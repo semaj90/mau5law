@@ -1,5 +1,5 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';, https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected; keyword: 'class';, https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected; keyword: 'class' -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  CommandMenu  from "./CommandMenu.svelte";
@@ -17,6 +17,7 @@
     onCommandInsert?: (data: { text: string }) => void
     onBlur?: (e: FocusEvent) => void
     onFocus?: (e: FocusEvent) => void}
+
   // use $props() and give sensible defaults
   let {
     value = $bindable(""),
@@ -36,7 +37,7 @@
   let textarea = $state<HTMLTextAreaElement | null>(null);
   let commandMenu = $state<any>(null);
   let showCommandMenu = $state<boolean>(false);
-  let commandMenuPosition = $state({ x: 0, y: 0 });
+  let commandMenuPosition = $state({ x: 0; y: 0 });
   let lastCursorPosition = $state<number>(0);
   function handleInput(e: Event) {
     const target = e.target as HTMLTextAreaElement
@@ -56,6 +57,7 @@
     ) {
       // allow CommandMenu consumer to handle navigation if it needs to
       return}
+
     // Ctrl/Cmd + K to open command menu
     if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) {
       e.preventDefault();
@@ -106,12 +108,14 @@
     onBlur?.(e)}
   function handleFocus(e: FocusEvent) {
     onFocus?.(e)}
+
   // Auto-resize textarea
   function autoResize() {
     if (textarea) {
       textarea.style.height = "auto";
       textarea.style.height = textarea.scrollHeight + "px"}
   }
+
   // Watch for value changes to auto-resize
   $effect(() => {
     if (value !== undefined) {
@@ -120,8 +124,7 @@
 </script>
 <div class={className}>
   <textarea
-    bind:this={textarea}
-   , bind:value={value}
+    bind:this={textarea}; bind:value={value}
     placeholder={placeholder}
     rows={rows}
     {disabled}
@@ -136,7 +139,7 @@
   {#if showCommandMenu}
     <div
       class="command-menu"
-      style="position: absolute, left: {commandMenuPosition.x}px;, top: {commandMenuPosition.y}px; z-index:9999;"
+      style="position: absolute; left: {commandMenuPosition.x}px;, top: {commandMenuPosition.y}px; z-index:9999;"
       role="listbox"
     >
       <!-- CommandMenu API may vary; provide a callback prop that CommandMenu, can, call -->
@@ -156,7 +159,7 @@
     font-family: inherit
     font-size: 0.875rem
     line-height: 1.5
-   ;background: var(--pico-card-background-color, #ffffff), color: var(--pico-color, #111827);
+   ;background: var(--pico-card-background-color, #ffffff); color: var(--pico-color, #111827);
     transition: border-color 0.15s ease, box-shadow 0.15s ease}
   .smart-textarea:focus { outline: none
     border-color: var(--pico-primary, #3b82f6);
@@ -172,14 +175,15 @@
     pointer-events: auto}
   /* Help text styling */
   .smart-textarea-container: :after {
-    content: 'Tip: Use # for commands or Ctrl/Cmd + K', position: absolute
+    content: 'Tip: Use # for commands or Ctrl/Cmd + K'; position: absolute
     bottom: -1.5rem
     right: 0
     font-size: 0.75rem
-   ; color: var(--pico-muted-color, #6b7280), opacity: 0
+   ; color: var(--pico-muted-color, #6b7280); opacity: 0
     transition: opacity 0.15s ease}
   .smart-textarea-container:hover::after {
     opacity: 1}
   .command-menu { background:var(--card-bg,#fff); box-shadow:0 8px 20px rgba(0,0,0,0.12); border-radius:6px}
 </style>
+
 

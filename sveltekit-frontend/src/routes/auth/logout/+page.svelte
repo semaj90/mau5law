@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Logout Route - Handles user logout
 TODO: Implement logout functionality, clear session, redirect to login
 -->
@@ -20,6 +20,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 			if (typeof window !== 'undefined') {
 				localStorage.removeItem('user');
 				localStorage.removeItem('token')}
+
 			// Redirect to login
 			setTimeout(() => {
 				goto('/auth/login')}, 1000)} catch (error) {
@@ -76,3 +77,4 @@ TODO: Implement logout functionality, clear session, redirect to login
 		</div.Root>
 	{/snippet}
 </EssentialRoutePage>
+

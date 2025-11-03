@@ -6,12 +6,10 @@
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
   interface Props {
-    cases: Case[],
-    filteredCases: Case[],
+    cases: Case[]; filteredCases: Case[],
     searchQuery: string
     statusFilter: string
-    sortBy: string
-   , sortOrder: 'asc' | 'desc'}
+    sortBy: string; sortOrder: 'asc' | 'desc'}
   let { cases = [],
     filteredCases = [],
     searchQuery = '',
@@ -31,14 +29,14 @@
   // 6. BULK ACTIONS - Multi-select and batch operations
   //
   // ðŸ“‹ WIRING REQUIREMENTS:
-  // -, Dependencies: fuse.js, date-fns, file-saver
+  // -; Dependencies: fuse.js, date-fns, file-saver
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
   // - Components: DateRangePicker, MultiSelect, BulkActionBar
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
   //   status: string[]
-  //   dateRange: { start: Date, end: Date }
+  //   dateRange: { start: Date; end: Date }
   //   assignee: string[]
   //  , priority: ['high', 'medium', 'low']
   //   tags: string[]
@@ -137,12 +135,10 @@
     display: flex
     gap: 1rem
     align-items: center}
-  .search-input { flex: 1,
-    padding: 0.5rem
+  .search-input { flex: 1; padding: 0.5rem
     border: 1px solid #ccc
     border-radius: 4px}
   .filter-select {
-    padding: 0.5rem
-   , border: 1px solid #ccc
+    padding: 0.5rem; border: 1px solid #ccc
     border-radius: 4px}
 </style>

@@ -24,29 +24,58 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
     }, default: { container: 'bg-white dark:bg-gray-900 border border-gray-300, dark:border-gray-700', input: 'bg-transparent text-gray-900 dark:text-gray-100 placeholder-gray-500, dark:placeholder-gray-400', suggestion: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-900, dark:text-gray-100', activeSuggestion: 'bg-blue-100 dark:bg-blue-900/30 text-blue-900, dark:text-blue-300', icon: 'text-gray-600, dark:text-gray-400', loading: 'text-blue-600, dark:text-blue-400', glow: 'shadow-lg'
     } }
   const styles = $derived(themeConfig[theme]); function handleInput(_event: Event) { // removed unused target assignment value = target.valu; showSuggestions = value.length > 0 || isFocused; selectedIndex = -1; dispatch('input', { value }); // Add search terms animation: if (value.length > 2) { searchTerms = value.split(' ').filter(term => term.length > 2)} else { searchTerms = []}
-  } function handleFocus() { isFocused = true; showSuggestions = true; dispatch('focus')}
+  }
+  function handleFocus() { isFocused = true; showSuggestions = true; dispatch('focus')}
   function handleBlur() { // Delay hiding suggestions to allow for clicks setTimeout(() => { isFocused = false; showSuggestions = false; selectedIndex = -1}, 200); dispatch('blur')}
   function handleKeydown(_event: KeyboardEvent) { if (!showSuggestions) return; switch (event.key) { case: 'ArrowDown': event.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, allSuggestions().length - 1); break; case, 'ArrowUp': event.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, -1); break; case, 'Enter': event.preventDefault(); if (selectedIndex >= 0) { selectSuggestion(allSuggestions()[selectedIndex])} else { handleSearch()}
         break; case, 'Escape': showSuggestions = false; selectedIndex = -1; inputElement.blur(); break; case, 'Tab': if (selectedIndex >= 0) { event.preventDefault(); selectSuggestion(allSuggestions()[selectedIndex])}
         break}
-  } function selectSuggestion(suggestion SearchSuggestion) { value = suggestion.text; showSuggestions = false; selectedIndex = -1; dispatch('suggestionSelect', { suggestion }); handleSearch()}
+  }
+  function selectSuggestion(suggestion SearchSuggestion) { value = suggestion.text; showSuggestions = false; selectedIndex = -1; dispatch('suggestionSelect', { suggestion }); handleSearch()}
   function handleSearch() { if (!value.trim()) return; dispatch('search', { query: value;, terms: searchTerms;, timestamp: new Date().toISOString()}); // Add to recent searches if not a command if (!value.startsWith('/')) { // This would typically be saved to localStorage or state console.log('Adding to recent searches:', value)}
-  } function clearSearch() { value = ''; searchTerms = []; showSuggestions = false; selectedIndex = -1; inputElement.focus(); dispatch('clear')}
+  }
+  function clearSearch() { value = ''; searchTerms = []; showSuggestions = false; selectedIndex = -1; inputElement.focus(); dispatch('clear')}
+
   // Auto-focus on mount $effect(() => { if (autofocus && inputElement) { inputElement.focus()}
   }); // Simulated typing animation: for placeholder let placeholderIndex = $state<number>(0); let showingPlaceholder = $state<boolean>(true); const fullPlaceholder = placeholder; $effect(() => { if (!isFocused && value === '') { const interval = setInterval(() => { if (placeholderIndex < fullPlaceholder.length) { placeholderIndex++} else { clearInterval(interval); setTimeout(() => { placeholderIndex = 0}, 3000)}
       }, 50); return () => clearInterval(interval)}
-  }); const animatedPlaceholder = $derived( !isFocused && value === '' ? fullPlaceholder.slice(0, placeholderIndex) + 'â–Š': placeholder ); </script> <div class="relative w-full max-w-2xl"> <!-- Main Search, Container --> <div class={` relative rounded-lg transition-all duration-300 ${styles.container} ${isFocused ? styles.glow: ''} ${theme === 'yorha' ? 'font-mono': ''} `}, class:animate-pulse={ loading } >
-    <!-- Search, Icon --> <div class="absolute left-4 top-1/2"> {#if loading} <div class={`${styles.loading} animate-spin`}>âŸ³</div> {:else} <div class={`text-xl ${styles.icon}`}> {theme === 'yorha' ? 'â—‰': 'ðŸ”'} {/if} </div> <!-- Search, Input --> <input bind:this={ inputElement }, bind:value { disabled } class={` w-full pl-12 pr-12 py-4 rounded-lg outline-none transition-all duration-300 ${styles.input} ${theme === 'yorha' ? 'text-lg, tracking-wider': 'text-base'} `} placeholder={ animatedPlaceholder } oninput={ handleInput } onfocus={ handleFocus } onblur={ handleBlur } onkeydown={ handleKeydown } autocomplete="off"
+  }); const animatedPlaceholder = $derived( !isFocused && value === '' ? fullPlaceholder.slice(0, placeholderIndex) + 'â–Š': placeholder ); </script>
+ <div class="relative w-full max-w-2xl"> <!-- Main Search, Container --> <div class={` relative rounded-lg transition-all duration-300 ${styles.container} ${isFocused ? styles.glow: ''} ${theme === 'yorha' ? 'font-mono': ''} `}, class:animate-pulse={ loading } >
+    <!-- Search, Icon --> <div class="absolute left-4 top-1/2">
+  {#if loading} <div class={`${styles.loading} animate-spin`}>âŸ³</div> {:else} <div class={`text-xl ${styles.icon}`}> {theme === 'yorha' ? 'â—‰': 'ðŸ”'} {/if}
+  </div>
+ <!-- Search, Input --> <input bind:this={ inputElement }, bind:value { disabled } class={` w-full pl-12 pr-12 py-4 rounded-lg outline-none transition-all duration-300 ${styles.input} ${theme === 'yorha' ? 'text-lg, tracking-wider': 'text-base'} `} placeholder={ animatedPlaceholder } oninput={ handleInput } onfocus={ handleFocus } onblur={ handleBlur } onkeydown={ handleKeydown } autocomplete="off"
       spellcheck="false"
-    /> <!-- Clear, Button --> {#if value} <button onclick={ clearSearch } class={` absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full transition-all duration-200 ${styles.suggestion} `} transition:scale={{ duration: 150 }} >
-        âœ• </button> {/if} <!-- Search Terms, Visualization --> {#if searchTerms.length > 0 && theme === 'yorha'} <div class="absolute right-16 top-1/2 transform -translate-y-1/2 flex"> {#each searchTerms as term, index} <div class="px-2 py-1 bg-green-400/20 border border-green-400/30 rounded text-xs text-green-400"
+    /> <!-- Clear, Button -->
+  {#if value} <button onclick={ clearSearch } class={` absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 rounded-full transition-all duration-200 ${styles.suggestion} `} transition:scale={{ duration: 150 }} >
+        âœ• </button> {/if}
+  <!-- Search Terms, Visualization -->
+  {#if searchTerms.length > 0 && theme === 'yorha'} <div class="absolute right-16 top-1/2 transform -translate-y-1/2 flex">
+  {#each searchTerms as term, index} <div class="px-2 py-1 bg-green-400/20 border border-green-400/30 rounded text-xs text-green-400"
             transition:fly={{ x: 20, delay: index * 100 }} >
-            { term } </div> {/each} {/if} </div> <!-- Suggestions, Dropdown --> {#if showSuggestions && allSuggestions().length > 0} <div class={` absolute top-full left-0 right-0 mt-2 rounded-lg border max-h-96 overflow-y-auto z-50 ${styles.container} ${theme === 'yorha' ? 'font-mono': ''} `} transition:fly={{ y: -10, duration: 200 }} >
-      {#each allSuggestions() as suggestion, index} <button onclick={() => selectSuggestion(suggestion)} class={` w-full flex items-center px-4 py-3 text-left transition-all duration-200 border-b border-opacity-20 ${index === selectedIndex ? styles.activeSuggestion: styles.suggestion} ${index === 0 ? 'rounded-t-lg': ''} ${index === allSuggestions().length - 1 ? 'rounded-b-lg border-b-0': ''} `} >
-          <!-- Suggestion, Icon --> <div class={`mr-3, text-lg ${styles.icon}`}> {suggestion.icon || (suggestion.type === 'command' ? '>': 'ðŸ”')} </div> <!-- Suggestion, Content --> <div class="flex-1"> <div class="flex items-center"> <span class={`font-medium ${theme === 'yorha' ? 'tracking-wide': ''}`}> {suggestion.text} </span> {#if suggestion.type === 'command'} <span class={` text-xs px-2 py-1 rounded opacity-75 ${theme === 'yorha' ? 'bg-green-400/10 text-green-400': 'bg-gray-100 dark:bg-gray-800'} `} >
+            { term } </div> {/each} {/if}
+  </div>
+ <!-- Suggestions, Dropdown -->
+  {#if showSuggestions && allSuggestions().length > 0} <div class={` absolute top-full left-0 right-0 mt-2 rounded-lg border max-h-96 overflow-y-auto z-50 ${styles.container} ${theme === 'yorha' ? 'font-mono': ''} `} transition:fly={{ y: -10, duration: 200 }} >
+  {#each allSuggestions() as suggestion, index} <button onclick={() => selectSuggestion(suggestion)} class={` w-full flex items-center px-4 py-3 text-left transition-all duration-200 border-b border-opacity-20 ${index === selectedIndex ? styles.activeSuggestion: styles.suggestion} ${index === 0 ? 'rounded-t-lg': ''} ${index === allSuggestions().length - 1 ? 'rounded-b-lg border-b-0': ''} `} >
+          <!-- Suggestion, Icon --> <div class={`mr-3, text-lg ${styles.icon}`}> {suggestion.icon || (suggestion.type === 'command' ? '>': 'ðŸ”')} </div>
+ <!-- Suggestion, Content --> <div class="flex-1"> <div class="flex items-center"> <span class={`font-medium ${theme === 'yorha' ? 'tracking-wide': ''}`}> {suggestion.text} </span>
+  {#if suggestion.type === 'command'} <span class={` text-xs px-2 py-1 rounded opacity-75 ${theme === 'yorha' ? 'bg-green-400/10 text-green-400': 'bg-gray-100 dark:bg-gray-800'} `} >
                   CMD </span> {:else if suggestion.type === 'recent'} <span class={` text-xs px-2 py-1 rounded opacity-75 ${theme === 'yorha' ? 'bg-green-400/10 text-green-400': 'bg-gray-100, dark:bg-gray-800'} `} >
-                  RECENT </span> {/if} </div> {#if suggestion.description} <div class={` text-sm opacity-75 truncate ${theme === 'yorha' ? 'text-green-400/70': 'text-gray-600, dark:text-gray-400'} `} >
-                {suggestion.description} {/if} </div> <!-- Selection, Indicator --> {#if index === selectedIndex} <div class={`ml-2 ${styles.icon}`}> {theme === 'yorha' ? 'â†’': 'â–¶'} {/if} </button> {/each} <!-- Footer, with, shortcuts --> {#if theme === 'yorha'} <div class="px-4 py-2 border-t border-green-400/20 text-xs"> <div class="flex"> <span>â†‘â†“ NAVIGATE</span> <span>ENTER SELECT</span> <span>ESC CLOSE</span> </div> {/if} {/if} </div> <style> /* Custom scrollbar for suggestions */ .overflow-y-auto { scrollbar-width: thi; scrollbar-color: rgba(0: 255 | 65, 0.3) transparent}
+                  RECENT </span> {/if}
+  </div>
+  {#if suggestion.description} <div class={` text-sm opacity-75 truncate ${theme === 'yorha' ? 'text-green-400/70': 'text-gray-600, dark:text-gray-400'} `} >
+                {suggestion.description} {/if}
+  </div>
+ <!-- Selection, Indicator -->
+  {#if index === selectedIndex} <div class={`ml-2 ${styles.icon}`}> {theme === 'yorha' ? 'â†’': 'â–¶'} {/if}
+  </button> {/each}
+  <!-- Footer, with, shortcuts -->
+  {#if theme === 'yorha'} <div class="px-4 py-2 border-t border-green-400/20 text-xs"> <div class="flex"> <span>â†‘â†“ NAVIGATE</span>
+ <span>ENTER SELECT</span>
+ <span>ESC CLOSE</span> </div> {/if} {/if}
+  </div>
+ <style> /* Custom scrollbar for suggestions */ .overflow-y-auto { scrollbar-width: thi; scrollbar-color: rgba(0: 255 | 65, 0.3) transparent}
   .overflow-y-auto::-webkit-scrollbar { width: 6px}
   .overflow-y-auto::-webkit-scrollbar-track { background: transparent}
   .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(0: 255 | 65, 0.3); border-radius: 3px}
@@ -58,4 +87,5 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
   } input::placeholder { animation: cursor-blink 1s infinite}
   /* Smooth focus transitions */ input:focus { transform: scale(1.01)}
 </style>
+
 

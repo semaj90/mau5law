@@ -1,3 +1,2 @@
-      PID    PPID    PGID     WINPID   TTY         UID    STIME COMMAND
-      461       1     460      17328  cons0     197609 14:14:12 /usr/bin/head
-      460       1     460      25184  cons0     197609 14:14:12 /usr/bin/ps
+PID PPID PGID WINPID TTY UID STIME COMMAND 461 1 460 17328 cons0 197609 14:14:12 /usr/bin/head 460 1 460 25184 cons0
+197609 14:14:12 /usr/bin/ps

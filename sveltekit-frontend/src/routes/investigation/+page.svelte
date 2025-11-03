@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Integrated Legal Investigation Workspace
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
@@ -54,6 +54,7 @@ import type { Document } from '$lib/types';
    , timestamp: string
     context?: 'evidence' | 'case' | 'citation' | 'analysis';
     relatedId?: string}
+
   // State management with Svelte, 5 runes
   let currentCase = $state<Case | null>(null);
   let cases = $state<Case[]>([]);
@@ -109,6 +110,7 @@ import type { Document } from '$lib/types';
     if (patterns && patterns.length > 0) {
       addChatMessage('assistant', `ðŸ” Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`, 'analysis')}
   }
+
   // AI Chat functionality
   function addChatMessage(role: 'user' | 'assistant' | 'system', content: string, context?: 'evidence' | 'case' | 'citation' | 'analysis', relatedId?: string) {
     const message: ChatMessage = { id: `msg-${Date.now()}`,
@@ -144,6 +146,7 @@ import type { Document } from '$lib/types';
       case, 'tagged': return 'bg-purple-500';
       default: return 'bg-gray-500'}
   }
+
   // Initialize
   $effect(() => {
     console.log('ðŸš€ Legal Investigation Workspace initialized');
@@ -176,6 +179,7 @@ import type { Document } from '$lib/types';
     } catch (error) {
       console.log('Could not load system status:', error)}
   }
+
   // Save investigation progress
   async function saveInvestigation(): Promise<void> {
     if (!currentCase || isSaving) return
@@ -216,18 +220,22 @@ import type { Document } from '$lib/types';
     <div class="header-content flex justify-between items-center flex-col sm:flex-row gap-4">
       <div class="case-info">
         <h1 class="text-2xl font-bold mb-2">ðŸ” Legal Investigation Workspace</h1>
+
         {#if currentCase}
           <div class="case-details flex items-center">
             <Badge class={`${getPriorityColor(currentCase.priority)} text-white, mr-2`}>
               {currentCase.priority.toUpperCase()}
-            </Badge>
-            <span class="case-title font-semibold">{currentCase.title}</span>
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{currentCase.status}</span>
+</Badge>
+            <span class="case-title font-semibold">{currentCase.title}
+</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{currentCase.status}
+</span>
           </div>
         {/if}
-      </div>
+</div>
       <div class="workspace-actions flex items-center">
         <Button onclick={saveInvestigation} variant="ghost" size="sm" disabled={!currentCase || isSaving}>
+
           {#if isSaving}
             <Cpu class="w-4 h-4 mr-2" />
             Saving...
@@ -235,7 +243,7 @@ import type { Document } from '$lib/types';
             <Save class="w-4 h-4" />
             Save Progress
           {/if}
-        </Button>
+</Button>
         <!-- System, Status, Indicators -->
         <div class="status-indicators flex">
           <div class="status-item flex items-center justify-center w-8 h-8 border border-gray-600 rounded-md transition-all duration-300" class:active={systemStatus.evidenceCanvas} title="Evidence, Canvas">
@@ -284,7 +292,7 @@ import type { Document } from '$lib/types';
       <TabsContent value="evidence" class="tab-content">
         <div class="evidence-layout grid grid-cols-1 lg:grid-cols-3 gap-4 h-full">
           <div class="evidence-canvas-section lg:col-span-2">
-            <Card.Root, class="h-full">
+            <Card.Root class="h-full">
               <CardHeader>
                 <CardTitle>Enhanced Evidence Canvas</CardTitle>
                 <CardDescription>
@@ -313,14 +321,17 @@ import type { Document } from '$lib/types';
               </CardHeader>
               <CardContent>
                  <div class="evidence-list">
+
                    {#each evidence as item}
                      <div class="evidence-item p-3 border border-[#00ff88]/30 rounded-md mb-2">
                        <div class="evidence-header flex justify-between items-center">
-                         <span class="evidence-title">{item.title}</span>
+                         <span class="evidence-title">{item.title}
+</span>
                          <Badge class={`${getStatusColor(item.status)} text-white, text-xs`}>
                           {item.status}
-                        </Badge>
+</Badge>
                        </div>
+
                        {#if item.confidence}
                         <div class="confidence-meter">
                           <span class="confidence-label text-xs">Confidence: {Math.round((item.confidence ?? 0) * 100)}%</span>
@@ -333,16 +344,19 @@ import type { Document } from '$lib/types';
                         </div>
                       {/if}
                       {#if item.aiAnalysis}
-                        <p class="evidence-analysis text-sm text-gray-400 mt-2">{item.aiAnalysis}</p>
+                        <p class="evidence-analysis text-sm text-gray-400 mt-2">{item.aiAnalysis}
+</p>
                       {/if}
                       {#if item.tags.length > 0}
                         <div class="evidence-tags flex flex-wrap gap-1">
+
                           {#each Array.isArray(item.tags) ? item.tags : [] as tag}
-                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{tag}</span>
+                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{tag}
+</span>
                           {/each}
-                        </div>
+</div>
                       {/if}
-                    </div>
+</div>
                    {/each}
                    {#if evidence.length === 0}
                      <div class="empty-state flex flex-col items-center justify-center h-48 text-center">
@@ -350,7 +364,7 @@ import type { Document } from '$lib/types';
                        <p class="text-gray-500">Upload evidence to begin analysis</p>
                      </div>
                    {/if}
-                 </div>
+</div>
               </CardContent>
             </Card>
            </div>
@@ -359,7 +373,7 @@ import type { Document } from '$lib/types';
 
        <!-- Investigation, Notes, Tab -->
        <TabsContent value="investigation" class="tab-content">
-        <Card.Root, class="h-full">
+        <Card.Root class="h-full">
           <CardHeader>
             <CardTitle>Investigation Notes</CardTitle>
             <CardDescription>
@@ -377,7 +391,7 @@ import type { Document } from '$lib/types';
 
        <!-- AI, Assistant, Tab -->
        <TabsContent value="chat" class="tab-content">
-        <Card.Root, class="h-full">
+        <Card.Root class="h-full">
           <CardHeader>
             <CardTitle>Unified AI Legal Assistant</CardTitle>
             <CardDescription>
@@ -400,7 +414,7 @@ import type { Document } from '$lib/types';
 
        <!-- Citations, Tab -->
        <TabsContent value="citations" class="tab-content">
-        <Card.Root, class="h-full">
+        <Card.Root class="h-full">
           <CardHeader>
             <CardTitle>Legal Citations & References</CardTitle>
             <CardDescription>
@@ -563,3 +577,5 @@ import type { Document } from '$lib/types';
       padding: 0.5rem}
   }
 </style>
+
+

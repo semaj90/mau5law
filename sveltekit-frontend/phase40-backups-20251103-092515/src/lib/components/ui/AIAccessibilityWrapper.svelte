@@ -26,8 +26,7 @@
       enableVoiceCommands,
       progressiveDisclosure: showProgressiveDisclosure
       enhancedFocusIndicators: true
-      aiResultSummaries: true
-     , contextualHelp: true
+      aiResultSummaries: true; contextualHelp: true
     });
     // Set up keyboard shortcuts for voice commands
     const handleKeyboard = (_event: KeyboardEvent) => {
@@ -73,8 +72,7 @@
       const obj = aiResult as Record<string unknown>;
       const summary = (obj as: any).summary || `${operation} completed with ${Object.keys(obj).length} sections`;
       const levels = Object.entries(obj).map(([key, value], index) => ({
-        label: key.charAt(0).toUpperCase() + key.slice(1),
-        content: value
+        label: key.charAt(0).toUpperCase() + key.slice(1); content: value
        , level: index + 1}));
       aiAccessibilityPatterns?.createProgressiveDisclosure(containerElement, aiResult, {
         summary,
@@ -180,15 +178,12 @@
 <style>
   .ai-accessibility-wrapper {
     position: relative
-    padding: 1rem
-   , border: 1px solid var(--color-border, #333);
-    border-radius: 8px
-   , background: var(--color-bg-secondary, #1a1a2e);
+    padding: 1rem; border: 1px solid var(--color-border, #333);
+    border-radius: 8px; background: var(--color-bg-secondary, #1a1a2e);
   }
   .voice-commands-control {
     display: flex
-    align-items: center
-   , gap: 1rem
+    align-items: center; gap: 1rem
     margin-bottom: 1rem
     padding-bottom: 1rem
     border-bottom: 1px solid var(--color-border, #333);
@@ -200,12 +195,9 @@
     cursor: pointer
     transition: all 0.2s ease}
   .voice-status {
-    font-size: 0.875rem
-   , color: var(--color-text-secondary, #aaa);
-    padding: 0.25rem 0.5rem
-   , background: rgba(0, 188, 212, 0.1);
-    border-radius: 4px
-   , border: 1px solid rgba(0, 188, 212, 0.3);
+    font-size: 0.875rem; color: var(--color-text-secondary, #aaa);
+    padding: 0.25rem 0.5rem; background: rgba(0, 188, 212, 0.1);
+    border-radius: 4px; border: 1px solid rgba(0, 188, 212, 0.3);
   }
   .ai-status-indicator {
     margin-bottom: 1rem
@@ -237,8 +229,7 @@
   }
   .ai-content-area {
     min-height: 100px
-    padding: 1rem
-   , border: 1px dashed var(--color-border, #444);
+    padding: 1rem; border: 1px dashed var(--color-border, #444);
     border-radius: 6px
     margin-bottom: 1rem}
   .ai-help-section {
@@ -248,8 +239,7 @@
     cursor: pointer
     padding: 0.5rem
     border-radius: 4px
-    background: transparent
-   , border: 1px solid var(--color-border, #333);
+    background: transparent; border: 1px solid var(--color-border, #333);
     display: flex
     align-items: center
     gap: 0.5rem
@@ -259,10 +249,8 @@
   }
   .help-content {
     padding: 1rem
-    margin-top: 0.5rem
-   , background: rgba(0, 0, 0, 0.2);
-    border-radius: 6px
-   , border: 1px solid var(--color-border, #444);
+    margin-top: 0.5rem; background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px; border: 1px solid var(--color-border, #444);
   }
 .help-content h3, {}
   .help-content h4 {
@@ -274,13 +262,11 @@
     margin: 0.5rem 0
     padding-left: 1rem}
   .help-content dt {
-    font-weight: 600
-   , color: var(--color-text-primary, #fff);
+    font-weight: 600; color: var(--color-text-primary, #fff);
   }
   .help-content dd {
     margin-left: 1rem
-    margin-bottom: 0.5rem
-   , color: var(--color-text-secondary, #aaa);
+    margin-bottom: 0.5rem; color: var(--color-text-secondary, #aaa);
   }
 /* Enhanced focus indicators for AI components */ {}
   :global($1) {
@@ -294,8 +280,7 @@
 .spinner, {}
 .voice-toggle, {}
     .help-toggle {
-      animation: none
-     , transition: none}
+      animation: none; transition: none}
   }
 /* High contrast mode support */ {}
   @media (prefers-contrast: high) {

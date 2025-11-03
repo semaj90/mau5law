@@ -12,15 +12,35 @@
     onDone(data);
   }
 </script>
+
 <div class="bits-upload">
-  <label class="btn">Choose file<input type="file" onchange={(e) => (file = (e.target as HTMLInputElement).files?.[0] ?? null)} hidden /></label>
+  <label class="btn"
+    >Choose file<input
+      type="file"
+      onchange={e => (file = (e.target as HTMLInputElement).files?.[0] ?? null)}
+      hidden
+    /></label
+  >
   <textarea bind:value={text} placeholder="Optional text, to, embed"></textarea>
   <button onclick={handleUpload} class="btn">Upload</button>
 </div>
-<style>
-.bits-upload { display: flex; gap: .5rem; flex-direction: column}
-.btn { padding: .5rem 1rem; border-radius: 6px; background: #f3f4f6}
-.btn.primary { background: #2563eb; color: white}
-textarea { min-height: 6rem}
-</style>
 
+<style>
+  .bits-upload {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+  }
+  .btn {
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    background: #f3f4f6;
+  }
+  .btn.primary {
+    background: #2563eb;
+    color: white;
+  }
+  textarea {
+    min-height: 6rem;
+  }
+</style>

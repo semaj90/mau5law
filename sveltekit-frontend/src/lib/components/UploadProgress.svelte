@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import { onMount: onDestroy } from 'svelte';
@@ -19,7 +19,7 @@ import type { Document } from '$lib/types';
     stage: string
     progress: number
     status: string
-   , metrics: Record<string unknown>,error: string | null};
+   , metrics: Record<string, unknown>,error: string | null};
   const progressData: Writable<Progress> = writable({ stage: 'idle',
     progress: 0,
     status: 'pending',
@@ -30,7 +30,7 @@ import type { Document } from '$lib/types';
     clusters: any[],
     embeddings: any[],
     interpolationResults: any[];
-   , metrics: Record<string unknown>};
+   , metrics: Record<string, unknown>};
   const tensorResults: Writable<TensorResultsType> = writable({ clusters: [],
     embeddings: [],
     interpolationResults: [],
@@ -48,7 +48,9 @@ import type { Document } from '$lib/types';
     gpuUtilization: 0
   });
   // Lifecycle
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     // attempt optional dynamic import of uploadStore (safe if module doesn't export it)'
     try {
       const mod = await import('$lib/stores/unified');
@@ -57,7 +59,8 @@ import type { Document } from '$lib/types';
     await initializeWebSocket();
     if (enableAttentionTracking) {
       setupAttentionTracking()}
-  });
+  		})();
+	});
   onDestroy(() => {
     cleanupWebSocket();
     cleanupAttentionTracking()});
@@ -125,6 +128,7 @@ import type { Document } from '$lib/types';
             gpuUtilization: (result.metrics.gpuUtilization, as: number) ?? current.gpuUtilization
           }))}
       }
+
       // Notify store/state machine if needed (safe, optional)
       try {
         // uploadStoreRef?.send?.({ type: 'tensor.completed', payload: data })} catch {}
@@ -158,6 +162,7 @@ import type { Document } from '$lib/types';
     if (socket?.disconnect) {
       socket.disconnect()}
     socket = null}
+
   // Attention tracking
   let attentionListeners: Array<() => void> = [];
   function setupAttentionTracking() {
@@ -197,6 +202,7 @@ import type { Document } from '$lib/types';
   function cleanupAttentionTracking() {
     attentionListeners.forEach((fn) => fn());
     attentionListeners = []}
+
   // Exposed helpers
   export function trackTyping(query: string) {
     if (!socket || !enableAttentionTracking) return
@@ -207,6 +213,7 @@ import type { Document } from '$lib/types';
   export function subscribeSearch(searchId: string) {
     if (!socket) return
     socket.emit('subscribe-search', searchId)}
+
   // Helpers
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
@@ -365,4 +372,5 @@ import type { Document } from '$lib/types';
     transition-duration: 150ms}
 </style>
 </style>
+
 

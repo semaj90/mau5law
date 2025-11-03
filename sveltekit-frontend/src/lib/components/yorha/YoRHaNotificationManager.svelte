@@ -14,6 +14,7 @@
     icon?: string
     position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left' | 'center';
     showProgress?: boolean}
+
   // Subscribe to notification store
   let notifications = $state<Notification[]>([]);
   // Avoid TS union issues by creating a typed alias
@@ -25,6 +26,7 @@
     return unsubscrib});
   function removeNotification(id: string) {
     notificationStore.remove(id)}
+
   // Group notifications by position for proper stacking
   function groupNotificationsByPosition(notifications: Notification[]) {
     return notifications.reduce((groups, notification) => {
@@ -32,9 +34,10 @@
       if (!groups[position]) {
         groups[position] = []}
       groups[position].push(notification);
-      return group}, as Record<string Notification[]>)}
+      return group}, as Record<string, Notification[]>)}
   const groupedNotifications = $derived(groupNotificationsByPosition(notifications));
 </script>
+
 <!-- Render notifications grouped, by, position -->
 {#each Object.entries(groupedNotifications) as [position, notificationGroup]}
   <div class="notification-group">
@@ -46,11 +49,12 @@
     {/each}
   </div>
 {/each}
+
 <style>
   .notification-group {
     position: fixed
 d
-    z-index: 9999, display: flex
+    z-index: 9999; display: flex
     flex-direction: column
    ;gap: 12px
     pointer-events: none}
@@ -72,7 +76,7 @@ d
     left: 20px
     flex-direction: column-rever}
   .notification-group-center {
-    top: 50%, left: 50%;transform: translate(-50%, -50%);
+    top: 50%; left: 50%;transform: translate(-50%, -50%);
     align-items: center}
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -88,4 +92,5 @@ d
      ;left: 10px}
   }
 </style>
+
 

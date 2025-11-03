@@ -104,7 +104,11 @@
   </div>
   <div class="controls">
     <!-- use value + oninput because Input.value is not bindable in this component -->
-    <Input value={searchQuery} oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)} placeholder="Search cases..." />
+    <Input
+      value={searchQuery}
+      oninput={e => (searchQuery = (e.target as HTMLInputElement).value)}
+      placeholder="Search cases..."
+    />
     <Button variant="primary">➕ NEW CASE</Button>
   </div>
   <div class="cases-grid">
@@ -114,7 +118,9 @@
           <div class="case-header">
             <h3>{case_.title}</h3>
             <span class="status-badge nes-badge">
-              <span class={case_.status === 'active' ? 'is-success' : case_.status === 'error' ? 'is-error' : 'is-warning'}>
+              <span
+                class={case_.status === 'active' ? 'is-success' : case_.status === 'error' ? 'is-error' : 'is-warning'}
+              >
                 {case_.status.toUpperCase()}
               </span>
             </span>
@@ -249,4 +255,3 @@
     }
   }
 </style>
-

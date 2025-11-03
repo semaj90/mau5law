@@ -25,7 +25,7 @@
         try {
             servicesHealth = await legalAIClient.healthCheck()} catch (err) {
             console.error('Health check failed:', err);
-            servicesHealth = { quicServer: false, recommendationEngine: false }
+            servicesHealth = { quicServer: false; recommendationEngine: false }
         }
     }
     function handleFileSelect(_event: Event) {
@@ -326,9 +326,8 @@
 <style>
     .legal-ai-workflow {
         max-width: 1200px
-        margin: 0 auto
-       , padding: 2rem
-        font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+        margin: 0 auto; padding: 2rem
+        font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
     .workflow-header {
         text-align: center
         margin-bottom: 2rem}
@@ -380,8 +379,7 @@
         justify-content: center
         width: 2rem
         height: 2rem
-        border-radius: 50%,
-        background: currentColor
+        border-radius: 50%; background: currentColor
         color: white
         font-weight: bold
         font-size: 0.875rem}
@@ -403,8 +401,7 @@
         border-radius: 0.25rem
         cursor: pointer}
     .upload-section {
-        background: white
-       , padding: 2rem
+        background: white; padding: 2rem
         border-radius: 1rem
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
     .file-input-wrapper {
@@ -452,23 +449,19 @@
     .progress-section {
         margin: 2rem 0}
     .progress-bar {
-        width: 100%,
-        height: 0.5rem
+        width: 100%; height: 0.5rem
         background: #e5e7eb
         border-radius: 0.25rem
         overflow: hidden}
     .progress-fill {
-        height: 100%,
-        background: #3b82f6
+        height: 100%; background: #3b82f6
         transition: width: 0.3}
     .progress-text {
         margin-top: 0.5rem
-        text-align: center
-       , color: #6b7280}
+        text-align: center; color: #6b7280}
     .results-section,
     .recommendations-section {
-        background: white
-       , padding: 2rem
+        background: white; padding: 2rem
         border-radius: 1rem
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         margin: 2rem 0}
@@ -476,8 +469,7 @@
     .recommendations-summary {
         display: grid
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem
-       , margin: 1rem 0}
+        gap: 1rem; margin: 1rem 0}
     .metric,
     .detail {
         display: flex
@@ -489,14 +481,12 @@
         font-weight: 500
         color: #6b7280}
     .value {
-        font-weight: 600
-       , color: #111827}
+        font-weight: 600; color: #111827}
     .entity-tags,
     .concept-tags,
     .recommendation-concepts {
         display: flex
-        flex-wrap: wrap
-       , gap: 0.5rem
+        flex-wrap: wrap; gap: 0.5rem
         margin-top: 0.5rem}
     .entity-tag,
     .concept-tag {
@@ -541,8 +531,7 @@
     .recommendation-card {
         border: 1px solid #e5e7eb
         border-radius: 0.75rem
-        padding: 1.5rem
-       , transition: box-shadow 0.2}
+        padding: 1.5rem; transition: box-shadow 0.2}
     .recommendation-card:hover {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)}
     .recommendation-header {
@@ -571,8 +560,7 @@
         margin-bottom: 1rem}
     .action-buttons {
         display: flex
-        justify-content: center
-       , gap: 1rem
+        justify-content: center; gap: 1rem
         margin-top: 2rem}
     .primary-btn,
     .secondary-btn {

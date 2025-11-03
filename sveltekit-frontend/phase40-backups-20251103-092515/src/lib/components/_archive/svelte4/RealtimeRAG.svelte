@@ -54,13 +54,12 @@ import type { Document } from '$lib/types';
   function handleQuerySubmit() {
     if (!query.trim()) return
     ragMachine.send({
-      type: 'QUERY',
-      query: query.trim(),
+      type: 'QUERY'; query: query.trim(),
       options: {
         maxResults,
         confidenceThreshold,
         caseId: selectedCaseId
-       , documentTypes: selectedDocumentTypes.length > 0 ? selectedDocumentTypes : undefined
+; documentTypes: selectedDocumentTypes.length > 0 ? selectedDocumentTypes : undefined
       }
     });
   }
@@ -70,7 +69,8 @@ import type { Document } from '$lib/types';
     files.forEach(async (file) => {
       try {
         await ragStore.uploadDocument(file, {
-          case_id: selectedCaseId,
+          case_id: selectedCaseId
+,
           document_type: 'upload',
           uploaded_by: 'user'
         });
@@ -390,8 +390,7 @@ import type { Document } from '$lib/types';
   .line-clamp-3 {
     display: -webkit-box
     -webkit-line-clamp: 3
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
   @keyframes pulse {
     0%,
     100% {
@@ -410,9 +409,6 @@ import type { Document } from '$lib/types';
     .advanced-options {
       grid-template-columns: 1fr}
     .rag-header .flex {
-      flex-direction: column
-     , gap: 0.5rem}
+      flex-direction: column; gap: 0.5rem}
   }
 </style>
-
-

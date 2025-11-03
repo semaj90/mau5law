@@ -205,11 +205,7 @@
       <div class="section">
         <h3>📤 File Upload</h3>
 
-        <div
-          class="file-drop-zone"
-          id="dropZone"
-          onclick="document.getElementById('fileInput').click()"
-        >
+        <div class="file-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
           <div>🗂️ Click here or drag & drop PDF files</div>
           <div style="font-size: 12px; margin-top: 10px">Supported: PDF, DOC, DOCX, TXT</div>
           <input type="file" id="fileInput" multiple accept=".pdf,.doc,.docx,.txt" />
@@ -217,19 +213,12 @@
 
         <div class="checkbox-group">
           <h4>Processing Options:</h4>
-          <label
-            ><input type="checkbox" id="enableOCR" checked /> Enable OCR (Text Extraction)</label
-          >
-          <label
-            ><input type="checkbox" id="enableEmbedding" checked /> Enable Embeddings (Vector
-            Generation)</label
-          >
+          <label><input type="checkbox" id="enableOCR" checked /> Enable OCR (Text Extraction)</label>
+          <label><input type="checkbox" id="enableEmbedding" checked /> Enable Embeddings (Vector Generation)</label>
           <label><input type="checkbox" id="enableRAG" checked /> Enable RAG (Analysis)</label>
         </div>
 
-        <button class="button" onclick="uploadFiles()" id="uploadBtn" disabled>
-          🚀 Upload & Process Files
-        </button>
+        <button class="button" onclick="uploadFiles()" id="uploadBtn" disabled> 🚀 Upload & Process Files </button>
         <button class="button" onclick="clearFiles()">🗑️ Clear Files</button>
       </div>
 
@@ -265,8 +254,7 @@
       function log(message, type = 'info') {
         const timestamp = new Date().toLocaleTimeString();
         const logElement = document.getElementById('systemLog');
-        const prefix =
-          type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+        const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
         logElement.textContent += `[${timestamp}] ${prefix} ${message}\n`;
         logElement.scrollTop = logElement.scrollHeight;
         console.log(`[${type.toUpperCase()}] ${message}`);
@@ -376,7 +364,7 @@
 
       function handleFileSelection(files) {
         const pdfFiles = files.filter(
-          (file) =>
+          file =>
             file.type === 'application/pdf' ||
             file.name.toLowerCase().endsWith('.pdf') ||
             file.type.includes('document') ||
@@ -384,10 +372,7 @@
         );
 
         if (pdfFiles.length === 0) {
-          log(
-            '⚠️ No supported files selected. Please select PDF, DOC, DOCX, or TXT files.',
-            'warning'
-          );
+          log('⚠️ No supported files selected. Please select PDF, DOC, DOCX, or TXT files.', 'warning');
           return;
         }
 
@@ -458,7 +443,7 @@
         }
 
         const totalTime = ((Date.now() - startTime) / 1000).toFixed(1);
-        const successCount = uploadResults.filter((r) => r.success).length;
+        const successCount = uploadResults.filter(r => r.success).length;
 
         log(`\n📊 UPLOAD COMPLETE`);
         log(`Total time: ${totalTime}s`);
@@ -498,9 +483,7 @@
 
           if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(
-              `Upload failed: ${response.status} ${response.statusText} - ${errorText}`
-            );
+            throw new Error(`Upload failed: ${response.status} ${response.statusText} - ${errorText}`);
           }
 
           const result = await response.json();
@@ -573,8 +556,8 @@
       }
 
       function displayUploadSummary() {
-        const successCount = uploadResults.filter((r) => r.success).length;
-        const failCount = uploadResults.filter((r) => !r.success).length;
+        const successCount = uploadResults.filter(r => r.success).length;
+        const failCount = uploadResults.filter(r => !r.success).length;
 
         updateStatus(
           'systemStatus',

@@ -8,14 +8,14 @@
       const prefersDark =
         typeof window !== 'undefined' && typeof window.matchMedia === 'function'
           ? window.matchMedia('(prefers-color-scheme: dark)').matches
-          : false
+          : false;
       document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
     } else {
       document.documentElement.setAttribute('data-theme', t);
     }
   }
   function setTheme(t: Theme) {
-    theme = t
+    theme = t;
     try {
       localStorage.setItem(THEME_KEY, t);
     } catch {
@@ -25,9 +25,10 @@
   }
   $effect(() => {
     try {
-      const stored = localStorage.getItem(THEME_KEY) as Theme | null
+      const stored = localStorage.getItem(THEME_KEY) as Theme | null;
       if (stored === 'light' || stored === 'dark' || stored === 'system') {
-        theme = stored}
+        theme = stored;
+      }
     } catch {
       // ignore
     }
@@ -51,8 +52,10 @@
         };
       }
     }
-    return});
+    return;
+  });
 </script>
+
 <div class="theme-selector" role="group" aria-label="Theme, selector">
   <button
     type="button"
@@ -76,6 +79,7 @@
     ðŸ–¥ï¸ System
   </button>
 </div>
+
 <style>
   .theme-selector {
     display: inline-flex
@@ -93,4 +97,3 @@
     color: white
     border-color: transparent}
 </style>
-

@@ -23,7 +23,7 @@ import type { Case } from '$lib/types';
   const { formData } = $props<{ formData: FormData }>()
 
   const dispatch = createEventDispatcher();
-  let validationErrors: Record<string string> = {};
+  let validationErrors: Record<string, string> = {};
 
   // Case type options
   const caseTypes = [
@@ -71,6 +71,7 @@ import type { Case } from '$lib/types';
   }
   function handleSaveDraft() {
     dispatch('dispatch', { step: 'caseInfo', data: formData })}
+
   // Priority colors
   function getPriorityColor(priority: string) {
     switch (priority) {
@@ -208,4 +209,5 @@ import type { Case } from '$lib/types';
     </div>
   </form>
 </div>
+
 

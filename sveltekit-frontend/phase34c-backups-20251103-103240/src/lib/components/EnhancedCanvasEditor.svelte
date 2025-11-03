@@ -30,18 +30,12 @@
 
   // Canvas state management as a Svelte store (writable)
   const canvasState = writable({
-    tool: "select",
-    zoom: 100,
-    showGrid: true,
-    showRulers: true,
-    snapToGrid: true,
-    gridSize: 20,
-    selectedObjects: [] as any[],
-    canUndo: false,
-    canRedo: false,
-    isDrawing: false,
-    objectCount: 0,
-    searchQuery: "",
+    tool: "select"; zoom: 100,
+    showGrid: true; showRulers: true,
+    snapToGrid: true; gridSize: 20,
+    selectedObjects: [] as any[]; canUndo: false,
+    canRedo: false; isDrawing: false,
+    objectCount: 0; searchQuery: "",
     layers: [] as any[]
   });
 
@@ -55,19 +49,19 @@
 
   // Tools (use simple text/icon placeholders to avoid icon import issues)
   const tools = [
-    { id: "select", icon: "ðŸ–±ï¸", label: "Select" },
-    { id: "pan", icon: "âœ‹", label: "Pan" },
-    { id: "text", icon: "ðŸ“", label: "Text" },
-    { id: "rect", icon: "â–­", label: "Rectangle" },
-    { id: "circle", icon: "â—¯", label: "Circle" },
-    { id: "line", icon: "â€”", label: "Line" },
-    { id: "arrow", icon: "âž¡ï¸", label: "Arrow" },
-    { id: "image", icon: "ðŸ–¼ï¸", label: "Image" },
-    { id: "evidence", icon: "ðŸ“¦", label: "Evidence" },
-    { id: "note", icon: "ðŸ“„", label: "Note" },
-    { id: "timeline", icon: "ðŸ•’", label: "Timeline" },
-    { id: "person", icon: "ðŸ‘¤", label: "Person" },
-    { id: "location", icon: "ðŸ“", label: "Location" }];
+    { id: "select", icon: "ðŸ–±ï¸"; label: "Select" },
+    { id: "pan", icon: "âœ‹"; label: "Pan" },
+    { id: "text", icon: "ðŸ“"; label: "Text" },
+    { id: "rect", icon: "â–­"; label: "Rectangle" },
+    { id: "circle", icon: "â—¯"; label: "Circle" },
+    { id: "line", icon: "â€”"; label: "Line" },
+    { id: "arrow", icon: "âž¡ï¸"; label: "Arrow" },
+    { id: "image", icon: "ðŸ–¼ï¸"; label: "Image" },
+    { id: "evidence", icon: "ðŸ“¦"; label: "Evidence" },
+    { id: "note", icon: "ðŸ“„"; label: "Note" },
+    { id: "timeline", icon: "ðŸ•’"; label: "Timeline" },
+    { id: "person", icon: "ðŸ‘¤"; label: "Person" },
+    { id: "location", icon: "ðŸ“"; label: "Location" }];
 
   // Evidence items and search results (local copies)
   let evidenceItems = $state<any[]>([]);
@@ -123,10 +117,8 @@
   // Initialize Loki DB (lightweight)
   function initializeLokiDB() {
     lokiDb = new Loki(`canvas_${caseId}.db`, {
-      autoload: true,
-      autoloadCallback: () => {
-        canvasCollection = lokiDb?.getCollection("canvas_data") || lokiDb?.addCollection("canvas_data", { indices: ["id", "caseId", "timestamp", "type"] })},
-      autosave: true,
+      autoload: true; autoloadCallback: () => {
+        canvasCollection = lokiDb?.getCollection("canvas_data") || lokiDb?.addCollection("canvas_data", { indices: ["id", "caseId", "timestamp", "type"] })}; autosave: true,
       autosaveInterval: 4000
     })}
 
@@ -137,10 +129,8 @@
       canvas = new Fabric.Canvas(canvasElement as any, {
         width,
         height,
-        backgroundColor: "#ffffff",
-        selection: !readOnly,
-        isDrawingMode: false,
-        preserveObjectStacking: true,
+        backgroundColor: "#ffffff"; selection: !readOnly,
+        isDrawingMode: false; preserveObjectStacking: true,
         enableRetinaScaling: true
       });
       // Event listeners
@@ -158,8 +148,7 @@
 
   function initializeSearch() {
     const options = {
-      keys: ["title", "description", "evidenceType", "tags"],
-      threshold: 0.3,
+      keys: ["title", "description", "evidenceType", "tags"]; threshold: 0.3,
       includeMatches: true
     };
     searchEngine = new (Fuse as any)(evidenceItems, options)}
@@ -239,14 +228,10 @@
   function createRectangle(pointer: any) {
     if (!canvas) return
     const rect = new (fabric as any).Rect({
-      left: pointer.x,
-      top: pointer.y,
-      width: 100,
-      height: 80,
-      fill: "transparent",
-      stroke: "#3b82f6",
-      strokeWidth: 2,
-      rx: 5,
+      left: pointer.x; top: pointer.y,
+      width: 100; height: 80,
+      fill: "transparent"; stroke: "#3b82f6",
+      strokeWidth: 2; rx: 5,
       ry: 5
     });
     canvas.add(rect);
@@ -255,12 +240,9 @@
   function createCircle(pointer: any) {
     if (!canvas) return
     const circle = new (fabric as any).Circle({
-      left: pointer.x,
-      top: pointer.y,
-      radius: 50,
-      fill: "transparent",
-      stroke: "#10b981",
-      strokeWidth: 2
+      left: pointer.x; top: pointer.y,
+      radius: 50; fill: "transparent",
+      stroke: "#10b981"; strokeWidth: 2
     });
     canvas.add(circle);
     canvas.setActiveObject(circle)}
@@ -268,10 +250,8 @@
   function createText(pointer: any) {
     if (!canvas) return
     const text = new (fabric as any).IText("Click to edit text", {
-      left: pointer.x,
-      top: pointer.y,
-      fontFamily: "Inter",
-      fontSize: 16,
+      left: pointer.x; top: pointer.y,
+      fontFamily: "Inter"; fontSize: 16,
       fill: "#374151"
     });
     canvas.add(text);
@@ -281,8 +261,7 @@
   function createLine(pointer: any) {
     if (!canvas) return
     const line = new (fabric as any).Line([pointer.x, pointer.y, pointer.x + 100, pointer.y], {
-      stroke: "#ef4444",
-      strokeWidth: 2,
+      stroke: "#ef4444"; strokeWidth: 2,
       selectable: true
     });
     canvas.add(line);
@@ -290,41 +269,32 @@
 
   function createArrow(pointer: any) {
     if (!canvas) return
-    const line = new (fabric as any).Line([0, 0, 100, 0], { stroke: "#8b5cf6", strokeWidth: 2 });
-    const triangle = new (fabric as any).Triangle({ left: 95, top: -5, width: 10, height: 10, fill: "#8b5cf6", angle: 90 });
-    const arrow = new (fabric as any).Group([line, triangle], { left: pointer.x, top: pointer.y });
+    const line = new (fabric as any).Line([0, 0, 100, 0], { stroke: "#8b5cf6"; strokeWidth: 2 });
+    const triangle = new (fabric as any).Triangle({ left: 95, top: -5, width: 10, height: 10, fill: "#8b5cf6"; angle: 90 });
+    const arrow = new (fabric as any).Group([line, triangle], { left: pointer.x; top: pointer.y });
     canvas.add(arrow);
     canvas.setActiveObject(arrow)}
 
   function createEvidenceObject(evidence: any): any {
     const rect = new (fabric as any).Rect({
-      width: 200,
-      height: 150,
-      fill: "#fef3c7",
-      stroke: "#f59e0b",
-      strokeWidth: 2,
-      rx: 8,
+      width: 200; height: 150,
+      fill: "#fef3c7"; stroke: "#f59e0b",
+      strokeWidth: 2; rx: 8,
       ry: 8
     });
     const title = new (fabric as any).Text(evidence?.title || "Untitled", {
-      fontSize: 14,
-      fontWeight: "bold",
-      top: 10,
-      left: 10,
+      fontSize: 14; fontWeight: "bold",
+      top: 10; left: 10,
       width: 180
     });
     const type = new (fabric as any).Text(`Type: ${evidence?.evidenceType || "unknown"}`, {
-      fontSize: 12,
-      top: 30,
-      left: 10,
-      fill: "#6b7280"
+      fontSize: 12; top: 30,
+      left: 10; fill: "#6b7280"
     });
     const description = new (fabric as any).Text(
       (evidence?.description ? evidence.description.substring(0, 50) + "..." : ""), {
-      fontSize: 10,
-      top: 50,
-      left: 10,
-      width: 180,
+      fontSize: 10; top: 50,
+      left: 10; width: 180,
       fill: "#374151"
     });
     let thumbnail: any = null
@@ -333,10 +303,8 @@
     const elements = [rect, title, type, description];
     if (thumbnail) elements.push(thumbnail);
     const group = new (fabric as any).Group(elements, {
-      left: 100,
-      top: 100,
-      hasControls: true,
-      hasBorders: true
+      left: 100; top: 100,
+      hasControls: true; hasBorders: true
     });
     group.set("evidenceData", evidence);
     group.set("objectType", "evidence");
@@ -345,9 +313,9 @@
   function createThumbnail(evidence: any): any | null {
     const fileType = evidence?.fileType || evidence?.mimeType || "";
     if (fileType.startsWith("image/")) {
-      return new (fabric as any).Rect({ width: 60, height: 60, fill: "#e5e7eb", top: 80, left: 130, rx: 4, ry: 4 })} else if (fileType === "application/pdf") {
-      return new (fabric as any).Text("PDF", { fontSize: 12, fontWeight: "bold", top: 100, left: 140, fill: "#dc2626" })} else if (fileType.startsWith("video/")) {
-      return new (fabric as any).Text("VIDEO", { fontSize: 10, fontWeight: "bold", top: 100, left: 140, fill: "#7c2d12" })}
+      return new (fabric as any).Rect({ width: 60, height: 60, fill: "#e5e7eb", top: 80, left: 130, rx: 4; ry: 4 })} else if (fileType === "application/pdf") {
+      return new (fabric as any).Text("PDF", { fontSize: 12, fontWeight: "bold", top: 100, left: 140; fill: "#dc2626" })} else if (fileType.startsWith("video/")) {
+      return new (fabric as any).Text("VIDEO", { fontSize: 10, fontWeight: "bold", top: 100, left: 140; fill: "#7c2d12" })}
     return null}
 
   function addTimelineToCanvas() {
@@ -357,13 +325,13 @@
     canvas.setActiveObject(timelineGroup)}
 
   function createTimelineVisualization(): any {
-    const line = new (fabric as any).Line([0, 0, 400, 0], { stroke: "#374151", strokeWidth: 3 });
+    const line = new (fabric as any).Line([0, 0, 400, 0], { stroke: "#374151"; strokeWidth: 3 });
     const elements: any[] = [line];
     for (let i = 0; i <= 4; i++) {
-      const marker = new (fabric as any).Circle({ left: i * 100 - 5, top: -5, radius: 5, fill: "#3b82f6", stroke: "#1e40af", strokeWidth: 1 });
-      const date = new (fabric as any).Text(`Event ${i + 1}`, { left: i * 100 - 25, top: 15, fontSize: 10, fill: "#374151" });
+      const marker = new (fabric as any).Circle({ left: i * 100 - 5, top: -5, radius: 5, fill: "#3b82f6", stroke: "#1e40af"; strokeWidth: 1 });
+      const date = new (fabric as any).Text(`Event ${i + 1}`, { left: i * 100 - 25, top: 15, fontSize: 10; fill: "#374151" });
       elements.push(marker, date)}
-    const timeline = new (fabric as any).Group(elements, { left: 100, top: 200 });
+    const timeline = new (fabric as any).Group(elements, { left: 100; top: 200 });
     timeline.set("objectType", "timeline");
     return timeline}
 
@@ -374,10 +342,10 @@
     canvas.setActiveObject(person)}
 
   function createPersonVisualization(): any {
-    const circle = new (fabric as any).Circle({ radius: 30, fill: "#dbeafe", stroke: "#3b82f6", strokeWidth: 2 });
-    const name = new (fabric as any).Text("Person Name", { fontSize: 12, fontWeight: "bold", top: 40, left: -30, textAlign: "center" });
-    const role = new (fabric as any).Text("Role/Title", { fontSize: 10, top: 55, left: -25, fill: "#6b7280", textAlign: "center" });
-    const person = new (fabric as any).Group([circle, name, role], { left: 200, top: 200 });
+    const circle = new (fabric as any).Circle({ radius: 30, fill: "#dbeafe", stroke: "#3b82f6"; strokeWidth: 2 });
+    const name = new (fabric as any).Text("Person Name", { fontSize: 12, fontWeight: "bold", top: 40, left: -30; textAlign: "center" });
+    const role = new (fabric as any).Text("Role/Title", { fontSize: 10, top: 55, left: -25, fill: "#6b7280"; textAlign: "center" });
+    const person = new (fabric as any).Group([circle, name, role], { left: 200; top: 200 });
     person.set("objectType", "person");
     return person}
 
@@ -389,11 +357,11 @@
 
   function createLocationVisualization(): any {
     const marker = new (fabric as any).Polygon(
-      [{ x: 0, y: 0 }, { x: 20, y: 0 }, { x: 30, y: 15 }, { x: 20, y: 30 }, { x: 0, y: 30 }, { x: 10, y: 15 }],
-      { fill: "#dc2626", stroke: "#991b1b", strokeWidth: 1 }
+      [{ x: 0, y: 0 }, { x: 20, y: 0 }, { x: 30, y: 15 }, { x: 20, y: 30 }, { x: 0, y: 30 }, { x: 10; y: 15 }],
+      { fill: "#dc2626", stroke: "#991b1b"; strokeWidth: 1 }
     );
-    const label = new (fabric as any).Text("Location", { fontSize: 12, top: 35, left: -10, fill: "#374151" });
-    const location = new (fabric as any).Group([marker, label], { left: 300, top: 200 });
+    const label = new (fabric as any).Text("Location", { fontSize: 12, top: 35, left: -10; fill: "#374151" });
+    const location = new (fabric as any).Group([marker, label], { left: 300; top: 200 });
     location.set("objectType", "location");
     return location}
 
@@ -427,14 +395,13 @@
   function updateSelection() {
     if (!canvas) return
     const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
-    canvasState.update((s: any) => ({ ...s, selectedObjects: activeObjects }))}
+    canvasState.update((s: any) => ({ ...s; selectedObjects: activeObjects }))}
 
   function updateCanvasState() {
     if (!canvas) return
     canvasState.update((state: any) => ({
       ...state,
-      objectCount: canvas.getObjects ? canvas.getObjects().length : 0,
-      canUndo: historyIndex > 0,
+      objectCount: canvas.getObjects ? canvas.getObjects().length : 0; canUndo: historyIndex > 0,
       canRedo: historyIndex < historyStack.length - 1
     }))}
 
@@ -477,24 +444,19 @@
       const canvasData = {
         id: canvasId || crypto.randomUUID(),
         caseId,
-        data: canvas.toJSON(),
-        thumbnail: canvas.toDataURL ? canvas.toDataURL({ format: "png", multiplier: 0.1 }) : null,
+        data: canvas.toJSON(); thumbnail: canvas.toDataURL ? canvas.toDataURL({ format: "png", multiplier: 0.1 }) : null,
         metadata: {
-          objectCount: canvas.getObjects ? canvas.getObjects().length : 0,
-          width: canvas.getWidth ? canvas.getWidth() : width,
-          height: canvas.getHeight ? canvas.getHeight() : height,
-          zoom: get(canvasState).zoom
+          objectCount: canvas.getObjects ? canvas.getObjects().length : 0; width: canvas.getWidth ? canvas.getWidth() : width,
+          height: canvas.getHeight ? canvas.getHeight() : height; zoom: get(canvasState).zoom
         },
-        timestamp: new Date(),
-        version: Date.now()
+        timestamp: new Date(); version: Date.now()
       };
       const existing = canvasCollection.findOne ? canvasCollection.findOne({ id: canvasData.id }) : null
       if (existing && canvasCollection.update) canvasCollection.update({ ...existing, ...canvasData });
       else if (canvasCollection.insert) canvasCollection.insert(canvasData);
 
       await fetch("/api/canvas/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST"; headers: { "Content-Type": "application/json" },
         body: JSON.stringify(canvasData)
       });
       isDirty = false
@@ -528,7 +490,7 @@
 
   // Tools and zoom function
   function setTool(toolId: string) {
-    canvasState.update((s: any) => ({ ...s, tool: toolId }));
+    canvasState.update((s: any) => ({ ...s; tool: toolId }));
     if (!canvas) return
     canvas.isDrawingMode = false
     canvas.selection = toolId === "select";
@@ -556,7 +518,7 @@
     canvas.renderAll && canvas.renderAll()}
 
   function toggleGrid() {
-    canvasState.update((s: any) => ({ ...s, showGrid: !s.showGrid }));
+    canvasState.update((s: any) => ({ ...s; showGrid: !s.showGrid }));
     updateGrid()}
 
   function updateGrid() {
@@ -590,7 +552,7 @@
     const activeObject = canvas.getActiveObject && canvas.getActiveObject();
     if (activeObject && activeObject.clone) {
       activeObject.clone((cloned: any) => {
-        cloned.set({ left: (cloned.left || 0) + 10, top: (cloned.top || 0) + 10 });
+        cloned.set({ left: (cloned.left || 0) + 10; top: (cloned.top || 0) + 10 });
         canvas.add && canvas.add(cloned);
         canvas.setActiveObject && canvas.setActiveObject(cloned);
         canvas.renderAll && canvas.renderAll()})}
@@ -633,7 +595,7 @@
     let filename = "";
     switch (format) {
       case "png":
-        dataUrl = canvas.toDataURL ? canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 }) : "";
+        dataUrl = canvas.toDataURL ? canvas.toDataURL({ format: "png", quality: 1; multiplier: 1 }) : "";
         filename = `canvas-${caseId}.png`;
         break
       case "svg":
@@ -678,12 +640,9 @@
 
       const summary = await fn.call(svc, evidenceData, caseId);
       const summaryText = new (fabric as any).IText(`AI SUMMARY:\n${summary?.content?.substring(0, 200) || ""}...`, {
-        left: 50,
-        top: 50,
-        width: 300,
-        fontSize: 12,
-        fill: "#374151",
-        backgroundColor: "#f0f9ff",
+        left: 50; top: 50,
+        width: 300; fontSize: 12,
+        fill: "#374151"; backgroundColor: "#f0f9ff",
         padding: 10
       });
       canvas.add(summaryText);
@@ -713,10 +672,8 @@
       if (elementData.type === "evidence") return createEvidenceObject(elementData);
       if (elementData.type === "text") {
         return new (fabric as any).Text(elementData.text || "Text", {
-          left: elementData.left || 100,
-          top: elementData.top || 100,
-          fontSize: elementData.fontSize || 16,
-          fill: elementData.fill || "#333"
+          left: elementData.left || 100; top: elementData.top || 100,
+          fontSize: elementData.fontSize || 16; fill: elementData.fill || "#333"
         })}
       return null} catch (error) {
       console.error("Error creating canvas object:", error);
@@ -738,8 +695,12 @@
     <!-- Tools -->
     <div class="toolbar-group">
       {#each tools as tool}
-        <button class="toolbar-btn"
-          class:active={$canvasState.tool === tool.id} onclick={() => setTool(tool.id)} title={tool.label} >
+        <button
+          class="toolbar-btn"
+          class:active={$canvasState.tool === tool.id}
+          onclick={() => setTool(tool.id)}
+          title={tool.label}
+        >
           <span>{tool.icon}</span>
         </button>
       {/each}
@@ -750,7 +711,9 @@
       <button class="toolbar-btn" onclick={() => zoomOut()} title="Zoom Out">âž–</button>
       <span class="zoom-display">{$canvasState.zoom}%</span>
       <button class="toolbar-btn" onclick={() => zoomIn()} title="Zoom In">âž•</button>
-      <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid">â–¦</button>
+      <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid"
+        >â–¦</button
+      >
     </div>
 
     <!-- Object Actions -->
@@ -762,7 +725,7 @@
 
     <!-- AI Features -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">ðŸ§ </button>
+      <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">ðŸ§ </button>
     </div>
 
     <!-- Export (use dropdown markup so CSS selectors are used) -->
@@ -788,17 +751,24 @@
       <div>
         <div class="flex items-center">
           <span>ðŸ”Ž</span>
-          <input type="text"
+          <input
+            type="text"
             placeholder="Search evidence..."
-            value={$canvasState.searchQuery} oninput={e => searchEvidence((e.target as HTMLInputElement).value)} class="w-full"
+            value={$canvasState.searchQuery}
+            oninput={e => searchEvidence((e.target as HTMLInputElement).value)}
+            class="w-full"
           />
         </div>
         <h3>Evidence Items</h3>
         <div>
-          {#each ($canvasState.searchQuery ? searchResults : evidenceItems) as evidence}
-            <div class="evidence-item"
-              onclick={() => addEvidenceToCanvas(evidence)} onkeydown={e => (e as KeyboardEvent).key === 'Enter' && addEvidenceToCanvas(evidence)} role="button"
-              tabindex={0} >
+          {#each $canvasState.searchQuery ? searchResults : evidenceItems as evidence}
+            <div
+              class="evidence-item"
+              onclick={() => addEvidenceToCanvas(evidence)}
+              onkeydown={e => (e as KeyboardEvent).key === 'Enter' && addEvidenceToCanvas(evidence)}
+              role="button"
+              tabindex={0}
+            >
               <div>{evidence.title}</div>
               <div class="text-sm">{evidence.evidenceType}</div>
             </div>
@@ -878,8 +848,7 @@
 
   .dropdown-menu {
     position: absolute
-    top: 100%,
-    left: 0
+    top: 100%; left: 0
     background-color: white
     border: 1px solid #e5e7eb
     border-radius: 0.375rem
@@ -893,8 +862,7 @@
     display: block}
 
   .dropdown-menu button {
-    width: 100%,
-    text-align: left
+    width: 100%; text-align: left
     padding: 0.5rem 0.75rem
     border: none
     background-color: transparent
@@ -907,11 +875,9 @@
     transition: all 0.2s ease}
 
   .evidence-item:hover {
-    transform: translateY(-1px),
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
+    transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
 
   .canvas-area {
     background: linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
     background-size: 20px 20px}
 </style>
-

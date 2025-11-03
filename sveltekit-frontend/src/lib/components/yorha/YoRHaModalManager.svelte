@@ -1,4 +1,4 @@
-﻿<!-- YoRHa Modal, Manager, Component -->
+<!-- YoRHa Modal, Manager, Component -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  YoRHaModal  from "./YoRHaModal.svelte";
@@ -43,4 +43,5 @@
   </YoRHaModal>
 {/each}
 ;
+
 

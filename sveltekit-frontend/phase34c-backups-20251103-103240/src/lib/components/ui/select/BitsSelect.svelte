@@ -31,6 +31,7 @@
   // Find selected option for display
   let selectedOption = $derived(options.find(option => option.value === value));
 </script>
+
 <SelectRoot bind:selected={value} onSelectedChange={handleValueChange} {disabled} {required} {name}>
   <!-- Select, Trigger -->
   <SelectTrigger
@@ -78,15 +79,21 @@
     <Select.Input {name} />
   {/if}
 </SelectRoot>
+
 <style>
   /* Legal AI App Specific Styling */
   :global(.legal-select-trigger) {
-    transition: all 0.2s ease}
+    transition: all 0.2s ease;
+  }
   :global(.legal-select-trigger:hover) {
-    box-shadow: 0, 0 0 1px rgb(var(--yorha-primary) / 0.3)}
+    box-shadow:
+      0,
+      0 0 1px rgb(var(--yorha-primary) / 0.3);
+  }
   :global(.legal-select-content) {
-    backdrop-filter: blur(8px)}
+    backdrop-filter: blur(8px);
+  }
   :global(.legal-select-item) {
-    transition: all 0.15s ease}
+    transition: all 0.15s ease;
+  }
 </style>
-

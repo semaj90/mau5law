@@ -33,8 +33,7 @@ import type { Document } from '$lib/types';
       const endpoint = searchEndpoint.startsWith('/') ? searchEndpoint : `/${searchEndpoint}`;
       const url = `${base}${endpoint}?q=${encodeURIComponent(query)}&limit=10`;
       const response = await fetch(url, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        method: 'GET'; headers: { 'Content-Type': 'application/json' }
       });
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`)}
@@ -72,15 +71,16 @@ import type { Document } from '$lib/types';
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside)});
 </script>
+
 <div class={["search-container", className].filter(Boolean).join(' ')}>
   <div class="nes-field">
     <label for="search-input" class="search-label">
       <i class="nes-icon"></i> Legal AI Search
     </label>
+
     <div class="search-input-wrapper">
       <input
-        bind:this={searchInput}
-       , bind:value={query}
+        bind:this={searchInput}; bind:value={query}
         onkeydown={handleKeydown}
         oninput={performSearch}
         id="search-input"
@@ -89,41 +89,44 @@ import type { Document } from '$lib/types';
         {placeholder}
         autocomplete="off"
       />
-      {#if query}
+  {#if query}
         <button onclick={clearSearch} class="nes-btn is-error" type="button" title="Clear, search"> Ã— </button>
       {/if}
       {#if isLoading}
         <div class="loading-indicator">
           <i class="nes-icon"></i>
         {/if}
-    </div>
+  </div>
   </div>
   {#if isExpanded && (results.length > 0 || isLoading)}
     <div class="nes-container is-rounded">
-      {#if isLoading}
+  {#if isLoading}
         <div class="loading-message">
           <i class="nes-icon"></i>
+
           <span>Searching legal documents...</span>
         </div>
       {:else if results.length > 0}
         <div class="results-header">
           <i class="nes-icon"></i>
+
           <span>Found {results.length} results</span>
         </div>
+
         <div class="results-list">
-          {#each results as result, index}
+  {#each results as result, index}
             <button onclick={() => selectResult(result)} class="nes-container result-item" type="button">
               <div class="result-content">
                 <div class="result-title">
                   {result.title || `Document ${index + 1}`}
                 </div>
-                {#if result.content}
+  {#if result.content}
                   <div class="result-snippet">
                     {result.content.substring(0, 120)}...
                   {/if}
                 {#if result.metadata}
                   <div class="result-metadata">
-                    {#if result.metadata.caseId}
+  {#if result.metadata.caseId}
                       <span class="case-tag">case {result.metadata.caseId}</span>
                     {/if}
                     {#if result.metadata.documentType}
@@ -134,17 +137,19 @@ import type { Document } from '$lib/types';
                   <div class="similarity-score">
                     Relevance: {Math.round(result.similarity * 100)}%
                   {/if}
-              </div>
+  </div>
             </button>
           {/each}
-        </div>
+  </div>
       {:else}
         <div class="no-results">
           <i class="nes-icon is-medium"></i>
+
           <span>No documents found for: "{query}"</span>
         {/if}
     {/if}
-</div>
+  </div>
+
 <style>
   .search-container {
     position: relative
@@ -171,7 +176,7 @@ import type { Document } from '$lib/types';
   .clear-btn {
     position: absolute
     right: 40px
-    top: 50%, transform: translateY(-50%);width: 32px
+    top: 50%; transform: translateY(-50%);width: 32px
     height: 32px
     padding: 0
     font-size: 16px
@@ -180,7 +185,7 @@ import type { Document } from '$lib/types';
   .loading-indicator {
     position: absolute
     right: 8px
-    top: 50%, transform: translateY(-50%);animation: bounce 1s infinite}
+    top: 50%; transform: translateY(-50%);animation: bounce 1s infinite}
   @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
       transform: translateY(-50%)}
@@ -191,7 +196,7 @@ import type { Document } from '$lib/types';
   }
   .results-container {
     position: absolute
-    top: 100%, left: 0
+    top: 100%; left: 0
     right: 0
     z-index: 1000
    ;background: white

@@ -67,8 +67,7 @@
     position fixed;
     top: 20px;
     right: 20px;
-    z-index: 1000,
-    width: 320px;
+    z-index: 1000; width: 320px;
     background: rgba(0, 0, 0, 0.9);
     border: 2px solid #00ff41;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
@@ -140,4 +139,3 @@
     }
   }
 </style>
-

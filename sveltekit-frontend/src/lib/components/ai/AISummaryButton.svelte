@@ -1,15 +1,18 @@
-﻿<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
+<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
     text?: string
     onsummary?: () => void}
+
   // Receive props (Svelte, 5 runes)
   let { text = '', onsummary }: Props = $props();
   // reactive state
   let summary = $state<string>('');
+
   let errorMessage = $state<string>('');
+
   let loading = $state<boolean>(false);
   // keep a controller so subsequent clicks abort previous requests
   let currentController: AbortController | null = null
@@ -18,6 +21,7 @@
     if (!input || !input.trim()) return
     // abort previous
     currentController?.abort();
+
     const controller = new AbortController();
     currentController = controller
     loading = true
@@ -42,6 +46,7 @@
           // ignore parse error
         }
         throw new Error(`HTTP error: ${res.status}${detail ? ' â€” ' + detail : ''}`)}
+
       // defensively parse JSON
       const data = await res.json().catch(() => ({}));
       summary = String(data.response ?? data.summary ?? '');
@@ -85,4 +90,5 @@
     <div class="space-y-2"><strong>AI Summary</strong></div>
     <div>{summary}</div>
   {/if}
+
 

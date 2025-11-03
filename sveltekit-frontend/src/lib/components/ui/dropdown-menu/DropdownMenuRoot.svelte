@@ -1,7 +1,8 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   // note: bits-ui's exported types vary by version; avoid relying on a specific RootProps'
   import { cn } from '$lib/utils.js';
+
   import type { Snippet } from 'svelte';
   // Minimal, permissive props shape used at runtime by the dropdown creator.
   type Props = {
@@ -18,6 +19,7 @@
   let open: any = false
   (async () => {
     const ns = await getBitsNamespace();
+
     const factory = ns.createDropdownMenu ?? ns.DropdownMenu?.create ?? ns.DropdownMenu ?? null
     if (factory) {
       try {
@@ -45,4 +47,5 @@
       {/if}
     {/if}
 </div>
+
 

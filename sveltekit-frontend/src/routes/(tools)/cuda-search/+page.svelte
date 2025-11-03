@@ -5,6 +5,7 @@ import type { Document } from '$lib/types';
   // Handle search results
   function handleResults(data) {
     console.log('Search results received:', data)}
+
   // Handle search errors
   function handleError(error) {
     console.error('Search error:', error);'

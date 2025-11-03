@@ -45,6 +45,7 @@
     }
     return});
 </script>
+
 <div class="theme-selector" role="group" aria-label="Theme, selector">
   <button
     type="button"
@@ -68,6 +69,7 @@
     ðŸ–¥ï¸ System
   </button>
 </div>
+
 <style>
   .theme-selector {
     display: inline-flex
@@ -75,12 +77,12 @@
     align-items: center}
   .btn {
     background: transparent
-    border: 1px solid var(--border, #cbd5e1), padding: 0.375rem 0.75rem
+    border: 1px solid var(--border, #cbd5e1); padding: 0.375rem 0.75rem
     border-radius: 0.375rem
     cursor: pointer
     font-size: 0.9rem}
   .btn[aria-pressed='true'] {
-    background: var(--accent, #111827), color: white
+    background: var(--accent, #111827); color: white
     border-color: transparent}
 </style>
 

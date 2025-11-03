@@ -29,7 +29,7 @@
   }
   interface ExpectedLokiService {
     init(): Promise<void>;
-    evidence: RefreshableCollection, notes: RefreshableCollection
+    evidence: RefreshableCollection; notes: RefreshableCollection
     canvasStates: RefreshableCollection}
   // Cast the imported loki: object to the expected interface
   const typedLoki = loki as ExpectedLokiService
@@ -41,9 +41,9 @@
   // Create Fuse instance when relevant items change
   $effect(() => {
     if (activeTab === 'evidence' && evidenceItems.length > 0) {
-      fuse = new Fuse(evidenceItems, { keys: ['fileName', 'description', 'tags'], threshold: 0.3 });
+      fuse = new Fuse(evidenceItems, { keys: ['fileName', 'description', 'tags']; threshold: 0.3 });
     } else if (activeTab === 'notes' && notesItems.length > 0) {
-      fuse = new Fuse(notesItems, { keys: ['title', 'content', 'tags'], threshold: 0.3 });
+      fuse = new Fuse(notesItems, { keys: ['title', 'content', 'tags']; threshold: 0.3 });
     } else {
       fuse = null}
   });
@@ -75,7 +75,7 @@
   function togglePin() {
     isPinned = !isPinned
     // annotate state param to avoid implicit: any
-    sidebarStore.update((state: any) => ({ ...state, open: isPinned }));
+    sidebarStore.update((state: any) => ({ ...state; open: isPinned }));
   }
   // Fix malformed handler: use the event parameter correctly
   function handleSearch(event: CustomEvent) {
@@ -92,8 +92,7 @@
 </script>
 <div
   class="yorha-3d-panel nes-legal-container sidebar-container"
-  class:open={sidebarOpen}
- , bind:this={sidebarElement}
+  class:open={sidebarOpen}; bind:this={sidebarElement}
   role="complementary"
   aria-label="Content sidebar"
   onmouseenter={handleMouseEnter}
@@ -104,7 +103,7 @@
   {#if sidebarOpen}
     <div
       class="yorha-3d-panel-inner neural-sprite-active"
-      transitionslide={{ duration: 300, easing: quintOut, axis: 'x' }}
+      transitionslide={{ duration: 300, easing: quintOut; axis: 'x' }}
     >
       <div class="nes-legal-header">
         <h3 class="nes-legal-title">CONTENT LIBRARY</h3>
@@ -199,8 +198,7 @@
     width: 320px
     z-index: 20
     pointer-events: none
-    transition: transform 0.3s ease
-   , transform: translateX(-100%);
+    transition: transform 0.3s ease; transform: translateX(-100%);
   }
   .sidebar-container.open {
     transform: translateX(0);
@@ -238,8 +236,7 @@
     cursor: pointer
     display: flex
     align-items: center
-    justify-content: center
-   , color: var(--text-primary);
+    justify-content: center; color: var(--text-primary);
   }
   .pin-buttonhover,
   .close-buttonhover {
@@ -261,8 +258,7 @@
     gap: 0.5rem
     padding: 0.75rem 1rem
     background: transparent
-    border: none
-   , color: var(--text-muted);
+    border: none; color: var(--text-muted);
     cursor: pointer
     transition: all 0.2s ease}
   .tab-trigger:hover { background: var(--bg-tertiary);

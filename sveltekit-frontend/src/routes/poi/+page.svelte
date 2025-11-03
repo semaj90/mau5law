@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -62,18 +62,19 @@ import type { Case } from '$lib/types';
       >
         <Filter class="w-4 h-4" />
         Filters
-    <Button.Root, class="bits-btn"
+    <Button.Root class="bits-btn"
         variant="ghost"
         size="sm"
   onclick={() =>
 (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
       >
+
         {#if viewMode === 'grid'}
           <List class="w-4" />
         {:else}
           <Grid class="w-4" />
         {/if}
-      <Button.Root, class="bits-btn">
+      <Button.Root class="bits-btn">
 <Plus class="w-4 h-4" />
         Add Person
     </div>
@@ -91,6 +92,7 @@ import type { Case } from '$lib/types';
     </div>
   </div>
   <!-- Advanced, Filters -->
+
   {#if showFilters}
     <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
       <div class="grid md:grid-cols-3">
@@ -127,23 +129,26 @@ Clear Filters
     </p>
   </div>
   <!-- Persons, Grid/List -->
+
   {#if filteredPersons.length === 0}
     <div class="text-center">
       <Users class="w-16 h-16 text-gray-300 mx-auto" />
       <h3 class="text-lg font-medium text-gray-900 dark:text-white">
         {searchQuery ? 'No matching persons found' : 'No persons found'}
-      </h3>
+</h3>
       <p class="text-gray-500">
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
-      </p>
+</p>
+
       {#if !searchQuery}
-        <Button.Root, class="bits-btn">
+        <Button.Root class="bits-btn">
 <Plus class="w-4 h-4" />
           Add First Person
       {/if}
-    </div>
+</div>
   {:else if viewMode === 'grid'}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+
       {#each Array.isArray(filteredPersons) ? filteredPersons : [] as person}
         <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg">
           <div class="flex items-start justify-between">
@@ -151,24 +156,28 @@ Clear Filters
               <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center">
                 <span class="text-blue-600 dark:text-blue-300 font-semibold">
                   {person.alias}
-                </span>
+</span>
               </div>
               <div>
-                <h3 class="font-semibold text-gray-900">{person.name}</h3>
+                <h3 class="font-semibold text-gray-900">{person.name}
+</h3>
                 <span class="inline-block px-2" text-xs, rounded-full {
                   person.status === 'Person of Interest' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' :
                   person.status === 'Witness' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' :
                   person.status === 'Suspect' ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' :
                   'bg-gray-100 text-gray-800 dark:bg-gray-700, dark:text-gray-200'}">"
                   {person.status}
-                </span>
+</span>
               </div>
             </div>
           </div>
           <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-            <div><strong>DOB:</strong> {new Date(person.dateOfBirth).toLocaleDateString()}</div>
-            <div><strong>Address:</strong> {person.address}</div>
-            <div><strong>Cases:</strong> {person.caseIds.join(', ')}</div>
+            <div><strong>DOB:</strong> {new Date(person.dateOfBirth).toLocaleDateString()}
+</div>
+            <div><strong>Address:</strong> {person.address}
+</div>
+            <div><strong>Cases:</strong> {person.caseIds.join(', ')}
+</div>
           </div>
           <div class="flex">
             <Button size="sm" class="flex-1 bits-btn">
@@ -180,10 +189,11 @@ Clear Filters
           </div>
         </div>
       {/each}
-    </div>
+</div>
   {:else}
     <!-- List, view -->
     <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+
       {#each Array.isArray(filteredPersons) ? filteredPersons : [] as person}
         <div class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50">
           <div class="flex items-center">
@@ -191,26 +201,28 @@ Clear Filters
               <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center">
                 <span class="text-blue-600 dark:text-blue-300">
                   {person.alias}
-                </span>
+</span>
               </div>
               <div>
-                <h3 class="font-semibold text-gray-900">{person.name}</h3>
+                <h3 class="font-semibold text-gray-900">{person.name}
+</h3>
                 <p class="text-sm text-gray-500">
                   {person.status} â€¢ {new Date(person.dateOfBirth).toLocaleDateString()}
-                </p>
+</p>
               </div>
             </div>
             <div class="flex">
-              <Button.Root, class="bits-btn" size="sm">
+              <Button.Root class="bits-btn" size="sm">
 <Eye class="w-3 h-3" />
                 View
-              <Button.Root, class="bits-btn" variant="ghost" size="sm">
+              <Button.Root class="bits-btn" variant="ghost" size="sm">
 <Edit class="w-3 h-3" />
                 Edit
             </div>
           </div>
         </div>
       {/each}
-    </div>
+</div>
   {/if}
 </div>;
+

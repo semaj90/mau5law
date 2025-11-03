@@ -58,5 +58,3 @@
     color: var(--text-primary, #e0e0e0);
   }
 </style>
-
-

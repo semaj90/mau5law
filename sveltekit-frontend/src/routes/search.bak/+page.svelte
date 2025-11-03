@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-import type { User } from '$lib/types';
+  import type { User } from '$lib/types';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -8,20 +8,26 @@ import type { User } from '$lib/types';
   let isAuthenticated = $state<boolean>(false);
   let userName = $state<string>('');
 
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     // Check if user is authenticated
     try {
       const response = await fetch('/api/auth/user');
       if (response.ok) {
         const user = await response.json();
-        isAuthenticated = true
-        userName = user.username || user.email || 'User'} else {
+        isAuthenticated = true;
+        userName = user.username || user.email || 'User';
+      } else {
         // Redirect to login if not authenticated
-        await goto('/auth/login')}
+        await goto('/auth/login');
+      }
     } catch (err) {
       console.error('Auth check failed:', err);
-      await goto('/auth/login')}
-  });
+      await goto('/auth/login');
+    }
+  		})();
+	});
 </script>
 
 <svelte:head>
@@ -37,9 +43,7 @@ import type { User } from '$lib/types';
     </div>
 
     <nav class="header-nav">
-      <button onclick={() => goto('/dashboard')} class="nav-button">
-        â† Back to Dashboard
-      </button>
+      <button onclick={() => goto('/dashboard')} class="nav-button"> â† Back to Dashboard </button>
       {#if userName}
         <span class="user-info">ðŸ‘¤ {userName}</span>
       {/if}
@@ -353,6 +357,3 @@ import type { User } from '$lib/types';
       grid-template-columns: 1fr}
   }
 </style>
-
-
-

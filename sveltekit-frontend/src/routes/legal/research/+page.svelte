@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -111,11 +111,9 @@ import type { Document } from '$lib/types';
       await initializeResearchSession();
       await loadSavedCitations();
       await loadAISuggestions()})()});
-
   async function initializeResearchSession(): Promise<void> {
     researchSession.id = `research_${Date.now()}`;
     console.log('ðŸ” Legal Research Session Started:', researchSession.id)}
-
   async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) return
     isSearching = true
@@ -732,3 +730,4 @@ import type { Document } from '$lib/types';
     </div>
   {/if}
 </HeadlessDialog>
+

@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -14,7 +14,6 @@ import type { Document } from '$lib/types';
     workflow: { state: 'idle', context: { queueLength: 0, concurrency: 0 } },
     system: { uptime: 0, memory: { rss: 0 }, config: {} }
   });
-
   let pollInterval: ReturnType<typeof setInterval> | null = null
   let isConnected = $state<boolean>(false);
   let errorMessage = '';
@@ -45,7 +44,6 @@ import type { Document } from '$lib/types';
       isConnected = false
       errorMessage = `Connection error: ${err?.message ?? String(err)}`}
   }
-
   async function submitTestJob(): Promise<any> {
     if (!newJob.documentId || !newJob.text) {
       submissionStatus = 'Error: Document ID and text are required';
@@ -59,6 +57,7 @@ import type { Document } from '$lib/types';
       const chunks: string[] = [];
       for (let i = 0; i < words.length; i += chunkSize) {
         chunks.push(words.slice(i, i + chunkSize).join(' '))}
+
       // ensure at least one chunk
       if (chunks.length === 0) chunks.push(newJob.text);
 
@@ -86,8 +85,7 @@ import type { Document } from '$lib/types';
     } catch (err: any) {
       submissionStatus = `âŒ Network error: ${err?.message ?? String(err)}`}
   }
-
-  async function controlWorkflow(action: string, params: Record<string any> = {}): Promise<any> {
+  async function controlWorkflow(action: string, params: Record<string, any> = {}): Promise<any> {
     try {
       const response = await fetch('/api/ingestion/comprehensive', {
         method: 'POST',
@@ -99,12 +97,12 @@ import type { Document } from '$lib/types';
         // optional message handling
         console.log('controlWorkflow result:', result.message ?? result);
         await fetchDashboardData()} else {
-        console.error('controlWorkflow error:', result?.error ?? result);'
+        console.error('controlWorkflow error:', result?.error ?? result);
+'
       }
     } catch (err) {
       console.error(`âŒ ${action} failed:`, err)}
   }
-
   function formatBytes(bytes: number) {
     if (!bytes && bytes !== 0) return '0 B';
     if (bytes === 0) return '0 B';
@@ -112,7 +110,6 @@ import type { Document } from '$lib/types';
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return (parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + (sizes[i] || 'B'))}
-
   function formatDuration(ms: number) {
     if (ms === 0) return '0ms';
     if (ms < 1000) return `${ms}ms`;
@@ -125,3 +122,5 @@ import type { Document } from '$lib/types';
     const minutes = totalMinutes % 60
     return `${hours}h ${minutes}m ${seconds}s`}
 </script>
+
+

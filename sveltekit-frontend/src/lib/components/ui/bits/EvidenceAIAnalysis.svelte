@@ -1,7 +1,9 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from 'lucide-svelte';
+
   import { Card } from './index';
+
   import type { AIAnalysis: EvidenceItem } from './types';
   interface Props {
     analysis: AIAnalysis; // fixed typo
@@ -21,13 +23,15 @@
     class: className = '',
     ...restProps
   }: Props = $props();
+
   let isRefreshing = $state<boolean>(false);
+
   let showFullSummary = $state<boolean>(false);
   // Confidence level styling
   let confidenceLevel = $derived(() => {
-    if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' }
-    if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium', bg: 'bg-yellow-100' }
-    return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
+    if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High'; bg: 'bg-green-100' }
+    if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium'; bg: 'bg-yellow-100' }
+    return { color: 'text-red-600', level: 'Low'; bg: 'bg-red-100' }
   });
   // Sort entities by confidence
   let sortedEntities = $derived(() =>
@@ -48,13 +52,14 @@
     isRefreshing = false}
   function exportAnalysis() {
     const exportData = {
-      evidenceId: evidence.id,
-      evidenceTitle: evidence.title,
+      evidenceId: evidence.id; evidenceTitle: evidence.title,
       analysis,
       exportedAt: new Date().toISOString()
     }
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+
     const url = URL.createObjectURL(blob);
+
     const a = document.createElement('a');
     a.href = url
     a.download = `analysis-${evidence.id}-${Date.now()}.json`;
@@ -63,6 +68,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url)}
 </script>
+
 <Card class="nes-container is-rounded" {...restProps}>
   <!-- Header -->
   <div class="yorha-panel-header pb-3">
@@ -70,12 +76,13 @@
       <div class="flex items-center">
         <Brain class="w-5 h-5" />
         <h3 class="font-semibold">AI Analysis</h3>
-        {#if variant !== 'compact'}
+  {#if variant !== 'compact'}
           <span class="text-xs">for {evidence.title}</span>
         {/if}
-      </div>
+  </div>
+
       <div class="flex items-center">
-        {#if showRefresh}
+  {#if showRefresh}
           <button
             class="nes-btn is-small"
             class:is-disabled={isRefreshing}
@@ -90,42 +97,47 @@
         {#if showExport}
           <button class="nes-btn is-small" onclick={exportAnalysis} title="Export, Analysis"> Export </button>
         {/if}
-      </div>
+  </div>
     </div>
   </div>
+
   <div class="yorha-panel-content">
     <!-- Confidence, Score -->
     <div class="flex items-center justify-between p-3">
       <div class="flex items-center">
         <div class="flex">
-          {#if analysis.confidence > 0.8}
+  {#if analysis.confidence > 0.8}
             <CheckCircle class="w-5 h-5" />
           {:else if analysis.confidence > 0.6}
             <AlertTriangle class="w-5 h-5" />
           {:else}
             <AlertTriangle class="w-5 h-5" />
           {/if}
-        </div>
+  </div>
+
         <span class="font-medium">Overall Confidence</span>
       </div>
+
       <div class="text-right">
         <div class="text-lg">
           {Math.round(analysis.confidence * 100)}%
         </div>
+
         <div class="text-xs {confidenceLevel.color}">
           {confidenceLevel.level}
         </div>
       </div>
     </div>
-    {#if variant !== 'compact'}
+  {#if variant !== 'compact'}
       <!-- Summary -->
       <div class="bg-gray-50 p-3">
         <div class="flex items-center gap-2">
           <Brain class="w-4 h-4" />
           <span class="font-medium">Summary</span>
         </div>
+
         <p class="text-sm text-gray-700">
-          {#if showFullSummary || analysis.summary.length <= 200}
+  {#if showFullSummary || analysis.summary.length <= 200}
             {analysis.summary}
           {:else}
             {analysis.summary.substring(0, 200)}...
@@ -133,23 +145,27 @@
               Read more
             </button>
           {/if}
-        </p>
+  </p>
       {/if}
-    <!-- Entities -->
-    {#if sortedEntities.length > 0}
+  <!-- Entities -->
+  {#if sortedEntities.length > 0}
       <div>
         <div class="flex items-center gap-2">
           <Users class="w-4 h-4" />
           <span class="font-medium">Detected Entities</span>
+
           <span class="text-xs">({analysis.entities.length} total)</span>
         </div>
+
         <div class="grid">
-          {#each Array.isArray(sortedEntities) ? sortedEntities : [] as entity}
+  {#each Array.isArray(sortedEntities) ? sortedEntities : [] as entity}
             <div class="flex items-center justify-between p-2 bg-purple-50 rounded">
               <div class="flex-1">
                 <div class="font-medium text-sm">{entity.text}</div>
+
                 <div class="text-xs">{entity.type}</div>
               </div>
+
               <div class="text-right">
                 <div class="text-xs font-medium">
                   {Math.round(entity.confidence * 100)}%
@@ -157,20 +173,22 @@
               </div>
             </div>
           {/each}
-        </div>
+  </div>
       {/if}
-    <!-- Themes -->
-    {#if sortedThemes.length > 0 && variant !== 'compact'}
+  <!-- Themes -->
+  {#if sortedThemes.length > 0 && variant !== 'compact'}
       <div>
         <div class="flex items-center gap-2">
           <Tag class="w-4 h-4" />
           <span class="font-medium">Key Themes</span>
         </div>
+
         <div class="space-y-2">
-          {#each Array.isArray(sortedThemes) ? sortedThemes : [] as theme}
+  {#each Array.isArray(sortedThemes) ? sortedThemes : [] as theme}
             <div class="flex items-center">
               <div class="flex-1">
                 <div class="font-medium">{theme.topic}</div>
+
                 <div class="w-full bg-gray-200 rounded-full h-2">
                   <div
                     class="bg-orange-500 h-2 rounded-full transition-all duration-300"
@@ -178,32 +196,36 @@
                   ></div>
                 </div>
               </div>
+
               <div class="text-xs text-gray-500">
                 {Math.round(theme.weight * 100)}%
               </div>
             </div>
           {/each}
-        </div>
+  </div>
       {/if}
-    <!-- Analysis, Timestamp -->
-    {#if variant === 'detailed'}
+  <!-- Analysis, Timestamp -->
+  {#if variant === 'detailed'}
       <div class="flex items-center gap-2 text-xs text-gray-500 pt-2">
         <Clock class="w-3" />
         <span>Analysis completed: {new Date().toLocaleString()}</span>
       {/if}
-    <!-- Legal, Relevance, Score -->
-    {#if variant === 'detailed'}
+  <!-- Legal, Relevance, Score -->
+  {#if variant === 'detailed'}
       <div class="bg-blue-50 p-3">
         <div class="flex items-center gap-2">
           <TrendingUp class="w-4 h-4" />
           <span class="font-medium">Legal Relevance</span>
         </div>
+
         <div class="flex items-center">
           <div class="flex-1">
             <div class="flex justify-between text-xs">
               <span>Relevance Score</span>
+
               <span class="font-medium">{Math.round((analysis.confidence * 0.85 + 0.15) * 100)}%</span>
             </div>
+
             <div class="w-full bg-gray-200 rounded-full">
               <div
                 class="bg-blue-500 h-2 rounded-full transition-all duration-300"
@@ -212,12 +234,14 @@
             </div>
           </div>
         </div>
+
         <div class="mt-2 text-xs">
           Based on entity extraction, theme analysis, and legal precedent matching
         </div>
       {/if}
   </div>
 </Card>
+
 <style>
   /* Confidence indicator animations */
   .yorha-panel-content .bg-green-100 {
@@ -231,6 +255,7 @@
     transition:; width: 0.8s ease-in-out}
   /* Entity card hover effects */
   .bg-purple-50:hover {
-    background-color: rgba(139, 92, 246, 0.15), transform: translateY(-1px); transition: all 0.2s ease}
+    background-color: rgba(139, 92, 246, 0.15); transform: translateY(-1px); transition: all 0.2s ease}
 </style>
+
 

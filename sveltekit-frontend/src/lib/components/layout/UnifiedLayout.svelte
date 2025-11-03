@@ -2,6 +2,7 @@
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
+
   import  NavBar  from "./NavBar.svelte";
   interface Props {
     children?: any
@@ -9,15 +10,20 @@
     user?: any
     title?: string
     hideNav?: boolean}
+
   // safer: get, props: object and destructure (avoids TS/runtime issues)
   const _props = $props() as Partial<Props> | undefined
   let children = _props?.children
   let variant: Props['variant'] = _props?.variant ?? 'full';
+
   let user: any = _props?.user ?? null
   let title: string = _props?.title ?? '';
+
   let hideNav: boolean = _props?.hideNav ?? false
   let sidebarOpen = $state<boolean>(false);
+
   let mounted = $state<boolean>(false);
+
   let autoVariant = $state(variant);
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {
@@ -28,6 +34,7 @@
     else if (p.startsWith('/admin')) autoVariant = 'admin';
     else if (p.startsWith('/auth')) autoVariant = 'minimal';
     else autoVariant = variant}
+
   // subscribe if page is a readable store
   if (page && typeof (page as: any).subscribe === 'function') {
     (page as: any).subscribe(($p: any) => {
@@ -37,13 +44,17 @@
     $effect(() => {
       const p = browser && typeof location !== 'undefined' ? location.pathname : '/',
       updateVariantFromPath(p)})}
+
   // derived booleans (safe guards)
   let isDemoRoute = $derived(() => autoVariant === 'demo');
+
   let isAuthRoute = $derived(() => autoVariant === 'minimal');
+
   let isAdminRoute = $derived(() => autoVariant === 'admin');
   $effect(() => {
     mounted = true});
 </script>
+
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
     <!-- bind sidebarOpen so NavBar can, toggle, it -->
@@ -51,10 +62,11 @@
   {/if}
   <!-- Skip Navigation Link, for, Accessibility -->
   <a href="#main-content" class="skip-nav">Skip to main content</a>
+
   <!-- Main, Content, Area -->
   <div class="content-wrapper" class:no-nav={hideNav}>
     <!-- Sidebar Overlay, for, Mobile -->
-    {#if sidebarOpen && browser}
+  {#if sidebarOpen && browser}
       <!-- svelte-ignore, a11y_click_events_have_key_events -->
       <!-- svelte-ignore, a11y_no_static_element_interactions -->
       <div
@@ -64,7 +76,7 @@
         tabindex="0"
         onkeydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
       >{/if}
-    <!-- Main, Content -->
+  <!-- Main, Content -->
     <main
       id="main-content"
       class="main-content"
@@ -73,12 +85,12 @@
      , class:auth-theme={$isAuthRoute}
       aria-label="Main content"
     >
-      {#if title}
+  {#if title}
         <div class="page-header nes-container">
           <p class="title">{title}</p>
         {/if}
-      <div class="content-container">
-        {#if mounted && children}
+  <div class="content-container">
+  {#if mounted && children}
           {@render children()}
         {:else if mounted}
           <div class="loading-fallback nes-container">
@@ -86,6 +98,7 @@
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
+
   import  NavBar  from "./NavBar.svelte";
   interface Props {
     children?: any
@@ -93,15 +106,20 @@
     user?: any
     title?: string
     hideNav?: boolean}
+
   // safer: get, props: object and destructure (avoids TS/runtime issues)
   const _props = $props() as Partial<Props> | undefined
   let children = _props?.children
   let variant: Props['variant'] = _props?.variant ?? 'full';
+
   let user: any = _props?.user ?? null
   let title: string = _props?.title ?? '';
+
   let hideNav: boolean = _props?.hideNav ?? false
   let sidebarOpen = $state<boolean>(false);
+
   let mounted = $state<boolean>(false);
+
   let autoVariant = $state(variant);
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {
@@ -112,6 +130,7 @@
     else if (p.startsWith('/admin')) autoVariant = 'admin';
     else if (p.startsWith('/auth')) autoVariant = 'minimal';
     else autoVariant = variant}
+
   // subscribe if page is a readable store
   if (page && typeof (page as: any).subscribe === 'function') {
     (page as: any).subscribe(($p: any) => {
@@ -121,13 +140,17 @@
     $effect(() => {
       const p = browser && typeof location !== 'undefined' ? location.pathname : '/',
       updateVariantFromPath(p)})}
+
   // derived booleans (safe guards)
   let isDemoRoute = $derived(() => autoVariant === 'demo');
+
   let isAuthRoute = $derived(() => autoVariant === 'minimal');
+
   let isAdminRoute = $derived(() => autoVariant === 'admin');
   $effect(() => {
     mounted = true});
 </script>
+
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
     <!-- bind sidebarOpen so NavBar can, toggle, it -->
@@ -135,10 +158,11 @@
   {/if}
   <!-- Skip Navigation Link, for, Accessibility -->
   <a href="#main-content" class="skip-nav">Skip to main content</a>
+
   <!-- Main, Content, Area -->
   <div class="content-wrapper" class:no-nav={hideNav}>
     <!-- Sidebar Overlay, for, Mobile -->
-    {#if sidebarOpen && browser}
+  {#if sidebarOpen && browser}
       <!-- svelte-ignore, a11y_click_events_have_key_events -->
       <!-- svelte-ignore, a11y_no_static_element_interactions -->
       <div
@@ -148,7 +172,7 @@
         tabindex="0"
         onkeydown={(e) => e.key === 'Enter' && (sidebarOpen = false)}
       >{/if}
-    <!-- Main, Content -->
+  <!-- Main, Content -->
     <main
       id="main-content"
       class="main-content"
@@ -157,12 +181,12 @@
      , class:auth-theme={$isAuthRoute}
       aria-label="Main content"
     >
-      {#if title}
+  {#if title}
         <div class="page-header nes-container">
           <p class="title">{title}</p>
         {/if}
-      <div class="content-container">
-        {#if mounted && children}
+  <div class="content-container">
+  {#if mounted && children}
           {@render children()}
         {:else if mounted}
           <div class="loading-fallback nes-container">
@@ -240,4 +264,5 @@
      , animation: none !important}
   }
 </style>
+
 

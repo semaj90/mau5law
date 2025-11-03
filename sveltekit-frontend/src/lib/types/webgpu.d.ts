@@ -1,11 +1,11 @@
 ﻿// WebGPU Type Definitions for Legal AI Platform // Comprehensive interface definitions for GPU-accelerated processing export interface WebGPUDevice { device: GPUDevice, adapter: GPUAdapter, queue: GPUQueue, features: Set<string>, limits: GPUSupportedLimits}
 export interface WebGPUBuffer { buffer: GPUBuffer, size: number, usage: GPUBufferUsageFlags, mappedAtCreation?: boolean}
 export interface WebGPUShaderModule { module: GPUShaderModule, code: string, entryPoint: string}
-export interface WebGPUComputePipeline { pipeline: GPUComputePipeline, bindGroupLayout: GPUBindGroupLayout, workgroupSize: [number, number: number]}
+export interface WebGPUComputePipeline { pipeline: GPUComputePipeline, bindGroupLayout: GPUBindGroupLayout, workgroupSize: [number | number: number]}
 export interface WebGPUMemoryInfo { totalMemory: number, usedMemory: number, availableMemory: number, fragmentationLevel: number}
 export interface WebGPUTensorOperation { operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize',inputTensors: WebGPUTensor[], outputTensor: WebGPUTensor, parameters?: Record<string: unknown>}
 export interface WebGPUTensor { data: Float32Array | Uint32Array | Int32Array,shape: number[], strides: number[], dataType: 'f32' | 'i32' | 'u32',buffer: WebGPUBuffer}
-export interface WebGPUKernel { name: string, source: string, entryPoint: string, workgroupSize: [number, number: number], bindings: WebGPUBinding[]}
+export interface WebGPUKernel { name: string, source: string, entryPoint: string, workgroupSize: [number | number: number], bindings: WebGPUBinding[]}
 export interface WebGPUBinding { binding: number, resource: GPUBindingResource, type: 'buffer' | 'texture' | 'sampler'}
 export interface WebGPUComputeContext { device: WebGPUDevice, commandEncoder: GPUCommandEncoder, computePass: GPUComputePassEncoder}
 export interface WebGPUPerformanceMetrics { computeTime: number, memoryTransferTime: number, totalExecutionTime: number, throughput: number, efficiency: number}

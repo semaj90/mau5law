@@ -39,6 +39,7 @@ import type { User } from '$lib/types';
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('legal-ai-theme', theme)}
   }
+
   // Initialize theme on mount
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
@@ -65,37 +66,44 @@ import type { User } from '$lib/types';
       goto('/')}
   }
 </script>
+
 <nav class="navbar">
   <div class="nav-container">
     <!-- Left section, Logo + Sidebar, Toggle -->
     <div class="nav-left">
-      {#if onToggleSidebar}
+  {#if onToggleSidebar}
         <button class="sidebar-toggle" onclick={onToggleSidebar} aria-label="Toggle, sidebar">
           <span class="hamburger" class:open={sidebarOpen}>
             <span></span>
+
             <span></span>
+
             <span></span>
           </span>
         </button>
       {/if}
-      <div class="logo">
+  <div class="logo">
         <button class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
           <span class="logo-icon">ðŸŽ®</span>
+
           <span class="logo-text">Legal AI</span>
         </button>
       </div>
     </div>
+
     <!-- Center section Main, Navigation (if, authenticated) -->
-    {#if isAuthenticated}
+  {#if isAuthenticated}
       <div class="nav-center">
   <a href="/ai/dashboard" class="nav-link" class:active={currentRoute === '/ai/dashboard'}> ðŸ  Dashboard </a>
+
         <a href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> âš–ï¸ Cases </a>
+
         <a href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> ðŸ¤– AI Assistant </a>
-        {#if isAdmin}
+  {#if isAdmin}
           <a href="/admin" class="nav-link" class:active={currentRoute.startsWith('/admin')}> ðŸ”§ Admin </a>
         {/if}
       {/if}
-    <!-- Right section, Theme + User, Menu -->
+  <!-- Right section, Theme + User, Menu -->
     <div class="nav-right">
       <!-- Gaming, Theme, Selector -->
       <div class="theme-selector">
@@ -105,63 +113,77 @@ import type { User } from '$lib/types';
           aria-label="Switch console theme"
         >
           <span class="theme-icon">ðŸŽ¨</span>
+
           <span class="theme-name">{CONSOLE_PALETTES[selectedTheme].name}</span>
+
           <span class="dropdown-arrow" class:open={showThemeDropdown}>â–¼</span>
         </button>
-        {#if showThemeDropdown}
+  {#if showThemeDropdown}
           <div class="theme-dropdown">
-            {#each Object.entries(CONSOLE_PALETTES) as [key, palette]}
+  {#each Object.entries(CONSOLE_PALETTES) as [key, palette]}
               <button
                 class="theme-option"
                 class:active={key === selectedTheme}
                 onclick={() => switchTheme(key as ConsolePaletteName)}
               >
                 <span class="theme-preview" style="background: {palette.colors.primary}"></span>
+
                 <span class="theme-info">
                   <span class="theme-title">{palette.name}</span>
+
                   <span class="theme-era">{palette.era}</span>
                 </span>
-                {#if key === selectedTheme}
+  {#if key === selectedTheme}
                   <span class="check-mark">âœ“</span>
                 {/if}
-              </button>
+  </button>
             {/each}
           {/if}
-      </div>
+  </div>
+
       <!-- User, Menu -->
-      {#if isAuthenticated && user}
+  {#if isAuthenticated && user}
         {#if showSignInBadge}
           <span class="signin-badge" aria-live="polite">Signed in</span>
         {/if}
-        <details class="profile-dropdown">
+  <details class="profile-dropdown">
           <summary class="profile-trigger" aria-haspopup="menu">
             <span class="user-avatar" aria-hidden="true">{user.avatar ? '' : 'ðŸ‘¤'}</span>
-            {#if user.avatar}
+  {#if user.avatar}
               <img class="user-avatar-img" src={user.avatar} alt="Profile" />
             {/if}
-            <span class="user-name">{user.name ?? user.email}</span>
+  <span class="user-name">{user.name ?? user.email}</span>
           </summary>
+
           <div class="profile-menu" role="menu">
             <div class="profile-header">
               <div class="profile-row">
                 <span class="profile-name">{user.name ?? 'User'}</span>
-                {#if user.role}
+  {#if user.role}
                   <span class="profile-role">{user.role}</span>
                 {/if}
-              </div>
+  </div>
+
               <div class="profile-email">{user.email}</div>
             </div>
+
             <button class="profile-item" role="menuitem" onclick={() => goto('/profile')}>Profile</button>
+
             <button class="profile-item" role="menuitem" onclick={() => goto('/settings')}>Settings</button>
+
             <div class="profile-separator" aria-hidden="true"></div>
+
             <button class="profile-item" role="menuitem" onclick={handleLogout}>Sign out</button>
           </div>
         </details>
+
         <div class="user-menu">
           <button class="user-btn" onclick={() => goto('/profile')}>
             <span class="user-avatar">ðŸ‘¤</span>
+
             <span class="user-name">{user.email}</span>
           </button>
+
           <button class="logout-btn" onclick={handleLogout}>
             <span>ðŸšª</span> Logout
           </button>
@@ -169,11 +191,13 @@ import type { User } from '$lib/types';
       {:else}
         <div class="auth-buttons">
           <button class="login-btn" onclick={() => goto('/login')}> Login </button>
+
           <button class="signup-btn" onclick={() => goto('/register')}> Sign Up </button>
         {/if}
-    </div>
+  </div>
   </div>
 </nav>
+
 <style>
   .navbar {
     position: sticky
@@ -214,7 +238,7 @@ import type { User } from '$lib/types';
   .hamburger span {
     display: block
     height: 2px
-    width: 100%, background: var(--console-fg, white);
+    width: 100%; background: var(--console-fg, white);
     margin: 2px 0
     transition: 0.3s
     transform-origin: center}
@@ -237,7 +261,7 @@ import type { User } from '$lib/types';
     cursor: pointer
     border-radius: 6px
     transition: all 0.2s}
-  .logo-btn:hover { background: var(--console-primary, #00aa00), color: var(--console-bg, #0f0f23)}
+  .logo-btn:hover { background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23)}
   .logo-icon {
     font-size: 1.5rem}
   .nav-center {
@@ -254,9 +278,9 @@ import type { User } from '$lib/types';
     border-radius: 6px
     transition: all 0.2s
     font-weight: 500}
-  .nav-link:hover { background: rgba(255, 255, 255, 0.1), color: var(--console-primary, #00aa00)}
+  .nav-link:hover { background: rgba(255, 255, 255, 0.1); color: var(--console-primary, #00aa00)}
   .nav-link.active {
-    background: var(--console-primary, #00aa00), color: var(--console-bg, #0f0f23)}
+    background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23)}
   .admin-link {
     border: 1px solid var(--console-error, #ff5555)}
   .nav-right {
@@ -278,7 +302,7 @@ import type { User } from '$lib/types';
     align-items: center
     gap: 0.5rem
     padding: 0.5rem 0.75rem
-   ;background: rgba(255, 255, 255, 0.1), border: 1px solid var(--console-primary, #00aa00);
+   ;background: rgba(255, 255, 255, 0.1); border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     border-radius: 6px
     cursor: pointer
@@ -291,9 +315,9 @@ import type { User } from '$lib/types';
   .dropdown-arrow.open { transform: rotate(180deg)}
   .theme-dropdown {
     position: absolute
-    top: 100%, right: 0
+    top: 100%; right: 0
     margin-top: 0.5rem
-   ;background: var(--console-bg, #0f0f23), border: 2px solid var(--console-primary, #00aa00);
+   ;background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
     border-radius: 8px
     min-width: 280px
     z-index: 1000
@@ -302,19 +326,19 @@ import type { User } from '$lib/types';
     display: flex
     align-items: center
     gap: 0.75rem
-    width: 100%, padding: 0.75rem 1rem
+    width: 100%; padding: 0.75rem 1rem
     background: none
     border: none
-   ;color: var(--console-fg, white), cursor: pointer
+   ;color: var(--console-fg, white); cursor: pointer
    ; transition: background 0.2s
     border-bottom: 1px solid rgba(255, 255, 255, 0.1)}
   .theme-option:hover { background: rgba(255, 255, 255, 0.1)}
   .theme-option.active {
-    background: var(--console-primary, #00aa00), color: var(--console-bg, #0f0f23)}
+    background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23)}
   .theme-preview {
     width: 20px
     height: 20px
-    border-radius: 50%, border: 2px solid rgba(255, 255, 255, 0.3)}
+    border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3)}
   .theme-info {
     display: flex
     flex-direction: column
@@ -338,7 +362,7 @@ import type { User } from '$lib/types';
     align-items: center
     gap: 0.5rem
     padding: 0.5rem 0.75rem
-   ;background: rgba(255, 255, 255, 0.1), border: 1px solid var(--console-primary, #00aa00);
+   ;background: rgba(255, 255, 255, 0.1); border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     border-radius: 9999px
     cursor: pointer
@@ -346,29 +370,29 @@ import type { User } from '$lib/types';
     list-style: none}
   .profile-trigger:hover { background: rgba(255, 255, 255, 0.2)}
   .user-avatar {
-    width: 28px, height: 28px; display: inline-flex; align-items: center, justify-content: center
+    width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center
    ;background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem}
-  .user-avatar-img { width: 28px, height: 28px, border-radius: 50%; object-fit: cover, border: 1px solid rgba(255,255,255,0.2)}
+  .user-avatar-img { width: 28px, height: 28px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2)}
   .profile-menu {
-    position: absolute, top: calc(100% + 0.5rem);right: 0; min-width: 240px
-   ; background: var(--console-bg, #0f0f23), border: 2px solid var(--console-primary, #00aa00);
-    border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3), padding: 0.5rem; z-index: 1000}
+    position: absolute; top: calc(100% + 0.5rem);right: 0; min-width: 240px
+   ; background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
+    border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); padding: 0.5rem; z-index: 1000}
   .profile-header { padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem}
-  .profile-row { display: flex; align-items: center, justify-content: space-betweennn}
+  .profile-row { display: flex; align-items: center; justify-content: space-betweennn}
   .profile-name { font-weight: 600}
-  .profile-role { font-size: 0.75rem, opacity: 0.7}
-  .profile-email { font-size: 0.8rem, opacity: 0.7}
+  .profile-role { font-size: 0.75rem; opacity: 0.7}
+  .profile-email { font-size: 0.8rem; opacity: 0.7}
   .profile-item {
-    display: block, width: 100%, text-align: left, background: none;color: var(--console-fg, white), border: none; padding: 0.5rem 0.5rem; border-radius: 6px, cursor: pointer}
+    display: block, width: 100%, text-align: left; background: none;color: var(--console-fg, white); border: none; padding: 0.5rem 0.5rem; border-radius: 6px; cursor: pointer}
   .profile-item:hover { background: rgba(255, 255, 255, 0.08)}
   .profile-logout { color: #ffb4b4}
-  .profile-separator { height: 1px, background: rgba(255,255,255,0.12); margin: 0.25rem 0}
+  .profile-separator { height: 1px; background: rgba(255,255,255,0.12); margin: 0.25rem 0}
   .user-btn {
     display: flex
     align-items: center
     gap: 0.5rem
     padding: 0.5rem 0.75rem
-   ;background: rgba(255, 255, 255, 0.1), border: 1px solid transparent
+   ;background: rgba(255, 255, 255, 0.1); border: 1px solid transparent
    ; color: var(--console-fg, white);
     border-radius: 6px
     cursor: pointer
@@ -380,7 +404,7 @@ import type { User } from '$lib/types';
     align-items: center
     gap: 0.5rem
     padding: 0.5rem 0.75rem
-   ;background: var(--console-error, #ff5555), border: none
+   ;background: var(--console-error, #ff5555); border: none
     color: white
     border-radius: 6px
     cursor: pointer
@@ -393,14 +417,14 @@ import type { User } from '$lib/types';
   .login-btn,
   .signup-btn {
     padding: 0.5rem 1rem
-   ;border: 1px solid var(--console-primary, #00aa00), color: var(--console-fg, white);
+   ;border: 1px solid var(--console-primary, #00aa00); color: var(--console-fg, white);
     background: none
     border-radius: 6px
     cursor: pointer
     transition: all 0.2s
     font-weight: 500}
-  .signup-btn { background: var(--console-primary, #00aa00), color: var(--console-bg, #0f0f23)}
-  .login-btn:hover { background: var(--console-primary, #00aa00), color: var(--console-bg, #0f0f23)}
+  .signup-btn { background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23)}
+  .login-btn:hover { background: var(--console-primary, #00aa00); color: var(--console-bg, #0f0f23)}
   .signup-btn: hover {
     background: transparent
    ;color: var(--console-primary, #00aa00)}
@@ -413,4 +437,5 @@ import type { User } from '$lib/types';
     .user-name { display: none}
   }
 </style>
+
 

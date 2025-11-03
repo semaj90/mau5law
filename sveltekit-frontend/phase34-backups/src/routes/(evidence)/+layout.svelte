@@ -10,13 +10,13 @@
   let { data: _data, children }: Props = $props();
 
   const evidenceRoutes = [
-    { name: 'Evidence List', href: '/evidence', icon: 'ðŸ“‹' },
-    { name: 'Upload Evidence', href: '/evidence/upload', icon: 'â¬†ï¸' },
-    { name: 'Analysis Dashboard', href: '/evidence/analysis', icon: 'ðŸ”' },
-    { name: 'Evidence Canvas', href: '/evidence/canvas', icon: 'ðŸŽ¨' },
-    { name: 'Evidence Board', href: '/evidence/board', icon: 'ðŸ“Š' },
-    { name: 'Workspace', href: '/evidence/workspace', icon: 'ðŸ—‚ï¸' },
-    { name: 'Interactive Tools', href: '/evidence/interactive', icon: 'âš¡' }
+    { name: 'Evidence List', href: '/evidence'; icon: 'ðŸ“‹' },
+    { name: 'Upload Evidence', href: '/evidence/upload'; icon: 'â¬†ï¸' },
+    { name: 'Analysis Dashboard', href: '/evidence/analysis'; icon: 'ðŸ”' },
+    { name: 'Evidence Canvas', href: '/evidence/canvas'; icon: 'ðŸŽ¨' },
+    { name: 'Evidence Board', href: '/evidence/board'; icon: 'ðŸ“Š' },
+    { name: 'Workspace', href: '/evidence/workspace'; icon: 'ðŸ—‚ï¸' },
+    { name: 'Interactive Tools', href: '/evidence/interactive'; icon: 'âš¡' }
   ];
 
   let currentPath = $derived($page.url.pathname);
@@ -77,8 +77,7 @@
   .evidence-layout {
     min-height: 100vh
     display: flex
-    flex-direction: column
-   , background: var(--nier-bg-primary, #0a0a0a);
+    flex-direction: column; background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0);
     font-family: 'JetBrains Mono', 'Courier New', monospace}
 
@@ -98,8 +97,7 @@
 
   .evidence-title {
     font-size: 1.5rem
-    font-weight: bold
-   , color: var(--nier-accent-warm, #d4af37);
+    font-weight: bold; color: var(--nier-accent-warm, #d4af37);
     margin: 0}
 
   .evidence-badge { background: var(--nier-accent-warm, #d4af37);
@@ -118,11 +116,9 @@
     display: flex
     align-items: center
     gap: 0.5rem
-    padding: 0.5rem 1rem
-   , border: 1px solid var(--nier-border-primary, #333);
+    padding: 0.5rem 1rem; border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem
-    text-decoration: none
-   , color: var(--nier-text-secondary, #d0d0d0);
+    text-decoration: none; color: var(--nier-text-secondary, #d0d0d0);
     background: var(--nier-bg-primary, #0a0a0a);
     transition: all 0.25s ease}
 
@@ -145,8 +141,7 @@
 
   .evidence-content {
     flex: 1
-    overflow-y: auto
-   , background: var(--nier-bg-primary, #0a0a0a);
+    overflow-y: auto; background: var(--nier-bg-primary, #0a0a0a);
   }
 
   .evidence-container {
@@ -158,8 +153,7 @@
 
   .evidence-placeholder {
     text-align: center
-    padding: 4rem 2rem
-   , background: var(--nier-bg-secondary, #1a1a1a);
+    padding: 4rem 2rem; background: var(--nier-bg-secondary, #1a1a1a);
     border: 2px dashed var(--nier-border-muted, #444);
     border-radius: 1rem}
 
@@ -183,8 +177,7 @@
     display: flex
     align-items: center
     gap: 1rem
-    font-size: 0.9rem
-   , color: var(--nier-text-muted, #999);
+    font-size: 0.9rem; color: var(--nier-text-muted, #999);
   }
 
   .evidence-current strong {
@@ -196,11 +189,9 @@
     gap: 1rem}
 
   .evidence-main-btn {
-    padding: 0.5rem 1rem
-   , border: 1px solid var(--nier-border-primary, #333);
+    padding: 0.5rem 1rem; border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem
-    text-decoration: none
-   , color: var(--nier-text-primary, #f0f0f0);
+    text-decoration: none; color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
     transition: all 0.2s ease
     font-size: 0.9rem}
@@ -235,6 +226,3 @@
   .evidence-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool, #87ceeb);
   }
 </style>
-
-
-

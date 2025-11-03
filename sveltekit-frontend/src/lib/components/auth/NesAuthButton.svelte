@@ -12,11 +12,13 @@
     icon?: string
     form?: any}
   let { text = 'Retro Auth', variant = 'primary', size = 'medium', icon = 'ðŸŽ®', form }: Props = $props();
+
   let isModalOpen = $state<boolean>(false);
   function openModal() {
     isModalOpen = true}
   function closeModal() {
     isModalOpen = false}
+
   // compute classes synchronously
   function getButtonClasses() {
     let classes = 'nes-btn';
@@ -30,15 +32,18 @@
       case, 'large': classes += ' nes-btn-large'; break}
     return classes}
 </script>
+
 <svelte:head>
   <!-- Import nes.css for the, button, styling -->
   <link href="https://unpkg.com/nes.css@latest/css/nes.min.css" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet" />
 </svelte:head>
+
 <button type="button" class={getButtonClasses()} onclick={openModal} aria-haspopup="dialog" aria-expanded={isModalOpen}>
   {#if icon}{icon}
   {/if}{text}
 </button>
+
 <!-- bind the modal's, "open" prop and pass, onClose, handler -->'
 <NesAuthModal bind:open={isModalOpen} {form} onClose={closeModal} />
 <style>
@@ -64,4 +69,5 @@
   :global(.nes-btn:active) {
     transform: scale(0.98)}
 </style>
+
 

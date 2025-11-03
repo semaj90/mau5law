@@ -1,7 +1,7 @@
 ﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import type { Snippet } from 'svelte'; import { onMount } from "svelte"; import { fade, scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface Props { isOpen?: boolean; title?: string; type?: 'menu' | 'dialog' | 'battle' | 'shop' | 'inventory' | 'status'; size?: 'small' | 'medium' | 'large' | 'fullscreen'; showBorder?: boolean; cornerStyle?: 'classic' | 'modern' | 'hybrid'; backgroundOpacity?: number; children?: import('svelte').Snippet; actions?: import('svelte').Snippet}
-  let { isOpen = false, title = 'Final Fantasy Modal', type = 'menu', size = 'medium', showBorder = true, cornerStyle = 'classic', backgroundOpacity = 0.8, children, actions }: Props = $props(); let modalElement: HTMLDivElement = $state()!; let contentElement: HTMLDivElement = $state()!; const sizeClasses = { small: 'w-80 h-64', medium: 'w-96 h-80', large: 'w-[32rem] h-96', fullscreen: 'w-[90vw] h-[80vh]'
-  } const typeColors = { menu: 'from-blue-900/90 to-blue-800/90', dialog: 'from-purple-900/90 to-purple-800/90', battle: 'from-red-900/90 to-red-800/90', shop: 'from-green-900/90 to-green-800/90', inventory: 'from-amber-900/90 to-amber-800/90', status: 'from-cyan-900/90 to-cyan-800/90'
-  } const cornerClasses = { classic: 'ff-corner-classic', modern: 'ff-corner-modern', hybrid: 'ff-corner-hybrid'
+  let { isOpen = false, title = 'Final Fantasy Modal', type = 'menu', size = 'medium', showBorder = true, cornerStyle = 'classic', backgroundOpacity = 0.8, children, actions }: Props = $props(); let modalElement: HTMLDivElement = $state()!; let contentElement: HTMLDivElement = $state()!; const sizeClasses = { small: 'w-80 h-64', medium: 'w-96 h-80', large: 'w-[32rem] h-96'; fullscreen: 'w-[90vw] h-[80vh]'
+  } const typeColors = { menu: 'from-blue-900/90 to-blue-800/90', dialog: 'from-purple-900/90 to-purple-800/90', battle: 'from-red-900/90 to-red-800/90', shop: 'from-green-900/90 to-green-800/90', inventory: 'from-amber-900/90 to-amber-800/90'; status: 'from-cyan-900/90 to-cyan-800/90'
+  } const cornerClasses = { classic: 'ff-corner-classic', modern: 'ff-corner-modern'; hybrid: 'ff-corner-hybrid'
   } function handleClose() { // ondispatch removed}
   function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Escape') { handleClose(); }
   } $effect(() => { if (isOpen && modalElement) { modalElement.focus(); }
@@ -13,7 +13,7 @@
     onclick={ handleClose } keydown={ handleKeydown } tabindex="-1"
     ; bind:this={ modalElement } >
     <!-- FF-Style, Modal, Container --> <div class="relative" {sizeClasses[size]} bg-gradient-to-br {typeColors[type]} border-2 border-amber-400/80 shadow-2xl, overflow-hidden {cornerClasses[cornerStyle]}"
-      transitiscale={{ duration, 400, easing: quintOut, start: 0.8 }}, bind:this={ contentElement } >
+      transitiscale={{ duration, 400, easing: quintOut, start: 0.8 }}; bind:this={ contentElement } >
       <!-- FF-Style, Corner, Decorations --> {#if showBorder} <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2"></div> <div class="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2"></div> <div class="absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2"></div> <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2">{/if} <!-- FF-Style, Title, Bar --> {#if title} <div class="relative px-6 py-3" bg-gradient-to-r from-amber-600/90 to-yellow-500/90 border-b, border-amber-400/50"
         > <h2 id="modal-title"
             class="text-lg font-bold text-white" tracking-wider uppercase text-shadow-lg shadow-black/50"
@@ -32,6 +32,6 @@
 /* Text Shadow Utility */ {} .text-shadow-lg { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); }
 /* FF-Style Animations */ {} @keyframes ff-shimmer { 0%, {} 100% { opacity: 0.8}
     50% { opacity: 1}
-  } .ff-corner-classic::after { content: ''; position: absolute;, inset: 0, background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 50%, transparent 52%); animation: ff-shimmer 3s ease-in-out infinite}
+  } .ff-corner-classic::after { content: ''; position: absolute;, inset: 0; background: linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 50%, transparent 52%); animation: ff-shimmer 3s ease-in-out infinite}
 </style>
 

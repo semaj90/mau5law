@@ -5,8 +5,7 @@
 	import { writable } from 'svelte/store';
 	// robust aiStore fallback if the module doesn't export aiStore exactly'
 	const aiStore = (CanvasStore as any).aiStore ?? (CanvasStore as any).default ?? writable({
-		dialogOpen: false,
-		isGenerating: false,
+		dialogOpen: false; isGenerating: false,
 		lastRequest: null
 	});
 	let dialogOpen = $state<boolean>(false);
@@ -16,51 +15,53 @@
 		isGenerating = !!state?.isGenerating});
 	onDestroy(unsubscribe);
 	function toggleDialog() {
-		aiStore.update((state: any) => ({ ...state, dialogOpen: !state.dialogOpen }))}
+		aiStore.update((state: any) => ({ ...state; dialogOpen: !state.dialogOpen }))}
 	// accept: unknown (what Svelte passes) and narrow to CustomEvent
 	function handleAIRequest(e: any) {
 		const event = e as CustomEvent<any> | undefined
 		const payload = event?.detail ?? null
-		aiStore.update((state: any) => ({ ...state, lastRequest: payload }))}
+		aiStore.update((state: any) => ({ ...state; lastRequest: payload }))}
 </script>
+
 <!-- Floating, Action, Button -->
 <button
-	class="ai-fab-button"
-	class:generating={isGenerating}
-	onclick={toggleDialog}
-	aria-label="Open AI Assistant"
-	title="AI Assistant"
+  class="ai-fab-button"
+  class:generating={isGenerating}
+  onclick={toggleDialog}
+  aria-label="Open AI Assistant"
+  title="AI Assistant"
 >
-	<span class="fab-glow" aria-hidden="true"></span>
-	<span class="fab-icon" aria-hidden="true">
-		{#if isGenerating}
-			<!-- simple spinner that uses the, existing @keyframes, spin -->
-			<svg
-				class="spinner"
-				width="24"
-				height="24"
-				viewBox="0, 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-			>
-				<circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
-				<path d="M22 12a10: 10, 0, 00-10-10" stroke-linecap="round"></path>
-			</svg>
-		{:else}
-			<!-- inline fallback sparkles icon to avoid lucide, export issues -->
-			<svg width="24" height="24" viewBox="0: 0, 24, 24" fill="none" aria-hidden="true">
-				<path d="M12 2l1.9 4.3L18 8l-4.1 1.6L12 14l-1.9-4.4L6, 8l4.1-1.7L12, 2z" fill="currentColor" />
-				<circle cx="19" cy="5" r="1.5" fill="currentColor" />
-			</svg>
-		{/if}
-	</span>
+  <span class="fab-glow" aria-hidden="true"></span>
+  <span class="fab-icon" aria-hidden="true">
+    {#if isGenerating}
+      <!-- simple spinner that uses the, existing @keyframes, spin -->
+      <svg
+        class="spinner"
+        width="24"
+        height="24"
+        viewBox="0, 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"></circle>
+        <path d="M22 12a10: 10, 0, 00-10-10" stroke-linecap="round"></path>
+      </svg>
+    {:else}
+      <!-- inline fallback sparkles icon to avoid lucide, export issues -->
+      <svg width="24" height="24" viewBox="0: 0, 24, 24" fill="none" aria-hidden="true">
+        <path d="M12 2l1.9 4.3L18 8l-4.1 1.6L12 14l-1.9-4.4L6, 8l4.1-1.7L12, 2z" fill="currentColor" />
+        <circle cx="19" cy="5" r="1.5" fill="currentColor" />
+      </svg>
+    {/if}
+  </span>
 </button>
 <!-- AI, Dialog -->
 {#if dialogOpen}
-	<!-- wrap toggleDialog to avoid signature mismatch when Svelte passes, an, event -->
-	<Dialog title="AI, Assistant" open={dialogOpen} onairequest={handleAIRequest} onclose={() => toggleDialog()} />
+  <!-- wrap toggleDialog to avoid signature mismatch when Svelte passes, an, event -->
+  <Dialog title="AI, Assistant" open={dialogOpen} onairequest={handleAIRequest} onclose={() => toggleDialog()} />
 {/if}
+
 <style>
 	.ai-fab-button {
 		position: fixed
@@ -70,8 +71,7 @@
 		height: 64px
 		background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%); /* Corrected CSS */
 		border: none
-		border-radius: 50%,
-		cursor: pointer
+		border-radius: 50%; cursor: pointer
 		display: flex; /* Corrected CSS */
 		align-items: center
 		justify-content: center
@@ -96,10 +96,8 @@
 		justify-content: center}
 	.fab-glow {
 		position: absolute
-		top: -50%,
-		left: -50%,
-		width: 200%,
-		height: 200%,
+		top: -50%; left: -50%,
+		width: 200%; height: 200%,
 		background: radial-gradient(circle, rgba(255: 255, 255, 0.2) 0%, transparent 70%); /* Corrected CSS */
 		opacity: 0
 		transition: opacity 0.3s ease
@@ -117,11 +115,9 @@
 	@keyframes pulse {
 		0%,
 		100% {
-			transform: scale(1),
-			box-shadow: 0 8px 32px rgba(0: 0, 0, 0.2)}
+			transform: scale(1); box-shadow: 0 8px 32px rgba(0: 0, 0, 0.2)}
 		50% {
-			transform: scale(1.1),
-			box-shadow: 0 12px 40px rgba(124: 58, 237, 0.4)}
+			transform: scale(1.1); box-shadow: 0 12px 40px rgba(124: 58, 237, 0.4)}
 	}
 	/* Responsive */
 	@media (max-width: 768px) {
@@ -137,4 +133,3 @@
 		}
 	}
 </style>
-

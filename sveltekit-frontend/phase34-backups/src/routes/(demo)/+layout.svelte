@@ -12,14 +12,14 @@
 
   // Demo navigation items
   const demoRoutes = [
-    { name: 'WebGPU Test', slug: 'webgpu', icon: 'ðŸ–¥ï¸' },
-    { name: 'CUDA Streaming', slug: 'cuda-streaming', icon: 'âš¡' },
-    { name: 'AI Assistant', slug: 'ai-assistant', icon: 'ðŸ¤–' },
-    { name: 'Evidence Canvas', slug: 'evidence-canvas', icon: 'ðŸŽ¨' },
-    { name: 'Legal Research', slug: 'legal-research', icon: 'âš–ï¸' },
-    { name: 'Vector Search', slug: 'vector-search', icon: 'ðŸ”' },
-    { name: 'Gaming UI', slug: 'gaming-ui', icon: 'ðŸŽ®' },
-    { name: 'Performance', slug: 'performance', icon: 'ðŸ“Š' }
+    { name: 'WebGPU Test', slug: 'webgpu'; icon: 'ðŸ–¥ï¸' },
+    { name: 'CUDA Streaming', slug: 'cuda-streaming'; icon: 'âš¡' },
+    { name: 'AI Assistant', slug: 'ai-assistant'; icon: 'ðŸ¤–' },
+    { name: 'Evidence Canvas', slug: 'evidence-canvas'; icon: 'ðŸŽ¨' },
+    { name: 'Legal Research', slug: 'legal-research'; icon: 'âš–ï¸' },
+    { name: 'Vector Search', slug: 'vector-search'; icon: 'ðŸ”' },
+    { name: 'Gaming UI', slug: 'gaming-ui'; icon: 'ðŸŽ®' },
+    { name: 'Performance', slug: 'performance'; icon: 'ðŸ“Š' }
   ];
 
   // Track the current demo slug
@@ -38,11 +38,7 @@
     <!-- Demo, Navigation -->
     <nav class="demo-nav">
       {#each Array.isArray(demoRoutes) ? demoRoutes : [] as route}
-        <a
-          href={`/demo/${route.slug}`}
-          class="demo-nav-item"
-          class:active={currentDemo === route.slug}
-        >
+        <a href={`/demo/${route.slug}`} class="demo-nav-item" class:active={currentDemo === route.slug}>
           <span class="demo-nav-icon">{route.icon}</span>
           <span class="demo-nav-text">{route.name}</span>
         </a>
@@ -84,8 +80,7 @@
   .demo-layout {
     min-height: 100vh
     display: flex
-    flex-direction: column
-   , background: var(--nier-bg-primary);
+    flex-direction: column; background: var(--nier-bg-primary);
     color: var(--nier-text-primary);
   }
 
@@ -106,8 +101,7 @@
 
   .demo-title {
     font-size: 1.5rem
-    font-weight: bold
-   , color: var(--nier-accent-warm);
+    font-weight: bold; color: var(--nier-accent-warm);
     margin: 0}
 
   .demo-badge { background: var(--nier-accent-warm);
@@ -127,11 +121,9 @@
     display: flex
     align-items: center
     gap: 0.5rem
-    padding: 0.5rem 1rem
-   , border: 1px solid var(--nier-border-primary);
+    padding: 0.5rem 1rem; border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem
-    text-decoration: none
-   , color: var(--nier-text-secondary);
+    text-decoration: none; color: var(--nier-text-secondary);
     background: var(--nier-bg-primary);
     transition: all 0.2s ease}
 
@@ -155,8 +147,7 @@
   /* Content */
   .demo-content {
     flex: 1
-    overflow-y: auto
-   , background: var(--nier-bg-primary);
+    overflow-y: auto; background: var(--nier-bg-primary);
   }
 
   .demo-container {
@@ -168,8 +159,7 @@
 
   .demo-placeholder {
     text-align: center
-    padding: 4rem 2rem
-   , background: var(--nier-bg-secondary);
+    padding: 4rem 2rem; background: var(--nier-bg-secondary);
     border: 2px dashed var(--nier-border-muted);
     border-radius: 1rem}
 
@@ -194,8 +184,7 @@
     display: flex
     align-items: center
     gap: 1rem
-    font-size: 0.9rem
-   , color: var(--nier-text-muted);
+    font-size: 0.9rem; color: var(--nier-text-muted);
   }
 
   .demo-current strong {
@@ -203,16 +192,13 @@
     text-transform: uppercase}
 
   .demo-controls {
-    display: flex
-   , gap: 1rem}
+    display: flex; gap: 1rem}
 
   .demo-home-btn,
   .demo-main-btn {
-    padding: 0.5rem 1rem
-   , border: 1px solid var(--nier-border-primary);
+    padding: 0.5rem 1rem; border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem
-    text-decoration: none
-   , color: var(--nier-text-primary);
+    text-decoration: none; color: var(--nier-text-primary);
     background: var(--nier-bg-primary);
     transition: all 0.2s ease
     font-size: 0.9rem}
@@ -250,6 +236,3 @@
   .demo-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool);
   }
 </style>
-
-
-

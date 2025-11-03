@@ -65,7 +65,7 @@
         evidence: [] as any[],
         userId: user?.id || '',
         summary: '',
-        error: ''
+        error: '',
       },
       states: {
         idle: {
@@ -75,20 +75,20 @@
               actions: assign({
                 caseId: (_, event) => event.caseId,
                 evidence: (_, event) => event.evidence,
-                userId: (_, event) => event.userId
-              })
-            }
-          }
+                userId: (_, event) => event.userId,
+              }),
+            },
+          },
         },
         checkingCache: {
           always: [
             {
               target: 'success',
               guard: 'isSummaryInCache',
-              actions: 'loadSummaryFromCache'
+              actions: 'loadSummaryFromCache',
             },
-            { target: 'processing' }
-          ]
+            { target: 'processing' },
+          ],
         },
         processing: {
           invoke: {
@@ -96,48 +96,47 @@
             onDone: {
               target: 'success',
               actions: assign({
-                summary: (_, event) => event.output.summary
-              })
+                summary: (_, event) => event.output.summary,
+              }),
             },
             onError: {
               target: 'failure',
               actions: assign({
-                error: (_, event) =>
-                  event.data?.message || 'An unexpected error occurred.'
-              })
-            }
-          }
+                error: (_, event) => event.data?.message || 'An unexpected error occurred.',
+              }),
+            },
+          },
         },
         success: {
           entry: 'cacheSummary',
-          on: { PROCESS: 'checkingCache' }
+          on: { PROCESS: 'checkingCache' },
         },
         failure: {
-          on: { PROCESS: 'checkingCache' }
-        }
-      }
+          on: { PROCESS: 'checkingCache' },
+        },
+      },
     },
     {
       actions: {
         loadSummaryFromCache: assign({
-          summary: (context) => {
+          summary: context => {
             const cached = summaryCache.findOne({ caseId: context.caseId });
             return cached?.summary || '';
-          }
+          },
         }),
-        cacheSummary: (context) => {
+        cacheSummary: context => {
           if (context.summary && !summaryCache.findOne({ caseId: context.caseId })) {
             summaryCache.insert({ caseId: context.caseId, summary: context.summary });
           }
-        }
+        },
       },
       guards: {
-        isSummaryInCache: (context) => {
+        isSummaryInCache: context => {
           return !!summaryCache.findOne({ caseId: context.caseId });
-        }
+        },
       },
       services: {
-        processEvidenceOnServer: async (context) => {
+        processEvidenceOnServer: async context => {
           // This fetch call triggers the backend orchestration.
           const response = await fetch('/api/ai/process-evidence', {
             method: 'POST',
@@ -145,8 +144,8 @@
             body: JSON.stringify({
               caseId: context.caseId,
               evidence: context.evidence,
-              userId: context.userId
-            })
+              userId: context.userId,
+            }),
           });
 
           if (!response.ok) {
@@ -159,8 +158,8 @@
             throw new Error(errorData.message || 'Failed to process evidence.');
           }
           return await response.json();
-        }
-      }
+        },
+      },
     }
   );
 
@@ -183,7 +182,7 @@
       type: 'PROCESS',
       caseId,
       evidence: contextItems,
-      userId: user.id
+      userId: user.id,
     });
   }
 </script>
@@ -220,7 +219,9 @@
     {:else if summary}
       <pre class="whitespace-pre-wrap font-mono bg-black/20 p-3 rounded">{summary}</pre>
     {:else}
-      <span class="text-gray-500">Click "Analyze Evidence" to generate an AI summary and create knowledge graph embeddings.</span>
+      <span class="text-gray-500"
+        >Click "Analyze Evidence" to generate an AI summary and create knowledge graph embeddings.</span
+      >
     {/if}
   </div>
 </div>

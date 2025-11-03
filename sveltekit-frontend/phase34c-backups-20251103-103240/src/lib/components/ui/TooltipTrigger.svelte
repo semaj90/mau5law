@@ -12,6 +12,7 @@
     if (!children) return: null
     return typeof children === 'function' ? (children, as: any)(args) : (children as Snippet)}
 </script>
+
 {#if asChild}
   {#if children}
     <!-- use a plain call expression; remove, TypeScript, casts -->
@@ -25,4 +26,3 @@
     {/if}
   </button>
 {/if}
-

@@ -1,14 +1,21 @@
-﻿<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
+<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  Input  from "$lib/components/ui/input/Input.svelte";
+
   import Loader2 from 'lucide-svelte/icons/loader-2';
+
   import Bot from 'lucide-svelte/icons/bot';
+
   import MessageSquare from 'lucide-svelte/icons/message-square';
+
   import FileText from 'lucide-svelte/icons/file-text';
+
   import Search from 'lucide-svelte/icons/search';
+
   import Sparkles from 'lucide-svelte/icons/sparkles';
+
   import Zap from 'lucide-svelte/icons/zap';
 
   // Exported props (use standard exports to avoid svelte-preprocess type errors)
@@ -19,14 +26,23 @@
 
   // Local state
   let aiSearchQuery: string = '';
+
   let errorMessage: string = '';
+
   let isAISearching = $state<boolean>(false);
+
   let isAIChatting = $state<boolean>(false);
+
   let isSummarizing = $state<boolean>(false);
+
   let aiSearchResults: any[] = [];
+
   let aiChatMessage: string = '';
+
   let aiChatResponse = '';
+
   let summarizeText = '';
+
   let summaryResult = '';
 
   // Enhanced AI Search with LangChain.js and vector similarity
@@ -46,6 +62,7 @@
           similarityThreshold: 0.7
         }
       };
+
       const response = await fetch('/api/ai/enhanced-legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -73,6 +90,7 @@
   async function performFallbackSearch(): Promise<any> {
     try {
       const payload = { query: aiSearchQuery, jurisdiction: 'all', category: 'all', useAI: true };
+
       const response = await fetch('/api/ai/legal-search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -96,12 +114,14 @@
     errorMessage = '';
     try {
       const payload = { message: aiChatMessage, temperature: 0.7 };
+
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
       const result = await response.json();
       if (result?.response) {
         aiChatResponse = result.response
@@ -122,12 +142,14 @@
     errorMessage = '';
     try {
       const payload = { text: summarizeText, type: 'legal', options: { max_tokens: 500 } };
+
       const response = await fetch('/api/ai/summarize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
       const result = await response.json();
       if (result?.success) {
         summaryResult = result.summary || '';
@@ -178,19 +200,19 @@
         class="bits-btn text-sm px-2 py-1"
         onclick={performAISearch}
         disabled={disabled || isAISearching || !aiSearchQuery.trim()}>
-        {#if isAISearching}
+  {#if isAISearching}
           <Loader2 class="h-4 w-4" />
         {:else}
           <Search class="h-4" />
         {/if}
-      </button>
+  </button>
     </div>
-
-    {#if aiSearchResults.length > 0}
+  {#if aiSearchResults.length > 0}
       <div class="space-y-2 max-h-32 overflow-y-auto">
-        {#each Array.isArray(aiSearchResults.slice(0, 3)) ? aiSearchResults.slice(0, 3) : [] as result}
+  {#each Array.isArray(aiSearchResults.slice(0, 3)) ? aiSearchResults.slice(0, 3) : [] as result}
           <div class="p-2 bg-muted/50 rounded">
             <div class="font-medium">{result?.title}</div>
+
             <div class="text-xs nes-text">{result?.jurisdiction}</div>
           </div>
         {/each}
@@ -208,6 +230,7 @@
         AI Chat
       </h3>
     </div>
+
     <div class="yorha-panel-content">
       <div class="space-y-2">
         <form on:submit|preventDefault={performAIChat} class="space-y-2">
@@ -225,24 +248,23 @@
             type="submit"
             disabled={disabled || isAIChatting || !aiChatMessage.trim()}
             class="w-full bits-btn text-sm px-3 py-2">
-            {#if isAIChatting}
+  {#if isAIChatting}
               <Loader2 aria-hidden="true" class="h-4 w-4 animate-spin" />
               Thinking...
             {:else}
               <MessageSquare aria-hidden="true" class="h-4 w-4" />
               Ask AI
             {/if}
-          </button>
+  </button>
         </form>
       </div>
-
-      {#if aiChatResponse}
+  {#if aiChatResponse}
         <div class="p-3 bg-green-50 dark:bg-green-950/30 rounded text-sm max-h-32">
           <div class="prose prose-sm">
             <p class="whitespace-pre-wrap">{aiChatResponse}</p>
           </div>
         {/if}
-    </div>
+  </div>
   </div>
 
   <!-- AI, Summarization -->
@@ -253,6 +275,7 @@
         AI Summary
       </h3>
     </div>
+
     <div class="yorha-panel-content">
       <div class="space-y-2">
         <textarea
@@ -261,28 +284,28 @@
           disabled={disabled}
           rows={2}
           class="resize-none rounded border px-3 py-2 w-full"></textarea>
+
         <button
           type="button"
           onclick={performAISummarization}
           disabled={disabled || isSummarizing || !summarizeText.trim()}
           class="w-full bits-btn text-sm px-3 py-2">
-          {#if isSummarizing}
+  {#if isSummarizing}
             <Loader2 class="h-4 w-4 animate-spin" />
             Summarizing...
           {:else}
             <Zap class="h-4 w-4" />
             Summarize
           {/if}
-        </button>
+  </button>
       </div>
-
-      {#if summaryResult}
+  {#if summaryResult}
         <div class="p-3 bg-blue-50 dark:bg-blue-950/30 rounded text-sm max-h-32">
           <div class="prose prose-sm">
             <p class="whitespace-pre-wrap">{summaryResult}</p>
           </div>
         {/if}
-    </div>
+  </div>
   </div>
 
   <!-- Clear, Results, Button -->
@@ -292,7 +315,6 @@
         Clear All Results
       </button>
     {/if}
-
   <!-- Quick, Actions -->
   <div class="flex flex-wrap gap-2">
     <button type="button"
@@ -325,4 +347,5 @@
   <!-- Optional, error, display -->
   {#if errorMessage}
     <div class="text-center text-sm text-red-600">{errorMessage}{/if}
-</div>
+  </div>
+

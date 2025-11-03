@@ -11,17 +11,22 @@
     'Establishing Connection to Command Center...',
     'Activating Detective Support System...',
     'AI Assistant 9S Online...',
-    'Investigation Interface Ready.'];
+    'Investigation Interface Ready.',
+  ];
   // Boot sequence simulation
   setTimeout(() => {
     const bootInterval = setInterval(() => {
       if (bootProgress < bootSequence.length) {
         bootMessages.push(bootSequence[bootProgress]);
-        bootProgress++} else {
+        bootProgress++;
+      } else {
         clearInterval(bootInterval);
         setTimeout(() => {
-          isBooting = false}, 1000)}
-    }, 800)}, 500);
+          isBooting = false;
+        }, 1000);
+      }
+    }, 800);
+  }, 500);
 </script>
 
 <svelte:head>
@@ -40,7 +45,10 @@
       </div>
       <div class="boot-progress">
         <div class="progress-bar w-full h-2 bg-white/10 border border-[#333333] rounded overflow-hidden">
-          <div class="progress-fill h-full rounded-[3px] transition-width duration-800" style="width: {(bootProgress / bootSequence.length) * 100}%"></div>
+          <div
+            class="progress-fill h-full rounded-[3px] transition-width duration-800"
+            style="width: {(bootProgress / bootSequence.length) * 100}%"
+          ></div>
         </div>
         <div class="progress-text">
           {Math.round((bootProgress / bootSequence.length) * 100)}% Complete
@@ -55,8 +63,12 @@
           </div>
         {/each}
         {#if bootProgress < bootSequence.length}
-          <div class="boot-message current flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2 bg-[#00ff41]/10 border-l-3">
-            <span class="message-prefix text-[#666666] font-bold">[{(bootProgress + 1).toString().padStart(2, '0')}]</span>
+          <div
+            class="boot-message current flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2 bg-[#00ff41]/10 border-l-3"
+          >
+            <span class="message-prefix text-[#666666] font-bold"
+              >[{(bootProgress + 1).toString().padStart(2, '0')}]</span
+            >
             <span class="message-text flex-1">
               {bootSequence[bootProgress] || 'Finalizing...'}
             </span>
@@ -65,7 +77,9 @@
         {/if}
       </div>
       <div class="boot-footer border-t">
-        <div class="system-info text-[0.75rem] text-[#666666] leading-normal">YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework</div>
+        <div class="system-info text-[0.75rem] text-[#666666] leading-normal">
+          YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework
+        </div>
       </div>
     </div>
   </div>
@@ -173,5 +187,3 @@
       font-size: 0.75rem}
   }
 </style>
-
-

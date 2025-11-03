@@ -67,6 +67,7 @@
     [key: string]: any}
   let { open = $bindable(false), trigger, items, contentProps, children, ...restProps }: Props = $props();
 </script>
+
 <ContextMenuRoot bind:open {...restProps}>
   <ContextMenuTrigger>
     {@render trigger()}
@@ -113,4 +114,3 @@
     </ContextMenuContent>
   </ContextMenuPortal>
 </ContextMenuRoot>
-

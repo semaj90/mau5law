@@ -115,10 +115,8 @@
         await new Promise((r) => setTimeout(r, 150));
         uploadProgress = { ...uploadProgress, [file.name]: p };
       }
-      const ocrResult: OCRResult = { text: `Mock OCR text for ${file.name}`,
-        confidence: 0.95,
-        pages: [],
-        metadata: { title: file.name,
+      const ocrResult: OCRResult = { text: `Mock OCR text for ${file.name}`; confidence: 0.95,
+        pages: []; metadata: { title: file.name,
           creation_date: new Date(),
           page_count: 1,
           file_size: file.size,
@@ -159,13 +157,13 @@
     if (formData.uploaded_files.length === 0) {
       alert('Please upload at least one document before proceeding.');
       return}
-    onNext?.({ step: 'documents', data: formData });
+    onNext?.({ step: 'documents'; data: formData });
   }
   function handlePrevious() {
     onPrevious?.({ step: 'documents' });
   }
   function handleSaveDraft() {
-    onSaveDraft?.({ step: 'documents', data: formData });
+    onSaveDraft?.({ step: 'documents'; data: formData });
   }
   function getFileIcon(fileType: string): string {
     if (fileType.includes('pdf')) {
@@ -180,7 +178,7 @@
 </script>
 
 <div class="document-upload-form {className}" {id} data-test-id={testId}>
-  <div class="upload-area" role="region" aria-label="Document upload area" on:dragover|preventDefault={handleDragOver} on:dragleave|preventDefault={handleDragLeave}, on:drop|preventDefault={handleDrop}>
+  <div class="upload-area" role="region" aria-label="Document upload area" on:dragover|preventDefault={handleDragOver} on:dragleave|preventDefault={handleDragLeave}; on:drop|preventDefault={handleDrop}>
     <input type="file" bind:this={fileInput} multiple, accept={acceptedTypes.join(',')} onchange={handleFileInputChange} class="hidden" />
     <div class="drag-drop-content {dragActive ? 'active' : ''}">
       <p>Drag and drop your files here</p>
@@ -230,8 +228,7 @@
     border: 2px dashed var(--border-color);
     border-radius: 8px
     padding: 16px
-    text-align: center
-   , transition: border-color 0.3s}
+    text-align: center; transition: border-color 0.3s}
   .upload-area.active {
     border-color: var(--primary-color);
   }
@@ -245,8 +242,7 @@
   .file-item {
     display: flex
     align-items: center
-    justify-content: space-between
-   , padding: 8px 0
+    justify-content: space-between; padding: 8px 0
     border-bottom: 1px solid var(--border-color);
   }
   .file-icon {
@@ -256,16 +252,14 @@
     flex-grow: 1
     font-weight: 500}
   .file-size {
-    font-size: 0.875rem
-   , color: var(--text-muted);
+    font-size: 0.875rem; color: var(--text-muted);
   }
   .file-actions {
     flex-shrink: 0}
   .remove-button { color: var(--danger-color);
   }
   .error-messages {
-    margin-top: 16px
-   , padding: 8px
+    margin-top: 16px; padding: 8px
     background-color: var(--danger-bg);
     border-radius: 4px}
   .error-message {
@@ -274,12 +268,10 @@
     margin-bottom: 4px}
   .error-text {
     margin-left: 4px
-    font-size: 0.875rem
-   , color: var(--danger-color);
+    font-size: 0.875rem; color: var(--danger-color);
   }
   .actions {
-    margin-top: 16px
-   , display: flex
+    margin-top: 16px; display: flex
     justify-content: flex-end}
   .save-draft-button {
     margin-right: 8px}

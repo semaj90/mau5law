@@ -32,7 +32,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		currentFormat: 'paragraph'
   	});
   	let nieRTheme = $state({ mode: 'android', // 'android' | 'yorha' | 'machine'
-  		glitchEnabled: true, scanlines: true
+  		glitchEnabled: true; scanlines: true
   		typingSound: true });
   	// Component props
   	let {
@@ -180,8 +180,7 @@ https://svelte.dev/e/attribute_duplicate -->
   		console.log('💾 Saving investigation notes...');
   		try {
   			const response = await fetch('/api/legal/investigation-notes', {
-  				method: 'POST',
-  				headers: { 'Content-Type': 'application/json' },
+  				method: 'POST'; headers: { 'Content-Type': 'application/json' },
   				body: JSON.stringify(toISOString)();
   				})
   			});
@@ -470,10 +469,8 @@ https://svelte.dev/e/attribute_duplicate -->
 	.scanlines::after {
 		content: '';
 		position: absolute;
-		top: 0,
-		left: 0;
-		right: 0,
-		bottom: 0;
+		top: 0; left: 0;
+		right: 0; bottom: 0;
 		background: linear-gradient(
 			transparent 0%,
 			rgba(0, 255, 0, 0.03) 50%,
@@ -508,8 +505,7 @@ https://svelte.dev/e/attribute_duplicate -->
 	.nier-editor-content blockquote {
 		border-left: 4px solid #00ff00;
 		padding-left: 16px;
-		margin-left: 0,
-		background: rgba(0, 255, 0, 0.05);
+		margin-left: 0; background: rgba(0, 255, 0, 0.05);
 	}
 	.nier-editor-content pre {
 		background: rgba(0, 0, 0, 0.8);
@@ -537,8 +533,7 @@ d;
 		font-family: 'Courier New', monospace;
 		font-size: 12px;
 		font-weight: bold;
-		z-index: 9999,
-		animation: fadeInOut 2s ease-in-out;
+		z-index: 9999; animation: fadeInOut 2s ease-in-out;
 	}
 	:global(.save-success) {
 		background: rgba(0, 255, 0, 0.2);

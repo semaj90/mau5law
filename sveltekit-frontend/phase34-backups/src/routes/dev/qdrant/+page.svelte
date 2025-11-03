@@ -292,13 +292,13 @@
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
           tabindex="0"
           onclick={() => {
-            previewOpen = false
+            previewOpen = false;
             restoreFocus();
           }}
           onkeydown={(e: KeyboardEvent) => {
             // make overlay keyboard-operable (Enter / Space)
             if (e.key === 'Enter' || e.key === ' ') {
-              previewOpen = false
+              previewOpen = false;
               restoreFocus();
             }
           }}
@@ -319,7 +319,7 @@
             <button
               class="absolute top-2 right-2 text-gray-500"
               onclick={() => {
-                previewOpen = false
+                previewOpen = false;
                 restoreFocus();
               }}
               aria-label="Close">âœ•</button
@@ -348,4 +348,3 @@
     </section>
   {/if}
 </div>
-

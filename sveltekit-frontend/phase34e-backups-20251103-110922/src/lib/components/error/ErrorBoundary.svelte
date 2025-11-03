@@ -53,7 +53,8 @@
   function reportError() {
     if (browser) {
       const errorReport = {
-        path: currentPath,
+        path: currentPath
+,
         error: errorDetails
         stack: errorStack
        , userAgent: navigator.userAgent,
@@ -67,6 +68,7 @@
     errorDetails = null
     errorStack = null}
 </script>
+
 {#if hasError && !fallback}
   <div class="error-boundary-container">
     <div class="error-boundary-content">
@@ -108,6 +110,7 @@
 {:else}
   <slot />
 {/if}
+
 <style>
   .error-boundary-container {
     min-height: 60vh
@@ -177,4 +180,3 @@
       align-items: center}
   }
 </style>
-

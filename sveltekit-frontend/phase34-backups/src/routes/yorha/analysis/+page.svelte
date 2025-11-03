@@ -5,22 +5,235 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       id: 'ANA-002', case_id: 'CASE-2024-088', type: 'Behavioral Analysis', status: 'processing', confidence: null, findings: 'Analyzing communication patterns...', timestamp: '15 minutes ago'
     }, {
       id: 'ANA-003', case_id: 'CASE-2024-089', type: 'Financial Correlation', status: 'completed', confidence: 88.3, findings: 'Suspicious transaction clusters detected', timestamp: '4 hours ago'
-    }]); </script> <svelte:head> <title>ANALYSIS - YoRHa Detective Interface</title> </svelte:head> <div class="yorha-interface"> <!-- Sidebar --> <aside class="yorha-sidebar"> <div class="yorha-logo"> <div class="yorha-title">YORHA</div> <div class="yorha-subtitle">DETECTIVE</div> <div class="yorha-subtext">Investigation Interface</div> </div> <nav class="yorha-nav"> <div class="nav-section"> <a href="/yorha-command-center" class="nav-item"> <span class="nav-icon">âŒ‚</span> COMMAND CENTER </a> <a href="/yorha/cases" class="nav-item"> <span class="nav-text">ACTIVE CASES</span> <span class="nav-count">8</span> </a> <a href="/evidenceboard" class="nav-item"> <span class="nav-icon">ðŸ“</span> EVIDENCE </a> <a href="/yorha/persons" class="nav-item"> <span class="nav-icon">ðŸ‘¤</span> PERSONS OF INTEREST </a> <button class="nav-item"> <span class="nav-icon">ðŸ“Š</span> ANALYSIS </button> <a href="/yorha/search" class="nav-item"> <span class="nav-icon">ðŸ”</span> GLOBAL SEARCH </a> <a href="/yorha/terminal" class="nav-item"> <span class="nav-icon">></span> TERMINAL </a> </div> <div class="nav-section"> <a href="/yorha/config" class="nav-item"> <span class="nav-icon">âš™</span> SYSTEM CONFIG </a> </div> </nav> <div class="yorha-status"> <div class="status-item">Online</div> <div class="status-time">{new Date().toLocaleTimeString()}</div> <div class="status-text">System: Operational</div> </div> </aside> <!-- Main, Content --> <main class="yorha-main"> <!-- Header --> <header class="analysis-header"> <div class="header-left"> <button class="header-icon">ðŸ“Š</button> <h1 class="analysis-title">ANALYSIS</h1> <div class="analysis-subtitle">AI-Powered Investigation Intelligence</div> </div> <div class="header-right"> <div class="header-btn bits-btn"> <ButtonComponent> <Brain class="w-4" /> RUN ANALYSIS </ButtonComponent>
-</div> </div> </header> <!-- Analysis, Dashboard --> <div class="analysis-dashboard"> <!-- Top, Row - Key, Metrics --> <div class="metrics-row"> <!-- Top metrics, card (Case, Metrics) --> <div class="metric-nier-bits-card"> <CardComponent> <div class="metric-header"> <TrendingUp class="metric-icon" /> <div> <h3 class="card-title">Case Metrics</h3> <p class="card-description">Investigation Progress</p> </div> </div> <div class="metric-content"> <div class="metric-grid"> <div class="metric-item"> <span class="metric-number">{analysisData.caseMetrics.total}</span> <span class="metric-label">Total Cases</span> </div> <div class="metric-item"> <span class="metric-number">{analysisData.caseMetrics.active}</span> <span class="metric-label">Active</span> </div> <div class="metric-item"> <span class="metric-number">{analysisData.caseMetrics.success_rate}%</span> <span class="metric-label">Success Rate</span> </div> </div> </div> </CardComponent>
+    }]);
+</script>
+
+<svelte:head><title>ANALYSIS - YoRHa Detective Interface</title></svelte:head>
+<div class="yorha-interface">
+  <!-- Sidebar -->
+  <aside class="yorha-sidebar">
+    <div class="yorha-logo">
+      <div class="yorha-title">YORHA</div>
+      <div class="yorha-subtitle">DETECTIVE</div>
+      <div class="yorha-subtext">Investigation Interface</div>
+    </div>
+    <nav class="yorha-nav">
+      <div class="nav-section">
+        <a href="/yorha-command-center" class="nav-item"> <span class="nav-icon">âŒ‚</span> COMMAND CENTER </a>
+        <a href="/yorha/cases" class="nav-item">
+          <span class="nav-text">ACTIVE CASES</span> <span class="nav-count">8</span>
+        </a> <a href="/evidenceboard" class="nav-item"> <span class="nav-icon">ðŸ“</span> EVIDENCE </a>
+        <a href="/yorha/persons" class="nav-item"> <span class="nav-icon">ðŸ‘¤</span> PERSONS OF INTEREST </a>
+        <button class="nav-item"> <span class="nav-icon">ðŸ“Š</span> ANALYSIS </button>
+        <a href="/yorha/search" class="nav-item"> <span class="nav-icon">ðŸ”</span> GLOBAL SEARCH </a>
+        <a href="/yorha/terminal" class="nav-item"> <span class="nav-icon">></span> TERMINAL </a>
+      </div>
+      <div class="nav-section">
+        <a href="/yorha/config" class="nav-item"> <span class="nav-icon">âš™</span> SYSTEM CONFIG </a>
+      </div>
+    </nav>
+    <div class="yorha-status">
+      <div class="status-item">Online</div>
+      <div class="status-time">{new Date().toLocaleTimeString()}</div>
+      <div class="status-text">System: Operational</div>
+    </div>
+  </aside>
+  <!-- Main, Content -->
+  <main class="yorha-main">
+    <!-- Header -->
+    <header class="analysis-header">
+      <div class="header-left">
+        <button class="header-icon">ðŸ“Š</button>
+        <h1 class="analysis-title">ANALYSIS</h1>
+        <div class="analysis-subtitle">AI-Powered Investigation Intelligence</div>
+      </div>
+      <div class="header-right">
+        <div class="header-btn bits-btn"><ButtonComponent><Brain class="w-4" /> RUN ANALYSIS</ButtonComponent></div>
+      </div>
+    </header>
+    <!-- Analysis, Dashboard -->
+    <div class="analysis-dashboard">
+      <!-- Top, Row - Key, Metrics -->
+      <div class="metrics-row">
+        <!-- Top metrics, card (Case, Metrics) -->
+        <div class="metric-nier-bits-card">
+          <CardComponent>
+            <div class="metric-header">
+              <TrendingUp class="metric-icon" />
+              <div>
+                <h3 class="card-title">Case Metrics</h3>
+                <p class="card-description">Investigation Progress</p>
+              </div>
+            </div>
+            <div class="metric-content">
+              <div class="metric-grid">
+                <div class="metric-item">
+                  <span class="metric-number">{analysisData.caseMetrics.total}</span>
+                  <span class="metric-label">Total Cases</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-number">{analysisData.caseMetrics.active}</span>
+                  <span class="metric-label">Active</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-number">{analysisData.caseMetrics.success_rate}%</span>
+                  <span class="metric-label">Success Rate</span>
+                </div>
+              </div>
+            </div>
+          </CardComponent>
+        </div>
+      </div>
+    </div>
+    <!-- Evidence, Analysis, card -->
+    <div class="metric-nier-bits-card">
+      <CardComponent>
+        <div class="metric-header">
+          <Database class="metric-icon" />
+          <div>
+            <h3 class="card-title">Evidence Analysis</h3>
+            <p class="card-description">Processing Status</p>
+          </div>
+        </div>
+        <div class="metric-content">
+          <div class="progress-section">
+            <div class="progress-item">
+              <span class="progress-label"
+                >Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis
+                  .total_pieces})</span
+              >
+              <Progress
+                value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                class="progress-bar"
+              />
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span>
+              <Progress
+                value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                class="progress-bar"
+              />
+            </div>
+          </div>
+        </div>
+      </CardComponent>
+      <!-- Threat, Assessment, card -->
+      <div class="metric-nier-bits-card">
+        <CardComponent>
+          <div class="metric-header">
+            <AlertCircle class="metric-icon" />
+            <div>
+              <h3 class="card-title">Threat Assessment</h3>
+              <p class="card-description">Risk Analysis</p>
+            </div>
+          </div>
+          <div class="metric-content">
+            <div class="threat-grid">
+              <div class="threat-item">
+                <span class="threat-number">{analysisData.threatAssessment.critical}</span>
+                <span class="threat-label">Critical</span>
+              </div>
+              <div class="threat-item">
+                <span class="threat-number">{analysisData.threatAssessment.high}</span>
+                <span class="threat-label">High</span>
+              </div>
+              <div class="threat-item">
+                <span class="threat-number">{analysisData.threatAssessment.medium}</span>
+                <span class="threat-label">Medium</span>
+              </div>
+              <div class="threat-item">
+                <span class="threat-number">{analysisData.threatAssessment.low}</span>
+                <span class="threat-label">Low</span>
+              </div>
+            </div>
+          </div>
+        </CardComponent>
+      </div>
+      <!-- AI, Performance, Panel -->
+      <div class="ai-performance-nier-bits-card">
+        <CardComponent>
+          <div class="nes-container">
+            <div class="flex items-center gap-2 nes-container">
+              <Brain class="w-5" /> <span>AI PERFORMANCE METRICS</span>
+            </div>
+          </div>
+          <div class="ai-performance-content">
+            <div class="performance-metrics">
+              <div class="performance-item">
+                <div class="performance-label">Accuracy</div>
+                <div class="performance-value">{analysisData.aiPerformance.accuracy}%</div>
+                <Progress value={analysisData.aiPerformance.accuracy} class="performance-progress" />
+              </div>
+              <div class="performance-item">
+                <div class="performance-label">Processing Speed</div>
+                <div class="performance-value">{analysisData.aiPerformance.processing_speed}s avg</div>
+                <Progress value={100 - analysisData.aiPerformance.processing_speed * 20} class="performance-progress" />
+              </div>
+              <div class="performance-item">
+                <div class="performance-label">Confidence Score</div>
+                <div class="performance-value">{analysisData.aiPerformance.confidence}%</div>
+                <Progress value={analysisData.aiPerformance.confidence} class="performance-progress" />
+              </div>
+            </div>
+            <div class="performance-footer">
+              <Clock class="w-4" /> Last Updated: {analysisData.aiPerformance.last_update}
+            </div>
+          </div>
+        </CardComponent>
+      </div>
+      <!-- Recent, Analyses -->
+      <div class="recent-analyses-nier-bits-card">
+        <CardComponent>
+          <div class="nes-container">
+            <h3 class="card-title">RECENT ANALYSES</h3>
+            <p class="card-description">Latest AI-powered investigations</p>
+          </div>
+          <div>
+            <div class="analyses-content">
+              <div class="analyses-list">
+                {#each recentAnalyses as analysis (analysis.id)}
+                  <div class="analysis-item">
+                    <div class="analysis-header">
+                      <div class="analysis-basic-info">
+                        <span class="analysis-id">{analysis.id}</span>
+                        <span class="analysis-case">{analysis.case_id}</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{analysis.type}</span
+                        >
+                      </div>
+                      <div class="analysis-status">
+                        {#if analysis.status === 'completed'}
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-green-600">COMPLETED</span>
+                          <span class="confidence-score">{analysis.confidence}% confidence</span>
+                        {:else if analysis.status === 'processing'}
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600">PROCESSING</span>
+                          <Activity class="w-4 h-4" />
+                        {:else}
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200"
+                            >{analysis.status.toUpperCase()}</span
+                          >
+                        {/if}
+                      </div>
+                    </div>
+                    <div class="analysis-findings">{analysis.findings}</div>
+                    <div class="analysis-footer">
+                      <span class="analysis-timestamp">{analysis.timestamp}</span>
+                      <div class="bits-btn">
+                        <ButtonComponent size="sm" variant="secondary">View Details</ButtonComponent>
+                      </div>
+                    </div>
+                  </div>
+                {/each}
+              </div>
+            </div>
+          </div>
+        </CardComponent>
+      </div>
+    </div>
+  </main>
 </div>
-</div>
-</div> <!-- Evidence, Analysis, card --> <div class="metric-nier-bits-card"> <CardComponent> <div class="metric-header"> <Database class="metric-icon" /> <div> <h3 class="card-title">Evidence Analysis</h3> <p class="card-description">Processing Status</p> </div> </div> <div class="metric-content"> <div class="progress-section"> <div class="progress-item"> <span class="progress-label"
-                  >Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis .total_pieces})</span >
-                <Progress value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100} class="progress-bar"
-                /> </div> <div class="progress-item"> <span class="progress-label">AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span> <Progress value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100} class="progress-bar"
-                /> </div> </div> </div> </CardComponent> <!-- Threat, Assessment, card --> <div class="metric-nier-bits-card"> <CardComponent> <div class="metric-header"> <AlertCircle class="metric-icon" /> <div> <h3 class="card-title">Threat Assessment</h3> <p class="card-description">Risk Analysis</p> </div> </div> <div class="metric-content"> <div class="threat-grid"> <div class="threat-item"> <span class="threat-number">{analysisData.threatAssessment.critical}</span> <span class="threat-label">Critical</span> </div> <div class="threat-item"> <span class="threat-number">{analysisData.threatAssessment.high}</span> <span class="threat-label">High</span> </div> <div class="threat-item"> <span class="threat-number">{analysisData.threatAssessment.medium}</span> <span class="threat-label">Medium</span> </div> <div class="threat-item"> <span class="threat-number">{analysisData.threatAssessment.low}</span> <span class="threat-label">Low</span> </div> </div> </div> </CardComponent> </div> <!-- AI, Performance, Panel --> <div class="ai-performance-nier-bits-card"> <CardComponent> <div class="nes-container"> <div class="flex items-center gap-2 nes-container"> <Brain class="w-5" /> <span>AI PERFORMANCE METRICS</span> </div> </div> <div class="ai-performance-content"> <div class="performance-metrics"> <div class="performance-item"> <div class="performance-label">Accuracy</div> <div class="performance-value">{analysisData.aiPerformance.accuracy}%</div> <Progress value={analysisData.aiPerformance.accuracy} class="performance-progress" /> </div> <div class="performance-item"> <div class="performance-label">Processing Speed</div> <div class="performance-value">{analysisData.aiPerformance.processing_speed}s avg</div> <Progress value={100 - analysisData.aiPerformance.processing_speed * 20} class="performance-progress" /> </div> <div class="performance-item"> <div class="performance-label">Confidence Score</div> <div class="performance-value">{analysisData.aiPerformance.confidence}%</div> <Progress value={analysisData.aiPerformance.confidence} class="performance-progress" /> </div> </div> <div class="performance-footer"> <Clock class="w-4" /> Last Updated: {analysisData.aiPerformance.last_update} </div> </div> </CardComponent>
-</div> <!-- Recent, Analyses --> <div class="recent-analyses-nier-bits-card"> <CardComponent> <div class="nes-container"> <h3 class="card-title">RECENT ANALYSES</h3> <p class="card-description">Latest AI-powered investigations</p> </div> <div> <div class="analyses-content"> <div class="analyses-list"> {#each recentAnalyses as analysis (analysis.id)} <div class="analysis-item"> <div class="analysis-header"> <div class="analysis-basic-info"> <span class="analysis-id">{analysis.id}</span> <span class="analysis-case">{analysis.case_id}</span> <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300"
-                        >{analysis.type}</span >
-                    </div> <div class="analysis-status"> {#if analysis.status === 'completed'} <span class="px-2 py-1 rounded text-xs font-medium bg-green-600">COMPLETED</span> <span class="confidence-score">{analysis.confidence}% confidence</span> {:else if analysis.status === 'processing'} <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600">PROCESSING</span> <Activity class="w-4 h-4" /> {:else} <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200"
-                          >{analysis.status.toUpperCase()}</span >
-                      {/if} </div> </div> <div class="analysis-findings"> {analysis.findings} </div> <div class="analysis-footer"> <span class="analysis-timestamp">{analysis.timestamp}</span> <div class="bits-btn"> <ButtonComponent size="sm" variant="secondary">View Details</ButtonComponent>
-</div> </div> </div> {/each} </div> </div> </div> </CardComponent>
-</div> </div> </main> </div> <style> .yorha-interface { display: flex; height: 100vh; background: #2a2a2a;, color: #d4af37; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; overflow: hidden}
+
+<style>
+ .yorha-interface { display: flex; height: 100vh; background: #2a2a2a;, color: #d4af37; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 12px; overflow: hidden}
   .yorha-sidebar { width: 200px; background: #1a1a1a; border-right: 1px solid #3a3a3a; display: flex; flex-direction: column}
   .yorha-logo { padding: 20px 15px; border-bottom: 1px solid #3a3a3a}
   .yorha-title, .yorha-subtitle { font-size: 18px; font-weight: bold; color: #d4af37; line-height: 1}
@@ -76,5 +289,3 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .analysis-footer { display: flex; justify-content: space-between; /* Fixed typo: space-betweenn to space-between */ align-items: center; margin-top: 10px}
   .analysis-timestamp { font-size: 10px;, color: #666}
 </style>
-
-

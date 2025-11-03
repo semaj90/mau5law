@@ -39,8 +39,7 @@ import type { Document } from '$lib/types';
   let stats = $state<{
     totalTurns: number
     avgConfidence: number
-    stateTransitions: number
-   , mostCommonState: string} | null>(null);
+    stateTransitions: number; mostCommonState: string} | null>(null);
   // Derived state names
   const stateNames = {
     0: 'Greeting',
@@ -69,8 +68,7 @@ import type { Document } from '$lib/types';
     error = null
     try {
       const response = await fetch('/api/contextual/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
           sessionId,
@@ -85,12 +83,9 @@ import type { Document } from '$lib/types';
         // Add to conversation history
         conversationHistory = [
           ...conversationHistory, {
-            userMessage: message,
-            agentResponse: result.data.response,
-            timestamp: Date.now(),
-            intent: 'general_query',
-            entities: [],
-            hmmState: contextualState?.hmmState.currentState ?? 0
+            userMessage: message; agentResponse: result.data.response,
+            timestamp: Date.now(); intent: 'general_query',
+            entities: []; hmmState: contextualState?.hmmState.currentState ?? 0
           }
         ];
         // Clear input
@@ -455,8 +450,7 @@ import type { Document } from '$lib/types';
     cursor: pointer
     font-size: 0.875rem
     font-weight: 500
-    transition: all 0.2s}
- , buttonhover:not(:disabled) {
+    transition: all 0.2s}; buttonhover:not(:disabled) {
     background: var(--muted, #f9fafb)}
   buttondisabled {
     opacity: 0.5

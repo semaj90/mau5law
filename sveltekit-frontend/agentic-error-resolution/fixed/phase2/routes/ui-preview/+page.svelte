@@ -15,7 +15,15 @@
   // Stores and Utilities
   // Note: sessionStore may not be available, using mock data instead
   // import  sessionActions, user, isAuthenticated  from "$lib/stores/sessionStore.svelte";
-  import { formatRelativeTime, formatDetailedTimestamp, truncateFilename, truncateText, getFileIcon, getPriorityColor, getStatusColor } from '$lib/utils/formatting';
+  import {
+    formatRelativeTime,
+    formatDetailedTimestamp,
+    truncateFilename,
+    truncateText,
+    getFileIcon,
+    getPriorityColor,
+    getStatusColor,
+  } from '$lib/utils/formatting';
 
   // Improved: Use QuickActionButton directly, ensure its props/events are typed correctly
 
@@ -66,12 +74,20 @@
   const avatarSizes = ['small', 'medium', 'large'] as const;
   type AvatarSize = (typeof avatarSizes)[number];
   // Mock session actions for demo
-  const mockSessionActions = { setSession: (user: any, session: any) => console.log('Mock setSession', user, session), clearSession: () => console.log('Mock clearSession'), init: (data: any) => console.log('Mock init:', data) };
+  const mockSessionActions = {
+    setSession: (user: any, session: any) => console.log('Mock setSession', user, session),
+    clearSession: () => console.log('Mock clearSession'),
+    init: (data: any) => console.log('Mock init:', data),
+  };
 
   // Mock session demo functions
-  function simulateLogin() { mockSessionActive = true;
+  function simulateLogin() {
+    mockSessionActive = true;
     mockSessionActions.setSession(mockUser, {
-      id: 'demo-session-123', user: mockUser, fresh: true });
+      id: 'demo-session-123',
+      user: mockUser,
+      fresh: true,
+    });
   }
   function simulateLogout() {
     mockSessionActive = $state(false);
@@ -85,7 +101,7 @@
         id: 'demo-session-123',
         user: mockUser,
         fresh: false,
-        refreshedAt: new Date().toISOString()
+        refreshedAt: new Date().toISOString(),
       });
     } else {
       console.log('No active session to refresh');
@@ -105,7 +121,17 @@
   let authenticated = $derived(mockSessionActive);
   let stats = $derived(
     mockSessionActive
-      ? { casesWorked: 23, documentsReviewed: 157, hoursLogged: 89.5, accuracy: 94.2, totalCases: 47, totalEvidence: 1284, totalDocuments: 567, totalCitations: 89, totalReports: 34 }
+      ? {
+          casesWorked: 23,
+          documentsReviewed: 157,
+          hoursLogged: 89.5,
+          accuracy: 94.2,
+          totalCases: 47,
+          totalEvidence: 1284,
+          totalDocuments: 567,
+          totalCitations: 89,
+          totalReports: 34,
+        }
       : { totalCases: 0, totalEvidence: 0, totalDocuments: 0, totalCitations: 0, totalReports: 0 }
   );
   // MOCK DATA FOR UI PREVIEW/TESTING ONLY:
@@ -142,9 +168,9 @@
   // Properly type the component or update its event typings for production use.
   // DEMO/PROTOTYPE ONLY: The following alias casts Dialog as: 'any' to bypass strict event typing (e.g., for onclose).
   // This is a workaround for Svelte/TypeScript event typing issues and should NOT be used in production code.
-  const DialogAny = (Dialog as unknown) as any;
+  const DialogAny = Dialog as unknown as any;
   // add QuickActionButtonAny alias so template demo buttons can use onclick without TS errors
-  const QuickActionButtonAny = (QuickActionButton as unknown) as any;
+  const QuickActionButtonAny = QuickActionButton as unknown as any;
 
   // TODO: Replace this demo workaround by fixing component typings (export constructor types) for production.
   // add MeltButtonAny alias so template demo buttons can use onclick without TS errors
@@ -172,15 +198,15 @@
           <div>
             <!-- use alias to avoid TS constructor/instance mismatch in demo -->
             <div class="nes-btn">
-  <ButtonComponent variant={v}>{v}</ButtonComponent>
-</div>
+              <ButtonComponent variant={v}>{v}</ButtonComponent>
+            </div>
             <div class="meta">variant: {v}</div>
           </div>
         {/each}
         <div>
           <div class="nes-btn">
-  <ButtonComponent disabled>{'disabled'}</ButtonComponent>
-</div>
+            <ButtonComponent disabled>{'disabled'}</ButtonComponent>
+          </div>
           <div class="meta">variant: disabled</div>
         </div>
       </div>
@@ -215,8 +241,8 @@
       <h2 class="section">Dialog</h2>
       <!-- use any-typed alias to avoid TS errors -->
       <div class="nes-btn">
-  <ButtonComponent onclick={openDialog}>Open Dialog</ButtonComponent>
-</div>
+        <ButtonComponent onclick={openDialog}>Open Dialog</ButtonComponent>
+      </div>
       <div class="meta">Simple open/close controlled by boolean state.</div>
       {#if showDialog}
         <!-- changed: use DialogAny to bypass strict event typing -->
@@ -224,11 +250,11 @@
           <p>This dialog demonstrates the NES modal style and accessibility hooks.</p>
           <div class="dialog-actions">
             <div class="nes-btn">
-  <ButtonComponent onclick={closeDialog}>Cancel</ButtonComponent>
-</div>
+              <ButtonComponent onclick={closeDialog}>Cancel</ButtonComponent>
+            </div>
             <div class="nes-btn is-primary">
-  <ButtonComponent onclick={closeDialog}>Confirm</ButtonComponent>
-</div>
+              <ButtonComponent onclick={closeDialog}>Confirm</ButtonComponent>
+            </div>
           </div>
         </DialogAny>
       {/if}
@@ -262,8 +288,8 @@
       </div>
 
       <div class="meta">
-        Enhanced modals with gradient colors, diamond patterns, and NES.css integration.
-        sm, md, lg, xl and themes (gradient, diamond, gaming, legal, default).
+        Enhanced modals with gradient colors, diamond patterns, and NES.css integration. sm, md, lg, xl and themes
+        (gradient, diamond, gaming, legal, default).
         <br />
         <strong>Developer Note:</strong> See <code>src/routes/ui-preview/+page.svelte</code> for modal implementation.
         To use: call <code>openModal(variant, size)</code> and conditionally render the modal block.
@@ -290,16 +316,16 @@
         {#if !authenticated}
           <!-- use alias here as well -->
           <div class="nes-btn is-primary">
-  <ButtonComponent onclick={simulateLogin}>Simulate Login</ButtonComponent>
-</div>
+            <ButtonComponent onclick={simulateLogin}>Simulate Login</ButtonComponent>
+          </div>
         {:else}
           <div class="nes-btn is-error">
-  <ButtonComponent onclick={simulateLogout}>Simulate Logout</ButtonComponent>
-</div>
+            <ButtonComponent onclick={simulateLogout}>Simulate Logout</ButtonComponent>
+          </div>
         {/if}
         <div class="nes-btn">
-  <ButtonComponent onclick={simulateRefreshSession}>Refresh Session</ButtonComponent>
-</div>
+          <ButtonComponent onclick={simulateRefreshSession}>Refresh Session</ButtonComponent>
+        </div>
       </div>
 
       {#if currentUser}
@@ -430,107 +456,111 @@
   <dialog class="nes-dialog is-dark" open>
     <form method="dialog">
       <p class="title">Enhanced Modal - {modalVariant.charAt(0).toUpperCase() + modalVariant.slice(1)} Style</p>
-        <div class="space-y-6">
-          <!-- Modal Content based on variant -->
-          {#if modalVariant === 'gradient'}
-            <div class="space-y-4">
-              <h3 class="text-xl font-bold text-enhanced-text-primary">Gradient Modal Content</h3>
-              <p class="text-enhanced-text-secondary">
-                This modal features beautiful gradient backgrounds combining Harvard crimson, gold, and grey tones. The
-                gradients create visual depth while maintaining readability.
-              </p>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20 to-harvard-gold/20">
-                  <h4 class="font-semibold text-enhanced-text-primary">Crimson to Gold</h4>
-                  <p class="text-sm text-enhanced-text-secondary">Harvard signature colors</p>
-                </div>
-                <div class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20 to-harvard-crimson/20">
-                  <h4 class="font-semibold text-enhanced-text-primary">Grey to Crimson</h4>
-                  <p class="text-sm text-enhanced-text-secondary">NES-style balance</p>
-                </div>
+      <div class="space-y-6">
+        <!-- Modal Content based on variant -->
+        {#if modalVariant === 'gradient'}
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold text-enhanced-text-primary">Gradient Modal Content</h3>
+            <p class="text-enhanced-text-secondary">
+              This modal features beautiful gradient backgrounds combining Harvard crimson, gold, and grey tones. The
+              gradients create visual depth while maintaining readability.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20 to-harvard-gold/20">
+                <h4 class="font-semibold text-enhanced-text-primary">Crimson to Gold</h4>
+                <p class="text-sm text-enhanced-text-secondary">Harvard signature colors</p>
+              </div>
+              <div class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20 to-harvard-crimson/20">
+                <h4 class="font-semibold text-enhanced-text-primary">Grey to Crimson</h4>
+                <p class="text-sm text-enhanced-text-secondary">NES-style balance</p>
               </div>
             </div>
-          {:else if modalVariant === 'diamond'}
-            <div class="space-y-4">
-              <h3 class="text-xl font-bold text-enhanced-text-primary nes-diamond-text">Diamond Pattern Modal</h3>
-              <p class="text-enhanced-text-secondary">
-                This modal showcases NES-style diamond patterns with repeating gradients. The patterns are created using
-                CSS background images.
-              </p>
-              <div class="grid grid-cols-1 gap-4">
-                <div class="p-4 rounded-lg nes-diamond-small">
-                  <h4 class="font-semibold text-enhanced-text-primary">Small Diamond Pattern</h4>
-                  <p class="text-sm text-enhanced-text-secondary">Fine detail background</p>
-                </div>
-                <div class="p-4 rounded-lg nes-diamond-large">
-                  <h4 class="font-semibold text-enhanced-text-primary">Large Diamond Pattern</h4>
-                  <p class="text-sm text-enhanced-text-secondary">Bold pattern background</p>
-                </div>
-                <div class="p-4 rounded-lg nes-diamond-crimson">
-                  <h4 class="font-semibold text-enhanced-text-primary">Crimson Diamonds</h4>
-                  <p class="text-sm text-enhanced-text-secondary">Harvard-themed pattern</p>
-                </div>
-              </div>
-            </div>
-          {:else if modalVariant === 'gaming'}
-            <div class="space-y-4">
-              <h3
-                class="text-xl font-bold text-enhanced-text-primary"
-                style="font-family: 'Press Start 2P', monospace;"
-              >
-                Gaming Modal
-              </h3>
-              <p class="text-enhanced-text-secondary">
-                A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements.
-              </p>
-              <div class="space-y-4">
-                <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent gaming-scan-lines">
-                  <h4 class="font-semibold text-enhanced-text-primary mb-2">Terminal Interface</h4>
-                  <div class="font-mono text-green-400 text-sm">
-                    <div>> System Status: ONLINE</div>
-                    <div>> AI Models: LOADED</div>
-                    <div>> GPU Acceleration ENABLED</div>
-                    <div>> Legal Database: CONNECTED</div>
-                  </div>
-                </div>
-                <div class="flex space-x-2">
-                  <!-- use the any-typed alias to allow arbitrary onclick handlers without TS errors -->
-                  <QuickActionButtonAny onclick={() => { /* execute action */ }}>Execute</QuickActionButtonAny>
-                  <QuickActionButtonAny onclick={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny>
-                  <button class="nes-btn is-success">Success</button>
-                </div>
-              </div>
-            </div>
-          {:else if modalVariant === 'legal'}
-            <div class="space-y-4">
-              <h3 class="text-xl font-bold text-enhanced-text-primary">Legal Document Modal</h3>
-              <p class="text-enhanced-text-secondary">
-                Professional modal styling for legal documents, case management, and court filings.
-              </p>
-              <div class="space-y-4">
-                <StatsCard title="Case File #2024-001" value="Harvard Law" />
-              </div>
-            </div>
-          {:else}
-            <div class="space-y-4">
-              <h3 class="text-xl font-bold text-enhanced-text-primary">Default Modal Content</h3>
-              <p class="text-enhanced-text-secondary">
-                This is the default modal styling with clean, professional appearance.
-              </p>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <StatsCard title="Feature Card" value="Standard" />
-                <StatsCard title="Grey Card" value="NES-style" />
-              </div>
-            </div>
-          {/if}
-
-          <!-- Common Modal Footer -->
-          <div class="flex justify-end space-x-2 pt-4 border-t border-enhanced-border">
-            <QuickActionButtonAny onclick={() => closeModal()}>Cancel</QuickActionButtonAny>
-            <QuickActionButtonAny onclick={() => closeModal()}>Confirm</QuickActionButtonAny>
           </div>
+        {:else if modalVariant === 'diamond'}
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold text-enhanced-text-primary nes-diamond-text">Diamond Pattern Modal</h3>
+            <p class="text-enhanced-text-secondary">
+              This modal showcases NES-style diamond patterns with repeating gradients. The patterns are created using
+              CSS background images.
+            </p>
+            <div class="grid grid-cols-1 gap-4">
+              <div class="p-4 rounded-lg nes-diamond-small">
+                <h4 class="font-semibold text-enhanced-text-primary">Small Diamond Pattern</h4>
+                <p class="text-sm text-enhanced-text-secondary">Fine detail background</p>
+              </div>
+              <div class="p-4 rounded-lg nes-diamond-large">
+                <h4 class="font-semibold text-enhanced-text-primary">Large Diamond Pattern</h4>
+                <p class="text-sm text-enhanced-text-secondary">Bold pattern background</p>
+              </div>
+              <div class="p-4 rounded-lg nes-diamond-crimson">
+                <h4 class="font-semibold text-enhanced-text-primary">Crimson Diamonds</h4>
+                <p class="text-sm text-enhanced-text-secondary">Harvard-themed pattern</p>
+              </div>
+            </div>
+          </div>
+        {:else if modalVariant === 'gaming'}
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold text-enhanced-text-primary" style="font-family: 'Press Start 2P', monospace;">
+              Gaming Modal
+            </h3>
+            <p class="text-enhanced-text-secondary">
+              A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements.
+            </p>
+            <div class="space-y-4">
+              <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent gaming-scan-lines">
+                <h4 class="font-semibold text-enhanced-text-primary mb-2">Terminal Interface</h4>
+                <div class="font-mono text-green-400 text-sm">
+                  <div>> System Status: ONLINE</div>
+                  <div>> AI Models: LOADED</div>
+                  <div>> GPU Acceleration ENABLED</div>
+                  <div>> Legal Database: CONNECTED</div>
+                </div>
+              </div>
+              <div class="flex space-x-2">
+                <!-- use the any-typed alias to allow arbitrary onclick handlers without TS errors -->
+                <QuickActionButtonAny
+                  onclick={() => {
+                    /* execute action */
+                  }}>Execute</QuickActionButtonAny
+                >
+                <QuickActionButtonAny
+                  onclick={() => {
+                    /* open terminal */
+                  }}>Terminal</QuickActionButtonAny
+                >
+                <button class="nes-btn is-success">Success</button>
+              </div>
+            </div>
+          </div>
+        {:else if modalVariant === 'legal'}
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold text-enhanced-text-primary">Legal Document Modal</h3>
+            <p class="text-enhanced-text-secondary">
+              Professional modal styling for legal documents, case management, and court filings.
+            </p>
+            <div class="space-y-4">
+              <StatsCard title="Case File #2024-001" value="Harvard Law" />
+            </div>
+          </div>
+        {:else}
+          <div class="space-y-4">
+            <h3 class="text-xl font-bold text-enhanced-text-primary">Default Modal Content</h3>
+            <p class="text-enhanced-text-secondary">
+              This is the default modal styling with clean, professional appearance.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <StatsCard title="Feature Card" value="Standard" />
+              <StatsCard title="Grey Card" value="NES-style" />
+            </div>
+          </div>
+        {/if}
 
+        <!-- Common Modal Footer -->
+        <div class="flex justify-end space-x-2 pt-4 border-t border-enhanced-border">
+          <QuickActionButtonAny onclick={() => closeModal()}>Cancel</QuickActionButtonAny>
+          <QuickActionButtonAny onclick={() => closeModal()}>Confirm</QuickActionButtonAny>
         </div>
+      </div>
     </form>
   </dialog>
 {/if}
@@ -747,5 +777,3 @@
     margin: 0.25rem 0;
   }
 </style>
-
-

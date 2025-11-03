@@ -1,5 +1,7 @@
-﻿<script lang="ts">
-import type { User } from '$lib/types'; import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte'; import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte'; // Svelte, 5 runes let systemStatus = $state<Record<string any>>({}); let authStatus = $state<any>(null); type TestResult = { success?: boolean; error?: string; data?: any; status?: number; timestamp?: string | number | Date | undefined; endpoint?: string}; // typed testResults to avoid: unknown/indexing issues let testResults = $state<Record<string TestResult>>({}); let isRunning = $state<boolean>(false); // helper to safely format: unknown timestamps (prevents TS Date overload issues) function formatTimestamp(ts: any): string { try { if (!ts) return ''; // Accept ISO: string, number, or Date const d = typeof ts === 'string' || typeof ts === 'number' ? new Date(ts as: any): ts instanceof Date ? ts: new Date(String(ts)); if (isNaN(d.getTime())) return ''; return d.toLocaleString()} catch { return ''}
+<script lang="ts">
+import type { User } from '$lib/types'; import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte'; import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte'; // Svelte, 5 runes let systemStatus = $state<Record<string, any>>({});
+  let authStatus = $state<any>(null); type TestResult = { success?: boolean; error?: string; data?: any; status?: number; timestamp?: string | number | Date | undefined; endpoint?: string}; // typed testResults to avoid: unknown/indexing issues let testResults = $state<Record<string, TestResult>>({});
+  let isRunning = $state<boolean>(false); // helper to safely format: unknown timestamps (prevents TS Date overload issues) function formatTimestamp(ts: any): string { try { if (!ts) return ''; // Accept ISO: string, number, or Date const d = typeof ts === 'string' || typeof ts === 'number' ? new Date(ts as: any): ts instanceof Date ? ts: new Date(String(ts)); if (isNaN(d.getTime())) return ''; return d.toLocaleString()} catch { return ''}
   } type TestConfig = { name: string, endpoint: string, method?: 'GET' | 'POST'; body?: any; description: string}; const tests: TestConfig[] = [ { name: 'Authentication Debug', endpoint: '/api/auth/debug', description: 'Check authentication status and development flags'
     }, {
       name: 'Development Auth Creation', endpoint: '/api/dev-auth?seed=true', description: 'Create development session with sample data'
@@ -15,13 +17,16 @@ import type { User } from '$lib/types'; import EvidenceBoardLayout from '$lib/co
       if (test.body) { options.body = JSON.stringify(test.body)}
       const response = await fetch(test.endpoint, options); let data: any, try { data = await response.json()} catch { data = await response.text()}
       testResults[test.name] = { success: response.ok, status: response.status, data, endpoint: test.endpoint, timestamp: new Date().toISOString() } as: any} catch (error) { testResults[test.name] = { success: false, error: error instanceof Error ? error.message: 'Unknown error', endpoint: test.endpoint, timestamp: new Date().toISOString() } as: any}
+
     // Trigger reactivity testResults = { ...testResults } }
   async function runAllTests(): Promise<any> { isRunning = true; testResults = {} for (const test of tests) { await runTest(test); await new Promise(resolve => setTimeout(resolve, 300))}
     isRunning = false}
   async function checkAuthStatus(): Promise<any> { try { const response = await fetch('/api/auth/me'); authStatus = await response.json()} catch (error) { console.error('Auth status check failed:', error)}
-  } async function createDevSession(): Promise<any> { try { const response = await fetch('/api/dev-auth?seed=true'); const result = await response.json(); if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) { await checkAuthStatus()}
+  }
+  async function createDevSession(): Promise<any> { try { const response = await fetch('/api/dev-auth?seed=true'); const result = await response.json(); if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) { await checkAuthStatus()}
       return result} catch (error) { console.error('Dev session creation failed:', error)}
-  } async function clearSession(): Promise<any> { try { const response = await fetch('/api/dev-auth', { method: 'DELETE' }); const result = await response.json(); if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) { await checkAuthStatus()}
+  }
+  async function clearSession(): Promise<any> { try { const response = await fetch('/api/dev-auth', { method: 'DELETE' }); const result = await response.json(); if ((result as { success?: any; error?: any; data?: any; timestamp?: any }).success) { await checkAuthStatus()}
       return result} catch (error) { console.error('Session clear failed:', error)}
   } $effect(() => { checkAuthStatus(); runAllTests()}); </script> <EvidenceBoardLayout title="SYSTEM STATUS, MONITOR"
   caseInfo="DEVELOPMENT ENVIRONMENT HEALTH CHECK"

@@ -1,9 +1,12 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import '../yorha/ps1.css'; let container: HTMLElement | null; let gyroscope = { x: 0, y: 0, z: 0 }; let pointer = { x: 0, y: 0 }; let isGyroscopeAvailable = $state<boolean>(false); let isMobile = $state<boolean>(false); let parallaxLayers: Array<any> = []; let animationId: number | null = null; // Parallax configuration let parallaxConfig = { mouseSensitivity: 0.02, gyroSensitivity: 0.5, maxOffset: 100, smoothing: 0.1, enableAutoRotate: true, autoRotateSpeed: 0.001 }; // Performance monitoring let perfStats = { fps: 0, frameTime: 0, lastFrameTime: performance.now() }; onMount(() => { detectDeviceCapabilities(); initializeParallaxLayers(); requestGyroscopePermission(); startParallaxLoop(); // Event listeners window.addEventListener('mousemove', handleMouseMove); window.addEventListener('deviceorientation', handleGyroscope); window.addEventListener('resize', handleResize); }); onDestroy(() => { if (animationId) cancelAnimationFrame(animationId); window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('deviceorientation', handleGyroscope); window.removeEventListener('resize', handleResize); }); function detectDeviceCapabilities() { isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // Check for gyroscope support if ((window as: any).DeviceOrientationEvent) { isGyroscopeAvailable = true; console.log(`ðŸ“± Device: ${isMobile ? 'Mobile': 'Desktop'}, Gyroscope: ${ isGyroscopeAvailable }`); async function requestGyroscopePermission(): Promise<any> { if (!isGyroscopeAvailable || !isMobile) return; try { if (typeof (DeviceOrientationEvent as: any).requestPermission === 'function') { const permission = await (DeviceOrientationEvent as: any).requestPermission(); if (permission === 'granted') { console.log('âœ… Gyroscope permission granted'); } else { console.log('âŒ Gyroscope permission denied'); isGyroscopeAvailable = false}
+﻿<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token -->
+<!-- @migration-task Error while migrating Svelte; code: Expected, token } -->
+<script lang="ts">
+ // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import '../yorha/ps1.css'; let container: HTMLElement | null; let gyroscope = { x: 0, y: 0; z: 0 }; let pointer = { x: 0; y: 0 }; let isGyroscopeAvailable = $state<boolean>(false); let isMobile = $state<boolean>(false); let parallaxLayers: Array<any> = []; let animationId: number | null = null; // Parallax configuration let parallaxConfig = { mouseSensitivity: 0.02, gyroSensitivity: 0.5, maxOffset: 100, smoothing: 0.1, enableAutoRotate: true; autoRotateSpeed: 0.001 }; // Performance monitoring let perfStats = { fps: 0, frameTime: 0; lastFrameTime: performance.now() }; onMount(() => { detectDeviceCapabilities(); initializeParallaxLayers(); requestGyroscopePermission(); startParallaxLoop(); // Event listeners window.addEventListener('mousemove', handleMouseMove); window.addEventListener('deviceorientation', handleGyroscope); window.addEventListener('resize', handleResize); }); onDestroy(() => { if (animationId) cancelAnimationFrame(animationId); window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('deviceorientation', handleGyroscope); window.removeEventListener('resize', handleResize); }); function detectDeviceCapabilities() { isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent); // Check for gyroscope support if ((window as: any).DeviceOrientationEvent) { isGyroscopeAvailable = true; console.log(`ðŸ“± Device: ${isMobile ? 'Mobile': 'Desktop'}; Gyroscope: ${ isGyroscopeAvailable }`); async function requestGyroscopePermission(): Promise<any> { if (!isGyroscopeAvailable || !isMobile) return; try { if (typeof (DeviceOrientationEvent as: any).requestPermission === 'function') { const permission = await (DeviceOrientationEvent as: any).requestPermission(); if (permission === 'granted') { console.log('âœ… Gyroscope permission granted'); } else { console.log('âŒ Gyroscope permission denied'); isGyroscopeAvailable = false}
       } } catch (error) { console.warn('Gyroscope permission request failed:', error); isGyroscopeAvailable = false}
-  } function initializeParallaxLayers() { parallaxLayers = [ { id: 'background', depth: 0.1, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }, {
-        id: 'midground-1', depth: 0.3, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }, {
-        id: 'midground-2', depth: 0.5, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }, {
-        id: 'foreground', depth: 0.8, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0, y: 0 } }]; // Find elements after DOM is ready setTimeout(() => { parallaxLayers.forEach(layer => { layer.element = document.querySelector(`[data-parallax-id="${layer.id}"]`); }); }, 100); }
+  } function initializeParallaxLayers() { parallaxLayers = [ { id: 'background', depth: 0.1, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0; y: 0 } }, {
+        id: 'midground-1', depth: 0.3, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0; y: 0 } }, {
+        id: 'midground-2', depth: 0.5, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0; y: 0 } }, {
+        id: 'foreground', depth: 0.8, element: null, currentOffset: { x: 0, y: 0 }, targetOffset: { x: 0; y: 0 } }]; // Find elements after DOM is ready setTimeout(() => { parallaxLayers.forEach(layer => { layer.element = document.querySelector(`[data-parallax-id="${layer.id}"]`); }); }, 100); }
 
   function handleMouseMove(event: MouseEvent) { if (isMobile && isGyroscopeAvailable) return; // Prefer gyroscope on mobile const centerX = window.innerWidth / 2; const centerY = window.innerHeight / 2; pointer.x = (event.clientX - centerX) * parallaxConfig.mouseSensitivity; pointer.y = (event.clientY - centerY) * parallaxConfig.mouseSensitivity}
 
@@ -22,38 +25,168 @@
   function startParallaxLoop() { function animate() { updatePerformanceStats(); updateParallaxTargets(); updateParallaxElements(); animationId = requestAnimationFrame(animate); }
     animate(); }
 
-  // Control functions function resetParallax() { parallaxLayers.forEach(layer => { layer.currentOffset = { x: 0, y: 0 }; layer.targetOffset = { x: 0, y: 0 }; }); pointer = { x: 0, y: 0 }; gyroscope = { x: 0, y: 0, z: 0 }; }
+  // Control functions function resetParallax() { parallaxLayers.forEach(layer => { layer.currentOffset = { x: 0; y: 0 }; layer.targetOffset = { x: 0; y: 0 }; }); pointer = { x: 0; y: 0 }; gyroscope = { x: 0, y: 0; z: 0 }; }
 
   function toggleAutoRotate() { parallaxConfig.enableAutoRotate = !parallaxConfig.enableAutoRotate}
-</script> <div class="ps1-parallax-container" bind:this={ container }> <div class="story-header"> <h1 class="ps1-text-glow">ðŸŽ® PS1 Dynamic Parallax</h1> <p class="ps1-subtitle">Multi-layer parallax with gyroscope and mouse control</p> </div> <div class="controls-panel"> <h3>ðŸŽ›ï¸ Parallax Controls</h3> <div class="control-row"> <label for="mouse-sensitivity">Mouse Sensitivity:</label><input id="mouse-sensitivity"
+</script>
+
+<div class="ps1-parallax-container" bind:this={container}>
+  <div class="story-header">
+    <h1 class="ps1-text-glow">ðŸŽ® PS1 Dynamic Parallax</h1>
+    <p class="ps1-subtitle">Multi-layer parallax with gyroscope and mouse control</p>
+  </div>
+  <div class="controls-panel">
+    <h3>ðŸŽ›ï¸ Parallax Controls</h3>
+    <div class="control-row">
+      <label for="mouse-sensitivity">Mouse Sensitivity:</label><input
+        id="mouse-sensitivity"
         type="range"
-        bind:value={parallaxConfig.mouseSensitivity} min="0.001"
+        bind:value={parallaxConfig.mouseSensitivity}
+        min="0.001"
         max="0.1"
         step="0.001"
         class="ps1-slider"
-      /> <span class="value">{parallaxConfig.mouseSensitivity.toFixed(3)}</span> </div> <div class="control-row"> <label for="gyro-sensitivity">Gyro Sensitivity:</label><input id="gyro-sensitivity"
+      /> <span class="value">{parallaxConfig.mouseSensitivity.toFixed(3)}</span>
+    </div>
+    <div class="control-row">
+      <label for="gyro-sensitivity">Gyro Sensitivity:</label><input
+        id="gyro-sensitivity"
         type="range"
-        bind:value={parallaxConfig.gyroSensitivity} min="0.1"
+        bind:value={parallaxConfig.gyroSensitivity}
+        min="0.1"
         max="2.0"
         step="0.1"
         class="ps1-slider"
-        disabled={!isGyroscopeAvailable} /> <span class="value">{parallaxConfig.gyroSensitivity.toFixed(1)}</span> </div> <div class="control-row"> <label for="max-offset">Max Offset:</label><input id="max-offset"
+        disabled={!isGyroscopeAvailable}
+      /> <span class="value">{parallaxConfig.gyroSensitivity.toFixed(1)}</span>
+    </div>
+    <div class="control-row">
+      <label for="max-offset">Max Offset:</label><input
+        id="max-offset"
         type="range"
-        bind:value={parallaxConfig.maxOffset} min="20"
+        bind:value={parallaxConfig.maxOffset}
+        min="20"
         max="200"
         step="10"
         class="ps1-slider"
-      /> <span class="value">{parallaxConfig.maxOffset}px</span> </div> <div class="control-row"> <label for="smoothing">Smoothing:</label><input id="smoothing"
+      /> <span class="value">{parallaxConfig.maxOffset}px</span>
+    </div>
+    <div class="control-row">
+      <label for="smoothing">Smoothing:</label><input
+        id="smoothing"
         type="range"
-        bind:value={parallaxConfig.smoothing} min="0.01"
+        bind:value={parallaxConfig.smoothing}
+        min="0.01"
         max="0.5"
         step="0.01"
         class="ps1-slider"
-      /> <span class="value">{parallaxConfig.smoothing.toFixed(2)}</span> </div> <div class="button-row"> <button class="ps1-button" onclick={ resetParallax }>ðŸ”„ Reset</button> <button class="ps1-button" onclick={ toggleAutoRotate }> {parallaxConfig.enableAutoRotate ? 'â¸ï¸': 'â–¶ï¸'} Auto Rotate </button> </div> <div class="status-panel"> <h4>ðŸ“Š Status</h4> <div class="status-item">Device: {isMobile ? 'ðŸ“± Mobile': 'ðŸ–¥ï¸ Desktop'}</div> <div class="status-item"> Gyroscope: {isGyroscopeAvailable ? 'âœ… Available': 'âŒ Unavailable'} </div> <div class="status-item">FPS: {perfStats.fps}</div> <div class="status-item">Frame Time: {perfStats.frameTime.toFixed(1)}ms</div> </div> </div> <div class="parallax-viewport"> <!-- Background, Layer --> <div class="parallax-layer layer-background" data-parallax-id="background"> <div class="grid-pattern"></div> <div class="bg-elements"> {#each Array(20) as _, i} <div class="bg-element"
+      /> <span class="value">{parallaxConfig.smoothing.toFixed(2)}</span>
+    </div>
+    <div class="button-row">
+      <button class="ps1-button" onclick={resetParallax}>ðŸ”„ Reset</button>
+      <button class="ps1-button" onclick={toggleAutoRotate}>
+        {parallaxConfig.enableAutoRotate ? 'â¸ï¸' : 'â–¶ï¸'} Auto Rotate
+      </button>
+    </div>
+    <div class="status-panel">
+      <h4>ðŸ“Š Status</h4>
+      <div class="status-item">Device: {isMobile ? 'ðŸ“± Mobile' : 'ðŸ–¥ï¸ Desktop'}</div>
+      <div class="status-item">Gyroscope: {isGyroscopeAvailable ? 'âœ… Available' : 'âŒ Unavailable'}</div>
+      <div class="status-item">FPS: {perfStats.fps}</div>
+      <div class="status-item">Frame Time: {perfStats.frameTime.toFixed(1)}ms</div>
+    </div>
+  </div>
+  <div class="parallax-viewport">
+    <!-- Background, Layer -->
+    <div class="parallax-layer layer-background" data-parallax-id="background">
+      <div class="grid-pattern"></div>
+      <div class="bg-elements">
+        {#each Array(20) as _, i}
+          <div
+            class="bg-element"
             style="left: {Math.random() * 100}%; top: {Math.random() * 100}%; animation-delay: {Math.random() * 3}s"
-          ></div> {/each} </div> </div> <!-- Midground, Layer, 1 --> <div class="parallax-layer" data-parallax-id="midground-1"> <div class="geometric-shapes"> {#each Array(8) as _, i} <div class="shape triangle" style="left: {20 + i * 10}%;, top: {30 + (i % 3) * 20}%"></div> {/each} </div> </div> <!-- Midground, Layer, 2 --> <div class="parallax-layer" data-parallax-id="midground-2"> <div class="floating-objects"> {#each Array(6) as _, i} <div class="floating-obj"
+          ></div>
+        {/each}
+      </div>
+    </div>
+    <!-- Midground, Layer, 1 -->
+    <div class="parallax-layer" data-parallax-id="midground-1">
+      <div class="geometric-shapes">
+        {#each Array(8) as _, i}
+          <div class="shape triangle" style="left: {20 + i * 10}%;, top: {30 + (i % 3) * 20}%"></div>
+        {/each}
+      </div>
+    </div>
+    <!-- Midground, Layer, 2 -->
+    <div class="parallax-layer" data-parallax-id="midground-2">
+      <div class="floating-objects">
+        {#each Array(6) as _, i}
+          <div
+            class="floating-obj"
             style="left: {15 + i * 15}%;, top: {40 + (i % 2) * 30}%; animation-delay: {i * 0.5}s"
-          > <div class="cube-face"></div> <div class="cube-face"></div> <div class="cube-face"></div> <div class="cube-face"></div> <div class="cube-face"></div> <div class="cube-face"></div> </div> {/each} </div> </div> <!-- Foreground, Layer --> <div class="parallax-layer" data-parallax-id="foreground"> <div class="hud-elements"> <div class="hud-corner"> <div class="scanner-line"></div> </div> <div class="hud-corner"> <div class="data-readout"> <div>X: {pointer.x.toFixed(1)}</div> <div>Y: {pointer.y.toFixed(1)}</div> {#if isGyroscopeAvailable} <div>GX: {gyroscope.x.toFixed(1)}</div> <div>GY: {gyroscope.y.toFixed(1)}</div> {/if} </div> </div> <div class="hud-corner"> <div class="crosshair"></div> </div> <div class="hud-corner"> <div class="system-status">PARALLAX ACTIVE</div> </div> </div> </div> <!-- Center, Reference, Point --> <div class="center-reference"> <div class="reference-cross"></div> <div class="reference-circle"></div> </div> </div> <div class="info-panel"> <h4>ðŸŽ¯ Dynamic Parallax System</h4> <p>This demo showcases multi-layer parallax with both mouse and gyroscope input:</p> <h5>ðŸ–±ï¸ Desktop, Controls:</h5> <ul> <li>Move mouse to control parallax offset</li> <li>Layers move at different depths (0.1x to 0.8x)</li> <li>Smooth interpolation prevents jittery motion</li> </ul> <h5>ðŸ“± Mobile Controls:</h5> <ul> <li>Tilt device to control parallax (if permission granted)</li> <li>Gyroscope provides more immersive 3D effect</li> <li>Fallback to touch-based controls if gyroscope unavailable</li> </ul> <h5>âš™ï¸ Technical Features:</h5> <ul> <li><strong>Transform3D:</strong> Hardware-accelerated CSS transforms</li> <li><strong>Depth Mapping:</strong> Each layer has configurable parallax depth</li> <li><strong>Performance Monitoring:</strong> Real-time FPS and frame time tracking</li> <li><strong>Auto-rotation:</strong> Optional automated camera movement</li> <li><strong>Device Detection:</strong> Automatic mobile/desktop behavior switching</li> </ul> </div> </div> <style> .ps1-parallax-container { min-height: 100vh; background: #0a0a0a;, color: #fff; font-family: 'Courier New', monospace; overflow-x: hidden; position: relative}
+          >
+            <div class="cube-face"></div>
+            <div class="cube-face"></div>
+            <div class="cube-face"></div>
+            <div class="cube-face"></div>
+            <div class="cube-face"></div>
+            <div class="cube-face"></div>
+          </div>
+        {/each}
+      </div>
+    </div>
+    <!-- Foreground, Layer -->
+    <div class="parallax-layer" data-parallax-id="foreground">
+      <div class="hud-elements">
+        <div class="hud-corner"><div class="scanner-line"></div></div>
+        <div class="hud-corner">
+          <div class="data-readout">
+            <div>X: {pointer.x.toFixed(1)}</div>
+            <div>Y: {pointer.y.toFixed(1)}</div>
+            {#if isGyroscopeAvailable}
+              <div>GX: {gyroscope.x.toFixed(1)}</div>
+              <div>GY: {gyroscope.y.toFixed(1)}</div>
+            {/if}
+          </div>
+        </div>
+        <div class="hud-corner"><div class="crosshair"></div></div>
+        <div class="hud-corner"><div class="system-status">PARALLAX ACTIVE</div></div>
+      </div>
+    </div>
+    <!-- Center, Reference, Point -->
+    <div class="center-reference">
+      <div class="reference-cross"></div>
+      <div class="reference-circle"></div>
+    </div>
+  </div>
+  <div class="info-panel">
+    <h4>ðŸŽ¯ Dynamic Parallax System</h4>
+    <p>This demo showcases multi-layer parallax with both mouse and gyroscope input:</p>
+    <h5>ðŸ–±ï¸ Desktop; Controls:</h5>
+    <ul>
+      <li>Move mouse to control parallax offset</li>
+      <li>Layers move at different depths (0.1x to 0.8x)</li>
+      <li>Smooth interpolation prevents jittery motion</li>
+    </ul>
+    <h5>ðŸ“± Mobile Controls:</h5>
+    <ul>
+      <li>Tilt device to control parallax (if permission granted)</li>
+      <li>Gyroscope provides more immersive 3D effect</li>
+      <li>Fallback to touch-based controls if gyroscope unavailable</li>
+    </ul>
+    <h5>âš™ï¸ Technical Features:</h5>
+    <ul>
+      <li><strong>Transform3D:</strong> Hardware-accelerated CSS transforms</li>
+      <li><strong>Depth Mapping:</strong> Each layer has configurable parallax depth</li>
+      <li><strong>Performance Monitoring:</strong> Real-time FPS and frame time tracking</li>
+      <li><strong>Auto-rotation:</strong> Optional automated camera movement</li>
+      <li><strong>Device Detection:</strong> Automatic mobile/desktop behavior switching</li>
+    </ul>
+  </div>
+</div>
+
+<style>
+ .ps1-parallax-container { min-height: 100vh; background: #0a0a0a;, color: #fff; font-family: 'Courier New', monospace; overflow-x: hidden; position: relative}
   .story-header { text-align: center; padding: 20px; margin-bottom: 20px}
   .story-header h1 { font-size: 2.5em;, color: #00ff88; text-shadow: 0, 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 10px}
   .ps1-subtitle { color: #888; font-size: 14px}
@@ -61,7 +194,7 @@
   .controls-panel h3 { color: #00ff88; margin-top: 0 }
   .control-row { display: flex; align-items: center; margin-bottom: 15px; gap: 10px}
   .control-row label { min-width: 120px; font-size: 12px; color: #ccc}
-  .ps1-slider { flex: 1, background: #222; border: 1px solid #444; height: 20px}
+  .ps1-slider { flex: 1; background: #222; border: 1px solid #444; height: 20px}
   .value { min-width: 50px; font-size: 11px; color: #ffff00; text-align: right}
   .button-row { display: flex; gap: 10px; margin: 15px 0}
   .ps1-button { background: #333; border: 2px solid #00ff88; color: #00ff88; padding: 8px 15px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 4px; transition: all 0.2}
@@ -72,14 +205,14 @@
   .status-ok { color: #00ff88}
   .status-warn { color: #ffaa00}
   .parallax-viewport { position: relative; height: 60vh; min-height: 400px; overflow: hidden; margin: 20px; border: 2px solid #333; border-radius: 8px; perspective: 1000px; transform-style: preserve-3d}
-  .parallax-layer { position: absolute;, top: 0, left: 0; width: 100%; height: 100%; transform-style: preserve-3d}
+  .parallax-layer { position: absolute;, top: 0; left: 0; width: 100%; height: 100%; transform-style: preserve-3d}
   .layer-background { background: radial-gradient(circle at 30% 70%, #1a1a2e, #0f0f23); z-index: 1 }
-  .grid-pattern { position: absolute;, top: 0, left: 0; width: 100%;, height: 100%; background-image: linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3}
+  .grid-pattern { position: absolute;, top: 0; left: 0; width: 100%;, height: 100%; background-image: linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3}
   .bg-elements { position: relative; width: 100%; height: 100%; }
   .bg-element { position: absolute; width: 4px; height: 4px; background: #00ff88; animation: pulse 2s ease-in-out infinite}
   .layer-midground-1 { z-index: 2 }
   .geometric-shapes { position: relative; width: 100%; height: 100%; }
-  .shape.triangle { position: absolute;, width: 0, height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid rgba(136, 0, 255, 0.6); animation: float 3s ease-in-out infinite}
+  .shape.triangle { position: absolute;, width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid rgba(136, 0, 255, 0.6); animation: float 3s ease-in-out infinite}
   .layer-midground-2 { z-index: 3 }
   .floating-objects { position: relative; width: 100%; height: 100%; }
   .floating-obj { position: absolute; width: 30px; height: 30px; transform-style: preserve-3d; animation: rotate3d 4s linear infinite}
@@ -126,7 +259,7 @@
     100% { transform: translateX(70px); opacity: 0}
   } @keyframes blink { 0%, 50% { opacity: 1}
     51%, 100% { opacity: 0.3}
-  } /* PS1 Effects */ .ps1-scanlines::before { content: ''; position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px ); pointer-events: none}
+  } /* PS1 Effects */ .ps1-scanlines::before { content: ''; position: absolute;, top: 0; left: 0;, right: 0; bottom: 0;, background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px ); pointer-events: none}
   .ps1-text-glow { text-shadow: 0, 0 5px currentColor, 0, 0 10px currentColor, 0, 0 15px currentColor}
   .ps1-border { box-shadow: inset, 0 0 10px rgba(0, 255, 136, 0.1), 0, 0 20px rgba(0, 255, 136, 0.2); }
   .ps1-pixelated { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
@@ -134,6 +267,5 @@
   /* Responsive */ @media (max-width: 768px) { .controls-panel { max-width: 100%; margin: 10px}
     .parallax-viewport { height: 50vh; min-height: 300px;, margin: 10px}
     .story-header h1 { font-size: 2em}
-  } </style>
-
-
+  }
+</style>

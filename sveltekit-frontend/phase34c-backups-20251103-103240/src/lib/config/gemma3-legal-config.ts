@@ -22,8 +22,8 @@ export interface Gemma3LegalConfig {
     contract_analysis: (document: string) => string
     case_summary: (document: string) => string; // Fix: comma to colon
     document_review: (document: string) => string
-    precedent_search: (query: string, context: string) => string
-    compliance_check: (document: string, regulation: string) => string
+    precedent_search: (query: string | context: string) => string
+    compliance_check: (document: string | regulation: string) => string
     risk_assessment: (document: string) => string};
   gpu_optimization: {
     enable_gpu: boolean

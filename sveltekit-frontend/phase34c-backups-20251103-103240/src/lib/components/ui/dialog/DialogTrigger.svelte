@@ -3,11 +3,12 @@
   // Props are defined as $props() rune, no import needed
   import type { Snippet } from 'svelte';
   interface Props {
-    trigger?: Snippet
-    children?: Snippet}
+    trigger?: Snippet;
+    children?: Snippet;
+  }
   let { children, trigger }: Props = $props();
 </script>
+
 <button>
   <slot />
 </button>
-

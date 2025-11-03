@@ -22,6 +22,7 @@ import type { Document } from '$lib/types';
   function updateField(key: string, value: any) {
     form.update((f: any) => ({ ...(f ?? {}), [key]: value }))}
 </script>
+
 <form method="POST" use: enhance | class="space-y-4">
   {#if evidence}
     <input type="hidden" name="id" value={$form.id} />
@@ -31,6 +32,7 @@ import type { Document } from '$lib/types';
   <div>
     <!-- replaced Label component with, native, label -->
     <label for="title" class="block text-sm font-medium">Title</label>
+
     <!-- use native input and update form, via, helper -->
     <input
       id="title"
@@ -40,12 +42,14 @@ import type { Document } from '$lib/types';
       oninput={(e: Event) => updateField('title', (e.target as HTMLInputElement).value)}
       required
     />
-    {#if $errors.title}
+  {#if $errors.title}
       <span class="text-sm">{$errors.title}</span>
     {/if}
   </div>
+
   <div>
     <label for="description" class="block text-sm font-medium">Description</label>
+
     <textarea
       id="description"
       name="description"
@@ -54,8 +58,10 @@ import type { Document } from '$lib/types';
       oninput={(e: Event) => updateField('description', (e.target as HTMLTextAreaElement).value)}
     >{$form?.description ?? ''}</textarea>
   </div>
+
   <div>
     <label for="type" class="block text-sm font-medium">Type</label>
+
     <select
       id="type"
       name="type"
@@ -65,18 +71,25 @@ import type { Document } from '$lib/types';
       onchange={(e: Event) => updateField('type', (e.target as HTMLSelectElement).value)}
     >
       <option value="">Select a type</option>
+
       <option value="Document">Document</option>
+
       <option value="Image">Image</option>
+
       <option value="Video">Video</option>
+
       <option value="Audio">Audio</option>
+
       <option value="Other">Other</option>
     </select>
-    {#if $errors.type}
+  {#if $errors.type}
       <span class="text-sm">{$errors.type}</span>
     {/if}
   </div>
+
   <div>
     <label for="url" class="block text-sm font-medium">URL</label>
+
     <input
       id="url"
       name="url"
@@ -85,12 +98,14 @@ import type { Document } from '$lib/types';
       placeholder="https://example.com/evidence"
       oninput={(e: Event) => updateField('url', (e.target as HTMLInputElement).value)}
     />
-    {#if $errors.url}
+  {#if $errors.url}
       <span class="text-sm">{$errors.url}</span>
     {/if}
   </div>
+
   <div>
     <label for="tags" class="block text-sm font-medium">Tags (comma-separated)</label>
+
     <input
       id="tags"
       name="tags"
@@ -99,23 +114,26 @@ import type { Document } from '$lib/types';
       placeholder="tag1, tag2, tag3"
       oninput={(e: Event) => updateField('tags', (e.target as HTMLInputElement).value)}
     />
-    {#if $errors.tags}
+  {#if $errors.tags}
       <span class="text-sm">{$errors.tags}</span>
     {/if}
   </div>
+
   <div class="space-y-4">
     <button class="bits-btn" type="button" onclick={() => { /* Cancel no-op for now */ }}>
       Cancel
     </button>
+
     <button class="bits-btn" type="submit" disabled={$submitting}>
-      {#if $submitting}
+  {#if $submitting}
         Saving...
       {:else}
         {evidence ? "Save Changes" : "Create Evidence"}
       {/if}
-    </button>
+  </button>
   </div>
 </form>
+
 <style>
   /* @unocss-include */
   form {

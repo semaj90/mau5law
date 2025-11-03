@@ -319,15 +319,8 @@
       Sign in to manage your account, knowledge base uploads, and Docker-connected services.
     </p>
     <div class="flex items-center justify-center gap-3">
-      <a
-        href="/login?redirect=/profile"
-        class="nes-btn is-primary px-6 py-2"
-      >
-        Go to Login
-      </a>
-      <a href="/" class="nes-btn px-6 py-2">
-        Return Home
-      </a>
+      <a href="/login?redirect=/profile" class="nes-btn is-primary px-6 py-2"> Go to Login </a>
+      <a href="/" class="nes-btn px-6 py-2"> Return Home </a>
     </div>
   </div>
 {:else}
@@ -343,7 +336,9 @@
         <div class="hidden md:block">
           <Avatar type="nes-pokeball" size="large" />
         </div>
-        <div class="rounded-lg border border-dashed border-gray-300 bg-white p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300">
+        <div
+          class="rounded-lg border border-dashed border-gray-300 bg-white p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+        >
           <p class="font-semibold">Environment</p>
           <p>API Base: {apiOrigin || 'Same-origin'}</p>
           <p>Docker Discovery: {dockerDiscoveryFlag}</p>
@@ -396,31 +391,26 @@
             required
           />
           <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-300">
-            <span class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 dark:border-gray-700">
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 dark:border-gray-700"
+            >
               <span class="nes-text is-success text-xs uppercase">Role</span>
               <span>{user?.role ?? 'user'}</span>
             </span>
-            <span class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 dark:border-gray-700">
+            <span
+              class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1 dark:border-gray-700"
+            >
               <span class="text-xs uppercase tracking-wide text-gray-400">User ID</span>
               <code class="font-mono text-xs">
-                {typeof user?.id === 'string' ? user?.id : user?.id?.toString() ?? '-'}
+                {typeof user?.id === 'string' ? user?.id : (user?.id?.toString() ?? '-')}
               </code>
             </span>
           </div>
           <div class="flex flex-wrap items-center gap-3">
-            <Button
-              type="submit"
-              disabled={isSaving}
-              className="nes-btn is-primary flex items-center gap-2 px-4 py-2"
-            >
+            <Button type="submit" disabled={isSaving} className="nes-btn is-primary flex items-center gap-2 px-4 py-2">
               <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
             </Button>
-            <Button
-              type="button"
-              disabled={isSaving}
-              onclick={refreshProfile}
-              className="nes-btn px-4 py-2"
-            >
+            <Button type="button" disabled={isSaving} onclick={refreshProfile} className="nes-btn px-4 py-2">
               Reset
             </Button>
           </div>
@@ -430,7 +420,10 @@
           <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300">
             Profile Picture
           </h3>
-          <AvatarUpload userId={typeof user?.id === 'string' ? user?.id : user?.id?.toString()} currentAvatar={user?.avatarUrl ?? undefined} />
+          <AvatarUpload
+            userId={typeof user?.id === 'string' ? user?.id : user?.id?.toString()}
+            currentAvatar={user?.avatarUrl ?? undefined}
+          />
         </div>
       </Card>
 
@@ -458,10 +451,10 @@
           </div>
         </div>
 
-        <div class="rounded-lg border border-dashed border-indigo-300 bg-indigo-50 p-4 text-xs text-indigo-700 dark:border-indigo-500/50 dark:bg-indigo-500/10 dark:text-indigo-200">
-          <p>
-            Stats are powered by Drizzle ORM queries and stay in sync with Docker-discovered Postgres services.
-          </p>
+        <div
+          class="rounded-lg border border-dashed border-indigo-300 bg-indigo-50 p-4 text-xs text-indigo-700 dark:border-indigo-500/50 dark:bg-indigo-500/10 dark:text-indigo-200"
+        >
+          <p>Stats are powered by Drizzle ORM queries and stay in sync with Docker-discovered Postgres services.</p>
         </div>
       </Card>
     </div>
@@ -503,7 +496,9 @@
       {/if}
 
       {#if ragSummary}
-        <div class="rounded-lg border border-sky-300 bg-sky-50 p-4 text-sm text-sky-800 dark:border-sky-500/60 dark:bg-sky-500/10 dark:text-sky-100">
+        <div
+          class="rounded-lg border border-sky-300 bg-sky-50 p-4 text-sm text-sky-800 dark:border-sky-500/60 dark:bg-sky-500/10 dark:text-sky-100"
+        >
           <h3 class="mb-3 text-base font-semibold">Recent Upload Summary</h3>
           <div class="grid gap-4 md:grid-cols-3">
             <div class="rag-stat">
@@ -533,7 +528,9 @@
     padding: 16px;
     text-align: center;
     box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
   }
   .stat-card:hover {
     transform: translateY(-2px);

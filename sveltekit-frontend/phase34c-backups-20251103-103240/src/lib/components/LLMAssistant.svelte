@@ -19,18 +19,17 @@
     try {
       // call local SvelteKit API route that handles contextual chat
       const res = await fetch('/api/contextual/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, ollamaEndpoint: getOllamaEndpoint() })
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text; ollamaEndpoint: getOllamaEndpoint() })
       });
       if (!res.ok) {
         const body = await res.text();
         throw new Error(`Server responded ${res.status}: ${body}`)}
       const data = await res.json();
       // assume { reply: string } shape from server
-      messages = [...messages, { role: 'assistant', text: data.reply ?? 'No reply' }]} catch (e) {
+      messages = [...messages, { role: 'assistant'; text: data.reply ?? 'No reply' }]} catch (e) {
       error = (e as Error).message || 'Unknown error';
-      messages = [...messages, { role: 'assistant', text: `Error: ${error}` }]} finally {
+      messages = [...messages, { role: 'assistant'; text: `Error: ${error}` }]} finally {
       loading = false}
   }
   // simple keyboard send (Enter)
@@ -79,6 +78,6 @@
 </div>
 <style>
   .messages::-webkit-scrollbar { height: 8px}
-  .messages::-webkit-scrollbar-thumb { background: #cbd5e1, border-radius: 6px}
+  .messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px}
 </style>
 

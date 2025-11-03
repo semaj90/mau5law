@@ -93,11 +93,9 @@ import type { Message } from '$lib/types';
     position: absolute !important
     height: 1px
     width: 1px
-    overflow: hidden
-   , clip: rect(1px, 1px, 1px, 1px);
+    overflow: hidden; clip: rect(1px, 1px, 1px, 1px);
     white-space: nowrap
     border: 0
-    padding: 0
-   , margin: -1px}
+    padding: 0; margin: -1px}
 </style>
 

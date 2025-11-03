@@ -1,4 +1,6 @@
-﻿<!-- Detective Mode: Motive Analysis, Enhancement --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import { page } from '$app/stores'; import  Button  from "$lib/components/ui/Button.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; import  Separator  from "$lib/components/ui/separator.svelte"; import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte"; import  Progress  from "$lib/components/ui/progress.svelte"; import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge'; import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge'; // Svelte, 5 Runes let activeTab: string = $state('profile'); let analysisInProgress: boolean = false; let analysisProgress: number = $state(0); let caseId: string = $state(''); // Typed domain objects to avoid `never` in templates interface BehaviorPattern { pattern: string, confidence: number, timeline: string[], riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | string}
+﻿<!-- Detective Mode: Motive Analysis, Enhancement -->
+<script lang="ts">
+ // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import { page } from '$app/stores'; import  Button  from "$lib/components/ui/Button.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; import  Separator  from "$lib/components/ui/separator.svelte"; import  Tabs, TabsContent, TabsList, TabsTrigger  from "$lib/components/ui/tabs.svelte"; import  Progress  from "$lib/components/ui/progress.svelte"; import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; import { nesMemoryBridge } from '$lib/gpu/nes-gpu-memory-bridge'; import glyphShaderCache from '$lib/cache/glyph-shader-cache-bridge'; // Svelte, 5 Runes let activeTab: string = $state('profile'); let analysisInProgress: boolean = false; let analysisProgress: number = $state(0); let caseId: string = $state(''); // Typed domain objects to avoid `never` in templates interface BehaviorPattern { pattern: string, confidence: number, timeline: string[], riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | string}
   interface PsychologicalProfile { primaryTraits: string[], riskFactors: string[], protectiveFactors: string[];, assessmentScore: Record<string number>; recommendations: string[]}
   interface RiskAssessment { overallLevel: string, immediateThreat: string, escalationPotential: string, publicSafety?: string;, factors: Record<string { score: number, trend: string }>; timeline: { immediate: string, shortTerm: string, longTerm: string }}
   interface Recommendation { priority: string, action: string, rationale?: string; resources?: string[]}
@@ -63,11 +65,431 @@
   function generateMockEvidence() { return [ { id: 'E001', type: 'Digital', relevance: 'HIGH' }, { id: 'E002', type: 'Financial', relevance: 'MEDIUM' }, { id: 'E003', type: 'Witness', relevance: 'HIGH' } ]}
   function getThreatColor(level: string) { switch (level) { case, 'LOW': return 'bg-green-500'; case, 'MEDIUM': return 'bg-yellow-500'; case, 'HIGH': return 'bg-red-500'; case, 'CRITICAL': return 'bg-red-700'; default: return 'bg-gray-500'}
   } function getMotiveColor(category: string) { switch (category) { case, 'FINANCIAL': return 'bg-green-600'; case, 'REVENGE': return 'bg-red-600'; case, 'JEALOUSY': return 'bg-purple-600'; case, 'POWER': return 'bg-blue-600'; case, 'FEAR': return 'bg-yellow-600'; case, 'MENTAL_HEALTH': return 'bg-orange-600'; default: return 'bg-gray-600'}
-  } </script> <div class="container mx-auto p-6"> <!-- Header --> <div class="flex justify-between"> <div> <h1 class="text-3xl">Detective Mode: Motive Analysis</h1> <p class="text-gray-600">Advanced AI-powered criminal motive analysis and risk assessment</p> </div> <div class="flex items-center"> <Badge variant="outline">case { caseId }</Badge> <Badge class={detectiveSystem.status === 'ready'
-          ? 'bg-green-600': detectiveSystem.status === 'analyzing'
-            ? 'bg-blue-600': 'bg-gray-600'} >
-        {detectiveSystem.status.toUpperCase()} </Badge> </div> </div> <!-- System, Status --> <Card> <CardHeader> <CardTitle>Detective AI System Status</CardTitle> </CardHeader> <CardContent> <div class="grid grid-cols-2 md:grid-cols-4 gap-4"> <div class="text-center"> <div class="text-2xl font-bold">{detectiveSystem.totalEvidence}</div> <div class="text-sm">Evidence Items</div> </div> <div class="text-center"> <div class="text-2xl font-bold">{detectiveSystem.profiledSuspects}</div> <div class="text-sm">Profiled Suspects</div> </div> <div class="text-center"> <div class="text-2xl font-bold">{detectiveSystem.confidenceLevel}%</div> <div class="text-sm">Analysis Confidence</div> </div> <div class="text-center"> <div class="text-2xl font-bold">{detectiveSystem.motiveConfidence}%</div> <div class="text-sm">Motive Confidence</div> </div> </div> <div class="bg-gray-100 p-3"> <div class="flex items-center justify-between"> <span class="text-sm">Processing Status</span> <span class="text-sm">{detectiveSystem.processingStage}</span> </div> {#if analysisInProgress} <Progress value={ analysisProgress } class="w-full" /> {/if} </div> </CardContent> </Card> <!-- NES-GPU Memory, Metrics --> <Card> <CardHeader> <CardTitle>NES-GPU Memory Bridge Status</CardTitle> </CardHeader> <CardContent> <div class="grid grid-cols-2 md:grid-cols-4"> <div> <div class="text-sm">NES RAM Usage</div> <div class="text-lg">{memoryMetrics.nesRAM.used}/{memoryMetrics.nesRAM.total} KB</div> <Progress value={(memoryMetrics.nesRAM.used / memoryMetrics.nesRAM.total) * 100} class="w-full" /> </div> <div> <div class="text-sm">CHR-ROM Usage</div> <div class="text-lg">{memoryMetrics.chrROM.used}/{memoryMetrics.chrROM.total} KB</div> <Progress value={(memoryMetrics.chrROM.used / memoryMetrics.chrROM.total) * 100} class="w-full" /> </div> <div> <div class="text-sm">Glyph Cache</div> <div class="text-lg">{memoryMetrics.glyphCache.hitRate.toFixed(1)}% hit rate</div> <div class="text-xs">{memoryMetrics.glyphCache.entries} entries</div> </div> <div> <div class="text-sm">GPU Utilization</div> <div class="text-lg">{memoryMetrics.gpuUtilization.toFixed(1)}%</div> <Progress value={memoryMetrics.gpuUtilization} class="w-full" /> </div> </div> </CardContent> </Card> <!-- Analysis, Controls --> <div class="flex"> <Button onclick={ analyzeMotives } disabled={analysisInProgress || !suspectProfile} class="bg-blue-600 hover:bg-blue-700"
-    > {#if analysisInProgress} Analyzing... {:else} Start Motive Analysis {/if} </Button> <!-- use native onclick attribute to avoid deprecated, directive, warning --> <button class="nes-btn" onclick={() => (activeTab = 'profile')}> View Suspect Profile </button> <button class="nes-btn" onclick={() => (activeTab = 'motives')}> Motive Matrix </button> <button class="nes-btn" onclick={() => (activeTab = 'risk')}> Risk Assessment </button> </div> <!-- Analysis, Results --> <Tabs bind:value={ activeTab } class="w-full"> <TabsList class="grid w-full"> <TabsTrigger value="profile">Suspect Profile</TabsTrigger> <TabsTrigger value="motives">Motive Analysis</TabsTrigger> <TabsTrigger value="timeline">Timeline</TabsTrigger> <TabsTrigger value="risk">Risk Assessment</TabsTrigger> <TabsTrigger value="recommendations">Recommendations</TabsTrigger> </TabsList> <TabsContent value="profile"> {#if suspectProfile} <Card> <CardHeader> <CardTitle>Suspect Profile: {suspectProfile.name}</CardTitle> </CardHeader> <CardContent class="space-y-4"> <div class="grid grid-cols-2 md:grid-cols-4"> <div> <div class="text-sm">Relationship</div> <div class="font-medium">{suspectProfile.relationship}</div> </div> <div> <div class="text-sm">Opportunity Score</div> <div class="font-medium">{suspectProfile.opportunityScore}/100</div> </div> <div> <div class="text-sm">Means Score</div> <div class="font-medium">{suspectProfile.meansScore}/100</div> </div> <div> <div class="text-sm">Motive Score</div> <div class="font-medium">{suspectProfile.motiveScore}/100</div> </div> </div> <Separator /> <div> <div class="text-sm text-gray-600">Overall Threat Level</div> <Badge class={getThreatColor(suspectProfile.overallThreatLevel) + ' text-white'}> {suspectProfile.overallThreatLevel} </Badge> </div> <div> <div class="text-sm text-gray-600">Psychological Markers</div> <div class="flex flex-wrap"> {#each Array.isArray(suspectProfile.psychologicalMarkers) ? suspectProfile.psychologicalMarkers: [] as marker} <Badge class="bg-transparent border text-sm px-2">{ marker }</Badge> {/each} </div> </div> <div> <div class="text-sm text-gray-600">Behavioral Analysis</div> <div class="grid grid-cols-2"> <div> <div class="flex justify-between"> <span>Aggression</span> <span>{suspectProfile.behaviorAnalysis.aggression}%</span> </div> <Progress value={suspectProfile.behaviorAnalysis.aggression} class="w-full" /> </div> <div> <div class="flex justify-between"> <span>Deception</span> <span>{suspectProfile.behaviorAnalysis.deception}%</span> </div> <Progress value={suspectProfile.behaviorAnalysis.deception} class="w-full" /> </div> <div> <div class="flex justify-between"> <span>Impulsivity</span> <span>{suspectProfile.behaviorAnalysis.impulsivity}%</span> </div> <Progress value={suspectProfile.behaviorAnalysis.impulsivity} class="w-full" /> </div> <div> <div class="flex justify-between"> <span>Planning</span> <span>{suspectProfile.behaviorAnalysis.planning}%</span> </div> <Progress value={suspectProfile.behaviorAnalysis.planning} class="w-full" /> </div> </div> </div> </CardContent> </Card> {/if} </TabsContent> <TabsContent value="motives"> <div class="space-y-4"> {#each Array.isArray(motiveMatrix) ? motiveMatrix: [] as motive} <Card> <CardHeader> <div class="flex items-center"> <CardTitle class="flex items-center"> <Badge class={getMotiveColor(motive.category) + ' text-white'}> {motive.category.replace('_', ' ')} </Badge> <span>Probability: {(motive.probability * 100).toFixed(1)}%</span> </CardTitle> <Progress value={motive.probability * 100} class="w-32" /> </div> </CardHeader> <CardContent class="space-y-4"> <p class="text-gray-700">{motive.description}</p> <div class="grid md:grid-cols-2"> <div> <div class="text-sm font-medium text-green-700">Supporting Evidence</div> <ul class="text-sm"> {#each Array.isArray(motive.supportingEvidence) ? motive.supportingEvidence: [] as evidence} <li class="flex items-center"> <div class="w-2 h-2 bg-green-500"></div> { evidence } </li> {/each} </ul> </div> <div> <div class="text-sm font-medium text-red-700">Contradicting Evidence</div> <ul class="text-sm"> {#each Array.isArray(motive.contradictingEvidence) ? motive.contradictingEvidence: [] as evidence} <li class="flex items-center"> <div class="w-2 h-2 bg-red-500"></div> { evidence } </li> {/each} </ul> </div> </div> <div> <div class="text-sm font-medium text-blue-700">Psychological Basis</div> <p class="text-sm bg-blue-50 p-2">{motive.psychologicalBasis}</p> </div> <div> <div class="text-sm font-medium text-purple-700">Trigger Events</div> <div class="flex flex-wrap"> {#each Array.isArray(motive.triggerEvents) ? motive.triggerEvents: [] as trigger} <Badge class="bg-transparent border text-sm px-2 py-0.5">{ trigger }</Badge> {/each} </div> </div> </CardContent> </Card> {/each} </div> </TabsContent> <TabsContent value="timeline"> <Card> <CardHeader> <CardTitle>Event Timeline Analysis</CardTitle> </CardHeader> <CardContent> <div class="space-y-4"> {#each Array.isArray(timelineEvents) ? timelineEvents: [] as event} <div class="border-l-4 border-blue-500"> <div class="flex items-center justify-between"> <div class="font-medium">{new Date(event.timestamp).toLocaleString()}</div> <Badge class={event.significance === 'HIGH' ? 'bg-red-500': event.significance === 'MEDIUM' ? 'bg-yellow-500': 'bg-green-500'}> {event.significance} </Badge> </div> <div class="text-gray-700">{event.event}</div> <div class="flex items-center gap-4 text-sm"> <span>Correlation {(event.correlationScore * 100).toFixed(1)}%</span> <span>Evidence: {event.evidenceIds.join(', ')}</span> </div> </div> {/each} </div> </CardContent> </Card> </TabsContent> <TabsContent value="risk"> {#if riskAssessment} <div class="space-y-4"> <Card> <CardHeader> <CardTitle>Risk Assessment Summary</CardTitle> </CardHeader> <CardContent> <div class="grid grid-cols-1 md:grid-cols-3 gap-4"> <div class="text-center p-4 border"> <div class="text-lg font-bold">{riskAssessment.overallLevel}</div> <div class="text-sm">Overall Risk</div> </div> <div class="text-center p-4 border"> <div class="text-lg font-bold">{riskAssessment.immediateThreat}</div> <div class="text-sm">Immediate Threat</div> </div> <div class="text-center p-4 border"> <div class="text-lg font-bold">{riskAssessment.escalationPotential}</div> <div class="text-sm">Escalation Potential</div> </div> </div> <div class="space-y-4"> <div> <div class="text-sm font-medium">Risk Factor Analysis</div> <div class="grid grid-cols-2"> {#each riskFactorEntries as [factor, data]} <div class="border rounded-lg"> <div class="flex justify-between items-center"> <span class="font-medium">{ factor }</span> <span class="text-sm">{data.score}/100</span> </div> <Progress value={data.score} class="w-full" /> <div class="text-xs text-gray-500">Trend: {data.trend}</div> </div> {/each} </div> </div> <div> <div class="text-sm font-medium">Timeline Recommendations</div> <div class="space-y-2"> <div class="border-l-4 border-red-500"> <div class="font-medium">Immediate</div> <div class="text-sm">{riskAssessment.timeline.immediate}</div> </div> <div class="border-l-4 border-yellow-500"> <div class="font-medium">Short-term</div> <div class="text-sm">{riskAssessment.timeline.shortTerm}</div> </div> <div class="border-l-4 border-green-500"> <div class="font-medium">Long-term</div> <div class="text-sm">{riskAssessment.timeline.longTerm}</div> </div> </div> </div> </div> </CardContent> </Card> </div> {/if} </TabsContent> <TabsContent value="recommendations"> <div class="space-y-4"> {#each Array.isArray(investigativeRecommendations) ? investigativeRecommendations: [] as rec} <Card> <CardHeader> <div class="flex items-center"> <CardTitle>{rec.action}</CardTitle> <Badge class={rec.priority === 'IMMEDIATE'
-                    ? 'bg-red-600': rec.priority === 'URGENT'
-                      ? 'bg-orange-600': 'bg-blue-600'} >
-                  {rec.priority} </Badge> </div> </CardHeader> <CardContent> <div class="space-y-3"> <div> <div class="text-sm font-medium">Rationale</div> <p class="text-sm">{rec.rationale}</p> </div> <div> <div class="text-sm font-medium">Required Resources</div> <div class="flex flex-wrap gap-2"> {#each Array.isArray(rec.resources ?? []) ? rec.resources ?? []: [] as resource} <Badge class="bg-transparent border text-sm px-2">{ resource }</Badge> {/each} </div> </div> </div> </CardContent> </Card> {/each} </div> </TabsContent> </Tabs> {#if behaviorPatterns.length > 0} <Card> <CardHeader> <CardTitle>Behavioral Pattern Analysis</CardTitle> </CardHeader> <CardContent> <div class="grid"> {#each Array.isArray(behaviorPatterns) ? behaviorPatterns: [] as pattern} <div class="border rounded-lg"> <div class="flex items-center justify-between"> <div class="font-medium">{pattern.pattern}</div> <div class="flex items-center"> <span class="text-sm">Confidence: {(pattern.confidence * 100).toFixed(1)}%</span> <Badge class={getThreatColor(pattern.riskLevel) + ' text-white'}>{pattern.riskLevel}</Badge> </div> </div> <div class="text-sm"> <div class="font-medium">Timeline:</div> <ul class="list-disc list-inside"> {#each Array.isArray(pattern.timeline) ? pattern.timeline: [] as event} <li>{ event }</li> {/each} </ul> </div> </div> {/each} </div> </CardContent> </Card> {/if} {#if psychologicalProfile} <Card> <CardHeader> <CardTitle>Psychological Profile</CardTitle> </CardHeader> <CardContent class="space-y-4"> <div class="grid md:grid-cols-3"> <div> <div class="text-sm font-medium text-gray-700">Primary Traits</div> <div class="space-y-1"> {#each Array.isArray(psychologicalProfile.primaryTraits) ? psychologicalProfile.primaryTraits: [] as trait} <div class="text-sm bg-blue-50 p-2">{ trait }</div> {/each} </div> </div> <div> <div class="text-sm font-medium text-gray-700">Risk Factors</div> <div class="space-y-1"> {#each Array.isArray(psychologicalProfile.riskFactors) ? psychologicalProfile.riskFactors: [] as factor} <div class="text-sm bg-red-50 p-2">{ factor }</div> {/each} </div> </div> <div> <div class="text-sm font-medium text-gray-700">Protective Factors</div> <div class="space-y-1"> {#each Array.isArray(psychologicalProfile.protectiveFactors) ? psychologicalProfile.protectiveFactors: [] as factor} <div class="text-sm bg-green-50 p-2">{ factor }</div> {/each} </div> </div> </div> <!-- ...any additional psychological profile UI elements can be, added, here... --> </CardContent> </Card> {/if} </div>
+  }
+</script>
+
+<div class="container mx-auto p-6">
+  <!-- Header -->
+  <div class="flex justify-between">
+    <div>
+      <h1 class="text-3xl">Detective Mode: Motive Analysis</h1>
+      <p class="text-gray-600">Advanced AI-powered criminal motive analysis and risk assessment</p>
+    </div>
+    <div class="flex items-center">
+      <Badge variant="outline">case {caseId}</Badge>
+      <Badge
+        class={detectiveSystem.status === 'ready'
+          ? 'bg-green-600'
+          : detectiveSystem.status === 'analyzing'
+            ? 'bg-blue-600'
+            : 'bg-gray-600'}
+      >
+        {detectiveSystem.status.toUpperCase()}
+      </Badge>
+    </div>
+  </div>
+  <!-- System, Status -->
+  <Card>
+    <CardHeader><CardTitle>Detective AI System Status</CardTitle></CardHeader>
+    <CardContent>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="text-center">
+          <div class="text-2xl font-bold">{detectiveSystem.totalEvidence}</div>
+          <div class="text-sm">Evidence Items</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold">{detectiveSystem.profiledSuspects}</div>
+          <div class="text-sm">Profiled Suspects</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold">{detectiveSystem.confidenceLevel}%</div>
+          <div class="text-sm">Analysis Confidence</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl font-bold">{detectiveSystem.motiveConfidence}%</div>
+          <div class="text-sm">Motive Confidence</div>
+        </div>
+      </div>
+      <div class="bg-gray-100 p-3">
+        <div class="flex items-center justify-between">
+          <span class="text-sm">Processing Status</span> <span class="text-sm">{detectiveSystem.processingStage}</span>
+        </div>
+        {#if analysisInProgress}
+          <Progress value={analysisProgress} class="w-full" />
+        {/if}
+      </div>
+    </CardContent>
+  </Card>
+  <!-- NES-GPU Memory, Metrics -->
+  <Card>
+    <CardHeader><CardTitle>NES-GPU Memory Bridge Status</CardTitle></CardHeader>
+    <CardContent>
+      <div class="grid grid-cols-2 md:grid-cols-4">
+        <div>
+          <div class="text-sm">NES RAM Usage</div>
+          <div class="text-lg">{memoryMetrics.nesRAM.used}/{memoryMetrics.nesRAM.total} KB</div>
+          <Progress value={(memoryMetrics.nesRAM.used / memoryMetrics.nesRAM.total) * 100} class="w-full" />
+        </div>
+        <div>
+          <div class="text-sm">CHR-ROM Usage</div>
+          <div class="text-lg">{memoryMetrics.chrROM.used}/{memoryMetrics.chrROM.total} KB</div>
+          <Progress value={(memoryMetrics.chrROM.used / memoryMetrics.chrROM.total) * 100} class="w-full" />
+        </div>
+        <div>
+          <div class="text-sm">Glyph Cache</div>
+          <div class="text-lg">{memoryMetrics.glyphCache.hitRate.toFixed(1)}% hit rate</div>
+          <div class="text-xs">{memoryMetrics.glyphCache.entries} entries</div>
+        </div>
+        <div>
+          <div class="text-sm">GPU Utilization</div>
+          <div class="text-lg">{memoryMetrics.gpuUtilization.toFixed(1)}%</div>
+          <Progress value={memoryMetrics.gpuUtilization} class="w-full" />
+        </div>
+      </div>
+    </CardContent>
+  </Card>
+  <!-- Analysis, Controls -->
+  <div class="flex">
+    <Button
+      onclick={analyzeMotives}
+      disabled={analysisInProgress || !suspectProfile}
+      class="bg-blue-600 hover:bg-blue-700"
+    >
+      {#if analysisInProgress}
+        Analyzing...
+      {:else}
+        Start Motive Analysis
+      {/if}
+    </Button>
+    <!-- use native onclick attribute to avoid deprecated, directive, warning -->
+    <button class="nes-btn" onclick={() => (activeTab = 'profile')}> View Suspect Profile </button>
+    <button class="nes-btn" onclick={() => (activeTab = 'motives')}> Motive Matrix </button>
+    <button class="nes-btn" onclick={() => (activeTab = 'risk')}> Risk Assessment </button>
+  </div>
+  <!-- Analysis, Results -->
+  <Tabs bind:value={activeTab} class="w-full">
+    <TabsList class="grid w-full">
+      <TabsTrigger value="profile">Suspect Profile</TabsTrigger>
+      <TabsTrigger value="motives">Motive Analysis</TabsTrigger>
+      <TabsTrigger value="timeline">Timeline</TabsTrigger>
+      <TabsTrigger value="risk">Risk Assessment</TabsTrigger>
+      <TabsTrigger value="recommendations">Recommendations</TabsTrigger>
+    </TabsList>
+    <TabsContent value="profile">
+      {#if suspectProfile}
+        <Card>
+          <CardHeader><CardTitle>Suspect Profile: {suspectProfile.name}</CardTitle></CardHeader>
+          <CardContent class="space-y-4">
+            <div class="grid grid-cols-2 md:grid-cols-4">
+              <div>
+                <div class="text-sm">Relationship</div>
+                <div class="font-medium">{suspectProfile.relationship}</div>
+              </div>
+              <div>
+                <div class="text-sm">Opportunity Score</div>
+                <div class="font-medium">{suspectProfile.opportunityScore}/100</div>
+              </div>
+              <div>
+                <div class="text-sm">Means Score</div>
+                <div class="font-medium">{suspectProfile.meansScore}/100</div>
+              </div>
+              <div>
+                <div class="text-sm">Motive Score</div>
+                <div class="font-medium">{suspectProfile.motiveScore}/100</div>
+              </div>
+            </div>
+            <Separator />
+            <div>
+              <div class="text-sm text-gray-600">Overall Threat Level</div>
+              <Badge class={getThreatColor(suspectProfile.overallThreatLevel) + ' text-white'}>
+                {suspectProfile.overallThreatLevel}
+              </Badge>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600">Psychological Markers</div>
+              <div class="flex flex-wrap">
+                {#each Array.isArray(suspectProfile.psychologicalMarkers) ? suspectProfile.psychologicalMarkers : [] as marker}
+                  <Badge class="bg-transparent border text-sm px-2">{marker}</Badge>
+                {/each}
+              </div>
+            </div>
+            <div>
+              <div class="text-sm text-gray-600">Behavioral Analysis</div>
+              <div class="grid grid-cols-2">
+                <div>
+                  <div class="flex justify-between">
+                    <span>Aggression</span> <span>{suspectProfile.behaviorAnalysis.aggression}%</span>
+                  </div>
+                  <Progress value={suspectProfile.behaviorAnalysis.aggression} class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between">
+                    <span>Deception</span> <span>{suspectProfile.behaviorAnalysis.deception}%</span>
+                  </div>
+                  <Progress value={suspectProfile.behaviorAnalysis.deception} class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between">
+                    <span>Impulsivity</span> <span>{suspectProfile.behaviorAnalysis.impulsivity}%</span>
+                  </div>
+                  <Progress value={suspectProfile.behaviorAnalysis.impulsivity} class="w-full" />
+                </div>
+                <div>
+                  <div class="flex justify-between">
+                    <span>Planning</span> <span>{suspectProfile.behaviorAnalysis.planning}%</span>
+                  </div>
+                  <Progress value={suspectProfile.behaviorAnalysis.planning} class="w-full" />
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      {/if}
+    </TabsContent>
+    <TabsContent value="motives">
+      <div class="space-y-4">
+        {#each Array.isArray(motiveMatrix) ? motiveMatrix : [] as motive}
+          <Card>
+            <CardHeader>
+              <div class="flex items-center">
+                <CardTitle class="flex items-center">
+                  <Badge class={getMotiveColor(motive.category) + ' text-white'}>
+                    {motive.category.replace('_', ' ')}
+                  </Badge> <span>Probability: {(motive.probability * 100).toFixed(1)}%</span>
+                </CardTitle>
+                <Progress value={motive.probability * 100} class="w-32" />
+              </div>
+            </CardHeader>
+            <CardContent class="space-y-4">
+              <p class="text-gray-700">{motive.description}</p>
+              <div class="grid md:grid-cols-2">
+                <div>
+                  <div class="text-sm font-medium text-green-700">Supporting Evidence</div>
+                  <ul class="text-sm">
+                    {#each Array.isArray(motive.supportingEvidence) ? motive.supportingEvidence : [] as evidence}
+                      <li class="flex items-center">
+                        <div class="w-2 h-2 bg-green-500"></div>
+                        {evidence}
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-red-700">Contradicting Evidence</div>
+                  <ul class="text-sm">
+                    {#each Array.isArray(motive.contradictingEvidence) ? motive.contradictingEvidence : [] as evidence}
+                      <li class="flex items-center">
+                        <div class="w-2 h-2 bg-red-500"></div>
+                        {evidence}
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-blue-700">Psychological Basis</div>
+                <p class="text-sm bg-blue-50 p-2">{motive.psychologicalBasis}</p>
+              </div>
+              <div>
+                <div class="text-sm font-medium text-purple-700">Trigger Events</div>
+                <div class="flex flex-wrap">
+                  {#each Array.isArray(motive.triggerEvents) ? motive.triggerEvents : [] as trigger}
+                    <Badge class="bg-transparent border text-sm px-2 py-0.5">{trigger}</Badge>
+                  {/each}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        {/each}
+      </div>
+    </TabsContent>
+    <TabsContent value="timeline">
+      <Card>
+        <CardHeader><CardTitle>Event Timeline Analysis</CardTitle></CardHeader>
+        <CardContent>
+          <div class="space-y-4">
+            {#each Array.isArray(timelineEvents) ? timelineEvents : [] as event}
+              <div class="border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                  <div class="font-medium">{new Date(event.timestamp).toLocaleString()}</div>
+                  <Badge
+                    class={event.significance === 'HIGH'
+                      ? 'bg-red-500'
+                      : event.significance === 'MEDIUM'
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'}
+                  >
+                    {event.significance}
+                  </Badge>
+                </div>
+                <div class="text-gray-700">{event.event}</div>
+                <div class="flex items-center gap-4 text-sm">
+                  <span>Correlation {(event.correlationScore * 100).toFixed(1)}%</span>
+                  <span>Evidence: {event.evidenceIds.join(', ')}</span>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </CardContent>
+      </Card>
+    </TabsContent>
+    <TabsContent value="risk">
+      {#if riskAssessment}
+        <div class="space-y-4">
+          <Card>
+            <CardHeader><CardTitle>Risk Assessment Summary</CardTitle></CardHeader>
+            <CardContent>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="text-center p-4 border">
+                  <div class="text-lg font-bold">{riskAssessment.overallLevel}</div>
+                  <div class="text-sm">Overall Risk</div>
+                </div>
+                <div class="text-center p-4 border">
+                  <div class="text-lg font-bold">{riskAssessment.immediateThreat}</div>
+                  <div class="text-sm">Immediate Threat</div>
+                </div>
+                <div class="text-center p-4 border">
+                  <div class="text-lg font-bold">{riskAssessment.escalationPotential}</div>
+                  <div class="text-sm">Escalation Potential</div>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div>
+                  <div class="text-sm font-medium">Risk Factor Analysis</div>
+                  <div class="grid grid-cols-2">
+                    {#each riskFactorEntries as [factor, data]}
+                      <div class="border rounded-lg">
+                        <div class="flex justify-between items-center">
+                          <span class="font-medium">{factor}</span> <span class="text-sm">{data.score}/100</span>
+                        </div>
+                        <Progress value={data.score} class="w-full" />
+                        <div class="text-xs text-gray-500">Trend: {data.trend}</div>
+                      </div>
+                    {/each}
+                  </div>
+                </div>
+                <div>
+                  <div class="text-sm font-medium">Timeline Recommendations</div>
+                  <div class="space-y-2">
+                    <div class="border-l-4 border-red-500">
+                      <div class="font-medium">Immediate</div>
+                      <div class="text-sm">{riskAssessment.timeline.immediate}</div>
+                    </div>
+                    <div class="border-l-4 border-yellow-500">
+                      <div class="font-medium">Short-term</div>
+                      <div class="text-sm">{riskAssessment.timeline.shortTerm}</div>
+                    </div>
+                    <div class="border-l-4 border-green-500">
+                      <div class="font-medium">Long-term</div>
+                      <div class="text-sm">{riskAssessment.timeline.longTerm}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      {/if}
+    </TabsContent>
+    <TabsContent value="recommendations">
+      <div class="space-y-4">
+        {#each Array.isArray(investigativeRecommendations) ? investigativeRecommendations : [] as rec}
+          <Card>
+            <CardHeader>
+              <div class="flex items-center">
+                <CardTitle>{rec.action}</CardTitle>
+                <Badge
+                  class={rec.priority === 'IMMEDIATE'
+                    ? 'bg-red-600'
+                    : rec.priority === 'URGENT'
+                      ? 'bg-orange-600'
+                      : 'bg-blue-600'}
+                >
+                  {rec.priority}
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div class="space-y-3">
+                <div>
+                  <div class="text-sm font-medium">Rationale</div>
+                  <p class="text-sm">{rec.rationale}</p>
+                </div>
+                <div>
+                  <div class="text-sm font-medium">Required Resources</div>
+                  <div class="flex flex-wrap gap-2">
+                    {#each Array.isArray(rec.resources ?? []) ? (rec.resources ?? []) : [] as resource}
+                      <Badge class="bg-transparent border text-sm px-2">{resource}</Badge>
+                    {/each}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        {/each}
+      </div>
+    </TabsContent>
+  </Tabs>
+  {#if behaviorPatterns.length > 0}
+    <Card>
+      <CardHeader><CardTitle>Behavioral Pattern Analysis</CardTitle></CardHeader>
+      <CardContent>
+        <div class="grid">
+          {#each Array.isArray(behaviorPatterns) ? behaviorPatterns : [] as pattern}
+            <div class="border rounded-lg">
+              <div class="flex items-center justify-between">
+                <div class="font-medium">{pattern.pattern}</div>
+                <div class="flex items-center">
+                  <span class="text-sm">Confidence: {(pattern.confidence * 100).toFixed(1)}%</span>
+                  <Badge class={getThreatColor(pattern.riskLevel) + ' text-white'}>{pattern.riskLevel}</Badge>
+                </div>
+              </div>
+              <div class="text-sm">
+                <div class="font-medium">Timeline:</div>
+                <ul class="list-disc list-inside">
+                  {#each Array.isArray(pattern.timeline) ? pattern.timeline : [] as event}
+                    <li>{event}</li>
+                  {/each}
+                </ul>
+              </div>
+            </div>
+          {/each}
+        </div>
+      </CardContent>
+    </Card>
+  {/if}
+  {#if psychologicalProfile}
+    <Card>
+      <CardHeader><CardTitle>Psychological Profile</CardTitle></CardHeader>
+      <CardContent class="space-y-4">
+        <div class="grid md:grid-cols-3">
+          <div>
+            <div class="text-sm font-medium text-gray-700">Primary Traits</div>
+            <div class="space-y-1">
+              {#each Array.isArray(psychologicalProfile.primaryTraits) ? psychologicalProfile.primaryTraits : [] as trait}
+                <div class="text-sm bg-blue-50 p-2">{trait}</div>
+              {/each}
+            </div>
+          </div>
+          <div>
+            <div class="text-sm font-medium text-gray-700">Risk Factors</div>
+            <div class="space-y-1">
+              {#each Array.isArray(psychologicalProfile.riskFactors) ? psychologicalProfile.riskFactors : [] as factor}
+                <div class="text-sm bg-red-50 p-2">{factor}</div>
+              {/each}
+            </div>
+          </div>
+          <div>
+            <div class="text-sm font-medium text-gray-700">Protective Factors</div>
+            <div class="space-y-1">
+              {#each Array.isArray(psychologicalProfile.protectiveFactors) ? psychologicalProfile.protectiveFactors : [] as factor}
+                <div class="text-sm bg-green-50 p-2">{factor}</div>
+              {/each}
+            </div>
+          </div>
+        </div>
+        <!-- ...any additional psychological profile UI elements can be, added, here... -->
+      </CardContent>
+    </Card>
+  {/if}
+</div>

@@ -115,7 +115,8 @@ import type { Case } from '$lib/types';
                 title="Copy citation"
                 onclick={e => {
                   e.stopPropagation();
-                  copyCitation(citation)}}
+                  copyCitation(citation);
+                }}
               >
                 <Copy />
               </button>
@@ -158,7 +159,8 @@ import type { Case } from '$lib/types';
             onkeydown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                (e.currentTarget as HTMLElement).click()}
+                (e.currentTarget as HTMLElement).click();
+              }
             }}
             title="Drag to insert into report"
           >
@@ -191,7 +193,8 @@ import type { Case } from '$lib/types';
             size="sm"
             onclick={() => {
               searchQuery = '';
-              selectedCategory = 'all'}}
+              selectedCategory = 'all';
+            }}
           >
             Clear filters
           </button>
@@ -360,6 +363,3 @@ import type { Case } from '$lib/types';
    ;margin: 0, 0 16px 0
     line-height: 1.4}
 </style>
-
-
-

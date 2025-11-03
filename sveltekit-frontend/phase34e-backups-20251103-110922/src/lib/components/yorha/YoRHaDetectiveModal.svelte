@@ -69,8 +69,7 @@ d
   .modal-panel {
     background-color: #F7F6F2
    ;border: 1px solid #D1CFC7
-    border-radius: 0;width: 100%,
-    max-width: 32rem
+    border-radius: 0;width: 100%; max-width: 32rem
     max-height: 90vh
     overflow: hidden
     animation: slideIn 0.2s ease-in-out}

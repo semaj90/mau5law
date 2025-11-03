@@ -1,74 +1,74 @@
-﻿<svelte:head>
-  <title>MCP + Gemma Demo</title>
-  <meta name="description" content="Demo page for querying MCP context7, via, Gemma3-Legal" />
-</svelte:head>
-
-<script lang="ts">
-  import { onMount } from 'svelte'
+﻿<script lang="ts">
+  import { onMount } from 'svelte';
 
   type RegistryServer = {
-    name: string
-    region?: string
-    lastUpdated?: string
-    cores?: number
-    capabilities?: string[]
-    endpoints?: Array<{ id: string, url: string, protocol: string }>
-  }
+    name: string;
+    region?: string;
+    lastUpdated?: string;
+    cores?: number;
+    capabilities?: string[];
+    endpoints?: Array<{ id: string; url: string; protocol: string }>;
+  };
 
-  let serverName = 'context7'
-  let useFunctions = true
-  let loading = false
-  let result: any = null
-  let error: string | null = null
-  let servers: RegistryServer[] = []
+  let serverName = 'context7';
+  let useFunctions = true;
+  let loading = false;
+  let result: any = null;
+  let error: string | null = null;
+  let servers: RegistryServer[] = [];
 
   async function loadServers(): Promise<any> {
     try {
-      const res = await fetch('/api/mcp/registry')
-      if (!res.ok) throw new Error('Failed to load MCP registry')
-      const data = await res.json()
-      servers = data.servers ?? []
-      if (!servers.find((s) => s.name === serverName) && servers.length > 0) {
-        serverName = servers[0].name
+      const res = await fetch('/api/mcp/registry');
+      if (!res.ok) throw new Error('Failed to load MCP registry');
+      const data = await res.json();
+      servers = data.servers ?? [];
+      if (!servers.find(s => s.name === serverName) && servers.length > 0) {
+        serverName = servers[0].name;
       }
     } catch (err: any) {
-      error = err?.message ?? String(err)
+      error = err?.message ?? String(err);
     }
   }
 
   async function fetchMcp(): Promise<Response> {
-    loading = true
-    error = null
-    result = null
+    loading = true;
+    error = null;
+    result = null;
     try {
       const res = await fetch('/api/mcp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ serverName, useFunctions })
-      })
-      const data = await res.json()
+        body: JSON.stringify({ serverName, useFunctions }),
+      });
+      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data?.error ?? 'Request failed')
+        throw new Error(data?.error ?? 'Request failed');
       }
-      result = data
+      result = data;
     } catch (err: any) {
-      error = err?.message ?? String(err)
+      error = err?.message ?? String(err);
     } finally {
-      loading = false
+      loading = false;
     }
   }
 
   onMount(async () => {
-    await loadServers()
-    await fetchMcp()
-  })
+    await loadServers();
+    await fetchMcp();
+  });
 </script>
+
+<svelte:head>
+  <title>MCP + Gemma Demo</title>
+  <meta name="description" content="Demo page for querying MCP context7, via, Gemma3-Legal" />
+</svelte:head>
 
 <section class="mx-auto flex w-full max-w-3xl flex-col gap-4">
   <h1 class="text-2xl">MCP Server Query Demo</h1>
   <p class="text-sm">
-    This demo calls <code>/api/mcp</code>, which in turn invokes Gemma3-Legal through Ollama.
-    Toggle function-calling to let the model request <code>getMcpServerData</code>.
+    This demo calls <code>/api/mcp</code>, which in turn invokes Gemma3-Legal through Ollama. Toggle function-calling to
+    let the model request <code>getMcpServerData</code>.
   </p>
 
   <div class="flex flex-col gap-3 rounded-lg border border-gray-200 bg-white p-4">
@@ -187,4 +187,3 @@
     </div>
   {/if}
 </section>
-

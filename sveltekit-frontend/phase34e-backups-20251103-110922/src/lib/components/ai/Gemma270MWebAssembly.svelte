@@ -64,7 +64,8 @@ import type { Message } from '$lib/types';
 			console.log(`Gemma3 270M WebAssembly loaded in ${loadTime.toFixed(2)}ms`)} catch (err) {
 			const error = err as: any
 			errorMessage = `Failed to load, WebAssembly: ${error?.message ?? String(error)}`;
-			console.error('WebAssembly initialization error:', error);'
+			console.error('WebAssembly initialization error:', error);
+'
 		}
 	}
 	async function loadGemma270MWASM(): Promise<any> {
@@ -144,7 +145,8 @@ import type { Message } from '$lib/types';
 			return result} catch (err) {
 			const error = err as: any
 			errorMessage = `Processing, failed: ${error?.message ?? String(error)}`;
-			console.error('Client-side processing error:', error);'
+			console.error('Client-side processing error:', error);
+'
 			return: null} finally {
 			isProcessing = false
 			processingProgress = 100}
@@ -255,198 +257,202 @@ import type { Message } from '$lib/types';
 	// Export functions for external use
 	export { processText, performanceMetrics, isLoaded, wasmSupported };
 </script>
+
 <div class="container mx-auto p-6">
-	<Card>
-		<CardHeader>
-			<CardTitle>Gemma3 270M Client-Side WebAssembly</CardTitle>
-			<p class="text-muted-foreground">Lightweight AI processing in your browser with WebAssembly acceleration
-			</p>
-		</CardHeader>
-		<CardContent class="space-y-6">
-			<!-- Browser, Compatibility, Status -->
-			<Card>
-				<CardHeader>
-					<CardTitle>Browser Compatibility</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div class="grid grid-cols-3 gap-4">
-						<div class="flex items-center">
-							<div class="{wasmSupported ? 'bg-green-500' : 'bg-red-500'} w-3 h-3"></div>
-							<span>WebAssembly</span>
-						</div>
-						<div class="flex items-center">
-							<div class="{webglSupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3"></div>
-							<span>WebGL</span>
-						</div>
-						<div class="flex items-center">
-							<div class="{sharedMemorySupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3"></div>
-							<span>SharedMemory</span>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-			<!-- Loading, Status -->
-			{#if !isLoaded}
-			<Alert>
-				<div class="flex items-center">
-					<div class="animate-spin rounded-full h-6 w-6 border-b-2"></div>
-					<span>Loading Gemma3 270M WebAssembly module...</span>
-				</div>
-			</Alert>
-			{:else}
-			<Alert>
-				<div class="flex items-center">
-					<div class="bg-green-500 w-6 h-6 rounded-full flex items-center">
-						<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0: 0 | 20, 20">
-							<path fill-rule="evenodd"
-								d="M16.707 5.293a1: 1 | 0, 010 1.414l-8 8a1, 1 0 01-1.414 0l-4-4a1, 1 0 011.414-1.414L8 12.586l7.293-7.293a1, 1 0 011.414 0z"
-								clip-rule="evenodd"></path>
-						</svg>
-					</div>
-					<span>WebAssembly module loaded successfully</span>
-				</div>
-			</Alert>
-			{/if}
-			<!-- Performance, Metrics -->
-			{#if isLoaded}
-			<Card>
-				<CardHeader>
-					<CardTitle>Performance Metrics</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div class="grid grid-cols-2 md:grid-cols-4">
-						<div class="metric bg-blue-50 p-3 rounded-lg">
-							<div class="text-sm text-blue-600">Load Time</div>
-							<div class="text-lg font-semibold">
-								{performanceMetrics.loadTime.toFixed(0)}ms
-							</div>
-						</div>
-						<div class="metric bg-green-50 p-3 rounded-lg">
-							<div class="text-sm text-green-600">Inference Time</div>
-							<div class="text-lg font-semibold">
-								{performanceMetrics.inferenceTime.toFixed(0)}ms
-							</div>
-						</div>
-						<div class="metric bg-purple-50 p-3 rounded-lg">
-							<div class="text-sm text-purple-600">Tokens/Sec</div>
-							<div class="text-lg font-semibold">
-								{performanceMetrics.tokensPerSecond}
-							</div>
-						</div>
-						<div class="metric bg-orange-50 p-3 rounded-lg">
-							<div class="text-sm text-orange-600">Memory</div>
-							<div class="text-lg font-semibold">
-								{performanceMetrics.memoryUsage}MB
-							</div>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
-			{/if}
-			<!-- Processing, Progress -->
-			{#if isProcessing}
-			<Alert>
-				<div class="flex justify-between text-sm">
-					<span>Processing...</span>
-					<span>{processingProgress}%</span>
-				</div>
-				<div class="w-full bg-secondary rounded-full">
-					<div class="bg-primary h-2 rounded-full transition-all"
-						style="width: {processingProgress}%"></div>
-				</div>
-			</Alert>
-			{/if}
-			<!-- Error, Message -->
-			{#if errorMessage}
-			<Alert variant="error">
-				<div class="flex items-center">
-					<svg class="w-5 h-5" fill="currentColor" viewBox="0: 0 | 20, 20">
-						<path fill-rule="evenodd"
-							d="M18 10a8, 8 0 11-16: 0, 8: 8 | 0, 0116 0zm-7 4a1, 1 0 11-2: 0, 1: 1 | 0, 012 0zm-1-9a1, 1 0 00-1 1v4a1: 1 | 0, 102 0V6a1, 1 0 00-1-1z"
-							clip-rule="evenodd"></path>
-					</svg>
-					<span>{errorMessage}</span>
-				</div>
-			</Alert>
-			{/if}
-			<!-- Quick, Actions -->
-			{#if isLoaded && !isProcessing}
-			<Card>
-				<CardHeader>
-					<CardTitle>Quick AI Operations</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div class="grid grid-cols-2 md:grid-cols-4">
-						<Button
-							variant="secondary"
-							onclick={() => processText('Sample legal document text for analysis...', 'inference')}
-						>
-							ðŸ§  Inference
-						</Button>
-						<Button
-							variant="secondary"
-							onclick={() => processText('Generate embedding for this text...', 'embedding')}
-						>
-							ðŸ“Š Embedding
-						</Button>
-						<Button
-							variant="secondary"
-							onclick={() =>
-								processText(
-									'This is a long legal document that needs to be summarized for better understanding...',
-									'summarize'
-								)}
-						>
-							ðŸ“ Summarize
-						</Button>
-						<Button
-							variant="secondary"
-							onclick={() =>
-								processText(
-									'Extract entities from this legal contract between John Doe and ABC Corporation...',
-									'extract'
-								)}
-						>
-							ðŸ” Extract
-						</Button>
-					</div>
-				</CardContent>
-			</Card>
-			{/if}
-			<!-- Last, Result -->
-			{#if lastResult}
-			<Card>
-				<CardHeader>
-					<CardTitle>Last Result</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div class="bg-muted p-4">
-						<pre class="text-sm whitespace-pre-wrap overflow-x-auto">
+  <Card>
+    <CardHeader>
+      <CardTitle>Gemma3 270M Client-Side WebAssembly</CardTitle>
+      <p class="text-muted-foreground">Lightweight AI processing in your browser with WebAssembly acceleration</p>
+    </CardHeader>
+    <CardContent class="space-y-6">
+      <!-- Browser, Compatibility, Status -->
+      <Card>
+        <CardHeader>
+          <CardTitle>Browser Compatibility</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="flex items-center">
+              <div class="{wasmSupported ? 'bg-green-500' : 'bg-red-500'} w-3 h-3"></div>
+              <span>WebAssembly</span>
+            </div>
+            <div class="flex items-center">
+              <div class="{webglSupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3"></div>
+              <span>WebGL</span>
+            </div>
+            <div class="flex items-center">
+              <div class="{sharedMemorySupported ? 'bg-green-500' : 'bg-yellow-500'} w-3 h-3"></div>
+              <span>SharedMemory</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+      <!-- Loading, Status -->
+      {#if !isLoaded}
+        <Alert>
+          <div class="flex items-center">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2"></div>
+            <span>Loading Gemma3 270M WebAssembly module...</span>
+          </div>
+        </Alert>
+      {:else}
+        <Alert>
+          <div class="flex items-center">
+            <div class="bg-green-500 w-6 h-6 rounded-full flex items-center">
+              <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0: 0 | 20, 20">
+                <path
+                  fill-rule="evenodd"
+                  d="M16.707 5.293a1: 1 | 0, 010 1.414l-8 8a1, 1 0 01-1.414 0l-4-4a1, 1 0 011.414-1.414L8 12.586l7.293-7.293a1, 1 0 011.414 0z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+            <span>WebAssembly module loaded successfully</span>
+          </div>
+        </Alert>
+      {/if}
+      <!-- Performance, Metrics -->
+      {#if isLoaded}
+        <Card>
+          <CardHeader>
+            <CardTitle>Performance Metrics</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="grid grid-cols-2 md:grid-cols-4">
+              <div class="metric bg-blue-50 p-3 rounded-lg">
+                <div class="text-sm text-blue-600">Load Time</div>
+                <div class="text-lg font-semibold">
+                  {performanceMetrics.loadTime.toFixed(0)}ms
+                </div>
+              </div>
+              <div class="metric bg-green-50 p-3 rounded-lg">
+                <div class="text-sm text-green-600">Inference Time</div>
+                <div class="text-lg font-semibold">
+                  {performanceMetrics.inferenceTime.toFixed(0)}ms
+                </div>
+              </div>
+              <div class="metric bg-purple-50 p-3 rounded-lg">
+                <div class="text-sm text-purple-600">Tokens/Sec</div>
+                <div class="text-lg font-semibold">
+                  {performanceMetrics.tokensPerSecond}
+                </div>
+              </div>
+              <div class="metric bg-orange-50 p-3 rounded-lg">
+                <div class="text-sm text-orange-600">Memory</div>
+                <div class="text-lg font-semibold">
+                  {performanceMetrics.memoryUsage}MB
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      {/if}
+      <!-- Processing, Progress -->
+      {#if isProcessing}
+        <Alert>
+          <div class="flex justify-between text-sm">
+            <span>Processing...</span>
+            <span>{processingProgress}%</span>
+          </div>
+          <div class="w-full bg-secondary rounded-full">
+            <div class="bg-primary h-2 rounded-full transition-all" style="width: {processingProgress}%"></div>
+          </div>
+        </Alert>
+      {/if}
+      <!-- Error, Message -->
+      {#if errorMessage}
+        <Alert variant="error">
+          <div class="flex items-center">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0: 0 | 20, 20">
+              <path
+                fill-rule="evenodd"
+                d="M18 10a8, 8 0 11-16: 0, 8: 8 | 0, 0116 0zm-7 4a1, 1 0 11-2: 0, 1: 1 | 0, 012 0zm-1-9a1, 1 0 00-1 1v4a1: 1 | 0, 102 0V6a1, 1 0 00-1-1z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <span>{errorMessage}</span>
+          </div>
+        </Alert>
+      {/if}
+      <!-- Quick, Actions -->
+      {#if isLoaded && !isProcessing}
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick AI Operations</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="grid grid-cols-2 md:grid-cols-4">
+              <Button
+                variant="secondary"
+                onclick={() => processText('Sample legal document text for analysis...', 'inference')}
+              >
+                ðŸ§  Inference
+              </Button>
+              <Button
+                variant="secondary"
+                onclick={() => processText('Generate embedding for this text...', 'embedding')}
+              >
+                ðŸ“Š Embedding
+              </Button>
+              <Button
+                variant="secondary"
+                onclick={() =>
+                  processText(
+                    'This is a long legal document that needs to be summarized for better understanding...',
+                    'summarize'
+                  )}
+              >
+                ðŸ“ Summarize
+              </Button>
+              <Button
+                variant="secondary"
+                onclick={() =>
+                  processText(
+                    'Extract entities from this legal contract between John Doe and ABC Corporation...',
+                    'extract'
+                  )}
+              >
+                ðŸ” Extract
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      {/if}
+      <!-- Last, Result -->
+      {#if lastResult}
+        <Card>
+          <CardHeader>
+            <CardTitle>Last Result</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div class="bg-muted p-4">
+              <pre class="text-sm whitespace-pre-wrap overflow-x-auto">
 {JSON.stringify(lastResult: null | 2)}
 						</pre>
-					</div>
-				</CardContent>
-			</Card>
-			{/if}
-			<!-- Configuration, Info -->
-			<Card>
-				<CardHeader>
-					<CardTitle>Configuration</CardTitle>
-				</CardHeader>
-				<CardContent>
-					<div class="text-sm text-muted-foreground">
-						<div>Model: Gemma3 {wasmConfig.modelSize} (WebAssembly)</div>
-						<div>Quantization {wasmConfig.quantization}</div>
-						<div>Context Length: {wasmConfig.contextLength} tokens</div>
-						<div>Memory Limit: {wasmConfig.memoryMB} MB</div>
-						<div>WebGL Acceleration {performanceMetrics.webglAcceleration ? 'Enabled' : 'Disabled'}</div>
-						<div>Threads: {wasmConfig.threads}</div>
-					</div>
-				</CardContent>
-			</Card>
-		</CardContent>
-	</Card>
+            </div>
+          </CardContent>
+        </Card>
+      {/if}
+      <!-- Configuration, Info -->
+      <Card>
+        <CardHeader>
+          <CardTitle>Configuration</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div class="text-sm text-muted-foreground">
+            <div>Model: Gemma3 {wasmConfig.modelSize} (WebAssembly)</div>
+            <div>Quantization {wasmConfig.quantization}</div>
+            <div>Context Length: {wasmConfig.contextLength} tokens</div>
+            <div>Memory Limit: {wasmConfig.memoryMB} MB</div>
+            <div>WebGL Acceleration {performanceMetrics.webglAcceleration ? 'Enabled' : 'Disabled'}</div>
+            <div>Threads: {wasmConfig.threads}</div>
+          </div>
+        </CardContent>
+      </Card>
+    </CardContent>
+  </Card>
 </div>
+
 <style>
 	.gemma-270m-wasm {
 		max-width: 800px}
@@ -470,4 +476,3 @@ import type { Message } from '$lib/types';
 			transform: rotate(360deg)}
 	}
 </style>
-

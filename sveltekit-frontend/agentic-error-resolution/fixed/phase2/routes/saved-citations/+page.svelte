@@ -256,7 +256,7 @@ import '$lib/styles/bits-ui.css';
     <div class="mb-4 p-3 border rounded bg-white/5">
       <h2 class="text-sm font-semibold">📡 Live Report Updates</h2>
       <ul>
-        {#each Array.isArray($liveReports.slice(0,5)) ? $liveReports.slice(0,5) : [] as update}
+        {#each Array.isArray($liveReports.slice(0, 5)) ? $liveReports.slice(0, 5) : [] as update}
           <li class="text-xs">
             <strong>{update.title}</strong>
             <div class="text-muted">{update.updatedAt}</div>
@@ -265,12 +265,17 @@ import '$lib/styles/bits-ui.css';
       </ul>
     </div>
     <div class="space-y-4">
-      <div class="space-y-2"> <!-- Adjusted spacing -->
-        <h1 class="text-3xl font-bold">Saved Citations</h1> <!-- Added text size and weight -->
-        <p class="text-gray-600">Manage your collection of legal citations and references</p> <!-- Adjusted text color -->
+      <div class="space-y-2">
+        <!-- Adjusted spacing -->
+        <h1 class="text-3xl font-bold">Saved Citations</h1>
+        <!-- Added text size and weight -->
+        <p class="text-gray-600">Manage your collection of legal citations and references</p>
+        <!-- Adjusted text color -->
       </div>
-      <div class="flex gap-4"> <!-- Use flex and gap for horizontal spacing -->
-        <div class="flex flex-col"> <!-- Use flex-col for vertical stacking -->
+      <div class="flex gap-4">
+        <!-- Use flex and gap for horizontal spacing -->
+        <div class="flex flex-col">
+          <!-- Use flex-col for vertical stacking -->
           <span class="text-lg font-bold">{totalCitations}</span>
           <span class="text-sm text-gray-500">Total</span>
         </div>
@@ -282,16 +287,16 @@ import '$lib/styles/bits-ui.css';
     </div>
   </div>
   <!-- Toolbar -->
-  <div class="flex items-center gap-4"> <!-- Use flex and gap for horizontal spacing -->
-    <div class="relative flex-1"> <!-- Use relative and flex-1 for search input -->
+  <div class="flex items-center gap-4">
+    <!-- Use flex and gap for horizontal spacing -->
+    <div class="relative flex-1">
+      <!-- Use relative and flex-1 for search input -->
       <span class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400">{ICON.search}</span>
-      <Input
-        type="text"
-        placeholder="Search citations..."
-        bind:value={searchQuery}
-        class="pl-8 w-full" /> <!-- Add pl-8 for icon padding -->
+      <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="pl-8 w-full" />
+      <!-- Add pl-8 for icon padding -->
     </div>
-    <select bind:value={selectedCategory} class="p-2 border rounded"> <!-- Clean up select styling -->
+    <select bind:value={selectedCategory} class="p-2 border rounded">
+      <!-- Clean up select styling -->
       {#each Array.isArray(categories) ? categories : [] as category}
         <option value={category.value}>{category.label}</option>
       {/each}
@@ -308,15 +313,15 @@ import '$lib/styles/bits-ui.css';
       <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
       Add Citation
     </Button>
-    <div id="add-citation-help" class="sr-only">
-      Create a new legal citation with title, content, source, and tags
-    </div>
+    <div id="add-citation-help" class="sr-only">Create a new legal citation with title, content, source, and tags</div>
   </div>
   <!-- Citations Grid -->
-  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3"> <!-- Use grid for citations -->
+  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <!-- Use grid for citations -->
     {#each filteredCitations as citation (citation.id)}
       <Card class="citation-nier-bits-card">
-        <div class="yorha-panel-header citation-header flex justify-between items-start"> <!-- Use flex for header layout -->
+        <div class="yorha-panel-header citation-header flex justify-between items-start">
+          <!-- Use flex for header layout -->
           <h3 class="text-lg font-semibold">{citation.title}</h3>
           <DropdownMenuRoot>
             <DropdownMenuTrigger>
@@ -330,7 +335,9 @@ import '$lib/styles/bits-ui.css';
                 data-nes-theme="citation-menu"
                 data-citation-id={citation.id}
               >
-                <span class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon">{ICON.moreVertical}</span>
+                <span class="w-4 h-4" aria-hidden="true" role="img" aria-label="Menu options icon"
+                  >{ICON.moreVertical}</span
+                >
               </Button>
               <div id="citation-menu-help" class="sr-only">
                 Access citation actions: favorite, copy, edit, or delete
@@ -340,7 +347,11 @@ import '$lib/styles/bits-ui.css';
             <!-- Pass required collisionBoundary prop (cast for type-checking) -->
             <DropdownMenuContent collisionBoundary={menuCollisionBoundary as Element}>
               <!-- Use component props onclick/onselect expected by the generated typings -->
-              <DropdownMenuItem href="#" onclick={() => toggleFavorite(citation)} onselect={() => toggleFavorite(citation)}>
+              <DropdownMenuItem
+                href="#"
+                onclick={() => toggleFavorite(citation)}
+                onselect={() => toggleFavorite(citation)}
+              >
                 <span class="w-4 h-4 mr-2">{ICON.star}</span>
                 {citation.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               </DropdownMenuItem>
@@ -358,7 +369,12 @@ import '$lib/styles/bits-ui.css';
               <DropdownMenuSeparator />
 
               <!-- provide className (typing expects className) and onclick/onselect -->
-              <DropdownMenuItem href="#" className="text-destructive" onclick={() => deleteCitation(citation.id)} onselect={() => deleteCitation(citation.id)}>
+              <DropdownMenuItem
+                href="#"
+                className="text-destructive"
+                onclick={() => deleteCitation(citation.id)}
+                onselect={() => deleteCitation(citation.id)}
+              >
                 <span class="w-4 h-4 mr-2">{ICON.trash2}</span>
                 Delete
               </DropdownMenuItem>
@@ -366,7 +382,8 @@ import '$lib/styles/bits-ui.css';
           </DropdownMenuRoot>
         </div>
 
-        <div class="flex gap-2 mb-2"> <!-- Use flex and gap for category/favorite badges -->
+        <div class="flex gap-2 mb-2">
+          <!-- Use flex and gap for category/favorite badges -->
           <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{citation.category}</span>
           {#if citation.isFavorite}
             <!-- Badge replaced with span -->
@@ -377,7 +394,8 @@ import '$lib/styles/bits-ui.css';
           {/if}
         </div>
 
-        <div class="yorha-panel-content citation-content space-y-2"> <!-- Apply space-y-2 to content -->
+        <div class="yorha-panel-content citation-content space-y-2">
+          <!-- Apply space-y-2 to content -->
           <p>{citation.content}</p>
           <p class="text-sm text-gray-600">Source: {citation.source}</p>
           {#if citation.notes}
@@ -386,7 +404,8 @@ import '$lib/styles/bits-ui.css';
             </div>
           {/if}
           {#if citation.tags.length > 0}
-            <div class="flex flex-wrap gap-2"> <!-- Use flex-wrap and gap for tags -->
+            <div class="flex flex-wrap gap-2">
+              <!-- Use flex-wrap and gap for tags -->
               {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
                 <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
                   <span class="w-3 h-3 mr-1">{ICON.tag}</span>
@@ -395,12 +414,15 @@ import '$lib/styles/bits-ui.css';
               {/each}
             </div>
           {/if}
-          <div class="flex justify-between items-center text-xs text-gray-500 pt-2"> <!-- Use flex for footer -->
+          <div class="flex justify-between items-center text-xs text-gray-500 pt-2">
+            <!-- Use flex for footer -->
             <span>
               Saved {new Date(citation.savedAt).toLocaleDateString()}
             </span>
             {#if citation.contextData?.caseId}
-              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">case {citation.contextData.caseId}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                >case {citation.contextData.caseId}</span
+              >
             {/if}
           </div>
         </div>
@@ -409,7 +431,8 @@ import '$lib/styles/bits-ui.css';
 
     <!-- No-citations / Filters: close Clear filters Button and move help div outside -->
     {#if filteredCitations.length === 0}
-      <div class="col-span-full text-center py-8 space-y-4"> <!-- Center content and add vertical spacing -->
+      <div class="col-span-full text-center py-8 space-y-4">
+        <!-- Center content and add vertical spacing -->
         {#if searchQuery || selectedCategory !== 'all'}
           <h3 class="text-xl font-semibold">No citations found</h3>
           <p class="text-gray-600">No citations match your current search criteria.</p>
@@ -434,8 +457,7 @@ import '$lib/styles/bits-ui.css';
         {:else}
           <h3 class="text-xl font-semibold">No saved citations</h3>
           <p class="text-gray-600">
-            You haven't saved any citations yet. Start by adding citations from reports or create
-            new ones.
+            You haven't saved any citations yet. Start by adding citations from reports or create new ones.
           </p>
           <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
@@ -466,7 +488,8 @@ import '$lib/styles/bits-ui.css';
           <DialogDescription>Create a new citation to save for future reference.</DialogDescription>
         </DialogHeader>
 
-        <div class="grid gap-4 py-4"> <!-- Use grid gap for form fields -->
+        <div class="grid gap-4 py-4">
+          <!-- Use grid gap for form fields -->
           <div class="grid gap-2">
             <label for="title" class="text-sm font-medium">Title</label>
             <Input id="title" bind:value={newCitation.title} placeholder="Citation title" />
@@ -485,7 +508,8 @@ import '$lib/styles/bits-ui.css';
             <label for="source" class="text-sm font-medium">Source</label>
             <Input id="source" bind:value={newCitation.source} placeholder="Source reference" />
           </div>
-          <div class="grid grid-cols-2 gap-4"> <!-- Use grid for category and tags -->
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Use grid for category and tags -->
             <div class="grid gap-2">
               <label for="category" class="text-sm font-medium">Category</label>
               <select id="category" bind:value={newCitation.category} class="p-2 border rounded">
@@ -517,14 +541,16 @@ import '$lib/styles/bits-ui.css';
             onclick={() => (showAddDialog = false)}
             aria-label="Cancel citation creation and close dialog"
             role="button"
-            data-nes-theme="dialog-secondary"
-          >Cancel</Button>
+            data-nes-theme="dialog-secondary">Cancel</Button
+          >
 
           <Button
             class="nes-dialog-control n64-enhanced lod-optimized retro-save-btn"
             onclick={() => saveCitation()}
             disabled={!newCitation.title || !newCitation.content}
-            aria-label={!newCitation.title || !newCitation.content ? 'Save citation - Title and content required' : 'Save new legal citation'}
+            aria-label={!newCitation.title || !newCitation.content
+              ? 'Save citation - Title and content required'
+              : 'Save new legal citation'}
             aria-describedby="save-citation-help"
             role="button"
             tabindex={!newCitation.title || !newCitation.content ? -1 : 0}
@@ -550,7 +576,8 @@ import '$lib/styles/bits-ui.css';
           <DialogHeader>
             <DialogTitle>Edit Citation</DialogTitle>
           </DialogHeader>
-          <div class="grid gap-4 py-4"> <!-- Use grid gap for form fields -->
+          <div class="grid gap-4 py-4">
+            <!-- Use grid gap for form fields -->
             <div class="grid gap-2">
               <label for="edit-title" class="text-sm font-medium">Title</label>
               <Input id="edit-title" bind:value={editingCitation.title} />
@@ -568,7 +595,8 @@ import '$lib/styles/bits-ui.css';
               <label for="edit-source" class="text-sm font-medium">Source</label>
               <Input id="edit-source" bind:value={editingCitation.source} />
             </div>
-            <div class="grid grid-cols-2 gap-4"> <!-- Use grid for category and tags -->
+            <div class="grid grid-cols-2 gap-4">
+              <!-- Use grid for category and tags -->
               <div class="grid gap-2">
                 <label for="edit-category" class="text-sm font-medium">Category</label>
                 <select id="edit-category" bind:value={editingCitation.category} class="p-2 border rounded">
@@ -599,8 +627,8 @@ import '$lib/styles/bits-ui.css';
               onclick={() => (editingCitation = null)}
               aria-label="Cancel editing and close dialog"
               role="button"
-              data-nes-theme="dialog-secondary"
-            >Cancel</Button>
+              data-nes-theme="dialog-secondary">Cancel</Button
+            >
 
             <Button
               class="nes-dialog-control n64-enhanced lod-optimized retro-update-btn"
@@ -609,8 +637,8 @@ import '$lib/styles/bits-ui.css';
               aria-describedby="update-citation-help"
               role="button"
               data-nes-theme="dialog-primary"
-              data-operation="update-citation"
-            >Update Citation</Button>
+              data-operation="update-citation">Update Citation</Button
+            >
 
             <div id="update-citation-help" class="sr-only">
               Apply changes to the citation and update your collection

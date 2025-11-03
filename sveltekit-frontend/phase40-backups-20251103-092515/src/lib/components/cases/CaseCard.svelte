@@ -23,8 +23,7 @@ import type { Case } from '$lib/types';
     id: string
     title: string
     description?: string
-   , status: 'active' | 'pending' | 'closed' | 'archived',
-    priority: 'critical' | 'high' | 'medium' | 'low';
+   , status: 'active' | 'pending' | 'closed' | 'archived'; priority: 'critical' | 'high' | 'medium' | 'low';
     created: Date | string
     updated?: Date | string
     assignee?: {
@@ -253,6 +252,5 @@ import type { Case } from '$lib/types';
     display: -webkit-box
     -webkit-line-clamp: 2
     line-clamp: 2
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
 </style>

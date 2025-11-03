@@ -39,8 +39,7 @@ import type { Document } from '$lib/types';
   let stats = $state<{
     totalTurns: number
     avgConfidence: number
-    stateTransitions: number
-   , mostCommonState: string} | null>(null);
+    stateTransitions: number; mostCommonState: string} | null>(null);
   // Derived state names
   const stateNames = {
     0: 'Greeting',
@@ -69,8 +68,7 @@ import type { Document } from '$lib/types';
     error = null
     try {
       const response = await fetch('/api/contextual/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
           sessionId,
@@ -85,12 +83,9 @@ import type { Document } from '$lib/types';
         // Add to conversation history
         conversationHistory = [
           ...conversationHistory, {
-            userMessage: message,
-            agentResponse: result.data.response,
-            timestamp: Date.now(),
-            intent: 'general_query',
-            entities: [],
-            hmmState: contextualState?.hmmState.currentState ?? 0
+            userMessage: message; agentResponse: result.data.response,
+            timestamp: Date.now(); intent: 'general_query',
+            entities: []; hmmState: contextualState?.hmmState.currentState ?? 0
           }
         ];
         // Clear input
@@ -169,6 +164,7 @@ import type { Document } from '$lib/types';
       );
       if (!response.ok) {
         throw new Error(`API error: ${response.statusText}`)}
+
       // Reset state
       conversationHistory = [];
       contextualState = null
@@ -195,27 +191,35 @@ import type { Document } from '$lib/types';
   onMount(() => {
     fetchContextualState()});
 </script>
+
 <div class="contextual-chat-demo">
   <div class="demo-header">
     <h2>Contextual Chat with HMM State Machine</h2>
+
     <div class="session-info">
       <span>Session {sessionId.substring(0, 12)}...</span>
+
       <span>User: {userId}</span>
     </div>
   </div>
+
   <div class="demo-content">
     <!-- Left, Panel: Chat -->
     <div class="chat-panel">
       <div class="chat-messages">
-        {#each conversationHistory as turn, idx (idx)}
+  {#each conversationHistory as turn, idx (idx)}
           <div class="message-group">
             <div class="user-message">
               <div class="message-label">You</div>
+
               <div class="message-content">{turn.userMessage}</div>
             </div>
+
             <div class="agent-message">
               <div class="message-label">Legal AI Assistant</div>
+
               <div class="message-content">{turn.agentResponse}</div>
+
               <div class="message-meta">
                 State: {stateNames[turn.hmmState as keyof typeof stateNames]}
               </div>
@@ -225,28 +229,33 @@ import type { Document } from '$lib/types';
         {#if conversationHistory.length === 0}
           <div class="empty-state">
             <p>Start a conversation to see HMM state tracking in action.</p>
+
             <p>Try asking about a legal case, document analysis, or risk assessment.</p>
           {/if}
-      </div>
+  </div>
+
       <div class="chat-input">
-        {#if error}
+  {#if error}
           <div class="error-banner">{error}{/if}
-        <textarea
+  <textarea
           bind:value={message}
           onkeydown={handleKeyDown}
           placeholder="Ask about legal cases, documents, or risk assessment..."
           rows="3"
           disabled={isLoading}
         ></textarea>
+
         <div class="input-controls">
           <label>
             <input type="checkbox" bind:checked={enableFunctions} />
             Enable Agentic Functions
           </label>
+
           <div class="button-group">
             <button onclick={clearConversation} disabled={isLoading}>
               Clear
             </button>
+
             <button onclick={sendMessage} disabled={isLoading || !message.trim()}>
               {isLoading ? 'Sending...' : 'Send'}
             </button>
@@ -254,43 +263,50 @@ import type { Document } from '$lib/types';
         </div>
       </div>
     </div>
+
     <!-- Right Panel: HMM State & Predictions -->
     <div class="state-panel">
       <!-- Current, State -->
       <div class="state-card">
         <h3>Current State</h3>
-        {#if contextualState}
+  {#if contextualState}
           <div class="state-display">
             <div class="state-name">{currentStateName}</div>
+
             <div class="state-confidence">
               Confidence: {confidencePercentage}%
             </div>
+
             <div class="state-history">
               <strong>State History:</strong>
+
               <div class="history-timeline">
-                {#each contextualState.hmmState.stateHistory.slice(-5) as state, idx (idx)}
+  {#each contextualState.hmmState.stateHistory.slice(-5) as state, idx (idx)}
                   <span class="history-state">
                     {stateNames[state as keyof typeof stateNames]}
                   </span>
                 {/each}
-              </div>
+  </div>
             </div>
           </div>
         {:else}
           <p class="no-data">No state data yet</p>
         {/if}
-      </div>
+  </div>
+
       <!-- Next-Step, Predictions -->
       <div class="predictions-card">
         <h3>Next-Step Predictions</h3>
-        {#if predictions.length > 0}
+  {#if predictions.length > 0}
           <div class="predictions-list">
-            {#each predictions as prediction, idx (idx)}
+  {#each predictions as prediction, idx (idx)}
               <div class="prediction-item">
                 <div class="prediction-action">{prediction.action}</div>
+
                 <div class="prediction-confidence">
                   {(prediction.confidence * 100).toFixed(1)}%
                 </div>
+
                 <div class="prediction-bar">
                   <div
                     class="prediction-fill"
@@ -299,53 +315,65 @@ import type { Document } from '$lib/types';
                 </div>
               </div>
             {/each}
-          </div>
+  </div>
         {:else}
           <p class="no-data">No predictions yet</p>
         {/if}
-      </div>
+  </div>
+
       <!-- Extracted, Entities -->
       <div class="entities-card">
         <h3>Extracted Entities</h3>
-        {#if entities.length > 0}
+  {#if entities.length > 0}
           <div class="entities-list">
-            {#each entities as entity, idx (idx)}
+  {#each entities as entity, idx (idx)}
               <div class="entity-item">
                 <span class="entity-type">{entity.type}</span>
+
                 <span class="entity-value">{entity.value}</span>
               </div>
             {/each}
-          </div>
+  </div>
         {:else}
           <p class="no-data">No entities extracted yet</p>
         {/if}
-      </div>
+  </div>
+
       <!-- Session, Statistics -->
-      {#if stats}
+  {#if stats}
         <div class="stats-card">
           <h3>Session Statistics</h3>
+
           <div class="stats-grid">
             <div class="stat-item">
               <div class="stat-label">Total Turns</div>
+
               <div class="stat-value">{stats.totalTurns}</div>
             </div>
+
             <div class="stat-item">
               <div class="stat-label">Avg Confidence</div>
+
               <div class="stat-value">{(stats.avgConfidence * 100).toFixed(1)}%</div>
             </div>
+
             <div class="stat-item">
               <div class="stat-label">State Transitions</div>
+
               <div class="stat-value">{stats.stateTransitions}</div>
             </div>
+
             <div class="stat-item">
               <div class="stat-label">Most Common State</div>
+
               <div class="stat-value">{stats.mostCommonState}</div>
             </div>
           </div>
         {/if}
-    </div>
+  </div>
   </div>
 </div>
+
 <style>
   .contextual-chat-demo {
     display: flex
@@ -357,7 +385,7 @@ import type { Document } from '$lib/types';
    ;background: var(--background, #ffffff)}
   .demo-header {
     padding: 1rem 1.5rem
-    border-bottom: 1px solid var(--border, #e5e7eb), background: var(--muted, #f9fafb)}
+    border-bottom: 1px solid var(--border, #e5e7eb); background: var(--muted, #f9fafb)}
   .demo-header h2 {
     margin: 0, 0 0.5rem 0
     font-size: 1.25rem
@@ -370,7 +398,7 @@ import type { Document } from '$lib/types';
   .demo-content {
     display: grid
     grid-template-columns: 1fr 400px
-    height: 100%, overflow: hidden}
+    height: 100%; overflow: hidden}
   /* Chat Panel */
   .chat-panel { display: flex
     flex-direction: column
@@ -393,9 +421,9 @@ import type { Document } from '$lib/types';
     padding: 0.75rem 1rem
     border-radius: 8px
     line-height: 1.5}
-  .user-message .message-content { background: var(--primary, #3b82f6), color: white
+  .user-message .message-content { background: var(--primary, #3b82f6); color: white
     margin-left: 2rem}
-  .agent-message .message-content { background: var(--muted, #f9fafb), border: 1px solid var(--border, #e5e7eb)}
+  .agent-message .message-content { background: var(--muted, #f9fafb); border: 1px solid var(--border, #e5e7eb)}
   .message-meta {
     font-size: 0.75rem
    ;color: var(--muted-foreground, #6b7280);
@@ -408,7 +436,7 @@ import type { Document } from '$lib/types';
   .empty-state p {
     margin: 0.5rem 0}
   .chat-input {
-    border-top: 1px solid var(--border, #e5e7eb), padding: 1rem
+    border-top: 1px solid var(--border, #e5e7eb); padding: 1rem
    ; background: var(--background, #ffffff)}
   .error-banner {
     padding: 0.75rem
@@ -418,7 +446,7 @@ import type { Document } from '$lib/types';
     border-radius: 4px
     font-size: 0.875rem}
   textarea {
-    width: 100%, padding: 0.75rem
+    width: 100%; padding: 0.75rem
    ; border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px
     resize: none
@@ -447,11 +475,10 @@ import type { Document } from '$lib/types';
     padding: 0.5rem 1rem
    ;border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px
-   ;background: var(--background, #ffffff), cursor: pointer
+   ;background: var(--background, #ffffff); cursor: pointer
     font-size: 0.875rem
     font-weight: 500
-    transition: all 0.2s}
- , buttonhover:not(:disabled) {
+    transition: all 0.2s}; buttonhover:not(:disabled) {
     background: var(--muted, #f9fafb)}
   buttondisabled {
     opacity: 0.5
@@ -468,7 +495,7 @@ import type { Document } from '$lib/types';
   .predictions-card,
   .entities-card,
   .stats-card {
-    background: var(--background, #ffffff), border: 1px solid var(--border, #e5e7eb);
+    background: var(--background, #ffffff); border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px
    ;padding: 1rem}
   .state-card h3,
@@ -529,7 +556,7 @@ import type { Document } from '$lib/types';
     border-radius: 2px
     overflow: hidden}
   .prediction-fill {
-    height: 100%, background: var(--primary, #3b82f6);
+    height: 100%; background: var(--primary, #3b82f6);
     transition: width: 0.3s ease}
   .entities-list {
     display: flex
@@ -563,4 +590,5 @@ import type { Document } from '$lib/types';
     font-weight: 700
    ;color: var(--foreground, #111827)}
 </style>
+
 

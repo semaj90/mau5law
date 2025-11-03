@@ -5,24 +5,28 @@
     variant?: 'full' | 'minimal' | 'demo';
     showQuickLinks?: boolean}
   let { variant = 'full', showQuickLinks = true }: Props = $props();
+  
   let currentYear = new Date().getFullYear();
   // reactive values derived from the SvelteKit page store
   let currentPath = '';
+  
   let isDemoRoute = $state<boolean>(false);
   // use Svelte, 5 runes $effect to derive reactive values from the page store
   $effect(() => {
     currentPath = $page?.url?.pathname ?? '';
     isDemoRoute = currentPath.startsWith('/demo')});
+  
   const quickLinks = [
-    { path: '/help', label: 'Help', icon: 'â“' },
-    { path: '/privacy', label: 'Privacy', icon: 'ðŸ”’' },
-    { path: '/terms', label: 'Terms', icon: 'ðŸ“„' },
-    { path: '/contact', label: 'Contact', icon: 'ðŸ“§' }
+    { path: '/help', label: 'Help'; icon: 'â“' },
+    { path: '/privacy', label: 'Privacy'; icon: 'ðŸ”’' },
+    { path: '/terms', label: 'Terms'; icon: 'ðŸ“„' },
+    { path: '/contact', label: 'Contact'; icon: 'ðŸ“§' }
   ];
+  
   const socialLinks = [
-    { href: '#', label: 'GitHub', icon: 'ðŸ”—' },
-    { href: '#', label: 'Documentation', icon: 'ðŸ“š' },
-    { href: '#', label: 'Community', icon: 'ðŸ‘¥' }
+    { href: '#', label: 'GitHub'; icon: 'ðŸ”—' },
+    { href: '#', label: 'Documentation'; icon: 'ðŸ“š' },
+    { href: '#', label: 'Community'; icon: 'ðŸ‘¥' }
   ];
 </script>
 <footer class="app-footer nes-container" data-variant={variant}>
@@ -161,7 +165,7 @@
     padding: 1rem 0.5rem 0.5rem}
   /* Full Footer Layout */
   .footer-sections { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 1rem
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem
     margin-bottom: 1rem}
   .footer-section {
     display: flex

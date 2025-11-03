@@ -53,6 +53,7 @@
     .filter(Boolean)
     .join(' ');
 </script>
+
 {#if to}
   <a class={classes} data-button-root, href={to} {...anchorProps}>
     {#if icon && iconPosition === 'left'}
@@ -84,15 +85,14 @@
     {/if}
   </button>
 {/if}
+
 <style>
   :global(.nier-btn[disabled]) {
-    opacity: 0.6
-   , cursor: not-allowed}
+    opacity: 0.6; cursor: not-allowed}
   :global(.nier-btn.btn-loading) {
     opacity: 0.6
     cursor: not-allowed
-    background: #23272e
-   , color: #bcbcbc}
+    background: #23272e; color: #bcbcbc}
   /* Variant styles */
   :global(.btn-default) {
     background: linear-gradient(90deg, #23272e 0%, #393e46 100%);
@@ -102,31 +102,23 @@
     color: #fff}
   :global(.btn-secondary) {
     background: #f3f3f3
-    color: #23272e
-   , border: 1px solid #393e46}
+    color: #23272e; border: 1px solid #393e46}
   :global(.btn-outline) {
     background: transparent
-    color: #23272e
-   , border: 1.5px solid #393e46}
+    color: #23272e; border: 1.5px solid #393e46}
   :global(.btn-danger) {
-    background: #e53935
-   , color: #fff}
+    background: #e53935; color: #fff}
   :global(.btn-destructive) {
-    background: #e53935
-   , color: #fff}
+    background: #e53935; color: #fff}
   :global(.btn-success) {
-    background: #43a047
-   , color: #fff}
+    background: #43a047; color: #fff}
   :global(.btn-warning) {
-    background: #fbc02d
-   , color: #23272e}
+    background: #fbc02d; color: #23272e}
   :global(.btn-info) {
-    background: #1976d2
-   , color: #fff}
+    background: #1976d2; color: #fff}
   :global(.btn-ghost) {
     background: transparent
-    color: #23272e
-   , border: none}
+    color: #23272e; border: none}
   :global(.btn-ghost:hover) {
     background: rgba(35, 39, 46, 0.1);
   }
@@ -141,17 +133,13 @@
     color: #000}
   /* Size styles */
   :global(.btn-xs) {
-    font-size: 0.75rem
-   , padding: 0.25rem 0.75rem}
+    font-size: 0.75rem; padding: 0.25rem 0.75rem}
   :global(.btn-sm) {
-    font-size: 0.875rem
-   , padding: 0.375rem 1rem}
+    font-size: 0.875rem; padding: 0.375rem 1rem}
   :global(.btn-md) {
-    font-size: 1rem
-   , padding: 0.5rem 1.25rem}
+    font-size: 1rem; padding: 0.5rem 1.25rem}
   :global(.btn-lg) {
-    font-size: 1.125rem
-   , padding: 0.75rem 1.5rem}
+    font-size: 1.125rem; padding: 0.75rem 1.5rem}
   :global(.btn-xl) {
     font-size: 1.25rem
     padding: 1rem 2rem}
@@ -169,4 +157,3 @@
     }
   }
 </style>
-

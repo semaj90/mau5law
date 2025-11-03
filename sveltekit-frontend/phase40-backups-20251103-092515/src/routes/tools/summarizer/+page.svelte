@@ -79,9 +79,7 @@
           <div class="space-y-2">
             <div class="bg-purple-50 p-3 rounded-lg border-l-4">
               <h4 class="font-medium">3. Configure Focus</h4>
-              <p class="text-sm">
-                Select focus areas and summary type to tailor the output to your specific needs.
-              </p>
+              <p class="text-sm">Select focus areas and summary type to tailor the output to your specific needs.</p>
             </div>
           </div>
           <div class="space-y-2">
@@ -107,4 +105,3 @@
     </Card>
   </div>
 </div>
-

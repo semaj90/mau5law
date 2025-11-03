@@ -44,11 +44,13 @@
         const result = state.context.files[evidenceId]?.result
         onComplete?.(result);
         addLog('Processing completed successfully', 'success')}
+
       // Handle errors
       if (state.context.lastError || state.context.files[evidenceId]?.error) {
         const error = state.context.lastError || state.context.files[evidenceId]?.error
         onError?.(error);
         addLog(`Error: ${error}`, 'error')}
+
       // Log state changes
       if (state.value !== 'idle') {
         addLog(`State: ${String(state.value)}`, 'info')}
@@ -374,4 +376,5 @@ https://svelte.dev/e/js_parse_error -->
     /* Custom styles if needed */
   }
 </style>
+
 

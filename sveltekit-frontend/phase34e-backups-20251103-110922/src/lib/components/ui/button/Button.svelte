@@ -53,6 +53,7 @@
     .filter(Boolean)
     .join(' ');
 </script>
+
 {#if to}
   <a class={classes} data-button-root, href={to} {...anchorProps}>
     {#if icon && iconPosition === 'left'}
@@ -84,6 +85,7 @@
     {/if}
   </button>
 {/if}
+
 <style>
   : global(.nier-btn[disabled]) {
     opacity: 0.6
@@ -166,4 +168,3 @@
     to { transform: rotate(360deg)}
   }
 </style>
-

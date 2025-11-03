@@ -27,7 +27,7 @@ Displays detailed integrity verification results with AI analysis
     authenticity: number
     completeness: number
     relevance: number
-    riskLevel: RiskLevel, recommendations: string[];
+    riskLevel: RiskLevel; recommendations: string[];
    , flaggedAnomalies: string[]};
   // Exported props (clean, typed)
   const { integrityStatus } = $props<{ integrityStatus: 'pending' | 'verified' | 'compromised' | 'requires-attention' }>()
@@ -321,11 +321,9 @@ Displays detailed integrity verification results with AI analysis
     animation: fadeIn 0.5s ease-out}
   @keyframes fadeIn {
     from {
-      opacity: 0
-     , transform: translateY(10px)}
+      opacity: 0; transform: translateY(10px)}
     to {
-      opacity: 1
-     , transform: translateY(0)}
+      opacity: 1; transform: translateY(0)}
   }
 </style>
 

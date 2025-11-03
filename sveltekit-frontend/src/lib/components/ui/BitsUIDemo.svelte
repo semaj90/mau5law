@@ -1,4 +1,4 @@
-﻿<!-- Comprehensive Bits-UI Demo for Legal, AI, App -->
+<!-- Comprehensive Bits-UI Demo for Legal, AI, App -->
 <script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -35,21 +35,25 @@ import type { Case } from '$lib/types';
     clientName = '';
     selectedCaseType = ''}
 </script>
+
 <div class="p-6 space-y-8 max-w-6xl mx-auto bg-yorha-bg-primary">
   <!-- Header -->
   <div class="text-center">
     <h1 class="text-3xl font-bold text-yorha-text-primary">
       Legal AI Platform - Bits-UI Components
     </h1>
+
     <p class="text-yorha-text-secondary font-mono">
       Modern Svelte, 5 components with bits-ui primitives
     </p>
   </div>
+
   <!-- Search, Bar, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
       ðŸ” Search Interface
     </h2>
+
     <div class="max-w-md">
       <BitsInput
         bind:value={searchQuery}
@@ -62,11 +66,13 @@ import type { Case } from '$lib/types';
       />
     </div>
   </section>
+
   <!-- Form, Components, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
       ðŸ“ Form Components
     </h2>
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Input, Demo -->
       <BitsInput
@@ -83,6 +89,7 @@ import type { Case } from '$lib/types';
         <label class="block text-sm font-medium text-yorha-text-primary">
           Case Type <span class="text-yorha-accent">*</span>
         </label>
+
         <BitsSelect
           options={caseTypes}
           bind:value={selectedCaseType}
@@ -95,13 +102,15 @@ import type { Case } from '$lib/types';
       </div>
     </div>
   </section>
+
   <!-- Dialog, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
       ðŸ’¬ Dialog Components
     </h2>
+
     <!-- Dialog, Trigger, Button -->
-    <Button.Root, class="bits-btn"
+    <Button.Root class="bits-btn"
       variant="primary"
       size="md"
       onclick={() =>
@@ -116,7 +125,7 @@ showDialog = true}
       description="Enter the details for a new case file"
       size="lg"
     >
-      {#snippet children()}
+  {#snippet children()}
         <div class="space-y-4">
           <!-- Case, Name, Input -->
           <BitsInput
@@ -141,6 +150,7 @@ showDialog = true}
             <label class="block text-sm font-medium text-yorha-text-primary">
               Case Type <span class="text-yorha-accent">*</span>
             </label>
+
             <BitsSelect
               options={caseTypes}
               bind:value={selectedCaseType}
@@ -151,13 +161,14 @@ showDialog = true}
         </div>
       {/snippet}
 {#snippet footer()}
-  <Button.Root, class="bits-btn"
+  <Button.Root class="bits-btn"
     variant="ghost"
     onclick={() => showDialog = false}
   >
     Cancel
   </Button>
-  <Button.Root, class="bits-btn"
+
+  <Button.Root class="bits-btn"
     variant="primary"
     onclick={handleCreateCase}
     disabled={!caseName || !clientName || !selectedCaseType}
@@ -165,29 +176,34 @@ showDialog = true}
     Create Case
   </Button>
 {/snippet}
-    </BitsDialog>
+  </BitsDialog>
   </section>
+
   <!-- Cases, List, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
       ðŸ“Š Case Management
     </h2>
+
     <div class="grid">
-      {#each Array.isArray(sampleCases) ? sampleCases : [] as sampleCase}
+  {#each Array.isArray(sampleCases) ? sampleCases : [] as sampleCase}
         <div class="border border-yorha-border bg-yorha-bg-secondary rounded-lg">
           <div class="flex items-center">
             <div class="space-y-1">
               <h3 class="font-medium text-yorha-text-primary">
                 {sampleCase.name}
-              </h3>
+</h3>
+
               <p class="text-sm text-yorha-text-secondary">
                 {sampleCase.type} â€¢ {sampleCase.status}
-              </p>
+</p>
+
 <div class="flex">
-  <Button.Root, class="bits-btn" variant="ghost" size="sm">
+  <Button.Root class="bits-btn" variant="ghost" size="sm">
     <Eye class="w-4" />
   </Button>
-  <Button.Root, class="bits-btn" variant="ghost" size="sm">
+
+  <Button.Root class="bits-btn" variant="ghost" size="sm">
     <Edit class="w-4" />
   </Button>
 </div>
@@ -195,34 +211,46 @@ showDialog = true}
           </div>
         </div>
       {/each}
-    </div>
+  </div>
   </section>
+
   <!-- Component, Status -->
   <section class="space-y-4 border-t border-yorha-border">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
       âœ… Component Status
     </h2>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
       <div class="bg-green-500/10 border border-green-500/20 rounded">
         <div class="text-green-400">âœ… BitsDialog</div>
+
         <div class="text-yorha-text-secondary">Accessible modal component</div>
       </div>
+
       <div class="bg-green-500/10 border border-green-500/20 rounded">
         <div class="text-green-400">âœ… BitsSelect</div>
+
         <div class="text-yorha-text-secondary">Dropdown with search</div>
       </div>
+
       <div class="bg-green-500/10 border border-green-500/20 rounded">
         <div class="text-green-400">âœ… BitsInput</div>
+
         <div class="text-yorha-text-secondary">Enhanced input fields</div>
       </div>
+
       <div class="bg-green-500/10 border border-green-500/20 rounded">
         <div class="text-green-400">âœ… Button</div>
+
         <div class="text-yorha-text-secondary">Svelte, 5 compatible</div>
       </div>
+
       <div class="bg-blue-500/10 border border-blue-500/20 rounded">
         <div class="text-blue-400">ðŸ”¨ More Coming</div>
+
         <div class="text-yorha-text-secondary">Expanding library</div>
       </div>
     </div>
   </section>
 </div>;
+

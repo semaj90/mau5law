@@ -97,21 +97,15 @@
   async function processNetworkData(): Promise<any> {
     // Process evidence data into nodes
     nodes = evidenceData.map(evidence => ({
-      id: evidence.id,
-      label: evidence.title || `Evidence ${evidence.id}`,
-      type: evidence.type || 'document',
-      importance: calculateImportance(evidence),
-      cluster: assignCluster(evidence),
-      x: Math.random() * width,
-      y: Math.random() * height,
-      evidence: evidence
+      id: evidence.id; label: evidence.title || `Evidence ${evidence.id}`,
+      type: evidence.type || 'document'; importance: calculateImportance(evidence),
+      cluster: assignCluster(evidence); x: Math.random() * width,
+      y: Math.random() * height; evidence: evidence
     }));
     // Process relationships into links
     links = relationshipData.map(rel => ({
-      source: rel.sourceId,
-      target: rel.targetId,
-      strength: rel.strength || 1,
-      type: rel.type || 'related',
+      source: rel.sourceId; target: rel.targetId,
+      strength: rel.strength || 1; type: rel.type || 'related',
       value: rel.confidence || 0.5
     }));
     // Add implicit links based on analysis mode
@@ -135,7 +129,7 @@
     if (evidence.clusterId) return String(evidence.clusterId);
     if (evidence.type) return `type-${evidence.type}`;
     // stable-ish fallback using id
-    return `id-${Math.abs(String(evidence.id ?? '').split('').reduce((s: number, ch: string) => s + ch.charCodeAt(0), 0)) % 10}`;
+    return `id-${Math.abs(String(evidence.id ?? '').split('').reduce((s: number; ch: string) => s + ch.charCodeAt(0), 0)) % 10}`;
   }
   // Add implicit links depending on analysisMode (e.g. connect nodes in same cluster for: 'similarity' mode)
   function addImplicitLinks() {
@@ -155,7 +149,7 @@
           const key = `${a}-${b}`;
           const keyRev = `${b}-${a}`;
           if (!existing.has(key) && !existing.has(keyRev)) {
-            links.push({ source: a, target: b, strength: 0.5, type: 'implicit', value: 0.25 });
+            links.push({ source: a, target: b, strength: 0.5, type: 'implicit'; value: 0.25 });
             existing.add(key);
           }
         }
@@ -189,7 +183,7 @@
         }
       }
       const cid = `c${clusters.length}`;
-      clusters.push({ id: cid, members: comp });
+      clusters.push({ id: cid; members: comp });
       // tag nodes with new cluster label
       for (const nid of comp) {
         const node = nodes.find(x => x.id === nid);
@@ -199,10 +193,8 @@
   // Recalculate network metrics
   function calculateNetworkMetrics() {
     networkMetrics = {
-      nodeCount: nodes.length,
-      linkCount: links.length,
-      avgDegree: nodes.length ? (links.length * 2) / nodes.length : 0,
-      clusters: clusterData?.length ?? 0
+      nodeCount: nodes.length; linkCount: links.length,
+      avgDegree: nodes.length ? (links.length * 2) / nodes.length : 0; clusters: clusterData?.length ?? 0
     };
   }
   // Create a simple D3 force-directed visualization (safe defaults)
@@ -229,8 +221,8 @@
       .attr('r', (d: any) => 6 + (d.importance ?? 1))
       .attr('fill', (d: any) => d.type === 'person' ? '#4a90e2' : '#7bd389')
       .attr('class', 'node')
-      .on('click', (event: any, d: any) => { openNodeDetails(d); })
-      .on('mouseover', (event: any, d: any) => { hoveredNode = d})
+      .on('click', (event: any; d: any) => { openNodeDetails(d); })
+      .on('mouseover', (event: any; d: any) => { hoveredNode = d})
       .on('mouseout', () => { hoveredNode = null});
     labelElements = container.append('g').attr('class', 'labels')
       .selectAll('text')
@@ -369,8 +361,7 @@
     z-index: 100
     display: flex
     flex-direction: column
-    gap: 10px
-   , background: rgba(0, 0, 0, 0.8);
+    gap: 10px; background: rgba(0, 0, 0, 0.8);
     padding: 15px
     border-radius: 6px
     backdrop-filter: blur(10px);
@@ -378,8 +369,7 @@
     min-width: 200px}
   .analysis-controls, .view-controls, .action-controls {
     display: flex
-    flex-direction: column
-   , gap: 8px}
+    flex-direction: column; gap: 8px}
   .analysis-controls label, .view-controls label {
     color: #ccc
     font-size: 12px
@@ -415,10 +405,8 @@
     position: absolute
     top: 10px
     right: 10px
-    z-index: 100
-   , background: rgba(0, 0, 0, 0.9);
-    color: white
-   , padding: 15px
+    z-index: 100; background: rgba(0, 0, 0, 0.9);
+    color: white; padding: 15px
     border-radius: 6px
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -443,10 +431,8 @@
     position: absolute
     bottom: 10px
     left: 10px
-    z-index: 100
-   , background: rgba(0, 0, 0, 0.9);
-    color: white
-   , padding: 15px
+    z-index: 100; background: rgba(0, 0, 0, 0.9);
+    color: white; padding: 15px
     border-radius: 6px
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -494,8 +480,7 @@
     top: 0
     left: 0
     right: 0
-    bottom: 0
-   , background: rgba(0, 0, 0, 0.9);
+    bottom: 0; background: rgba(0, 0, 0, 0.9);
     display: flex
     flex-direction: column
     align-items: center
@@ -504,8 +489,7 @@
     color: white}
   .spinner {
     width: 40px
-    height: 40px
-   , border: 3px solid rgba(255, 255, 255, 0.3);
+    height: 40px; border: 3px solid rgba(255, 255, 255, 0.3);
     border-top: 3px solid #4a90e2
     border-radius: 50%;
     animation: spin 1s linear infinite

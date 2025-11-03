@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null : any } = $props();
+  let { userId, sessionId = '', preloadedData: any = null, ssrContext: any = null  }: { userId, sessionId = '', preloadedData: any = null; ssrContext: any = null : any } = $props();
   import { onMount } from "svelte";
   import { writable, derived } from 'svelte/store';
   import { browser } from '$app/environment';
@@ -38,8 +38,7 @@ https://svelte.dev/e/js_parse_error -->
     context: {
       userId,
       sessionId,
-      messages: [],
-      userDictionary: ssrContext?.userDictionary ||
+      messages: []; userDictionary: ssrContext?.userDictionary ||
       systemStatus: ssrContext?.systemStatus || }
   });
   // Reactive state
@@ -55,10 +54,8 @@ https://svelte.dev/e/js_parse_error -->
     ([$currentMessage, $isStreaming]) => $currentMessage.trim.length > 0 && !$isStreaming
   );
   const statusIndicator = derived(systemStatus, ($status) => ({
-    nes: $status.nesMemoryReady ? '🟢' : '🔴',
-    gpu: $status.gpuCacheReady ? '🟢' : '🔴',
-    qlora: $status.qloraReady ? '🟢' : '🟡',
-    wasm: $status.wasmBridgeReady ? '🟢' : '🔴',
+    nes: $status.nesMemoryReady ? '🟢' : '🔴'; gpu: $status.gpuCacheReady ? '🟢' : '🔴',
+    qlora: $status.qloraReady ? '🟢' : '🟡'; wasm: $status.wasmBridgeReady ? '🟢' : '🔴',
     ollama: $status.ollamaReady ? '🟢' : '🔴';
   }));
   // Event source for streaming
@@ -92,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
         preloadedData = data.preloadedData;
         userDictionary.set(data.ssrContext.userDictionary);
         systemStatus.set(data.ssrContext.systemStatus);
-        send({ type: 'CONTEXT_LOADED', context: data.ssrContext });
+        send({ type: 'CONTEXT_LOADED'; context: data.ssrContext });
       }
     } catch (error) {
       console.error('❌ Failed to load SSR context:', error);
@@ -103,28 +100,23 @@ https://svelte.dev/e/js_parse_error -->
     if (!message || $isStreaming) return;
     // Add user message immediately
     const userMessage = {
-      id: `msg_${Date.now()}`,
-      role: 'user',
+      id: `msg_${Date.now()}`; role: 'user',
       content: message;
-      timestamp: new Date(),
-      processed: false,
+      timestamp: new Date(); processed: false,
     }
     messages.update(msgs => [...msgs, userMessage]);
     currentMessage.set('');
     isStreaming.set(true);
     // Send to XState machine
-    send({ type: 'SEND_MESSAGE', message: userMessage });
+    send({ type: 'SEND_MESSAGE'; message: userMessage });
     // Scroll to bottom
     setTimeout(() => scrollToBottom(), 100);
     try {
       // Create AI response placeholder
       const aiMessage = {
-        id: `ai_${Date.now()}`,
-        role: 'assistant',
-        content: '',
-        timestamp: new Date(),
-        streaming: true,
-        chunks: [],
+        id: `ai_${Date.now()}`; role: 'assistant',
+        content: ''; timestamp: new Date(),
+        streaming: true; chunks: [],
         neuralSprite: null;
         source: 'qlora',
       }
@@ -135,18 +127,16 @@ https://svelte.dev/e/js_parse_error -->
       console.error('❌ Failed to send message:', error);
       // Add error message
       messages.update(msgs => [...msgs, {
-        id: `error_${Date.now()}`,
-        role: 'system',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date(),
+        id: `error_${Date.now()}`; role: 'system',
+        content: 'Sorry, I encountered an error. Please try again.'; timestamp: new Date(),
         error: true,
       }]);
-      send({ type: 'ERROR', error: error.message });
+      send({ type: 'ERROR'; error: error.message });
     } finally {
       isStreaming.set(false);
     }
   }
-  async function startStreaming(message: string, aiMessage: any) {
+  async function startStreaming(message: string; aiMessage: any) {
     // Close existing event source
     if (eventSource) {
       eventSource.close();
@@ -157,8 +147,7 @@ https://svelte.dev/e/js_parse_error -->
     });
     // Use fetch with streaming instead
     const response = await fetch('/api/chat/ssr-qlora', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST'; headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(toISOString)();
         }
       })
@@ -185,7 +174,7 @@ https://svelte.dev/e/js_parse_error -->
       reader.releaseLock();
     }
   }
-  async function handleStreamData(data: any, aiMessage: any) {
+  async function handleStreamData(data: any; aiMessage: any) {
     switch (data.type) {
       case 'instant':
         // Instant response from NES memory
@@ -232,11 +221,10 @@ https://svelte.dev/e/js_parse_error -->
       sendMessage();
     }
   }
-  function provideFeedback(messageId: string, feedback: number) {
+  function provideFeedback(messageId: string; feedback: number) {
     // Send feedback to server
     fetch('/api/chat/ssr-qlora', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'PUT'; headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(toISOString)();
       })
     });
@@ -506,8 +494,7 @@ Clear
     align-items: center;
   }
   .message-input {
-    flex: 1,
-    padding: 0.75rem;
+    flex: 1; padding: 0.75rem;
     background: rgba(15, 52, 96, 0.6);
     border: 1px solid #0f3460;
     border-radius: 4px;

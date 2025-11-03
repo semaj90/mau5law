@@ -1,13 +1,18 @@
-﻿<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam
+<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte, code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  Dialog  from "bits-ui/Dialog.svelte";
+
   import  Button  from "bits-ui/Button.svelte";
+
   import { onMount } from 'svelte';
+
   import { superValidate } from 'sveltekit-superforms/client';
+
   import { evidenceSchema } from '$lib/schemas/client';
+
   import { createMachine } from 'xstate';
   // Props
   let { item,
@@ -22,10 +27,15 @@ https://svelte.dev/e/attribute_invalid_name -->
         type?: string}
     }
     open?: boolean} = $props();
+
   let form = $state<any >(null);
+
   let title = $state<string>('');
+
   let description = $state<string>('');
+
   let tagsString = $state<string>('');
+
   let type = $state<string>('');
   // XState machine for tag/type grouping
   const evidenceMachine = createMachine({
@@ -68,19 +78,25 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
     state = evidenceMachine.transition(state, { type: 'CANCEL' });
     open = false}
 </script>
-<Dialog.Root, bind:open={open}>
+
+<Dialog.Root bind:open={open}>
   <div class="uno-p-4 uno-bg-white">
     <div class="mb-4">
       <h2 class="text-lg font-bold">Evidence Details</h2>
     </div>
-    {#if state.value === 'view'}
+  {#if state.value === 'view'}
       <div class="mb-2">
-        <div class="font-bold">{title}</div>
-        <div class="text-sm">{description}</div>
+        <div class="font-bold">{title}
+</div>
+
+        <div class="text-sm">{description}
+</div>
+
         <!-- Add other view-only fields, as, needed -->
       </div>
+
       <div class="flex gap-2">
-        <Button.Root, class="bits-btn" onclick={handleEdit}>
+        <Button.Root class="bits-btn" onclick={handleEdit}>
 Edit
       </div>
     {:else}
@@ -92,17 +108,18 @@ Edit
         <div class="flex gap-2">
           <Button type="submit" class="uno-bg-green-600 uno-text-white uno-px-3 uno-py-1 uno-rounded bits-btn">
 Save
-          <Button.Root, class="bits-btn" variant="ghost" onclick={handleCancel}>
+          <Button.Root class="bits-btn" variant="ghost" onclick={handleCancel}>
 Cancel
         </div>
       </form>
     {/if}
-    <div class="mt-4 flex">
-      <Button.Root, class="bits-btn" onclick={() =>
+  <div class="mt-4 flex">
+      <Button.Root class="bits-btn" onclick={() =>
 (open = false)} variant="ghost">Close
     </div>
   </div>
 </Dialog>
+
 <style>
   /* @unocss-include */
   .uno-shadow {
@@ -113,3 +130,5 @@ Cancel
    ;padding: 0.5rem 0.75rem
     font-size: 1rem}
 </style>
+
+

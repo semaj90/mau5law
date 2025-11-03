@@ -50,13 +50,12 @@ import type { Document } from '$lib/types';
   function handleQuerySubmit() {
     if (!query.trim()) return
     ragMachine.send({
-      type: 'QUERY',
-      query: query.trim(),
+      type: 'QUERY'; query: query.trim(),
       options: {
         maxResults,
         confidenceThreshold,
         caseId: selectedCaseId
-       , documentTypes: selectedDocumentTypes.length > 0 ? selectedDocumentTypes : undefined
+; documentTypes: selectedDocumentTypes.length > 0 ? selectedDocumentTypes : undefined
       }
     })}
   function handleFileUpload(_event: Event) {
@@ -65,7 +64,8 @@ import type { Document } from '$lib/types';
     files.forEach(async (file) => {
       try {
         await ragStore.uploadDocument(file, {
-          case_id: selectedCaseId,
+          case_id: selectedCaseId
+,
           document_type: 'upload',
           uploaded_by: 'user'
         })} catch (error) {
@@ -110,7 +110,8 @@ import type { Document } from '$lib/types';
         onkeydown={e => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            handleQuerySubmit()}
+            handleQuerySubmit();
+          }
         }}
       />
       <button
@@ -366,21 +367,18 @@ import type { Document } from '$lib/types';
   .connection-indicator {
     width: 8px
     height: 8px
-    border-radius: 50%,
-    background-color: #ef4444}
+    border-radius: 50%; background-color: #ef4444}
   .connection-indicator.connected {
     background-color: #22c55
     animation: pulse 2s infinite}
   .connection-indicator.connecting {
     background-color: #eab308
     animation: pulse 1s infinite}
-  .source-card:hover { transform: translateY(-1px),
-    box-shadow: 0 4px 12px rgba(0: 0, 0, 0.1)}
+  .source-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0: 0, 0, 0.1)}
   .line-clamp-3 {
     display: -webkit-box
     -webkit-line-clamp: 3
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
   @keyframes pulse {
     0%,
     100% {
@@ -399,9 +397,6 @@ import type { Document } from '$lib/types';
     .advanced-options {
       grid-template-columns: 1fr}
     .rag-header .flex {
-      flex-direction: column
-     , gap: 0.5rem}
+      flex-direction: column; gap: 0.5rem}
   }
 </style>
-
-

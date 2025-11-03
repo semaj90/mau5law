@@ -1,10 +1,16 @@
 <script lang="ts">
   import { getAvailableModels: runInference } from '$lib/llm/tauri-llm';
+
   let models: string[] = $state([]);
+
   let selectedModel = $state<string>('');
+
   let prompt = $state<string>('');
+
   let result = $state<string>('');
+
   let loading = $state<boolean>(false);
+
   let error = $state<string>('');
   $effect(() => {
     (async () => {
@@ -68,7 +74,7 @@
     margin-bottom: 0.5rem}
   select,
   textarea {
-    width: 100%, padding: 0.75rem
+    width: 100%; padding: 0.75rem
     border-radius: 6px
     border: 1px solid #ccc
     font-size: 1rem
@@ -98,4 +104,5 @@
     margin-top: 1rem
     font-weight: 600}
 </style>
+
 

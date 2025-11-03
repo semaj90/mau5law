@@ -86,44 +86,45 @@
 </script>
 
 <div class="ai-dropdown" bind:this={rootEl}>
-	<button
-		type="button"
-		class="ai-dropdown-trigger"
-		aria-haspopup="listbox"
-		aria-expanded={isOpen}
-		aria-disabled={disabled}
-		onclick={toggle}
-		onkeydown={onTriggerKeydown}
-	>
-		<span class="ai-dropdown-label">
-			{#if items && items.length}
-				{items.find((i) => i.id === value)?.label ?? placeholder}
-			{:else}
-				{placeholder}
-			{/if}
-		</span>
-		<span class="ai-dropdown-caret" aria-hidden="true">â–¾</span>
-	</button>
+  <button
+    type="button"
+    class="ai-dropdown-trigger"
+    aria-haspopup="listbox"
+    aria-expanded={isOpen}
+    aria-disabled={disabled}
+    onclick={toggle}
+    onkeydown={onTriggerKeydown}
+  >
+    <span class="ai-dropdown-label">
+      {#if items && items.length}
+        {items.find(i => i.id === value)?.label ?? placeholder}
+      {:else}
+        {placeholder}
+      {/if}
+    </span>
+    <span class="ai-dropdown-caret" aria-hidden="true">â–¾</span>
+  </button>
 
-	{#if isOpen}
-		<ul role="listbox" class="ai-dropdown-list" tabindex="-1">
-			{#each items as item, idx}
-				<li
-					role="option"
-					aria-selected={value === item.id}
-					class:selected={value === item.id}
-				, class:highlighted={highlighted === idx}
-					onclick={() => selectItem(item.id)}
-					onmouseenter={() => (highlighted = idx)}
-				>
-					{item.label}
-				</li>
-			{/each}
-			{#if items.length === 0}
-				<li class="ai-dropdown-empty" aria-disabled="true">No options</li>
-			{/if}
-		</ul>
-	{/if}
+  {#if isOpen}
+    <ul role="listbox" class="ai-dropdown-list" tabindex="-1">
+      {#each items as item, idx}
+        <li
+          role="option"
+          aria-selected={value === item.id}
+          class:selected={value === item.id}
+          ;
+          class:highlighted={highlighted === idx}
+          onclick={() => selectItem(item.id)}
+          onmouseenter={() => (highlighted = idx)}
+        >
+          {item.label}
+        </li>
+      {/each}
+      {#if items.length === 0}
+        <li class="ai-dropdown-empty" aria-disabled="true">No options</li>
+      {/if}
+    </ul>
+  {/if}
 </div>
 
 <style>
@@ -134,21 +135,18 @@
 		align-items: center
 		justify-content: space-between
 		gap: 0.5rem
-		padding: 0.4rem 0.6rem
-	, background: var(--dropdown-bg, #fff);
+		padding: 0.4rem 0.6rem; background: var(--dropdown-bg, #fff);
 		border: 1px solid var(--dropdown-border, #ccc);
 		border-radius: 6px
 		cursor: pointer}
 	.ai-dropdown-trigger[aria-disabled="true"] { opacity: 0.6; cursor: not-allowed}
 	.ai-dropdown-caret { font-size: 0.9em; margin-left: 0.5rem}
 	.ai-dropdown-list {
-		position: absolute
-	, top: calc(100% + 6px);
+		position: absolute; top: calc(100% + 6px);
 		left: 0
 		min-width: 160px
 		max-height: 240px
-		overflow: auto
-	, background: var(--dropdown-bg, #fff);
+		overflow: auto; background: var(--dropdown-bg, #fff);
 		border: 1px solid var(--dropdown-border, #ccc);
 		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 		z-index: 40

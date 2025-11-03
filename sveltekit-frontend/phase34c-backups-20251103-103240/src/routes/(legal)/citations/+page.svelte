@@ -10,8 +10,7 @@ import type { Case } from '$lib/types';
     formattedCitation: string
     quotedText: string
     legalPrinciple: string
-    relevanceScore: string
-   , isKeyAuthority: boolean
+    relevanceScore: string; isKeyAuthority: boolean
     documentTitle?: string
     caseTitle?: string}
 
@@ -146,20 +145,17 @@ import type { Case } from '$lib/types';
     margin-bottom: 2rem}
 
   .page-header h1 {
-    font-size: 2.5rem
-   , color: var(--text-primary, #00ff00);
+    font-size: 2.5rem; color: var(--text-primary, #00ff00);
     margin-bottom: 0.5rem
     text-shadow: 0, 0 15px currentColor}
 
   .search-card {
-    margin-bottom: 2rem
-   , background: var(--surface-secondary, #111111);
+    margin-bottom: 2rem; background: var(--surface-secondary, #111111);
     border: 1px solid var(--border-primary, #00ff00)}
 
   .search-controls {
     display: grid
-    grid-template-columns: 2fr 1fr auto
-   , gap: 1rem
+    grid-template-columns: 2fr 1fr auto; gap: 1rem
     align-items: center}
 
   .search-field,
@@ -167,8 +163,7 @@ import type { Case } from '$lib/types';
     background: var(--surface-primary, #0a0a0a);
     border: 1px solid rgba(0, 255, 0, 0.3);
     border-radius: 4px
-    padding: 0.75rem
-   , color: var(--text-primary, #ffffff);
+    padding: 0.75rem; color: var(--text-primary, #ffffff);
     font-family: inherit}
 
   .search-field:focus,
@@ -179,16 +174,13 @@ import type { Case } from '$lib/types';
   .loading-state,
   .empty-state {
     text-align: center
-    padding: 4rem 2rem
-   , color: var(--text-secondary, #888888)}
+    padding: 4rem 2rem; color: var(--text-secondary, #888888)}
 
   .loading-spinner {
     width: 40px
-    height: 40px
-   , border: 3px solid rgba(0, 255, 0, 0.3);
+    height: 40px; border: 3px solid rgba(0, 255, 0, 0.3);
     border-top: 3px solid var(--text-primary, #00ff00);
-    border-radius: 50%,
-    animation: spin 1s linear infinite
+    border-radius: 50%; animation: spin 1s linear infinite
     margin: 0 auto 1rem}
 
   @keyframes spin {
@@ -210,8 +202,7 @@ import type { Case } from '$lib/types';
     border: 1px solid var(--border-primary, #00ff00);
     transition: all 0.3s ease}
 
-  .citation-card:hover { transform: translateY(-2px),
-    box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2)}
+  .citation-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2)}
 
   .citation-type {
     color: var(--text-primary, #00ff00);
@@ -220,27 +211,22 @@ import type { Case } from '$lib/types';
     gap: 0.5rem}
 
   .key-authority-badge { background: var(--accent-primary, #ff6600);
-    color: white
-   , padding: 0.2rem 0.4rem
+    color: white; padding: 0.2rem 0.4rem
     border-radius: 3px
     font-size: 0.7rem
     font-weight: bold}
 
   .formatted-citation {
     font-family: 'Times New Roman', serif
-    font-style: italic
-   , color: var(--text-primary, #ffffff);
+    font-style: italic; color: var(--text-primary, #ffffff);
     margin-bottom: 1rem
-    padding: 0.75rem
-   , background: rgba(0, 255, 0, 0.05);
+    padding: 0.75rem; background: rgba(0, 255, 0, 0.05);
     border-left: 3px solid var(--text-primary, #00ff00)}
 
   .quoted-text {
-    font-style: italic
-   , color: var(--text-secondary, #cccccc);
+    font-style: italic; color: var(--text-secondary, #cccccc);
     margin: 1rem 0
-    padding: 0.75rem
-   , background: rgba(0, 0, 0, 0.3);
+    padding: 0.75rem; background: rgba(0, 0, 0, 0.3);
     border-left: 3px solid var(--text-secondary, #888888)}
 
   .legal-principle {
@@ -259,8 +245,7 @@ import type { Case } from '$lib/types';
     font-weight: bold}
 
   .citation-actions {
-    display: flex
-   , gap: 0.5rem}
+    display: flex; gap: 0.5rem}
 
   @media (max-width: 768px) {
     .search-controls {

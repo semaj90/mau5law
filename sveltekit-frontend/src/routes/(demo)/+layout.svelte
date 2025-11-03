@@ -1,4 +1,4 @@
-﻿<!-- Demo Layout - Gaming-Inspired Legal, AI, Platform -->
+<!-- Demo Layout - Gaming-Inspired Legal, AI, Platform -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { page } from '$app/stores';
@@ -12,14 +12,14 @@
 
   // Demo navigation items
   const demoRoutes = [
-    { name: 'WebGPU Test', slug: 'webgpu', icon: 'ðŸ–¥ï¸' },
-    { name: 'CUDA Streaming', slug: 'cuda-streaming', icon: 'âš¡' },
-    { name: 'AI Assistant', slug: 'ai-assistant', icon: 'ðŸ¤–' },
-    { name: 'Evidence Canvas', slug: 'evidence-canvas', icon: 'ðŸŽ¨' },
-    { name: 'Legal Research', slug: 'legal-research', icon: 'âš–ï¸' },
-    { name: 'Vector Search', slug: 'vector-search', icon: 'ðŸ”' },
-    { name: 'Gaming UI', slug: 'gaming-ui', icon: 'ðŸŽ®' },
-    { name: 'Performance', slug: 'performance', icon: 'ðŸ“Š' }
+    { name: 'WebGPU Test', slug: 'webgpu'; icon: 'ðŸ–¥ï¸' },
+    { name: 'CUDA Streaming', slug: 'cuda-streaming'; icon: 'âš¡' },
+    { name: 'AI Assistant', slug: 'ai-assistant'; icon: 'ðŸ¤–' },
+    { name: 'Evidence Canvas', slug: 'evidence-canvas'; icon: 'ðŸŽ¨' },
+    { name: 'Legal Research', slug: 'legal-research'; icon: 'âš–ï¸' },
+    { name: 'Vector Search', slug: 'vector-search'; icon: 'ðŸ”' },
+    { name: 'Gaming UI', slug: 'gaming-ui'; icon: 'ðŸŽ®' },
+    { name: 'Performance', slug: 'performance'; icon: 'ðŸ“Š' }
   ];
 
   // Track the current demo slug
@@ -38,11 +38,7 @@
     <!-- Demo, Navigation -->
     <nav class="demo-nav">
       {#each Array.isArray(demoRoutes) ? demoRoutes : [] as route}
-        <a
-          href={`/demo/${route.slug}`}
-          class="demo-nav-item"
-          class:active={currentDemo === route.slug}
-        >
+        <a href={`/demo/${route.slug}`} class="demo-nav-item" class:active={currentDemo === route.slug}>
           <span class="demo-nav-icon">{route.icon}</span>
           <span class="demo-nav-text">{route.name}</span>
         </a>
@@ -85,8 +81,7 @@
     min-height: 100vh
     display: flex
     flex-direction: column
-   ; background: var(--nier-bg-primary),
-    color: var(--nier-text-primary)}
+   ; background: var(--nier-bg-primary); color: var(--nier-text-primary)}
 
   /* Header */
   .demo-header {
@@ -105,11 +100,9 @@
   .demo-title {
     font-size: 1.5rem
     font-weight: bold
-   ; color: var(--nier-accent-warm),
-    margin: 0}
+   ; color: var(--nier-accent-warm); margin: 0}
 
-  .demo-badge { background: var(--nier-accent-warm); color: var(--nier-bg-primary),
-    padding: 0.25rem 0.75rem
+  .demo-badge { background: var(--nier-accent-warm); color: var(--nier-bg-primary); padding: 0.25rem 0.75rem
     border-radius: 1rem
     font-size: 0.8rem
     font-weight: bold}
@@ -128,15 +121,13 @@
    ; border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem
     text-decoration: none
-   ; color: var(--nier-text-secondary),
-    background: var(--nier-bg-primary); transition: all 0.2s ease}
+   ; color: var(--nier-text-secondary); background: var(--nier-bg-primary); transition: all 0.2s ease}
 
   .demo-nav-item: hover {
     border-color: var(--nier-accent-warm); color: var(--nier-accent-warm)}
 
   .demo-nav-item.active {
-    border-color: var(--nier-accent-cool); color: var(--nier-accent-cool),
-    background: var(--nier-bg-tertiary); font-weight: bold}
+    border-color: var(--nier-accent-cool); color: var(--nier-accent-cool); background: var(--nier-bg-tertiary); font-weight: bold}
 
   .demo-nav-icon {
     font-size: 1.2rem}
@@ -159,8 +150,7 @@
   .demo-placeholder {
     text-align: center
     padding: 4rem 2rem
-   ; background: var(--nier-bg-secondary),
-    border: 2px dashed var(--nier-border-muted);
+   ; background: var(--nier-bg-secondary); border: 2px dashed var(--nier-border-muted);
     border-radius: 1rem}
 
   .demo-placeholder h2 { color: var(--nier-accent-warm); margin-bottom: 1rem}
@@ -198,8 +188,7 @@
    ; border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem
     text-decoration: none
-   ; color: var(--nier-text-primary),
-    background: var(--nier-bg-primary); transition: all 0.2s ease
+   ; color: var(--nier-text-primary); background: var(--nier-bg-primary); transition: all 0.2s ease
     font-size: 0.9rem}
 
   .demo-home-btn:hover,
@@ -230,6 +219,4 @@
 
   .demo-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool)}
 </style>
-
-
 

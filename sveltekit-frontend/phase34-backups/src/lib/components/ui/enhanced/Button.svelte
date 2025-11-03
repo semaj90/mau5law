@@ -37,7 +37,6 @@
     transform: translateY(0);
   }
   .yorha-buttondisabled {
-    transform: none
-   , cursor: not-allowed}
+    transform: none; cursor: not-allowed}
 </style>
 

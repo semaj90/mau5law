@@ -4,15 +4,12 @@ import type { User } from '$lib/types';
 
   type PerformanceStats = {
     webgpuAvailable: boolean
-    webglAvailable: boolean
-   , userAgent: string};
-
+    webglAvailable: boolean; userAgent: string};
   let statusMessage = 'Not checked yet';
   let isSuccess = $state<boolean>(false);
   let errors: string[] = [];
   let recommendations: string[] = [];
-  let performanceStats: PerformanceStats = { webgpuAvailable: false,
-    webglAvailable: false,
+  let performanceStats: PerformanceStats = { webgpuAvailable: false; webglAvailable: false,
     userAgent: navigator.userAgent
   };
   let checking = $state<boolean>(false);
@@ -27,7 +24,6 @@ import type { User } from '$lib/types';
       return !!gl} catch {
       return false}
   }
-
   async function checkWebGPU(): Promise<boolean> {
     try {
       const hasGPU = !!(navigator as: any).gpu
@@ -36,7 +32,6 @@ import type { User } from '$lib/types';
       return !!adapter} catch {
       return false}
   }
-
   async function runDiagnostics(): Promise<any> {
     checking = true
     errors = [];
@@ -47,8 +42,7 @@ import type { User } from '$lib/types';
     const webgpu = await checkWebGPU();
 
     performanceStats = {
-      webgpuAvailable: webgpu,
-      webglAvailable: webgl,
+      webgpuAvailable: webgpu; webglAvailable: webgl,
       userAgent: navigator.userAgent
     };
 
@@ -125,7 +119,7 @@ import type { User } from '$lib/types';
     max-width: 900px
     margin: 0 auto
    ; padding: 2rem
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif
     color: #111827}
 
   header {
@@ -153,8 +147,7 @@ import type { User } from '$lib/types';
     border-radius: 8px
     font-weight: 600
     cursor: pointer}
-
- , button:hover:not(:disabled) {
+; button:hover:not(:disabled) {
     background: #1d4ed8}
 
   button:disabled {
@@ -202,6 +195,4 @@ import type { User } from '$lib/types';
 
   .recommendation-list li { color: #059669}
 </style>
-
-
 

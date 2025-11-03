@@ -1,6 +1,6 @@
 ﻿/** * Feedback System Types for Legal AI Platform */ export interface FeedbackSession { id: string, userId: string, startTime: Date, endTime?: Date; interactions: UserInteraction[], context: SessionContext}
 export interface UserInteraction { id: string, type: string, timestamp: Date, context: any, feedbackCollected?: boolean; rating?: number}
-export interface SessionContext { page: string, userAgent: string, viewport: { width: number, height, number} [key, string]: any}
+export interface SessionContext { page: string, userAgent: string, viewport: { width: number | height | number} [key, string]: any}
 export interface FeedbackTrigger { interactionId: string, type: 'response_quality' | 'search_relevance' | 'ui_experience' | 'ai_accuracy' | 'performance'; priority: 'low' | 'medium' | 'high'; delay: number, context: any, triggered?: boolean}
 export interface FeedbackAnalytics { totalInteractions: number, averageRating: number, completionRate: number, topIssues: string[], trends?: { daily: { date: string, rating: number, count: number }]; weekly: { week: string, rating: number, count: number }]} }export interface UserFeedbackContext { userId: string, sessionId: string, deviceType: 'mobile' | 'tablet' | 'desktop'; userType: 'attorney' | 'paralegal' | 'investigator' | 'admin'; experienceLevel?: 'junior' | 'mid' | 'senior' | 'expert'}
 export interface FeedbackMetrics { user_satisfaction: number, feature_adoption: number, error_rate: number, response_time: number, completion_rate: number}

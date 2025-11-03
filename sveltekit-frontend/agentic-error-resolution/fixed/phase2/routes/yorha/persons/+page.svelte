@@ -20,9 +20,42 @@
   const Shield = resolveIcon('Shield');
   // Persons of Interest data
   let persons = $state([
-    { id: 'POI-001', name: 'Marcus Chen', alias: 'The Ghost', threat_level: 'high', status: 'wanted', last_seen: '2024-01-15', location: 'Downtown District', description: 'Former cybersecurity expert turned corporate spy', cases: ['CASE-2024-087', 'CASE-2024-089'], photo: null },
-    { id: 'POI-002', name: 'Sarah Williams', alias: 'Red Phoenix', threat_level: 'medium', status: 'surveillance', last_seen: '2024-01-20', location: 'Tech Quarter', description: 'Data analyst with suspicious financial transactions', cases: ['CASE-2024-088'], photo: null },
-    { id: 'POI-003', name: 'Unknown Subject', alias: 'Digital Phantom', threat_level: 'critical', status: 'active', last_seen: '2024-01-22', location: 'Multiple Networks', description: 'Advanced persistent threat actor, identity unknown', cases: ['CASE-2024-087', 'CASE-2024-090'], photo: null },
+    {
+      id: 'POI-001',
+      name: 'Marcus Chen',
+      alias: 'The Ghost',
+      threat_level: 'high',
+      status: 'wanted',
+      last_seen: '2024-01-15',
+      location: 'Downtown District',
+      description: 'Former cybersecurity expert turned corporate spy',
+      cases: ['CASE-2024-087', 'CASE-2024-089'],
+      photo: null,
+    },
+    {
+      id: 'POI-002',
+      name: 'Sarah Williams',
+      alias: 'Red Phoenix',
+      threat_level: 'medium',
+      status: 'surveillance',
+      last_seen: '2024-01-20',
+      location: 'Tech Quarter',
+      description: 'Data analyst with suspicious financial transactions',
+      cases: ['CASE-2024-088'],
+      photo: null,
+    },
+    {
+      id: 'POI-003',
+      name: 'Unknown Subject',
+      alias: 'Digital Phantom',
+      threat_level: 'critical',
+      status: 'active',
+      last_seen: '2024-01-22',
+      location: 'Multiple Networks',
+      description: 'Advanced persistent threat actor, identity unknown',
+      cases: ['CASE-2024-087', 'CASE-2024-090'],
+      photo: null,
+    },
   ]);
   let searchQuery = $state('');
   let selectedThreatLevel = $state('all');
@@ -35,7 +68,7 @@
     status: 'surveillance',
     description: '',
     last_seen: '',
-    location: ''
+    location: '',
   });
   let isLoading = $state(false);
   let error: string | null = $state(null);
@@ -67,7 +100,8 @@
         return 'bg-yellow-500 text-black';
       case 'low':
         return 'bg-green-500 text-white';
-      default: return 'bg-gray-500 text-white';
+      default:
+        return 'bg-gray-500 text-white';
     }
   }
   function getStatusColor(status: string) {
@@ -80,7 +114,8 @@
         return 'bg-orange-600 text-white';
       case 'cleared':
         return 'bg-green-600 text-white';
-      default: return 'bg-gray-600 text-white';
+      default:
+        return 'bg-gray-600 text-white';
     }
   }
   // Load persons from API
@@ -134,7 +169,7 @@
         status: 'surveillance',
         description: '',
         last_seen: '',
-        location: ''
+        location: '',
       };
       showNewPersonModal = false;
       error = null;
@@ -364,7 +399,7 @@
     tabindex="0"
     aria-label="Close person modal"
     onclick={() => (showNewPersonModal = false)}
-    onkeydown={(e) => {
+    onkeydown={e => {
       // Close on Enter / Space / Escape for keyboard users
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
         showNewPersonModal = false;
@@ -378,8 +413,8 @@
       aria-modal="true"
       aria-labelledby="dialog-title"
       tabindex="-1"
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => e.stopPropagation()}
+      onclick={e => e.stopPropagation()}
+      onkeydown={e => e.stopPropagation()}
     >
       <header class="dialog-header">
         <!-- ensure the heading has the id referenced by aria-labelledby -->
@@ -393,21 +428,11 @@
         <div class="form-grid">
           <div class="form-field">
             <label class="form-label" for="full-name">FULL NAME</label>
-            <Input
-              id="full-name"
-              placeholder="Enter full name"
-              class="yorha-input"
-              bind:value={newPerson.name}
-            />
+            <Input id="full-name" placeholder="Enter full name" class="yorha-input" bind:value={newPerson.name} />
           </div>
           <div class="form-field">
             <label class="form-label" for="alias">ALIAS / CODENAME</label>
-            <Input
-              id="alias"
-              placeholder="Known alias or codename"
-              class="yorha-input"
-              bind:value={newPerson.alias}
-            />
+            <Input id="alias" placeholder="Known alias or codename" class="yorha-input" bind:value={newPerson.alias} />
           </div>
           <div class="form-field">
             <label class="form-label" for="threat-level">THREAT LEVEL</label>
@@ -466,7 +491,7 @@
               status: 'surveillance',
               description: '',
               last_seen: '',
-              location: ''
+              location: '',
             };
           }}
         >
@@ -528,7 +553,9 @@
     color: #888;
     text-decoration: none;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
     justify-content: space-between;
     font-size: 11px;
   }

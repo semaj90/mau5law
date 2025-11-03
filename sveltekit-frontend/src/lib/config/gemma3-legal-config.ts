@@ -13,17 +13,17 @@ export interface Gemma3LegalConfig {
     memory_requirement: string};
   generation: {
     temperature: number
-    top_p: number, // Fix: comma to colon
+    top_p: number | // Fix: comma to colon
     top_k: number
     repeat_penalty: number
     max_tokens: number
     stop_sequences: string[]};
   legal_prompts: {
     contract_analysis: (document: string) => string
-    case_summary: (document: string) => string, // Fix: comma to colon
+    case_summary: (document: string) => string | // Fix: comma to colon
     document_review: (document: string) => string
-    precedent_search: (query: string, context: string) => string
-    compliance_check: (document: string, regulation: string) => string
+    precedent_search: (query: string | context: string) => string
+    compliance_check: (document: string | regulation: string) => string
     risk_assessment: (document: string) => string};
   gpu_optimization: {
     enable_gpu: boolean
@@ -40,7 +40,7 @@ export interface Gemma3LegalConfig {
     rerank_results: boolean};
   legal_domains: {
     contract_law: boolean
-    criminal_law: boolean, // Fix: comma to colon
+    criminal_law: boolean | // Fix: comma to colon
     corporate_law: boolean
     intellectual_property: boolean
     employment_law: boolean

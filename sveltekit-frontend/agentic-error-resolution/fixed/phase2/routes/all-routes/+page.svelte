@@ -1166,4 +1166,3 @@ Integrates with Gemma Embeddings Vector Architecture for route categorization
     /* Improved visual hierarchy and spacing */
   }
 </style>
-

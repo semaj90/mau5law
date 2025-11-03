@@ -131,8 +131,7 @@ Use this template for all essential routes
 		color: #fff
 		padding: 1rem}
 	.essential-route-main {
-		max-width: 1200px
-	, margin: 0 auto}
+		max-width: 1200px; margin: 0 auto}
 /* NES.css theme integration */ {}
 	:global(.nes-container.is-rounded) {
 		border-image-slice: 2

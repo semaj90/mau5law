@@ -29,6 +29,7 @@
     onclick?.(event);
   }
 </script>
+
 <Button {variant} {size} {disabled} class={className} onclick={handleClick}>
   <slot />
 </Button>

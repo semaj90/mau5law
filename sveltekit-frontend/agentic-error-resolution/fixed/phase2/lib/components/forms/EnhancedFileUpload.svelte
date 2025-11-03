@@ -75,7 +75,7 @@ export default ;
   let isUploading = $state(false);
   let currentUploadFile = $state("");
   // Local form state (no $form store)
-  let formState = $state({ title: '', description: '', tags: [] as string[], caseId: caseId || '', evidenceType: '', confidentialityLevel: '', collectedBy: '', location: '', enableAiAnalysis: false
+  let formState = $state({ title: '', description: '', tags: [] as string[], caseId: caseId || '', evidenceType: '', confidentialityLevel: '', collectedBy: '', location: ''; enableAiAnalysis: false
     enableOcr: false
     enableEmbeddings: false
     enableSummarization false
@@ -83,21 +83,21 @@ export default ;
   let errors = $state<Record<string string[]>([]) >( );
   // Options
   const evidenceTypes = [
-    { value: "documents", label: "Documents" },
-    { value: "physical_evidence", label: "Physical Evidence" },
-    { value: "digital_evidence", label: "Digital Evidence" },
-    { value: "photographs", label: "Photographs" },
-    { value: "video_recording", label: "Video Recording" },
-    { value: "audio_recording", label: "Audio Recording" },
-    { value: "witness_testimony", label: "Witness Testimony" },
-    { value: "expert_opinion", label: "Expert Opinion" },
-    { value: "forensic_analysis", label: "Forensic Analysis" },
-    { value: "chain_of_custody", label: "Chain of Custody" },
+    { value: "documents"; label: "Documents" },
+    { value: "physical_evidence"; label: "Physical Evidence" },
+    { value: "digital_evidence"; label: "Digital Evidence" },
+    { value: "photographs"; label: "Photographs" },
+    { value: "video_recording"; label: "Video Recording" },
+    { value: "audio_recording"; label: "Audio Recording" },
+    { value: "witness_testimony"; label: "Witness Testimony" },
+    { value: "expert_opinion"; label: "Expert Opinion" },
+    { value: "forensic_analysis"; label: "Forensic Analysis" },
+    { value: "chain_of_custody"; label: "Chain of Custody" },
   ];
   const confidentialityLevels = [
-    { value: "low", label: "Low" },
-    { value: "medium", label: "Medium" },
-    { value: "high", label: "High" },
+    { value: "low"; label: "Low" },
+    { value: "medium"; label: "Medium" },
+    { value: "high"; label: "High" },
   ];
   // Helpers
   function formatFileSize(bytes: number): string {
@@ -193,7 +193,7 @@ export default ;
         await simulateUpload(file.name); // replace with actual upload logic later
         formDataArray.push(fileData);
       }
-      onupload?.({ files: selectedFiles, formData: formDataArray });
+      onupload?.({ files: selectedFiles; formData: formDataArray });
       // reset
       selectedFiles = [];
       previews = {}

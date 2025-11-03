@@ -3,8 +3,9 @@ https: //svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    text: string
-   , speed: number}
+    text: string;
+    speed: number;
+  }
   let { text = '', speed = 50 }: Props = $props();
   let output = $state<string>('');
   let i = $state<number>(0);
@@ -12,23 +13,29 @@ https: //svelte.dev/e/js_parse_error -->
   $effect(() => {
     if (text) {
       output = '';
-      i = 0
+      i = 0;
       if (intervalId) {
-        clearInterval(intervalId)}
+        clearInterval(intervalId);
+      }
       intervalId = setInterval(() => {
         if (i < text.length) {
           output += text[i];
-          i++} else {
+          i++;
+        } else {
           if (intervalId) {
             clearInterval(intervalId);
-            intervalId = null}
+            intervalId = null;
+          }
         }
-      }, speed)}
+      }, speed);
+    }
   });
 </script>
+
 <div class="space-y-4">
   {output}
 </div>
+
 <style>
   /* @unocss-include */
   .typewriter {
@@ -36,8 +43,7 @@ https: //svelte.dev/e/js_parse_error -->
     color: #6c757d
     min-height: 1.5rem
     border-right: 2px solid #007bff
-    padding-right: 5px
-   , animation: blink 1s infinite}
+    padding-right: 5px; animation: blink 1s infinite}
   @keyframes blink {
     0%,
     50% {
@@ -47,4 +53,3 @@ https: //svelte.dev/e/js_parse_error -->
       border-color: transparent}
   }
 </style>
-

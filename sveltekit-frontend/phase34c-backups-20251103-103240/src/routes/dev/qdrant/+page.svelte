@@ -250,7 +250,8 @@
                 onclick={() => {
                   if (page > 1) {
                     page--;
-                    runQuery()}
+                    runQuery();
+                  }
                 }}
                 disabled={page <= 1}>Prev</button
               >
@@ -259,7 +260,8 @@
                 class="bits-btn bits-ghost"
                 onclick={() => {
                   page++;
-                  runQuery()}}>Next</button
+                  runQuery();
+                }}>Next</button
               >
             </div>
           {/if}
@@ -272,13 +274,15 @@
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
           tabindex="0"
           onclick={() => {
-            previewOpen = false
-            restoreFocus()}}
+            previewOpen = false;
+            restoreFocus();
+          }}
           onkeydown={(e: KeyboardEvent) => {
             // make overlay keyboard-operable (Enter / Space)
             if (e.key === 'Enter' || e.key === ' ') {
-              previewOpen = false
-              restoreFocus()}
+              previewOpen = false;
+              restoreFocus();
+            }
           }}
           aria-hidden={!previewOpen}
         >
@@ -297,8 +301,9 @@
             <button
               class="absolute top-2 right-2 text-gray-500"
               onclick={() => {
-                previewOpen = false
-                restoreFocus()}}
+                previewOpen = false;
+                restoreFocus();
+              }}
               aria-label="Close">âœ•</button
             >
             <div class="flex items-center justify-between">
@@ -325,4 +330,3 @@
     </section>
   {/if}
 </div>
-

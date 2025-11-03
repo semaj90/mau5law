@@ -59,7 +59,8 @@ import type { Document } from '$lib/types';
       console.warn('Failed to generate metadata preview:', error);
       // Provide mock metadata as fallback
       metadata = {
-        mockData: true,
+        mockData: true
+,
         error: 'failure default to mock',
         fallbackMetadata: { fileName: file.name,
           fileSize: file.size,
@@ -253,9 +254,10 @@ import type { Document } from '$lib/types';
                 <button
                   type="button"
                   onclick={() => {
-                    selectedFile = null
-                    filePreview = null
-                    metadata = null}}
+                    selectedFile = null;
+                    filePreview = null;
+                    metadata = null;
+                  }}
                   class="text-sm text-red-600 hover:text-red-800"
                 >
                   Remove file
@@ -459,9 +461,7 @@ import type { Document } from '$lib/types';
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600"
               />
-              <label for="enableSummarization" class="ml-2 block text-sm">
-                Generate document summary
-              </label>
+              <label for="enableSummarization" class="ml-2 block text-sm"> Generate document summary </label>
             </div>
           </div>
         </div>
@@ -494,4 +494,3 @@ import type { Document } from '$lib/types';
     </form>
   </div>
 </div>
-

@@ -66,6 +66,7 @@ import type { Document } from '$lib/types';
   function loadSampleDocument() {
     reportText = sampleLegalDoc
     activeTab = 'input'}
+
   // Clear all content
   function clearAll() {
     reportText = '';
@@ -74,6 +75,7 @@ import type { Document } from '$lib/types';
     processingSteps = [];
     metadata = null
     activeTab = 'input'}
+
   // Handle file upload
   function handleFileUpload(event: Event) {
     const target = event.target as HTMLInputElement | null
@@ -87,6 +89,7 @@ import type { Document } from '$lib/types';
       reportText = e.target?.result as: string
       activeTab = 'input'}
     reader.readAsText(file)}
+
   // Main summarization function
   async function handleSummarize(): Promise<any> {
     if (!reportText.trim()) {
@@ -110,16 +113,13 @@ import type { Document } from '$lib/types';
     ];
     try {
       const response = await fetch('/api/summarize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: reportText,
-          options: {
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: reportText; options: {
             summaryLength,
             includeKeyTerms,
             includeLegalAnalysis,
             temperature,
-            chunkSize: 2000,
-            chunkOverlap: 200
+            chunkSize: 2000; chunkOverlap: 200
           }
         })
       });
@@ -135,11 +135,13 @@ import type { Document } from '$lib/types';
         errorMessage = data.error || 'An: unknown error occurred during summarization.';
         processingSteps.push('âŒ Processing failed')}
     } catch (error) {
-      console.error('Summarization error:', error);'
+      console.error('Summarization error:', error);
+'
       errorMessage = 'Network error: Could not connect to summarization service.';
       processingSteps.push('âŒ Network error')} finally {
       isLoading = false}
   }
+
   // Copy summary to clipboard
   async function copySummary(): Promise<any> {
     try {
@@ -359,7 +361,7 @@ import type { Document } from '$lib/types';
     max-width: 1200px
     margin: 0 auto
    ; padding: 2rem
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .page-header {
     text-align: center
     margin-bottom: 2rem
@@ -456,8 +458,7 @@ import type { Document } from '$lib/types';
   .text-input-area {
     position: relative}
   #document-input {
-    width: 100%; padding: 1rem
-   , border: 2px solid #e5e7eb
+    width: 100%; padding: 1rem; border: 2px solid #e5e7eb
     border-radius: 0.5rem
     font-family: 'Consolas', 'Monaco', monospace
     font-size: 0.9rem
@@ -605,5 +606,4 @@ import type { Document } from '$lib/types';
       grid-template-columns: 1fr}
   }
 </style>
-
 

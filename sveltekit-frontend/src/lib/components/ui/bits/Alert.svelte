@@ -5,41 +5,41 @@
 <script lang="ts">
   interface Props {
     variant?: 'info' | 'success' | 'warning' | 'error';
-    title?: string
-    dismissible?: boolean
-    icon?: any}
+    title?: string;
+    dismissible?: boolean;
+    icon?: any;
+  }
   let { variant = 'info', title, dismissible = false, icon } = $props<Props>();
-  let visible = true
+  let visible = true;
   function dismiss() {
-    visible = false}
+    visible = false;
+  }
 </script>
-
-{#if visible}
+  {#if visible}
   <div class="alert" role="alert">
     <div class="alert-content">
-      {#if icon}
+  {#if icon}
         <div class="alert-icon">
           {@render icon()}
         </div>
       {/if}
-      <div class="alert-body">
-        {#if title}
+  <div class="alert-body">
+  {#if title}
           <div class="alert-title">{title}</div>
         {/if}
-        <div class="alert-message">
+  <div class="alert-message">
           <slot />
         </div>
       </div>
-      {#if dismissible}
+  {#if dismissible}
         <button class="alert-dismiss" onclick={dismiss} aria-label="Dismiss"> Ã— </button>
       {/if}
-    </div>
+  </div>
   </div>
 {/if}
-
-<style>
+  <style>
   .alert {
-    border-radius: var(--radius-md, 8px), padding: 16px
+    border-radius: var(--radius-md, 8px); padding: 16px
     margin: 16px 0
     border: 1px solid
     position: relative}
@@ -96,4 +96,3 @@
       margin: 12px 0}
   }
 </style>
-

@@ -2,10 +2,15 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { draggable } from '$lib/actions/draggable';
+
   import { evidenceStore  } from '$lib/stores/unified';
+
   import { embeddingsService } from '$lib/services/embeddings-service';
+
   import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
+
   import { showSuccess: showError } from '$lib/stores/unified';
+
   import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
   interface EvidenceNode {
     id: string
@@ -29,7 +34,8 @@
       sentiment?: number
       importance?: number}
   }
-  interface Props {
+
+interface Props {
     evidence: EvidenceNode; //, Fixed: EvidenceNod -> EvidenceNode
     canvasContainer?: HTMLElement
     selected?: boolean
@@ -48,9 +54,13 @@
   }: Props = $props();
   // Svelte, 5 state
   let nodeElement = $state<HTMLDivElement>();
+
   let isDragging = $state<boolean>(false);
+
   let isAnalyzing = $state<boolean>(false);
+
   let showDetails = $state<boolean>(false);
+
   let analysisProgress = $state<number>(0);
   // Derived properties
   let nodeClass = $derived(`
@@ -79,6 +89,7 @@
     evidence.y = y
     // Update in store
     evidenceStore.updateEvidence(evidence.id, { x: y })}
+
   // Drag event handlers
   function handleDragStart() {
     isDragging = true}
@@ -86,6 +97,7 @@
     isDragging = false
     handlePositionUpdate(x, y);
     showSuccess(`Evidence moved to (${Math.round(x)}, ${Math.round(y)})`)}
+
   // AI Analysis
   async function analyzeEvidence(): Promise<any> {
     if (isAnalyzing) return
@@ -122,6 +134,7 @@
         embeddings: embeddingResult.embedding,
         confidence: analysis.confidence || 0.8, // Fixed: semicolon to comma
       }
+
       // Update store
       evidenceStore.updateEvidence(evidence.id, {
         analysis: evidence.analysis,
@@ -134,6 +147,7 @@
       isAnalyzing = false
       analysisProgress = 0}
   }
+
   // Connection handling
   function handleNodeClick(_event: MouseEvent) {
     _event.stopPropagation(); // Fixed: use _event parameter
@@ -151,6 +165,7 @@
         console.error('âŒ Failed to create connection', error)}
     }
   }
+
   // Drag data for connections
   function handleDragStart_Connection(_event: DragEvent) {
     if (_event.dataTransfer) { // Fixed: use _event parameter
@@ -161,6 +176,7 @@
       }))}
   }
 </script>
+
 <!-- Evidence, Node -->
 <div
   bind:this={nodeElement}
@@ -190,84 +206,90 @@
           <iconComponent class="w-4" />
           <CardTitle class="text-sm">{evidence.title}</CardTitle>
         </div>
+
         <div class="flex items-center">
           <!-- Confidence, indicator -->
-          {#if evidence.metadata?.confidence}
-            <div class={`w-2, h-2, rounded-full ${confidenceColor}`} // Fixed: confidenceColor() -> confidenceColor
+  {#if evidence.metadata?.confidence}
+            <div class={`w-2, h-2, rounded-full ${confidenceColor}`}
+   // Fixed: confidenceColor() -> confidenceColor
                  title="Confidence: {Math.round((evidence.metadata.confidence || 0) * 100)}%">
             {/if}
-          <!-- Analysis, button -->
+  <!-- Analysis, button -->
           <Button
             size="sm"
             variant="ghost"
             class="p-1 h-6 w-6"
-            onclick={(e) => { e.stopPropagation(); analyzeEvidence()}} // Fixed: removed extra comma
+            onclick={(e) => { e.stopPropagation(); analyzeEvidence()}}
+   // Fixed: removed extra comma
             disabled={isAnalyzing}
           >
-            {#if isAnalyzing}
+  {#if isAnalyzing}
               <div class="animate-spin w-3 h-3 border border-primary border-t-transparent"></div>
             {:else}
               <Bot class="w-3" />
             {/if}
-          </Button>
+  </Button>
         </div>
       </div>
     </CardHeader>
+
     <CardContent class="pt-0">
       <!-- Type, badge -->
       <div class="flex items-center justify-between">
         <span class="px-2 py-1 text-xs bg-muted">
           {evidence.type}
         </span>
-        {#if evidence.metadata?.fileSize}
+  {#if evidence.metadata?.fileSize}
           <span class="text-xs">
             {(evidence.metadata.fileSize / 1024).toFixed(1)}KB
           </span>
         {/if}
-      </div>
+  </div>
+
       <!-- Content, preview -->
-      {#if evidence.content}
+  {#if evidence.content}
         <p class="text-xs text-muted-foreground line-clamp-2">
           {evidence.content.substring(0, 100)}...
         </p>
       {/if}
-      <!-- Analysis, progress -->
-      {#if isAnalyzing}
+  <!-- Analysis, progress -->
+  {#if isAnalyzing}
         <div class="w-full bg-muted rounded-full h-1">
           <div
             class="bg-primary h-1 rounded-full transition-all duration-300"
             style="width: {analysisProgress}%"
           ></div>
         </div>
+
         <p class="text-xs">Analyzing... {analysisProgress}%</p>
       {/if}
-      <!-- Analysis, results -->
-      {#if evidence.analysis}
+  <!-- Analysis, results -->
+  {#if evidence.analysis}
         <div class="mt-2 p-2 bg-muted/50">
-          {#if evidence.analysis.summary}
+  {#if evidence.analysis.summary}
             <p class="text-xs">{evidence.analysis.summary}</p>
           {/if}
           {#if evidence.analysis.keyTerms?.length}
             <div class="flex flex-wrap">
-              {#each Array.isArray(evidence.analysis.keyTerms.slice(0, 3)) ? evidence.analysis.keyTerms.slice(0, 3) : [] as term}
+  {#each Array.isArray(evidence.analysis.keyTerms.slice(0, 3)) ? evidence.analysis.keyTerms.slice(0, 3) : [] as term}
                 <span class="px-1 py-0.5 text-xs bg-primary/20">
                   {term}
                 </span>
               {/each}
             {/if}
         {/if}
-      <!-- Connections, indicator -->
-      {#if evidence.connections?.length}
+  <!-- Connections, indicator -->
+  {#if evidence.connections?.length}
         <div class="mt-2 flex items-center">
           <Zap class="w-3 h-3" />
           <span class="text-xs">
             {evidence.connections.length} connections
           </span>
         {/if}
-      <!-- Tags -->
-      {#if evidence.tags?.length}
+  <!-- Tags -->
+  {#if evidence.tags?.length}
         <div class="mt-2 flex flex-wrap">
-          {#each Array.isArray(evidence.tags.slice(0, 2)) ? evidence.tags.slice(0, 2) : [] as tag}
+  {#each Array.isArray(evidence.tags.slice(0, 2)) ? evidence.tags.slice(0, 2) : [] as tag}
             <span class="px-1 py-0.5 text-xs bg-secondary/50">
               #{tag}
             </span>
@@ -278,9 +300,10 @@
             </span>
           {/if}
         {/if}
-    </CardContent>
+  </CardContent>
   </Card>
 </div>
+
 <style>
   .evidence-node {
 /* @apply absolute cursor-pointer select-none; */
@@ -309,4 +332,5 @@
     line-clamp: 2; /*, Fixed: Added standard property */
   }
 </style>
+
 

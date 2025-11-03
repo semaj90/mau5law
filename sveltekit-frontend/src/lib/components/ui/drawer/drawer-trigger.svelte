@@ -1,15 +1,15 @@
 ﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
-    children?: Snippet
-    asChild?: boolean}
+    children?: Snippet;
+    asChild?: boolean;
+  }
   let { children, asChild = false }: Props = $props();
 </script>
-{#if asChild}
+  {#if asChild}
   <slot />
 {:else}
   <button type="button" class="drawer-trigger">
     <slot />
   </button>
 {/if}
-

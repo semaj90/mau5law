@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // Changed from default to named import
+  import Button from '$lib/components/ui/enhanced-bits.svelte'; // Changed from default to named import
   import AlertTriangle from 'lucide-svelte/icons/alert-triangle';
   import ArrowRight from 'lucide-svelte/icons/arrow-right';
   import Book from 'lucide-svelte/icons/book';
@@ -39,12 +39,27 @@
     { id: 'evidence', title: 'Evidence Handling', icon: Search, description: 'Evidence collection and analysis' },
     { id: 'ai-assistant', title: 'AI Assistant', icon: MessageSquare, description: 'Using AI features effectively' },
     { id: 'advanced', title: 'Advanced Features', icon: UserIcon, description: 'Power user features and tips' },
-    { id: 'troubleshooting', title: 'Troubleshooting', icon: AlertTriangle, description: 'Common issues and solutions' },
+    {
+      id: 'troubleshooting',
+      title: 'Troubleshooting',
+      icon: AlertTriangle,
+      description: 'Common issues and solutions',
+    },
   ];
   // Help articles
   const articles = [
     // Getting Started
-    { id: 'quick-start', category: 'getting-started', title: 'Quick Start Guide', description: 'Get up and running in 5 minutes', type: 'article', duration: '5 min read', popularity: 5, tags: ['getting-started', 'tutorial', 'basics'], lastUpdated: '2024-01-15', content: `
+    {
+      id: 'quick-start',
+      category: 'getting-started',
+      title: 'Quick Start Guide',
+      description: 'Get up and running in 5 minutes',
+      type: 'article',
+      duration: '5 min read',
+      popularity: 5,
+      tags: ['getting-started', 'tutorial', 'basics'],
+      lastUpdated: '2024-01-15',
+      content: `
   # Quick Start Guide
   Welcome to the Legal Case Management System! This guide will help you get started quickly.
   ## Step 1: Set Up Your Profile
@@ -71,8 +86,19 @@
   - Explore the analytics dashboard
   - Set up notifications
   - Learn about advanced search features
-  			` },
-    { id: 'navigation-tour', category: 'getting-started', title: 'System Navigation Tour', description: 'Learn how to navigate the interface', type: 'interactive', duration: '10 min', popularity: 4, tags: [], lastUpdated: '2024-01-15', content: `
+  			`,
+    },
+    {
+      id: 'navigation-tour',
+      category: 'getting-started',
+      title: 'System Navigation Tour',
+      description: 'Learn how to navigate the interface',
+      type: 'interactive',
+      duration: '10 min',
+      popularity: 4,
+      tags: [],
+      lastUpdated: '2024-01-15',
+      content: `
   # System Navigation Tour
   ## Main Navigation
   The top navigation bar contains links to all major sections:
@@ -94,7 +120,8 @@
   - User settings
   - Preferences
   - Logout
-  			` },
+  			`,
+    },
     {
       id: 'first-case',
       category: 'getting-started',
@@ -132,7 +159,16 @@
   			`,
     },
     // Case Management
-    { id: 'case-organization', category: 'cases', title: 'Case Organization Best Practices', description: 'How to structure and organize cases effectively', type: 'article', duration: '7 min read', popularity: 4, tags: [], content: `
+    {
+      id: 'case-organization',
+      category: 'cases',
+      title: 'Case Organization Best Practices',
+      description: 'How to structure and organize cases effectively',
+      type: 'article',
+      duration: '7 min read',
+      popularity: 4,
+      tags: [],
+      content: `
   # Case Organization Best Practices
   ## Naming Conventions
   Use consistent naming patterns:
@@ -158,9 +194,19 @@
   - Document all actions taken
   - Include timestamps on updates
   - Use consistent terminology
-  			` },
+  			`,
+    },
     // Evidence
-    { id: 'evidence-best-practices', category: 'evidence', title: 'Evidence Handling Best Practices', description: 'Proper evidence collection and management', type: 'article', duration: '10 min read', popularity: 5, tags: [], content: `
+    {
+      id: 'evidence-best-practices',
+      category: 'evidence',
+      title: 'Evidence Handling Best Practices',
+      description: 'Proper evidence collection and management',
+      type: 'article',
+      duration: '10 min read',
+      popularity: 5,
+      tags: [],
+      content: `
   # Evidence Handling Best Practices
   ## Chain of Custody
   Maintain proper documentation
@@ -185,9 +231,19 @@
   - Control access permissions
   - Regular backup procedures
   - Audit trail maintenance
-  			` },
+  			`,
+    },
     // AI Assistant
-    { id: 'ai-prompting', category: 'ai-assistant', title: 'Effective AI Prompting Techniques', description: 'How to get better results from the AI assistant', type: 'article', duration: '8 min read', popularity: 4, tags: [], content: `
+    {
+      id: 'ai-prompting',
+      category: 'ai-assistant',
+      title: 'Effective AI Prompting Techniques',
+      description: 'How to get better results from the AI assistant',
+      type: 'article',
+      duration: '8 min read',
+      popularity: 4,
+      tags: [],
+      content: `
   # Effective AI Prompting Techniques
   ## Clear and Specific Queries
   Be specific about what you need:
@@ -209,9 +265,19 @@
   - **Recommendations**: "What should I investigate next?"
   - **Explanations**: "Explain the legal implications of..."
   - **Summaries**: "Summarize the key findings in this case"
-  			` },
+  			`,
+    },
     // Troubleshooting
-    { id: 'common-issues', category: 'troubleshooting', title: 'Common Issues and Solutions', description: 'Solutions to frequently encountered problems', type: 'article', duration: '6 min read', popularity: 3, tags: [], content: `
+    {
+      id: 'common-issues',
+      category: 'troubleshooting',
+      title: 'Common Issues and Solutions',
+      description: 'Solutions to frequently encountered problems',
+      type: 'article',
+      duration: '6 min read',
+      popularity: 3,
+      tags: [],
+      content: `
   # Common Issues and Solutions
   ## Login Problems
   **Issue**: Cannot log in to the system
@@ -241,16 +307,32 @@
   2. Remove filters and try again
   3. Use broader search terms
   4. Try advanced search options
-  			` },
+  			`,
+    },
   ];
   // FAQ items
   const faqs = [
-    { question: 'How do I reset my password?', answer: 'Go to Settings > Security > Change Password. Enter your current password and new password twice.' },
-    { question: 'Can I export my case data?', answer: 'Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.' },
-    { question: 'How do I use keyboard shortcuts?', answer:
-        'Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.' },
-    { question: 'What file types are supported for evidence?', answer: 'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.' },
-    { question: 'How do I collaborate with team members?', answer: 'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.' },
+    {
+      question: 'How do I reset my password?',
+      answer: 'Go to Settings > Security > Change Password. Enter your current password and new password twice.',
+    },
+    {
+      question: 'Can I export my case data?',
+      answer: 'Yes! Go to Export > Select data types > Choose format (JSON, CSV, XML) > Download.',
+    },
+    {
+      question: 'How do I use keyboard shortcuts?',
+      answer:
+        'Press Ctrl+H to see all available shortcuts. Common ones include Ctrl+K for search and Ctrl+N for new evidence.',
+    },
+    {
+      question: 'What file types are supported for evidence?',
+      answer: 'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.',
+    },
+    {
+      question: 'How do I collaborate with team members?',
+      answer: 'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.',
+    },
   ];
 
   const filteredArticles = $derived(() => {
@@ -280,7 +362,8 @@
         return Video;
       case 'interactive':
         return Play;
-      default: return Book;
+      default:
+        return Book;
     }
   }
   function getTypeColor(type: string) {
@@ -289,7 +372,8 @@
         return 'text-red-600';
       case 'interactive':
         return 'text-blue-600';
-      default: return 'text-gray-600';
+      default:
+        return 'text-gray-600';
     }
   }
 </script>
@@ -351,7 +435,7 @@
               onclick={() => (activeCategory = category.id)}
             >
               <!-- <svelte:component> is deprecated in runes mode -->
-              {category.icon({ class: "h-5 w-5" })}
+              {category.icon({ class: 'h-5 w-5' })}
               <div>
                 <div class="font-medium">{category.title}</div>
                 <div class="text-xs text-gray-500">{category.description}</div>
@@ -364,15 +448,18 @@
       <div class="bg-white rounded-lg shadow-md p-6 mt-6">
         <h3 class="text-lg font-semibold mb-4">Need More Help?</h3>
         <div class="space-y-3">
-          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
+          <Button variant="ghost" class="w-full justify-start bits-btn">
+            <!-- Removed duplicate: 'bits-btn' -->
             <MessageSquare class="h-4 w-4 mr-2" />
             Contact Support
           </Button>
-          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
+          <Button variant="ghost" class="w-full justify-start bits-btn">
+            <!-- Removed duplicate: 'bits-btn' -->
             <Video class="h-4 w-4 mr-2" />
             Video Tutorials
           </Button>
-          <Button variant="ghost" class="w-full justify-start bits-btn"> <!-- Removed duplicate: 'bits-btn' -->
+          <Button variant="ghost" class="w-full justify-start bits-btn">
+            <!-- Removed duplicate: 'bits-btn' -->
             <Download class="h-4 w-4 mr-2" />
             User Manual (PDF)
           </Button>
@@ -424,7 +511,8 @@
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
                       {@html article.content.split('\n').slice(0, 3).join('\n').substring(0, 200)}...
                     </div>
-                    <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
+                    <Button class="bits-btn" variant="ghost" size="sm">
+                      <!-- Removed duplicate: 'bits-btn' -->
                       <Book class="h-4 w-4 mr-2" />
                       Read Full Article
                       <ArrowRight class="h-4 w-4 ml-2" />
@@ -474,11 +562,13 @@
               Can't find what you're looking for? Our support team is here to help you succeed.
             </p>
             <div class="flex gap-3">
-              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
+              <Button class="bits-btn" variant="ghost" size="sm">
+                <!-- Removed duplicate: 'bits-btn' -->
                 <MessageSquare class="h-4 w-4 mr-2" />
                 Start Live Chat
               </Button>
-              <Button class="bits-btn" variant="ghost" size="sm"> <!-- Removed duplicate: 'bits-btn' -->
+              <Button class="bits-btn" variant="ghost" size="sm">
+                <!-- Removed duplicate: 'bits-btn' -->
                 <ExternalLink class="h-4 w-4 mr-2" />
                 Submit Ticket
               </Button>

@@ -9,6 +9,7 @@
       analyticsLog({ event: 'chat_message_rendered', role: message.role, timestamp: Date.now() })}
   });
 </script>
+
 <div
   class="flex items-start gap-2 py-2 px-3 rounded-lg mb-2"
   class:bg-gray-100={message.role === 'user'}
@@ -26,7 +27,7 @@
   {/if}
   <div class="flex-1">
     <div class="text-sm">{message.content}</div>
-    {#if message.timestamp}
+  {#if message.timestamp}
       <div class="text-xs text-gray-400">{message.timestamp}{/if}
   </div>
 </div>

@@ -63,8 +63,7 @@
   .yorha-nav {
     background: var(--yorha-bg-secondary, #1a1a1a);
     border-bottom: 3px solid var(--yorha-secondary, #ffd700);
-    position: sticky
-   , top: 0
+    position: sticky; top: 0
     z-index: 1000
     box-shadow:
       0 3px, 0 0 var(--yorha-secondary, #ffd700),
@@ -86,11 +85,9 @@
     align-items: center
     justify-content: center
     width: 48px
-    height: 48px
-   , background: var(--yorha-secondary, #ffd700);
+    height: 48px; background: var(--yorha-secondary, #ffd700);
     color: var(--yorha-bg-primary, #0a0a0a);
-    font-size: 24px
-   , border: 2px solid var(--yorha-secondary, #ffd700);
+    font-size: 24px; border: 2px solid var(--yorha-secondary, #ffd700);
     box-shadow: 0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
   }
   .yorha-brand-info {
@@ -116,8 +113,7 @@
     position: relative
     display: flex
     align-items: center
-    gap: 8px
-   , color: var(--yorha-text-secondary, #b0b0b0);
+    gap: 8px; color: var(--yorha-text-secondary, #b0b0b0);
     font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
     font-size: 14px
     font-weight: 500
@@ -147,8 +143,7 @@
     bottom: 0
     left: 0
     right: 0
-    height: 2px
-   , background: var(--yorha-secondary, #ffd700);
+    height: 2px; background: var(--yorha-secondary, #ffd700);
     box-shadow: 0, 0 8px rgba(255, 215, 0, 0.5);
   }
   .yorha-nav-actions {
@@ -161,8 +156,7 @@
     align-items: center
     justify-content: center
     gap: 2px
-    padding: 8px 12px
-   , background: var(--yorha-bg-secondary, #1a1a1a);
+    padding: 8px 12px; background: var(--yorha-bg-secondary, #1a1a1a);
     border: 2px solid var(--yorha-text-muted, #808080);
     color: var(--yorha-text-secondary, #b0b0b0);
     cursor: pointer
@@ -198,8 +192,7 @@
     .btn-label {
       display: none}
     .yorha-toolbar-btn {
-      min-width: 48px
-     , height: 48px}
+      min-width: 48px; height: 48px}
   }
 </style>
 

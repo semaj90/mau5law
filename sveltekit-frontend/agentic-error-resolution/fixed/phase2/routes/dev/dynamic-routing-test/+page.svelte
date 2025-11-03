@@ -150,16 +150,13 @@ https://svelte.dev/e/attribute_duplicate -->
     return JSON.stringify(obj, null, 2);
   }
 </script>
+
 <div class="min-h-screen bg-yorha-bg-primary text-yorha-text-primary p-6">
   <div class="max-w-6xl mx-auto space-y-6">
     <!-- Header -->
     <div class="text-center">
-      <h1 class="text-4xl font-bold text-yorha-secondary mb-4">
-        🛣️ Dynamic Routing Test Suite
-      </h1>
-      <p class="text-yorha-text-secondary">
-        Testing route configuration and navigation functionality
-      </p>
+      <h1 class="text-4xl font-bold text-yorha-secondary mb-4">🛣️ Dynamic Routing Test Suite</h1>
+      <p class="text-yorha-text-secondary">Testing route configuration and navigation functionality</p>
       <p class="text-sm text-yorha-text-muted mt-2">
         Current Path: <code class="bg-yorha-bg-secondary px-2 py-1 rounded">{currentPath}</code>
       </p>
@@ -213,7 +210,9 @@ https://svelte.dev/e/attribute_duplicate -->
             </div>
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Experimental:</span>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{$routeStats.experimental}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                >{$routeStats.experimental}</span
+              >
             </div>
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Beta:</span>
@@ -292,7 +291,8 @@ https://svelte.dev/e/attribute_duplicate -->
                     class="block w-full text-left text-sm text-yorha-text-secondary hover:text-yorha-accent hover:bg-yorha-bg-secondary p-1 rounded transition-colors"
                     onclick={() => navigateToRoute(route.route)}
                   >
-                    {route.icon} {route.label}
+                    {route.icon}
+                    {route.label}
                   </button>
                 {/each}
                 {#if categoryRoutes.length > 5}
@@ -310,15 +310,15 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Debug Information</h2>
       <details class="cursor-pointer">
-        <summary class="text-yorha-secondary hover:text-yorha-accent mb-4">
-          View All Routes Configuration
-        </summary>
+        <summary class="text-yorha-secondary hover:text-yorha-accent mb-4"> View All Routes Configuration </summary>
         <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
           {#each Array.isArray(allRoutes) ? allRoutes : [] as route}
             <div class="bg-yorha-bg-secondary p-2 rounded text-xs">
               <div class="flex justify-between items-center">
                 <span class="font-mono text-yorha-accent">{route.id}</span>
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{route.category}</span>
+                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                  >{route.category}</span
+                >
               </div>
               <div class="text-yorha-text-secondary">{route.route}</div>
               <div class="text-yorha-text-muted text-xs">{route.description}</div>
@@ -332,6 +332,7 @@ https://svelte.dev/e/attribute_duplicate -->
     </div>
   </div>
 </div>
+
 <style>
   :global(.yorha-terminal-grid) {
     background-image:

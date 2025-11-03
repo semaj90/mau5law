@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
 	import { onMount } from 'svelte';
 	// UI components (existing bits-ui / enhanced-bits-ui)
@@ -16,7 +16,7 @@ import type { Document } from '$lib/types';
 		postgres: false,
 		neo4j: false
 	});
-	let loading = $state<boolean>(false);
+  let loading = $state<boolean>(false);
 	let error = $state<string>('');
 	let toasts = $state<{ id: string, message: string;, type: 'info' | 'success' | 'error' }[]>([]);
 
@@ -24,8 +24,7 @@ import type { Document } from '$lib/types';
 		const id = crypto.randomUUID();
 		toasts = [...toasts, { id, message, type }];
 		setTimeout(() => (toasts = toasts.filter((t) => t.id !== id)), 4500)}
-
-	async function checkSystemStatus(): Promise<any> {
+  async function checkSystemStatus(): Promise<any> {
 		loading = true
 		error = '';
 		try {
@@ -59,8 +58,7 @@ import type { Document } from '$lib/types';
 	function openAssistant() {
 		// lightweight navigation without importing router to keep file minimal
 		window.location.href = '/ai/assistant'}
-
-	function handleUpload() {
+  function handleUpload() {
 		// Simple trigger for native file picker; integrate real upload flow as needed
 		const input = document.createElement('input');
 		input.type = 'file';
@@ -94,26 +92,31 @@ import type { Document } from '$lib/types';
 						<div class="status-row">
 							<div class="status-item">
 								<div class="label">GPU</div>
-								<div class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'Accelerated' : 'Unavailable'}</div>
+								<div class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'Accelerated' : 'Unavailable'}
+</div>
 							</div>
 							<div class="status-item">
 								<div class="label">Ollama</div>
-								<div class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'Healthy' : 'Offline'}</div>
+								<div class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'Healthy' : 'Offline'}
+</div>
 							</div>
 							<div class="status-item">
 								<div class="label">Enhanced RAG</div>
-								<div class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'Running' : 'Idle'}</div>
+								<div class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'Running' : 'Idle'}
+</div>
 							</div>
 						</div>
 
 						<div class="status-row">
 							<div class="status-item">
 								<div class="label">Postgres (pgvector)</div>
-								<div class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'Connected' : 'Disconnected'}</div>
+								<div class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'Connected' : 'Disconnected'}
+</div>
 							</div>
 							<div class="status-item">
 								<div class="label">Neo4j</div>
-								<div class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'Active' : 'Inactive'}</div>
+								<div class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'Active' : 'Inactive'}
+</div>
 							</div>
 						</div>
 					</div>
@@ -121,19 +124,20 @@ import type { Document } from '$lib/types';
 					<div class="actions">
 						<Button onclick={checkSystemStatus} disabled={loading} aria-busy={loading}>
 							{loading ? 'Checking...' : 'Run Health Check'}
-						</Button>
+</Button>
 						<Button variant="secondary" onclick={openAssistant}>Open Assistant</Button>
 						<Button variant="ghost" onclick={handleUpload}>Upload Document</Button>
 					</div>
 
 					{#if error}
-						<div role="alert" class="error">{error}</div>
+						<div role="alert" class="error">{error}
+</div>
 					{/if}
-				</CardContent>
+</CardContent>
 			</Card>
 
 			<!-- Future: metrics, recent, jobs, ingestion, status -->
-			<Card.Root, class="mt">
+			<Card.Root class="mt">
 				<CardHeader>
 					<CardTitle>Quick Insights</CardTitle>
 				</CardHeader>
@@ -158,17 +162,22 @@ import type { Document } from '$lib/types';
 							<tr><th>Service</th><th>Status</th></tr>
 						</thead>
 						<tbody>
-							<tr><td>GPU Orchestrator</td><td><span class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Ollama</td><td><span class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Enhanced RAG</td><td><span class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Postgres</td><td><span class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'OK' : 'Down'}</span></td></tr>
-							<tr><td>Neo4j</td><td><span class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'OK' : 'Down'}</span></td></tr>
+							<tr><td>GPU Orchestrator</td><td><span class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'OK' : 'Down'}
+</span></td></tr>
+							<tr><td>Ollama</td><td><span class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'OK' : 'Down'}
+</span></td></tr>
+							<tr><td>Enhanced RAG</td><td><span class="pill {systemStatus.enhancedRAG ? 'on' : 'off'}">{systemStatus.enhancedRAG ? 'OK' : 'Down'}
+</span></td></tr>
+							<tr><td>Postgres</td><td><span class="pill {systemStatus.postgres ? 'on' : 'off'}">{systemStatus.postgres ? 'OK' : 'Down'}
+</span></td></tr>
+							<tr><td>Neo4j</td><td><span class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'OK' : 'Down'}
+</span></td></tr>
 						</tbody>
 					</table>
 				</CardContent>
 			</Card>
 
-			<Card.Root, class="mt">
+			<Card.Root class="mt">
 				<CardHeader>
 					<CardTitle>Support</CardTitle>
 				</CardHeader>
@@ -185,12 +194,13 @@ import type { Document } from '$lib/types';
 
 	<!-- Toast, container -->
 	<div class="toasts" aria-live="polite" aria-atomic="true">
+
 		{#each toasts as t (t.id)}
 			<div class="toast {t.type}">
 				{t.message}
-			</div>
+</div>
 		{/each}
-	</div>
+</div>
 </div>
 
 <style>
@@ -305,4 +315,5 @@ import type { Document } from '$lib/types';
 
 	.toast.error { background: #c53030}
 </style>
+
 

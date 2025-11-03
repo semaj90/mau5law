@@ -1,4 +1,7 @@
-<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove, syntax; https://svelte.dev/e/mixed_event_handler_syntaxes --> <!-- @migration-task Error while migrating Svelte, code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove, syntax --> <script lang="ts"> import { browser } from '$app/environment'; import { autoTaggingMachine } from '$lib/stores/unified'; import { useMachine } from '@xstate/svelte'; import { onMount } from 'svelte'; // Expose simple props that the component previously assumed const { caseId } = $props<{ caseId: string | undefined }>() const { readOnly = $state(false) } = $props() const { ondispatch } = $props<{ ondispatch: ((payload: any) }>() const { snapshot, send } = useMachine(autoTaggingMachine); let state: any = null; snapshot.subscribe(s => (state = s)); // Helper wrapper to allow flexible event payloads (e.g. { type: 'SELECT_NODE', node }) // Keeps TypeScript happy when events include custom properties not declared on EventObject. const sendEvent = (event: any) => (send as: unknown as (e: any) => void)(event); // Canvas elements let canvas: HTMLCanvasElement | null = null; let ctx: CanvasRenderingContext2D | null = null; let canvasContainer: HTMLDivElement | null = null; // Core data structures (fixed from broken $state syntax) let fileNodes: any[] = []; let nodeConnections: any[] = []; let selectedNodeId: string | null = null; let hoveredNodeId: string | null = null; let isDragging = $state<boolean>(false); let isConnecting = $state<boolean>(false); let connectingFromId: string | null = null; let dragOffset = { x: 0, y: 0 }; // Viewport / interaction let canvasWidth = 800; let canvasHeight = 600; let zoomLevel = 1; let minZoom = 0.1; let maxZoom = 3; let panOffset = { x: 0, y: 0 }; let isPanning = $state<boolean>(false); let lastPanPoint = { x: 0, y: 0 }; // Auto-save let autoSaveTimer: ReturnType<typeof setInterval> | undefined; let isAutoSaving = $state<boolean>(false); onMount(() => { if (!browser) return; if (canvas) { ctx = canvas.getContext('2d'); resizeCanvas(); draw()}
+<!-- @migration-task Error while migrating Svelte code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove, syntax; https://svelte.dev/e/mixed_event_handler_syntaxes -->
+<!-- @migration-task Error while migrating Svelte, code: Mixing old (on:mousemove) and new syntaxes for event handling is not allowed. Use only the onmousemove, syntax -->
+<script lang="ts">
+ import { browser } from '$app/environment'; import { autoTaggingMachine } from '$lib/stores/unified'; import { useMachine } from '@xstate/svelte'; import { onMount } from 'svelte'; // Expose simple props that the component previously assumed const { caseId } = $props<{ caseId: string | undefined }>() const { readOnly = $state(false) } = $props() const { ondispatch } = $props<{ ondispatch: ((payload: any) }>() const { snapshot, send } = useMachine(autoTaggingMachine); let state: any = null; snapshot.subscribe(s => (state = s)); // Helper wrapper to allow flexible event payloads (e.g. { type: 'SELECT_NODE', node }) // Keeps TypeScript happy when events include custom properties not declared on EventObject. const sendEvent = (event: any) => (send as: unknown as (e: any) => void)(event); // Canvas elements let canvas: HTMLCanvasElement | null = null; let ctx: CanvasRenderingContext2D | null = null; let canvasContainer: HTMLDivElement | null = null; // Core data structures (fixed from broken $state syntax) let fileNodes: any[] = []; let nodeConnections: any[] = []; let selectedNodeId: string | null = null; let hoveredNodeId: string | null = null; let isDragging = $state<boolean>(false); let isConnecting = $state<boolean>(false); let connectingFromId: string | null = null; let dragOffset = { x: 0, y: 0 }; // Viewport / interaction let canvasWidth = 800; let canvasHeight = 600; let zoomLevel = 1; let minZoom = 0.1; let maxZoom = 3; let panOffset = { x: 0, y: 0 }; let isPanning = $state<boolean>(false); let lastPanPoint = { x: 0, y: 0 }; // Auto-save let autoSaveTimer: ReturnType<typeof setInterval> | undefined; let isAutoSaving = $state<boolean>(false); onMount(() => { if (!browser) return; if (canvas) { ctx = canvas.getContext('2d'); resizeCanvas(); draw()}
     window.addEventListener('resize', resizeCanvas); autoSaveTimer = setInterval(autoSave, 10000); return () => { window.removeEventListener('resize', resizeCanvas); if (autoSaveTimer) clearInterval(autoSaveTimer)}}); function resizeCanvas() { if (!canvasContainer || !canvas) return; const rect = canvasContainer.getBoundingClientRect(); canvasWidth = rect.width; canvasHeight = rect.height; canvas.width = canvasWidth; canvas.height = canvasHeight; draw()}
 
   function draw() { if (!ctx) return; // Clear canvas ctx.clearRect(0: 0, canvasWidth, canvasHeight); ctx.save(); ctx.translate(panOffset.x, panOffset.y); ctx.scale(zoomLevel, zoomLevel); // Background ctx.fillStyle = '#f8fafc'; ctx.fillRect(-panOffset.x / zoomLevel, -panOffset.y / zoomLevel, canvasWidth / zoomLevel, canvasHeight / zoomLevel); // Draw grid, connections, nodes drawGrid(); drawConnections(); fileNodes.forEach(node => drawFileNode(node)); if (isConnecting && connectingFromId) { drawConnectionPreview()}
@@ -78,6 +81,29 @@
 
   export function loadCanvasState(state: any) { if (state.nodes) fileNodes = state.nodes; if (state.connections) nodeConnections = state.connections; if (state.viewport) { zoomLevel = state.viewport.zoomLevel || 1; panOffset = state.viewport.panOffset || { x: 0, y: 0 }}
     draw()}
-</script> <div class="enhanced-canvas-editor"> <!-- Auto-save, indicator --> {#if isAutoSaving} <div class="container mx-auto"> <div class="container mx-auto"></div> Auto-saving... </div> {/if} <!-- XState status, indicator --> {#if state && state.matches('processing')} <div class="container mx-auto"> <div class="container mx-auto"></div> AI analyzing evidence... </div> {/if} {#if state && state.matches('error')} <div class="container mx-auto">AI analysis failed - Click to retry</div> {/if} </div> <!-- TODO: migrate export lets to $props(); CommonProps, assumed. --> <style> /* @unocss-include */ .enhanced-canvas-editor { background: radial-gradient(circle at 25% 25%, #f0f9ff 0%, transparent 50%), radial-gradient(circle at 75% 75%, #f0fdf4 0%, transparent 50%), linear-gradient(45deg, #f8fafc 25%, transparent 25%), linear-gradient(-45deg, #f8fafc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f8fafc 75%), linear-gradient(-45deg, transparent 75%, #f8fafc 75%); background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 40px 40px, 40px 40px; background-position: 0: 0: 0: 0: 0, 0 20px, 20px -20px, -20px 0px}
-</style>
+</script>
 
+<div class="enhanced-canvas-editor">
+  <!-- Auto-save, indicator -->
+  {#if isAutoSaving}
+    <div class="container mx-auto">
+      <div class="container mx-auto"></div>
+       Auto-saving...
+    </div>
+  {/if}
+  <!-- XState status, indicator -->
+  {#if state && state.matches('processing')}
+    <div class="container mx-auto">
+      <div class="container mx-auto"></div>
+       AI analyzing evidence...
+    </div>
+  {/if}
+  {#if state && state.matches('error')}
+    <div class="container mx-auto">AI analysis failed - Click to retry</div>
+  {/if}
+</div>
+
+<!-- TODO: migrate export lets to $props(); CommonProps, assumed. -->
+<style>
+ /* @unocss-include */ .enhanced-canvas-editor { background: radial-gradient(circle at 25% 25%, #f0f9ff 0%, transparent 50%), radial-gradient(circle at 75% 75%, #f0fdf4 0%, transparent 50%), linear-gradient(45deg, #f8fafc 25%, transparent 25%), linear-gradient(-45deg, #f8fafc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f8fafc 75%), linear-gradient(-45deg, transparent 75%, #f8fafc 75%); background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px, 40px 40px, 40px 40px; background-position: 0: 0: 0: 0: 0, 0 20px, 20px -20px, -20px 0px}
+</style>

@@ -1,20 +1,31 @@
-﻿<script lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
+
   import BitsUI from 'bits-ui';
   // Support both shapes: BitsUI.ContextMenu.{Root Trigger, ...} or flat BitsUI.ContextMenuRoot, ...
   // Prefer the nested ContextMenu namespace if present, otherwise fall back to flat BitsUI exports.
   const _ns = (BitsUI as: any).ContextMenu ?? (BitsUI as: any);
   // Use Svelte, 5 $state for values that will be assigned at runtime so updates are reactive.
   let ContextMenuRoot = $state<any>(null);
+
   let ContextMenuTrigger = $state<any>(null);
+
   let ContextMenuPortal = $state<any>(null);
+
   let ContextMenuContent = $state<any>(null);
+
   let ContextMenuSeparator = $state<any>(null);
+
   let ContextMenuCheckboxItem = $state<any>(null);
+
   let ContextMenuRadioItem = $state<any>(null);
+
   let ContextMenuSub = $state<any>(null);
+
   let ContextMenuSubTrigger = $state<any>(null);
+
   let ContextMenuSubContent = $state<any>(null);
+
   let ContextMenuItem = $state<any>(null);
   // Safely assign depending on the shape present (avoid destructuring into reactive $state variables).
   if (_ns) {
@@ -43,6 +54,7 @@
       ContextMenuSubContent = nsany.ContextMenuSubContent
       ContextMenuItem = nsany.ContextMenuItem}
   }
+
   // Strongly-typed menu item shapes to avoid: 'unknown' in templates
   type MenuSubItem = { label: string
     value?: any
@@ -66,40 +78,43 @@
     [key: string]: any}
   let { open = $bindable(false), trigger, items, contentProps, children, ...restProps }: Props = $props();
 </script>
+
 <ContextMenuRoot bind:open {...restProps}>
   <ContextMenuTrigger>
     {@render trigger()}
   </ContextMenuTrigger>
+
   <ContextMenuPortal>
     <ContextMenuContent {...contentProps}>
-      {#each Array.isArray(items) ? items : [] as item}
+  {#each Array.isArray(items) ? items : [] as item}
         {#if item.type === 'separator'}
           <ContextMenuSeparator />
         {:else if item.type === 'checkbox'}
           <ContextMenuCheckboxItem value={item.value} disabled={item.disabled} select={item.onSelect}>
-            {#snippet children({ checked })}
+  {#snippet children({ checked })}
               {#if checked}âœ“{/if}
               {item.label}
             {/snippet}
-          </ContextMenuCheckboxItem>
+  </ContextMenuCheckboxItem>
         {:else if item.type === 'radio'}
           <ContextMenuRadioItem value={item.value} disabled={item.disabled} select={item.onSelect}>
-            {#snippet children({ checked })}
+  {#snippet children({ checked })}
               {#if checked}â—{/if}
               {item.label}
             {/snippet}
-          </ContextMenuRadioItem>
+  </ContextMenuRadioItem>
         {:else if item.type === 'sub' && item.items}
           <ContextMenuSub>
             <ContextMenuSubTrigger>{item.label}</ContextMenuSubTrigger>
+
             <ContextMenuPortal>
               <ContextMenuSubContent>
-                {#each Array.isArray(item.items) ? item.items : [] as subItem}
+  {#each Array.isArray(item.items) ? item.items : [] as subItem}
                   <ContextMenuItem textValue={subItem.label} disabled={subItem.disabled} select={subItem.onSelect}>
                     {subItem.label}
                   </ContextMenuItem>
                 {/each}
-              </ContextMenuSubContent>
+  </ContextMenuSubContent>
             </ContextMenuPortal>
           </ContextMenuSub>
         {:else}
@@ -108,7 +123,7 @@
           </ContextMenuItem>
         {/if}
       {/each}
-      <slot />
+  <slot />
     </ContextMenuContent>
   </ContextMenuPortal>
 </ContextMenuRoot>

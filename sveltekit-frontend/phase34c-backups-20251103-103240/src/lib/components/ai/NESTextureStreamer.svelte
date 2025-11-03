@@ -29,10 +29,8 @@ import type { Document } from '$lib/types';
   let isStreaming = $state<boolean>(false);
   let streamingProgress = $state<number>(0);
   let memoryStats = $state({
-    memoryUsage: 0,
-    maxMemory: 8192,
-    textureCount: 0,
-    activeBankId: 0
+    memoryUsage: 0; maxMemory: 8192,
+    textureCount: 0; activeBankId: 0
   });
   // Viewing context
   let viewerElement: HTMLElement
@@ -338,8 +336,7 @@ import type { Document } from '$lib/types';
 </SSRWebGPULoader>
 <style>
   .nes-texture-streamer {
-    background: #0f0f0f
-   , color: #ffffff
+    background: #0f0f0f; color: #ffffff
     font-family: 'Perfect DOS VGA 437', 'JetBrains Mono', monospace
     border: 2px solid #333
     border-radius: 4px
@@ -415,15 +412,13 @@ import type { Document } from '$lib/types';
   .texture-viewer {
     position: relative
     height: 400px
-    overflow: auto
-   , background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px}
+    overflow: auto; background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px}
   .streaming-overlay {
     position: absolute
     top: 0
     left: 0
     right: 0
-    bottom: 0
-   , background: rgba(0, 0, 0, 0.8);
+    bottom: 0; background: rgba(0, 0, 0, 0.8);
     display: flex
     align-items: center
     justify-content: center
@@ -439,8 +434,7 @@ import type { Document } from '$lib/types';
     margin: 1rem 0
     overflow: hidden}
   .loading-progress {
-    height: 100%,
-    background: #22c55e
+    height: 100%; background: #22c55e
     transition: width: 0.3s ease}
   .texture-display {
     position: relative
@@ -449,15 +443,13 @@ import type { Document } from '$lib/types';
     justify-content: center
     height: 100%}
   .texture-image {
-    max-width: 100%,
-    max-height: 100%,
+    max-width: 100%; max-height: 100%,
     image-rendering: pixelated
     border: 2px solid #555}
   .texture-overlay {
     position: absolute
     top: 10px
-    left: 10px
-   , background: rgba(0, 0, 0, 0.7);
+    left: 10px; background: rgba(0, 0, 0, 0.7);
     padding: 0.5rem
     border-radius: 4px}
   .lod-indicator {
@@ -468,8 +460,7 @@ import type { Document } from '$lib/types';
     flex-direction: column
     align-items: center
     justify-content: center
-    height: 100%,
-    color: #666}
+    height: 100%; color: #666}
   .nes-icon {
     font-size: 3rem
     margin-bottom: 1rem}
@@ -504,8 +495,7 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem
     color: #ccc}
   .memory-bar {
-    width: 100%,
-    height: 8px
+    width: 100%; height: 8px
     background: #333
     border: 1px solid #555
     margin: 0.5rem 0

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { Search, Database, Activity, FileText, Settings, Upload, RefreshCw } from 'lucide-svelte';
@@ -39,18 +39,22 @@ import type { Document } from '$lib/types';
       isLoading = false}
   }
 </script>
+
 <div class="nes-container is-rounded" {...restProps}>
   <div class="flex items-center justify-between">
     <h2 class="text-xl">Enhanced RAG Studio</h2>
+
     <div class="flex">
       <button class="nes-btn" class:is-primary={activeTab === 'search'} onclick={() => (activeTab = 'search')}>
         <Search class="w-4" />
         Search
       </button>
+
       <button class="nes-btn" class:is-primary={activeTab === 'upload'} onclick={() => (activeTab = 'upload')}>
         <Database class="w-4" />
         Upload
       </button>
+
       <button
         class="nes-btn is-small"
         class:is-primary={activeTab === 'settings'}
@@ -72,7 +76,7 @@ import type { Document } from '$lib/types';
           onkeydown={e => e.key === 'Enter' && handleSearch()}
         />
         <button class="nes-btn is-success" onclick={handleSearch} disabled={isLoading || !searchQuery.trim()}>
-          {#if isLoading}
+  {#if isLoading}
             <RefreshCw class="w-4 h-4" />
           {:else}
             <Search class="w-4" />
@@ -80,33 +84,35 @@ import type { Document } from '$lib/types';
           Search
         </button>
       </div>
-      {#if searchResults.length > 0}
+  {#if searchResults.length > 0}
         <div class="space-y-3">
           <h3 class="font-bold">Search Results ({searchResults.length})</h3>
-          {#each searchResults as result, index}
+  {#each searchResults as result, index}
             <div class="nes-container is-rounded p-3">
               <div class="flex items-start">
                 <div class="flex-1">
                   <div class="font-bold text-sm">
                     {result.title || `Result ${index + 1}`}
                   </div>
+
                   <div class="text-sm text-gray-600">
                     {result.content || 'No content available'}
                   </div>
-                  {#if result.score}
+  {#if result.score}
                     <div class="text-xs">
                       Relevance: {Math.round((result.score || 0) * 100)}%
                     {/if}
-                </div>
+  </div>
               </div>
             </div>
           {/each}
         {/if}
-    </div>
+  </div>
   {:else if activeTab === 'upload'}
     <div class="space-y-4">
       <div>
         <label class="block text-sm font-bold">Upload Document</label>
+
         <input
           class="nes-input w-full"
           type="file"
@@ -114,18 +120,19 @@ import type { Document } from '$lib/types';
           accept=".pdf,.txt,.md,.docx"
         />
       </div>
-      {#if uploadFile}
+  {#if uploadFile}
         <div class="nes-container is-rounded p-3">
           <div class="flex items-center">
             <FileText class="w-4" />
             <span class="text-sm">{uploadFile.name}</span>
+
             <span class="text-xs">
               ({Math.round(uploadFile.size / 1024)}KB)
             </span>
           </div>
         {/if}
-      <button class="nes-btn is-success" onclick={handleUpload} disabled={!uploadFile || isLoading}>
-        {#if isLoading}
+  <button class="nes-btn is-success" onclick={handleUpload} disabled={!uploadFile || isLoading}>
+  {#if isLoading}
           <RefreshCw class="w-4 h-4" />
         {:else}
           <Upload class="w-4" />
@@ -137,15 +144,17 @@ import type { Document } from '$lib/types';
     <div class="space-y-4">
       <div class="nes-container is-rounded">
         <h3 class="font-bold">RAG Configuration</h3>
+
         <div class="text-sm">
           Enhanced RAG Studio settings and configuration options will be available here.
         </div>
       </div>
-      {#if children}
+  {#if children}
         {@render children()}
       {/if}
     {/if}
-</div>
+  </div>
+
 <style>
   .animate-spin {
     animation: spin 1s linear infinite}
@@ -155,4 +164,5 @@ import type { Document } from '$lib/types';
       transform: rotate(360deg)}
   }
 </style>
+
 

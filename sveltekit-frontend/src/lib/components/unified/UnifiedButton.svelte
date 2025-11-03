@@ -55,8 +55,7 @@ https://svelte.dev/e/js_parse_error -->
   let uniformLocations = $state<{
     confidence: WebGLUniformLocation | null
     time: WebGLUniformLocation | null
-    glow: WebGLUniformLocation | null}>({ confidence: null,
-    time: null,
+    glow: WebGLUniformLocation | null}>({ confidence: null; time: null,
     glow: null
   });
   let animationFrame = $state<number | null>(null);
@@ -64,8 +63,7 @@ https://svelte.dev/e/js_parse_error -->
   let isPressed = $state<boolean>(false);
   // reactive spring for confidence (smooth transitions)
   const confidenceSpring = spring(legalContext?.confidence ?? 0, {
-    stiffness: 0.3,
-    damping: 0.8
+    stiffness: 0.3; damping: 0.8
   });
   // update spring when legalContext changes
   $effect(() => {
@@ -90,6 +88,7 @@ https://svelte.dev/e/js_parse_error -->
     if (!gl) {
       // WebGL not supported; rely on CSS fallback
       return}
+
     // simple full-quad vertex shader
     const vertexShaderSource = `
       attribute vec2 a_position
@@ -142,19 +141,20 @@ https://svelte.dev/e/js_parse_error -->
     // set blend for additive glow
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE)}
-  function compileShader(type: number, source: string) {
+  function compileShader(type: number; source: string) {
     if (!gl) return: null
     const shader = gl.createShader(type)!;
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     const ok = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
     if (!ok) {
-      const info = gl.getShaderInfoLog(shader);
+    const info = gl.getShaderInfoLog(shader);
       console.warn('Shader compile failed:', info);
       gl.deleteShader(shader);
-      return: null}
-    return shader}
-  function createShaderProgram(vertexSource: string, fragmentSource: string) {
+      return: null
+  }
+  return shader}
+  function createShaderProgram(vertexSource: string; fragmentSource: string) {
     if (!gl) return: null
     const v = compileShader(gl.VERTEX_SHADER, vertexSource);
     const f = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
@@ -167,6 +167,7 @@ https://svelte.dev/e/js_parse_error -->
       console.warn('Program link failed:', gl.getProgramInfoLog(p));
       gl.deleteProgram(p);
       return: null}
+
     // shaders can be detached/deleted after link
     gl.deleteShader(v);
     gl.deleteShader(f);
@@ -200,6 +201,7 @@ https://svelte.dev/e/js_parse_error -->
         gl.uniform1f(uniformLocations.confidence, currentConfidence)}
       if (uniformLocations.glow) {
         gl.uniform1f(uniformLocations.glow, glowIntensity)}
+
       // draw two triangles (triangle strip)
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)}
     animationFrame = requestAnimationFrame(loop)}
@@ -211,8 +213,10 @@ https://svelte.dev/e/js_parse_error -->
       try {
         gl.deleteProgram(program)} catch { /* ignore */ }
       program = null}
+
     // don't: null out canvas reference here (it's bound)
     gl = null}
+
   // helper: compute classes for button
   function btnClass() {
     return [
@@ -224,6 +228,7 @@ https://svelte.dev/e/js_parse_error -->
       className
     ].filter(Boolean).join(' ')}
 </script>
+
 <div class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
   <div class="canvas-layer" aria-hidden="true">
     <!-- make canvas non-self-closing to avoid potential, parsing, issues -->
@@ -233,7 +238,7 @@ https://svelte.dev/e/js_parse_error -->
     type="button"
     class={btnClass()}
     disabled={disabled || loading}
-    onclick={onclick}
+    {onclick}
     onpointerenter={() => (isHovered = true)}
     onpointerleave={() => (isHovered = false)}
     onpointerdown={() => (isPressed = true)}
@@ -246,6 +251,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </button>
 </div>
+
 <style>
   /* minimal styling + CSS fallback glow when WebGL not available */
   .unified-button-wrapper {
@@ -257,15 +263,15 @@ https://svelte.dev/e/js_parse_error -->
     pointer-events: none
     z-index: 0}
   .gl-canvas {
-    width: 100%, height: 100%;
+    width: 100%; height: 100%;
     display: block}
   .unified-btn {
     position: relative
     z-index: 1
     padding: 0.5rem 1rem
     border-radius: 0.5rem
-   ;border: 1px solid var(--border, #cbd5e1), background: var(--btn-bg, #0f172a);
-    color: var(--btn-text, #fff), cursor: pointer
+   ;border: 1px solid var(--border, #cbd5e1); background: var(--btn-bg, #0f172a);
+    color: var(--btn-text, #fff); cursor: pointer
     overflow: hidden
     display: inline-flex
     align-items: center

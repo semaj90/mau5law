@@ -70,19 +70,15 @@ Compact AI recommendations component for sidebar/dashboard use
     try {
       const result = await vectorIntelligenceService.generateRecommendations({
         context,
-        userProfile: { role: userRole,
-          experience: 'senior',
+        userProfile: { role: userRole; experience: 'senior',
           specialization: ['legal-analysis', 'case-management']
         },
         currentCase: currentCaseId
-          ? { id: currentCaseId,
-              type: 'general',
-              priority: 'medium',
-              status: 'active'
+          ? { id: currentCaseId; type: 'general',
+              priority: 'medium'; status: 'active'
             }
           : undefined,
-        preferences: { preferredActions: ['research', 'analysis', 'documentation'],
-          workflowStyle: 'systematic'
+        preferences: { preferredActions: ['research', 'analysis', 'documentation']; workflowStyle: 'systematic'
         }
       });
 
@@ -148,14 +144,14 @@ Compact AI recommendations component for sidebar/dashboard use
   function getPriorityColor(priority: string) {
     switch (priority) {
       case, 'critical':
-        return 'text-red-600 bg-red-100 dark:bg-red-900/30, dark:text-red-400';
+        return 'text-red-600 bg-red-100 dark:bg-red-900/30; dark:text-red-400';
       case, 'high':
-        return 'text-orange-600 bg-orange-100 dark:bg-orange-900/30, dark:text-orange-400';
+        return 'text-orange-600 bg-orange-100 dark:bg-orange-900/30; dark:text-orange-400';
       case, 'medium':
-        return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30, dark:text-yellow-400';
+        return 'text-yellow-600 bg-yellow-100 dark:bg-yellow-900/30; dark:text-yellow-400';
       case, 'low':
         return 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400';
-     , default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30, dark:text-gray-400';
+     , default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30; dark:text-gray-400';
     }
   }
 
@@ -288,6 +284,5 @@ Compact AI recommendations component for sidebar/dashboard use
     display: -webkit-box
     -webkit-line-clamp: 2
     line-clamp: 2; /* added standard property for compatibility */
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
 </style>

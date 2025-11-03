@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -140,6 +140,7 @@ import type { Document } from '$lib/types';
       ctx.moveTo(0, y);
       ctx.lineTo(width, y);
       ctx.stroke()}
+
     // Draw spatial points
     spatialPoints.forEach(point => {
       // Simple 3D to 2D projection
@@ -186,6 +187,7 @@ import type { Document } from '$lib/types';
   onDestroy(() => {
     stopVisualization()});
 </script>
+
 <div class="space-y-6">
   <!-- Control, Panel -->
   <div class="nes-container">
@@ -197,13 +199,15 @@ import type { Document } from '$lib/types';
         {:else if results}
           <Badge class="bg-green-100">Complete</Badge>
         {/if}
-      </h3>
+  </h3>
     </div>
+
     <div class="yorha-panel-content">
       <div class="space-y-4">
         <!-- Input -->
         <div>
-          <label class="block text-sm font-medium" for="input-text">Input Text:</label><textarea id="input-text" ,
+          <label class="block text-sm font-medium" for="input-text">Input Text:</label>
+<textarea id="input-text" ,
             bind:value={inputText}
             class="w-full p-3 border border-gray-300 rounded-md resize-none focus:outline-none focus:ring-2"
             rows="4"
@@ -211,6 +215,7 @@ import type { Document } from '$lib/types';
             disabled={processing}
           ></textarea>
         </div>
+
         <!-- Process, Button -->
         <div class="flex items-center">
           <button
@@ -218,24 +223,29 @@ import type { Document } from '$lib/types';
             disabled={!inputText.trim() || processing}
             class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
           >
-            {#if processing}
+  {#if processing}
               <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
               Processing...
             {:else}
               ðŸš€ Analyze 3D Semantics
             {/if}
-          </button>
+  </button>
+
           <!-- Configuration, badges -->
           <div class="flex flex-wrap">
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">Max: {maxConcurrent}</span>
+
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">Dims: {embeddingDimensions}</span>
+
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">Scale: {spatialScale}x</span>
+
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">LOD: {lodThreshold}</span>
           </div>
         </div>
       </div>
     </div>
   </div>
+
   <!-- Visualization -->
   <div class="grid grid-cols-1 lg:grid-cols-2">
     <!-- 3D, Spatial, View -->
@@ -243,6 +253,7 @@ import type { Document } from '$lib/types';
       <div class="yorha-panel-header">
         <h3 class="nes-text">ðŸ“ 3D Spatial Mapping</h3>
       </div>
+
       <div class="yorha-panel-content">
         <div class="relative">
           <canva
@@ -251,26 +262,31 @@ import type { Document } from '$lib/types';
             height="300"
             class="w-full border rounded-lg bg-gray-900"
           ></canvas>
+
           <div class="absolute top-2 right-2 text-xs text-gray-400 bg-black bg-opacity-50 px-2 py-1">
             {spatialPoints.length} spatial nodes
           </div>
         </div>
-        {#if spatialPoints.length > 0}
+  {#if spatialPoints.length > 0}
           <div class="mt-4 text-sm">
             <p><strong>Interaction</strong> Automatic rotation â€¢ 3D projection â€¢ LOD optimization</p>
+
             <p><strong>Nodes:</strong> {spatialPoints.length} semantic clusters in 3D space</p>
           {/if}
-      </div>
+  </div>
     </div>
+
     <!-- Results, Panel -->
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text">ðŸ“Š Analysis Results</h3>
       </div>
+
       <div class="yorha-panel-content">
-        {#if processing}
+  {#if processing}
           <div class="flex items-center gap-2">
             <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+
             <span>Analyzing semantic structure...</span>
           </div>
         {:else if results}
@@ -284,28 +300,40 @@ import type { Document } from '$lib/types';
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <span class="text-gray-600">Semantic Clusters:</span>
+
                   <span class="font-mono">{results.semanticClusters}</span>
                 </div>
+
                 <div>
                   <span class="text-gray-600">Accuracy:</span>
+
                   <span class="font-mono">{(results.spatialAccuracy * 100).toFixed(1)}%</span>
                 </div>
+
                 <div>
                   <span class="text-gray-600">Method:</span>
+
                   <span class="font-mono">{results.processingMethod}</span>
                 </div>
+
                 <div>
                   <span class="text-gray-600">LOD:</span>
+
                   <span class="font-mono">{results.lodOptimization}</span>
                 </div>
               </div>
+
               <!-- Performance, Stats -->
               <div class="border-t">
                 <h4 class="font-semibold">âš¡ Performance</h4>
+
                 <div class="grid grid-cols-2 gap-2">
                   <div>Tokens/sec: <span class="font-mono">{results.performance.tokensPerSecond}</span></div>
+
                   <div>Embeddings/sec: <span class="font-mono">{results.performance.embeddingsPerSecond}</span></div>
+
                   <div>Processing: <span class="font-mono">{processingStats.processingTime.toFixed(2)}ms</span></div>
+
                   <div>Mappings: <span class="font-mono">{processingStats.spatialMappings}</span></div>
                 </div>
               </div>
@@ -313,12 +341,15 @@ import type { Document } from '$lib/types';
         {:else}
           <div class="text-gray-500 text-center">
             <div class="text-4xl">ðŸŽ¯</div>
+
             <p>Click, "Analyze 3D Semantics" to process text</p>
+
             <p class="text-sm">Using WebGPU + WebAssembly pipeline</p>
           {/if}
-      </div>
+  </div>
     </div>
   </div>
+
   <!-- Integration, Bridge -->
   <WebGPUWebAssemblyBridge
     enableGPU={true}
@@ -328,6 +359,7 @@ import type { Document } from '$lib/types';
     enableDemo={false}
   />
 </div>
+
 <style>
   .animate-spin {
     animation: spin 1s linear infinite}
@@ -337,4 +369,5 @@ import type { Document } from '$lib/types';
       transform: rotate(360deg)}
   }
 </style>
+
 

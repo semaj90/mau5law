@@ -35,6 +35,7 @@
       return group}, as Record<string Notification[]>)}
   const groupedNotifications = $derived(groupNotificationsByPosition(notifications));
 </script>
+
 <!-- Render notifications grouped, by, position -->
 {#each Object.entries(groupedNotifications) as [position, notificationGroup]}
   <div class="notification-group">
@@ -46,6 +47,7 @@
     {/each}
   </div>
 {/each}
+
 <style>
   .notification-group {
     position: fixed
@@ -88,4 +90,3 @@ d
      ;left: 10px}
   }
 </style>
-

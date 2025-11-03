@@ -63,9 +63,11 @@ import type { User } from '$lib/types';
             console.log('ðŸ”§ Cache optimized:', data || payload);
             break}
       }
+
       // Initialize the worker
       worker.postMessage({ type: 'INIT_WASM' })} catch (error) {
       console.error('Failed to initialize worker:', error)}
+
     // Start auto-refresh
     refreshInterval = setInterval(refreshSystemStatus, 5000);
     // Initial status load
@@ -149,17 +151,21 @@ import type { User } from '$lib/types';
       case, 'correction': return 'âœï¸',default: return 'ðŸ’¡'}
   }
 </script>
+
 <div class="intelligent-orchestrator-dashboard min-h-screen bg-gray-50">
   <!-- Header -->
   <div class="mb-8">
     <h1 class="text-3xl font-bold text-gray-900">ðŸ§  Intelligent Model Orchestrator</h1>
+
     <p class="text-gray-600">
       Multi-model AI system with auto-switching, predictive loading, and self-prompting intelligence
     </p>
   </div>
+
   <!-- Query, Interface -->
   <div class="bg-white rounded-lg shadow-lg p-6">
     <h2 class="text-xl font-semibold text-gray-800">Query Interface</h2>
+
     <div class="flex gap-4">
       <input
         bind:value={queryInput}
@@ -173,18 +179,19 @@ import type { User } from '$lib/types';
         disabled={isProcessing || !queryInput.trim()}
         class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
       >
-        {#if isProcessing}
+  {#if isProcessing}
           <span class="animate-spin">âš™ï¸</span> Processing...
         {:else}
           ðŸš€ Process
         {/if}
-      </button>
+  </button>
     </div>
+
     <!-- Query, Results -->
-    {#if $results}
+  {#if $results}
       <div class="mt-6 p-4 border border-gray-200 rounded-lg">
         <h3 class="text-lg font-medium text-gray-800">ðŸŽ¯ Processing Results</h3>
-        {#if $results.error}
+  {#if $results.error}
           <div class="text-red-600">
             <strong>Error:</strong>
             {$results.error}
@@ -193,62 +200,78 @@ import type { User } from '$lib/types';
           <div class="grid grid-cols-1 md:grid-cols-2">
             <div>
               <div class="text-sm">Selected Model:</div>
+
               <div class="text-lg font-semibold">{$results.selectedModel}</div>
             </div>
+
             <div>
               <div class="text-sm">Estimated Latency:</div>
+
               <div
                 class="text-lg font-semibold {$results.estimatedLatency < 500 ? 'text-green-600' : 'text-yellow-600'}"
               >
                 {formatLatency($results.estimatedLatency)}
               </div>
             </div>
+
             <div class="md:col-span-2">
               <div class="text-sm">Preload Recommendations:</div>
+
               <div class="flex gap-2">
-                {#each Array.isArray($results.shouldPreload || []) ? $results.shouldPreload || [] : [] as model}
+  {#each Array.isArray($results.shouldPreload || []) ? $results.shouldPreload || [] : [] as model}
                   <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded">{model}</span>
                 {/each}
-              </div>
+  </div>
             </div>
           {/if}
       {/if}
   </div>
+
   <!-- System, Status, Dashboard -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Current, Model, Status -->
     <div class="bg-white rounded-lg shadow">
       <h3 class="text-lg font-semibold text-gray-800">ðŸ¤– Current Model</h3>
-      {#if $modelStatusDisplay.current}
+  {#if $modelStatusDisplay.current}
         <div class="space-y-3">
           <div>
             <div class="text-sm">Active Model</div>
+
             <div class="text-xl font-bold">{$modelStatusDisplay.current.name}</div>
+
             <div class="text-sm">{$modelStatusDisplay.current.id}</div>
           </div>
+
           <div class="grid grid-cols-2 gap-4">
             <div>
               <div class="text-gray-600">Target Latency</div>
+
               <div class="font-semibold">{formatLatency($modelStatusDisplay.current.targetLatency)}</div>
             </div>
+
             <div>
               <div class="text-gray-600">Memory</div>
+
               <div class="font-semibold">{formatMemorySize($modelStatusDisplay.current.memoryFootprint)}</div>
             </div>
           </div>
+
           <div>
             <div class="text-gray-600">Capabilities</div>
+
             <div class="flex flex-wrap gap-1">
-              {#each Array.isArray($modelStatusDisplay.current.capabilities) ? $modelStatusDisplay.current.capabilities : [] as capability}
+  {#each Array.isArray($modelStatusDisplay.current.capabilities) ? $modelStatusDisplay.current.capabilities : [] as capability}
                 <span class="px-2 py-1 bg-green-100 text-green-800 rounded">
                   {capability}
                 </span>
               {/each}
-            </div>
+  </div>
           </div>
+
           <div class="pt-2">
             <div class="flex items-center">
               <div class="w-2 h-2"></div>
+
               <span class="text-sm {$modelStatusDisplay.isHealthy ? 'text-green-600' : 'text-red-600'}">
                 {$modelStatusDisplay.isHealthy ? 'Healthy' : 'Issues Detected'}
               </span>
@@ -257,84 +280,105 @@ import type { User } from '$lib/types';
         </div>
       {:else}
         <div class="text-gray-500">No model currently active{/if}
-    </div>
+  </div>
+
     <!-- Memory, Optimization, Status -->
     <div class="bg-white rounded-lg shadow">
       <h3 class="text-lg font-semibold text-gray-800">ðŸ§  Memory Status</h3>
-      {#if $memoryStatusDisplay}
+  {#if $memoryStatusDisplay}
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
             <div>
               <div class="text-gray-600">Total Used</div>
+
               <div class="font-semibold">{formatMemorySize($memoryStatusDisplay.totalUsed)}</div>
             </div>
+
             <div>
               <div class="text-gray-600">Efficiency</div>
+
               <div class="font-semibold">
                 {($memoryStatusDisplay.efficiency * 100).toFixed(1)}%
               </div>
             </div>
           </div>
+
           <div>
             <div class="text-gray-600">Fragmentation</div>
+
             <div class="w-full bg-gray-200 rounded-full">
               <div
                 class="bg-{$memoryStatusDisplay.fragmentation < 0.3 ? 'green' : 'orange'}-500 h-2"
                 style="width: {$memoryStatusDisplay.fragmentation * 100}%"
               ></div>
             </div>
+
             <div class="text-xs text-gray-500">
               {($memoryStatusDisplay.fragmentation * 100).toFixed(1)}% fragmented
             </div>
           </div>
+
           <div>
             <div class="text-gray-600">Model Layout</div>
+
             <div class="space-y-1">
-              {#each $memoryStatusDisplay.layout as [modelId, layout]}
+  {#each $memoryStatusDisplay.layout as [modelId, layout]}
                 <div class="flex justify-between">
                   <span class="truncate">{modelId}</span>
+
                   <span class="text-gray-500">{formatMemorySize(layout.size)}</span>
                 </div>
               {/each}
-            </div>
+  </div>
           </div>
         </div>
       {:else}
         <div class="text-gray-500">Memory data not available{/if}
-    </div>
+  </div>
+
     <!-- Performance, Metrics -->
     <div class="bg-white rounded-lg shadow">
       <h3 class="text-lg font-semibold text-gray-800">ðŸ“Š Performance</h3>
-      {#if $systemStatus}
+  {#if $systemStatus}
         <div class="space-y-3">
           <div class="grid grid-cols-2">
             <div>
               <div class="text-gray-600">Total Queries</div>
+
               <div class="text-xl font-bold">{$systemStatus.summary?.totalQueries || 0}</div>
             </div>
+
             <div>
               <div class="text-gray-600">Avg Latency</div>
+
               <div class="text-xl font-bold">{formatLatency($systemStatus.summary?.averageLatency || 0)}</div>
             </div>
           </div>
+
           <div>
             <div class="text-gray-600">Overall Satisfaction</div>
+
             <div class="w-full bg-gray-200 rounded-full">
               <div
                 class="bg-blue-500 h-2 rounded-full"
                 style="width: {($systemStatus.summary?.overallSatisfaction || 0) * 100}%"
               ></div>
             </div>
+
             <div class="text-xs text-gray-500">
               {(($systemStatus.summary?.overallSatisfaction || 0) * 100).toFixed(1)}%
             </div>
           </div>
+
           <div>
             <div class="text-gray-600">Active Models</div>
+
             <div class="text-lg font-semibold">{$systemStatus.summary?.activeModels || 0}</div>
           </div>
+
           <div>
             <div class="text-gray-600">Cache Hit Rate</div>
+
             <div class="text-lg font-semibold">
               {(($systemStatus.summary?.cacheHitRate || 0) * 100).toFixed(1)}%
             </div>
@@ -342,41 +386,50 @@ import type { User } from '$lib/types';
         </div>
       {:else}
         <div class="text-gray-500">Loading performance data...{/if}
-    </div>
   </div>
+  </div>
+
   <!-- Self-Prompting, Suggestions -->
   <div class="bg-white rounded-lg shadow">
     <h3 class="text-lg font-semibold text-gray-800">ðŸ’¡ Self-Prompting Suggestions</h3>
-    {#if $suggestionDisplay && $suggestionDisplay.length > 0}
+  {#if $suggestionDisplay && $suggestionDisplay.length > 0}
       <div class="space-y-4">
-        {#each Array.isArray($suggestionDisplay) ? $suggestionDisplay : [] as suggestion}
+  {#each Array.isArray($suggestionDisplay) ? $suggestionDisplay : [] as suggestion}
           <div class="border border-gray-200 rounded-lg p-4">
             <div class="flex items-start">
               <div class="flex-1">
                 <div class="flex items-center gap-2">
                   <span class="text-lg">{getCategoryIcon(suggestion.category)}</span>
+
                   <span class="text-sm font-medium text-gray-700">
                     {suggestion.category}
                   </span>
+
                   <span class="text-xs px-2 py-1 bg-gray-100">
                     {(suggestion.confidence * 100).toFixed(0)}% confident
                   </span>
                 </div>
+
                 <p class="text-gray-800">{suggestion.suggestion}</p>
+
                 <div class="flex items-center gap-4 text-xs">
                   <span>ðŸ“± {suggestion.modelRecommendation}</span>
+
                   <span>âš¡ {formatLatency(suggestion.estimatedLatency)}</span>
+
                   <span>ðŸŽ¯ {(suggestion.contextRelevance * 100).toFixed(0)}% relevant</span>
                 </div>
               </div>
+
               <div class="flex gap-2">
-                {#if !$userFeedback.has(suggestion.id)}
+  {#if !$userFeedback.has(suggestion.id)}
                   <button
                     onclick={() => acceptSuggestion(suggestion)}
                     class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
                   >
                     âœ“ Accept
                   </button>
+
                   <button
                     onclick={() => rejectSuggestion(suggestion)}
                     class="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
@@ -392,38 +445,49 @@ import type { User } from '$lib/types';
                     {$userFeedback.get(suggestion.id) ? 'âœ“ Accepted' : 'âœ— Rejected'}
                   </span>
                 {/if}
-              </div>
+  </div>
             </div>
           </div>
         {/each}
-      </div>
+  </div>
     {:else}
       <div class="text-center py-8">
         <div class="text-4xl">ðŸ¤”</div>
+
         <p>No suggestions available. Try asking a question to see intelligent suggestions!</p>
       {/if}
   </div>
+
   <!-- Model, Performance, Details -->
   {#if $performanceMetrics && $performanceMetrics.length > 0}
     <div class="mt-8 bg-white rounded-lg shadow">
       <h3 class="text-lg font-semibold text-gray-800">ðŸ” Model Performance Details</h3>
+
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead class="bg-gray-50">
             <tr>
               <th class="px-4 py-2">Model ID</th>
+
               <th class="px-4 py-2">Avg Latency</th>
+
               <th class="px-4 py-2">Success Rate</th>
+
               <th class="px-4 py-2">User Satisfaction</th>
+
               <th class="px-4 py-2">Usage Count</th>
+
               <th class="px-4 py-2">Last Used</th>
             </tr>
           </thead>
+
           <tbody class="divide-y">
-            {#each Array.isArray($performanceMetrics) ? $performanceMetrics : [] as metric}
+  {#each Array.isArray($performanceMetrics) ? $performanceMetrics : [] as metric}
               <tr class="hover:bg-gray-50">
                 <td class="px-4 py-2">{metric.modelId}</td>
+
                 <td class="px-4 py-2">{formatLatency(metric.averageLatency)}</td>
+
                 <td class="px-4 py-2">
                   <span
                     class="px-2 py-1 rounded text-xs" {metric.successRate > 0.8
@@ -435,18 +499,22 @@ import type { User } from '$lib/types';
                     {(metric.successRate * 100).toFixed(1)}%
                   </span>
                 </td>
+
                 <td class="px-4 py-2">{(metric.userSatisfaction * 100).toFixed(1)}%</td>
+
                 <td class="px-4 py-2">{metric.usageCount}</td>
+
                 <td class="px-4 py-2 text-center">
                   {new Date(metric.lastUsed).toLocaleTimeString()}
                 </td>
               </tr>
             {/each}
-          </tbody>
+  </tbody>
         </table>
       </div>
     {/if}
-</div>
+  </div>
+
 <style>
   .intelligent-orchestrator-dashboard {
     font-family:
@@ -474,4 +542,5 @@ import type { User } from '$lib/types';
     border-radius: 3px}
   .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #a8a8a8}
 </style>
+
 

@@ -26,17 +26,13 @@ import type { Document } from '$lib/types';
     try {
       console.log('ðŸš€ Running cached RAG query...');
       const response = await fetch('/api/v1/rag/cached', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'query',
-          query: { query: query.trim(),
-            semantic: { useEmbeddings: true,
-              expandConcepts: true
+          action: 'query'; query: { query: query.trim(),
+            semantic: { useEmbeddings: true; expandConcepts: true
              , includeRelated: true
             },
-            filters: { confidenceThreshold: 0.7,
-              legalCategories: ['CONTRACT', 'TORT']
+            filters: { confidenceThreshold: 0.7; legalCategories: ['CONTRACT', 'TORT']
             }
           }
         })
@@ -76,8 +72,7 @@ import type { Document } from '$lib/types';
     loading = true
     try {
       const response = await fetch('/api/v1/rag/cached', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'warmup' })
       });
       const data = await (response as { json?: any }).json();
@@ -89,6 +84,7 @@ import type { Document } from '$lib/types';
       alert(`Cache warmup error: ${err.message}`)} finally {
       loading = false}
   }
+
   // Load metrics on component mount
   $effect(() => {
     loadCacheMetrics()});
@@ -273,7 +269,7 @@ import type { Document } from '$lib/types';
     max-width: 1200px
     margin: 0 auto
    ;padding: 20px
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     text-align: center
     margin-bottom: 30px
@@ -298,7 +294,7 @@ import type { Document } from '$lib/types';
     font-weight: 600
     color: #4a5568}
   .input-group textarea {
-    width: 100%, padding: 10px
+    width: 100%; padding: 10px
     border: 1px solid #e2e8f0
     border-radius: 6px
     font-size: 14px
@@ -381,7 +377,7 @@ import type { Document } from '$lib/types';
     color: #22543d
     margin-bottom: 15px}
   .stats-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 10px}
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px}
   .stat {
     display: flex
     justify-content: space-betweenn
@@ -455,7 +451,7 @@ import type { Document } from '$lib/types';
     color: #2d3748
     margin-bottom: 20px}
   .metrics-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)), gap: 20px}
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px}
   .metric-card {
     background: white
     border: 1px solid #e2e8f0
@@ -477,6 +473,5 @@ import type { Document } from '$lib/types';
     font-weight: 600
    ;color: #38a169}
 </style>
-
 
 

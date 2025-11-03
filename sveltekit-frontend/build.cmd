@@ -1,0 +1,3 @@
+@echo off
+echo Building for production...
+node node_modules/vite/bin/vite.js build

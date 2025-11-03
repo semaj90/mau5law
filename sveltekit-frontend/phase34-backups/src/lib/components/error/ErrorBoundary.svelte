@@ -58,10 +58,10 @@
   function reportError() {
     if (browser) {
       const errorReport = {
-        path: currentPath,
-        error: errorDetails
+        path: currentPath
+; error: errorDetails
         stack: errorStack
-       , userAgent: navigator.userAgent,
+; userAgent: navigator.userAgent,
         timestamp: new Date().toISOString();
       }
       console.log('Error Report:', errorReport);
@@ -74,6 +74,7 @@
     errorDetails = null
     errorStack = null}
 </script>
+
 {#if hasError && !fallback}
   <div class="error-boundary-container">
     <div class="error-boundary-content">
@@ -115,22 +116,20 @@
 {:else}
   <slot />
 {/if}
+
 <style>
   .error-boundary-container {
     min-height: 60vh
     display: flex
     align-items: center
     justify-content: center
-    padding: 2rem
-   , background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    padding: 2rem; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   }
   .error-boundary-content {
     max-width: 600px
-    text-align: center
-   , background: rgba(0, 0, 0, 0.8);
+    text-align: center; background: rgba(0, 0, 0, 0.8);
     border: 2px solid #00ff41
-    border-radius: 12px
-   , padding: 3rem 2rem
+    border-radius: 12px; padding: 3rem 2rem
     box-shadow: 0 20px 40px rgba(0, 255, 65, 0.2);
   }
   .error-icon {
@@ -149,8 +148,7 @@
     margin-bottom: 2rem}
   .error-details {
     text-align: left
-    margin: 2rem 0
-   , background: rgba(255, 255, 255, 0.05);
+    margin: 2rem 0; background: rgba(255, 255, 255, 0.05);
     border-radius: 8px
     padding: 1rem}
   .error-details summary {
@@ -172,8 +170,7 @@
     margin-top: 1rem}
   .error-actions {
     display: flex
-    flex-wrap: wrap
-   , gap: 1rem
+    flex-wrap: wrap; gap: 1rem
     justify-content: center
     margin-top: 2rem}
   @media (max-width: 640px) {
@@ -186,4 +183,3 @@
       align-items: center}
   }
 </style>
-

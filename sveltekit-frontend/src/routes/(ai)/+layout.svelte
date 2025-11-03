@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
@@ -15,18 +15,18 @@ import type { Document } from '$lib/types';
 
   // AI navigation items - route groups (ai) are invisible in URLs
   const aiRoutes = [
-    { name: 'AI Assistant', href: '/assistant', icon: 'ðŸ¤–' },
-    { name: 'AI Chat', href: '/chat', icon: 'ðŸ’¬' },
-    { name: 'GPU Chat', href: '/gpu-chat', icon: 'âš¡' },
-    { name: 'AI Dashboard', href: '/dashboard', icon: 'ðŸ“Š' },
-    { name: 'RAG System', href: '/ai-rag', icon: 'ðŸ§ ' },
-    { name: 'Vector Search', href: '/vector-search', icon: 'ðŸ”' },
-    { name: 'Recommendations', href: '/recommendations', icon: 'ðŸ’¡' },
-    { name: 'Case Scoring', href: '/case-scoring', icon: 'âš–ï¸' },
-    { name: 'Document Drafting', href: '/document-drafting', icon: 'ðŸ“' },
-    { name: 'Pattern Detection', href: '/pattern-detection', icon: 'ðŸŽ¯' },
-    { name: 'Orchestrator', href: '/orchestrator', icon: 'ðŸŽ¼' },
-    { name: 'Processing', href: '/processing', icon: 'âš™ï¸' }];
+    { name: 'AI Assistant', href: '/assistant'; icon: 'ðŸ¤–' },
+    { name: 'AI Chat', href: '/chat'; icon: 'ðŸ’¬' },
+    { name: 'GPU Chat', href: '/gpu-chat'; icon: 'âš¡' },
+    { name: 'AI Dashboard', href: '/dashboard'; icon: 'ðŸ“Š' },
+    { name: 'RAG System', href: '/ai-rag'; icon: 'ðŸ§ ' },
+    { name: 'Vector Search', href: '/vector-search'; icon: 'ðŸ”' },
+    { name: 'Recommendations', href: '/recommendations'; icon: 'ðŸ’¡' },
+    { name: 'Case Scoring', href: '/case-scoring'; icon: 'âš–ï¸' },
+    { name: 'Document Drafting', href: '/document-drafting'; icon: 'ðŸ“' },
+    { name: 'Pattern Detection', href: '/pattern-detection'; icon: 'ðŸŽ¯' },
+    { name: 'Orchestrator', href: '/orchestrator'; icon: 'ðŸŽ¼' },
+    { name: 'Processing', href: '/processing'; icon: 'âš™ï¸' }];
 
   // AI-focused console theme (cyberpunk for AI work)
   const consolePalette: ConsolePaletteName = 'cyberpunk';
@@ -178,8 +178,7 @@ import type { Document } from '$lib/types';
   .ai-nav-item: :before {
     content: ''; position: absolute
     top: 0
-    left: -100%; width: 100%,
-    height: 100%; background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
+    left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
     transition: left 0.5s ease}
 
   .ai-nav-item:hover::before {

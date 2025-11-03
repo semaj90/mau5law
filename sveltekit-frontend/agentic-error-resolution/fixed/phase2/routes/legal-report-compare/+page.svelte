@@ -301,29 +301,21 @@
 
 <div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-8">
   <div class="max-w-7xl mx-auto">
-
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
         ⚖️ Legal Report Comparison
       </h1>
       <p class="text-slate-400 mb-4">
-        Upload PDF legal reports for AI-powered analysis with WHO/WHAT/WHY/HOW/EVIDENCE extraction and case similarity search
+        Upload PDF legal reports for AI-powered analysis with WHO/WHAT/WHY/HOW/EVIDENCE extraction and case similarity
+        search
       </p>
 
       <div class="flex flex-wrap gap-2 text-sm">
-        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400">
-          📄 OCR Text Extraction
-        </span>
-        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400">
-          🧠 gemma3-legal:latest
-        </span>
-        <span class="px-3 py-1 rounded-full bg-green-500/20 text-green-400">
-          🔢 embeddinggemma vectors
-        </span>
-        <span class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400">
-          🏷️ Qdrant tags
-        </span>
+        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400"> 📄 OCR Text Extraction </span>
+        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400"> 🧠 gemma3-legal:latest </span>
+        <span class="px-3 py-1 rounded-full bg-green-500/20 text-green-400"> 🔢 embeddinggemma vectors </span>
+        <span class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400"> 🏷️ Qdrant tags </span>
       </div>
     </div>
 
@@ -350,9 +342,7 @@
                 onchange={handleFileUpload}
                 class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 cursor-pointer"
               />
-              <div class="mt-2 text-xs text-slate-500">
-                Supported: PDF, TXT, JSON, PNG/JPG, MP4, MP3
-              </div>
+              <div class="mt-2 text-xs text-slate-500">Supported: PDF, TXT, JSON, PNG/JPG, MP4, MP3</div>
               {#if uploadFile}
                 <div class="mt-2 flex items-center gap-2 text-sm text-slate-400">
                   <FileText class="w-4 h-4" />
@@ -378,9 +368,7 @@
 
             <!-- Document Type -->
             <div>
-              <label for="document-type" class="block text-sm font-medium text-slate-300 mb-2">
-                Document Type
-              </label>
+              <label for="document-type" class="block text-sm font-medium text-slate-300 mb-2"> Document Type </label>
               <select
                 id="document-type"
                 bind:value={formData.documentType}
@@ -399,9 +387,7 @@
             <!-- Jurisdiction & Case Number -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="jurisdiction" class="block text-sm font-medium text-slate-300 mb-2">
-                  Jurisdiction
-                </label>
+                <label for="jurisdiction" class="block text-sm font-medium text-slate-300 mb-2"> Jurisdiction </label>
                 <input
                   id="jurisdiction"
                   type="text"
@@ -412,9 +398,7 @@
               </div>
 
               <div>
-                <label for="case-number" class="block text-sm font-medium text-slate-300 mb-2">
-                  Case Number
-                </label>
+                <label for="case-number" class="block text-sm font-medium text-slate-300 mb-2"> Case Number </label>
                 <input
                   id="case-number"
                   type="text"
@@ -441,14 +425,19 @@
             <!-- Submit Button -->
             <Button
               onclick={submitReport}
-               disabled={!canSubmit}
-               class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+              disabled={!canSubmit}
+              class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition-colors"
             >
               {#if isUploading}
                 <span class="flex items-center gap-2 justify-center">
                   <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"
+                    ></circle>
+                    <path
+                      class="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   Analyzing... {uploadProgress}%
                 </span>
@@ -481,13 +470,8 @@
         <Card class="bg-slate-800/50 border-slate-700">
           <CardContent class="pt-6">
             <div class="flex items-center justify-between mb-4">
-              <h2 class="text-2xl font-bold text-white">
-                Analysis Results
-              </h2>
-              <Button
-                onclick={resetForm}
-                class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg"
-              >
+              <h2 class="text-2xl font-bold text-white">Analysis Results</h2>
+              <Button onclick={resetForm} class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg">
                 Upload New Report
               </Button>
             </div>
@@ -524,20 +508,20 @@
             </div>
 
             <div class="mt-4 text-sm text-slate-400">
-              Processing time: {(analysisResult.processingTime / 1000).toFixed(2)}s |
-              Text extracted: {analysisResult.extractedTextLength.toLocaleString()} characters
+              Processing time: {(analysisResult.processingTime / 1000).toFixed(2)}s | Text extracted: {analysisResult.extractedTextLength.toLocaleString()}
+              characters
             </div>
           </CardContent>
         </Card>
 
         <!-- Analysis Tabs -->
         <div class="flex gap-2 flex-wrap">
-          {#each Array.isArray(['who', 'what', 'why', 'how', 'evidence', 'comparison']) ? ['who', 'what', 'why', 'how', 'evidence', 'comparison'] : [] as tab}
+          {#each Array.isArray( ['who', 'what', 'why', 'how', 'evidence', 'comparison'] ) ? ['who', 'what', 'why', 'how', 'evidence', 'comparison'] : [] as tab}
             <button
               onclick={() => (activeTab = tab as typeof activeTab)}
-              class={`px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === tab
-                ? 'bg-blue-600 text-white'
-                : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}
+              class={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                activeTab === tab ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+              }`}
             >
               {#if tab === 'who'}
                 <Users class="w-4 h-4 inline mr-1" />
@@ -585,12 +569,9 @@
                 {/each}
 
                 {#if analysisResult.analysis.who.personsOfInterest.length === 0}
-                  <div class="text-center text-slate-400 py-8">
-                    No persons of interest identified
-                  </div>
+                  <div class="text-center text-slate-400 py-8">No persons of interest identified</div>
                 {/if}
               </div>
-
             {:else if activeTab === 'what'}
               <!-- WHAT Section -->
               <h3 class="text-xl font-bold text-white mb-4">📄 Case Summary</h3>
@@ -636,7 +617,6 @@
                   </div>
                 {/if}
               </div>
-
             {:else if activeTab === 'why'}
               <!-- WHY Section -->
               <h3 class="text-xl font-bold text-white mb-4">⚖️ Legal Basis & Motivation</h3>
@@ -671,7 +651,6 @@
                   </div>
                 {/if}
               </div>
-
             {:else if activeTab === 'how'}
               <!-- HOW Section -->
               <h3 class="text-xl font-bold text-white mb-4">🔍 Methodology & Arguments</h3>
@@ -706,7 +685,6 @@
                   </div>
                 {/if}
               </div>
-
             {:else if activeTab === 'evidence'}
               <!-- EVIDENCE Section -->
               <h3 class="text-xl font-bold text-white mb-4">🔬 Evidence Analysis</h3>
@@ -720,7 +698,9 @@
                         <div class="bg-slate-700/50 rounded-lg p-3">
                           <div class="flex items-center justify-between mb-1">
                             <span class="text-white font-medium">{evidence.description}</span>
-                            <span class={`px-2 py-1 rounded text-xs ${evidence.admissible ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                            <span
+                              class={`px-2 py-1 rounded text-xs ${evidence.admissible ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}
+                            >
                               {evidence.admissible ? 'Admissible' : 'Excluded'}
                             </span>
                           </div>
@@ -766,7 +746,6 @@
                   </div>
                 {/if}
               </div>
-
             {:else if activeTab === 'comparison'}
               <!-- COMPARISON Section -->
               <h3 class="text-xl font-bold text-white mb-4">📊 Case Similarity & Recommendations</h3>
@@ -829,7 +808,10 @@
                         {#each Array.isArray(analysisResult.comparison.recommendations) ? analysisResult.comparison.recommendations : [] as rec}
                           <div class="bg-slate-700/50 rounded-lg p-4">
                             <div class="flex items-center gap-2 mb-2">
-                              <svelte:component this={getPriorityIcon(rec.priority)} class={`w-5 h-5 ${getPriorityColor(rec.priority)}`} />
+                              <svelte:component
+                                this={getPriorityIcon(rec.priority)}
+                                class={`w-5 h-5 ${getPriorityColor(rec.priority)}`}
+                              />
                               <h5 class={`text-lg font-semibold ${getPriorityColor(rec.priority)}`}>
                                 {rec.type.toUpperCase()}: {rec.description}
                               </h5>
@@ -860,9 +842,7 @@
                   {/if}
                 </div>
               {:else}
-                <div class="text-center text-slate-400 py-8">
-                  Comparison was not enabled for this analysis
-                </div>
+                <div class="text-center text-slate-400 py-8">Comparison was not enabled for this analysis</div>
               {/if}
             {/if}
           </CardContent>
@@ -891,7 +871,11 @@
   }
 
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

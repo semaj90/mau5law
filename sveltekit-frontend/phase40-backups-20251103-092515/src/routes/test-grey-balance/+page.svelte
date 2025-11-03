@@ -117,8 +117,8 @@
           <h3 class="text-lg font-semibold">Before: Crimson Heavy</h3>
           <div class="p-6 bg-gradient-to-br from-red-900/20 to-red-800/10 rounded-lg border">
             <div class="mb-4">
-  <YoRHaHarvardButton variant="primary">Primary Action</YoRHaHarvardButton>
-</div>
+              <YoRHaHarvardButton variant="primary">Primary Action</YoRHaHarvardButton>
+            </div>
             <YoRHaHarvardCard variant="default" title="Heavy Crimson" subtitle="Overwhelming, red, tones">
               <p class="text-enhanced-text-secondary">
                 Too much crimson can be overwhelming and doesn't match NES aesthetics.'
@@ -131,8 +131,8 @@
           <h3 class="text-lg font-semibold">After: Grey Balance</h3>
           <div class="p-6 bg-gradient-to-br from-gray-800/20 to-red-900/5 rounded-lg border">
             <div class="mb-4">
-  <YoRHaHarvardButton variant="crimson-grey">Balanced Action</YoRHaHarvardButton>
-</div>
+              <YoRHaHarvardButton variant="crimson-grey">Balanced Action</YoRHaHarvardButton>
+            </div>
             <YoRHaHarvardCard variant="crimson-grey" title="Balanced Design" subtitle="Grey with, crimson, accents">
               <p class="text-enhanced-text-secondary">
                 Perfect balance of grey neutrals with Harvard crimson highlights.
@@ -200,4 +200,3 @@
     -webkit-background-clip: text
     -webkit-text-fill-color: transparent}
 </style>
-

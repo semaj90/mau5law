@@ -6,33 +6,39 @@ https://svelte.dev/e/js_parse_error -->
 
   // 1. Define Law interface
   interface Law {
-    id: string
-    title?: string
-    code?: string
-    description?: string
-    category?: string
+    id: string;
+    title?: string;
+    code?: string;
+    description?: string;
+    category?: string;
     createdAt?: string; // ISO date: string
   }
 
   // 2. Update laws type
   let laws: Law[] = $state([]);
   let loading = $state<boolean>(true);
-  let error: string | null = null
+  let error: string | null = null;
   let searchQuery = $state<string>('');
 
   // 3. Fix data fetching with onMount
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     try {
       const response = await fetch('/api/v1/laws'); // Assuming /api/v1/laws is the endpoint
       if (response.ok) {
-        laws = await response.json()} else {
-        error = 'Failed to load laws'}
+        laws = await response.json();
+      } else {
+        error = 'Failed to load laws';
+      }
     } catch (err) {
       error = 'Error loading laws';
-      console.error('Error:', err)} finally {
-      loading = false}
-  });
-
+      console.error('Error:', err);
+    } finally {
+      loading = false;
+    }
+  		})();
+	});
   let filteredLaws = $derived(
     laws.filter(
       law =>
@@ -46,7 +52,8 @@ https://svelte.dev/e/js_parse_error -->
 <svelte:head>
   <title>Law Database - WardenNet</title>
 </svelte:head>
-<div class="space-y-4"> <!-- Main container, with, spacing -->
+<div class="space-y-4">
+  <!-- Main container, with, spacing -->
   <div class="flex items-center">
     <h1 class="text-3xl">Law Database</h1>
     <a href="/law/add" class="flex items-center gap-2 text-blue-600">
@@ -58,15 +65,14 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <div class="mt-4">
     <div class="flex flex-col">
-      <label for="search" class="text-lg">
-        Search laws and statutes
-      </label>
+      <label for="search" class="text-lg"> Search laws and statutes </label>
       <input
         type="text"
         id="search"
         placeholder="Search by title, description, or code..."
         class="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-       , bind:value={searchQuery}
+        ,
+        bind:value={searchQuery}
       />
     </div>
   </div>

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   // NES Auth Modal - Svelte, 5 compatible
   interface Props {
@@ -7,6 +7,7 @@
     onClose?: () => void
     onSubmit?: (payload: { email: string;, password: string }) => void
     form?: any}
+
   // Svelte, 5 runes - props via $props()
   let {
     open = $bindable(false),
@@ -17,8 +18,11 @@
   }: Props = $props();
   // component state
   let email = $state<string>('');
+
   let password = $state<string>('');
+
   let error = $state<string | null>(null);
+
   let submitting = $state<boolean>(false);
   function close() {
     open = false
@@ -41,14 +45,15 @@
       submitting = false}
   }
 </script>
-{#if open}
+  {#if open}
   <div class="fixed inset-0 z-50 grid" role="dialog" aria-modal="true" aria-label={title}>
   <div class="fixed inset-0" onclick={close}></div>
+
     <form class="relative z-10 w-full max-w-md rounded bg-neutral-900 p-6" onsubmit={submit}>
       <div class="mb-3 text-lg">{title}</div>
-      {#if error}
+  {#if error}
         <div class="mb-3 text-sm">{error}{/if}
-      <div class="space-y-3">
+  <div class="space-y-3">
         <label class="block">Email
           <input
             type="email"
@@ -59,6 +64,7 @@
             autofocus
           />
         </label>
+
         <label class="block">Password
           <input
             type="password"
@@ -69,17 +75,20 @@
           />
         </label>
       </div>
+
       <div class="mt-4 flex justify-end">
         <button type="button" class="rounded bg-neutral-700 px-3" onclick={close}>Cancel</button>
+
         <button type="submit" class="rounded bg-emerald-600 px-3" disabled={submitting}>
-          {#if submitting}Signing in...{:else}Sign in{/if}
-        </button>
+  {#if submitting}Signing in...{:else}Sign in{/if}
+  </button>
       </div>
     </form>
   {/if}
-<style>
+  <style>
   /* Minimal modal styles; keep project-wide theming elsewhere */
   :global(body) {
     --modal-bg: rgba(0,0,0,0.5)}
 </style>
+
 

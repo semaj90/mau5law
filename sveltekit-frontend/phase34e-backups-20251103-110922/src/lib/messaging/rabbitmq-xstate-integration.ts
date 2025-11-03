@@ -112,7 +112,7 @@ type ConnectionLike = StompClientLike | AmqpConnectionLike;
 interface UserPatterns {
 	searchFrequency: number,popularSearches: string[],
 	recentDocuments: string[],sessionDuration: number,
-	mostUsedFeatures: Record<string, number>;
+	mostUsedFeatures: Record<string | number>;
 	timePatterns: { mostActiveHour: string, activityDistribution: Record<number, number> };
 	wasmInferenceFrequency: number,
 	averageWasmLatency: number,concurrentWasmRequests: number,

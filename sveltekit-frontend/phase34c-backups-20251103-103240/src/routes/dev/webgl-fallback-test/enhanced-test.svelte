@@ -5,10 +5,9 @@
   // Svelte, 5 runes for reactive state
   let log = $state<string>('');
   let testResults = $state({
-    webgpu: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    webgl2: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    webgl1: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    wasm: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgpu: { supported: false, tested: false, performance: null, as: any, error: null; as: string | null },
+    webgl2: { supported: false, tested: false, performance: null, as: any, error: null; as: string | null },
+    webgl1: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null }; wasm: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
     recommendation: ''});
   let isTestingInProgress = $state<boolean>(false);
   let currentTest = $state<string>('');
@@ -97,7 +96,8 @@ if (browser) {
       progressPercent = 100
       append('ðŸŽ‰ Gemma3 270M performance analysis completed successfully')} catch (error) {
       append(`âŒ Test error: ${error}`);
-      console.error('Performance test error:', error);'
+      console.error('Performance test error:', error);
+'
     } finally {
       isTestingInProgress = false
       currentTest = ''}
@@ -132,8 +132,7 @@ if (browser) {
       `;`
       const computeShader = device.createShaderModule({ code: computeShaderSource });
       const computePipeline = device.createComputePipeline({
-        layout: 'auto',
-        compute: { module: computeShader, entryPoint: 'main' }
+        layout: 'auto'; compute: { module: computeShader, entryPoint: 'main' }
       });
       // Performance benchmark for Gemma3 270M operations
       const startTime = performance.now();
@@ -142,10 +141,8 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.webgpu.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / iterations).toFixed(2),
-        opsPerSecond: (iterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / iterations).toFixed(2),
+        opsPerSecond: (iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
       }
       append(`âœ…, WebGPU: ${iterations} Gemma3 270M operations in ${totalTime.toFixed(2)}ms (${(iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgpu.error = (error as Error).messag
@@ -169,10 +166,8 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.webgl2.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / webgl2Iterations).toFixed(2),
-        opsPerSecond: (webgl2Iterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / webgl2Iterations).toFixed(2),
+        opsPerSecond: (webgl2Iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
       }
       append(`âœ…, WebGL2: ${webgl2Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl2Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgl2.error = (error as Error).messag
@@ -196,11 +191,9 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.webgl1.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / webgl1Iterations).toFixed(2),
-        opsPerSecond: (webgl1Iterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
-        note: `Reduced, iterations: ${webgl1Iterations} (WebGL1 limitations)`
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / webgl1Iterations).toFixed(2),
+        opsPerSecond: (webgl1Iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
+        note: `Reduced; iterations: ${webgl1Iterations} (WebGL1 limitations)`
       }
       append(`âœ… WebGL1: ${webgl1Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl1Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgl1.error = (error as Error).messag
@@ -220,11 +213,9 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.wasm.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / cpuIterations).toFixed(2),
-        opsPerSecond: (cpuIterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
-       , note: `CPU-based SIMD, iterations: ${cpuIterations}`
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / cpuIterations).toFixed(2),
+        opsPerSecond: (cpuIterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
+       , note: `CPU-based SIMD; iterations: ${cpuIterations}`
       }
       append(`âœ…, WebAssembly: ${cpuIterations} operations in ${totalTime.toFixed(2)}ms (${(cpuIterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.wasm.error = (error as Error).messag
@@ -240,25 +231,21 @@ if (browser) {
       matrixB[i] = (Math.random() * 2 - 1) * 0.1}
     return { matrixA, matrixB }
   }
-  async function performWebGPUMatrixMultiplication(device: GPUDevice, computePipeline: GPUComputePipeline): Promise<any> {
+  async function performWebGPUMatrixMultiplication(device: GPUDevice; computePipeline: GPUComputePipeline): Promise<any> {
     const matrixSizeBytes = matrixSize * matrixSize * 4
     const bufferA = device.createBuffer({
-      size: matrixSizeBytes
-     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
+      size: matrixSizeBytes; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
     const bufferB = device.createBuffer({
-      size: matrixSizeBytes
-     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
+      size: matrixSizeBytes; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
     const resultBuffer = device.createBuffer({
-      size: matrixSizeBytes
-     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC});
+      size: matrixSizeBytes; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC});
     device.queue.writeBuffer(bufferA, 0, testData!.matrixA);
     device.queue.writeBuffer(bufferB, 0, testData!.matrixB);
     const bindGroup = device.createBindGroup({
-      layout: computePipeline.getBindGroupLayout(0),
-      entries: [
-        { binding: 0, resource: { buffer: bufferA } },
-        { binding: 1, resource: { buffer: bufferB } },
-        { binding: 2, resource: { buffer: resultBuffer } }
+      layout: computePipeline.getBindGroupLayout(0); entries: [
+        { binding: 0; resource: { buffer: bufferA } },
+        { binding: 1; resource: { buffer: bufferB } },
+        { binding: 2; resource: { buffer: resultBuffer } }
       ]
     });
     const commandEncoder = device.createCommandEncoder();
@@ -294,7 +281,7 @@ if (browser) {
   async function createWebAssemblyMatrixModule(): Promise<any> {
     // Simulated high-performance WebAssembly SIMD module for Gemma3 270M
     return {
-      matrixMultiply: (matrixA: Float32Array, matrixB: Float32Array, size: number) => {
+      matrixMultiply: (matrixA: Float32Array, matrixB: Float32Array; size: number) => {
         const result = new Float32Array(size * size);
         // Optimized matrix multiplication with simulated SIMD operations
         for (let i = 0; i < size; i++) {
@@ -490,9 +477,8 @@ if (browser) {
 <style>
   .webgl-test-container {
     max-width: 1200px
-    margin: 0 auto
-   , padding: 1rem
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    margin: 0 auto; padding: 1rem
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white
@@ -520,12 +506,10 @@ if (browser) {
     border-radius: 0.75rem
     cursor: pointer
     font-weight: 600
-    font-size: 1rem
-   , transition: all 0.2
+    font-size: 1rem; transition: all 0.2
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)}
   .test-buttonhover:not(:disabled) {
-    background: #1d4ed8
-   , transform: translateY(-2px),
+    background: #1d4ed8; transform: translateY(-2px),
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)}
   .test-buttondisabled {
     background: #6b7280
@@ -534,16 +518,14 @@ if (browser) {
   .progress-container {
     background: white
     border-radius: 0.75rem
-    padding: 1.5rem
-   , margin: 1rem 0
+    padding: 1.5rem; margin: 1rem 0
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .progress-text {
     font-weight: 600
     margin-bottom: 1rem
     color: #374151}
   .progress-bar {
-    width: 100%,
-    height: 0.75rem
+    width: 100%; height: 0.75rem
     background: #e5e7eb
     border-radius: 0.375rem
     overflow: hidden
@@ -565,12 +547,10 @@ if (browser) {
   .result-card {
     background: white
     border: 2px solid #e5e7eb
-    border-radius: 1rem
-   , padding: 1.5rem
+    border-radius: 1rem; padding: 1.5rem
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.2}
-  .result-card:hover { transform: translateY(-4px),
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  .result-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6}
   .result-card h3 { margin: 0, 0 1rem 0
     font-size: 1.25rem
@@ -596,8 +576,7 @@ if (browser) {
   .recommendation { background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
     border: 2px solid #3b82f6
     border-radius: 1rem
-    padding: 2rem
-   , margin: 2rem 0
+    padding: 2rem; margin: 2rem 0
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05)}
   .recommendation h3 {
     margin: 0, 0 1rem 0
@@ -614,13 +593,11 @@ if (browser) {
     padding: 1.5rem
     margin: 2rem 0}
   .log-container h2 {
-    color: #e2e8f0
-   , margin: 0, 0 1rem 0
+    color: #e2e8f0; margin: 0, 0 1rem 0
     font-size: 1.25rem}
   .log-output {
     background: #1e293b
-    color: #e2e8f0
-   , padding: 1rem
+    color: #e2e8f0; padding: 1rem
     border-radius: 0.5rem
     white-space: pre-wrap
     font-family: 'Courier New', 'Monaco', monospace
@@ -646,8 +623,7 @@ if (browser) {
     letter-spacing: 0.5px}
   .info-value {
     font-size: 1.1rem
-    font-weight: 700
-   , color: #1f2937
+    font-weight: 700; color: #1f2937
     margin-top: 0.25rem}
   @media (max-width: 768px) {
     .header h1 {
@@ -661,5 +637,3 @@ if (browser) {
       grid-template-columns: 1fr}
   }
 </style>
-
-

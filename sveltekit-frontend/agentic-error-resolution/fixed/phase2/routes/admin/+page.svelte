@@ -206,14 +206,7 @@
         <div>Real-time status of core system components</div>
       </div>
       <div class="space-y-4">
-        {#each [
-          { key: 'database', label: 'PostgreSQL Database', icon: Database },
-          { key: 'redis', label: 'Redis Cache', icon: HardDrive },
-          { key: 'aiService', label: 'AI Service', icon: Cpu },
-          { key: 'vectorSearch', label: 'Vector Search', icon: Network },
-          { key: 'fileSystem', label: 'File System', icon: HardDrive },
-          { key: 'gpu', label: 'GPU Acceleration', icon: Zap }
-        ] as service}
+        {#each [{ key: 'database', label: 'PostgreSQL Database', icon: Database }, { key: 'redis', label: 'Redis Cache', icon: HardDrive }, { key: 'aiService', label: 'AI Service', icon: Cpu }, { key: 'vectorSearch', label: 'Vector Search', icon: Network }, { key: 'fileSystem', label: 'File System', icon: HardDrive }, { key: 'gpu', label: 'GPU Acceleration', icon: Zap }] as service}
           <div class="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
             <div class="flex items-center gap-3">
               <service.icon class="w-4 h-4 nes-text is-disabled" />

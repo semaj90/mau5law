@@ -8,8 +8,11 @@
     Video,
     Search
   } from "lucide-svelte";
+
   import { quintOut } from "svelte/easing";
+
   import { scale } from "svelte/transition";
+
   import type { Evidence } from '$lib/types/evidence';
   // Props
   const { evidence } = $props<{ evidence: Evidence }>()
@@ -36,15 +39,21 @@
         return Link
       default: return FileText}
   };
+
   const formatFileSize = (bytes: number): string => {
     if (!bytes || bytes === 0) return "0 Bytes";
+
     const k = 1024
     const sizes = ["Bytes", "KB", "MB", "GB"];
+
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i]};
+
   const fileSize = evidence?.metadata?.size ?? evidence?.fileSize ?? 0
   let isHovered = $state<boolean>(false);
+
   let comparing = $state<boolean>(false);
+
   let compareError: string | null = null
   const IconComponent = getIcon(evidence?.evidenceType ?? evidence?.type ?? 'document');
   function handleMouseEnter() {
@@ -62,7 +71,9 @@
       if (evidence.description) fd.append('text', evidence.description);
       if (Array.isArray(evidence.tags) && evidence.tags.length) fd.append('tags', evidence.tags.join(','));
       fd.append('topK', '8');
+
       const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd });
+
       const data = await resp.json();
       if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed');
       $$events.compared({ evidence, result: data.data }); // Use $$events
@@ -71,6 +82,7 @@
       comparing = false}
   }
 </script>
+
 <div
   role="article"
   class="bg-white border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 shadow relative"
@@ -108,10 +120,11 @@
       <svelte: component | this={IconComponent} size={16} />
       <span>{evidence?.evidenceType ?? evidence?.type}</span>
     </div>
+
     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100">
       <!-- Prefer a named slot for custom actions; fallback to built-in, compare, button -->
       <slot name="actions" {evidence}>
-        {#if showCompare}
+  {#if showCompare}
           <button
             class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100"
             onclick={handleCompareClick}
@@ -122,13 +135,14 @@
             <Search size={14} />
           </button>
         {/if}
-      </slot>
+  </slot>
     </div>
   </div>
+
   <!-- Content -->
   <div class="px-3">
     <!-- Preview (for, images/videos) -->
-    {#if (evidence?.evidenceType ?? evidence?.type) === 'image' && evidence?.url}
+  {#if (evidence?.evidenceType ?? evidence?.type) === 'image' && evidence?.url}
       <div class="relative w-full mb-3 rounded-lg overflow-hidden">
         <img
           src={evidence.url}
@@ -143,23 +157,24 @@
         <video src={evidence.url} preload="metadata" controls={false} muted class="w-full h-auto max-h-48">
           <track kind="captions" />
         </video>
+
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/60 rounded-full p-3">
           <Video size={24} />
         </div>
       {/if}
-    <!-- Title, and, Description -->
+  <!-- Title, and, Description -->
     <div class="flex flex-col">
       <h3 class="font-semibold text-base text-gray-900 leading-tight">
         {evidence?.title}
       </h3>
-      {#if evidence?.description && !compact}
+  {#if evidence?.description && !compact}
         <p class="text-sm text-gray-500 leading-snug">
           {evidence.description}
         </p>
       {/if}
-      <!-- Metadata -->
+  <!-- Metadata -->
       <div class="flex flex-wrap gap-2">
-        {#if evidence?.metadata?.createdAt || evidence?.createdAt}
+  {#if evidence?.metadata?.createdAt || evidence?.createdAt}
           <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5">
             {new Date(evidence?.metadata?.createdAt ?? evidence?.createdAt ?? '').toLocaleDateString()}
           </span>
@@ -174,11 +189,12 @@
             {evidence.metadata.format.toUpperCase()}
           </span>
         {/if}
-      </div>
+  </div>
+
       <!-- Tags -->
-      {#if evidence?.tags && evidence.tags.length > 0}
+  {#if evidence?.tags && evidence.tags.length > 0}
         <div class="flex flex-wrap gap-1">
-          {#each Array.isArray(evidence.tags.slice(0, 3)) ? evidence.tags.slice(0, 3) : [] as tag}
+  {#each Array.isArray(evidence.tags.slice(0, 3)) ? evidence.tags.slice(0, 3) : [] as tag}
             <span class="flex items-center gap-1 text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded border">
               <Tag size={10} />
               {tag}
@@ -188,8 +204,9 @@
             <span class="text-xs text-gray-500">+{evidence.tags.length - 3}</span>
           {/if}
         {/if}
-    </div>
   </div>
+  </div>
+
   <!-- Footer (if has URL and is, a, link) -->
   {#if evidence?.url && (evidence?.evidenceType ?? evidence?.type) === 'link'}
     <div class="px-3 py-3 border-t border-gray-200">
@@ -203,8 +220,10 @@
         Open Link
       </a>
     {/if}
-</div>
+  </div>
+
 <!-- Tooltip section removed - replaced with native, title, attributes -->
 <!-- Tooltip section removed - replaced with native, title, attributes -->
       >
+
 

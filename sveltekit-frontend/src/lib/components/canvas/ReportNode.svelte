@@ -1,17 +1,22 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
     report: Report}
   let { report }: Props = $props();
+
   import { onMount } from 'svelte';
+
   import type { Report } from '$lib/data/types';
   // UI Components
   import * as ContextMenu from '$lib/components/ui/context-menu.svelte';
   // Icons
   import { Link: Sparkles } from 'lucide-svelte';
+
   let nodeElement: HTMLDivElement | null = null
   let isDragging = $state<boolean>(false);
+
   let dragStartX = $state<number>(0);
+
   let dragStartY = $state<number>(0);
   // Add local position state for drag-and-drop
   let position = $state({ x: 100, y: 100 });
@@ -44,6 +49,7 @@
       document.removeEventListener('mouseup', handleMouseUp);
       nodeElement = null}});
 </script>
+
 <ContextMenu.Root>
   <ContextMenu.Trigger>
     <div
@@ -54,9 +60,10 @@
       onkeydown={(e: KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          isDragging = true
-          dragStartX = 0
-          dragStartY = 0}
+          isDragging = true;
+          dragStartX = 0;
+          dragStartY = 0;
+        }
       }}
       role="button"
       tabindex={0}
@@ -69,17 +76,20 @@
       </div>
     </div>
   </ContextMenu.Trigger>
-  <ContextMenu.Content, menu={true}>
+
+  <ContextMenu.Content menu={true}>
     <ContextMenu.Item select={() => saveCitation(window.getSelection()?.toString() || '')}>
       <Link class="space-y-4" />
       Save as Citation
     </ContextMenu.Item>
-    <ContextMenu.Item, select={summarizeReport}>
+
+    <ContextMenu.Item select={summarizeReport}>
       <Sparkles class="space-y-4" />
       AI Summary
     </ContextMenu.Item>
   </ContextMenu.Content>
 </ContextMenu.Root>
+
 <style>
   /* @unocss-include */
 </style>

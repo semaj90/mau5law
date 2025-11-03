@@ -10,8 +10,9 @@
 
   onMount(() => {
     if (browser) {
-      currentUrl = window.location.href
-      currentTime = new Date().toLocaleString()}
+      currentUrl = window.location.href;
+      currentTime = new Date().toLocaleString();
+    }
   });
 </script>
 
@@ -21,12 +22,8 @@
     <h2 class="text-xl">Test these navigation links:</h2>
     <!-- Direct, links (should, work) -->
     <div class="space-x-4">
-      <a href="/yorha-command-center" class="bg-blue-500 text-white px-4 py-2 rounded"
-        >YoRHa Command Center (Link)</a
-      >
-      <a href="/evidenceboard" class="bg-green-500 text-white px-4 py-2 rounded"
-        >Evidence Board (Link)</a
-      >
+      <a href="/yorha-command-center" class="bg-blue-500 text-white px-4 py-2 rounded">YoRHa Command Center (Link)</a>
+      <a href="/evidenceboard" class="bg-green-500 text-white px-4 py-2 rounded">Evidence Board (Link)</a>
       <a href="/endpoints" class="bg-purple-500 text-white px-4 py-2 rounded">Endpoints (Link)</a>
       <a href="/demo/enhanced-rag-semantic" class="bg-orange-500 text-white px-4 py-2 rounded"
         >Enhanced RAG Demo (Link)</a
@@ -57,4 +54,3 @@
     </div>
   </div>
 </div>
-

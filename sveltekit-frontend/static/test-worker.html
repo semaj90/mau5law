@@ -72,8 +72,8 @@
     <div class="test-container">
       <h1>🎮 YoRHa Legal AI Worker Test Suite</h1>
       <p>
-        Comprehensive testing of the integrated Legal AI Pipeline with CHR-ROM caching, NES memory,
-        and Visual Memory Palace.
+        Comprehensive testing of the integrated Legal AI Pipeline with CHR-ROM caching, NES memory, and Visual Memory
+        Palace.
       </p>
 
       <div class="test-section">
@@ -123,8 +123,7 @@
       function log(message, type = 'info') {
         const timestamp = new Date().toTimeString().split(' ')[0];
         const logElement = document.getElementById('test-log');
-        const prefix =
-          type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+        const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
         logElement.textContent += `[${timestamp}] ${prefix} ${message}\n`;
         logElement.scrollTop = logElement.scrollHeight;
         console.log(`${prefix} ${message}`);
@@ -246,8 +245,7 @@
           return;
         }
 
-        const testText =
-          'John Doe vs. ABC Corporation case filed in Superior Court of California on January 15, 2024.';
+        const testText = 'John Doe vs. ABC Corporation case filed in Superior Court of California on January 15, 2024.';
 
         log('Testing ONNX Legal-BERT entity extraction...');
         worker.postMessage({
@@ -268,10 +266,7 @@
                 </div>
             `;
 
-        updateStatus(
-          'analysis-results',
-          document.getElementById('analysis-results').innerHTML + entitiesHtml
-        );
+        updateStatus('analysis-results', document.getElementById('analysis-results').innerHTML + entitiesHtml);
         log(`Entity extraction completed: ${data.length} entities found`, 'success');
       }
 
@@ -303,15 +298,12 @@
                     <p><strong>Dimensions:</strong> ${data.length}</p>
                     <p><strong>Sample Values:</strong> [${data
                       .slice(0, 5)
-                      .map((v) => v.toFixed(4))
+                      .map(v => v.toFixed(4))
                       .join(', ')}...]</p>
                 </div>
             `;
 
-        updateStatus(
-          'analysis-results',
-          document.getElementById('analysis-results').innerHTML + embeddingHtml
-        );
+        updateStatus('analysis-results', document.getElementById('analysis-results').innerHTML + embeddingHtml);
         log(`Gemma embedding generated: ${data.length} dimensions`, 'success');
       }
 
@@ -400,10 +392,7 @@
             `;
 
         updateStatus('performance-metrics', metricsHtml);
-        log(
-          `Benchmark completed: ${percentage}% functionality verified`,
-          passed === total ? 'success' : 'warning'
-        );
+        log(`Benchmark completed: ${percentage}% functionality verified`, passed === total ? 'success' : 'warning');
       }
 
       // Initialize log

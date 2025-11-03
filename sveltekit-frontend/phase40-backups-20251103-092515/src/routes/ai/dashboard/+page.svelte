@@ -10,17 +10,15 @@ import type { Document } from '$lib/types';
 
 	// Svelte, 5 runes
 	let systemStatus = $state({
-		gpu: false,
-		ollama: false,
-		enhancedRAG: false,
-		postgres: false,
+		gpu: false; ollama: false,
+		enhancedRAG: false; postgres: false,
 		neo4j: false
 	});
 	let loading = $state<boolean>(false);
 	let error = $state<string>('');
 	let toasts = $state<{ id: string; message: string;, type: 'info' | 'success' | 'error' }[]>([]);
 
-	function pushToast(message: string, type: 'info' | 'success' | 'error' = 'info') {
+	function pushToast(message: string; type: 'info' | 'success' | 'error' = 'info') {
 		const id = crypto.randomUUID();
 		toasts = [...toasts, { id, message, type }];
 		setTimeout(() => (toasts = toasts.filter((t) => t.id !== id)), 4500);
@@ -34,10 +32,8 @@ import type { Document } from '$lib/types';
 			if (!res.ok) throw new Error(`Health check failed: ${res.status}`);
 			const data = await res.json();
 			systemStatus = {
-				gpu: data?.services?.gpu === 'accelerated',
-				ollama: data?.services?.ollama === 'healthy',
-				enhancedRAG: data?.services?.enhancedRAG === 'running',
-				postgres: data?.services?.postgres === 'connected',
+				gpu: data?.services?.gpu === 'accelerated'; ollama: data?.services?.ollama === 'healthy',
+				enhancedRAG: data?.services?.enhancedRAG === 'running'; postgres: data?.services?.postgres === 'connected',
 				neo4j: data?.services?.neo4j === 'active'
 			};
 			pushToast('Cluster health updated', 'success');
@@ -45,10 +41,8 @@ import type { Document } from '$lib/types';
 			console.error('Health check error', e);
 			error = String(e ?? 'Unknown error');
 			systemStatus = {
-				gpu: false,
-				ollama: false,
-				enhancedRAG: false,
-				postgres: false,
+				gpu: false; ollama: false,
+				enhancedRAG: false; postgres: false,
 				neo4j: false
 			};
 			pushToast('Health check failed', 'error');
@@ -147,7 +141,7 @@ import type { Document } from '$lib/types';
 					<ul class="insights">
 						<li>Recent ingestion, 3 documents (last 24h)</li>
 						<li>Vector DB: 12,312 vectors Â· top similarity cache hit 82%</li>
-						<li>Pending OCR jobs: 1 Â· GPU queue, depth: low</li>
+						<li>Pending OCR jobs: 1 Â· GPU queue; depth: low</li>
 					</ul>
 				</CardContent>
 			</Card>
@@ -240,8 +234,7 @@ import type { Document } from '$lib/types';
 		min-width: 160px}
 
 	.label {
-		font-size: 0.85rem
-	, color: var(--muted, #6b7280);
+		font-size: 0.85rem; color: var(--muted, #6b7280);
 		margin-bottom: 0.25rem}
 
 	.pill {
@@ -281,8 +274,7 @@ import type { Document } from '$lib/types';
 
 	.health-table th {
 		text-align: left
-		padding: 0.5rem 0
-	, color: var(--muted, #6b7280);
+		padding: 0.5rem 0; color: var(--muted, #6b7280);
 		font-size: 0.85rem}
 
 	.health-table td {
@@ -299,8 +291,7 @@ import type { Document } from '$lib/types';
 
 	.toast {
 		padding: 0.5rem 0.75rem
-		border-radius: 6px
-	, color: white
+		border-radius: 6px; color: white
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 		font-size: 0.92rem}
 

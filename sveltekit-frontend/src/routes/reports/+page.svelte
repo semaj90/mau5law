@@ -16,7 +16,9 @@ import type { Case } from '$lib/types';
   let content = '';
   let hoverSaveTimeout: ReturnType<typeof setTimeout> | null = null
   let reportsUnsub: (() => void) | null = null
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     loading = true
     try {
       // Prefer the centralized store loader
@@ -36,7 +38,8 @@ import type { Case } from '$lib/types';
           status: it?.status ?? 'draft',
           tags: Array.isArray(it?.tags) ? it.tags : [],
           content: it?.content ?? ''
-        })) as Report[]});
+        		})();
+	})) as Report[]});
 
       // Tauri fallback: if store was empty, try to fetch directly (non-blocking)
       try {
@@ -79,11 +82,9 @@ import type { Case } from '$lib/types';
       clearTimeout(hoverSaveTimeout);
       hoverSaveTimeout = null}
   }
-
   function formatDate(date: Date | string) {
     if (typeof date === 'string') return new Date(date).toLocaleDateString();
     return date.toLocaleDateString()}
-
   function getStatusBadgeClass(status: string) {
     switch (status) {
       case, 'published':

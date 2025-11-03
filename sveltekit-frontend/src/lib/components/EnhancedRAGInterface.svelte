@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
 
   import { tick } from 'svelte';
@@ -27,6 +27,7 @@ import type { Document } from '$lib/types';
   }
   async function handleOptimize(): Promise<any> {
     if (typeof store?.optimizeCache === 'function') await store.optimizeCache().catch(() => null)}
+
   // safe reactive defaults if store.state is missing
   const ragState = $derived(store?.state ?? { didYouMean: [], error: null, currentQuery: '', cacheMetrics: { hitRate: 0 } });
   const intelligentSuggestions = $derived(store?.intelligentSuggestions ?? []);
@@ -34,6 +35,7 @@ import type { Document } from '$lib/types';
   const searchDuration = $derived(lastDuration);
 
 </script>
+
 <div class="enhanced-rag-interface">
   <div class="search-bar">
     <Input bind:value={searchQuery} placeholder="Ask about, case, documents..." class="bits-input" />
@@ -42,16 +44,19 @@ import type { Document } from '$lib/types';
         {isLoading ? 'Searching...' : 'Search'}
       </Button>
     </div>
+
     <div class="ml-2">
       <Button onclick={handleOptimize}>Optimize</Button>
     </div>
   </div>
+
   <div class="meta"><small>Last search time: {searchDuration}ms</small></div>
   {#if intelligentSuggestions.length}
     <div class="mt-3">
       <div class="mb-2"><strong>Suggestions</strong></div>
+
       <div class="suggestions">
-        {#each Array.isArray(intelligentSuggestions) ? intelligentSuggestions : [] as s}
+  {#each Array.isArray(intelligentSuggestions) ? intelligentSuggestions : [] as s}
           <div class="bits-chip" style="display:inline-block;">
             <Button
               onclick={() => {
@@ -62,38 +67,41 @@ import type { Document } from '$lib/types';
             </Button>
           </div>
         {/each}
-      </div>
+  </div>
     {/if}
   <div id="search-results" class="results">
-    {#if optimizedResults && optimizedResults.length > 0}
+  {#if optimizedResults && optimizedResults.length > 0}
       <div class="results-header nes-container">
         <div class="flex items-center">
           <div>
             <h3 class="is-primary">
               {optimizedResults.length} results {#if ragState.currentQuery}for, "{ragState.currentQuery}"{/if}
-            </h3>
+  </h3>
+
             <p class="text-sm">
               Found in {searchDuration}ms â€¢ Cache hit rate: {Math.round((ragState.cacheMetrics?.hitRate || 0) * 100)}%
             </p>
           </div>
         </div>
       </div>
+
       <div class="space-y-3">
-        {#each Array.isArray(optimizedResults) ? optimizedResults : [] as result}
+  {#each Array.isArray(optimizedResults) ? optimizedResults : [] as result}
           <div class="nes-container">
             <div class="result-row">
               <div class="result-main">
                 <h4>{result?.document?.title || result?.id || 'Document'}</h4>
-                {#if result?.highlights && result.highlights.length > 0}
+  {#if result?.highlights && result.highlights.length > 0}
                   <div class="highlights">{@html result.highlights[0]}{/if}
-              </div>
+  </div>
+
               <div class="result-meta">
                 <div class="badge">Relevance: {Math.round((result?.score || 0) * 100)}%</div>
               </div>
             </div>
           </div>
         {/each}
-      </div>
+  </div>
     {:else}
       <div class="nes-container p-4">
         <p class="text-sm">No results yet. Try searching for a case term or document title.</p>
@@ -101,7 +109,8 @@ import type { Document } from '$lib/types';
   </div>
   {#if ragState.error}
     <div class="nes-container is-error mt-3"><strong>Error:</strong> {ragState.error}{/if}
-</div>
+  </div>
+
 <style>
   .enhanced-rag-interface {
     padding: 0.75rem}
@@ -128,7 +137,8 @@ import type { Document } from '$lib/types';
   </div>
   {#if ragState.error}
     <div class="nes-container is-error mt-3"><strong>Error:</strong> {ragState.error}{/if}
-</div>
+  </div>
+
 <style>
   .enhanced-rag-interface {
     padding: 0.75rem}
@@ -151,4 +161,5 @@ import type { Document } from '$lib/types';
    ;padding: 4px 8px
     border-radius: 6px}
 </style>
+
 

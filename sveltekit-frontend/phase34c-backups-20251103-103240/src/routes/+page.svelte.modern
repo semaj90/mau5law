@@ -41,20 +41,28 @@
   // Status indicator color helper
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'healthy': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'degraded': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'unhealthy': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'healthy':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
+      case 'degraded':
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+      case 'unhealthy':
+        return 'bg-red-500/20 text-red-400 border-red-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   }
 
   // Priority color helper
   function getPriorityColor(priority: string): string {
     switch (priority) {
-      case 'high': return 'bg-red-500/20 text-red-400 border-red-500/30';
-      case 'medium': return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'low': return 'bg-green-500/20 text-green-400 border-green-500/30';
-      default: return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      case 'high':
+        return 'bg-red-500/20 text-red-400 border-red-500/30';
+      case 'medium':
+        return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
+      case 'low':
+        return 'bg-green-500/20 text-green-400 border-green-500/30';
+      default:
+        return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
     }
   }
 
@@ -75,12 +83,9 @@
 
 <!-- Modern Dashboard Layout -->
 <div class="space-y-golden-xl">
-
   <!-- Hero Section -->
   <section class="text-center space-y-golden-lg">
-    <h1 class="text-4xl md:text-6xl font-bold text-nier-accent-warm uppercase tracking-wider">
-      YoRHa Legal AI
-    </h1>
+    <h1 class="text-4xl md:text-6xl font-bold text-nier-accent-warm uppercase tracking-wider">YoRHa Legal AI</h1>
     <p class="text-xl text-nier-text-secondary max-w-2xl mx-auto">
       Advanced Legal Intelligence Platform with GPU Acceleration and Vector Search
     </p>
@@ -105,9 +110,7 @@
           <div class="text-3xl font-bold text-nier-accent-warm">
             {data.dashboardStats.activeCases}
           </div>
-          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">
-            Active Cases
-          </div>
+          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">Active Cases</div>
         </div>
       </Card.Content>
     </Card.Root>
@@ -118,9 +121,7 @@
           <div class="text-3xl font-bold text-nier-accent-cool">
             {data.dashboardStats.evidenceItems}
           </div>
-          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">
-            Evidence Items
-          </div>
+          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">Evidence Items</div>
         </div>
       </Card.Content>
     </Card.Root>
@@ -131,9 +132,7 @@
           <div class="text-3xl font-bold text-green-400">
             {data.dashboardStats.aiAnalyses}
           </div>
-          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">
-            AI Analyses
-          </div>
+          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">AI Analyses</div>
         </div>
       </Card.Content>
     </Card.Root>
@@ -144,9 +143,7 @@
           <div class="text-3xl font-bold text-nier-text-primary">
             {Math.floor(data.dashboardStats.systemUptime / 3600)}h
           </div>
-          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">
-            System Uptime
-          </div>
+          <div class="text-nier-text-secondary text-sm uppercase tracking-wide">System Uptime</div>
         </div>
       </Card.Content>
     </Card.Root>
@@ -154,18 +151,15 @@
 
   <!-- Main Dashboard Grid -->
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-golden-xl">
-
     <!-- Left Column: Quick Actions -->
     <div class="space-y-golden-lg">
       <Card.Root class="bg-nier-bg-secondary border-nier-border-muted">
         <Card.Header class="pb-golden-sm">
-          <Card.Title class="text-nier-accent-warm uppercase tracking-wide">
-            Quick Actions
-          </Card.Title>
+          <Card.Title class="text-nier-accent-warm uppercase tracking-wide">Quick Actions</Card.Title>
         </Card.Header>
         <Card.Content class="space-y-golden-sm">
           <ModernButton
-            onclick={() => showQuickCaseModal = true}
+            onclick={() => (showQuickCaseModal = true)}
             variant="primary"
             class="w-full bg-gradient-to-r from-nier-accent-warm to-nier-accent-cool text-nier-bg-primary"
           >
@@ -194,9 +188,7 @@
       {#if data.systemInfo}
         <Card.Root class="bg-nier-bg-secondary border-nier-border-muted">
           <Card.Header class="pb-golden-sm">
-            <Card.Title class="text-nier-accent-cool uppercase tracking-wide">
-              System Info
-            </Card.Title>
+            <Card.Title class="text-nier-accent-cool uppercase tracking-wide">System Info</Card.Title>
           </Card.Header>
           <Card.Content class="space-y-golden-xs text-sm font-mono">
             <div class="grid grid-cols-2 gap-2">
@@ -221,9 +213,7 @@
     <div class="space-y-golden-lg">
       <Card.Root class="bg-nier-bg-secondary border-nier-border-muted">
         <Card.Header class="pb-golden-sm">
-          <Card.Title class="text-nier-text-primary uppercase tracking-wide">
-            Recent Activities
-          </Card.Title>
+          <Card.Title class="text-nier-text-primary uppercase tracking-wide">Recent Activities</Card.Title>
         </Card.Header>
         <Card.Content class="space-y-golden-sm">
           {#each data.recentActivities as activity}
@@ -250,18 +240,20 @@
       {#if data.health}
         <Card.Root class="bg-nier-bg-secondary border-nier-border-muted">
           <Card.Header class="pb-golden-sm flex flex-row items-center justify-between">
-            <Card.Title class="text-nier-text-primary uppercase tracking-wide">
-              Services Status
-            </Card.Title>
-            <form method="POST" action="?/refreshSystem" use:enhance={() => {
-              refreshing = true;
-              return async ({ result }) => {
-                refreshing = false;
-                if (result.type === 'success') {
-                  await invalidateAll();
-                }
-              };
-            }}>
+            <Card.Title class="text-nier-text-primary uppercase tracking-wide">Services Status</Card.Title>
+            <form
+              method="POST"
+              action="?/refreshSystem"
+              use:enhance={() => {
+                refreshing = true;
+                return async ({ result }) => {
+                  refreshing = false;
+                  if (result.type === 'success') {
+                    await invalidateAll();
+                  }
+                };
+              }}
+            >
               <ModernButton
                 type="submit"
                 variant="ghost"
@@ -274,12 +266,9 @@
             </form>
           </Card.Header>
           <Card.Content class="space-y-golden-sm">
-
             <!-- Database Services -->
             <div class="space-y-golden-xs">
-              <h4 class="text-xs text-nier-text-secondary uppercase tracking-wide font-bold">
-                Databases
-              </h4>
+              <h4 class="text-xs text-nier-text-secondary uppercase tracking-wide font-bold">Databases</h4>
               {#each Object.entries(data.health.services.databases) as [name, service]}
                 <div class="flex items-center justify-between text-sm">
                   <span class="text-nier-text-primary capitalize">{name}</span>
@@ -292,9 +281,7 @@
 
             <!-- AI Services -->
             <div class="space-y-golden-xs">
-              <h4 class="text-xs text-nier-text-secondary uppercase tracking-wide font-bold">
-                AI Services
-              </h4>
+              <h4 class="text-xs text-nier-text-secondary uppercase tracking-wide font-bold">AI Services</h4>
               {#each Object.entries(data.health.services.aiServices) as [name, service]}
                 <div class="flex items-center justify-between text-sm">
                   <span class="text-nier-text-primary capitalize">{name}</span>
@@ -307,9 +294,7 @@
 
             <!-- GPU Services -->
             <div class="space-y-golden-xs">
-              <h4 class="text-xs text-nier-text-secondary uppercase tracking-wide font-bold">
-                GPU Services
-              </h4>
+              <h4 class="text-xs text-nier-text-secondary uppercase tracking-wide font-bold">GPU Services</h4>
               {#each Object.entries(data.health.services.gpuServices) as [name, service]}
                 <div class="flex items-center justify-between text-sm">
                   <span class="text-nier-text-primary capitalize">{name}</span>
@@ -319,22 +304,21 @@
                 </div>
               {/each}
             </div>
-
           </Card.Content>
         </Card.Root>
       {/if}
     </div>
-
   </div>
-
 </div>
 
 <!-- Quick Case Creation Modal -->
 {#if showQuickCaseModal}
-  <Dialog.Root open={showQuickCaseModal} onOpenChange={() => showQuickCaseModal = false}>
+  <Dialog.Root open={showQuickCaseModal} onOpenChange={() => (showQuickCaseModal = false)}>
     <Dialog.Portal>
       <Dialog.Overlay class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50" />
-      <Dialog.Content class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-51 bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-golden-xl max-w-lg w-[calc(100vw-2rem)]">
+      <Dialog.Content
+        class="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-51 bg-nier-bg-secondary border border-nier-border-primary rounded-lg p-golden-xl max-w-lg w-[calc(100vw-2rem)]"
+      >
         <Dialog.Header class="mb-golden-lg">
           <Dialog.Title class="text-xl font-bold text-nier-accent-warm uppercase tracking-wide">
             Create New Case
@@ -396,7 +380,7 @@
             <ModernButton
               type="button"
               variant="ghost"
-              onclick={() => showQuickCaseModal = false}
+              onclick={() => (showQuickCaseModal = false)}
               class="text-nier-text-secondary hover:text-nier-text-primary"
             >
               Cancel
@@ -411,7 +395,6 @@
             </ModernButton>
           </div>
         </form>
-
       </Dialog.Content>
     </Dialog.Portal>
   </Dialog.Root>

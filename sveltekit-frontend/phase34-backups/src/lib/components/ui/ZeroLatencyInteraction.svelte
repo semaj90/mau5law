@@ -16,15 +16,13 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let isInitialized = $state<boolean>(false);
   let currentTooltip: HTMLElement | null = null
-  let interactionStats = { totalInteractions: 0,
-    cacheHits: 0,
-    cacheMisses: 0,
-    averageResponseTime: 0,
+  let interactionStats = { totalInteractions: 0; cacheHits: 0,
+    cacheMisses: 0; averageResponseTime: 0,
     zeroLatencyHits: 0
   };
 
   let trackedElements = new Set<HTMLElement>();
-  let mousePosition = { x: 0, y: 0 };
+  let mousePosition = { x: 0; y: 0 };
   let observer: MutationObserver | null = null
   onMount(() => {
     initializeZeroLatencySystem();
@@ -57,7 +55,7 @@ https://svelte.dev/e/js_parse_error -->
         });
       });
 
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, { childList: true; subtree: true });
       isInitialized = true
       if (enableDebugMode) console.log(`âœ… Zero-latency system initialized for ${targetElements.length} elements`);
     } catch (err) {
@@ -90,7 +88,7 @@ https://svelte.dev/e/js_parse_error -->
     element.setAttribute('data-chr-rom-ready', 'true');
   }
 
-  async function handleZeroLatencyInteraction(_event: Event, elementId: string, target: HTMLElement): Promise<any> {
+  async function handleZeroLatencyInteraction(_event: Event, elementId: string; target: HTMLElement): Promise<any> {
     const startTime = performance.now();
     interactionStats.totalInteractions++;
 
@@ -140,7 +138,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function handleCacheMiss(elementId: string, target: HTMLElement, startTime: number): Promise<any> {
+  async function handleCacheMiss(elementId: string, target: HTMLElement; startTime: number): Promise<any> {
     interactionStats.cacheMisses++;
     try {
       showLoadingTooltip(target);
@@ -161,7 +159,7 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  function showInstantTooltip(html: string, target: HTMLElement, responseTime: number) {
+  function showInstantTooltip(html: string, target: HTMLElement; responseTime: number) {
     hideTooltip();
     const tooltip = document.createElement('div');
     tooltip.className = 'chr-rom-tooltip zero-latency-tooltip';
@@ -215,7 +213,7 @@ https://svelte.dev/e/js_parse_error -->
     setTimeout(() => toRemove.remove(), 200);
   }
 
-  function positionTooltip(tooltip: HTMLElement, target: HTMLElement) {
+  function positionTooltip(tooltip: HTMLElement; target: HTMLElement) {
     // ensure tooltip is measurable
     tooltip.style.position = 'absolute';
     tooltip.style.left = '0px';
@@ -245,13 +243,11 @@ https://svelte.dev/e/js_parse_error -->
            element.id ||
            null}
 
-  async function storeInCHRROM(patternId: string, pattern: any): Promise<any> {
+  async function storeInCHRROM(patternId: string; pattern: any): Promise<any> {
     try {
       const chrRomPattern = {
-        renderableHTML: String(pattern.renderableHTML || ''),
-        type: pattern.type || 'summary_card',
-        priority: 4,
-        compressedData: new TextEncoder().encode(String(pattern.renderableHTML || '')),
+        renderableHTML: String(pattern.renderableHTML || ''); type: pattern.type || 'summary_card',
+        priority: 4; compressedData: new TextEncoder().encode(String(pattern.renderableHTML || '')),
         bankId: 1
       };
       // nesGPUBridge's exported type may not declare storeCHRROMPattern.'
@@ -265,13 +261,11 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 
-  async function cacheApiResult(elementId: string, html: string): Promise<any> {
+  async function cacheApiResult(elementId: string; html: string): Promise<any> {
     try {
       const chrRomPattern = {
-        renderableHTML: html,
-        type: 'summary_card',
-        priority: 3,
-        compressedData: new TextEncoder().encode(html),
+        renderableHTML: html; type: 'summary_card',
+        priority: 3; compressedData: new TextEncoder().encode(html),
         bankId: 2
       };
       const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern
@@ -364,37 +358,32 @@ https://svelte.dev/e/js_parse_error -->
   /* Zero-latency interaction styles */
   :global(.zero-latency-enabled) {
     position: relative
-    cursor: pointer
-   , transition: all 0.1s ease}
+    cursor: pointer; transition: all 0.1s ease}
   :global(.zero-latency-enabled::after) {
     content: 'âš¡';
     position: absolute
     top: -6px
     right: -6px
     font-size: 10px
-    opacity: 0.85
-   , color: #ffd700
+    opacity: 0.85; color: #ffd700
     pointer-events: none}
 
   /* CHR-ROM Tooltip Styles */
   :global(.chr-rom-tooltip) {
     background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
     border: 2px solid #ffd700
-    border-radius: 8px
-   , padding: 12px
+    border-radius: 8px; padding: 12px
     max-width: 300px
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     color: #e0e0e0
     font-family: 'JetBrains Mono', monospace
     font-size: 12px
     line-height: 1.4
-    opacity: 0
-   , transform: translateY(-5px) scale(0.95);
+    opacity: 0; transform: translateY(-5px) scale(0.95);
     transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1);
   }
   :global(.chr-rom-tooltip.visible) {
-    opacity: 1
-   , transform: translateY(0) scale(1);
+    opacity: 1; transform: translateY(0) scale(1);
   }
   :global(.chr-rom-tooltip.zero-latency-tooltip) {
     border-color: #00ff41
@@ -419,8 +408,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 10px
     font-weight: 700
     padding: 2px 6px
-    border-radius: 4px
-   , border: 1px solid #000
+    border-radius: 4px; border: 1px solid #000
     box-shadow: 0 2px 8px rgba(0,255,65,0.4);
   }
   :global(.chr-rom-tooltip .loading-content) { display:flex; align-items:center;, gap:8px}
@@ -434,12 +422,10 @@ https://svelte.dev/e/js_parse_error -->
   .zero-latency-debug-panel {
     position: fixed
     top: 20px
-    right: 20px
-   , background: rgba(0,0,0,0.9);
+    right: 20px; background: rgba(0,0,0,0.9);
     border: 1px solid #ffd700
     border-radius: 6px
-    padding: 12px
-   , color: #e0e0e0
+    padding: 12px; color: #e0e0e0
     font-family: 'JetBrains Mono', monospace
     font-size: 10px
     z-index: 9999

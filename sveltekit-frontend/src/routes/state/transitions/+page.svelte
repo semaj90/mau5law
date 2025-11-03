@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported â€” do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
@@ -18,7 +18,7 @@ import type { Case } from '$lib/types';
   let selectedTransition = $state<any | null>(null);
 
   // Mock transition data (fixed syntax: colons, property names)
-  let mockTransitions: Record<string any> = {
+  let mockTransitions: Record<string, any> = {
     'auth-machine': {
       currentState: 'authenticated',
       transitions: [ {
@@ -89,7 +89,6 @@ import type { Case } from '$lib/types';
     if (machineId) {
       loadTransitions()}
   });
-
   async function loadTransitions(): Promise<any> {
     loading = true
     try {
@@ -103,7 +102,6 @@ import type { Case } from '$lib/types';
       currentState = 'error'} finally {
       loading = false}
   }
-
   async function triggerTransition(eventName: string): Promise<any> {
     try {
       // production post to API to trigger event
@@ -112,18 +110,15 @@ import type { Case } from '$lib/types';
       await loadTransitions()} catch (error) {
       console.error('Failed to trigger transition', error)}
   }
-
   function formatDuration(ms: number) {
     if (ms < 1000) return `${ms}ms`;
     return `${(ms / 1000).toFixed(1)}s`}
-
   function getTransitionColor(transition: any) {
     const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0
     const age = Date.now() - ts
     if (age < 30000) return 'border-green-200, bg-green-50';
     if (age < 300000) return 'border-blue-200, bg-blue-50';
     return 'border-gray-200 bg-gray-50'}
-
   function getStateColor(state: string) {
     if (!state) return 'bg-gray-100 text-gray-800';
     if (state.includes('error')) return 'bg-red-100 text-red-800';
@@ -517,4 +512,5 @@ import type { Case } from '$lib/types';
   button.transition-card:focus { outline: none
     box-shadow: 0, 0 0 3px rgba(59,130,246,0.18)}
 </style>
+
 

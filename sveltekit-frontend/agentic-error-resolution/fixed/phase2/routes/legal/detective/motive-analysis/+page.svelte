@@ -411,6 +411,7 @@
     }
   }
 </script>
+
 <div class="container mx-auto p-6 space-y-6">
   <!-- Header -->
   <div class="flex justify-between items-center">
@@ -669,7 +670,13 @@
               <div class="border-l-4 border-blue-500 pl-4">
                 <div class="flex items-center justify-between mb-2">
                   <div class="font-medium">{new Date(event.timestamp).toLocaleString()}</div>
-                  <Badge class={event.significance === 'HIGH' ? 'bg-red-500' : event.significance === 'MEDIUM' ? 'bg-yellow-500' : 'bg-green-500'}>
+                  <Badge
+                    class={event.significance === 'HIGH'
+                      ? 'bg-red-500'
+                      : event.significance === 'MEDIUM'
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'}
+                  >
                     {event.significance}
                   </Badge>
                 </div>
@@ -772,7 +779,7 @@
                 <div>
                   <div class="text-sm font-medium text-gray-700">Required Resources</div>
                   <div class="flex flex-wrap gap-2 mt-1">
-                    {#each Array.isArray(rec.resources ?? []) ? rec.resources ?? [] : [] as resource}
+                    {#each Array.isArray(rec.resources ?? []) ? (rec.resources ?? []) : [] as resource}
                       <Badge class="bg-transparent border text-sm px-2 py-0.5">{resource}</Badge>
                     {/each}
                   </div>
@@ -850,5 +857,4 @@
       </CardContent>
     </Card>
   {/if}
-
 </div>

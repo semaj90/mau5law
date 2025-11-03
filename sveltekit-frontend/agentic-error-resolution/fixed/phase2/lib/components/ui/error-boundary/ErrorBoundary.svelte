@@ -77,6 +77,7 @@
     };
   });
 </script>
+
 {#if hasError && error}
   <!-- Error State -->
   <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
@@ -166,6 +167,7 @@
 {:else}
   {@render childrenSnippet?.()}
 {/if}
+
 <style>
   /* Ensure error boundary styles don't interfere with global styles */
   details summary::-webkit-details-marker {

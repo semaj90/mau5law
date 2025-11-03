@@ -1,10 +1,10 @@
-﻿<!-- Test page for Simple File Upload with, RAG, integration -->
+<!-- Test page for Simple File Upload with, RAG, integration -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import SimpleFileUpload from '$lib/components/ai/SimpleFileUpload.svelte';
   interface ServiceStatus { healthy: boolean; [key: string]: any }
-  interface SystemStatus { services?: Record<string ServiceStatus>; [key: string]: any }
+  interface SystemStatus { services?: Record<string, ServiceStatus>; [key: string]: any }
   interface UploadResult { filename?: string; status?: string; documentId?: string; size?: number; embeddingGenerated?: boolean; error?: string; [key:string]: any }
 
   // make these Svelte, 5 reactive state variables so assignments trigger updates
@@ -118,12 +118,13 @@ import type { Document } from '$lib/types';
               <h3 class="font-medium">
                 {(
                   result as {
-                    filename?: any
-                    status?: any
-                    documentId?: any
-                    size?: any
-                    embeddingGenerated?: any
-                    error?: any}
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
+                  }
                 ).filename || 'Unknown file'}
               </h3>
               <span
@@ -131,12 +132,13 @@ import type { Document } from '$lib/types';
               >
                 {(
                   result as {
-                    filename?: any
-                    status?: any
-                    documentId?: any
-                    size?: any
-                    embeddingGenerated?: any
-                    error?: any}
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
+                  }
                 ).status}
               </span>
             </div>
@@ -144,20 +146,32 @@ import type { Document } from '$lib/types';
               <p class="text-sm text-gray-600">
                 Document ID: {(
                   result as {
-                    filename?: any
-                    status?: any
-                    documentId?: any
-                    size?: any
-                    embeddingGenerated?: any
-                    error?: any}
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
+                  }
                 ).documentId}
               </p>
             {/if}
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size}
               <p class="text-sm text-gray-600">
-                Size: {(
-                  //, ensure: 'size' is numeric for the division to satisfy TypeScript
-                  (Number((result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).size) / 1024)
+                Size: {//, ensure: 'size' is numeric for the division to satisfy TypeScript
+                (
+                  Number(
+                    (
+                      result as {
+                        filename?: any;
+                        status?: any;
+                        documentId?: any;
+                        size?: any;
+                        embeddingGenerated?: any;
+                        error?: any;
+                      }
+                    ).size
+                  ) / 1024
                 ).toFixed(1)} KB
               </p>
             {/if}
@@ -168,12 +182,13 @@ import type { Document } from '$lib/types';
               <p class="text-sm">
                 Error: {(
                   result as {
-                    filename?: any
-                    status?: any
-                    documentId?: any
-                    size?: any
-                    embeddingGenerated?: any
-                    error?: any}
+                    filename?: any;
+                    status?: any;
+                    documentId?: any;
+                    size?: any;
+                    embeddingGenerated?: any;
+                    error?: any;
+                  }
                 ).error}
               </p>
             {/if}
@@ -199,7 +214,7 @@ import type { Document } from '$lib/types';
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
   Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
-  Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
- , Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
--->
+Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px" , Add: 'max-w-1200px' to safelist in uno.config if using arbitrary
+values. -->
+
 

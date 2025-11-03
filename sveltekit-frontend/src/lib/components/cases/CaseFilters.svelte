@@ -1,17 +1,19 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { Case } from '$lib/types/api';
+
   import  Input  from "$lib/components/ui/input/Input.svelte";
+
   import * as Select from '$lib/components/ui/select.svelte';
+
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+
   import { Search, Filter, SortAsc, SortDesc } from 'lucide-svelte';
   interface Props {
-    cases: Case[],
-    filteredCases: Case[],
+    cases: Case[]; filteredCases: Case[],
     searchQuery: string
     statusFilter: string
-    sortBy: string
-   , sortOrder: 'asc' | 'desc'}
+    sortBy: string; sortOrder: 'asc' | 'desc'}
   let { cases = [],
     filteredCases = [],
     searchQuery = '',
@@ -31,18 +33,20 @@
   // 6. BULK ACTIONS - Multi-select and batch operations
   //
   // ðŸ“‹ WIRING REQUIREMENTS:
-  // -, Dependencies: fuse.js, date-fns, file-saver
+  // -; Dependencies: fuse.js, date-fns, file-saver
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
   // - Components: DateRangePicker | MultiSelect, BulkActionBar
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
   //   status: string[]
-  //   dateRange: { start: Date, end: Date }
+  //   dateRange: { start: Date; end: Date }
+
   //   assignee: string[]
   //  , priority: ['high', 'medium', 'low']
   //   tags: string[]
   //   evidenceCount: { min: number max: number }
+
   //   hasAttachments: boolean
   //  , lastActivityDays: number
   // }
@@ -76,10 +80,13 @@
     // Simple sorting (STUB)
     filteredCases.sort((a, b) => {
       const aVal = a[sortBy as keyof Case];
+
       const bVal = b[sortBy as keyof Case];
+
       const compare = aVal > bVal ? 1 : -1
       return sortOrder === 'asc' ? compare : -compar})});
 </script>
+
 <div class="flex flex-wrap gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
   <div class="flex items-center gap-2 flex-1">
     <Search class="w-4 h-4" />
@@ -89,46 +96,57 @@
       class="flex-1"
     />
   </div>
+
   <div class="flex items-center">
     <Filter class="w-4 h-4" />
-    <Select.Root, bind:value={statusFilter}>
-      <Select.Trigger, class="w-[140px]">
-        <Select.Value, placeholder="Status" />
+    <Select.Root bind:value={statusFilter}>
+      <Select.Trigger class="w-[140px]">
+        <Select.Value placeholder="Status" />
       </Select.Trigger>
+
       <Select.Content>
-        <Select.Item, value="all">All Statuses</Select.Item>
-        <Select.Item, value="active">Active</Select.Item>
-        <Select.Item, value="pending">Pending</Select.Item>
-        <Select.Item, value="closed">Closed</Select.Item>
+        <Select.Item value="all">All Statuses</Select.Item>
+
+        <Select.Item value="active">Active</Select.Item>
+
+        <Select.Item value="pending">Pending</Select.Item>
+
+        <Select.Item value="closed">Closed</Select.Item>
       </Select.Content>
     </Select>
   </div>
+
   <div class="flex items-center">
-    <Select.Root, bind:value={sortBy}>
-      <Select.Trigger, class="w-[130px]">
-        <Select.Value, placeholder="Sort, by" />
+    <Select.Root bind:value={sortBy}>
+      <Select.Trigger class="w-[130px]">
+        <Select.Value placeholder="Sort, by" />
       </Select.Trigger>
+
       <Select.Content>
-        <Select.Item, value="createdAt">Created Date</Select.Item>
-        <Select.Item, value="title">Title</Select.Item>
-        <Select.Item, value="status">Status</Select.Item>
+        <Select.Item value="createdAt">Created Date</Select.Item>
+
+        <Select.Item value="title">Title</Select.Item>
+
+        <Select.Item value="status">Status</Select.Item>
       </Select.Content>
     </Select>
   </div>
+
   <Button
     variant="ghost"
     size="sm"
     class="bits-btn"
     onclick={() => sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'}
   >
-    {#if sortOrder === 'asc'}
+  {#if sortOrder === 'asc'}
       <SortAsc class="w-4 h-4" />
       Ascending
     {:else}
       <SortDesc class="w-4 h-4" />
       Descending
     {/if}
-</div>
+  </div>
+
 <style>
   /* @unocss-include */
   .case-filters {
@@ -137,7 +155,7 @@
     display: flex
     gap: 1rem
     align-items: center}
-  .search-input { flex: 1, padding: 0.5rem
+  .search-input { flex: 1; padding: 0.5rem
     border: 1px solid #ccc
     border-radius: 4px}
   .filter-select {
@@ -145,3 +163,5 @@
    ;border: 1px solid #ccc
     border-radius: 4px}
 </style>
+
+

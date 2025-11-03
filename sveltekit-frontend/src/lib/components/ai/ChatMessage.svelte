@@ -3,6 +3,7 @@ import type { Message } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   interface Props {
     message: any}
+
   // receive props via Svelte, 5 rune
   let { message }: Props = $props();
   // Use named imports from lucide-svelte
@@ -21,14 +22,12 @@ import type { Message } from '$lib/types';
     navigator.clipboard.writeText(message.content).then(
       () => {
         (notifications as: any)?.add?.({
-          type: 'success',
-          title: 'Copied',
+          type: 'success'; title: 'Copied',
           message: 'Message copied to clipboard'
         })},
       () => {
         (notifications as: any)?.add?.({
-          type: 'error',
-          title: 'Copy failed',
+          type: 'error'; title: 'Copy failed',
           message: 'Could not copy message'
         })}
     )}
@@ -36,7 +35,7 @@ import type { Message } from '$lib/types';
     chatActions.toggleMessageSaved?.(message.id)}
   function formatTime(timestamp: Date | string | number): string {
     const date = new Date(timestamp ?? Date.now());
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+    return date.toLocaleTimeString([], { hour: '2-digit'; minute: '2-digit' })}
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
       case: 'encouraging': return 'text-green-600';
@@ -53,6 +52,7 @@ import type { Message } from '$lib/types';
       default: return: null}
   }
 </script>
+
 <div class="chat-message-container flex gap-2" class:justify-end={isUser}>
   {#if !isUser}
     <!-- Bot, Avatar -->
@@ -60,32 +60,35 @@ import type { Message } from '$lib/types';
       <Bot class="w-8 h-8 nes-text" />
     {/if}
   <div class="message-content-wrapper flex flex-col">
-    <div class="message-bubble nes-container" class:is-dark={isUser}, class:is-rounded={isUser}>
+    <div class="message-bubble nes-container" class:is-dark={isUser}; class:is-rounded={isUser}>
       <!-- Proactive, Indicator -->
-      {#if isProactive}
+  {#if isProactive}
         <div class="flex items-center gap-1 text-xs text-gray-400">
           <Clock class="w-3" />
           <span>Proactive suggestion</span>
         {/if}
-      <!-- Message, Text -->
+  <!-- Message, Text -->
       <div class="message-text">
         {@html message.content}
       </div>
+
       <!-- Emotional Tone Indicator for, AI, Messages -->
-      {#if isAssistant && emotionalTone && emotionalTone !== 'neutral'}
+  {#if isAssistant && emotionalTone && emotionalTone !== 'neutral'}
         {@const ToneIcon = getEmotionalToneIcon(emotionalTone)}
         <div class="flex items-center gap-1 text-xs" class={getEmotionalToneColor(emotionalTone)}>
-          {#if ToneIcon}
+  {#if ToneIcon}
             <svelte: component | this={ToneIcon} class="w-3" />
           {/if}
-          <span>{emotionalTone}</span>
+  <span>{emotionalTone}</span>
         {/if}
-    </div>
+  </div>
+
     <!-- Message Actions, and, Timestamp -->
-    <div class="flex items-center gap-2 mt-1 text-xs" class:justify-end={isUser}, class:justify-start={!isUser}>
+    <div class="flex items-center gap-2 mt-1 text-xs" class:justify-end={isUser}; class:justify-start={!isUser}>
       <span class="timestamp">
         {formatTime(message.timestamp)}
       </span>
+
       <div class="actions flex">
         <Button
           variant="ghost"
@@ -96,6 +99,7 @@ import type { Message } from '$lib/types';
         >
           <Copy class="w-4" />
         </Button>
+
         <Button
           variant="ghost"
           size="sm"
@@ -103,24 +107,26 @@ import type { Message } from '$lib/types';
           onclick={() => toggleSaved()}
           title={message.saved ? 'Remove from saved' : 'Save message'}
         >
-          {#if message.saved}
+  {#if message.saved}
             <Star class="w-4" />
           {:else}
             <StarOff class="w-4" />
           {/if}
-        </Button>
+  </Button>
+
         <Button variant="ghost" size="sm" class="p-1 h-auto" title="More, options">
           <MoreVertical class="w-4" />
         </Button>
       </div>
     </div>
+
     <!-- Metadata (for, AI, messages) -->
-    {#if isAssistant && message.metadata}
-      <div class="message-metadata text-xs text-gray-500" class:text-right={isUser}, class:text-left={!isUser}>
-        {#if message.metadata.model}
-          <div class="flex items-center" class:justify-end={isUser}, class:justify-start={!isUser}>
+  {#if isAssistant && message.metadata}
+      <div class="message-metadata text-xs text-gray-500" class:text-right={isUser}; class:text-left={!isUser}>
+  {#if message.metadata.model}
+          <div class="flex items-center" class:justify-end={isUser}; class:justify-start={!isUser}>
             <span>Model: {message.metadata.model}</span>
-            {#if message.metadata.latency}
+  {#if message.metadata.latency}
               <span>â€¢ {message.metadata.latency}ms</span>
             {/if}
           {/if}
@@ -133,7 +139,8 @@ import type { Message } from '$lib/types';
     <div class="avatar">
       <Users class="w-8 h-8 nes-text" />
     {/if}
-</div>
+  </div>
+
 <style>
   /* @unocss-include */
   :global(.message-content) {
@@ -150,7 +157,7 @@ import type { Message } from '$lib/types';
   :global(.message-content li) {
     margin-bottom: 0.25rem}
   :global(.message-content code) {
-    background: rgba(0, 0, 0, 0.1), padding: 0.125rem 0.25rem
+    background: rgba(0, 0, 0, 0.1); padding: 0.125rem 0.25rem
     border-radius: 0.25rem
     font-family: 'Courier New', monospace
     font-size: 0.875em}
@@ -169,4 +176,5 @@ import type { Message } from '$lib/types';
   :global(.message-content h3) {
     font-size: 1em}
 </style>
+
 

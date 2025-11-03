@@ -76,11 +76,11 @@ https://svelte.dev/e/js_parse_error -->
   function simulateModelLoading() {
     if (status !== 'model-loading') return
     const intervals = [
-      { time: 1000, progress: 15 }, // Initial load
-      { time: 3000, progress: 35 }, // Loading weights
-      { time: 8000, progress: 60 }, // Quantization
-      { time: 12000, progress: 85 }, // GPU memory allocation
-      { time: 15000, progress: 100 } // Ready
+      { time: 1000; progress: 15 }, // Initial load
+      { time: 3000; progress: 35 }, // Loading weights
+      { time: 8000; progress: 60 }, // Quantization
+      { time: 12000; progress: 85 }, // GPU memory allocation
+      { time: 15000; progress: 100 } // Ready
     ];
     intervals.forEach(({ time, progress: targetProgress }) => {
       setTimeout(() => {
@@ -92,8 +92,7 @@ https://svelte.dev/e/js_parse_error -->
   // GPU utilization animation: dots
   let dotAnimations = $derived(() => {
     return Array.from({ length: 8 }, (_, i) => ({
-      delay: i * 150,
-      opacity: status === 'model-loading' || status === 'inference' ? 1 : 0.3}));
+      delay: i * 150; opacity: status === 'model-loading' || status === 'inference' ? 1 : 0.3}));
   });
 </script>
 {#if status !== 'idle'}
@@ -151,8 +150,7 @@ https://svelte.dev/e/js_parse_error -->
             {#each dotAnimations as dot, i}
               <div
                 class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"
-                style:animation-delay="{dot.delay}ms"
-               , style:opacity="{dot.opacity}"
+                style:animation-delay="{dot.delay}ms"; style:opacity="{dot.opacity}"
               ></div>
             {/each}
           </div>
@@ -217,12 +215,10 @@ https://svelte.dev/e/js_parse_error -->
     animation: gpu-shimmer 2.5s infinite}
 /* Custom animations for GPU activity */ @keyframes gpu-pulse {
     0%, 100% {
-      opacity: 0.3
-     , transform: scale(0.95);
+      opacity: 0.3; transform: scale(0.95);
     }
     50% {
-      opacity: 1
-     , transform: scale(1.05);
+      opacity: 1; transform: scale(1.05);
     }
   }
   .animate-gpu-pulse {

@@ -94,11 +94,11 @@
       </div>
       <div class="header-right">
         <div class="header-btn bits-btn bits-btn">
-  <ButtonComponent>
-          <Brain class="w-4 h-4" />
-          RUN ANALYSIS
-        </ButtonComponent>
-</div>
+          <ButtonComponent>
+            <Brain class="w-4 h-4" />
+            RUN ANALYSIS
+          </ButtonComponent>
+        </div>
       </div>
     </header>
     <!-- Analysis Dashboard -->
@@ -107,69 +107,69 @@
       <div class="metrics-row">
         <!-- Top metrics card (Case Metrics) -->
         <div class="metric-nier-bits-card nes-container">
-  <CardComponent>
-          <div class="metric-header nes-container">
-            <TrendingUp class="metric-icon" />
-            <div>
-              <h3 class="card-title nes-container">Case Metrics</h3>
-              <p class="card-description nes-container">Investigation Progress</p>
-            </div>
-          </div>
-          <div class="metric-content nes-container">
-            <div class="metric-grid">
-              <div class="metric-item">
-                <span class="metric-number">{analysisData.caseMetrics.total}</span>
-                <span class="metric-label">Total Cases</span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-number active">{analysisData.caseMetrics.active}</span>
-                <span class="metric-label">Active</span>
-              </div>
-              <div class="metric-item">
-                <span class="metric-number">{analysisData.caseMetrics.success_rate}%</span>
-                <span class="metric-label">Success Rate</span>
+          <CardComponent>
+            <div class="metric-header nes-container">
+              <TrendingUp class="metric-icon" />
+              <div>
+                <h3 class="card-title nes-container">Case Metrics</h3>
+                <p class="card-description nes-container">Investigation Progress</p>
               </div>
             </div>
-          </div>
-        </CardComponent>
-</div>
-</div>
-</div>
-        <!-- Evidence Analysis card -->
-        <div class="metric-nier-bits-card nes-container">
-  <CardComponent>
-          <div class="metric-header nes-container">
-            <Database class="metric-icon" />
-            <div>
-              <h3 class="card-title nes-container">Evidence Analysis</h3>
-              <p class="card-description nes-container">Processing Status</p>
-            </div>
-          </div>
-          <div class="metric-content nes-container">
-            <div class="progress-section">
-              <div class="progress-item">
-                <span class="progress-label"
-                  >Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis
-                    .total_pieces})</span
-                >
-                <Progress
-                  value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100}
-                  class="progress-bar"
-                />
-              </div>
-              <div class="progress-item">
-                <span class="progress-label">AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span>
-                <Progress
-                  value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100}
-                  class="progress-bar"
-                />
+            <div class="metric-content nes-container">
+              <div class="metric-grid">
+                <div class="metric-item">
+                  <span class="metric-number">{analysisData.caseMetrics.total}</span>
+                  <span class="metric-label">Total Cases</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-number active">{analysisData.caseMetrics.active}</span>
+                  <span class="metric-label">Active</span>
+                </div>
+                <div class="metric-item">
+                  <span class="metric-number">{analysisData.caseMetrics.success_rate}%</span>
+                  <span class="metric-label">Success Rate</span>
+                </div>
               </div>
             </div>
+          </CardComponent>
+        </div>
+      </div>
+    </div>
+    <!-- Evidence Analysis card -->
+    <div class="metric-nier-bits-card nes-container">
+      <CardComponent>
+        <div class="metric-header nes-container">
+          <Database class="metric-icon" />
+          <div>
+            <h3 class="card-title nes-container">Evidence Analysis</h3>
+            <p class="card-description nes-container">Processing Status</p>
           </div>
-        </CardComponent>
-        <!-- Threat Assessment card -->
-        <div class="metric-nier-bits-card nes-container">
-  <CardComponent>
+        </div>
+        <div class="metric-content nes-container">
+          <div class="progress-section">
+            <div class="progress-item">
+              <span class="progress-label"
+                >Processed ({analysisData.evidenceAnalysis.processed}/{analysisData.evidenceAnalysis
+                  .total_pieces})</span
+              >
+              <Progress
+                value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                class="progress-bar"
+              />
+            </div>
+            <div class="progress-item">
+              <span class="progress-label">AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span>
+              <Progress
+                value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                class="progress-bar"
+              />
+            </div>
+          </div>
+        </div>
+      </CardComponent>
+      <!-- Threat Assessment card -->
+      <div class="metric-nier-bits-card nes-container">
+        <CardComponent>
           <div class="metric-header nes-container">
             <AlertCircle class="metric-icon" />
             <div>
@@ -201,88 +201,88 @@
       </div>
       <!-- AI Performance Panel -->
       <div class="ai-performance-nier-bits-card nes-container">
-  <CardComponent>
-        <div class="nes-container">
-          <div class="flex items-center gap-2 nes-container card-title">
-            <Brain class="w-5 h-5" />
-            <span>AI PERFORMANCE METRICS</span>
-          </div>
-        </div>
-        <div class="ai-performance-content nes-container">
-          <div class="performance-metrics">
-            <div class="performance-item">
-              <div class="performance-label">Accuracy</div>
-              <div class="performance-value">{analysisData.aiPerformance.accuracy}%</div>
-              <Progress value={analysisData.aiPerformance.accuracy} class="performance-progress" />
-            </div>
-            <div class="performance-item">
-              <div class="performance-label">Processing Speed</div>
-              <div class="performance-value">{analysisData.aiPerformance.processing_speed}s avg</div>
-              <Progress value={100 - analysisData.aiPerformance.processing_speed * 20} class="performance-progress" />
-            </div>
-            <div class="performance-item">
-              <div class="performance-label">Confidence Score</div>
-              <div class="performance-value">{analysisData.aiPerformance.confidence}%</div>
-              <Progress value={analysisData.aiPerformance.confidence} class="performance-progress" />
+        <CardComponent>
+          <div class="nes-container">
+            <div class="flex items-center gap-2 nes-container card-title">
+              <Brain class="w-5 h-5" />
+              <span>AI PERFORMANCE METRICS</span>
             </div>
           </div>
-          <div class="performance-footer">
-            <Clock class="w-4 h-4" />
-            Last Updated: {analysisData.aiPerformance.last_update}
+          <div class="ai-performance-content nes-container">
+            <div class="performance-metrics">
+              <div class="performance-item">
+                <div class="performance-label">Accuracy</div>
+                <div class="performance-value">{analysisData.aiPerformance.accuracy}%</div>
+                <Progress value={analysisData.aiPerformance.accuracy} class="performance-progress" />
+              </div>
+              <div class="performance-item">
+                <div class="performance-label">Processing Speed</div>
+                <div class="performance-value">{analysisData.aiPerformance.processing_speed}s avg</div>
+                <Progress value={100 - analysisData.aiPerformance.processing_speed * 20} class="performance-progress" />
+              </div>
+              <div class="performance-item">
+                <div class="performance-label">Confidence Score</div>
+                <div class="performance-value">{analysisData.aiPerformance.confidence}%</div>
+                <Progress value={analysisData.aiPerformance.confidence} class="performance-progress" />
+              </div>
+            </div>
+            <div class="performance-footer">
+              <Clock class="w-4 h-4" />
+              Last Updated: {analysisData.aiPerformance.last_update}
+            </div>
           </div>
-        </div>
-      </CardComponent>
-</div>
+        </CardComponent>
+      </div>
       <!-- Recent Analyses -->
       <div class="recent-analyses-nier-bits-card nes-container">
-  <CardComponent>
-        <div class="nes-container">
-          <h3 class="card-title nes-container">RECENT ANALYSES</h3>
-          <p class="card-description nes-container">Latest AI-powered investigations</p>
-        </div>
-        <div>
-          <div class="analyses-content nes-container">
-            <div class="analyses-list">
-              {#each recentAnalyses as analysis (analysis.id)}
-                <div class="analysis-item">
-                  <div class="analysis-header">
-                    <div class="analysis-basic-info">
-                      <span class="analysis-id">{analysis.id}</span>
-                      <span class="analysis-case">{analysis.case_id}</span>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
-                        >{analysis.type}</span
-                      >
-                    </div>
-                    <div class="analysis-status">
-                      {#if analysis.status === 'completed'}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-green-600 text-white">COMPLETED</span>
-                        <span class="confidence-score">{analysis.confidence}% confidence</span>
-                      {:else if analysis.status === 'processing'}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600 text-white">PROCESSING</span>
-                        <Activity class="w-4 h-4 animate-pulse" />
-                      {:else}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
-                          >{analysis.status.toUpperCase()}</span
+        <CardComponent>
+          <div class="nes-container">
+            <h3 class="card-title nes-container">RECENT ANALYSES</h3>
+            <p class="card-description nes-container">Latest AI-powered investigations</p>
+          </div>
+          <div>
+            <div class="analyses-content nes-container">
+              <div class="analyses-list">
+                {#each recentAnalyses as analysis (analysis.id)}
+                  <div class="analysis-item">
+                    <div class="analysis-header">
+                      <div class="analysis-basic-info">
+                        <span class="analysis-id">{analysis.id}</span>
+                        <span class="analysis-case">{analysis.case_id}</span>
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                          >{analysis.type}</span
                         >
-                      {/if}
+                      </div>
+                      <div class="analysis-status">
+                        {#if analysis.status === 'completed'}
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-green-600 text-white">COMPLETED</span>
+                          <span class="confidence-score">{analysis.confidence}% confidence</span>
+                        {:else if analysis.status === 'processing'}
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600 text-white">PROCESSING</span>
+                          <Activity class="w-4 h-4 animate-pulse" />
+                        {:else}
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                            >{analysis.status.toUpperCase()}</span
+                          >
+                        {/if}
+                      </div>
+                    </div>
+                    <div class="analysis-findings">
+                      {analysis.findings}
+                    </div>
+                    <div class="analysis-footer">
+                      <span class="analysis-timestamp">{analysis.timestamp}</span>
+                      <div class="bits-btn">
+                        <ButtonComponent size="sm" variant="secondary">View Details</ButtonComponent>
+                      </div>
                     </div>
                   </div>
-                  <div class="analysis-findings">
-                    {analysis.findings}
-                  </div>
-                  <div class="analysis-footer">
-                    <span class="analysis-timestamp">{analysis.timestamp}</span>
-                    <div class="bits-btn">
-  <ButtonComponent size="sm" variant="secondary">View Details</ButtonComponent>
-</div>
-                  </div>
-                </div>
-              {/each}
+                {/each}
+              </div>
             </div>
           </div>
-        </div>
-      </CardComponent>
-</div>
+        </CardComponent>
+      </div>
     </div>
   </main>
 </div>
@@ -616,4 +616,3 @@
     color: #666;
   }
 </style>
-

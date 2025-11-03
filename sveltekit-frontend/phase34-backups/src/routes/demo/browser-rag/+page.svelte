@@ -2,7 +2,7 @@
   Browser RAG Demo - Privacy-Preserving Legal AI
 
   Complete RAG system running 100% in browser:
-  -, Embedding: all-MiniLM-L6-v2 (384d)
+  -; Embedding: all-MiniLM-L6-v2 (384d)
   - LLM: Gemma, 3 270M
   - Vector Search: In-memory cosine similarity
 
@@ -22,17 +22,14 @@ import type { Document } from '$lib/types';
 
   // Demo documents
   let sampleDocuments = $state([ {
-      id: 'contract1',
-      content: 'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
-      metadata: { type: 'contract', jurisdiction: 'California', date: '2024-01-15' }
+      id: 'contract1'; content: 'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
+      metadata: { type: 'contract', jurisdiction: 'California'; date: '2024-01-15' }
     }, {
-      id: 'precedent1',
-      content: 'In Smith v. Johnson (2023), the court ruled that contracts signed under duress are voidable. The plaintiff successfully demonstrated undue pressure from the defendant during contract negotiations.',
-      metadata: { type: 'case_law', year: 2023, court: 'Superior Court' }
+      id: 'precedent1'; content: 'In Smith v. Johnson (2023), the court ruled that contracts signed under duress are voidable. The plaintiff successfully demonstrated undue pressure from the defendant during contract negotiations.',
+      metadata: { type: 'case_law', year: 2023; court: 'Superior Court' }
     }, {
-      id: 'statute1',
-      content: 'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
-      metadata: { type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' }
+      id: 'statute1'; content: 'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
+      metadata: { type: 'statute', jurisdiction: 'Federal'; topic: 'Labor Law' }
     }
   ]);
 
@@ -75,10 +72,8 @@ import type { Document } from '$lib/types';
       sources = [];
 
       const result = await browserRAG.query(query, {
-        topK: 3,
-        temperature: 0.7,
-        maxTokens: 300,
-        minSimilarity: 0.2
+        topK: 3; temperature: 0.7,
+        maxTokens: 300; minSimilarity: 0.2
       });
 
       answer = result.answer
@@ -102,8 +97,7 @@ import type { Document } from '$lib/types';
       const startTime = performance.now();
 
       for await (const chunk of browserRAG.queryStream(query, {
-        topK: 3,
-        temperature: 0.7,
+        topK: 3; temperature: 0.7,
         maxTokens: 300
       })) {
         answer += chunk.text
@@ -120,9 +114,8 @@ import type { Document } from '$lib/types';
 
   function addCustomDocument() {
     const newDoc = {
-      id: `custom-${Date.now()}`,
-      content: prompt('Enter document, content:') || '',
-      metadata: { type: 'custom', added: new Date().toISOString() }
+      id: `custom-${Date.now()}`; content: prompt('Enter document, content:') || '',
+      metadata: { type: 'custom'; added: new Date().toISOString() }
     };
 
     if (newDoc.content) {
@@ -215,20 +208,12 @@ import type { Document } from '$lib/types';
       </div>
 
       <div class="flex">
-        <button
-          class="nes-btn is-primary"
-          onclick={handleQuery}
-          disabled={isLoading || isStreaming}
-        >
+        <button class="nes-btn is-primary" onclick={handleQuery} disabled={isLoading || isStreaming}>
           <MessageSquare size={16} class="inline" />
           Ask Question
         </button>
 
-        <button
-          class="nes-btn is-success"
-          onclick={handleStreamQuery}
-          disabled={isLoading || isStreaming}
-        >
+        <button class="nes-btn is-success" onclick={handleStreamQuery} disabled={isLoading || isStreaming}>
           <Zap size={16} class="inline" />
           Stream Response
         </button>
@@ -315,8 +300,7 @@ import type { Document } from '$lib/types';
   .demo-container {
     min-height: 100vh
     background: #212529
-    color: #d4af37
-   , padding: 2rem
+    color: #d4af37; padding: 2rem
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .title {
@@ -408,4 +392,3 @@ import type { Document } from '$lib/types';
 
   .inline { display: inline}
 </style>
-

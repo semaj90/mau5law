@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import * as Select from '$lib/components/ui/select/index.js';
   import  FormField  from "./FormField.svelte";
@@ -79,6 +79,7 @@
   function handleValueChange(_event: CustomEvent<string>) {
     updateValue(e(vent as CustomEvent).detail)}
 </script>
+
 <FormField {name} {errors}>
   {#snippet control()}
     <div class={className} {...rest}>

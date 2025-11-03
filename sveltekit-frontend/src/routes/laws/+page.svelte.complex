@@ -1,16 +1,16 @@
 <script lang="ts">
   import { page } from '$app/state';
   import { enhance } from '$app/forms';
-  import * as Card from "$lib/components/ui/Card";
-  import { Input } from "$lib/components/ui/input/index.js";
-  import { Button } from "$lib/components/ui/button/index.js";
-  import * as Select from "$lib/components/ui/select/index.js";
-  import * as Dialog from "$lib/components/ui/dialog/index.js";
-  import * as Tabs from "$lib/components/ui/tabs/index.js";
-  import { Badge } from "$lib/components/ui/badge/index.js";
-  import { Loader2, Search, BookOpen, ExternalLink, MessageSquare, FileText, Bot, Zap } from "lucide-svelte";
-  import FuseLegalSearch from "$lib/components/search/FuseLegalSearch.svelte";
-  import AIChatWidget from "$lib/components/ai/AIChatWidget.svelte";
+  import * as Card from '$lib/components/ui/Card';
+  import { Input } from '$lib/components/ui/input/index.js';
+  import { Button } from '$lib/components/ui/button/index.js';
+  import * as Select from '$lib/components/ui/select/index.js';
+  import * as Dialog from '$lib/components/ui/dialog/index.js';
+  import * as Tabs from '$lib/components/ui/tabs/index.js';
+  import { Badge } from '$lib/components/ui/badge/index.js';
+  import { Loader2, Search, BookOpen, ExternalLink, MessageSquare, FileText, Bot, Zap } from 'lucide-svelte';
+  import FuseLegalSearch from '$lib/components/search/FuseLegalSearch.svelte';
+  import AIChatWidget from '$lib/components/ai/AIChatWidget.svelte';
 
   let { data } = $props();
 
@@ -31,9 +31,8 @@
   // Filtered quick links based on selection
   let filteredQuickLinks = $derived(() => {
     if (selectedJurisdiction === 'all') return data.quickLinks;
-    return data.quickLinks.filter(link =>
-      link.jurisdiction === selectedJurisdiction ||
-      link.jurisdiction === 'federal'
+    return data.quickLinks.filter(
+      link => link.jurisdiction === selectedJurisdiction || link.jurisdiction === 'federal'
     );
   });
 
@@ -45,7 +44,7 @@
       const params = new URLSearchParams({
         q: searchQuery,
         jurisdiction: selectedJurisdiction,
-        category: selectedCategory
+        category: selectedCategory,
       });
 
       const response = await fetch(`/api/laws/search?${params}`);
@@ -77,8 +76,8 @@
           query: searchQuery,
           jurisdiction: selectedJurisdiction,
           category: selectedCategory,
-          useAI: true
-        })
+          useAI: true,
+        }),
       });
 
       const result = await response.json();
@@ -106,8 +105,8 @@
         body: JSON.stringify({
           text: law.fullText || law.description,
           type: 'legal_statute',
-          options: { max_tokens: 500 }
-        })
+          options: { max_tokens: 500 },
+        }),
       });
 
       const result = await response.json();
@@ -131,7 +130,7 @@
       description: law.description,
       jurisdiction: law.jurisdiction,
       code: law.code,
-      fullText: law.fullText || law.description
+      fullText: law.fullText || law.description,
     };
     aiChatOpen = true;
   }
@@ -154,7 +153,10 @@
 
 <svelte:head>
   <title>Legal Resources - Laws & Regulations | YoRHa Legal AI</title>
-  <meta name="description" content="Browse California and state laws with AI-powered search and summaries. Access legal codes, regulations, and statutes with intelligent assistance." />
+  <meta
+    name="description"
+    content="Browse California and state laws with AI-powered search and summaries. Access legal codes, regulations, and statutes with intelligent assistance."
+  />
 </svelte:head>
 
 <div class="container mx-auto py-8 space-y-8">
@@ -162,8 +164,8 @@
   <div class="text-center space-y-4">
     <h1 class="text-4xl font-bold tracking-tight">Legal Resources</h1>
     <p class="text-xl text-muted-foreground max-w-2xl mx-auto">
-      Browse California and state laws with AI-powered search and summaries.
-      Access legal codes, regulations, and statutes with intelligent assistance.
+      Browse California and state laws with AI-powered search and summaries. Access legal codes, regulations, and
+      statutes with intelligent assistance.
     </p>
   </div>
 
@@ -261,9 +263,7 @@
             placeholder="Instant search through quick links..."
             maxResults={6}
           />
-          <p class="text-sm text-muted-foreground">
-            Instant client-side search with fuzzy matching and highlighting.
-          </p>
+          <p class="text-sm text-muted-foreground">Instant client-side search with fuzzy matching and highlighting.</p>
         </Tabs.Content>
 
         <Tabs.Content value="ai" class="space-y-4">
@@ -380,7 +380,9 @@
   {:else if searchQuery && !isSearching}
     <Card.Root>
       <Card.Content class="py-8 text-center">
-        <p class="text-muted-foreground">No results found for "{searchQuery}". Try adjusting your search terms or filters.</p>
+        <p class="text-muted-foreground">
+          No results found for "{searchQuery}". Try adjusting your search terms or filters.
+        </p>
       </Card.Content>
     </Card.Root>
   {/if}
@@ -409,9 +411,7 @@
       {/if}
 
       <div class="flex justify-end gap-2 pt-4">
-        <Button variant="outline" onclick={() => aiSummaryDialog = false}>
-          Close
-        </Button>
+        <Button variant="outline" onclick={() => (aiSummaryDialog = false)}>Close</Button>
         {#if selectedLaw}
           <Button onclick={() => openAIChat(selectedLaw)}>
             <MessageSquare class="h-4 w-4 mr-2" />

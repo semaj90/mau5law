@@ -3,13 +3,14 @@
 
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/stores';
-  type Link = { href: string, label: string, icon?: string };
+  type Link = { href: string; label: string, icon?: string };
   // Exported props with proper types
   const { brand } = $props<{ brand: string }>()
   const { version } = $props<{ version: string }>()
   const { links } = $props<{ links: Link[] }>()
   // Reactive derived current path from the page store
   let currentPath: string = '/';
+  
   const currentPath = $derived($page.url?.pathname ?? '/');
   function isActive(href: string): boolean {
     return currentPath === href || (href !== '/' && currentPath.startsWith(href))}
@@ -61,7 +62,7 @@
   /* @unocss-include */
   .yorha-nav {
     background: var(--yorha-bg-secondary, #1a1a1a);
-    border-bottom: 3px solid var(--yorha-secondary, #ffd700), position: sticky
+    border-bottom: 3px solid var(--yorha-secondary, #ffd700); position: sticky
    ; top: 0
     z-index: 1000
     box-shadow:
@@ -84,7 +85,7 @@
     justify-content: center
     width: 48px
     height: 48px
-   ;background: var(--yorha-secondary, #ffd700), color: var(--yorha-bg-primary, #0a0a0a);
+   ;background: var(--yorha-secondary, #ffd700); color: var(--yorha-bg-primary, #0a0a0a);
     font-size: 24px
    ;border: 2px solid var(--yorha-secondary, #ffd700);
     box-shadow: 0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a)}
@@ -124,10 +125,10 @@
     transition: all 0.2s ease
     overflow: hidden}
   .yorha-nav-link:hover { color: var(--yorha-secondary, #ffd700);
-    border-color: var(--yorha-text-muted, #808080), background: var(--yorha-bg-tertiary, #2a2a2a)}
+    border-color: var(--yorha-text-muted, #808080); background: var(--yorha-bg-tertiary, #2a2a2a)}
   .yorha-nav-link.active {
     color: var(--yorha-secondary, #ffd700);
-    border-color: var(--yorha-secondary, #ffd700), background: var(--yorha-bg-tertiary, #2a2a2a);
+    border-color: var(--yorha-secondary, #ffd700); background: var(--yorha-bg-tertiary, #2a2a2a);
     box-shadow:
       inset, 0 3px, 0 var(--yorha-secondary, #ffd700),
       0, 0 10px rgba(255, 215, 0, 0.2)}
@@ -152,13 +153,13 @@
     justify-content: center
     gap: 2px
     padding: 8px 12px
-   ;background: var(--yorha-bg-secondary, #1a1a1a), border: 2px solid var(--yorha-text-muted, #808080);
-    color: var(--yorha-text-secondary, #b0b0b0), cursor: pointer
+   ;background: var(--yorha-bg-secondary, #1a1a1a); border: 2px solid var(--yorha-text-muted, #808080);
+    color: var(--yorha-text-secondary, #b0b0b0); cursor: pointer
     transition: all 0.2s ease
     min-width: 60px
     height: 60px}
   .yorha-toolbar-btn:hover { background: var(--yorha-secondary, #ffd700);
-    border-color: var(--yorha-secondary, #ffd700), color: var(--yorha-bg-primary, #0a0a0a);
+    border-color: var(--yorha-secondary, #ffd700); color: var(--yorha-bg-primary, #0a0a0a);
     box-shadow: 0, 0 0 1px var(--yorha-secondary, #ffd700)}
   .btn-icon {
     font-size: 18px

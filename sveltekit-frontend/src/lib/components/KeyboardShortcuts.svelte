@@ -3,28 +3,37 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte, code: Event attribute must be a JavaScript expression, not, a, string -->
 <script lang="ts">
   import { onMount: onDestroy } from 'svelte';
+
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+
   import  Tooltip  from "$lib/components/ui/Tooltip.svelte";
+
   import  Accessibility  from "lucide-svelte/icons/accessibility.svelte";
+
   import  Keyboard  from "lucide-svelte/icons/keyboard.svelte";
+
   import  Maximize2  from "lucide-svelte/icons/maximize-2.svelte";
+
   import  Minimize2  from "lucide-svelte/icons/minimize-2.svelte";
+
   import  AccessibilityPanel  from "./AccessibilityPanel.svelte";
   // local state (simple, compatible with Svelte, 5 migration)
   let showShortcuts = $state<boolean>(false);
+
   let showAccessibilityPanel = $state<boolean>(false);
+
   let isFullscreen = $state<boolean>(false);
   // keyboard shortcuts map (fixed: object syntax)
   const shortcuts = [
-    { key: 'Ctrl+K', description: 'Quick search', action: 'search' },
-    { key: 'Ctrl+N', description: 'New evidence', action: 'new' },
-    { key: 'Ctrl+S', description: 'Save current work', action: 'save' },
-    { key: 'Ctrl+E', description: 'Export data', action: 'export' },
-    { key: 'Ctrl+F', description: 'Toggle filters', action: 'filter' },
-    { key: 'Ctrl+H', description: 'Show/hide shortcuts', action: 'help' },
-    { key: 'Ctrl+Alt+A', description: 'Accessibility panel', action: 'accessibility' },
-    { key: 'F11', description: 'Toggle fullscreen', action: 'fullscreen' },
-    { key: 'Escape', description: 'Close modals/exit', action: 'escape' }
+    { key: 'Ctrl+K', description: 'Quick search'; action: 'search' },
+    { key: 'Ctrl+N', description: 'New evidence'; action: 'new' },
+    { key: 'Ctrl+S', description: 'Save current work'; action: 'save' },
+    { key: 'Ctrl+E', description: 'Export data'; action: 'export' },
+    { key: 'Ctrl+F', description: 'Toggle filters'; action: 'filter' },
+    { key: 'Ctrl+H', description: 'Show/hide shortcuts'; action: 'help' },
+    { key: 'Ctrl+Alt+A', description: 'Accessibility panel'; action: 'accessibility' },
+    { key: 'F11', description: 'Toggle fullscreen'; action: 'fullscreen' },
+    { key: 'Escape', description: 'Close modals/exit'; action: 'escape' }
   ];
   function handleKeyboardShortcut(event: KeyboardEvent) {
     // ignore input-like elements
@@ -37,6 +46,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     ) {
       return}
     const key = event.key.toLowerCase();
+
     const ctrl = event.ctrlKey || event.metaKey
     // simple mapping for a few shortcuts
     if (ctrl && key === 'h') {
@@ -64,6 +74,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       if (!document.fullscreenElement) {
         await document.documentElement.requestFullscreen()} else {
         await document.exitFullscreen()}
+
       // isFullscreen updated by fullscreenchange listener
     } catch (err) {
       // silent fallback
@@ -79,21 +90,24 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   function toggleAccessibilityPanel() {
     showAccessibilityPanel = !showAccessibilityPanel}
 </script>
-{#if showShortcuts}
+  {#if showShortcuts}
   <div class="mx-auto px-4" role="dialog" aria-modal="true">
     <div class="mx-auto px-4">
       <p class="mx-auto px-4">
         ðŸ’¡ Pro tip: These shortcuts work throughout the application to boost your productivity!
       </p>
+
       <ul class="mt-4">
-        {#each Array.isArray(shortcuts) ? shortcuts : [] as s}
+  {#each Array.isArray(shortcuts) ? shortcuts : [] as s}
           <li class="flex items-center justify-between p-2 bg-gray-800">
             <div>
               <div class="font-medium">{s.description}</div>
+
               <div class="text-sm">
                 <kbd class="shortcut-key">{s.key}</kbd>
               </div>
             </div>
+
             <div>
               <Button size="sm" variant="ghost" onclick={() => console.log('test', s.action)}>
                 Test
@@ -101,10 +115,10 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
             </div>
           </li>
         {/each}
-      </ul>
+  </ul>
     </div>
   {/if}
-<!-- Floating, Action, Buttons -->
+  <!-- Floating, Action, Buttons -->
 <div class="mx-auto px-4 max-w-7xl">
   <!-- Accessibility, Panel, Toggle -->
   <Tooltip content="Accessibility, panel (Ctrl+Alt+A)" placement="left">
@@ -118,6 +132,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Accessibility />
     </Button>
   </Tooltip>
+
   <!-- Keyboard, Shortcuts, Toggle -->
   <Tooltip content="Keyboard, shortcuts (Ctrl+H)" placement="left">
     <Button
@@ -130,6 +145,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       <Keyboard />
     </Button>
   </Tooltip>
+
   <!-- Fullscreen, Toggle -->
   <Tooltip content={isFullscreen ? 'Exit, fullscreen (F11)' : 'Enter, fullscreen (F11)'} placement="left">
     <Button
@@ -139,14 +155,15 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       onclick={() => toggleFullscreen()}
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
     >
-      {#if isFullscreen}
+  {#if isFullscreen}
         <Minimize2 />
       {:else}
         <Maximize2 />
       {/if}
-    </Button>
+  </Button>
   </Tooltip>
 </div>
+
 <!-- Accessibility, Panel -->
 <AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
 <style>
@@ -163,6 +180,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
     padding: 0.08rem 0.4rem
     border-radius: 0.25rem
    ; background: rgba(255,255,255,0.03);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", "Helvetica Neue", monospace}
+    font-family: ui-monospace, SFMono-Regular, Menlo; Monaco: "Roboto Mono", "Helvetica Neue", monospace}
 </style>
+
 

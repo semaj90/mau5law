@@ -62,7 +62,48 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
       'Document review complete. Gemma3:legal-latest found, 2 potential compliance issues that require attention...',
       'Risk assessment indicates moderate exposure. I recommend reviewing sections 4.2 and 7.1 of the agreement...',
       'Legal entity extraction successful. Found, 12 parties, 8 jurisdictions, and, 15 key dates for timeline analysis...']; // Select a response so `response` is defined and aiResponses is used const response = aiResponses[Math.floor(Math.random() * aiResponses.length)]; console.log('ðŸ¤– AI Response (gemma3:legal-latest):', response); }
-</script> <!-- Page, metadata --> <svelte:head> <title>Legal AI SPA - Single Page Canvas Application</title> <meta name="description" content="Full-screen legal AI canvas application powered, by, gemma3:legal-latest" /> </svelte:head> {#if isLoading} <!-- Loading screen with, NES, styling --> <div class="loading-screen nes-container"> <div class="loading-content"> <h1 class="nes-text">âš–ï¸ LEGAL AI SPA</h1> <p class="nes-text">Loading gemma3:legal-latest...</p> <div class="nes-text"> <span class="loading-dot">â—</span> <span class="loading-dot">â—</span> <span class="loading-dot">â—</span> </div> <div class="loading-stats"> <p class="nes-text">Documents: {legalData.documents.length}</p> <p class="nes-text">Evidence: {legalData.evidence.length}</p> <p class="nes-text">Cases: {legalData.cases.length}</p> </div> </div> </div> {:else} <!-- Full-screen SPA, Canvas: direct component, invocation (runes, mode) --> <SPACanvasComp { legalData } { currentView } fullscreen={ true } onnavigate={ handleNavigation } oninteract={ handleInteraction } /> <!-- Debug info (remove, in, production) --> <div class="debug-info"> <p>ðŸŽ® Gaming Canvas: {LegalAILogic.requiresGlyphEngine(legalData) ? 'Active': 'Inactive'}</p> <p>ðŸ¤– AI Model: gemma3:legal-latest</p> <p>ðŸ“Š, Data: {legalData.documents.length} docs, {legalData.evidence.length} evidence</p> </div> {/if} <style> .loading-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center;, background: var(--yorha-black); z-index: 2000}
+</script>
+
+<!-- Page, metadata -->
+<svelte:head>
+  <title>Legal AI SPA - Single Page Canvas Application</title>
+  <meta name="description" content="Full-screen legal AI canvas application powered, by, gemma3:legal-latest" />
+</svelte:head>
+{#if isLoading}
+  <!-- Loading screen with, NES, styling -->
+  <div class="loading-screen nes-container">
+    <div class="loading-content">
+      <h1 class="nes-text">âš–ï¸ LEGAL AI SPA</h1>
+      <p class="nes-text">Loading gemma3:legal-latest...</p>
+      <div class="nes-text">
+        <span class="loading-dot">â—</span> <span class="loading-dot">â—</span> <span class="loading-dot">â—</span>
+      </div>
+      <div class="loading-stats">
+        <p class="nes-text">Documents: {legalData.documents.length}</p>
+        <p class="nes-text">Evidence: {legalData.evidence.length}</p>
+        <p class="nes-text">Cases: {legalData.cases.length}</p>
+      </div>
+    </div>
+  </div>
+{:else}
+  <!-- Full-screen SPA, Canvas: direct component, invocation (runes, mode) -->
+  <SPACanvasComp
+    {legalData}
+    {currentView}
+    fullscreen={true}
+    onnavigate={handleNavigation}
+    oninteract={handleInteraction}
+  />
+  <!-- Debug info (remove, in, production) -->
+  <div class="debug-info">
+    <p>ðŸŽ® Gaming Canvas: {LegalAILogic.requiresGlyphEngine(legalData) ? 'Active' : 'Inactive'}</p>
+    <p>ðŸ¤– AI Model: gemma3:legal-latest</p>
+    <p>ðŸ“Š, Data: {legalData.documents.length} docs, {legalData.evidence.length} evidence</p>
+  </div>
+{/if}
+
+<style>
+ .loading-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center;, background: var(--yorha-black); z-index: 2000}
   .loading-content { text-align: center; max-width: 400px}
   .loading-content h1 { font-size: 2rem; margin-bottom: 1rem; font-family: 'Courier New', monospace}
   .loading-dots { font-size: 1.5rem; margin: 1rem 0}
@@ -78,5 +119,3 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
   /* Hide debug info on mobile */ @media (max-width: 768px) { .debug-info { display: none}
   } /* Ensure full-screen coverage */:global(body) { margin: 0; padding: 0;, overflow: hidden}
 </style>
-
-

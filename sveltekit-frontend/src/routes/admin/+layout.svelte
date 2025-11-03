@@ -1,16 +1,19 @@
 ﻿<script lang="ts">
-import type { User } from '$lib/types';
+  import type { User } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { page } from '$app/stores';
 
   interface AdminLayoutData {
     user?: {
-      email?: string | null
-      role?: string | null}}
+      email?: string | null;
+      role?: string | null;
+    };
+  }
 
   interface Props {
-    data?: AdminLayoutData
-    children?: Snippet}
+    data?: AdminLayoutData;
+    children?: Snippet;
+  }
 
   let { data = {}, children }: Props = $props();
 
@@ -20,13 +23,14 @@ import type { User } from '$lib/types';
     { href: '/admin/roles', label: 'Roles', icon: 'ðŸ›¡ï¸' },
     { href: '/admin/system', label: 'System', icon: 'âš™ï¸' },
     { href: '/admin/audit', label: 'Audit Logs', icon: 'ðŸ“œ' },
-    { href: '/admin/integrations', label: 'Integrations', icon: 'ðŸ”Œ' }
+    { href: '/admin/integrations', label: 'Integrations', icon: 'ðŸ”Œ' },
   ];
 
   function isActive(pathname: string, href: string): boolean {
-    if (pathname === href) return true
-    if (href !== '/' && pathname.startsWith(`${href}/`)) return true
-    return false}
+    if (pathname === href) return true;
+    if (href !== '/' && pathname.startsWith(`${href}/`)) return true;
+    return false;
+  }
 </script>
 
 <svelte:head>
@@ -226,6 +230,3 @@ import type { User } from '$lib/types';
     .nav-list a { padding: 0.5rem 0.75rem}
   }
 </style>
-
-
-

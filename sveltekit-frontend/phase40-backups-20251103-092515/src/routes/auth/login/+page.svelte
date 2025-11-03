@@ -52,9 +52,9 @@
         method="POST"
         action="?/login"
         use:enhance={({ formData, cancel }) => {
-          isLoading = true
+          isLoading = true;
           return async ({ result }) => {
-            isLoading = false
+            isLoading = false;
             if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
@@ -144,4 +144,3 @@
     </div>
   </div>
 </div>
-

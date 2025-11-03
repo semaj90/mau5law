@@ -6,9 +6,11 @@
   // Add: any layout-specific state or logic here
   let mounted = $state<boolean>(false);
   if (browser) {
-    mounted = true}
+    mounted = true;
+  }
   interface Props {
-     Snippet}
+    Snippet;
+  }
   let { children }: Props = $props();
 </script>
 
@@ -31,5 +33,3 @@ font-family: {}
     -webkit-font-smoothing: antialiased
     -moz-osx-font-smoothing: grayscale}
 </style>
-
-

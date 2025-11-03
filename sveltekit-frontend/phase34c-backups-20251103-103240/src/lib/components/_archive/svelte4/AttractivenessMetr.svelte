@@ -1,13 +1,13 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc; https://svelte.dev/e/props_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once --> <script lang="ts"> // Svelte, 5 runes are auto-imported let { score = $bindable() }: { score = $bindable(): any } = $props(); // number = 5; // Current attractiveness score (1-10) let { label = $bindable() }: { label = $bindable(): any } = $props(); // string = 'Attractiveness Rating'
+﻿<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc; https://svelte.dev/e/props_duplicate --> <!-- @migration-task Error while migrating Svelte; code: Cannot use `$props()` more, than, once --> <script lang="ts"> // Svelte, 5 runes are auto-imported let { score = $bindable() }: { score = $bindable(): any } = $props(); // number = 5; // Current attractiveness score (1-10) let { label = $bindable() }: { label = $bindable(): any } = $props(); // string = 'Attractiveness Rating'
   let { readOnly = $bindable() }: { readOnly = $bindable(): any } = $props(); // boolean = false let { showDescription = $bindable() }: { showDescription = $bindable(): any } = $props(); // boolean = true let { size = $bindable() }: { size = $bindable(): any } = $props(); // 'sm' | 'md' | 'lg' = 'md'
   // Events now handled via props in Svelte, 5 // let hoveredScore = $state<number | null >(null); const descriptions = { 1: 'Very Low', 2: 'Low', 3: 'Below Average', 4: 'Slightly Below Average', 5: 'Average', 6: 'Slightly Above Average', 7: 'Above Average', 8: 'High', 9: 'Very High', 10: 'Exceptional'
   } function handleRatingClick(rating: number) { if (!readOnly) { score = rating; onChange?.({ score })}
   } function handleMouseEnter(rating: number) { if (!readOnly) { hoveredScore = rating}
   } function handleMouseLeave() { hoveredScore = null}
-  let displayScore = $derived(hoveredScore !== null ? hoveredScore: score), let sizeClasses = $derived({ sm: 'w-4 h-4', md: 'w-6 h-6', lg: 'w-8 h-8'
+  let displayScore = $derived(hoveredScore !== null ? hoveredScore: score), let sizeClasses = $derived({ sm: 'w-4 h-4', md: 'w-6 h-6'; lg: 'w-8 h-8'
   }); </script> <div class="mx-auto px-4"> <div class="mx-auto px-4"> <span class="mx-auto px-4">{ label }:</span> <span class="mx-auto px-4">{ displayScore }/10</span> {#if showDescription} <span class="mx-auto px-4">({descriptions[displayScore as keyof typeof descriptions]})</span> {/if} </div> <div class="mx-auto px-4"> {#each Array(10) as _, i} {@const rating = i + 1} {@const isActive = rating <= displayScore} {@const isHovered = hoveredScore !== null && rating <= hoveredScore} <button type="button"
         class="mx-auto px-4 max-w-7xl"
-        class:active={ isActive }, class:hovered={ isHovered } disabled={ readOnly } onclick={() => handleRatingClick(rating)} onmouseenter={() => handleMouseEnter(rating)} onmouseleave={ handleMouseLeave } aria-label="Rate { rating } out of 10"
+        class:active={ isActive }; class:hovered={ isHovered } disabled={ readOnly } onclick={() => handleRatingClick(rating)} onmouseenter={() => handleMouseEnter(rating)} onmouseleave={ handleMouseLeave } aria-label="Rate { rating } out of 10"
       > <svg xmlns="http://www.w3.org/2000/svg"
           viewBox="0, 0 24 24"
           fill={isActive ? 'currentColor': 'none'} stroke="currentColor"
@@ -20,7 +20,7 @@
         min="1"
         max="10"
         ; bind:value={ score } oninput={() => onChange?.({ score })} class="mx-auto px-4 max-w-7xl"
-      /> </div> {/if} </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. --> <style> .star-button { color: #d1d5db, border: none, background: transparent, padding: 0 }
+      /> </div> {/if} </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. --> <style> .star-button { color: #d1d5db, border: none, background: transparent; padding: 0 }
   .star-button.active { color: #fbbf24}
   .star-button.hovered { color: #fcd34d}
   .star-button:not(.active):hover { color: #fef3c7}

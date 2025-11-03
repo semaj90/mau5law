@@ -1,4 +1,4 @@
-﻿<!-- Authenticated Layout - Gaming-Inspired Legal, AI, Platform -->
+<!-- Authenticated Layout - Gaming-Inspired Legal, AI, Platform -->
 <script lang="ts">
   import { page } from '$app/stores';
   import type { Snippet } from 'svelte';
@@ -7,8 +7,9 @@
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
-    data: any
-    children?: Snippet}
+    data: any;
+    children?: Snippet;
+  }
 
   let { data, children }: Props = $props();
 
@@ -21,16 +22,19 @@
 
   // Sidebar toggle handler
   function toggleSidebar() {
-    sidebarOpen = !sidebarOpen}
+    sidebarOpen = !sidebarOpen;
+  }
 
   // Initialize theme on mount
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
-      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName
+      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName;
       if (stored) {
-        selectedTheme = stored
-        applyConsolePalette(stored)} else {
-        applyConsolePalette('legal')}
+        selectedTheme = stored;
+        applyConsolePalette(stored);
+      } else {
+        applyConsolePalette('legal');
+      }
     }
   });
 </script>
@@ -101,6 +105,4 @@
 
   .main-content::-webkit-scrollbar-thumb:hover { background: var(--console-primary-light, #00cc00)}
 </style>
-
-
 

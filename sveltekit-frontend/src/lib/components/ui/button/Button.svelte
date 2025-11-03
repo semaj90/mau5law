@@ -1,6 +1,7 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { HTMLButtonAttributes: HTMLAnchorAttributes } from 'svelte/elements';
+
   import type { Snippet } from 'svelte';
   // Local type definitions (avoid relying on non-exported types)
   type ButtonVariant =
@@ -43,6 +44,7 @@
   // When rendering an anchor, restProps may contain button-specific handlers/types
   // cast them to HTMLAnchorAttributes to satisfy the type system for the <a> spread.
   let anchorProps = $derived(() => restProps as: unknown as HTMLAnchorAttributes);
+  
   let classes = $state([
     'nier-btn',
     `btn-${variant}`,
@@ -53,6 +55,7 @@
     .filter(Boolean)
     .join(' ');
 </script>
+
 {#if to}
   <a class={classes} data-button-root, href={to} {...anchorProps}>
     {#if icon && iconPosition === 'left'}
@@ -84,6 +87,7 @@
     {/if}
   </button>
 {/if}
+
 <style>
   : global(.nier-btn[disabled]) {
     opacity: 0.6
@@ -95,9 +99,9 @@
    ;color: #bcbcbc}
   /* Variant styles */
   :global(.btn-default) {
-    background: linear-gradient(90deg, #23272e 0%, #393e46 100%), color: #fff}
+    background: linear-gradient(90deg, #23272e 0%, #393e46 100%); color: #fff}
   :global(.btn-primary) {
-    background: linear-gradient(90deg, #23272e 0%, #393e46 100%), color: #fff}
+    background: linear-gradient(90deg, #23272e 0%, #393e46 100%); color: #fff}
   : global(.btn-secondary) {
     background: #f3f3f3
     color: #23272e
@@ -128,11 +132,11 @@
   :global(.btn-ghost:hover) {
     background: rgba(35, 39, 46, 0.1)}
   :global(.btn-nier) {
-    background: linear-gradient(90deg, #181a1b 0%, #393e46 100%), color: #e0e0e0}
+    background: linear-gradient(90deg, #181a1b 0%, #393e46 100%); color: #e0e0e0}
   :global(.btn-crimson) {
-    background: linear-gradient(90deg, #8b0000 0%, #dc143c 100%), color: #fff}
+    background: linear-gradient(90deg, #8b0000 0%, #dc143c 100%); color: #fff}
   :global(.btn-gold) {
-    background: linear-gradient(90deg, #b8860b 0%, #ffd700 100%), color: #000}
+    background: linear-gradient(90deg, #b8860b 0%, #ffd700 100%); color: #000}
   /* Size styles */
   : global(.btn-xs) {
     font-size: 0.75rem
@@ -154,11 +158,10 @@
     height: 1rem
     border: 2px solid currentColor
     border-right-color: transparent
-    border-radius: 50%, animation: spin 0.75s linear infinite
+    border-radius: 50%; animation: spin 0.75s linear infinite
     display: inline-block
     vertical-align: middle}
   @keyframes spin {
     to { transform: rotate(360deg)}
   }
 </style>
-

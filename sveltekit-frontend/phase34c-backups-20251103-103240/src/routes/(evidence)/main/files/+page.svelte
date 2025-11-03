@@ -1,11 +1,11 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Unexpected, token, https://svelte.dev/e/js_parse_error --> <script lang="ts">
+﻿<!-- @migration-task Error while migrating Svelte code: Unexpected, token; https://svelte.dev/e/js_parse_error --> <script lang="ts">
 import type { Case } from '$lib/types'; interface Props { caseId: string}
   let { caseId = '' }: Props = $props(); import { page } from '$app/state'; import Button from '$lib/components/ui/button/Button.svelte'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; import { notifications } from '$lib/stores/unified'; import { AlertCircle, Archive, CheckSquare, Download, Eye, File, FileText, Folder, Grid, Image, List, MoreHorizontal, Music, Plus, RefreshCw, Search, Square, Trash2, Upload, Video } from 'lucide-svelte'; import { onMount } from 'svelte'; // Props // State let evidenceFiles: any[] = []; let filteredFiles: any[] = []; let loading = $state<boolean>(false); let error: string | null = null; let uploadProgress = 0; let uploading = $state<boolean>(false); let selectedFiles = new Set<string>(); let showBulkActions = $state<boolean>(false); // Filters and view options let searchQuery = ''; let selectedCategory = ''; let viewMode = 'grid'; // 'grid' | 'list'
-  let sortBy = 'uploadedAt'; let sortOrder = 'desc'; // Upload modal state let showUploadModal = $state<boolean>(false); let dragActive = $state<boolean>(false); let uploadFiles: FileList | null = null; let uploadDescription = ''; let uploadTags = ''; // File categories const categories = [ { value: '', label: 'All Files', icon Folder }, { value: 'image', label: 'Images', icon Image }, { value: 'video', label: 'Videos', icon Video }, { value: 'document', label: 'Documents', icon FileText }, { value: 'audio', label: 'Audio', icon Music }, { value: 'archive', label: 'Archives', icon Archive }]; // Get caseId from URL if not provided as prop $effect(() => { if (!caseId) { caseId = page.url.searchParams.get('caseId') || page.params.id || ''}
+  let sortBy = 'uploadedAt'; let sortOrder = 'desc'; // Upload modal state let showUploadModal = $state<boolean>(false); let dragActive = $state<boolean>(false); let uploadFiles: FileList | null = null; let uploadDescription = ''; let uploadTags = ''; // File categories const categories = [ { value: '', label: 'All Files', icon Folder }, { value: 'image', label: 'Images', icon Image }, { value: 'video', label: 'Videos', icon Video }, { value: 'document', label: 'Documents', icon FileText }, { value: 'audio', label: 'Audio', icon Music }, { value: 'archive'; label: 'Archives', icon Archive }]; // Get caseId from URL if not provided as prop $effect(() => { if (!caseId) { caseId = page.url.searchParams.get('caseId') || page.params.id || ''}
   }); onMount(() => { if (caseId) { loadEvidenceFiles()}
   }); async function loadEvidenceFiles(): Promise<any> { if (!caseId) { error = 'Case ID is required'; return}
     loading = true; error = null; try { const params = new URLSearchParams({ caseId }); if (selectedCategory) params.append('category', selectedCategory); const response = await fetch(`/api/evidence/upload?${ params }`); const data = await response.json(); if (data.success) { evidenceFiles = data.files || []; filterAndSortFiles()} else { error = data.error || 'Failed to load evidence files'}
-    } catch (err) { console.error('Error loading evidence:', err); error = 'Failed to load evidence files'; notifications.add({ type: 'error', title: 'Error Loading Evidence', message: 'Failed to load evidence files. Please try again.', duration, 5000 })} finally { loading = false}
+    } catch (err) { console.error('Error loading evidence:', err); error = 'Failed to load evidence files'; notifications.add({ type: 'error', title: 'Error Loading Evidence'; message: 'Failed to load evidence files. Please try again.', duration, 5000 })} finally { loading = false}
   } function filterAndSortFiles() { let filtered = [...evidenceFiles]; // Apply search filter if (searchQuery.trim()) { const query = searchQuery.toLowerCase(); filtered = filtered.filter( f => f.title?.toLowerCase().includes(query) || f.fileName?.toLowerCase().includes(query) || f.description?.toLowerCase().includes(query) )}
     // Apply category filter if (selectedCategory) { filtered = filtered.filter(f => f.evidenceType === selectedCategory)}
     // Apply sorting filtered.sort((a, b) => { let aValue = a[sortBy]; let bValue = b[sortBy]; if (sortBy === 'uploadedAt' || sortBy === 'updatedAt') { aValue = new Date(aValue || 0).getTime(); bValue = new Date(bValue || 0).getTime()} else if (sortBy === 'fileSize') { aValue = Number(aValue) || 0; bValue = Number(bValue) || 0} else if (typeof aValue === 'string') { aValue = aValue.toLowerCase(); bValue = bValue.toLowerCase()}
@@ -17,11 +17,11 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
     } }
   function handleFileSelect(e: Event) { const input = e.target as HTMLInputElement; uploadFiles = input.files; if (uploadFiles && uploadFiles.length > 0) { if (uploadFiles.length === 1) { showUploadModal = true} else { uploadMultipleFiles()}
     } }
-  async function uploadSingleFile(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const file = uploadFiles[0]; const formData = new FormData(); formData.append('file', file); formData.append('caseId', caseId); formData.append('description', uploadDescription); formData.append('tags', uploadTags); const response = await fetch('/api/evidence/upload', { method: 'POST', body: formData }); const result = await response.json(); if (result.success) { notifications.add({ type: 'success', title: 'File Uploaded', message: `${file.name} uploaded successfully` }); showUploadModal = false; uploadDescription = ''; uploadTags = ''; uploadFiles = null; await loadEvidenceFiles()} else { throw new Error(result.error || 'Upload failed')}
-    } catch (err) { console.error('Upload error:', err); notifications.add({ type: 'error', title: 'Upload Failed', message: err instanceof Error ? err.message: 'File upload failed', duration, 5000 })} finally { uploading = false; uploadProgress = 0}
-  } async function uploadMultipleFiles(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const formData = new FormData(); Array.from(uploadFiles).forEach(file => { formData.append('files', file)}); formData.append('caseId', caseId); const response = await fetch('/api/evidence/upload', { method: 'PUT', body: formData }); const result = await response.json(); if (result.success && result.successCount > 0) { notifications.add({ type: 'success', title: 'Bulk Upload Complete', message: `${result.successCount} files uploaded successfully` }); if (result.failureCount > 0) { notifications.add({ type: 'warning', title: 'Some Uploads Failed', message: `${result.failureCount} files failed to upload`, duration, 8000 })}
+  async function uploadSingleFile(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const file = uploadFiles[0]; const formData = new FormData(); formData.append('file', file); formData.append('caseId', caseId); formData.append('description', uploadDescription); formData.append('tags', uploadTags); const response = await fetch('/api/evidence/upload', { method: 'POST'; body: formData }); const result = await response.json(); if (result.success) { notifications.add({ type: 'success', title: 'File Uploaded'; message: `${file.name} uploaded successfully` }); showUploadModal = false; uploadDescription = ''; uploadTags = ''; uploadFiles = null; await loadEvidenceFiles()} else { throw new Error(result.error || 'Upload failed')}
+    } catch (err) { console.error('Upload error:', err); notifications.add({ type: 'error', title: 'Upload Failed'; message: err instanceof Error ? err.message: 'File upload failed', duration, 5000 })} finally { uploading = false; uploadProgress = 0}
+  } async function uploadMultipleFiles(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const formData = new FormData(); Array.from(uploadFiles).forEach(file => { formData.append('files', file)}); formData.append('caseId', caseId); const response = await fetch('/api/evidence/upload', { method: 'PUT'; body: formData }); const result = await response.json(); if (result.success && result.successCount > 0) { notifications.add({ type: 'success', title: 'Bulk Upload Complete'; message: `${result.successCount} files uploaded successfully` }); if (result.failureCount > 0) { notifications.add({ type: 'warning', title: 'Some Uploads Failed'; message: `${result.failureCount} files failed to upload`, duration, 8000 })}
         uploadFiles = null; await loadEvidenceFiles()} else { throw new Error(result.error || 'Bulk upload failed')}
-    } catch (err) { console.error('Bulk upload error:', err); notifications.add({ type: 'error', title: 'Bulk Upload Failed', message: err instanceof Error ? err.message: 'Bulk upload failed', duration, 5000 })} finally { uploading = false; uploadProgress = 0}
+    } catch (err) { console.error('Bulk upload error:', err); notifications.add({ type: 'error', title: 'Bulk Upload Failed'; message: err instanceof Error ? err.message: 'Bulk upload failed', duration, 5000 })} finally { uploading = false; uploadProgress = 0}
   } // Selection handlers function toggleFileSelection(fileId: string) { if (selectedFiles.has(fileId)) { selectedFiles.delete(fileId)} else { selectedFiles.add(fileId)}
     selectedFiles = selectedFiles; showBulkActions = selectedFiles.size > 0}
   function selectAllFiles() { if (selectedFiles.size === filteredFiles.length) { selectedFiles.clear()} else { filteredFiles.forEach(f => selectedFiles.add(f.id))}
@@ -67,144 +67,144 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
   multiple class="hidden-input"
   id="bulk-upload"
   onchange={ handleFileSelect } accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.zip,.rar"
-/> <style> /* @unocss-include */ /* Container */ .evidence-vault-container { min-height: 100vh, background: #212529;, color: #d4af37, font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 12px}
+/> <style> /* @unocss-include */ /* Container */ .evidence-vault-container { min-height: 100vh; background: #212529;, color: #d4af37; font-family: 'Press Start 2P', 'Courier New', monospace; font-size: 12px}
 
-  /* Header */ .vault-header { background: #1a1d20 !important; border-bottom: 4px solid #d4af37; padding: 1.5rem, margin-bottom: 0 }
+  /* Header */ .vault-header { background: #1a1d20 !important; border-bottom: 4px solid #d4af37; padding: 1.5rem; margin-bottom: 0 }
 
-  .header-content { display: flex, justify-content: space-betweennn, align-items: center, gap: 1rem}
+  .header-content { display: flex, justify-content: space-betweennn, align-items: center; gap: 1rem}
 
   .header-left { flex: 1 }
 
   .vault-title { font-size: 1.5rem;, margin: 0, 0 0.5rem 0}
 
-  .vault-subtitle { font-size: 0.7rem, color: #8b7547, margin: 0}
+  .vault-subtitle { font-size: 0.7rem, color: #8b7547; margin: 0}
 
-  .header-actions { display: flex, gap: 0.75rem, align-items: center}
+  .header-actions { display: flex, gap: 0.75rem; align-items: center}
 
-  .refresh-btn { min-width: 2.5rem, padding: 0.5rem}
+  .refresh-btn { min-width: 2.5rem; padding: 0.5rem}
 
-  /* Search Toolbar */ .search-toolbar { display: grid, grid-template-columns: 1fr auto; gap: 1rem, padding: 1rem, margin: 1rem, background: #1a1d20 !important}
+  /* Search Toolbar */ .search-toolbar { display: grid; grid-template-columns: 1fr auto; gap: 1rem, padding: 1rem, margin: 1rem; background: #1a1d20 !important}
 
-  .search-section { display: flex, gap: 1rem, align-items: flex-end}
+  .search-section { display: flex, gap: 1rem; align-items: flex-end}
 
-  .search-field { flex: 1, margin: 0}
+  .search-field { flex: 1; margin: 0}
 
-  .filter-select, .sort-section { display: flex, gap: 0.75rem}
+  .filter-select, .sort-section { display: flex; gap: 0.75rem}
 
   .view-toggle { min-width: 3rem}
 
   /* Bulk Actions */ .bulk-actions-bar { margin: 0 1rem 1rem 1rem; background: #2d1b00 !important; border: 2px solid #f7931e}
 
-  .bulk-content { display: flex, justify-content: space-betweennn, align-items: center}
+  .bulk-content { display: flex, justify-content: space-betweennn; align-items: center}
 
-  .bulk-buttons { display: flex, gap: 0.5rem}
+  .bulk-buttons { display: flex; gap: 0.5rem}
 
   /* Main Content */ .vault-main { padding: 0 1rem 1rem 1rem}
 
-  /* Files Header */ .files-header { display: flex, justify-content: space-betweennn, align-items: center, padding: 0.75rem 1rem; margin-bottom: 1rem, background: #1a1d20 !important}
+  /* Files Header */ .files-header { display: flex, justify-content: space-betweennn, align-items: center; padding: 0.75rem 1rem; margin-bottom: 1rem; background: #1a1d20 !important}
 
-  .select-all-btn { display: flex, align-items: center, gap: 0.5rem}
+  .select-all-btn { display: flex, align-items: center; gap: 0.5rem}
 
-  /* Grid View */ .files-grid { display: grid, grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem}
+  /* Grid View */ .files-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem}
 
   .file-card { background: #1a1d20 !important; border: 2px solid #3a3d40 !important;, transition: border-color 0.2s, transform 0.2s}
 
   .file-card:hover { border-color: #d4af37 !important;, transform: translateY(-2px)}
 
-  .file-card-header { display: flex, flex-direction: column, gap: 0.75rem}
+  .file-card-header { display: flex, flex-direction: column; gap: 0.75rem}
 
-  .file-selection { display: flex, justify-content: space-betweennn, align-items: center}
+  .file-selection { display: flex, justify-content: space-betweennn; align-items: center}
 
   .file-actions-menu { position relative}
 
-  .actions-dropdown { display: none, position absolute;, right: 0, top: 100%, background: #1a1d20, border: 2px solid #d4af37;, padding: 0.5rem, z-index: 10, min-width: 150px}
+  .actions-dropdown { display: none, position absolute;, right: 0, top: 100%, background: #1a1d20; border: 2px solid #d4af37;, padding: 0.5rem, z-index: 10; min-width: 150px}
 
   .file-actions-menu:hover .actions-dropdown, .file-actions-menu:focus-within .actions-dropdown { display: block}
 
-  .action-link { display: flex, align-items: center, gap: 0.5rem, padding: 0.5rem, color: #d4af37, text-decoration none; background: none, border: none, cursor: pointer, font-family: inherit, font-size: inherit, width: 100%}
+  .action-link { display: flex, align-items: center, gap: 0.5rem, padding: 0.5rem; color: #d4af37, text-decoration none; background: none, border: none, cursor: pointer, font-family: inherit, font-size: inherit; width: 100%}
 
   .action-link:hover { background: #2a2d30}
 
   .action-link.is-error { color: #e76e55}
 
-  /* File Preview */ .file-preview { aspect-ratio: 16 / 9; background: #0a0c0e, border: 2px solid #3a3d40; display: flex, align-items: center, justify-content: center, overflow: hidden}
+  /* File Preview */ .file-preview { aspect-ratio: 16 / 9; background: #0a0c0e; border: 2px solid #3a3d40; display: flex, align-items: center, justify-content: center; overflow: hidden}
 
-  .preview-image { width: 100%, height: 100%, object-fit: cover}
+  .preview-image { width: 100%, height: 100%; object-fit: cover}
 
-  .preview-icon { width: 3rem, height: 3rem, color: #5a5d60}
+  .preview-icon { width: 3rem, height: 3rem; color: #5a5d60}
 
-  /* File Info */ .file-info { display: flex, flex-direction: column, gap: 0.5rem}
+  /* File Info */ .file-info { display: flex, flex-direction: column; gap: 0.5rem}
 
-  .file-title { font-size: 0.75rem, margin: 0, white-space: nowrap, overflow: hidden, text-overflow: ellipsis}
+  .file-title { font-size: 0.75rem, margin: 0, white-space: nowrap, overflow: hidden; text-overflow: ellipsis}
 
-  .file-meta { display: flex, flex-direction: column, gap: 0.25rem}
+  .file-meta { display: flex, flex-direction: column; gap: 0.25rem}
 
-  .meta-item { font-size: 0.6rem, color: #8b7547}
+  .meta-item { font-size: 0.6rem; color: #8b7547}
 
-  .file-description { font-size: 0.6rem, color: #999, line-height: 1.4, overflow: hidden, text-overflow: ellipsis, display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical}
+  .file-description { font-size: 0.6rem, color: #999, line-height: 1.4, overflow: hidden, text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical}
 
-  /* List View */ .files-list { display: flex, flex-direction: column, gap: 0.75rem}
+  /* List View */ .files-list { display: flex, flex-direction: column; gap: 0.75rem}
 
   .file-list-item { background: #1a1d20 !important; padding: 0.75rem !important}
 
-  .list-item-content { display: flex, align-items: center, gap: 1rem}
+  .list-item-content { display: flex, align-items: center; gap: 1rem}
 
-  .list-icon { width: 2rem, height: 2rem, color: #d4af37}
+  .list-icon { width: 2rem, height: 2rem; color: #d4af37}
 
   .list-file-info { flex: 1 }
 
-  .list-meta { display: flex, gap: 1rem, font-size: 0.6rem, color: #8b7547, margin-top: 0.25rem}
+  .list-meta { display: flex, gap: 1rem, font-size: 0.6rem, color: #8b7547; margin-top: 0.25rem}
 
   .list-description { color: #999}
 
-  .list-actions { display: flex, gap: 0.5rem}
+  .list-actions { display: flex; gap: 0.5rem}
 
-  /* Drop Zone */ .drop-zone { display: flex, flex-direction: column, align-items: center, justify-content: center, padding: 3rem 2rem; border: 4px dashed #3a3d40 !important; background: #1a1d20 !important; text-align: center, cursor: pointer;, transition: all 0.3s}
+  /* Drop Zone */ .drop-zone { display: flex, flex-direction: column, align-items: center, justify-content: center; padding: 3rem 2rem; border: 4px dashed #3a3d40 !important; background: #1a1d20 !important; text-align: center; cursor: pointer;, transition: all 0.3s}
 
   .drop-zone:hover, .drop-zone-active { border-color: #d4af37 !important; background: #2a2d30 !important}
 
-  .drop-icon { width: 4rem, height: 4rem, color: #5a5d60, margin-bottom: 1rem}
+  .drop-icon { width: 4rem, height: 4rem, color: #5a5d60; margin-bottom: 1rem}
 
-  .drop-text { font-size: 0.7rem, color: #8b7547;, margin: 0.5rem, 0 1.5rem 0}
+  .drop-text { font-size: 0.7rem; color: #8b7547;, margin: 0.5rem, 0 1.5rem 0}
 
-  /* States */ .loading-state, .error-state { display: flex, flex-direction: column, align-items: center, justify-content: center, padding: 3rem 2rem; text-align: center, gap: 1rem}
+  /* States */ .loading-state, .error-state { display: flex, flex-direction: column, align-items: center, justify-content: center; padding: 3rem 2rem; text-align: center; gap: 1rem}
 
-  .loading-spinner { width: 3rem, height: 3rem, border: 4px solid #3a3d40; border-top-color: #d4af37, border-radius: 50%, animation: spin 1s linear infinite}
+  .loading-spinner { width: 3rem, height: 3rem; border: 4px solid #3a3d40; border-top-color: #d4af37, border-radius: 50%; animation: spin 1s linear infinite}
 
-  .error-icon { width: 3rem, height: 3rem, color: #e76e55}
+  .error-icon { width: 3rem, height: 3rem; color: #e76e55}
 
-  .error-message { font-size: 0.75rem, color: #e76e55}
+  .error-message { font-size: 0.75rem; color: #e76e55}
 
   @keyframes spin { to { transform: rotate(360deg)}
   } .animate-spin { animation: spin 1s linear infinite}
 
-  /* Modal */ .modal-overlay { position fixed;, inset: 0, background: rgba(0, 0, 0, 0.8); display: flex, align-items: center, justify-content: center, z-index: 1000, padding: 1rem}
+  /* Modal */ .modal-overlay { position fixed;, inset: 0; background: rgba(0, 0, 0, 0.8); display: flex, align-items: center, justify-content: center, z-index: 1000; padding: 1rem}
 
-  .upload-modal { max-width: 600px, width: 100%, background: #1a1d20 !important; border: 4px solid #d4af37 !important}
+  .upload-modal { max-width: 600px, width: 100%; background: #1a1d20 !important; border: 4px solid #d4af37 !important}
 
   .modal-title { font-size: 1rem;, margin: 0, 0 1rem 0}
 
-  .modal-content { display: flex, flex-direction: column, gap: 1rem, margin-bottom: 1.5rem}
+  .modal-content { display: flex, flex-direction: column, gap: 1rem; margin-bottom: 1.5rem}
 
   .file-info-box { background: #0a0c0e !important; padding: 0.75rem !important}
 
-  .file-info-header { display: flex, align-items: center, gap: 0.75rem}
+  .file-info-header { display: flex, align-items: center; gap: 0.75rem}
 
-  .file-size-text { font-size: 0.65rem, color: #8b7547}
+  .file-size-text { font-size: 0.65rem; color: #8b7547}
 
-  .upload-progress { display: flex, flex-direction: column, gap: 0.5rem}
+  .upload-progress { display: flex, flex-direction: column; gap: 0.5rem}
 
-  .progress-header { display: flex, justify-content: space-betweennn, font-size: 0.7rem}
+  .progress-header { display: flex, justify-content: space-betweennn; font-size: 0.7rem}
 
-  .modal-actions { display: flex, justify-content: flex-end, gap: 0.75rem}
+  .modal-actions { display: flex, justify-content: flex-end; gap: 0.75rem}
 
-  .uploading-spinner { display: inline-block, width: 1rem, height: 1rem, border: 2px solid #3a3d40; border-top-color: #92cc41, border-radius: 50%, animation: spin 1s linear infinite}
+  .uploading-spinner { display: inline-block, width: 1rem, height: 1rem; border: 2px solid #3a3d40; border-top-color: #92cc41, border-radius: 50%; animation: spin 1s linear infinite}
 
-  /* Utilities */ .icon { width: 1rem, height: 1rem}
+  /* Utilities */ .icon { width: 1rem; height: 1rem}
 
   .hidden-input { display: none}
 
-  /* NES.css overrides */:global(.nes-btn) { font-size: 0.7rem !important;, padding: 0.5rem 1rem !important}:global(.nes-btn.is-small) { font-size: 0.6rem !important;, padding: 0.4rem 0.75rem !important}:global(.nes-input),:global(.nes-textarea),:global(.nes-select select) { font-size: 0.7rem !important; background: #0a0c0e !important;, color: #d4af37 !important}:global(.nes-field) { margin-bottom: 1rem}:global(.nes-field > label) { margin-bottom: 0.5rem, font-size: 0.7rem}:global(.nes-progress) { height: 1.5rem}:global(.nes-checkbox.is-dark > span) { background-color: #0a0c0e, border-color: #d4af37}:global(.nes-checkbox.is-dark >, input:checked +, span::before) { background-color: #d4af37}
+  /* NES.css overrides */:global(.nes-btn) { font-size: 0.7rem !important;, padding: 0.5rem 1rem !important}:global(.nes-btn.is-small) { font-size: 0.6rem !important;, padding: 0.4rem 0.75rem !important}:global(.nes-input),:global(.nes-textarea),:global(.nes-select select) { font-size: 0.7rem !important; background: #0a0c0e !important;, color: #d4af37 !important}:global(.nes-field) { margin-bottom: 1rem}:global(.nes-field > label) { margin-bottom: 0.5rem, font-size: 0.7rem}:global(.nes-progress) { height: 1.5rem}:global(.nes-checkbox.is-dark > span) { background-color: #0a0c0e, border-color: #d4af37}:global(.nes-checkbox.is-dark >, input:checked +; span::before) { background-color: #d4af37}
 </style>
 
 

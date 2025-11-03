@@ -185,8 +185,7 @@
           const data = await response.json();
 
           if (response.ok) {
-            resultDiv.innerHTML =
-              '<div class="result success">✅ Avatar uploaded successfully!</div>';
+            resultDiv.innerHTML = '<div class="result success">✅ Avatar uploaded successfully!</div>';
 
             if (data.avatarUrl) {
               avatarImg.src = data.avatarUrl;

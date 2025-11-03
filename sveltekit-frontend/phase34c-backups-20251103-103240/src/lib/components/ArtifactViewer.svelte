@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
 import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
+  const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true; onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
   import { onMount } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
@@ -348,8 +348,7 @@ import type { User } from '$lib/types';
   code {
     word-break: break-all
     max-width: 200px
-    display: inline-block
-   , overflow: hidden
+    display: inline-block; overflow: hidden
     text-overflow: ellipsi
     white-space: nowrap}
 </style>

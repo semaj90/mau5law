@@ -1048,6 +1048,241 @@
 				"panel": "shared"
 			},
 			"detail": "Complete Phase 34D workflow: Install dependencies → Run AI-assisted repair"
+		},
+		{
+			"label": "🔗 Phase 34D: Integration & Error Check",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run-phase34d-integration.ps1",
+				"-SkipInstall",
+				"-FullReport"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Run complete Phase 34D integration with error checking and reporting"
+		},
+		{
+			"label": "🔍 Phase 34D: Error Checker Only",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/check-phase34d-errors.ps1",
+				"-Verbose",
+				"-ExportJson"
+			],
+			"problemMatcher": [],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Check Phase 34D results for errors and export JSON report"
+		},
+		{
+			"label": "🔧 Phase 34C: Object-Literal Repair (Dry-Run)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/fix-object-literal-colons.mjs",
+				"--verbose"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Phase 34C: Detect object-literal colon issues (read-only)"
+		},
+		{
+			"label": "✏️ Phase 34C: Object-Literal Repair (Apply)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/fix-object-literal-colons.mjs",
+				"--apply",
+				"--verbose"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Phase 34C: Apply object-literal colon fixes (modifies files)"
+		},
+		{
+			"label": "🚀 Phase 34C+34D: Complete Pipeline (Dry-Run)",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run-phase34c-34d-pipeline.ps1",
+				"-Verbose"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Run complete Phase 34C+34D pipeline (read-only analysis)"
+		},
+		{
+			"label": "⚡ Phase 34C+34D: Complete Pipeline (Apply)",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run-phase34c-34d-pipeline.ps1",
+				"-Apply34C",
+				"-Verbose"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Run complete Phase 34C+34D pipeline (apply fixes)"
+		},
+		{
+			"label": "🚀 Orchestrator: Phase 34C+34D (Dry-Run)",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run-orchestrator.ps1"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "GPU-enhanced orchestrator with dashboard generation (read-only)"
+		},
+		{
+			"label": "⚡ Orchestrator: Phase 34C+34D + GPU",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run-orchestrator.ps1",
+				"-GPU",
+				"-Workers",
+				"4"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Full orchestrator with GPU-accelerated Ollama analysis"
+		},
+		{
+			"label": "💎 Orchestrator: Full Stack (Apply + GPU)",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/run-orchestrator.ps1",
+				"-Apply",
+				"-GPU",
+				"-Workers",
+				"8",
+				"-FullStack"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Complete orchestration: Apply fixes + GPU + Redis + Qdrant + Neo4j"
+		},
+		{
+			"label": "🔄 BullMQ → RabbitMQ Migration (Dry-Run)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/migrate-bullmq-rabbitmq-enhanced.mjs",
+				"--validate"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Preview BullMQ to RabbitMQ migration (read-only)"
+		},
+		{
+			"label": "✅ BullMQ → RabbitMQ Migration (Apply)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/migrate-bullmq-rabbitmq-enhanced.mjs",
+				"--apply",
+				"--validate"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Apply BullMQ to RabbitMQ migration (modifies files)"
 		}
 	]
 }

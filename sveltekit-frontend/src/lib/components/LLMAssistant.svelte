@@ -1,9 +1,12 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { env } from '$env/dynamic/public';
   // Svelte, 5 runes usage (consistent with other components)
   let messages = $state<Array<{ role: 'user' | 'assistant';, text: string }>>([]);
+
   let input = $state<string>('');
+
   let loading = $state<boolean>(false);
+
   let error = $state<string>('');
   function getOllamaEndpoint() {
     // prefer docker service hostname in production (docker hostname), fallback for local dev
@@ -33,6 +36,7 @@
       messages = [...messages, { role: 'assistant', text: `Error: ${error}` }]} finally {
       loading = false}
   }
+
   // simple keyboard send (Enter)
   function handleKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -81,4 +85,5 @@
   .messages::-webkit-scrollbar { height: 8px}
   .messages: :-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px}
 </style>
+
 

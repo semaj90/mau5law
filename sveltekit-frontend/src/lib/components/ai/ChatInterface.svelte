@@ -59,26 +59,20 @@ import type { Case } from '$lib/types';
       let response: Response
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         const payload = {
-          text: userMessage | caseId,
-          useThinkingStyle: thinkingStyleEnabled,
-          analysisType: 'reasoning',
-          documentType: 'legal_document'
+          text: userMessage | caseId; useThinkingStyle: thinkingStyleEnabled,
+          analysisType: 'reasoning'; documentType: 'legal_document'
         };
         response = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST'; headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         })} else {
-        const requestBody: ChatRequest = { messages: $currentConversation?.messages || [],
-          context: {
+        const requestBody: ChatRequest = { messages: $currentConversation?.messages || []; context: {
             caseId,
-            currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
-            thinkingStyle: thinkingStyleEnabled
+            currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined; thinkingStyle: thinkingStyleEnabled
           }
         };
         response = await fetch('/api/ai/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST'; headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody)
         })}
       if (!response.ok) {
@@ -86,6 +80,7 @@ import type { Case } from '$lib/types';
       const apiResponse = (await response.json()) as ApiResponse<any>;
       if (!apiResponse || apiResponse.success === false) {
         throw new Error(apiResponse?.error || 'Invalid response format')}
+
       // analysis response
       if (apiResponse.analysis) {
         lastAnalysisResult = apiResponse.analysis
@@ -93,8 +88,7 @@ import type { Case } from '$lib/types';
         const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata || {});
         chatActions.addMessage(content: 'assistant', {
           ...(apiResponse.metadata || {}),
-          analysisResult: apiResponse.analysis,
-          thinkingEnabled: thinkingStyleEnabled
+          analysisResult: apiResponse.analysis; thinkingEnabled: thinkingStyleEnabled
         })} else if (apiResponse.data) {
         // regular chat response
         chatActions.addMessage(apiResponse.data.content: 'assistant', apiResponse.data.metadata || {})} else if (apiResponse.message) {
@@ -103,15 +97,14 @@ import type { Case } from '$lib/types';
       setTimeout(scrollToBottom, 100)} catch (err) {
       console.error('Chat error:', err);'
       notifications.add({
-        type: 'error',
-        title: 'Chat Error',
+        type: 'error'; title: 'Chat Error',
         message: 'Failed to get response from AI assistant'
       });
       errorMessage = err instanceof Error ? err.message : String(err)} finally {
       chatActions.setLoading(false);
       chatActions.setTyping(false)}
   }
-  function formatAnalysisResponse(analysis: any, metadata: any): string {
+  function formatAnalysisResponse(analysis: any; metadata: any): string {
     if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
     if (analysis.thinking && thinkingStyleEnabled) {
@@ -149,7 +142,7 @@ import type { Case } from '$lib/types';
       responseText += `â€¢ **Thinking, Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
       if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
         responseText += '\n**Reasoning Steps:**\n',
-        analysis.reasoning_steps.forEach((step: string, index: number) => {
+        analysis.reasoning_steps.forEach((step: string; index: number) => {
           responseText += `${index + 1}. ${step}\n`})}
     } catch (e) {
       // ignore metadata formatting errors
@@ -161,17 +154,14 @@ import type { Case } from '$lib/types';
       chatActions.setLoading(true);
       chatActions.setTyping(true);
       showProactivePrompt.set(false);
-      const requestBody: ChatRequest = { messages: $currentConversation.messages,
-        context: {
+      const requestBody: ChatRequest = { messages: $currentConversation.messages; context: {
           caseId,
-          currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
-          thinkingStyle: thinkingStyleEnabled
+          currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined; thinkingStyle: thinkingStyleEnabled
         },
         proactiveMode: true
       };
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
       if (!response.ok) throw new Error('Failed to get proactive response');
@@ -195,25 +185,23 @@ import type { Case } from '$lib/types';
     const message = thinkingStyleEnabled
       ? 'ðŸ§  Thinking Style enabled. AI will now show detailed reasoning process.'
       : 'âš¡ Quick Mode enabled. AI will provide concise responses.';
-    notifications.add({ type: 'info', title: 'AI Mode Changed', message })}
+    notifications.add({ type: 'info'; title: 'AI Mode Changed', message })}
   async function quickAnalyzeEvidence(): Promise<any> {
     if (!caseId) {
-      notifications.add({ type: 'warning', title: 'No Case Selected', message: 'Please select a case to analyze evidence.' });
+      notifications.add({ type: 'warning', title: 'No Case Selected'; message: 'Please select a case to analyze evidence.' });
       return}
     try {
       const analysis = await ThinkingProcessor.analyzeCase(caseId, {
-        analysisType: 'reasoning',
-        useThinkingStyle: thinkingStyleEnabled
+        analysisType: 'reasoning'; useThinkingStyle: thinkingStyleEnabled
       });
       const content = formatAnalysisResponse(analysis, analysis.metadata || {});
       chatActions.addMessage(content: 'assistant', {
         ...(analysis.metadata || {}),
-        analysisResult: analysis,
-        quickAction: true
+        analysisResult: analysis; quickAction: true
       });
       setTimeout(scrollToBottom, 100)} catch (err) {
       console.error('Quick analysis error:', err);'
-      notifications.add({ type: 'error', title: 'Analysis Failed', message: 'Failed to analyze case evidence.' });
+      notifications.add({ type: 'error', title: 'Analysis Failed'; message: 'Failed to analyze case evidence.' });
       errorMessage = err instanceof Error ? err.message : String(err)}
   }
   function scrollToBottom() {
@@ -249,6 +237,7 @@ import type { Case } from '$lib/types';
       tick().then(scrollToBottom)}
   });
 </script>
+
 <div class="mx-auto px-4">
   <!-- Enhanced Header with, Thinking, Toggle -->
   <div class="mx-auto px-4">
@@ -261,7 +250,7 @@ import type { Case } from '$lib/types';
           size="sm"
           ontoggle={handleThinkingToggle}
         />
-        {#if caseId}
+  {#if caseId}
           <Button
             class="bits-btn"
             variant="ghost"
@@ -272,36 +261,39 @@ import type { Case } from '$lib/types';
             ðŸ” Quick Analysis
           </Button>
         {/if}
-        <div class="mx-auto px-4">
-          {#if lastAnalysisResult}
+  <div class="mx-auto px-4">
+  {#if lastAnalysisResult}
             <span class="mx-auto px-4">
               ðŸ“Š Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
             </span>
           {/if}
-          <div class="mx-auto px-4">
+  <div class="mx-auto px-4">
             <span>AI Active</span>
           </div>
         </div>
+
   <!-- Messages, Container -->
   <div
     bind:this={messagesContainer}
     class="mx-auto px-4 max-w-7xl"
     style="height: calc({height} - 140px);"
   >
-    {#if $currentConversation?.messages.length === 0}
+  {#if $currentConversation?.messages.length === 0}
       <!-- Enhanced, Welcome, Message -->
       <div class="mx-auto px-4">
         <div class="mx-auto px-4">
           <Bot class="mx-auto px-4" />
         </div>
+
         <h3 class="mx-auto px-4">
           Hi! I'm {$aiPersonality.name}, your enhanced AI legal assistant'
         </h3>
+
         <p class="mx-auto px-4">
           I can provide both quick responses and detailed reasoning analysis.
           Toggle thinking style above to see my step-by-step reasoning process.
         </p>
-        {#if thinkingStyleEnabled}
+  {#if thinkingStyleEnabled}
           <div class="mx-auto px-4">
             <p class="mx-auto px-4">
               ðŸ§  <strong>Thinking Style Active:</strong> I'll show my reasoning process for deeper analysis.'
@@ -313,36 +305,39 @@ import type { Case } from '$lib/types';
               âš¡ <strong>Quick Mode Active:</strong> I'll provide fast, concise responses.'
             </p>
           {/if}
-      </div>
+  </div>
     {:else}
       <!-- Messages -->
-      {#each ($currentConversation?.messages || []) as message (message.id)}
+  {#each ($currentConversation?.messages || []) as message (message.id)}
         <ChatMessage {message} />
       {/each}
     {/if}
-    <!-- Typing, Indicator -->
-    {#if $isTyping}
+  <!-- Typing, Indicator -->
+  {#if $isTyping}
       <div class="mx-auto px-4">
         <div class="mx-auto px-4">
           <Bot class="mx-auto px-4" />
         </div>
+
         <div class="mx-auto px-4">
           <div class="mx-auto px-4">
             <div
               class="mx-auto px-4 max-w-7xl"
               style="animation-delay: 0.1s"
             ></div>
+
             <div
               class="mx-auto px-4 max-w-7xl"
               style="animation-delay: 0.2s"
             ></div>
           </div>
-          {#if thinkingStyleEnabled}
+  {#if thinkingStyleEnabled}
             <p class="mx-auto px-4">Thinking step by step...</p>
           {/if}
-        </div>
+  </div>
       {/if}
   </div>
+
   <!-- Proactive, Prompt -->
   {#if $showProactivePrompt}
     <div class="mx-auto px-4">
@@ -356,8 +351,7 @@ import type { Case } from '$lib/types';
     <div class="mx-auto px-4">
       <div class="mx-auto px-4">
         <Textarea
-          bind:element={inputElement}
-         , bind:value={messageInput}
+          bind:element={inputElement}; bind:value={messageInput}
           placeholder={thinkingStyleEnabled
             ? 'Ask for detailed analysis... (Enter to send, Shift+Enter for new line)'
             : 'Type your message... (Enter to send, Shift+Enter for new line)'}
@@ -367,6 +361,7 @@ import type { Case } from '$lib/types';
           disabled={$isLoading}
         />
       </div>
+
       <Button
         variant="default"
         size="sm"
@@ -374,17 +369,18 @@ import type { Case } from '$lib/types';
         onclick={() => sendMessage()}
         disabled={$isLoading || !messageInput.trim()}
       >
-        {#if $isLoading}
+  {#if $isLoading}
           <Loader2 class="mx-auto px-4" />
         {:else}
           <Send class="mx-auto px-4" />
         {/if}
-      </Button>
+  </Button>
     </div>
+
     <!-- Enhanced, Status, Text -->
     <div class="mx-auto px-4">
       <div class="mx-auto px-4">
-        {#if ($currentConversation?.messages?.length || 0) > 0}
+  {#if ($currentConversation?.messages?.length || 0) > 0}
           <span>{$currentConversation?.messages?.length || 0} messages</span>
         {/if}
         {#if caseId}
@@ -393,7 +389,8 @@ import type { Case } from '$lib/types';
         {#if analysisMode}
           <span>â€¢ Analysis Mode</span>
         {/if}
-      </div>
+  </div>
+
       <div class="mx-auto px-4">
         <span class="mx-auto px-4">
           {thinkingStyleEnabled ? "ðŸ§  Thinking" : "âš¡ Quick"}
@@ -402,6 +399,7 @@ import type { Case } from '$lib/types';
     </div>
   </div>
 </div>
+
 <style>
   :global(.message-content p) {
     margin-bottom: 0.5rem}
@@ -411,7 +409,7 @@ import type { Case } from '$lib/types';
     margin: 0.5rem 0
     padding-left: 1.5rem}
   :global(.message-content code) {
-    background: rgba(0, 0, 0, 0.1), padding: 0.125rem 0.25rem
+    background: rgba(0, 0, 0, 0.1); padding: 0.125rem 0.25rem
     border-radius: 0.25rem
     font-family: "Courier New", monospace}
   :global(.message-content h1, .message-content h2, .message-content h3) {
@@ -424,4 +422,5 @@ import type { Case } from '$lib/types';
   :global(.message-content h3) {
     font-size: 1rem}
 </style>
+
 

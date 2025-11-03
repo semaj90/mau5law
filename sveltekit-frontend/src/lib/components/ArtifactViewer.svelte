@@ -95,9 +95,10 @@ import type { User } from '$lib/types';
   $effect(() => {
     loadArtifact()});
 </script>
-{#if loading}
+  {#if loading}
   <div class="flex items-center justify-center">
     <div class="animate-spin rounded-full h-8 w-8 border-b-2"></div>
+
     <span class="ml-2">Loading artifact...</span>
   </div>
 {:else if error}
@@ -111,14 +112,16 @@ import type { User } from '$lib/types';
     <div class="flex items-center justify-between">
       <div>
         <h2 class="text-2xl font-semibold">Evidence Artifact</h2>
+
         <p class="text-sm">ID: {artifact.evidence_id}</p>
       </div>
-      {#if allowDownload && downloadUrl}
+  {#if allowDownload && downloadUrl}
         <Button onclick={handleDownload} class="flex items-center gap-2 bits-btn">
 <Download class="w-4" />
           Download
       {/if}
-    </div>
+  </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-2">
       <!-- Image, Preview -->
       <div class="nes-container">
@@ -128,8 +131,9 @@ import type { User } from '$lib/types';
             Preview
           </h3>
         </div>
+
         <div class="yorha-panel-content">
-          {#if imageUrl}
+  {#if imageUrl}
             <div class="relative">
               <img
                 src={imageUrl}
@@ -137,16 +141,17 @@ import type { User } from '$lib/types';
                 class="w-full h-auto rounded-lg shadow-sm max-h-96: object-contain"
                 transitionscale
               />
-              {#if extractedMetadata}
+  {#if extractedMetadata}
                 <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">Metadata Embedded</span>
               {/if}
-            </div>
+  </div>
           {:else}
             <div class="flex items-center justify-center h-48 bg-gray-100">
               <p class="text-gray-500">No preview available</p>
             {/if}
-        </div>
+  </div>
       </div>
+
       <!-- Artifact, Information -->
       <div class="nes-container">
         <div class="yorha-panel-header">
@@ -155,29 +160,38 @@ import type { User } from '$lib/types';
             Artifact Information
           </h3>
         </div>
+
         <div class="yorha-panel-content">
           <div class="grid grid-cols-2 gap-4">
             <div>
               <span class="font-medium">File Size:</span>
+
               <span class="ml-2">{formatFileSize(artifact.file_size)}</span>
             </div>
+
             <div>
               <span class="font-medium">Content Type:</span>
+
               <span class="ml-2">{artifact.content_type || 'Unknown'}</span>
             </div>
+
             <div>
               <span class="font-medium">Uploaded:</span>
+
               <span class="ml-2">{formatTimestamp(artifact.created_at)}</span>
             </div>
+
             <div>
               <span class="font-medium">Last Updated:</span>
+
               <span class="ml-2">{formatTimestamp(artifact.updated_at)}</span>
             </div>
           </div>
-          {#if artifact.content_hash}
+  {#if artifact.content_hash}
             <div class="flex items-center gap-2">
               <Hash class="w-4 h-4" />
               <span class="font-medium">Content Hash:</span>
+
               <code class="text-xs bg-gray-100 px-2 py-1 rounded">
                 {artifact.content_hash}
               </code>
@@ -186,21 +200,24 @@ import type { User } from '$lib/types';
             <div class="flex items-center">
               <Zap class="w-4 h-4" />
               <span class="font-medium">Confidence:</span>
+
               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{formatConfidence(artifact.confidence)}</span>
             {/if}
           {#if artifact.risk_assessment}
             <div class="flex items-center">
               <Shield class="w-4 h-4" />
               <span class="font-medium">Risk Assessment:</span>
+
               <Badge variant={getRiskBadgeVariant(artifact.risk_assessment)}>
                 {artifact.risk_assessment.toUpperCase()}
               </Badge>
             {/if}
-        </div>
+  </div>
       </div>
     </div>
+
     <!-- Detailed, Analysis -->
-    {#if showMetadata && (extractedMetadata || artifact.ai_analysis)}
+  {#if showMetadata && (extractedMetadata || artifact.ai_analysis)}
       <div class="mt-6">
         <div class="yorha-panel-header">
           <h3 class="nes-text is-primary flex items-center">
@@ -208,81 +225,98 @@ import type { User } from '$lib/types';
             Legal AI Analysis
           </h3>
         </div>
+
         <div class="yorha-panel-content">
           <Tabs defaultValue="analysis" class="w-full">
             <TabsList class="grid w-full">
               <TabsTrigger value="analysis">AI Analysis</TabsTrigger>
+
               <TabsTrigger value="extracted">PNG Metadata</TabsTrigger>
+
               <TabsTrigger value="processing">Processing Chain</TabsTrigger>
             </TabsList>
+
             <!-- AI, Analysis, Tab -->
             <TabsContent value="analysis" class="mt-4">
-              {#if artifact.ai_analysis}
+  {#if artifact.ai_analysis}
                 <div class="space-y-4">
-                  {#try}
+  {#try}
                     {@const analysis = typeof artifact.ai_analysis === 'string'
                       ? JSON.parse(artifact.ai_analysis)
                       : artifact.ai_analysis}
                     {#if analysis.summary}
                       <div>
                         <h4 class="font-medium text-gray-900">Summary</h4>
+
                         <p class="text-sm text-gray-600 bg-gray-50 p-3">{analysis.summary}</p>
                       {/if}
                     {#if analysis.entities && analysis.entities.length > 0}
                       <div>
                         <h4 class="font-medium text-gray-900">Entities</h4>
+
                         <div class="flex flex-wrap">
-                          {#each Array.isArray(analysis.entities) ? analysis.entities : [] as entity}
+  {#each Array.isArray(analysis.entities) ? analysis.entities : [] as entity}
                             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{entity.name} ({entity.type})</span>
                           {/each}
-                        </div>
+  </div>
                       {/if}
                     {#if analysis.classifications}
                       <div>
                         <h4 class="font-medium text-gray-900">Classifications</h4>
+
                         <div class="grid grid-cols-2 gap-2">
-                          {#each Object.entries(analysis.classifications) as [key, value]}
+  {#each Object.entries(analysis.classifications) as [key, value]}
                             <div class="flex">
                               <span class="capitalize">{key.replace('_', ' ')}:</span>
+
                               <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{value}</span>
                             </div>
                           {/each}
-                        </div>
+  </div>
                       {/if}
                   {:catch}
                     <p class="text-sm">Unable to parse AI analysis data</p>
                   {/try}
-                </div>
+  </div>
               {:else}
                 <p class="text-sm">No AI analysis available</p>
               {/if}
-            </TabsContent>
+  </TabsContent>
+
             <!-- PNG, Metadata, Tab -->
             <TabsContent value="extracted" class="mt-4">
-              {#if extractedMetadata}
+  {#if extractedMetadata}
                 <div class="space-y-4">
                   <div class="grid grid-cols-2 gap-4">
                     <div>
                       <span class="font-medium">Processing ID:</span>
+
                       <span class="ml-2">{extractedMetadata.processingId}</span>
                     </div>
+
                     <div>
                       <span class="font-medium">Timestamp:</span>
+
                       <span class="ml-2">{formatTimestamp(extractedMetadata.timestamp)}</span>
                     </div>
+
                     <div>
                       <span class="font-medium">Confidence:</span>
+
                       <span class="ml-2">{formatConfidence(extractedMetadata.confidence)}</span>
                     </div>
+
                     <div>
                       <span class="font-medium">Version</span>
+
                       <span class="ml-2">{extractedMetadata.version}</span>
                     </div>
                   </div>
-                  {#if extractedMetadata.semanticHash}
+  {#if extractedMetadata.semanticHash}
                     <div class="flex items-center gap-2">
                       <Hash class="w-4 h-4" />
                       <span class="font-medium">Semantic Hash:</span>
+
                       <code class="text-xs bg-gray-100 px-2 py-1 rounded">
                         {extractedMetadata.semanticHash}
                       </code>
@@ -290,36 +324,41 @@ import type { User } from '$lib/types';
                   {#if extractedMetadata.processingChain}
                     <div>
                       <h4 class="font-medium text-gray-900">Processing Steps</h4>
+
                       <div class="space-y-1">
-                        {#each Array.isArray(extractedMetadata.processingChain) ? extractedMetadata.processingChain : [] as step}
+  {#each Array.isArray(extractedMetadata.processingChain) ? extractedMetadata.processingChain : [] as step}
                           <div class="flex items-center gap-2 text-xs">
                             <CheckCircle class="w-3 h-3" />
                             {step.step} ({step.durationMs}ms)
                           </div>
                         {/each}
-                      </div>
+  </div>
                     {/if}
-                </div>
+  </div>
               {:else}
                 <div class="text-center">
                   <FileText class="w-12 h-12 mx-auto text-gray-300" />
                   <p class="text-sm">No embedded metadata found</p>
+
                   <p class="text-xs text-gray-400">
                     This file may not contain Legal AI metadata
                   </p>
                 {/if}
-            </TabsContent>
+  </TabsContent>
+
             <!-- Processing, Chain, Tab -->
             <TabsContent value="processing" class="mt-4">
-              {#if artifact.processing_chain}
+  {#if artifact.processing_chain}
                 <div class="space-y-2">
-                  {#each artifact.processing_chain as step, index}
+  {#each artifact.processing_chain as step, index}
                     <div class="flex items-center gap-3 p-2 rounded">
                       <div class="flex items-center justify-center w-6 h-6 rounded-full bg-blue-100 text-blue-600 text-xs">
                         {index + 1}
                       </div>
+
                       <div class="flex-1">
                         <span class="text-sm">{step.step}</span>
+
                         <div class="text-xs">
                           Duration {step.duration_ms}ms
                           {#if step.success}
@@ -327,20 +366,20 @@ import type { User } from '$lib/types';
                           {:else}
                             <span class="px-2 py-1 rounded text-xs font-medium bg-red-500">Failed</span>
                           {/if}
-                        </div>
+  </div>
                       </div>
                     </div>
                   {/each}
-                </div>
+  </div>
               {:else}
                 <p class="text-sm">No processing chain information available</p>
               {/if}
-            </TabsContent>
+  </TabsContent>
           </Tabs>
         </div>
       {/if}
   {/if}
-<style>
+  <style>
   .artifact-viewer {
     max-width: 1200px
     margin: 0 auto}

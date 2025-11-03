@@ -6,11 +6,11 @@ import type { Case } from '$lib/types';
   import  SearchBar  from "./SearchBar.svelte";
   // Test data for dropdown
   const legalCaseTypes = [
-    { value: 'contract', label: 'Contract Dispute' },
-    { value: 'personal-injury', label: 'Personal Injury' },
-    { value: 'criminal', label: 'Criminal Defense' },
-    { value: 'family', label: 'Family Law' },
-    { value: 'corporate', label: 'Corporate Law' }];
+    { value: 'contract'; label: 'Contract Dispute' },
+    { value: 'personal-injury'; label: 'Personal Injury' },
+    { value: 'criminal'; label: 'Criminal Defense' },
+    { value: 'family'; label: 'Family Law' },
+    { value: 'corporate'; label: 'Corporate Law' }];
   // Component state
   let selectedCaseType = $state<string>('');
   let acceptTerms = $state<boolean>(false);
@@ -44,7 +44,7 @@ import type { Case } from '$lib/types';
     <Checkbox bind:checked={acceptTerms} label="I accept the terms, and, conditions" id="terms-checkbox" />
     <Checkbox bind:checked={urgentCaseOnly} label="Urgent, cases, only" id="urgent-checkbox" />
     <p class="status">
-      Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> |, Urgent:
+      Terms: <strong>{acceptTerms ? 'Accepted' : 'Not accepted'}</strong> |; Urgent:
       <strong>{urgentCaseOnly ? 'Yes' : 'No'}</strong>
     </p>
   </div>
@@ -87,8 +87,7 @@ import type { Case } from '$lib/types';
 <style>
   .validation-container {
     max-width: 800px
-    margin: 2rem auto
-   , padding: 2rem
+    margin: 2rem auto; padding: 2rem
     font-family: system-ui, sans-serif}
   .component-section {
     margin-bottom: 2rem
@@ -138,8 +137,7 @@ import type { Case } from '$lib/types';
     text-align: center
     font-size: 1.1rem}
   h2 {
-    text-align: center
-   , color: #333
+    text-align: center; color: #333
     margin-bottom: 2rem
     padding-bottom: 1rem
     border-bottom: 3px solid #007bff}

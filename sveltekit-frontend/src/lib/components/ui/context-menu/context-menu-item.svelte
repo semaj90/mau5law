@@ -6,6 +6,7 @@
   interface ContextMenuContext {
     close: () => void}
   const ctx = getContext<ContextMenuContext>('context-menu');
+  
   const close = ctx?.close ?? (() => {});
   function handleClick(event?: MouseEvent) {
     if (!disabled) {
@@ -13,6 +14,7 @@
       close()}
   }
 </script>
+
 <button
   class="context-menu-item"
   class:disabled
@@ -23,12 +25,13 @@
 >
   <slot />
 </button>
+
 <style>
   /* @unocss-include */
   .context-menu-item {
     display: flex
     align-items: center
-    width: 100%, padding: 0.375rem 0.5rem
+    width: 100%; padding: 0.375rem 0.5rem
     font-size: 0.875rem
     border: none
     border-radius: 0.25rem
@@ -45,4 +48,3 @@
     opacity: 0.5
    ;cursor: not-allowed}
 </style>
-

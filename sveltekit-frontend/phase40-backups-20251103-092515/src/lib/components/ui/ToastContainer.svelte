@@ -1,31 +1,31 @@
 ﻿<script lang="ts">
   import { toastStore } from '$lib/stores/toast';
-  // helper: build, class: string safely to avoid inline expression parsing issues
+  // helper: build; class: string safely to avoid inline expression parsing issues
   function toastClass(t: any) {
     return [
       'toast-item',
       'nes-container',
       t?.type === 'success' ? 'is-success' : '',
       t?.type === 'error' ? 'is-error' : '',
-      t?.type === 'info' ? 'is-primary' : ''
-    ].filter(Boolean).join(' ');
+      t?.type === 'info' ? 'is-primary' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
   }
   // helper: choose appropriate aria-live value
   function ariaLiveFor(t: any) {
     return t?.type === 'error' ? 'assertive' : 'polite';
   }
 </script>
+
 <div class="toast-container" role="region" aria-label="Notifications">
   {#each $toastStore as t (t.id)}
-    <div
-      class={toastClass(t)}
-      role="status"
-      aria-live={ariaLiveFor(t)}
-    >
+    <div class={toastClass(t)} role="status" aria-live={ariaLiveFor(t)}>
       <p class="nes-text">{t.message}</p>
     </div>
   {/each}
 </div>
+
 <style>
   .toast-container {
     position: fixed
@@ -73,10 +73,8 @@
       left: 10px
       max-width: none}
     .toast-item {
-      min-width: auto
-     , padding: 12px}
+      min-width: auto; padding: 12px}
     .toast-message {
       font-size: 12px}
   }
 </style>
-

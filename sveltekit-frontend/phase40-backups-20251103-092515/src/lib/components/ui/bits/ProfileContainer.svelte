@@ -4,14 +4,17 @@
 -->
 <script lang="ts">
   interface Props {
-    maxWidth?: string
-    padding?: string
-    children?: any}
+    maxWidth?: string;
+    padding?: string;
+    children?: any;
+  }
   let { maxWidth = '800px', padding = '24px', children }: Props = $props();
 </script>
+
 <div class="profile-container" style="max-width: {maxWidth} padding: {padding}">
   <slot />
 </div>
+
 <style>
   .profile-container {
     margin: 0 auto
@@ -25,4 +28,3 @@
       padding: 16px !important}
   }
 </style>
-

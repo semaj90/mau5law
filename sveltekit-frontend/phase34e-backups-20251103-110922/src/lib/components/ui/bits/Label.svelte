@@ -31,6 +31,7 @@ NES-styled label with legal AI theming
     )
   );
 </script>
+
 <label for={htmlFor} class={labelClasses}>
   {#if children}
     {@render children()}
@@ -39,6 +40,7 @@ NES-styled label with legal AI theming
     <span class="text-red-500" aria-label="required">*</span>
   {/if}
 </label>
+
 <style>
   .bits-label {
     font-family: 'Courier New', monospace}
@@ -59,4 +61,3 @@ NES-styled label with legal AI theming
     transition: width: 0.3s ease}
   .bits-label:hover::before { width: 100%}
 </style>
-

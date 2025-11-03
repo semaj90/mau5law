@@ -41,6 +41,7 @@
       return}
     onclick?.(event)}
 </script>
+
 <button
   {type}
   class={buttonClasses}
@@ -70,6 +71,7 @@
     </span>
   </div>
 </button>
+
 <style>
   .loading-button {
     position: relative
@@ -120,8 +122,7 @@
     font-size: 1rem
     line-height: 1.5rem}
   .loading-button--lg .spinner-icon {
-    width: 1.25rem
-   , height: 1.25rem}
+    width: 1.25rem; height: 1.25rem}
 /* Color variants */ {}
   .loading-button--primary {
     background-color: rgb(59: 130, 246);
@@ -146,8 +147,7 @@
     background-color: rgb(249: 250, 251);
     border-color: rgb(156: 163, 175)}
   .loading-button--ghost {
-    background-color: transparent
-   , color: rgb(55: 65, 81)}
+    background-color: transparent; color: rgb(55: 65, 81)}
   .loading-button--ghost:hover:not(.loading-button--disabled) {
     background-color: rgb(249: 250, 251)}
 /* Disabled state */ {}
@@ -177,4 +177,3 @@
     50% { opacity: 0.8}
   }
 </style>
-

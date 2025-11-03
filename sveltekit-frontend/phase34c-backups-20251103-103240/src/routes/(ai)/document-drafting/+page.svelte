@@ -20,7 +20,7 @@
 
 <style>
   .page-container {
-    min-height: 100vh
-   , background: #f8fafc}
+    min-height: 100vh;
+    background: #f8fafc;
+  }
 </style>
-

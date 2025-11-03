@@ -2,16 +2,20 @@
   // Svelte, 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   interface Props {
-    class?: string
-    children?: Snippet}
+    class?: string;
+    children?: Snippet;
+  }
   let { class: className = '', children }: Props = $props();
+  
   let classes = $derived(`card-content-ssr ${className} space-y-4`.trim());
 </script>
+
 <div class="card-content-ssr {classes}">
   {#if children}
     <slot />
   {/if}
-</div>
+  </div>
+
 <style>
   /* SSR-optimized CardContent for consistent rendering */
   .card-content-ssr {
@@ -34,7 +38,7 @@
     font-size: clamp(0.875rem, 2vw, 1rem);
     line-height: 1.5}
   :global(.card-content-ssr code) {
-    font-size: clamp(0.75rem, 1.8vw, 0.875rem), padding: 0.25rem 0.5rem
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem); padding: 0.25rem 0.5rem
     background-color: #f3f4f6
     border-radius: 0.25rem
     word-break: break-all}
@@ -55,4 +59,3 @@
     outline-offset: 2px
     border-radius: 0.5rem}
 </style>
-

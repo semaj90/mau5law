@@ -738,8 +738,12 @@
     <!-- Tools -->
     <div class="toolbar-group">
       {#each tools as tool}
-        <button class="toolbar-btn"
-          class:active={$canvasState.tool === tool.id} onclick={() => setTool(tool.id)} title={tool.label} >
+        <button
+          class="toolbar-btn"
+          class:active={$canvasState.tool === tool.id}
+          onclick={() => setTool(tool.id)}
+          title={tool.label}
+        >
           <span>{tool.icon}</span>
         </button>
       {/each}
@@ -750,7 +754,9 @@
       <button class="toolbar-btn" onclick={() => zoomOut()} title="Zoom Out">âž–</button>
       <span class="zoom-display">{$canvasState.zoom}%</span>
       <button class="toolbar-btn" onclick={() => zoomIn()} title="Zoom In">âž•</button>
-      <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid">â–¦</button>
+      <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid"
+        >â–¦</button
+      >
     </div>
 
     <!-- Object Actions -->
@@ -762,7 +768,7 @@
 
     <!-- AI Features -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">ðŸ§ </button>
+      <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">ðŸ§ </button>
     </div>
 
     <!-- Export (use dropdown markup so CSS selectors are used) -->
@@ -788,17 +794,24 @@
       <div>
         <div class="flex items-center">
           <span>ðŸ”Ž</span>
-          <input type="text"
+          <input
+            type="text"
             placeholder="Search evidence..."
-            value={$canvasState.searchQuery} oninput={e => searchEvidence((e.target as HTMLInputElement).value)} class="w-full"
+            value={$canvasState.searchQuery}
+            oninput={e => searchEvidence((e.target as HTMLInputElement).value)}
+            class="w-full"
           />
         </div>
         <h3>Evidence Items</h3>
         <div>
-          {#each ($canvasState.searchQuery ? searchResults : evidenceItems) as evidence}
-            <div class="evidence-item"
-              onclick={() => addEvidenceToCanvas(evidence)} onkeydown={e => (e as KeyboardEvent).key === 'Enter' && addEvidenceToCanvas(evidence)} role="button"
-              tabindex={0} >
+          {#each $canvasState.searchQuery ? searchResults : evidenceItems as evidence}
+            <div
+              class="evidence-item"
+              onclick={() => addEvidenceToCanvas(evidence)}
+              onkeydown={e => (e as KeyboardEvent).key === 'Enter' && addEvidenceToCanvas(evidence)}
+              role="button"
+              tabindex={0}
+            >
               <div>{evidence.title}</div>
               <div class="text-sm">{evidence.evidenceType}</div>
             </div>
@@ -911,4 +924,3 @@
     background: linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
     background-size: 20px 20px}
 </style>
-

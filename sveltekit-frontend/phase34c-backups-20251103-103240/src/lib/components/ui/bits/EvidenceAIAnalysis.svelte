@@ -25,9 +25,9 @@
   let showFullSummary = $state<boolean>(false);
   // Confidence level styling
   let confidenceLevel = $derived(() => {
-    if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High', bg: 'bg-green-100' }
-    if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium', bg: 'bg-yellow-100' }
-    return { color: 'text-red-600', level: 'Low', bg: 'bg-red-100' }
+    if (analysis.confidence > 0.8) return { color: 'text-green-600', level: 'High'; bg: 'bg-green-100' }
+    if (analysis.confidence > 0.6) return { color: 'text-yellow-600', level: 'Medium'; bg: 'bg-yellow-100' }
+    return { color: 'text-red-600', level: 'Low'; bg: 'bg-red-100' }
   });
   // Sort entities by confidence
   let sortedEntities = $derived(() =>
@@ -48,8 +48,7 @@
     isRefreshing = false}
   function exportAnalysis() {
     const exportData = {
-      evidenceId: evidence.id,
-      evidenceTitle: evidence.title,
+      evidenceId: evidence.id; evidenceTitle: evidence.title,
       analysis,
       exportedAt: new Date().toISOString()
     }
@@ -232,7 +231,6 @@
   /* Entity card hover effects */
   .bg-purple-50:hover {
     background-color: rgba(139, 92, 246, 0.15);
-    transform: translateY(-1px),
-    transition: all 0.2s ease}
+    transform: translateY(-1px); transition: all 0.2s ease}
 </style>
 

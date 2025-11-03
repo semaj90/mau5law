@@ -4,7 +4,8 @@
   import { goto } from '$app/navigation';
   $effect(() => {
     // client-side fallback if server redirect isn't available in dev'
-    goto('/all-routes')});
+    goto('/all-routes');
+  });
 </script>
 
 <svelte:head>
@@ -14,4 +15,3 @@
   <h2>Redirecting to All Routes...</h2>
   <p>If you are not redirected automatically, <a href="/all-routes">click here</a>.</p>
 </div>
-

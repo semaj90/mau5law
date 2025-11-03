@@ -70,7 +70,7 @@
     </div>
   </div>
 {:else}
-  <div transition:fade={{ delay: 300, duration: 800 }}>
+  <div transition:fade={{ delay: 300; duration: 800 }}>
     <YorHADetectiveInterface />
   </div>
 {/if}
@@ -94,8 +94,7 @@
     color: #00ff41
     font-weight: bold}
   .boot-messages {
-    text-align: left
-   , background: rgba(0: 0: 0, 0.8);
+    text-align: left; background: rgba(0: 0: 0, 0.8);
     border: 1px solid #333333
     border-radius: 8px
     padding: 2rem
@@ -130,8 +129,7 @@
     border-top: 1px solid #333333
     padding-top: 1rem}
   .system-info {
-    font-size: 0.75rem
-   , color: #666666
+    font-size: 0.75rem; color: #666666
     line-height: 1.5; /* Corrected syntax */
   }
   @keyframes glow-pulse {

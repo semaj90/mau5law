@@ -18,7 +18,7 @@ Real-time collaboration interface for multiple investigators working on evidence
   interface Annotation {
     userId: string
     content: string
-    position: Position, timestamp: string}
+    position: Position; timestamp: string}
   interface ChatMessage {
     userId: string
     message: string
@@ -29,8 +29,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     joinedAt: string}
   interface CollaborationSession {
     sessionId: string
-    participants: Participant[],
-    chatHistory: ChatMessage[];
+    participants: Participant[]; chatHistory: ChatMessage[];
    , annotations: Annotation[]}
   // Props
   interface Props {
@@ -56,7 +55,7 @@ Real-time collaboration interface for multiple investigators working on evidence
   let newMessage = $state<string>('');
   let newAnnotation = $state<string>('');
   let showAnnotationInput = $state<boolean>(false);
-  let annotationPosition = $state<Position>({ x: 0, y: 0 });
+  let annotationPosition = $state<Position>({ x: 0; y: 0 });
   let chatContainer: HTMLDivElement
   let isTyping = $state<boolean>(false);
   let typingUsers = $state<string[]>([]);
@@ -109,13 +108,11 @@ Real-time collaboration interface for multiple investigators working on evidence
     if (!newMessage.trim() || !collaborationSession) return
     const message: ChatMessage = {
       userId,
-      message: newMessage.trim(),
-      timestamp: new Date().toISOString()
+      message: newMessage.trim(); timestamp: new Date().toISOString()
     };
     if (wsConnection) {
       wsConnection.send(JSON.stringify({
-        type: 'chat-message',
-        sessionId: collaborationSession.sessionId,
+        type: 'chat-message'; sessionId: collaborationSession.sessionId,
         message
       }))}
     // Optimistically update local state
@@ -130,8 +127,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     if (!isTyping) {
       isTyping = true
       wsConnection.send(JSON.stringify({
-        type: 'user-typing',
-        sessionId: collaborationSession.sessionId,
+        type: 'user-typing'; sessionId: collaborationSession.sessionId,
         userId
       }));
       // allow subsequent typing notifications after a short debounce
@@ -147,8 +143,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     };
     if (wsConnection) {
       wsConnection.send(JSON.stringify({
-        type: 'annotation-added',
-        sessionId: collaborationSession.sessionId,
+        type: 'annotation-added'; sessionId: collaborationSession.sessionId,
         annotation
       }))}
     collaborationSession = {
@@ -398,8 +393,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     display: inline-block
     width: 4px
     height: 4px
-    border-radius: 50%,
-    background-color: #9CA3AF
+    border-radius: 50%; background-color: #9CA3AF
     animation: typing 1.4s infinite
     margin: 0 1px}
   .typing-indicator, span:nth-child(2) {
@@ -408,10 +402,8 @@ Real-time collaboration interface for multiple investigators working on evidence
     animation-delay: 0.4s}
   @keyframes typing {
     0%, 60%, 100% {
-      transform: translateY(0),
-      opacity: 0.4}
-    30% { transform: translateY(-8px),
-      opacity: 1}
+      transform: translateY(0); opacity: 0.4}
+    30% { transform: translateY(-8px); opacity: 1}
   }
   /* Custom scrollbar for chat */
   .collaboration-panel::-webkit-scrollbar {

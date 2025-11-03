@@ -3,20 +3,20 @@
     Slider, // Correct named import for Slider
     SliderRange,
     SliderThumb,
-    SliderTrack
+    SliderTrack,
   } from 'bits-ui';
 
-  type $$Props = Slider.Props
-  type $$Events = Slider.Events
-  const { value } = $props<{ value: $$Props['value'] }>() // Default to a single value slider
-  const { min } = $props<{ min: $$Props['min'] }>()
-  const { max } = $props<{ max: $$Props['max'] }>()
-  const { step } = $props<{ step: $$Props['step'] }>()
-  const { orientation } = $props<{ orientation: $$Props['orientation'] }>()
-  const { disabled } = $props<{ disabled: $$Props['disabled'] }>()
+  type $$Props = Slider.Props;
+  type $$Events = Slider.Events;
+  const { value } = $props<{ value: $$Props['value'] }>(); // Default to a single value slider
+  const { min } = $props<{ min: $$Props['min'] }>();
+  const { max } = $props<{ max: $$Props['max'] }>();
+  const { step } = $props<{ step: $$Props['step'] }>();
+  const { orientation } = $props<{ orientation: $$Props['orientation'] }>();
+  const { disabled } = $props<{ disabled: $$Props['disabled'] }>();
 
   // Pass through all other props to the primitive root
-  let { ...$$restProps } = $$props
+  let { ...$$restProps } = $$props;
 </script>
 
 <Slider.Root
@@ -29,9 +29,7 @@
   class="relative flex w-full touch-none select-none items-center"
   {...rest}
 >
-  <SliderTrack
-    class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary"
-  >
+  <SliderTrack class="relative h-2 w-full grow overflow-hidden rounded-full bg-secondary">
     <SliderRange class="absolute h-full" />
   </SliderTrack>
   {#each value as _, i}
@@ -40,4 +38,3 @@
     />
   {/each}
 </Slider.Root>
-

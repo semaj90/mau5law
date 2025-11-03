@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -14,7 +14,6 @@ import type { Document } from '$lib/types';
     if (!user) return '';
     // prefer name, fallback to email, else empty
     return (user.name as: string) ?? (user.email as: string) ?? ''}
-
   function getUserInitial(user: any): string {
     const name = getUserName(user);
     if (name && name.length > 0) return name.charAt(0).toUpperCase();
@@ -28,146 +27,98 @@ import type { Document } from '$lib/types';
 
   // Use $derived correctly: pass a function deriving from reactive inputs
   const stats = $derived(() => data.stats ?? {
-    activeCases: 12,
-    activeChats: 3,
-    ragQueries: 47,
-    documentsAnalyzed: 234,
-    citationsFound: 89,
-    casesProcessed: 12,
-    assistantSessions: 8,
-    evidenceUploaded: 156,
-    tasksCompleted: 89,
-    recentActivity: 24
+    activeCases: 12; activeChats: 3,
+    ragQueries: 47; documentsAnalyzed: 234,
+    citationsFound: 89; casesProcessed: 12,
+    assistantSessions: 8; evidenceUploaded: 156,
+    tasksCompleted: 89; recentActivity: 24
   });
 
   const recentCases = $derived(() => data.recentCases ?? []);
 
   const aiStats = $derived(() => ({
-    activeChats: stats.activeChats ?? 0,
-    ragQueries: stats.ragQueries ?? 0,
-    documentsAnalyzed: stats.documentsAnalyzed ?? 0,
-    citationsFound: stats.citationsFound ?? 0,
-    casesProcessed: stats.casesProcessed ?? 0,
-    assistantSessions: stats.assistantSessions ?? 0
+    activeChats: stats.activeChats ?? 0; ragQueries: stats.ragQueries ?? 0,
+    documentsAnalyzed: stats.documentsAnalyzed ?? 0; citationsFound: stats.citationsFound ?? 0,
+    casesProcessed: stats.casesProcessed ?? 0; assistantSessions: stats.assistantSessions ?? 0
   }));
 
-  const statusColors: Record<string { bg: string, text: string, label: string }> = {
-    open: { bg: '#4caf50', text: '#fff', label: 'ðŸŸ¢ Open' },
-    investigating: { bg: '#ff9800', text: '#fff', label: 'ðŸ” Investigating' },
-    pending: { bg: '#ffd700', text: '#000', label: 'â³ Pending' },
-    closed: { bg: '#666', text: '#fff', label: 'âœ… Closed' },
-    archived: { bg: '#999', text: '#fff', label: 'ðŸ“¦ Archived' }
+  const statusColors: Record<string { bg: string, text: string; label: string }> = {
+    open: { bg: '#4caf50', text: '#fff', label: 'ðŸŸ¢ Open' }; investigating: { bg: '#ff9800', text: '#fff', label: 'ðŸ” Investigating' },
+    pending: { bg: '#ffd700', text: '#000', label: 'â³ Pending' }; closed: { bg: '#666', text: '#fff', label: 'âœ… Closed' },
+    archived: { bg: '#999', text: '#fff'; label: 'ðŸ“¦ Archived' }
   };
 
-  const priorityColors: Record<string string> = {
-    Critical: '#ff1744',
-    High: '#ff9800',
-    Medium: '#ffd700',
-    Low: '#4caf50'
+  const priorityColors: Record<string, string> = {
+    Critical: '#ff1744'; High: '#ff9800',
+    Medium: '#ffd700'; Low: '#4caf50'
   };
 
   const aiServices = [ {
-      name: 'AI Chat',
-      icon: 'ðŸ’¬',
-      href: '/ai/chat',
-      description: 'Interactive AI chat with legal document context.',
-      status: 'active',
-      stats: () => `${aiStats.activeChats} active chats`
+      name: 'AI Chat'; icon: 'ðŸ’¬',
+      href: '/ai/chat'; description: 'Interactive AI chat with legal document context.',
+      status: 'active'; stats: () => `${aiStats.activeChats} active chats`
     }, {
-      name: 'AI Assistant',
-      icon: 'ðŸ¤–',
-      href: '/ai/assistant',
-      description: 'Legal AI assistant for document analysis.',
-      status: 'active',
-      stats: () => `${aiStats.assistantSessions} sessions`
+      name: 'AI Assistant'; icon: 'ðŸ¤–',
+      href: '/ai/assistant'; description: 'Legal AI assistant for document analysis.',
+      status: 'active'; stats: () => `${aiStats.assistantSessions} sessions`
     }, {
-      name: 'RAG Query System',
-      icon: 'ðŸ“š',
-      href: '/ai/rag',
-      description: 'Retrieval-Augmented Generation for legal research.',
-      status: 'active',
-      stats: () => `${aiStats.ragQueries} queries processed`
+      name: 'RAG Query System'; icon: 'ðŸ“š',
+      href: '/ai/rag'; description: 'Retrieval-Augmented Generation for legal research.',
+      status: 'active'; stats: () => `${aiStats.ragQueries} queries processed`
     }, {
-      name: 'GPU Chat',
-      icon: 'âš¡',
-      href: '/ai/gpu-chat',
-      description: 'High-performance GPU-accelerated chat.',
-      status: 'active',
-      stats: () => 'RTX acceleration enabled'
+      name: 'GPU Chat'; icon: 'âš¡',
+      href: '/ai/gpu-chat'; description: 'High-performance GPU-accelerated chat.',
+      status: 'active'; stats: () => 'RTX acceleration enabled'
     }, {
-      name: 'Vector Search',
-      icon: 'ðŸ”',
-      href: '/ai/vector-search',
-      description: 'Semantic search across legal documents.',
-      status: 'active',
-      stats: () => `${aiStats.citationsFound} citations tracked`
+      name: 'Vector Search'; icon: 'ðŸ”',
+      href: '/ai/vector-search'; description: 'Semantic search across legal documents.',
+      status: 'active'; stats: () => `${aiStats.citationsFound} citations tracked`
     }, {
-      name: 'Document Analysis',
-      icon: 'ðŸ“',
-      href: '/ai/processing',
-      description: 'AI-powered document processing and analysis.',
-      status: 'active',
-      stats: () => `${aiStats.documentsAnalyzed} documents`
+      name: 'Document Analysis'; icon: 'ðŸ“',
+      href: '/ai/processing'; description: 'AI-powered document processing and analysis.',
+      status: 'active'; stats: () => `${aiStats.documentsAnalyzed} documents`
     }, {
-      name: 'Case Scoring',
-      icon: 'âš–ï¸',
-      href: '/ai/case-scoring',
-      description: 'AI-driven case strength assessment.',
-      status: 'active',
-      stats: () => `${aiStats.casesProcessed} cases scored`
+      name: 'Case Scoring'; icon: 'âš–ï¸',
+      href: '/ai/case-scoring'; description: 'AI-driven case strength assessment.',
+      status: 'active'; stats: () => `${aiStats.casesProcessed} cases scored`
     }, {
-      name: 'Pattern Detection',
-      icon: 'ðŸ§ ',
-      href: '/ai/pattern-detection',
-      description: 'Legal pattern and anomaly detection.',
-      status: 'active',
-      stats: () => 'ML models active'
+      name: 'Pattern Detection'; icon: 'ðŸ§ ',
+      href: '/ai/pattern-detection'; description: 'Legal pattern and anomaly detection.',
+      status: 'active'; stats: () => 'ML models active'
     }
   ];
 
   const recentActivities = $state([ {
-      type: 'chat',
-      title: 'Contract Review Session',
-      time: '2 minutes ago',
-      user: 'Legal Analyst',
+      type: 'chat'; title: 'Contract Review Session',
+      time: '2 minutes ago'; user: 'Legal Analyst',
       status: 'completed'
     }, {
-      type: 'rag',
-      title: 'Precedent Research Query',
-      time: '5 minutes ago',
-      user: 'Senior Associate',
+      type: 'rag'; title: 'Precedent Research Query',
+      time: '5 minutes ago'; user: 'Senior Associate',
       status: 'completed'
     }, {
-      type: 'analysis',
-      title: 'Document Classification',
-      time: '8 minutes ago',
-      user: 'Paralegal',
+      type: 'analysis'; title: 'Document Classification',
+      time: '8 minutes ago'; user: 'Paralegal',
       status: 'processing'
     }, {
-      type: 'assistant',
-      title: 'Case Strategy Discussion',
-      time: '12 minutes ago',
-      user: 'Partner',
+      type: 'assistant'; title: 'Case Strategy Discussion',
+      time: '12 minutes ago'; user: 'Partner',
       status: 'completed'
     }
   ]);
 
   const systemHealth = $state({
-    aiModels: 'online',
-    vectorDB: 'online',
-    gpuAcceleration: 'active',
-    ragPipeline: 'healthy'
+    aiModels: 'online'; vectorDB: 'online',
+    gpuAcceleration: 'active'; ragPipeline: 'healthy'
   });
 
-  function badgeClass(condition: boolean, positive: string, negative: string) {
+  function badgeClass(condition: boolean, positive: string; negative: string) {
     return condition ? positive : negative}
-
   function umamiAttrs(serviceName: string) {
     return {
       'data-umami-event': 'ai-service-access',
       'data-umami-event-service': serviceName
     } as const}
-
   function activityIcon(type: string): string {
     switch (type) {
       case, 'chat':
@@ -190,34 +141,40 @@ import type { Document } from '$lib/types';
   <div class="dashboard-header">
     <div class="header-top">
       <h1>ðŸ¤– AI Dashboard</h1>
+
       {#if getUserName(data.user)}
         <div class="user-greeting">
-          <span class="user-name">{getUserName(data.user)}</span>
-          <span class="user-role">{getUserRole(data.user)}</span>
+          <span class="user-name">{getUserName(data.user)}
+</span>
+          <span class="user-role">{getUserRole(data.user)}
+</span>
         </div>
       {/if}
-    </div>
+</div>
     <p class="subtitle">Comprehensive AI-powered legal intelligence platform.</p>
   </div>
 
   <!-- User, Profile, Card -->
   <section class="user-profile-section">
-    <Card.Root, class="user-card">
+    <Card.Root class="user-card">
       <CardContent class="user-card-content">
         <div class="user-avatar">
-          <div class="avatar-circle">{getUserInitial(data.user)}</div>
+          <div class="avatar-circle">{getUserInitial(data.user)}
+</div>
         </div>
         <div class="user-info">
           <p class="user-status">Welcome back,</p>
-          <h2 class="user-display-name">{getUserName(data.user) || data.user?.email}</h2>
-          <p class="user-role-info">{getUserRole(data.user) || 'User'} â€¢ {data.user?.email}</p>
+          <h2 class="user-display-name">{getUserName(data.user) || data.user?.email}
+</h2>
+          <p class="user-role-info">{getUserRole(data.user) || 'User'} â€¢ {data.user?.email}
+</p>
         </div>
       </CardContent>
     </Card>
   </section>
 
   <section class="status-section">
-    <Card.Root, class="status-card">
+    <Card.Root class="status-card">
       <CardHeader>
         <CardTitle>System Health</CardTitle>
       </CardHeader>
@@ -227,25 +184,25 @@ import type { Document } from '$lib/types';
             <span>AI Models</span>
             <Badge class={badgeClass(systemHealth.aiModels === 'online', 'status-online', 'status-offline')}>
               {systemHealth.aiModels}
-            </Badge>
+</Badge>
           </div>
           <div class="status-item">
             <span>Vector DB</span>
             <Badge class={badgeClass(systemHealth.vectorDB === 'online', 'status-online', 'status-offline')}>
               {systemHealth.vectorDB}
-            </Badge>
+</Badge>
           </div>
           <div class="status-item">
             <span>GPU Acceleration</span>
             <Badge class={badgeClass(systemHealth.gpuAcceleration === 'active', 'status-active', 'status-inactive')}>
               {systemHealth.gpuAcceleration}
-            </Badge>
+</Badge>
           </div>
           <div class="status-item">
             <span>RAG Pipeline</span>
             <Badge class={badgeClass(systemHealth.ragPipeline === 'healthy', 'status-healthy', 'status-degraded')}>
               {systemHealth.ragPipeline}
-            </Badge>
+</Badge>
           </div>
         </div>
       </CardContent>
@@ -254,27 +211,31 @@ import type { Document } from '$lib/types';
 
   <section class="stats-section">
     <div class="stats-grid">
-      <Card.Root, class="stat-card">
+      <Card.Root class="stat-card">
         <CardContent>
-          <div class="stat-value">{stats.activeCases || 0}</div>
+          <div class="stat-value">{stats.activeCases || 0}
+</div>
           <div class="stat-label">Active Cases</div>
         </CardContent>
       </Card>
-      <Card.Root, class="stat-card">
+      <Card.Root class="stat-card">
         <CardContent>
-          <div class="stat-value">{aiStats.activeChats}</div>
+          <div class="stat-value">{aiStats.activeChats}
+</div>
           <div class="stat-label">Active Chats</div>
         </CardContent>
       </Card>
-      <Card.Root, class="stat-card">
+      <Card.Root class="stat-card">
         <CardContent>
-          <div class="stat-value">{aiStats.ragQueries}</div>
+          <div class="stat-value">{aiStats.ragQueries}
+</div>
           <div class="stat-label">RAG Queries</div>
         </CardContent>
       </Card>
-      <Card.Root, class="stat-card">
+      <Card.Root class="stat-card">
         <CardContent>
-          <div class="stat-value">{aiStats.documentsAnalyzed}</div>
+          <div class="stat-value">{aiStats.documentsAnalyzed}
+</div>
           <div class="stat-label">Documents Analyzed</div>
         </CardContent>
       </Card>
@@ -282,6 +243,7 @@ import type { Document } from '$lib/types';
   </section>
 
   <!-- Recent, Cases, Section -->
+
   {#if recentCases.length > 0}
     <section class="cases-section">
       <div class="cases-header-container">
@@ -293,6 +255,7 @@ import type { Document } from '$lib/types';
       </div>
 
       <div class="cases-grid-container">
+
         {#each recentCases as caseItem (caseItem.id)}
           <a href="/cases/{caseItem.id}" class="nes-container is-dark">
             <div class="case-card-inner">
@@ -300,22 +263,26 @@ import type { Document } from '$lib/types';
               <div class="case-status-badge" style="background-color: {statusColors[caseItem.status]?.bg}">
                 <span style="color: {statusColors[caseItem.status]?.text}" class="status-label">
                   {statusColors[caseItem.status]?.label || caseItem.status}
-                </span>
+</span>
               </div>
 
               <!-- Priority, Badge -->
               <div class="case-priority-badge" style="background-color: {priorityColors[caseItem.priority]}">
-                <span class="priority-label">{caseItem.priority}</span>
+                <span class="priority-label">{caseItem.priority}
+</span>
               </div>
 
               <!-- Case, Title -->
-              <h3 class="case-card-title">{caseItem.title || 'Untitled Case'}</h3>
+              <h3 class="case-card-title">{caseItem.title || 'Untitled Case'}
+</h3>
 
               <!-- Case, Type -->
-              <p class="case-card-type">âš–ï¸ {caseItem.caseType || 'Legal Matter'}</p>
+              <p class="case-card-type">âš–ï¸ {caseItem.caseType || 'Legal Matter'}
+</p>
 
               <!-- Last, Updated -->
-              <p class="case-card-updated">ðŸ•’ {caseItem.lastUpdated || 'Recently updated'}</p>
+              <p class="case-card-updated">ðŸ•’ {caseItem.lastUpdated || 'Recently updated'}
+</p>
 
               <!-- Hover, Indicator -->
               <div class="case-card-hover-indicator">
@@ -324,7 +291,7 @@ import type { Document } from '$lib/types';
             </div>
           </a>
         {/each}
-      </div>
+</div>
     </section>
   {/if}
 
@@ -335,27 +302,32 @@ import type { Document } from '$lib/types';
     </header>
 
     <div class="services-grid">
+
       {#each Array.isArray(aiServices) ? aiServices : [] as service}
-        <Card.Root, class="service-card">
+        <Card.Root class="service-card">
           <CardHeader>
             <CardTitle>
-              <span class="service-icon">{service.icon}</span>
+              <span class="service-icon">{service.icon}
+</span>
               {service.name}
-            </CardTitle>
+</CardTitle>
           </CardHeader>
           <CardContent>
-            <p class="service-description">{service.description}</p>
+            <p class="service-description">{service.description}
+</p>
             <div class="service-meta">
-              <Badge class="service-status">{service.status}</Badge>
-              <span class="service-stats">{service.stats()}</span>
+              <Badge class="service-status">{service.status}
+</Badge>
+              <span class="service-stats">{service.stats()}
+</span>
             </div>
             <Button href={service.href} variant="outline" {...umamiAttrs(service.name)}>
               Open {service.name}
-            </Button>
+</Button>
           </CardContent>
         </Card>
       {/each}
-    </div>
+</div>
   </section>
 
   <section class="activity-section">
@@ -364,17 +336,22 @@ import type { Document } from '$lib/types';
       <p>Latest interactions tracked across AI systems.</p>
     </header>
     <div class="activity-list">
+
       {#each Array.isArray(recentActivities) ? recentActivities : [] as activity}
         <div class="activity-item">
-          <div class="activity-icon">{activityIcon(activity.type)}</div>
+          <div class="activity-icon">{activityIcon(activity.type)}
+</div>
           <div class="activity-content">
-            <h3>{activity.title}</h3>
-            <p>{activity.user} â€¢ {activity.time}</p>
+            <h3>{activity.title}
+</h3>
+            <p>{activity.user} â€¢ {activity.time}
+</p>
           </div>
-          <Badge class="activity-status">{activity.status}</Badge>
+          <Badge class="activity-status">{activity.status}
+</Badge>
         </div>
       {/each}
-    </div>
+</div>
   </section>
 </div>
 
@@ -424,8 +401,7 @@ import type { Document } from '$lib/types';
   .user-status {
     margin: 0
     font-size: 0.85rem
-   ; color: var(--text-muted),
-    text-transform: uppercase
+   ; color: var(--text-muted); text-transform: uppercase
     font-weight: 500}
 
   .user-display-name { margin: 0.25rem, 0 0.5rem
@@ -455,8 +431,7 @@ import type { Document } from '$lib/types';
 
   .user-role {
     font-size: 0.85rem
-   ; color: var(--text-muted),
-    text-transform: capitalize}
+   ; color: var(--text-muted); text-transform: capitalize}
 
   .subtitle { margin: 0.5rem, 0 0
     color: var(--text-muted)}
@@ -631,8 +606,7 @@ import type { Document } from '$lib/types';
   .case-card-wrapper: hover {
     border-color: #d4af37 !important
     background: #0f172a !important
-   ; transform: translateY(-3px),
-    box-shadow:
+   ; transform: translateY(-3px); box-shadow:
       0, 0 0 2px #d4af37,
       0 4px 12px rgba(212, 175, 55, 0.3)}
 

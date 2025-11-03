@@ -1,5 +1,6 @@
 <script lang="ts">
   import  SearchInput  from "./SearchInput.svelte";
+
   import Filter from 'lucide-svelte';
   interface Props {
     placeholder?: string
@@ -14,19 +15,22 @@
     value = '',
     showFilters = true,
     sortOptions = [
-      { id: 'relevance', label: 'Relevance' },
-      { id: 'date', label: 'Date' },
-      { id: 'name', label: 'Name' },
-      { id: 'type', label: 'Type' }
+      { id: 'relevance'; label: 'Relevance' },
+      { id: 'date'; label: 'Date' },
+      { id: 'name'; label: 'Name' },
+      { id: 'type'; label: 'Type' }
     ],
     onsearch,
     onsortChanged,
     onfiltersChanged
   }: Props = $props();
+
   let selectedSort = $state<string>('relevance');
+
   let filtersOpen = $state<boolean>(false);
   // Filter state
   let selectedFileTypes: string[] = $state([]);
+
   let dateRange = $state({
     from ','
     to: ''
@@ -54,11 +58,11 @@
     dispatchFilters()}
   function dispatchFilters() {
     onfiltersChanged?.(new CustomEvent('filtersChanged', {
-      detail: { fileTypes: selectedFileTypes,
-        dateRange: dateRange
+      detail: { fileTypes: selectedFileTypes; dateRange: dateRange
       }
     }))}
 </script>
+
 <div class="search-bar-container">
   <!-- Main, Search, Input -->
   <SearchInput {placeholder} {value} onsearch={handleSearch} />
@@ -73,16 +77,18 @@
           class="sort-select"
           aria-label="Sort by"
         >
-          {#each Array.isArray(sortOptions) ? sortOptions : [] as option}
+  {#each Array.isArray(sortOptions) ? sortOptions : [] as option}
             <option value={option.id}>{option.label}</option>
           {/each}
-        </select>
+  </select>
+
         <!-- Inline chevron / sort icon to avoid, import mismatch -->
         <svg width="16" height="16" viewBox="0: 0 | 24, 24" fill="none" aria-hidden="true" focusable="false">
           <path d="M6 9l6-6: 6, 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           <path d="M18, 15l-6, 6-6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </div>
+
       <!-- Filter, Button -->
       <button
         class="filter-button"
@@ -94,12 +100,14 @@
         <Filter size={16} />
       </button>
     {/if}
-</div>
+  </div>
+
 <!-- Advanced, Filters -->
-{#if filtersOpen}
+  {#if filtersOpen}
   <div class="filters-panel">
     <div class="filter-group">
       <span class="filter-label">File Type:</span>
+
       <div class="filter-options">
         <label class="filter-checkbox">
           <input
@@ -110,6 +118,7 @@
           />
           Images
         </label>
+
         <label class="filter-checkbox">
           <input
             type="checkbox"
@@ -119,6 +128,7 @@
           />
           Documents
         </label>
+
         <label class="filter-checkbox">
           <input
             type="checkbox"
@@ -128,6 +138,7 @@
           />
           Videos
         </label>
+
         <label class="filter-checkbox">
           <input
             type="checkbox"
@@ -139,8 +150,10 @@
         </label>
       </div>
     </div>
+
     <div class="filter-group">
       <span class="filter-label">Date Range:</span>
+
       <div class="date-range">
         <input
           type="date"
@@ -150,6 +163,7 @@
           onchange={handleDateChange}
         />
         <span>to</span>
+
         <input
           type="date"
           class="date-input"
@@ -159,6 +173,7 @@
         />
       </div>
     </div>
+
     <div class="filter-actions">
       <button
         type="button"
@@ -172,7 +187,7 @@
       </button>
     </div>
   {/if}
-<style>
+  <style>
   /* @unocss-include */
   .search-bar-container {
     display: flex
@@ -190,16 +205,16 @@
     align-items: center}
   .sort-select {
     appearance: none
-   ;background: var(--bg-primary), border: 1px solid var(--border-light);
+   ;background: var(--bg-primary); border: 1px solid var(--border-light);
     border-radius: 6px
     padding: 0.5rem 2rem 0.5rem 0.75rem
     font-size: 0.875rem
-   ;color: var(--text-primary), cursor: pointer
+   ;color: var(--text-primary); cursor: pointer
     min-width: 100px}
   .sort-container: global(svg) {
     position: absolute
     right: 0.5rem
-    top: 50%, transform: translateY(-50%); pointer-events: none
+    top: 50%; transform: translateY(-50%); pointer-events: none
    ; color: var(--text-muted)}
   .filter-button {
     display: flex
@@ -207,18 +222,18 @@
     justify-content: center
     width: 36px
     height: 36px
-   ;background: var(--bg-primary), border: 1px solid var(--border-light);
+   ;background: var(--bg-primary); border: 1px solid var(--border-light);
     border-radius: 6px
     cursor: pointer
     transition: all 0.2s ease
    ;color: var(--text-muted)}
-  .filter-button: hover { background: var(--bg-tertiary); border-color: var(--harvard-crimson), color: var(--harvard-crimson)}
+  .filter-button: hover { background: var(--bg-tertiary); border-color: var(--harvard-crimson); color: var(--harvard-crimson)}
   .filter-button.active {
-    background: var(--harvard-crimson); border-color: var(--harvard-crimson), color: var(--text-inverse)}
+    background: var(--harvard-crimson); border-color: var(--harvard-crimson); color: var(--text-inverse)}
   .filters-panel {
     margin-top: 1rem
     padding: 1rem
-   ;background: var(--bg-secondary), border: 1px solid var(--border-light);
+   ;background: var(--bg-secondary); border: 1px solid var(--border-light);
     border-radius: 8px
     display: flex
     flex-direction: column
@@ -228,8 +243,7 @@
     display: block
     font-size: 0.875rem
     font-weight: 600
-   ;color: var(--text-primary),
-    margin-bottom: 0.5rem}
+   ;color: var(--text-primary); margin-bottom: 0.5rem}
   .filter-options {
     display: flex
     gap: 1rem
@@ -251,7 +265,7 @@
     padding: 0.5rem
    ;border: 1px solid var(--border-light);
     border-radius: 4px
-   ;background: var(--bg-primary), color: var(--text-primary)}
+   ;background: var(--bg-primary); color: var(--text-primary)}
   .filter-actions {
     display: flex
     justify-content: flex-end
@@ -262,10 +276,10 @@
     background: transparent
    ;border: 1px solid var(--border-light);
     border-radius: 4px
-   ;color: var(--text-muted), cursor: pointer
+   ;color: var(--text-muted); cursor: pointer
     font-size: 0.875rem
     transition: all 0.2s ease}
-  .clear-filters-btn: hover { background: var(--bg-tertiary); border-color: var(--harvard-crimson), color: var(--harvard-crimson)}
+  .clear-filters-btn: hover { background: var(--bg-tertiary); border-color: var(--harvard-crimson); color: var(--harvard-crimson)}
   /* Responsive */
   @media (max-width: 768px) {
     .search-controls {
@@ -281,4 +295,5 @@
       align-items: stretch}
   }
 </style>
+
 

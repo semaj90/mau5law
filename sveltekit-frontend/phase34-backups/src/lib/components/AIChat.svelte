@@ -3,7 +3,7 @@
   import { chatMachine } from '$lib/machines/chatMachine.js';
   import { onMount } from 'svelte'; // Import onMount for initial scroll
 
-  let chatContainer: HTMLDivElement | null = null
+  let chatContainer: HTMLDivElement | null = null;
   let userInput = $state<string>('');
 
   // Actor implementation with explicit types and safer error handling
@@ -17,13 +17,14 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ messages: input?.messages ?? [] }),
-            signal: controller.signal
+            signal: controller.signal,
           });
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          if (!response.body) { // Add null check for response.body
+          if (!response.body) {
+            // Add null check for response.body
             throw new Error('Response body is null.');
           }
 
@@ -31,7 +32,7 @@
           const decoder = new TextDecoder();
           while (true) {
             const { done, value } = await reader.read();
-            if (done) break
+            if (done) break;
             const chunk = decoder.decode(value, { stream: true });
             const lines = chunk.split('\n').filter((line: string) => line.trim().startsWith('data:'));
             for (const line of lines) {
@@ -67,13 +68,14 @@
   // Register the actor here.
   const service = interpret(chatMachine, {
     actors: {
-      streamChatActor: streamChatActorFactory // Register the actor
-    }
+      streamChatActor: streamChatActorFactory, // Register the actor
+    },
   });
 
-  let snapshot: any = service.initialState
+  let snapshot: any = service.initialState;
   service.subscribe((state: any) => {
-    snapshot = state});
+    snapshot = state;
+  });
 
   service.start();
 
@@ -81,9 +83,9 @@
 
   // Submit handler: accept generic Event to match Svelte DOM types, then cast to SubmitEvent
   function handleSubmit(event: Event) {
-    const submitEvent = event as SubmitEvent
+    const submitEvent = event as SubmitEvent;
     submitEvent.preventDefault();
-    if (!userInput.trim()) return
+    if (!userInput.trim()) return;
     send({ type: 'SUBMIT', message: userInput });
     userInput = '';
   }
@@ -94,7 +96,8 @@
       // Use a microtask to wait for the DOM to update
       Promise.resolve().then(() => {
         if (chatContainer) {
-          chatContainer.scrollTop = chatContainer.scrollHeight}
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
       });
     }
   });
@@ -102,14 +105,15 @@
   // Initial scroll to bottom on mount
   onMount(() => {
     if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight}
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
   });
 </script>
 
 <div class="flex flex-col h-[calc(100vh-4rem)] bg-gray-50">
-  <div bind:this={ chatContainer } class="flex-1 overflow-y-auto p-4">
+  <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4">
     {#each snapshot.context.messages as message, i (i)}
-      <div class="chat-message {message.role === 'user' ? 'user': 'assistant'}">
+      <div class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
         <div class="message-bubble">
           {@html message.content.replace(/\n/g, '<br>')}
           {#if snapshot.matches('loading') && i === snapshot.context.messages.length - 1}
@@ -120,7 +124,8 @@
     {/each}
     {#if snapshot.matches('error')}
       <div class="chat-message">
-        <div class="message-bubble error-bubble"> <!-- Added error-bubble class for styling -->
+        <div class="message-bubble error-bubble">
+          <!-- Added error-bubble class for styling -->
           <p>Sorry, an error occurred: {snapshot.context.error?.message || 'Unknown error'}</p>
           <p>Please try again.</p>
         </div>
@@ -128,14 +133,19 @@
     {/if}
   </div>
   <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200">
-    <form onsubmit={ handleSubmit } class="flex items-center">
-      <input type="text"
-        bind:value={ userInput } placeholder="Ask about your case..."
+    <form onsubmit={handleSubmit} class="flex items-center">
+      <input
+        type="text"
+        bind:value={userInput}
+        placeholder="Ask about your case..."
         class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
-        disabled={snapshot.matches('loading')} />
-      <button type="submit"
+        disabled={snapshot.matches('loading')}
+      />
+      <button
+        type="submit"
         class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
-        disabled={snapshot.matches('loading') || !userInput.trim()} >
+        disabled={snapshot.matches('loading') || !userInput.trim()}
+      >
         Send
       </button>
     </form>
@@ -166,4 +176,3 @@
     to { transform: translateY(-0.25rem); }
   }
 </style>
-

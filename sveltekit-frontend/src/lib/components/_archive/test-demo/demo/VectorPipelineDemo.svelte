@@ -1,4 +1,4 @@
-﻿<!-- Vector Pipeline, Demo, Component -->
+<!-- Vector Pipeline, Demo, Component -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
@@ -33,6 +33,7 @@
     vectorPipelineActions.reset()}
   function retryFailedJobs() {
     vectorPipelineActions.retryFailedJobs()}
+
   // Get status indicators using derived values
   let pipelineStatus = $derived(machineState.context?.pipeline || null);
   let batchInfo = $derived(machineState.context?.batch || null);
@@ -60,27 +61,28 @@
           <span class="font-semibold">Current State:</span>
           <span class="px-3 py-1 rounded-full text-sm font-medium bg-blue-100">
             {currentState}
-          </span>
+</span>
         </div>
+
         {#if errors.length > 0}
           <div class="text-red-600">
             <strong>Errors:</strong>
             {errors.join(', ')}
-          </div>
+</div>
         {/if}
-      </div>
+</div>
       <!-- Control, Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Button.Root, class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
+        <Button.Root class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
           Submit Single Job
         </Button>
-        <Button.Root, class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
+        <Button.Root class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
           Submit Batch
         </Button>
-        <Button.Root, class="bits-btn" onclick={runHealthCheck} variant="ghost">Health Check</Button>
-        <Button.Root, class="bits-btn" onclick={resetPipeline} variant="error">Reset Pipeline</Button>
-        <Button.Root, class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button>
-        <Button.Root, class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button>
+        <Button.Root class="bits-btn" onclick={runHealthCheck} variant="ghost">Health Check</Button>
+        <Button.Root class="bits-btn" onclick={resetPipeline} variant="error">Reset Pipeline</Button>
+        <Button.Root class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button>
+        <Button.Root class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button>
         <Button
           class="bits-btn"
           onclick={retryFailedJobs}
@@ -102,37 +104,37 @@
                 <span>PostgreSQL:</span>
                 <span class={getStatusColor(pipelineStatus?.postgresql || false)}>
                   {getStatusIcon(pipelineStatus?.postgresql || false)}
-                </span>
+</span>
               </div>
               <div class="flex">
                 <span>Redis:</span>
                 <span class={getStatusColor(pipelineStatus?.redis || false)}>
                   {getStatusIcon(pipelineStatus?.redis || false)}
-                </span>
+</span>
               </div>
               <div class="flex">
                 <span>Go Microservice:</span>
                 <span class={getStatusColor(pipelineStatus?.goMicroservice || false)}>
                   {getStatusIcon(pipelineStatus?.goMicroservice || false)}
-                </span>
+</span>
               </div>
               <div class="flex">
                 <span>CUDA Worker:</span>
                 <span class={getStatusColor(pipelineStatus?.cudaWorker || false)}>
                   {getStatusIcon(pipelineStatus?.cudaWorker || false)}
-                </span>
+</span>
               </div>
               <div class="flex">
                 <span>Qdrant:</span>
                 <span class={getStatusColor(pipelineStatus?.qdrant || false)}>
                   {getStatusIcon(pipelineStatus?.qdrant || false)}
-                </span>
+</span>
               </div>
               <div class="flex">
                 <span>WebGPU:</span>
                 <span class={getStatusColor(pipelineStatus?.webgpu || false)}>
                   {getStatusIcon(pipelineStatus?.webgpu || false)}
-                </span>
+</span>
               </div>
             </div>
           </div>
@@ -146,20 +148,24 @@
             <div class="space-y-2">
               <div class="flex">
                 <span>Total Jobs:</span>
-                <span class="font-mono">{batchInfo?.totalJobs || 0}</span>
+                <span class="font-mono">{batchInfo?.totalJobs || 0}
+</span>
               </div>
               <div class="flex">
                 <span>Completed:</span>
-                <span class="font-mono text-green-600">{batchInfo?.completedJobs || 0}</span>
+                <span class="font-mono text-green-600">{batchInfo?.completedJobs || 0}
+</span>
               </div>
               <div class="flex">
                 <span>Failed:</span>
-                <span class="font-mono text-red-600">{batchInfo?.failedJobs || 0}</span>
+                <span class="font-mono text-red-600">{batchInfo?.failedJobs || 0}
+</span>
               </div>
               <div class="flex">
                 <span>Progress:</span>
                 <span class="font-mono">{batchInfo?.progress || 0}%</span>
               </div>
+
               {#if batchInfo && batchInfo.progress > 0}
                 <div class="w-full bg-gray-200 rounded-full">
                   <div
@@ -168,7 +174,7 @@
                   ></div>
                 </div>
               {/if}
-            </div>
+</div>
           </div>
         </div>
         <!-- Performance, Metrics -->
@@ -180,7 +186,8 @@
             <div class="space-y-2">
               <div class="flex">
                 <span>Processed:</span>
-                <span class="font-mono">{metrics?.totalJobsProcessed || 0}</span>
+                <span class="font-mono">{metrics?.totalJobsProcessed || 0}
+</span>
               </div>
               <div class="flex">
                 <span>Avg Time:</span>
@@ -194,13 +201,14 @@
                 <span>Last Run:</span>
                 <span class="text-sm">
                   {metrics?.lastProcessedAt ? new Date(metrics.lastProcessedAt).toLocaleTimeString() : 'Never'}
-                </span>
+</span>
               </div>
             </div>
           </div>
         </div>
       </div>
       <!-- Current, Jobs, Display -->
+
       {#if batchInfo && batchInfo.jobs.length > 0}
         <div class="mt-6">
           <div class="yorha-panel-header">
@@ -220,12 +228,17 @@
                   </tr>
                 </thead>
                 <tbody>
+
                   {#each Array.isArray(batchInfo.jobs) ? batchInfo.jobs : [] as job}
                     <tr class="border-b">
-                      <td class="p-2 font-mono">{job.jobId}</td>
-                      <td class="p-2">{job.ownerType}</td>
-                      <td class="p-2 font-mono">{job.ownerId}</td>
-                      <td class="p-2">{job.event}</td>
+                      <td class="p-2 font-mono">{job.jobId}
+</td>
+                      <td class="p-2">{job.ownerType}
+</td>
+                      <td class="p-2 font-mono">{job.ownerId}
+</td>
+                      <td class="p-2">{job.event}
+</td>
                       <td class="p-2">
                         <span
                           class="px-2 py-1 rounded" text-xs font-medium
@@ -238,12 +251,12 @@
                                 : 'bg-gray-100 text-gray-800'}"
                         >
                           {job.status}
-                        </span>
+</span>
                       </td>
                       <td class="p-2">{job.progress}%</td>
                     </tr>
                   {/each}
-                </tbody>
+</tbody>
               </table>
             </div>
           </div>
@@ -291,4 +304,5 @@
     </div>
   </div>
 </div>
+
 

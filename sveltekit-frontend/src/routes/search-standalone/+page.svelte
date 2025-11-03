@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-import type { Document } from '$lib/types';
+  import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import SearchBox from '$lib/components/ui/SearchBox.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
@@ -7,17 +7,17 @@ import type { Document } from '$lib/types';
   import 'nes.css/css/nes.min.css'; // Add nes.css import
 
   interface VectorResult {
-    title?: string
-    similarity?: number
-    content?: string
+    title?: string;
+    similarity?: number;
+    content?: string;
     metadata?: {
-      caseId?: string
-      documentType?: string
-      priority?: string
+      caseId?: string;
+      documentType?: string;
+      priority?: string;
       [key: string]: any; // Allow other metadata properties
     };
     embedding?: number[]; // Assuming embedding is an array of numbers
-    vectorMagnitude?: number
+    vectorMagnitude?: number;
     [key: string]: any; // Allow other top-level properties
   }
 
@@ -25,37 +25,46 @@ import type { Document } from '$lib/types';
   let selectedDocument = $state<VectorResult | null>(null); // Use VectorResult type
   let isAnalyzing = $state<boolean>(false);
 
-  const handleSearchResults = (results: VectorResult[]) => { // Use VectorResult type
+  const handleSearchResults = (results: VectorResult[]) => {
+    // Use VectorResult type
     searchResults = results; // Corrected typo: result -> results
-    selectedDocument = null};
+    selectedDocument = null;
+  };
 
-  const viewDocument = (_document: VectorResult) => { // Use VectorResult type and corrected typo
+  const viewDocument = (_document: VectorResult) => {
+    // Use VectorResult type and corrected typo
     selectedDocument = _document; // Corrected typo: document -> _document
   };
 
   const closeDocument = () => {
-    selectedDocument = null};
+    selectedDocument = null;
+  };
 
-  const analyzeDocument = async (_document: VectorResult) => { // Use VectorResult type and corrected typo
-    isAnalyzing = true
+  const analyzeDocument = async (_document: VectorResult) => {
+    // Use VectorResult type and corrected typo
+    isAnalyzing = true;
     try {
       // Simulate AI analysis
       await new Promise(resolve => setTimeout(resolve, 2000));
       // In a real implementation, this would call your legal AI analysis endpoint
       console.log('Analyzing document:', _document); // Corrected typo: document -> _document
     } catch (error) {
-      console.error('Analysis failed:', error)} finally {
-      isAnalyzing = false}
+      console.error('Analysis failed:', error);
+    } finally {
+      isAnalyzing = false;
+    }
   };
 
   // Utility function for score formatting
   function getScorePercent(score: any): string {
-    const n = typeof score === 'number' && Number.isFinite(score) ? score : 0
-    return (n * 100).toFixed(1)}
+    const n = typeof score === 'number' && Number.isFinite(score) ? score : 0;
+    return (n * 100).toFixed(1);
+  }
 
   $effect(() => {
     // Set page title
-    document.title = 'Legal AI Search - Deeds Platform'});
+    document.title = 'Legal AI Search - Deeds Platform';
+  });
 </script>
 
 <svelte:head>
@@ -125,13 +134,8 @@ import type { Document } from '$lib/types';
                   </div>
                 {/if}
                 <div class="result-actions">
-                  <Button onclick={() => viewDocument(result)} variant="primary" size="sm"> View </Button>
-                  <Button
-                    onclick={() => analyzeDocument(result)}
-                    variant="success"
-                    size="sm"
-                    disabled={isAnalyzing}
-                  >
+                  <Button onclick={() => viewDocument(result)} variant="primary" size="sm">View</Button>
+                  <Button onclick={() => analyzeDocument(result)} variant="success" size="sm" disabled={isAnalyzing}>
                     {isAnalyzing ? 'Analyzing...' : 'AI Analysis'}
                   </Button>
                 </div>
@@ -150,7 +154,7 @@ import type { Document } from '$lib/types';
               {selectedDocument.title || 'Document Viewer'}
             </h3>
             <div class="close-btn">
-              <Button onclick={closeDocument} variant="error" size="sm"> Ã— </Button>
+              <Button onclick={closeDocument} variant="error" size="sm">Ã—</Button>
             </div>
           </div>
           <div class="modal-content">

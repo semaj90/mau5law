@@ -1,4 +1,4 @@
-﻿<!-- Legal AI Embedding & Search Test Component -->
+<!-- Legal AI Embedding & Search Test Component -->
 <script lang="ts">
 import type { SearchResult } from '$lib/types';
 import type { Case } from '$lib/types';
@@ -151,6 +151,7 @@ await checkSystemHealth();
       errorMessage = `CUDA test failed: ${(error, as: any)?.message ?? String(error)}`} finally {
       isLoading = false}
   }
+
   // Add typed interfaces
   interface SystemHealth { status: string, database: string, ollama: string, embeddings: number}
   interface CudaStatus { status: string, gpu_model: string, cuda_cores: number, memory_gb: number}
@@ -161,6 +162,7 @@ await checkSystemHealth();
     taskId?: string
     createdAt?: string
     metadata?: { caseId?: string; documentType?: string }}
+
   // Narrowed types for helpers
   function getStatusColor(status: string): string {
     switch (status) {
@@ -426,3 +428,4 @@ await checkSystemHealth();
     font-family: 'Courier New', monospace
     font-size: 0.875rem}
 </style>
+

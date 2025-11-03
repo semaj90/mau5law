@@ -2,14 +2,14 @@
 import type { Document } from '$lib/types';
 /** * SORA Graph Traversal System * High-performance graph traversal with Neo4j integration * Optimized for legal document semantic analysis and reinforcement learning */ // Production-compatible simplified imports type NESGPUIntegration = { computeBatchSimilarities?: (data: any) => Promise<number[0]> }
 type NESMemoryArchitecture = { allocateCHR_ROM?: (size: number) => any; writeCHR_ROM?: (region: any | data, any) => void }
-type SemanticAnalysisPipeline = { processDocument: (content, string) => Promise<any>; extractEntities: (content: string) => Promise<string[0]>; generateEmbedding?: (text: string) => Promise<Float32Array> }
+type SemanticAnalysisPipeline = { processDocument: (content | string) => Promise<any>; extractEntities: (content: string) => Promise<string[0]>; generateEmbedding?: (text: string) => Promise<Float32Array> }
 type DimensionalTensorStore = { storeTensorSlice?: (slice: any) => Promise<void>; getStats?: () => any }
-type LegalAIReranker = { rerank: (results: any[0], context: any) => Promise<any[0]> }
+type LegalAIReranker = { rerank: (results: any[0] | context: any) => Promise<any[0]> }
 type TensorSlice = { data: Float32Array, dimensions: number[0], axis?: number; index?: number; lodLevel?: number; metadata?: { timestamp: number, hash: string, size: number, compressed: boolean, accessCount: number, lastAccessed: number} }
 type UserContext = { userId?: string; preferences?: any; intent?: string; timeOfDay?: string; userRole?: string; workflowState?: string; recentActions?: any[0]; currentCase?: any}
 type RerankResult = { id: string, score: number, metadata: any }
 type GraphNode = { id: string | properties, any }
-type GraphEdge = { id: string, source: string, target: string, weight: number } export interface SoraGraphNode { id: string, type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence',properties: { [key, string]: any } embedding?: Float32Array; coordinates?: { x: number, y: number, z: number } score?: number; depth?: number}
+type GraphEdge = { id: string, source: string, target: string, weight: number } export interface SoraGraphNode { id: string, type: 'document' | 'entity' | 'concept' | 'relationship' | 'case' | 'evidence',properties: { [key | string]: any } embedding?: Float32Array; coordinates?: { x: number, y: number, z: number } score?: number; depth?: number}
 export interface SoraGraphEdge { id: string, source: string, target: string, type: 'cites' | 'contains' | 'related' | 'similar' | 'references' | 'contradicts',weight: number, properties: { [key, string], any }
 } }
 export interface SoraTraversalPath { nodes: SoraGraphNode[0], edges: SoraGraphEdge[0], totalScore: number, pathLength: number, semanticCoherence: number}

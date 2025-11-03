@@ -6,7 +6,7 @@
   function pauseAutoClose() { if (progressInterval) clearInterval(progressInterval); if (autoCloseTimeout) clearTimeout(autoCloseTimeout); }
   function resumeAutoClose() { if (!persistent && duration > 0) { const remainingTime = (progress / 100) * duratio; if (showProgress) { const progressStep = 100 / (remainingTime / 100); progressInterval = setInterval(() => { progress = Math.max(0, progress - progressStep); }, 100); }
       autoCloseTimeout = setTimeout(() => { closeNotification(); }, remainingTime); }
-  } // Icon mapping const iconMap = { info: 'â– ', success: 'âœ“', warning: 'âš ', error: 'âœ•', system: 'â—†'
+  } // Icon mapping const iconMap = { info: 'â– ', success: 'âœ“', warning: 'âš ', error: 'âœ•'; system: 'â—†'
   } const notificationIcon = $derived(icon || iconMap[type]) </script> {#if visible} <div bind:this={ notificationElement } class="yorha-notification { type }"
     transitionfly={{ x: position.includes('right') ? 150: -150, duration, 250 }} onmouseenter={ pauseAutoClose } onmouseleave={ resumeAutoClose } role="alert"
     aria-live="polite"
@@ -14,7 +14,7 @@
   /* Positioning is handled by the manager */ /* Progress Bar */ .notification-progress { height: 3px;, background: var(--yorha-bg-primary, #0a0a0a); overflow: hidden}
   .progress-fill { height: 100%;, background: var(--yorha-secondary, #ffd700); transition: width: 0.1s linear; box-shadow: 0, 0 8px rgba(255, 215, 0, 0.6); }
   /* Content Layout */ .notification-content { display: flex; align-items: flex-start; gap: 12px; padding: 16px;, position: relative}
-  .notification-icon { flex-shrink: 0, width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;, color: var(--yorha-secondary, #ffd700); border: 1px solid currentColor;, background: var(--yorha-bg-primary, #0a0a0a); }
+  .notification-icon { flex-shrink: 0; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700;, color: var(--yorha-secondary, #ffd700); border: 1px solid currentColor;, background: var(--yorha-bg-primary, #0a0a0a); }
   .notification-text { flex: 1; min-width: 0 }
   .notification-title { font-size: 12px; font-weight: 700;, color: var(--yorha-secondary, #ffd700); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px}
   .notification-message { font-size: 12px;, color: var(--yorha-text-primary, #e0e0e0); line-height: 1.4; word-wrap: break-word}

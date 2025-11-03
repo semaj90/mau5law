@@ -15,6 +15,7 @@
   // detect if resolved export looks like a Svelte component (constructor/function)
   const hasSelectImpl = Boolean(SelectImpl && (typeof SelectImpl === 'function' || typeof SelectImpl === 'object'));
 </script>
+
 {#if hasSelectImpl}
   <!-- Svelte 5: Direct component usage instead, of, svelte:component -->
   <SelectImpl {value} {options} {placeholder} {disabled} {...rest} />
@@ -32,8 +33,8 @@
     {/each}
   </select>
 {/if}
+
 <!-- Intentionally minimal styles; this file is purely a, compatibility, shim -->
 <style>
   /* no-op */
 </style>
-

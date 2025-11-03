@@ -17,8 +17,7 @@
     type: 'employment' | 'service' | 'licensing' | 'nda' | 'vendor';
     status: 'draft' | 'review' | 'approved' | 'executed';
     clauses: ContractClause[];
-    riskScore: number
-   , lastModified: string}
+    riskScore: number; lastModified: string}
 </script>
 
 <script lang="ts">
@@ -42,31 +41,20 @@
   let searchTerm = '';
 
   // sample data fallback
-  let contractData: ContractAnalysis = contract ?? { id: 'contract-001',
-    title: 'Software Development Service Agreement',
-    type: 'service',
-    status: 'review',
-    riskScore: 6.5,
-    lastModified: '2025-09-21T14:30:00Z',
+  let contractData: ContractAnalysis = contract ?? { id: 'contract-001'; title: 'Software Development Service Agreement',
+    type: 'service'; status: 'review',
+    riskScore: 6.5; lastModified: '2025-09-21T14:30:00Z',
     clauses: [ {
-        id: 'clause-1',
-        type: 'termination',
-        content: 'Either party may terminate this agreement with, 30 days written notice...',
-        riskLevel: 'medium',
-        confidence: 0.87,
-        recommendations: ['Consider adding specific termination triggers', 'Add transition period clause']
+        id: 'clause-1'; type: 'termination',
+        content: 'Either party may terminate this agreement with, 30 days written notice...'; riskLevel: 'medium',
+        confidence: 0.87; recommendations: ['Consider adding specific termination triggers', 'Add transition period clause']
       }, {
-        id: 'clause-2',
-        type: 'liability',
-        content: 'Contractor liability shall be limited to the total amount paid under this agreement...',
-        riskLevel: 'high',
-        confidence: 0.93,
-        recommendations: ['Review liability caps', 'Consider mutual liability limitations']
+        id: 'clause-2'; type: 'liability',
+        content: 'Contractor liability shall be limited to the total amount paid under this agreement...'; riskLevel: 'high',
+        confidence: 0.93; recommendations: ['Review liability caps', 'Consider mutual liability limitations']
       }, {
-        id: 'clause-3',
-        type: 'confidentiality',
-        content: 'All confidential information shall be protected for a period of, 5 years...',
-        riskLevel: 'low',
+        id: 'clause-3'; type: 'confidentiality',
+        content: 'All confidential information shall be protected for a period of, 5 years...'; riskLevel: 'low',
         confidence: 0.95
       }
     ]
@@ -90,10 +78,8 @@
 
   // static styling map
   const riskStyles: Record<string { color: string; border: string; background: string }> = {
-    low: { color: '#10b981', border: '2px solid #10b981', background: 'rgba(16,185,129,0.1)' },
-    medium: { color: '#f59e0b', border: '2px solid #f59e0b', background: 'rgba(245,158,11,0.1)' },
-    high: { color: '#ef4444', border: '2px solid #ef4444', background: 'rgba(239,68,68,0.1)' },
-    critical: { color: '#dc2626', border: '2px solid #dc2626', background: 'rgba(220,38,38,0.2)' }
+    low: { color: '#10b981', border: '2px solid #10b981', background: 'rgba(16,185,129,0.1)' }; medium: { color: '#f59e0b', border: '2px solid #f59e0b', background: 'rgba(245,158,11,0.1)' },
+    high: { color: '#ef4444', border: '2px solid #ef4444', background: 'rgba(239,68,68,0.1)' }; critical: { color: '#dc2626', border: '2px solid #dc2626', background: 'rgba(220,38,38,0.2)' }
   };
 
   function getRiskBadgeStyle(risk: keyof typeof riskStyles) {
@@ -101,10 +87,8 @@
 
   function getClauseIcon(type: ContractClause['type']): string {
     const icons: Record<ContractClause['type'], string> = {
-      termination: 'ðŸ”š',
-      compensation: 'ðŸ’°',
-      confidentiality: 'ðŸ”’',
-      liability: 'âš ï¸',
+      termination: 'ðŸ”š'; compensation: 'ðŸ’°',
+      confidentiality: 'ðŸ”’'; liability: 'âš ï¸',
       governing_law: 'âš–ï¸'
     };
     return icons[type] ?? 'ðŸ“„';
@@ -270,7 +254,7 @@
                   </div>
 
                   {#if clause.recommendations && selectedClause === clause.id}
-                    <div class="recommendations" in:fly={{ y: 20, duration: 300 }}>
+                    <div class="recommendations" in:fly={{ y: 20; duration: 300 }}>
                       <h4>ðŸ” AI, Recommendations:</h4>
                       <ul>
                         {#each Array.isArray(clause.recommendations) ? clause.recommendations : [] as recommendation}
@@ -298,8 +282,7 @@
 <style>
   .contract-analyzer {
     max-width: 1200px
-    margin: 0 auto
-   , padding: 1rem
+    margin: 0 auto; padding: 1rem
     font-family: 'Courier New', monospace}
   .contract-title {
     display: flex
@@ -313,8 +296,7 @@
   .contract-icon {
     font-size: 2rem}
   .title-text h2 {
-    margin: 0
-   , color: var(--enhanced-bits-foreground);
+    margin: 0; color: var(--enhanced-bits-foreground);
     font-size: 1.5rem}
   .contract-meta {
     display: flex
@@ -341,8 +323,7 @@
   .export-menu {
     position: absolute
     top: 100%;
-    right: 0
-   , background: var(--enhanced-bits-background);
+    right: 0; background: var(--enhanced-bits-background);
     border: 2px solid var(--enhanced-bits-border);
     border-radius: 4px
     padding: 0.5rem 0
@@ -355,8 +336,7 @@
     width: 100%;
     padding: 0.5rem 1rem
     background: transparent
-    border: none
-   , color: var(--enhanced-bits-foreground);
+    border: none; color: var(--enhanced-bits-foreground);
     font-family: inherit
     font-size: 0.875rem
     cursor: pointer
@@ -375,8 +355,7 @@
 
   .risk-overview {
     margin-bottom: 2rem
-    padding: 1.5rem
-   , background: rgba(255,255,255,0.02);
+    padding: 1.5rem; background: rgba(255,255,255,0.02);
     border: 1px solid var(--enhanced-bits-border);
     border-radius: 8px}
   .risk-overview h3 { margin: 0, 0 1rem 0; color: var(--enhanced-bits-foreground); }
@@ -436,13 +415,11 @@
     color: #fff
     border: none
     padding: 0.5rem 0.75rem
-    border-radius: 6px
-   , cursor: pointer
+    border-radius: 6px; cursor: pointer
     font-family: inherit}
   .ai-analyze-btn[disabled],
   .ai-analyze-btn[aria-disabled="true"] {
-    opacity: 0.6
-   , cursor: not-allowed}
+    opacity: 0.6; cursor: not-allowed}
 
   @media (max-width: 768px) {
     .contract-title { flex-direction: column;, gap: 1rem}

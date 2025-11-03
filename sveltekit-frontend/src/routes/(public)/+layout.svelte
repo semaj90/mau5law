@@ -5,8 +5,9 @@
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
-    data?: any
-    children?: Snippet}
+    data?: any;
+    children?: Snippet;
+  }
 
   let { data, children }: Props = $props();
 
@@ -19,11 +20,13 @@
   // Initialize theme on mount
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
-      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName
+      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName;
       if (stored) {
-        selectedTheme = stored
-        applyConsolePalette(stored)} else {
-        applyConsolePalette('legal')}
+        selectedTheme = stored;
+        applyConsolePalette(stored);
+      } else {
+        applyConsolePalette('legal');
+      }
     }
   });
 </script>
@@ -155,7 +158,3 @@
       text-align: center}
   }
 </style>
-
-
-
-

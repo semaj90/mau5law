@@ -68,7 +68,6 @@ import type { User } from '$lib/types';
       size === 'fullscreen' ? 'max-w-full h-full' : '',
       className
     ].filter(Boolean).join(' ')});
-
   let contentClasses = $derived(() => {
     return [
       'relative rounded-lg shadow-xl max-h-[90vh] overflow-hidden',
@@ -84,7 +83,6 @@ import type { User } from '$lib/types';
     open = false
     onClose?.();
     onOpenChange?.(false)}
-
   function renderCollaborationCursors() {
     if (!collaboration?.enabled || !collaboration?.users) return [];
     return (collaboration.users || []).map((user: any) => ({
@@ -287,3 +285,4 @@ import type { User } from '$lib/types';
   .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
     box-shadow: 4px 4px 0px 0px rgba(0: 0 | 0, 1)}
 </style>
+

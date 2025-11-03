@@ -84,7 +84,7 @@
     court: '',
     documentType: '',
     dateRange: '',
-    precedentialValue: ''
+    precedentialValue: '',
   });
   let sortBy = $state<string>('relevance');
   let currentPage = $state<number>(1);
@@ -96,7 +96,7 @@
     id: null,
     startTime: new Date(),
     queries: [],
-    findings: []
+    findings: [],
   });
   // Advanced search options
   let advancedSearch = $state<boolean>(false);
@@ -113,7 +113,7 @@
     jurisdictions: ['Federal', 'State', 'Local', 'International'],
     courts: ['Supreme Court', 'Court of Appeals', 'District Court', 'Bankruptcy Court'],
     documentTypes: ['case', 'statute', 'regulation', 'brief', 'opinion'],
-    precedentialValues: ['High', 'Medium', 'Low', 'Informational']
+    precedentialValues: ['High', 'Medium', 'Low', 'Informational'],
   });
 
   $effect(() => {
@@ -137,7 +137,7 @@
       query: searchQuery,
       filters: { ...selectedFilters },
       timestamp: new Date(),
-      mode: searchMode
+      mode: searchMode,
     } as ResearchQuery);
     try {
       const searchPayload = {
@@ -146,7 +146,7 @@
         filters: selectedFilters,
         sort: sortBy,
         page: currentPage,
-        limit: 20
+        limit: 20,
       };
       // Guarded call to nesGPUBridge if available
       try {
@@ -159,7 +159,7 @@
       const response = await fetch('/api/legal/research/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(searchPayload)
+        body: JSON.stringify(searchPayload),
       });
       if (response.ok) {
         const data = await response.json();
@@ -199,7 +199,7 @@
         relevanceScore: 0.94,
         citedBy: 47,
         isBookmarked: false,
-        url: '/legal/documents/smith-v-johnson-2019'
+        url: '/legal/documents/smith-v-johnson-2019',
       },
       {
         id: '2',
@@ -216,7 +216,7 @@
         relevanceScore: 0.89,
         citedBy: 234,
         isBookmarked: true,
-        url: '/legal/documents/frcp-26-b-1'
+        url: '/legal/documents/frcp-26-b-1',
       },
       {
         id: '3',
@@ -233,19 +233,19 @@
         relevanceScore: 0.82,
         citedBy: 12,
         isBookmarked: false,
-        url: '/legal/documents/summary-judgment-template'
-      }
+        url: '/legal/documents/summary-judgment-template',
+      },
     ];
   }
   async function generateAISuggestions(results: DocumentResult[]) {
     // Extract key terms and generate related search suggestions
-    const topics = results.flatMap((r) => r.keyTopics || []);
+    const topics = results.flatMap(r => r.keyTopics || []);
     const uniqueTopics = [...new Set(topics)];
     aiSuggestions = [
       `Related cases on ${uniqueTopics[0] || 'similar topics'}`,
       `Recent developments in ${uniqueTopics[1] || 'this area'}`,
       `Opposing arguments and counterpoint cases`,
-      `Practical applications and precedent analysis`
+      `Practical applications and precedent analysis`,
     ];
   }
   async function loadSavedCitations() {
@@ -257,15 +257,35 @@
       } else {
         // fallback mock
         savedCitations = [
-          { id: '1', title: 'Miranda v. Arizona', citation: '384 U.S. 436 (1966)', savedAt: new Date(Date.now() - 86400000) },
-          { id: '2', title: 'Brown v. Board of Education', citation: '347 U.S. 483 (1954)', savedAt: new Date(Date.now() - 172800000) }
+          {
+            id: '1',
+            title: 'Miranda v. Arizona',
+            citation: '384 U.S. 436 (1966)',
+            savedAt: new Date(Date.now() - 86400000),
+          },
+          {
+            id: '2',
+            title: 'Brown v. Board of Education',
+            citation: '347 U.S. 483 (1954)',
+            savedAt: new Date(Date.now() - 172800000),
+          },
         ];
       }
     } catch (error) {
       console.error('Failed to load saved citations:', error);
       savedCitations = [
-        { id: '1', title: 'Miranda v. Arizona', citation: '384 U.S. 436 (1966)', savedAt: new Date(Date.now() - 86400000) },
-        { id: '2', title: 'Brown v. Board of Education', citation: '347 U.S. 483 (1954)', savedAt: new Date(Date.now() - 172800000) }
+        {
+          id: '1',
+          title: 'Miranda v. Arizona',
+          citation: '384 U.S. 436 (1966)',
+          savedAt: new Date(Date.now() - 86400000),
+        },
+        {
+          id: '2',
+          title: 'Brown v. Board of Education',
+          citation: '347 U.S. 483 (1954)',
+          savedAt: new Date(Date.now() - 172800000),
+        },
       ];
     }
   }
@@ -274,7 +294,7 @@
       'Recent Supreme Court decisions on constitutional law',
       'Trending legal issues in technology and privacy',
       'Commercial litigation best practices',
-      'Evidence standards in federal court'
+      'Evidence standards in federal court',
     ];
   }
   async function saveCitation(document: DocumentResult) {
@@ -286,8 +306,8 @@
           documentId: document.id,
           citation: document.citation,
           title: document.title,
-          notes: ''
-        })
+          notes: '',
+        }),
       });
       if (response.ok) {
         document.isBookmarked = true;
@@ -296,9 +316,9 @@
             id: document.id,
             title: document.title,
             citation: document.citation,
-            savedAt: new Date()
+            savedAt: new Date(),
           },
-          ...savedCitations
+          ...savedCitations,
         ];
       } else {
         // optimistic UI fallback
@@ -319,14 +339,14 @@
       court: '',
       documentType: '',
       dateRange: '',
-      precedentialValue: ''
+      precedentialValue: '',
     };
   }
   function formatDate(dateString: any) {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   }
   function getRelevanceColor(score: number) {
@@ -337,16 +357,24 @@
   }
   function getPrecedentialColor(value: string) {
     switch (value) {
-      case 'High': return 'text-red-600 bg-red-100';
-      case 'Medium': return 'text-yellow-600 bg-yellow-100';
-      case 'Low': return 'text-gray-600 bg-gray-100';
-      default: return 'text-blue-600 bg-blue-100';
+      case 'High':
+        return 'text-red-600 bg-red-100';
+      case 'Medium':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'Low':
+        return 'text-gray-600 bg-gray-100';
+      default:
+        return 'text-blue-600 bg-blue-100';
     }
   }
 </script>
+
 <svelte:head>
   <title>Legal Research - Citation & Precedent Analysis</title>
-  <meta name="description" content="Comprehensive legal research platform with AI-powered citation analysis and precedent matching" />
+  <meta
+    name="description"
+    content="Comprehensive legal research platform with AI-powered citation analysis and precedent matching"
+  />
 </svelte:head>
 <div class="min-h-screen bg-gray-50">
   <!-- Header -->
@@ -366,7 +394,7 @@
         </div>
         <div class="flex items-center space-x-3">
           <button
-            onclick={() => advancedSearch = !advancedSearch}
+            onclick={() => (advancedSearch = !advancedSearch)}
             class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           >
             <Filter class="h-4 w-4 mr-2" />
@@ -394,37 +422,35 @@
               <input
                 type="search"
                 bind:value={searchQuery}
-                onkeydown={(e) => e.key === 'Enter' && performSearch()}
+                onkeydown={e => e.key === 'Enter' && performSearch()}
                 placeholder="Search legal documents, cases, statutes, and precedents..."
                 class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
               <div class="absolute inset-y-0 right-0 flex items-center">
-                <div class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-  <LoadingButton onclick={performSearch}
-                  loading={isSearching}
-                  disabled={!searchQuery.trim()}>
-                  {#if isSearching}
-                    Searching...
-                  {:else}
-                    Search
-                  {/if}
-                </LoadingButton>
-</div>
+                <div
+                  class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                  <LoadingButton onclick={performSearch} loading={isSearching} disabled={!searchQuery.trim()}>
+                    {#if isSearching}
+                      Searching...
+                    {:else}
+                      Search
+                    {/if}
+                  </LoadingButton>
+                </div>
               </div>
             </div>
             <!-- Search Mode Toggle -->
             <div class="flex items-center space-x-4">
               <span class="text-sm font-medium text-gray-700">Search Mode:</span>
-              {#each [
-                { id: 'semantic', label: 'AI Semantic', icon: Brain },
-                { id: 'boolean', label: 'Boolean', icon: Filter },
-                { id: 'phrase', label: 'Exact Phrase', icon: FileText }
-              ] as mode}
+              {#each [{ id: 'semantic', label: 'AI Semantic', icon: Brain }, { id: 'boolean', label: 'Boolean', icon: Filter }, { id: 'phrase', label: 'Exact Phrase', icon: FileText }] as mode}
                 {@const Icon = mode.icon}
                 <button
-                  onclick={() => searchMode = mode.id}
+                  onclick={() => (searchMode = mode.id)}
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors
-                         {searchMode === mode.id ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
+                         {searchMode === mode.id
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}"
                 >
                   <Icon class="h-3 w-3 mr-1" />
                   {mode.label}
@@ -435,7 +461,12 @@
             {#if advancedSearch}
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction">Jurisdiction</label><select id="jurisdiction" bind:value={selectedFilters.jurisdiction} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction">Jurisdiction</label
+                  ><select
+                    id="jurisdiction"
+                    bind:value={selectedFilters.jurisdiction}
+                    class="w-full rounded-md border-gray-300 text-sm"
+                  >
                     <option value="">All Jurisdictions</option>
                     {#each Array.isArray(filterOptions.jurisdictions) ? filterOptions.jurisdictions : [] as jurisdiction}
                       <option value={jurisdiction}>{jurisdiction}</option>
@@ -443,7 +474,11 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="court">Court</label><select id="court" bind:value={selectedFilters.court} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="court">Court</label><select
+                    id="court"
+                    bind:value={selectedFilters.court}
+                    class="w-full rounded-md border-gray-300 text-sm"
+                  >
                     <option value="">All Courts</option>
                     {#each Array.isArray(filterOptions.courts) ? filterOptions.courts : [] as court}
                       <option value={court}>{court}</option>
@@ -451,7 +486,12 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label><select id="document-type" bind:value={selectedFilters.documentType} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label
+                  ><select
+                    id="document-type"
+                    bind:value={selectedFilters.documentType}
+                    class="w-full rounded-md border-gray-300 text-sm"
+                  >
                     <option value="">All Types</option>
                     {#each Array.isArray(filterOptions.documentTypes) ? filterOptions.documentTypes : [] as type}
                       <option value={type}>{type}</option>
@@ -459,10 +499,16 @@
                   </select>
                 </div>
                 <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="precedential-value">Precedential Value</label><select id="precedential-value" bind:value={selectedFilters.precedentialValue} class="w-full rounded-md border-gray-300 text-sm">
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="precedential-value"
+                    >Precedential Value</label
+                  ><select
+                    id="precedential-value"
+                    bind:value={selectedFilters.precedentialValue}
+                    class="w-full rounded-md border-gray-300 text-sm"
+                  >
                     <option value="">All Values</option>
                     {#each Array.isArray(filterOptions.precedentialValues) ? filterOptions.precedentialValues : [] as value}
-                      <option value={value}>{value}</option>
+                      <option {value}>{value}</option>
                     {/each}
                   </select>
                 </div>
@@ -488,7 +534,10 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
               {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
                 <button
-                  onclick={() => { searchQuery = suggestion; performSearch(); }}
+                  onclick={() => {
+                    searchQuery = suggestion;
+                    performSearch();
+                  }}
                   class="text-left p-2 text-sm text-blue-700 hover:bg-blue-100 rounded-md transition-colors"
                 >
                   {suggestion}
@@ -512,7 +561,7 @@
                 </select>
               </div>
               <div class="text-sm text-gray-500">
-                Showing {((currentPage - 1) * 20) + 1}-{Math.min(currentPage * 20, totalResults)} of {totalResults.toLocaleString()}
+                Showing {(currentPage - 1) * 20 + 1}-{Math.min(currentPage * 20, totalResults)} of {totalResults.toLocaleString()}
               </div>
             </div>
             <!-- Results List -->
@@ -521,13 +570,61 @@
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex-1">
                     <h3 class="text-lg font-semibold text-blue-600 hover:text-blue-800">
-                      <a href={(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).url}>{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).title}</a>
+                      <a
+                        href={(
+                          result as {
+                            url?: any;
+                            title?: any;
+                            citation?: any;
+                            relevanceScore?: any;
+                            isBookmarked?: any;
+                            summary?: any;
+                            court?: any;
+                            dateDecided?: any;
+                            citedBy?: any;
+                            precedentialValue?: any;
+                            keyTopics?: any;
+                          }
+                        ).url}
+                        >{(
+                          result as {
+                            url?: any;
+                            title?: any;
+                            citation?: any;
+                            relevanceScore?: any;
+                            isBookmarked?: any;
+                            summary?: any;
+                            court?: any;
+                            dateDecided?: any;
+                            citedBy?: any;
+                            precedentialValue?: any;
+                            keyTopics?: any;
+                          }
+                        ).title}</a
+                      >
                     </h3>
-                    <p class="text-sm text-gray-600 font-mono">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citation}</p>
+                    <p class="text-sm text-gray-600 font-mono">
+                      {(
+                        result as {
+                          url?: any;
+                          title?: any;
+                          citation?: any;
+                          relevanceScore?: any;
+                          isBookmarked?: any;
+                          summary?: any;
+                          court?: any;
+                          dateDecided?: any;
+                          citedBy?: any;
+                          precedentialValue?: any;
+                          keyTopics?: any;
+                        }
+                      ).citation}
+                    </p>
                   </div>
                   <div class="flex items-center space-x-2 ml-4">
                     <span
-                      class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium " + getRelevanceColor(((result as any).relevanceScore ?? 0))}
+                      class={'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ' +
+                        getRelevanceColor((result as any).relevanceScore ?? 0)}
                     >
                       {Math.round(((result as any).relevanceScore ?? 0) * 100)}% match
                     </span>
@@ -540,25 +637,118 @@
                     </button>
                   </div>
                 </div>
-                <p class="text-gray-700 text-sm mb-3 line-clamp-2">{(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).summary}</p>
+                <p class="text-gray-700 text-sm mb-3 line-clamp-2">
+                  {(
+                    result as {
+                      url?: any;
+                      title?: any;
+                      citation?: any;
+                      relevanceScore?: any;
+                      isBookmarked?: any;
+                      summary?: any;
+                      court?: any;
+                      dateDecided?: any;
+                      citedBy?: any;
+                      precedentialValue?: any;
+                      keyTopics?: any;
+                    }
+                  ).summary}
+                </p>
                 <div class="flex items-center justify-between text-sm">
                   <div class="flex items-center space-x-4">
                     <div class="flex items-center text-gray-500">
                       <Gavel class="h-4 w-4 mr-1" />
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).court}
+                      {(
+                        result as {
+                          url?: any;
+                          title?: any;
+                          citation?: any;
+                          relevanceScore?: any;
+                          isBookmarked?: any;
+                          summary?: any;
+                          court?: any;
+                          dateDecided?: any;
+                          citedBy?: any;
+                          precedentialValue?: any;
+                          keyTopics?: any;
+                        }
+                      ).court}
                     </div>
                     <div class="flex items-center text-gray-500">
                       <Calendar class="h-4 w-4 mr-1" />
-                      {formatDate((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).dateDecided)}
+                      {formatDate(
+                        (
+                          result as {
+                            url?: any;
+                            title?: any;
+                            citation?: any;
+                            relevanceScore?: any;
+                            isBookmarked?: any;
+                            summary?: any;
+                            court?: any;
+                            dateDecided?: any;
+                            citedBy?: any;
+                            precedentialValue?: any;
+                            keyTopics?: any;
+                          }
+                        ).dateDecided
+                      )}
                     </div>
                     <div class="flex items-center text-gray-500">
                       <Link class="h-4 w-4 mr-1" />
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).citedBy} citations
+                      {(
+                        result as {
+                          url?: any;
+                          title?: any;
+                          citation?: any;
+                          relevanceScore?: any;
+                          isBookmarked?: any;
+                          summary?: any;
+                          court?: any;
+                          dateDecided?: any;
+                          citedBy?: any;
+                          precedentialValue?: any;
+                          keyTopics?: any;
+                        }
+                      ).citedBy} citations
                     </div>
                   </div>
                   <div class="flex items-center space-x-2">
-                    <span class={"inline-flex items-center px-2 py-1 rounded-full text-xs font-medium " + getPrecedentialColor((result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue)}>
-                      {(result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).precedentialValue} Precedent
+                    <span
+                      class={'inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ' +
+                        getPrecedentialColor(
+                          (
+                            result as {
+                              url?: any;
+                              title?: any;
+                              citation?: any;
+                              relevanceScore?: any;
+                              isBookmarked?: any;
+                              summary?: any;
+                              court?: any;
+                              dateDecided?: any;
+                              citedBy?: any;
+                              precedentialValue?: any;
+                              keyTopics?: any;
+                            }
+                          ).precedentialValue
+                        )}
+                    >
+                      {(
+                        result as {
+                          url?: any;
+                          title?: any;
+                          citation?: any;
+                          relevanceScore?: any;
+                          isBookmarked?: any;
+                          summary?: any;
+                          court?: any;
+                          dateDecided?: any;
+                          citedBy?: any;
+                          precedentialValue?: any;
+                          keyTopics?: any;
+                        }
+                      ).precedentialValue} Precedent
                     </span>
                     <button
                       onclick={() => openCitationDialog(result)}
@@ -574,7 +764,9 @@
                   <div class="mt-3 pt-3 border-t border-gray-100">
                     <div class="flex flex-wrap gap-1">
                       {#each (result as { url?: any; title?: any; citation?: any; relevanceScore?: any; isBookmarked?: any; summary?: any; court?: any; dateDecided?: any; citedBy?: any; precedentialValue?: any; keyTopics?: any }).keyTopics.slice(0, 5) as topic}
-                        <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800">
+                        <span
+                          class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-800"
+                        >
                           {topic}
                         </span>
                       {/each}
@@ -587,7 +779,10 @@
             {#if totalResults > 20}
               <div class="flex items-center justify-center space-x-2 mt-8">
                 <button
-                  onclick={() => { currentPage = Math.max(1, currentPage - 1); performSearch(); }}
+                  onclick={() => {
+                    currentPage = Math.max(1, currentPage - 1);
+                    performSearch();
+                  }}
                   disabled={currentPage <= 1}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -597,7 +792,10 @@
                   Page {currentPage} of {Math.ceil(totalResults / 20)}
                 </span>
                 <button
-                  onclick={() => { currentPage = currentPage + 1; performSearch(); }}
+                  onclick={() => {
+                    currentPage = currentPage + 1;
+                    performSearch();
+                  }}
                   disabled={currentPage >= Math.ceil(totalResults / 20)}
                   class="px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
                 >
@@ -636,9 +834,7 @@
               </div>
             {/each}
             {#if savedCitations.length === 0}
-              <p class="text-sm text-gray-500 text-center py-4">
-                No saved citations yet
-              </p>
+              <p class="text-sm text-gray-500 text-center py-4">No saved citations yet</p>
             {/if}
           </div>
         </div>
@@ -669,7 +865,10 @@
               <div class="space-y-2 max-h-32 overflow-y-auto">
                 {#each Array.isArray(researchSession.queries.slice(-5)) ? researchSession.queries.slice(-5) : [] as query}
                   <button
-                    onclick={() => { searchQuery = query.query; performSearch(); }}
+                    onclick={() => {
+                      searchQuery = query.query;
+                      performSearch();
+                    }}
                     class="w-full text-left p-2 text-xs text-gray-600 hover:bg-gray-50 rounded border border-gray-200"
                   >
                     {query.query}
@@ -686,7 +885,10 @@
             <div class="space-y-2">
               {#each Array.isArray(relatedTopics) ? relatedTopics : [] as topic}
                 <button
-                  onclick={() => { searchQuery = topic; performSearch(); }}
+                  onclick={() => {
+                    searchQuery = topic;
+                    performSearch();
+                  }}
                   class="w-full text-left p-2 text-sm text-blue-600 hover:bg-blue-50 rounded"
                 >
                   {topic}
@@ -736,7 +938,9 @@
               <h4 class="font-medium text-gray-700 mb-2">Key Topics</h4>
               <div class="flex flex-wrap gap-2">
                 {#each Array.isArray(selectedDocument.keyTopics) ? selectedDocument.keyTopics : [] as topic}
-                  <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800">
+                  <span
+                    class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800"
+                  >
                     {topic}
                   </span>
                 {/each}
@@ -746,13 +950,16 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
           <button
-            onclick={() => showCitationDialog = false}
+            onclick={() => (showCitationDialog = false)}
             class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50"
           >
             Close
           </button>
           <button
-            onclick={() => { saveCitation(selectedDocument); showCitationDialog = $state(false); }}
+            onclick={() => {
+              saveCitation(selectedDocument);
+              showCitationDialog = $state(false);
+            }}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
             <Bookmark class="h-4 w-4 mr-1 inline" />

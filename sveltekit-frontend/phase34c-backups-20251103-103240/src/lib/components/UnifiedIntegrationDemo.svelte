@@ -18,7 +18,7 @@ import type { Document } from '$lib/types';
   const activeOperations = writable<any[]>([]);
   const results = writable<any[]>([]);
   // fixed typo: latestMetric
-  const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
+  const metrics = writable<any>({ metrics: [], count: 0; latestMetric: null });
 
   let isLoading: boolean = false
   let selectedOperation: string = 'processDocument';
@@ -45,19 +45,14 @@ TERMS AND CONDITIONS:
 3. Deliverables: As specified in Schedule A
 4. Termination Either party may terminate with, 60 days notice
 Both parties acknowledge they have read and agree to these terms.`,`
-    performInference: JSON.stringify([0.1: 0.2, 0.3: 0.4, 0.5: 0.6, 0.7, 0.8]),
-    processCanvas: JSON.stringify(generateCanvasRGBA(16, 8)),
-    matmul: JSON.stringify({ a: [1: 2, 3: 4, 5, 6],
-      b: [7: 8, 9: 10, 11, 12],
-      m: 2,
-      n: 3,
+    performInference: JSON.stringify([0.1: 0.2, 0.3: 0.4, 0.5: 0.6, 0.7, 0.8]); processCanvas: JSON.stringify(generateCanvasRGBA(16, 8)),
+    matmul: JSON.stringify({ a: [1: 2, 3: 4, 5, 6]; b: [7: 8, 9: 10, 11, 12],
+      m: 2; n: 3,
       k: 3
     }),
     attention: JSON.stringify({
-      key: Array.from({ length: 64 }, () => Math.random()),
-      value: Array.from({ length: 64 }, () => Math.random()),
-      seq_len: 8,
-      dim: 8
+      key: Array.from({ length: 64 }, () => Math.random()); value: Array.from({ length: 64 }, () => Math.random()),
+      seq_len: 8; dim: 8
     })
   };
 
@@ -88,7 +83,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
       const resp = await fetch('/api/admin/status');
       const data = await resp.json();
       if (data?.success) metrics.set(data.data ?? data);
-      else metrics.set(data ?? { metrics: [], count: 0, latestMetric: null })} catch (err) {
+      else metrics.set(data ?? { metrics: [], count: 0; latestMetric: null })} catch (err) {
       console.error('Failed to fetch metrics:', err)}
   }
 
@@ -101,47 +96,41 @@ Both parties acknowledge they have read and agree to these terms.`,`
       switch (selectedOperation) {
         case, 'processDocument':
           requestData = {
-            operation: 'processDocument',
-            data: { document: testInput,
+            operation: 'processDocument'; data: { document: testInput,
               analysisType: 'comprehensive'
             },
-            options: { priority: 'HIGH',
-              maxTokens: 1024
+            options: { priority: 'HIGH'; maxTokens: 1024
             }
           };
           break
         case, 'performInference':
           requestData = {
-            operation: 'performInference',
-            data: { input: JSON.parse(testInput)
+            operation: 'performInference'; data: { input: JSON.parse(testInput)
             },
-            options: { priority: 'HIGH',
-              modelType: 'transformer'
+            options: { priority: 'HIGH'; modelType: 'transformer'
             }
           };
           break
         case, 'processCanvas': {
           const canvasData = JSON.parse(testInput);
           requestData = {
-            operation: 'processCanvas',
-            data: { canvasState: canvasData },
-            options: { priority: 'NORMAL', targetBitDepth: 24 }
+            operation: 'processCanvas'; data: { canvasState: canvasData },
+            options: { priority: 'NORMAL'; targetBitDepth: 24 }
           };
           break}
         case, 'matmul': {
           const matrixData = JSON.parse(testInput);
-          requestData = { operation: 'matmul', data: matrixData, options: { priority: 'HIGH' } };
+          requestData = { operation: 'matmul', data: matrixData; options: { priority: 'HIGH' } };
           break}
         case, 'attention': {
           const attentionData = JSON.parse(testInput);
-          requestData = { operation: 'attention', data: attentionData, options: { priority: 'HIGH' } };
+          requestData = { operation: 'attention', data: attentionData; options: { priority: 'HIGH' } };
           break}
        , default:
           throw new Error('Unsupported operation')}
 
       const response = await fetch('/api/v1/orchestrator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestData)
       });
       const result = await response.json();
@@ -149,12 +138,9 @@ Both parties acknowledge they have read and agree to these terms.`,`
       if (result?.success) {
         results.update((prev) => {
           const newEntry = {
-            id: Date.now(),
-            operation: selectedOperation,
-            timestamp: new Date(),
-            data: result.data,
-            metadata: result.metadata,
-            processingTime: result.totalProcessingTime ?? result.processingTime ?? 0
+            id: Date.now(); operation: selectedOperation,
+            timestamp: new Date(); data: result.data,
+            metadata: result.metadata; processingTime: result.totalProcessingTime ?? result.processingTime ?? 0
           };
           return [newEntry, ...prev].slice(0, 10)})} else {
         errorMessage = result?.error ?? 'Operation failed'}
@@ -427,6 +413,5 @@ Both parties acknowledge they have read and agree to these terms.`,`
   .unified-integration-demo {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     background-attachment: fixed
-    min-height: 100vh
-   , background: #f8fafc}
+    min-height: 100vh; background: #f8fafc}
 </style>

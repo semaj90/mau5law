@@ -119,6 +119,7 @@
       ? 'border-slate-700 text-slate-300 hover:bg-slate-800'
       : 'border-slate-300 text-slate-700 hover:bg-slate-100';
 </script>
+
 {#if variant === 'switch'}
   <div class="flex items-center space-x-3">
     {#if showLabel}
@@ -191,6 +192,7 @@
     </span>
   </button>
 {/if}
+
 <style>
   /* Gaming theme animations */
   button[data-theme='gaming'] {
@@ -212,7 +214,8 @@
   }
   /* Smooth theme transitions */
   :global(html) {
-    transition: background-color 0.3s ease,
+    transition:
+      background-color 0.3s ease,
       color 0.3s ease;
   }
   :global(html.dark) {

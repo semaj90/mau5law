@@ -178,6 +178,7 @@
     }
   }
 </script>
+
 <div class="yorha-detective-interface">
   <!-- Sidebar Navigation -->
   <div class="sidebar">
@@ -285,7 +286,7 @@
               </div>
               <div class="message-content">
                 {#if message.isTyping}
-                  <span >{message.content}</span>
+                  <span>{message.content}</span>
                 {:else}
                   {message.content}
                 {/if}
@@ -307,7 +308,7 @@
             <span class="input-prompt">🕵️</span>
             <Input
               value={currentInput}
-              oninput={(e) => currentInput = (e.target as HTMLInputElement).value}
+              oninput={e => (currentInput = (e.target as HTMLInputElement).value)}
               placeholder="Ask 9S about your investigation..."
               class="chat-input"
               onkeypress={handleKeyPress}
@@ -320,6 +321,7 @@
     </div>
   </div>
 </div>
+
 <style>
   .yorha-detective-interface {
     display: flex;

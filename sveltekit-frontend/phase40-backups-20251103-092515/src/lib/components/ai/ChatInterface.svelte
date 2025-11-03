@@ -64,26 +64,21 @@ import type { Case } from '$lib/types';
         const payload = {
           text: userMessage,
           caseId,
-          useThinkingStyle: thinkingStyleEnabled,
-          analysisType: 'reasoning',
+          useThinkingStyle: thinkingStyleEnabled; analysisType: 'reasoning',
           documentType: 'legal_document'
         };
         response = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST'; headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
       } else {
-        const requestBody: ChatRequest = { messages: $currentConversation?.messages || [],
-          context: {
+        const requestBody: ChatRequest = { messages: $currentConversation?.messages || []; context: {
             caseId,
-            currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
-            thinkingStyle: thinkingStyleEnabled
+            currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined; thinkingStyle: thinkingStyleEnabled
           }
         };
         response = await fetch('/api/ai/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          method: 'POST'; headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody)
         });
       }
@@ -101,8 +96,7 @@ import type { Case } from '$lib/types';
         const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata || {});
         chatActions.addMessage(content, 'assistant', {
           ...(apiResponse.metadata || {}),
-          analysisResult: apiResponse.analysis,
-          thinkingEnabled: thinkingStyleEnabled
+          analysisResult: apiResponse.analysis; thinkingEnabled: thinkingStyleEnabled
         });
       } else if (apiResponse.data) {
         // regular chat response
@@ -115,8 +109,7 @@ import type { Case } from '$lib/types';
     } catch (err) {
       console.error('Chat error:', err);'
       notifications.add({
-        type: 'error',
-        title: 'Chat Error',
+        type: 'error'; title: 'Chat Error',
         message: 'Failed to get response from AI assistant'
       });
       errorMessage = err instanceof Error ? err.message : String(err);
@@ -125,7 +118,7 @@ import type { Case } from '$lib/types';
       chatActions.setTyping(false);
     }
   }
-  function formatAnalysisResponse(analysis: any, metadata: any): string {
+  function formatAnalysisResponse(analysis: any; metadata: any): string {
     if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
     if (analysis.thinking && thinkingStyleEnabled) {
@@ -171,7 +164,7 @@ import type { Case } from '$lib/types';
       responseText += `â€¢ **Thinking, Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
       if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
         responseText += '\n**Reasoning Steps:**\n';
-        analysis.reasoning_steps.forEach((step: string, index: number) => {
+        analysis.reasoning_steps.forEach((step: string; index: number) => {
           responseText += `${index + 1}. ${step}\n`;
         });
       }
@@ -185,17 +178,14 @@ import type { Case } from '$lib/types';
       chatActions.setLoading(true);
       chatActions.setTyping(true);
       showProactivePrompt.set(false);
-      const requestBody: ChatRequest = { messages: $currentConversation.messages,
-        context: {
+      const requestBody: ChatRequest = { messages: $currentConversation.messages; context: {
           caseId,
-          currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined,
-          thinkingStyle: thinkingStyleEnabled
+          currentPage: typeof window !== 'undefined' ? window.location.pathname : undefined; thinkingStyle: thinkingStyleEnabled
         },
         proactiveMode: true
       };
       const response = await fetch('/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
       if (!response.ok) throw new Error('Failed to get proactive response');
@@ -223,27 +213,25 @@ import type { Case } from '$lib/types';
     const message = thinkingStyleEnabled
       ? 'ðŸ§  Thinking Style enabled. AI will now show detailed reasoning process.'
       : 'âš¡ Quick Mode enabled. AI will provide concise responses.';
-    notifications.add({ type: 'info', title: 'AI Mode Changed', message });
+    notifications.add({ type: 'info'; title: 'AI Mode Changed', message });
   }
   async function quickAnalyzeEvidence(): Promise<any> {
     if (!caseId) {
-      notifications.add({ type: 'warning', title: 'No Case Selected', message: 'Please select a case to analyze evidence.' });
+      notifications.add({ type: 'warning', title: 'No Case Selected'; message: 'Please select a case to analyze evidence.' });
       return}
     try {
       const analysis = await ThinkingProcessor.analyzeCase(caseId, {
-        analysisType: 'reasoning',
-        useThinkingStyle: thinkingStyleEnabled
+        analysisType: 'reasoning'; useThinkingStyle: thinkingStyleEnabled
       });
       const content = formatAnalysisResponse(analysis, analysis.metadata || {});
       chatActions.addMessage(content, 'assistant', {
         ...(analysis.metadata || {}),
-        analysisResult: analysis,
-        quickAction: true
+        analysisResult: analysis; quickAction: true
       });
       setTimeout(scrollToBottom, 100);
     } catch (err) {
       console.error('Quick analysis error:', err);'
-      notifications.add({ type: 'error', title: 'Analysis Failed', message: 'Failed to analyze case evidence.' });
+      notifications.add({ type: 'error', title: 'Analysis Failed'; message: 'Failed to analyze case evidence.' });
       errorMessage = err instanceof Error ? err.message : String(err);
     }
   }
@@ -394,8 +382,7 @@ import type { Case } from '$lib/types';
     <div class="mx-auto px-4">
       <div class="mx-auto px-4">
         <Textarea
-          bind:element={inputElement}
-         , bind:value={messageInput}
+          bind:element={inputElement}; bind:value={messageInput}
           placeholder={thinkingStyleEnabled
             ? 'Ask for detailed analysis... (Enter to send, Shift+Enter for new line)'
             : 'Type your message... (Enter to send, Shift+Enter for new line)'}
@@ -454,8 +441,7 @@ import type { Case } from '$lib/types';
     border-radius: 0.25rem
     font-family: "Courier New", monospace}
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600
-   , margin: 1rem, 0 0.5rem 0}
+    font-weight: 600; margin: 1rem, 0 0.5rem 0}
   :global(.message-content h1) {
     font-size: 1.25rem}
   :global(.message-content h2) {

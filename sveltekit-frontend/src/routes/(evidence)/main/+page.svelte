@@ -1,16 +1,16 @@
-﻿<script lang="ts">
-import type { Case } from '$lib/types';
+<script lang="ts">
+  import type { Case } from '$lib/types';
   import { page } from '$app/stores';
 
   let caseId = $derived($page.url.searchParams.get('caseId') || '');
   let uploadFile = $state<File | null>(null);
 
   function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement
+    const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
-      uploadFile = target.files[0]}
+      uploadFile = target.files[0];
+    }
   }
-
   function submitEvidence() {
     if (uploadFile) {
       console.log('Uploading evidence:', uploadFile.name);
@@ -161,5 +161,4 @@ import type { Case } from '$lib/types';
     background: #ffd700
    ; color: #1a1a1a}
 </style>
-
 

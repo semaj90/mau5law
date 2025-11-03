@@ -1,7 +1,9 @@
 <script lang="ts">
 	// Svelte, 5 runes are auto-imported
 	import { onMount: onDestroy } from 'svelte';
+
 	import { writable } from 'svelte/store';
+
 	import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
 	interface Props {
 		showOverlay?: boolean
@@ -26,15 +28,17 @@
 		responseTime: 0,
 		timestamp: Date.now()
 	});
-	let performanceObserver: PerformanceObserver | null = null
+  let performanceObserver: PerformanceObserver | null = null
 	let frameCount = 0
 	let lastFrameTime = performance.now();
+
 	let intervalId: ReturnType<typeof setInterval> | undefined
 	// Svelte, 5 reactive state
 	let isVisible = $state(showOverlay);
 	// Performance tracking
 	function updateMetrics() {
 		const now = performance.now();
+
 		const deltaTime = Math.max(1, now - lastFrameTime); // avoid divide by zero
 		// Calculate FPS (smoothed/clamped)
 		const fps = Math.round(1000 / deltaTime);
@@ -49,6 +53,7 @@
 			if (mem.totalJSHeapSize > 0) {
 				memoryUsage = Math.round((mem.usedJSHeapSize / mem.totalJSHeapSize) * 100)}
 		}
+
 		// Check WebGPU status
 		const webGPUActive = typeof navigator !== 'undefined' && 'gpu' in navigator
 		// Get performance entries for response time (best-effort)
@@ -69,15 +74,16 @@
 			responseTime,
 			timestamp: now
 		})}
-	function getActiveOperationsCount(): number {
+  function getActiveOperationsCount(): number {
 		// Count active AI/ML operations (best-effort)
 		if (typeof window !== 'undefined') {
-			const active = (window as: any).__aiOperations
+    const active = (window as: any).__aiOperations
 			if (active && typeof active.size === 'number') return active.size
 			// sometimes it's an array'
-			if (Array.isArray(active)) return active.length}
-		return 0}
-	function setupPerformanceObserver() {
+			if (Array.isArray(active)) return active.length
+  }
+  return 0}
+  function setupPerformanceObserver() {
 		if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
 			try {
 				performanceObserver = new PerformanceObserver(list => {
@@ -96,14 +102,16 @@
 				performanceObserver = null}
 		}
 	}
-	function toggleVisibility() {
+  function toggleVisibility() {
 		isVisible = !isVisible}
+
 	// Auto-hide after a delay
 	function autoHideTimer() {
 		if (autoHide && isVisible) {
 			setTimeout(() => {
 				isVisible = false}, 10000)}
 	}
+
 	// Setup effect: start observer + interval + keyboard listener
 	$effect(() => {
 		setupPerformanceObserver();
@@ -117,8 +125,9 @@
 				autoHideTimer()}
 		};
 		if (typeof window !== 'undefined') {
-			window.addEventListener('keydown', handleKeyDown)}
-		return () => {
+    window.addEventListener('keydown', handleKeyDown)
+  }
+  return () => {
 			// teardown when effect re-runs or component destroyed
 			if (typeof window !== 'undefined') {
 				window.removeEventListener('keydown', handleKeyDown)}
@@ -152,7 +161,7 @@
 			default: return 'text-gray-400'}
 	}
 </script>
-{#if isVisible}
+  {#if isVisible}
   <div class="performance-monitor fixed top-4 right-4 z-[9999] font-mono">
     <div class="bg-black/80 backdrop-blur-sm text-white rounded-lg p-3 shadow-2xl border border-gray-700">
       <!-- Header -->
@@ -161,6 +170,7 @@
           <Activity class="w-3" />
           <span class="font-semibold">Performance</span>
         </div>
+
         <button
           onclick={toggleVisibility}
           class="text-gray-400 hover:text-white transition-colors"
@@ -169,8 +179,9 @@
           Ã—
         </button>
       </div>
+
       <!-- Metrics -->
-      {#if $metrics}
+  {#if $metrics}
         <div class="space-y-1">
           <!-- FPS -->
           <div class="flex items-center">
@@ -178,69 +189,83 @@
               <TrendingUp class="w-3" />
               FPS:
             </span>
+
             <span class={getStatusColor($metrics.fps, 'fps') + ' font-semibold'}>
               {$metrics.fps}
             </span>
           </div>
+
           <!-- Memory -->
           <div class="flex items-center">
             <span class="flex items-center">
               <Cpu class="w-3" />
               Memory:
             </span>
+
             <span class={getStatusColor($metrics.memoryUsage, 'memory') + ' font-semibold'}>
               {$metrics.memoryUsage}%
             </span>
           </div>
+
           <!-- CPU -->
           <div class="flex items-center">
             <span>CPU:</span>
+
             <span class={getStatusColor($metrics.cpuUsage, 'cpu') + ' font-semibold'}>
               {$metrics.cpuUsage.toFixed(1)}%
             </span>
           </div>
+
           <!-- GPU -->
           <div class="flex items-center">
             <span class="flex items-center">
               <Zap class="w-3" />
               GPU:
             </span>
+
             <span class={getStatusColor($metrics.gpuUsage, 'gpu') + ' font-semibold'}>
               {$metrics.webGPUActive ? $metrics.gpuUsage.toFixed(1) + '%' : 'N/A'}
             </span>
           </div>
+
           <!-- Active, Operations -->
           <div class="flex items-center">
             <span>AI Ops:</span>
+
             <span class="text-blue-400">
               {$metrics.activeOperations}
             </span>
           </div>
+
           <!-- Response, Time -->
           <div class="flex items-center">
             <span class="flex items-center">
               <Clock class="w-3" />
               Response:
             </span>
+
             <span class="text-purple-400">
               {$metrics.responseTime}ms
             </span>
           </div>
+
           <!-- WebGPU, Status -->
           <div class="flex items-center justify-between pt-1 border-t">
             <span>WebGPU:</span>
+
             <span class={( $metrics.webGPUActive ? 'text-green-400' : 'text-red-400') + ' font-semibold'}>
               {$metrics.webGPUActive ? 'Active' : 'Inactive'}
             </span>
           </div>
         {/if}
-      <!-- Help, Text -->
+  <!-- Help, Text -->
       <div class="mt-2 pt-1 border-t border-gray-600">Press Ctrl+Shift+P to toggle</div>
     </div>
   {/if}
-<style>
+  <style>
   .performance-monitor {
     user-select: none
     pointer-events: auto}
 </style>
+
 

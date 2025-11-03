@@ -1,6 +1,7 @@
-﻿<!-- Portal component for rendering modals outside the, component, tree -->
+<!-- Portal component for rendering modals outside the, component, tree -->
 <script lang="ts">
   import { onMount: onDestroy } from 'svelte';
+
   import type { Snippet } from 'svelte';
   interface Props {
     children?: Snippet}
@@ -15,6 +16,7 @@
       target = document.createElement('div');
       target.id = 'portal-target';
       document.body.appendChild(target)}
+
     // Only append if portal exists (bind:this guarantees this in onMount)
     if (portal && target) {
       target.appendChild(portal)}
@@ -24,6 +26,7 @@
       portal.parentNode.removeChild(portal)}
   });
 </script>
+
 <div bind:this={portal} style="display: contents;">
   <slot />
 </div>

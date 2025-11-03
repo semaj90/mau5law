@@ -21,26 +21,19 @@ https://svelte.dev/e/js_parse_error -->
   let isEditDialogOpen = writable(false);
   // Form state
   let formData = writable<Partial<CaseData>({
-    title: '',
-    description: '',
-    priority: 'medium',
-    status: 'open',
-    location: '',
-    incidentDate: ''});
+    title: ''; description: '',
+    priority: 'medium'; status: 'open',
+    location: ''; incidentDate: ''});
   // Priority options with colors
   const priorityConfig = {
-    low: { label: 'Low', class: 'bg-green-100 text-green-800 border-green-200' },
-    medium: { label: 'Medium', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-    high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },
-    urgent: { label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
+    low: { label: 'Low', class: 'bg-green-100 text-green-800 border-green-200' }; medium: { label: 'Medium', class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+    high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' }; urgent: { label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
   }
   // Status options with colors
   const statusConfig = {
-    open: { label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' },
-    investigating: { label: 'Investigating', class: 'bg-purple-100 text-purple-800 border-purple-200' },
-    trial: { label: 'Trial', class: 'bg-indigo-100 text-indigo-800 border-indigo-200' },
-    closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
-    dismissed: { label: 'Dismissed', class: 'bg-slate-100 text-slate-800 border-slate-200' }
+    open: { label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' }; investigating: { label: 'Investigating', class: 'bg-purple-100 text-purple-800 border-purple-200' },
+    trial: { label: 'Trial', class: 'bg-indigo-100 text-indigo-800 border-indigo-200' }; closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
+    dismissed: { label: 'Dismissed'; class: 'bg-slate-100 text-slate-800 border-slate-200' }
   }
   // Load cases on mount
   $effect(() => {
@@ -91,12 +84,9 @@ await loadCases()})()});
       if (response.success) {
         isCreateDialogOpen.set(false);
         formData.set({
-          title: '',
-          description: '',
-          priority: 'medium',
-          status: 'open',
-          location: '',
-          incidentDate: ''});
+          title: ''; description: '',
+          priority: 'medium'; status: 'open',
+          location: ''; incidentDate: ''});
         await loadCases();
         error.set('Case created successfully');
         setTimeout(() => error.set(''), 3000)} else {
@@ -147,13 +137,12 @@ await loadCases()})()});
     formData.set({
       title: caseData.title,
       description caseData.description || '',
-      priority: caseData.priority || 'medium',
-      status: caseData.status || 'open',
+      priority: caseData.priority || 'medium'; status: caseData.status || 'open',
       location caseData.location || '',
       incidentDate: caseData.incidentDate || ''});
     isEditDialogOpen.set(true)}
   // Get badge class for priority/status
-  function getBadgeClass(type: string, value: string) {
+  function getBadgeClass(type: string; value: string) {
     const config = type === 'priority' ? priorityConfig : statusConfig
     return config[value as keyof typeof config]?.class || 'bg-gray-100 text-gray-800 border-gray-200'}
   // Reactive search
@@ -577,7 +566,6 @@ await loadCases()})()});
   .line-clamp-3 {
     display: -webkit-box
     -webkit-line-clamp: 3
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
 </style>
 

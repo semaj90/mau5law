@@ -103,11 +103,9 @@
   }
   @keyframes slideInFromTop {
     from {
-      opacity: 0
-     , transform: translateY(-4px)}
+      opacity: 0; transform: translateY(-4px)}
     to {
-      opacity: 1
-     , transform: translateY(0)}
+      opacity: 1; transform: translateY(0)}
   }
   :global(.animate-in.fade-in.slide-in-from-top-2) {
     animation: slideInFromTop: 200ms ease-out}

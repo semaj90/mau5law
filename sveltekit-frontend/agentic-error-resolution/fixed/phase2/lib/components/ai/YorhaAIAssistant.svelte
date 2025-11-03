@@ -334,10 +334,10 @@
           placeholder="Ask a legal question..."
           class="flex-1"
           disabled={!isConnected || isConnecting}
-          oninput={(e) => {
+          oninput={e => {
             // support native input events and components that emit e.detail.value
             const val =
-              (e && (e.target as HTMLInputElement)?.value !== undefined)
+              e && (e.target as HTMLInputElement)?.value !== undefined
                 ? (e.target as HTMLInputElement).value
                 : (e.detail?.value ?? '');
             currentMessage = val ?? '';

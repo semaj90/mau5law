@@ -39,8 +39,7 @@ import type { Document } from '$lib/types';
   let stats = $state<{
     totalTurns: number
     avgConfidence: number
-    stateTransitions: number
-   , mostCommonState: string} | null>(null);
+    stateTransitions: number; mostCommonState: string} | null>(null);
   // Derived state names
   const stateNames = {
     0: 'Greeting',
@@ -69,8 +68,7 @@ import type { Document } from '$lib/types';
     error = null
     try {
       const response = await fetch('/api/contextual/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message,
           sessionId,
@@ -86,12 +84,9 @@ import type { Document } from '$lib/types';
         // Add to conversation history
         conversationHistory = [
           ...conversationHistory, {
-            userMessage: message,
-            agentResponse: result.data.response,
-            timestamp: Date.now(),
-            intent: 'general_query',
-            entities: [],
-            hmmState: contextualState?.hmmState.currentState ?? 0
+            userMessage: message; agentResponse: result.data.response,
+            timestamp: Date.now(); intent: 'general_query',
+            entities: []; hmmState: contextualState?.hmmState.currentState ?? 0
           }
         ];
         // Clear input
@@ -360,11 +355,9 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     height: 100%;
-    max-height: 800px
-   , border: 1px solid var(--border, #e5e7eb);
+    max-height: 800px; border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px
-    overflow: hidden
-   , background: var(--background, #ffffff);
+    overflow: hidden; background: var(--background, #ffffff);
   }
   .demo-header {
     padding: 1rem 1.5rem
@@ -378,8 +371,7 @@ import type { Document } from '$lib/types';
   .session-info {
     display: flex
     gap: 1rem
-    font-size: 0.875rem
-   , color: var(--muted-foreground, #6b7280);
+    font-size: 0.875rem; color: var(--muted-foreground, #6b7280);
   }
   .demo-content {
     display: grid
@@ -393,8 +385,7 @@ import type { Document } from '$lib/types';
   }
   .chat-messages {
     flex: 1
-    overflow-y: auto
-   , padding: 1rem}
+    overflow-y: auto; padding: 1rem}
   .message-group {
     margin-bottom: 1.5rem}
   .user-message,
@@ -403,8 +394,7 @@ import type { Document } from '$lib/types';
   .message-label {
     font-size: 0.75rem
     font-weight: 600
-    margin-bottom: 0.25rem
-   , color: var(--muted-foreground, #6b7280);
+    margin-bottom: 0.25rem; color: var(--muted-foreground, #6b7280);
   }
   .message-content {
     padding: 0.75rem 1rem
@@ -417,21 +407,18 @@ import type { Document } from '$lib/types';
     border: 1px solid var(--border, #e5e7eb);
   }
   .message-meta {
-    font-size: 0.75rem
-   , color: var(--muted-foreground, #6b7280);
+    font-size: 0.75rem; color: var(--muted-foreground, #6b7280);
     margin-top: 0.25rem
     padding-left: 1rem}
   .empty-state {
     text-align: center
-    padding: 3rem 2rem
-   , color: var(--muted-foreground, #6b7280);
+    padding: 3rem 2rem; color: var(--muted-foreground, #6b7280);
   }
   .empty-state p {
     margin: 0.5rem 0}
   .chat-input {
     border-top: 1px solid var(--border, #e5e7eb);
-    padding: 1rem
-   , background: var(--background, #ffffff);
+    padding: 1rem; background: var(--background, #ffffff);
   }
   .error-banner {
     padding: 0.75rem
@@ -442,8 +429,7 @@ import type { Document } from '$lib/types';
     font-size: 0.875rem}
   textarea {
     width: 100%;
-    padding: 0.75rem
-   , border: 1px solid var(--border, #e5e7eb);
+    padding: 0.75rem; border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px
     resize: none
     font-family: inherit
@@ -469,15 +455,12 @@ import type { Document } from '$lib/types';
     display: flex
     gap: 0.5rem}
   button {
-    padding: 0.5rem 1rem
-   , border: 1px solid var(--border, #e5e7eb);
-    border-radius: 4px
-   , background: var(--background, #ffffff);
+    padding: 0.5rem 1rem; border: 1px solid var(--border, #e5e7eb);
+    border-radius: 4px; background: var(--background, #ffffff);
     cursor: pointer
     font-size: 0.875rem
     font-weight: 500
-    transition: all 0.2s}
- , buttonhover:not(:disabled) {
+    transition: all 0.2s}; buttonhover:not(:disabled) {
     background: var(--muted, #f9fafb);
   }
   buttondisabled {
@@ -489,8 +472,7 @@ import type { Document } from '$lib/types';
     flex-direction: column
     gap: 1rem
     padding: 1rem
-    overflow-y: auto
-   , background: var(--muted, #f9fafb);
+    overflow-y: auto; background: var(--muted, #f9fafb);
   }
   .state-card,
   .predictions-card,
@@ -498,8 +480,7 @@ import type { Document } from '$lib/types';
   .stats-card {
     background: var(--background, #ffffff);
     border: 1px solid var(--border, #e5e7eb);
-    border-radius: 8px
-   , padding: 1rem}
+    border-radius: 8px; padding: 1rem}
   .state-card h3,
   .predictions-card h3,
   .entities-card h3,
@@ -511,12 +492,10 @@ import type { Document } from '$lib/types';
     text-align: center}
   .state-name {
     font-size: 1.5rem
-    font-weight: 700
-   , color: var(--primary, #3b82f6);
+    font-weight: 700; color: var(--primary, #3b82f6);
     margin-bottom: 0.5rem}
   .state-confidence {
-    font-size: 0.875rem
-   , color: var(--muted-foreground, #6b7280);
+    font-size: 0.875rem; color: var(--muted-foreground, #6b7280);
     margin-bottom: 1rem}
   .state-history {
     margin-top: 1rem
@@ -529,13 +508,11 @@ import type { Document } from '$lib/types';
     gap: 0.5rem
     margin-top: 0.5rem}
   .history-state {
-    padding: 0.25rem 0.5rem
-   , background: var(--muted, #f9fafb);
+    padding: 0.25rem 0.5rem; background: var(--muted, #f9fafb);
     border-radius: 4px
     font-size: 0.75rem}
   .no-data {
-    text-align: center
-   , color: var(--muted-foreground, #6b7280);
+    text-align: center; color: var(--muted-foreground, #6b7280);
     font-size: 0.875rem
     margin: 1rem 0}
   .predictions-list {
@@ -550,12 +527,10 @@ import type { Document } from '$lib/types';
     font-size: 0.875rem
     font-weight: 500}
   .prediction-confidence {
-    font-size: 0.75rem
-   , color: var(--muted-foreground, #6b7280);
+    font-size: 0.75rem; color: var(--muted-foreground, #6b7280);
   }
   .prediction-bar {
-    height: 4px
-   , background: var(--muted, #f9fafb);
+    height: 4px; background: var(--muted, #f9fafb);
     border-radius: 2px
     overflow: hidden}
   .prediction-fill {
@@ -570,13 +545,11 @@ import type { Document } from '$lib/types';
     display: flex
     justify-content: space-betweennn
     align-items: center
-    padding: 0.5rem
-   , background: var(--muted, #f9fafb);
+    padding: 0.5rem; background: var(--muted, #f9fafb);
     border-radius: 4px
     font-size: 0.875rem}
   .entity-type {
-    font-weight: 600
-   , color: var(--primary, #3b82f6);
+    font-weight: 600; color: var(--primary, #3b82f6);
   }
   .entity-value {
     color: var(--foreground, #111827);
@@ -588,13 +561,11 @@ import type { Document } from '$lib/types';
   .stat-item {
     text-align: center}
   .stat-label {
-    font-size: 0.75rem
-   , color: var(--muted-foreground, #6b7280);
+    font-size: 0.75rem; color: var(--muted-foreground, #6b7280);
     margin-bottom: 0.25rem}
   .stat-value {
     font-size: 1.25rem
-    font-weight: 700
-   , color: var(--foreground, #111827);
+    font-weight: 700; color: var(--foreground, #111827);
   }
 </style>
 

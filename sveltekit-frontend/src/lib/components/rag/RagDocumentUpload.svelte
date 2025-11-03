@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   import { Upload, X, CheckCircle, AlertCircle } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
@@ -70,12 +70,14 @@ import type { Document } from '$lib/types';
     uploadResult = null
     message = ''}
 </script>
+
 <div class="w-full space-y-4 p-6 bg-white rounded-lg border">
   <!-- Header -->
   <div class="flex items-center gap-2">
     <Upload class="w-5 h-5" />
     <h2 class="text-lg font-semibold">Upload Evidence Document</h2>
   </div>
+
   <!-- Messages -->
   {#if message}
     <div
@@ -87,12 +89,12 @@ import type { Document } from '$lib/types';
             : 'bg-blue-50 border border-blue-200 text-blue-700'
       }`}`
     >
-      {#if messageType === 'success'}
+  {#if messageType === 'success'}
         <CheckCircle class="w-5 h-5 flex-shrink-0" />
       {:else if messageType === 'error'}
         <AlertCircle class="w-5 h-5 flex-shrink-0" />
       {/if}
-      <span>{message}</span>
+  <span>{message}</span>
     {/if}
   <!-- Drop, Zone -->
   <div
@@ -106,9 +108,11 @@ import type { Document } from '$lib/types';
   >
     <Upload class="w-10 h-10 text-gray-400 mx-auto" />
     <p class="text-sm font-medium text-gray-900">Drag files here or click to select</p>
+
     <p class="text-xs text-gray-600">
       PDF, Word, TXT, JPEG, PNG, TIFF up to 50MB
     </p>
+
     <input
       type="file"
       accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.tiff"
@@ -122,20 +126,24 @@ import type { Document } from '$lib/types';
       Select File
     </Button>
   </div>
+
   <!-- File, Preview -->
   {#if files && files.length > 0}
     <div class="space-y-3">
       <div class="p-3 bg-blue-50 rounded-lg border">
         <p class="text-sm font-medium">{files[0].name}</p>
+
         <p class="text-xs text-gray-600">
           {(files[0].size / 1024 / 1024).toFixed(2)} MB
         </p>
       </div>
+
       <!-- Tags, Input -->
       <div>
         <label for="tags" class="block text-sm font-medium text-gray-700">
           Tags (comma-separated, optional)
         </label>
+
         <input
           id="tags"
           type="text"
@@ -149,14 +157,17 @@ import type { Document } from '$lib/types';
   {#if uploadResult && uploadResult.success && uploadResult.document}
     <div class="p-4 bg-green-50 rounded-lg border">
       <h3 class="font-medium text-green-900">Upload Complete</h3>
+
       <div class="space-y-1 text-sm">
         <p><strong>Filename:</strong> {uploadResult.document.filename}</p>
+
         <p><strong>Chunks:</strong> {uploadResult.document.chunks}</p>
+
         <p><strong>Embedding, Model:</strong> {uploadResult.document.embeddingModel}</p>
-        {#if uploadResult.document.hasOCR}
+  {#if uploadResult.document.hasOCR}
           <p><strong>OCR:</strong> Processed âœ“</p>
         {/if}
-      </div>
+  </div>
     {/if}
   <!-- Progress, Bar -->
   {#if uploading}
@@ -175,6 +186,7 @@ import type { Document } from '$lib/types';
     >
       {uploading ? 'Uploading...' : 'Upload Document'}
     </Button>
+
     <Button
       onclick={clearFiles}
       disabled={uploading || !files}
@@ -184,8 +196,10 @@ import type { Document } from '$lib/types';
     </Button>
   </div>
 </div>
+
 <style>
   input[type='file'] {
     cursor: pointer}
 </style>
+
 

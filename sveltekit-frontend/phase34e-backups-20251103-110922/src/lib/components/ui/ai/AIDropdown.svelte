@@ -78,44 +78,45 @@
 </script>
 
 <div class="ai-dropdown" bind:this={rootEl}>
-	<button
-		type="button"
-		class="ai-dropdown-trigger"
-		aria-haspopup="listbox"
-		aria-expanded={isOpen}
-		aria-disabled={disabled}
-		onclick={toggle}
-		onkeydown={onTriggerKeydown}
-	>
-		<span class="ai-dropdown-label">
-			{#if items && items.length}
-				{items.find((i) => i.id === value)?.label ?? placeholder}
-			{:else}
-				{placeholder}
-			{/if}
-		</span>
-		<span class="ai-dropdown-caret" aria-hidden="true">â–¾</span>
-	</button>
+  <button
+    type="button"
+    class="ai-dropdown-trigger"
+    aria-haspopup="listbox"
+    aria-expanded={isOpen}
+    aria-disabled={disabled}
+    onclick={toggle}
+    onkeydown={onTriggerKeydown}
+  >
+    <span class="ai-dropdown-label">
+      {#if items && items.length}
+        {items.find(i => i.id === value)?.label ?? placeholder}
+      {:else}
+        {placeholder}
+      {/if}
+    </span>
+    <span class="ai-dropdown-caret" aria-hidden="true">â–¾</span>
+  </button>
 
-	{#if isOpen}
-		<ul role="listbox" class="ai-dropdown-list" tabindex="-1">
-			{#each items as item, idx}
-				<li
-					role="option"
-					aria-selected={value === item.id}
-					class:selected={value === item.id}
-				, class:highlighted={highlighted === idx}
-					onclick={() => selectItem(item.id)}
-					onmouseenter={() => (highlighted = idx)}
-				>
-					{item.label}
-				</li>
-			{/each}
-			{#if items.length === 0}
-				<li class="ai-dropdown-empty" aria-disabled="true">No options</li>
-			{/if}
-		</ul>
-	{/if}
+  {#if isOpen}
+    <ul role="listbox" class="ai-dropdown-list" tabindex="-1">
+      {#each items as item, idx}
+        <li
+          role="option"
+          aria-selected={value === item.id}
+          class:selected={value === item.id}
+          ,
+          class:highlighted={highlighted === idx}
+          onclick={() => selectItem(item.id)}
+          onmouseenter={() => (highlighted = idx)}
+        >
+          {item.label}
+        </li>
+      {/each}
+      {#if items.length === 0}
+        <li class="ai-dropdown-empty" aria-disabled="true">No options</li>
+      {/if}
+    </ul>
+  {/if}
 </div>
 
 <style>

@@ -51,6 +51,7 @@ import type { Case } from '$lib/types';
   // Create context menu
   // Melt UI component creation removed - replace with bits-ui declarative components"></div>"
   </div>
+
   <!-- Card, Content -->
   <div class="relative">
     <!-- Header -->
@@ -60,26 +61,30 @@ import type { Case } from '$lib/types';
           <span class="text-sm font-mono text-nier-gray">
             {caseData.id}
           </span>
+
           <span class="{currentPriority.color} text-lg" title="{caseData.priority} priority">
             {currentPriority.icon}
           </span>
         </div>
+
         <h3 class="text-lg font-semibold nier-heading line-clamp-1 group-hover:text-harvard-crimson dark:group-hover:text-digital-green">
           {caseData.title}
         </h3>
-        {#if caseData.description}
+  {#if caseData.description}
           <p class="text-sm text-nier-gray dark:text-nier-silver line-clamp-2">
             {caseData.description}
           </p>
         {/if}
-      </div>
+  </div>
+
       <div class="flex items-center">
         <Badge variant="ghost" class="{currentStatus.class}">
-          {#key currentStatus.icon}
+  {#key currentStatus.icon}
             <currentStatus.icon class="w-3 h-3" />
           {/key}
           {currentStatus.label}
         </Badge>
+
         <Button
           variant="ghost"
           size="sm"
@@ -90,6 +95,7 @@ import type { Case } from '$lib/types';
         </Button>
       </div>
     </div>
+
     <!-- Stats, Grid -->
     <div class="grid grid-cols-3 gap-4">
       <div class="text-center p-3 rounded-lg bg-nier-white/50">
@@ -99,8 +105,10 @@ import type { Case } from '$lib/types';
             {caseData.stats.documents}
           </p>
         </div>
+
         <p class="text-xs text-nier-gray">Documents</p>
       </div>
+
       <div class="text-center p-3 rounded-lg bg-nier-white/50">
         <div class="flex items-center justify-center gap-1">
           <AlertTriangle class="w-4 h-4 text-nier-gray" />
@@ -108,8 +116,10 @@ import type { Case } from '$lib/types';
             {caseData.stats.evidence}
           </p>
         </div>
+
         <p class="text-xs text-nier-gray">Evidence</p>
       </div>
+
       <div class="text-center p-3 rounded-lg bg-nier-white/50">
         <div class="flex items-center justify-center gap-1">
           <Users class="w-4 h-4 text-nier-gray" />
@@ -117,16 +127,20 @@ import type { Case } from '$lib/types';
             {caseData.stats.witnesses}
           </p>
         </div>
+
         <p class="text-xs text-nier-gray">Witnesses</p>
       </div>
     </div>
+
     <!-- Progress, Bar (if, applicable) -->
-    {#if caseData.progress !== undefined}
+  {#if caseData.progress !== undefined}
       <div class="mb-4">
         <div class="flex justify-between items-center">
           <span class="text-xs text-nier-gray">Progress</span>
+
           <span class="text-xs">{caseData.progress}%</span>
         </div>
+
         <div class="h-2 bg-nier-white/50 dark:bg-nier-black/50 rounded-full">
           <div
             class="h-full nier-gradient-digital nier-transition"
@@ -134,21 +148,21 @@ import type { Case } from '$lib/types';
           ></div>
         </div>
       {/if}
-    <!-- Tags -->
-    {#if caseData.tags && caseData.tags.length > 0}
+  <!-- Tags -->
+  {#if caseData.tags && caseData.tags.length > 0}
       <div class="flex flex-wrap gap-2">
-        {#each Array.isArray(caseData.tags) ? caseData.tags : [] as tag}
+  {#each Array.isArray(caseData.tags) ? caseData.tags : [] as tag}
           <Badge variant="secondary" class="text-xs">
             #{tag}
           </Badge>
         {/each}
       {/if}
-    <!-- Footer -->
+  <!-- Footer -->
     <div class="flex items-center justify-between pt-4 border-t border-nier-light-gray">
       <div class="flex items-center">
-        {#if caseData.assignee}
+  {#if caseData.assignee}
           <div class="flex items-center">
-            {#if caseData.assignee.avatar}
+  {#if caseData.assignee.avatar}
               <img
                 src={caseData.assignee.avatar}
                 alt={caseData.assignee.name}
@@ -160,11 +174,12 @@ import type { Case } from '$lib/types';
                   {caseData.assignee.name.charAt.toUpperCase()}
                 </span>
               {/if}
-            <span class="text-sm text-nier-gray">
+  <span class="text-sm text-nier-gray">
               {caseData.assignee.name}
             </span>
           {/if}
-      </div>
+  </div>
+
       <div class="flex items-center gap-2 text-xs text-nier-gray">
         <Calendar class="w-3" />
         <span title={formatDate(caseData.created)}>
@@ -172,6 +187,7 @@ import type { Case } from '$lib/types';
         </span>
       </div>
     </div>
+
     <!-- Action, Buttons -->
     <div class="flex gap-2">
       <Button
@@ -182,6 +198,7 @@ import type { Case } from '$lib/types';
         <Eye class="w-4 h-4" />
         View Details
       </Button>
+
       <Button
         onclick={() => onEdit(caseData.id)}
         variant="ghost"
@@ -192,11 +209,13 @@ import type { Case } from '$lib/types';
       </Button>
     </div>
   </div>
+
   <!-- Digital Effect, on, Hover -->
   <div class="absolute inset-0 bg-gradient-to-br from-transparent to-digital-green/5 opacity-0 group-hover:opacity-100 pointer-events-none"></div>
 </div.Root>
+
 <!-- Context, Menu -->
-{#if $open}
+  {#if $open}
   <div
     class="nier-panel p-2 min-w-[200px] z-50"
     transition:scale={{ duration: 200, start: 0.95 }}
@@ -210,6 +229,7 @@ import type { Case } from '$lib/types';
       <Eye class="w-4 h-4" />
       View Details
     </Button>
+
     <Button
       onclick={() => onEdit(caseData.id)}
       variant="ghost"
@@ -219,7 +239,9 @@ import type { Case } from '$lib/types';
       <Edit class="w-4 h-4" />
       Edit Case
     </Button>
+
     <div class="h-px bg-nier-light-gray dark:bg-nier-gray/30"></div>
+
     <Button
       onclick={() => onArchive(caseData.id)}
       variant="ghost"
@@ -229,6 +251,7 @@ import type { Case } from '$lib/types';
       <Archive class="w-4 h-4" />
       Archive
     </Button>
+
     <Button
       onclick={() => onDelete(caseData.id)}
       variant="ghost"
@@ -239,7 +262,7 @@ import type { Case } from '$lib/types';
       Delete
     </Button>
   {/if}
-<style lang="css">
+  <style lang="css">
   /* @unocss-include */
   /* Add smooth line clamp transitions */
   .line-clamp-1 {

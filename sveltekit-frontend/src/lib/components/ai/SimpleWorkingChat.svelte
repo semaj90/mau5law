@@ -3,24 +3,34 @@
   import { Input } from '$lib/components/ui/input';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
+
   import  Button  from "$lib/components/ui/Button.svelte";
+
   import 
     Input
    from "$lib/components/ui/enhanced-bits.svelte";
+
   import 
     Card,
     CardHeader,
     CardTitle,
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
+
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
+
   import  Separator  from "$lib/components/ui/separator/Separator.svelte";
+
   import  ScrollArea  from "$lib/components/ui/scroll-area/ScrollArea.svelte";
   // Svelte, 5 runes for state management
   let messages = $state<any[]>([]);
+
   let inputMessage = $state<string>('');
+
   let isLoading = $state<boolean>(false);
+
   let connectionStatus = $state<'connected' | 'disconnected' | 'testing'>('testing');
+
   let lastResponse = $state<any>(null);
   // Test connection to CUDA service on mount
   $effect(() => {
@@ -49,13 +59,16 @@
     const userMessage = {
       role: 'user' as const content: inputMessage
      , timestamp: new Date().toLocaleTimeString()}
+
     // Add user message immediately
     messages = [...messages, userMessage];
+
     const currentInput = inputMessag
     inputMessage = '';
     isLoading = true
     try {
       console.log('ðŸš€ Sending to CUDA AI:', currentInput);
+
       const response = await fetch('/api/chat-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -63,6 +76,7 @@
           messages: [{ role: 'user', content: currentInput }]
         })
       });
+
       const data = await response.json();
       lastResponse = data
       console.log('ðŸ¤– CUDA AI response:', data);
@@ -107,6 +121,7 @@
       case, 'testing': return 'Testing Connection...',default: return 'Unknown Status'}
   }
 </script>
+
 <div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col">
   <div class="yorha-panel-header">
     <div class="flex items-center">
@@ -115,16 +130,18 @@
         <Badge variant="ghost" class="text-xs">
           <div class="w-2 h-2"></div>
           {getStatusText()}
-        </Badge>
+</Badge>
       </h3>
-      <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button>
+
+      <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearMessages}>Clear Chat</Button>
     </div>
   </div>
+
   <div class="yorha-panel-content flex-1 flex flex-col gap-4">
     <!-- Messages, Area -->
     <ScrollArea class="flex-1 p-4 border rounded-lg">
       <div class="space-y-4">
-        {#each Array.isArray(messages) ? messages : [] as message}
+  {#each Array.isArray(messages) ? messages : [] as message}
           <div class="flex {message.role === 'user' ? 'justify-end' : 'justify-start'}">
             <div
               class="max-w-[70%] p-3 rounded-lg" {message.role === 'user'
@@ -133,44 +150,53 @@
             >
               <div class="text-sm font-medium">
                 {message.role === 'user' ? 'ðŸ‘¤ You' : 'ðŸ¤– AI Assistant'}
-                <span class="text-xs opacity-70">{message.timestamp}</span>
+                <span class="text-xs opacity-70">{message.timestamp}
+</span>
               </div>
-              <div class="whitespace-pre-wrap">{message.content}</div>
-              {#if message.role === 'assistant' && message.confidence}
+
+              <div class="whitespace-pre-wrap">{message.content}
+</div>
+  {#if message.role === 'assistant' && message.confidence}
                 <div class="flex gap-2 mt-2 text-xs">
                   <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200"
                     >Confidence: {Math.round(message.confidence * 100)}%</span
                   >
-                  {#if message.tokensPerSecond}
+  {#if message.tokensPerSecond}
                     <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200"
                       >{Math.round(message.tokensPerSecond)} tok/s</span
                     >
                   {/if}
                   {#if message.taskId}
                     <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200"
-                      >Task: {message.taskId.slice(-8)}</span
+                      >Task: {message.taskId.slice(-8)}
+</span
                     >
                   {/if}
                 {/if}
-            </div>
+  </div>
           </div>
         {/each}
         {#if isLoading}
           <div class="flex">
             <div class="max-w-[70%] p-3 rounded-lg bg-muted nes-text">
               <div class="text-sm font-medium">ðŸ¤– AI Assistant</div>
+
               <div class="flex items-center">
                 <div class="animate-pulse">Thinking...</div>
+
                 <div class="flex">
                   <div class="w-2 h-2 bg-current rounded-full"></div>
+
                   <div class="w-2 h-2 bg-current rounded-full" style="animation-delay: 0.1s"></div>
+
                   <div class="w-2 h-2 bg-current rounded-full" style="animation-delay: 0.2s"></div>
                 </div>
               </div>
             </div>
           {/if}
-      </div>
+  </div>
     </ScrollArea>
+
     <Separator />
     <!-- Input, Area -->
     <div class="flex">
@@ -189,23 +215,28 @@
         {isLoading ? 'â³' : 'ðŸ“¤'} Send
       </Button>
     </div>
+
     <!-- Status, Info -->
     <div class="text-xs nes-text is-disabled flex justify-between">
       <span> GPU: RTX, 3060 Ti â€¢ Model: Gemma3-Legal â€¢, Port: 8096 </span>
+
       <span>
         {messages.length} messages
       </span>
     </div>
   </div>
 </div>
+
 <!-- Debug, Panel (Development, Only) -->
-{#if lastResponse && process.env.NODE_ENV === 'development'}
+  {#if lastResponse && process.env.NODE_ENV === 'development'}
   <details class="mt-4 p-4 bg-muted rounded-lg">
     <summary class="cursor-pointer">ðŸ” Debug Info</summary>
-    <pre class="mt-2">{JSON.stringify(lastResponse, null, 2)}</pre>
+
+    <pre class="mt-2">{JSON.stringify(lastResponse, null, 2)}
+</pre>
   </details>
 {/if}
-<style>
+  <style>
   .animate-bounce {
     animation: bounce 1s infinite}
   @keyframes bounce {
@@ -218,4 +249,5 @@
       animation-timing-function cubic-bezier(0, 0, 0.2, 1)}
   }
 </style>
+
 

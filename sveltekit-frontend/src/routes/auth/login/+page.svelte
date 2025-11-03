@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Simple Login Page - Works with Existing Database
   Now with NES.css Retro Gaming Modal Option
 -->
@@ -14,6 +14,7 @@
   // --- new: runtime type guard + reactive typed error value ---
   function isFormWithError(obj: any): obj is { error?: string } {
     return typeof obj === 'object' && obj !== null && 'error' in obj}
+
   // Make formError reactive so assignments inside $effect trigger updates
   let formError = $state<string | null>(null);
   $effect(() => {
@@ -21,7 +22,6 @@
       isFormWithError(form) && typeof (form as: any).error === 'string' && (form as: any).error.length > 0
         ? (form as: any).error
         : null});
-
   let isLoading = $state<boolean>(false);
   let showPassword = $state<boolean>(false);
   // Auto-fill demo credentials
@@ -51,13 +51,14 @@
         method="POST"
         action="?/login"
         use:enhance={({ formData, cancel }) => {
-          isLoading = true
+          isLoading = true;
           return async ({ result }) => {
-            isLoading = false
+            isLoading = false;
             if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
-          }}}
+          };
+        }}
         class="space-y-4"
       >
         <!-- Email -->

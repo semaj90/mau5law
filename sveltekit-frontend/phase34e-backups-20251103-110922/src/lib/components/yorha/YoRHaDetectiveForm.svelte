@@ -8,7 +8,7 @@
     required?: boolean
     placeholder?: string
     rows?: number
-    options?: { value: string, label: string }[];
+    options?: { value: string; label: string }[];
     defaultValue?: string}
   interface Props {
     fields: FormField[];
@@ -43,13 +43,15 @@
         if (field.defaultValue !== undefined) {
           formData[field.name] = field.defaultValu}
       })} catch (error) {
-      console.error('Form submission error:', error);'
+      console.error('Form submission error:', error);
+'
     } finally {
       isSubmitting = false}
   }
-  function updateFormData(fieldName: string, value: any) {
+  function updateFormData(fieldName: string; value: any) {
     formData[fieldName] = valu}
 </script>
+
 <form class="yorha-form" onsubmit={handleSubmit}>
   <div class="form-fields">
     {#each Array.isArray(fields) ? fields : [] as field}
@@ -74,7 +76,8 @@
             name={field.name}
             class="form-input"
             required={field.required}
-           , bind:value={formData[field.name]}
+            ,
+            bind:value={formData[field.name]}
           >
             {#if field.options}
               {#each Array.isArray(field.options) ? field.options : [] as option}
@@ -110,7 +113,8 @@
             class="form-input"
             placeholder={field.placeholder || ''}
             required={field.required}
-           , bind:value={formData[field.name]}
+            ,
+            bind:value={formData[field.name]}
           />
         {/if}
       </div>
@@ -126,6 +130,7 @@
     </button>
   </div>
 </form>
+
 <style>
   .yorha-form {
     font-family: 'Roboto Mono', monospace}
@@ -154,8 +159,7 @@
     font-size: 0.875rem
     color: #3d3d3d
    ;transition: all 0.2s ease
-    border-radius: 0;width: 100%,
-    box-sizing: border-box}
+    border-radius: 0;width: 100%; box-sizing: border-box}
   .form-input:focus { outline: none
     border-color: #3d3d3d
     box-shadow: 0, 0 0 3px rgba(61, 61, 61, 0.2)}
@@ -207,4 +211,3 @@
     .submit-btn { width: 100%; justify-content: center}
   }
 </style>
-

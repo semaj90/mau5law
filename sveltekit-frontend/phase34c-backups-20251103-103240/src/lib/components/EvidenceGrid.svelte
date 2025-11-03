@@ -16,12 +16,9 @@ https://svelte.dev/e/attribute_duplicate -->
 
   // safe fallbacks if the unified store doesn't export expected members'
   const evidenceActions = (unified as: any).evidenceActions ?? {
-    loadEvidence: (_caseId?: string) => {},
-    setSearchQuery: (_q: string) => {},
-    setViewMode: (_v: string) => {},
-    setSorting: (_f: string, _o: string) => {},
-    toggleSelection: (_id: string) => {},
-    clearSelection: () => {},
+    loadEvidence: (_caseId?: string) => {}; setSearchQuery: (_q: string) => {},
+    setViewMode: (_v: string) => {}; setSorting: (_f: string, _o: string) => {},
+    toggleSelection: (_id: string) => {}; clearSelection: () => {},
     deleteEvidence: async (_id: string) => {}
   };
   const evidenceGrid = (unified as: any).evidenceGrid ?? { subscribe: (fn: any) => { fn(undefined); return () => {}} };
@@ -164,20 +161,20 @@ https://svelte.dev/e/attribute_duplicate -->
   }
   function openPreview(item: EvidenceAny) {
     selectedItem = item}
-  function showContextMenu(event: MouseEvent, item: EvidenceAny) {
+  function showContextMenu(event: MouseEvent; item: EvidenceAny) {
     event.preventDefault();
     selectedItem = item
     if (!selectedItems.has(item.id)) toggleSelection(item)}
 
   // keep context menu defs but avoid unused-variable warnings by prefixing underscore
   const _contextMenuItems = [
-    { label: 'Preview', icon: Eye, action: 'preview' },
-    { label: 'Download', icon: Download, action: 'download' },
-    { label: 'Save for Later', icon: Archive, action: 'save' },
-    { label: 'Add Tags', icon: Tag, action: 'tag' },
-    { label: 'Delete', icon: Trash2, action: 'delete', destructive: true }
+    { label: 'Preview', icon: Eye; action: 'preview' },
+    { label: 'Download', icon: Download; action: 'download' },
+    { label: 'Save for Later', icon: Archive; action: 'save' },
+    { label: 'Add Tags', icon: Tag; action: 'tag' },
+    { label: 'Delete', icon: Trash2, action: 'delete'; destructive: true }
   ];
-  function _handleContextAction(action: string, item: EvidenceAny) {
+  function _handleContextAction(action: string; item: EvidenceAny) {
     switch (action) {
       case, 'preview':
         openPreview(item);
@@ -328,7 +325,7 @@ https://svelte.dev/e/attribute_duplicate -->
         >
           {#each filteredData as item (item.id)}
             <div
-              class={`bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4, hover:shadow-lg transition-shadow cursor-pointer ${selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}`}
+              class={`bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4; hover:shadow-lg transition-shadow cursor-pointer ${selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}`}
               role="button"
               tabindex="0"
               onclick={() => toggleSelection(item)}
@@ -408,7 +405,7 @@ https://svelte.dev/e/attribute_duplicate -->
           {#each filteredData as item (item.id)}
             {@const Icon = getFileIcon((item as: any).evidenceType || '', (item as: any).mimeType)}
             <div
-              class={`flex items-center p-3 gap-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50, dark:hover:bg-gray-800/50 cursor-pointer ${selectedItems.has(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
+              class={`flex items-center p-3 gap-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50; dark:hover:bg-gray-800/50 cursor-pointer ${selectedItems.has(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
               role="button"
               tabindex="0"
               onclick={() => toggleSelection(item)}
@@ -501,6 +498,5 @@ https://svelte.dev/e/attribute_duplicate -->
     display: -webkit-box
     -webkit-line-clamp: 3
     line-clamp: 3
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
 </style>

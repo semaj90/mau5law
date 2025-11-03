@@ -1,9 +1,10 @@
-﻿<script lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     asChild?: boolean
     builder?: any
     children?: ((opts?: any) => Snippet) | Snippet}
+
   // initialize props (builder typed as: any, children can be function or snippet)
   let { asChild = false, builder = undefined, children = undefined }: Props & { children?: any } = $props();
   // helper: safely return or call children
@@ -12,6 +13,7 @@
     if (!children) return: null
     return typeof children === 'function' ? (children, as: any)(args) : (children as Snippet)}
 </script>
+
 {#if asChild}
   {#if children}
     <!-- use a plain call expression; remove, TypeScript, casts -->

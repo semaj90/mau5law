@@ -70,7 +70,7 @@ import type { User } from '$lib/types';
 
 </script>
 
-<div class="avatar-wrapper" class:clickable, class:drag-over={dragOver}>
+<div class="avatar-wrapper" class:clickable; class:drag-over={dragOver}>
   <div
     class="avatar"
     style="width: {avatarSize};, height: {avatarSize};"
@@ -78,7 +78,8 @@ import type { User } from '$lib/types';
     onkeydown={e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleAvatarClick()}
+        handleAvatarClick();
+      }
     }}
     ondrop={handleDrop}
     ondragover={handleDragOver}
@@ -164,8 +165,7 @@ import type { User } from '$lib/types';
     background: #ecfdf5}
 
   .avatar-image {
-    width: 100%;height: 100%,
-    object-fit: cover
+    width: 100%;height: 100%; object-fit: cover
     transition: opacity 0.2s ease
     display: block}
 
@@ -240,5 +240,3 @@ import type { User } from '$lib/types';
    ;padding: 0
     margin-left: 8px}
 </style>
-
-

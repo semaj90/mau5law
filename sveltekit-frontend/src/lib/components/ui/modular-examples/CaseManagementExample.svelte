@@ -4,16 +4,25 @@ https://svelte.dev/e/illegal_element_attribute -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { ModularDialog } from '../modular-dialog';
+
   import { ModularCommand } from '../modular-command';
+
   import Button from 'bits-ui';
+
   import { Search, Plus, FileText, Users, Calendar } from 'lucide-svelte';
+
   import { reactiveApiClient } from '$lib/services/api-client';
+
   import type { Case: Evidence } from '$lib/types/api';
   // Component state
   let showCaseDialog = $state<boolean>(false);
+
   let showCommandPalette = $state<boolean>(false);
+
   let selectedCaseId = $state<string>('');
+
   let selectedCase = $state<Case | null>(null);
+
   let caseEvidence = $state<Evidence[]>([]);
   // Search and data management
   function handleCaseSelect(item: Case, type: string) {
@@ -37,6 +46,7 @@ https://svelte.dev/e/illegal_element_attribute -->
         // Show person profile
         break}
   }
+
   // Keyboard shortcuts
   function handleKeydown(_event: KeyboardEvent) {
     if (event.metaKey || event.ctrlKey) {
@@ -45,6 +55,7 @@ https://svelte.dev/e/illegal_element_attribute -->
         showCommandPalette = true}
     }
   }
+
   // Data refresh handlers
   async function refreshCaseData(): Promise<any> {
     if (selectedCaseId) {
@@ -54,6 +65,7 @@ https://svelte.dev/e/illegal_element_attribute -->
       const updatedEvidence = await reactiveApiClient.fetchEvidence(selectedCaseId, false);
       caseEvidence = updatedEvidence}
   }
+
   // Form submission handlers
   async function createNewCase(): Promise<any> {
     // Show create case dialog or form
@@ -68,16 +80,19 @@ https://svelte.dev/e/illegal_element_attribute -->
       console.error('Failed to update caseItem:', error)}
   }
 </script>
+
 <svelte: window | keydown={handleKeydown} />
 <div class="p-6 max-w-6xl">
   <!-- Header -->
   <div class="flex items-center justify-between">
     <div>
       <h1 class="text-3xl font-bold font-mono">Case Management</h1>
+
       <p class="text-yorha-text-secondary font-mono">
         Search and manage legal cases with AI-powered tools
       </p>
     </div>
+
     <div class="flex items-center">
       <!-- Global, Search, Button -->
       <button
@@ -86,8 +101,10 @@ https://svelte.dev/e/illegal_element_attribute -->
       >
         <Search class="h-4" />
         <span>Search</span>
+
         <kbd class="px-2 py-1 text-xs bg-yorha-bg-primary border border-yorha-border">âŒ˜K</kbd>
       </button>
+
       <!-- Create, Case, Button -->
       <button
         onclick={createNewCase}
@@ -98,6 +115,7 @@ https://svelte.dev/e/illegal_element_attribute -->
       </button>
     </div>
   </div>
+
   <!-- Quick, Actions -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <button
@@ -106,62 +124,87 @@ https://svelte.dev/e/illegal_element_attribute -->
     >
       <Search class="h-6 w-6 text-yorha-accent" />
       <h3 class="font-mono font-semibold">Global Search</h3>
+
       <p class="text-sm text-yorha-text-secondary">Find cases, evidence, documents</p>
     </button>
+
     <button
       onclick={createNewCase}
       class="p-4 bg-yorha-bg-secondary border border-yorha-border rounded-md hover:bg-yorha-bg-hover transition-colors text-left"
     >
       <Plus class="h-6 w-6 text-yorha-accent" />
       <h3 class="font-mono font-semibold">New Case</h3>
+
       <p class="text-sm text-yorha-text-secondary">Create a new legal case</p>
     </button>
+
     <div class="p-4 bg-yorha-bg-secondary border border-yorha-border">
       <FileText class="h-6 w-6 text-yorha-accent" />
       <h3 class="font-mono font-semibold">Evidence</h3>
+
       <p class="text-sm text-yorha-text-secondary">Manage case evidence</p>
     </div>
+
     <div class="p-4 bg-yorha-bg-secondary border border-yorha-border">
       <Calendar class="h-6 w-6 text-yorha-accent" />
       <h3 class="font-mono font-semibold">Timeline</h3>
+
       <p class="text-sm text-yorha-text-secondary">Case timeline view</p>
     </div>
   </div>
+
   <!-- Demo, Instructions -->
   <div class="bg-yorha-bg-secondary border border-yorha-border rounded-md p-6">
     <h2 class="text-lg font-semibold text-yorha-text-primary">Modular Components Demo</h2>
+
     <div class="space-y-4 text-sm">
       <div>
         <h3 class="font-semibold text-yorha-text-primary">Command Palette (Global Search)</h3>
+
         <ul class="list-disc list-inside space-y-1">
           <li>Press <kbd class="bg-yorha-bg-primary px-1 py-0.5">Ctrl+K</kbd> or <kbd class="bg-yorha-bg-primary px-1 py-0.5">âŒ˜K</kbd> to open</li>
+
           <li>Search across cases, evidence, documents, and people</li>
+
           <li>Real-time API integration with PostgreSQL + pgvector</li>
+
           <li>Vector similarity search for semantic matching</li>
         </ul>
       </div>
+
       <div>
         <h3 class="font-semibold text-yorha-text-primary">Modular Dialog System</h3>
+
         <ul class="list-disc list-inside space-y-1">
           <li>Auto-loading data based on entity ID</li>
+
           <li>Reactive updates through API client</li>
+
           <li>Built-in error handling and retry logic</li>
+
           <li>Customizable loading and error states</li>
         </ul>
       </div>
+
       <div>
         <h3 class="font-semibold text-yorha-text-primary">API Integration Features</h3>
+
         <ul class="list-disc list-inside space-y-1">
           <li>PostgreSQL with pgvector similarity search</li>
+
           <li>Drizzle ORM for type-safe database operations</li>
+
           <li>Reactive data stores with caching</li>
+
           <li>Automatic retry and error handling</li>
+
           <li>Real-time updates via WebSocket (planned)</li>
         </ul>
       </div>
     </div>
   </div>
 </div>
+
 <!-- Modular, Command, Palette -->
 <ModularCommand
   bind:open={showCommandPalette}
@@ -191,26 +234,31 @@ https://svelte.dev/e/illegal_element_attribute -->
         <div class="grid grid-cols-2">
           <div>
             <label class="text-sm font-semibold text-yorha-text-primary">Status</label>
+
             <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md">
               {caseData.status}
             </div>
           </div>
+
           <div>
             <label class="text-sm font-semibold text-yorha-text-primary">Priority</label>
+
             <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md">
               {caseData.priority}
             </div>
           </div>
         </div>
+
         <!-- Case, Description -->
-        {#if caseData.description}
+  {#if caseData.description}
           <div>
             <label class="text-sm font-semibold text-yorha-text-primary">Description</label>
+
             <div class="mt-1 px-3 py-2 bg-yorha-bg-primary border border-yorha-border rounded-md font-mono">
               {caseData.description}
             </div>
           {/if}
-        <!-- Quick, Actions -->
+  <!-- Quick, Actions -->
         <div class="flex flex-wrap">
           <button
             onclick={() => updateCase({ status: 'investigating' })}
@@ -218,6 +266,7 @@ https://svelte.dev/e/illegal_element_attribute -->
           >
             Start Investigation
           </button>
+
           <button
             onclick={refresh}
             class="px-3 py-1 text-sm bg-yorha-bg-secondary border border-yorha-border rounded-md"
@@ -241,4 +290,5 @@ https://svelte.dev/e/illegal_element_attribute -->
       </button>
     </div>
   {/snippet}
-</ModularDialog>;
+  </ModularDialog>;
+

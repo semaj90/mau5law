@@ -15,21 +15,183 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
   function resetForm() { uploadFile = null; uploadResult = null; uploadError = null; compareResult = null; compareError = null; comparing = false; uploadProgress = 0; formData = { title: '', description: '', evidenceType: 'document', tags: '', isAdmissible: true }; }
 
   async function runCompare(): Promise<any> { if (!uploadFile && !uploadResult) return; try { comparing = true; compareError = null; compareResult = null; const fd = new FormData(); if (uploadFile) fd.append('file', uploadFile); if (formData.description?.trim()) fd.append('text', formData.description.trim()); if (formData.tags?.trim()) fd.append('tags', formData.tags.trim()); fd.append('topK', '8'); const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST', body: fd }); const data = await resp.json(); if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed'); compareResult = data.data; toast.success('ðŸ”Ž Similar cases analyzed'); } catch (e: any) { compareError = e?.message || String(e); toast.error(`Comparison error: ${ compareError }`); } finally { comparing = false}
-  } </script> <svelte:head> <title>Evidence Manager - YoRHa Legal AI</title> </svelte:head> <div class="home-page"> <div class="hero-section"> <h1>ðŸ“ Evidence Manager</h1> <p class="subtitle">Full Stack: MinIO + OCR + Ollama (gemma3-legal) + PostgreSQL + Qdrant</p> <p class="status">Case ID: <span class="text-green-400">{ caseId }</span></p> </div> <div class="action-grid"> <!-- Upload, Form --> <div class="action-card"> <h3>ðŸ“¤ Upload Evidence</h3> <input type="file"
-        onchange={ handleFileUpload } accept=".pdf,.doc,.docx,.txt,.jpg,.png,.mp4,.mp3"
+  }
+</script>
+
+<svelte:head><title>Evidence Manager - YoRHa Legal AI</title></svelte:head>
+<div class="home-page">
+  <div class="hero-section">
+    <h1>ðŸ“ Evidence Manager</h1>
+    <p class="subtitle">Full Stack: MinIO + OCR + Ollama (gemma3-legal) + PostgreSQL + Qdrant</p>
+    <p class="status">Case ID: <span class="text-green-400">{caseId}</span></p>
+  </div>
+  <div class="action-grid">
+    <!-- Upload, Form -->
+    <div class="action-card">
+      <h3>ðŸ“¤ Upload Evidence</h3>
+      <input
+        type="file"
+        onchange={handleFileUpload}
+        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.mp4,.mp3"
         class="file-input"
-        disabled={ isUploading } /> {#if uploadFile} <div class="file-preview"> <FileText class="file-preview-file-icon" /> <div class="file-info"> <p class="file-name">{uploadFile.name}</p> <p class="file-size">{ fileSize }</p> </div> </div> <div class="form-fields"> <input type="text"
-            bind:value={formData.title} placeholder="Evidence title *"
+        disabled={isUploading}
+      />
+      {#if uploadFile}
+        <div class="file-preview">
+          <FileText class="file-preview-file-icon" />
+          <div class="file-info">
+            <p class="file-name">{uploadFile.name}</p>
+            <p class="file-size">{fileSize}</p>
+          </div>
+        </div>
+        <div class="form-fields">
+          <input
+            type="text"
+            bind:value={formData.title}
+            placeholder="Evidence title *"
             class="form-input"
-            disabled={ isUploading } /> <textarea bind:value={formData.description} placeholder="Description (optional)"
+            disabled={isUploading}
+          />
+          <textarea
+            bind:value={formData.description}
+            placeholder="Description (optional)"
             class="form-textarea"
             rows="3"
-            disabled={ isUploading } ></textarea> <select bind:value={formData.evidenceType} class="form-select" disabled={ isUploading }> <option value="document">Document</option> <option value="image">Image</option> <option value="video">Video</option> <option value="audio">Audio</option> </select> <input type="text"
-            bind:value={formData.tags} placeholder="Tags (comma-separated)"
+            disabled={isUploading}
+          ></textarea>
+          <select bind:value={formData.evidenceType} class="form-select" disabled={isUploading}>
+            <option value="document">Document</option> <option value="image">Image</option>
+            <option value="video">Video</option> <option value="audio">Audio</option>
+          </select>
+          <input
+            type="text"
+            bind:value={formData.tags}
+            placeholder="Tags (comma-separated)"
             class="form-input"
-            disabled={ isUploading } /> </div> {#if isUploading} <div class="upload-progress"> <div class="progress-info"> <Loader2 class="loader-spin-icon" /> <span>Processing... { uploadProgress }%</span> </div> <div class="progress-bar"> <div class="progress-fill" style="width: { uploadProgress }%"></div> </div> </div> {/if} <div class="button-group"> <button onclick={ submitEvidence } disabled={!canSubmit} class="upload-btn"
-            class:disabled={!canSubmit} >
-            {#if isUploading} <Loader2 class="loader-spin-icon" /> Uploading... {:else} <Upload class="icon" /> Upload & Process {/if} </button> {#if uploadResult || uploadError} <button onclick={ resetForm } class="reset-btn">Reset</button> {/if} </div> {/if} </div> <!-- Results, Panel --> <div class="action-card"> <h3>ðŸ“Š Processing Results</h3> {#if uploadResult} <div class="result-success"> <div class="result-header"> <CheckCircle class="result-success-icon" /> <div> <h4>{uploadResult.title}</h4> <p class="result-id">ID: {uploadResult.id}</p> </div> </div> <div class="processing-steps"> <div class="step"> <CheckCircle class="processing-step-icon" /> <span>MinIO Upload</span> </div> <div class="step"> {#if uploadResult.hasEmbedding} <CheckCircle class="processing-step-icon" /> {:else} <AlertCircle class="processing-step-skip-icon" /> {/if} <span>Vector Embedding</span> </div> <div class="step"> <CheckCircle class="processing-step-icon" /> <span>PostgreSQL</span> </div> <div class="step"> <CheckCircle class="processing-step-icon" /> <span>Qdrant Index</span> </div> </div> {#if uploadResult.aiSummary} <div class="ai-summary"> <div class="summary-header"> <Sparkles class="ai-summary-sparkle-icon" /> <span>AI Summary</span> </div> <p>{uploadResult.aiSummary}</p> </div> {/if} <div class="metadata"> <div class="meta-row"> <span>Type:</span> <span>{uploadResult.evidenceType}</span> </div> <div class="meta-row"> <span>Size:</span> <span>{formatFileSize(uploadResult.fileSize)}</span> </div> {#if uploadResult.tags && uploadResult.tags.length > 0} <div class="tags"> {#each Array.isArray(uploadResult.tags) ? uploadResult.tags: [] as tag} <span class="tag">{ tag }</span> {/each} </div> {/if} </div> <div class="compare-actions"> <button class="upload-btn" onclick={ runCompare } disabled={ comparing }> {comparing ? 'Analyzingâ€¦': 'Analyze Similar Cases'} </button> </div> {#if compareError} <div class="result-error" style="margin-top: .75rem;"> <AlertCircle class="result-error-icon" /> <h4>Comparison Failed</h4> <p>{ compareError }</p> </div> {/if} {#if compareResult} <div class="comparison-panel"> <h4>Similar Items (Qdrant)</h4> {#each Array.isArray(compareResult.similar) ? compareResult.similar: [] as s} <div class="similar-item"> <div><strong>{s.id}</strong> â€¢ {s.score?.toFixed?.(3) ?? s.score}</div> {#if s.tags?.length}<div class="tags">{s.tags.join(', ')}</div>{/if} {#if s.snippet}<div class="snippet">{s.snippet}</div>{/if} </div> {/each} <h4>Structured Analysis</h4> <pre>{JSON.stringify(compareResult.analysis, null, 2)}</pre> </div> {/if} </div> {:else if uploadError} <div class="result-error"> <AlertCircle class="result-error-icon" /> <h4>Upload Failed</h4> <p>{ uploadError }</p> </div> {:else} <div class="result-empty"> <FileText class="result-empty-icon" /> <p>No evidence uploaded yet</p> </div> {/if} </div> <!-- Integration, Info --> <div class="action-card"> <h3>ðŸ”§ Integration Stack</h3> <div class="tech-stack"> <div class="tech-item"> <strong>Storage:</strong> MinIO + PostgreSQL + pgvector + Qdrant </div> <div class="tech-item"> <strong>AI:</strong> OCR (5-strategy) + Ollama (gemma3-legal:latest) + RAG </div> <div class="tech-item"> <strong>Frontend:</strong> Svelte, 5 + bits-ui + Zod + Superforms </div> </div> </div> </div> <div class="quick-actions"> <a href="/" class="action-link">â† Back to Home</a> <a href="/cases" class="action-link">View Cases</a> <a href="/all-routes" class="action-link">All Routes</a> </div> </div> <style> .home-page { max-width: 1400px; margin: 0 auto; padding: 2rem; min-height: 100vh; background: #0a0a0a}
+            disabled={isUploading}
+          />
+        </div>
+        {#if isUploading}
+          <div class="upload-progress">
+            <div class="progress-info">
+              <Loader2 class="loader-spin-icon" /> <span>Processing... {uploadProgress}%</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width: {uploadProgress}%"></div></div>
+          </div>
+        {/if}
+        <div class="button-group">
+          <button onclick={submitEvidence} disabled={!canSubmit} class="upload-btn" class:disabled={!canSubmit}>
+            {#if isUploading}
+              <Loader2 class="loader-spin-icon" /> Uploading...
+            {:else}
+              <Upload class="icon" /> Upload & Process
+            {/if}
+          </button>
+          {#if uploadResult || uploadError}
+            <button onclick={resetForm} class="reset-btn">Reset</button>
+          {/if}
+        </div>
+      {/if}
+    </div>
+    <!-- Results, Panel -->
+    <div class="action-card">
+      <h3>ðŸ“Š Processing Results</h3>
+      {#if uploadResult}
+        <div class="result-success">
+          <div class="result-header">
+            <CheckCircle class="result-success-icon" />
+            <div>
+              <h4>{uploadResult.title}</h4>
+              <p class="result-id">ID: {uploadResult.id}</p>
+            </div>
+          </div>
+          <div class="processing-steps">
+            <div class="step"><CheckCircle class="processing-step-icon" /> <span>MinIO Upload</span></div>
+            <div class="step">
+              {#if uploadResult.hasEmbedding}
+                <CheckCircle class="processing-step-icon" />
+              {:else}
+                <AlertCircle class="processing-step-skip-icon" />
+              {/if} <span>Vector Embedding</span>
+            </div>
+            <div class="step"><CheckCircle class="processing-step-icon" /> <span>PostgreSQL</span></div>
+            <div class="step"><CheckCircle class="processing-step-icon" /> <span>Qdrant Index</span></div>
+          </div>
+          {#if uploadResult.aiSummary}
+            <div class="ai-summary">
+              <div class="summary-header"><Sparkles class="ai-summary-sparkle-icon" /> <span>AI Summary</span></div>
+              <p>{uploadResult.aiSummary}</p>
+            </div>
+          {/if}
+          <div class="metadata">
+            <div class="meta-row"><span>Type:</span> <span>{uploadResult.evidenceType}</span></div>
+            <div class="meta-row"><span>Size:</span> <span>{formatFileSize(uploadResult.fileSize)}</span></div>
+            {#if uploadResult.tags && uploadResult.tags.length > 0}
+              <div class="tags">
+                {#each Array.isArray(uploadResult.tags) ? uploadResult.tags : [] as tag}
+                  <span class="tag">{tag}</span>
+                {/each}
+              </div>
+            {/if}
+          </div>
+          <div class="compare-actions">
+            <button class="upload-btn" onclick={runCompare} disabled={comparing}>
+              {comparing ? 'Analyzingâ€¦' : 'Analyze Similar Cases'}
+            </button>
+          </div>
+          {#if compareError}
+            <div class="result-error" style="margin-top: .75rem;">
+              <AlertCircle class="result-error-icon" />
+              <h4>Comparison Failed</h4>
+              <p>{compareError}</p>
+            </div>
+          {/if}
+          {#if compareResult}
+            <div class="comparison-panel">
+              <h4>Similar Items (Qdrant)</h4>
+              {#each Array.isArray(compareResult.similar) ? compareResult.similar : [] as s}
+                <div class="similar-item">
+                  <div><strong>{s.id}</strong> â€¢ {s.score?.toFixed?.(3) ?? s.score}</div>
+                  {#if s.tags?.length}<div class="tags">{s.tags.join(', ')}</div>{/if}
+                  {#if s.snippet}<div class="snippet">{s.snippet}</div>{/if}
+                </div>
+              {/each}
+              <h4>Structured Analysis</h4>
+              <pre>{JSON.stringify(compareResult.analysis, null, 2)}</pre>
+            </div>
+          {/if}
+        </div>
+      {:else if uploadError}
+        <div class="result-error">
+          <AlertCircle class="result-error-icon" />
+          <h4>Upload Failed</h4>
+          <p>{uploadError}</p>
+        </div>
+      {:else}
+        <div class="result-empty">
+          <FileText class="result-empty-icon" />
+          <p>No evidence uploaded yet</p>
+        </div>
+      {/if}
+    </div>
+    <!-- Integration, Info -->
+    <div class="action-card">
+      <h3>ðŸ”§ Integration Stack</h3>
+      <div class="tech-stack">
+        <div class="tech-item"><strong>Storage:</strong> MinIO + PostgreSQL + pgvector + Qdrant</div>
+        <div class="tech-item"><strong>AI:</strong> OCR (5-strategy) + Ollama (gemma3-legal:latest) + RAG</div>
+        <div class="tech-item"><strong>Frontend:</strong> Svelte, 5 + bits-ui + Zod + Superforms</div>
+      </div>
+    </div>
+  </div>
+  <div class="quick-actions">
+    <a href="/" class="action-link">â† Back to Home</a> <a href="/cases" class="action-link">View Cases</a>
+    <a href="/all-routes" class="action-link">All Routes</a>
+  </div>
+</div>
+
+<style>
+ .home-page { max-width: 1400px; margin: 0 auto; padding: 2rem; min-height: 100vh; background: #0a0a0a}
 
   .hero-section { text-align: center; margin-bottom: 3rem}
 
@@ -146,6 +308,3 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 
   .action-link:hover { background: #ffd700; color: #0a0a0a;, transform: translateY(-1px); }:global(.icon) { width: 16px;, height: 16px}
 </style>
-
-
-

@@ -15,15 +15,15 @@
     isDemoRoute = currentPath.startsWith('/demo');
   });
   const quickLinks = [
-    { path: '/help', label: 'Help', icon: 'â“' },
-    { path: '/privacy', label: 'Privacy', icon: 'ðŸ”’' },
-    { path: '/terms', label: 'Terms', icon: 'ðŸ“„' },
-    { path: '/contact', label: 'Contact', icon: 'ðŸ“§' }
+    { path: '/help', label: 'Help'; icon: 'â“' },
+    { path: '/privacy', label: 'Privacy'; icon: 'ðŸ”’' },
+    { path: '/terms', label: 'Terms'; icon: 'ðŸ“„' },
+    { path: '/contact', label: 'Contact'; icon: 'ðŸ“§' }
   ];
   const socialLinks = [
-    { href: '#', label: 'GitHub', icon: 'ðŸ”—' },
-    { href: '#', label: 'Documentation', icon: 'ðŸ“š' },
-    { href: '#', label: 'Community', icon: 'ðŸ‘¥' }
+    { href: '#', label: 'GitHub'; icon: 'ðŸ”—' },
+    { href: '#', label: 'Documentation'; icon: 'ðŸ“š' },
+    { href: '#', label: 'Community'; icon: 'ðŸ‘¥' }
   ];
 </script>
 <footer class="app-footer nes-container" data-variant={variant}>
@@ -152,8 +152,7 @@
 </footer>
 <style>
   .app-footer {
-    margin-top: auto
-   , background: linear-gradient(135deg, var(--nier-bg-secondary, #1e293b), var(--nier-bg-tertiary, #0f1419)) !important
+    margin-top: auto; background: linear-gradient(135deg, var(--nier-bg-secondary, #1e293b), var(--nier-bg-tertiary, #0f1419)) !important
     border-top: 3px solid var(--n64-primary, #4a90e2) !important
     font-family: 'Press Start 2P', cursive}
   .footer-content {
@@ -171,19 +170,16 @@
     gap: 0.5rem}
   .footer-title {
     font-size: 0.625rem !important
-    margin: 0 !important
-   , color: var(--nes-warning, #f5a623) !important
+    margin: 0 !important; color: var(--nes-warning, #f5a623) !important
     text-transform: uppercase
     letter-spacing: 0.1em}
   .section-title {
     font-size: 0.5rem !important
-    margin: 0 !important
-   , color: var(--n64-primary, #4a90e2) !important
+    margin: 0 !important; color: var(--n64-primary, #4a90e2) !important
     text-transform: uppercase
     letter-spacing: 0.05em}
   .footer-description {
-    font-size: 0.5rem
-   , color: var(--nier-text-secondary, #94a3b8);
+    font-size: 0.5rem; color: var(--nier-text-secondary, #94a3b8);
     line-height: 1.3
     margin: 0}
   /* Gaming Badges */
@@ -196,8 +192,7 @@
   /* Footer Navigation */
   .footer-nav {
     display: flex
-    flex-direction: column
-   , gap: 0.5rem}
+    flex-direction: column; gap: 0.5rem}
   :global(.footer-link) {
     justify-content: flex-start !important
     padding: 0.25rem 0.5rem !important
@@ -225,8 +220,7 @@
     padding: 0 !important
     margin: 0 !important}
   .status-label {
-    font-size: 0.5rem
-   , color: var(--nier-text-secondary, #94a3b8);
+    font-size: 0.5rem; color: var(--nier-text-secondary, #94a3b8);
   }
   /* Resource Links */
   .resource-links {
@@ -250,16 +244,14 @@
     display: flex
     flex-wrap: wrap
     justify-content: space-between
-    align-items: center
-   , gap: 0.5rem
+    align-items: center; gap: 0.5rem
     padding-top: 0.5rem
     border-top: 1px solid var(--n64-secondary, #7ed321);
   }
   .copyright-text,
   .version-info {
     font-size: 0.4rem !important
-    margin: 0 !important
-   , color: var(--nier-text-muted, #64748b) !important}
+    margin: 0 !important; color: var(--nier-text-muted, #64748b) !important}
   .tech-stack {
     display: flex
     flex-wrap: wrap
@@ -297,8 +289,7 @@
     margin: 0 !important
     color: white !important}
   .demo-actions {
-    display: flex
-   , gap: 1rem
+    display: flex; gap: 1rem
     flex-wrap: wrap
     justify-content: center}
   /* Responsive Design */
@@ -315,8 +306,7 @@
       flex-direction: column
       align-items: flex-start}
     .demo-actions {
-      flex-direction: column
-     , width: 100%;
+      flex-direction: column; width: 100%;
     }
   }
   @media (max-width: 480px) {
@@ -330,8 +320,7 @@
   /* Print styles */
   @media print {
     .app-footer {
-      background: white !important
-     , color: black !important
+      background: white !important; color: black !important
       border-top: 1px solid black !important}
     .gaming-badges,
     .status-indicators,

@@ -38,7 +38,7 @@
     font-family: monospace}
   .metrics {
     display: grid
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)), gap: 0.5rem
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.5rem
     margin: 1rem 0}
   .metric {
     display: flex

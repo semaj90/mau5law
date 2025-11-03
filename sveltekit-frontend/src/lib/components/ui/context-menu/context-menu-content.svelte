@@ -1,15 +1,19 @@
 <!-- Context menu, content, component -->
 <script lang="ts">
   import { getContext, onMount, onDestroy } from 'svelte';
+
   import type { Writable } from 'svelte/store';
+
   import type { Snippet } from 'svelte';
   // Use a safe prop name instead of the reserved word `class`
   let { className = '', children }: { className?: string; children?: Snippet } = $props();
-  type Position = { x: number, y: number };
+  type Position = { x: number; y: number };
+
   const ctx = getContext<{
     isOpen: Writable<boolean>,
     position Writable<Position>;
    , close: () => void}>('context-menu');
+
   const { isOpen, position, close } = ctx
   let menuElement = $state<HTMLDivElement | null>(null);
   function handleClickOutside(event: MouseEvent) {
@@ -27,7 +31,7 @@
     document.removeEventListener('click', handleClickOutside);
     document.removeEventListener('keydown', handleEscape)});
 </script>
-{#if $isOpen}
+  {#if $isOpen}
   <div
     bind:this={menuElement}
     class={className || 'context-menu-content'}
@@ -37,7 +41,7 @@
   >
     <slot />
   {/if}
-<style>
+  <style>
   /* @unocss-include */
   .context-menu-content {
     position: fixed
@@ -46,6 +50,7 @@
     background-color: white
    ;border: 1px solid #e5e7eb
     border-radius: 0.375rem
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), padding: 0.25rem}
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 0.25rem}
 </style>
+
 

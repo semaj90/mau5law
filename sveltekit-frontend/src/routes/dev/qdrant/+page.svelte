@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   let loading = $state<boolean>(false);
@@ -23,7 +23,6 @@
     if (caseId) params.set('caseId', caseId);
     if (tag) params.set('tag', tag);
     return params.toString()}
-
   async function runQuery(): Promise<any> {
     loading = true
     error = null
@@ -36,7 +35,6 @@
       error = e instanceof Error ? e.message : String(e)} finally {
       loading = false}
   }
-
   function extractTitle(payload: any): string {
     if (!payload) return '';
     return payload.title || payload.metadata?.title || payload.fileName || payload.name || payload.id || ''}
@@ -113,7 +111,6 @@
     if (markdownToHtml) return markdownToHtml(md);
     // synchronous fallback
     return md.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br/>')}
-
   function escHandler(e: KeyboardEvent) {
     if (e.key === 'Escape' && previewOpen) previewOpen = false}
 
@@ -250,7 +247,8 @@
                 onclick={() => {
                   if (page > 1) {
                     page--;
-                    runQuery()}
+                    runQuery();
+                  }
                 }}
                 disabled={page <= 1}>Prev</button
               >
@@ -259,7 +257,8 @@
                 class="bits-btn bits-ghost"
                 onclick={() => {
                   page++;
-                  runQuery()}}>Next</button
+                  runQuery();
+                }}>Next</button
               >
             </div>
           {/if}
@@ -272,13 +271,15 @@
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
           tabindex="0"
           onclick={() => {
-            previewOpen = false
-            restoreFocus()}}
+            previewOpen = false;
+            restoreFocus();
+          }}
           onkeydown={(e: KeyboardEvent) => {
             // make overlay keyboard-operable (Enter / Space)
             if (e.key === 'Enter' || e.key === ' ') {
-              previewOpen = false
-              restoreFocus()}
+              previewOpen = false;
+              restoreFocus();
+            }
           }}
           aria-hidden={!previewOpen}
         >
@@ -297,8 +298,9 @@
             <button
               class="absolute top-2 right-2 text-gray-500"
               onclick={() => {
-                previewOpen = false
-                restoreFocus()}}
+                previewOpen = false;
+                restoreFocus();
+              }}
               aria-label="Close">âœ•</button
             >
             <div class="flex items-center justify-between">

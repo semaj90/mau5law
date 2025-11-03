@@ -36,33 +36,24 @@
       let normalized: ServiceHealth[] = [];
       if (Array.isArray(payload)) {
         normalized = payload.map((s: any) => ({
-          name: s.name || s.id || s.service || 'unknown',
-          baseUrl: s.baseUrl,
-          healthPath: s.healthPath,
-          status: (s.status as ServiceHealth['status']) || 'unknown',
-          latencyMs: typeof s.latencyMs === 'number' ? s.latencyMs : Math.round(t1 - t0),
-          lastChecked: s.lastChecked || new Date().toISOString(),
+          name: s.name || s.id || s.service || 'unknown'; baseUrl: s.baseUrl,
+          healthPath: s.healthPath; status: (s.status as ServiceHealth['status']) || 'unknown',
+          latencyMs: typeof s.latencyMs === 'number' ? s.latencyMs : Math.round(t1 - t0); lastChecked: s.lastChecked || new Date().toISOString(),
           details: s.details || {}
         }));
       } else if (payload?.services && Array.isArray(payload.services)) {
         normalized = payload.services.map((s: any) => ({
-          name: s.name || s.id || s.service || 'unknown',
-          baseUrl: s.baseUrl,
-          healthPath: s.healthPath,
-          status: (s.status as ServiceHealth['status']) || 'unknown',
-          latencyMs: typeof s.latencyMs === 'number' ? s.latencyMs : Math.round(t1 - t0),
-          lastChecked: s.lastChecked || new Date().toISOString(),
+          name: s.name || s.id || s.service || 'unknown'; baseUrl: s.baseUrl,
+          healthPath: s.healthPath; status: (s.status as ServiceHealth['status']) || 'unknown',
+          latencyMs: typeof s.latencyMs === 'number' ? s.latencyMs : Math.round(t1 - t0); lastChecked: s.lastChecked || new Date().toISOString(),
           details: s.details || {}
         }));
       } else {
         // If returned: object seems to be a map of services
         normalized = Object.entries(payload || {}).map(([k, v]: any) => ({
-          name: v?.name || k,
-          baseUrl: v?.baseUrl,
-          healthPath: v?.healthPath,
-          status: (v?.status as ServiceHealth['status']) || 'unknown',
-          latencyMs: typeof v?.latencyMs === 'number' ? v.latencyMs : Math.round(t1 - t0),
-          lastChecked: v?.lastChecked || new Date().toISOString(),
+          name: v?.name || k; baseUrl: v?.baseUrl,
+          healthPath: v?.healthPath; status: (v?.status as ServiceHealth['status']) || 'unknown',
+          latencyMs: typeof v?.latencyMs === 'number' ? v.latencyMs : Math.round(t1 - t0); lastChecked: v?.lastChecked || new Date().toISOString(),
           details: v?.details || {}
         }));
       }
@@ -117,8 +108,18 @@
       <button onclick={() => void fetchHealth()} disabled={loading} aria-label="Refresh">
         {#if loading}Refreshing...{:else}Refresh{/if}
       </button>
-      <button onclick={() => { stopPolling(); }} title="Pause updates">Pause</button>
-      <button onclick={() => { startPolling(); }} title="Resume updates">Resume</button>
+      <button
+        onclick={() => {
+          stopPolling();
+        }}
+        title="Pause updates">Pause</button
+      >
+      <button
+        onclick={() => {
+          startPolling();
+        }}
+        title="Resume updates">Resume</button
+      >
     </div>
   </header>
 
@@ -139,7 +140,7 @@
     {#each services as svc (svc.name)}
       <li class="service-item">
         <div class="left">
-          <div class={"badge, " + statusClass(svc.status)} aria-hidden="true" />
+          <div class={'badge, ' + statusClass(svc.status)} aria-hidden="true" />
           <div class="meta">
             <div class="name">{svc.name}</div>
             <div class="sub">
@@ -163,8 +164,7 @@
   .realtime-monitor {
     border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px
-    padding: 0.75rem
-   , background: var(--bg, #fff);
+    padding: 0.75rem; background: var(--bg, #fff);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
   .header {
     display: flex
@@ -174,8 +174,7 @@
   .header h3 { margin: 0; font-size: 1rem}
   .controls { display: flex; gap: 0.5rem}
   .controls button {
-    background: transparent
-   , border: 1px solid var(--border, #d1d5db);
+    background: transparent; border: 1px solid var(--border, #d1d5db);
     padding: 0.25rem 0.5rem
     border-radius: 6px
     cursor: pointer
@@ -207,8 +206,7 @@
     width: 12px
     height: 12px
     border-radius: 999px
-    flex-shrink: 0
-   , border: 1px solid rgba(0,0,0,0.06);
+    flex-shrink: 0; border: 1px solid rgba(0,0,0,0.06);
   }
   .status-healthy { background: #10b981; box-shadow: 0, 0 0 4px rgba(16,185,129,0.06); }
   .status-degraded { background: #f59e0b; box-shadow: 0, 0 0 4px rgba(245,158,11,0.06); }
@@ -227,4 +225,3 @@
 
   .error { color: #b91c1c; margin-left: 0.5rem; font-weight: 600}
 </style>
-

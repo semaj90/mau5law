@@ -5,24 +5,30 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount: onDestroy } from 'svelte';
+
   import type { ObservabilityState } from '$lib/services/observability-persistence';
   interface Alert {
     id: string
-    type: 'p99_breach' | 'error_spike' | 'anomaly_spike' | 'baseline_drift',message: string
+    type: 'p99_breach' | 'error_spike' | 'anomaly_spike' | 'baseline_drift'; message: string
     timestamp: string
     severity: 'info' | 'warning' | 'critical',
     value?: number
     threshold?: number}
+
   // State
   let state: ObservabilityState | null = null
   let alerts: Alert[] = $state([]);
+
   let isConnected = $state<boolean>(false);
+
   let ws = $state<WebSocket | null >(null);
+
   let autoScroll = $state<boolean>(true);
+
   let showDetails = $state<boolean>(false);
   // Computed values
   let p99Badge = $derived(() => {
-    if (!state) return { count: 0, status: 'normal' }
+    if (!state) return { count: 0; status: 'normal' }
     const count = state.sustained_counters.p99_breache
     const budget = state.daily_budgets.max_p99_breache
     const ratio = count / budget
@@ -33,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'}
   });
   let errorBadge = $derived(() => {
-    if (!state) return { count: 0, status: 'normal' }
+    if (!state) return { count: 0; status: 'normal' }
     const count = state.sustained_counters.error_spike
     const budget = state.daily_budgets.max_error_spike
     const ratio = count / budget
@@ -44,7 +50,7 @@ https://svelte.dev/e/js_parse_error -->
       status: ratio >= 1 ? 'critical' : ratio >= 0.8 ? 'warning' : 'normal'}
   });
   let anomalyBadge = $derived(() => {
-    if (!state) return { count: 0, status: 'normal' }
+    if (!state) return { count: 0; status: 'normal' }
     const count = state.sustained_counters.anomaly_spike
     const budget = state.daily_budgets.max_anomaly_spike
     const ratio = count / budget
@@ -74,12 +80,9 @@ https://svelte.dev/e/js_parse_error -->
           const data = JSON.parse(event.data);
           // Handle different message types
           if (data.type === 'observability.alert') {
-            const alert: Alert = { id: crypto.randomUUID(),
-              type: data.alert_type,
-              message: data.message,
-              timestamp: new Date().toISOString(),
-              severity: data.severity || 'info',
-              value: data.value,
+            const alert: Alert = { id: crypto.randomUUID(); type: data.alert_type,
+              message: data.message; timestamp: new Date().toISOString(),
+              severity: data.severity || 'info'; value: data.value,
               threshold: data.threshold}
             alerts = [alert, ...alerts].slice(0, 100); // Keep last, 100 alerts
             // Auto-scroll if enabled
@@ -135,39 +138,51 @@ await loadState();
       ws.close()}
   });
 </script>
+
 <div class="observability-panel">
   <!-- Header -->
   <div class="panel-header">
     <h3>ðŸ” Observability Dashboard</h3>
+
     <div class="header-controls">
       <div class="connection-status">
         <span class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
         {isConnected ? 'Live' : 'Disconnected'}
       </div>
+
       <button class="btn-toggle" onclick={() => (showDetails = !showDetails)}>
         {showDetails ? 'Hide' : 'Show'} Details
       </button>
     </div>
   </div>
+
   <!-- Sustained, Monitoring, Badges -->
   <div class="badges-row">
     <div class="badge {getBadgeClass(p99Badge.status)}">
       <div class="badge-label">P99 Breaches</div>
+
       <div class="badge-value">{p99Badge.count}/{p99Badge.budget}</div>
+
       <div class="badge-progress">
         <div class="progress-bar" style="width: {Math.min(p99Badge.ratio * 100, 100)}%"></div>
       </div>
     </div>
+
     <div class="badge {getBadgeClass(errorBadge.status)}">
       <div class="badge-label">Error Spikes</div>
+
       <div class="badge-value">{errorBadge.count}/{errorBadge.budget}</div>
+
       <div class="badge-progress">
         <div class="progress-bar" style="width: {Math.min(errorBadge.ratio * 100, 100)}%"></div>
       </div>
     </div>
+
     <div class="badge {getBadgeClass(anomalyBadge.status)}">
       <div class="badge-label">Anomalies</div>
+
       <div class="badge-value">{anomalyBadge.count}/{anomalyBadge.budget}</div>
+
       <div class="badge-progress">
         <div class="progress-bar" style="width: {Math.min(anomalyBadge.ratio * 100, 100)}%"></div>
       </div>
@@ -177,22 +192,30 @@ await loadState();
     <!-- Detailed, State -->
     <div class="details-section">
       <h4>Current Baselines</h4>
+
       <div class="baselines-grid">
         <div class="baseline-item">
           <span class="label">P99 Latency:</span>
+
           <span class="value">{state.baselines.p99_latency_ms}ms</span>
         </div>
+
         <div class="baseline-item">
           <span class="label">Error Rate:</span>
+
           <span class="value">{state.baselines.error_rate_percent}%</span>
         </div>
+
         <div class="baseline-item">
           <span class="label">Connections:</span>
+
           <span class="value">{state.baselines.connection_count}</span>
         </div>
       </div>
+
       <div class="metadata">
         <small>Last calculated: {formatTimestamp(state.baselines.last_calculated)}</small>
+
         <small>Last reset: {formatTimestamp(state.sustained_counters.last_reset)}</small>
       </div>
     {/if}
@@ -200,39 +223,45 @@ await loadState();
   <div class="alerts-section">
     <div class="alerts-header">
       <h4>Live Alerts</h4>
+
       <div class="alerts-controls">
         <label class="auto-scroll">
           <input type="checkbox" bind:checked={autoScroll} />
           Auto-scroll
         </label>
+
         <button class="btn-clear" onclick={clearAlerts}>Clear</button>
       </div>
     </div>
-    <div class="alerts-list" style="max-height: 300px, overflow-y: auto;">
-      {#if alerts.length === 0}
+
+    <div class="alerts-list" style="max-height: 300px; overflow-y: auto;">
+  {#if alerts.length === 0}
         <div class="no-alerts">No alerts yet...</div>
       {:else}
         {#each alerts as alert (alert.id)}
           <div class="alert-item {getAlertClass(alert.severity)}">
             <div class="alert-timestamp">{formatTimestamp(alert.timestamp)}</div>
+
             <div class="alert-type">{alert.type.replace(/_/g, ' ')}</div>
+
             <div class="alert-message">{alert.message}</div>
-            {#if alert.value !== undefined}
+  {#if alert.value !== undefined}
               <div class="alert-value">
                 Value: {alert.value}
                 {#if alert.threshold !== undefined}
                   (threshold: {alert.threshold})
                 {/if}
               {/if}
-          </div>
+  </div>
         {/each}
       {/if}
-    </div>
+  </div>
   </div>
 </div>
+
 <style>
   .observability-panel {
-    background: var(--bg-secondary, #1a1a2e), border: 1px solid var(--border-color, #333);
+    background: var(--bg-secondary, #1a1a2e); border: 1px solid var(--border-color, #333);
     border-radius: 8px
     padding: 1rem
    ;margin: 1rem 0
@@ -261,28 +290,28 @@ await loadState();
   .status-indicator {
     width: 8px
     height: 8px
-    border-radius: 50%, background: var(--error-color, #ff4757)}
+    border-radius: 50%; background: var(--error-color, #ff4757)}
   .status-indicator.connected {
     background: var(--success-color, #2ed573)}
   .btn-toggle {
-    background: var(--accent-color, #0984e3), color: white
+    background: var(--accent-color, #0984e3); color: white
     border: none
     padding: 0.25rem 0.5rem
     border-radius: 4px
     cursor: pointer
     font-size: 0.75rem}
   .badges-row { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)), gap: 1rem
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem
     margin-bottom: 1rem}
   .badge {
     padding: 0.75rem
     border-radius: 6px
     text-align: center}
-  .badge-normal { background: var(--success-bg, #2ed57320), border: 1px solid var(--success-color, #2ed573)}
+  .badge-normal { background: var(--success-bg, #2ed57320); border: 1px solid var(--success-color, #2ed573)}
   .badge-warning {
-    background: var(--warning-bg, #ffa50220), border: 1px solid var(--warning-color, #ffa502)}
+    background: var(--warning-bg, #ffa50220); border: 1px solid var(--warning-color, #ffa502)}
   .badge-critical {
-    background: var(--error-bg, #ff475720), border: 1px solid var(--error-color, #ff4757)}
+    background: var(--error-bg, #ff475720); border: 1px solid var(--error-color, #ff4757)}
   .badge-label {
     font-size: 0.7rem
     text-transform: uppercase
@@ -298,16 +327,16 @@ await loadState();
     border-radius: 2px
     overflow: hidden}
   .progress-bar {
-    height: 100%, background: currentColor
+    height: 100%; background: currentColor
     transition: width: 0.3s ease}
-  .details-section { background: var(--bg-primary, #000), padding: 1rem
+  .details-section { background: var(--bg-primary, #000); padding: 1rem
     border-radius: 6px
     margin-bottom: 1rem}
   .details-section h4 { margin: 0, 0 0.75rem 0
     color: var(--text-primary, #fff);
     font-size: 0.9rem}
   .baselines-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)), gap: 0.5rem
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem
     margin-bottom: 0.75rem}
   .baseline-item {
     display: flex
@@ -342,8 +371,8 @@ await loadState();
     align-items: center
     gap: 0.25rem
     font-size: 0.75rem
-   ;color: var(--text-muted, #999), cursor: pointer}
-  .btn-clear { background: var(--error-color, #ff4757), color: white
+   ;color: var(--text-muted, #999); cursor: pointer}
+  .btn-clear { background: var(--error-color, #ff4757); color: white
     border: none
     padding: 0.25rem 0.5rem
     border-radius: 4px
@@ -396,4 +425,5 @@ await loadState();
      ;gap: 0.25rem}
   }
 </style>
+
 

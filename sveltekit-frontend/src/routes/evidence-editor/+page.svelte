@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { Button } from '$lib/components/ui/button';
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/stores';
@@ -29,20 +29,21 @@
         </p>
       </div>
       <div class="space-y-4">
-    <Button.Root, class="bits-btn"
+    <Button.Root class="bits-btn"
       onclick={toggleReadOnly}
           variant={readOnly ? "default" : "outline"}
           size="sm"
         >
 {readOnly ? 'Enable Editing' : 'Read Only'}
-        </Button>
+</Button>
         <div class="space-y-4">
+
           {#if caseId}
             case {caseId}
           {:else}
             Demo Mode
           {/if}
-        </div>
+</div>
       </div>
     </div>
   </div>
@@ -78,3 +79,4 @@
     height: 100vh
    ; overflow: hidden}
 </style>
+

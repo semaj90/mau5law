@@ -14,7 +14,7 @@
   class="n64-screen {variant}"
   role="region"
   aria-label={ariaLabel}
-  style="width: {width}, height: {height}"
+  style="width: {width}; height: {height}"
 >
   <div class="screen-content" tabindex="0">
 	<slot />
@@ -45,8 +45,7 @@
 	border-radius: calc(var(--n64-radius) - 2px);
 	display: flex
 	align-items: center
-	justify-content: center
-, color: var(--n64-text);
+	justify-content: center; color: var(--n64-text);
 	font-family: var(--n64-font-family);
 	font-size: var(--n64-font-size);
 	outline: none}

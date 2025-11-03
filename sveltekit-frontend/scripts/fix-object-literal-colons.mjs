@@ -1,21 +1,35 @@
 #!/usr/bin/env node
 /**
- * Phase 34C: Object Literal Colon Recovery
+ * Phase 34C: Object Literal Colon Recovery (Enhanced AST Transformer)
  * Detects and repairs corrupted object literals: { key, value } -> { key: value }
  * Uses Babel parser for safety (no regex replacements).
  * 
  * Corruption pattern from Phase 34B:
  *   const report = { estimated_fixes, 12 }  // WRONG
  *   const report = { estimated_fixes: 12 }  // CORRECT
+ * 
+ * Usage: 
+ *   node fix-object-literal-colons.mjs           # Dry-run mode (no changes)
+ *   node fix-object-literal-colons.mjs --apply   # Apply fixes
+ *   node fix-object-literal-colons.mjs --verbose # Show detailed output
  */
 
 import fs from 'fs';
 import path from 'path';
 import { glob } from 'glob';
 import parser from '@babel/parser';
-import traverse from '@babel/traverse';
-import generate from '@babel/generator';
+import _traverse from '@babel/traverse';
+import _generate from '@babel/generator';
 import * as t from '@babel/types';
+
+// Handle ESM/CJS interop
+const traverse = _traverse.default || _traverse;
+const generate = _generate.default || _generate;
+
+// Parse command line arguments
+const apply = process.argv.includes('--apply');
+const verbose = process.argv.includes('--verbose');
+const dryRun = !apply;
 
 const stats = {
   filesScanned: 0,
@@ -25,6 +39,7 @@ const stats = {
 };
 
 console.log('\n🔧 Phase 34C: Object Literal Colon Recovery');
+console.log(`Mode: ${apply ? '✏️ APPLY (will modify files)' : '👁️ DRY-RUN (read-only)'}`);
 console.log('='.repeat(70));
 
 const startTime = Date.now();
@@ -100,93 +115,114 @@ for (const file of allFiles) {
   let fileChanged = false;
   let fileRepairCount = 0;
   
-  traverse.default(ast, {
-    ObjectExpression(nodePath) {
-      const props = nodePath.node.properties;
-      
-      for (let i = 0; i < props.length; i++) {
-        const prop = props[i];
-        
-        // Look for pattern: ObjectProperty with shorthand that has a literal value
-        // This indicates { key, value } corruption where it should be { key: value }
-        if (t.isObjectProperty(prop) && prop.shorthand) {
-          // Shorthand should only be { key } not { key, value }
-          // If we have a comma-separated value after, it's corruption
-          const nextProp = props[i + 1];
+  try {
+    traverse(ast, {
+      ObjectExpression(nodePath) {
+        try {
+          const props = nodePath.node.properties;
           
-          // Check if current prop looks like identifier and next is a literal
-          if (nextProp && 
-              t.isIdentifier(prop.key) && 
-              t.isIdentifier(prop.value) &&
-              prop.key.name === prop.value.name) {
+          for (let i = 0; i < props.length; i++) {
+            const prop = props[i];
             
-            // This is legitimate shorthand like { foo } meaning { foo: foo }
-            continue;
+            // Look for pattern: ObjectProperty with shorthand that has a literal value
+            // This indicates { key, value } corruption where it should be { key: value }
+            if (t.isObjectProperty(prop) && prop.shorthand) {
+              // Shorthand should only be { key } not { key, value }
+              // If we have a comma-separated value after, it's corruption
+              const nextProp = props[i + 1];
+              
+              // Check if current prop looks like identifier and next is a literal
+              if (nextProp && 
+                  t.isIdentifier(prop.key) && 
+                  t.isIdentifier(prop.value) &&
+                  prop.key.name === prop.value.name) {
+                
+                // This is legitimate shorthand like { foo } meaning { foo: foo }
+                continue;
+              }
+            }
+            
+            // Detect pattern: two sequential properties where first has no value
+            // indicating { identifier , literal } corruption
+            if (t.isObjectProperty(prop) && i < props.length - 1) {
+              const nextProp = props[i + 1];
+              
+              // Pattern: { key: key, literal } where key is duplicated
+              if (t.isIdentifier(prop.key) &&
+                  t.isIdentifier(prop.value) &&
+                  prop.key.name === prop.value.name &&
+                  nextProp &&
+                  (t.isNumericLiteral(nextProp.key) || 
+                   t.isStringLiteral(nextProp.key) ||
+                   t.isBooleanLiteral(nextProp.key))) {
+                
+                // Fix: Make first property use the literal as value
+                prop.value = nextProp.key;
+                prop.shorthand = false;
+                
+                // Remove the next property (it was the value, not a separate property)
+                props.splice(i + 1, 1);
+                
+                fileChanged = true;
+                fileRepairCount++;
+                stats.literalsRepaired++;
+              }
+            }
           }
-        }
-        
-        // Detect pattern: two sequential properties where first has no value
-        // indicating { identifier , literal } corruption
-        if (t.isObjectProperty(prop) && i < props.length - 1) {
-          const nextProp = props[i + 1];
-          
-          // Pattern: { key: key, literal } where key is duplicated
-          if (t.isIdentifier(prop.key) &&
-              t.isIdentifier(prop.value) &&
-              prop.key.name === prop.value.name &&
-              nextProp &&
-              (t.isNumericLiteral(nextProp.key) || 
-               t.isStringLiteral(nextProp.key) ||
-               t.isBooleanLiteral(nextProp.key))) {
-            
-            // Fix: Make first property use the literal as value
-            prop.value = nextProp.key;
-            prop.shorthand = false;
-            
-            // Remove the next property (it was the value, not a separate property)
-            props.splice(i + 1, 1);
-            
-            fileChanged = true;
-            fileRepairCount++;
-            stats.literalsRepaired++;
-          }
+        } catch (err) {
+          // Skip problematic nodes within traverse
         }
       }
-    }
-  });
+    });
+  } catch (err) {
+    // Babel traverse error - skip this file
+    stats.errors.push({ file, error: 'Traverse error', message: err.message.split('\n')[0] });
+    continue;
+  }
   
   if (fileChanged) {
-    try {
-      let output;
-      if (isScriptExtraction) {
-        // Regenerate just the script section
-        const newScript = generate.default(ast, {
-          retainLines: true,
-          compact: false
-        }).code;
+    const relativePath = path.relative(process.cwd(), file);
+    
+    if (apply) {
+      try {
+        let output;
+        if (isScriptExtraction) {
+          // Regenerate just the script section
+          const newScript = generate(ast, {
+            retainLines: true,
+            compact: false
+          }).code;
+          
+          // Replace script content in original file
+          output = code.replace(
+            /<script[^>]*>[\s\S]*?<\/script>/,
+            match => {
+              const scriptTag = match.match(/<script[^>]*>/)[0];
+              return `${scriptTag}\n${newScript}\n</script>`;
+            }
+          );
+        } else {
+          output = generate(ast, {
+            retainLines: true,
+            compact: false
+          }).code;
+        }
         
-        // Replace script content in original file
-        output = code.replace(
-          /<script[^>]*>[\s\S]*?<\/script>/,
-          match => {
-            const scriptTag = match.match(/<script[^>]*>/)[0];
-            return `${scriptTag}\n${newScript}\n</script>`;
-          }
-        );
-      } else {
-        output = generate.default(ast, {
-          retainLines: true,
-          compact: false
-        }).code;
+        fs.writeFileSync(file, output, 'utf8');
+        stats.filesFixed++;
+        
+        if (verbose) {
+          console.log(`\r✅ Fixed ${fileRepairCount} literals → ${relativePath}`);
+        }
+      } catch (err) {
+        stats.errors.push({ file, error: 'Write error', message: err.message });
       }
-      
-      fs.writeFileSync(file, output, 'utf8');
+    } else {
+      // Dry-run mode: just report what would be fixed
       stats.filesFixed++;
-      
-      const relativePath = path.relative(process.cwd(), file);
-      console.log(`\r✅ Fixed ${fileRepairCount} literals → ${relativePath}`);
-    } catch (err) {
-      stats.errors.push({ file, error: 'Write error', message: err.message });
+      if (verbose) {
+        console.log(`\r🔍 Would fix ${fileRepairCount} literals → ${relativePath}`);
+      }
     }
   }
 }
@@ -212,11 +248,17 @@ if (stats.errors.length > 0 && stats.errors.length <= 10) {
 console.log('\n' + '='.repeat(70));
 
 if (stats.filesFixed > 0) {
-  console.log('✅ Object literal recovery complete!');
-  console.log('\nNext steps:');
-  console.log('  1. npx tsc --noEmit (verify syntax)');
-  console.log('  2. npx svelte-check --threshold error');
-  console.log('  3. npm run build (test production build)');
+  if (apply) {
+    console.log('✅ Object literal recovery complete!');
+    console.log('\nNext steps:');
+    console.log('  1. npx tsc --noEmit (verify syntax)');
+    console.log('  2. npx svelte-check --threshold error');
+    console.log('  3. npm run build (test production build)');
+  } else {
+    console.log(`🔍 Dry-run complete - ${stats.filesFixed} files would be modified`);
+    console.log('\n💡 To apply fixes, run:');
+    console.log('   node scripts/fix-object-literal-colons.mjs --apply');
+  }
 } else {
   console.log('✅ No corrupted object literals found');
 }

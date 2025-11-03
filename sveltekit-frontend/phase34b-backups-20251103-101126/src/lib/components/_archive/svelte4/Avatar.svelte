@@ -2,16 +2,16 @@
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once -->
 <script lang="ts">
-import type { User } from '$lib/types';
+  import type { User } from '$lib/types';
 
   import { onMount } from 'svelte';
   import { avatarStore } from '../stores/avatarStore';
 
-  const { size } = $props<{ size: 'small' | 'medium' | 'large' }>()
-  const { clickable } = $props<{ clickable: boolean }>()
-  const { showUploadButton } = $props<{ showUploadButton: boolean }>()
+  const { size } = $props<{ size: 'small' | 'medium' | 'large' }>();
+  const { clickable } = $props<{ clickable: boolean }>();
+  const { showUploadButton } = $props<{ showUploadButton: boolean }>();
 
-  let fileInput: HTMLInputElement | null = null
+  let fileInput: HTMLInputElement | null = null;
   let dragOver = $state<boolean>(false);
 
   // reactive avatarSize based on size prop
@@ -28,7 +28,7 @@ import type { User } from '$lib/types';
   }
 
   function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement | null
+    const target = event.target as HTMLInputElement | null;
     const file = target?.files?.[0];
     if (file) {
       uploadFile(file);
@@ -37,8 +37,8 @@ import type { User } from '$lib/types';
 
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = false
-    const files = event.dataTransfer?.files
+    dragOver = false;
+    const files = event.dataTransfer?.files;
     if (files && files.length > 0) {
       uploadFile(files[0]);
     }
@@ -46,22 +46,26 @@ import type { User } from '$lib/types';
 
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
-    dragOver = true}
+    dragOver = true;
+  }
 
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragOver = false}
+    dragOver = false;
+  }
 
   async function uploadFile(file: File): Promise<any> {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       alert('Please select a valid image file (JPEG, PNG, GIF, SVG, WebP)');
-      return}
+      return;
+    }
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('File too large. Maximum size: 5MB');
-      return}
+      return;
+    }
     const result = await avatarStore.uploadAvatar(file);
     if (!(result as { success?: any; error?: any }).success) {
       alert((result as { success?: any; error?: any }).error || 'Upload failed');
@@ -73,10 +77,9 @@ import type { User } from '$lib/types';
       avatarStore.removeAvatar();
     }
   }
-
 </script>
 
-<div class="avatar-wrapper" class:clickable, class:drag-over={dragOver}>
+<div class="avatar-wrapper" class:clickable; class:drag-over={dragOver}>
   <div
     class="avatar"
     style="width: {avatarSize};, height: {avatarSize};"
@@ -164,8 +167,7 @@ import type { User } from '$lib/types';
 
   .clickable .avatar:hover {
     border-color: #3b82f6
-    cursor: pointer
-   , transform: scale(1.05);
+    cursor: pointer; transform: scale(1.05);
   }
 
   .drag-over .avatar {
@@ -196,17 +198,14 @@ import type { User } from '$lib/types';
   }
 
   .upload-overlay {
-    position: absolute
-   , inset: 0,
+    position: absolute; inset: 0,
     display: flex
     align-items: center
-    justify-content: center
-   , background: rgba(0, 0, 0, 0.4);
+    justify-content: center; background: rgba(0, 0, 0, 0.4);
     color: white}
 
   .upload-controls {
-    display: flex
-   , gap: 8px
+    display: flex; gap: 8px
     flex-wrap: wrap}
 
   .upload-btn,
@@ -220,8 +219,7 @@ import type { User } from '$lib/types';
     transition: all 0.2s ease}
 
   .upload-btn {
-    background: #3b82f6
-   , color: white}
+    background: #3b82f6; color: white}
 
   .upload-btn:hover:not(:disabled) {
     background: #2563eb}
@@ -249,9 +247,6 @@ import type { User } from '$lib/types';
     color: #dc2626
     cursor: pointer
     font-size: 18px
-    line-height: 1
-   , padding: 0
+    line-height: 1; padding: 0
     margin-left: 8px}
 </style>
-
-

@@ -43,11 +43,11 @@ import type { Document } from '$lib/types';
   let ocrResult = $derived(ocrService.currentResult$);
   let extractedFields = $derived(ocrService.extractedFields$);
   // Form validation
-  const formErrors = writable<Record<string string>>({});
+  const formErrors = writable<Record<string, string>>({});
   let isFormValid = $state<boolean>(false);
   // Smart suggestions
-  let activeSuggestions = $state<Record<string string[]>>({});
-  let suggestionLoading = $state<Record<string boolean>>({});
+  let activeSuggestions = $state<Record<string, string[]>>({});
+  let suggestionLoading = $state<Record<string, boolean>>({});
   // Default form schema if none provided
   $effect(() => {
     if (formSchema.length === 0) {
@@ -105,6 +105,7 @@ import type { Document } from '$lib/types';
       // Clear suggestions once user makes a selection
       delete activeSuggestions[fieldName];
       activeSuggestions = { ...activeSuggestions }}
+
     // Validate field
     validateField(fieldName, value);
     if (ondispatch) ondispatch({ fieldName, value, confidence });
@@ -135,7 +136,7 @@ import type { Document } from '$lib/types';
     populatedFields.forEach(field => {
       if (field.value) validateField(field.name, field.value as: string)});
     if (isFormValid) {
-      const formData = populatedFields.reduce((acc: Record<string any>, field) => {
+      const formData = populatedFields.reduce((acc: Record<string, any>, field) => {
         acc[field.name] = field.value || '';
         return acc}, {} as { [key: string]: any });
       if (ondispatch) ondispatch({ formData, extractedFields: $extractedFields });
@@ -177,35 +178,45 @@ import type { Document } from '$lib/types';
   const handleDragOver = (_event: DragEvent) => {
     _event.preventDefault()};
 </script>
+
 <div class="smart-document-form max-w-4xl mx-auto p-6">
   <!-- Header -->
   <div class="text-center">
-    <h1 class="text-2xl font-bold text-yorha-text-primary">{title}</h1>
-    <p class="text-yorha-text-secondary">{description}</p>
+    <h1 class="text-2xl font-bold text-yorha-text-primary">{title}
+</h1>
+
+    <p class="text-yorha-text-secondary">{description}
+</p>
   </div>
+
   <!-- File, Upload, Section -->
   {#if enableOCR}
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center">
           <span>ðŸ“„</span>
+
           <span>Document Upload & Processing</span>
         </h3>
       </div>
+
       <div class="yorha-panel-content">
         <!-- Document, Type, Selection -->
         <div class="flex items-center">
           <!-- replaced Label component with, native, label -->
           <label class="text-sm">Document Type:</label>
+
           <select bind:value={selectedDocumentType}
             class="px-3 py-2 bg-yorha-bg-secondary border border-yorha-border rounded-md text-yorha-text-primary"
           >
             <option value="auto">Auto-detect</option>
-            {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
-              <option value={type}>{type.replace(/_/g, ' ').toUpperCase()}</option>
+  {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
+              <option value={type}>{type.replace(/_/g, ' ').toUpperCase()}
+</option>
             {/each}
-          </select>
+  </select>
         </div>
+
         <!-- File, Drop, Zone -->
         <div
           class="border-2 border-dashed border-yorha-border rounded-lg p-8 text-center transition-colors duration-200 hover:border-yorha-primary hover:bg-yorha-bg-secondary/50"
@@ -216,11 +227,14 @@ import type { Document } from '$lib/types';
           ondragover={handleDragOver}
           tabindex={0}
         >
-          {#if uploadedFile}
+  {#if uploadedFile}
             <div class="flex items-center justify-center">
               <span class="text-2xl">ðŸ“„</span>
+
               <div>
-                <p class="font-medium">{uploadedFile.name}</p>
+                <p class="font-medium">{uploadedFile.name}
+</p>
+
                 <p class="text-sm">
                   {(uploadedFile.size / 1024 / 1024).toFixed(2)} MB
                 </p>
@@ -229,10 +243,12 @@ import type { Document } from '$lib/types';
           {:else}
             <div class="space-y-2">
               <span class="text-4xl">ðŸ“</span>
+
               <p class="text-yorha-text-primary">Drop your document here or click to browse</p>
+
               <p class="text-sm">Supports PDF, PNG, JPG, TIFF</p>
             {/if}
-          <input
+  <input
             bind:this={fileInput}
             type="file"
             accept=".pdf,.png,.jpg,.jpeg,.tiff"
@@ -244,7 +260,7 @@ import type { Document } from '$lib/types';
                 handleFileUpload()}
             }}
           />
-          {#if !uploadedFile}
+  {#if !uploadedFile}
             <Button
               variant="ghost"
               class="mt-4 bits-btn"
@@ -253,75 +269,88 @@ import type { Document } from '$lib/types';
               Browse Files
             </Button>
           {/if}
-        </div>
+  </div>
+
         <!-- Processing, Status -->
-        {#if $processing}
+  {#if $processing}
           <div class="space-y-2" transition:fade>
             <div class="flex items-center">
               <span class="text-sm">Processing document...</span>
+
               <span class="text-sm">{Math.round($progress)}%</span>
             </div>
+
             <!-- native progress element instead of, Progress, component -->
             <progress value={$progress} max="100" class="h-2"></progress>
           {/if}
-        <!-- OCR, Results, Preview -->
-        {#if $ocrResult && showPreview}
+  <!-- OCR, Results, Preview -->
+  {#if $ocrResult && showPreview}
           <div class="bg-yorha-bg-secondary rounded-md p-4 border">
             <div class="flex items-center justify-between">
               <h4 class="font-medium">Extraction Results</h4>
+
               <!-- Badge replaced, with, span -->
               <span class="badge bg-yorha-success text-yorha-bg-primary px-2 py-1">
                 {$extractedFields.length} fields found
               </span>
             </div>
+
             <div class="text-xs">
               Confidence: {Math.round($ocrResult.confidence ?? 0)}% |
               Processing Time: {$ocrResult.processingTime ?? 0}ms |
               Document, Type: {$ocrResult.metadata?.documentType ?? 'unknown'}
-            </div>
+</div>
           {/if}
-      </div>
+  </div>
     {/if}
   <!-- Form, Fields -->
   <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary flex items-center">
         <span>ðŸ“</span>
+
         <span>Form Fields</span>
-        {#if enableOCR && $extractedFields.length > 0}
+  {#if enableOCR && $extractedFields.length > 0}
           <!-- Badge replaced, with, span -->
           <span class="bg-yorha-accent text-yorha-bg-primary px-2 py-1">
             Auto-populated
           </span>
         {/if}
-      </h3>
+  </h3>
     </div>
+
     <div class="yorha-panel-content">
       <form onsubmit={(e) => { e.preventDefault(); handleSubmit()}} class="space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2">
-          {#each populatedFields as field (field.name)}
+  {#each populatedFields as field (field.name)}
             <div class="space-y-2" transition:fade>
               <!-- Field, Label -->
               <div class="flex items-center">
                 <!-- use native label (already, present, elsewhere) -->
                 <label class="flex items-center">
-                  <span class="text-lg">{getFieldTypeIcon(field.type)}</span>
-                  <span>{field.label}</span>
-                  {#if field.required}
+                  <span class="text-lg">{getFieldTypeIcon(field.type)}
+</span>
+
+                  <span>{field.label}
+</span>
+  {#if field.required}
                     <span class="text-yorha-danger">*</span>
                   {/if}
-                </label>
+  </label>
+
                 <!-- Confidence, Indicator -->
-                {#if field.confidence}
+  {#if field.confidence}
                   <div class="flex items-center">
                     <div class={`w-2, h-2, rounded-full ${getConfidenceColor(field.confidence)}`}></div>
+
                     <span class="text-xs">
                       {Math.round((field.confidence ?? 0) * 100)}%
                     </span>
                   {/if}
-              </div>
+  </div>
+
               <!-- Field, Input -->
-              {#if field.type === 'text_block' && field.name.includes('notes')}
+  {#if field.type === 'text_block' && field.name.includes('notes')}
                 <!-- native textarea with new, event, syntax -->
                 <textarea
                   bind:value={field.value}
@@ -339,18 +368,19 @@ import type { Document } from '$lib/types';
                   oninput={(e: Event) => handleFieldChange(field.name, (e.target as HTMLInputElement).value)}
                 />
               {/if}
-              <!-- Field, Error -->
-              {#if $formErrors[field.name]}
+  <!-- Field, Error -->
+  {#if $formErrors[field.name]}
                 <p class="text-xs" transition:scale>
                   {$formErrors[field.name]}
-                </p>
+</p>
               {/if}
-              <!-- Smart, Suggestions -->
-              {#if activeSuggestions[field.name] && activeSuggestions[field.name].length > 0}
+  <!-- Smart, Suggestions -->
+  {#if activeSuggestions[field.name] && activeSuggestions[field.name].length > 0}
                 <div class="space-y-1">
                   <p class="text-xs">Suggestions:</p>
+
                   <div class="flex flex-wrap">
-                    {#each Array.isArray(activeSuggestions[field.name]) ? activeSuggestions[field.name] : [] as suggestion}
+  {#each Array.isArray(activeSuggestions[field.name]) ? activeSuggestions[field.name] : [] as suggestion}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -358,38 +388,42 @@ import type { Document } from '$lib/types';
                         onclick={() => applySuggestion(field.name, suggestion)}
                       >
                         {suggestion}
-                      </Button>
+</Button>
                     {/each}
-                  </div>
+  </div>
                 {/if}
-              <!-- Loading, Suggestions -->
-              {#if suggestionLoading[field.name]}
+  <!-- Loading, Suggestions -->
+  {#if suggestionLoading[field.name]}
                 <div class="flex items-center space-x-2 text-xs">
                   <div class="animate-spin w-3 h-3 border border-yorha-accent border-t-transparent"></div>
+
                   <span>Generating suggestions...</span>
                 {/if}
-            </div>
+  </div>
           {/each}
-        </div>
+  </div>
+
         <!-- Form, Actions -->
         <div class="flex items-center justify-between pt-6 border-t">
           <div class="flex items-center">
             <!-- Badge replaced, with, span -->
             <span class={isFormValid ? 'bg-yorha-success text-yorha-bg-primary px-2 py-1 rounded' : 'bg-yorha-warning text-yorha-bg-primary px-2, py-1, rounded'}>
               {isFormValid ? 'Ready to Submit' : 'Incomplete'}
-            </span>
-            {#if enableOCR && $extractedFields.length > 0}
+</span>
+  {#if enableOCR && $extractedFields.length > 0}
               <span class="text-xs">
                 {populatedFields.filter(f => f.value && f.value.toString().trim().length > 0).length} / {populatedFields.length} fields completed
               </span>
             {/if}
-          </div>
+  </div>
+
           <div class="flex items-center">
-            <Button.Root, class="bits-btn" variant="ghost" onclick={() => {
+            <Button.Root class="bits-btn" variant="ghost" onclick={() => {
               populatedFields = populatedFields.map(f => ({ ...f, value: '' }));
               formErrors.set({})}}>
               Clear All
             </Button>
+
             <Button
               type="submit"
               disabled={!isFormValid}
@@ -402,25 +436,30 @@ import type { Document } from '$lib/types';
       </form>
     </div>
   </div>
+
   <!-- Extracted, Fields, Preview -->
   {#if $extractedFields.length > 0 && showPreview}
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center">
           <span>ðŸ”</span>
+
           <span>Extracted Data</span>
-          <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={() => showPreview = !showPreview}>
+
+          <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={() => showPreview = !showPreview}>
             {showPreview ? 'Hide' : 'Show'}
-          </Button>
+</Button>
         </h3>
       </div>
+
       <!-- each, extracted, item: Badge -> span -->
-      {#each $extractedFields as field (field.fieldName)}
+  {#each $extractedFields as field (field.fieldName)}
         <div class="bg-yorha-bg-secondary rounded p-3 border">
           <div class="flex items-center justify-between">
             <span class="text-sm font-medium">
               {field.fieldName.replace(/_/g, ' ')}
-            </span>
+</span>
+
             <span
               class={
                 field.validationStatus === 'valid' ? 'bg-yorha-success text-yorha-bg-primary px-2 py-1 rounded' :
@@ -429,20 +468,27 @@ import type { Document } from '$lib/types';
               }
             >
               {field.validationStatus}
-            </span>
+</span>
           </div>
-          <p class="text-sm text-yorha-text-secondary">{field.value}</p>
+
+          <p class="text-sm text-yorha-text-secondary">{field.value}
+</p>
+
           <div class="flex items-center justify-between text-xs">
-            <span>{field.fieldType}</span>
+            <span>{field.fieldType}
+</span>
+
             <span>{Math.round((field.confidence ?? 0) * 100)}%</span>
           </div>
         </div>
       {/each}
     {/if}
-</div>
+  </div>
+
 <style>
   .smart-document-form {
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
     min-height: 100vh}
 </style>
+
 

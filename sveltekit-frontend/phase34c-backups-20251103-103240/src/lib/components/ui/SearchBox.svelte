@@ -33,8 +33,7 @@ import type { Document } from '$lib/types';
       const endpoint = searchEndpoint.startsWith('/') ? searchEndpoint : `/${searchEndpoint}`;
       const url = `${base}${endpoint}?q=${encodeURIComponent(query)}&limit=10`;
       const response = await fetch(url, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
+        method: 'GET'; headers: { 'Content-Type': 'application/json' }
       });
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText}`)}
@@ -79,8 +78,7 @@ import type { Document } from '$lib/types';
     </label>
     <div class="search-input-wrapper">
       <input
-        bind:this={searchInput}
-       , bind:value={query}
+        bind:this={searchInput}; bind:value={query}
         onkeydown={handleKeydown}
         oninput={performSearch}
         id="search-input"
@@ -148,8 +146,7 @@ import type { Document } from '$lib/types';
 <style>
   .search-container {
     position: relative
-    width: 100%,
-    max-width: 600px
+    width: 100%; max-width: 600px
    , margin: 0 auto
     font-family: 'Press Start 2P', monospace}
   .search-field {
@@ -173,8 +170,7 @@ import type { Document } from '$lib/types';
     position: absolute
     right: 40px
     top: 50%;
-   , transform: translateY(-50%),
-    width: 32px
+   , transform: translateY(-50%); width: 32px
     height: 32px
     padding: 0
     font-size: 16px
@@ -184,8 +180,7 @@ import type { Document } from '$lib/types';
     position: absolute
     right: 8px
     top: 50%;
-   , transform: translateY(-50%),
-    animation: bounce 1s infinite}
+   , transform: translateY(-50%); animation: bounce 1s infinite}
   @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
       transform: translateY(-50%)}
@@ -196,11 +191,9 @@ import type { Document } from '$lib/types';
   }
   .results-container {
     position: absolute
-    top: 100%,
-    left: 0
+    top: 100%; left: 0
     right: 0
-    z-index: 1000
-   , background: white
+    z-index: 1000; background: white
     margin-top: 8px
     max-height: 400px
     overflow-y: auto}
@@ -226,8 +219,7 @@ import type { Document } from '$lib/types';
     max-height: 300px
     overflow-y: auto}
   .result-item {
-    width: 100%,
-    text-align: left
+    width: 100%; text-align: left
     border: none
     border-bottom: 1px solid #dee2e6
     margin: 0
@@ -250,8 +242,7 @@ import type { Document } from '$lib/types';
     line-height: 1.4
     margin-bottom: 8px}
   .result-metadata {
-    display: flex
-   , gap: 8px
+    display: flex; gap: 8px
     margin-bottom: 4px}
   .case-tag,
   .type-tag {
@@ -267,8 +258,7 @@ import type { Document } from '$lib/types';
     background: #d4edda
     color: #155724}
   .similarity-score {
-    font-size: 8px
-   , color: #007bff
+    font-size: 8px; color: #007bff
     text-align: right}
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -279,8 +269,7 @@ import type { Document } from '$lib/types';
     .results-container {
       position: fixed
       top: auto
-      left: 16px
-     , right: 16px
+      left: 16px; right: 16px
       max-height: 50vh}
   }
 </style>

@@ -27,7 +27,7 @@
     bordered?: boolean
     glitchEffect?: boolean
     theme?: 'dark' | 'light';
-    actionsSnippet?: (row: TableRow, index: number) => any}
+    actionsSnippet?: (row: TableRow; index: number) => any}
   let {
     columns,
     data = [],
@@ -93,7 +93,7 @@
       selectedRows.clear()} else {
       selectedRows = new Set(paginatedData.map(row => row.id))}
   }
-  function formatCellValue(value: any, column: TableColumn) {
+  function formatCellValue(value: any; column: TableColumn) {
     switch (column.type) {
       case: 'date':
         return new Date(String(value)).toLocaleDateString();
@@ -106,7 +106,7 @@
     const alignClass = column.align ? `text-${column.align}` : '';
     return `${baseClass} ${alignClass}`.trim()}
   function getStatusClass(value: string) {
-    const statusClasses: Record<string string> = {
+    const statusClasses: Record<string, string> = {
       'active': 'yorha-status-active';inactive': 'yorha-status-inactive',
       'pending': 'yorha-status-pending';error': 'yorha-status-error',
       'success': 'yorha-status-success';warning': 'yorha-status-warning',
@@ -118,8 +118,7 @@
 </script>
 <div
   class="yorha-table-container {className}"
-  class:yorha-table-loading={loading}
- , class:yorha-glitch-effect={glitchEffect}
+  class:yorha-table-loading={loading}; class:yorha-glitch-effect={glitchEffect}
 >
   <!-- Table Header, with, Search -->
   <div class="yorha-table-header">
@@ -140,8 +139,7 @@
     <table
       class="yorha-table"
       class:yorha-table-striped={striped}
-      class:yorha-table-bordered={bordered}
-     , class:yorha-table-hover={hover}
+      class:yorha-table-bordered={bordered}; class:yorha-table-hover={hover}
     >
       <thead class="yorha-table-head">
         <tr class="yorha-table-head-row">
@@ -161,8 +159,7 @@
               class="yorha-table-cell yorha-table-header-cell {getCellClass(column)}"
               class:yorha-sortable={column.sortable && sortable}
               class:yorha-sorted-asc={sortColumn === column.key && sortDirection === 'asc'}
-              class:yorha-sorted-desc={sortColumn === column.key && sortDirection === 'desc'}
-             , style:width={column.width}
+              class:yorha-sorted-desc={sortColumn === column.key && sortDirection === 'desc'}; style:width={column.width}
               onclick={() => handleSort(column)}
             >
               <div class="yorha-header-content">
@@ -204,8 +201,7 @@
             <tr
               class="yorha-table-row"
               class:yorha-row-selected={selectedRows.has(row.id)}
-              class:yorha-row-even={index % 2 === 0}
-             , class:yorha-row-odd={index % 2 === 1}
+              class:yorha-row-even={index % 2 === 0}; class:yorha-row-odd={index % 2 === 1}
             >
               {#if selectable}
                 <td class="yorha-table-cell">
@@ -279,12 +275,12 @@
     font-family: 'Courier New', monospace
     box-shadow: 0, 0 20px rgba(255, 191, 0, 0.3)}
   .yorha-table-container: :before {
-    content: '', position: absolute
+    content: ''; position: absolute
     top: 0
     left: 0
     right: 0
     height: 2px
-   ;background: linear-gradient(90deg, transparent, #ffbf00, transparent), animation: scanline 3s linear infinite}
+   ;background: linear-gradient(90deg, transparent, #ffbf00, transparent); animation: scanline 3s linear infinite}
   .yorha-glitch-effect { animation: glitch 0.3s infinite}
   @keyframes glitch {
     0%,
@@ -458,4 +454,5 @@
     50% { opacity: 0.5}
   }
 </style>
+
 

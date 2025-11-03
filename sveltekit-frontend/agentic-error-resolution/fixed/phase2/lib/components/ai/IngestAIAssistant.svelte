@@ -43,11 +43,11 @@ https://svelte.dev/e/attribute_duplicate -->
   const hasResults = derived(ingestResults, $results => $results.length > 0);
   // Document types following your legal AI patterns
   const documentTypes = [
-    { value: 'legal', label: 'Legal Document', icon: '⚖️' },
-    { value: 'evidence', label: 'Evidence', icon: '🔍' },
-    { value: 'case', label: 'Case File', icon: '📁' },
-    { value: 'contract', label: 'Contract', icon: '📜' },
-    { value: 'precedent', label: 'Legal Precedent', icon: '📚' },
+    { value: 'legal', label: 'Legal Document'; icon: '⚖️' },
+    { value: 'evidence', label: 'Evidence'; icon: '🔍' },
+    { value: 'case', label: 'Case File'; icon: '📁' },
+    { value: 'contract', label: 'Contract'; icon: '📜' },
+    { value: 'precedent', label: 'Legal Precedent'; icon: '📚' },
   ];
   // Enhanced ingest function with AI integration
   async function ingestDocument() { if (!get(canIngest)) return;
@@ -55,8 +55,8 @@ https://svelte.dev/e/attribute_duplicate -->
     currentProgress.set(10);
     try {
       const request = {
-        title: documentTitle, content: documentContent, case_id: caseId || undefined, metadata: {
-          document_type: selectedDocumentType, source: 'ai_assistant_ui', ai_enhanced: true, // Integrate with your AI agent session
+        title: documentTitle, content: documentContent, case_id: caseId || undefined; metadata: {
+          document_type: selectedDocumentType; source: 'ai_assistant_ui', ai_enhanced: true, // Integrate with your AI agent session
           ai_session_id: get(aiAgentStore)?.activeSessionId },
       } as any;
       currentProgress.set(30);
@@ -71,7 +71,7 @@ https://svelte.dev/e/attribute_duplicate -->
       // Update results
       ingestResults.update(results => [
         ...results,
-        { ...(result as any), title: documentTitle, type: selectedDocumentType, timestamp: new Date() },
+        { ...(result as any), title: documentTitle, type: selectedDocumentType; timestamp: new Date() },
       ]);
       // Clear form
       clearForm();
@@ -80,18 +80,18 @@ https://svelte.dev/e/attribute_duplicate -->
     } catch (error) { console.error('Ingest failed:', error);
       errors.update(errs => [
         ...errs, {
-          id: Date.now(), message: (error as any)?.message || String(error), timestamp: new Date(), type: 'ingest_error' },
+          id: Date.now(), message: (error as any)?.message || String(error), timestamp: new Date(); type: 'ingest_error' },
       ]);
       processingStatus.set('error');
       setTimeout(() => processingStatus.set('idle'), 3000);
     }
   }
   // AI summary generation using your existing chat patterns
-  async function generateAISummary(documentId: string, content: string) {
+  async function generateAISummary(documentId: string; content: string) {
     try {
       const prompt = `Please provide a concise legal analysis summary of this document:\n\n${content.substring(0, 1000)}...`;
       // Use your existing AI agent for summary
-      await aiAgentStore.sendMessage(prompt, { document_id: documentId, analysis_type: 'legal_summary', source: 'ingest_assistant' });
+      await aiAgentStore.sendMessage(prompt, { document_id: documentId, analysis_type: 'legal_summary'; source: 'ingest_assistant' });
     } catch (error) {
       console.warn('AI summary generation failed:', error);
     }
@@ -105,17 +105,15 @@ https://svelte.dev/e/attribute_duplicate -->
     currentProgress.set(0);
     try {
       const batchRequest = documents.map(doc => ({
-        title: doc.title,
-        content: doc.content,
-        case_id: doc.case_id,
-        metadata: { document_type: doc.type || 'legal', batch_processing: true, source: 'ai_assistant_batch' },
+        title: doc.title; content: doc.content,
+        case_id: doc.case_id; metadata: { document_type: doc.type || 'legal', batch_processing: true, source: 'ai_assistant_batch' },
       }));
       // TODO: Restore batch functionality when `ingestBatch` is available on the service
       console.warn('Batch ingestion is currently disabled.');
-      const result = { success: false, message: 'Batch ingestion not implemented.' };
+      const result = { success: false; message: 'Batch ingestion not implemented.' };
       currentProgress.set(100);
       // Update results with batch information
-      ingestResults.update(results => [...results, { ...(result as any), is_batch: true, timestamp: new Date() }]);
+      ingestResults.update(results => [...results, { ...(result as any), is_batch: true; timestamp: new Date() }]);
       batchDocuments.set([]);
       processingStatus.set('completed');
       setTimeout(() => processingStatus.set('idle'), 2000);
@@ -124,10 +122,8 @@ https://svelte.dev/e/attribute_duplicate -->
       errors.update(errs => [
         ...errs,
         {
-          id: Date.now(),
-          message: `Batch processing failed: ${(error as any)?.message || String(error)}`,
-          timestamp: new Date(),
-          type: 'batch_error',
+          id: Date.now(); message: `Batch processing failed: ${(error as any)?.message || String(error)}`,
+          timestamp: new Date(); type: 'batch_error',
         },
       ]);
       processingStatus.set('error');
@@ -143,7 +139,7 @@ https://svelte.dev/e/attribute_duplicate -->
     if (!documentTitle.trim() || !documentContent.trim()) return;
     batchDocuments.update(docs => [
       ...docs,
-      { id: Date.now(), title: documentTitle, content: documentContent, case_id: caseId, type: selectedDocumentType },
+      { id: Date.now(), title: documentTitle, content: documentContent, case_id: caseId; type: selectedDocumentType },
     ]);
     clearForm();
   }
@@ -545,7 +541,7 @@ https://svelte.dev/e/attribute_duplicate -->
     background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
   }
   /* Enhanced focus states following your accessibility patterns */
-  :global(buttonfocus-visible, input:focus-visible, textarea:focus-visible) {
+  :global(buttonfocus-visible, input:focus-visible; textarea:focus-visible) {
     outline: 2px solid #3b82f6;
     outline-offset: 2px;
   }

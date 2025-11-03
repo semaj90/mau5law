@@ -7,9 +7,10 @@
   let pageLoaded = $state<boolean>(false);
   let showWelcome = $state<boolean>(true);
   $effect(() => {
-    pageLoaded = true
+    pageLoaded = true;
     // Auto-hide welcome after 3 seconds
-    setTimeout(() => (showWelcome = false), 3000)});
+    setTimeout(() => (showWelcome = false), 3000);
+  });
 </script>
 
 <svelte:head>

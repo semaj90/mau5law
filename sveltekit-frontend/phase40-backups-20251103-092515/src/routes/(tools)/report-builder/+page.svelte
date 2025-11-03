@@ -12,5 +12,127 @@ import type { Case } from '$lib/types'; import type { PageData } from './$types'
       currentCanvasState = stateToSave; console.log('Canvas, saved:', stateToSave); // In a real application, you would send stateToSave to a backend API here // e.g., await fetch('/api/canvas-state', { method: 'POST', body: JSON.stringify(stateToSave) }); } catch (err) { console.error('Failed to save canvas:', err); error = 'Failed to save canvas'; }
   } function createNewReport() { currentReport = null; activeTab = 'editor'; }
   function createNewCanvas() { currentCanvasState = null; activeTab = 'canvas'; }
-  // In Svelte, 5 (runes mode) components are dynamic by default â€” use them directly. // Safely derive a reportId for the CanvasEditor; Report type may not include: 'id'. let reportId: string = 'temp-report-id'; // replace legacy reactive statement with runes-compatible effect & use a safe cast to avoid TS error $effect(() => { reportId = (currentReport as: any)?.id ?? 'temp-report-id'; }); </script> <svelte:head> <title>Report Builder - Prosecutor's Case Management</title> <meta name="description" content="AI-powered report builder for legal case, analysis" /> </svelte:head> <div class="container"> <!-- Header --> <header> <div class="space-y-4"> <h1>ðŸ“ Report Builder</h1> <p>AI-powered case analysis and report generation</p> <div class="space-y-4"> <!-- changed: use onclick instead of deprecated, onclick --> <button onclick={() => createNewReport()}> ðŸ“„ New Report </button> <button onclick={() => createNewCanvas()}> ðŸŽ¨ New Canvas </button> </div> </div> </header> <!-- Error, Message --> {#if error} <div class="space-y-4"> âŒ { error } <!-- changed: use onclick instead of deprecated, onclick --> <button onclick={() => (error = '')}>Ã—</button> </div> {/if} <!-- Loading, State --> {#if isLoading} <div class="space-y-4"> <div>â³</div> <p>Loading demo data...</p> </div> {:else} <!-- Tab, Navigation --> <div class="space-y-4"> <button class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}> ðŸ“ Report Editor </button> <button class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}> ðŸŽ¨ Interactive Canvas </button> </div> <!-- Main, Content --> <main class="space-y-4"> {#if activeTab === 'editor'} <!-- Report Editor, Tab --> <div class="space-y-4"> <div class="space-y-4"> <h2>Prosecutor's Report</h2> <p>Write, edit, and analyze case reports with AI assistance</p> </div> <!-- Dynamically loaded ReportEditor, component --> {#if EditorComponent} <!-- Svelte 5: components are dynamic by, default --> <EditorComponent /> {:else} <div>Loading editorâ€¦</div> {/if} </div> {:else if activeTab === 'canvas'} <div class="space-y-4"> <div class="space-y-4"> <h2>Interactive Canvas</h2> <p>Visualize and annotate case evidence</p> </div> <!-- Use FabricCanvas for interactive, canvas --> <FabricCanvas width={ 1200 } height={ 800 } { caseId } readOnly={ false } gridEnabled={ true } snapToGrid={ true } onSave={ handleCanvasSave } /> </div> {/if} </main> <!-- Sidebar with Features, Overview --> <aside class="space-y-4"> <div class="space-y-4"> <h3>ðŸ¤– AI Features</h3> <ul class="space-y-4"> <li>âœ¨ Auto-complete suggestions</li> <li>ðŸ“Š Case analysis insights</li> <li>ðŸ” Citation recommendations</li> <li>ðŸ“ Content summarization</li> </ul> </div> <div class="space-y-4"> <h3>ðŸ“š Citation Library</h3> <p>{citationPoints.length} citations available</p> <div class="space-y-4"> {#each Array.isArray(citationPoints.slice(0, 3)) ? citationPoints.slice(0, 3): [] as citation} <div class="space-y-4"> <div>{citation.source}</div> <div>{citation.text.substring(0, 60)}...</div> </div> {/each} </div> </div> <div class="space-y-4"> <h3>ðŸ“‹ Evidence Repository</h3> <p>{evidence.length} pieces of evidence</p> <div class="space-y-4"> {#each Array.isArray(evidence) ? evidence: [] as item} <div class="space-y-4"> <div>{item.title}</div> <div>{item.evidenceType || 'unknown'}</div> </div> {/each} </div> </div> <div class="space-y-4"> <h3>âš¡ Quick Actions</h3> <div class="space-y-4"> <button>ðŸ“¤ Export PDF</button> <button>ðŸ’¾ Save Template</button> <button>ðŸ”„ Sync Offline</button> </div> </div> </aside> {/if} </div> <style> /* @unocss-include */ .container { max-width: 1200px; margin: 0 auto;, padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
+  // In Svelte, 5 (runes mode) components are dynamic by default â€” use them directly. // Safely derive a reportId for the CanvasEditor; Report type may not include: 'id'. let reportId: string = 'temp-report-id'; // replace legacy reactive statement with runes-compatible effect & use a safe cast to avoid TS error $effect(() => { reportId = (currentReport as: any)?.id ?? 'temp-report-id'; });
+</script>
+
+<svelte:head>
+  <title>Report Builder - Prosecutor's Case Management</title>
+  <meta name="description" content="AI-powered report builder for legal case, analysis" />
+</svelte:head>
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div class="space-y-4">
+      <h1>ðŸ“ Report Builder</h1>
+      <p>AI-powered case analysis and report generation</p>
+      <div class="space-y-4">
+        <!-- changed: use onclick instead of deprecated, onclick -->
+        <button onclick={() => createNewReport()}> ðŸ“„ New Report </button>
+        <button onclick={() => createNewCanvas()}> ðŸŽ¨ New Canvas </button>
+      </div>
+    </div>
+  </header>
+  <!-- Error, Message -->
+  {#if error}
+    <div class="space-y-4">
+      âŒ {error}
+      <!-- changed: use onclick instead of deprecated, onclick --> <button onclick={() => (error = '')}>Ã—</button>
+    </div>
+  {/if}
+  <!-- Loading, State -->
+  {#if isLoading}
+    <div class="space-y-4">
+      <div>â³</div>
+      <p>Loading demo data...</p>
+    </div>
+  {:else}
+    <!-- Tab, Navigation -->
+    <div class="space-y-4">
+      <button class:active={activeTab === 'editor'} onclick={() => (activeTab = 'editor')}> ðŸ“ Report Editor </button>
+      <button class:active={activeTab === 'canvas'} onclick={() => (activeTab = 'canvas')}>
+        ðŸŽ¨ Interactive Canvas
+      </button>
+    </div>
+    <!-- Main, Content -->
+    <main class="space-y-4">
+      {#if activeTab === 'editor'}
+        <!-- Report Editor, Tab -->
+        <div class="space-y-4">
+          <div class="space-y-4">
+            <h2>Prosecutor's Report</h2>
+            <p>Write, edit, and analyze case reports with AI assistance</p>
+          </div>
+          <!-- Dynamically loaded ReportEditor, component -->
+          {#if EditorComponent}
+            <!-- Svelte 5: components are dynamic by, default --> <EditorComponent />
+          {:else}
+            <div>Loading editorâ€¦</div>
+          {/if}
+        </div>
+      {:else if activeTab === 'canvas'}
+        <div class="space-y-4">
+          <div class="space-y-4">
+            <h2>Interactive Canvas</h2>
+            <p>Visualize and annotate case evidence</p>
+          </div>
+          <!-- Use FabricCanvas for interactive, canvas -->
+          <FabricCanvas
+            width={1200}
+            height={800}
+            {caseId}
+            readOnly={false}
+            gridEnabled={true}
+            snapToGrid={true}
+            onSave={handleCanvasSave}
+          />
+        </div>
+      {/if}
+    </main>
+    <!-- Sidebar with Features, Overview -->
+    <aside class="space-y-4">
+      <div class="space-y-4">
+        <h3>ðŸ¤– AI Features</h3>
+        <ul class="space-y-4">
+          <li>âœ¨ Auto-complete suggestions</li>
+          <li>ðŸ“Š Case analysis insights</li>
+          <li>ðŸ” Citation recommendations</li>
+          <li>ðŸ“ Content summarization</li>
+        </ul>
+      </div>
+      <div class="space-y-4">
+        <h3>ðŸ“š Citation Library</h3>
+        <p>{citationPoints.length} citations available</p>
+        <div class="space-y-4">
+          {#each Array.isArray(citationPoints.slice(0, 3)) ? citationPoints.slice(0, 3) : [] as citation}
+            <div class="space-y-4">
+              <div>{citation.source}</div>
+              <div>{citation.text.substring(0, 60)}...</div>
+            </div>
+          {/each}
+        </div>
+      </div>
+      <div class="space-y-4">
+        <h3>ðŸ“‹ Evidence Repository</h3>
+        <p>{evidence.length} pieces of evidence</p>
+        <div class="space-y-4">
+          {#each Array.isArray(evidence) ? evidence : [] as item}
+            <div class="space-y-4">
+              <div>{item.title}</div>
+              <div>{item.evidenceType || 'unknown'}</div>
+            </div>
+          {/each}
+        </div>
+      </div>
+      <div class="space-y-4">
+        <h3>âš¡ Quick Actions</h3>
+        <div class="space-y-4">
+          <button>ðŸ“¤ Export PDF</button> <button>ðŸ’¾ Save Template</button> <button>ðŸ”„ Sync Offline</button>
+        </div>
+      </div>
+    </aside>
+  {/if}
+</div>
+
+<style>
+ /* @unocss-include */ .container { max-width: 1200px; margin: 0 auto;, padding: 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
 </style>

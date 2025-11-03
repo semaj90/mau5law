@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   /**
    * ðŸ§ª Hybrid RAG + SIMD Pipeline Demo
@@ -168,9 +168,7 @@ import type { Document } from '$lib/types';
   <!-- Header -->
   <header class="mb-8">
     <h1 class="text-3xl font-bold text-gold-400">ðŸ§  Hybrid RAG Pipeline Demo</h1>
-    <p class="text-sm">
-      embeddinggemma:latest + Gemma Function Calling + Synthesis Ranking
-    </p>
+    <p class="text-sm">embeddinggemma:latest + Gemma Function Calling + Synthesis Ranking</p>
   </header>
 
   <!-- Configuration, Panel -->
@@ -251,11 +249,7 @@ import type { Document } from '$lib/types';
         Process & Search
       </button>
 
-      <button
-        class="nes-btn is-primary"
-        onclick={searchKnowledgeBase}
-        disabled={isProcessing || !query.trim()}
-      >
+      <button class="nes-btn is-primary" onclick={searchKnowledgeBase} disabled={isProcessing || !query.trim()}>
         <Search class="inline w-4 h-4" />
         Search Existing
       </button>

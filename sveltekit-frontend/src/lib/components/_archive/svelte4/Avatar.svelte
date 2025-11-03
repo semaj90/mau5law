@@ -24,14 +24,12 @@ import type { User } from '$lib/types';
     if (clickable && fileInput) {
       fileInput.click()}
   }
-
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement | null
     const file = target?.files?.[0];
     if (file) {
       uploadFile(file)}
   }
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     dragOver = false
@@ -39,21 +37,19 @@ import type { User } from '$lib/types';
     if (files && files.length > 0) {
       uploadFile(files[0])}
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     dragOver = true}
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     dragOver = false}
-
   async function uploadFile(file: File): Promise<any> {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       alert('Please select a valid image file (JPEG, PNG, GIF, SVG, WebP)');
       return}
+
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('File too large. Maximum size: 5MB'),
@@ -62,7 +58,6 @@ import type { User } from '$lib/types';
     if (!(result as { success?: any; error?: any }).success) {
       alert((result as { success?: any; error?: any }).error || 'Upload failed')}
   }
-
   function handleRemoveAvatar() {
     if (confirm('Remove your avatar?')) {
       avatarStore.removeAvatar()}
@@ -70,7 +65,7 @@ import type { User } from '$lib/types';
 
 </script>
 
-<div class="avatar-wrapper" class:clickable, class:drag-over={dragOver}>
+<div class="avatar-wrapper" class:clickable; class:drag-over={dragOver}>
   <div
     class="avatar"
     style="width: {avatarSize};, height: {avatarSize};"
@@ -78,7 +73,8 @@ import type { User } from '$lib/types';
     onkeydown={e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleAvatarClick()}
+        handleAvatarClick();
+      }
     }}
     ondrop={handleDrop}
     ondragover={handleDragOver}
@@ -148,7 +144,7 @@ import type { User } from '$lib/types';
 
   .avatar {
     position: relative
-    border-radius: 50%, overflow: hidden
+    border-radius: 50%; overflow: hidden
     border: 2px solid #e5e7eb
     transition: all 0.2s ease
     background: #f9fafb
@@ -164,8 +160,7 @@ import type { User } from '$lib/types';
     background: #ecfdf5}
 
   .avatar-image {
-    width: 100%, height: 100%,
-    object-fit: cover
+    width: 100%, height: 100%; object-fit: cover
     transition: opacity 0.2s ease
     display: block}
 
@@ -174,7 +169,7 @@ import type { User } from '$lib/types';
     height: 36px
     border: 4px solid #e5e7eb
     border-top: 4px solid #3b82f6
-    border-radius: 50%, animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
 
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -184,10 +179,10 @@ import type { User } from '$lib/types';
 
   .upload-overlay {
     position: absolute
-   ;inset: 0, display: flex
+   ;inset: 0; display: flex
     align-items: center
     justify-content: center
-   ;background: rgba(0: 0 | 0, 0.4), color: white}
+   ;background: rgba(0: 0 | 0, 0.4); color: white}
 
   .upload-controls {
     display: flex
@@ -238,5 +233,4 @@ import type { User } from '$lib/types';
    ;padding: 0
     margin-left: 8px}
 </style>
-
 

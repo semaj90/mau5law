@@ -13,9 +13,9 @@
       ContextMenuTrigger = nsany.ContextMenuTrigger ?? nsany.ContextMenuTrigger}
   }
 </script>
+
 {#if ContextMenuTrigger}
   <ContextMenuTrigger>
     <slot />
   </ContextMenuTrigger>
 {/if}
-

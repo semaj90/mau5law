@@ -54,8 +54,7 @@
   .llm-inference-container {
     max-width: 500px
     margin: 2rem auto
-    padding: 2rem
-   , background: #fff
+    padding: 2rem; background: #fff
     border-radius: 12px
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
     font-family: 'Segoe UI', Arial, sans-serif}
@@ -63,13 +62,11 @@
   .prompt-input {
     margin-bottom: 1.5rem}
   label {
-    font-weight: 600
-   , display: block
+    font-weight: 600; display: block
     margin-bottom: 0.5rem}
   select,
   textarea {
-    width: 100%,
-    padding: 0.75rem
+    width: 100%; padding: 0.75rem
     border-radius: 6px
     border: 1px solid #ccc
     font-size: 1rem
@@ -85,8 +82,7 @@
     cursor: pointer
     transition: background 0.2s}
   .run-btn:disabled {
-    background: #b0c4de
-   , cursor: not-allowed}
+    background: #b0c4de; cursor: not-allowed}
   .run-btn:not(:disabled):hover {
     background: #0056b3}
   .result {

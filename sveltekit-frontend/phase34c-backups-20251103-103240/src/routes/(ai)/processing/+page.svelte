@@ -9,18 +9,20 @@
   // Add Job type so $state infers properly (prevents 'never' issues)
   type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
   interface Job {
-    id: string
-    documentId: string
-    analysisType: string
-    priority: string
-    status: JobStatus, progress: number
-    createdAt?: string
-    startedAt?: string
-    completedAt?: string
-    useGPU?: boolean
-    bankId?: number | null
-    gpuLayers?: number
-    results?: { confidence: number, entities: number, risks?: number }}
+    id: string;
+    documentId: string;
+    analysisType: string;
+    priority: string;
+    status: JobStatus;
+    progress: number;
+    createdAt?: string;
+    startedAt?: string;
+    completedAt?: string;
+    useGPU?: boolean;
+    bankId?: number | null;
+    gpuLayers?: number;
+    results?: { confidence: number; entities: number; risks?: number };
+  }
 
   // Use explicit generics so TS doesn't infer `never`
   let processingQueue = $state<Job[]>([]);
@@ -32,13 +34,13 @@
     vectorProcessingRate: 0,
     glyphCacheHitRate: 0,
     bankSwitchingFreq: 0,
-    chrRomPatterns: 0
+    chrRomPatterns: 0,
   });
   let performanceStats = $state({
     totalDocumentsProcessed: 0,
     averageProcessingTime: 0,
     successRate: 0,
-    memoryEfficiency: 0
+    memoryEfficiency: 0,
   });
   let showJobDialog = $state<boolean>(false);
   let isProcessing = $state<boolean>(false);
@@ -47,15 +49,17 @@
     analysisType: 'semantic',
     priority: 'normal',
     useGPU: true,
-    errors: {} as Record<string, string[]> // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
+    errors: {} as Record<string, string[]>, // errors keyed by field name, e.g. { documentId: ['msg'], general: ['msg'] }
   });
   let realTimeStats = $state<boolean>(true);
 
   $effect(() => {
     initializeNESGPUBridge();
     if (realTimeStats) {
-      startRealtimeMonitoring()}
-    loadProcessingHistory()});
+      startRealtimeMonitoring();
+    }
+    loadProcessingHistory();
+  });
 
   async function initializeNESGPUBridge(): Promise<void> {
     try {
@@ -63,18 +67,22 @@
       const adapter = await navigator.gpu?.requestAdapter();
       if (adapter) {
         const device = await adapter.requestDevice();
-        await glyphShaderCacheBridge.initialize(device)}
+        await glyphShaderCacheBridge.initialize(device);
+      }
       // Load initial metrics
       await updateSystemMetrics();
-      console.log('ðŸŽ¯ AI Processing Dashboard initialized with NES-GPU optimization')} catch (error) {
-      console.error('âŒ Failed to initialize NES-GPU bridge:', error)}
+      console.log('ðŸŽ¯ AI Processing Dashboard initialized with NES-GPU optimization');
+    } catch (error) {
+      console.error('âŒ Failed to initialize NES-GPU bridge:', error);
+    }
   }
 
   function startRealtimeMonitoring() {
     setInterval(async () => {
       if (realTimeStats) {
         await updateSystemMetrics();
-        await updateProcessingQueue()}
+        await updateProcessingQueue();
+      }
     }, 1000); // Update every second
   }
 
@@ -82,30 +90,34 @@
     try {
       // Guard calls on nesGPUBridge which may not implement these exact methods
       const nesGPUMetrics = (nesGPUBridge as any).getPerformanceMetrics?.();
-      const glyphStats = await glyphShaderCacheBridge.getGlyphCacheStats?.() ?? { cacheHitRate: 0, averageRenderTime: 0 };
+      const glyphStats = (await glyphShaderCacheBridge.getGlyphCacheStats?.()) ?? {
+        cacheHitRate: 0,
+        averageRenderTime: 0,
+      };
 
       systemMetrics = {
         nesMemory: {
           usedRAM: Math.min(2048, systemMetrics.nesMemory.usedRAM + (Math.random() - 0.5) * 50),
           totalRAM: 2048,
           usedCHR: Math.min(8192, systemMetrics.nesMemory.usedCHR + (Math.random() - 0.5) * 100),
-          totalCHR: 8192
+          totalCHR: 8192,
         },
         gpuUtilization: Math.max(0, Math.min(100, systemMetrics.gpuUtilization + (Math.random() - 0.5) * 10)),
         vectorProcessingRate: Math.max(0, systemMetrics.vectorProcessingRate + (Math.random() - 0.5) * 500),
         glyphCacheHitRate: (glyphStats.cacheHitRate || 0) * 100,
         bankSwitchingFreq: nesGPUMetrics?.activeBankMappings ? Object.keys(nesGPUMetrics.activeBankMappings).length : 0,
-        chrRomPatterns: nesGPUMetrics?.textureCacheSize ?? 0
+        chrRomPatterns: nesGPUMetrics?.textureCacheSize ?? 0,
       };
 
       performanceStats = {
         totalDocumentsProcessed: performanceStats.totalDocumentsProcessed + Math.floor(Math.random() * 3),
         averageProcessingTime: glyphStats.averageRenderTime || 0,
         successRate: Math.max(85, Math.min(100, performanceStats.successRate + (Math.random() - 0.5) * 2)),
-        memoryEfficiency: nesGPUMetrics?.memoryEfficiencyRatio ?? 0
-      }
+        memoryEfficiency: nesGPUMetrics?.memoryEfficiencyRatio ?? 0,
+      };
     } catch (error) {
-      console.error('Failed to update metrics:', error)}
+      console.error('Failed to update metrics:', error);
+    }
   }
 
   async function updateProcessingQueue(): Promise<any> {
@@ -117,7 +129,8 @@
         job.status = 'completed';
         job.completedAt = new Date().toISOString();
         completedJobs = [job, ...completedJobs.slice(0, 9)];
-        activeJobs = activeJobs.slice(1)}
+        activeJobs = activeJobs.slice(1);
+      }
     }
 
     // Add new jobs from queue
@@ -125,14 +138,16 @@
       const newJob = processingQueue[0];
       newJob.status = 'processing';
       newJob.startedAt = new Date().toISOString();
-      newJob.progress = 0
+      newJob.progress = 0;
       activeJobs = [...activeJobs, newJob];
-      processingQueue = processingQueue.slice(1)}
+      processingQueue = processingQueue.slice(1);
+    }
   }
 
   async function loadProcessingHistory(): Promise<any> {
     // Mock processing history
-    completedJobs = [ {
+    completedJobs = [
+      {
         id: 'job_001',
         documentId: 'contract_2024_001',
         analysisType: 'semantic',
@@ -141,8 +156,9 @@
         progress: 100,
         startedAt: new Date(Date.now() - 3600000).toISOString(),
         completedAt: new Date(Date.now() - 3300000).toISOString(),
-        results: { confidence: 0.94, entities: 12, risks: 2 }
-      }, {
+        results: { confidence: 0.94, entities: 12, risks: 2 },
+      },
+      {
         id: 'job_002',
         documentId: 'evidence_2024_047',
         analysisType: 'entity_extraction',
@@ -151,10 +167,11 @@
         progress: 100,
         startedAt: new Date(Date.now() - 7200000).toISOString(),
         completedAt: new Date(Date.now() - 6900000).toISOString(),
-        results: { confidence: 0.87, entities: 8, risks: 0 }
-      }
+        results: { confidence: 0.87, entities: 8, risks: 0 },
+      },
     ];
-    activeJobs = [ {
+    activeJobs = [
+      {
         id: 'job_003',
         documentId: 'brief_2024_023',
         analysisType: 'precedent_matching',
@@ -163,9 +180,10 @@
         progress: 67,
         startedAt: new Date(Date.now() - 900000).toISOString(),
         bankId: 2,
-        gpuLayers: 23
-      }
-    ]}
+        gpuLayers: 23,
+      },
+    ];
+  }
 
   async function submitProcessingJob(event: Event): Promise<any> {
     // typed event to avoid implicit: any
@@ -173,9 +191,10 @@
 
     if (!newJobForm.documentId.trim()) {
       newJobForm.errors = { documentId: ['Document ID is required'] };
-      return}
+      return;
+    }
 
-    isProcessing = true
+    isProcessing = true;
     newJobForm.errors = {} as Record<string, string[]>;
 
     try {
@@ -189,48 +208,63 @@
         progress: 0,
         createdAt: new Date().toISOString(),
         useGPU: newJobForm.useGPU,
-        bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null
+        bankId: newJobForm.useGPU ? Math.floor(Math.random() * 6) : null,
       };
 
       // Store in CHR-ROM pattern cache if high priority (guarded)
       if (newJobForm.priority === 'high' && newJobForm.useGPU) {
-        await (nesGPUBridge as any).storeCHRROMPattern?.(`job_${job.id}`, {})}
+        await (nesGPUBridge as any).storeCHRROMPattern?.(`job_${job.id}`, {});
+      }
 
       processingQueue = [...processingQueue, job];
-      showJobDialog = false
+      showJobDialog = false;
       // Reset form
       newJobForm = {
         documentId: '',
         analysisType: 'semantic',
         priority: 'normal',
         useGPU: true,
-        errors: {} as Record<string, string[]>
-      }
+        errors: {} as Record<string, string[]>,
+      };
     } catch (error) {
       console.error('Failed to submit job:', error);
-      newJobForm.errors = { general: ['Failed to submit processing job'] }} finally {
-      isProcessing = false}
+      newJobForm.errors = { general: ['Failed to submit processing job'] };
+    } finally {
+      isProcessing = false;
+    }
   }
 
   function cancelJob(jobId: string) {
     processingQueue = processingQueue.filter(job => job.id !== jobId);
-    activeJobs = activeJobs.filter(job => job.id !== jobId)}
+    activeJobs = activeJobs.filter(job => job.id !== jobId);
+  }
 
   function getStatusColor(status: string) {
     switch (status) {
-      case 'queued': return 'text-blue-600 bg-blue-100';
-      case 'processing': return 'text-yellow-600 bg-yellow-100';
-      case 'completed': return 'text-green-600 bg-green-100';
-      case 'failed': return 'text-red-600 bg-red-100';
-      default: return 'text-gray-600 bg-gray-100'}
+      case 'queued':
+        return 'text-blue-600 bg-blue-100';
+      case 'processing':
+        return 'text-yellow-600 bg-yellow-100';
+      case 'completed':
+        return 'text-green-600 bg-green-100';
+      case 'failed':
+        return 'text-red-600 bg-red-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
+    }
   }
 
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case 'high': return 'text-red-600 bg-red-100';
-      case 'normal': return 'text-blue-600 bg-blue-100';
-      case 'low': return 'text-gray-600 bg-gray-100';
-      default: return 'text-gray-600 bg-gray-100'}
+      case 'high':
+        return 'text-red-600 bg-red-100';
+      case 'normal':
+        return 'text-blue-600 bg-blue-100';
+      case 'low':
+        return 'text-gray-600 bg-gray-100';
+      default:
+        return 'text-gray-600 bg-gray-100';
+    }
   }
 
   // changed: accept: undefined and return a safe placeholder
@@ -243,17 +277,23 @@
 
     if (diffMins < 60) return `${diffMins}m ago`;
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h ago`;
-    return `${Math.floor(diffMins / 1440)}d ago`}
+    return `${Math.floor(diffMins / 1440)}d ago`;
+  }
 
   function getBankName(bankId: number) {
     switch (bankId) {
       case 0:
-      case 1: return 'RAM';
+      case 1:
+        return 'RAM';
       case 2:
-      case 3: return 'CHR-ROM';
+      case 3:
+        return 'CHR-ROM';
       case 4:
-      case 5: return 'PRG-ROM';
-      default: return 'UNKNOWN'}
+      case 5:
+        return 'PRG-ROM';
+      default:
+        return 'UNKNOWN';
+    }
   }
 </script>
 
@@ -269,7 +309,7 @@
       <div>
         <h1 class="text-3xl font-bold text-gray-900 flex items-center">
           <!-- replaced icon component with emoji span -->
-          <span class="w-8 h-8">ðŸ§ </span> AI Processing Dashboard
+          <span class="w-8 h-8">ðŸ§ </span> AI Processing Dashboard
         </h1>
         <p class="text-gray-600">Real-time legal document processing with NES-GPU memory bridge optimization</p>
       </div>
@@ -426,10 +466,7 @@
               </span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div
-                class="bg-blue-600 h-2 rounded-full transition-all"
-                style="width: {job.progress}%"
-              ></div>
+              <div class="bg-blue-600 h-2 rounded-full transition-all" style="width: {job.progress}%"></div>
             </div>
             <div class="text-xs text-gray-500">
               <div>{job.analysisType} Â· {Math.round(job.progress)}% complete</div>
@@ -511,11 +548,7 @@
 <!-- New Job Dialog -->
 {#if showJobDialog}
   <!-- Overlay -->
-  <div
-    class="fixed inset-0 z-40 flex items-center justify-center"
-    role="dialog"
-    aria-modal="true"
-  >
+  <div class="fixed inset-0 z-40 flex items-center justify-center" role="dialog" aria-modal="true">
     <button
       type="button"
       class="absolute inset-0 bg-black bg-opacity-50"
@@ -525,10 +558,7 @@
     ></button>
 
     <!-- Modal content -->
-    <div
-      class="relative z-50 bg-white rounded-lg shadow-xl max-w-md w-full"
-      transition:fly={{ y: 10, duration: 200 }}
-    >
+    <div class="relative z-50 bg-white rounded-lg shadow-xl max-w-md w-full" transition:fly={{ y: 10, duration: 200 }}>
       <div class="flex items-center justify-between">
         <h3 class="text-xl font-semibold">New Processing Job</h3>
         <button
@@ -621,5 +651,3 @@
     </div>
   </div>
 {/if}
-
-

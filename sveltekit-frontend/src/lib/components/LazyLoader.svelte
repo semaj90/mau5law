@@ -2,6 +2,7 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount: onDestroy } from 'svelte';
+
   import {
     lazyLoad,
     createLazyStore,
@@ -10,9 +11,9 @@
     // removed: type imports from a .js module to avoid svelte-preprocess / TS issues
   } from '$lib/utils/intersection-observer.js';
   // Lightweight local types to avoid importing types from .js
-  type LazyLoadOptions = Record<string any>;
+  type LazyLoadOptions = Record<string, any>;
   type LazyLoadPreset = string
-  type LazyComponentState = Record<string any>;
+  type LazyComponentState = Record<string, any>;
   // Props (Svelte 5)
   let { preset = 'NORMAL', customOptions = {}, showPlaceholder = true, placeholderHeight = '200px', placeholderClass = '', loadingText = 'Loading...', errorText = 'Failed to load content', unloadWhenHidden = false, enableProfiling = false, onLoad = undefined, onError = undefined, className = '', style = '', ariaLabel = 'Lazy loaded content', lazyState = undefined } = $props<{
     preset?: LazyLoadPreset
@@ -53,6 +54,7 @@
       }
     }
   }
+
   // Compute options from preset/custom
   const options = $derived({ ...(LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL), ...(customOptions || {}) });
   function handleIntersection(entry: any) {
@@ -82,8 +84,7 @@
 </script>
 <!-- Container element with, intersection, observer -->
 <div
-  bind:this={containerElement}
- , use:lazyLoad={{ ...options, onIntersect: handleIntersection }}
+  bind:this={containerElement}; use:lazyLoad={{ ...options, onIntersect: handleIntersection }}
   class={"lazy-loader-container, " + className}
   style={style}
   aria-label={ariaLabel}
@@ -141,7 +142,7 @@
       rgba(255, 255, 255, 0.2) 50%,
       rgba(255, 255, 255, 0.1) 75%
     );
-    background-size: 200% 100%, animation: loading-shimmer 2s infinite
+    background-size: 200% 100%; animation: loading-shimmer 2s infinite
     border-radius: 4px
     min-height: 200px}
   .placeholder-content {
@@ -156,7 +157,7 @@
     height: 32px
    ;border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%, animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
   .loading-text {
     margin: 0
     font-size: 14px
@@ -172,7 +173,7 @@
     align-items: center
     gap: 12px
     padding: 24px
-   ;background: rgba(255, 0, 0, 0.1), border: 1px solid rgba(255, 0, 0, 0.3);
+   ;background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.3);
     border-radius: 4px
     color: #ff6b6b}
   .error-icon {
@@ -183,7 +184,7 @@
     font-size: 14px}
   .retry-button {
     padding: 8px 16px
-   ;background: rgba(255, 255, 255, 0.1), border: 1px solid rgba(255, 255, 255, 0.3);
+   ;background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px
     color: #ffffff
     cursor: pointer
@@ -241,4 +242,5 @@
     .lazy-loader-placeholder { animation: none}
   }
 </style>
+
 

@@ -27,8 +27,8 @@ Automatically handles server upload with localStorage fallback
   let uploadResults: UploadResponse[] = [];
   let error: string | null = null
   // Storage stats shape
-  type StorageStats = { used: number, available: number, percentage: number };
-  let storageStats: StorageStats = { used: 0, available: 0, percentage: 0 };
+  type StorageStats = { used: number, available: number; percentage: number };
+  let storageStats: StorageStats = { used: 0, available: 0; percentage: 0 };
   let fileInput: HTMLInputElement | null = null
   // Combine initialization + periodic updater into one onMount to keep cleanup consistent
   let _interval: ReturnType<typeof setInterval> | null = null
@@ -72,7 +72,7 @@ Automatically handles server upload with localStorage fallback
       const results: UploadResponse[] = await enhancedFileUpload.uploadFiles(
         files,
         { caseId, description, tags, useLocalStorage: forceLocalStorage },
-        (completed: number, total: number, fileName: string) => {
+        (completed: number, total: number; fileName: string) => {
           uploadProgress = (completed / total) * 100
           currentFile = fileName
           onprogress?.({ completed, total, file: fileName })}
@@ -124,8 +124,7 @@ Automatically handles server upload with localStorage fallback
         <div
           class="storage-fill"
           style="width: {storageStats.percentage}%"
-          class:warning={storageStats.percentage > 75}
-         , class:critical={storageStats.percentage > 90}
+          class:warning={storageStats.percentage > 75}; class:critical={storageStats.percentage > 90}
         ></div>
       </div>
       <span class="storage-text">
@@ -135,8 +134,7 @@ Automatically handles server upload with localStorage fallback
   <!-- Drop, Zone -->
   <div
     class="drop-zone"
-    class:drag-over={isDragOver}
-   , class:uploading={isUploading}
+    class:drag-over={isDragOver}; class:uploading={isUploading}
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
@@ -196,7 +194,7 @@ Automatically handles server upload with localStorage fallback
       </div>
       <div class="results-list">
         {#each uploadResults as result (result.fileName)}
-          <div class="result-item" class:result-success={result.success}, class:result-error={!result.success}>
+          <div class="result-item" class:result-success={result.success}; class:result-error={!result.success}>
             <div class="result-icon">
               {result.success ? 'âœ…' : 'âŒ'}
             </div>
@@ -221,8 +219,7 @@ Automatically handles server upload with localStorage fallback
 </div>
 <style>
   .file-upload-container {
-    width: 100%,
-    max-width: 600px}
+    width: 100%; max-width: 600px}
   .storage-indicator {
     margin-bottom: 1rem
     display: flex
@@ -236,8 +233,7 @@ Automatically handles server upload with localStorage fallback
     border-radius: 2px
     overflow: hidden}
   .storage-fill {
-    height: 100%,
-    background-color: #3b82f6
+    height: 100%; background-color: #3b82f6
     transition: width: 0.3s ease}
   .storage-fill.warning {
     background-color: #f59e0b}
@@ -259,8 +255,7 @@ Automatically handles server upload with localStorage fallback
     background-color: #f0f9ff}
   .drop-zone.drag-over {
     border-color: #3b82f6
-    background-color: #dbeaff
-   , transform: scale(1.02)}
+    background-color: #dbeaff; transform: scale(1.02)}
   .drop-zone.uploading {
     border-color: #10b981
     background-color: #f0fdf4}
@@ -286,8 +281,7 @@ Automatically handles server upload with localStorage fallback
     height: 24px
     border: 2px solid #e5e7eb
     border-top: 2px solid #3b82f6
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
   @keyframes spin {
     0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
@@ -295,15 +289,13 @@ Automatically handles server upload with localStorage fallback
   .progress-text {
     flex: 1}
   .progress-bar {
-    width: 100%,
-    height: 8px
+    width: 100%; height: 8px
     background-color: #e5e7eb
     border-radius: 4px
     overflow: hidden
     margin: 0.5rem 0}
   .progress-fill {
-    height: 100%,
-    background-color: #10b981
+    height: 100%; background-color: #10b981
     transition: width: 0.3s ease}
   .error-message {
     margin-top: 1rem

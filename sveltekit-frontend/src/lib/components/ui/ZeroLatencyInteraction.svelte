@@ -16,22 +16,18 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let isInitialized = $state<boolean>(false);
   let currentTooltip: HTMLElement | null = null
-  let interactionStats = { totalInteractions: 0,
-    cacheHits: 0,
-    cacheMisses: 0,
-    averageResponseTime: 0,
+  let interactionStats = { totalInteractions: 0; cacheHits: 0,
+    cacheMisses: 0; averageResponseTime: 0,
     zeroLatencyHits: 0
   };
-
   let trackedElements = new Set<HTMLElement>();
-  let mousePosition = { x: 0, y: 0 };
+  let mousePosition = { x: 0; y: 0 };
   let observer: MutationObserver | null = null
   onMount(() => {
     initializeZeroLatencySystem()});
 
   onDestroy(() => {
     cleanupSystem()});
-
   async function initializeZeroLatencySystem(): Promise<void> {
     try {
       if (isInitialized) return
@@ -51,12 +47,11 @@ https://svelte.dev/e/js_parse_error -->
               childElements?.forEach(child => setupElementInteractions(child as HTMLElement))}
           })})});
 
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, { childList: true; subtree: true });
       isInitialized = true
       if (enableDebugMode) console.log(`âœ… Zero-latency system initialized for ${targetElements.length} elements`)} catch (err) {
       console.warn('Initialization failed:', err)}
   }
-
   function setupElementInteractions(element: HTMLElement) {
     if (trackedElements.has(element)) return
     const elementId = getElementId(element);
@@ -80,8 +75,7 @@ https://svelte.dev/e/js_parse_error -->
 
     element.classList.add('zero-latency-enabled');
     element.setAttribute('data-chr-rom-ready', 'true')}
-
-  async function handleZeroLatencyInteraction(_event: Event, elementId: string, target: HTMLElement): Promise<any> {
+  async function handleZeroLatencyInteraction(_event: Event, elementId: string; target: HTMLElement): Promise<any> {
     const startTime = performance.now();
     interactionStats.totalInteractions++;
 
@@ -126,8 +120,7 @@ https://svelte.dev/e/js_parse_error -->
       console.warn('Zero-latency interaction failed:', error);
       await handleCacheMiss(elementId, target, startTime)}
   }
-
-  async function handleCacheMiss(elementId: string, target: HTMLElement, startTime: number): Promise<any> {
+  async function handleCacheMiss(elementId: string, target: HTMLElement; startTime: number): Promise<any> {
     interactionStats.cacheMisses++;
     try {
       showLoadingTooltip(target);
@@ -145,8 +138,7 @@ https://svelte.dev/e/js_parse_error -->
       console.error('API fallback failed:', error);
       showErrorTooltip(target)}
   }
-
-  function showInstantTooltip(html: string, target: HTMLElement, responseTime: number) {
+  function showInstantTooltip(html: string, target: HTMLElement; responseTime: number) {
     hideTooltip();
     const tooltip = document.createElement('div');
     tooltip.className = 'chr-rom-tooltip zero-latency-tooltip';
@@ -164,7 +156,6 @@ https://svelte.dev/e/js_parse_error -->
     requestAnimationFrame(() => tooltip.classList.add('visible'));
     currentTooltip = tooltip
     updateStats(responseTime)}
-
   function showLoadingTooltip(target: HTMLElement) {
     hideTooltip();
     const tooltip = document.createElement('div');
@@ -179,7 +170,6 @@ https://svelte.dev/e/js_parse_error -->
     positionTooltip(tooltip, target);
     requestAnimationFrame(() => tooltip.classList.add('visible'));
     currentTooltip = tooltip}
-
   function showErrorTooltip(target: HTMLElement) {
     hideTooltip();
     const tooltip = document.createElement('div');
@@ -189,15 +179,13 @@ https://svelte.dev/e/js_parse_error -->
     positionTooltip(tooltip, target);
     requestAnimationFrame(() => tooltip.classList.add('visible'));
     currentTooltip = tooltip}
-
   function hideTooltip() {
     if (!currentTooltip) return
     currentTooltip.classList.remove('visible');
     const toRemove = currentTooltip
     currentTooltip = null
     setTimeout(() => toRemove.remove(), 200)}
-
-  function positionTooltip(tooltip: HTMLElement, target: HTMLElement) {
+  function positionTooltip(tooltip: HTMLElement; target: HTMLElement) {
     // ensure tooltip is measurable
     tooltip.style.position = 'absolute';
     tooltip.style.left = '0px';
@@ -214,25 +202,20 @@ https://svelte.dev/e/js_parse_error -->
     if (top < 10) top = window.scrollY + targetRect.bottom + 10
     tooltip.style.top = `${top}px`;
     tooltip.style.left = `${left}px`}
-
   function trackMousePosition(event: MouseEvent) {
     mousePosition.x = event.clientX
     mousePosition.y = event.clientY}
-
   function getElementId(element: HTMLElement): string | null {
     return element.getAttribute('data-legal-id') ||
            element.getAttribute('data-case-id') ||
            element.getAttribute('data-document-id') ||
            element.id ||
            null}
-
-  async function storeInCHRROM(patternId: string, pattern: any): Promise<any> {
+  async function storeInCHRROM(patternId: string; pattern: any): Promise<any> {
     try {
       const chrRomPattern = {
-        renderableHTML: String(pattern.renderableHTML || ''),
-        type: pattern.type || 'summary_card',
-        priority: 4,
-        compressedData: new TextEncoder().encode(String(pattern.renderableHTML || '')),
+        renderableHTML: String(pattern.renderableHTML || ''); type: pattern.type || 'summary_card',
+        priority: 4; compressedData: new TextEncoder().encode(String(pattern.renderableHTML || '')),
         bankId: 1
       };
       // nesGPUBridge's exported type may not declare storeCHRROMPattern.'
@@ -243,24 +226,21 @@ https://svelte.dev/e/js_parse_error -->
     } catch (error) {
       console.warn('Failed to store pattern in CHR-ROM:', error)}
   }
-
-  async function cacheApiResult(elementId: string, html: string): Promise<any> {
+  async function cacheApiResult(elementId: string; html: string): Promise<any> {
     try {
       const chrRomPattern = {
-        renderableHTML: html,
-        type: 'summary_card',
-        priority: 3,
-        compressedData: new TextEncoder().encode(html),
+        renderableHTML: html; type: 'summary_card',
+        priority: 3; compressedData: new TextEncoder().encode(html),
         bankId: 2
       };
       const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern
       if (typeof storeFn === 'function') {
         await storeFn.call(nesGPUBridge, `${patternPrefix}_${elementId}`, chrRomPattern)}
+
       // Optionally persist via precomputation service if available; left commented to avoid unused import.
     } catch (error) {
       console.warn('Failed to cache API result:', error)}
   }
-
   function generateTooltipHTML(data: any): string {
     // Minimal safe HTML generator; adapt as needed for domain
     try {
@@ -282,7 +262,6 @@ https://svelte.dev/e/js_parse_error -->
     } catch {
       return `<div><pre>${escapeHtml(String(data)).slice(0,300)}</pre></div>`}
   }
-
   function escapeHtml(unsafe: string) {
     return unsafe
       .replaceAll('&', '&amp;')
@@ -291,13 +270,11 @@ https://svelte.dev/e/js_parse_error -->
       .replaceAll('"', '&quot;')"
       .replaceAll("'", '&#039;');'
   }
-
   function updateStats(responseTime: number) {
     interactionStats.averageResponseTime = (
       (interactionStats.averageResponseTime * (interactionStats.totalInteractions - 1) + responseTime) /
       interactionStats.totalInteractions
     )}
-
   function cleanupSystem() {
     document.removeEventListener('mousemove', trackMousePosition);
     hideTooltip();
@@ -340,7 +317,7 @@ https://svelte.dev/e/js_parse_error -->
     cursor: pointer
    ;transition: all 0.1s ease}
   : global(.zero-latency-enabled: :after) {
-    content: 'âš¡', position: absolute
+    content: 'âš¡'; position: absolute
     top: -6px
     right: -6px
     font-size: 10px
@@ -350,16 +327,16 @@ https://svelte.dev/e/js_parse_error -->
 
   /* CHR-ROM Tooltip Styles */
   :global(.chr-rom-tooltip) {
-    background: linear-gradient(135deg, #1a1a1a, #2a2a2a), border: 2px solid #ffd700
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a); border: 2px solid #ffd700
     border-radius: 8px
    ; padding: 12px
     max-width: 300px
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5), color: #e0e0e0
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5); color: #e0e0e0
     font-family: 'JetBrains Mono', monospace
     font-size: 12px
     line-height: 1.4
     opacity: 0
-   ;transform: translateY(-5px) scale(0.95), transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1)}
+   ;transform: translateY(-5px) scale(0.95); transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1)}
   : global(.chr-rom-tooltip.visible) {
     opacity: 1
    ;transform: translateY(0) scale(1)}
@@ -373,9 +350,9 @@ https://svelte.dev/e/js_parse_error -->
     font-weight: 600
     text-transform: uppercase
     letter-spacing: 1px}
-  :global(.chr-rom-tooltip p) { margin: 0, 0 8px 0, color: #e0e0e0}
-  : global(.chr-rom-tooltip .metadata) { display: flex, gap:8px, font-size: 10px, color:#b0b0b0}
-  :global(.chr-rom-tooltip .metadata span) { background: rgba(255,215,0,0.08), padding:2px 6px; border-radius: 4px, border: 1px solid rgba(255,215,0,0.12)}
+  :global(.chr-rom-tooltip p) { margin: 0, 0 8px 0; color: #e0e0e0}
+  : global(.chr-rom-tooltip .metadata) { display: flex, gap:8px, font-size: 10px; color:#b0b0b0}
+  :global(.chr-rom-tooltip .metadata span) { background: rgba(255,215,0,0.08); padding:2px 6px; border-radius: 4px; border: 1px solid rgba(255,215,0,0.12)}
   : global(.chr-rom-tooltip .perf-indicator) {
     position: absolute
     top: -8px
@@ -388,10 +365,10 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px
    ;border: 1px solid #000
     box-shadow: 0 2px 8px rgba(0,255,65,0.4)}
-  :global(.chr-rom-tooltip .loading-content) { display: flex; align-items: center, gap:8px}
+  :global(.chr-rom-tooltip .loading-content) { display: flex; align-items: center; gap:8px}
   : global(.chr-rom-tooltip .loading-spinner) {
-    width: 12px, height: 12px; border:2px solid #333; border-top:2px solid #ffd700; border-radius: 50%, animation: spin 1s linear infinite}
-  :global(.chr-rom-tooltip .error-content) { display: flex; align-items: center, gap: 6px;color:#ff0041}
+    width: 12px; height: 12px; border:2px solid #333; border-top:2px solid #ffd700; border-radius: 50%; animation: spin 1s linear infinite}
+  :global(.chr-rom-tooltip .error-content) { display: flex; align-items: center; gap: 6px;color:#ff0041}
 
   @keyframes spin { 0% { transform: rotate(0deg)} 100% { transform: rotate(360deg)} }
 
@@ -400,7 +377,7 @@ https://svelte.dev/e/js_parse_error -->
     position: fixed
     top: 20px
     right: 20px
-   ;background: rgba(0,0,0,0.9), border: 1px solid #ffd700
+   ;background: rgba(0,0,0,0.9); border: 1px solid #ffd700
     border-radius: 6px
     padding: 12px
    ; color: #e0e0e0
@@ -408,16 +385,17 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 10px
     z-index: 9999
     backdrop-filter: blur(10px)}
-  .zero-latency-debug-panel h4 { margin:0, 0 8px 0, color: #ffd700; font-size:12px, text-align:center}
-  .debug-stats { display: flex; flex-direction: column, gap:4px}
-  .stat { display: flex; justify-content:space-between, align-items: center, gap:8px}
+  .zero-latency-debug-panel h4 { margin:0, 0 8px 0; color: #ffd700; font-size:12px; text-align:center}
+  .debug-stats { display: flex; flex-direction: column; gap:4px}
+  .stat { display: flex; justify-content:space-between, align-items: center; gap:8px}
   .stat .label { color: #b0b0b0}
-  .stat .value { font-weight: 600, color:#e0e0e0}
+  .stat .value { font-weight: 600; color:#e0e0e0}
   .stat .value.cache-hits { color:#00ff41}
   .stat .value.zero-latency { color: #ffd700; font-weight:700}
 
   @media (max-width: 768px) {
-    .zero-latency-debug-panel { top:10px, right: 10px;left: 10px; font-size:9px}
+    .zero-latency-debug-panel { top:10px; right: 10px;left: 10px; font-size:9px}
     :global(.chr-rom-tooltip) { max-width: 250px; font-size:11px}
   }
 </style>
+

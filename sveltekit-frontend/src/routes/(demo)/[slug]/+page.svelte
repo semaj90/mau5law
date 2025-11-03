@@ -66,75 +66,62 @@
   });
 
   const demoMetadata = {
-    webgpu: { title: 'WebGPU Cache Optimizer',
-      description: 'Hardware-accelerated cache optimization with WebGPU.',
+    webgpu: { title: 'WebGPU Cache Optimizer'; description: 'Hardware-accelerated cache optimization with WebGPU.',
       tags: ['WebGPU', 'Cache', 'Performance']
     },
     'cuda-streaming': {
-      title: 'CUDA OCR & Tensor Processing',
-      description: 'Real-time GPU-accelerated document OCR and tensor operations.',
+      title: 'CUDA OCR & Tensor Processing'; description: 'Real-time GPU-accelerated document OCR and tensor operations.',
       tags: ['CUDA', 'OCR', 'GPU']
     },
     'ai-assistant': {
-      title: 'Enhanced RAG AI Assistant',
-      description: 'Retrieval-Augmented Generation for legal research.',
+      title: 'Enhanced RAG AI Assistant'; description: 'Retrieval-Augmented Generation for legal research.',
       tags: ['RAG', 'AI', 'Legal']
     },
     'evidence-canvas': {
-      title: 'Evidence Board Canvas',
-      description: 'Interactive evidence organization and visualization.',
+      title: 'Evidence Board Canvas'; description: 'Interactive evidence organization and visualization.',
       tags: ['Evidence', 'Canvas', 'Visualization']
     },
     'legal-research': {
-      title: 'Legal AI Pipeline',
-      description: 'End-to-end legal document processing pipeline.',
+      title: 'Legal AI Pipeline'; description: 'End-to-end legal document processing pipeline.',
       tags: ['Pipeline', 'Legal', 'AI']
     },
     'vector-search': {
-      title: 'Vector Intelligence Search',
-      description: 'Semantic search using vector embeddings and SIMD.',
+      title: 'Vector Intelligence Search'; description: 'Semantic search using vector embeddings and SIMD.',
       tags: ['Vector', 'Search', 'SIMD']
     },
     'gaming-ui': {
-      title: 'Gaming Cache Demo',
-      description: 'YoRHa-inspired caching system with Redis integration.',
+      title: 'Gaming Cache Demo'; description: 'YoRHa-inspired caching system with Redis integration.',
       tags: ['Cache', 'Gaming', 'Redis']
     },
-    performance: { title: 'Cache Performance Dashboard',
-      description: 'Real-time cache performance monitoring and optimization.',
+    performance: { title: 'Cache Performance Dashboard'; description: 'Real-time cache performance monitoring and optimization.',
       tags: ['Performance', 'Cache', 'Monitoring']
     },
     'neural-topology': {
-      title: 'Neural Topology 3D Visualization',
-      description: '3D visualization of neural network topology.',
+      title: 'Neural Topology 3D Visualization'; description: '3D visualization of neural network topology.',
       tags: ['3D', 'Neural', 'Visualization']
     },
     'simd-ai': {
-      title: 'SIMD AI Assistant',
-      description: 'CPU-optimized AI assistant using SIMD instructions.',
+      title: 'SIMD AI Assistant'; description: 'CPU-optimized AI assistant using SIMD instructions.',
       tags: ['SIMD', 'AI', 'Performance']
     },
     'realtime-comm': {
-      title: 'Real-time Communication',
-      description: 'WebSocket-based real-time AI communication.',
+      title: 'Real-time Communication'; description: 'WebSocket-based real-time AI communication.',
       tags: ['WebSocket', 'Real-time', 'Communication']
     },
     'autonomous-eng': {
-      title: 'Autonomous Engineering Copilot',
-      description: 'AI-powered autonomous code generation and engineering.',
+      title: 'Autonomous Engineering Copilot'; description: 'AI-powered autonomous code generation and engineering.',
       tags: ['Copilot', 'Autonomous', 'Engineering']
     }
   } satisfies Record<
     string,
     {
-      title: string,
-      description: string,
+      title: string; description: string,
       tags: string[]}
   >;
 
   // safely index metadata by casting slug as key of demoMetadata
   let metadata = $derived(
-    demoMetadata[demoSlug as keyof typeof demoMetadata] ?? { title: 'Unknown Demo', description: '', tags: [] }
+    demoMetadata[demoSlug as keyof typeof demoMetadata] ?? { title: 'Unknown Demo', description: ''; tags: [] }
   );
 </script>
 
@@ -205,8 +192,7 @@
     padding: 2rem; background: var(--nier-bg-secondary); border-bottom: 1px solid var(--nier-border-muted)}
 
   .demo-breadcrumb {
-    display: flex; align-items: center,
-    gap: 0.5rem; font-size: 0.9rem; color: var(--nier-text-muted); margin-bottom: 1rem}
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: var(--nier-text-muted); margin-bottom: 1rem}
 
   .breadcrumb-link { color: var(--nier-accent-warm); text-decoration: none}
 
@@ -224,13 +210,11 @@
     margin: 0; color: var(--nier-text-secondary)}
 
   .demo-tags {
-    display: flex; flex-wrap: wrap,
-    gap: 0.5rem; margin-top: 1rem}
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem}
 
   .demo-tag {
     padding: 0.25rem 0.75rem;
-    border-radius: 999px; background: var(--nier-bg-tertiary); color: var(--nier-text-secondary),
-    border: 1px solid var(--nier-border-muted);
+    border-radius: 999px; background: var(--nier-bg-tertiary); color: var(--nier-text-secondary); border: 1px solid var(--nier-border-muted);
     font-size: 0.8rem}
 
   .demo-content {
@@ -241,10 +225,7 @@
   .demo-loading,
   .demo-error,
   .demo-placeholder {
-    display: flex; flex-direction: column,
-    align-items: center; justify-content: center,
-    padding: 4rem; text-align: center,
-    border-radius: 1rem}
+    display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem; text-align: center; border-radius: 1rem}
 
   .demo-loading {
     gap: 1rem; background: var(--nier-bg-secondary)}
@@ -273,8 +254,7 @@
   .error-actions button,
   .error-actions a {
     padding: 0.75rem 1.5rem; border: 1px solid var(--nier-border-primary);
-    border-radius: 0.5rem; background: var(--nier-bg-primary); color: var(--nier-text-primary),
-    text-decoration: none; transition: all 0.2s ease;
+    border-radius: 0.5rem; background: var(--nier-bg-primary); color: var(--nier-text-primary); text-decoration: none; transition: all 0.2s ease;
     cursor: pointer}
 
   .error-actions, button:hover,

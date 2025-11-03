@@ -72,7 +72,8 @@ try {
       const match = line.match(/(.+\.tsx?)\((\d+),\d+\): (.+)/);
       if (match) {
         extractedErrors.push({
-          message: match[3],
+          message: match[3]
+,
           file: match[1]
          , line: parseInt(match[2]),
           severity: determineSeverity(match[3]),
@@ -151,16 +152,13 @@ try {
   <!-- NPM, Output, Input -->
   <div class="bg-gray-900 rounded-lg p-4">
     <h3 class="text-white font-medium">ðŸ“‹ NPM Check Output:</h3>
-    <textarea bind:value={npmOutput}
+    <textarea
+      bind:value={npmOutput}
       class="w-full h-32 bg-gray-800 text-green-400 font-mono text-sm p-3 rounded border-none resize-none"
       placeholder="Paste npm check output here..."
     ></textarea>
     <div class="flex justify-between items-center">
-      <button
-        onclick={processErrors}
-        disabled={isLoading || !somCache}
-        class="bg-blue-600 hover:bg-blue-700"
-      >
+      <button onclick={processErrors} disabled={isLoading || !somCache} class="bg-blue-600 hover:bg-blue-700">
         {#if isLoading}
           ðŸ§  Processing with SOM...
         {:else}
@@ -360,6 +358,6 @@ try {
 
 <style>
   :global(body) {
-    background-color: #f8fafc}
+    background-color: #f8fafc;
+  }
 </style>
-

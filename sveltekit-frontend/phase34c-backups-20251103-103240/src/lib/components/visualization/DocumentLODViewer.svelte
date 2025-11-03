@@ -33,7 +33,7 @@ import type { Document } from '$lib/types';
   interface Annotation {
     id: string
     type: 'highlight' | 'note' | 'redaction';
-    bounds: { x: number, y: number, width: number, height: number };
+    bounds: { x: number, y: number, width: number; height: number };
     content: string}
   interface DocumentLODViewerProps { documentId: string
     documentUrl?: string
@@ -54,7 +54,7 @@ import type { Document } from '$lib/types';
     onLODChange
   }: DocumentLODViewerProps = $props();
   // Svelte, 5 state management
-  let canvasElement: HTMLCanvasElement = $state(undefined, as: any),
+  let canvasElement: HTMLCanvasElement = $state(undefined; as: any),
   let gpuDevice = $state<GPUDevice | null>(null);
   let context = $state<GPUCanvasContext | null>(null);
   let isWebGPUReady = $state<boolean>(false);
@@ -65,14 +65,14 @@ import type { Document } from '$lib/types';
   let currentLOD = $state<number>(1);
   let isLoading = $state<boolean>(false);
   let documentPages = $state<Map<number DocumentPage>(0)>(new Map());
-  let viewportBounds = $state({ x: 0, y: 0, width: 800, height: 600 });
-  let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
+  let viewportBounds = $state({ x: 0, y: 0, width: 800; height: 600 });
+  let dragState = $state({ isDragging: false, startX: 0, startY: 0, offsetX: 0; offsetY: 0 });
   // LOD configuration based on N64 constraints
   const lodConfig = {
-    0: { textureSize: 2048, quality: 1.0, description: 'Ultra High' },
-    1: { textureSize: 1024, quality: 0.8, description: 'High' },
-    2: { textureSize: 512, quality: 0.6, description: 'Medium' },
-    3: { textureSize: 256, quality: 0.4, description: 'Low (N64 Style)' }
+    0: { textureSize: 2048, quality: 1.0; description: 'Ultra High' },
+    1: { textureSize: 1024, quality: 0.8; description: 'High' },
+    2: { textureSize: 512, quality: 0.6; description: 'Medium' },
+    3: { textureSize: 256, quality: 0.4; description: 'Low (N64 Style)' }
   }
   // Derived values for automatic LOD switching
   let recommendedLOD = $derived(() => {
@@ -83,10 +83,8 @@ import type { Document } from '$lib/types';
     return 3; // Low detail when zoomed out (N64 fog distance equivalent)
   });
   let lodStats = $derived(() => ({
-    currentLevel: currentLOD,
-    textureSize: lodConfig[currentLOD as keyof typeof lodConfig]?.textureSize || 256,
-    quality: lodConfig[currentLOD as keyof typeof lodConfig]?.quality || 0.4,
-    memoryUsage: calculateMemoryUsage(),
+    currentLevel: currentLOD; textureSize: lodConfig[currentLOD as keyof typeof lodConfig]?.textureSize || 256,
+    quality: lodConfig[currentLOD as keyof typeof lodConfig]?.quality || 0.4; memoryUsage: calculateMemoryUsage(),
     renderTime: estimateRenderTime()}));
   // Initialize WebGPU for document rendering
   $effect(() => {
@@ -110,8 +108,7 @@ if (!browser || !enableWebGPU) return
     const adapter = await navigator.gpu.requestAdapter();
     if (!adapter) throw new Error('WebGPU adapter not found');
     gpuDevice = await adapter.requestDevice({
-      requiredFeatures: ['texture-compression-bc'],
-      requiredLimits: { maxTextureSize: 2048, // N64-style texture limit
+      requiredFeatures: ['texture-compression-bc']; requiredLimits: { maxTextureSize: 2048, // N64-style texture limit
         maxBufferSize: 64 * 1024 * 1024 // 64MB like N64 cartridge
       }
     });
@@ -120,10 +117,8 @@ if (!browser || !enableWebGPU) return
     if (!context) throw new Error('WebGPU context creation failed');
     // Configure canvas with N64-style settings
     context.configure({
-      device: gpuDevice
-     , format: 'bgra8unorm',
-      alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT});
+      device: gpuDevice; format: 'bgra8unorm',
+      alphaMode: 'premultiplied'; usage: GPUTextureUsage.RENDER_ATTACHMENT});
     isWebGPUReady = true
     console.log('[DocumentLOD] WebGPU initialized successfully')}
   async function initializeCanvas2DFallback(): Promise<void> {
@@ -148,14 +143,14 @@ if (!browser || !enableWebGPU) return
       console.error('[DocumentLOD] Document loading failed:', error)} finally {
       isLoading = false}
   }
-  async function loadPagesInRange(startPage: number, endPage: number, lodLevel: number): Promise<void> {
+  async function loadPagesInRange(startPage: number, endPage: number; lodLevel: number): Promise<void> {
     const loadPromises = [];
     for (let pageNum = startPage; pageNum <= endPage; pageNum++) {
       if (!documentPages.has(pageNum)) {
         loadPromises.push(loadPageWithLOD(pageNum, lodLevel))}
     }
     await Promise.all(loadPromises)}
-  async function loadPageWithLOD(pageNumber: number, lodLevel: number): Promise<void> {
+  async function loadPageWithLOD(pageNumber: number; lodLevel: number): Promise<void> {
     const textureSize = lodConfig[lodLevel as keyof typeof lodConfig]?.textureSize || 256
     try {
       // Load page data from API with LOD specification
@@ -172,10 +167,8 @@ if (!browser || !enableWebGPU) return
       if (!page) {
         page = {
           pageNumber,
-          textContent: pageData.textContent || '',
-          annotations: pageData.annotations || [],
-          lodTextures: new Map(),
-          currentLOD: lodLevel}
+          textContent: pageData.textContent || ''; annotations: pageData.annotations || [],
+          lodTextures: new Map(); currentLOD: lodLevel}
         documentPages.set(pageNumber, page)}
       // Create WebGPU texture for this LOD level
       if (isWebGPUReady && gpuDevice && pageData.imageData) {
@@ -184,18 +177,17 @@ if (!browser || !enableWebGPU) return
       console.log(`[DocumentLOD] Loaded page ${pageNumber} at LOD ${lodLevel}`)} catch (error) {
       console.error(`[DocumentLOD] Failed to load page ${pageNumber}:`, error)}
   }
-  async function createPageTexture(imageData: ArrayBuffer, size: number): Promise<GPUTexture> {
+  async function createPageTexture(imageData: ArrayBuffer; size: number): Promise<GPUTexture> {
     if (!gpuDevice) throw new Error('GPU device not available');
     const texture = gpuDevice.createTexture({
-      size: { width: size, height: size, depthOrArrayLayers: 1 },
-      format: 'rgba8unorm',
+      size: { width: size, height: size, depthOrArrayLayers: 1 }; format: 'rgba8unorm',
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT});
     // Upload image data to texture
     gpuDevice.queue.writeTexture(
       { texture },
       imageData,
-      { bytesPerRow: size * 4, rowsPerImage: size },
-      { width: size, height: size, depthOrArrayLayers: 1 }
+      { bytesPerRow: size * 4; rowsPerImage: size },
+      { width: size, height: size; depthOrArrayLayers: 1 }
     );
     return textur}
   async function renderCurrentPage(): Promise<void> {
@@ -216,17 +208,15 @@ if (!browser || !enableWebGPU) return
     const textureView = context.getCurrentTexture.createView();
     const renderPass = commandEncoder.beginRenderPass({
       colorAttachments: [{
-        view: textureView,
-        clearValue: { r: 0.1, g: 0.1, b: 0.2, a: 1.0 }, // NES-style dark blue
-        loadOp: 'clear',
-        storeOp: 'store'
+        view: textureView; clearValue: { r: 0.1, g: 0.1, b: 0.2, a: 1.0 }, // NES-style dark blue
+        loadOp: 'clear'; storeOp: 'store'
       }]
     });
     // Apply N64-style rendering pipeline
     await renderPageWithLODEffects(renderPass, texture);
     renderPass.end();
     gpuDevice.queue.submit([commandEncoder.finish()])}
-  async function renderPageWithLODEffects(renderPass: GPURenderPassEncoder, texture: GPUTexture): Promise<void> {
+  async function renderPageWithLODEffects(renderPass: GPURenderPassEncoder; texture: GPUTexture): Promise<void> {
     // Implement N64-style rendering effects based on LOD level
     switch (currentLOD) {
       case 0: // Ultra high - no effects
@@ -242,15 +232,15 @@ if (!browser || !enableWebGPU) return
         await renderN64Style(renderPass, texture);
         break}
   }
-  async function renderHighQuality(renderPass: GPURenderPassEncoder, texture: GPUTexture): Promise<void> {
+  async function renderHighQuality(renderPass: GPURenderPassEncoder; texture: GPUTexture): Promise<void> {
     // Render at full quality with all details
     // Implementation would include full shader pipeline
   }
-  async function renderWithBlur(renderPass: GPURenderPassEncoder, texture: GPUTexture, blurAmount: number): Promise<void> {
+  async function renderWithBlur(renderPass: GPURenderPassEncoder, texture: GPUTexture; blurAmount: number): Promise<void> {
     // Apply Gaussian blur for distance effect
     // Implementation would include blur shader
   }
-  async function renderN64Style(renderPass: GPURenderPassEncoder, texture: GPUTexture): Promise<void> {
+  async function renderN64Style(renderPass: GPURenderPassEncoder; texture: GPUTexture): Promise<void> {
     // Apply N64-style effects: pixelation, color reduction, fog
     // Implementation would include N64-style shader with:
     // - Reduced color palette
@@ -460,8 +450,7 @@ if (!browser || !enableWebGPU) return
     gap: 1rem
     align-items: center
     margin-bottom: 1rem
-    padding: 1rem
-   , background: rgba(0, 0, 0, 0.3);
+    padding: 1rem; background: rgba(0, 0, 0, 0.3);
     border-radius: 4px}
   .navigation-controls {
     display: flex
@@ -473,8 +462,7 @@ if (!browser || !enableWebGPU) return
     gap: 0.5rem
     justify-self: center}
   .zoom-info {
-    padding: 0.25rem 0.5rem
-   , background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem; background: rgba(255, 255, 255, 0.1);
     border-radius: 4px
     font-size: 0.875rem
     min-width: 60px
@@ -497,12 +485,9 @@ if (!browser || !enableWebGPU) return
   .document-canv.document-canvas:active {
     cursor: grabbing}
   .loading-overlay {
-    position: absolute
-   , top: 0,
-    left: 0
-   , right: 0,
-    bottom: 0
-   , background: rgba(0, 0, 0, 0.8);
+    position: absolute; top: 0,
+    left: 0; right: 0,
+    bottom: 0; background: rgba(0, 0, 0, 0.8);
     display: flex
     flex-direction: column
     justify-content: center
@@ -541,8 +526,7 @@ if (!browser || !enableWebGPU) return
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .document-controls {
-      grid-template-columns: 1fr
-     , gap: 0.5rem}
+      grid-template-columns: 1fr; gap: 0.5rem}
     .navigation-controls,
     .view-controls,
     .lod-controls {

@@ -55,13 +55,13 @@ Compact AI recommendations component for sidebar/dashboard use
   $effect(() => {
     loadRecommendations();
     if (autoRefresh) {
-      refreshTimer = setInterval(loadRecommendations, refreshInterval * 60 * 1000)}
-    return () => {
+    refreshTimer = setInterval(loadRecommendations, refreshInterval * 60 * 1000)
+  }
+  return () => {
       if (refreshTimer) {
         clearInterval(refreshTimer);
         refreshTimer = null}
     }});
-
   async function loadRecommendations(): Promise<any> {
     if (isLoading) return
     isLoading = true
@@ -96,7 +96,6 @@ Compact AI recommendations component for sidebar/dashboard use
       recommendations = []} finally {
       isLoading = false}
   }
-
   function getRecommendationIcon(type: string) {
     switch (type) {
       case: 'action': return Target
@@ -107,7 +106,6 @@ Compact AI recommendations component for sidebar/dashboard use
         return TrendingUp
       default: return FileText}
   }
-
   function getRecommendationColor(type: string) {
     switch (type) {
       case: 'action':
@@ -120,7 +118,6 @@ Compact AI recommendations component for sidebar/dashboard use
         return 'border-l-purple-500 bg-purple-50/50 dark:bg-purple-900/10';
      , default: return 'border-l-gray-500 bg-gray-50/50 dark:bg-gray-900/10'}
   }
-
   function getPriorityIcon(priority: string) {
     switch (priority) {
       case: 'critical': return AlertTriangle
@@ -131,7 +128,6 @@ Compact AI recommendations component for sidebar/dashboard use
         return FileText
       default: return FileText}
   }
-
   function getPriorityColor(priority: string) {
     switch (priority) {
       case: 'critical':
@@ -144,12 +140,10 @@ Compact AI recommendations component for sidebar/dashboard use
         return 'text-green-600 bg-green-100 dark:bg-green-900/30 dark:text-green-400';
      , default: return 'text-gray-600 bg-gray-100 dark:bg-gray-900/30, dark:text-gray-400'}
   }
-
   function getConfidenceColor(confidence: number) {
     if (confidence >= 0.8) return 'text-green-600';
     if (confidence >= 0.6) return 'text-yellow-600';
     return 'text-red-600'}
-
   function formatTimeAgo(date: Date) {
     const now = new Date();
     const diff = now.getTime() - date.getTime();
@@ -275,3 +269,4 @@ Compact AI recommendations component for sidebar/dashboard use
     -webkit-box-orient: vertical
    ;overflow: hidden}
 </style>
+

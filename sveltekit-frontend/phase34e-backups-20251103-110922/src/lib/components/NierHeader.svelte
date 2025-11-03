@@ -132,8 +132,7 @@
     left: 0
     right: 0
     height: 60px
-   ;background: var(--bg-secondary),
-    border-bottom: 1px solid var(--border-light);
+   ;background: var(--bg-secondary); border-bottom: 1px solid var(--border-light);
     z-index: 30
     backdrop-filter: blur(8px)}
   .header-content {
@@ -212,8 +211,7 @@
    ;background: var(--bg-secondary);
     color: var(--harvard-crimson)}
   .user-avatar img {
-    width: 100%;height: 100%,
-    object-fit: cover}
+    width: 100%;height: 100%; object-fit: cover}
   .avatar-fallback {
     font-weight: 600
     font-size: 0.875rem}
@@ -241,8 +239,7 @@
     cursor: pointer
     border-radius: 4px
     transition: background 0.2s ease
-   ;color: var(--text-primary),
-    text-align: left}
+   ;color: var(--text-primary); text-align: left}
   .menu-item:hover { background: var(--bg-tertiary)}
   .menu-separator {
     border: none
@@ -250,7 +247,7 @@
   .sign-in-button {
     padding: 0.5rem 1rem
     background: transparent
-   ;border: 1px solid var(--harvard-crimson);color: var(--harvard-crimson), border-radius: 6px
+   ;border: 1px solid var(--harvard-crimson);color: var(--harvard-crimson); border-radius: 6px
     cursor: pointer
     transition: all 0.2s ease}
   .sign-in-button: hover { background: var(--harvard-crimson);color: var(--text-inverse)}
