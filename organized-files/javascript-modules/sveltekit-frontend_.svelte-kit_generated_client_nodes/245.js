@@ -1,1 +1,0 @@
-export { default as component } from "../../../../src/routes/yorha-home/+page.svelte";
