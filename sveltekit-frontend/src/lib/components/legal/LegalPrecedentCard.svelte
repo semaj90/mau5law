@@ -1,4 +1,4 @@
-<!-- Legal Precedent Card for Legal, AI, App -->
+﻿<!-- Legal Precedent Card for Legal, AI, App -->
 <script lang="ts">
 import type { Case } from '$lib/types';
 
@@ -12,39 +12,36 @@ import type { Case } from '$lib/types';
   import  Users  from "lucide-svelte/icons/users.svelte";
   import { cn } from '$lib/utils';
   export interface LegalPrecedent {
-    id: string;
-    caseNumber: string;
-    caseName: string;
-    court: string;
+    id: string
+    caseNumber: string
+    caseName: string
+    court: string
     jurisdiction: 'federal' | 'state' | 'local' | 'international';
-    date: Date;
-    judge: string;
-    summary: string;
+    date: Date, judge: string
+    summary: string
     keyIssues: string[];
-    holding: string;
+    holding: string
     reasoning: string[];
     legalAreas: string[];
-    citations: number;
+    citations: number
     relevanceScore: number; // 0-100
     similarityScore?: number; // 0-100 for current case relevance
     precedentType: 'binding' | 'persuasive' | 'distinguishable';
-    overruled?: boolean;
-    overruledBy?: string;
+    overruled?: boolean
+    overruledBy?: string
     relatedCases?: string[];
-    sourceUrl?: string;
-    pdfUrl?: string;
-  }
-  export interface LegalPrecedentCardProps { precedent: LegalPrecedent;
-    currentCaseId?: string;
-    showRelevanceScore?: boolean;
-    showSimilarityScore?: boolean;
-    expandable?: boolean;
-    interactive?: boolean;
-    onViewFull?: (precedent: LegalPrecedent) => void;
-    onAddToCase?: (precedent: LegalPrecedent) => void;
-    onViewRelated?: (caseId: string) => void;
-    class?: string;
-  }
+    sourceUrl?: string
+    pdfUrl?: string}
+  export interface LegalPrecedentCardProps { precedent: LegalPrecedent
+    currentCaseId?: string
+    showRelevanceScore?: boolean
+    showSimilarityScore?: boolean
+    expandable?: boolean
+    interactive?: boolean
+    onViewFull?: (precedent: LegalPrecedent) => void
+    onAddToCase?: (precedent: LegalPrecedent) => void
+    onViewRelated?: (caseId: string) => void
+    class?: string}
   let {
     precedent,
     currentCaseId,
@@ -108,7 +105,7 @@ import type { Case } from '$lib/types';
   }
   function truncateText(text: string, maxLength: number): string {
     if (!text) return '';
-    if (text.length <= maxLength) return text;
+    if (text.length <= maxLength) return text
     return text.substring(0, maxLength).trim() + '...';
   }
 
@@ -130,7 +127,7 @@ import type { Case } from '$lib/types';
         </h3>
         <div class="flex items-center gap-2 mt-1 text-sm text-yorha-text-secondary">
           <span>{precedent.caseNumber}</span>
-          <span>•</span>
+          <span>â€¢</span>
           <span>{precedent.court}</span>
         </div>
       </div>
@@ -263,7 +260,7 @@ import type { Case } from '$lib/types';
         <ul class="space-y-2">
           {#each Array.isArray(precedent.reasoning) ? precedent.reasoning : [] as reason}
             <li class="text-sm text-yorha-text-primary font-mono flex items-start">
-              <span class="text-yorha-primary">•</span>
+              <span class="text-yorha-primary">â€¢</span>
               <span>{reason}</span>
             </li>
           {/each}
@@ -368,6 +365,6 @@ import type { Case } from '$lib/types';
 </div>
 <style>
   .legal-precedent-card {
-    transition: all 0.2s ease;
-  }
+    transition: all 0.2s ease}
 </style>
+

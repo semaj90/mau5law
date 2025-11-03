@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import { Button } from 'bits-ui';
@@ -21,11 +21,10 @@
 
   // Workflow state
   interface WorkflowStatus {
-    stage: string;
-    progress: number;
+    stage: string
+    progress: number
     status: 'pending' | 'processing' | 'complete' | 'error';
-    message?: string;
-  }
+    message?: string}
   let workflowStatus = $state<WorkflowStatus>({ stage: 'idle',
     progress: 0,
     status: 'pending'
@@ -33,8 +32,8 @@
 
   // Backend health state
   let backendStatus = $state<{
-    typescript: boolean;
-    pythonAI: boolean;
+    typescript: boolean
+    pythonAI: boolean
     capabilities: string[];
   }>({ typescript: true,
     pythonAI: false,
@@ -57,11 +56,10 @@
 
   // File metadata
   let fileMetadata = $state<{
-    filename: string;
-    size: number;
-   , uploadTime: string;
-    analysis?: string;
-  } | null>(null);
+    filename: string
+    size: number
+   , uploadTime: string
+    analysis?: string} | null>(null);
 
   // ======================
   // WEBSOCKET CONNECTION
@@ -70,9 +68,8 @@
   // Compute WebSocket URL using public env or infer from location, fallback to Docker Desktop python-ai (localhost:8000)
   function computeWsUrl(): string {
     // Prefer explicit public env var (set in Docker / Caddy)
-    const envUrl = (import.meta as: any).env?.PUBLIC_WS_URL || (import.meta as: any).env?.VITE_WS_URL;
-    if (envUrl) return envUrl;
-
+    const envUrl = (import.meta as: any).env?.PUBLIC_WS_URL || (import.meta as: any).env?.VITE_WS_URL
+    if (envUrl) return envUrl
     if (browser) {
       // If page served over TLS use wss, else ws
       const proto = location.protocol === 'https:' ? 'wss' : 'ws';
@@ -87,19 +84,19 @@
   }
 
   // Reconnect backoff state
-  let reconnectAttempts = 0;
-  function resetBackoff() { reconnectAttempts = 0; }
+  let reconnectAttempts = 0
+  function resetBackoff() { reconnectAttempts = 0}
 
   function connectWebSocket() {
-    if (!browser) return;
+    if (!browser) return
     const url = computeWsUrl();
     try {
       ws = new WebSocket(url);
 
       ws.onopen = () => {
-        console.log('✅ WebSocket connected to Python AI Server ->', url);
-        wsConnected = true;
-        wsReconnecting = false;
+        console.log('âœ… WebSocket connected to Python AI Server ->', url);
+        wsConnected = true
+        wsReconnecting = false
         resetBackoff();
       };
 
@@ -113,55 +110,50 @@
       };
 
       ws.onerror = (error) => {
-        console.error('❌ WebSocket error:', error);'
+        console.error('âŒ WebSocket error:', error);'
       };
 
       ws.onclose = () => {
-        console.log('🔌 WebSocket disconnected');
-        wsConnected = false;
-        ws = null;
-
+        console.log('ðŸ”Œ WebSocket disconnected');
+        wsConnected = false
+        ws = null
         // Exponential backoff reconnect
-        wsReconnecting = true;
+        wsReconnecting = true
         reconnectAttempts++;
         const backoff = Math.min(30000, 1000 * 2 ** Math.min(reconnectAttempts, 6));
         setTimeout(() => {
-          console.log(`🔄 Reconnect attempt #${reconnectAttempts} (backoff ${backoff}ms)`);
+          console.log(`ðŸ”„ Reconnect attempt #${reconnectAttempts} (backoff ${backoff}ms)`);
           connectWebSocket();
         }, backoff);
       };
     } catch (error) {
       console.error('Failed to create WebSocket:', error);
-      wsConnected = false;
-    }
+      wsConnected = false}
   }
 
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
       case, 'TOKEN':
         // Real-time token streaming
-        streamingTokens += data.token;
-        isStreaming = true;
-        aiSource = data.source;
-
+        streamingTokens += data.token
+        isStreaming = true
+        aiSource = data.source
         // Extract tags on-the-fly (look for #hashtags)
         const tagMatch = data.token.match(/#(\w+)/);
         if (tagMatch && !extractedTags.includes(tagMatch[1])) {
           extractedTags = [...extractedTags, tagMatch[1]];
         }
-        break;
-
+        break
       case, 'COMPLETE':
         // Streaming complete
-        isStreaming = false;
-        console.log('✅ AI streaming complete');
+        isStreaming = false
+        console.log('âœ… AI streaming complete');
 
         // Cache the final analysis
         if (fileMetadata && streamingTokens) {
           fileMetadata = { ...fileMetadata, analysis: streamingTokens };
         }
-        break;
-
+        break
       case, 'WORKFLOW_UPDATE':
         // Workflow progress update
         workflowStatus = {
@@ -170,8 +162,7 @@
           status: data.status,
           message: data.message
         };
-        break;
-
+        break
       case, 'ERROR':
         console.error('AI Error:', data.message);
         workflowStatus = {
@@ -179,13 +170,11 @@
           status: 'error',
           message: data.message
         };
-        break;
-
+        break
       case, 'PONG':
         // Heartbeat response
-        console.log('💓 Pong received');
-        break;
-    }
+        console.log('ðŸ’“ Pong received');
+        break}
   }
 
   function sendQuery(query: string, fileId?: string) {
@@ -199,9 +188,8 @@
         body: JSON.stringify({ query, file_id: fileId || currentFileId })
       }).catch(err => console.warn('REST analysis fallback failed', err));
       streamingTokens = '';
-      isStreaming = true;
-      return;
-    }
+      isStreaming = true
+      return}
 
     ws.send(JSON.stringify({
       type: 'QUERY',
@@ -211,11 +199,10 @@
 
     // Reset streaming state
     streamingTokens = '';
-    isStreaming = true;
-  }
+    isStreaming = true}
 
   function subscribeToWorkflow(fileId: string) {
-    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return
     ws.send(JSON.stringify({ type: 'SUBSCRIBE_WORKFLOW', file_id: fileId }));
   }
 
@@ -225,41 +212,37 @@
 
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
-    isDragging = true;
-  }
+    isDragging = true}
 
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    isDragging = false;
-  }
+    isDragging = false}
 
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragging = false;
-
-    const files = event.dataTransfer?.files;
+    isDragging = false
+    const files = event.dataTransfer?.files
     if (files && files.length > 0) {
       selectedFile = files[0];
     }
   }
 
   function handleFileSelect(event: Event) {
-    const input = event.target as HTMLInputElement;
+    const input = event.target as HTMLInputElement
     if (input.files && input.files.length > 0) {
       selectedFile = input.files[0];
     }
   }
 
   async function uploadFile(): Promise<any> {
-    if (!selectedFile) return;
-
+    if (!selectedFile) return
     const formData = new FormData();
     formData.append('file', selectedFile);
     // Get authenticated user from XState auth machine (use top-level import)
     // replaced deprecated/non-existent method getGlobalState(...) with safe access to globalState
-    const _global = (xstateIntegration as: any)?.globalState;
+    const _global = (xstateIntegration as: any)?.globalState
     // authState may be stored under .auth or be the top-level state: object; handle both
-    const authState = _global?.auth ?? _global ?? null;
+    const authState = _global?.auth ?? _global ?? null
     const userId = authState?.context?.user?.id || 'anonymous';
     formData.append('user_id', userId);
     formData.append('caseId', 'case_001');
@@ -268,7 +251,7 @@
     const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
 
     try {
-      uploadProgress = 0;
+      uploadProgress = 0
       workflowStatus = {
         stage: 'uploading',
         progress: 0,
@@ -284,11 +267,9 @@
       const result = await response.json();
 
       // mark upload complete
-      uploadProgress = 100;
-
+      uploadProgress = 100
       if (result.success) {
-        currentFileId = result.aiProcessing?.file_id || result.evidence?.id;
-
+        currentFileId = result.aiProcessing?.file_id || result.evidence?.id
         // Set file metadata
         fileMetadata = {
           filename: selectedFile.name,
@@ -316,7 +297,7 @@
           }
         }
 
-        console.log(`✅ File uploaded (${result.source}):`, currentFileId);
+        console.log(`âœ… File uploaded (${result.source}):`, currentFileId);
       } else {
         throw new Error(result.error || 'Upload failed');
       }
@@ -336,17 +317,14 @@
   // ======================
 
   // Use a platform-independent timeout type (works with DOM and Node types)
-  let searchTimeout: ReturnType<typeof setTimeout> | undefined;
-
+  let searchTimeout: ReturnType<typeof setTimeout> | undefined
   async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) {
       searchResults = [];
       aiSuggestions = [];
-      return;
-    }
+      return}
 
-    isSearching = true;
-
+    isSearching = true
     try {
       // Use unified API v2 endpoint with vector search (env-aware)
       const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
@@ -372,8 +350,7 @@
     } catch (error) {
       console.error('Search error:', error);'
     } finally {
-      isSearching = false;
-    }
+      isSearching = false}
   }
 
   // debounced effect for searchQuery
@@ -381,12 +358,10 @@
     if (!searchQuery) {
       if (searchTimeout) {
         clearTimeout(searchTimeout);
-        searchTimeout = undefined;
-      }
+        searchTimeout = undefined}
       searchResults = [];
       aiSuggestions = [];
-      return;
-    }
+      return}
 
     if (searchTimeout) clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => performSearch(), 350);
@@ -394,22 +369,19 @@
     return () => {
       if (searchTimeout) {
         clearTimeout(searchTimeout);
-        searchTimeout = undefined;
-      }
+        searchTimeout = undefined}
     };
   });
 
   // onMount: health check, connect WS if available, heartbeat and cleanup
   onMount(() => {
-    let mounted = true;
-
+    let mounted = true
     (async () => {
       try {
         const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
         const healthResponse = await fetch(`${apiBase}?action=health`);
         const health = await healthResponse.json();
-        if (!mounted) return;
-
+        if (!mounted) return
         backendStatus = {
           typescript: !!(health.backends?.typescript?.status === 'healthy'),
           pythonAI: !!(health.backends?.pythonAI?.status === 'healthy'),
@@ -417,9 +389,9 @@
         };
 
         if (backendStatus.pythonAI) connectWebSocket();
-        else console.warn('⚠️ Python AI backend unavailable. Some features will be limited.');
+        else console.warn('âš ï¸ Python AI backend unavailable. Some features will be limited.');
       } catch (error) {
-        if (!mounted) return;
+        if (!mounted) return
         console.error('Health check failed:', error);
         backendStatus = { ...backendStatus, pythonAI: false };
       }
@@ -432,7 +404,7 @@
     }, 30000);
 
     return () => {
-      mounted = false;
+      mounted = false
       clearInterval(heartbeat);
       if (ws) ws.close();
       if (searchTimeout) clearTimeout(searchTimeout);
@@ -451,17 +423,17 @@
 
   function getStageIcon(stage: string): string {
     const icons: Record<string string> = {
-      idle: '⏸️',
-      uploading: '📤',
-      upload: '📤',
-      ocr: '📝',
-      embedding: '🧬',
-      analysis: '🤖',
-      storage: '💾',
-      complete: '✅',
-      error: '❌'
+      idle: 'â¸ï¸',
+      uploading: 'ðŸ“¤',
+      upload: 'ðŸ“¤',
+      ocr: 'ðŸ“',
+      embedding: 'ðŸ§¬',
+      analysis: 'ðŸ¤–',
+      storage: 'ðŸ’¾',
+      complete: 'âœ…',
+      error: 'âŒ'
     };
-    return icons[stage] ?? 'ℹ️';
+    return icons[stage] ?? 'â„¹ï¸';
   }
 
   function getProgressColor(progress: number): string {
@@ -482,7 +454,7 @@
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
-        🧠 Evidence AI Assistant
+        ðŸ§  Evidence AI Assistant
       </h1>
       <p class="text-slate-400">
         Upload documents, get AI-powered analysis with real-time streaming
@@ -501,11 +473,11 @@
         <!-- Backend, Status -->
         {#if backendStatus.pythonAI}
           <div class="px-3 py-1 rounded-full bg-green-500/20 text-green-400 text-sm">
-            🐍 Python AI: Online
+            ðŸ Python AI: Online
           </div>
         {:else}
           <div class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 text-sm">
-            📘 TypeScript Mode
+            ðŸ“˜ TypeScript Mode
           </div>
         {/if}
 
@@ -513,11 +485,11 @@
         {#if aiSource}
           <div class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400">
             {#if aiSource === 'ollama'}
-              🚀 Ollama (Vector Search)
+              ðŸš€ Ollama (Vector Search)
             {:else if aiSource === 'tensorrt'}
-              ⚡ TensorRT (GPU Accelerated)
+              âš¡ TensorRT (GPU Accelerated)
             {:else}
-              📊 Basic Search (Fallback)
+              ðŸ“Š Basic Search (Fallback)
             {/if}
           </div>
         {/if}
@@ -532,7 +504,7 @@
         <!-- File, Upload, Card -->
         <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
           <h2 class="text-xl font-semibold mb-4 flex items-center">
-            📁 Upload Evidence
+            ðŸ“ Upload Evidence
           </h2>
 
           <!-- Drag & Drop Zone -->
@@ -546,7 +518,7 @@
           >
             {#if selectedFile}
               <div class="space-y-2">
-                <div class="text-4xl">📄</div>
+                <div class="text-4xl">ðŸ“„</div>
                 <p class="font-medium">{selectedFile.name}</p>
                 <p class="text-sm">{formatFileSize(selectedFile.size)}</p>
                 <button
@@ -558,7 +530,7 @@
               </div>
             {:else}
               <div class="space-y-2">
-                <div class="text-4xl">📎</div>
+                <div class="text-4xl">ðŸ“Ž</div>
                 <p class="text-slate-300">Drag & drop file here</p>
                 <p class="text-sm">or click to browse</p>
               </div>
@@ -585,14 +557,14 @@
             onclick={uploadFile}
             disabled={!selectedFile || !wsConnected || isStreaming}
           >
-            {isStreaming ? '🔄 Processing...' : '🚀 Upload & Analyze'}
+            {isStreaming ? 'ðŸ”„ Processing...' : 'ðŸš€ Upload & Analyze'}
           </button>
         </div>
 
         <!-- File, Metadata, Card -->
         {#if fileMetadata}
           <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
-            <h3 class="text-lg font-semibold">📋 File Info</h3>
+            <h3 class="text-lg font-semibold">ðŸ“‹ File Info</h3>
             <div class="space-y-2">
               <div class="flex">
                 <span class="text-slate-400">Filename:</span>
@@ -645,15 +617,15 @@
             <div class="mt-3">
               {#if workflowStatus.status === 'complete'}
                 <span class="px-2 py-1 bg-green-500/20 text-green-400 rounded text-xs">
-                  ✅ Complete
+                  âœ… Complete
                 </span>
               {:else if workflowStatus.status === 'error'}
                 <span class="px-2 py-1 bg-red-500/20 text-red-400 rounded text-xs">
-                  ❌ Error
+                  âŒ Error
                 </span>
               {:else if workflowStatus.status === 'processing'}
                 <span class="px-2 py-1 bg-blue-500/20 text-blue-400 rounded text-xs font-medium">
-                  🔄 Processing
+                  ðŸ”„ Processing
                 </span>
               {/if}
             </div>
@@ -671,7 +643,7 @@
             <input
               type="text"
               bind:value={searchQuery}
-              placeholder="🔍 Search evidence with AI assistance..."
+              placeholder="ðŸ” Search evidence with AI assistance..."
               class="flex-1 px-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg focus:outline-none focus:border-purple-500 transition-colors"
             />
             <button
@@ -679,14 +651,14 @@
               onclick={performSearch}
               disabled={isSearching || !searchQuery.trim()}
             >
-              {isSearching ? '🔄' : '🔍'}
+              {isSearching ? 'ðŸ”„' : 'ðŸ”'}
             </button>
           </div>
 
           <!-- AI, Suggestions -->
           {#if aiSuggestions.length > 0}
             <div class="mt-4">
-              <p class="text-sm">💡 AI Suggestions:</p>
+              <p class="text-sm">ðŸ’¡ AI Suggestions:</p>
               <div class="flex flex-wrap">
                 {#each Array.isArray(aiSuggestions) ? aiSuggestions : [] as suggestion}
                   <button
@@ -704,7 +676,7 @@
         <!-- AI, Streaming, Terminal -->
         <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg border border-slate-700">
           <div class="bg-slate-900/50 px-4 py-2 border-b border-slate-700 flex items-center">
-            <span class="text-sm font-medium">🤖 AI Analysis Stream</span>
+            <span class="text-sm font-medium">ðŸ¤– AI Analysis Stream</span>
             {#if isStreaming}
               <span class="text-xs text-green-400 flex items-center">
                 <div class="w-2 h-2 bg-green-400 rounded-full"></div>
@@ -718,7 +690,7 @@
               <pre class="font-mono text-sm text-slate-200 whitespace-pre-wrap">{streamingTokens}</pre>
             {:else}
               <p class="text-slate-500 text-center">
-                ⏸️ Upload a file to see AI analysis streaming here...
+                â¸ï¸ Upload a file to see AI analysis streaming here...
               </p>
             {/if}
           </div>
@@ -728,7 +700,7 @@
         {#if extractedTags.length > 0}
           <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
             <h3 class="text-lg font-semibold mb-3 flex items-center">
-              🏷️ Auto-Extracted Tags
+              ðŸ·ï¸ Auto-Extracted Tags
             </h3>
             <div class="flex flex-wrap">
               {#each Array.isArray(extractedTags) ? extractedTags : [] as tag}
@@ -743,7 +715,7 @@
         <!-- Search, Results -->
         {#if searchResults.length > 0}
           <div class="bg-slate-800/50 backdrop-blur-sm rounded-lg p-6 border">
-            <h3 class="text-lg font-semibold">📊 Search Results ({searchResults.length})</h3>
+            <h3 class="text-lg font-semibold">ðŸ“Š Search Results ({searchResults.length})</h3>
             <div class="space-y-3">
               {#each Array.isArray(searchResults) ? searchResults : [] as result}
                 <div class="bg-slate-900/50 rounded-lg p-4 border border-slate-700 hover:border-slate-600">
@@ -782,15 +754,13 @@
 <style>
   /* Custom scrollbar for terminal */
   .overflow-y-auto::-webkit-scrollbar {
-    width: 8px;
-  }
+    width: 8px}
 
   .overflow-y-auto::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.3);
   }
 
   .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.5);
-    border-radius: 4px;
-  }
+    border-radius: 4px}
 
   .overflow-y-auto::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7);
   }
@@ -798,10 +768,9 @@
   /* Smooth animations */
   @keyframes pulse {
     0%, 100% {
-      opacity: 1;
-    }
-    50% { opacity: 0.5;
-    }
+      opacity: 1}
+    50% { opacity: 0.5}
   }
 </style>
+
 

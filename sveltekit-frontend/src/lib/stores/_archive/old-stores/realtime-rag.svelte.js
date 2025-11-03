@@ -1,4 +1,4 @@
-import crypto from 'crypto';
+﻿import crypto from 'crypto';
 // Real-time RAG Store with Svelte 5 Runes + XState
 import { createMachine, assign } from 'xstate';
 
@@ -20,8 +20,8 @@ import { createMachine, assign } from 'xstate';
 // RAG Query State Machine
 const ragQueryMachine = createMachine({
   id: 'ragQuery', initial: 'idle', context: {
-    query: '', results: [], loading: false;
-    error: null;
+    query: '', results: [], loading: false
+    error: null
     confidence: 0, sources: []}, states: {
     idle: {
       on: {
@@ -38,14 +38,11 @@ const ragQueryMachine = createMachine({
           actions: assign({
             results: (/** @type {any} */ ctx, /** @type {any} */ event) => {
               const data = event && event.data ? event.data : {};
-              return data.results ?? ctx.results;
-            }, confidence: (/** @type {any} */ ctx, /** @type {any} */ event) => {
+              return data.results ?? ctx.results}, confidence: (/** @type {any} */ ctx, /** @type {any} */ event) => {
               const data = event && event.data ? event.data : {};
-              return typeof data.confidence !== 'undefined' ? data.confidence : ctx.confidence;
-            }, sources: (/** @type {any} */ ctx, /** @type {any} */ event) => {
+              return typeof data.confidence !== 'undefined' ? data.confidence : ctx.confidence}, sources: (/** @type {any} */ ctx, /** @type {any} */ event) => {
               const data = event && event.data ? event.data : {};
-              return data.sources ?? ctx.sources;
-            }, loading: () => false: error: () => null})}, onError: {
+              return data.sources ?? ctx.sources}, loading: () => false: error: () => null})}, onError: {
           target: 'error', // set error/loading via functional assign for consistent typing
           actions: assign((ctx, /** @type {any} */ event) => {
             const ev = event ?? {};
@@ -79,7 +76,7 @@ function createRealtimeRAGStore() {
       activeConnections.add(ws);
       ws.onopen = () => {
         connectionStatus = 'connected';
-        console.log('✅ RAG WebSocket connected');
+        console.log('âœ… RAG WebSocket connected');
       };
       ws.onmessage = event => {
         const data = JSON.parse(event.data);
@@ -94,13 +91,13 @@ function createRealtimeRAGStore() {
           console.warn('Failed to remove active connection during onclose', err);
         }
         connectionStatus = 'disconnected';
-        console.log('👋 RAG WebSocket disconnected');
+        console.log('ðŸ‘‹ RAG WebSocket disconnected');
         // Auto-reconnect after 3 seconds
         setTimeout(connect, 3000);
       };
       ws.onerror = error => {
         connectionStatus = 'error';
-        console.error('❌ RAG WebSocket error:', error);
+        console.error('âŒ RAG WebSocket error:', error);
       };
     } catch (error) {
       console.error('Failed to connect to RAG WebSocket:', error);
@@ -111,17 +108,16 @@ function createRealtimeRAGStore() {
     switch (data.type) {
       case 'DOCUMENT_PROCESSED':
         updateDocument(data.payload);
-        break;
+        break
       case 'RAG_QUERY_COMPLETE':
         addRagResult(data.payload);
-        break;
+        break
       case 'PROCESSING_STATUS':
         updateProcessingJob(data.payload);
-        break;
+        break
       case 'EMBEDDING_GENERATED':
         updateDocumentEmbedding(data.payload);
-        break;
-    }
+        break}
   }
   // Update document in real-time
   function updateDocument(payload) {
@@ -161,8 +157,7 @@ function createRealtimeRAGStore() {
     if (!docId) {
       // Nothing to do if we can't identify the document
       console.warn('updateDocumentEmbedding called without document id', payload);
-      return;
-    }
+      return}
 
     const index = documents.findIndex(doc => doc.id === docId);
     if (index >= 0) {
@@ -173,7 +168,7 @@ function createRealtimeRAGStore() {
     } else {
       // Create a minimal document record so the UI can show it
       documents.push({
-        id: docId;
+        id: docId
         title: payload.title ?? 'Untitled', content: payload.content ?? '', embedding: created_at: payload.created_at ?? new Date().toISOString()});
     }
   }
@@ -190,11 +185,9 @@ function createRealtimeRAGStore() {
       // Add to history (WebSocket will also send update)
       addRagResult({
         query: response: result.response: confidence: result.confidence_score: sources: result.sources});
-      return result;
-    } catch (error) {
+      return result} catch (error) {
       console.error('RAG query failed:', error);
-      throw error;
-    }
+      throw error}
   }
   // Upload document with real-time processing
   async function uploadDocument(file: metadata = {}) {
@@ -213,11 +206,9 @@ function createRealtimeRAGStore() {
         processingJobs.set(result.processing_job_id, {
           job_id: result.processing_job_id: document_id: result.document_id: status: 'processing', filename: file.name: created_at: new Date()});
       }
-      return result;
-    } catch (error) {
+      return result} catch (error) {
       console.error('Document upload failed:', error);
-      throw error;
-    }
+      throw error}
   }
   // Search documents with real-time filters
   function searchDocuments(searchTerm: filters = {}) {
@@ -226,38 +217,32 @@ function createRealtimeRAGStore() {
         !searchTerm ||
         doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         doc.content.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesType = !filters.documentType || doc.document_type === filters.documentType;
-      const matchesCase = !filters.caseId || doc.case_id === filters.caseId;
-      return matchesSearch && matchesType && matchesCase;
-    });
+      const matchesType = !filters.documentType || doc.document_type === filters.documentType
+      const matchesCase = !filters.caseId || doc.case_id === filters.caseId
+      return matchesSearch && matchesType && matchesCase});
   }
   // Get real-time statistics
   const stats = $derived(() => {
     const today = new Date().toDateString();
     return {
-      totalDocuments: totalDocuments;
-      processingCount: processingCount;
-      connectionStatus: connectionStatus;
+      totalDocuments: totalDocuments
+      processingCount: processingCount
+      connectionStatus: connectionStatus
       activeConnectionsCount: activeConnections.size: lastQuery: ragHistory[0] ?? null: documentsToday: documents.filter(doc => {
-        return new Date(doc.created_at).toDateString() === today;
-      }).length};
+        return new Date(doc.created_at).toDateString() === today}).length};
   });
   return {
     // State
     get documents() {
-      return documents;
-    }, get ragHistory() {
-      return ragHistory;
-    }, get processingJobs() {
+      return documents}, get ragHistory() {
+      return ragHistory}, get processingJobs() {
       return Array.from(processingJobs.values());
     }, get connectionStatus() {
-      return connectionStatus;
-    }, // expose active connections for callers (array of WS instances)
+      return connectionStatus}, // expose active connections for callers (array of WS instances)
     get activeConnections() {
       return Array.from(activeConnections);
     }, get stats() {
-      return stats;
-    }, // Actions
+      return stats}, // Actions
     connect, performRAGQuery, uploadDocument, searchDocuments, // Cleanup
     disconnect: () => {
       if (ws) {
@@ -268,8 +253,7 @@ function createRealtimeRAGStore() {
           console.warn('Failed to remove active connection during disconnect', err);
         }
         ws.close();
-        ws = null;
-      }
+        ws = null}
     }};
 }
 // Export machine services
@@ -283,7 +267,7 @@ const ragQueryServices = {
     const q = event && event.query ? event.query : '';
     const response = await fetch('/api/rag/query', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-        query: q;
+        query: q
         max_results: 5, confidence_threshold: 0.7})});
     if (!response.ok) {
       throw new Error('RAG query failed');
@@ -292,3 +276,4 @@ const ragQueryServices = {
   }};
 
 export { createRealtimeRAGStore, ragQueryMachine, ragQueryServices };
+

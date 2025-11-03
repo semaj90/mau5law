@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu;
+﻿<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique -->
 <script lang="ts">
@@ -49,10 +49,9 @@ https://svelte.dev/e/attribute_duplicate -->
   type EvidenceAny = Evidence & Record<string any>;
 
   interface Props {
-    caseId?: string;
-    showHeader?: boolean;
-    columns?: number;
-  }
+    caseId?: string
+    showHeader?: boolean
+    columns?: number}
   let {
     caseId = undefined,
     showHeader = true,
@@ -60,17 +59,15 @@ https://svelte.dev/e/attribute_duplicate -->
   }: Props = $props();
 
   let searchInput: HTMLInputElement | undefined = $state();
-  let selectedItem: EvidenceAny | null = null;
+  let selectedItem: EvidenceAny | null = null
   let gridData = $state<any>(undefined);
   let filteredData = $state<EvidenceAny[]>([]);
   // Subscribe to store changes
   $effect(() => {
     const unsubscribe = evidenceGrid.subscribe((value: any) => {
-      gridData = value;
-    });
+      gridData = value});
     const unsubscribeFiltered = filteredEvidence.subscribe((value: any) => {
-      filteredData = value;
-    });
+      filteredData = value});
     return () => {
       unsubscribe();
       unsubscribeFiltered();
@@ -93,7 +90,7 @@ https://svelte.dev/e/attribute_duplicate -->
   });
 
   function handleSearch(event: Event) {
-    const target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement
     evidenceActions.setSearchQuery(target.value);
   }
 
@@ -129,32 +126,30 @@ https://svelte.dev/e/attribute_duplicate -->
 
   function getFileIcon(evidenceType: string, mimeType?: string) {
     if (mimeType) {
-      if (isImageFile(mimeType)) return Image;
-      if (mimeType.startsWith('video/')) return Video;
-      if (mimeType.startsWith('audio/')) return Music;
-      if (mimeType.includes('pdf')) return FileText;
-    }
+      if (isImageFile(mimeType)) return Image
+      if (mimeType.startsWith('video/')) return Video
+      if (mimeType.startsWith('audio/')) return Music
+      if (mimeType.includes('pdf')) return FileText}
     switch (evidenceType.toLowerCase()) {
       case, 'image':
-        return Image;
+        return Image
       case, 'video':
-        return Video;
+        return Video
       case, 'audio':
-        return Music;
+        return Music
       case, 'document':
       case, 'pdf':
-        return FileText;
-      default: return File;
-    }
+        return FileText
+      default: return File}
   }
   function formatDate(date: string | Date | undefined): string {
     if (!date) return 'Unknown';
-    const dateObj = typeof date === 'string' ? new Date(date) : date;
+    const dateObj = typeof date === 'string' ? new Date(date) : date
     return new Intl.DateTimeFormat().format(dateObj);
   }
   async function downloadEvidence(item: EvidenceAny): Promise<any> {
-    const fileUrl = item.fileUrl as: string | undefined;
-    if (!fileUrl) return;
+    const fileUrl = item.fileUrl as: string | undefined
+    if (!fileUrl) return
     try {
       const response = await fetch(fileUrl);
       const blob = await response.blob();
@@ -162,7 +157,7 @@ https://svelte.dev/e/attribute_duplicate -->
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
-      a.href = url;
+      a.href = url
       a.download = item.fileName || item.title || 'evidence-file';
       document.body.appendChild(a);
       a.click();
@@ -184,11 +179,10 @@ https://svelte.dev/e/attribute_duplicate -->
     }
   }
   function openPreview(item: EvidenceAny) {
-    selectedItem = item;
-  }
+    selectedItem = item}
   function showContextMenu(event: MouseEvent, item: EvidenceAny) {
     event.preventDefault();
-    selectedItem = item;
+    selectedItem = item
     if (!selectedItems.has(item.id)) toggleSelection(item);
   }
 
@@ -204,22 +198,21 @@ https://svelte.dev/e/attribute_duplicate -->
     switch (action) {
       case, 'preview':
         openPreview(item);
-        break;
+        break
       case, 'download':
         downloadEvidence(item);
-        break;
+        break
       case, 'save':
         // Implement save for later functionality
         console.log('Save for later:', item);
-        break;
+        break
       case, 'tag':
         // Implement tagging modal
         console.log('Add tags:', item);
-        break;
+        break
       case, 'delete':
         deleteEvidence(item);
-        break;
-    }
+        break}
   }
 </script>
 
@@ -245,7 +238,7 @@ https://svelte.dev/e/attribute_duplicate -->
         <select
           value={sortBy}
           onchange={(e) => {
-            const value = (e.target as HTMLSelectElement)?.value;
+            const value = (e.target as HTMLSelectElement)?.value
             if (value === 'title' || value === 'evidenceType' || value === 'fileSize' || value === 'uploadedAt') {
               toggleSort(value);
             }
@@ -519,17 +512,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <style>
   /* @unocss-include */
   .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 2
+    line-clamp: 2
+    -webkit-box-orient: vertical
+    overflow: hidden}
   .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-   , overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 3
+    line-clamp: 3
+    -webkit-box-orient: vertical
+   , overflow: hidden}
 </style>

@@ -1,13 +1,12 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   type BadgeVariant = 'default' | 'success' | 'destructive' | 'warning' | 'info' | 'outline';
   type BadgeSize = 'sm' | 'md' | 'lg';
   interface Props {
-    variant?: BadgeVariant;
-    size?: BadgeSize;
-    class?: string;
-    children?: Snippet;
-  }
+    variant?: BadgeVariant
+    size?: BadgeSize
+    class?: string
+    children?: Snippet}
   let { variant = 'default', size = 'md', class: className = '', children }: Props = $props();
   let variantClasses = $derived(
     variant === 'success'
@@ -32,3 +31,4 @@
 >
   <slot />
 </span>
+

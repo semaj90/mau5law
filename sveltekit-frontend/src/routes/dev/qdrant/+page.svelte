@@ -1,11 +1,11 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   let loading = $state<boolean>(false);
-  let result: any = null;
-  let error: string | null = null;
-  let limit = 6;
-  let page = 1;
+  let result: any = null
+  let error: string | null = null
+  let limit = 6
+  let page = 1
   let caseId = '';
   let tag = '';
 
@@ -14,9 +14,8 @@
   let previewTitle = '';
   let previewSnippet = '';
   // Copy feedback
-  let copiedId: string | null = null;
-  let copyTimeout: any = null;
-
+  let copiedId: string | null = null
+  let copyTimeout: any = null
   function buildQuery() {
     const params = new URLSearchParams();
     params.set('limit', String(limit));
@@ -27,19 +26,17 @@
   }
 
   async function runQuery(): Promise<any> {
-    loading = true;
-    error = null;
-    result = null;
+    loading = true
+    error = null
+    result = null
     try {
       const resp = await fetch('/api/dev/qdrant?' + buildQuery());
       const body = await resp.json();
       if (!resp.ok) throw new Error(body?.error || 'Request failed');
-      result = body;
-    } catch (e) {
+      result = body} catch (e) {
       error = e instanceof Error ? e.message : String(e);
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
 
   function extractTitle(payload: any): string {
@@ -52,14 +49,14 @@
     return typeof s === 'string' ? s.slice(0, 400) : '';
   }
   function openPreview(title: string, snippet: string) {
-    previewTitle = title;
-    previewSnippet = snippet;
-    previewOpen = true;
+    previewTitle = title
+    previewSnippet = snippet
+    previewOpen = true
     // Ensure markdown libs are ready if user wants to render markdown
     ensureMarkdownLibs().then(() => {
       // focus trap will be applied in the DOM after the modal mounts
       setTimeout(() => {
-        const modalRoot = document.querySelector('[role="dialog"]') as HTMLElement | null;
+        const modalRoot = document.querySelector('[role="dialog"]') as HTMLElement | null
         trapFocus(modalRoot);
       }, 0);
     });
@@ -73,18 +70,17 @@
         const tmp = document.createElement('input');
         tmp.style.position = 'fixed';
         tmp.style.left = '-10000px';
-        tmp.value = id;
+        tmp.value = id
         document.body.appendChild(tmp);
         tmp.select();
         document.execCommand('copy');
         document.body.removeChild(tmp);
       }
-      copiedId = id;
+      copiedId = id
       if (copyTimeout) clearTimeout(copyTimeout);
       copyTimeout = setTimeout(() => {
-        copiedId = null;
-        copyTimeout = null;
-      }, 2500);
+        copiedId = null
+        copyTimeout = null}, 2500);
     } catch (err) {
       console.warn('Copy failed', err);
     }
@@ -92,18 +88,17 @@
 
   // Modal markdown rendering toggle + tiny sanitizer
   let previewRenderMarkdown = $state<boolean>(false);
-  let purified: ((html: string) => string) | null = null;
-  let markdownToHtml: ((md: string) => string) | null = null;
+  let purified: ((html: string) => string) | null = null
+  let markdownToHtml: ((md: string) => string) | null = null
   async function ensureMarkdownLibs(): Promise<any> {
     if (!purified || !markdownToHtml) {
       try {
         // use awaited dynamic imports and cast to: any to avoid TS type errors when types are missing
         const [DOMPurifyMod, markedMod] = await Promise.all([
           (await import('dompurify')) as: any,
-          (await import('marked')) as: any,
-        ]);
-        const DOMPurify = DOMPurifyMod.default ?? DOMPurifyMod;
-        const marked = markedMod.default ?? markedMod;
+          (await import('marked')) as: any]);
+        const DOMPurify = DOMPurifyMod.default ?? DOMPurifyMod
+        const marked = markedMod.default ?? markedMod
         purified = (html: string) => DOMPurify.sanitize(html);
         markdownToHtml = (md: string) => marked.parse(md || '');
       } catch (err) {
@@ -135,8 +130,7 @@
   }
 
   function escHandler(e: KeyboardEvent) {
-    if (e.key === 'Escape' && previewOpen) previewOpen = false;
-  }
+    if (e.key === 'Escape' && previewOpen) previewOpen = false}
 
   onMount(() => {
     runQuery();
@@ -147,10 +141,10 @@
   });
 
   // Focus trap state
-  let lastActiveElement: Element | null = null;
+  let lastActiveElement: Element | null = null
   function trapFocus(modalRoot: HTMLElement | null) {
-    if (!modalRoot) return;
-    lastActiveElement = document.activeElement;
+    if (!modalRoot) return
+    lastActiveElement = document.activeElement
     // focus first focusable element
     const focusable = modalRoot.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
@@ -159,8 +153,7 @@
   }
   function restoreFocus() {
     (lastActiveElement as HTMLElement | null)?.focus?.();
-    lastActiveElement = null;
-  }
+    lastActiveElement = null}
 </script>
 
 <div class="p-4 max-w-4xl">
@@ -193,7 +186,7 @@
                   <div class="text-sm">Score: {item.score}</div>
                   {#if extractSnippet(item.payload)}
                     <div class="text-xs text-muted">
-                      {extractSnippet(item.payload)}{extractSnippet(item.payload).length === 400 ? '…' : ''}
+                      {extractSnippet(item.payload)}{extractSnippet(item.payload).length === 400 ? 'â€¦' : ''}
                     </div>
                   {/if}
                 </div>
@@ -245,7 +238,7 @@
                         row.snippet ||
                         ''
                       ).length > 400
-                        ? '…'
+                        ? 'â€¦'
                         : ''}
                     </div>
                   {/if}
@@ -299,13 +292,13 @@
           class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center"
           tabindex="0"
           onclick={() => {
-            previewOpen = false;
+            previewOpen = false
             restoreFocus();
           }}
           onkeydown={(e: KeyboardEvent) => {
             // make overlay keyboard-operable (Enter / Space)
             if (e.key === 'Enter' || e.key === ' ') {
-              previewOpen = false;
+              previewOpen = false
               restoreFocus();
             }
           }}
@@ -326,10 +319,10 @@
             <button
               class="absolute top-2 right-2 text-gray-500"
               onclick={() => {
-                previewOpen = false;
+                previewOpen = false
                 restoreFocus();
               }}
-              aria-label="Close">✕</button
+              aria-label="Close">âœ•</button
             >
             <div class="flex items-center justify-between">
               <h3 class="text-lg font-bold">{previewTitle || 'Preview'}</h3>
@@ -355,3 +348,4 @@
     </section>
   {/if}
 </div>
+

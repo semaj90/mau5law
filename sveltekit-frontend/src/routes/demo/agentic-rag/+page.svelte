@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Message } from '$lib/types';
   /**
-   * 🤖 Agentic RAG Demo
+   * ðŸ¤– Agentic RAG Demo
    *
    * Interactive demo of the complete agentic RAG system:
    * - Gemma3 function calling
@@ -50,21 +50,18 @@ import type { Message } from '$lib/types';
   }
 
   async function sendQuery(): Promise<any> {
-    if (!query.trim() || isProcessing) return;
-
-    isProcessing = true;
-
+    if (!query.trim() || isProcessing) return
+    isProcessing = true
     // Add user message
     messages = [
-      ...messages,
-      {
+      ...messages, {
         role: 'user',
         content: query,
         timestamp: new Date()
       }
     ];
 
-    const currentQuery = query;
+    const currentQuery = query
     query = '';
 
     try {
@@ -83,8 +80,7 @@ import type { Message } from '$lib/types';
       if (data.success) {
         // Add assistant response
         messages = [
-          ...messages,
-          {
+          ...messages, {
             role: 'assistant',
             content: data.response,
             toolCalls: data.toolCalls || [],
@@ -97,8 +93,7 @@ import type { Message } from '$lib/types';
       }
     } catch (error: any) {
       messages = [
-        ...messages,
-        {
+        ...messages, {
           role: 'system',
           content: `Error: ${error.message}`,
           timestamp: new Date(),
@@ -106,13 +101,11 @@ import type { Message } from '$lib/types';
         }
       ];
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   }
 
   function useSampleQuery(sample: string) {
-    query = sample;
-  }
+    query = sample}
 
   function clearConversation() {
     messages = [];
@@ -125,15 +118,15 @@ import type { Message } from '$lib/types';
 
   function getToolIcon(toolName: string): string {
     const icons: Record<string string> = {
-      rag_search: '🔍',
-      ocr_extract: '📷',
-      code_analyze: '💻',
-      vector_query: '🧮',
-      gpu_rank: '⚡',
-      cache_query: '💾',
-      mcp_call: '🔌'
+      rag_search: 'ðŸ”',
+      ocr_extract: 'ðŸ“·',
+      code_analyze: 'ðŸ’»',
+      vector_query: 'ðŸ§®',
+      gpu_rank: 'âš¡',
+      cache_query: 'ðŸ’¾',
+      mcp_call: 'ðŸ”Œ'
     };
-    return icons[toolName] || '🔧';
+    return icons[toolName] || 'ðŸ”§';
   }
 </script>
 
@@ -141,7 +134,7 @@ import type { Message } from '$lib/types';
   <!-- Header -->
   <header class="mb-8">
     <h1 class="text-3xl font-bold text-gold-400">
-      🤖 Agentic RAG Orchestrator
+      ðŸ¤– Agentic RAG Orchestrator
     </h1>
     <p class="text-sm">
       Gemma3 + embeddinggemma + Function Calling + Synthesis Ranking
@@ -187,11 +180,11 @@ import type { Message } from '$lib/types';
           <div class="flex items-start justify-between">
             <div class="flex items-center">
               {#if message.role === 'user'}
-                <span class="text-blue-400">👤 You</span>
+                <span class="text-blue-400">ðŸ‘¤ You</span>
               {:else if message.role === 'assistant'}
-                <span class="text-green-400">🤖 Agent</span>
+                <span class="text-green-400">ðŸ¤– Agent</span>
               {:else}
-                <span class="text-red-400">⚠️ System</span>
+                <span class="text-red-400">âš ï¸ System</span>
               {/if}
             </div>
             <div class="text-xs">
@@ -208,7 +201,7 @@ import type { Message } from '$lib/types';
           {#if message.toolCalls && message.toolCalls.length > 0}
             <div class="mt-3 pt-3 border-t">
               <div class="text-xs text-slate-400">
-                🔧 Tools Used ({message.toolCalls.length})
+                ðŸ”§ Tools Used ({message.toolCalls.length})
               </div>
 
               <div class="space-y-2">
@@ -281,7 +274,7 @@ import type { Message } from '$lib/types';
           disabled={isProcessing || !query.trim()}
         >
           {#if isProcessing}
-            <span class="animate-spin">⚙️</span>
+            <span class="animate-spin">âš™ï¸</span>
           {:else}
             <Zap class="inline w-4 h-4" />
           {/if}
@@ -309,7 +302,7 @@ import type { Message } from '$lib/types';
           onclick={() => useSampleQuery(sample)}
           disabled={isProcessing}
         >
-          <span class="text-gold-400">→</span>
+          <span class="text-gold-400">â†’</span>
           {sample}
         </button>
       {/each}
@@ -319,18 +312,15 @@ import type { Message } from '$lib/types';
 
 <style>
   .agentic-rag-demo {
-    background: #212529;
-   , color: #d4af37;
-    font-family: 'Press Start 2P', 'Courier New', monospace;
-  }
+    background: #212529
+   , color: #d4af37
+    font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .text-gold-400 {
-    color: #d4af37;
-  }
+    color: #d4af37}
 
   .animate-spin {
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
 
   @keyframes spin {
     from { transform: rotate(0deg);
@@ -341,18 +331,15 @@ import type { Message } from '$lib/types';
   }
 
   .messages-container {
-    scroll-behavior: smooth;
-  }
+    scroll-behavior: smooth}
 
   .message.user {
-    border-left: 4px solid #3b82f6;
-  }
+    border-left: 4px solid #3b82f6}
 
   .message.assistant {
-    border-left: 4px solid #22c55e;
-  }
+    border-left: 4px solid #22c55e}
 
   .message.system {
-    border-left: 4px solid #ef4444;
-  }
+    border-left: 4px solid #ef4444}
 </style>
+

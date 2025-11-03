@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Legal Document Processor Component
   Demonstrates XState integration with Svelte, 5 for legal document processing
 -->
@@ -15,11 +15,10 @@ import type { Case } from '$lib/types';
     onError = undefined,
     autoStart = false
   }: {
-    document?: Partial<LegalDocument> | undefined;
-    onComplete?: (result: any) => void;
-    onError?: (errors: string[]) => void;
-    autoStart?: boolean;
-  } = $props();
+    document?: Partial<LegalDocument> | undefined
+    onComplete?: (result: any) => void
+    onError?: (errors: string[]) => void
+    autoStart?: boolean} = $props();
   // XState machine integration
   const { state, send, context } = useMachine(legalDocumentProcessingMachine);
   // Reactive derived state
@@ -45,8 +44,7 @@ import type { Case } from '$lib/types';
         entities: $context.entities,
         riskScore: $context.riskScore,
         aiAnalysis: $context.aiAnalysis,
-        processingDuration $context.processingDuratio;
-      });
+        processingDuration $context.processingDuratio});
     }
     if (isFailed && onError && $context.errors.length > 0) {
       onError($context.errors);
@@ -54,7 +52,7 @@ import type { Case } from '$lib/types';
   });
   // Actions
   function startProcessing() {
-    if (!document) return;
+    if (!document) return
     send({
       type: 'START_PROCESSING',
       document,
@@ -249,7 +247,7 @@ import type { Case } from '$lib/types';
           <ul class="text-sm text-gray-700 dark:text-gray-300">
             {#each Array.isArray($context.stackRecommendations) ? $context.stackRecommendations : [] as recommendation}
               <li class="flex items-start">
-                <span class="text-blue-500">•</span>
+                <span class="text-blue-500">â€¢</span>
                 <span>{recommendation}</span>
               </li>
             {/each}
@@ -268,7 +266,7 @@ import type { Case } from '$lib/types';
       <ul class="text-sm text-red-700 dark:text-red-300">
         {#each Array.isArray($context.errors) ? $context.errors : [] as error}
           <li class="flex items-start">
-            <span class="text-red-500">×</span>
+            <span class="text-red-500">Ã—</span>
             <span>{error}</span>
           </li>
         {/each}
@@ -327,6 +325,6 @@ Context: {JSON.stringify($context, null, 2)}
 <style>
   .legal-document-processor {
     /* Component-specific styles if needed */
-    max-width: 800px;
-  }
+    max-width: 800px}
 </style>
+

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import IntegrationValidator from '$lib/components/validation/IntegrationValidator.svelte';
   let pageTitle = 'Integration Validation - Legal AI Platform';
 </script>
@@ -11,17 +11,17 @@
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-4xl font-bold text-white">
-        🏗️ Legal AI Platform Integration Validation
+        ðŸ—ï¸ Legal AI Platform Integration Validation
       </h1>
       <p class="text-xl">
         Comprehensive testing suite for all integrated components and systems
       </p>
       <div class="mt-4 text-sm">
-        <span>✨ Testing Phase 1-3 Integration</span>
-        <span class="mx-2">•</span>
-        <span>🎯 GPU Acceleration Ready</span>
-        <span class="mx-2">•</span>
-        <span>⚖️ Legal AI Workflows Active</span>
+        <span>âœ¨ Testing Phase 1-3 Integration</span>
+        <span class="mx-2">â€¢</span>
+        <span>ðŸŽ¯ GPU Acceleration Ready</span>
+        <span class="mx-2">â€¢</span>
+        <span>âš–ï¸ Legal AI Workflows Active</span>
       </div>
     </div>
     <!-- Integration, Validator, Component -->
@@ -33,7 +33,7 @@
           <div class="w-3 h-3 bg-green-400 rounded-full"></div>
           <span class="text-white">Integration Status: Active</span>
         </div>
-        <div class="text-slate-400">•</div>
+        <div class="text-slate-400">â€¢</div>
         <div class="text-sm">
           Phase 1-3 Complete (12/12 Components Integrated)
         </div>
@@ -44,14 +44,13 @@
 <style>
   /* Global dark theme styles */
   :global(body) {
-    background: #0f172a;
-   , color: #f8fafc;
-  }
+    background: #0f172a
+   , color: #f8fafc}
   /* Animation for the status indicator */
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+    0%, 100% { opacity: 1}
+    50% { opacity: 0.5}
   }
-  .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
+  .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}
 </style>
+

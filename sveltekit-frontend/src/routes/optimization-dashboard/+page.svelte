@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
@@ -48,15 +48,14 @@ https://svelte.dev/e/js_parse_error -->
   async function updateSystemMetrics(): Promise<any> {
     try {
       // Defensive access because EnhancedRAGStore typings differ across implementations
-      const rag: any = enhancedRAGStore;
-
+      const rag: any = enhancedRAGStore
       // Get neural memory metrics if available
       let memoryReport: any = {};
       if (rag.neuralMemory?.generatePerformanceReport) {
         memoryReport = await rag.neuralMemory.generatePerformanceReport();
       }
 
-      const currentUsage = rag.neuralMemory?.getCurrentMemoryUsage?.() ?? systemStatus.neuralMemory.currentUsage;
+      const currentUsage = rag.neuralMemory?.getCurrentMemoryUsage?.() ?? systemStatus.neuralMemory.currentUsage
       systemStatus.neuralMemory = {
         currentUsage,
         efficiency: memoryReport.memoryEfficiency ?? systemStatus.neuralMemory.efficiency,
@@ -66,15 +65,13 @@ https://svelte.dev/e/js_parse_error -->
 
       // Get caching metrics (support both .stat and .state shapes)
       const ragState = rag.stat ?? rag.state ?? {};
-      systemStatus.mlCaching = ragState.cacheMetric ?? systemStatus.mlCaching;
-
+      systemStatus.mlCaching = ragState.cacheMetric ?? systemStatus.mlCaching
       // Get worker system stats
       const workerResponse = await fetch('/api/workers?stats=true');
       if (workerResponse.ok) {
         const data = await workerResponse.json();
         // prefer .stats shape, fallback to top-level
-        systemStatus.workerSystem = (data as: any).stats ?? (data as: any).stat ?? systemStatus.workerSystem;
-      }
+        systemStatus.workerSystem = (data as: any).stats ?? (data as: any).stat ?? systemStatus.workerSystem}
 
       // Update performance charts with correct property names
       const now = new Date();
@@ -93,15 +90,14 @@ https://svelte.dev/e/js_parse_error -->
         performanceChart.cacheHitRate.shift();
       }
 
-      lastUpdate = now;
-    } catch (err) {
+      lastUpdate = now} catch (err) {
       console.error('Failed to update metrics:', err);
     }
   }
 
   async function testWorkerSystem(): Promise<any> {
-    isSubmittingJob = true;
-    testJobResult = null;
+    isSubmittingJob = true
+    testJobResult = null
     try {
       // Submit a test summarization job
       const jobResponse = await fetch('/api/workers', {
@@ -136,13 +132,12 @@ https://svelte.dev/e/js_parse_error -->
       console.error('Worker system test failed:', error);
       testJobResult = { error: 'Test failed: ' + (((error, as: any)?.message) ?? String(error)) };
     } finally {
-      isSubmittingJob = false;
-    }
+      isSubmittingJob = false}
   }
 
   async function runRAGSearch(): Promise<any> {
     try {
-      const rag: any = enhancedRAGStore;
+      const rag: any = enhancedRAGStore
       // Cast options, to: any to avoid strict RAGSearchOptions mismatch
       await rag.search('legal AI optimization neural networks', {
         limit: 5,
@@ -157,7 +152,7 @@ https://svelte.dev/e/js_parse_error -->
 
   async function optimizeCache(): Promise<any> {
     try {
-      const rag: any = enhancedRAGStore;
+      const rag: any = enhancedRAGStore
       await rag.optimizeCache?.();
       await updateSystemMetrics();
     } catch (err) {
@@ -166,7 +161,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function startMonitoring() {
-    isMonitoring = true;
+    isMonitoring = true
     updateSystemMetrics();
     // Update every, 5 seconds
     const interval = setInterval(() => {
@@ -179,8 +174,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   function stopMonitoring() {
-    isMonitoring = false;
-  }
+    isMonitoring = false}
 
   // start monitoring on mount to avoid unused import warnings and provide UX
   onMount(() => {
@@ -198,7 +192,7 @@ https://svelte.dev/e/js_parse_error -->
     <!-- Header -->
     <div class="mb-8">
       <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">
-        🧠 Advanced Optimization Dashboard
+        ðŸ§  Advanced Optimization Dashboard
       </h1>
       <p class="text-slate-300">
         Real-time monitoring of neural memory prediction, ML-based caching, adaptive resource management, and
@@ -210,7 +204,7 @@ https://svelte.dev/e/js_parse_error -->
           onclick={isMonitoring ? stopMonitoring : startMonitoring}
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
         >
-          {isMonitoring ? '⏸️ Stop Monitoring' : '▶️ Start Monitoring'}
+          {isMonitoring ? 'â¸ï¸ Stop Monitoring' : 'â–¶ï¸ Start Monitoring'}
         </button>
         <span class="text-sm text-slate-400">
           Last updated: {lastUpdate.toLocaleTimeString()}
@@ -221,7 +215,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <!-- Neural, Memory, Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-xl font-semibold mb-4 flex items-center">🧠 Neural Memory</h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center">ðŸ§  Neural Memory</h3>
         <div class="space-y-3">
           <div class="flex">
             <span class="text-slate-300">Usage:</span>
@@ -239,7 +233,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- ML, Caching, Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-xl font-semibold mb-4 flex items-center">⚡ ML Caching</h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center">âš¡ ML Caching</h3>
         <div class="space-y-3">
           <div class="flex">
             <span class="text-slate-300">Hit Rate:</span>
@@ -257,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Worker, System, Status -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-xl font-semibold mb-4 flex items-center">🏗️ Worker System</h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center">ðŸ—ï¸ Worker System</h3>
         <div class="space-y-3">
           <div class="flex">
             <span class="text-slate-300">Health:</span>
@@ -275,7 +269,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Performance, Overview -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-xl font-semibold mb-4 flex items-center">📊 Performance</h3>
+        <h3 class="text-xl font-semibold mb-4 flex items-center">ðŸ“Š Performance</h3>
         <div class="space-y-3">
           <div class="flex">
             <span class="text-slate-300">Avg Response:</span>
@@ -296,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       <!-- RAG, Search, Test -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-lg font-semibold">🔍 Enhanced RAG Search</h3>
+        <h3 class="text-lg font-semibold">ðŸ” Enhanced RAG Search</h3>
         <p class="text-slate-300 text-sm">
           Test the SOM clustering, neural memory optimization, and recommendation engine
         </p>
@@ -312,7 +306,7 @@ https://svelte.dev/e/js_parse_error -->
             <h4 class="text-sm font-semibold text-slate-300">AI Recommendations:</h4>
             <ul class="text-xs">
               {#each Array.isArray(systemStatus.recommendations) ? systemStatus.recommendations : [] as rec}
-                <li class="text-blue-300">• {rec}</li>
+                <li class="text-blue-300">â€¢ {rec}</li>
               {/each}
             </ul>
           </div>
@@ -320,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Cache, Optimization -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-lg font-semibold">⚡ Cache Optimization</h3>
+        <h3 class="text-lg font-semibold">âš¡ Cache Optimization</h3>
         <p class="text-slate-300 text-sm">Trigger ML-based cache optimization and memory rebalancing</p>
         <button
           onclick={optimizeCache}
@@ -331,28 +325,28 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Worker, System, Test -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-lg font-semibold">🏗️ Test Worker System</h3>
+        <h3 class="text-lg font-semibold">ðŸ—ï¸ Test Worker System</h3>
         <p class="text-slate-300 text-sm">Submit a test job to the specialized worker system</p>
         <button
           onclick={testWorkerSystem}
           disabled={isSubmittingJob}
           class="w-full px-4 py-2 bg-green-600 hover:bg-green-700"
         >
-          {isSubmittingJob ? '⏳ Processing...' : 'Test Workers'}
+          {isSubmittingJob ? 'â³ Processing...' : 'Test Workers'}
         </button>
         {#if testJobResult}
           <div class="mt-4 p-3 bg-slate-700">
             <h4 class="text-sm font-semibold">Job Result:</h4>
             {#if testJobResult.success}
               <div class="text-xs">
-                ✅ Success! Processing time: {testJobResult.processingTime}ms
+                âœ… Success! Processing time: {testJobResult.processingTime}ms
                 {#if testJobResult.result?.summary}
                   <p class="mt-2">Summary: {testJobResult.result.summary}</p>
                 {/if}
               </div>
             {:else}
               <div class="text-xs">
-                ❌ {testJobResult.error || 'Job failed'}
+                âŒ {testJobResult.error || 'Job failed'}
               </div>
             {/if}
           </div>
@@ -363,7 +357,7 @@ https://svelte.dev/e/js_parse_error -->
     <div class="grid grid-cols-1 lg:grid-cols-2">
       <!-- Memory, Usage, Chart -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-lg font-semibold">📈 Memory Usage Trends</h3>
+        <h3 class="text-lg font-semibold">ðŸ“ˆ Memory Usage Trends</h3>
         <div class="h-48 flex items-end">
           {#each performanceChart.memoryUsage as point, i}
             <div
@@ -376,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
       </div>
       <!-- Cache, Performance, Chart -->
       <div class="bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-        <h3 class="text-lg font-semibold">⚡ Cache Hit Rate</h3>
+        <h3 class="text-lg font-semibold">âš¡ Cache Hit Rate</h3>
         <div class="h-48 flex items-end">
           {#each performanceChart.cacheHitRate as point, i}
             <div
@@ -390,7 +384,7 @@ https://svelte.dev/e/js_parse_error -->
     </div>
     <!-- Feature, Status -->
     <div class="mt-8 bg-slate-800/50 backdrop-blur rounded-xl p-6 border">
-      <h3 class="text-xl font-semibold">✅ Advanced Features Status</h3>
+      <h3 class="text-xl font-semibold">âœ… Advanced Features Status</h3>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
         <div class="flex items-center">
           <span class="w-3 h-3 bg-green-500"></span>
@@ -432,14 +426,12 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* Custom scrollbar for webkit browsers */
   ::-webkit-scrollbar {
-    width: 8px;
-  }
+    width: 8px}
   ::-webkit-scrollbar-track { background: rgb(30, 41 59);
-    border-radius: 4px;
-  }
+    border-radius: 4px}
   ::-webkit-scrollbar-thumb { background: rgb(100, 116 139);
-    border-radius: 4px;
-  }
+    border-radius: 4px}
   ::-webkit-scrollbar-thumb:hover { background: rgb(148, 163 184);
   }
 </style>
+

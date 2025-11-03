@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -25,48 +25,42 @@ import type { Document } from '$lib/types';
 
   // --- ADDED: explicit types to avoid `never` / `unknown` inference errors ---
   interface DocumentResult {
-    id: string;
-    title: string;
-    citation: string;
-    fullCitation?: string;
-    court?: string;
-    jurisdiction?: string;
-    dateDecided?: string;
-    documentType?: string;
-    precedentialValue?: string;
-    summary?: string;
+    id: string
+    title: string
+    citation: string
+    fullCitation?: string
+    court?: string
+    jurisdiction?: string
+    dateDecided?: string
+    documentType?: string
+    precedentialValue?: string
+    summary?: string
     keyTopics?: string[];
-    relevanceScore?: number;
-    citedBy?: number;
-    isBookmarked?: boolean;
-    url?: string;
-  }
+    relevanceScore?: number
+    citedBy?: number
+    isBookmarked?: boolean
+    url?: string}
 
   type Citation = {
-    id: string;
-    title: string;
-    citation: string;
-    savedAt: Date;
-  };
+    id: string
+    title: string
+    citation: string
+    savedAt: Date};
 
   type ResearchQuery = {
-    query: string;
+    query: string
     filters: {
-      jurisdiction?: string;
-      court?: string;
-      documentType?: string;
-      dateRange?: string;
-      precedentialValue?: string;
-      [k: string]: any;
-    };
-    timestamp: Date;
-    mode: string;
-  };
+      jurisdiction?: string
+      court?: string
+      documentType?: string
+      dateRange?: string
+      precedentialValue?: string
+      [k: string]: any};
+    timestamp: Date, mode: string};
 
   type ResearchSession = {
-    id: string | null;
-    startTime: Date;
-    queries: ResearchQuery[];
+    id: string | null
+    startTime: Date, queries: ResearchQuery[];
    , findings: any[];
   };
   // --- END ADDED ---
@@ -75,12 +69,11 @@ import type { Document } from '$lib/types';
   let searchResults = $state<DocumentResult[]>([]);
   let isSearching = $state<boolean>(false);
   let selectedFilters = $state<{
-    jurisdiction: string;
-    court: string;
-    documentType: string;
-    dateRange: string;
-    precedentialValue: string;
-  }>({ jurisdiction: '',
+    jurisdiction: string
+    court: string
+    documentType: string
+    dateRange: string
+    precedentialValue: string}>({ jurisdiction: '',
     court: '',
     documentType: '',
     dateRange: '',
@@ -125,12 +118,12 @@ import type { Document } from '$lib/types';
 
   async function initializeResearchSession(): Promise<void> {
     researchSession.id = `research_${Date.now()}`;
-    console.log('🔍 Legal Research Session Started:', researchSession.id);
+    console.log('ðŸ” Legal Research Session Started:', researchSession.id);
   }
 
   async function performSearch(): Promise<any> {
-    if (!searchQuery.trim()) return;
-    isSearching = true;
+    if (!searchQuery.trim()) return
+    isSearching = true
     // record query with correct property names and commas
     researchSession.queries.push({
       query: searchQuery,
@@ -163,27 +156,23 @@ import type { Document } from '$lib/types';
       if (response.ok) {
         const data = await response.json();
         const results = (data && data.results) || [];
-        searchResults = results;
-        totalResults = data?.total ?? 0;
+        searchResults = results
+        totalResults = data?.total ?? 0
         relatedTopics = data?.relatedTopics ?? [];
         // Generate AI suggestions based on results (guard when results is array)
         await generateAISuggestions(Array.isArray(results) ? results.slice(0, 5) : []);
       } else {
         // Mock data for demo
         searchResults = generateMockResults(searchQuery);
-        totalResults = searchResults.length;
-      }
+        totalResults = searchResults.length}
     } catch (error) {
       console.error('Search failed:', error);
       searchResults = generateMockResults(searchQuery);
-      totalResults = searchResults.length;
-    } finally {
-      isSearching = false;
-    }
+      totalResults = searchResults.length} finally {
+      isSearching = false}
   }
   function generateMockResults(query: string) {
-    return [
-      {
+    return [ {
         id: '1',
         title: 'Smith v. Johnson - Contract Dispute Resolution',
         citation: '123 F.3d, 456 (9th Cir. 2019)',
@@ -199,10 +188,9 @@ import type { Document } from '$lib/types';
         citedBy: 47,
         isBookmarked: false,
         url: '/legal/documents/smith-v-johnson-2019'
-      },
-      {
+      }, {
         id: '2',
-        title: 'Federal Rules of Civil Procedure § 26(b)(1)',
+        title: 'Federal Rules of Civil Procedure Â§ 26(b)(1)',
         citation: 'Fed. R. Civ. P. 26(b)(1)',
         fullCitation: 'Federal Rules of Civil Procedure Rule 26(b)(1) (2020)',
         court: 'Federal Rules',
@@ -216,8 +204,7 @@ import type { Document } from '$lib/types';
         citedBy: 234,
         isBookmarked: true,
         url: '/legal/documents/frcp-26-b-1'
-      },
-      {
+      }, {
         id: '3',
         title: 'Legal, Brief: Motion for Summary Judgment Template',
         citation: 'Practice Guide Ch. 7',
@@ -288,9 +275,8 @@ import type { Document } from '$lib/types';
         })
       });
       if (response.ok) {
-        document.isBookmarked = true;
-        savedCitations = [
-          {
+        document.isBookmarked = true
+        savedCitations = [ {
             id: document.id,
             title: document.title,
             citation: document.citation,
@@ -300,17 +286,14 @@ import type { Document } from '$lib/types';
         ];
       } else {
         // optimistic UI fallback
-        document.isBookmarked = true;
-      }
+        document.isBookmarked = true}
     } catch (error) {
       console.error('Failed to save citation', error);
-      document.isBookmarked = true;
-    }
+      document.isBookmarked = true}
   }
   function openCitationDialog(document: DocumentResult) {
-    selectedDocument = document;
-    showCitationDialog = true;
-  }
+    selectedDocument = document
+    showCitationDialog = true}
   function clearFilters() {
     selectedFilters = {
       jurisdiction: '',
@@ -358,7 +341,7 @@ import type { Document } from '$lib/types';
           </div>
           <div class="hidden sm:flex items-center space-x-2 text-sm">
             <span>Session {researchSession.id?.slice(-8)}</span>
-            <span>•</span>
+            <span>â€¢</span>
             <span>{researchSession.queries.length} queries</span>
           </div>
         </div>
@@ -750,7 +733,7 @@ import type { Document } from '$lib/types';
             Close
           </button>
           <button
-            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false; }}
+            onclick={() => { saveCitation(selectedDocument); showCitationDialog = false}}
             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700"
           >
             <Bookmark class="h-4 w-4 mr-1" />

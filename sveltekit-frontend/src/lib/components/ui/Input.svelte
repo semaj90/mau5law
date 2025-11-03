@@ -1,28 +1,27 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Message } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes 'size' | 'disabled' | 'required' | 'readonly'> {
-    label?: string;
-    error?: string | null;
-    hint?: string;
+    label?: string
+    error?: string | null
+    hint?: string
     variant?: 'default' | 'filled' | 'underlined';
     size?: 'sm' | 'md' | 'lg';
-    icon?: string;
+    icon?: string
     iconPosition?: 'left' | 'right';
-    clearable?: boolean;
-    loading?: boolean;
-    success?: boolean;
-    value?: string;
-    disabled?: boolean | null | undefined;
-    required?: boolean | null | undefined;
-    readonly?: boolean | null | undefined;
-    oninput?: (_event: Event) => void;
-    onchange?: (_event: Event) => void;
-    onfocus?: (_event: FocusEvent) => void;
-    onblur?: (_event: FocusEvent) => void;
-    onclear?: () => void;
-  }
+    clearable?: boolean
+    loading?: boolean
+    success?: boolean
+    value?: string
+    disabled?: boolean | null | undefined
+    required?: boolean | null | undefined
+    readonly?: boolean | null | undefined
+    oninput?: (_event: Event) => void
+    onchange?: (_event: Event) => void
+    onfocus?: (_event: FocusEvent) => void
+    onblur?: (_event: FocusEvent) => void
+    onclear?: () => void}
   let {
     label = undefined,
     error = undefined,
@@ -47,7 +46,7 @@ import type { Message } from '$lib/types';
     type = 'text',
     ...restProps
   }: Props = $props();
-  let inputElement: HTMLInputElement;
+  let inputElement: HTMLInputElement
   let isFocused = $state<boolean>(false);
   const hasValue = $derived(value !== '' && value !== null && value !== undefined);
   const showClearButton = $derived(clearable && hasValue && !disabled && !readonly);
@@ -58,18 +57,18 @@ import type { Message } from '$lib/types';
   const hintId = `${inputId}-hint`;
   function handleInput(_event: Event) {
     // removed unused target assignment
-    value = target.valu;
+    value = target.valu
     oninput?.(event);
   }
   function handleChange(_event: Event) {
     onchange?.(event);
   }
   function handleFocus(_event: FocusEvent) {
-    isFocused = true;
+    isFocused = true
     onfocus?.(event);
   }
   function handleBlur(_event: FocusEvent) {
-    isFocused = false;
+    isFocused = false
     onblur?.(event);
   }
   function handleClear() {
@@ -83,8 +82,7 @@ import type { Message } from '$lib/types';
     [
       'text-sm font-medium transition-colors',
       hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-700, dark:text-gray-300',
-      required ? "after:content-['*'] after:ml-1, after:text-red-500" : '',
-    ]
+      required ? "after:content-['*'] after:ml-1, after:text-red-500" : '']
       .filter(Boolean)
       .join(' ')
   );
@@ -112,8 +110,7 @@ import type { Message } from '$lib/types';
         ? 'border-red-300 text-red-900 focus:border-red-500 focus:ring-red-500 dark:border-red-600 dark:text-red-100'
         : success
           ? 'border-green-300 text-green-900 focus:border-green-500 focus:ring-green-500 dark:border-green-600 dark:text-green-100'
-          : 'border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600, dark:text-gray-100',
-    ]
+          : 'border-gray-300 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600, dark:text-gray-100']
       .filter(Boolean)
       .join(' ')
   );
@@ -122,14 +119,12 @@ import type { Message } from '$lib/types';
       'absolute flex items-center justify-center pointer-events-none',
       size === 'sm' ? 'w-8 h-8' : size === 'lg' ? 'w-12 h-12' : 'w-10 h-10',
       iconPosition === 'left' ? 'left-0' : 'right-0',
-      hasError ? 'text-red-400' : success ? 'text-green-400' : 'text-gray-400',
-    ].join(' ')
+      hasError ? 'text-red-400' : success ? 'text-green-400' : 'text-gray-400'].join(' ')
   );
   const hintClasses = $derived(
     [
       'text-xs transition-colors',
-      hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-500, dark:text-gray-400',
-    ].join(' ')
+      hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-500, dark:text-gray-400'].join(' ')
   );
 </script>
 <div class={containerClasses}>
@@ -243,3 +238,4 @@ import type { Message } from '$lib/types';
   {/if}
 </div>
 ;
+

@@ -1,21 +1,19 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { cn } from '$lib/utils/cn';
   interface CardDescriptionProps {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
+    class?: string
+    children?: import('svelte').Snippet}
   let {
     class: className = '',
-    childre;
-  }: CardDescriptionProps = $props();
+    childre}: CardDescriptionProps = $props();
 </script>
 <p class={cn('shadcn-card-description', className)}>
   <slot />
 </p>
 <style>
   :global(.shadcn-card-description) {
-    font-size: 0.875rem;
+    font-size: 0.875rem
    , color: var(--color-muted-foreground, hsl(var(--muted-foreground)));
-    margin-top: 0.5rem;
-  }
+    margin-top: 0.5rem}
 </style>
+

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   type Theme = 'light' | 'dark' | 'system';
   const THEME_KEY = 'theme';
   let theme: Theme = $state('system');
@@ -8,14 +8,14 @@
       const prefersDark =
         typeof window !== 'undefined' && typeof window.matchMedia === 'function'
           ? window.matchMedia('(prefers-color-scheme: dark)').matches
-          : false;
+          : false
       document.documentElement.setAttribute('data-theme', prefersDark ? 'dark' : 'light');
     } else {
       document.documentElement.setAttribute('data-theme', t);
     }
   }
   function setTheme(t: Theme) {
-    theme = t;
+    theme = t
     try {
       localStorage.setItem(THEME_KEY, t);
     } catch {
@@ -25,10 +25,9 @@
   }
   $effect(() => {
     try {
-      const stored = localStorage.getItem(THEME_KEY) as Theme | null;
+      const stored = localStorage.getItem(THEME_KEY) as Theme | null
       if (stored === 'light' || stored === 'dark' || stored === 'system') {
-        theme = stored;
-      }
+        theme = stored}
     } catch {
       // ignore
     }
@@ -52,8 +51,7 @@
         };
       }
     }
-    return;
-  });
+    return});
 </script>
 <div class="theme-selector" role="group" aria-label="Theme, selector">
   <button
@@ -63,10 +61,10 @@
     onclick={() => setTheme('light')}
     title="Light theme"
   >
-    ☀️ Light
+    â˜€ï¸ Light
   </button>
   <button type="button" class="btn" aria-pressed={theme === 'dark'} onclick={() => setTheme('dark')} title="Dark theme">
-    🌙 Dark
+    ðŸŒ™ Dark
   </button>
   <button
     type="button"
@@ -75,26 +73,24 @@
     onclick={() => setTheme('system')}
     title="Use system preference"
   >
-    🖥️ System
+    ðŸ–¥ï¸ System
   </button>
 </div>
 <style>
   .theme-selector {
-    display: inline-flex;
-    gap: 0.5rem;
-    align-items: center;
-  }
+    display: inline-flex
+    gap: 0.5rem
+    align-items: center}
   .btn {
-    background: transparent;
+    background: transparent
     border: 1px solid var(--border, #cbd5e1);
-    padding: 0.375rem 0.75rem;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-  }
+    padding: 0.375rem 0.75rem
+    border-radius: 0.375rem
+    cursor: pointer
+    font-size: 0.9rem}
   .btn[aria-pressed='true'] {
     background: var(--accent, #111827);
-    color: white;
-    border-color: transparent;
-  }
+    color: white
+    border-color: transparent}
 </style>
+

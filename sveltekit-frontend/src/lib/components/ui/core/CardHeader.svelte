@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
-    class?: string;
-    children?: Snippet;
-  }
+    class?: string
+    children?: Snippet}
   let { class: className = '', children }: Props = $props();
   let classes = $derived(className);
 </script>
@@ -12,3 +11,4 @@
     {@render children()}
   {/if}
 </div>
+

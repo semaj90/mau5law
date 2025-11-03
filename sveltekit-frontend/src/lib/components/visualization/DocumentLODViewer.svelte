@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Document LOD Viewer - N64-Inspired PDF Visualization
   Implements progressive document detail similar to N64 texture streaming:
   - LOD, 0: Full resolution (2048x2048 texture)
@@ -25,27 +25,24 @@ import type { Document } from '$lib/types';
     Eye, Layers, Download, Navigation
   } from 'lucide-svelte';
   interface DocumentPage {
-    pageNumber: number;
-    textContent: string;
+    pageNumber: number
+    textContent: string
     annotations: Annotation[];
    , lodTextures: Map<number GPUTexture>;
-    currentLOD: number;
-  }
+    currentLOD: number}
   interface Annotation {
-    id: string;
+    id: string
     type: 'highlight' | 'note' | 'redaction';
     bounds: { x: number; y: number; width: number; height: number };
-    content: string;
-  }
-  interface DocumentLODViewerProps { documentId: string;
-    documentUrl?: string;
-    initialZoom?: number;
-    enableWebGPU?: boolean;
-    maxLODLevel?: number;
+    content: string}
+  interface DocumentLODViewerProps { documentId: string
+    documentUrl?: string
+    initialZoom?: number
+    enableWebGPU?: boolean
+    maxLODLevel?: number
     cacheStrategy?: 'palace' | 'cartridge';
-    onPageChange?: (pageNumber: number) => void;
-    onLODChange?: (_lodLevel: number) => void;
-  }
+    onPageChange?: (pageNumber: number) => void
+    onLODChange?: (_lodLevel: number) => void}
   let {
     documentId,
     documentUrl,
@@ -95,7 +92,7 @@ import type { Document } from '$lib/types';
   // Initialize WebGPU for document rendering
   $effect(() => {
     (async () => {
-if (!browser || !enableWebGPU) return;
+if (!browser || !enableWebGPU) return
     try {
       await initializeWebGPU();
       await loadDocument();
@@ -129,12 +126,11 @@ if (!browser || !enableWebGPU) return;
     if (!context) throw new Error('WebGPU context creation failed');
     // Configure canvas with N64-style settings
     context.configure({
-      device: gpuDevice;
+      device: gpuDevice
      , format: 'bgra8unorm',
       alphaMode: 'premultiplied',
-      usage: GPUTextureUsage.RENDER_ATTACHMENT;
-    });
-    isWebGPUReady = true;
+      usage: GPUTextureUsage.RENDER_ATTACHMENT});
+    isWebGPUReady = true
     console.log('[DocumentLOD] WebGPU initialized successfully');
   }
   async function initializeCanvas2DFallback(): Promise<void> {
@@ -146,12 +142,12 @@ if (!browser || !enableWebGPU) return;
     }
   }
   async function loadDocument(): Promise<void> {
-    isLoading = true;
+    isLoading = true
     try {
       // Load document metadata
       // removed unused response assignment
       const metadata = await response.json();
-      totalPages = metadata.totalPage;
+      totalPages = metadata.totalPage
       // Load initial pages with appropriate LOD
       await loadPagesInRange(1, Math.min(5, totalPages), currentLOD);
       // Trigger initial render
@@ -159,8 +155,7 @@ if (!browser || !enableWebGPU) return;
     } catch (error) {
       console.error('[DocumentLOD] Document loading failed:', error);
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   async function loadPagesInRange(startPage: number, endPage: number, lodLevel: number): Promise<void> {
     const loadPromises = [];
@@ -172,12 +167,11 @@ if (!browser || !enableWebGPU) return;
     await Promise.all(loadPromises);
   }
   async function loadPageWithLOD(pageNumber: number, lodLevel: number): Promise<void> {
-    const textureSize = lodConfig[lodLevel as keyof typeof lodConfig]?.textureSize || 256;
+    const textureSize = lodConfig[lodLevel as keyof typeof lodConfig]?.textureSize || 256
     try {
       // Load page data from API with LOD specification
       const response = await fetch(
-        `/api/v1/documents/${documentId}/pages/${pageNumber}?lod=${lodLevel}&size=${textureSize}`,
-        {
+        `/api/v1/documents/${documentId}/pages/${pageNumber}?lod=${lodLevel}&size=${textureSize}`, {
           headers: {
             'X-Cache-Strategy': cacheStrategy
           }
@@ -192,8 +186,7 @@ if (!browser || !enableWebGPU) return;
           textContent: pageData.textContent || '',
           annotations: pageData.annotations || [],
           lodTextures: new Map(),
-          currentLOD: lodLevel;
-        }
+          currentLOD: lodLevel}
         documentPages.set(pageNumber, page);
       }
       // Create WebGPU texture for this LOD level
@@ -211,8 +204,7 @@ if (!browser || !enableWebGPU) return;
     const texture = gpuDevice.createTexture({
       size: { width: size, height: size, depthOrArrayLayers: 1 },
       format: 'rgba8unorm',
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT;
-    });
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST | GPUTextureUsage.RENDER_ATTACHMENT});
     // Upload image data to texture
     gpuDevice.queue.writeTexture(
       { texture },
@@ -220,15 +212,13 @@ if (!browser || !enableWebGPU) return;
       { bytesPerRow: size * 4, rowsPerImage: size },
       { width: size, height: size, depthOrArrayLayers: 1 }
     );
-    return textur;
-  }
+    return textur}
   async function renderCurrentPage(): Promise<void> {
     if (!isWebGPUReady || !context || !gpuDevice) {
       await renderCanvas2DFallback();
-      return;
-    }
+      return}
     const page = documentPages.get(currentPage);
-    if (!page) return;
+    if (!page) return
     // Get texture for current LOD level
     let texture = page.lodTextures.get(currentLOD);
     // Load texture if not available at current LOD
@@ -236,7 +226,7 @@ if (!browser || !enableWebGPU) return;
       await loadPageWithLOD(currentPage, currentLOD);
       texture = page.lodTextures.get(currentLOD);
     }
-    if (!texture) return;
+    if (!texture) return
     // Create render pass for page rendering
     const commandEncoder = gpuDevice.createCommandEncoder();
     const textureView = context.getCurrentTexture.createView();
@@ -258,17 +248,16 @@ if (!browser || !enableWebGPU) return;
     switch (currentLOD) {
       case 0: // Ultra high - no effects
         await renderHighQuality(renderPass, texture);
-        break;
+        break
       case 1: // High - slight blur
         await renderWithBlur(renderPass, texture, 0.5);
-        break;
+        break
       case 2: // Medium - more blur + slight pixelation
         await renderWithBlur(renderPass, texture, 1.0);
-        break;
+        break
       case 3: // Low - N64 style pixelation + fog effect
         await renderN64Style(renderPass, texture);
-        break;
-    }
+        break}
   }
   async function renderHighQuality(renderPass: GPURenderPassEncoder, texture: GPUTexture): Promise<void> {
     // Render at full quality with all details
@@ -283,11 +272,10 @@ if (!browser || !enableWebGPU) return;
     // Implementation would include N64-style shader with:
     // - Reduced color palette
     // - Pixelation filter
-    // - Distance fog effect;
-  }
+    // - Distance fog effect}
   async function renderCanvas2DFallback(): Promise<void> {
     const ctx = canvasElement?.getContext('2d');
-    if (!ctx) return;
+    if (!ctx) return
     // Clear canvas with NES-style background
     ctx.fillStyle = '#1a1a2e';
     ctx.fillRect(0, 0, viewportBounds.width, viewportBounds.height);
@@ -311,20 +299,20 @@ if (!browser || !enableWebGPU) return;
     updateLODBasedOnZoom();
   }
   function handleRotate(): void {
-    rotation = (rotation + 90) % 360;
+    rotation = (rotation + 90) % 360
     renderCurrentPage();
   }
   function updateLODBasedOnZoom(): void {
-    const newLOD = recommendedLOD;
+    const newLOD = recommendedLOD
     if (newLOD !== currentLOD) {
-      currentLOD = newLOD;
+      currentLOD = newLOD
       onLODChange?.(currentLOD);
       renderCurrentPage();
     }
   }
   async function changePage(newPage: number): Promise<void> {
-    if (newPage < 1 || newPage > totalPages) return;
-    currentPage = newPag;
+    if (newPage < 1 || newPage > totalPages) return
+    currentPage = newPag
     onPageChange?.(currentPage);
     // Preload adjacent pages
     const preloadStart = Math.max(1, currentPage - 2);
@@ -333,10 +321,10 @@ if (!browser || !enableWebGPU) return;
     await renderCurrentPage();
   }
   function calculateMemoryUsage(): number {
-    let totalMemory = 0;
+    let totalMemory = 0
     documentPages.forEach(page => {
       page.lodTextures.forEach((texture, lod) => {
-        const size = lodConfig[lod as keyof typeof lodConfig]?.textureSize || 256;
+        const size = lodConfig[lod as keyof typeof lodConfig]?.textureSize || 256
         totalMemory += size * size * 4; // RGBA bytes
       });
     });
@@ -345,37 +333,34 @@ if (!browser || !enableWebGPU) return;
   function estimateRenderTime(): number {
     // Estimate render time based on LOD level (N64-style performance)
     const baseTimes = { 0: 16.7, 1: 12.5, 2: 8.3, 3: 4.2 } // ms
-    return baseTimes[currentLOD as keyof typeof baseTimes] || 16.7;
-  }
+    return baseTimes[currentLOD as keyof typeof baseTimes] || 16.7}
   // Mouse interaction handlers
   function handleMouseDown(_event: MouseEvent): void {
-    dragState.isDragging = true;
-    dragState.startX = event.clientX;
-    dragState.startY = event.clientY;
-  }
+    dragState.isDragging = true
+    dragState.startX = event.clientX
+    dragState.startY = event.clientY}
   function handleMouseMove(_event: MouseEvent): void {
-    if (!dragState.isDragging) return;
-    const deltaX = event.clientX - dragState.startX;
-    const deltaY = event.clientY - dragState.startY;
-    dragState.offsetX += deltaX;
-    dragState.offsetY += deltaY;
-    dragState.startX = event.clientX;
-    dragState.startY = event.clientY;
+    if (!dragState.isDragging) return
+    const deltaX = event.clientX - dragState.startX
+    const deltaY = event.clientY - dragState.startY
+    dragState.offsetX += deltaX
+    dragState.offsetY += deltaY
+    dragState.startX = event.clientX
+    dragState.startY = event.clientY
     renderCurrentPage();
   }
   function handleMouseUp(): void {
-    dragState.isDragging = false;
-  }
+    dragState.isDragging = false}
   // Wheel zoom handler
   function handleWheel(_event: WheelEvent): void {
     event.preventDefault();
-    const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+    const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1
     zoomLevel = Math.max(0.1, Math.min(4.0, zoomLevel * zoomFactor));
     updateLODBasedOnZoom();
   }
 </script>
 <div class="document-lod-viewer nes-container">
-  <p class="title">📄 Document Viewer (LOD)</p>
+  <p class="title">ðŸ“„ Document Viewer (LOD)</p>
   <!-- Document, Controls -->
   <div class="document-controls">
     <div class="navigation-controls">
@@ -386,7 +371,7 @@ if (!browser || !enableWebGPU) return;
         variant="ghost"
         size="sm"
       >
-        {#snippet children()}← Prev{/snippet}
+        {#snippet children()}â† Prev{/snippet}
       </LoadingButton>
       <span class="page-info">
         <span class="is-primary">Page {currentPage} / {totalPages}</span>
@@ -398,7 +383,7 @@ if (!browser || !enableWebGPU) return;
         variant="ghost"
         size="sm"
       >
-        {#snippet children()}Next →{/snippet}
+        {#snippet children()}Next â†’{/snippet}
       </LoadingButton>
     </div>
     <div class="view-controls">
@@ -460,7 +445,7 @@ if (!browser || !enableWebGPU) return;
   </div>
   <!-- LOD, Statistics, Panel -->
   <div class="lod-stats">
-    <h4>📊 LOD Statistics</h4>
+    <h4>ðŸ“Š LOD Statistics</h4>
     <div class="stats-grid">
       <div class="stat-item">
         <span class="label">Current LOD:</span>
@@ -494,102 +479,85 @@ if (!browser || !enableWebGPU) return;
 <style>
   .document-lod-viewer {
     background: linear-gradient(135deg, #0f0f23, #1a1a2e);
-    color: #fff;
-    min-height: 600px;
-  }
+    color: #fff
+    min-height: 600px}
   .document-controls {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    display: grid
+    grid-template-columns: auto 1fr auto
+    gap: 1rem
+    align-items: center
+    margin-bottom: 1rem
+    padding: 1rem
    , background: rgba(0, 0, 0, 0.3);
-    border-radius: 4px;
-  }
+    border-radius: 4px}
   .navigation-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+    display: flex
+    align-items: center
+    gap: 0.5rem}
   .view-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    justify-self: center;
-  }
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    justify-self: center}
   .zoom-info {
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.5rem
    , background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    font-size: 0.875rem;
-    min-width: 60px;
-    text-align: center;
-  }
+    border-radius: 4px
+    font-size: 0.875rem
+    min-width: 60px
+    text-align: center}
   .lod-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    justify-self: end;
-  }
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    justify-self: end}
   .lod-badge {
-    font-size: 0.75rem;
-  }
+    font-size: 0.75rem}
   .document-canvas-container {
-    position: relative;
-    height: 500px;
-    background: #2a2a3;
-    border: 2px solid #444;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-  }
+    position: relative
+    height: 500px
+    background: #2a2a3
+    border: 2px solid #444
+    border-radius: 4px
+    overflow: hidden
+    margin-bottom: 1rem}
   .document-canv.document-canvas:active {
-    cursor: grabbing;
-  }
+    cursor: grabbing}
   .loading-overlay {
-    position: absolute;
+    position: absolute
    , top: 0,
-    left: 0;
+    left: 0
    , right: 0,
-    bottom: 0;
+    bottom: 0
    , background: rgba(0, 0, 0, 0.8);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-  }
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    gap: 1rem}
   .lod-stats { background: rgba(0, 0, 0, 0.4);
   }
   .stats-grid {
-    display: grid;
+    display: grid
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    margin-top: 0.5rem;
-  }
+    gap: 1rem
+    margin-top: 0.5rem}
   .stat-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center}
   .label {
-    font-size: 0.875rem;
-    color: #ccc;
-  }
+    font-size: 0.875rem
+    color: #ccc}
   .value {
-    font-weight: bold;
-    color: #4ade80;
-  }
+    font-weight: bold
+    color: #4ade80}
   .value.success {
-    color: #4ade80;
-  }
+    color: #4ade80}
   .value.warning {
-    color: #fbbf24;
-  }
+    color: #fbbf24}
   .page-info {
-    font-size: 0.875rem;
-  }
+    font-size: 0.875rem}
   /* N64-style animations */
   @keyframes indeterminate {
     0% { transform: translateX(-100%);
@@ -599,21 +567,19 @@ if (!browser || !enableWebGPU) return;
     }
   }
   .nes-progress-bar.indeterminate {
-    animation: indeterminate 1.5s linear infinite;
-  }
+    animation: indeterminate 1.5s linear infinite}
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .document-controls {
-      grid-template-columns: 1fr;
-     , gap: 0.5rem;
-    }
+      grid-template-columns: 1fr
+     , gap: 0.5rem}
     .navigation-controls,
     .view-controls,
     .lod-controls {
-      justify-self: center;
-    }
+      justify-self: center}
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
     }
   }
 </style>
+

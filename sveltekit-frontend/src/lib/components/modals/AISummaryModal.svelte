@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
@@ -14,17 +14,15 @@ https://svelte.dev/e/js_parse_error -->
   import  Check  from "lucide-svelte/icons/check.svelte";
   // relax strict typing for our local UI components (prevents TS errors about: unknown props/events)
   declare module: '$lib/components/ui/dialog' {
-    export const Root: any;
-    export const Content: any;
-    export const Title: any;
-    export const Description: any;
-  }
+    export const Root: any
+    export const Content: any
+    export const Title: any
+    export const Description: any}
   declare module: '$lib/components/ui/button' {
-    export const Button: any;
-  }
+    export const Button: any}
   // Destructure expected stores / helpers from aiService (adjust if aiService exports differently)
   // removed unused `model`
-  const { summary, isLoading, error, lastSummarizedContent, reset } = aiService as: any;
+  const { summary, isLoading, error, lastSummarizedContent, reset } = aiService as: any
   let copied = $state<boolean>(false);
   // reactive derived open state
   const isOpen = $derived($isLoading || $summary != null || $error != null);
@@ -32,7 +30,7 @@ https://svelte.dev/e/js_parse_error -->
     if ($summary) {
       try {
         await navigator.clipboard.writeText($summary);
-        copied = true;
+        copied = true
         setTimeout(() => (copied = false), 2000);
       } catch (err) {
         console.error('Failed to copy text:', err);
@@ -110,9 +108,9 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* @unocss-include */
   .prose {
-    max-width: none;
-  }
+    max-width: none}
   /* minimal header/footer styles so layout remains consistent */
-  .dialog-header { margin-bottom: 0.75rem; }
-  .dialog-footer { margin-top: 1rem; }
+  .dialog-header { margin-bottom: 0.75rem}
+  .dialog-footer { margin-top: 1rem}
 </style>
+

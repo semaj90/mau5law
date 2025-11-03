@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   LegalSearchCombobox.svelte
   Sophisticated legal search component with:
   - Vector search integration
@@ -14,21 +14,20 @@ import type { SearchResult } from '$lib/types';
   import { debounce } from 'lodash-es';
   import { cn } from '$lib/utils/cn';
   // Root element reference to dispatch DOM CustomEvents (parent can listen with onselect)
-  let rootEl: HTMLElement | null = null;
-
+  let rootEl: HTMLElement | null = null
   // Types
   interface SearchResult {
-    id: string;
-    title: string;
+    id: string
+    title: string
    , type: 'case' | 'evidence' | 'precedent' | 'statute' | 'criminal' | 'document' | 'recent';
-    content?: string;
-    score?: number;
+    content?: string
+    score?: number
     metadata?: {
-      date?: string;
-      jurisdiction?: string;
-      status?: string;
-      confidentiality?: string;
-      caseId?: string;
+      date?: string
+      jurisdiction?: string
+      status?: string
+      confidentiality?: string
+      caseId?: string
       tags?: string[];
     };
     highlights?: string[];
@@ -47,17 +46,16 @@ import type { SearchResult } from '$lib/types';
     disabled = false,
     className = ""
   }: {
-    placeholder?: string;
-    value?: string;
+    placeholder?: string
+    value?: string
     categories?: Array<'cases' | 'evidence' | 'precedents' | 'statutes' | 'criminals' | 'documents'>;
-    enableVectorSearch?: boolean;
-    aiSuggestions?: boolean;
-    maxResults?: number;
-    similarityThreshold?: number;
-    includeMetadata?: boolean;
-    disabled?: boolean;
-    className?: string;
-  } = $props();
+    enableVectorSearch?: boolean
+    aiSuggestions?: boolean
+    maxResults?: number
+    similarityThreshold?: number
+    includeMetadata?: boolean
+    disabled?: boolean
+    className?: string} = $props();
 
   // State
   let open = $state<boolean>(false);
@@ -109,9 +107,8 @@ import type { SearchResult } from '$lib/types';
   const performSearch = debounce(async (query: string) => {
     if (!query || query.length < 2) {
       searchResults = [];
-      return;
-    }
-    isLoading = true;
+      return}
+    isLoading = true
     try {
       const params = new URLSearchParams({
         q: query,
@@ -148,8 +145,7 @@ import type { SearchResult } from '$lib/types';
       console.error('Search error:', error);'
       searchResults = [];
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }, 300);
 
   // Load AI-powered suggestions
@@ -167,9 +163,9 @@ import type { SearchResult } from '$lib/types';
 
   // Handle input changes
   function handleInputChange(event: Event) {
-    const target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement
     inputValue = target?.value ?? '';
-    value = inputValue;
+    value = inputValue
     if (inputValue && inputValue.length >= 2) {
       performSearch(inputValue);
     } else {
@@ -179,10 +175,10 @@ import type { SearchResult } from '$lib/types';
 
   // Handle result selection
   function handleSelect(result: SearchResult) {
-    selectedResult = result;
-    inputValue = result.title;
-    value = inputValue;
-    open = false;
+    selectedResult = result
+    inputValue = result.title
+    value = inputValue
+    open = false
     // Add to recent searches
     if (!recentSearches.includes(result.title)) {
       recentSearches = [result.title, ...recentSearches.slice(0, 4)];
@@ -208,7 +204,7 @@ import type { SearchResult } from '$lib/types';
   function handleClear() {
     inputValue = "";
     value = "";
-    selectedResult = null;
+    selectedResult = null
     searchResults = [];
   }
 
@@ -437,7 +433,7 @@ import type { SearchResult } from '$lib/types';
       <div class="border-t border-gray-100">
         <p class="text-xs text-gray-500">
           {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
-          {#if enableVectorSearch} • AI-powered search{/if}
+          {#if enableVectorSearch} â€¢ AI-powered search{/if}
         </p>
       {/if}
   </div>
@@ -445,9 +441,8 @@ import type { SearchResult } from '$lib/types';
 
 <style>
   .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-   , overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 2
+    -webkit-box-orient: vertical
+   , overflow: hidden}
 </style>

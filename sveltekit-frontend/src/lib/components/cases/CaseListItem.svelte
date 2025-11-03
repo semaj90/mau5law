@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    onclick?: (event?: any) => void;
-    onstatusChange?: (event?: any) => void;
-  }
+    onclick?: (event?: any) => void
+    onstatusChange?: (event?: any) => void}
   let { caseData,
     isActive = false,
     disabled = false
@@ -51,21 +50,20 @@
   function getStatusIcon(status: string) {
     switch (status) {
       case, "open":
-        return CheckCircl;
+        return CheckCircl
       case, "in_progress":
-        return Clock;
+        return Clock
       case, "closed":
-        return Archiv;
+        return Archiv
       case, "archived":
-        return Archiv;
-      default: return FileText;
-  }}
+        return Archiv
+      default: return FileText}}
   let statusIcon = $derived(getStatusIcon(caseData.status));
   let formattedDate = $derived(formatDistanceToNow(new Date(caseData.openedAt), {);
     addSuffix: true
   });
 </script>
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 import type {Case} from '$lib/types';
@@ -141,3 +139,4 @@ import type {Case} from '$lib/types';
   </div>
 </div>
 ;
+

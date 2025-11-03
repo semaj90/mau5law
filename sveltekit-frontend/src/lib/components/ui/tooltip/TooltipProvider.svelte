@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Props } from '$lib/types/global';
   let { children }: Props = $props();
 </script>
@@ -7,7 +7,7 @@
 </div>
 <style>
   .tooltip-provider {
-    position: relative;
-   , display: inline-block;
-  }
+    position: relative
+   , display: inline-block}
 </style>
+

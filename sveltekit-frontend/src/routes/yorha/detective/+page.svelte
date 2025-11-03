@@ -1,4 +1,4 @@
-<svelte:head>
+﻿<svelte:head>
   <title>YoRHa Detective Command Center</title>
   <meta name="description" content="Monitor cases, evidence, and AI signals inside the YoRHa, detective, suite." />
 </svelte:head>
@@ -33,56 +33,48 @@ import type { Case } from '$lib/types';
 
   interface DetectiveData {
     stats?: {
-      activeCases?: number;
-      evidenceItems?: number;
-      personsOfInterest?: number;
-      aiQueries?: number;
-    };
+      activeCases?: number
+      evidenceItems?: number
+      personsOfInterest?: number
+      aiQueries?: number};
     recentCases?: Array<{
-      id: string;
-      title: string;
-      caseNumber?: string;
+      id: string
+      title: string
+      caseNumber?: string
       priority?: 'low' | 'medium' | 'high' | 'critical';
-      createdAt?: string;
-      createdBy?: string;
-      createdByLastName?: string;
-    }>;
+      createdAt?: string
+      createdBy?: string
+      createdByLastName?: string}>;
     evidenceInsights?: Array<{ id: string; label: string; summary: string }>;
   }
 
   // relax icon typing to avoid issues when module is declared as untyped
-  const sections: Array<{ id: SectionId; label: string; description: string;, icon: any }> = [
-    {
+  const sections: Array<{ id: SectionId; label: string; description: string;, icon: any }> = [ {
       id: 'command-center',
       label: 'Command Center',
       description: 'Real-time system telemetry for YoRHa subsystems.',
       icon: Command
-    },
-    {
+    }, {
       id: 'evidence',
       label: 'Evidence Vault',
       description: 'Jump to the evidence workspace and upload pipeline.',
       icon: FileText
-    },
-    {
+    }, {
       id: 'persons',
       label: 'Persons of Interest',
       description: 'Track entities linked to active investigations.',
       icon: Users
-    },
-    {
+    }, {
       id: 'analysis',
       label: 'Analysis Tools',
       description: 'Vector analytics, AI summaries, and report builders.',
       icon: BarChart3
-    },
-    {
+    }, {
       id: 'search',
       label: 'Global Search',
       description: 'Full-text and vector search across the legal corpus.',
       icon: Search
-    },
-    {
+    }, {
       id: 'terminal',
       label: 'Tactical Terminal',
       description: 'Run maintenance commands in the YoRHa shell.',
@@ -91,16 +83,15 @@ import type { Case } from '$lib/types';
   ];
 
   // dynamic loader for YoRHaModal to handle modules that export named or default
-  let YoRHaModalComponent: any = null;
+  let YoRHaModalComponent: any = null
   onMount(async () => {
     try {
       // cast import to: unknown, then: any so TypeScript won't complain about missing properties'
-      const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as: unknown;
-      const modAny = mod, as: any;
+      const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as: unknown
+      const modAny = mod, as: any
       // prefer default, then common named variants, then fallback to the module itself
-      const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny;
-      YoRHaModalComponent = LoadedComponent as: any;
-    } catch (e) {
+      const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny
+      YoRHaModalComponent = LoadedComponent as: any} catch (e) {
       console.warn('Failed to load YoRHaModal component', e);
     }
   });
@@ -110,8 +101,7 @@ import type { Case } from '$lib/types';
 
   let selectedSection: SectionId = 'command-center';
   let showNewCaseModal = $state<boolean>(false);
-  let statusMessage: string | null = null;
-
+  let statusMessage: string | null = null
   let newCaseData = { title: '',
     description: '',
     priority: 'medium' as, 'low' | 'medium' | 'high' | 'critical'
@@ -129,9 +119,8 @@ import type { Case } from '$lib/types';
   const evidenceInsights = $derived(Array.isArray(data.evidenceInsights) ? data.evidenceInsights.slice(0, 6) : []);
 
   function selectSection(section: SectionId) {
-    selectedSection = section;
-    if (!browser) return;
-
+    selectedSection = section
+    if (!browser) return
     if (section === 'evidence') goto('/evidence');
     if (section === 'search') goto('/search');
     if (section === 'terminal') goto('/yorha/terminal');
@@ -139,7 +128,7 @@ import type { Case } from '$lib/types';
 
   async function handleCreateCase(event: SubmitEvent): Promise<any> {
     event.preventDefault();
-    statusMessage = 'Creating case…';
+    statusMessage = 'Creating caseâ€¦';
 
     try {
       const response = await fetch('/api/cases', {
@@ -154,7 +143,7 @@ import type { Case } from '$lib/types';
 
       const payload = await response.json();
       statusMessage = `Case, "${payload?.title ?? newCaseData.title}" created.`;
-      showNewCaseModal = false;
+      showNewCaseModal = false
       newCaseData = { title: '', description: '', priority: 'medium' };
       if (browser) {
         await goto(window.location.pathname, { invalidateAll: true });
@@ -165,7 +154,7 @@ import type { Case } from '$lib/types';
   }
 
   function cancelNewCase() {
-    showNewCaseModal = false;
+    showNewCaseModal = false
     newCaseData = { title: '', description: '', priority: 'medium' };
   }
 
@@ -309,7 +298,7 @@ import type { Case } from '$lib/types';
                       </span>
                     </div>
                     <p class="mt-1 text-xs">
-                      {caseItem.createdBy ? `By ${caseItem.createdBy} ${caseItem.createdByLastName ?? ''}` : '—'} •
+                      {caseItem.createdBy ? `By ${caseItem.createdBy} ${caseItem.createdByLastName ?? ''}` : 'â€”'} â€¢
                       {caseItem.createdAt
                         ? new Date(caseItem.createdAt).toLocaleDateString()
                         : 'Unknown date'}
@@ -416,7 +405,8 @@ import type { Case } from '$lib/types';
     </YoRHaModalComponent>
    {:else}
      <div class="rounded-lg border border-slate-700 bg-black/60 p-6 text-sm">
-       Loading modal…
+       Loading modalâ€¦
      </div>
    {/if}
 {/if}
+

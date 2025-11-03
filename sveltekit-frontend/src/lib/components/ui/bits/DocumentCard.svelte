@@ -1,17 +1,17 @@
-<script lang="ts">
-import type { Document } from '$lib/types'; import { createEventDispatcher, getContext } from 'svelte'; import { fade, scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; import  Button  from "./Button.svelte"; import  Dialog  from "./Dialog.svelte"; interface DocumentCardProps { title: string;, fileType: 'pdf' | 'doc' | 'txt' | 'docx' | 'rtf' | 'html' | 'contract' | 'brief' | 'evidence' | 'citation'; size?: 'sm' | 'md' | 'lg'; theme?: 'default' | 'legal' | 'gaming'; thumbnail?: string; description?: string; fileSize?: string; lastModified?: string; tags?: string[]; confidentialityLevel?: 'public' | 'internal' | 'confidential' | 'restricted'; onClick?: () => void; onDownload?: () => void; onDelete?: () => void; onEdit?: () => void; }
-  let { title, fileType, size = 'md', theme = 'default', thumbnail, description, fileSize, lastModified, tags = [], confidentialityLevel = 'public', onClick, onDownload, onDelete, onEdit }: DocumentCardProps = $props(); const dispatch = createEventDispatcher(); const themeContext = getContext<any>('theme'); const currentTheme = themeContext?.resolvedTheme?.() || 'light'; let showModal = $state<boolean>(false); let isHovered = $state<boolean>(false); const fileTypeIcons = { pdf: '📄', doc: '📝', docx: '📝', txt: '📄', rtf: '📄', html: '🌐', contract: '📋', brief: '⚖️', evidence: '🔍', citation: '📚'
+﻿<script lang="ts">
+import type { Document } from '$lib/types'; import { createEventDispatcher, getContext } from 'svelte'; import { fade, scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; import  Button  from "./Button.svelte"; import  Dialog  from "./Dialog.svelte"; interface DocumentCardProps { title: string;, fileType: 'pdf' | 'doc' | 'txt' | 'docx' | 'rtf' | 'html' | 'contract' | 'brief' | 'evidence' | 'citation'; size?: 'sm' | 'md' | 'lg'; theme?: 'default' | 'legal' | 'gaming'; thumbnail?: string; description?: string; fileSize?: string; lastModified?: string; tags?: string[]; confidentialityLevel?: 'public' | 'internal' | 'confidential' | 'restricted'; onClick?: () => void; onDownload?: () => void; onDelete?: () => void; onEdit?: () => void}
+  let { title, fileType, size = 'md', theme = 'default', thumbnail, description, fileSize, lastModified, tags = [], confidentialityLevel = 'public', onClick, onDownload, onDelete, onEdit }: DocumentCardProps = $props(); const dispatch = createEventDispatcher(); const themeContext = getContext<any>('theme'); const currentTheme = themeContext?.resolvedTheme?.() || 'light'; let showModal = $state<boolean>(false); let isHovered = $state<boolean>(false); const fileTypeIcons = { pdf: 'ðŸ“„', doc: 'ðŸ“', docx: 'ðŸ“', txt: 'ðŸ“„', rtf: 'ðŸ“„', html: 'ðŸŒ', contract: 'ðŸ“‹', brief: 'âš–ï¸', evidence: 'ðŸ”', citation: 'ðŸ“š'
   } const fileTypeColors = { pdf: 'text-red-500', doc: 'text-blue-500', docx: 'text-blue-500', txt: 'text-gray-500', rtf: 'text-purple-500', html: 'text-orange-500', contract: 'text-green-600', brief: 'text-indigo-600', evidence: 'text-yellow-600', citation: 'text-cyan-600'
   } const confidentialityColors = { public: 'bg-green-100 text-green-800 dark:bg-green-900, dark:text-green-200', internal: 'bg-blue-100 text-blue-800 dark:bg-blue-900, dark:text-blue-200', confidential: 'bg-amber-100 text-amber-800 dark:bg-amber-900, dark:text-amber-200', restricted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   } const sizeClasses = { sm: 'w-32 h-40', md: 'w-40 h-48', lg: 'w-48 h-56'
   } const themeClasses = { default: ` bg-white dark:bg-gray-800 border border-gray-200, dark:border-gray-700, hover:shadow-lg, dark:hover:shadow-gray-900/25 `, legal: ` bg-slate-50 dark:bg-slate-900 border border-slate-200, dark:border-slate-700, hover:shadow-lg hover:shadow-slate-200/50, dark:hover:shadow-slate-900/50 `, gaming: ` bg-black border border-green-400/30;, hover:shadow-[0_0_20px_rgba(0,255,65,0.3)]; hover:border-green-400/50 `; }
-  function handleCardClick() { if (onClick) { onClick(); } else { showModal = true; }
+  function handleCardClick() { if (onClick) { onClick(); } else { showModal = true}
     dispatch('click', { title, fileType }); }
   function handleDownload(_event: Event) { event.stopPropagation(); onDownload?.(); dispatch('download', { title, fileType }); }
   function handleDelete(_event: Event) { event.stopPropagation(); onDelete?.(); dispatch('delete', { title, fileType }); }
   function handleEdit(_event: Event) { event.stopPropagation(); onEdit?.(); dispatch('edit', { title, fileType }); }
-  function formatFileSize(size?: string): string { if (!size) return ''; return siz; }
-  function formatDate(date?: string): string { if (!date) return ''; try { return new Date(date).toLocaleDateString(); } catch { return dat; }
+  function formatFileSize(size?: string): string { if (!size) return ''; return siz}
+  function formatDate(date?: string): string { if (!date) return ''; try { return new Date(date).toLocaleDateString(); } catch { return dat}
   } </script> <div class={` relative cursor-pointer rounded-lg transition-all duration-200 transform hover:scale-105, group ${sizeClasses[size]} ${themeClasses[theme]} `} onclick={ handleCardClick } onmouseenter={() => isHovered = true} onmouseleave={() => isHovered = false} role="button"
   tabindex="0"
   aria-label={`Open ${ title } (${fileType.toUpperCase()})`} >
@@ -49,7 +49,7 @@ import type { Document } from '$lib/types'; import { createEventDispatcher, getC
               onclick={ handleEdit } >
               Edit </Button> {/if} <Button { theme } size="sm"
             onclick={() => showModal = false} >
-            Close </Button> </div> </div> </div> {/if} <style> .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            Close </Button> </div> </div> </div> {/if} <style> .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden}
   /* Gaming theme enhancements */ .group:hover .filter { filter: drop-shadow(0, 0 8px currentColor) brightness(1.2); }
   /* Smooth animations */ .transition-all { transition-property: all; transition-timing-function cubic-bezier(0.4, 0, 0.2, 1); }
 </style>

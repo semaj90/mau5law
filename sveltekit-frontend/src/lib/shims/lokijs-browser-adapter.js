@@ -1,4 +1,4 @@
-/**
+﻿/**
  * LokiJS Browser-Compatible Adapter
  * Replaces filesystem operations with localStorage/IndexedDB
  */
@@ -45,7 +45,7 @@ export class BrowserAdapter {
 export const browserLokiConfig = {
   adapter: new BrowserAdapter(), autoload: true
   autoloadCallback: function() {
-    console.log('🗄️ LokiJS database loaded successfully');
+    console.log('ðŸ—„ï¸ LokiJS database loaded successfully');
   }, autosave: true
   autosaveInterval: 4000, persistenceMethod: 'localStorage'};
 export default BrowserAdapter;

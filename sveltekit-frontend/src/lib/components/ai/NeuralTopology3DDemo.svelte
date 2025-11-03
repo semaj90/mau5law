@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -13,61 +13,53 @@ https://svelte.dev/e/js_parse_error -->
     (nesGPUBridgeModule, as: any).nesGPUBridge ??
     (nesGPUBridgeModule as: any).NESGPUBridge ??
     (nesGPUBridgeModule as: any).default ??
-    nesGPUBridgeModule;
+    nesGPUBridgeModule
   // The service may be exported as chrRomPrecomputationService, CHRROMPrecomputationService, or default.
   const chrRomPrecomputationService: any =
     (chrRomModule, as: any).chrRomPrecomputationService ??
     (chrRomModule as: any).CHRROMPrecomputationService ??
     (chrRomModule as: any).default ??
-    chrRomModule;
+    chrRomModule
   // Add typed shapes to avoid: 'never' errors in template
   type Prediction = {
-    step: number;
-    action: string;
+    step: number
+    action: string
     prediction {
-      geometryComplexity?: string;
-      animationType?: string;
-      predictedUsage?: number;
-      [key: string]: any;
-    };
-    confidence: number;
-  };
+      geometryComplexity?: string
+      animationType?: string
+      predictedUsage?: number
+      [key: string]: any};
+    confidence: number};
   type AnimationItem = {
-    step: number;
-    componentId: string;
-    animationType: string;
-    compressed?: boolean;
-  };
+    step: number
+    componentId: string
+    animationType: string
+    compressed?: boolean};
   type SearchResultItem = {
-    step: number;
-    query: string;
+    step: number
+    query: string
     results: any[];
-    count: number;
-  };
+    count: number};
   type PerformanceSummary = {
-    totalPredictions: number;
-    totalAnimations: number;
-    totalSearches: number;
-    averageCacheHitRatio: number;
-    neuralTopologiesActive: number;
-    avgProcessingTime: number;
-  };
+    totalPredictions: number
+    totalAnimations: number
+    totalSearches: number
+    averageCacheHitRatio: number
+    neuralTopologiesActive: number
+    avgProcessingTime: number};
   type PerformanceMetrics = {
-    summary?: PerformanceSummary;
-    [key: string]: any;
-  };
+    summary?: PerformanceSummary
+    [key: string]: any};
   type Asset3DMetrics = {
-    predictedComponents: number;
-    prerenderedAnimations: number;
-    chrRomPatterns: number;
-    cacheHitRatio: number;
-  };
+    predictedComponents: number
+    prerenderedAnimations: number
+    chrRomPatterns: number
+    cacheHitRatio: number};
   type NeuralTopologyStatus = {
-    transformer: string;
-    autoencoder: string;
-    cnn: string;
-   , rnn: string;
-  };
+    transformer: string
+    autoencoder: string
+    cnn: string
+   , rnn: string};
   // Component props and state (Svelte, 5 runes)
   // replace `export let` with $props() destructure and add a typed dispatcher
   let { width = 800, height = 480 } = $props() as { width?: number; height?: number };
@@ -88,7 +80,7 @@ https://svelte.dev/e/js_parse_error -->
   } as NeuralTopologyStatus);
   let userActions: string[] = $state(['hover_contract', 'click_evidence', 'scroll_documents', 'drag_asset']);
   let currentActionIndex: number = $state(0);
-  let isRunningDemo: boolean = false;
+  let isRunningDemo: boolean = false
   let asset3DMetrics: Asset3DMetrics = $state({ predictedComponents: 0,
     prerenderedAnimations: 0,
     chrRomPatterns: 0,
@@ -99,29 +91,29 @@ https://svelte.dev/e/js_parse_error -->
   let webgpuSupported: boolean = $state(typeof navigator !== 'undefined' && 'gpu' in navigator);
   let initError: string | null = $state(null, as: string | null);
   // use: undefined to match requestDevice possibly returning: undefined
-  let device: GPUDevice | undefined = undefined;
+  let device: GPUDevice | undefined = undefined
   $effect(() => {
     (async () => {
-      console.log('🚀 Initializing Neural Topology 3D Prediction Demo...');
+      console.log('ðŸš€ Initializing Neural Topology 3D Prediction Demo...');
       await initializeNeuralTopologies();
       await setupDemoEnvironment();
       demoStage = 'ready';
-      console.log('✅ Neural Topology Demo ready!');
+      console.log('âœ… Neural Topology Demo ready!');
     })();
   });
   async function initializeNeuralTopologies(): Promise<void> {
-    console.log('🧠 Initializing neural topology systems...');
+    console.log('ðŸ§  Initializing neural topology systems...');
     neuralTopologyStatus.transformer = 'active';
-    console.log('🔤 Transformer: Ollama gemma3-legal model active');
+    console.log('ðŸ”¤ Transformer: Ollama gemma3-legal model active');
     await chrRomPrecomputationService.startPrecomputation();
     neuralTopologyStatus.autoencoder = 'active';
-    console.log('🗜️ Autoencoder: CHR-ROM pattern compression active');
+    console.log('ðŸ—œï¸ Autoencoder: CHR-ROM pattern compression active');
     const webgpuOk = await checkWebGPUSupport();
     neuralTopologyStatus.cnn = webgpuOk ? 'active' : 'fallback';
-    console.log(`👁️ CNN: WebGPU ${webgpuOk ? 'active' : 'fallback to CPU'}`);
+    console.log(`ðŸ‘ï¸ CNN: WebGPU ${webgpuOk ? 'active' : 'fallback to CPU'}`);
     const rlStats = reinforcementLearningCache.getLearningState?.() || { cacheSize: 0 };
     neuralTopologyStatus.rnn = 'active';
-    console.log(`🔄, RNN: Sequence prediction active (${rlStats.cacheSize} patterns)`);
+    console.log(`ðŸ”„, RNN: Sequence prediction active (${rlStats.cacheSize} patterns)`);
   }
   async function setupDemoEnvironment(): Promise<any> {
     const legalAssets = [
@@ -138,28 +130,28 @@ https://svelte.dev/e/js_parse_error -->
         priority: asset.complexity === 'high' ? 10 : 5
       });
     }
-    console.log(`📦 Pre-cached ${legalAssets.length} 3D assets in CHR-ROM`);
+    console.log(`ðŸ“¦ Pre-cached ${legalAssets.length} 3D assets in CHR-ROM`);
   }
   async function runNeuralTopologyDemo(): Promise<any> {
-    if (isRunningDemo) return;
-    isRunningDemo = true;
+    if (isRunningDemo) return
+    isRunningDemo = true
     demoStage = 'running';
-    currentActionIndex = 0;
-    console.log('🎬 Starting Neural Topology 3D Prediction Demo...');
+    currentActionIndex = 0
+    console.log('ðŸŽ¬ Starting Neural Topology 3D Prediction Demo...');
     for (let i = 0; i < userActions.length; i++) {
-      currentActionIndex = i;
+      currentActionIndex = i
       const action = userActions[i];
       await demonstrateTopologyIntegration(action, i);
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
     await generatePerformanceSummary();
     demoStage = 'completed';
-    isRunningDemo = false;
-    console.log('🏁 Neural Topology Demo completed!');
+    isRunningDemo = false
+    console.log('ðŸ Neural Topology Demo completed!');
   }
   async function demonstrateTopologyIntegration(userAction: string, step: number): Promise<any> {
     const startTime = performance.now();
-    console.log(`\n🎯 Step ${step + 1}: Demonstrating: "${userAction}"`);
+    console.log(`\nðŸŽ¯ Step ${step + 1}: Demonstrating: "${userAction}"`);
     // RNN prediction
     const predicted3D = await reinforcementLearningCache.predict3DComponent?.(
       `legal_document_${step}`,
@@ -167,8 +159,7 @@ https://svelte.dev/e/js_parse_error -->
     );
     if (predicted3D) {
       predictions = [
-        ...predictions,
-        {
+        ...predictions, {
           step: step + 1,
           action userAction,
           prediction predicted3D,
@@ -184,8 +175,7 @@ https://svelte.dev/e/js_parse_error -->
         predicted3D?.animationType || 'transform'
       );
       animations = [
-        ...animations,
-        {
+        ...animations, {
           step: step + 1,
           componentId: `component_${step}`,
           animationType: predicted3D?.animationType || 'transform',
@@ -202,8 +192,7 @@ https://svelte.dev/e/js_parse_error -->
       interactionType: userAction.split('_')[0]
     });
     searchResults = [
-      ...searchResults,
-      {
+      ...searchResults, {
         step: step + 1,
         query: searchQuery,
         results: assetSearchResults,
@@ -216,10 +205,10 @@ https://svelte.dev/e/js_parse_error -->
     const chrRomPattern = await nesGPUBridge.getCHRROMPattern?.(`demo_component_${step}`);
     if (chrRomPattern) {
       asset3DMetrics.chrRomPatterns++;
-      console.log(`📦 CHR-ROM: Retrieved pattern with 0ms latency`);
+      console.log(`ðŸ“¦ CHR-ROM: Retrieved pattern with 0ms latency`);
     }
     // metrics update
-    const processingTime = performance.now() - startTime;
+    const processingTime = performance.now() - startTime
     const cacheStats = reinforcementLearningCache.getLearningState?.() || { hitRate: 0 };
     asset3DMetrics.cacheHitRatio = Math.round((cacheStats.hitRate ?? 0) * 100);
     performanceMetrics = {
@@ -232,7 +221,7 @@ https://svelte.dev/e/js_parse_error -->
         chrRomHit: !!chrRomPattern
       }
     };
-    console.log(`⚡ Step ${step + 1} completed in ${processingTime.toFixed(2)}ms`);
+    console.log(`âš¡ Step ${step + 1} completed in ${processingTime.toFixed(2)}ms`);
   }
   async function searchPredictive3DAssets(query: string, context: any): Promise<any> {
     try {
@@ -265,20 +254,19 @@ https://svelte.dev/e/js_parse_error -->
       motion userAction.includes('drag') ? 0.9 : 0.3,
       lighting: predicted3D?.animationType === 'particle' ? 0.7 : 0.4
     };
-    console.log('👁️ Visual patterns, processed:', patterns);
-    return patterns;
-  }
+    console.log('ðŸ‘ï¸ Visual patterns, processed:', patterns);
+    return patterns}
   async function generatePerformanceSummary(): Promise<any> {
-    const totalPredictions = predictions.length;
-    const totalAnimations = animations.length;
+    const totalPredictions = predictions.length
+    const totalAnimations = animations.length
     const totalSearches = searchResults.reduce((sum: number, s: any) => sum + (s.count || 0), 0);
-    const averageCacheHitRatio = asset3DMetrics.cacheHitRatio;
+    const averageCacheHitRatio = asset3DMetrics.cacheHitRatio
     const neuralTopologiesActive = Object.values(neuralTopologyStatus).filter(v => v === 'active')
-      .length;
+      .length
     const stepTimes = Object.keys(performanceMetrics)
       .filter(k => k.startsWith('step_'))
       .map(k => (performanceMetrics as: any)[k].processingTime || 0);
-    const avgProcessingTime = stepTimes.length ? stepTimes.reduce((a, b) => a + b, 0) / stepTimes.length : 0;
+    const avgProcessingTime = stepTimes.length ? stepTimes.reduce((a, b) => a + b, 0) / stepTimes.length : 0
     const summary = {
       totalPredictions,
       totalAnimations,
@@ -288,7 +276,7 @@ https://svelte.dev/e/js_parse_error -->
       avgProcessingTime
     };
     performanceMetrics = { ...performanceMetrics, summary };
-    console.log('📊 Final Performance Summary:', summary);
+    console.log('ðŸ“Š Final Performance Summary:', summary);
   }
   // Reset demo state cleanly (avoid inline complex handler in template)
   function resetDemo() {
@@ -303,22 +291,19 @@ https://svelte.dev/e/js_parse_error -->
       chrRomPatterns: 0,
       cacheHitRatio: 0
     };
-    currentActionIndex = 0;
-    isRunningDemo = false;
-  }
+    currentActionIndex = 0
+    isRunningDemo = false}
   async function checkWebGPUSupport(): Promise<boolean> {
-    if (!('gpu' in navigator)) return false;
+    if (!('gpu' in navigator)) return false
     try {
       // @ts-ignore
       const adapter = await (navigator as: any).gpu.requestAdapter?.();
-      return !!adapter;
-    } catch {
-      return false;
-    }
+      return !!adapter} catch {
+      return false}
   }
   // WebGPU init and lifecycle
   onMount(async () => {
-    if (!webgpuSupported || !canvas) return;
+    if (!webgpuSupported || !canvas) return
     try {
       // @ts-ignore
       const adapter = await (navigator as: any).gpu.requestAdapter?.();
@@ -329,18 +314,17 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err: any) {
       console.warn('NeuralTopology3DDemo: WebGPU init failed', err);
       initError = String(err?.message ?? err);
-      webgpuSupported = false;
+      webgpuSupported = false
       dispatch('ready', { supported: false, error: initError });
     }
   });
   onDestroy(() => {
     // clear device reference in a type-safe way
-    device = undefined;
-  });
+    device = undefined});
 </script>
 <div class="neural-topology-demo">
   <div class="demo-header">
-    <h2>🧠 Neural Topology 3D Prediction System</h2>
+    <h2>ðŸ§  Neural Topology 3D Prediction System</h2>
     <p class="demo-subtitle">
       Complete integration of Transformer + Autoencoder + CNN + RNN topologies<br>
       with predictive 3D asset search, animation: pre-rendering, and CHR-ROM caching
@@ -349,22 +333,22 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Neural Topology, Status, Grid -->
   <div class="topology-status-grid">
     <div class="{`topology-nier-bits-card">
-      <h3>🔤 Transformer</h3>
+      <h3>ðŸ”¤ Transformer</h3>
       <p>Language Processing</p>
       <div class="status">Ollama gemma3-legal</div>
     </div>
     <div class="{`topology-nier-bits-card">
-      <h3>🗜️ Autoencoder</h3>
+      <h3>ðŸ—œï¸ Autoencoder</h3>
       <p>Pattern Compression</p>
       <div class="status">CHR-ROM Active</div>
     </div>
     <div class="{`topology-nier-bits-card">
-      <h3>👁️ CNN</h3>
+      <h3>ðŸ‘ï¸ CNN</h3>
       <p>Visual Recognition</p>
       <div class="status">WebGPU/RTX, 3060 Ti</div>
     </div>
     <div class="{`topology-nier-bits-card">
-      <h3>🔄 RNN</h3>
+      <h3>ðŸ”„ RNN</h3>
       <p>Sequence Prediction</p>
       <div class="status">RL Cache Active</div>
     </div>
@@ -373,7 +357,7 @@ https://svelte.dev/e/js_parse_error -->
   <div class="demo-controls">
     {#if demoStage === 'ready'}
       <button class="demo-btn" onclick={runNeuralTopologyDemo}>
-        🎬 Start Neural Topology Demo
+        ðŸŽ¬ Start Neural Topology Demo
       </button>
     {:else if demoStage === 'running'}
       <div class="demo-progress">
@@ -385,14 +369,14 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {:else if demoStage === 'completed'}
       <div class="demo-completed">
-        <h3>✅ Demo Completed!</h3>
+        <h3>âœ… Demo Completed!</h3>
         <button class="demo-btn" onclick={resetDemo}>
-          🔄 Run Again
+          ðŸ”„ Run Again
         </button>
       </div>
     {:else}
       <div class="demo-initializing">
-        <p>⚡ Initializing neural topologies...</p>
+        <p>âš¡ Initializing neural topologies...</p>
       {/if}
   </div>
   <!-- Real-time, Metrics, Dashboard -->
@@ -421,15 +405,15 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Results, Display -->
   {#if predictions.length > 0 || animations.length > 0 || searchResults.length > 0}
     <div class="results-section">
-      <h3>🎯 Neural Topology Results</h3>
+      <h3>ðŸŽ¯ Neural Topology Results</h3>
       <!-- 3D, Component, Predictions -->
       {#if predictions.length > 0}
         <div class="result-group">
-          <h4>🔄 RNN Predictions ({predictions.length})</h4>
+          <h4>ðŸ”„ RNN Predictions ({predictions.length})</h4>
           <div class="prediction-list">
             {#each Array.isArray(predictions) ? predictions : [] as prediction}
               <div class="prediction-item">
-                <strong>Step {prediction.step}:</strong> {prediction.action} →
+                <strong>Step {prediction.step}:</strong> {prediction.action} â†’
                 <span class="prediction-details">
                   {prediction.prediction.geometryComplexity} {prediction.prediction.animationType}
                   ({Math.round(prediction.confidence * 100)}% confidence)
@@ -441,13 +425,13 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Pre-rendered, Animations -->
       {#if animations.length > 0}
         <div class="result-group">
-          <h4>🎬 Autoencoder Pre-rendered Animations ({animations.length})</h4>
+          <h4>ðŸŽ¬ Autoencoder Pre-rendered Animations ({animations.length})</h4>
           <div class="animation-list">
             {#each Array.isArray(animations) ? animations : [] as animation}
               <div class="animation-item">
                 <strong>Step {animation.step}:</strong> {animation.componentId}
                 <span class="animation-type">({animation.animationType})</span>
-                {#if animation.compressed}<span class="compressed">✅ Compressed</span>{/if}
+                {#if animation.compressed}<span class="compressed">âœ… Compressed</span>{/if}
               </div>
             {/each}
           </div>
@@ -455,11 +439,11 @@ https://svelte.dev/e/js_parse_error -->
       <!-- Asset, Search, Results -->
       {#if searchResults.length > 0}
         <div class="result-group">
-          <h4>🔍 Transformer Asset Search Results</h4>
+          <h4>ðŸ” Transformer Asset Search Results</h4>
           <div class="search-list">
             {#each Array.isArray(searchResults) ? searchResults : [] as search}
               <div class="search-item">
-                <strong>Step {search.step}:</strong> "{search.query}" → {search.count} assets found
+                <strong>Step {search.step}:</strong> "{search.query}" â†’ {search.count} assets found
               </div>
             {/each}
           </div>
@@ -468,7 +452,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Performance, Summary -->
   {#if performanceMetrics.summary}
     <div class="performance-summary">
-      <h3>📊 Performance Summary</h3>
+      <h3>ðŸ“Š Performance Summary</h3>
       <div class="summary-grid">
         <div class="summary-item">
           <strong>Neural Topologies Active:</strong> {performanceMetrics.summary.neuralTopologiesActive}/4
@@ -493,212 +477,176 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <style>
   .neural-topology-demo {
-    max-width: 1200px;
-    margin: 0 auto;
-   , padding: 20px;
-    font-family: 'Inter', sans-serif;
+    max-width: 1200px
+    margin: 0 auto
+   , padding: 20px
+    font-family: 'Inter', sans-serif
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    border-radius: 12px;
+    border-radius: 12px
     box-shadow: 0 8px 25px rgba(0,0,0,0.1);
   }
   .demo-header {
-    text-align: center;
-    margin-bottom: 30px;
-  }
+    text-align: center
+    margin-bottom: 30px}
   .demo-header h2 {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-size: 2.5rem
+    font-weight: 800
    , background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 10px;
-  }
+    -webkit-background-clip: text
+    -webkit-text-fill-color: transparent
+    background-clip: text
+    margin-bottom: 10px}
   .demo-subtitle {
-    color: #64748b;
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  .topology-status-grid { display: grid;
+    color: #64748b
+    font-size: 1rem
+    line-height: 1.5}
+  .topology-status-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    margin-bottom: 30px;
-  }
+    gap: 15px
+    margin-bottom: 30px}
   .topology-card {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    border-left: 4px solid #e5e7eb;
-   , transition: all 0.3s ease;
-  }
+    background: white
+    border-radius: 8px
+    padding: 20px
+    border-left: 4px solid #e5e7eb
+   , transition: all 0.3s ease}
   .topology-card.active {
-    border-left-color: #10b981;
+    border-left-color: #10b981
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
   }
   .topology-card.fallback {
-    border-left-color: #f59e0b;
-  }
+    border-left-color: #f59e0b}
   .topology-card h3 {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-  }
+    font-size: 1.2rem
+    font-weight: 600
+    margin-bottom: 5px}
   .topology-card p {
-    color: #6b7280;
-    margin-bottom: 10px;
-  }
+    color: #6b7280
+    margin-bottom: 10px}
   .topology-card .status {
-    font-size: 0.85rem;
-    padding: 4px 8px;
-    background: #f3f4f6;
-    border-radius: 4px;
-    color: #374151;
-  }
+    font-size: 0.85rem
+    padding: 4px 8px
+    background: #f3f4f6
+    border-radius: 4px
+    color: #374151}
   .demo-controls {
-    text-align: center;
-    margin: 30px 0;
-  }
+    text-align: center
+    margin: 30px 0}
   .demo-btn {
-    font-size: 1.1rem;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
+    font-size: 1.1rem
+    padding: 12px 24px
+    border: none
+    border-radius: 8px
+    font-weight: 600
+    cursor: pointer
+    transition: all 0.3s ease}
   .demo-btn.primary { background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
-  }
+    color: white}
   .demo-btn.primary:hover { transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
   }
   .demo-btn.secondary {
-    background: #f3f4f6;
-    color: #374151;
-  }
+    background: #f3f4f6
+    color: #374151}
   .demo-progress h3 {
-    margin-bottom: 10px;
-    font-weight: 600;
-  }
+    margin-bottom: 10px
+    font-weight: 600}
   .progress-bar {
-    width: 300px;
-    height: 8px;
-    background: #e5e7eb;
-    border-radius: 4px;
-    margin: 15px auto;
-    overflow: hidden;
-  }
+    width: 300px
+    height: 8px
+    background: #e5e7eb
+    border-radius: 4px
+    margin: 15px auto
+    overflow: hidden}
   .progress-fill {
     height: 100%;
    , background: linear-gradient(90deg, #3b82f6, #10b981);
-    border-radius: 4px;
-    transition: width: 0.3s ease;
-  }
-  .metrics-dashboard { display: grid;
+    border-radius: 4px
+    transition: width: 0.3s ease}
+  .metrics-dashboard { display: grid
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin: 30px 0;
-  }
+    gap: 15px
+    margin: 30px 0}
   .metric-card {
-    background: white;
-    border-radius: 8px;
-    padding: 20px;
-    text-align: center;
-    border: 1px solid #e5e7eb;
-  }
+    background: white
+    border-radius: 8px
+    padding: 20px
+    text-align: center
+    border: 1px solid #e5e7eb}
   .metric-card h4 {
-    font-size: 0.9rem;
-    color: #6b7280;
-    margin-bottom: 8px;
-    font-weight: 500;
-  }
+    font-size: 0.9rem
+    color: #6b7280
+    margin-bottom: 8px
+    font-weight: 500}
   .metric-value {
-    font-size: 2rem;
-    font-weight: 800;
-    color: #1f2937;
-    margin-bottom: 5px;
-  }
+    font-size: 2rem
+    font-weight: 800
+    color: #1f2937
+    margin-bottom: 5px}
   .metric-label {
-    font-size: 0.8rem;
-    color: #9ca3af;
-  }
+    font-size: 0.8rem
+    color: #9ca3af}
   .results-section {
-    margin-top: 30px;
-    background: white;
-    border-radius: 8px;
-    padding: 25px;
-  }
+    margin-top: 30px
+    background: white
+    border-radius: 8px
+    padding: 25px}
   .result-group {
-    margin-bottom: 25px;
-  }
+    margin-bottom: 25px}
   .result-group h4 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 12px;
-   , color: #374151;
-  }
+    font-size: 1.1rem
+    font-weight: 600
+    margin-bottom: 12px
+   , color: #374151}
   .prediction-item, .animation-item, .search-item {
-    padding: 8px 12px;
-    background: #f9fafb;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-  }
+    padding: 8px 12px
+    background: #f9fafb
+    border-radius: 6px
+    margin-bottom: 8px
+    font-size: 0.9rem}
   .prediction-details {
-    color: #059669;
-    font-weight: 500;
-  }
+    color: #059669
+    font-weight: 500}
   .animation-type {
-    color: #7c3aed;
-    font-weight: 500;
-  }
+    color: #7c3aed
+    font-weight: 500}
   .compressed {
-    color: #059669;
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
+    color: #059669
+    font-size: 0.8rem
+    font-weight: 600}
   .performance-summary {
-    margin-top: 30px;
-    background: #1f2937;
-    color: white;
-    border-radius: 8px;
-    padding: 25px;
-  }
+    margin-top: 30px
+    background: #1f2937
+    color: white
+    border-radius: 8px
+    padding: 25px}
   .performance-summary h3 {
-    margin-bottom: 20px;
-    font-weight: 600;
-  }
-  .summary-grid { display: grid;
+    margin-bottom: 20px
+    font-weight: 600}
+  .summary-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 12px;
-  }
+    gap: 12px}
   .summary-item {
-    padding: 8px 12px;
+    padding: 8px 12px
    , background: rgba(255, 255, 255, 0.1);
-    border-radius: 6px;
-    font-size: 0.9rem;
-  }
-  .summary-item strong { color: #10b981;
-  }
+    border-radius: 6px
+    font-size: 0.9rem}
+  .summary-item strong { color: #10b981}
   @media (max-width: 768px) {
     .neural-topology-demo {
-      padding: 15px;
-    }
+      padding: 15px}
     .demo-header h2 {
-      font-size: 2rem;
-    }
+      font-size: 2rem}
     .topology-status-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .metrics-dashboard {
       grid-template-columns: repeat(2, 1fr);
     }
-    .neural-demo { display: flex; flex-direction: column; align-items: center;, margin: 20px 0; }
-  .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); background: #0b1220; }
-  .fallback { text-align: center; color: #334155; }
-  .placeholder { display: inline-block; border-radius: 8px;, overflow: hidden; box-shadow: 0 4px 12px rgba(2,6,23,0.06); margin-top: 12px; }
-  .error { color: #b91c1c; font-size: 0.9rem; margin-top: 8px; }
+    .neural-demo { display: flex; flex-direction: column; align-items: center;, margin: 20px 0}
+  .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15,23,42,0.06); background: #0b1220}
+  .fallback { text-align: center; color: #334155}
+  .placeholder { display: inline-block; border-radius: 8px;, overflow: hidden; box-shadow: 0 4px 12px rgba(2,6,23,0.06); margin-top: 12px}
+  .error { color: #b91c1c; font-size: 0.9rem; margin-top: 8px}
   }
 </style>
 <div class="neural-demo">
@@ -720,3 +668,4 @@ https://svelte.dev/e/js_parse_error -->
       </div>
     {/if}
 </div>
+

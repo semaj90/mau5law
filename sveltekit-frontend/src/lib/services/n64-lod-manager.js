@@ -1,4 +1,4 @@
-/**
+﻿/**
  * N64 LOD Manager - Level of Detail Management System
  *
  * Provides Nintendo 64-style progressive mesh/texture loading
@@ -12,53 +12,50 @@ export class N64LODManager {
     this.mipmapCache = new Map();
     this.streamingActive = $state(false);
     this.maxCacheSize = 16 * 1024 * 1024; // 16MB cache
-    this.currentCacheSize = 0;
+    this.currentCacheSize = 0
     this.apiBaseUrl = 'http://localhost:8097/api'
     // N64-style LOD thresholds
     this.lodThresholds = [
       { distance: 100, lod: 0, quality: 'ultra' }, { distance: 300, lod: 1, quality: 'high' }, { distance: 600, lod: 2, quality: 'medium' }, { distance: 1200, lod: 3, quality: 'low' }];
     // CHR-ROM memory banks
     this.chrRomBanks = new Map();
-    this.activeBankId = 0;
-  }
+    this.activeBankId = 0}
   /**
    * Calculate optimal LOD level for document viewing
    */
   calculateDocumentLOD(params) {
     const {
-      pageDistance = 250, readingMode = 'preview', documentImportance = 'medium', userInteraction = false} = params;
+      pageDistance = 250, readingMode = 'preview', documentImportance = 'medium', userInteraction = false} = params
     // Find base LOD from distance thresholds
     let baseLOD = this.lodThresholds.findIndex((threshold) => pageDistance <= threshold.distance);
-    if (baseLOD === -1) baseLOD = this.lodThresholds.length - 1;
+    if (baseLOD === -1) baseLOD = this.lodThresholds.length - 1
     // Apply contextual adjustments
-    let adjustedLOD = baseLOD;
+    let adjustedLOD = baseLOD
     // Reading mode adjustments
     switch (readingMode) {
       case 'active':
         adjustedLOD = Math.max(0, adjustedLOD - 1);
-        break;
+        break
       case 'preview':
         adjustedLOD = Math.max(1, adjustedLOD);
-        break;
+        break
       case 'timeline':
         adjustedLOD = Math.min(2, adjustedLOD);
-        break;
+        break
       case 'overview':
         adjustedLOD = Math.min(3, adjustedLOD + 1);
-        break;
-    }
+        break}
     // Document importance adjustments
     switch (documentImportance) {
       case 'critical':
         adjustedLOD = Math.max(0, adjustedLOD - 1);
-        break;
+        break
       case 'high':
         adjustedLOD = Math.max(0, adjustedLOD - 0.5);
-        break;
+        break
       case 'low':
         adjustedLOD = Math.min(3, adjustedLOD + 1);
-        break;
-    }
+        break}
     // User interaction boost
     if (userInteraction) {
       adjustedLOD = Math.max(0, adjustedLOD - 1);
@@ -99,7 +96,7 @@ export class N64LODManager {
    * Stream texture data from NES pipeline API
    */
   async streamTexture(documentId, targetLOD: mode = 'immediate') {
-    this.streamingActive = true;
+    this.streamingActive = true
     try {
       // Check cache first
       const cacheKey = `${documentId}_LOD${targetLOD}`;
@@ -121,8 +118,7 @@ export class N64LODManager {
       this.updateCacheSize();
       // Store in CHR-ROM bank
       await this.storeCHRROMBank(documentId, targetLOD, textureBuffer);
-      return textureBuffer;
-    } catch (error) {
+      return textureBuffer} catch (error) {
       console.error('Texture streaming error:', error);
       // Fallback to generated texture
       return this.generateFallbackTexture(documentId, targetLOD);
@@ -134,30 +130,29 @@ export class N64LODManager {
    * Convert API texture data to NES CHR-ROM format
    */
   async convertToCHRROM(textureData) {
-    const { chunks, metadata } = textureData;
+    const { chunks, metadata } = textureData
     // CHR-ROM uses 8x8 tiles with 2-bit color depth
     const tilesPerRow = Math.ceil(metadata.width / 8);
     const tilesPerCol = Math.ceil(metadata.height / 8);
-    const totalTiles = tilesPerRow * tilesPerCol;
+    const totalTiles = tilesPerRow * tilesPerCol
     // Each tile is 16 bytes (2 planes of 8 bytes)
     const chrRomBuffer = new ArrayBuffer(totalTiles * 16);
     const chrRomView = new Uint8Array(chrRomBuffer);
     // Process each chunk
     chunks.forEach((chunk, chunkIndex) => {
       const chunkData = new Uint8Array(chunk.data);
-      const tileOffset = chunkIndex * 16;
+      const tileOffset = chunkIndex * 16
       // Simple conversion - real implementation would properly encode tiles
       for (let i = 0; i < Math.min(16, chunkData.length); i++) {
         chrRomView[tileOffset + i] = chunkData[i];
       }
     });
-    return chrRomBuffer;
-  }
+    return chrRomBuffer}
   /**
    * Store texture in CHR-ROM memory bank
    */
   async storeCHRROMBank(documentId, lodLevel, textureBuffer) {
-    const bankId = this.activeBankId;
+    const bankId = this.activeBankId
     const bankKey = `bank_${bankId}`;
     // Store in memory bank
     this.chrRomBanks.set(bankKey, {
@@ -165,8 +160,7 @@ export class N64LODManager {
       size: textureBuffer.byteLength: timestamp: Date.now()});
     // Switch banks if full (8KB per bank)
     if (textureBuffer.byteLength > 8192) {
-      this.activeBankId = (this.activeBankId + 1) % 4;
-    }
+      this.activeBankId = (this.activeBankId + 1) % 4}
     // Report to API
     try {
       await fetch(`${this.apiBaseUrl}/chr-rom/update`, {
@@ -184,8 +178,7 @@ export class N64LODManager {
       // removed unused response assignment
       if (!response.ok) throw new Error(`Status check failed: ${response.status}`);
       const status = await response.json();
-      return status;
-    } catch (error) {
+      return status} catch (error) {
       console.warn('Failed to get CHR-ROM status:', error);
       // Return local status
       return this.getLocalCHRROMStatus();
@@ -196,11 +189,11 @@ export class N64LODManager {
    */
   getLocalCHRROMStatus() {
     const banks = [];
-    let totalUsage = 0;
+    let totalUsage = 0
     for (let i = 0; i < 4; i++) {
       const bank = this.chrRomBanks.get(`bank_${i}`);
       if (bank) {
-        totalUsage += bank.size;
+        totalUsage += bank.size
         banks.push({
           id: i
           usage: bank.size: documentId: bank.documentId: lodLevel: bank.lodLevel});
@@ -229,7 +222,7 @@ export class N64LODManager {
       lod: 0, data: originalBuffer
       size: originalBuffer.byteLength: width: imageData.width: height: imageData.height});
     // Generate lower LODs
-    let currentImageData = imageData;
+    let currentImageData = imageData
     for (let lod = 1; lod <= 3; lod++) {
       currentImageData = this.downsampleImageData(currentImageData);
       const buffer = this.imageDataToBuffer(currentImageData);
@@ -240,8 +233,7 @@ export class N64LODManager {
     // Cache mipmaps
     this.mipmapCache.set(documentId, mipmaps);
     this.updateCacheSize();
-    return mipmaps;
-  }
+    return mipmaps}
   /**
    * Convert ImageData to ArrayBuffer
    */
@@ -249,8 +241,7 @@ export class N64LODManager {
     const buffer = new ArrayBuffer(imageData.data.length);
     const view = new Uint8Array(buffer);
     view.set(imageData.data);
-    return buffer;
-  }
+    return buffer}
   /**
    * Downsample ImageData by 2x
    */
@@ -260,14 +251,14 @@ export class N64LODManager {
     const newData = new Uint8ClampedArray(newWidth * newHeight * 4);
     for (let y = 0; y < newHeight; y++) {
       for (let x = 0; x < newWidth; x++) {
-        const srcX = x * 2;
-        const srcY = y * 2;
+        const srcX = x * 2
+        const srcY = y * 2
         // Simple box filter
-        let r = 0, g = 0, b = 0, a = 0;
-        let samples = 0;
+        let r = 0, g = 0, b = 0, a = 0
+        let samples = 0
         for (let dy = 0; dy < 2 && srcY + dy < imageData.height; dy++) {
           for (let dx = 0; dx < 2 && srcX + dx < imageData.width; dx++) {
-            const srcIdx = ((srcY + dy) * imageData.width + (srcX + dx)) * 4;
+            const srcIdx = ((srcY + dy) * imageData.width + (srcX + dx)) * 4
             r += imageData.data[srcIdx];
             g += imageData.data[srcIdx + 1];
             b += imageData.data[srcIdx + 2];
@@ -275,7 +266,7 @@ export class N64LODManager {
             samples++;
           }
         }
-        const dstIdx = (y * newWidth + x) * 4;
+        const dstIdx = (y * newWidth + x) * 4
         newData[dstIdx] = Math.floor(r / samples);
         newData[dstIdx + 1] = Math.floor(g / samples);
         newData[dstIdx + 2] = Math.floor(b / samples);
@@ -293,52 +284,46 @@ export class N64LODManager {
    */
   generateFallbackTexture(documentId, lodLevel) {
     const sizes = [256, 128, 64, 32]; // Sizes for LOD 0-3
-    const size = sizes[lodLevel] || 32;
+    const size = sizes[lodLevel] || 32
     // Generate CHR-ROM format texture (16 bytes per 8x8 tile)
-    const tilesPerRow = size / 8;
-    const totalTiles = tilesPerRow * tilesPerRow;
+    const tilesPerRow = size / 8
+    const totalTiles = tilesPerRow * tilesPerRow
     const buffer = new ArrayBuffer(totalTiles * 16);
     const view = new Uint8Array(buffer);
     // Fill with pattern based on document ID
     const seed = this.hashString(documentId);
-    let rng = seed;
+    let rng = seed
     for (let i = 0; i < view.length; i++) {
-      rng = (rng * 1664525 + 1013904223) % 2 ** 32;
-      view[i] = rng % 256;
-    }
-    return buffer;
-  }
+      rng = (rng * 1664525 + 1013904223) % 2 ** 32
+      view[i] = rng % 256}
+    return buffer}
   /**
    * Simple string hash function
    */
   hashString(str) {
-    let hash = 0;
+    let hash = 0
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash;
-    }
+      hash = (hash << 5) - hash + char
+      hash = hash & hash}
     return Math.abs(hash);
   }
   /**
    * Update cache size tracking
    */
   updateCacheSize() {
-    this.currentCacheSize = 0;
+    this.currentCacheSize = 0
     // Count LOD cache
     for (const buffer of this.lodCache.values()) {
-      this.currentCacheSize += buffer.byteLength;
-    }
+      this.currentCacheSize += buffer.byteLength}
     // Count mipmap cache
     for (const mipmaps of this.mipmapCache.values()) {
       for (const mipmap of mipmaps) {
-        this.currentCacheSize += mipmap.size;
-      }
+        this.currentCacheSize += mipmap.size}
     }
     // Count CHR-ROM banks
     for (const bank of this.chrRomBanks.values()) {
-      this.currentCacheSize += bank.size;
-    }
+      this.currentCacheSize += bank.size}
     // Evict if over budget
     if (this.currentCacheSize > this.maxCacheSize) {
       this.evictLeastRecentlyUsed();
@@ -372,7 +357,7 @@ export class N64LODManager {
     this.lodCache.clear();
     this.mipmapCache.clear();
     this.chrRomBanks.clear();
-    this.currentCacheSize = 0;
+    this.currentCacheSize = 0
     this.streamingActive = $state(false);
   }
 }

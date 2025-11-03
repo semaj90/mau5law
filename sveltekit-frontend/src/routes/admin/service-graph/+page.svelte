@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Service Dependency Graph Interactive Dashboard
   Real-time visualization with health status, performance metrics, and dependency analysis
 
@@ -8,32 +8,30 @@
   import { onMount } from 'svelte';
 
   interface Service {
-    id: string;
-    label: string;
-    type: string;
-    port: number;
-    description: string;
+    id: string
+    label: string
+    type: string
+    port: number
+    description: string
     capabilities: string[];
     protocol: string | string[];
     dependsOn: string[];
     health?: 'healthy' | 'degraded' | 'unhealthy' | 'unknown';
-    responseTime?: number;
-    uptime?: number;
-  }
+    responseTime?: number
+    uptime?: number}
 
   interface ServiceGraph {
     nodes: Service[];
     edges: Array<{ source: string; target: string }>;
   }
 
-  let graph: ServiceGraph | null = null;
-  let selectedService: Service | null = null;
+  let graph: ServiceGraph | null = null
+  let selectedService: Service | null = null
   let filterType: string = 'all';
   let searchQuery: string = '';
-  let showDependencies: boolean = true;
-  let showHealth: boolean = true;
-  let autoRefresh: boolean = false;
-
+  let showDependencies: boolean = true
+  let showHealth: boolean = true
+  let autoRefresh: boolean = false
   const serviceTypeColors: Record<string string> = {
     frontend: 'bg-red-500',
     core: 'bg-teal-500',
@@ -69,8 +67,7 @@
     try {
       const response = await fetch('/api/admin/service-graph');
       const data = await response.json();
-      graph = data;
-    } catch (error) {
+      graph = data} catch (error) {
       console.error('Failed to load service graph:', error);
     }
   }
@@ -78,13 +75,12 @@
   function getFilteredServices() {
     if (!graph) return [];
     return graph.nodes.filter(service => {
-      const typeMatch = filterType === 'all' || service.type === filterType;
+      const typeMatch = filterType === 'all' || service.type === filterType
       const searchMatch =
         !searchQuery ||
         service.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return typeMatch && searchMatch;
-    });
+      return typeMatch && searchMatch});
   }
 
   function getDependentServices(serviceId: string): Service[] {
@@ -96,8 +92,7 @@
   }
 
   function selectService(service: Service) {
-    selectedService = service;
-  }
+    selectedService = service}
 
   async function checkServiceHealth(serviceId: string): Promise<any> {
     try {
@@ -106,9 +101,9 @@
       if (graph) {
         const service = graph.nodes.find(s => s.id === serviceId);
         if (service) {
-          service.health = health.status;
-          service.responseTime = health.responseTime;
-          service.uptime = health.uptime;
+          service.health = health.status
+          service.responseTime = health.responseTime
+          service.uptime = health.uptime
           graph = graph; // Trigger reactivity
         }
       }
@@ -118,18 +113,18 @@
   }
 
   function exportAsJSON() {
-    if (!graph) return;
+    if (!graph) return
     const json = JSON.stringify(graph, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = url
     a.download = `service-graph-${new Date().toISOString().split('T')[0]}.json`;
     a.click();
   }
 
   function exportAsCSV() {
-    if (!graph) return;
+    if (!graph) return
     const csv = [
       ['Service', 'Type', 'Port', 'Dependencies', 'Health', 'Response Time (ms)'].join(','),
       ...graph.nodes.map(n => [
@@ -143,7 +138,7 @@
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = url
     a.download = `service-graph-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
   }
@@ -153,7 +148,7 @@
   <div class="max-w-7xl">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-4xl font-bold">🔗 Service Dependency Graph</h1>
+      <h1 class="text-4xl font-bold">ðŸ”— Service Dependency Graph</h1>
       <p class="text-gray-400">Real-time visualization of microservices architecture</p>
     </div>
 
@@ -212,19 +207,19 @@
           onclick={loadGraph}
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded"
         >
-          🔄 Refresh
+          ðŸ”„ Refresh
         </button>
         <button
           onclick={exportAsJSON}
           class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded"
         >
-          📥 Export JSON
+          ðŸ“¥ Export JSON
         </button>
         <button
           onclick={exportAsCSV}
           class="px-4 py-2 bg-green-600"
         >
-          📥 Export CSV
+          ðŸ“¥ Export CSV
         </button>
       </div>
     </div>
@@ -258,7 +253,7 @@
                 </div>
                 {#if showHealth && service.health}
                   <span class={`text-sm ${healthColors[service.health] || 'text-gray-500'}`}>
-                    ● {service.health}
+                    â— {service.health}
                   </span>
                 {/if}
               </div>
@@ -270,7 +265,7 @@
       <!-- Service, Details, Panel -->
       <div class="bg-gray-800 rounded-lg">
         {#if selectedService}
-          <h2 class="text-xl font-bold">📊 Service Details</h2>
+          <h2 class="text-xl font-bold">ðŸ“Š Service Details</h2>
 
           <div class="space-y-4">
             <!-- Basic, Info -->
@@ -332,7 +327,7 @@
                 <h3 class="font-semibold text-blue-400">Dependencies</h3>
                 <div class="space-y-1">
                   {#each Array.isArray(selectedService.dependsOn) ? selectedService.dependsOn : [] as dep}
-                    <p class="text-gray-300">→ {dep}</p>
+                    <p class="text-gray-300">â†’ {dep}</p>
                   {/each}
                 </div>
               </div>
@@ -346,7 +341,7 @@
                   <h3 class="font-semibold text-blue-400">Used By</h3>
                   <div class="space-y-1">
                     {#each Array.isArray(dependents) ? dependents : [] as dep}
-                      <p class="text-gray-300">← {dep.id}</p>
+                      <p class="text-gray-300">â† {dep.id}</p>
                     {/each}
                   </div>
                 </div>
@@ -364,7 +359,7 @@
     <!-- Statistics, Footer -->
     {#if graph}
       <div class="mt-6 bg-gray-800 rounded-lg">
-        <h2 class="text-lg font-bold">📈 Statistics</h2>
+        <h2 class="text-lg font-bold">ðŸ“ˆ Statistics</h2>
         <div class="grid grid-cols-2 md:grid-cols-4">
           <div>
             <p class="text-gray-400">Total Services</p>
@@ -390,8 +385,8 @@
 
 <style>
   :global(body) {
-    background-color: #111827;
-  }
+    background-color: #111827}
 </style>
+
 
 

@@ -1,4 +1,4 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported import { goto } from '$app/navigation'; // import * as Tooltip from 'bits-ui'; // Removed melt dependency import { Brain, Sparkles, Mic, MicOff } from 'lucide-svelte'; import { cn } from '$lib/utils'; import { SvelteComponent } from 'svelte'; import  BadgeDefault  from "$lib/components/ui/badge/Badge.svelte"; // Cast to constructor type so template receives a proper Svelte component constructor const Badge = BadgeDefault as: unknown as typeof SvelteComponent; // Tooltip wrapper removed for now to avoid incomplete module issues interface Props { variant?: 'floating' | 'inline' | 'compact' | 'full'; position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'; showStatus?: boolean; showBadge?: boolean; disabled?: boolean; voiceEnabled?: boolean; class?: string; onclick?: () => void; }
+﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import { goto } from '$app/navigation'; // import * as Tooltip from 'bits-ui'; // Removed melt dependency import { Brain, Sparkles, Mic, MicOff } from 'lucide-svelte'; import { cn } from '$lib/utils'; import { SvelteComponent } from 'svelte'; import  BadgeDefault  from "$lib/components/ui/badge/Badge.svelte"; // Cast to constructor type so template receives a proper Svelte component constructor const Badge = BadgeDefault as: unknown as typeof SvelteComponent; // Tooltip wrapper removed for now to avoid incomplete module issues interface Props { variant?: 'floating' | 'inline' | 'compact' | 'full'; position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'; showStatus?: boolean; showBadge?: boolean; disabled?: boolean; voiceEnabled?: boolean; class?: string; onclick?: () => void}
   let { variant = 'floating', position = 'bottom-right', showStatus = true, showBadge = true, disabled = false, voiceEnabled = true, class: className = '', onclick }: Props = $props(); // AI Assistant state let isActive = $state<boolean>(false); let isListening = $state<boolean>(false); let unreadCount = $state<number>(3); // Mock unread suggestions let aiStatus = $state<'idle' | 'processing' | 'listening' | 'connected'>('connected'); // Tooltip for compact variants // const tooltipBuilder = variant === 'compact' ? createTooltip({ // openDelay: 500, // closeDelay: 100 // }): null // const trigger = tooltipBuilder?.elements.trigger // const tooltipContent = tooltipBuilder?.elements.content // const open = tooltipBuilder?.states.ope // Dynamic classes (computed reactively) const buttonClasses = $derived(() => { const base = 'ai-assistant-btn transition-all duration-300 font-mono'; const variants = { floating: 'fixed z-50 rounded-full shadow-2xl, hover:shadow-yorha-accent/20 border-2', inline: 'relative rounded-lg shadow-md, hover:shadow-lg border', compact: 'relative rounded-md shadow-sm, hover:shadow-md border', full: 'w-full rounded-lg shadow-md, hover:shadow-lg border p-4'
     }; const positions = {
       'bottom-right': 'bottom-6 right-6',
@@ -9,7 +9,7 @@
     }; let classes = `${ base } ${variants[variant]} ${statusColors[aiStatus]}`; if (variant === 'floating') { classes += ` ${positions[position]}`; }
     if (disabled) { classes += ' opacity-50 cursor-not-allowed'; } else { classes += ' cursor-pointer hover:scale-105, active:scale-95'; }
     return cn(classes, className); }); // Handle click action function handleClick() { if (disabled) return; if (onclick) { onclick(); } else { // Navigate to AI assistant page goto('/aiassistant'); }
-    isActive = true; }
+    isActive = true}
   // Voice input toggle function toggleVoiceInput() { if (!voiceEnabled) return; isListening = !isListening; aiStatus = isListening ? 'listening': 'connected'; }
   // Status indicator component function StatusIndicator() { const statusConfig = { idle: { color: 'bg-gray-400', pulse: false }, processing: { color: 'bg-yorha-primary', pulse: true }, listening: { color: 'bg-red-500', pulse: true }, connected: { color: 'bg-yorha-accent-gold', pulse: false } }; const config = statusConfig[aiStatus]; return { class: `w-2 h-2 rounded-full ${config.color} ${config.pulse ? 'animate-pulse': ''}`, title: aiStatus.charAt(0).toUpperCase() + aiStatus.slice(1) }; }
 </script> <!-- Floating, Variant --> {#if variant === 'floating'} <button type="button"
@@ -28,7 +28,7 @@
           }} aria-label={isListening ? 'Stop listening': 'Start voice input'} >
           {#if isListening} <MicOff class="w-4 h-4" /> {:else} <Mic class="w-4" /> {/if} </span> {/if} {#if showBadge && unreadCount > 0} <Badge class="bg-yorha-accent-gold text-yorha-bg-primary"> { unreadCount } </Badge> {/if} </div> </button> <!-- Compact Variant with, Tooltip --> {:else if variant === 'compact'} <button type="button"
     class={ buttonClasses } data-status={ aiStatus } onclick={ handleClick } { disabled } aria-label="AI Assistant"
-    title={`AI Assistant — Status: ${ aiStatus }${unreadCount > 0 ? ` — ${ unreadCount } new`: ''}`} >
+    title={`AI Assistant â€” Status: ${ aiStatus }${unreadCount > 0 ? ` â€” ${ unreadCount } new`: ''}`} >
     <div class="relative"> <Brain class="w-5" /> {#if showStatus} <div class="absolute -top-0.5 -right-0.5 {StatusIndicator().class}" title={StatusIndicator().title}>{/if} </div> </button> <!-- Full, Variant --> {:else if variant === 'full'} <button type="button"
     aria-label="Action button"
     class={ buttonClasses } data-status={ aiStatus } onclick={ handleClick } { disabled } >
@@ -38,11 +38,12 @@
             tabindex="0"
             onclick={e => { e.stopPropagation(); toggleVoiceInput(); }} onkeydown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleVoiceInput(); }
             }} aria-label={isListening ? 'Stop listening': 'Start voice input'} >
-            {#if isListening} <MicOff class="w-5 h-5" /> {:else} <Mic class="w-5" /> {/if} </span> {/if} <div class="flex flex-col"> {#if showBadge && unreadCount > 0} <Badge class="bg-yorha-accent-gold text-yorha-bg-primary"> { unreadCount } new suggestions </Badge> {/if} <span class="text-xs">Click to open</span> </div> <Sparkles class="w-5 h-5" /> </div> </div> </button> {/if} <!-- Remove the disabled tooltip section as it's now handled in the compact variant, above --> <style> .ai-assistant-btn { position: relative; overflow: hidden; }'
-  .ai-assistant-btn::before { content: ''; position: absolute;, top: 0, left: -100%; width: 100%; height: 100%;, background: linear-gradient(90deg, transparent, rgba(var(--yorha-accent-gold-rgb), 0.2), transparent); transition: left: 0.5s ease; }
+            {#if isListening} <MicOff class="w-5 h-5" /> {:else} <Mic class="w-5" /> {/if} </span> {/if} <div class="flex flex-col"> {#if showBadge && unreadCount > 0} <Badge class="bg-yorha-accent-gold text-yorha-bg-primary"> { unreadCount } new suggestions </Badge> {/if} <span class="text-xs">Click to open</span> </div> <Sparkles class="w-5 h-5" /> </div> </div> </button> {/if} <!-- Remove the disabled tooltip section as it's now handled in the compact variant, above --> <style> .ai-assistant-btn { position: relative; overflow: hidden}'
+  .ai-assistant-btn::before { content: ''; position: absolute;, top: 0, left: -100%; width: 100%; height: 100%;, background: linear-gradient(90deg, transparent, rgba(var(--yorha-accent-gold-rgb), 0.2), transparent); transition: left: 0.5s ease}
   .ai-assistant-btn:hover::before { left: 100%; }
-  /* Pulse, animation: for processing state */ @keyframes ai-pulse { 0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-  } .ai-assistant-btn[data-status='processing'] { animation: ai-pulse 2s infinite; }
+  /* Pulse, animation: for processing state */ @keyframes ai-pulse { 0%, 100% { opacity: 1}
+    50% { opacity: 0.5}
+  } .ai-assistant-btn[data-status='processing'] { animation: ai-pulse 2s infinite}
   /* Glowing effect for floating button */ .ai-assistant-btn.fixed:hover { box-shadow: 0, 0 30px rgba(var(--yorha-accent-gold-rgb), 0.3); }
 </style>
+

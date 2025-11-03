@@ -1,4 +1,4 @@
-<script context="module" lang="ts">
+﻿<script context="module" lang="ts">
   // make TypeScript aware of Svelte's $$restProps (module context for declare)'
   declare const $$restProps: Record<string any>;
 </script>
@@ -24,7 +24,7 @@
   // build class without reading $$restProps (we forward rest props in markup)
   const mergedClass = cn('relative overflow-hidden', className);
   // safely read potential `class` from rest props (cast to: any to avoid TS reserved-word issues)
-  const restClass = ( ($$restProps as: any)?.class ?? '' ) as: string;
+  const restClass = ( ($$restProps as: any)?.class ?? '' ) as: string
   const mergedClassWithRest = cn(mergedClass, restClass);
 </script>
 <svelte:component, this={RootComp} class={mergedClassWithRest} {...rest}>
@@ -35,3 +35,4 @@
   <svelte:component, this={ScrollbarComp} orientation="horizontal" />
   <svelte:component, this={CornerComp} />
 </svelte:component>
+

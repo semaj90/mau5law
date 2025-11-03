@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Enhanced Contextual Chat with Bits-UI + Superforms
   Features:
   - SvelteKit, 2 Superforms validation
@@ -31,10 +31,9 @@ import type { Document } from '$lib/types';
   // This component correctly uses relative paths for API calls, allowing SvelteKit to handle routing.
   // Props
   interface Props {
-    sessionId?: string;
-    userId?: string;
-    caseId?: string;
-  }
+    sessionId?: string
+    userId?: string
+    caseId?: string}
   let {
     sessionId = `session-${Date.now()}`,
     userId = 'demo-user',
@@ -57,8 +56,7 @@ import type { Document } from '$lib/types';
       if (result.type === 'success' && result.data) {
         // Add to conversation history
         conversationHistory = [
-          ...conversationHistory,
-          {
+          ...conversationHistory, {
             userMessage: $form.message,
             agentResponse: result.data.response,
             timestamp: Date.now(),
@@ -94,10 +92,10 @@ import type { Document } from '$lib/types';
     6: 'Follow-up',
     7: 'Conclusion'
   };
-  // explicit derived values (Svelte, 5 runes) — use $derived.by to evaluate at runtime
+  // explicit derived values (Svelte, 5 runes) â€” use $derived.by to evaluate at runtime
   const currentStateName = $derived.by(() => {
     if (!contextualState) return 'Unknown';
-    const idx = contextualState.hmmState?.currentState;
+    const idx = contextualState.hmmState?.currentState
     return stateNames[idx as keyof typeof stateNames] ?? 'Unknown';
   });
   const confidencePercentage = $derived.by(() => {
@@ -106,8 +104,7 @@ import type { Document } from '$lib/types';
   });
   const canSubmit = $derived.by(() => {
     const text = ($form?.message ?? '') + '';
-    return text.trim().length > 0 && !$submitting;
-  });
+    return text.trim().length > 0 && !$submitting});
   // load initial contextual state & predictions in browser only
   onMount(() => {
     // fire-and-forget; errors are already logged inside helpers
@@ -124,9 +121,8 @@ import type { Document } from '$lib/types';
       );
       const result = await response.json();
       if (result.success) {
-        contextualState = result.data;
-        entities = result.data.extractedEntities;
-      }
+        contextualState = result.data
+        entities = result.data.extractedEntities}
     } catch (error) {
       console.error('Failed to fetch contextual state:', error);
     }
@@ -141,8 +137,7 @@ import type { Document } from '$lib/types';
       );
       const result = await response.json();
       if (result.success) {
-        predictions = result.data.predictions;
-      }
+        predictions = result.data.predictions}
     } catch (error) {
       console.error('Failed to fetch predictions:', error);
     }
@@ -151,9 +146,8 @@ import type { Document } from '$lib/types';
    * Show entity details
    */
   function showEntity(entity: LegalEntity) {
-    selectedEntity = entity;
-    showEntityDetails = true;
-  }
+    selectedEntity = entity
+    showEntityDetails = true}
   /**
    * Clear conversation
    */
@@ -165,7 +159,7 @@ import type { Document } from '$lib/types';
       );
       if (response.ok) {
         conversationHistory = [];
-        contextualState = null;
+        contextualState = null
         predictions = [];
         entities = [];
         $form.message = '';
@@ -183,7 +177,7 @@ import type { Document } from '$lib/types';
       <div class="header-actions">
         <Tooltip.Root>
           <Tooltip.Trigger, class="nes-btn">
-            ⚙️
+            âš™ï¸
           </Tooltip.Trigger>
           <Tooltip.Content class="tooltip-content nes-container">
             <p>Settings</p>
@@ -194,7 +188,7 @@ import type { Document } from '$lib/types';
           onclick={clearConversation}
           type="button"
         >
-          🗑️ Clear
+          ðŸ—‘ï¸ Clear
         </button>
       </div>
     </div>
@@ -213,11 +207,11 @@ import type { Document } from '$lib/types';
         {#each conversationHistory as turn, idx (idx)}
           <div class="message-group">
             <div class="user-message nes-container">
-              <div class="message-label">👤 You</div>
+              <div class="message-label">ðŸ‘¤ You</div>
               <p>{turn.userMessage}</p>
             </div>
             <div class="agent-message">
-              <div class="message-label">🤖 Assistant</div>
+              <div class="message-label">ðŸ¤– Assistant</div>
               <p>{turn.agentResponse}</p>
               <div class="message-meta">
                 <span class="meta-item">
@@ -281,7 +275,7 @@ import type { Document } from '$lib/types';
             class="nes-btn is-primary"
             disabled={!canSubmit}
           >
-            {$submitting ? '⏳ Sending...' : '📤 Send'}
+            {$submitting ? 'â³ Sending...' : 'ðŸ“¤ Send'}
           </button>
         </div>
       </form>
@@ -293,8 +287,8 @@ import type { Document } from '$lib/types';
         <Accordion.Item, value="predictions">
           <Accordion.Header>
             <Accordion.Trigger class="accordion-trigger nes-container">
-              <span>🔮 Next-Step Predictions</span>
-              <span class="accordion-icon">▼</span>
+              <span>ðŸ”® Next-Step Predictions</span>
+              <span class="accordion-icon">â–¼</span>
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content, class="accordion-content">
@@ -327,8 +321,8 @@ import type { Document } from '$lib/types';
         <Accordion.Item, value="entities">
           <Accordion.Header>
             <Accordion.Trigger class="accordion-trigger nes-container">
-              <span>🏷️ Extracted Entities</span>
-              <span class="accordion-icon">▼</span>
+              <span>ðŸ·ï¸ Extracted Entities</span>
+              <span class="accordion-icon">â–¼</span>
             </Accordion.Trigger>
           </Accordion.Header>
           <Accordion.Content, class="accordion-content">
@@ -355,8 +349,8 @@ import type { Document } from '$lib/types';
           <Accordion.Item, value="history">
             <Accordion.Header>
               <Accordion.Trigger class="accordion-trigger nes-container">
-                <span>📊 State History</span>
-                <span class="accordion-icon">▼</span>
+                <span>ðŸ“Š State History</span>
+                <span class="accordion-icon">â–¼</span>
               </Accordion.Trigger>
             </Accordion.Header>
             <Accordion.Content, class="accordion-content">
@@ -415,216 +409,176 @@ import type { Document } from '$lib/types';
 </Dialog>
 <style>
   .enhanced-contextual-chat {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    max-height: 900px;
-   , background: #212529;
-    font-family: 'Press Start 2P', 'Courier New', monospace;
-    font-size: 12px;
-  }
+    display: flex
+    flex-direction: column
+    height: 100vh
+    max-height: 900px
+   , background: #212529
+    font-family: 'Press Start 2P', 'Courier New', monospace
+    font-size: 12px}
   .chat-header {
-    padding: 1.5rem;
-    border-bottom: 4px solid #d4af37;
-    background: #1a1d20 !important;
-  }
+    padding: 1.5rem
+    border-bottom: 4px solid #d4af37
+    background: #1a1d20 !important}
   .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 1rem}
   .header-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
+    display: flex
+    gap: 0.5rem}
   .state-indicator {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    background: #2a2d30;
-    border: 2px solid #d4af37;
-    border-radius: 4px;
-  }
+    display: flex
+    gap: 1rem
+    align-items: center
+    padding: 0.5rem 1rem
+    background: #2a2d30
+    border: 2px solid #d4af37
+    border-radius: 4px}
   .state-label {
-    color: #888;
-  }
+    color: #888}
   .state-name {
-    color: #d4af37;
-    font-weight: bold;
-  }
+    color: #d4af37
+    font-weight: bold}
   .state-confidence {
-    color: #4ade80;
-  }
+    color: #4ade80}
   .chat-body {
-    display: grid;
-    grid-template-columns: 1fr 400px;
-    flex: 1;
-    overflow: hidden;
-  }
+    display: grid
+    grid-template-columns: 1fr 400px
+    flex: 1
+    overflow: hidden}
   .conversation-panel {
-    display: flex;
-    flex-direction: column;
-    border-right: 4px solid #d4af37;
-  }
+    display: flex
+    flex-direction: column
+    border-right: 4px solid #d4af37}
   .messages-container {
-    flex: 1;
-    overflow-y: auto;
-   , padding: 1rem;
-  }
+    flex: 1
+    overflow-y: auto
+   , padding: 1rem}
   .message-group {
-    margin-bottom: 1.5rem;
-  }
+    margin-bottom: 1.5rem}
   .user-message,
   .agent-message {
-    margin-bottom: 0.75rem;
-    padding: 1rem !important;
-  }
+    margin-bottom: 0.75rem
+    padding: 1rem !important}
   .message-label {
-    font-size: 10px;
-    margin-bottom: 0.5rem;
-    color: #d4af37;
-  }
+    font-size: 10px
+    margin-bottom: 0.5rem
+    color: #d4af37}
   .message-meta {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    font-size: 10px;
-    color: #888;
-  }
+    display: flex
+    gap: 1rem
+    margin-top: 0.5rem
+    font-size: 10px
+    color: #888}
   .empty-state {
-    text-align: center;
-    padding: 3rem 2rem;
-  }
+    text-align: center
+    padding: 3rem 2rem}
   .message-form {
-    padding: 1rem;
-    background: #1a1d20;
-    border-top: 4px solid #d4af37;
-  }
+    padding: 1rem
+    background: #1a1d20
+    border-top: 4px solid #d4af37}
   .form-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 0.75rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-top: 0.75rem}
   .error-text {
-    margin-top: 0.25rem;
-    font-size: 10px;
-  }
+    margin-top: 0.25rem
+    font-size: 10px}
   .info-panel {
-    overflow-y: auto;
-    padding: 1rem;
-    background: #1a1d20;
-  }
+    overflow-y: auto
+    padding: 1rem
+    background: #1a1d20}
   .accordion-trigger {
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem !important;
-    cursor: pointer;
-    margin-bottom: 0.5rem;
-  }
-  .accordion-content { padding: 1rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 0.75rem 1rem !important
+    cursor: pointer
+    margin-bottom: 0.5rem}
+  .accordion-content { padding: 1rem}
   .predictions-list,
   .entities-list,
   .state-history {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.75rem}
   .prediction-item {
-    padding: 1rem !important;
-  }
+    padding: 1rem !important}
   .prediction-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-  }
+    display: flex
+    justify-content: space-between
+    margin-bottom: 0.5rem}
   .prediction-action {
-    font-weight: bold;
-    color: #d4af37;
-  }
+    font-weight: bold
+    color: #d4af37}
   .prediction-confidence {
-    color: #4ade80;
-  }
+    color: #4ade80}
   .prediction-description {
-    margin: 0.5rem 0;
-    font-size: 10px;
-    color: #ccc;
-  }
+    margin: 0.5rem 0
+    font-size: 10px
+    color: #ccc}
   .confidence-bar {
-    height: 6px;
-    background: #2a2d30;
-    border: 2px solid #444;
-    border-radius: 2px;
-    overflow: hidden;
-  }
+    height: 6px
+    background: #2a2d30
+    border: 2px solid #444
+    border-radius: 2px
+    overflow: hidden}
   .confidence-fill {
     height: 100%;
    , background: linear-gradient(90deg, #d4af37, #4ade80);
-    transition: width: 0.3s ease;
-  }
+    transition: width: 0.3s ease}
   .entity-item {
-    display: flex;
-    justify-content: space-between;
-    text-align: left;
+    display: flex
+    justify-content: space-between
+    text-align: left
     width: 100%;
   }
   .entity-type {
-    color: #d4af37;
-    font-weight: bold;
-  }
+    color: #d4af37
+    font-weight: bold}
   .history-item {
-    display: flex;
-    gap: 1rem;
-    padding: 0.5rem 1rem !important;
-  }
+    display: flex
+    gap: 1rem
+    padding: 0.5rem 1rem !important}
   .history-index {
-    color: #888;
-  }
+    color: #888}
   .dialog-overlay {
-    position: fixed;
-    inset: 0;
+    position: fixed
+    inset: 0
    , background: rgba(0, 0, 0, 0.8);
-    z-index: 50;
-  }
+    z-index: 50}
   .dialog-content {
-    position: fixed;
+    position: fixed
     top: 50%;
     left: 50%;
    , transform: translate(-50%, -50%);
     width: 90%;
-    max-width: 500px;
-    max-height: 85vh;
-    padding: 2rem;
-    z-index: 51;
-  }
+    max-width: 500px
+    max-height: 85vh
+    padding: 2rem
+    z-index: 51}
   .dialog-title {
-    margin-bottom: 1.5rem;
-    color: #d4af37;
-    font-size: 14px;
-  }
+    margin-bottom: 1.5rem
+    color: #d4af37
+    font-size: 14px}
   .entity-details {
-    margin-bottom: 1.5rem;
-  }
+    margin-bottom: 1.5rem}
   .detail-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #444;
-  }
+    display: flex
+    justify-content: space-between
+    padding: 0.5rem 0
+    border-bottom: 1px solid #444}
   .detail-label {
-    color: #888;
-  }
+    color: #888}
   .detail-value {
-    color: #d4af37;
-    font-weight: bold;
-  }
-  .tooltip-content { padding: 0.5rem 1rem !important;
-    font-size: 10px;
-    z-index: 100;
-  }
+    color: #d4af37
+    font-weight: bold}
+  .tooltip-content { padding: 0.5rem 1rem !important
+    font-size: 10px
+    z-index: 100}
 </style>
+

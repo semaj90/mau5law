@@ -1,5 +1,5 @@
-<!-- Toast Provider for Legal, AI, App --> <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import createToast from 'bits-ui'; import BitsToast, { type ToastProps } from './BitsToast.svelte'; // Destructure Root and Viewport from createToast() const { Root, Viewport } = createToast(); interface ToastWithId extends ToastProps { id: string; }
+﻿<!-- Toast Provider for Legal, AI, App --> <script lang="ts">
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import createToast from 'bits-ui'; import BitsToast, { type ToastProps } from './BitsToast.svelte'; // Destructure Root and Viewport from createToast() const { Root, Viewport } = createToast(); interface ToastWithId extends ToastProps { id: string}
   let toasts = $state<ToastWithId[]>([]); export function addToast(toast: Omit<ToastProps 'id'>) { const id = crypto.randomUUID(); const newToast: ToastWithId = { ...toast, id }
     toasts = [...toasts, newToast]; return { id, dismiss: () => removeToast(id) }
   } export function removeToast(id: string) { toasts = toasts.filter(t => t.id !== id); }
@@ -12,3 +12,4 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       } }); }
 </script> <Root.Provider, swipeDirection="right"> {#each toasts as toast (toast.id)} <BitsToast {...toast} onClose={() => removeToast(toast.id)} /> {/each} <Viewport class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col"
   /> </Root.Provider>
+

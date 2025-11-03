@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -17,62 +17,58 @@ import type { Case } from '$lib/types';
 
   // Type Definitions
   interface Theory {
-    id: string;
-    name: string;
+    id: string
+    name: string
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
-    description: string;
-    strength: number;
+    description: string
+    strength: number
     legalArguments: string[];
     counterarguments: string[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Date, updatedAt: Date
     logicalChain?: LogicalStep[];
-    riskAssessment?: RiskAssessment | null;
+    riskAssessment?: RiskAssessment | null
     aiSuggestions?: string[];
   }
 
   interface EvidenceItem {
-    id: string;
-    title: string;
-    type: string;
-    description: string;
-    strength: number;
-  }
+    id: string
+    title: string
+    type: string
+    description: string
+    strength: number}
 
   interface Precedent {
-    id: string;
-    title: string;
-    citation: string;
-    relevanceScore: number;
-    summary: string;
-  }
+    id: string
+    title: string
+    citation: string
+    relevanceScore: number
+    summary: string}
 
   interface LogicalStep {
-    step: number;
-    premise: string;
-    evidence: string;
-    conclusion?: string;
-    confidence?: number;
-  }
+    step: number
+    premise: string
+    evidence: string
+    conclusion?: string
+    confidence?: number}
 
   interface RiskAssessment {
-    overallRisk: string;
+    overallRisk: string
     strengths: string[];
     weaknesses: string[];
     recommendations: string[];
   }
 
   interface StrengthAnalysis {
-    overall: number;
+    overall: number
    , components: Record<string number>;
   }
 
   interface NewTheoryForm {
-    name: string;
+    name: string
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
-    description: string;
+    description: string
    , errors: Partial<Record<keyof Omit<NewTheoryForm 'errors'>, string[]>>;
   }
 
@@ -119,7 +115,7 @@ import type { Case } from '$lib/types';
       // Initialize with case data if coming from case page
       const paramCaseId = $page.url.searchParams.get('caseId');
       if (paramCaseId) {
-        caseId = paramCaseId;
+        caseId = paramCaseId
         await loadCaseData();
       }
       await loadExistingTheories();
@@ -186,8 +182,7 @@ import type { Case } from '$lib/types';
     } catch (error) {
       console.error('Failed to load theories:', error);
       // Mock theories for demo
-      theories = [
-        {
+      theories = [ {
           id: '1',
           name: 'Self-Defense Theory',
           type: 'defense',
@@ -203,7 +198,7 @@ import type { Case } from '$lib/types';
     }
   }
   async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm 'errors'>): Promise<any> {
-    isBuilding = true;
+    isBuilding = true
     try {
       // Store theory building request in CHR-ROM for fast processing
       await nesGPUBridge.storeCHRROMPattern(`theory_${Date.now()}`, {});
@@ -232,14 +227,14 @@ import type { Case } from '$lib/types';
           updatedAt: new Date()
         };
         theories = [builtTheory, ...theories];
-        currentTheory = builtTheory;
+        currentTheory = builtTheory
         // Load detailed analysis
         await loadTheoryAnalysis(builtTheory);
       } else {
         // Mock AI analysis for demo
         const mockTheory = await generateMockTheoryAnalysis(theoryData);
         theories = [mockTheory, ...theories];
-        currentTheory = mockTheory;
+        currentTheory = mockTheory
         await loadTheoryAnalysis(mockTheory);
       }
     } catch (error) {
@@ -247,11 +242,9 @@ import type { Case } from '$lib/types';
       // Fallback to mock data
       const mockTheory = await generateMockTheoryAnalysis(theoryData);
       theories = [mockTheory, ...theories];
-      currentTheory = mockTheory;
-    } finally {
-      isBuilding = false;
-      showTheoryDialog = false;
-    }
+      currentTheory = mockTheory} finally {
+      isBuilding = false
+      showTheoryDialog = false}
   }
   async function generateMockTheoryAnalysis(
     theoryData: Omit<NewTheoryForm 'errors'>
@@ -299,7 +292,7 @@ import type { Case } from '$lib/types';
     legalArguments = theory.legalArguments || [];
     counterarguments = theory.counterarguments || [];
     logicalChain = theory.logicalChain || [];
-    riskAssessment = theory.riskAssessment || null;
+    riskAssessment = theory.riskAssessment || null
     aiSuggestions = theory.aiSuggestions || [];
     // Calculate theory strength visualization
     strengthAnalysis = {
@@ -315,8 +308,7 @@ import type { Case } from '$lib/types';
     event.preventDefault();
     if (!newTheoryForm.name.trim()) {
       newTheoryForm.errors = { name: ['Theory name is required'] };
-      return;
-    }
+      return}
     newTheoryForm.errors = {};
     await buildTheoryWithAI({ name: newTheoryForm.name,
       type: newTheoryForm.type strategy: newTheoryForm.strategy,
@@ -332,7 +324,7 @@ import type { Case } from '$lib/types';
     };
   }
   function selectTheory(theory: Theory) {
-    currentTheory = theory;
+    currentTheory = theory
     loadTheoryAnalysis(theory);
   }
   function getTheoryTypeColor(type: Theory['type']) {
@@ -354,22 +346,19 @@ import type { Case } from '$lib/types';
     return 'text-red-600';
   }
   function generateMockEvidence() {
-    return [
-      {
+    return [ {
         id: '1',
         title: 'Security Camera Footage',
         type: 'video',
         description: 'Shows defendant actions at time of incident',
         strength: 0.9
-      },
-      {
+      }, {
         id: '2',
         title: 'Witness Statement - John Doe',
         type: 'testimony',
         description: 'Eyewitness account of events leading to incident',
         strength: 0.7
-      },
-      {
+      }, {
         id: '3',
         title: 'Medical Examiner Report',
        <script lang="ts">
@@ -390,62 +379,58 @@ import type { Case } from '$lib/types';
 
   // Type Definitions
   interface Theory {
-    id: string;
-    name: string;
+    id: string
+    name: string
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
-    description: string;
-    strength: number;
+    description: string
+    strength: number
     legalArguments: string[];
     counterarguments: string[];
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: Date, updatedAt: Date
     logicalChain?: LogicalStep[];
-    riskAssessment?: RiskAssessment | null;
+    riskAssessment?: RiskAssessment | null
     aiSuggestions?: string[];
   }
 
   interface EvidenceItem {
-    id: string;
-    title: string;
-    type: string;
-    description: string;
-    strength: number;
-  }
+    id: string
+    title: string
+    type: string
+    description: string
+    strength: number}
 
   interface Precedent {
-    id: string;
-    title: string;
-    citation: string;
-    relevanceScore: number;
-    summary: string;
-  }
+    id: string
+    title: string
+    citation: string
+    relevanceScore: number
+    summary: string}
 
   interface LogicalStep {
-    step: number;
-    premise: string;
-    evidence: string;
-    conclusion?: string;
-    confidence?: number;
-  }
+    step: number
+    premise: string
+    evidence: string
+    conclusion?: string
+    confidence?: number}
 
   interface RiskAssessment {
-    overallRisk: string;
+    overallRisk: string
     strengths: string[];
     weaknesses: string[];
     recommendations: string[];
   }
 
   interface StrengthAnalysis {
-    overall: number;
+    overall: number
    , components: Record<string number>;
   }
 
   interface NewTheoryForm {
-    name: string;
+    name: string
     type: 'prosecution' | 'defense' | 'civil' | 'alternative';
     strategy: 'evidence-based' | 'precedent-based' | 'narrative-based' | 'technical-based';
-    description: string;
+    description: string
    , errors: Partial<Record<keyof Omit<NewTheoryForm 'errors'>, string[]>>;
   }
 
@@ -492,7 +477,7 @@ import type { Case } from '$lib/types';
       // Initialize with case data if coming from case page
       const paramCaseId = $page.url.searchParams.get('caseId');
       if (paramCaseId) {
-        caseId = paramCaseId;
+        caseId = paramCaseId
         await loadCaseData();
       }
       await loadExistingTheories();
@@ -559,8 +544,7 @@ import type { Case } from '$lib/types';
     } catch (error) {
       console.error('Failed to load theories:', error);
       // Mock theories for demo
-      theories = [
-        {
+      theories = [ {
           id: '1',
           name: 'Self-Defense Theory',
           type: 'defense',
@@ -576,7 +560,7 @@ import type { Case } from '$lib/types';
     }
   }
   async function buildTheoryWithAI(theoryData: Omit<NewTheoryForm 'errors'>): Promise<any> {
-    isBuilding = true;
+    isBuilding = true
     try {
       // Store theory building request in CHR-ROM for fast processing
       await nesGPUBridge.storeCHRROMPattern(`theory_${Date.now()}`, {});
@@ -605,14 +589,14 @@ import type { Case } from '$lib/types';
           updatedAt: new Date()
         };
         theories = [builtTheory, ...theories];
-        currentTheory = builtTheory;
+        currentTheory = builtTheory
         // Load detailed analysis
         await loadTheoryAnalysis(builtTheory);
       } else {
         // Mock AI analysis for demo
         const mockTheory = await generateMockTheoryAnalysis(theoryData);
         theories = [mockTheory, ...theories];
-        currentTheory = mockTheory;
+        currentTheory = mockTheory
         await loadTheoryAnalysis(mockTheory);
       }
     } catch (error) {
@@ -620,11 +604,9 @@ import type { Case } from '$lib/types';
       // Fallback to mock data
       const mockTheory = await generateMockTheoryAnalysis(theoryData);
       theories = [mockTheory, ...theories];
-      currentTheory = mockTheory;
-    } finally {
-      isBuilding = false;
-      showTheoryDialog = false;
-    }
+      currentTheory = mockTheory} finally {
+      isBuilding = false
+      showTheoryDialog = false}
   }
   async function generateMockTheoryAnalysis(
     theoryData: Omit<NewTheoryForm 'errors'>
@@ -672,7 +654,7 @@ import type { Case } from '$lib/types';
     legalArguments = theory.legalArguments || [];
     counterarguments = theory.counterarguments || [];
     logicalChain = theory.logicalChain || [];
-    riskAssessment = theory.riskAssessment || null;
+    riskAssessment = theory.riskAssessment || null
     aiSuggestions = theory.aiSuggestions || [];
     // Calculate theory strength visualization
     strengthAnalysis = {
@@ -688,8 +670,7 @@ import type { Case } from '$lib/types';
     event.preventDefault();
     if (!newTheoryForm.name.trim()) {
       newTheoryForm.errors = { name: ['Theory name is required'] };
-      return;
-    }
+      return}
     newTheoryForm.errors = {};
     await buildTheoryWithAI({ name: newTheoryForm.name,
       type: newTheoryForm.type strategy: newTheoryForm.strategy,
@@ -705,7 +686,7 @@ import type { Case } from '$lib/types';
     };
   }
   function selectTheory(theory: Theory) {
-    currentTheory = theory;
+    currentTheory = theory
     loadTheoryAnalysis(theory);
   }
   function getTheoryTypeColor(type: Theory['type']) {
@@ -727,21 +708,19 @@ import type { Case } from '$lib/types';
     return 'text-red-600';
   }
   function generateMockEvidence() {
-    return [
-      {
+    return [ {
         id: '1',
         title: 'Security Camera Footage',
         type: 'video',
         description: 'Shows defendant actions at time of incident',
         strength: 0.9
-      },
-      {
+      }, {
         id: '2',
         title: 'Witness Statement - John Doe',
         type: 'testimony',
         description: 'Eyewitness account of events leading to incident',
         strength: 0.7
-      },
-      {
+      }, {
         id: '3',
         title: 'Medical Examiner Report',
+

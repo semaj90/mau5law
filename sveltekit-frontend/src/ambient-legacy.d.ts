@@ -1,13 +1,11 @@
-// Temporary legacy ambient declarations
+﻿// Temporary legacy ambient declarations
 declare global {
   interface Window {
-    __DEBUG__?: boolean;
-    [key: string]: any;
-  }
+    __DEBUG__?: boolean
+    [key: string]: any}
   namespace NodeJS {
     interface ProcessEnv {
-      [key: string]: string | undefined;
-    }
+      [key: string]: string | undefined}
   }
 }
 export {};

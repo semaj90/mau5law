@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
   import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
   // Svelte, 5 runes are auto-imported
@@ -13,36 +13,33 @@
   import Upload from 'lucide-svelte/icons/upload';
   import X from 'lucide-svelte/icons/x';
   interface Props {
-    onViewEvidence?: (files: any[]) => void;
-  }
+    onViewEvidence?: (files: any[]) => void}
   const { onViewEvidence = () => {} }: Props = $props();
-  let fileInput: HTMLInputElement;
+  let fileInput: HTMLInputElement
   let dragActive = $state<boolean>(false);
   let isOpen = $derived($uploadStore.isOpen);
   let files = $derived($uploadStore.files || []);
   let activeUploads = $derived(files.filter(f => f?.status === 'uploading' || f?.status === 'processing'));
   let completedUploads = $derived(files.filter(f => f?.status === 'completed'));
   function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement
     if (target.files && target.files.length > 0) {
       uploadStore.addFiles(Array.from(target.files));
     }
   }
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragActive = false;
+    dragActive = false
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       uploadStore.addFiles(Array.from(event.dataTransfer.files));
     }
   }
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
-    dragActive = true;
-  }
+    dragActive = true}
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragActive = false;
-  }
+    dragActive = false}
   function removeFile(fileId: string) {
     uploadStore.removeFile(fileId);
   }
@@ -125,13 +122,13 @@
                       <p class="text-xs">
                         {file.file?.size ? formatFileSize(file.file.size) : 'Unknown size'}
                         {#if file.status === 'uploading'}
-                          • {Math.round(file.progress || 0)}% uploaded
+                          â€¢ {Math.round(file.progress || 0)}% uploaded
                         {:else if file.status === 'processing'}
-                          • Processing...
+                          â€¢ Processing...
                         {:else if file.status === 'error'}
-                          • Upload failed
+                          â€¢ Upload failed
                         {:else if file.status === 'completed'}
-                          • Upload complete
+                          â€¢ Upload complete
                         {/if}
                       </p>
                       {#if file.status === 'uploading' && file.progress && file.progress > 0}
@@ -186,3 +183,4 @@
   </Dialog.Content>
 </Dialog>
 </Dialog>
+

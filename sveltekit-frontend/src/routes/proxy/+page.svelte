@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   interface Props {
     data: { message: string; path: string; targetExample: string; now: string };
   }
@@ -13,3 +13,4 @@
   <p class="text-xs">Server time: {data.now}</p>
 </div>
 ;
+

@@ -1,36 +1,34 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
   interface TableColumn {
-    key: string;
-    title: string;
-    sortable?: boolean;
-    width?: string;
+    key: string
+    title: string
+    sortable?: boolean
+    width?: string
     align?: 'left' | 'center' | 'right';
     type?: 'text' | 'number' | 'date' | 'status' | 'action';
   }
   interface TableRow {
-    id: string;
-    [key: string]: any;
-  }
+    id: string
+    [key: string]: any}
   interface TableProps {
     columns: TableColumn[];
    , data: TableRow[];
-    loading?: boolean;
-    selectable?: boolean;
-    sortable?: boolean;
-    pagination?: boolean;
-    pageSize?: number;
-    totalItems?: number;
-    className?: string;
-    dense?: boolean;
-    hover?: boolean;
-    striped?: boolean;
-    bordered?: boolean;
-    glitchEffect?: boolean;
+    loading?: boolean
+    selectable?: boolean
+    sortable?: boolean
+    pagination?: boolean
+    pageSize?: number
+    totalItems?: number
+    className?: string
+    dense?: boolean
+    hover?: boolean
+    striped?: boolean
+    bordered?: boolean
+    glitchEffect?: boolean
     theme?: 'dark' | 'light';
-    actionsSnippet?: (row: TableRow, index: number) => any;
-  }
+    actionsSnippet?: (row: TableRow, index: number) => any}
   let {
     columns,
     data = [],
@@ -55,7 +53,7 @@
   let currentPage = $state<number>(1);
   let searchQuery = $state<string>('');
   const filteredData = $derived.by(() => {
-    let filtered = data;
+    let filtered = data
     if (searchQuery) {
       filtered = data.filter(item =>
         Object.values(item).some(val =>
@@ -68,8 +66,7 @@
         const aVal = a[sortColumn];
         const bVal = b[sortColumn];
         if (typeof aVal === 'number' && typeof bVal === 'number') {
-          return sortDirection === 'asc' ? aVal - bVal : bVal - aVal;
-        }
+          return sortDirection === 'asc' ? aVal - bVal : bVal - aVal}
         const aStr = String(aVal).toLowerCase();
         const bStr = String(bVal).toLowerCase();
         return sortDirection === 'asc'
@@ -77,20 +74,19 @@
           : bStr.localeCompare(aStr);
       });
     }
-    return filtered;
-  });
+    return filtered});
   const paginatedData = $derived.by(() => {
-    if (!pagination) return filteredData;
-    const start = (currentPage - 1) * pageSize;
+    if (!pagination) return filteredData
+    const start = (currentPage - 1) * pageSize
     return filteredData.slice(start, start + pageSize);
   });
   const totalPages = $derived(Math.ceil(filteredData.length / pageSize));
   function handleSort(column: TableColumn) {
-    if (!column.sortable || !sortable) return;
+    if (!column.sortable || !sortable) return
     if (sortColumn === column.key) {
       sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      sortColumn = column.key;
+      sortColumn = column.key
       sortDirection = 'asc';
     }
   }
@@ -151,7 +147,7 @@
   <div class="yorha-table-header">
     <div class="yorha-table-search">
       <input type="text" placeholder="SEARCH, RECORDS..." bind:value={searchQuery} class="yorha-search-input" />
-      <div class="yorha-search-icon">⚡</div>
+      <div class="yorha-search-icon">âš¡</div>
     </div>
     {#if selectable && selectedRows.size > 0}
       <div class="yorha-table-actions">
@@ -196,9 +192,9 @@
                 {#if column.sortable && sortable}
                   <div class="yorha-sort-indicator">
                     {#if sortColumn === column.key}
-                      {sortDirection === 'asc' ? '▲' : '▼'}
+                      {sortDirection === 'asc' ? 'â–²' : 'â–¼'}
                     {:else}
-                      ⋮
+                      â‹®
                     {/if}
                   {/if}
               </div>
@@ -220,7 +216,7 @@
           <tr class="yorha-empty-row">
             <td colspan={columns.length + (selectable ? 1 : 0)} class="yorha-empty-cell">
               <div class="yorha-empty-state">
-                <div class="yorha-empty-icon">⚠</div>
+                <div class="yorha-empty-icon">âš </div>
                 <span>NO DATA AVAILABLE</span>
               </div>
             </td>
@@ -280,21 +276,21 @@
       </div>
       <div class="yorha-pagination-controls">
         <button class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => (currentPage = 1)}>
-          ⟨⟨
+          âŸ¨âŸ¨
         </button>
-        <button class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => currentPage--}> ⟨ </button>
+        <button class="yorha-pagination-btn" disabled={currentPage === 1} onclick={() => currentPage--}> âŸ¨ </button>
         <span class="yorha-page-info">
           PAGE {currentPage} OF {totalPages}
         </span>
         <button class="yorha-pagination-btn" disabled={currentPage === totalPages} onclick={() => currentPage++}>
-          ⟩
+          âŸ©
         </button>
         <button
           class="yorha-pagination-btn"
           disabled={currentPage === totalPages}
           onclick={() => (currentPage = totalPages)}
         >
-          ⟩⟩
+          âŸ©âŸ©
         </button>
       </div>
     {/if}
@@ -302,21 +298,19 @@
 <style>
   .yorha-table-container {
     /* @apply bg-black border border-amber-400 relative overflow-hidden; */
-    font-family: 'Courier New', monospace;
+    font-family: 'Courier New', monospace
     box-shadow: 0, 0 20px rgba(255, 191, 0, 0.3);
   }
   .yorha-table-container::before {
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    height: 2px
    , background: linear-gradient(90deg, transparent, #ffbf00, transparent);
-    animation: scanline 3s linear infinite;
-  }
-  .yorha-glitch-effect { animation: glitch 0.3s infinite;
-  }
+    animation: scanline 3s linear infinite}
+  .yorha-glitch-effect { animation: glitch 0.3s infinite}
   @keyframes glitch {
     0%,
     100% {
@@ -361,16 +355,14 @@
   }
   .yorha-action-btn {
     /* @apply bg-amber-400 text-black px-3 py-1 font-mono text-xs hover: bg-amber-300 transition-color; */
-    border: 1px solid #ffbf00;
-  }
+    border: 1px solid #ffbf00}
   .yorha-table-wrapper {
     /* @apply overflow-auto max-h-96; */
   }
   .yorha-table {
     /* @apply w-full text-amber-400 font-mono text-sm; */
-    border-collapse: separate;
-    border-spacing: 0;
-  }
+    border-collapse: separate
+    border-spacing: 0}
   .yorha-table-striped .yorha-row-even {
     /* @apply bg-gray-900; */
   }
@@ -417,8 +409,7 @@
   }
   .yorha-checkbox {
     /* @apply w-4 h-4 bg-black border border-amber-400 text-amber-400; */
-    accent-color: #ffbf00;
-  }
+    accent-color: #ffbf00}
   .yorha-row-selected {
     /* @apply bg-amber-400 bg-opacity-10; */
   }
@@ -438,8 +429,7 @@
   .yorha-status-pending,
   .yorha-status-processing {
     /* @apply bg-yellow-600 text-yellow-100 border-yellow-400; */
-    animation: pulse 1.5s infinite;
-  }
+    animation: pulse 1.5s infinite}
   .yorha-status-warning {
     /* @apply bg-orange-600 text-orange-100 border-orange-400; */
   }
@@ -454,8 +444,7 @@
   }
   .yorha-action-btn-sm {
     /* @apply bg-amber-400 text-black px-2 py-1 text-xs font-mono hover: bg-amber-300 transition-color; */
-   , border: 1px solid #ffbf00;
-  }
+   , border: 1px solid #ffbf00}
   .yorha-loading-row,
   .yorha-empty-row {
     /* @apply border-none; */
@@ -469,8 +458,7 @@
   }
   .yorha-spinner {
     /* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
   .yorha-empty-state {
     /* @apply flex flex-col items-center gap-3 text-amber-400; */
   }
@@ -500,9 +488,8 @@
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
-    }
-    50% { opacity: 0.5;
-    }
+      opacity: 1}
+    50% { opacity: 0.5}
   }
 </style>
+

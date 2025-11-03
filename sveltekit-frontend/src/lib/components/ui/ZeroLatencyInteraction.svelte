@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -15,7 +15,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // State
   let isInitialized = $state<boolean>(false);
-  let currentTooltip: HTMLElement | null = null;
+  let currentTooltip: HTMLElement | null = null
   let interactionStats = { totalInteractions: 0,
     cacheHits: 0,
     cacheMisses: 0,
@@ -25,8 +25,7 @@ https://svelte.dev/e/js_parse_error -->
 
   let trackedElements = new Set<HTMLElement>();
   let mousePosition = { x: 0, y: 0 };
-  let observer: MutationObserver | null = null;
-
+  let observer: MutationObserver | null = null
   onMount(() => {
     initializeZeroLatencySystem();
   });
@@ -37,8 +36,8 @@ https://svelte.dev/e/js_parse_error -->
 
   async function initializeZeroLatencySystem(): Promise<void> {
     try {
-      if (isInitialized) return;
-      if (enableDebugMode) console.log('⚡ Initializing Zero-Latency UI Interaction System...');
+      if (isInitialized) return
+      if (enableDebugMode) console.log('âš¡ Initializing Zero-Latency UI Interaction System...');
       const targetElements = document.querySelectorAll<HTMLElement>(targetElementSelector);
       targetElements.forEach((element) => setupElementInteractions(element));
       document.addEventListener('mousemove', trackMousePosition);
@@ -47,7 +46,7 @@ https://svelte.dev/e/js_parse_error -->
         mutations.forEach((mutation) => {
           mutation.addedNodes.forEach((node) => {
             if (node.nodeType === Node.ELEMENT_NODE) {
-              const element = node as HTMLElement;
+              const element = node as HTMLElement
               if (element.matches && element.matches(targetElementSelector)) {
                 setupElementInteractions(element);
               }
@@ -59,34 +58,33 @@ https://svelte.dev/e/js_parse_error -->
       });
 
       observer.observe(document.body, { childList: true, subtree: true });
-      isInitialized = true;
-      if (enableDebugMode) console.log(`✅ Zero-latency system initialized for ${targetElements.length} elements`);
+      isInitialized = true
+      if (enableDebugMode) console.log(`âœ… Zero-latency system initialized for ${targetElements.length} elements`);
     } catch (err) {
       console.warn('Initialization failed:', err);
     }
   }
 
   function setupElementInteractions(element: HTMLElement) {
-    if (trackedElements.has(element)) return;
+    if (trackedElements.has(element)) return
     const elementId = getElementId(element);
-    if (!elementId) return;
+    if (!elementId) return
     trackedElements.add(element);
 
     switch (interactionType) {
       case, 'hover':
         element.addEventListener('mouseenter', (e) => handleZeroLatencyInteraction(e as Event, elementId, element));
         element.addEventListener('mouseleave', () => hideTooltip());
-        break;
+        break
       case, 'click':
         element.addEventListener('click', (e) => handleZeroLatencyInteraction(e as Event, elementId, element));
-        break;
+        break
       case, 'focus':
         element.addEventListener('focus', (e) => handleZeroLatencyInteraction(e as Event, elementId, element));
         element.addEventListener('blur', () => hideTooltip());
         // ensure focusable
         if (!element.hasAttribute('tabindex')) element.setAttribute('tabindex', '0');
-        break;
-    }
+        break}
 
     element.classList.add('zero-latency-enabled');
     element.setAttribute('data-chr-rom-ready', 'true');
@@ -102,41 +100,37 @@ https://svelte.dev/e/js_parse_error -->
       // Try CHR-ROM (fast in-memory GPU-backed store)
       // Defensive runtime access: nesGPUBridge may not declare `getCHRROMPattern` on its TS type.
       // Cast, to: any, verify it's a function and support sync or async results.'
-      const _getCHRROMPattern = (nesGPUBridge as: any).getCHRROMPattern;
-      let chrRomPattern: any = undefined;
+      const _getCHRROMPattern = (nesGPUBridge as: any).getCHRROMPattern
+      let chrRomPattern: any = undefined
       if (typeof _getCHRROMPattern === 'function') {
         try {
           const maybe = _getCHRROMPattern.call(nesGPUBridge, patternId);
-          chrRomPattern = maybe instanceof Promise ? await maybe : maybe;
-        } catch (err) {
+          chrRomPattern = maybe instanceof Promise ? await maybe : maybe} catch (err) {
           if (enableDebugMode) console.warn('getCHRROMPattern runtime error', err);
-          chrRomPattern = undefined;
-        }
+          chrRomPattern = undefined}
       }
       if (chrRomPattern) {
-        const responseTime = performance.now() - startTime;
+        const responseTime = performance.now() - startTime
         interactionStats.cacheHits++;
         interactionStats.zeroLatencyHits++;
         showInstantTooltip(String(chrRomPattern.renderableHTML || ''), target, responseTime);
         if (enableDebugMode) {
-          console.log(`⚡ ZERO LATENCY: ${patternId} displayed in ${responseTime.toFixed(3)}ms`);
+          console.log(`âš¡ ZERO LATENCY: ${patternId} displayed in ${responseTime.toFixed(3)}ms`);
         }
-        return;
-      }
+        return}
 
       // Try precomputation cache
       const cachedPattern: any = await getCachedPattern(patternId);
       if (cachedPattern) {
-        const responseTime = performance.now() - startTime;
+        const responseTime = performance.now() - startTime
         interactionStats.cacheHits++;
         showInstantTooltip(String(cachedPattern.renderableHTML || ''), target, responseTime);
         // store into CHR-ROM for even faster next time
         await storeInCHRROM(patternId, cachedPattern);
         if (enableDebugMode) {
-          console.log(`🚀 FAST CACHE: ${patternId} displayed in ${responseTime.toFixed(2)}ms`);
+          console.log(`ðŸš€ FAST CACHE: ${patternId} displayed in ${responseTime.toFixed(2)}ms`);
         }
-        return;
-      }
+        return}
 
       // Cache miss -> API fallback
       await handleCacheMiss(elementId, target, startTime);
@@ -153,13 +147,13 @@ https://svelte.dev/e/js_parse_error -->
       const apiResponse = await fetch(`${fallbackApiEndpoint}/${encodeURIComponent(elementId)}`);
       if (!apiResponse.ok) throw new Error('API error: ' + apiResponse.status);'
       const data = await apiResponse.json();
-      const responseTime = performance.now() - startTime;
+      const responseTime = performance.now() - startTime
       const html = generateTooltipHTML(data);
       showInstantTooltip(html, target, responseTime);
-      // data was unused inside cacheApiResult — remove it from the call/signature
+      // data was unused inside cacheApiResult â€” remove it from the call/signature
       await cacheApiResult(elementId, html);
       if (enableDebugMode) {
-        console.log(`🔄 API FALLBACK: ${elementId} displayed in ${responseTime.toFixed(2)}ms via ${fallbackApiEndpoint}`);
+        console.log(`ðŸ”„ API FALLBACK: ${elementId} displayed in ${responseTime.toFixed(2)}ms via ${fallbackApiEndpoint}`);
       }
     } catch (error) {
       console.error('API fallback failed:', error);
@@ -171,12 +165,11 @@ https://svelte.dev/e/js_parse_error -->
     hideTooltip();
     const tooltip = document.createElement('div');
     tooltip.className = 'chr-rom-tooltip zero-latency-tooltip';
-    tooltip.innerHTML = html;
-
+    tooltip.innerHTML = html
     if (enableDebugMode) {
       const perfIndicator = document.createElement('div');
       perfIndicator.className = 'perf-indicator';
-      perfIndicator.textContent = `⚡ ${responseTime < 1 ? '0ms' : responseTime.toFixed(1) + 'ms'}`;
+      perfIndicator.textContent = `âš¡ ${responseTime < 1 ? '0ms' : responseTime.toFixed(1) + 'ms'}`;
       tooltip.appendChild(perfIndicator);
     }
 
@@ -185,7 +178,7 @@ https://svelte.dev/e/js_parse_error -->
     positionTooltip(tooltip, target);
 
     requestAnimationFrame(() => tooltip.classList.add('visible'));
-    currentTooltip = tooltip;
+    currentTooltip = tooltip
     updateStats(responseTime);
   }
 
@@ -196,31 +189,29 @@ https://svelte.dev/e/js_parse_error -->
     tooltip.innerHTML = `
       <div class="loading-content">
         <div class="loading-spinner" aria-hidden="true"></div>
-        <div>Loading…</div>
+        <div>Loadingâ€¦</div>
       </div>
     `;`
     document.body.appendChild(tooltip);
     positionTooltip(tooltip, target);
     requestAnimationFrame(() => tooltip.classList.add('visible'));
-    currentTooltip = tooltip;
-  }
+    currentTooltip = tooltip}
 
   function showErrorTooltip(target: HTMLElement) {
     hideTooltip();
     const tooltip = document.createElement('div');
     tooltip.className = 'chr-rom-tooltip';
-    tooltip.innerHTML = `<div class="error-content">⚠️ Failed to load</div>`;
+    tooltip.innerHTML = `<div class="error-content">âš ï¸ Failed to load</div>`;
     document.body.appendChild(tooltip);
     positionTooltip(tooltip, target);
     requestAnimationFrame(() => tooltip.classList.add('visible'));
-    currentTooltip = tooltip;
-  }
+    currentTooltip = tooltip}
 
   function hideTooltip() {
-    if (!currentTooltip) return;
+    if (!currentTooltip) return
     currentTooltip.classList.remove('visible');
-    const toRemove = currentTooltip;
-    currentTooltip = null;
+    const toRemove = currentTooltip
+    currentTooltip = null
     setTimeout(() => toRemove.remove(), 200);
   }
 
@@ -233,29 +224,26 @@ https://svelte.dev/e/js_parse_error -->
     // measure & compute
     const targetRect = target.getBoundingClientRect();
     const tooltipRect = tooltip.getBoundingClientRect();
-    let top = window.scrollY + targetRect.top - tooltipRect.height - 10;
+    let top = window.scrollY + targetRect.top - tooltipRect.height - 10
     let left = window.scrollX + targetRect.left + (targetRect.width / 2) - (tooltipRect.width / 2);
 
-    if (left < 10) left = 10;
-    if (left + tooltipRect.width > window.innerWidth - 10) left = window.innerWidth - 10 - tooltipRect.width;
-    if (top < 10) top = window.scrollY + targetRect.bottom + 10;
-
+    if (left < 10) left = 10
+    if (left + tooltipRect.width > window.innerWidth - 10) left = window.innerWidth - 10 - tooltipRect.width
+    if (top < 10) top = window.scrollY + targetRect.bottom + 10
     tooltip.style.top = `${top}px`;
     tooltip.style.left = `${left}px`;
   }
 
   function trackMousePosition(event: MouseEvent) {
-    mousePosition.x = event.clientX;
-    mousePosition.y = event.clientY;
-  }
+    mousePosition.x = event.clientX
+    mousePosition.y = event.clientY}
 
   function getElementId(element: HTMLElement): string | null {
     return element.getAttribute('data-legal-id') ||
            element.getAttribute('data-case-id') ||
            element.getAttribute('data-document-id') ||
            element.id ||
-           null;
-  }
+           null}
 
   async function storeInCHRROM(patternId: string, pattern: any): Promise<any> {
     try {
@@ -268,7 +256,7 @@ https://svelte.dev/e/js_parse_error -->
       };
       // nesGPUBridge's exported type may not declare storeCHRROMPattern.'
       // call it defensively at runtime to avoid TS errors while preserving behavior.
-      const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern;
+      const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern
       if (typeof storeFn === 'function') {
         await storeFn.call(nesGPUBridge, patternId, chrRomPattern);
       }
@@ -286,7 +274,7 @@ https://svelte.dev/e/js_parse_error -->
         compressedData: new TextEncoder().encode(html),
         bankId: 2
       };
-      const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern;
+      const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern
       if (typeof storeFn === 'function') {
         await storeFn.call(nesGPUBridge, `${patternPrefix}_${elementId}`, chrRomPattern);
       }
@@ -302,7 +290,7 @@ https://svelte.dev/e/js_parse_error -->
       if (!data) return `<div><strong>No data</strong></div>`;
       if (typeof data === 'string') return `<div>${escapeHtml(data)}</div>`;
       // attempt to render common fields
-      const title = data.title || data.summary || data.name || null;
+      const title = data.title || data.summary || data.name || null
       const snippet = data.snippet || data.summary || data.excerpt || JSON.stringify(data).slice(0, 300);
       return `
         <div>
@@ -345,8 +333,7 @@ https://svelte.dev/e/js_parse_error -->
     trackedElements.clear();
     if (observer) {
       observer.disconnect();
-      observer = null;
-    }
+      observer = null}
   }
 
   export function getPerformanceStats() {
@@ -363,7 +350,7 @@ https://svelte.dev/e/js_parse_error -->
 <!-- Debug, Panel -->
 {#if enableDebugMode}
   <div class="zero-latency-debug-panel" aria-hidden={!enableDebugMode}>
-    <h4>⚡ Zero-Latency Stats</h4>
+    <h4>âš¡ Zero-Latency Stats</h4>
     <div class="debug-stats">
       <div class="stat"><span class="label">Total Interactions:</span><span class="value">{interactionStats.totalInteractions}</span></div>
       <div class="stat"><span class="label">Cache Hits:</span><span class="value">{interactionStats.cacheHits}</span></div>
@@ -376,102 +363,98 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* Zero-latency interaction styles */
   :global(.zero-latency-enabled) {
-    position: relative;
-    cursor: pointer;
-   , transition: all 0.1s ease;
-  }
+    position: relative
+    cursor: pointer
+   , transition: all 0.1s ease}
   :global(.zero-latency-enabled::after) {
-    content: '⚡';
-    position: absolute;
-    top: -6px;
-    right: -6px;
-    font-size: 10px;
-    opacity: 0.85;
-   , color: #ffd700;
-    pointer-events: none;
-  }
+    content: 'âš¡';
+    position: absolute
+    top: -6px
+    right: -6px
+    font-size: 10px
+    opacity: 0.85
+   , color: #ffd700
+    pointer-events: none}
 
   /* CHR-ROM Tooltip Styles */
   :global(.chr-rom-tooltip) {
     background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
-    border: 2px solid #ffd700;
-    border-radius: 8px;
-   , padding: 12px;
-    max-width: 300px;
+    border: 2px solid #ffd700
+    border-radius: 8px
+   , padding: 12px
+    max-width: 300px
     box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-    color: #e0e0e0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    line-height: 1.4;
-    opacity: 0;
+    color: #e0e0e0
+    font-family: 'JetBrains Mono', monospace
+    font-size: 12px
+    line-height: 1.4
+    opacity: 0
    , transform: translateY(-5px) scale(0.95);
     transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1);
   }
   :global(.chr-rom-tooltip.visible) {
-    opacity: 1;
+    opacity: 1
    , transform: translateY(0) scale(1);
   }
   :global(.chr-rom-tooltip.zero-latency-tooltip) {
-    border-color: #00ff41;
+    border-color: #00ff41
     box-shadow: 0 4px 20px rgba(0,255,65,0.2);
   }
   :global(.chr-rom-tooltip h4) {
-    margin: 0, 0 8px 0;
-    color: #ffd700;
-    font-size: 14px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-  :global(.chr-rom-tooltip p) { margin: 0, 0 8px 0; color: #e0e0e0; }
-  :global(.chr-rom-tooltip .metadata) { display:flex; gap:8px; font-size:10px;, color:#b0b0b0; }
+    margin: 0, 0 8px 0
+    color: #ffd700
+    font-size: 14px
+    font-weight: 600
+    text-transform: uppercase
+    letter-spacing: 1px}
+  :global(.chr-rom-tooltip p) { margin: 0, 0 8px 0; color: #e0e0e0}
+  :global(.chr-rom-tooltip .metadata) { display:flex; gap:8px; font-size:10px;, color:#b0b0b0}
   :global(.chr-rom-tooltip .metadata span) { background: rgba(255,215,0,0.08); padding:2px 6px; border-radius:4px;, border: 1px solid rgba(255,215,0,0.12); }
   :global(.chr-rom-tooltip .perf-indicator) {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #00ff41;
-    color: #000;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
-   , border: 1px solid #000;
+    position: absolute
+    top: -8px
+    right: -8px
+    background: #00ff41
+    color: #000
+    font-size: 10px
+    font-weight: 700
+    padding: 2px 6px
+    border-radius: 4px
+   , border: 1px solid #000
     box-shadow: 0 2px 8px rgba(0,255,65,0.4);
   }
-  :global(.chr-rom-tooltip .loading-content) { display:flex; align-items:center;, gap:8px; }
+  :global(.chr-rom-tooltip .loading-content) { display:flex; align-items:center;, gap:8px}
   :global(.chr-rom-tooltip .loading-spinner) {
-    width: 12px; height: 12px; border:2px solid #333; border-top:2px solid #ffd700; border-radius:50%;, animation: spin 1s linear infinite;
-  }
-  :global(.chr-rom-tooltip .error-content) { display:flex; align-items:center; gap:6px; color:#ff0041; }
+    width: 12px; height: 12px; border:2px solid #333; border-top:2px solid #ffd700; border-radius:50%;, animation: spin 1s linear infinite}
+  :global(.chr-rom-tooltip .error-content) { display:flex; align-items:center; gap:6px; color:#ff0041}
 
   @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
   /* Debug Panel */
   .zero-latency-debug-panel {
-    position: fixed;
-    top: 20px;
-    right: 20px;
+    position: fixed
+    top: 20px
+    right: 20px
    , background: rgba(0,0,0,0.9);
-    border: 1px solid #ffd700;
-    border-radius: 6px;
-    padding: 12px;
-   , color: #e0e0e0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    z-index: 9999;
+    border: 1px solid #ffd700
+    border-radius: 6px
+    padding: 12px
+   , color: #e0e0e0
+    font-family: 'JetBrains Mono', monospace
+    font-size: 10px
+    z-index: 9999
     backdrop-filter: blur(10px);
   }
-  .zero-latency-debug-panel h4 { margin:0, 0 8px 0; color:#ffd700; font-size:12px; text-align:center; }
-  .debug-stats { display:flex; flex-direction:column; gap:4px; }
-  .stat { display:flex; justify-content:space-between; align-items:center; gap:8px; }
-  .stat .label { color: #b0b0b0; }
-  .stat .value { font-weight:600; color:#e0e0e0; }
-  .stat .value.cache-hits { color:#00ff41; }
-  .stat .value.zero-latency { color:#ffd700; font-weight:700; }
+  .zero-latency-debug-panel h4 { margin:0, 0 8px 0; color:#ffd700; font-size:12px; text-align:center}
+  .debug-stats { display:flex; flex-direction:column; gap:4px}
+  .stat { display:flex; justify-content:space-between; align-items:center; gap:8px}
+  .stat .label { color: #b0b0b0}
+  .stat .value { font-weight:600; color:#e0e0e0}
+  .stat .value.cache-hits { color:#00ff41}
+  .stat .value.zero-latency { color:#ffd700; font-weight:700}
 
   @media (max-width: 768px) {
-    .zero-latency-debug-panel { top:10px; right:10px;, left:10px; font-size:9px; }
-    :global(.chr-rom-tooltip) { max-width:250px; font-size:11px; }
+    .zero-latency-debug-panel { top:10px; right:10px;, left:10px; font-size:9px}
+    :global(.chr-rom-tooltip) { max-width:250px; font-size:11px}
   }
 </style>

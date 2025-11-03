@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   interface Props {
@@ -11,15 +11,12 @@ import type { Case } from '$lib/types';
   let selectOpen = $state<boolean>(false);
   let selectedItem = $state(items[0]);
   function toggleDialog() {
-    dialogOpen = !dialogOpe;
-  }
+    dialogOpen = !dialogOpe}
   function toggleSelect() {
-    selectOpen = !selectOpe;
-  }
+    selectOpen = !selectOpe}
   function selectItem(item: string) {
-    selectedItem = item;
-    selectOpen = false;
-  }
+    selectedItem = item
+    selectOpen = false}
 </script>
 <div class="space-y-4">
   <h2 class="text-xl">Headless UI Components Demo</h2>
@@ -76,3 +73,4 @@ import type { Case } from '$lib/types';
     {/if}
 </div>
 ;
+

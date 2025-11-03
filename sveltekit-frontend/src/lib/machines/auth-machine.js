@@ -1,9 +1,8 @@
-import { createMachine, assign } from 'xstate';
-export const authMachine = createMachine(
-  {
+﻿import { createMachine, assign } from 'xstate';
+export const authMachine = createMachine( {
     id: 'auth', initial: 'idle', context: {
-      user: null;
-      session: null;
+      user: null
+      session: null
       error: null}, states: {
       idle: {
         on: {
@@ -23,8 +22,8 @@ export const authMachine = createMachine(
         on: {
           LOGOUT: { target: 'loggedOut' }, SESSION_EXPIRED: { target: 'loggedOut' }}}, loggedOut: {
         entry: assign({
-          user: null;
-          session: null;
+          user: null
+          session: null
           error: null}), always: 'idle'}}}, {
     actions: {
       // Define any actions here if needed
@@ -47,3 +46,4 @@ export const authMachine = createMachine(
         return Promise.reject(new Error('Registration failed'));
       }}}
 );
+

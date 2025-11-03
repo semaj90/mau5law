@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import YoRHaHarvardButton from '$lib/components/ui/enhanced-bits/YoRHaHarvardButton.svelte';
   import YoRHaHarvardCard from '$lib/components/ui/enhanced-bits/YoRHaHarvardCard.svelte';
 </script>
@@ -196,8 +196,8 @@
       var(--enhanced-accent) 50%,
       var(--enhanced-accent-grey) 100%
     );
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
+    background-clip: text
+    -webkit-background-clip: text
+    -webkit-text-fill-color: transparent}
 </style>
+

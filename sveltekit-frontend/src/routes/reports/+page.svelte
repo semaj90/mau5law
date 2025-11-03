@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
   import type { Report } from '$lib/types/index';
@@ -9,18 +9,15 @@ import type { Case } from '$lib/types';
 
   // Local UI state (avoid colliding with `reports` store name)
   let reportList: Report[] = [];
-  let loading = true;
-  let error: string | null = null;
-
+  let loading = true
+  let error: string | null = null
   // Editor local state
   let title = '';
   let content = '';
-  let hoverSaveTimeout: ReturnType<typeof setTimeout> | null = null;
-
-  let reportsUnsub: (() => void) | null = null;
-
+  let hoverSaveTimeout: ReturnType<typeof setTimeout> | null = null
+  let reportsUnsub: (() => void) | null = null
   onMount(async () => {
-    loading = true;
+    loading = true
     try {
       // Prefer the centralized store loader
       await loadReports();
@@ -46,10 +43,9 @@ import type { Case } from '$lib/types';
       try {
         const tauriReports = await TauriAPI.getReports();
         if (Array.isArray(tauriReports) && tauriReports.length > 0 && reportList.length === 0) {
-          reportList = tauriReports;
-        }
+          reportList = tauriReports}
       } catch (tauriErr) {
-        // swallow Tauri error — store loader is primary
+        // swallow Tauri error â€” store loader is primary
         console.debug('Tauri getReports fallback failed:', tauriErr);
       }
 
@@ -69,30 +65,26 @@ import type { Case } from '$lib/types';
       console.error('Error loading reports:', err);
       error = 'Error loading reports';
     } finally {
-      loading = false;
-    }
+      loading = false}
   });
 
   onDestroy(() => {
     if (reportsUnsub) reportsUnsub();
     if (hoverSaveTimeout) {
       clearTimeout(hoverSaveTimeout);
-      hoverSaveTimeout = null;
-    }
+      hoverSaveTimeout = null}
   });
 
   function handleHoverStart() {
     if (hoverSaveTimeout) clearTimeout(hoverSaveTimeout);
     hoverSaveTimeout = setTimeout(async () => {
       await saveReport({ title, content });
-      hoverSaveTimeout = null;
-    }, 800);
+      hoverSaveTimeout = null}, 800);
   }
   function handleHoverEnd() {
     if (hoverSaveTimeout) {
       clearTimeout(hoverSaveTimeout);
-      hoverSaveTimeout = null;
-    }
+      hoverSaveTimeout = null}
   }
 
   function formatDate(date: Date | string) {
@@ -190,7 +182,7 @@ import type { Case } from '$lib/types';
                 </h2>
                 <p class="space-y-4">{report.summary}</p>
                 <div class="space-y-4">
-                  <span>Type: {report.reportType ?? '—'}</span>
+                  <span>Type: {report.reportType ?? 'â€”'}</span>
                   <span>Created: {formatDate(report.createdAt ?? new Date())}</span>
                   <span>Words: {report.wordCount ?? 0}</span>
                   {#if report.estimatedReadTime != null}
@@ -235,3 +227,4 @@ import type { Case } from '$lib/types';
     </div>
   {/if}
 </div>
+

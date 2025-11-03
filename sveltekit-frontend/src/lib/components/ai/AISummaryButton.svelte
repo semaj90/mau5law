@@ -1,11 +1,10 @@
-<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
+﻿<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    text?: string;
-    onsummary?: () => void;
-  }
+    text?: string
+    onsummary?: () => void}
   // Receive props (Svelte, 5 runes)
   let { text = '', onsummary }: Props = $props();
   // reactive state
@@ -13,15 +12,15 @@
   let errorMessage = $state<string>('');
   let loading = $state<boolean>(false);
   // keep a controller so subsequent clicks abort previous requests
-  let currentController: AbortController | null = null;
+  let currentController: AbortController | null = null
   const REQUEST_TIMEOUT_MS = 30000; // 30s
   async function getSummary(input: string): Promise<any> {
-    if (!input || !input.trim()) return;
+    if (!input || !input.trim()) return
     // abort previous
     currentController?.abort();
     const controller = new AbortController();
-    currentController = controller;
-    loading = true;
+    currentController = controller
+    loading = true
     errorMessage = '';
     summary = '';
     // timeout fallback
@@ -43,7 +42,7 @@
         } catch {
           // ignore parse error
         }
-        throw new Error(`HTTP error: ${res.status}${detail ? ' — ' + detail : ''}`);
+        throw new Error(`HTTP error: ${res.status}${detail ? ' â€” ' + detail : ''}`);
       }
       // defensively parse JSON
       const data = await res.json().catch(() => ({}));
@@ -57,16 +56,14 @@
       } else {
         console.error('Summary failed', e);
         if (e instanceof Error) {
-          errorMessage = e.message;
-        } else {
+          errorMessage = e.message} else {
           errorMessage = 'An: unknown error occurred.';
         }
       }
     } finally {
-      loading = false;
+      loading = false
       // clear only if current controller is the one we created
-      if (currentController === controller) currentController = null;
-    }
+      if (currentController === controller) currentController = null}
   }
 </script>
 <!-- Use onclick (Svelte 5) and disable when no input or, while, loading -->
@@ -93,3 +90,4 @@
     <div class="space-y-2"><strong>AI Summary</strong></div>
     <div>{summary}</div>
   {/if}
+

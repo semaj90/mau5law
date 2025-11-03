@@ -1,20 +1,18 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
   import { Upload, X, CheckCircle, AlertCircle } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   interface UploadResult {
-    success: boolean;
-    message: string;
+    success: boolean
+    message: string
     document?: {
-      id: string;
-      filename: string;
-      title: string;
-      chunks: number;
-      hasOCR: boolean;
-     , embeddingModel: string;
-    };
-    error?: string;
-  }
+      id: string
+      filename: string
+      title: string
+      chunks: number
+      hasOCR: boolean
+     , embeddingModel: string};
+    error?: string}
   let files = $state<FileList | null>(null);
   let tags = $state<string>('');
   let uploading = $state<boolean>(false);
@@ -31,20 +29,18 @@ import type { Document } from '$lib/types';
   function handleDrop(e: DragEvent) {
     e.preventDefault();
     e.stopPropagation();
-    dragActive = false;
+    dragActive = false
     if (e.dataTransfer?.files) {
-      files = e.dataTransfer.files;
-    }
+      files = e.dataTransfer.files}
   }
   async function handleUpload(): Promise<any> {
     if (!files || files.length === 0) {
       message = 'Please select a file first';
       messageType = 'error';
-      return;
-    }
-    uploading = true;
-    uploadProgress = 0;
-    uploadResult = null;
+      return}
+    uploading = true
+    uploadProgress = 0
+    uploadResult = null
     message = '';
     try {
       const file = files[0]; // Upload first file only
@@ -61,23 +57,22 @@ import type { Document } from '$lib/types';
         const error = await response.json();
         throw new Error(error.error || 'Upload failed');
       }
-      uploadProgress = 100;
+      uploadProgress = 100
       const data = await response.json();
-      uploadResult = data;
+      uploadResult = data
       message = data.message || 'Document uploaded successfully';
       messageType = 'success';
-      files = null;
+      files = null
       tags = '';
     } catch (error) {
       message = error instanceof Error ? error.message : 'Upload failed';
       messageType = 'error';
     } finally {
-      uploading = false;
-    }
+      uploading = false}
   }
   function clearFiles() {
-    files = null;
-    uploadResult = null;
+    files = null
+    uploadResult = null
     message = '';
   }
 </script>
@@ -165,7 +160,7 @@ import type { Document } from '$lib/types';
         <p><strong>Chunks:</strong> {uploadResult.document.chunks}</p>
         <p><strong>Embedding, Model:</strong> {uploadResult.document.embeddingModel}</p>
         {#if uploadResult.document.hasOCR}
-          <p><strong>OCR:</strong> Processed ✓</p>
+          <p><strong>OCR:</strong> Processed âœ“</p>
         {/if}
       </div>
     {/if}
@@ -197,6 +192,6 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   input[type='file'] {
-    cursor: pointer;
-  }
+    cursor: pointer}
 </style>
+

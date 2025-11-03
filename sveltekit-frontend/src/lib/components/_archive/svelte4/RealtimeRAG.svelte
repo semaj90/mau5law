@@ -1,4 +1,4 @@
-<!-- Real-time RAG, Interface, Component -->
+﻿<!-- Real-time RAG, Interface, Component -->
 <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -12,16 +12,14 @@ import type { Document } from '$lib/types';
     documentTypes = $bindable([]),
     onResultSelect = $bindable()
   }: {
-    selectedCaseId?: any;
+    selectedCaseId?: any
     documentTypes?: any[];
-    onResultSelect?: any;
-  } = $props();
+    onResultSelect?: any} = $props();
   // Initialize real-time RAG store
   const ragStore = createRealtimeRAGStore();
   // Initialize XState machine
   const ragMachine = useMachine(ragQueryMachine, {
-    services: ragQueryService;
-  });
+    services: ragQueryService});
   // Local component state
   let query = $state<string>('');
   let showAdvancedOptions = $state<boolean>(false);
@@ -47,14 +45,14 @@ import type { Document } from '$lib/types';
       // removed unused response assignment
       if (response.ok) {
         const data = await response.json();
-        console.log(`📚 Loaded ${data.documents?.length || 0} documents`);
+        console.log(`ðŸ“š Loaded ${data.documents?.length || 0} documents`);
       }
     } catch (error) {
       console.error('Failed to load documents:', error);
     }
   }
   function handleQuerySubmit() {
-    if (!query.trim()) return;
+    if (!query.trim()) return
     ragMachine.send({
       type: 'QUERY',
       query: query.trim(),
@@ -104,7 +102,7 @@ import type { Document } from '$lib/types';
           </span>
         </div>
         <div class="text-sm">
-          {stats.totalDocuments} docs • {stats.processingCount} processing
+          {stats.totalDocuments} docs â€¢ {stats.processingCount} processing
         </div>
       </div>
     </div>
@@ -354,7 +352,7 @@ import type { Document } from '$lib/types';
                   {job.filename}
                 </div>
                 <div class="text-xs">
-                  {job.status} • {new Date(job.created_at).toLocaleTimeString()}
+                  {job.status} â€¢ {new Date(job.created_at).toLocaleTimeString()}
                 </div>
               </div>
             </div>
@@ -372,60 +370,49 @@ import type { Document } from '$lib/types';
 
 <style>
   .realtime-rag-interface {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
-  }
+    max-width: 1200px
+    margin: 0 auto
+    padding: 1rem}
   .connection-indicator {
-    width: 8px;
-    height: 8px;
+    width: 8px
+    height: 8px
     border-radius: 50%;
-    background-color: #ef4444;
-  }
+    background-color: #ef4444}
   .connection-indicator.connected {
-    background-color: #22c55;
-    animation: pulse 2s infinite;
-  }
+    background-color: #22c55
+    animation: pulse 2s infinite}
   .connection-indicator.connecting {
-    background-color: #eab308;
-    animation: pulse 1s infinite;
-  }
+    background-color: #eab308
+    animation: pulse 1s infinite}
   .source-card:hover { transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-   , overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 3
+    -webkit-box-orient: vertical
+   , overflow: hidden}
   @keyframes pulse {
     0%,
     100% {
-      opacity: 1;
-    }
+      opacity: 1}
     50% {
-      opacity: 0.5;
-    }
+      opacity: 0.5}
   }
-  .processing-spinner { display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .processing-spinner { display: flex
+    align-items: center
+    justify-content: center}
   .prose {
-    line-height: 1.6;
-  }
+    line-height: 1.6}
   @media (max-width: 768px) {
     .realtime-rag-interface {
-      padding: 0.5rem;
-    }
+      padding: 0.5rem}
     .advanced-options {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .rag-header .flex {
-      flex-direction: column;
-     , gap: 0.5rem;
-    }
+      flex-direction: column
+     , gap: 0.5rem}
   }
 </style>
+
 

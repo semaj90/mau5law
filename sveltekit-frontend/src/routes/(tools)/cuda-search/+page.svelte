@@ -1,4 +1,4 @@
-<!-- Test page for CUDA, Search, integration -->
+﻿<!-- Test page for CUDA, Search, integration -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   import SearchBox from '$lib/components/SearchBox.svelte';
@@ -19,13 +19,13 @@ import type { Document } from '$lib/types';
 </svelte:head>
 <main class="container">
   <section class="hero nes-container">
-    <h1 class="title">⚡ CUDA Legal AI Search</h1>
+    <h1 class="title">âš¡ CUDA Legal AI Search</h1>
     <p class="nes-text">
-      🚀 <strong>RTX, 3060 Ti</strong> powered semantic search using Ollama's Gemma3:legal-latest model'
+      ðŸš€ <strong>RTX, 3060 Ti</strong> powered semantic search using Ollama's Gemma3:legal-latest model'
       <br />
-      🔗 <strong>pgvector</strong> similarity search with PostgreSQL
+      ðŸ”— <strong>pgvector</strong> similarity search with PostgreSQL
       <br />
-      ⚡ <strong>GPU acceleration</strong> for embedding generation and vector operations
+      âš¡ <strong>GPU acceleration</strong> for embedding generation and vector operations
     </p>
   </section>
   <section class="search-section">
@@ -38,10 +38,10 @@ import type { Document } from '$lib/types';
     />
   </section>
   <section class="features nes-container">
-    <h2 class="title">🔧 System Features</h2>
+    <h2 class="title">ðŸ”§ System Features</h2>
     <div class="feature-grid">
       <div class="feature-item">
-        <h3 class="nes-text">🖥️ CUDA Acceleration</h3>
+        <h3 class="nes-text">ðŸ–¥ï¸ CUDA Acceleration</h3>
         <ul class="nes-list">
           <li>RTX, 3060 Ti with, 4,864 CUDA cores</li>
           <li>152 Tensor cores for AI workloads</li>
@@ -50,7 +50,7 @@ import type { Document } from '$lib/types';
         </ul>
       </div>
       <div class="feature-item">
-        <h3 class="nes-text">🤖 Ollama Integration</h3>
+        <h3 class="nes-text">ðŸ¤– Ollama Integration</h3>
         <ul class="nes-list">
           <li>Gemma3:legal-latest model</li>
           <li>Local LLM inference</li>
@@ -59,7 +59,7 @@ import type { Document } from '$lib/types';
         </ul>
       </div>
       <div class="feature-item">
-        <h3 class="nes-text">📊 Vector Database</h3>
+        <h3 class="nes-text">ðŸ“Š Vector Database</h3>
         <ul class="nes-list">
           <li>PostgreSQL with pgvector extension</li>
           <li>Cosine similarity search</li>
@@ -70,13 +70,12 @@ import type { Document } from '$lib/types';
     </div>
   </section>
   <section class="api-info nes-container">
-    <h2 class="title">🔗 API Integration</h2>
+    <h2 class="title">ðŸ”— API Integration</h2>
     <div class="api-details">
       <h3 class="nes-text">Search Endpoint</h3>
       <div class="code-block nes-container">
         <pre class="nes-text">{@html `POST http://localhost:8096/api/v1/search`
-Content-Type: application/json
-{
+Content-Type: application/json {
   "q": "contract termination clause",
   "limit": 5
 }`}</pre>`
@@ -85,8 +84,7 @@ Content-Type: application/json
       <div class="code-block nes-container">
         <pre class="nes-text">{@html `{`
   "query": "contract termination clause",
-  "results": [
-    {
+  "results": [ {
       "id": "doc_123",
       "task_id": "task_456",
       "payload": "Document content...",
@@ -101,11 +99,11 @@ Content-Type: application/json
     </div>
   </section>
   <section class="system-status nes-container">
-    <h2 class="title">📡 System Status</h2>
+    <h2 class="title">ðŸ“¡ System Status</h2>
     <div class="status-grid">
       <div class="status-item">
         <p class="nes-text">
-          🖥️ <strong>CUDA Service:</strong>
+          ðŸ–¥ï¸ <strong>CUDA Service:</strong>
           <a href="http://localhost:8096/api/v1/health" target="_blank" class="nes-text"
             >, localhost:8096
           </a>
@@ -113,13 +111,13 @@ Content-Type: application/json
       </div>
       <div class="status-item">
         <p class="nes-text">
-          🤖 <strong>Ollama:</strong>
+          ðŸ¤– <strong>Ollama:</strong>
           <a href="http://localhost:11434/api/tags" target="_blank" class="nes-text">, localhost:11434 </a>
         </p>
       </div>
       <div class="status-item">
         <p class="nes-text">
-          📊 <strong>PostgreSQL:</strong>
+          ðŸ“Š <strong>PostgreSQL:</strong>
           <span class="nes-text">localhost:5432/legal_ai</span>
         </p>
       </div>
@@ -129,106 +127,82 @@ Content-Type: application/json
 
 <style>
   :global(body) {
-    font-family: 'Press Start 2P', cursive;
-    background-color: #212529;
-    color: #f8f9fa;
-    line-height: 1.6;
-  }
+    font-family: 'Press Start 2P', cursive
+    background-color: #212529
+    color: #f8f9fa
+    line-height: 1.6}
   .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
+    max-width: 1200px
+    margin: 0 auto
+    padding: 20px}
   .hero {
-    text-align: center;
-    margin-bottom: 40px;
-    background-color: #0f4c75;
-  }
+    text-align: center
+    margin-bottom: 40px
+    background-color: #0f4c75}
   .hero h1 {
-    margin-bottom: 20px;
-    color: #92cc41;
-  }
+    margin-bottom: 20px
+    color: #92cc41}
   .search-section {
-    margin-bottom: 40px;
-  }
+    margin-bottom: 40px}
   .features {
-    margin-bottom: 40px;
-    background-color: #2d3436;
-  }
-  .feature-grid { display: grid;
+    margin-bottom: 40px
+    background-color: #2d3436}
+  .feature-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-top: 20px;
-  }
+    gap: 20px
+    margin-top: 20px}
   .feature-item {
-    background-color: #1a1a1a;
-  }
+    background-color: #1a1a1a}
   .feature-item h3 {
-    margin-bottom: 15px;
-  }
+    margin-bottom: 15px}
   .api-info {
-    margin-bottom: 40px;
-    background-color: #2d3436;
-  }
-  .api-details h3 { margin: 20px, 0 10px 0;
-    color: #92cc41;
-  }
+    margin-bottom: 40px
+    background-color: #2d3436}
+  .api-details h3 { margin: 20px, 0 10px 0
+    color: #92cc41}
   .code-block {
-    margin: 15px 0;
-    background-color: #000;
-  }
+    margin: 15px 0
+    background-color: #000}
   .code-block pre {
-    margin: 0;
-    color: #00ff00;
-    font-size: 10px;
-    line-height: 1.4;
-    overflow-x: auto;
-  }
+    margin: 0
+    color: #00ff00
+    font-size: 10px
+    line-height: 1.4
+    overflow-x: auto}
   .system-status {
-    background-color: #2d3436;
-  }
-  .status-grid { display: grid;
+    background-color: #2d3436}
+  .status-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-  }
+    gap: 15px
+    margin-top: 20px}
   .status-item {
-    background-color: #1a1a1a;
-    text-align: center;
-    padding: 15px;
-  }
+    background-color: #1a1a1a
+    text-align: center
+    padding: 15px}
   .status-item a {
-    text-decoration none;
-  }
+    text-decoration none}
   .status-item, a:hover {
-    text-decoration underline;
-  }
+    text-decoration underline}
   /* Responsive design */
   @media (max-width: 768px) {
     .container {
-      padding: 10px;
-    }
+      padding: 10px}
     .feature-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .status-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .code-block pre {
-      font-size: 8px;
-    }
+      font-size: 8px}
   }
   /* NES.css enhancements */
   :global(.nes-container.with-title > .title) {
-    background-color: inherit;
-   , padding: 0 20px;
-  }
+    background-color: inherit
+   , padding: 0 20px}
   :global(.nes-list.is-disc) {
-    list-style-type: disc;
-    margin-left: 20px;
-  }
+    list-style-type: disc
+    margin-left: 20px}
   :global(.nes-list.is-disc li) {
-    margin-bottom: 5px;
-  }
+    margin-bottom: 5px}
 </style>
+
 

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Vector Recommendations Widget
 Compact AI recommendations component for sidebar/dashboard use
 -->
@@ -29,15 +29,14 @@ Compact AI recommendations component for sidebar/dashboard use
   import { vectorIntelligenceService } from '$lib/services/vector-intelligence-service.js';
   import type { IntelligenceRecommendation } from '$lib/services/vector-intelligence-service.js';
   interface Props {
-    context?: string;
+    context?: string
     userRole?: 'prosecutor' | 'detective' | 'admin' | 'user';
-    currentCaseId?: string;
-    maxRecommendations?: number;
-    autoRefresh?: boolean;
+    currentCaseId?: string
+    maxRecommendations?: number
+    autoRefresh?: boolean
     refreshInterval?: number; // minutes
-    compact?: boolean;
-    onRecommendationClick?: (recommendation: IntelligenceRecommendation) => void;
-  }
+    compact?: boolean
+    onRecommendationClick?: (recommendation: IntelligenceRecommendation) => void}
   let {
     context = 'General legal assistance and case management',
     userRole = 'user',
@@ -61,14 +60,13 @@ Compact AI recommendations component for sidebar/dashboard use
     return () => {
       if (refreshTimer) {
         clearInterval(refreshTimer);
-        refreshTimer = null;
-      }
+        refreshTimer = null}
     };
   });
 
   async function loadRecommendations(): Promise<any> {
-    if (isLoading) return;
-    isLoading = true;
+    if (isLoading) return
+    isLoading = true
     try {
       const result = await vectorIntelligenceService.generateRecommendations({
         context,
@@ -104,22 +102,20 @@ Compact AI recommendations component for sidebar/dashboard use
       console.error('Failed to load recommendations:', error);
       recommendations = [];
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
 
   function getRecommendationIcon(type: string) {
     switch (type) {
       case, 'action':
-        return Target;
+        return Target
       case, 'insight':
-        return Lightbulb;
+        return Lightbulb
       case, 'warning':
-        return AlertTriangle;
+        return AlertTriangle
       case, 'opportunity':
-        return TrendingUp;
-      default: return FileText;
-    }
+        return TrendingUp
+      default: return FileText}
   }
 
   function getRecommendationColor(type: string) {
@@ -139,15 +135,14 @@ Compact AI recommendations component for sidebar/dashboard use
   function getPriorityIcon(priority: string) {
     switch (priority) {
       case, 'critical':
-        return AlertTriangle;
+        return AlertTriangle
       case, 'high':
-        return Zap;
+        return Zap
       case, 'medium':
-        return Clock;
+        return Clock
       case, 'low':
-        return FileText;
-      default: return FileText;
-    }
+        return FileText
+      default: return FileText}
   }
 
   function getPriorityColor(priority: string) {
@@ -268,7 +263,7 @@ Compact AI recommendations component for sidebar/dashboard use
             {#if rec.estimatedImpact && !compact}
               <div class="flex items-center gap-3 mt-2 text-xs nes-text">
                 <span>Time: {rec.estimatedImpact.timeToComplete}min</span>
-                <span>•</span>
+                <span>â€¢</span>
                 <span>Success: {rec.estimatedImpact.successProbability}%</span>
               {/if}
           </button>
@@ -290,10 +285,9 @@ Compact AI recommendations component for sidebar/dashboard use
 <style>
   /* @unocss-include */
   .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
+    display: -webkit-box
+    -webkit-line-clamp: 2
     line-clamp: 2; /* added standard property for compatibility */
-    -webkit-box-orient: vertical;
-   , overflow: hidden;
-  }
+    -webkit-box-orient: vertical
+   , overflow: hidden}
 </style>

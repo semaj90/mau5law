@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc;
+﻿<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc
 https://svelte.dev/e/props_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once -->
 <script lang="ts">
@@ -11,7 +11,7 @@ import type { User } from '$lib/types';
   const { clickable } = $props<{ clickable: boolean }>()
   const { showUploadButton } = $props<{ showUploadButton: boolean }>()
 
-  let fileInput: HTMLInputElement | null = null;
+  let fileInput: HTMLInputElement | null = null
   let dragOver = $state<boolean>(false);
 
   // reactive avatarSize based on size prop
@@ -28,7 +28,7 @@ import type { User } from '$lib/types';
   }
 
   function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement | null;
+    const target = event.target as HTMLInputElement | null
     const file = target?.files?.[0];
     if (file) {
       uploadFile(file);
@@ -37,8 +37,8 @@ import type { User } from '$lib/types';
 
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
-    const files = event.dataTransfer?.files;
+    dragOver = false
+    const files = event.dataTransfer?.files
     if (files && files.length > 0) {
       uploadFile(files[0]);
     }
@@ -46,26 +46,22 @@ import type { User } from '$lib/types';
 
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
-    dragOver = true;
-  }
+    dragOver = true}
 
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
-  }
+    dragOver = false}
 
   async function uploadFile(file: File): Promise<any> {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
       alert('Please select a valid image file (JPEG, PNG, GIF, SVG, WebP)');
-      return;
-    }
+      return}
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('File too large. Maximum size: 5MB');
-      return;
-    }
+      return}
     const result = await avatarStore.uploadAvatar(file);
     if (!(result as { success?: any; error?: any }).success) {
       alert((result as { success?: any; error?: any }).error || 'Upload failed');
@@ -137,7 +133,7 @@ import type { User } from '$lib/types';
   {#if $avatarStore.error}
     <div class="error-row">
       <span>{$avatarStore.error}</span>
-      <button type="button" onclick={() => avatarStore.clearError()} class="close-error">×</button>
+      <button type="button" onclick={() => avatarStore.clearError()} class="close-error">Ã—</button>
     </div>
   {/if}
 </div>
@@ -152,49 +148,44 @@ import type { User } from '$lib/types';
 
 <style>
   .avatar-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 12px}
 
   .avatar {
-    position: relative;
+    position: relative
     border-radius: 50%;
-    overflow: hidden;
-    border: 2px solid #e5e7eb;
-    transition: all 0.2s ease;
-    background: #f9fafb;
-    display: inline-block;
-  }
+    overflow: hidden
+    border: 2px solid #e5e7eb
+    transition: all 0.2s ease
+    background: #f9fafb
+    display: inline-block}
 
   .clickable .avatar:hover {
-    border-color: #3b82f6;
-    cursor: pointer;
+    border-color: #3b82f6
+    cursor: pointer
    , transform: scale(1.05);
   }
 
   .drag-over .avatar {
-    border-color: #10b981;
-    background: #ecfdf5;
-  }
+    border-color: #10b981
+    background: #ecfdf5}
 
   .avatar-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    transition: opacity 0.2s ease;
-    display: block;
-  }
+    object-fit: cover
+    transition: opacity 0.2s ease
+    display: block}
 
   .spinner {
-    width: 36px;
-    height: 36px;
-    border: 4px solid #e5e7eb;
-    border-top: 4px solid #3b82f6;
+    width: 36px
+    height: 36px
+    border: 4px solid #e5e7eb
+    border-top: 4px solid #3b82f6
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
 
   @keyframes spin {
     0% { transform: rotate(0deg);
@@ -205,71 +196,62 @@ import type { User } from '$lib/types';
   }
 
   .upload-overlay {
-    position: absolute;
+    position: absolute
    , inset: 0,
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex
+    align-items: center
+    justify-content: center
    , background: rgba(0, 0, 0, 0.4);
-    color: white;
-  }
+    color: white}
 
   .upload-controls {
-    display: flex;
-   , gap: 8px;
-    flex-wrap: wrap;
-  }
+    display: flex
+   , gap: 8px
+    flex-wrap: wrap}
 
   .upload-btn,
   .remove-btn {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
+    padding: 8px 16px
+    border: none
+    border-radius: 6px
+    font-size: 14px
+    font-weight: 500
+    cursor: pointer
+    transition: all 0.2s ease}
 
   .upload-btn {
-    background: #3b82f6;
-   , color: white;
-  }
+    background: #3b82f6
+   , color: white}
 
   .upload-btn:hover:not(:disabled) {
-    background: #2563eb;
-  }
+    background: #2563eb}
 
   .upload-btn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+    opacity: 0.6
+    cursor: not-allowed}
 
   .remove-btn {
-    background: #ef4444;
-    color: white;
-  }
+    background: #ef4444
+    color: white}
 
   .remove-btn:hover {
-    background: #dc2626;
-  }
+    background: #dc2626}
 
   .error-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #dc2626;
-  }
+    display: flex
+    align-items: center
+    gap: 8px
+    color: #dc2626}
 
   .close-error {
-    background: none;
-    border: none;
-    color: #dc2626;
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-   , padding: 0;
-    margin-left: 8px;
-  }
+    background: none
+    border: none
+    color: #dc2626
+    cursor: pointer
+    font-size: 18px
+    line-height: 1
+   , padding: 0
+    margin-left: 8px}
 </style>
+
 

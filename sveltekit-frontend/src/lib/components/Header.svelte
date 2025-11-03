@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   import  LoginModal  from "$lib/components/auth/LoginModal.svelte";
@@ -8,19 +8,18 @@
   let showLoginModal = $state<boolean>(false);
   let showRegisterModal = $state<boolean>(false);
   // component refs (typed as: any to avoid strict typing issues)
-  let loginModalRef: any = null;
-  let registerModalRef: any = null;
+  let loginModalRef: any = null
+  let registerModalRef: any = null
   // unsubscribers returned by $on
-  let loginUnsub: (() => void) | null = null;
-  let registerUnsub: (() => void) | null = null;
+  let loginUnsub: (() => void) | null = null
+  let registerUnsub: (() => void) | null = null
   function handleLoginSuccess() {
-    showLoginModal = false;
+    showLoginModal = false
     window.location.href = '/profile';
   }
   function handleRegisterSuccess() {
-    showRegisterModal = false;
-    showLoginModal = true;
-  }
+    showRegisterModal = false
+    showLoginModal = true}
   onMount(() => {
     // Attach event listeners to the component instances to avoid template event typing errors
     if (loginModalRef && typeof loginModalRef.$on === 'function') {
@@ -39,7 +38,7 @@
 <header class="bg-white border-b border-slate-200 sticky top-0">
   <div class="max-w-7xl mx-auto px-4 py-4 flex items-center">
     <div class="flex items-center">
-      <div class="text-2xl font-bold">⚖️</div>
+      <div class="text-2xl font-bold">âš–ï¸</div>
       <h1 class="text-xl font-bold">Legal AI</h1>
     </div>
     <nav class="flex items-center">
@@ -68,3 +67,4 @@
 <!-- bind component instances and remove, template, on: handlers -->
 <LoginModal bind:open={showLoginModal}, bind:this={loginModalRef} />
 <RegisterModal bind:open={showRegisterModal}, bind:this={registerModalRef} />
+

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { useMachine } from '@xstate/svelte';
@@ -9,11 +9,10 @@ import type { Document } from '$lib/types';
   import { Brain, Zap, Target, Cpu, Activity } from 'lucide-svelte';
   interface Props {
     initialContext?: Partial<AIAssistantContext>;
-    enableStreamingMode?: boolean;
+    enableStreamingMode?: boolean
     preferredProtocol?: 'http' | 'grpc' | 'quic' | 'websocket';
-    userId?: string;
-    enableAIEnhancements?: boolean;
-  }
+    userId?: string
+    enableAIEnhancements?: boolean}
   let {
     initialContext = ,
     enableStreamingMode = false,
@@ -29,7 +28,7 @@ import type { Document } from '$lib/types';
       response: '',
       conversationHistory: [],
       sessionId: `session-${Date.now()}`,
-      isProcessing: false;
+      isProcessing: false
      , model: 'gemma3-legal',
       temperature: 0.7,
       maxTokens: 2048,
@@ -64,8 +63,7 @@ import type { Document } from '$lib/types';
       preferredProtocol,
       activeProtocol: preferredProtocol
       serviceLoadBalancer: { strategy: 'round_robin',
-        currentIndex: 0;
-      },
+        currentIndex: 0},
       circuitBreakers: new Map(),
       natsConnected: true
       activeStreaming: enableStreamingMode
@@ -76,8 +74,8 @@ import type { Document } from '$lib/types';
   });
   const { state, send } = useMachine(machineWithContext);
   // AI Enhancement Services
-  const modelSwitcher = enableAIEnhancements ? new IntelligentModelSwitcher() : null;
-  const intentPredictionSystem = enableAIEnhancements ? new UserIntentPredictionSystem() : null;
+  const modelSwitcher = enableAIEnhancements ? new IntelligentModelSwitcher() : null
+  const intentPredictionSystem = enableAIEnhancements ? new UserIntentPredictionSystem() : null
   let queryInput = $state<string>('');
   let showSuggestions = $state<boolean>(false);
   let currentModel = $state<string>('gemma3-legal');
@@ -92,8 +90,8 @@ import type { Document } from '$lib/types';
         try {
           const recommendation = await modelSwitcher.recommendModel(query, userId);
           if (recommendation.model !== currentModel) {
-            currentModel = recommendation.model;
-            modelSwitchReason = recommendation.reaso;
+            currentModel = recommendation.model
+            modelSwitchReason = recommendation.reaso
             console.log(`Model switched to ${currentModel}: ${recommendation.reason}`);
           }
         } catch (error) {
@@ -102,8 +100,7 @@ import type { Document } from '$lib/types';
       }
       send({ type: 'QUERY', query, model: currentModel });
       queryInput = '';
-      showSuggestions = false;
-    }
+      showSuggestions = false}
   }
   function clearConversation() {
     send({ type: 'CLEAR_HISTORY' });
@@ -113,16 +110,14 @@ import type { Document } from '$lib/types';
   }
   // Handle suggestion selection
   function handleSuggestionSelect(_event: CustomEvent) {
-    const { suggestion } = e(vent as CustomEvent).detail;
+    const { suggestion } = e(vent as CustomEvent).detail
     queryInput = suggestion.term || suggestion.suggestion || suggestion.text || '';
-    showSuggestions = false;
-  }
+    showSuggestions = false}
   // Handle task selection
   function handleTaskSelect(_event: CustomEvent) {
-    const { task } = e(vent as CustomEvent).detail;
-    queryInput = task.task;
-    showSuggestions = false;
-  }
+    const { task } = e(vent as CustomEvent).detail
+    queryInput = task.task
+    showSuggestions = false}
   // Load user insights
   async function loadUserInsights(): Promise<any> {
     if (intentPredictionSystem && enableAIEnhancements) {
@@ -140,10 +135,8 @@ import type { Document } from '$lib/types';
   // Auto-show suggestions when typing
   $effect(() => {
     if (queryInput.length >= 2) {
-      showSuggestions = true;
-    } else {
-      showSuggestions = false;
-    }
+      showSuggestions = true} else {
+      showSuggestions = false}
   });
   // Get status indicators
   let isIdle = $derived(state.value === 'idle');
@@ -359,7 +352,7 @@ import type { Document } from '$lib/types';
             <div class="flex-1">
               <div class="text-sm text-gray-500">
                 {new Date(entry.timestamp).toLocaleTimeString()}
-                {entry.userId && ` • User: ${entry.userId}`}
+                {entry.userId && ` â€¢ User: ${entry.userId}`}
               </div>
               <div class="text-gray-900">{entry.content}</div>
             </div>
@@ -389,7 +382,7 @@ import type { Document } from '$lib/types';
           <div class="border rounded-lg">
             <div class="font-medium">{doc.filename}</div>
             <div class="text-sm text-gray-600">
-              {doc.contentType} • {(doc.size / 1024).toFixed(1)} KB
+              {doc.contentType} â€¢ {(doc.size / 1024).toFixed(1)} KB
             </div>
             <div class="flex items-center">
               <div
@@ -484,15 +477,13 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .ai-assistant-machine-demo {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
   .prose {
-    max-width: none;
-  }
+    max-width: none}
   .prose pre {
-    background: #f5f5f5;
-   , padding: 1rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-  }
+    background: #f5f5f5
+   , padding: 1rem
+    border-radius: 0.5rem
+    overflow-x: auto}
 </style>
+

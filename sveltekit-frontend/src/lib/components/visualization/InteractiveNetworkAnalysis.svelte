@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Interactive Network Analysis Component
   Advanced network visualization for evidence relationships and collaboration patterns
 -->
@@ -9,16 +9,15 @@
   import { websocketStore  } from '$lib/stores/unified';
   import * as d3 from 'd3';
   interface Props {
-    caseId: string;
+    caseId: string
     evidenceData: any[];
    , relationshipData: any[];
-    width?: number;
-    height?: number;
-    interactive?: boolean;
-    showClusters?: boolean;
-    showMetrics?: boolean;
-    realTimeUpdates?: boolean;
-  }
+    width?: number
+    height?: number
+    interactive?: boolean
+    showClusters?: boolean
+    showMetrics?: boolean
+    realTimeUpdates?: boolean}
   let {
     caseId,
     evidenceData = [],
@@ -31,9 +30,9 @@
     realTimeUpdates = false
   }: Props = $props();
   // Reactive state
-  let containerElement: HTMLDivElement;
-  let svg: any;
-  let simulation: any;
+  let containerElement: HTMLDivElement
+  let svg: any
+  let simulation: any
   let selectedNode = $state<any>(null);
   let hoveredNode = $state<any>(null);
   let networkMetrics = $state<any>({});
@@ -45,27 +44,23 @@
   let links = $state<any[]>([]);
   let clusters = $state<any[]>([]);
   // D3 elements (loose typing to avoid build-time d3 types mismatch)
-  let nodeElements: any;
-  let linkElements: any;
-  let labelElements: any;
-  let clusterElements: any;
+  let nodeElements: any
+  let linkElements: any
+  let labelElements: any
+  let clusterElements: any
   // small UI helpers to use previously-unused state and wire simple interactions
   function setAnalysisMode(mode: 'relationships' | 'importance' | 'timeline' | 'similarity') {
-    analysisMode = mode;
-  }
+    analysisMode = mode}
   function toggleClusterView() {
-    showClusters = !showClusters;
-  }
+    showClusters = !showClusters}
   function openNodeDetails(node: any) {
-    selectedNode = node;
-  }
+    selectedNode = node}
   function closeNodeDetails() {
-    selectedNode = null;
-  }
+    selectedNode = null}
   // Lifecycle
   $effect(() => {
     (async () => {
-      if (!browser) return;
+      if (!browser) return
       try {
         await initializeNetwork();
         await processNetworkData();
@@ -74,11 +69,9 @@
         if (realTimeUpdates) {
           setupRealTimeUpdates();
         }
-        isLoading = false;
-      } catch (error) {
+        isLoading = false} catch (error) {
         console.error('Failed to initialize network analysis:', error);
-        isLoading = false;
-      }
+        isLoading = false}
     })();
   });
   onDestroy(() => {
@@ -129,14 +122,13 @@
     }
   }
   function calculateImportance(evidence: any): number {
-    let importance = 1;
-    if (!evidence) return importance;
+    let importance = 1
+    if (!evidence) return importance
     // Basic heuristic: presence of AI summary, attachments, and tags increase importance
-    if (evidence.aiSummary) importance += 2;
+    if (evidence.aiSummary) importance += 2
     if (Array.isArray(evidence.attachments) && evidence.attachments.length) importance += Math.min(2, evidence.attachments.length);
     if (evidence.tags) importance += (Array.isArray(evidence.tags) ? Math.min(2, evidence.tags.length) : 0);
-    return importance;
-  }
+    return importance}
   // Assign a cluster id based on evidence metadata or fallback
   function assignCluster(evidence: any): string {
     if (!evidence) return 'cluster-0';
@@ -147,8 +139,8 @@
   }
   // Add implicit links depending on analysisMode (e.g. connect nodes in same cluster for: 'similarity' mode)
   function addImplicitLinks() {
-    if (!nodes || !links) return;
-    if (analysisMode !== 'similarity') return;
+    if (!nodes || !links) return
+    if (analysisMode !== 'similarity') return
     const existing = new Set(links.map(l => `${l.source}-${l.target}`));
     const byCluster: Record<string any[]> = {};
     for (const n of nodes) {
@@ -158,8 +150,8 @@
       const group = byCluster[clusterId];
       for (let i = 0; i < group.length; i++) {
         for (let j = i + 1; j < group.length; j++) {
-          const a = group[i].id;
-          const b = group[j].id;
+          const a = group[i].id
+          const b = group[j].id
           const key = `${a}-${b}`;
           const keyRev = `${b}-${a}`;
           if (!existing.has(key) && !existing.has(keyRev)) {
@@ -172,7 +164,7 @@
   }
   // Simple community detection: connected components -> cluster ids
   function detectCommunities() {
-    if (!nodes || !links) return;
+    if (!nodes || !links) return
     const adj = new Map<string Set<string>>();
     for (const n of nodes) adj.set(n.id, new Set());
     for (const l of links) {
@@ -184,12 +176,12 @@
     const visited = new Set<string>();
     clusters = [];
     for (const n of nodes) {
-      if (visited.has(n.id)) continue;
+      if (visited.has(n.id)) continue
       const stack = [n.id];
       const comp: string[] = [];
       while (stack.length) {
         const id = stack.pop();
-        if (visited.has(id)) continue;
+        if (visited.has(id)) continue
         visited.add(id);
         comp.push(id);
         for (const nei of adj.get(id) || []) {
@@ -201,11 +193,9 @@
       // tag nodes with new cluster label
       for (const nid of comp) {
         const node = nodes.find(x => x.id === nid);
-        if (node) node.cluster = cid;
-      }
+        if (node) node.cluster = cid}
     }
-    clusterData = clusters;
-  }
+    clusterData = clusters}
   // Recalculate network metrics
   function calculateNetworkMetrics() {
     networkMetrics = {
@@ -217,7 +207,7 @@
   }
   // Create a simple D3 force-directed visualization (safe defaults)
   function createVisualization() {
-    if (!browser) return;
+    if (!browser) return
     if (!svg) awaitInitializeSVG();
     const container = svg.select('.network-container');
     // clear previous rendering
@@ -240,8 +230,8 @@
       .attr('fill', (d: any) => d.type === 'person' ? '#4a90e2' : '#7bd389')
       .attr('class', 'node')
       .on('click', (event: any, d: any) => { openNodeDetails(d); })
-      .on('mouseover', (event: any, d: any) => { hoveredNode = d; })
-      .on('mouseout', () => { hoveredNode = null; });
+      .on('mouseover', (event: any, d: any) => { hoveredNode = d})
+      .on('mouseout', () => { hoveredNode = null});
     labelElements = container.append('g').attr('class', 'labels')
       .selectAll('text')
       .data(nodes)
@@ -290,12 +280,12 @@
   }
   // Subscribe to real-time updates via websocketStore if realTimeUpdates true
   function setupRealTimeUpdates() {
-    if (!browser || !realTimeUpdates) return;
+    if (!browser || !realTimeUpdates) return
     try {
       // websocketStore is an imported store previously in file
       const unsubscribe = websocketStore?.subscribe?.((msg: any) => {
         // simple handler: expect messages with { type: 'node-update' | 'link-add', payload }
-        if (!msg || !msg.type) return;
+        if (!msg || !msg.type) return
         if (msg.type === 'node-update') {
           const idx = nodes.findIndex(n => n.id === msg.payload.id);
           if (idx >= 0) Object.assign(nodes[idx], msg.payload);
@@ -348,7 +338,7 @@
   {/if}
 {#if selectedNode}
   <div class="node-details-panel">
-    <button class="btn-close" onclick={closeNodeDetails}>✕</button>
+    <button class="btn-close" onclick={closeNodeDetails}>âœ•</button>
     <h3>{selectedNode.label ?? 'Node'}</h3>
     <div class="details-content">
       <p>Type: {selectedNode.type}</p>
@@ -368,183 +358,158 @@
 {#if isLoading}
   <div class="loading-overlay">
     <div class="spinner"></div>
-    <div>Loading network…</div>
+    <div>Loading networkâ€¦</div>
   {/if}
 <style>
   /* ...existing code... but corrected CSS syntax where needed ... */
   .controls-panel {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    position: absolute
+    top: 10px
+    left: 10px
+    z-index: 100
+    display: flex
+    flex-direction: column
+    gap: 10px
    , background: rgba(0, 0, 0, 0.8);
-    padding: 15px;
-    border-radius: 6px;
+    padding: 15px
+    border-radius: 6px
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    min-width: 200px;
-  }
+    min-width: 200px}
   .analysis-controls, .view-controls, .action-controls {
-    display: flex;
-    flex-direction: column;
-   , gap: 8px;
-  }
+    display: flex
+    flex-direction: column
+   , gap: 8px}
   .analysis-controls label, .view-controls label {
-    color: #ccc;
-    font-size: 12px;
-    margin-bottom: 4px;
-  }
+    color: #ccc
+    font-size: 12px
+    margin-bottom: 4px}
   .analysis-controls select { background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 6px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-  }
+    color: white
+    padding: 6px 8px
+    border-radius: 4px
+    font-size: 12px}
   .view-controls label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-  }
+    display: flex
+    align-items: center
+    gap: 8px
+    cursor: pointer}
   .view-controls input[type="checkbox"] {
-    margin: 0;
-  }
+    margin: 0}
   .action-controls {
-    flex-direction: row;
-    gap: 5px;
-  }
+    flex-direction: row
+    gap: 5px}
   .btn-control { background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 4px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
+    color: white
+    padding: 6px 12px
+    border-radius: 4px
+    font-size: 12px
+    cursor: pointer
+    transition: all 0.2s ease}
   .btn-control:hover { background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4);
   }
   .metrics-panel {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 100;
+    position: absolute
+    top: 10px
+    right: 10px
+    z-index: 100
    , background: rgba(0, 0, 0, 0.9);
-    color: white;
-   , padding: 15px;
-    border-radius: 6px;
+    color: white
+   , padding: 15px
+    border-radius: 6px
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    min-width: 200px;
-  }
-  .metrics-panel h3 { margin: 0, 0 10px 0;
-    color: #4a90e2;
-    font-size: 14px;
-  }
+    min-width: 200px}
+  .metrics-panel h3 { margin: 0, 0 10px 0
+    color: #4a90e2
+    font-size: 14px}
   .metrics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 8px}
   .metric {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-  }
+    display: flex
+    justify-content: space-between
+    font-size: 12px}
   .metric .metric-label {
-    color: #ccc;
-  }
+    color: #ccc}
   .metric span {
-    color: #4a90e2;
-    font-weight: bold;
-  }
+    color: #4a90e2
+    font-weight: bold}
   .node-details-panel {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    z-index: 100;
+    position: absolute
+    bottom: 10px
+    left: 10px
+    z-index: 100
    , background: rgba(0, 0, 0, 0.9);
-    color: white;
-   , padding: 15px;
-    border-radius: 6px;
+    color: white
+   , padding: 15px
+    border-radius: 6px
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    max-width: 300px;
-  }
-  .node-details-panel h3 { margin: 0, 0 10px 0;
-    color: #4a90e2;
-    font-size: 16px;
-    padding-right: 20px;
-  }
+    max-width: 300px}
+  .node-details-panel h3 { margin: 0, 0 10px 0
+    color: #4a90e2
+    font-size: 16px
+    padding-right: 20px}
   .details-content p {
-    margin: 5px 0;
-    font-size: 14px;
-    line-height: 1.4;
-  }
+    margin: 5px 0
+    font-size: 14px
+    line-height: 1.4}
   .connected-nodes {
-    margin-top: 10px;
-  }
-  .connected-nodes h4 { margin: 0, 0 5px 0;
-    color: #4a90e2;
-    font-size: 14px;
-  }
+    margin-top: 10px}
+  .connected-nodes h4 { margin: 0, 0 5px 0
+    color: #4a90e2
+    font-size: 14px}
   .connected-nodes ul {
-    margin: 0;
-    padding-left: 15px;
-    list-style-type: disc;
-  }
+    margin: 0
+    padding-left: 15px
+    list-style-type: disc}
   .connected-nodes li {
-    font-size: 12px;
-    color: #ccc;
-    margin: 2px 0;
-  }
+    font-size: 12px
+    color: #ccc
+    margin: 2px 0}
   .btn-close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    color: #ccc;
-    font-size: 18px;
-    cursor: pointer;
-    padding: 0;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    position: absolute
+    top: 10px
+    right: 10px
+    background: none
+    border: none
+    color: #ccc
+    font-size: 18px
+    cursor: pointer
+    padding: 0
+    width: 20px
+    height: 20px
+    display: flex
+    align-items: center
+    justify-content: center}
   .btn-close:hover {
-    color: white;
-  }
+    color: white}
   .loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
    , background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    color: white;
-  }
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    z-index: 200
+    color: white}
   .spinner {
-    width: 40px;
-    height: 40px;
+    width: 40px
+    height: 40px
    , border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid #4a90e2;
+    border-top: 3px solid #4a90e2
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 15px;
-  }
+    animation: spin 1s linear infinite
+    margin-bottom: 15px}
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -554,12 +519,10 @@
    , height: 100%;
   }
   :global(.network-container .link) {
-    transition: opacity 0.2s ease;
-  }
+    transition: opacity 0.2s ease}
   :global(.network-container .node) {
-    transition: opacity 0.2s ease;
-  }
+    transition: opacity 0.2s ease}
   :global(.network-container .label) {
-    transition: opacity 0.2s ease;
-  }
+    transition: opacity 0.2s ease}
 </style>
+

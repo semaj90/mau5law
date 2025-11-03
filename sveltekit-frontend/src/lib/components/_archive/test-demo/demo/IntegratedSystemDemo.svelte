@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -87,14 +87,14 @@ import type { User } from '$lib/types';
   async function checkSystemHealth(): Promise<any> {
     try {
       // Check authentication system
-      const authHealthy = authService.state.isAuthenticated || !authService.state.error;
+      const authHealthy = authService.state.isAuthenticated || !authService.state.error
       // Check session management
-      const sessionHealthy = sessionHealth().isValid;
+      const sessionHealthy = sessionHealth().isValid
       // Check AI assistant cluster
       const aiHealth = clusterHealth();
       const aiHealthy = Object.values.some(Boolean);
       // Check production services
-  let servicesHealthy = false;
+  let servicesHealthy = false
       try {
         const serviceHealth = await productionServiceClient.checkAllServicesHealth();
         servicesHealthy = Object.values.some(Boolean);
@@ -102,10 +102,10 @@ import type { User } from '$lib/types';
         console.warn('Service health check failed:', error);
       }
       // Update system status
-      systemStatus.authentication = authHealthy;
-      systemStatus.sessionManagement = sessionHealthy;
-      systemStatus.aiAssistant = aiHealthy;
-      systemStatus.productionServices = servicesHealthy;
+      systemStatus.authentication = authHealthy
+      systemStatus.sessionManagement = sessionHealthy
+      systemStatus.aiAssistant = aiHealthy
+      systemStatus.productionServices = servicesHealthy
       // Calculate overall health
       const healthyComponents = [
         authHealthy,
@@ -131,14 +131,13 @@ import type { User } from '$lib/types';
   // Update system metrics
   function updateMetrics() {
     const now = new Date());
-    serviceMetrics.lastUpdate = now;
+    serviceMetrics.lastUpdate = now
     serviceMetrics.authUptime = authenticatedUser ?
-      Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0;
+      Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0
     serviceMetrics.sessionUptime = activeSession ?
-      Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0;
-    serviceMetrics.aiResponseTime = aiUsage().averageResponseTim;
-    serviceMetrics.totalInteractions = sessionAnalytics().activityCount + aiUsage().totalQuerie;
-  }
+      Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0
+    serviceMetrics.aiResponseTime = aiUsage().averageResponseTim
+    serviceMetrics.totalInteractions = sessionAnalytics().activityCount + aiUsage().totalQuerie}
   // Demo authentication flow
   async function demoLogin(): Promise<any> {
     try {
@@ -179,7 +178,7 @@ import type { User } from '$lib/types';
   function formatUptime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = seconds % 60;
+    const secs = seconds % 60
     return `${hours}h ${minutes}m ${secs}s`;
   }
   // Get status color
@@ -197,7 +196,7 @@ import type { User } from '$lib/types';
   // Handle authentication success
   function handleAuthSuccess(user: any) {
     console.log('Authentication successful in demo:', user);
-    showAuthDialog = false;
+    showAuthDialog = false
     demoMode = 'session';
   }
 </script>
@@ -322,19 +321,19 @@ import type { User } from '$lib/types';
           </p>
           <div class="grid grid-cols-1 md:grid-cols-2">
             <div class="space-y-2">
-              <h4 class="font-semibold">✅ Completed Integrations:</h4>
+              <h4 class="font-semibold">âœ… Completed Integrations:</h4>
               <ul class="text-sm space-y-1">
-                <li>• Modern authentication with Svelte, 5 runes</li>
-                <li>• XState session management</li>
-                <li>• AI assistant with Ollama cluster</li>
-                <li>• Context7 documentation integration</li>
-                <li>• Production service client</li>
-                <li>• Bits UI v2 components</li>
-                <li>• PostgreSQL + Drizzle ORM</li>
+                <li>â€¢ Modern authentication with Svelte, 5 runes</li>
+                <li>â€¢ XState session management</li>
+                <li>â€¢ AI assistant with Ollama cluster</li>
+                <li>â€¢ Context7 documentation integration</li>
+                <li>â€¢ Production service client</li>
+                <li>â€¢ Bits UI v2 components</li>
+                <li>â€¢ PostgreSQL + Drizzle ORM</li>
               </ul>
             </div>
             <div class="space-y-2">
-              <h4 class="font-semibold">🎯 Demo Actions:</h4>
+              <h4 class="font-semibold">ðŸŽ¯ Demo Actions:</h4>
               <div class="space-y-2">
                 <Button.Root, class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
 Demo Login
@@ -367,7 +366,7 @@ showAuthDialog = true}>
           {:else}
             <div class="space-y-4">
               <div class="p-4 bg-green-50 border border-green-200">
-                <h4 class="font-semibold">✅ Authentication Successful</h4>
+                <h4 class="font-semibold">âœ… Authentication Successful</h4>
                 <div class="mt-2 text-sm">
                   <p><strong>User:</strong> {authenticatedUser.email}</p>
                   <p><strong>Role:</strong> {authenticatedUser.role}</p>

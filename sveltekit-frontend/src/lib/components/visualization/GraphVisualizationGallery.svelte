@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'return' outside, of, functio;
+﻿<!-- @migration-task Error while migrating Svelte code: 'return' outside, of, functio
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: 'return' outside, of, function -->
 <script lang="ts">
@@ -24,20 +24,20 @@ https://svelte.dev/e/js_parse_error -->
   const generationProgress = writable(0);
   const cachingStats = writable({ hits: 0, misses: 0, compressionRatio: 0 });
   // Services
-  let visualizationEngine: GraphVisualizationEngine | null = null;
-  let multiLayerCache: MultiLayerCache | null = null;
-  let canvas: HTMLCanvasElement;
-  let canvasContext: CanvasRenderingContext2D | null = null;
+  let visualizationEngine: GraphVisualizationEngine | null = null
+  let multiLayerCache: MultiLayerCache | null = null
+  let canvas: HTMLCanvasElement
+  let canvasContext: CanvasRenderingContext2D | null = null
   // Sample graph data for demonstration
   const sampleGraphData = {
     nodes: [
-      { id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position ;
+      { id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position
 { x: 100, y: 100 }, metadata: { caseType: 'contract', importance: 0.8 }, embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
-      { id: 'statute-1', label: '15 USC § 1', type: 'statute', position ;
+      { id: 'statute-1', label: '15 USC Â§ 1', type: 'statute', position
 { x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
-      { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position ;
+      { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position
 { x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
-      { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position ;
+      { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position
 { x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
     ],
     edges: [
@@ -51,8 +51,7 @@ https://svelte.dev/e/js_parse_error -->
   // Filtered visualizations based on algorithm
   //, TODO: Convert to $derived: filteredVisualizations = $visualizations.filter(vis => {
     if (algorithmFilter === 'all') return true
-    return vis.metadata.algorithm === algorithmFilter;
-  });
+    return vis.metadata.algorithm === algorithmFilter});
   $effect(() => {
     try {
       // Initialize services
@@ -95,7 +94,7 @@ https://svelte.dev/e/js_parse_error -->
     multiLayerCache?.cleanup();
   });
   async function generateVisualizationsForAllAlgorithms(): Promise<any> {
-    if (!visualizationEngine || !currentGraphData) return;
+    if (!visualizationEngine || !currentGraphData) return
     isGenerating.set(true);
     generationProgress.set(0);
     const algorithms = ['dfs', 'bfs', 'som', 'autoencoder'];
@@ -104,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
       const algorithm = algorithms[i];
       try {
         const cacheKey = `graph_vis_${algorithm}_${JSON.stringify(slice)(0, 100)}`;
-        let visualization GraphVisualizationResult | null = null;
+        let visualization GraphVisualizationResult | null = null
         // Try cache first if enabled
         if (cacheResults && multiLayerCache) {
           visualization = await multiLayerCache.get('visualization', cacheKey);
@@ -142,7 +141,7 @@ https://svelte.dev/e/js_parse_error -->
     isGenerating.set(false);
   }
   async function regenerateVisualization(algorithm: string): Promise<any> {
-    if (!visualizationEngine || !currentGraphData) return;
+    if (!visualizationEngine || !currentGraphData) return
     isGenerating.set(true);
     try {
       const options = {
@@ -173,11 +172,11 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   function setupCanvasEventListeners() {
-    if (!canvas) return;
+    if (!canvas) return
     canvas.addEventListener('click', (event) => {
       const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
       // Handle canvas interactions for real-time visualization
       if (visualizationEngine) {
         visualizationEngine.handleCanvasClick(x, y);
@@ -205,8 +204,7 @@ https://svelte.dev/e/js_parse_error -->
       'som': 'Self-Organizing Map',
       'autoencoder': 'Auto-Encoder Compression'
     }
-    return names[algorithm] || algorithm;
-  }
+    return names[algorithm] || algorithm}
   function getAlgorithmDescription(algorithm: string): string {
     const descriptions: Record<string string> = {
       'dfs': 'Deep traversal revealing hierarchical legal precedent chains',
@@ -221,7 +219,7 @@ https://svelte.dev/e/js_parse_error -->
 <div class="graph-gallery-container nes-container">
   <!-- Header -->
   <div class="gallery-header">
-    <h2 class="nes-text">🧠 Graph Traversal Visualizations</h2>
+    <h2 class="nes-text">ðŸ§  Graph Traversal Visualizations</h2>
     <div class="header-controls">
       <!-- View, Mode, Toggle -->
       <div class="nes-select">
@@ -261,7 +259,7 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Caching, Stats -->
   <div class="cache-stats nes-container">
     <p class="nes-text">
-      🗄️ Cache: {$cachingStats.hits} hits, {$cachingStats.misses} misses
+      ðŸ—„ï¸ Cache: {$cachingStats.hits} hits, {$cachingStats.misses} misses
       {#if $cachingStats.compressionRatio > 0}
         | Compression {($cachingStats.compressionRatio * 100).toFixed(1)}%
       {/if}
@@ -300,15 +298,15 @@ https://svelte.dev/e/js_parse_error -->
 regenerateVisualization(visualization.metadata.algorithm)}
             disabled={$isGenerating}
           >
-            🔄 Regenerate
+            ðŸ”„ Regenerate
 </Button>
           <div class="item-metrics">
             <span class="nes-text">
-              ⚡ {visualization.metadata.processingTime}ms
+              âš¡ {visualization.metadata.processingTime}ms
             </span>
             {#if visualization.metadata.nodeCount}
               <span class="nes-text">
-                📊 {visualization.metadata.nodeCount} nodes
+                ðŸ“Š {visualization.metadata.nodeCount} nodes
               </span>
             {/if}
           </div>
@@ -329,7 +327,7 @@ generateVisualizationsForAllAlgorithms()}
 </Button>
     {/if}
   <!-- Real-time Canvas (Hidden, used, for, generation) -->
-  <canva;
+  <canva
     bind:this={canvas as: any}
     width="800"
     height="600"
@@ -343,7 +341,7 @@ generateVisualizationsForAllAlgorithms()}
                 onclick={closeModal}>
     <div class="modal-content nes-container" role="button" tabindex="0"
                 onclick={(e) => e.stopPropagation()}>
-      <button class="modal-close nes-btn" onclick={closeModal}>×
+      <button class="modal-close nes-btn" onclick={closeModal}>Ã—
 </Button>
       <div class="modal-header">
         <h3 class="nes-text">
@@ -389,207 +387,177 @@ generateVisualizationsForAllAlgorithms()}
   {/if}
 <style>
   .graph-gallery-container {
-    padding: 2rem;
-    background: #212529;
-    border-radius: 8px;
-  }
+    padding: 2rem
+    background: #212529
+    border-radius: 8px}
   .gallery-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 1.5rem
+    flex-wrap: wrap
+    gap: 1rem}
   .header-controls {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
-  }
+    display: flex
+    gap: 1rem
+    align-items: center
+    flex-wrap: wrap}
   .progress-container {
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
+    margin-bottom: 1.5rem
+    text-align: center}
   .cache-stats {
-    margin-bottom: 1.5rem;
-    padding: 0.5rem 1rem;
-    text-align: center;
-  }
+    margin-bottom: 1.5rem
+    padding: 0.5rem 1rem
+    text-align: center}
   .gallery-grid {
-    display: grid;
-   , gap: 1.5rem;
-  }
+    display: grid
+   , gap: 1.5rem}
   .gallery-grid.gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   }
   .gallery-grid.gallery-list {
-    grid-template-columns: 1fr;
-  }
+    grid-template-columns: 1fr}
   .gallery-grid.gallery-masonry {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
   .gallery-item {
-    background: #2a2e33;
-    border: 2px solid #4a90e2;
-    border-radius: 8px;
-    overflow: hidden;
-   , transition: transform 0.3s ease, box-shadow 0.3s ease;
-  }
+    background: #2a2e33
+    border: 2px solid #4a90e2
+    border-radius: 8px
+    overflow: hidden
+   , transition: transform 0.3s ease, box-shadow 0.3s ease}
   .gallery-item:hover { transform: translateY(-4px);
     box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3);
   }
   .gallery-item[data-algorithm="som"] {
-    border-color: #e74c3c;
-  }
+    border-color: #e74c3c}
   .gallery-item[data-algorithm="autoencoder"] {
-    border-color: #f39c12;
-  }
+    border-color: #f39c12}
   .gallery-item[data-algorithm="dfs"] {
-    border-color: #27ae60;
-  }
+    border-color: #27ae60}
   .gallery-item[data-algorithm="bfs"] {
-    border-color: #8e44ad;
-  }
+    border-color: #8e44ad}
   .item-preview {
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-  }
+    position: relative
+    cursor: pointer
+    overflow: hidden}
   .preview-image {
     width: 100%;
-    height: 200px;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
+    height: 200px
+    object-fit: cover
+    transition: transform 0.3s ease}
   .item-preview:hover .preview-image { transform: scale(1.05);
   }
   .item-overlay {
-    position: absolute;
+    position: absolute
    , bottom: 0,
-    left: 0;
+    left: 0
    , right: 0,
     background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-    color: white;
-    padding: 1rem;
+    color: white
+    padding: 1rem
    , transform: translateY(100%);
-    transition: transform 0.3s ease;
-  }
+    transition: transform 0.3s ease}
   .item-preview:hover .item-overlay { transform: translateY(0);
   }
   .item-title {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.1rem
+    margin-bottom: 0.5rem
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   }
   .item-description {
-    font-size: 0.9rem;
-    line-height: 1.4;
+    font-size: 0.9rem
+    line-height: 1.4
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
   }
   .item-controls {
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+    padding: 1rem
+    display: flex
+    justify-content: space-between
+    align-items: center}
   .item-metrics {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    font-size: 0.8rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.25rem
+    font-size: 0.8rem}
   .empty-state {
-    text-align: center;
-    padding: 3rem;
-    margin: 2rem 0;
-  }
+    text-align: center
+    padding: 3rem
+    margin: 2rem 0}
   /* Modal Styles */
   .modal-overlay {
-    position: fixed;
-d;
+    position: fixed
+d
    , top: 0,
-    left: 0;
+    left: 0
     width: 100%;
     height: 100%;
    , background: rgba(0, 0, 0, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    display: flex
+    justify-content: center
+    align-items: center
     z-index: 1000,
-    padding: 2rem;
-  }
+    padding: 2rem}
   .modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
-    overflow: auto;
-    position: relative;
-    background: #212529;
-    border: 2px solid #4a90e2;
-  }
+    max-width: 90vw
+    max-height: 90vh
+    overflow: auto
+    position: relative
+    background: #212529
+    border: 2px solid #4a90e2}
   .modal-close {
-    position: absolute;
-    top: 1rem;
-   , right: 1rem;
+    position: absolute
+    top: 1rem
+   , right: 1rem
     z-index: 1001,
-    width: 40px;
-    height: 40px;
+    width: 40px
+    height: 40px
     border-radius: 50%;
   }
   .modal-header {
-    padding: 2rem 2rem 1rem 2rem;
-    text-align: center;
-  }
+    padding: 2rem 2rem 1rem 2rem
+    text-align: center}
   .modal-image {
-    padding: 0 2rem;
-    text-align: center;
-  }
+    padding: 0 2rem
+    text-align: center}
   .full-image {
     max-width: 100%;
-    max-height: 60vh;
-    object-fit: contai;
-    border-radius: 4px;
-  }
+    max-height: 60vh
+    object-fit: contai
+    border-radius: 4px}
   .modal-metadata {
-    padding: 1rem 2rem 2rem 2rem;
-  }
-  .metadata-grid { display: grid;
+    padding: 1rem 2rem 2rem 2rem}
+  .metadata-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-  }
+    gap: 1rem}
   .metadata-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem;
-   , background: #2a2e33;
-    border-radius: 4px;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 0.5rem
+   , background: #2a2e33
+    border-radius: 4px}
   /* Responsive Design */
   @media (max-width: 768px) {
     .gallery-header {
-      flex-direction: column;
-      align-items: stretch;
-    }
+      flex-direction: column
+      align-items: stretch}
     .header-controls {
-      justify-content: center;
-    }
+      justify-content: center}
     .gallery-grid.gallery-grid {
-      grid-template-columns: 1fr;
-    }
-    .modal-content { margin: 1rem;
+      grid-template-columns: 1fr}
+    .modal-content { margin: 1rem
       max-width: calc(100vw - 2rem);
     }
     .metadata-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
   }
   /* Animation for generation */
   @keyframes pulse {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 1; }
+    0%, 100% { opacity: 0.8}
+    50% { opacity: 1}
   }
   .gallery-item:has(.generate-btn:disabled) {
-    animation: pulse 2s infinite;
-  }
+    animation: pulse 2s infinite}
 </style>
+

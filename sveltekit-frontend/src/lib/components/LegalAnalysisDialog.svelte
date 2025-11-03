@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   LegalAnalysisDialog.svelte
   Dialog component for AI-powered legal case analysis.
   Props:
@@ -28,8 +28,7 @@ import type { Document } from '$lib/types';
   };
   // Prefer exported store if present, otherwise provide a safe no-op stub.
   const legalCaseStore: MinimalLegalCaseStore =
-    (unified, as: any).legalCaseStore ??
-    {
+    (unified, as: any).legalCaseStore ?? {
       filteredCases: () => [],
       aiInsights: {},
       loading: { analysis: false },
@@ -43,7 +42,7 @@ import type { Document } from '$lib/types';
     loading,
     analyzeCase,
     loadCases
-  } = legalCaseStore;
+  } = legalCaseStore
   // Load cases when component mounts
   $effect(() => {
     if (filteredCases().length === 0) {
@@ -54,9 +53,9 @@ import type { Document } from '$lib/types';
   let analysisProgress = $state<number>(0);
   let analysisStatus = $state<'idle' | 'analyzing' | 'complete' | 'error'>('idle');
   async function handleAnalysis(): Promise<any> {
-    if (!selectedCaseForAnalysis) return;
+    if (!selectedCaseForAnalysis) return
     analysisStatus = 'analyzing';
-    analysisProgress = 0;
+    analysisProgress = 0
     try {
       // Progress updates for real analysis
       const progressInterval = setInterval(() => {
@@ -65,14 +64,13 @@ import type { Document } from '$lib/types';
       // Call the real API endpoint through the store
       await analyzeCase(selectedCaseForAnalysis);
       clearInterval(progressInterval);
-      analysisProgress = 100;
+      analysisProgress = 100
       analysisStatus = 'complete';
       // Auto-close after showing success
       setTimeout(() => {
         onOpenChange(false);
         analysisStatus = 'idle';
-        analysisProgress = 0;
-      }, 3000);
+        analysisProgress = 0}, 3000);
     } catch (error) {
       analysisStatus = 'error';
       console.error('Analysis failed:', error);
@@ -128,7 +126,7 @@ import type { Document } from '$lib/types';
           <option value="" disabled>Choose a case to analyze...</option>
           {#each Array.isArray(filteredCases()) ? filteredCases() : [] as legalCase}
             <option value={legalCase.id}>
-              {legalCase.title} — {legalCase.caseNumber} ({legalCase.status})
+              {legalCase.title} â€” {legalCase.caseNumber} ({legalCase.status})
             </option>
           {/each}
         </select>
@@ -290,18 +288,18 @@ import type { Document } from '$lib/types';
   }
   @keyframes dialog-content-show {
     from {
-      opacity: 0;
+      opacity: 0
      , transform: translate(-50%, -48%) scale(0.96);
     }
     to {
-      opacity: 1;
+      opacity: 1
      , transform: translate(-50%, -50%) scale(1);
     }
   }
   .legal-action-btn {
-    transition: all 0.2s ease-in-out;
-  }
+    transition: all 0.2s ease-in-out}
   .legal-action-btn:hover { transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
   }
 </style>
+

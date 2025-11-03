@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { accessibilityService } from '$lib/services/accessibility-service';
   import { Settings, Eye, Type } from 'lucide-svelte';
@@ -51,7 +51,7 @@ isOpen = false}
           aria-label="Close accessibility settings"
           class="text-gray-500 hover:text-gray-700 dark:text-gray-400"
         >
-          ×
+          Ã—
         </Button>
       </div>
       <!-- Content -->
@@ -242,6 +242,5 @@ isOpen = false}
 <style>
   .accessibility-settings {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  }
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif}
 </style>

@@ -1,17 +1,17 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 	// defensive import of the canvas module (works whether it's named or default)'
 	import * as canvasModule from "../stores/canvas";
-	const toolbarStore = (canvasModule as: any).toolbarStore ?? (canvasModule as: any).default ?? null;
+	const toolbarStore = (canvasModule as: any).toolbarStore ?? (canvasModule as: any).default ?? null
 	const dispatch = createEventDispatcher();
 	// Tool categories (use simple emoji/text icons to avoid unreliable icon imports)
 	const tools = [
-		{ id: 'select', icon: '🖱️', label: 'Select', category: 'selection' },
-		{ id: 'pan', icon: '✋', label: 'Pan', category: 'navigation' },
-		{ id: 'text', icon: '🅰️', label: 'Text', category: 'content' },
-		{ id: 'rectangle', icon: '▭', label: 'Rectangle', category: 'shapes' },
-		{ id: 'circle', icon: '◯', label: 'Circle', category: 'shapes' },
-		{ id: 'draw', icon: '🎨', label: 'Draw', category: 'drawing' }
+		{ id: 'select', icon: 'ðŸ–±ï¸', label: 'Select', category: 'selection' },
+		{ id: 'pan', icon: 'âœ‹', label: 'Pan', category: 'navigation' },
+		{ id: 'text', icon: 'ðŸ…°ï¸', label: 'Text', category: 'content' },
+		{ id: 'rectangle', icon: 'â–­', label: 'Rectangle', category: 'shapes' },
+		{ id: 'circle', icon: 'â—¯', label: 'Circle', category: 'shapes' },
+		{ id: 'draw', icon: 'ðŸŽ¨', label: 'Draw', category: 'drawing' }
 	];
 	const formatActions = [
 		{ id: 'bold', icon: 'B', label: 'Bold' },
@@ -20,9 +20,9 @@
 		{ id: 'strikethrough', icon: 'S', label: 'Strikethrough' }
 	];
 	const alignActions = [
-		{ id: 'left', icon: '⟵', label: 'Align Left' },
-		{ id: 'center', icon: '↔', label: 'Align Center' },
-		{ id: 'right', icon: '⟶', label: 'Align Right' }
+		{ id: 'left', icon: 'âŸµ', label: 'Align Left' },
+		{ id: 'center', icon: 'â†”', label: 'Align Center' },
+		{ id: 'right', icon: 'âŸ¶', label: 'Align Right' }
 	];
 	// sensible defaults so component compiles standalone
 	let selectedTool = 'select';
@@ -30,20 +30,18 @@
 	let drawing: any = { strokeColor: '#000000', strokeWidth: 2 };
 	let canUndo = $state<boolean>(false);
 	let canRedo = $state<boolean>(false);
-	let zoom = 100;
+	let zoom = 100
 	// subscribe to toolbarStore if available
 	onMount(() => {
 		if (toolbarStore && typeof toolbarStore.subscribe === 'function') {
 			const unsub = toolbarStore.subscribe((state: any) => {
-				selectedTool = state?.selectedTool ?? selectedTool;
-				formatting = state?.formatting ?? formatting;
-				drawing = state?.drawing ?? drawing;
-				canUndo = state?.canUndo ?? canUndo;
-				canRedo = state?.canRedo ?? canRedo;
-				zoom = state?.zoom ?? zoom;
-			});
-			return unsub;
-		}
+				selectedTool = state?.selectedTool ?? selectedTool
+				formatting = state?.formatting ?? formatting
+				drawing = state?.drawing ?? drawing
+				canUndo = state?.canUndo ?? canUndo
+				canRedo = state?.canRedo ?? canRedo
+				zoom = state?.zoom ?? zoom});
+			return unsub}
 	});
 	function selectTool(toolId: string) {
 		if (toolbarStore?.update) {
@@ -76,7 +74,7 @@
 		dispatch('change', { alignment });
 	}
 	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
-		const target = event.target as HTMLInputElement | null;
+		const target = event.target as HTMLInputElement | null
 		const color = target?.value ?? (type === 'color' ? '#000000' : '#ffffff');
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
@@ -97,8 +95,8 @@
 		dispatch('change', { type color });
 	}
 	function handleFontSizeChange(event: Event) {
-		const target = event.target as HTMLInputElement | null;
-		const fontSize = target ? parseInt(target.value, 10) || formatting.fontSize : formatting.fontSize;
+		const target = event.target as HTMLInputElement | null
+		const fontSize = target ? parseInt(target.value, 10) || formatting.fontSize : formatting.fontSize
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
 				...state,
@@ -111,8 +109,8 @@
 		dispatch('change', { fontSize });
 	}
 	function handleStrokeWidthChange(event: Event) {
-		const target = event.target as HTMLInputElement | null;
-		const strokeWidth = target ? parseInt(target.value, 10) || drawing.strokeWidth : drawing.strokeWidth;
+		const target = event.target as HTMLInputElement | null
+		const strokeWidth = target ? parseInt(target.value, 10) || drawing.strokeWidth : drawing.strokeWidth
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
 				...state,
@@ -247,7 +245,7 @@
 				aria-label="Undo"
 				title="Undo"
 			>
-				<span class="icon">↺</span>
+				<span class="icon">â†º</span>
 			</button>
 			<button
 				class="action-button container mx-auto px-4"
@@ -256,15 +254,15 @@
 				aria-label="Redo"
 				title="Redo"
 			>
-				<span class="icon">↻</span>
+				<span class="icon">â†»</span>
 			</button>
 		</div>
 		<div class="tool-group container mx-auto">
 			<button class="action-button container mx-auto" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
-				<span class="icon">⧉</span>
+				<span class="icon">â§‰</span>
 			</button>
 			<button class="action-button container mx-auto" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
-				<span class="icon">🗑️</span>
+				<span class="icon">ðŸ—‘ï¸</span>
 			</button>
 		</div>
 	</div>
@@ -273,11 +271,11 @@
 	<div class="toolbar-section container mx-auto">
 		<div class="tool-group container mx-auto">
 			<button class="action-button container mx-auto" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
-				<span class="icon">➖</span>
+				<span class="icon">âž–</span>
 			</button>
 			<span class="zoom-level container mx-auto">{zoom}%</span>
 			<button class="action-button container mx-auto" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
-				<span class="icon">➕</span>
+				<span class="icon">âž•</span>
 			</button>
 		</div>
 	</div>
@@ -285,44 +283,42 @@
 <style>
 	/* @unocss-include */
 	.toolbar-container {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1rem;
+		display: flex
+		align-items: center
+		gap: 0.5rem
+		padding: 0.75rem 1rem
 	, background: var(--bg-secondary);
 		border-bottom: 1px solid var(--border-light);
-		overflow-x: auto;
-		min-height: 60px;
-	}
+		overflow-x: auto
+		min-height: 60px}
 	.toolbar-section {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		flex-shrink: 0;
-	}
+		display: flex
+		align-items: center
+		gap: 0.5rem
+		flex-shrink: 0}
 	.tool-group {
-		display: flex;
-		align-items: center;
-		gap: 0.25rem;
-		padding: 0.25rem;
+		display: flex
+		align-items: center
+		gap: 0.25rem
+		padding: 0.25rem
 	, background: var(--bg-primary);
-		border-radius: 6px;
+		border-radius: 6px
 	, border: 1px solid var(--border-light);
 	}
 	.tool-button,
 	.format-button,
 	.align-button,
 	.action-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 36px;
-		height: 36px;
-		background: transparent;
-		border: none;
-		cursor: pointer;
-		border-radius: 4px;
-		transition: all 0.2s ease;
+		display: flex
+		align-items: center
+		justify-content: center
+		width: 36px
+		height: 36px
+		background: transparent
+		border: none
+		cursor: pointer
+		border-radius: 4px
+		transition: all 0.2s ease
 	, color: var(--text-primary);
 	}
 	.tool-button:hover,
@@ -340,80 +336,68 @@
 	.format-button:disabled,
 	.align-button:disabled,
 	.action-button:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
+		opacity: 0.5
+		cursor: not-allowed}
 	.color-input {
-		position: relative;
-		cursor: pointer;
-	}
+		position: relative
+		cursor: pointer}
 	.color-input input[type='color'] {
-		position: absolute;
-		opacity: 0;
+		position: absolute
+		opacity: 0
 		width: 100%;
 		height: 100%;
-		cursor: pointer;
-	}
+		cursor: pointer}
 	.color-preview {
-		display: block;
-		width: 24px;
-		height: 24px;
-		border-radius: 4px;
+		display: block
+		width: 24px
+		height: 24px
+		border-radius: 4px
 	, border: 2px solid var(--border-light);
-		cursor: pointer;
-	}
+		cursor: pointer}
 	.size-input {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.5rem;
-	}
+		display: flex
+		align-items: center
+		gap: 0.5rem
+		padding: 0.5rem}
 	.size-input input[type='range'] {
-		width: 80px;
-		height: 4px;
+		width: 80px
+		height: 4px
 	, background: var(--muted-background);
-		border-radius: 2px;
-		outline: none;
-		cursor: pointer;
-	}
+		border-radius: 2px
+		outline: none
+		cursor: pointer}
 	.size-input input[type='range']::-webkit-slider-thumb {
-		appearance: none;
-		width: 16px;
-		height: 16px;
+		appearance: none
+		width: 16px
+		height: 16px
 	, background: var(--harvard-crimson);
 		border-radius: 50%;
-		cursor: pointer;
-	}
+		cursor: pointer}
 	.size-label {
-		font-size: 0.75rem;
+		font-size: 0.75rem
 	, color: var(--text-muted);
-		min-width: 35px;
-		text-align: center;
-	}
+		min-width: 35px
+		text-align: center}
 	.zoom-level {
-		font-size: 0.875rem;
+		font-size: 0.875rem
 	, color: var(--text-primary);
-		min-width: 45px;
-		text-align: center;
-		font-weight: 500;
-	}
+		min-width: 45px
+		text-align: center
+		font-weight: 500}
 	.toolbar-separator {
-		width: 1px;
-		height: 32px;
+		width: 1px
+		height: 32px
 	, background: var(--border-light);
-		margin: 0 0.5rem;
-		flex-shrink: 0;
-	}
+		margin: 0 0.5rem
+		flex-shrink: 0}
 	/* Responsive */
 	@media (max-width: 768px) {
 		.toolbar-container {
-			padding: 0.5rem;
-			gap: 0.25rem;
-		}
+			padding: 0.5rem
+			gap: 0.25rem}
 		.size-input input[type='range'] {
-			width: 60px;
-		}
-		.size-label { display: none;
-		}
+			width: 60px}
+		.size-label { display: none}
 	}
 </style>
+

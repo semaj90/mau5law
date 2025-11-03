@@ -1,12 +1,12 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // RoleGuard component - Role-based access control - Svelte, 5 compatible
   import { auth  } from '$lib/stores/unified';
   interface Props {
-    children?: import('svelte').Snippet;
+    children?: import('svelte').Snippet
     roles: string | string[];
-    fallback?: import('svelte').Snippet;
+    fallback?: import('svelte').Snippet
     requireAll?: boolean; // For multiple roles, require all or just one
   }
   let { children, roles, fallback, requireAll = false }: Props = $props();
@@ -15,13 +15,11 @@ import type { User } from '$lib/types';
   });
   let hasAccess = $derived(() => {
     if (!authStore.isAuthenticated || !authStore.user) {
-      return false;
-    }
-    const userRole = authStore.user.rol;
+      return false}
+    const userRole = authStore.user.rol
     // Admin always has access
     if (userRole === 'admin') {
-      return true;
-    }
+      return true}
     if (requireAll) {
       // User must have all specified roles (not typical for single role systems)
       return allowedRoles.every(role => userRole === role);
@@ -38,3 +36,4 @@ import type { User } from '$lib/types';
 {:else if fallback}
   {@render fallback()}
 {/if}
+

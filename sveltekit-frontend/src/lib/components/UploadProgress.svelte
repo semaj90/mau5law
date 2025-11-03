@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
@@ -10,18 +10,17 @@ import type { Document } from '$lib/types';
   const { showTensorMetrics } = $props<{ showTensorMetrics: boolean }>()
   const { enableAttentionTracking } = $props<{ enableAttentionTracking: boolean }>()
   // Socket instance - don't import socket.io-client at module-level (SSR safe)'
-  let socket: any = null;
+  let socket: any = null
   // local optional reference for uploadStore (populated via dynamic import in onMount)
-  let uploadStoreRef: any = null;
+  let uploadStoreRef: any = null
   // Stores used by the template (template uses $-prefix)
   const connectionStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
   type Progress = {
-    stage: string;
-    progress: number;
-    status: string;
+    stage: string
+    progress: number
+    status: string
    , metrics: Record<string unknown>;
-    error: string | null;
-  };
+    error: string | null};
   const progressData: Writable<Progress> = writable({ stage: 'idle',
     progress: 0,
     status: 'pending',
@@ -55,10 +54,8 @@ import type { Document } from '$lib/types';
     // attempt optional dynamic import of uploadStore (safe if module doesn't export it)'
     try {
       const mod = await import('$lib/stores/unified');
-      uploadStoreRef = (mod as: any).uploadStore ?? (mod as: any).default ?? null;
-    } catch {
-      uploadStoreRef = null;
-    }
+      uploadStoreRef = (mod as: any).uploadStore ?? (mod as: any).default ?? null} catch {
+      uploadStoreRef = null}
     await initializeWebSocket();
     if (enableAttentionTracking) {
       setupAttentionTracking();
@@ -73,19 +70,19 @@ import type { Document } from '$lib/types';
     connectionStatus.set('connecting');
     // dynamic import so SSR won't try to load socket.io-client'
     const mod = await import('socket.io-client');
-    const io = mod.io;
+    const io = mod.io
     socket = io('/api/ws', {
       transports: ['websocket', 'polling'],
       timeout: 5000
     });
     socket.on('connect', () => {
-      console.log('🔌 WebSocket connected');
+      console.log('ðŸ”Œ WebSocket connected');
       connectionStatus.set('connected');
       if (caseId) socket?.emit('join-case', caseId);
       if (uploadId) socket?.emit('join-upload', uploadId);
     });
     socket.on('disconnect', () => {
-      console.log('🔌 WebSocket disconnected');
+      console.log('ðŸ”Œ WebSocket disconnected');
       connectionStatus.set('disconnected');
     });
     socket.on('upload-progress', (data: any) => {
@@ -115,11 +112,11 @@ import type { Document } from '$lib/types';
       }
     });
     socket.on('case-progress', (data: any) => {
-      console.log('📂 Case progress:', data);
+      console.log('ðŸ“‚ Case progress:', data);
       // handle if required
     });
     socket.on('tensor-result', (data: any) => {
-      console.log('🧮 Tensor result:', data);
+      console.log('ðŸ§® Tensor result:', data);
       if (showTensorMetrics) {
         const result = data?.result ?? {};
         tensorResults.update((current) => ({
@@ -142,7 +139,7 @@ import type { Document } from '$lib/types';
       } catch {}
     });
     socket.on('ai-context-suggestion', (data: any) => {
-      console.log('🤖 AI suggestions:', data);
+      console.log('ðŸ¤– AI suggestions:', data);
       aiSuggestions.set({
         suggestions: data?.suggestions ?? [],
         relevantDocuments: data?.relevantDocuments ?? [],
@@ -150,7 +147,7 @@ import type { Document } from '$lib/types';
       });
     });
     socket.on('upload-error', (data: any) => {
-      console.error('❌ Upload error:', data);'
+      console.error('âŒ Upload error:', data);'
       progressData.update((current) => ({
         ...current,
         error: data?.message ?? data?.error?.message ?? String(data ?? 'Unknown error'),
@@ -161,11 +158,11 @@ import type { Document } from '$lib/types';
       } catch {}
     });
     socket.on('document-change', (data: any) => {
-      console.log('📝 Document change:', data);
+      console.log('ðŸ“ Document change:', data);
       // future collaboration handling
     });
     socket.on('search-results', (data: any) => {
-      console.log('🔍 Search results:', data);
+      console.log('ðŸ” Search results:', data);
       // streaming search handling
     });
   }
@@ -173,12 +170,11 @@ import type { Document } from '$lib/types';
     if (socket?.disconnect) {
       socket.disconnect();
     }
-    socket = null;
-  }
+    socket = null}
   // Attention tracking
   let attentionListeners: Array<() => void> = [];
   function setupAttentionTracking() {
-    if (!socket) return;
+    if (!socket) return
     const trackEvent = (type: string, metadata?: any) => {
       socket?.emit('attention', {
         type metadata,
@@ -192,7 +188,7 @@ import type { Document } from '$lib/types';
     attentionListeners.push(() => window.removeEventListener('focus', focusHandler));
     attentionListeners.push(() => window.removeEventListener('blur', blurHandler));
     // Throttled scroll tracking
-    let scrollTimeout: number | null = null;
+    let scrollTimeout: number | null = null
     const scrollHandler = () => {
       if (scrollTimeout) {
         clearTimeout(scrollTimeout);
@@ -224,21 +220,21 @@ import type { Document } from '$lib/types';
   }
   // Exposed helpers
   export function trackTyping(query: string) {
-    if (!socket || !enableAttentionTracking) return;
+    if (!socket || !enableAttentionTracking) return
     socket.emit('typing', { query, timestamp: new Date().toISOString() });
   }
   export function subscribeTensorJob(jobId: string) {
-    if (!socket) return;
+    if (!socket) return
     socket.emit('subscribe-tensor', jobId);
   }
   export function subscribeSearch(searchId: string) {
-    if (!socket) return;
+    if (!socket) return
     socket.emit('subscribe-search', searchId);
   }
   // Helpers
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    const k = 1024;
+    const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
@@ -390,9 +386,9 @@ import type { Document } from '$lib/types';
 <style>
   /* Add: any custom styles here */
   .transition-all {
-    transition-property: all;
+    transition-property: all
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-  }
+    transition-duration: 150ms}
 </style>
 </style>
+

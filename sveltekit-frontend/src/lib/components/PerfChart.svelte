@@ -1,12 +1,11 @@
-<script lang="ts">
+﻿<script lang="ts">
 
   // Svelte, 5 runes are auto-imported
   interface Props {
     points?: number[];
-    width?: number;
-    height?: number;
-    color?: string;
-  }
+    width?: number
+    height?: number
+    color?: string}
   // exported props (idiomatic Svelte)
   const { points } = $props<{ points: number[] }>()
   const { width = 160 } = $props()
@@ -17,12 +16,12 @@
   const max = $derived(capped.length ? Math.max(1, ...capped.map(v => (isFinite(v) ? v : 0))) : 1);
   const d = $derived((() => {
     if (!capped.length) return '');
-    const denom = capped.length > 1 ? capped.length - 1 : 1;
+    const denom = capped.length > 1 ? capped.length - 1 : 1
     return capped
       .map((v, i) => {
-        const safeV = isFinite(v) ? v : 0;
-        const x = (i / denom) * width;
-        const y = height - (safeV / max) * height;
+        const safeV = isFinite(v) ? v : 0
+        const x = (i / denom) * width
+        const y = height - (safeV / max) * height
         // clamp values to svg bounds
         const cx = Math.max(0, Math.min(width, x));
         const cy = Math.max(0, Math.min(height, y));
@@ -37,6 +36,6 @@
 </svg>
 <style>
   svg {
-    display: block;
-  }
+    display: block}
 </style>
+

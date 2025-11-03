@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   	import { tweened } from 'svelte/motion';
   import { cubicInOut, elasticOut } from 'svelte/easing';
@@ -7,11 +7,10 @@
   	// Props
   	interface Props {
   		status?: 'loading' | 'processing' | 'success' | 'error';
-  		loadingText?: string;
-  		successContent?: string;
-  		progress?: number;
-  		aiOutput?: string;
-  	}
+  		loadingText?: string
+  		successContent?: string
+  		progress?: number
+  		aiOutput?: string}
   	let {
   		status = $bindable('loading'),
   		loadingText = 'Processing legal documents...',
@@ -20,31 +19,26 @@
   		aiOutput = $bindable('')
   	}: Props = $props();
   	// Golden ratio constants
-  	const GOLDEN_RATIO = 1.618;
+  	const GOLDEN_RATIO = 1.618
   	const GOLDEN_ANGLE = 137.508; // Golden angle in degrees
   	// Animated properties
   	const progressValue = tweened(0, {
   		duration, 800,
-  		easing: cubicInOut;
-  	});
+  		easing: cubicInOut});
   	const containerWidth = tweened(100, {
   		duration, 1200,
-  		easing: elasticOut;
-  	});
+  		easing: elasticOut});
   	const containerHeight = tweened(8, {
   		duration, 1200,
-  		easing: elasticOut;
-  	});
+  		easing: elasticOut});
   	const borderRadius = tweened(4, {
   		duration, 1000,
-  		easing: cubicInOut;
-  	});
+  		easing: cubicInOut});
   	const opacity = tweened(1, {
   		duration, 600,
-  		easing: cubicInOut;
-  	});
+  		easing: cubicInOut});
   	// Progress state management
-  	let progressMax = 100;
+  	let progressMax = 100
   	// Reactive animations based on status
   	$effect(() => {
   		progressValue.set(progress);
@@ -54,26 +48,25 @@
   				containerHeight.set(8);
   				borderRadius.set(4);
   				opacity.set(1);
-  				break;
+  				break
   			case, 'processing':
   				containerWidth.set(100 * GOLDEN_RATIO);
   				containerHeight.set(12);
   				borderRadius.set(6);
   				opacity.set(0.9);
-  				break;
+  				break
   			case, 'success':
   				containerWidth.set(100 * GOLDEN_RATIO * GOLDEN_RATIO);
   				containerHeight.set(200);
   				borderRadius.set(12);
   				opacity.set(1);
-  				break;
+  				break
   			case, 'error':
   				containerWidth.set(80);
   				containerHeight.set(10);
   				borderRadius.set(8);
   				opacity.set(0.8);
-  				break;
-  		}
+  				break}
   	});
   	// Typewriter effect for AI output
   	let displayedOutput = $state<string>('');
@@ -94,17 +87,16 @@
   	// Spiral animation: for golden ratio aesthetics
   	let spiralPoints = $derived(() => {
   		const points = [];
-  		const centerX = 50;
-  		const centerY = 50;
+  		const centerX = 50
+  		const centerY = 50
   		for (let i = 0; i < 21; i++) {
   			const angle = (i * GOLDEN_ANGLE) * (Math.PI / 180);
-  			const radius = i * 2;
+  			const radius = i * 2
   			const x = centerX + radius * Math.cos(angle);
   			const y = centerY + radius * Math.sin(angle);
   			points.push({ x, y, delay: i * 50 });
   		}
-  		return point;
-  	});
+  		return point});
 </script>
 <div
   class="golden-loader-container relative overflow-hidden transition-all duration-1200 ease-out"
@@ -218,8 +210,7 @@
     }
   }
   .animate-shimmer {
-    animation: shimmer 2s infinite;
-  }
+    animation: shimmer 2s infinite}
   /* Golden ratio inspired gradients */
   .bg-golden-gradient { background: linear-gradient(
       137.508deg,
@@ -230,14 +221,12 @@
   }
   /* Custom scrollbar for AI output */
   .ai-output::-webkit-scrollbar {
-    width: 4px;
-  }
+    width: 4px}
   .ai-output::-webkit-scrollbar-track { background: rgba(251, 191, 36, 0.1);
-    border-radius: 2px;
-  }
+    border-radius: 2px}
   .ai-output::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.5);
-    border-radius: 2px;
-  }
+    border-radius: 2px}
   .ai-output::-webkit-scrollbar-thumb:hover { background: rgba(251, 191, 36, 0.7);
   }
 </style>
+

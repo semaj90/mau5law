@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Centralized utility to get the Ollama API endpoint.
  * Prioritizes Docker service names from environment variables,
  * with a localhost fallback for local development without Docker Compose.
@@ -44,3 +44,4 @@ export function getOllamaApiEndpoint(type: 'generate' | 'delete' | 'list' | 'sho
       return `${base}/api/generate`; // Default to generate if type is unknown
   }
 }
+

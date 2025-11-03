@@ -1,4 +1,4 @@
-// Centralized configuration for pgvector with GPU acceleration and Gemma embeddings
+﻿// Centralized configuration for pgvector with GPU acceleration and Gemma embeddings
 export const PGVECTOR_CONFIG = {
   // PostgreSQL 17 with pgvector
   database: {
@@ -28,21 +28,19 @@ export const PGVECTOR_CONFIG = {
       model: 'RTX 3060 Ti', cudaCores: 4864, tensorCores: 152, memoryGB: 8, computeCapability: '8.6'}
   }, // Performance settings
   performance: {
-    maxParallelWorkers: 8, vectorSearchLimit: 100, batchSize: 50, cacheEnabled: true;
+    maxParallelWorkers: 8, vectorSearchLimit: 100, batchSize: 50, cacheEnabled: true
     cacheTTL: 3600  // 1 hour
   }
 };
 // Helper function to get database connection string
 export function getDatabaseUrl() {
-  return PGVECTOR_CONFIG.database.url;
-}
+  return PGVECTOR_CONFIG.database.url}
 // Helper function to get Ollama embedding model
 export function getEmbeddingModel() {
-  return PGVECTOR_CONFIG.ollama.models.embedding;
-}
+  return PGVECTOR_CONFIG.ollama.models.embedding}
 // Helper function to get CUDA service URL
 export function getCudaServiceUrl(endpoint = '') {
-  const base = PGVECTOR_CONFIG.cuda.url;
-  const path = PGVECTOR_CONFIG.cuda.endpoints[endpoint] || endpoint;
+  const base = PGVECTOR_CONFIG.cuda.url
+  const path = PGVECTOR_CONFIG.cuda.endpoints[endpoint] || endpoint
   return `${base}${path}`;
 }

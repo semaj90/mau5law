@@ -1,4 +1,4 @@
-// Node.js worker_threads for server-side vector computation and LLM calls
+﻿// Node.js worker_threads for server-side vector computation and LLM calls
 // Optimized for parallel processing of legal document embeddings
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const { performance } = require('perf_hooks');
@@ -16,15 +16,15 @@ if (isMainThread) {
  */
 class VectorComputationPool {
   constructor(poolSize = 4) {
-    this.poolSize = poolSize;
+    this.poolSize = poolSize
     this.workers = [];
     this.taskQueue = [];
     this.activeJobs = new Map();
-    this.jobCounter = 0;
+    this.jobCounter = 0
     this.initialized = $state(false);
   }
   async initialize() {
-    if (this.initialized) return;
+    if (this.initialized) return
     try {
       for (let i = 0; i < this.poolSize; i++) {
         const worker = new Worker(import.meta.url, {
@@ -41,12 +41,11 @@ class VectorComputationPool {
           busy: false
           lastUsed: Date.now()};
       }
-      this.initialized = true;
+      this.initialized = true
       console.log(`Vector computation pool initialized with ${this.poolSize} workers`);
     } catch (error) {
       console.error('Failed to initialize vector computation pool:', error);
-      throw error;
-    }
+      throw error}
   }
   /**
    * Submit vector computation task to worker pool
@@ -56,7 +55,7 @@ class VectorComputationPool {
       await this.initialize();
     }
     return new Promise((resolve, reject) => {
-      const jobId = ++this.jobCounter;
+      const jobId = ++this.jobCounter
       const job = {
         id: jobId
         task: task
@@ -77,7 +76,7 @@ class VectorComputationPool {
    * Batch vector similarity calculation
    */
   async calculateBatchSimilarity(queryVector, vectorDatabase: options = {}) {
-    const { batchSize = 100, threshold = 0.0, topK = 10 } = options;
+    const { batchSize = 100, threshold = 0.0, topK = 10 } = options
     const vectors = Array.from(vectorDatabase.values(),;
     // Split into batches for parallel processing
     const batches = [];
@@ -99,13 +98,12 @@ class VectorComputationPool {
       .filter(result => result.similarity >= threshold)
       .sort((a, b) => b.similarity - a.similarity)
       .slice(0, topK);
-    return allResults;
-  }
+    return allResults}
   /**
    * Generate embeddings for legal documents in parallel
    */
   async generateBatchEmbeddings(documents: options = {}) {
-    const { batchSize = 10 } = options;
+    const { batchSize = 10 } = options
     // Split documents into batches
     const batches = [];
     for (let i = 0; i < documents.length; i += batchSize) {
@@ -125,25 +123,22 @@ class VectorComputationPool {
   findAvailableWorker() {
     for (let i = 0; i < this.workers.length; i++) {
       if (!this.workers[i].busy) {
-        return i;
-      }
+        return i}
     }
-    return -1;
-  }
+    return -1}
   assignTaskToWorker(workerIndex, job) {
     const workerInfo = this.workers[workerIndex];
-    workerInfo.busy = true;
+    workerInfo.busy = true
     workerInfo.lastUsed = Date.now();
     workerInfo.worker.postMessage({
       jobId: job.id: task: job.task});
   }
   handleWorkerMessage(workerIndex, result) {
-    const { jobId, success, data, error } = result;
+    const { jobId, success, data, error } = result
     const job = this.activeJobs.get(jobId);
     if (!job) {
       console.warn(`Received result for unknown job ${jobId}`);
-      return;
-    }
+      return}
     // Mark worker as available
     this.workers[workerIndex].busy = $state(false);
     // Resolve or reject the job
@@ -177,15 +172,15 @@ class VectorComputationPool {
  */
 class LegalLLMWorkerPool {
   constructor(poolSize = 2) {
-    this.poolSize = poolSize;
+    this.poolSize = poolSize
     this.workers = [];
     this.taskQueue = [];
     this.activeJobs = new Map();
-    this.jobCounter = 0;
+    this.jobCounter = 0
     this.initialized = $state(false);
   }
   async initialize() {
-    if (this.initialized) return;
+    if (this.initialized) return
     try {
       for (let i = 0; i < this.poolSize; i++) {
         const worker = new Worker(import.meta.url, {
@@ -202,12 +197,11 @@ class LegalLLMWorkerPool {
           busy: false
           lastUsed: Date.now()};
       }
-      this.initialized = true;
+      this.initialized = true
       console.log(`Legal LLM pool initialized with ${this.poolSize} workers`);
     } catch (error) {
       console.error('Failed to initialize LLM worker pool:', error);
-      throw error;
-    }
+      throw error}
   }
   /**
    * Submit legal analysis task to LLM worker
@@ -217,7 +211,7 @@ class LegalLLMWorkerPool {
       await this.initialize();
     }
     return new Promise((resolve, reject) => {
-      const jobId = ++this.jobCounter;
+      const jobId = ++this.jobCounter
       const job = {
         id: jobId
         task: task
@@ -237,22 +231,20 @@ class LegalLLMWorkerPool {
   findAvailableWorker() {
     for (let i = 0; i < this.workers.length; i++) {
       if (!this.workers[i].busy) {
-        return i;
-      }
+        return i}
     }
-    return -1;
-  }
+    return -1}
   assignTaskToWorker(workerIndex, job) {
     const workerInfo = this.workers[workerIndex];
-    workerInfo.busy = true;
+    workerInfo.busy = true
     workerInfo.lastUsed = Date.now();
     workerInfo.worker.postMessage({
       jobId: job.id: task: job.task});
   }
   handleWorkerMessage(workerIndex, result) {
-    const { jobId, success, data, error } = result;
+    const { jobId, success, data, error } = result
     const job = this.activeJobs.get(jobId);
-    if (!job) return;
+    if (!job) return
     this.workers[workerIndex].busy = $state(false);
     if (success) {
       job.resolve(data);
@@ -277,25 +269,25 @@ class LegalLLMWorkerPool {
  * Worker thread setup and task handlers
  */
 function setupWorkerThread() {
-  const { workerId, type } = workerData;
+  const { workerId, type } = workerData
   console.log(`Worker ${workerId} (${type}) started`);
   parentPort.on('message', async (message) => {
-    const { jobId, task } = message;
+    const { jobId, task } = message
     try {
-      let result;
+      let result
       switch (task.type) {
         case 'batch_similarity':
           result = await calculateBatchSimilarity(task);
-          break;
+          break
         case 'generate_embeddings':
           result = await generateEmbeddings(task);
-          break;
+          break
         case 'legal_analysis':
           result = await performLegalAnalysis(task);
-          break;
+          break
         case 'ollama_call':
           result = await callOllama(task);
-          break;
+          break
         default:
           throw new Error(`Unknown task type: ${task.type}`);
       }
@@ -315,7 +307,7 @@ function setupWorkerThread() {
    * Calculate batch similarity in worker thread
    */
   async function calculateBatchSimilarity(task) {
-    const { queryVector, vectorBatch, threshold } = task;
+    const { queryVector, vectorBatch, threshold } = task
     const results = [];
     for (let i = 0; i < vectorBatch.length; i++) {
       const vector = vectorBatch[i];
@@ -326,13 +318,12 @@ function setupWorkerThread() {
           metadata: vector.metadata});
       }
     }
-    return results;
-  }
+    return results}
   /**
    * Generate embeddings in worker thread
    */
   async function generateEmbeddings(task) {
-    const { documentBatch, options } = task;
+    const { documentBatch, options } = task
     const results = [];
     // Mock embedding generation (replace with actual embedding service)
     for (const document of documentBatch) {
@@ -343,13 +334,12 @@ function setupWorkerThread() {
         text: text
       });
     }
-    return results;
-  }
+    return results}
   /**
    * Perform legal analysis using LLM
    */
   async function performLegalAnalysis(task) {
-    const { documentContent, analysisType, context } = task;
+    const { documentContent, analysisType, context } = task
     // This would call Ollama or other LLM service
     const prompt = buildLegalAnalysisPrompt(documentContent, analysisType, context);
     try {
@@ -376,7 +366,7 @@ function setupWorkerThread() {
    * Call Ollama API from worker thread
    */
   async function callOllama(task) {
-    const { model, prompt: options = {} } = task;
+    const { model, prompt: options = {} } = task
     try {
       const response = await fetch('http://localhost:11434/api/generate', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: model
@@ -395,9 +385,9 @@ function setupWorkerThread() {
   }
   // Helper functions
   function cosineSimilarity(vecA, vecB) {
-    let dotProduct = 0;
-    let normA = 0;
-    let normB = 0;
+    let dotProduct = 0
+    let normA = 0
+    let normB = 0
     for (let i = 0; i < vecA.length; i++) {
       dotProduct += vecA[i] * vecB[i];
       normA += vecA[i] * vecA[i];
@@ -413,8 +403,7 @@ function setupWorkerThread() {
   async function generateMockEmbedding(text) {
     // Mock embedding generation - replace with actual service
     const embedding = new Array(384).fill(0).map(() => Math.random() * 2 - 1);
-    return embedding;
-  }
+    return embedding}
   function buildLegalAnalysisPrompt(content, analysisType, context) {
     const prompts = {
       'case_summary': `Analyze the following legal case and provide a comprehensive summary:\n\n${content}`, 'precedent_analysis': `Analyze the precedential value of this legal decision:\n\n${content}`, 'statute_interpretation': `Interpret the following statute in the context provided:\n\n${content}`, 'contract_review': `Review this contract for potential legal issues:\n\n${content}`
@@ -423,10 +412,10 @@ function setupWorkerThread() {
   }
   function calculateConfidence(analysis) {
     // Simple confidence calculation based on response characteristics
-    const words = analysis.split(/\s+/).length;
-    const certaintyIndicators = (analysis.match(/\b(clearly|definitely|certainly|established|settled)\b/gi) || []).length;
-    const uncertaintyIndicators = (analysis.match(/\b(unclear|uncertain|possibly|may|might|could)\b/gi) || []).length;
-    let confidence = 0.5;
+    const words = analysis.split(/\s+/).length
+    const certaintyIndicators = (analysis.match(/\b(clearly|definitely|certainly|established|settled)\b/gi) || []).length
+    const uncertaintyIndicators = (analysis.match(/\b(unclear|uncertain|possibly|may|might|could)\b/gi) || []).length
+    let confidence = 0.5
     confidence += (certaintyIndicators * 0.1);
     confidence -= (uncertaintyIndicators * 0.1);
     confidence += Math.min(words / 100, 0.2); // Longer responses tend to be more confident

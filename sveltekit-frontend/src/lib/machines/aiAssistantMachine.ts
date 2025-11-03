@@ -1,9 +1,8 @@
-/** * Enhanced AI Assistant Machine - Full-Stack Legal AI Integration * * Enterprise-Grade XState, 5 State Machine with Complete Production Stack: * * PERFORMANCE: OPTIMIZATIONS: * - Multi-threading with Web Workers and Service Workers * - Memory management with malloc-style buffer arrays * - Multi-core GPU utilization (RTX, 3060 Ti) for vector operations * - Multi-layer caching (Browser → Redis → Database → GPU) * - Bit encoding for efficient network transfers * - Optimized search/sort algorithms for large datasets * * DATABASE INTEGRATION: * - PostgreSQL, 17 + pgvector with 768-dimension embeddings * - Drizzle ORM with type-safe migrations * - JSONB optimization for legal metadata * - Vector similarity search with HNSW indexes * - Real-time query optimization * * SERVICE INTEGRATION: * - 37 Go microservices with multi-protocol support (HTTP/gRPC/QUIC/WebSocket) * - Intelligent service selection based on load and complexity * - Automatic failover and circuit breaker patterns * - Protocol switching for optimal performance * * AI CAPABILITIES: * - Enhanced RAG with Context7 integration * - Multi-model AI processing (Ollama cluster) * - Vector embeddings with nomic-embed-text (384d) * - Legal document analysis with domain expertise * - Real-time semantic analysis and entity extraction * * REAL-TIME FEATURES: * - WebSocket streaming for AI responses * - NATS messaging for live collaboration * - Real-time performance monitoring * - Live document editing and synchronization * * ENTERPRISE: FEATURES: * - Comprehensive error recovery * - Performance analytics and optimization * - Security and audit logging * - Resource management and throttling */ import { createMachine, assign, fromPromise } from 'xstate'; // runtime browser flag used during focused checks const browser = typeof window !== 'undefined'; // Replace the previous type that depended on a type-only import with a small runtime-safe interface type AmqplibConnection = {
+﻿/** * Enhanced AI Assistant Machine - Full-Stack Legal AI Integration * * Enterprise-Grade XState, 5 State Machine with Complete Production Stack: * * PERFORMANCE: OPTIMIZATIONS: * - Multi-threading with Web Workers and Service Workers * - Memory management with malloc-style buffer arrays * - Multi-core GPU utilization (RTX, 3060 Ti) for vector operations * - Multi-layer caching (Browser â†’ Redis â†’ Database â†’ GPU) * - Bit encoding for efficient network transfers * - Optimized search/sort algorithms for large datasets * * DATABASE INTEGRATION: * - PostgreSQL, 17 + pgvector with 768-dimension embeddings * - Drizzle ORM with type-safe migrations * - JSONB optimization for legal metadata * - Vector similarity search with HNSW indexes * - Real-time query optimization * * SERVICE INTEGRATION: * - 37 Go microservices with multi-protocol support (HTTP/gRPC/QUIC/WebSocket) * - Intelligent service selection based on load and complexity * - Automatic failover and circuit breaker patterns * - Protocol switching for optimal performance * * AI CAPABILITIES: * - Enhanced RAG with Context7 integration * - Multi-model AI processing (Ollama cluster) * - Vector embeddings with nomic-embed-text (384d) * - Legal document analysis with domain expertise * - Real-time semantic analysis and entity extraction * * REAL-TIME FEATURES: * - WebSocket streaming for AI responses * - NATS messaging for live collaboration * - Real-time performance monitoring * - Live document editing and synchronization * * ENTERPRISE: FEATURES: * - Comprehensive error recovery * - Performance analytics and optimization * - Security and audit logging * - Resource management and throttling */ import { createMachine, assign, fromPromise } from 'xstate'; // runtime browser flag used during focused checks const browser = typeof window !== 'undefined'; // Replace the previous type that depended on a type-only import with a small runtime-safe interface type AmqplibConnection = {
   // minimal methods used in this file
   createChannel: () => Promise<Channel>; // Updated to return the new Channel type
   close: () => Promise<void>;
-  on: (event: 'error' | 'close' | string, cb: (...args: any[]) => void) => void;
-};
+  on: (event: 'error' | 'close' | string, cb: (...args: any[]) => void) => void};
 
 // Define the AmqplibModule interface for dynamic import typing
 interface AmqplibModule {
@@ -14,77 +13,74 @@ interface AmqplibModule {
 // Define a minimal Channel type based on amqplib's Channel interface
 type Channel = {
   assertExchange: (name: string, type: string, opts?: Record<string, unknown>) => Promise<void>;
-  publish: (exchange: string, routingKey: string, content: Uint8Array | ArrayBuffer | Buffer) => boolean;
+  publish: (exchange: string, routingKey: string, content: Uint8Array | ArrayBuffer | Buffer) => boolean
   close: () => Promise<void>;
   assertQueue: (queue?: string, options?: Record<string, unknown>) => Promise<{ queue: string; messageCount: number; consumerCount: number }>;
   bindQueue: (queue: string, source: string, pattern: string, args?: Record<string, unknown>) => Promise<void>;
   consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void, options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
   cancel: (consumerTag: string) => Promise<void>;
-  ack: (message: ConsumeMessage, allUpTo?: boolean) => void;
+  ack: (message: ConsumeMessage, allUpTo?: boolean) => void
   // Add other methods if they are used, e.g., deleteQueue
   deleteQueue: (queue: string, options?: Record<string, unknown>) => Promise<{ messageCount: number }>;
 };
 
 // Define a minimal ConsumeMessage type based on amqplib's ConsumeMessage interface
 type ConsumeMessage = {
-  content: Buffer;
-  fields: { deliveryTag: number; redelivered: boolean; exchange: string; routingKey: string };
+  content: Buffer, fields: { deliveryTag: number; redelivered: boolean; exchange: string; routingKey: string };
   properties: {
-    contentType?: string;
-    contentEncoding?: string;
+    contentType?: string
+    contentEncoding?: string
     headers: Record<string, unknown>;
-    deliveryMode?: number;
-    priority?: number;
-    correlationId?: string;
-    replyTo?: string;
-    expiration?: string;
-    messageId?: string;
-    timestamp?: number;
-    type?: string;
-    userId?: string;
-    appId?: string;
-    clusterId?: string;
-  };
+    deliveryMode?: number
+    priority?: number
+    correlationId?: string
+    replyTo?: string
+    expiration?: string
+    messageId?: string
+    timestamp?: number
+    type?: string
+    userId?: string
+    appId?: string
+    clusterId?: string};
 };
 
 // --- Simplified/cleaned types (kept for compatibility) ---
 export interface ConversationEntry {
-  id: string;
+  id: string
   type: 'user' | 'assistant' | 'system';
-  content: string;
-  timestamp: Date;
+  content: string
+  timestamp: Date
   metadata?: Record<string, unknown>;
 }
 
 export interface DocumentType {
-  id: string;
-  title: string;
-  filename: string;
-  fileSize: number;
-  extractedText: string;
-  isIndexed: boolean;
+  id: string
+  title: string
+  filename: string
+  fileSize: number
+  extractedText: string
+  isIndexed: boolean
   metadata?: Record<string, unknown>;
 }
 
 export interface AIAssistantContext {
   // allow extra keys so this type satisfies XState's AnyObject constraint
-  [key: string]: any;
-  currentQuery: string;
-  response: string;
+  [key: string]: any
+  currentQuery: string
+  response: string
   conversationHistory: ConversationEntry[];
-  sessionId: string;
-  isProcessing: boolean;
-  model: string;
-  temperature: number;
-  maxTokens: number;
+  sessionId: string
+  isProcessing: boolean
+  model: string
+  temperature: number
+  maxTokens: number
   availableModels: any[];
   // minimal placeholders for previously used properties
-  context7Available?: boolean;
-  rabbitmqConnected?: boolean;
-  gpuProcessingEnabled?: boolean;
+  context7Available?: boolean
+  rabbitmqConnected?: boolean
+  gpuProcessingEnabled?: boolean
   currentDocuments?: DocumentType[];
-  error: { message: string } | null;
-}
+  error: { message: string } | null}
 
 // --- Types for AI Assistant Events ---
 /** Context for semantic search, e.g., document IDs or case files. */
@@ -92,8 +88,8 @@ type SemanticSearchContext = Record<string, unknown>;
 
 /** Options for vector search operations. */
 interface VectorSearchOptions {
-  topK?: number;
-  threshold?: number;
+  topK?: number
+  threshold?: number
   indexType?: 'HNSW' | 'IVF';
 }
 
@@ -115,44 +111,42 @@ interface Context7Options {
 
 /** Configuration for performance benchmarking. */
 interface BenchmarkOptions {
-  iterations?: number;
-  targetService?: string;
+  iterations?: number
+  targetService?: string
   type: 'cpu' | 'gpu' | 'network' | 'e2e';
 }
 
 /** Configuration for scaling microservices. */
 interface ServiceScaleConfig {
-  serviceName: string;
-  replicas: number;
-  cpuLimit?: string;
-  memoryLimit?: string;
-}
+  serviceName: string
+  replicas: number
+  cpuLimit?: string
+  memoryLimit?: string}
 
 /** A reference to a document for batch processing. */
 interface DocumentReference {
-  id: string;
+  id: string
   source: 'minio' | 'local';
 }
 
 /** Configuration for training a custom AI model. */
 interface ModelTrainingConfig {
-  modelName: string;
-  baseModel: string;
-  datasetId: string;
-  epochs: number;
-  learningRate: number;
-}
+  modelName: string
+  baseModel: string
+  datasetId: string
+  epochs: number
+  learningRate: number}
 
 /** Defines a workflow to be executed. */
 interface WorkflowPayload {
-  workflowId: string;
+  workflowId: string
   parameters: Record<string, unknown>;
 }
 
 /** Represents a user in a collaboration session. */
 interface Collaborator {
-  userId: string;
-  name: string;
+  userId: string
+  name: string
   role: 'attorney' | 'paralegal' | 'viewer';
 }
 
@@ -199,71 +193,60 @@ type ProcessQueryOutput = { response: string };
 type NavWithGPU = Navigator & {
   gpu?: {
     // requestAdapter may return an adapter with optional requestDevice
-    requestAdapter?: () => Promise<{ requestDevice?: () => Promise<unknown> } | null> | null;
-  };
+    requestAdapter?: () => Promise<{ requestDevice?: () => Promise<unknown> } | null> | null};
 };
 
 // --- Minimal, correct GPU processor ---
 class GPUProcessor {
-  private static instance: GPUProcessor;
-  private initialized: boolean = false;
-
+  private static instance: GPUProcessor
+  private initialized: boolean = false
   static getInstance(): GPUProcessor {
     if (!GPUProcessor.instance) GPUProcessor.instance = new GPUProcessor();
-    return GPUProcessor.instance;
-  }
+    return GPUProcessor.instance}
 
   async initialize(): Promise<boolean> {
     try {
       // Use a properly typed navigator alias instead of `any`
-      const nav = typeof navigator !== 'undefined' ? (navigator as NavWithGPU) : undefined;
-
+      const nav = typeof navigator !== 'undefined' ? (navigator as NavWithGPU) : undefined
       // Guard against missing WebGPU support
       if (!nav?.gpu) {
-        this.initialized = false;
-        return false;
-      }
+        this.initialized = false
+        return false}
 
       const adapter = await nav.gpu.requestAdapter?.();
       if (!adapter) {
-        this.initialized = false;
-        return false;
-      }
+        this.initialized = false
+        return false}
 
       // requestDevice might not be available in test envs; guard it
       await adapter.requestDevice?.();
-      this.initialized = true;
-      return true;
-    } catch (err) {
-      this.initialized = false;
-      return false;
-    }
+      this.initialized = true
+      return true} catch (err) {
+      this.initialized = false
+      return false}
   }
 
   isAvailable(): boolean {
-    return this.initialized;
-  }
+    return this.initialized}
 }
 
 // --- Minimal multi-layer cache (safe, no DOM assumptions) ---
 class MultiLayerCache {
-  private static instance: MultiLayerCache;
+  private static instance: MultiLayerCache
   private l1Cache = new Map<string, unknown>();
 
   static getInstance(): MultiLayerCache {
     if (!MultiLayerCache.instance) MultiLayerCache.instance = new MultiLayerCache();
-    return MultiLayerCache.instance;
-  }
+    return MultiLayerCache.instance}
 
   async get(key: string): Promise<unknown> {
-    return this.l1Cache.has(key) ? this.l1Cache.get(key) : null;
-  }
+    return this.l1Cache.has(key) ? this.l1Cache.get(key) : null}
 
   async set(key: string, value: any, _ttl = 3600000): Promise<void> {
     this.l1Cache.set(key, value);
     if (this.l1Cache.size > 2000) {
       // simple eviction
-      const firstKey = this.l1Cache.keys().next().value;
+      const firstKey = this.l1Cache.keys().next().value
       if (firstKey) this.l1Cache.delete(firstKey);
     }
   }
@@ -279,27 +262,23 @@ class MultiLayerCache {
 
 // --- Minimal memory manager ---
 class MemoryManager {
-  private static instance: MemoryManager;
-
+  private static instance: MemoryManager
   static getInstance(): MemoryManager {
     if (!MemoryManager.instance) MemoryManager.instance = new MemoryManager();
-    return MemoryManager.instance;
-  }
+    return MemoryManager.instance}
 
   getMemoryUsage(): number {
     try {
-      const perf = typeof performance !== 'undefined' ? performance : undefined;
+      const perf = typeof performance !== 'undefined' ? performance : undefined
       if (perf && 'memory' in perf) {
-        const memoryInfo = (perf as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+        const memoryInfo = (perf as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }).memory
         if (memoryInfo) {
-          return memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit;
-        }
+          return memoryInfo.usedJSHeapSize / memoryInfo.jsHeapSizeLimit}
       }
     } catch {
       // performance.memory is not available, return default
     }
-    return 0.5;
-  }
+    return 0.5}
 
   forceGC(): void {
     // best-effort no-op in browsers unless explicit GC exposed
@@ -319,8 +298,7 @@ type TaskResult = { ok: true; result: any } | { ok: false; error: string };
 
 class $WebWorkerPool {
   private _workers: Worker[] = [];
-  private _nextWorker = 0;
-
+  private _nextWorker = 0
   constructor(
     private _maxWorkers = Math.max(
       1,
@@ -332,7 +310,7 @@ class $WebWorkerPool {
     // create a short-lived worker for simplicity (safe and predictable)
     const code = `
       self.onmessage = function(e) {
-        const task = e.data;
+        const task = e.data
         try {
           // basic simulation of task execution
           if (task.type === 'processDocument') {
@@ -397,45 +375,39 @@ class $WebWorkerPool {
 
 // --- Replace previous RabbitMQService stub with a real server implementation ---
 class RabbitMQService {
-  private connection: AmqplibConnection | null = null;
+  private connection: AmqplibConnection | null = null
   private connectionUrl = 'amqp://localhost:5672';
-  private connectionPromise: Promise<boolean> | null = null;
+  private connectionPromise: Promise<boolean> | null = null
   // keep track of channels/consumers so we can close them on disconnect
   private channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> = new Map();
 
   connect(config?: { url?: string }): Promise<boolean> {
     if (this.connection) return Promise.resolve(true);
-    if (this.connectionPromise) return this.connectionPromise;
-
+    if (this.connectionPromise) return this.connectionPromise
     this.connectionPromise = this._doConnect(config).finally(() => {
-      this.connectionPromise = null;
-    });
-    return this.connectionPromise;
-  }
+      this.connectionPromise = null});
+    return this.connectionPromise}
 
   private async _doConnect(config?: { url?: string }): Promise<boolean> {
     if (browser) {
       console.warn('[RabbitMQ] RabbitMQ connection is not available in the browser.');
-      return false;
-    }
+      return false}
 
-    let urlToUse = config?.url;
+    let urlToUse = config?.url
     if (!urlToUse) {
       try {
         // dynamic private env (SvelteKit server-only). Use safe try/catch to avoid compile/runtime failures in some environments
         // dynamic env module is provided by SvelteKit at runtime and may be missing in editor environments
         const mod = await import('$env/dynamic/private').catch(() => undefined);
-        urlToUse = (mod?.env?.RABBITMQ_URL as string | undefined) || urlToUse;
-      } catch (e) {
+        urlToUse = (mod?.env?.RABBITMQ_URL as string | undefined) || urlToUse} catch (e) {
         // ignore - server-only import may fail in some contexts
       }
     }
-    this.connectionUrl = urlToUse || this.connectionUrl;
-
+    this.connectionUrl = urlToUse || this.connectionUrl
     try {
       const amqplibMod = await import('amqplib');
       // Support both ESM and CommonJS shapes without referencing `.default` directly in a typed way.
-      const connectFn = (amqplibMod as AmqplibModule).connect || (amqplibMod as AmqplibModule).default?.connect;
+      const connectFn = (amqplibMod as AmqplibModule).connect || (amqplibMod as AmqplibModule).default?.connect
       if (!connectFn) throw new Error('amqplib.connect not available');
 
       this.connection = await connectFn(this.connectionUrl);
@@ -451,16 +423,14 @@ class RabbitMQService {
       });
 
       console.log(`[RabbitMQ] Connected to ${this.connectionUrl}`);
-      return true;
-    } catch (error) {
+      return true} catch (error) {
       console.error('[RabbitMQ] Failed to connect: ', error);
-      this.connection = null;
-      return false;
-    }
+      this.connection = null
+      return false}
   }
 
   private _cleanupConnection() {
-    this.connection = null;
+    this.connection = null
     // close stored channels (iterate values to avoid downlevelIteration issues)
     for (const entry of Array.from(this.channels.values())) {
       try {
@@ -473,8 +443,7 @@ class RabbitMQService {
   }
 
   isConnected(): boolean {
-    return this.connection !== null;
-  }
+    return this.connection !== null}
 
   async disconnect(): Promise<void> {
     // close channels first (iterate values for compatibility)
@@ -497,34 +466,31 @@ class RabbitMQService {
       } catch (e) {
         console.warn('[RabbitMQ] Error while disconnecting: ', e);
       }
-      this.connection = null;
-    }
+      this.connection = null}
   }
 
   private async _ensureConnected(): Promise<boolean> {
-    if (this.isConnected()) return true;
+    if (this.isConnected()) return true
     return this.connect();
   }
 
   private async publish(exchange: string, routingKey: string, payload: any): Promise<void> {
     if (browser) {
       console.warn('[RabbitMQ] publish skipped in browser.');
-      return;
-    }
+      return}
 
     const ok = await this._ensureConnected();
     if (!ok || !this.connection) {
       console.warn('[RabbitMQ] Not connected. Cannot publish message.');
-      return;
-    }
+      return}
 
-    let channel: Channel | undefined;
+    let channel: Channel | undefined
     try {
       channel = await this.connection.createChannel();
       await channel.assertExchange(exchange, 'topic', { durable: false });
 
       const json = JSON.stringify(payload);
-      const BufferGlobal = (globalThis as unknown as { Buffer?: { from(s: string, enc?: string): Uint8Array } }).Buffer;
+      const BufferGlobal = (globalThis as unknown as { Buffer?: { from(s: string, enc?: string): Uint8Array } }).Buffer
       const content: Uint8Array = typeof BufferGlobal !== 'undefined' ? BufferGlobal.from(json, 'utf8') : new TextEncoder().encode(json);
 
       channel.publish(exchange, routingKey, content);
@@ -552,15 +518,13 @@ class RabbitMQService {
   subscribeToSystemEvents(cb: (msg: any) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToSystemEvents is not available in the browser (no-op).');
-      return;
-    }
+      return}
 
     // create consumer in background
     (async () => {
       try {
         const ok = await this._ensureConnected();
-        if (!ok || !this.connection) return;
-
+        if (!ok || !this.connection) return
         const channel = await this.connection.createChannel();
         await channel.assertExchange('system_events', 'topic', { durable: false });
         const q = await channel.assertQueue('', { exclusive: true });
@@ -569,9 +533,8 @@ class RabbitMQService {
         const consumeResult = await channel.consume(
           q.queue,
           (msg: ConsumeMessage | null) => {
-            if (!msg) return;
-
-            let payload: any = null;
+            if (!msg) return
+            let payload: any = null
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
@@ -579,12 +542,10 @@ class RabbitMQService {
               // Added error logging
               console.warn('[RabbitMQ] Error parsing system event message content: ', e);
               try {
-                payload = msg.content?.toString?.('utf8') ?? null;
-              } catch (e2) {
+                payload = msg.content?.toString?.('utf8') ?? null} catch (e2) {
                 // Added error logging
                 console.warn('[RabbitMQ] Error converting system event message content to string: ', e2);
-                payload = null;
-              }
+                payload = null}
             }
 
             try {
@@ -613,14 +574,12 @@ class RabbitMQService {
   subscribeToCase(caseId: string, cb: (msg: any) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToCase is not available in the browser (no-op).');
-      return;
-    }
+      return}
 
     (async () => {
       try {
         const ok = await this._ensureConnected();
-        if (!ok || !this.connection) return;
-
+        if (!ok || !this.connection) return
         const channel = await this.connection.createChannel();
         await channel.assertExchange('case_events', 'topic', { durable: false });
         const q = await channel.assertQueue('', { exclusive: true });
@@ -632,9 +591,8 @@ class RabbitMQService {
         const consumeResult = await channel.consume(
           q.queue,
           (msg: ConsumeMessage | null) => {
-            if (!msg) return;
-
-            let payload: any = null;
+            if (!msg) return
+            let payload: any = null
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
@@ -642,12 +600,10 @@ class RabbitMQService {
               // Added error logging
               console.warn('[RabbitMQ] Error parsing case event message content: ', e);
               try {
-                payload = msg.content?.toString?.('utf8') ?? null;
-              } catch (e2) {
+                payload = msg.content?.toString?.('utf8') ?? null} catch (e2) {
                 // Added error logging
                 console.warn('[RabbitMQ] Error converting case event message content to string: ', e2);
-                payload = null;
-              }
+                payload = null}
             }
 
             try {
@@ -676,14 +632,12 @@ class RabbitMQService {
   subscribeToAIAnalysis(cb: (msg: any) => void): void {
     if (browser) {
       console.warn('[RabbitMQ] subscribeToAIAnalysis is not available in the browser (no-op).');
-      return;
-    }
+      return}
 
     (async () => {
       try {
         const ok = await this._ensureConnected();
-        if (!ok || !this.connection) return;
-
+        if (!ok || !this.connection) return
         const channel = await this.connection.createChannel();
         await channel.assertExchange('ai_events', 'topic', { durable: false });
         const q = await channel.assertQueue('', { exclusive: true });
@@ -692,9 +646,8 @@ class RabbitMQService {
         const consumeResult = await channel.consume(
           q.queue,
           (msg: ConsumeMessage | null) => {
-            if (!msg) return;
-
-            let payload: any = null;
+            if (!msg) return
+            let payload: any = null
             try {
               const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
@@ -702,12 +655,10 @@ class RabbitMQService {
               // Added error logging
               console.warn('[RabbitMQ] Error parsing AI analysis message content: ', e);
               try {
-                payload = msg.content?.toString?.('utf8') ?? null;
-              } catch (e2) {
+                payload = msg.content?.toString?.('utf8') ?? null} catch (e2) {
                 // Added error logging
                 console.warn('[RabbitMQ] Error converting AI analysis message content to string: ', e2);
-                payload = null;
-              }
+                payload = null}
             }
 
             try {
@@ -736,8 +687,7 @@ class RabbitMQService {
   // optional: allow programmatic unsubscribe if needed
   async unsubscribe(key: string): Promise<void> {
     const entry = this.channels.get(key);
-    if (!entry) return;
-
+    if (!entry) return
     try {
       if (entry.consumerTag && entry.channel?.cancel) {
         await entry.channel.cancel(entry.consumerTag).catch(() => {});
@@ -884,5 +834,6 @@ export const aiAssistantProvider = {
   delays: {},
   guards: {}};
 
-export default aiAssistantMachine;
+export default aiAssistantMachine
 // Helper: resolve Ollama endpoint safely in server or browser.
+

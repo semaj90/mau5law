@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Essential Route Page Template with CSS Bits UI Integration
 Use this template for all essential routes
 -->
@@ -14,12 +14,11 @@ Use this template for all essential routes
 	import  ButtonBits, CardBits, DialogBits  from "$lib/components/ui/bits-ui.svelte";
 	// Props
 	interface Props {
-		pageTitle: string;
-		description?: string;
-		showBackButton?: boolean;
-		className?: string;
-		children?: import('svelte').Snippet;
-	}
+		pageTitle: string
+		description?: string
+		showBackButton?: boolean
+		className?: string
+		children?: import('svelte').Snippet}
 	let {
 		pageTitle,
 		description = '',
@@ -30,8 +29,7 @@ Use this template for all essential routes
 	let isLoading = $state<boolean>(false);
 	let isClient = $state<boolean>(false);
 	$effect(() => {
-		isClient = true;
-	});
+		isClient = true});
 	function goBack() {
 		if (browser) {
 			window.history.back();
@@ -56,7 +54,7 @@ Use this template for all essential routes
 								onclick={goBack}
 								class="nes-btn is-primary"
 							>
-								← Back
+								â† Back
 						{/if}
 						<div>
 							<CardTitle class="nes-text is-primary">
@@ -88,7 +86,7 @@ Use this template for all essential routes
 					<Card.Root, class="nes-container">
 						<CardContent class="p-8">
 							<div class="mb-4">
-								<div class="text-6xl">🚧</div>
+								<div class="text-6xl">ðŸš§</div>
 								<h2 class="nes-text is-primary text-xl">
 									Page Under Development
 								</h2>
@@ -127,40 +125,33 @@ Use this template for all essential routes
 	@import url('https://unpkg.com/nes.css@2.3.0/css/nes.min.css')
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap')
 	.essential-route-page {
-		min-height: 100vh;
-		font-family: 'Press Start 2P', cursiv;
+		min-height: 100vh
+		font-family: 'Press Start 2P', cursiv
 		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-		color: #fff;
-		padding: 1rem;
-	}
+		color: #fff
+		padding: 1rem}
 	.essential-route-main {
-		max-width: 1200px;
-	, margin: 0 auto;
-	}
+		max-width: 1200px
+	, margin: 0 auto}
 /* NES.css theme integration */ {}
 	:global(.nes-container.is-rounded) {
-		border-image-slice: 2;
-		border-image-width: 2px;
-		border-image-outset: 0;
+		border-image-slice: 2
+		border-image-width: 2px
+		border-image-outset: 0
 border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>") {}
 	}
 	:global(.nes-btn) {
-		font-family: 'Press Start 2P', cursive !important;
-		font-size: 0.75rem !important;
-	}
+		font-family: 'Press Start 2P', cursive !important
+		font-size: 0.75rem !important}
 	:global(.nes-text) {
-		font-family: 'Press Start 2P', cursiv;
-	}
+		font-family: 'Press Start 2P', cursiv}
 	:global(.nes-badge) {
-		font-family: 'Press Start 2P', cursiv;
-		font-size: 0.6rem;
-	}
+		font-family: 'Press Start 2P', cursiv
+		font-size: 0.6rem}
 	@media (max-width: 768px) {
 		.essential-route-page {
-			padding: 0.5rem;
-		}
+			padding: 0.5rem}
 		:global(.nes-text.text-2xl) {
-			font-size: 1rem !important;
-		}
+			font-size: 1rem !important}
 	}
 </style>

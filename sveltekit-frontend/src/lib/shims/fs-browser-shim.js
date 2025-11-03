@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Filesystem Browser Shim
  * Provides empty stubs for Node.js fs module in browser
  */
@@ -26,12 +26,12 @@ export default {
     F_OK: 0, R_OK: 4, W_OK: 2, X_OK: 1}
 };
 // Named exports for ESM compatibility
-export const stat = noop;
-export const readFile = noop;
-export const writeFile = noop;
-export const access = noop;
-export const mkdir = noop;
-export const readdir = noop;
+export const stat = noop
+export const readFile = noop
+export const writeFile = noop
+export const access = noop
+export const mkdir = noop
+export const readdir = noop
 export const promises = {
   stat: noopAsync
   readFile: noopAsync

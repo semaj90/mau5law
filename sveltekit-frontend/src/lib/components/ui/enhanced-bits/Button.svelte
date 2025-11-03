@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   const { onclick } = $props<{ onclick: (() }>()
   const { disabled } = $props<{ disabled: boolean }>()
   const { variant } = $props<{ variant: string | undefined }>()
@@ -13,5 +13,6 @@
   <slot />
 </button>
 <style>
-  button[disabled] { opacity: 0.6; cursor: not-allowed; }
+  button[disabled] { opacity: 0.6; cursor: not-allowed}
 </style>
+

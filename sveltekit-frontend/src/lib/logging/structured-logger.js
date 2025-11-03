@@ -1,4 +1,4 @@
-// Minimal structured logger stub to satisfy imports and provide basic console logging.
+﻿// Minimal structured logger stub to satisfy imports and provide basic console logging.
 class StructuredLogger {
   async logAPIRequest(entry) {
     console.debug('[api:req]', entry.requestId, entry.method, entry.endpoint);
@@ -60,3 +60,4 @@ export const logger = {
     }
   }, // ...existing methods...
 };
+

@@ -1,4 +1,4 @@
-<!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save, with Loki.js -->
+﻿<!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save, with Loki.js -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount, onDestroy } from "svelte";
@@ -14,12 +14,11 @@
 
   // Props via Svelte 5 $props() runes
   interface Props {
-    caseId: string;
-    canvasId?: string;
-    width?: number;
-    height?: number;
-    readOnly?: boolean;
-  }
+    caseId: string
+    canvasId?: string
+    width?: number
+    height?: number
+    readOnly?: boolean}
   let { caseId, canvasId = "", width = 1200, height = 800, readOnly = false }: Props = $props();
 
   // Reactive state (runes)
@@ -49,28 +48,26 @@
   // History management
   let historyStack = $state<string[]>([]);
   let historyIndex = $state<number>(-1);
-  const maxHistorySize = 50;
-
+  const maxHistorySize = 50
   // Auto-save
-  let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null;
+  let autoSaveTimeout: ReturnType<typeof setTimeout> | null = null
   let isDirty = $state<boolean>(false);
 
   // Tools (use simple text/icon placeholders to avoid icon import issues)
   const tools = [
-    { id: "select", icon: "🖱️", label: "Select" },
-    { id: "pan", icon: "✋", label: "Pan" },
-    { id: "text", icon: "📝", label: "Text" },
-    { id: "rect", icon: "▭", label: "Rectangle" },
-    { id: "circle", icon: "◯", label: "Circle" },
-    { id: "line", icon: "—", label: "Line" },
-    { id: "arrow", icon: "➡️", label: "Arrow" },
-    { id: "image", icon: "🖼️", label: "Image" },
-    { id: "evidence", icon: "📦", label: "Evidence" },
-    { id: "note", icon: "📄", label: "Note" },
-    { id: "timeline", icon: "🕒", label: "Timeline" },
-    { id: "person", icon: "👤", label: "Person" },
-    { id: "location", icon: "📍", label: "Location" },
-  ];
+    { id: "select", icon: "ðŸ–±ï¸", label: "Select" },
+    { id: "pan", icon: "âœ‹", label: "Pan" },
+    { id: "text", icon: "ðŸ“", label: "Text" },
+    { id: "rect", icon: "â–­", label: "Rectangle" },
+    { id: "circle", icon: "â—¯", label: "Circle" },
+    { id: "line", icon: "â€”", label: "Line" },
+    { id: "arrow", icon: "âž¡ï¸", label: "Arrow" },
+    { id: "image", icon: "ðŸ–¼ï¸", label: "Image" },
+    { id: "evidence", icon: "ðŸ“¦", label: "Evidence" },
+    { id: "note", icon: "ðŸ“„", label: "Note" },
+    { id: "timeline", icon: "ðŸ•’", label: "Timeline" },
+    { id: "person", icon: "ðŸ‘¤", label: "Person" },
+    { id: "location", icon: "ðŸ“", label: "Location" }];
 
   // Evidence items and search results (local copies)
   let evidenceItems = $state<any[]>([]);
@@ -88,7 +85,7 @@
     // Subscribe to the store and read state.evidence instead of trying to access evidenceStore.evidence.
     const unsubscribe = evidenceStore.subscribe((state: any) => {
       const items = state?.evidence ?? [];
-      evidenceItems = items;
+      evidenceItems = items
       updateSearchEngine();
     });
 
@@ -194,60 +191,58 @@
   }
 
   function handleKeyboard(e: KeyboardEvent) {
-    if (!canvas) return;
+    if (!canvas) return
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
         case "z":
           e.preventDefault();
           if (e.shiftKey) redo();
           else undo();
-          break;
+          break
         case "s":
           e.preventDefault();
           saveCanvas();
-          break;
+          break
         case "c":
           e.preventDefault();
           copySelected();
-          break;
+          break
         case "v":
           e.preventDefault();
           pasteClipboard();
-          break;
+          break
         case "a":
           e.preventDefault();
           selectAll();
-          break;
+          break
         case "Delete":
         case "Backspace":
           e.preventDefault();
           deleteSelected();
-          break;
-      }
+          break}
     }
   }
 
   function handleMouseDown(event: any) {
     const state = get(canvasState);
-    if (!canvas) return;
+    if (!canvas) return
     const pointer = canvas.getPointer(event.e || event);
     switch (state.tool) {
       case "rect":
         createRectangle(pointer);
-        break;
+        break
       case "circle":
         createCircle(pointer);
-        break;
+        break
       case "text":
         createText(pointer);
-        break;
+        break
       case "line":
         createLine(pointer);
-        break;
+        break
       case "arrow":
         createArrow(pointer);
-        break;
-    }
+        break}
   }
 
   function handleMouseMove(_event: any) { /* no-op for now */ }
@@ -255,7 +250,7 @@
 
   // Shape creation helpers (use any typing to avoid type errors)
   function createRectangle(pointer: any) {
-    if (!canvas) return;
+    if (!canvas) return
     const rect = new (fabric as any).Rect({
       left: pointer.x,
       top: pointer.y,
@@ -272,7 +267,7 @@
   }
 
   function createCircle(pointer: any) {
-    if (!canvas) return;
+    if (!canvas) return
     const circle = new (fabric as any).Circle({
       left: pointer.x,
       top: pointer.y,
@@ -286,7 +281,7 @@
   }
 
   function createText(pointer: any) {
-    if (!canvas) return;
+    if (!canvas) return
     const text = new (fabric as any).IText("Click to edit text", {
       left: pointer.x,
       top: pointer.y,
@@ -300,7 +295,7 @@
   }
 
   function createLine(pointer: any) {
-    if (!canvas) return;
+    if (!canvas) return
     const line = new (fabric as any).Line([pointer.x, pointer.y, pointer.x + 100, pointer.y], {
       stroke: "#ef4444",
       strokeWidth: 2,
@@ -311,7 +306,7 @@
   }
 
   function createArrow(pointer: any) {
-    if (!canvas) return;
+    if (!canvas) return
     const line = new (fabric as any).Line([0, 0, 100, 0], { stroke: "#8b5cf6", strokeWidth: 2 });
     const triangle = new (fabric as any).Triangle({ left: 95, top: -5, width: 10, height: 10, fill: "#8b5cf6", angle: 90 });
     const arrow = new (fabric as any).Group([line, triangle], { left: pointer.x, top: pointer.y });
@@ -350,7 +345,7 @@
       width: 180,
       fill: "#374151"
     });
-    let thumbnail: any = null;
+    let thumbnail: any = null
     if (evidence?.fileUrl) {
       thumbnail = createThumbnail(evidence);
     }
@@ -364,8 +359,7 @@
     });
     group.set("evidenceData", evidence);
     group.set("objectType", "evidence");
-    return group;
-  }
+    return group}
 
   function createThumbnail(evidence: any): any | null {
     const fileType = evidence?.fileType || evidence?.mimeType || "";
@@ -376,11 +370,10 @@
     } else if (fileType.startsWith("video/")) {
       return new (fabric as any).Text("VIDEO", { fontSize: 10, fontWeight: "bold", top: 100, left: 140, fill: "#7c2d12" });
     }
-    return null;
-  }
+    return null}
 
   function addTimelineToCanvas() {
-    if (!canvas) return;
+    if (!canvas) return
     const timelineGroup = createTimelineVisualization();
     canvas.add(timelineGroup);
     canvas.setActiveObject(timelineGroup);
@@ -396,11 +389,10 @@
     }
     const timeline = new (fabric as any).Group(elements, { left: 100, top: 200 });
     timeline.set("objectType", "timeline");
-    return timeline;
-  }
+    return timeline}
 
   function addPersonToCanvas() {
-    if (!canvas) return;
+    if (!canvas) return
     const person = createPersonVisualization();
     canvas.add(person);
     canvas.setActiveObject(person);
@@ -412,11 +404,10 @@
     const role = new (fabric as any).Text("Role/Title", { fontSize: 10, top: 55, left: -25, fill: "#6b7280", textAlign: "center" });
     const person = new (fabric as any).Group([circle, name, role], { left: 200, top: 200 });
     person.set("objectType", "person");
-    return person;
-  }
+    return person}
 
   function addLocationToCanvas() {
-    if (!canvas) return;
+    if (!canvas) return
     const location = createLocationVisualization();
     canvas.add(location);
     canvas.setActiveObject(location);
@@ -430,26 +421,25 @@
     const label = new (fabric as any).Text("Location", { fontSize: 12, top: 35, left: -10, fill: "#374151" });
     const location = new (fabric as any).Group([marker, label], { left: 300, top: 200 });
     location.set("objectType", "location");
-    return location;
-  }
+    return location}
 
   // Canvas state management functions
   function handleObjectAdded() {
-    isDirty = true;
+    isDirty = true
     updateCanvasState();
     scheduleAutoSave();
     saveState();
   }
 
   function handleObjectRemoved() {
-    isDirty = true;
+    isDirty = true
     updateCanvasState();
     scheduleAutoSave();
     saveState();
   }
 
   function handleObjectModified() {
-    isDirty = true;
+    isDirty = true
     scheduleAutoSave();
     saveState();
   }
@@ -468,13 +458,13 @@
   }
 
   function updateSelection() {
-    if (!canvas) return;
+    if (!canvas) return
     const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
     canvasState.update((s: any) => ({ ...s, selectedObjects: activeObjects }));
   }
 
   function updateCanvasState() {
-    if (!canvas) return;
+    if (!canvas) return
     canvasState.update((state: any) => ({
       ...state,
       objectCount: canvas.getObjects ? canvas.getObjects().length : 0,
@@ -485,11 +475,11 @@
 
   // History management
   function saveState() {
-    if (!canvas || !canvas.toJSON) return;
+    if (!canvas || !canvas.toJSON) return
     const stateString = JSON.stringify(canvas.toJSON());
     historyStack = historyStack.slice(0, historyIndex + 1);
     historyStack.push(stateString);
-    historyIndex = historyStack.length - 1;
+    historyIndex = historyStack.length - 1
     if (historyStack.length > maxHistorySize) {
       historyStack.shift();
       historyIndex--;
@@ -498,7 +488,7 @@
   }
 
   async function undo(): Promise<any> {
-    if (!canvas || historyIndex <= 0) return;
+    if (!canvas || historyIndex <= 0) return
     historyIndex--;
     const state = historyStack[historyIndex];
     await (canvas.loadFromJSON ? canvas.loadFromJSON(state) : Promise.resolve());
@@ -507,7 +497,7 @@
   }
 
   async function redo(): Promise<any> {
-    if (!canvas || historyIndex >= historyStack.length - 1) return;
+    if (!canvas || historyIndex >= historyStack.length - 1) return
     historyIndex++;
     const state = historyStack[historyIndex];
     await (canvas.loadFromJSON ? canvas.loadFromJSON(state) : Promise.resolve());
@@ -522,7 +512,7 @@
   }
 
   async function saveCanvas(): Promise<void> {
-    if (!canvas || !canvasCollection || !isDirty) return;
+    if (!canvas || !canvasCollection || !isDirty) return
     try {
       const canvasData = {
         id: canvasId || crypto.randomUUID(),
@@ -538,7 +528,7 @@
         timestamp: new Date(),
         version: Date.now()
       };
-      const existing = canvasCollection.findOne ? canvasCollection.findOne({ id: canvasData.id }) : null;
+      const existing = canvasCollection.findOne ? canvasCollection.findOne({ id: canvasData.id }) : null
       if (existing && canvasCollection.update) canvasCollection.update({ ...existing, ...canvasData });
       else if (canvasCollection.insert) canvasCollection.insert(canvasData);
 
@@ -547,7 +537,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(canvasData)
       });
-      isDirty = false;
+      isDirty = false
       showSaveIndicator();
     } catch (error) {
       console.error("Failed to save canvas:", error);
@@ -555,13 +545,12 @@
   }
 
   async function loadCanvasData(): Promise<any> {
-    if (!canvasCollection) return;
+    if (!canvasCollection) return
     try {
-      const localData = canvasCollection.findOne ? canvasCollection.findOne({ caseId }) : null;
+      const localData = canvasCollection.findOne ? canvasCollection.findOne({ caseId }) : null
       if (localData && canvas && canvas.loadFromJSON) {
         canvas.loadFromJSON(localData.data, () => canvas.renderAll && canvas.renderAll());
-        return;
-      }
+        return}
       // fallback to server
       const resp = await fetch(`/api/canvas/load?caseId=${encodeURIComponent(caseId)}`);
       if (resp.ok) {
@@ -586,31 +575,31 @@
   // Tools and zoom function
   function setTool(toolId: string) {
     canvasState.update((s: any) => ({ ...s, tool: toolId }));
-    if (!canvas) return;
-    canvas.isDrawingMode = false;
+    if (!canvas) return
+    canvas.isDrawingMode = false
     canvas.selection = toolId === "select";
     switch (toolId) {
       case "pan":
         canvas.defaultCursor = "grab";
-        break;
+        break
       case "text":
         canvas.defaultCursor = "text";
-        break;
+        break
       default:
         canvas.defaultCursor = "default";
     }
   }
 
   function zoomIn() {
-    const currentZoom = get(canvasState).zoom;
+    const currentZoom = get(canvasState).zoom
     setZoom(Math.min(currentZoom + 10, 200));
   }
   function zoomOut() {
-    const currentZoom = get(canvasState).zoom;
+    const currentZoom = get(canvasState).zoom
     setZoom(Math.max(currentZoom - 10, 25));
   }
   function setZoom(zoom: number) {
-    if (!canvas) return;
+    if (!canvas) return
     canvasState.update((s: any) => ({ ...s, zoom }));
     canvas.setZoom && canvas.setZoom(zoom / 100);
     canvas.renderAll && canvas.renderAll();
@@ -622,10 +611,10 @@
   }
 
   function updateGrid() {
-    if (!canvas) return;
+    if (!canvas) return
     const state = get(canvasState);
     if (state.showGrid) {
-      const gridSize = state.gridSize;
+      const gridSize = state.gridSize
       const pattern = createGridPattern(gridSize);
       canvas.backgroundColor = `url(${pattern})`;
       canvas.renderAll && canvas.renderAll();
@@ -642,7 +631,7 @@
 
   // Object manipulation function
   function deleteSelected() {
-    if (!canvas) return;
+    if (!canvas) return
     const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
     if (activeObjects.length) {
       canvas.discardActiveObject && canvas.discardActiveObject();
@@ -652,7 +641,7 @@
   }
 
   async function copySelected(): Promise<any> {
-    if (!canvas) return;
+    if (!canvas) return
     const activeObject = canvas.getActiveObject && canvas.getActiveObject();
     if (activeObject && activeObject.clone) {
       activeObject.clone((cloned: any) => {
@@ -665,18 +654,18 @@
   }
 
   async function pasteClipboard(): Promise<any> {
-    if (!canvas) return;
+    if (!canvas) return
     try {
       // navigator.clipboard.read() is async and may require permissions
       // Fallback gracefully if not supported
-      if (!navigator.clipboard || !navigator.clipboard.read) return;
+      if (!navigator.clipboard || !navigator.clipboard.read) return
       const items = await navigator.clipboard.read();
       for (const item of items) {
         if (item.types && item.types.includes("image/png")) {
           const blob = await item.getType("image/png");
           const reader = new FileReader();
           reader.onload = async (e) => {
-            const imgUrl = e.target?.result as string;
+            const imgUrl = e.target?.result as string
             const img = await (fabric as any).Image.fromURL(imgUrl);
             img.scale && img.scale(0.5);
             canvas?.add(img);
@@ -691,7 +680,7 @@
   }
 
   function selectAll() {
-    if (!canvas) return;
+    if (!canvas) return
     const allObjects = canvas.getObjects ? canvas.getObjects() : [];
     const selection = new (fabric as any).ActiveSelection(allObjects, { canvas });
     canvas.setActiveObject(selection);
@@ -700,27 +689,26 @@
 
   // Export function
   function exportCanvas(format: "png" | "svg" | "json") {
-    if (!canvas) return;
+    if (!canvas) return
     let dataUrl = "";
     let filename = "";
     switch (format) {
       case "png":
         dataUrl = canvas.toDataURL ? canvas.toDataURL({ format: "png", quality: 1, multiplier: 1 }) : "";
         filename = `canvas-${caseId}.png`;
-        break;
+        break
       case "svg":
         dataUrl = `data:image/svg+xml;base64,${btoa(canvas.toSVG ? canvas.toSVG() : "")}`;
         filename = `canvas-${caseId}.svg`;
-        break;
+        break
       case "json":
         const jsonData = canvas.toJSON ? canvas.toJSON() : {};
         dataUrl = `data:application/json;base64,${btoa(JSON.stringify(jsonData, null, 2))}`;
         filename = `canvas-${caseId}.json`;
-        break;
-    }
+        break}
     const link = document.createElement("a");
-    link.href = dataUrl;
-    link.download = filename;
+    link.href = dataUrl
+    link.download = filename
     link.click();
   }
 
@@ -728,15 +716,14 @@
   function searchEvidence(query: string) {
     if (!searchEngine || !query.trim()) {
       searchResults = [];
-      return;
-    }
+      return}
     const results = (searchEngine as any).search(query) || [];
     searchResults = results.map((r: any) => r.item || r);
   }
 
   // AI summary
   async function generateAISummary(): Promise<any> {
-    if (!canvas) return;
+    if (!canvas) return
     try {
       const canvasObjects = canvas.getObjects ? canvas.getObjects() : [];
       const evidenceObjects = canvasObjects.filter((obj: any) => obj.get && obj.get("objectType") === "evidence");
@@ -744,13 +731,11 @@
 
       if (evidenceData.length === 0) {
         alert("No evidence items found on canvas to summarize.");
-        return;
-      }
+        return}
 
       // Resolve the available summarization method at runtime to avoid TS type errors.
-      const svc: any = aiSummarizationService as any;
-      const fn = svc.generateEvidenceAnalysis ?? svc.generateSummary ?? svc.summarizeEvidence ?? svc.summarize ?? null;
-
+      const svc: any = aiSummarizationService as any
+      const fn = svc.generateEvidenceAnalysis ?? svc.generateSummary ?? svc.summarizeEvidence ?? svc.summarize ?? null
       if (!fn || typeof fn !== "function") {
         throw new Error("AI summarization service does not expose a supported method.");
       }
@@ -776,14 +761,14 @@
   // Derived/template usage: in template we use $canvasState directly
   // Exported functions for parent access
   export function addEvidenceToCanvas(evidence: any) {
-    if (!canvas) return;
+    if (!canvas) return
     const evidenceObject = createEvidenceObject(evidence as any);
     canvas.add && canvas.add(evidenceObject);
     canvas.setActiveObject && canvas.setActiveObject(evidenceObject);
   }
 
   export function addElementsToCanvas(elements: any[]) {
-    if (!canvas || !elements) return;
+    if (!canvas || !elements) return
     elements.forEach((element) => {
       const canvasObject = createCanvasObjectFromData(element as any);
       if (canvasObject) canvas.add && canvas.add(canvasObject);
@@ -793,7 +778,7 @@
 
   function createCanvasObjectFromData(elementData: any): any | null {
     try {
-      if (!elementData) return null;
+      if (!elementData) return null
       if (elementData.type === "evidence") return createEvidenceObject(elementData);
       if (elementData.type === "text") {
         return new (fabric as any).Text(elementData.text || "Text", {
@@ -803,11 +788,9 @@
           fill: elementData.fill || "#333"
         });
       }
-      return null;
-    } catch (error) {
+      return null} catch (error) {
       console.error("Error creating canvas object:", error);
-      return null;
-    }
+      return null}
   }
 </script>
 
@@ -816,9 +799,9 @@
   <div class="toolbar">
     <!-- File Operations -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" onclick={() => saveCanvas()} title="Save Canvas">💾</button>
-      <button class="toolbar-btn" onclick={() => undo()} disabled={!$canvasState.canUndo} title="Undo">↶</button>
-      <button class="toolbar-btn" onclick={() => redo()} disabled={!$canvasState.canRedo} title="Redo">↷</button>
+      <button class="toolbar-btn" onclick={() => saveCanvas()} title="Save Canvas">ðŸ’¾</button>
+      <button class="toolbar-btn" onclick={() => undo()} disabled={!$canvasState.canUndo} title="Undo">â†¶</button>
+      <button class="toolbar-btn" onclick={() => redo()} disabled={!$canvasState.canRedo} title="Redo">â†·</button>
     </div>
     <div class="toolbar-separator" aria-hidden="true"></div>
 
@@ -834,27 +817,27 @@
 
     <!-- Canvas Controls -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" onclick={() => zoomOut()} title="Zoom Out">➖</button>
+      <button class="toolbar-btn" onclick={() => zoomOut()} title="Zoom Out">âž–</button>
       <span class="zoom-display">{$canvasState.zoom}%</span>
-      <button class="toolbar-btn" onclick={() => zoomIn()} title="Zoom In">➕</button>
-      <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid">▦</button>
+      <button class="toolbar-btn" onclick={() => zoomIn()} title="Zoom In">âž•</button>
+      <button class="toolbar-btn" class:active={$canvasState.showGrid} onclick={() => toggleGrid()} title="Toggle Grid">â–¦</button>
     </div>
 
     <!-- Object Actions -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" onclick={() => copySelected()} title="Copy">📋</button>
-      <button class="toolbar-btn" onclick={() => pasteClipboard()} title="Paste">📥</button>
-      <button class="toolbar-btn" onclick={() => deleteSelected()} title="Delete">🗑️</button>
+      <button class="toolbar-btn" onclick={() => copySelected()} title="Copy">ðŸ“‹</button>
+      <button class="toolbar-btn" onclick={() => pasteClipboard()} title="Paste">ðŸ“¥</button>
+      <button class="toolbar-btn" onclick={() => deleteSelected()} title="Delete">ðŸ—‘ï¸</button>
     </div>
 
     <!-- AI Features -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">🧠</button>
+      <button class="toolbar-btn" onclick={() => generateAISummary()} title="Generate AI Summary">ðŸ§ </button>
     </div>
 
     <!-- Export (use dropdown markup so CSS selectors are used) -->
     <div class="toolbar-group">
-      <button class="toolbar-btn" title="Export">⬇️</button>
+      <button class="toolbar-btn" title="Export">â¬‡ï¸</button>
       <div class="dropdown-menu" role="menu" aria-hidden="true">
         <button onclick={() => exportCanvas('png')}>Export as PNG</button>
         <button onclick={() => exportCanvas('svg')}>Export as SVG</button>
@@ -874,7 +857,7 @@
     <aside class="col-span-1">
       <div>
         <div class="flex items-center">
-          <span>🔎</span>
+          <span>ðŸ”Ž</span>
           <input type="text"
             placeholder="Search evidence..."
             value={$canvasState.searchQuery} oninput={e => searchEvidence((e.target as HTMLInputElement).value)} class="w-full"
@@ -895,10 +878,10 @@
       <div class="mt-4">
         <h3>Quick Add</h3>
         <div class="space-y-2">
-          <button class="toolbar-btn" onclick={() => addTimelineToCanvas()}>🕒 Timeline</button>
-          <button class="toolbar-btn" onclick={() => addPersonToCanvas()}>👤 Person</button>
-          <button class="toolbar-btn" onclick={() => addLocationToCanvas()}>📍 Location</button>
-          <button class="toolbar-btn" onclick={() => setTool('note')}>📝 Note</button>
+          <button class="toolbar-btn" onclick={() => addTimelineToCanvas()}>ðŸ•’ Timeline</button>
+          <button class="toolbar-btn" onclick={() => addPersonToCanvas()}>ðŸ‘¤ Person</button>
+          <button class="toolbar-btn" onclick={() => addLocationToCanvas()}>ðŸ“ Location</button>
+          <button class="toolbar-btn" onclick={() => setTool('note')}>ðŸ“ Note</button>
         </div>
       </div>
     </aside>
@@ -913,100 +896,85 @@
 <!-- Props migrated to Svelte 5 $props() pattern -->
 <style>
   .canvas-editor-container {
-    background: #f9fafb;
-  }
+    background: #f9fafb}
 
   .toolbar {
-    min-height: 48px;
-  }
+    min-height: 48px}
 
   .toolbar-group {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
+    display: flex
+    align-items: center
+    gap: 0.25rem}
 
   .toolbar-btn {
-    padding: 0.5rem;
-    border-radius: 0.375rem;
-    transition: background-color 0.2s;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 36px;
-    height: 36px;
-  }
+    padding: 0.5rem
+    border-radius: 0.375rem
+    transition: background-color 0.2s
+    border: none
+    background: transparent
+    cursor: pointer
+    display: flex
+    align-items: center
+    justify-content: center
+    min-width: 36px
+    height: 36px}
 
   .toolbar-btn:hover {
-    background-color: #f3f4f6;
-  }
+    background-color: #f3f4f6}
 
   .toolbar-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+    opacity: 0.5
+    cursor: not-allowed}
 
   .toolbar-btn.active {
-    background-color: #dbeafe;
+    background-color: #dbeafe
     /* fixed hex */
-    color: #2563eb;
-  }
+    color: #2563eb}
 
   .toolbar-separator {
-    width: 1px;
-    height: 1.5rem;
-    background-color: #d1d5db;
-    margin: 0 0.25rem;
-  }
+    width: 1px
+    height: 1.5rem
+    background-color: #d1d5db
+    margin: 0 0.25rem}
 
   .zoom-display {
-    font-size: 0.875rem;
-    color: #4b5563;
-    min-width: 40px;
-    text-align: center;
-  }
+    font-size: 0.875rem
+    color: #4b5563
+    min-width: 40px
+    text-align: center}
 
   .dropdown {
-    position: relative;
-  }
+    position: relative}
 
   .dropdown-menu {
-    position: absolute;
+    position: absolute
     top: 100%;
-    left: 0;
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
+    left: 0
+    background-color: white
+    border: 1px solid #e5e7eb
+    border-radius: 0.375rem
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    padding: 0.25rem 0;
-    z-index: 20;
-    min-width: 150px;
-    display: none;
-  }
+    padding: 0.25rem 0
+    z-index: 20
+    min-width: 150px
+    display: none}
 
   .dropdown:hover .dropdown-menu {
-    display: block;
-  }
+    display: block}
 
   .dropdown-menu button {
     width: 100%;
-    text-align: left;
-    padding: 0.5rem 0.75rem;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-  }
+    text-align: left
+    padding: 0.5rem 0.75rem
+    border: none
+    background-color: transparent
+    cursor: pointer}
 
   .dropdown-menu button:hover {
-    background-color: #f3f4f6;
-  }
+    background-color: #f3f4f6}
 
   .evidence-item {
-    transition: all 0.2s ease;
-  }
+    transition: all 0.2s ease}
 
   .evidence-item:hover {
     transform: translateY(-1px);
@@ -1015,6 +983,6 @@
 
   .canvas-area {
     background: linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
+    background-size: 20px 20px}
 </style>
+

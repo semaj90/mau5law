@@ -1,12 +1,11 @@
-<!--
+﻿<!--
 AI Document Summarization - Generate summaries of legal documents
 -->
 <script lang="ts">
 import type { Document } from '$lib/types';
 	// Safe imports (works with default or named exports)
 	import * as EssentialRoutePageModule from '$lib/templates/EssentialRoutePage.svelte';
-	const EssentialRouteComponent = EssentialRoutePageModule.default ?? EssentialRoutePageModule.EssentialRoutePage ?? EssentialRoutePageModule;
-
+	const EssentialRouteComponent = EssentialRoutePageModule.default ?? EssentialRoutePageModule.EssentialRoutePage ?? EssentialRoutePageModule
 	// UI components / icons
 	import EnhancedButton from '$lib/components/ui/enhanced-bits.svelte';
 	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
@@ -32,15 +31,15 @@ import type { Document } from '$lib/types';
 	];
 
 	// Derived stats (memoization handled by $derived)
-	$derived wordCount = summary ? summary.trim().split(/\s+/).filter(Boolean).length : 0;
+	$derived wordCount = summary ? summary.trim().split(/\s+/).filter(Boolean).length : 0
 	$derived readMinutes = Math.max(1, Math.ceil(wordCount / 200));
 
-	// File upload handler — now posts to /api/ai/upload
+	// File upload handler â€” now posts to /api/ai/upload
 	async function handleFileUpload(event: Event): Promise<any> {
-		const input = event.currentTarget as HTMLInputElement | null;
+		const input = event.currentTarget as HTMLInputElement | null
 		const file = input?.files?.[0] ?? (event.target as HTMLInputElement | null)?.files?.[0];
-		if (!file) return;
-		isUploading = true;
+		if (!file) return
+		isUploading = true
 		try {
 			const form = new FormData();
 			form.append('file', file);
@@ -48,24 +47,22 @@ import type { Document } from '$lib/types';
 			const data = await res.json().catch(() => null);
 			if (res.ok && data?.id) {
 				selectedFile = { id: data.id, name: data.name, size: file.size, uploadedAt: new Date().toISOString() };
-				rawFile = file;
-			} else {
+				rawFile = file} else {
 				// fallback to local id if upload failed
 				selectedFile = { id: crypto.randomUUID(), name: file.name, size: file.size, uploadedAt: new Date().toISOString() };
-				rawFile = file;
+				rawFile = file
 				console.warn('Upload endpoint returned an error:', data);'
 			}
 		} catch (err) {
 			console.error('Upload failed:', err);
 		} finally {
-			isUploading = false;
-		}
+			isUploading = false}
 	}
 
-	// Generate summary — call /api/ai/summarize
+	// Generate summary â€” call /api/ai/summarize
 	async function generateSummary(): Promise<any> {
-		if (!selectedFile) return;
-		isSummarizing = true;
+		if (!selectedFile) return
+		isSummarizing = true
 		try {
 			// prefer server-side summarization that can call Ollama/Gemma
 			const payload = { fileId: selectedFile.id, type: summaryType };
@@ -77,9 +74,8 @@ import type { Document } from '$lib/types';
 
 			const data = await res.json().catch(() => null);
 			if (res.ok && data?.summary) {
-				summary = data.summary;
-				return;
-			}
+				summary = data.summary
+				return}
 
 			// fallback if server returns no summary
 			console.warn('Summarize endpoint returned no summary, using fallback', data);
@@ -88,19 +84,18 @@ import type { Document } from '$lib/types';
 			console.error('Summarization failed:', err);
 			summary = FALLBACK_SUMMARY.replace('{filename}', selectedFile.name);
 		} finally {
-			isSummarizing = false;
-		}
+			isSummarizing = false}
 	}
 
 	// Export summary as .txt
 	function exportSummary() {
-		if (!summary) return;
-		let url: string | null = null;
+		if (!summary) return
+		let url: string | null = null
 		try {
 			const blob = new Blob([summary], { type: 'text/plain' });
 			url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
-			a.href = url;
+			a.href = url
 			a.download = `${selectedFile?.name || 'document'}_summary.txt`;
 			document.body.appendChild(a);
 			a.click();
@@ -269,41 +264,33 @@ import type { Document } from '$lib/types';
 <style>
 	/* Custom styles for this page */
 	.nes-container {
-		background-color: #fff;
-		border: 1px solid #ddd;
-	}
+		background-color: #fff
+		border: 1px solid #ddd}
 
 	.nes-text.is-primary {
-		color: #0070f3;
-	}
+		color: #0070f3}
 
 	.nes-btn.is-primary {
-		background-color: #0070f3;
-		border-color: #0070f3;
-	}
+		background-color: #0070f3
+		border-color: #0070f3}
 
 	.nes-btn.is-primary:hover {
-		background-color: #005bb5;
-		border-color: #005bb5;
-	}
+		background-color: #005bb5
+		border-color: #005bb5}
 
 	.nes-badge.is-success {
-		background-color: #28a745;
-		color: #fff;
-	}
+		background-color: #28a745
+		color: #fff}
 
 	.nes-radio.is-primary {
-		accent-color: #0070f3;
-	}
+		accent-color: #0070f3}
 
 	.nes-field {
-		margin-bottom: 1rem;
-	}
+		margin-bottom: 1rem}
 
 	.title {
-		font-size: 1.125rem;
-		font-weight: 500;
-	}
+		font-size: 1.125rem
+		font-weight: 500}
 
 	/* Spinner animation */
 	@keyframes spin {
@@ -312,6 +299,5 @@ import type { Document } from '$lib/types';
 	}
 
 	.animate-spin {
-		animation: spin 1s linear infinite;
-	}
+		animation: spin 1s linear infinite}
 </style>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Advanced Performance Dashboard
   Real-time monitoring and analytics
 -->
@@ -8,30 +8,29 @@ import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   interface PerformanceMetrics {
-    totalRequests: number;
-    averageResponseTime: number;
+    totalRequests: number
+    averageResponseTime: number
     slowestEndpoints: { endpoint: string; avgTime: number; requests: number }[];
-    errorRate: number;
+    errorRate: number
     peakHours: { hour: number; requests: number }[];
   }
   interface SystemHealth {
-    cpu: number;
-    memory: number;
+    cpu: number
+    memory: number
     database: 'healthy' | 'warning' | 'error';
-    storage: number;
-  }
+    storage: number}
   // ---, NEW: strongly-typed logs ---
   interface LogEntry {
-    id?: string | number;
-    timestamp?: string | number;
-    level?: string;
-    message?: string;
+    id?: string | number
+    timestamp?: string | number
+    level?: string
+    message?: string
     metadata?: Record<string any>;
   }
   const metrics = writable<PerformanceMetrics | null>(null);
   const health = writable<SystemHealth | null>(null);
   const logs = writable<LogEntry[]>([]); // changed from: unknown[]
-  let refreshInterval: NodeJS.Timeout;
+  let refreshInterval: NodeJS.Timeout
   let autoRefresh = $state<boolean>(true);
   $effect(() => {
     loadMetrics();
@@ -67,7 +66,7 @@ import type { Case } from '$lib/types';
     }
   }
   function toggleAutoRefresh() {
-    autoRefresh = !autoRefresh;
+    autoRefresh = !autoRefresh
     if (autoRefresh) {
       refreshInterval = setInterval(loadMetrics, 30000);
     } else {
@@ -101,9 +100,9 @@ import type { Case } from '$lib/types';
     <h1>Performance Dashboard</h1>
     <div class="space-y-4">
       <button class="space-y-4" onclick={() => toggleAutoRefresh()}>
-        {autoRefresh ? '🔄 Auto Refresh On' : '⏸️ Auto Refresh Off'}
+        {autoRefresh ? 'ðŸ”„ Auto Refresh On' : 'â¸ï¸ Auto Refresh Off'}
       </button>
-      <button class="space-y-4" onclick={() => loadMetrics()}> 🔄 Refresh Now </button>
+      <button class="space-y-4" onclick={() => loadMetrics()}> ðŸ”„ Refresh Now </button>
     </div>
   </div>
   <!-- System, Health, Cards -->
@@ -207,243 +206,214 @@ import type { Case } from '$lib/types';
 <style>
   /* @unocss-include */
   .performance-dashboard {
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
+    padding: 2rem
+    max-width: 1400px
+    margin: 0 auto}
   .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 2rem}
   .dashboard-header h1 {
-    font-size: 2rem;
-    font-weight: bold;
+    font-size: 2rem
+    font-weight: bold
    , color: var(--primary-color);
   }
   .controls {
-    display: flex;
-    gap: 1rem;
-  }
+    display: flex
+    gap: 1rem}
   .btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-    font-weight: 500;
+    padding: 0.5rem 1rem
+    border: none
+    border-radius: 0.375rem
+    cursor: pointer
+    font-weight: 500
     transition: all 0.2s ease; /* added unit + easing */
   }
   .btn-primary { background: var(--primary-color);
-    color: white;
-  }
+    color: white}
   .btn-secondary { background: var(--secondary-color);
     color: var(--text-color);
   }
   .health-grid {
-    display: grid;
+    display: grid
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
+    gap: 1rem
+    margin-bottom: 2rem}
   .health-card {
-    background: white;
-    border-radius: 0.5rem;
-   , padding: 1.5rem;
+    background: white
+    border-radius: 0.5rem
+   , padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
   }
   .health-card h3 {
-    margin: 0, 0 1rem 0;
-    font-size: 1rem;
+    margin: 0, 0 1rem 0
+    font-size: 1rem
    , color: var(--text-secondary);
   }
   .health-status {
-    font-size: 1.25rem;
-    font-weight: bold;
+    font-size: 1.25rem
+    font-weight: bold
     text-transform: capitalize; /* fixed typo */
   }
-  .metrics-grid { display: grid;
+  .metrics-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
+    gap: 1rem
+    margin-bottom: 2rem}
   .metric-card {
-    background: white;
-    border-radius: 0.5rem;
-   , padding: 1.5rem;
+    background: white
+    border-radius: 0.5rem
+   , padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
-    text-align: center;
-  }
-  .metric-card h3 { margin: 0, 0 1rem 0;
-    font-size: 0.875rem;
+    text-align: center}
+  .metric-card h3 { margin: 0, 0 1rem 0
+    font-size: 0.875rem
    , color: var(--text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+    text-transform: uppercase
+    letter-spacing: 0.05em}
   .metric-value {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.5rem
+    font-weight: bold
    , color: var(--primary-color);
   }
   .metric-value.large {
-    font-size: 2rem;
-  }
+    font-size: 2rem}
   .progress-bar {
     width: 100%;
-    height: 0.5rem;
+    height: 0.5rem
    , background: var(--border-color);
-    border-radius: 0.25rem;
-    overflow: hidden;
-    margin-top: 0.5rem;
-  }
+    border-radius: 0.25rem
+    overflow: hidden
+    margin-top: 0.5rem}
   .progress-fill {
     height: 100%;
    , background: var(--primary-color);
-    transition: width: 0.3s ease;
-  }
+    transition: width: 0.3s ease}
   .chart-section {
-    background: white;
-    border-radius: 0.5rem;
-   , padding: 1.5rem;
+    background: white
+    border-radius: 0.5rem
+   , padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
-    margin-bottom: 2rem;
-  }
-  .chart-section h2 { margin: 0, 0 1.5rem 0;
-    font-size: 1.25rem;
+    margin-bottom: 2rem}
+  .chart-section h2 { margin: 0, 0 1.5rem 0
+    font-size: 1.25rem
    , color: var(--text-color);
   }
   .endpoints-list {
-    display: flex;
-    flex-direction: column;
+    display: flex
+    flex-direction: column
     gap: 0.5rem; /* replaced invalid space-y */
   }
   .endpoint-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 0.75rem
    , background: var(--background-light);
-    border-radius: 0.375rem;
-    margin-bottom: 0.5rem;
-  }
+    border-radius: 0.375rem
+    margin-bottom: 0.5rem}
   .endpoint-path {
-    font-family: monospace;
-    font-weight: 500;
-  }
+    font-family: monospace
+    font-weight: 500}
   .endpoint-stats {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.875rem;
+    display: flex
+    gap: 1rem
+    font-size: 0.875rem
    , color: var(--text-secondary);
   }
   .peak-hours-chart {
-    display: flex;
-    align-items: end;
-    gap: 0.5rem;
-    height: 200px;
-    padding: 1rem 0;
-  }
+    display: flex
+    align-items: end
+    gap: 0.5rem
+    height: 200px
+    padding: 1rem 0}
   .peak-hour-bar {
     flex: 1; /* fixed comma -> semicolon */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    display: flex
+    flex-direction: column
+    align-items: center
     height: 100%;
   }
   .bar-fill {
     width: 100%;
    , background: var(--primary-color);
-    border-radius: 0.25rem 0.25rem, 0 0;
-    min-height: 2px;
-  }
+    border-radius: 0.25rem 0.25rem, 0 0
+    min-height: 2px}
   .bar-label {
-    font-size: 0.75rem;
+    font-size: 0.75rem
    , color: var(--text-secondary);
-    margin-top: 0.5rem;
-    writing-mode: vertical-rl;
+    margin-top: 0.5rem
+    writing-mode: vertical-rl
     text-orientation: mixed; /* fixed syntax */
   }
   .bar-count {
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin-top: 0.25rem;
-  }
+    font-size: 0.75rem
+    font-weight: 500
+    margin-top: 0.25rem}
   .logs-section {
-    background: white;
-    border-radius: 0.5rem;
-   , padding: 1.5rem;
+    background: white
+    border-radius: 0.5rem
+   , padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
   }
   .logs-section h2 {
-    margin: 0, 0 1.5rem 0;
-    font-size: 1.25rem;
+    margin: 0, 0 1.5rem 0
+    font-size: 1.25rem
    , color: var(--text-color);
   }
   .logs-container {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  .log-entry { padding: 0.75rem;
+    max-height: 400px
+    overflow-y: auto}
+  .log-entry { padding: 0.75rem
     border-left: 4px solid var(--border-color);
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.5rem
    , background: var(--background-light);
-    border-radius: 0 0.375rem 0.375rem 0;
-  }
+    border-radius: 0 0.375rem 0.375rem 0}
   .log-entry.error {
-    border-left-color: #ef4444;
-    background: #fef2f2;
-  }
+    border-left-color: #ef4444
+    background: #fef2f2}
   .log-entry.warn {
-    border-left-color: #f59e0b;
-    background: #fffbeb;
-  }
+    border-left-color: #f59e0b
+    background: #fffbeb}
   .log-entry.info {
-    border-left-color: #3b82f6;
-    background: #eff6ff;
-  }
+    border-left-color: #3b82f6
+    background: #eff6ff}
   .log-timestamp {
-    font-size: 0.75rem;
+    font-size: 0.75rem
    , color: var(--text-secondary);
-    margin-bottom: 0.25rem;
-  }
+    margin-bottom: 0.25rem}
   .log-level {
-    display: inline-block;
-    font-size: 0.75rem;
-    font-weight: bold;
-    padding: 0.125rem 0.5rem;
-    border-radius: 0.25rem;
+    display: inline-block
+    font-size: 0.75rem
+    font-weight: bold
+    padding: 0.125rem 0.5rem
+    border-radius: 0.25rem
    , background: var(--text-secondary);
-    color: white;
-    margin-bottom: 0.5rem;
-  }
+    color: white
+    margin-bottom: 0.5rem}
   .log-message {
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-  }
+    font-weight: 500
+    margin-bottom: 0.25rem}
   .log-metadata {
-    font-family: monospace;
-    font-size: 0.75rem;
+    font-family: monospace
+    font-size: 0.75rem
    , color: var(--text-secondary);
-    background: white;
-    padding: 0.5rem;
-    border-radius: 0.25rem;
-    white-space: pre-wrap;
-    max-height: 100px;
-    overflow-y: auto;
-  }
+    background: white
+    padding: 0.5rem
+    border-radius: 0.25rem
+    white-space: pre-wrap
+    max-height: 100px
+    overflow-y: auto}
   .text-green-600 {
-    color: #059669;
-  }
+    color: #059669}
   .text-yellow-600 {
-    color: #d97706;
-  }
+    color: #d97706}
   .text-red-600 {
-    color: #dc2626;
-  }
-  .text-gray-600 { color: #6b7280;
-  }
+    color: #dc2626}
+  .text-gray-600 { color: #6b7280}
 </style>
+

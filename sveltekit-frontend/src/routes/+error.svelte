@@ -1,11 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { dev } from '$app/environment';
 
   // Svelte 5: Use single $props() call to destructure all props
   const { status, error } = $props<{
-    status: number;
-    error: { message?: string } | undefined;
-  }>();
+    status: number
+    error: { message?: string } | undefined}>();
 </script>
 
 <svelte:head>
@@ -48,3 +47,4 @@
     </div>
   </div>
 </div>
+

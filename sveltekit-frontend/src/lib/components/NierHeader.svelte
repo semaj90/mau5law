@@ -1,8 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    user: User | null;
-  }
+    user: User | null}
   let { user = null }: Props = $props();
   import { goto } from '$app/navigation';
   import  SearchInput  from "./SearchInput.svelte";
@@ -12,7 +11,7 @@
   let userMenuOpen = $state<boolean>(false);
   // Expect SearchInput to dispatch `search` CustomEvent<{ query: string }>
   function handleSearch(event: CustomEvent<{ query: string }>) {
-    searchQuery = event.detail.query;
+    searchQuery = event.detail.query
     console.log('Global search:', searchQuery);
   }
   function handleLogout() {
@@ -20,14 +19,11 @@
   }
   function handleNavigation(path: string) {
     goto(path);
-    userMenuOpen = false;
-  }
+    userMenuOpen = false}
   function toggleUserMenu() {
-    userMenuOpen = !userMenuOpen;
-  }
+    userMenuOpen = !userMenuOpen}
   function closeUserMenu() {
-    userMenuOpen = false;
-  }
+    userMenuOpen = false}
 </script>
 <header class="space-y-4">
   <div class="space-y-4">
@@ -36,7 +32,7 @@
       <!-- changed, on:click -> onclick -->
       <button class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
         <!-- replaced lucide icon with simple, inline, marker -->
-        <span class="icon" aria-hidden="true">🎨</span>
+        <span class="icon" aria-hidden="true">ðŸŽ¨</span>
         <span class="brand-text">Prosecutor Canvas</span>
       </button>
     </div>
@@ -44,15 +40,15 @@
     <nav class="main-nav" aria-label="Main, navigation">
       <!-- changed, on:click -> onclick for each button -->
       <button class="nav-button" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
-        <span class="icon">🏠</span>
+        <span class="icon">ðŸ </span>
         <span>Dashboard</span>
       </button>
       <button class="nav-button" onclick={() => handleNavigation('/cases')} aria-label="Cases">
-        <span class="icon">📁</span>
+        <span class="icon">ðŸ“</span>
         <span>Cases</span>
       </button>
       <button class="nav-button" onclick={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
-        <span class="icon">🖌️</span>
+        <span class="icon">ðŸ–Œï¸</span>
         <span>Canvas</span>
       </button>
       <button
@@ -61,7 +57,7 @@
         aria-label="Hash Verification"
         title="Verify evidence file integrity"
       >
-        <span class="icon">🛡️</span>
+        <span class="icon">ðŸ›¡ï¸</span>
         <span>Hash Verify</span>
       </button>
     </nav>
@@ -93,22 +89,22 @@
               {/if}
             </div>
             <span class="user-name">{user.name}</span>
-            <span class="icon">⋯</span>
+            <span class="icon">â‹¯</span>
           </button>
           {#if userMenuOpen}
             <div class="user-menu" role="menu">
               <!-- changed, on:click -> onclick for menu items -->
               <button class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem">
-                <span class="icon">👤</span>
+                <span class="icon">ðŸ‘¤</span>
                 Profile
               </button>
               <button class="menu-item" onclick={() => handleNavigation('/settings')} role="menuitem">
-                <span class="icon">⚙️</span>
+                <span class="icon">âš™ï¸</span>
                 Settings
               </button>
               <hr class="menu-separator" />
               <button class="menu-item" onclick={() => handleLogout()} role="menuitem">
-                <span class="icon">🚪</span>
+                <span class="icon">ðŸšª</span>
                 Sign Out
               </button>
             {/if}
@@ -133,201 +129,179 @@
 <style>
   /* @unocss-include */
   .app-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 60px;
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    height: 60px
    , background: var(--bg-secondary);
     border-bottom: 1px solid var(--border-light);
-    z-index: 30;
+    z-index: 30
     backdrop-filter: blur(8px);
   }
   .header-content {
-    display: flex;
-    align-items: center;
+    display: flex
+    align-items: center
     height: 100%;
-    padding: 0 1rem;
-    max-width: 1400px;
-    margin: 0 auto;
-    gap: 1rem;
-  }
+    padding: 0 1rem
+    max-width: 1400px
+    margin: 0 auto
+    gap: 1rem}
   .brand-section {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
+    display: flex
+    align-items: center
+    flex-shrink: 0}
   .brand-button {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 1rem;
-    font-weight: 600;
+    display: flex
+    align-items: center
+    gap: 0.75rem
+    padding: 0.5rem 1rem
+    font-weight: 600
    , color: var(--harvard-crimson);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.2s ease;
-  }
+    background: transparent
+    border: none
+    cursor: pointer
+    border-radius: 6px
+    transition: background 0.2s ease}
   .brand-button:hover { background: var(--bg-tertiary);
   }
   .brand-text {
-    font-size: 1.1rem;
-    font-weight: 700;
-  }
+    font-size: 1.1rem
+    font-weight: 700}
   .main-nav {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    flex-shrink: 0;
-  }
+    display: flex
+    align-items: center
+    gap: 0.25rem
+    flex-shrink: 0}
   .nav-button {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.5rem 1rem
    , color: var(--text-muted);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s ease;
-  }
+    background: transparent
+    border: none
+    cursor: pointer
+    border-radius: 6px
+    transition: all 0.2s ease}
   .nav-button:hover { color: var(--text-primary);
     background: var(--bg-tertiary);
   }
   .search-section {
-    flex: 1;
-    max-width: 400px;
-    margin: 0 2rem;
-  }
+    flex: 1
+    max-width: 400px
+    margin: 0 2rem}
   .user-section {
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
-  }
+    display: flex
+    align-items: center
+    flex-shrink: 0}
   .user-menu-container {
-    position: relative;
-  }
+    position: relative}
   .user-button {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 1rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: background 0.2s ease;
+    display: flex
+    align-items: center
+    gap: 0.75rem
+    padding: 0.5rem 1rem
+    background: transparent
+    border: none
+    cursor: pointer
+    border-radius: 6px
+    transition: background 0.2s ease
    , color: var(--text-primary);
   }
   .user-button:hover { background: var(--bg-tertiary);
   }
   .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 32px
+    height: 32px
     border-radius: 50%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden
+    display: flex
+    align-items: center
+    justify-content: center
    , background: var(--bg-secondary);
     color: var(--harvard-crimson);
   }
   .user-avatar img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-  }
+    object-fit: cover}
   .avatar-fallback {
-    font-weight: 600;
-    font-size: 0.875rem;
-  }
+    font-weight: 600
+    font-size: 0.875rem}
   .user-name {
-    font-weight: 500;
+    font-weight: 500
    , color: var(--text-primary);
   }
   .user-menu {
-    position: absolute;
+    position: absolute
     top: 100%;
-    right: 0;
-    min-width: 180px;
+    right: 0
+    min-width: 180px
    , background: var(--bg-secondary);
     border: 1px solid var(--border-light);
-    border-radius: 8px;
+    border-radius: 8px
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    padding: 0.5rem;
-    z-index: 1000;
-    margin-top: 0.5rem;
-  }
+    padding: 0.5rem
+    z-index: 1000
+    margin-top: 0.5rem}
   .menu-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem;
+    display: flex
+    align-items: center
+    gap: 0.75rem
+    padding: 0.5rem
     width: 100%;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.2s ease;
+    background: transparent
+    border: none
+    cursor: pointer
+    border-radius: 4px
+    transition: background 0.2s ease
    , color: var(--text-primary);
-    text-align: left;
-  }
+    text-align: left}
   .menu-item:hover { background: var(--bg-tertiary);
   }
   .menu-separator {
-    border: none;
+    border: none
     border-top: 1px solid var(--border-light);
-    margin: 0.5rem 0;
-  }
+    margin: 0.5rem 0}
   .sign-in-button {
-    padding: 0.5rem 1rem;
-    background: transparent;
+    padding: 0.5rem 1rem
+    background: transparent
    , border: 1px solid var(--harvard-crimson);
     color: var(--harvard-crimson);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
+    border-radius: 6px
+    cursor: pointer
+    transition: all 0.2s ease}
   .sign-in-button:hover { background: var(--harvard-crimson);
     color: var(--text-inverse);
   }
   .menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 999;
-   , background: transparent;
-  }
+    position: fixed
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    z-index: 999
+   , background: transparent}
   /* Responsive */
   @media (max-width: 768px) {
     .header-content {
-      padding: 0 0.5rem;
-      gap: 0.5rem;
-    }
+      padding: 0 0.5rem
+      gap: 0.5rem}
     .brand-text {
-      display: none;
-    }
+      display: none}
     .search-section {
-      margin: 0 1rem;
-    }
+      margin: 0 1rem}
     .nav-button span {
-      display: none;
-    }
-    .user-name { display: none;
-    }
+      display: none}
+    .user-name { display: none}
   }
   @media (max-width: 480px) {
     .main-nav {
-      gap: 0;
-    }
+      gap: 0}
     .search-section {
-      max-width: 200px;
-     , margin: 0 0.5rem;
-    }
+      max-width: 200px
+     , margin: 0 0.5rem}
   }
 </style>
+

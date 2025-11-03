@@ -1,5 +1,5 @@
-node:internal/modules/cjs/loader:1404
-  throw err;
+﻿node:internal/modules/cjs/loader:1404
+  throw err
   ^
 
 Error: Cannot find module 'C:\Users\james\Videos\deeds-web-app\node_modules\.bin\pbjs'
@@ -15,3 +15,4 @@ Error: Cannot find module 'C:\Users\james\Videos\deeds-web-app\node_modules\.bin
 }
 
 Node.js v22.17.1
+

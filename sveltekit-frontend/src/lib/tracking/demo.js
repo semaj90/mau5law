@@ -1,8 +1,8 @@
-// Demo script to test all tracking functionality
+﻿// Demo script to test all tracking functionality
 // Run this to verify MCP integration works
 import productionController from './index.js';
 async function runDemo() {
-  console.log('🧪 Testing Production Tracking System...\n');
+  console.log('ðŸ§ª Testing Production Tracking System...\n');
   // Test 1: Check initial state
   console.log('1. Initial Assessment:');
   const initial = productionController.assessReadiness();
@@ -26,7 +26,7 @@ async function runDemo() {
   const final = productionController.assessReadiness();
   console.log(`Progress Improved: ${final.overall_progress}%`);
   console.log('Next Steps:', final.next_steps);
-  console.log('\n✅ Demo complete - tracking system operational!');
+  console.log('\nâœ… Demo complete - tracking system operational!');
 }
 // Run if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {

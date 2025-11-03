@@ -1,45 +1,41 @@
-// sveltekit-frontend/src/lib/server/rabbitmq-service.ts
+﻿// sveltekit-frontend/src/lib/server/rabbitmq-service.ts
 
 // Minimal, stable surface that matches existing imports across the app.
 
 export interface DocumentProcessingJob {
-  documentId: string;
-  caseId: string;
-  userId: string;
-  s3Key: string;
-  s3Bucket: string;
-  originalName: string;
-  mimeType: string;
-  fileSize: number;
+  documentId: string
+  caseId: string
+  userId: string
+  s3Key: string
+  s3Bucket: string
+  originalName: string
+  mimeType: string
+  fileSize: number
   processingType: string; // e.g., "ocr" | "nlp" | "classify"
-  priority?: number;
-  createdAt?: string;
+  priority?: number
+  createdAt?: string
   metadata?: Record<string, unknown>;
 }
 
 export interface DLQMessage extends DocumentProcessingJob {
-  error: string;
-  retries: number;
+  error: string
+  retries: number
   timestamp: string; // ISO
-  reason?: string;
-}
+  reason?: string}
 
-type Handler<T> = (msg: T) => Promise<void> | void;
-
+type Handler<T> = (msg: T) => Promise<void> | void
 const isDev = typeof process !== "undefined" && process.env.NODE_ENV !== "production";
 
 class RabbitMQClient {
-  private connected = false;
-
+  private connected = false
   async connect(): Promise<void> {
     // Real impl would connect to RabbitMQ (amqplib)
-    this.connected = true;
+    this.connected = true
     if (isDev) console.log("[rabbitmq] connected (mock)");
   }
 
   isConnected(): boolean {
-    return this.connected;
-  }
+    return this.connected}
 
   async publish<T = unknown>(queue: string, message: T): Promise<void> {
     if (!this.connected) await this.connect();
@@ -54,12 +50,12 @@ class RabbitMQClient {
   }
 
   async close(): Promise<void> {
-    this.connected = false;
+    this.connected = false
     if (isDev) console.log("[rabbitmq] disconnected");
   }
 }
 
-// ✅ Lowercase export to satisfy `import { rabbitMQService }`
+// âœ… Lowercase export to satisfy `import { rabbitMQService }`
 export const rabbitMQService = new RabbitMQClient();
 
 // Optional convenience re-exports for legacy call sites
@@ -96,3 +92,4 @@ export function isDLQMessage(obj: unknown): obj is DLQMessage {
     "retries" in obj
   );
 }
+

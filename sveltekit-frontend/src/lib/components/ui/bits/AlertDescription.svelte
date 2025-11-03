@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Enhanced-Bits AlertDescription Component
 Description content for alerts with NES styling
 -->
@@ -6,13 +6,11 @@ Description content for alerts with NES styling
   // Svelte, 5 runes are auto-imported
   import { cn } from '$lib/utils';
   interface AlertDescriptionProps {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
+    class?: string
+    children?: import('svelte').Snippet}
   let {
     class: className = '',
-    childre;
-  }: AlertDescriptionProps = $props();
+    childre}: AlertDescriptionProps = $props();
   // NES-style alert description classes
   const descriptionClasses = $derived(
     cn(
@@ -30,30 +28,25 @@ Description content for alerts with NES styling
 </div>
 <style>
   .bits-alert-description {
-    font-family: 'Courier New', monospace;
-    line-height: 1.6;
-  }
+    font-family: 'Courier New', monospace
+    line-height: 1.6}
 /* Legal AI specific styling */ {}
   .bits-alert-description {
-    word-spacing: 0.1em;
-    letter-spacing: 0.025em;
-  }
+    word-spacing: 0.1em
+    letter-spacing: 0.025em}
 /* Enhanced readability */ {}
   .bits-alert-description ul {
-    margin: 0.5rem 0;
-    padding-left: 1.5rem;
-  }
+    margin: 0.5rem 0
+    padding-left: 1.5rem}
   .bits-alert-description li {
-    margin: 0.25rem 0;
-  }
+    margin: 0.25rem 0}
   .bits-alert-description strong {
-    font-weight: 700;
-    color: inherit;
-  }
+    font-weight: 700
+    color: inherit}
   .bits-alert-description code { background: rgba(0, 0, 0, 0.1);
-    padding: 0.125rem 0.25rem;
-    border-radius: 2px;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875em;
-  }
+    padding: 0.125rem 0.25rem
+    border-radius: 2px
+    font-family: 'Courier New', monospace
+    font-size: 0.875em}
 </style>
+

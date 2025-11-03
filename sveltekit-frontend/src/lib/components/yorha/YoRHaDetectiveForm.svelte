@@ -1,22 +1,20 @@
-<!-- YoRHa Detective Form Component - Fixed dynamic, type binding -->
+﻿<!-- YoRHa Detective Form Component - Fixed dynamic, type binding -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface FormField {
-    name: string;
-    label: string;
+    name: string
+    label: string
     type: 'text' | 'textarea' | 'select' | 'email' | 'number';
-    required?: boolean;
-    placeholder?: string;
-    rows?: number;
+    required?: boolean
+    placeholder?: string
+    rows?: number
     options?: { value: string; label: string }[];
-    defaultValue?: string;
-  }
+    defaultValue?: string}
   interface Props {
     fields: FormField[];
    , onSubmit: (data: any) => Promise<void>;
-    submitText?: string;
-    submitClass?: string;
-  }
+    submitText?: string
+    submitClass?: string}
   let { fields = $bindable(),
     onsubmit= $bindable(),
     submitText = $bindable(),
@@ -31,31 +29,27 @@
   // Initialize form data with default values
   fields.forEach(field => {
     if (field.defaultValue !== undefined) {
-      formData[field.name] = field.defaultValu;
-    }
+      formData[field.name] = field.defaultValu}
   });
   async function handleSubmit(_event: Event): Promise<any> {
     event.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmitting) return
     try {
-      isSubmitting = true;
+      isSubmitting = true
       await onSubmit(formData);
       // Reset form
       formData = {}
       fields.forEach(field => {
         if (field.defaultValue !== undefined) {
-          formData[field.name] = field.defaultValu;
-        }
+          formData[field.name] = field.defaultValu}
       });
     } catch (error) {
       console.error('Form submission error:', error);'
     } finally {
-      isSubmitting = false;
-    }
+      isSubmitting = false}
   }
   function updateFormData(fieldName: string, value: any) {
-    formData[fieldName] = valu;
-  }
+    formData[fieldName] = valu}
 </script>
 <form class="yorha-form" onsubmit={handleSubmit}>
   <div class="form-fields">
@@ -135,88 +129,76 @@
 </form>
 <style>
   .yorha-form {
-    font-family: 'Roboto Mono', monospace;
-  }
+    font-family: 'Roboto Mono', monospace}
   .form-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 1.5rem}
   .form-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.5rem}
   .form-label {
-    font-size: 0.875rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #3d3d3d;
-    letter-spacing: 0.025em;
-  }
+    font-size: 0.875rem
+    font-weight: bold
+    text-transform: uppercase
+    color: #3d3d3d
+    letter-spacing: 0.025em}
   .required {
-    color: #ef4444;
-    margin-left: 0.25rem;
-  }
+    color: #ef4444
+    margin-left: 0.25rem}
   .form-input {
-    background-color: #ffffff;
-    border: 1px solid #d1cfc7;
-   , padding: 0.75rem 1rem;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 0.875rem;
-    color: #3d3d3d;
-   , transition: all 0.2s ease;
+    background-color: #ffffff
+    border: 1px solid #d1cfc7
+   , padding: 0.75rem 1rem
+    font-family: 'Roboto Mono', monospace
+    font-size: 0.875rem
+    color: #3d3d3d
+   , transition: all 0.2s ease
     border-radius: 0,
     width: 100%;
-    box-sizing: border-box;
-  }
-  .form-input:focus { outline: none;
-    border-color: #3d3d3d;
+    box-sizing: border-box}
+  .form-input:focus { outline: none
+    border-color: #3d3d3d
     box-shadow: 0, 0 0 3px rgba(61, 61, 61, 0.2);
   }
   .form-input::placeholder {
-    color: #999;
-    opacity: 1;
-  }
+    color: #999
+    opacity: 1}
   textarea.form-input {
-    resize: vertical;
-    min-height: 3rem;
-  }
+    resize: vertical
+    min-height: 3rem}
   select.form-input {
-    cursor: pointer;
-  }
+    cursor: pointer}
   .form-actions {
-    margin-top: 2rem;
-    display: flex;
-    justify-content: flex-end;
-  }
+    margin-top: 2rem
+    display: flex
+    justify-content: flex-end}
   .submit-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    border: 1px solid #d1cfc7;
-    background-color: #f7f6f2;
-   , padding: 0.75rem 1.5rem;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 0.875rem;
-    font-weight: bold;
-    color: #3d3d3d;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border-radius: 0;
-    text-transform: uppercase;
-  }
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    border: 1px solid #d1cfc7
+    background-color: #f7f6f2
+   , padding: 0.75rem 1.5rem
+    font-family: 'Roboto Mono', monospace
+    font-size: 0.875rem
+    font-weight: bold
+    color: #3d3d3d
+    cursor: pointer
+    transition: all 0.2s ease
+    border-radius: 0
+    text-transform: uppercase}
   .submit-btn:, hover:not(:disabled) {
-    background-color: #eae8e1;
+    background-color: #eae8e1
    , transform: translateY(-1px);
   }
   .submit-btn:disabled {
-    opacity: 0.6;
-   , cursor: not-allowed;
-  }
+    opacity: 0.6
+   , cursor: not-allowed}
   .submit-btn.yorha-btn-success {
     background-color: rgba(16, 185, 129, 0.1);
-    color: #059669;
+    color: #059669
     border-color: rgba(16, 185, 129, 0.5);
   }
   .submit-btn.yorha-btn-success:hover:not(:disabled) {
@@ -225,13 +207,11 @@
   /* Responsive */
   @media (max-width: 640px) {
     .form-fields {
-      gap: 1rem;
-    }
+      gap: 1rem}
     .form-actions {
-      margin-top: 1.5rem;
-    }
+      margin-top: 1.5rem}
     .submit-btn { width: 100%;
-      justify-content: center;
-    }
+      justify-content: center}
   }
 </style>
+

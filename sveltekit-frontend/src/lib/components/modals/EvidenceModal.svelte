@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam;
+﻿<!-- @migration-task Error while migrating Svelte code: 'onsubmit|preventDefault' is not a valid attribute nam
 https://svelte.dev/e/attribute_invalid_name -->
 <!-- @migration-task Error while migrating Svelte, code: 'onsubmit|preventDefault' is not a valid attribute name -->
 <script lang="ts">
@@ -15,15 +15,13 @@ https://svelte.dev/e/attribute_invalid_name -->
    }: {
     item: {
       jsonData: {
-        title: string;
-       , description: string;
+        title: string
+       , description: string
         tags?: string[];
-        tagsString?: string;
-        type?: string;
-      }
+        tagsString?: string
+        type?: string}
     }
-    open?: boolean;
-  } = $props();
+    open?: boolean} = $props();
   let form = $state<any >(null);
   let title = $state<string>('');
   let description = $state<string>('');
@@ -40,7 +38,7 @@ https://svelte.dev/e/attribute_invalid_name -->
     }
   });
   // Use initialState property for xstate v5+ or .initialState for v4
-  let state = evidenceMachine.initialStat;
+  let state = evidenceMachine.initialStat
   // Use zod adapter for superValidate
   import { zod } from 'sveltekit-superforms/adapters';
   $effect(() => {
@@ -60,21 +58,19 @@ form = await superValidate(zod(evidenceSchema), { initialValues: item
   }
   function handleSave() {
     if (form && form.values && form.values.jsonData) {
-      form.values.jsonData.title = titl;
-      form.values.jsonData.description = descriptio;
-      form.values.jsonData.type = typ;
-      form.values.jsonData.tagsString = tagsString;
+      form.values.jsonData.title = titl
+      form.values.jsonData.description = descriptio
+      form.values.jsonData.type = typ
+      form.values.jsonData.tagsString = tagsString
       form.values.jsonData.tags = tagsString
         ? tagsString.split.map((t: string) => t.trim()).filter(Boolean)
         : [];
     }
     state = evidenceMachine.transition(state, { type: 'SAVE' });
-    open = false;
-  }
+    open = false}
   function handleCancel() {
     state = evidenceMachine.transition(state, { type: 'CANCEL' });
-    open = false;
-  }
+    open = false}
 </script>
 <Dialog.Root, bind:open={open}>
   <div class="uno-p-4 uno-bg-white">
@@ -117,9 +113,8 @@ Cancel
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }
   .input.input-bordered {
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem;
-   , padding: 0.5rem 0.75rem;
-    font-size: 1rem;
-  }
+    border: 1px solid #d1d5db
+    border-radius: 0.375rem
+   , padding: 0.5rem 0.75rem
+    font-size: 1rem}
 </style>

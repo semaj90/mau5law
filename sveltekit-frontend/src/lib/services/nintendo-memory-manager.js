@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Nintendo Memory Manager - Phase 2 Integration
  *
  * Provides Nintendo-style memory constraints for legal AI operations
@@ -7,9 +7,9 @@
 import { nesMemory } from '../memory/nes-memory-architecture.ts.js';
 export class NintendoMemoryManager {
   constructor(redisClient, pgPool) {
-    this.redis = redisClient;
-    this.pgPool = pgPool;
-    this.nesMemory = nesMemory;
+    this.redis = redisClient
+    this.pgPool = pgPool
+    this.nesMemory = nesMemory
     this.budgets = {
       redis: 1024 * 1024, // 1MB L3 cache budget
       chrRom: 8192 * 4, // 32KB CHR-ROM total
@@ -36,8 +36,7 @@ export class NintendoMemoryManager {
       // Update PostgreSQL with full document
       await this.updatePostgreSQLDocument(documentId, data, document);
     }
-    return success;
-  }
+    return success}
   calculateRiskLevel(documentType) {
     const riskMapping = {
       evidence: 'critical', contract: 'high', brief: 'medium', citation: 'low', precedent: 'medium'};
@@ -45,15 +44,14 @@ export class NintendoMemoryManager {
   }
   async updateRedisMetadata(documentId, document) {
     const metadataKey = `legal:doc:${documentId}`;
-    const metadataSize = JSON.stringify(document).length;
+    const metadataSize = JSON.stringify(document).length
     // Check Redis budget
     if (this.currentUsage.redis + metadataSize > this.budgets.redis) {
-      console.warn('⚠️ Redis budget exceeded, performing selective eviction');
+      console.warn('âš ï¸ Redis budget exceeded, performing selective eviction');
       await this.evictLeastImportantMetadata(metadataSize);
     }
     await this.redis.setex(metadataKey, 3600, JSON.stringify(document);
-    this.currentUsage.redis += metadataSize;
-  }
+    this.currentUsage.redis += metadataSize}
   async updatePostgreSQLDocument(documentId, content, document) {
     const client = await this.pgPool.connect();
     try {
@@ -84,19 +82,19 @@ export class NintendoMemoryManager {
     }
     // Sort by priority (low first)
     candidates.sort((a, b) => a.priority - b.priority);
-    let freedSpace = 0;
+    let freedSpace = 0
     for (const candidate of candidates) {
-      if (freedSpace >= requiredSpace) break;
+      if (freedSpace >= requiredSpace) break
       await this.redis.del(candidate.key);
-      freedSpace += candidate.size;
-      this.currentUsage.redis -= candidate.size;
-      console.log(`🗑️ Evicted ${candidate.key} (priority: ${candidate.priority})`);
+      freedSpace += candidate.size
+      this.currentUsage.redis -= candidate.size
+      console.log(`ðŸ—‘ï¸ Evicted ${candidate.key} (priority: ${candidate.priority})`);
     }
   }
   calculatePriority(document) {
     const riskWeights = {
       critical: 255, high: 192, medium: 128, low: 64};
-    const baseWeight = riskWeights[document.riskLevel] || 64;
+    const baseWeight = riskWeights[document.riskLevel] || 64
     const confidenceBonus = Math.floor(document.confidenceLevel * 31);
     return Math.min(255, baseWeight + confidenceBonus);
   }

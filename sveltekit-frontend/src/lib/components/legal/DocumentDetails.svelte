@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -28,7 +28,7 @@ import type { Document } from '$lib/types';
   let serverFetchTime = $state<number>(0);
   // Node click handler with cache-first strategy
   async function loadDocumentDetails(docId: string, forceRefresh = false): Promise<any> {
-    if (!docId) return;
+    if (!docId) return
     const startTime = performance.now();
     isLoading.set(true);
     errorMessage.set(null);
@@ -38,8 +38,8 @@ import type { Document } from '$lib/types';
         loadingSource.set('cache');
         const cachedDocument = await legalDB.documentCache.get(docId);
         if (cachedDocument) {
-          cacheHitTime = performance.now() - startTime;
-          console.log(`✅ CACHE HIT! Loaded ${docId} from IndexedDB in ${cacheHitTime.toFixed(2)}ms`);
+          cacheHitTime = performance.now() - startTime
+          console.log(`âœ… CACHE HIT! Loaded ${docId} from IndexedDB in ${cacheHitTime.toFixed(2)}ms`);
           // Update UI instantly with cached data
           displayDocumentDetails(cachedDocument);
           loadingSource.set(null);
@@ -48,14 +48,13 @@ import type { Document } from '$lib/types';
           const cacheAge = Date.now() - new Date(cachedDocument.lastAccessed).getTime();
           const cacheTimeout = 5 * 60 * 1000; // 5 minutes
           if (cacheAge < cacheTimeout) {
-            console.log('📦 Cache is fresh, using cached data');
-            return;
-          } else {
-            console.log('🔄 Cache is stale, fetching fresh data in background');
+            console.log('ðŸ“¦ Cache is fresh, using cached data');
+            return} else {
+            console.log('ðŸ”„ Cache is stale, fetching fresh data in background');
             // Continue to server fetch for fresh data
           }
         } else {
-          console.log('❌ CACHE MISS! Document not in IndexedDB');
+          console.log('âŒ CACHE MISS! Document not in IndexedDB');
         }
       }
       // THE SLOW PATH: Fetch from server
@@ -71,7 +70,7 @@ import type { Document } from '$lib/types';
   async function fetchAndCacheDocument(docId: string, includeGPU = false): Promise<Response> {
     const serverStartTime = performance.now();
     loadingSource.set('server');
-    console.log('🌐 Fetching from server with full analysis...');
+    console.log('ðŸŒ Fetching from server with full analysis...');
     const url = `/api/document/${docId}${includeGPU ? '?gpu=true' : ''}`;
     // perform network request
     const response = await fetch(url);
@@ -79,11 +78,11 @@ import type { Document } from '$lib/types';
       throw new Error(`Server error: ${response.status} ${response.statusText}`);
     }
     const data = await response.json();
-    serverFetchTime = performance.now() - serverStartTime;
-    console.log(`🚀 Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
-    console.log(`📊 Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time ?? 'n/a'}`);
+    serverFetchTime = performance.now() - serverStartTime
+    console.log(`ðŸš€ Server fetch completed in ${serverFetchTime.toFixed(2)}ms`);
+    console.log(`ðŸ“Š Server processing: ${data.enhanced_metadata?.server_processing?.total_server_time ?? 'n/a'}`);
     // Build a safe cache entry (cast to: any to avoid strict schema mismatch here)
-    const doc = (data && (data.document ?? data)) as: any;
+    const doc = (data && (data.document ?? data)) as: any
     const cacheEntry: any = { id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
       documentId: docId,
       title: doc.title ?? '',
@@ -104,9 +103,9 @@ import type { Document } from '$lib/types';
     // Store in IndexedDB with error handling
     try {
       await legalDB.documentCache.put(cacheEntry);
-      console.log('💾 Document cached successfully in IndexedDB');
+      console.log('ðŸ’¾ Document cached successfully in IndexedDB');
     } catch (cacheError) {
-      console.warn('⚠️ Failed to cache document:', cacheError);
+      console.warn('âš ï¸ Failed to cache document:', cacheError);
     }
     // Update UI with server data
     displayDocumentDetails(data);
@@ -115,9 +114,9 @@ import type { Document } from '$lib/types';
   }
   // Display document details (unified function for cache and server data)
   function displayDocumentDetails(data: any) {
-    const obj = data as: any;
-    const doc = obj.document ?? obj;
-    const metadata = obj.metadata ?? obj;
+    const obj = data as: any
+    const doc = obj.document ?? obj
+    const metadata = obj.metadata ?? obj
     documentData.set({ id: doc.id ?? doc.documentId ?? null,
       title: doc.title ?? '',
       content: doc.content ?? '',
@@ -142,16 +141,16 @@ import type { Document } from '$lib/types';
   // GPU Analysis toggle
   async function toggleGPUAnalysis(): Promise<any> {
     if (!showGPUAnalysis && documentId) {
-      showGPUAnalysis = true;
+      showGPUAnalysis = true
       await fetchAndCacheDocument(documentId, true);
     } else {
-      showGPUAnalysis = false;
+      showGPUAnalysis = false
       gpuAnalysis.set(null);
     }
   }
   function formatBytes(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    const k = 1024;
+    const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
@@ -172,18 +171,18 @@ import type { Document } from '$lib/types';
           <h2 class="text-2xl">Document Analysis</h2>
           <p class="text-blue-100">
             {#if $loadingSource === 'cache'}
-              📦 Loading from cache... ({formatDuration(cacheHitTime)})
+              ðŸ“¦ Loading from cache... ({formatDuration(cacheHitTime)})
             {:else if $loadingSource === 'server'}
-              🌐 Fetching from server...
+              ðŸŒ Fetching from server...
             {:else if $documentData}
-              📄 {$documentData.title || `Document ${documentId}`}
+              ðŸ“„ {$documentData.title || `Document ${documentId}`}
             {:else}
               Document ID: {documentId}
             {/if}
           </p>
         </div>
         <button onclick={onClose} class="text-white hover:text-blue-200 text-2xl" aria-label="Close">
-          ×
+          Ã—
         </button>
       </div>
       <!-- Loading, State -->
@@ -203,7 +202,7 @@ import type { Document } from '$lib/types';
       <!-- Error, State -->
       {#if $errorMessage}
         <div class="p-8">
-          <div class="text-red-600 text-xl">❌ Error</div>
+          <div class="text-red-600 text-xl">âŒ Error</div>
           <p class="text-red-700">{$errorMessage}</p>
           <button
             onclick={() => loadDocumentDetails(documentId, true)}
@@ -246,7 +245,7 @@ import type { Document } from '$lib/types';
                       onclick={() => loadDocumentDetails(documentId, true)}
                       class="text-sm bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded"
                     >
-                      🔄 Refresh
+                      ðŸ”„ Refresh
                     </button>
                     <button
                       onclick={toggleGPUAnalysis}
@@ -254,7 +253,7 @@ import type { Document } from '$lib/types';
                         ? 'bg-purple-100 text-purple-700'
                         : 'bg-gray-100'}, hover:bg-purple-200 px-3 py-1 rounded"
                     >
-                      {showGPUAnalysis ? '🧠 GPU Active' : '⚡ GPU Analysis'}
+                      {showGPUAnalysis ? 'ðŸ§  GPU Active' : 'âš¡ GPU Analysis'}
                     </button>
                   </div>
                 </div>
@@ -286,7 +285,7 @@ import type { Document } from '$lib/types';
               {#if $gpuAnalysis}
                 <div class="bg-purple-50 rounded-lg border border-purple-200 p-6">
                   <h3 class="text-xl font-semibold text-purple-800 mb-4 flex items-center">
-                    🧠 GPU Analysis (FlashAttention2 RTX, 3060 Ti)
+                    ðŸ§  GPU Analysis (FlashAttention2 RTX, 3060 Ti)
                   </h3>
                   <div class="grid grid-cols-2">
                     <div>
@@ -330,7 +329,7 @@ import type { Document } from '$lib/types';
               {#if $relatedDocuments.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200">
                   <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                    🔗 Related Documents ({$relatedDocuments.length})
+                    ðŸ”— Related Documents ({$relatedDocuments.length})
                   </h3>
                   <div class="space-y-3 max-h-64">
                     {#each Array.isArray($relatedDocuments) ? $relatedDocuments : [] as doc}
@@ -352,7 +351,7 @@ import type { Document } from '$lib/types';
               {#if $graphConnections.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200">
                   <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                    🌐 Knowledge Graph ({$graphConnections.length})
+                    ðŸŒ Knowledge Graph ({$graphConnections.length})
                   </h3>
                   <div class="space-y-3 max-h-64">
                     {#each Array.isArray($graphConnections) ? $graphConnections : [] as conn}
@@ -375,7 +374,7 @@ import type { Document } from '$lib/types';
               {#if $caseAssociations.length > 0}
                 <div class="bg-white rounded-lg border border-gray-200">
                   <h3 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                    ⚖️ Associated Cases ({$caseAssociations.length})
+                    âš–ï¸ Associated Cases ({$caseAssociations.length})
                   </h3>
                   <div class="space-y-3 max-h-64">
                     {#each Array.isArray($caseAssociations) ? $caseAssociations : [] as caseItem}
@@ -396,7 +395,7 @@ import type { Document } from '$lib/types';
               <!-- Processing, Metrics -->
               {#if $processingMetrics}
                 <div class="bg-white rounded-lg border border-gray-200">
-                  <h3 class="text-lg font-semibold text-gray-800">📊 Processing Metrics</h3>
+                  <h3 class="text-lg font-semibold text-gray-800">ðŸ“Š Processing Metrics</h3>
                   <div class="space-y-2">
                     <div class="flex">
                       <span class="text-gray-600">Content Length:</span>
@@ -409,7 +408,7 @@ import type { Document } from '$lib/types';
                           ? 'text-green-600'
                           : 'text-red-600'}"
                       >
-                        {$processingMetrics.has_vector_embedding ? '✅ Available' : '❌ Missing'}
+                        {$processingMetrics.has_vector_embedding ? 'âœ… Available' : 'âŒ Missing'}
                       </span>
                     </div>
                     <div class="flex">
@@ -441,9 +440,9 @@ import type { Document } from '$lib/types';
   {/if}
 <style>
   .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-   , overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 2
+    -webkit-box-orient: vertical
+   , overflow: hidden}
 </style>
+

@@ -1,24 +1,22 @@
-<script lang="ts">
+﻿<script lang="ts">
 	// Svelte, 5 runes are auto-imported
 	import { onMount, onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
 	interface Props {
-		showOverlay?: boolean;
-		autoHide?: boolean;
-		updateInterval?: number;
-	}
+		showOverlay?: boolean
+		autoHide?: boolean
+		updateInterval?: number}
 	let { showOverlay = false, autoHide = true, updateInterval = 1000 }: Props = $props();
 	interface PerformanceMetrics {
-		fps: number;
-		memoryUsage: number;
-		cpuUsage: number;
-		gpuUsage: number;
-		webGPUActive: boolean;
-		activeOperations: number;
-		responseTime: number;
-		timestamp: number;
-	}
+		fps: number
+		memoryUsage: number
+		cpuUsage: number
+		gpuUsage: number
+		webGPUActive: boolean
+		activeOperations: number
+		responseTime: number
+		timestamp: number}
 	const metrics = writable<PerformanceMetrics>({ fps: 0,
 		memoryUsage: 0,
 		cpuUsage: 0,
@@ -28,10 +26,10 @@
 		responseTime: 0,
 		timestamp: Date.now()
 	});
-	let performanceObserver: PerformanceObserver | null = null;
-	let frameCount = 0;
+	let performanceObserver: PerformanceObserver | null = null
+	let frameCount = 0
 	let lastFrameTime = performance.now();
-	let intervalId: ReturnType<typeof setInterval> | undefined;
+	let intervalId: ReturnType<typeof setInterval> | undefined
 	// Svelte, 5 reactive state
 	let isVisible = $state(showOverlay);
 	// Performance tracking
@@ -41,21 +39,21 @@
 		// Calculate FPS (smoothed/clamped)
 		const fps = Math.round(1000 / deltaTime);
 		frameCount++;
-		lastFrameTime = now;
+		lastFrameTime = now
 		// Memory usage (if available)
-		let memoryUsage = 0;
+		let memoryUsage = 0
 		// guard access to experimental memory API
-		const perfAny = performance as: any;
+		const perfAny = performance as: any
 		if (perfAny?.memory && typeof perfAny.memory.usedJSHeapSize === 'number' && typeof perfAny.memory.totalJSHeapSize === 'number') {
-			const mem = perfAny.memory;
+			const mem = perfAny.memory
 			if (mem.totalJSHeapSize > 0) {
 				memoryUsage = Math.round((mem.usedJSHeapSize / mem.totalJSHeapSize) * 100);
 			}
 		}
 		// Check WebGPU status
-		const webGPUActive = typeof navigator !== 'undefined' && 'gpu' in navigator;
+		const webGPUActive = typeof navigator !== 'undefined' && 'gpu' in navigator
 		// Get performance entries for response time (best-effort)
-		let responseTime = 0;
+		let responseTime = 0
 		try {
 			const entries = performance.getEntriesByType('navigation') as PerformanceNavigationTiming[];
 			if (entries?.length > 0 && typeof entries[0].responseStart === 'number') {
@@ -78,13 +76,11 @@
 	function getActiveOperationsCount(): number {
 		// Count active AI/ML operations (best-effort)
 		if (typeof window !== 'undefined') {
-			const active = (window as: any).__aiOperations;
-			if (active && typeof active.size === 'number') return active.size;
+			const active = (window as: any).__aiOperations
+			if (active && typeof active.size === 'number') return active.size
 			// sometimes it's an array'
-			if (Array.isArray(active)) return active.length;
-		}
-		return 0;
-	}
+			if (Array.isArray(active)) return active.length}
+		return 0}
 	function setupPerformanceObserver() {
 		if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
 			try {
@@ -103,19 +99,16 @@
 			} catch (error) {
 				// PerformanceObserver may not be available in all contexts
 				console.warn('PerformanceObserver not supported:', error);
-				performanceObserver = null;
-			}
+				performanceObserver = null}
 		}
 	}
 	function toggleVisibility() {
-		isVisible = !isVisible;
-	}
+		isVisible = !isVisible}
 	// Auto-hide after a delay
 	function autoHideTimer() {
 		if (autoHide && isVisible) {
 			setTimeout(() => {
-				isVisible = false;
-			}, 10000);
+				isVisible = false}, 10000);
 		}
 	}
 	// Setup effect: start observer + interval + keyboard listener
@@ -141,19 +134,16 @@
 			}
 			if (intervalId) {
 				clearInterval(intervalId);
-				intervalId = undefined;
-			}
+				intervalId = undefined}
 		};
 	});
 	onDestroy(() => {
 		if (intervalId) {
 			clearInterval(intervalId);
-			intervalId = undefined;
-		}
+			intervalId = undefined}
 		if (performanceObserver) {
 			performanceObserver.disconnect();
-			performanceObserver = null;
-		}
+			performanceObserver = null}
 	});
 	// Color coding for metrics
 	function getStatusColor(value: number, type: 'fps' | 'memory' | 'cpu' | 'gpu'): string {
@@ -189,7 +179,7 @@
           class="text-gray-400 hover:text-white transition-colors"
           aria-label="Close performance monitor"
         >
-          ×
+          Ã—
         </button>
       </div>
       <!-- Metrics -->
@@ -263,7 +253,7 @@
   {/if}
 <style>
   .performance-monitor {
-    user-select: none;
-    pointer-events: auto;
-  }
+    user-select: none
+    pointer-events: auto}
 </style>
+

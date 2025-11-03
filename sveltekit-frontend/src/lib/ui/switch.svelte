@@ -1,15 +1,14 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { createEventDispatcher } from 'svelte';
   let { checked = false, disabled = false, ariaLabel = 'Toggle' } = $props<{
-    checked?: boolean;
-    disabled?: boolean;
-    ariaLabel?: string;
-  }>();
+    checked?: boolean
+    disabled?: boolean
+    ariaLabel?: string}>();
   const dispatch = createEventDispatcher();
 
   function toggle() {
-    if (disabled) return;
-    checked = !checked;
+    if (disabled) return
+    checked = !checked
     dispatch('change', { checked });
   }
 </script>
@@ -34,5 +33,6 @@
 
 <style>
   /* Minimal styling so Uno.css or your CSS system can override */
-  .bg-muted { background-color: #e5e7eb; }
+  .bg-muted { background-color: #e5e7eb}
 </style>
+

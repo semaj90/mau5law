@@ -1,14 +1,12 @@
-/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
+﻿/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 import * as $protobuf from "protobufjs/minimal";
 
 // Common aliases
-const $Reader = $protobuf.Reader: $Writer = $protobuf.Writer: $util = $protobuf.util;
-
+const $Reader = $protobuf.Reader: $Writer = $protobuf.Writer: $util = $protobuf.util
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
 export const legal = $root.legal = (() => {
-
     /**
      * Namespace legal.
      * @exports legal
@@ -17,7 +15,6 @@ export const legal = $root.legal = (() => {
     const legal = {};
 
     legal.api = (function() {
-
         /**
          * Namespace api.
          * @memberof legal
@@ -26,7 +23,6 @@ export const legal = $root.legal = (() => {
         const api = {};
 
         api.User = (function() {
-
             /**
              * Properties of a User.
              * @memberof legal.api
@@ -48,8 +44,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IUser=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * User id.
@@ -81,32 +76,28 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.roles = $util.emptyArray;
-
+            User.prototype.roles = $util.emptyArray
             /**
              * User createdAt.
              * @member {google.protobuf.ITimestamp|null|undefined} createdAt
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.createdAt = null;
-
+            User.prototype.createdAt = null
             /**
              * User updatedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} updatedAt
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.updatedAt = null;
-
+            User.prototype.updatedAt = null
             /**
              * User preferences.
              * @member {legal.api.IUserPreferences|null|undefined} preferences
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.preferences = null;
-
+            User.prototype.preferences = null
             /**
              * Creates a new User instance using the specified properties.
              * @function create
@@ -128,8 +119,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            User.encode = undefined;
-            },;
+            User.encode = undefined},;
 
             /**
              * Encodes the specified User message, length delimited. Does not implicitly {@link legal.api.User.verify|verify} messages.
@@ -155,8 +145,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            User.decode = undefined;
-            },;
+            User.decode = undefined},;
 
             /**
              * Decodes a User message from the specified reader or buffer, length delimited.
@@ -182,8 +171,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            User.verify = undefined;
-            };
+            User.verify = undefined};
 
             /**
              * Creates a User message from a plain object. Also converts values to their respective internal types.
@@ -193,8 +181,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.User} User
              */
-            User.fromObject = undefined;
-            };
+            User.fromObject = undefined};
 
             /**
              * Creates a plain object from a User message. Also converts values to other types if specified.
@@ -205,8 +192,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            User.toObject = undefined;
-            };
+            User.toObject = undefined};
 
             /**
              * Converts this User to JSON.
@@ -234,11 +220,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.User";
             };
 
-            return User;
-        })();
+            return User})();
 
         api.UserPreferences = (function() {
-
             /**
              * Properties of a UserPreferences.
              * @memberof legal.api
@@ -257,8 +241,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IUserPreferences=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * UserPreferences theme.
@@ -313,8 +296,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            UserPreferences.encode = undefined;
-            };
+            UserPreferences.encode = undefined};
 
             /**
              * Encodes the specified UserPreferences message, length delimited. Does not implicitly {@link legal.api.UserPreferences.verify|verify} messages.
@@ -340,8 +322,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            UserPreferences.decode = undefined;
-            };
+            UserPreferences.decode = undefined};
 
             /**
              * Decodes a UserPreferences message from the specified reader or buffer, length delimited.
@@ -367,8 +348,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            UserPreferences.verify = undefined;
-            };
+            UserPreferences.verify = undefined};
 
             /**
              * Creates a UserPreferences message from a plain object. Also converts values to their respective internal types.
@@ -378,8 +358,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.UserPreferences} UserPreferences
              */
-            UserPreferences.fromObject = undefined;
-            };
+            UserPreferences.fromObject = undefined};
 
             /**
              * Creates a plain object from a UserPreferences message. Also converts values to other types if specified.
@@ -390,8 +369,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            UserPreferences.toObject = undefined;
-            };
+            UserPreferences.toObject = undefined};
 
             /**
              * Converts this UserPreferences to JSON.
@@ -419,11 +397,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.UserPreferences";
             };
 
-            return UserPreferences;
-        })();
+            return UserPreferences})();
 
         api.AuthRequest = (function() {
-
             /**
              * Properties of an AuthRequest.
              * @memberof legal.api
@@ -442,8 +418,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAuthRequest=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * AuthRequest email.
@@ -498,8 +473,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AuthRequest.encode = undefined;
-            };
+            AuthRequest.encode = undefined};
 
             /**
              * Encodes the specified AuthRequest message, length delimited. Does not implicitly {@link legal.api.AuthRequest.verify|verify} messages.
@@ -525,8 +499,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AuthRequest.decode = undefined;
-            };
+            AuthRequest.decode = undefined};
 
             /**
              * Decodes an AuthRequest message from the specified reader or buffer, length delimited.
@@ -552,8 +525,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AuthRequest.verify = undefined;
-            };
+            AuthRequest.verify = undefined};
 
             /**
              * Creates an AuthRequest message from a plain object. Also converts values to their respective internal types.
@@ -563,8 +535,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AuthRequest} AuthRequest
              */
-            AuthRequest.fromObject = undefined;
-            };
+            AuthRequest.fromObject = undefined};
 
             /**
              * Creates a plain object from an AuthRequest message. Also converts values to other types if specified.
@@ -575,8 +546,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AuthRequest.toObject = undefined;
-            };
+            AuthRequest.toObject = undefined};
 
             /**
              * Converts this AuthRequest to JSON.
@@ -604,11 +574,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AuthRequest";
             };
 
-            return AuthRequest;
-        })();
+            return AuthRequest})();
 
         api.AuthResponse = (function() {
-
             /**
              * Properties of an AuthResponse.
              * @memberof legal.api
@@ -628,8 +596,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAuthResponse=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * AuthResponse success.
@@ -653,8 +620,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthResponse
              * @instance
              */
-            AuthResponse.prototype.user = null;
-
+            AuthResponse.prototype.user = null
             /**
              * AuthResponse errorMessage.
              * @member {string} errorMessage
@@ -669,8 +635,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthResponse
              * @instance
              */
-            AuthResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-
+            AuthResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0
             /**
              * Creates a new AuthResponse instance using the specified properties.
              * @function create
@@ -692,8 +657,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AuthResponse.encode = undefined;
-            };
+            AuthResponse.encode = undefined};
 
             /**
              * Encodes the specified AuthResponse message, length delimited. Does not implicitly {@link legal.api.AuthResponse.verify|verify} messages.
@@ -719,8 +683,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AuthResponse.decode = undefined;
-            };
+            AuthResponse.decode = undefined};
 
             /**
              * Decodes an AuthResponse message from the specified reader or buffer, length delimited.
@@ -746,8 +709,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AuthResponse.verify = undefined;
-            };
+            AuthResponse.verify = undefined};
 
             /**
              * Creates an AuthResponse message from a plain object. Also converts values to their respective internal types.
@@ -757,8 +719,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AuthResponse} AuthResponse
              */
-            AuthResponse.fromObject = undefined;
-            };
+            AuthResponse.fromObject = undefined};
 
             /**
              * Creates a plain object from an AuthResponse message. Also converts values to other types if specified.
@@ -769,8 +730,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AuthResponse.toObject = undefined;
-            };
+            AuthResponse.toObject = undefined};
 
             /**
              * Converts this AuthResponse to JSON.
@@ -798,11 +758,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AuthResponse";
             };
 
-            return AuthResponse;
-        })();
+            return AuthResponse})();
 
         api.LegalDocument = (function() {
-
             /**
              * Properties of a LegalDocument.
              * @memberof legal.api
@@ -830,8 +788,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ILegalDocument=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * LegalDocument id.
@@ -871,40 +828,35 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.type = 0;
-
+            LegalDocument.prototype.type = 0
             /**
              * LegalDocument tags.
              * @member {Array.<string>} tags
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.tags = $util.emptyArray;
-
+            LegalDocument.prototype.tags = $util.emptyArray
             /**
              * LegalDocument metadata.
              * @member {legal.api.IDocumentMetadata|null|undefined} metadata
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.metadata = null;
-
+            LegalDocument.prototype.metadata = null
             /**
              * LegalDocument createdAt.
              * @member {google.protobuf.ITimestamp|null|undefined} createdAt
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.createdAt = null;
-
+            LegalDocument.prototype.createdAt = null
             /**
              * LegalDocument updatedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} updatedAt
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.updatedAt = null;
-
+            LegalDocument.prototype.updatedAt = null
             /**
              * LegalDocument ownerId.
              * @member {string} ownerId
@@ -919,24 +871,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.collaboratorIds = $util.emptyArray;
-
+            LegalDocument.prototype.collaboratorIds = $util.emptyArray
             /**
              * LegalDocument status.
              * @member {legal.api.DocumentStatus} status
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.status = 0;
-
+            LegalDocument.prototype.status = 0
             /**
              * LegalDocument securityLevel.
              * @member {legal.api.SecurityLevel} securityLevel
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.securityLevel = 0;
-
+            LegalDocument.prototype.securityLevel = 0
             /**
              * Creates a new LegalDocument instance using the specified properties.
              * @function create
@@ -958,8 +907,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            LegalDocument.encode = undefined;
-            };
+            LegalDocument.encode = undefined};
 
             /**
              * Encodes the specified LegalDocument message, length delimited. Does not implicitly {@link legal.api.LegalDocument.verify|verify} messages.
@@ -985,8 +933,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            LegalDocument.decode = undefined;
-            };
+            LegalDocument.decode = undefined};
 
             /**
              * Decodes a LegalDocument message from the specified reader or buffer, length delimited.
@@ -1012,8 +959,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            LegalDocument.verify = undefined;
-            };
+            LegalDocument.verify = undefined};
 
             /**
              * Creates a LegalDocument message from a plain object. Also converts values to their respective internal types.
@@ -1023,8 +969,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.LegalDocument} LegalDocument
              */
-            LegalDocument.fromObject = undefined;
-            };
+            LegalDocument.fromObject = undefined};
 
             /**
              * Creates a plain object from a LegalDocument message. Also converts values to other types if specified.
@@ -1035,8 +980,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            LegalDocument.toObject = undefined;
-            };
+            LegalDocument.toObject = undefined};
 
             /**
              * Converts this LegalDocument to JSON.
@@ -1064,8 +1008,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.LegalDocument";
             };
 
-            return LegalDocument;
-        })();
+            return LegalDocument})();
 
         /**
          * DocumentType enum.
@@ -1083,17 +1026,16 @@ export const legal = $root.legal = (() => {
          */
         api.DocumentType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "DOCUMENT_TYPE_UNKNOWN"] = 0;
-            values[valuesById[1] = "DOCUMENT_TYPE_CONTRACT"] = 1;
-            values[valuesById[2] = "DOCUMENT_TYPE_BRIEF"] = 2;
-            values[valuesById[3] = "DOCUMENT_TYPE_EVIDENCE"] = 3;
-            values[valuesById[4] = "DOCUMENT_TYPE_CITATION"] = 4;
-            values[valuesById[5] = "DOCUMENT_TYPE_RULING"] = 5;
-            values[valuesById[6] = "DOCUMENT_TYPE_MOTION"] = 6;
-            values[valuesById[7] = "DOCUMENT_TYPE_PLEADING"] = 7;
-            values[valuesById[8] = "DOCUMENT_TYPE_CORRESPONDENCE"] = 8;
-            return values;
-        })();
+            values[valuesById[0] = "DOCUMENT_TYPE_UNKNOWN"] = 0
+            values[valuesById[1] = "DOCUMENT_TYPE_CONTRACT"] = 1
+            values[valuesById[2] = "DOCUMENT_TYPE_BRIEF"] = 2
+            values[valuesById[3] = "DOCUMENT_TYPE_EVIDENCE"] = 3
+            values[valuesById[4] = "DOCUMENT_TYPE_CITATION"] = 4
+            values[valuesById[5] = "DOCUMENT_TYPE_RULING"] = 5
+            values[valuesById[6] = "DOCUMENT_TYPE_MOTION"] = 6
+            values[valuesById[7] = "DOCUMENT_TYPE_PLEADING"] = 7
+            values[valuesById[8] = "DOCUMENT_TYPE_CORRESPONDENCE"] = 8
+            return values})();
 
         /**
          * DocumentStatus enum.
@@ -1107,13 +1049,12 @@ export const legal = $root.legal = (() => {
          */
         api.DocumentStatus = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "DOCUMENT_STATUS_DRAFT"] = 0;
-            values[valuesById[1] = "DOCUMENT_STATUS_REVIEW"] = 1;
-            values[valuesById[2] = "DOCUMENT_STATUS_APPROVED"] = 2;
-            values[valuesById[3] = "DOCUMENT_STATUS_ARCHIVED"] = 3;
-            values[valuesById[4] = "DOCUMENT_STATUS_DELETED"] = 4;
-            return values;
-        })();
+            values[valuesById[0] = "DOCUMENT_STATUS_DRAFT"] = 0
+            values[valuesById[1] = "DOCUMENT_STATUS_REVIEW"] = 1
+            values[valuesById[2] = "DOCUMENT_STATUS_APPROVED"] = 2
+            values[valuesById[3] = "DOCUMENT_STATUS_ARCHIVED"] = 3
+            values[valuesById[4] = "DOCUMENT_STATUS_DELETED"] = 4
+            return values})();
 
         /**
          * SecurityLevel enum.
@@ -1126,15 +1067,13 @@ export const legal = $root.legal = (() => {
          */
         api.SecurityLevel = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "SECURITY_LEVEL_PUBLIC"] = 0;
-            values[valuesById[1] = "SECURITY_LEVEL_INTERNAL"] = 1;
-            values[valuesById[2] = "SECURITY_LEVEL_CONFIDENTIAL"] = 2;
-            values[valuesById[3] = "SECURITY_LEVEL_RESTRICTED"] = 3;
-            return values;
-        })();
+            values[valuesById[0] = "SECURITY_LEVEL_PUBLIC"] = 0
+            values[valuesById[1] = "SECURITY_LEVEL_INTERNAL"] = 1
+            values[valuesById[2] = "SECURITY_LEVEL_CONFIDENTIAL"] = 2
+            values[valuesById[3] = "SECURITY_LEVEL_RESTRICTED"] = 3
+            return values})();
 
         api.DocumentMetadata = (function() {
-
             /**
              * Properties of a DocumentMetadata.
              * @memberof legal.api
@@ -1158,8 +1097,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IDocumentMetadata=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * DocumentMetadata jurisdiction.
@@ -1183,24 +1121,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.parties = $util.emptyArray;
-
+            DocumentMetadata.prototype.parties = $util.emptyArray
             /**
              * DocumentMetadata practiceAreas.
              * @member {Array.<string>} practiceAreas
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.practiceAreas = $util.emptyArray;
-
+            DocumentMetadata.prototype.practiceAreas = $util.emptyArray
             /**
              * DocumentMetadata confidenceScore.
              * @member {number} confidenceScore
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.confidenceScore = 0;
-
+            DocumentMetadata.prototype.confidenceScore = 0
             /**
              * DocumentMetadata riskLevel.
              * @member {string} riskLevel
@@ -1215,24 +1150,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.keyTerms = $util.emptyArray;
-
+            DocumentMetadata.prototype.keyTerms = $util.emptyArray
             /**
              * DocumentMetadata citations.
              * @member {Array.<legal.api.ILegalCitation>} citations
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.citations = $util.emptyArray;
-
+            DocumentMetadata.prototype.citations = $util.emptyArray
             /**
              * DocumentMetadata caseInfo.
              * @member {legal.api.ICaseInformation|null|undefined} caseInfo
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.caseInfo = null;
-
+            DocumentMetadata.prototype.caseInfo = null
             /**
              * Creates a new DocumentMetadata instance using the specified properties.
              * @function create
@@ -1254,8 +1186,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            DocumentMetadata.encode = undefined;
-            };
+            DocumentMetadata.encode = undefined};
 
             /**
              * Encodes the specified DocumentMetadata message, length delimited. Does not implicitly {@link legal.api.DocumentMetadata.verify|verify} messages.
@@ -1281,8 +1212,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            DocumentMetadata.decode = undefined;
-            };
+            DocumentMetadata.decode = undefined};
 
             /**
              * Decodes a DocumentMetadata message from the specified reader or buffer, length delimited.
@@ -1308,8 +1238,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            DocumentMetadata.verify = undefined;
-            };
+            DocumentMetadata.verify = undefined};
 
             /**
              * Creates a DocumentMetadata message from a plain object. Also converts values to their respective internal types.
@@ -1319,8 +1248,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.DocumentMetadata} DocumentMetadata
              */
-            DocumentMetadata.fromObject = undefined;
-            };
+            DocumentMetadata.fromObject = undefined};
 
             /**
              * Creates a plain object from a DocumentMetadata message. Also converts values to other types if specified.
@@ -1331,8 +1259,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            DocumentMetadata.toObject = undefined;
-            };
+            DocumentMetadata.toObject = undefined};
 
             /**
              * Converts this DocumentMetadata to JSON.
@@ -1360,11 +1287,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.DocumentMetadata";
             };
 
-            return DocumentMetadata;
-        })();
+            return DocumentMetadata})();
 
         api.Party = (function() {
-
             /**
              * Properties of a Party.
              * @memberof legal.api
@@ -1383,8 +1308,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IParty=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * Party name.
@@ -1416,8 +1340,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.Party
              * @instance
              */
-            Party.prototype.contact = null;
-
+            Party.prototype.contact = null
             /**
              * Creates a new Party instance using the specified properties.
              * @function create
@@ -1439,8 +1362,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Party.encode = undefined;
-            };
+            Party.encode = undefined};
 
             /**
              * Encodes the specified Party message, length delimited. Does not implicitly {@link legal.api.Party.verify|verify} messages.
@@ -1466,8 +1388,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Party.decode = undefined;
-            };
+            Party.decode = undefined};
 
             /**
              * Decodes a Party message from the specified reader or buffer, length delimited.
@@ -1493,8 +1414,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Party.verify = undefined;
-            };
+            Party.verify = undefined};
 
             /**
              * Creates a Party message from a plain object. Also converts values to their respective internal types.
@@ -1504,8 +1424,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.Party} Party
              */
-            Party.fromObject = undefined;
-            };
+            Party.fromObject = undefined};
 
             /**
              * Creates a plain object from a Party message. Also converts values to other types if specified.
@@ -1516,8 +1435,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Party.toObject = undefined;
-            };
+            Party.toObject = undefined};
 
             /**
              * Converts this Party to JSON.
@@ -1545,11 +1463,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.Party";
             };
 
-            return Party;
-        })();
+            return Party})();
 
         api.ContactInfo = (function() {
-
             /**
              * Properties of a ContactInfo.
              * @memberof legal.api
@@ -1568,8 +1484,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IContactInfo=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * ContactInfo address.
@@ -1624,8 +1539,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ContactInfo.encode = undefined;
-            };
+            ContactInfo.encode = undefined};
 
             /**
              * Encodes the specified ContactInfo message, length delimited. Does not implicitly {@link legal.api.ContactInfo.verify|verify} messages.
@@ -1651,8 +1565,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ContactInfo.decode = undefined;
-            };
+            ContactInfo.decode = undefined};
 
             /**
              * Decodes a ContactInfo message from the specified reader or buffer, length delimited.
@@ -1678,8 +1591,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ContactInfo.verify = undefined;
-            };
+            ContactInfo.verify = undefined};
 
             /**
              * Creates a ContactInfo message from a plain object. Also converts values to their respective internal types.
@@ -1689,8 +1601,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ContactInfo} ContactInfo
              */
-            ContactInfo.fromObject = undefined;
-            };
+            ContactInfo.fromObject = undefined};
 
             /**
              * Creates a plain object from a ContactInfo message. Also converts values to other types if specified.
@@ -1701,8 +1612,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ContactInfo.toObject = undefined;
-            };
+            ContactInfo.toObject = undefined};
 
             /**
              * Converts this ContactInfo to JSON.
@@ -1730,11 +1640,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ContactInfo";
             };
 
-            return ContactInfo;
-        })();
+            return ContactInfo})();
 
         api.LegalCitation = (function() {
-
             /**
              * Properties of a LegalCitation.
              * @memberof legal.api
@@ -1753,8 +1661,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ILegalCitation=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * LegalCitation citationText.
@@ -1786,8 +1693,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.LegalCitation
              * @instance
              */
-            LegalCitation.prototype.type = 0;
-
+            LegalCitation.prototype.type = 0
             /**
              * Creates a new LegalCitation instance using the specified properties.
              * @function create
@@ -1809,8 +1715,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            LegalCitation.encode = undefined;
-            };
+            LegalCitation.encode = undefined};
 
             /**
              * Encodes the specified LegalCitation message, length delimited. Does not implicitly {@link legal.api.LegalCitation.verify|verify} messages.
@@ -1836,8 +1741,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            LegalCitation.decode = undefined;
-            };
+            LegalCitation.decode = undefined};
 
             /**
              * Decodes a LegalCitation message from the specified reader or buffer, length delimited.
@@ -1863,8 +1767,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            LegalCitation.verify = undefined;
-            };
+            LegalCitation.verify = undefined};
 
             /**
              * Creates a LegalCitation message from a plain object. Also converts values to their respective internal types.
@@ -1874,8 +1777,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.LegalCitation} LegalCitation
              */
-            LegalCitation.fromObject = undefined;
-            };
+            LegalCitation.fromObject = undefined};
 
             /**
              * Creates a plain object from a LegalCitation message. Also converts values to other types if specified.
@@ -1886,8 +1788,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            LegalCitation.toObject = undefined;
-            };
+            LegalCitation.toObject = undefined};
 
             /**
              * Converts this LegalCitation to JSON.
@@ -1915,8 +1816,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.LegalCitation";
             };
 
-            return LegalCitation;
-        })();
+            return LegalCitation})();
 
         /**
          * CitationType enum.
@@ -1929,15 +1829,13 @@ export const legal = $root.legal = (() => {
          */
         api.CitationType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "CITATION_TYPE_CASE_LAW"] = 0;
-            values[valuesById[1] = "CITATION_TYPE_STATUTE"] = 1;
-            values[valuesById[2] = "CITATION_TYPE_REGULATION"] = 2;
-            values[valuesById[3] = "CITATION_TYPE_SECONDARY"] = 3;
-            return values;
-        })();
+            values[valuesById[0] = "CITATION_TYPE_CASE_LAW"] = 0
+            values[valuesById[1] = "CITATION_TYPE_STATUTE"] = 1
+            values[valuesById[2] = "CITATION_TYPE_REGULATION"] = 2
+            values[valuesById[3] = "CITATION_TYPE_SECONDARY"] = 3
+            return values})();
 
         api.CaseInformation = (function() {
-
             /**
              * Properties of a CaseInformation.
              * @memberof legal.api
@@ -1957,8 +1855,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ICaseInformation=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * CaseInformation caseNumber.
@@ -1982,24 +1879,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.CaseInformation
              * @instance
              */
-            CaseInformation.prototype.filingDate = null;
-
+            CaseInformation.prototype.filingDate = null
             /**
              * CaseInformation status.
              * @member {legal.api.CaseStatus} status
              * @memberof legal.api.CaseInformation
              * @instance
              */
-            CaseInformation.prototype.status = 0;
-
+            CaseInformation.prototype.status = 0
             /**
              * CaseInformation judges.
              * @member {Array.<string>} judges
              * @memberof legal.api.CaseInformation
              * @instance
              */
-            CaseInformation.prototype.judges = $util.emptyArray;
-
+            CaseInformation.prototype.judges = $util.emptyArray
             /**
              * Creates a new CaseInformation instance using the specified properties.
              * @function create
@@ -2021,8 +1915,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            CaseInformation.encode = undefined;
-            };
+            CaseInformation.encode = undefined};
 
             /**
              * Encodes the specified CaseInformation message, length delimited. Does not implicitly {@link legal.api.CaseInformation.verify|verify} messages.
@@ -2048,8 +1941,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            CaseInformation.decode = undefined;
-            };
+            CaseInformation.decode = undefined};
 
             /**
              * Decodes a CaseInformation message from the specified reader or buffer, length delimited.
@@ -2075,8 +1967,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            CaseInformation.verify = undefined;
-            };
+            CaseInformation.verify = undefined};
 
             /**
              * Creates a CaseInformation message from a plain object. Also converts values to their respective internal types.
@@ -2086,8 +1977,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.CaseInformation} CaseInformation
              */
-            CaseInformation.fromObject = undefined;
-            };
+            CaseInformation.fromObject = undefined};
 
             /**
              * Creates a plain object from a CaseInformation message. Also converts values to other types if specified.
@@ -2098,8 +1988,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            CaseInformation.toObject = undefined;
-            };
+            CaseInformation.toObject = undefined};
 
             /**
              * Converts this CaseInformation to JSON.
@@ -2127,8 +2016,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.CaseInformation";
             };
 
-            return CaseInformation;
-        })();
+            return CaseInformation})();
 
         /**
          * CaseStatus enum.
@@ -2143,17 +2031,15 @@ export const legal = $root.legal = (() => {
          */
         api.CaseStatus = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "CASE_STATUS_PENDING"] = 0;
-            values[valuesById[1] = "CASE_STATUS_ACTIVE"] = 1;
-            values[valuesById[2] = "CASE_STATUS_SETTLED"] = 2;
-            values[valuesById[3] = "CASE_STATUS_DISMISSED"] = 3;
-            values[valuesById[4] = "CASE_STATUS_DECIDED"] = 4;
-            values[valuesById[5] = "CASE_STATUS_APPEALED"] = 5;
-            return values;
-        })();
+            values[valuesById[0] = "CASE_STATUS_PENDING"] = 0
+            values[valuesById[1] = "CASE_STATUS_ACTIVE"] = 1
+            values[valuesById[2] = "CASE_STATUS_SETTLED"] = 2
+            values[valuesById[3] = "CASE_STATUS_DISMISSED"] = 3
+            values[valuesById[4] = "CASE_STATUS_DECIDED"] = 4
+            values[valuesById[5] = "CASE_STATUS_APPEALED"] = 5
+            return values})();
 
         api.SearchRequest = (function() {
-
             /**
              * Properties of a SearchRequest.
              * @memberof legal.api
@@ -2176,8 +2062,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchRequest=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SearchRequest query.
@@ -2193,32 +2078,28 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.filters = $util.emptyArray;
-
+            SearchRequest.prototype.filters = $util.emptyArray
             /**
              * SearchRequest limit.
              * @member {number} limit
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.limit = 0;
-
+            SearchRequest.prototype.limit = 0
             /**
              * SearchRequest offset.
              * @member {number} offset
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.offset = 0;
-
+            SearchRequest.prototype.offset = 0
             /**
              * SearchRequest type.
              * @member {legal.api.SearchType} type
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.type = 0;
-
+            SearchRequest.prototype.type = 0
             /**
              * SearchRequest includeEmbeddings.
              * @member {boolean} includeEmbeddings
@@ -2233,8 +2114,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.sort = null;
-
+            SearchRequest.prototype.sort = null
             /**
              * SearchRequest userId.
              * @member {string} userId
@@ -2264,8 +2144,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchRequest.encode = undefined;
-            };
+            SearchRequest.encode = undefined};
 
             /**
              * Encodes the specified SearchRequest message, length delimited. Does not implicitly {@link legal.api.SearchRequest.verify|verify} messages.
@@ -2291,8 +2170,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchRequest.decode = undefined;
-            };
+            SearchRequest.decode = undefined};
 
             /**
              * Decodes a SearchRequest message from the specified reader or buffer, length delimited.
@@ -2318,8 +2196,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchRequest.verify = undefined;
-            };
+            SearchRequest.verify = undefined};
 
             /**
              * Creates a SearchRequest message from a plain object. Also converts values to their respective internal types.
@@ -2329,8 +2206,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchRequest} SearchRequest
              */
-            SearchRequest.fromObject = undefined;
-            };
+            SearchRequest.fromObject = undefined};
 
             /**
              * Creates a plain object from a SearchRequest message. Also converts values to other types if specified.
@@ -2341,8 +2217,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchRequest.toObject = undefined;
-            };
+            SearchRequest.toObject = undefined};
 
             /**
              * Converts this SearchRequest to JSON.
@@ -2370,11 +2245,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchRequest";
             };
 
-            return SearchRequest;
-        })();
+            return SearchRequest})();
 
         api.SearchFilter = (function() {
-
             /**
              * Properties of a SearchFilter.
              * @memberof legal.api
@@ -2392,8 +2265,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchFilter=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SearchFilter field.
@@ -2417,8 +2289,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchFilter
              * @instance
              */
-            SearchFilter.prototype.values = $util.emptyArray;
-
+            SearchFilter.prototype.values = $util.emptyArray
             /**
              * Creates a new SearchFilter instance using the specified properties.
              * @function create
@@ -2440,8 +2311,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchFilter.encode = undefined;
-            };
+            SearchFilter.encode = undefined};
 
             /**
              * Encodes the specified SearchFilter message, length delimited. Does not implicitly {@link legal.api.SearchFilter.verify|verify} messages.
@@ -2467,8 +2337,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchFilter.decode = undefined;
-            };
+            SearchFilter.decode = undefined};
 
             /**
              * Decodes a SearchFilter message from the specified reader or buffer, length delimited.
@@ -2494,8 +2363,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchFilter.verify = undefined;
-            };
+            SearchFilter.verify = undefined};
 
             /**
              * Creates a SearchFilter message from a plain object. Also converts values to their respective internal types.
@@ -2505,8 +2373,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchFilter} SearchFilter
              */
-            SearchFilter.fromObject = undefined;
-            };
+            SearchFilter.fromObject = undefined};
 
             /**
              * Creates a plain object from a SearchFilter message. Also converts values to other types if specified.
@@ -2517,8 +2384,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchFilter.toObject = undefined;
-            };
+            SearchFilter.toObject = undefined};
 
             /**
              * Converts this SearchFilter to JSON.
@@ -2546,11 +2412,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchFilter";
             };
 
-            return SearchFilter;
-        })();
+            return SearchFilter})();
 
         api.SortOptions = (function() {
-
             /**
              * Properties of a SortOptions.
              * @memberof legal.api
@@ -2567,8 +2431,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISortOptions=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SortOptions field.
@@ -2607,8 +2470,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SortOptions.encode = undefined;
-            };
+            SortOptions.encode = undefined};
 
             /**
              * Encodes the specified SortOptions message, length delimited. Does not implicitly {@link legal.api.SortOptions.verify|verify} messages.
@@ -2634,8 +2496,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SortOptions.decode = undefined;
-            };
+            SortOptions.decode = undefined};
 
             /**
              * Decodes a SortOptions message from the specified reader or buffer, length delimited.
@@ -2661,8 +2522,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SortOptions.verify = undefined;
-            };
+            SortOptions.verify = undefined};
 
             /**
              * Creates a SortOptions message from a plain object. Also converts values to their respective internal types.
@@ -2672,8 +2532,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SortOptions} SortOptions
              */
-            SortOptions.fromObject = undefined;
-            };
+            SortOptions.fromObject = undefined};
 
             /**
              * Creates a plain object from a SortOptions message. Also converts values to other types if specified.
@@ -2684,8 +2543,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SortOptions.toObject = undefined;
-            };
+            SortOptions.toObject = undefined};
 
             /**
              * Converts this SortOptions to JSON.
@@ -2713,8 +2571,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SortOptions";
             };
 
-            return SortOptions;
-        })();
+            return SortOptions})();
 
         /**
          * SearchType enum.
@@ -2728,16 +2585,14 @@ export const legal = $root.legal = (() => {
          */
         api.SearchType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "SEARCH_TYPE_FULL_TEXT"] = 0;
-            values[valuesById[1] = "SEARCH_TYPE_SEMANTIC"] = 1;
-            values[valuesById[2] = "SEARCH_TYPE_VECTOR"] = 2;
-            values[valuesById[3] = "SEARCH_TYPE_HYBRID"] = 3;
-            values[valuesById[4] = "SEARCH_TYPE_LEGAL_CITATION"] = 4;
-            return values;
-        })();
+            values[valuesById[0] = "SEARCH_TYPE_FULL_TEXT"] = 0
+            values[valuesById[1] = "SEARCH_TYPE_SEMANTIC"] = 1
+            values[valuesById[2] = "SEARCH_TYPE_VECTOR"] = 2
+            values[valuesById[3] = "SEARCH_TYPE_HYBRID"] = 3
+            values[valuesById[4] = "SEARCH_TYPE_LEGAL_CITATION"] = 4
+            return values})();
 
         api.SearchResponse = (function() {
-
             /**
              * Properties of a SearchResponse.
              * @memberof legal.api
@@ -2758,8 +2613,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchResponse=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SearchResponse results.
@@ -2767,24 +2621,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.results = $util.emptyArray;
-
+            SearchResponse.prototype.results = $util.emptyArray
             /**
              * SearchResponse totalCount.
              * @member {number} totalCount
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.totalCount = 0;
-
+            SearchResponse.prototype.totalCount = 0
             /**
              * SearchResponse maxScore.
              * @member {number} maxScore
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.maxScore = 0;
-
+            SearchResponse.prototype.maxScore = 0
             /**
              * SearchResponse queryId.
              * @member {string} queryId
@@ -2799,16 +2650,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.processingTimeMs = 0;
-
+            SearchResponse.prototype.processingTimeMs = 0
             /**
              * SearchResponse metadata.
              * @member {legal.api.ISearchMetadata|null|undefined} metadata
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.metadata = null;
-
+            SearchResponse.prototype.metadata = null
             /**
              * Creates a new SearchResponse instance using the specified properties.
              * @function create
@@ -2830,8 +2679,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchResponse.encode = undefined;
-            };
+            SearchResponse.encode = undefined};
 
             /**
              * Encodes the specified SearchResponse message, length delimited. Does not implicitly {@link legal.api.SearchResponse.verify|verify} messages.
@@ -2857,8 +2705,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchResponse.decode = undefined;
-            };
+            SearchResponse.decode = undefined};
 
             /**
              * Decodes a SearchResponse message from the specified reader or buffer, length delimited.
@@ -2884,8 +2731,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchResponse.verify = undefined;
-            };
+            SearchResponse.verify = undefined};
 
             /**
              * Creates a SearchResponse message from a plain object. Also converts values to their respective internal types.
@@ -2895,8 +2741,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchResponse} SearchResponse
              */
-            SearchResponse.fromObject = undefined;
-            };
+            SearchResponse.fromObject = undefined};
 
             /**
              * Creates a plain object from a SearchResponse message. Also converts values to other types if specified.
@@ -2907,8 +2752,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchResponse.toObject = undefined;
-            };
+            SearchResponse.toObject = undefined};
 
             /**
              * Converts this SearchResponse to JSON.
@@ -2936,11 +2780,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchResponse";
             };
 
-            return SearchResponse;
-        })();
+            return SearchResponse})();
 
         api.SearchResult = (function() {
-
             /**
              * Properties of a SearchResult.
              * @memberof legal.api
@@ -2961,8 +2803,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchResult=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SearchResult document.
@@ -2970,32 +2811,28 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.document = null;
-
+            SearchResult.prototype.document = null
             /**
              * SearchResult score.
              * @member {number} score
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.score = 0;
-
+            SearchResult.prototype.score = 0
             /**
              * SearchResult highlights.
              * @member {Array.<string>} highlights
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.highlights = $util.emptyArray;
-
+            SearchResult.prototype.highlights = $util.emptyArray
             /**
              * SearchResult similarity.
              * @member {legal.api.IVectorSimilarity|null|undefined} similarity
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.similarity = null;
-
+            SearchResult.prototype.similarity = null
             /**
              * SearchResult excerpt.
              * @member {string} excerpt
@@ -3010,8 +2847,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.relatedCitations = $util.emptyArray;
-
+            SearchResult.prototype.relatedCitations = $util.emptyArray
             /**
              * Creates a new SearchResult instance using the specified properties.
              * @function create
@@ -3033,8 +2869,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchResult.encode = undefined;
-            };
+            SearchResult.encode = undefined};
 
             /**
              * Encodes the specified SearchResult message, length delimited. Does not implicitly {@link legal.api.SearchResult.verify|verify} messages.
@@ -3060,8 +2895,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchResult.decode = undefined;
-            };
+            SearchResult.decode = undefined};
 
             /**
              * Decodes a SearchResult message from the specified reader or buffer, length delimited.
@@ -3087,8 +2921,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchResult.verify = undefined;
-            };
+            SearchResult.verify = undefined};
 
             /**
              * Creates a SearchResult message from a plain object. Also converts values to their respective internal types.
@@ -3098,8 +2931,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchResult} SearchResult
              */
-            SearchResult.fromObject = undefined;
-            };
+            SearchResult.fromObject = undefined};
 
             /**
              * Creates a plain object from a SearchResult message. Also converts values to other types if specified.
@@ -3110,8 +2942,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchResult.toObject = undefined;
-            };
+            SearchResult.toObject = undefined};
 
             /**
              * Converts this SearchResult to JSON.
@@ -3139,11 +2970,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchResult";
             };
 
-            return SearchResult;
-        })();
+            return SearchResult})();
 
         api.VectorSimilarity = (function() {
-
             /**
              * Properties of a VectorSimilarity.
              * @memberof legal.api
@@ -3162,8 +2991,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IVectorSimilarity=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * VectorSimilarity cosineSimilarity.
@@ -3171,24 +2999,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.VectorSimilarity
              * @instance
              */
-            VectorSimilarity.prototype.cosineSimilarity = 0;
-
+            VectorSimilarity.prototype.cosineSimilarity = 0
             /**
              * VectorSimilarity euclideanDistance.
              * @member {number} euclideanDistance
              * @memberof legal.api.VectorSimilarity
              * @instance
              */
-            VectorSimilarity.prototype.euclideanDistance = 0;
-
+            VectorSimilarity.prototype.euclideanDistance = 0
             /**
              * VectorSimilarity embeddingDimension.
              * @member {number} embeddingDimension
              * @memberof legal.api.VectorSimilarity
              * @instance
              */
-            VectorSimilarity.prototype.embeddingDimension = 0;
-
+            VectorSimilarity.prototype.embeddingDimension = 0
             /**
              * VectorSimilarity modelUsed.
              * @member {string} modelUsed
@@ -3218,8 +3043,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            VectorSimilarity.encode = undefined;
-            };
+            VectorSimilarity.encode = undefined};
 
             /**
              * Encodes the specified VectorSimilarity message, length delimited. Does not implicitly {@link legal.api.VectorSimilarity.verify|verify} messages.
@@ -3245,8 +3069,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            VectorSimilarity.decode = undefined;
-            };
+            VectorSimilarity.decode = undefined};
 
             /**
              * Decodes a VectorSimilarity message from the specified reader or buffer, length delimited.
@@ -3272,8 +3095,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            VectorSimilarity.verify = undefined;
-            };
+            VectorSimilarity.verify = undefined};
 
             /**
              * Creates a VectorSimilarity message from a plain object. Also converts values to their respective internal types.
@@ -3283,8 +3105,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.VectorSimilarity} VectorSimilarity
              */
-            VectorSimilarity.fromObject = undefined;
-            };
+            VectorSimilarity.fromObject = undefined};
 
             /**
              * Creates a plain object from a VectorSimilarity message. Also converts values to other types if specified.
@@ -3295,8 +3116,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            VectorSimilarity.toObject = undefined;
-            };
+            VectorSimilarity.toObject = undefined};
 
             /**
              * Converts this VectorSimilarity to JSON.
@@ -3324,11 +3144,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.VectorSimilarity";
             };
 
-            return VectorSimilarity;
-        })();
+            return VectorSimilarity})();
 
         api.SearchMetadata = (function() {
-
             /**
              * Properties of a SearchMetadata.
              * @memberof legal.api
@@ -3346,8 +3164,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchMetadata=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SearchMetadata suggestedQueries.
@@ -3355,16 +3172,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchMetadata
              * @instance
              */
-            SearchMetadata.prototype.suggestedQueries = $util.emptyArray;
-
+            SearchMetadata.prototype.suggestedQueries = $util.emptyArray
             /**
              * SearchMetadata facets.
              * @member {Array.<legal.api.ISearchFacet>} facets
              * @memberof legal.api.SearchMetadata
              * @instance
              */
-            SearchMetadata.prototype.facets = $util.emptyArray;
-
+            SearchMetadata.prototype.facets = $util.emptyArray
             /**
              * SearchMetadata hasMoreResults.
              * @member {boolean} hasMoreResults
@@ -3394,8 +3209,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchMetadata.encode = undefined;
-            };
+            SearchMetadata.encode = undefined};
 
             /**
              * Encodes the specified SearchMetadata message, length delimited. Does not implicitly {@link legal.api.SearchMetadata.verify|verify} messages.
@@ -3421,8 +3235,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchMetadata.decode = undefined;
-            };
+            SearchMetadata.decode = undefined};
 
             /**
              * Decodes a SearchMetadata message from the specified reader or buffer, length delimited.
@@ -3448,8 +3261,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchMetadata.verify = undefined;
-            };
+            SearchMetadata.verify = undefined};
 
             /**
              * Creates a SearchMetadata message from a plain object. Also converts values to their respective internal types.
@@ -3459,8 +3271,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchMetadata} SearchMetadata
              */
-            SearchMetadata.fromObject = undefined;
-            };
+            SearchMetadata.fromObject = undefined};
 
             /**
              * Creates a plain object from a SearchMetadata message. Also converts values to other types if specified.
@@ -3471,8 +3282,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchMetadata.toObject = undefined;
-            };
+            SearchMetadata.toObject = undefined};
 
             /**
              * Converts this SearchMetadata to JSON.
@@ -3500,11 +3310,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchMetadata";
             };
 
-            return SearchMetadata;
-        })();
+            return SearchMetadata})();
 
         api.SearchFacet = (function() {
-
             /**
              * Properties of a SearchFacet.
              * @memberof legal.api
@@ -3521,8 +3329,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchFacet=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SearchFacet field.
@@ -3538,8 +3345,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchFacet
              * @instance
              */
-            SearchFacet.prototype.values = $util.emptyArray;
-
+            SearchFacet.prototype.values = $util.emptyArray
             /**
              * Creates a new SearchFacet instance using the specified properties.
              * @function create
@@ -3561,8 +3367,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchFacet.encode = undefined;
-            };
+            SearchFacet.encode = undefined};
 
             /**
              * Encodes the specified SearchFacet message, length delimited. Does not implicitly {@link legal.api.SearchFacet.verify|verify} messages.
@@ -3588,8 +3393,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchFacet.decode = undefined;
-            };
+            SearchFacet.decode = undefined};
 
             /**
              * Decodes a SearchFacet message from the specified reader or buffer, length delimited.
@@ -3615,8 +3419,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchFacet.verify = undefined;
-            };
+            SearchFacet.verify = undefined};
 
             /**
              * Creates a SearchFacet message from a plain object. Also converts values to their respective internal types.
@@ -3626,8 +3429,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchFacet} SearchFacet
              */
-            SearchFacet.fromObject = undefined;
-            };
+            SearchFacet.fromObject = undefined};
 
             /**
              * Creates a plain object from a SearchFacet message. Also converts values to other types if specified.
@@ -3638,8 +3440,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchFacet.toObject = undefined;
-            };
+            SearchFacet.toObject = undefined};
 
             /**
              * Converts this SearchFacet to JSON.
@@ -3667,11 +3468,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchFacet";
             };
 
-            return SearchFacet;
-        })();
+            return SearchFacet})();
 
         api.FacetValue = (function() {
-
             /**
              * Properties of a FacetValue.
              * @memberof legal.api
@@ -3688,8 +3487,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IFacetValue=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * FacetValue value.
@@ -3705,8 +3503,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.FacetValue
              * @instance
              */
-            FacetValue.prototype.count = 0;
-
+            FacetValue.prototype.count = 0
             /**
              * Creates a new FacetValue instance using the specified properties.
              * @function create
@@ -3728,8 +3525,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            FacetValue.encode = undefined;
-            };
+            FacetValue.encode = undefined};
 
             /**
              * Encodes the specified FacetValue message, length delimited. Does not implicitly {@link legal.api.FacetValue.verify|verify} messages.
@@ -3755,8 +3551,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            FacetValue.decode = undefined;
-            };
+            FacetValue.decode = undefined};
 
             /**
              * Decodes a FacetValue message from the specified reader or buffer, length delimited.
@@ -3782,8 +3577,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            FacetValue.verify = undefined;
-            };
+            FacetValue.verify = undefined};
 
             /**
              * Creates a FacetValue message from a plain object. Also converts values to their respective internal types.
@@ -3793,8 +3587,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.FacetValue} FacetValue
              */
-            FacetValue.fromObject = undefined;
-            };
+            FacetValue.fromObject = undefined};
 
             /**
              * Creates a plain object from a FacetValue message. Also converts values to other types if specified.
@@ -3805,8 +3598,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            FacetValue.toObject = undefined;
-            };
+            FacetValue.toObject = undefined};
 
             /**
              * Converts this FacetValue to JSON.
@@ -3834,11 +3626,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.FacetValue";
             };
 
-            return FacetValue;
-        })();
+            return FacetValue})();
 
         api.ChatMessage = (function() {
-
             /**
              * Properties of a ChatMessage.
              * @memberof legal.api
@@ -3861,8 +3651,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatMessage=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * ChatMessage id.
@@ -3902,32 +3691,28 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.type = 0;
-
+            ChatMessage.prototype.type = 0
             /**
              * ChatMessage attachments.
              * @member {Array.<legal.api.IAttachment>} attachments
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.attachments = $util.emptyArray;
-
+            ChatMessage.prototype.attachments = $util.emptyArray
             /**
              * ChatMessage timestamp.
              * @member {google.protobuf.ITimestamp|null|undefined} timestamp
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.timestamp = null;
-
+            ChatMessage.prototype.timestamp = null
             /**
              * ChatMessage metadata.
              * @member {legal.api.IMessageMetadata|null|undefined} metadata
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.metadata = null;
-
+            ChatMessage.prototype.metadata = null
             /**
              * Creates a new ChatMessage instance using the specified properties.
              * @function create
@@ -3949,8 +3734,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatMessage.encode = undefined;
-            };
+            ChatMessage.encode = undefined};
 
             /**
              * Encodes the specified ChatMessage message, length delimited. Does not implicitly {@link legal.api.ChatMessage.verify|verify} messages.
@@ -3976,8 +3760,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatMessage.decode = undefined;
-            };
+            ChatMessage.decode = undefined};
 
             /**
              * Decodes a ChatMessage message from the specified reader or buffer, length delimited.
@@ -4003,8 +3786,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatMessage.verify = undefined;
-            };
+            ChatMessage.verify = undefined};
 
             /**
              * Creates a ChatMessage message from a plain object. Also converts values to their respective internal types.
@@ -4014,8 +3796,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatMessage} ChatMessage
              */
-            ChatMessage.fromObject = undefined;
-            };
+            ChatMessage.fromObject = undefined};
 
             /**
              * Creates a plain object from a ChatMessage message. Also converts values to other types if specified.
@@ -4026,8 +3807,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatMessage.toObject = undefined;
-            };
+            ChatMessage.toObject = undefined};
 
             /**
              * Converts this ChatMessage to JSON.
@@ -4055,8 +3835,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatMessage";
             };
 
-            return ChatMessage;
-        })();
+            return ChatMessage})();
 
         /**
          * MessageType enum.
@@ -4070,16 +3849,14 @@ export const legal = $root.legal = (() => {
          */
         api.MessageType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "MESSAGE_TYPE_USER"] = 0;
-            values[valuesById[1] = "MESSAGE_TYPE_ASSISTANT"] = 1;
-            values[valuesById[2] = "MESSAGE_TYPE_SYSTEM"] = 2;
-            values[valuesById[3] = "MESSAGE_TYPE_ERROR"] = 3;
-            values[valuesById[4] = "MESSAGE_TYPE_FUNCTION_CALL"] = 4;
-            return values;
-        })();
+            values[valuesById[0] = "MESSAGE_TYPE_USER"] = 0
+            values[valuesById[1] = "MESSAGE_TYPE_ASSISTANT"] = 1
+            values[valuesById[2] = "MESSAGE_TYPE_SYSTEM"] = 2
+            values[valuesById[3] = "MESSAGE_TYPE_ERROR"] = 3
+            values[valuesById[4] = "MESSAGE_TYPE_FUNCTION_CALL"] = 4
+            return values})();
 
         api.MessageMetadata = (function() {
-
             /**
              * Properties of a MessageMetadata.
              * @memberof legal.api
@@ -4099,8 +3876,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IMessageMetadata=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * MessageMetadata modelUsed.
@@ -4116,32 +3892,28 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.tokensUsed = 0;
-
+            MessageMetadata.prototype.tokensUsed = 0
             /**
              * MessageMetadata processingTimeMs.
              * @member {number} processingTimeMs
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.processingTimeMs = 0;
-
+            MessageMetadata.prototype.processingTimeMs = 0
             /**
              * MessageMetadata sourceDocuments.
              * @member {Array.<string>} sourceDocuments
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.sourceDocuments = $util.emptyArray;
-
+            MessageMetadata.prototype.sourceDocuments = $util.emptyArray
             /**
              * MessageMetadata confidenceScore.
              * @member {number} confidenceScore
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.confidenceScore = 0;
-
+            MessageMetadata.prototype.confidenceScore = 0
             /**
              * Creates a new MessageMetadata instance using the specified properties.
              * @function create
@@ -4163,8 +3935,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            MessageMetadata.encode = undefined;
-            };
+            MessageMetadata.encode = undefined};
 
             /**
              * Encodes the specified MessageMetadata message, length delimited. Does not implicitly {@link legal.api.MessageMetadata.verify|verify} messages.
@@ -4190,8 +3961,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            MessageMetadata.decode = undefined;
-            };
+            MessageMetadata.decode = undefined};
 
             /**
              * Decodes a MessageMetadata message from the specified reader or buffer, length delimited.
@@ -4217,8 +3987,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            MessageMetadata.verify = undefined;
-            };
+            MessageMetadata.verify = undefined};
 
             /**
              * Creates a MessageMetadata message from a plain object. Also converts values to their respective internal types.
@@ -4228,8 +3997,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.MessageMetadata} MessageMetadata
              */
-            MessageMetadata.fromObject = undefined;
-            };
+            MessageMetadata.fromObject = undefined};
 
             /**
              * Creates a plain object from a MessageMetadata message. Also converts values to other types if specified.
@@ -4240,8 +4008,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            MessageMetadata.toObject = undefined;
-            };
+            MessageMetadata.toObject = undefined};
 
             /**
              * Converts this MessageMetadata to JSON.
@@ -4269,11 +4036,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.MessageMetadata";
             };
 
-            return MessageMetadata;
-        })();
+            return MessageMetadata})();
 
         api.ChatRequest = (function() {
-
             /**
              * Properties of a ChatRequest.
              * @memberof legal.api
@@ -4293,8 +4058,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatRequest=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * ChatRequest sessionId.
@@ -4326,16 +4090,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatRequest
              * @instance
              */
-            ChatRequest.prototype.context = null;
-
+            ChatRequest.prototype.context = null
             /**
              * ChatRequest options.
              * @member {legal.api.IChatOptions|null|undefined} options
              * @memberof legal.api.ChatRequest
              * @instance
              */
-            ChatRequest.prototype.options = null;
-
+            ChatRequest.prototype.options = null
             /**
              * Creates a new ChatRequest instance using the specified properties.
              * @function create
@@ -4357,8 +4119,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatRequest.encode = undefined;
-            };
+            ChatRequest.encode = undefined};
 
             /**
              * Encodes the specified ChatRequest message, length delimited. Does not implicitly {@link legal.api.ChatRequest.verify|verify} messages.
@@ -4384,8 +4145,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatRequest.decode = undefined;
-            };
+            ChatRequest.decode = undefined};
 
             /**
              * Decodes a ChatRequest message from the specified reader or buffer, length delimited.
@@ -4411,8 +4171,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatRequest.verify = undefined;
-            };
+            ChatRequest.verify = undefined};
 
             /**
              * Creates a ChatRequest message from a plain object. Also converts values to their respective internal types.
@@ -4422,8 +4181,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatRequest} ChatRequest
              */
-            ChatRequest.fromObject = undefined;
-            };
+            ChatRequest.fromObject = undefined};
 
             /**
              * Creates a plain object from a ChatRequest message. Also converts values to other types if specified.
@@ -4434,8 +4192,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatRequest.toObject = undefined;
-            };
+            ChatRequest.toObject = undefined};
 
             /**
              * Converts this ChatRequest to JSON.
@@ -4463,11 +4220,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatRequest";
             };
 
-            return ChatRequest;
-        })();
+            return ChatRequest})();
 
         api.ChatContext = (function() {
-
             /**
              * Properties of a ChatContext.
              * @memberof legal.api
@@ -4486,8 +4241,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatContext=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * ChatContext documentIds.
@@ -4495,8 +4249,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatContext
              * @instance
              */
-            ChatContext.prototype.documentIds = $util.emptyArray;
-
+            ChatContext.prototype.documentIds = $util.emptyArray
             /**
              * ChatContext caseId.
              * @member {string} caseId
@@ -4511,16 +4264,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatContext
              * @instance
              */
-            ChatContext.prototype.previousMessageIds = $util.emptyArray;
-
+            ChatContext.prototype.previousMessageIds = $util.emptyArray
             /**
              * ChatContext variables.
              * @member {Object.<string,string>} variables
              * @memberof legal.api.ChatContext
              * @instance
              */
-            ChatContext.prototype.variables = $util.emptyObject;
-
+            ChatContext.prototype.variables = $util.emptyObject
             /**
              * Creates a new ChatContext instance using the specified properties.
              * @function create
@@ -4542,8 +4293,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatContext.encode = undefined;
-            };
+            ChatContext.encode = undefined};
 
             /**
              * Encodes the specified ChatContext message, length delimited. Does not implicitly {@link legal.api.ChatContext.verify|verify} messages.
@@ -4569,8 +4319,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatContext.decode = undefined;
-            };
+            ChatContext.decode = undefined};
 
             /**
              * Decodes a ChatContext message from the specified reader or buffer, length delimited.
@@ -4596,8 +4345,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatContext.verify = undefined;
-            };
+            ChatContext.verify = undefined};
 
             /**
              * Creates a ChatContext message from a plain object. Also converts values to their respective internal types.
@@ -4607,8 +4355,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatContext} ChatContext
              */
-            ChatContext.fromObject = undefined;
-            };
+            ChatContext.fromObject = undefined};
 
             /**
              * Creates a plain object from a ChatContext message. Also converts values to other types if specified.
@@ -4619,8 +4366,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatContext.toObject = undefined;
-            };
+            ChatContext.toObject = undefined};
 
             /**
              * Converts this ChatContext to JSON.
@@ -4648,11 +4394,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatContext";
             };
 
-            return ChatContext;
-        })();
+            return ChatContext})();
 
         api.ChatOptions = (function() {
-
             /**
              * Properties of a ChatOptions.
              * @memberof legal.api
@@ -4672,8 +4416,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatOptions=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * ChatOptions model.
@@ -4689,16 +4432,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.temperature = 0;
-
+            ChatOptions.prototype.temperature = 0
             /**
              * ChatOptions maxTokens.
              * @member {number} maxTokens
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.maxTokens = 0;
-
+            ChatOptions.prototype.maxTokens = 0
             /**
              * ChatOptions stream.
              * @member {boolean} stream
@@ -4736,8 +4477,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatOptions.encode = undefined;
-            };
+            ChatOptions.encode = undefined};
 
             /**
              * Encodes the specified ChatOptions message, length delimited. Does not implicitly {@link legal.api.ChatOptions.verify|verify} messages.
@@ -4763,8 +4503,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatOptions.decode = undefined;
-            };
+            ChatOptions.decode = undefined};
 
             /**
              * Decodes a ChatOptions message from the specified reader or buffer, length delimited.
@@ -4790,8 +4529,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatOptions.verify = undefined;
-            };
+            ChatOptions.verify = undefined};
 
             /**
              * Creates a ChatOptions message from a plain object. Also converts values to their respective internal types.
@@ -4801,8 +4539,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatOptions} ChatOptions
              */
-            ChatOptions.fromObject = undefined;
-            };
+            ChatOptions.fromObject = undefined};
 
             /**
              * Creates a plain object from a ChatOptions message. Also converts values to other types if specified.
@@ -4813,8 +4550,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatOptions.toObject = undefined;
-            };
+            ChatOptions.toObject = undefined};
 
             /**
              * Converts this ChatOptions to JSON.
@@ -4842,11 +4578,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatOptions";
             };
 
-            return ChatOptions;
-        })();
+            return ChatOptions})();
 
         api.ChatResponse = (function() {
-
             /**
              * Properties of a ChatResponse.
              * @memberof legal.api
@@ -4868,8 +4602,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatResponse=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * ChatResponse response.
@@ -4885,16 +4618,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.sources = $util.emptyArray;
-
+            ChatResponse.prototype.sources = $util.emptyArray
             /**
              * ChatResponse confidence.
              * @member {number} confidence
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.confidence = 0;
-
+            ChatResponse.prototype.confidence = 0
             /**
              * ChatResponse modelUsed.
              * @member {string} modelUsed
@@ -4909,24 +4640,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.tokensUsed = 0;
-
+            ChatResponse.prototype.tokensUsed = 0
             /**
              * ChatResponse citations.
              * @member {Array.<legal.api.ILegalCitation>} citations
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.citations = $util.emptyArray;
-
+            ChatResponse.prototype.citations = $util.emptyArray
             /**
              * ChatResponse actionItems.
              * @member {Array.<legal.api.IActionItem>} actionItems
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.actionItems = $util.emptyArray;
-
+            ChatResponse.prototype.actionItems = $util.emptyArray
             /**
              * Creates a new ChatResponse instance using the specified properties.
              * @function create
@@ -4948,8 +4676,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatResponse.encode = undefined;
-            };
+            ChatResponse.encode = undefined};
 
             /**
              * Encodes the specified ChatResponse message, length delimited. Does not implicitly {@link legal.api.ChatResponse.verify|verify} messages.
@@ -4975,8 +4702,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatResponse.decode = undefined;
-            };
+            ChatResponse.decode = undefined};
 
             /**
              * Decodes a ChatResponse message from the specified reader or buffer, length delimited.
@@ -5002,8 +4728,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatResponse.verify = undefined;
-            };
+            ChatResponse.verify = undefined};
 
             /**
              * Creates a ChatResponse message from a plain object. Also converts values to their respective internal types.
@@ -5013,8 +4738,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatResponse} ChatResponse
              */
-            ChatResponse.fromObject = undefined;
-            };
+            ChatResponse.fromObject = undefined};
 
             /**
              * Creates a plain object from a ChatResponse message. Also converts values to other types if specified.
@@ -5025,8 +4749,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatResponse.toObject = undefined;
-            };
+            ChatResponse.toObject = undefined};
 
             /**
              * Converts this ChatResponse to JSON.
@@ -5054,11 +4777,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatResponse";
             };
 
-            return ChatResponse;
-        })();
+            return ChatResponse})();
 
         api.ActionItem = (function() {
-
             /**
              * Properties of an ActionItem.
              * @memberof legal.api
@@ -5077,8 +4798,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IActionItem=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * ActionItem description.
@@ -5094,16 +4814,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ActionItem
              * @instance
              */
-            ActionItem.prototype.priority = 0;
-
+            ActionItem.prototype.priority = 0
             /**
              * ActionItem dueDate.
              * @member {google.protobuf.ITimestamp|null|undefined} dueDate
              * @memberof legal.api.ActionItem
              * @instance
              */
-            ActionItem.prototype.dueDate = null;
-
+            ActionItem.prototype.dueDate = null
             /**
              * ActionItem assignedTo.
              * @member {string} assignedTo
@@ -5133,8 +4851,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ActionItem.encode = undefined;
-            };
+            ActionItem.encode = undefined};
 
             /**
              * Encodes the specified ActionItem message, length delimited. Does not implicitly {@link legal.api.ActionItem.verify|verify} messages.
@@ -5160,8 +4877,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ActionItem.decode = undefined;
-            };
+            ActionItem.decode = undefined};
 
             /**
              * Decodes an ActionItem message from the specified reader or buffer, length delimited.
@@ -5187,8 +4903,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ActionItem.verify = undefined;
-            };
+            ActionItem.verify = undefined};
 
             /**
              * Creates an ActionItem message from a plain object. Also converts values to their respective internal types.
@@ -5198,8 +4913,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ActionItem} ActionItem
              */
-            ActionItem.fromObject = undefined;
-            };
+            ActionItem.fromObject = undefined};
 
             /**
              * Creates a plain object from an ActionItem message. Also converts values to other types if specified.
@@ -5210,8 +4924,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ActionItem.toObject = undefined;
-            };
+            ActionItem.toObject = undefined};
 
             /**
              * Converts this ActionItem to JSON.
@@ -5239,8 +4952,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ActionItem";
             };
 
-            return ActionItem;
-        })();
+            return ActionItem})();
 
         /**
          * ActionPriority enum.
@@ -5253,15 +4965,13 @@ export const legal = $root.legal = (() => {
          */
         api.ActionPriority = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "ACTION_PRIORITY_LOW"] = 0;
-            values[valuesById[1] = "ACTION_PRIORITY_MEDIUM"] = 1;
-            values[valuesById[2] = "ACTION_PRIORITY_HIGH"] = 2;
-            values[valuesById[3] = "ACTION_PRIORITY_CRITICAL"] = 3;
-            return values;
-        })();
+            values[valuesById[0] = "ACTION_PRIORITY_LOW"] = 0
+            values[valuesById[1] = "ACTION_PRIORITY_MEDIUM"] = 1
+            values[valuesById[2] = "ACTION_PRIORITY_HIGH"] = 2
+            values[valuesById[3] = "ACTION_PRIORITY_CRITICAL"] = 3
+            return values})();
 
         api.Attachment = (function() {
-
             /**
              * Properties of an Attachment.
              * @memberof legal.api
@@ -5281,8 +4991,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAttachment=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * Attachment filename.
@@ -5306,8 +5015,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.Attachment
              * @instance
              */
-            Attachment.prototype.size = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-
+            Attachment.prototype.size = $util.Long ? $util.Long.fromBits(0,0,false) : 0
             /**
              * Attachment url.
              * @member {string} url
@@ -5345,8 +5053,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Attachment.encode = undefined;
-            };
+            Attachment.encode = undefined};
 
             /**
              * Encodes the specified Attachment message, length delimited. Does not implicitly {@link legal.api.Attachment.verify|verify} messages.
@@ -5372,8 +5079,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Attachment.decode = undefined;
-            };
+            Attachment.decode = undefined};
 
             /**
              * Decodes an Attachment message from the specified reader or buffer, length delimited.
@@ -5399,8 +5105,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Attachment.verify = undefined;
-            };
+            Attachment.verify = undefined};
 
             /**
              * Creates an Attachment message from a plain object. Also converts values to their respective internal types.
@@ -5410,8 +5115,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.Attachment} Attachment
              */
-            Attachment.fromObject = undefined;
-            };
+            Attachment.fromObject = undefined};
 
             /**
              * Creates a plain object from an Attachment message. Also converts values to other types if specified.
@@ -5422,8 +5126,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Attachment.toObject = undefined;
-            };
+            Attachment.toObject = undefined};
 
             /**
              * Converts this Attachment to JSON.
@@ -5451,11 +5154,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.Attachment";
             };
 
-            return Attachment;
-        })();
+            return Attachment})();
 
         api.AnalysisRequest = (function() {
-
             /**
              * Properties of an AnalysisRequest.
              * @memberof legal.api
@@ -5475,8 +5176,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisRequest=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * AnalysisRequest documentId.
@@ -5492,24 +5192,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisRequest
              * @instance
              */
-            AnalysisRequest.prototype.type = 0;
-
+            AnalysisRequest.prototype.type = 0
             /**
              * AnalysisRequest specificQueries.
              * @member {Array.<string>} specificQueries
              * @memberof legal.api.AnalysisRequest
              * @instance
              */
-            AnalysisRequest.prototype.specificQueries = $util.emptyArray;
-
+            AnalysisRequest.prototype.specificQueries = $util.emptyArray
             /**
              * AnalysisRequest options.
              * @member {legal.api.IAnalysisOptions|null|undefined} options
              * @memberof legal.api.AnalysisRequest
              * @instance
              */
-            AnalysisRequest.prototype.options = null;
-
+            AnalysisRequest.prototype.options = null
             /**
              * AnalysisRequest userId.
              * @member {string} userId
@@ -5539,8 +5236,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisRequest.encode = undefined;
-            };
+            AnalysisRequest.encode = undefined};
 
             /**
              * Encodes the specified AnalysisRequest message, length delimited. Does not implicitly {@link legal.api.AnalysisRequest.verify|verify} messages.
@@ -5566,8 +5262,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisRequest.decode = undefined;
-            };
+            AnalysisRequest.decode = undefined};
 
             /**
              * Decodes an AnalysisRequest message from the specified reader or buffer, length delimited.
@@ -5593,8 +5288,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisRequest.verify = undefined;
-            };
+            AnalysisRequest.verify = undefined};
 
             /**
              * Creates an AnalysisRequest message from a plain object. Also converts values to their respective internal types.
@@ -5604,8 +5298,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisRequest} AnalysisRequest
              */
-            AnalysisRequest.fromObject = undefined;
-            };
+            AnalysisRequest.fromObject = undefined};
 
             /**
              * Creates a plain object from an AnalysisRequest message. Also converts values to other types if specified.
@@ -5616,8 +5309,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisRequest.toObject = undefined;
-            };
+            AnalysisRequest.toObject = undefined};
 
             /**
              * Converts this AnalysisRequest to JSON.
@@ -5645,8 +5337,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisRequest";
             };
 
-            return AnalysisRequest;
-        })();
+            return AnalysisRequest})();
 
         /**
          * AnalysisType enum.
@@ -5661,17 +5352,15 @@ export const legal = $root.legal = (() => {
          */
         api.AnalysisType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "ANALYSIS_TYPE_RISK_ASSESSMENT"] = 0;
-            values[valuesById[1] = "ANALYSIS_TYPE_CLAUSE_EXTRACTION"] = 1;
-            values[valuesById[2] = "ANALYSIS_TYPE_COMPLIANCE_CHECK"] = 2;
-            values[valuesById[3] = "ANALYSIS_TYPE_PRECEDENT_ANALYSIS"] = 3;
-            values[valuesById[4] = "ANALYSIS_TYPE_ENTITY_EXTRACTION"] = 4;
-            values[valuesById[5] = "ANALYSIS_TYPE_SENTIMENT_ANALYSIS"] = 5;
-            return values;
-        })();
+            values[valuesById[0] = "ANALYSIS_TYPE_RISK_ASSESSMENT"] = 0
+            values[valuesById[1] = "ANALYSIS_TYPE_CLAUSE_EXTRACTION"] = 1
+            values[valuesById[2] = "ANALYSIS_TYPE_COMPLIANCE_CHECK"] = 2
+            values[valuesById[3] = "ANALYSIS_TYPE_PRECEDENT_ANALYSIS"] = 3
+            values[valuesById[4] = "ANALYSIS_TYPE_ENTITY_EXTRACTION"] = 4
+            values[valuesById[5] = "ANALYSIS_TYPE_SENTIMENT_ANALYSIS"] = 5
+            return values})();
 
         api.AnalysisOptions = (function() {
-
             /**
              * Properties of an AnalysisOptions.
              * @memberof legal.api
@@ -5690,8 +5379,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisOptions=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * AnalysisOptions jurisdiction.
@@ -5707,16 +5395,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisOptions
              * @instance
              */
-            AnalysisOptions.prototype.practiceAreas = $util.emptyArray;
-
+            AnalysisOptions.prototype.practiceAreas = $util.emptyArray
             /**
              * AnalysisOptions confidenceThreshold.
              * @member {number} confidenceThreshold
              * @memberof legal.api.AnalysisOptions
              * @instance
              */
-            AnalysisOptions.prototype.confidenceThreshold = 0;
-
+            AnalysisOptions.prototype.confidenceThreshold = 0
             /**
              * AnalysisOptions includeRecommendations.
              * @member {boolean} includeRecommendations
@@ -5746,8 +5432,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisOptions.encode = undefined;
-            };
+            AnalysisOptions.encode = undefined};
 
             /**
              * Encodes the specified AnalysisOptions message, length delimited. Does not implicitly {@link legal.api.AnalysisOptions.verify|verify} messages.
@@ -5773,8 +5458,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisOptions.decode = undefined;
-            };
+            AnalysisOptions.decode = undefined};
 
             /**
              * Decodes an AnalysisOptions message from the specified reader or buffer, length delimited.
@@ -5800,8 +5484,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisOptions.verify = undefined;
-            };
+            AnalysisOptions.verify = undefined};
 
             /**
              * Creates an AnalysisOptions message from a plain object. Also converts values to their respective internal types.
@@ -5811,8 +5494,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisOptions} AnalysisOptions
              */
-            AnalysisOptions.fromObject = undefined;
-            };
+            AnalysisOptions.fromObject = undefined};
 
             /**
              * Creates a plain object from an AnalysisOptions message. Also converts values to other types if specified.
@@ -5823,8 +5505,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisOptions.toObject = undefined;
-            };
+            AnalysisOptions.toObject = undefined};
 
             /**
              * Converts this AnalysisOptions to JSON.
@@ -5852,11 +5533,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisOptions";
             };
 
-            return AnalysisOptions;
-        })();
+            return AnalysisOptions})();
 
         api.AnalysisResponse = (function() {
-
             /**
              * Properties of an AnalysisResponse.
              * @memberof legal.api
@@ -5877,8 +5556,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisResponse=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * AnalysisResponse analysisId.
@@ -5894,40 +5572,35 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.type = 0;
-
+            AnalysisResponse.prototype.type = 0
             /**
              * AnalysisResponse results.
              * @member {Array.<legal.api.IAnalysisResult>} results
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.results = $util.emptyArray;
-
+            AnalysisResponse.prototype.results = $util.emptyArray
             /**
              * AnalysisResponse overallConfidence.
              * @member {number} overallConfidence
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.overallConfidence = 0;
-
+            AnalysisResponse.prototype.overallConfidence = 0
             /**
              * AnalysisResponse createdAt.
              * @member {google.protobuf.ITimestamp|null|undefined} createdAt
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.createdAt = null;
-
+            AnalysisResponse.prototype.createdAt = null
             /**
              * AnalysisResponse recommendations.
              * @member {Array.<legal.api.IRecommendation>} recommendations
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.recommendations = $util.emptyArray;
-
+            AnalysisResponse.prototype.recommendations = $util.emptyArray
             /**
              * Creates a new AnalysisResponse instance using the specified properties.
              * @function create
@@ -5949,8 +5622,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisResponse.encode = undefined;
-            };
+            AnalysisResponse.encode = undefined};
 
             /**
              * Encodes the specified AnalysisResponse message, length delimited. Does not implicitly {@link legal.api.AnalysisResponse.verify|verify} messages.
@@ -5976,8 +5648,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisResponse.decode = undefined;
-            };
+            AnalysisResponse.decode = undefined};
 
             /**
              * Decodes an AnalysisResponse message from the specified reader or buffer, length delimited.
@@ -6003,8 +5674,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisResponse.verify = undefined;
-            };
+            AnalysisResponse.verify = undefined};
 
             /**
              * Creates an AnalysisResponse message from a plain object. Also converts values to their respective internal types.
@@ -6014,8 +5684,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisResponse} AnalysisResponse
              */
-            AnalysisResponse.fromObject = undefined;
-            };
+            AnalysisResponse.fromObject = undefined};
 
             /**
              * Creates a plain object from an AnalysisResponse message. Also converts values to other types if specified.
@@ -6026,8 +5695,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisResponse.toObject = undefined;
-            };
+            AnalysisResponse.toObject = undefined};
 
             /**
              * Converts this AnalysisResponse to JSON.
@@ -6055,11 +5723,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisResponse";
             };
 
-            return AnalysisResponse;
-        })();
+            return AnalysisResponse})();
 
         api.AnalysisResult = (function() {
-
             /**
              * Properties of an AnalysisResult.
              * @memberof legal.api
@@ -6080,8 +5746,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisResult=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * AnalysisResult category.
@@ -6105,32 +5770,28 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.confidence = 0;
-
+            AnalysisResult.prototype.confidence = 0
             /**
              * AnalysisResult supportingText.
              * @member {Array.<string>} supportingText
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.supportingText = $util.emptyArray;
-
+            AnalysisResult.prototype.supportingText = $util.emptyArray
             /**
              * AnalysisResult citations.
              * @member {Array.<legal.api.ILegalCitation>} citations
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.citations = $util.emptyArray;
-
+            AnalysisResult.prototype.citations = $util.emptyArray
             /**
              * AnalysisResult riskLevel.
              * @member {legal.api.RiskLevel} riskLevel
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.riskLevel = 0;
-
+            AnalysisResult.prototype.riskLevel = 0
             /**
              * Creates a new AnalysisResult instance using the specified properties.
              * @function create
@@ -6152,8 +5813,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisResult.encode = undefined;
-            };
+            AnalysisResult.encode = undefined};
 
             /**
              * Encodes the specified AnalysisResult message, length delimited. Does not implicitly {@link legal.api.AnalysisResult.verify|verify} messages.
@@ -6179,8 +5839,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisResult.decode = undefined;
-            };
+            AnalysisResult.decode = undefined};
 
             /**
              * Decodes an AnalysisResult message from the specified reader or buffer, length delimited.
@@ -6206,8 +5865,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisResult.verify = undefined;
-            };
+            AnalysisResult.verify = undefined};
 
             /**
              * Creates an AnalysisResult message from a plain object. Also converts values to their respective internal types.
@@ -6217,8 +5875,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisResult} AnalysisResult
              */
-            AnalysisResult.fromObject = undefined;
-            };
+            AnalysisResult.fromObject = undefined};
 
             /**
              * Creates a plain object from an AnalysisResult message. Also converts values to other types if specified.
@@ -6229,8 +5886,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisResult.toObject = undefined;
-            };
+            AnalysisResult.toObject = undefined};
 
             /**
              * Converts this AnalysisResult to JSON.
@@ -6258,8 +5914,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisResult";
             };
 
-            return AnalysisResult;
-        })();
+            return AnalysisResult})();
 
         /**
          * RiskLevel enum.
@@ -6272,15 +5927,13 @@ export const legal = $root.legal = (() => {
          */
         api.RiskLevel = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "RISK_LEVEL_LOW"] = 0;
-            values[valuesById[1] = "RISK_LEVEL_MEDIUM"] = 1;
-            values[valuesById[2] = "RISK_LEVEL_HIGH"] = 2;
-            values[valuesById[3] = "RISK_LEVEL_CRITICAL"] = 3;
-            return values;
-        })();
+            values[valuesById[0] = "RISK_LEVEL_LOW"] = 0
+            values[valuesById[1] = "RISK_LEVEL_MEDIUM"] = 1
+            values[valuesById[2] = "RISK_LEVEL_HIGH"] = 2
+            values[valuesById[3] = "RISK_LEVEL_CRITICAL"] = 3
+            return values})();
 
         api.Recommendation = (function() {
-
             /**
              * Properties of a Recommendation.
              * @memberof legal.api
@@ -6300,8 +5953,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IRecommendation=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * Recommendation title.
@@ -6325,24 +5977,21 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.Recommendation
              * @instance
              */
-            Recommendation.prototype.type = 0;
-
+            Recommendation.prototype.type = 0
             /**
              * Recommendation priority.
              * @member {legal.api.ActionPriority} priority
              * @memberof legal.api.Recommendation
              * @instance
              */
-            Recommendation.prototype.priority = 0;
-
+            Recommendation.prototype.priority = 0
             /**
              * Recommendation steps.
              * @member {Array.<string>} steps
              * @memberof legal.api.Recommendation
              * @instance
              */
-            Recommendation.prototype.steps = $util.emptyArray;
-
+            Recommendation.prototype.steps = $util.emptyArray
             /**
              * Creates a new Recommendation instance using the specified properties.
              * @function create
@@ -6364,8 +6013,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Recommendation.encode = undefined;
-            };
+            Recommendation.encode = undefined};
 
             /**
              * Encodes the specified Recommendation message, length delimited. Does not implicitly {@link legal.api.Recommendation.verify|verify} messages.
@@ -6391,8 +6039,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Recommendation.decode = undefined;
-            };
+            Recommendation.decode = undefined};
 
             /**
              * Decodes a Recommendation message from the specified reader or buffer, length delimited.
@@ -6418,8 +6065,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Recommendation.verify = undefined;
-            };
+            Recommendation.verify = undefined};
 
             /**
              * Creates a Recommendation message from a plain object. Also converts values to their respective internal types.
@@ -6429,8 +6075,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.Recommendation} Recommendation
              */
-            Recommendation.fromObject = undefined;
-            };
+            Recommendation.fromObject = undefined};
 
             /**
              * Creates a plain object from a Recommendation message. Also converts values to other types if specified.
@@ -6441,8 +6086,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Recommendation.toObject = undefined;
-            };
+            Recommendation.toObject = undefined};
 
             /**
              * Converts this Recommendation to JSON.
@@ -6470,8 +6114,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.Recommendation";
             };
 
-            return Recommendation;
-        })();
+            return Recommendation})();
 
         /**
          * RecommendationType enum.
@@ -6484,15 +6127,13 @@ export const legal = $root.legal = (() => {
          */
         api.RecommendationType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "RECOMMENDATION_TYPE_ACTION"] = 0;
-            values[valuesById[1] = "RECOMMENDATION_TYPE_RESEARCH"] = 1;
-            values[valuesById[2] = "RECOMMENDATION_TYPE_REVIEW"] = 2;
-            values[valuesById[3] = "RECOMMENDATION_TYPE_COMPLIANCE"] = 3;
-            return values;
-        })();
+            values[valuesById[0] = "RECOMMENDATION_TYPE_ACTION"] = 0
+            values[valuesById[1] = "RECOMMENDATION_TYPE_RESEARCH"] = 1
+            values[valuesById[2] = "RECOMMENDATION_TYPE_REVIEW"] = 2
+            values[valuesById[3] = "RECOMMENDATION_TYPE_COMPLIANCE"] = 3
+            return values})();
 
         api.HealthCheckRequest = (function() {
-
             /**
              * Properties of a HealthCheckRequest.
              * @memberof legal.api
@@ -6509,8 +6150,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IHealthCheckRequest=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * HealthCheckRequest service.
@@ -6549,8 +6189,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            HealthCheckRequest.encode = undefined;
-            };
+            HealthCheckRequest.encode = undefined};
 
             /**
              * Encodes the specified HealthCheckRequest message, length delimited. Does not implicitly {@link legal.api.HealthCheckRequest.verify|verify} messages.
@@ -6576,8 +6215,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            HealthCheckRequest.decode = undefined;
-            };
+            HealthCheckRequest.decode = undefined};
 
             /**
              * Decodes a HealthCheckRequest message from the specified reader or buffer, length delimited.
@@ -6603,8 +6241,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            HealthCheckRequest.verify = undefined;
-            };
+            HealthCheckRequest.verify = undefined};
 
             /**
              * Creates a HealthCheckRequest message from a plain object. Also converts values to their respective internal types.
@@ -6614,8 +6251,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.HealthCheckRequest} HealthCheckRequest
              */
-            HealthCheckRequest.fromObject = undefined;
-            };
+            HealthCheckRequest.fromObject = undefined};
 
             /**
              * Creates a plain object from a HealthCheckRequest message. Also converts values to other types if specified.
@@ -6626,8 +6262,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            HealthCheckRequest.toObject = undefined;
-            };
+            HealthCheckRequest.toObject = undefined};
 
             /**
              * Converts this HealthCheckRequest to JSON.
@@ -6655,11 +6290,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.HealthCheckRequest";
             };
 
-            return HealthCheckRequest;
-        })();
+            return HealthCheckRequest})();
 
         api.HealthCheckResponse = (function() {
-
             /**
              * Properties of a HealthCheckResponse.
              * @memberof legal.api
@@ -6679,8 +6312,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IHealthCheckResponse=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * HealthCheckResponse healthy.
@@ -6704,16 +6336,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.HealthCheckResponse
              * @instance
              */
-            HealthCheckResponse.prototype.details = $util.emptyObject;
-
+            HealthCheckResponse.prototype.details = $util.emptyObject
             /**
              * HealthCheckResponse timestamp.
              * @member {google.protobuf.ITimestamp|null|undefined} timestamp
              * @memberof legal.api.HealthCheckResponse
              * @instance
              */
-            HealthCheckResponse.prototype.timestamp = null;
-
+            HealthCheckResponse.prototype.timestamp = null
             /**
              * HealthCheckResponse version.
              * @member {string} version
@@ -6743,8 +6373,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            HealthCheckResponse.encode = undefined;
-            };
+            HealthCheckResponse.encode = undefined};
 
             /**
              * Encodes the specified HealthCheckResponse message, length delimited. Does not implicitly {@link legal.api.HealthCheckResponse.verify|verify} messages.
@@ -6770,8 +6399,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            HealthCheckResponse.decode = undefined;
-            };
+            HealthCheckResponse.decode = undefined};
 
             /**
              * Decodes a HealthCheckResponse message from the specified reader or buffer, length delimited.
@@ -6797,8 +6425,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            HealthCheckResponse.verify = undefined;
-            };
+            HealthCheckResponse.verify = undefined};
 
             /**
              * Creates a HealthCheckResponse message from a plain object. Also converts values to their respective internal types.
@@ -6808,8 +6435,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.HealthCheckResponse} HealthCheckResponse
              */
-            HealthCheckResponse.fromObject = undefined;
-            };
+            HealthCheckResponse.fromObject = undefined};
 
             /**
              * Creates a plain object from a HealthCheckResponse message. Also converts values to other types if specified.
@@ -6820,8 +6446,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            HealthCheckResponse.toObject = undefined;
-            };
+            HealthCheckResponse.toObject = undefined};
 
             /**
              * Converts this HealthCheckResponse to JSON.
@@ -6849,11 +6474,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.HealthCheckResponse";
             };
 
-            return HealthCheckResponse;
-        })();
+            return HealthCheckResponse})();
 
         api.SystemStatus = (function() {
-
             /**
              * Properties of a SystemStatus.
              * @memberof legal.api
@@ -6875,8 +6498,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISystemStatus=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * SystemStatus serviceName.
@@ -6900,40 +6522,35 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.cpuUsage = 0;
-
+            SystemStatus.prototype.cpuUsage = 0
             /**
              * SystemStatus memoryUsage.
              * @member {number} memoryUsage
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.memoryUsage = 0;
-
+            SystemStatus.prototype.memoryUsage = 0
             /**
              * SystemStatus activeConnections.
              * @member {number} activeConnections
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.activeConnections = 0;
-
+            SystemStatus.prototype.activeConnections = 0
             /**
              * SystemStatus requestsPerMinute.
              * @member {number|Long} requestsPerMinute
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.requestsPerMinute = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-
+            SystemStatus.prototype.requestsPerMinute = $util.Long ? $util.Long.fromBits(0,0,false) : 0
             /**
              * SystemStatus lastUpdated.
              * @member {google.protobuf.ITimestamp|null|undefined} lastUpdated
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.lastUpdated = null;
-
+            SystemStatus.prototype.lastUpdated = null
             /**
              * Creates a new SystemStatus instance using the specified properties.
              * @function create
@@ -6955,8 +6572,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SystemStatus.encode = undefined;
-            };
+            SystemStatus.encode = undefined};
 
             /**
              * Encodes the specified SystemStatus message, length delimited. Does not implicitly {@link legal.api.SystemStatus.verify|verify} messages.
@@ -6982,8 +6598,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SystemStatus.decode = undefined;
-            };
+            SystemStatus.decode = undefined};
 
             /**
              * Decodes a SystemStatus message from the specified reader or buffer, length delimited.
@@ -7009,8 +6624,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SystemStatus.verify = undefined;
-            };
+            SystemStatus.verify = undefined};
 
             /**
              * Creates a SystemStatus message from a plain object. Also converts values to their respective internal types.
@@ -7020,8 +6634,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SystemStatus} SystemStatus
              */
-            SystemStatus.fromObject = undefined;
-            };
+            SystemStatus.fromObject = undefined};
 
             /**
              * Creates a plain object from a SystemStatus message. Also converts values to other types if specified.
@@ -7032,8 +6645,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SystemStatus.toObject = undefined;
-            };
+            SystemStatus.toObject = undefined};
 
             /**
              * Converts this SystemStatus to JSON.
@@ -7061,11 +6673,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SystemStatus";
             };
 
-            return SystemStatus;
-        })();
+            return SystemStatus})();
 
         api.BatchRequest = (function() {
-
             /**
              * Properties of a BatchRequest.
              * @memberof legal.api
@@ -7084,8 +6694,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchRequest=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * BatchRequest batchId.
@@ -7101,16 +6710,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchRequest
              * @instance
              */
-            BatchRequest.prototype.operations = $util.emptyArray;
-
+            BatchRequest.prototype.operations = $util.emptyArray
             /**
              * BatchRequest options.
              * @member {legal.api.IBatchOptions|null|undefined} options
              * @memberof legal.api.BatchRequest
              * @instance
              */
-            BatchRequest.prototype.options = null;
-
+            BatchRequest.prototype.options = null
             /**
              * BatchRequest userId.
              * @member {string} userId
@@ -7140,8 +6747,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchRequest.encode = undefined;
-            };
+            BatchRequest.encode = undefined};
 
             /**
              * Encodes the specified BatchRequest message, length delimited. Does not implicitly {@link legal.api.BatchRequest.verify|verify} messages.
@@ -7167,8 +6773,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchRequest.decode = undefined;
-            };
+            BatchRequest.decode = undefined};
 
             /**
              * Decodes a BatchRequest message from the specified reader or buffer, length delimited.
@@ -7194,8 +6799,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchRequest.verify = undefined;
-            };
+            BatchRequest.verify = undefined};
 
             /**
              * Creates a BatchRequest message from a plain object. Also converts values to their respective internal types.
@@ -7205,8 +6809,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchRequest} BatchRequest
              */
-            BatchRequest.fromObject = undefined;
-            };
+            BatchRequest.fromObject = undefined};
 
             /**
              * Creates a plain object from a BatchRequest message. Also converts values to other types if specified.
@@ -7217,8 +6820,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchRequest.toObject = undefined;
-            };
+            BatchRequest.toObject = undefined};
 
             /**
              * Converts this BatchRequest to JSON.
@@ -7246,11 +6848,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchRequest";
             };
 
-            return BatchRequest;
-        })();
+            return BatchRequest})();
 
         api.BatchOperation = (function() {
-
             /**
              * Properties of a BatchOperation.
              * @memberof legal.api
@@ -7268,8 +6868,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchOperation=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * BatchOperation operationId.
@@ -7293,8 +6892,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchOperation
              * @instance
              */
-            BatchOperation.prototype.parameters = $util.emptyObject;
-
+            BatchOperation.prototype.parameters = $util.emptyObject
             /**
              * Creates a new BatchOperation instance using the specified properties.
              * @function create
@@ -7316,8 +6914,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchOperation.encode = undefined;
-            };
+            BatchOperation.encode = undefined};
 
             /**
              * Encodes the specified BatchOperation message, length delimited. Does not implicitly {@link legal.api.BatchOperation.verify|verify} messages.
@@ -7343,8 +6940,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchOperation.decode = undefined;
-            };
+            BatchOperation.decode = undefined};
 
             /**
              * Decodes a BatchOperation message from the specified reader or buffer, length delimited.
@@ -7370,8 +6966,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchOperation.verify = undefined;
-            };
+            BatchOperation.verify = undefined};
 
             /**
              * Creates a BatchOperation message from a plain object. Also converts values to their respective internal types.
@@ -7381,8 +6976,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchOperation} BatchOperation
              */
-            BatchOperation.fromObject = undefined;
-            };
+            BatchOperation.fromObject = undefined};
 
             /**
              * Creates a plain object from a BatchOperation message. Also converts values to other types if specified.
@@ -7393,8 +6987,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchOperation.toObject = undefined;
-            };
+            BatchOperation.toObject = undefined};
 
             /**
              * Converts this BatchOperation to JSON.
@@ -7422,11 +7015,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchOperation";
             };
 
-            return BatchOperation;
-        })();
+            return BatchOperation})();
 
         api.BatchOptions = (function() {
-
             /**
              * Properties of a BatchOptions.
              * @memberof legal.api
@@ -7445,8 +7036,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchOptions=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * BatchOptions parallelExecution.
@@ -7462,16 +7052,14 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.maxConcurrency = 0;
-
+            BatchOptions.prototype.maxConcurrency = 0
             /**
              * BatchOptions timeoutSeconds.
              * @member {number} timeoutSeconds
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.timeoutSeconds = 0;
-
+            BatchOptions.prototype.timeoutSeconds = 0
             /**
              * BatchOptions continueOnError.
              * @member {boolean} continueOnError
@@ -7501,8 +7089,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchOptions.encode = undefined;
-            };
+            BatchOptions.encode = undefined};
 
             /**
              * Encodes the specified BatchOptions message, length delimited. Does not implicitly {@link legal.api.BatchOptions.verify|verify} messages.
@@ -7528,8 +7115,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchOptions.decode = undefined;
-            };
+            BatchOptions.decode = undefined};
 
             /**
              * Decodes a BatchOptions message from the specified reader or buffer, length delimited.
@@ -7555,8 +7141,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchOptions.verify = undefined;
-            };
+            BatchOptions.verify = undefined};
 
             /**
              * Creates a BatchOptions message from a plain object. Also converts values to their respective internal types.
@@ -7566,8 +7151,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchOptions} BatchOptions
              */
-            BatchOptions.fromObject = undefined;
-            };
+            BatchOptions.fromObject = undefined};
 
             /**
              * Creates a plain object from a BatchOptions message. Also converts values to other types if specified.
@@ -7578,8 +7162,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchOptions.toObject = undefined;
-            };
+            BatchOptions.toObject = undefined};
 
             /**
              * Converts this BatchOptions to JSON.
@@ -7607,11 +7190,9 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchOptions";
             };
 
-            return BatchOptions;
-        })();
+            return BatchOptions})();
 
         api.BatchResponse = (function() {
-
             /**
              * Properties of a BatchResponse.
              * @memberof legal.api
@@ -7632,8 +7213,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchResponse=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * BatchResponse batchId.
@@ -7649,32 +7229,28 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.status = 0;
-
+            BatchResponse.prototype.status = 0
             /**
              * BatchResponse results.
              * @member {Array.<legal.api.IBatchResult>} results
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.results = $util.emptyArray;
-
+            BatchResponse.prototype.results = $util.emptyArray
             /**
              * BatchResponse startedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} startedAt
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.startedAt = null;
-
+            BatchResponse.prototype.startedAt = null
             /**
              * BatchResponse completedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} completedAt
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.completedAt = null;
-
+            BatchResponse.prototype.completedAt = null
             /**
              * BatchResponse errorMessage.
              * @member {string} errorMessage
@@ -7704,8 +7280,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchResponse.encode = undefined;
-            };
+            BatchResponse.encode = undefined};
 
             /**
              * Encodes the specified BatchResponse message, length delimited. Does not implicitly {@link legal.api.BatchResponse.verify|verify} messages.
@@ -7731,8 +7306,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchResponse.decode = undefined;
-            };
+            BatchResponse.decode = undefined};
 
             /**
              * Decodes a BatchResponse message from the specified reader or buffer, length delimited.
@@ -7758,8 +7332,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchResponse.verify = undefined;
-            };
+            BatchResponse.verify = undefined};
 
             /**
              * Creates a BatchResponse message from a plain object. Also converts values to their respective internal types.
@@ -7769,8 +7342,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchResponse} BatchResponse
              */
-            BatchResponse.fromObject = undefined;
-            };
+            BatchResponse.fromObject = undefined};
 
             /**
              * Creates a plain object from a BatchResponse message. Also converts values to other types if specified.
@@ -7781,8 +7353,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchResponse.toObject = undefined;
-            };
+            BatchResponse.toObject = undefined};
 
             /**
              * Converts this BatchResponse to JSON.
@@ -7810,8 +7381,7 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchResponse";
             };
 
-            return BatchResponse;
-        })();
+            return BatchResponse})();
 
         /**
          * BatchStatus enum.
@@ -7825,16 +7395,14 @@ export const legal = $root.legal = (() => {
          */
         api.BatchStatus = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "BATCH_STATUS_PENDING"] = 0;
-            values[valuesById[1] = "BATCH_STATUS_RUNNING"] = 1;
-            values[valuesById[2] = "BATCH_STATUS_COMPLETED"] = 2;
-            values[valuesById[3] = "BATCH_STATUS_FAILED"] = 3;
-            values[valuesById[4] = "BATCH_STATUS_CANCELLED"] = 4;
-            return values;
-        })();
+            values[valuesById[0] = "BATCH_STATUS_PENDING"] = 0
+            values[valuesById[1] = "BATCH_STATUS_RUNNING"] = 1
+            values[valuesById[2] = "BATCH_STATUS_COMPLETED"] = 2
+            values[valuesById[3] = "BATCH_STATUS_FAILED"] = 3
+            values[valuesById[4] = "BATCH_STATUS_CANCELLED"] = 4
+            return values})();
 
         api.BatchResult = (function() {
-
             /**
              * Properties of a BatchResult.
              * @memberof legal.api
@@ -7854,8 +7422,7 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchResult=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * BatchResult operationId.
@@ -7895,8 +7462,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchResult
              * @instance
              */
-            BatchResult.prototype.processingTimeMs = 0;
-
+            BatchResult.prototype.processingTimeMs = 0
             /**
              * Creates a new BatchResult instance using the specified properties.
              * @function create
@@ -7918,8 +7484,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchResult.encode = undefined;
-            };
+            BatchResult.encode = undefined};
 
             /**
              * Encodes the specified BatchResult message, length delimited. Does not implicitly {@link legal.api.BatchResult.verify|verify} messages.
@@ -7945,8 +7510,7 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchResult.decode = undefined;
-            };
+            BatchResult.decode = undefined};
 
             /**
              * Decodes a BatchResult message from the specified reader or buffer, length delimited.
@@ -7972,8 +7536,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchResult.verify = undefined;
-            };
+            BatchResult.verify = undefined};
 
             /**
              * Creates a BatchResult message from a plain object. Also converts values to their respective internal types.
@@ -7983,8 +7546,7 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchResult} BatchResult
              */
-            BatchResult.fromObject = undefined;
-            };
+            BatchResult.fromObject = undefined};
 
             /**
              * Creates a plain object from a BatchResult message. Also converts values to other types if specified.
@@ -7995,8 +7557,7 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchResult.toObject = undefined;
-            };
+            BatchResult.toObject = undefined};
 
             /**
              * Converts this BatchResult to JSON.
@@ -8024,17 +7585,13 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchResult";
             };
 
-            return BatchResult;
-        })();
+            return BatchResult})();
 
-        return api;
-    })();
+        return api})();
 
-    return legal;
-})();
+    return legal})();
 
 export const google = $root.google = (() => {
-
     /**
      * Namespace google.
      * @exports google
@@ -8043,7 +7600,6 @@ export const google = $root.google = (() => {
     const google = {};
 
     google.protobuf = (function() {
-
         /**
          * Namespace protobuf.
          * @memberof google
@@ -8052,7 +7608,6 @@ export const google = $root.google = (() => {
         const protobuf = {};
 
         protobuf.Timestamp = (function() {
-
             /**
              * Properties of a Timestamp.
              * @memberof google.protobuf
@@ -8069,8 +7624,7 @@ export const google = $root.google = (() => {
              * @constructor
              * @param {google.protobuf.ITimestamp=} [properties] Properties to set
              */
-            undefined;
-            }
+            undefined}
 
             /**
              * Timestamp seconds.
@@ -8078,16 +7632,14 @@ export const google = $root.google = (() => {
              * @memberof google.protobuf.Timestamp
              * @instance
              */
-            Timestamp.prototype.seconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
-
+            Timestamp.prototype.seconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0
             /**
              * Timestamp nanos.
              * @member {number} nanos
              * @memberof google.protobuf.Timestamp
              * @instance
              */
-            Timestamp.prototype.nanos = 0;
-
+            Timestamp.prototype.nanos = 0
             /**
              * Creates a new Timestamp instance using the specified properties.
              * @function create
@@ -8109,8 +7661,7 @@ export const google = $root.google = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Timestamp.encode = undefined;
-            },;
+            Timestamp.encode = undefined},;
 
             /**
              * Encodes the specified Timestamp message, length delimited. Does not implicitly {@link google.protobuf.Timestamp.verify|verify} messages.
@@ -8136,8 +7687,7 @@ export const google = $root.google = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Timestamp.decode = undefined;
-            },;
+            Timestamp.decode = undefined},;
 
             /**
              * Decodes a Timestamp message from the specified reader or buffer, length delimited.
@@ -8163,8 +7713,7 @@ export const google = $root.google = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Timestamp.verify = undefined;
-            };
+            Timestamp.verify = undefined};
 
             /**
              * Creates a Timestamp message from a plain object. Also converts values to their respective internal types.
@@ -8174,8 +7723,7 @@ export const google = $root.google = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {google.protobuf.Timestamp} Timestamp
              */
-            Timestamp.fromObject = undefined;
-            };
+            Timestamp.fromObject = undefined};
 
             /**
              * Creates a plain object from a Timestamp message. Also converts values to other types if specified.
@@ -8186,8 +7734,7 @@ export const google = $root.google = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Timestamp.toObject = undefined;
-            };
+            Timestamp.toObject = undefined};
 
             /**
              * Converts this Timestamp to JSON.
@@ -8215,13 +7762,11 @@ export const google = $root.google = (() => {
                 return typeUrlPrefix + "/google.protobuf.Timestamp";
             };
 
-            return Timestamp;
-        })();
+            return Timestamp})();
 
-        return protobuf;
-    })();
+        return protobuf})();
 
-    return google;
-})();
+    return google})();
 
 export { $root as default };
+

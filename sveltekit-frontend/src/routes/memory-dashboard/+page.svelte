@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -17,7 +17,7 @@ if (browser) {
   });
   async function loadData(): Promise<any> {
     try {
-      error = null;
+      error = null
       // Fetch system status and memory prediction
       const [statusResponse, predictionResponse] = await Promise.all([
         fetch('/api/memory/neural?action=status'),
@@ -25,21 +25,17 @@ if (browser) {
       ]);
       if (statusResponse.ok) {
         const statusResult = await statusResponse.json();
-        systemStatus = statusResult.success ? statusResult.data: null;
-      }
+        systemStatus = statusResult.success ? statusResult.data: null}
       if (predictionResponse.ok) {
         const predictionResult = await predictionResponse.json();
-        memoryPrediction = predictionResult.success ? predictionResult.data: null;
-      }
+        memoryPrediction = predictionResult.success ? predictionResult.data: null}
     } catch (err) {
       console.error('Failed to load memory data:', err);
-      error = err.messag;
-    } finally {
-      isLoading = false;
-    }
+      error = err.messag} finally {
+      isLoading = false}
   }
   async function triggerOptimization(): Promise<any> {
-    isLoading = true;
+    isLoading = true
     try {
       // removed unused response assignment
       const result = await (response as { json?: any }).json();
@@ -51,10 +47,8 @@ if (browser) {
       }
     } catch (err) {
       console.error('Optimization failed:', err);
-      error = err.messag;
-    } finally {
-      isLoading = false;
-    }
+      error = err.messag} finally {
+      isLoading = false}
   }
   function getHealthColor(_value: number): string {
     if (value >= 0.8) return 'text-green-600';

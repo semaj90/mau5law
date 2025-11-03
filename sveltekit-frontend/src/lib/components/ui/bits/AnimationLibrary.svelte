@@ -1,35 +1,33 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { fade, fly, scale, slide, blur, draw } from 'svelte/transition';
   import { quintOut, elasticOut, backOut, bounceOut } from 'svelte/easing';
   import { createEventDispatcher } from 'svelte';
   interface AnimationConfig {
     type: 'fade' | 'fly' | 'scale' | 'slide' | 'blur' | 'draw' | 'gaming' | 'legal';
-    duration?: number;
-    delay?: number;
-    easing?: typeof quintOut | typeof elasticOut | typeof backOut | typeof bounceOut;
+    duration?: number
+    delay?: number
+    easing?: typeof quintOut | typeof elasticOut | typeof backOut | typeof bounceOut
     direction?: 'in' | 'out' | 'both';
     // Fly-specific
-    x?: number;
-    y?: number;
+    x?: number
+    y?: number
     // Scale-specific
-    start?: number;
+    start?: number
     // Slide-specific
     axis?: 'x' | 'y';
     // Blur-specific
-    amount?: number;
+    amount?: number
     // Gaming-specific
-    glitch?: boolean;
-    neon?: boolean;
+    glitch?: boolean
+    neon?: boolean
     // Legal-specific
-    professional?: boolean;
-    subtle?: boolean;
-  }
+    professional?: boolean
+    subtle?: boolean}
   interface EnhancedAnimationLibraryProps {
     theme?: 'default' | 'gaming' | 'legal';
-    globalDuration?: number;
-    globalEasing?: typeof quintOut;
-    reduceMotion?: boolean;
-  }
+    globalDuration?: number
+    globalEasing?: typeof quintOut
+    reduceMotion?: boolean}
   let {
     theme = 'default',
     globalDuration = 300,
@@ -131,7 +129,7 @@
             text-shadow:
               ${(Math.random() * 2 - 1) * 2}px, 0 #00ff41,
               ${-(Math.random() * 2 - 1) * 2}px, 0 #ff0040,
-              0, 0 ${t * 10}px #00ff41;
+              0, 0 ${t * 10}px #00ff41
           `
         }
       },
@@ -163,7 +161,7 @@
           css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
            , transform: scale(${0.9 + t * 0.1});
-            image-rendering: pixelated;
+            image-rendering: pixelated
            , filter: contrast(${1 + (1 - t)}) brightness(${0.8 + t * 0.2});
           `
         }
@@ -211,7 +209,7 @@
   // Stagger animation: helper
   export function stagger(elements: Element[], animation: any, staggerDelay: number = 50): void {
     elements.forEach((element, index) => {
-      const delay = index * staggerDelay;
+      const delay = index * staggerDelay
       const animConfig = animation({ delay });
       // Apply animation: to element
       element.setAttribute('data-stagger-delay', delay.toString());
@@ -258,110 +256,97 @@
 /* CSS-only animations for better performance */
   :global(.enhanced-bits-animate-in) {
 animation: enhanced-fade-in var(--animation-duration, 300ms) var(--animation-easing, ease-out)
-      var(--animation-delay, 0ms) both;
-  }
+      var(--animation-delay, 0ms) both}
   :global(.enhanced-bits-animate-slide-up) {
 animation: enhanced-slide-up var(--animation-duration, 300ms) var(--animation-easing, ease-out)
-      var(--animation-delay, 0ms) both;
-  }
+      var(--animation-delay, 0ms) both}
   :global(.enhanced-bits-animate-scale) {
 animation: enhanced-scale-in var(--animation-duration, 300ms) var(--animation-easing, ease-out)
-      var(--animation-delay, 0ms) both;
-  }
+      var(--animation-delay, 0ms) both}
   :global(.enhanced-bits-animate-gaming) {
 animation: enhanced-gaming-glitch var(--animation-duration, 500ms) var(--animation-easing, ease-out)
-      var(--animation-delay, 0ms) both;
-  }
+      var(--animation-delay, 0ms) both}
   :global(.enhanced-bits-animate-legal) {
 animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--animation-easing, ease-out)
-      var(--animation-delay, 0ms) both;
-  }
+      var(--animation-delay, 0ms) both}
   @keyframes enhanced-fade-in {
     from {
-      opacity: 0;
-    }
+      opacity: 0}
     to {
-      opacity: 1;
-    }
+      opacity: 1}
   }
   @keyframes enhanced-slide-up {
     from {
-      opacity: 0;
+      opacity: 0
      , transform: translateY(20px);
     }
     to {
-      opacity: 1;
+      opacity: 1
      , transform: translateY(0);
     }
   }
   @keyframes enhanced-scale-in {
     from {
-      opacity: 0;
+      opacity: 0
      , transform: scale(0.8);
     }
     to {
-      opacity: 1;
+      opacity: 1
      , transform: scale(1);
     }
   }
   @keyframes enhanced-gaming-glitch {
     0% {
-      opacity: 0.95;
+      opacity: 0.95
      , transform: translateX(-1px) scale(0.995);
       filter: hue-rotate(-20deg) contrast(0.95);
-      text-shadow: none;
-    }
+      text-shadow: none}
     20% {
-      opacity: 0.9;
+      opacity: 0.9
      , transform: translateX(-2px) scale(0.99);
       filter: hue-rotate(-90deg) contrast(0.8);
       text-shadow:
         -2px, 0 #00ff41,
         2px, 0 #ff0040,
-        0, 0 5px #00ff41;
-    }
+        0, 0 5px #00ff41}
     40% {
-      opacity: 0.85;
+      opacity: 0.85
      , transform: translateX(1px) scale(1.005);
       filter: hue-rotate(60deg) contrast(1.1);
       text-shadow:
         2px, 0 #00ff41,
         -2px, 0 #ff0040,
-        0, 0 8px #00ff41;
-    }
+        0, 0 8px #00ff41}
     60% {
-      opacity: 0.9;
+      opacity: 0.9
      , transform: translateX(-1px) scale(1.0);
       filter: hue-rotate(-30deg) contrast(1.05);
       text-shadow:
         -1px, 0 #00ff41,
         1px, 0 #ff0040,
-        0, 0 6px #00ff41;
-    }
+        0, 0 6px #00ff41}
     80% {
-      opacity: 0.95;
+      opacity: 0.95
      , transform: translateX(2px) scale(1.01);
       filter: hue-rotate(30deg) contrast(1.15);
       text-shadow:
         2px, 0 #00ff41,
         -2px, 0 #ff0040,
-        0, 0 10px #00ff41;
-    }
+        0, 0 10px #00ff41}
     100% {
-      opacity: 1;
+      opacity: 1
      , transform: translateX(0) scale(1);
       filter: hue-rotate(0deg) contrast(1);
-      text-shadow: none;
-    }
+      text-shadow: none}
   }
   @keyframes enhanced-legal-professional {
     from {
-      opacity: 0;
+      opacity: 0
      , transform: translateY(5px);
       filter: blur(1px);
     }
     to {
-      opacity: 1;
+      opacity: 1
      , transform: translateY(0);
       filter: blur(0);
     }
@@ -373,8 +358,7 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
 :global(.enhanced-bits-animate-scale),
 :global(.enhanced-bits-animate-gaming),
     :global(.enhanced-bits-animate-legal) {
-      animation: none !important;
-    }
+      animation: none !important}
   }
 /* Stagger, animation: support */
   :global([data-stagger-delay]) {

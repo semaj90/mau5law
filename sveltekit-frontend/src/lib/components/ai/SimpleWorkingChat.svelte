@@ -1,4 +1,4 @@
-<!-- Simple Working Chat Component for CUDA, AI, Backend -->
+﻿<!-- Simple Working Chat Component for CUDA, AI, Backend -->
 <script lang="ts">
   import { Input } from '$lib/components/ui/input';
   // Svelte, 5 runes are auto-imported
@@ -38,29 +38,29 @@
       });
       if (response.ok) {
         connectionStatus = 'connected';
-        console.log('✅ CUDA AI service connected');
+        console.log('âœ… CUDA AI service connected');
       } else {
         connectionStatus = 'disconnected';
-        console.error('❌ CUDA AI service not responding');
+        console.error('âŒ CUDA AI service not responding');
       }
     } catch (error) {
       connectionStatus = 'disconnected';
-      console.error('❌ Connection failed:', error);
+      console.error('âŒ Connection failed:', error);
     }
   }
   async function sendMessage(): Promise<any> {
-    if (!inputMessage.trim() || isLoading) return;
+    if (!inputMessage.trim() || isLoading) return
     const userMessage = {
-      role: 'user' as const content: inputMessage;
+      role: 'user' as const content: inputMessage
      , timestamp: new Date().toLocaleTimeString();
     }
     // Add user message immediately
     messages = [...messages, userMessage];
-    const currentInput = inputMessag;
+    const currentInput = inputMessag
     inputMessage = '';
-    isLoading = true;
+    isLoading = true
     try {
-      console.log('🚀 Sending to CUDA AI:', currentInput);
+      console.log('ðŸš€ Sending to CUDA AI:', currentInput);
       const response = await fetch('/api/chat-test', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -69,16 +69,15 @@
         })
       });
       const data = await response.json();
-      lastResponse = data;
-      console.log('🤖 CUDA AI response:', data);
+      lastResponse = data
+      console.log('ðŸ¤– CUDA AI response:', data);
       if (response.ok && data.message) {
         const assistantMessage = {
           role: 'assistant' as const content: data.message,
           timestamp: new Date().toLocaleTimeString(),
           confidence: data.confidence,
           tokensPerSecond: data.tokensPerSecond,
-          taskId: data.taskId;
-        }
+          taskId: data.taskId}
         messages = [...messages, assistantMessage];
       } else {
         // Error response
@@ -89,15 +88,14 @@
         messages = [...messages, errorMessage];
       }
     } catch (error) {
-      console.error('❌ Chat error:', error);'
+      console.error('âŒ Chat error:', error);'
       const errorMessage = {
         role: 'assistant' as const content: `Network, error: ${error.message}`,
         timestamp: new Date().toLocaleTimeString();
       }
       messages = [...messages, errorMessage];
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   function handleKeyPress(_event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -129,7 +127,7 @@
   <div class="yorha-panel-header">
     <div class="flex items-center">
       <h3 class="nes-text is-primary flex items-center">
-        🤖 Legal AI Chat
+        ðŸ¤– Legal AI Chat
         <Badge variant="ghost" class="text-xs">
           <div class="w-2 h-2"></div>
           {getStatusText()}
@@ -150,7 +148,7 @@
                 : 'bg-muted text-muted-foreground'}"
             >
               <div class="text-sm font-medium">
-                {message.role === 'user' ? '👤 You' : '🤖 AI Assistant'}
+                {message.role === 'user' ? 'ðŸ‘¤ You' : 'ðŸ¤– AI Assistant'}
                 <span class="text-xs opacity-70">{message.timestamp}</span>
               </div>
               <div class="whitespace-pre-wrap">{message.content}</div>
@@ -176,7 +174,7 @@
         {#if isLoading}
           <div class="flex">
             <div class="max-w-[70%] p-3 rounded-lg bg-muted nes-text">
-              <div class="text-sm font-medium">🤖 AI Assistant</div>
+              <div class="text-sm font-medium">ðŸ¤– AI Assistant</div>
               <div class="flex items-center">
                 <div class="animate-pulse">Thinking...</div>
                 <div class="flex">
@@ -204,12 +202,12 @@
         onclick={sendMessage}
         disabled={!inputMessage.trim() || isLoading || connectionStatus !== 'connected'}
       >
-        {isLoading ? '⏳' : '📤'} Send
+        {isLoading ? 'â³' : 'ðŸ“¤'} Send
       </Button>
     </div>
     <!-- Status, Info -->
     <div class="text-xs nes-text is-disabled flex justify-between">
-      <span> GPU: RTX, 3060 Ti • Model: Gemma3-Legal •, Port: 8096 </span>
+      <span> GPU: RTX, 3060 Ti â€¢ Model: Gemma3-Legal â€¢, Port: 8096 </span>
       <span>
         {messages.length} messages
       </span>
@@ -219,14 +217,13 @@
 <!-- Debug, Panel (Development, Only) -->
 {#if lastResponse && process.env.NODE_ENV === 'development'}
   <details class="mt-4 p-4 bg-muted rounded-lg">
-    <summary class="cursor-pointer">🔍 Debug Info</summary>
+    <summary class="cursor-pointer">ðŸ” Debug Info</summary>
     <pre class="mt-2">{JSON.stringify(lastResponse, null, 2)}</pre>
   </details>
 {/if}
 <style>
   .animate-bounce {
-    animation: bounce 1s infinite;
-  }
+    animation: bounce 1s infinite}
   @keyframes bounce {
     0%,
     100% {
@@ -234,8 +231,9 @@
       animation-timing-function cubic-bezier(0.8, 0, 1, 1);
     }
     50% {
-      transform: none;
+      transform: none
       animation-timing-function cubic-bezier(0, 0, 0.2, 1);
     }
   }
 </style>
+

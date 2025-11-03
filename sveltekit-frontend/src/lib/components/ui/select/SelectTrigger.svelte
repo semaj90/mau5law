@@ -1,11 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   import { Select } from 'bits-ui';
   interface Props {
-    children?: import('svelte').Snippet;
-    class?: string;
-    [attr: string]: any;
-  }
+    children?: import('svelte').Snippet
+    class?: string
+    [attr: string]: any}
   let { children, class: className = '', ...rest }: Props = $props();
 </script>
 <Select.Trigger, class="space-y-4 {className}" {...rest}>
@@ -15,3 +14,4 @@
 <style>
 /* @unocss-include */ {}
 </style>
+

@@ -1,32 +1,30 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
   import { embedText } from '$lib/ai/tensor-client';
   let text = 'A short legal passage about indemnification and liability.';
-  let simdParse = true;
-  let gpuTile = true;
-  let result: any = null;
+  let simdParse = true
+  let gpuTile = true
+  let result: any = null
   let ocrBusy = $state<boolean>(false);
   let runBusy = $state<boolean>(false);
-  let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as: any).gpu;
+  let webgpuSupported = typeof navigator !== 'undefined' && !!(navigator as: any).gpu
   async function run(): Promise<any> {
-    runBusy = true;
-    result = null;
+    runBusy = true
+    result = null
     try {
       const r = await embedText(text, { simdParse, gpuTile });
-      result = r;
-    } catch (e: any) {
+      result = r} catch (e: any) {
       result = { error: e?.message || String(e) };
     } finally {
-      runBusy = false;
-    }
+      runBusy = false}
   }
   async function onImageSelected(e: Event): Promise<any> {
-    const input = e.target as HTMLInputElement;
+    const input = e.target as HTMLInputElement
     const file = input.files?.[0];
-    if (!file) return;
-    ocrBusy = true;
+    if (!file) return
+    ocrBusy = true
     try {
       const form = new FormData();
       form.append('image', file, file.name);
@@ -37,18 +35,17 @@ https://svelte.dev/e/js_parse_error -->
     } catch (e: any) {
       alert(e?.message || String(e));
     } finally {
-      ocrBusy = false;
-    }
+      ocrBusy = false}
   }
 </script>
 
 <div class="page">
-  <h1>GPU Tiling + SIMD Demo (OCR → Embedding)</h1>
+  <h1>GPU Tiling + SIMD Demo (OCR â†’ Embedding)</h1>
   <p>WebGPU: {webgpuSupported ? 'available' : 'unavailable'}</p>
   <div class="controls">
     <label>
       <input type="checkbox" bind:checked={simdParse} />
-      SIMD parse in Service Worker (zero‑copy)
+      SIMD parse in Service Worker (zeroâ€‘copy)
     </label>
     <label>
       <input type="checkbox" bind:checked={gpuTile} disabled={!webgpuSupported} />
@@ -64,7 +61,7 @@ https://svelte.dev/e/js_parse_error -->
         onchange={onImageSelected}
         disabled={ocrBusy}
       />
-      {#if ocrBusy}<span>OCR…</span>{/if}
+      {#if ocrBusy}<span>OCRâ€¦</span>{/if}
     </div>
     <div class="text">
       <label for="text">Text</label><textarea id="text" bind:value={text} rows="6" />
@@ -72,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
   </div>
   <div class="actions">
     <button onclick={run} disabled={runBusy}>Process</button>
-    {#if runBusy}<span>Running…</span>{/if}
+    {#if runBusy}<span>Runningâ€¦</span>{/if}
   </div>
   {#if result}
     <h3>Result</h3>
@@ -82,25 +79,22 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .page {
-    padding: 1rem;
-    display: grid;
-    gap: 1rem;
-  }
+    padding: 1rem
+    display: grid
+    gap: 1rem}
   .controls {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-  }
+    display: flex
+    gap: 1.5rem
+    align-items: center}
   .inputs {
-    display: grid;
-    gap: 0.75rem;
-  }
+    display: grid
+    gap: 0.75rem}
   .inputs .text textarea {
     width: 100%;
   }
   .actions {
-    display: flex;
-   , gap: 0.75rem;
-    align-items: center;
-  }
+    display: flex
+   , gap: 0.75rem
+    align-items: center}
 </style>
+

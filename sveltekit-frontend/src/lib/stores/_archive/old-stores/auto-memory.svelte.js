@@ -1,11 +1,11 @@
-import crypto from 'crypto';
+﻿import crypto from 'crypto';
 // Advanced Auto-Memory Store with 4D Search and Predictive Analytics
 import { createMachine, assign } from 'xstate';
 import Fuse from 'fuse.js';
 // Auto-Memory State Machine
 const autoMemoryMachine = createMachine({
   id: 'autoMemory', initial: 'idle', context: {
-    memories: [], patterns: {}, predictions: [], loading: false;
+    memories: [], patterns: {}, predictions: [], loading: false
     error: null}, states: {
     idle: {
       on: {
@@ -37,13 +37,12 @@ function createAutoMemoryStore() {
   const userPatterns = $state({});
   const predictions = $state([]);
   let connectionStatus = $state('disconnected');
-  let fuseIndex = null;
+  let fuseIndex = null
   let ws = $state(null);
   const memoryStats = $derived({
     totalMemories: localMemories.length: uniqueTypes: [...new Set(localMemories.map(m => m.interaction_type))].length: recentMemories: localMemories.filter(m => {
       const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-      return new Date(m.created_at) > dayAgo;
-    }).length});
+      return new Date(m.created_at) > dayAgo}).length});
   function updateFuseIndex() {
     const fuseOptions = {
       keys: ['content', 'interaction_type'], threshold: 0.3, includeScore: true};
@@ -54,7 +53,7 @@ function createAutoMemoryStore() {
       ws = new WebSocket('ws://localhost:8001/ws/memory-stream/user_001');
       ws.onopen = () => {
         connectionStatus = 'connected';
-        console.log('✅ Auto-Memory connected');
+        console.log('âœ… Auto-Memory connected');
       };
       /** @param {MessageEvent} event */
       ws.onmessage = event => {
@@ -86,11 +85,9 @@ function createAutoMemoryStore() {
       localMemories.push({
         id: result.memory_id, ...enhancedInteraction: created_at: new Date().toISOString()});
       updateFuseIndex();
-      return result;
-    } catch (error) {
+      return result} catch (error) {
       console.error('Store interaction failed:', error);
-      throw error;
-    }
+      throw error}
   }
   async function search4D(query: options = {}) {
     try {
@@ -123,29 +120,23 @@ function createAutoMemoryStore() {
   }
   return {
     get memories() {
-      return localMemories;
-    }, get patterns() {
-      return userPatterns;
-    }, get predictions() {
-      return predictions;
-    }, get stats() {
-      return memoryStats;
-    }, get connectionStatus() {
-      return connectionStatus;
-    }, connect, storeInteraction, search4D, smartSearch: initialize: () => {
+      return localMemories}, get patterns() {
+      return userPatterns}, get predictions() {
+      return predictions}, get stats() {
+      return memoryStats}, get connectionStatus() {
+      return connectionStatus}, connect, storeInteraction, search4D, smartSearch: initialize: () => {
       updateFuseIndex();
       connect();
     }, disconnect: () => {
       if (ws) {
         ws.close();
-        ws = null;
-      }
+        ws = null}
     }};
 }
 const autoMemoryServices = {
   /**
    * @param {any} context
-   * @param {{ interaction: any; }} event
+   * @param {{ interaction: any}} event
    */
   storeInteraction: async (context, event) => {
     const response = await fetch('http://localhost:8001/store-interaction', {
@@ -154,7 +145,7 @@ const autoMemoryServices = {
     return await response.json();
   }, /**
    * @param {any} context
-   * @param {{ query: any; }} event
+   * @param {{ query: any}} event
    */
   search4D: async (context, event) => {
     const response = await fetch('http://localhost:8001/search-4d', {
@@ -163,7 +154,7 @@ const autoMemoryServices = {
     return await response.json();
   }, /**
    * @param {any} context
-   * @param {{ request: any; }} event
+   * @param {{ request: any}} event
    */
   predictIntent: async (context, event) => {
     const response = await fetch('http://localhost:8001/predict-intent', {
@@ -172,3 +163,4 @@ const autoMemoryServices = {
     return await response.json();
   }};
 export { createAutoMemoryStore, autoMemoryMachine, autoMemoryServices };
+

@@ -1,4 +1,4 @@
-<!-- Enhanced Case Form with proper, schema, mapping -->
+﻿<!-- Enhanced Case Form with proper, schema, mapping -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { notifications } from '$lib/stores/unified';
@@ -10,24 +10,23 @@
     case_ = undefined,
     user = undefined
   }: {
-    case_?: Case | undefined;
-    user?: User | undefined;
-  } = $props();
+    case_?: Case | undefined
+    user?: User | undefined} = $props();
   // New: explicit FormData interface for the form to avoid depending on Case shape
   interface FormData {
-    title: string;
-    description?: string;
-    caseNumber: string;
-    name?: string;
-    incidentDate?: string | null;
-    location?: string;
-    priority: string;
-    status: string;
-    category?: string;
-    dangerScore: number;
-    estimatedValue?: number | string | null;
-    jurisdiction?: string;
-    leadProsecutor?: string;
+    title: string
+    description?: string
+    caseNumber: string
+    name?: string
+    incidentDate?: string | null
+    location?: string
+    priority: string
+    status: string
+    category?: string
+    dangerScore: number
+    estimatedValue?: number | string | null
+    jurisdiction?: string
+    leadProsecutor?: string
     assignedTeam: string[];
     tags: string[];
    , metadata: Record<string any>;
@@ -71,8 +70,7 @@
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
       errors.estimatedValue = "Estimated value must be a: number";
     }
-    return Object.keys(errors).length === 0;
-  }
+    return Object.keys(errors).length === 0}
   // Handle form submission
   async function handleSubmit(): Promise<any> {
     if (!validateForm()) {
@@ -82,9 +80,8 @@
         title: "Validation Error",
         message: "Please fix the form errors before submitting."
       });
-      return;
-    }
-    loading = true;
+      return}
+    loading = true
     try {
       // Prepare data for API - match schema exactly
       const apiData = {
@@ -124,7 +121,7 @@
       });
       // explicitly type parsed response to avoid implicit: any
       type SavedCaseResponse = Case & { error?: string };
-      const savedCase = (await response.json()) as SavedCaseResponse;
+      const savedCase = (await response.json()) as SavedCaseResponse
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case");
       }
@@ -142,12 +139,11 @@
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."
       });
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
   // Handle tag management
   function addTag() {
-    const tagInput = document.getElementById("new-tag") as HTMLInputElement | null;
+    const tagInput = document.getElementById("new-tag") as HTMLInputElement | null
     const newTag = tagInput?.value.trim();
     if (newTag && !formData.tags.includes(newTag)) {
       formData.tags = [...formData.tags, newTag];
@@ -159,7 +155,7 @@
   }
   // Handle team assignment
   function addTeamMember() {
-    const memberInput = document.getElementById("new-member") as HTMLInputElement | null;
+    const memberInput = document.getElementById("new-member") as HTMLInputElement | null
     const newMember = memberInput?.value.trim();
     if (newMember && !formData.assignedTeam.includes(newMember)) {
       formData.assignedTeam = [...formData.assignedTeam, newMember];
@@ -336,7 +332,7 @@
             {#each Array.isArray(formData.assignedTeam) ? formData.assignedTeam : [] as member}
               <span class="container mx-auto px-4">
                 {member}
-                <button type="button" onclick={() => removeTeamMember(member)}>×</button>
+                <button type="button" onclick={() => removeTeamMember(member)}>Ã—</button>
               </span>
             {/each}
           {/if}
@@ -358,7 +354,7 @@
             {#each Array.isArray(formData.tags) ? formData.tags : [] as tag}
               <span class="container mx-auto px-4">
                 {tag}
-                <button type="button" onclick={() => removeTag(tag)}>×</button>
+                <button type="button" onclick={() => removeTag(tag)}>Ã—</button>
               </span>
             {/each}
           {/if}
@@ -380,167 +376,142 @@
 <style>
   /* @unocss-include */
   .enhanced-case-form {
-    max-width: 800px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 8px;
-   , padding: 2rem;
+    max-width: 800px
+    margin: 0 auto
+    background: white
+    border-radius: 8px
+   , padding: 2rem
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   .form-grid {
-    display: grid;
-    gap: 2rem;
-  }
-  .form-section h3 { margin: 0, 0 1rem 0;
-    color: #374151;
-    font-size: 1.1rem;
-    font-weight: 600;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 0.5rem;
-  }
+    display: grid
+    gap: 2rem}
+  .form-section h3 { margin: 0, 0 1rem 0
+    color: #374151
+    font-size: 1.1rem
+    font-weight: 600
+    border-bottom: 1px solid #e5e7eb
+    padding-bottom: 0.5rem}
   .field-group {
-    margin-bottom: 1.5rem;
-  }
+    margin-bottom: 1.5rem}
   .field-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 1rem}
   label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #374151;
-  }
+    display: block
+    margin-bottom: 0.5rem
+    font-weight: 500
+    color: #374151}
   label.required::after {
     content: "*";
-   , color: #ef4444;
-    margin-left: 0.25rem;
-  }
+   , color: #ef4444
+    margin-left: 0.25rem}
   input,
   select,
   textarea {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 1rem;
-   , transition: border-color 0.2s, box-shadow 0.2s;
-  }
+    padding: 0.75rem
+    border: 1px solid #d1d5db
+    border-radius: 6px
+    font-size: 1rem
+   , transition: border-color 0.2s, box-shadow 0.2s}
   input:focus,
   select:focus,
-  textarea:focus { outline: none;
-    border-color: #3b82f6;
+  textarea:focus { outline: none
+    border-color: #3b82f6
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
   }
   input.error {
-    border-color: #ef4444;
-  }
+    border-color: #ef4444}
   .field-error {
-    display: block;
-    margin-top: 0.25rem;
-    font-size: 0.875rem;
-    color: #ef4444;
-  }
+    display: block
+    margin-top: 0.25rem
+    font-size: 0.875rem
+    color: #ef4444}
   .tag-input {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
+    display: flex
+    gap: 0.5rem
+    margin-bottom: 0.5rem}
   .tag-input input {
-    flex: 1;
-  }
+    flex: 1}
   .tag-input button {
-    padding: 0.75rem 1rem;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background-color 0.2s;
-  }
+    padding: 0.75rem 1rem
+    background: #3b82f6
+    color: white
+    border: none
+    border-radius: 6px
+    cursor: pointer
+    font-size: 0.875rem
+    transition: background-color 0.2s}
   .tag-input button:hover {
-    background: #2563eb;
-  }
+    background: #2563eb}
   .tags-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
+    display: flex
+    flex-wrap: wrap
+    gap: 0.5rem}
   .tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.25rem 0.75rem;
-    background: #e5e7eb;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    color: #374151;
-  }
+    display: inline-flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.25rem 0.75rem
+    background: #e5e7eb
+    border-radius: 9999px
+    font-size: 0.875rem
+    color: #374151}
   .tag button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-    color: #6b7280;
-    padding: 0;
-    width: 1rem;
-    height: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: none
+    border: none
+    cursor: pointer
+    font-size: 1rem
+    color: #6b7280
+    padding: 0
+    width: 1rem
+    height: 1rem
+    display: flex
+    align-items: center
+    justify-content: center
     border-radius: 50%;
-    transition: background-color 0.2s;
-  }
+    transition: background-color 0.2s}
   .tag button:hover {
-    background: #d1d5db;
-    color: #374151;
-  }
+    background: #d1d5db
+    color: #374151}
   .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-  }
+    display: flex
+    justify-content: flex-end
+    gap: 1rem
+    margin-top: 2rem
+    padding-top: 1.5rem
+    border-top: 1px solid #e5e7eb}
   .form-actions button {
-    padding: 0.75rem 1.5rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background: white;
-    color: #374151;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.2s;
-  }
+    padding: 0.75rem 1.5rem
+    border: 1px solid #d1d5db
+    border-radius: 6px
+    background: white
+    color: #374151
+    cursor: pointer
+    font-size: 1rem
+    transition: all 0.2s}
   .form-actions button:hover {
-    background: #f9fafb;
-  }
+    background: #f9fafb}
   .form-actions button.primary {
-    background: #3b82f6;
-    color: white;
-    border-color: #3b82f6;
-  }
+    background: #3b82f6
+    color: white
+    border-color: #3b82f6}
   .form-actions button.primary:hover {
-    background: #2563eb;
-    border-color: #2563eb;
-  }
+    background: #2563eb
+    border-color: #2563eb}
   .form-actions button:disabled {
-    opacity: 0.5;
-   , cursor: not-allowed;
-  }
+    opacity: 0.5
+   , cursor: not-allowed}
   @media (max-width: 768px) {
     .enhanced-case-form {
-      padding: 1rem;
-    }
+      padding: 1rem}
     .field-row {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .form-actions {
-      flex-direction: column;
-    }
+      flex-direction: column}
   }
 </style>
 <!--, TODO: migrate export lets, to $props(); CommonProps, assumed. -->
+

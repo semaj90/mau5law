@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -34,24 +34,24 @@ import type { User } from '$lib/types';
   } from 'lucide-svelte';
   // Props
   // Component state
-  let artifact: any = null;
-  let extractedMetadata: LegalAIMetadata | null = null;
-  let imageUrl: string | null = null;
-  let loading = true;
-  let error: string | null = null;
-  let downloadUrl: string | null = null;
+  let artifact: any = null
+  let extractedMetadata: LegalAIMetadata | null = null
+  let imageUrl: string | null = null
+  let loading = true
+  let error: string | null = null
+  let downloadUrl: string | null = null
   // Load artifact data
   const loadArtifact = async () => {
     try {
-      loading = true;
-      error = null;
+      loading = true
+      error = null
       // removed unused response assignment
       if (response.success) {
-        artifact = response.artifact;
-        downloadUrl = response.download_url;
+        artifact = response.artifact
+        downloadUrl = response.download_url
         // Load image for display
         if (downloadUrl) {
-          imageUrl = downloadUrl;
+          imageUrl = downloadUrl
           // Extract PNG metadata if it's a PNG file'
           if (artifact.content_type === 'image/png' && showMetadata) {
             await extractMetadata();
@@ -63,11 +63,10 @@ import type { User } from '$lib/types';
     } catch (err: any) {
       error = err.message || 'Failed to load artifact';
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
   const extractMetadata = async () => {
-    if (!downloadUrl) return;
+    if (!downloadUrl) return
     try {
       // Fetch the PNG file
       // removed unused response assignment
@@ -75,7 +74,7 @@ import type { User } from '$lib/types';
       // Extract metadata
       const metadata = await extractPNGMetadata(arrayBuffer);
       if (metadata) {
-        extractedMetadata = metadata;
+        extractedMetadata = metadata
         if (onMetadataExtracted) {
           onMetadataExtracted(metadata);
         }
@@ -354,15 +353,13 @@ import type { User } from '$lib/types';
   {/if}
 <style>
   .artifact-viewer {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
+    max-width: 1200px
+    margin: 0 auto}
   code {
-    word-break: break-all;
-    max-width: 200px;
-    display: inline-block;
-   , overflow: hidden;
-    text-overflow: ellipsi;
-    white-space: nowrap;
-  }
+    word-break: break-all
+    max-width: 200px
+    display: inline-block
+   , overflow: hidden
+    text-overflow: ellipsi
+    white-space: nowrap}
 </style>

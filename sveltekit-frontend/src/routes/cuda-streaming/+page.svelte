@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { Input } from '$lib/components/ui/input';
   import { Button } from '$lib/components/ui/button';
   // Svelte, 5 runes are auto-imported
@@ -39,8 +39,8 @@
   let liveMetrics = $state((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).sessionStats);
   let selectedTab = $state<'streaming' | 'monitoring' | 'results' | 'config'>('streaming');
   // Real-time metrics update
-  let metricsInterval: NodeJS.Timeout | null = null;
-  let streamingSocket: EventSource | null = null;
+  let metricsInterval: NodeJS.Timeout | null = null
+  let streamingSocket: EventSource | null = null
   // Derived states
   let gpuStatus = $derived((data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.gpuAvailable ? 'available' : 'unavailable');
   let canStream = $derived(!isStreaming && inputText.trim.length > 0);
@@ -50,9 +50,9 @@
   );
   // CUDA streaming functions
   async function startCudaStream(): Promise<any> {
-    if (!canStream) return;
-    isStreaming = true;
-    processingProgress = 0;
+    if (!canStream) return
+    isStreaming = true
+    processingProgress = 0
     streamResults = [];
     const formData = new FormData();
     formData.append('operationType', selectedOperation);
@@ -65,17 +65,16 @@
       });
       const result = await (response as { json?: any }).json();
       if ((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).success) {
-        currentSession = (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).sessionId;
+        currentSession = (result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).sessionId
         // Start streaming updates
         startStreamingUpdates((result as { success?: any; sessionId?: any; processingTime?: any; gpuAccelerated?: any; result?: any; timestamp?: any; operation?: any; status?: any; input?: any; results?: any; progress?: any }).sessionId);
       }
     } catch (error) {
       console.error('Failed to start CUDA stream:', error);
-      isStreaming = false;
-    }
+      isStreaming = false}
   }
   async function stopCudaStream(): Promise<any> {
-    if (!currentSession) return;
+    if (!currentSession) return
     const formData = new FormData();
     formData.append('sessionId', currentSession);
     try {
@@ -91,9 +90,9 @@
   function startStreamingUpdates(sessionId: string) {
     // Simulate real-time streaming updates
     const updateInterval = setInterval(() => {
-      processingProgress += Math.random() * 15;
+      processingProgress += Math.random() * 15
       if (processingProgress >= 100) {
-        processingProgress = 100;
+        processingProgress = 100
         // Add final result
         streamResults = [...streamResults, {
           id: Date.now(),
@@ -104,8 +103,7 @@
           gpuAccelerated: useGpu,
           results: { vectorsGenerated: Math.floor(Math.random() * 500) + 100,
             entitiesExtracted: Math.floor(Math.random() * 20) + 5,
-            confidence: 0.85 + Math.random() * 0.1;
-          }
+            confidence: 0.85 + Math.random() * 0.1}
         }];
         stopStreamingUpdates();
       } else {
@@ -114,24 +112,21 @@
           id: Date.now(),
           operation `${selectedOperation}_chunk_${streamResults.length + 1}`,
           status: 'processing',
-          progress: processingProgres;
-        }];
+          progress: processingProgres}];
       }
     }, 800);
     // Store interval for cleanup
-    metricsInterval = updateInterval;
-  }
+    metricsInterval = updateInterval}
   function stopStreamingUpdates() {
-    isStreaming = false;
-    currentSession = null;
-    processingProgress = 0;
+    isStreaming = false
+    currentSession = null
+    processingProgress = 0
     if (metricsInterval) {
       clearInterval(metricsInterval);
-      metricsInterval = null;
-    }
+      metricsInterval = null}
   }
   async function processSingleDocument(): Promise<any> {
-    if (!inputText.trim()) return;
+    if (!inputText.trim()) return
     const startTime = Date.now();
     const formData = new FormData();
     formData.append('documentData', inputText);
@@ -171,12 +166,11 @@
   }
   function getOperationIcon(operation: string) {
     switch (operation) {
-      case, 'document_vectorization': return Databa;
-      case, 'similarity_search': return BarChart3;
-      case, 'text_embedding': return Layer;
-      case, 'legal_entity_extraction': return Ey;
-      default: return Cpu;
-    }
+      case, 'document_vectorization': return Databa
+      case, 'similarity_search': return BarChart3
+      case, 'text_embedding': return Layer
+      case, 'legal_entity_extraction': return Ey
+      default: return Cpu}
   }
   // Cleanup on destroy
   onDestroy(() => {
@@ -469,10 +463,10 @@
         <div.Content, class="p-6">
           <div class="flex items-center justify-between">
             <Thermometer class="w-8 h-8" />
-            <Badge variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</Badge>
+            <Badge variant="ghost">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}Â°C</Badge>
           </div>
           <p class="text-sm nes-text is-disabled">Temperature</p>
-          <p class="text-lg">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}°C</p>
+          <p class="text-lg">{(data as { sessionStats?: any; gpuInfo?: any; supportedOperations?: any; recentProcessing?: any }).gpuInfo.temperatureCurrent}Â°C</p>
           <p class="text-xs nes-text">Normal operating range</p>
         </div.Content>
       </OrchestratedCard.Analysis>
@@ -547,8 +541,8 @@
                 </Badge>
               </div>
               <div class="text-sm nes-text">
-                {session.documentsProcessed} documents •
-                {session.processingTime}ms •
+                {session.documentsProcessed} documents â€¢
+                {session.processingTime}ms â€¢
                 {formatThroughput(session.throughput)} throughput
               </div>
               <div class="text-xs nes-text">
@@ -563,3 +557,4 @@
     </div.Content>
   </OrchestratedCard.Analysis>
 </div>;
+

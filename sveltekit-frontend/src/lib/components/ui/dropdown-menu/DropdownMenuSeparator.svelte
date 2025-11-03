@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   interface Props {
-    class?: string;
-  }
+    class?: string}
   let { class: className = '' }: Props = $props();
 </script>
 <div class="-mx-1 my-1 h-px"></div>
+

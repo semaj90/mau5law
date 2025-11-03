@@ -1,29 +1,28 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { toasts, removeToast } from '$lib/stores/errorStore';
   // Using store directly in template via $toasts
 </script>
 <style>
   .toast-container {
-    position: fixed;
-    right: 1rem;
-    top: 1rem;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+    position: fixed
+    right: 1rem
+    top: 1rem
+    z-index: 9999
+    display: flex
+    flex-direction: column
+    gap: 0.5rem}
   .toast {
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    color: white;
+    padding: 0.75rem 1rem
+    border-radius: 6px
+    color: white
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   }
-  .info { background: #3b82f6; }
-  .warn { background: #f59e0b; }
-  .error { background: #ef4444; }
-  .success { background: #10b981; }
-  .title { font-weight: 600; }
-  .msg { font-size: 0.95rem; margin-top: 0.25rem; }
+  .info { background: #3b82f6}
+  .warn { background: #f59e0b}
+  .error { background: #ef4444}
+  .success { background: #10b981}
+  .title { font-weight: 600}
+  .msg { font-size: 0.95rem; margin-top: 0.25rem}
 </style>
 <div class="toast-container">
   {#each $toasts as t (t.id)}
@@ -34,9 +33,10 @@
           <div class="msg">{t.message}</div>
         </div>
         <div style="margin-left:1rem;">
-          <button onclick={(event) => removeToast(event, t.id)} aria-label="Dismiss toast" style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✖</button>
+          <button onclick={(event) => removeToast(event, t.id)} aria-label="Dismiss toast" style="background:transparent;border:none;color:rgba(255,255,255,0.9);">âœ–</button>
         </div>
       </div>
     </div>
   {/each}
 </div>
+

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Gaming Components Cache Demo
 Comprehensive demo showcasing GPU texture caching, shader optimization,
 and performance monitoring across N64 and YoRHa gaming components
@@ -33,29 +33,25 @@ and performance monitoring across N64 and YoRHa gaming components
   });
   // Demo scenarios
   let currentScenario = $state<number>(0);
-  let scenarios = $state([
-    {
+  let scenarios = $state([ {
       name: 'N64 Texture Filtering Showcase',
       description: 'Demonstrate high-performance N64-style texture filtering with cache optimization',
       component: 'n64',
       textures: ['mario-face', 'zelda-sword', 'starfox-ship', 'donkey-kong-barrel'],
       filters: ['bilinear', 'trilinear', 'anisotropic'];
-    },
-    {
+    }, {
       name: 'YoRHa Anti-Aliasing Pipeline',
       description: 'Showcase YoRHa AA shaders with real-time compilation and caching',
       component: 'yorha',
       shaders: ['FXAA', 'TAA', 'SMAA', 'MSAA'],
       qualities: ['fast', 'balanced', 'quality'];
-    },
-    {
+    }, {
       name: 'WASM Acceleration Benchmark',
       description: 'Compare WASM-accelerated vs JavaScript texture/shader processing',
       component: 'wasm',
       operations: ['texture-compression', 'shader-optimization', 'memory-defragmentation'],
       datasets: ['small', 'medium', 'large'];
-    },
-    {
+    }, {
       name: 'Cache Performance Analytics',
       description: 'Real-time cache performance monitoring and optimization',
       component: 'performance',
@@ -106,8 +102,7 @@ and performance monitoring across N64 and YoRHa gaming components
       shaderTestData = await generateTestShaders();
       console.log('[Gaming Cache Demo] Initialized with:', {
         textures: textureTestData.length,
-        shaders: shaderTestData.length;
-      });
+        shaders: shaderTestData.length});
     } catch (error) {
       console.error('[Gaming Cache Demo] Initialization failed:', error);
     }
@@ -126,20 +121,20 @@ and performance monitoring across N64 and YoRHa gaming components
     for (let i = 0; i < sizes.length; i++) {
       const { width, height, name } = sizes[i];
       const canvas = document.createElement('canvas');
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width
+      canvas.height = height
       const ctx = canvas.getContext('2d');
-      if (!ctx) continu;
+      if (!ctx) continu
       // Generate procedural texture pattern
       const imageData = ctx.createImageData(width, height);
-      const data = imageData.data;
+      const data = imageData.data
       for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-          const index = (y * width + x) * 4;
+          const index = (y * width + x) * 4
           // Create interesting pattern for demo
-          const r = Math.sin(x * 0.02) * 127 + 128;
-          const g = Math.sin(y * 0.02) * 127 + 128;
-          const b = Math.sin((x + y) * 0.01) * 127 + 128;
+          const r = Math.sin(x * 0.02) * 127 + 128
+          const g = Math.sin(y * 0.02) * 127 + 128
+          const b = Math.sin((x + y) * 0.01) * 127 + 128
           data[index] = r;     // Red
           data[index + 1] = g; // Green
           data[index + 2] = b; // Blue
@@ -149,50 +144,46 @@ and performance monitoring across N64 and YoRHa gaming components
       textures.push({
         id: `test-texture-${i}`,
         name: `${name}_${width}x${height}`,
-        data: imageData;
-      });
+        data: imageData});
     }
-    return texture;
-  }
+    return texture}
   /**
    * Generate test shader data for demos
    */
   async function generateTestShaders(): Promise<Array> {
-    return [
-      {
+    return [ {
         id: 'n64-vertex-shader',
         type: 'vertex',
         source: `
-          attribute vec3 positio;
-          attribute vec2 uv;
-          attribute vec3 normal;
-          uniform mat4 projectionMatrix;
-          uniform mat4 modelViewMatrix;
-          uniform mat3 normalMatrix;
-          varying vec2 vUv;
-          varying vec3 vNormal;
-          varying vec3 vPositio;
+          attribute vec3 positio
+          attribute vec2 uv
+          attribute vec3 normal
+          uniform mat4 projectionMatrix
+          uniform mat4 modelViewMatrix
+          uniform mat3 normalMatrix
+          varying vec2 vUv
+          varying vec3 vNormal
+          varying vec3 vPositio
           void main() {
-            vUv = uv;
+            vUv = uv
             vNormal = normalize(normalMatrix * normal);
-            vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz;
+            vPosition = (modelViewMatrix * vec4(position, 1.0)).xyz
             gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
           }
         `
-      },
-      {
+      }, {
         id: 'n64-fragment-shader',
         type: 'fragment',
         source: `
-          precision mediump float;
-          uniform sampler2D diffuseTextur;
+          precision mediump float
+          uniform sampler2D diffuseTextur
           uniform float filterType; // 0=point, 1=bilinear, 2=trilinear
-          uniform float fogStart;
-          uniform float fogEnd;
-          uniform vec3 fogColor;
-          varying vec2 vUv;
-          varying vec3 vNormal;
-          varying vec3 vPositio;
+          uniform float fogStart
+          uniform float fogEnd
+          uniform vec3 fogColor
+          varying vec2 vUv
+          varying vec3 vNormal
+          varying vec3 vPositio
           vec4 sampleTexture(sampler2D tex, vec2 uv, float filter) {
             if (filter < 0.5) {
               // Point sampling
@@ -212,7 +203,7 @@ and performance monitoring across N64 and YoRHa gaming components
             vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
             float NdotL = max(dot(vNormal, lightDir), 0.0);
             vec3 lighting = vec3(0.3 + 0.7 * NdotL);
-            vec3 color = texColor.rgb * lighting;
+            vec3 color = texColor.rgb * lighting
             // N64-style fog
             float depth = length(vPosition);
             float fogFactor = clamp((fogEnd - depth) / (fogEnd - fogStart), 0.0, 1.0);
@@ -220,27 +211,26 @@ and performance monitoring across N64 and YoRHa gaming components
             gl_FragColor = vec4(color, texColor.a);
           }
         `
-      },
-      {
+      }, {
         id: 'yorha-aa-compute-shader',
         type: 'compute',
         source: `
           #version, 310 es
-          precision highp float;
-          layout(local_size_x = 8, local_size_y = 8) i;
-          layout(binding = 0, rgba8) uniform readonly image2D inputImag;
-          layout(binding = 1, rgba8) uniform writeonly image2D outputImag;
+          precision highp float
+          layout(local_size_x = 8, local_size_y = 8) i
+          layout(binding = 0, rgba8) uniform readonly image2D inputImag
+          layout(binding = 1, rgba8) uniform writeonly image2D outputImag
           uniform float aaType; // 0=FXAA, 1=TAA, 2=SMAA
-          uniform float frameIndex;
-          uniform mat4 prevViewProjectio;
-          uniform mat4 currViewProjectio;
+          uniform float frameIndex
+          uniform mat4 prevViewProjectio
+          uniform mat4 currViewProjectio
           // FXAA implementation
           vec3 fxaa(ivec2 coord) {
-            vec3 rgbNW = imageLoad(inputImage, coord + ivec2(-1, -1)).rgb;
-            vec3 rgbNE = imageLoad(inputImage, coord + ivec2(1, -1)).rgb;
-            vec3 rgbSW = imageLoad(inputImage, coord + ivec2(-1, 1)).rgb;
-            vec3 rgbSE = imageLoad(inputImage, coord + ivec2(1, 1)).rgb;
-            vec3 rgbM = imageLoad(inputImage, coord).rgb;
+            vec3 rgbNW = imageLoad(inputImage, coord + ivec2(-1, -1)).rgb
+            vec3 rgbNE = imageLoad(inputImage, coord + ivec2(1, -1)).rgb
+            vec3 rgbSW = imageLoad(inputImage, coord + ivec2(-1, 1)).rgb
+            vec3 rgbSE = imageLoad(inputImage, coord + ivec2(1, 1)).rgb
+            vec3 rgbM = imageLoad(inputImage, coord).rgb
             float lumaNW = dot(rgbNW, vec3(0.299, 0.587, 0.114));
             float lumaNE = dot(rgbNE, vec3(0.299, 0.587, 0.114));
             float lumaSW = dot(rgbSW, vec3(0.299, 0.587, 0.114));
@@ -249,8 +239,7 @@ and performance monitoring across N64 and YoRHa gaming components
             float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));
             float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
             if ((lumaMax - lumaMin) < max(0.0833, lumaMax * 0.125)) {
-              return rgbM;
-            }
+              return rgbM}
             // Simplified FXAA blend
             return mix(rgbM, (rgbNW + rgbNE + rgbSW + rgbSE) * 0.25, 0.5);
           }
@@ -258,9 +247,8 @@ and performance monitoring across N64 and YoRHa gaming components
             ivec2 coord = ivec2(gl_GlobalInvocationID.xy);
             ivec2 imageSize = imageSize(inputImage);
             if (coord.x >= imageSize.x || coord.y >= imageSize.y) {
-              return;
-            }
-            vec3 color = imageLoad(inputImage, coord).rgb;
+              return}
+            vec3 color = imageLoad(inputImage, coord).rgb
             if (aaType < 0.5) {
               // FXAA
               color = fxaa(coord);
@@ -289,7 +277,7 @@ and performance monitoring across N64 and YoRHa gaming components
    * Start real-time metrics collection
    */
   function startRealTimeMetrics() {
-    if (!enableRealTimeMetrics) return;
+    if (!enableRealTimeMetrics) return
     metricsTimer = setInterval(async () => {
       try {
         // Collect current metrics
@@ -333,30 +321,28 @@ and performance monitoring across N64 and YoRHa gaming components
    * Start demo scenarios
    */
   async function startDemo(): Promise<any> {
-    demoStarted = true;
-    currentScenario = 0;
+    demoStarted = true
+    currentScenario = 0
     try {
       await runCurrentScenario();
       if (autoRunScenarios) {
         demoTimer = setInterval(async () => {
-          currentScenario = (currentScenario + 1) % scenarios.length;
+          currentScenario = (currentScenario + 1) % scenarios.length
           await runCurrentScenario();
         }, scenarioInterval);
       }
     } catch (error) {
       console.error('[Gaming Cache Demo] Demo start failed:', error);
-      demoStarted = false;
-    }
+      demoStarted = false}
   }
   /**
    * Stop demo scenarios
    */
   function stopDemo() {
-    demoStarted = false;
+    demoStarted = false
     if (demoTimer) {
       clearInterval(demoTimer);
-      demoTimer = null;
-    }
+      demoTimer = null}
   }
   /**
    * Run current scenario
@@ -368,17 +354,16 @@ and performance monitoring across N64 and YoRHa gaming components
       switch (scenario.component) {
         case, 'n64':
           await runN64Scenario(scenario);
-          break;
+          break
         case, 'yorha':
           await runYoRHaScenario(scenario);
-          break;
+          break
         case, 'wasm':
           await runWasmScenario(scenario);
-          break;
+          break
         case, 'performance':
           await runPerformanceScenario(scenario);
-          break;
-      }
+          break}
     } catch (error) {
       console.error(`[Gaming Cache Demo] Scenario ${scenario.name} failed:`, error);
       demoStats.failedOperations++;
@@ -396,8 +381,7 @@ and performance monitoring across N64 and YoRHa gaming components
           mipmapLevel: Math.floor(Math.random() * 4),
           anisotropyLevel: filterType === 'anisotropic' ? 8 : 1,
           dimensions: { width: texture.data.width,
-            height: texture.data.height;
-          }
+            height: texture.data.height}
         }
         const startTime = performance.now();
         const cachedEntry = await enhancedGPUCacheService.cacheN64Texture(
@@ -409,7 +393,7 @@ and performance monitoring across N64 and YoRHa gaming components
           const textureBytes = new Uint8Array(texture.data.data);
           await wasmCacheOps.accelerateN64Filtering(textureBytes, renderingOptions);
         }
-        const processingTime = performance.now() - startTime;
+        const processingTime = performance.now() - startTime
         demoStats.averageProcessingTime =
           (demoStats.averageProcessingTime * demoStats.totalOperations + processingTime) /
           (demoStats.totalOperations + 1);
@@ -429,7 +413,7 @@ and performance monitoring across N64 and YoRHa gaming components
     for (const shader of shaderTestData) {
       for (const quality of scenario.qualities) {
         const aaConfig: AntiAliasingConfig = { type: scenario.shaders[Math.floor(Math.random() * scenario.shaders.length)] as: any,
-          quality: quality as: any;
+          quality: quality as: any
          , samples: quality === 'quality' ? 8 : quality === 'balanced' ? 4 : 2,
           enableTemporalAccumulation: quality !== 'fast',
           customParams: { edgeThreshold: 0.1,
@@ -444,7 +428,7 @@ and performance monitoring across N64 and YoRHa gaming components
         if (enableWasmAcceleration) {
           await wasmCacheOps.optimizeShader(shader.source, shader.type quality as: any);
         }
-        const processingTime = performance.now() - startTime;
+        const processingTime = performance.now() - startTime
         demoStats.averageProcessingTime =
           (demoStats.averageProcessingTime * demoStats.totalOperations + processingTime) /
           (demoStats.totalOperations + 1);
@@ -470,27 +454,24 @@ and performance monitoring across N64 and YoRHa gaming components
             await wasmCacheOps.compressTexture(texture.data, {
               format: 'dxt5',
               quality: dataset === 'small' ? 0.6 : dataset === 'medium' ? 0.8 : 1.0,
-              enableSIMD: enableWasmAcceleratio;
-            });
-            break;
+              enableSIMD: enableWasmAcceleratio});
+            break
           case, 'shader-optimization':
             const shader = shaderTestData[Math.floor(Math.random() * shaderTestData.length)];
             await wasmCacheOps.optimizeShader(
               shader.source,
               shader.type dataset === 'small' ? 'fast' : dataset === 'medium' ? 'balanced' : 'quality'
             );
-            break;
+            break
           case, 'memory-defragmentation':
-            const blockCount = dataset === 'small' ? 10 : dataset === 'medium' ? 50 : 200;
+            const blockCount = dataset === 'small' ? 10 : dataset === 'medium' ? 50 : 200
             const memoryBlocks = Array.from({ length: blockCount }, (_, i) => ({
               address: i * 1024,
               size: Math.random() * 1024 + 512,
-              used: Math.random() > 0.3;
-            }));
+              used: Math.random() > 0.3}));
             await wasmCacheOps.defragmentCacheMemory(memoryBlocks);
-            break;
-        }
-        const processingTime = performance.now() - startTime;
+            break}
+        const processingTime = performance.now() - startTime
         demoStats.averageProcessingTime =
           (demoStats.averageProcessingTime * demoStats.totalOperations + processingTime) /
           (demoStats.totalOperations + 1);
@@ -510,23 +491,22 @@ and performance monitoring across N64 and YoRHa gaming components
       key: `entry-${i}`,
       size: Math.random() * 10 * 1024 * 1024, // 0-10MB
       accessCount: Math.floor(Math.random() * 100),
-      lastAccessed: Date.now() - Math.random() * 24 * 60 * 60 * 1000 // Last, 24 hour;
-    }));
+      lastAccessed: Date.now() - Math.random() * 24 * 60 * 60 * 1000 // Last, 24 hour}));
     await wasmCacheOps.analyzeCachePerformance(cacheEntries);
     // Trigger memory defragmentation
     await gpuCacheInvalidationSystem.performCleanup('demo-performance-test');
     // Update memory usage
     const memoryMetrics = gpuCacheInvalidationSystem.getMemoryPressureMetrics();
-    demoStats.memoryUsedMB = memoryMetrics.usedMemoryMB;
+    demoStats.memoryUsedMB = memoryMetrics.usedMemoryMB
     await tick();
   }
   /**
    * Trigger stress test
    */
   async function runStressTest(): Promise<any> {
-    stressTestMode = true;
-    const stressOperations = 1000;
-    const batchSize = 10;
+    stressTestMode = true
+    const stressOperations = 1000
+    const batchSize = 10
     for (let i = 0; i < stressOperations; i += batchSize) {
       const batch = Array.from({ length: Math.min(batchSize, stressOperations - i) }, () =>
         runCurrentScenario()
@@ -537,7 +517,7 @@ and performance monitoring across N64 and YoRHa gaming components
         await tick(); // Allow UI updates
       }
     }
-    stressTestMode = false;
+    stressTestMode = false
     console.log('[Gaming Cache Demo] Stress test completed');
   }
   /**
@@ -882,6 +862,5 @@ and performance monitoring across N64 and YoRHa gaming components
 </div>
 <style>
   .gaming-cache-demo {
-    font-family: 'Roboto Mono', 'Courier New', monospace;
-  }
+    font-family: 'Roboto Mono', 'Courier New', monospace}
 </style>

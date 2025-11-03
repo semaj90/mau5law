@@ -1,14 +1,13 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
-  // onMount was unused — removed
+  // onMount was unused â€” removed
   // Use a namespace import to safely access public env vars without TS named-export errors
   import * as env from '$env/static/public';
   interface Props {
-    placeholder?: string;
-    searchEndpoint?: string;
-    onResults?: (results: any[]) => void;
-    className?: string;
-  }
+    placeholder?: string
+    searchEndpoint?: string
+    onResults?: (results: any[]) => void
+    className?: string}
   let {
     placeholder = "Search legal documents...",
     searchEndpoint = "/api/v1/search",
@@ -19,17 +18,16 @@ import type { Document } from '$lib/types';
   let results = $state<any[]>([]);
   let isLoading = $state<boolean>(false);
   let isExpanded = $state<boolean>(false);
-  let searchInput: HTMLInputElement | null = null;
+  let searchInput: HTMLInputElement | null = null
   // prefer PUBLIC env, fallback to empty so relative paths work in dev/prod
   const API_BASE = (env.PUBLIC_API_BASE ?? "").replace(/\/$/, "");
   const performSearch = async () => {
     if (!query?.trim() || query.length < 2) {
       results = [];
-      isExpanded = false;
-      return;
-    }
-    isLoading = true;
-    isExpanded = true;
+      isExpanded = false
+      return}
+    isLoading = true
+    isExpanded = true
     try {
       const base = API_BASE || '';
       const endpoint = searchEndpoint.startsWith('/') ? searchEndpoint : `/${searchEndpoint}`;
@@ -48,8 +46,7 @@ import type { Document } from '$lib/types';
       console.error('Search error:', error);'
       results = [];
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   };
   const handleKeydown = (event: KeyboardEvent) => {
     if (event.key === 'Enter') {
@@ -57,28 +54,27 @@ import type { Document } from '$lib/types';
     } else if (event.key === 'Escape') {
       query = "";
       results = [];
-      isExpanded = false;
+      isExpanded = false
       searchInput?.blur();
     }
   };
   const selectResult = (result: any) => {
     query = result.content ? result.content.substring(0, 100) + "..." : (result.title || "");
     results = [];
-    isExpanded = false;
+    isExpanded = false
     onResults([result]);
   };
   const clearSearch = () => {
     query = "";
     results = [];
-    isExpanded = false;
+    isExpanded = false
     searchInput?.focus();
   };
   $effect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as Element | null;
+      const target = e.target as Element | null
       if (!target || !target.closest('.search-container')) {
-        isExpanded = false;
-      }
+        isExpanded = false}
     };
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
@@ -102,7 +98,7 @@ import type { Document } from '$lib/types';
         autocomplete="off"
       />
       {#if query}
-        <button onclick={clearSearch} class="nes-btn is-error" type="button" title="Clear, search"> × </button>
+        <button onclick={clearSearch} class="nes-btn is-error" type="button" title="Clear, search"> Ã— </button>
       {/if}
       {#if isLoading}
         <div class="loading-indicator">
@@ -159,52 +155,45 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .search-container {
-    position: relative;
+    position: relative
     width: 100%;
-    max-width: 600px;
-   , margin: 0 auto;
-    font-family: 'Press Start 2P', monospace;
-  }
+    max-width: 600px
+   , margin: 0 auto
+    font-family: 'Press Start 2P', monospace}
   .search-field {
-    margin-bottom: 0;
-  }
+    margin-bottom: 0}
   .search-label {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-    font-size: 12px;
-    color: #212529;
-  }
+    display: flex
+    align-items: center
+    gap: 8px
+    margin-bottom: 8px
+    font-size: 12px
+    color: #212529}
   .search-input-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
-  .search-input { flex: 1;
-    padding-right: 80px;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 10px;
-  }
+    position: relative
+    display: flex
+    align-items: center}
+  .search-input { flex: 1
+    padding-right: 80px
+    font-family: 'Press Start 2P', monospace
+    font-size: 10px}
   .clear-btn {
-    position: absolute;
-    right: 40px;
+    position: absolute
+    right: 40px
     top: 50%;
    , transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    padding: 0;
-    font-size: 16px;
-    line-height: 1;
-    border: 2px solid #dc3545;
-  }
+    width: 32px
+    height: 32px
+    padding: 0
+    font-size: 16px
+    line-height: 1
+    border: 2px solid #dc3545}
   .loading-indicator {
-    position: absolute;
-    right: 8px;
+    position: absolute
+    right: 8px
     top: 50%;
    , transform: translateY(-50%);
-    animation: bounce 1s infinite;
-  }
+    animation: bounce 1s infinite}
   @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
       transform: translateY(-50%);
@@ -217,110 +206,94 @@ import type { Document } from '$lib/types';
     }
   }
   .results-container {
-    position: absolute;
+    position: absolute
     top: 100%;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-   , background: white;
-    margin-top: 8px;
-    max-height: 400px;
-    overflow-y: auto;
-  }
+    left: 0
+    right: 0
+    z-index: 1000
+   , background: white
+    margin-top: 8px
+    max-height: 400px
+    overflow-y: auto}
   .loading-message,
   .no-results {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 16px;
-    justify-content: center;
-    font-size: 10px;
-    color: #6c757d;
-  }
+    display: flex
+    align-items: center
+    gap: 8px
+    padding: 16px
+    justify-content: center
+    font-size: 10px
+    color: #6c757d}
   .results-header {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border-bottom: 2px solid #dee2e6;
-    font-size: 10px;
-    color: #495057;
-    background: #f8f9fa;
-  }
+    display: flex
+    align-items: center
+    gap: 8px
+    padding: 8px 16px
+    border-bottom: 2px solid #dee2e6
+    font-size: 10px
+    color: #495057
+    background: #f8f9fa}
   .results-list {
-    max-height: 300px;
-    overflow-y: auto;
-  }
+    max-height: 300px
+    overflow-y: auto}
   .result-item {
     width: 100%;
-    text-align: left;
-    border: none;
-    border-bottom: 1px solid #dee2e6;
-    margin: 0;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
+    text-align: left
+    border: none
+    border-bottom: 1px solid #dee2e6
+    margin: 0
+    cursor: pointer
+    transition: background-color 0.2s}
   .result-item:hover {
-    background: #e9ecef;
-  }
+    background: #e9ecef}
   .result-item:last-child {
-    border-bottom: none;
-  }
+    border-bottom: none}
   .result-content {
-    padding: 12px;
-  }
+    padding: 12px}
   .result-title {
-    font-size: 10px;
-    font-weight: bold;
-    color: #212529;
-    margin-bottom: 4px;
-  }
+    font-size: 10px
+    font-weight: bold
+    color: #212529
+    margin-bottom: 4px}
   .result-snippet {
-    font-size: 8px;
-    color: #6c757d;
-    line-height: 1.4;
-    margin-bottom: 8px;
-  }
+    font-size: 8px
+    color: #6c757d
+    line-height: 1.4
+    margin-bottom: 8px}
   .result-metadata {
-    display: flex;
-   , gap: 8px;
-    margin-bottom: 4px;
-  }
+    display: flex
+   , gap: 8px
+    margin-bottom: 4px}
   .case-tag,
   .type-tag {
-    font-size: 8px;
-    padding: 2px 6px;
-    border-radius: 2px;
-    background: #e9ecef;
-    color: #495057;
-  }
+    font-size: 8px
+    padding: 2px 6px
+    border-radius: 2px
+    background: #e9ecef
+    color: #495057}
   .case-tag {
-    background: #d1ecf1;
-    color: #0c5460;
-  }
+    background: #d1ecf1
+    color: #0c5460}
   .type-tag {
-    background: #d4edda;
-    color: #155724;
-  }
+    background: #d4edda
+    color: #155724}
   .similarity-score {
-    font-size: 8px;
-   , color: #007bff;
-    text-align: right;
-  }
+    font-size: 8px
+   , color: #007bff
+    text-align: right}
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .search-container {
       max-width: 100%;
     }
     .search-input {
-      font-size: 8px;
-    }
+      font-size: 8px}
     .results-container {
-      position: fixed;
-      top: auto;
-      left: 16px;
-     , right: 16px;
-      max-height: 50vh;
-    }
+      position: fixed
+      top: auto
+      left: 16px
+     , right: 16px
+      max-height: 50vh}
   }
 </style>
+

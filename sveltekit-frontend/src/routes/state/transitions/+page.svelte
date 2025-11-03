@@ -1,6 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types';
-  // Svelte, 5 runes are auto-imported — do NOT import runes explicitly.
+  // Svelte, 5 runes are auto-imported â€” do NOT import runes explicitly.
   // XState Transition Monitoring & Visualization
 
   let mounted = $state<boolean>(false);
@@ -22,8 +22,7 @@ import type { Case } from '$lib/types';
   let mockTransitions: Record<string any> = {
     'auth-machine': {
       currentState: 'authenticated',
-      transitions: [
-        {
+      transitions: [ {
           id: 'logout',
           event: 'LOGOUT',
           from: 'authenticated',
@@ -33,8 +32,7 @@ import type { Case } from '$lib/types';
           context: { userId: 'user_123', sessionId: 'sess_456' },
           guards: ['isValidSession'],
           actions: ['clearToken', 'redirectToLogin']
-        },
-        {
+        }, {
           id: 'refresh',
           event: 'REFRESH_TOKEN',
           from: 'authenticated',
@@ -44,8 +42,7 @@ import type { Case } from '$lib/types';
           context: { userId: 'user_123', tokenExp: 1642435200 },
           guards: ['tokenNearExpiry'],
           actions: ['refreshAuthToken']
-        },
-        {
+        }, {
           id: 'profile',
           event: 'VIEW_PROFILE',
           from: 'authenticated',
@@ -60,8 +57,7 @@ import type { Case } from '$lib/types';
     },
     'case-management-machine': {
       currentState: 'reviewing',
-      transitions: [
-        {
+      transitions: [ {
           id: 'submit',
           event: 'SUBMIT_CASE',
           from: 'reviewing',
@@ -71,8 +67,7 @@ import type { Case } from '$lib/types';
           context: { caseId: 'case_789', reviewerId: 'user_123' },
           guards: ['allFieldsComplete', 'hasPermission'],
           actions: ['validateCase', 'submitToDatabase', 'notifyStakeholders']
-        },
-        {
+        }, {
           id: 'save-draft',
           event: 'SAVE_DRAFT',
           from: 'reviewing',
@@ -88,7 +83,7 @@ import type { Case } from '$lib/types';
   };
 
   $effect(() => {
-    mounted = true;
+    mounted = true
     loadTransitions();
   });
 
@@ -99,20 +94,19 @@ import type { Case } from '$lib/types';
   });
 
   async function loadTransitions(): Promise<any> {
-    loading = true;
+    loading = true
     try {
       // production: fetch(`/api/state/machines/${machineId}/transitions`)
       await new Promise((resolve) => setTimeout(resolve, 800));
       const machineData = mockTransitions[machineId] || { currentState: 'unknown', transitions: [] };
-      currentState = machineData.currentState;
+      currentState = machineData.currentState
       transitions = machineData.transitions || [];
     } catch (error) {
       console.error('Failed to load transitions:', error);
       transitions = [];
       currentState = 'error';
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
 
   async function triggerTransition(eventName: string): Promise<any> {
@@ -132,8 +126,8 @@ import type { Case } from '$lib/types';
   }
 
   function getTransitionColor(transition: any) {
-    const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0;
-    const age = Date.now() - ts;
+    const ts = transition?.timestamp ? new Date(transition.timestamp).getTime() : 0
+    const age = Date.now() - ts
     if (age < 30000) return 'border-green-200, bg-green-50';
     if (age < 300000) return 'border-blue-200, bg-blue-50';
     return 'border-gray-200 bg-gray-50';
@@ -157,10 +151,10 @@ import type { Case } from '$lib/types';
     <div class="header-content">
       <div class="breadcrumb">
         <a href="/state/machines" class="breadcrumb-link">State Machines</a>
-        <span class="breadcrumb-separator">→</span>
+        <span class="breadcrumb-separator">â†’</span>
         <span class="breadcrumb-current">{machineId}</span>
       </div>
-      <h1>🔄 Transition Monitor</h1>
+      <h1>ðŸ”„ Transition Monitor</h1>
       <p>Real-time transitions for <strong>{machineId}</strong></p>
       <div class="current-state-display">
         <span class="state-label">Current State:</span>
@@ -188,13 +182,13 @@ import type { Case } from '$lib/types';
       </div>
     {:else if transitions.length === 0}
       <div class="empty-state">
-        <h2>🎯 No Transitions Recorded</h2>
+        <h2>ðŸŽ¯ No Transitions Recorded</h2>
         <p>This state machine hasn't recorded: any transitions yet.</p>'
       </div>
     {:else}
       <div class="transitions-timeline">
         <div class="timeline-header">
-          <h2>📊 Transition History ({transitions.length})</h2>
+          <h2>ðŸ“Š Transition History ({transitions.length})</h2>
           <div class="timeline-stats">
             <span>Avg Duration {Math.round(transitions.reduce((sum, t) => sum + (t.duration || 0), 0) / transitions.length)}ms</span>
           </div>
@@ -212,7 +206,7 @@ import type { Case } from '$lib/types';
                 <div class="transition-flow">
                   <span class="state-from">{transition.from}</span>
                   <div class="transition-arrow">
-                    <span class="arrow">→</span>
+                    <span class="arrow">â†’</span>
                     <span class="event-label">{transition.event}</span>
                   </div>
                   <span class="state-to">{transition.to}</span>
@@ -234,7 +228,7 @@ import type { Case } from '$lib/types';
                       <div class="guards-list">
 -                        {#each Array.isArray((transition.guards || [])) ? (transition.guards || []) : [] as guard}
 +                        {#each transition.guards || [] as guard}
-                          <span class="guard-badge">✓ {guard}</span>
+                          <span class="guard-badge">âœ“ {guard}</span>
                         {/each}
                         {#if !(transition.guards || []).length}
                           <span class="no-guards">No guards</span>
@@ -246,7 +240,7 @@ import type { Case } from '$lib/types';
                       <div class="actions-list">
 -                        {#each Array.isArray((transition.actions || [])) ? (transition.actions || []) : [] as action}
 +                        {#each transition.actions || [] as action}
-                          <span class="action-badge">⚡ {action}</span>
+                          <span class="action-badge">âš¡ {action}</span>
                         {/each}
                       </div>
                     </div>
@@ -277,7 +271,7 @@ import type { Case } from '$lib/types';
             </button>
           </div>
           <p class="control-note">
-            ⚠️ These are test triggers. In production, transitions are triggered by application events.
+            âš ï¸ These are test triggers. In production, transitions are triggered by application events.
           </p>
         </div>
       </div>
@@ -287,307 +281,256 @@ import type { Case } from '$lib/types';
 
 <style>
   .page-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
+    max-width: 1400px
+    margin: 0 auto
+    padding: 2rem}
   .page-header {
-    margin-bottom: 2rem;
-  }
+    margin-bottom: 2rem}
   .header-content {
-    margin-bottom: 1.5rem;
-  }
+    margin-bottom: 1.5rem}
   .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    margin-bottom: 1rem
+    font-size: 0.875rem
+    color: #6b7280}
   .breadcrumb-link {
-    color: #3b82f6;
-    text-decoration: none;
-  }
+    color: #3b82f6
+    text-decoration: none}
   .breadcrumb-link:hover {
-    text-decoration: underline;
-  }
+    text-decoration: underline}
   .breadcrumb-separator {
-    color: #9ca3af;
-  }
+    color: #9ca3af}
   .breadcrumb-current {
-    font-weight: 500;
-  }
+    font-weight: 500}
   .page-header h1 {
-    font-size: 2.5rem;
-    color: #1f2937;
-    margin-bottom: 0.5rem;
-  }
+    font-size: 2.5rem
+    color: #1f2937
+    margin-bottom: 0.5rem}
   .page-header p {
-    font-size: 1.125rem;
-    color: #6b7280;
-    margin-bottom: 1rem;
-  }
+    font-size: 1.125rem
+    color: #6b7280
+    margin-bottom: 1rem}
   .current-state-display {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem}
   .state-label {
-    font-weight: 500;
-    color: #374151;
-  }
+    font-weight: 500
+    color: #374151}
   .current-state {
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 1rem;
-  }
+    padding: 0.5rem 1rem
+    border-radius: 8px
+    font-weight: 500
+    font-size: 1rem}
   .machine-selector {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem
+    padding: 1rem
+    background: #f8fafc
+    border-radius: 12px
+    border: 1px solid #e2e8f0}
   .machine-select {
-    padding: 0.5rem 1rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background: white;
-    color: #374151;
-    min-width: 200px;
-  }
+    padding: 0.5rem 1rem
+    border: 1px solid #d1d5db
+    border-radius: 6px
+    background: white
+    color: #374151
+    min-width: 200px}
   .loading-state {
-    text-align: center;
-    padding: 4rem;
-  }
+    text-align: center
+    padding: 4rem}
   .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f4f6;
-    border-top: 4px solid #3b82f6;
+    width: 40px
+    height: 40px
+    border: 4px solid #f3f4f6
+    border-top: 4px solid #3b82f6
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-  }
+    animation: spin 1s linear infinite
+    margin: 0 auto 1rem}
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
   .empty-state {
-    text-align: center;
-    padding: 4rem;
-    background: #f8fafc;
-    border-radius: 12px;
-    border: 2px dashed #cbd5e1;
-  }
+    text-align: center
+    padding: 4rem
+    background: #f8fafc
+    border-radius: 12px
+    border: 2px dashed #cbd5e1}
   .empty-state h2 {
-    color: #374151;
-    margin-bottom: 0.5rem;
-  }
+    color: #374151
+    margin-bottom: 0.5rem}
   .transitions-timeline {
-    margin-bottom: 2rem;
-  }
+    margin-bottom: 2rem}
   .timeline-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 1.5rem}
   .timeline-header h2 {
-    color: #1f2937;
-    margin: 0;
-  }
+    color: #1f2937
+    margin: 0}
   .timeline-stats {
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
+    font-size: 0.875rem
+    color: #6b7280}
   .timeline-container {
-    display: flex;
-    flex-direction: column;
-   , gap: 1rem;
-  }
+    display: flex
+    flex-direction: column
+   , gap: 1rem}
   /* alias for old class name used in markup migrations */
   .transition-card,
   .transition-nier-bits-card {
-    border: 2px solid;
-    border-radius: 12px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
+    border: 2px solid
+    border-radius: 12px
+    padding: 1.5rem
+    cursor: pointer
+    transition: all 0.2s ease}
   .transition-card:hover { transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   .transition-card.selected {
-    border-color: #3b82f6;
+    border-color: #3b82f6
     box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.2);
   }
   .transition-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center}
   .transition-flow {
-    display: flex;
-    align-items: center;
-   , gap: 1rem;
-  }
+    display: flex
+    align-items: center
+   , gap: 1rem}
   .state-from 
   .state-to {
-    padding: 0.25rem 0.75rem;
-    border-radius: 6px;
-    background: #e5e7eb;
-    color: #374151;
-    font-weight: 500;
-    font-size: 0.875rem;
-  }
+    padding: 0.25rem 0.75rem
+    border-radius: 6px
+    background: #e5e7eb
+    color: #374151
+    font-weight: 500
+    font-size: 0.875rem}
   .state-to {
-    background: #dbeafe;
-    color: #1d4ed8;
-  }
+    background: #dbeafe
+    color: #1d4ed8}
   .transition-arrow {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-  }
+    display: flex
+    flex-direction: column
+    align-items: center
+    gap: 0.25rem}
   .arrow {
-    font-size: 1.25rem;
-    color: #6b7280;
-  }
+    font-size: 1.25rem
+    color: #6b7280}
   .event-label {
-    font-size: 0.75rem;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+    font-size: 0.75rem
+    color: #9ca3af
+    text-transform: uppercase
+    letter-spacing: 0.05em}
   .transition-meta {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem
+    font-size: 0.875rem
+    color: #6b7280}
   .duration {
-    font-weight: 500;
-    color: #059669;
-  }
+    font-weight: 500
+    color: #059669}
   .transition-details {
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid #e5e7eb;
-  }
+    margin-top: 1.5rem
+    padding-top: 1.5rem
+    border-top: 1px solid #e5e7eb}
   .details-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 1.5rem;
-  }
+    display: grid
+    grid-template-columns: 1fr 1fr 1fr
+    gap: 1.5rem}
   .detail-section h4 {
-    font-weight: 600;
-    color: #374151;
-    margin-bottom: 0.75rem;
-    font-size: 0.875rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+    font-weight: 600
+    color: #374151
+    margin-bottom: 0.75rem
+    font-size: 0.875rem
+    text-transform: uppercase
+    letter-spacing: 0.05em}
   .context-display {
-    background: #1f2937;
-    color: #f9fafb;
-    padding: 0.75rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    overflow-x: auto;
-   , margin: 0;
-  }
+    background: #1f2937
+    color: #f9fafb
+    padding: 0.75rem
+    border-radius: 6px
+    font-size: 0.75rem
+    overflow-x: auto
+   , margin: 0}
   .guards-list,
   .actions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.5rem}
   .guard-badge {
-    background: #dcfce7;
-    color: #166534;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    border: 1px solid #bbf7d0;
-  }
+    background: #dcfce7
+    color: #166534
+    padding: 0.25rem 0.5rem
+    border-radius: 4px
+    font-size: 0.75rem
+    border: 1px solid #bbf7d0}
   .action-badge {
-    background: #fef3c7;
+    background: #fef3c7
     color: #92400e; /* fixed to valid 6-digit hex */
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    border: 1px solid #fde68a;
-  }
-  .no-guards { color: #9ca3af;
-    font-style: italic;
-    font-size: 0.75rem;
-  }
+    padding: 0.25rem 0.5rem
+    border-radius: 4px
+    font-size: 0.75rem
+    border: 1px solid #fde68a}
+  .no-guards { color: #9ca3af
+    font-style: italic
+    font-size: 0.75rem}
   .transition-controls {
-    margin-top: 2rem;
-  }
+    margin-top: 2rem}
   /* alias for controls card */
   .controls-card,
   .controls-nier-bits-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 1rem;
-  }
-  .controls-header { margin-bottom: 0.5rem; }
-  .controls-title { margin: 0; font-size: 1.125rem; }
-  .controls-content { padding-top: 0.5rem; }
+    border: 1px solid #e2e8f0
+    border-radius: 12px
+    padding: 1rem}
+  .controls-header { margin-bottom: 0.5rem}
+  .controls-title { margin: 0; font-size: 1.125rem}
+  .controls-content { padding-top: 0.5rem}
   .control-buttons {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-  }
+    display: flex
+    gap: 1rem
+    margin-bottom: 1rem
+    flex-wrap: wrap}
   .control-note {
-    font-size: 0.875rem;
-    color: #6b7280;
-   , margin: 0;
-  }
+    font-size: 0.875rem
+    color: #6b7280
+   , margin: 0}
   @media (max-width: 768px) {
     .page-container {
-      padding: 1rem;
-    }
+      padding: 1rem}
     .details-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .transition-header {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 1rem;
-    }
+      flex-direction: column
+      align-items: flex-start
+      gap: 1rem}
     .machine-selector {
-      flex-direction: column;
-      align-items: stretch;
-    }
+      flex-direction: column
+      align-items: stretch}
     .control-buttons {
-      flex-direction: column;
-    }
+      flex-direction: column}
   }
 
   /* Ensure button elements keep the .transition-card visuals but remove user-agent appearance */
   button.transition-card {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-color: transparent;
+    appearance: none
+    -webkit-appearance: none
+    -moz-appearance: none
+    background-color: transparent
     text-align: left; /* keep inner layout same as div */
     width: 100%;
     border: inherit; /* let .transition-card CSS control border */
-    cursor: pointer;
-  }
+    cursor: pointer}
 
   /* Visible focus style for keyboard users */
-  button.transition-card:focus { outline: none;
+  button.transition-card:focus { outline: none
     box-shadow: 0, 0 0 3px rgba(59,130,246,0.18);
   }
 </style>
+

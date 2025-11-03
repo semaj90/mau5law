@@ -1,10 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Message } from '$lib/types';
   // $props is a Svelte rune; do not import it.
   interface Props {
     size?: 'sm' | 'md' | 'lg';
-    message?: string;
-    showMessage?: boolean;
+    message?: string
+    showMessage?: boolean
     color?: 'blue' | 'green' | 'purple' | 'gray';
   }
   let { size = 'md', message = 'Loading...', showMessage = true, color = 'blue' }: Props = $props();
@@ -87,18 +87,17 @@ import type { Message } from '$lib/types';
     }
   }
   .animate-spin {
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
   /* visually-hidden helper for screen readers */
   .sr-only {
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
+    position: absolute !important
+    height: 1px
+    width: 1px
+    overflow: hidden
    , clip: rect(1px, 1px, 1px, 1px);
-    white-space: nowrap;
-    border: 0;
-    padding: 0;
-   , margin: -1px;
-  }
+    white-space: nowrap
+    border: 0
+    padding: 0
+   , margin: -1px}
 </style>
+

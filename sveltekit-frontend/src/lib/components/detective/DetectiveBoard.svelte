@@ -1,4 +1,4 @@
-<!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css, integration -->
+﻿<!-- DetectiveBoard.svelte - enhanced-bits + bits-ui + nes.css, integration -->
 <script lang="ts">
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
@@ -61,8 +61,7 @@ import type { Case } from '$lib/types';
 	// Subscribe evidence store
 	$effect(() => {
 		const unsubscribe = evidenceStore.subscribe((v) => {
-			evidenceStoreState = v;
-		});
+			evidenceStoreState = v});
 		return () => unsubscribe();
 	});
 
@@ -77,22 +76,20 @@ import type { Case } from '$lib/types';
 	async function initializeEnhancedSystems(): Promise<void> {
 		try {
 			await rabbitMQService.connect();
-			systemStatus.rabbitMQ.connected = true;
+			systemStatus.rabbitMQ.connected = true
 			systemStatus.rabbitMQ.health = 'connected';
 		} catch (e) {
 			console.warn('RabbitMQ connection failed', e);
 		}
 		try {
-			systemStatus.postgreSQL.connected = true;
-			systemStatus.postgreSQL.vectorCount = 0;
-		} catch (e) {
+			systemStatus.postgreSQL.connected = true
+			systemStatus.postgreSQL.vectorCount = 0} catch (e) {
 			console.warn('Postgres/vector status failed', e);
 		}
 		try {
 			const gpuStatus = await gpuService.getStatus();
-			systemStatus.gpu.available = !!gpuStatus?.webgpuSupported;
-			systemStatus.gpu.utilization = gpuStatus?.accelerationActive ? 75 : 0;
-		} catch (e) {
+			systemStatus.gpu.available = !!gpuStatus?.webgpuSupported
+			systemStatus.gpu.utilization = gpuStatus?.accelerationActive ? 75 : 0} catch (e) {
 			console.warn('GPU service failed', e);
 		}
 	}
@@ -102,14 +99,13 @@ import type { Case } from '$lib/types';
 	}
 
 	function updateProcessingStats(message: any) {
-		systemStatus.processingStats.queued = message?.queuedCount ?? 0;
-		systemStatus.processingStats.processed = message?.processedCount ?? 0;
-	}
+		systemStatus.processingStats.queued = message?.queuedCount ?? 0
+		systemStatus.processingStats.processed = message?.processedCount ?? 0}
 
 	function updateEvidenceStatus(message: any) {
-		const evidenceId = message?.evidenceId;
-		const newStatus = message?.status;
-		if (!evidenceId || !newStatus) return;
+		const evidenceId = message?.evidenceId
+		const newStatus = message?.status
+		if (!evidenceId || !newStatus) return
 		moveEvidenceBetweenColumns(evidenceId, newStatus);
 	}
 
@@ -119,10 +115,8 @@ import type { Case } from '$lib/types';
 			const idx = col.items.findIndex((it: any) => it.id === evidenceId);
 			if (idx !== -1) {
 				const [item] = col.items.splice(idx, 1);
-				return col;
-			}
-			return col;
-		});
+				return col}
+			return col});
 		const item = columns.reduce((acc: any, col: any) => acc || col.items.find((i: any) => i.id === evidenceId), null);
 		if (item) {
 			columns = columns.map((col) => (col.id === targetColumnId ? { ...col, items: [...col.items, item] } : col));
@@ -130,8 +124,7 @@ import type { Case } from '$lib/types';
 	}
 
 	function switchViewMode(mode: 'columns' | 'canvas') {
-		viewMode = mode;
-	}
+		viewMode = mode}
 
 	function handleFileUpload(result: any, columnId: string) {
 		const newEvidence = {
@@ -183,8 +176,7 @@ import type { Case } from '$lib/types';
 
 
 	function toggleAIAssistant() {
-		showAIAssistant = !showAIAssistant;
-	}
+		showAIAssistant = !showAIAssistant}
 
 	function handleEvidenceSelect(evidenceId: string) {
 		if (selectedEvidenceIds.includes(evidenceId)) {
@@ -206,15 +198,14 @@ import type { Case } from '$lib/types';
 		switch (type) {
 			case, 'suggestions':
 				console.log('AI suggestions', data);
-				break;
+				break
 			case, 'evidence-connect':
 				console.log('Evidence connections', data);
-				break;
-		}
+				break}
 	}
 
 	async function analyzeSelectedEvidence(): Promise<any> {
-		if (selectedEvidenceIds.length === 0) return;
+		if (selectedEvidenceIds.length === 0) return
 		try {
 			if (selectedEvidenceIds.length === 1) {
 				await analyzeEvidence(caseId, selectedEvidenceIds[0]);
@@ -247,7 +238,7 @@ import type { Case } from '$lib/types';
 	}
 
 	async function saveTo(target: string, item: any): Promise<void> {
-		if (!item) return;
+		if (!item) return
 		try {
 			await fetch('/api/user-activity', {
 				method: 'POST',
@@ -264,22 +255,21 @@ import type { Case } from '$lib/types';
 	}
 
 	function openFindModal(item: any) {
-		findModal.show = true;
+		findModal.show = true
 		findModal.query = item?.title || '';
 		findModal.results = [];
-		findModal.loading = false;
+		findModal.loading = false
 		findModal.error = '';
 		findModal.suggestions = [];
 	}
 
 	function closeFindModal() {
-		findModal.show = false;
-	}
+		findModal.show = false}
 
 	function runFindSearch(item: any): Promise<void> {
 		return (async () => {
 			if (!item) return closeFindModal();
-			findModal.loading = true;
+			findModal.loading = true
 			findModal.error = '';
 			findModal.results = [];
 			findModal.suggestions = [];
@@ -305,20 +295,19 @@ import type { Case } from '$lib/types';
 			} catch (e) {
 				findModal.error += ' Qdrant search failed.';
 			}
-			findModal.loading = false;
-		})();
+			findModal.loading = false})();
 	}
 
 	function handleCanvasDrop(e: DragEvent): void {
 		e.preventDefault();
 		const data = e.dataTransfer?.getData('text/plain');
-		if (!data) return;
+		if (!data) return
 		try {
 			const item = JSON.parse(data);
 			const rect = canvasContainer?.getBoundingClientRect();
 			if (rect) {
-				item.x = e.clientX - rect.left;
-				item.y = e.clientY - rect.top;
+				item.x = e.clientX - rect.left
+				item.y = e.clientY - rect.top
 				canvasEvidence = [...canvasEvidence, item];
 			}
 		} catch (err) {
@@ -336,8 +325,8 @@ import type { Case } from '$lib/types';
 	function handleCanvasDragEnd(e: DragEvent, item: any): void {
 		const rect = canvasContainer?.getBoundingClientRect();
 		if (rect) {
-			const newX = e.clientX - rect.left;
-			const newY = e.clientY - rect.top;
+			const newX = e.clientX - rect.left
+			const newY = e.clientY - rect.top
 			canvasEvidence = canvasEvidence.map((ex: any) => (ex.id === item.id ? { ...ex, x: newX, y: newY } : ex));
 			broadcastPositionUpdate(item.id, newX, newY);
 		}
@@ -359,11 +348,10 @@ import type { Case } from '$lib/types';
 				}
 			}
 		}
-		return connections;
-	}
+		return connections}
 
 	// Workaround: render EvidenceCard via svelte:component to avoid TS complaining about event-like attributes on props
-	const EvidenceCardAny = EvidenceCard as: unknown, as: any;
+	const EvidenceCardAny = EvidenceCard as: unknown, as: any
 </script>
 
 <svelte:window, onkeydown={handleGlobalKeydown} />
@@ -374,7 +362,7 @@ import type { Case } from '$lib/types';
 			<div class="flex justify-between">
 				<div class="flex items-center">
 					<div class="w-12 h-12 bg-primary bg-opacity-10 rounded-full flex items-center">
-						<span class="text-2xl">🕵️</span>
+						<span class="text-2xl">ðŸ•µï¸</span>
 					</div>
 					<div>
 						<CardTitle class="text-2xl">Detective Board</CardTitle>
@@ -392,7 +380,7 @@ import type { Case } from '$lib/types';
 										onclick={() => switchViewMode('columns')}
 										aria-pressed={viewMode === 'columns'}
 									>
-										<span class="mr-2">📋</span> Columns
+										<span class="mr-2">ðŸ“‹</span> Columns
 									</button>
 								</Tooltip.Trigger>
 								<Tooltip.Content, side="top">Switch to columns view</Tooltip.Content>
@@ -405,7 +393,7 @@ import type { Case } from '$lib/types';
 										onclick={() => switchViewMode('canvas')}
 										aria-pressed={viewMode === 'canvas'}
 									>
-										<span class="mr-2">🎨</span> Canvas
+										<span class="mr-2">ðŸŽ¨</span> Canvas
 									</button>
 								</Tooltip.Trigger>
 								<Tooltip.Content, side="top">Switch to canvas view</Tooltip.Content>
@@ -424,7 +412,7 @@ import type { Case } from '$lib/types';
 						<Tooltip.Root>
 							<Tooltip.Trigger, asChild>
 								<Button size="sm" variant="secondary" onclick={() => analyzeSelectedEvidence()}>
-									<span class="mr-2">🤖</span> Analyze Selected
+									<span class="mr-2">ðŸ¤–</span> Analyze Selected
 								</Button>
 							</Tooltip.Trigger>
 							<Tooltip.Content, side="top">Ask the AI to analyze selected evidence</Tooltip.Content>
@@ -452,7 +440,7 @@ import type { Case } from '$lib/types';
 					<Tooltip.Root>
 						<Tooltip.Trigger, asChild>
 							<Button size="sm" onclick={() => { /* new case */ }}>
-								<span class="mr-2">➕</span> New Case
+								<span class="mr-2">âž•</span> New Case
 							</Button>
 						</Tooltip.Trigger>
 						<Tooltip.Content, side="top">Create a new case</Tooltip.Content>
@@ -519,7 +507,7 @@ import type { Case } from '$lib/types';
 														aria-expanded={openContextMenuId === item.id}
 														onclick={() => openContextMenuId = openContextMenuId === item.id ? null : item.id}
 													>
-														⋯
+														â‹¯
 													</button>
 												</Tooltip.Trigger>
 												<Tooltip.Content, side="left">Item actions</Tooltip.Content>
@@ -527,12 +515,12 @@ import type { Case } from '$lib/types';
 
 											{#if openContextMenuId === item.id}
 												<ul class="absolute right-2 mt-8 w-56 bg-background border border-border rounded shadow-md">
-													<li class="px-3 py-2 hover:bg-muted" onclick={() => { handleViewEvidence(item); openContextMenuId = null; }} title="View details">View Details</li>
-													<li class="px-3 py-2 hover:bg-muted" onclick={() => { window.location.href = `/evidence/${item.id}/edit`; openContextMenuId = null; }} title="Edit">Edit</li>
-													<li class="px-3 py-2 hover:bg-muted" onclick={() => { saveTo('savedcitations', item); openContextMenuId = null; }} title="Save to your citations">Saved Citations</li>
-													<li class="px-3 py-2 hover:bg-muted" onclick={() => { saveTo('mcpcontext', item); openContextMenuId = null; }} title="Add to MCP context">MCP Context (LLM)</li>
-													<li class="px-3 py-2 hover:bg-muted" onclick={() => { openFindModal(item); openContextMenuId = null; }} title="Find related evidence">Find Related...</li>
-													<li class="px-3 py-2 hover:bg-muted" onclick={() => { analyzeSelectedEvidence(); openContextMenuId = null; }} title="Ask AI about this">🤖 Ask AI About This</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { handleViewEvidence(item); openContextMenuId = null}} title="View details">View Details</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { window.location.href = `/evidence/${item.id}/edit`; openContextMenuId = null}} title="Edit">Edit</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { saveTo('savedcitations', item); openContextMenuId = null}} title="Save to your citations">Saved Citations</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { saveTo('mcpcontext', item); openContextMenuId = null}} title="Add to MCP context">MCP Context (LLM)</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { openFindModal(item); openContextMenuId = null}} title="Find related evidence">Find Related...</li>
+													<li class="px-3 py-2 hover:bg-muted" onclick={() => { analyzeSelectedEvidence(); openContextMenuId = null}} title="Ask AI about this">ðŸ¤– Ask AI About This</li>
 												</ul>
 											{/if}
 										</div>
@@ -589,14 +577,14 @@ import type { Case } from '$lib/types';
 														<div class="flex">
 															<Tooltip.Root>
 																<Tooltip.Trigger, asChild>
-																	<Button size="sm" variant="ghost" onclick={() => handleViewEvidence(item)}><span class="mr-1">🔍</span> View</Button>
+																	<Button size="sm" variant="ghost" onclick={() => handleViewEvidence(item)}><span class="mr-1">ðŸ”</span> View</Button>
 																</Tooltip.Trigger>
 																<Tooltip.Content, side="top">View evidence details</Tooltip.Content>
 															</Tooltip.Root>
 
 															<Tooltip.Root>
 																<Tooltip.Trigger, asChild>
-																	<Button size="sm" variant="secondary" onclick={() => {}}><span class="mr-1">⋯</span></Button>
+																	<Button size="sm" variant="secondary" onclick={() => {}}><span class="mr-1">â‹¯</span></Button>
 																</Tooltip.Trigger>
 																<Tooltip.Content, side="top">More actions</Tooltip.Content>
 															</Tooltip.Root>
@@ -616,7 +604,7 @@ import type { Case } from '$lib/types';
 												aria-expanded={openContextMenuId === item.id}
 												onclick={() => openContextMenuId = openContextMenuId === item.id ? null : item.id}
 											>
-												⋯
+												â‹¯
 											</button>
 										</Tooltip.Trigger>
 										<Tooltip.Content, side="left">Item actions</Tooltip.Content>
@@ -712,17 +700,16 @@ import type { Case } from '$lib/types';
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap');
 			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
 	.bg-grid-pattern {90deg rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-		background-image:50px 50px;
+		background-image:50px 50px
 			linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
-		background-size: 50px 50px;
-	}	linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+		background-size: 50px 50px}	linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
 	:global(.dark) .bg-grid-pattern { 255, 255, 0.1) 1px, transparent 1px);
 		background-image:
 			linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
 	}box-shadow: 0, 0 0 2px rgb(251, 191 36 / 0.75), 0 10px 15px -3px rgb(0, 0 0 / 0.1), 0 4px 6px -4px rgb(0, 0 0 / 0.1);
-		animation: pulse-highlight 2s ease-in-out;
+		animation: pulse-highlight 2s ease-in-out
 	:global(.highlighted) {
 		box-shadow: 0, 0 0 2px rgb(251, 191 36 / 0.75), 0 10px 15px -3px rgb(0, 0 0 / 0.1), 0 4px 6px -4px rgb(0, 0 0 / 0.1);
 		animation: pulse-highlight 2s ease-in-out; 0.75);

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
@@ -67,14 +67,13 @@ await loadCases();
     }
   }
   // Search cases with debouncing
-  let searchTimeout = $state<NodeJS.Timeout;
+  let searchTimeout = $state<NodeJS.Timeout
   async function handleSearch(): Promise<any> {
     clearTimeout(searchTimeout)searchTimeout  | null>(null); const data = setTimeout(async () => {
       const query = $searchQuery.trim());
       if (!query) {
         await loadCases();
-        return;
-      }
+        return}
       loading.set(true);
       error.set('');
       try {
@@ -93,11 +92,10 @@ await loadCases();
   }
   // Create new case
   async function createCase(): Promise<any> {
-    const data = $formData;
+    const data = $formData
     if (!data.title?.trim()) {
       error.set('Case title is required');
-      return;
-    }
+      return}
     loading.set(true);
     error.set('');
     try {
@@ -126,9 +124,9 @@ await loadCases();
   }
   // Update existing case
   async function updateCase(): Promise<any> {
-    const data = $formData;
-    const selected = $selectedCa;
-    if (!selected?.id) return;
+    const data = $formData
+    const selected = $selectedCa
+    if (!selected?.id) return
     loading.set(true);
     error.set('');
     try {
@@ -150,7 +148,7 @@ await loadCases();
   }
   // Delete case
   async function deleteCase(caseId: string): Promise<void> {
-    if (!confirm('Are you sure you want to delete this case? This action cannot be undone.')) return;
+    if (!confirm('Are you sure you want to delete this case? This action cannot be undone.')) return
     loading.set(true);
     error.set('');
     try {
@@ -183,7 +181,7 @@ await loadCases();
   }
   // Get badge class for priority/status
   function getBadgeClass(type: string, value: string) {
-    const config = type === 'priority' ? priorityConfig : statusConfig;
+    const config = type === 'priority' ? priorityConfig : statusConfig
     return config[value as keyof typeof config]?.class || 'bg-gray-100 text-gray-800 border-gray-200';
   }
   // Reactive search
@@ -600,15 +598,14 @@ await loadCases();
   {/if}
 <style>
   .line-clamp-2 {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 2
+    -webkit-box-orient: vertical
+    overflow: hidden}
   .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-   , overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 3
+    -webkit-box-orient: vertical
+   , overflow: hidden}
 </style>
+

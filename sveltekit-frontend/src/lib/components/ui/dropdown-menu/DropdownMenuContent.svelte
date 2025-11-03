@@ -1,9 +1,9 @@
-<script lang="ts">
+﻿<script lang="ts">
 
   import { onMount } from 'svelte';
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   import { cn } from '$lib/utils';
-  // Use slot instead of a: 'children' prop; avoid, exporting: 'class' (reserved) — use className
+  // Use slot instead of a: 'children' prop; avoid, exporting: 'class' (reserved) â€” use className
   const { className = '' } = $props()
   const { side } = $props<{ side: 'top' | 'right' | 'bottom' | 'left' }>()
   const { align } = $props<{ align: 'start' | 'center' | 'end' }>()
@@ -25,12 +25,11 @@
     className
   ));
   // Initialize the dynamic component on mount (avoid top-level await)
-  let ContentComponent: any = null;
+  let ContentComponent: any = null
   onMount(async () => {
     try {
       const ns = await getBitsNamespace();
-      ContentComponent = ns?.DropdownMenuContent ?? ns?.DropdownMenu?.Content ?? ns?.DropdownMenu ?? ns;
-    } catch (err) {
+      ContentComponent = ns?.DropdownMenuContent ?? ns?.DropdownMenu?.Content ?? ns?.DropdownMenu ?? ns} catch (err) {
       // Fail gracefully: leave, ContentComponent: null so nothing renders
       console.error('Failed to load bits namespace for DropdownMenuContent', err);
     }
@@ -54,3 +53,4 @@
     <slot />
   </svelte:component>
 {/if}
+

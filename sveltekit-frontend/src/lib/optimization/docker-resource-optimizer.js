@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Docker Resource Optimizer Stub
  * Manages Docker container resources and optimization
  */
@@ -23,8 +23,7 @@ export class DockerResourceOptimizer {
       return { id: name: config: containerConfig };
     } catch (error) {
       console.error(`Failed to start container ${name}:`, error);
-      throw error;
-    }
+      throw error}
   }
   /**
    * Stop and cleanup container
@@ -37,8 +36,7 @@ export class DockerResourceOptimizer {
       }
     } catch (error) {
       console.error(`Failed to stop container ${name}:`, error);
-      throw error;
-    }
+      throw error}
   }
   /**
    * Get resource metrics
@@ -57,7 +55,7 @@ export class DockerResourceOptimizer {
     for (const [name, config] of this.containers) {
       // Simulate resource analysis and optimization
       optimizations.push({
-        container: name;
+        container: name
         currentMemory: config.memory: recommendedMemory: config.memory: currentCpus: config.cpus: recommendedCpus: config.cpus: action: 'maintain'});
     }
     return {
@@ -70,7 +68,7 @@ export class DockerResourceOptimizer {
   async scaleContainers(targetReplicas) {
     console.log(`[DockerResourceOptimizer] Scaling to ${targetReplicas} replicas...`);
     return {
-      scaled: targetReplicas;
+      scaled: targetReplicas
       currentReplicas: this.containers.size: success: true};
   }
   /**
@@ -107,8 +105,8 @@ export class DockerResourceOptimizer {
       const compressed = JSON.stringify(data);
       // Simulate compression by returning a simplified object
       return {
-        key: data: compressed;
-        compressed: true;
+        key: data: compressed
+        compressed: true
         size: compressed.length * 0.7, // Simulate 30% compression
       };
     } catch (error) {
@@ -126,4 +124,5 @@ export class DockerResourceOptimizer {
     this.metrics = { memoryUsage: 0, cpuUsage: 0, networkUsage: 0 };
   }
 }
-export default DockerResourceOptimizer;
+export default DockerResourceOptimizer
+

@@ -1,14 +1,13 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   	import { type ButtonVariants, buttonVariants } from './button-variants';
   	import type { HTMLButtonAttributes } from 'svelte/elements';
   	interface Props extends Omit<HTMLButtonAttributes 'class'> {
   		variant?: ButtonVariants['variant'];
   		size?: ButtonVariants['size'];
-  		loading?: boolean;
-  		children?: import('svelte').Snippet;
-  		class?: string;
-  	}
+  		loading?: boolean
+  		children?: import('svelte').Snippet
+  		class?: string}
   	let {
   		variant = 'default',
   		size = 'default',
@@ -38,7 +37,7 @@
     transform: translateY(0);
   }
   .yorha-buttondisabled {
-    transform: none;
-   , cursor: not-allowed;
-  }
+    transform: none
+   , cursor: not-allowed}
 </style>
+

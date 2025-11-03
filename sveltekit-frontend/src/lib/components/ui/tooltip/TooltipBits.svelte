@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import '$lib/styles/tooltip-global.css';
   import * as TooltipPrimitive from "bits-ui/tooltip";
@@ -6,18 +6,17 @@
   import { cn } from '$lib/utils';
   import { fade, scale } from 'svelte/transition';
   interface Props {
-    content: string;
+    content: string
     side?: 'top' | 'right' | 'bottom' | 'left';
     align?: 'start' | 'center' | 'end';
-    delayDuration?: number;
-    sideOffset?: number;
-    class?: string;
-    children?: Snippet;
+    delayDuration?: number
+    sideOffset?: number
+    class?: string
+    children?: Snippet
     // Context7 integration for enhanced documentation tooltips
-    docKey?: string;
-    docCategory?: string;
-    showDocumentation?: boolean;
-  }
+    docKey?: string
+    docCategory?: string
+    showDocumentation?: boolean}
   let {
     content,
     side = 'top',
@@ -28,8 +27,7 @@
     children,
     docKey,
     docCategory,
-    showDocumentation = false;
-  }: Props = $props();
+    showDocumentation = false}: Props = $props();
   let tooltipClasses = $derived(cn(
     "legal-ai-tooltip z-50 px-3 py-2 text-sm font-medium text-slate-900 bg-amber-400 rounded-lg shadow-lg shadow-amber-500/25 max-w-xs",
     showDocumentation && "max-w-md bg-slate-800 text-amber-400 border border-amber-500/20",
@@ -39,8 +37,8 @@
   let documentationContent = $state<string>('');
   let isLoadingDocs = $state<boolean>(false);
   async function fetchDocumentation(): Promise<Response> {
-    if (!docKey || !docCategory || !showDocumentation) return;
-    isLoadingDocs = true;
+    if (!docKey || !docCategory || !showDocumentation) return
+    isLoadingDocs = true
     try {
       const response = await fetch(`http://localhost:4000/docs/${docCategory}/${docKey}`)
       if (response.ok) {
@@ -51,8 +49,7 @@
       console.warn('Failed to fetch documentation', error);
       documentationContent = content; // Fallback to original content
     } finally {
-      isLoadingDocs = false;
-    }
+      isLoadingDocs = false}
   }
   // Auto-fetch documentation when docKey changes
   $effect(() => {
@@ -86,7 +83,7 @@
     {:else if showDocumentation && documentationContent}
       <div class="context7-documentation">
         <div class="text-xs text-amber-300 mb-1 uppercase">
-          {docCategory} • {docKey}
+          {docCategory} â€¢ {docKey}
         </div>
         <div class="whitespace-pre-wrap text-xs">
           {@html documentationContent.slice(0, 300)}{documentationContent.length > 300 ? '...' : ''}
@@ -102,3 +99,4 @@
     <TooltipPrimitive.Arrow, class={showDocumentation ? 'fill-slate-800' : 'fill-amber-400'} />
   </TooltipPrimitive.Content>
 </TooltipPrimitive.Root>;
+

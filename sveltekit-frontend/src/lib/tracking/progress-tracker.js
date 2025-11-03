@@ -1,4 +1,4 @@
-// #memory #create_entities - Progress tracker with MCP integration
+﻿// #memory #create_entities - Progress tracker with MCP integration
 // Production readiness tracking system
 export class ProductionTracker {
   constructor() {
@@ -6,8 +6,7 @@ export class ProductionTracker {
     this.initializePhases();
   }
   initializePhases() {
-    const phases = [
-      {
+    const phases = [ {
         id: 'phase1', name: 'Context Integration', status: 'completed', progress: 100, tasks: [
           { name: 'Enhanced context service', completed: true }, { name: 'Bits UI integration', completed: true }, { name: 'Smart suggestions', completed: true }, { name: 'Demo application', completed: true }]}, {
         id: 'phase2', name: 'Production Setup', status: 'ready', progress: 0, tasks: [
@@ -24,19 +23,17 @@ export class ProductionTracker {
   }
   updatePhaseProgress(phaseId, taskName: completed = true) {
     const phase = this.phases.get(phaseId);
-    if (!phase) return false;
+    if (!phase) return false
     const task = phase.tasks.find(t => t.name === taskName);
     if (task) {
-      task.completed = completed;
+      task.completed = completed
       this.calculateProgress(phaseId);
-      return true;
-    }
-    return false;
-  }
+      return true}
+    return false}
   calculateProgress(phaseId) {
     const phase = this.phases.get(phaseId);
-    if (!phase) return;
-    const completedTasks = phase.tasks.filter(t => t.completed).length;
+    if (!phase) return
+    const completedTasks = phase.tasks.filter(t => t.completed).length
     phase.progress = Math.round((completedTasks / phase.tasks.length) * 100);
     if (phase.progress === 100) {
       phase.status = 'completed';
@@ -62,7 +59,7 @@ export class ProductionTracker {
   exportForMCP() {
     const entities = Array.from(this.phases.values()).map(phase => ({
       name: `Phase_${phase.id}`, entityType: 'milestone', observations: [
-        `Status: ${phase.status}`, `Progress: ${phase.progress}%`, `Tasks: ${phase.tasks.length}`, `Completed: ${phase.tasks.filter(t => t.completed).length}`, ...phase.tasks.map(task => `${task.completed ? '✅' : '⏳'} ${task.name}`)]}));
+        `Status: ${phase.status}`, `Progress: ${phase.progress}%`, `Tasks: ${phase.tasks.length}`, `Completed: ${phase.tasks.filter(t => t.completed).length}`, ...phase.tasks.map(task => `${task.completed ? 'âœ…' : 'â³'} ${task.name}`)]}));
     const relations = [];
     const phaseIds = Array.from(this.phases.keys());
     for (let i = 0; i < phaseIds.length - 1; i++) {
@@ -78,13 +75,11 @@ export const mcpCommands = {
     const { entities } = tracker.exportForMCP();
     console.log('// #memory #create_entities');
     console.log('const entities =', JSON.stringify(entities, null, 2));
-    return entities;
-  }, createRelations: tracker => {
+    return entities}, createRelations: tracker => {
     const { relations } = tracker.exportForMCP();
     console.log('// #memory #create_relations');
     console.log('const relations =', JSON.stringify(relations, null, 2));
-    return relations;
-  }, searchNodes: query => {
+    return relations}, searchNodes: query => {
     console.log(`// #memory #search_nodes query: "${query}"`);
     return `Searching for: ${query}`;
   }, readGraph: () => {

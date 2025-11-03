@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   /**
    * Usage Examples for bits-ui Button Component
    * This demonstrates how to use the ButtonExample component in Svelte, 5
@@ -7,9 +7,9 @@
   import { counterStore } from '$lib/stores/example-barrel-pattern';
   let isLoading = $state<boolean>(false);
   async function handleAsyncAction(): Promise<any> {
-    isLoading = true;
+    isLoading = true
     await new Promise(resolve => setTimeout(resolve, 2000));
-    isLoading = false;
+    isLoading = false
     console.log('Async action completed!');
   }
 </script>
@@ -127,13 +127,13 @@
 <style>
   pre {
     background: var(--color-nier-bg-tertiary);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    overflow-x: auto;
-  }
+    padding: 1rem
+    border-radius: 0.5rem
+    overflow-x: auto}
   code {
-    font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
-    font-size: 0.875rem;
+    font-family: 'JetBrains Mono', 'Roboto Mono', monospace
+    font-size: 0.875rem
    , color: var(--color-nier-text-primary);
   }
 </style>
+

@@ -1,10 +1,9 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { cn } from '$lib/utils';
   import type { Snippet } from 'svelte';
   interface Props {
-    children?: Snippet;
-    class?: string;
-  }
+    children?: Snippet
+    class?: string}
   let { children, class: className = '' }: Props = $props();
 </script>
 <div class={cn('relative, w-full, overflow-auto', className)}>
@@ -12,3 +11,4 @@
     <slot />
   </table>
 </div>
+

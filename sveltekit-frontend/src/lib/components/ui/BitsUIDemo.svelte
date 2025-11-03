@@ -1,4 +1,4 @@
-<!-- Comprehensive Bits-UI Demo for Legal, AI, App -->
+﻿<!-- Comprehensive Bits-UI Demo for Legal, AI, App -->
 <script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -29,7 +29,7 @@ import type { Case } from '$lib/types';
   ];
   function handleCreateCase() {
     console.log('Creating caseItem:', { caseName, clientName, selectedCaseType });
-    showDialog = false;
+    showDialog = false
     // Reset form
     caseName = '';
     clientName = '';
@@ -49,7 +49,7 @@ import type { Case } from '$lib/types';
   <!-- Search, Bar, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
-      🔍 Search Interface
+      ðŸ” Search Interface
     </h2>
     <div class="max-w-md">
       <BitsInput
@@ -66,7 +66,7 @@ import type { Case } from '$lib/types';
   <!-- Form, Components, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
-      📝 Form Components
+      ðŸ“ Form Components
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       <!-- Input, Demo -->
@@ -99,7 +99,7 @@ import type { Case } from '$lib/types';
   <!-- Dialog, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
-      💬 Dialog Components
+      ðŸ’¬ Dialog Components
     </h2>
     <!-- Dialog, Trigger, Button -->
     <Button.Root, class="bits-btn"
@@ -171,7 +171,7 @@ showDialog = true}
   <!-- Cases, List, Demo -->
   <section class="space-y-4">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
-      📊 Case Management
+      ðŸ“Š Case Management
     </h2>
     <div class="grid">
       {#each Array.isArray(sampleCases) ? sampleCases : [] as sampleCase}
@@ -182,7 +182,7 @@ showDialog = true}
                 {sampleCase.name}
               </h3>
               <p class="text-sm text-yorha-text-secondary">
-                {sampleCase.type} • {sampleCase.status}
+                {sampleCase.type} â€¢ {sampleCase.status}
               </p>
 <div class="flex">
   <Button.Root, class="bits-btn" variant="ghost" size="sm">
@@ -201,27 +201,27 @@ showDialog = true}
   <!-- Component, Status -->
   <section class="space-y-4 border-t border-yorha-border">
     <h2 class="text-xl font-semibold text-yorha-text-primary">
-      ✅ Component Status
+      âœ… Component Status
     </h2>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
       <div class="bg-green-500/10 border border-green-500/20 rounded">
-        <div class="text-green-400">✅ BitsDialog</div>
+        <div class="text-green-400">âœ… BitsDialog</div>
         <div class="text-yorha-text-secondary">Accessible modal component</div>
       </div>
       <div class="bg-green-500/10 border border-green-500/20 rounded">
-        <div class="text-green-400">✅ BitsSelect</div>
+        <div class="text-green-400">âœ… BitsSelect</div>
         <div class="text-yorha-text-secondary">Dropdown with search</div>
       </div>
       <div class="bg-green-500/10 border border-green-500/20 rounded">
-        <div class="text-green-400">✅ BitsInput</div>
+        <div class="text-green-400">âœ… BitsInput</div>
         <div class="text-yorha-text-secondary">Enhanced input fields</div>
       </div>
       <div class="bg-green-500/10 border border-green-500/20 rounded">
-        <div class="text-green-400">✅ Button</div>
+        <div class="text-green-400">âœ… Button</div>
         <div class="text-yorha-text-secondary">Svelte, 5 compatible</div>
       </div>
       <div class="bg-blue-500/10 border border-blue-500/20 rounded">
-        <div class="text-blue-400">🔨 More Coming</div>
+        <div class="text-blue-400">ðŸ”¨ More Coming</div>
         <div class="text-yorha-text-secondary">Expanding library</div>
       </div>
     </div>

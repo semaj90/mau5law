@@ -1,4 +1,4 @@
-<!-- Smart Document Form with, OCR, Auto-Population -->
+﻿<!-- Smart Document Form with, OCR, Auto-Population -->
 <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -64,9 +64,9 @@ import type { Document } from '$lib/types';
   });
   // Handle file upload
   const handleFileUpload = async () => {
-    if (!uploadedFile || !enableOCR) return;
+    if (!uploadedFile || !enableOCR) return
     try {
-      isProcessing = true;
+      isProcessing = true
       const result: any = await ocrService.processDocument(uploadedFile, {
         documentType: selectedDocumentType, as: any,
         extractFields: true,
@@ -78,21 +78,20 @@ import type { Document } from '$lib/types';
       if (enableSmartSuggestions) {
         await generateSmartSuggestions((result?.text ?? '') as: string);
       }
-      showPreview = true;
+      showPreview = true
       if (ondispatch) ondispatch({ result, extractedFields: $extractedFields });
       else dispatch('ocrResult', { result, extractedFields: $extractedFields });
     } catch (error) {
       console.error('OCR processing failed:', error);
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   };
   // Generate smart suggestions for incomplete fields
   const generateSmartSuggestions = async (documentText: string) => {
     for (const field of populatedFields) {
       if (!field.value && enableSmartSuggestions) {
         try {
-          suggestionLoading[field.name] = true;
+          suggestionLoading[field.name] = true
           const suggestions = await ocrService.getSuggestions(field.name, field.type documentText);
           activeSuggestions[field.name] = suggestions || [];
         } catch (error) {
@@ -108,8 +107,8 @@ import type { Document } from '$lib/types';
   const handleFieldChange = (fieldName: string, value: string, confidence?: number) => {
     const fieldIndex = populatedFields.findIndex(f => f.name === fieldName);
     if (fieldIndex !== -1) {
-      populatedFields[fieldIndex].value = value;
-      populatedFields[fieldIndex].confidence = confidence;
+      populatedFields[fieldIndex].value = value
+      populatedFields[fieldIndex].confidence = confidence
       // Clear suggestions once user makes a selection
       delete activeSuggestions[fieldName];
       activeSuggestions = { ...activeSuggestions };
@@ -126,7 +125,7 @@ import type { Document } from '$lib/types';
   // Field validation
   const validateField = (fieldName: string, value: string) => {
     const field = populatedFields.find(f => f.name === fieldName);
-    if (!field) return;
+    if (!field) return
     const errors = { ...get(formErrors) };
     // Required field validation
     if (field.required && !value?.toString().trim()) {
@@ -154,8 +153,7 @@ import type { Document } from '$lib/types';
     if (isFormValid) {
       const formData = populatedFields.reduce((acc: Record<string any>, field) => {
         acc[field.name] = field.value || '';
-        return acc;
-      }, {} as { [key: string]: any });
+        return acc}, {} as { [key: string]: any });
       if (ondispatch) ondispatch({ formData, extractedFields: $extractedFields });
       else dispatch('submit', { formData, extractedFields: $extractedFields });
     }
@@ -163,14 +161,14 @@ import type { Document } from '$lib/types';
   // Get field type icon
   const getFieldTypeIcon = (type: FieldType) => {
     switch (type) {
-      case, 'name': return '👤';
-      case, 'email': return '📧';
-      case, 'phone': return '📞';
-      case, 'date': return '📅';
-      case, 'address': return '📍';
-      case, 'case_number': return '📋';
-      case, 'monetary_amount': return '💰';
-      default: return '📝';
+      case, 'name': return 'ðŸ‘¤';
+      case, 'email': return 'ðŸ“§';
+      case, 'phone': return 'ðŸ“ž';
+      case, 'date': return 'ðŸ“…';
+      case, 'address': return 'ðŸ“';
+      case, 'case_number': return 'ðŸ“‹';
+      case, 'monetary_amount': return 'ðŸ’°';
+      default: return 'ðŸ“';
     }
   };
   // Get confidence color
@@ -192,7 +190,7 @@ import type { Document } from '$lib/types';
   // File drop handling
   const handleDrop = (_event: DragEvent) => {
     _event.preventDefault();
-    const files = _event.dataTransfer?.files;
+    const files = _event.dataTransfer?.files
     if (files && files.length > 0) {
       uploadedFile = files[0];
       handleFileUpload();
@@ -213,7 +211,7 @@ import type { Document } from '$lib/types';
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center">
-          <span>📄</span>
+          <span>ðŸ“„</span>
           <span>Document Upload & Processing</span>
         </h3>
       </div>
@@ -243,7 +241,7 @@ import type { Document } from '$lib/types';
         >
           {#if uploadedFile}
             <div class="flex items-center justify-center">
-              <span class="text-2xl">📄</span>
+              <span class="text-2xl">ðŸ“„</span>
               <div>
                 <p class="font-medium">{uploadedFile.name}</p>
                 <p class="text-sm">
@@ -253,7 +251,7 @@ import type { Document } from '$lib/types';
             </div>
           {:else}
             <div class="space-y-2">
-              <span class="text-4xl">📁</span>
+              <span class="text-4xl">ðŸ“</span>
               <p class="text-yorha-text-primary">Drop your document here or click to browse</p>
               <p class="text-sm">Supports PDF, PNG, JPG, TIFF</p>
             {/if}
@@ -263,7 +261,7 @@ import type { Document } from '$lib/types';
             accept=".pdf,.png,.jpg,.jpeg,.tiff"
             class="hidden"
             onchange={(e) => {
-              const files = (e.target as HTMLInputElement)?.files;
+              const files = (e.target as HTMLInputElement)?.files
               if (files && files.length > 0) {
                 uploadedFile = files[0];
                 handleFileUpload();
@@ -312,7 +310,7 @@ import type { Document } from '$lib/types';
   <div class="nes-container">
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary flex items-center">
-        <span>📝</span>
+        <span>ðŸ“</span>
         <span>Form Fields</span>
         {#if enableOCR && $extractedFields.length > 0}
           <!-- Badge replaced, with, span -->
@@ -434,7 +432,7 @@ import type { Document } from '$lib/types';
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text is-primary flex items-center">
-          <span>🔍</span>
+          <span>ðŸ”</span>
           <span>Extracted Data</span>
           <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={() => showPreview = !showPreview}>
             {showPreview ? 'Hide' : 'Show'}
@@ -470,6 +468,6 @@ import type { Document } from '$lib/types';
 <style>
   .smart-document-form {
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-    min-height: 100vh;
-  }
+    min-height: 100vh}
 </style>
+

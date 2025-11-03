@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { createEventDispatcher } from 'svelte';
 
   // Props
@@ -6,9 +6,8 @@
     type?: 'button' | 'submit' | 'reset';
     variant?: 'default' | 'primary' | 'secondary' | 'ghost' | 'outline' | 'destructive' | 'link';
     size?: 'default' | 'sm' | 'lg' | 'icon';
-    disabled?: boolean;
-    href?: string;
-  }>();
+    disabled?: boolean
+    href?: string}>();
 
   // Event dispatcher for custom events
   const dispatch = createEventDispatcher();
@@ -16,8 +15,7 @@
   function handleClick(event: MouseEvent) {
     if (disabled) {
       event.preventDefault();
-      return;
-    }
+      return}
     dispatch('click', event);
   }
 
@@ -58,3 +56,4 @@
 <style lang="postcss">
   /* UnoCSS handles most styling, but custom styles can go here if needed */
 </style>
+

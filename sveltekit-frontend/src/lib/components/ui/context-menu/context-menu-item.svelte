@@ -1,11 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { getContext } from 'svelte';
   // Expose props correctly for Svelte
   const { disabled } = $props<{ disabled: boolean }>()
   const { onClick } = $props<{ onClick: (event?: MouseEvent | unknown) }>()
   interface ContextMenuContext {
-    close: () => void;
-  }
+    close: () => void}
   const ctx = getContext<ContextMenuContext>('context-menu');
   const close = ctx?.close ?? (() => {});
   function handleClick(event?: MouseEvent) {
@@ -28,27 +27,24 @@
 <style>
   /* @unocss-include */
   .context-menu-item {
-    display: flex;
-    align-items: center;
+    display: flex
+    align-items: center
     width: 100%;
-    padding: 0.375rem 0.5rem;
-    font-size: 0.875rem;
-    border: none;
-    border-radius: 0.25rem;
-    background: transparent;
-    cursor: pointer;
-   , transition: background-color 0.15s;
-    text-align: left;
-  }
+    padding: 0.375rem 0.5rem
+    font-size: 0.875rem
+    border: none
+    border-radius: 0.25rem
+    background: transparent
+    cursor: pointer
+   , transition: background-color 0.15s
+    text-align: left}
   .context-menu-item:hover:not(.disabled) {
-    background-color: #f3f4f6;
-  }
+    background-color: #f3f4f6}
   .context-menu-item:focus {
-    outline: 2px solid #3b82f6;
-    outline-offset: -2px;
-  }
+    outline: 2px solid #3b82f6
+    outline-offset: -2px}
   .context-menu-item.disabled {
-    opacity: 0.5;
-   , cursor: not-allowed;
-  }
+    opacity: 0.5
+   , cursor: not-allowed}
 </style>
+

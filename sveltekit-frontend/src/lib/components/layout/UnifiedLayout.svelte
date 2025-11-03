@@ -1,36 +1,33 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
   import  NavBar  from "./NavBar.svelte";
   interface Props {
-    children?: any;
+    children?: any
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
-    user?: any;
-    title?: string;
-    hideNav?: boolean;
-  }
+    user?: any
+    title?: string
+    hideNav?: boolean}
   // safer: get, props: object and destructure (avoids TS/runtime issues)
-  const _props = $props() as Partial<Props> | undefined;
-  let children = _props?.children;
+  const _props = $props() as Partial<Props> | undefined
+  let children = _props?.children
   let variant: Props['variant'] = _props?.variant ?? 'full';
-  let user: any = _props?.user ?? null;
+  let user: any = _props?.user ?? null
   let title: string = _props?.title ?? '';
-  let hideNav: boolean = _props?.hideNav ?? false;
+  let hideNav: boolean = _props?.hideNav ?? false
   let sidebarOpen = $state<boolean>(false);
   let mounted = $state<boolean>(false);
   let autoVariant = $state(variant);
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {
     if (!p || typeof p !== 'string') {
-      autoVariant = variant;
-      return;
-    }
+      autoVariant = variant
+      return}
     if (p.startsWith('/demo')) autoVariant = 'demo';
     else if (p.startsWith('/admin')) autoVariant = 'admin';
     else if (p.startsWith('/auth')) autoVariant = 'minimal';
-    else autoVariant = variant;
-  }
+    else autoVariant = variant}
   // subscribe if page is a readable store
   if (page && typeof (page as: any).subscribe === 'function') {
     (page as: any).subscribe(($p: any) => {
@@ -49,8 +46,7 @@
   let isAuthRoute = $derived(() => autoVariant === 'minimal');
   let isAdminRoute = $derived(() => autoVariant === 'admin');
   $effect(() => {
-    mounted = true;
-  });
+    mounted = true});
 </script>
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
@@ -96,33 +92,30 @@
   import { browser } from '$app/environment';
   import  NavBar  from "./NavBar.svelte";
   interface Props {
-    children?: any;
+    children?: any
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
-    user?: any;
-    title?: string;
-    hideNav?: boolean;
-  }
+    user?: any
+    title?: string
+    hideNav?: boolean}
   // safer: get, props: object and destructure (avoids TS/runtime issues)
-  const _props = $props() as Partial<Props> | undefined;
-  let children = _props?.children;
+  const _props = $props() as Partial<Props> | undefined
+  let children = _props?.children
   let variant: Props['variant'] = _props?.variant ?? 'full';
-  let user: any = _props?.user ?? null;
+  let user: any = _props?.user ?? null
   let title: string = _props?.title ?? '';
-  let hideNav: boolean = _props?.hideNav ?? false;
+  let hideNav: boolean = _props?.hideNav ?? false
   let sidebarOpen = $state<boolean>(false);
   let mounted = $state<boolean>(false);
   let autoVariant = $state(variant);
   // Safe path detection: subscribe to page store if available, otherwise use location when in browser.
   function updateVariantFromPath(p: string) {
     if (!p || typeof p !== 'string') {
-      autoVariant = variant;
-      return;
-    }
+      autoVariant = variant
+      return}
     if (p.startsWith('/demo')) autoVariant = 'demo';
     else if (p.startsWith('/admin')) autoVariant = 'admin';
     else if (p.startsWith('/auth')) autoVariant = 'minimal';
-    else autoVariant = variant;
-  }
+    else autoVariant = variant}
   // subscribe if page is a readable store
   if (page && typeof (page as: any).subscribe === 'function') {
     (page as: any).subscribe(($p: any) => {
@@ -141,8 +134,7 @@
   let isAuthRoute = $derived(() => autoVariant === 'minimal');
   let isAdminRoute = $derived(() => autoVariant === 'admin');
   $effect(() => {
-    mounted = true;
-  });
+    mounted = true});
 </script>
 <div class="unified-layout" data-variant={autoVariant}>
   {#if !hideNav}
@@ -185,19 +177,17 @@
             <p class
   /* Minimal Layout */
   [data-variant='minimal'] .main-content {
-    padding: 1rem;
-  }
+    padding: 1rem}
   /* Full Layout */
   [data-variant='full'] .content-container {
-    max-width: 1200px;
-  }
+    max-width: 1200px}
   /* Demo Layout */
   [data-variant='demo'] .main-content { background: linear-gradient(135deg, rgba(26, 26, 46, 0.8), rgba(22, 33, 62, 0.8));
   }
   [data-variant='demo'] .content-container {
     background: rgba(74, 144, 226, 0.05);
-    border-radius: 12px;
-    padding: 2rem;
+    border-radius: 12px
+    padding: 2rem
    , border: 2px solid var(--n64-primary, #4a90e2);
     backdrop-filter: blur(5px);
   }
@@ -207,36 +197,30 @@
   }
   [data-variant='admin'] .content-container {
     background: rgba(208, 2, 27, 0.05);
-    border-radius: 12px;
-    padding: 2rem;
+    border-radius: 12px
+    padding: 2rem
    , border: 2px solid var(--nes-error, #d0021b);
     backdrop-filter: blur(5px);
   }
   /* Responsive Design */
   @media (max-width: 768px) {
     .main-content {
-      padding: 1rem;
-    }
+      padding: 1rem}
     .page-header .title {
-      font-size: 0.875rem !important;
-    }
+      font-size: 0.875rem !important}
     .content-container {
-      padding: 1rem;
-    }
+      padding: 1rem}
     .auth-theme .content-container {
-      margin: 1rem;
-      padding: 1.5rem;
-    }
+      margin: 1rem
+      padding: 1.5rem}
   }
   /* Custom scrollbar for content areas */
   .main-content ::-webkit-scrollbar {
-    width: 8px;
-  }
+    width: 8px}
   .main-content ::-webkit-scrollbar-track { background: rgba(26, 26, 46, 0.3);
-    border-radius: 4px;
-  }
+    border-radius: 4px}
   .main-content ::-webkit-scrollbar-thumb { background: var(--n64-primary, #4a90e2);
-    border-radius: 4px;
+    border-radius: 4px
    , border: 1px solid var(--n64-secondary, #7ed321);
   }
   .main-content ::-webkit-scrollbar-thumb:hover { background: var(--n64-secondary, #7ed321);
@@ -245,34 +229,29 @@
   /* Print styles */
   @media print {
     .unified-layout {
-      background: white !important;
-     , color: black !important;
-    }
+      background: white !important
+     , color: black !important}
     .skip-nav,
     .sidebar-overlay {
-      display: none !important;
-    }
+      display: none !important}
     .main-content {
-      background: white !important;
-     , color: black !important;
-    }
+      background: white !important
+     , color: black !important}
   }
   /* High contrast mode support */
   @media (prefers-contrast: high) {
     .unified-layout {
-      background: #000 !important;
-     , color: #fff !important;
-    }
+      background: #000 !important
+     , color: #fff !important}
     .page-header,
     .content-container {
-      border-width: 3px !important;
-    }
+      border-width: 3px !important}
   }
   /* Reduced motion support */
   @media (prefers-reduced-motion reduce) {
     * {
-      transition: none !important;
-     , animation: none !important;
-    }
+      transition: none !important
+     , animation: none !important}
   }
 </style>
+

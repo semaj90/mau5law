@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -16,7 +16,7 @@ import type { Document } from '$lib/types';
         legal_issues: string[];
         precedents: any[];
       }
-    | undefined;
+    | undefined
   const { ocrResultsProp } = $props<{ ocrResultsProp: OCRResult[] | undefined }>()
 
   // local state derived from props with safe defaults
@@ -47,42 +47,40 @@ import type { Document } from '$lib/types';
   async function performAutomatedAnalysis(): Promise<any> {
     if (!ocrResults || ocrResults.length === 0) {
       alert('No documents available for analysis. Please upload documents first.');
-      return;
-    }
-    isAnalyzing = true;
+      return}
+    isAnalyzing = true
     analysisProgress.set(0);
     try {
       // Step 1: Entity Extraction
       currentAnalysisStep.set('Extracting entities from documents...');
       await new Promise((r) => setTimeout(r, 1000));
       const entities = await extractEntitiesFromText();
-      formData.extracted_entities = entities;
+      formData.extracted_entities = entities
       analysisProgress.set(25);
       // Step 2: Key Facts Identification
       currentAnalysisStep.set('Identifying key facts...');
       await new Promise((r) => setTimeout(r, 1000));
       const keyFacts = await identifyKeyFacts();
-      formData.key_facts = keyFacts;
+      formData.key_facts = keyFacts
       analysisProgress.set(50);
       // Step 3: Legal Issues Analysis
       currentAnalysisStep.set('Analyzing legal issues...');
       await new Promise((r) => setTimeout(r, 1000));
       const legalIssues = await analyzeLegalIssues();
-      formData.legal_issues = legalIssues;
+      formData.legal_issues = legalIssues
       analysisProgress.set(75);
       // Step 4: Precedent Research
       currentAnalysisStep.set('Researching relevant precedents...');
       await new Promise((r) => setTimeout(r, 1500));
       const precedents = await findRelevantPrecedents();
-      formData.precedents = precedents;
+      formData.precedents = precedents
       analysisProgress.set(100);
       currentAnalysisStep.set('Analysis complete!');
     } catch (error) {
       console.error('Analysis failed:', error);
       alert('Analysis failed. Please try again.');
     } finally {
-      isAnalyzing = false;
-    }
+      isAnalyzing = false}
   }
   async function extractEntitiesFromText(): Promise<any[]> {
     const entities: any[] = [];
@@ -92,7 +90,7 @@ import type { Document } from '$lib/types';
       const patterns = [
         { type: 'Person', regex: /([A-Z][a-z]+ [A-Z][a-z]+)/g, confidence: 0.85 },
         { type: 'Date', regex: /(\d{1 2}\/\d{1 2}\/\d{4}|\d{4}-\d{2}-\d{2})/g, confidence: 0.95 },
-        { type: 'Money', regex: /\$[\d,]+(?:\.\d{2})?/g, confidence: 0.90 },
+        { type: 'Money', regex: /\$[\d]+(?:\.\d{2})?/g, confidence: 0.90 },
         { type: 'Organization', regex: /([A-Z][a-z]+ (?:Inc|LLC|Corp|Corporation|Company)\.?)/g, confidence: 0.80 },
         { type: 'Legal Document', regex: /(contract|agreement|lease|deed|will|testament)/gi, confidence: 0.75 }
       ];
@@ -152,28 +150,23 @@ import type { Document } from '$lib/types';
         issues.push(pattern.issue);
       }
     }
-    return issues;
-  }
+    return issues}
   async function findRelevantPrecedents(): Promise<any[]> {
-    const mockPrecedents = [
-      {
+    const mockPrecedents = [ {
         case_name: 'Smith v. Jones Contract Dispute',
         relevance: 0.92,
         summary: 'Landmark case establishing principles for contract interpretation in commercial disputes.'
-      },
-      {
+      }, {
         case_name: 'Brown v. Board of Education',
         relevance: 0.85,
         summary: 'Supreme Court decision on constitutional rights and equal protection under law.'
-      },
-      {
+      }, {
         case_name: 'Carlill v. Carbolic Smoke Ball Co.',
         relevance: 0.78,
         summary: 'Classic contract law case defining unilateral contracts and consideration.'
       }
     ];
-    return mockPrecedents;
-  }
+    return mockPrecedents}
   function addKeyFact() {
     formData.key_facts = [...formData.key_facts, ''];
   }
@@ -197,8 +190,7 @@ import type { Document } from '$lib/types';
   function handleNext() {
     if (!formData.key_facts || formData.key_facts.length === 0) {
       alert('Please identify at least one key fact before proceeding.');
-      return;
-    }
+      return}
     ondispatch?.({ step: 'evidence', data: formData });
   }
   function handlePrevious() {
@@ -227,7 +219,7 @@ import type { Document } from '$lib/types';
           onclick={performAutomatedAnalysis}
           class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2"
         >
-          🤖 Start Analysis
+          ðŸ¤– Start Analysis
         </Button>
       </div>
     {/if}
@@ -269,7 +261,7 @@ import type { Document } from '$lib/types';
                   class="bits-btn p-1 text-red-600 hover:text-red-800"
                   aria-label="Remove entity"
                 >
-                  ×
+                  Ã—
                 </Button>
               </div>
             </div>
@@ -379,7 +371,7 @@ import type { Document } from '$lib/types';
       onclick={handlePrevious}
       class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2"
     >
-      ← Previous
+      â† Previous
     </Button>
     <div class="flex">
       <Button
@@ -393,7 +385,7 @@ import type { Document } from '$lib/types';
         disabled={formData.key_facts.length === 0}
         class="px-6 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed bits-btn"
       >
-        Next: AI Analysis →
+        Next: AI Analysis â†’
       </Button>
     </div>
   </div>

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Simple Login Page - Works with Existing Database
   Now with NES.css Retro Gaming Modal Option
 -->
@@ -7,30 +7,27 @@
   import { enhance } from '$app/forms';
   import DemoLoginButton from '$lib/components/auth/DemoLoginButton.svelte';
   interface Props {
-    data?: any;
-    form?: any;
-  }
+    data?: any
+    form?: any}
   let { data, form }: Props = $props();
 
   // --- new: runtime type guard + reactive typed error value ---
   function isFormWithError(obj: any): obj is { error?: string } {
-    return typeof obj === 'object' && obj !== null && 'error' in obj;
-  }
+    return typeof obj === 'object' && obj !== null && 'error' in obj}
   // Make formError reactive so assignments inside $effect trigger updates
   let formError = $state<string | null>(null);
   $effect(() => {
     formError =
       isFormWithError(form) && typeof (form as: any).error === 'string' && (form as: any).error.length > 0
         ? (form as: any).error
-        : null;
-  });
+        : null});
 
   let isLoading = $state<boolean>(false);
   let showPassword = $state<boolean>(false);
   // Auto-fill demo credentials
   function fillDemoCredentials() {
-    const emailInput = document.getElementById('email') as HTMLInputElement;
-    const passwordInput = document.getElementById('password') as HTMLInputElement;
+    const emailInput = document.getElementById('email') as HTMLInputElement
+    const passwordInput = document.getElementById('password') as HTMLInputElement
     if (emailInput && passwordInput) {
       emailInput.value = 'admin@legal-ai.local';
       passwordInput.value = 'admin123';
@@ -55,9 +52,9 @@
         method="POST"
         action="?/login"
         use:enhance={({ formData, cancel }) => {
-          isLoading = true;
+          isLoading = true
           return async ({ result }) => {
-            isLoading = false;
+            isLoading = false
             if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
@@ -147,3 +144,4 @@
     </div>
   </div>
 </div>
+

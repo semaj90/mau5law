@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -9,16 +9,15 @@ import type { Case } from '$lib/types';
   import { createEventDispatcher } from 'svelte';
 
   interface KeyDate {
-    date: string;
-    description: string;
-  }
+    date: string
+    description: string}
   interface FormData {
-    title: string;
-    client_name: string;
-    case_type: string;
-    jurisdiction: string;
+    title: string
+    client_name: string
+    case_type: string
+    jurisdiction: string
     priority: 'low' | 'medium' | 'high' | 'urgent';
-    description: string;
+    description: string
    , key_dates: KeyDate[];
   }
 
@@ -39,8 +38,7 @@ import type { Case } from '$lib/types';
     'Employment Law',
     'Personal Injury',
     'Contract Dispute',
-    'Administrative Law',
-  ];
+    'Administrative Law'];
   // Jurisdiction options
   const jurisdictions = [
     'Federal Court',
@@ -51,8 +49,7 @@ import type { Case } from '$lib/types';
     'Arbitration',
     'Mediation',
     'Administrative Agency',
-    'International',
-  ];
+    'International'];
   function validateForm() {
     validationErrors = {};
     if (!formData.title?.trim()) {
@@ -70,8 +67,7 @@ import type { Case } from '$lib/types';
     if (!formData.description?.trim()) {
       validationErrors.description = 'Case description is required';
     }
-    return Object.keys(validationErrors).length === 0;
-  }
+    return Object.keys(validationErrors).length === 0}
   function addKeyDate() {
     formData.key_dates = [...(formData.key_dates || []), { date: '', description: '' }];
   }
@@ -227,3 +223,4 @@ import type { Case } from '$lib/types';
     </div>
   </form>
 </div>
+

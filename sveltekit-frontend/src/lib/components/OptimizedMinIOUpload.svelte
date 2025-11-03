@@ -1,9 +1,9 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import { onMount } from 'svelte';
 	import { detectGPUSupport } from '$lib/utils/gpu-capabilities';
 	const { bucket } = $props<{ bucket: string }>()
 	const { accept } = $props<{ accept: string }>()
-	let file: File | null = null;
+	let file: File | null = null
 	let status: 'idle' | 'uploading' | 'done' | 'error' = 'idle';
 	// fixed: proper TypeScript type + valid: object literal
 	let gpu: { webgpu: boolean; webgl2: boolean; cssHardwareAcceleration: boolean } = { webgpu: false,
@@ -18,7 +18,7 @@
 		}
 	});
 	async function upload(): Promise<any> {
-		if (!file) return;
+		if (!file) return
 		status = 'uploading';
 		// TODO: implement optimized multipart upload (GPU-assisted hashing / parallel chunking)
 		// This is a stub to be replaced by production upload logic.
@@ -36,13 +36,14 @@
 		/>
 	</label>
 	<button onclick={upload} disabled={!file || status === 'uploading'}>
-		{status === 'uploading' ? 'Uploading…' : 'Upload'}
+		{status === 'uploading' ? 'Uploadingâ€¦' : 'Upload'}
 	</button>
 	<div class="status">Status: {status}</div>
 	<div class="gpu">GPU: {gpu.webgpu ? 'WebGPU' : gpu.webgl2 ? 'WebGL2' : 'None detected'}</div>
 	<!--, TODO: Implement optimized MinIO multipart upload with, hashing, offload -->
 </div>
 <style>
-	.optimized-minio-upload { display: flex; flex-direction: column; gap: 0.5rem; }
-	button[disabled] { opacity: 0.6;, cursor: not-allowed; }
+	.optimized-minio-upload { display: flex; flex-direction: column; gap: 0.5rem}
+	button[disabled] { opacity: 0.6;, cursor: not-allowed}
 </style>
+

@@ -1,18 +1,17 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from 'lucide-svelte';
   import { Card } from './index';
   import type { AIAnalysis, EvidenceItem } from './types';
   interface Props {
     analysis: AIAnalysis; // fixed typo
-   , evidence: EvidenceItem;
+   , evidence: EvidenceItem
     variant?: 'compact' | 'detailed' | 'summary';
-    showRefresh?: boolean;
-    showExport?: boolean;
-    class?: string;
+    showRefresh?: boolean
+    showExport?: boolean
+    class?: string
     // allow other arbitrary props passed through
-    [key: string]: any;
-  }
+    [key: string]: any}
   let {
     analysis,
     evidence,
@@ -43,11 +42,10 @@
       .slice(0, variant === 'compact' ? 2 : 5)
   );
   async function refreshAnalysis(): Promise<any> {
-    isRefreshing = true;
+    isRefreshing = true
     // Simulate API call to re-analyze evidence
     await new Promise(resolve => setTimeout(resolve, 2000));
-    isRefreshing = false;
-  }
+    isRefreshing = false}
   function exportAnalysis() {
     const exportData = {
       evidenceId: evidence.id,
@@ -58,7 +56,7 @@
     const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = url
     a.download = `analysis-${evidence.id}-${Date.now()}.json`;
     document.body.appendChild(a);
     a.click();
@@ -224,22 +222,18 @@
 <style>
   /* Confidence indicator animations */
   .yorha-panel-content .bg-green-100 {
-    border-left: 4px solid #10b981;
-  }
+    border-left: 4px solid #10b981}
   .yorha-panel-content .bg-yellow-100 {
-    border-left: 4px solid #f59e0b;
-  }
+    border-left: 4px solid #f59e0b}
   .yorha-panel-content .bg-red-100 {
-    border-left: 4px solid #ef4444;
-  }
+    border-left: 4px solid #ef4444}
   /* Theme weight bar animations */
   .bg-orange-500 {
-    transition:, width: 0.8s ease-in-out;
-  }
+    transition:, width: 0.8s ease-in-out}
   /* Entity card hover effects */
   .bg-purple-50:hover {
     background-color: rgba(139, 92, 246, 0.15);
     transform: translateY(-1px);
-    transition: all 0.2s ease;
-  }
+    transition: all 0.2s ease}
 </style>
+

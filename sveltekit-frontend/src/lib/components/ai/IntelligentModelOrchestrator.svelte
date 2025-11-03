@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Intelligent Model Orchestrator Dashboard
   Real-time monitoring and control of the multi-model AI system
 -->
@@ -23,14 +23,14 @@ import type { User } from '$lib/types';
   let systemStatus = writable<any>(null);
   let userFeedback = writable<Map<string boolean>(new Map());
   // Auto-refresh interval
-  let refreshInterval: NodeJS.Timeout;
-  let worker: Worker | null = null;
+  let refreshInterval: NodeJS.Timeout
+  let worker: Worker | null = null
   // Derived stores for UI
   const modelStatusDisplay = derived(
     [currentModelInfo, performanceMetrics],
     ([$model, $metrics]) => ({
-      current: $model;
-      metrics: $metrics;
+      current: $model
+      metrics: $metrics
      , isHealthy: $model && $metrics.some(m => m.modelId === $model.id && m.successRate > 0.7);
     })
   );
@@ -48,23 +48,22 @@ import type { User } from '$lib/types';
     ($suggestions) => $suggestions.sort((a, b) => b.confidence - a.confidence)
   );
   $effect(() => {
-    mounted = true;
+    mounted = true
     // Initialize worker for communication with the intelligent system
     try {
   worker = new Worker('/workers/rl-workergemma.js');
       worker.onmessage = (event) => {
-  const { type data, payload } = event.data;
+  const { type data, payload } = event.data
         switch (type) {
           case, 'SMART_MODEL_SELECTED':
-            console.log('🧠 Smart model selected:', data || payload);
-            break;
+            console.log('ðŸ§  Smart model selected:', data || payload);
+            break
           case, 'MODEL_PERFORMANCE':
-            console.log('📊 Performance data:', data || payload);
-            break;
+            console.log('ðŸ“Š Performance data:', data || payload);
+            break
           case, 'CACHE_OPTIMIZED':
-            console.log('🔧 Cache optimized:', data || payload);
-            break;
-        }
+            console.log('ðŸ”§ Cache optimized:', data || payload);
+            break}
       }
       // Initialize the worker
       worker.postMessage({ type: 'INIT_WASM' });
@@ -93,13 +92,12 @@ import type { User } from '$lib/types';
     }
   }
   async function processQuery(): Promise<any> {
-    if (!queryInput.trim() || isProcessing) return;
-    isProcessing = true;
+    if (!queryInput.trim() || isProcessing) return
+    isProcessing = true
     try {
       // Process the query through the intelligent orchestrator
       const result = await intelligentOrchestrator.processQuery(
-        queryInput,
-        {
+        queryInput, {
           sessionLength: 5,
           totalSessions: 1,
           avgQueryComplexity: 0.5
@@ -120,8 +118,7 @@ import type { User } from '$lib/types';
       console.error('Query processing failed:', error);
       results.set({ error: error.message });
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   }
   async function acceptSuggestion(suggestion SelfPromptingSuggestion): Promise<any> {
     try {
@@ -129,10 +126,9 @@ import type { User } from '$lib/types';
       // Update local feedback tracking
       userFeedback.update(fb => {
         fb.set(suggestion.id, true);
-        return fb;
-      });
+        return fb});
       // Process the accepted suggestion as a new query
-      queryInput = suggestion.suggestio;
+      queryInput = suggestion.suggestio
       await processQuery();
     } catch (error) {
       console.error('Failed to accept suggestion', error);
@@ -143,8 +139,7 @@ import type { User } from '$lib/types';
       await intelligentOrchestrator.handleUserFeedback(suggestion.id, false);
       userFeedback.update(fb => {
         fb.set(suggestion.id, false);
-        return fb;
-      });
+        return fb});
     } catch (error) {
       console.error('Failed to reject suggestion', error);
     }
@@ -165,19 +160,19 @@ import type { User } from '$lib/types';
   }
   function getCategoryIcon(category: string): string {
     switch (category) {
-      case, 'clarification': return '❓';
-      case, 'expansion': return '📋';
-      case, 'alternative': return '🔄';
-      case, 'follow-up': return '➡️';
-      case, 'correction': return '✏️';
-      default: return '💡';
+      case, 'clarification': return 'â“';
+      case, 'expansion': return 'ðŸ“‹';
+      case, 'alternative': return 'ðŸ”„';
+      case, 'follow-up': return 'âž¡ï¸';
+      case, 'correction': return 'âœï¸';
+      default: return 'ðŸ’¡';
     }
   }
 </script>
 <div class="intelligent-orchestrator-dashboard min-h-screen bg-gray-50">
   <!-- Header -->
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">🧠 Intelligent Model Orchestrator</h1>
+    <h1 class="text-3xl font-bold text-gray-900">ðŸ§  Intelligent Model Orchestrator</h1>
     <p class="text-gray-600">
       Multi-model AI system with auto-switching, predictive loading, and self-prompting intelligence
     </p>
@@ -199,16 +194,16 @@ import type { User } from '$lib/types';
         class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
       >
         {#if isProcessing}
-          <span class="animate-spin">⚙️</span> Processing...
+          <span class="animate-spin">âš™ï¸</span> Processing...
         {:else}
-          🚀 Process
+          ðŸš€ Process
         {/if}
       </button>
     </div>
     <!-- Query, Results -->
     {#if $results}
       <div class="mt-6 p-4 border border-gray-200 rounded-lg">
-        <h3 class="text-lg font-medium text-gray-800">🎯 Processing Results</h3>
+        <h3 class="text-lg font-medium text-gray-800">ðŸŽ¯ Processing Results</h3>
         {#if $results.error}
           <div class="text-red-600">
             <strong>Error:</strong>
@@ -243,7 +238,7 @@ import type { User } from '$lib/types';
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- Current, Model, Status -->
     <div class="bg-white rounded-lg shadow">
-      <h3 class="text-lg font-semibold text-gray-800">🤖 Current Model</h3>
+      <h3 class="text-lg font-semibold text-gray-800">ðŸ¤– Current Model</h3>
       {#if $modelStatusDisplay.current}
         <div class="space-y-3">
           <div>
@@ -285,7 +280,7 @@ import type { User } from '$lib/types';
     </div>
     <!-- Memory, Optimization, Status -->
     <div class="bg-white rounded-lg shadow">
-      <h3 class="text-lg font-semibold text-gray-800">🧠 Memory Status</h3>
+      <h3 class="text-lg font-semibold text-gray-800">ðŸ§  Memory Status</h3>
       {#if $memoryStatusDisplay}
         <div class="space-y-4">
           <div class="grid grid-cols-2 gap-4">
@@ -329,7 +324,7 @@ import type { User } from '$lib/types';
     </div>
     <!-- Performance, Metrics -->
     <div class="bg-white rounded-lg shadow">
-      <h3 class="text-lg font-semibold text-gray-800">📊 Performance</h3>
+      <h3 class="text-lg font-semibold text-gray-800">ðŸ“Š Performance</h3>
       {#if $systemStatus}
         <div class="space-y-3">
           <div class="grid grid-cols-2">
@@ -371,7 +366,7 @@ import type { User } from '$lib/types';
   </div>
   <!-- Self-Prompting, Suggestions -->
   <div class="bg-white rounded-lg shadow">
-    <h3 class="text-lg font-semibold text-gray-800">💡 Self-Prompting Suggestions</h3>
+    <h3 class="text-lg font-semibold text-gray-800">ðŸ’¡ Self-Prompting Suggestions</h3>
     {#if $suggestionDisplay && $suggestionDisplay.length > 0}
       <div class="space-y-4">
         {#each Array.isArray($suggestionDisplay) ? $suggestionDisplay : [] as suggestion}
@@ -389,9 +384,9 @@ import type { User } from '$lib/types';
                 </div>
                 <p class="text-gray-800">{suggestion.suggestion}</p>
                 <div class="flex items-center gap-4 text-xs">
-                  <span>📱 {suggestion.modelRecommendation}</span>
-                  <span>⚡ {formatLatency(suggestion.estimatedLatency)}</span>
-                  <span>🎯 {(suggestion.contextRelevance * 100).toFixed(0)}% relevant</span>
+                  <span>ðŸ“± {suggestion.modelRecommendation}</span>
+                  <span>âš¡ {formatLatency(suggestion.estimatedLatency)}</span>
+                  <span>ðŸŽ¯ {(suggestion.contextRelevance * 100).toFixed(0)}% relevant</span>
                 </div>
               </div>
               <div class="flex gap-2">
@@ -400,13 +395,13 @@ import type { User } from '$lib/types';
                     onclick={() => acceptSuggestion(suggestion)}
                     class="px-3 py-1 bg-green-600 text-white rounded text-xs hover:bg-green-700"
                   >
-                    ✓ Accept
+                    âœ“ Accept
                   </button>
                   <button
                     onclick={() => rejectSuggestion(suggestion)}
                     class="px-3 py-1 bg-gray-400 text-white rounded text-xs hover:bg-gray-500"
                   >
-                    ✗ Reject
+                    âœ— Reject
                   </button>
                 {:else}
                   <span
@@ -414,7 +409,7 @@ import type { User } from '$lib/types';
                       ? 'bg-green-100 text-green-800'
                       : 'bg-red-100 text-red-800'}"
                   >
-                    {$userFeedback.get(suggestion.id) ? '✓ Accepted' : '✗ Rejected'}
+                    {$userFeedback.get(suggestion.id) ? 'âœ“ Accepted' : 'âœ— Rejected'}
                   </span>
                 {/if}
               </div>
@@ -424,14 +419,14 @@ import type { User } from '$lib/types';
       </div>
     {:else}
       <div class="text-center py-8">
-        <div class="text-4xl">🤔</div>
+        <div class="text-4xl">ðŸ¤”</div>
         <p>No suggestions available. Try asking a question to see intelligent suggestions!</p>
       {/if}
   </div>
   <!-- Model, Performance, Details -->
   {#if $performanceMetrics && $performanceMetrics.length > 0}
     <div class="mt-8 bg-white rounded-lg shadow">
-      <h3 class="text-lg font-semibold text-gray-800">🔍 Model Performance Details</h3>
+      <h3 class="text-lg font-semibold text-gray-800">ðŸ” Model Performance Details</h3>
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead class="bg-gray-50">
@@ -480,12 +475,10 @@ import type { User } from '$lib/types';
       BlinkMacSystemFont,
       'Segoe UI',
       Roboto,
-      sans-serif;
-  }
+      sans-serif}
   /* Responsive animations */
   .animate-spin {
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
   @keyframes spin {
     from { transform: rotate(0deg);
     }
@@ -495,16 +488,13 @@ import type { User } from '$lib/types';
   }
   /* Custom scrollbar for overflow areas */
   .overflow-x-auto::-webkit-scrollbar {
-    height: 6px;
-  }
+    height: 6px}
   .overflow-x-auto::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-  }
+    background: #f1f1f1
+    border-radius: 3px}
   .overflow-x-auto::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-  }
-  .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #a8a8a8;
-  }
+    background: #c1c1c1
+    border-radius: 3px}
+  .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #a8a8a8}
 </style>
+

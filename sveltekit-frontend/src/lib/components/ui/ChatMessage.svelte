@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { User, Bot, AlertTriangle } from 'lucide-svelte';
   interface Props {
     message: { role: 'user' | 'assistant' | 'error';, content: string; timestamp?: string };
-    analyticsLog?: (_event: any) => void;
-  }
+    analyticsLog?: (_event: any) => void}
   let { message, analyticsLog = () => {} }: Props = $props();
   $effect(() => {
     if (message && message.content) {
@@ -33,3 +32,4 @@
   </div>
 </div>
 ;
+

@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Logout Route - Handles user logout
 TODO: Implement logout functionality, clear session, redirect to login
 -->
@@ -12,7 +12,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 	import { goto } from '$app/navigation';
 	let isLoggingOut = $state<boolean>(false);
 	async function handleLogout(): Promise<any> {
-		isLoggingOut = true;
+		isLoggingOut = true
 		try {
 			// TODO: Call logout API
 			// await fetch('/api/auth/logout', { method: 'POST' })
@@ -27,8 +27,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 			}, 1000);
 		} catch (error) {
 			console.error('Logout failed:', error);
-			isLoggingOut = false;
-		}
+			isLoggingOut = false}
 	}
 	$effect(() => {
 		// Auto-logout in, 3 seconds if user doesn't cancel'
@@ -45,7 +44,7 @@ TODO: Implement logout functionality, clear session, redirect to login
 		<Card class="nes-container is-rounded max-w-md">
 			<CardContent class="p-8">
 				<div class="mb-6">
-					<div class="text-4xl">👋</div>
+					<div class="text-4xl">ðŸ‘‹</div>
 					<h2 class="nes-text is-primary text-lg">
 						Signing Out
 					</h2>

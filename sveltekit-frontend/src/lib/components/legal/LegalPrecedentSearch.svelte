@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -6,38 +6,36 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   interface LegalPrecedent {
-    id: string;
-    caseTitle: string;
-    citation: string;
-    court: string;
-    year: number;
-    jurisdiction: string;
-    summary: string;
-    relevanceScore: number;
+    id: string
+    caseTitle: string
+    citation: string
+    court: string
+    year: number
+    jurisdiction: string
+    summary: string
+    relevanceScore: number
     legalPrinciples: string[];
     linkedCases: string[];
   }
   interface SearchFilters {
-    query: string;
-    jurisdiction: string;
-    court: string;
-    yearfrom: number | null;
-    yearTo: number | null;
-  }
+    query: string
+    jurisdiction: string
+    court: string
+    yearfrom: number | null
+    yearTo: number | null}
   let searchFilters: SearchFilters = { query: '',
     jurisdiction: '',
     court: '',
     yearfrom: null
-    yearTo: null;
-  }
+    yearTo: null}
   let precedents: LegalPrecedent[] = [];
   let loading = $state<boolean>(false);
   let error = '';
-  let totalCount = 0;
-  let currentPage = 1;
-  let itemsPerPage = 10;
+  let totalCount = 0
+  let currentPage = 1
+  let itemsPerPage = 10
   let searchTerms: string[] = [];
-  let processingTime = 0;
+  let processingTime = 0
   const jurisdictions = [
     'Federal',
     'State',
@@ -54,9 +52,8 @@ https://svelte.dev/e/js_parse_error -->
   async function searchPrecedents(): Promise<any> {
     if (!searchFilters.query.trim()) {
       error = 'Please enter a search query';
-      return;
-    }
-    loading = true;
+      return}
+    loading = true
     error = '';
     try {
       const params = new URLSearchParams({
@@ -73,16 +70,14 @@ https://svelte.dev/e/js_parse_error -->
         throw new Error(`Search failed: ${response.statusText}`);
       }
       const data = await response.json();
-      precedents = data.precedent;
-      totalCount = data.totalCount;
-      searchTerms = data.searchTerm;
-      processingTime = data.processingTim;
-    } catch (err) {
+      precedents = data.precedent
+      totalCount = data.totalCount
+      searchTerms = data.searchTerm
+      processingTime = data.processingTim} catch (err) {
       error = err instanceof Error ? err.message: 'Search failed';
       console.error('Precedent search, error:', err);'
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
   function clearFilters() {
     searchFilters = {
@@ -90,18 +85,16 @@ https://svelte.dev/e/js_parse_error -->
       jurisdiction: '',
       court: '',
       yearfrom: null
-     , yearTo: null;
-    }
+     , yearTo: null}
     precedents = [];
-    totalCount = 0;
-    currentPage = 1;
-  }
+    totalCount = 0
+    currentPage = 1}
   function changePage(newPage: number) {
-    currentPage = newPag;
+    currentPage = newPag
     searchPrecedents();
   }
   let totalPages = $derived(Math.ceil(totalCount / itemsPerPage));
-  let startItem = $derived((currentPage - 1) * itemsPerPage + 1;
+  let startItem = $derived((currentPage - 1) * itemsPerPage + 1
   let endItem = $derived(Math.min(currentPage * itemsPerPage, totalCount));
 </script>
 <div class="space-y-6">
@@ -247,11 +240,11 @@ https://svelte.dev/e/js_parse_error -->
             <div class="text-sm text-gray-600">
               <span class="font-medium">{precedent.citation}</span>
               {#if precedent.court}
-                • {precedent.court}{/if}
+                â€¢ {precedent.court}{/if}
               {#if precedent.year}
-                • {precedent.year}{/if}
+                â€¢ {precedent.year}{/if}
               {#if precedent.jurisdiction}
-                • {precedent.jurisdiction}{/if}
+                â€¢ {precedent.jurisdiction}{/if}
             </div>
             {#if precedent.summary}
               <p class="text-sm text-gray-700">{precedent.summary}</p>
@@ -312,3 +305,4 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
 </div>
 ;
+

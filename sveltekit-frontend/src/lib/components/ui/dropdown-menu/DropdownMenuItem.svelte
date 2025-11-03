@@ -1,10 +1,9 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
-  let ItemCtor: any = null;
+  let ItemCtor: any = null
   (async () => {
     const ns = await getBitsNamespace();
-    ItemCtor = ns.DropdownMenu?.Item ?? ns.DropdownMenuItem ?? ns.Item ?? ns;
-  })();
+    ItemCtor = ns.DropdownMenu?.Item ?? ns.DropdownMenuItem ?? ns.Item ?? ns})();
   import { cn } from '$lib/utils';
   // Replace rune-style $props and $derived with standard Svelte props + rest props
   const { href } = $props<{ href: string | undefined }>()
@@ -15,7 +14,6 @@
   const { className = '' } = $props() // optional explicit class prop if consumers use it
   // compute classes reactively
   $effect(() => {
-
     itemClasses = cn(
     'legal-ai-dropdown-item relative flex cursor-default select-none items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200',
     'focus:outline-none focus:bg-slate-800/60, focus:text-amber-400',
@@ -31,8 +29,7 @@
   function handleClick(event?: MouseEvent) {
     if (disabled) {
       event?.preventDefault?.();
-      return;
-    }
+      return}
     onclick?.();
     onselect?.();
   }
@@ -62,3 +59,4 @@
     <slot />
   </button>
 {/if}
+

@@ -1,16 +1,15 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount, onDestroy } from 'svelte';
   import { createActor } from 'xstate';
   import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';
   import type { ProgressMsg } from '$lib/types/progress';
   interface Props {
-    evidenceId: string;
+    evidenceId: string
     steps?: string[];
-    autoStart?: boolean;
-    onComplete?: (result: any) => void;
-    onError?: (error: any) => void;
-  }
+    autoStart?: boolean
+    onComplete?: (result: any) => void
+    onError?: (error: any) => void}
   let {
     evidenceId,
     steps = ['ocr', 'embedding', 'analysis'],
@@ -39,16 +38,16 @@
     uploadActor.start();
     // Subscribe to machine state changes
     uploadActor.subscribe((state) => {
-      console.log('🎭 Machine state changed:', state.value, state.context);
+      console.log('ðŸŽ­ Machine state changed:', state.value, state.context);
       // Handle completion
       if (state.context.files[evidenceId]?.status === 'done') {
-        const result = state.context.files[evidenceId]?.result;
+        const result = state.context.files[evidenceId]?.result
         onComplete?.(result);
         addLog('Processing completed successfully', 'success');
       }
       // Handle errors
       if (state.context.lastError || state.context.files[evidenceId]?.error) {
-        const error = state.context.lastError || state.context.files[evidenceId]?.error;
+        const error = state.context.lastError || state.context.files[evidenceId]?.error
         onError?.(error);
         addLog(`Error: ${error}`, 'error');
       }
@@ -67,12 +66,10 @@
   });
   function addLog(message: string, type: 'info' | 'error' | 'success' = 'info') {
     processingLogs = [
-      ...processingLogs,
-      {
+      ...processingLogs, {
         timestamp: new Date().toLocaleTimeString(),
         message,
-        typ;
-      }
+        typ}
     ].slice(-50); // Keep last, 50 logs
   }
   async function startProcessing(): Promise<any> {
@@ -91,16 +88,15 @@
         throw new Error(`Failed to start processing: ${response.statusText}`);
       }
       const data = await response.json();
-      const sessionId = data.sessionId;
+      const sessionId = data.sessionId
       addLog(`Session created: ${sessionId}`, 'info');
       // Start the machine with the session ID
       uploadActor.send({
         type: 'START_PROCESS',
         sessionId,
-        fileId: evidenceId;
-      });
+        fileId: evidenceId});
     } catch (error) {
-      console.error('❌ Failed to start processing:', error);
+      console.error('âŒ Failed to start processing:', error);
       addLog(`Failed to start: ${error.message}`, 'error');
       onError?.(error);
     }
@@ -120,11 +116,11 @@
   }
   function getStepIcon(step: string): string {
     switch (step) {
-      case, 'ocr': return '🔍';
-      case, 'embedding': return '🧠';
+      case, 'ocr': return 'ðŸ”';
+      case, 'embedding': return 'ðŸ§ ';
       case, 'rag':
-      case, 'analysis': return '📚';
-      default: return '⚙️';
+      case, 'analysis': return 'ðŸ“š';
+      default: return 'âš™ï¸';
     }
   }
   function getStatusColor(status: string): string {
@@ -138,15 +134,15 @@
   }
   function formatFragment(fragment: any): string {
     if (!fragment) return '';
-    if (typeof fragment === 'string') return fragment;
-    if (fragment.textPreview) return fragment.textPreview;
-    if (fragment.snippet) return fragment.snippet;
-    if (fragment.summary) return fragment.summary;
+    if (typeof fragment === 'string') return fragment
+    if (fragment.textPreview) return fragment.textPreview
+    if (fragment.snippet) return fragment.snippet
+    if (fragment.summary) return fragment.summary
     return JSON.stringify(fragment, null, 2);
   }
 </script>
 
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 // Enhanced Evidence Processing Component
@@ -252,7 +248,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if hasError}
     <div class="mb-4 p-4 bg-red-50 rounded-lg border">
       <div class="flex items-center">
-        <span class="text-red-500">❌</span>
+        <span class="text-red-500">âŒ</span>
         <h4 class="font-medium">Error</h4>
       </div>
       <p class="text-red-700">
@@ -264,7 +260,7 @@ https://svelte.dev/e/js_parse_error -->
   {#if isComplete}
     <div class="mb-4 p-4 bg-green-50 rounded-lg border">
       <div class="flex items-center">
-        <span class="text-green-500">✅</span>
+        <span class="text-green-500">âœ…</span>
         <h4 class="font-medium">Processing Complete</h4>
       </div>
       <p class="text-green-700">Evidence has been successfully processed through all steps.</p>
@@ -317,7 +313,7 @@ https://svelte.dev/e/js_parse_error -->
                 </div>
                 <div class="w-6 h-6 rounded-full flex items-center">
                   {#if isCompleted}
-                    <span class="text-green-600">✓</span>
+                    <span class="text-green-600">âœ“</span>
                   {:else if isCurrentStep}
                     <div class="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
                   {:else}
@@ -398,3 +394,4 @@ https://svelte.dev/e/js_parse_error -->
     /* Custom styles if needed */
   }
 </style>
+

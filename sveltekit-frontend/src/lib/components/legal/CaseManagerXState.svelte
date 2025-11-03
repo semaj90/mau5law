@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   /// <reference types="vite/client" />
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/state';
@@ -36,15 +36,15 @@
   let newCaseNumber = $state<string>('');
   // Handle route changes and load case
   $effect(() => {
-    const routeCaseId = page.params.caseId;
+    const routeCaseId = page.params.caseId
     if (routeCaseId && routeCaseId !== caseId) {
-      caseId = routeCaseId;
+      caseId = routeCaseId
       send({ type: 'LOAD_CASE', caseId: routeCaseId });
     }
   });
   // Machine event handlers
   function handleCreateCase() {
-    if (!newCaseTitle || !newCaseDescription || !newCaseNumber) return;
+    if (!newCaseTitle || !newCaseDescription || !newCaseNumber) return
     const caseData = {
       title: newCaseTitle,
       description: newCaseDescription,
@@ -87,7 +87,7 @@
     fileInput?.click();
   }
   function onFileChange(event: Event) {
-    const target = event.target as HTMLInputElement | null;
+    const target = event.target as HTMLInputElement | null
     if (target?.files) {
       const fileArray = Array.from(target.files);
       send({ type: 'ADD_EVIDENCE', files: fileArray });
@@ -369,13 +369,12 @@
 </div>
 <style>
   .case-manager-xstate {
-    min-height: 100vh;
-  }
+    min-height: 100vh}
   .animate-spin {
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
   @keyframes spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
 </style>
+

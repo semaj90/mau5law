@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -11,14 +11,13 @@ https://svelte.dev/e/js_parse_error -->
   // Props
   interface Props {
     status?: 'idle' | 'model-loading' | 'inference' | 'complete' | 'error';
-    progress?: number;
-    loadingText?: string;
-    estimatedTime?: string;
-    modelName?: string;
-    gpuMemoryUsage?: string;
-    children?: import('svelte').Snippet;
-    class?: string;
-  }
+    progress?: number
+    loadingText?: string
+    estimatedTime?: string
+    modelName?: string
+    gpuMemoryUsage?: string
+    children?: import('svelte').Snippet
+    class?: string}
   let {
     status = $bindable('idle'),
     progress = $bindable(0),
@@ -32,19 +31,17 @@ https://svelte.dev/e/js_parse_error -->
   // Animated progress value
   const progressValue = tweened(0, {
     duration, 800,
-    easing: cubicInOut;
-  });
+    easing: cubicInOut});
   const opacity = tweened(0, {
     duration, 400,
-    easing: cubicInOut;
-  });
+    easing: cubicInOut});
   // Auto-update progress and text based on status
   $effect(() => {
     progressValue.set(progress);
     switch (status) {
       case, 'idle':
         opacity.set(0);
-        break;
+        break
       case, 'model-loading':
         opacity.set(1);
         loadingText = 'Loading GPU model into VRAM...';
@@ -53,32 +50,31 @@ https://svelte.dev/e/js_parse_error -->
         if (progress === 0) {
           simulateModelLoading();
         }
-        break;
+        break
       case, 'inference':
         loadingText = 'Processing with AI model...';
         estimatedTime = '10-30 seconds';
-        break;
+        break
       case, 'complete':
         loadingText = 'Inference complete!';
         estimatedTime = '';
-        progress = 100;
+        progress = 100
         // Auto-hide after, 2 seconds
         setTimeout(() => {
           if (status === 'complete') {
             opacity.set(0);
           }
         }, 2000);
-        break;
+        break
       case, 'error':
         loadingText = 'GPU inference failed';
         estimatedTime = 'Please try again';
         opacity.set(1);
-        break;
-    }
+        break}
   });
   // Simulate model loading with realistic timing
   function simulateModelLoading() {
-    if (status !== 'model-loading') return;
+    if (status !== 'model-loading') return
     const intervals = [
       { time: 1000, progress: 15 }, // Initial load
       { time: 3000, progress: 35 }, // Loading weights
@@ -89,8 +85,7 @@ https://svelte.dev/e/js_parse_error -->
     intervals.forEach(({ time, progress: targetProgress }) => {
       setTimeout(() => {
         if (status === 'model-loading') {
-          progress = targetProgres;
-        }
+          progress = targetProgres}
       }, time);
     });
   }
@@ -98,8 +93,7 @@ https://svelte.dev/e/js_parse_error -->
   let dotAnimations = $derived(() => {
     return Array.from({ length: 8 }, (_, i) => ({
       delay: i * 150,
-      opacity: status === 'model-loading' || status === 'inference' ? 1 : 0.3;
-    }));
+      opacity: status === 'model-loading' || status === 'inference' ? 1 : 0.3}));
   });
 </script>
 {#if status !== 'idle'}
@@ -168,9 +162,9 @@ https://svelte.dev/e/js_parse_error -->
             {:else if status === 'inference'}
               Processing query...
             {:else if status === 'complete'}
-              ✓ Ready
+              âœ“ Ready
             {:else if status === 'error'}
-              ✗ Failed
+              âœ— Failed
             {/if}
           </span>
         </div>
@@ -220,19 +214,18 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
   .animate-gpu-shimmer {
-    animation: gpu-shimmer 2.5s infinite;
-  }
+    animation: gpu-shimmer 2.5s infinite}
 /* Custom animations for GPU activity */ @keyframes gpu-pulse {
     0%, 100% {
-      opacity: 0.3;
+      opacity: 0.3
      , transform: scale(0.95);
     }
     50% {
-      opacity: 1;
+      opacity: 1
      , transform: scale(1.05);
     }
   }
   .animate-gpu-pulse {
-    animation: gpu-pulse 1.5s infinite;
-  }
+    animation: gpu-pulse 1.5s infinite}
 </style>
+

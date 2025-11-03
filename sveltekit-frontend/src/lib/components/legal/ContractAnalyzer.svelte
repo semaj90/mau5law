@@ -1,25 +1,24 @@
-<script context="module" lang="ts">
+﻿<script context="module" lang="ts">
   import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   // Move interfaces here so: 'export' modifiers are allowed
   export interface ContractClause {
-    id: string;
+    id: string
     type: 'termination' | 'compensation' | 'confidentiality' | 'liability' | 'governing_law';
-    content: string;
+    content: string
     riskLevel: 'low' | 'medium' | 'high' | 'critical';
-    confidence: number;
+    confidence: number
     recommendations?: string[];
   }
 
   export interface ContractAnalysis {
-    id: string;
-    title: string;
+    id: string
+    title: string
     type: 'employment' | 'service' | 'licensing' | 'nda' | 'vendor';
     status: 'draft' | 'review' | 'approved' | 'executed';
     clauses: ContractClause[];
-    riskScore: number;
-   , lastModified: string;
-  }
+    riskScore: number
+   , lastModified: string}
 </script>
 
 <script lang="ts">
@@ -39,7 +38,7 @@
 
   // local component state (no Svelte store misuse)
   let isAnalyzing = $state<boolean>(false);
-  let selectedClause: string | null = null;
+  let selectedClause: string | null = null
   let searchTerm = '';
 
   // sample data fallback
@@ -49,24 +48,21 @@
     status: 'review',
     riskScore: 6.5,
     lastModified: '2025-09-21T14:30:00Z',
-    clauses: [
-      {
+    clauses: [ {
         id: 'clause-1',
         type: 'termination',
         content: 'Either party may terminate this agreement with, 30 days written notice...',
         riskLevel: 'medium',
         confidence: 0.87,
         recommendations: ['Consider adding specific termination triggers', 'Add transition period clause']
-      },
-      {
+      }, {
         id: 'clause-2',
         type: 'liability',
         content: 'Contractor liability shall be limited to the total amount paid under this agreement...',
         riskLevel: 'high',
         confidence: 0.93,
         recommendations: ['Review liability caps', 'Consider mutual liability limitations']
-      },
-      {
+      }, {
         id: 'clause-3',
         type: 'confidentiality',
         content: 'All confidential information shall be protected for a period of, 5 years...',
@@ -79,11 +75,9 @@
   // build a small UI/AI helper (safe access) AFTER contractData is defined
   const urgency = (contractData?.riskScore ?? 0) > 7 ? 'critical' : 'medium';
   const contractBuilder: { styling?: { colors?: { primary?: string; evidence?: string }; borderWidth?: string } } | undefined =
-    undefined;
-
+    undefined
   // derived values via reactive declarations
   $effect(() => {
-
     filteredClauses = !searchTerm
     ? contractData.clauses
     : contractData.clauses.filter(
@@ -103,44 +97,40 @@
   };
 
   function getRiskBadgeStyle(risk: keyof typeof riskStyles) {
-    return riskStyles[risk] ?? riskStyles.medium;
-  }
+    return riskStyles[risk] ?? riskStyles.medium}
 
   function getClauseIcon(type: ContractClause['type']): string {
     const icons: Record<ContractClause['type'], string> = {
-      termination: '🔚',
-      compensation: '💰',
-      confidentiality: '🔒',
-      liability: '⚠️',
-      governing_law: '⚖️'
+      termination: 'ðŸ”š',
+      compensation: 'ðŸ’°',
+      confidentiality: 'ðŸ”’',
+      liability: 'âš ï¸',
+      governing_law: 'âš–ï¸'
     };
-    return icons[type] ?? '📄';
+    return icons[type] ?? 'ðŸ“„';
   }
 
   async function analyzeContract(): Promise<any> {
-    if (!onAnalyze) return;
-    isAnalyzing = true;
+    if (!onAnalyze) return
+    isAnalyzing = true
     try {
       await onAnalyze(contractData.id);
       // simple simulated update after analysis
-      contractData.riskScore = Math.round((Math.random() * 10) * 10) / 10;
+      contractData.riskScore = Math.round((Math.random() * 10) * 10) / 10
       contractData.lastModified = new Date().toISOString();
     } catch (err) {
       console.error('Contract analysis failed:', err);
     } finally {
-      isAnalyzing = false;
-    }
+      isAnalyzing = false}
   }
 
   function selectClause(clauseId: string) {
-    selectedClause = selectedClause === clauseId ? null : clauseId;
-  }
+    selectedClause = selectedClause === clauseId ? null : clauseId}
 
   function exportContract(format: 'pdf' | 'docx' | 'json') {
     if (onExport) {
       onExport(format);
-      return;
-    }
+      return}
     console.log(`Exporting contract as ${format.toUpperCase()}`);
   }
 </script>
@@ -155,7 +145,7 @@
       <CardHeader>
         <CardTitle class="contract-title">
           <div class="title-section">
-            <span class="contract-icon">📋</span>
+            <span class="contract-icon">ðŸ“‹</span>
             <div class="title-text">
               <h2>{contractData.title}</h2>
               <div class="contract-meta">
@@ -181,15 +171,15 @@
               aria-disabled={isAnalyzing}
               type="button"
             >
-              {#if isAnalyzing}🔄 Analyzing...{:else}🤖 AI Analyze{/if}
+              {#if isAnalyzing}ðŸ”„ Analyzing...{:else}ðŸ¤– AI Analyze{/if}
             </button>
 
             <div class="export-dropdown">
-              <Button.Root, class="export-btn">📤 Export</Button>
+              <Button.Root, class="export-btn">ðŸ“¤ Export</Button>
               <div class="export-menu">
-                <button onclick={() => exportContract('pdf')}>📄 PDF</button>
-                <button onclick={() => exportContract('docx')}>📝 DOCX</button>
-                <button onclick={() => exportContract('json')}>🔧 JSON</button>
+                <button onclick={() => exportContract('pdf')}>ðŸ“„ PDF</button>
+                <button onclick={() => exportContract('docx')}>ðŸ“ DOCX</button>
+                <button onclick={() => exportContract('json')}>ðŸ”§ JSON</button>
               </div>
             </div>
           </div>
@@ -207,8 +197,8 @@
             oninput={(e) => (searchTerm = (e.target as HTMLInputElement).value)}
           />
           <div class="clause-stats">
-            <span class="stat-item">📄 {filteredClauses.length} clauses</span>
-            <span class="stat-item">🕒 Modified: {new Date(contractData.lastModified).toLocaleDateString()}</span>
+            <span class="stat-item">ðŸ“„ {filteredClauses.length} clauses</span>
+            <span class="stat-item">ðŸ•’ Modified: {new Date(contractData.lastModified).toLocaleDateString()}</span>
           </div>
         </div>
 
@@ -281,7 +271,7 @@
 
                   {#if clause.recommendations && selectedClause === clause.id}
                     <div class="recommendations" in:fly={{ y: 20, duration: 300 }}>
-                      <h4>🔍 AI, Recommendations:</h4>
+                      <h4>ðŸ” AI, Recommendations:</h4>
                       <ul>
                         {#each Array.isArray(clause.recommendations) ? clause.recommendations : [] as recommendation}
                           <li>{recommendation}</li>
@@ -292,9 +282,9 @@
 
                 {#if selectedClause === clause.id}
                   <div class="clause-actions" in:fade>
-                    <Button size="sm">✏️ Edit</Button>
-                    <Button size="sm" variant="outline">💬 Comment</Button>
-                    <Button size="sm" variant="outline">🔍 Deep Analysis</Button>
+                    <Button size="sm">âœï¸ Edit</Button>
+                    <Button size="sm" variant="outline">ðŸ’¬ Comment</Button>
+                    <Button size="sm" variant="outline">ðŸ” Deep Analysis</Button>
                   {/if}
               </div>
             {/each}
@@ -307,175 +297,157 @@
 
 <style>
   .contract-analyzer {
-    max-width: 1200px;
-    margin: 0 auto;
-   , padding: 1rem;
-    font-family: 'Courier New', monospace;
-  }
+    max-width: 1200px
+    margin: 0 auto
+   , padding: 1rem
+    font-family: 'Courier New', monospace}
   .contract-title {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 2rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: flex-start
+    gap: 2rem}
   .title-section {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem}
   .contract-icon {
-    font-size: 2rem;
-  }
+    font-size: 2rem}
   .title-text h2 {
-    margin: 0;
+    margin: 0
    , color: var(--enhanced-bits-foreground);
-    font-size: 1.5rem;
-  }
+    font-size: 1.5rem}
   .contract-meta {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    font-size: 0.875rem;
-  }
+    display: flex
+    gap: 1rem
+    margin-top: 0.5rem
+    font-size: 0.875rem}
   .contract-type { background: var(--enhanced-bits-primary);
-    color: #000;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: bold;
-  }
+    color: #000
+    padding: 0.25rem 0.5rem
+    border-radius: 4px
+    font-weight: bold}
   .contract-status {
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: bold;
-  }
-  .status-draft { background: rgba(156,163,175,0.2); color: #9ca3af; }
-  .status-review { background: rgba(245,158,11,0.2); color: #f59e0b; }
-  .status-approved { background: rgba(16,185,129,0.2); color: #10b981; }
-  .status-executed { background: rgba(59,130,246,0.2); color: #3b82f6; }
-  .risk-score { font-weight: bold; }
-  .contract-actions { display: flex; gap: 0.5rem; align-items: center; }
-  .export-dropdown { position: relative; }
-  .export-btn { background: var(--enhanced-bits-secondary); color: #000; }
+    padding: 0.25rem 0.5rem
+    border-radius: 4px
+    font-weight: bold}
+  .status-draft { background: rgba(156,163,175,0.2); color: #9ca3af}
+  .status-review { background: rgba(245,158,11,0.2); color: #f59e0b}
+  .status-approved { background: rgba(16,185,129,0.2); color: #10b981}
+  .status-executed { background: rgba(59,130,246,0.2); color: #3b82f6}
+  .risk-score { font-weight: bold}
+  .contract-actions { display: flex; gap: 0.5rem; align-items: center}
+  .export-dropdown { position: relative}
+  .export-btn { background: var(--enhanced-bits-secondary); color: #000}
   .export-menu {
-    position: absolute;
+    position: absolute
     top: 100%;
-    right: 0;
+    right: 0
    , background: var(--enhanced-bits-background);
     border: 2px solid var(--enhanced-bits-border);
-    border-radius: 4px;
-    padding: 0.5rem 0;
-    min-width: 120px;
-    z-index: 10;
-    display: none;
-  }
-  .export-dropdown:hover .export-menu { display: block; }
+    border-radius: 4px
+    padding: 0.5rem 0
+    min-width: 120px
+    z-index: 10
+    display: none}
+  .export-dropdown:hover .export-menu { display: block}
   .export-menu button {
-    display: block;
+    display: block
     width: 100%;
-    padding: 0.5rem 1rem;
-    background: transparent;
-    border: none;
+    padding: 0.5rem 1rem
+    background: transparent
+    border: none
    , color: var(--enhanced-bits-foreground);
-    font-family: inherit;
-    font-size: 0.875rem;
-    cursor: pointer;
-    text-align: left;
-  }
+    font-family: inherit
+    font-size: 0.875rem
+    cursor: pointer
+    text-align: left}
   .export-menu button:hover { background: var(--enhanced-bits-muted); }
 
   .search-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
-  }
-  .clause-search { flex: 1; max-width: 400px; }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 2rem
+    gap: 1rem}
+  .clause-search { flex: 1; max-width: 400px}
   .clause-stats { display: flex; gap: 1rem; font-size: 0.875rem;, color: var(--enhanced-bits-muted-foreground); }
-  .stat-item { padding: 0.25rem 0.5rem;, background: rgba(255,255,255,0.05); border-radius: 4px; }
+  .stat-item { padding: 0.25rem 0.5rem;, background: rgba(255,255,255,0.05); border-radius: 4px}
 
   .risk-overview {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
+    margin-bottom: 2rem
+    padding: 1.5rem
    , background: rgba(255,255,255,0.02);
     border: 1px solid var(--enhanced-bits-border);
-    border-radius: 8px;
-  }
+    border-radius: 8px}
   .risk-overview h3 { margin: 0, 0 1rem 0; color: var(--enhanced-bits-foreground); }
-  .risk-bars { display: grid; gap: 0.75rem; }
-  .risk-bar { display: flex; align-items: center; gap: 1rem; }
-  .risk-label { min-width: 80px; font-size: 0.75rem; font-weight: bold; }
-  .risk-track { flex: 1; height: 8px;, background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-  .risk-fill { height: 100%; transition: width: 300ms ease; border-radius: 4px; }
-  .risk-count { min-width: 30px; text-align: center; font-weight: bold; }
+  .risk-bars { display: grid; gap: 0.75rem}
+  .risk-bar { display: flex; align-items: center; gap: 1rem}
+  .risk-label { min-width: 80px; font-size: 0.75rem; font-weight: bold}
+  .risk-track { flex: 1; height: 8px;, background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden}
+  .risk-fill { height: 100%; transition: width: 300ms ease; border-radius: 4px}
+  .risk-count { min-width: 30px; text-align: center; font-weight: bold}
 
   .clauses-section h3 { margin: 0, 0 1.5rem 0; color: var(--enhanced-bits-foreground); }
-  .clauses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; }
+  .clauses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem}
   .clause-card { background: rgba(255,255,255,0.03);
     border: 2px solid var(--enhanced-bits-border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 300ms ease;
-  }
+    border-radius: 8px
+    padding: 1.5rem
+    cursor: pointer
+    transition: all 300ms ease}
   /* keyboard focus visible for accessibility */
   .clause-card:focus { outline: 3px solid rgba(124,58,237,0.28);
-    outline-offset: 2px;
-  }
+    outline-offset: 2px}
   .clause-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
   .clause-card.selected { transform: translateY(-4px); box-shadow: 0 12px 48px rgba(0,0,0,0.4); }
-  .clause-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
-  .clause-type { display: flex; align-items: center; gap: 0.5rem; }
-  .clause-icon { font-size: 1.25rem; }
+  .clause-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem}
+  .clause-type { display: flex; align-items: center; gap: 0.5rem}
+  .clause-icon { font-size: 1.25rem}
   .clause-label { font-size: 0.875rem; font-weight: bold;, color: var(--enhanced-bits-foreground); }
   .clause-risk {
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
-  .clause-text { color: var(--enhanced-bits-muted-foreground); line-height: 1.6; margin-bottom: 1rem; }
-  .clause-metrics { margin-bottom: 1rem; }
-  .confidence-display { display: flex; align-items: center; gap: 1rem; }
+    padding: 0.25rem 0.5rem
+    border-radius: 4px
+    font-size: 0.75rem
+    font-weight: bold
+    text-transform: uppercase}
+  .clause-text { color: var(--enhanced-bits-muted-foreground); line-height: 1.6; margin-bottom: 1rem}
+  .clause-metrics { margin-bottom: 1rem}
+  .confidence-display { display: flex; align-items: center; gap: 1rem}
   .confidence-label { font-size: 0.875rem;, color: var(--enhanced-bits-muted-foreground); }
-  .confidence-bar { flex: 1; height: 6px;, background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
-  .confidence-fill { height: 100%; transition: width: 300ms ease; border-radius: 3px; }
+  .confidence-bar { flex: 1; height: 6px;, background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden}
+  .confidence-fill { height: 100%; transition: width: 300ms ease; border-radius: 3px}
   .confidence-value { font-size: 0.875rem; font-weight: bold;, color: var(--enhanced-bits-evidence); }
 
   .recommendations {
     background: rgba(157,74,221,0.1);
     border: 1px solid var(--enhanced-bits-ai);
-    border-radius: 4px;
-    padding: 1rem;
-    margin-top: 1rem;
-  }
-  .recommendations h4 { margin: 0, 0 0.5rem 0; color: var(--enhanced-bits-ai); font-size: 0.875rem; }
-  .recommendations ul { margin: 0; padding-left: 1.5rem; }
-  .recommendations li { color: var(--enhanced-bits-foreground); font-size: 0.875rem; line-height: 1.5; margin-bottom: 0.25rem; }
+    border-radius: 4px
+    padding: 1rem
+    margin-top: 1rem}
+  .recommendations h4 { margin: 0, 0 0.5rem 0; color: var(--enhanced-bits-ai); font-size: 0.875rem}
+  .recommendations ul { margin: 0; padding-left: 1.5rem}
+  .recommendations li { color: var(--enhanced-bits-foreground); font-size: 0.875rem; line-height: 1.5; margin-bottom: 0.25rem}
 
   .clause-actions { display: flex;, gap: 0.5rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--enhanced-bits-border); }
 
   /* optional minimal styling for the native analyze button */
   .ai-analyze-btn {
     background: var(--enhanced-bits-ai, #7c3aed);
-    color: #fff;
-    border: none;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-   , cursor: pointer;
-    font-family: inherit;
-  }
+    color: #fff
+    border: none
+    padding: 0.5rem 0.75rem
+    border-radius: 6px
+   , cursor: pointer
+    font-family: inherit}
   .ai-analyze-btn[disabled],
   .ai-analyze-btn[aria-disabled="true"] {
-    opacity: 0.6;
-   , cursor: not-allowed;
-  }
+    opacity: 0.6
+   , cursor: not-allowed}
 
   @media (max-width: 768px) {
-    .contract-title { flex-direction: column;, gap: 1rem; }
-    .search-section { flex-direction: column; align-items: stretch; }
-    .clauses-grid { grid-template-columns: 1fr; }
-    .clause-actions { flex-wrap: wrap; }
+    .contract-title { flex-direction: column;, gap: 1rem}
+    .search-section { flex-direction: column; align-items: stretch}
+    .clauses-grid { grid-template-columns: 1fr}
+    .clause-actions { flex-wrap: wrap}
   }
 </style>

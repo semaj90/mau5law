@@ -1,19 +1,16 @@
-<script lang="ts">
+﻿<script lang="ts">
   import * as BitsUI from 'bits-ui';
   interface Props {
-    children?: import('svelte').Snippet;
-  }
+    children?: import('svelte').Snippet}
   let { children }: Props = $props();
   // Resolve ContextMenu Trigger component from bits-ui exports
   const _ns = (BitsUI as: any).ContextMenu ?? (BitsUI as: any);
   let ContextMenuTrigger: any = $state<any>(null);
   if (_ns) {
     if ('Trigger' in _ns) {
-      ContextMenuTrigger = _ns.Trigger;
-    } else {
-      const nsany = _ns as: any;
-      ContextMenuTrigger = nsany.ContextMenuTrigger ?? nsany.ContextMenuTrigger;
-    }
+      ContextMenuTrigger = _ns.Trigger} else {
+      const nsany = _ns as: any
+      ContextMenuTrigger = nsany.ContextMenuTrigger ?? nsany.ContextMenuTrigger}
   }
 </script>
 {#if ContextMenuTrigger}
@@ -21,3 +18,4 @@
     <slot />
   </ContextMenuTrigger>
 {/if}
+

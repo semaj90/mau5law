@@ -1,15 +1,15 @@
-/**
+﻿/**
  * Comprehensive Agent Orchestration
  * Integrates Claude, CrewAI, AutoGen, and RAG systems
  */
 export const comprehensiveOrchestrator = {
   initialized: false
   async initialize() {
-    console.log('🤖 Initializing Agent Orchestrator...')
-    console.log('✅ Claude Agent: Ready')
-    console.log('✅ CrewAI Integration: Ready')
-    console.log('✅ AutoGen Framework: Ready')
-    console.log('✅ RAG System: Ready')
+    console.log('ðŸ¤– Initializing Agent Orchestrator...')
+    console.log('âœ… Claude Agent: Ready')
+    console.log('âœ… CrewAI Integration: Ready')
+    console.log('âœ… AutoGen Framework: Ready')
+    console.log('âœ… RAG System: Ready')
     this.initialized = true
     return { status: 'success', agents: ['claude', 'crewai', 'autogen', 'rag'] }
   }, getSystemStatus() {

@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+﻿/// <reference types="vite/client" />
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 // Simplified database configuration for production
@@ -13,8 +13,8 @@ console.log(
   `[Database] Connecting to: postgresql://${config.user}:***@${config.host}:${config.port}/${config.database}`
 );
 // Create connection with error handling
-let sql;
-let db;
+let sql
+let db
 try {
   sql = postgres(connectionString, {
     max: 10, idle_timeout: 20, connect_timeout: 10, onnotice: () => {}, // Suppress notices
@@ -36,8 +36,7 @@ export async function initializeDatabase() {
   try {
     if (!sql) {
       console.warn('[Database] No SQL connection, skipping initialization');
-      return false;
-    }
+      return false}
     console.log('[Database] Initializing database...');
     // Create extensions
     await sql`CREATE EXTENSION IF NOT EXISTS vector`;
@@ -55,21 +54,18 @@ export async function initializeDatabase() {
       )
     `;
     console.log('[Database] Tables created');
-    return true;
-  } catch (error) {
+    return true} catch (error) {
     console.error('[Database] Initialization failed:', error.message);
-    return false;
-  }
+    return false}
 }
 // Test connection function
 export async function testDatabaseConnection() {
   try {
-    if (!sql) return false;
+    if (!sql) return false
     const result = await sql`SELECT 1 as test`;
-    return result.length > 0;
-  } catch (error) {
+    return result.length > 0} catch (error) {
     console.error('[Database] Connection test failed:', error.message);
-    return false;
-  }
+    return false}
 }
 export { db, sql };
+
