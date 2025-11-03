@@ -1,8 +1,0 @@
-{
-  "mode": "i8",
-  "dim": 64,
-  "vectors": 156037,
-  "bytePerVector": 64,
-  "dataFile": "embeddings.i8",
-  "metaFile": "embeddings.meta.json"
-}

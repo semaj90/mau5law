@@ -1,9 +1,0 @@
-{
-  "type": "module",
-  "version": "66.3.2",
-  "private": true,
-  "dependencies": {
-    "@unocss/core": "workspace:*",
-    "@unocss/scope": "workspace:*"
-  }
-}
