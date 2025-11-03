@@ -7,15 +7,15 @@
       bind:value={$form.password} aria-invalid={$errors.password ? 'true': undefined} required /> {#if $errors.password} <span class="field-error">{$errors.password}</span> {/if} </div> <button type="submit">Login</button> <button type="button"
     class="demo-login"
     onclick={() => { $form.email = 'demo@legal-ai.com'; $form.password = 'demo123'}} >
-    ðŸŽ¯ Fill Demo Credentials </button> </form> <style> .success-banner { background: #d4edda, color: #155724, padding: 0.75rem, border: 1px solid #c3e6cb; border-radius: 0.375rem, margin-bottom: 1rem}
-  .error-message { background: #f8d7da, color: #721c24, padding: 0.75rem, border: 1px solid #f5c6cb; border-radius: 0.375rem, margin-bottom: 1rem}
+    ðŸŽ¯ Fill Demo Credentials </button> </form> <style> .success-banner { background: #d4edda; color: #155724, padding: 0.75rem; border: 1px solid #c3e6cb; border-radius: 0.375rem; margin-bottom: 1rem}
+  .error-message { background: #f8d7da; color: #721c24, padding: 0.75rem; border: 1px solid #f5c6cb; border-radius: 0.375rem; margin-bottom: 1rem}
   .form-field { margin-bottom: 1rem}
-  .form-field input { width: 100%, padding: 0.5rem, border: 1px solid #ccc; border-radius: 0.375rem}
+  .form-field input { width: 100%; padding: 0.5rem, border: 1px solid #ccc; border-radius: 0.375rem}
   .form-field input[aria-invalid='true'] { border-color: #dc3545}
-  .field-error { color: #dc3545, font-size: 0.875rem, margin-top: 0.25rem, display: block}
-  button { background: #007bff, color: white, padding: 0.75rem 1.5rem; border: none, border-radius: 0.375rem, cursor: pointer}
+  .field-error { color: #dc3545; font-size: 0.875rem, margin-top: 0.25rem; display: block}
+  button { background: #007bff; color: white, padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem, cursor: pointer}
   button:hover { background: #0056b3}
-  .demo-login { background: #6c757d, margin-left: 0.5rem}
+  .demo-login { background: #6c757d; margin-left: 0.5rem}
   .demo-login:hover { background: #5a6268}
 </style>
 

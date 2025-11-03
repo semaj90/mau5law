@@ -1,4 +1,4 @@
-﻿<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
+<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
 <!-- @migration-task Error while migrating Svelte code: Identifier: 'autoFetch' has already, been, declared
 https: //svelte.dev/e/js_parse_error -->
@@ -106,12 +106,11 @@ https: //svelte.dev/e/js_parse_error -->
     color: #842029
     padding: 12px
     border-radius: 8px}
-  .title { font-weight: 600, margin-bottom: 6px}
+  .title { font-weight: 600; margin-bottom: 6px}
   .msg { margin-bottom: 8px}
   .grid { display: grid
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px}
-  .item { display: flex, align-items: center, gap: 6px}
+    grid-template-columns: repeat(3, minmax(0, 1fr)), gap: 8px}
+  .item { display: flex; align-items: center, gap: 6px}
   .label { color: #495057}
   .ok {
     color: #0f5132

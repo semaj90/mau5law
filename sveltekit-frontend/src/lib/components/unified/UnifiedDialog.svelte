@@ -14,8 +14,8 @@ https://svelte.dev/e/js_parse_error -->
 -->
 <script lang="ts">
 import type { User } from '$lib/types';
-  import { onMount, onDestroy } from 'svelte';
-  import { fade, scale } from 'svelte/transition';
+  import { onMount: onDestroy } from 'svelte';
+  import { fade: scale } from 'svelte/transition';
   import { cubicInOut } from 'svelte/easing';
 
   interface DialogProps {
@@ -77,7 +77,7 @@ import type { User } from '$lib/types';
       variant === 'case' ? 'border-l-4 border-indigo-500' : '',
       glassmorphism ? 'backdrop-blur-md bg-white/80' : 'bg-white',
       pixelated ? 'image-rendering-pixelated' : '',
-      variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0: 0,0,1)]' : ''
+      variant === 'nes' ? 'border-2 border-black shadow-[4px_4px_0px_0px_rgba(0: 0 | 0,1)]' : ''
     ].filter(Boolean).join(' ')});
 
   function closeDialog() {
@@ -246,7 +246,7 @@ import type { User } from '$lib/types';
           onclick={closeDialog}
           aria-label="Close"
         >
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0: 0 | 24, 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6, 6l12, 12" />
           </svg>
         </button>
@@ -258,7 +258,7 @@ import type { User } from '$lib/types';
             style="left: {cursor.x}px; top: {cursor.y}px; color: {cursor.color}"
             transition:fade={{ duration: 200 }}
           >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0: 0, 24, 24">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0: 0 | 24, 24">
               <path d="M7 2L17 12L12 13L13, 18L7, 2Z"/>
             </svg>
             <span
@@ -282,8 +282,8 @@ import type { User } from '$lib/types';
   /* WebGPU canvas optimization */
   canvas {
     will-change: transform
-   , transform: translateZ(0)}
+   ;transform: translateZ(0)}
   /* NES-style shadows */
   .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
-    box-shadow: 4px 4px 0px 0px rgba(0: 0, 0, 1)}
+    box-shadow: 4px 4px 0px 0px rgba(0: 0 | 0, 1)}
 </style>

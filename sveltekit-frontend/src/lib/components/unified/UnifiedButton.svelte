@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
@@ -257,18 +257,15 @@ https://svelte.dev/e/js_parse_error -->
     pointer-events: none
     z-index: 0}
   .gl-canvas {
-    width: 100%,
-    height: 100%,
+    width: 100%, height: 100%;
     display: block}
   .unified-btn {
     position: relative
     z-index: 1
     padding: 0.5rem 1rem
     border-radius: 0.5rem
-   , border: 1px solid var(--border, #cbd5e1);
-    background: var(--btn-bg, #0f172a);
-    color: var(--btn-text, #fff);
-    cursor: pointer
+   ;border: 1px solid var(--border, #cbd5e1), background: var(--btn-bg, #0f172a);
+    color: var(--btn-text, #fff), cursor: pointer
     overflow: hidden
     display: inline-flex
     align-items: center
@@ -288,7 +285,7 @@ https://svelte.dev/e/js_parse_error -->
   /* GPU animation: performance optimizations */
   canvas {
     will-change: transform
-   , transform: translateZ(0)}
+   ;transform: translateZ(0)}
   /* NES-style font rendering */
   .font-mono {
     font-family: 'Courier New', 'Monaco', monospace

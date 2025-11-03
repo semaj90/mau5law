@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/state'; // replaced deprecated $app/stores import
   import { browser } from '$app/environment';
@@ -228,7 +228,7 @@
   @media (prefers-contrast: high) {
     .unified-layout {
       background: #000 !important
-     , color: #fff !important}
+     ; color: #fff !important}
     .page-header,
     .content-container {
       border-width: 3px !important}

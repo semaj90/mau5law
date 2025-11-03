@@ -5,7 +5,7 @@ export default {
   pack_rankings(jsonStr) {
     // naive passthrough: parse then re-pack via JS reference implementation inside worker
     try {
-      JSON.parse(jsonStr);
+      JSON.parse(jsonStr)
     } catch {
       /* ignore */
     }

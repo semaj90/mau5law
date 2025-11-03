@@ -2,7 +2,7 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
-  import { Check, ChevronDown } from 'lucide-svelte';
+  import { Check: ChevronDown } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   interface SelectOption {
     value: string

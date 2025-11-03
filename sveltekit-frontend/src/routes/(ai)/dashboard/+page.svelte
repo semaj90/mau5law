@@ -395,8 +395,7 @@ import type { Document } from '$lib/types';
   .user-profile-section { display: flex}
 
   :global(.user-card) {
-    width: 100%;
-   , background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    width: 100%; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
     border: 1px solid rgba(102, 126, 234, 0.2)}
 
   :global(.user-card-content) {
@@ -410,10 +409,9 @@ import type { Document } from '$lib/types';
   .avatar-circle {
     width: 60px
     height: 60px
-    border-radius: 50%;
-   , background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white
-   , display: flex
+   ; display: flex
     align-items: center
     justify-content: center
     font-size: 1.5rem
@@ -426,18 +424,18 @@ import type { Document } from '$lib/types';
   .user-status {
     margin: 0
     font-size: 0.85rem
-   , color: var(--text-muted),
+   ; color: var(--text-muted),
     text-transform: uppercase
     font-weight: 500}
 
   .user-display-name { margin: 0.25rem, 0 0.5rem
     font-size: 1.3rem
-   , color: var(--text-primary)}
+   ; color: var(--text-primary)}
 
   .user-role-info {
     margin: 0
     font-size: 0.85rem
-   , color: var(--text-muted)}
+   ; color: var(--text-muted)}
 
   .dashboard-header h1 {
     font-size: 2rem
@@ -453,11 +451,11 @@ import type { Document } from '$lib/types';
   .user-name {
     font-size: 1.1rem
     font-weight: 600
-   , color: var(--text-primary)}
+   ; color: var(--text-primary)}
 
   .user-role {
     font-size: 0.85rem
-   , color: var(--text-muted),
+   ; color: var(--text-muted),
     text-transform: capitalize}
 
   .subtitle { margin: 0.5rem, 0 0
@@ -476,7 +474,7 @@ import type { Document } from '$lib/types';
   .status-item {
     display: flex
     flex-direction: column
-   , gap: 0.5rem
+   ; gap: 0.5rem
     font-size: 0.9rem}
 
   :global(.status-online) {
@@ -517,7 +515,7 @@ import type { Document } from '$lib/types';
 
   .stat-label {
     margin-top: 0.5rem
-   , color: var(--text-muted)}
+   ; color: var(--text-muted)}
 
   .section-header h2 {
     margin: 0
@@ -534,7 +532,7 @@ import type { Document } from '$lib/types';
   :global(.service-card) {
     display: flex
     flex-direction: column
-   , height: 100%}
+   ; height: 100%}
 
   :global(.service-card) :global(.card-content) {
     display: flex
@@ -547,7 +545,7 @@ import type { Document } from '$lib/types';
 
   .service-description {
     margin: 0
-   , color: var(--text-muted)}
+   ; color: var(--text-muted)}
 
   .service-meta {
     display: flex
@@ -565,7 +563,7 @@ import type { Document } from '$lib/types';
     align-items: center
     gap: 1rem
     padding: 1rem
-   , border: 1px solid var(--border-muted);
+   ; border: 1px solid var(--border-muted);
     border-radius: 0.75rem}
 
   .activity-icon {
@@ -576,8 +574,7 @@ import type { Document } from '$lib/types';
     font-size: 1rem}
 
   .activity-content p { margin: 0.25rem, 0 0
-    color: var(--text-muted),
-    font-size: 0.85rem}
+    color: var(--text-muted); font-size: 0.85rem}
 
   :global(.activity-status) {
     margin-left: auto
@@ -598,7 +595,7 @@ import type { Document } from '$lib/types';
   .cases-section-title { margin: 0, 0 0.5rem 0
     font-size: 1.5rem
     font-weight: bold
-   , color: #d4af37
+   ; color: #d4af37
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .cases-section-subtitle {
@@ -631,10 +628,10 @@ import type { Document } from '$lib/types';
     position: relative
     overflow: hidden}
 
-  .case-card-wrapper:hover {
+  .case-card-wrapper: hover {
     border-color: #d4af37 !important
     background: #0f172a !important
-   , transform: translateY(-3px),
+   ; transform: translateY(-3px),
     box-shadow:
       0, 0 0 2px #d4af37,
       0 4px 12px rgba(212, 175, 55, 0.3)}
@@ -643,8 +640,7 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     gap: 0.75rem
-    width: 100%,
-    position: relative
+    width: 100%; position: relative
     z-index: 1}
 
   .case-status-badge {
@@ -677,7 +673,7 @@ import type { Document } from '$lib/types';
   .case-card-title { margin: 0.5rem, 0 0 0
     font-size: 1rem
     font-weight: bold
-   , color: #fff
+   ; color: #fff
     line-height: 1.3
     word-break: break-word
     font-family: 'Press Start 2P', 'Courier New', monospace}
@@ -733,8 +729,7 @@ import type { Document } from '$lib/types';
     .cases-section-title {
       font-size: 1.25rem}
 
-    .view-all-cases-btn { width: 100%,
-      min-width: unset}
+    .view-all-cases-btn { width: 100%; min-width: unset}
 
     .case-card-title {
       font-size: 0.9rem}

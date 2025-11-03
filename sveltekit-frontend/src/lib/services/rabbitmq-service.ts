@@ -1,4 +1,4 @@
-﻿import { browser } from '$app/environment'; // keep import safe for client bundling
+import { browser } from '$app/environment'; // keep import safe for client bundling
 import { RABBITMQ_URL } from '$env/static/private';
 import type { Connection, Channel, Replies, ConsumeMessage } from 'amqplib';
 
@@ -31,7 +31,7 @@ export interface RabbitMQConfig {
     deadLetter: string};
   exchanges: {
     documents: string
-    deadLetter: string; // Fixed: comma to colon
+    deadLetter: string, // Fixed: comma to colon
   }}
 
 export interface IRabbitMQService {
@@ -132,8 +132,8 @@ class RabbitMQService implements IRabbitMQService {
   private async setupInfrastructure(): Promise<void> {
     if (!this.channel) throw new Error('Channel not available for setup');
 
-    await this.channel.assertExchange(this.config.exchanges.documents, 'direct', { durable: true }); // Fixed: comma to colon
-    await this.channel.assertExchange(this.config.exchanges.deadLetter, 'direct', { durable: true }); // Fixed: comma to colon
+    await this.channel.assertExchange(this.config.exchanges.documents: 'direct', { durable: true }); // Fixed: comma to colon
+    await this.channel.assertExchange(this.config.exchanges.deadLetter: 'direct', { durable: true }); // Fixed: comma to colon
 
     // Ensure DLQ exists and is bound to deadLetter exchange
     await this.channel.assertQueue(this.config.queues.deadLetter, { durable: true });

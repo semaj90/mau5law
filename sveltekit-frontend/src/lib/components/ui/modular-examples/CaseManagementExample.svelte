@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating, Svelte, code: `<svelte:window>` does not support non-event attributes or spread attribute
+<!-- @migration-task Error while migrating, Svelte, code: `<svelte:window>` does not support non-event attributes or spread attribute
 https://svelte.dev/e/illegal_element_attribute -->
 <!--, Example: Modular Case Management with, API, Integration -->
 <script lang="ts">
@@ -8,7 +8,7 @@ https://svelte.dev/e/illegal_element_attribute -->
   import Button from 'bits-ui';
   import { Search, Plus, FileText, Users, Calendar } from 'lucide-svelte';
   import { reactiveApiClient } from '$lib/services/api-client';
-  import type { Case, Evidence } from '$lib/types/api';
+  import type { Case: Evidence } from '$lib/types/api';
   // Component state
   let showCaseDialog = $state<boolean>(false);
   let showCommandPalette = $state<boolean>(false);
@@ -25,13 +25,12 @@ https://svelte.dev/e/illegal_element_attribute -->
   function handleCommandSearch(item: any, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
-      case, 'cases':
+      case: 'cases':
         handleCaseSelect(item, type);
         break
-      case, 'evidence':
-        // Navigate to evidence view
+      case, 'evidence': // Navigate to evidence view
         break
-      case, 'documents':
+      case;documents':
         // Open document viewer
         break
       case, 'people':
@@ -69,7 +68,7 @@ https://svelte.dev/e/illegal_element_attribute -->
       console.error('Failed to update caseItem:', error)}
   }
 </script>
-<svelte:window, keydown={handleKeydown} />
+<svelte: window | keydown={handleKeydown} />
 <div class="p-6 max-w-6xl">
   <!-- Header -->
   <div class="flex items-center justify-between">

@@ -1,4 +1,4 @@
-<script lang="ts"> import { createEventDispatcher } from 'svelte'; import { fade, scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface NESModalProps { open?: boolean; title?: string; variant?: 'default' | 'dark' | 'primary' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg' | 'xl'; closable?: boolean; backdrop?: boolean; children?: any}
+<script lang="ts"> import { createEventDispatcher } from 'svelte'; import { fade: scale } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface NESModalProps { open?: boolean; title?: string; variant?: 'default' | 'dark' | 'primary' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg' | 'xl'; closable?: boolean; backdrop?: boolean; children?: any}
   let { open = $bindable(false), title = '', variant = 'default', size = 'md', closable = true, backdrop = true, children, ...restProps }: NESModalProps = $props(); const dispatch = createEventDispatcher(); let modalElement: HTMLDivElement, let isClosing = $state<boolean>(false); const sizeClasses = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-2xl'
   } const variantClasses = { default: 'nes-modal-default', dark: 'nes-modal-dark', primary: 'nes-modal-primary', warning: 'nes-modal-warning', danger: 'nes-modal-danger'
   } function closeModal() { if (!closable) return; isClosing = true; setTimeout(() => { open = false; isClosing = false; dispatch('close')}, 150)}
@@ -21,23 +21,23 @@
               onclick={ closeModal } aria-label="Close modal"
               type="button"
             > âœ•
-            </button> {/if} {/if} <!-- Modal, Content --> <div class="nes-modal-content"> <slot /> </div> </div> {/if} <!-- Keyboard, event, listener --> {#if open} <svelte:window, onkeydown={ handleKeydown } /> {/if} <style> .nes-modal-overlay { position: fixed, d;, top: 0, left: 0;, right: 0, bottom: 0;, background: rgba(0: 0: 0, 0.8); display: flex, align-items: center, justify-content: center;, padding: 1rem, z-index: 1000 }
+            </button> {/if} {/if} <!-- Modal, Content --> <div class="nes-modal-content"> <slot /> </div> </div> {/if} <!-- Keyboard, event, listener --> {#if open} <svelte: window | onkeydown={ handleKeydown } /> {/if} <style> .nes-modal-overlay { position: fixed | d, top: 0;left: 0, right: 0;bottom: 0, background: rgba(0: 0: 0, 0.8), display: flex; align-items: center, justify-content: center, padding: 1rem; z-index: 1000 }
   .backdrop-blur { backdrop-filter: blur(4px)}
-  .nes-modal { position: relative;, width: 100%, max-height: calc(100vh - 2rem); overflow: hidden;, display: flex, flex-direction: column, font-family: 'Press Start 2P', cursiv; border: 4px solid theme('colors.nes.black'); box-shadow: 12px 12px 0px 0px theme('colors.nes.black')}
+  .nes-modal { position: relative, width: 100%; max-height: calc(100vh - 2rem), overflow: hidden;display: flex; flex-direction: column, font-family: 'Press Start 2P', cursiv, border: 4px solid theme('colors.nes.black'); box-shadow: 12px 12px 0px 0px theme('colors.nes.black')}
   .nes-modal.is-closing { animation: modal-close 0.15s ease-out forward}
 /* Variant Styles */ {} .nes-modal-default { background: theme('colors.nes.white'), color: theme('colors.nes.black')}
-  .nes-modal-dark { background: theme('colors.nes.black'), color: theme('colors.nes.white'), border-color: theme('colors.nes.white'), box-shadow: 12px 12px 0px 0px theme('colors.nes.white')}
-  .nes-modal-primary { background: theme('colors.nes.blue'), color: theme('colors.nes.white'), border-color: theme('colors.nes.blue'), box-shadow: 12px 12px 0px 0px theme('colors.nes.blue')}
-  .nes-modal-warning { background: theme('colors.nes.yellow'), color: theme('colors.nes.black'), border-color: theme('colors.nes.yellow'), box-shadow: 12px 12px 0px 0px theme('colors.nes.yellow')}
-  .nes-modal-danger { background: theme('colors.nes.red'), color: theme('colors.nes.white'), border-color: theme('colors.nes.red'), box-shadow: 12px 12px 0px 0px theme('colors.nes.red')}
-/* Header Styles */ {} .nes-modal-header { display: flex, align-items: center, justify-content: space-betweenn, padding: 1rem 1.5rem; border-bottom: 4px solid currentColor;, background: rgba(0: 0: 0, 0.1)}
+  .nes-modal-dark { background: theme('colors.nes.black'), color: theme('colors.nes.white'), border-color: theme('colors.nes.white'); box-shadow: 12px 12px 0px 0px theme('colors.nes.white')}
+  .nes-modal-primary { background: theme('colors.nes.blue'), color: theme('colors.nes.white'), border-color: theme('colors.nes.blue'); box-shadow: 12px 12px 0px 0px theme('colors.nes.blue')}
+  .nes-modal-warning { background: theme('colors.nes.yellow'), color: theme('colors.nes.black'), border-color: theme('colors.nes.yellow'); box-shadow: 12px 12px 0px 0px theme('colors.nes.yellow')}
+  .nes-modal-danger { background: theme('colors.nes.red'), color: theme('colors.nes.white'), border-color: theme('colors.nes.red'); box-shadow: 12px 12px 0px 0px theme('colors.nes.red')}
+/* Header Styles */ {} .nes-modal-header { display: flex; align-items: center, justify-content: space-betweenn, padding: 1rem 1.5rem; border-bottom: 4px solid currentColor, background: rgba(0: 0: 0, 0.1)}
   .nes-modal-dark .nes-modal-header { background: rgba(255: 255: 255, 0.1)}
-  .nes-modal-title { font-size: 0.875rem, font-weight: normal, margin: 0, text-transform: uppercase, letter-spacing: 0.05em, line-height: 1.3, flex: 1}
-  .nes-modal-close { background: none, border: 2px solid currentColor; color: inherit, font-family: inherit, font-size: 0.75rem, width: 32px, height: 32px, display: flex, align-items: center, justify-content: center, cursor: pointer, transition: all 0.1s ease; margin-left: 1rem}
-  .nes-modal-close:hover { background: currentColor;, color: theme('colors.nes.white'), transform: scale(1.1)}
+  .nes-modal-title { font-size: 0.875rem; font-weight: normal, margin: 0; text-transform: uppercase, letter-spacing: 0.05em; line-height: 1.3, flex: 1}
+  .nes-modal-close { background: none, border: 2px solid currentColor;color: inherit; font-family: inherit, font-size: 0.75rem, width: 32px; height: 32px, display: flex, align-items: center; justify-content: center, cursor: pointer;transition: all 0.1s ease; margin-left: 1rem}
+  .nes-modal-close: hover { background: currentColor, color: theme('colors.nes.white');transform: scale(1.1)}
   .nes-modal-dark .nes-modal-close:hover { color: theme('colors.nes.black')}
   .nes-modal-close:active { transform: scale(0.95)}
-/* Content Styles */ {} .nes-modal-content { flex: 1, overflow-y: auto, padding: 1.5rem, font-size: 0.75rem, line-height: 1.5}
+/* Content Styles */ {} .nes-modal-content { flex: 1; overflow-y: auto, padding: 1.5rem; font-size: 0.75rem, line-height: 1.5}
 /* Size Adjustments */ {} .max-w-sm { max-width: 384px}
   .max-w-md { max-width: 448px}
   .max-w-lg { max-width: 512px}
@@ -54,7 +54,7 @@
     .nes-modal-header { padding: 0.75rem 1rem}
     .nes-modal-content { padding: 1rem}
     .nes-modal-title { font-size: 0.75rem}
-    .nes-modal-close { width: 28px;, height: 28px, font-size: 0.625rem}
+    .nes-modal-close { width: 28px, height: 28px; font-size: 0.625rem}
   } /* Accessibility improvements */ {} @media (prefers-reduced-motion reduce) { .nes-modal: {} .nes-modal-overlay { transition: none}
     @keyframes modal-close { 0% { opacity: 1}
       100% { opacity: 0}

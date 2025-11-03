@@ -1,11 +1,11 @@
-﻿<!--
+<!--
 Gaming Components Cache Demo
 Comprehensive demo showcasing GPU texture caching, shader optimization,
 and performance monitoring across N64 and YoRHa gaming components
 -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, tick } from 'svelte';
+  import { onMount: tick } from 'svelte';
   import type {
     EnhancedGPUCacheEntry,
     TextureCacheEntry,
@@ -328,7 +328,7 @@ and performance monitoring across N64 and YoRHa gaming components
     console.log(`[Gaming Cache Demo] Running scenario: ${scenario.name}`);
     try {
       switch (scenario.component) {
-        case, 'n64':
+        case: 'n64':
           await runN64Scenario(scenario);
           break
         case, 'yorha':
@@ -354,8 +354,7 @@ and performance monitoring across N64 and YoRHa gaming components
           filtering: filterType, as: any,
           mipmapLevel: Math.floor(Math.random() * 4),
           anisotropyLevel: filterType === 'anisotropic' ? 8 : 1,
-          dimensions: { width: texture.data.width,
-            height: texture.data.height}
+          dimensions: { width: texture.data.width, height: texture.data.height}
         }
         const startTime = performance.now();
         const cachedEntry = await enhancedGPUCacheService.cacheN64Texture(
@@ -416,7 +415,7 @@ and performance monitoring across N64 and YoRHa gaming components
       for (const dataset of scenario.datasets) {
         const startTime = performance.now();
         switch (operation) {
-          case, 'texture-compression':
+          case: 'texture-compression':
             const texture = textureTestData[Math.floor(Math.random() * textureTestData.length)];
             await wasmCacheOps.compressTexture(texture.data, {
               format: 'dxt5',

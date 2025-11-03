@@ -1,0 +1,9 @@
+{
+  "babel": {
+    "plugins": [],
+    "parserOpts": {
+      "sourceType": "module",
+      "plugins": ["typescript", "jsx", "classProperties"]
+    }
+  }
+}

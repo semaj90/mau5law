@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Enhanced Bits - Form Grid
   Responsive form layout component
 -->
@@ -15,8 +15,7 @@
 <style>
   .form-grid {
     display: grid
-    grid-template-columns: repeat(var(--columns, 2), 1fr);
-    gap: var(--gap, 16px);
+    grid-template-columns: repeat(var(--columns, 2), 1fr), gap: var(--gap, 16px);
     margin-bottom: 24px}
   @media (max-width: 768px) {
     .form-grid {

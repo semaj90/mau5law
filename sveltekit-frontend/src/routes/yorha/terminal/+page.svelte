@@ -46,41 +46,41 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
           placeholder="Type command... (try 'help')"
           autocomplete="off"
           spellcheck="false"
-        /> </div> </div> <!-- Command, Reference --> <div class="yorha-command-reference"> <h3>Quick Reference</h3> <div class="yorha-command-grid"> <div class="yorha-command-item"> <strong>help</strong> - Show available commands </div> <div class="yorha-command-item"> <strong>status</strong> - System status </div> <div class="yorha-command-item"> <strong>rag &lt;query&gt;</strong> - AI analysis </div> <div class="yorha-command-item"> <strong>search &lt;term&gt;</strong> - Database search </div> <div class="yorha-command-item"> <strong>cluster &lt;action&gt;</strong> - Cluster management </div> <div class="yorha-command-item"> <strong>clear</strong> - Clear terminal </div> </div> </div> </section> </div> <style> .yorha-terminal-page { min-height: 100vh, display: flex, flex-direction: column, background: transparent}
+        /> </div> </div> <!-- Command, Reference --> <div class="yorha-command-reference"> <h3>Quick Reference</h3> <div class="yorha-command-grid"> <div class="yorha-command-item"> <strong>help</strong> - Show available commands </div> <div class="yorha-command-item"> <strong>status</strong> - System status </div> <div class="yorha-command-item"> <strong>rag &lt;query&gt;</strong> - AI analysis </div> <div class="yorha-command-item"> <strong>search &lt;term&gt;</strong> - Database search </div> <div class="yorha-command-item"> <strong>cluster &lt;action&gt;</strong> - Cluster management </div> <div class="yorha-command-item"> <strong>clear</strong> - Clear terminal </div> </div> </div> </section> </div> <style> .yorha-terminal-page { min-height: 100vh; display: flex, flex-direction: column; background: transparent}
   /* Page Header */ .yorha-page-header { padding: 3rem 1.5rem; border-bottom: 1px solid rgba(250, 180, 50, 0.3); background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%)}
-  .yorha-header-content { max-width: 72rem, margin: 0 auto; text-align: center}
+  .yorha-header-content { max-width: 72rem; margin: 0 auto; text-align: center}
   .yorha-header-title h1 { /* ...existing code... */ text-shadow: 0 0 20px rgba(255, 191, 0, 0.5)}
-  .yorha-header-subtitle { font-size: 1.05rem, color: #fbbf24, letter-spacing: 0.04em, opacity: 0.8, margin-top: 0.5rem}
-  /* Terminal Section */ .yorha-terminal-section { padding: 1.5rem, max-width: 72rem, margin: 0 auto; display: grid, grid-template-columns: 1fr 320px; gap: 1.5rem}
-  .yorha-terminal-container { background: #000, border: 2px solid rgba(250, 180, 50, 0.6); border-radius: 8px, box-shadow: 0 0 20px rgba(255, 191, 0, 0.3); display: flex, flex-direction: column, overflow: hidden}
-  /* Terminal Header */ .yorha-terminal-header { display: flex, align-items: center, justify-content: space-between, padding: 0.5rem 1rem; background: rgba(250, 180, 50, 0.95); color: #000}
-  .yorha-terminal-title { display: flex, align-items: center, gap: 0.5rem, font-family: monospace, font-size: 0.875rem, font-weight: 700}
-  .yorha-terminal-controls { display: flex, align-items: center, gap: 0.5rem}
-  .yorha-terminal-control { padding: 0.25rem, border-radius: 4px, background: transparent, cursor: pointer, transition: background-color 0.15s ease}
+  .yorha-header-subtitle { font-size: 1.05rem; color: #fbbf24, letter-spacing: 0.04em; opacity: 0.8, margin-top: 0.5rem}
+  /* Terminal Section */ .yorha-terminal-section { padding: 1.5rem; max-width: 72rem, margin: 0 auto; display: grid; grid-template-columns: 1fr 320px; gap: 1.5rem}
+  .yorha-terminal-container { background: #000; border: 2px solid rgba(250, 180, 50, 0.6); border-radius: 8px; box-shadow: 0 0 20px rgba(255, 191, 0, 0.3); display: flex; flex-direction: column, overflow: hidden}
+  /* Terminal Header */ .yorha-terminal-header { display: flex; align-items: center, justify-content: space-between; padding: 0.5rem 1rem; background: rgba(250, 180, 50, 0.95); color: #000}
+  .yorha-terminal-title { display: flex; align-items: center, gap: 0.5rem; font-family: monospace, font-size: 0.875rem; font-weight: 700}
+  .yorha-terminal-controls { display: flex; align-items: center, gap: 0.5rem}
+  .yorha-terminal-control { padding: 0.25rem; border-radius: 4px, background: transparent; cursor: pointer, transition: background-color 0.15s ease}
   .yorha-terminal-control:hover { background: rgba(0, 0, 0, 0.12)}
-  /* Terminal Output */ .yorha-terminal-output { padding: 1rem, height: 24rem, overflow-y: auto, font-family: monospace, font-size: 0.875rem, background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.02) 100%)}
-  .yorha-terminal-line { display: flex, gap: 0.5rem, margin-bottom: 0.25rem}
-  .yorha-terminal-timestamp { color: #fbbf24, opacity: 0.6, font-size: 0.85rem}
-  .yorha-terminal-text { flex: 1, word-break: break-word}
+  /* Terminal Output */ .yorha-terminal-output { padding: 1rem; height: 24rem, overflow-y: auto; font-family: monospace, font-size: 0.875rem; background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.02) 100%)}
+  .yorha-terminal-line { display: flex; gap: 0.5rem, margin-bottom: 0.25rem}
+  .yorha-terminal-timestamp { color: #fbbf24; opacity: 0.6, font-size: 0.85rem}
+  .yorha-terminal-text { flex: 1; word-break: break-word}
   .yorha-line-system { color: #fbbf24}
   .yorha-line-user { color: #7ee787}
   .yorha-line-success { color: #7ee787}
   .yorha-line-error { color: #ff7b7b}
   .yorha-line-info { color: #f8c77a}
-  .yorha-terminal-spinner { display: inline-block, transform-origin: center, animation: spin 1s linear infinite; margin-right: 0.5rem}
-  /* Terminal Input */ .yorha-terminal-input-container { display: flex, align-items: center, border-top: 1px solid rgba(250, 180, 50, 0.3); background: rgba(0, 0, 0, 0.5); padding: 0.125rem 0.5rem}
-  .yorha-terminal-prompt { padding: 0.5rem 0.75rem; color: #fbbf24, font-family: monospace, font-size: 0.875rem, display: flex, align-items: center, gap: 0.5rem}
-  .yorha-terminal-input { flex: 1, padding: 0.5rem, background: transparent, color: #f6d38b, font-family: monospace, font-size: 0.9rem, border: none, outline: none}
+  .yorha-terminal-spinner { display: inline-block; transform-origin: center, animation: spin 1s linear infinite; margin-right: 0.5rem}
+  /* Terminal Input */ .yorha-terminal-input-container { display: flex; align-items: center, border-top: 1px solid rgba(250, 180, 50, 0.3); background: rgba(0, 0, 0, 0.5); padding: 0.125rem 0.5rem}
+  .yorha-terminal-prompt { padding: 0.5rem 0.75rem; color: #fbbf24; font-family: monospace, font-size: 0.875rem; display: flex, align-items: center; gap: 0.5rem}
+  .yorha-terminal-input { flex: 1; padding: 0.5rem, background: transparent; color: #f6d38b, font-family: monospace; font-size: 0.9rem, border: none; outline: none}
   .yorha-terminal-input::placeholder { color: rgba(251, 191, 36, 0.6)}
-  /* Command Reference */ .yorha-command-reference { background: #0b0b0b, border: 1px solid rgba(250, 180, 50, 0.3); padding: 1.25rem, border-radius: 8px, height: fit-content}
-  .yorha-command-reference h3 { font-size: 1.125rem, font-weight: 700, color: #fbbf24, margin-bottom: 0.75rem}
-  .yorha-command-grid { display: grid, grid-template-columns: 1fr, gap: 0.5rem}
-  .yorha-command-item { color: #f6d38b, font-size: 0.9rem, font-family: monospace}
+  /* Command Reference */ .yorha-command-reference { background: #0b0b0b; border: 1px solid rgba(250, 180, 50, 0.3); padding: 1.25rem; border-radius: 8px, height: fit-content}
+  .yorha-command-reference h3 { font-size: 1.125rem; font-weight: 700, color: #fbbf24; margin-bottom: 0.75rem}
+  .yorha-command-grid { display: grid; grid-template-columns: 1fr, gap: 0.5rem}
+  .yorha-command-item { color: #f6d38b; font-size: 0.9rem, font-family: monospace}
   .yorha-command-item strong { color: #fbbf24}
   @keyframes spin { to { transform: rotate(360deg)}
-  } /* Responsive */ @media (max-width: 768px) { .yorha-header-title h1 { font-size: 1.5rem, display: flex, flex-direction: column, align-items: center}
+  } /* Responsive */ @media (max-width: 768px) { .yorha-header-title h1 { font-size: 1.5rem; display: flex, flex-direction: column; align-items: center}
     .yorha-terminal-output { height: 16rem}
-    .yorha-command-grid { grid-template-columns: 1fr, gap: 0.5rem}
+    .yorha-command-grid { grid-template-columns: 1fr; gap: 0.5rem}
     .yorha-terminal-section { grid-template-columns: 1fr}
   } </style>
 

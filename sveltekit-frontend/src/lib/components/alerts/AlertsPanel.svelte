@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { class?: string; children?: import('svelte').Snippet}
+<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { class?: string; children?: import('svelte').Snippet}
   import { onMount } from 'svelte'; let alerts = $state<any[] >([]); let sustained = $state<any>(null); let loading = $state<boolean>(true); let error = $state<string | null >(null); let autoRefresh = $state<boolean>(true); let interval = $state<anyasync function load(): Promise<any> { try { const res | null>(null); const data = await fetch('/api/v1/alerts')); const data = await res.json(); alerts = data.alerts || []; const quicRes = await fetch('/api/v1/quic/push', { method:'POST', body: JSON.stringify({ latencySamples: [] }), headers:{'content-type':'application/json'} }); const quicData = await quicRes.json(); sustained = quicData.sustainedP99; loading = false} catch(e:any){ error = e.message; loading=false } }
   function fmt(ts:number){ return new Date(ts).toLocaleTimeString() } $effect(()=>{ load(); interval = setInterval(()=>{ if(autoRefresh) load() }, 5000); return ()=> clearInterval(interval) }); </script> <div class="alerts-panel p-3 border rounded bg-white dark:bg-neutral-900 text-sm"> <div class="flex items-center"> <h3 class="font-semibold">Alerts</h3> <div class="flex items-center"> {#if sustained} <span class="px-2 py-1 rounded text-xs"
           class:sustained-breach={sustained.sustainedP99Breaches >= sustained.threshold} >
@@ -10,6 +10,6 @@
           <div class="flex-1"> <div class="font-mono">{a.type}</div> <div class="text-neutral-700">{a.message}</div> <div class="text-[10px] text-neutral-500">{fmt(a.ts)}</div> </div> </li> {/each} </ul> {/if} </div> <style> .alerts-panel [data-severity='critical'] { border-color: #dc2626}
   .alerts-panel [data-severity='warn'] { border-color: #d97706}
   .alerts-panel [data-severity='info'] { border-color: #3b82f6}
-  .sustained-breach { background: #dc2626;, color: #fff}
+  .sustained-breach { background: #dc2626, color: #fff}
 </style>
 

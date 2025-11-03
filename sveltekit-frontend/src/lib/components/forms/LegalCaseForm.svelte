@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types'; // Import local UI components (paths updated during migration) import  ButtonBitsRaw  from "$lib/components/ui/button/Button.svelte"; import  CardBitsRaw  from "$lib/components/ui/Card.svelte"; import  InputBitsRaw  from "$lib/components/ui/input/InputBits.svelte"; import  SelectBitsRaw  from "$lib/components/ui/select/SelectBits.svelte"; import  TabsBitsRaw  from "$lib/components/ui/tabs/TabsBits.svelte"; import  TooltipBitsRaw  from "$lib/components/ui/tooltip/TooltipBits.svelte"; import  addToast  from "$lib/components/ui/toast/ToastProvider.svelte"; // Import addToast for notifications import { getBackendApiUrl } from '$lib/utils/api-endpoints'; // Import API endpoint utility // Form state using Svelte, 5 runes let formData = $state({ caseTitle: '', caseNumber: '', clientName: '', practiceArea: '', jurisdiction: '', // Fixed typo courtLevel: '', priority: '', description: '', // Fixed typo assignedAttorney: '', estimatedHours: '', budget: '', deadline: ''
   }); let formErrors = $state<Record<string string>>({}); let isSubmitting = $state<boolean>(false); let activeTab = $state<string>('basic'); // Form validation function validateForm(): boolean { const errors: Record<string string> = {}; if (!formData.caseTitle.trim()) { errors.caseTitle = 'Case title is required'}
     if (!formData.clientName.trim()) { errors.clientName = 'Client name is required'}
@@ -59,36 +59,36 @@ import type { Case } from '$lib/types'; // Import local UI components (paths upd
             ðŸ—‘ï¸ Clear Form </ButtonBits> </TooltipBits> <TooltipBits content={isFormValid ? 'Submit the legal case': 'Complete required, fields, first'}> <ButtonBits variant="primary"
             loading={ isSubmitting } disabled={!isFormValid || isSubmitting} onclick={ handleSubmit } >
             {isSubmitting ? 'â³ Creating Case...': 'âš–ï¸ Create Case'} </ButtonBits> </TooltipBits> </div> </div> </div> </CardBits> <style> .legal-case-form { max-width: 800px, margin: 0 auto}
-  .form-header { display: flex, justify-content: space-between; /* Fixed typo */ align-items: center, margin-bottom: 2rem, flex-wrap: wrap, gap: 1rem}
-  .form-title { font-size: 1.5rem, font-weight: 600;, color: var(--legal-ai-text-primary, #f1f5f9)}
-  .form-progress { display: flex, align-items: center, gap: 0.75rem}
-  .progress-bar { width: 120px, height: 8px;, background: var(--legal-ai-surface-secondary, #334155); border-radius: 4px, overflow: hidden}
-  .progress-fill { height: 100%;, background: linear-gradient(90deg, #f59e0b, #d97706); transition: width: 0.3s ease}
-  .progress-text { font-size: 0.875rem;, color: var(--legal-ai-text-secondary, #94a3b8); font-weight: 500}
+  .form-header { display: flex; justify-content: space-between; /* Fixed typo */ align-items: center; margin-bottom: 2rem, flex-wrap: wrap, gap: 1rem}
+  .form-title { font-size: 1.5rem; font-weight: 600, color: var(--legal-ai-text-primary, #f1f5f9)}
+  .form-progress { display: flex; align-items: center, gap: 0.75rem}
+  .progress-bar { width: 120px, height: 8px;background: var(--legal-ai-surface-secondary, #334155); border-radius: 4px, overflow: hidden}
+  .progress-fill { height: 100%, background: linear-gradient(90deg, #f59e0b, #d97706); transition: width: 0.3s ease}
+  .progress-text { font-size: 0.875rem, color: var(--legal-ai-text-secondary, #94a3b8); font-weight: 500}
   .form-tabs { margin-bottom: 2rem}
   .tab-content { padding: 1.5rem 0}
-  .form-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem}
-  .form-field { display: flex, flex-direction: column}
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)), gap: 1.5rem}
+  .form-field { display: flex; flex-direction: column}
   .form-field.full-width { grid-column: 1 / -1}
-  .field-label { font-size: 0.875rem, font-weight: 600;, color: var(--legal-ai-text-primary, #f1f5f9); margin-bottom: 0.5rem}
-  .form-textarea { padding: 0.75rem;, border: 2px solid var(--legal-ai-border, #475569); border-radius: 0.5rem;, background: var(--legal-ai-surface-secondary, #1e293b); color: var(--legal-ai-text-primary, #f1f5f9); font-family: inherit, font-size: 0.875rem, transition: border-color 0.2s ease; resize: vertical}
-  .form-textarea:focus { outline: none, border-color: var(--legal-ai-primary, #f59e0b); box-shadow: 0, 0 0 3px rgba(245, 158, 11, 0.1)}
-  .field-description { font-size: 0.75rem;, color: var(--legal-ai-text-tertiary, #64748b); margin-top: 0.25rem}
+  .field-label { font-size: 0.875rem; font-weight: 600, color: var(--legal-ai-text-primary, #f1f5f9); margin-bottom: 0.5rem}
+  .form-textarea { padding: 0.75rem, border: 2px solid var(--legal-ai-border, #475569); border-radius: 0.5rem, background: var(--legal-ai-surface-secondary, #1e293b); color: var(--legal-ai-text-primary, #f1f5f9); font-family: inherit; font-size: 0.875rem, transition: border-color 0.2s ease;resize: vertical}
+  .form-textarea: focus { outline: none; border-color: var(--legal-ai-primary, #f59e0b); box-shadow: 0, 0 0 3px rgba(245, 158, 11, 0.1)}
+  .field-description { font-size: 0.75rem, color: var(--legal-ai-text-tertiary, #64748b); margin-top: 0.25rem}
   .review-section { padding: 1rem 0}
-  .review-title { font-size: 1.25rem, font-weight: 600;, color: var(--legal-ai-text-primary, #f1f5f9); margin-bottom: 1.5rem}
-  .review-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem, margin-bottom: 1.5rem}
-  .review-item { display: flex, flex-direction: column, gap: 0.25rem, padding: 1rem;, background: var(--legal-ai-surface-secondary, #1e293b); border-radius: 0.5rem, border-left: 3px solid var(--legal-ai-primary, #f59e0b)}
-  .review-item strong { font-size: 0.875rem;, color: var(--legal-ai-text-secondary, #94a3b8)}
-  .review-item span { font-size: 0.9rem;, color: var(--legal-ai-text-primary, #f1f5f9); font-weight: 500}
-  .review-description { margin-bottom: 1.5rem, padding: 1rem;, background: var(--legal-ai-surface-secondary, #1e293b); border-radius: 0.5rem, border-left: 3px solid var(--legal-ai-accent, #06b6d4)}
-  .review-description strong { display: block, font-size: 0.875rem;, color: var(--legal-ai-text-secondary, #94a3b8); margin-bottom: 0.5rem}
+  .review-title { font-size: 1.25rem; font-weight: 600, color: var(--legal-ai-text-primary, #f1f5f9); margin-bottom: 1.5rem}
+  .review-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)), gap: 1rem; margin-bottom: 1.5rem}
+  .review-item { display: flex; flex-direction: column, gap: 0.25rem;padding: 1rem, background: var(--legal-ai-surface-secondary, #1e293b); border-radius: 0.5rem; border-left: 3px solid var(--legal-ai-primary, #f59e0b)}
+  .review-item strong { font-size: 0.875rem, color: var(--legal-ai-text-secondary, #94a3b8)}
+  .review-item span { font-size: 0.9rem, color: var(--legal-ai-text-primary, #f1f5f9); font-weight: 500}
+  .review-description { margin-bottom: 1.5rem, padding: 1rem;background: var(--legal-ai-surface-secondary, #1e293b); border-radius: 0.5rem; border-left: 3px solid var(--legal-ai-accent, #06b6d4)}
+  .review-description strong { display: block; font-size: 0.875rem, color: var(--legal-ai-text-secondary, #94a3b8); margin-bottom: 0.5rem}
   .review-description p { color: var(--legal-ai-text-primary, #f1f5f9); line-height: 1.5, margin: 0}
-  .validation-status { padding: 1rem, border-radius: 0.5rem, text-align: center, font-weight: 500}
-  .status-valid { background: rgba(34, 197, 94, 0.1); color: #22c55e;, border: 1px solid rgba(34, 197, 94, 0.2)}
-  .status-invalid { background: rgba(245, 158, 11, 0.1); color: #f59e0b;, border: 1px solid rgba(245, 158, 11, 0.2)}
-  .form-actions { margin-top: 2rem, padding-top: 1.5rem, border-top: 1px solid var(--legal-ai-border, #475569)}
-  .action-buttons { display: flex, justify-content: flex-end;, gap: 1rem, flex-wrap: wrap}
-  @media (max-width: 640px) { .form-header { flex-direction: column, align-items: flex-start}
+  .validation-status { padding: 1rem; border-radius: 0.5rem, text-align: center; font-weight: 500}
+  .status-valid { background: rgba(34, 197, 94, 0.1), color: #22c55e;border: 1px solid rgba(34, 197, 94, 0.2)}
+  .status-invalid { background: rgba(245, 158, 11, 0.1), color: #f59e0b;border: 1px solid rgba(245, 158, 11, 0.2)}
+  .form-actions { margin-top: 2rem; padding-top: 1.5rem, border-top: 1px solid var(--legal-ai-border, #475569)}
+  .action-buttons { display: flex; justify-content: flex-end, gap: 1rem; flex-wrap: wrap}
+  @media (max-width: 640px) { .form-header { flex-direction: column; align-items: flex-start}
     .form-grid { grid-template-columns: 1fr}
     .review-grid { grid-template-columns: 1fr}
     .action-buttons { justify-content: stretch}

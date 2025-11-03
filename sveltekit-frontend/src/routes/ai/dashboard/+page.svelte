@@ -235,7 +235,7 @@ import type { Document } from '$lib/types';
 
 	.label {
 		font-size: 0.85rem
-	, color: var(--muted, #6b7280);
+	; color: var(--muted, #6b7280);
 		margin-bottom: 0.25rem}
 
 	.pill {
@@ -270,13 +270,12 @@ import type { Document } from '$lib/types';
 		border-radius: 6px}
 
 	.health-table {
-		width: 100%,
-		border-collapse: collapse}
+		width: 100%; border-collapse: collapse}
 
 	.health-table th {
 		text-align: left
 		padding: 0.5rem 0
-	, color: var(--muted, #6b7280);
+	; color: var(--muted, #6b7280);
 		font-size: 0.85rem}
 
 	.health-table td {
@@ -294,7 +293,7 @@ import type { Document } from '$lib/types';
 	.toast {
 		padding: 0.5rem 0.75rem
 		border-radius: 6px
-	, color: white
+	; color: white
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 		font-size: 0.92rem}
 

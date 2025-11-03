@@ -28,8 +28,7 @@ export interface SynthesisOptions {
 // Semantic search audit result structure (for /api/audit/semantic and UI)
 export interface SemanticAuditResult {
   step: string; // Pipeline step or feature
-  status: 'ok' | 'missing' | 'error' | 'improvement';
-  message: string
+  status: 'ok' | 'missing' | 'error' | 'improvement',message: string
   suggestedFix?: string
   todoId?: string
   agentTriggered?: boolean}
@@ -44,8 +43,7 @@ export interface AuditLogEntry {
 // Agent action trigger structure
 export interface AgentTrigger {
   todoId: string
-  action: 'code_review' | 'fix' | 'analyze' | 'summarize' | 'auto_fix';
-  status: 'pending' | 'in_progress' | 'done';
+  action: 'code_review' | 'fix' | 'analyze' | 'summarize' | 'auto_fix',status: 'pending' | 'in_progress' | 'done',
   result?: string
   area?: string; // For: auto_fix: 'imports', 'svelte5', 'typescript', 'performance', 'accessibility', 'security'
 }

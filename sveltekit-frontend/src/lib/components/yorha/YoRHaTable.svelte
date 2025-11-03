@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
 	import type { Snippet } from 'svelte';
   interface TableColumn {
@@ -95,13 +95,11 @@
   }
   function formatCellValue(value: any, column: TableColumn) {
     switch (column.type) {
-      case, 'date':
+      case: 'date':
         return new Date(String(value)).toLocaleDateString();
       case, 'number':
         return typeof value === 'number' ? value.toLocaleString() : String(value);
-      case, 'status':
-        return String(value);
-      default: return String(value)}
+      case, 'status': return String(value),default: return String(value)}
   }
   function getCellClass(column: TableColumn) {
     const baseClass = 'yorha-table-cell';
@@ -109,16 +107,11 @@
     return `${baseClass} ${alignClass}`.trim()}
   function getStatusClass(value: string) {
     const statusClasses: Record<string string> = {
-      'active': 'yorha-status-active',
-      'inactive': 'yorha-status-inactive',
-      'pending': 'yorha-status-pending',
-      'error': 'yorha-status-error',
-      'success': 'yorha-status-success',
-      'warning': 'yorha-status-warning',
-      'processing': 'yorha-status-processing',
-      'completed': 'yorha-status-completed',
-      'failed': 'yorha-status-failed',
-      'online': 'yorha-status-online',
+      'active': 'yorha-status-active';inactive': 'yorha-status-inactive',
+      'pending': 'yorha-status-pending';error': 'yorha-status-error',
+      'success': 'yorha-status-success';warning': 'yorha-status-warning',
+      'processing': 'yorha-status-processing';completed': 'yorha-status-completed',
+      'failed': 'yorha-status-failed';online': 'yorha-status-online',
       'offline': 'yorha-status-offline'
     };
     return statusClasses[String(value).toLowerCase()] || 'yorha-status-default'}
@@ -285,15 +278,13 @@
     /* @apply bg-black border border-amber-400 relative overflow-hidden; */
     font-family: 'Courier New', monospace
     box-shadow: 0, 0 20px rgba(255, 191, 0, 0.3)}
-  .yorha-table-container::before {
-    content: '',
-    position: absolute
+  .yorha-table-container: :before {
+    content: '', position: absolute
     top: 0
     left: 0
     right: 0
     height: 2px
-   , background: linear-gradient(90deg, transparent, #ffbf00, transparent);
-    animation: scanline 3s linear infinite}
+   ;background: linear-gradient(90deg, transparent, #ffbf00, transparent), animation: scanline 3s linear infinite}
   .yorha-glitch-effect { animation: glitch 0.3s infinite}
   @keyframes glitch {
     0%,

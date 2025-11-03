@@ -1,4 +1,4 @@
-﻿<!-- Simple Working Chat Component for CUDA, AI, Backend -->
+<!-- Simple Working Chat Component for CUDA, AI, Backend -->
 <script lang="ts">
   import { Input } from '$lib/components/ui/input';
   // Svelte, 5 runes are auto-imported
@@ -96,17 +96,15 @@
     messages = []}
   function getStatusColor() {
     switch (connectionStatus) {
-      case, 'connected': return 'bg-green-500';
+      case: 'connected': return 'bg-green-500';
       case, 'disconnected': return 'bg-red-500';
-      case, 'testing': return 'bg-yellow-500';
-      default: return 'bg-gray-500'}
+      case, 'testing': return 'bg-yellow-500',default: return 'bg-gray-500'}
   }
   function getStatusText() {
     switch (connectionStatus) {
-      case, 'connected': return 'CUDA AI Connected';
+      case: 'connected': return 'CUDA AI Connected';
       case, 'disconnected': return 'CUDA AI Disconnected';
-      case, 'testing': return 'Testing Connection...';
-      default: return 'Unknown Status'}
+      case, 'testing': return 'Testing Connection...',default: return 'Unknown Status'}
   }
 </script>
 <div class="w-full max-w-4xl mx-auto h-[600px] flex flex-col">

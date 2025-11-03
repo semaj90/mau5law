@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import type { Evidence } from "$lib/types";
   // add a local view type to include optional UI properties
   interface LocalEvidence extends Evidence {
@@ -98,8 +98,7 @@
   .evidence-panel {
     background: var(--pico-background, #fff);
     border-radius: 1rem
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    padding: 1.5rem
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), padding: 1.5rem
     margin-bottom: 2rem}
   .evidence-title {
     font-size: 1.3rem
@@ -133,16 +132,14 @@
     background: #f9fafb
     border: 1px solid #e5e7eb
     border-radius: 8px
-   , padding: 0.75rem
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    cursor: grab
-   , transition: all 0.2s ease
+   ;padding: 0.75rem
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), cursor: grab
+   ; transition: all 0.2s ease
     min-width: 180px
     max-width: 220px
     user-select: none}
   .evidence-nier-bits-card:hover {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transform: translateY(-1px)}
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), transform: translateY(-1px)}
   .evidence-nier-bits-card:active {
     cursor: grabbing}
   .evidence-meta {
@@ -153,8 +150,7 @@
     gap: 0.5em}
   .evidence-tags {
     font-size: 0.75rem
-   , background: rgba(59, 130, 246, 0.1);
-    color: #3b82f6
+   ;background: rgba(59, 130, 246, 0.1), color: #3b82f6
     padding: 0.125rem 0.5rem
     border-radius: 12px
     font-weight: 500}
@@ -183,6 +179,6 @@
   .empty-hint {
     font-size: 0.875rem
     margin-top: 0.5rem
-   , opacity: 0.8}
+   ;opacity: 0.8}
 </style>
 

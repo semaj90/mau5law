@@ -12,32 +12,32 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
                   onclick={() => restartMachine(machine.id)} >
                   Restart </button> {#if machine.status === 'running'} <button class="nes-btn"
                     onclick={() => stopMachine(machine.id)} >
-                    Stop </button> {/if} </div> </div> </div> {/each} </div> {/if} </main> </div> <style> .page-container { max-width: 1400px, margin: 0 auto; padding: 2rem}
-  .page-header { text-align: center, margin-bottom: 2rem}
-  .page-header h1 { font-size: 2.5rem, color: #1f2937, margin-bottom: 0.5rem}
-  .page-header p { font-size: 1.125rem, color: #6b7280, margin-bottom: 2rem}
-  .stats-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem, margin-bottom: 2rem}
-  .stat-card { background: #f8fafc, border: 1px solid #e2e8f0; border-radius: 12px, padding: 1.5rem, text-align: center}
-  .stat-number { display: block, font-size: 2rem, font-weight: 700, color: #1f2937}
-  .stat-label { font-size: 0.875rem, color: #6b7280, text-transform: uppercase, letter-spacing: 0.05em}
-  .loading-state { text-align: center, padding: 4rem}
-  .spinner { width: 40px, height: 40px, border: 4px solid #f3f4f6; border-top: 4px solid #3b82f6; border-radius: 50%, animation: spin 1s linear infinite; margin: 0 auto 1rem}
+                    Stop </button> {/if} </div> </div> </div> {/each} </div> {/if} </main> </div> <style> .page-container { max-width: 1400px; margin: 0 auto; padding: 2rem}
+  .page-header { text-align: center; margin-bottom: 2rem}
+  .page-header h1 { font-size: 2.5rem; color: #1f2937, margin-bottom: 0.5rem}
+  .page-header p { font-size: 1.125rem; color: #6b7280, margin-bottom: 2rem}
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem}
+  .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem, text-align: center}
+  .stat-number { display: block; font-size: 2rem, font-weight: 700; color: #1f2937}
+  .stat-label { font-size: 0.875rem; color: #6b7280, text-transform: uppercase; letter-spacing: 0.05em}
+  .loading-state { text-align: center; padding: 4rem}
+  .spinner { width: 40px; height: 40px, border: 4px solid #f3f4f6; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem}
   @keyframes spin { 0% { transform: rotate(0deg)} 100% { transform: rotate(360deg)} }
-  .machines-grid { display: grid, grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem}
-  .machine-card { border: 1px solid #e2e8f0; border-radius: 12px, transition: box-shadow 0.2s ease; padding: 1rem;, background: #ffffff}
+  .machines-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem}
+  .machine-card { border: 1px solid #e2e8f0; border-radius: 12px; transition: box-shadow 0.2s ease; padding: 1rem; background: #ffffff}
   .machine-card:hover { box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1)}
-  .machine-header { display: flex, justify-content: space-between, align-items: center, gap: 1rem}
-  .machine-id { font-size: 0.875rem, color: #6b7280;, margin: 0.25rem, 0 0}
-  .status-badge { padding: 0.25rem 0.75rem; border-radius: 12px, font-size: 0.75rem, font-weight: 500, text-transform: uppercase, letter-spacing: 0.05em}
+  .machine-header { display: flex; justify-content: space-between, align-items: center; gap: 1rem}
+  .machine-id { font-size: 0.875rem; color: #6b7280; margin: 0.25rem, 0 0}
+  .status-badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem, font-weight: 500; text-transform: uppercase, letter-spacing: 0.05em}
   .machine-details { margin-top: 1rem}
-  .detail-row { display: flex, justify-content: space-between, align-items: center, padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9}
-  .label { font-weight: 500, color: #374151}
+  .detail-row { display: flex; justify-content: space-between, align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f1f5f9}
+  .label { font-weight: 500; color: #374151}
   .value { color: #6b7280}
-  .state-indicator { background: #dbeafe; /* fixed invalid hex */ color: #1d4ed8, padding: 0.25rem 0.75rem; border-radius: 6px, font-size: 0.875rem, font-weight: 500}
+  .state-indicator { background: #dbeafe; /* fixed invalid hex */ color: #1d4ed8; padding: 0.25rem 0.75rem; border-radius: 6px; font-size: 0.875rem, font-weight: 500}
   .transitions { margin-top: 1rem}
-  .transition-tags { display: flex, flex-wrap: wrap, gap: 0.5rem, margin-top: 0.5rem}
-  .transition-tag { background: #f3e8ff, color: #7c3aed, padding: 0.25rem 0.5rem; border-radius: 6px, font-size: 0.75rem, border: 1px solid #e9d5ff}
-  .machine-actions { display: flex;, gap: 0.75rem, margin-top: 1.5rem, flex-wrap: wrap}
+  .transition-tags { display: flex; flex-wrap: wrap, gap: 0.5rem; margin-top: 0.5rem}
+  .transition-tag { background: #f3e8ff; color: #7c3aed, padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.75rem, border: 1px solid #e9d5ff}
+  .machine-actions { display: flex; gap: 0.75rem; margin-top: 1.5rem, flex-wrap: wrap}
   @media (max-width: 768px) { .page-container { padding: 1rem}
     .machines-grid { grid-template-columns: 1fr}
     .machine-actions { justify-content: center}

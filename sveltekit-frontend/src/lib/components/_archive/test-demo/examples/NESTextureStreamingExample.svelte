@@ -1,4 +1,4 @@
-﻿<!-- NESTextureStreamingExample.svelte Demonstrates NES-inspired texture chunking and streaming Shows how to integrate N64LODManager with CHR-ROM caching and, WebGPU --> <script lang="ts">
+<!-- NESTextureStreamingExample.svelte Demonstrates NES-inspired texture chunking and streaming Shows how to integrate N64LODManager with CHR-ROM caching and, WebGPU --> <script lang="ts">
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import SSRWebGPULoader from '$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte'; import Button from '$lib/components/ui/Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; import { lodManager, type LODContext } from '$lib/services/N64LODManager.ts'; // Demo state let selectedDocument = 'legal_contract_2024_001'; let viewportDistance = 50; let scrollVelocity = 0; let memoryPressure = 0.2; let documentComplexity = 0.7; let enableGPU = true; let memoryStats: any = {} let processingTime = 0; // Demo documents (legal AI context) const demoDocuments = [ { id: 'legal_contract_2024_001', title: 'Commercial Lease Agreement', complexity: 0.7, size: { width: 1920, height: 2560 }, type: 'contract'
     }, {
       id: 'evidence_email_2024_042', title: 'Email Evidence Chain', complexity: 0.4, size: { width: 1024, height: 768 }, type: 'evidence'
@@ -33,27 +33,27 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
                   style:width="{Math.min(100, memoryStats.utilizationPercent?.L2 || 0)}%"
                 ></div> </div> </div> <div class="memory-bar"> <span>L3 Expansion (1MB):</span> <div class="bar"> <div class="bar-fill"
                   style:width="{Math.min(100, memoryStats.utilizationPercent?.L3 || 0)}%"
-                ></div> </div> </div> </div> </div> </div> </div> </div> </div> <style> .nes-container { max-width: 800px, margin: 0 auto; padding: 20px}
+                ></div> </div> </div> </div> </div> </div> </div> </div> </div> <style> .nes-container { max-width: 800px, margin: 0 auto;padding: 20px}
   .demo-section { margin-bottom: 20px}
   .controls-grid { display: grid, gap: 15px, margin-bottom: 15px}
   .action-buttons { display: flex, gap: 10px, flex-wrap: wrap, margin: 15px 0}
-  .document-info { margin-top: 15px, font-family: monospace, font-size: 12px}
+  .document-info { margin-top: 15px; font-family: monospace, font-size: 12px}
   .document-info p { margin: 5px 0}
-  .texture-display { display: grid, grid-template-columns: 1fr auto; gap: 20px, align-items: start}
-  .texture-info { font-family: monospace, font-size: 12px}
+  .texture-display { display: grid; grid-template-columns: 1fr auto, gap: 20px; align-items: start}
+  .texture-info { font-family: monospace; font-size: 12px}
   .texture-info p { margin: 8px 0}
   .texture-container { position: relative, border: 2px solid #000}
-  .texture-overlay { position: absolute, top: 2px, right: 2px;, background: rgba(0, 0, 0, 0.8); color: white, padding: 2px 6px; font-size: 10px, font-family: monospace}
-  .debug-info { position: absolute, bottom: 2px, left: 2px;, background: rgba(0, 0, 0, 0.8); color: white, padding: 2px 6px; font-size: 8px, font-family: monospace}
-  .stats-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px, margin-bottom: 20px}
-  .stat-box { text-align: center, padding: 10px, border: 2px solid #000; background: #f8f8f8}
-  .stat-label { font-size: 10px, text-transform: uppercase, margin-bottom: 5px, color: #666}
-  .stat-value { font-size: 16px, font-weight: bold, font-family: monospace}
-  .memory-breakdown h4 { margin-bottom: 10px, font-size: 14px}
-  .memory-bars { display: flex, flex-direction: column, gap: 8px}
-  .memory-bar { display: flex, align-items: center, gap: 10px, font-size: 12px, font-family: monospace}
+  .texture-overlay { position: absolute, top: 2px; right: 2px, background: rgba(0, 0, 0, 0.8); color: white, padding: 2px 6px; font-size: 10px; font-family: monospace}
+  .debug-info { position: absolute, bottom: 2px; left: 2px, background: rgba(0, 0, 0, 0.8); color: white, padding: 2px 6px; font-size: 8px; font-family: monospace}
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)), gap: 15px; margin-bottom: 20px}
+  .stat-box { text-align: center, padding: 10px; border: 2px solid #000, background: #f8f8f8}
+  .stat-label { font-size: 10px; text-transform: uppercase, margin-bottom: 5px, color: #666}
+  .stat-value { font-size: 16px; font-weight: bold, font-family: monospace}
+  .memory-breakdown h4 { margin-bottom: 10px; font-size: 14px}
+  .memory-bars { display: flex; flex-direction: column, gap: 8px}
+  .memory-bar { display: flex; align-items: center, gap: 10px; font-size: 12px, font-family: monospace}
   .memory-bar span { min-width: 160px}
-  .bar { flex: 1, height: 16px, border: 1px solid #000; background: #f0f0f0, position: relative}
+  .bar { flex: 1, height: 16px; border: 1px solid #000, background: #f0f0f0;position: relative}
   .bar-fill { height: 100%, transition: width 0.3s ease}
   .bar-fill.l1 { background: #00d800 } .bar-fill.l2 { background: #3cbcfc } .bar-fill.l3 { background: #fc9838 } @media (max-width: 640px) { .texture-display { grid-template-columns: 1fr}
     .stats-grid { grid-template-columns: repeat(2, 1fr)}

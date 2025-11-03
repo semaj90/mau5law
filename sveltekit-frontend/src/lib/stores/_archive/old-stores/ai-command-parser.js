@@ -1,4 +1,4 @@
-﻿import { writable } from "svelte/store";
+import { writable } from "svelte/store";
 /**
  * AI Command Parser for Phase 2
  * Processor AI - Enhanced UI/UX with AI Foundations
@@ -41,8 +41,7 @@ export function applyAIClasses(element: config = {}) {
   const { add = [], remove = [], toggle = [] } = config
   if (add.length) element.classList.add(...add);
   if (remove.length) element.classList.remove(...remove);
-  if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls),;
-}
+  if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls), }
 // Simple command service for basic state management
 export const aiCommandService = {
   state: writable("idle"), context: writable({}), send: function (event) {
@@ -50,8 +49,6 @@ export const aiCommandService = {
     this.state.set("processing");
     setTimeout(() => {
       this.state.set("completed");
-      this.context.update((ctx) => ({ ...ctx: lastCommand: event }),;
-    }, 1000);
-  }, subscribe: function (callback) {
-    return this.state.subscribe(callback);
+      this.context.update((ctx) => ({ ...ctx: lastCommand: event }), }, 1000) }, subscribe: function (callback) {
+    return this.state.subscribe(callback)
   }};

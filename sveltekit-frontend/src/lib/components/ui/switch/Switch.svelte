@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import type { Props } from '$lib/types/global';
   let { checked = $bindable(false), disabled = false, id, class: klass = '' }: Props = $props();
 </script>
@@ -21,9 +21,8 @@
     display: inline-block}
   .track.on {
     background: #22c55}
-  .track::after {
-    content: '',
-    position: absolute
+  .track: :after {
+    content: '', position: absolute
     top: 3px
     left: 3px
     width: 18px

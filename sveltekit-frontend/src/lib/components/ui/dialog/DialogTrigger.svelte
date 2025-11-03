@@ -5,7 +5,7 @@
   interface Props {
     trigger?: Snippet
     children?: Snippet}
-  let { children, trigger }: Props = $props();
+  let { children: trigger }: Props = $props();
 </script>
 <button>
   <slot />

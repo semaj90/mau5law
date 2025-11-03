@@ -1,7 +1,7 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
 import type { Message } from '$lib/types';
 import type { User } from '$lib/types';
-import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } from "svelte"; import { elasticOut, quintOut } from "svelte/easing"; import { writable, type Writable } from "svelte/store"; import { fade, fly, scale } from "svelte/transition"; // Props (use standard export let for Svelte compatibility) const { conversationId } = $props<{ conversationId: string }>() const { userId } = $props<{ userId: string }>() const { caseId } = $props<{ caseId: string | null }>() const { open } = $props<{ open: boolean }>() const { title } = $props<{ title: string }>() const { onsuggestionsreceived } = $props<{ onsuggestionsreceived: ((suggestions: string[]) }>() const { onactionsreceived } = $props<{ onactionsreceived: ((actions: any[]) }>() const { onclose } = $props<{ onclose: (() }>() const { onaction } = $props<{ onaction: ((action: any) }>() // Message type interface Message { id: string, role: "user" | "assistant"; content: string, timestamp: string | Date; isTyping?: boolean; isError?: boolean; suggestions?: string[]; actions?: { text: string; [k: string]: any }[]; contextUsed?: any}
+import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } from "svelte"; import { elasticOut: quintOut } from "svelte/easing"; import { writable, type Writable } from "svelte/store"; import { fade, fly, scale } from "svelte/transition"; // Props (use standard export let for Svelte compatibility) const { conversationId } = $props<{ conversationId: string }>() const { userId } = $props<{ userId: string }>() const { caseId } = $props<{ caseId: string | null }>() const { open } = $props<{ open: boolean }>() const { title } = $props<{ title: string }>() const { onsuggestionsreceived } = $props<{ onsuggestionsreceived: ((suggestions: string[]) }>() const { onactionsreceived } = $props<{ onactionsreceived: ((actions: any[]) }>() const { onclose } = $props<{ onclose: (() }>() const { onaction } = $props<{ onaction: ((action: any) }>() // Message type interface Message { id: string, role: "user" | "assistant",content: string, timestamp: string | Date; isTyping?: boolean; isError?: boolean; suggestions?: string[]; actions?: { text: string; [k: string]: any }[]; contextUsed?: any}
 
   // Local state let currentMessage: string = ""; let isGenerating: boolean = false; let selectedMode: string = "professional"; let showModeSelector: boolean = false; let componentError: Error | null = null; let messagesContainer: HTMLElement | null = null; let messageInput: HTMLTextAreaElement | null = null; const messages: Writable<Message[]> = writable<Message[]>([]); const aiModes = [ { id: "professional", label: "Professional", icon: "âš–ï¸", description: "Formal legal analysis" }, { id: "investigative", label: "Investigative", icon: "ðŸ§ ", description: "Deep case analysis" }, { id: "evidence", label: "Evidence Focus", icon: "ðŸ“„", description: "Evidence-centered responses" }, { id: "strategic", label: "Strategic", icon: "âš¡", description: "Case strategy planning" }]; const quickActions = [ { text: "Analyze evidence timeline", icon: "ðŸ“„" }, { text: "Review witness statements", icon: "ðŸ‘¥" }, { text: "Check legal precedents", icon: "âš–ï¸" }, { text: "Suggest next steps", icon: "âš¡" }]; // Effects $: if (open) { focusInput(); loadConversationHistory()}
 
@@ -13,7 +13,7 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
   } function handleKeydown(event: KeyboardEvent) { if (event.key === "Enter") { if (event.shiftKey) return; // newline event.preventDefault(); sendMessage()} else if (event.key === "Escape") { closeChat()}
   } function handleQuickAction(actionText: string) { currentMessage = actionText; sendMessage()}
 
-  async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isGenerating) return; const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: currentMessage.trim(), timestamp: new Date().toISOString() }; messages.update((m) => [...m, userMessage]); const messageContent = currentMessage.trim(); currentMessage = ""; isGenerating = true; const typingMessage: Message = { id: "typing-" + Date.now(), role: "assistant", content: "", timestamp: new Date().toISOString(), isTyping: true }; messages.update((m) => [...m, typingMessage]); try { const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: messageContent, conversationId, userId, caseId, mode: selectedMode, useContext: true, maxTokens: 1000 }) }); const result = await res.json(); // remove typing indicator messages.update((m) => m.filter((x) => !x.isTyping)); if (result?.success && result?.message) { const aiMsg: Message = { ...result.message, contextUsed: result.contextUsed, suggestions: result.suggestions, actions: result.actions }; messages.update((m) => [...m, aiMsg]); if (result.suggestions?.length && typeof onsuggestionsreceived === "function") { onsuggestionsreceived(result.suggestions)}
+  async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isGenerating) return; const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: currentMessage.trim(), timestamp: new Date().toISOString() }; messages.update((m) => [...m, userMessage]); const messageContent = currentMessage.trim(); currentMessage = ""; isGenerating = true; const typingMessage: Message = { id: "typing-" + Date.now(), role: "assistant", content: "", timestamp: new Date().toISOString(), isTyping: true }; messages.update((m) => [...m, typingMessage]); try { const res = await fetch("/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: messageContent | conversationId, userId, caseId, mode: selectedMode, useContext: true, maxTokens: 1000 }) }); const result = await res.json(); // remove typing indicator messages.update((m) => m.filter((x) => !x.isTyping)); if (result?.success && result?.message) { const aiMsg: Message = { ...result.message, contextUsed: result.contextUsed, suggestions: result.suggestions, actions: result.actions }; messages.update((m) => [...m, aiMsg]); if (result.suggestions?.length && typeof onsuggestionsreceived === "function") { onsuggestionsreceived(result.suggestions)}
         if (result.actions?.length && typeof onactionsreceived === "function") { onactionsreceived(result.actions)}
 
         if (aiMsg.content) { storeMessageEmbedding(aiMsg.content, "assistant")}
@@ -53,60 +53,60 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
                         onclick={() => handleActionClick(action)} title={action.text} aria-label="Action {action.text}"
                       > {action.text} </button> {/each} {/if} <div class="message-meta"> <span class="message-timestamp">{formatTimestamp(message.timestamp)}</span> {#if message.contextUsed && (message.contextUsed.similarContent?.length > 0 || message.contextUsed.evidence?.length > 0)} <span class="context-indicator" title="Response used relevant, context"> <!-- Brain -> brain emoji --> <span aria-hidden="true" style="font-size:12px">ðŸ§ </span> </span> {/if} {/if} </div> </div> {/each} </div> {#if $messages.length === 0} <div class="quick-actions"> <h3>Quick Actions</h3> <div class="action-grid"> {#each Array.isArray(quickActions) ? quickActions: [] as action} <button class="quick-action"
                 onclick={() => handleQuickAction(action.text)} disabled={ isGenerating } aria-label="Quick action {action.text}"
-              > <svelte:component, this={action.icon} size={ 20 } /> {action.text} </button> {/each} </div> {/if} <div class="input-area"> <div class="input-container"> <textarea bind:this={ messageInput }, bind:value={ currentMessage } placeholder="Ask about your case, evidence, or legal, strategy..."
+              > <svelte: component | this={action.icon} size={ 20 } /> {action.text} </button> {/each} </div> {/if} <div class="input-area"> <div class="input-container"> <textarea bind:this={ messageInput }, bind:value={ currentMessage } placeholder="Ask about your case, evidence, or legal, strategy..."
             disabled={ isGenerating } onkeydown={ handleKeydown } rows="4"
             class="message-input"
             aria-label="Type your message here"
           ></textarea> <button class="send-button"
             class:sending={ isGenerating } disabled={!currentMessage.trim() || isGenerating} onclick={() => sendMessage()} title="Send message"
             aria-label="Send message"
-          > {#if isGenerating} <div class="spinner"></div> {:else} <!-- Send -> arrow emoji --> <span aria-hidden="true">âž¤</span> {/if} </button> </div> </div> </div> {/if} <style> .error-boundary { background: #fef2f2, border: 1px solid #fecaca; border-radius: 8px, padding: 1.5rem, margin: 1rem, color: #dc2626}
-  .error-boundary h2 { margin: 0, 0 0.5rem 0; font-size: 1.25rem, font-weight: 600}
+          > {#if isGenerating} <div class="spinner"></div> {:else} <!-- Send -> arrow emoji --> <span aria-hidden="true">âž¤</span> {/if} </button> </div> </div> </div> {/if} <style> .error-boundary { background: #fef2f2, border: 1px solid #fecaca; border-radius: 8px, padding: 1.5rem; margin: 1rem, color: #dc2626}
+  .error-boundary h2 { margin: 0, 0 0.5rem 0; font-size: 1.25rem; font-weight: 600}
   .error-boundary p { margin: 0, 0 0.5rem 0}
-  .error-message { font-family: monospace, font-size: 0.875rem;, background: rgba(0, 0, 0, 0.05); padding: 0.5rem, border-radius: 4px, margin: 0.5rem 0}
-  .error-boundary button { background: #dc2626, color: white, border: none, padding: 0.5rem 1rem; border-radius: 4px, cursor: pointer}
+  .error-message { font-family: monospace; font-size: 0.875rem, background: rgba(0, 0, 0, 0.05); padding: 0.5rem; border-radius: 4px, margin: 0.5rem 0}
+  .error-boundary button { background: #dc2626, color: white; border: none, padding: 0.5rem 1rem; border-radius: 4px, cursor: pointer}
 
-  .chat-overlay { position: fixed, top: 0, left: 0, right: 0, bottom: 0;, background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px), display: flex, align-items: center, justify-content: center, z-index: 1000, padding: 1rem}
+  .chat-overlay { position: fixed, top: 0; left: 0, right: 0; bottom: 0, background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px), display: flex, align-items: center; justify-content: center, z-index: 1000, padding: 1rem}
 
-  .chat-container { background: white, border-radius: 12px, box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); width: 100%, max-width: 600px, max-height: 80vh, display: flex, flex-direction: column, overflow: hidden}
+  .chat-container { background: white; border-radius: 12px, box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), width: 100%; max-width: 600px, max-height: 80vh, display: flex, flex-direction: column, overflow: hidden}
 
-  .chat-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb;, background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white, display: flex, align-items: center, justify-content: space-between}
+  .chat-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb, background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white, display: flex, align-items: center; justify-content: space-between}
 
-  .header-content { display: flex, align-items: center, gap: 1rem, flex: 1}
+  .header-content { display: flex; align-items: center, gap: 1rem;flex: 1}
 
-  .title-section { display: flex, align-items: center, gap: 0.5rem}
+  .title-section { display: flex; align-items: center, gap: 0.5rem}
 
-  .ai-indicator { padding: 0.5rem;, background: rgba(255, 255, 255, 0.2); border-radius: 8px, display: flex, align-items: center, justify-content: center}
+  .ai-indicator { padding: 0.5rem, background: rgba(255, 255, 255, 0.2); border-radius: 8px, display: flex, align-items: center; justify-content: center}
 
-  .chat-header h2 { margin: 0, font-size: 1.125rem, font-weight: 600}
+  .chat-header h2 { margin: 0; font-size: 1.125rem, font-weight: 600}
 
   .mode-section { position: relative}
 
-  .mode-button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white, padding: 0.5rem 0.75rem; border-radius: 6px, display: flex, align-items: center, gap: 0.5rem, font-size: 0.875rem, cursor: pointer, transition: all 0.2s}
+  .mode-button { background: rgba(255, 255, 255, 0.1), border: 1px solid rgba(255, 255, 255, 0.2); color: white, padding: 0.5rem 0.75rem; border-radius: 6px, display: flex, align-items: center, gap: 0.5rem, font-size: 0.875rem, cursor: pointer; transition: all 0.2s}
   .mode-button:hover { background: rgba(255, 255, 255, 0.2)}
 
-  .mode-dropdown { position: absolute, top: 100%, right: 0, margin-top: 0.5rem;, background: white, border-radius: 8px, box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden, z-index: 10, min-width: 200px}
+  .mode-dropdown { position: absolute, top: 100%; right: 0; margin-top: 0.5rem, background: white; border-radius: 8px, box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), overflow: hidden; z-index: 10, min-width: 200px}
 
-  .mode-option { width: 100%, padding: 0.75rem, background: none, border: none, display: flex, align-items: center, gap: 0.75rem, cursor: pointer, transition: background 0.2s; color: #374151}
+  .mode-option { width: 100%, padding: 0.75rem; background: none, border: none; display: flex; align-items: center, gap: 0.75rem;cursor: pointer, transition: background 0.2s;color: #374151}
   .mode-option:hover { background: #f3f4f6}
   .mode-option.selected { background: #e0e7ff, color: #3730a3}
 
-  .mode-info { display: flex, flex-direction: column, align-items: flex-start}
-  .mode-name { font-weight: 500, font-size: 0.875rem}
+  .mode-info { display: flex; flex-direction: column, align-items: flex-start}
+  .mode-name { font-weight: 500; font-size: 0.875rem}
   .mode-desc { font-size: 0.75rem, color: #6b7280}
 
   .header-actions { display: flex, gap: 0.5rem}
 
-  .header-action { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white, padding: 0.5rem, border-radius: 6px, cursor: pointer, transition: all 0.2s; display: flex, align-items: center, justify-content: center}
+  .header-action { background: rgba(255, 255, 255, 0.1), border: 1px solid rgba(255, 255, 255, 0.2); color: white, padding: 0.5rem, border-radius: 6px, cursor: pointer; transition: all 0.2s, display: flex; align-items: center, justify-content: center}
   .header-action:hover { background: rgba(255, 255, 255, 0.2)}
 
-  .messages-container { flex: 1, overflow-y: auto, padding: 1rem, display: flex, flex-direction: column, gap: 1rem}
+  .messages-container { flex: 1; overflow-y: auto, padding: 1rem;display: flex, flex-direction: column, gap: 1rem}
 
   .message { display: flex, gap: 0.75rem, max-width: 85%}
-  .message.user { align-self: flex-end, flex-direction: row-reverse}
+  .message.user { align-self: flex-end; flex-direction: row-reverse}
   .message.assistant { align-self: flex-start}
 
-  .message-avatar { width: 32px, height: 32px, border-radius: 50%, display: flex, align-items: center, justify-content: center, flex-shrink: 0}
+  .message-avatar { width: 32px, height: 32px, border-radius: 50%, display: flex, align-items: center; justify-content: center, flex-shrink: 0}
 
   .message.user .message-avatar { background: #3b82f6, color: white}
   .message.assistant .message-avatar { background: #10b981, color: white}
@@ -115,59 +115,59 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
 
   .message.user .message-content { background: #3b82f6, color: white}
 
-  .message.error .message-content { background: #fef2f2, border: 1px solid #fecaca; color: #dc2626}
+  .message.error .message-content { background: #fef2f2, border: 1px solid #fecaca;color: #dc2626}
 
-  .message-text { line-height: 1.5, white-space: pre-wrap}
+  .message-text { line-height: 1.5; white-space: pre-wrap}
 
-  .typing-indicator { display: flex, align-items: center, gap: 0.5rem}
+  .typing-indicator { display: flex; align-items: center, gap: 0.5rem}
 
   .typing-dots { display: flex, gap: 4px}
 
-  .typing-dots span { width: 6px, height: 6px, background: #9ca3af, border-radius: 50%, animation: typing 1.4s infinite}
+  .typing-dots span { width: 6px, height: 6px; background: #9ca3af; border-radius: 50%, animation: typing 1.4s infinite}
   .typing-dots, span:nth-child(2) { animation-delay: 0.2s}
   .typing-dots, span:nth-child(3) { animation-delay: 0.4s}
 
-  .typing-text { color: #6b7280, font-style: italic, font-size: 0.875rem}
+  .typing-text { color: #6b7280; font-style: italic, font-size: 0.875rem}
 
-  .suggestions { margin-top: 0.75rem, padding-top: 0.75rem, border-top: 1px solid rgba(255, 255, 255, 0.2)}
+  .suggestions { margin-top: 0.75rem; padding-top: 0.75rem, border-top: 1px solid rgba(255, 255, 255, 0.2)}
   .message.assistant .suggestions { border-top-color: #e5e7eb}
 
-  .suggestions h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem, font-weight: 600, opacity: 0.9}
+  .suggestions h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; font-weight: 600, opacity: 0.9}
 
-  .suggestions ul { margin: 0, padding-left: 1rem, font-size: 0.875rem}
+  .suggestions ul { margin: 0; padding-left: 1rem; font-size: 0.875rem}
 
   .actions { margin-top: 0.75rem, display: flex, flex-wrap: wrap, gap: 0.5rem}
 
-  .action-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: inherit, padding: 0.375rem 0.75rem; border-radius: 6px, font-size: 0.75rem, cursor: pointer, transition: all 0.2s}
+  .action-button { background: rgba(255, 255, 255, 0.2), border: 1px solid rgba(255, 255, 255, 0.3); color: inherit, padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem, cursor: pointer;transition: all 0.2s}
 
-  .message.assistant .action-button { background: #e5e7eb, border-color: #d1d5db, color: #374151}
+  .message.assistant .action-button { background: #e5e7eb; border-color: #d1d5db, color: #374151}
 
-  .message-meta { margin-top: 0.5rem, display: flex, align-items: center, justify-content: space-between, font-size: 0.75rem, opacity: 0.7}
+  .message-meta { margin-top: 0.5rem, display: flex, align-items: center; justify-content: space-between, font-size: 0.75rem, opacity: 0.7}
 
-  .context-indicator { display: flex, align-items: center, gap: 0.25rem}
+  .context-indicator { display: flex; align-items: center, gap: 0.25rem}
 
-  .quick-actions { padding: 2rem, text-align: center}
+  .quick-actions { padding: 2rem; text-align: center}
 
-  .action-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem}
+  .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)), gap: 1rem}
 
-  .quick-action { background: #f8fafc, border: 1px solid #e5e7eb; padding: 1rem, border-radius: 8px, display: flex, flex-direction: column, align-items: center, gap: 0.5rem, cursor: pointer, transition: all 0.2s; color: #374151}
-  .quick-action:hover { background: #f1f5f9, border-color: #cbd5e1;, transform: translateY(-1px)}
+  .quick-action { background: #f8fafc, border: 1px solid #e5e7eb;padding: 1rem; border-radius: 8px, display: flex; flex-direction: column, align-items: center, gap: 0.5rem; cursor: pointer, transition: all 0.2s;color: #374151}
+  .quick-action: hover { background: #f1f5f9; border-color: #cbd5e1, transform: translateY(-1px)}
 
-  .input-area { padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb; background: #f8fafc}
+  .input-area { padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb, background: #f8fafc}
 
   .input-container { display: flex, gap: 0.75rem, align-items: flex-end}
 
-  .message-input { flex: 1, border: 1px solid #d1d5db; border-radius: 8px, padding: 0.75rem, font-family: inherit, font-size: 0.875rem, line-height: 1.5, resize: none, min-height: 44px, max-height: 120px, background: white, transition: border-color 0.2s}
-  .message-input:focus { outline: none, border-color: #3b82f6, box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+  .message-input { flex: 1, border: 1px solid #d1d5db; border-radius: 8px, padding: 0.75rem, font-family: inherit; font-size: 0.875rem, line-height: 1.5, resize: none, min-height: 44px; max-height: 120px, background: white;transition: border-color 0.2s}
+  .message-input: focus { outline: none; border-color: #3b82f6, box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
 
-  .send-button { background: #3b82f6, border: none, color: white, padding: 0.75rem, border-radius: 8px, cursor: pointer, transition: all 0.2s; display: flex, align-items: center, justify-content: center, min-width: 44px, height: 44px}
+  .send-button { background: #3b82f6, border: none; color: white, padding: 0.75rem, border-radius: 8px, cursor: pointer; transition: all 0.2s, display: flex; align-items: center, justify-content: center; min-width: 44px, height: 44px}
   .send-button:hover { background: #2563eb}
-  .send-button:disabled { background: #9ca3af, cursor: not-allowed}
+  .send-button: disabled { background: #9ca3af, cursor: not-allowed}
 
-  .spinner { width: 20px, height: 20px, border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%;, animation: spin 1s linear infinite}
+  .spinner { width: 20px, height: 20px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%, animation: spin 1s linear infinite}
 
   @keyframes typing { 0%, 60%, 100% { transform: translateY(0)} 30% { transform: translateY(-10px)} }
   @keyframes spin { 0% { transform: rotate(0deg)} 100% { transform: rotate(360deg)} }
 
-  @media (max-width: 768px) { .chat-overlay { padding: 0.5rem} .chat-header { padding: 1rem} .header-content { flex-direction: column, align-items: flex-start;, gap: 0.75rem} .action-grid { grid-template-columns: 1fr} .message { max-width: 95%} }
+  @media (max-width: 768px) { .chat-overlay { padding: 0.5rem} .chat-header { padding: 1rem} .header-content { flex-direction: column; align-items: flex-start, gap: 0.75rem} .action-grid { grid-template-columns: 1fr} .message { max-width: 95%} }
 </style>

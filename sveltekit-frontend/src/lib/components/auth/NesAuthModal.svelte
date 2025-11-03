@@ -32,7 +32,7 @@
     try {
       submitting = true
       // call parent callback (if provided)
-      await onSubmit({ email, password });
+      await onSubmit({ email: password });
       // close modal on successful submit
       email = '';
       password = '';

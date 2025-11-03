@@ -58,7 +58,7 @@ class ParallaxDynamic {
 			console.log('âœ… WebGPU parallax acceleration enabled');
 		} catch (error) {
 			console.warn('WebGPU initialization failed:', error);
-			this.config.enableWebGPU = $state(false);
+			this.config.enableWebGPU = $state(false)
 		}
 	}
 	async createTransformPipeline() {

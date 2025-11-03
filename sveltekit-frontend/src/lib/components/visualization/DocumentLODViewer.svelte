@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Document LOD Viewer - N64-Inspired PDF Visualization
   Implements progressive document detail similar to N64 texture streaming:
   - LOD, 0: Full resolution (2048x2048 texture)
@@ -16,7 +16,7 @@ import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { browser } from '$app/environment';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import { LoadingButton } from '$lib/headless';
   import * as Card from '$lib/components/ui/Card.svelte';
   import  Badge  from "$lib/components/ui/badge/Badge.svelte";
@@ -28,12 +28,10 @@ import type { Document } from '$lib/types';
     pageNumber: number
     textContent: string
     annotations: Annotation[];
-   , lodTextures: Map<number GPUTexture>;
-    currentLOD: number}
+   , lodTextures: Map<number GPUTexture>,currentLOD: number}
   interface Annotation {
     id: string
-    type: 'highlight' | 'note' | 'redaction';
-    bounds: { x: number, y: number, width: number, height: number };
+    type: 'highlight' | 'note' | 'redaction',bounds: { x: number, y: number, width: number, height: number };
     content: string}
   interface DocumentLODViewerProps { documentId: string
     documentUrl?: string
@@ -451,8 +449,7 @@ if (!browser || !enableWebGPU) return
 </div>
 <style>
   .document-lod-viewer {
-    background: linear-gradient(135deg, #0f0f23, #1a1a2e);
-    color: #fff
+    background: linear-gradient(135deg, #0f0f23, #1a1a2e), color: #fff
     min-height: 600px}
   .document-controls {
     display: grid
@@ -461,7 +458,7 @@ if (!browser || !enableWebGPU) return
     align-items: center
     margin-bottom: 1rem
     padding: 1rem
-   , background: rgba(0, 0, 0, 0.3);
+   ;background: rgba(0, 0, 0, 0.3);
     border-radius: 4px}
   .navigation-controls {
     display: flex
@@ -474,7 +471,7 @@ if (!browser || !enableWebGPU) return
     justify-self: center}
   .zoom-info {
     padding: 0.25rem 0.5rem
-   , background: rgba(255, 255, 255, 0.1);
+   ;background: rgba(255, 255, 255, 0.1);
     border-radius: 4px
     font-size: 0.875rem
     min-width: 60px
@@ -498,12 +495,9 @@ if (!browser || !enableWebGPU) return
     cursor: grabbing}
   .loading-overlay {
     position: absolute
-   , top: 0,
-    left: 0
-   , right: 0,
-    bottom: 0
-   , background: rgba(0, 0, 0, 0.8);
-    display: flex
+   ;top: 0, left: 0
+   ;right: 0, bottom: 0
+   ;background: rgba(0, 0, 0, 0.8), display: flex
     flex-direction: column
     justify-content: center
     align-items: center
@@ -511,8 +505,7 @@ if (!browser || !enableWebGPU) return
   .lod-stats { background: rgba(0, 0, 0, 0.4)}
   .stats-grid {
     display: grid
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)), gap: 1rem
     margin-top: 0.5rem}
   .stat-item {
     display: flex
@@ -542,7 +535,7 @@ if (!browser || !enableWebGPU) return
   @media (max-width: 768px) {
     .document-controls {
       grid-template-columns: 1fr
-     , gap: 0.5rem}
+     ;gap: 0.5rem}
     .navigation-controls,
     .view-controls,
     .lod-controls {

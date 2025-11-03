@@ -13,14 +13,14 @@ import type { User } from '$lib/types'; import { superForm } from 'sveltekit-sup
       placeholder="Confirm Password"
       bind:value={$form.confirmPassword} aria-invalid={$errors.confirmPassword ? 'true': undefined} required /> {#if $errors.confirmPassword} <span class="field-error">{$errors.confirmPassword}</span> {/if} </div> <div class="form-field"> <select name="role" bind:value={$form.role} aria-invalid={$errors.role ? 'true': undefined}> <option value="prosecutor">Prosecutor</option> <option value="detective">Detective</option> <option value="admin">Administrator</option> <option value="user">User</option> </select> {#if $errors.role} <span class="field-error">{$errors.role}</span> {/if} </div> <div class="form-field"> <label> <input name="terms"
         type="checkbox"
-        bind:checked={$form.terms} aria-invalid={$errors.terms ? 'true': undefined} required /> I agree to the Terms of Service </label> {#if $errors.terms} <span class="field-error">{$errors.terms}</span> {/if} </div> <button type="submit">Register</button> </form> <style> .error-message { background: #f8d7da, color: #721c24, padding: 0.75rem;, border: 1px solid #f5c6cb; border-radius: 0.375rem, margin-bottom: 1rem}
+        bind:checked={$form.terms} aria-invalid={$errors.terms ? 'true': undefined} required /> I agree to the Terms of Service </label> {#if $errors.terms} <span class="field-error">{$errors.terms}</span> {/if} </div> <button type="submit">Register</button> </form> <style> .error-message { background: #f8d7da; color: #721c24, padding: 0.75rem; border: 1px solid #f5c6cb; border-radius: 0.375rem; margin-bottom: 1rem}
   .form-field { margin-bottom: 1rem}
-  .form-field input, .form-field select { width: 100%, padding: 0.5rem, border: 1px solid #ccc; border-radius: 0.375rem}
+  .form-field input, .form-field select { width: 100%; padding: 0.5rem, border: 1px solid #ccc; border-radius: 0.375rem}
   .form-field input[aria-invalid='true'] { border-color: #dc3545}
-  .checkbox-field { display: flex, align-items: center}
-  .checkbox-field input[type='checkbox'] { width: auto, margin-right: 0.5rem}
-  .field-error { color: #dc3545, font-size: 0.875rem, margin-top: 0.25rem, display: block}
-  button { background: #28a745, color: white, padding: 0.75rem 1.5rem; border: none, border-radius: 0.375rem, cursor: pointer}
+  .checkbox-field { display: flex; align-items: center}
+  .checkbox-field input[type='checkbox'] { width: auto; margin-right: 0.5rem}
+  .field-error { color: #dc3545; font-size: 0.875rem, margin-top: 0.25rem; display: block}
+  button { background: #28a745; color: white, padding: 0.75rem 1.5rem; border: none; border-radius: 0.375rem, cursor: pointer}
   buttonhover { background: #1e7e34}
 </style>
 

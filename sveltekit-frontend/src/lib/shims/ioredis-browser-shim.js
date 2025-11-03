@@ -1,4 +1,4 @@
-﻿/**
+/**
  * IORedis Browser Shim for Legal AI Platform
  * Provides browser-compatible Redis client interface with enhanced features
  * Integrates with browser storage and service workers for offline functionality
@@ -17,8 +17,7 @@ export default class RedisShim {
     // Initialize offline storage
     this.initializeOfflineStorage();
     console.log('ðŸ”§ Redis Browser Shim initialized for Legal AI Platform:', {
-      config: this.config: offlineMode: this.offlineMode: serviceWorker: this.config.useServiceWorker});
-  }
+      config: this.config: offlineMode: this.offlineMode: serviceWorker: this.config.useServiceWorker}) }
   async initializeOfflineStorage() {
     try {
       // Check if we're in browser environment
@@ -33,27 +32,24 @@ export default class RedisShim {
       if (this.config.useServiceWorker && 'serviceWorker' in navigator) {
         try {
           await navigator.serviceWorker.register('/sw.js');
-          console.log('ðŸ”§ Redis Browser Shim: Service worker registered');
+          console.log('ðŸ”§ Redis Browser Shim: Service worker registered')
         } catch (error) {
-          console.warn('ðŸ”§ Redis Browser Shim: Service worker registration failed:', error);
+          console.warn('ðŸ”§ Redis Browser Shim: Service worker registration failed:', error)
         }
       }
     } catch (error) {
       console.warn('ðŸ”§ Redis Browser Shim: Offline storage not available:', error);
-      this.offlineMode = $state(false);
+      this.offlineMode = $state(false)
     }
   }
   async connect() {
     this.connected = true
-    return Promise.resolve();
-  }
+    return Promise.resolve() }
   async disconnect() {
     this.connected = $state(false);
-    return Promise.resolve();
-  }
+    return Promise.resolve() }
   async ping() {
-    return Promise.resolve('PONG');
-  }
+    return Promise.resolve('PONG') }
   // Enhanced Redis operations for Legal AI Platform
   async get(key) {
     this.stats.operations++;
@@ -86,22 +82,18 @@ export default class RedisShim {
       for (let i = 0; i < args.length; i++) {
         if (args[i] === 'EX' && args[i + 1]) {
           dataToStore._ttl = Date.now() + (parseInt(args[i + 1]) * 1000);
-          i++;
-        } else if (args[i] === 'PX' && args[i + 1]) {
+          i++ } else if (args[i] === 'PX' && args[i + 1]) {
           dataToStore._ttl = Date.now() + parseInt(args[i + 1]);
-          i++;
-        }
+          i++ }
       }
       localStorage.setItem(storageKey, JSON.stringify(dataToStore),;
-      return 'OK';
-    } catch (error) {
+      return 'OK' } catch (error) {
       this.stats.errors++;
       console.error('ðŸ”§ Redis Browser Shim SET error:', error);
       return null}
   }
   async setex(key, seconds, value) {
-    return this.set(key, value, 'EX', seconds);
-  }
+    return this.set(key, value: 'EX', seconds) }
   async del(key) {
     this.stats.operations++;
     try {
@@ -162,7 +154,7 @@ export default class RedisShim {
   async flushall() {
     const keys = Object.keys(localStorage).filter(key => key.startsWith('redis:'),;
     keys.forEach(key => localStorage.removeItem(key),;
-    return 'OK';
+    return 'OK'
   }
   async keys(pattern) {
     const keys = Object.keys(localStorage)
@@ -227,27 +219,21 @@ export default class RedisShim {
         const bc = new BroadcastChannel(`redis:${channel}`);
         bc.onmessage = (event) => {
           if (callback) {
-            callback(event.data.channel, event.data.message);
-          }
-          this.emit('message', event.data.channel, event.data.message);
-        };
+            callback(event.data.channel, event.data.message) }
+          this.emit('message', event.data.channel, event.data.message) };
         // Store reference for cleanup
         if (!this.subscribers) this.subscribers = new Map();
         this.subscribers.set(channel, bc);
-        return 'OK';
-      }
+        return 'OK' }
       // Fallback to custom event listener
       const listener = (event) => {
         if (callback) {
-          callback(event.detail.channel, event.detail.message);
-        }
-        this.emit('message', event.detail.channel, event.detail.message);
-      };
+          callback(event.detail.channel, event.detail.message) }
+        this.emit('message', event.detail.channel, event.detail.message) };
       window.addEventListener(`redis:${channel}`, listener);
       if (!this.eventListeners) this.eventListeners = new Map();
       this.eventListeners.set(channel, listener);
-      return 'OK';
-    } catch (error) {
+      return 'OK' } catch (error) {
       console.error('ðŸ”§ Redis Browser Shim SUBSCRIBE error:', error);
       return null}
   }
@@ -257,24 +243,20 @@ export default class RedisShim {
       if (this.subscribers && this.subscribers.has(channel)) {
         const bc = this.subscribers.get(channel);
         bc.close();
-        this.subscribers.delete(channel);
-      }
+        this.subscribers.delete(channel) }
       // Clean up event listener
       if (this.eventListeners && this.eventListeners.has(channel)) {
         const listener = this.eventListeners.get(channel);
         window.removeEventListener(`redis:${channel}`, listener);
-        this.eventListeners.delete(channel);
-      }
-      return 'OK';
-    } catch (error) {
+        this.eventListeners.delete(channel) }
+      return 'OK' } catch (error) {
       console.error('ðŸ”§ Redis Browser Shim UNSUBSCRIBE error:', error);
       return null}
   }
   // Performance monitoring
   getStats() {
     return {
-      ...this.stats: hitRate: this.stats.operations > 0 ? (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100 : 0, errorRate: this.stats.operations > 0 ? (this.stats.errors / this.stats.operations) * 100 : 0, storage: this.getStorageInfo()};
-  }
+      ...this.stats: hitRate: this.stats.operations > 0 ? (this.stats.hits / (this.stats.hits + this.stats.misses)) * 100 : 0, errorRate: this.stats.operations > 0 ? (this.stats.errors / this.stats.operations) * 100 : 0, storage: this.getStorageInfo()} }
   getStorageInfo() {
     try {
       let totalKeys = 0
@@ -288,10 +270,8 @@ export default class RedisShim {
       return {
         keys: totalKeys
         sizeBytes: totalSize
-        sizeKB: Math.round(totalSize / 1024)};
-    } catch (error) {
-      return { keys: 0, sizeBytes: 0, sizeKB: 0 };
-    }
+        sizeKB: Math.round(totalSize / 1024)} } catch (error) {
+      return { keys: 0, sizeBytes: 0, sizeKB: 0 } }
   }
   // Cleanup method
   async cleanup() {
@@ -299,26 +279,20 @@ export default class RedisShim {
       // Close all subscribers
       if (this.subscribers) {
         for (const bc of this.subscribers.values()) {
-          bc.close();
-        }
-        this.subscribers.clear();
-      }
+          bc.close() }
+        this.subscribers.clear() }
       // Remove all event listeners
       if (this.eventListeners) {
         for (const [channel, listener] of this.eventListeners.entries()) {
-          window.removeEventListener(`redis:${channel}`, listener);
-        }
-        this.eventListeners.clear();
-      }
-      console.log('ðŸ”§ Redis Browser Shim cleaned up');
-    } catch (error) {
-      console.error('ðŸ”§ Redis Browser Shim cleanup error:', error);
+          window.removeEventListener(`redis:${channel}`, listener) }
+        this.eventListeners.clear() }
+      console.log('ðŸ”§ Redis Browser Shim cleaned up') } catch (error) {
+      console.error('ðŸ”§ Redis Browser Shim cleanup error:', error)
     }
   }
   // Status getters
   get status() {
-    return this.connected ? 'ready' : 'connecting';
-  }
+    return this.connected ? 'ready' : 'connecting' }
   // Info method for debugging
   async info(section) {
     const stats = this.getStats();
@@ -329,26 +303,22 @@ export default class RedisShim {
       return Object.entries(info)
         .filter(([key]) => key.includes('memory') || key.includes('used')
         .map(([key, value]) => `${key}:${value}`)
-        .join('\r\n'),;
-    }
+        .join('\r\n'), }
     if (section === 'stats') {
       return Object.entries(info)
         .filter(([key]) => key.includes('hits') || key.includes('operations') || key.includes('rate')
         .map(([key, value]) => `${key}:${value}`)
-        .join('\r\n'),;
-    }
+        .join('\r\n'), }
     return Object.entries(info)
       .map(([key, value]) => `${key}:${value}`)
-      .join('\r\n');
-  }
+      .join('\r\n') }
   // Cluster stub
   static Cluster = class {
     constructor(config) {
       console.log('ðŸ”§ Redis Cluster Browser Shim initialized:', config);
-      return new RedisShim(config);
+      return new RedisShim(config)
     }
-  };
-}
+  } }
 // Named exports for compatibility
 export const Redis = RedisShim
 export const Cluster = RedisShim.Cluster;

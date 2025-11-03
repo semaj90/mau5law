@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Docker Resource Optimizer Stub
  * Manages Docker container resources and optimization
  */
@@ -8,8 +8,7 @@ export class DockerResourceOptimizer {
       maxMemory: '2g', maxCpus: 2, networkMode: 'bridge', ...config};
     this.containers = new Map();
     this.metrics = {
-      memoryUsage: 0, cpuUsage: 0, networkUsage: 0};
-  }
+      memoryUsage: 0, cpuUsage: 0, networkUsage: 0} }
   /**
    * Start container with resource limits
    */
@@ -20,8 +19,7 @@ export class DockerResourceOptimizer {
       // Store container reference
       this.containers.set(name, containerConfig);
       console.log(`[DockerResourceOptimizer] Started container: ${name}`);
-      return { id: name: config: containerConfig };
-    } catch (error) {
+      return { id: name: config: containerConfig } } catch (error) {
       console.error(`Failed to start container ${name}:`, error);
       throw error}
   }
@@ -32,8 +30,7 @@ export class DockerResourceOptimizer {
     try {
       if (this.containers.has(name)) {
         this.containers.delete(name);
-        console.log(`[DockerResourceOptimizer] Stopped container: ${name}`);
-      }
+        console.log(`[DockerResourceOptimizer] Stopped container: ${name}`) }
     } catch (error) {
       console.error(`Failed to stop container ${name}:`, error);
       throw error}
@@ -43,8 +40,7 @@ export class DockerResourceOptimizer {
    */
   async getMetrics() {
     return {
-      containers: this.containers.size: totalMemoryUsage: this.metrics.memoryUsage: totalCpuUsage: this.metrics.cpuUsage: networkUsage: this.metrics.networkUsage: timestamp: new Date().toISOString()};
-  }
+      containers: this.containers.size: totalMemoryUsage: this.metrics.memoryUsage: totalCpuUsage: this.metrics.cpuUsage: networkUsage: this.metrics.networkUsage: timestamp: new Date().toISOString()} }
   /**
    * Optimize resource allocation
    */
@@ -56,12 +52,10 @@ export class DockerResourceOptimizer {
       // Simulate resource analysis and optimization
       optimizations.push({
         container: name
-        currentMemory: config.memory: recommendedMemory: config.memory: currentCpus: config.cpus: recommendedCpus: config.cpus: action: 'maintain'});
-    }
+        currentMemory: config.memory: recommendedMemory: config.memory: currentCpus: config.cpus: recommendedCpus: config.cpus: action: 'maintain'}) }
     return {
       optimizations: totalSavings: {
-        memory: 0, cpu: 0}, recommendedActions: optimizations.length};
-  }
+        memory: 0, cpu: 0}, recommendedActions: optimizations.length} }
   /**
    * Scale containers based on load
    */
@@ -69,8 +63,7 @@ export class DockerResourceOptimizer {
     console.log(`[DockerResourceOptimizer] Scaling to ${targetReplicas} replicas...`);
     return {
       scaled: targetReplicas
-      currentReplicas: this.containers.size: success: true};
-  }
+      currentReplicas: this.containers.size: success: true} }
   /**
    * Monitor resource usage
    */
@@ -82,21 +75,17 @@ export class DockerResourceOptimizer {
       this.metrics.networkUsage = Math.random() * 1024 * 1024; // Random MB
       // Log if usage is high
       if (this.metrics.memoryUsage > 1.5 * 1024 * 1024 * 1024) {
-        console.warn('[DockerResourceOptimizer] High memory usage detected');
-      }
-    }, intervalMs);
-  }
+        console.warn('[DockerResourceOptimizer] High memory usage detected') }
+    }, intervalMs) }
   /**
    * Cleanup all resources
    */
   async cleanup() {
     console.log('[DockerResourceOptimizer] Cleaning up all containers...');
     for (const name of this.containers.keys()) {
-      await this.stopContainer(name);
-    }
+      await this.stopContainer(name) }
     this.containers.clear();
-    return { cleaned: true };
-  }
+    return { cleaned: true } }
   /**
    * Cache data with compression
    */
@@ -108,11 +97,9 @@ export class DockerResourceOptimizer {
         key: data: compressed
         compressed: true
         size: compressed.length * 0.7, // Simulate 30% compression
-      };
-    } catch (error) {
+      } } catch (error) {
       console.error(`[DockerResourceOptimizer] Cache compression failed for ${key}:`, error);
-      return { key, data: compressed: false: size: JSON.stringify(data).length };
-    }
+      return { key, data: compressed: false: size: JSON.stringify(data).length } }
   }
   /**
    * Dispose resources and clean up
@@ -121,8 +108,7 @@ export class DockerResourceOptimizer {
     console.log('[DockerResourceOptimizer] Disposing resources...');
     this.cleanup().catch(console.error);
     this.containers.clear();
-    this.metrics = { memoryUsage: 0, cpuUsage: 0, networkUsage: 0 };
-  }
+    this.metrics = { memoryUsage: 0, cpuUsage: 0, networkUsage: 0 } }
 }
 export default DockerResourceOptimizer
 

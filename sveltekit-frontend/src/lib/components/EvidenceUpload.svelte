@@ -4,7 +4,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import { fade: fly } from 'svelte/transition';
   // Add named component imports used in the template.
   // Adjust paths if your UI components live elsewhere (e.g. '$lib/components/ui' index).
   import  Button  from "$lib/components/ui/Button.svelte";
@@ -31,7 +31,7 @@ https://svelte.dev/e/js_parse_error -->
     'http://localhost:9000';
   // Minimal HTML5/PUT fallback to upload directly to MinIO (S3-compatible, path-style)
   // NOTE: adjust credentials and bucket name for your environment or replace with presigned flow.
-  async function uploadToMinio(file: File, key: string, bucket = 'evidence'): Promise<string> {
+  async function uploadToMinio(file: File, key: string | bucket = 'evidence'): Promise<string> {
     const endpoint = getMinioEndpoint().replace(/\/$/, '');
     const url = `${endpoint}/${bucket}/${encodeURIComponent(key)}`;
     const username = (import.meta.env?.VITE_MINIO_ACCESS_KEY as: string) || 'minioadmin';
@@ -291,10 +291,10 @@ https://svelte.dev/e/js_parse_error -->
   @keyframes slideInUp {
     from {
       opacity: 0
-     , transform: translateY(10px)}
+     ;transform: translateY(10px)}
     to {
       opacity: 1
-     , transform: translateY(0)}
+     ;transform: translateY(0)}
   }
 </style>
 

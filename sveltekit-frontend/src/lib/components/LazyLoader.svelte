@@ -1,7 +1,7 @@
-﻿<!-- LazyLoader.svelte - Universal lazy loading, wrapper, component -->
+<!-- LazyLoader.svelte - Universal lazy loading, wrapper, component -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import {
     lazyLoad,
     createLazyStore,
@@ -135,14 +135,13 @@
     display: flex
     align-items: center
     justify-content: center
-   , background: linear-gradient(
+   ;background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.1) 25%,
       rgba(255, 255, 255, 0.2) 50%,
       rgba(255, 255, 255, 0.1) 75%
     );
-    background-size: 200% 100%;
-    animation: loading-shimmer 2s infinite
+    background-size: 200% 100%, animation: loading-shimmer 2s infinite
     border-radius: 4px
     min-height: 200px}
   .placeholder-content {
@@ -150,22 +149,21 @@
     flex-direction: column
     align-items: center
     gap: 12px
-   , color: rgba(255, 255, 255, 0.7)}
+   ;color: rgba(255, 255, 255, 0.7)}
   /* Loading spinner */
   .loading-spinner {
     width: 32px
     height: 32px
-   , border: 3px solid rgba(255, 255, 255, 0.2);
+   ;border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%, animation: spin 1s linear infinite}
   .loading-text {
     margin: 0
     font-size: 14px
     text-align: center}
   .debug-info {
     font-size: 12px
-   , color: rgba(255, 255, 255, 0.5);
+   ;color: rgba(255, 255, 255, 0.5);
     font-family: monospace}
   /* Error styles */
   .lazy-loader-error {
@@ -174,8 +172,7 @@
     align-items: center
     gap: 12px
     padding: 24px
-   , background: rgba(255, 0, 0, 0.1);
-    border: 1px solid rgba(255, 0, 0, 0.3);
+   ;background: rgba(255, 0, 0, 0.1), border: 1px solid rgba(255, 0, 0, 0.3);
     border-radius: 4px
     color: #ff6b6b}
   .error-icon {
@@ -186,8 +183,7 @@
     font-size: 14px}
   .retry-button {
     padding: 8px 16px
-   , background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+   ;background: rgba(255, 255, 255, 0.1), border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px
     color: #ffffff
     cursor: pointer
@@ -215,7 +211,7 @@
       gap: 8px}
     .loading-spinner {
       width: 24px
-     , height: 24px
+     ;height: 24px
       border-width: 2px}
     .loading-text {
       font-size: 12px}

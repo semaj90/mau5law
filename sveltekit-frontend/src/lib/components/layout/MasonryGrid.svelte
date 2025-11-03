@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, token
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, token
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
@@ -157,7 +157,7 @@ https://svelte.dev/e/js_parse_error -->
     .masonry-grid:empty::before { content: 'Loading...',
     display: block
     text-align: center
-   , color: var(--pico-muted-color, #6b7280);
+   ; color: var(--pico-muted-color, #6b7280);
     font-style: italic
    , padding: 2rem}
   /* Animation for new items */

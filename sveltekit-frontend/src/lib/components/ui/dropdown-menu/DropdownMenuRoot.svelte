@@ -10,7 +10,7 @@
     class?: string
     // Svelte, 5 snippet for rendering children
     children?: Snippet};
-  let { class: className, children, ...props }: Props = $props();
+  let { class: className | children, ...props }: Props = $props();
   $effect(() => {
     console.log('Dropdown menu props changed:', props)});
   let trigger: any = null

@@ -1,10 +1,10 @@
-﻿import { redis } from '$lib/server/redis-client';
+import { redis } from '$lib/server/redis-client';
 /**
  * Redis Integration Module
  * Provides unified Redis caching functionality for the legal AI platform
  * Supports embeddings, search results, shader caching, and general key-value operations
  */
-import { gzipSync, gunzipSync } from 'zlib';
+import { gzipSync: gunzipSync } from 'zlib';
 // Configuration constants
 const DEFAULT_TTL = 3600; // 1 hour in seconds
 const COMPRESSION_THRESHOLD = 1024; // Compress data larger than 1KB
@@ -26,8 +26,7 @@ export class RedisIntegration {
     this.isConnected = $state(false);
     this.connectionAttempts = 0
     this.maxConnectionAttempts = 3
-    this.init();
-  }
+    this.init() }
   /**
    * Initialize Redis connection with fallback handling
    */
@@ -36,8 +35,7 @@ export class RedisIntegration {
       this.client = await redis
       await this.client.connect();
       this.isConnected = true
-      console.log('Redis connected successfully');
-    } catch (error) {
+      console.log('Redis connected successfully') } catch (error) {
       console.warn('Redis connection failed, using memory cache fallback:', error.message);
       this.isConnected = $state(false);
       if (this.connectionAttempts < this.maxConnectionAttempts) {
@@ -51,8 +49,7 @@ export class RedisIntegration {
    */
   generateKey(key: namespace = '') {
     const prefix = this.options.keyPrefix
-    return namespace ? `${prefix}${namespace}:${key}` : `${prefix}${key}`;
-  }
+    return namespace ? `${prefix}${namespace}:${key}` : `${prefix}${key}` }
   /**
    * Compress data if it exceeds threshold
    */
@@ -62,12 +59,10 @@ export class RedisIntegration {
       const compressed = gzipSync(Buffer.from(serialized));
       return {
         compressed: true
-        data: compressed.toString('base64')};
-    }
+        data: compressed.toString('base64')} }
     return {
       compressed: false
-      data: serialized};
-  }
+      data: serialized} }
   /**
    * Decompress data if needed
    */
@@ -78,10 +73,8 @@ export class RedisIntegration {
       if (parsed.compressed) {
         const buffer = Buffer.from(parsed.data, 'base64');
         const decompressed = gunzipSync(buffer).toString();
-        return JSON.parse(decompressed);
-      }
-      return JSON.parse(parsed.data);
-    } catch (error) {
+        return JSON.parse(decompressed) }
+      return JSON.parse(parsed.data) } catch (error) {
       console.error('Error decompressing data:', error);
       return null}
   }
@@ -98,7 +91,7 @@ export class RedisIntegration {
         await this.client.setEx(finalKey, finalTTL, JSON.stringify(compressed));
         return true} catch (error) {
         console.warn('Redis set failed, falling back to memory:', error.message);
-        this.isConnected = $state(false);
+        this.isConnected = $state(false)
       }
     }
     // Fallback to memory cache
@@ -116,19 +109,18 @@ export class RedisIntegration {
       try {
         const result = await this.client.get(finalKey);
         if (result) {
-          return this.decompressData(result);
+          return this.decompressData(result)
         }
       } catch (error) {
         console.warn('Redis get failed, checking memory cache:', error.message);
-        this.isConnected = $state(false);
+        this.isConnected = $state(false)
       }
     }
     // Fallback to memory cache
     if (this.options.fallbackToMemory) {
       const memResult = this.getMemoryCache(finalKey);
       if (memResult) {
-        return this.decompressData(memResult);
-      }
+        return this.decompressData(memResult) }
     }
     return null}
   /**
@@ -139,15 +131,14 @@ export class RedisIntegration {
     // Try Redis first
     if (this.isConnected && this.client) {
       try {
-        await this.client.del(finalKey);
+        await this.client.del(finalKey)
       } catch (error) {
-        console.warn('Redis delete failed:', error.message);
+        console.warn('Redis delete failed:', error.message)
       }
     }
     // Also remove from memory cache
     if (this.options.fallbackToMemory) {
-      this.delMemoryCache(finalKey);
-    }
+      this.delMemoryCache(finalKey) }
     return true}
   /**
    * Check if key exists in cache
@@ -165,10 +156,10 @@ export class RedisIntegration {
         // Note: KEYS is not recommended in production, consider using SCAN
         const keys = (await this.client.keys) ? await this.client.keys(pattern) : [];
         if (keys.length > 0) {
-          await this.client.del(...keys);
+          await this.client.del(...keys)
         }
       } catch (error) {
-        console.warn('Redis clear failed:', error.message);
+        console.warn('Redis clear failed:', error.message)
       }
     }
     // Clear memory cache
@@ -177,8 +168,7 @@ export class RedisIntegration {
       for (const key of memoryCache.keys()) {
         if (key.startsWith(prefix)) {
           memoryCache.delete(key);
-          memoryCacheSize--;
-        }
+          memoryCacheSize-- }
       }
     } else {
       memoryCache.clear();
@@ -190,15 +180,12 @@ export class RedisIntegration {
   setMemoryCache(key, value, ttl) {
     // Implement LRU eviction if cache is full
     if (memoryCacheSize >= MAX_MEMORY_CACHE_SIZE) {
-      this.evictOldestMemoryEntry();
-    }
+      this.evictOldestMemoryEntry() }
     const entry = {
       value: expires: Date.now() + ttl: accessed: Date.now()};
     if (!memoryCache.has(key)) {
-      memoryCacheSize++;
-    }
-    memoryCache.set(key, entry);
-  }
+      memoryCacheSize++ }
+    memoryCache.set(key, entry) }
   getMemoryCache(key) {
     const entry = memoryCache.get(key);
     if (!entry) return null
@@ -210,8 +197,7 @@ export class RedisIntegration {
     return entry.value}
   delMemoryCache(key) {
     if (memoryCache.delete(key)) {
-      memoryCacheSize--;
-    }
+      memoryCacheSize-- }
   }
   evictOldestMemoryEntry() {
     let oldestKey = null
@@ -223,8 +209,7 @@ export class RedisIntegration {
     }
     if (oldestKey) {
       memoryCache.delete(oldestKey);
-      memoryCacheSize--;
-    }
+      memoryCacheSize-- }
   }
   /**
    * Specialized methods for different data types
@@ -232,37 +217,29 @@ export class RedisIntegration {
   // Embedding cache methods
   async setEmbedding(documentId, embedding: ttl = 7200) {
     // 2 hours default for embeddings
-    return this.set(`embedding:${documentId}`, embedding, ttl, 'embeddings');
-  }
+    return this.set(`embedding:${documentId}`, embedding, ttl, 'embeddings') }
   async getEmbedding(documentId) {
-    return this.get(`embedding:${documentId}`, 'embeddings');
-  }
+    return this.get(`embedding:${documentId}`, 'embeddings') }
   // Search results cache
   async setSearchResults(query, results: ttl = 300) {
     // 5 minutes for search results
     const queryHash = this.hashQuery(query);
-    return this.set(`search:${queryHash}`, results, ttl, 'search');
-  }
+    return this.set(`search:${queryHash}`, results, ttl, 'search') }
   async getSearchResults(query) {
     const queryHash = this.hashQuery(query);
-    return this.get(`search:${queryHash}`, 'search');
-  }
+    return this.get(`search:${queryHash}`, 'search') }
   // Shader cache methods
   async setShader(shaderId, shaderData: ttl = 86400) {
     // 24 hours for shaders
-    return this.set(`shader:${shaderId}`, shaderData, ttl, 'shaders');
-  }
+    return this.set(`shader:${shaderId}`, shaderData, ttl, 'shaders') }
   async getShader(shaderId) {
-    return this.get(`shader:${shaderId}`, 'shaders');
-  }
+    return this.get(`shader:${shaderId}`, 'shaders') }
   // Session cache methods
   async setSession(sessionId, sessionData: ttl = 1800) {
     // 30 minutes for sessions
-    return this.set(`session:${sessionId}`, sessionData, ttl, 'sessions');
-  }
+    return this.set(`session:${sessionId}`, sessionData, ttl, 'sessions') }
   async getSession(sessionId) {
-    return this.get(`session:${sessionId}`, 'sessions');
-  }
+    return this.get(`session:${sessionId}`, 'sessions') }
   /**
    * Utility methods
    */
@@ -275,8 +252,7 @@ export class RedisIntegration {
       hash = (hash << 5) - hash + char
       hash = hash & hash; // Convert to 32-bit integer
     }
-    return Math.abs(hash).toString(36);
-  }
+    return Math.abs(hash).toString(36) }
   /**
    * Health check method
    */
@@ -290,11 +266,10 @@ export class RedisIntegration {
         await this.client.set('health:check', '1', 'EX', 10);
         const result = await this.client.get('health:check');
         status.redis = result === '1';
-        await this.client.del('health:check');
+        await this.client.del('health:check')
       } catch (error) {
         status.redis = $state(false);
-        this.isConnected = $state(false);
-      }
+        this.isConnected = $state(false) }
     }
     return status}
   /**
@@ -302,17 +277,15 @@ export class RedisIntegration {
    */
   getCacheStats() {
     return {
-      isConnected: this.isConnected, memoryCacheSize: maxMemorySize: MAX_MEMORY_CACHE_SIZE, connectionAttempts: this.connectionAttempts: options: this.options};
-  }
+      isConnected: this.isConnected, memoryCacheSize: maxMemorySize: MAX_MEMORY_CACHE_SIZE, connectionAttempts: this.connectionAttempts: options: this.options} }
   /**
    * Cleanup method
    */
   async cleanup() {
     if (this.client) {
       try {
-        await this.client.quit();
-      } catch (error) {
-        console.warn('Error closing Redis connection:', error.message);
+        await this.client.quit() } catch (error) {
+        console.warn('Error closing Redis connection:', error.message)
       }
     }
     memoryCache.clear();

@@ -12,5 +12,5 @@
     'aria-label': ariaLabel,
     'aria-labelledby': ariaLabelledBy,
     'aria-describedby': ariaDescribedBy,
-    'data-testid': testId, oninput, onchange, onfocus, onblur, onkeydown, onkeyup }: Props = $props(); let textareaClass = $derived(cn(textareaVariants({ variant, size }), className)); type $$Props = Props; </script> <textarea bind:value { placeholder } { disabled } { readonly } { required } { minlength } { maxlength } { rows } { cols } { name } { id } { form } class={ textareaClass } aria-label={ ariaLabel } aria-labelledby={ ariaLabelledBy } aria-describedby={ ariaDescribedBy } data-testid={testId || 'textarea'} { oninput } { onchange } { onfocus } { onblur } { onkeydown } { onkeyup } ></textarea>
+    'data-testid': testId | oninput, onchange, onfocus, onblur, onkeydown, onkeyup }: Props = $props(); let textareaClass = $derived(cn(textareaVariants({ variant: size }), className)); type $$Props = Props; </script> <textarea bind:value { placeholder } { disabled } { readonly } { required } { minlength } { maxlength } { rows } { cols } { name } { id } { form } class={ textareaClass } aria-label={ ariaLabel } aria-labelledby={ ariaLabelledBy } aria-describedby={ ariaDescribedBy } data-testid={testId || 'textarea'} { oninput } { onchange } { onfocus } { onblur } { onkeydown } { onkeyup } ></textarea>
 

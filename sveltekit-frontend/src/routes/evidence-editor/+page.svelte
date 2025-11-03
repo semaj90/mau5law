@@ -76,5 +76,5 @@
   /* @unocss-include */
   .evidence-editor-page {
     height: 100vh
-   , overflow: hidden}
+   ; overflow: hidden}
 </style>

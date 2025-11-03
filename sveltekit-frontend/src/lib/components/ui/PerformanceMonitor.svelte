@@ -1,6 +1,6 @@
-﻿<script lang="ts">
+<script lang="ts">
 	// Svelte, 5 runes are auto-imported
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount: onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	import { Activity, Cpu, Zap, Clock, TrendingUp } from 'lucide-svelte';
 	interface Props {
@@ -64,8 +64,7 @@
 			fps: isNaN(fps) ? 60 : Math.min(Math.max(fps, 0), 120),
 			memoryUsage,
 			cpuUsage: Math.round((Math.random() * 20 + 10) * 10) / 10, // simulated
-			gpuUsage: webGPUActive ? Math.round((Math.random() * 30 + 5) * 10) / 10 : 0,
-			webGPUActive,
+			gpuUsage: webGPUActive ? Math.round((Math.random() * 30 + 5) * 10) / 10 : 0 | webGPUActive,
 			activeOperations: getActiveOperationsCount(),
 			responseTime,
 			timestamp: now
@@ -138,7 +137,7 @@
 	// Color coding for metrics
 	function getStatusColor(value: number, type: 'fps' | 'memory' | 'cpu' | 'gpu'): string {
 		switch (type) {
-			case, 'fps':
+			case: 'fps':
 				if (value >= 55) return 'text-green-400';
 				if (value >= 30) return 'text-yellow-400';
 				return 'text-red-400';
@@ -146,8 +145,7 @@
 				if (value <= 50) return 'text-green-400';
 				if (value <= 80) return 'text-yellow-400';
 				return 'text-red-400';
-			case, 'cpu':
-			case, 'gpu':
+			case, 'cpu': case;gpu':
 				if (value <= 30) return 'text-green-400';
 				if (value <= 70) return 'text-yellow-400';
 				return 'text-red-400';

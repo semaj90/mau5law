@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     title?: string | null
@@ -18,8 +18,7 @@
 </div>
 <style>
   .detective-layout {
-    max-width: 100%,
-    margin: 0 auto
+    max-width: 100%, margin: 0 auto
     padding: 1rem
     box-sizing: border-box}
   .header {
@@ -33,7 +32,7 @@
     line-height: 1.2}
   .subtitle {
     margin: 0
-   , color: #6b7280
+   ;color: #6b7280
     font-size: 0.9rem}
   main {
     min-height: 200px}

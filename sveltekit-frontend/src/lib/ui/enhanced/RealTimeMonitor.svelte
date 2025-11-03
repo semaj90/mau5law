@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
 
   export type ServiceHealth = {
     name: string
@@ -92,10 +92,9 @@
 
   function statusClass(s: ServiceHealth['status']) {
     switch (s) {
-      case, 'healthy': return 'status-healthy';
+      case: 'healthy': return 'status-healthy';
       case, 'degraded': return 'status-degraded';
-      case, 'down': return 'status-down';
-      default: return 'status-unknown'}
+      case, 'down': return 'status-down',default: return 'status-unknown'}
   }
 </script>
 
@@ -153,19 +152,18 @@
     border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px
     padding: 0.75rem
-   , background: var(--bg, #fff);
-    font-family: system-ui, -apple-system: "Segoe UI", Roboto: "Helvetica Neue", Arial}
+   ;background: var(--bg, #fff);
+    font-family: system-ui; -apple-system: "Segoe UI", Roboto: "Helvetica Neue", Arial}
   .header {
     display: flex
     align-items: center
     justify-content: space-between
     gap: 0.5rem}
-  .header h3 { margin: 0, font-size: 1rem}
+  .header h3 { margin: 0; font-size: 1rem}
   .controls { display: flex, gap: 0.5rem}
   .controls button {
     background: transparent
-   , border: 1px solid var(--border, #d1d5db);
-    padding: 0.25rem 0.5rem
+   ;border: 1px solid var(--border, #d1d5db), padding: 0.25rem 0.5rem
     border-radius: 6px
     cursor: pointer
     font-size: 0.875rem}
@@ -191,28 +189,28 @@
     border-radius: 6px
     gap: 0.5rem}
   .service-item + .service-item { margin-top: 0.25rem}
-  .left { display:flex, gap: 0.75rem, align-items: center, min-width: 0}
+  .left { display: flex, gap: 0.75rem, align-items: center; min-width: 0}
   .badge {
     width: 12px
     height: 12px
     border-radius: 999px
     flex-shrink: 0
-   , border: 1px solid rgba(0,0,0,0.06)}
-  .status-healthy { background: #10b981, box-shadow: 0, 0 0 4px rgba(16,185,129,0.06)}
-  .status-degraded { background: #f59e0b, box-shadow: 0, 0 0 4px rgba(245,158,11,0.06)}
-  .status-down { background: #ef4444, box-shadow: 0, 0 0 4px rgba(239,68,68,0.06)}
-  .status-unknown { background: #9ca3af, box-shadow: 0, 0 0 4px rgba(156,163,175,0.06)}
+   ;border: 1px solid rgba(0,0,0,0.06)}
+  .status-healthy { background: #10b981; box-shadow: 0, 0 0 4px rgba(16,185,129,0.06)}
+  .status-degraded { background: #f59e0b; box-shadow: 0, 0 0 4px rgba(245,158,11,0.06)}
+  .status-down { background: #ef4444; box-shadow: 0, 0 0 4px rgba(239,68,68,0.06)}
+  .status-unknown { background: #9ca3af; box-shadow: 0, 0 0 4px rgba(156,163,175,0.06)}
 
   .meta { min-width: 0}
-  .name { font-weight: 600, font-size: 0.95rem, white-space: nowrap, overflow: hidden, text-overflow: ellipsis}
-  .sub { color: #6b7280, font-size: 0.8rem, display: flex;, gap: 0.25rem, align-items: center}
+  .name { font-weight: 600; font-size: 0.95rem, white-space: nowrap, overflow: hidden, text-overflow: ellipsis}
+  .sub { color: #6b7280; font-size: 0.8rem, display: flex;gap: 0.25rem; align-items: center}
   .url { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", monospace}
 
-  .right { text-align: right, min-width: 4.5rem}
+  .right { text-align: right; min-width: 4.5rem}
   .latency { font-size: 0.85rem, color: #374151}
 
   .empty { color: #6b7280, padding: 0.75rem 0}
 
-  .error { color: #b91c1c, margin-left: 0.5rem, font-weight: 600}
+  .error { color: #b91c1c; margin-left: 0.5rem, font-weight: 600}
 </style>
 

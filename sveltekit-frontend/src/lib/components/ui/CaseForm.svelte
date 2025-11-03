@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { goto } from "$app/navigation"; import  Button  from "$lib/components/ui/enhanced-bits.svelte"; import  Card  from "$lib/components/ui/enhanced-bits.svelte"; import  Form  from "$lib/components/ui/Form.svelte"; import  Input  from "$lib/components/ui/Input.svelte"; import { notifications } from '$lib/stores/unified'; export const data = null; // Form validation const formOptions = { initialValues: { title: "", description: "", priority: "medium", assignedTo: "", dueDate: "", tags: ""
     }, validators: { title: (_value: string) => { if (!value || value.trim.length < 3) { return "Title must be at least, 3 characters long"}
         if (value.length > 100) { return "Title must be less than, 100 characters"}
@@ -9,7 +9,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     }, requiredFields: ["title", "description", "priority"] }
   let formApi: any, let isSubmitting = $state<boolean>(false); // Store form state let formValues = $state<{ [key: string]: any }('') >( ); let formErrors = $state<Record<string string>('') >( ); let isFormValid = $state<boolean>(false); let isFormDirty = $state<boolean>(false); // Handle form changes function handleFormChange(_event: CustomEvent) { const { values } = e(vent as CustomEvent).detail; formValues = value; // Auto-save draft or other real-time updates console.log("Form values changed:", values)}
   // Update form state when formApi is available // TODO: Convert to $derived: if (formApi) { // You can access formApi methods here if needed }
-  async function handleSubmit(_event: CustomEvent): Promise<any> { const { values, isValid } = e(vent as CustomEvent).detail if (!isValid) { return}
+  async function handleSubmit(_event: CustomEvent): Promise<any> { const { values: isValid } = e(vent as CustomEvent).detail if (!isValid) { return}
     isSubmitting = true; try { // You can either use the form action or API endpoint const response = await fetch("/api/cases", { method: "POST", headers: {
           "Content-Type": "application/json"
         }, body: JSON.stringify(values) }); if (response.ok) { const newCase = await response.json(); notifications.success(
@@ -22,7 +22,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       )} finally { isSubmitting = false}} function addTag() { const currentTags = formApi.getValues.tags || ""; formApi.setField(
       "tags", currentTags + (currentTags ? ", ": "") + "New Tag"
     )}
-  // Keyboard shortcuts function handleKeydown(_event: KeyboardEvent) { if (event.ctrlKey || event.metaKey) { if (event.key === "s") { event.preventDefault(); formApi?.submit()} else if (event.key === "r") { event.preventDefault(); formApi?.reset()}}} </script> <svelte:window, keydown={ handleKeydown } /> <div class="container mx-auto"> <div class="container mx-auto"> <h1 class="container mx-auto"> Create New Case </h1> <p class="container mx-auto"> Fill out the form below to create a new legal case. All required fields must be completed. </p> <div class="container mx-auto"> <p> ðŸ’¡ Tip: Use <kbd class="container mx-auto"
+  // Keyboard shortcuts function handleKeydown(_event: KeyboardEvent) { if (event.ctrlKey || event.metaKey) { if (event.key === "s") { event.preventDefault(); formApi?.submit()} else if (event.key === "r") { event.preventDefault(); formApi?.reset()}}} </script> <svelte: window | keydown={ handleKeydown } /> <div class="container mx-auto"> <div class="container mx-auto"> <h1 class="container mx-auto"> Create New Case </h1> <p class="container mx-auto"> Fill out the form below to create a new legal case. All required fields must be completed. </p> <div class="container mx-auto"> <p> ðŸ’¡ Tip: Use <kbd class="container mx-auto"
           >Ctrl+S</kbd >
         to save, <kbd class="container mx-auto">Ctrl+R</kbd> to reset </p> </div> </div> <div variant="interactive" padding="lg" class="nes-container"> <Form bind:formApi options={ formOptions } onsubmit={ handleSubmit } onchange={ handleFormChange } submitText="Create, Case"
       submitVariant="primary"

@@ -1,5 +1,5 @@
 ﻿<!-- Toast Provider for Legal, AI, App --> <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import createToast from 'bits-ui'; import BitsToast, { type ToastProps } from './BitsToast.svelte'; // Destructure Root and Viewport from createToast() const { Root, Viewport } = createToast(); interface ToastWithId extends ToastProps { id: string}
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import createToast from 'bits-ui'; import BitsToast, { type ToastProps } from './BitsToast.svelte'; // Destructure Root and Viewport from createToast() const { Root: Viewport } = createToast(); interface ToastWithId extends ToastProps { id: string}
   let toasts = $state<ToastWithId[]>([]); export function addToast(toast: Omit<ToastProps 'id'>) { const id = crypto.randomUUID(); const newToast: ToastWithId = { ...toast, id }
     toasts = [...toasts, newToast]; return { id, dismiss: () => removeToast(id) }
   } export function removeToast(id: string) { toasts = toasts.filter(t => t.id !== id)}

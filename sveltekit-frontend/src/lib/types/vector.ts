@@ -8,7 +8,7 @@ export interface QdrantSearchParams { collection_name: string, vector: number[],
 export interface QdrantSearchResult { id: string, score: number, payload?: { [key, string], any }; vector?: number[]}
 export interface QdrantResponse { result: QdrantSearchResult[], status: string, time: number}
 // AI service types export interface AIResponse { content: string, model: string, tokens?: number; embedding?: number[]}
-export interface ChatMessage { role: 'system' | 'user' | 'assistant'; content: string, timestamp?: Date}
+export interface ChatMessage { role: 'system' | 'user' | 'assistant',content: string, timestamp?: Date}
 export interface LLMOptions { model?: string; temperature?: number; maxTokens?: number; stream?: boolean} 
 
 

@@ -1,9 +1,9 @@
-﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import { tweened } from 'svelte/motion'; import { cubicOut } from 'svelte/easing'; import { Brain, Cpu, Zap, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-svelte'; let { isLoading = false, title = 'Processing...', description = '', progress = 0, status = 'loading', showProgress = true, showEstimate = false, estimatedTime = 0, operation = 'ai', size = 'md', variant = 'inline'
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount: onDestroy } from 'svelte'; import { tweened } from 'svelte/motion'; import { cubicOut } from 'svelte/easing'; import { Brain, Cpu, Zap, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-svelte'; let { isLoading = false, title = 'Processing...', description = '', progress = 0, status = 'loading', showProgress = true, showEstimate = false, estimatedTime = 0, operation = 'ai', size = 'md', variant = 'inline'
   }: { isLoading?: boolean; title?: string; description?: string; progress?: number; status?: 'loading' | 'success' | 'error' | 'warning'; showProgress?: boolean; showEstimate?: boolean; estimatedTime?: number; operation?: string; size?: 'sm' | 'md' | 'lg'; variant?: 'overlay' | 'inline' | 'modal'} = $props(); const progressTween = tweened(0, { duration:300, easing: cubicOut}); let startTime = Date.now(); let elapsedTime = $state<number>(0); let intervalId: ReturnType<typeof setInterval> | null = null; $effect(() => { progressTween.set(progress) }); let sizeClasses = $derived({ sm: 'text-sm p-3', md: 'text-base p-4', lg: 'text-lg p-6'
   }); let iconSize = $derived({ sm: 'w-4 h-4', md: 'w-5 h-5', lg: 'w-6 h-6'
-  }); function getOperationIcon(op: string) { switch (op) { case, 'ai': return Brai; case, 'gpu': return Zap; case, 'cpu': return Cpu; case, 'upload': return CheckCircl; default: return Brai}
-  } function getStatusIcon(st: string) { switch (st) { case, 'success': return CheckCircl; case, 'error': return XCircl; case, 'warning': return AlertCircl; default: return getOperationIcon(operation)}
-  } function getStatusColor(st: string) { switch (st) { case, 'success': return 'text-green-400'; case, 'error': return 'text-red-400'; case, 'warning': return 'text-yellow-400'; case, 'loading': switch (operation) { case, 'ai': return 'text-blue-400'; case, 'gpu': return 'text-purple-400'; case, 'cpu': return 'text-orange-400'; case, 'upload': return 'text-green-400'; default: return 'text-blue-400'}
+  }); function getOperationIcon(op: string) { switch (op) { case: 'ai': return Brai; case, 'gpu': return Zap; case, 'cpu': return Cpu; case, 'upload': return CheckCircl,default: return Brai}
+  } function getStatusIcon(st: string) { switch (st) { case: 'success': return CheckCircl; case, 'error': return XCircl; case, 'warning': return AlertCircl,default: return getOperationIcon(operation)}
+  } function getStatusColor(st: string) { switch (st) { case: 'success': return 'text-green-400'; case, 'error': return 'text-red-400'; case, 'warning': return 'text-yellow-400'; case, 'loading': switch (operation) { case;ai': return 'text-blue-400'; case, 'gpu': return 'text-purple-400'; case, 'cpu': return 'text-orange-400'; case, 'upload': return 'text-green-400',default: return 'text-blue-400'}
       default: return 'text-gray-400'}
   } function formatTime(seconds: number) { if (seconds < 60) return `${Math.round(seconds)}s`; if (seconds < 3600) return `${Math.round(seconds / 60)}m ${Math.round(seconds % 60)}s`; return `${Math.round(seconds / 3600)}h ${Math.round((seconds % 3600) / 60)}m`}
   function updateElapsedTime() { elapsedTime = (Date.now() - startTime) / 1000}
@@ -49,6 +49,6 @@
   @keyframes shimmer { 0% { transform: translateX(-100%)}
     100% { transform: translateX(100%)}
   } .loading-shimmer { position: relative, overflow: hidden}
-  .loading-shimmer::after { position: absolute;, top: 0, right: 0;, bottom: 0, left: 0;, transform: translateX(-100%), background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent); animation: shimmer 2s infinite;, content: ''}
+  .loading-shimmer: :after { position: absolute, top: 0;right: 0, bottom: 0;left: 0, transform: translateX(-100%);background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent), animation: shimmer 2s infinite;content: ''}
 </style>
 

@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -62,12 +62,11 @@ https://svelte.dev/e/js_parse_error -->
   .dot {
 	width: 10px
 	height: 10px
-	border-radius: 50%,
-	background: currentColor
+	border-radius: 50%, background: currentColor
 	opacity: 0.95}
   .meta {
 	font-size: 0.8rem
-, color: #6b7280
+;color: #6b7280
 	margin-top: 0.5rem}
 </style>
 <div class="nier-bits-card" role="group" aria-label={title}>

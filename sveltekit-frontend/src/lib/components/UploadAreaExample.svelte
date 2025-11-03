@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import  UploadArea  from "./UploadArea.svelte";
 
   let uploadComponent: any = null

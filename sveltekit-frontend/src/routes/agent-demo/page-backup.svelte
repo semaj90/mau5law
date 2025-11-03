@@ -42,7 +42,7 @@ import type { User } from '$lib/types'; import { onMount } from 'svelte'; import
 
   .patch-card { border: 1px solid #e5e7eb}
 
-  .diff-preview { font-size: 11px, line-height: 1.4}
+  .diff-preview { font-size: 11px; line-height: 1.4}
 
   .log-container { font-family: 'JetBrains Mono', 'Consolas', monospace}
 

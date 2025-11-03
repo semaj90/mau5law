@@ -1054,8 +1054,7 @@
   /* Enhanced SSR-optimized 3-Column Flexbox Layout */
   .ssr-flexbox-container {
     /* Ensure proper layout calculation on server-side rendering */
-    min-height: 400px,
-    width: 100%,
+    min-height: 400px; width: 100%,
     box-sizing: border-box}
 
   /* Dynamic flex-basis proportions for better visual balance */
@@ -1072,17 +1071,14 @@
   /* SSR Card optimizations for consistent rendering */
   .ssr-card {
     /* Ensure consistent card heights in flexbox layout */
-    display: flex,
-    flex-direction: column,
-    min-height: 280px,
-    max-height: 400px,
+    display: flex; flex-direction: column,
+    min-height: 280px; max-height: 400px,
     overflow: hidden;
     /* Enhanced border and shadow for better visual hierarchy */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease}
-  .ssr-card:hover {
-    transform: translateY(-2px),
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15)}
+  .ssr-card: hover {
+    transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15)}
 
   /* Responsive adjustments for smaller screens */
   @media (max-width: 1024px) {
@@ -1097,8 +1093,7 @@
     .flex-basis-33,
     .flex-basis-35 {
       flex: 0 0 100%;
-      max-width: 100%,
-      min-width: unset}
+      max-width: 100%; min-width: unset}
     .ssr-flexbox-container {
       gap: 1rem}
   }
@@ -1106,8 +1101,7 @@
   /* API Service Grid optimizations */
   .api-service-grid {
     /* Ensure consistent grid layout across different viewport sizes */
-    display: grid,
-    gap: 1.5rem,
+    display: grid; gap: 1.5rem,
     align-items: start;
     /* Responsive grid template with proper proportions */
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))}
@@ -1125,8 +1119,7 @@
   /* Service cluster enhancements for API display */
   .service-cluster {
     transition: all 0.3s ease;
-    min-height: 340px,
-    max-height: 500px;
+    min-height: 340px; max-height: 500px;
     /* Improved visual hierarchy and spacing */
   }
 </style>

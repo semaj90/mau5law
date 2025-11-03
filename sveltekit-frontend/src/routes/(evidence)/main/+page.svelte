@@ -82,7 +82,7 @@ import type { Case } from '$lib/types';
 
   .hero-section h1 {
     font-size: 2.5rem
-   , color: #ffd700
+   ; color: #ffd700
     margin-bottom: 1rem
     text-shadow: 0, 0 10px rgba(255, 215, 0, 0.3)}
 
@@ -104,7 +104,7 @@ import type { Case } from '$lib/types';
     border: 1px solid #444
     border-radius: 8px
     padding: 2rem
-   , transition: all 0.3s ease}
+   ; transition: all 0.3s ease}
 
   .action-card:hover {
     border-color: #ffd700
@@ -118,13 +118,12 @@ import type { Case } from '$lib/types';
 
   .file-input,
   .search-input {
-    width: 100%,
-    padding: 0.5rem
+    width: 100%; padding: 0.5rem
     margin: 0.5rem 0
     background: #1a1a1a
     border: 1px solid #444
     border-radius: 4px
-   , color: white}
+   ; color: white}
 
   .upload-btn,
   .search-btn {
@@ -133,7 +132,7 @@ import type { Case } from '$lib/types';
     border: none
     padding: 0.5rem 1rem
     border-radius: 4px
-   , cursor: pointer
+   ; cursor: pointer
     font-weight: bold}
 
   .upload-btn:hover,
@@ -158,9 +157,9 @@ import type { Case } from '$lib/types';
     border-radius: 4px
     transition: all 0.3s ease}
 
-  .action-link:hover {
+  .action-link: hover {
     background: #ffd700
-   , color: #1a1a1a}
+   ; color: #1a1a1a}
 </style>
 
 

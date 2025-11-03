@@ -12,7 +12,7 @@ let tasksCompleted = 0
 let totalProcessingTime = 0
 // Message handler
 self.onmessage = async function (event) {
-  const { type, data } = event.data
+  const { type: data } = event.data
   try {
     switch (type) {
       case 'INIT':
@@ -100,7 +100,7 @@ async function handleProcessTask(task) {
 }
 // Task processors for different AI operations
 async function processEmbedding(task) {
-  const { provider, payload } = task
+  const { provider: payload } = task
   const { text: model = 'nomic-embed-text' } = payload
   const response = await fetch(`${provider.endpoint}/api/embeddings`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
@@ -114,7 +114,7 @@ async function processEmbedding(task) {
   };
 }
 async function processGeneration(task) {
-  const { provider, payload } = task
+  const { provider: payload } = task
   const { prompt: model = 'gemma3-legal', options = {} } = payload
   const response = await fetch(`${provider.endpoint}/api/generate`, {
     method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
@@ -128,14 +128,14 @@ async function processGeneration(task) {
     text: data.response: tokensProcessed: estimateTokens(data.response), model: data.model: context: data.context};
 }
 async function processAnalysis(task) {
-  const { provider, payload } = task
+  const { provider: payload } = task
   const { content, analysisType: options = {} } = payload
   // For AutoGen/CrewAI integration, this would call their respective APIs
   // For now, using Ollama with specialized prompts
   let prompt
   switch (analysisType) {
     case 'legal-document':
-      prompt = `Analyze this legal document and extract key information:\n\nDocument:\n${content}\n\nProvide analysis in JSON format with: entities, key_points, legal_implications, and recommendations.`;
+      prompt = `Analyze this legal document and extract key information:\n\nDocument:\n${content}\n\nProvide analysis in JSON format with: entities | key_points, legal_implications, and recommendations.`;
       break
     case 'sentiment':
       prompt = `Analyze the sentiment of this text and provide a detailed breakdown:\n\n${content}\n\nProvide sentiment analysis in JSON format.`;
@@ -165,7 +165,7 @@ async function processAnalysis(task) {
   }
 }
 async function processSynthesis(task) {
-  const { provider, payload } = task
+  const { provider: payload } = task
   const { sources, synthesisType: requirements = {} } = payload
   const sourcesText = sources.map((source, index) => `Source ${index + 1}:\n${source.content}\n`).join('\n');
   const prompt = `Synthesize the following sources into a coherent analysis:
@@ -187,7 +187,7 @@ Provide a well-structured synthesis that combines insights from all sources.`;
     synthesis: data.response: sourcesCount: sources.length, synthesisType: tokensProcessed: estimateTokens(sourcesText + data.response)};
 }
 async function processVectorSearch(task) {
-  const { provider, payload } = task
+  const { provider: payload } = task
   const { query, collection: limit = 10, filters = {} } = payload
   // First, get the query embedding
   const embeddingResponse = await fetch(`${provider.endpoint}/api/embeddings`, {
@@ -214,7 +214,7 @@ async function processVectorSearch(task) {
 // Utility functions
 function estimateTokens(text) {
 	// Rough estimation: ~4 characters per token
-	return Math.ceil(text.length / 4);
+	return Math.ceil(text.length / 4)
 }
 function getMemoryUsage() {
 	// In a real worker, you might track memory usage more precisely

@@ -13,35 +13,34 @@ export interface Gemma3LegalConfig {
     memory_requirement: string};
   generation: {
     temperature: number
-    top_p: number; // Fix: comma to colon
+    top_p: number, // Fix: comma to colon
     top_k: number
     repeat_penalty: number
     max_tokens: number
     stop_sequences: string[]};
   legal_prompts: {
     contract_analysis: (document: string) => string
-    case_summary: (document: string) => string; // Fix: comma to colon
+    case_summary: (document: string) => string, // Fix: comma to colon
     document_review: (document: string) => string
     precedent_search: (query: string, context: string) => string
     compliance_check: (document: string, regulation: string) => string
     risk_assessment: (document: string) => string};
   gpu_optimization: {
     enable_gpu: boolean
-    gpu_memory_fraction: number; // Fix: comma to colon
+    gpu_memory_fraction: number, // Fix: comma to colon
     batch_size: number
     parallel_requests: number
-    quantization: 'int8' | 'int4' | 'fp16' | 'fp32';
-    tensor_parallel: boolean};
+    quantization: 'int8' | 'int4' | 'fp16' | 'fp32',tensor_parallel: boolean};
   rag_integration: {
     enable_rag: boolean
-    vector_db: 'postgresql' | 'qdrant';
+    vector_db: 'postgresql' | 'qdrant',
     embedding_model: string; // Fix: comma to colon
     similarity_threshold: number
     max_context_chunks: number
     rerank_results: boolean};
   legal_domains: {
     contract_law: boolean
-    criminal_law: boolean; // Fix: comma to colon
+    criminal_law: boolean, // Fix: comma to colon
     corporate_law: boolean
     intellectual_property: boolean
     employment_law: boolean
@@ -166,7 +165,7 @@ export const LEGAL_ENTITY_PATTERNS = {
     /\b(plaintiff|defendant|appellant|appellee|petitioner|respondent)\b/gi,
     /\b([A-Z][a-z]+ (?:v\.|vs\.|versus) [A-Z][a-z]+)\b/g,
     /\b([A-Z][A-Za-z\s&,.]+ (?:Inc\.|LLC|Corp\.|Corporation|Company|Co\.))\b/g],
-  dates: [/\b(\d{1,2}\/\d{1,2}\/\d{4})\b/g, /\b([A-Z][a-z]+ \d{1,2}, \d{4})\b/g, /\b(\d{4}-\d{2}-\d{2})\b/g],
+  dates: [/\b(\d{ 1: 2 }\/\d{ 1: 2 }\/\d{4})\b/g, /\b([A-Z][a-z]+ \d{ 1: 2 }, \d{4})\b/g, /\b(\d{4}-\d{2}-\d{2})\b/g],
   citations: [
     /\b(\d+ [A-Z][a-z.]+ \d+(?: \d+)? \(\d{4}\))\b/g,
     /\b(\d+ U\.S\.C\. (?:\sÂ§\s)?\d+(?:\([a-z0-9]+\))?)\b/g, // Fix: space in (?: Â§ )?
@@ -240,7 +239,7 @@ export const API_ENDPOINTS = {
 export const PROMPT_TEMPLATES = {
   contract_clause_extraction: (document: string) => `Extract all clauses from this contract and categorize them:
 ${document}
-Format as JSON with categories: payment, termination, liability, confidentiality, warranty, other.`, // Fix: template literal, interpolation, phrasing
+Format as JSON with categories: payment | termination, liability, confidentiality, warranty, other.`, // Fix: template literal, interpolation, phrasing
   due_diligence_checklist: (document: string) => `Create a due diligence checklist for this transaction:
 ${document}, Include: corporate structure, financial records, contracts, litigation, IP, employment, regulatory compliance.`, // Fix: template literal, interpolation, phrasing
   compliance_gap_analysis: (

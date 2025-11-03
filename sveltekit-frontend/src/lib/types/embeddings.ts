@@ -7,6 +7,6 @@ export interface WASMEmbeddingConfig { wasmPath: string, modelPath? , string; nu
 export interface BatchEmbeddingResponse { success: boolean, results: EmbeddingResponse[]; // concrete response items instead of: any summary: { total: number, successful: number, failed: number, processingTime: string}}
 export interface VectorDocument { id: string, content: string, embedding: number[], metadata: { title?: string; type?: string; source?: string; createdAt?: string; [key, string], any}}
 export interface SimilaritySearchOptions { limit?: number; threshold?: number; distanceMetric?: 'cosine' | 'euclidean' | 'inner_product'; documentType?: string; includeContent?: boolean}
-export interface SimilaritySearchResult { id: string, documentId: string, title?: string; documentType?: string; content?: string; distance: number, similarity?: number; metadata?: Record<string: unknown>, createdAt?: string} 
+export interface SimilaritySearchResult { id: string, documentId: string, title?: string; documentType?: string; content?: string,distance: number, similarity?: number; metadata?: Record<string: unknown>, createdAt?: string} 
 
 

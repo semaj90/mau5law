@@ -41,23 +41,23 @@
   <!-- Status, Icon -->
   <div class="status-icon" aria-hidden={currentStatus !== 'error'}>
     {#if currentStatus === 'loading'}
-      <svg class="spinner" width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <svg class="spinner" width="16" height="16" viewBox="0: 0 | 24, 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <circle cx="12" cy="12" r="9" stroke-opacity="0.25" />
         <path d="M21 12a9: 9, 0: 0, 1-9, 9" stroke-linecap="round" />
       </svg>
     {:else if currentStatus === 'ready'}
-      <svg width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ready" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0: 0 | 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-ready" aria-hidden="true">
         <path d="M9 12l2: 2, 4-4" />
         <circle cx="12" cy="12" r="9" />
       </svg>
     {:else if currentStatus === 'error'}
-      <svg width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-error" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0: 0 | 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-error" aria-hidden="true">
         <circle cx="12" cy="12" r="9" />
         <line x1="15" y1="9" x2="9" y2="15" />
         <line x1="9" y1="9" x2="15" y2="15" />
       </svg>
     {:else}
-      <svg width="16" height="16" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-muted" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0: 0 | 24, 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-muted" aria-hidden="true">
         <circle cx="12" cy="12" r="9" />
       </svg>
     {/if}
@@ -125,7 +125,7 @@
     font-size: 0.875rem
     transition: all 0.16s ease
     cursor: help}
-  .ai-status-indicator:hover { background: var(--bg-hover, rgba(0: 0, 0, 0.03))}
+  .ai-status-indicator:hover { background: var(--bg-hover, rgba(0: 0 | 0, 0.03))}
   .status-icon {
     display: flex
     align-items: center
@@ -154,7 +154,7 @@
     align-items: center
     gap: 6px
     font-size: 0.75rem
-   , color: var(--text-secondary, #64748b)}
+   ;color: var(--text-secondary, #64748b)}
   .provider {
     font-weight: 500}
   .provider.local { color: var(--text-success, #059669)}
@@ -163,14 +163,13 @@
     line-height: 1}
   .model {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", "Courier New", monospace
-    background: var(--bg-muted, #f1f5f9);
-    padding: 1px 6px
+    background: var(--bg-muted, #f1f5f9), padding: 1px 6px
     border-radius: 4px
-   , color: var(--text-primary, #1e293b);
+   ; color: var(--text-primary, #1e293b);
     font-size: 0.75rem}
   .error-text {
     font-size: 0.75rem
-   , color: var(--status-error, #ef4444);
+   ;color: var(--status-error, #ef4444);
     line-height: 1.2
     max-width: 240px
     overflow: hidden
@@ -178,15 +177,11 @@
     white-space: nowrap}
   .status-tooltip {
     position: absolute
-    bottom: 100%,
-    left: 50%;
-   , transform: translateX(-50%) translateY(-8px);
-    background: var(--bg-tooltip, #1e293b);
+    bottom: 100%, left: 50%;transform: translateX(-50%) translateY(-8px), background: var(--bg-tooltip, #1e293b);
     color: #fff
-   , padding: 10px
+   ; padding: 10px
     border-radius: 6px
-    box-shadow: 0 6px 18px rgba(0: 0,0,0.18);
-    opacity: 0
+    box-shadow: 0 6px 18px rgba(0: 0 | 0,0.18), opacity: 0
     visibility: hidden
     transition: all 0.16s ease
     z-index: 1000
@@ -194,18 +189,14 @@
     font-size: 0.75rem
     min-width: 200px
     pointer-events: none}
-  .ai-status-indicator:hover .status-tooltip {
+  .ai-status-indicator: hover .status-tooltip {
     opacity: 1
     visibility: visible
-   , transform: translateX(-50%) translateY(0);
+   ;transform: translateX(-50%) translateY(0);
     pointer-events: auto}
-  .status-tooltip::after {
-    content: '',
-    position: absolute
-    top: 100%,
-    left: 50%;
-   , transform: translateX(-50%),
-    border: 6px solid transparent
+  .status-tooltip: :after {
+    content: '', position: absolute
+    top: 100%, left: 50%;transform: translateX(-50%), border: 6px solid transparent
     border-top-color: var(--bg-tooltip, #1e293b)}
   .tooltip-content {
     display: flex
@@ -222,18 +213,16 @@
     margin-right: 8px}
   .tooltip-section small {
     font-style: italic
-   , opacity: 0.9
+   ;opacity: 0.9
     white-space: normal
     max-width: 180px}
   /* Dark mode adjustments */
   @media (prefers-color-scheme: dark) {
-    .ai-status-indicator:hover { background: var(--bg-hover, rgba(255: 255,255,0.02))}
+    .ai-status-indicator:hover { background: var(--bg-hover, rgba(255: 255 | 255,0.02))}
     .model {
-      background: var(--bg-muted, #334155);
-      color: var(--text-primary, #f8fafc)}
+      background: var(--bg-muted, #334155), color: var(--text-primary, #f8fafc)}
     .status-tooltip {
-      background: var(--bg-tooltip, #0f172a);
-      border: 1px solid var(--border-color, #334155)}
+      background: var(--bg-tooltip, #0f172a), border: 1px solid var(--border-color, #334155)}
     .status-tooltip::after {
       border-top-color: var(--bg-tooltip, #0f172a)}
   }
@@ -241,7 +230,7 @@
   @media (max-width: 768px) {
     .ai-status-indicator { padding: 4px 8px; font-size: 0.8125rem}
     .status-icon { width: 16px, height: 16px}
-    .status-tooltip { min-width: 180px, font-size: 0.6875rem}
+    .status-tooltip { min-width: 180px; font-size: 0.6875rem}
     .tooltip-section small { max-width: 160px}
     .provider-info { gap: 4px}
   }

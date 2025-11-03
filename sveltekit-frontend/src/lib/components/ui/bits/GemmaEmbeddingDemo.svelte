@@ -1,5 +1,5 @@
-﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import  Button  from "./Button.svelte"; import  Input  from "./Input.svelte"; import  Card  from "./Card.svelte"; import  SearchInput  from "./SearchInput.svelte"; import { z } from "zod"; import { Brain, Database, Zap, Search, AlertCircle, CheckCircle, Cpu, Activity, Hash, Clock } from 'lucide-svelte'; // Types for Gemma API integration interface GemmaEmbeddingResult { success: boolean, embedding?: number[]; metadata?: any; error?: string; responseTime?: string; timestamp?: string}
-  interface EmbeddingSearchResult { id: string, content: string, similarity: number, metadata?: any; createdAt: string}
+<script lang="ts"> // Svelte, 5 runes are auto-imported import  Button  from "./Button.svelte"; import  Input  from "./Input.svelte"; import  Card  from "./Card.svelte"; import  SearchInput  from "./SearchInput.svelte"; import { z } from "zod"; import { Brain, Database, Zap, Search, AlertCircle, CheckCircle, Cpu, Activity, Hash, Clock } from 'lucide-svelte'; // Types for Gemma API integration interface GemmaEmbeddingResult { success: boolean, embedding?: number[]; metadata?: any; error?: string; responseTime?: string; timestamp?: string}
+  interface EmbeddingSearchResult { id: string, content: string, similarity: number, metadata?: any,createdAt: string}
   // Form validation schema const embeddingFormSchema = z.object({ content: z.string().min(1, "Content is required").max(10000, "Content too long") }); interface Props { onSuccess?: (result: any) => void; onError?: (error: string) => void; variant?: 'default' | 'legal' | 'evidence'; showSearch?: boolean; useWorker?: boolean; // Use WASM worker vs API }
   let { onSuccess, onError, variant = 'legal', showSearch = true, useWorker = false // WASM as fallback only }: Props = $props(); // Component state using Svelte, 5 runes let content = $state<string>(''); let searchQuery = $state<string>(''); let isGenerating = $state<boolean>(false); let isSearching = $state<boolean>(false); let result = $state<GemmaEmbeddingResult | null>(null); let searchResults = $state<EmbeddingSearchResult[]>([]); let error = $state<string>(''); let validationErrors = $state<Record<string string>>({}); let stats = $state({ totalEmbeddings: 0, avgResponseTime: '0ms', lastUpdate: new Date().toISOString() }); // Web Worker for client-side processing let embeddingWorker: Worker | null = null; // Initialize worker if requested $effect(() => { if (useWorker && typeof Worker !== 'undefined') { try { embeddingWorker = new Worker('/lib/workers/embeddings-worker.js'); embeddingWorker.onmessage = handleWorkerMessag; embeddingWorker.onerror = handleWorkerError} catch (err) { console.warn('Could not initialize embeddings worker:', err); useWorker = false}
     } return () => { if (embeddingWorker) { embeddingWorker.terminate()}
@@ -36,34 +36,34 @@
               enableVectorSearch={ true } enableAISearch={ true } variant="legal"
               onsearch={ searchEmbeddings } /> <Button variant="primary"
               nesStyle={ true } disabled={!canSearch || isSearching} loading={ isSearching } onclick={ searchEmbeddings } >
-              {#if isSearching} <Search class="inline-icon" /> Searching... {:else} <Search class="inline-icon" /> Vector Search {/if} </Button> </div> {#if searchResults.length > 0} <div class="search-results"> <h4 class="nes-text">Search Results:</h4> {#each Array.isArray(searchResults) ? searchResults: [] as result} <div class="search-result-item"> <div class="result-content"> <p class="nes-text"> {result.content.length > 150 ? result.content.substring(0, 150) + '...': result.content} </p> </div> <div class="result-meta"> <span class="nes-text"> Similarity: {(result.similarity * 100).toFixed(1)}% </span> <span class="nes-text"> {new Date(result.createdAt).toLocaleDateString()} </span> </div> </div> {/each} </div> {:else if searchQuery && !isSearching} <p class="nes-text">No similar content found. Try a different query.</p> {/if} </div> {/snippet} </Card> {/if} </div> <style> .gemma-demo-container { max-width: 1000px, margin: 0 auto; padding: 1rem, display: flex, flex-direction: column, gap: 2rem}
-  .demo-header { display: flex, flex-direction: column, gap: 1rem}
-  .stats-bar { display: flex, gap: 2rem, justify-content: center, flex-wrap: wrap}
-  .stat { display: flex, align-items: center, gap: 0.5rem}
-  .generation-form { display: flex, flex-direction: column, gap: 1.5rem}
-  .form-group { display: flex, flex-direction: column, gap: 0.5rem}
-  .form-group label { display: flex, align-items: center, gap: 0.5rem, font-weight: bold}
-  .char-counter { text-align: right, margin-top: 0.25rem}
-  .form-actions { display: flex, justify-content: center, align-items: center, gap: 2rem, margin: 1rem 0; flex-wrap: wrap}
-  .worker-toggle { display: flex, align-items: center;, gap: 0.5rem}
+              {#if isSearching} <Search class="inline-icon" /> Searching... {:else} <Search class="inline-icon" /> Vector Search {/if} </Button> </div> {#if searchResults.length > 0} <div class="search-results"> <h4 class="nes-text">Search Results:</h4> {#each Array.isArray(searchResults) ? searchResults: [] as result} <div class="search-result-item"> <div class="result-content"> <p class="nes-text"> {result.content.length > 150 ? result.content.substring(0, 150) + '...': result.content} </p> </div> <div class="result-meta"> <span class="nes-text"> Similarity: {(result.similarity * 100).toFixed(1)}% </span> <span class="nes-text"> {new Date(result.createdAt).toLocaleDateString()} </span> </div> </div> {/each} </div> {:else if searchQuery && !isSearching} <p class="nes-text">No similar content found. Try a different query.</p> {/if} </div> {/snippet} </Card> {/if} </div> <style> .gemma-demo-container { max-width: 1000px, margin: 0 auto;padding: 1rem, display: flex, flex-direction: column, gap: 2rem}
+  .demo-header { display: flex; flex-direction: column, gap: 1rem}
+  .stats-bar { display: flex, gap: 2rem, justify-content: center; flex-wrap: wrap}
+  .stat { display: flex; align-items: center, gap: 0.5rem}
+  .generation-form { display: flex; flex-direction: column, gap: 1.5rem}
+  .form-group { display: flex; flex-direction: column, gap: 0.5rem}
+  .form-group label { display: flex; align-items: center, gap: 0.5rem; font-weight: bold}
+  .char-counter { text-align: right; margin-top: 0.25rem}
+  .form-actions { display: flex; justify-content: center, align-items: center, gap: 2rem; margin: 1rem 0; flex-wrap: wrap}
+  .worker-toggle { display: flex; align-items: center, gap: 0.5rem}
   .result-display, .error-display { margin-top: 1rem}
   .result-details { margin-top: 1rem, display: flex, flex-direction: column, gap: 0.5rem}
-  .result-details code { background: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.4rem; border-radius: 3px, font-family: 'Courier New', monospace; font-size: 0.9rem}
-  .search-section { display: flex, flex-direction: column, gap: 1.5rem}
-  .search-form { display: flex, gap: 1rem, align-items: end, flex-wrap: wrap}
-  .search-form >:first-child { flex: 1, min-width: 300px}
-  .search-results { display: flex, flex-direction: column, gap: 1rem}
-  .search-result-item { border: 1px solid #666; padding: 1rem, border-radius: 4px;, background: rgba(255, 255, 255, 0.05)}
+  .result-details code { background: rgba(255, 255, 255, 0.1), padding: 0.2rem 0.4rem; border-radius: 3px; font-family: 'Courier New', monospace; font-size: 0.9rem}
+  .search-section { display: flex; flex-direction: column, gap: 1.5rem}
+  .search-form { display: flex, gap: 1rem, align-items: end; flex-wrap: wrap}
+  .search-form >:first-child { flex: 1; min-width: 300px}
+  .search-results { display: flex; flex-direction: column, gap: 1rem}
+  .search-result-item { border: 1px solid #666, padding: 1rem; border-radius: 4px, background: rgba(255, 255, 255, 0.05)}
   .result-content { margin-bottom: 0.5rem}
-  .result-meta { display: flex, justify-content: space-betweenn, font-size: 0.8rem, flex-wrap: wrap, gap: 0.5rem}
-  .inline-icon { width: 1rem, height: 1rem, display: inli, vertical-align: text-bottom}
+  .result-meta { display: flex; justify-content: space-betweenn, font-size: 0.8rem; flex-wrap: wrap, gap: 0.5rem}
+  .inline-icon { width: 1rem, height: 1rem; display: inli; vertical-align: text-bottom}
   .error-message { margin-top: 0.5rem, display: flex, align-items: center, gap: 0.5rem}
   .animate-spin { animation: spin 1s linear infinite}
   @keyframes spin { from { transform: rotate(0deg)}
     to { transform: rotate(360deg)}
-  } /* NES.css overrides */ .nes-textarea { min-height: 120px;, resize: vertical}
+  } /* NES.css overrides */ .nes-textarea { min-height: 120px, resize: vertical}
   .nes-textarea.is-error { border-color: #ce372b}
-  @media (max-width: 768px) { .stats-bar { flex-direction: column, align-items: center}
+  @media (max-width: 768px) { .stats-bar { flex-direction: column; align-items: center}
     .search-form { flex-direction: column}
     .search-form >:first-child { min-width: auto}
   } </style>

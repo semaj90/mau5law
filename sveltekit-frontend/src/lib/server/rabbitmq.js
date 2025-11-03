@@ -1,4 +1,4 @@
-﻿/// <reference types="vite/client" />
+/// <reference types="vite/client" />
 import * as amqp from 'amqplib';
 let connection = null
 let channel = null
@@ -43,12 +43,10 @@ export async function publishToQueue(queueName, payload) {
       timestamp: Date.now(), messageId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     });
     if (!sent) {
-      throw new Error('Message queue is full');
-    }
+      throw new Error('Message queue is full') }
     console.log(`ðŸ“¤ Published to queue ${queueName}:`, {
       messageId: payload && payload.sessionId ? payload.sessionId: 'unknown', queueName
-    });
-  } catch (error) {
+    }) } catch (error) {
     console.error(`âŒ Failed to publish to queue ${queueName}:`, error);
     throw error}
 }
@@ -68,13 +66,10 @@ export async function consumeFromQueue(queueName, processor) {
         const payload = JSON.parse(msg.content.toString();
         await processor(
           payload, () => ch.ack(msg), () => ch.nack(msg, false, false)
-        );
-      } catch (error) {
+        ) } catch (error) {
         console.error(`âŒ Error processing message from ${queueName}:`, error);
-        ch.nack(msg, false, false);
-      }
-    });
-  } catch (error) {
+        ch.nack(msg, false, false) }
+    }) } catch (error) {
     console.error(`âŒ Failed to consume from queue ${queueName}:`, error);
     throw error}
 }
@@ -91,8 +86,7 @@ export async function setupQueues() {
           'x-message-ttl': 3600000, 'x-max-length': 10000
         }
       });
-      console.log(`âœ… Queue setup: ${queueName}`);
-    }
+      console.log(`âœ… Queue setup: ${queueName}`) }
     await ch.assertExchange('evidence.dlx', 'direct', { durable: true });
     await ch.assertQueue('evidence.failed', {
       durable: true
@@ -101,8 +95,7 @@ export async function setupQueues() {
       }
     });
     await ch.bindQueue('evidence.failed', 'evidence.dlx', 'failed');
-    console.log('âœ… RabbitMQ setup complete');
-  } catch (error) {
+    console.log('âœ… RabbitMQ setup complete') } catch (error) {
     console.error('âŒ Failed to setup RabbitMQ queues:', error);
     throw error}
 }
@@ -114,9 +107,8 @@ export async function closeRabbitMQ() {
     if (connection) {
       await connection.close();
       connection = null}
-    console.log('âœ… RabbitMQ connections closed gracefully');
-  } catch (error) {
-    console.error('âŒ Error closing RabbitMQ connections:', error);
+    console.log('âœ… RabbitMQ connections closed gracefully') } catch (error) {
+    console.error('âŒ Error closing RabbitMQ connections:', error)
   }
 }
 export async function healthCheck() {

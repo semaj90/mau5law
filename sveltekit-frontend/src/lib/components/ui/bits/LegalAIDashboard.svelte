@@ -1,4 +1,4 @@
-﻿<!-- Enhanced-Bits Legal, AI, Dashboard -->
+<!-- Enhanced-Bits Legal, AI, Dashboard -->
 <!-- Complete integration of Citations, Reports, and, POI, systems -->
 <script lang="ts">
   import { Input } from '$lib/components/ui/input';
@@ -23,7 +23,7 @@ import type { Case } from '$lib/types';
   import { citationsStore } from '$lib/stores/legal-citations.js';
   import { reportsStore } from '$lib/stores/legal-reports.js';
   import { poiStore } from '$lib/stores/legal-poi.js';
-  import { legalPlatformStore, unifiedSearch } from '$lib/stores/legal-platform-integration.js';
+  import { legalPlatformStore: unifiedSearch } from '$lib/stores/legal-platform-integration.js';
   // Component state using Svelte, 5 runes
   let activeTab = $state<string>('dashboard');
   let searchQuery = $state<string>('');
@@ -390,12 +390,9 @@ import type { Case } from '$lib/types';
 <style>
   .legal-dashboard {
     min-height: 100vh
-   , background: var(--enhanced-bits-background),
-    color: var(--enhanced-bits-text)}
+   ;background: var(--enhanced-bits-background), color: var(--enhanced-bits-text)}
   .dashboard-header {
-    background: var(--enhanced-bits-surface),
-    border-bottom: 1px solid var(--enhanced-bits-border);
-    padding: 1rem 2rem}
+    background: var(--enhanced-bits-surface); border-bottom: 1px solid var(--enhanced-bits-border), padding: 1rem 2rem}
   .header-content {
     display: flex
     justify-content: space-between
@@ -404,8 +401,7 @@ import type { Case } from '$lib/types';
     margin: 0 auto}
   .header-content h1 {
     margin: 0
-   , color: var(--enhanced-bits-primary),
-    font-size: 1.75rem
+   ;color: var(--enhanced-bits-primary); font-size: 1.75rem
     font-weight: bold}
   .header-actions {
     display: flex
@@ -418,33 +414,26 @@ import type { Case } from '$lib/types';
   .dashboard-nav {
     position: fixed
     bottom: 2rem
-    left: 50%;
-   , transform: translateX(-50%),
-    display: flex
+    left: 50%, transform: translateX(-50%);display: flex
     gap: 0.5rem
-   , background: var(--enhanced-bits-surface),
-    padding: 0.75rem
-    border-radius: var(--enhanced-bits-radius-lg),
-    box-shadow: var(--enhanced-bits-shadow-lg),
-    border: 1px solid var(--enhanced-bits-border)}
+   ;background: var(--enhanced-bits-surface), padding: 0.75rem
+    border-radius: var(--enhanced-bits-radius-lg); box-shadow: var(--enhanced-bits-shadow-lg), border: 1px solid var(--enhanced-bits-border)}
   .stats-grid {
     display: grid
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)), gap: 1.5rem
     margin-bottom: 2rem}
   .stat-card {
     text-align: center}
   .stat-value {
     font-size: 2.5rem
     font-weight: bold
-   , color: var(--enhanced-bits-primary),
+   ;color: var(--enhanced-bits-primary),
     line-height: 1}
   .stat-detail {
     font-size: 0.875rem
-   , color: var(--enhanced-bits-textMuted),
+   ;color: var(--enhanced-bits-textMuted),
     margin-top: 0.25rem}
-  .stat-detail.high-risk { color: var(--enhanced-bits-error),
-    font-weight: 600}
+  .stat-detail.high-risk { color: var(--enhanced-bits-error); font-weight: 600}
   .recent-activity {
     margin-bottom: 2rem}
   .activity-list {
@@ -456,9 +445,8 @@ import type { Case } from '$lib/types';
     align-items: center
     gap: 0.75rem
     padding: 0.75rem
-   , background: var(--enhanced-bits-background),
-    border-radius: var(--enhanced-bits-radius-md),
-    border: 1px solid var(--enhanced-bits-border)}
+   ;background: var(--enhanced-bits-background),
+    border-radius: var(--enhanced-bits-radius-md), border: 1px solid var(--enhanced-bits-border)}
   .activity-icon {
     font-size: 1.25rem}
   .activity-text {
@@ -466,7 +454,7 @@ import type { Case } from '$lib/types';
     font-size: 0.875rem}
   .activity-time {
     font-size: 0.75rem
-   , color: var(--enhanced-bits-textMuted)}
+   ;color: var(--enhanced-bits-textMuted)}
   .section-header {
     display: flex
     justify-content: space-between
@@ -474,15 +462,13 @@ import type { Case } from '$lib/types';
     margin-bottom: 1.5rem}
   .section-header h2 {
     margin: 0
-   , color: var(--enhanced-bits-primary)}
+   ;color: var(--enhanced-bits-primary)}
   .poi-grid {
     display: grid
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 1.5rem}
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)), gap: 1.5rem}
   .search-results {
     margin-top: 2rem}
-  .search-results h2 { color: var(--enhanced-bits-primary),
-    margin-bottom: 1.5rem}
+  .search-results h2 { color: var(--enhanced-bits-primary); margin-bottom: 1.5rem}
   .search-result-item { padding: 0.75rem 0
     border-bottom: 1px solid var(--enhanced-bits-border)}
   .search-result-item:last-child {
@@ -491,14 +477,13 @@ import type { Case } from '$lib/types';
   .search-result-item p {
     margin: 0.25rem, 0 0 0
     font-size: 0.875rem
-   , color: var(--enhanced-bits-textMuted)}
+   ;color: var(--enhanced-bits-textMuted)}
   @media (max-width: 768px) {
     .header-content {
       flex-direction: column
       gap: 1rem}
     .header-actions {
-      width: 100%,
-      justify-content: center}
+      width: 100%; justify-content: center}
     .dashboard-content {
       padding: 1rem}
     .stats-grid {
@@ -507,7 +492,7 @@ import type { Case } from '$lib/types';
       grid-template-columns: 1fr}
     .dashboard-nav {
       position: static
-     , transform: none
+     ;transform: none
       margin-top: 2rem
       justify-content: center}
   }

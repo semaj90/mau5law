@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   N64 Switch/Toggle Component
   Advanced 3D toggle switch with mechanical animation, texture filtering, and spatial feedback
   Features:
@@ -12,7 +12,7 @@
 <script lang="ts">
 
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import type { N64RenderingOptions } from '../types/gaming-types.js';
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
@@ -198,8 +198,7 @@
         animation: switchParticleExplosion 0.6s ease-out forwards
         --angle: ${angle}deg
         --distance: ${distance}px
-        top: 50%,
-        left: 50%;
+        top: 50%, left: 50%;
        , transform: translate(-50%, -50%);
         z-index: 1000
       `;`
@@ -296,8 +295,7 @@
     particleStyleElement.textContent = `
       @keyframes switchParticleExplosion {
         to {
-          transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(0);
-          opacity: 0}
+          transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(0), opacity: 0}
       }
     `;`
     document.head.appendChild(particleStyleElement)});
@@ -408,18 +406,15 @@
   .n64-switch {
     /* Base N64 switch styling */
     position: relative
-   , width: var(--switch-width),
-    height: var(--switch-height),
-    cursor: pointer
+   ;width: var(--switch-width), height: var(--switch-height);cursor: pointer
     /* 3D transformations */
-   , transform: var(--transform-3d),
-    transform-origin: center center
+   ; transform: var(--transform-3d); transform-origin: center center
     transform-style: preserve-3d
     /* Enhanced rendering */
     -webkit-font-smoothing: antialiased
     -moz-osx-font-smoothing: grayscale
     text-rendering: optimizeLegibility
-   , transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
+   ;transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
     /* Remove default styles */
     -webkit-appearance: none
     -moz-appearance: none
@@ -429,11 +424,7 @@
     will-change: transform}
   .switch-track {
     position: relative
-    width: 100%,
-    height: 100%;
-   , background: var(--track-bg),
-    border-radius: calc(var(--switch-height) / 2);
-    overflow: hidden
+    width: 100%, height: 100%;background: var(--track-bg); border-radius: calc(var(--switch-height) / 2), overflow: hidden
     /* 3D track styling */
     box-shadow:
       inset, 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
@@ -444,16 +435,12 @@
     position: absolute
     top: 2px
     left: 2px
-   , width: var(--knob-size),
-    height: var(--knob-size),
-    background: var(--knob-bg),
+   ;width: var(--knob-size), height: var(--knob-size);background: var(--knob-bg),
     border-radius: 50%;
     /* 3D knob styling */
-    box-shadow: var(--knob-shadow),
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--knob-shadow), border: 1px solid rgba(255, 255, 255, 0.2);
     /* Smooth mechanical animation: */
-   , transform: var(--knob-transform),
-    transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+   ;transform: var(--knob-transform), transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
     /* Performance optimization */
     will-change: transform
     transform-style: preserve-3d}
@@ -464,38 +451,29 @@
     left: 0
     right: 0
     bottom: 0
-   , background: radial-gradient(
+   ;background: radial-gradient(
       circle at 30% 30%,
       rgba(255, 255, 255, 0.6) 0%,
       rgba(255, 255, 255, 0.3) 30%,
       transparent 60%
     );
-    border-radius: 50%,
-    pointer-events: none}
+    border-radius: 50%; pointer-events: none}
   /* Knob reflection */
   .knob-reflection {
     position: absolute
-    top: 15%,
-    left: 15%,
-    right: 60%,
-    bottom: 60%;
-   , background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
-    border-radius: 50%,
-    pointer-events: none
+    top: 15%, left: 15%;
+    right: 60%, bottom: 60%;background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+    border-radius: 50%; pointer-events: none
     opacity: 0.7}
   /* Knob loading indicator */
   .knob-loading {
     position: absolute
-    top: 50%,
-    left: 50%;
-   , transform: translate(-50%, -50%);
+    top: 50%, left: 50%;transform: translate(-50%, -50%);
     z-index: 10}
-  .n64-spinner { width: calc(var(--knob-size) * 0.5);
-    height: calc(var(--knob-size) * 0.5);
+  .n64-spinner { width: calc(var(--knob-size) * 0.5), height: calc(var(--knob-size) * 0.5);
     border: 2px solid transparent
     border-top: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%,
-    animation: switchSpin 1s linear infinite}
+    border-radius: 50%, animation: switchSpin 1s linear infinite}
   @keyframes switchSpin {
     to { transform: rotate(360deg)}
   }
@@ -506,8 +484,7 @@
     left: 0
     right: 0
     bottom: 0
-   , background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%);
-    opacity: 0.15
+   ;background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%), opacity: 0.15
     pointer-events: none
     border-radius: calc(var(--switch-height) / 2)}
   /* Toggle glow effect */
@@ -517,24 +494,22 @@
     left: -4px
     right: -4px
     bottom: -4px
-   , background: radial-gradient(
+   ;background: radial-gradient(
       ellipse at center,
       rgba(74, 144, 226, calc(var(--glow-intensity) * 0.6)) 0%,
       transparent 70%
     );
     border-radius: calc(var(--switch-height) / 2 + 4px);
     pointer-events: none
-   , filter: blur(8px),
+   ;filter: blur(8px),
     z-index: -1
-   , animation: toggleGlowPulse 2s ease-in-out infinite}
+   ;animation: toggleGlowPulse 2s ease-in-out infinite}
   @keyframes toggleGlowPulse {
     0%,
     100% {
-      opacity: var(--glow-intensity),
-      transform: scale(1)}
+      opacity: var(--glow-intensity), transform: scale(1)}
     50% {
-      opacity: calc(var(--glow-intensity) * 1.5);
-      transform: scale(1.1)}
+      opacity: calc(var(--glow-intensity) * 1.5), transform: scale(1.1)}
   }
   /* Switch content styling */
   .switch-content {
@@ -544,8 +519,7 @@
     flex: 1}
   .switch-label { color: #ffffff
     font-weight: 600
-    font-size: var(--switch-font-size),
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    font-size: var(--switch-font-size); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     letter-spacing: 0.5px
     cursor: pointer
     user-select: none}
@@ -566,7 +540,7 @@
   .n64-switch.disabled {
     opacity: 0.5
     cursor: not-allowed
-   , filter: grayscale(0.8)}
+   ;filter: grayscale(0.8)}
   .n64-switch.disabled .switch-knob {
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%)}
   .n64-switch.readonly {
@@ -619,7 +593,7 @@
       animation: none}
     .n64-spinner {
       animation: none
-     , border: 2px solid rgba(255, 255, 255, 0.8);
+     ;border: 2px solid rgba(255, 255, 255, 0.8);
       border-right-color: transparent}
   }
   /* High contrast mode */

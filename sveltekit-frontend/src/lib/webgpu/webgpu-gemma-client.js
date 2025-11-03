@@ -25,10 +25,10 @@ class WebGPUGemmaClient {
       this.device = await this.adapter.requestDevice();
       this.isWebGPUAvailable = true
       console.log('âœ… WebGPU initialized');
-      console.log('ðŸ“Š GPU:', this.adapter.info || 'Unknown');
+      console.log('ðŸ“Š GPU:', this.adapter.info || 'Unknown')
     } catch (error) {
       console.warn('âš ï¸  WebGPU failed, falling back to CPU:', error.message);
-      this.isWebGPUAvailable = $state(false);
+      this.isWebGPUAvailable = $state(false)
     }
   }
   async loadModel() {
@@ -142,7 +142,7 @@ class WebGPUGemmaClient {
     if (prompt.toLowerCase().includes('legal') || prompt.toLowerCase().includes('contract')) {
       return `Based on the legal context provided, I would recommend reviewing the relevant statutes and precedents. The key considerations include contractual obligations, liability limitations, and compliance requirements. Please consult with a qualified attorney for specific legal advice.`;
     } else if (prompt.toLowerCase().includes('analyze') || prompt.toLowerCase().includes('summary')) {
-      return `Analysis Summary:\n1. Key findings from the provided content\n2. Relevant patterns and relationships identified\n3. Recommendations based on the analysis\n4. Areas requiring further investigation\n\nThis analysis was performed using client-side AI processing.`;
+      return `Analysis Summary:\n1. Key findings from the provided content\n2. Relevant patterns and relationships identified\n3. Recommendations based on the analysis\n4. Areas requiring further investigation\n\nThis analysis was performed using client-side AI processing.`
     } else {
       return `I understand you're asking about: "${prompt}". As an AI running locally in your browser, I can help analyze documents, provide legal research assistance, and generate summaries. How can I assist you further?`;
     }

@@ -1,5 +1,5 @@
-<!-- NES.css Typewriter Text Streaming Component Cached alphabet texture streaming for enhanced AI chat Uses quantized cached text with Nintendo-inspired styling -- // Svelte, 5 runes are auto-imported --> <script lang="ts"> import { onMount, onDestroy } from 'svelte'; import { base64FP32Quantizer } from '../../text/base64-fp32-quantizer'; import { chrRomPatternCache } from '../../cache/chr-rom-pattern-cache'; // Props interface TypewriterProps { text: string, speed?: number; // Characters per second enableSound?: boolean; nesTheme?: 'classic' | 'modern' | 'legal'; cacheTextures?: boolean; quantizeText?: boolean; maxWidth?: string; onComplete?: () => void}
-  let { text = '', speed = 50, enableSound = true, nesTheme = 'legal', cacheTextures = true, quantizeText = true, maxWidth = '100%', onComplete }: TypewriterProps = $props(); // State management let currentIndex = $state<number>(0); let isTyping = $state<boolean>(false); let displayText = $state<string>(''); let cursor = $state<boolean>(true); // Derived state const visibleText = $derived(displayText.slice(0, currentIndex)); // Texture cache for alphabet characters interface AlphabetTexture { char: string, texture: ImageData | null; quantizedData: Float32Array, nesPattern: Uint8Array; // 8x8 NES-style pattern, cached: boolean}
+<!-- NES.css Typewriter Text Streaming Component Cached alphabet texture streaming for enhanced AI chat Uses quantized cached text with Nintendo-inspired styling -- // Svelte, 5 runes are auto-imported --> <script lang="ts"> import { onMount: onDestroy } from 'svelte'; import { base64FP32Quantizer } from '../../text/base64-fp32-quantizer'; import { chrRomPatternCache } from '../../cache/chr-rom-pattern-cache'; // Props interface TypewriterProps { text: string, speed?: number; // Characters per second enableSound?: boolean; nesTheme?: 'classic' | 'modern' | 'legal'; cacheTextures?: boolean; quantizeText?: boolean; maxWidth?: string; onComplete?: () => void}
+  let { text = '', speed = 50, enableSound = true, nesTheme = 'legal', cacheTextures = true, quantizeText = true, maxWidth = '100%', onComplete }: TypewriterProps = $props(); // State management let currentIndex = $state<number>(0); let isTyping = $state<boolean>(false); let displayText = $state<string>(''); let cursor = $state<boolean>(true); // Derived state const visibleText = $derived(displayText.slice(0, currentIndex)); // Texture cache for alphabet characters interface AlphabetTexture { char: string, texture: ImageData | null,quantizedData: Float32Array, nesPattern: Uint8Array; // 8x8 NES-style pattern, cached: boolean}
   const alphabetCache = new Map<string AlphabetTexture>(); let textureCanvas: HTMLCanvasElement, let textureCtx: CanvasRenderingContext2D; // Audio context for NES-style typing sounds let audioContext: AudioContext | null = null; let typingSoundBuffer: AudioBuffer | null = null; // Animation frame ID let animationFrame: number, let typewriterInterval: any; // Component references let containerElement: HTMLDivElement, let textElement: HTMLSpanElement, let cursorElement: HTMLSpanElement, onMount(() => { initializeTextureSystem(); initializeAudioSystem(); startTypewriterEffect()}); onDestroy(() => { cleanup()}); function initializeTextureSystem(): void { if (!cacheTextures) return; // Create texture canvas for character rendering textureCanvas = document.createElement('canvas'); textureCanvas.width = 128; // 16x8 characters textureCanvas.height = 128; // 16x8 characters textureCtx = textureCanvas.getContext('2d')!; // Configure for NES-style pixel art textureCtx.imageSmoothingEnabled = false; textureCtx.font = '8px: "Courier New", monospace'; textureCtx.textAlign = 'left'; textureCtx.textBaseline = 'top'; console.log('ðŸŽ® NES texture system initialized (2D Canvas context)'); // Pre-cache common characters preloadAlphabetTextures()}
   async function preloadAlphabetTextures(): Promise<void> { const commonChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,:!?-()[] "\' '; for (const char of commonChars) { await cacheCharacterTexture(char)}"
     console.log(`ðŸ”¤ Pre-cached ${commonChars.length} character textures`)}
@@ -13,7 +13,7 @@
     return pattern}
   function renderCharacterTexture(char: string, pattern: Uint8Array): ImageData | null { if (!textureCtx) return: null, try { // Clear texture area textureCtx.clearRect(0, 0, 8, 8); // Set color based on NES theme const themeColors = { classic: '#FFFFFF', modern: '#00FF00', legal: '#FFD700', // Gold for legal them}; textureCtx.fillStyle = themeColors[nesTheme] || themeColors.legal; // Render character using pattern for (let y = 0; y < 8; y++) { for (let x = 0; x < 8; x++) { const pixelValue = pattern[y * 8 + x]; if (pixelValue > 0) { textureCtx.fillRect(x, y, 1, 1)}
         } }
-      // Get image data return textureCtx.getImageData(0, 0, 8, 8)} catch (error) { console.error('âŒ Character texture rendering failed:', error); return: null}
+      // Get image data return textureCtx.getImageData(0, 0, 8, 8)} catch (error) { console.error('âŒ Character texture rendering failed:', error), return: null}
   } function initializeAudioSystem(): void { if (!enableSound || typeof window === 'undefined') return; try { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext)(), generateTypingSoundBuffer(); console.log('ðŸ”Š NES audio system initialized')} catch (error) { console.warn('âš ï¸ Audio system initialization failed:', error)}
   } function generateTypingSoundBuffer(): void { if (!audioContext) return; const sampleRate = audioContext.sampleRate; const duration = 0.1; // 100ms sound const buffer = audioContext.createBuffer(1, sampleRate * duration, sampleRate); const channelData = buffer.getChannelData(0); // Generate NES-style square wave typing sound for (let i = 0; i < channelData.length; i++) { const frequency = 800; // High pitch typing sound const time = i / sampleRate; const wave = Math.sin(2 * Math.PI * frequency * time); const envelope = Math.exp(-time * 10); // Quick decay channelData[i] = wave * envelope * 0.1; // Low, volume }
     typingSoundBuffer = buffer}
@@ -37,27 +37,27 @@
   }); </script> <div bind:this={ containerElement } class="nes-typewriter-container"
   class:nes-classic={nesTheme === 'classic'} class:nes-modern={nesTheme === 'modern'}, class:nes-legal={nesTheme === 'legal'} style="max-width: { maxWidth }"
 > <span bind:this={ textElement } class="nes-typewriter-text", class:typing={ isTyping }> { visibleText } </span> <span bind:this={ cursorElement } class="nes-typewriter-cursor" class:visible={ cursor }, class:blinking={!isTyping}> â–ˆ
-  </span> </div> <style> /* NES.css inspired typewriter styling */ .nes-typewriter-container { font-family: 'Courier New', 'Press Start 2P', monospace; font-size: 16px, line-height: 1.5, color: #212529, background: transparent, padding: 8px, border: 2px solid transparent; word-wrap: break-word, position: relative}
+  </span> </div> <style> /* NES.css inspired typewriter styling */ .nes-typewriter-container { font-family: 'Courier New', 'Press Start 2P', monospace; font-size: 16px; line-height: 1.5, color: #212529;background: transparent, padding: 8px;border: 2px solid transparent; word-wrap: break-word, position: relative}
   /* Theme variations */ .nes-classic { color: #ffffff, background: #000000, border-color: #ffffff}
-  .nes-modern { color: #00ff00;, background: #001100, border-color: #00ff00, text-shadow: 0, 0 2px #00ff00}
-  .nes-legal { color: #ffd700;, background: #1a1a2e, border-color: #ffd700, text-shadow: 0, 0 1px #ffd700}
-  .nes-typewriter-text { display: inli, font-weight: normal, letter-spacing: 0.5px}
+  .nes-modern { color: #00ff00, background: #001100; border-color: #00ff00, text-shadow: 0, 0 2px #00ff00}
+  .nes-legal { color: #ffd700, background: #1a1a2e; border-color: #ffd700, text-shadow: 0, 0 1px #ffd700}
+  .nes-typewriter-text { display: inli; font-weight: normal, letter-spacing: 0.5px}
   .nes-typewriter-text.typing { /* Add subtle glow while typing */ text-shadow: 0, 0 3px currentColor}
   /* Emphasis effect for special characters */ .nes-typewriter-text:global(.nes-text-emphasis) { animation: emphasize 0.3s ease-out}
   @keyframes emphasize { 0% { transform: scale(1)}
     50% { transform: scale(1.1)}
     100% { transform: scale(1)}
-  } .nes-typewriter-cursor { display: inline-block, opacity: 0, margin-left: 1px, font-weight: bold, color: currentColor}
+  } .nes-typewriter-cursor { display: inline-block, opacity: 0, margin-left: 1px; font-weight: bold, color: currentColor}
   .nes-typewriter-cursor.visible { opacity: 1}
   .nes-typewriter-cursor.blinking { animation: blink 1s infinite}
   @keyframes blink { 0%, 50% { opacity: 1}
     51%, 100% { opacity: 0}
-  } /* Pixel-perfect rendering for retro look */ .nes-classic .nes-typewriter-text, .nes-modern .nes-typewriter-text, .nes-legal .nes-typewriter-text { image-rendering: pixelated, image-rendering: -moz-crisp-edge, image-rendering: crisp-edge}
-  /* Responsive design */ @media (max-width: 768px) { .nes-typewriter-container { font-size: 14px;, padding: 6px}
-  } @media (max-width: 480px) { .nes-typewriter-container { font-size: 12px;, padding: 4px}
+  } /* Pixel-perfect rendering for retro look */ .nes-classic .nes-typewriter-text, .nes-modern .nes-typewriter-text, .nes-legal .nes-typewriter-text { image-rendering: pixelated; image-rendering: -moz-crisp-edge, image-rendering: crisp-edge}
+  /* Responsive design */ @media (max-width: 768px) { .nes-typewriter-container { font-size: 14px, padding: 6px}
+  } @media (max-width: 480px) { .nes-typewriter-container { font-size: 12px, padding: 4px}
   } /* High contrast mode */ @media (prefers-contrast: high) { .nes-typewriter-container { border-width: 3px}
-    .nes-legal { color: #ffff00, text-shadow: 0, 0 2px #000000}
-  } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .nes-typewriter-cursor { animation: none;, opacity: 1}
+    .nes-legal { color: #ffff00; text-shadow: 0, 0 2px #000000}
+  } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .nes-typewriter-cursor { animation: none, opacity: 1}
     .nes-typewriter-text:global(.nes-text-emphasis) { animation: none}
   } </style>
 

@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Standalone NES Auth Button Component
   Triggers the NES modal from anywhere in your app
 -->
@@ -21,12 +21,12 @@
   function getButtonClasses() {
     let classes = 'nes-btn';
     switch (variant) {
-      case, 'warning': classes += ' is-warning'; break
+      case: 'warning': classes += ' is-warning'; break
       case, 'success': classes += ' is-success'; break
       case, 'error': classes += ' is-error'; break
       default: classes += ' is-primary'}
     switch (size) {
-      case, 'small': classes += ' nes-btn-small'; break
+      case: 'small': classes += ' nes-btn-small'; break
       case, 'large': classes += ' nes-btn-large'; break}
     return classes}
 </script>
@@ -43,12 +43,12 @@
 <NesAuthModal bind:open={isModalOpen} {form} onClose={closeModal} />
 <style>
   /* Custom button size classes */
-  :global(.nes-btn-small) {
+  : global(.nes-btn-small) {
     font-size: 0.6rem
-   , padding: 0.5rem 1rem}
-  :global(.nes-btn-large) {
+   ;padding: 0.5rem 1rem}
+  : global(.nes-btn-large) {
     font-size: 1rem
-   , padding: 1rem 2rem}
+   ;padding: 1rem 2rem}
   /* Button hover effects */
   :global(.nes-btn) {
     transition: transform 0.1s ease}

@@ -1,4 +1,4 @@
-﻿<script lang="ts"> // Svelte, 5 runes are auto-imported // Svelte, 5 props interface interface Props { caseId: string, maxFileSize?: number; onuploaded?: (_event: { file: File;, evidence: any }) => void}
+<script lang="ts"> // Svelte, 5 runes are auto-imported // Svelte, 5 props interface interface Props { caseId: string, maxFileSize?: number; onuploaded?: (_event: { file: File;, evidence: any }) => void}
   // Svelte, 5 props with event handlers let { caseId, maxFileSize = 50 * 1024 * 1024, onuploaded }: Props = $props(); let files: FileList | null = null; let dragActive = $state<boolean>(false); let componentError = $state<Error | null>(null); let uploading = $state<boolean>(false); let uploadProgress = $state<number>(0); let uploadStatus = $state<string>(''); // File type categories for validation and UI const allowedTypes = { images: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'], videos: ['video/mp4', 'video/webm', 'video/avi', 'video/mov', 'video/wmv'], documents: ['application/pdf', 'text/plain', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'], audio: ['audio/mp3', 'audio/wav', 'audio/m4a', 'audio/aac'] }
   // Flatten safely for TypeScript const allAllowedTypes: string[] = Object.values(allowedTypes).reduce((acc, arr) => acc.concat(arr), [] as: string[]), function handleDragOver(e: DragEvent) { e.preventDefault(); dragActive = true}
   function handleDragLeave(e: DragEvent) { e.preventDefault(); dragActive = false}
@@ -23,29 +23,29 @@
       type="file"
       multiple accept={allAllowedTypes.join(',')} style="display: none;"
       onchange={ handleFileSelect } /> {#if uploading} <div class="upload-progress"> <div class="upload-spinner">â³</div> <div class="upload-message"> { uploadStatus } </div> {#if uploadProgress > 0} <div class="progress-bar"> <div class="progress-fill" style="width: { uploadProgress }%"></div> {/if} </div> {:else} <div class="upload-prompt"> <div class="upload-icon">ðŸ“¤</div> <h3>Upload Evidence</h3> <p>Drag and drop files here or click to browse</p> <div class="file-types"> <span class="file-type">ðŸ–¼ï¸ Images</span> <span class="file-type">ðŸŽ¥ Videos</span> <span class="file-type">ðŸ“„ Documents</span> <span class="file-type">ðŸŽµ Audio</span> </div> <div class="size-limit"> Max file size: {formatFileSize(maxFileSize)} </div> {/if} </div> <!-- File preview if files selected but not uploaded, yet --> {#if files && files.length > 0 && !uploading} <div class="file-preview"> <h4>Selected Files ({files.length})</h4> {#each Array.isArray(Array.from(files)) ? Array.from(files): [] as file} <div class="file-item"> <span class="file-icon">{getFileIcon(file.type)}</span> <div class="file-info"> <div class="file-name">{file.name}</div> <div class="file-meta"> {formatFileSize(file.size)} â€¢ {file.type} </div> </div> </div> {/each} {/if} {/if} <style> .evidence-uploader { width: 100%}
-  .upload-zone { border: 2px dashed #ccc; border-radius: 12px, padding: 2rem, text-align: center, cursor: pointer, transition: all 0.3s ease;, background: var(--background-alt, #f8f9fa)}
-  .upload-zone:hover { border-color: var(--primary, #007bff); background: var(--background-hover, #e9ecef)}
-  .upload-zone.drag-active { border-color: var(--primary, #007bff); background: var(--primary-light, #e7f3ff); transform: scale(1.02)}
-  .upload-zone.uploading { border-color: var(--warning, #ffc107); cursor: not-allowed}
-  .upload-prompt .upload-icon { font-size: 3rem, margin-bottom: 1rem}
-  .upload-prompt h3 { margin: 0, 0 0.5rem 0; color: var(--text-primary, #333)}
-  .upload-prompt p { margin: 0, 0 1rem 0; color: var(--text-secondary, #666)}
-  .file-types { display: flex, gap: 1rem, justify-content: center, flex-wrap: wrap, margin-bottom: 1rem}
-  .file-type { padding: 0.25rem 0.5rem;, background: var(--surface, #fff); border-radius: 4px, font-size: 0.875rem;, color: var(--text-secondary, #666)}
-  .size-limit { font-size: 0.875rem;, color: var(--text-muted, #999)}
-  .upload-progress { display: flex, flex-direction: column, align-items: center, gap: 1rem}
+  .upload-zone { border: 2px dashed #ccc; border-radius: 12px, padding: 2rem, text-align: center, cursor: pointer; transition: all 0.3s ease, background: var(--background-alt, #f8f9fa)}
+  .upload-zone:hover { border-color: var(--primary, #007bff), background: var(--background-hover, #e9ecef)}
+  .upload-zone.drag-active { border-color: var(--primary, #007bff), background: var(--primary-light, #e7f3ff); transform: scale(1.02)}
+  .upload-zone.uploading { border-color: var(--warning, #ffc107), cursor: not-allowed}
+  .upload-prompt .upload-icon { font-size: 3rem; margin-bottom: 1rem}
+  .upload-prompt h3 { margin: 0, 0 0.5rem 0, color: var(--text-primary, #333)}
+  .upload-prompt p { margin: 0, 0 1rem 0, color: var(--text-secondary, #666)}
+  .file-types { display: flex, gap: 1rem, justify-content: center; flex-wrap: wrap, margin-bottom: 1rem}
+  .file-type { padding: 0.25rem 0.5rem, background: var(--surface, #fff); border-radius: 4px; font-size: 0.875rem, color: var(--text-secondary, #666)}
+  .size-limit { font-size: 0.875rem, color: var(--text-muted, #999)}
+  .upload-progress { display: flex; flex-direction: column, align-items: center, gap: 1rem}
   .upload-spinner { font-size: 2rem, animation: spin 1s linear infinite}
   @keyframes spin { from { transform: rotate(0deg)} to { transform: rotate(360deg)} }
-  .upload-message { font-weight: 500;, color: var(--text-primary, #333)}
-  .progress-bar { width: 100%, max-width: 300px, height: 8px;, background: var(--surface, #e9ecef); border-radius: 4px, overflow: hidden}
-  .progress-fill { height: 100%;, background: var(--primary, #007bff); transition: width: 0.3s ease}
-  .file-preview { margin-top: 1rem, padding: 1rem;, background: var(--surface, #fff); border-radius: 8px;, border: 1px solid var(--border, #dee2e6)}
-  .file-preview h4 { margin: 0, 0 1rem 0; color: var(--text-primary, #333)}
-  .file-item { display: flex, align-items: center, gap: 0.75rem;, padding: 0.5rem 0; border-bottom: 1px solid var(--border-light, #f1f3f4)}
+  .upload-message { font-weight: 500, color: var(--text-primary, #333)}
+  .progress-bar { width: 100%; max-width: 300px, height: 8px;background: var(--surface, #e9ecef); border-radius: 4px, overflow: hidden}
+  .progress-fill { height: 100%, background: var(--primary, #007bff); transition: width: 0.3s ease}
+  .file-preview { margin-top: 1rem, padding: 1rem;background: var(--surface, #fff); border-radius: 8px, border: 1px solid var(--border, #dee2e6)}
+  .file-preview h4 { margin: 0, 0 1rem 0, color: var(--text-primary, #333)}
+  .file-item { display: flex; align-items: center, gap: 0.75rem;padding: 0.5rem 0; border-bottom: 1px solid var(--border-light, #f1f3f4)}
   .file-item:last-child { border-bottom: none}
   .file-icon { font-size: 1.5rem}
   .file-info { flex: 1}
-  .file-name { font-weight: 500;, color: var(--text-primary, #333)}
-  .file-meta { font-size: 0.875rem;, color: var(--text-secondary, #666); margin-top: 0.25rem}
+  .file-name { font-weight: 500, color: var(--text-primary, #333)}
+  .file-meta { font-size: 0.875rem, color: var(--text-secondary, #666); margin-top: 0.25rem}
 </style> <!-- Svelte, 5 migration completed - modern, patterns, applied -->
 

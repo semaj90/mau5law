@@ -124,7 +124,7 @@ import type { User } from '$lib/types';
   .container {
     max-width: 900px
     margin: 0 auto
-   , padding: 2rem
+   ; padding: 2rem
     font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif
     color: #111827}
 
@@ -139,7 +139,7 @@ import type { User } from '$lib/types';
   section {
     background: white
     border-radius: 12px
-   , padding: 1.5rem
+   ; padding: 1.5rem
     box-shadow: 0 4px 6px rgba(0,0,0,0.06)}
 
   .controls {
@@ -185,7 +185,7 @@ import type { User } from '$lib/types';
 
   .details h3 {
     color: #374151
-   , margin: 0.75rem, 0 0.5rem 0
+   ; margin: 0.75rem, 0 0.5rem 0
     font-size: 1rem}
 
   .details ul {

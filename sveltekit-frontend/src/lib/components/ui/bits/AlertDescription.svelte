@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Enhanced-Bits AlertDescription Component
 Description content for alerts with NES styling
 -->
@@ -43,8 +43,7 @@ Description content for alerts with NES styling
   .bits-alert-description strong {
     font-weight: 700
     color: inherit}
-  .bits-alert-description code { background: rgba(0, 0, 0, 0.1);
-    padding: 0.125rem 0.25rem
+  .bits-alert-description code { background: rgba(0, 0, 0, 0.1), padding: 0.125rem 0.25rem
     border-radius: 2px
     font-family: 'Courier New', monospace
     font-size: 0.875em}

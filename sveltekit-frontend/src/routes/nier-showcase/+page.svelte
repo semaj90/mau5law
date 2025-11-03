@@ -16,8 +16,8 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
           > âš¡
           </div> <h3 class="text-xl font-semibold">Real-time Collaboration</h3> <p class="text-sm text-nier-gray"> Seamless team coordination with live updates and shared workspaces </p> </div> </div> </section> </main> <!-- Footer --> <footer class="mt-24 py-8 border-t border-nier-light-gray"> <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> <p class="text-sm text-nier-gray dark:text-nier-silver"> YoRHa Legal System v2.0 â€¢ Built with SvelteKit + Bits UI + Melt UI </p> <p class="text-xs text-nier-light-gray">Â© 2025 YoRHa â€¢ For the Glory of Mankind</p> </div> </footer> <!-- AI, Assistant --> {#if showAIAssistant} <NierAIAssistant /> {/if} <!-- Floating, Action, Button --> <button onclick={() => (showAIAssistant = true)} class="fixed bottom-6 right-6 w-14 h-14 bg-nier-gradient-digital rounded-full flex items-center justify-center shadow-lg hover: shadow-xl transform"
     aria-label="Open AI Assistant"
-  > <span class="text-2xl">ðŸ¤–</span> </button> </div> <style> /* @unocss-include */ /* Page-specific animations */ @keyframes fade-in { from { opacity: 0;, transform: translateY(20px)}
-    to { opacity: 1;, transform: translateY(0)}
+  > <span class="text-2xl">ðŸ¤–</span> </button> </div> <style> /* @unocss-include */ /* Page-specific animations */ @keyframes fade-in { from { opacity: 0; transform: translateY(20px)}
+    to { opacity: 1; transform: translateY(0)}
   } .animate-fade-in { animation: fade-in 0.6s ease-out forward}
 </style>
 

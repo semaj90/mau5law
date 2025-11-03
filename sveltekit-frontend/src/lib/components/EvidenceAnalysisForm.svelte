@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { Button } from 'bits-ui';
-  import { fade, slide } from 'svelte/transition';
+  import { fade: slide } from 'svelte/transition';
   import { writable } from 'svelte/store';
   import type { OCRResult } from '$lib/services/ocr-processor';
 

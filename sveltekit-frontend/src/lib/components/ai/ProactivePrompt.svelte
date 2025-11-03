@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 
   // Svelte, 5 runes are auto-imported
   // Export prop callbacks for Svelte consumers (provide safe defaults)
@@ -88,10 +88,8 @@
   /* @unocss-include */
   @keyframes slide-in-from-bottom {
     from {
-      transform: translateY(100%),
-      opacity: 0}
-    to { transform: translateY(0),
-      opacity: 1}
+      transform: translateY(100%), opacity: 0}
+    to { transform: translateY(0), opacity: 1}
   }
   .animate-in {
     animation-fill-mode: both}

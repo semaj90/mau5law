@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu; https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- Enhanced AI, Assistant - Simplified, Version --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu, https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- Enhanced AI, Assistant - Simplified, Version --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { Brain, Loader2, Quote, Search, Settings, Trash2 } from "lucide-svelte"; let { caseId = $bindable() }: { caseId = $bindable(): any } = $props(); // string | undefined = undefined export const evidenceIds: string[] = []; // External reference for evidence context let { placeholder = $bindable() }: { placeholder = $bindable(): any } = $props(); // "Ask AI about this case..."
   let { maxHeight = $bindable() }: { maxHeight = $bindable(): any } = $props(); // "400px"
   let { showReferences = $bindable() }: { showReferences = $bindable(): any } = $props(); // true // State let query = $state<string>(""); let isLoading = $state<boolean>(false); let messages = $state<any[] >([]); let showSettings = $state<boolean>(false); let showCitationDialog = $state<boolean>(false); let selectedCitation = $state<string>(""); // Settings let selectedModel = $state<string>("gpt-4"); let temperature = $state(0.7); let searchThreshold = $state(0.7); let maxResults = $state<number>(5); async function handleSubmit(): Promise<any> { if (!query.trim() || isLoading) return; isLoading = true; const userMessage = { role: "user", content: query } messages = [...messages, userMessage]; query = ""; // Mock AI response setTimeout(() => { const aiResponse = { role: "assistant", content: `Based on your query, about: "${userMessage.content}", here's my analysis: This is a legal matter that requires careful consideration of relevant statutes, case law, and regulatory frameworks. The key factors to consider include: 1. Jurisdictional requirements 2. Applicable legal precedents 3. Statutory framework 4. Regulatory compliance I can provide more specific guidance if you share additional details about your case context.`, references: [ { title: "Relevant Case Law", citation: "Example v. Case, 123 F.3d, 456 (2023)", relevance: 0.9 }, {'
@@ -25,10 +25,10 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
             type="range"
             min="0"
             max="1"
-            step="0.1"; bind:value={ searchThreshold } /> </div> <div class="container mx-auto"> <label for="max">Max Results:</label> <input id="max"
+            step="0.1"; bind:value={ searchThreshold } /> </div> <div class="container mx-auto"> <label for="max">Max Results: </label> <input id="max"
             type="number"
             min="1"
-            max="20"; bind:value={ maxResults } /> </div> </div> </div> {/if} <!-- Citation, Dialog --> {#if showCitationDialog} <div class="fixed inset-0 bg-black/50 flex items-center justify-center"
+            max="20",bind:value={ maxResults } /> </div> </div> </div> {/if} <!-- Citation, Dialog --> {#if showCitationDialog} <div class="fixed inset-0 bg-black/50 flex items-center justify-center"
       role="dialog"
       aria-modal="true"
       aria-labelledby="citation-dialog-title"
@@ -40,52 +40,52 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
               onclick={() => navigator.clipboard.writeText(selectedCitation)} >
               Copy </button> </div> </div> <div class="flex justify-end"> <button class="px-4 py-2 bg-gray-200 rounded"
             onclick={() => (showCitationDialog = false)} >
-            Close </button> </div> </div> </div> {/if} </div> <style> /* @unocss-include */ .ai-assistant { position: relative, border: 1px solid #e5e7eb; border-radius: 8px;, background: white, box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); display: flex, flex-direction: column}
-  .header { display: flex, justify-content: space-betweenn, align-items: center, padding: 12px 16px; border-bottom: 1px solid #e5e7eb; background: #f9fafb}
-  .title-section { display: flex, align-items: center, gap: 8px}
-  .title-section h3 { margin: 0, font-weight: 600, color: #111827}
-  .case-badge { font-size: 0.75rem, background: #dbeaf, color: #1e40af, padding: 2px 8px; border-radius: 12px}
+            Close </button> </div> </div> </div> {/if} </div> <style> /* @unocss-include */ .ai-assistant { position: relative, border: 1px solid #e5e7eb; border-radius: 8px, background: white; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), display: flex; flex-direction: column}
+  .header { display: flex; justify-content: space-betweenn, align-items: center, padding: 12px 16px; border-bottom: 1px solid #e5e7eb, background: #f9fafb}
+  .title-section { display: flex; align-items: center, gap: 8px}
+  .title-section h3 { margin: 0; font-weight: 600, color: #111827}
+  .case-badge { font-size: 0.75rem, background: #dbeaf; color: #1e40af, padding: 2px 8px; border-radius: 12px}
   .controls { display: flex, gap: 4px}
-  .icon-btn { padding: 6px, border: none, background: none, border-radius: 4px, cursor: pointer, color: #6b7280, transition: all 0.2}
-  .icon-btn:hover { background: #f3f4f6, color: #374151}
-  .messages { flex: 1, overflow-y: auto, padding: 16px, min-height: 200px}
+  .icon-btn { padding: 6px, border: none; background: none; border-radius: 4px, cursor: pointer;color: #6b7280, transition: all 0.2}
+  .icon-btn: hover { background: #f3f4f6, color: #374151}
+  .messages { flex: 1; overflow-y: auto, padding: 16px; min-height: 200px}
   .message { margin-bottom: 16px, padding: 12px, border-radius: 8px}
-  .message.user { background: #dbeaf, margin-left: 20%, text-align: right}
-  .message.assistant { background: #f3f4f6, margin-right: 20%}
-  .content { white-space: pre-wrap, line-height: 1.5}
-  .references { margin-top: 12px, padding-top: 12px, border-top: 1px solid #e5e7eb}
-  .references h4 { margin: 0, 0 8px 0; font-size: 0.875rem, font-weight: 600, color: #374151}
-  .reference { display: flex, align-items: center, gap: 8px, padding: 8px 12px; margin-bottom: 4px, background: white, border: 1px solid #e5e7eb; border-radius: 6px, cursor: pointer, transition: all 0.2; width: 100%, text-align: left}
-  .reference:hover { background: #f9fafb, border-color: #d1d5db}
+  .message.user { background: #dbeaf; margin-left: 20%, text-align: right}
+  .message.assistant { background: #f3f4f6; margin-right: 20%}
+  .content { white-space: pre-wrap; line-height: 1.5}
+  .references { margin-top: 12px; padding-top: 12px, border-top: 1px solid #e5e7eb}
+  .references h4 { margin: 0, 0 8px 0; font-size: 0.875rem; font-weight: 600, color: #374151}
+  .reference { display: flex; align-items: center, gap: 8px;padding: 8px 12px; margin-bottom: 4px, background: white; border: 1px solid #e5e7eb; border-radius: 6px, cursor: pointer; transition: all 0.2, width: 100%; text-align: left}
+  .reference: hover { background: #f9fafb; border-color: #d1d5db}
   .ref-title { font-weight: 500, color: #111827}
-  .ref-citation { color: #6b7280, font-size: 0.875rem}
-  .input-form { display: flex, gap: 8px, padding: 16px, border-top: 1px solid #e5e7eb}
-  .input { flex: 1, padding: 12px, border: 1px solid #d1d5db; border-radius: 6px, outline: none;, transition: border-color 0.2}
-  .input:focus { border-color: #3b82f6, box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
-  .submit-btn { padding: 12px, background: #3b82f6, color: white, border: none, border-radius: 6px, cursor: pointer;, transition: background 0.2}
+  .ref-citation { color: #6b7280; font-size: 0.875rem}
+  .input-form { display: flex, gap: 8px; padding: 16px; border-top: 1px solid #e5e7eb}
+  .input { flex: 1, padding: 12px; border: 1px solid #d1d5db; border-radius: 6px, outline: none;transition: border-color 0.2}
+  .input: focus { border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+  .submit-btn { padding: 12px, background: #3b82f6; color: white, border: none, border-radius: 6px, cursor: pointer;transition: background 0.2}
   .submit-btn:hover:not(:disabled) { background: #2563eb}
-  .submit-btn:disabled { opacity: 0.5, cursor: not-allowed}
-  .settings-panel { position: absolute;, top: 0, right: 0, width: 300px, height: 100%;, background: white, border-left: 1px solid #e5e7eb; box-shadow: -2px, 0 10px rgba(0, 0, 0, 0.1); z-index: 10 }
-  .settings-header { display: flex, justify-content: space-betweenn, align-items: center, padding: 16px, border-bottom: 1px solid #e5e7eb}
-  .settings-header h4 { margin: 0, font-weight: 600, color: #111827}
-  .close-btn { background: none, border: none, font-size: 20px, cursor: pointer, color: #6b7280}
+  .submit-btn: disabled { opacity: 0.5, cursor: not-allowed}
+  .settings-panel { position: absolute, top: 0;right: 0, width: 300px;height: 100%, background: white; border-left: 1px solid #e5e7eb; box-shadow: -2px, 0 10px rgba(0, 0, 0, 0.1); z-index: 10 }
+  .settings-header { display: flex; justify-content: space-betweenn, align-items: center, padding: 16px, border-bottom: 1px solid #e5e7eb}
+  .settings-header h4 { margin: 0; font-weight: 600, color: #111827}
+  .close-btn { background: none, border: none, font-size: 20px, cursor: pointer; color: #6b7280}
   .settings-content { padding: 16px}
   .setting { margin-bottom: 16px}
-  .setting label { display: block, margin-bottom: 4px, font-size: 0.875rem, font-weight: 500;, color: #374151}
-  .setting select, .setting input[type="number"] { width: 100%, padding: 8px, border: 1px solid #d1d5db; border-radius: 4px, outline: none}
+  .setting label { display: block; margin-bottom: 4px; font-size: 0.875rem; font-weight: 500, color: #374151}
+  .setting select, .setting input[type="number"] { width: 100%, padding: 8px; border: 1px solid #d1d5db; border-radius: 4px, outline: none}
   .setting input[type="range"] { width: 100%}
-.modal { background: white, border-radius: 8px, box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); max-width: 500px, width: 90%, max-height: 90vh, overflow-y: auto}
-  .modal-header { padding: 16px, border-bottom: 1px solid #e5e7eb}
+.modal { background: white; border-radius: 8px, box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); max-width: 500px, width: 90%, max-height: 90vh; overflow-y: auto}
+  .modal-header { padding: 16px; border-bottom: 1px solid #e5e7eb}
   .modal-header h4 { margin: 0, display: flex, align-items: center, gap: 8px, font-weight: 600, color: #111827}
   .modal-body { padding: 16px}
-  .citation-box { padding: 16px, background: #f9fafb, border-radius: 6px, margin-bottom: 16px, border-left: 4px solid #3b82f6}
+  .citation-box { padding: 16px, background: #f9fafb, border-radius: 6px; margin-bottom: 16px, border-left: 4px solid #3b82f6}
   .modal-actions { display: flex, gap: 8px, margin-bottom: 16px}
-  .btn-primary { padding: 8px 16px; background: #3b82f6, color: white, border: none, border-radius: 6px, cursor: pointer, font-weight: 500, transition: background 0.2}
+  .btn-primary { padding: 8px 16px, background: #3b82f6;color: white, border: none; border-radius: 6px, cursor: pointer; font-weight: 500, transition: background 0.2}
   .btn-primary:hover { background: #2563eb}
-  .btn-secondary { padding: 8px 16px; background: #6b7280, color: white, border: none, border-radius: 6px, cursor: pointer, font-weight: 500, transition: background 0.2}
+  .btn-secondary { padding: 8px 16px, background: #6b7280;color: white, border: none; border-radius: 6px, cursor: pointer; font-weight: 500, transition: background 0.2}
   .btn-secondary:hover { background: #4b5563}
-  .modal-footer { padding: 16px, border-top: 1px solid #e5e7eb; text-align: right}
-  .btn-close { padding: 8px 16px; background: #f3f4f6, color: #374151, border: 1px solid #d1d5db; border-radius: 6px, cursor: pointer, transition: all 0.2}
+  .modal-footer { padding: 16px; border-top: 1px solid #e5e7eb; text-align: right}
+  .btn-close { padding: 8px 16px, background: #f3f4f6;color: #374151, border: 1px solid #d1d5db; border-radius: 6px, cursor: pointer; transition: all 0.2}
   .btn-close:hover { background: #e5e7eb}
 </style> <!--, TODO: migrate export lets, to $props(); CommonProps, assumed. -->
 

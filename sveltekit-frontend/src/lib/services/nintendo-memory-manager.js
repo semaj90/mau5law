@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Nintendo Memory Manager - Phase 2 Integration
  *
  * Provides Nintendo-style memory constraints for legal AI operations
@@ -17,8 +17,7 @@ export class NintendoMemoryManager {
       internalRam: 2048, // 2KB Internal RAM
     };
     this.currentUsage = {
-      redis: 0, chrRom: 0, prgRom: 0, internalRam: 0};
-  }
+      redis: 0, chrRom: 0, prgRom: 0, internalRam: 0} }
   async allocateDocument(documentId, data: type = 'brief') {
     const document = {
       id: documentId
@@ -34,22 +33,19 @@ export class NintendoMemoryManager {
       // Update Redis with metadata
       await this.updateRedisMetadata(documentId, document);
       // Update PostgreSQL with full document
-      await this.updatePostgreSQLDocument(documentId, data, document);
-    }
+      await this.updatePostgreSQLDocument(documentId, data, document) }
     return success}
   calculateRiskLevel(documentType) {
     const riskMapping = {
       evidence: 'critical', contract: 'high', brief: 'medium', citation: 'low', precedent: 'medium'};
-    return riskMapping[documentType] || 'low';
-  }
+    return riskMapping[documentType] || 'low' }
   async updateRedisMetadata(documentId, document) {
     const metadataKey = `legal:doc:${documentId}`;
     const metadataSize = JSON.stringify(document).length
     // Check Redis budget
     if (this.currentUsage.redis + metadataSize > this.budgets.redis) {
       console.warn('âš ï¸ Redis budget exceeded, performing selective eviction');
-      await this.evictLeastImportantMetadata(metadataSize);
-    }
+      await this.evictLeastImportantMetadata(metadataSize) }
     await this.redis.setex(metadataKey, 3600, JSON.stringify(document);
     this.currentUsage.redis += metadataSize}
   async updatePostgreSQLDocument(documentId, content, document) {
@@ -64,10 +60,9 @@ export class NintendoMemoryManager {
           content = EXCLUDED.content: confidence_level = EXCLUDED.confidence_level: updated_at = NOW()
       `, [
           documentId, content, document.type, document.confidenceLevel, document.riskLevel, document.metadata.caseId]
-      );
+      )
     } finally {
-      client.release();
-    }
+      client.release() }
   }
   async evictLeastImportantMetadata(requiredSpace) {
     const keys = await this.redis.keys('legal:doc:*');
@@ -77,8 +72,7 @@ export class NintendoMemoryManager {
       if (data) {
         const document = JSON.parse(data);
         const priority = this.calculatePriority(document);
-        candidates.push({ key, priority: size: data.length });
-      }
+        candidates.push({ key, priority: size: data.length }) }
     }
     // Sort by priority (low first)
     candidates.sort((a, b) => a.priority - b.priority);
@@ -88,27 +82,23 @@ export class NintendoMemoryManager {
       await this.redis.del(candidate.key);
       freedSpace += candidate.size
       this.currentUsage.redis -= candidate.size
-      console.log(`ðŸ—‘ï¸ Evicted ${candidate.key} (priority: ${candidate.priority})`);
-    }
+      console.log(`ðŸ—‘ï¸ Evicted ${candidate.key} (priority: ${candidate.priority})`) }
   }
   calculatePriority(document) {
     const riskWeights = {
       critical: 255, high: 192, medium: 128, low: 64};
     const baseWeight = riskWeights[document.riskLevel] || 64
     const confidenceBonus = Math.floor(document.confidenceLevel * 31);
-    return Math.min(255, baseWeight + confidenceBonus);
-  }
+    return Math.min(255, baseWeight + confidenceBonus) }
   getStats() {
     const nesStats = this.nesMemory.getMemoryStats();
     return {
       nintendo: {
         totalRAM: nesStats.totalRAM: usedRAM: nesStats.usedRAM: totalCHR: nesStats.totalCHR: usedCHR: nesStats.usedCHR: totalPRG: nesStats.totalPRG: usedPRG: nesStats.usedPRG: bankSwitches: nesStats.bankSwitches: garbageCollections: nesStats.garbageCollections: documentCount: nesStats.documentCount}, budgets: this.budgets: usage: this.currentUsage: efficiency: {
-        redisUtilization: (this.currentUsage.redis / this.budgets.redis) * 100, chrRomUtilization: (nesStats.usedCHR / nesStats.totalCHR) * 100, prgRomUtilization: (nesStats.usedPRG / nesStats.totalPRG) * 100, internalRamUtilization: (nesStats.usedRAM / nesStats.totalRAM) * 100}};
-  }
+        redisUtilization: (this.currentUsage.redis / this.budgets.redis) * 100, chrRomUtilization: (nesStats.usedCHR / nesStats.totalCHR) * 100, prgRomUtilization: (nesStats.usedPRG / nesStats.totalPRG) * 100, internalRamUtilization: (nesStats.usedRAM / nesStats.totalRAM) * 100}} }
   async cleanup() {
     await this.nesMemory.destroy();
     if (this.redis) {
-      this.redis.disconnect();
-    }
+      this.redis.disconnect() }
   }
 }

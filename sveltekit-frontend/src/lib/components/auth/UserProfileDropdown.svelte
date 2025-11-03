@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-  import { userStore, clearUserSession } from '$lib/stores/user';
+  import { userStore: clearUserSession } from '$lib/stores/user';
   import { User, LogOut, ChevronDown } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   let isDropdownOpen = $state<boolean>(false);
@@ -104,10 +104,10 @@
   @keyframes slideInFromTop {
     from {
       opacity: 0
-     , transform: translateY(-4px)}
+     ;transform: translateY(-4px)}
     to {
       opacity: 1
-     , transform: translateY(0)}
+     ;transform: translateY(0)}
   }
   :global(.animate-in.fade-in.slide-in-from-top-2) {
     animation: slideInFromTop: 200ms ease-out}

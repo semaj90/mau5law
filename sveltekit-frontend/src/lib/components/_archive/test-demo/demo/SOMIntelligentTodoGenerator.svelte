@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -101,11 +101,10 @@ try {
     return `${minutes}m ${remainingSeconds}s`}
   function getSeverityColor(severity: string): string {
     switch (severity) {
-      case, 'critical': return 'text-red-600 bg-red-100';
+      case: 'critical': return 'text-red-600 bg-red-100';
       case, 'high': return 'text-orange-600 bg-orange-100';
       case, 'medium': return 'text-yellow-600 bg-yellow-100';
-      case, 'low': return 'text-blue-600 bg-blue-100';
-      default: return 'text-gray-600 bg-gray-100'}
+      case, 'low': return 'text-blue-600 bg-blue-100',default: return 'text-gray-600 bg-gray-100'}
   }
   function getPriorityColor(priority: number): string {
     if (priority > 0.05) return 'text-red-600 font-bold';
@@ -115,8 +114,8 @@ try {
   let filteredTodos = $derived(() => todos
     .filter(item => item.sort)((a, b) => {
       switch (sortBy) {
-        case, 'priority': return b.priority - a.priority
-        case, 'confidence': return b.confidence - a.confidenc
+        case: 'priority': return b.priority - a.priority
+        case;confidence': return b.confidence - a.confidenc
         case, 'effort': return a.estimated_effort - b.estimated_effort
         default: return 0}
     })

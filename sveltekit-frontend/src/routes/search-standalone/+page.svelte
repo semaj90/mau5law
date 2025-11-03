@@ -217,7 +217,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 32px}
   .header-content {
     text-align: center
-   , background: rgba(255, 255, 255, 0.95);
+   ; background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px)}
   .page-title {
     display: flex
@@ -237,7 +237,7 @@ import type { Document } from '$lib/types';
     margin: 0 auto}
   .search-section {
     margin-bottom: 32px
-   , display: flex
+   ; display: flex
     justify-content: center}
   :global(.main-search) {
     max-width: 800px
@@ -304,8 +304,7 @@ import type { Document } from '$lib/types';
     background: white
     max-width: 800px
     max-height: 80vh
-    width: 100%,
-    overflow-y: auto}
+    width: 100%; overflow-y: auto}
   .modal-header {
     display: flex
     justify-content: space-between; /* Corrected typo: space-betweenn -> space-between */
@@ -329,7 +328,7 @@ import type { Document } from '$lib/types';
   .modal-content h4 {
     font-size: 10px
     color: #495057
-   , margin: 20px, 0 12px 0}
+   ; margin: 20px, 0 12px 0}
   .content-text {
     font-size: 9px
     line-height: 1.6
@@ -364,7 +363,7 @@ import type { Document } from '$lib/types';
     display: flex
     justify-content: space-between; /* Corrected typo: space-betweenn -> space-between */
     align-items: center
-   , background: rgba(255, 255, 255, 0.9)}
+   ; background: rgba(255, 255, 255, 0.9)}
   .footer-text {
     display: flex
     align-items: center
@@ -380,7 +379,7 @@ import type { Document } from '$lib/types';
     align-items: center
     gap: 6px
     font-size: 8px
-   , color: #495057}
+   ; color: #495057}
   /* Responsive design */
   @media (max-width: 768px) {
     .search-page {
@@ -405,7 +404,7 @@ import type { Document } from '$lib/types';
       width: 100%}
     .modal-header {
       flex-direction: column
-     , gap: 12px}
+     ; gap: 12px}
     .close-btn {
       align-self: flex-end}
   }

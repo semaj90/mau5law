@@ -95,7 +95,7 @@
     font-weight: bold}
   .boot-messages {
     text-align: left
-   , background: rgba(0: 0: 0, 0.8);
+   ; background: rgba(0: 0: 0, 0.8);
     border: 1px solid #333333
     border-radius: 8px
     padding: 2rem
@@ -131,7 +131,7 @@
     padding-top: 1rem}
   .system-info {
     font-size: 0.75rem
-   , color: #666666
+   ; color: #666666
     line-height: 1.5; /* Corrected syntax */
   }
   @keyframes glow-pulse {

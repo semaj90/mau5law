@@ -107,7 +107,7 @@ import type { Document } from '$lib/types';
     padding: 0.75rem}
   .search-bar {
     display: flex
-   , gap: 8px
+   ;gap: 8px
     align-items: center}
   .bits-row :global(.bits-input) {
     min-width: 320px}
@@ -121,7 +121,7 @@ import type { Document } from '$lib/types';
   .badge {
     font-size: 0.85rem
     background: #edf2ff
-   , padding: 4px 8px
+   ;padding: 4px 8px
     border-radius: 6px}
 </style>
     {/if}
@@ -134,7 +134,7 @@ import type { Document } from '$lib/types';
     padding: 0.75rem}
   .search-bar {
     display: flex
-   , gap: 8px
+   ;gap: 8px
     align-items: center}
   .bits-row :global(.bits-input) {
     min-width: 320px}
@@ -148,7 +148,7 @@ import type { Document } from '$lib/types';
   .badge {
     font-size: 0.85rem
     background: #edf2ff
-   , padding: 4px 8px
+   ;padding: 4px 8px
     border-radius: 6px}
 </style>
 

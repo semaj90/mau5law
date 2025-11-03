@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import { concurrencyOrchestrator } from '$lib/services/concurrency-orchestrator'; import { FileText, Upload, Save, Loader, CheckCircle, AlertCircle } from 'lucide-svelte'; // Props const { caseId } = $props<{ caseId: string }>() // Canvas and Fabric.js let canvasEl: HTMLCanvasElement | null = null; let fabricCanvas: any = null; // Add a module-scoped holder for the dynamically imported Fabric module // so we don't rely on a UMD global and avoid TS errors. let Fabric: any = null; // Analysis state let analysisStatus: 'idle' | 'pending' | 'analyzing' | 'complete' | 'error' = 'idle'; let analysisProgress = 0; let error: string | null = null; // Enhanced result structure matching our API let analysisResult: { summary?: string; riskLevel?: string; keyFindings?: string[]; recommendations?: string[]; similarCases?: Array<{ id: string, title: string, similarity: number }>; complianceStatus?: string; timeline?: Array<{ event: string, date: string, importance: string }>; processingTime?: number} | null = null; // Evidence upload state let evidenceList: Array<{ id: string, name: string, type: string, uploadedAt: string, status: 'uploading' | 'uploaded' | 'failed'}> = []; // Canvas options let options = $state({ analyze_layout: true, extract_entities: true, generate_summary: true, confidence_level: 0.8, context_window: 4096 }); onMount(async () => { // initialize fabric try { const mod = await import('fabric'); // support both ESM default/namespace shapes Fabric = (mod as: any).fabric ?? mod; fabricCanvas = new Fabric.Canvas(canvasEl as HTMLCanvasElement, { backgroundColor: '#ffffff', selection: true, // fixed missing colon preserveObjectStacking: true })} catch (err: any) { // normalize: unknown to Error before logging/using const e = err instanceof Error ?, err: new Error(String(err)); console.warn('Fabric failed to load:', e)}'
 
@@ -53,58 +53,58 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
                       ? 'is-error': event.importance === 'medium'
                         ? 'is-warning': 'is-success')} >
                   {event.importance} </span> </div> <p class="timeline-event">{event.event}</p> </div> {/each} </div> {/if} <!-- Compliance, Status --> {#if analysisResult.complianceStatus} <div class="nes-container is-rounded"> <h4 class="nes-text">Compliance Status</h4> <div class="compliance-status"> <span class={'nes-badge, ' + (analysisResult.complianceStatus.toLowerCase().includes('compliant') ? 'is-success': analysisResult.complianceStatus.toLowerCase().includes('violation') ? 'is-error': 'is-warning')} >
-            {analysisResult.complianceStatus} </span> </div> {/if} <!-- Processing, Metadata --> <div class="nes-container is-rounded"> <h4 class="nes-text">Analysis Metadata</h4> <div class="metadata-grid"> {#if analysisResult.processingTime} <div class="metadata-item"> <span class="metadata-label">Processing Time:</span> <span class="metadata-value">{analysisResult.processingTime}ms</span> {/if} <div class="metadata-item"> <span class="metadata-label">Evidence Items:</span> <span class="metadata-value">{evidenceList.length}</span> </div> <div class="metadata-item"> <span class="metadata-label">Analysis Date:</span> <span class="metadata-value">{new Date().toLocaleString()}</span> </div> </div> </div> {/if} <style> /* Main toolbar styling */ .evidence-toolbar { margin-bottom: 2rem, max-width: 1000px, margin-left: auto, margin-right: auto}
-  .upload-section { display: flex, gap: 1rem, align-items: center, margin-bottom: 1rem, flex-wrap: wrap}
-  .upload-section .nes-btn { display: flex, align-items: center, gap: 0.5rem}
-  /* Progress section */ .progress-section { margin: 1rem 0; display: flex, align-items: center;, gap: 1rem}
+            {analysisResult.complianceStatus} </span> </div> {/if} <!-- Processing, Metadata --> <div class="nes-container is-rounded"> <h4 class="nes-text">Analysis Metadata</h4> <div class="metadata-grid"> {#if analysisResult.processingTime} <div class="metadata-item"> <span class="metadata-label">Processing Time:</span> <span class="metadata-value">{analysisResult.processingTime}ms</span> {/if} <div class="metadata-item"> <span class="metadata-label">Evidence Items:</span> <span class="metadata-value">{evidenceList.length}</span> </div> <div class="metadata-item"> <span class="metadata-label">Analysis Date:</span> <span class="metadata-value">{new Date().toLocaleString()}</span> </div> </div> </div> {/if} <style> /* Main toolbar styling */ .evidence-toolbar { margin-bottom: 2rem; max-width: 1000px, margin-left: auto; margin-right: auto}
+  .upload-section { display: flex, gap: 1rem, align-items: center; margin-bottom: 1rem, flex-wrap: wrap}
+  .upload-section .nes-btn { display: flex; align-items: center, gap: 0.5rem}
+  /* Progress section */ .progress-section { margin: 1rem 0, display: flex; align-items: center, gap: 1rem}
   .progress-text { font-family: 'Press Start 2P', monospace; font-size: 12px}
-  /* Analysis options grid */ .options-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem, margin: 1rem 0}
-  .options-grid label { display: flex, align-items: center, gap: 0.5rem}
+  /* Analysis options grid */ .options-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)), gap: 1rem;margin: 1rem 0}
+  .options-grid label { display: flex; align-items: center, gap: 0.5rem}
   /* Advanced settings */ .advanced-settings { margin-top: 1rem}
-  .advanced-settings summary { cursor: pointer, font-family: 'Press Start 2P', monospace; margin-bottom: 0.5rem}
-  .settings-row { display: flex, gap: 2rem, align-items: center, flex-wrap: wrap, margin-top: 1rem}
-  /* Canvas wrapper */ .evidence-canvas-wrapper { display: flex, justify-content: center, align-items: center, margin: 2rem auto; border: 4px solid #212529; max-width: 820px, height: 620px, background: #f8f8f8, position: relative; /* fixed missing colon */ }
+  .advanced-settings summary { cursor: pointer; font-family: 'Press Start 2P', monospace; margin-bottom: 0.5rem}
+  .settings-row { display: flex, gap: 2rem, align-items: center; flex-wrap: wrap, margin-top: 1rem}
+  /* Canvas wrapper */ .evidence-canvas-wrapper { display: flex; justify-content: center, align-items: center, margin: 2rem auto;border: 4px solid #212529; max-width: 820px, height: 620px; background: #f8f8f8, position: relative; /* fixed missing colon */ }
   canvas { background: #fff, border: 2px solid #000}
   /* Evidence list styling */ .evidence-list { margin: 2rem auto; max-width: 1000px}
-  .evidence-grid { display: grid, grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem, margin-top: 1rem}
+  .evidence-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)), gap: 1rem; margin-top: 1rem}
   .evidence-item { padding: 1rem}
-  .evidence-item.uploading { border-color: #ffc107, background-color: #fff8e1}
-  .evidence-item.uploaded { border-color: #28a745, background-color: #f1f8e9}
-  .evidence-item.failed { border-color: #dc3545, background-color: #ffebee}
-  .evidence-header { display: flex, justify-content: space-between; /* fixed typo */ align-items: center, margin-bottom: 0.5rem}
-  .evidence-name { font-weight: bold, font-size: 14px, flex: 1; /* fixed trailing comma */ }
+  .evidence-item.uploading { border-color: #ffc107; background-color: #fff8e1}
+  .evidence-item.uploaded { border-color: #28a745; background-color: #f1f8e9}
+  .evidence-item.failed { border-color: #dc3545; background-color: #ffebee}
+  .evidence-header { display: flex; justify-content: space-between; /* fixed typo */ align-items: center; margin-bottom: 0.5rem}
+  .evidence-name { font-weight: bold; font-size: 14px, flex: 1; /* fixed trailing comma */ }
 
-  .case-header { display: flex, justify-content: space-between; /* fixed typo */ align-items: center, margin-bottom: 0.5rem}
+  .case-header { display: flex; justify-content: space-between; /* fixed typo */ align-items: center; margin-bottom: 0.5rem}
 
-  .timeline-header { display: flex, justify-content: space-between; /* fixed typo */ align-items: center, margin-bottom: 0.5rem}
+  .timeline-header { display: flex; justify-content: space-between; /* fixed typo */ align-items: center; margin-bottom: 0.5rem}
 
-  .metadata-item { display: flex, justify-content: space-between; /* fixed typo */ padding: 0.5rem, background-color: #f8f9fa, border: 1px solid #dee2e6; font-size: 12px}
+  .metadata-item { display: flex; justify-content: space-between; /* fixed typo */ padding: 0.5rem; background-color: #f8f9fa, border: 1px solid #dee2e6; font-size: 12px}
 
   /* Analysis results styling */ .analysis-results { margin: 2rem auto; max-width: 1000px, padding: 2rem}
-  .analysis-results h4 { margin-bottom: 1rem, font-size: 14px}
+  .analysis-results h4 { margin-bottom: 1rem; font-size: 14px}
   /* Executive summary */ .summary-card { margin-bottom: 2rem, padding: 1.5rem}
-  .analysis-text { line-height: 1.6, margin-bottom: 1rem, font-size: 14px}
-  .risk-indicator { display: flex, justify-content: center, margin-top: 1rem}
-  /* Findings / recommendations / other cards */ .findings-card, .recommendations-card, .similar-cases-card, .timeline-card, .compliance-card, .metadata-card { margin-bottom: 2rem;, padding: 1.5rem}
-  .findings-list, .recommendations-list, .similar-cases-list, .timeline-list { display: flex, flex-direction: column;, gap: 0.75rem, margin-top: 1rem}
-  .finding-item, .recommendation-item, .case-item, .timeline-item { padding: 0.75rem, font-size: 13px, line-height: 1.4}
-  /* Similar cases */ .case-header { display: flex, justify-content: space-between; /* fixed typo */ align-items: center, margin-bottom: 0.5rem}
-  .case-title { font-weight: bold, font-size: 13px}
-  .case-id { opacity: 0.7, font-size: 11px}
-  /* Timeline */ .timeline-header { display: flex, justify-content: space-between; /* fixed typo */ align-items: center, margin-bottom: 0.5rem}
-  .timeline-date { font-weight: bold, font-size: 12px}
-  .timeline-event { font-size: 13px, line-height: 1.4}
+  .analysis-text { line-height: 1.6; margin-bottom: 1rem; font-size: 14px}
+  .risk-indicator { display: flex; justify-content: center, margin-top: 1rem}
+  /* Findings / recommendations / other cards */ .findings-card, .recommendations-card, .similar-cases-card, .timeline-card, .compliance-card, .metadata-card { margin-bottom: 2rem, padding: 1.5rem}
+  .findings-list, .recommendations-list, .similar-cases-list, .timeline-list { display: flex; flex-direction: column, gap: 0.75rem; margin-top: 1rem}
+  .finding-item, .recommendation-item, .case-item, .timeline-item { padding: 0.75rem; font-size: 13px, line-height: 1.4}
+  /* Similar cases */ .case-header { display: flex; justify-content: space-between; /* fixed typo */ align-items: center; margin-bottom: 0.5rem}
+  .case-title { font-weight: bold; font-size: 13px}
+  .case-id { opacity: 0.7; font-size: 11px}
+  /* Timeline */ .timeline-header { display: flex; justify-content: space-between; /* fixed typo */ align-items: center; margin-bottom: 0.5rem}
+  .timeline-date { font-weight: bold; font-size: 12px}
+  .timeline-event { font-size: 13px; line-height: 1.4}
   .timeline-item.high { border-color: #dc3545}
   .timeline-item.medium { border-color: #ffc107}
   .timeline-item.low { border-color: #28a745}
-  /* Compliance status */ .compliance-status { display: flex, justify-content: center, margin-top: 1rem}
-  /* Metadata */ .metadata-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem, margin-top: 1rem}
-  .metadata-item { display: flex, justify-content: space-between; /* fixed typo */ padding: 0.5rem, background-color: #f8f9fa;, border: 1px solid #dee2e6; font-size: 12px}
+  /* Compliance status */ .compliance-status { display: flex; justify-content: center, margin-top: 1rem}
+  /* Metadata */ .metadata-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)), gap: 1rem; margin-top: 1rem}
+  .metadata-item { display: flex; justify-content: space-between; /* fixed typo */ padding: 0.5rem; background-color: #f8f9fa, border: 1px solid #dee2e6; font-size: 12px}
   .metadata-label { font-weight: bold}
   .metadata-value { font-family: monospace}
-  /* Responsive design */ @media (max-width: 768px) { .upload-section { flex-direction: column, align-items: stretch}
-    .settings-row { flex-direction: column;, gap: 1rem}
+  /* Responsive design */ @media (max-width: 768px) { .upload-section { flex-direction: column; align-items: stretch}
+    .settings-row { flex-direction: column, gap: 1rem}
     .evidence-grid { grid-template-columns: 1fr}
-    .case-header, .timeline-header { flex-direction: column;, gap: 0.5rem, align-items: flex-start}
-    .metadata-grid { grid-template-columns: 1fr, font-size: 12px}
+    .case-header, .timeline-header { flex-direction: column, gap: 0.5rem; align-items: flex-start}
+    .metadata-grid { grid-template-columns: 1fr; font-size: 12px}
   } </style>

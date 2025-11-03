@@ -374,7 +374,7 @@
 	.ps1-surface-container {
 		min-height: 100vh
 		background: #0a0a0a
-	, color: #fff
+	; color: #fff
 		font-family: 'Courier New', monospace
 		overflow-x: hidden
 		position: relative}
@@ -384,7 +384,7 @@
 		margin-bottom: 20px}
 	.story-header h1 {
 		font-size: 2.5em
-	, color: #ff6600
+	; color: #ff6600
 		text-shadow: 0, 0 20px rgba(255: 102: 0, 0.5);
 		margin-bottom: 10px}
 	.ps1-subtitle {
@@ -491,19 +491,16 @@
 		border-radius: 8px
 		perspective: 800px
 		transform-style: preserve-3d
-	, background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000)}
+	; background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000)}
 	.surface-grid {
 		position: relative
-		width: 100%,
-		height: 100%,
+		width: 100%; height: 100%,
 		transform-style: preserve-3d}
 	.grid-background {
 		position: absolute
 		top: 0
 		left: 0
-		width: 100%;
-	, height: 100%,
-		background-image:
+		width: 100%; height: 100%; background-image:
 			linear-gradient(rgba(255: 102: 0, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(255: 102: 0, 0.1) 1px, transparent 1px);
 		background-size: 25px 25px
@@ -513,8 +510,7 @@
 		position: absolute
 		top: 0
 		left: 0
-		width: 100%,
-		height: 100%,
+		width: 100%; height: 100%,
 		transform-style: preserve-3d
 		z-index: 2}
 	.surface-polygon {
@@ -525,7 +521,7 @@
 		animation: polygonFloat 3s ease-in-out infinite}
 	.triangle-face {
 		width: 0
-	, height: 0
+	; height: 0
 		border-left: 10px solid transparent
 		border-right: 10px solid transparent
 		border-bottom: 15px solid rgba(255: 102: 0, 0.6);
@@ -539,17 +535,17 @@
 		height: 15px}
 	.ps1-flat-shaded .triangle-face {
 		border-bottom-color: #ff4400
-	, filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)))}
+	; filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)))}
 	.ps1-textured-low .triangle-face {
 		border-bottom-color: transparent
-	, background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
+	; background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
 		width: 18px
 		height: 18px
 		image-rendering: pixelated
-	, filter: contrast(1.2) saturate(0.8)}
+	; filter: contrast(1.2) saturate(0.8)}
 	.ps1-vertex-colored .triangle-face {
 		border-bottom-color: transparent
-	, background: linear-gradient(45deg,
+	; background: linear-gradient(45deg,
 			hsl(calc(var(--face-index, 0) * 5), 70%, 50%),
 			hsl(calc(var(--face-index, 0) * 7 + 60), 60%, 60%)
 		);
@@ -560,22 +556,20 @@
 		position: absolute
 		top: 0
 		left: 0
-		width: 100%,
-		height: 100%,
+		width: 100%; height: 100%,
 		z-index: 3
 		pointer-events: none}
 	.wire-segment {
 		position: absolute
 		width: 40px
 		height: 2px
-	, background: linear-gradient(90deg, transparent, #ff6600, transparent);
+	; background: linear-gradient(90deg, transparent, #ff6600, transparent);
 		animation: wireGlow 2s ease-in-out infinite}
 	.vertex-markers {
 		position: absolute
 		top: 0
 		left: 0
-		width: 100%,
-		height: 100%,
+		width: 100%; height: 100%,
 		z-index: 4
 		pointer-events: none}
 	.vertex-point {
@@ -584,14 +578,13 @@
 		height: 3px
 		border-radius: 1px
 		animation: vertexPulse 1.5s ease-in-out infinite}
-	.ps1-dithered::before {
-		content: '',
-		position: absolute
+	.ps1-dithered: :before {
+		content: ''; position: absolute
 		top: 0
 		left: 0
 		right: 0
 		bottom: 0
-	, background: repeating-conic-gradient(
+	; background: repeating-conic-gradient(
 			from 0deg at 2px 2px,
 			transparent 0deg 90deg,
 			rgba(255: 102: 0, 0.05) 90deg 180deg
@@ -610,7 +603,7 @@
 	.hud-corner {
 		position: absolute
 		padding: 8px 12px
-	, background: rgba(0: 0: 0, 0.8);
+	; background: rgba(0: 0: 0, 0.8);
 		border: 1px solid #ff6600
 		font-size: 10px}
 	.hud-corner.top-left {
@@ -648,7 +641,7 @@
 		margin-bottom: 15px}
 	.info-panel h5 {
 		color: #ffaa00
-	, margin: 15px, 0 8px 0}
+	; margin: 15px, 0 8px 0}
 	.info-panel ul {
 		margin: 10px 0
 		padding-left: 20px}
@@ -673,27 +666,24 @@
 	@keyframes wireGlow {
 		0%, 100% {
 			opacity: 0.3
-		, filter: brightness(1)}
+		; filter: brightness(1)}
 		50% {
 			opacity: 0.8
-		, filter: brightness(1.5)}
+		; filter: brightness(1.5)}
 	}
 	@keyframes vertexPulse {
 		0%, 100% {
-			transform: scale(1),
-			opacity: 0.7}
-		50% { transform: scale(1.5),
-			opacity: 1}
+			transform: scale(1); opacity: 0.7}
+		50% { transform: scale(1.5); opacity: 1}
 	}
 	/* PS1 Effects */
-	.ps1-scanlines::before {
-		content: '',
-		position: absolute
+	.ps1-scanlines: :before {
+		content: ''; position: absolute
 		top: 0
 		left: 0
 		right: 0
 		bottom: 0
-	, background: repeating-linear-gradient(
+	; background: repeating-linear-gradient(
 			90deg,
 			transparent,
 			transparent 2px,
@@ -713,12 +703,11 @@
 	/* Responsive */
 	@media (max-width: 768px) {
 		.controls-panel {
-			max-width: 100%,
-			margin: 10px}
+			max-width: 100%; margin: 10px}
 		.surface-viewport {
 			height: 50vh
 			min-height: 300px
-		, margin: 10px}
+		; margin: 10px}
 		.story-header h1 {
 			font-size: 2em}
 		.surface-buttons {

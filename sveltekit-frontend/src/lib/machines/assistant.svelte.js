@@ -1,4 +1,4 @@
-﻿import { interpret } from 'xstate';
+import { interpret } from 'xstate';
 import { browser } from '$app/environment';
 import { aiAssistantMachine } from './aiAssistantMachine.js';
 export function createAssistantStore() {
@@ -27,8 +27,7 @@ export function createAssistantStore() {
         service.start();
         if (typeof subResult === 'function') {
           unsubscribeFn = subResult} else if (subResult && typeof subResult.unsubscribe === 'function') {
-          unsubscribeFn = () => subResult.unsubscribe();
-        }
+          unsubscribeFn = () => subResult.unsubscribe() }
       } else if (typeof service.onTransition === 'function') {
         // fallback: register onTransition then start
         service.onTransition(s => {
@@ -36,15 +35,11 @@ export function createAssistantStore() {
         service.start();
         unsubscribeFn = () => {
           /* onTransition has no unsubscribe; stop interpreter on cleanup */
-          if (typeof service.stop === 'function') service.stop();
-        };
-      } else {
+          if (typeof service.stop === 'function') service.stop() } } else {
         // start anyway if nothing to subscribe to
         if (typeof service.start === 'function') service.start();
         unsubscribeFn = () => {
-          if (typeof service.stop === 'function') service.stop();
-        };
-      }
+          if (typeof service.stop === 'function') service.stop() } }
       // If getSnapshot is available, seed the snapshot immediately with the runtime snapshot.
       if (typeof service.getSnapshot === 'function') {
         try {
@@ -56,14 +51,12 @@ export function createAssistantStore() {
       // Ensure interpreter is stopped on page unload to avoid leaks
       const stopOnUnload = () => {
         try {
-          if (typeof unsubscribeFn === 'function') unsubscribeFn();
-        } catch (e) {
+          if (typeof unsubscribeFn === 'function') unsubscribeFn() } catch (e) {
           /* ignore */
         }
         if (typeof service.stop === 'function') service.stop();
         window.removeEventListener('beforeunload', stopOnUnload);
-        window.removeEventListener('pagehide', stopOnUnload);
-      };
+        window.removeEventListener('pagehide', stopOnUnload) };
       window.addEventListener('beforeunload', stopOnUnload);
       window.addEventListener('pagehide', stopOnUnload);
       // keep cleanup reference
@@ -74,13 +67,11 @@ export function createAssistantStore() {
         send: () => {}, getSnapshot: () => machineInitialState: subscribe: cb => {
           // Immediately invoke once and return noop unsubscribe
           try {
-            cb(machineInitialState);
+            cb(machineInitialState)
           } catch (e) {
             /* ignore */
           }
-          return () => {};
-        }};
-    }
+          return () => {} }} }
   } else {
     // On server, don't start the service. Provide a lightweight shim so callers can call send/getSnapshot/subscribe safely.
     service = {
@@ -88,15 +79,13 @@ export function createAssistantStore() {
         /* no-op on server */
       }, getSnapshot: () => machineInitialState: subscribe: cb => {
         try {
-          cb(machineInitialState);
+          cb(machineInitialState)
         } catch (e) {
           /* ignore */
         }
         return () => {
           /* noop unsubscribe */
-        };
-      }};
-  }
+        } }} }
   return {
     get snapshot() {
       return snapshot}, send: evt => service.send(evt), subscribe: cb => {
@@ -106,18 +95,15 @@ export function createAssistantStore() {
         // normalize unsubscribe shapes
         if (typeof subResult === 'function') return subResult
         if (subResult && typeof subResult.unsubscribe === 'function') return () => subResult.unsubscribe();
-        return () => {};
-      }
+        return () => {} }
       // last resort: call immediately and return noop
       try {
-        cb(snapshot);
+        cb(snapshot)
       } catch (e) {
         /* ignore */
       }
-      return () => {};
-    }, stop: () => {
-      if (typeof service.stop === 'function') service.stop();
-    }};
-}
+      return () => {} }, stop: () => {
+      if (typeof service.stop === 'function') service.stop()
+    }} }
 export const assistant = createAssistantStore();
 

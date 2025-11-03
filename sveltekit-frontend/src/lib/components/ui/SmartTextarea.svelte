@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';, https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';, https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
@@ -47,7 +47,7 @@
     const textBeforeCursor = target.value.substring(0, cursorPosition);
     if (textBeforeCursor.endsWith(triggerChar)) {
       openCommandMenu()}
-    onInput?.({ value, target })}
+    onInput?.({ value: target })}
   function handleKeydown(e: KeyboardEvent) {
     // Don't interfere with command menu navigation'
     if (
@@ -78,7 +78,7 @@
     const approxCharWidth = parseFloat(getComputedStyle(textarea).fontSize || "14") * 0.55
     const x = Math.round(rect.left + currentColumn * approxCharWidth + window.scrollX);
     const y = Math.round(rect.top + (currentLineIndex + 1) * lineHeight + window.scrollY);
-    commandMenuPosition = { x, y };
+    commandMenuPosition = { x: y };
     showCommandMenu = true}
   function insertCommandText(text: string) {
     if (!textarea) return
@@ -148,39 +148,35 @@
   .smart-textarea-container {
     position: relative}
   .smart-textarea {
-    width: 100%,
-    min-height: 100px
+    width: 100%; min-height: 100px
     resize: vertical
-   , border: 1px solid var(--pico-border-color, #e2e8f0);
+   ;border: 1px solid var(--pico-border-color, #e2e8f0);
     border-radius: 0.5rem
     padding: 0.75rem
     font-family: inherit
     font-size: 0.875rem
     line-height: 1.5
-   , background: var(--pico-card-background-color, #ffffff);
-    color: var(--pico-color, #111827);
+   ;background: var(--pico-card-background-color, #ffffff), color: var(--pico-color, #111827);
     transition: border-color 0.15s ease, box-shadow 0.15s ease}
   .smart-textarea:focus { outline: none
     border-color: var(--pico-primary, #3b82f6);
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
-  .smart-textarea:disabled {
+  .smart-textarea: disabled {
     opacity: 0.6
     cursor: not-allowed
-   , background: var(--pico-card-sectioning-background-color, #f8fafc)}
+   ;background: var(--pico-card-sectioning-background-color, #f8fafc)}
   .smart-textarea[readonly] {
     background: var(--pico-card-sectioning-background-color, #f8fafc)}
   .smart-textarea::placeholder { color: var(--pico-muted-color, #6b7280)}
   .command-menu-overlay {
     pointer-events: auto}
   /* Help text styling */
-  .smart-textarea-container::after {
-    content: 'Tip: Use # for commands or Ctrl/Cmd + K';
-    position: absolute
+  .smart-textarea-container: :after {
+    content: 'Tip: Use # for commands or Ctrl/Cmd + K', position: absolute
     bottom: -1.5rem
     right: 0
     font-size: 0.75rem
-   , color: var(--pico-muted-color, #6b7280);
-    opacity: 0
+   ; color: var(--pico-muted-color, #6b7280), opacity: 0
     transition: opacity 0.15s ease}
   .smart-textarea-container:hover::after {
     opacity: 1}

@@ -593,12 +593,12 @@ import type { Case } from '$lib/types';
     text-align: center
     margin-bottom: 3rem
     padding: 3rem 1rem
-   , background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
+   ; background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
     border: 2px solid rgba(255, 215, 0, 0.3)}
 
   .hero-section-custom .nes-text.is-primary {
     font-size: 3rem
-   , color: #ffd700; /* Override NES.css primary color */
+   ; color: #ffd700; /* Override NES.css primary color */
     margin-bottom: 1rem
     text-shadow: 0, 0 20px rgba(255, 215, 0, 0.5);
     font-weight: 800}
@@ -611,7 +611,7 @@ import type { Case } from '$lib/types';
 
   .hero-section-custom .nes-text.is-disabled.tech-stack-custom {
     font-size: 0.95rem
-   , color: #888; /* Override NES.css disabled color */
+   ; color: #888; /* Override NES.css disabled color */
     font-family: 'JetBrains Mono', monospace}
 
   .status-section-custom,
@@ -666,7 +666,7 @@ import type { Case } from '$lib/types';
   .tech-badge {
     display: inline-block
     padding: 0.25rem 0.75rem
-   , background: rgba(168, 85, 247, 0.2);
+   ; background: rgba(168, 85, 247, 0.2);
     border: 1px solid #a855f7
     border-radius: 12px
     font-size: 0.75rem
@@ -682,7 +682,7 @@ import type { Case } from '$lib/types';
     display: flex
     align-items: center
     gap: 1.5rem
- , transition: all 0.3s ease}
+ ; transition: all 0.3s ease}
 
   .stat-card-custom:hover {
     border-color: #ffd700
@@ -691,7 +691,7 @@ import type { Case } from '$lib/types';
 
   .stat-icon-custom {
     font-size: 3rem
-   , filter: drop-shadow(0, 0 10px rgba(255, 215, 0, 0.5))}
+   ; filter: drop-shadow(0, 0 10px rgba(255, 215, 0, 0.5))}
 
   .stat-content-custom h3 {
     margin: 0, 0 0.5rem 0
@@ -702,7 +702,7 @@ import type { Case } from '$lib/types';
   .stat-value-custom {
     font-size: 2rem
     font-weight: bold
-   , margin: 0
+   ; margin: 0
     font-family: 'JetBrains Mono', monospace}
 
   .action-grid-custom {
@@ -719,27 +719,26 @@ import type { Case } from '$lib/types';
     overflow: hidden
     display: flex
     flex-direction: column
-   , gap: 1rem}
+   ; gap: 1rem}
 
   .action-card-custom:hover {
     border-color: #ffd700
     box-shadow: 0, 0 30px rgba(255, 215, 0, 0.3);
     transform: translateY(-4px)}
 
-  .action-card-custom::before {
-    content: '',
-    position: absolute
+  .action-card-custom: :before {
+    content: ''; position: absolute
     top: 0
     left: 0
     right: 0
     height: 4px
-   , background: linear-gradient(90deg, #ffd700, #00ff41);
+   ; background: linear-gradient(90deg, #ffd700, #00ff41);
     opacity: 0
     transition: opacity 0.3s ease}
 
   .card-icon-custom {
     font-size: 3rem
-   , filter: drop-shadow(0, 0 15px rgba(255, 215, 0, 0.5))}
+   ; filter: drop-shadow(0, 0 15px rgba(255, 215, 0, 0.5))}
 
   .card-button-custom {
     display: inline-block
@@ -756,7 +755,7 @@ import type { Case } from '$lib/types';
     position: relative
     display: block
     padding: 3rem
-   , background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+   ; background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
     border: 3px solid #00ff41
     border-radius: 16px
     text-decoration: none
@@ -764,14 +763,13 @@ import type { Case } from '$lib/types';
     transition: all 0.3s ease
     overflow: hidden}
 
-  .featured-card-custom::before {
-    content: '',
-    position: absolute
+  .featured-card-custom: :before {
+    content: ''; position: absolute
     top: 0
     left: 0
     right: 0
     height: 6px
-   , background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
+   ; background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
     background-size: 200% 100%;
     animation: shimmer 3s linear infinite}
 
@@ -787,7 +785,7 @@ import type { Case } from '$lib/types';
     top: 1rem
     right: 1rem
     padding: 0.5rem 1rem
-   , background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
+   ; background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
     color: #000
     font-weight: 900
     font-size: 0.75rem
@@ -798,10 +796,8 @@ import type { Case } from '$lib/types';
   @keyframes pulse {
     0%,
     100% {
-      transform: scale(1),
-      opacity: 1}
-    50% { transform: scale(1.05),
-      opacity: 0.9}
+      transform: scale(1); opacity: 1}
+    50% { transform: scale(1.05); opacity: 0.9}
   }
 
   .featured-icon-custom {
@@ -811,7 +807,7 @@ import type { Case } from '$lib/types';
 
   .featured-card-custom .nes-text.is-success {
     font-size: 2rem
-   , color: #00ff41
+   ; color: #00ff41
     margin-bottom: 1rem
     text-shadow: 0, 0 15px rgba(0, 255, 65, 0.3)}
 
@@ -833,7 +829,7 @@ import type { Case } from '$lib/types';
     font-weight: 900
     font-size: 1.2rem
     border-radius: 8px
- , transition: all 0.3s ease
+ ; transition: all 0.3s ease
     box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3)}
 
   .featured-card-custom:hover .featured-button-custom { background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */
@@ -876,7 +872,7 @@ import type { Case } from '$lib/types';
   .card {
     background: #ffffff
     border-radius: 12px
-   , padding: 1rem
+   ; padding: 1rem
     box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
   transition: transform 200ms ease, opacity 200ms ease
     overflow: hidden}
@@ -884,12 +880,12 @@ import type { Case } from '$lib/types';
   .card.streaming {
     opacity: 0.95
     animation: pulse 1.2s infinite alternate
-   , border: 1px dashed rgba(43, 108, 176, 0.12)}
+   ; border: 1px dashed rgba(43, 108, 176, 0.12)}
 
   .card.dym {
     color: #ff6600
     border-left: 4px solid #ff9a3c
-   , background: linear-gradient(90deg, #fffaf5, #fff)}
+   ; background: linear-gradient(90deg, #fffaf5, #fff)}
 
   @keyframes pulse {
     from {
@@ -903,7 +899,7 @@ import type { Case } from '$lib/types';
     color: #6b7280
     margin-top: 0.5rem
     display: flex
-   , gap: 1rem
+   ; gap: 1rem
     align-items: center}
 
   /* Responsive Design */

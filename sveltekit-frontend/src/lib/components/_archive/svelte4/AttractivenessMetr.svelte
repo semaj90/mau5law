@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc; https://svelte.dev/e/props_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once --> <script lang="ts"> // Svelte, 5 runes are auto-imported let { score = $bindable() }: { score = $bindable(): any } = $props(); // number = 5; // Current attractiveness score (1-10) let { label = $bindable() }: { label = $bindable(): any } = $props(); // string = 'Attractiveness Rating'
+<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more, than, onc, https://svelte.dev/e/props_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more, than, once --> <script lang="ts"> // Svelte, 5 runes are auto-imported let { score = $bindable() }: { score = $bindable(): any } = $props(); // number = 5; // Current attractiveness score (1-10) let { label = $bindable() }: { label = $bindable(): any } = $props(); // string = 'Attractiveness Rating'
   let { readOnly = $bindable() }: { readOnly = $bindable(): any } = $props(); // boolean = false let { showDescription = $bindable() }: { showDescription = $bindable(): any } = $props(); // boolean = true let { size = $bindable() }: { size = $bindable(): any } = $props(); // 'sm' | 'md' | 'lg' = 'md'
   // Events now handled via props in Svelte, 5 // let hoveredScore = $state<number | null >(null); const descriptions = { 1: 'Very Low', 2: 'Low', 3: 'Below Average', 4: 'Slightly Below Average', 5: 'Average', 6: 'Slightly Above Average', 7: 'Above Average', 8: 'High', 9: 'Very High', 10: 'Exceptional'
   } function handleRatingClick(rating: number) { if (!readOnly) { score = rating; onChange?.({ score })}
@@ -20,7 +20,7 @@
         min="1"
         max="10"
         ; bind:value={ score } oninput={() => onChange?.({ score })} class="mx-auto px-4 max-w-7xl"
-      /> </div> {/if} </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. --> <style> .star-button { color: #d1d5db, border: none, background: transparent, padding: 0 }
+      /> </div> {/if} </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. --> <style> .star-button { color: #d1d5db, border: none; background: transparent, padding: 0 }
   .star-button.active { color: #fbbf24}
   .star-button.hovered { color: #fcd34d}
   .star-button:not(.active):hover { color: #fef3c7}

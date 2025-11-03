@@ -1,5 +1,5 @@
-﻿<script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+<script lang="ts">
+	import { createEventDispatcher: onMount } from 'svelte';
 	// defensive import of the canvas module (works whether it's named or default)'
 	import * as canvasModule from "../stores/canvas";
 	const toolbarStore = (canvasModule as: any).toolbarStore ?? (canvasModule as: any).default ?? null
@@ -272,7 +272,7 @@
 		align-items: center
 		gap: 0.5rem
 		padding: 0.75rem 1rem
-	, background: var(--bg-secondary),
+	;background: var(--bg-secondary),
 		border-bottom: 1px solid var(--border-light);
 		overflow-x: auto
 		min-height: 60px}
@@ -286,9 +286,9 @@
 		align-items: center
 		gap: 0.25rem
 		padding: 0.25rem
-	, background: var(--bg-primary),
+	;background: var(--bg-primary),
 		border-radius: 6px
-	, border: 1px solid var(--border-light)}
+	;border: 1px solid var(--border-light)}
 	.tool-button,
 	.format-button,
 	.align-button,
@@ -303,7 +303,7 @@
 		cursor: pointer
 		border-radius: 4px
 		transition: all 0.2s ease
-	, color: var(--text-primary)}
+	;color: var(--text-primary)}
 	.tool-button:hover,
 	.format-button:hover,
 	.align-button:hover,
@@ -311,8 +311,7 @@
 	.tool-button.active,
 	.format-button.active,
 	.align-button.active {
-		background: var(--harvard-crimson),
-		color: var(--text-inverse)}
+		background: var(--harvard-crimson), color: var(--text-inverse)}
 	.tool-button:disabled,
 	.format-button:disabled,
 	.align-button:disabled,
@@ -325,16 +324,14 @@
 	.color-input input[type='color'] {
 		position: absolute
 		opacity: 0
-		width: 100%,
-		height: 100%,
+		width: 100%, height: 100%;
 		cursor: pointer}
 	.color-preview {
 		display: block
 		width: 24px
 		height: 24px
 		border-radius: 4px
-	, border: 2px solid var(--border-light);
-		cursor: pointer}
+	;border: 2px solid var(--border-light), cursor: pointer}
 	.size-input {
 		display: flex
 		align-items: center
@@ -343,33 +340,31 @@
 	.size-input input[type='range'] {
 		width: 80px
 		height: 4px
-	, background: var(--muted-background),
+	;background: var(--muted-background),
 		border-radius: 2px
 		outline: none
 		cursor: pointer}
-	.size-input input[type='range']::-webkit-slider-thumb {
+	.size-input input[type='range']: :-webkit-slider-thumb {
 		appearance: none
 		width: 16px
 		height: 16px
-	, background: var(--harvard-crimson),
-		border-radius: 50%,
-		cursor: pointer}
+	;background: var(--harvard-crimson),
+		border-radius: 50%, cursor: pointer}
 	.size-label {
 		font-size: 0.75rem
-	, color: var(--text-muted),
+	;color: var(--text-muted),
 		min-width: 35px
 		text-align: center}
 	.zoom-level {
 		font-size: 0.875rem
-	, color: var(--text-primary),
+	;color: var(--text-primary),
 		min-width: 45px
 		text-align: center
 		font-weight: 500}
 	.toolbar-separator {
 		width: 1px
 		height: 32px
-	, background: var(--border-light),
-		margin: 0 0.5rem
+	;background: var(--border-light), margin: 0 0.5rem
 		flex-shrink: 0}
 	/* Responsive */
 	@media (max-width: 768px) {

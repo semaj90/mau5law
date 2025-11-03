@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Enhanced Contextual Chat with Bits-UI + Superforms
   Features:
   - SvelteKit, 2 Superforms validation
@@ -405,7 +405,7 @@ import type { Document } from '$lib/types';
     flex-direction: column
     height: 100vh
     max-height: 900px
-   , background: #212529
+   ;background: #212529
     font-family: 'Press Start 2P', 'Courier New', monospace
     font-size: 12px}
   .chat-header {
@@ -447,7 +447,7 @@ import type { Document } from '$lib/types';
   .messages-container {
     flex: 1
     overflow-y: auto
-   , padding: 1rem}
+   ;padding: 1rem}
   .message-group {
     margin-bottom: 1.5rem}
   .user-message,
@@ -484,8 +484,7 @@ import type { Document } from '$lib/types';
     padding: 1rem
     background: #1a1d20}
   .accordion-trigger {
-    width: 100%,
-    display: flex
+    width: 100%, display: flex
     justify-content: space-between
     align-items: center
     padding: 0.75rem 1rem !important
@@ -520,8 +519,7 @@ import type { Document } from '$lib/types';
     border-radius: 2px
     overflow: hidden}
   .confidence-fill {
-    height: 100%;
-   , background: linear-gradient(90deg, #d4af37, #4ade80);
+    height: 100%, background: linear-gradient(90deg, #d4af37, #4ade80);
     transition: width: 0.3s ease}
   .entity-item {
     display: flex
@@ -540,15 +538,11 @@ import type { Document } from '$lib/types';
   .dialog-overlay {
     position: fixed
     inset: 0
-   , background: rgba(0, 0, 0, 0.8);
+   ;background: rgba(0, 0, 0, 0.8);
     z-index: 50}
   .dialog-content {
     position: fixed
-    top: 50%,
-    left: 50%;
-   , transform: translate(-50%, -50%);
-    width: 90%,
-    max-width: 500px
+    top: 50%, left: 50%;transform: translate(-50%, -50%), width: 90%, max-width: 500px
     max-height: 85vh
     padding: 2rem
     z-index: 51}

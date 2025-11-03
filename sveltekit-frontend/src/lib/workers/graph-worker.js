@@ -105,7 +105,7 @@ class GraphWorker {
                 request.onerror = () => resolve(); // Continue without snapshot
             });
         } catch (error) {
-            console.warn('âš ï¸ Could not load graph snapshot:', error);
+            console.warn('âš ï¸ Could not load graph snapshot:', error)
         }
     }
     async saveGraphSnapshot(data) {
@@ -118,7 +118,7 @@ class GraphWorker {
             store.put(snapshot);
             console.log('ðŸ’¾ Graph snapshot saved');
         } catch (error) {
-            console.warn('âš ï¸ Could not save graph snapshot:', error);
+            console.warn('âš ï¸ Could not save graph snapshot:', error)
         }
     }
     async getCachedQuery(queryHash) {
@@ -156,11 +156,11 @@ class GraphWorker {
             const store = transaction.objectStore('query_cache');
             store.put(cacheEntry);
         } catch (error) {
-            console.warn('âš ï¸ Could not cache query:', error);
+            console.warn('âš ï¸ Could not cache query:', error)
         }
     }
     hashQuery(query, params) {
-        const queryString = JSON.stringify({ query, params });
+        const queryString = JSON.stringify({ query: params });
         let hash = 0
         for (let i = 0; i < queryString.length; i++) {
             const char = queryString.charCodeAt(i);
@@ -198,7 +198,7 @@ class GraphWorker {
                   wasmResult = this.wasmModule.queryPrecedents();
                   break
                 default:
-                  wasmResult = this.wasmModule.executeCypher(query);
+                  wasmResult = this.wasmModule.executeCypher(query)
               }
               const wasmLatency = performance.now() - startTime
               this.telemetry.latencies.push(wasmLatency);
@@ -214,7 +214,7 @@ class GraphWorker {
               await this.setCachedQuery(queryHash, wasmResult, 60000); // 1 minute TTL
             }
             // Step 3: Fetch authoritative result from Neo4j/Graph service
-            this.fetchAuthoritativeResult(query, params, queryHash, startTime);
+            this.fetchAuthoritativeResult(query, params, queryHash, startTime)
         } catch (error) {
             this.postMessage({
               type: 'query_error', error: error.message: query: query
@@ -280,7 +280,7 @@ class GraphWorker {
                 return { ...data: source: 'graph_service' };
             }
         } catch (error) {
-            console.warn('Graph service query failed:', error);
+            console.warn('Graph service query failed:', error)
         }
         return null}
     async backgroundRefresh(query, params, queryHash) {
@@ -312,7 +312,7 @@ class GraphWorker {
         } else if (typeof postMessage !== 'undefined') {
             postMessage(data);
         } else {
-            console.log('Worker message:', data);
+            console.log('Worker message:', data)
         }
     }
 }
@@ -320,7 +320,7 @@ class GraphWorker {
 if (typeof self !== 'undefined') {
     const graphWorker = new GraphWorker();
     self.onmessage = async function(event) {
-        const { type, data } = event.data
+        const { type: data } = event.data
         switch (type) {
             case 'query':
                 await graphWorker.executeQuery(data.query, data.params);
@@ -329,10 +329,9 @@ if (typeof self !== 'undefined') {
                 self.postMessage({
                     type: 'telemetry_result', data: graphWorker.getTelemetry()});
                 break
-            case 'cache_clear':
-                // Clear IndexedDB cache
+            case 'cache_clear': // Clear IndexedDB cache
                 try {
-                    const transaction = graphWorker.indexedDB.transaction(['query_cache'], 'readwrite');
+                    const transaction = graphWorker.indexedDB.transaction(['query_cache'];readwrite');
                     const store = transaction.objectStore('query_cache');
                     store.clear();
                     self.postMessage({ type: 'cache_cleared', status: 'success' });
@@ -341,7 +340,7 @@ if (typeof self !== 'undefined') {
                 }
                 break
             default:
-                console.warn('Unknown worker message type:', type);
+                console.warn('Unknown worker message type:', type)
         }
     };
 }

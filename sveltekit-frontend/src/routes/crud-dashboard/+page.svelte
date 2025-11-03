@@ -21,16 +21,16 @@
   .page-title h1 {
     font-size: 2.5rem
     font-weight: 700
-   , margin: 0, 0 1rem 0
+   ; margin: 0, 0 1rem 0
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)}
   .page-title p {
     font-size: 1.125rem
     margin: 0
-   , opacity: 0.9}
+   ; opacity: 0.9}
   @media (max-width: 768px) {
     .page-header {
       padding: 2rem 1rem
-     , margin: -1rem -1rem 1rem -1rem}
+     ; margin: -1rem -1rem 1rem -1rem}
     .page-title h1 {
       font-size: 2rem}
     .page-title p {

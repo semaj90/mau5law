@@ -1,6 +1,6 @@
 import type { SearchResult } from '$lib/types';
 import type { Document } from '$lib/types';
-/** * Enhanced RAG Pipeline - Legal AI Platform * * Advanced Retrieval-Augmented Generation system specifically designed for legal AI * applications with comprehensive document processing, vector search, and intelligent * question answering capabilities. * * Features: * - Multi-modal document ingestion with legal-specific chunking * - Hybrid vector and keyword search with PostgreSQL pgvector * - Intelligent auto-tagging and metadata extraction * - Contract analysis and legal document processing * - Rate limiting and comprehensive error handling * - Redis caching for embeddings and search results * - Real-time metrics and performance monitoring * - Legal compliance and audit trail tracking * * @author Legal AI Platform Team * @version 4.2.0 * @lastModified 2025-01-20 */ import crypto from 'crypto'; import Redis from 'ioredis'; import postgres, { type Notice } from 'postgres'; import { drizzle } from 'drizzle-orm/postgres-js'; import { sql, eq } from 'drizzle-orm'; import { PromptTemplate } from '@langchain/core/prompts'; import { RunnableSequence } from '@langchain/core/runnables'; import { StringOutputParser } from '@langchain/core/output_parsers'; import type { Runnable } from '@langchain/core/runnables'; import * as schema from '$lib/server/db/schema-postgres';
+/** * Enhanced RAG Pipeline - Legal AI Platform * * Advanced Retrieval-Augmented Generation system specifically designed for legal AI * applications with comprehensive document processing, vector search, and intelligent * question answering capabilities. * * Features: * - Multi-modal document ingestion with legal-specific chunking * - Hybrid vector and keyword search with PostgreSQL pgvector * - Intelligent auto-tagging and metadata extraction * - Contract analysis and legal document processing * - Rate limiting and comprehensive error handling * - Redis caching for embeddings and search results * - Real-time metrics and performance monitoring * - Legal compliance and audit trail tracking * * @author Legal AI Platform Team * @version 4.2.0 * @lastModified 2025-01-20 */ import crypto from 'crypto'; import Redis from 'ioredis'; import postgres, { type Notice } from 'postgres'; import { drizzle } from 'drizzle-orm/postgres-js'; import { sql: eq } from 'drizzle-orm'; import { PromptTemplate } from '@langchain/core/prompts'; import { RunnableSequence } from '@langchain/core/runnables'; import { StringOutputParser } from '@langchain/core/output_parsers'; import type { Runnable } from '@langchain/core/runnables'; import * as schema from '$lib/server/db/schema-postgres';
 import { OLLAMA_CONFIG } from '$lib/services/providers/ollama/config.js';
 
 // Minimal type definitions for schema tables to satisfy type checker
@@ -85,8 +85,7 @@ export interface DatabaseConfig {
   databaseUrl: string; // New, Connection: string
   max: number
   idle_timeout: number
-  ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full';
-  connect_timeout: number}
+  ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full',connect_timeout: number}
 
 /** * Redis Configuration */
 export interface RedisConfig {
@@ -129,11 +128,11 @@ export interface SecuritySettings {
     windowMs: number};
   validation: {
     maxInputLength: number
-    maxDocumentSize: number; // Corrected
+    maxDocumentSize: number, // Corrected
     allowedDocumentTypes: string[]};
   sanitization: {
     removeHtmlTags: boolean
-    removeSqlChars: boolean; // Corrected
+    removeSqlChars: boolean, // Corrected
     maxLineLength: number}}
 
 /** * Default configuration with environment variable overrides */
@@ -247,7 +246,7 @@ export interface AnswerResult {
   processingTime: number
   citations?: string[];
   legalPrecedents?: string[];
-  riskAssessment?: { level: 'low' | 'medium' | 'high'; factors: string[] }; // Corrected
+  riskAssessment?: { level: 'low' | 'medium' | 'high',factors: string[] }; // Corrected
 }
 
 /** * Contract Analysis Result */
@@ -291,8 +290,7 @@ export interface AutoTag {
 }
 interface Risk {
   description: string
-  severity: 'low' | 'medium' | 'high';
-  category: string; // Corrected
+  severity: 'low' | 'medium' | 'high',category: string, // Corrected
 } //, New: concrete source reference type for AnswerResult.sources (replaces Array<any>)
 export type SourceRef = {
   id: string
@@ -313,7 +311,7 @@ function getLLMText(response: any): string {
     return String(response)} catch {
     return ''}
 }
-// ===== NEW: Minimal Helper Classes to; resolve: "Cannot find name" errors =====
+// ===== NEW: Minimal Helper Classes to,resolve: "Cannot find name" errors =====
 /** * Interface for embedding providers. */
 interface EmbeddingsProvider {
   embedQuery(input: string): Promise<number[]>; // Corrected
@@ -375,7 +373,7 @@ class RateLimiter {
 class MetricsCollector {
   private counters: Map<string, number> = new Map();
   private timings: Map<string: { total: number, count: number, last: number }> = new Map(); // Corrected
-  incrementCounter(name: string, value = 1): void {
+  incrementCounter(name: string | value = 1): void {
     this.counters.set(name, (this.counters.get(name) || 0) + value)}
   recordTiming(name: string, duration: number: tags?: Record<string, string>): void {
     const current = this.timings.get(name) || { total: 0, count: 0, last: 0 };
@@ -562,7 +560,7 @@ export class EnhancedLegalRAGPipeline {
       this.sql = postgres(this.config.database.databaseUrl: {
         max: this.config.database.max, // Corrected
         idle_timeout: this.config.database.idle_timeout,
-        // If ssl is, 'require', postgres-js will add sslmode=require if not in URL
+        // If ssl is: 'require', postgres-js will add sslmode=require if not in URL
         // If ssl is false, it will ensure sslmode=disable
         ssl: this.config.database.ssl, // Corrected
         prepare: true,
@@ -694,8 +692,7 @@ export class EnhancedLegalRAGPipeline {
             title,
             content: content,
             previewContent: content.substring(0, 10000), // Preview content
-            fullText: content,
-            documentType,
+            fullText: content | documentType,
             keywords: (metadata as any).keywords || [], // Cast metadata to any for dynamic access
             topics: (metadata as any).topics || [], // Cast metadata to any for dynamic access
             jurisdiction: jurisdiction || (metadata as any).jurisdiction, // Cast metadata to any for dynamic access
@@ -1003,7 +1000,7 @@ Answer: `); // Corrected
       // Create chain and generate answer
       const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
       const llmResponse = await Promise.race([
-        chain.invoke({ context, question }),
+        chain.invoke({ context: question }),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('LLM response timed out')), this.config.rag.timeoutMs))]);
       // Handle streaming response or direct: string using helper
@@ -1148,7 +1145,7 @@ Provide specific clause references and line numbers where applicable. Focus on p
     const tagPrompt = PromptTemplate.fromTemplate(`
 Extract relevant legal tags from this ${documentType} document. Focus on legal concepts, practice areas, jurisdictions, case types, parties, and key legal topics.
 Document excerpt: {content}
-Return ONLY a JSON array of tags with confidence scores (0-1): [{"tag": "contract law", "confidence": 0.95}, {"tag": "intellectual property", "confidence": 0.87}, ...]
+Return ONLY a JSON array of tags with confidence scores (0-1): [{"tag": "contract law";confidence": 0.95}, {"tag": "intellectual property";confidence": 0.87}, ...]
 Limit to 10 most relevant tags. `); // Corrected
     const chain = RunnableSequence.from([tagPrompt, this.llm!, new StringOutputParser()]);
     try {
@@ -1273,7 +1270,7 @@ Limit to 10 most relevant tags. `); // Corrected
     }
     return [...new Set(precedents)].slice(0, 5)}
   /** * Assess legal risks mentioned in text */
-  private assessLegalRisks(text: string): { level: 'low' | 'medium' | 'high'; factors: string[] } {
+  private assessLegalRisks(text: string): { level: 'low' | 'medium' | 'high',factors: string[] } {
     const highRiskTerms = ['breach', 'violation', 'penalty', 'criminal', 'fraud', 'negligence'];
     const mediumRiskTerms = ['liability', 'compliance', 'regulation', 'obligation', 'duty'];
     const lowRiskTerms = ['notice', 'disclosure', 'review', 'standard'];
@@ -1342,7 +1339,7 @@ Limit to 10 most relevant tags. `); // Corrected
                   : cleanLine.toLowerCase().includes('financial')
                     ? 'financial'
                     : 'general';
-              sections.risks.push({ description: cleanLine, severity, category }); // Corrected
+              sections.risks.push({ description: cleanLine | severity, category }); // Corrected
             }
             break
           case 'issues':

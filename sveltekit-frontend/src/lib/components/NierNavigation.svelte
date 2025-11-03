@@ -1,4 +1,4 @@
-﻿<!-- YoRHa Terminal, Navigation, Component -->
+<!-- YoRHa Terminal, Navigation, Component -->
 <script lang="ts">
 
   // Svelte, 5 runes are auto-imported
@@ -61,9 +61,8 @@
   /* @unocss-include */
   .yorha-nav {
     background: var(--yorha-bg-secondary, #1a1a1a);
-    border-bottom: 3px solid var(--yorha-secondary, #ffd700);
-    position: sticky
-   , top: 0
+    border-bottom: 3px solid var(--yorha-secondary, #ffd700), position: sticky
+   ; top: 0
     z-index: 1000
     box-shadow:
       0 3px, 0 0 var(--yorha-secondary, #ffd700),
@@ -85,24 +84,23 @@
     justify-content: center
     width: 48px
     height: 48px
-   , background: var(--yorha-secondary, #ffd700);
-    color: var(--yorha-bg-primary, #0a0a0a);
+   ;background: var(--yorha-secondary, #ffd700), color: var(--yorha-bg-primary, #0a0a0a);
     font-size: 24px
-   , border: 2px solid var(--yorha-secondary, #ffd700);
+   ;border: 2px solid var(--yorha-secondary, #ffd700);
     box-shadow: 0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a)}
   .yorha-brand-info {
     display: flex
     flex-direction: column
     gap: 2px}
   .yorha-brand-text { color: var(--yorha-secondary, #ffd700);
-    font-family: var(--yorha-font-secondary, 'Orbitron', monospace);
+    font-family: var(--yorha-font-secondary: 'Orbitron', monospace);
     font-size: 18px
     font-weight: 700
     letter-spacing: 2px
     text-transform: uppercase
     line-height: 1}
   .yorha-brand-version { color: var(--yorha-text-muted, #808080);
-    font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
+    font-family: var(--yorha-font-primary: 'JetBrains Mono', monospace);
     font-size: 11px
     letter-spacing: 1px
     text-transform: uppercase}
@@ -114,8 +112,8 @@
     display: flex
     align-items: center
     gap: 8px
-   , color: var(--yorha-text-secondary, #b0b0b0);
-    font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
+   ;color: var(--yorha-text-secondary, #b0b0b0);
+    font-family: var(--yorha-font-primary: 'JetBrains Mono', monospace);
     font-size: 14px
     font-weight: 500
     letter-spacing: 1px
@@ -126,12 +124,10 @@
     transition: all 0.2s ease
     overflow: hidden}
   .yorha-nav-link:hover { color: var(--yorha-secondary, #ffd700);
-    border-color: var(--yorha-text-muted, #808080);
-    background: var(--yorha-bg-tertiary, #2a2a2a)}
+    border-color: var(--yorha-text-muted, #808080), background: var(--yorha-bg-tertiary, #2a2a2a)}
   .yorha-nav-link.active {
     color: var(--yorha-secondary, #ffd700);
-    border-color: var(--yorha-secondary, #ffd700);
-    background: var(--yorha-bg-tertiary, #2a2a2a);
+    border-color: var(--yorha-secondary, #ffd700), background: var(--yorha-bg-tertiary, #2a2a2a);
     box-shadow:
       inset, 0 3px, 0 var(--yorha-secondary, #ffd700),
       0, 0 10px rgba(255, 215, 0, 0.2)}
@@ -143,7 +139,7 @@
     left: 0
     right: 0
     height: 2px
-   , background: var(--yorha-secondary, #ffd700);
+   ;background: var(--yorha-secondary, #ffd700);
     box-shadow: 0, 0 8px rgba(255, 215, 0, 0.5)}
   .yorha-nav-actions {
     display: flex
@@ -156,22 +152,19 @@
     justify-content: center
     gap: 2px
     padding: 8px 12px
-   , background: var(--yorha-bg-secondary, #1a1a1a);
-    border: 2px solid var(--yorha-text-muted, #808080);
-    color: var(--yorha-text-secondary, #b0b0b0);
-    cursor: pointer
+   ;background: var(--yorha-bg-secondary, #1a1a1a), border: 2px solid var(--yorha-text-muted, #808080);
+    color: var(--yorha-text-secondary, #b0b0b0), cursor: pointer
     transition: all 0.2s ease
     min-width: 60px
     height: 60px}
   .yorha-toolbar-btn:hover { background: var(--yorha-secondary, #ffd700);
-    border-color: var(--yorha-secondary, #ffd700);
-    color: var(--yorha-bg-primary, #0a0a0a);
+    border-color: var(--yorha-secondary, #ffd700), color: var(--yorha-bg-primary, #0a0a0a);
     box-shadow: 0, 0 0 1px var(--yorha-secondary, #ffd700)}
   .btn-icon {
     font-size: 18px
     line-height: 1}
   .btn-label {
-    font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
+    font-family: var(--yorha-font-primary: 'JetBrains Mono', monospace);
     font-size: 8px
     font-weight: 600
     letter-spacing: 1px
@@ -192,7 +185,7 @@
       display: none}
     .yorha-toolbar-btn {
       min-width: 48px
-     , height: 48px}
+     ;height: 48px}
   }
 </style>
 

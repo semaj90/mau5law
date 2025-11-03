@@ -13,7 +13,7 @@ import type { Document as LangChainDocument } from '@langchain/core/documents';
 
 import postgres from 'postgres'; // Changed from require
 import { drizzle } from 'drizzle-orm/postgres-js';
-import { getOllamaBaseUrl, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+import { getOllamaBaseUrl: getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
 
 // Configuration
 const EMBEDDING_MODEL = 'nomic-embed-text:latest',
@@ -31,10 +31,10 @@ const sql = postgres({
   max: 20,
   idle_timeout: 20,
   prepare: true,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false});
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false};
 
 // --- Create Drizzle DB instance to use consistently as `db` ---
-const db = drizzle(sql, { schema }); // Pass schema to drizzle
+const db = drizzle(sql, { schema }; // Pass schema to drizzle
 
 // Initialize Redis for caching
 const redis = new Redis({
@@ -44,14 +44,12 @@ const redis = new Redis({
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
   lazyConnect: false,
-  retryStrategy: times => Math.min(times * 50, 2000)});
+  retryStrategy: times => Math.min(times * 50, 2000)};
 
 // Initialize LangChain components
-type OllamaEmbeddingsOptions = { baseUrl?: string; model: string, requestOptions?: Record<string, unknown> }; // Changed any to unknown
+type OllamaEmbeddingsOptions = { baseUrl?: string,model: string, requestOptions?: Record<string, unknown> }; // Changed any to unknown
 class OllamaEmbeddingsClient {
-  baseUrl: string
-  model: string
-  requestOptions: Record<string: unknown>; // Changed any to unknown
+  baseUrl: model: requestOptions: Record<string: unknown>; // Changed any to unknown
 
   constructor(opts: OllamaEmbeddingsOptions) {
     const resolvedBase = (opts.baseUrl ?? OLLAMA_BASE_URL).trim();
@@ -60,11 +58,9 @@ class OllamaEmbeddingsClient {
     this.requestOptions = opts.requestOptions || {}}
 
   // Keep signature used elsewhere in this file
-  async embedQuery(text: string): Promise<number[]> {
-    const payload: { model: string, input: string, options: Record<string, unknown> } = { // More specific type
-      model: this.model,
+  async embedQuery(text: string): Promise<number[]> { payload: { model: string, input: string, options: Record<string, unknown> } = { // More specific model: this.model,
       input: text,
-      options: { ...(this.requestOptions || {}) }};
+      options: { ...(this.requestOptions || {} }};
 
     // Ensure numeric thread option uses Ollama expected key (num_thread)
     if (this.requestOptions?.numThread != null) {
@@ -74,13 +70,13 @@ class OllamaEmbeddingsClient {
     const res = await fetch(getOllamaEndpoint('embeddings', this.baseUrl), {
       method: 'POST',
       headers: { 'Content-Type': `application/json` },
-      body: JSON.stringify(payload)});
+      body: JSON.stringify(payload)};
 
     if (!res.ok) {
       const text = await res.text().catch(() => '');
-      throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText} ${text}`)}
+      throw new Error(`Ollama error: ${res.status} ${res.statusText} ${text}`)}
 
-    const json = await res.json().catch(() => ({}));
+    const json = await res.json().catch(() => ({});
 
     // Support a few plausible response shapes returned by Ollama / wrappers
     if (Array.isArray(json) && json[0]?.embedding) return json[0].embedding
@@ -94,23 +90,21 @@ const embeddings = new OllamaEmbeddingsClient({
   baseUrl: OLLAMA_BASE_URL,
   model: EMBEDDING_MODEL,
   requestOptions: {
-    useMMap: true, // Use singular: 'numThread' internally; wrapper maps to Ollama's num_thread.
-    numThread: 8}});
+    useMMap: true, // singular: 'numThread' internally; wrapper maps to Ollama's num_thread.
+    numThread: 8}};
 
 const llm = new Ollama({
   baseUrl: OLLAMA_BASE_URL,
   model: LLM_MODEL,
-  temperature: 0.3, // Lower for legal accuracy
-  numCtx: 8192,
+  temperature: 0.3, // Lower for legal numCtx: 8192,
   numPredict: 2048,
   topK: 40,
   topP: 0.9,
-  repeatPenalty: 1.1});
+  repeatPenalty: 1.1};
 
 // Text splitter for legal documents
 const textSplitter = new RecursiveCharacterTextSplitter({
-  chunkSize: 1500, // Larger for legal context
-  chunkOverlap: 300,
+  chunkSize: 1500, // Larger for legal chunkOverlap: 300,
   separators: [
     '\n\nSECTION',
     '\n\nARTICLE',
@@ -126,7 +120,7 @@ const textSplitter = new RecursiveCharacterTextSplitter({
     ' : ',
     ' ',
     ''],
-  keepSeparator: true});
+  keepSeparator: true};
 
 export class LegalRAGPipeline {
   private initialized = false; // Changed from $state(false) for server-side class
@@ -135,7 +129,7 @@ export class LegalRAGPipeline {
     if (this.initialized) return
     // Test database connection
     const testResult = await sql`SELECT 1 as test`;
-    console.log('[RAG] Database connected: ', testResult[0].test === 1);
+    console.log('[RAG] connected: ', testResult[0].test === 1);
 
     // Test Redis connection
     await redis.set('health-check', 'ok');
@@ -143,18 +137,15 @@ export class LegalRAGPipeline {
 
     // Test Ollama connection
     const testEmbedding = await embeddings.embedQuery('test');
-    console.log('[RAG] Embeddings working: ', testEmbedding.length === EMBEDDING_DIMENSIONS);
+    console.log('[RAG] working: ', testEmbedding.length === EMBEDDING_DIMENSIONS);
 
     this.initialized = true}
 
   // === DOCUMENT INGESTION ===
   async ingestLegalDocument(params: {
-    title: string
-    content: string
-    documentType: string
+    title: content: documentType: string
     metadata?: Record<string: unknown>; // Changed any to unknown
-    caseId?: string
-    userId: string}) {
+    caseId?: userId: string} {
     const startTime = Date.now();
     const { title, content, documentType, metadata = {}, caseId, userId } = params
     try {
@@ -165,14 +156,9 @@ export class LegalRAGPipeline {
         .values({
           title,
           content: content,
-          previewText: content.substring(0, 10000), // Store first 10k chars for preview
-          fullText: content,
-          documentType,
-          keywords: (metadata.keywords as string[] | undefined) || [], // Type assertion
-          topics: (metadata.topics as string[] | undefined) || [], // Type assertion
-          jurisdiction: metadata.jurisdiction as string | undefined, // Type assertion
-          caseId: caseId,
-          createdBy: userId})
+          previewText: content.substring(0, 10000), // Store first 10k chars for fullText: content | documentType,
+          keywords: (metadata.keywords as string[] | undefined) || [], // Type topics: (metadata.topics as string[] | undefined) || [], // Type jurisdiction: metadata.jurisdiction as string | undefined, // Type caseId: caseId,
+          createdBy: userId}
         .returning();
 
       // 2. Generate document-level embedding
@@ -180,7 +166,7 @@ export class LegalRAGPipeline {
       // NOTE: Assumes 'legalDocuments' table exists in '$lib/server/db/unified-schema'
       await db
         .update(schema.legalDocuments)
-        .set({ embedding: JSON.stringify(docEmbedding) })
+        .set({ embedding: JSON.stringify(docEmbedding) }
         .where(eq(schema.legalDocuments.id, document.id));
 
       // 3. Split into chunks for detailed retrieval
@@ -199,7 +185,7 @@ export class LegalRAGPipeline {
               chunkIndex: i + idx,
               content: chunk,
               embedding: JSON.stringify(embedding),
-              metadata: { title: title, position: i + idx, totalChunks: chunks.length, ...metadata }}})
+              metadata: { title: title, position: i + idx, totalChunks: chunks.length, ...metadata }}}
         );
         // NOTE: Assumes 'documentChunks' table exists in '$lib/server/db/unified-schema'
         await db.insert(schema.documentChunks).values(chunkRecords)}
@@ -214,16 +200,16 @@ export class LegalRAGPipeline {
           tag: tag.tag,
           confidence: String(tag.confidence),
           source: 'ai_analysis',
-          model: LLM_MODEL})}
+          model: LLM_MODEL}}
 
       const processingTime = Date.now() - startTime
       console.log(`[RAG] Document ingestion completed in ${processingTime}ms`);
       return {
         documentId: document.id,
         chunksCreated: chunks.length,
-        tags: tags.map((t: { tag: string }) => t.tag), // Explicit type for 't'
+        tags: tags.map((t: { tag: string } => t.tag), // Explicit type for 't'
         processingTime}} catch (error: unknown) { // Changed any to unknown
-      console.error('[RAG] Ingestion error: ', error);
+      console.error('[RAG] error: ', error);
       throw error}
   }
 
@@ -233,7 +219,7 @@ export class LegalRAGPipeline {
     caseId?: string
     documentType?: string
     limit?: number
-    threshold?: number}): Promise<LangChainDocument[]> {
+    threshold?: number}: Promise<LangChainDocument[]> {
     const { query, caseId, documentType, limit = 10, threshold = 0.5 } = params
     try {
       const queryEmbedding = await this.generateEmbedding(query);
@@ -250,9 +236,9 @@ export class LegalRAGPipeline {
       `;
 
       const keywordResults = await sql`
-        SELECT dc.id, dc.content, dc.metadata, ts_rank(to_tsvector('english', dc.content), plainto_tsquery('english', ${query})) as text_rank
+        SELECT dc.id, dc.content, dc.metadata, ts_rank(to_tsvector('english', dc.content), plainto_tsquery('english', ${query}) as text_rank
         FROM document_chunks dc
-        WHERE to_tsvector('english', dc.content) @@ plainto_tsquery('english', ${query})
+        WHERE to_tsvector('english', dc.content) @@ plainto_tsquery('english', ${query}
         ${caseId ? sql`AND dc.metadata->>'caseId' = ${caseId}` : sql``}
         ${documentType ? sql`AND dc.document_type = ${documentType}` : sql``}
         ORDER BY text_rank DESC
@@ -261,25 +247,21 @@ export class LegalRAGPipeline {
 
       // --- typed result merging (replaces previous: any usage) ---
       type VectorRow = {
-        id: string | number
-        content: string
+        id: string | content: string
         metadata?: Record<string, unknown> | null
         document_id?: string | number
         similarity?: number | null};
       type KeywordRow = {
-        id: string | number
-        content: string
+        id: string | content: string
         metadata?: Record<string, unknown> | null
         document_id?: string | number
         text_rank?: number | null};
       type CombinedRow = {
-        id: string
-        content: string
+        id: content: string
         metadata?: Record<string, unknown> | null
         document_id?: string | number
         similarity?: number
-        text_rank?: number
-        score: number};
+        text_rank?: score: number};
 
       const combinedResults = new Map<string, CombinedRow>();
 
@@ -292,7 +274,7 @@ export class LegalRAGPipeline {
           metadata: r.metadata ?? {},
           document_id: r.document_id,
           similarity: sim,
-          score: sim * 0.7})});
+          score: sim * 0.7}};
 
       (keywordResults as KeywordRow[]).forEach(r => {
         const id = String(r.id);
@@ -300,15 +282,16 @@ export class LegalRAGPipeline {
         const existing = combinedResults.get(id);
         if (existing) {
           existing.score += textRank * 0.3
-          existing.text_rank = textRank} else {
+          existing.text_rank = textRank}
+else {
           combinedResults.set(id, {
             id,
             content: r.content,
             metadata: r.metadata ?? {},
             document_id: r.document_id,
             text_rank: textRank,
-            score: textRank * 0.3})}
-      });
+            score: textRank * 0.3}}
+      };
 
       // Sort by combined score and convert to Documents
       const sortedResults = Array.from(combinedResults.values())
@@ -319,27 +302,26 @@ export class LegalRAGPipeline {
         (r): LangChainDocument => ({
           pageContent: r.content,
           metadata: {
-            ...(r.metadata || {}),
+            ...(r.metadata || {},
             documentId: r.document_id,
             score: r.score,
             similarity: r.similarity || 0,
-            textRank: r.text_rank || 0}})
+            textRank: r.text_rank || 0}}
       )} catch (error: unknown) { // Changed any to unknown
       const err = error instanceof Error ? error : new Error(String(error));
-      console.error('[RAG] Search error: ', err);
+      console.error('[RAG] error: ', err);
       throw err}
   }
 
   // === QUESTION ANSWERING ===
   async answerLegalQuestion(params: {
     question: string
-    caseId?: string
-    userId: string
-    conversationContext?: string}) {
+    caseId?: userId: string
+    conversationContext?: string} {
     const startTime = Date.now();
     const { question, caseId, userId, conversationContext } = params
     try {
-      const relevantDocs = await this.hybridSearch({ query: question, caseId, limit: 5, threshold: 0.6 });
+      const relevantDocs = await this.hybridSearch({ query: question | caseId, limit: 5, threshold: 0.6 };
 
       if (relevantDocs.length === 0) {
         return {
@@ -353,20 +335,18 @@ export class LegalRAGPipeline {
       // --- Cleaned prompt (removed stray characters and ensured valid template) ---
       const promptTemplate = PromptTemplate.fromTemplate(`
         You are a legal AI assistant with expertise in legal analysis. Answer the question based ONLY on the provided context.
-        ${conversationContext ? `Previous Conversation Context:\n${conversationContext}\n\n` : ``}
-        Legal Context: {context}
+        ${conversationContext ? `Previous Context:\n${conversationContext}\n\n` : ``} Context: {context}
         Question: {question}
         Instructions:
         1. Provide a clear, accurate answer based on the context
         2. Cite specific sources using [Source N] notation
         3. Identify any legal principles or precedents mentioned
         4. Note any important caveats or limitations
-        5. If the context doesn't fully answer the question, clearly state what information is missing
-        Answer:
+        5. If the context doesn't fully answer the question, clearly state what information is Answer:
       `);
 
       // Format prompt and call LLM directly (simpler and avoids malformed RunnableSequence usage)
-      const promptText = await promptTemplate.format({ context, question });
+      const promptText = await promptTemplate.format({ context: question };
       const llmResult = await llm.invoke(promptText); // Use invoke for direct call, no need for `as any`
       const answer = String(llmResult); // Ollama.invoke returns a string
       const analysis = await this.analyzeAnswer(answer, relevantDocs);
@@ -382,21 +362,18 @@ export class LegalRAGPipeline {
         queryType: 'legal_research',
         confidence: String(analysis.confidence),
         processingTime: Date.now() - startTime,
-        contextUsed: relevantDocs.map(d => d.metadata.documentId as string), // Type assertion
-        embedding: JSON.stringify(queryEmbedding),
-        metadata: { sourcesCount: relevantDocs.length, keyPoints: analysis.keyPoints }});
+        contextUsed: relevantDocs.map(d => d.metadata.documentId as string), // Type embedding: JSON.stringify(queryEmbedding),
+        metadata: { sourcesCount: relevantDocs.length, keyPoints: analysis.keyPoints }};
 
       return {
         answer,
         sources: relevantDocs.map(d => ({
-          id: d.metadata.documentId as string, // Type assertion
-          title: d.metadata.title as string | undefined, // Type assertion
-          score: d.metadata.score as number, // Type assertion
-        })),
+          id: d.metadata.documentId as string, // Type title: d.metadata.title as string | undefined, // Type score: d.metadata.score as number, // Type assertion
+        }),
         confidence: analysis.confidence,
         keyPoints: analysis.keyPoints,
         processingTime: Date.now() - startTime}} catch (error: unknown) { // Changed any to unknown
-      console.error('[RAG] QA error: ', error);
+      console.error('[RAG] error: ', error);
       // NOTE: Assumes 'userAiQueries' table exists in '$lib/server/db/unified-schema'
       await db.insert(schema.userAiQueries).values({
         userId,
@@ -405,8 +382,7 @@ export class LegalRAGPipeline {
         response: '',
         model: LLM_MODEL,
         isSuccessful: false,
-        errorMessage: (error instanceof Error ? error.message : String(error)), // Handle unknown error type
-        processingTime: Date.now() - startTime});
+        errorMessage: (error instanceof Error ? error.message : String(error)), // Handle unknown error processingTime: Date.now() - startTime};
       throw error}
   }
 
@@ -415,7 +391,7 @@ export class LegalRAGPipeline {
     const contractPrompt = PromptTemplate.fromTemplate(`
       You are a legal expert specializing in contract analysis. Analyze the following contract and provide a structured assessment.
       Contract: {contract}
-      Provide your analysis in the following format:
+      Provide your analysis in the format:
       1. CONTRACT TYPE & PARTIES
       - Type of contract
       - Parties involved
@@ -443,28 +419,27 @@ export class LegalRAGPipeline {
     `);
 
     const chain = RunnableSequence.from([contractPrompt, llm, new StringOutputParser()]);
-    const chainResult = await chain.invoke({ contract: contractText });
+    const chainResult = await chain.invoke({ contract: contractText };
     const analysis = String(chainResult); // StringOutputParser returns string
     return this.parseContractAnalysis(analysis)}
 
   async correlateEvidence(evidenceIds: string[]) {
     // Fetch evidence content using raw SQL to avoid Drizzle type errors with the fallback schema.
     // This returns rows as plain objects (any), so accessing title/description/summary is safe.
-    type EvidenceRecord = { id: string, title: string | null; description: string | null; summary: string | null };
-    // NOTE: Assumes 'evidence' table exists in '$lib/server/db/unified-schema'
-    const evidenceRecords: EvidenceRecord[] = await sql`
-      SELECT id, title, description, COALESCE(summary, '') AS summary FROM ${schema.evidence} WHERE id = ANY(${evidenceIds})
+    type EvidenceRecord = { id: string, title: string | null,description: string | null,summary: string | null };
+    // NOTE: Assumes 'evidence' table exists in '$lib/server/db/unified-schema' evidenceRecords: EvidenceRecord[] = await sql`
+      SELECT id, title, description, COALESCE(summary, '') AS summary FROM ${schema.evidence} WHERE id = ANY(${evidenceIds}
     `;
 
     // Build formatted evidence blocks for the prompt
     const formattedEvidence = evidenceRecords.map(
-      (e: EvidenceRecord, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled'}):\n${e.description ?? ''}\n${e.summary ?? ''}`
+      (e: EvidenceRecord, i: number) => `Evidence ${i + 1} (${e.title ?? 'Untitled'}:\n${e.description ?? ''}\n${e.summary ?? ''}`
     );
 
     const correlationPrompt = PromptTemplate.fromTemplate(`
-      As a legal analyst, examine the relationships between these pieces of evidence:
+      As a legal analyst, examine the relationships between these pieces evidence:
       ${formattedEvidence.join('\n\n')}
-      Provide a comprehensive analysis covering:
+      Provide a comprehensive covering:
       1. DIRECT CONNECTIONS
       - Explicit relationships between evidence items
       - Common entities, dates, or locations
@@ -488,12 +463,11 @@ export class LegalRAGPipeline {
       6. RECOMMENDED ACTIONS
       - Additional evidence needed
       - Further investigation required
-      - Strategic considerations
-      Analysis:
+      - Strategic Analysis:
     `),
 
     const chain = RunnableSequence.from([correlationPrompt, llm, new StringOutputParser()]);
-    return await chain.invoke({})}
+    return await chain.invoke({}}
 
   // === HELPER METHODS ===
   private async generateEmbedding(text: string): Promise<number[]> {
@@ -506,15 +480,12 @@ export class LegalRAGPipeline {
     await redis.set(cacheKey, JSON.stringify(embedding), 'EX', 60 * 60 * 24);
     return embedding}
 
-  private async smartLegalChunking(content: string): Promise<string[]> {
-    const chunks: string[] = [];
+  private async smartLegalChunking(content: string): Promise<string[]> { chunks: string[] = [];
     const sectionPatterns = [
       /(?:^|\n)(?:SECTION|ARTICLE|CLAUSE|PARAGRAPH)\s+[\d.]+[^\n]*/gi,
       /(?:^|\n)Â§\s*[\d.]+[^\n]*/g,
       /(?:^|\n)\d+\.\s+[A-Z][^\n]+/g,
-      /(?:^|\n)\([a-z]\)\s+[^\n]+/g];
-
-    let structuredChunks: string[] = [];
+      /(?: ^|\n)\([a-z]\)\s+[^\n]+/g],structuredChunks: string[] = [];
     let contentProcessed = false
     // Attempt to split by legal sections first
     for (const pattern of sectionPatterns) {
@@ -538,21 +509,21 @@ export class LegalRAGPipeline {
       if (chunk.length > 2000) {
         // If a chunk is still too large, split it further
         const subDocs = await textSplitter.createDocuments([chunk]);
-        chunks.push(...subDocs.map(d => d.pageContent))} else {
+        chunks.push(...subDocs.map(d => d.pageContent))}
+else {
         chunks.push(chunk)}
     }
     return chunks}
 
   private async generateAutoTags(content: string, documentType: string): Promise<Array<{ tag: string, confidence: number }>> { // More specific type
     const tagPrompt = PromptTemplate.fromTemplate(`
-      Extract relevant legal tags from this {documentType} document. Focus on legal concepts, parties, jurisdictions, case types, and key topics.
-      Document excerpt: {content}
-      Return ONLY a JSON array of tags with confidence scores (0-1): [{"tag": "contract law", "confidence": 0.95}, ...]
+      Extract relevant legal tags from this {documentType} document. Focus on legal concepts, parties, jurisdictions, case types, and key topics. excerpt: {content}
+      Return ONLY a JSON array of tags with confidence scores (0-1): [{"tag": "contract law";confidence": 0.95}, ...]
     `);
 
     const chain = RunnableSequence.from([tagPrompt, llm, new StringOutputParser()]);
     try {
-      const chainResult = await chain.invoke({ documentType, content: content.substring(0, 3000) });
+      const chainResult = await chain.invoke({ documentType, content: content.substring(0, 3000) };
       const responseText = typeof chainResult === 'string' ? chainResult : String(chainResult); // StringOutputParser returns string
       const jsonMatch = responseText.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
@@ -568,14 +539,14 @@ export class LegalRAGPipeline {
     const avgScore = sources.reduce((sum, doc) => sum + (doc.metadata?.score || 0), 0) / (sources.length || 1);
     const confidence = Math.min(0.95, avgScore);
 
-    // Extract simple key points from the answer: first 3 non-empty lines after trimming common bullets
+    // Extract simple key points from answer: first 3 non-empty lines after trimming common bullets
     const keyPoints = (answer || '')
       .split(/\r?\n/)
       .map(line => line.replace(/^[\d.â€¢-\s]+/, '').trim())
       .filter(Boolean)
       .slice(0, 3);
 
-    return { confidence, keyPoints }}
+    return { confidence: keyPoints }}
 
   private parseContractAnalysis(analysis: string) {
     const sections = {

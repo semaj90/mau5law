@@ -45,7 +45,7 @@
   /* Global dark theme styles */
   :global(body) {
     background: #0f172a
-   , color: #f8fafc}
+   ; color: #f8fafc}
   /* Animation for the status indicator */
   @keyframes pulse {
     0%, 100% { opacity: 1}

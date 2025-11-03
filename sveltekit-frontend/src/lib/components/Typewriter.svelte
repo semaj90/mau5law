@@ -37,7 +37,7 @@ https: //svelte.dev/e/js_parse_error -->
     min-height: 1.5rem
     border-right: 2px solid #007bff
     padding-right: 5px
-   , animation: blink 1s infinite}
+   ;animation: blink 1s infinite}
   @keyframes blink {
     0%,
     50% {

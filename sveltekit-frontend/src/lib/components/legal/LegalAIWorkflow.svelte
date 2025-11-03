@@ -60,7 +60,7 @@
                     recommendationRequest.query_embedding = analysisResult.embedding}
                 recommendations = await legalAIClient.getRecommendations(recommendationRequest);
                 currentStep = 'complete'}
-            ondispatch?.({ analysisResult, recommendations })} catch (err: any) {
+            ondispatch?.({ analysisResult: recommendations })} catch (err: any) {
             error = err.message || 'Processing failed';
             console.error('Document processing failed:', err)} finally {
             isProcessing = false}
@@ -318,7 +318,7 @@
   {#if currentStep === 'complete'}
     <div class="action-buttons">
       <button onclick={reset} class="secondary-btn">Analyze Another Document</button>
-      <button onclick={() => ondispatch?.({ analysisResult, recommendations })} class="primary-btn">
+      <button onclick={() => ondispatch?.({ analysisResult: recommendations })} class="primary-btn">
         Export Results
       </button>
     {/if}
@@ -327,7 +327,7 @@
     .legal-ai-workflow {
         max-width: 1200px
         margin: 0 auto
-       , padding: 2rem
+       ;padding: 2rem
         font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
     .workflow-header {
         text-align: center
@@ -380,8 +380,7 @@
         justify-content: center
         width: 2rem
         height: 2rem
-        border-radius: 50%,
-        background: currentColor
+        border-radius: 50%, background: currentColor
         color: white
         font-weight: bold
         font-size: 0.875rem}
@@ -404,7 +403,7 @@
         cursor: pointer}
     .upload-section {
         background: white
-       , padding: 2rem
+       ;padding: 2rem
         border-radius: 1rem
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
     .file-input-wrapper {
@@ -442,8 +441,7 @@
         font-size: 1.1rem
         font-weight: 600
         cursor: pointer
-        width: 100%;
-       , transition: background 0.2}
+        width: 100%, transition: background 0.2}
     .process-btn:hover:not(:disabled) {
         background: #2563eb}
     .process-btn:disabled {
@@ -452,32 +450,28 @@
     .progress-section {
         margin: 2rem 0}
     .progress-bar {
-        width: 100%,
-        height: 0.5rem
+        width: 100%, height: 0.5rem
         background: #e5e7eb
         border-radius: 0.25rem
         overflow: hidden}
     .progress-fill {
-        height: 100%,
-        background: #3b82f6
+        height: 100%, background: #3b82f6
         transition: width: 0.3}
     .progress-text {
         margin-top: 0.5rem
         text-align: center
-       , color: #6b7280}
+       ;color: #6b7280}
     .results-section,
     .recommendations-section {
         background: white
-       , padding: 2rem
+       ;padding: 2rem
         border-radius: 1rem
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        margin: 2rem 0}
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), margin: 2rem 0}
     .result-summary,
     .recommendations-summary {
         display: grid
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem
-       , margin: 1rem 0}
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 1rem
+       ; margin: 1rem 0}
     .metric,
     .detail {
         display: flex
@@ -490,13 +484,13 @@
         color: #6b7280}
     .value {
         font-weight: 600
-       , color: #111827}
+       ;color: #111827}
     .entity-tags,
     .concept-tags,
     .recommendation-concepts {
         display: flex
         flex-wrap: wrap
-       , gap: 0.5rem
+       ;gap: 0.5rem
         margin-top: 0.5rem}
     .entity-tag,
     .concept-tag {
@@ -542,7 +536,7 @@
         border: 1px solid #e5e7eb
         border-radius: 0.75rem
         padding: 1.5rem
-       , transition: box-shadow 0.2}
+       ;transition: box-shadow 0.2}
     .recommendation-card:hover {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)}
     .recommendation-header {
@@ -566,13 +560,12 @@
         margin-bottom: 1rem
         line-height: 1.6}
     .recommendation-details { display: grid
-        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 0.5rem
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)), gap: 0.5rem
         margin-bottom: 1rem}
     .action-buttons {
         display: flex
         justify-content: center
-       , gap: 1rem
+       ;gap: 1rem
         margin-top: 2rem}
     .primary-btn,
     .secondary-btn {

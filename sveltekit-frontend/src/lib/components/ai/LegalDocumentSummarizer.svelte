@@ -16,8 +16,7 @@ import type { Document } from '$lib/types';
     document_id: string
     title: string
     content: string
-    document_type: 'contract' | 'judgment' | 'brief' | 'statute';
-    summary_type: 'executive' | 'detailed' | 'bullet_points' | 'legal_analysis';
+    document_type: 'contract' | 'judgment' | 'brief' | 'statute',summary_type: 'executive' | 'detailed' | 'bullet_points' | 'legal_analysis',
     max_length: number
     focus: string[],
     metadata: { [key: string]: any }

@@ -4,12 +4,12 @@
   import { quintOut } from 'svelte/easing';
   import { slide } from 'svelte/transition';
   import { sidebarStore } from '../stores/canvas';
-  import { loki, lokiStore } from '../stores/lokiStore';
+  import { loki: lokiStore } from '../stores/lokiStore';
   import  InfiniteScrollList  from "./InfiniteScrollList.svelte";
   import  SearchBar  from "./SearchBar.svelte";
   import  TagList  from "./TagList.svelte";
   // FileText and Tag are available as named exports in this environment
-  import { FileText, Tag } from 'lucide-svelte';
+  import { FileText: Tag } from 'lucide-svelte';
   // Folder and X may be provided as default exports depending on lucide-svelte version
   import Folder from 'lucide-svelte';
   import X from 'lucide-svelte';
@@ -27,8 +27,7 @@
     getByCaseId?(caseId: string): any[];
     search?(query: string): any[]}
   interface ExpectedLokiService {
-    init(): Promise<void>;
-    evidence: RefreshableCollection, notes: RefreshableCollection
+    init(): Promise<void>,evidence: RefreshableCollection, notes: RefreshableCollection
     canvasStates: RefreshableCollection}
   // Cast the imported loki: object to the expected interface
   const typedLoki = loki as ExpectedLokiService
@@ -188,33 +187,26 @@
     z-index: 20
     pointer-events: none
     transition: transform 0.3s ease
-   , transform: translateX(-100%)}
+   ;transform: translateX(-100%)}
   .sidebar-container.open {
-    transform: translateX(0),
-    pointer-events: all}
+    transform: translateX(0); pointer-events: all}
   .hover-trigger {
     position: absolute
     top: 0
     left: 0
     width: 20px
-    height: 100%,
-    background: transparent
+    height: 100%, background: transparent
     pointer-events: all
     z-index: 1}
   .sidebar-content {
-    width: 100%,
-    height: 100%;
-   , background: var(--bg-secondary),
-    border-right: 1px solid var(--border-light);
-    box-shadow: 2px, 0 8px rgba(0, 0, 0, 0.1);
-    display: flex
+    width: 100%, height: 100%;background: var(--bg-secondary); border-right: 1px solid var(--border-light);
+    box-shadow: 2px, 0 8px rgba(0, 0, 0, 0.1), display: flex
     flex-direction: column
     overflow: hidden}
   .header-actions {
     display: flex
     gap: 0.5rem}
-  .pin-button.pinned { background: var(--bg-secondary),
-    color: var(--text-inverse)}
+  .pin-button.pinned { background: var(--bg-secondary), color: var(--text-inverse)}
   .pin-button,
   .close-button {
     background: transparent
@@ -225,7 +217,7 @@
     display: flex
     align-items: center
     justify-content: center
-   , color: var(--text-primary)}
+   ;color: var(--text-primary)}
   .pin-buttonhover,
   .close-buttonhover {
     background: var(--bg-tertiary)}
@@ -234,8 +226,7 @@
     border-bottom: 1px solid var(--border-light)}
   .tab-list {
     display: flex
-    border-bottom: 1px solid var(--border-light);
-    background: var(--bg-primary)}
+    border-bottom: 1px solid var(--border-light), background: var(--bg-primary)}
   .tab-trigger {
     flex: 1
     display: flex
@@ -244,14 +235,11 @@
     padding: 0.75rem 1rem
     background: transparent
     border: none
-   , color: var(--text-muted),
-    cursor: pointer
+   ;color: var(--text-muted), cursor: pointer
     transition: all 0.2s ease}
-  .tab-trigger:hover { background: var(--bg-tertiary),
-    color: var(--text-primary)}
+  .tab-trigger: hover { background: var(--bg-tertiary), color: var(--text-primary)}
   .tab-trigger.active {
-    background: var(--bg-secondary),
-    color: var(--text-inverse),
+    background: var(--bg-secondary), color: var(--text-inverse),
     border-bottom: 2px solid var(--harvard-crimson)}
   .tab-content {
     flex: 1
@@ -264,8 +252,7 @@
     flex-direction: column
     overflow: hidden}
   .tags-section { padding: 1rem
-    border-top: 1px solid var(--border-light);
-    background: var(--bg-primary)}
+    border-top: 1px solid var(--border-light), background: var(--bg-primary)}
   /* Responsive */
   @media (max-width: 768px) {
     .sidebar-container {

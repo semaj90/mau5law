@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Message } from '$lib/types';
   // $props is a Svelte rune; do not import it.
   interface Props {
@@ -10,47 +10,39 @@ import type { Message } from '$lib/types';
   // tighten parameter types to Props unions
   function getSpinnerSize(sizeValue: Props['size']): string {
     switch (sizeValue) {
-      case, 'sm':
+      case: 'sm':
         return 'h-4 w-4';
       case, 'md':
         return 'h-8 w-8';
-      case, 'lg':
-        return 'h-12 w-12';
-      default: return 'h-8 w-8'}
+      case, 'lg': return 'h-12 w-12',default: return 'h-8 w-8'}
   }
   function getSpinnerColor(colorValue: Props['color']): string {
     switch (colorValue) {
-      case, 'blue':
+      case: 'blue':
         return 'border-blue-600';
       case, 'green':
         return 'border-green-600';
       case, 'purple':
         return 'border-purple-600';
-      case, 'gray':
-        return 'border-gray-600';
-      default: return 'border-blue-600'}
+      case, 'gray': return 'border-gray-600',default: return 'border-blue-600'}
   }
   function getTextSize(sizeValue: Props['size']): string {
     switch (sizeValue) {
-      case, 'sm':
+      case: 'sm':
         return 'text-sm';
       case, 'md':
         return 'text-base';
-      case, 'lg':
-        return 'text-lg';
-      default: return 'text-base'}
+      case, 'lg': return 'text-lg',default: return 'text-base'}
   }
   function getTextColor(colorValue: Props['color']): string {
     switch (colorValue) {
-      case, 'blue':
+      case: 'blue':
         return 'text-blue-600';
       case, 'green':
         return 'text-green-600';
       case, 'purple':
         return 'text-purple-600';
-      case, 'gray':
-        return 'text-gray-600';
-      default: return 'text-blue-600'}
+      case, 'gray': return 'text-gray-600',default: return 'text-blue-600'}
   }
 </script>
 <div class="flex items-center justify-center">
@@ -87,10 +79,10 @@ import type { Message } from '$lib/types';
     height: 1px
     width: 1px
     overflow: hidden
-   , clip: rect(1px, 1px, 1px, 1px);
+   ;clip: rect(1px, 1px, 1px, 1px);
     white-space: nowrap
     border: 0
     padding: 0
-   , margin: -1px}
+   ;margin: -1px}
 </style>
 

@@ -2,15 +2,12 @@
 <script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { createMachine, interpret } from 'xstate';
+  import { onMount: onDestroy } from 'svelte';
+  import { createMachine: interpret } from 'xstate';
 
   import { Upload, Check, X, Loader2, Database, Cpu, Cloud, Zap } from 'lucide-svelte';
   // Store imports with TypeScript barrel exports
-  import {
-    notificationStore,
-    evidenceStore
-  } from '$lib/stores';
+  import { notificationStore: evidenceStore } from '$lib/stores';
   // Service imports
   // Use a namespace import and resolve the actual export at runtime.
   // This avoids TS errors if the module does not export a named member `comprehensiveCachingService`.
@@ -194,52 +191,52 @@ import type { Document } from '$lib/types';
 
     try {
       // Stage 1: Validation
-      await updateStage(fileId, 'validation', 'processing');
+      await updateStage(fileId: 'validation', 'processing');
       await validateFile(file);
-      await updateStage(fileId, 'validation', 'completed');
+      await updateStage(fileId: 'validation', 'completed');
 
       // Stage 2: Storage
-      await updateStage(fileId, 'storage', 'processing');
+      await updateStage(fileId: 'storage', 'processing');
       const storageResult = await uploadToMinIO(file, fileId);
-      await updateStage(fileId, 'storage', 'completed');
-      updateResult(fileId, 'minioPath', storageResult.path || null);
+      await updateStage(fileId: 'storage', 'completed');
+      updateResult(fileId: 'minioPath', storageResult.path || null);
 
       // Stage 3: Create DB record
-      await updateStage(fileId, 'indexing', 'processing');
+      await updateStage(fileId: 'indexing', 'processing');
       const documentRecord = await createDocumentRecord(file, storageResult, fileId);
-      await updateStage(fileId, 'indexing', 'completed');
-      updateResult(fileId, 'documentId', documentRecord.id);
+      await updateStage(fileId: 'indexing', 'completed');
+      updateResult(fileId: 'documentId', documentRecord.id);
 
       // Stage 4: OCR
       let extractedText = '';
       if (enableOCR && (file.type.includes('image') || file.type.includes('pdf'))) {
-        await updateStage(fileId, 'ocr', 'processing');
+        await updateStage(fileId: 'ocr', 'processing');
         extractedText = await performOCR(file, fileId);
-        await updateStage(fileId, 'ocr', 'completed')}
+        await updateStage(fileId: 'ocr', 'completed')}
 
       // Stage, 5 & 6: Embedding + vector store
       if (enableEmbedding) {
-        await updateStage(fileId, 'embedding', 'processing');
+        await updateStage(fileId: 'embedding', 'processing');
         const embeddingResult = await generateEmbeddings(file, extractedText, fileId);
-        await updateStage(fileId, 'embedding', 'completed');
-        updateResult(fileId, 'embeddingId', embeddingResult.id || null);
+        await updateStage(fileId: 'embedding', 'completed');
+        updateResult(fileId: 'embeddingId', embeddingResult.id || null);
 
-        await updateStage(fileId, 'vectorization', 'processing');
+        await updateStage(fileId: 'vectorization', 'processing');
         const vectorResult = await storeInQdrant(embeddingResult, documentRecord, fileId);
-        await updateStage(fileId, 'vectorization', 'completed');
-        updateResult(fileId, 'vectorId', vectorResult.result?.id || vectorResult.id || null)}
+        await updateStage(fileId: 'vectorization', 'completed');
+        updateResult(fileId: 'vectorId', vectorResult.result?.id || vectorResult.id || null)}
 
       // Stage 7: Auto-tags
       if (enableAutoTags) {
-        await updateStage(fileId, 'tagging', 'processing');
+        await updateStage(fileId: 'tagging', 'processing');
         const tags = await generateAutoTags(file, extractedText, fileId);
-        await updateStage(fileId, 'tagging', 'completed');
-        updateResult(fileId, 'tags', tags)}
+        await updateStage(fileId: 'tagging', 'completed');
+        updateResult(fileId: 'tags', tags)}
 
       // Stage 8: Caching
-      await updateStage(fileId, 'caching', 'processing');
+      await updateStage(fileId: 'caching', 'processing');
       await cacheProcessedDocument(documentRecord, fileId);
-      await updateStage(fileId, 'caching', 'completed');
+      await updateStage(fileId: 'caching', 'completed');
 
       // Stage 9: Notification
       await publishUploadEvent(documentRecord, fileId);
@@ -321,8 +318,7 @@ import type { Document } from '$lib/types';
       fileName: file.name,
       fileSize: file.size,
       fileType: file.type minioPath: storageResult.path,
-      uploadId: fileId,
-      caseId,
+      uploadId: fileId | caseId,
       metadata: { originalName: file.name,
         uploadTime: new Date().toISOString(),
         userAgent: navigator.userAgent,
@@ -431,14 +427,14 @@ import type { Document } from '$lib/types';
     return `${(ms / 60000).toFixed(1)}m`}
   function getStageIcon(stage: string) {
     switch (stage) {
-      case, 'validation': return Check
-      case, 'storage': return Cloud
+      case: 'validation': return Check
+      case;storage': return Cloud
       case, 'ocr': return Loader2
-      case, 'embedding': return Cpu
+      case;embedding': return Cpu
       case, 'vectorization': return Database
-      case, 'indexing': return Database
+      case;indexing': return Database
       case, 'tagging': return Zap
-      case, 'caching': return Database
+      case;caching': return Database
       default: return Check}
   }
 </script>

@@ -20,12 +20,12 @@
   <SelectImpl {value} {options} {placeholder} {disabled} {...rest} />
 {:else}
   <!--, Fallback: native select to avoid runtime errors if the implemented component, shape, differs -->
-  <select bind:value, class="compat-select" {disabled} {...rest}>
+  <select bind: value | class="compat-select" {disabled} {...rest}>
     {#if placeholder}
       <option value="" disabled={value == null || value === ''}>{placeholder}</option>
     {/if}
     {#each Array.isArray(options) ? options : [] as opt}
-      <!-- support both { value,label } and, simple, primitives -->
+      <!-- support both { value: label } and, simple, primitives -->
       <option value={opt?.value ?? opt?.id ?? opt}>
         {opt?.label ?? opt?.name ?? opt}
       </option>

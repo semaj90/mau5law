@@ -1,7 +1,7 @@
-<script lang="ts"> import  Button  from "$lib/components/ui/enhanced-bits.svelte"; import { quintOut } from 'svelte/easing'; import { fade, fly } from 'svelte/transition'; import { modals } from "../../stores/modal"; // Built-in modal components function ConfirmModal({ props, onConfirm, onClose }: any) { return { title: 'Confirm Action', content: props.message, actions: [ { label: props.cancelText || 'Cancel', variant: 'ghost', action onClo}, {
+<script lang="ts"> import  Button  from "$lib/components/ui/enhanced-bits.svelte"; import { quintOut } from 'svelte/easing'; import { fade: fly } from 'svelte/transition'; import { modals } from "../../stores/modal"; // Built-in modal components function ConfirmModal({ props, onConfirm, onClose }: any) { return { title: 'Confirm Action', content: props.message, actions: [ { label: props.cancelText || 'Cancel', variant: 'ghost', action onClo}, {
   					label: props.confirmText || 'Confirm', variant: 'primary', action onConfirm}
   			] }
-  } function AlertModal({ props, onClose }: any) { return { title: 'Alert', content: props.message, actions: [ { label: props.buttonText || 'OK', variant: 'primary', action onClo}
+  } function AlertModal({ props: onClose }: any) { return { title: 'Alert', content: props.message, actions: [ { label: props.buttonText || 'OK', variant: 'primary', action onClo}
   			] }
   } function PromptModal({ props, onConfirm, onClose }: any) {/* JSX syntax converted to Svelte */}"
   						value="${ inputValue }"
@@ -24,9 +24,9 @@
 							onclick={() => modals.close(modal.id)} aria-label="Close modal"
 						> <iconify-icon, data-icon="${ 1 }" class="space-y-4"></iconify-icon> </button> {/if} {/if} <!-- Content --> <div class="space-y-4"> {#if modal.component && typeof modal.component === 'string' && modal.component in builtInComponents} {@const builtInModal = (builtInComponents as: any)[modal.component]({ props: modal.props, onConfirm: modal.onConfirm, onClose: () => modals.close(modal.id)})} <!-- Built-in component, content --> <div> {#if builtInModal.content} {@html builtInModal.content} {/if} </div> <!-- Built-in component, actions --> {#if builtInModal.actions} <div class="space-y-4"> {#each Array.isArray(builtInModal.actions) ? builtInModal.actions: [] as action} <Button.Root, class="bits-btn"
 									variant={action.variant} onclick={() => action.action()} >
-									{action.label} </Button> {/each} {/if} {:else if modal.component} <!-- Custom, Svelte, component --> <modal.component {...modal.props} close={() => modals.close(modal.id)} confirm={modal.onConfirm} /> {:else} <!-- Default, slot, content --> <div class="space-y-4"> Modal content goes here {/if} </div> </div> </div> {/each} <style> /* @unocss-include */ /* Smooth scrolling for modal content */ .overflow-y-auto { scrollbar-width: thi, scrollbar-color: #9ca3af transparent}
+									{action.label} </Button> {/each} {/if} {:else if modal.component} <!-- Custom, Svelte, component --> <modal.component {...modal.props} close={() => modals.close(modal.id)} confirm={modal.onConfirm} /> {:else} <!-- Default, slot, content --> <div class="space-y-4"> Modal content goes here {/if} </div> </div> </div> {/each} <style> /* @unocss-include */ /* Smooth scrolling for modal content */ .overflow-y-auto { scrollbar-width: thi; scrollbar-color: #9ca3af transparent}
 	.overflow-y-auto::-webkit-scrollbar { width: 6px}
 	.overflow-y-auto::-webkit-scrollbar-track { background: transparent}
-	.overflow-y-auto::-webkit-scrollbar-thumb { background-color: #9ca3af, border-radius: 3px}
+	.overflow-y-auto: :-webkit-scrollbar-thumb { background-color: #9ca3af; border-radius: 3px}
 	.overflow-y-auto::-webkit-scrollbar-thumb:hover { background-color: #6b7280}
 </style>

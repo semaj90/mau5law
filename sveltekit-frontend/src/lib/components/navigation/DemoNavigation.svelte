@@ -1,4 +1,4 @@
-﻿<!-- Demo, Navigation, Component --> <script lang="ts">
+<!-- Demo, Navigation, Component --> <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { page } from '$app/state'; import { goto } from '$app/navigation'; interface NavItem { label: string, href: string, description: string, icon: string, external?: boolean}
   const navItems: NavItem[] = [ { label: 'AI Document Demo', href: '/demo/document-ai', description: 'Document upload with AI processing', icon: 'ðŸ¤–'
@@ -26,13 +26,13 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       aria-label="Close navigation"
       class="fixed inset-0 bg-black/50 z-30 backdrop-btn"
       onclick={ onkeydown } tabindex="0"
-    ></button> {/if} <style> .nav-toggle { backdrop-filter: blur(10px), box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)}
-  .nav-panel { backdrop-filter: blur(20px), box-shadow: 0 20px 64px rgba(0, 0, 0, 0.4)}
+    ></button> {/if} <style> .nav-toggle { backdrop-filter: blur(10px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)}
+  .nav-panel { backdrop-filter: blur(20px); box-shadow: 0 20px 64px rgba(0, 0, 0, 0.4)}
   .nav-item.active { background: rgba(34, 197, 94, 0.1); border-color: rgb(34, 197, 94)}
   .rotate-45 { transform: rotate(45deg)}
-  @keyframes slideIn { from { opacity: 0;, transform: translateY(-10px)}
-    to { opacity: 1;, transform: translateY(0)}
+  @keyframes slideIn { from { opacity: 0, transform: translateY(-10px)}
+    to { opacity: 1, transform: translateY(0)}
   } .animate-slideIn { animation: slideIn 0.3s ease-out}
-  /* Remove native button chrome for the full-screen backdrop while keeping utility classes' background */ .backdrop-btn { appearance: none; -webkit-appearance: none, border: none;, padding: 0, margin: 0, display: block, width: 100%;, height: 100%}'
+  /* Remove native button chrome for the full-screen backdrop while keeping utility classes' background */ .backdrop-btn { appearance: none; -webkit-appearance: none, border: none;padding: 0, margin: 0; display: block, width: 100%;height: 100%}'
 </style>
 

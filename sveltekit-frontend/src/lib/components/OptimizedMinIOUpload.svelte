@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { detectGPUSupport } from '$lib/utils/gpu-capabilities';
 	const { bucket } = $props<{ bucket: string }>()
@@ -40,7 +40,7 @@
 	<!--, TODO: Implement optimized MinIO multipart upload with, hashing, offload -->
 </div>
 <style>
-	.optimized-minio-upload { display: flex, flex-direction: column, gap: 0.5rem}
-	button[disabled] { opacity: 0.6;, cursor: not-allowed}
+	.optimized-minio-upload { display: flex; flex-direction: column, gap: 0.5rem}
+	button[disabled] { opacity: 0.6, cursor: not-allowed}
 </style>
 

@@ -11,6 +11,6 @@
   {/if}
 </div>
 <style>
-  .card-header { font-weight: 600, margin-bottom: 0.5rem}
+  .card-header { font-weight: 600; margin-bottom: 0.5rem}
 </style>
 

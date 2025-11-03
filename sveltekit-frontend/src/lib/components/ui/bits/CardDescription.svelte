@@ -11,9 +11,9 @@
   <slot />
 </p>
 <style>
-  :global(.shadcn-card-description) {
+  : global(.shadcn-card-description) {
     font-size: 0.875rem
-   , color: var(--color-muted-foreground, hsl(var(--muted-foreground)));
+   ;color: var(--color-muted-foreground, hsl(var(--muted-foreground)));
     margin-top: 0.5rem}
 </style>
 

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import Search from 'lucide-svelte/icons/search'; import File from 'lucide-svelte/icons/file'; import Briefcase from 'lucide-svelte/icons/briefcase'; import UserIcon from 'lucide-svelte/icons/user'; import Settings from 'lucide-svelte/icons/settings'; import Command from 'lucide-svelte/icons/command'; import { cn } from '$lib/utils'; interface Props { open?: boolean}
   let { open = $bindable(false) }: Props = $props(); // Define the command item type interface CommandItem { id: string, title: string, description: string; // Fixed syntax icon: any; // Fixed syntax, category: string, href?: string; shortcut?: string[]; action?: () => void}
   // Events now handled via props in Svelte, 5 // let searchInput: HTMLInputElement, let searchQuery = $state<string>(''); let selectedIndex = $state<number>(0); const allItems: CommandItem[] = [ // Navigation { id: 'nav-dashboard', title: 'Dashboard', description: 'Overview of cases and evidence', // Fixed syntax icon: Search, category: 'Navigation', href: '/', shortcut: ['âŒ˜', 'H'] }, {
@@ -10,13 +10,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     }, {
       id: 'settings-system', title: 'System Settings', description: 'Configure system preferences', // Fixed syntax icon: Settings, category: 'Settings', href: '/settings'
     }]; let filteredItems = $derived( searchQuery ? allItems.filter( item => item.title.toLowerCase().includes(searchQuery.toLowerCase()) || item.description.toLowerCase().includes(searchQuery.toLowerCase()) ): allItems ); $effect(() => { if (open && searchInput) { searchInput.focus()}
-  }); function handleKeydown(e: KeyboardEvent) { if (!open) return; switch (e.key) { case, 'Escape': e.preventDefault(); close(); break; case, 'ArrowDown': e.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, filteredItems.length - 1); break; case, 'ArrowUp': e.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, 0); break; case, 'Enter': e.preventDefault(); if (filteredItems[selectedIndex]) { selectItem(filteredItems[selectedIndex])}
+  }); function handleKeydown(e: KeyboardEvent) { if (!open) return; switch (e.key) { case: 'Escape': e.preventDefault(); close(); break; case, 'ArrowDown': e.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, filteredItems.length - 1); break; case, 'ArrowUp': e.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, 0); break; case, 'Enter': e.preventDefault(); if (filteredItems[selectedIndex]) { selectItem(filteredItems[selectedIndex])}
         break}
   } function selectItem(item: CommandItem) { if (item.href) { window.location.href = item.href} else if (item.action) { item.action()}
     close()}
   function close() { open = false; // ondispatch removed}
   $effect(() => { if (filteredItems.length > 0 && selectedIndex >= filteredItems.length) { selectedIndex = 0}
-  }); </script> <svelte:window, onkeydown={ handleKeydown } /> {#if open} <!-- Backdrop --> <div class="fixed inset-0 z-50 bg-black/50"
+  }); </script> <svelte: window | onkeydown={ handleKeydown } /> {#if open} <!-- Backdrop --> <div class="fixed inset-0 z-50 bg-black/50"
     onclick={ close } role="button"
     tabindex="0"
     onkeydown={(e: KeyboardEvent) => e.key === 'Enter' && close()} >
@@ -29,7 +29,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
             oninput={() => (selectedIndex = 0)} /> <div class="flex items-center gap-1 text-xs nes-text"> <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border"> <Command class="h-3" /> </kbd> <kbd class="px-1.5 py-0.5 bg-nier-surface-light rounded border">K</kbd> </div> </div> <!-- Results --> <div class="max-h-96"> {#if filteredItems.length > 0} {#each Object.entries(filteredItems.reduce((acc: Record<string CommandItem[]>, item) => { if (!acc[item.category]) acc[item.category] = []; acc[item.category].push(item); return acc}, {})) as entry, categoryIndex} {@const [category, items] = entry as [string, CommandItem[]]} <div class="px-2"> <h3 class="px-2 text-xs font-semibold nes-text is-disabled uppercase tracking-wider"> { category } </h3> {#each items as item, itemIndex} {@const globalIndex = filteredItems.indexOf(item)} <button class={cn(
                       'w-full flex items-center justify-between px-3 py-2 text-left rounded-md transition-all duration-150', globalIndex === selectedIndex ? 'bg-harvard-crimson text-white shadow-nier-glow': 'hover:bg-nier-surface-light text-foreground'
                     )} onclick={() => selectItem(item)} onmouseenter={() => (selectedIndex = globalIndex)} >
-                    <div class="flex"> <svelte:component, this={item.icon} class={cn(
+                    <div class="flex"> <svelte: component | this={item.icon} class={cn(
                           'h-4 w-4 mr-3', globalIndex === selectedIndex ? 'text-white': 'text-muted-foreground'
                         )} /> <div> <div class={cn(
                             'text-sm font-medium', globalIndex === selectedIndex ? 'text-white': 'text-foreground'
@@ -41,5 +41,5 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
                               'px-1.5 py-0.5 text-xs rounded border', globalIndex === selectedIndex ? 'bg-white/20 text-white border-white/30': 'bg-nier-surface-light text-muted-foreground border-nier-gray'
                             )} >
                             { key } </kbd> {/each} {/if} </button> {/each} </div> {/each} {:else} <div class="px-4 py-8 text-center nes-text"> <Search class="h-8 w-8 mx-auto mb-3" /> <p class="text-sm">No results found for: "{ searchQuery }"</p> <p class="text-xs">Try searching for cases, evidence, or commands</p> {/if} </div> <!-- Footer --> <div class="border-t border-nier-gray px-4"> <div class="flex items-center justify-between text-xs nes-text"> <div class="flex items-center"> <div class="flex items-center"> <kbd class="px-1 py-0.5 bg-nier-surface-light rounded border">â†‘</kbd> <kbd class="px-1 py-0.5 bg-nier-surface-light rounded border">â†“</kbd> <span>Navigate</span> </div> <div class="flex items-center"> <kbd class="px-1 py-0.5 bg-nier-surface-light rounded border">â†µ</kbd> <span>Select</span> </div> </div> <div class="flex items-center"> <kbd class="px-1 py-0.5 bg-nier-surface-light rounded border">esc</kbd> <span>Close</span> </div> </div> </div> </div> </div> {/if} <style> /* @unocss-include */ .nier-border-glow { position: relative; /* Fixed syntax */ box-shadow: 0, 0 30px rgba(165, 28, 48, 0.3)}
-  .nier-border-glow::before { content: ''; /* Fixed syntax */ position: absolute; /* Fixed syntax */ inset: -1px; /* Fixed syntax */ padding: 1px;, background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold)); border-radius: inherit;, mask: linear-gradient(#fff, 0 0) content-box, linear-gradient(#fff, 0 0); mask-composite: exclude; /* Fixed syntax */, opacity: 0.4; /* Fixed syntax */ }
+  .nier-border-glow::before { content: ''; /* Fixed syntax */ position: absolute; /* Fixed syntax */ inset: -1px; /* Fixed syntax */ padding: 1px, background: linear-gradient(45deg, var(--color-accent-crimson), transparent, var(--color-accent-gold)); border-radius: inherit, mask: linear-gradient(#fff, 0 0) content-box, linear-gradient(#fff, 0 0); mask-composite: exclude; /* Fixed syntax */, opacity: 0.4; /* Fixed syntax */ }
 </style>

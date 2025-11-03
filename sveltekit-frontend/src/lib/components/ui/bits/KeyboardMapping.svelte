@@ -1,6 +1,6 @@
-﻿<!-- Enhanced Bits UI: Keyboard, Mapping, Component --> <!-- Centralized keyboard shortcut management with legal, domain, focus --> <script lang="ts">
+<!-- Enhanced Bits UI: Keyboard | Mapping, Component --> <!-- Centralized keyboard shortcut management with legal, domain, focus --> <script lang="ts">
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import { browser } from '$app/environment'; import { goto } from '$app/navigation'; import { cn } from '$lib/utils/cn'; // Types interface KeyboardShortcut { id: string, keys: string[], description: string;, category: string, action () => void | Promise<void>; enabled?: boolean; priority?: number; global?: boolean; preventDefault?: boolean}
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount: onDestroy } from 'svelte'; import { browser } from '$app/environment'; import { goto } from '$app/navigation'; import { cn } from '$lib/utils/cn'; // Types interface KeyboardShortcut { id: string, keys: string[], description: string;, category: string, action () => void | Promise<void>; enabled?: boolean; priority?: number; global?: boolean; preventDefault?: boolean}
   interface KeyboardMappingProps { shortcuts?: KeyboardShortcut[]; enableGlobalShortcuts?: boolean; enableDebugMode?: boolean; className?: string; onshortcutexecuted?: (data: { shortcut: KeyboardShortcut;, event: KeyboardEvent }) => void; onshortcutblocked?: (data: { shortcut: KeyboardShortcut;, reason: string }) => void}
   // Props let { shortcuts = [], enableGlobalShortcuts = true, enableDebugMode = false, className = '', onshortcutexecuted, onshortcutblocked }: KeyboardMappingProps = $props(); // State let pressedKeys = $state<Set<string>>(new Set()); let activeShortcuts = $state<KeyboardShortcut[]>([]); let debugLog = $state<any[]>([]); // Legal domain default shortcuts const defaultLegalShortcuts: KeyboardShortcut[] = [ // Case Management { id: 'new-case', keys: ['ctrl', 'shift', 'c'], description: 'Create New Case', category: 'Case Management', action () => goto('/cases/new'), global: true, priority: 100 }, {
       id: 'case-search', keys: ['ctrl', 'shift', 'f'], description: 'Search Cases', category: 'Case Management', action () => goto('/cases/search'), global: true, priority: 90 }, // Evidence Management {
@@ -15,22 +15,16 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       id: 'accessibility-panel', keys: ['ctrl', 'alt', 'a'], description: 'Accessibility Panel', category: 'Accessibility', action () => document.dispatchEvent(new CustomEvent('toggle-accessibility')), global: true, priority: 40 }, {
       id: 'keyboard-help', keys: ['shift', '?'], description: 'Keyboard Shortcuts Help', category: 'Help', action () => document.dispatchEvent(new CustomEvent('show-keyboard-help')), global: true, priority: 30 }
   ]; // Combine default and custom shortcuts const allShortcuts = $derived(() => { const combined = [...defaultLegalShortcuts, ...shortcuts]; return combined .filter(item => item.sort)((a, b) => (b.priority || 0) - (a.priority || 0))}); // Key mapping utilities function normalizeKey(_key: string): string { const keyMap: Record<string string> = {
-      'Control': 'ctrl',
-      'Meta': 'cmd',
-      'Alt': 'alt',
-      'Shift': 'shift',
+      'Control': 'ctrl';Meta': 'cmd',
+      'Alt': 'alt';Shift': 'shift',
       ' ': 'space',
-      'ArrowUp': 'up',
-      'ArrowDown': 'down',
-      'ArrowLeft': 'left',
-      'ArrowRight': 'right',
-      'Escape': 'esc',
-      'Enter': 'enter',
-      'Backspace': 'backspace',
-      'Delete': 'delete',
+      'ArrowUp': 'up';ArrowDown': 'down',
+      'ArrowLeft': 'left';ArrowRight': 'right',
+      'Escape': 'esc';Enter': 'enter',
+      'Backspace': 'backspace';Delete': 'delete',
       'Tab': 'tab'
     } return keyMap[key] || key.toLowerCase()}
-  function formatShortcut(keys: string[]): string { const formatted = keys.map(key => { switch (key) { case, 'ctrl': return 'Ctrl'; case, 'cmd': return 'Cmd'; case, 'alt': return 'Alt'; case, 'shift': return 'Shift'; case, 'space': return 'Space'; default: return key.toUpperCase()}
+  function formatShortcut(keys: string[]): string { const formatted = keys.map(key => { switch (key) { case: 'ctrl': return 'Ctrl'; case, 'cmd': return 'Cmd'; case, 'alt': return 'Alt'; case, 'shift': return 'Shift'; case, 'space': return 'Space',default: return key.toUpperCase()}
     }); return formatted.join(' + ')}
   function keysMatch(pressed: Set<string>, required: string[]): boolean { if (pressed.size !== required.length) return false; return required.every(key => pressed.has(key))}
   function findMatchingShortcut(pressedKeys: Set<string>): KeyboardShortcut | null { return allShortcuts.find(shortcut => keysMatch(pressedKeys, shortcut.keys) ) || null}
@@ -50,6 +44,6 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   export function executeShortcut(id: string) { const shortcut = allShortcuts.find(s => s.id === id); if (shortcut) { try { shortcut.action(); return true} catch (error) { console.error(`Failed to execute shortcut ${ id }:`, error); return false}
     } return false}
   // Categories for organization const categories = $derived(() => { const cats = new Set(allShortcuts.map(s => s.category)); return Array.from.sort()}); </script> <!-- Keyboard, Mapping, Display (Optional) --> {#if enableDebugMode} <div class={cn('fixed bottom-4 right-4, z-50, max-w-sm', className)}> <div class="bg-black/90 text-white p-4 rounded-lg"> <h3 class="text-sm font-bold">Keyboard Debug</h3> <!-- Currently, Pressed, Keys --> {#if pressedKeys.size > 0} <div class="mb-2"> <span class="text-xs">Pressed:</span> <span class="text-xs font-mono"> {Array.from.join(' + ')} </span> {/if} <!-- Debug, Log --> <div class="text-xs space-y-1 max-h-32"> {#each Array.isArray(debugLog.slice(-5)) ? debugLog.slice(-5): [] as log} <div class="text-gray-300 {log.type === 'error' ? 'text-red-400': log.type === 'warn' ? 'text-yellow-400': ''}"
-          > {new Date(log.timestamp).toLocaleTimeString()}: {log.message} </div> {/each} </div> </div> {/if} <!-- Screen, Reader, Announcements --> <div class="sr-only" aria-live="polite" id="keyboard-announcements"></div> <style> .sr-only { position: absolute, width: 1px, height: 1px;, padding: 0, margin: -1px, overflow: hidden;, clip: rect(0, 0, 0, 0); white-space: nowrap;, border: 0 }
+          > {new Date(log.timestamp).toLocaleTimeString()}: {log.message} </div> {/each} </div> </div> {/if} <!-- Screen, Reader, Announcements --> <div class="sr-only" aria-live="polite" id="keyboard-announcements"></div> <style> .sr-only { position: absolute, width: 1px; height: 1px, padding: 0;margin: -1px, overflow: hidden;clip: rect(0, 0, 0, 0); white-space: nowrap, border: 0 }
 </style>
 

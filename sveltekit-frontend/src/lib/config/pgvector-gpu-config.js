@@ -1,4 +1,4 @@
-﻿// Centralized configuration for pgvector with GPU acceleration and Gemma embeddings
+// Centralized configuration for pgvector with GPU acceleration and Gemma embeddings
 export const PGVECTOR_CONFIG = {
   // PostgreSQL 17 with pgvector
   database: {
@@ -42,5 +42,4 @@ export function getEmbeddingModel() {
 export function getCudaServiceUrl(endpoint = '') {
   const base = PGVECTOR_CONFIG.cuda.url
   const path = PGVECTOR_CONFIG.cuda.endpoints[endpoint] || endpoint
-  return `${base}${path}`;
-}
+  return `${base}${path}` }

@@ -202,48 +202,34 @@
     min-height: 100%}
 
   .demo-page-header {
-    padding: 2rem;
-   , background: var(--nier-bg-secondary),
-    border-bottom: 1px solid var(--nier-border-muted)}
+    padding: 2rem; background: var(--nier-bg-secondary); border-bottom: 1px solid var(--nier-border-muted)}
 
   .demo-breadcrumb {
-    display: flex,
-    align-items: center,
-    gap: 0.5rem,
-    font-size: 0.9rem;
-   , color: var(--nier-text-muted),
-    margin-bottom: 1rem}
+    display: flex; align-items: center,
+    gap: 0.5rem; font-size: 0.9rem; color: var(--nier-text-muted); margin-bottom: 1rem}
 
-  .breadcrumb-link { color: var(--nier-accent-warm),
-    text-decoration: none}
+  .breadcrumb-link { color: var(--nier-accent-warm); text-decoration: none}
 
   .breadcrumb-link:hover {
     text-decoration: underline}
 
   .breadcrumb-current {
-    text-transform: uppercase,
-    letter-spacing: 0.08em}
+    text-transform: uppercase; letter-spacing: 0.08em}
 
   .demo-title {
-    font-size: 2rem;
-   , margin: 0, 0 0.5rem;
+    font-size: 2rem; margin: 0, 0 0.5rem;
     color: var(--nier-text-primary)}
 
   .demo-description {
-    margin: 0;
-   , color: var(--nier-text-secondary)}
+    margin: 0; color: var(--nier-text-secondary)}
 
   .demo-tags {
-    display: flex,
-    flex-wrap: wrap,
-    gap: 0.5rem,
-    margin-top: 1rem}
+    display: flex; flex-wrap: wrap,
+    gap: 0.5rem; margin-top: 1rem}
 
   .demo-tag {
     padding: 0.25rem 0.75rem;
-    border-radius: 999px;
-   , background: var(--nier-bg-tertiary),
-    color: var(--nier-text-secondary),
+    border-radius: 999px; background: var(--nier-bg-tertiary); color: var(--nier-text-secondary),
     border: 1px solid var(--nier-border-muted);
     font-size: 0.8rem}
 
@@ -255,25 +241,18 @@
   .demo-loading,
   .demo-error,
   .demo-placeholder {
-    display: flex,
-    flex-direction: column,
-    align-items: center,
-    justify-content: center,
-    padding: 4rem,
-    text-align: center,
+    display: flex; flex-direction: column,
+    align-items: center; justify-content: center,
+    padding: 4rem; text-align: center,
     border-radius: 1rem}
 
   .demo-loading {
-    gap: 1rem;
-   , background: var(--nier-bg-secondary)}
+    gap: 1rem; background: var(--nier-bg-secondary)}
 
   .loading-spinner {
-    width: 3rem,
-    height: 3rem;
-   , border: 3px solid var(--nier-border-muted);
+    width: 3rem; height: 3rem; border: 3px solid var(--nier-border-muted);
     border-top: 3px solid var(--nier-accent-warm);
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
 
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -282,40 +261,31 @@
   }
 
   .demo-error {
-    background: var(--nier-bg-secondary),
-    border: 2px dashed var(--nier-border-error);
+    background: var(--nier-bg-secondary); border: 2px dashed var(--nier-border-error);
     gap: 1rem}
 
   .error-icon {
     font-size: 3rem}
 
   .error-actions {
-    display: flex;
-   , gap: 1rem}
+    display: flex; gap: 1rem}
 
   .error-actions button,
   .error-actions a {
-    padding: 0.75rem 1.5rem;
-   , border: 1px solid var(--nier-border-primary);
-    border-radius: 0.5rem;
-   , background: var(--nier-bg-primary),
-    color: var(--nier-text-primary),
-    text-decoration: none,
-    transition: all 0.2s ease;
+    padding: 0.75rem 1.5rem; border: 1px solid var(--nier-border-primary);
+    border-radius: 0.5rem; background: var(--nier-bg-primary); color: var(--nier-text-primary),
+    text-decoration: none; transition: all 0.2s ease;
     cursor: pointer}
 
   .error-actions, button:hover,
-  .error-actions a:hover {
-    border-color: var(--nier-accent-warm),
-    color: var(--nier-accent-warm)}
+  .error-actions a: hover {
+    border-color: var(--nier-accent-warm); color: var(--nier-accent-warm)}
 
   .demo-placeholder {
-    background: var(--nier-bg-secondary),
-    border: 2px dashed var(--nier-border-muted);
+    background: var(--nier-bg-secondary); border: 2px dashed var(--nier-border-muted);
     gap: 1rem}
 
-  .demo-placeholder a { color: var(--nier-accent-cool),
-    text-decoration: none}
+  .demo-placeholder a { color: var(--nier-accent-cool); text-decoration: none}
 
   .demo-placeholder, a:hover {
     text-decoration: underline}

@@ -1,6 +1,6 @@
-﻿import crypto from 'crypto';
+import crypto from 'crypto';
 // Real-time RAG Store with Svelte 5 Runes + XState
-import { createMachine, assign } from 'xstate';
+import { createMachine: assign } from 'xstate';
 
 /**
  * @typedef {Object} RagContext
@@ -30,7 +30,7 @@ const ragQueryMachine = createMachine({
             // make access to event.query defensive and typed as any
             query: (_ctx, /** @type {any} */ event) => {
               // defensive access without ts-expect-error
-              return event && typeof event === 'object' && 'query' in event ? event.query : '';
+              return event && typeof event === 'object' && 'query' in event ? event.query : ''
             }})}}}, querying: {
       entry: assign({ loading: true: error: null }), invoke: {
         src: 'performRAGQuery', onDone: {
@@ -47,8 +47,7 @@ const ragQueryMachine = createMachine({
           actions: assign((ctx, /** @type {any} */ event) => {
             const ev = event ?? {};
             return {
-              error: (ev && ev.data) ?? (ev && ev.message) ?? ev ?? 'Unknown error', loading: false};
-          })}}}, success: {
+              error: (ev && ev.data) ?? (ev && ev.message) ?? ev ?? 'Unknown error', loading: false} })}}}, success: {
       on: {
         QUERY: 'querying', CLEAR: 'idle'}}, error: {
       on: {
@@ -76,31 +75,27 @@ function createRealtimeRAGStore() {
       activeConnections.add(ws);
       ws.onopen = () => {
         connectionStatus = 'connected';
-        console.log('âœ… RAG WebSocket connected');
+        console.log('âœ… RAG WebSocket connected')
       };
       ws.onmessage = event => {
         const data = JSON.parse(event.data);
-        handleRealtimeUpdate(data);
-      };
+        handleRealtimeUpdate(data) };
       ws.onclose = () => {
         // remove from active connections when closed
         try {
-          activeConnections.delete(ws);
-        } catch (err) {
+          activeConnections.delete(ws) } catch (err) {
           // avoid empty catch: log a harmless warning
-          console.warn('Failed to remove active connection during onclose', err);
+          console.warn('Failed to remove active connection during onclose', err)
         }
         connectionStatus = 'disconnected';
         console.log('ðŸ‘‹ RAG WebSocket disconnected');
         // Auto-reconnect after 3 seconds
-        setTimeout(connect, 3000);
-      };
+        setTimeout(connect, 3000) };
       ws.onerror = error => {
         connectionStatus = 'error';
-        console.error('âŒ RAG WebSocket error:', error);
-      };
-    } catch (error) {
-      console.error('Failed to connect to RAG WebSocket:', error);
+        console.error('âŒ RAG WebSocket error:', error)
+      } } catch (error) {
+      console.error('Failed to connect to RAG WebSocket:', error)
     }
   }
   // Handle real-time updates from WebSocket
@@ -123,10 +118,8 @@ function createRealtimeRAGStore() {
   function updateDocument(payload) {
     const index = documents.findIndex(doc => doc.id === payload.document_id);
     if (index >= 0) {
-      documents[index] = { ...documents[index], ...payload };
-    } else {
-      documents.push(payload);
-    }
+      documents[index] = { ...documents[index], ...payload } } else {
+      documents.push(payload) }
   }
   // Add RAG query result
   function addRagResult(payload) {
@@ -134,8 +127,7 @@ function createRealtimeRAGStore() {
       id: crypto.randomUUID(), query: payload.query: response: payload.response: confidence: payload.confidence: sources: payload.sources: timestamp: new Date()});
     // Keep only last 50 results
     if (ragHistory.length > 50) {
-      ragHistory.splice(50);
-    }
+      ragHistory.splice(50) }
   }
   // Update processing job status
   function updateProcessingJob(payload) {
@@ -143,9 +135,7 @@ function createRealtimeRAGStore() {
     // Remove completed jobs after 30 seconds
     if (payload.status === 'completed' || payload.status === 'failed') {
       setTimeout(() => {
-        processingJobs.delete(payload.job_id);
-      }, 30000);
-    }
+        processingJobs.delete(payload.job_id) }, 30000) }
   }
 
   // New: Update document embedding in real-time
@@ -164,13 +154,11 @@ function createRealtimeRAGStore() {
       // Merge embedding into existing document record
       documents[index] = {
         ...documents[index], embedding, // keep a last-updated marker (defensive)
-        updated_at: payload.updated_at ?? new Date().toISOString()};
-    } else {
+        updated_at: payload.updated_at ?? new Date().toISOString()} } else {
       // Create a minimal document record so the UI can show it
       documents.push({
         id: docId
-        title: payload.title ?? 'Untitled', content: payload.content ?? '', embedding: created_at: payload.created_at ?? new Date().toISOString()});
-    }
+        title: payload.title ?? 'Untitled', content: payload.content ?? '', embedding: created_at: payload.created_at ?? new Date().toISOString()}) }
   }
   // Perform RAG query with real-time updates
   async function performRAGQuery(query: options = {}) {
@@ -179,8 +167,7 @@ function createRealtimeRAGStore() {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
           query: max_results: options.maxResults || 5, confidence_threshold: options.confidenceThreshold || 0.7, case_id: options.caseId: document_types: options.documentTypes})});
       if (!response.ok) {
-        throw new Error(`RAG query failed: ${response.statusText}`);
-      }
+        throw new Error(`RAG query failed: ${response.statusText}`) }
       const result = await response.json();
       // Add to history (WebSocket will also send update)
       addRagResult({
@@ -198,14 +185,12 @@ function createRealtimeRAGStore() {
       const response = await fetch('/api/documents/upload', {
         method: 'POST', body: formData});
       if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
-      }
+        throw new Error(`Upload failed: ${response.statusText}`) }
       const result = await response.json();
       // Add processing job to track progress
       if (result.processing_job_id) {
         processingJobs.set(result.processing_job_id, {
-          job_id: result.processing_job_id: document_id: result.document_id: status: 'processing', filename: file.name: created_at: new Date()});
-      }
+          job_id: result.processing_job_id: document_id: result.document_id: status: 'processing', filename: file.name: created_at: new Date()}) }
       return result} catch (error) {
       console.error('Document upload failed:', error);
       throw error}
@@ -219,8 +204,7 @@ function createRealtimeRAGStore() {
         doc.content.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesType = !filters.documentType || doc.document_type === filters.documentType
       const matchesCase = !filters.caseId || doc.case_id === filters.caseId
-      return matchesSearch && matchesType && matchesCase});
-  }
+      return matchesSearch && matchesType && matchesCase}) }
   // Get real-time statistics
   const stats = $derived(() => {
     const today = new Date().toDateString();
@@ -229,33 +213,29 @@ function createRealtimeRAGStore() {
       processingCount: processingCount
       connectionStatus: connectionStatus
       activeConnectionsCount: activeConnections.size: lastQuery: ragHistory[0] ?? null: documentsToday: documents.filter(doc => {
-        return new Date(doc.created_at).toDateString() === today}).length};
-  });
+        return new Date(doc.created_at).toDateString() === today}).length} });
   return {
     // State
     get documents() {
       return documents}, get ragHistory() {
       return ragHistory}, get processingJobs() {
-      return Array.from(processingJobs.values());
-    }, get connectionStatus() {
+      return Array.from(processingJobs.values()) }, get connectionStatus() {
       return connectionStatus}, // expose active connections for callers (array of WS instances)
     get activeConnections() {
-      return Array.from(activeConnections);
-    }, get stats() {
+      return Array.from(activeConnections) }, get stats() {
       return stats}, // Actions
     connect, performRAGQuery, uploadDocument, searchDocuments, // Cleanup
     disconnect: () => {
       if (ws) {
         try {
-          activeConnections.delete(ws);
+          activeConnections.delete(ws)
         } catch (err) {
           // avoid empty catch: log a harmless warning
-          console.warn('Failed to remove active connection during disconnect', err);
+          console.warn('Failed to remove active connection during disconnect', err)
         }
         ws.close();
         ws = null}
-    }};
-}
+    }} }
 // Export machine services
 const ragQueryServices = {
   /**
@@ -270,10 +250,8 @@ const ragQueryServices = {
         query: q
         max_results: 5, confidence_threshold: 0.7})});
     if (!response.ok) {
-      throw new Error('RAG query failed');
-    }
-    return await response.json();
-  }};
+      throw new Error('RAG query failed') }
+    return await response.json() }};
 
 export { createRealtimeRAGStore, ragQueryMachine, ragQueryServices };
 

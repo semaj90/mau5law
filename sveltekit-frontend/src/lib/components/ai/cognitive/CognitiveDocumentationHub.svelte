@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported let { cognitiveHub, achievements, consciousness }: { cognitiveHub: any, achievements: string[], consciousness: { level: number, experience: number;, awakening: number } } = $props(); let activeTab = $state<string>('strategy'); let searchQuery = $state<string>(''); let filteredContent = $state<any[]>([]); // Documentation sections const documentationSections = { strategy: { title: 'ðŸŽ¯ Strategic Development Guide', icon: 'ðŸŽ¯', content: [ { title: 'Cognitive Architecture Mastery', level: 'beginner', description: 'Master the fundamental cognitive systems for legal AI enhancement', steps: [
             'Initialize the Master Cognitive Hub with optimal parameters',
@@ -200,7 +200,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     const results = []; for (const [key, section] of Object.entries(documentationSections)) { for (const item of section.content) { if (JSON.stringify(item).toLowerCase().includes(query.toLowerCase())) { results.push({ sectionKey: key, sectionTitle: section.title, ...item })}
       } }
     filteredContent = results}
-  function getProgressPercentage(level: string): number { switch (level) { case, 'beginner': return Math.min(100, consciousness.level * 20); case, 'intermediate': return Math.max(0, (consciousness.level - 3) * 25); case, 'advanced': return Math.max(0, (consciousness.level - 5) * 33); case, 'expert': return Math.max(0, (consciousness.level - 7) * 50); default: return 0}
+  function getProgressPercentage(level: string): number { switch (level) { case: 'beginner': return Math.min(100, consciousness.level * 20); case, 'intermediate': return Math.max(0, (consciousness.level - 3) * 25); case, 'advanced': return Math.max(0, (consciousness.level - 5) * 33); case, 'expert': return Math.max(0, (consciousness.level - 7) * 50); default: return 0}
   } function isUnlocked(requirement: string): boolean { if (requirement.includes('achievement')) { const count = parseInt(requirement.match(/\d+/)?.[0] || '0'); return achievements.length >= count}
     if (requirement.includes('consciousness level')) { const level = parseInt(requirement.match(/\d+/)?.[0] || '0'); return consciousness.level >= level}
     return true}

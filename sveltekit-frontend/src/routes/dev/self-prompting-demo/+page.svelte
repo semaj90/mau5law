@@ -89,7 +89,7 @@ import type { Case } from '$lib/types';
   /* Ensure full-width layout */
   :global(body) {
     margin: 0
-   , padding: 0}
+   ; padding: 0}
 </style>
 
 

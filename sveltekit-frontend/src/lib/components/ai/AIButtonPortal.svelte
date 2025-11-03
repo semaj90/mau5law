@@ -26,6 +26,6 @@
     top: 1.5rem}
   [data-position='top-left'] {
     left: 1.5rem
-   , top: 1.5rem}
+   ;top: 1.5rem}
 </style>
 

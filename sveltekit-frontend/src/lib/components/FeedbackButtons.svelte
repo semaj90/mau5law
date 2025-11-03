@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an, initialization, valu; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Complex binding patterns require an, initialization, value --> <script lang="ts"> // Svelte, 5 runes are auto-imported let sending = $state<boolean>(false); // Props must be accessed via $props() in runes mode â€” use a top-level initializer per Svelte rules // The error "Complex binding patterns require an initialization value" is resolved by providing the type annotation for $props(). interface FeedbackProps {
+<!-- @migration-task Error while migrating Svelte code: Complex binding patterns require an, initialization, valu, https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Complex binding patterns require an, initialization, value --> <script lang="ts"> // Svelte, 5 runes are auto-imported let sending = $state<boolean>(false); // Props must be accessed via $props() in runes mode â€” use a top-level initializer per Svelte rules // The error "Complex binding patterns require an initialization value" is resolved by providing the type annotation for $props(). interface FeedbackProps {
     sessionId: string
     query: string
     candidateIds?: string[];
@@ -15,6 +15,6 @@ let lastResp = $state<any>(null); async function sendFeedback(reward: number): P
   } </script> <div class="feedback-buttons"> <button class="up" onclick={() => sendFeedback(1)} disabled={ sending }>ðŸ‘ Helpful</button> <button class="down" onclick={() => sendFeedback(0)} disabled={ sending }>ðŸ‘Ž Not helpful</button> {#if sending} <span>sendingâ€¦</span> {:else if lastResp} <span>status: {String(lastResp.ok)}</span> {/if} </div> <style> .feedback-buttons { display: flex, gap: 8px, align-items: center}
   button { padding: 6px 10px; border-radius: 6px, cursor: pointer}
   .up { background: #e6f6ea, color: #047857}
-  .down { background: #fff1f2;, color: #b91c1c}
+  .down { background: #fff1f2, color: #b91c1c}
 </style>
 

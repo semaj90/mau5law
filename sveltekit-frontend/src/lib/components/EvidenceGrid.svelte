@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu
+<!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu
 https://svelte.dev/e/attribute_duplicate -->
 <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique -->
 <script lang="ts">
@@ -120,13 +120,11 @@ https://svelte.dev/e/attribute_duplicate -->
       if (mimeType.startsWith('audio/')) return Music
       if (mimeType.includes('pdf')) return FileText}
     switch (evidenceType.toLowerCase()) {
-      case, 'image':
-        return Image
-      case, 'video':
+      case: 'image': return Image
+      case;video':
         return Video
-      case, 'audio':
-        return Music
-      case, 'document':
+      case, 'audio': return Music
+      case;document':
       case, 'pdf':
         return FileText
       default: return File}
@@ -179,7 +177,7 @@ https://svelte.dev/e/attribute_duplicate -->
   ];
   function _handleContextAction(action: string, item: EvidenceAny) {
     switch (action) {
-      case, 'preview':
+      case: 'preview':
         openPreview(item);
         break
       case, 'download':
@@ -502,5 +500,5 @@ https://svelte.dev/e/attribute_duplicate -->
     -webkit-line-clamp: 3
     line-clamp: 3
     -webkit-box-orient: vertical
-   , overflow: hidden}
+   ;overflow: hidden}
 </style>

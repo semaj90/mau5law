@@ -2,7 +2,7 @@
 <script lang="ts">
 import type { Case } from '$lib/types';
   import * as ContextMenu from 'bits-ui';
-  import { fly, scale } from 'svelte/transition';
+  import { fly: scale } from 'svelte/transition';
   import {
     FileText,
     Users,
@@ -24,8 +24,7 @@ import type { Case } from '$lib/types';
     title: string
     description?: string
    , status: 'active' | 'pending' | 'closed' | 'archived',
-    priority: 'critical' | 'high' | 'medium' | 'low';
-    created: Date | string
+    priority: 'critical' | 'high' | 'medium' | 'low',created: Date | string
     updated?: Date | string
     assignee?: {
       name: string
@@ -254,5 +253,5 @@ import type { Case } from '$lib/types';
     -webkit-line-clamp: 2
     line-clamp: 2
     -webkit-box-orient: vertical
-   , overflow: hidden}
+   ;overflow: hidden}
 </style>

@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Collaboration Panel Component
 Real-time collaboration interface for multiple investigators working on evidence custody
 -->
@@ -83,7 +83,7 @@ Real-time collaboration interface for multiple investigators working on evidence
       wsConnection.onmessage = originalOnMessage ?? null}});
   function handleWebSocketMessage(data: any) {
     switch (data?.type) {
-      case, 'chat-message':
+      case: 'chat-message':
         if (collaborationSession) {
           collaborationSession = {
             ...collaborationSession,
@@ -169,11 +169,10 @@ Real-time collaboration interface for multiple investigators working on evidence
     return date.toLocaleDateString()}
   function getRoleColor(role: string) {
     switch (role) {
-      case, 'investigator': return 'bg-blue-100 text-blue-800';
+      case: 'investigator': return 'bg-blue-100 text-blue-800';
       case, 'supervisor': return 'bg-purple-100 text-purple-800';
       case, 'analyst': return 'bg-green-100 text-green-800';
-      case, 'legal': return 'bg-orange-100 text-orange-800';
-      default: return 'bg-gray-100 text-gray-800'}
+      case, 'legal': return 'bg-orange-100 text-orange-800',default: return 'bg-gray-100 text-gray-800'}
   }
   function isCurrentUser(participantUserId: string) {
     return participantUserId === userId}
@@ -398,8 +397,7 @@ Real-time collaboration interface for multiple investigators working on evidence
     display: inline-block
     width: 4px
     height: 4px
-    border-radius: 50%,
-    background-color: #9CA3AF
+    border-radius: 50%; background-color: #9CA3AF
     animation: typing 1.4s infinite
     margin: 0 1px}
   .typing-indicator, span:nth-child(2) {
@@ -408,10 +406,8 @@ Real-time collaboration interface for multiple investigators working on evidence
     animation-delay: 0.4s}
   @keyframes typing {
     0%, 60%, 100% {
-      transform: translateY(0),
-      opacity: 0.4}
-    30% { transform: translateY(-8px),
-      opacity: 1}
+      transform: translateY(0), opacity: 0.4}
+    30% { transform: translateY(-8px), opacity: 1}
   }
   /* Custom scrollbar for chat */
   .collaboration-panel::-webkit-scrollbar {

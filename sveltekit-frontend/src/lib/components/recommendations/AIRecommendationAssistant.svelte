@@ -9,8 +9,7 @@ import type { Document } from '$lib/types';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface AIRecommendation {
     id: string
-    type: 'case' | 'document' | 'search' | 'workflow' | 'precedent';
-    title: string
+    type: 'case' | 'document' | 'search' | 'workflow' | 'precedent',title: string
     description: string
     confidence: number
     priority: number
@@ -19,8 +18,7 @@ import type { Document } from '$lib/types';
   interface AIAction {
     action: string
     description: string
-    priority: 'low' | 'medium' | 'high' | 'critical';
-    estimatedTime: string
+    priority: 'low' | 'medium' | 'high' | 'critical',estimatedTime: string
     tools?: string[]}
   interface Props { open: boolean
     context?: {
@@ -140,7 +138,7 @@ import type { Document } from '$lib/types';
         const notice = document.createElement('div');
         notice.innerHTML = 'âš ï¸ failure default to mock';
         notice.style.cssText =
-          'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
+          'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9), color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000)}
     }
@@ -181,7 +179,7 @@ import type { Document } from '$lib/types';
       const notice = document.createElement('div');
       notice.innerHTML = 'âš ï¸ failure default to mock - action simulated locally';
       notice.style.cssText =
-        'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
+        'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9), color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock success - simulate action execution
@@ -191,7 +189,7 @@ import type { Document } from '$lib/types';
   }
   function getTypeIcon(type: AIRecommendation['type']): string {
     switch (type) {
-      case, 'case':
+      case: 'case':
         return 'âš–ï¸';
       case, 'document':
         return 'ðŸ“„';
@@ -199,9 +197,7 @@ import type { Document } from '$lib/types';
         return 'ðŸ”';
       case, 'workflow':
         return 'âš¡';
-      case, 'precedent':
-        return 'ðŸ“š';
-      default: return 'ðŸ¤–'}
+      case, 'precedent': return 'ðŸ“š',default: return 'ðŸ¤–'}
   }
   function getConfidenceColor(conf: number): string {
     const palette = getCurrentPalette();
@@ -219,15 +215,13 @@ import type { Document } from '$lib/types';
   function getActionPriorityColor(priority: AIAction['priority']): string {
     const palette = getCurrentPalette();
     switch (priority) {
-      case, 'critical':
+      case: 'critical':
         return palette.colors?.error ?? '#e53e3e';
       case, 'high':
         return palette.colors?.warning ?? '#dd6b20';
       case, 'medium':
         return palette.colors?.accent?.[1] ?? '#4a90e2';
-      case, 'low':
-        return palette.colors?.accent?.[2] ?? '#9f7aea';
-      default: return palette.colors?.primary ?? '#6b7280'}
+      case, 'low': return palette.colors?.accent?.[2] ?? '#9f7aea',default: return palette.colors?.primary ?? '#6b7280'}
   }
 </script>
 <DiamondModal bind:open title="ðŸ¤– AI, Legal, Assistant" size="large">
@@ -409,7 +403,7 @@ import type { Document } from '$lib/types';
   .ai-assistant-modal {
     max-height: 85vh
     overflow: hidden
-   , display: flex
+   ;display: flex
     flex-direction: column}
   .modal-header {
     margin-bottom: 1.5rem
@@ -417,15 +411,13 @@ import type { Document } from '$lib/types';
     border-bottom: 1px solid rgba(255, 255, 255, 0.1)}
   .analysis-types {
     display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 0.5rem
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 0.5rem
     margin-bottom: 1rem}
   .type-btn {
     padding: 0.75rem
-   , background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+   ;background: rgba(255, 255, 255, 0.05), border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px
-   , color: rgba(255, 255, 255, 0.8);
+   ;color: rgba(255, 255, 255, 0.8);
     font-size: 0.85rem
     cursor: pointer
     transition: all 0.2s
@@ -434,38 +426,33 @@ import type { Document } from '$lib/types';
     border-color: rgba(138, 43, 226, 0.5)}
   .type-btn.active {
     background: rgba(138, 43, 226, 0.2);
-    border-color: rgba(138, 43, 226, 0.6);
-    color: #fff}
+    border-color: rgba(138, 43, 226, 0.6), color: #fff}
   .query-section {
     display: flex
     gap: 1rem}
   .query-input {
     flex: 1
     padding: 0.75rem
-   , background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+   ;background: rgba(255, 255, 255, 0.05), border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px
     color: #fff
     font-size: 0.9rem}
   .query-input::placeholder { color: rgba(255, 255, 255, 0.5)}
   .analyze-btn {
     padding: 0.75rem 1.5rem
-   , background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5));
-    border: 1px solid rgba(138, 43, 226, 0.6);
+   ;background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5)), border: 1px solid rgba(138, 43, 226, 0.6);
     border-radius: 8px
     color: #fff
     font-weight: 500
     cursor: pointer
-   , transition: all 0.2s
+   ;transition: all 0.2s
     white-space: nowrap}
   .analyze-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(138, 43, 226, 0.4), rgba(138, 43, 226, 0.6));
-    transform: translateY(-1px)}
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.4), rgba(138, 43, 226, 0.6)), transform: translateY(-1px)}
   .analyze-btn:disabled {
     opacity: 0.6
     cursor: not-allowed}
-  .ai-thinking { background: rgba(138, 43, 226, 0.1);
-    border: 1px solid rgba(138, 43, 226, 0.3);
+  .ai-thinking { background: rgba(138, 43, 226, 0.1), border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 12px
     padding: 1.5rem
     margin-bottom: 1.5rem}
@@ -480,17 +467,16 @@ import type { Document } from '$lib/types';
   .thinking-header h3 {
     margin: 0
     flex: 1
-   , color: rgba(255, 255, 255, 0.9)}
+   ;color: rgba(255, 255, 255, 0.9)}
   .thinking-spinner {
     width: 24px
     height: 24px
-   , border: 2px solid rgba(255, 255, 255, 0.2);
+   ;border: 2px solid rgba(255, 255, 255, 0.2);
     border-top: 2px solid rgba(138, 43, 226, 0.8);
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%, animation: spin 1s linear infinite}
   .thinking-message {
     font-size: 1rem
-   , color: rgba(255, 255, 255, 0.8);
+   ;color: rgba(255, 255, 255, 0.8);
     margin-bottom: 1rem
     font-style: italic}
   .processing-steps {
@@ -499,13 +485,11 @@ import type { Document } from '$lib/types';
     gap: 0.5rem}
   .processing-step {
     font-size: 0.85rem
-   , color: rgba(255, 255, 255, 0.7);
-    padding: 0.25rem 0}
+   ;color: rgba(255, 255, 255, 0.7), padding: 0.25rem 0}
   .ai-results {
     flex: 1
     overflow-y: auto}
-  .ai-reasoning { background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .ai-reasoning { background: rgba(255, 255, 255, 0.05), border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px
     padding: 1rem
     margin-bottom: 1.5rem}
@@ -516,7 +500,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 0.75rem}
   .reasoning-header h3 {
     margin: 0
-   , color: rgba(255, 255, 255, 0.9);
+   ;color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem}
   .confidence-badge {
     padding: 0.25rem 0.75rem
@@ -526,7 +510,7 @@ import type { Document } from '$lib/types';
     font-weight: bold}
   .reasoning-text {
     margin: 0
-   , color: rgba(255, 255, 255, 0.8);
+   ;color: rgba(255, 255, 255, 0.8);
     line-height: 1.5}
   .recommendations-section,
   .actions-section,
@@ -542,8 +526,7 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     gap: 1rem}
-  .recommendation-card { background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .recommendation-card { background: rgba(255, 255, 255, 0.03), border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px
     padding: 1rem
     transition: all 0.2s}
@@ -564,13 +547,13 @@ import type { Document } from '$lib/types';
     font-weight: 500}
   .rec-description {
     margin: 0
-   , color: rgba(255, 255, 255, 0.7);
+   ;color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem
     line-height: 1.4}
   .rec-stats {
     display: flex
     flex-direction: column
-   , gap: 0.5rem}
+   ;gap: 0.5rem}
   .confidence-meter,
   .priority-indicator {
     padding: 0.25rem 0.5rem
@@ -579,19 +562,18 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem
     font-weight: bold
     text-align: center}
-  .ai-insight { background: rgba(138, 43, 226, 0.1);
-    border: 1px solid rgba(138, 43, 226, 0.2);
+  .ai-insight { background: rgba(138, 43, 226, 0.1), border: 1px solid rgba(138, 43, 226, 0.2);
     border-radius: 6px
     padding: 0.75rem
     margin-bottom: 0.75rem}
   .insight-label {
     font-size: 0.8rem
-   , color: rgba(138, 43, 226, 0.9);
+   ;color: rgba(138, 43, 226, 0.9);
     font-weight: 500
     margin-bottom: 0.25rem}
   .insight-text {
     font-size: 0.85rem
-   , color: rgba(255, 255, 255, 0.8);
+   ;color: rgba(255, 255, 255, 0.8);
     line-height: 1.4
     font-style: italic}
   .metadata-details {
@@ -599,7 +581,7 @@ import type { Document } from '$lib/types';
   .metadata-details summary {
     cursor: pointer
     font-size: 0.8rem
-   , color: rgba(255, 255, 255, 0.6);
+   ;color: rgba(255, 255, 255, 0.6);
     margin-bottom: 0.5rem}
   .metadata-content { background: rgba(0, 0, 0, 0.2);
     border-radius: 4px
@@ -618,8 +600,7 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     gap: 1rem}
-  .action-card { background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+  .action-card { background: rgba(255, 255, 255, 0.03), border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px
     padding: 1rem}
   .action-header {
@@ -635,7 +616,7 @@ import type { Document } from '$lib/types';
     font-weight: 500}
   .action-description {
     margin: 0
-   , color: rgba(255, 255, 255, 0.7);
+   ;color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem
     line-height: 1.4}
   .action-meta {
@@ -652,7 +633,7 @@ import type { Document } from '$lib/types';
     text-transform: uppercase}
   .action-time {
     font-size: 0.8rem
-   , color: rgba(255, 255, 255, 0.6)}
+   ;color: rgba(255, 255, 255, 0.6)}
   .action-tools {
     display: flex
     flex-wrap: wrap
@@ -661,25 +642,23 @@ import type { Document } from '$lib/types';
     margin-bottom: 0.75rem}
   .tools-label {
     font-size: 0.8rem
-   , color: rgba(255, 255, 255, 0.6)}
+   ;color: rgba(255, 255, 255, 0.6)}
   .tool-chip {
     padding: 0.25rem 0.5rem
-   , background: rgba(255, 255, 255, 0.1);
+   ;background: rgba(255, 255, 255, 0.1);
     border-radius: 4px
     font-size: 0.75rem
-   , color: rgba(255, 255, 255, 0.8)}
+   ;color: rgba(255, 255, 255, 0.8)}
   .execute-btn {
     padding: 0.5rem 1rem
-   , background: rgba(76, 175, 80, 0.2);
-    border: 1px solid rgba(76, 175, 80, 0.4);
+   ;background: rgba(76, 175, 80, 0.2), border: 1px solid rgba(76, 175, 80, 0.4);
     border-radius: 6px
     color: #fff
     font-size: 0.85rem
     cursor: pointer
-   , transition: all 0.2s}
+   ;transition: all 0.2s}
   .execute-btn:hover:not(:disabled) {
-    background: rgba(76, 175, 80, 0.3);
-    transform: translateY(-1px)}
+    background: rgba(76, 175, 80, 0.3), transform: translateY(-1px)}
   .execute-btn:disabled {
     opacity: 0.6
     cursor: not-allowed}
@@ -689,10 +668,9 @@ import type { Document } from '$lib/types';
     gap: 0.5rem}
   .topic-tag {
     padding: 0.5rem 1rem
-   , background: rgba(138, 43, 226, 0.1);
-    border: 1px solid rgba(138, 43, 226, 0.3);
+   ;background: rgba(138, 43, 226, 0.1), border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 16px
-   , color: rgba(255, 255, 255, 0.8);
+   ;color: rgba(255, 255, 255, 0.8);
     font-size: 0.8rem
     cursor: pointer
     transition: all 0.2s}
@@ -705,7 +683,7 @@ import type { Document } from '$lib/types';
     justify-content: center
     padding: 3rem
     text-align: center
-   , color: rgba(255, 255, 255, 0.7)}
+   ;color: rgba(255, 255, 255, 0.7)}
   .empty-icon {
     font-size: 4rem
     margin-bottom: 1rem

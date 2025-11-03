@@ -6,7 +6,7 @@ https://svelte.dev/e/js_parse_error -->
 import type { User } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Progress } from 'bits-ui';
   import  LLMProviderSelector  from "./LLMProviderSelector.svelte";
   import { aiServiceWorkerManager, type AITaskResult } from '$lib/services/aiServiceWorkerManager';
@@ -128,14 +128,13 @@ import type { Document } from '$lib/types';
   // Generate mock results for demo
   const generateMockResult = (taskType: string) => {
     switch (taskType) {
-      case, 'embedding':
+      case: 'embedding':
         return {
           embedding: Array.from({ length: 384 }, () => Math.random() - 0.5),
           dimensions: 384
         };
-      case, 'analysis':
-        return {
-          entities: ['GDPR', 'Privacy Policy', 'Data Controller'],
+      case, 'analysis': return {
+          entities: ['GDPR';Privacy Policy', 'Data Controller'],
           sentiment: 'neutral',
           compliance_score: 0.85,
           key_points: ['Data retention requirements', 'User consent mechanisms', 'Privacy by design']
@@ -191,11 +190,10 @@ import type { Document } from '$lib/types';
   // Utility functions
   const getTaskTypeColor = (type: string) => {
     switch (type) {
-      case, 'embedding': return 'bg-blue-500';
+      case: 'embedding': return 'bg-blue-500';
       case, 'generation': return 'bg-green-500';
       case, 'analysis': return 'bg-purple-500';
-      case, 'vector-search': return 'bg-orange-500';
-      default: return 'bg-gray-500'}
+      case, 'vector-search': return 'bg-orange-500',default: return 'bg-gray-500'}
   };
   const formatDuration = (ms: number) => (ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(1)}s`);
 </script>

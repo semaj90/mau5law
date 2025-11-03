@@ -10,12 +10,12 @@ const migrationMap = {
   // AI Store Migration
   'ai-commands.js': {
     newFile: 'ai-unified.ts', changes: [
-      'âœ… All functions preserved: addCommand, setCurrentCommand, setProcessing, setError, clearHistory', 'âœ… Store structure identical: {current, history, isProcessing, lastResult, error}', 'âž• Added: parseAICommand(), applyAIClasses(), TypeScript interfaces', 'âž• Enhanced: Real-time command processing, better error handling'], compatibility: '100% - Drop-in replacement'}, 'ai-command-parser.js': {
+      'âœ… All functions preserved: addCommand | setCurrentCommand, setProcessing, setError, clearHistory', 'âœ… Store structure identical: {current, history, isProcessing, lastResult, error}', 'âž• Added: parseAICommand(), applyAIClasses(), TypeScript interfaces', 'âž• Enhanced: Real-time command processing, better error handling'], compatibility: '100% - Drop-in replacement'}, 'ai-command-parser.js': {
     newFile: 'ai-unified.ts', changes: [
       'âœ… parseAICommand() function preserved exactly', 'âœ… applyAIClasses() function preserved exactly', 'âœ… aiCommandService preserved with same API', 'âž• Integrated: Combined with command history management', 'âž• Enhanced: TypeScript interfaces, better state management'], compatibility: '100% - All features preserved'}, // Evidence Store Migration
   'evidence.ts': {
     newFile: 'evidence-unified.ts', changes: [
-      'âœ… All CRUD operations preserved: fetchEvidence, addEvidence, updateEvidence, deleteEvidence', 'âœ… Evidence interface extended (backward compatible)', 'âœ… Auto-fetch on case change preserved', 'âž• Added: Real-time WebSocket sync, metadata fields, derived stores', 'âž• Enhanced: Better error recovery, local storage persistence'], compatibility: '100% - Fully backward compatible'}, 'evidenceStore.ts': {
+      'âœ… All CRUD operations preserved: fetchEvidence | addEvidence, updateEvidence, deleteEvidence', 'âœ… Evidence interface extended (backward compatible)', 'âœ… Auto-fetch on case change preserved', 'âž• Added: Real-time WebSocket sync, metadata fields, derived stores', 'âž• Enhanced: Better error recovery, local storage persistence'], compatibility: '100% - Fully backward compatible'}, 'evidenceStore.ts': {
     newFile: 'evidence-unified.ts', changes: [
       'âœ… Real-time WebSocket capabilities preserved', 'âœ… Optimistic updates preserved', 'âœ… Local storage persistence preserved', 'âš ï¸ Simplified: Removed complex undo/redo (basic version kept)', 'âž• Integrated: Basic CRUD from evidence.ts', 'âž• Enhanced: Better API consistency'], compatibility: '95% - Minor undo/redo API changes'}};
 // PHASE INTEGRATION MATRIX
@@ -34,7 +34,7 @@ const importGuide = {
   legacy: {
     "import aiCommands from './stores/ai-commands.js'": 'âœ… Works - Redirects to ai-unified.ts', "import { evidence } from './stores/evidence.js'": 'âœ… Works - Redirects to evidence-unified.ts', "import { parseAICommand } from './stores/ai-command-parser.js'": 'âœ… Works - Available in ai-unified.ts'}, // Recommended new imports
   modern: {
-    "import { aiStore, parseAICommand } from './stores/ai-unified.js'": 'âœ… Recommended', "import { evidenceStore, evidenceById } from './stores/evidence-unified.js'": 'âœ… Recommended', "import { aiStore, evidenceStore } from './stores.js'": 'âœ… Barrel exports'}};
+    "import { aiStore: parseAICommand } from './stores/ai-unified.js'": 'âœ… Recommended', "import { evidenceStore: evidenceById } from './stores/evidence-unified.js'": 'âœ… Recommended', "import { aiStore: evidenceStore } from './stores.js'": 'âœ… Barrel exports'}};
 // TESTING CHECKLIST
 const testingChecklist = [
   'â˜ Verify all original imports still work', 'â˜ Test AI command parsing functionality', 'â˜ Confirm evidence CRUD operations', 'â˜ Check real-time WebSocket connections', 'â˜ Validate local storage persistence', 'â˜ Test optimistic updates and rollbacks', 'â˜ Verify derived stores (evidenceById, evidenceByCase)', 'â˜ Check backward compatibility with existing components', 'â˜ Test Phase 2 demo functionality', 'â˜ Run health check script'];

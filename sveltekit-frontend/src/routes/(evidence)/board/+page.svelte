@@ -65,16 +65,12 @@
 
 <style>
   .evidence-page-container {
-    min-height: 100vh,
-    position: relative}
+    min-height: 100vh; position: relative}
 
   .welcome-banner {
-    position: fixed,
-    top: 20px,
-    right: 20px,
-    z-index: 1000,
-    width: 320px,
-    background: rgba(0, 0, 0, 0.9);
+    position: fixed; top: 20px,
+    right: 20px; z-index: 1000,
+    width: 320px; background: rgba(0, 0, 0, 0.9);
     border: 2px solid #00ff41;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3)}
 
@@ -83,56 +79,41 @@
 
   @keyframes fadeInSlide {
     from {
-      opacity: 0,
-      transform: translateX(100%)}
+      opacity: 0; transform: translateX(100%)}
     to {
-      opacity: 1,
-      transform: translateX(0)}
+      opacity: 1; transform: translateX(0)}
   }
 
   .welcome-stats {
-    display: grid,
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px,
-    margin: 8px 0}
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 12px; margin: 8px 0}
 
   .stat {
-    display: flex,
-    flex-direction: column,
-    align-items: center,
-    padding: 8px,
+    display: flex; flex-direction: column,
+    align-items: center; padding: 8px,
     background: rgba(0, 255, 65, 0.1);
     border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px}
 
   .stat-label {
-    font-size: 10px,
-    color: #888,
-    text-transform: uppercase,
-    letter-spacing: 0.5px}
+    font-size: 10px; color: #888,
+    text-transform: uppercase; letter-spacing: 0.5px}
 
   .stat-value {
-    font-size: 12px,
-    font-weight: bold,
-    color: #00ff41,
-    margin-top: 2px}
+    font-size: 12px; font-weight: bold,
+    color: #00ff41; margin-top: 2px}
 
   .loading-screen {
-    display: flex,
-    flex-direction: column,
-    align-items: center,
-    justify-content: center,
-    height: 100vh,
-    background: #f5f5f5,
+    display: flex; flex-direction: column,
+    align-items: center; justify-content: center,
+    height: 100vh; background: #f5f5f5,
     color: #666}
 
   .loading-spinner {
-    width: 40px,
-    height: 40px,
+    width: 40px; height: 40px,
     border: 4px solid #e5e5e5;
     border-top: 4px solid #3b82f6;
-    border-radius: 50%,
-    animation: spin 1s linear infinite;
+    border-radius: 50%; animation: spin 1s linear infinite;
     margin-bottom: 16px}
 
   @keyframes spin {

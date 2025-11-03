@@ -2,7 +2,7 @@
   }; function close() { open = false}
   function handleKeydown(event: KeyboardEvent) { if (closeOnEscape && event.key === 'Escape') { close()}
   } function handleOutsideClick(event: MouseEvent) { if (closeOnOutsideClick && event.target === event.currentTarget) { close()}
-  } </script> <!-- keyboard handling on window, for, accessibility --> <svelte:window, onkeydown={ handleKeydown } /> <!-- optional, trigger --> {@render trigger?.()} {#if open} <!-- overlay --> <div class="fixed inset-0 z-40 flex items-center justify-center"
+  } </script> <!-- keyboard handling on window, for, accessibility --> <svelte: window | onkeydown={ handleKeydown } /> <!-- optional, trigger --> {@render trigger?.()} {#if open} <!-- overlay --> <div class="fixed inset-0 z-40 flex items-center justify-center"
     onclick={ handleOutsideClick } role="presentation"
     aria-hidden="true"
   > <!-- dialog, content --> <div class={cn(

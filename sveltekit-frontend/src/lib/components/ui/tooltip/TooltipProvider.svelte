@@ -8,6 +8,6 @@
 <style>
   .tooltip-provider {
     position: relative
-   , display: inline-block}
+   ;display: inline-block}
 </style>
 

@@ -48,7 +48,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           onclick={() => advancedCache.clearRecommendations()} >
           Clear Cache </button> </div> </section> </div> </div> <style> -  /* Import advanced interactions (use absolute path so PostCSS/Vite resolves it reliably) */ -  @import '/src/lib/styles/advanced-interactions.css'; +  /* Import advanced interactions using a project-relative relative path +     (avoid absolute leading slash which resolves to disk root like C:\src\...) */ +  @import '../../../../styles/advanced-interactions.css'; .advanced-cache-demo { font-family: 'Inter', system-ui, sans-serif}
   .cache-stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)}
-  .cache-stat-card:hover { transform: translateY(-2px), border-color: rgba(0, 255, 0, 0.4)}
+  .cache-stat-card: hover { transform: translateY(-2px); border-color: rgba(0, 255, 0, 0.4)}
   .sample-query-btn:hover { transform: translateX(2px)}
   .code-example summary:hover { text-decoration: underline}
   .recommendation-type { font-family: 'Monaco', 'Menlo', monospace}

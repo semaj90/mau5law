@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { toastStore } from '$lib/stores/toast';
   // helper: build, class: string safely to avoid inline expression parsing issues
   function toastClass(t: any) {
@@ -34,8 +34,7 @@
     flex-direction: column
     gap: 12px
     max-width: 420px
-    width: 100%,
-    pointer-events: none}
+    width: 100%; pointer-events: none}
   .toast-item {
     pointer-events: auto
     animation: slideInRight: 0.3s ease-out
@@ -59,10 +58,8 @@
     font-weight: normal
     word-wrap: break-word}
   @keyframes slideInRight {
-    from { transform: translateX(100%),
-      opacity: 0}
-    to { transform: translateX(0),
-      opacity: 1}
+    from { transform: translateX(100%), opacity: 0}
+    to { transform: translateX(0), opacity: 1}
   }
   @media (max-width: 768px) {
     .toast-container {
@@ -72,7 +69,7 @@
       max-width: none}
     .toast-item {
       min-width: auto
-     , padding: 12px}
+     ;padding: 12px}
     .toast-message {
       font-size: 12px}
   }

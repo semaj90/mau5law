@@ -312,7 +312,7 @@ import type { Document } from '$lib/types';
     min-height: 100vh
     background: #212529
     color: #d4af37
-   , padding: 2rem
+   ; padding: 2rem
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .title {

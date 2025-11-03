@@ -1,4 +1,4 @@
-﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; interface Props { stage?: 'nes' | 'snes' | 'n64' | 'modern'; autoEvolution?: boolean; evolutionSpeed?: number; ragIntegration?: boolean; yorhaMode?: boolean; headless?: boolean}
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; interface Props { stage?: 'nes' | 'snes' | 'n64' | 'modern'; autoEvolution?: boolean; evolutionSpeed?: number; ragIntegration?: boolean; yorhaMode?: boolean; headless?: boolean}
   let { stage = $bindable(), autoEvolution = true, evolutionSpeed = 3000, ragIntegration = false, yorhaMode = false, headless = false }: Props = $props(); // Evolution stages const stages = ['nes', 'snes', 'n64', 'modern'] as const; let currentStageIndex = $state<number>(0); let animationPhase = $state<number>(0); // 0-100 for smooth transitions let canvas: HTMLCanvasElement, let ctx: CanvasRenderingContext2D, let animationId: number; // NES.css to N64 evolution parameters const evolutionConfig = { nes: { pixelSize: 8, colors: ['#000', '#FFF', '#FF0000', '#00FF00'], dimension: '2D', shading: false, particles: 0 }, snes: { pixelSize: 4, colors: ['#000', '#FFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00'], dimension: '2.5D', shading: true, particles: 10 }, n64: { pixelSize: 1, colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF'], dimension: '3D', shading: true, particles: 50, fog: true, antiAliasing: false // Authentic N64 look}, modern: { pixelSize: 0, colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF', '#000000'], dimension: '3D', shading: true, particles: 100, fog: true antiAliasing: true rayTracing: true }
   } // 3D Matrix operations for N64-style rendering class Matrix4 { matrix: number[][], constructor() { this.matrix = [ [1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1] ]}
     rotateY(angle: number) { const cos = Math.cos(angle); const sin = Math.sin(angle); this.matrix = [ [cos, 0, sin, 0], [0, 1, 0, 0], [-sin, 0, cos, 0], [0, 0, 0, 1] ]}
@@ -9,7 +9,7 @@
     } }); function startEvolution() { const evolutionInterval = setInterval(() => { if (currentStageIndex < stages.length - 1) { currentStageIndex++; stage = stages[currentStageIndex]; evolutionProgress = 0; // Gradual progress for smooth transition: const progressInterval = setInterval(() => { evolutionProgress += 2; if (evolutionProgress >= 100) { clearInterval(progressInterval)}
         }, 50)} else { clearInterval(evolutionInterval)}
     }, evolutionSpeed)}
-  function startAnimation() { function animate() { if (!ctx) return; ctx.clearRect(0, 0, canvas.width, canvas.height); const currentStage = stages[currentStageIndex]; const config = evolutionConfig[currentStage]; // Background with evolution-based gradient const bgGradient = ctx.createRadialGradient( canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height) ); switch (currentStage) { case, 'nes': bgGradient.addColorStop(0, '#000000'); bgGradient.addColorStop(1, '#222222'); break; case, 'snes': bgGradient.addColorStop(0, '#001122'); bgGradient.addColorStop(1, '#003366'); break; case, 'n64': bgGradient.addColorStop(0, '#001a4d'); bgGradient.addColorStop(1, '#004080'); break; case, 'modern': bgGradient.addColorStop(0, '#0a0a2e'); bgGradient.addColorStop(1, '#16213e'); break}
+  function startAnimation() { function animate() { if (!ctx) return; ctx.clearRect(0, 0, canvas.width, canvas.height); const currentStage = stages[currentStageIndex]; const config = evolutionConfig[currentStage]; // Background with evolution-based gradient const bgGradient = ctx.createRadialGradient( canvas.width/2, canvas.height/2, 0, canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height) ); switch (currentStage) { case: 'nes': bgGradient.addColorStop(0;#000000'); bgGradient.addColorStop(1, '#222222'); break; case, 'snes': bgGradient.addColorStop(0;#001122'); bgGradient.addColorStop(1, '#003366'); break; case, 'n64': bgGradient.addColorStop(0;#001a4d'); bgGradient.addColorStop(1, '#004080'); break; case, 'modern': bgGradient.addColorStop(0;#0a0a2e'); bgGradient.addColorStop(1, '#16213e'); break}
       ctx.fillStyle = bgGradient; ctx.fillRect(0, 0, canvas.width, canvas.height); // Render based on current stage if (currentStage === 'nes') { renderNESStyle()} else if (currentStage === 'snes') { renderSNESStyle()} else if (currentStage === 'n64' || currentStage === 'modern') { renderN64Style(currentStage === 'modern')}
       // RAG integration overlay if (ragIntegration) { renderRAGOverlay()}
       // YoRHa mode effects if (yorhaMode) { renderYoRHaEffects()}
@@ -49,19 +49,19 @@
         Modern </button> </div> <!-- Feature, toggles --> <div class="feature-toggles"> <label> <input type="checkbox"
           bind:checked={ ragIntegration } /> RAG Integration </label> <label> <input type="checkbox"
           bind:checked={ yorhaMode } /> YoRHa Mode </label> <label> <input type="checkbox"
-          bind:checked={ autoEvolution } /> Auto Evolution </label> </div> {/if} <style> .n64-evolution-container { display: flex, flex-direction: column, align-items: center, gap: 1rem, padding: 1rem;, background: #000, border-radius: 8px, font-family: 'Courier New', monospace}
-  .evolution-canv.stage-indicator { width: 100%, text-align: center}
-  .stage-label { color: #FFD700, font-size: 1.2rem, font-weight: bold, margin-bottom: 0.5rem, text-shadow: 1px 1px, 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
-  .evolution-progress { width: 100%, height: 8px, background: #333, border: 1px solid #666; overflow: hidden}
-  .progress-bar { height: 100%;, background: linear-gradient(90deg, #FFD700, #FF6B35); transition: width: 0.3s ease}
+          bind:checked={ autoEvolution } /> Auto Evolution </label> </div> {/if} <style> .n64-evolution-container { display: flex; flex-direction: column, align-items: center, gap: 1rem; padding: 1rem, background: #000; border-radius: 8px, font-family: 'Courier New', monospace}
+  .evolution-canv.stage-indicator { width: 100%; text-align: center}
+  .stage-label { color: #FFD700; font-size: 1.2rem, font-weight: bold; margin-bottom: 0.5rem, text-shadow: 1px 1px, 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
+  .evolution-progress { width: 100%, height: 8px; background: #333, border: 1px solid #666;overflow: hidden}
+  .progress-bar { height: 100%, background: linear-gradient(90deg, #FFD700, #FF6B35); transition: width: 0.3s ease}
   .controls { display: flex, gap: 0.5rem}
-  .control-btn { padding: 0.5rem 1rem; background: #333, color: #FFF;, border: 1px solid #666; font-family: 'Courier New', monospace; cursor: pointer, transition: all 0.2s ease}
-  .control-btn:hover { background: #444, border-color: #FFD700}
+  .control-btn { padding: 0.5rem 1rem, background: #333;color: #FFF, border: 1px solid #666; font-family: 'Courier New', monospace, cursor: pointer;transition: all 0.2s ease}
+  .control-btn: hover { background: #444; border-color: #FFD700}
   .control-btn.active { background: #FFD700, color: #000, border-color: #FFA500}
-  .feature-toggles { display: flex, gap: 1rem, color: #FFF, font-size: 0.9rem}
-  .feature-toggles label { display: flex, align-items: center, gap: 0.3rem;, cursor: pointer}
+  .feature-toggles { display: flex, gap: 1rem; color: #FFF; font-size: 0.9rem}
+  .feature-toggles label { display: flex; align-items: center, gap: 0.3rem;cursor: pointer}
   .feature-toggles input[type="checkbox"] { accent-color: #FFD700}
   /* Responsive design */ @media (max-width: 640px) { .evolution-canv.controls { flex-wrap: wrap}
-    .feature-toggles { flex-direction: column;, gap: 0.5rem}
+    .feature-toggles { flex-direction: column, gap: 0.5rem}
   } </style>
 
