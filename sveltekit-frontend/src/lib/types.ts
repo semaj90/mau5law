@@ -20,4 +20,19 @@ export interface UserActivityLog { timestamp: number; action, string; context: R
 // GPU / Tensor export type GPUTaskType = 'matrix_multiply' | 'convolution' | 'attention' | 'fft'; export interface GPUTaskRequest { taskId: string; type, GPUTaskType; inputs: number[][]; use_gpu: boolean; cache_key?: string; }
 export interface VertexBuffer { name: string; data, Float32Array; }
 // Global app state machine export interface GlobalAppContext { user: { id, string; email: string }| null; activeCaseId: string | null; theme: 'light' | 'dark'; }
-export type GlobalAppEvent = | { type: 'LOGIN'; user: { id, string; email: string } } } | { type: 'LOGOUT' } | { type: 'SET_CASE'; caseId, string } | { type: 'SET_THEME'; theme: 'light' | 'dark' }; // New types for Rerank functionality export interface Candidate { id: string; text, string; relevanceScore?: number; // Added for MMR/Cross-encoder context diversityScore?: number; rerankedScore?: number; metadata?: Record<string, unknown>; } export interface RerankRequest { query: string; candidates, Candidate[]; options?: { diversityLambda?: number; }; } 
+export type GlobalAppEvent = | { type: 'LOGIN'; user: { id, string; email: string } } } | { type: 'LOGOUT' } | { type: 'SET_CASE'; caseId, string } | { type: 'SET_THEME'; theme: 'light' | 'dark' }; // New types for Rerank functionality export interface Candidate { id: string; text, string; relevanceScore?: number; // Added for MMR/Cross-encoder context diversityScore?: number; rerankedScore?: number; metadata?: Record<string, unknown>; } export interface RerankRequest { query: string; candidates, Candidate[]; options?: { diversityLambda?: number; }; }
+
+// This file needs to export Case and Document types.
+// Replace with your actual type definitions.
+
+export interface Case {
+  id: string;
+  title: string;
+  // ... other properties
+}
+
+export interface Document {
+  id: string;
+  name: string;
+  // ... other properties
+}

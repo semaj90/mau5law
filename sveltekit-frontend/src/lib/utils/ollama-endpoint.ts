@@ -1,1 +1,46 @@
-// Centralized Ollama endpoint helpers import { getOllamaBaseUrlFromConfig, resolveOllamaConfig } from '$lib/config/ollama-config'; export function getOllamaBaseUrl(): string { // Prefer explicit project config first try { const cfg = resolveOllamaConfig(); if (cfg && typeof cfg.baseUrl === 'string' && cfg.baseUrl.length > 0) { return cfg.baseUrl.replace(/\/$/, ''); }catch (e) { // fallthrough to previous strategies if resolve fails: void e; } // Fallback to legacy resolution for edge cases (keeps previous behavior) try { const meta = (import.meta as unknown as { env?: { VITE_OLLAMA_ENDPOINT?: string; VITE_OLLAMA_URL?: string } }) || undefined; const viteUrl = meta? .env?.VITE_OLLAMA_ENDPOINT || meta?.env?.VITE_OLLAMA_URL; if (viteUrl) return viteUrl.replace(/\/$/, ''); }catch (e) { void e; } if (typeof process !== 'undefined' && typeof process.env?.OLLAMA_ENDPOINT === 'string') { return (process.env.OLLAMA_ENDPOINT as string).replace(/\/$/, ''); } const g = globalThis as unknown as { OLLAMA_ENDPOINT? :  string }| undefined; if (g && typeof g.OLLAMA_ENDPOINT === 'string') return g.OLLAMA_ENDPOINT.replace(/\/$/, ''); // As a last resort, use the config helper's default which centralizes the fallback' return getOllamaBaseUrlFromConfig(); } export function getOllamaEndpoint(path, string = ''): string { const base = getOllamaBaseUrl().replace(/\/$/, ''); if (!path) return base; return `${base.replace(/\/$/, '')}/${path.replace(/^\//, '')}`; } export function getOllamaHealthEndpoint(): string { return getOllamaEndpoint('api/version'); } export function getOllamaEmbeddingsEndpoint(): string { return getOllamaEndpoint('api/embeddings'); } export function getOllamaGenerateEndpoint(): string { return getOllamaEndpoint('api/generate'); } export default getOllamaEndpoint; 
+/**
+ * Centralized utility to get the Ollama API endpoint.
+ * Prioritizes Docker service names from environment variables,
+ * with a localhost fallback for local development without Docker Compose.
+ */
+export function getOllamaEndpoint(): string {
+  // Prefer OLLAMA_URL from environment variables (e.g., Docker Compose service name 'ollama')
+  // Fallback to localhost for local development without Docker.
+  // The default port 11434 is standard for Ollama.
+  return process.env.OLLAMA_URL || 'http://localhost:11434';
+}
+
+/**
+ * Utility to get the Ollama generation API endpoint.
+ * This can be distinct from the general Ollama URL if specific generation services are used.
+ */
+export function getOllamaGenerationEndpoint(): string {
+  return process.env.OLLAMA_GENERATION_URL || getOllamaEndpoint();
+}
+
+/**
+ * Utility to get the Ollama embedding API endpoint.
+ * This can be distinct from the general Ollama URL if specific embedding services are used.
+ */
+export function getOllamaEmbeddingEndpoint(): string {
+  return process.env.OLLAMA_EMBEDDING_URL || getOllamaEndpoint();
+}
+
+/**
+ * Utility to get specific Ollama API endpoints based on type.
+ * @param type The type of Ollama API endpoint to retrieve (e.g., 'generate', 'delete', 'list', 'show').
+ * @returns The full URL for the specified Ollama API endpoint.
+ */
+export function getOllamaApiEndpoint(type: 'generate' | 'delete' | 'list' | 'show' | string): string {
+  const base = getOllamaEndpoint(); // Get the base Ollama URL
+  switch (type) {
+    case 'delete':
+      return `${base}/api/delete`;
+    case 'list':
+      return `${base}/api/tags`;
+    case 'show':
+      return `${base}/api/show`;
+    default:
+      return `${base}/api/generate`; // Default to generate if type is unknown
+  }
+}

@@ -15,7 +15,7 @@
   .toast {
     padding: 0.75rem 1rem;
     border-radius: 6px;
-   , color: white;
+    color: white;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
   }
   .info { background: #3b82f6; }
@@ -30,11 +30,11 @@
     <div class="toast {t.level}">
       <div style="display:flex;justify-content: space-between;align-items:center;">
         <div>
-          {#if t.title}<div class="title">{t.title}{/if}
+          {#if t.title}<div class="title">{t.title}</div>{/if}
           <div class="msg">{t.message}</div>
         </div>
         <div style="margin-left:1rem;">
-          <button onclick={() => removeToast(t.id)} aria-label="Dismiss toast" style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✖</button>
+          <button onclick={(event) => removeToast(event, t.id)} aria-label="Dismiss toast" style="background:transparent;border:none;color:rgba(255,255,255,0.9);">✖</button>
         </div>
       </div>
     </div>
