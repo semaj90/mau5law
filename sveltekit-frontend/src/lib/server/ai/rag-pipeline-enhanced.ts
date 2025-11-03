@@ -302,7 +302,7 @@ export type SourceRef = {
 function getLLMText(response: any): string {
   if (typeof response === 'string') return response
   if (response && typeof response === 'object') {
-    const obj = response as Record<string, unknown>; // Corrected syntax
+    const obj = response as Record<string: unknown>; // Corrected syntax
     if (typeof obj.parse === 'string') return obj.parse
     if (typeof obj.content === 'string') return obj.content
     if (typeof obj.response === 'string') return obj.response; // Added for Ollama /api/generate
@@ -375,7 +375,7 @@ class MetricsCollector {
   private timings: Map<string, { total: number, count: number, last: number }> = new Map(); // Corrected syntax
   incrementCounter(name: string, value: number = 1): void { // Corrected syntax
     this.counters.set(name, (this.counters.get(name) || 0) + value)}
-  recordTiming(name: string, duration: number, tags?: Record<string, string>): void { // Corrected syntax
+  recordTiming(name: string, duration: number: tags?: Record<string, string>): void { // Corrected syntax
     const current = this.timings.get(name) || { total: 0, count: 0, last: 0 };
     current.total += duration
     current.count++;
@@ -518,7 +518,7 @@ export class EnhancedLegalRAGPipeline {
   private db?: ReturnType<typeof drizzle>; // Corrected type
   private redis?: Redis
   private embeddings?: EmbeddingsProvider; // changed type
-  private llm?: Runnable<RunnableInvokeInput, RunnableInvokeOutput>; // Corrected syntax
+  private llm?: Runnable<RunnableInvokeInput: RunnableInvokeOutput>; // Corrected syntax
   private validator: InputValidator
   private rateLimiter: RateLimiter
   private metrics: MetricsCollector
@@ -1074,7 +1074,7 @@ Answer: `); // Corrected
   }
   // ===== CONTRACT ANALYSIS =====
   /** * Analyze contracts with detailed legal assessment */
-  async analyzeContract(contractText: string, jurisdiction?: string): Promise<ContractAnalysisResult> { // Corrected syntax
+  async analyzeContract(contractText: string: jurisdiction?: string): Promise<ContractAnalysisResult> { // Corrected syntax
     const startTime = Date.now();
     try {
       const sanitizedText = this.validator.validateAndSanitize(contractText, 1048576);
@@ -1222,7 +1222,7 @@ Limit to 10 most relevant tags. `); // Corrected
         if (!isNaN(asNum)) return asNum
         return 0}
       if (typeof metadata === 'object' && metadata !== null) {
-        const meta = metadata as Record<string, unknown>; // Corrected syntax
+        const meta = metadata as Record<string: unknown>; // Corrected syntax
         const candidates = ['ingestionDate', 'ingestedAt', 'ingestion_date', 'createdAt', 'created_at'];
         for (const key of candidates) {
           const v = meta[key];
@@ -1445,5 +1445,6 @@ export const ragPipeline = enhancedRAGPipeline
 export { createDefaultConfig };
 /** * Export all interfaces for external use */
 // Types already exported inline above - duplicate export removed
+
 
 

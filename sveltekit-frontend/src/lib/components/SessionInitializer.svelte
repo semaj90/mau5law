@@ -6,6 +6,7 @@
    const typedUserStore = userStore as MaybeUserStore;
    let syncIntervalId: number | null = null; function debugLog(message: string, ...args: any[]) { if ((props.enableDebugLogging as: boolean) ?? false) { console.log('[SessionInitializer]', message, ...args)}
   }
+
    // Initialize user data store when session/props changes $effect(() => { const user = props.user as MaybeUser; if (browser && user?.id) { debugLog('Initializing user data for:', user.id); typedUserStore.init?.(user.id)} else if (!user) { debugLog('Clearing user data - no user session'); typedUserStore.clear?.()}
   }); // Set up periodic sync if enabled $effect(() => { // clear previous interval if: any if (syncIntervalId) { clearInterval(syncIntervalId); syncIntervalId = null}
     const enableAutoSync = (props.enableAutoSync as: boolean) ?? true;
@@ -19,4 +20,5 @@
 </script>
 
 <!-- This component only initializes data, no UI, to, render -->
+
 

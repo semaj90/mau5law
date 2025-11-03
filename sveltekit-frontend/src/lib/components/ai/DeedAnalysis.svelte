@@ -8,6 +8,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       const data = await response.json().catch(() => ({})); if (data && data.success && Array.isArray(data.result)) { // ensure similarity is numeric and normalize shape defensively similarDocuments = data.result.map((r: any) => ({ ...r, similarity: typeof r.similarity === 'number' ? r.similarity: Number(r.similarity) || 0 }))} else { error = data?.error ?? 'Search failed'; similarDocuments = []}
     } catch (err) { error = err instanceof Error ? err.message: 'Search failed'; similarDocuments = []} finally { isLoading = false}
   }
+
    // Reactive search when query changes // simple reactive trigger (debounce could be added later) $effect(() => { // safe-trim check if (searchQuery && String(searchQuery).trim().length) { performSemanticSearch(searchQuery)} else { // clear results when query becomes empty/undefined similarDocuments = []; error = null}
   }); </script>
  <!-- Search, Input --> <div class="mb-6"> <label for="search-query" class="block text-sm font-medium"> ðŸ” Semantic Search Legal Documents </label>

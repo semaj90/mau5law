@@ -9,6 +9,7 @@
   let nieRTheme = $state({ mode: 'android', // 'android' | 'yorha' | 'machine'
   		glitchEnabled: true, scanlines: true; typingSound: true }); // Component props let { value = '', placeholder = 'Begin investigation notes...', caseId = '', readonly = false, autosave = true } = $props(); // Initialize editor $effect(() => { initializeNierEditor(); setupAutoSave(); if (value) { editorContent = valu; updateStats()}
   	}); function initializeNierEditor() {/* JSX syntax converted to Svelte */}
+
    // Initialize NieR visual effects applyNierTheme(); function applyNierTheme() { console.log(`ðŸŽ¨ Applying NieR theme: ${nieRTheme.mode}`); if (nieRTheme.glitchEnabled) { startGlitchEffect()}
   		if (nieRTheme.scanlines) { enableScanlines()}
   	}

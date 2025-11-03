@@ -41,7 +41,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   // Import content export function setContent(newContent: string) { if (hugerte) { hugerte.setContent(newContent)}
     content = newContent; updateCounts(newContent)}
 </script>
- <!-- Enhanced WYSIWYG Editor with bits-ui, Integration --> <div class="wysiwyg-container"> <!-- Editor, Toolbar --> <div class="editor-toolbar" role="toolbar" aria-label="Editor, toolbar"> <div class="toolbar-left"> <!-- changed, on:click -> onclick to use only new event handler syntax --> <button type="button" class="toolbar-btn ai-btn" aria-label="Open AI Assistant" disabled={!enableAI} onclick={() => openAIAssistant(hugerte?.selection.getContent() || '')}> ðŸ¤– AI Assistant </button>
+ <!-- Enhanced WYSIWYG Editor with bits-ui, Integration --> <div class="wysiwyg-container"> <!-- Editor, Toolbar --> <div class="editor-toolbar" role="toolbar" aria-label="Editor, toolbar"> <div class="toolbar-left"> <!-- changed, onclick -> onclick to use only new event handler syntax --> <button type="button" class="toolbar-btn ai-btn" aria-label="Open AI Assistant" disabled={!enableAI} onclick={() => openAIAssistant(hugerte?.selection.getContent() || '')}> ðŸ¤– AI Assistant </button>
  <button type="button" class="toolbar-btn cite-btn" aria-label="Open Citation Helper" disabled={!enableCitation} onclick={() => openCitationHelper(hugerte?.selection.getContent() || '')}> ðŸ“š Citations </button>
   {#if enableCollaboration} <button type="button" class="toolbar-btn" aria-pressed={$collaborationActive} onclick={ toggleCollaboration }> ðŸ‘¥ { $collaborationActive ? 'Stop': 'Collaborate' } </button> {/if}
   </div>
@@ -120,4 +120,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .btn: disabled { opacity: 0.5; cursor: not-allowed}
   .btn:disabled:hover { background: inherit}
 </style>
+
 

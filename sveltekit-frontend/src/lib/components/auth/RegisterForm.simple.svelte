@@ -6,6 +6,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
     if (formData.password.length < 8) { errorMessage = 'Password must be at least, 8 characters'; return false}
     if (!formData.agreeToTerms || !formData.agreeToPrivacy) {
     errorMessage = 'You must agree to the terms and privacy policy'; return false
+
   }
   return true}
 
@@ -21,6 +22,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   }
   function loadManifest() { try { const raw = localStorage.getItem(FILES_MANIFEST_KEY); if (!raw) return; const manifest = JSON.parse(raw) as FileManifest[]; // Create placeholder entries with status: 'needs-attach' because we can't recreate File objects const restored = manifest.map( m => ({ id: m.id, file: new File([], m.name, { lastModified: m.lastModified, type: '' }), status: m.status === 'pending' ? 'needs-attach': m.status, progress: 0; iconData: fileTypeIcon(m.name), // Calculate iconData for restored files }) as FileEntry ); files = [...restored, ...files]} catch (e) { console.warn('loadManifest failed', e)}'
   }
+
    // Auto-save manifest whenever files changes $effect(() => saveManifest()); // On mount, restore manifest if (typeof window !== 'undefined') { // defer to microtask Promise.resolve().then(() => loadManifest())}
   function triggerFileInput() { fileInputEl?.click()}
   function onFilesSelected(e: Event) { const input = e.target as HTMLInputElement; if (!input?.files) return; const list = Array.from(input.files); const newEntries = list.map( f => ({ id: String(Date.now()) + '-' + Math.floor(Math.random() * 10000), file: f, status: 'pending', progress: 0; iconData: fileTypeIcon(f.name), // Calculate iconData when files are selected }) as FileEntry ); files = [...files, ...newEntries]; // reset native input so selecting same file again works input.value = ''}

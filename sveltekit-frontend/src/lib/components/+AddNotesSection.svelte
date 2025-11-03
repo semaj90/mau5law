@@ -6,6 +6,7 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; type O
     } else { // fallback to console and lightweight feedback console.info('onsaved not provided; saved payload:', payload); // guard alert behind browser environment check to avoid SSR issues try { if (typeof window !== 'undefined' && typeof window.alert === 'function') { window.alert('Notes saved successfully!')}
       } catch (e) { // ignore in non-browser contexts }
     }
+
    // Reset form notesContent = ''; selectedCaseForNotes = ''; selectedPoiForNotes = ''};
 </script>
 
@@ -50,4 +51,5 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; type O
   button.btn.nes-btn.is-primary:hover, .btn.nes-btn.is-primary:hover { background-color: #0056b3}
   /* Utility spacing used in markup (mb-3 etc.) */ .mb-3 { margin-bottom: 0.75rem}
 </style>
+
 

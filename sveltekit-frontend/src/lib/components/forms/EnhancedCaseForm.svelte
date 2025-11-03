@@ -147,7 +147,7 @@
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member)}
 </script>
 
-<form on:submit|preventDefault={handleSubmit} class="enhanced-case-form container mx-auto px-4">
+<form onsubmit|preventDefault={handleSubmit} class="enhanced-case-form container mx-auto px-4">
   <div class="container mx-auto">
     <!-- Basic, Information -->
     <section class="container mx-auto">

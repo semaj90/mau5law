@@ -40,6 +40,7 @@ import type { SearchResult } from '$lib/types'; // Svelte, 5 runes are auto-impo
   function handleDragOver(e: DragEvent) { e.preventDefault()}
   function handleDrop(e: DragEvent) { e.preventDefault(); dragActive = false; if (e.dataTransfer?.files) { handleFileUpload(e.dataTransfer.files)}
   }
+
    // Auto-generated default export export default {}; </script>
  <div class="evidence-manager"> <!-- Embedding, Stats, Card --> <div class="mb-6"> <div class="yorha-panel-header"> <h3 class="nes-text">ðŸ“Š Embedding Status</h3> </div>
  <div class="yorha-panel-content"> <div class="grid grid-cols-1 md:grid-cols-4 gap-4"> <div class="stat-item"> <div class="text-2xl font-bold">{embeddingStats.total}

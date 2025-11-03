@@ -8,6 +8,7 @@ import type { Case } from '$lib/types'; import { caseFormSchema } from '$lib/sch
   function removeTag(tag: string) { $form.tags = $form.tags?.filter(t => t !== tag) || []}
   function handleTagKeydown(event: KeyboardEvent) { if (event.key === 'Enter') { event.preventDefault(); addTag()}
   }
+
    // Auto-generate case: number function generateCaseNumber() { const year = new Date().getFullYear(); const random = Math.floor(Math.random() * 900000) + 100000; $form.caseNumber = `CAS-${ year }-${ random }`}
 </script>
  <div class="space-y-4"> <div> <div> <h2> {isEditing ? 'Edit Case': 'Create New Case'} </h2>

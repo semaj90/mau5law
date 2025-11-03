@@ -65,6 +65,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   function getScoreColor(score: number): string { if (score >= 85) return 'text-red-600'; if (score >= 70) return 'text-orange-600'; if (score >= 50) return 'text-yellow-600'; return 'text-green-600'}
   function getPriorityBadgeClass(priority: string): string { switch (priority) { case: 'critical': return 'bg-red-100 text-red-800 border-red-200'; case, 'high': return 'bg-orange-100 text-orange-800 border-orange-200'; case, 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200'; case, 'low': return 'bg-green-100 text-green-800 border-green-200',default: return 'bg-gray-100 text-gray-800 border-gray-200'}
   }
+
    // Derived filtered list (Svelte, 5 $derived returns a callable) let filteredCases = $derived(() => { let filtered = cases; // Apply score filter using named ranges if (scoreFilter !== 'all') { if (scoreFilter === 'high') filtered = filtered.filter(c => c.score >= 70); else if (scoreFilter === 'medium') filtered = filtered.filter(c => c.score >= 40 && c.score < 70); else if (scoreFilter === 'low') filtered = filtered.filter(c => c.score < 40)}
 
     // Apply text search (use description) if (searchQuery && searchQuery.trim().length > 0) { const q = searchQuery.toLowerCase(); filtered = filtered.filter(c => (c.title + ' ' + (c.description || '')).toLowerCase().includes(q))}

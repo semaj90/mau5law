@@ -18,6 +18,7 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import
     }; await saveLegalNote(updated)}
   async function deleteNote(noteId: string): Promise<void> { if (confirm('Are you sure you want to delete this note?')) { await removeLegalNote(noteId)}
   }
+
    // Semantic search async function performSemSearch(): Promise<any> { if (!searchQuery.trim()) return; const results = await performSemanticSearch(searchQuery, 10); semanticResults = results; showSemanticSearch = true}
 
   // Export functionality async function exportNotes(format: 'json' | 'markdown' | 'legal_brief'): Promise<any> { await exportLegalNotes(format)}

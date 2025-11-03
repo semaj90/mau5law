@@ -10,7 +10,7 @@ import type { Case } from '$lib/types'; // Enhanced Legal Canvas with YoRHa styl
 		(async () => {
  if (!canvas) return; ctx = canvas.getContext('2d'); if (!ctx) return; // Check WebGPU support if ('gpu' in navigator) { try { const adapter = await navigator.gpu.requestAdapter(); isWebGPUSupported = !!adapter} catch (error) { console.warn('WebGPU not available:', error)}
     } setupCanvas(); startRenderLoop(); 		})();
-		
+
 		return () => { if (animationFrameId) { cancelAnimationFrame(animationFrameId)}
     } 
 	}); function setupCanvas() { if (!canvas || !ctx) return; // High DPI support const devicePixelRatio = window.devicePixelRatio || 1; canvas.width = width * devicePixelRatio; canvas.height = height * devicePixelRatio; canvas.style.width = `${ width }px`; canvas.style.height = `${ height }px`; ctx.scale(devicePixelRatio, devicePixelRatio); // Set canvas properties ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high'}
@@ -40,6 +40,7 @@ import type { Case } from '$lib/types'; // Enhanced Legal Canvas with YoRHa styl
   }
   function handleMouseLeave() { hoveredNode = null; onNodeHover?.(null); if (canvas) { canvas.style.cursor = 'default'}
   }
+
    // Generate sample data if none provided $effect(() => { if (data.length === 0) { // Generate sample legal data points const sampleData: CanvasDataPoint[] = [ { id: 'case-001', x: 100, y: 100, label: 'Case 001', type: 'case', riskLevel: 'high', metadata: { priority: 'urgent'; connections: ['evidence-001', 'document-001'] } }, {
           id: 'evidence-001', x: 200, y: 150, label: 'Evidence A', type: 'evidence', riskLevel: 'critical', metadata: { type: 'forensic'; connections: ['case-001'] } }, {
           id: 'document-001', x: 300, y: 120, label: 'Contract X', type: 'document', riskLevel: 'medium', metadata: { category: 'legal'; connections: ['case-001', 'citation-001'] } }, {

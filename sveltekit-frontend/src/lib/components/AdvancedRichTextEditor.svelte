@@ -35,6 +35,7 @@ import type { Document } from '$lib/types'; import { ErrorBoundary } from '$lib/
   // }
 
   // }; // document.addEventListener("keydown", handleKeyDown); // return () => { // document.removeEventListener('keydown', handleKeyDown); // }; // }); // }
+
    // Toolbar actions function toggleBold() { editor?.chain().focus().toggleBold().run()}
   function toggleItalic() { editor?.chain().focus().toggleItalic().run()}
   function toggleUnderline() { editor?.chain().focus().toggleUnderline().run()}

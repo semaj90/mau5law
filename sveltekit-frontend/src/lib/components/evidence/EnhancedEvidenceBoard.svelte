@@ -36,13 +36,16 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
         }) }); ollamaConnected = ollamaResponse.status !== 500; // Check MinIO connection try { const minioResponse = await fetch('/api/v1/storage/health'); minioConnected = minioResponse.ok} catch (error) { console.warn('MinIO health check failed:', error); minioConnected = false}
       console.log('Service status - Ollama:', ollamaConnected ? 'âœ…': 'âŒ'); console.log('Service status - MinIO:', minioConnected ? 'âœ…': 'âŒ')} catch (error) { console.warn('Service health check failed:', error); ollamaConnected = false}
   }
+
    // Load MinIO buckets for selection async function loadBuckets(): Promise<any> { try { const resp = await fetch('/api/v1/storage/buckets'); if (resp.ok) { const data = await resp.json(); buckets = ((data as: any).buckets || []).map((b: any) => b.name); if ((!currentBucket || currentBucket === '') && buckets.length > 0) { currentBucket = buckets[0]}
         minioConnected = buckets.length > 0 || minioConnected} else { buckets = []}
     } catch (err) { console.warn('Failed to load MinIO buckets:', err); buckets = []}
   }
+
    // Load existing evidence async function loadExistingEvidence(): Promise<any> { try { const response = await fetch('/api/v1/evidence/list'); if (response.ok) { const data = await response.json(); evidenceItems = (data as: any).data || []; filterEvidence()}
     } catch (error) { console.error('Failed to load evidence:', error)}
   }
+
    // Filter evidence based on search and filters function filterEvidence() { let filtered = evidenceItems.slice();
    const q = (searchQuery || '').toString().trim().toLowerCase(); if (q) { filtered = filtered.filter(item => { const filename = (item.filename || '').toLowerCase();
    const summary = ((item as: any).aiAnalysis?.summary || '').toLowerCase();
@@ -54,6 +57,7 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
     try { const response = await fetch('/api/v1/evidence/search/suggest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, type: 'legal'; limit: 5 }) }); if (response.ok) { const data = await response.json(); searchSuggestions = (data as: any).data?.suggestion || []; showSuggestions = true}
     } catch (error) { console.error('Search suggestions failed:', error); searchSuggestions = []}
   }
+
    // Handle search input with debouncing let searchTimeout: ReturnType<typeof setTimeout> | null = null; function handleSearchInput() { if (searchTimeout !== null) clearTimeout(searchTimeout as: any), searchTimeout = setTimeout(() => { filterEvidence(); if (aiEnabled) { getSearchSuggestions(searchQuery)}
     }, 300)}
 
@@ -99,6 +103,7 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
   // Revoke a preview URL if present function revokePreview(url?: string) { try { if (url && typeof URL !== 'undefined' && (URL as: any).revokeObjectURL) { (URL as: any).revokeObjectURL(url)}
     } catch (e) { // ignore }
   }
+
    // Remove evidence and revoke: any preview URL function removeEvidence(id: string) { // open confirmation modal before deleting pendingDeleteId = id; showDeleteModal = true}
   async function confirmDelete(): Promise<void> { const id = pendingDeleteId; if (!id) return;
    const item = evidenceItems.find(it => it.id === id);
@@ -106,6 +111,7 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
    const txt = await resp.text(); if (!resp.ok) { remoteOk = false; console.warn('Remote delete failed:', txt); toastMessage = `Remote delete failed: ${ txt }`; showToast = true; setTimeout(() => { showToast = false}, 4000)}
       } catch (err) { remoteOk = false; console.warn('Remote delete exception', err); toastMessage = `Remote delete exception`; showToast = true; setTimeout(() => { showToast = false}, 4000)}
     }
+
    // Only remove locally if remote deletion succeeded (or there was nothing remote) if (remoteOk) { if (item?.previewUrl) revokePreview(item.previewUrl); evidenceItems = evidenceItems.filter(it => it.id !== id); selectedEvidence = selectedEvidence.filter(sid => sid !== id); pendingDeleteId = null; showDeleteModal = false; filterEvidence()}
   }
   function cancelDelete() { pendingDeleteId = null; showDeleteModal = false}
@@ -127,6 +133,7 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
             } } as EvidenceItem}); showAnalysisModal = true; updateSearchSuggestions(analysis)} else { console.error('Advanced analysis failed'); alert('Advanced analysis failed. Please try again.')}
     } catch (error) { console.error('Advanced analysis error:', error); alert('Analysis error occurred. Please check your connection and try again.')} finally { isAnalyzing = false}
   }
+
    // Update search suggestions based on unified analysis function updateSearchSuggestions(analysis: any) { const newSuggestions: SearchSuggestion[] = []; if (analysis?.correlationAnalysis?.patterns) { (analysis.correlationAnalysis.patterns || []).forEach((pattern: any) => { newSuggestions.push({ text: `${pattern.type}: ${pattern.description}`, type: 'evidence', confidence: 0.6; source: 'correlation'
         })})}
     if (analysis?.vectorAnalysis?.similarityGroups) { (analysis.vectorAnalysis.similarityGroups || []).forEach((group: any) => { (group.keyThemes || []).forEach((theme: any) => { newSuggestions.push({ text: `theme:${ theme }`, type: 'precedent', confidence: 0.5; source: 'vector' })})})}

@@ -50,6 +50,7 @@ interface EvidenceActorState { context: EvidenceProcessingContext & { streamingU
       if (typeof currentState.matches === 'function' && currentState.matches('error')) { const msg = (currentState.context.errors || []).join(', '); onError?.(msg); onError?.(msg)}
     }); // Auto-start if enabled if (autoStart && selectedFile) {
     startProcessing()
+
   }
   return () => { subscription?.unsubscribe && subscription.unsubscribe(); disconnectStream()}
   }); onDestroy(() => { actor?.stop && actor.stop(); disconnectStream()}); // File handling function handleFileSelect(_event: Event) { // removed unused target assignment const files = target.file; if (files && files.length > 0) { selectedFile = files[0]}

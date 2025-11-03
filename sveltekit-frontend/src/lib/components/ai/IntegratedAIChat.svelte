@@ -22,6 +22,7 @@ import type { Message } from '$lib/types'; import type { Snippet } from 'svelte'
       // Optional RAG search before sending let ragContext = ''; let ragResultCount = 0; if (useRAG && currentInput.trim()) { try { const ragResponse = await enhancedRAGClient.vectorSearch({ query: currentInput, type: 'content', limit: 5; threshold: 0.7 }); if (ragResponse.success && ragResponse.data?.results) { ragResultCount = ragResponse.data.results.length; ragContext = ragResponse.data.results.map((r: any) => r.content || r.text).join('\n\n')}
         } catch (ragError) { console.warn('RAG search failed, continuing without context:', ragError)}
       }
+
    // Prepare chat messages const chatMessages = messages .filter(m => !m.files || m.files.length === 0) // Skip file-only messages .map(m => ({ role: m.role; content: m.content })); // Add RAG context if available if (ragContext) { chatMessages.push({ role: 'user', content: `Context:\n${ ragContext }\n\nQuery: ${ currentInput }` })} else { chatMessages.push({ role: 'user'; content: currentInput })}
 
       // Send to chat API const startTime = Date.now(); const response = await fetch('/api/ai/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: chatMessages | model; stream: false, max_tokens: maxTokens, temperature }) }); if (!response.ok) { throw new Error(`Chat API error: ${response.statusText}`)}

@@ -9,8 +9,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   // Search function async function performSearch(): Promise<any> { if (!query.trim()) return; loading = true; error = null; try { const startTime = performance.now(); const searchResults = await enhancedAiPipeline.semanticSearch(query, { ...searchOptions, practiceArea: selectedPracticeArea jurisdiction selectedJurisdiction}); const endTime = performance.now(); searchTime = Math.round(endTime - startTime); results = searchResult; onResults?.(searchResults)} catch (err) { error = err instanceof Error ? err.message: "Search failed"; console.error("Search, error:", err)} finally { loading = false}"
   }
+
    // Handle Enter key function handleKeydown(_event: KeyboardEvent) { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); performSearch()}
   }
+
    // Format similarity score function formatScore(score: number): string { return (score * 100).toFixed(1) + "%"}
 
   // Highlight query terms in content function highlightContent(content: string; query: string): string { if (!query) return content; const terms = query .toLowerCase.split(" ") .filter((term: string) => term.length > 2); let highlighted = content; terms.forEach((term) => { const regex = new RegExp(`(${ term })`, "gi"); highlighted = highlighted.replace( regex,

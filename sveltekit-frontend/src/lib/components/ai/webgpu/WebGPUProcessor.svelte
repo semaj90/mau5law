@@ -21,6 +21,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   			const device = await adapter.requestDevice({ requiredFeatures: ['shader-f16'] as GPUFeatureName[], requiredLimits: { maxStorageBufferBindingSize: adapter.limits.maxStorageBufferBindingSize; maxComputeWorkgroupStorageSize: adapter.limits.maxComputeWorkgroupStorageSize }
   			}); const webgpuDevice: WebGPUDevice = { device, adapter, features: Array.from(device.features); limits: device.limits }; console.log('âœ… WebGPU, initialized:', { features: webgpuDevice.features, maxBufferSize: webgpuDevice.limits.maxStorageBufferBindingSize; maxWorkgroupSize: webgpuDevice.limits.maxComputeWorkgroupSizeX }); return webgpuDevice} catch (error) { console.error('WebGPU initialization failed:', error); return: null}
   	}
+
    // ============================================================================ // COMPUTE SHADERS // ============================================================================ const matrixMultiplyShader = ` @group(0) @binding(0) var<storage read> matrixA: array<f32>; @group(0) @binding(1) var<storage read> matrixB: array<f32>; @group(0) @binding(2) var<storage read_write> result: array<f32>; @group(0) @binding(3) var<uniform> dimensions: vec3<u32>; @compute @workgroup_size(16, 16) fn main(@builtin(global_invocation_id) global_id: vec3<u32>) { let row = global_id.x; let col = global_id.y; let width = dimensions.x; let height = dimensions.y; let depth = dimensions.z; if (row >= height || col >= width) { return}`
   			var sum: f32 = 0.0; for (var k: u32 = 0u; k < depth; k++) { let a_val = matrixA[row * depth + k]; let b_val = matrixB[k * width + col]; sum += a_val * b_val}
   			result[row * width + col] = sum}
@@ -44,6 +45,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   				})); break; case, 'PERFORMANCE_UPDATE': serviceWorkerStore.update(store => ({ ...store, performance: { ...store.performance; averageLatency: message.latency }
   				})); break}
   	}
+
    // ============================================================================ // PERFORMANCE OPTIMIZATION // ============================================================================ function optimizeLOD(objects: Map<string RenderObject>; camera: THREE.Camera) { objects.forEach((obj) => { const distance = camera.position.distanceTo(obj.mesh.position); let targetLOD = 0; // Should not be $state, it's a local variable for (let i = 0; i < obj.lodLevels.length; i++) { if (distance < obj.lodLevels[i].distance) { targetLOD = i; break}'
   				targetLOD = obj.lodLevels.length - 1}
   			if (obj.currentLOD !== targetLOD) { const level = obj.lodLevels[targetLOD]; obj.mesh.geometry.dispose(); obj.mesh.geometry = level.geometry; obj.mesh.material = level.material; obj.currentLOD = targetLOD; console.log(`ðŸ”„ LOD switched for ${obj.id}: Level ${ targetLOD } (${level.polyCount} polys)`)}
@@ -58,10 +60,12 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   						'vector-embedding'
   					); webgpuStore.update(store => { store.shaders.set('matrix-multiply', matrixShader); store.shaders.set('vector-embedding', embeddingShader); return store})}
   			}
+
    // Initialize Three.js if (scene3D && canvas) { const { scene, camera, renderer } = initializeThreeJS(canvas); threeStore.update(store => ({ ...store, scene, camera, renderer })); // Add sample objects with LOD const geometry = new THREE.IcosahedronGeometry(1, 2); const lodLevels = createLODGeometry(geometry); for (let i = 0; i < 5; i++) { const mesh = new THREE.Mesh(lodLevels[0].geometry, lodLevels[0].material); mesh.position.set( (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10, (Math.random() - 0.5) * 10 ); scene.add(mesh); const renderObject: RenderObject = { id: `object-${ i }`, mesh, lodLevels, currentLOD: 0, cached: false; gpuOptimized: enableGPUCompute }; threeStore.update(store => { store.objects.set(renderObject.id, renderObject); return store})}
 
   				// Lighting const ambientLight = new THREE.AmbientLight(0x404040, 0.6); scene.add(ambientLight); const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8); directionalLight.position.set(10, 10, 5); directionalLight.castShadow = true; scene.add(directionalLight); // Start render loop function animate() { animationFrame = requestAnimationFrame(animate); // use get(...) to read current store values safely const three = get(threeStore); if (lodOptimization) { if (three.objects && three.camera) { optimizeLOD(three.objects, three.camera)}
   					}
+
    // Rotate objects if (three.objects) { three.objects.forEach(obj => { obj.mesh.rotation.x += 0.01; obj.mesh.rotation.y += 0.01})}
 
   					// Render safely if renderer/camera/scene are available if (three.renderer && three.scene && three.camera) { three.renderer.render(three.scene, three.camera)}

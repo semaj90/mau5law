@@ -12,6 +12,7 @@ import type { Document } from '$lib/types'; // RAG Document Upload Component // 
 
       // Avoid duplicates if (!files.find(f => f.name === file.name && f.size === file.size)) { files.push(file)}
     }
+
    // Trigger reactivity files = [...files]}
   function removeFile(index: number) { files.splice(index, 1); files = [...files]}
   function handleDrop(event: DragEvent) { event.preventDefault(); dragOver = false; const droppedFiles = Array.from(event.dataTransfer?.files || []); addFiles(droppedFiles)}

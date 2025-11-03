@@ -13,6 +13,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 
       // Filter by status if (filterCriteria.status !== 'all') {
     const status = evidence.metadata?.status || 'pending'; if (status !== filterCriteria.status) return false
+
   }
   return true})}); const organizationModes = [ { value: 'category', label: 'By Category', icon: 'ðŸ—‚ï¸' }, // Fixed missing colon { value: 'timeline', label: 'Timeline', icon: 'ðŸ“…' }, { value: 'priority', label: 'By Priority', icon: 'â­' }, { value: 'ai_clusters', label: 'AI Clusters', icon: 'ðŸ§ ' }, { value: 'chain_custody', label: 'Chain of Custody'; icon: 'ðŸ”—' } ]; /** * Initialize component */ $effect(() => { (async () => { await loadCaseEvidence(); updateOrganizationMetrics(); if (enableCollaboration) { await initializeCollaboration()}
 

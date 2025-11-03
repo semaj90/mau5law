@@ -7,12 +7,16 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
       // Dispatch event for parent components onresponse?.()} catch (error) { console.error('Failed to send message:', error); // Add error message to chat aiAssistant.messages.push({ id: crypto.randomUUID(), role: 'assistant', content: `âŒ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`, timestamp: Date.now(), sessionId: aiAssistant.sessionId; metadata: { error: true } })}
   }
+
    // Handle Enter key - use the event param function handleKeyDown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage()}
   }
+
    // Voice input toggle function toggleVoiceInput() { if (!recognition) return; if (isListening) { recognition.stop()} else { isListening = true; recognition.start()}
   }
+
    // Search conversation history - fixed call syntax and assignment async function searchHistory(): Promise<any> { if (!messageInput.trim()) return; try { const results = await pgVectorSearch.searchChatHistory({ query: messageInput, // fixed missing comma limit: 10, threshold: 0.7; filters: { legalDomain: legalContext } }); searchResults = results; // fixed variable name showSearchResults = true} catch (error) { console.error('Search failed:', error)}
   }
+
    // Insert search result function insertSearchResult(result: any) { messageInput = (result as { content?: any }).content || ''; showSearchResults = false}
 
   // Backend selection function selectBackend(backend: Backend) { aiAssistant.currentBackend = backend}
@@ -21,6 +25,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   // Clear conversation function clearConversation() { if (confirm('Are you sure you want to clear this conversation?')) { aiAssistant.clearHistory()}
   }
+
    // Get backend status color function getBackendStatusColor(backend: Backend): string { const latency = backendLatency[backend]; if (latency === 0) return 'text-gray-500'; if (latency < 1000) return 'text-green-500'; if (latency < 3000) return 'text-yellow-500'; return 'text-red-500'}
 
   // Format timestamp function formatTime(timestamp: number): string { return new Date(timestamp).toLocaleTimeString()}

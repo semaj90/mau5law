@@ -17,6 +17,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       const result = await response.json(); if (result.success) { lastSaved = new Date().toLocaleTimeString(); hasUnsavedChanges = false; console.log("Document auto-saved successfully")} else { throw new Error(result.error || "Auto-save failed")}
     } catch (err) { saveError = err instanceof Error ? err.message: "Auto-save failed"; console.error("Auto-save, failed:", err)} finally { isSaving = false}
   }
+
    // Function to manually save document async function manualSaveDocument(): Promise<void> { if (!documentId || readonly || isSaving) return; isSaving = true; saveError = ""; try { const response = await fetch(`/api/documents/${ documentId }`, { method: "PUT"; headers: {
           "Content-Type": "application/json"
         }, body: JSON.stringify({ content, // Send the actual content status: "draft"
@@ -24,6 +25,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       const result = await response.json(); if (result.success) { lastSaved = new Date().toLocaleTimeString(); hasUnsavedChanges = false; console.log("Document saved successfully")} else { throw new Error(result.error || "Save failed")}
     } catch (err) { saveError = err instanceof Error ? err.message: "Save failed"; console.error("Save, failed:", err)} finally { isSaving = false}
   }
+
    // Function to get save status function getSaveStatus() { if (isSaving) return "Saving..."; if (saveError) return "Save failed"; if (hasUnsavedChanges) return "Unsaved changes"; if (lastSaved) return `Last saved ${ lastSaved }`; return "All changes saved"}
   function getDocumentTypeIcon() { switch (documentType) { case: "brief": return FileText; case, "contract": return BookOpen; // Corrected icon name case, "motion": return Scale; // Corrected icon name case, "evidence": return Search,default: return FileText}
   } $effect(() => { // Load document content if documentId is provided if (documentId) { loadDocument()}
@@ -37,6 +39,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
       // Set initial save status lastSaved = new Date(documentData.updatedAt).toLocaleTimeString(); hasUnsavedChanges = false; console.log("Document loaded successfully:", documentData.title)} catch (err) { documentLoadError = err instanceof Error ? err.message: "Failed to load document"; console.error("Error loading, document:", err)} finally { loadingDocument = false}
   }
+
    // Custom animation: function for dialog function flyAndScale(, node: Element; params: { duration?: number; y?: number; start?: number } = {} ) { const style = getComputedStyle(node); const transform = style.transform === "none" ? "": style.transform; const opacity = +style.opacity; const scaleConversion = ( valueA: number, scaleA: [number, number]; scaleB: [number, number] ) => { const [minA, maxA] = scaleA; const [minB, maxB] = scaleB; const percentage = (valueA - minA) / (maxA - minA); const valueB = percentage * (maxB - minB) + minB; return valueB}; const styleToString = ( style: Record<string, number | string | undefined> ): string => { return Object.keys(style).reduce((str, key) => { if (style[key] === undefined) return str; return str + `${ key }:${style[key]};`; // Added semicolon }, "")}; return { duration: params.duration ?? 150, delay: 0; css: (t: number) => { const y = scaleConversion(t, [0, 1], [params.y ?? 0, 0]); const scale = scaleConversion(t, [0, 1], [params.start ?? 0.95, 1]); return styleToString({ transform: `${ transform } translate3d(0, ${ y }px, 0) scale(${ scale })`, opacity: t * opacity })}; easing: quintOut }}
 </script>
  <!-- Main Document Editor, Container --> <div class="mx-auto px-4 py-6"> <!-- Header with semantic, styling --> <header class="mb-6 flex items-center"> <div class="flex items-center"> <svelte:component this={getDocumentTypeIcon()} class="h-8 w-8" /> <div> <h1 class="text-3xl font-bold">{ title }

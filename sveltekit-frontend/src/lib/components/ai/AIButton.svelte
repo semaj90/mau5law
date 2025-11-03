@@ -14,8 +14,10 @@
       'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400; hover:to-yorha-accent border-yorha-accent'
   } as const; // Handle button click function handleClick() { if (disabled || loading) return; onclick?.(); onactivate?.(); // Add haptic feedback on supported devices if ('vibrate' in navigator) { navigator.vibrate(50)}
   }
+
    // Handle keyboard events function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleClick()}
   }
+
    // Show/hide tooltip function showTooltipHandler() { if (tooltip && !disabled) { showTooltip = true}
   }
   function hideTooltipHandler() { showTooltip = false}

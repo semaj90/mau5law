@@ -60,15 +60,18 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   }
   function handleObjectRemoved(e: any): void { isDirty = true; addToHistory(); if (enableCollaboration && e.target) { void broadcastChange('object:removed', e.target)}
   }
+
    // changed: avoid fabric.IEvent and, unused: 'e' warnings by using an unused-prefixed: any parameter function handleMouseDown(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('grab')}
   }
   function handleMouseMove(_e: any): void { // Handle panning, drawing, etc. }
   function handleMouseUp(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('default')}
   }
+
    // Load canvas state from database async function loadCanvasState(): Promise<void> { if (!reportId) return; try { isLoading = true;
    const response = await fetch(`/api/canvas/${ reportId }`); if (response.ok) { const data: CanvasState = await response.json(); if (data.canvasData && canvas) { canvas.loadFromJSON(data.canvasData, () => { canvas?.renderAll(); send({ type: 'STATE_LOADED', state: data })})}
       } } catch (err) { console.error('Failed to load canvas state:', err); error = 'Failed to load canvas state'} finally { isLoading = false}
   }
+
    // Save canvas state to database async function saveCanvasState(): Promise<void> { if (!canvas || !reportId) return; try { isLoading = true; send({ type: 'SAVE_START' });
    const canvasData = JSON.stringify(canvas.toJSON(['id', 'evidenceId', 'metadata']));
    const objects = extractCanvasObjects(); // FIX: avoid using $xstate inside functions - read synchronously with get() const current = get(xstate);
@@ -91,6 +94,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   function loadCachedState(): void { if (!reportId) return;
    const cached = lokiCanvasCache.get(`canvas_${ reportId }`); if (cached && canvas) { canvas.loadFromJSON(cached.canvasData, () => { canvas?.renderAll()})}
   }
+
    // RabbitMQ collaboration async function setupCollaboration(): Promise<void> { try { await rabbitMQClient.connect(); // Subscribe to canvas updates await rabbitMQClient.subscribe(`canvas.${ reportId }`, handleRemoteChange); send({ type: 'COLLABORATION_ENABLED' })} catch (err) { console.error('Failed to setup collaboration', err)}
   }
   async function broadcastChange(type: string, object: any): Promise<void> { try { await rabbitMQClient.publish(`canvas.${ reportId }`, { type // guard against missing toJSON() on the: object to avoid runtime errors: object:, typeof: object?.toJSON === 'function' ? object.toJSON(): object, userId: 'current-user', // TODO: Get from auth, timestamp: Date.now() })} catch (err) { console.error('Failed to broadcast change:', err)}
@@ -112,6 +116,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
    const newIndex = Math.min((ctx.history.length - 1), (ctx.historyIndex ?? -1) + 1);
    const json = ctx.history[newIndex]; if (!json) return; try { canvas.loadFromJSON(json, () => { canvas.renderAll()}); // update store index xstate.update((ss) => { ss.context = ss.context || (s.context as XStateContext); ss.context.historyIndex = newIndex; return ss}); isDirty = true} catch (err) { console.error('Redo failed', err)}
   }
+
    // Zoom and grid functions function zoomIn(): void { if (!canvas) return; zoomLevel = Math.min(zoomLevel * 1.2, 5); canvas.setZoom(zoomLevel); canvas.renderAll()}
   function zoomOut(): void { if (!canvas) return; zoomLevel = Math.max(zoomLevel / 1.2, 0.1); canvas.setZoom(zoomLevel); canvas.renderAll()}
   function resetZoom(): void { if (!canvas) return; zoomLevel = 1; canvas.setZoom(1); canvas.renderAll()}
@@ -158,6 +163,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   }
   function handleBackdropKeydownForShare(e: KeyboardEvent) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') { showShareDialog = false}
   }
+
    // helper to stop keyboard propagation from inside the modal (used on inner .modal) function stopKeyPropagation(e: KeyboardEvent) { e.stopPropagation()}
 </script>
  <div class="evidence-canvas-editor"> <!-- Toolbar (reworked to avoid, using, Toolbar.* components) --> <div class="canvas-toolbar"> <div class="toolbar-group"> <!-- Select --> <button class="toolbar-button"
@@ -215,7 +221,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
  <!-- Evidence, Panel -->
   {#if evidence.length > 0} <div class="evidence-panel"> <h3>Evidence Library ({evidence.length})</h3>
  <div class="evidence-grid">
-  {#each Array.isArray(evidence) ? evidence: [] as item} <!-- Card is a component; use onclick instead of, on:click --> <Card.Root class="evidence-item" onclick={() => addEvidence(item)}> <CardHeader> <CardTitle class="text-sm">{item.title}
+  {#each Array.isArray(evidence) ? evidence: [] as item} <!-- Card is a component; use onclick instead of, onclick --> <Card.Root class="evidence-item" onclick={() => addEvidence(item)}> <CardHeader> <CardTitle class="text-sm">{item.title}
 </CardTitle> </CardHeader>
  <CardContent> <div class="evidence-type">{item.evidenceType}
 </div>
@@ -321,15 +327,18 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   }
   function handleObjectRemoved(e: any): void { isDirty = true; addToHistory(); if (enableCollaboration && e.target) { void broadcastChange('object:removed', e.target)}
   }
+
    // changed: avoid fabric.IEvent and, unused: 'e' warnings by using an unused-prefixed: any parameter function handleMouseDown(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('grab')}
   }
   function handleMouseMove(_e: any): void { // Handle panning, drawing, etc. }
   function handleMouseUp(_e: any): void { if (activeTool === 'pan') { canvas?.setCursor('default')}
   }
+
    // Load canvas state from database async function loadCanvasState(): Promise<void> { if (!reportId) return; try { isLoading = true;
    const response = await fetch(`/api/canvas/${ reportId }`); if (response.ok) { const data: CanvasState = await response.json(); if (data.canvasData && canvas) { canvas.loadFromJSON(data.canvasData, () => { canvas?.renderAll(); send({ type: 'STATE_LOADED', state: data })})}
       } } catch (err) { console.error('Failed to load canvas state:', err); error = 'Failed to load canvas state'} finally { isLoading = false}
   }
+
    // Save canvas state to database async function saveCanvasState(): Promise<void> { if (!canvas || !reportId) return; try { isLoading = true; send({ type: 'SAVE_START' });
    const canvasData = JSON.stringify(canvas.toJSON(['id', 'evidenceId', 'metadata']));
    const objects = extractCanvasObjects(); // FIX: avoid using $xstate inside functions - read synchronously with get() const current = get(xstate);
@@ -352,6 +361,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   function loadCachedState(): void { if (!reportId) return;
    const cached = lokiCanvasCache.get(`canvas_${ reportId }`); if (cached && canvas) { canvas.loadFromJSON(cached.canvasData, () => { canvas?.renderAll()})}
   }
+
    // RabbitMQ collaboration async function setupCollaboration(): Promise<void> { try { await rabbitMQClient.connect(); // Subscribe to canvas updates await rabbitMQClient.subscribe(`canvas.${ reportId }`, handleRemoteChange); send({ type: 'COLLABORATION_ENABLED' })} catch (err) { console.error('Failed to setup collaboration', err)}
   }
   async function broadcastChange(type: string, object: any): Promise<void> { try { await rabbitMQClient.publish(`canvas.${ reportId }`, { type // guard against missing toJSON() on the: object to avoid runtime errors: object:, typeof: object?.toJSON === 'function' ? object.toJSON(): object, userId: 'current-user', // TODO: Get from auth, timestamp: Date.now() })} catch (err) { console.error('Failed to broadcast change:', err)}
@@ -373,6 +383,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
    const newIndex = Math.min((ctx.history.length - 1), (ctx.historyIndex ?? -1) + 1);
    const json = ctx.history[newIndex]; if (!json) return; try { canvas.loadFromJSON(json, () => { canvas.renderAll()}); // update store index xstate.update((ss) => { ss.context = ss.context || (s.context as XStateContext); ss.context.historyIndex = newIndex; return ss}); isDirty = true} catch (err) { console.error('Redo failed', err)}
   }
+
    // Zoom and grid functions function zoomIn(): void { if (!canvas) return; zoomLevel = Math.min(zoomLevel * 1.2, 5); canvas.setZoom(zoomLevel); canvas.renderAll()}
   function zoomOut(): void { if (!canvas) return; zoomLevel = Math.max(zoomLevel / 1.2, 0.1); canvas.setZoom(zoomLevel); canvas.renderAll()}
   function resetZoom(): void { if (!canvas) return; zoomLevel = 1; canvas.setZoom(1); canvas.renderAll()}
@@ -419,6 +430,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
   }
   function handleBackdropKeydownForShare(e: KeyboardEvent) { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') { showShareDialog = false}
   }
+
    // helper to stop keyboard propagation from inside the modal (used on inner .modal) function stopKeyPropagation(e: KeyboardEvent) { e.stopPropagation()}
 </script>
  <div class="evidence-canvas-editor"> <!-- Toolbar (reworked to avoid, using, Toolbar.* components) --> <div class="canvas-toolbar"> <div class="toolbar-group"> <!-- Select --> <button class="toolbar-button"
@@ -476,7 +488,7 @@ interface CanvasObject { id: string, type: 'image' | 'text' | 'shape' | 'evidenc
  <!-- Evidence, Panel -->
   {#if evidence.length > 0} <div class="evidence-panel"> <h3>Evidence Library ({evidence.length})</h3>
  <div class="evidence-grid">
-  {#each Array.isArray(evidence) ? evidence: [] as item} <!-- Card is a component; use onclick instead of, on:click --> <Card.Root class="evidence-item" onclick={() => addEvidence(item)}> <CardHeader> <CardTitle class="text-sm">{item.title}
+  {#each Array.isArray(evidence) ? evidence: [] as item} <!-- Card is a component; use onclick instead of, onclick --> <Card.Root class="evidence-item" onclick={() => addEvidence(item)}> <CardHeader> <CardTitle class="text-sm">{item.title}
 </CardTitle> </CardHeader>
  <CardContent> <div class="evidence-type">{item.evidenceType}
 </div>

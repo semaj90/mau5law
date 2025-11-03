@@ -7,6 +7,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     processing = true; const startTime = Date.now(); try { // Create automation configuration const automationConfig: AutomationConfig = { id: `automation_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`, type: selectedAutomationType, source: selectedSource, autoProcessing: enableAutoProcessing, gpuAcceleration: enableGPUAcceleration, batchSize: batchSize, confidenceThreshold: confidenceThreshold, processingOptions: Array.from(selectedProcessingOptions), createdAt: new Date().toISOString() }; // Initialize tensor service if GPU acceleration is enabled if (enableGPUAcceleration) { try { const health = await goTensorService.healthCheck(); if (health.status === 'offline') { console.log('Go tensor service offline, continuing with mock processing')}
         } catch (error) { console.log('Tensor service not available, using fallback mode')}
       }
+
    // Simulate batch processing setup if (enableAutoProcessing) { await simulateBatchProcessing(automationConfig)}
 
       // Save configuration (in real app, this would call your API) const response = await fetch('/api/legal/automation/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(automationConfig) }); if (!response.ok) { throw new Error('Failed to save automation configuration')}
@@ -14,6 +15,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }; // Simulate batch document processing with GPU acceleration async function simulateBatchProcessing(config: AutomationConfig): Promise<any> { const mockDocuments = generateMockLegalDocuments(config.batchSize); processingStats.totalDocuments = mockDocuments.length; processingStats.totalBatches = Math.ceil(mockDocuments.length / 10); const batchId = `batch_${Date.now()}`; ondispatch?.({ batchId, documentCount: mockDocuments.length }); for (let i = 0; i < processingStats.totalBatches; i++) { processingStats.currentBatch = i + 1; const batch = mockDocuments.slice(i * 10, (i + 1) * 10); if (config.gpuAcceleration) { // Process batch with tensor service const tensorRequests: TensorRequest[] = batch.map(doc => generateTensorRequest(doc.id, doc.vectorData, 'analyze') ); try { await goTensorService.processBatch(tensorRequests)} catch (error) { console.log('Using mock tensor processing')}
       } processingStats.documentsProcessed += batch.length; // Simulate processing delay await new Promise(resolve => setTimeout(resolve, 200))}
   }
+
    // Helper to generate a Float32Array filled with random values in [-1, 1) function generateRandomVector(dim: number): Float32Array { const arr = new Float32Array(dim); for (let i = 0; i < dim; i++) arr[i] = Math.random() * 2 - 1; return arr}
 
   // Generate mock legal documents for testing function generateMockLegalDocuments(count: number) { return Array.from({ length: count }, (_, i) => ({ id: `doc_${i + 1}`, type: ['contract', 'evidence', 'brief', 'motion', 'discovery'][Math.floor(Math.random() * 5)], vectorData: generateRandomVector(768) }))}

@@ -2,6 +2,7 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types'; // keep only what we actually use import { goto } from '$app/navigation'; import  user as currentUser, isAuthenticated  from "$lib/stores/sessionStore.svelte"; import { cn } from '$lib/utils'; // prefer named exports from the UI barrel to avoid duplicate-prop/import mismatches import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // lightweight inline icon map (emoji placeholders) â€” avoids lucide type/export issues const ICON_EMOJI: Record<string, string> = { FileText: 'ðŸ“„', Folder: 'ðŸ“', Clock: 'ðŸ•’', User: 'ðŸ‘¤', Settings: 'âš™ï¸', Search: 'ðŸ”', Plus: '+', SortAsc: 'â‡…', ChevronDown: 'â–¾', ChevronRight: 'â–¸', Eye: 'ðŸ‘ï¸', AlertCircle: 'âš ï¸', MessageSquare: 'ðŸ’¬', Paperclip: 'ðŸ“Ž', Brain: 'ðŸ§ '; Archive: 'ðŸ—„ï¸'
   }; function ICON(key: string) { return ICON_EMOJI[key] ?? 'â”'}
+
    // Props interface Props { collapsed?: boolean; className?: string}
   let { collapsed = $bindable(false), className = ''
   }: Props = $props(); // Component state using Svelte, 5 runes let searchQuery = $state<string>(''); let selectedCategory = $state<'all' | 'cases' | 'evidence' | 'reports' | 'citations'>('all'); let sortBy = $state<'date' | 'name' | 'priority' | 'status'>('date'); let sortOrder = $state<'asc' | 'desc'>('desc'); let expandedFolders = $state<Set<string>>(new Set(['recent', 'cases'])); let selectedItems = $state<Set<string>>(new Set()); let isLoading = $state<boolean>(false); let error = $state<string | null>(null); // User-specific data let userCases = $state<Array<CaseItem>>([]); let userEvidence = $state<Array<EvidenceItem>>([]); let userReports = $state<Array<ReportItem>>([]); let userCitations = $state<Array<CitationItem>>([]); let recentActivity = $state<Array<ActivityItem>>([]); // TypeScript interfaces matching Drizzle schema interface CaseItem { id: string, title: string, description?: string,status: 'open' | 'in_progress' | 'closed' | 'archived',priority: 'low' | 'medium' | 'high' | 'critical',category: 'criminal' | 'civil' | 'corporate' | 'investigation',createdAt: Date, updatedAt: Date, evidenceCount: number, assignedTo?: string; tags: string[]}
@@ -41,6 +42,7 @@ import type { Case } from '$lib/types'; // keep only what we actually use import
   function createNewItem(type: string) { const routes: Record<string, string> = { case: '/cases/new', evidence: '/evidence/new', report: '/reports/new'; citation: '/citations/new'
     }; const route = routes[type as keyof typeof routes]; if (route) { goto(route)}
   }
+
    // Lifecycle $effect(() => { if (authenticated && user) { loadUserData()}
   }); // Auto-refresh data every, 30 seconds $effect(() => { if (!authenticated) return; const interval = setInterval(() => { loadUserData()}, 30000); return () => clearInterval(interval)}); </script>
  <div class={cn(

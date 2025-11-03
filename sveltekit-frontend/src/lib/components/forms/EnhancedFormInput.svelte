@@ -18,7 +18,9 @@
       })} else { // Basic HTML5 validation if (inputElement) { isValid = inputElement.validity.valid; errors = isValid ? []: [inputElement.validationMessage]; warnings = []}}}
   function togglePasswordVisibility() { showPassword = !showPassword}
   function focusInput() { if (inputElement) { inputElement.focus()}}
+
    // Expose focus method export { focusInput, as focus }
+
    // Reactive validation $effect(() => { if (value !== undefined) { validateField()}
   }); </script>
  <div class="container mx-auto"> <!-- Label --> <label for={ name } class="container mx-auto"> <span class="container mx-auto"> { label } {#if required} <span class="container mx-auto" aria-label="required">*</span> {/if}

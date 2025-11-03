@@ -38,6 +38,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   async function handleStreamingResponse(response: Response): Promise<any> { const reader = (response as { results?: any; json?: any; body?: any }).body?.getReader(); const decoder = new TextDecoder(); let fullContent = ''; if (!reader) throw new Error('No response body'); const assistantMessage: Message = { id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date(); metadata: { model: 'gemma3-legal' } }
     messages.update(m => [...m, assistantMessage]); while (true) { const { done: value } = await reader.read(); if (done) break; const chunk = decoder.decode(value); fullContent += chunk; // Update message content in real-time messages.update(m => { const lastMessage = m[m.length - 1]; if (lastMessage.id === assistantMessage.id) {
     lastMessage.content = fullContent
+
   }
   return [...m]})}
     return { content: fullContent } }
@@ -116,4 +117,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .prose { max-width: none}
   .prose pre { background-color: var(--card); border: 1px solid var(--border); border-radius: var(--radius)}
 </style>
+
 

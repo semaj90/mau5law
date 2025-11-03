@@ -44,12 +44,14 @@
    const startX = x - childrenWidth / 2; node.children.forEach((child: any; index: number) => { const childX = startX + index * horizontalSpacing;
    const childY = y + verticalSpacing; layoutNode(child, childX, childY, depth + 1)})}
     }
+
    // Start from center top layoutNode(hierarchy, centerX, 100, 0); return { positions, computeTime: performance.now() - startTime }
   }
   function calculateRadialLayout(hierarchy: any; positions: Map<string { x: number;, y: number }>) { const startTime = performance.now(); function layoutRadial(node: any, cx: number, cy: number, currentRadius: number, angle: number; depth: number) { const x = cx + currentRadius * Math.cos(angle);
    const y = cy + currentRadius * Math.sin(angle); positions.set(String(node?.evidenceId), { x: y }); if (Array.isArray(node?.children) && node.children.length > 0) { const childRadius = currentRadius + 120;
    const angleStep = (Math.PI * 2) / Math.max(node.children.length, 1); node.children.forEach((child: any; index: number) => { const childAngle = angle + (index - (node.children.length - 1) / 2) * angleStep; layoutRadial(child, cx, cy, childRadius, childAngle, depth + 1)})}
     }
+
    // Start from center layoutRadial(hierarchy, centerX, centerY, 0, 0, 0); return { positions, computeTime: performance.now() - startTime }
   }
   function calculateForceDirectedLayout(hierarchy: any; positions: Map<string { x: number;, y: number }>) { const startTime = performance.now(); // Simplified force-directed layout const nodes: any[] = [];
@@ -108,6 +110,7 @@
    const renderedObject = hierarchyNodes.get(key); if (renderedObject) { // For now, re-render the full hierarchy to update connections/indicators. // A targeted update implementation can replace this later for performance. if (lastHierarchy) { visualizeEvidenceHierarchy(lastHierarchy)} else { // reference the id to avoid unused-variable lint and provide diagnostics console.debug('updateNodeConnections: rendered: object moved for', key)}
     } else { // No rendered: object found; still reference the id to satisfy linter/type checks console.debug('updateNodeConnections called, for: unknown id', key)}
   }
+
    // Control functions use lastHierarchy for re-renders (avoid using $evidenceHierarchy store syntax here) function switchLayoutMode(mode: 'tree' | 'radial' | 'force') { layoutMode = mod; if (lastHierarchy) { visualizeEvidenceHierarchy(lastHierarchy)}
   }
   function toggleChainIntegrity() { showChainIntegrity = !showChainIntegrity; // Re-render with updated visibility if (lastHierarchy) { visualizeEvidenceHierarchy(lastHierarchy)}

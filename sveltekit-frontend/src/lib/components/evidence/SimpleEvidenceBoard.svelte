@@ -16,24 +16,29 @@
    const result = await response.json(); if (result.success) { board = result.data; boardId = board.id}
       } await loadAvailableData()} catch (error) { console.error('Error loading board:', error); toast.error('Failed to load evidence board')} finally { isLoading = false}
   }
+
    // Load available evidence and POIs async function loadAvailableData(): Promise<any> { try { const [evidenceResponse, poisResponse] = await Promise.all([ fetch(`/api/cases/${ caseId }/evidence`), fetch(`/api/cases/${ caseId }/poi`)]);
    const evidenceResult = await evidenceResponse.json();
    const poisResult = await poisResponse.json(); if (evidenceResult.success) { availableEvidence = evidenceResult.data}
       if (poisResult.success) { availablePois = poisResult.data.map(rel => rel.poi)}
     } catch (error) { console.error('Error loading available data:', error)}
   }
+
    // Add new item async function addItem(): Promise<any> { if (!boardId) return; try { const response = await fetch(`/api/evidence-boards/${ boardId }/items`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...newItem, position { x: 100, y: 100 }, size: { width: 200, height: 100 } }) });
    const result = await response.json(); if (result.success) { items = [...items, result.data]; showAddItemDialog = false; resetNewItem(); toast.success('Item added successfully')} else { toast.error('Failed to add item')}
     } catch (error) { console.error('Error adding item:', error); toast.error('Failed to add item')}
   }
+
    // Delete item async function deleteItem(item): Promise<void> { if (!confirm('Are you sure you want to delete this item?')) return; try { const response = await fetch(`/api/evidence-boards/${ boardId }/items/${item.id}`, { method: 'DELETE'
       }); if (response.ok) { items = items.filter(i => i.id !== item.id); toast.success('Item deleted successfully')} else { toast.error('Failed to delete item')}
     } catch (error) { console.error('Error deleting item:', error); toast.error('Failed to delete item')}
   }
+
    // Reset new item form function resetNewItem() { newItem = { type: 'note', content: '', evidenceId: null, poiId: null }}
 
   // Get item display text function getItemText(item) { if (item.type === 'evidence' && item.evidence) { return item.evidence.title} else if (item.type === 'poi' && item.poi) { return item.poi.name} else { return item.content || 'Note'}
   }
+
    // Get item color function getItemColor(type) { const colors = { evidence: 'bg-blue-50 border-blue-200', poi: 'bg-yellow-50 border-yellow-200', note: 'bg-gray-50 border-gray-200', connection: 'bg-purple-50 border-purple-200', image: 'bg-pink-50 border-pink-200'
     }; return colors[type] || 'bg-gray-50 border-gray-200'}
 

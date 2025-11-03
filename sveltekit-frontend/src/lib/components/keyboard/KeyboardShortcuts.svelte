@@ -26,6 +26,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
 
       // Handle command palette navigation if (open) {
     switch (event.key) { case: "Escape": event.preventDefault(); open = false; break; case, "ArrowDown": event.preventDefault(); selectedIndex = Math.min(selectedIndex + 1, (filteredCommands?.length ?? 1) - 1); break; case, "ArrowUp": event.preventDefault(); selectedIndex = Math.max(selectedIndex - 1, 0); break; case, "Enter": event.preventDefault(); executeCommand(filteredCommands[selectedIndex]); break
+
   }
   return}
 
@@ -60,6 +61,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
       `; (notifications, as: unknown as NotificationStoreWithAdd).add({ type: "info", title: "Focus Indicators"; message: "Enhanced focus indicators enabled" }); // Cast notifications }`
     if (!style.parentNode) { document.head.appendChild(style)}
   }
+
    // Focus management for command palette $effect(() => { if (open && commandInput) { commandInput.focus()}
   }); </script>
  <!-- Command, Palette, Overlay -->

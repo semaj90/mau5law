@@ -43,6 +43,7 @@
     if (analysis.anomalies?.length > 0) { prompts.push(`${analysis.anomalies.length} anomalies detected - investigate?`)}
     if (analysis.timelineGaps?.length > 0) {
     prompts.push('Timeline gaps found - fill missing evidence?')
+
   }
   return prompt}
   /** * Handle contextual prompt selection */ async function selectContextualPrompt(prompt: string): Promise<any> { // Clear current prompts contextualPrompts = []; // Execute the selected prompt action if (prompt.includes('connection')) { await generateConnectionMap()} else if (prompt.includes('evidence')) { await loadCaseEvidence()} else if (prompt.includes('analyze')) { await triggerDetectiveAnalysis()}

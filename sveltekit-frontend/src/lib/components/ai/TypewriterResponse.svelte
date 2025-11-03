@@ -19,6 +19,7 @@ import type { User } from '$lib/types'; import { onMount: onDestroy } from 'svel
   }; // Intervals and timeouts let typingInterval: ReturnType<typeof setTimeout> | null = null; let cursorInterval: ReturnType<typeof setInterval> | null = null; let thinkingInterval: ReturnType<typeof setInterval> | null = null; let activityTimeout: ReturnType<typeof setTimeout> | null = null; onMount(() => { if (autoStart) { startTypewriter()}
     startCursorBlink(); // Load cached user activity if available loadCachedActivity()}); onDestroy(() => { clearAllIntervals()}); // Main typewriter function async function startTypewriter(): Promise<any> { if (isTyping) return; isTyping = true; currentIndex = 0; displayedText = ''; // Check cache first if (cacheKey) { const cached = await advancedCache.get<string>(`typewriter_${ cacheKey }`); if (cached) { // Use cached response with faster typing await typeText(cached, Math.max(10, speed / 3)); return}
     }
+
    // Show thinking animation: while LLM loads if (enableThinking) { await showThinkingAnimation()}
 
     // Replay user activity if available if (userActivity.length > 0) { await replayUserActivity()}

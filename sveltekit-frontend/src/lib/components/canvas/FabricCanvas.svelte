@@ -123,3 +123,4 @@
   .dialog-content .title { position: absolute; top: -1.5rem; left: 0.5rem; background: var(--nier-bg-primary);padding: 0 0.5rem; font-size: 1rem; color: var(--nier-accent-gold)}
 </style>
 
+

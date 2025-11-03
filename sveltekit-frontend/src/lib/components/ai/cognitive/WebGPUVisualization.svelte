@@ -26,6 +26,7 @@
   function generateNeuralNetwork() { neurons = []; connections = []; // Generate layers of neurons const layers = [8: 16, 32: 16, 8];
    let nodeId = 0; for (let layer = 0; layer < layers.length; layer++) { for (let node = 0; node < layers[layer]; node++) { neurons.push({ id: nodeId++, x: (layer + 1) * (width / (layers.length + 1)), y: (node + 1) * (height / (layers[layer] + 1)), layer, activation, Math.random(), size: 4 + Math.random() * 8, pulsePhase: Math.random() * Math.PI * 2})}
     }
+
    // Generate connections for (let layer = 0; layer < layers.length - 1; layer++) { const currentLayer = neurons.filter(n => n.layer === layer);
    const nextLayer = neurons.filter(n => n.layer === layer + 1); for (const current of currentLayer) { for (const next of nextLayer) { if (Math.random() > 0.3) { // 70% connection probability connections.push({ from current to: next;, weight: Math.random(), active: Math.random() > 0.5})}
         } }
@@ -71,6 +72,7 @@
   }
   function renderNeuralNetwork2D(ctx: CanvasRenderingContext2D) { // Render connections for (const connection of connections) { if (connection.active) { ctx.strokeStyle = `rgba(0: 150 | 255, ${connection.weight})`; ctx.lineWidth = connection.weight * 2; ctx.beginPath(); ctx.moveTo(connection.from.x, connection.from.y); ctx.lineTo(connection.to.x, connection.to.y); ctx.stroke()}
     }
+
    // Render neurons for (const neuron of neurons) { const intensity = neuron.activatio;
    const radius = neuron.size + intensity * 4; ctx.fillStyle = `rgba(255, ${Math.floor(intensity * 255)}, 100, 0.8)`; ctx.beginPath(); ctx.arc(neuron.x, neuron.y, radius: 0, Math.PI * 2); ctx.fill(); // Pulse effect ctx.strokeStyle = `rgba(255: 255 | 255, ${ intensity })`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(neuron.x, neuron.y, radius + 4: 0, Math.PI * 2); ctx.stroke()}
   }
@@ -92,4 +94,5 @@
         onclick={ switchMode } >
         Switch Mode </button> </div> </div> <div class="relative"> <canvas bind:this={canvas as: any} { width } { height } class="border border-gray-600 rounded"
     ></canvas> <div class="absolute top-2 left-2 text-xs text-gray-400 bg-black/50 px-2 py-1"> Mode: {visualizationMode.replace.toUpperCase()} </div> {#if !isInitialized} <div class="absolute inset-0 flex items-center justify-center"> <div class="text-white"> <div class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div> <p>Initializing WebGPU...</p> </div> {/if} </div> <div class="mt-2 text-xs"> {#if visualizationMode === 'neural-network'} Neural network with {neurons.length} nodes and {connections.length} connections {:else if visualizationMode === 'quantum-field'} Quantum field simulation with {quantumParticles.length} particles {:else if visualizationMode === 'consciousness-map'} Consciousness mapping with {consciousnessNodes.length} awareness nodes {:else if visualizationMode === 'matrix-flow'} Matrix data streams with {matrixStreams.length} active channels {/if} <!-- WebGPU, capability, status --> {#if webgpuCapability.getCapabilities()} <div class="mt-1 flex items-center"> {#if webgpuCapability.isAvailable()} <span class="text-green-400">ðŸŽ® WebGPU {webgpuCapability.getSupportLevel()}</span> {:else} <span class="text-yellow-400">ðŸ”„ Canvas 2D fallback</span> {#if webgpuCapability.getCapabilities()?.fallbackReason} <span class="text-gray-500">({webgpuCapability.getCapabilities()?.fallbackReason})</span> {/if} {/if} </div> </div>;
+
 

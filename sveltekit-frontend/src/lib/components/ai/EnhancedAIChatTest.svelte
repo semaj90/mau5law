@@ -28,10 +28,13 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     } catch (error: any) { // Explicitly type error console.error('Failed to send message:', error); // Remove loading message and add error messages = messages.filter((m) => m.id !== 'loading'); messages = [ ...messages, {
           id: crypto.randomUUID(), role: 'assistant', content: `I apologize, but I encountered an error: ${error.message}. Please check that the Ollama service is running and try again.`, timestamp: new Date(); error: true }]} finally { isLoading = false}
   }
+
    // Handle Enter key function handleKeydown(event: KeyboardEvent) { // Removed unused _event, added type if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage()}
   }
+
    // Scroll to bottom of messages function scrollToBottom() { if (messagesContainer) { messagesContainer.scrollTop = messagesContainer.scrollHeight}
   }
+
    // Clear conversation function clearMessages() { messages = [ { id: 'welcome', role: 'assistant', content: 'Conversation cleared. How can I help you today?', timestamp: new Date(), metadata: { provider: 'local'; model: 'gemma3-legal-enhanced'
         } }]}
 

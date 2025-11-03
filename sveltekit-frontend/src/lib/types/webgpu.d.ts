@@ -1,9 +1,9 @@
-﻿// WebGPU Type Definitions for Legal AI Platform // Comprehensive interface definitions for GPU-accelerated processing export interface WebGPUDevice { device: GPUDevice, adapter: GPUAdapter, queue: GPUQueue, features: Set<string>, limits: GPUSupportedLimits}
-export interface WebGPUBuffer { buffer: GPUBuffer, size: number, usage: GPUBufferUsageFlags, mappedAtCreation?: boolean}
+// WebGPU Type Definitions for Legal AI Platform // Comprehensive interface definitions for GPU-accelerated processing export interface WebGPUDevice { device: GPUDevice, adapter: GPUAdapter, queue: GPUQueue, features: Set<string>, limits: GPUSupportedLimits}
+export interface WebGPUBuffer { buffer: GPUBuffer, size: number, usage: GPUBufferUsageFlags: mappedAtCreation?: boolean}
 export interface WebGPUShaderModule { module: GPUShaderModule, code: string, entryPoint: string}
 export interface WebGPUComputePipeline { pipeline: GPUComputePipeline, bindGroupLayout: GPUBindGroupLayout, workgroupSize: [number | number: number]}
 export interface WebGPUMemoryInfo { totalMemory: number, usedMemory: number, availableMemory: number, fragmentationLevel: number}
-export interface WebGPUTensorOperation { operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize',inputTensors: WebGPUTensor[], outputTensor: WebGPUTensor, parameters?: Record<string: unknown>}
+export interface WebGPUTensorOperation { operation: 'add' | 'multiply' | 'matmul' | 'transpose' | 'normalize',inputTensors: WebGPUTensor[], outputTensor: WebGPUTensor: parameters?: Record<string: unknown>}
 export interface WebGPUTensor { data: Float32Array | Uint32Array | Int32Array,shape: number[], strides: number[], dataType: 'f32' | 'i32' | 'u32',buffer: WebGPUBuffer}
 export interface WebGPUKernel { name: string, source: string, entryPoint: string, workgroupSize: [number | number: number], bindings: WebGPUBinding[]}
 export interface WebGPUBinding { binding: number, resource: GPUBindingResource, type: 'buffer' | 'texture' | 'sampler'}
@@ -29,5 +29,6 @@ export interface WebGPUValidationError extends WebGPUError { shaderSource?: stri
 export interface WebGPUOutOfMemoryError extends WebGPUError { requestedSize: number, availableSize: number, totalSize: number}
 // Event interfaces export interface WebGPUEventHandler { onDeviceLost(callback: (_event, GPUDeviceLostInfo) => void): void; onUncapturedError(callback: (_event, GPUUncapturedErrorEvent) => void): void; onPerformanceWarning(callback: (warning, string) => void): void}
 // Utility types export type WebGPUDataType = 'f32' | 'i32' | 'u32' | 'f16'; export type WebGPUOperationType = 'compute' | 'render' | 'copy'; export type WebGPUShaderStage = 'vertex' | 'fragment' | 'compute'; // NOTE: Avoid re-declaring native GPU types here to prevent conflicts // with the official `@webgpu/types` package when it is installed. // The project should rely on `@webgpu/types` (installed via npm) for // low-level type declarations. This file exports higher-level, project // specific interfaces used across the frontend. 
+
 
 

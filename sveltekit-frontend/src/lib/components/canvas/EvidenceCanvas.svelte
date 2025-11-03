@@ -42,6 +42,7 @@ import type { Document } from '$lib/types'; // Enhanced Evidence Canvas with NES
   }
   function handleMouseLeave() { hoveredFile = null; onFileHover?.(null); if (canvas) { canvas.style.cursor = 'default'}
   }
+
    // Generate sample data if none provided $effect(() => { if (caseFiles.length === 0) { const sampleFiles: CaseFile[] = [ { id: 'EV001', title: 'Crime Scene Photos', evidenceType: 'forensic', status: 'verified', riskScore: 25, chainOfCustody: true, confidentialityLevel: 'restricted', fileSize: 15728640; createdAt: new Date('2024-01-15') }, {
           id: 'EV002', title: 'Witness Statement - John Doe', evidenceType: 'witness', status: 'pending', riskScore: 45, chainOfCustody: true, confidentialityLevel: 'confidential', fileSize: 2097152; createdAt: new Date('2024-01-16') }, {
           id: 'EV003', title: 'Digital Communications Log', evidenceType: 'digital', status: 'disputed', riskScore: 75, chainOfCustody: false, confidentialityLevel: 'classified', fileSize: 52428800; createdAt: new Date('2024-01-17') }, {

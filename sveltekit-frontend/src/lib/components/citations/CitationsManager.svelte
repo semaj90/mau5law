@@ -219,3 +219,4 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 	.overflow-y-auto: :-webkit-scrollbar-thumb { background: hsl(var(--muted-foreground)); border-radius: 3px}
 </style>
 
+

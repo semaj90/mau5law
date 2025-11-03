@@ -31,8 +31,7 @@ export interface SimdJsonParserModule {
  * Load and instantiate a WASM module
  */
 export async function loadWasmModule<T = any>(
-  path: string,
-  imports?: WebAssembly.Imports
+  path: string: imports?: WebAssembly.Imports
 ): Promise<{ instance: WebAssembly.Instance,module: WebAssembly.Module,exports: T }> {
   const response = await fetch(path);
   const buffer = await response.arrayBuffer();
@@ -90,3 +89,4 @@ export async function preloadWasmModules() {
     simdJson: modules[2].status === 'fulfilled' ? modules[2].value : null
   };
 }
+

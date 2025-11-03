@@ -214,3 +214,4 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
   @media (max-width: 768px) { .chat-overlay { padding: 0.5rem} .chat-header { padding: 1rem} .header-content { flex-direction: column; align-items: flex-start; gap: 0.75rem} .action-grid { grid-template-columns: 1fr} .message { max-width: 95%} }
 </style>
 
+

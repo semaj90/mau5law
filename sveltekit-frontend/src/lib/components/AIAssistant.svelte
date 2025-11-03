@@ -21,6 +21,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 
   // Keyboard shortcuts (best practices) function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); handleQuery()}
   }
+
    // Add a permissive alias to bypass strict component event typings for Textarea const TextareaAny = Textarea as: unknown as: any; // Add a permissive alias to bypass strict component prop/event typings const EnhancedButtonAny = EnhancedButton as: unknown; as: any; </script>
  <!-- Simple, Notifications -->
   {#each $notifications as notification (notification.id)} <div class="fixed top-4 right-4 bg-blue-500 text-white p-4 rounded shadow-lg"> <div class="font-semibold">{notification.title}</div>

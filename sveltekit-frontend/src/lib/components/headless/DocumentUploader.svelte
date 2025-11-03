@@ -14,6 +14,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   // Handle file selection async function handleFileSelection(_event: Event): Promise<void> { // removed unused target assignment const files = target.file; if (!files || files.length === 0) return; // Validate files const validFiles = await validateFiles(files); if (validFiles.length === 0) { dispatch('upload-error', { error: 'No valid files selected' }); return}
     onFilesSelected?.({ files }); if (autoUpload) { await processFileUploads(validFiles)} else { uploadQueue = [...uploadQueue, ...validFiles]}
   }
+
    // Validate selected files async function validateFiles(files: FileList): Promise<File[]> { const validFiles: File[] = []; for (const file of Array.from(files)) { // Check file type if (!acceptedTypes.includes(file.type)) { onUploadError?.({ error: `File type ${file.type} not accepted`, file }); continu}
 
       // Check file size if (file.size > maxFileSize) { onUploadError?.({ error: `File size ${file.size} exceeds maximum ${ maxFileSize }`, file }); continu}
@@ -26,9 +27,11 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     isUploading = true; const results: MinIOFile[] = []; try { onUploadStart?.({ files }); // Process files sequentially to avoid overwhelming the server for (const file of files) { const uploadId = `${file.name}_${Date.now()}`; currentUploads.add(uploadId); try { // Subscribe to progress updates const unsubscribe = subscribeToProgress(uploadId); // Upload file const result = await minioService.uploadDocuments([file], { autoProcess: true priority, caseId, documentType: detectDocumentType(file) }); const uploadedFile = result[0]; results.push(uploadedFile); completedUploads = [...completedUploads, uploadedFile]; onUploadComplete?.({ file: uploadedFile }); unsubscribe()} catch (error) { onUploadError?.({ error: error instanceof Error ? error.message: 'Upload failed', file})} finally { currentUploads.delete(uploadId)}
       } onAllUploadsComplete?.({ files: results }); return result} finally { isUploading = false}
   }
+
    // Subscribe to upload progress for a specific upload function subscribeToProgress(uploadId: string): () => void { const handleProgress = (progress: UploadProgress) => { uploadProgress.set(uploadId, progress); onUploadProgress?.({ progress })}
     minioService.onUploadProgress(uploadId, handleProgress); return () => { minioService.offUploadProgress(uploadId); uploadProgress.delete(uploadId)}
   }
+
    // Detect document type from file function detectDocumentType(file: File): string { const name = file.name.toLowerCase(); if (name.includes('contract') || name.includes('agreement')) return 'contract'; if (name.includes('evidence') || name.includes('exhibit')) return 'evidence'; if (name.includes('brief') || name.includes('motion')) return 'brief'; if (name.includes('citation') || name.includes('cite')) return 'citation'; if (name.includes('precedent') || name.includes('case')) return 'precedent'; // Default based on file type if (file.type === 'application/pdf') return 'brief'; if (file.type.startsWith('image/')) return 'evidence'; return 'brief'}
 </script>
 
@@ -54,4 +57,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     uploadProgress,
   })}
 {/if}
+
 

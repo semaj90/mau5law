@@ -4,6 +4,7 @@
           break; case, 'pie': // Example: const module = await import('$lib/components/charts/PieChart.svelte') // chartComponent = module.default break; case, 'scatter': // Example: const module = await import('$lib/components/charts/ScatterChart.svelte') // chartComponent = module.default break,default: throw new Error(`Unsupported chart; type: ${ chartType }`)}
     } catch (error) { loadError = error instanceof Error ? error: new Error('Failed to load chart component'); console.error('Chart loading error:', error)}'
   }
+
    // Chart-specific placeholder design function generatePlaceholderBars() { const barCount = Math.min(data.length || 5, 10); return Array.from({ length: barCount }, (_, i) => ({ height: Math.random() * 60 + 20, // 20-80% height; delay: i * 0.1 // Staggered animatio}))}
   const placeholderBars = generatePlaceholderBars(); </script>
  <LazyLoader preset="HEAVY_COMPONENT"

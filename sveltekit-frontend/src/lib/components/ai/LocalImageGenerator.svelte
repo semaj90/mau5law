@@ -28,6 +28,7 @@ interface Props { caseId?: string; onImageGenerated?: (result: ImageGenerationRe
     selectedStyle = (result.parameters?.style as: any) || 'realistic'; width = result.metadata?.size?.width ?? width; height = result.metadata?.size?.height ?? height; await generateImage()}
   async function copyPrompt(text: string): Promise<any> { try { await navigator.clipboard.writeText(text); // optional: small feedback can be added } catch (err) { console.error('Failed to copy prompt', err)}
   }
+
    // Legal/evidence specific prompts const legalPromptTemplates = [ { name: 'Crime Scene Recreation'; prompt:
         'detailed crime scene recreation, professional forensic photography style, accurate lighting, evidence markers'
     }, {

@@ -65,7 +65,7 @@ https://svelte.dev/e/js_parse_error -->
         docs = null}
     })();
 
-    // Attach DOM event listeners to avoid Svelte type errors from on:upload /, on:remove
+    // Attach DOM event listeners to avoid Svelte type errors from onupload /, onremove
     if (fileUploadContainer) {
       // use: any for incoming event detail to avoid strict typing issues
       fileUploadContainer.addEventListener('upload', (e: any) => {
@@ -241,7 +241,7 @@ https://svelte.dev/e/js_parse_error -->
     </p>
   </div>
 
-  <!-- Note: on:upload /, on:remove were removed from markup due to TS typing; listeners are attached to the container, in, onMount -->
+  <!-- Note: onupload /, onremove were removed from markup due to TS typing; listeners are attached to the container, in, onMount -->
   <FileUpload
     {multiple}
     maxFiles={maxFiles}
@@ -297,4 +297,5 @@ https://svelte.dev/e/js_parse_error -->
   </div>
 
 <!-- Styles are handled by, modular, components / UnoCSS -->
+
 

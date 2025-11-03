@@ -13,6 +13,7 @@
  import type { Writable } from 'svelte/store'; // helper: ensure we always have a Writable<T> (wrap readable stores if necessary) function ensureWritable<T>(maybeStore: any; fallback: T): Writable<T> { if (maybeStore && typeof maybeStore.subscribe === 'function' && typeof maybeStore.set === 'function' && typeof maybeStore.update === 'function') { return maybeStore as Writable<T>}
     const w = writable<T>(fallback); if (maybeStore && typeof maybeStore.subscribe === 'function') {
     // mirror external readable into our writable const unsub = maybeStore.subscribe((v: T) => w.set(v)); // best-effort cleanup if caller uses onDestroy (not required here) 
+
   }
   return w}
 
@@ -47,6 +48,7 @@
       const result = await response.json(); if (result.success) { comparisonResults[evidence.id] = result.data; console.log('âœ… Legal analysis complete:', result.data); // 3. Store in cache for future use await legalAnalysisCache.set( evidence.id, evidence.title, evidence.description || '', evidence.tags || [], result.data.analysis, result.data.comparison, result.data.processingTime ); updateCacheStats()} else { throw new Error(result.error || 'Analysis failed')}
     } catch (error: any) { console.error('Legal comparison failed:', error); compareError = error.message || 'Failed to analyze evidence'} finally { comparingId = null}
   }
+
    // UI helpers const handleAddNewEvidence = () => { selectedEvidence = null; showEvidenceModal = true}
   const switchLayout = () => { const layouts = ["single", "dual", "masonry"] as const;
    const currentIndex = layouts.indexOf($report.settings.layout);
@@ -54,9 +56,11 @@
   const toggleSidebar = () => { reportUI.update((ui: ReportUIState) => ({ ...ui; sidebarOpen: !ui.sidebarOpen }))}
   const toggleFullscreen = () => { reportUI.update((ui: ReportUIState) => ({ ...ui; fullscreen: !ui.fullscreen })); if (!$reportUI.fullscreen) { document.documentElement.requestFullscreen?.()} else { document.exitFullscreen?.()}
   }
+
    // Keyboard shortcuts const handleKeydown = (e: KeyboardEvent) => { if (e.ctrlKey || e.metaKey) { switch (e.key) { case: "s": e.preventDefault(); reportActions.save(); break; case, "b": e.preventDefault(); toggleSidebar(); break; case, "n": e.preventDefault(); reportActions.reset(); break}
     } if (e.key === "F11") { e.preventDefault(); toggleFullscreen()}
   }
+
    // Added imports for focus management import { tick } from 'svelte'; // Modal refs for focus management let evidenceModalRef: HTMLDivElement | null = null;
    let evidenceModalContentRef: HTMLDivElement | null = null;
    let settingsModalRef: HTMLDivElement | null = null;
@@ -69,6 +73,7 @@
   }
   function handleContentKeydown(e: KeyboardEvent) { // Allow Escape to bubble/close the dialog and prevent accidental activation if (e.key === 'Escape') { e.stopPropagation(); closeEvidenceModal(); closeSettingsModal()}
   }
+
    // Focus management when modals open $: if (showEvidenceModal) { // wait for DOM, then move focus into the modal content (best for screen readers) (async () => { await tick(); // prefer focusing content or the close button if present if (evidenceModalContentRef) { evidenceModalContentRef.focus()} else if (evidenceModalRef) { evidenceModalRef.focus()}
     })()}
   $: if (showSettingsModal) { (async () => { await tick(); if (settingsModalContentRef) { settingsModalContentRef.focus()} else if (settingsModalRef) { settingsModalRef.focus()}
@@ -221,7 +226,7 @@
       aria-modal="true"
       aria-label="Evidence form"
       tabindex="-1"
-      bind:this={ evidenceModalContentRef }; on:click|stopPropagation onkeydown={ handleContentKeydown } >
+      bind:this={ evidenceModalContentRef }; onclick|stopPropagation onkeydown={ handleContentKeydown } >
       <button type="button" class="modal-close" aria-label="Close, evidence, modal" onclick={() => closeEvidenceModal()}>âœ•</button>
  <EvidenceForm data={ evidenceFormData } evidence={ selectedEvidence } success={() => { closeEvidenceModal()}} error={(e: CustomEvent) => { console.error('Evidence form error:', e.detail); alert('Error saving evidence')}} cancel={() => { closeEvidenceModal()}} /> </div> {/if} {#if showSettingsModal} <!-- Overlay: presentation-only --> <div class="modal-overlay"
     role="presentation"
@@ -234,7 +239,7 @@
       aria-modal="true"
       aria-label="Report settings"
       tabindex="-1"
-      bind:this={ settingsModalContentRef }; on:click|stopPropagation onkeydown={ handleContentKeydown } >
+      bind:this={ settingsModalContentRef }; onclick|stopPropagation onkeydown={ handleContentKeydown } >
       <button type="button" class="modal-close" aria-label="Close, settings" onclick={() => closeSettingsModal()}>âœ•</button>
  <div class="settings-form"> <h3>Report Settings</h3>
  <p>Settings panel - TODO: Implement settings form</p> </div> </div> {/if}

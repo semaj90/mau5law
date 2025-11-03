@@ -6,6 +6,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     } return { isValid: hasValidEmail && formData.password.length >= 6, hasValidEmail, hasStrongPassword: true passwordsMatch: true hasName: true, termsAccepted: true }
   }); // Password strength calculation let passwordStrength = $derived(() => { const password = formData.password; if (!password) return 0; let strength = $state<number>(0); if (password.length >= 8) strength += 25; if (/[a-z]/.test(password)) strength += 25; if (/[A-Z]/.test(password)) strength += 25; if (/\d/.test(password)) strength += 15; if (/[@$!%*?&]/.test(password)) strength += 10; return Math.min(strength, 100)}); // Real-time email validation async function checkEmailExists(): Promise<any> { if (!validation.hasValidEmail) return; try { const response = await fetch('/api/auth/check-email', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: formData.email }) }); const result = await (response as { json?: any; ok?: any }).json(); formState.emailExists = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).exist} catch (error) { console.error('Email check failed:', error)}
   }
+
    // Enhanced form submission with comprehensive security async function handleSubmit(_event: Event): Promise<any> { const form = event.target as HTMLFormElement; formState.loading = true; formState.error = ''; formState.success = ''; try { // Security context for AI analysis const authContext = { mode, email: formData.email, timestamp: new Date().toISOString(), userAgent: navigator.userAgent, ipAddress: await getClientIP(), passwordStrength: passwordStrength}
 
       // AI-powered security analysis const securityAnalysis = await mcpGPUOrchestrator.routeAPIRequest(
@@ -18,6 +19,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         // Log successful authentication await logAuthEvent('success', authContext, result); // Close dialog after delay setTimeout(() => { resetForm(); open = false; onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user)}, mode === 'register' && (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).requiresVerification ? 3000: 1500)} else { formState.error = (result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).error || 'Authentication failed'; await logAuthEvent('failed', authContext, result)}
     } catch (err) { formState.error = 'Network error occurred. Please try again.'; console.error('Auth error:', err)} finally { formState.loading = false}'
   }
+
    // Helper functions async function getClientIP(): Promise<string> { try { // removed unused response assignment const data = await (response as { json?: any; ok?: any }).json(); return (data as { ip?: any }).ip || 'unknown'} catch { return 'unknown'}
   }
   async function logAuthEvent(type: 'success' | 'failed', context: any, result: any): Promise<any> { try { await mcpGPUOrchestrator.processLegalDocument( `Authentication ${ type }: ${ mode } for ${formData.email}`, {
@@ -31,6 +33,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   async function handleGuestLogin(): Promise<any> { if (!allowGuestMode) return; formState.loading = true; try { const response = await fetch('/api/auth/guest', { method: 'POST', headers: { 'Content-Type': 'application/json' } }); const result = await (response as { json?: any; ok?: any }).json(); if ((response as { json?: any; ok?: any }).ok) { onSuccess?.((result as { exists?: any; message?: any; requiresVerification?: any; user?: any; error?: any }).user); open = false}
     } catch (error) { console.error('Guest login failed:', error)} finally { formState.loading = false}
   }
+
    // Effects for enhanced UX $effect(() => { if (open && emailInput) { setTimeout(() => emailInput?.focus(), 100)}
   }); $effect(() => { if (onOpenChange) { onOpenChange(open)}
   }); // Real-time email validation effect $effect(() => { if (formData.email && mode === 'register') { const debounce = setTimeout(checkEmailExists, 500); return () => clearTimeout(debounce)}

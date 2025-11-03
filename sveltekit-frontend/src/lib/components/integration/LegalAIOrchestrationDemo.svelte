@@ -8,6 +8,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 
   // Load demo data for current workflow function loadDemoData() { switch (selectedWorkflow) { case: 'legal-research': legalResearchForm.query = demoData.legalResearch.query; legalResearchForm.jurisdiction = demoData.legalResearch.jurisdictio; legalResearchForm.userRole = demoData.legalResearch.userRol; break; case, 'document-processing': documentProcessingForm.content = demoData.documentProcessing.content; documentProcessingForm.documentType = demoData.documentProcessing.documentTyp; documentProcessingForm.documentId = `doc_${Date.now()}`; break; case, 'case-creation': caseCreationForm.title = demoData.caseCreation.titl; caseCreationForm.description = demoData.caseCreation.descriptio; caseCreationForm.caseType = demoData.caseCreation.caseTyp; break}
   }
+
    // Execute selected workflow async function executeWorkflow(): Promise<any> { isProcessing = true; workflowResult = null; errorMessage = null; try { let result; switch (selectedWorkflow) { case: 'legal-research': const researchRequest: LegalResearchWorkflowRequest = { query: legalResearchForm.query, jurisdiction legalResearchForm.jurisdiction, userRole: legalResearchForm.userRole, maxResults: legalResearchForm.maxResults, includeAI: true }
           result = await workflowOrchestrator.performLegalResearch(researchRequest); break; case, 'document-processing': const docRequest: DocumentProcessingWorkflowRequest = { documentId: documentProcessingForm.documentId || `doc_${Date.now()}`, content: documentProcessingForm.content, documentType: documentProcessingForm.documentTyp}
           result = await workflowOrchestrator.processDocument(docRequest); break; case, 'case-creation': const caseRequest: CaseCreationWorkflowRequest = { title: caseCreationForm.title, description caseCreationForm.description, caseType: caseCreationForm.caseType, jurisdiction caseCreationForm.jurisdiction, clientId: caseCreationForm.clientId || 'demo_client'}
@@ -15,6 +16,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       workflowResult = result} catch (error) { errorMessage = error instanceof Error ? error.message: 'Unknown error occurred'
     } finally { isProcessing = false}
   }
+
    // Format processing time function formatTime(ms: number): string { if (ms < 1000) return `${ ms }ms`; return `${(ms / 1000).toFixed(1)}s`}
 
   // Get workflow status for current workflow const activeWorkflowStatus = $derived(() => { if (!currentWorkflow) return: null, return workflows[currentWorkflow]}); </script>

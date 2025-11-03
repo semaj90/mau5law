@@ -17,7 +17,7 @@ class ComprehensiveKnowledgeIndexer {
       EMBEDDING_MODEL: 'embeddinggemma:latest',
       REDIS_PASSWORD: process.env.REDIS_PASSWORD || 'redis',
       DB_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_test',
-      EMBEDDING_DIMENSION: 768,
+      EMBEDDING_DIMENSION: 384, // Memory-optimized dimensions
     };
 
     this.sql = postgres(this.config.DB_URL, { max: 10 });

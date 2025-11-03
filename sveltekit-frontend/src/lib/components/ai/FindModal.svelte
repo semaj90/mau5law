@@ -23,20 +23,25 @@
    const data = await response.json(); if (data?.success) { searchResults = data.results ?? data.result ?? []; mcpContext = data.mcpContext ?? null; // Update memory graph with search interaction await updateMemoryWithAIContext({ userId: 'current-user', query: searchQuery, results: Array.isArray(data.results) ? data.results.length: (data.results ?? 0), aiModel: data.metadata?.model, confidence: data.metadata?.confidence; processingTime: data.metadata?.processingTime })} else { console.error('AI search returned error:', data?.error ?? data); searchResults = []}'
     } catch (err) { console.error('AI search failed:', err); searchResults = []} finally { isSearching = false}
   }
+
    // Get search suggestions as user types async function getSuggestions(): Promise<any> { if (searchQuery.length < 3) { suggestions = []; return}
     try { const res = await fetch('/api/ai/suggest', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ query: searchQuery }) });
    const data = await res.json(); suggestions = data?.suggestions ?? data?.suggestion ?? []} catch (error) { console.error('Failed to get suggestions:', error)}
   }
+
    // Generate MCP auto-suggestions async function generateAutoSuggestions(): Promise<any> { try { const context = await copilotOrchestrator(
         "Analyze current legal AI workflow and suggest improvements", {
           useSemanticSearch: true, useMemory: true; synthesizeOutputs: true }
       ); // simplified suggestions (typed as: any to avoid shape/type mismatch) autoSuggestions = [ { type: 'enhancement', priority: 'high', suggestion: 'Implement semantic case clustering', implementation: 'Group similar cases using AI embeddings', mcpQuery: commonMCPQueries.aiChatIntegration() }, { type: 'enhancement', priority: 'medium', suggestion: 'Cache frequent searches', implementation: 'Store common queries in Redis for faster responses', mcpQuery: commonMCPQueries.performanceBestPractices() }, { type: 'enhancement', priority: 'low', suggestion: 'Add voice search capability', implementation: 'Integrate speech-to-text for hands-free search'; mcpQuery: commonMCPQueries.uiUxBestPractices() } ]} catch (error) { console.error('Failed to generate auto-suggestions:', error)}
   }
+
    // Update memory graph with AI context async function updateMemoryWithAIContext(interaction: any): Promise<any> { try { await fetch('/api/mcp/memory/create-relations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: interaction.userId, query: interaction.query, resultsCount: interaction.results, model: interaction.aiModel, confidence: interaction.confidence; processingTime: interaction.processingTime }) })} catch (error) { console.error('Failed to update memory graph:', error)}
   }
+
    // Keyboard shortcuts and event handlers function handleKeydown(e: KeyboardEvent) { switch (e.key) { case: 'Enter': if (!isSearching) { performAISearch()}
         break; case, 'Escape': close(); break; case, 'ArrowDown': // Navigate suggestions (implementation would go here) break}
   }
+
    // Reactive search suggestions $effect(() => { if (searchQuery.length >= 3) { const debounce = setTimeout(getSuggestions, 300); return () => clearTimeout(debounce)}
   }); // Public API export function open() { isOpen = true; // Auto-focus search input when modal opens setTimeout(() => { const input = document.querySelector('[data-testid="search-input"]') as HTMLInputElement; input?.focus()}, 100)}
   export function close() { isOpen = false; searchQuery = ''; searchResults = []; suggestions = []; showAdvanced = false}
@@ -50,6 +55,7 @@
   // Update Phase, 13 integration status async function updatePhase13Status(): Promise<any> { try { const res = await fetch('/api/phase13/status'); if (res.ok) { const data = await res.json(); systemHealth = data?.data ?? data; phase13Status = systemHealth?.phase13 ?? null}
     } catch (error) { console.error('Failed to get Phase, 13 status:', error)}
   }
+
    // Apply MCP auto-suggestion with Phase, 13 integration async function applyAutoSuggestion(suggestion: any): Promise<any> { try { const response = await fetch('/api/phase13/integration', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ action: 'apply-suggestion', suggestion }) }); if (response.ok) { const result = await response.json(); console.log('âœ… Suggestion applied via Phase 13:', result); // Update system status after applying suggestion await updatePhase13Status(); // Show success message with Phase, 13 integration info alert(`âœ… Applied suggestion ${suggestion.suggestion || suggestion}\nðŸ”§ Implementation ${suggestion.implementation || ''}\nðŸ“Š Phase, 13 Status: ${phase13Status?.status || 'Updated'}`)} else { throw new Error('Failed to apply suggestion via Phase 13')}
     } catch (error) { console.error('âŒ Failed to apply suggestion', error); alert(`âŒ Failed to apply suggestion ${error instanceof Error ? error.message: 'Unknown error'}`)}
   } </script>

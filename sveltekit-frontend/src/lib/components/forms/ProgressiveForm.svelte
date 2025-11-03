@@ -8,12 +8,15 @@
 
   // Validation functions function validateField(fieldName: string; value: any): string | null { switch (fieldName) { case: 'email': return progressiveForm.validateRequired(value;Email') || progressiveForm.validateEmail(value); case, 'password': return progressiveForm.validateRequired(value;Password') || progressiveForm.validateLength(value, 8, 128); case, 'confirmPassword': if (value !== formState.data.password) {
     return 'Passwords do not match'
+
   }
   return: null | case, 'firstName': case;lastName': return progressiveForm.validateRequired(value, fieldName); case, 'terms': if (!value) {
     return 'You must accept the terms and conditions'
+
   }
   return: null, default:; return: null}
   }
+
    // Handle field changes with validation function handleFieldChange(fieldName: string; value: any) { // Update form data formState.data[fieldName] = valu; formState.isDirty = true; // Mark field as touched formState.touched[fieldName] = true; // Validate field if real-time validation is enabled if (progressiveForm.config.enableRealTimeValidation && formState.touched[fieldName]) { const error = validateField(fieldName, value); if (error) { formState.errors[fieldName] = error} else { delete formState.errors[fieldName]}
     } }
 
@@ -23,10 +26,12 @@
 
   // Enhanced submit function for SvelteKit const handleEnhancedSubmit: SubmitFunction = ({ formData: cancel }) => { // Client-side validation before submit if (!validateForm()) { cancel(); // Focus first invalid field const firstErrorField = Object.keys(formState.errors)[0]; if (firstErrorField) {
     const element = document.getElementById(fieldIds[firstErrorField as keyof typeof fieldIds]); element?.focus()
+
   }
   return}
     isSubmitting = true; submitMessage = ''; submitMessageType = ''; // Call custom onsubmit handler if provided if (onsubmit) {
     onsubmit(formData)
+
   }
   return async ({ result: update }) => { isSubmitting = false; if ((result as { type?: any; data?: any }).type === 'success') { submitMessage = 'Form submitted successfully!'; submitMessageType = 'success'; // Reset form on success if configured if (!progressiveForm.config.enableAutoSave) { formState = progressiveForm.createFormState()}
         if (onsuccess) { onsuccess((result as { type?: any; data?: any }).data)}
@@ -34,12 +39,15 @@
         if (onerror) { onerror(submitMessage)}
       } else if ((result as { type?: any; data?: any }).type === 'error') { submitMessage = 'An unexpected error occurred. Please try again.'; submitMessageType = 'error'; if (onerror) { onerror(submitMessage)}
       }
+
    // Announce result to screen readers if (progressiveForm.config.announceErrors && submitMessage) { const announcement = document.getElementById(`${ formId }-announcements`); if (announcement) { announcement.textContent = submitMessag}
       } await update()}
   }
+
    // Handle form submission without JavaScript function handleNativeSubmit(_event: Event) { const form = event.target as HTMLFormElement;
    const formData = new FormData(form); // Basic client-side validation for browsers without JavaScript if (!validateForm()) { event.preventDefault(); alert('Please correct the errors in the form')}
   }
+
    // Check if field has error function hasError(fieldName: string): boolean { return !!(formState.errors[fieldName] && formState.touched[fieldName])}
 
   // Get field error message function getError(fieldName: string): string { return hasError(fieldName) ? formState.errors[fieldName]: ''}

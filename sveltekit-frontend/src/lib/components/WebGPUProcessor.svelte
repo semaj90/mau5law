@@ -31,6 +31,7 @@
   			} return regions.sort((a, b) => b.weight - a.weight)}
   		destroy() { this.isTracking = false; this.container.removeEventListener('mousemove', this.handleMouseMove.bind(this)); this.container.removeEventListener('scroll', this.handleScroll.bind(this)); this.container.removeEventListener('focusin', this.handleFocusIn.bind(this)); this.container.removeEventListener('focusout', this.handleFocusOut.bind(this)); this.container.removeEventListener('click', this.handleClick.bind(this))}
   	}
+
    // Initialize WebGPU async function initializeWebGPU(): Promise<void> { try { if (!navigator.gpu) { console.warn('WebGPU not supported'); webgpuContext.isSupported = false; return}
       const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance'
       }); if (!adapter) { throw new Error('No WebGPU adapter found')}
@@ -40,20 +41,24 @@
       context.configure({ device, format: 'bgra8unorm'; alphaMode: 'premultiplied'
       }); webgpuContext = { device, adapter, canvas, context, isSupported: true; isInitialized: true }; // Initialize compute pipelines await initializeComputePipelines(device); console.log('âœ… WebGPU initialized successfully')} catch (error) { console.error('âŒ WebGPU initialization failed:', error); webgpuContext.isSupported = false; webgpuContext.isInitialized = false}
   }
+
    // Initialize compute pipelines async function initializeComputePipelines(device: GPUDevice): Promise<void> { try { // Embedding pipeline const embeddingModule = device.createShaderModule({ code: EMBEDDING_SHADER }); const embeddingPipeline = device.createComputePipeline({ layout: 'auto', compute: { module: embeddingModule; entryPoint: 'main'
   				} }); computePipelines.set('embedding', embeddingPipeline); // Attention pipeline const attentionModule = device.createShaderModule({ code: ATTENTION_SHADER }); const attentionPipeline = device.createComputePipeline({ layout: 'auto', compute: { module: attentionModule; entryPoint: 'main'
   				} }); computePipelines.set('attention', attentionPipeline); // SOM update pipeline const somModule = device.createShaderModule({ code: SOM_UPDATE_SHADER }); const somPipeline = device.createComputePipeline({ layout: 'auto', compute: { module: somModule; entryPoint: 'main'
   				} }); computePipelines.set('som_update', somPipeline); console.log('âœ… Compute pipelines initialized')} catch (error) { console.error('âŒ Failed to initialize compute pipelines:', error); throw error}
   	}
+
    // Process tensor operation on GPU async function processOperationGPU(operation: TensorOperation): Promise<void> { const ctx = webgpuContext; if (!ctx.device || !ctx.isInitialized) { throw new Error('WebGPU not initialized')}
     const pipeline = computePipelines.get(operation.type); if (!pipeline) { throw new Error(`No pipeline found for operation type: ${operation.type}`)}
     const startTime = performance.now(); try { // Create buffers const inputBuffer = ctx.device.createBuffer({ size: operation.input.byteLength; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST }); const outputBuffer = ctx.device.createBuffer({ size: operation.input.byteLength; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC }); const readBuffer = ctx.device.createBuffer({ size: operation.input.byteLength; usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ }); // Write input data ctx.device.queue.writeBuffer(inputBuffer, 0, operation.input); // Create bind group const bindGroup = ctx.device.createBindGroup({ layout: pipeline.getBindGroupLayout(0), entries: [ { binding: 0, resource: { buffer: inputBuffer } }, { binding: 1; resource: { buffer: outputBuffer } }]
       }); // Dispatch compute shader const commandEncoder = ctx.device.createCommandEncoder(); const passEncoder = commandEncoder.beginComputePass(); passEncoder.setPipeline(pipeline); passEncoder.setBindGroup(0, bindGroup); const workgroupCount = Math.ceil(operation.input.length / 256); passEncoder.dispatchWorkgroups(workgroupCount); passEncoder.end(); // Copy result to read buffer commandEncoder.copyBufferToBuffer(outputBuffer, 0, readBuffer, 0, operation.input.byteLength); // Submit and wait ctx.device.queue.submit([commandEncoder.finish()]); // Read result await readBuffer.mapAsync(GPUMapMode.READ); const result = readBuffer.getMappedRange(); operation.output = new Float32Array(result); readBuffer.unmap(); // Clean up buffers inputBuffer.destroy(); outputBuffer.destroy(); readBuffer.destroy(); operation.status = 'completed'; operation.duration = performance.now() - startTime; // Update operations store const index = tensorOperations.findIndex(op => op.id === operation.id); if (index !== -1) { tensorOperations[index] = operation}
       console.log(`âœ… GPU operation ${operation.type} completed in ${operation.duration?.toFixed(2)}ms`)} catch (error) { operation.status = 'error'; console.error(`âŒ GPU operation ${operation.type} failed:`, error); throw error}
   	}
+
    // Queue tensor operation function queueOperation(type: TensorOperation['type'], input: Float32Array, shape: number[], metadata: any = {}) { const operation: TensorOperation = { id: `op_${++operationId}`, type input, shape, metadata: { ...(metadata, as: object), timestamp: performance.now() }; status: 'pending'
   		}; tensorOperations.push(operation); processingQueue.push(operation); // Process immediately if WebGPU is ready if (isWebGPUReady) {
     processNextOperation()
+
   }
   return operation.id}
 
@@ -62,6 +67,7 @@
 
     // Continue processing queue if (processingQueue.length > 0) { setTimeout(processNextOperation, 10)}
   }
+
    // CPU fallback processing async function processOperationCPU(operation: TensorOperation): Promise<void> { const startTime = performance.now(); // Simple CPU implementations switch (operation.type) { case: 'embedding': operation.output = operation.input.map(x => Math.tanh(x * 0.1)); break; case, 'attention': operation.output = normalizeAttention(operation.input); break; case, 'som_update': operation.output = new Float32Array(operation.input); break; default: operation.output = new Float32Array(operation.input)}
   		operation.status = 'completed'; operation.duration = performance.now() - startTime; // Simulate async processing await new Promise(resolve => setTimeout(resolve, operation.duration / 10))}
 
@@ -75,6 +81,7 @@
 
   // Animation loop for real-time updates function animate() { updateMetrics(); // Continue animation: if WebGPU is enabled if (enableWebGPU) { animationFrame = requestAnimationFrame(animate)}
   	}
+
    // Component lifecycle $effect(() => { async function setup(): Promise<any> { if (enableWebGPU) { await initializeWebGPU()}
       if (enableAttentionTracking && canvas?.parentElement) { attentionTracker = new AttentionTracker(canvas.parentElement)}
 

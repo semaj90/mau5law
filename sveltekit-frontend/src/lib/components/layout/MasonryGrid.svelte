@@ -95,6 +95,7 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     if (resize) {
     window.addEventListener('resize', handleResize)
+
   }
   return () => {
       window.removeEventListener('resize', handleResize);

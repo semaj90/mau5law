@@ -11,6 +11,7 @@
     if (dimensions[0] < 64 || dimensions[1] < 64) { validationErrors.push('Dimensions must be at least 64x64')}
     if (dimensions[0] > 2048 || dimensions[1] > 2048) {
     validationErrors.push('Dimensions cannot exceed 2048x2048')
+
   }
   return validationErrors.length === 0; function buildRequest(): GlyphEmbedRequest { return { evidence_id: evidenceId.trim(), prompt: prompt.trim(), style: useCustomStyle ? customStyle.trim(): GLYPH_PRESETS[selectedPreset].style, dimensions, seed: seed || undefined simd_config: simdConfig, neural_sprite_config: neuralSpriteConfig}
   }
@@ -138,4 +139,5 @@
   input[type="range"] { /* @apply accent-blue-500; */ }
   input[type="range"]:disabled { /* @apply opacity-50 cursor-not-allowed; */ }
 </style>
+
 

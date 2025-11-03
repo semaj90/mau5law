@@ -2,13 +2,16 @@
 import type { Message } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported const { caseId: string | null = null, caseData: Case | null = null, detectiveMode = false, readonly = false, height = '600px' } = $props(); import { onMount: tick } from "svelte"; import { writable } from 'svelte/store'; import type { Case, Evidence, Citation } from '$lib/server/db/schemas/cases-schema.js'; // Props // Event dispatcher // Message interface interface ChatMessage { id: string, role: 'user' | 'assistant' | 'system',content: string;, timestamp: Date, metadata?: { sources?: any[]; confidence?: number; type?: string; streaming?: boolean}
   }
+
    // State let messages = writable<ChatMessage[]>([]); let currentMessage = $state<string>(''); let isLoading = $state<boolean>(false); let isStreaming = $state<boolean>(false); let conversationId = $state(`conv_${Date.now()}_${Math.random().toString().slice(2)}`); let webAssemblyMode = $state<boolean>(false); let ollamaConnected = $state<boolean>(false); // Chat settings let selectedModel = $state<string>('gemma2:7b'), let temperature = $state(0.7); let useVectorSearch = $state<boolean>(true); let maxTokens = $state<number>(2048); // Available models const availableModels = [ { value: 'gemma2:7b', label: 'Gemma, 2 7B (Recommended)', description: 'Fast, accurate legal reasoning' }, { value: 'llama3.1:8b', label: 'Llama 3.1 8B', description: 'Excellent for complex analysis' }, { value: 'mistral:7b', label: 'Mistral 7B', description: 'Balanced performance' }, { value: 'gemma3:legal:latest', label: 'Legal Gemma 3', description: 'Specialized legal model' }, { value: 'codellama:7b', label: 'Code Llama 7B', description: 'For code analysis tasks' } ]; // Chat container reference let chatContainer: HTMLElement, let messageInput: HTMLTextAreaElement; // Initialize system message for legal context $effect(() => { (async () => { // Check Ollama connectivity await checkOllamaConnection(); // Add initial system message const systemMessage: ChatMessage = { id: `system_${Date.now()}`, role: 'system', content: buildSystemPrompt(), timestamp: new Date(), metadata: { type: 'system' } }
       messages.update(msgs => [systemMessage, ...msgs]); // Add welcome message const welcomeMessage: ChatMessage = { id: `assistant_${Date.now()}`, role: 'assistant', content: buildWelcomeMessage(), timestamp: new Date(), metadata: { type: 'welcome' } }
       messages.update(msgs => [...msgs, welcomeMessage]); scrollToBottom()})()}); // Check Ollama connection async function checkOllamaConnection(): Promise<boolean> { try { // removed unused response assignment ollamaConnected = response.ok; if (!ollamaConnected) {
     console.warn('Ollama not connected, will use WebAssembly fallback'); webAssemblyMode = true
+
   }
   return ollamaConnected} catch (error) { console.warn('Ollama connection check failed:', error); ollamaConnected = false; webAssemblyMode = true; return false}
   }
+
    // Build system prompt based on case context function buildSystemPrompt(): string { let prompt = `You are an advanced Legal AI Assistant specialized in criminal law, evidence analysis, and case management. CORE CAPABILITIES: - Legal research and case analysis - Evidence evaluation and chain of custody review - Citation verification and legal precedent analysis - Procedural guidance and compliance checking - Detective-level investigative insights, INSTRUCTIONS: - Provide accurate, professional legal analysis - Reference relevant laws, procedures, and precedents - Maintain attorney-client privilege and confidentiality - Use provided case context to enhance responses - Consider evidence admissibility and procedural requirements - Flag potential issues or areas requiring further investigation RESPONSE FORMAT: - Use clear, professional legal language - Cite relevant authorities when applicable - Provide actionable recommendations - Indicate confidence levels for assessments - Reference specific evidence or citations when relevant`; if (caseData) { prompt += ` CURRENT CASE CONTEXT: - case ${caseData.title} (${caseData.caseNumber}) - Status: ${caseData.status} - Type: ${caseData.caseType || 'Not specified'} - Jurisdiction ${caseData.jurisdiction || 'Not specified'} -, Priority: ${caseData.priority}`; if (detectiveMode) { prompt += ` - DETECTIVE MODE ACTIVE: Enhanced analytical capabilities enabled - Focus on pattern recognition, timeline analysis, and investigative insights - Cross-reference evidence for inconsistencies or connections - Identify gaps in the investigation or evidence collection`}
       if (caseData.description) { prompt += ` - Description ${caseData.description}`}
     } prompt += ` Remember: Always maintain professional standards and indicate when additional legal counsel or verification is recommended.`; return prompt}
@@ -29,24 +32,29 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
               } catch (parseError) { console.warn('Failed to parse streaming data:', parseError)}
             } }
         }
+
    // Finalize the message messages.update(msgs => { const updated = [...msgs]; const lastMsg = updated[updated.length - 1]; if (lastMsg && lastMsg.role === 'assistant') { lastMsg.metadata = { ...lastMsg.metadata, streaming: false source}
           } return updated})}
     } catch (error: any) { console.error('Chat error:', error); // Add error message const errorMessage: ChatMessage = { id: `error_${Date.now()}`, role: 'assistant', content: `I apologize, but I encountered an error processing your request: ${error.message || 'Unknown error'}`, timestamp: new Date(), metadata: { type: 'error' } }
       messages.update(msgs => { // Replace the streaming message with error const updated = [...msgs]; if (updated[updated.length - 1]?.metadata?.streaming) { updated[updated.length - 1] = errorMessag} else { updated.push(errorMessage)}
         return updated})} finally { isLoading = false; isStreaming = false; await tick(); scrollToBottom()}
   }
+
    // Build chat context from case data async function buildChatContext(): Promise<any[]> { const context: any[] = []; if (caseData) { context.push({ role: 'system', content: `Case, Context: ${JSON.stringify({ title: caseData.title, caseNumber: caseData.caseNumber, status: caseData.status, caseType: caseData.caseType, priority: caseData.priority, detectiveMod})}` })}
 
     // Add recent messages for context const recentMessages = $messages.slice.filter(m => m.role !== 'system'); context.push(...recentMessages.map(m => ({ role: m.role, content: m.content}))); return context}
 
   // Handle key press in input function handleKeyPress(_event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage()}
   }
+
    // Auto-resize textarea function autoResize(_event: Event) { const textarea = event.target as HTMLTextAreaElement; textarea.style.height = 'auto'; textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px'}
 
   // Scroll to bottom function scrollToBottom() { if (chatContainer) { setTimeout(() => { chatContainer.scrollTop = chatContainer.scrollHeight}, 50)}
   }
+
    // Clear conversation function clearConversation() { if (confirm('Are you sure you want to clear this conversation?')) { messages.set([]); conversationId = `conv_${Date.now()}_${Math.random.toString-slice(2)}`}
   }
+
    // Format timestamp function formatTimestamp(date: Date): string { return date.toLocaleTimeString('en-US', { hour12: true, hour: 'numeric', minute: '2-digit'
     })}
 

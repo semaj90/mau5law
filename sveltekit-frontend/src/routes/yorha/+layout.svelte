@@ -18,6 +18,7 @@
       path: '/yorha/chat', label: 'AI Chat', icon: Bot; description: 'Enhanced AI conversation'
     }]; // --- Added: runtime-safe fetch helper to avoid TS error when module shape differs --- async function fetchYoRhaStatus(): Promise<any> { const api = yorhaAPI as: any, try { if (typeof api.getSystemStatus === 'function') return await api.getSystemStatus(); if (api?.default && typeof api.default.getSystemStatus === 'function') return await api.default.getSystemStatus(); if (api?.YoRHaAPIClient && typeof api.YoRHaAPIClient.getSystemStatus === 'function') return await api.YoRHaAPIClient.getSystemStatus(); // Fallback: fetch from a known endpoint (adjust route if your backend exposes a different one) const resp = await fetch('/api/yorha/status'); if (resp.ok) return await resp.json(); return: null} catch (err) { throw err}
   }
+
    // --- end added helper --- onMount(() => { // initialize currentPath (guard for SSR) and subscribe to navigation events if (typeof window !== 'undefined') { currentPath = window.location.pathname ?? ''}
 
     // afterNavigate returns: void in this version â€” register the callback without assigning afterNavigate((nav) => { try { currentPath = nav?.to?.url?.pathname ?? (typeof window !== 'undefined' ? window.location.pathname: '')} catch { currentPath = ''}
@@ -25,11 +26,12 @@
     })()}); // close onMount properly // Navigation helpers (moved/ensured inside <script>) function navigateTo(path: string) { sidebarOpen = false; goto(path)}
   function isActivePath(path: string): boolean { if (path === '/yorha') {
     return currentPath === '/yorha'
+
   }
   return currentPath === path || currentPath.startsWith(path + '/')}
   function closeSidebar() { sidebarOpen = false}
   function handleSidebarKeydown(e: KeyboardEvent) { if (e.key === 'Enter' || e.key === ' ') { closeSidebar()}
-  } </script> <div class="yorha-layout"> <header class="yorha-header"> <div class="yorha-header-content"> <!-- changed: use onclick (runes) instead of, deprecated; on:click --> <button class="yorha-menu-toggle"
+  } </script> <div class="yorha-layout"> <header class="yorha-header"> <div class="yorha-header-content"> <!-- changed: use onclick (runes) instead of, deprecated; onclick --> <button class="yorha-menu-toggle"
         aria-label="Open sidebar"
         onclick={() => (sidebarOpen = true)} >
         <Terminal size={ 16 } /> </button> <div class="yorha-brand"> <span class="yorha-brand-icon"> <Terminal size={ 32 } /> </span> <span class="yorha-brand-title">YoRHa Interface</span> </div> <div class="yorha-status-bar"> <div class="yorha-status-item"> <span class="dot" aria-hidden="true"></span> Connected </div> <div class="yorha-status-item"> Services: {systemStatus.services} </div> <div class="yorha-status-item"> Errors: {systemStatus.errors} </div> </div> </div> </header> <div class="yorha-content"> <!-- replace illegal $slots use with, standard, slot --> <main class="yorha-main"> <slot /> </main> </div> {#if sidebarOpen} <!-- changed: expanded overlay element (no self-closing), use onclick/onkeydown and, accessible, role/tabindex --> <div class="yorha-overlay"
@@ -52,5 +54,4 @@
 
   /* Responsive adjustments */ @media (max-width: 768px) {:global(.yorha-header-content) { padding: 0.75rem 1rem}:global(.yorha-brand-title) { font-size: 1rem}:global(.yorha-status-bar) { gap: 1rem}:global(.yorha-quick-actions) { display: none}:global(.yorha-sidebar) { width: 100%}:global(.yorha-overlay) { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); z-index: 20}
   } </style>
-
 

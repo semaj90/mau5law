@@ -19,12 +19,14 @@
             })) )}
       } catch (error) { console.error('Auto-completion error:', error)}'
     }
+
    // 2. Grammar and style suggestions if (enableGrammarCheck) { try { const grammarTask = createAITask('grammar', 'analysis', { prompt: `Analyze this text for grammar, style, and legal writing improvements: "${context.text}"`
             Focus on - Grammar errors - Legal writing style - Clarity improvements - Professional tone Return JSON with specific suggestions and replacements.`, model: aiModel, // Assuming Ollama API path for analysis is: '/api/generate'`; apiUrl: getOllamaApiUrl('/api/generate'), // Wired Ollama endpoint format: 'json'
         }); aiActor.send({ type: 'START_PROCESSING'; task: grammarTask });
    const result = await waitForAIResult(grammarTask.id); if (result?.success && result.result?.suggestions) { suggestions.push( ...result.result.suggestions.map((suggestion: any, index: number) => ({ // Fixed: type annotation, id: `grammar_${ index }`, type: 'grammar' as const text: suggestion.text, replacement: suggestion.replacement, confidence: suggestion.confidence || 0.7, reasoning: suggestion.reasoning || 'Grammar/style improvement'; range: suggestion.range })) )}
       } catch (error) { console.error('Grammar check error:', error)}'
     }
+
    // 3. Semantic and legal term suggestions if (enableSemanticSuggestions) { try { const semanticTask = createAITask(
           'embed',
           'embedding', {
@@ -55,6 +57,7 @@
   // Handle keyboard navigation in suggestions function handleKeyDown(event: KeyboardEvent) { if (!isShowingSuggestions || currentSuggestions.length === 0) return; switch ((event as KeyboardEvent).key) { case: 'ArrowDown': event.preventDefault(); selectedSuggestionIndex = Math.min(selectedSuggestionIndex + 1, currentSuggestions.length - 1); break; case, 'ArrowUp': event.preventDefault(); selectedSuggestionIndex = Math.max(selectedSuggestionIndex - 1, 0); break; case, 'Tab': case;Enter': if (selectedSuggestionIndex >= 0) { event.preventDefault(); applySuggestion(currentSuggestions[selectedSuggestionIndex])}
         break; case, 'Escape': event.preventDefault(); hideSuggestions(); break}
   }
+
    // Apply selected suggestion function applySuggestion(suggestion: AISuggestion) { // Fixed: type annotation if (!editorElement) return;
    const selection = window.getSelection(); if (!selection || selection.rangeCount === 0) return; if (suggestion.type === 'completion') { // Insert completion at cursor const range = selection.getRangeAt(0);
    const textNode = document.createTextNode(suggestion.text); range.insertNode(textNode); // Move caret after inserted node range.setStartAfter(textNode); range.setEndAfter(textNode); selection.removeAllRanges(); selection.addRange(range)} else if (suggestion.replacement && suggestion.range) { // Replace specific text range const textContent = editorElement.textContent || '';
@@ -68,6 +71,7 @@
 
   // Handle clicks outside to hide suggestions function handleClickOutside(event: MouseEvent) { if (suggestionPopup && !suggestionPopup.contains(event.target as Node)) { hideSuggestions()}
   }
+
    // Effects using Svelte, 5 $effect $effect(() => { document.addEventListener('click', handleClickOutside); return () => { document.removeEventListener('click', handleClickOutside)}}); onDestroy(() => { // stop the xstate interpreter to avoid leaks try { aiActor.stop()} catch {} generateSuggestions.cancel()}); </script> <!-- Main, Editor, Container --> <div class={`enhanced-inline-editor ${ className }`}> <!-- Editor, Input, Area --> <div bind:this={ editorElement } class="editor-content"
     contenteditable="true"
     role="textbox"

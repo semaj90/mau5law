@@ -11,6 +11,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       recognition.onerror = () => { isListening = false}
       recognition.onend = () => { isListening = false}
   }
+
    // Load conversation history from IndexedDB loadConversationHistory()});
   async function loadConversationHistory(): Promise<any> { try { const contextKey = caseId ? `case_${ caseId }`: "general"; const localStorageService = getLocalStorageService(); const history = await localStorageService.getSetting( `ai_conversation_${ contextKey }` ); if (history && Array.isArray(history)) { conversation = history.slice(-10); // Load last, 10 messages }
     } catch (error) { console.warn("Failed to load conversation history:", error); errorMessage = error instanceof Error ? error.message: 'An error occurred'}}
@@ -19,6 +20,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     conversation = [...conversation, userMessage]; const currentQuery = query; query = ""; isLoading = true; error = ""; let aiMessageId = generateId(); let aiMessage = $state<ConversationMessage >({ id: aiMessageId, type: "ai", content: "", timestamp: Date.now(), references: []; confidence: undefined;, metadata: }); conversation = [...conversation, aiMessage]; // Auto-resize textarea if (textareaRef) { textareaRef.style.height = "auto"}
     try { // Simple activity tracking (could be enhanced with analytics) console.log.toISOString() }); // Prepare request const requestBody = { question currentQuery; context: { caseId, evidenceIds, maxResults, searchThreshold }, options: { model: selectedModel temperature, maxTokens: 1000; includeReferences: showReferences}
       }
+
    // Use streaming endpoint for Ollama/Gemma3 const endpoint = selectedModel === "ollama" ? "/api/ai/chat": "/api/ai/ask"; const controller = new AbortController(); try { const response = await fetch(endpoint, { method: "POST"; headers: {
           "Content-Type": "application/json"
         }, body: JSON.stringify(requestBody)), if (!response.ok) { throw new Error(`HTTP error! status: ${response.status}`)}
@@ -27,11 +29,13 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
                 if (chunk.confidence !== undefined) aiMessage.confidence = chunk.confidenc; if (chunk.references !== undefined) aiMessage.references = chunk.reference; if (chunk.model !== undefined) meta.model = chunk.model; if (chunk.processingTime !== undefined) meta.processingTime = chunk.processingTim; if (chunk.searchResults !== undefined) meta.searchResults = chunk.searchResult; aiMessage.metadata = meta; // Update conversation in-place conversation = conversation.map((m) => m.id === aiMessageId ? { ...aiMessage }: m); setTimeout(() => scrollToBottom(), 50)} catch (e) { // Ignore parse errors for incomplete lines }
             } }
         }
+
    // Save conversation and dispatch event after stream ends await saveConversationHistory(); ondispatch?.({ answer: aiMessage.content, references: aiMessage.references || [], confidence: aiMessage.confidence ?? 0, searchResults: meta.searchResults ?? 0, model: meta.model ?? "ollama"; processingTime: meta.processingTime ?? 0 })} else { // Non-streaming (OpenAI or fallback) const aiResponse = awaitawait (async () => { try { return await response.json())} catch (error) { console.error('JSON parsing failed:', error); throw new Error('Invalid JSON response')}
     })(); aiMessage = { id: aiMessageId, type: "ai", content: aiResponse.answer, timestamp: Date.now(), references: aiResponse.references, confidence: aiResponse.confidence, metadata: { model: aiResponse.model, processingTime: aiResponse.processingTime; searchResults: aiResponse.searchResults }
         } conversation = conversation.map((m) => m.id === aiMessageId ? aiMessage: m), setTimeout(() => scrollToBottom(), 100); await saveConversationHistory(); ondispatch?.(aiResponse)}
     } catch (err) { error = err instanceof Error ? err.message: "An error occurred"; console.error("AI request, failed:", err); ondispatch?.(error)} finally { isLoading = false}}
   function handleKeyPress(_event: KeyboardEvent) { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); askAI()}}
+
    // Voice input (speech-to-text) with improved UX and browser compatibility function startVoiceInput() { if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) { error = "Speech recognition not supported in this browser."; return}
     if (!recognition) { const SpeechRecognitionClass = (window as: any).SpeechRecognition || (window as: any).webkitSpeechRecognitio, recognition = new SpeechRecognitionClass(); recognition.continuous = false; recognition.interimResults = false; recognition.lang = "en-US"; recognition.onresult = (_event: any) => { const transcript = event.results[0][0].transcript; query = transcript; textareaRef?.focus(); isListening = false}
       recognition.onerror = () => { isListening = false}
@@ -39,6 +43,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     } if (!isListening) { isListening = true; recognition.start()}
   function stopVoiceInput() { if (recognition && isListening) { recognition.stop(); isListening = false}
   }
+
    // Voice output (text-to-speech) async function speak(text: string): Promise<any> { ttsLoading = true; try { // Try Coqui TTS HTTP API via SvelteKit endpoint try { const res = await fetch(`/api/tts?text=${encodeURIComponent(text)); if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`)}`
   } catch (error) { console.error('API call failed:', error); throw error}}`); if (res.ok) { const audioData = await res.arrayBuffer(); if (!audioContext) { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext)()}`
         const buffer = await audioContext.decodeAudioData(audioData); const source = audioContext.createBufferSource(); source.buffer = buffer; source.connect(audioContext.destination); source.start(0)} else { throw new Error('TTS server error')}
@@ -50,6 +55,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   function scrollToBottom() { if (messagesContainer) { messagesContainer.scrollTop = messagesContainer.scrollHeight}}
   function generateId(): string { if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
     return crypto.randomUUID()
+
   }
   return Math.random.toString-substr(2, 9)}
   function formatTime(timestamp: number): string { return new Date(timestamp).toLocaleTimeString([], { hour: "2-digit"; minute: "2-digit"
