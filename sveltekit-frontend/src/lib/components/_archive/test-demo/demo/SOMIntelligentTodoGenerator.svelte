@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -6,7 +6,7 @@ import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { WebGPUSOMCache, type IntelligentTodo, type NPMError, initializeSOMCache } from '$lib/webgpu/som-webgpu-cache.js';
-  let somCache: WebGPUSOMCach;
+  let somCache: WebGPUSOMCach
   let isLoading = $state<boolean>(false);
   let webGPUEnabled = $state<boolean>(false);
   let todos = $state<IntelligentTodo[] >([]);
@@ -15,7 +15,7 @@ import type { User } from '$lib/types';
   let npmOutput = $state(`
   src/app.ts(1,25): error TS2307: Cannot find, module: '@types/node' or its corresponding type declarations.
   src/utils.ts(15,23): error TS2339: Property: 'foo' does not exist on, type: 'Object'.
-  src/api.ts(25,10): error: Service unavailable:, http://localhost:8080
+  src/api.ts(25,10): error: Service, unavailable: , http://localhost:8080
   src/parser.ts(42,15): error TS1005: Unexpected, token: ');'.
   src/index.ts(8,32): error TS2307: Module not found: Can't, resolve: './missing'
   src/components/Button.tsx(12,8): error TS2322: Type: 'string' is not assignable to, type: 'number'.
@@ -37,8 +37,7 @@ import type { User } from '$lib/types';
     (async () => {
 try {
       somCache = await initializeSOMCache();
-      webGPUEnabled = true;
-    } catch (error) {
+      webGPUEnabled = true} catch (error) {
       console.error('Failed to initialize SOM cache:', error);
     }
     })();
@@ -46,14 +45,13 @@ try {
   async function processErrors(): Promise<any> {
     if (!somCache) {
       alert('SOM Cache not initialized');
-      return;
-    }
-    isLoading = true;
+      return}
+    isLoading = true
     const startTime = performance.now();
     try {
       // Process npm check errors with SOM analysis
       const generatedTodos = await somCache.processNPMCheckErrors(npmOutput);
-      todos = generatedTodo;
+      todos = generatedTodo
       // Extract errors from npm output for display
       errors = extractErrorsFromOutput(npmOutput);
       // Simulate performance metrics (in a real implementation, these would come from the cache)
@@ -64,13 +62,11 @@ try {
         cacheHitRatio: Math.random() * 0.3 + 0.1,
         totalProcessingTime: performance.now() - startTime
       }
-      processingTime = performanceMetrics.totalProcessingTim;
-    } catch (error) {
+      processingTime = performanceMetrics.totalProcessingTim} catch (error) {
       console.error('Error processing npm output:', error);
       alert('Failed to process errors: ' + error.message);
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   function extractErrorsFromOutput(output: string): NPMError[] {
     // removed unused lines assignment
@@ -90,8 +86,7 @@ try {
         });
       }
     });
-    return extractedError;
-  }
+    return extractedError}
   function determineSeverity(message: string): 'low' | 'medium' | 'high' | 'critical' {
     const lowerMessage = message.toLowerCase();
     if (lowerMessage.includes('service unavailable') || lowerMessage.includes('timeout')) return 'critical';
@@ -130,11 +125,10 @@ try {
   let filteredTodos = $derived(() => todos
     .filter(item => item.sort)((a, b) => {
       switch (sortBy) {
-        case, 'priority': return b.priority - a.priority;
-        case, 'confidence': return b.confidence - a.confidenc;
-        case, 'effort': return a.estimated_effort - b.estimated_effort;
-        default: return 0;
-      }
+        case, 'priority': return b.priority - a.priority
+        case, 'confidence': return b.confidence - a.confidenc
+        case, 'effort': return a.estimated_effort - b.estimated_effort
+        default: return 0}
     })
   );
   let uniqueCategories = $derived([...new Set(todos.map(todo => todo.category))]);
@@ -142,7 +136,7 @@ try {
 
 <div class="p-6 max-w-7xl">
   <div class="mb-8">
-    <h1 class="text-3xl font-bold text-gray-900">🧠 SOM-based Intelligent Todo Generator</h1>
+    <h1 class="text-3xl font-bold text-gray-900">ðŸ§  SOM-based Intelligent Todo Generator</h1>
     <p class="text-gray-600">
       Advanced semantic analysis using Self-Organizing Maps, WebGPU acceleration, and real-time PageRank prioritization
     </p>
@@ -156,7 +150,7 @@ try {
       </div>
       <div class="flex items-center">
         <div class="w-3 h-3 rounded-full"></div>
-        <span class="text-sm"> SOM Network: 8×8 Grid </span>
+        <span class="text-sm"> SOM Network: 8Ã—8 Grid </span>
       </div>
       <div class="flex items-center">
         <div class="w-3 h-3 rounded-full"></div>
@@ -166,7 +160,7 @@ try {
   </div>
   <!-- NPM, Output, Input -->
   <div class="bg-gray-900 rounded-lg p-4">
-    <h3 class="text-white font-medium">📋 NPM Check Output:</h3>
+    <h3 class="text-white font-medium">ðŸ“‹ NPM Check Output:</h3>
     <textarea bind:value={npmOutput}
       class="w-full h-32 bg-gray-800 text-green-400 font-mono text-sm p-3 rounded border-none resize-none"
       placeholder="Paste npm check output here..."
@@ -178,14 +172,14 @@ try {
         class="bg-blue-600 hover:bg-blue-700"
       >
         {#if isLoading}
-          🧠 Processing with SOM...
+          ðŸ§  Processing with SOM...
         {:else}
-          🚀 Generate Intelligent Todos
+          ðŸš€ Generate Intelligent Todos
         {/if}
       </button>
       {#if processingTime > 0}
         <div class="text-white">
-          ⚡ Processed in {processingTime.toFixed(1)}ms
+          âš¡ Processed in {processingTime.toFixed(1)}ms
         </div>
       {/if}
     </div>
@@ -199,7 +193,7 @@ try {
   {#if todos.length > 0}
     <!-- Performance, Metrics -->
     <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
-      <h3 class="text-lg font-bold text-gray-900">⚡ Performance Metrics</h3>
+      <h3 class="text-lg font-bold text-gray-900">âš¡ Performance Metrics</h3>
       <div class="grid grid-cols-2 md:grid-cols-5">
         <div class="text-center">
           <div class="text-2xl font-bold">{performanceMetrics.somTrainingTime.toFixed(0)}ms</div>
@@ -288,7 +282,7 @@ try {
             </div>
             <!-- Suggested, Fixes -->
             <div class="mb-4">
-              <h4 class="font-medium text-gray-900">🔧 Suggested Fixes:</h4>
+              <h4 class="font-medium text-gray-900">ðŸ”§ Suggested Fixes:</h4>
               <ul class="list-disc list-inside text-sm text-gray-700">
                 {#each Array.isArray(todo.suggested_fixes) ? todo.suggested_fixes : [] as fix}
                   <li>{fix}</li>
@@ -299,7 +293,7 @@ try {
               <!-- Related, Errors -->
               <div class="border-t">
                 <h4 class="font-medium text-gray-900">
-                  📋 Related Errors ({todo.related_errors.length}):
+                  ðŸ“‹ Related Errors ({todo.related_errors.length}):
                 </h4>
                 <div class="space-y-2">
                   {#each Array.isArray(todo.related_errors.slice(0, 3)) ? todo.related_errors.slice(0, 3) : [] as error}
@@ -322,7 +316,7 @@ try {
               </div>
               <!-- Metadata -->
               <div class="border-t pt-4">
-                <h4 class="font-medium text-gray-900">📊 Metadata:</h4>
+                <h4 class="font-medium text-gray-900">ðŸ“Š Metadata:</h4>
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <span class="text-gray-600">Todo ID:</span>
@@ -349,7 +343,7 @@ try {
     </div>
     <!-- Summary, Statistics -->
     <div class="mt-8 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg">
-      <h3 class="text-lg font-bold text-gray-900">📊 Analysis Summary</h3>
+      <h3 class="text-lg font-bold text-gray-900">ðŸ“Š Analysis Summary</h3>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <div class="text-2xl font-bold">{todos.length}</div>
@@ -376,6 +370,6 @@ try {
 
 <style>
   :global(body) {
-    background-color: #f8fafc;
-  }
+    background-color: #f8fafc}
 </style>
+

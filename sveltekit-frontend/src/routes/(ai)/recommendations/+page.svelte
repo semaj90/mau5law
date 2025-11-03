@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Recommendations Test Page - Enhanced-Bits Architecture
   Testing the RecommendationEngine with Enhanced-Bits UI components
 -->
@@ -14,7 +14,6 @@
 </div>
 <style>
   .page-container {
-    min-height: 100vh;
-   , background: #f8fafc;
-  }
+    min-height: 100vh
+   , background: #f8fafc}
 </style>

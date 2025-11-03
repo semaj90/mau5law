@@ -1,4 +1,4 @@
-<!-- Enhanced-Bits Legal, AI, Dashboard -->
+﻿<!-- Enhanced-Bits Legal, AI, Dashboard -->
 <!-- Complete integration of Citations, Reports, and, POI, systems -->
 <script lang="ts">
   import { Input } from '$lib/components/ui/input';
@@ -53,15 +53,14 @@ import type { Case } from '$lib/types';
   });
   // Search functionality
   async function handleSearch(): Promise<any> {
-    if (!searchQuery.trim()) return;
-    loading = true;
+    if (!searchQuery.trim()) return
+    loading = true
     try {
       searchResults = await unifiedSearch(searchQuery, ['citations', 'reports', 'poi']);
     } catch (error) {
       console.error('Search failed:', error);
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
   // Quick actions
   function handleCreateCase() {
@@ -98,8 +97,7 @@ import type { Case } from '$lib/types';
     legalPlatformStore.analyzeInsights();
   }
   // Sample data for demo (would normally come from stores)
-  let samplePOIs = $state([
-    {
+  let samplePOIs = $state([ {
       id: '1',
       name: 'John Doe',
       aliases: ['Johnny D', 'JD'],
@@ -140,8 +138,7 @@ import type { Case } from '$lib/types';
       },
       criminalProfile: { aliases: ['Johnny D'],
         mugshots: [],
-        warrants: [
-          {
+        warrants: [ {
             id: 'W001',
             type: 'arrest',
             jurisdiction: 'State of California',
@@ -150,8 +147,7 @@ import type { Case } from '$lib/types';
             status: 'active'
           }
         ],
-        watchLists: [
-          {
+        watchLists: [ {
             list: 'fbi_most_wanted',
             addedDate: '2024-01-01',
             reason: 'Violent felony charges',
@@ -198,7 +194,7 @@ import type { Case } from '$lib/types';
   <!-- Header -->
   <header class="dashboard-header">
     <div class="header-content">
-      <h1>⚖️ Legal AI Dashboard</h1>
+      <h1>âš–ï¸ Legal AI Dashboard</h1>
       <div class="header-actions">
         <Input
           bind:value={searchQuery}
@@ -206,10 +202,10 @@ import type { Case } from '$lib/types';
           onkeydown={e => e.key === 'Enter' && handleSearch()}
         />
         <Button onclick={handleSearch} disabled={loading}>
-          {loading ? '🔍 Searching...' : '🔍 Search'}
+          {loading ? 'ðŸ” Searching...' : 'ðŸ” Search'}
         </Button>
-        <Button onclick={handleCreateCase} variant="outline">📝 New Case</Button>
-        <Button onclick={handleQuickAnalysis} variant="outline">🤖 AI Analysis</Button>
+        <Button onclick={handleCreateCase} variant="outline">ðŸ“ New Case</Button>
+        <Button onclick={handleQuickAnalysis} variant="outline">ðŸ¤– AI Analysis</Button>
       </div>
     </div>
   </header>
@@ -223,7 +219,7 @@ import type { Case } from '$lib/types';
           <div class="stats-grid">
             <Card.Root, class="stat-card">
               <CardHeader>
-                <CardTitle>📂 Total Cases</CardTitle>
+                <CardTitle>ðŸ“‚ Total Cases</CardTitle>
               </CardHeader>
               <CardContent>
                 <div class="stat-value">{dashboardData.totalCases}</div>
@@ -231,7 +227,7 @@ import type { Case } from '$lib/types';
             </Card>
             <Card.Root, class="stat-card">
               <CardHeader>
-                <CardTitle>📚 Citations</CardTitle>
+                <CardTitle>ðŸ“š Citations</CardTitle>
               </CardHeader>
               <CardContent>
                 <div class="stat-value">{dashboardData.totalCitations}</div>
@@ -240,7 +236,7 @@ import type { Case } from '$lib/types';
             </Card>
             <Card.Root, class="stat-card">
               <CardHeader>
-                <CardTitle>📊 Reports</CardTitle>
+                <CardTitle>ðŸ“Š Reports</CardTitle>
               </CardHeader>
               <CardContent>
                 <div class="stat-value">{dashboardData.totalReports}</div>
@@ -249,7 +245,7 @@ import type { Case } from '$lib/types';
             </Card>
             <Card.Root, class="stat-card">
               <CardHeader>
-                <CardTitle>👥 Persons of Interest</CardTitle>
+                <CardTitle>ðŸ‘¥ Persons of Interest</CardTitle>
               </CardHeader>
               <CardContent>
                 <div class="stat-value">{dashboardData.totalPOIs}</div>
@@ -261,22 +257,22 @@ import type { Case } from '$lib/types';
           <div class="recent-activity">
             <Card>
               <CardHeader>
-                <CardTitle>🕒 Recent Activity</CardTitle>
+                <CardTitle>ðŸ•’ Recent Activity</CardTitle>
               </CardHeader>
               <CardContent>
                 <div class="activity-list">
                   <div class="activity-item">
-                    <span class="activity-icon">🎯</span>
+                    <span class="activity-icon">ðŸŽ¯</span>
                     <span class="activity-text">John Doe added to FBI Most Wanted</span>
                     <span class="activity-time">2 hours ago</span>
                   </div>
                   <div class="activity-item">
-                    <span class="activity-icon">📋</span>
+                    <span class="activity-icon">ðŸ“‹</span>
                     <span class="activity-text">Criminal case report generated</span>
                     <span class="activity-time">4 hours ago</span>
                   </div>
                   <div class="activity-item">
-                    <span class="activity-icon">📚</span>
+                    <span class="activity-icon">ðŸ“š</span>
                     <span class="activity-text">New citation verified: Smith v. Jones</span>
                     <span class="activity-time">6 hours ago</span>
                   </div>
@@ -289,8 +285,8 @@ import type { Case } from '$lib/types';
       {#if activeTab === 'poi'}
         <div class="poi-section">
           <div class="section-header">
-            <h2>👥 Persons of Interest</h2>
-            <Button onclick={() => alert('Create new POI')}>➕ Add POI</Button>
+            <h2>ðŸ‘¥ Persons of Interest</h2>
+            <Button onclick={() => alert('Create new POI')}>âž• Add POI</Button>
           </div>
           <div class="poi-grid">
             {#each Array.isArray(samplePOIs) ? samplePOIs : [] as poi}
@@ -306,8 +302,8 @@ import type { Case } from '$lib/types';
       {#if activeTab === 'citations'}
         <div class="citations-section">
           <div class="section-header">
-            <h2>📚 Legal Citations</h2>
-            <Button onclick={() => alert('Add new citation')}>➕ Add Citation</Button>
+            <h2>ðŸ“š Legal Citations</h2>
+            <Button onclick={() => alert('Add new citation')}>âž• Add Citation</Button>
           </div>
           <Card>
             <CardContent>
@@ -320,8 +316,8 @@ import type { Case } from '$lib/types';
       {#if activeTab === 'reports'}
         <div class="reports-section">
           <div class="section-header">
-            <h2>📊 Legal Reports</h2>
-            <Button onclick={() => alert('Generate new report')}>➕ Generate Report</Button>
+            <h2>ðŸ“Š Legal Reports</h2>
+            <Button onclick={() => alert('Generate new report')}>âž• Generate Report</Button>
           </div>
           <Card>
             <CardContent>
@@ -333,11 +329,11 @@ import type { Case } from '$lib/types';
       <!-- Search, Results -->
       {#if searchQuery && Object.keys(searchResults).length > 0}
         <div class="search-results">
-          <h2>🔍 Search Results for: "{searchQuery}"</h2>
+          <h2>ðŸ” Search Results for: "{searchQuery}"</h2>
           {#if searchResults.citations?.length > 0}
             <Card>
               <CardHeader>
-                <CardTitle>📚 Citations ({searchResults.citations.length})</CardTitle>
+                <CardTitle>ðŸ“š Citations ({searchResults.citations.length})</CardTitle>
               </CardHeader>
               <CardContent>
                 {#each Array.isArray(searchResults.citations.slice(0, 3)) ? searchResults.citations.slice(0, 3) : [] as citation}
@@ -352,7 +348,7 @@ import type { Case } from '$lib/types';
           {#if searchResults.reports?.length > 0}
             <Card>
               <CardHeader>
-                <CardTitle>📊 Reports ({searchResults.reports.length})</CardTitle>
+                <CardTitle>ðŸ“Š Reports ({searchResults.reports.length})</CardTitle>
               </CardHeader>
               <CardContent>
                 {#each Array.isArray(searchResults.reports.slice(0, 3)) ? searchResults.reports.slice(0, 3) : [] as report}
@@ -367,7 +363,7 @@ import type { Case } from '$lib/types';
           {#if searchResults.poi?.length > 0}
             <Card>
               <CardHeader>
-                <CardTitle>👥 Persons of Interest ({searchResults.poi.length})</CardTitle>
+                <CardTitle>ðŸ‘¥ Persons of Interest ({searchResults.poi.length})</CardTitle>
               </CardHeader>
               <CardContent>
                 {#each Array.isArray(searchResults.poi.slice(0, 3)) ? searchResults.poi.slice(0, 3) : [] as person}
@@ -384,173 +380,149 @@ import type { Case } from '$lib/types';
     <!-- Navigation, Tabs -->
     <nav class="dashboard-nav">
       <Button onclick={() => (activeTab = 'dashboard')} variant={activeTab === 'dashboard' ? 'default' : 'outline'}>
-        📊 Dashboard
+        ðŸ“Š Dashboard
       </Button>
-      <Button onclick={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>👥 POI</Button>
+      <Button onclick={() => (activeTab = 'poi')} variant={activeTab === 'poi' ? 'default' : 'outline'}>ðŸ‘¥ POI</Button>
       <Button onclick={() => (activeTab = 'citations')} variant={activeTab === 'citations' ? 'default' : 'outline'}>
-        📚 Citations
+        ðŸ“š Citations
       </Button>
       <Button onclick={() => (activeTab = 'reports')} variant={activeTab === 'reports' ? 'default' : 'outline'}>
-        📊 Reports
+        ðŸ“Š Reports
       </Button>
     </nav>
   </main>
 </div>
 <style>
   .legal-dashboard {
-    min-height: 100vh;
+    min-height: 100vh
    , background: var(--enhanced-bits-background);
     color: var(--enhanced-bits-text);
   }
   .dashboard-header {
     background: var(--enhanced-bits-surface);
     border-bottom: 1px solid var(--enhanced-bits-border);
-    padding: 1rem 2rem;
-  }
+    padding: 1rem 2rem}
   .header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    max-width: 1400px
+    margin: 0 auto}
   .header-content h1 {
-    margin: 0;
+    margin: 0
    , color: var(--enhanced-bits-primary);
-    font-size: 1.75rem;
-    font-weight: bold;
-  }
+    font-size: 1.75rem
+    font-weight: bold}
   .header-actions {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-  }
+    display: flex
+    gap: 1rem
+    align-items: center}
   .dashboard-content {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
+    max-width: 1400px
+    margin: 0 auto
+    padding: 2rem}
   .dashboard-nav {
-    position: fixed;
-    bottom: 2rem;
+    position: fixed
+    bottom: 2rem
     left: 50%;
    , transform: translateX(-50%);
-    display: flex;
-    gap: 0.5rem;
+    display: flex
+    gap: 0.5rem
    , background: var(--enhanced-bits-surface);
-    padding: 0.75rem;
+    padding: 0.75rem
     border-radius: var(--enhanced-bits-radius-lg);
     box-shadow: var(--enhanced-bits-shadow-lg);
     border: 1px solid var(--enhanced-bits-border);
   }
   .stats-grid {
-    display: grid;
+    display: grid
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
+    gap: 1.5rem
+    margin-bottom: 2rem}
   .stat-card {
-    text-align: center;
-  }
+    text-align: center}
   .stat-value {
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 2.5rem
+    font-weight: bold
    , color: var(--enhanced-bits-primary);
-    line-height: 1;
-  }
+    line-height: 1}
   .stat-detail {
-    font-size: 0.875rem;
+    font-size: 0.875rem
    , color: var(--enhanced-bits-textMuted);
-    margin-top: 0.25rem;
-  }
+    margin-top: 0.25rem}
   .stat-detail.high-risk { color: var(--enhanced-bits-error);
-    font-weight: 600;
-  }
+    font-weight: 600}
   .recent-activity {
-    margin-bottom: 2rem;
-  }
+    margin-bottom: 2rem}
   .activity-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.75rem}
   .activity-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
+    display: flex
+    align-items: center
+    gap: 0.75rem
+    padding: 0.75rem
    , background: var(--enhanced-bits-background);
     border-radius: var(--enhanced-bits-radius-md);
     border: 1px solid var(--enhanced-bits-border);
   }
   .activity-icon {
-    font-size: 1.25rem;
-  }
+    font-size: 1.25rem}
   .activity-text {
-    flex: 1;
-    font-size: 0.875rem;
-  }
+    flex: 1
+    font-size: 0.875rem}
   .activity-time {
-    font-size: 0.75rem;
+    font-size: 0.75rem
    , color: var(--enhanced-bits-textMuted);
   }
   .section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 1.5rem}
   .section-header h2 {
-    margin: 0;
+    margin: 0
    , color: var(--enhanced-bits-primary);
   }
   .poi-grid {
-    display: grid;
+    display: grid
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 1.5rem;
-  }
+    gap: 1.5rem}
   .search-results {
-    margin-top: 2rem;
-  }
+    margin-top: 2rem}
   .search-results h2 { color: var(--enhanced-bits-primary);
-    margin-bottom: 1.5rem;
-  }
-  .search-result-item { padding: 0.75rem 0;
+    margin-bottom: 1.5rem}
+  .search-result-item { padding: 0.75rem 0
     border-bottom: 1px solid var(--enhanced-bits-border);
   }
   .search-result-item:last-child {
-    border-bottom: none;
-  }
+    border-bottom: none}
   .search-result-item strong { color: var(--enhanced-bits-primary);
   }
   .search-result-item p {
-    margin: 0.25rem, 0 0 0;
-    font-size: 0.875rem;
+    margin: 0.25rem, 0 0 0
+    font-size: 0.875rem
    , color: var(--enhanced-bits-textMuted);
   }
   @media (max-width: 768px) {
     .header-content {
-      flex-direction: column;
-      gap: 1rem;
-    }
+      flex-direction: column
+      gap: 1rem}
     .header-actions {
       width: 100%;
-      justify-content: center;
-    }
+      justify-content: center}
     .dashboard-content {
-      padding: 1rem;
-    }
+      padding: 1rem}
     .stats-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .poi-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .dashboard-nav {
-      position: static;
-     , transform: none;
-      margin-top: 2rem;
-      justify-content: center;
-    }
+      position: static
+     , transform: none
+      margin-top: 2rem
+      justify-content: center}
   }
 </style>
+

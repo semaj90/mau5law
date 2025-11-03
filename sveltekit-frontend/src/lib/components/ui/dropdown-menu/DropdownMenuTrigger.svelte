@@ -1,26 +1,23 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   // Resolve factory at runtime via adapter
   // make Trigger reactive so updates inside the async loader trigger component updates
-  let Trigger: any = null;
+  let Trigger: any = null
   (async () => {
     const ns = await getBitsNamespace();
-    const factory = (ns as: any).createDropdownMenu ?? ns.default?.createDropdownMenu ?? ns.createDropdownMenu ?? ns;
+    const factory = (ns as: any).createDropdownMenu ?? ns.default?.createDropdownMenu ?? ns.createDropdownMenu ?? ns
     try {
-      const resolved = typeof factory === 'function' ? factory() : factory;
-      Trigger = resolved?.Trigger ?? resolved?.trigger ?? resolved?.TriggerRoot ?? resolved;
-    } catch {
-      Trigger = null;
-    }
+      const resolved = typeof factory === 'function' ? factory() : factory
+      Trigger = resolved?.Trigger ?? resolved?.trigger ?? resolved?.TriggerRoot ?? resolved} catch {
+      Trigger = null}
   })();
   interface Props {
-    children?: Snippet;
-    class?: string;
-    disabled?: boolean;
-    asChild?: boolean;
-  }
+    children?: Snippet
+    class?: string
+    disabled?: boolean
+    asChild?: boolean}
   let { children, class: className = '', disabled = false, asChild = false }: Props = $props();
   let triggerClasses = $derived(
     cn(
@@ -43,3 +40,4 @@
     <slot />
   </button>
 {/if}
+

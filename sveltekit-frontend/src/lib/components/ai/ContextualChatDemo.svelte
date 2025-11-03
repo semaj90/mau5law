@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Contextual Chat Demo Component
   Demonstrates:
   - Gemma3 agentic function calling
@@ -20,10 +20,9 @@ import type { Document } from '$lib/types';
   } from '$lib/types/sharedTypes';
   // Props
   interface Props {
-    sessionId?: string;
-    userId?: string;
-    enableFunctions?: boolean;
-  }
+    sessionId?: string
+    userId?: string
+    enableFunctions?: boolean}
   let {
     sessionId = `session-${Date.now(}`),
     userId = 'demo-user',
@@ -38,11 +37,10 @@ import type { Document } from '$lib/types';
   let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let stats = $state<{
-    totalTurns: number;
-    avgConfidence: number;
-    stateTransitions: number;
-   , mostCommonState: string;
-  } | null>(null);
+    totalTurns: number
+    avgConfidence: number
+    stateTransitions: number
+   , mostCommonState: string} | null>(null);
   // Derived state names
   const stateNames = {
     0: 'Greeting',
@@ -66,9 +64,9 @@ import type { Document } from '$lib/types';
    * Send message to contextual chat API
    */
   async function sendMessage(): Promise<any> {
-    if (!message.trim()) return;
-    isLoading = true;
-    error = null;
+    if (!message.trim()) return
+    isLoading = true
+    error = null
     try {
       const response = await fetch('/api/contextual/chat', {
         method: 'POST',
@@ -87,8 +85,7 @@ import type { Document } from '$lib/types';
       if (result.success) {
         // Add to conversation history
         conversationHistory = [
-          ...conversationHistory,
-          {
+          ...conversationHistory, {
             userMessage: message,
             agentResponse: result.data.response,
             timestamp: Date.now(),
@@ -110,8 +107,7 @@ import type { Document } from '$lib/types';
       error = err instanceof Error ? err.message : 'Unknown error';
       console.error('Send message error:', err);'
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   /**
    * Fetch current contextual state
@@ -126,9 +122,8 @@ import type { Document } from '$lib/types';
       }
       const result = await response.json();
       if (result.success) {
-        contextualState = result.data;
-        entities = result.data.extractedEntities;
-      }
+        contextualState = result.data
+        entities = result.data.extractedEntities}
     } catch (err) {
       console.error('Fetch contextual state error:', err);'
     }
@@ -146,8 +141,7 @@ import type { Document } from '$lib/types';
       }
       const result = await response.json();
       if (result.success) {
-        predictions = result.data.predictions;
-      }
+        predictions = result.data.predictions}
     } catch (err) {
       console.error('Fetch predictions error:', err);'
     }
@@ -165,8 +159,7 @@ import type { Document } from '$lib/types';
       }
       const result = await response.json();
       if (result.success) {
-        stats = result.data;
-      }
+        stats = result.data}
     } catch (err) {
       console.error('Fetch stats error:', err);'
     }
@@ -185,13 +178,12 @@ import type { Document } from '$lib/types';
       }
       // Reset state
       conversationHistory = [];
-      contextualState = null;
+      contextualState = null
       predictions = [];
       entities = [];
-      stats = null;
+      stats = null
       message = '';
-      error = null;
-    } catch (err) {
+      error = null} catch (err) {
       error = err instanceof Error ? err.message : 'Unknown error';
       console.error('Clear conversation error:', err);'
     }
@@ -365,156 +357,139 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .contextual-chat-demo {
-    display: flex;
-    flex-direction: column;
+    display: flex
+    flex-direction: column
     height: 100%;
-    max-height: 800px;
+    max-height: 800px
    , border: 1px solid var(--border, #e5e7eb);
-    border-radius: 8px;
-    overflow: hidden;
+    border-radius: 8px
+    overflow: hidden
    , background: var(--background, #ffffff);
   }
   .demo-header {
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.5rem
     border-bottom: 1px solid var(--border, #e5e7eb);
     background: var(--muted, #f9fafb);
   }
   .demo-header h2 {
-    margin: 0, 0 0.5rem 0;
-    font-size: 1.25rem;
-    font-weight: 600;
-  }
+    margin: 0, 0 0.5rem 0
+    font-size: 1.25rem
+    font-weight: 600}
   .session-info {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.875rem;
+    display: flex
+    gap: 1rem
+    font-size: 0.875rem
    , color: var(--muted-foreground, #6b7280);
   }
   .demo-content {
-    display: grid;
-    grid-template-columns: 1fr 400px;
+    display: grid
+    grid-template-columns: 1fr 400px
     height: 100%;
-    overflow: hidden;
-  }
+    overflow: hidden}
   /* Chat Panel */
-  .chat-panel { display: flex;
-    flex-direction: column;
+  .chat-panel { display: flex
+    flex-direction: column
     border-right: 1px solid var(--border, #e5e7eb);
   }
   .chat-messages {
-    flex: 1;
-    overflow-y: auto;
-   , padding: 1rem;
-  }
+    flex: 1
+    overflow-y: auto
+   , padding: 1rem}
   .message-group {
-    margin-bottom: 1.5rem;
-  }
+    margin-bottom: 1.5rem}
   .user-message,
   .agent-message {
-    margin-bottom: 0.75rem;
-  }
+    margin-bottom: 0.75rem}
   .message-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
+    font-size: 0.75rem
+    font-weight: 600
+    margin-bottom: 0.25rem
    , color: var(--muted-foreground, #6b7280);
   }
   .message-content {
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    line-height: 1.5;
-  }
+    padding: 0.75rem 1rem
+    border-radius: 8px
+    line-height: 1.5}
   .user-message .message-content { background: var(--primary, #3b82f6);
-    color: white;
-    margin-left: 2rem;
-  }
+    color: white
+    margin-left: 2rem}
   .agent-message .message-content { background: var(--muted, #f9fafb);
     border: 1px solid var(--border, #e5e7eb);
   }
   .message-meta {
-    font-size: 0.75rem;
+    font-size: 0.75rem
    , color: var(--muted-foreground, #6b7280);
-    margin-top: 0.25rem;
-    padding-left: 1rem;
-  }
+    margin-top: 0.25rem
+    padding-left: 1rem}
   .empty-state {
-    text-align: center;
-    padding: 3rem 2rem;
+    text-align: center
+    padding: 3rem 2rem
    , color: var(--muted-foreground, #6b7280);
   }
   .empty-state p {
-    margin: 0.5rem 0;
-  }
+    margin: 0.5rem 0}
   .chat-input {
     border-top: 1px solid var(--border, #e5e7eb);
-    padding: 1rem;
+    padding: 1rem
    , background: var(--background, #ffffff);
   }
   .error-banner {
-    padding: 0.75rem;
-    margin-bottom: 0.75rem;
-    background: #fee2e2;
-    color: #991b1b;
-    border-radius: 4px;
-    font-size: 0.875rem;
-  }
+    padding: 0.75rem
+    margin-bottom: 0.75rem
+    background: #fee2e2
+    color: #991b1b
+    border-radius: 4px
+    font-size: 0.875rem}
   textarea {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.75rem
    , border: 1px solid var(--border, #e5e7eb);
-    border-radius: 4px;
-    resize: none;
-    font-family: inherit;
-    font-size: 0.875rem;
-  }
-  textarea:focus { outline: none;
+    border-radius: 4px
+    resize: none
+    font-family: inherit
+    font-size: 0.875rem}
+  textarea:focus { outline: none
     border-color: var(--primary, #3b82f6);
     box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.1);
   }
   textarea:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+    opacity: 0.5
+    cursor: not-allowed}
   .input-controls {
-    display: flex;
-    justify-content: space-betweennn;
-    align-items: center;
-    margin-top: 0.75rem;
-  }
+    display: flex
+    justify-content: space-betweennn
+    align-items: center
+    margin-top: 0.75rem}
   .input-controls label {
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+    font-size: 0.875rem
+    display: flex
+    align-items: center
+    gap: 0.5rem}
   .button-group {
-    display: flex;
-    gap: 0.5rem;
-  }
+    display: flex
+    gap: 0.5rem}
   button {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem
    , border: 1px solid var(--border, #e5e7eb);
-    border-radius: 4px;
+    border-radius: 4px
    , background: var(--background, #ffffff);
-    cursor: pointer;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
+    cursor: pointer
+    font-size: 0.875rem
+    font-weight: 500
+    transition: all 0.2s}
  , buttonhover:not(:disabled) {
     background: var(--muted, #f9fafb);
   }
   buttondisabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
+    opacity: 0.5
+    cursor: not-allowed}
   /* State Panel */
   .state-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    overflow-y: auto;
+    display: flex
+    flex-direction: column
+    gap: 1rem
+    padding: 1rem
+    overflow-y: auto
    , background: var(--muted, #f9fafb);
   }
   .state-card,
@@ -523,121 +498,103 @@ import type { Document } from '$lib/types';
   .stats-card {
     background: var(--background, #ffffff);
     border: 1px solid var(--border, #e5e7eb);
-    border-radius: 8px;
-   , padding: 1rem;
-  }
+    border-radius: 8px
+   , padding: 1rem}
   .state-card h3,
   .predictions-card h3,
   .entities-card h3,
   .stats-card h3 {
-    margin: 0, 0 1rem 0;
-    font-size: 1rem;
-    font-weight: 600;
-  }
+    margin: 0, 0 1rem 0
+    font-size: 1rem
+    font-weight: 600}
   .state-display {
-    text-align: center;
-  }
+    text-align: center}
   .state-name {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.5rem
+    font-weight: 700
    , color: var(--primary, #3b82f6);
-    margin-bottom: 0.5rem;
-  }
+    margin-bottom: 0.5rem}
   .state-confidence {
-    font-size: 0.875rem;
+    font-size: 0.875rem
    , color: var(--muted-foreground, #6b7280);
-    margin-bottom: 1rem;
-  }
+    margin-bottom: 1rem}
   .state-history {
-    margin-top: 1rem;
-    padding-top: 1rem;
+    margin-top: 1rem
+    padding-top: 1rem
     border-top: 1px solid var(--border, #e5e7eb);
-    text-align: left;
-  }
+    text-align: left}
   .history-timeline {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-  }
+    display: flex
+    flex-wrap: wrap
+    gap: 0.5rem
+    margin-top: 0.5rem}
   .history-state {
-    padding: 0.25rem 0.5rem;
+    padding: 0.25rem 0.5rem
    , background: var(--muted, #f9fafb);
-    border-radius: 4px;
-    font-size: 0.75rem;
-  }
+    border-radius: 4px
+    font-size: 0.75rem}
   .no-data {
-    text-align: center;
+    text-align: center
    , color: var(--muted-foreground, #6b7280);
-    font-size: 0.875rem;
-    margin: 1rem 0;
-  }
+    font-size: 0.875rem
+    margin: 1rem 0}
   .predictions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.75rem}
   .prediction-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.25rem}
   .prediction-action {
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
+    font-size: 0.875rem
+    font-weight: 500}
   .prediction-confidence {
-    font-size: 0.75rem;
+    font-size: 0.75rem
    , color: var(--muted-foreground, #6b7280);
   }
   .prediction-bar {
-    height: 4px;
+    height: 4px
    , background: var(--muted, #f9fafb);
-    border-radius: 2px;
-    overflow: hidden;
-  }
+    border-radius: 2px
+    overflow: hidden}
   .prediction-fill {
     height: 100%;
    , background: var(--primary, #3b82f6);
-    transition: width: 0.3s ease;
-  }
+    transition: width: 0.3s ease}
   .entities-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+    display: flex
+    flex-direction: column
+    gap: 0.5rem}
   .entity-item {
-    display: flex;
-    justify-content: space-betweennn;
-    align-items: center;
-    padding: 0.5rem;
+    display: flex
+    justify-content: space-betweennn
+    align-items: center
+    padding: 0.5rem
    , background: var(--muted, #f9fafb);
-    border-radius: 4px;
-    font-size: 0.875rem;
-  }
+    border-radius: 4px
+    font-size: 0.875rem}
   .entity-type {
-    font-weight: 600;
+    font-weight: 600
    , color: var(--primary, #3b82f6);
   }
   .entity-value {
     color: var(--foreground, #111827);
   }
   .stats-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 1rem}
   .stat-item {
-    text-align: center;
-  }
+    text-align: center}
   .stat-label {
-    font-size: 0.75rem;
+    font-size: 0.75rem
    , color: var(--muted-foreground, #6b7280);
-    margin-bottom: 0.25rem;
-  }
+    margin-bottom: 0.25rem}
   .stat-value {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.25rem
+    font-weight: 700
    , color: var(--foreground, #111827);
   }
 </style>
+

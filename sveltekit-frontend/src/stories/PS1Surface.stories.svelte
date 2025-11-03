@@ -1,8 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
 	// updated imports & typed animation id
 	import { onMount, onDestroy } from 'svelte';
 	import '../lib/components/yorha/ps1.css';
-	let container;
+	let container
 	let surfaceType = $state<string>('wireframe');
 	let animationSpeed = $state<number>(1);
 	let polygonCount = $state<number>(500);
@@ -12,28 +12,24 @@
 	let enableDithering = $state<boolean>(true);
 	let lightingModel = $state<string>('flat');
 	let textureQuality = $state<string>('low');
-	let animationId: number | null = null;
+	let animationId: number | null = null
 	// PS1 surface configurations (cleaned labels)
-	let surfaceConfigs = [
-		{
+	let surfaceConfigs = [ {
 			id: 'wireframe',
 			name: 'Wireframe',
 			desc: 'Classic PS1 wireframe rendering',
 			className: 'ps1-wireframe'
-		},
-		{
+		}, {
 			id: 'flat',
 			name: 'Flat Shaded',
 			desc: 'Flat polygon surfaces, no smoothing',
 			className: 'ps1-flat-shaded'
-		},
-		{
+		}, {
 			id: 'textured',
 			name: 'Low-Res Textured',
 			desc: 'Pixelated textures with UV mapping',
 			className: 'ps1-textured-low'
-		},
-		{
+		}, {
 			id: 'vertex',
 			name: 'Vertex Colored',
 			desc: 'Per-vertex color interpolation',
@@ -55,22 +51,21 @@
 	});
 	onDestroy(() => {
 		if (animationId !== null) cancelAnimationFrame(animationId);
-		animationId = null;
-	});
+		animationId = null});
 	function generateSurfaceMesh() {
 		vertices = [];
 		faces = [];
 		const gridSize = Math.floor(Math.sqrt(polygonCount / 2));
-		const spacing = 40;
-		const amplitude = 30;
+		const spacing = 40
+		const amplitude = 30
 		// Generate vertices in a grid
 		for (let x = 0; x < gridSize; x++) {
 			for (let z = 0; z < gridSize; z++) {
-				const worldX = (x - gridSize / 2) * spacing;
-				const worldZ = (z - gridSize / 2) * spacing;
+				const worldX = (x - gridSize / 2) * spacing
+				const worldZ = (z - gridSize / 2) * spacing
 				// PS1-style low precision height calculation
-				const height = Math.sin(worldX * 0.02) * Math.cos(worldZ * 0.02) * amplitude;
-				const quantizedHeight = Math.floor(height / vertexPrecision) * vertexPrecision;
+				const height = Math.sin(worldX * 0.02) * Math.cos(worldZ * 0.02) * amplitude
+				const quantizedHeight = Math.floor(height / vertexPrecision) * vertexPrecision
 				vertices.push({
 					x: worldX,
 					y: quantizedHeight,
@@ -87,8 +82,8 @@
 		// Generate triangular faces
 		for (let x = 0; x < gridSize - 1; x++) {
 			for (let z = 0; z < gridSize - 1; z++) {
-				const topLeft = x * gridSize + z;
-				const topRight = (x + 1) * gridSize + z;
+				const topLeft = x * gridSize + z
+				const topRight = (x + 1) * gridSize + z
 				const bottomLeft = x * gridSize + (z + 1);
 				const bottomRight = (x + 1) * gridSize + (z + 1);
 				// Two triangles per quad
@@ -106,8 +101,8 @@
 	}
 	function calculateNormal(v1, v2, v3) {
 		// Calculate face normal for lighting
-		const ax = v2.x - v1.x, ay = v2.y - v1.y, az = v2.z - v1.z;
-		const bx = v3.x - v1.x, by = v3.y - v1.y, bz = v3.z - v1.z;
+		const ax = v2.x - v1.x, ay = v2.y - v1.y, az = v2.z - v1.z
+		const bx = v3.x - v1.x, by = v3.y - v1.y, bz = v3.z - v1.z
 		return {
 			x: ay * bz - az * by,
 			y: az * bx - ax * bz,
@@ -116,15 +111,15 @@
 	}
 	function updatePerformanceMetrics() {
 		const currentTime = performance.now();
-		perfMetrics.frameTime = currentTime - perfMetrics.lastFrameTime;
-		perfMetrics.lastFrameTime = currentTime;
-		perfMetrics.polygonsPerFrame = faces.length;
+		perfMetrics.frameTime = currentTime - perfMetrics.lastFrameTime
+		perfMetrics.lastFrameTime = currentTime
+		perfMetrics.polygonsPerFrame = faces.length
 		perfMetrics.vertexOperations = vertices.length * 4; // Transform, project, light, clip
 		perfMetrics.fillRate = (perfMetrics.polygonsPerFrame * 60) / 1000; // K-polys/sec estimate
 	}
 	// Helper to produce a valid inline style: string for a face
 	function faceStyle(face, i) {
-		const avgZ = face.vertices.reduce((sum, vi) => sum + (vertices[vi]?.z ?? 0), 0) / 3;
+		const avgZ = face.vertices.reduce((sum, vi) => sum + (vertices[vi]?.z ?? 0), 0) / 3
 		const zIndex = enableZBuffer ? Math.floor(100 - avgZ * 0.1) : 'auto';
 		// ensure animation-delay has unit: 's' and CSS custom properties separated by semicolons
 		return `--face-index: ${i}; --normal-x: ${face.normal.x}; --normal-y: ${face.normal.y}; --normal-z: ${face.normal.z}; animation-delay: ${i * 0.001}s; z-index: ${zIndex};`;
@@ -138,30 +133,26 @@
 		perfMetrics.lastFrameTime = performance.now();
 		return () => {
 			if (animationId !== null) cancelAnimationFrame(animationId);
-			animationId = null;
-		};
+			animationId = null};
 	});
 	onDestroy(() => {
 		if (animationId !== null) cancelAnimationFrame(animationId);
-		animationId = null;
-	});
+		animationId = null});
 
 	// startRenderLoop - guard against multiple loops and keep timing accurate
 	function startRenderLoop() {
 		if (animationId !== null) {
 			cancelAnimationFrame(animationId);
-			animationId = null;
-		}
+			animationId = null}
 		perfMetrics.lastFrameTime = performance.now();
 		function animate() {
 			updatePerformanceMetrics();
-			const time = performance.now() * 0.001 * animationSpeed;
+			const time = performance.now() * 0.001 * animationSpeed
 			vertices.forEach((vertex, i) => {
 				const jitterX = (Math.sin(time * 2 + i * 0.1) * 0.5) / Math.max(1, vertexPrecision);
 				const jitterY = (Math.cos(time * 1.5 + i * 0.1) * 0.3) / Math.max(1, vertexPrecision);
-				vertex.screenX = vertex.x + jitterX;
-				vertex.screenY = vertex.y + jitterY;
-			});
+				vertex.screenX = vertex.x + jitterX
+				vertex.screenY = vertex.y + jitterY});
 			animationId = requestAnimationFrame(animate);
 		}
 		animationId = requestAnimationFrame(animate);
@@ -177,11 +168,9 @@
 		generateSurfaceMesh();
 	}
 	function toggleZBuffer() {
-		enableZBuffer = !enableZBuffer;
-	}
+		enableZBuffer = !enableZBuffer}
 	function toggleBackfaceCulling() {
-		enableBackfaceCulling = !enableBackfaceCulling;
-	}
+		enableBackfaceCulling = !enableBackfaceCulling}
 	// Reactive updates
 	$effect(() => {
 		generateSurfaceMesh();
@@ -284,7 +273,7 @@
 			</button>
 		</div>
 		<div class="status-panel">
-			<h4>=� Rendering Stats</h4>
+			<h4>=ï¿½ Rendering Stats</h4>
 			<div class="status-item">Vertices: {vertices.length}</div>
 			<div class="status-item">Triangles: {faces.length}</div>
 			<div class="status-item">Vertex Ops/Frame: {perfMetrics.vertexOperations}</div>
@@ -394,340 +383,293 @@
 </div>
 <style>
 	.ps1-surface-container {
-		min-height: 100vh;
-		background: #0a0a0a;
-	, color: #fff;
-		font-family: 'Courier New', monospace;
-		overflow-x: hidden;
-		position: relative;
-	}
+		min-height: 100vh
+		background: #0a0a0a
+	, color: #fff
+		font-family: 'Courier New', monospace
+		overflow-x: hidden
+		position: relative}
 	.story-header {
-		text-align: center;
-		padding: 20px;
-		margin-bottom: 20px;
-	}
+		text-align: center
+		padding: 20px
+		margin-bottom: 20px}
 	.story-header h1 {
-		font-size: 2.5em;
-	, color: #ff6600;
+		font-size: 2.5em
+	, color: #ff6600
 		text-shadow: 0, 0 20px rgba(255, 102, 0, 0.5);
-		margin-bottom: 10px;
-	}
+		margin-bottom: 10px}
 	.ps1-subtitle {
-		color: #888;
-		font-size: 14px;
-	}
+		color: #888
+		font-size: 14px}
 	.controls-panel { background: rgba(0, 0, 0, 0.9);
-		border: 2px solid #ff6600;
-		border-radius: 8px;
-		padding: 20px;
-		margin: 20px;
-		max-width: 450px;
-		position: relative;
-		z-index: 100;
-	}
+		border: 2px solid #ff6600
+		border-radius: 8px
+		padding: 20px
+		margin: 20px
+		max-width: 450px
+		position: relative
+		z-index: 100}
 	.controls-panel h3 {
-		color: #ff6600;
-		margin-top: 0;
-	}
+		color: #ff6600
+		margin-top: 0}
 	.surface-type-selector {
-		margin-bottom: 20px;
-	}
+		margin-bottom: 20px}
 	.surface-type-selector label {
-		display: block;
-		margin-bottom: 10px;
-		color: #ccc;
-		font-size: 14px;
-	}
+		display: block
+		margin-bottom: 10px
+		color: #ccc
+		font-size: 14px}
 	.surface-buttons {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 8px;
-	}
+		display: grid
+		grid-template-columns: 1fr 1fr
+		gap: 8px}
 	.surface-btn {
-		padding: 8px 10px;
-		font-size: 11px;
-		border-radius: 3px;
-		transition: all 0.2;
-	}
+		padding: 8px 10px
+		font-size: 11px
+		border-radius: 3px
+		transition: all 0.2}
 	.surface-btn.active { background: rgba(255, 102, 0, 0.2);
-		border-color: #ff6600;
+		border-color: #ff6600
 		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.4);
 	}
 	.control-row {
-		display: flex;
-		align-items: center;
-		margin-bottom: 15px;
-		gap: 10px;
-	}
+		display: flex
+		align-items: center
+		margin-bottom: 15px
+		gap: 10px}
 	.control-row label {
-		min-width: 120px;
-		font-size: 12px;
-		color: #ccc;
-	}
+		min-width: 120px
+		font-size: 12px
+		color: #ccc}
 	.checkbox-row {
-		margin-bottom: 10px;
-	}
+		margin-bottom: 10px}
 	.checkbox-label {
-		display: flex;
-		align-items: center;
-		gap: 8px;
-		font-size: 12px;
-		color: #ccc;
-		cursor: pointer;
-	}
+		display: flex
+		align-items: center
+		gap: 8px
+		font-size: 12px
+		color: #ccc
+		cursor: pointer}
 	.ps1-checkbox {
-		accent-color: #ff6600;
-	}
+		accent-color: #ff6600}
 	.ps1-slider {
-		flex: 1;
-		background: #222;
-		border: 1px solid #444;
-		height: 20px;
-		accent-color: #ff6600;
-	}
+		flex: 1
+		background: #222
+		border: 1px solid #444
+		height: 20px
+		accent-color: #ff6600}
 	.value {
-		min-width: 50px;
-		font-size: 11px;
-		color: #ffff00;
-		text-align: right;
-	}
+		min-width: 50px
+		font-size: 11px
+		color: #ffff00
+		text-align: right}
 	.button-row {
-		display: flex;
-		gap: 10px;
-		margin: 15px 0;
-	}
+		display: flex
+		gap: 10px
+		margin: 15px 0}
 	.ps1-button {
-		background: #333;
-		border: 2px solid #ff6600;
-		color: #ff6600;
-		padding: 8px 15px;
-		font-family: inherit;
-		font-size: 12px;
-		cursor: pointer;
-		border-radius: 4px;
-		transition: all 0.2;
-	}
+		background: #333
+		border: 2px solid #ff6600
+		color: #ff6600
+		padding: 8px 15px
+		font-family: inherit
+		font-size: 12px
+		cursor: pointer
+		border-radius: 4px
+		transition: all 0.2}
 	.ps1-button:hover { background: rgba(255, 102, 0, 0.1);
 		box-shadow: 0, 0 10px rgba(255, 102, 0, 0.3);
 	}
 	.status-panel {
 		background: rgba(40, 20, 0, 0.8);
-		border: 1px solid #ff6600;
-		border-radius: 4px;
-		padding: 15px;
-		margin-top: 20px;
-	}
+		border: 1px solid #ff6600
+		border-radius: 4px
+		padding: 15px
+		margin-top: 20px}
 	.status-panel h4 {
-		color: #ff6600;
-		margin-top: 0;
-		margin-bottom: 10px;
-	}
+		color: #ff6600
+		margin-top: 0
+		margin-bottom: 10px}
 	.status-item {
-		margin: 5px 0;
-		font-size: 12px;
-		color: #aaa;
-	}
+		margin: 5px 0
+		font-size: 12px
+		color: #aaa}
 	.surface-viewport {
-		position: relative;
-		height: 60vh;
-		min-height: 400px;
-		overflow: hidden;
-		margin: 20px;
-		border: 2px solid #333;
-		border-radius: 8px;
-		perspective: 800px;
-		transform-style: preserve-3d;
+		position: relative
+		height: 60vh
+		min-height: 400px
+		overflow: hidden
+		margin: 20px
+		border: 2px solid #333
+		border-radius: 8px
+		perspective: 800px
+		transform-style: preserve-3d
 	, background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000);
 	}
 	.surface-grid {
-		position: relative;
+		position: relative
 		width: 100%;
 		height: 100%;
-		transform-style: preserve-3d;
-	}
+		transform-style: preserve-3d}
 	.grid-background {
-		position: absolute;
-		top: 0;
-		left: 0;
+		position: absolute
+		top: 0
+		left: 0
 		width: 100%;
 	, height: 100%;
 		background-image:
 			linear-gradient(rgba(255, 102, 0, 0.1) 1px, transparent 1px),
 			linear-gradient(90deg, rgba(255, 102, 0, 0.1) 1px, transparent 1px);
-		background-size: 25px 25px;
-		opacity: 0.3;
-		z-index: 1;
-	}
+		background-size: 25px 25px
+		opacity: 0.3
+		z-index: 1}
 	.surface-mesh {
-		position: absolute;
-		top: 0;
-		left: 0;
+		position: absolute
+		top: 0
+		left: 0
 		width: 100%;
 		height: 100%;
-		transform-style: preserve-3d;
-		z-index: 2;
-	}
+		transform-style: preserve-3d
+		z-index: 2}
 	.surface-polygon {
-		position: absolute;
-		width: 20px;
-		height: 20px;
-		transform-origin: center;
-		animation: polygonFloat 3s ease-in-out infinite;
-	}
+		position: absolute
+		width: 20px
+		height: 20px
+		transform-origin: center
+		animation: polygonFloat 3s ease-in-out infinite}
 	.triangle-face {
-		width: 0;
-	, height: 0;
-		border-left: 10px solid transparent;
-		border-right: 10px solid transparent;
+		width: 0
+	, height: 0
+		border-left: 10px solid transparent
+		border-right: 10px solid transparent
 		border-bottom: 15px solid rgba(255, 102, 0, 0.6);
-		transform-origin: center bottom;
-		animation: trianglePulse 2s ease-in-out infinite;
-	}
+		transform-origin: center bottom
+		animation: trianglePulse 2s ease-in-out infinite}
 	/* Surface type styles */
 	.ps1-wireframe .triangle-face {
-		border-bottom-color: transparent;
-		border: 1px solid #ff6600;
-		width: 15px;
-		height: 15px;
-	}
+		border-bottom-color: transparent
+		border: 1px solid #ff6600
+		width: 15px
+		height: 15px}
 	.ps1-flat-shaded .triangle-face {
-		border-bottom-color: #ff4400;
+		border-bottom-color: #ff4400
 	, filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)));
 	}
 	.ps1-textured-low .triangle-face {
-		border-bottom-color: transparent;
+		border-bottom-color: transparent
 	, background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
-		width: 18px;
-		height: 18px;
-		image-rendering: pixelated;
+		width: 18px
+		height: 18px
+		image-rendering: pixelated
 	, filter: contrast(1.2) saturate(0.8);
 	}
 	.ps1-vertex-colored .triangle-face {
-		border-bottom-color: transparent;
+		border-bottom-color: transparent
 	, background: linear-gradient(45deg,
 			hsl(calc(var(--face-index, 0) * 5), 70%, 50%),
 			hsl(calc(var(--face-index, 0) * 7 + 60), 60%, 60%)
 		);
-		width: 16px;
-		height: 16px;
-		border-radius: 2px;
-	}
+		width: 16px
+		height: 16px
+		border-radius: 2px}
 	.wireframe-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
+		position: absolute
+		top: 0
+		left: 0
 		width: 100%;
 		height: 100%;
-		z-index: 3;
-		pointer-events: none;
-	}
+		z-index: 3
+		pointer-events: none}
 	.wire-segment {
-		position: absolute;
-		width: 40px;
-		height: 2px;
+		position: absolute
+		width: 40px
+		height: 2px
 	, background: linear-gradient(90deg, transparent, #ff6600, transparent);
-		animation: wireGlow 2s ease-in-out infinite;
-	}
+		animation: wireGlow 2s ease-in-out infinite}
 	.vertex-markers {
-		position: absolute;
-		top: 0;
-		left: 0;
+		position: absolute
+		top: 0
+		left: 0
 		width: 100%;
 		height: 100%;
-		z-index: 4;
-		pointer-events: none;
-	}
+		z-index: 4
+		pointer-events: none}
 	.vertex-point {
-		position: absolute;
-		width: 3px;
-		height: 3px;
-		border-radius: 1px;
-		animation: vertexPulse 1.5s ease-in-out infinite;
-	}
+		position: absolute
+		width: 3px
+		height: 3px
+		border-radius: 1px
+		animation: vertexPulse 1.5s ease-in-out infinite}
 	.ps1-dithered::before {
 		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		position: absolute
+		top: 0
+		left: 0
+		right: 0
+		bottom: 0
 	, background: repeating-conic-gradient(
 			from 0deg at 2px 2px,
 			transparent 0deg 90deg,
 			rgba(255, 102, 0, 0.05) 90deg 180deg
 		);
-		background-size: 4px 4px;
-		pointer-events: none;
-		z-index: 10;
-	}
+		background-size: 4px 4px
+		pointer-events: none
+		z-index: 10}
 	.hud-overlay {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		pointer-events: none;
-		z-index: 20;
-	}
+		position: absolute
+		top: 0
+		left: 0
+		right: 0
+		bottom: 0
+		pointer-events: none
+		z-index: 20}
 	.hud-corner {
-		position: absolute;
-		padding: 8px 12px;
+		position: absolute
+		padding: 8px 12px
 	, background: rgba(0, 0, 0, 0.8);
-		border: 1px solid #ff6600;
-		font-size: 10px;
-	}
+		border: 1px solid #ff6600
+		font-size: 10px}
 	.hud-corner.top-left {
-		top: 10px;
-		left: 10px;
-		border-bottom-right-radius: 8px;
-	}
+		top: 10px
+		left: 10px
+		border-bottom-right-radius: 8px}
 	.hud-corner.top-right {
-		top: 10px;
-		right: 10px;
-		border-bottom-left-radius: 8px;
-	}
+		top: 10px
+		right: 10px
+		border-bottom-left-radius: 8px}
 	.hud-corner.bottom-left {
-		bottom: 10px;
-		left: 10px;
-		border-top-right-radius: 8px;
-	}
+		bottom: 10px
+		left: 10px
+		border-top-right-radius: 8px}
 	.hud-corner.bottom-right {
-		bottom: 10px;
-		right: 10px;
-		border-top-left-radius: 8px;
-	}
+		bottom: 10px
+		right: 10px
+		border-top-left-radius: 8px}
 	.hud-text {
-		color: #888;
-		margin-bottom: 2px;
-	}
+		color: #888
+		margin-bottom: 2px}
 	.hud-value {
-		color: #ff6600;
-		font-weight: bold;
-	}
-	.hud-value.status-ok { color: #00ff88; }
-	.hud-value.status-off { color: #888; }
+		color: #ff6600
+		font-weight: bold}
+	.hud-value.status-ok { color: #00ff88}
+	.hud-value.status-off { color: #888}
 	.info-panel { background: rgba(0, 0, 0, 0.9);
-		border: 2px solid #ff6600;
-		border-radius: 8px;
-		padding: 20px;
-		margin: 20px;
-		color: #ccc;
-	}
+		border: 2px solid #ff6600
+		border-radius: 8px
+		padding: 20px
+		margin: 20px
+		color: #ccc}
 	.info-panel h4 {
-		color: #ff6600;
-		margin-bottom: 15px;
-	}
+		color: #ff6600
+		margin-bottom: 15px}
 	.info-panel h5 {
-		color: #ffaa00;
-	, margin: 15px, 0 8px 0;
-	}
+		color: #ffaa00
+	, margin: 15px, 0 8px 0}
 	.info-panel ul {
-		margin: 10px 0;
-		padding-left: 20px;
-	}
-	.info-panel li { margin: 5px 0;
-		line-height: 1.4;
-	}
+		margin: 10px 0
+		padding-left: 20px}
+	.info-panel li { margin: 5px 0
+		line-height: 1.4}
 	/* Animations */
 	@keyframes polygonFloat {
 		0%, 100% {
@@ -743,39 +685,35 @@
 	@keyframes trianglePulse {
 		0%, 100% {
 			transform: scale(1) rotateY(0deg);
-			opacity: 0.8;
-		}
+			opacity: 0.8}
 		50% { transform: scale(1.1) rotateY(180deg);
-			opacity: 1;
-		}
+			opacity: 1}
 	}
 	@keyframes wireGlow {
 		0%, 100% {
-			opacity: 0.3;
+			opacity: 0.3
 		, filter: brightness(1);
 		}
 		50% {
-			opacity: 0.8;
+			opacity: 0.8
 		, filter: brightness(1.5);
 		}
 	}
 	@keyframes vertexPulse {
 		0%, 100% {
 			transform: scale(1);
-			opacity: 0.7;
-		}
+			opacity: 0.7}
 		50% { transform: scale(1.5);
-			opacity: 1;
-		}
+			opacity: 1}
 	}
 	/* PS1 Effects */
 	.ps1-scanlines::before {
 		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
+		position: absolute
+		top: 0
+		left: 0
+		right: 0
+		bottom: 0
 	, background: repeating-linear-gradient(
 			90deg,
 			transparent,
@@ -783,14 +721,12 @@
 			rgba(255, 102, 0, 0.03) 2px,
 			rgba(255, 102, 0, 0.03) 4px
 		);
-		pointer-events: none;
-	}
+		pointer-events: none}
 	.ps1-text-glow {
 		text-shadow:
 			0, 0 5px currentColor,
 			0, 0 10px currentColor,
-			0, 0 15px currentColor;
-	}
+			0, 0 15px currentColor}
 	.ps1-border {
 		box-shadow:
 			inset, 0 0 10px rgba(255, 102, 0, 0.1),
@@ -803,18 +739,14 @@
 	@media (max-width: 768px) {
 		.controls-panel {
 			max-width: 100%;
-			margin: 10px;
-		}
+			margin: 10px}
 		.surface-viewport {
-			height: 50vh;
-			min-height: 300px;
-		, margin: 10px;
-		}
+			height: 50vh
+			min-height: 300px
+		, margin: 10px}
 		.story-header h1 {
-			font-size: 2em;
-		}
+			font-size: 2em}
 		.surface-buttons {
-			grid-template-columns: 1fr;
-		}
+			grid-template-columns: 1fr}
 	}
 </style>

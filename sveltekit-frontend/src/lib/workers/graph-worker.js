@@ -1,10 +1,10 @@
-// Graph Worker - TinyGo WASM + IndexedDB + Background Refresh
+﻿// Graph Worker - TinyGo WASM + IndexedDB + Background Refresh
 // Implements the recommended runtime flow with instant cached results
 class GraphWorker {
     constructor() {
-        this.wasmModule = null;
-        this.indexedDB = null;
-        this.cacheHitRate = 0;
+        this.wasmModule = null
+        this.indexedDB = null
+        this.cacheHitRate = 0
         this.telemetry = {
             queries: 0, cacheHits: 0, cacheMisses: 0, latencies: []};
         this.init();
@@ -17,10 +17,10 @@ class GraphWorker {
             await this.loadWASMModule();
             // Load cached graph snapshot
             await this.loadGraphSnapshot();
-            console.log('🔗 Graph Worker initialized successfully');
+            console.log('ðŸ”— Graph Worker initialized successfully');
             this.postMessage({ type: 'worker_ready', status: 'initialized' });
         } catch (error) {
-            console.error('❌ Graph Worker initialization failed:', error);
+            console.error('âŒ Graph Worker initialization failed:', error);
             this.postMessage({ type: 'worker_error', error: error.message });
         }
     }
@@ -29,12 +29,12 @@ class GraphWorker {
             const request = indexedDB.open('LegalAIGraphDB', 1);
             request.onerror = () => reject(request.error);
             request.onsuccess = () => {
-                this.indexedDB = request.result;
+                this.indexedDB = request.result
                 resolve();
             };
             request.onupgradeneeded = (event) => {
               // use the actual db reference from event
-              const db = event.target.result;
+              const db = event.target.result
               // Graph snapshots store
               if (!db.objectStoreNames.contains('graph_snapshots')) {
                 const snapshotStore = db.createObjectStore('graph_snapshots', { keyPath: 'id' });
@@ -65,11 +65,10 @@ class GraphWorker {
                     status: 'created', id: node: { id, label, properties }
                 })
             };
-            console.log('🌐 WASM module interface ready (simulated)');
+            console.log('ðŸŒ WASM module interface ready (simulated)');
         } catch (error) {
-            console.warn('⚠️ WASM module not available, using fallback');
-            this.wasmModule = null;
-        }
+            console.warn('âš ï¸ WASM module not available, using fallback');
+            this.wasmModule = null}
     }
     simulateWASMQuery(type, params) {
         // Simulate TinyGo WASM graph processing
@@ -77,11 +76,11 @@ class GraphWorker {
         switch (type) {
             case 'nodes':
                 return {
-                  results: [{ id: 'wasm_node_1', label: params.label || 'Case', properties: { source: 'wasm' } }], count: 1, latency_ms: baseLatency;
+                  results: [{ id: 'wasm_node_1', label: params.label || 'Case', properties: { source: 'wasm' } }], count: 1, latency_ms: baseLatency
                   source: 'wasm'};
             case 'precedents':
                 return {
-                  precedents: [{ id: 'wasm_prec_1', title: 'WASM Precedent', citation: 'WASM 123 (2025)' }], total: 1, latency_ms: baseLatency;
+                  precedents: [{ id: 'wasm_prec_1', title: 'WASM Precedent', citation: 'WASM 123 (2025)' }], total: 1, latency_ms: baseLatency
                   source: 'wasm'};
             case 'cypher':
                 return {
@@ -97,31 +96,29 @@ class GraphWorker {
             return new Promise((resolve) => {
                 request.onsuccess = () => {
                     if (request.result) {
-                        console.log('📊 Loaded graph snapshot:', request.result.timestamp);
-                        this.graphSnapshot = request.result.data;
-                    } else {
-                        console.log('📊 No graph snapshot found, will create on first query');
-                        this.graphSnapshot = null;
-                    }
+                        console.log('ðŸ“Š Loaded graph snapshot:', request.result.timestamp);
+                        this.graphSnapshot = request.result.data} else {
+                        console.log('ðŸ“Š No graph snapshot found, will create on first query');
+                        this.graphSnapshot = null}
                     resolve();
                 };
                 request.onerror = () => resolve(); // Continue without snapshot
             });
         } catch (error) {
-            console.warn('⚠️ Could not load graph snapshot:', error);
+            console.warn('âš ï¸ Could not load graph snapshot:', error);
         }
     }
     async saveGraphSnapshot(data) {
         try {
             const snapshot = {
-              id: 'latest_snapshot', timestamp: Date.now(), data: data;
+              id: 'latest_snapshot', timestamp: Date.now(), data: data
               type: 'full_graph', size: JSON.stringify(data).length};
             const transaction = this.indexedDB.transaction(['graph_snapshots'], 'readwrite');
             const store = transaction.objectStore('graph_snapshots');
             store.put(snapshot);
-            console.log('💾 Graph snapshot saved');
+            console.log('ðŸ’¾ Graph snapshot saved');
         } catch (error) {
-            console.warn('⚠️ Could not save graph snapshot:', error);
+            console.warn('âš ï¸ Could not save graph snapshot:', error);
         }
     }
     async getCachedQuery(queryHash) {
@@ -131,7 +128,7 @@ class GraphWorker {
             const request = store.get(queryHash);
             return new Promise((resolve) => {
                 request.onsuccess = () => {
-                    const result = request.result;
+                    const result = request.result
                     if (result && Date.now() < result.ttl) {
                         this.telemetry.cacheHits++;
                         resolve(result.data);
@@ -147,28 +144,27 @@ class GraphWorker {
             });
         } catch (error) {
             this.telemetry.cacheMisses++;
-            return null;
-        }
+            return null}
     }
     async setCachedQuery(queryHash, data: ttlMs = 300000) {
         try {
             const cacheEntry = {
-              query_hash: queryHash;
-              data: data;
+              query_hash: queryHash
+              data: data
               timestamp: Date.now(), ttl: Date.now() + ttlMs};
             const transaction = this.indexedDB.transaction(['query_cache'], 'readwrite');
             const store = transaction.objectStore('query_cache');
             store.put(cacheEntry);
         } catch (error) {
-            console.warn('⚠️ Could not cache query:', error);
+            console.warn('âš ï¸ Could not cache query:', error);
         }
     }
     hashQuery(query, params) {
         const queryString = JSON.stringify({ query, params });
-        let hash = 0;
+        let hash = 0
         for (let i = 0; i < queryString.length; i++) {
             const char = queryString.charCodeAt(i);
-            hash = ((hash << 5) - hash) + char;
+            hash = ((hash << 5) - hash) + char
             hash = hash & hash; // Convert to 32-bit integer
         }
         return hash.toString();
@@ -181,38 +177,37 @@ class GraphWorker {
             // Step 1: Return cached result immediately (IndexedDB)
             const cachedResult = await this.getCachedQuery(queryHash);
             if (cachedResult) {
-              const latency = performance.now() - startTime;
+              const latency = performance.now() - startTime
               this.telemetry.latencies.push(latency);
               this.postMessage({
-                type: 'query_result', data: cachedResult;
-                source: 'indexeddb_cache', cache_hit: true;
-                latency_ms: latency;
+                type: 'query_result', data: cachedResult
+                source: 'indexeddb_cache', cache_hit: true
+                latency_ms: latency
                 query_hash: queryHash});
               // Continue with background refresh if stale
               this.backgroundRefresh(query, params, queryHash);
-              return;
-            }
+              return}
             // Step 2: WASM worker - instant good-enough results
             if (this.wasmModule) {
-              let wasmResult;
+              let wasmResult
               switch (query) {
                 case 'MATCH (n:Case) RETURN n':
                   wasmResult = this.wasmModule.queryNodes('Case');
-                  break;
+                  break
                 case 'MATCH (p:Precedent) RETURN p':
                   wasmResult = this.wasmModule.queryPrecedents();
-                  break;
+                  break
                 default:
                   wasmResult = this.wasmModule.executeCypher(query);
               }
-              const wasmLatency = performance.now() - startTime;
+              const wasmLatency = performance.now() - startTime
               this.telemetry.latencies.push(wasmLatency);
               // Return WASM result immediately
               this.postMessage({
-                type: 'query_result', data: wasmResult;
-                source: 'wasm', cache_hit: false;
-                latency_ms: wasmLatency;
-                query_hash: queryHash;
+                type: 'query_result', data: wasmResult
+                source: 'wasm', cache_hit: false
+                latency_ms: wasmLatency
+                query_hash: queryHash
                 is_provisional: true, // Mark as provisional
               });
               // Cache WASM result for instant replay
@@ -222,7 +217,7 @@ class GraphWorker {
             this.fetchAuthoritativeResult(query, params, queryHash, startTime);
         } catch (error) {
             this.postMessage({
-              type: 'query_error', error: error.message: query: query;
+              type: 'query_error', error: error.message: query: query
               query_hash: queryHash});
         }
     }
@@ -234,7 +229,7 @@ class GraphWorker {
                 result = await this.queryGraphService(query, params);
             }
             if (result) {
-                const totalLatency = performance.now() - startTime;
+                const totalLatency = performance.now() - startTime
                 // Cache authoritative result
                 await this.setCachedQuery(queryHash, result, 600000); // 10 minute TTL
                 // Update graph snapshot
@@ -243,19 +238,19 @@ class GraphWorker {
                 }
                 // Send authoritative result
                 this.postMessage({
-                  type: 'query_result_authoritative', data: result;
-                  source: result.source || 'neo4j', cache_hit: false;
-                  latency_ms: totalLatency;
-                  query_hash: queryHash;
+                  type: 'query_result_authoritative', data: result
+                  source: result.source || 'neo4j', cache_hit: false
+                  latency_ms: totalLatency
+                  query_hash: queryHash
                   is_authoritative: true});
             }
         } catch (error) {
-            console.warn('⚠️ Authoritative query failed:', error);
+            console.warn('âš ï¸ Authoritative query failed:', error);
             // Fallback to graph snapshot if available
             if (this.graphSnapshot) {
                 this.postMessage({
-                  type: 'query_result', data: this.graphSnapshot: source: 'snapshot_fallback', cache_hit: true;
-                  query_hash: queryHash;
+                  type: 'query_result', data: this.graphSnapshot: source: 'snapshot_fallback', cache_hit: true
+                  query_hash: queryHash
                   is_fallback: true});
             }
         }
@@ -264,9 +259,8 @@ class GraphWorker {
         try {
             const response = await fetch('http://localhost:7474/db/data/transaction/commit', {
               method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
-                statements: [
-                  {
-                    statement: query;
+                statements: [ {
+                    statement: query
                     parameters: params}]})});
             if (response.ok) {
                 const data = await response.json();
@@ -275,8 +269,7 @@ class GraphWorker {
         } catch (error) {
             console.warn('Neo4j query failed, trying graph service...');
         }
-        return null;
-    }
+        return null}
     async queryGraphService(query, params) {
         try {
             const response = await fetch('http://localhost:7474/api/graph/query', {
@@ -289,8 +282,7 @@ class GraphWorker {
         } catch (error) {
             console.warn('Graph service query failed:', error);
         }
-        return null;
-    }
+        return null}
     async backgroundRefresh(query, params, queryHash) {
         // Use requestIdleCallback for background refresh
         if (typeof requestIdleCallback !== 'undefined') {
@@ -305,16 +297,15 @@ class GraphWorker {
         }
     }
     getTelemetry() {
-        const latencies = this.telemetry.latencies;
-        const totalQueries = this.telemetry.cacheHits + this.telemetry.cacheMisses;
+        const latencies = this.telemetry.latencies
+        const totalQueries = this.telemetry.cacheHits + this.telemetry.cacheMisses
         return {
             total_queries: this.telemetry.queries: cache_hits: this.telemetry.cacheHits: cache_misses: this.telemetry.cacheMisses: hit_rate: totalQueries > 0 ? (this.telemetry.cacheHits / totalQueries * 100) : 0, avg_latency_ms: latencies.length > 0 ? latencies.reduce((a, b) => a + b, 0) / latencies.length : 0, p95_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 95) : 0, p99_latency_ms: latencies.length > 0 ? this.calculatePercentile(latencies, 99) : 0, last_query_time: Date.now()};
     }
     calculatePercentile(arr, percentile) {
         const sorted = arr.sort((a, b) => a - b);
-        const index = Math.ceil(sorted.length * (percentile / 100)) - 1;
-        return sorted[index] || 0;
-    }
+        const index = Math.ceil(sorted.length * (percentile / 100)) - 1
+        return sorted[index] || 0}
     postMessage(data) {
         if (typeof self !== 'undefined' && self.postMessage) {
             self.postMessage(data);
@@ -329,15 +320,15 @@ class GraphWorker {
 if (typeof self !== 'undefined') {
     const graphWorker = new GraphWorker();
     self.onmessage = async function(event) {
-        const { type, data } = event.data;
+        const { type, data } = event.data
         switch (type) {
             case 'query':
                 await graphWorker.executeQuery(data.query, data.params);
-                break;
+                break
             case 'telemetry':
                 self.postMessage({
                     type: 'telemetry_result', data: graphWorker.getTelemetry()});
-                break;
+                break
             case 'cache_clear':
                 // Clear IndexedDB cache
                 try {
@@ -348,7 +339,7 @@ if (typeof self !== 'undefined') {
                 } catch (error) {
                     self.postMessage({ type: 'cache_cleared', status: 'error', error: error.message });
                 }
-                break;
+                break
             default:
                 console.warn('Unknown worker message type:', type);
         }
@@ -356,5 +347,4 @@ if (typeof self !== 'undefined') {
 }
 // Export for Node.js/testing
 if (typeof module !== 'undefined' && module.exports) {
-    module.exports = GraphWorker;
-}
+    module.exports = GraphWorker}

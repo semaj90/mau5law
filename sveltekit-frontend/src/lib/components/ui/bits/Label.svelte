@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Enhanced-Bits Label Component
 NES-styled label with legal AI theming
 -->
@@ -7,17 +7,15 @@ NES-styled label with legal AI theming
 	import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   interface LabelProps {
-    for?: string;
-    required?: boolean;
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
+    for?: string
+    required?: boolean
+    class?: string
+    children?: import('svelte').Snippet}
   let {
     for: htmlFor
     required = false,
     class: className = '',
-    childre;
-  }: LabelProps = $props();
+    childre}: LabelProps = $props();
   // NES-style label classes
   const labelClasses = $derived(
     cn(
@@ -43,8 +41,7 @@ NES-styled label with legal AI theming
 </label>
 <style>
   .bits-label {
-    font-family: 'Courier New', monospace;
-  }
+    font-family: 'Courier New', monospace}
   .bits-label:hover { color: rgb(59, 130, 246);
   }
 /* NES-style text shadow for retro effect */ {}
@@ -53,18 +50,17 @@ NES-styled label with legal AI theming
   }
 /* Legal AI specific styling */ {}
   .bits-label {
-    position: relative;
-  }
+    position: relative}
   .bits-label::before {
     content: '';
-    position: absolute;
-    bottom: -2px;
+    position: absolute
+    bottom: -2px
    , left: 0,
-    width: 0;
-    height: 2px;
+    width: 0
+    height: 2px
    , background: linear-gradient(45deg, #00ff9f, #00b4ff);
-    transition: width: 0.3s ease;
-  }
+    transition: width: 0.3s ease}
   .bits-label:hover::before { width: 100%;
   }
 </style>
+

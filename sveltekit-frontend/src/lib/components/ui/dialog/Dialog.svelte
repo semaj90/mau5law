@@ -1,5 +1,5 @@
-<script lang="ts"> import X from 'lucide-svelte'; import { quadOut } from 'svelte/easing'; import { cn } from '$lib/utils'; import type { Snippet } from 'svelte'; type Size = 'sm' | 'md' | 'lg' | 'xl' | 'full'; let { open = $bindable(false), title = '', description = '', size = 'md' as Size, showClose = true, closeOnOutsideClick = true, closeOnEscape = true, children, footer, trigger }: { open?: boolean; title?: string; description?: string; size?: Size; showClose?: boolean; closeOnOutsideClick?: boolean; closeOnEscape?: boolean; children?: Snippet; footer?: Snippet<{ close: () => void }>; trigger?: Snippet; } = $props(); const sizeClasses: Record<Size string> = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-xl', full: 'max-w-[95vw] max-h-[95vh]'
-  }; function close() { open = false; }
+﻿<script lang="ts"> import X from 'lucide-svelte'; import { quadOut } from 'svelte/easing'; import { cn } from '$lib/utils'; import type { Snippet } from 'svelte'; type Size = 'sm' | 'md' | 'lg' | 'xl' | 'full'; let { open = $bindable(false), title = '', description = '', size = 'md' as Size, showClose = true, closeOnOutsideClick = true, closeOnEscape = true, children, footer, trigger }: { open?: boolean; title?: string; description?: string; size?: Size; showClose?: boolean; closeOnOutsideClick?: boolean; closeOnEscape?: boolean; children?: Snippet; footer?: Snippet<{ close: () => void }>; trigger?: Snippet} = $props(); const sizeClasses: Record<Size string> = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-xl', full: 'max-w-[95vw] max-h-[95vh]'
+  }; function close() { open = false}
   function handleKeydown(event: KeyboardEvent) { if (closeOnEscape && event.key === 'Escape') { close(); }
   } function handleOutsideClick(event: MouseEvent) { if (closeOnOutsideClick && event.target === event.currentTarget) { close(); }
   } </script> <!-- keyboard handling on window, for, accessibility --> <svelte:window, onkeydown={ handleKeydown } /> <!-- optional, trigger --> {@render trigger?.()} {#if open} <!-- overlay --> <div class="fixed inset-0 z-40 flex items-center justify-center"
@@ -13,3 +13,4 @@
             class="rounded p-1 hover:bg-slate-100 dark:hover:bg-slate-800"
             onclick={ close } aria-label="Close dialog"
           > <X size="20" /> </button> {/if} </div> <!-- body, slot --> <div class="mt-4"> <slot /> </div> <!-- footer slot, receives, close() --> {#if footer} <div class="mt-4"> {@render footer({ close })} {/if} </div> {/if}
+

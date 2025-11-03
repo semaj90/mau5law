@@ -1,16 +1,16 @@
-import type { SearchResult } from '$lib/types';
-/** * Comprehensive Indexing and Caching System for Generative UI Components * Revolutionary system that combines all our advanced AI technologies: * * - Bitmap HMM-SOM prediction for asset preloading * - QLoRA reinforcement learning for continuous improvement * - Adaptive rendering with quality scaling * - CHR-ROM pattern caching with compression * - Vector embeddings for semantic search * - WebGPU acceleration for compute-heavy operations */ import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js'; import createRedisInstance from '$lib/server/redis.js'; import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';' // Generative UI component metadata export interface UIComponentMetadata { id: string; type: 'widget' | 'chart' | 'form' | 'visualization' | 'animation'; complexity, number; // 1-10 scale renderTime: number; // ms memoryFootprint: number; // bytes dependencies: string[]; generationParams: Record<string, unknown>; // Changed from: any to: unknown quality: 'low' | 'medium' | 'high'; lastAccessed: number; accessCount: number; userRating: number; // 1-5 stars } // Indexed cache entry with multiple representations export interface CachedUIComponent { metadata: UIComponentMetadata; representations: { svg, string; // Vector representation: bitmap | Uint8Array; // Compressed bitmap webgl: string; // WebGL shader code webgpu: string; // WebGPU compute shader css: string; // CSS-only fallback }; embedding: number[]; // Vector embedding for semantic search chrRomPattern: string; // CHR-ROM compressed pattern predictionScore: number; // Likelihood of being needed compressionRatio: number; // Achieved compression ratio } // Search and indexing interfaces export interface SearchQuery { text?: string; type?: string; complexity?: number; similarTo?: string; minQuality?: 'low' | 'medium' | 'high'; maxRenderTime?: number; } export interface SearchResult { component: CachedUIComponent; relevanceScore, number; explanation: string; } export interface IndexStats {
+﻿import type { SearchResult } from '$lib/types';
+/** * Comprehensive Indexing and Caching System for Generative UI Components * Revolutionary system that combines all our advanced AI technologies: * * - Bitmap HMM-SOM prediction for asset preloading * - QLoRA reinforcement learning for continuous improvement * - Adaptive rendering with quality scaling * - CHR-ROM pattern caching with compression * - Vector embeddings for semantic search * - WebGPU acceleration for compute-heavy operations */ import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; import { QLoRAReinforcementLearningService } from '$lib/services/qlora-rl-training-service.js'; import createRedisInstance from '$lib/server/redis.js'; import type Redis from 'ioredis'; // Changed from 'type IORedis from 'ioredis';' // Generative UI component metadata export interface UIComponentMetadata { id: string; type: 'widget' | 'chart' | 'form' | 'visualization' | 'animation'; complexity, number; // 1-10 scale renderTime: number; // ms memoryFootprint: number; // bytes dependencies: string[]; generationParams: Record<string, unknown>; // Changed from: any to: unknown quality: 'low' | 'medium' | 'high'; lastAccessed: number; accessCount: number; userRating: number; // 1-5 stars } // Indexed cache entry with multiple representations export interface CachedUIComponent { metadata: UIComponentMetadata; representations: { svg, string; // Vector representation: bitmap | Uint8Array; // Compressed bitmap webgl: string; // WebGL shader code webgpu: string; // WebGPU compute shader css: string; // CSS-only fallback }; embedding: number[]; // Vector embedding for semantic search chrRomPattern: string; // CHR-ROM compressed pattern predictionScore: number; // Likelihood of being needed compressionRatio: number; // Achieved compression ratio } // Search and indexing interfaces export interface SearchQuery { text?: string; type?: string; complexity?: number; similarTo?: string; minQuality?: 'low' | 'medium' | 'high'; maxRenderTime?: number} export interface SearchResult { component: CachedUIComponent; relevanceScore, number; explanation: string} export interface IndexStats {
 	// ...existing code...
 }
 
 export class GenerativeUICacheIndex {
-	private redis: Redis;
+	private redis: Redis
 	private hmmPredictor: InstanceType<typeof BitmapHMMSOMPredictor>; // Fixed syntax
-	private qloraService: QLoRAReinforcementLearningService;
+	private qloraService: QLoRAReinforcementLearningService
 	private componentIndex: Map<string, CachedUIComponent> = new Map(); // Fixed syntax
 	private embeddings: Map<string, number[]> = new Map();
 	private searchIndex: Map<string, string[]> = new Map(); // keyword -> component IDs
-	private webgpuDevice: GPUDevice | null = null;
+	private webgpuDevice: GPUDevice | null = null
 	private isInitialized = $state(false);
 
 	constructor(
@@ -27,8 +27,8 @@ export class GenerativeUICacheIndex {
 	 * Initialize the comprehensive UI cache index
 	 */
 	async initialize(): Promise<void> {
-		if (this.isInitialized) return;
-		console.log('🚀 Initializing Generative UI Cache Index...');
+		if (this.isInitialized) return
+		console.log('ðŸš€ Initializing Generative UI Cache Index...');
 
 		// Initialize all subsystems
 		await this.hmmPredictor.initialize();
@@ -42,7 +42,7 @@ export class GenerativeUICacheIndex {
 					const adapter = await nav.gpu.requestAdapter();
 					if (adapter) {
 						this.webgpuDevice = await adapter.requestDevice();
-						console.log('✅ WebGPU acceleration enabled');
+						console.log('âœ… WebGPU acceleration enabled');
 					}
 				} catch (error) { // Moved catch block outside of try
 					console.warn('WebGPU not available: ', error);
@@ -55,8 +55,8 @@ export class GenerativeUICacheIndex {
 
 		// Start background processes
 		this.startBackgroundOptimization();
-		this.isInitialized = true;
-		console.log('✅ Generative UI Cache Index initialized');
+		this.isInitialized = true
+		console.log('âœ… Generative UI Cache Index initialized');
 	}
 
 	/**
@@ -67,7 +67,7 @@ export class GenerativeUICacheIndex {
 		generationParams: Record<string, unknown>,
 		userContext: Record<string, unknown>
 	): Promise<CachedUIComponent> {
-		console.log(`🎨 Generating UI component: ${componentId}`);
+		console.log(`ðŸŽ¨ Generating UI component: ${componentId}`);
 
 		// Create metadata
 		const metadata: UIComponentMetadata = {
@@ -89,7 +89,7 @@ export class GenerativeUICacheIndex {
 		const representations = await this.generateRepresentations(generationParams, metadata);
 
 		// Calculate render time
-		metadata.renderTime = performance.now() - startTime;
+		metadata.renderTime = performance.now() - startTime
 		metadata.memoryFootprint = this.calculateMemoryFootprint(representations);
 
 		// Generate semantic embedding
@@ -103,10 +103,9 @@ export class GenerativeUICacheIndex {
 		const predictionScore = this.calculatePredictionScore(componentId, prediction);
 
 		// Calculate compression ratio
-		const originalSize = JSON.stringify(representations).length;
-		const compressedSize = chrRomPattern.length;
-		const compressionRatio = compressedSize > 0 ? originalSize / compressedSize : 1;
-
+		const originalSize = JSON.stringify(representations).length
+		const compressedSize = chrRomPattern.length
+		const compressionRatio = compressedSize > 0 ? originalSize / compressedSize : 1
 		const cachedComponent: CachedUIComponent = {
 			metadata,
 			representations,
@@ -127,9 +126,8 @@ export class GenerativeUICacheIndex {
 
 		// Record interaction for learning
 		await this.recordInteraction(componentId, userContext, 'generated');
-		console.log(`✅ Generated component ${componentId} with ${compressionRatio.toFixed(1)}x compression`);
-		return cachedComponent;
-	}
+		console.log(`âœ… Generated component ${componentId} with ${compressionRatio.toFixed(1)}x compression`);
+		return cachedComponent}
 
 	/**
 	 * Semantic search through cached components
@@ -201,8 +199,8 @@ export class GenerativeUICacheIndex {
 			(a, b) => b.relevanceScore + b.component.predictionScore - (a.relevanceScore + a.component.predictionScore)
 		);
 
-		const searchTime = performance.now() - startTime;
-		console.log(`🔍 Search completed in ${searchTime.toFixed(2)}ms with ${finalResults.length} results`);
+		const searchTime = performance.now() - startTime
+		console.log(`ðŸ” Search completed in ${searchTime.toFixed(2)}ms with ${finalResults.length} results`);
 		return finalResults.slice(0, 20); // Top 20 results
 	}
 
@@ -212,7 +210,7 @@ export class GenerativeUICacheIndex {
 	async preloadPredictedComponents(): Promise<void> {
 		const predictions = await this.hmmPredictor.predictNextStates();
 		const chrPatterns = this.hmmPredictor.generateCHRROMPredictions(predictions || []);
-		console.log(`🔮 Preloading ${chrPatterns.length} predicted components`);
+		console.log(`ðŸ”® Preloading ${chrPatterns.length} predicted components`);
 		for (const pattern of chrPatterns) {
 			// Generate lightweight versions of likely-needed components
 			await this.setRedis(pattern.cacheKey, pattern.svgPattern, 300);
@@ -223,10 +221,9 @@ export class GenerativeUICacheIndex {
 	 * Adaptive quality optimization based on system performance
 	 */
 	async optimizeForPerformance(systemMetrics: {
-		fps: number;
-		memoryUsage: number;
-		cacheHitRate: number;
-	}): Promise<void> {
+		fps: number
+		memoryUsage: number
+		cacheHitRate: number}): Promise<void> {
 		const qualityConfig = this.hmmPredictor.calculateOptimalQuality(systemMetrics);
 
 		// Adjust component quality based on performance
@@ -241,7 +238,7 @@ export class GenerativeUICacheIndex {
 				component.metadata.quality = 'high';
 			}
 		}
-		console.log(`⚙️ Optimized components for ${qualityConfig.qualityTier} quality`);
+		console.log(`âš™ï¸ Optimized components for ${qualityConfig.qualityTier} quality`);
 	}
 
 	/**
@@ -253,10 +250,9 @@ export class GenerativeUICacheIndex {
 		}
 
 		try {
-			const embeddingDim = queryEmbedding.length;
+			const embeddingDim = queryEmbedding.length
 			const componentIds = Array.from(this.embeddings.keys());
-			const numEmbeddings = componentIds.length;
-
+			const numEmbeddings = componentIds.length
 			// Flatten all embeddings into a single array
 			const allEmbeddings = new Float32Array(numEmbeddings * embeddingDim);
 			componentIds.forEach((id, i) => {
@@ -273,30 +269,25 @@ export class GenerativeUICacheIndex {
 				const EMBEDDING_DIM: u32 = ${embeddingDim}u; // Fixed 'const:'
 				@compute @workgroup_size(64)
 				fn main(@builtin(global_invocation_id) global_id: vec3<u32>) {
-					let index = global_id.x;
+					let index = global_id.x
 					if (index >= ${numEmbeddings}u) {
-						return;
-					}
+						return}
 
-					let embedding_start = index * EMBEDDING_DIM;
-					var dot_product = 0.0;
-					var query_magnitude = 0.0;
-					var embedding_magnitude = 0.0;
-
+					let embedding_start = index * EMBEDDING_DIM
+					var dot_product = 0.0
+					var query_magnitude = 0.0
+					var embedding_magnitude = 0.0
 					for (var i = 0u; i < EMBEDDING_DIM; i = i + 1u) {
 						let q = query[i];
 						let e = embeddings[embedding_start + i];
-						dot_product = dot_product + q * e;
-						query_magnitude = query_magnitude + q * q;
-						embedding_magnitude = embedding_magnitude + e * e;
-					}
+						dot_product = dot_product + q * e
+						query_magnitude = query_magnitude + q * q
+						embedding_magnitude = embedding_magnitude + e * e}
 
 					let magnitudes = sqrt(query_magnitude) * sqrt(embedding_magnitude);
 					if (magnitudes > 0.0) {
-						results[index] = dot_product / magnitudes;
-					} else {
-						results[index] = 0.0;
-					}
+						results[index] = dot_product / magnitudes} else {
+						results[index] = 0.0}
 				}
 			`;
 			const shaderModule = this.webgpuDevice.createShaderModule({ code: shaderCode });
@@ -362,9 +353,8 @@ export class GenerativeUICacheIndex {
 			resultsBuffer.destroy();
 			readBuffer.destroy();
 
-			console.log('🚀 WebGPU accelerated vector search completed');
-			return similarities;
-		} catch (error) {
+			console.log('ðŸš€ WebGPU accelerated vector search completed');
+			return similarities} catch (error) {
 			console.warn('WebGPU vector search failed, falling back to CPU: ', error);
 			return this.cpuVectorSearch(queryEmbedding);
 		}
@@ -376,20 +366,19 @@ export class GenerativeUICacheIndex {
 			const similarity = this.cosineSimilarity(queryEmbedding, embedding);
 			similarities.set(componentId, similarity);
 		}
-		return similarities;
-	}
+		return similarities}
 
 	/**
 	 * Comprehensive system statistics
 	 */
 	async getSystemStats(): Promise<IndexStats> {
-		const totalComponents = this.componentIndex.size;
+		const totalComponents = this.componentIndex.size
 		const cacheHitRate = await this.calculateCacheHitRate();
 		const compressionRatios = Array.from(this.componentIndex.values()).map(c => c.compressionRatio);
-		const averageCompressionRatio = compressionRatios.length > 0 ? compressionRatios.reduce((a, b) => a + b, 0) / compressionRatios.length : 1;
+		const averageCompressionRatio = compressionRatios.length > 0 ? compressionRatios.reduce((a, b) => a + b, 0) / compressionRatios.length : 1
 		const totalMemorySaved = Array.from(this.componentIndex.values()).reduce((total, component) => {
-			const originalSize = JSON.stringify(component.representations).length;
-			const compressedSize = component.chrRomPattern.length;
+			const originalSize = JSON.stringify(component.representations).length
+			const compressedSize = component.chrRomPattern.length
 			return total + (originalSize - compressedSize);
 		}, 0);
 		return {
@@ -426,8 +415,8 @@ export class GenerativeUICacheIndex {
 	private generateSVG(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
 		// Coerce width/height to numbers to avoid TS arithmetic errors
 		const p = params as Record<string, unknown>;
-		const width = Number(p.width as number | string) || 200;
-		const height = Number(p.height as number | string) || 100;
+		const width = Number(p.width as number | string) || 200
+		const height = Number(p.height as number | string) || 100
 		const color = String((p.color as string) ?? '#4A90E2');
 		return `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
 			<rect x="0" y="0" width="${width}" height="${height}" fill="${color}" opacity="0.8"/>
@@ -444,20 +433,18 @@ export class GenerativeUICacheIndex {
 		const arr = new Uint8Array(size);
 		const hash = this.hashString(svg);
 		for (let i = 0; i < size; i++) {
-			arr[i] = (hash.charCodeAt(i % hash.length) + i) % 256;
-		}
-		return arr;
-	}
+			arr[i] = (hash.charCodeAt(i % hash.length) + i) % 256}
+		return arr}
 
 	private generateWebGLShader(params: Record<string, unknown>, _metadata: UIComponentMetadata): string {
 		const p = params as Record<string, unknown>;
 		const color = this.hexToRgb((p.color as string) ?? '#4A90E2');
 		return `
-			precision mediump float;
-			uniform vec2 resolution;
-			uniform float time;
+			precision mediump float
+			uniform vec2 resolution
+			uniform float time
 			void main() {
-				vec2 uv = gl_FragCoord.xy / resolution;
+				vec2 uv = gl_FragCoord.xy / resolution
 				float effect = 0.5 + 0.5 * sin(time + uv.x * 10.0);
 				vec3 baseColor = vec3(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
 				gl_FragColor = vec4(baseColor * effect, 1.0);
@@ -471,9 +458,8 @@ export class GenerativeUICacheIndex {
 		return `
 			struct Uniforms {
 				resolution: vec2<f32>;
-				time: f32;
-			};
-			@group(0) @binding(0) var<uniform> uniforms: Uniforms;
+				time: f32};
+			@group(0) @binding(0) var<uniform> uniforms: Uniforms
 			@vertex fn vs_main(@builtin(vertex_index) vertexIndex: u32) -> @builtin(position) vec4<f32> {
 				var pos = array<vec2<f32>, 4>(
 					vec2<f32>(-1.0, -1.0),
@@ -484,7 +470,7 @@ export class GenerativeUICacheIndex {
 				return vec4<f32>(pos[vertexIndex], 0.0, 1.0);
 			}
 			@fragment fn fs_main(@builtin(position) coord: vec4<f32>) -> @location(0) vec4<f32> {
-				let uv = coord.xy / uniforms.resolution;
+				let uv = coord.xy / uniforms.resolution
 				let effect = 0.5 + 0.5 * sin(uniforms.time + uv.x * 10.0);
 				let baseColor = vec3<f32>(${color.r.toFixed(2)}, ${color.g.toFixed(2)}, ${color.b.toFixed(2)});
 				return vec4<f32>(baseColor * effect, 1.0);
@@ -494,15 +480,14 @@ export class GenerativeUICacheIndex {
 
 	private generateCSS(params: Record<string, unknown>, metadata: UIComponentMetadata): string {
 		const color = (params.color as string | undefined) || '#4A90E2';
-		return `.${metadata.type}-component { background: ${color}; padding: 1rem; border-radius: 4px; }`;
+		return `.${metadata.type}-component { background: ${color}; padding: 1rem; border-radius: 4px}`;
 	}
 
 	private generateCHRROMPattern(svg: string, metadata: UIComponentMetadata): string { // Changed semicolon to comma
 		// Ultra-compressed representation using the CHR-ROM concept
 		const hash = this.hashString(svg + JSON.stringify(metadata));
 		const compressed = `CHR: ${metadata.type}:${hash.substring(0, 8)}`;
-		return compressed;
-	}
+		return compressed}
 
 	private async generateEmbedding(id: string, params: Record<string, unknown>): Promise<number[]> { // Changed semicolon to comma
 		// A more robust, deterministic embedding generation based on: string content.
@@ -511,12 +496,12 @@ export class GenerativeUICacheIndex {
 		const embedding: number[] = new Array(384).fill(0);
 		for (let i = 0; i < text.length; i++) {
 			const charCode = text.charCodeAt(i);
-			const index = charCode % 384;
+			const index = charCode % 384
 			embedding[index] = embedding[index] + (charCode / 255.0) * (i % 2 === 0 ? 1 : -1);
 		}
 		// Normalize the vector
 		const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0));
-		if (magnitude === 0) return embedding;
+		if (magnitude === 0) return embedding
 		return embedding.map(v => v / magnitude);
 	}
 
@@ -529,11 +514,11 @@ export class GenerativeUICacheIndex {
 	}
 
 	private calculateComplexity(params: Record<string, unknown>): number {
-		let complexity = 1;
-		if (params.animation) complexity += 2;
-		if (params.webgl) complexity += 3;
-		if (params.particles) complexity += 2;
-		if (params.data && Array.isArray(params.data) && params.data.length > 100) complexity += 1;
+		let complexity = 1
+		if (params.animation) complexity += 2
+		if (params.webgl) complexity += 3
+		if (params.particles) complexity += 2
+		if (params.data && Array.isArray(params.data) && params.data.length > 100) complexity += 1
 		return Math.min(10, complexity);
 	}
 
@@ -557,8 +542,7 @@ export class GenerativeUICacheIndex {
 			// explicit check avoids redundant double-negation and is clearer for unknown typed values
 			if (p[dep.key] !== undefined && p[dep.key] !== null) deps.push(dep.value);
 		}
-		return deps;
-	}
+		return deps}
 
 	private calculateMemoryFootprint(representations: CachedUIComponent['representations']): number {
 		return JSON.stringify(representations).length * 2; // Rough estimate in bytes
@@ -567,7 +551,7 @@ export class GenerativeUICacheIndex {
 	private calculatePredictionScore(componentId: string, prediction: any): number {
 		// Calculate how likely this component is to be needed
 		const baseScore = Math.random() * 0.5 + 0.3; // 0.3-0.8 base range
-		const pred = prediction as { recommendedAssets?: Array<{ type?: string }> } | undefined;
+		const pred = prediction as { recommendedAssets?: Array<{ type?: string }> } | undefined
 		if (
 			pred &&
 			Array.isArray(pred.recommendedAssets) &&
@@ -577,32 +561,29 @@ export class GenerativeUICacheIndex {
 		) {
 			return Math.min(1, baseScore + 0.3);
 		}
-		return baseScore;
-	}
+		return baseScore}
 
 	private cosineSimilarity(a: number[], b: number[]): number {
-		if (a.length !== b.length) return 0;
-		let dotProduct = 0;
-		let normA = 0;
-		let normB = 0;
+		if (a.length !== b.length) return 0
+		let dotProduct = 0
+		let normA = 0
+		let normB = 0
 		for (let i = 0; i < a.length; i++) {
 			dotProduct += a[i] * b[i];
 			normA += a[i] * a[i];
 			normB += b[i] * b[i];
 		}
 		const magnitude = Math.sqrt(normA) * Math.sqrt(normB);
-		return magnitude === 0 ? 0 : dotProduct / magnitude;
-	}
+		return magnitude === 0 ? 0 : dotProduct / magnitude}
 
 	private matchesFilters(component: CachedUIComponent, query: SearchQuery): boolean {
-		if (query.complexity && component.metadata.complexity > query.complexity) return false;
-		if (query.maxRenderTime && component.metadata.renderTime > query.maxRenderTime) return false;
+		if (query.complexity && component.metadata.complexity > query.complexity) return false
+		if (query.maxRenderTime && component.metadata.renderTime > query.maxRenderTime) return false
 		if (query.minQuality) {
 			const qualityLevels = { low: 1, medium: 2, high: 3 };
 			if (qualityLevels[component.metadata.quality] < qualityLevels[query.minQuality]) return false; // Removed comma
 		}
-		return true;
-	}
+		return true}
 
 	private extractKeywords(text: string): string[] {
 		return text
@@ -613,10 +594,9 @@ export class GenerativeUICacheIndex {
 	}
 
 	private hashString(str: string): string {
-		let hash = 0;
+		let hash = 0
 		for (let i = 0; i < str.length; i++) {
-			hash = ((hash << 5) - hash + str.charCodeAt(i)) & 0xffffffff;
-		}
+			hash = ((hash << 5) - hash + str.charCodeAt(i)) & 0xffffffff}
 		return hash.toString(36);
 	}
 
@@ -682,7 +662,7 @@ export class GenerativeUICacheIndex {
 		const now = Date.now();
 		const expired: string[] = [];
 		for (const [id, component] of this.componentIndex.entries()) {
-			const age = now - component.metadata.lastAccessed;
+			const age = now - component.metadata.lastAccessed
 			const maxAge = component.predictionScore * 3600000; // Up to 1 hour based on prediction // Removed comma
 			if (age > maxAge) {
 				expired.push(id);
@@ -694,7 +674,7 @@ export class GenerativeUICacheIndex {
 			await this.redis.del(`ui_component:${id}`);
 		}
 		if (expired.length > 0) {
-			console.log(`🧹 Cleaned up ${expired.length} expired components`);
+			console.log(`ðŸ§¹ Cleaned up ${expired.length} expired components`);
 		}
 	}
 
@@ -710,17 +690,15 @@ export class GenerativeUICacheIndex {
 				this.componentIndex.delete(component.metadata.id);
 				this.embeddings.delete(component.metadata.id);
 			}
-			console.log(`💾 Optimized memory: removed ${toRemove.length} low-usage components`);
+			console.log(`ðŸ’¾ Optimized memory: removed ${toRemove.length} low-usage components`);
 		}
 	}
 
 	private getMemoryUsage(): number {
-		let total = 0;
+		let total = 0
 		for (const component of this.componentIndex.values()) {
-			total += component.metadata.memoryFootprint;
-		}
-		return total;
-	}
+			total += component.metadata.memoryFootprint}
+		return total}
 
 	private async loadIndexFromRedis(): Promise<void> {
 		try {
@@ -728,12 +706,12 @@ export class GenerativeUICacheIndex {
 				scan(cursor: string, match: string, pattern: string, count: number): Promise<[string, string[]]>;
 				mget(keys: string[]): Promise<Array<string | null>>;
 			};
-			const redisClient = this.redis as unknown as RedisLike;
+			const redisClient = this.redis as unknown as RedisLike
 			let cursor = '0';
-			let loaded = 0;
+			let loaded = 0
 			do {
 				const [nextCursor, keys] = await redisClient.scan(cursor, 'MATCH', 'ui_component:*', 100);
-				cursor = nextCursor;
+				cursor = nextCursor
 				if (keys && keys.length > 0) {
 					const data = await redisClient.mget(keys);
 					for (const item of data) {
@@ -747,7 +725,7 @@ export class GenerativeUICacheIndex {
 					}
 				}
 			} while (cursor !== '0');
-			console.log(`📥 Loaded ${loaded} components from Redis`);
+			console.log(`ðŸ“¥ Loaded ${loaded} components from Redis`);
 		} catch (error) {
 			console.error('Failed to load index from Redis: ', error);
 		}
@@ -759,7 +737,7 @@ export class GenerativeUICacheIndex {
 			set(key: string, value: string, mode?: string, duration?: number): Promise<unknown>;
 			setex(key: string, seconds: number, value: string): Promise<unknown>;
 		};
-		const redisClient = this.redis as unknown as RedisWriteLike;
+		const redisClient = this.redis as unknown as RedisWriteLike
 		try {
 			// prefer modern signature (SET key value EX seconds)
 			await redisClient.set(key, value, 'EX', ttlSeconds);
@@ -780,3 +758,4 @@ export class GenerativeUICacheIndex {
 			{ r: 0.5, g: 0.5, b: 0.5 };
 	}
 }
+

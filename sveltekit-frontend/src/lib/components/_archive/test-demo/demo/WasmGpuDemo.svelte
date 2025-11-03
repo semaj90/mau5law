@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   WebAssembly GPU Initialization Demo
   Real-time monitoring and testing interface for the WASM GPU system
 -->
@@ -13,45 +13,39 @@ import type { Document } from '$lib/types';
   // Initialize WASM GPU service with RTX, 3060 configuration
   const wasmGpu = createWasmGpuService(WasmGpuHelpers.rtx3060Config());
   // Reactive stores
-  const { initStatus, performanceMetrics, resourceStatus } = wasmGpu.store;
-  const { isReady, isRtx3060, systemHealth, performance } = wasmGpu.derived;
+  const { initStatus, performanceMetrics, resourceStatus } = wasmGpu.store
+  const { isReady, isRtx3060, systemHealth, performance } = wasmGpu.derived
   // Demo state
   let benchmarkRunning = $state<boolean>(false);
   let benchmarkResults: { operation: string; time: number;, throughput: number }[] = $state([]);
   let testVectorCount = $state<number>(100);
   let testDimensions = $state<number>(384);
-  let similarityResults: Float32Array | null = null;
+  let similarityResults: Float32Array | null = null
   // Legal AI test scenarios
-  const legalTestScenarios = [
-    {
+  const legalTestScenarios = [ {
       name: 'Contract Analysis',
       description: 'Similarity search across contract clauses',
       vectorCount: 150,
       dimensions: 384,
-      expectedTime: 5 // m;
-    },
-    {
+      expectedTime: 5 // m}, {
       name: 'Case Law Search',
       description: 'Semantic search through legal precedents',
       vectorCount: 500,
       dimensions: 768,
-      expectedTime: 15 // m;
-    },
-    {
+      expectedTime: 15 // m}, {
       name: 'Evidence Classification',
       description: 'Document type classification using embeddings',
       vectorCount: 200,
       dimensions: 512,
-      expectedTime: 8 // m;
-    }
+      expectedTime: 8 // m}
   ];
   let selectedScenario = $state(legalTestScenarios[0]);
   $effect(() => {
-    console.log('🎮 WASM GPU Demo component mounted');
+    console.log('ðŸŽ® WASM GPU Demo component mounted');
     // Wait for initialization
     const unsubscribe = isReady.subscribe(ready => {
       if (ready) {
-        console.log('✅ WASM GPU system ready for demos');
+        console.log('âœ… WASM GPU system ready for demos');
         unsubscribe();
       }
     });
@@ -60,38 +54,36 @@ import type { Document } from '$lib/types';
    * Run comprehensive benchmark suite
    */
   async function runBenchmark(): Promise<any> {
-    if (!$isReady || benchmarkRunning) return;
-    benchmarkRunning = true;
+    if (!$isReady || benchmarkRunning) return
+    benchmarkRunning = true
     benchmarkResults = [];
     try {
-      console.log('🏃 Starting WASM GPU benchmark suite...');
+      console.log('ðŸƒ Starting WASM GPU benchmark suite...');
       // Test 1: Vector similarity computation
       const vectors1 = WasmGpuHelpers.createTestVectors(testVectorCount, testDimensions);
       const vectors2 = WasmGpuHelpers.createTestVectors(testVectorCount, testDimensions);
       const startTime = performance.now();
       const similarities = await wasmGpu.computeVectorSimilarity(vectors1, vectors2, testDimensions);
-      const computeTime = performance.now() - startTime;
+      const computeTime = performance.now() - startTime
       const dataSize = (vectors1.length + vectors2.length + similarities.length) * 4; // bytes
       const throughput = (dataSize / 1024 / 1024) / (computeTime / 1000); // MB/s
       benchmarkResults.push({
         operation: 'Vector Similarity',
         time: computeTime
-        throughput;
-      });
-      similarityResults = similaritie;
+        throughput});
+      similarityResults = similaritie
       // Test 2: Memory bandwidth test
       const largeVectors1 = WasmGpuHelpers.createTestVectors(1000, 768);
       const largeVectors2 = WasmGpuHelpers.createTestVectors(1000, 768);
       const memoryStart = performance.now();
       await wasmGpu.computeVectorSimilarity(largeVectors1, largeVectors2, 768);
-      const memoryTime = performance.now() - memoryStart;
-      const largeDataSize = (largeVectors1.length + largeVectors2.length) * 4;
+      const memoryTime = performance.now() - memoryStart
+      const largeDataSize = (largeVectors1.length + largeVectors2.length) * 4
       const memoryThroughput = (largeDataSize / 1024 / 1024) / (memoryTime / 1000);
       benchmarkResults.push({
         operation: 'Memory Bandwidth',
-        time: memoryTime;
-       , throughput: memoryThroughput;
-      });
+        time: memoryTime
+       , throughput: memoryThroughput});
       // Test 3: Legal AI scenario
       const scenarioStart = performance.now();
       const scenarioVectors1 = WasmGpuHelpers.createTestVectors(
@@ -103,29 +95,27 @@ import type { Document } from '$lib/types';
         selectedScenario.dimensions
       );
       await wasmGpu.computeVectorSimilarity(scenarioVectors1, scenarioVectors2, selectedScenario.dimensions);
-      const scenarioTime = performance.now() - scenarioStart;
-      const scenarioDataSize = (scenarioVectors1.length + scenarioVectors2.length) * 4;
+      const scenarioTime = performance.now() - scenarioStart
+      const scenarioDataSize = (scenarioVectors1.length + scenarioVectors2.length) * 4
       const scenarioThroughput = (scenarioDataSize / 1024 / 1024) / (scenarioTime / 1000);
       benchmarkResults.push({
         operation: selectedScenario.name,
-        time: scenarioTime;
-       , throughput: scenarioThroughput;
-      });
-      console.log('🎯 Benchmark results:', benchmarkResults);
+        time: scenarioTime
+       , throughput: scenarioThroughput});
+      console.log('ðŸŽ¯ Benchmark results:', benchmarkResults);
     } catch (error) {
-      console.error('❌ Benchmark failed:', error);
+      console.error('âŒ Benchmark failed:', error);
     } finally {
-      benchmarkRunning = false;
-    }
+      benchmarkRunning = false}
   }
   /**
    * Run specific legal AI scenario
    */
   async function runLegalScenario(): Promise<any> {
-    if (!$isReady || benchmarkRunning) return;
-    benchmarkRunning = true;
+    if (!$isReady || benchmarkRunning) return
+    benchmarkRunning = true
     try {
-      console.log(`🏛️ Running legal AI scenario: ${selectedScenario.name}`);
+      console.log(`ðŸ›ï¸ Running legal AI scenario: ${selectedScenario.name}`);
       const vectors1 = WasmGpuHelpers.createTestVectors(
         selectedScenario.vectorCount,
         selectedScenario.dimensions
@@ -136,19 +126,18 @@ import type { Document } from '$lib/types';
       );
       const startTime = performance.now();
       const results = await wasmGpu.computeVectorSimilarity(vectors1, vectors2, selectedScenario.dimensions);
-      const executionTime = performance.now() - startTime;
-      similarityResults = result;
+      const executionTime = performance.now() - startTime
+      similarityResults = result
       // Find top similarities
       const topSimilarities = Array.from.map((similarity, index) => ({ similarity, index }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, 10);
-      console.log(`✅ ${selectedScenario.name} completed in ${Math.round(executionTime)}ms`);
-      console.log('🔍 Top similarities:', topSimilarities);
+      console.log(`âœ… ${selectedScenario.name} completed in ${Math.round(executionTime)}ms`);
+      console.log('ðŸ” Top similarities:', topSimilarities);
     } catch (error) {
-      console.error(`❌ Legal scenario failed: ${selectedScenario.name}`, error);
+      console.error(`âŒ Legal scenario failed: ${selectedScenario.name}`, error);
     } finally {
-      benchmarkRunning = false;
-    }
+      benchmarkRunning = false}
   }
   /**
    * Get status color based on system health
@@ -244,13 +233,13 @@ import type { Document } from '$lib/types';
             <div class="flex">
               <span class="text-gray-400">RTX 3060:</span>
               <span class="{$isRtx3060 ? 'text-green-400' : 'text-yellow-400'}">
-                {$isRtx3060 ? '✅ Detected' : '⚠️ Not detected'}
+                {$isRtx3060 ? 'âœ… Detected' : 'âš ï¸ Not detected'}
               </span>
             </div>
             <div class="flex">
               <span class="text-gray-400">WASM Compatible:</span>
               <span class="text-green-400">
-                {$initStatus.deviceInfo.wasmCompatible ? '✅ Yes' : '❌ No'}
+                {$initStatus.deviceInfo.wasmCompatible ? 'âœ… Yes' : 'âŒ No'}
               </span>
             </div>
             <div class="flex">
@@ -440,7 +429,7 @@ import type { Document } from '$lib/types';
     {/if}
     <!-- Buffer, Quantization, Integration -->
     <div class="bg-gradient-to-r from-blue-900 to-purple-900 rounded-lg p-6 border border-blue-700">
-      <h3 class="text-xl font-semibold mb-4">🚀 Advanced Buffer Quantization Available</h3>
+      <h3 class="text-xl font-semibold mb-4">ðŸš€ Advanced Buffer Quantization Available</h3>
       <div class="grid grid-cols-1 md:grid-cols-2">
         <div>
           <p class="text-blue-100">

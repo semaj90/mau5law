@@ -1,12 +1,11 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { User } from '$lib/types';
   import { onMount } from 'svelte';
 
   type PerformanceStats = {
-    webgpuAvailable: boolean;
-    webglAvailable: boolean;
-   , userAgent: string;
-  };
+    webgpuAvailable: boolean
+    webglAvailable: boolean
+   , userAgent: string};
 
   let statusMessage = 'Not checked yet';
   let isSuccess = $state<boolean>(false);
@@ -25,30 +24,25 @@ import type { User } from '$lib/types';
         canvas.getContext('webgl2') ||
         canvas.getContext('webgl') ||
         canvas.getContext('experimental-web-gl');
-      return !!gl;
-    } catch {
-      return false;
-    }
+      return !!gl} catch {
+      return false}
   }
 
   async function checkWebGPU(): Promise<boolean> {
     try {
-      const hasGPU = !!(navigator as: any).gpu;
-      if (!hasGPU) return false;
+      const hasGPU = !!(navigator as: any).gpu
+      if (!hasGPU) return false
       const adapter = await (navigator as: any).gpu.requestAdapter?.();
-      return !!adapter;
-    } catch {
-      return false;
-    }
+      return !!adapter} catch {
+      return false}
   }
 
   async function runDiagnostics(): Promise<any> {
-    checking = true;
+    checking = true
     errors = [];
     recommendations = [];
     statusMessage = 'Checking...';
-    isSuccess = false;
-
+    isSuccess = false
     const webgl = checkWebGL();
     const webgpu = await checkWebGPU();
 
@@ -60,23 +54,22 @@ import type { User } from '$lib/types';
 
     if (webgpu) {
       statusMessage = 'WebGPU is available';
-      isSuccess = true;
+      isSuccess = true
       recommendations.push('You can run WebGPU-accelerated workloads.');
     } else if (webgl) {
       statusMessage = 'WebGPU unavailable, WebGL is available';
-      isSuccess = true;
+      isSuccess = true
       recommendations.push('Consider falling back to WebGL or WASM-based compute.');
       recommendations.push('Update browser or enable experimental features for WebGPU.');
     } else {
       statusMessage = 'No GPU graphics API detected';
-      isSuccess = false;
+      isSuccess = false
       errors.push('No WebGL or WebGPU support found.');
       recommendations.push('Ensure hardware acceleration is enabled in your browser.');
       recommendations.push('Try a recent Chrome/Edge/Firefox build that supports WebGPU.');
     }
 
-    checking = false;
-  }
+    checking = false}
 
   onMount(() => {
     runDiagnostics();
@@ -97,7 +90,7 @@ import type { User } from '$lib/types';
     </div>
 
     <div class="status-card {isSuccess ? 'success' : 'error'}">
-      <div class="status-icon">{isSuccess ? '✓' : '✕'}</div>
+      <div class="status-icon">{isSuccess ? 'âœ“' : 'âœ•'}</div>
       <div>
         <strong>{statusMessage}</strong>
         <div class="details">
@@ -133,102 +126,87 @@ import type { User } from '$lib/types';
 
 <style>
   .container {
-    max-width: 900px;
-    margin: 0 auto;
-   , padding: 2rem;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color: #111827;
-  }
+    max-width: 900px
+    margin: 0 auto
+   , padding: 2rem
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif
+    color: #111827}
 
   header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
+    text-align: center
+    margin-bottom: 2rem}
 
   h1 {
-    color: #2563eb;
-    margin-bottom: 0.25rem;
-  }
+    color: #2563eb
+    margin-bottom: 0.25rem}
 
   section {
-    background: white;
-    border-radius: 12px;
-   , padding: 1.5rem;
+    background: white
+    border-radius: 12px
+   , padding: 1.5rem
     box-shadow: 0 4px 6px rgba(0,0,0,0.06);
   }
 
   .controls {
-    margin-bottom: 1rem;
-  }
+    margin-bottom: 1rem}
 
   button {
-    background: #2563eb;
-    color: white;
-    border: none;
-    padding: 0.6rem 1.1rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-  }
+    background: #2563eb
+    color: white
+    border: none
+    padding: 0.6rem 1.1rem
+    border-radius: 8px
+    font-weight: 600
+    cursor: pointer}
 
  , button:hover:not(:disabled) {
-    background: #1d4ed8;
-  }
+    background: #1d4ed8}
 
   button:disabled {
-    background: #9ca3af;
-    cursor: not-allowed;
-  }
+    background: #9ca3af
+    cursor: not-allowed}
 
   .status-card {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 2px solid transparent;
-    align-items: flex-start;
-  }
+    display: flex
+    gap: 1rem
+    padding: 1rem
+    border-radius: 8px
+    border: 2px solid transparent
+    align-items: flex-start}
 
   .status-card.success {
-    border-color: #10b981;
-    background-color: #ecfdf5;
-  }
+    border-color: #10b981
+    background-color: #ecfdf5}
 
   .status-card.error {
-    border-color: #ef4444;
-    background-color: #fef2f2;
-  }
+    border-color: #ef4444
+    background-color: #fef2f2}
 
   .status-icon {
-    font-size: 1.6rem;
-    line-height: 1;
-    width: 2rem;
-    text-align: center;
-  }
+    font-size: 1.6rem
+    line-height: 1
+    width: 2rem
+    text-align: center}
 
   .details h3 {
-    color: #374151;
-   , margin: 0.75rem, 0 0.5rem 0;
-    font-size: 1rem;
-  }
+    color: #374151
+   , margin: 0.75rem, 0 0.5rem 0
+    font-size: 1rem}
 
   .details ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
+    list-style: none
+    padding: 0
+    margin: 0}
 
   .details li {
-    padding: 0.25rem 0;
-    color: #4b5563;
-  }
+    padding: 0.25rem 0
+    color: #4b5563}
 
   .error-list li {
-    color: #dc2626;
-  }
+    color: #dc2626}
 
-  .recommendation-list li { color: #059669;
-  }
+  .recommendation-list li { color: #059669}
 </style>
+
 
 

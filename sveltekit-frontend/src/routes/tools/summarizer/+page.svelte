@@ -1,8 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount } from 'svelte';
   import LegalDocumentSummarizer from '$lib/components/ai/LegalDocumentSummarizer.svelte';
   import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
-  let summarizerRef: any;
+  let summarizerRef: any
   function handleSummaryGenerated(summary: any) {
     console.log('Summary generated:', summary);
     // Additional handling if needed
@@ -26,7 +26,7 @@
   <div class="mb-8">
     <Card>
       <CardHeader>
-        <CardTitle class="text-2xl">🤖 Legal Document Summarizer</CardTitle>
+        <CardTitle class="text-2xl">ðŸ¤– Legal Document Summarizer</CardTitle>
         <p class="text-muted-foreground">
           Transform lengthy legal documents into concise, actionable summaries using advanced Gemma3 AI. Perfect for
           contracts, judgments, briefs, and legal statutes.
@@ -35,15 +35,15 @@
       <CardContent>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="flex items-center">
-            <span class="text-green-600">✅</span>
+            <span class="text-green-600">âœ…</span>
             <span>AI-powered analysis with legal context understanding</span>
           </div>
           <div class="flex items-center">
-            <span class="text-blue-600">⚡</span>
+            <span class="text-blue-600">âš¡</span>
             <span>90% compression ratio while preserving key information</span>
           </div>
           <div class="flex items-center">
-            <span class="text-purple-600">🎯</span>
+            <span class="text-purple-600">ðŸŽ¯</span>
             <span>Multiple summary formats: executive, detailed, analysis</span>
           </div>
         </div>
@@ -56,7 +56,7 @@
   <div class="mt-8">
     <Card>
       <CardHeader>
-        <CardTitle>📖 How to Use the Legal Document Summarizer</CardTitle>
+        <CardTitle>ðŸ“– How to Use the Legal Document Summarizer</CardTitle>
       </CardHeader>
       <CardContent class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
@@ -94,16 +94,17 @@
           </div>
         </div>
         <div class="mt-6 p-4 bg-muted">
-          <h4 class="font-medium">💡 Pro Tips</h4>
+          <h4 class="font-medium">ðŸ’¡ Pro Tips</h4>
           <ul class="space-y-1 text-sm">
-            <li>• Use descriptive document titles to improve AI context understanding</li>
-            <li>• Select multiple focus areas for comprehensive analysis</li>
-            <li>• Executive summaries are ideal for quick decision-making</li>
-            <li>• Legal analysis mode provides deeper statutory and precedent insights</li>
-            <li>• Quality scores help assess the reliability of generated summaries</li>
+            <li>â€¢ Use descriptive document titles to improve AI context understanding</li>
+            <li>â€¢ Select multiple focus areas for comprehensive analysis</li>
+            <li>â€¢ Executive summaries are ideal for quick decision-making</li>
+            <li>â€¢ Legal analysis mode provides deeper statutory and precedent insights</li>
+            <li>â€¢ Quality scores help assess the reliability of generated summaries</li>
           </ul>
         </div>
       </CardContent>
     </Card>
   </div>
 </div>
+

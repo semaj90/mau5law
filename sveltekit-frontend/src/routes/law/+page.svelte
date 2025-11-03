@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
@@ -6,18 +6,18 @@ https://svelte.dev/e/js_parse_error -->
 
   // 1. Define Law interface
   interface Law {
-    id: string;
-    title?: string;
-    code?: string;
-    description?: string;
-    category?: string;
+    id: string
+    title?: string
+    code?: string
+    description?: string
+    category?: string
     createdAt?: string; // ISO date: string
   }
 
   // 2. Update laws type
   let laws: Law[] = $state([]);
   let loading = $state<boolean>(true);
-  let error: string | null = null;
+  let error: string | null = null
   let searchQuery = $state<string>('');
 
   // 3. Fix data fetching with onMount
@@ -33,8 +33,7 @@ https://svelte.dev/e/js_parse_error -->
       error = 'Error loading laws';
       console.error('Error:', err);
     } finally {
-      loading = false;
-    }
+      loading = false}
   });
 
   let filteredLaws = $derived(
@@ -140,3 +139,4 @@ https://svelte.dev/e/js_parse_error -->
     </div>
   {/if}
 </div>
+

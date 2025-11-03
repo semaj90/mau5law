@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
@@ -26,31 +26,28 @@ import type { Document } from '$lib/types';
   import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
   // dynamic orchestrator component (workaround for modules without a typed default export)
-  let OrchestratorComponent: any = null;
+  let OrchestratorComponent: any = null
   onMount(async () => {
     try {
       const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
-      OrchestratorComponent = (mod && (mod as: any).default) ?? (mod as: any).MultiLLMOrchestrator ?? mod;
-    } catch (err) {
+      OrchestratorComponent = (mod && (mod as: any).default) ?? (mod as: any).MultiLLMOrchestrator ?? mod} catch (err) {
       console.warn('Failed to load orchestrator component dynamically:', err);
     }
   });
 
   interface DemoResult {
-    task: AITask;
-    response?: any;
-    error?: string;
-  }
+    task: AITask
+    response?: any
+    error?: string}
 
   // Local demo state (avoid runtime $state magic here for compile stability)
-  let selectedModel: LLMModel | undefined;
+  let selectedModel: LLMModel | undefined
   let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
   let isProcessing = $state<boolean>(false);
   let demoResults: DemoResult[] = [];
 
   // Demo scenarios
-  const demoScenarios = [
-    {
+  const demoScenarios = [ {
       name: 'Legal Document Analysis',
       description: 'Parallel analysis across multiple AI models',
       prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
@@ -59,8 +56,7 @@ import type { Document } from '$lib/types';
         { provider: 'vllm', model: 'vllm-gemma3-legal', focus: 'Risk assessment' },
         { provider: 'autogen', model: 'autogen-agents', focus: 'Multi-agent legal review' }
       ]
-    },
-    {
+    }, {
       name: 'Evidence Processing',
       description: 'Multi-stage evidence analysis pipeline',
       prompt: 'Process and categorize evidence files for case preparation.',
@@ -69,8 +65,7 @@ import type { Document } from '$lib/types';
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Content classification' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Evidence correlation' }
       ]
-    },
-    {
+    }, {
       name: 'Case Research',
       description: 'Comprehensive legal research workflow',
       prompt: 'Research relevant case law and statutes for this legal matter.',
@@ -84,8 +79,8 @@ import type { Document } from '$lib/types';
 
   // Run a demo scenario by creating analysis tasks and submitting them to the aiWorkerManager.
   async function runDemoScenario(scenario: any): Promise<any> {
-    if (!selectedModel) return;
-    isProcessing = true;
+    if (!selectedModel) return
+    isProcessing = true
     demoResults = [];
     try {
       const tasks: AITask[] = (scenario.tasks || []).map((taskConfig: any) =>
@@ -111,8 +106,7 @@ import type { Document } from '$lib/types';
           demoResults = demoResults.map((r) =>
             r.task === task ? { ...r, response: result } : r
           );
-          return result;
-        } catch (error) {
+          return result} catch (error) {
           console.error('Task failed:', error);
           demoResults = demoResults.map((r) =>
             r.task === task ? { ...r, error: (error as Error).message ?? String(error) } : r
@@ -125,14 +119,13 @@ import type { Document } from '$lib/types';
     } catch (error) {
       console.error('Demo scenario failed:', error);
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   }
 
   async function submitCustomTask(): Promise<any> {
-    if (!selectedModel || !userPrompt || !userPrompt.trim()) return;
-    isProcessing = true;
-    let task: AITask | undefined;
+    if (!selectedModel || !userPrompt || !userPrompt.trim()) return
+    isProcessing = true
+    let task: AITask | undefined
     try {
       task = createGenerationTask(
         userPrompt,
@@ -143,8 +136,7 @@ import type { Document } from '$lib/types';
           maxTokens: 1024,
           params: { temperature: 0.1 }
         }, as: any)
-      ) as: any;
-
+      ) as: any
       if (task) {
         demoResults = [{ task }];
         const taskId = await aiWorkerManager.submitTask(task as: any);
@@ -158,8 +150,7 @@ import type { Document } from '$lib/types';
         demoResults = [{ task, error: (error as Error).message ?? String(error) }];
       }
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   }
 
   function clearResults() {
@@ -169,15 +160,14 @@ import type { Document } from '$lib/types';
   function getProviderIcon(providerId: string) {
     switch (providerId) {
       case, 'ollama':
-        return Cpu;
+        return Cpu
       case, 'vllm':
-        return Zap;
+        return Zap
       case, 'autogen':
-        return Brain;
+        return Brain
       case, 'crewai':
-        return Database;
-      default: return Activity;
-    }
+        return Database
+      default: return Activity}
   }
 
   function formatDuration(ms: number): string {

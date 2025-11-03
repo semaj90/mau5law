@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Standalone NES Auth Button Component
   Triggers the NES modal from anywhere in your app
 -->
@@ -6,35 +6,30 @@
   // Svelte, 5 runes are auto-imported
   import  NesAuthModal  from "./NesAuthModal.svelte";
   interface Props {
-    text?: string;
+    text?: string
     variant?: 'primary' | 'warning' | 'success' | 'error';
     size?: 'small' | 'medium' | 'large';
-    icon?: string;
-    form?: any;
-  }
-  let { text = 'Retro Auth', variant = 'primary', size = 'medium', icon = '🎮', form }: Props = $props();
+    icon?: string
+    form?: any}
+  let { text = 'Retro Auth', variant = 'primary', size = 'medium', icon = 'ðŸŽ®', form }: Props = $props();
   let isModalOpen = $state<boolean>(false);
   function openModal() {
-    isModalOpen = true;
-  }
+    isModalOpen = true}
   function closeModal() {
-    isModalOpen = false;
-  }
+    isModalOpen = false}
   // compute classes synchronously
   function getButtonClasses() {
     let classes = 'nes-btn';
     switch (variant) {
-      case, 'warning': classes += ' is-warning'; break;
-      case, 'success': classes += ' is-success'; break;
-      case, 'error': classes += ' is-error'; break;
+      case, 'warning': classes += ' is-warning'; break
+      case, 'success': classes += ' is-success'; break
+      case, 'error': classes += ' is-error'; break
       default: classes += ' is-primary';
     }
     switch (size) {
-      case, 'small': classes += ' nes-btn-small'; break;
-      case, 'large': classes += ' nes-btn-large'; break;
-    }
-    return classes;
-  }
+      case, 'small': classes += ' nes-btn-small'; break
+      case, 'large': classes += ' nes-btn-large'; break}
+    return classes}
 </script>
 <svelte:head>
   <!-- Import nes.css for the, button, styling -->
@@ -50,17 +45,14 @@
 <style>
   /* Custom button size classes */
   :global(.nes-btn-small) {
-    font-size: 0.6rem;
-   , padding: 0.5rem 1rem;
-  }
+    font-size: 0.6rem
+   , padding: 0.5rem 1rem}
   :global(.nes-btn-large) {
-    font-size: 1rem;
-   , padding: 1rem 2rem;
-  }
+    font-size: 1rem
+   , padding: 1rem 2rem}
   /* Button hover effects */
   :global(.nes-btn) {
-    transition: transform 0.1s ease;
-  }
+    transition: transform 0.1s ease}
   :global(.nes-btn:hover) {
     transform: scale(1.02);
   }
@@ -69,8 +61,7 @@
   }
 </style>
   :global(.nes-btn) {
-    transition: transform 0.1s ease;
-  }
+    transition: transform 0.1s ease}
   :global(.nes-btn:hover) {
     transform: scale(1.02);
   }
@@ -78,3 +69,4 @@
     transform: scale(0.98);
   }
 </style>
+

@@ -1,4 +1,4 @@
-import { interpret } from 'xstate';
+﻿import { interpret } from 'xstate';
 import { browser } from '$app/environment';
 import { aiAssistantMachine } from './aiAssistantMachine.js';
 export function createAssistantStore() {
@@ -6,10 +6,10 @@ export function createAssistantStore() {
   const machineInitialState =
     (typeof aiAssistantMachine?.getInitialState === 'function'
       ? aiAssistantMachine.getInitialState()
-      : aiAssistantMachine?.initialState) ?? null;
-  let snapshot = machineInitialState;
-  let service;
-  let cleanupHandler;
+      : aiAssistantMachine?.initialState) ?? null
+  let snapshot = machineInitialState
+  let service
+  let cleanupHandler
   if (browser) {
     try {
       // Create the real interpreter only in the browser
@@ -22,20 +22,17 @@ export function createAssistantStore() {
         // subscribe may return a function or an object with unsubscribe()
         const subResult = service.subscribe(s => {
           // state object may be wrapped depending on xstate version
-          snapshot = s;
-        });
+          snapshot = s});
         // Start after subscribing
         service.start();
         if (typeof subResult === 'function') {
-          unsubscribeFn = subResult;
-        } else if (subResult && typeof subResult.unsubscribe === 'function') {
+          unsubscribeFn = subResult} else if (subResult && typeof subResult.unsubscribe === 'function') {
           unsubscribeFn = () => subResult.unsubscribe();
         }
       } else if (typeof service.onTransition === 'function') {
         // fallback: register onTransition then start
         service.onTransition(s => {
-          snapshot = s;
-        });
+          snapshot = s});
         service.start();
         unsubscribeFn = () => {
           /* onTransition has no unsubscribe; stop interpreter on cleanup */
@@ -52,8 +49,7 @@ export function createAssistantStore() {
       if (typeof service.getSnapshot === 'function') {
         try {
           const runtimeSnapshot = service.getSnapshot();
-          if (runtimeSnapshot != null) snapshot = runtimeSnapshot;
-        } catch (err) {
+          if (runtimeSnapshot != null) snapshot = runtimeSnapshot} catch (err) {
           /* ignore */
         }
       }
@@ -71,8 +67,7 @@ export function createAssistantStore() {
       window.addEventListener('beforeunload', stopOnUnload);
       window.addEventListener('pagehide', stopOnUnload);
       // keep cleanup reference
-      cleanupHandler = stopOnUnload;
-    } catch (err) {
+      cleanupHandler = stopOnUnload} catch (err) {
       // If interpreter creation fails, fall back to a safe shim so callers don't crash
       console.error('Failed to start assistant interpreter:', err);
       service = {
@@ -104,13 +99,12 @@ export function createAssistantStore() {
   }
   return {
     get snapshot() {
-      return snapshot;
-    }, send: evt => service.send(evt), subscribe: cb => {
+      return snapshot}, send: evt => service.send(evt), subscribe: cb => {
       // Provide a subscribe function compatible with Svelte stores and consumers
       if (typeof service.subscribe === 'function') {
         const subResult = service.subscribe(s => cb(s));
         // normalize unsubscribe shapes
-        if (typeof subResult === 'function') return subResult;
+        if (typeof subResult === 'function') return subResult
         if (subResult && typeof subResult.unsubscribe === 'function') return () => subResult.unsubscribe();
         return () => {};
       }
@@ -126,3 +120,4 @@ export function createAssistantStore() {
     }};
 }
 export const assistant = createAssistantStore();
+

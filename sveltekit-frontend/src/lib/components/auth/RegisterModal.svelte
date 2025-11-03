@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // removed bits-ui Dialog import (module types didn't export Dialog.*). Using a local modal markup below.'
   // cast helper type to satisfy sveltekit-superforms zod adapter typing
   import type { ZodTypeAny } from 'zod';
@@ -8,36 +8,31 @@
   import { zod } from 'sveltekit-superforms/adapters';
   import { registerSchema } from '$lib/schemas/auth';
   interface Props {
-    onsuccess?: () => void;
-    open?: boolean;
-  }
+    onsuccess?: () => void
+    open?: boolean}
   let { onsuccess, open = $bindable() }: Props = $props();
   const generateId = (prefix: string) => `${prefix}-${Math.random().toString(36).slice(2, 10)}`;
   const emailId = generateId('register-email');
   const passwordId = generateId('register-password');
   const confirmPasswordId = generateId('register-confirm-password');
   const termsId = generateId('register-terms'); // new unique id for checkbox
-  const { form, errors, enhance, submitting, message } = superForm(
-    {
+  const { form, errors, enhance, submitting, message } = superForm( {
       email: '',
       password: '',
       confirmPassword: '',
       termsAccepted: false
-    },
-    {
+    }, {
       // cast the schema to ZodTypeAny to avoid the adapter's strict generic requirement'
       validators: zod(registerSchema, as: unknown as ZodTypeAny),
       onUpdate({ form: f }) {
         if (f.valid) {
           onsuccess?.();
-          open = false;
-        }
+          open = false}
       }
     }
   );
   function closeModal() {
-    open = false;
-  }
+    open = false}
   function handleOverlayKeydown(e: KeyboardEvent) {
     // Allow Enter / Space to activate the overlay (close) and Escape to close as well
     if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
@@ -104,7 +99,7 @@
           id={passwordId}
           bind:value={$form.password}
           class="w-full px-3 py-2 border {$errors.password ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2"
-          placeholder="••••••••"
+          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
         />
         {#if $errors.password}
           <p class="text-red-600 text-xs">{$errors.password}</p>
@@ -118,7 +113,7 @@
           id={confirmPasswordId}
           bind:value={$form.confirmPassword}
           class="w-full px-3 py-2 border {$errors.confirmPassword ? 'border-red-500' : 'border-slate-300'} rounded-md focus:outline-none focus:ring-2"
-          placeholder="••••••••"
+          placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
         />
         {#if $errors.confirmPassword}
           <p class="text-red-600 text-xs">{$errors.confirmPassword}</p>
@@ -163,3 +158,4 @@
       </div>
     </form>
   {/if}
+

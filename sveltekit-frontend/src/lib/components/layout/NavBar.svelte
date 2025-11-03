@@ -1,4 +1,4 @@
-<!-- Gaming-Themed Navigation Bar with Console, Theme, Switching -->
+﻿<!-- Gaming-Themed Navigation Bar with Console, Theme, Switching -->
 <script lang="ts">
 import type { User } from '$lib/types';
   import { goto } from '$app/navigation';
@@ -6,16 +6,14 @@ import type { User } from '$lib/types';
   import { toastStore } from '$lib/stores/toast';
   import { applyConsolePalette, CONSOLE_PALETTES, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
   interface User {
-    name?: string;
-    email?: string;
-    avatar?: string;
-    role?: string;
-  }
+    name?: string
+    email?: string
+    avatar?: string
+    role?: string}
   interface Props {
-    user: User | null;
-    sidebarOpen?: boolean;
-    onToggleSidebar?: () => void;
-  }
+    user: User | null
+    sidebarOpen?: boolean
+    onToggleSidebar?: () => void}
   let { user, sidebarOpen = false, onToggleSidebar }: Props = $props();
   // Gaming theme state
   let selectedTheme = $state<ConsolePaletteName>('legal');
@@ -28,16 +26,16 @@ import type { User } from '$lib/types';
   let showSignInBadge = $state<boolean>(false);
   $effect(() => {
     if (isAuthenticated && user) {
-      showSignInBadge = true;
+      showSignInBadge = true
       const t = setTimeout(() => (showSignInBadge = false), 4000);
       return () => clearTimeout(t);
     }
   });
   // Theme switching logic
   function switchTheme(theme: ConsolePaletteName) {
-    selectedTheme = theme;
+    selectedTheme = theme
     applyConsolePalette(theme);
-    showThemeDropdown = false;
+    showThemeDropdown = false
     // Store in localStorage
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem('legal-ai-theme', theme);
@@ -46,9 +44,9 @@ import type { User } from '$lib/types';
   // Initialize theme on mount
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
-      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName;
+      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName
       if (stored && CONSOLE_PALETTES[stored]) {
-        selectedTheme = stored;
+        selectedTheme = stored
         applyConsolePalette(stored);
       }
     }
@@ -61,15 +59,15 @@ import type { User } from '$lib/types';
       // Call the logout endpoint to invalidate session
       const response = await fetch('/logout', { method: 'POST' });
       if (response.ok) {
-        toastStore.success('👋 Signed out successfully!');
+        toastStore.success('ðŸ‘‹ Signed out successfully!');
         // Wait for toast to be visible, then redirect
         setTimeout(() => goto('/'), 500);
       } else {
-        toastStore.error('❌ Logout failed');
+        toastStore.error('âŒ Logout failed');
       }
     } catch (error) {
       console.error('Logout error:', error);'
-      toastStore.error('❌ Logout failed');
+      toastStore.error('âŒ Logout failed');
       goto('/');
     }
   }
@@ -89,7 +87,7 @@ import type { User } from '$lib/types';
       {/if}
       <div class="logo">
         <button class="logo-btn" onclick={() => handleNavigation(isAuthenticated ? '/dashboard' : '/')}>
-          <span class="logo-icon">🎮</span>
+          <span class="logo-icon">ðŸŽ®</span>
           <span class="logo-text">Legal AI</span>
         </button>
       </div>
@@ -97,11 +95,11 @@ import type { User } from '$lib/types';
     <!-- Center section Main, Navigation (if, authenticated) -->
     {#if isAuthenticated}
       <div class="nav-center">
-  <a href="/ai/dashboard" class="nav-link" class:active={currentRoute === '/ai/dashboard'}> 🏠 Dashboard </a>
-        <a href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> ⚖️ Cases </a>
-        <a href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> 🤖 AI Assistant </a>
+  <a href="/ai/dashboard" class="nav-link" class:active={currentRoute === '/ai/dashboard'}> ðŸ  Dashboard </a>
+        <a href="/cases" class="nav-link" class:active={currentRoute.startsWith('/cases')}> âš–ï¸ Cases </a>
+        <a href="/ai" class="nav-link" class:active={currentRoute.startsWith('/ai')}> ðŸ¤– AI Assistant </a>
         {#if isAdmin}
-          <a href="/admin" class="nav-link" class:active={currentRoute.startsWith('/admin')}> 🔧 Admin </a>
+          <a href="/admin" class="nav-link" class:active={currentRoute.startsWith('/admin')}> ðŸ”§ Admin </a>
         {/if}
       {/if}
     <!-- Right section, Theme + User, Menu -->
@@ -113,9 +111,9 @@ import type { User } from '$lib/types';
           onclick={() => (showThemeDropdown = !showThemeDropdown)}
           aria-label="Switch console theme"
         >
-          <span class="theme-icon">🎨</span>
+          <span class="theme-icon">ðŸŽ¨</span>
           <span class="theme-name">{CONSOLE_PALETTES[selectedTheme].name}</span>
-          <span class="dropdown-arrow" class:open={showThemeDropdown}>▼</span>
+          <span class="dropdown-arrow" class:open={showThemeDropdown}>â–¼</span>
         </button>
         {#if showThemeDropdown}
           <div class="theme-dropdown">
@@ -131,7 +129,7 @@ import type { User } from '$lib/types';
                   <span class="theme-era">{palette.era}</span>
                 </span>
                 {#if key === selectedTheme}
-                  <span class="check-mark">✓</span>
+                  <span class="check-mark">âœ“</span>
                 {/if}
               </button>
             {/each}
@@ -144,7 +142,7 @@ import type { User } from '$lib/types';
         {/if}
         <details class="profile-dropdown">
           <summary class="profile-trigger" aria-haspopup="menu">
-            <span class="user-avatar" aria-hidden="true">{user.avatar ? '' : '👤'}</span>
+            <span class="user-avatar" aria-hidden="true">{user.avatar ? '' : 'ðŸ‘¤'}</span>
             {#if user.avatar}
               <img class="user-avatar-img" src={user.avatar} alt="Profile" />
             {/if}
@@ -168,11 +166,11 @@ import type { User } from '$lib/types';
         </details>
         <div class="user-menu">
           <button class="user-btn" onclick={() => goto('/profile')}>
-            <span class="user-avatar">👤</span>
+            <span class="user-avatar">ðŸ‘¤</span>
             <span class="user-name">{user.email}</span>
           </button>
           <button class="logout-btn" onclick={handleLogout}>
-            <span>🚪</span> Logout
+            <span>ðŸšª</span> Logout
           </button>
         </div>
       {:else}
@@ -185,101 +183,91 @@ import type { User } from '$lib/types';
 </nav>
 <style>
   .navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    position: sticky
+    top: 0
+    z-index: 1000
    , background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
     border-bottom: 2px solid var(--console-primary, #00aa00);
     backdrop-filter: blur(10px);
   }
   .nav-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-betweennn;
-    padding: 0.75rem 1rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
+    display: flex
+    align-items: center
+    justify-content: space-betweennn
+    padding: 0.75rem 1rem
+    max-width: 1400px
+    margin: 0 auto}
   .nav-left {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem}
   .sidebar-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.2s;
-  }
+    display: flex
+    align-items: center
+    justify-content: center
+    width: 40px
+    height: 40px
+    background: none
+    border: none
+    cursor: pointer
+    border-radius: 4px
+    transition: background 0.2s}
   .sidebar-toggle:hover { background: rgba(255, 255, 255, 0.1);
   }
   .hamburger {
-    display: flex;
-    flex-direction: column;
-    width: 20px;
-    height: 16px;
-    position: relative;
-  }
+    display: flex
+    flex-direction: column
+    width: 20px
+    height: 16px
+    position: relative}
   .hamburger span {
-    display: block;
-    height: 2px;
+    display: block
+    height: 2px
     width: 100%;
    , background: var(--console-fg, white);
-    margin: 2px 0;
-    transition: 0.3s;
-    transform-origin: center;
-  }
+    margin: 2px 0
+    transition: 0.3s
+    transform-origin: center}
   .hamburger.open, span:nth-child(1) {
     transform: rotate(45deg) translate(5px, 5px);
   }
   .hamburger.open span:nth-child(2) {
-    opacity: 0;
-  }
+    opacity: 0}
   .hamburger.open, span:nth-child(3) {
     transform: rotate(-45deg) translate(7px, -6px);
   }
   .logo-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: none;
-    border: none;
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.5rem 1rem
+    background: none
+    border: none
    , color: var(--console-fg, white);
-    font-size: 1.25rem;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.2s;
-  }
+    font-size: 1.25rem
+    font-weight: bold
+    cursor: pointer
+    border-radius: 6px
+    transition: all 0.2s}
   .logo-btn:hover { background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
   .logo-icon {
-    font-size: 1.5rem;
-  }
+    font-size: 1.5rem}
   .nav-center {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem}
   .nav-link {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.75rem 1rem
    , color: var(--console-fg, white);
-    text-decoration: none;
-    border-radius: 6px;
-    transition: all 0.2s;
-    font-weight: 500;
-  }
+    text-decoration: none
+    border-radius: 6px
+    transition: all 0.2s
+    font-weight: 500}
   .nav-link:hover { background: rgba(255, 255, 255, 0.1);
     color: var(--console-primary, #00aa00);
   }
@@ -291,66 +279,61 @@ import type { User } from '$lib/types';
     border: 1px solid var(--console-error, #ff5555);
   }
   .nav-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem}
   .signin-badge {
-    background: #10b981;
-    color: #0b2e1f;
-    border: 1px solid #059669;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
+    background: #10b981
+    color: #0b2e1f
+    border: 1px solid #059669
+    padding: 0.25rem 0.5rem
+    border-radius: 9999px
+    font-size: 0.75rem
+    font-weight: 600}
   .theme-selector {
-    position: relative;
-  }
+    position: relative}
   .theme-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.5rem 0.75rem
    , background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-  }
+    border-radius: 6px
+    cursor: pointer
+    transition: all 0.2s
+    font-size: 0.9rem}
   .theme-btn:hover { background: rgba(255, 255, 255, 0.2);
   }
   .dropdown-arrow {
-    font-size: 0.8rem;
-    transition: transform 0.2s;
-  }
+    font-size: 0.8rem
+    transition: transform 0.2s}
   .dropdown-arrow.open { transform: rotate(180deg);
   }
   .theme-dropdown {
-    position: absolute;
+    position: absolute
     top: 100%;
-    right: 0;
-    margin-top: 0.5rem;
+    right: 0
+    margin-top: 0.5rem
    , background: var(--console-bg, #0f0f23);
     border: 2px solid var(--console-primary, #00aa00);
-    border-radius: 8px;
-    min-width: 280px;
-    z-index: 1000;
+    border-radius: 8px
+    min-width: 280px
+    z-index: 1000
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
   .theme-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
+    display: flex
+    align-items: center
+    gap: 0.75rem
     width: 100%;
-    padding: 0.75rem 1rem;
-    background: none;
-    border: none;
+    padding: 0.75rem 1rem
+    background: none
+    border: none
    , color: var(--console-fg, white);
-    cursor: pointer;
-   , transition: background 0.2s;
+    cursor: pointer
+   , transition: background 0.2s
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .theme-option:hover { background: rgba(255, 255, 255, 0.1);
@@ -360,115 +343,102 @@ import type { User } from '$lib/types';
     color: var(--console-bg, #0f0f23);
   }
   .theme-preview {
-    width: 20px;
-    height: 20px;
+    width: 20px
+    height: 20px
     border-radius: 50%;
    , border: 2px solid rgba(255, 255, 255, 0.3);
   }
   .theme-info {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex: 1;
-  }
+    display: flex
+    flex-direction: column
+    align-items: flex-start
+    flex: 1}
   .theme-title {
-    font-weight: 600;
-    font-size: 0.95rem;
-  }
+    font-weight: 600
+    font-size: 0.95rem}
   .theme-era {
-    font-size: 0.8rem;
-    opacity: 0.7;
-  }
+    font-size: 0.8rem
+    opacity: 0.7}
   .check-mark {
-    font-weight: bold;
-  }
+    font-weight: bold}
   .user-menu {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .profile-dropdown { position: relative; }
+    display: flex
+    align-items: center
+    gap: 0.5rem}
+  .profile-dropdown { position: relative}
   .profile-trigger {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    display: inline-flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.5rem 0.75rem
    , background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
-    border-radius: 9999px;
-    cursor: pointer;
-    transition: all 0.2s;
-    list-style: none;
-  }
+    border-radius: 9999px
+    cursor: pointer
+    transition: all 0.2s
+    list-style: none}
   .profile-trigger:hover { background: rgba(255, 255, 255, 0.2); }
   .user-avatar {
-    width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center;
-   , background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem;
-  }
+    width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center
+   , background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem}
   .user-avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover;, border: 1px solid rgba(255,255,255,0.2); }
   .profile-menu {
-    position: absolute;, top: calc(100% + 0.5rem); right: 0; min-width: 240px;
+    position: absolute;, top: calc(100% + 0.5rem); right: 0; min-width: 240px
    , background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
-    border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); padding: 0.5rem; z-index: 1000;
-  }
-  .profile-header { padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem; }
-  .profile-row { display: flex; align-items: center; justify-content: space-betweennn; }
-  .profile-name { font-weight: 600; }
-  .profile-role { font-size: 0.75rem; opacity: 0.7; }
-  .profile-email { font-size: 0.8rem; opacity: 0.7; }
+    border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); padding: 0.5rem; z-index: 1000}
+  .profile-header { padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem}
+  .profile-row { display: flex; align-items: center; justify-content: space-betweennn}
+  .profile-name { font-weight: 600}
+  .profile-role { font-size: 0.75rem; opacity: 0.7}
+  .profile-email { font-size: 0.8rem; opacity: 0.7}
   .profile-item {
     display: block; width: 100%; text-align: left; background: none;, color: var(--console-fg, white);
-    border: none; padding: 0.5rem 0.5rem; border-radius: 6px; cursor: pointer;
-  }
+    border: none; padding: 0.5rem 0.5rem; border-radius: 6px; cursor: pointer}
   .profile-item:hover { background: rgba(255, 255, 255, 0.08); }
-  .profile-logout { color: #ffb4b4; }
-  .profile-separator { height: 1px;, background: rgba(255,255,255,0.12); margin: 0.25rem 0; }
+  .profile-logout { color: #ffb4b4}
+  .profile-separator { height: 1px;, background: rgba(255,255,255,0.12); margin: 0.25rem 0}
   .user-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.5rem 0.75rem
    , background: rgba(255, 255, 255, 0.1);
-    border: 1px solid transparent;
+    border: 1px solid transparent
    , color: var(--console-fg, white);
-    border-radius: 6px;
-    cursor: pointer;
-   , transition: all 0.2s;
-  }
+    border-radius: 6px
+    cursor: pointer
+   , transition: all 0.2s}
   .user-btn:hover {
     border-color: var(--console-primary, #00aa00);
   }
   .logout-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 0.75rem;
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.5rem 0.75rem
    , background: var(--console-error, #ff5555);
-    border: none;
-    color: white;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-  }
+    border: none
+    color: white
+    border-radius: 6px
+    cursor: pointer
+    transition: all 0.2s
+    font-size: 0.9rem}
   .logout-btn:hover { background: var(--console-error, #cc4444);
   }
   .auth-buttons {
-    display: flex;
-   , gap: 0.5rem;
-  }
+    display: flex
+   , gap: 0.5rem}
   .login-btn,
   .signup-btn {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem
    , border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
-    background: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-weight: 500;
-  }
+    background: none
+    border-radius: 6px
+    cursor: pointer
+    transition: all 0.2s
+    font-weight: 500}
   .signup-btn { background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
   }
@@ -476,18 +446,16 @@ import type { User } from '$lib/types';
     color: var(--console-bg, #0f0f23);
   }
   .signup-btn:hover {
-    background: transparent;
+    background: transparent
    , color: var(--console-primary, #00aa00);
   }
   /* Mobile Responsive */
   @media (max-width: 768px) {
     .nav-center {
-      display: none;
-    }
+      display: none}
     .theme-name {
-      display: none;
-    }
-    .user-name { display: none;
-    }
+      display: none}
+    .user-name { display: none}
   }
 </style>
+

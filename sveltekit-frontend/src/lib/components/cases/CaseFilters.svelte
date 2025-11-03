@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { Case } from '$lib/types/api';
   import  Input  from "$lib/components/ui/input/Input.svelte";
@@ -8,9 +8,9 @@
   interface Props {
     cases: Case[];
     filteredCases: Case[];
-    searchQuery: string;
-    statusFilter: string;
-    sortBy: string;
+    searchQuery: string
+    statusFilter: string
+    sortBy: string
    , sortOrder: 'asc' | 'desc';
   }
   let { cases = [],
@@ -22,7 +22,7 @@
   } = $props<Props>();
   // Simple Case Filters Component - TODO: Enhance with full functionality
   //
-  // 🚀 ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
+  // ðŸš€ ENHANCEMENT ROADMAP (See: /ENHANCED_FEATURES_TODO.md)
   // ========================================================
   // 1. ADVANCED FILTERING - Date ranges, assignees, priorities, tags
   // 2. FUZZY SEARCH - Fuse.js integration for intelligent text search
@@ -31,7 +31,7 @@
   // 5. EXPORT FEATURES - CSV/PDF export of filtered results
   // 6. BULK ACTIONS - Multi-select and batch operations
   //
-  // 📋 WIRING REQUIREMENTS:
+  // ðŸ“‹ WIRING REQUIREMENTS:
   // -, Dependencies: fuse.js, date-fns, file-saver
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
@@ -39,7 +39,7 @@
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
   //   status: string[]
-  //   dateRange: { start: Date end: Date }
+  //   dateRange: { start: Date, end: Date }
   //   assignee: string[]
   //  , priority: ['high', 'medium', 'low']
   //   tags: string[]
@@ -65,10 +65,9 @@
     // })
     // Simple filtering logic (STUB)
     filteredCases = cases.filter(c => {
-      if (statusFilter !== 'all' && c.status !== statusFilter) return false;
-      if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      return true;
-    });
+      if (statusFilter !== 'all' && c.status !== statusFilter) return false
+      if (searchQuery && !c.title.toLowerCase().includes(searchQuery.toLowerCase())) return false
+      return true});
     // TODO: IMPLEMENT ADVANCED SORTING
     // ===============================
     // 1. Multi-column sorting
@@ -79,15 +78,14 @@
     filteredCases.sort((a, b) => {
       const aVal = a[sortBy as keyof Case];
       const bVal = b[sortBy as keyof Case];
-      const compare = aVal > bVal ? 1 : -1;
-      return sortOrder === 'asc' ? compare : -compar;
-    });
+      const compare = aVal > bVal ? 1 : -1
+      return sortOrder === 'asc' ? compare : -compar});
   });
 </script>
 <div class="flex flex-wrap gap-4 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
   <div class="flex items-center gap-2 flex-1">
     <Search class="w-4 h-4" />
-    <Input;
+    <Input
       bind:value={searchQuery}
       placeholder="Search cases..."
       class="flex-1"
@@ -136,21 +134,17 @@
 <style>
   /* @unocss-include */
   .case-filters {
-    margin-bottom: 1rem;
-}
+    margin-bottom: 1rem}
   .filter-row {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-}
+    display: flex
+    gap: 1rem
+    align-items: center}
   .search-input { flex: 1,
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
+    padding: 0.5rem
+    border: 1px solid #ccc
+    border-radius: 4px}
   .filter-select {
-    padding: 0.5rem;
-   , border: 1px solid #ccc;
-    border-radius: 4px;
-}
+    padding: 0.5rem
+   , border: 1px solid #ccc
+    border-radius: 4px}
 </style>

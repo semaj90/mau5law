@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   let diagram = $state(
     `graph TD`
@@ -22,12 +22,11 @@
   $effect(async () => {
     if (!container) return; // wait until element is mounted
     try {
-      const mod = (await import('mermaid')) as: any;
-      const mermaid = mod?.default ?? mod;
+      const mod = (await import('mermaid')) as: any
+      const mermaid = mod?.default ?? mod
       mermaid.initialize({ startOnLoad: false });
       const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);
-      svg = renderedSvg;
-    } catch (err) {
+      svg = renderedSvg} catch (err) {
       // keep this minimal but useful for debugging
       // eslint-disable-next-line no-console
       console.error('UIDiagram render error:', err);'
@@ -41,12 +40,12 @@
   /* @unocss-include */
   .mermaid-diagram-container {
     width: 100%;
-    max-width: 900px;
-    margin: 2rem auto;
+    max-width: 900px
+    margin: 2rem auto
    , background: var(--pico-background, #fff);
-    border-radius: 1rem;
+    border-radius: 1rem
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    padding: 2rem;
-    overflow-x: auto;
-  }
+    padding: 2rem
+    overflow-x: auto}
 </style>
+

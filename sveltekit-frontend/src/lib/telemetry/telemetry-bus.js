@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Telemetry Bus - Event System for GPU Processing Telemetry
  */
 /**

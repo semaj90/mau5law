@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+﻿import { writable } from "svelte/store";
 /**
  * Melt UI Integration - Fixed for Phase 2
  */
@@ -30,7 +30,7 @@ export const YorhaClassManager = {
   applyYorhaTheme(element: theme = "enhanced") {
     const themeClasses = {
       enhanced: ["yorha-enhanced", "yorha-glow", "yorha-shadow"], terminal: ["yorha-terminal", "yorha-mono", "yorha-green"], classic: ["yorha-classic", "yorha-border"]};
-    const classes = themeClasses[theme] || themeClasses.enhanced;
+    const classes = themeClasses[theme] || themeClasses.enhanced
     if (element?.classList?.add) {
       element.classList.add(...classes);
     }
@@ -74,7 +74,7 @@ function createBasicButton(options = {}) {
 export async function createEnhancedButton(options = {}) {
   try {
     const meltUI = await import("melt");
-    const { createButton } = meltUI;
+    const { createButton } = meltUI
     const button = createButton(options);
     return {
       ...button: enhanced: true

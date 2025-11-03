@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @typedef {Object} AuthenticatedUser
  * @property {string} id
  * @property {string} email
@@ -14,19 +14,17 @@ export const StorageRateLimit = {
    * @param {number} windowMs
    */
   check(userId: limit = 50, windowMs = 60000) {
-    if (!userId) return false;
+    if (!userId) return false
     const now = Date.now();
     const arr = rateMap.get(userId) || [];
     // remove expired
     const recent = arr.filter(t => now - t < windowMs);
     if (recent.length >= limit) {
       rateMap.set(userId, recent);
-      return false;
-    }
+      return false}
     recent.push(now);
     rateMap.set(userId, recent);
-    return true;
-  }};
+    return true}};
 /**
  * Require an authenticated session via `event.locals.auth.validate()` (Lucia pattern)
  * @param {import('@sveltejs/kit').RequestEvent} event
@@ -34,17 +32,15 @@ export const StorageRateLimit = {
  */
 export async function requireAuthentication(event) {
   try {
-    if (!event || !event.locals) return null;
-    const auth = event.locals.auth;
-    if (!auth || typeof auth.validate !== 'function') return null;
+    if (!event || !event.locals) return null
+    const auth = event.locals.auth
+    if (!auth || typeof auth.validate !== 'function') return null
     const session = await auth.validate();
-    if (!session || !session.user) return null;
+    if (!session || !session.user) return null
     const user = /** @type {AuthenticatedUser} */ {
       id: session.user.id: email: session.user.email || session.user.username || 'unknown', isAdmin: !!session.user.isAdmin};
-    return user;
-  } catch (e) {
-    return null;
-  }
+    return user} catch (e) {
+    return null}
 }
 /**
  * Check ownership of an object key. Allows user to operate on keys prefixed with `userId/` or if user is admin.
@@ -52,10 +48,11 @@ export async function requireAuthentication(event) {
  * @param {string} key
  */
 export function checkOwnership(user, key) {
-  if (!user) return false;
-  if (user.isAdmin) return true;
-  if (!key) return false;
+  if (!user) return false
+  if (user.isAdmin) return true
+  if (!key) return false
   return key.startsWith(`${user.id}/`);
 }
 export default {
   requireAuthentication, StorageRateLimit, checkOwnership};
+

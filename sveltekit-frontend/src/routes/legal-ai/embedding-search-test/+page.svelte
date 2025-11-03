@@ -1,4 +1,4 @@
-<!-- Legal AI Embedding & Search Test Component -->
+﻿<!-- Legal AI Embedding & Search Test Component -->
 <script lang="ts">
 import type { SearchResult } from '$lib/types';
 import type { Case } from '$lib/types';
@@ -69,9 +69,8 @@ await checkSystemHealth();
   async function submitEmbedding(): Promise<any> {
     if (!embeddingText.trim()) {
       errorMessage = 'Please enter text to embed';
-      return;
-    }
-    isLoading = true;
+      return}
+    isLoading = true
     errorMessage = '';
     embeddingStatus = 'processing';
     try {
@@ -90,15 +89,13 @@ await checkSystemHealth();
       errorMessage = `Embedding failed: ${(error, as: any)?.message ?? String(error)}`;
       embeddingStatus = 'error';
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   async function performSearch(): Promise<any> {
     if (!searchQuery.trim()) {
       errorMessage = 'Please enter a search query';
-      return;
-    }
-    isLoading = true;
+      return}
+    isLoading = true
     errorMessage = '';
     searchResults = [];
     try {
@@ -112,20 +109,18 @@ await checkSystemHealth();
       console.error('Search failed:', error);
       errorMessage = `Search failed: ${(error, as: any)?.message ?? String(error)}`;
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   async function performAdvancedSearch(): Promise<any> {
     if (!searchQuery.trim()) {
       errorMessage = 'Please enter a search query';
-      return;
-    }
-    isLoading = true;
+      return}
+    isLoading = true
     errorMessage = '';
     searchResults = [];
     try {
       const requestBody: any = { query: searchQuery, limit: searchLimit, metadata: { documentType: 'legal_contract' } };
-      if (caseId.trim()) requestBody.caseId = caseId;
+      if (caseId.trim()) requestBody.caseId = caseId
       const response = await fetch(`${API_BASE}/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -138,11 +133,10 @@ await checkSystemHealth();
       console.error('Advanced search failed:', error);
       errorMessage = `Advanced search failed: ${(error, as: any)?.message ?? String(error)}`;
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   async function testCUDAEmbedding(): Promise<any> {
-    isLoading = true;
+    isLoading = true
     errorMessage = '';
     try {
       const response = await fetch(`${CUDA_BASE}/submit`, {
@@ -159,8 +153,8 @@ await checkSystemHealth();
       console.log('CUDA embedding task submitted:', result);
       setTimeout(async () => {
         try {
-          const taskId = result.task_id || result.taskId;
-          if (!taskId) return;
+          const taskId = result.task_id || result.taskId
+          if (!taskId) return
           const resultResponse = await fetch(`${CUDA_BASE}/result/${taskId}`);
           if (resultResponse.ok) {
             const cudaResult = await resultResponse.json();
@@ -174,18 +168,17 @@ await checkSystemHealth();
       console.error('CUDA embedding test failed:', error);
       errorMessage = `CUDA test failed: ${(error, as: any)?.message ?? String(error)}`;
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   // Add typed interfaces
-  interface SystemHealth { status: string; database: string; ollama: string; embeddings: number; }
-  interface CudaStatus { status: string; gpu_model: string; cuda_cores: number; memory_gb: number; }
-  interface SearchStats { totalDocuments: number; uniqueCases: number; avgPayloadLength: number; }
+  interface SystemHealth { status: string; database: string; ollama: string; embeddings: number}
+  interface CudaStatus { status: string; gpu_model: string; cuda_cores: number; memory_gb: number}
+  interface SearchStats { totalDocuments: number; uniqueCases: number; avgPayloadLength: number}
   interface SearchResult {
-    similarity: number;
-   , payload: string;
-    taskId?: string;
-    createdAt?: string;
+    similarity: number
+   , payload: string
+    taskId?: string
+    createdAt?: string
     metadata?: { caseId?: string; documentType?: string };
   }
   // Narrowed types for helpers
@@ -205,7 +198,7 @@ await checkSystemHealth();
   }
   function truncateText(text: string, maxLength = 150): string {
     if (!text) return '';
-    if (text.length <= maxLength) return text;
+    if (text.length <= maxLength) return text
     return text.substring(0, maxLength) + '...';
   }
 </script>
@@ -305,7 +298,7 @@ await checkSystemHealth();
           />
         </div>
         <div>
-          <!-- Status is display-only — use a div, not a, form, label -->
+          <!-- Status is display-only â€” use a div, not a, form, label -->
           <div class="block text-sm font-medium text-gray-700">
             Status:
             <span class={getStatusColor(embeddingStatus)}>{embeddingStatus}</span>
@@ -404,14 +397,14 @@ await checkSystemHealth();
             <p class="text-gray-700">{truncateText(result.payload)}</p>
             <div class="flex flex-wrap gap-2 text-xs">
               <span>Task ID: {result.taskId}</span>
-              <span>•</span>
-              <span>Created: {result.createdAt ? new Date(result.createdAt).toLocaleString() : '—'}</span>
+              <span>â€¢</span>
+              <span>Created: {result.createdAt ? new Date(result.createdAt).toLocaleString() : 'â€”'}</span>
               {#if result.metadata?.caseId}
-                <span>•</span>
+                <span>â€¢</span>
                 <span>case {result.metadata.caseId}</span>
               {/if}
               {#if result.metadata?.documentType}
-                <span>•</span>
+                <span>â€¢</span>
                 <span>Type: {result.metadata.documentType}</span>
               {/if}
             </div>
@@ -453,7 +446,6 @@ await checkSystemHealth();
 
 <style>
   code {
-    font-family: 'Courier New', monospace;
-    font-size: 0.875rem;
-  }
+    font-family: 'Courier New', monospace
+    font-size: 0.875rem}
 </style>

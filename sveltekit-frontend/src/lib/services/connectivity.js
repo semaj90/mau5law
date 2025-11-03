@@ -1,4 +1,4 @@
-// This file ensures connection to all services and manages state
+﻿// This file ensures connection to all services and manages state
 // for both the AI chat and evidence analysis features.
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
@@ -23,7 +23,7 @@ export const aiFeatures = writable({
 });
 // Service health check function
 export async function checkServiceStatus() {
-  if (!browser) return;
+  if (!browser) return
   // Check Ollama
   try {
     const ollamaResponse = await fetch('/api/system/check-ollama', {

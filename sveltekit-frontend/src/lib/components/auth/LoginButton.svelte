@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // LoginButton component - Svelte, 5 with bits-ui Button
   import * as unified from '$lib/stores/unified';
   const authStore: any =
@@ -14,13 +14,12 @@
   interface Props {
     variant?: 'default' | 'outline' | 'ghost' | 'secondary';
     size?: 'sm' | 'md' | 'lg';
-    className?: string;
-    loginText?: string;
-    logoutText?: string;
-    showUserInfo?: boolean;
-    redirectAfterLogin?: string;
-    redirectAfterLogout?: string;
-  }
+    className?: string
+    loginText?: string
+    logoutText?: string
+    showUserInfo?: boolean
+    redirectAfterLogin?: string
+    redirectAfterLogout?: string}
 
   let {
     variant = 'default',

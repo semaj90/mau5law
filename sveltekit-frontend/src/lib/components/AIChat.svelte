@@ -1,9 +1,9 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { interpret } from 'xstate';
   import { chatMachine } from '$lib/machines/chatMachine.js';
   import { onMount } from 'svelte'; // Import onMount for initial scroll
 
-  let chatContainer: HTMLDivElement | null = null;
+  let chatContainer: HTMLDivElement | null = null
   let userInput = $state<string>('');
 
   // Actor implementation with explicit types and safer error handling
@@ -31,7 +31,7 @@
           const decoder = new TextDecoder();
           while (true) {
             const { done, value } = await reader.read();
-            if (done) break;
+            if (done) break
             const chunk = decoder.decode(value, { stream: true });
             const lines = chunk.split('\n').filter((line: string) => line.trim().startsWith('data:'));
             for (const line of lines) {
@@ -71,11 +71,9 @@
     }
   });
 
-  let snapshot: any = service.initialState;
-
+  let snapshot: any = service.initialState
   service.subscribe((state: any) => {
-    snapshot = state;
-  });
+    snapshot = state});
 
   service.start();
 
@@ -83,9 +81,9 @@
 
   // Submit handler: accept generic Event to match Svelte DOM types, then cast to SubmitEvent
   function handleSubmit(event: Event) {
-    const submitEvent = event as SubmitEvent;
+    const submitEvent = event as SubmitEvent
     submitEvent.preventDefault();
-    if (!userInput.trim()) return;
+    if (!userInput.trim()) return
     send({ type: 'SUBMIT', message: userInput });
     userInput = '';
   }
@@ -96,8 +94,7 @@
       // Use a microtask to wait for the DOM to update
       Promise.resolve().then(() => {
         if (chatContainer) {
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
+          chatContainer.scrollTop = chatContainer.scrollHeight}
       });
     }
   });
@@ -105,8 +102,7 @@
   // Initial scroll to bottom on mount
   onMount(() => {
     if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
+      chatContainer.scrollTop = chatContainer.scrollHeight}
   });
 </script>
 
@@ -149,25 +145,25 @@
 <style>
   /* Styles from previous Chat.svelte component can be reused here */
   .chat-message { display: flex; max-width: 80%; }
-  .chat-message.user { margin-left: auto; flex-direction: row-reverse; }
-  .chat-message.assistant { margin-right: auto; }
-  .message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem; word-wrap: break-word; position: relative; }
-  .user .message-bubble { background-color: #2563eb; color: white; border-bottom-right-radius: 0.25rem; }
-  .assistant .message-bubble { background-color: #e5e7eb; color: #111827; border-bottom-left-radius: 0.25rem; }
-  .dark .assistant .message-bubble { background-color: #374151; color: #f9fafb; }
-  .error-bubble { background-color: #fef2f2; color: #991b1b; }
-  .dark .error-bubble { background-color: #4c1d1d; color: #fca5a5; }
+  .chat-message.user { margin-left: auto; flex-direction: row-reverse}
+  .chat-message.assistant { margin-right: auto}
+  .message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem; word-wrap: break-word; position: relative}
+  .user .message-bubble { background-color: #2563eb; color: white; border-bottom-right-radius: 0.25rem}
+  .assistant .message-bubble { background-color: #e5e7eb; color: #111827; border-bottom-left-radius: 0.25rem}
+  .dark .assistant .message-bubble { background-color: #374151; color: #f9fafb}
+  .error-bubble { background-color: #fef2f2; color: #991b1b}
+  .dark .error-bubble { background-color: #4c1d1d; color: #fca5a5}
   .typing-indicator {
-    display: inline-block;
-    width: 5px;
-    height: 5px;
+    display: inline-block
+    width: 5px
+    height: 5px
     border-radius: 50%;
     background-color: currentColor; /* Removed extra comma */
     animation: typing 1s infinite steps(4, end);
-    margin-left: 8px;
-    vertical-align: bottom;
-  }
+    margin-left: 8px
+    vertical-align: bottom}
   @keyframes typing {
     to { transform: translateY(-0.25rem); }
   }
 </style>
+

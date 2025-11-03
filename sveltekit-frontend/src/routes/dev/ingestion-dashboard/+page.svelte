@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -15,10 +15,10 @@ import type { Document } from '$lib/types';
     system: { uptime: 0, memory: { rss: 0 }, config: {} }
   });
 
-  let pollInterval: ReturnType<typeof setInterval> | null = null;
+  let pollInterval: ReturnType<typeof setInterval> | null = null
   let isConnected = $state<boolean>(false);
   let errorMessage = '';
-  let autoRefresh = true;
+  let autoRefresh = true
   let refreshRate = 5000; // ms
 
   // Job submission form state
@@ -35,16 +35,16 @@ import type { Document } from '$lib/types';
       const result = await response.json().catch(() => null);
       if (result && (result.success === true || result.dashboard)) {
         // try to use result.dashboard if provided, otherwise use result directly
-        const payload = result.dashboard ?? result;
+        const payload = result.dashboard ?? result
         dashboardData.set(payload);
-        isConnected = true;
+        isConnected = true
         errorMessage = '';
       } else {
-        isConnected = false;
+        isConnected = false
         errorMessage = result?.error || 'Failed to fetch dashboard data';
       }
     } catch (err: any) {
-      isConnected = false;
+      isConnected = false
       errorMessage = `Connection error: ${err?.message ?? String(err)}`;
     }
   }
@@ -52,14 +52,13 @@ import type { Document } from '$lib/types';
   async function submitTestJob(): Promise<any> {
     if (!newJob.documentId || !newJob.text) {
       submissionStatus = 'Error: Document ID and text are required';
-      return;
-    }
+      return}
 
     try {
       submissionStatus = 'Submitting...';
       const words = newJob.text.trim().split(/\s+/).filter(Boolean);
       const chunkCount = Math.max(1, Math.floor(newJob.chunks) || 1);
-      const chunkSize = Math.ceil(words.length / chunkCount) || words.length;
+      const chunkSize = Math.ceil(words.length / chunkCount) || words.length
       const chunks: string[] = [];
       for (let i = 0; i < words.length; i += chunkSize) {
         chunks.push(words.slice(i, i + chunkSize).join(' '));
@@ -82,16 +81,16 @@ import type { Document } from '$lib/types';
 
       const result = await response.json().catch(() => null);
       if (result && result.success) {
-        submissionStatus = `✅ Job submitted: ${result.jobId ?? 'unknown-id'}`;
+        submissionStatus = `âœ… Job submitted: ${result.jobId ?? 'unknown-id'}`;
         // Reset form
         newJob = { documentId: '', text: '', chunks: 1, priority: 'normal' };
         // Refresh dashboard
         await fetchDashboardData();
       } else {
-        submissionStatus = `❌ Error: ${result?.error ?? 'Submission failed'}`;
+        submissionStatus = `âŒ Error: ${result?.error ?? 'Submission failed'}`;
       }
     } catch (err: any) {
-      submissionStatus = `❌ Network error: ${err?.message ?? String(err)}`;
+      submissionStatus = `âŒ Network error: ${err?.message ?? String(err)}`;
     }
   }
 
@@ -111,14 +110,14 @@ import type { Document } from '$lib/types';
         console.error('controlWorkflow error:', result?.error ?? result);'
       }
     } catch (err) {
-      console.error(`❌ ${action} failed:`, err);
+      console.error(`âŒ ${action} failed:`, err);
     }
   }
 
   function formatBytes(bytes: number) {
     if (!bytes && bytes !== 0) return '0 B';
     if (bytes === 0) return '0 B';
-    const k = 1024;
+    const k = 1024
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return (parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + (sizes[i] || 'B'));
@@ -130,10 +129,10 @@ import type { Document } from '$lib/types';
     const totalSeconds = Math.floor(ms / 1000);
     if (totalSeconds < 60) return `${totalSeconds}s`;
     const totalMinutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
+    const seconds = totalSeconds % 60
     if (totalMinutes < 60) return `${totalMinutes}m ${seconds}s`;
     const hours = Math.floor(totalMinutes / 60);
-    const minutes = totalMinutes % 60;
+    const minutes = totalMinutes % 60
     return `${hours}h ${minutes}m ${seconds}s`;
   }
 </script>

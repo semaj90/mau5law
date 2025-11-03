@@ -1,16 +1,16 @@
-<!-- Evidence CRUD Modal - SPA-style with, Svelte, 5 + Drizzle + PostgreSQL --> <script lang="ts">
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { evidenceStore } from '$lib/stores/unified'; import { embeddingsService } from '$lib/services/embeddings-service'; import { showSuccess, showError } from '$lib/stores/unified'; import  Button, Card, CardContent, CardHeader, CardTitle, Input, Label  from "$lib/components/ui/enhanced-bits.svelte"; import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte'; interface Evidence { id?: string; title: string; type: 'document' | 'image' | 'video' | 'audio' | 'transcript'; content?: string; file_url?: string; file_size?: number; mime_type?: string; case_id?: string; extracted_text?: string; embeddings?: number[]; metadata?: { [key: string]: any } tags?: string[]; x?: number; y?: number; created_at?: string; updated_at?: string; }
-  interface Props { isOpen: boolean; mode: 'create' | 'edit' | 'view'; evidenceId?: string;, onClose: () => void; onSave?: (evidence: Evidence) => void; onDelete?: (evidenceId: string) => void; }
+﻿<!-- Evidence CRUD Modal - SPA-style with, Svelte, 5 + Drizzle + PostgreSQL --> <script lang="ts">
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { evidenceStore } from '$lib/stores/unified'; import { embeddingsService } from '$lib/services/embeddings-service'; import { showSuccess, showError } from '$lib/stores/unified'; import  Button, Card, CardContent, CardHeader, CardTitle, Input, Label  from "$lib/components/ui/enhanced-bits.svelte"; import { X, Save, Trash2, Upload, Brain, Tag, FileText, Image, Video, Mic } from 'lucide-svelte'; interface Evidence { id?: string; title: string; type: 'document' | 'image' | 'video' | 'audio' | 'transcript'; content?: string; file_url?: string; file_size?: number; mime_type?: string; case_id?: string; extracted_text?: string; embeddings?: number[]; metadata?: { [key: string]: any } tags?: string[]; x?: number; y?: number; created_at?: string; updated_at?: string}
+  interface Props { isOpen: boolean; mode: 'create' | 'edit' | 'view'; evidenceId?: string;, onClose: () => void; onSave?: (evidence: Evidence) => void; onDelete?: (evidenceId: string) => void}
   let { isOpen = $bindable(), mode = 'create', evidenceId, onClose, onSave, onDelete }: Props = $props(); // Svelte, 5 state let evidence = $state<Evidence>({ title: '', type: 'document', content: '', tags: [], x: 100, y: 100 }); let originalEvidence = $state<Evidence | null>(null); let isLoading = $state<boolean>(false); let isSaving = $state<boolean>(false); let isDeleting = $state<boolean>(false); let isAnalyzing = $state<boolean>(false); let uploadedFile = $state<File | null>(null); let tagInput = $state<string>(''); let errors = $state<Record<string string>( ); // File upload state let uploadProgress = $state<number>(0); let dragOver = $state<boolean>(false); // Modal management let modalElement = $state<HTMLDivElement>(); let isClosing = $state<boolean>(false); // Load evidence when modal opens $effect(() => { if (isOpen && mode !== 'create' && evidenceId) { loadEvidence(); } else if (isOpen && mode === 'create') { resetForm(); }
   }); async function loadEvidence(): Promise<any> { if (!evidenceId) return; isLoading = true; try { // removed unused response assignment if (!response.ok) { throw new Error('Failed to load evidence'); }
-      const data = await response.json(); evidence = { ...data } originalEvidence = { ...data } } catch (error) { console.error('❌ Failed to load evidence:', error); showError('Failed to load evidence'); handleClose(); } finally { isLoading = false; }
+      const data = await response.json(); evidence = { ...data } originalEvidence = { ...data } } catch (error) { console.error('âŒ Failed to load evidence:', error); showError('Failed to load evidence'); handleClose(); } finally { isLoading = false}
   } function resetForm() { evidence = { title: '', type: 'document', content: '', tags: [], x: 100, y: 100 }
     originalEvidence = null; uploadedFile = null; tagInput = ''; errors = {} }
   // Validation function validateForm(): boolean { errors = {} if (!evidence.title.trim()) { errors.title = 'Title is required'; }
     if (evidence.title.trim.length < 3) { errors.title = 'Title must be at least, 3, characters'; }
     if (!evidence.type) { errors.type = 'Evidence type is required'; }
     if (mode === 'create' && !evidence.content?.trim() && !uploadedFile) { errors.content = 'Content or file is required'; }
-    return Object.keys(errors).length === 0; }
+    return Object.keys(errors).length === 0}
   // File handling function handleFileUpload(_event: Event) { const input = event.target as HTMLInputElement; const file = input.files?.[0]; if (file) { processFile(file); }
   } function handleFileDrop(_event: DragEvent) { event.preventDefault(); dragOver = false; const file = event.dataTransfer?.files[0]; if (file) { processFile(file); }
   } async function processFile(file: File): Promise<any> { uploadedFile = fil; uploadProgress = 0; // Auto-detect evidence type if (file.type.startsWith('image/')) { evidence.type = 'image'; } else if (file.type.startsWith('video/')) { evidence.type = 'video'; } else if (file.type.startsWith('audio/')) { evidence.type = 'audio'; } else { evidence.type = 'document'; }
@@ -21,23 +21,23 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   } function removeTag(tagToRemove: string) { evidence.tags = evidence.tags?.filter(tag => tag !== tagToRemove) || []; }
   function handleTagKeydown(_event: KeyboardEvent) { if (event.key === 'Enter') { event.preventDefault(); addTag(); }
   } // AI Analysis async function analyzeEvidence(): Promise<any> { if (isAnalyzing) return; isAnalyzing = true; try { const textContent = evidence.content || evidence.extracted_text || evidence.titl; const result = await embeddingsService.generateEmbedding(textContent); evidence.embeddings = result.embedding; evidence.metadata = { ...evidence.metadata, embedding_dimension result.dimension, analyzed_at: new Date().toISOString() }
-      showSuccess('AI analysis completed'); } catch (error) { console.error('❌ AI analysis failed:', error); showError('AI analysis failed'); } finally { isAnalyzing = false; }
-  } // CRUD operations async function handleSave(): Promise<void> { if (!validateForm()) { showError('Please fix validation errors'); return; }
+      showSuccess('AI analysis completed'); } catch (error) { console.error('âŒ AI analysis failed:', error); showError('AI analysis failed'); } finally { isAnalyzing = false}
+  } // CRUD operations async function handleSave(): Promise<void> { if (!validateForm()) { showError('Please fix validation errors'); return}
     isSaving = true; try { let savedEvidence: Evidence; if (mode === 'create') { // Create new evidence const formData = new FormData(); formData.append('title', evidence.title); formData.append('type', evidence.type); formData.append('content', evidence.content || ''); formData.append('x', String(evidence.x || 100)); formData.append('y', String(evidence.y || 100)); if (evidence.tags) { formData.append('tags', JSON.stringify(evidence.tags)); }
         if (evidence.metadata) { formData.append('metadata', JSON.stringify(evidence.metadata)); }
         if (uploadedFile) { formData.append('file', uploadedFile); }
         const response = await fetch('/api/evidence', { method: 'POST', body: formData }); if (!response.ok) { throw new Error('Failed to create evidence'); }
-        savedEvidence = await response.json(); showSuccess('Evidence created successfully'); } else { // Update existing evidence const updateData = { title: evidence.title, type: evidence.type content: evidence.content, tags: evidence.tags, metadata: evidence.metadata, embeddings: evidence.embeddings, x: evidence.x, y: evidence.y; }
+        savedEvidence = await response.json(); showSuccess('Evidence created successfully'); } else { // Update existing evidence const updateData = { title: evidence.title, type: evidence.type content: evidence.content, tags: evidence.tags, metadata: evidence.metadata, embeddings: evidence.embeddings, x: evidence.x, y: evidence.y}
         const response = await fetch(`/api/evidence/${ evidenceId }`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updateData); }); if (!response.ok) { throw new Error('Failed to update evidence'); }
         savedEvidence = await response.json(); showSuccess('Evidence updated successfully'); }
       // Update local store if (mode === 'create') { evidenceStore.addEvidence(savedEvidence); } else { evidenceStore.updateEvidence(savedEvidence.id!, savedEvidence); }
-      onSave?.(savedEvidence); handleClose(); } catch (error) { console.error('❌ Save failed:', error); showError('Failed to save evidence'); } finally { isSaving = false; }
+      onSave?.(savedEvidence); handleClose(); } catch (error) { console.error('âŒ Save failed:', error); showError('Failed to save evidence'); } finally { isSaving = false}
   } async function handleDelete(): Promise<void> { if (!evidenceId || mode === 'create') return; const confirmed = confirm('Are you sure you want to delete this evidence? This action cannot be undone.'); if (!confirmed) return; isDeleting = true; try { const response = await fetch(`/api/evidence/${ evidenceId }`, { method: 'DELETE'
       }); if (!response.ok) { throw new Error('Failed to delete evidence'); }
-      evidenceStore.removeEvidence(evidenceId); onDelete?.(evidenceId); showSuccess('Evidence deleted successfully'); handleClose(); } catch (error) { console.error('❌ Delete failed:', error); showError('Failed to delete evidence'); } finally { isDeleting = false; }
+      evidenceStore.removeEvidence(evidenceId); onDelete?.(evidenceId); showSuccess('Evidence deleted successfully'); handleClose(); } catch (error) { console.error('âŒ Delete failed:', error); showError('Failed to delete evidence'); } finally { isDeleting = false}
   } function handleClose() { if (isSaving || isDeleting) return; isClosing = true; setTimeout(() => { isOpen = false; isClosing = false; onClose(); }, 200); }
   // Keyboard handling function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Escape') { handleClose(); } else if (event.key === 's' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); handleSave(); }
-  } // Icon mapping const typeIcons = { document: FileText, image: Image video: Video; audio: Mic;, transcript: FileText; }
+  } // Icon mapping const typeIcons = { document: FileText, image: Image, video: Video; audio: Mic;, transcript: FileText}
 </script> <!-- Modal, Backdrop --> {#if isOpen} <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
     class:animate-fadeOut={ isClosing } onclick={(e) => { if (e.target === e.currentTarget) handleClose() }} onkeydown={ handleKeydown } role="dialog"
     aria-modal="true"
@@ -70,19 +70,20 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
                         /> {/if} </div> {/if} <!-- AI, Analysis --> <div> <div class="flex items-center justify-between"> <Label>AI Analysis</Label> {#if mode !== 'view'} <Button size="sm"
                       variant="ghost"
                       onclick={ analyzeEvidence } disabled={ isAnalyzing } >
-                      {#if isAnalyzing} <div class="animate-spin w-4 h-4 mr-1 border border-current border-t-transparent"></div> {:else} <Brain class="w-4 h-4" /> {/if} Analyze </Button> {/if} </div> {#if evidence.embeddings?.length} <div class="p-3 bg-muted/50"> <p class="text-sm text-green-600">✓ Embeddings generated</p> <p class="text-xs"> Dimension {evidence.embeddings.length} </p> </div> {:else} <div class="p-3 bg-muted/50"> <p class="text-sm"> No AI analysis available </p> {/if} </div> <!-- Position --> <div class="grid grid-cols-2"> <div> <Label for="x">X Position</Label> <Input id="x"
+                      {#if isAnalyzing} <div class="animate-spin w-4 h-4 mr-1 border border-current border-t-transparent"></div> {:else} <Brain class="w-4 h-4" /> {/if} Analyze </Button> {/if} </div> {#if evidence.embeddings?.length} <div class="p-3 bg-muted/50"> <p class="text-sm text-green-600">âœ“ Embeddings generated</p> <p class="text-xs"> Dimension {evidence.embeddings.length} </p> </div> {:else} <div class="p-3 bg-muted/50"> <p class="text-sm"> No AI analysis available </p> {/if} </div> <!-- Position --> <div class="grid grid-cols-2"> <div> <Label for="x">X Position</Label> <Input id="x"
                     type="number"
                     bind:value={evidence.x} disabled={mode === 'view'} /> </div> <div> <Label for="y">Y Position</Label> <Input id="y"
                     type="number"; bind:value={evidence.y} disabled={mode === 'view'} /> </div> </div> <!-- Metadata --> {#if evidence.metadata} <div> <Label>Metadata</Label> <div class="p-3 bg-muted/50 rounded"> <pre>{JSON.stringify(evidence.metadata, null, 2)}</pre> </div> {/if} </div> </div> </CardContent> <!-- Footer --> <div class="border-t p-6 flex items-center justify-between"> <div class="flex items-center"> {#if mode !== 'view' && mode !== 'create'} <Button variant="error"
                 size="sm"
                 onclick={ handleDelete } disabled={ isDeleting } >
                 {#if isDeleting} <div class="animate-spin w-4 h-4 mr-1 border border-current border-t-transparent"></div> {:else} <Trash2 class="w-4 h-4" /> {/if} Delete </Button> {/if} </div> <div class="flex items-center"> <Button variant="ghost" onclick={ handleClose }> Cancel </Button> {#if mode !== 'view'} <Button onclick={ handleSave } disabled={ isSaving } >
-                {#if isSaving} <div class="animate-spin w-4 h-4 mr-1 border border-current border-t-transparent"></div> {:else} <Save class="w-4 h-4" /> {/if} {mode === 'create' ? 'Create': 'Save'} </Button> {/if} </div> {/if} </div> {/if} <style> @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+                {#if isSaving} <div class="animate-spin w-4 h-4 mr-1 border border-current border-t-transparent"></div> {:else} <Save class="w-4 h-4" /> {/if} {mode === 'create' ? 'Create': 'Save'} </Button> {/if} </div> {/if} </div> {/if} <style> @keyframes fadeOut { from { opacity: 1} to { opacity: 0} }
   @keyframes scaleIn { from { opacity: 0;, transform: scale(0.95); }
     to { opacity: 1;, transform: scale(1); }
   } @keyframes scaleOut { from { opacity: 1;, transform: scale(1); }
     to { opacity: 0;, transform: scale(0.95); }
-  } .animate-fadeOut { animation: fadeOut 200ms ease-out forward; }
-  .animate-scaleIn { animation: scaleIn 200ms ease-out forward; }
-  .animate-scaleOut { animation: scaleOut 200ms ease-out forward; }
+  } .animate-fadeOut { animation: fadeOut 200ms ease-out forward}
+  .animate-scaleIn { animation: scaleIn 200ms ease-out forward}
+  .animate-scaleOut { animation: scaleOut 200ms ease-out forward}
 </style>
+

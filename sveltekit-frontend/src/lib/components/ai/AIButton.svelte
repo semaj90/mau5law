@@ -1,4 +1,4 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported import { fly, fade } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface Props { position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'; size?: 'sm' | 'md' | 'lg'; variant?: 'primary' | 'secondary' | 'accent'; disabled?: boolean; loading?: boolean; notification?: boolean; notificationCount?: number; tooltip?: string; onclick?: () => void; onactivate?: () => void; ondeactivate?: () => void; }
+﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import { fly, fade } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface Props { position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'; size?: 'sm' | 'md' | 'lg'; variant?: 'primary' | 'secondary' | 'accent'; disabled?: boolean; loading?: boolean; notification?: boolean; notificationCount?: number; tooltip?: string; onclick?: () => void; onactivate?: () => void; ondeactivate?: () => void}
   let { position = 'bottom-right', size = 'md', variant = 'primary', disabled = false, loading = false, notification = false, notificationCount = 0, tooltip = 'Legal AI Assistant', onclick, onactivate, ondeactivate }: Props = $props(); // State management (Svelte, 5 $state) let mounted = $state<boolean>(false); let buttonElement = $state<HTMLButtonElement | null>(null); let showTooltip = $state<boolean>(false); // Size configurations const sizeClasses = { sm: 'w-12 h-12 text-sm', md: 'w-16 h-16 text-base', lg: 'w-20 h-20 text-lg'
   } as const; // Position configurations const positionClasses = {
     'bottom-right': 'bottom-6 right-6',
@@ -11,8 +11,8 @@
       'bg-gradient-to-br from-yorha-accent to-blue-400 hover:from-blue-400, hover:to-yorha-accent border-yorha-accent'
   } as const; // Handle button click function handleClick() { if (disabled || loading) return; onclick?.(); onactivate?.(); // Add haptic feedback on supported devices if ('vibrate' in navigator) { navigator.vibrate(50); }
   } // Handle keyboard events function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); handleClick(); }
-  } // Show/hide tooltip function showTooltipHandler() { if (tooltip && !disabled) { showTooltip = true; }
-  } function hideTooltipHandler() { showTooltip = false; }
+  } // Show/hide tooltip function showTooltipHandler() { if (tooltip && !disabled) { showTooltip = true}
+  } function hideTooltipHandler() { showTooltip = false}
   $effect(() => { mounted = true; // Add global keyboard shortcut (Ctrl/Cmd + K) function handleGlobalKeydown(event: KeyboardEvent) { if ((event.ctrlKey || event.metaKey) && event.key === 'k') { event.preventDefault(); handleClick(); }
     } document.addEventListener('keydown', handleGlobalKeydown); return () => { document.removeEventListener('keydown', handleGlobalKeydown); }; }); </script> {#if mounted} <!-- AI Assistant, Button --> <div class="fixed {positionClasses[position]} z-50"> <!-- Tooltip --> {#if showTooltip && tooltip} <div class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border text-yorha-text-primary text-sm font-mono whitespace-nowrap rounded-none shadow-lg"
         in:fade={{ duration, 150 }} out:fade={{ duration, 100 }} >
@@ -36,9 +36,10 @@
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5, 5 0 117.072 0l-.548.547A3.374 3.374, 0 0014 18.469V19a2, 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
               /> </svg> </div> <!-- Label --> <span class="text-xs font-bold">AI</span> {/if} </div> <!-- Notification, Badge --> {#if notification && notificationCount > 0} <div class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-bounce"
           in:fly={{ y: -10, duration, 300 }} >
-          {notificationCount > 9 ? '9+': notificationCount} {/if} </button> {/if} <style> @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: translateY(-100%) rotate(360deg); opacity: 0; }
-  } .animate-float { animation: float 3s linear infinite; }
+          {notificationCount > 9 ? '9+': notificationCount} {/if} </button> {/if} <style> @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0}
+    10% { opacity: 1}
+    90% { opacity: 1}
+    100% { transform: translateY(-100%) rotate(360deg); opacity: 0}
+  } .animate-float { animation: float 3s linear infinite}
 </style>
+

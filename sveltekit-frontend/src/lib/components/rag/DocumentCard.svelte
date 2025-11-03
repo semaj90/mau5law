@@ -1,30 +1,28 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
   import { FileText, Trash2, Eye, Clock } from 'lucide-svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   interface Document {
-    id: string;
-    filename: string;
-    fileSize: number;
-    mimeType: string;
-    summary: string;
-    embeddingModel: string;
-    uploadedAt: string;
+    id: string
+    filename: string
+    fileSize: number
+    mimeType: string
+    summary: string
+    embeddingModel: string
+    uploadedAt: string
     metadata?: {
-      pageCount?: number;
-      language?: string;
-      confidence?: number;
-    };
+      pageCount?: number
+      language?: string
+      confidence?: number};
   }
-  interface Props { document: Document;
-    onView?: (doc: Document) => void;
-    onDelete?: (docId: string) => void;
-  }
+  interface Props { document: Document
+    onView?: (doc: Document) => void
+    onDelete?: (docId: string) => void}
   let { document, onView, onDelete }: Props = $props();
   let deleting = $state<boolean>(false);
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    const k = 1024;
+    const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
@@ -48,15 +46,14 @@ import type { Document } from '$lib/types';
   }
   async function handleDelete(e: Event): Promise<void> {
     e.stopPropagation();
-    if (!confirm('Delete this document?')) return;
+    if (!confirm('Delete this document?')) return
     try {
-      deleting = true;
+      deleting = true
       if (onDelete) {
         onDelete(document.id);
       }
     } finally {
-      deleting = false;
-    }
+      deleting = false}
   }
   function handleView(e: Event) {
     e.stopPropagation();
@@ -84,7 +81,7 @@ import type { Document } from '$lib/types';
   <div class="p-4">
     <!-- Embedding, Info -->
     <div class="flex items-center gap-2 px-3 py-2 bg-yellow-50">
-      <span class="text-xs font-semibold">⚡ {document.embeddingModel}</span>
+      <span class="text-xs font-semibold">âš¡ {document.embeddingModel}</span>
     </div>
     <!-- Summary -->
     <div>
@@ -140,3 +137,4 @@ import type { Document } from '$lib/types';
     <span class="px-2 py-1 bg-blue-600 text-white text-xs font-semibold">Click to view</span>
   </div>
 </div>
+

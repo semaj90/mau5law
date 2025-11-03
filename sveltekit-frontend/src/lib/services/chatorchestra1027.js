@@ -1,6 +1,6 @@
-#!/usr/bin/env zx
+﻿#!/usr/bin/env zx
 /**
- * LangChain Chat Orchestrator – Hybrid Triton + TensorFlow + Ollama
+ * LangChain Chat Orchestrator â€“ Hybrid Triton + TensorFlow + Ollama
  * - Triton embeddings cached in Redis (keyed by SHA256(question))
  * - /api/choose to set/get client preference: triton|tensorflow|auto
  * - /api/chat accepts { question, clientId?, prefer? } where prefer overrides stored pref
@@ -45,8 +45,7 @@ function sha256Hex(input) {
 /* ------------------------------------------------------------------ */
 async function getContextFromModel(question: opts = { prefer: "auto", clientId: null }) {
   const prefer = opts.prefer || "auto";
-  const clientId = opts.clientId || null;
-
+  const clientId = opts.clientId || null
   // try cache first (only for Triton embeddings)
   try {
     const key = `triton:embed:${sha256Hex(question)}`;
@@ -60,12 +59,11 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
   }
 
   // If a client preference exists in Redis, respect it unless explicit prefer passed
-  let pref = prefer;
+  let pref = prefer
   if (pref === "auto" && clientId) {
     try {
       const p = await redis.get(`langchain:pref:${clientId}`);
-      if (p) pref = p;
-    } catch (e) {
+      if (p) pref = p} catch (e) {
       console.warn("Redis pref read failed", e?.message || e);
     }
   }
@@ -75,13 +73,11 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
     // Build a safe input body: note the exact shape/datatype depends on your Triton model.
     const arr = Array.from(q.slice(0, 512)).map((ch) => ch.charCodeAt(0));
     const body = {
-      inputs: [
-        {
+      inputs: [ {
           name: "INPUT__0", datatype: "FP32", shape: [1, arr.length], data: [arr]}]};
     const { data } = await axios.post(tritonURL, body, { timeout: 5000 });
     const out = data.outputs?.[0]?.data?.[0];
-    const summary = Array.isArray(out) ? out.slice(0, 8) : out;
-
+    const summary = Array.isArray(out) ? out.slice(0, 8) : out
     // cache representation (JSON string)
     try {
       const key = `triton:embed:${sha256Hex(q)}`;
@@ -121,7 +117,7 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
 
 /* LangChain setup */
 const model = new ChatOllama({
-  baseUrl: ollamaBase;
+  baseUrl: ollamaBase
   model: "gemma3-legal:latest", temperature: 0.35, maxTokens: 512});
 
 const prompt = new PromptTemplate({
@@ -171,7 +167,7 @@ app.post("/api/choose", express.json(), async (req, res) => {
 app.post("/api/chat", express.json(), async (req, res) => {
   try {
     const question = req.body.question ?? "";
-    const clientId = req.body.clientId ?? null;
+    const clientId = req.body.clientId ?? null
     const prefer = req.body.prefer ?? "auto";
     const context = await getContextFromModel(question, { prefer, clientId });
     const result = await chain.call({ context, question });
@@ -182,5 +178,5 @@ app.post("/api/chat", express.json(), async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 8081;
-app.listen(port, () => console.log(`🧠 Hybrid LangChain chat running on http://localhost:${port}`));
+const port = process.env.PORT || 8081
+app.listen(port, () => console.log(`ðŸ§  Hybrid LangChain chat running on http://localhost:${port}`));

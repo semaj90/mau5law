@@ -1,34 +1,31 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
   interface SelectOption {
-    value: string;
-    label: string;
-    disabled?: boolean;
-  }
+    value: string
+    label: string
+    disabled?: boolean}
   interface Props {
-    value?: string;
+    value?: string
    , options: SelectOption[];
-    placeholder?: string;
-    disabled?: boolean;
-    class?: string;
-    onchange?: (_value: string) => void;
-  }
+    placeholder?: string
+    disabled?: boolean
+    class?: string
+    onchange?: (_value: string) => void}
   let {
     value = $bindable(),
     options,
     placeholder = "Select option",
     disabled = false,
     class: className = "",
-    onchang;
-  }: Props = $props();
+    onchang}: Props = $props();
   // Helper to get selected option label
   let selectedLabel = $derived(
     options.find(option => option.value === value)?.label || placeholder
   );
   function handleValueChange(newValue: string | undefined) {
     if (newValue !== undefined) {
-      value = newValu;
+      value = newValu
       onchange?.(newValue);
     }
   }
@@ -55,7 +52,7 @@
           >
             <div class="absolute left-2 flex h-3.5 w-3.5 items-center">
               {#if value === option.value}
-                ✓
+                âœ“
               {/if}
             </div>
             <span>
@@ -68,3 +65,4 @@
   </Select.Portal>
 </SelectRoot>
 ;
+

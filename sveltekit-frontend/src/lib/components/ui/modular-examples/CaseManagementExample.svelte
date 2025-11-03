@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating, Svelte, code: `<svelte:window>` does not support non-event attributes or spread attribute;
+﻿<!-- @migration-task Error while migrating, Svelte, code: `<svelte:window>` does not support non-event attributes or spread attribute
 https://svelte.dev/e/illegal_element_attribute -->
 <!--, Example: Modular Case Management with, API, Integration -->
 <script lang="ts">
@@ -18,35 +18,32 @@ https://svelte.dev/e/illegal_element_attribute -->
   // Search and data management
   function handleCaseSelect(item: Case, type: string) {
     if (type === 'cases') {
-      selectedCaseId = (item as { id?: any }).id;
-      selectedCase = item;
-      showCaseDialog = true;
-    }
+      selectedCaseId = (item as { id?: any }).id
+      selectedCase = item
+      showCaseDialog = true}
   }
   function handleCommandSearch(item: any, type: string) {
     console.log(`Selected ${type}:`, item);
     switch (type) {
       case, 'cases':
         handleCaseSelect(item, type);
-        break;
+        break
       case, 'evidence':
         // Navigate to evidence view
-        break;
+        break
       case, 'documents':
         // Open document viewer
-        break;
+        break
       case, 'people':
         // Show person profile
-        break;
-    }
+        break}
   }
   // Keyboard shortcuts
   function handleKeydown(_event: KeyboardEvent) {
     if (event.metaKey || event.ctrlKey) {
       if (event.key === 'k') {
         event.preventDefault();
-        showCommandPalette = true;
-      }
+        showCommandPalette = true}
     }
   }
   // Data refresh handlers
@@ -54,11 +51,9 @@ https://svelte.dev/e/illegal_element_attribute -->
     if (selectedCaseId) {
       const updatedCase = await reactiveApiClient.fetchCase(selectedCaseId, false);
       if (updatedCase) {
-        selectedCase = updatedCa;
-      }
+        selectedCase = updatedCa}
       const updatedEvidence = await reactiveApiClient.fetchEvidence(selectedCaseId, false);
-      caseEvidence = updatedEvidence;
-    }
+      caseEvidence = updatedEvidence}
   }
   // Form submission handlers
   async function createNewCase(): Promise<any> {
@@ -66,12 +61,11 @@ https://svelte.dev/e/illegal_element_attribute -->
     console.log('Create new case');
   }
   async function updateCase(caseData: Partial<Case>): Promise<any> {
-    if (!selectedCase) return;
+    if (!selectedCase) return
     try {
       await reactiveApiClient.updateCase({
         id: selectedCase.id,
-        ...caseData;
-      });
+        ...caseData});
       await refreshCaseData();
     } catch (error) {
       console.error('Failed to update caseItem:', error);
@@ -96,7 +90,7 @@ https://svelte.dev/e/illegal_element_attribute -->
       >
         <Search class="h-4" />
         <span>Search</span>
-        <kbd class="px-2 py-1 text-xs bg-yorha-bg-primary border border-yorha-border">⌘K</kbd>
+        <kbd class="px-2 py-1 text-xs bg-yorha-bg-primary border border-yorha-border">âŒ˜K</kbd>
       </button>
       <!-- Create, Case, Button -->
       <button
@@ -144,7 +138,7 @@ https://svelte.dev/e/illegal_element_attribute -->
       <div>
         <h3 class="font-semibold text-yorha-text-primary">Command Palette (Global Search)</h3>
         <ul class="list-disc list-inside space-y-1">
-          <li>Press <kbd class="bg-yorha-bg-primary px-1 py-0.5">Ctrl+K</kbd> or <kbd class="bg-yorha-bg-primary px-1 py-0.5">⌘K</kbd> to open</li>
+          <li>Press <kbd class="bg-yorha-bg-primary px-1 py-0.5">Ctrl+K</kbd> or <kbd class="bg-yorha-bg-primary px-1 py-0.5">âŒ˜K</kbd> to open</li>
           <li>Search across cases, evidence, documents, and people</li>
           <li>Real-time API integration with PostgreSQL + pgvector</li>
           <li>Vector similarity search for semantic matching</li>
@@ -173,7 +167,7 @@ https://svelte.dev/e/illegal_element_attribute -->
   </div>
 </div>
 <!-- Modular, Command, Palette -->
-<ModularCommand;
+<ModularCommand
   bind:open={showCommandPalette}
   placeholder="Search cases, evidence, documents, people..."
   searchTypes={['cases', 'evidence', 'documents', 'people']}

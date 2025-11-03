@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Message } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   interface Props {
-    message: any;
-  }
+    message: any}
   // receive props via Svelte, 5 rune
   let { message }: Props = $props();
   // Use named imports from lucide-svelte
@@ -18,7 +17,7 @@ import type { Message } from '$lib/types';
   let emotionalTone = $derived.by(() => message?.metadata?.emotionalTone ?? null);
   let isProactive = $derived.by(() => !!message?.metadata?.proactive);
   function copyToClipboard() {
-    if (!message?.content) return;
+    if (!message?.content) return
     navigator.clipboard.writeText(message.content).then(
       () => {
         (notifications as: any)?.add?.({
@@ -55,11 +54,10 @@ import type { Message } from '$lib/types';
   }
   function getEmotionalToneIcon(tone: string) {
     switch (tone) {
-      case, 'encouraging': return ThumbsUp;
-      case, 'supportive': return Heart;
-      case, 'enthusiastic': return Star;
-      default: return: null;
-    }
+      case, 'encouraging': return ThumbsUp
+      case, 'supportive': return Heart
+      case, 'enthusiastic': return Star
+      default: return: null}
   }
 </script>
 <div class="chat-message-container flex gap-2" class:justify-end={isUser}>
@@ -130,7 +128,7 @@ import type { Message } from '$lib/types';
           <div class="flex items-center" class:justify-end={isUser}, class:justify-start={!isUser}>
             <span>Model: {message.metadata.model}</span>
             {#if message.metadata.latency}
-              <span>• {message.metadata.latency}ms</span>
+              <span>â€¢ {message.metadata.latency}ms</span>
             {/if}
           {/if}
         {#if message.metadata.tokenCount}
@@ -146,46 +144,37 @@ import type { Message } from '$lib/types';
 <style>
   /* @unocss-include */
   :global(.message-content) {
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
+    word-wrap: break-word
+    overflow-wrap: break-word}
   :global(.message-content p) {
-    margin-bottom: 0.5rem;
-  }
+    margin-bottom: 0.5rem}
   :global(.message-content, p:last-child) {
     margin-bottom: 0; /* Corrected comma to semicolon */
   }
   :global(.message-content ul, .message-content ol) {
-    margin: 0.5rem 0;
-    padding-left: 1.25rem;
-  }
+    margin: 0.5rem 0
+    padding-left: 1.25rem}
   :global(.message-content li) {
-    margin-bottom: 0.25rem;
-  }
+    margin-bottom: 0.25rem}
   :global(.message-content code) {
     background: rgba(0, 0, 0, 0.1);
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
-    font-family: 'Courier New', monospace;
-    font-size: 0.875em;
-  }
+    padding: 0.125rem 0.25rem
+    border-radius: 0.25rem
+    font-family: 'Courier New', monospace
+    font-size: 0.875em}
   :global(.message-content blockquote) {
     border-left: 3px solid rgba(0, 0, 0, 0.2);
-    padding-left: 1rem;
-   , margin: 0.5rem 0;
-    font-style: italic;
-  }
+    padding-left: 1rem
+   , margin: 0.5rem 0
+    font-style: italic}
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600;
-   , margin: 0.75rem, 0 0.5rem 0;
-  }
+    font-weight: 600
+   , margin: 0.75rem, 0 0.5rem 0}
   :global(.message-content h1) {
-    font-size: 1.25em;
-  }
+    font-size: 1.25em}
   :global(.message-content h2) {
-    font-size: 1.125em;
-  }
+    font-size: 1.125em}
   :global(.message-content h3) {
-    font-size: 1em;
-  }
+    font-size: 1em}
 </style>
+

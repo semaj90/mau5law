@@ -1,4 +1,4 @@
-import { createMachine, assign } from "xstate";
+﻿import { createMachine, assign } from "xstate";
 export const chatMachine = createMachine({
   id: "chat", initial: "idle", context: {
     messages: [], error: null
@@ -20,9 +20,8 @@ export const chatMachine = createMachine({
             messages: ({ context, event }) => {
               const newMessages = [...context.messages];
               const lastMessage = newMessages[newMessages.length - 1];
-              lastMessage.content += event.chunk;
-              return newMessages;
-            }})}, STREAM_DONE: "idle"}}, error: {
+              lastMessage.content += event.chunk
+              return newMessages}})}, STREAM_DONE: "idle"}}, error: {
       on: {
         SUBMIT: "loading", // Allow retrying
       }}}, on: {

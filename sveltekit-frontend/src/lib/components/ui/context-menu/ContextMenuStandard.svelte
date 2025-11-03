@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   import BitsUI from 'bits-ui';
   // Support both shapes: BitsUI.ContextMenu.{Root Trigger, ...} or flat BitsUI.ContextMenuRoot, ...
@@ -19,56 +19,52 @@
   // Safely assign depending on the shape present (avoid destructuring into reactive $state variables).
   if (_ns) {
     if ('Root' in _ns) {
-      ContextMenuRoot = _ns.Root;
-      ContextMenuTrigger = _ns.Trigger;
-      ContextMenuPortal = _ns.Portal;
-      ContextMenuContent = _ns.Content;
-      ContextMenuSeparator = _ns.Separator;
-      ContextMenuCheckboxItem = _ns.CheckboxItem;
-      ContextMenuRadioItem = _ns.RadioItem;
-      ContextMenuSub = _ns.Sub;
-      ContextMenuSubTrigger = _ns.SubTrigger;
-      ContextMenuSubContent = _ns.SubContent;
-      ContextMenuItem = _ns.Item;
-    } else {
-      const nsany = _ns as: any;
-      ContextMenuRoot = nsany.ContextMenuRoot;
-      ContextMenuTrigger = nsany.ContextMenuTrigger;
-      ContextMenuPortal = nsany.ContextMenuPortal;
-      ContextMenuContent = nsany.ContextMenuContent;
-      ContextMenuSeparator = nsany.ContextMenuSeparator;
-      ContextMenuCheckboxItem = nsany.ContextMenuCheckboxItem;
-      ContextMenuRadioItem = nsany.ContextMenuRadioItem;
-      ContextMenuSub = nsany.ContextMenuSub;
-      ContextMenuSubTrigger = nsany.ContextMenuSubTrigger;
-      ContextMenuSubContent = nsany.ContextMenuSubContent;
-      ContextMenuItem = nsany.ContextMenuItem;
-    }
+      ContextMenuRoot = _ns.Root
+      ContextMenuTrigger = _ns.Trigger
+      ContextMenuPortal = _ns.Portal
+      ContextMenuContent = _ns.Content
+      ContextMenuSeparator = _ns.Separator
+      ContextMenuCheckboxItem = _ns.CheckboxItem
+      ContextMenuRadioItem = _ns.RadioItem
+      ContextMenuSub = _ns.Sub
+      ContextMenuSubTrigger = _ns.SubTrigger
+      ContextMenuSubContent = _ns.SubContent
+      ContextMenuItem = _ns.Item} else {
+      const nsany = _ns as: any
+      ContextMenuRoot = nsany.ContextMenuRoot
+      ContextMenuTrigger = nsany.ContextMenuTrigger
+      ContextMenuPortal = nsany.ContextMenuPortal
+      ContextMenuContent = nsany.ContextMenuContent
+      ContextMenuSeparator = nsany.ContextMenuSeparator
+      ContextMenuCheckboxItem = nsany.ContextMenuCheckboxItem
+      ContextMenuRadioItem = nsany.ContextMenuRadioItem
+      ContextMenuSub = nsany.ContextMenuSub
+      ContextMenuSubTrigger = nsany.ContextMenuSubTrigger
+      ContextMenuSubContent = nsany.ContextMenuSubContent
+      ContextMenuItem = nsany.ContextMenuItem}
   }
   // Strongly-typed menu item shapes to avoid: 'unknown' in templates
-  type MenuSubItem = { label: string;
-    value?: any;
-    disabled?: boolean;
-    onSelect?: (...args: any[]) => void;
-  };
+  type MenuSubItem = { label: string
+    value?: any
+    disabled?: boolean
+    onSelect?: (...args: any[]) => void};
   type MenuItem =
     | { type?: 'separator' }
     | {
         type?: 'checkbox' | 'radio' | 'item' | 'sub';
-        label?: string;
-        value?: any;
-        disabled?: boolean;
-        onSelect?: (...args: any[]) => void;
+        label?: string
+        value?: any
+        disabled?: boolean
+        onSelect?: (...args: any[]) => void
         items?: MenuSubItem[];
       };
   interface Props {
-    open?: boolean;
-    trigger: Snippet;
+    open?: boolean
+    trigger: Snippet
    , items: MenuItem[];
-    contentProps?: any;
-    children?: import('svelte').Snippet;
-    [key: string]: any;
-  }
+    contentProps?: any
+    children?: import('svelte').Snippet
+    [key: string]: any}
   let { open = $bindable(false), trigger, items, contentProps, children, ...restProps }: Props = $props();
 </script>
 <ContextMenuRoot bind:open {...restProps}>
@@ -83,14 +79,14 @@
         {:else if item.type === 'checkbox'}
           <ContextMenuCheckboxItem value={item.value} disabled={item.disabled} select={item.onSelect}>
             {#snippet children({ checked })}
-              {#if checked}✓{/if}
+              {#if checked}âœ“{/if}
               {item.label}
             {/snippet}
           </ContextMenuCheckboxItem>
         {:else if item.type === 'radio'}
           <ContextMenuRadioItem value={item.value} disabled={item.disabled} select={item.onSelect}>
             {#snippet children({ checked })}
-              {#if checked}●{/if}
+              {#if checked}â—{/if}
               {item.label}
             {/snippet}
           </ContextMenuRadioItem>
@@ -117,3 +113,4 @@
     </ContextMenuContent>
   </ContextMenuPortal>
 </ContextMenuRoot>
+

@@ -1,7 +1,6 @@
-import { json, type RequestHandler  } from '@sveltejs/kit';
+﻿import { json, type RequestHandler  } from '@sveltejs/kit';
 
-export const prerender = true;
-
+export const prerender = true
 export const GET: RequestHandler = async () => {
   return json({
     name: 'YoRHa Legal AI Platform',
@@ -16,6 +15,7 @@ export const GET: RequestHandler = async () => {
        }
   });
 };
+
 
 
 

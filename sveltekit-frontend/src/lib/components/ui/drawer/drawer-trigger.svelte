@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
-    children?: Snippet;
-    asChild?: boolean;
-  }
+    children?: Snippet
+    asChild?: boolean}
   let { children, asChild = false }: Props = $props();
 </script>
 {#if asChild}
@@ -13,3 +12,4 @@
     <slot />
   </button>
 {/if}
+

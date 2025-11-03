@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Gemma3 270M Client-Side WebAssembly Component
   Function Offload lightweight AI operations to client-side WebAssembly for reduced server load,
   Architecture: WebAssembly + WebGL + Shared Memory for real-time legal document processing
@@ -9,7 +9,7 @@ import type { Message } from '$lib/types';
 	import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
 	import  Alert  from "$lib/components/ui/enhanced-bits.svelte"; // use default import as compiler suggested
 	// Svelte, 5 runes for reactive state
-	let wasmModule: any = null;
+	let wasmModule: any = null
 	let isLoaded = $state<boolean>(false);
 	let isProcessing = $state<boolean>(false);
 	let processingProgress = $state<number>(0);
@@ -39,7 +39,7 @@ import type { Message } from '$lib/types';
 		lastUpdated: null, as: string | null
 	});
 	// WebGL context for GPU acceleration
-	let webglContext: WebGLRenderingContext | null = null;
+	let webglContext: WebGLRenderingContext | null = null
 	// removed unused gpuBuffers to avoid linter noise
 	$effect(() => {
 		(async () => {
@@ -50,23 +50,22 @@ import type { Message } from '$lib/types';
 	});
 	async function initializeWebAssembly(): Promise<void> {
 		try {
-			isLoaded = false;
+			isLoaded = false
 			const startTime = performance.now();
 			// Check for WebAssembly support
 			if (!(window as: any).WebAssembly) {
-				wasmSupported = false;
+				wasmSupported = false
 				errorMessage = 'WebAssembly not supported in this browser';
-				return;
-			}
+				return}
 			// Load Gemma3 270M WebAssembly module (simulated)
 			wasmModule = await loadGemma270MWASM();
-			const loadTime = performance.now() - startTime;
-			performanceMetrics.loadTime = loadTime;
+			const loadTime = performance.now() - startTime
+			performanceMetrics.loadTime = loadTime
 			performanceMetrics.lastUpdated = new Date().toISOString();
-			isLoaded = true;
+			isLoaded = true
 			console.log(`Gemma3 270M WebAssembly loaded in ${loadTime.toFixed(2)}ms`);
 		} catch (err) {
-			const error = err as: any;
+			const error = err as: any
 			errorMessage = `Failed to load, WebAssembly: ${error?.message ?? String(error)}`;
 			console.error('WebAssembly initialization error:', error);'
 		}
@@ -107,68 +106,63 @@ import type { Message } from '$lib/types';
 		});
 	}
 	function initializeWebGL() {
-		if (!webglSupported) return;
+		if (!webglSupported) return
 		try {
 			const canvas = document.createElement('canvas');
-			webglContext = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null;
+			webglContext = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null
 			if (webglContext) {
-				performanceMetrics.webglAcceleration = true;
+				performanceMetrics.webglAcceleration = true
 				console.log('WebGL acceleration enabled for client-side AI');
 			}
 		} catch (err) {
 			console.warn('WebGL initialization failed:', err);
-			performanceMetrics.webglAcceleration = false;
-		}
+			performanceMetrics.webglAcceleration = false}
 	}
 	// Client-side AI operations (added parameter typings)
 	async function processText(text: string, operation: 'inference' | 'embedding' | 'summarize' | 'extract' = 'inference'): Promise<any> {
 		if (!isLoaded || !wasmModule) {
 			errorMessage = 'WebAssembly module not loaded';
-			return: null;
-		}
+			return: null}
 		try {
-			isProcessing = true;
-			processingProgress = 0;
+			isProcessing = true
+			processingProgress = 0
 			errorMessage = '';
 			const startTime = performance.now();
-			let result: any;
+			let result: any
 			switch (operation) {
 				case, 'inference':
 					result = await performClientInference(text);
-					break;
+					break
 				case, 'embedding':
 					result = await generateClientEmbedding(text);
-					break;
+					break
 				case, 'summarize':
 					result = await summarizeClientSide(text);
-					break;
+					break
 				case, 'extract':
 					result = await extractClientSide(text);
-					break;
+					break
 				default:
 					throw new Error(`Unknown operation ${operation}`);
 			}
-			const inferenceTime = performance.now() - startTime;
-			performanceMetrics.inferenceTime = inferenceTime;
+			const inferenceTime = performance.now() - startTime
+			performanceMetrics.inferenceTime = inferenceTime
 			performanceMetrics.tokensPerSecond = calculateTokensPerSecond(text, inferenceTime);
-			performanceMetrics.memoryUsage = typeof wasmModule?.memory?.usage === 'function' ? wasmModule.memory.usage() : performanceMetrics.memoryUsage;
+			performanceMetrics.memoryUsage = typeof wasmModule?.memory?.usage === 'function' ? wasmModule.memory.usage() : performanceMetrics.memoryUsage
 			performanceMetrics.lastUpdated = new Date().toISOString();
-			lastResult = result;
-			return result;
-		} catch (err) {
-			const error = err as: any;
+			lastResult = result
+			return result} catch (err) {
+			const error = err as: any
 			errorMessage = `Processing, failed: ${error?.message ?? String(error)}`;
 			console.error('Client-side processing error:', error);'
-			return: null;
-		} finally {
-			isProcessing = false;
-			processingProgress = 100;
-		}
+			return: null} finally {
+			isProcessing = false
+			processingProgress = 100}
 	}
 	async function performClientInference(text: string): Promise<any> {
 		// Simulate progress updates
 		for (let i = 0; i <= 100; i += 10) {
-			processingProgress = i;
+			processingProgress = i
 			await new Promise((resolve) => setTimeout(resolve, 50));
 		}
 		// Use WebAssembly module for inference (fixed call signature)
@@ -231,7 +225,7 @@ import type { Message } from '$lib/types';
 	}
 	function calculateTokensPerSecond(text: string, inferenceTime: number): number {
 		const estimatedTokens = (text?.split(/\s+/).length ?? 0) * 1.3; // Rough token estimation
-		if (inferenceTime <= 0) return 0;
+		if (inferenceTime <= 0) return 0
 		return parseFloat(((estimatedTokens / (inferenceTime / 1000))).toFixed(2));
 	}
 	// Simulated WASM module functions (typed params)
@@ -245,7 +239,7 @@ import type { Message } from '$lib/types';
 	}
 	async function simulateEmbedding(params: any): Promise<any> {
 		await new Promise((resolve) => setTimeout(resolve, 100));
-		const dims = Number(params?.dimensions) || 384;
+		const dims = Number(params?.dimensions) || 384
 		return {
 			vector: new Array(dims).fill(0).map(() => Math.random())
 		};
@@ -269,14 +263,12 @@ import type { Message } from '$lib/types';
 		return `memory_block_${Date.now()}`;
 	}
 	function simulateMemoryFree(_blockId: string) {
-		return true;
-	}
+		return true}
 	function simulateMemoryUsage() {
 		return Math.floor(Math.random() * 100) + 50; // 50-150 MB
 	}
 	function simulateGPUInit() {
-		return performanceMetrics.webglAcceleration;
-	}
+		return performanceMetrics.webglAcceleration}
 	function simulateGPUTransfer(_data: any) {
 		return `gpu_buffer_${Date.now()}`;
 	}
@@ -412,13 +404,13 @@ import type { Message } from '$lib/types';
 							variant="secondary"
 							onclick={() => processText('Sample legal document text for analysis...', 'inference')}
 						>
-							🧠 Inference
+							ðŸ§  Inference
 						</Button>
 						<Button
 							variant="secondary"
 							onclick={() => processText('Generate embedding for this text...', 'embedding')}
 						>
-							📊 Embedding
+							ðŸ“Š Embedding
 						</Button>
 						<Button
 							variant="secondary"
@@ -428,7 +420,7 @@ import type { Message } from '$lib/types';
 									'summarize'
 								)}
 						>
-							📝 Summarize
+							ðŸ“ Summarize
 						</Button>
 						<Button
 							variant="secondary"
@@ -438,7 +430,7 @@ import type { Message } from '$lib/types';
 									'extract'
 								)}
 						>
-							🔍 Extract
+							ðŸ” Extract
 						</Button>
 					</div>
 				</CardContent>
@@ -480,30 +472,24 @@ import type { Message } from '$lib/types';
 </div>
 <style>
 	.gemma-270m-wasm {
-		max-width: 800px;
-	}
+		max-width: 800px}
 	.metric {
-		transition: transform 0.2s ease;
-	}
+		transition: transform 0.2s ease}
 	.metric:hover { transform: translateY(-2px);
 	}
 	.action-btn {
-		transition: all 0.2s ease;
-	}
+		transition: all 0.2s ease}
 	.action-btn:hover { transform: translateY(-1px);
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	}
 	.action-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	, transform: none;
-	}
+		opacity: 0.5
+		cursor: not-allowed
+	, transform: none}
 	pre {
-		font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-	}
+		font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace}
 	.animate-spin {
-		animation: spin 1s linear infinite;
-	}
+		animation: spin 1s linear infinite}
 	@keyframes spin {
 		from { transform: rotate(0deg);
 		}
@@ -512,3 +498,4 @@ import type { Message } from '$lib/types';
 		}
 	}
 </style>
+

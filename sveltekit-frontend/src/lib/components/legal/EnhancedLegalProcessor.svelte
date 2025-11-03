@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
   import { createMachine, assign, interpret } from 'xstate';
   import { slide } from 'svelte/transition';
@@ -135,22 +135,21 @@ import type { Document } from '$lib/types';
   });
   service.start(); // start the interpreter
   // expose Svelte-like store and send function used in template
-  const state = stateStore;
+  const state = stateStore
   const send = (evt: any) => service.send(evt);
-  let fileInput: HTMLInputElement;
+  let fileInput: HTMLInputElement
   function handleFileSelect(event: Event) {
-    const target = event.target as HTMLInputElement;
+    const target = event.target as HTMLInputElement
     if (target.files && target.files.length > 0) {
       send({ type: 'FILE_SELECTED', file: target.files[0] });
     }
   }
   function getProgress() {
-    if ($state.matches('uploading')) return 25;
-    if ($state.matches('processing')) return 50;
-    if ($state.matches('analyzing')) return 75;
-    if ($state.matches('complete')) return 100;
-    return 0;
-  }
+    if ($state.matches('uploading')) return 25
+    if ($state.matches('processing')) return 50
+    if ($state.matches('analyzing')) return 75
+    if ($state.matches('complete')) return 100
+    return 0}
 </script>
 <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 max-w-3xl">
   <div class="flex items-center justify-between">
@@ -247,7 +246,7 @@ import type { Document } from '$lib/types';
   {#if $state.matches('complete')}
     <div class="space-y-6" transition:slide>
       <div class="bg-green-50 border border-green-200 text-green-800 p-4">
-        <h3 class="font-bold">✅ Processing Complete</h3>
+        <h3 class="font-bold">âœ… Processing Complete</h3>
         <p>Document, '{$state.context.file?.name}' has been successfully analyzed.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2">
@@ -308,3 +307,4 @@ import type { Document } from '$lib/types';
       </div>
     {/if}
 </div>
+

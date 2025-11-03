@@ -1,12 +1,12 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
   interface Props {
-    class?: string;
-    children?: Snippet;
-  }
+    class?: string
+    children?: Snippet}
   let { class: className = '', children }: Props = $props();
 </script>
 <div class={cn('flex items-start, justify-between, p-4', className)}>
   <slot />
 </div>
+

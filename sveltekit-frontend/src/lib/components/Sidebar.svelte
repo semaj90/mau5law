@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import Fuse from 'fuse.js';
   import { onMount } from 'svelte';
   import { quintOut } from 'svelte/easing';
@@ -13,28 +13,26 @@
   // Folder and X may be provided as default exports depending on lucide-svelte version
   import Folder from 'lucide-svelte';
   import X from 'lucide-svelte';
-  let sidebarElement: HTMLElement;
+  let sidebarElement: HTMLElement
   let isHovered = $state<boolean>(false);
   let isPinned = $state<boolean>(false);
   let searchQuery = $state<string>('');
   let activeTab: 'evidence' | 'notes' | 'canvas' = $state('evidence');
-  let fuse: Fuse<any> | null = null;
+  let fuse: Fuse<any> | null = null
   // Define expected interfaces for Loki service to resolve type errors
   interface RefreshableCollection {
-    refreshStore(): void;
-    add?(item: any): void;
+    refreshStore(): void
+    add?(item: any): void
     getAll?(): any[];
     getByCaseId?(caseId: string): any[];
     search?(query: string): any[];
   }
   interface ExpectedLokiService {
     init(): Promise<void>;
-    evidence: RefreshableCollection;
-    notes: RefreshableCollection;
-    canvasStates: RefreshableCollection;
-  }
+    evidence: RefreshableCollection, notes: RefreshableCollection
+    canvasStates: RefreshableCollection}
   // Cast the imported loki: object to the expected interface
-  const typedLoki = loki as ExpectedLokiService;
+  const typedLoki = loki as ExpectedLokiService
   //, Fix: use $derived as a function that accepts a callback
   let sidebarOpen = $derived(() => ($sidebarStore?.open ?? false) || isHovered || isPinned);
   let evidenceItems = $derived(() => $lokiStore?.evidence ?? []);
@@ -47,18 +45,16 @@
     } else if (activeTab === 'notes' && notesItems.length > 0) {
       fuse = new Fuse(notesItems, { keys: ['title', 'content', 'tags'], threshold: 0.3 });
     } else {
-      fuse = null;
-    }
+      fuse = null}
   });
   // Compute search results reactively (use callback form)
   let searchResults = $derived(() => {
     if (searchQuery && fuse) {
       return fuse.search(searchQuery).map(r => r.item);
     }
-    if (activeTab === 'evidence') return evidenceItems;
-    if (activeTab === 'notes') return notesItems;
-    return canvasStates;
-  });
+    if (activeTab === 'evidence') return evidenceItems
+    if (activeTab === 'notes') return notesItems
+    return canvasStates});
   $effect(() => {
     typedLoki.init();
     refreshData();
@@ -73,13 +69,11 @@
     }
   }
   function handleMouseEnter() {
-    isHovered = true;
-  }
+    isHovered = true}
   function handleMouseLeave() {
-    isHovered = false;
-  }
+    isHovered = false}
   function togglePin() {
-    isPinned = !isPinned;
+    isPinned = !isPinned
     // annotate state param to avoid implicit: any
     sidebarStore.update((state: any) => ({ ...state, open: isPinned }));
   }
@@ -91,7 +85,7 @@
     console.log('Item clicked:', item);
   }
   function handleTabChange(tab: 'evidence' | 'notes' | 'canvas') {
-    activeTab = tab;
+    activeTab = tab
     searchQuery = '';
     refreshData();
   }
@@ -198,57 +192,53 @@
 <style>
   /* @unocss-include */
   .sidebar-container {
-    position: fixed;
+    position: fixed
     top: 60px; /* Header height */
-    left: 0;
-    bottom: 0;
-    width: 320px;
-    z-index: 20;
-    pointer-events: none;
-    transition: transform 0.3s ease;
+    left: 0
+    bottom: 0
+    width: 320px
+    z-index: 20
+    pointer-events: none
+    transition: transform 0.3s ease
    , transform: translateX(-100%);
   }
   .sidebar-container.open {
     transform: translateX(0);
-    pointer-events: all;
-  }
+    pointer-events: all}
   .hover-trigger {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 20px;
+    position: absolute
+    top: 0
+    left: 0
+    width: 20px
     height: 100%;
-    background: transparent;
-    pointer-events: all;
-    z-index: 1;
-  }
+    background: transparent
+    pointer-events: all
+    z-index: 1}
   .sidebar-content {
     width: 100%;
     height: 100%;
    , background: var(--bg-secondary);
     border-right: 1px solid var(--border-light);
     box-shadow: 2px, 0 8px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
+    display: flex
+    flex-direction: column
+    overflow: hidden}
   .header-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
+    display: flex
+    gap: 0.5rem}
   .pin-button.pinned { background: var(--bg-secondary);
     color: var(--text-inverse);
   }
   .pin-button,
   .close-button {
-    background: transparent;
-    border: none;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: transparent
+    border: none
+    padding: 0.25rem
+    border-radius: 0.25rem
+    cursor: pointer
+    display: flex
+    align-items: center
+    justify-content: center
    , color: var(--text-primary);
   }
   .pin-buttonhover,
@@ -256,26 +246,25 @@
     background: var(--bg-tertiary);
   }
   .search-section {
-    padding: 1rem;
+    padding: 1rem
     border-bottom: 1px solid var(--border-light);
   }
   .tab-list {
-    display: flex;
+    display: flex
     border-bottom: 1px solid var(--border-light);
     background: var(--bg-primary);
   }
   .tab-trigger {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-    background: transparent;
-    border: none;
+    flex: 1
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.75rem 1rem
+    background: transparent
+    border: none
    , color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
+    cursor: pointer
+    transition: all 0.2s ease}
   .tab-trigger:hover { background: var(--bg-tertiary);
     color: var(--text-primary);
   }
@@ -285,25 +274,23 @@
     border-bottom: 2px solid var(--harvard-crimson);
   }
   .tab-content {
-    flex: 1;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-  }
+    flex: 1
+    overflow: hidden
+    display: flex
+    flex-direction: column}
   .tabs-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .tags-section { padding: 1rem;
+    flex: 1
+    display: flex
+    flex-direction: column
+    overflow: hidden}
+  .tags-section { padding: 1rem
     border-top: 1px solid var(--border-light);
     background: var(--bg-primary);
   }
   /* Responsive */
   @media (max-width: 768px) {
     .sidebar-container {
-      width: 280px;
-    }
+      width: 280px}
   }
 </style>
+

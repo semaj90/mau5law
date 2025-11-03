@@ -1,8 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import  UploadArea  from "./UploadArea.svelte";
 
-  let uploadComponent: any = null;
+  let uploadComponent: any = null
   let uploadStatus = $state<string>('');
   let uploadedFiles: any[] = $state([]);
   let showProgress = $state<boolean>(true);
@@ -15,7 +15,7 @@
   // add a local endpoint variable instead of passing as a typed prop
   let uploadEndpoint = '/api/upload/';
 
-  // Event handlers — use the actual event parameter and event.detail
+  // Event handlers â€” use the actual event parameter and event.detail
   function handleUploadStart(event: CustomEvent) {
     uploadStatus = `Starting upload of ${event.detail?.files?.length ?? 0} files...`;
     console.log('Upload started:', event.detail);
@@ -55,8 +55,8 @@
 
   // Imperative attachment for custom events to avoid TS template event typing issues
   onMount(() => {
-    const el = uploadComponent;
-    if (!el) return;
+    const el = uploadComponent
+    if (!el) return
     el.addEventListener?.('upload-start', handleUploadStart as EventListener);
     el.addEventListener?.('upload-progress', handleUploadProgress as EventListener);
     el.addEventListener?.('upload-complete', handleUploadComplete as EventListener);
@@ -83,17 +83,16 @@
   // keep the UploadArea instance in sync with the local maxSize value
   // (workaround for component prop typing mismatch)
   $effect(() => {
-    if (!uploadComponent) return;
+    if (!uploadComponent) return
     // sync values imperatively to avoid passing: unknown props in the template
-    (uploadComponent, as: any).maxSize = maxSize;
-    (uploadComponent as: any).showProgress = showProgress;
-    (uploadComponent as: any).autoUpload = autoUpload;
-    (uploadComponent as: any).maxFiles = maxFiles;
+    (uploadComponent, as: any).maxSize = maxSize
+    (uploadComponent as: any).showProgress = showProgress
+    (uploadComponent as: any).autoUpload = autoUpload
+    (uploadComponent as: any).maxFiles = maxFiles
     // sync retryAttempts imperatively instead of passing: unknown prop
-    (uploadComponent, as: any).retryAttempts = retryAttempts;
+    (uploadComponent, as: any).retryAttempts = retryAttempts
     // sync upload endpoint imperatively to avoid Props type error
-    (uploadComponent as: any).uploadEndpoint = uploadEndpoint;
-  });
+    (uploadComponent as: any).uploadEndpoint = uploadEndpoint});
 </script>
 
 <div class="space-y-4">
@@ -129,11 +128,10 @@
                   class="space-y-4"
                   id="maxSize"
                   oninput={(e) => {
-                    const target = e.target as HTMLInputElement | null;
+                    const target = e.target as HTMLInputElement | null
                     if (target) {
                       const v = parseInt(target.value || '0', 10);
-                      maxSize = Number.isNaN(v) ? 0 : v * 1024 * 1024;
-                    }
+                      maxSize = Number.isNaN(v) ? 0 : v * 1024 * 1024}
                   }}
                   value={Math.round(maxSize / 1024 / 1024)}
                   min="1"
@@ -162,8 +160,7 @@
           'video/mov',
           'audio/mp3',
           'audio/wav',
-          'audio/mpeg',
-        ]}
+          'audio/mpeg']}
       />
       <!-- Status, Display -->
       {#if uploadStatus}

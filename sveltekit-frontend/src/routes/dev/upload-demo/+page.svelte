@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
   import { submitWithProgress } from '$lib/api/submitWithProgress';
 
@@ -34,3 +34,4 @@
 <h3>Save metadata (JSON example)</h3>
 <pre>{JSON.stringify(metadata, null, 2)}</pre>
 <button onclick={saveMetadata}>Save metadata</button>
+

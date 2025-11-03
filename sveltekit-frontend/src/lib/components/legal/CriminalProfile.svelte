@@ -1,50 +1,47 @@
-<!-- Criminal Profile Component for Legal, AI, App -->
+﻿<!-- Criminal Profile Component for Legal, AI, App -->
 <script lang="ts">
 import type { Case } from '$lib/types';
   // Removed invalid runes import and problematic lucide-svelte named imports
   import { cn } from '$lib/utils';
   // --- CHANGED: Add minimal TS interfaces to avoid: "undefined" property access errors ---
   interface CriminalRecord {
-    id?: string;
-    offense?: string;
-    date?: string | Date;
-    jurisdiction?: string;
-    caseNumber?: string;
-    disposition?: keyof typeof dispositionConfig;
-    sentence?: string;
-  }
+    id?: string
+    offense?: string
+    date?: string | Date
+    jurisdiction?: string
+    caseNumber?: string
+    disposition?: keyof typeof dispositionConfig
+    sentence?: string}
   interface CriminalProfile {
-    id?: string;
+    id?: string
     personalInfo?: {
-      firstName?: string;
-      lastName?: string;
-      dateOfBirth?: string | Date;
+      firstName?: string
+      lastName?: string
+      dateOfBirth?: string | Date
       aliases?: string[];
-      placeOfBirth?: string;
-      gender?: string;
-      height?: string;
-      weight?: string;
-      eyeColor?: string;
-      hairColor?: string;
+      placeOfBirth?: string
+      gender?: string
+      height?: string
+      weight?: string
+      eyeColor?: string
+      hairColor?: string
       distinguishingMarks?: string[];
     };
     identification?: {
       mugshots?: string[];
-      ssn?: string;
-      driverLicense?: string;
-      passport?: string;
+      ssn?: string
+      driverLicense?: string
+      passport?: string
       biometrics?: {
         fingerprints?: any[];
-        dnaProfile?: boolean;
-        facialRecognition?: boolean;
-      };
+        dnaProfile?: boolean
+        facialRecognition?: boolean};
     };
-    currentStatus?: keyof typeof statusConfig;
+    currentStatus?: keyof typeof statusConfig
     riskAssessment?: { riskLevel?: keyof typeof riskConfig; flightRisk?: boolean; violentHistory?: boolean };
     warrants?: any[];
     criminalHistory?: CriminalRecord[];
-    notes?: string;
-  }
+    notes?: string}
   // --- CHANGED: Exported props made safe and renamed `class` -> `className` to avoid TS/Svelte edge cases ---
   const { profile } = $props<{ profile: CriminalProfile | undefined }>()
   const { viewMode } = $props<{ viewMode: 'full' | 'summary' | 'identification' }>()
@@ -62,12 +59,12 @@ import type { Case } from '$lib/types';
     extreme: { label: 'Extreme Risk', className: 'bg-red-500/20 text-red-400 border-red-500/30' }
   };
   const statusConfig = {
-    at_large: { label: 'At Large', className: 'bg-red-500/20 text-red-400', icon: '⚠️' },
-    incarcerated: { label: 'Incarcerated', className: 'bg-gray-500/20 text-gray-400', icon: '🔒' },
-    on_parole: { label: 'On Parole', className: 'bg-yellow-500/20 text-yellow-400', icon: '👁️' },
-    probation: { label: 'Probation', className: 'bg-blue-500/20 text-blue-400', icon: '📄' },
-    deceased: { label: 'Deceased', className: 'bg-gray-500/20 text-gray-400', icon: '⚰️' },
-    cleared: { label: 'Cleared', className: 'bg-green-500/20 text-green-400', icon: '✅' }
+    at_large: { label: 'At Large', className: 'bg-red-500/20 text-red-400', icon: 'âš ï¸' },
+    incarcerated: { label: 'Incarcerated', className: 'bg-gray-500/20 text-gray-400', icon: 'ðŸ”’' },
+    on_parole: { label: 'On Parole', className: 'bg-yellow-500/20 text-yellow-400', icon: 'ðŸ‘ï¸' },
+    probation: { label: 'Probation', className: 'bg-blue-500/20 text-blue-400', icon: 'ðŸ“„' },
+    deceased: { label: 'Deceased', className: 'bg-gray-500/20 text-gray-400', icon: 'âš°ï¸' },
+    cleared: { label: 'Cleared', className: 'bg-green-500/20 text-green-400', icon: 'âœ…' }
   };
   const dispositionConfig = {
     convicted: { label: 'Convicted', className: 'bg-red-500/20 text-red-400' },
@@ -86,36 +83,30 @@ import type { Case } from '$lib/types';
     let a = today.getFullYear() - b.getFullYear();
     const m = today.getMonth() - b.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < b.getDate())) a--;
-    return a;
-  }
+    return a}
   // Replace $derived runes with reactive statements
-  let age: number | undefined;
+  let age: number | undefined
   $effect(() => {
-
-    age = profile?.personalInfo?.dateOfBirth ? computeAge(profile.personalInfo.dateOfBirth) : undefined;
-
-  })
+    age = profile?.personalInfo?.dateOfBirth ? computeAge(profile.personalInfo.dateOfBirth) : undefined})
   let activeWarrants: any[] = [];
   $effect(() => {
-
     activeWarrants = (profile?.warrants ?? []).filter((w: any) => w?.status === 'active');
 
   })
   let recentRecords: CriminalRecord[] = [];
   $effect(() => {
-
     recentRecords = (profile?.criminalHistory ?? [])
       .slice()
       .sort((a, b) => toDate(b.date).getTime() - toDate(a.date).getTime())
       .slice(0, 5);
 
   })
-  let firstMugshot: string | undefined;
+  let firstMugshot: string | undefined
   let firstMugshot = $derived(profile?.identification?.mugshots && profile.identification.mugshots.length > 0
       ? profile.identification.mugshots[0]
       : undefined)
   // Replace icons with emoji/icon fallbacks to avoid lucide-svelte export issues
-  let statusInfo: { label: string;, className: string; icon?: string } = statusConfig.cleared;
+  let statusInfo: { label: string;, className: string; icon?: string } = statusConfig.cleared
   let statusInfo = $derived(statusConfig[profile?.currentStatus ?? 'cleared'] ?? statusConfig.cleared)
   function formatDate(date: string | Date): string {
     return toDate(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
@@ -123,8 +114,7 @@ import type { Case } from '$lib/types';
   function maskSSN(ssn?: string): string {
     if (!ssn) return '';
     if (!showSensitiveInfo) return `***-**-${ssn.slice(-4)}`;
-    return ssn;
-  }
+    return ssn}
   function getFullName(): string {
     const { firstName = '', lastName = '' } = profile?.personalInfo ?? {};
     return `${firstName} ${lastName}`.trim();
@@ -150,13 +140,13 @@ import type { Case } from '$lib/types';
           >
             <div class="w-full h-full flex items-center justify-center text-yorha-text-secondary">
               <!-- camera, emoji, fallback -->
-              <span class="text-xl">🖼️</span>
+              <span class="text-xl">ðŸ–¼ï¸</span>
             </div>
           </button>
         {:else}
           <div class="w-20 h-24 bg-yorha-bg-tertiary border border-yorha-border rounded flex items-center">
             <!-- user, emoji, fallback -->
-            <span class="text-2xl">👤</span>
+            <span class="text-2xl">ðŸ‘¤</span>
           {/if}
       </div>
       <!-- Profile, Info -->
@@ -164,7 +154,7 @@ import type { Case } from '$lib/types';
         <div class="flex items-start justify-between">
           <div>
             <h2 class="text-xl font-bold text-yorha-text-primary">{getFullName()}</h2>
-            <div class="text-sm text-yorha-text-secondary">ID: {profile?.id} •, Age: {age}</div>
+            <div class="text-sm text-yorha-text-secondary">ID: {profile?.id} â€¢, Age: {age}</div>
           </div>
           <!-- Current Status (computed reactively, in, script) -->
           <div class="flex items-center">
@@ -206,7 +196,7 @@ import type { Case } from '$lib/types';
       <div class="mt-3 p-3 bg-red-500/10 border border-red-500/20">
         <div class="flex items-center gap-2 text-red-400 font-medium text-sm font-mono">
           <!-- alert, emoji, fallback -->
-          <span class="text-sm">⚠️</span>
+          <span class="text-sm">âš ï¸</span>
           {activeWarrants.length} Active Warrant{activeWarrants.length !== 1 ? 's' : ''}
         </div>
         {#each Array.isArray(activeWarrants) ? activeWarrants : [] as warrant}
@@ -298,7 +288,7 @@ import type { Case } from '$lib/types';
           <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
             {#if profile.identification.biometrics.fingerprints?.length}
               <div class="flex items-center">
-                <span class="text-yorha-text-secondary">🔎</span>
+                <span class="text-yorha-text-secondary">ðŸ”Ž</span>
                 <span class="text-yorha-text-primary">
                   {profile.identification.biometrics.fingerprints.length} fingerprint record{profile.identification
                     .biometrics.fingerprints.length !== 1
@@ -308,12 +298,12 @@ import type { Case } from '$lib/types';
               {/if}
             {#if profile.identification.biometrics.dnaProfile}
               <div class="flex items-center gap-2">
-                <span class="text-yorha-text-secondary">🧬</span>
+                <span class="text-yorha-text-secondary">ðŸ§¬</span>
                 DNA profile on file
               {/if}
             {#if profile.identification.biometrics.facialRecognition}
               <div class="flex items-center gap-2">
-                <span class="text-yorha-text-secondary">📸</span>
+                <span class="text-yorha-text-secondary">ðŸ“¸</span>
                 Facial recognition data
               {/if}
           {/if}
@@ -336,9 +326,9 @@ import type { Case } from '$lib/types';
                       {record.offense}
                     </h4>
                     <div class="text-xs text-yorha-text-secondary">
-                      {formatDate(record.date)} • {record.jurisdiction}
+                      {formatDate(record.date)} â€¢ {record.jurisdiction}
                       {#if record.caseNumber}
-                        • Case #{record.caseNumber}
+                        â€¢ Case #{record.caseNumber}
                       {/if}
                     </div>
                   </div>
@@ -401,8 +391,7 @@ import type { Case } from '$lib/types';
     {/if}
 </div>
 <style>
-  .criminal-profile { transition: all 0.2s ease;
-  }
+  .criminal-profile { transition: all 0.2s ease}
 </style>
           </p>
         </div>
@@ -423,6 +412,6 @@ import type { Case } from '$lib/types';
     {/if}
 </div>
 <style>
-  .criminal-profile { transition: all 0.2s ease;
-  }
+  .criminal-profile { transition: all 0.2s ease}
 </style>
+

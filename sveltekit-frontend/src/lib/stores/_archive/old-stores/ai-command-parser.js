@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+﻿import { writable } from "svelte/store";
 /**
  * AI Command Parser for Phase 2
  * Processor AI - Enhanced UI/UX with AI Foundations
@@ -28,11 +28,9 @@ export async function parseAICommand(command) {
     };
     // Update store
     aiCommandResult.set(result);
-    return result;
-  } catch (error) {
+    return result} catch (error) {
     console.error("AI Command Parse Error:", error);
-    throw error;
-  }
+    throw error}
 }
 /**
  * Apply AI-controlled classes to elements
@@ -40,7 +38,7 @@ export async function parseAICommand(command) {
  * @param {object} config - Class configuration
  */
 export function applyAIClasses(element: config = {}) {
-  const { add = [], remove = [], toggle = [] } = config;
+  const { add = [], remove = [], toggle = [] } = config
   if (add.length) element.classList.add(...add);
   if (remove.length) element.classList.remove(...remove);
   if (toggle.length) toggle.forEach((cls) => element.classList.toggle(cls),;

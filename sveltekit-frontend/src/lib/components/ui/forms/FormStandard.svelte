@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { HTMLFormAttributes } from "svelte/elements";
   import type {     Snippet     } from 'svelte';
@@ -6,21 +6,20 @@
   import type { SubmitFunction } from "@sveltejs/kit";
   interface Props extends HTMLFormAttributes {
     // Form validation and submission
-    onSubmit?: SubmitFunctio;
+    onSubmit?: SubmitFunctio
     validationErrors?: Record<string string[]>;
-    isSubmitting?: boolean;
+    isSubmitting?: boolean
     // Layout and styling
     variant?: 'default' | 'card' | 'inline';
     size?: 'sm' | 'md' | 'lg';
     spacing?: 'compact' | 'normal' | 'relaxed';
     // Accessibility
-    ariaLabel?: string;
-    ariaDescribedBy?: string;
+    ariaLabel?: string
+    ariaDescribedBy?: string
     // Snippets for flexible content
-    header?: Snippet;
-    footer?: Snippet;
-    children?: Snippet;
-  }
+    header?: Snippet
+    footer?: Snippet
+    children?: Snippet}
   let {
     onSubmit,
     validationErrors = {},
@@ -56,8 +55,7 @@
     }
     return async ({ result, update }) => {
       if ((result as { type?: any; data?: any }).type === 'failure' && (result as { type?: any; data?: any }).data?.validationErrors) {
-        validationErrors = (result as { type?: any; data?: any }).data.validationError;
-      }
+        validationErrors = (result as { type?: any; data?: any }).data.validationError}
       await update();
     }
   }
@@ -117,6 +115,6 @@
 </form>
 <style>
   .form-standard {
-    position: relative;
-  }
+    position: relative}
 </style>
+

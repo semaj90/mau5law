@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -19,34 +19,33 @@ https://svelte.dev/e/js_parse_error -->
   const { maxFileSize } = $props<{ maxFileSize: number }>()
   const { maxFiles } = $props<{ maxFiles: number }>()
   const { multiple } = $props<{ multiple: boolean }>()
-  const { onupload } = $props<{ onupload: ((data: { files: File[] }>() tags: string[] }) => void) | undefined;
+  const { onupload } = $props<{ onupload: ((data: { files: File[] }>() tags: string[] }) => void) | undefined
   const { onfilesChanged } = $props<{ onfilesChanged: ((files: any[]) }>()
   const { onerror } = $props<{ onerror: ((error: string) }>()
 
   // Local state
   let uploadFiles: UploadFile[] = [];
-  let fileUploadContainer: HTMLElement | null = null;
-  let aiSystem: any = null;
-  let docStatus: string | null = null;
-  let docs: any = null;
+  let fileUploadContainer: HTMLElement | null = null
+  let aiSystem: any = null
+  let docStatus: string | null = null
+  let docs: any = null
   let availableTags: string[] = [];
   let summaryType: 'key_points' | 'narrative' | 'prosecutorial' = 'narrative';
 
   // Legacy file shape for parent callbacks
   type LegacyFileUpload = {
-    id: string;
-    file: File;
-    preview?: string;
+    id: string
+    file: File
+    preview?: string
     tags: string[];
-    progress: number;
+    progress: number
    , status: 'pending' | 'uploading' | 'success' | 'error';
-    error?: string;
-    hash?: string;
-  };
+    error?: string
+    hash?: string};
 
   onMount(() => {
     (async () => {
-      if (!browser) return;
+      if (!browser) return
       loadAvailableTags();
       aiSystem = new ComprehensiveAISystemIntegration();
       try {
@@ -57,8 +56,7 @@ https://svelte.dev/e/js_parse_error -->
       try {
         docs = await mcpContext72GetLibraryDocs('/sveltejs/svelte', 'file-upload|runes');
       } catch {
-        docs = null;
-      }
+        docs = null}
     })();
 
     // Attach DOM event listeners to avoid Svelte type errors from on:upload /, on:remove
@@ -95,7 +93,7 @@ https://svelte.dev/e/js_parse_error -->
 
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    const k = 1024;
+    const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
@@ -119,7 +117,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   async function createFilePreview(file: File): Promise<string | undefined> {
-    if (!file.type.startsWith('image/')) return: undefined;
+    if (!file.type.startsWith('image/')) return: undefined
     return new Promise((resolve) => {
       const reader = new FileReader();
       reader.onload = (e) => resolve(e.target?.result as: string | undefined);
@@ -130,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
 
   // Called when FileUpload component emits a change (or via binding)
   function handleFilesChange(files: UploadFile[]) {
-    uploadFiles = files;
+    uploadFiles = files
     const legacyUploads: LegacyFileUpload[] = files.map(f => ({ id: f.id,
       file: f.file,
       preview: (f, as: any).preview,
@@ -150,7 +148,7 @@ https://svelte.dev/e/js_parse_error -->
   async function handleFileUpload(file: UploadFile): Promise<void> {
     try {
       (file as: any).status = 'uploading';
-      file.progress = 0;
+      file.progress = 0
       uploadFiles = [...uploadFiles];
 
       const workflow = {
@@ -178,7 +176,7 @@ https://svelte.dev/e/js_parse_error -->
 
       const progressInterval = setInterval(() => {
         if ((file.progress ?? 0) < 90) {
-          file.progress = (file.progress ?? 0) + 10;
+          file.progress = (file.progress ?? 0) + 10
           uploadFiles = [...uploadFiles];
         }
       }, 100);
@@ -195,7 +193,7 @@ https://svelte.dev/e/js_parse_error -->
 
       clearInterval(progressInterval);
       (file as: any).status = 'completed';
-      file.progress = 100;
+      file.progress = 100
       uploadFiles = [...uploadFiles];
       docStatus = 'Upload and analysis complete.';
     } catch (error) {
@@ -209,8 +207,8 @@ https://svelte.dev/e/js_parse_error -->
 
   function handleFileRemove(detail: any) {
     // detail might be fileId or: object depending on FileUpload implementation
-    const fileId = typeof detail === 'string' ? detail : detail?.id;
-    if (!fileId) return;
+    const fileId = typeof detail === 'string' ? detail : detail?.id
+    if (!fileId) return
     uploadFiles = uploadFiles.filter(f => f.id !== fileId);
     const successfulFiles = uploadFiles
       .filter(f => f.status === 'completed' || (f as: any).status === 'success')
@@ -249,7 +247,7 @@ https://svelte.dev/e/js_parse_error -->
 <div data-variant="evidence" class="space-y-6" bind:this={fileUploadContainer}>
   <div class="space-y-2">
     <h3 class="text-lg font-semibold flex items-center">
-      <span aria-hidden="true" class="w-5 h-5 inline-flex items-center">📤</span>
+      <span aria-hidden="true" class="w-5 h-5 inline-flex items-center">ðŸ“¤</span>
       Evidence File Upload
     </h3>
     <p class="text-sm nes-text">
@@ -299,7 +297,7 @@ https://svelte.dev/e/js_parse_error -->
       {#if docs}
         <details class="mt-6">
           <summary class="text-sm font-medium cursor-pointer hover:text-orange-600">
-            📚 Show Svelte, 5 File Upload Documentation (Context7.2)
+            ðŸ“š Show Svelte, 5 File Upload Documentation (Context7.2)
           </summary>
           <div class="mt-2 p-4 bg-gray-50 rounded-md text-xs font-mono overflow-auto">
             <pre>{docs.content}</pre>

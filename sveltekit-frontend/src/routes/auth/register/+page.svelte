@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Simple Register Page - Svelte, 5 Compatible
   Basic registration without complex UI dependencies
 -->
@@ -6,9 +6,8 @@
   // Svelte, 5 runes are auto-imported
   import { enhance } from '$app/forms';
   interface Props {
-    data?: any;
-    form?: any;
-  }
+    data?: any
+    form?: any}
   let { data, form }: Props = $props();
   let isLoading = $state<boolean>(false);
   let showPassword = $state<boolean>(false);
@@ -34,9 +33,9 @@
         method="POST"
         action="?/register"
         use:enhance={({ formData, cancel }) => {
-          isLoading = true;
+          isLoading = true
           return async ({ result }) => {
-            isLoading = false;
+            isLoading = false
             if ((result as { type?: any }).type === 'redirect') {
               // Let SvelteKit handle the redirect
             }
@@ -213,3 +212,4 @@
     </div>
   </div>
 </div>
+

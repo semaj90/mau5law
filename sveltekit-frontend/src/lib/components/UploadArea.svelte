@@ -1,25 +1,24 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    onFileSelected?: (files: File[]) => void;
-    accept?: string;
-    multiple?: boolean;
-    maxFiles?: number;
-  }
+    onFileSelected?: (files: File[]) => void
+    accept?: string
+    multiple?: boolean
+    maxFiles?: number}
   let { onFileSelected = (files: File[]) => {}, accept = '*', multiple = false }: Props = $props();
   let dragActive = $state<boolean>(false);
   let fileInput = $state<HTMLInputElement | null>(null);
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false;
-    const dt = e.dataTransfer;
+    dragActive = false
+    const dt = e.dataTransfer
     if (dt?.files && dt.files.length) {
       const files = Array.from(dt.files) as File[];
       onFileSelected(files);
     }
   }
   function handleFileSelect(e: Event) {
-    const target = e.target as HTMLInputElement | null;
+    const target = e.target as HTMLInputElement | null
     if (target?.files && target.files.length) {
       const files = Array.from(target.files) as File[];
       onFileSelected(files);
@@ -38,8 +37,7 @@
   // new: ensure dragenter sets active state reliably
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
-    dragActive = true;
-  }
+    dragActive = true}
 </script>
 <!-- new: click opens dialog; keyboard opens dialog; region, is, focusable -->
 <div
@@ -59,7 +57,7 @@
 >
   <input bind:this={fileInput} type="file" {accept} {multiple} onchange={handleFileSelect} class="hidden" />
   <div class="space-y-4">
-    <div class="text-4xl">📁</div>
+    <div class="text-4xl">ðŸ“</div>
     <div>
       <p id="upload-help" class="text-lg">Drop files here or click to browse</p>
       <p class="text-sm">Supports all file types</p>
@@ -74,3 +72,4 @@
     </button>
   </div>
 </div>
+

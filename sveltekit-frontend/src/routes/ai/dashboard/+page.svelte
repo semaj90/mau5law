@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
 	import { onMount } from 'svelte';
 	// UI components (existing bits-ui / enhanced-bits-ui)
@@ -27,7 +27,7 @@ import type { Document } from '$lib/types';
 	}
 
 	async function checkSystemStatus(): Promise<any> {
-		loading = true;
+		loading = true
 		error = '';
 		try {
 			const res = await fetch('/api/v1/cluster/health');
@@ -53,8 +53,7 @@ import type { Document } from '$lib/types';
 			};
 			pushToast('Health check failed', 'error');
 		} finally {
-			loading = false;
-		}
+			loading = false}
 	}
 
 	onMount(() => {
@@ -85,7 +84,7 @@ import type { Document } from '$lib/types';
 <div class="ai-dashboard-container">
 	<header class="header flex">
 		<h1 class="title">AI Dashboard</h1>
-		<p class="subtitle">Cluster overview · quick actions · service health</p>
+		<p class="subtitle">Cluster overview Â· quick actions Â· service health</p>
 	</header>
 
 	<main class="grid">
@@ -147,8 +146,8 @@ import type { Document } from '$lib/types';
 				<CardContent>
 					<ul class="insights">
 						<li>Recent ingestion, 3 documents (last 24h)</li>
-						<li>Vector DB: 12,312 vectors · top similarity cache hit 82%</li>
-						<li>Pending OCR jobs: 1 · GPU queue, depth: low</li>
+						<li>Vector DB: 12,312 vectors Â· top similarity cache hit 82%</li>
+						<li>Pending OCR jobs: 1 Â· GPU queue, depth: low</li>
 					</ul>
 				</CardContent>
 			</Card>
@@ -202,138 +201,115 @@ import type { Document } from '$lib/types';
 
 <style>
 	.ai-dashboard-container {
-		padding: 1rem;
-		max-width: 1200px;
-		margin: 0 auto;
-	}
+		padding: 1rem
+		max-width: 1200px
+		margin: 0 auto}
 
 	.header {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-		margin-bottom: 1rem;
-	}
+		display: flex
+		flex-direction: column
+		gap: 0.25rem
+		margin-bottom: 1rem}
 
 	.title {
-		font-size: 1.25rem;
-		margin: 0;
-	}
+		font-size: 1.25rem
+		margin: 0}
 
 	.subtitle { color: var(--muted, #6b7280);
-		font-size: 0.95rem;
-		margin: 0;
-	}
+		font-size: 0.95rem
+		margin: 0}
 
 	.grid {
-		display: grid;
-		grid-template-columns: 1fr 360px;
-		gap: 1rem;
-		align-items: start;
-	}
+		display: grid
+		grid-template-columns: 1fr 360px
+		gap: 1rem
+		align-items: start}
 
 	.mt {
-		margin-top: 1rem;
-	}
+		margin-top: 1rem}
 
 	.status-list {
-		margin: 0.75rem 0;
-	}
+		margin: 0.75rem 0}
 
 	.status-row {
-		display: flex;
-		gap: 0.75rem;
-		flex-wrap: wrap;
-	}
+		display: flex
+		gap: 0.75rem
+		flex-wrap: wrap}
 
 	.status-item {
-		min-width: 160px;
-	}
+		min-width: 160px}
 
 	.label {
-		font-size: 0.85rem;
+		font-size: 0.85rem
 	, color: var(--muted, #6b7280);
-		margin-bottom: 0.25rem;
-	}
+		margin-bottom: 0.25rem}
 
 	.pill {
-		display: inline-block;
-		padding: 0.25rem 0.6rem;
-		border-radius: 999px;
-		font-size: 0.85rem;
-		font-weight: 600;
-	}
+		display: inline-block
+		padding: 0.25rem 0.6rem
+		border-radius: 999px
+		font-size: 0.85rem
+		font-weight: 600}
 
 	.pill.on {
-		background: #ecfdf5;
-		color: #065f46;
-	}
+		background: #ecfdf5
+		color: #065f46}
 
 	.pill.off {
-		background: #fff7f7;
-		color: #7f1d1d;
-	}
+		background: #fff7f7
+		color: #7f1d1d}
 
 	.actions {
-		display: flex;
-		gap: 0.5rem;
-		margin-top: 0.75rem;
-		flex-wrap: wrap;
-	}
+		display: flex
+		gap: 0.5rem
+		margin-top: 0.75rem
+		flex-wrap: wrap}
 
 	.muted { color: var(--muted, #6b7280);
-		font-size: 0.95rem;
-	}
+		font-size: 0.95rem}
 
 	.error {
-		margin-top: 0.5rem;
-		color: #9b2c2c;
-		background: #fff5f5;
-		padding: 0.5rem;
-		border-radius: 6px;
-	}
+		margin-top: 0.5rem
+		color: #9b2c2c
+		background: #fff5f5
+		padding: 0.5rem
+		border-radius: 6px}
 
 	.health-table {
 		width: 100%;
-		border-collapse: collapse;
-	}
+		border-collapse: collapse}
 
 	.health-table th {
-		text-align: left;
-		padding: 0.5rem 0;
+		text-align: left
+		padding: 0.5rem 0
 	, color: var(--muted, #6b7280);
-		font-size: 0.85rem;
-	}
+		font-size: 0.85rem}
 
 	.health-table td {
-		padding: 0.5rem 0;
-	}
+		padding: 0.5rem 0}
 
 	.toasts {
-		position: fixed;
-		right: 1rem;
-		top: 1rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		z-index: 9999;
-	}
+		position: fixed
+		right: 1rem
+		top: 1rem
+		display: flex
+		flex-direction: column
+		gap: 0.5rem
+		z-index: 9999}
 
 	.toast {
-		padding: 0.5rem 0.75rem;
-		border-radius: 6px;
-	, color: white;
+		padding: 0.5rem 0.75rem
+		border-radius: 6px
+	, color: white
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-		font-size: 0.92rem;
-	}
+		font-size: 0.92rem}
 
 	.toast.info {
-		background: #2b6cb0;
-	}
+		background: #2b6cb0}
 
 	.toast.success {
-		background: #2f855a;
-	}
+		background: #2f855a}
 
-	.toast.error { background: #c53030;
-	}
+	.toast.error { background: #c53030}
 </style>
+

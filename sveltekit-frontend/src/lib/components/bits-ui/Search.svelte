@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import  VectorCard  from "./VectorCard.svelte";
   const { searchUrl } = $props<{ searchUrl: string }>()
   const { onSelect } = $props<{ onSelect: (item: any) }>()
@@ -21,7 +21,8 @@
   </div>
 </div>
 <style>
-.bits-search { display: block; }
+.bits-search { display: block}
 .search-bar { display:flex;, gap:.5rem }
 .results { margin-top: .75rem }
 </style>
+

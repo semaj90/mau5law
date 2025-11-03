@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { getAvailableModels, runInference } from '$lib/llm/tauri-llm';
   let models: string[] = $state([]);
   let selectedModel = $state<string>('');
@@ -17,8 +17,8 @@
     })();
   });
   async function handleInference(): Promise<any> {
-    if (!selectedModel || !prompt.trim()) return;
-    loading = true;
+    if (!selectedModel || !prompt.trim()) return
+    loading = true
     error = '';
     result = '';
     try {
@@ -26,8 +26,7 @@
     } catch (e) {
       error = 'Inference failed.';
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
 </script>
 <div class="space-y-4">
@@ -58,59 +57,51 @@
 <style>
   /* @unocss-include */
   .llm-inference-container {
-    max-width: 500px;
-    margin: 2rem auto;
-    padding: 2rem;
-   , background: #fff;
-    border-radius: 12px;
+    max-width: 500px
+    margin: 2rem auto
+    padding: 2rem
+   , background: #fff
+    border-radius: 12px
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-    font-family: 'Segoe UI', Arial, sans-serif;
-  }
+    font-family: 'Segoe UI', Arial, sans-serif}
   .model-select,
   .prompt-input {
-    margin-bottom: 1.5rem;
-  }
+    margin-bottom: 1.5rem}
   label {
-    font-weight: 600;
-   , display: block;
-    margin-bottom: 0.5rem;
-  }
+    font-weight: 600
+   , display: block
+    margin-bottom: 0.5rem}
   select,
   textarea {
     width: 100%;
-    padding: 0.75rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-  }
+    padding: 0.75rem
+    border-radius: 6px
+    border: 1px solid #ccc
+    font-size: 1rem
+    margin-bottom: 0.5rem}
   .run-btn {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    padding: 0.75rem 1.5rem;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
+    background: #007bff
+    color: #fff
+    border: none
+    padding: 0.75rem 1.5rem
+    border-radius: 6px
+    font-size: 1rem
+    font-weight: 600
+    cursor: pointer
+    transition: background 0.2s}
   .run-btn:disabled {
-    background: #b0c4de;
-   , cursor: not-allowed;
-  }
+    background: #b0c4de
+   , cursor: not-allowed}
   .run-btn:not(:disabled):hover {
-    background: #0056b3;
-  }
+    background: #0056b3}
   .result {
-    margin-top: 2rem;
-    background: #f8f9fa;
-    border-radius: 6px;
-    padding: 1rem;
-    font-size: 1rem;
-  }
-  .error { color: #b30000;
-    margin-top: 1rem;
-    font-weight: 600;
-  }
+    margin-top: 2rem
+    background: #f8f9fa
+    border-radius: 6px
+    padding: 1rem
+    font-size: 1rem}
+  .error { color: #b30000
+    margin-top: 1rem
+    font-weight: 600}
 </style>
+

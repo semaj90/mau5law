@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Pattern Detection Test Page - Enhanced-Bits Architecture
   Testing the PatternDetectionInterface with Enhanced-Bits UI components
 -->
@@ -17,7 +17,6 @@
 
 <style>
   .page-container {
-    min-height: 100vh;
-   , background: #f8fafc;
-  }
+    min-height: 100vh
+   , background: #f8fafc}
 </style>

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import type { Document } from '$lib/types';
   import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
   import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
@@ -9,18 +9,17 @@
   // Add Job type so $state infers properly (prevents 'never' issues)
   type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
   interface Job {
-    id: string;
-    documentId: string;
-    analysisType: string;
-    priority: string;
-    status: JobStatus;
-    progress: number;
-    createdAt?: string;
-    startedAt?: string;
-    completedAt?: string;
-    useGPU?: boolean;
-    bankId?: number | null;
-    gpuLayers?: number;
+    id: string
+    documentId: string
+    analysisType: string
+    priority: string
+    status: JobStatus, progress: number
+    createdAt?: string
+    startedAt?: string
+    completedAt?: string
+    useGPU?: boolean
+    bankId?: number | null
+    gpuLayers?: number
     results?: { confidence: number; entities: number; risks?: number };
   }
 
@@ -71,9 +70,9 @@
       }
       // Load initial metrics
       await updateSystemMetrics();
-      console.log('🎯 AI Processing Dashboard initialized with NES-GPU optimization');
+      console.log('ðŸŽ¯ AI Processing Dashboard initialized with NES-GPU optimization');
     } catch (error) {
-      console.error('❌ Failed to initialize NES-GPU bridge:', error);
+      console.error('âŒ Failed to initialize NES-GPU bridge:', error);
     }
   }
 
@@ -135,7 +134,7 @@
       const newJob = processingQueue[0];
       newJob.status = 'processing';
       newJob.startedAt = new Date().toISOString();
-      newJob.progress = 0;
+      newJob.progress = 0
       activeJobs = [...activeJobs, newJob];
       processingQueue = processingQueue.slice(1);
     }
@@ -143,8 +142,7 @@
 
   async function loadProcessingHistory(): Promise<any> {
     // Mock processing history
-    completedJobs = [
-      {
+    completedJobs = [ {
         id: 'job_001',
         documentId: 'contract_2024_001',
         analysisType: 'semantic',
@@ -154,8 +152,7 @@
         startedAt: new Date(Date.now() - 3600000).toISOString(),
         completedAt: new Date(Date.now() - 3300000).toISOString(),
         results: { confidence: 0.94, entities: 12, risks: 2 }
-      },
-      {
+      }, {
         id: 'job_002',
         documentId: 'evidence_2024_047',
         analysisType: 'entity_extraction',
@@ -167,8 +164,7 @@
         results: { confidence: 0.87, entities: 8, risks: 0 }
       }
     ];
-    activeJobs = [
-      {
+    activeJobs = [ {
         id: 'job_003',
         documentId: 'brief_2024_023',
         analysisType: 'precedent_matching',
@@ -188,10 +184,9 @@
 
     if (!newJobForm.documentId.trim()) {
       newJobForm.errors = { documentId: ['Document ID is required'] };
-      return;
-    }
+      return}
 
-    isProcessing = true;
+    isProcessing = true
     newJobForm.errors = {} as Record<string, string[]>;
 
     try {
@@ -214,8 +209,7 @@
       }
 
       processingQueue = [...processingQueue, job];
-      showJobDialog = false;
-
+      showJobDialog = false
       // Reset form
       newJobForm = {
         documentId: '',
@@ -228,8 +222,7 @@
       console.error('Failed to submit job:', error);
       newJobForm.errors = { general: ['Failed to submit processing job'] };
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   }
 
   function cancelJob(jobId: string) {
@@ -258,7 +251,7 @@
 
   // changed: accept: undefined and return a safe placeholder
   function formatTimeAgo(timestamp?: string) {
-    if (!timestamp) return '—';
+    if (!timestamp) return 'â€”';
     const date = new Date(timestamp);
     const now = new Date();
     const diffMs = now.getTime() - date.getTime();
@@ -294,7 +287,7 @@
       <div>
         <h1 class="text-3xl font-bold text-gray-900 flex items-center">
           <!-- replaced icon component with emoji span -->
-          <span class="w-8 h-8">🧠</span> AI Processing Dashboard
+          <span class="w-8 h-8">ðŸ§ </span> AI Processing Dashboard
         </h1>
         <p class="text-gray-600">Real-time legal document processing with NES-GPU memory bridge optimization</p>
       </div>
@@ -303,13 +296,13 @@
           onclick={() => (realTimeStats = !realTimeStats)}
           class="flex items-center gap-2 px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
         >
-          <span class="w-4">🖥️</span> Real-time: {realTimeStats ? 'ON' : 'OFF'}
+          <span class="w-4">ðŸ–¥ï¸</span> Real-time: {realTimeStats ? 'ON' : 'OFF'}
         </button>
         <button
           onclick={() => (showJobDialog = true)}
           class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm text-sm font-medium hover:bg-blue-700"
         >
-          <span class="w-4">▶️</span> New Processing Job
+          <span class="w-4">â–¶ï¸</span> New Processing Job
         </button>
       </div>
     </div>
@@ -321,7 +314,7 @@
     <div class="bg-white rounded-lg shadow">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-medium">NES Memory Banks</h3>
-        <span class="w-5 h-5">💾</span>
+        <span class="w-5 h-5">ðŸ’¾</span>
       </div>
       <div class="space-y-3">
         <div>
@@ -355,7 +348,7 @@
     <div class="bg-white rounded-lg shadow">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-medium">GPU Processing</h3>
-        <span class="w-5 h-5">🖥️</span>
+        <span class="w-5 h-5">ðŸ–¥ï¸</span>
       </div>
       <div class="text-center">
         <div class="text-3xl font-bold">{Math.round(systemMetrics.gpuUtilization)}%</div>
@@ -370,7 +363,7 @@
     <div class="bg-white rounded-lg shadow">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-medium">Glyph Cache</h3>
-        <span class="w-5 h-5">🗄️</span>
+        <span class="w-5 h-5">ðŸ—„ï¸</span>
       </div>
       <div class="text-center">
         <div class="text-3xl font-bold">{Math.round(systemMetrics.glyphCacheHitRate)}%</div>
@@ -385,7 +378,7 @@
     <div class="bg-white rounded-lg shadow">
       <div class="flex items-center justify-between">
         <h3 class="text-sm font-medium">Bank Switching</h3>
-        <span class="w-5 h-5">🔀</span>
+        <span class="w-5 h-5">ðŸ”€</span>
       </div>
       <div class="text-center">
         <div class="text-3xl font-bold">{systemMetrics.bankSwitchingFreq}</div>
@@ -403,7 +396,7 @@
     <div class="bg-white rounded-lg">
       <div class="px-6 py-4 border-b">
         <h3 class="text-lg font-medium text-gray-900 flex items-center">
-          <span class="w-5">⏰</span> Queue ({processingQueue.length})
+          <span class="w-5">â°</span> Queue ({processingQueue.length})
         </h3>
       </div>
       <div class="p-6">
@@ -416,7 +409,7 @@
               </span>
             </div>
             <div class="text-xs">
-              {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
+              {job.analysisType} Â· {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} Â· {formatTimeAgo(job.createdAt)}
             </div>
             <div class="flex justify-end">
               <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800" type="button">
@@ -427,7 +420,7 @@
         {/each}
         {#if processingQueue.length === 0}
           <div class="text-center py-8">
-            <span class="w-8 h-8 mx-auto mb-2">⏰</span>
+            <span class="w-8 h-8 mx-auto mb-2">â°</span>
             <p>No jobs in queue</p>
           </div>
         {/if}
@@ -438,7 +431,7 @@
     <div class="bg-white rounded-lg">
       <div class="px-6 py-4 border-b">
         <h3 class="text-lg font-medium text-gray-900 flex items-center">
-          <span class="w-5">⚡</span> Processing ({activeJobs.length})
+          <span class="w-5">âš¡</span> Processing ({activeJobs.length})
         </h3>
       </div>
       <div class="p-6">
@@ -457,9 +450,9 @@
               ></div>
             </div>
             <div class="text-xs text-gray-500">
-              <div>{job.analysisType} · {Math.round(job.progress)}% complete</div>
+              <div>{job.analysisType} Â· {Math.round(job.progress)}% complete</div>
               <div>
-                {job.bankId ? `Bank ${getBankName(job.bankId)} · GPU Layers: ${job.gpuLayers || 0}` : 'CPU Processing'}
+                {job.bankId ? `Bank ${getBankName(job.bankId)} Â· GPU Layers: ${job.gpuLayers || 0}` : 'CPU Processing'}
               </div>
               <div>Started {formatTimeAgo(job.startedAt)}</div>
             </div>
@@ -467,7 +460,7 @@
         {/each}
         {#if activeJobs.length === 0}
           <div class="text-center py-8">
-            <span class="w-8 h-8 mx-auto mb-2">⚡</span>
+            <span class="w-8 h-8 mx-auto mb-2">âš¡</span>
             <p>No active processing</p>
           </div>
         {/if}
@@ -478,7 +471,7 @@
     <div class="bg-white rounded-lg">
       <div class="px-6 py-4 border-b">
         <h3 class="text-lg font-medium text-gray-900 flex items-center">
-          <span class="w-5">✅</span> Completed ({completedJobs.length})
+          <span class="w-5">âœ…</span> Completed ({completedJobs.length})
         </h3>
       </div>
       <div class="p-6 max-h-96">
@@ -486,12 +479,12 @@
           <div class="p-3 border border-green-200 bg-green-50 rounded-lg">
             <div class="flex items-center justify-between">
               <span class="font-medium">{job.documentId}</span>
-              <span class="px-2 py-1 rounded-full text-xs"> ✓ Done </span>
+              <span class="px-2 py-1 rounded-full text-xs"> âœ“ Done </span>
             </div>
             <div class="text-xs text-gray-600">
               <div>{job.analysisType}</div>
               {#if job.results}
-                <div>Confidence: {Math.round(job.results.confidence * 100)}% · Entities: {job.results.entities}</div>
+                <div>Confidence: {Math.round(job.results.confidence * 100)}% Â· Entities: {job.results.entities}</div>
               {/if}
               <div>Completed {formatTimeAgo(job.completedAt)}</div>
             </div>
@@ -499,7 +492,7 @@
         {/each}
         {#if completedJobs.length === 0}
           <div class="text-center py-8">
-            <span class="w-8 h-8 mx-auto mb-2">✅</span>
+            <span class="w-8 h-8 mx-auto mb-2">âœ…</span>
             <p>No completed jobs</p>
           </div>
         {/if}
@@ -510,7 +503,7 @@
   <!-- Performance Stats -->
   <div class="mt-8 bg-white rounded-lg shadow">
     <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
-      <span class="w-5">📊</span> Performance Statistics
+      <span class="w-5">ðŸ“Š</span> Performance Statistics
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-4">
       <div class="text-center">
@@ -646,4 +639,5 @@
     </div>
   </div>
 {/if}
+
 

@@ -1,18 +1,17 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { HTMLButtonAttributes } from 'svelte/elements';
   interface LoadingButtonProps extends Omit<HTMLButtonAttributes 'type'> {
-    loading?: boolean;
-    disabled?: boolean;
-    spinnerClass?: string;
+    loading?: boolean
+    disabled?: boolean
+    spinnerClass?: string
     type?: 'button' | 'submit' | 'reset';
-    ariaLabel?: string;
+    ariaLabel?: string
     variant?: 'primary' | 'secondary' | 'destructive' | 'outline' | 'ghost';
     size?: 'sm' | 'md' | 'lg';
-    loadingText?: string;
-    children?: import('svelte').Snippet;
-    onclick?: (_event: MouseEvent) => void;
-  }
+    loadingText?: string
+    children?: import('svelte').Snippet
+    onclick?: (_event: MouseEvent) => void}
   let {
     loading = false,
     disabled = false,
@@ -25,8 +24,7 @@
     class: className = '',
     children,
     onclick,
-    ...rest;
-  }: LoadingButtonProps = $props();
+    ...rest}: LoadingButtonProps = $props();
   let isDisabled = $derived(disabled || loading);
   // Generate button classes based on variant and size
   let buttonClasses = $derived([
@@ -40,8 +38,7 @@
   function handleClick(_event: MouseEvent) {
     if (isDisabled) {
       event.preventDefault();
-      return;
-    }
+      return}
     onclick?.(event);
   }
 </script>
@@ -76,93 +73,77 @@
 </button>
 <style>
   .loading-button {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0.375rem;
-    font-weight: 500;
-    transition all 0.2s ease-in-out;
-    border: 1px solid transparent;
-    cursor: pointer;
-    user-select: none;
-  }
+    position: relative
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    border-radius: 0.375rem
+    font-weight: 500
+    transition all 0.2s ease-in-out
+    border: 1px solid transparent
+    cursor: pointer
+    user-select: none}
   .loading-button__content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-  }
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 0.5rem}
   .loading-button__spinner {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+    display: inline-flex
+    align-items: center
+    justify-content: center}
   .spinner-icon {
-    width: 1rem;
-    height: 1rem;
-    animation spin 1s linear infinite;
-  }
+    width: 1rem
+    height: 1rem
+    animation spin 1s linear infinite}
   .spinner-circle {
-    opacity: 0.25;
-  }
+    opacity: 0.25}
   .spinner-path {
-    opacity: 0.75;
-  }
+    opacity: 0.75}
   .loading-button__text {
-    transition opacity 0.2s ease-in-out;
-  }
+    transition opacity 0.2s ease-in-out}
   .loading-button__text--loading {
-    opacity: 0.8;
-  }
+    opacity: 0.8}
 /* Size variants */ {}
   .loading-button--sm {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
+    padding: 0.25rem 0.75rem
+    font-size: 0.875rem
+    line-height: 1.25rem}
   .loading-button--sm .spinner-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-  }
+    width: 0.875rem
+    height: 0.875rem}
   .loading-button--md {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-  }
+    padding: 0.5rem 1rem
+    font-size: 0.875rem
+    line-height: 1.25rem}
   .loading-button--lg {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    line-height: 1.5rem;
-  }
+    padding: 0.75rem 1.5rem
+    font-size: 1rem
+    line-height: 1.5rem}
   .loading-button--lg .spinner-icon {
-    width: 1.25rem;
-   , height: 1.25rem;
-  }
+    width: 1.25rem
+   , height: 1.25rem}
 /* Color variants */ {}
   .loading-button--primary {
     background-color: rgb(59, 130, 246);
-    color: white;
-  }
+    color: white}
   .loading-button--primary:hover:not(.loading-button--disabled) {
     background-color: rgb(37, 99, 235);
   }
   .loading-button--secondary {
     background-color: rgb(107, 114, 128);
-    color: white;
-  }
+    color: white}
   .loading-button--secondary:hover:not(.loading-button--disabled) {
     background-color: rgb(75, 85, 99);
   }
   .loading-button--destructive {
     background-color: rgb(239, 68, 68);
-    color: white;
-  }
+    color: white}
   .loading-button--destructive:hover:not(.loading-button--disabled) {
     background-color: rgb(220, 38, 38);
   }
   .loading-button--outline {
-    background-color: transparent;
+    background-color: transparent
     border-color: rgb(209, 213, 219);
     color: rgb(55, 65, 81);
   }
@@ -171,7 +152,7 @@
     border-color: rgb(156, 163, 175);
   }
   .loading-button--ghost {
-    background-color: transparent;
+    background-color: transparent
    , color: rgb(55, 65, 81);
   }
   .loading-button--ghost:hover:not(.loading-button--disabled) {
@@ -179,13 +160,11 @@
   }
 /* Disabled state */ {}
   .loading-button--disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    pointer-events: none;
-  }
+    opacity: 0.6
+    cursor: not-allowed
+    pointer-events: none}
   .loading-button--loading {
-    cursor: wait;
-  }
+    cursor: wait}
 /* Spin animation */ {}
   @keyframes spin {
     from { transform: rotate(0deg);
@@ -197,18 +176,15 @@
 /* Focus styles */ {}
   .loading-buttonfocus-visible {
     outline: 2px solid rgb(59, 130, 246);
-    outline-offset: 2px;
-  }
+    outline-offset: 2px}
 /* Loading state animation */ {}
   .loading-button--loading .loading-button__content {
-    animation loadingPulse 1.5s ease-in-out infinite;
-  }
+    animation loadingPulse 1.5s ease-in-out infinite}
   @keyframes loadingPulse {
 0%, {}
     100% {
-      opacity: 1;
-    }
-    50% { opacity: 0.8;
-    }
+      opacity: 1}
+    50% { opacity: 0.8}
   }
 </style>
+

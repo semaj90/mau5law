@@ -1,4 +1,4 @@
-<!-- Simple test homepage to verify, routing, works -->
+﻿<!-- Simple test homepage to verify, routing, works -->
 <script lang="ts">
   import { goto } from '$app/navigation';
   import { browser } from '$app/environment';
@@ -10,7 +10,7 @@
 
   onMount(() => {
     if (browser) {
-      currentUrl = window.location.href;
+      currentUrl = window.location.href
       currentTime = new Date().toLocaleString();
     }
   });
@@ -58,3 +58,4 @@
     </div>
   </div>
 </div>
+

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 
   import { createEventDispatcher } from 'svelte';
   import type { ButtonVariant, ButtonSize } from '$lib/ui/types/Button';
@@ -16,8 +16,7 @@
   function handleClick(event: MouseEvent) {
     if (disabled) {
       event.preventDefault();
-      return;
-    }
+      return}
     dispatch('click', event);
   }
 
@@ -63,3 +62,4 @@
 <style lang="postcss">
   /* UnoCSS handles most styling, but custom styles can go here if needed */
 </style>
+

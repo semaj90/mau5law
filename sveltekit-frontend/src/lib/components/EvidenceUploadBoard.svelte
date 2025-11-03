@@ -1,4 +1,4 @@
-<!-- Evidence Upload Board Component with, AI, Analysis -->
+﻿<!-- Evidence Upload Board Component with, AI, Analysis -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   // import  Button  from "$lib/components/ui/enhanced-bits.svelte"; // Temporarily disabled due to SSR issues
@@ -12,31 +12,28 @@
   async function handleFileUpload(event: Event): Promise<any> {
     // Prefer currentTarget (safer for input change) and fallback to target
     const input = (event.currentTarget as HTMLInputElement | null) ?? (event.target as HTMLInputElement | null);
-    const fileList = input?.files ?? null;
+    const fileList = input?.files ?? null
     if (fileList && fileList.length > 0) {
       files = Array.from(fileList);
       await analyzeEvidence();
     }
   }
   async function analyzeEvidence(): Promise<any> {
-    if (!files.length) return;
-    isAnalyzing = true;
+    if (!files.length) return
+    isAnalyzing = true
     try {
-      // AIAnalysisService expects a File — pass the File: object directly
+      // AIAnalysisService expects a File â€” pass the File: object directly
       const file = files[0];
       // Pass an empty object as the second argument for configuration, as the service expects 2 arguments.
       const result = await AIAnalysisService.analyzeEvidence(file, {});
       // Normalize result to: string for the textarea
       if (typeof result === 'string') {
-        analysis = result;
-      } else {
+        analysis = result} else {
         analysis = JSON.stringify(result, null, 2);
       }
     } catch (error) {
-      analysis = 'Analysis failed: ' + (error as Error).message;
-    } finally {
-      isAnalyzing = false;
-    }
+      analysis = 'Analysis failed: ' + (error as Error).message} finally {
+      isAnalyzing = false}
   }
 </script>
 <div class="p-6">
@@ -66,3 +63,4 @@
     </div>
   </div>
 </div>
+

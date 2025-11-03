@@ -1,5 +1,5 @@
-<!--
-🤖 Legal Document Summarizer Component
+﻿<!--
+ðŸ¤– Legal Document Summarizer Component
 Uses Gemma3 summarization service for converting 200-page legal documents into concise summaries
 Enhanced-bits UI integration with real-time progress and quality metrics
 -->
@@ -13,43 +13,40 @@ import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
   import Alert, { Button, Card, CardContent, CardHeader, CardTitle, Label } from '$lib/components/ui/enhanced-bits.svelte';
   interface SummarizationRequest {
-    document_id: string;
-    title: string;
-    content: string;
+    document_id: string
+    title: string
+    content: string
     document_type: 'contract' | 'judgment' | 'brief' | 'statute';
     summary_type: 'executive' | 'detailed' | 'bullet_points' | 'legal_analysis';
-    max_length: number;
+    max_length: number
     focus: string[];
     metadata: { [key: string]: any }
   }
   interface SummarizationResponse {
-    document_id: string;
-    original_length_words: number;
-    summary_length_words: number;
-    compression_ratio: number;
+    document_id: string
+    original_length_words: number
+    summary_length_words: number
+    compression_ratio: number
     summary: {
-      full_summary: string;
+      full_summary: string
       key_points: string[];
       legal_implications: string[];
       recommendations: string[];
-      executive_summary: string;
-    }
-    processing_time: number;
-    model: string;
+      executive_summary: string}
+    processing_time: number
+    model: string
     quality: {
-      relevance_score: number;
-      completeness_score: number;
-      clarity_score: number;
-      overall_rating: string;
-    }
+      relevance_score: number
+      completeness_score: number
+      clarity_score: number
+      overall_rating: string}
    , metadata: { [key: string]: any }
   }
   // Component props
   interface Props {
-    defaultContent?: string;
-    onSummaryGenerated?: (summary: SummarizationResponse) => void;
-    serviceUrl?: string;
-  }
+    defaultContent?: string
+    onSummaryGenerated?: (summary: SummarizationResponse) => void
+    serviceUrl?: string}
   let {
     defaultContent = '',
     onSummaryGenerated,
@@ -80,17 +77,17 @@ import type { Document } from '$lib/types';
   ];
   // Document type options
   const documentTypes = [
-    { value: 'contract', label: '📄 Contract', description: 'Agreements, terms, obligations' },
-    { value: 'judgment', label: '⚖️ Court Judgment', description: 'Court decisions, rulings' },
-    { value: 'brief', label: '📝 Legal Brief', description: 'Arguments, case analysis' },
-    { value: 'statute', label: '📖 Statute/Law', description: 'Legal codes, regulations' }
+    { value: 'contract', label: 'ðŸ“„ Contract', description: 'Agreements, terms, obligations' },
+    { value: 'judgment', label: 'âš–ï¸ Court Judgment', description: 'Court decisions, rulings' },
+    { value: 'brief', label: 'ðŸ“ Legal Brief', description: 'Arguments, case analysis' },
+    { value: 'statute', label: 'ðŸ“– Statute/Law', description: 'Legal codes, regulations' }
   ];
   // Summary type options
   const summaryTypes = [
-    { value: 'executive', label: '🎯 Executive Summary', description: 'High-level overview for decision makers' },
-    { value: 'detailed', label: '📋 Detailed Analysis', description: 'Comprehensive breakdown with context' },
-    { value: 'bullet_points', label: '📌 Key Points', description: 'Structured bullet-point format' },
-    { value: 'legal_analysis', label: '⚖️ Legal Analysis', description: 'Legal implications and precedents' }
+    { value: 'executive', label: 'ðŸŽ¯ Executive Summary', description: 'High-level overview for decision makers' },
+    { value: 'detailed', label: 'ðŸ“‹ Detailed Analysis', description: 'Comprehensive breakdown with context' },
+    { value: 'bullet_points', label: 'ðŸ“Œ Key Points', description: 'Structured bullet-point format' },
+    { value: 'legal_analysis', label: 'âš–ï¸ Legal Analysis', description: 'Legal implications and precedents' }
   ];
   // Check service health on mount
   $effect(() => {
@@ -117,22 +114,19 @@ await checkServiceHealth();
   async function generateSummary(): Promise<void> {
     if (!documentContent.trim()) {
       errorMessage = 'Please provide document content to summarize';
-      return;
-    }
+      return}
     if (!documentTitle.trim()) {
       errorMessage = 'Please provide a document title';
-      return;
-    }
-    isProcessing = true;
-    processingProgress = 0;
+      return}
+    isProcessing = true
+    processingProgress = 0
     errorMessage = '';
-    currentSummary = null;
+    currentSummary = null
     try {
       // Simulate progress updates
       const progressInterval = setInterval(() => {
         if (processingProgress < 90) {
-          processingProgress += Math.random() * 15;
-        }
+          processingProgress += Math.random() * 15}
       }, 500);
       const request: SummarizationRequest = { document_id: `doc_${Date.now()}`,
         title: documentTitle,
@@ -154,13 +148,13 @@ await checkServiceHealth();
         body: JSON.stringify(request)
       });
       clearInterval(progressInterval);
-      processingProgress = 100;
+      processingProgress = 100
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.error || `Summarization failed: ${response.status}`);
       }
-      const summaryResult = await response.json() as SummarizationResponse;
-      currentSummary = summaryResult;
+      const summaryResult = await response.json() as SummarizationResponse
+      currentSummary = summaryResult
       // Notify parent component
       if (onSummaryGenerated) {
         onSummaryGenerated(summaryResult);
@@ -168,10 +162,8 @@ await checkServiceHealth();
     } catch (error) {
       console.error('Summarization error:', error);'
       errorMessage = error instanceof Error ? error.message: 'Summarization failed';
-      currentSummary = null;
-    } finally {
-      isProcessing = false;
-    }
+      currentSummary = null} finally {
+      isProcessing = false}
   }
   // Handle focus area toggle
   function toggleFocusArea(area: string): void {
@@ -194,7 +186,7 @@ await checkServiceHealth();
   }
   // Copy summary to clipboard
   async function copySummary(): Promise<void> {
-    if (!currentSummary) return;
+    if (!currentSummary) return
     try {
       await navigator.clipboard.writeText(currentSummary.summary.full_summary);
       // You could add a toast notification here
@@ -210,21 +202,21 @@ await checkServiceHealth();
     {#if serviceHealth === 'unavailable'}
       <Alert variant="error">
         <div class="flex items-center">
-          <span>❌</span>
+          <span>âŒ</span>
           <span>Gemma3 Summarization Service is unavailable</span>
         </div>
       </Alert>
     {:else if serviceHealth === 'degraded'}
       <Alert>
         <div class="flex items-center">
-          <span>⚠️</span>
+          <span>âš ï¸</span>
           <span>Summarization service is running with degraded performance</span>
         </div>
       </Alert>
     {:else}
       <Alert>
         <div class="flex items-center">
-          <span>✅</span>
+          <span>âœ…</span>
           <span>Gemma3 Legal Summarization Service is ready</span>
         </div>
       </Alert>
@@ -234,7 +226,7 @@ await checkServiceHealth();
     <!-- Input, Section -->
     <Card>
       <CardHeader>
-        <CardTitle>📄 Document Input</CardTitle>
+        <CardTitle>ðŸ“„ Document Input</CardTitle>
         <p class="text-muted-foreground">
           Upload or paste legal document content for AI-powered summarization
         </p>
@@ -332,9 +324,9 @@ await checkServiceHealth();
           class="w-full"
         >
           {#if isProcessing}
-            🔄 Generating Summary...
+            ðŸ”„ Generating Summary...
           {:else}
-            🤖 Generate AI Summary
+            ðŸ¤– Generate AI Summary
           {/if}
         </Button>
         <!-- Processing, Progress -->
@@ -355,7 +347,7 @@ await checkServiceHealth();
         {#if errorMessage}
           <Alert variant="error">
             <div class="flex items-center">
-              <span>⚠️</span>
+              <span>âš ï¸</span>
               <span>{errorMessage}</span>
             </div>
           </Alert>
@@ -367,7 +359,7 @@ await checkServiceHealth();
       <CardHeader>
         <div class="flex items-center">
           <div>
-            <CardTitle>📊 AI Summary Results</CardTitle>
+            <CardTitle>ðŸ“Š AI Summary Results</CardTitle>
             {#if currentSummary}
               <p class="text-muted-foreground">
                 Generated in {formatProcessingTime(currentSummary.processing_time)}
@@ -376,7 +368,7 @@ await checkServiceHealth();
           </div>
           {#if currentSummary}
             <Button variant="ghost" size="sm" onclick={copySummary}>
-              📋 Copy
+              ðŸ“‹ Copy
             </Button>
           {/if}
         </div>
@@ -439,7 +431,7 @@ await checkServiceHealth();
           <!-- Executive, Summary -->
           {#if currentSummary.summary.executive_summary}
             <div class="space-y-2">
-              <h4 class="font-medium">🎯 Executive Summary</h4>
+              <h4 class="font-medium">ðŸŽ¯ Executive Summary</h4>
               <div class="bg-muted p-4">
                 <p class="text-sm">
                   {currentSummary.summary.executive_summary}
@@ -449,11 +441,11 @@ await checkServiceHealth();
           <!-- Key, Points -->
           {#if currentSummary.summary.key_points?.length}
             <div class="space-y-2">
-              <h4 class="font-medium">📌 Key Points</h4>
+              <h4 class="font-medium">ðŸ“Œ Key Points</h4>
               <ul class="space-y-2">
                 {#each Array.isArray(currentSummary.summary.key_points) ? currentSummary.summary.key_points : [] as point}
                   <li class="flex items-start space-x-2">
-                    <span class="text-primary">•</span>
+                    <span class="text-primary">â€¢</span>
                     <span>{point}</span>
                   </li>
                 {/each}
@@ -462,11 +454,11 @@ await checkServiceHealth();
           <!-- Legal, Implications -->
           {#if currentSummary.summary.legal_implications?.length}
             <div class="space-y-2">
-              <h4 class="font-medium">⚖️ Legal Implications</h4>
+              <h4 class="font-medium">âš–ï¸ Legal Implications</h4>
               <ul class="space-y-2">
                 {#each Array.isArray(currentSummary.summary.legal_implications) ? currentSummary.summary.legal_implications : [] as implication}
                   <li class="flex items-start space-x-2">
-                    <span class="text-yellow-600">⚠️</span>
+                    <span class="text-yellow-600">âš ï¸</span>
                     <span>{implication}</span>
                   </li>
                 {/each}
@@ -474,7 +466,7 @@ await checkServiceHealth();
             {/if}
           <!-- Full, Summary -->
           <div class="space-y-2">
-            <h4 class="font-medium">📋 Full Summary</h4>
+            <h4 class="font-medium">ðŸ“‹ Full Summary</h4>
             <div class="bg-muted p-4 rounded-lg max-h-96">
               <p class="text-sm leading-relaxed">
                 {currentSummary.summary.full_summary}
@@ -483,14 +475,14 @@ await checkServiceHealth();
           </div>
           <!-- Model, Info -->
           <div class="text-xs text-muted-foreground pt-2 border-t">
-            Generated by {currentSummary.model} • Document ID: {currentSummary.document_id}
+            Generated by {currentSummary.model} â€¢ Document ID: {currentSummary.document_id}
           </div>
         {:else}
           <div class="text-center py-12">
-            <div class="text-4xl">🤖</div>
+            <div class="text-4xl">ðŸ¤–</div>
             <p>Configure your document and click: "Generate AI Summary" to begin</p>
             <p class="text-xs">
-              Powered by Gemma3 Legal AI • Optimized for legal document analysis
+              Powered by Gemma3 Legal AI â€¢ Optimized for legal document analysis
             </p>
           {/if}
       </CardContent>
@@ -499,6 +491,5 @@ await checkServiceHealth();
 </div>
 <style>
   .legal-summarizer {
-    font-family: system-ui, -apple-system, sans-serif;
-  }
+    font-family: system-ui, -apple-system, sans-serif}
 </style>

@@ -1,4 +1,4 @@
-<!-- DropdownMenu component combining, dropdown-menu, parts -->
+﻿<!-- DropdownMenu component combining, dropdown-menu, parts -->
 <script lang="ts">
   import  DropdownMenuRoot  from "./dropdown-menu/DropdownMenuRoot.svelte";
   import  DropdownMenuTrigger  from "./dropdown-menu/DropdownMenuTrigger.svelte";
@@ -8,11 +8,11 @@
   import type { SvelteComponent } from 'svelte';
   // typed item shape to avoid: 'unknown' issues
   type DropdownItem = {
-    separator?: boolean;
-    value?: any;
-    disabled?: boolean;
-    onClick?: (value?: any) => void;
-    label?: string | typeof SvelteComponent;
+    separator?: boolean
+    value?: any
+    disabled?: boolean
+    onClick?: (value?: any) => void
+    label?: string | typeof SvelteComponent
     href?: string; // added optional href
   };
   // exported props + rest props
@@ -61,3 +61,4 @@
     {/each}
   </DropdownMenuContent>
 </DropdownMenuRoot>
+

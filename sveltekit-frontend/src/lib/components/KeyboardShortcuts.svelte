@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string;
+﻿<!-- @migration-task Error while migrating Svelte code: Event attribute must be a JavaScript expression, not, a, string
 https://svelte.dev/e/attribute_invalid_event_handler -->
 <!-- @migration-task Error while migrating Svelte, code: Event attribute must be a JavaScript expression, not, a, string -->
 <script lang="ts">
@@ -28,43 +28,37 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   ];
   function handleKeyboardShortcut(event: KeyboardEvent) {
     // ignore input-like elements
-    const target = event.target as Element | null;
+    const target = event.target as Element | null
     if (
       target instanceof HTMLInputElement ||
       target instanceof HTMLTextAreaElement ||
       target instanceof HTMLSelectElement ||
       (target && (target.getAttribute?.('contenteditable') === 'true'))
     ) {
-      return;
-    }
+      return}
     const key = event.key.toLowerCase();
-    const ctrl = event.ctrlKey || event.metaKey;
+    const ctrl = event.ctrlKey || event.metaKey
     // simple mapping for a few shortcuts
     if (ctrl && key === 'h') {
       event.preventDefault();
-      showShortcuts = !showShortcuts;
-      return;
-    }
+      showShortcuts = !showShortcuts
+      return}
     if (ctrl && key === 'k') {
       event.preventDefault();
       // trigger search - placeholder
       // dispatch or focus search input
-      return;
-    }
+      return}
     if (key === 'f11') {
       event.preventDefault();
       toggleFullscreen();
-      return;
-    }
+      return}
     if (key === 'escape') {
-      showShortcuts = false;
-      showAccessibilityPanel = false;
-      return;
-    }
+      showShortcuts = false
+      showAccessibilityPanel = false
+      return}
   }
   function handleFullscreenChange() {
-    isFullscreen = !!document.fullscreenElement;
-  }
+    isFullscreen = !!document.fullscreenElement}
   async function toggleFullscreen(): Promise<any> {
     try {
       if (!document.fullscreenElement) {
@@ -88,14 +82,13 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   });
   // helper for UI test action
   function toggleAccessibilityPanel() {
-    showAccessibilityPanel = !showAccessibilityPanel;
-  }
+    showAccessibilityPanel = !showAccessibilityPanel}
 </script>
 {#if showShortcuts}
   <div class="mx-auto px-4" role="dialog" aria-modal="true">
     <div class="mx-auto px-4">
       <p class="mx-auto px-4">
-        💡 Pro tip: These shortcuts work throughout the application to boost your productivity!
+        ðŸ’¡ Pro tip: These shortcuts work throughout the application to boost your productivity!
       </p>
       <ul class="mt-4">
         {#each Array.isArray(shortcuts) ? shortcuts : [] as s}
@@ -163,19 +156,18 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
 <style>
   :global(.floating-actions) {
-    transition: all 0.3s ease;
-    display: flex;
-   , gap: 0.5rem;
-    align-items: center;
-  }
+    transition: all 0.3s ease
+    display: flex
+   , gap: 0.5rem
+    align-items: center}
   /* scope styling to the in-component shortcut kbd elements */
   kbd.shortcut-key {
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.12),
       0 1px 2px rgba(0, 0, 0, 0.24);
-    padding: 0.08rem 0.4rem;
-    border-radius: 0.25rem;
+    padding: 0.08rem 0.4rem
+    border-radius: 0.25rem
    , background: rgba(255,255,255,0.03);
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace;
-  }
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace}
 </style>
+

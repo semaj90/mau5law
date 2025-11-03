@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { user } from '$lib/stores/unified';
@@ -6,16 +6,14 @@ import type { Case } from '$lib/types';
 
   let cases = $state([
     { id: 'case-1', name: 'State v. John Doe' },
-    { id: 'case-2', name: 'People v. Jane Smith' },
-  ]);
+    { id: 'case-2', name: 'People v. Jane Smith' }]);
   let showModal = $state<boolean>(false);
   async function selectCase(caseId: string): Promise<any> {
     // Update the application context with the selected case
     console.log(`Selected case ${caseId}`);
     // cast the payload to the expected Partial<ContextData> to satisfy TS
     await ContextService.updateCaseContext({ caseId } as: unknown as Partial<any>);
-    showModal = false;
-  }
+    showModal = false}
 </script>
 
 <!-- trigger -->

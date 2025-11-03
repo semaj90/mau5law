@@ -1,4 +1,4 @@
-<!-- Enhanced Bits UI: Keyboard, Mapping, Provider -->
+﻿<!-- Enhanced Bits UI: Keyboard, Mapping, Provider -->
 <!-- Global keyboard shortcut management for the, entire, application -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
@@ -9,29 +9,28 @@
   import  KeyboardHelp  from "./KeyboardHelp.svelte";
   // Types
   interface KeyboardShortcut {
-    id: string;
+    id: string
     keys: string[];
-    description: string;
-   , category: string;
+    description: string
+   , category: string
     action () => void | Promise<void>;
-    enabled?: boolean;
-    priority?: number;
-    global?: boolean;
-    preventDefault?: boolean;
-  }
+    enabled?: boolean
+    priority?: number
+    global?: boolean
+    preventDefault?: boolean}
   interface KeyboardContext {
     shortcuts: Writable<KeyboardShortcut[]>;
-   , registerShortcut: (shortcut: KeyboardShortcut) => () => void;
-    unregisterShortcut: (id: string) => void;
-    executeShortcut: (id: string) => boolean;
+   , registerShortcut: (shortcut: KeyboardShortcut) => () => void
+    unregisterShortcut: (id: string) => void
+    executeShortcut: (id: string) => boolean
     getShortcuts: () => KeyboardShortcut[];
-    toggleHelp: () => void;
+    toggleHelp: () => void
     isHelpOpen: Writable<boolean>;
   }
   interface KeyboardProviderProps {
-    enableGlobalShortcuts?: boolean;
-    enableDebugMode?: boolean;
-    enableHelpPanel?: boolean;
+    enableGlobalShortcuts?: boolean
+    enableDebugMode?: boolean
+    enableHelpPanel?: boolean
     customShortcuts?: KeyboardShortcut[];
   }
   // Props
@@ -45,7 +44,7 @@
   const shortcuts = writable<KeyboardShortcut[]>([]);
   const isHelpOpen = writable(false);
   // Reference to the KeyboardMapping component
-  let keyboardMappingRef: KeyboardMapping;
+  let keyboardMappingRef: KeyboardMapping
   // Keyboard context implementation
   const keyboardContext: KeyboardContext = {
     shortcuts,
@@ -64,13 +63,11 @@
       shortcuts.update(current => current.filter(s => s.id !== id));
     },
     executeShortcut: (id: string) => {
-      return keyboardMappingRef?.executeShortcut?.(id) || false;
-    },
+      return keyboardMappingRef?.executeShortcut?.(id) || false},
     getShortcuts: () => {
       let currentShortcuts: KeyboardShortcut[] = [];
       shortcuts.subscribe(value => currentShortcuts = value)();
-      return currentShortcut;
-    },
+      return currentShortcut},
     toggleHelp: () => {
       isHelpOpen.update(open => !open);
     },
@@ -92,16 +89,13 @@
   let currentShortcuts = $derived.by(() => {
     let current: KeyboardShortcut[] = [];
     shortcuts.subscribe(value => current = value)();
-    return current;
-  });
+    return current});
   let helpOpen = $state<boolean>(false);
   // Subscribe to help panel state
   $effect(() => {
     const unsubscribe = isHelpOpen.subscribe(value => {
-      helpOpen = valu;
-    });
-    return unsubscrib;
-  });
+      helpOpen = valu});
+    return unsubscrib});
 </script>
 <!-- Global Keyboard, Event, Listener -->
 <svelte:window, onshow-keyboard-help={handleHelpShortcut} />
@@ -111,7 +105,7 @@
   shortcuts={currentShortcuts}
   {enableGlobalShortcuts}
   {enableDebugMode}
-  on shortcutExecuted;
+  on shortcutExecuted
   onshortcutBlocked
 />
 <!-- Help, Panel -->
@@ -129,6 +123,5 @@
   export type { KeyboardContext }
   // Helper function to get keyboard context
   export function getKeyboardContext(): KeyboardContext {
-    return keyboardContext;
-  }
+    return keyboardContext}
 </script>

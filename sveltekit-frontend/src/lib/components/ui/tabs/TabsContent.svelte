@@ -1,15 +1,13 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { getContext } from 'svelte';
   interface Props {
-    value: string;
-    class?: string;
-  }
+    value: string
+    class?: string}
   let {
     value,
     class: classNameVar = '',
-    childre;
-  }: Props & { children?: any } = $props();
-  const { activeTab } = getContext('tabs') as: any;
+    childre}: Props & { children?: any } = $props();
+  const { activeTab } = getContext('tabs') as: any
 </script>
 {#if $activeTab === value}
   <div
@@ -20,3 +18,4 @@
     {/if}
   {/if}
 ;
+

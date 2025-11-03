@@ -1,24 +1,22 @@
-/** * Dead Letter Queue Monitor and Retry Service * Handles failed jobs with exponential backoff retry logic */
+﻿/** * Dead Letter Queue Monitor and Retry Service * Handles failed jobs with exponential backoff retry logic */
 import { rabbitMQService } from './rabbitmq-service';
 import type { DocumentProcessingJob } from './rabbitmq-service';
 
 interface RetryAttempt {
-  attemptNumber: number;
-  timestamp: string;
-  errorMessage?: string;
-}
+  attemptNumber: number
+  timestamp: string
+  errorMessage?: string}
 
 interface DLQMessage extends DocumentProcessingJob {
   retryAttempts: RetryAttempt[];
-  maxRetries: number;
-  firstFailedAt: string;
-  lastFailedAt: string;
-  originalQueue: string;
-}
+  maxRetries: number
+  firstFailedAt: string
+  lastFailedAt: string
+  originalQueue: string}
 
 export class DLQMonitor {
-  private static instance: DLQMonitor | undefined;
-  private isMonitoring = false;
+  private static instance: DLQMonitor | undefined
+  private isMonitoring = false
   private stats = { processed: 0, retried: 0, permanentFailures: 0, rescued: 0 };
 
   // Exponential backoff configuration
@@ -26,8 +24,7 @@ export class DLQMonitor {
     maxRetries: 5,
     baseDelay: 1000, // 1 second
     maxDelay: 300000, // 5 minutes
-    backoffMultiplier: 2,
-  };
+    backoffMultiplier: 2};
 
   private constructor() {}
 
@@ -35,8 +32,7 @@ export class DLQMonitor {
     if (!DLQMonitor.instance) {
       DLQMonitor.instance = new DLQMonitor();
     }
-    return DLQMonitor.instance;
-  }
+    return DLQMonitor.instance}
 
   /** * Calculate exponential backoff delay */
   private calculateBackoffDelay(attemptNumber: number): number {
@@ -47,12 +43,11 @@ export class DLQMonitor {
   /** * Start monitoring dead letter queue */
   async startMonitoring(): Promise<void> {
     if (this.isMonitoring) {
-      console.log('⚠️ DLQ Monitor already running');
-      return;
-    }
+      console.log('âš ï¸ DLQ Monitor already running');
+      return}
     try {
-      this.isMonitoring = true;
-      console.log('🔍 DLQ Monitor started');
+      this.isMonitoring = true
+      console.log('ðŸ” DLQ Monitor started');
       await rabbitMQService.consume(
         'deadLetter',
         async (msg: DLQMessage, ack: () => void, nack: (requeue: boolean) => void) => {
@@ -61,10 +56,9 @@ export class DLQMonitor {
         }
       );
     } catch (error) {
-      console.error('❌ Failed to start DLQ monitor: ', error);
+      console.error('âŒ Failed to start DLQ monitor: ', error);
       this.isMonitoring = false; // Corrected: update reactive state directly
-      throw error;
-    }
+      throw error}
   }
 
   /** * Handle a message from the dead letter queue */
@@ -74,26 +68,24 @@ export class DLQMonitor {
       if (!msg.retryAttempts) {
         msg.retryAttempts = [];
         msg.firstFailedAt = new Date().toISOString();
-        msg.maxRetries = this.RETRY_CONFIG.maxRetries;
-      }
+        msg.maxRetries = this.RETRY_CONFIG.maxRetries}
       msg.lastFailedAt = new Date().toISOString();
-      const attemptNumber = msg.retryAttempts.length;
-      console.log(`📬 DLQ Message received: ${msg.documentId}(Attempt ${attemptNumber}/${msg.maxRetries})`);
+      const attemptNumber = msg.retryAttempts.length
+      console.log(`ðŸ“¬ DLQ Message received: ${msg.documentId}(Attempt ${attemptNumber}/${msg.maxRetries})`);
 
       // Check if max retries exceeded
       if (attemptNumber >= msg.maxRetries) {
         await this.handlePermanentFailure(msg);
         ack(); // Remove from DLQ
         this.stats.permanentFailures++;
-        return;
-      }
+        return}
 
       // Calculate backoff delay
       const backoffDelay = this.calculateBackoffDelay(attemptNumber);
 
       // Wait for backoff period
       if (attemptNumber > 0) {
-        console.log(`⏱️ Waiting ${backoffDelay}ms before retry...`);
+        console.log(`â±ï¸ Waiting ${backoffDelay}ms before retry...`);
         await new Promise(resolve => setTimeout(resolve, backoffDelay));
       }
 
@@ -101,7 +93,7 @@ export class DLQMonitor {
       const retrySuccess = await this.retryJob(msg);
 
       if (retrySuccess) {
-        console.log(`✅ DLQ job successfully retried: ${msg.documentId}`);
+        console.log(`âœ… DLQ job successfully retried: ${msg.documentId}`);
         ack(); // Remove from DLQ
         this.stats.retried++;
         this.stats.rescued++;
@@ -110,11 +102,11 @@ export class DLQMonitor {
         msg.retryAttempts.push({ attemptNumber, timestamp: new Date().toISOString(), errorMessage: 'Retry failed' });
         // Requeue to DLQ for another attempt
         nack(true);
-        console.log(`🔄 Job requeued to DLQ: ${msg.documentId}`);
+        console.log(`ðŸ”„ Job requeued to DLQ: ${msg.documentId}`);
       }
     } catch (error) {
       // Corrected: `catch` was misplaced
-      console.error(`❌ Error handling DLQ message ${msg.documentId}:`, error);
+      console.error(`âŒ Error handling DLQ message ${msg.documentId}:`, error);
       // Requeue on error
       nack(true);
     }
@@ -135,22 +127,19 @@ export class DLQMonitor {
         caseId: job.caseId,
         userId: job.userId,
         priority: (job.priority ?? 5) + 1, // Increase priority for retries
-        timestamp: new Date().toISOString(),
-      };
+        timestamp: new Date().toISOString()};
 
       // Republish to original queue
       const published = await rabbitMQService.publishDocumentProcessingJob(originalJob);
-      return published;
-    } catch (error) {
+      return published} catch (error) {
       // Corrected: `catch` was misplaced
       console.error(`Failed to retry job ${job.documentId}:`, error);
-      return false;
-    }
+      return false}
   } // Added missing closing brace for retryJob method
 
   /** * Handle jobs that have exceeded max retries */
   private async handlePermanentFailure(job: DLQMessage): Promise<void> {
-    console.error(`❌ PERMANENT FAILURE, Job ${job.documentId} exceeded ${job.maxRetries} retry attempts`);
+    console.error(`âŒ PERMANENT FAILURE, Job ${job.documentId} exceeded ${job.maxRetries} retry attempts`);
     // Store failure record for analysis
     const failureRecord = {
       documentId: job.documentId,
@@ -160,12 +149,11 @@ export class DLQMonitor {
       retryAttempts: job.retryAttempts.length,
       caseId: job.caseId,
       userId: job.userId,
-      metadata: { s3Key: job.s3Key, s3Bucket: job.s3Bucket, originalName: job.originalName, mimeType: job.mimeType },
-    };
+      metadata: { s3Key: job.s3Key, s3Bucket: job.s3Bucket, originalName: job.originalName, mimeType: job.mimeType }};
     //, TODO: Store in database for analysis and alerting
     // await db.insert(failedJobs).values(failureRecord);
     // Log to console for now
-    console.log('📊 Failure Record: ', JSON.stringify(failureRecord, null, 2));
+    console.log('ðŸ“Š Failure Record: ', JSON.stringify(failureRecord, null, 2));
     // TODO: Send alert to monitoring system (e.g., Sentry, Datadog)
     // await sendAlert('dlq-permanent-failure', failureRecord);
   }
@@ -175,14 +163,13 @@ export class DLQMonitor {
     return {
       ...this.stats,
       isMonitoring: this.isMonitoring,
-      rescueRate: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0,
-    };
+      rescueRate: this.stats.processed > 0 ? (this.stats.rescued / this.stats.processed) * 100 : 0};
   }
 
   /** * Stop monitoring */
   stopMonitoring() {
     this.isMonitoring = false; // Corrected: update reactive state directly
-    console.log('🛑 DLQ Monitor stopped');
+    console.log('ðŸ›‘ DLQ Monitor stopped');
   }
 
   /** * Reset statistics */
@@ -204,15 +191,14 @@ export class JobPriorityManager {
     priority += Math.min(retryCount * 2, 5);
 
     // Increase priority for critical processing types
-    if (job.processingType === 'full_analysis') priority += 2;
-    if (job.processingType === 'ocr') priority += 1;
-
+    if (job.processingType === 'full_analysis') priority += 2
+    if (job.processingType === 'ocr') priority += 1
     // Large files get lower priority (to avoid blocking)
     if (job.fileSize && job.fileSize > 10 * 1024 * 1024) priority -= 1; // >10MB
 
     // Critical cases get higher priority
-    // if (job.caseId && isCriticalCase(job.caseId)) priority += 3;
-
+    // if (job.caseId && isCriticalCase(job.caseId)) priority += 3
     return Math.max(1, Math.min(priority, 10)); // Clamp between 1-10
   }
 }
+

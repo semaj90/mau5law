@@ -1,4 +1,4 @@
-// @ts-check
+﻿// @ts-check
 /**
  * @typedef {Object} AnalysisResult
  * @property {string[]} extractedTags

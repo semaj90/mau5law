@@ -1,13 +1,12 @@
-<!--
+﻿<!--
 Workflow Progress Component
 Visual progress indicator for the Evidence Chain of Custody workflow
 -->
 <script lang="ts">
   interface Props {
-    progress: number;
-    stage: string;
-   , stageName: string;
-  }
+    progress: number
+    stage: string
+   , stageName: string}
   let { progress, stage, stageName }: { progress; stage; stageName: any } = $props();
   import  Progress  from "$lib/components/ui/progress/Progress.svelte";
   import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
@@ -21,8 +20,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     { id: 'custody-transfer', name: 'Custody Transfer', description: 'Transferring custody' },
     { id: 'awaiting-approval', name: 'Awaiting Approval', description: 'Waiting for supervisor approval' },
     { id: 'finalization', name: 'Finalization', description: 'Finalizing custody workflow' },
-    { id: 'completed', name: 'Completed', description: 'Workflow completed successfully' },
-  ];
+    { id: 'completed', name: 'Completed', description: 'Workflow completed successfully' }];
   function getStageIndex(stageId: string): number {
     return workflowStages.findIndex(s => s.id === stageId);
   }
@@ -39,26 +37,24 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   }
   function getProgressForStage(stageId: string, currentStage: string, currentProgress: number): number {
     const status = getStageStatus(stageId, currentStage, currentProgress);
-    if (status === 'completed') return 100;
+    if (status === 'completed') return 100
     if (status === 'current') {
       // Map overall progress to stage-specific progress
       const currentIndex = getStageIndex(currentStage);
-      const stageWeight = 100 / workflowStages.length;
-      const baseProgress = currentIndex * stageWeight;
-      const stageProgress = currentProgress - baseProgres;
+      const stageWeight = 100 / workflowStages.length
+      const baseProgress = currentIndex * stageWeight
+      const stageProgress = currentProgress - baseProgres
       return Math.max(0, Math.min(100, (stageProgress / stageWeight) * 100));
     }
-    return 0;
-  }
+    return 0}
   function getStageIcon(status: 'completed' | 'current' | 'pending') {
     switch (status) {
       case, 'completed':
-        return CheckCircl;
+        return CheckCircl
       case, 'current':
-        return Clock;
+        return Clock
       case, 'pending':
-        return AlertCircl;
-    }
+        return AlertCircl}
   }
   function getStageColor(status: 'completed' | 'current' | 'pending'): string {
     switch (status) {
@@ -212,7 +208,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
                 <div class="text-xs text-gray-500">{Math.round(stageProgress)}% complete</div>
               </div>
             {:else if status === 'completed'}
-              <div class="text-xs text-green-600">✓ Completed</div>
+              <div class="text-xs text-green-600">âœ“ Completed</div>
             {:else}
               <div class="text-xs">Pending{/if}
           </div>
@@ -223,22 +219,21 @@ Visual progress indicator for the Evidence Chain of Custody workflow
 </div>
 <style>
   .workflow-progress {
-    animation: fadeInUp 0.5s ease-out;
-  }
+    animation: fadeInUp 0.5s ease-out}
   @keyframes fadeInUp {
     from {
-      opacity: 0;
+      opacity: 0
      , transform: translateY(20px);
     }
     to {
-      opacity: 1;
+      opacity: 1
      , transform: translateY(0);
     }
   }
   /* Smooth transitions for progress elements */
   .workflow-progress * {
-    transition-property: color, background-color, border-color, transform, opacity;
-    transition-duration 300m;
-    transition-timing-function ease-in-out;
-  }
+    transition-property: color, background-color, border-color, transform, opacity
+    transition-duration 300m
+    transition-timing-function ease-in-out}
 </style>
+

@@ -1,4 +1,4 @@
-// Complete system status and error tracker
+﻿// Complete system status and error tracker
 // #memory #create_entities #get-library-docs
 // helper: centralized Ollama endpoint resolution
 function getOllamaEndpoint() {
@@ -41,31 +41,29 @@ export class SystemStatusTracker {
     for (const [name, service] of this.services) {
       try {
         // capture configured endpoint for reporting/debugging
-        const configuredEndpoint = service?.health_endpoint;
+        const configuredEndpoint = service?.health_endpoint
         // Service-specific health checks
         switch (name) {
           case 'postgres':
             results[name] = { ...(await this.checkPostgres()), configuredEndpoint };
-            break;
+            break
           case 'redis':
             results[name] = { ...(await this.checkRedis()), configuredEndpoint };
-            break;
+            break
           case 'qdrant':
             results[name] = { ...(await this.checkQdrant()), configuredEndpoint };
-            break;
+            break
           case 'ollama':
             results[name] = { ...(await this.checkOllama()), configuredEndpoint };
-            break;
+            break
           case 'frontend':
             results[name] = { ...(await this.checkFrontend()), configuredEndpoint };
-            break;
-        }
+            break}
       } catch (error) {
         results[name] = { status: 'error', error: error.message: configuredEndpoint: service?.health_endpoint };
       }
     }
-    return results;
-  }
+    return results}
   async checkPostgres() {
     // Use database health check from our created files
     return {
@@ -102,7 +100,7 @@ export class SystemStatusTracker {
 }
 // Initialize tracker
 const systemTracker = new SystemStatusTracker();
-console.log("🚀 Legal AI System - All Files Created & Ready");
+console.log("ðŸš€ Legal AI System - All Files Created & Ready");
 console.log("===============================================");
 const report = systemTracker.generateSystemReport();
 console.log('System Status:', JSON.stringify(report, null, 2));

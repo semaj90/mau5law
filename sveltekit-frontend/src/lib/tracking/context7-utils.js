@@ -1,4 +1,4 @@
-// #get-library-docs bitsui - Context7 MCP integration utilities
+﻿// #get-library-docs bitsui - Context7 MCP integration utilities
 // Utilities for working with Context7 and Bits UI documentation
 export class Context7Helper {
   static async getBitsUIDoc(topic = '') {
@@ -8,16 +8,14 @@ export class Context7Helper {
     if (topic && typeof topic === 'string') {
       queries.push(`#get-library-docs bitsui/${topic}`);
     }
-    return queries;
-  }
+    return queries}
   static async getSvelteKitDoc(topic = '') {
     const queries = [
       '#get-library-docs sveltekit2', '#resolve-library-id @sveltejs/kit', '#get-library-docs sveltekit/routing', '#get-library-docs sveltekit/stores'];
     if (topic && typeof topic === 'string') {
       queries.push(`#get-library-docs sveltekit/${topic}`);
     }
-    return queries;
-  }
+    return queries}
   static get mcpKeywords() {
     return {
       context7: ['#context7', '#get-library-docs', '#resolve-library-id', '#microsoft-docs'], memory: ['#memory', '#create_entities', '#create_relations', '#read_graph', '#search_nodes'], codebase: ['#codebase', '#directory_tree', '#read_multiple_files']};
@@ -32,8 +30,7 @@ export class Context7Helper {
       prompts.push('#memory #create_entities production_phases');
       prompts.push('#create_relations phase_dependencies');
     }
-    return prompts;
-  }
+    return prompts}
 }
 // MCP-aware development utilities
 export const mcpUtils = {
@@ -44,4 +41,5 @@ export const mcpUtils = {
   exploreCode: pattern => `#codebase #read_multiple_files pattern:"${pattern}"`, showStructure: () => '#directory_tree', // Combined queries for complex tasks
   analyzeComponent: componentName => [
     `#codebase #read_multiple_files pattern:"**/${componentName}*"`, `#get-library-docs bitsui ${componentName.toLowerCase()}`, `#memory #search_nodes query:"${componentName}"`]};
-export default Context7Helper;
+export default Context7Helper
+

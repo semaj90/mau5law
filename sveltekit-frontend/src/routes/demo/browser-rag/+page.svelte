@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Browser RAG Demo - Privacy-Preserving Legal AI
 
   Complete RAG system running 100% in browser:
@@ -21,18 +21,15 @@ import type { Document } from '$lib/types';
   let error = $state<string | null>(null);
 
   // Demo documents
-  let sampleDocuments = $state([
-    {
+  let sampleDocuments = $state([ {
       id: 'contract1',
       content: 'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
       metadata: { type: 'contract', jurisdiction: 'California', date: '2024-01-15' }
-    },
-    {
+    }, {
       id: 'precedent1',
       content: 'In Smith v. Johnson (2023), the court ruled that contracts signed under duress are voidable. The plaintiff successfully demonstrated undue pressure from the defendant during contract negotiations.',
       metadata: { type: 'case_law', year: 2023, court: 'Superior Court' }
-    },
-    {
+    }, {
       id: 'statute1',
       content: 'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
       metadata: { type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' }
@@ -52,8 +49,7 @@ import type { Document } from '$lib/types';
   onMount(async () => {
     try {
       currentStep = 'Initializing Browser RAG (this may take 2-5 minutes on first load)...';
-      isLoading = true;
-
+      isLoading = true
       // Initialize RAG chain
       await browserRAG.initialize();
 
@@ -61,23 +57,20 @@ import type { Document } from '$lib/types';
       // Add sample documents
       await browserRAG.addDocuments(sampleDocuments);
 
-      isInitialized = true;
-      currentStep = '✅ Ready! Ask a legal question.';
-      error = null;
-    } catch (err) {
+      isInitialized = true
+      currentStep = 'âœ… Ready! Ask a legal question.';
+      error = null} catch (err) {
       error = `Initialization failed: ${err}`;
       console.error('RAG Init, Error:', err);
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   });
 
   async function handleQuery(): Promise<any> {
-    if (!query.trim() || !isInitialized) return;
-
+    if (!query.trim() || !isInitialized) return
     try {
-      isLoading = true;
-      error = null;
+      isLoading = true
+      error = null
       answer = '';
       sources = [];
 
@@ -88,24 +81,21 @@ import type { Document } from '$lib/types';
         minSimilarity: 0.2
       });
 
-      answer = result.answer;
-      sources = result.sources;
-      confidence = result.confidence;
-      duration = result.duration;
-    } catch (err) {
+      answer = result.answer
+      sources = result.sources
+      confidence = result.confidence
+      duration = result.duration} catch (err) {
       error = `Query failed: ${err}`;
       console.error('Query, Error:', err);
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
 
   async function handleStreamQuery(): Promise<any> {
-    if (!query.trim() || !isInitialized) return;
-
+    if (!query.trim() || !isInitialized) return
     try {
-      isStreaming = true;
-      error = null;
+      isStreaming = true
+      error = null
       answer = '';
       sources = [];
 
@@ -116,19 +106,16 @@ import type { Document } from '$lib/types';
         temperature: 0.7,
         maxTokens: 300
       })) {
-        answer += chunk.text;
-
+        answer += chunk.text
         if (chunk.done && chunk.sources) {
-          sources = chunk.sources;
-          duration = performance.now() - startTime;
-        }
+          sources = chunk.sources
+          duration = performance.now() - startTime}
       }
     } catch (err) {
       error = `Streaming failed: ${err}`;
       console.error('Streaming, Error:', err);
     } finally {
-      isStreaming = false;
-    }
+      isStreaming = false}
   }
 
   function addCustomDocument() {
@@ -154,8 +141,8 @@ import type { Document } from '$lib/types';
 <div class="demo-container">
   <!-- Header -->
   <header class="nes-container">
-    <h1 class="title">🔒 Privacy-Preserving Legal RAG</h1>
-    <p class="subtitle">100% Browser-Based • Gemma, 3 270M + LangChain.js + Transformer.js v3</p>
+    <h1 class="title">ðŸ”’ Privacy-Preserving Legal RAG</h1>
+    <p class="subtitle">100% Browser-Based â€¢ Gemma, 3 270M + LangChain.js + Transformer.js v3</p>
 
     <div class="privacy-badge">
       <Lock size={20} />
@@ -275,7 +262,7 @@ import type { Document } from '$lib/types';
 
       {#if duration > 0}
         <p class="text-xs text-gray-400">
-          Generated in {(duration / 1000).toFixed(2)}s • Confidence: {(confidence * 100).toFixed(0)}%
+          Generated in {(duration / 1000).toFixed(2)}s â€¢ Confidence: {(confidence * 100).toFixed(0)}%
         </p>
       {/if}
     </div>
@@ -292,7 +279,7 @@ import type { Document } from '$lib/types';
           <p class="text-xs">{source.content.substring(0, 200)}...</p>
           {#if source.metadata}
             <p class="text-xs text-gray-400">
-              Type: {source.metadata.type} • {source.metadata.jurisdiction || source.metadata.year || ''}
+              Type: {source.metadata.type} â€¢ {source.metadata.jurisdiction || source.metadata.year || ''}
             </p>
           {/if}
         </div>
@@ -326,124 +313,99 @@ import type { Document } from '$lib/types';
 
 <style>
   .demo-container {
-    min-height: 100vh;
-    background: #212529;
-    color: #d4af37;
-   , padding: 2rem;
-    font-family: 'Press Start 2P', 'Courier New', monospace;
-  }
+    min-height: 100vh
+    background: #212529
+    color: #d4af37
+   , padding: 2rem
+    font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .title {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
+    font-size: 1.5rem
+    margin-bottom: 0.5rem}
 
   .subtitle {
-    font-size: 0.75rem;
-    color: #9ca3af;
-  }
+    font-size: 0.75rem
+    color: #9ca3af}
 
   .privacy-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: #16a34a;
-    color: white;
-    border-radius: 4px;
-    margin-top: 1rem;
-    font-size: 0.75rem;
-  }
+    display: inline-flex
+    align-items: center
+    gap: 0.5rem
+    padding: 0.5rem 1rem
+    background: #16a34a
+    color: white
+    border-radius: 4px
+    margin-top: 1rem
+    font-size: 0.75rem}
 
-  .stats-grid { display: grid;
+  .stats-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem;
-    margin: 1.5rem 0;
-  }
+    gap: 1rem
+    margin: 1.5rem 0}
 
   .answer-box {
-    background: #1a1d20;
-    padding: 1rem;
-    border-radius: 4px;
-    margin-top: 0.5rem;
-  }
+    background: #1a1d20
+    padding: 1rem
+    border-radius: 4px
+    margin-top: 0.5rem}
 
   .flex {
-    display: flex;
-  }
+    display: flex}
 
   .items-center {
-    align-items: center;
-  }
+    align-items: center}
 
   .gap-2 {
-    gap: 0.5rem;
-  }
+    gap: 0.5rem}
 
   .gap-4 {
-    gap: 1rem;
-  }
+    gap: 1rem}
 
   .mb-1 {
-    margin-bottom: 0.25rem;
-  }
+    margin-bottom: 0.25rem}
 
   .mb-2 {
-    margin-bottom: 0.5rem;
-  }
+    margin-bottom: 0.5rem}
 
   .mb-4 {
-    margin-bottom: 1rem;
-  }
+    margin-bottom: 1rem}
 
   .mt-1 {
-    margin-top: 0.25rem;
-  }
+    margin-top: 0.25rem}
 
   .mt-2 {
-    margin-top: 0.5rem;
-  }
+    margin-top: 0.5rem}
 
   .text-xs {
-    font-size: 0.75rem;
-  }
+    font-size: 0.75rem}
 
   .text-sm {
-    font-size: 0.875rem;
-  }
+    font-size: 0.875rem}
 
   .text-lg {
-    font-size: 1.125rem;
-  }
+    font-size: 1.125rem}
 
   .font-bold {
-    font-weight: bold;
-  }
+    font-weight: bold}
 
   .text-gray-400 {
-    color: #9ca3af;
-  }
+    color: #9ca3af}
 
   .text-blue-400 {
-    color: #60a5fa;
-  }
+    color: #60a5fa}
 
   .text-green-400 {
-    color: #4ade80;
-  }
+    color: #4ade80}
 
   .text-yellow-400 {
-    color: #facc15;
-  }
+    color: #facc15}
 
   .cursor-pointer {
-    cursor: pointer;
-  }
+    cursor: pointer}
 
   .whitespace-pre-wrap {
-    white-space: pre-wrap;
-  }
+    white-space: pre-wrap}
 
-  .inline { display: inline;
-  }
+  .inline { display: inline}
 </style>
+

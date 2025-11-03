@@ -1,4 +1,4 @@
-<!-- Unified GPU/WASM Integration, Demo, Component -->
+﻿<!-- Unified GPU/WASM Integration, Demo, Component -->
 <script lang="ts">
 import type { Document } from '$lib/types';
 
@@ -20,20 +20,19 @@ import type { Document } from '$lib/types';
   // fixed typo: latestMetric
   const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
 
-  let isLoading: boolean = false;
+  let isLoading: boolean = false
   let selectedOperation: string = 'processDocument';
   let testInput: string = '';
   let errorMessage: string = '';
 
   // Helper to generate a simple RGBA canvas payload
   function generateCanvasRGBA(width = 8, height = 8) {
-    const len = width * height * 4;
+    const len = width * height * 4
     const pixels = Array.from({ length: len }, (_, i) => {
       const pixel = Math.floor(i / 4);
-      const component = i % 4;
+      const component = i % 4
       if (component === 3) return 255; // alpha
-      return pixel % 256;
-    });
+      return pixel % 256});
     return { pixels, format: 'RGBA', width, height };
   }
 
@@ -101,11 +100,11 @@ Both parties acknowledge they have read and agree to these terms.`,`
   }
 
   async function executeOperation(): Promise<any> {
-    if (!testInput || !testInput.trim()) return;
-    isLoading = true;
+    if (!testInput || !testInput.trim()) return
+    isLoading = true
     errorMessage = '';
     try {
-      let requestData: any = null;
+      let requestData: any = null
       switch (selectedOperation) {
         case, 'processDocument':
           requestData = {
@@ -117,7 +116,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
               maxTokens: 1024
             }
           };
-          break;
+          break
         case, 'performInference':
           requestData = {
             operation: 'performInference',
@@ -127,7 +126,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
               modelType: 'transformer'
             }
           };
-          break;
+          break
         case, 'processCanvas': {
           const canvasData = JSON.parse(testInput);
           requestData = {
@@ -135,18 +134,15 @@ Both parties acknowledge they have read and agree to these terms.`,`
             data: { canvasState: canvasData },
             options: { priority: 'NORMAL', targetBitDepth: 24 }
           };
-          break;
-        }
+          break}
         case, 'matmul': {
           const matrixData = JSON.parse(testInput);
           requestData = { operation: 'matmul', data: matrixData, options: { priority: 'HIGH' } };
-          break;
-        }
+          break}
         case, 'attention': {
           const attentionData = JSON.parse(testInput);
           requestData = { operation: 'attention', data: attentionData, options: { priority: 'HIGH' } };
-          break;
-        }
+          break}
        , default:
           throw new Error('Unsupported operation');
       }
@@ -177,7 +173,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
       errorMessage = `Error: ${err?.message ?? String(err)}`;
       console.error('Operation failed:', err);
     } finally {
-      isLoading = false;
+      isLoading = false
       updateSystemHealth();
       updateMetrics();
     }
@@ -379,7 +375,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
                   {/if}
                   {#if result.metadata?.fallbacksTriggered?.length > 0}
                     <p class="text-yellow-600">
-                      Fallbacks: {result.metadata.fallbacksTriggered.join(' → ')}
+                      Fallbacks: {result.metadata.fallbacksTriggered.join(' â†’ ')}
                     </p>
                   {/if}
                 </div>
@@ -446,8 +442,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
 <style>
   .unified-integration-demo {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-   , background: #f8fafc;
-  }
+    background-attachment: fixed
+    min-height: 100vh
+   , background: #f8fafc}
 </style>

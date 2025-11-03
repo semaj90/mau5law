@@ -1,10 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
   /**
-   * 🧪 Hybrid RAG + SIMD Pipeline Demo
+   * ðŸ§ª Hybrid RAG + SIMD Pipeline Demo
    *
    * Test the complete RAG pipeline:
-   * - Upload documents → Embed → Summarize → Index → Rank
+   * - Upload documents â†’ Embed â†’ Summarize â†’ Index â†’ Rank
    * - Search with Gemma function calling
    * - View synthesis ranking scores
    */
@@ -22,32 +22,28 @@ import type { Document } from '$lib/types';
   let error = $state<string>('');
 
   // Sample documents for testing
-  const sampleDocuments = $state([
-    {
+  const sampleDocuments = $state([ {
       id: 'doc1',
       title: 'Employment Contract - Software Engineer',
       content:
         'This employment agreement is entered into between TechCorp Inc. and John Smith for the position of Senior Software Engineer. The employee will receive a salary of $150,000 per year with benefits including health insurance, 401k matching, and stock options. The employment is at-will and can be terminated by either party with, 2 weeks notice.',
       source: 'sample',
       createdAt: new Date().toISOString()
-    },
-    {
+    }, {
       id: 'doc2',
       title: 'Non-Disclosure Agreement',
       content:
         'This NDA protects confidential information shared between the parties. The receiving party agrees not to disclose or use the confidential information, for: any purpose other than the agreed business relationship. This agreement remains in effect for, 5 years from the date of signing.',
       source: 'sample',
       createdAt: new Date().toISOString()
-    },
-    {
+    }, {
       id: 'doc3',
       title: 'Service Level Agreement - Cloud Services',
       content:
         'CloudProvider guarantees 99.9% uptime for all cloud services. In case of downtime exceeding the SLA, customers are entitled to service credits. The provider will respond to critical incidents within, 1 hour and resolve them within, 4 hours.',
       source: 'sample',
       createdAt: new Date().toISOString()
-    },
-    {
+    }, {
       id: 'doc4',
       title: 'Intellectual Property Assignment',
       content:
@@ -66,8 +62,7 @@ import type { Document } from '$lib/types';
   // Add custom document
   function addDocument() {
     documents = [
-      ...documents,
-      {
+      ...documents, {
         id: `custom_${Date.now()}`,
         title: `Custom Document ${documents.length + 1}`,
         content: '',
@@ -81,19 +76,16 @@ import type { Document } from '$lib/types';
   async function processDocuments(): Promise<any> {
     if (documents.length === 0) {
       error = 'No documents to process';
-      return;
-    }
+      return}
 
     if (!query.trim()) {
       error = 'Please enter a search query';
-      return;
-    }
+      return}
 
-    isProcessing = true;
+    isProcessing = true
     error = '';
     results = [];
-    timing = null;
-
+    timing = null
     try {
       // Stage 1: Upload documents
       processingStage = 'Uploading documents...';
@@ -123,7 +115,7 @@ import type { Document } from '$lib/types';
 
       if (data.success) {
         results = data.results || [];
-        timing = data.timing || null;
+        timing = data.timing || null
         processingStage = 'Complete!';
       } else {
         throw new Error(data.error || 'Unknown error');
@@ -132,18 +124,16 @@ import type { Document } from '$lib/types';
       error = err.message || 'Processing failed';
       processingStage = '';
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   }
 
   // Search existing knowledge base
   async function searchKnowledgeBase(): Promise<any> {
     if (!query.trim()) {
       error = 'Please enter a search query';
-      return;
-    }
+      return}
 
-    isProcessing = true;
+    isProcessing = true
     error = '';
     results = [];
 
@@ -170,8 +160,7 @@ import type { Document } from '$lib/types';
       error = err.message || 'Search failed';
       processingStage = '';
     } finally {
-      isProcessing = false;
-    }
+      isProcessing = false}
   }
 
   // Format score as percentage
@@ -190,7 +179,7 @@ import type { Document } from '$lib/types';
 <div class="hybrid-rag-demo nes-container is-dark min-h-screen">
   <!-- Header -->
   <header class="mb-8">
-    <h1 class="text-3xl font-bold text-gold-400">🧠 Hybrid RAG Pipeline Demo</h1>
+    <h1 class="text-3xl font-bold text-gold-400">ðŸ§  Hybrid RAG Pipeline Demo</h1>
     <p class="text-sm">
       embeddinggemma:latest + Gemma Function Calling + Synthesis Ranking
     </p>
@@ -198,7 +187,7 @@ import type { Document } from '$lib/types';
 
   <!-- Configuration, Panel -->
   <div class="nes-container is-dark mb-6">
-    <h2 class="text-xl text-gold-400">⚙️ Pipeline Configuration</h2>
+    <h2 class="text-xl text-gold-400">âš™ï¸ Pipeline Configuration</h2>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <div>
         <div class="text-slate-400">Embedding Model</div>
@@ -217,7 +206,7 @@ import type { Document } from '$lib/types';
 
   <!-- Document, Management -->
   <div class="nes-container is-dark mb-6">
-    <h2 class="text-xl text-gold-400">📄 Documents ({documents.length})</h2>
+    <h2 class="text-xl text-gold-400">ðŸ“„ Documents ({documents.length})</h2>
 
     <div class="flex gap-2">
       <button class="nes-btn" onclick={loadSamples}>
@@ -248,7 +237,7 @@ import type { Document } from '$lib/types';
 
   <!-- Query, Input -->
   <div class="nes-container is-dark mb-6">
-    <h2 class="text-xl text-gold-400">🔍 Search Query</h2>
+    <h2 class="text-xl text-gold-400">ðŸ” Search Query</h2>
 
     <div class="nes-field">
       <label for="query" class="text-sm text-slate-300 mb-2">
@@ -289,7 +278,7 @@ import type { Document } from '$lib/types';
   {#if isProcessing}
     <div class="nes-container is-dark mb-6">
       <div class="flex items-center">
-        <div class="animate-spin">⚙️</div>
+        <div class="animate-spin">âš™ï¸</div>
         <div class="text-yellow-400">{processingStage}</div>
       </div>
     </div>
@@ -298,14 +287,14 @@ import type { Document } from '$lib/types';
   <!-- Error, Display -->
   {#if error}
     <div class="nes-container is-dark is-error mb-6">
-      <div class="text-red-400">❌ Error: {error}</div>
+      <div class="text-red-400">âŒ Error: {error}</div>
     </div>
   {/if}
 
   <!-- Timing, Results -->
   {#if timing}
     <div class="nes-container is-dark mb-6">
-      <h2 class="text-xl text-gold-400">⚡ Performance Metrics</h2>
+      <h2 class="text-xl text-gold-400">âš¡ Performance Metrics</h2>
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div>
           <div class="text-slate-400">Embedding</div>
@@ -334,7 +323,7 @@ import type { Document } from '$lib/types';
   <!-- Results, Display -->
   {#if results.length > 0}
     <div class="nes-container is-dark">
-      <h2 class="text-xl text-gold-400">🎯 Results ({results.length})</h2>
+      <h2 class="text-xl text-gold-400">ðŸŽ¯ Results ({results.length})</h2>
 
       <div class="space-y-4">
         {#each results as result, i}
@@ -422,26 +411,21 @@ import type { Document } from '$lib/types';
 
 <style>
   .hybrid-rag-demo {
-    background: #212529;
-   , color: #d4af37;
-    font-family: 'Press Start 2P', 'Courier New', monospace;
-  }
+    background: #212529
+   , color: #d4af37
+    font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .text-gold-400 {
-    color: #d4af37;
-  }
+    color: #d4af37}
 
   .text-gold-600 {
-    color: #b8941f;
-  }
+    color: #b8941f}
 
   .bg-gold-600 {
-    background-color: #b8941f;
-  }
+    background-color: #b8941f}
 
   .animate-spin {
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
 
   @keyframes spin {
     from { transform: rotate(0deg);
@@ -451,3 +435,4 @@ import type { Document } from '$lib/types';
     }
   }
 </style>
+

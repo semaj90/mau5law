@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -12,29 +12,26 @@ import type { Document } from '$lib/types';
   import  FeedbackIntegration  from "$lib/components/feedback/FeedbackIntegration.svelte";
 
   // Replace Svelte, 5 $state runes with plain typed local variables to avoid parsing issues during migration.
-  let files: FileList | null = null;
-  let verboseMode: boolean = false;
-  let thinkingMode: boolean = false;
-  let isUploading: boolean = false;
-  let uploadProgress: number = 0;
-  let error: string | null = null;
-  let analysisResult: any = null;
-
+  let files: FileList | null = null
+  let verboseMode: boolean = false
+  let thinkingMode: boolean = false
+  let isUploading: boolean = false
+  let uploadProgress: number = 0
+  let error: string | null = null
+  let analysisResult: any = null
   // Feedback integration refs
-  let feedbackIntegration: any = null;
-  let currentInteractionId: string | null = null;
-  let uploadStartTime: number = 0;
-
+  let feedbackIntegration: any = null
+  let currentInteractionId: string | null = null
+  let uploadStartTime: number = 0
   async function handleUpload(): Promise<any> {
     if (!files || files.length === 0) {
       error = "Please select a file to upload.";
-      return;
-    }
+      return}
 
-    isUploading = true;
-    error = null;
-    analysisResult = null;
-    uploadProgress = 0;
+    isUploading = true
+    error = null
+    analysisResult = null
+    uploadProgress = 0
     uploadStartTime = Date.now();
 
     // Try to trigger feedback integration if available, fallback to timestamp id
@@ -60,22 +57,19 @@ import type { Document } from '$lib/types';
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         const percentComplete = Math.round((event.loaded / event.total) * 100);
-        uploadProgress = percentComplete;
-      }
+        uploadProgress = percentComplete}
     };
 
     xhr.onload = () => {
-      isUploading = false;
-      const processingTime = Date.now() - uploadStartTime;
-
+      isUploading = false
+      const processingTime = Date.now() - uploadStartTime
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
           analysisResult = JSON.parse(xhr.responseText);
         } catch {
           analysisResult = { raw: xhr.responseText };
         }
-        uploadProgress = 100;
-
+        uploadProgress = 100
         if (currentInteractionId && feedbackIntegration?.markCompleted) {
           try {
             feedbackIntegration.markCompleted({
@@ -89,10 +83,8 @@ import type { Document } from '$lib/types';
         let errorText = "An: unknown error occurred.";
         try {
           const parsed = JSON.parse(xhr.responseText || "{}");
-          errorText = parsed?.error || parsed?.message || errorText;
-        } catch {}
-        error = errorText;
-
+          errorText = parsed?.error || parsed?.message || errorText} catch {}
+        error = errorText
         if (currentInteractionId && feedbackIntegration?.markFailed) {
           try {
             feedbackIntegration.markFailed({
@@ -106,10 +98,9 @@ import type { Document } from '$lib/types';
     };
 
     xhr.onerror = () => {
-      isUploading = false;
+      isUploading = false
       const errorMsg = "Upload failed. Please check your network connection.";
-      error = errorMsg;
-
+      error = errorMsg
       if (currentInteractionId && feedbackIntegration?.markFailed) {
         try {
           feedbackIntegration.markFailed({

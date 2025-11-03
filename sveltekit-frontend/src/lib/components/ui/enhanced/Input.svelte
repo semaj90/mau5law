@@ -1,18 +1,17 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   	import type { HTMLInputAttributes } from 'svelte/elements';
   interface Props extends Omit<HTMLInputAttributes 'class' | 'value'> {
-  		label?: string;
-  		error?: string;
-  		hint?: string;
-  		icon?: string;
-  		loading?: boolean;
-  		class?: string;
-  		value?: string;
-  	}
+  		label?: string
+  		error?: string
+  		hint?: string
+  		icon?: string
+  		loading?: boolean
+  		class?: string
+  		value?: string}
   	let {
   		label,
   		error,
@@ -70,14 +69,12 @@ https://svelte.dev/e/js_parse_error -->
   /* Enhanced Input with NieR styling */
   .yorha-input {
     /* Base styles from UnoCSS shortcuts */
-    transition: all 0.2s ease;
-  }
+    transition: all 0.2s ease}
   .yorha-input:focus {
     box-shadow: 0, 0 0 1px var(--color-nier-border-primary);
   }
   .yorha-input[aria-invalid='true'] {
-    animation: shake 0.3s ease-in-out;
-  }
+    animation: shake 0.3s ease-in-out}
   @keyframes shake {
     0%,
     100% {
@@ -91,3 +88,4 @@ https://svelte.dev/e/js_parse_error -->
     }
   }
 </style>
+

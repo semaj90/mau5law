@@ -1,10 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
   import type { Snippet } from 'svelte';
   import { Search, Database, Activity, FileText, Settings, Upload, RefreshCw } from 'lucide-svelte';
   interface Props {
-    class?: string;
-    children?: Snippet;
+    class?: string
+    children?: Snippet
     onSearch?: (query: string) => Promise<any[]>;
     onUpload?: (file: File) => Promise<void>;
   }
@@ -21,8 +21,8 @@ import type { Document } from '$lib/types';
   let searchResults = $state<any[]>([]);
   let uploadFile = $state<File | null>(null);
   async function handleSearch(): Promise<any> {
-    if (!searchQuery.trim() || !onSearch) return;
-    isLoading = true;
+    if (!searchQuery.trim() || !onSearch) return
+    isLoading = true
     try {
       const results = await onSearch(searchQuery);
       searchResults = results || [];
@@ -30,20 +30,17 @@ import type { Document } from '$lib/types';
       console.error('Search failed:', error);
       searchResults = [];
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
   async function handleUpload(): Promise<any> {
-    if (!uploadFile || !onUpload) return;
-    isLoading = true;
+    if (!uploadFile || !onUpload) return
+    isLoading = true
     try {
       await onUpload(uploadFile);
-      uploadFile = null;
-    } catch (error) {
+      uploadFile = null} catch (error) {
       console.error('Upload failed:', error);
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
 </script>
 <div class="nes-container is-rounded" {...restProps}>
@@ -155,8 +152,7 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .animate-spin {
-    animation: spin 1s linear infinite;
-  }
+    animation: spin 1s linear infinite}
   @keyframes spin {
     from { transform: rotate(0deg);
     }
@@ -165,3 +161,4 @@ import type { Document } from '$lib/types';
     }
   }
 </style>
+

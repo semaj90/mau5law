@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   interface Props {
     orientation?: 'horizontal' | 'vertical';
-    decorative?: boolean;
-    class?: string;
-  }
+    decorative?: boolean
+    class?: string}
   let { orientation = 'horizontal', decorative = true, class: className = '', ...restProps }: Props = $props();
 </script>
 <div
@@ -12,3 +11,4 @@
   class="shrink-0 bg-border {orientation === 'horizontal' ? 'h-[1px] w-full' : 'h-full w-[1px]'} {className}"
   {...restProps}
 ></div>
+

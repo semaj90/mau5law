@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   N64 Switch/Toggle Component
   Advanced 3D toggle switch with mechanical animation, texture filtering, and spatial feedback
   Features:
@@ -51,7 +51,7 @@
   const { enableSpringPhysics } = $props<{ enableSpringPhysics: boolean }>()
   const { animationDuration } = $props<{ animationDuration: number }>()
   const { springTension } = $props<{ springTension: number }>()
-  const { ondispatch } = $props<{ ondispatch: ((_event: { checked: boolean }>() value?: string }) => void) | undefined;
+  const { ondispatch } = $props<{ ondispatch: ((_event: { checked: boolean }>() value?: string }) => void) | undefined
   // avoid using the reserved word `class` as an exported identifier
   const { className } = $props<{ className: string }>()
 
@@ -60,11 +60,10 @@
   let isHovered = $state<boolean>(false);
   let isPressed = $state<boolean>(false);
   let isAnimating = $state<boolean>(false);
-  let switchElement: HTMLElement | null = null;
-  let audioContext: AudioContext | null = null;
-  let animationFrameId: number | null = null;
-  let particleStyleElement: HTMLStyleElement | null = null;
-
+  let switchElement: HTMLElement | null = null
+  let audioContext: AudioContext | null = null
+  let animationFrameId: number | null = null
+  let particleStyleElement: HTMLStyleElement | null = null
   // Effective render options
   const effectiveRenderOptions: N64RenderingOptions = {
     ...N64_TEXTURE_PRESETS.balanced,
@@ -72,18 +71,17 @@
     enableMipMapping,
     enableFog,
     ...renderOptions
-  } as N64RenderingOptions;
-
+  } as N64RenderingOptions
   // Play spatial/mechanical switch sound (best-effort, guarded)
   async function playSwitchSound(isOn: boolean): Promise<any> {
-    if (!enableSpatialAudio) return;
+    if (!enableSpatialAudio) return
     try {
       if (!audioContext) {
-        const Ctor = (window as: any).AudioContext || (window as: any).webkitAudioContext;
-        if (!Ctor) return;
+        const Ctor = (window as: any).AudioContext || (window as: any).webkitAudioContext
+        if (!Ctor) return
         audioContext = new Ctor();
       }
-      const ctx = audioContext;
+      const ctx = audioContext
       if (!ctx) return; // guard against: null
       const oscillator1 = ctx.createOscillator();
       const oscillator2 = ctx.createOscillator();
@@ -119,11 +117,9 @@
         const impulseR = impulse.getChannelData(1);
         for (let i = 0; i < impulseLength; i++) {
           const decay = Math.pow(1 - i / impulseLength, 2);
-          impulseL[i] = (Math.random() * 2 - 1) * decay * 0.2;
-          impulseR[i] = (Math.random() * 2 - 1) * decay * 0.2;
-        }
-        reverbNode.buffer = impulse;
-      } catch {
+          impulseL[i] = (Math.random() * 2 - 1) * decay * 0.2
+          impulseR[i] = (Math.random() * 2 - 1) * decay * 0.2}
+        reverbNode.buffer = impulse} catch {
         /* ignore reverb creation errors */
       }
 
@@ -161,36 +157,31 @@
 
   // Toggle handler
   async function handleToggle(): Promise<any> {
-    if (disabled || readonly || loading) return;
-    isPressed = true;
-    isAnimating = true;
-    const newValue = !checked;
-    checked = newValue;
+    if (disabled || readonly || loading) return
+    isPressed = true
+    isAnimating = true
+    const newValue = !checked
+    checked = newValue
     await playSwitchSound(newValue);
     if (enableParticles) createSwitchParticles();
     setTimeout(() => {
-      isPressed = false;
-      isAnimating = false;
-    }, animationDuration);
+      isPressed = false
+      isAnimating = false}, animationDuration);
     ondispatch?.({ checked: newValue, value });
   }
 
   function handleFocus() {
-    if (disabled) return;
-    isFocused = true;
-  }
+    if (disabled) return
+    isFocused = true}
   function handleBlur() {
-    isFocused = false;
-  }
+    isFocused = false}
   function handleHover() {
-    if (disabled) return;
-    isHovered = true;
-  }
+    if (disabled) return
+    isHovered = true}
   function handleUnhover() {
-    isHovered = false;
-  }
+    isHovered = false}
   function handleKeyDown(e: KeyboardEvent) {
-    if (disabled || readonly) return;
+    if (disabled || readonly) return
     if (e.key === ' ' || e.key === 'Enter') {
       e.preventDefault();
       handleToggle();
@@ -198,28 +189,28 @@
   }
 
   function createSwitchParticles() {
-    const particles = 6;
-    const container = switchElement?.parentElement;
-    if (!container) return;
+    const particles = 6
+    const container = switchElement?.parentElement
+    if (!container) return
     for (let i = 0; i < particles; i++) {
       const particle = document.createElement('div');
       particle.className = 'n64-switch-particle';
-      const angle = (360 / particles) * i;
-      const distance = 20 + Math.random() * 15;
+      const angle = (360 / particles) * i
+      const distance = 20 + Math.random() * 15
       particle.style.cssText = `
-        position: absolute;
-        width: 6px;
-        height: 6px;
+        position: absolute
+        width: 6px
+        height: 6px
         background: ${checked ? '#4a90e2' : '#6c757d'};
         border-radius: 50%;
-        pointer-events: none;
-        animation: switchParticleExplosion 0.6s ease-out forwards;
-        --angle: ${angle}deg;
-        --distance: ${distance}px;
+        pointer-events: none
+        animation: switchParticleExplosion 0.6s ease-out forwards
+        --angle: ${angle}deg
+        --distance: ${distance}px
         top: 50%;
         left: 50%;
        , transform: translate(-50%, -50%);
-        z-index: 1000;
+        z-index: 1000
       `;`
       container.appendChild(particle);
       setTimeout(() => particle.remove(), 700);
@@ -253,11 +244,9 @@
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
         on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
-    } as const;
-
-    const colors = (baseColors, as: any)[variantKey] || baseColors.primary;
-    const stateColors = isOn ? colors.on : colors.off;
-
+    } as const
+    const colors = (baseColors, as: any)[variantKey] || baseColors.primary
+    const stateColors = isOn ? colors.on : colors.off
     const materialMap: Record<string any> = {
       basic: { trackBackground: isOn ? stateColors.base : '#2d3748',
         knobBackground: stateColors.base,
@@ -290,19 +279,17 @@
       }
     };
 
-    return materialMap[material] || materialMap.phong;
-  }
+    return materialMap[material] || materialMap.phong}
 
   function getSizeStyles(sz: string) {
-    const normalized = sz === 'md' ? 'medium' : sz;
+    const normalized = sz === 'md' ? 'medium' : sz
     const sizeMap: Record<string any> = {
       small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
       medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
       large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
       xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
     };
-    return sizeMap[normalized] || sizeMap.medium;
-  }
+    return sizeMap[normalized] || sizeMap.medium}
 
   // Reactive derived values
   const sizeStyles = $derived(getSizeStyles(size));
@@ -320,8 +307,7 @@
       @keyframes switchParticleExplosion {
         to {
           transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(0);
-          opacity: 0;
-        }
+          opacity: 0}
       }
     `;`
     document.head.appendChild(particleStyleElement);
@@ -357,15 +343,15 @@
       --track-bg: ${materialStyles.trackBackground};
       --knob-bg: ${materialStyles.knobBackground};
       --knob-shadow: ${materialStyles.knobShadow};
-      --switch-width: ${sizeStyles.width}px;
-      --switch-height: ${sizeStyles.height}px;
-      --knob-size: ${sizeStyles.knobSize}px;
+      --switch-width: ${sizeStyles.width}px
+      --switch-height: ${sizeStyles.height}px
+      --knob-size: ${sizeStyles.knobSize}px
       --switch-font-size: ${sizeStyles.fontSize};
       --transform-3d: ${transform3D};
       --knob-transform: ${knobTransform};
       --fog-color: ${(effectiveRenderOptions, as: any).fogColor || '#404040'};
       --glow-intensity: ${glowIntensity};
-      --animation-duration: ${animationDuration}ms;
+      --animation-duration: ${animationDuration}ms
       --spring-tension: ${springTension};
     `}`
     role="switch"
@@ -426,41 +412,39 @@
 
 <style>
   .n64-switch-container {
-    font-family: 'Rajdhani', 'Arial', sans-serif;
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
+    font-family: 'Rajdhani', 'Arial', sans-serif
+    display: flex
+    align-items: flex-start
+    gap: 12px}
   .n64-switch {
     /* Base N64 switch styling */
-    position: relative;
+    position: relative
    , width: var(--switch-width);
     height: var(--switch-height);
-    cursor: pointer;
+    cursor: pointer
     /* 3D transformations */
    , transform: var(--transform-3d);
-    transform-origin: center center;
-    transform-style: preserve-3d;
+    transform-origin: center center
+    transform-style: preserve-3d
     /* Enhanced rendering */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased
+    -moz-osx-font-smoothing: grayscale
+    text-rendering: optimizeLegibility
    , transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
     /* Remove default styles */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    outline: none;
+    -webkit-appearance: none
+    -moz-appearance: none
+    appearance: none
+    outline: none
     /* Performance optimization */
-    will-change: transform;
-  }
+    will-change: transform}
   .switch-track {
-    position: relative;
+    position: relative
     width: 100%;
     height: 100%;
    , background: var(--track-bg);
     border-radius: calc(var(--switch-height) / 2);
-    overflow: hidden;
+    overflow: hidden
     /* 3D track styling */
     box-shadow:
       inset, 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
@@ -469,9 +453,9 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
   .switch-knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
+    position: absolute
+    top: 2px
+    left: 2px
    , width: var(--knob-size);
     height: var(--knob-size);
     background: var(--knob-bg);
@@ -483,16 +467,15 @@
    , transform: var(--knob-transform);
     transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
     /* Performance optimization */
-    will-change: transform;
-    transform-style: preserve-3d;
-  }
+    will-change: transform
+    transform-style: preserve-3d}
   /* Knob lighting overlay */
   .knob-lighting {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
    , background: radial-gradient(
       circle at 30% 30%,
       rgba(255, 255, 255, 0.6) 0%,
@@ -500,69 +483,64 @@
       transparent 60%
     );
     border-radius: 50%;
-    pointer-events: none;
-  }
+    pointer-events: none}
   /* Knob reflection */
   .knob-reflection {
-    position: absolute;
+    position: absolute
     top: 15%;
     left: 15%;
     right: 60%;
     bottom: 60%;
    , background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
     border-radius: 50%;
-    pointer-events: none;
-    opacity: 0.7;
-  }
+    pointer-events: none
+    opacity: 0.7}
   /* Knob loading indicator */
   .knob-loading {
-    position: absolute;
+    position: absolute
     top: 50%;
     left: 50%;
    , transform: translate(-50%, -50%);
-    z-index: 10;
-  }
+    z-index: 10}
   .n64-spinner { width: calc(var(--knob-size) * 0.5);
     height: calc(var(--knob-size) * 0.5);
-    border: 2px solid transparent;
+    border: 2px solid transparent
     border-top: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%;
-    animation: switchSpin 1s linear infinite;
-  }
+    animation: switchSpin 1s linear infinite}
   @keyframes switchSpin {
     to { transform: rotate(360deg);
     }
   }
   /* Track fog effect */
   .track-fog {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
    , background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%);
-    opacity: 0.15;
-    pointer-events: none;
+    opacity: 0.15
+    pointer-events: none
     border-radius: calc(var(--switch-height) / 2);
   }
   /* Toggle glow effect */
   .toggle-glow {
-    position: absolute;
-    top: -4px;
-    left: -4px;
-    right: -4px;
-    bottom: -4px;
+    position: absolute
+    top: -4px
+    left: -4px
+    right: -4px
+    bottom: -4px
    , background: radial-gradient(
       ellipse at center,
       rgba(74, 144, 226, calc(var(--glow-intensity) * 0.6)) 0%,
       transparent 70%
     );
     border-radius: calc(var(--switch-height) / 2 + 4px);
-    pointer-events: none;
+    pointer-events: none
    , filter: blur(8px);
-    z-index: -1;
-   , animation: toggleGlowPulse 2s ease-in-out infinite;
-  }
+    z-index: -1
+   , animation: toggleGlowPulse 2s ease-in-out infinite}
   @keyframes toggleGlowPulse {
     0%,
     100% {
@@ -576,27 +554,23 @@
   }
   /* Switch content styling */
   .switch-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex: 1;
-  }
-  .switch-label { color: #ffffff;
-    font-weight: 600;
+    display: flex
+    flex-direction: column
+    gap: 4px
+    flex: 1}
+  .switch-label { color: #ffffff
+    font-weight: 600
     font-size: var(--switch-font-size);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    user-select: none;
-  }
+    letter-spacing: 0.5px
+    cursor: pointer
+    user-select: none}
   .switch-description { color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--switch-font-size) * 0.85);
-    line-height: 1.4;
-  }
+    line-height: 1.4}
   /* State variations */
   .n64-switch.focused { outline: 3px solid rgba(74, 144, 226, 0.6);
-    outline-offset: 2px;
-  }
+    outline-offset: 2px}
   .n64-switch.hovered:not(.disabled) .switch-track {
     box-shadow:
       inset, 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
@@ -608,25 +582,21 @@
     background: var(--track-bg);
   }
   .n64-switch.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    opacity: 0.5
+    cursor: not-allowed
    , filter: grayscale(0.8);
   }
   .n64-switch.disabled .switch-knob {
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%);
   }
   .n64-switch.readonly {
-    cursor: default;
-  }
-  .n64-switch.readonly .switch-label { cursor: default;
-  }
+    cursor: default}
+  .n64-switch.readonly .switch-label { cursor: default}
   /* Material type variations */
   .n64-switch.pbr .switch-track {
-    background-blend-mode: overlay, normal;
-  }
+    background-blend-mode: overlay, normal}
   .n64-switch.pbr .switch-knob {
-    background-blend-mode: overlay, normal;
-  }
+    background-blend-mode: overlay, normal}
   /* Mesh complexity variations */
   .n64-switch.mesh-ultra .switch-track {
     border-radius: calc(var(--switch-height) / 2 + 2px);
@@ -635,8 +605,7 @@
     border-radius: 60%;
   }
   .n64-switch.mesh-low {
-    transform-style: flat;
-  }
+    transform-style: flat}
   .n64-switch.mesh-low .switch-track {
     border-radius: calc(var(--switch-height) / 4);
   }
@@ -666,49 +635,39 @@
     .knob-reflection,
     .track-fog,
     .toggle-glow {
-      display: none;
-    }
+      display: none}
   }
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .n64-switch {
-      transform: none !important;
-      transition: opacity 150ms ease;
-    }
+      transform: none !important
+      transition: opacity 150ms ease}
     .switch-knob {
-      transition: transform 150ms ease;
-    }
+      transition: transform 150ms ease}
     .toggle-glow {
-      animation: none;
-    }
+      animation: none}
     .n64-spinner {
-      animation: none;
+      animation: none
      , border: 2px solid rgba(255, 255, 255, 0.8);
-      border-right-color: transparent;
-    }
+      border-right-color: transparent}
   }
   /* High contrast mode */
   @media (prefers-contrast: more) {
     .n64-switch {
-      border: 2px solid currentColor;
-    }
+      border: 2px solid currentColor}
     .switch-track {
-      border: 2px solid currentColor;
-    }
-    .switch-knob { border: 2px solid currentColor;
-    }
+      border: 2px solid currentColor}
+    .switch-knob { border: 2px solid currentColor}
     .knob-lighting,
     .knob-reflection,
     .track-fog,
     .toggle-glow {
-      display: none;
-    }
+      display: none}
   }
   /* Performance optimization for low-end devices */
   @media (max-device-memory: 2GB) {
     .n64-switch {
-      transform: none;
-    }
+      transform: none}
     .switch-track {
       box-shadow: inset, 0 2px, 0 rgba(0, 0, 0, 0.4);
     }
@@ -719,13 +678,11 @@
     .knob-reflection,
     .track-fog,
     .toggle-glow {
-      display: none;
-    }
+      display: none}
   }
   /* Dark mode variations */
   @media (prefers-color-scheme: dark) {
     .n64-switch {
-      --fog-color: #101010;
-    }
+      --fog-color: #101010}
   }
 </style>

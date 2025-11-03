@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
 </script>
 
@@ -15,6 +15,6 @@
 
 <style>
   .container {
-    max-width: 1200px;
-  }
+    max-width: 1200px}
 </style>
+

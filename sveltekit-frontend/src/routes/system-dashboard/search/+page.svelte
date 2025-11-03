@@ -1,64 +1,62 @@
-<!--
+﻿<!--
   Unified Vector Search - Legal AI Dashboard
   Enhanced-Bits orchestrated components with Svelte, 5 runes
 -->
 <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-  // Enhanced-Bits orchestrated components — adjust imports to match module exports
+  // Enhanced-Bits orchestrated components â€” adjust imports to match module exports
   import Badge from '$lib/components/ui/enhanced-bits/Badge.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte';
   import Input from '$lib/components/ui/Input.svelte';
-  // NOTE: lucide-svelte named exports caused type/import issues in this project;
+  // NOTE: lucide-svelte named exports caused type/import issues in this project
   // use a small inline icon map (emoji placeholders) to avoid breaking the build.
   const ICON = {
-    brain: '🧠',
-    sparkles: '✨',
-    settings: '⚙️',
-    search: '🔍',
-    zap: '⚡',
-    target: '🎯',
-    filter: '🔎',
-    fileText: '📄',
-    bookOpen: '📖',
-    scale: '⚖️',
-    lightbulb: '💡',
-    database: '🗄️',
-    alert: '⚠️',
-    clock: '🕒',
-    check: '✅',
-    eye: '👁️',
-    chevronRight: '➡️',
-    trendingUp: '📈'
+    brain: 'ðŸ§ ',
+    sparkles: 'âœ¨',
+    settings: 'âš™ï¸',
+    search: 'ðŸ”',
+    zap: 'âš¡',
+    target: 'ðŸŽ¯',
+    filter: 'ðŸ”Ž',
+    fileText: 'ðŸ“„',
+    bookOpen: 'ðŸ“–',
+    scale: 'âš–ï¸',
+    lightbulb: 'ðŸ’¡',
+    database: 'ðŸ—„ï¸',
+    alert: 'âš ï¸',
+    clock: 'ðŸ•’',
+    check: 'âœ…',
+    eye: 'ðŸ‘ï¸',
+    chevronRight: 'âž¡ï¸',
+    trendingUp: 'ðŸ“ˆ'
   };
 
   // Enhanced types using orchestrated components
   interface VectorSearchResult {
-    id: string;
-    document_id: string;
-    title: string;
-    content_preview: string;
-    similarity_score: number;
+    id: string
+    document_id: string
+    title: string
+    content_preview: string
+    similarity_score: number
     document_type: 'evidence' | 'case_note' | 'contract' | 'brief' | 'precedent';
-    case_id?: string;
+    case_id?: string
     metadata: {
-      file_type?: string;
-      upload_date?: string;
+      file_type?: string
+      upload_date?: string
       tags?: string[];
-      confidence?: number;
-    }
+      confidence?: number}
     highlights?: string[];
   }
   interface SearchResponse {
-    success: boolean;
+    success: boolean
     results: VectorSearchResult[];
     query_info: {
-      original_query: string;
-      processed_query: string;
-      embedding_model: string;
-      search_time_ms: number;
-     , total_results: number;
-    }
+      original_query: string
+      processed_query: string
+      embedding_model: string
+      search_time_ms: number
+     , total_results: number}
     suggestions?: string[];
   }
 
@@ -96,11 +94,11 @@ import type { Document } from '$lib/types';
 
   // Perform vector search
   async function performSearch(): Promise<any> {
-    if (!query.trim()) return;
-    loading = true;
-    error = null;
+    if (!query.trim()) return
+    loading = true
+    error = null
     results = [];
-    searchInfo = null;
+    searchInfo = null
     try {
       const requestBody = {
         query: query.trim(),
@@ -123,20 +121,19 @@ import type { Document } from '$lib/types';
       if (!response.ok) {
         throw new Error(`Search failed: ${response.statusText || response.status}`);
       }
-      const data = await response.json() as SearchResponse;
+      const data = await response.json() as SearchResponse
       if (!data.success) {
         throw new Error('Search request failed');
       }
       results = data.results || [];
-      searchInfo = data.query_info || null;
+      searchInfo = data.query_info || null
       suggestions = data.suggestions || [];
       console.log('Vector search results:', data);
     } catch (err) {
       console.error('Search error:', err);'
       error = err instanceof Error ? err.message : 'Search failed';
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
 
   function handleKeyPress(e: KeyboardEvent) {
@@ -147,7 +144,7 @@ import type { Document } from '$lib/types';
 
   // annotate event parameter type to avoid implicit: any
   function setSuggestionQuery(suggestion: string) {
-    query = suggestion;
+    query = suggestion
     performSearch();
   }
 
@@ -338,7 +335,7 @@ import type { Document } from '$lib/types';
            </div>
          </div>
          <!-- changed <p> to <div> to avoid invalid nesting when template blocks render inside -->
-         <div class="text-sm text-nier-text-muted">Query: "{searchInfo.processed_query}" •, Total: {searchInfo.total_results} matches</div>
+         <div class="text-sm text-nier-text-muted">Query: "{searchInfo.processed_query}" â€¢, Total: {searchInfo.total_results} matches</div>
        </div>
 
        <div class="space-y-4">

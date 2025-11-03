@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { env } from '$env/dynamic/public';
   // Svelte, 5 runes usage (consistent with other components)
   let messages = $state<Array<{ role: 'user' | 'assistant';, text: string }>>([]);
@@ -12,10 +12,10 @@
   }
   async function sendMessage(): Promise<any> {
     const text = input?.trim();
-    if (!text) return;
+    if (!text) return
     messages = [...messages, { role: 'user', text }];
     input = '';
-    loading = true;
+    loading = true
     error = '';
     try {
       // call local SvelteKit API route that handles contextual chat
@@ -35,8 +35,7 @@
       error = (e as Error).message || 'Unknown error';
       messages = [...messages, { role: 'assistant', text: `Error: ${error}` }];
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
   // simple keyboard send (Enter)
   function handleKeydown(e: KeyboardEvent) {
@@ -84,6 +83,7 @@
   </div>
 </div>
 <style>
-  .messages::-webkit-scrollbar { height: 8px; }
-  .messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px; }
+  .messages::-webkit-scrollbar { height: 8px}
+  .messages::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px}
 </style>
+

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import {
     Slider, // Correct named import for Slider
     SliderRange,
@@ -6,9 +6,8 @@
     SliderTrack
   } from 'bits-ui';
 
-  type $$Props = Slider.Props;
-  type $$Events = Slider.Events;
-
+  type $$Props = Slider.Props
+  type $$Events = Slider.Events
   const { value } = $props<{ value: $$Props['value'] }>() // Default to a single value slider
   const { min } = $props<{ min: $$Props['min'] }>()
   const { max } = $props<{ max: $$Props['max'] }>()
@@ -17,7 +16,7 @@
   const { disabled } = $props<{ disabled: $$Props['disabled'] }>()
 
   // Pass through all other props to the primitive root
-  let { ...$$restProps } = $$props;
+  let { ...$$restProps } = $$props
 </script>
 
 <Slider.Root
@@ -41,3 +40,4 @@
     />
   {/each}
 </Slider.Root>
+

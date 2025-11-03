@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 
   import { onMount, onDestroy, createEventDispatcher } from 'svelte';
   import { fly } from 'svelte/transition';
@@ -6,21 +6,21 @@
   const { align } = $props<{ align: 'left' | 'right' }>()
   const { closeOnSelect } = $props<{ closeOnSelect: boolean }>()
   const dispatch = createEventDispatcher();
-  let open: boolean = false;
-  let rootEl: HTMLElement | null = null;
+  let open: boolean = false
+  let rootEl: HTMLElement | null = null
   function toggle() {
-    open = !open;
+    open = !open
     if (open) dispatch('open');
     else dispatch('close');
   }
   export function close() {
     if (open) {
-      open = false;
+      open = false
       dispatch('close');
     }
   }
   function onDocumentClick(e: MouseEvent) {
-    if (!rootEl) return;
+    if (!rootEl) return
     if (!rootEl.contains(e.target as Node)) close();
   }
   function onKeydown(e: KeyboardEvent) {
@@ -77,17 +77,15 @@
 <style>
   /* Minimal encapsulated styles; toolbar reuses classes (menu-trigger, dropdown-menu, dropdown-item) */
   .dropdown-root {
-    font-size: 0.95rem;
-  }
+    font-size: 0.95rem}
   .dropdown-trigger {
-    display: inline-flex;
-    align-items: center;
-  }
+    display: inline-flex
+    align-items: center}
   .dropdown-menu { background: var(--dropdown-bg, #fff);
-    border-radius: 0.5rem;
+    border-radius: 0.5rem
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-    padding: 0.35rem;
-   , border: 1px solid #e6edf3;
-    min-width: 12rem;
-  }
+    padding: 0.35rem
+   , border: 1px solid #e6edf3
+    min-width: 12rem}
 </style>
+

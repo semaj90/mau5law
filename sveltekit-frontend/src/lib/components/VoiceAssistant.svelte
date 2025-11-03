@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { speak } from './speak';
   let isSupported = $state<boolean>(false);
   let isListening = $state<boolean>(false);
@@ -7,47 +7,43 @@
   let currentTranscript = $state<string>('');
   let recognition = $state<any | null>(null);
   $effect(() => {
-    const SpeechRecognition = (window as: any).webkitSpeechRecognition || (window as: any).SpeechRecognition;
+    const SpeechRecognition = (window as: any).webkitSpeechRecognition || (window as: any).SpeechRecognition
     if (!SpeechRecognition) {
-      isSupported = false;
-      return;
-    }
-    isSupported = true;
+      isSupported = false
+      return}
+    isSupported = true
     recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
+    recognition.continuous = true
+    recognition.interimResults = true
     recognition.lang = 'en-US';
-    if ('maxAlternatives' in recognition) recognition.maxAlternatives = 1;
+    if ('maxAlternatives' in recognition) recognition.maxAlternatives = 1
     recognition.onstart = () => {
-      isListening = true;
+      isListening = true
       speak("I'm listening. You can ask me legal questions or give voice commands.");'
     };
     recognition.onresult = (ev: any) => {
       let interim = '';
       let final = '';
       const results = ev?.results ?? [];
-      const startIndex = typeof ev?.resultIndex === 'number' ? ev.resultIndex : 0;
+      const startIndex = typeof ev?.resultIndex === 'number' ? ev.resultIndex : 0
       for (let i = startIndex; i < results.length; i++) {
         const r = results[i];
         const transcript = (r && r[0] && r[0].transcript) ? r[0].transcript : '';
         if (r?.isFinal) {
-          final += transcript;
-        } else {
-          interim += transcript;
-        }
+          final += transcript} else {
+          interim += transcript}
       }
-      finalTranscript = final;
-      interimTranscript = interim;
-      currentTranscript = final + interim;
-    };
+      finalTranscript = final
+      interimTranscript = interim
+      currentTranscript = final + interim};
     recognition.onend = () => {
-      isListening = false;
+      isListening = false
       if (!finalTranscript) {
         speak('No speech detected. Please try again.');
       }
     };
     recognition.onerror = (ev: any) => {
-      isListening = false;
+      isListening = false
       const err = ev?.error ?? 'unknown';
       if (err === 'no-speech') {
         speak('No speech detected. Please try again.');
@@ -65,8 +61,7 @@
       } catch {
         /* ignore */
       }
-      recognition = null;
-    };
+      recognition = null};
   });
 </script>
 {#if isSupported}
@@ -80,8 +75,7 @@
       onclick={() => {
         if (isListening) {
           recognition?.stop();
-          isListening = false;
-        } else {
+          isListening = false} else {
           try {
             recognition?.start();
           } catch (err) {
@@ -106,3 +100,4 @@
   /* @unocss-include */
   /* Add your styles here */
 </style>
+

@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!-- AI Processing, Dashboard - Integration, Demo -->
@@ -17,35 +17,30 @@ import type { Document } from '$lib/types';
   let taskQueue: any[] = [];
   let workerStatus: any[] = [];
   let systemMetrics: {
-    totalTasksProcessed: number;
-    averageResponseTime: number;
-    currentLoad: number;
-    availableWorkers: number;
-  } = { totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
+    totalTasksProcessed: number
+    averageResponseTime: number
+    currentLoad: number
+    availableWorkers: number} = { totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
 
-  let selectedProvider: LLMProvider | null = null;
+  let selectedProvider: LLMProvider | null = null
   let isProcessing = $state<boolean>(false);
   let processingResults: AITaskResult[] = [];
   let testInput = "Analyze this legal document for key compliance issues and regulatory requirements.";
 
   // Demo task examples (fixed property punctuation)
-  const demoTasks = [
-    {
+  const demoTasks = [ {
       name: "Document Embedding",
       type: "embedding" as const description: "Generate vector embeddings for document search",
       payload: { text: testInput, model: "nomic-embed-text" }
-    },
-    {
+    }, {
       name: "Legal Analysis",
       type: "analysis" as const description: "Analyze document for legal compliance",
       payload: { content: testInput, analysisType: "legal-document" }
-    },
-    {
+    }, {
       name: "Text Generation",
       type: "generation" as const description: "Generate legal summary and recommendations",
       payload: { prompt: `Create a legal summary, for: ${testInput}`, model: "gemma3-legal" }
-    },
-    {
+    }, {
       name: "Vector Search",
       type: "vector-search" as const description: "Search similar documents in database",
       payload: { query: testInput, collection: "legal_docs", limit: 5 }
@@ -55,8 +50,7 @@ import type { Document } from '$lib/types';
   // Event handlers (kept simple)
   const handleProviderSelected = (event: CustomEvent) => {
     // If LLMProviderSelector emits provider in detail, keep this handler as fallback
-    selectedProvider = (event as: any).detail?.provider ?? selectedProvider;
-  };
+    selectedProvider = (event as: any).detail?.provider ?? selectedProvider};
   const handleStatusChanged = (event: CustomEvent) => {
     console.log(`Provider status changed`, (event as: any).detail);
   };
@@ -65,14 +59,12 @@ import type { Document } from '$lib/types';
   const processTask = async (taskTemplate: typeof demoTasks[0]) => {
     if (!selectedProvider) {
       alert('Please select an LLM provider first');
-      return;
-    }
+      return}
     if (selectedProvider.status !== 'online') {
       alert(`Provider ${selectedProvider.name} is ${selectedProvider.status}. Please select an online provider.`);
-      return;
-    }
+      return}
     try {
-      isProcessing = true;
+      isProcessing = true
       const taskId = await aiServiceWorkerManager.queueTask({
         type: taskTemplate.type priority: 'medium',
         provider: selectedProvider,
@@ -82,7 +74,7 @@ import type { Document } from '$lib/types';
           timestamp: Date.now()
         }
       });
-      console.log(`✅ Task ${taskId} queued successfully`);
+      console.log(`âœ… Task ${taskId} queued successfully`);
       // Simulate completion for demo
       setTimeout(() => {
         const mockResult: AITaskResult = {
@@ -96,27 +88,24 @@ import type { Document } from '$lib/types';
           }
         };
         processingResults = [mockResult, ...processingResults].slice(0, 10); // Keep last, 10
-        isProcessing = false;
-      }, Math.random() * 3000 + 1000);
+        isProcessing = false}, Math.random() * 3000 + 1000);
     } catch (error) {
       console.error('Task processing failed:', error);
-      isProcessing = false;
-    }
+      isProcessing = false}
   };
 
   // Process multiple tasks in parallel
   const processParallelTasks = async () => {
     if (!selectedProvider || selectedProvider.status !== 'online') {
       alert('Please select an online LLM provider');
-      return;
-    }
+      return}
     try {
-      isProcessing = true;
+      isProcessing = true
       const tasks = demoTasks.map(task => ({
         type: task.type priority: 'high' as const provider: selectedProvider!,
         payload: task.payload
       }));
-      console.log('🚀 Processing parallel tasks...');
+      console.log('ðŸš€ Processing parallel tasks...');
       // Use manager if available; fallback to simulating results
       let results: AITaskResult[] = [];
       if (typeof aiServiceWorkerManager.processParallel === 'function') {
@@ -135,11 +124,9 @@ import type { Document } from '$lib/types';
         }));
       }
       processingResults = [...results.reverse(), ...processingResults].slice(0, 10);
-      isProcessing = false;
-    } catch (error) {
+      isProcessing = false} catch (error) {
       console.error('Parallel processing failed:', error);
-      isProcessing = false;
-    }
+      isProcessing = false}
   };
 
   // Generate mock results for demo
@@ -194,7 +181,7 @@ import type { Document } from '$lib/types';
   });
 
   // Health monitoring effect (keeps demo metrics updating)
-  let healthInterval: ReturnType<typeof setInterval> | null = null;
+  let healthInterval: ReturnType<typeof setInterval> | null = null
   $: if (!healthInterval) {
     healthInterval = setInterval(() => {
       systemMetrics = {
@@ -210,8 +197,7 @@ import type { Document } from '$lib/types';
   onDestroy(() => {
     if (healthInterval) {
       clearInterval(healthInterval);
-      healthInterval = null;
-    }
+      healthInterval = null}
     subs.forEach(s => s.unsubscribe && s.unsubscribe());
   });
 
@@ -337,7 +323,7 @@ import type { Document } from '$lib/types';
             <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
             Processing...
           {:else}
-            🚀 Run All Tasks in Parallel
+            ðŸš€ Run All Tasks in Parallel
           {/if}
         </Button>
       </div>

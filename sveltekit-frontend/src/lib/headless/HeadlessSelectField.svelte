@@ -1,31 +1,29 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import * as Select from '$lib/components/ui/select/index.js';
   import  FormField  from "./FormField.svelte";
   // Using custom wrapper and bits-ui re-exports; some may be: undefined if not provided
   const SelectRoot = (Select, as: any).Select || (Select as: any).Root || Select.default || (Select as: any);
-  const SelectTrigger = (Select as: any).SelectTrigger || (Select as: any).Trigger || (Select as: any).SelectTrigger || (Select as: any).Select?.Trigger;
-  const SelectContent = (Select as: any).SelectContent || (Select as: any).Content || (Select as: any).Select?.Content;
-  const SelectValue = (Select as: any).SelectValue || (Select as: any).Value || (Select as: any).Select?.Valu;
-  const SelectItem = (Select as: any).SelectItem || (Select as: any).Item || (Select as: any).Select?.Item;
+  const SelectTrigger = (Select as: any).SelectTrigger || (Select as: any).Trigger || (Select as: any).SelectTrigger || (Select as: any).Select?.Trigger
+  const SelectContent = (Select as: any).SelectContent || (Select as: any).Content || (Select as: any).Select?.Content
+  const SelectValue = (Select as: any).SelectValue || (Select as: any).Value || (Select as: any).Select?.Valu
+  const SelectItem = (Select as: any).SelectItem || (Select as: any).Item || (Select as: any).Select?.Item
   interface SelectOption {
-    value: string;
-    label?: string;
-  }
-  interface HeadlessSelectFieldProps { name: string;
-    value?: string | null;
-    selected?: string | null;
+    value: string
+    label?: string}
+  interface HeadlessSelectFieldProps { name: string
+    value?: string | null
+    selected?: string | null
     options?: (string | SelectOption)[];
-    placeholder?: string;
-    errors?: string[] | undefined;
-    disabled?: boolean;
-    autoSelectFirst?: boolean;
-    emptyOptionLabel?: string;
-    required?: boolean;
-    description?: string;
-    class?: string;
-    onChange?: (_event: { name: string;, value: string | null }) => void;
-  }
+    placeholder?: string
+    errors?: string[] | undefined
+    disabled?: boolean
+    autoSelectFirst?: boolean
+    emptyOptionLabel?: string
+    required?: boolean
+    description?: string
+    class?: string
+    onChange?: (_event: { name: string;, value: string | null }) => void}
   let {
     name,
     value = $bindable(),
@@ -40,8 +38,7 @@
     description = undefined,
     class: className = '',
     onChange,
-    ...rest;
-  }: HeadlessSelectFieldProps = $props();
+    ...rest}: HeadlessSelectFieldProps = $props();
   // Internal state for current selection
   let current = $state<string | null>(selected ?? value ?? null);
   let mounted = $state<boolean>(false);
@@ -56,10 +53,8 @@
   // Sync external value changes
   $effect(() => {
     if (selected !== undefined && selected !== current) {
-      current = selected;
-    } else if (value !== undefined && value !== current) {
-      current = valu;
-    }
+      current = selected} else if (value !== undefined && value !== current) {
+      current = valu}
   });
   // Auto-select first option if enabled
   $effect(() => {
@@ -69,16 +64,15 @@
   });
   // Mount effect
   $effect(() => {
-    mounted = true;
+    mounted = true
     return () => {
-      mounted = false;
-    }
+      mounted = false}
   });
   function updateValue(v: string | null) {
-    if (current === v) return;
-    current = v;
+    if (current === v) return
+    current = v
     // Update bindable props
-    if (value !== undefined) value = v;
+    if (value !== undefined) value = v
     // Call onChange callback
     if (onChange) {
       onChange({ name, value: v });
@@ -109,3 +103,4 @@
   {/snippet}
 </FormField>
 ;
+

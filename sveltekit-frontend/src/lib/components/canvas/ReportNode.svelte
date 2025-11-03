@@ -1,8 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    report: Report;
-  }
+    report: Report}
   let { report }: Props = $props();
   import { onMount } from 'svelte';
   import type { Report } from '$lib/data/types';
@@ -10,31 +9,28 @@
   import * as ContextMenu from '$lib/components/ui/context-menu.svelte';
   // Icons
   import { Link, Sparkles } from 'lucide-svelte';
-  let nodeElement: HTMLDivElement | null = null;
+  let nodeElement: HTMLDivElement | null = null
   let isDragging = $state<boolean>(false);
   let dragStartX = $state<number>(0);
   let dragStartY = $state<number>(0);
   // Add local position state for drag-and-drop
   let position = $state({ x: 100, y: 100 });
   function handleMouseDown(e: MouseEvent) {
-    const target = e.target as Element | null;
+    const target = e.target as Element | null
     if (target === nodeElement || target?.classList?.contains('node-header')) {
-      isDragging = true;
-      dragStartX = e.clientX - position.x;
-      dragStartY = e.clientY - position.y;
-    }
+      isDragging = true
+      dragStartX = e.clientX - position.x
+      dragStartY = e.clientY - position.y}
   }
   function handleMouseMove(e: MouseEvent) {
     if (isDragging) {
-      position.x = e.clientX - dragStartX;
-      position.y = e.clientY - dragStartY;
-    }
+      position.x = e.clientX - dragStartX
+      position.y = e.clientY - dragStartY}
   }
   function handleMouseUp() {
-    isDragging = false;
-  }
+    isDragging = false}
   async function saveCitation(text: string): Promise<void> {
-    if (!text.trim()) return;
+    if (!text.trim()) return
     // Implementation for saving citation
     console.log('Saving citation', text);
   }
@@ -48,8 +44,7 @@
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
-      nodeElement = null;
-    };
+      nodeElement = null};
   });
 </script>
 <ContextMenu.Root>
@@ -62,10 +57,9 @@
       onkeydown={(e: KeyboardEvent) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
-          isDragging = true;
-          dragStartX = 0;
-          dragStartY = 0;
-        }
+          isDragging = true
+          dragStartX = 0
+          dragStartY = 0}
       }}
       role="button"
       tabindex={0}
@@ -92,3 +86,4 @@
 <style>
   /* @unocss-include */
 </style>
+

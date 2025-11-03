@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { Button } from '$lib/components/ui/button';
   import { Input } from '$lib/components/ui/input';
   // Svelte, 5 runes are auto-imported
@@ -56,26 +56,24 @@
   }
   // Auto-refresh functionality
   function toggleAutoRefresh() {
-    isAutoRefresh = !isAutoRefresh;
+    isAutoRefresh = !isAutoRefresh
     if (isAutoRefresh) {
       refreshInterval = setInterval(() => {
         invalidateAll();
       }, 5000);
     } else if (refreshInterval) {
       clearInterval(refreshInterval);
-      refreshInterval = null;
-    }
+      refreshInterval = null}
   }
   // Manual refresh
   async function refreshData(): Promise<any> {
-    isLoading = true;
+    isLoading = true
     await invalidateAll();
-    isLoading = false;
-  }
+    isLoading = false}
   // Key management
   async function viewKeyDetails(_key: string): Promise<any> {
-    selectedKey = key;
-    isLoading = true;
+    selectedKey = key
+    isLoading = true
     try {
       // removed unused response assignment
       if (response.ok) {
@@ -83,22 +81,19 @@
       }
     } catch (error) {
       console.error('Failed to load key details:', error);
-      keyDetails = null;
-    } finally {
-      isLoading = false;
-    }
+      keyDetails = null} finally {
+      isLoading = false}
   }
   // Format bytes to human readable
   function formatBytes(bytes: string): string {
     if (typeof bytes === 'string' && bytes.includes('B')) {
-      return byte;
-    }
+      return byte}
     const size = parseFloat(bytes);
     const units = ['B', 'KB', 'MB', 'GB'];
-    let unitIndex = 0;
-    let convertedSize = siz;
+    let unitIndex = 0
+    let convertedSize = siz
     while (convertedSize >= 1024 && unitIndex < units.length - 1) {
-      convertedSize /= 1024;
+      convertedSize /= 1024
       unitIndex++;
     }
     return `${convertedSize.toFixed(1)}${units[unitIndex]}`;
@@ -297,7 +292,7 @@
         </NesCardHeader>
         <div.Content, class="space-y-4">
           <!-- Search, Filter -->
-          <Input;
+          <Input
             bind:value={keyFilter}
             placeholder="Filter keys..."
             class="max-w-md"
@@ -348,19 +343,19 @@
         <div.Content, class="nes-container">
           <form method="POST" action="?/setKey" use:enhance, class="space-y-4">
             <div class="grid grid-cols-1 md:grid-cols-3">
-              <Input;
+              <Input
                 bind:value={newKey}
                 name="key"
                 placeholder="Key name"
                 required
               />
-              <Input;
+              <Input
                 bind:value={newValue}
                 name="value"
                 placeholder="Value"
                 required
               />
-              <Input;
+              <Input
                , bind:value={newTtl}
                 name="ttl"
                 type="number"
@@ -440,7 +435,7 @@
           Administrative Tools
         </NesCardTitle>
         <div.Description, class="text-yellow-600">
-          ⚠️ Use these tools carefully - they affect the entire cache
+          âš ï¸ Use these tools carefully - they affect the entire cache
         </NesCardDescription>
       </NesCardHeader>
       <div.Content, class="space-y-4">

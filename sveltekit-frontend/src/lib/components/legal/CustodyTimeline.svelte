@@ -1,4 +1,4 @@
-<!--
+﻿<!--
 Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail
 -->
@@ -6,27 +6,26 @@ Displays the chronological chain of custody events with detailed audit trail
 import type { User } from '$lib/types';
   interface Props {
     events: any[];
-    signature?: string;
-    currentStage?: string;
-  }
+    signature?: string
+    currentStage?: string}
   // read props (Svelte, 5 runtime helper)
   let { events = [], signature, currentStage } = $props<Props>();
   // use simple emoji/icon fallbacks to avoid external icon import issues
   function getEventIcon(eventType: string) {
     switch (eventType) {
       case, 'intake':
-        return '🛡️';
+        return 'ðŸ›¡ï¸';
       case, 'transfer':
-        return '🔁';
+        return 'ðŸ”';
       case, 'verification':
-        return '🔍';
+        return 'ðŸ”';
       case, 'analysis':
-        return '🧠';
+        return 'ðŸ§ ';
       case, 'approval':
-        return '✅';
+        return 'âœ…';
       case, 'finalization':
-        return '🏁';
-      default: return '⏱️';
+        return 'ðŸ';
+      default: return 'â±ï¸';
     }
   }
   function getEventColor(eventType: string) {
@@ -71,7 +70,7 @@ import type { User } from '$lib/types';
       case, 'transfer':
         return {
           primary: `Custody transferred`,
-          secondary: `from ${details.fromCustodian ?? 'Unknown'} →, To: ${details.toCustodian ?? 'Unknown'}`,
+          secondary: `from ${details.fromCustodian ?? 'Unknown'} â†’, To: ${details.toCustodian ?? 'Unknown'}`,
           extra: details.transferReason ? `Reason: ${details.transferReason}` : ''
         };
       case, 'verification':
@@ -112,7 +111,7 @@ import type { User } from '$lib/types';
 <div class="custody-timeline">
   {#if events.length === 0}
     <div class="text-center py-8">
-      <div class="w-12 h-12 mx-auto mb-4 opacity-50">⏱️</div>
+      <div class="w-12 h-12 mx-auto mb-4 opacity-50">â±ï¸</div>
       <p>No custody events recorded yet</p>
     </div>
   {:else}
@@ -159,7 +158,7 @@ import type { User } from '$lib/types';
             {#if event.signature}
               <div class="mt-2 pt-2 border-t">
                 <div class="flex items-center text-xs">
-                  <span class="mr-1">🔒</span>
+                  <span class="mr-1">ðŸ”’</span>
                   Digitally signed: {String(event.signature).substring(0, 16)}...
                 </div>
               {/if}
@@ -184,7 +183,7 @@ import type { User } from '$lib/types';
         <div class="relative flex items-start">
           <!-- Active, stage, dot -->
           <div class="relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-4 border-white shadow-lg bg-blue-100 text-blue-800">
-            <div class="text-xl">⏱️</div>
+            <div class="text-xl">â±ï¸</div>
           </div>
           <!-- Active, stage, content -->
           <div class="flex-1 min-w-0 bg-blue-50 border border-blue-200 rounded-lg">
@@ -199,21 +198,17 @@ import type { User } from '$lib/types';
 </div>
 <style>
   .custody-timeline {
-    max-height: 600px;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-  }
+    max-height: 600px
+    overflow-y: auto
+    scroll-behavior: smooth}
   .custody-timeline::-webkit-scrollbar {
-    width: 6px;
-  }
+    width: 6px}
   .custody-timeline::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 3px;
-  }
+    background: #f1f1f1
+    border-radius: 3px}
   .custody-timeline::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
-    border-radius: 3px;
-  }
-  .custody-timeline::-webkit-scrollbar-thumb:hover { background: #a8a8a8;
-  }
+    background: #c1c1c1
+    border-radius: 3px}
+  .custody-timeline::-webkit-scrollbar-thumb:hover { background: #a8a8a8}
 </style>
+

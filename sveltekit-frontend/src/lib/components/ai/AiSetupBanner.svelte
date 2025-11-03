@@ -1,14 +1,14 @@
-<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
+﻿<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'autoFetch' has already, been, declared;
+<!-- @migration-task Error while migrating Svelte code: Identifier: 'autoFetch' has already, been, declared
 https: //svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  // $props is a Svelte rune provided by the compiler/runtime — do not import it.
+  // $props is a Svelte rune provided by the compiler/runtime â€” do not import it.
   // Types
   type ValidateResponse = {
-    ok: boolean;
-    message?: string;
+    ok: boolean
+    message?: string
     details?: {
       ai_summarize_checks?: { gpu: boolean; ollama: boolean; model: boolean };
       ollama?: { ok: boolean; models_count?: number; required_model?: string; model_present?: boolean };
@@ -17,9 +17,8 @@ https: //svelte.dev/e/js_parse_error -->
   };
 
   interface Props {
-    autoFetch?: boolean;
-    data?: ValidateResponse | null;
-  }
+    autoFetch?: boolean
+    data?: ValidateResponse | null}
 
   // props (Svelte, 5 runes)
   let { autoFetch = true, data = null }: Props = $props();
@@ -33,8 +32,7 @@ https: //svelte.dev/e/js_parse_error -->
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       const json = await res.json();
-      data = json as ValidateResponse;
-    } catch (err) {
+      data = json as ValidateResponse} catch (err) {
       console.error('API validation load failed:', err);
       data = { ok: false, message: 'Validation failed to load' };
     }
@@ -43,8 +41,8 @@ https: //svelte.dev/e/js_parse_error -->
   // Pull required model from Ollama and re-validate
   async function pullModel(): Promise<any> {
     performance.mark('function-start');
-    const required = data?.details?.ollama?.required_model;
-    if (!required) return;
+    const required = data?.details?.ollama?.required_model
+    if (!required) return
     try {
       const res = await fetch('/api/ollama/pull', {
         method: 'POST',
@@ -110,46 +108,41 @@ https: //svelte.dev/e/js_parse_error -->
 
 <style>
   .ai-setup-banner {
-    border: 1px solid #f5c2c7;
-    background: #fff5f5;
-    color: #842029;
-    padding: 12px;
-    border-radius: 8px;
-  }
-  .title { font-weight: 600; margin-bottom: 6px; }
-  .msg { margin-bottom: 8px; }
-  .grid { display: grid;
+    border: 1px solid #f5c2c7
+    background: #fff5f5
+    color: #842029
+    padding: 12px
+    border-radius: 8px}
+  .title { font-weight: 600; margin-bottom: 6px}
+  .msg { margin-bottom: 8px}
+  .grid { display: grid
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
-  }
-  .item { display: flex; align-items: center; gap: 6px; }
-  .label { color: #495057; }
+    gap: 8px}
+  .item { display: flex; align-items: center; gap: 6px}
+  .label { color: #495057}
   .ok {
-    color: #0f5132;
-    background: #d1e7dd;
-    padding: 2px 6px;
-    border-radius: 9999px;
-    font-size: 12px;
-  }
+    color: #0f5132
+    background: #d1e7dd
+    padding: 2px 6px
+    border-radius: 9999px
+    font-size: 12px}
   .bad {
-    color: #842029;
-    background: #f8d7da;
-    padding: 2px 6px;
-    border-radius: 9999px;
-    font-size: 12px;
-  }
+    color: #842029
+    background: #f8d7da
+    padding: 2px 6px
+    border-radius: 9999px
+    font-size: 12px}
   .pull {
-    margin-left: 8px;
-    padding: 4px 10px;
-    border: 1px solid #0d6efd;
-    color: #0d6efd;
-    background: #eef5ff;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  .pull:hover { background: #dceaff; }
+    margin-left: 8px
+    padding: 4px 10px
+    border: 1px solid #0d6efd
+    color: #0d6efd
+    background: #eef5ff
+    border-radius: 6px
+    font-size: 12px
+    cursor: pointer}
+  .pull:hover { background: #dceaff}
   @media (max-width: 600px) {
-    .grid { grid-template-columns: 1fr; }
+    .grid { grid-template-columns: 1fr}
   }
 </style>

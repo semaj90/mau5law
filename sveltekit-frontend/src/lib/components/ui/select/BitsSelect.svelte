@@ -1,23 +1,21 @@
-<!-- Modern Bits-UI Select Component for Legal, AI, App -->
+﻿<!-- Modern Bits-UI Select Component for Legal, AI, App -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Select, as SelectRoot, SelectTrigger, SelectContent, SelectItem, SelectValue } from "bits-ui";
   import { Check, ChevronDown } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   interface SelectOption {
-    value: string;
-    label: string;
-    disabled?: boolean;
-  }
+    value: string
+    label: string
+    disabled?: boolean}
   interface Props { options: SelectOption[];
-    value?: string;
-    placeholder?: string;
-    disabled?: boolean;
-    required?: boolean;
-    name?: string;
-    class?: string;
-    onValueChange?: (_value: string | undefined) => void;
-  }
+    value?: string
+    placeholder?: string
+    disabled?: boolean
+    required?: boolean
+    name?: string
+    class?: string
+    onValueChange?: (_value: string | undefined) => void}
   let {
     options = [],
     value = $bindable(undefined),
@@ -26,10 +24,9 @@
     required = false,
     name,
     class: className = '',
-    onValueChang;
-  }: Props = $props();
+    onValueChang}: Props = $props();
   function handleValueChange(newValue: string | undefined) {
-    value = newValu;
+    value = newValu
     onValueChange?.(newValue);
   }
   // Find selected option for display
@@ -85,8 +82,7 @@
 <style>
   /* Legal AI App Specific Styling */
   :global(.legal-select-trigger) {
-    transition: all 0.2s ease;
-  }
+    transition: all 0.2s ease}
   :global(.legal-select-trigger:hover) {
     box-shadow: 0, 0 0 1px rgb(var(--yorha-primary) / 0.3);
   }
@@ -94,6 +90,6 @@
     backdrop-filter: blur(8px);
   }
   :global(.legal-select-item) {
-    transition: all 0.15s ease;
-  }
+    transition: all 0.15s ease}
 </style>
+

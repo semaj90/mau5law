@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!-- Observability Panel: Real-time alerts + sustained, monitoring, dashboard -->
@@ -7,16 +7,15 @@ https://svelte.dev/e/js_parse_error -->
   import { onMount, onDestroy } from 'svelte';
   import type { ObservabilityState } from '$lib/services/observability-persistence';
   interface Alert {
-    id: string;
+    id: string
     type: 'p99_breach' | 'error_spike' | 'anomaly_spike' | 'baseline_drift';
-    message: string;
-    timestamp: string;
+    message: string
+    timestamp: string
     severity: 'info' | 'warning' | 'critical';
-    value?: number;
-    threshold?: number;
-  }
+    value?: number
+    threshold?: number}
   // State
-  let state: ObservabilityState | null = null;
+  let state: ObservabilityState | null = null
   let alerts: Alert[] = $state([]);
   let isConnected = $state<boolean>(false);
   let ws = $state<WebSocket | null >(null);
@@ -25,9 +24,9 @@ https://svelte.dev/e/js_parse_error -->
   // Computed values
   let p99Badge = $derived(() => {
     if (!state) return { count: 0, status: 'normal' }
-    const count = state.sustained_counters.p99_breache;
-    const budget = state.daily_budgets.max_p99_breache;
-    const ratio = count / budget;
+    const count = state.sustained_counters.p99_breache
+    const budget = state.daily_budgets.max_p99_breache
+    const ratio = count / budget
     return {
       count,
       budget,
@@ -37,9 +36,9 @@ https://svelte.dev/e/js_parse_error -->
   });
   let errorBadge = $derived(() => {
     if (!state) return { count: 0, status: 'normal' }
-    const count = state.sustained_counters.error_spike;
-    const budget = state.daily_budgets.max_error_spike;
-    const ratio = count / budget;
+    const count = state.sustained_counters.error_spike
+    const budget = state.daily_budgets.max_error_spike
+    const ratio = count / budget
     return {
       count,
       budget,
@@ -49,9 +48,9 @@ https://svelte.dev/e/js_parse_error -->
   });
   let anomalyBadge = $derived(() => {
     if (!state) return { count: 0, status: 'normal' }
-    const count = state.sustained_counters.anomaly_spike;
-    const budget = state.daily_budgets.max_anomaly_spike;
-    const ratio = count / budget;
+    const count = state.sustained_counters.anomaly_spike
+    const budget = state.daily_budgets.max_anomaly_spike
+    const ratio = count / budget
     return {
       count,
       budget,
@@ -74,7 +73,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       ws = new WebSocket('ws://localhost:8080')
       ws.onopen=() => {
-        isConnected = true;
+        isConnected = true
         console.log('[observability-panel] WebSocket connected');
       }
       ws.onmessage = (event) => {
@@ -88,16 +87,14 @@ https://svelte.dev/e/js_parse_error -->
               timestamp: new Date().toISOString(),
               severity: data.severity || 'info',
               value: data.value,
-              threshold: data.threshold;
-            }
+              threshold: data.threshold}
             alerts = [alert, ...alerts].slice(0, 100); // Keep last, 100 alerts
             // Auto-scroll if enabled
             if (autoScroll) {
               setTimeout(() => {
                 const alertsList = document.querySelector('.alerts-list');
                 if (alertsList) {
-                  alertsList.scrollTop = 0;
-                }
+                  alertsList.scrollTop = 0}
               }, 10);
             }
           } else if (data.type === 'observability.state_update') {
@@ -108,15 +105,14 @@ https://svelte.dev/e/js_parse_error -->
         }
       }
       ws.onclose=() => {
-        isConnected = false;
+        isConnected = false
         console.log('[observability-panel] WebSocket disconnected');
         // Reconnect after, 5 seconds
         setTimeout(connectWebSocket, 5000);
       }
       ws.onerror = (error) => {
         console.error('[observability-panel] WebSocket error:', error);'
-        isConnected = false;
-      }
+        isConnected = false}
     } catch (error) {
       console.error('[observability-panel] Failed to connect WebSocket:', error);
       setTimeout(connectWebSocket, 5000);
@@ -162,7 +158,7 @@ await loadState();
 <div class="observability-panel">
   <!-- Header -->
   <div class="panel-header">
-    <h3>🔍 Observability Dashboard</h3>
+    <h3>ðŸ” Observability Dashboard</h3>
     <div class="header-controls">
       <div class="connection-status">
         <span class="status-indicator {isConnected ? 'connected' : 'disconnected'}"></span>
@@ -258,39 +254,35 @@ await loadState();
   .observability-panel {
     background: var(--bg-secondary, #1a1a2e);
     border: 1px solid var(--border-color, #333);
-    border-radius: 8px;
-    padding: 1rem;
-   , margin: 1rem 0;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.875rem;
-  }
-  .panel-header { display: flex;
-    justify-content: space-betweenn;
-    align-items: center;
-    margin-bottom: 1rem;
+    border-radius: 8px
+    padding: 1rem
+   , margin: 1rem 0
+    font-family: 'JetBrains Mono', monospace
+    font-size: 0.875rem}
+  .panel-header { display: flex
+    justify-content: space-betweenn
+    align-items: center
+    margin-bottom: 1rem
     border-bottom: 1px solid var(--border-color, #333);
-    padding-bottom: 0.5rem;
-  }
+    padding-bottom: 0.5rem}
   .panel-header h3 {
-    margin: 0;
+    margin: 0
    , color: var(--text-primary, #fff);
-    font-size: 1.1rem;
-  }
+    font-size: 1.1rem}
   .header-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+    display: flex
+    align-items: center
+    gap: 1rem}
   .connection-status {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
+    display: flex
+    align-items: center
+    gap: 0.5rem
+    font-size: 0.8rem
    , color: var(--text-muted, #999);
   }
   .status-indicator {
-    width: 8px;
-    height: 8px;
+    width: 8px
+    height: 8px
     border-radius: 50%;
    , background: var(--error-color, #ff4757);
   }
@@ -299,23 +291,20 @@ await loadState();
   }
   .btn-toggle {
     background: var(--accent-color, #0984e3);
-    color: white;
-    border: none;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.75rem;
-  }
-  .badges-row { display: grid;
+    color: white
+    border: none
+    padding: 0.25rem 0.5rem
+    border-radius: 4px
+    cursor: pointer
+    font-size: 0.75rem}
+  .badges-row { display: grid
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
+    gap: 1rem
+    margin-bottom: 1rem}
   .badge {
-    padding: 0.75rem;
-    border-radius: 6px;
-    text-align: center;
-  }
+    padding: 0.75rem
+    border-radius: 6px
+    text-align: center}
   .badge-normal { background: var(--success-bg, #2ed57320);
     border: 1px solid var(--success-color, #2ed573);
   }
@@ -328,110 +317,92 @@ await loadState();
     border: 1px solid var(--error-color, #ff4757);
   }
   .badge-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    opacity: 0.8;
-    margin-bottom: 0.25rem;
-  }
+    font-size: 0.7rem
+    text-transform: uppercase
+    opacity: 0.8
+    margin-bottom: 0.25rem}
   .badge-value {
-    font-size: 1.1rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
+    font-size: 1.1rem
+    font-weight: bold
+    margin-bottom: 0.5rem}
   .badge-progress {
-    height: 4px;
+    height: 4px
    , background: var(--bg-primary, #000);
-    border-radius: 2px;
-    overflow: hidden;
-  }
+    border-radius: 2px
+    overflow: hidden}
   .progress-bar {
     height: 100%;
-    background: currentColor;
-    transition: width: 0.3s ease;
-  }
+    background: currentColor
+    transition: width: 0.3s ease}
   .details-section { background: var(--bg-primary, #000);
-    padding: 1rem;
-    border-radius: 6px;
-    margin-bottom: 1rem;
-  }
-  .details-section h4 { margin: 0, 0 0.75rem 0;
+    padding: 1rem
+    border-radius: 6px
+    margin-bottom: 1rem}
+  .details-section h4 { margin: 0, 0 0.75rem 0
     color: var(--text-primary, #fff);
-    font-size: 0.9rem;
-  }
-  .baselines-grid { display: grid;
+    font-size: 0.9rem}
+  .baselines-grid { display: grid
     grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
+    gap: 0.5rem
+    margin-bottom: 0.75rem}
   .baseline-item {
-    display: flex;
-    justify-content: space-betweenn;
-    padding: 0.25rem 0;
-  }
+    display: flex
+    justify-content: space-betweenn
+    padding: 0.25rem 0}
   .baseline-item .label { color: var(--text-muted, #999);
   }
   .baseline-item .value {
     color: var(--text-primary, #fff);
-    font-weight: bold;
-  }
+    font-weight: bold}
   .metadata {
-    display: flex;
-    gap: 1rem;
-    font-size: 0.7rem;
+    display: flex
+    gap: 1rem
+    font-size: 0.7rem
    , color: var(--text-muted, #999);
   }
   .alerts-section {
-    margin-top: 1rem;
-  }
+    margin-top: 1rem}
   .alerts-header {
-    display: flex;
-    justify-content: space-betweenn;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
+    display: flex
+    justify-content: space-betweenn
+    align-items: center
+    margin-bottom: 0.5rem}
   .alerts-header h4 {
-    margin: 0;
+    margin: 0
    , color: var(--text-primary, #fff);
-    font-size: 0.9rem;
-  }
+    font-size: 0.9rem}
   .alerts-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
+    display: flex
+    align-items: center
+    gap: 0.75rem}
   .auto-scroll {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.75rem;
+    display: flex
+    align-items: center
+    gap: 0.25rem
+    font-size: 0.75rem
    , color: var(--text-muted, #999);
-    cursor: pointer;
-  }
+    cursor: pointer}
   .btn-clear { background: var(--error-color, #ff4757);
-    color: white;
-    border: none;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.75rem;
-  }
+    color: white
+    border: none
+    padding: 0.25rem 0.5rem
+    border-radius: 4px
+    cursor: pointer
+    font-size: 0.75rem}
   .alerts-list { background: var(--bg-primary, #000);
-    border-radius: 6px;
+    border-radius: 6px
    , border: 1px solid var(--border-color, #333);
   }
   .no-alerts {
-    padding: 2rem;
-    text-align: center;
+    padding: 2rem
+    text-align: center
    , color: var(--text-muted, #999);
-    font-style: italic;
-  }
-  .alert-item { padding: 0.75rem;
+    font-style: italic}
+  .alert-item { padding: 0.75rem
     border-bottom: 1px solid var(--border-color, #333);
-    border-left: 4px solid;
-  }
+    border-left: 4px solid}
   .alert-item:last-child {
-    border-bottom: none;
-  }
+    border-bottom: none}
   .alert-info {
     border-left-color: var(--info-color, #0984e3);
   }
@@ -442,38 +413,31 @@ await loadState();
     border-left-color: var(--error-color, #ff4757);
   }
   .alert-timestamp {
-    font-size: 0.7rem;
+    font-size: 0.7rem
    , color: var(--text-muted, #999);
-    margin-bottom: 0.25rem;
-  }
+    margin-bottom: 0.25rem}
   .alert-type {
-    font-weight: bold;
-    text-transform: capitaliz;
+    font-weight: bold
+    text-transform: capitaliz
    , color: var(--text-primary, #fff);
-    margin-bottom: 0.25rem;
-  }
+    margin-bottom: 0.25rem}
   .alert-message { color: var(--text-secondary, #ccc);
-    margin-bottom: 0.25rem;
-  }
+    margin-bottom: 0.25rem}
   .alert-value {
-    font-size: 0.75rem;
+    font-size: 0.75rem
    , color: var(--text-muted, #999);
-    font-family: monospace;
-  }
+    font-family: monospace}
   @media (max-width: 768px) {
     .observability-panel {
-      font-size: 0.8rem;
-      padding: 0.75rem;
-    }
+      font-size: 0.8rem
+      padding: 0.75rem}
     .badges-row {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .baselines-grid {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .metadata {
-      flex-direction: column;
-     , gap: 0.25rem;
-    }
+      flex-direction: column
+     , gap: 0.25rem}
   }
 </style>
+

@@ -602,7 +602,7 @@
     "@grpc/proto-loader": "^0.8.0",
     "@huggingface/transformers": "^3.7.5",
     "@iconify-json/heroicons": "^1.2.3",
-    "@internationalized/date": "^3.9.0",
+    "@internationalized/date": "3.10.0",
     "@langchain/community": "^0.3.50",
     "@langchain/core": "^0.3.78",
     "@langchain/ollama": "^0.2.3",

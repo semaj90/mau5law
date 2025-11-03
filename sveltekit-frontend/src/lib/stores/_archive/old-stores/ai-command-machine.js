@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+﻿import { writable } from "svelte/store";
 /**
  * AI Command Machine for Phase 2
  * XState v5 compatible implementation
@@ -17,4 +17,4 @@ export const aiCommandMachine = {
         RETRY: "processing", RESET: "idle"}}}};
 // Machine service store
 export const machineStore = writable({
-  state: "idle", context: { [key,: strin,g]: any }});
+  state: "idle", context: { [key: strin,g]: any }});

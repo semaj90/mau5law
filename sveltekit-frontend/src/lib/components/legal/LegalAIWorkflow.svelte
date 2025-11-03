@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
     import { legalAIClient, legalAIUtils, type LegalDocumentResponse, type RecommendationResponse } from '$lib/services/legal-ai-client';
     // State management with Svelte, 5 patterns
@@ -30,18 +30,17 @@
         }
     }
     function handleFileSelect(_event: Event) {
-        const input = event.target as HTMLInputElement;
+        const input = event.target as HTMLInputElement
         if (input.files && input.files.length > 0) {
             uploadedFile = input.files[0];
-            error = null;
-        }
+            error = null}
     }
     async function processDocument(): Promise<any> {
-        if (!uploadedFile) return;
-        isProcessing = true;
-        error = null;
+        if (!uploadedFile) return
+        isProcessing = true
+        error = null
         currentStep = 'analysis';
-        uploadProgress = 0;
+        uploadProgress = 0
         try {
             // Step 1: Analyze document
             analysisResult = await legalAIClient.uploadDocument(
@@ -60,8 +59,7 @@
                 );
                 // Use embedding from analysis if available
                 if (analysisResult.embedding) {
-                    recommendationRequest.query_embedding = analysisResult.embedding;
-                }
+                    recommendationRequest.query_embedding = analysisResult.embedding}
                 recommendations = await legalAIClient.getRecommendations(recommendationRequest);
                 currentStep = 'complete';
             }
@@ -70,17 +68,15 @@
             error = err.message || 'Processing failed';
             console.error('Document processing failed:', err);
         } finally {
-            isProcessing = false;
-        }
+            isProcessing = false}
     }
     function reset() {
-        uploadedFile = null;
-        analysisResult = null;
-        recommendations = null;
+        uploadedFile = null
+        analysisResult = null
+        recommendations = null
         currentStep = 'upload';
-        error = null;
-        uploadProgress = 0;
-    }
+        error = null
+        uploadProgress = 0}
     // Reactive calculations using Svelte, 5 $derived
     const canProcess = $derived(uploadedFile !== null && !isProcessing);
     const progressPercentage = $derived(uploadProgress);
@@ -97,18 +93,18 @@
 <div class="legal-ai-workflow">
   <!-- Header -->
   <div class="workflow-header">
-    <h2>🏛️ Legal AI Analysis Workflow</h2>
+    <h2>ðŸ›ï¸ Legal AI Analysis Workflow</h2>
     <p>Upload legal documents for AI-powered analysis and recommendations</p>
     <!-- Services, Status -->
     <div class="services-status">
       <span class="status-label">Services:</span>
       <span class="status-indicator {servicesHealth?.quicServer ? 'online' : 'offline'}">
-        QUIC Server {servicesHealth?.quicServer ? '🟢' : '🔴'}
+        QUIC Server {servicesHealth?.quicServer ? 'ðŸŸ¢' : 'ðŸ”´'}
       </span>
       <span class="status-indicator {servicesHealth?.recommendationEngine ? 'online' : 'offline'}">
-        Recommendation Engine {servicesHealth?.recommendationEngine ? '🟢' : '🔴'}
+        Recommendation Engine {servicesHealth?.recommendationEngine ? 'ðŸŸ¢' : 'ðŸ”´'}
       </span>
-      <button onclick={checkServicesHealth} class="refresh-btn">🔄</button>
+      <button onclick={checkServicesHealth} class="refresh-btn">ðŸ”„</button>
     </div>
   </div>
   <!-- Step, Indicator -->
@@ -139,7 +135,7 @@
   <!-- Error, Display -->
   {#if error}
     <div class="error-message">
-      <span class="error-icon">❌</span>
+      <span class="error-icon">âŒ</span>
       <span>{error}</span>
       <button onclick={reset} class="retry-btn">Try Again</button>
     {/if}
@@ -204,7 +200,7 @@
   <!-- Results, Section -->
   {#if hasResults && analysisResult}
     <div class="results-section">
-      <h3>📄 Document Analysis Results</h3>
+      <h3>ðŸ“„ Document Analysis Results</h3>
       <div class="result-summary">
         <div class="metric">
           <span class="label">Legal Domain:</span>
@@ -278,7 +274,7 @@
   <!-- Recommendations, Section -->
   {#if hasRecommendations && recommendations}
     <div class="recommendations-section">
-      <h3>🎯 AI Recommendations</h3>
+      <h3>ðŸŽ¯ AI Recommendations</h3>
       <div class="recommendations-summary">
         <div class="metric">
           <span class="label">Total Recommendations:</span>
@@ -336,344 +332,284 @@
 </div>
 <style>
     .legal-ai-workflow {
-        max-width: 1200px;
-        margin: 0 auto;
-       , padding: 2rem;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+        max-width: 1200px
+        margin: 0 auto
+       , padding: 2rem
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
     .workflow-header {
-        text-align: center;
-        margin-bottom: 2rem;
-    }
+        text-align: center
+        margin-bottom: 2rem}
     .workflow-header h2 {
-        color: #1a365d;
-        margin-bottom: 0.5rem;
-    }
+        color: #1a365d
+        margin-bottom: 0.5rem}
     .services-status {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        margin-top: 1rem;
-        padding: 0.75rem;
-        background: #f7fafc;
-        border-radius: 0.5rem;
-        font-size: 0.875rem;
-    }
+        display: flex
+        align-items: center
+        justify-content: center
+        gap: 1rem
+        margin-top: 1rem
+        padding: 0.75rem
+        background: #f7fafc
+        border-radius: 0.5rem
+        font-size: 0.875rem}
     .status-indicator {
-        font-weight: 500;
-    }
+        font-weight: 500}
     .status-indicator.online {
-        color: #059669;
-    }
+        color: #059669}
     .status-indicator.offline {
-        color: #dc2626;
-    }
+        color: #dc2626}
     .refresh-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: 1rem;
-    }
+        background: none
+        border: none
+        cursor: pointer
+        font-size: 1rem}
     .step-indicator {
-        display: flex;
-        justify-content: center;
-        margin: 2rem 0;
-        gap: 2rem;
-    }
+        display: flex
+        justify-content: center
+        margin: 2rem 0
+        gap: 2rem}
     .step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-        opacity: 0.5;
-        transition: opacity 0.3;
-    }
+        display: flex
+        flex-direction: column
+        align-items: center
+        gap: 0.5rem
+        opacity: 0.5
+        transition: opacity 0.3}
     .step.active {
-        opacity: 1;
-        color: #3b82f6;
-    }
+        opacity: 1
+        color: #3b82f6}
     .step.completed {
-        opacity: 1;
-        color: #059669;
-    }
+        opacity: 1
+        color: #059669}
     .step-number {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2rem;
-        height: 2rem;
+        display: flex
+        align-items: center
+        justify-content: center
+        width: 2rem
+        height: 2rem
         border-radius: 50%;
-        background: currentColor;
-        color: white;
-        font-weight: bold;
-        font-size: 0.875rem;
-    }
+        background: currentColor
+        color: white
+        font-weight: bold
+        font-size: 0.875rem}
     .error-message {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem;
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        border-radius: 0.5rem;
-        color: #dc2626;
-        margin: 1rem 0;
-    }
+        display: flex
+        align-items: center
+        gap: 1rem
+        padding: 1rem
+        background: #fef2f2
+        border: 1px solid #fecaca
+        border-radius: 0.5rem
+        color: #dc2626
+        margin: 1rem 0}
     .retry-btn {
-        background: #dc2626;
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 0.25rem;
-        cursor: pointer;
-    }
+        background: #dc2626
+        color: white
+        border: none
+        padding: 0.5rem 1rem
+        border-radius: 0.25rem
+        cursor: pointer}
     .upload-section {
-        background: white;
-       , padding: 2rem;
-        border-radius: 1rem;
+        background: white
+       , padding: 2rem
+        border-radius: 1rem
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
     .file-input-wrapper {
-        margin-bottom: 2rem;
-    }
+        margin-bottom: 2rem}
     .file-input {
-        display: none;
-    }
+        display: none}
     .file-input-label {
-        display: block;
-        padding: 2rem;
-        border: 2px dashed #d1d5db;
-        border-radius: 0.5rem;
-        text-align: center;
-        cursor: pointer;
-        transition: border-color 0.2;
-    }
+        display: block
+        padding: 2rem
+        border: 2px dashed #d1d5db
+        border-radius: 0.5rem
+        text-align: center
+        cursor: pointer
+        transition: border-color 0.2}
     .file-input-label: hover {
-        border-color: #3b82f6;
-        background: #f8fafc;
-    }
+        border-color: #3b82f6
+        background: #f8fafc}
     .processing-options {
-        margin-bottom: 2rem;
-    }
+        margin-bottom: 2rem}
     .processing-options h3 {
-        margin-bottom: 1rem;
-        color: #374151;
-    }
+        margin-bottom: 1rem
+        color: #374151}
     .option {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 0.5rem;
-        cursor: pointer;
-    }
+        display: flex
+        align-items: center
+        gap: 0.5rem
+        margin-bottom: 0.5rem
+        cursor: pointer}
     .process-btn {
-        background: #3b82f6;
-        color: white;
-        border: none;
-        padding: 1rem 2rem;
-        border-radius: 0.5rem;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
+        background: #3b82f6
+        color: white
+        border: none
+        padding: 1rem 2rem
+        border-radius: 0.5rem
+        font-size: 1.1rem
+        font-weight: 600
+        cursor: pointer
         width: 100%;
-       , transition: background 0.2;
-    }
+       , transition: background 0.2}
     .process-btn:hover:not(:disabled) {
-        background: #2563eb;
-    }
+        background: #2563eb}
     .process-btn:disabled {
-        background: #9ca3af;
-        cursor: not-allowed;
-    }
+        background: #9ca3af
+        cursor: not-allowed}
     .progress-section {
-        margin: 2rem 0;
-    }
+        margin: 2rem 0}
     .progress-bar {
         width: 100%;
-        height: 0.5rem;
-        background: #e5e7eb;
-        border-radius: 0.25rem;
-        overflow: hidden;
-    }
+        height: 0.5rem
+        background: #e5e7eb
+        border-radius: 0.25rem
+        overflow: hidden}
     .progress-fill {
         height: 100%;
-        background: #3b82f6;
-        transition: width: 0.3;
-    }
+        background: #3b82f6
+        transition: width: 0.3}
     .progress-text {
-        margin-top: 0.5rem;
-        text-align: center;
-       , color: #6b7280;
-    }
+        margin-top: 0.5rem
+        text-align: center
+       , color: #6b7280}
     .results-section,
     .recommendations-section {
-        background: white;
-       , padding: 2rem;
-        border-radius: 1rem;
+        background: white
+       , padding: 2rem
+        border-radius: 1rem
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        margin: 2rem 0;
-    }
+        margin: 2rem 0}
     .result-summary,
     .recommendations-summary {
-        display: grid;
+        display: grid
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-       , margin: 1rem 0;
-    }
+        gap: 1rem
+       , margin: 1rem 0}
     .metric,
     .detail {
-        display: flex;
-        justify-content: space-betweenn;
-        padding: 0.75rem;
-        background: #f8fafc;
-        border-radius: 0.5rem;
-    }
+        display: flex
+        justify-content: space-betweenn
+        padding: 0.75rem
+        background: #f8fafc
+        border-radius: 0.5rem}
     .label {
-        font-weight: 500;
-        color: #6b7280;
-    }
+        font-weight: 500
+        color: #6b7280}
     .value {
-        font-weight: 600;
-       , color: #111827;
-    }
+        font-weight: 600
+       , color: #111827}
     .entity-tags,
     .concept-tags,
     .recommendation-concepts {
-        display: flex;
-        flex-wrap: wrap;
-       , gap: 0.5rem;
-        margin-top: 0.5rem;
-    }
+        display: flex
+        flex-wrap: wrap
+       , gap: 0.5rem
+        margin-top: 0.5rem}
     .entity-tag,
     .concept-tag {
-        background: #dbeaf;
-        color: #1e40af;
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
-        font-size: 0.875rem;
-        font-weight: 500;
-    }
+        background: #dbeaf
+        color: #1e40af
+        padding: 0.25rem 0.75rem
+        border-radius: 1rem
+        font-size: 0.875rem
+        font-weight: 500}
     .concept-tag.small {
-        font-size: 0.75rem;
-        padding: 0.125rem 0.5rem;
-    }
+        font-size: 0.75rem
+        padding: 0.125rem 0.5rem}
     .risk-level {
-        padding: 0.75rem;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-    }
+        padding: 0.75rem
+        border-radius: 0.5rem
+        font-weight: 600
+        margin-bottom: 0.5rem}
     .risk-level.low {
-        background: #d1fae5;
-        color: #065f46;
-    }
+        background: #d1fae5
+        color: #065f46}
     .risk-level.medium {
-        background: #fef3c7;
-        color: #92400;
-    }
+        background: #fef3c7
+        color: #92400}
     .risk-level.high {
-        background: #fecaca;
-        color: #991b1b;
-    }
+        background: #fecaca
+        color: #991b1b}
     .similar-case {
-        padding: 1rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 0.5rem;
-        margin-bottom: 0.5rem;
-    }
+        padding: 1rem
+        border: 1px solid #e5e7eb
+        border-radius: 0.5rem
+        margin-bottom: 0.5rem}
     .case-title {
-        font-weight: 600;
-        color: #111827;
-        margin-bottom: 0.25rem;
-    }
+        font-weight: 600
+        color: #111827
+        margin-bottom: 0.25rem}
     .case-details {
-        font-size: 0.875rem;
-        color: #6b7280;
-    }
+        font-size: 0.875rem
+        color: #6b7280}
     .recommendations-list {
-        display: grid;
-        gap: 1rem;
-    }
+        display: grid
+        gap: 1rem}
     .recommendation-card {
-        border: 1px solid #e5e7eb;
-        border-radius: 0.75rem;
-        padding: 1.5rem;
-       , transition: box-shadow 0.2;
-    }
+        border: 1px solid #e5e7eb
+        border-radius: 0.75rem
+        padding: 1.5rem
+       , transition: box-shadow 0.2}
     .recommendation-card:hover {
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .recommendation-header {
-        display: flex;
-        justify-content: space-betweenn;
-        align-items: flex-start;
-        margin-bottom: 0.75rem;
-    }
+        display: flex
+        justify-content: space-betweenn
+        align-items: flex-start
+        margin-bottom: 0.75rem}
     .recommendation-title {
-        color: #111827;
-        margin: 0;
-    }
+        color: #111827
+        margin: 0}
     .recommendation-type {
-        background: #f3f4f6;
-        color: #374151;
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
-        font-size: 0.75rem;
-        font-weight: 500;
-        text-transform: uppercase;
-    }
+        background: #f3f4f6
+        color: #374151
+        padding: 0.25rem 0.75rem
+        border-radius: 1rem
+        font-size: 0.75rem
+        font-weight: 500
+        text-transform: uppercase}
     .recommendation-description {
-        color: #6b7280;
-        margin-bottom: 1rem;
-        line-height: 1.6;
-    }
-    .recommendation-details { display: grid;
+        color: #6b7280
+        margin-bottom: 1rem
+        line-height: 1.6}
+    .recommendation-details { display: grid
         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
+        gap: 0.5rem
+        margin-bottom: 1rem}
     .action-buttons {
-        display: flex;
-        justify-content: center;
-       , gap: 1rem;
-        margin-top: 2rem;
-    }
+        display: flex
+        justify-content: center
+       , gap: 1rem
+        margin-top: 2rem}
     .primary-btn,
     .secondary-btn {
-        padding: 1rem 2rem;
-        border-radius: 0.5rem;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-        transition: all 0.2;
-    }
+        padding: 1rem 2rem
+        border-radius: 0.5rem
+        font-weight: 600
+        cursor: pointer
+        border: none
+        transition: all 0.2}
     .primary-btn {
-        background: #059669;
-        color: white;
-    }
+        background: #059669
+        color: white}
     .primary-btn:hover {
-        background: #047857;
-    }
+        background: #047857}
     .secondary-btn {
-        background: #f3f4f6;
-        color: #374151;
-        border: 1px solid #d1d5db;
-    }
-    .secondary-btn:hover { background: #e5e7eb;
-    }
+        background: #f3f4f6
+        color: #374151
+        border: 1px solid #d1d5db}
+    .secondary-btn:hover { background: #e5e7eb}
     @media (max-width: 768px) {
         .legal-ai-workflow {
-            padding: 1rem;
-        }
-        .step-indicator { gap: 1rem;
-        }
+            padding: 1rem}
+        .step-indicator { gap: 1rem}
         .step-label {
-            font-size: 0.75rem;
-        }
+            font-size: 0.75rem}
         .result-summary,
         .recommendations-summary {
-            grid-template-columns: 1fr;
-        }
+            grid-template-columns: 1fr}
     }
 </style>
+

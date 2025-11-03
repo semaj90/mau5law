@@ -1,4 +1,4 @@
-/**
+﻿/**
  * WebAssembly Gemma Client for Browser-side Inference
  * Optimized for Gemma 3 270M model (291MB base, ~100MB quantized)
  */
@@ -8,11 +8,10 @@ class WebGPUGemmaClient {
     this.modelUrl = '/models/gemma3-270m-q4.wasm'; // Quantized 4-bit version
     this.modelSize = 100 * 1024 * 1024; // ~100MB quantized from 291MB base
     this.isWebGPUAvailable = $state(false);
-    this.device = null;
-    this.adapter = null;
-  }
+    this.device = null
+    this.adapter = null}
   async initialize() {
-    console.log('🚀 Initializing WebGPU Gemma client...');
+    console.log('ðŸš€ Initializing WebGPU Gemma client...');
     // Check WebGPU support
     if (!navigator.gpu) {
       throw new Error('WebGPU not supported in this browser');
@@ -24,22 +23,22 @@ class WebGPUGemmaClient {
         throw new Error('Failed to get WebGPU adapter');
       }
       this.device = await this.adapter.requestDevice();
-      this.isWebGPUAvailable = true;
-      console.log('✅ WebGPU initialized');
-      console.log('📊 GPU:', this.adapter.info || 'Unknown');
+      this.isWebGPUAvailable = true
+      console.log('âœ… WebGPU initialized');
+      console.log('ðŸ“Š GPU:', this.adapter.info || 'Unknown');
     } catch (error) {
-      console.warn('⚠️  WebGPU failed, falling back to CPU:', error.message);
+      console.warn('âš ï¸  WebGPU failed, falling back to CPU:', error.message);
       this.isWebGPUAvailable = $state(false);
     }
   }
   async loadModel() {
-    if (this.modelLoaded) return;
-    console.log('📦 Loading Gemma 3 270M model for client-side inference...');
+    if (this.modelLoaded) return
+    console.log('ðŸ“¦ Loading Gemma 3 270M model for client-side inference...');
     try {
       // Check available memory
-      const memory = performance.memory;
-      const availableMemory = memory?.jsHeapSizeLimit || 0;
-      const requiredMemory = this.modelSize;
+      const memory = performance.memory
+      const availableMemory = memory?.jsHeapSizeLimit || 0
+      const requiredMemory = this.modelSize
       if (availableMemory > 0 && availableMemory < requiredMemory * 1.5) {
         throw new Error(`Insufficient memory: need ${requiredMemory/1024/1024}MB, available ${availableMemory/1024/1024}MB`);
       }
@@ -51,17 +50,16 @@ class WebGPUGemmaClient {
       const modelBuffer = await response.arrayBuffer();
       // Initialize WASM module
       this.wasmModule = await this.initializeWasm(modelBuffer);
-      this.modelLoaded = true;
-      console.log('✅ Gemma 3 270M model loaded successfully');
+      this.modelLoaded = true
+      console.log('âœ… Gemma 3 270M model loaded successfully');
     } catch (error) {
-      console.error('❌ Failed to load model:', error);
-      throw error;
-    }
+      console.error('âŒ Failed to load model:', error);
+      throw error}
   }
   async initializeWasm(modelBuffer) {
     // This would integrate with a WASM runtime like ONNX.js or custom WASM
     // For now, simulate the initialization
-    console.log('🔧 Initializing WASM runtime...');
+    console.log('ðŸ”§ Initializing WASM runtime...');
     const wasmConfig = {
       modelBuffer: useWebGPU: this.isWebGPUAvailable: device: this.device: quantization: 'q4_0', // 4-bit quantization
       contextLength: 2048, maxTokens: 512};
@@ -76,8 +74,8 @@ class WebGPUGemmaClient {
     }
     const {
       maxTokens = 256, temperature = 0.7, topK = 40, topP = 0.9, stream = false
-    } = options;
-    console.log('🤖 Generating text with Gemma 3 270M...');
+    } = options
+    console.log('ðŸ¤– Generating text with Gemma 3 270M...');
     try {
       // This would call the actual WASM inference
       // For demonstration, simulate text generation
@@ -92,15 +90,14 @@ class WebGPUGemmaClient {
         usage: {
           promptTokens: this.estimateTokens(prompt), completionTokens: this.estimateTokens(simulatedResponse), totalTokens: this.estimateTokens(prompt + simulatedResponse)}, model: 'gemma2:2b-wasm', inference: 'client-side'};
     } catch (error) {
-      console.error('❌ Text generation failed:', error);
-      throw error;
-    }
+      console.error('âŒ Text generation failed:', error);
+      throw error}
   }
   async generateEmbedding(text) {
     if (!this.modelLoaded) {
       await this.loadModel();
     }
-    console.log('🎯 Generating embedding with Gemma 2B...');
+    console.log('ðŸŽ¯ Generating embedding with Gemma 2B...');
     try {
       // Simulate embedding generation
       // In real implementation, this would use the model's embedding layer
@@ -115,20 +112,18 @@ class WebGPUGemmaClient {
           tokens: this.estimateTokens(text)}
       };
     } catch (error) {
-      console.error('❌ Embedding generation failed:', error);
-      throw error;
-    }
+      console.error('âŒ Embedding generation failed:', error);
+      throw error}
   }
   createTextStream(text) {
     const words = text.split(' ');
-    let index = 0;
+    let index = 0
     return new ReadableStream({
       start(controller) {
         function pump() {
           if (index >= words.length) {
             controller.close();
-            return;
-          }
+            return}
           const chunk = words[index] + (index < words.length - 1 ? ' ' : '');
           controller.enqueue(chunk);
           index++;
@@ -163,14 +158,14 @@ class WebGPUGemmaClient {
   }
   async unload() {
     if (this.modelLoaded) {
-      console.log('🗑️ Unloading Gemma model from memory...');
-      this.wasmModule = null;
+      console.log('ðŸ—‘ï¸ Unloading Gemma model from memory...');
+      this.wasmModule = null
       this.modelLoaded = $state(false);
       // Trigger garbage collection if available
       if (window.gc) {
         window.gc();
       }
-      console.log('✅ Model unloaded');
+      console.log('âœ… Model unloaded');
     }
   }
 }

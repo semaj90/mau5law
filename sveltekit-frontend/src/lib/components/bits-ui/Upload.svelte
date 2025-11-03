@@ -1,7 +1,7 @@
-<script lang="ts">
+﻿<script lang="ts">
   const { uploadUrl } = $props<{ uploadUrl: string }>()
   const { onDone } = $props<{ onDone: (res: any) }>()
-  let file: File | null = null;
+  let file: File | null = null
   let text = '';
   async function handleUpload(): Promise<any> {
     const form = new FormData();
@@ -18,8 +18,9 @@
   <button onclick={handleUpload} class="btn">Upload</button>
 </div>
 <style>
-.bits-upload { display: flex; gap: .5rem; flex-direction: column; }
-.btn { padding: .5rem 1rem; border-radius: 6px; background: #f3f4f6; }
-.btn.primary { background: #2563eb; color: white; }
-textarea { min-height: 6rem; }
+.bits-upload { display: flex; gap: .5rem; flex-direction: column}
+.btn { padding: .5rem 1rem; border-radius: 6px; background: #f3f4f6}
+.btn.primary { background: #2563eb; color: white}
+textarea { min-height: 6rem}
 </style>
+

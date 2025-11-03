@@ -1,7 +1,6 @@
-<script lang="ts">
+﻿<script lang="ts">
   interface Props {
-    class?: string;
-  }
+    class?: string}
   let { class: class_ = '', children }: Props & { children?: any } = $props();
 </script>
 <span class="space-y-4">
@@ -12,10 +11,10 @@
 <style>
   /* @unocss-include */
   .select-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #6b7280;
-    margin-bottom: 4px;
-    display: block;
-  }
+    font-size: 12px
+    font-weight: 500
+    color: #6b7280
+    margin-bottom: 4px
+    display: block}
 </style>
+

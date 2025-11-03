@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { onMount } from 'svelte';
 
   let recommendations = $state<any[]>([]);
@@ -13,8 +13,7 @@
     } catch (error) {
       console.error('Error loading recommendations:', error);
     } finally {
-      loading = false;
-    }
+      loading = false}
   });
 </script>
 
@@ -43,3 +42,4 @@
     <p class="text-gray-500 text-center">No recommendations available</p>
   {/if}
 </div>
+

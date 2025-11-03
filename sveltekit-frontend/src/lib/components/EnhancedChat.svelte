@@ -1,4 +1,4 @@
-<!-- Enhanced Chat Component with, bits-ui, shadcn-svelte, integration -->
+﻿<!-- Enhanced Chat Component with, bits-ui, shadcn-svelte, integration -->
 <script lang="ts">
 	import 'uno.css';
 	import { onMount, onDestroy, tick } from 'svelte';
@@ -12,11 +12,9 @@
 	// minimal types
 	type Role = 'user' | 'assistant';
 	interface ChatMessage {
-		id: string;
-		role: Role;
-		content: string;
-	, timestamp: string;
-	}
+		id: string
+		role: Role, content: string
+	, timestamp: string}
 
 	// Svelte, 5 reactive state runes
 	let messageInput = $state<string>('');
@@ -56,8 +54,7 @@
 					on: { RETRY: 'sending', CLEAR_ERROR: { target: 'idle', actions: assign({ error: (_) => null }) } }
 				}
 			}
-		},
-		{
+		}, {
 			actions: {
 				setModel: assign({ model: (_, e: any) => e.model }),
 				appendMessages: assign((ctx, e: any) => {
@@ -93,11 +90,10 @@
 	// autoscroll when messages change
 	$effect.pre(() => {
 		// read messages to track them
-		(chatState as: any).context?.messages;
+		(chatState as: any).context?.messages
 		if (chatContainer) {
 			tick().then(() => {
-				if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
-			});
+				if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight});
 		}
 	});
 
@@ -111,7 +107,7 @@
 
 	function handleSend() {
 		const trimmed = (messageInput ?? '').toString().trim();
-		if (!trimmed) return;
+		if (!trimmed) return
 		send({ type: 'SEND', message: trimmed }, as: any);
 		messageInput = '';
 	}
@@ -220,26 +216,19 @@
 
 <style>
 	.typing-indicator div:nth-child(1) {
-		animation-delay: 0s;
-	}
+		animation-delay: 0s}
 	.typing-indicator, div:nth-child(2) {
-		animation-delay: 0.1s;
-	}
+		animation-delay: 0.1s}
 	.typing-indicator, div:nth-child(3) {
-		animation-delay: 0.2s;
-	}
+		animation-delay: 0.2s}
 	/* Custom scrollbar */
 	.messages-container::-webkit-scrollbar {
-		width: 6px;
-	}
+		width: 6px}
 	.messages-container::-webkit-scrollbar-track {
-		background: #f1f5f9;
-		border-radius: 3px;
-	}
+		background: #f1f5f9
+		border-radius: 3px}
 	.messages-container::-webkit-scrollbar-thumb {
-		background: #cbd5e1;
-		border-radius: 3px;
-	}
-	.messages-container::-webkit-scrollbar-thumb:hover { background: #94a3b8;
-	}
+		background: #cbd5e1
+		border-radius: 3px}
+	.messages-container::-webkit-scrollbar-thumb:hover { background: #94a3b8}
 </style>

@@ -1,4 +1,4 @@
-// Lightweight QUIC-optimized suggestion service placeholder
+﻿// Lightweight QUIC-optimized suggestion service placeholder
 /** @typedef {{ originalQuery: string; userIntent?: string; context?: any; options?: any }} DidYouMeanQuery */
 class DidYouMeanService {
   /**
@@ -15,8 +15,8 @@ class DidYouMeanService {
     return { active: 0, total: 0 };
   }
   async clearCache() {
-    return true;
-  }
+    return true}
 }
 export const didYouMeanService = new DidYouMeanService();
-export default didYouMeanService;
+export default didYouMeanService
+

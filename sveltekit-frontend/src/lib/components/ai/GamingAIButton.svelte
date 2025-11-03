@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Expected, token >; https: //svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token > --> <!-- @migration-task Error while migrating Svelte, code: Expected, token >; https://svelte.dev/e/expected_token --> <script lang="ts">
+﻿<!-- @migration-task Error while migrating Svelte, code: Expected, token >; https: //svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token > --> <!-- @migration-task Error while migrating Svelte, code: Expected, token >; https://svelte.dev/e/expected_token --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { scale, fly } from 'svelte/transition'; import { Bot, MessageCircle, Sparkles, Brain, ChevronUp, Settings, Power } from 'lucide-svelte'
   interface Props { isVisible?: boolean onToggle?: () => void onSettingsClick?: () => void isConnected?: boolean aiMode?: 'idle' | 'thinking' | 'active'
   } let { isVisible = $bindable(true), onToggle = () => , onSettingsClick = () => , isConnected = true, aiMode = $bindable('idle') }: Props = $props() let isExpanded = $state<boolean>(false); let isHovered = $state<boolean>(false); let pulseAnimation = $state<boolean>(true); // Gaming UI inspiration - pulse effect for AI activity const pulseClasses = { idle: 'animate-pulse', thinking: 'animate-bounce', active: 'animate-ping'
@@ -36,3 +36,4 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .glow-green { box-shadow: 0, 0 20px rgba(34, 197, 94, 0.5); }
   .glow-purple { box-shadow: 0, 0 20px rgba(168, 85, 247, 0.5); }
 </style>
+

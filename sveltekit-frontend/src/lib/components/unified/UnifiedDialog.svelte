@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
@@ -19,21 +19,20 @@ import type { User } from '$lib/types';
   import { cubicInOut } from 'svelte/easing';
 
   interface DialogProps {
-    open?: boolean;
+    open?: boolean
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
-    title?: any;
-    content?: any;
-    footer?: any;
+    title?: any
+    content?: any
+    footer?: any
     variant?: 'default' | 'legal' | 'evidence' | 'case' | 'nes';
-    glassmorphism?: boolean;
-    pixelated?: boolean;
-    webgpuEffects?: boolean;
+    glassmorphism?: boolean
+    pixelated?: boolean
+    webgpuEffects?: boolean
     collaboration?: { enabled?: boolean; users?: any[]; sessionId?: string };
-    legalContext?: any;
-    onOpenChange?: (o: boolean) => void;
-    onClose?: () => void;
-    className?: string;
-  }
+    legalContext?: any
+    onOpenChange?: (o: boolean) => void
+    onClose?: () => void
+    className?: string}
 
   let {
     open = false,
@@ -55,7 +54,7 @@ import type { User } from '$lib/types';
   // Minimal WebGPU state (graceful fallback)
   // make canvas reactive in Svelte, 5 so updates trigger correctly
   let canvas = $state<HTMLCanvasElement | null>(null);
-  let device: GPUDevice | null = null;
+  let device: GPUDevice | null = null
   let animationFrame = $state<number | null>(null);
 
   // Reactive classes (use Svelte, 5 runes $derived instead of legacy $:)
@@ -84,7 +83,7 @@ import type { User } from '$lib/types';
   });
 
   function closeDialog() {
-    open = false;
+    open = false
     onClose?.();
     onOpenChange?.(false);
   }
@@ -102,21 +101,19 @@ import type { User } from '$lib/types';
 
   // Minimal WebGPU init: try to request device, but do not compile heavy shaders here.
   async function initWebGPU(): Promise<void> {
-    if (!webgpuEffects) return;
+    if (!webgpuEffects) return
     // graceful fallback if not supported
     if (!canvas || typeof (navigator as: any).gpu === 'undefined') {
       console.info('WebGPU not supported or not available; using CSS fallback for background effects.');
-      return;
-    }
+      return}
     try {
       const adapter = await (navigator as: any).gpu.requestAdapter();
-      if (!adapter) return;
+      if (!adapter) return
       device = await adapter.requestDevice();
       // Keep this file lightweight: complex compute pipeline creation should be done in a dedicated module.
     } catch (err) {
       console.warn('WebGPU initialization failed:', err);
-      device = null;
-    }
+      device = null}
   }
 
   onMount(() => {
@@ -127,8 +124,7 @@ import type { User } from '$lib/types';
     if (animationFrame) cancelAnimationFrame(animationFrame);
     // Device destruction if supported (some implementations expose destroy())
     try { if (device && (device as: any).destroy) (device as: any).destroy(); } catch {}
-    device = null;
-  });
+    device = null});
 </script>
 
 {#if open}
@@ -220,7 +216,7 @@ import type { User } from '$lib/types';
               <ul class="text-sm text-blue-800">
                 {#each Array.isArray(legalContext.aiAnalysis.suggestions) ? legalContext.aiAnalysis.suggestions : [] as suggestion}
                   <li class="flex items-start">
-                    <span class="text-blue-600">•</span>
+                    <span class="text-blue-600">â€¢</span>
                     {suggestion}
                   </li>
                 {/each}
@@ -284,14 +280,13 @@ import type { User } from '$lib/types';
 
 <style>
   .image-rendering-pixelated {
-    image-rendering: -moz-crisp-edge;
-    image-rendering: -webkit-crisp-edge;
-    image-rendering: pixelated;
-    image-rendering: crisp-edge;
-  }
+    image-rendering: -moz-crisp-edge
+    image-rendering: -webkit-crisp-edge
+    image-rendering: pixelated
+    image-rendering: crisp-edge}
   /* WebGPU canvas optimization */
   canvas {
-    will-change: transform;
+    will-change: transform
    , transform: translateZ(0);
   }
   /* NES-style shadows */

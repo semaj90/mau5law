@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import {
     FileText,
     Headphones,
@@ -20,48 +20,44 @@
   const { autoCompare = $state(false) } = $props()
   // Svelte, 5 event handling
   let { $$events } = $props<{
-    compare: (evidence: Evidence) => void;
-    compared: (data: { evidence: Evidence;, result: any }) => void;
-  }>();
+    compare: (evidence: Evidence) => void
+    compared: (data: { evidence: Evidence;, result: any }) => void}>();
   // small helper - use project-wide helper in the future
   const getOllamaEndpoint = () => (import.meta.env.VITE_OLLAMA_URL ?? 'http://ollama:11434');
   const getIcon = (type: Evidence["type"]) => {
     switch (type) {
       case, "document":
-        return FileText;
+        return FileText
       case, "image":
-        return Image;
+        return Image
       case, "video":
-        return Video;
+        return Video
       case, "audio":
-        return Headphones;
+        return Headphones
       case, "link":
-        return Link;
-      default: return FileText;
-    }
+        return Link
+      default: return FileText}
   };
   const formatFileSize = (bytes: number): string => {
     if (!bytes || bytes === 0) return "0 Bytes";
-    const k = 1024;
+    const k = 1024
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
-  const fileSize = evidence?.metadata?.size ?? evidence?.fileSize ?? 0;
+  const fileSize = evidence?.metadata?.size ?? evidence?.fileSize ?? 0
   let isHovered = $state<boolean>(false);
   let comparing = $state<boolean>(false);
-  let compareError: string | null = null;
+  let compareError: string | null = null
   const IconComponent = getIcon(evidence?.evidenceType ?? evidence?.type ?? 'document');
   function handleMouseEnter() {
-    if (expandOnHover) isHovered = true;
-  }
+    if (expandOnHover) isHovered = true}
   function handleMouseLeave() {
-    if (expandOnHover) isHovered = false;
-  }
+    if (expandOnHover) isHovered = false}
   async function handleCompareClick(): Promise<any> {
     try {
-      compareError = null;
-      comparing = true;
+      compareError = null
+      comparing = true
       $$events.compare(evidence); // Use $$events
       if (!autoCompare) return; // Let parent handle compare action
       const fd = new FormData();
@@ -76,8 +72,7 @@
     } catch (e: any) {
       compareError = e?.message ?? String(e);
     } finally {
-      comparing = false;
-    }
+      comparing = false}
   }
 </script>
 <div
@@ -124,7 +119,7 @@
           <button
             class="flex items-center justify-center w-7 h-7 rounded text-gray-500 hover:bg-gray-100"
             onclick={handleCompareClick}
-            title={comparing ? 'Analyzing…' : 'Analyze & compare'}
+            title={comparing ? 'Analyzingâ€¦' : 'Analyze & compare'}
             aria-busy={comparing}
             disabled={comparing}
           >
@@ -216,3 +211,4 @@
 <!-- Tooltip section removed - replaced with native, title, attributes -->
 <!-- Tooltip section removed - replaced with native, title, attributes -->
       >
+

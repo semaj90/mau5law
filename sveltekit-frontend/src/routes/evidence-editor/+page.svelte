@@ -1,11 +1,11 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { Button } from '$lib/components/ui/button';
   // Svelte, 5 runes are auto-imported
   import { page } from '$app/stores';
   import VisualEvidenceEditor from '$lib/components/evidence-editor/VisualEvidenceEditor.svelte';
   import  UiButton, as Button  from "$lib/components/ui.svelte";
   import { onMount } from 'svelte';
-  let caseId: string | null = null;
+  let caseId: string | null = null
   let readOnly = $state<boolean>(false);
   $effect(() => {
     // Get case ID from URL params if provided
@@ -13,8 +13,7 @@
     readOnly = $page.url.searchParams.get('readOnly') === 'true';
   });
   function toggleReadOnly() {
-    readOnly = !readOnly;
-  }
+    readOnly = !readOnly}
 </script>
 <svelte:head>
   <title>Visual Evidence Editor - Legal AI Assistant</title>
@@ -57,17 +56,16 @@
 <div class="space-y-4" style="display: none;" id="help-overlay">
   <h3 class="space-y-4">Quick Start Guide</h3>
   <ul class="space-y-4">
-    <li>• Drag files onto the canvas to add evidence</li>
-    <li>• Files are automatically analyzed with AI</li>
-    <li>• Click evidence to view details in the inspector</li>
-    <li>• Use the AI assistant for search and insights</li>
-    <li>• Edit metadata and tags in the inspector panel</li>
+    <li>â€¢ Drag files onto the canvas to add evidence</li>
+    <li>â€¢ Files are automatically analyzed with AI</li>
+    <li>â€¢ Click evidence to view details in the inspector</li>
+    <li>â€¢ Use the AI assistant for search and insights</li>
+    <li>â€¢ Edit metadata and tags in the inspector panel</li>
   </ul>
   <Button
     size="sm"
     class="space-y-4 bits-btn bits-btn"
-            onclick={() =>
-{
+            onclick={() => {
       const helpOverlay = document.getElementById('help-overlay');
       if (helpOverlay) {
         helpOverlay.style.display = 'none';
@@ -79,7 +77,6 @@
 <style>
   /* @unocss-include */
   .evidence-editor-page {
-    height: 100vh;
-   , overflow: hidden;
-}
+    height: 100vh
+   , overflow: hidden}
 </style>

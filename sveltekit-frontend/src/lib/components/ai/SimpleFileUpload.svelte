@@ -1,4 +1,4 @@
-<!-- Enhanced File Upload Component with Full, Stack, Integration -->
+﻿<!-- Enhanced File Upload Component with Full, Stack, Integration -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -29,8 +29,7 @@ import type { Document } from '$lib/types';
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ key, value, ttl: ttlSeconds })
           });
-          return;
-        }
+          return}
       } catch {
         // ignore and fallback to localStorage
       }
@@ -59,10 +58,9 @@ import type { Document } from '$lib/types';
   let files: File[] = [];
   let uploadStates: Map<string any> = new Map();
   let isDragOver = $state<boolean>(false);
-  let fileInput: HTMLInputElement | undefined;
+  let fileInput: HTMLInputElement | undefined
   let systemStatus: any = { services: {}, performance: {}, queues: {}, storage: {} };
-  let uploadMachine: any = null;
-
+  let uploadMachine: any = null
   // Minimal XState machine (syntax-correct)
   const fileUploadMachine = createMachine({
     id: 'fileUpload',
@@ -103,10 +101,10 @@ import type { Document } from '$lib/types';
       // Cast fetch results to `any` before property access to satisfy TypeScript checks.
       const ragStatus = (await fetch('/api/v1/cluster/rag-status')
         .then(r => r.ok ? r.json() : {})
-        .catch(() => ({}))) as: any;
+        .catch(() => ({}))) as: any
       const systemHealth = (await fetch('/api/v1/cluster/health')
         .then(r => r.ok ? r.json() : {})
-        .catch(() => ({}))) as: any;
+        .catch(() => ({}))) as: any
       // Fetch WebGPU support in parallel
       const [webgpuSupported] = await Promise.all([
         enableWebGPU ? checkWebGPUSupport() : Promise.resolve(false)
@@ -137,30 +135,26 @@ import type { Document } from '$lib/types';
   async function checkWebGPUSupport(): Promise<boolean> {
     try {
       // @ts-ignore navigator.gpu may be not in types
-      if (!('gpu' in navigator)) return false;
+      if (!('gpu' in navigator)) return false
       // @ts-ignore
       const adapter = await (navigator as: any).gpu.requestAdapter();
-      return !!adapter;
-    } catch {
-      return false;
-    }
+      return !!adapter} catch {
+      return false}
   }
 
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
-    isDragOver = true;
-  }
+    isDragOver = true}
   function handleDragLeave() {
-    isDragOver = false;
-  }
+    isDragOver = false}
   function handleDrop(event: DragEvent) {
     event.preventDefault();
-    isDragOver = false;
+    isDragOver = false
     const droppedFiles = Array.from(event.dataTransfer?.files || []);
     handleFiles(droppedFiles);
   }
   function handleFileInput(event: Event) {
-    const input = event.target as HTMLInputElement;
+    const input = event.target as HTMLInputElement
     const selectedFiles = Array.from(input.files || []);
     handleFiles(selectedFiles);
   }
@@ -265,9 +259,9 @@ import type { Document } from '$lib/types';
       const finalState = uploadStates.get(fileId);
       if (finalState) {
         finalState.status = 'success';
-        finalState.progress = 100;
+        finalState.progress = 100
         finalState.performance.endTime = Date.now();
-        finalState.performance.totalTime = finalState.performance.endTime - finalState.performance.startTime;
+        finalState.performance.totalTime = finalState.performance.endTime - finalState.performance.startTime
         uploadStates.set(fileId, finalState);
         uploadStates = new Map(uploadStates);
       }
@@ -275,28 +269,26 @@ import type { Document } from '$lib/types';
       if (caseId) evidenceStore.linkToCase(documentRecord.id, caseId);
       notificationStore.success(`Successfully processed ${file.name} with full AI pipeline`);
       onUploadComplete(documentRecord);
-      return documentRecord;
-    } catch (error) {
+      return documentRecord} catch (error) {
       console.error('Enhanced upload error:', error);'
       const errorState = uploadStates.get(fileId);
       if (errorState) {
         errorState.status = 'error';
         errorState.error = error instanceof Error ? error.message : String(error);
         errorState.performance.endTime = Date.now();
-        errorState.performance.totalTime = errorState.performance.endTime - errorState.performance.startTime;
+        errorState.performance.totalTime = errorState.performance.endTime - errorState.performance.startTime
         uploadStates.set(fileId, errorState);
         uploadStates = new Map(uploadStates);
       }
       notificationStore.error(`Failed to process ${file.name}: ${error instanceof Error ? error.message : String(error)}`);
-      throw error;
-    }
+      throw error}
   }
 
   // Helper functions
   async function updateStage(fileId: string, stage: string, status: 'pending' | 'processing' | 'completed' | 'skipped' | 'error'): Promise<any> {
     const state = uploadStates.get(fileId);
     if (state) {
-      state.stages[stage] = status;
+      state.stages[stage] = status
       state.performance.stageTimings[stage] = Date.now();
       uploadStates.set(fileId, state);
       uploadStates = new Map(uploadStates);
@@ -305,7 +297,7 @@ import type { Document } from '$lib/types';
   function updateResult(fileId: string, key: string, value: any) {
     const state = uploadStates.get(fileId);
     if (state) {
-      state.results[key] = value;
+      state.results[key] = value
       uploadStates.set(fileId, state);
       uploadStates = new Map(uploadStates);
     }
@@ -380,7 +372,7 @@ import type { Document } from '$lib/types';
     return result.extractedText || '';
   }
   async function generateEmbeddings(file: File, extractedText: string, fileId: string): Promise<any> {
-    const content = extractedText || file.name;
+    const content = extractedText || file.name
     if (enableWebGPU && systemStatus.services.webgpu) {
       return await generateWebGPUEmbeddings(content, fileId);
     }
@@ -424,7 +416,7 @@ import type { Document } from '$lib/types';
     return await response.json();
   }
   async function generateAutoTags(file: File, extractedText: string, fileId: string): Promise<string[]> {
-    const content = extractedText || file.name;
+    const content = extractedText || file.name
     const response = await fetch('/api/v1/ai/auto-tags', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -459,7 +451,7 @@ import type { Document } from '$lib/types';
   }
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
-    const k = 1024;
+    const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
@@ -471,16 +463,15 @@ import type { Document } from '$lib/types';
   }
   function getStageIcon(stage: string) {
     switch (stage) {
-      case, 'validation': return Check;
-      case, 'storage': return Cloud;
-      case, 'ocr': return Loader2;
-      case, 'embedding': return Cpu;
-      case, 'vectorization': return Database;
-      case, 'indexing': return Database;
-      case, 'tagging': return Zap;
-      case, 'caching': return Database;
-      default: return Check;
-    }
+      case, 'validation': return Check
+      case, 'storage': return Cloud
+      case, 'ocr': return Loader2
+      case, 'embedding': return Cpu
+      case, 'vectorization': return Database
+      case, 'indexing': return Database
+      case, 'tagging': return Zap
+      case, 'caching': return Database
+      default: return Check}
   }
 </script>
 <div class={`space-y-6 ${classNameVar}`}>
@@ -517,7 +508,7 @@ import type { Document } from '$lib/types';
                 <Check class="w-4" />
               {/if}
               <span class="text-xs">
-                {status ? '✓' : '✗'}
+                {status ? 'âœ“' : 'âœ—'}
               </span>
             </div>
             <span class="text-xs text-center font-medium">
@@ -600,19 +591,19 @@ import type { Document } from '$lib/types';
             <div class="flex items-center">
               <div class="p-2 bg-gray-100">
                 {#if state.fileType.includes('pdf')}
-                  📄
+                  ðŸ“„
                 {:else if state.fileType.includes('image')}
-                  🖼️
+                  ðŸ–¼ï¸
                 {:else if state.fileType.includes('text')}
-                  📝
+                  ðŸ“
                 {:else}
-                  📎
+                  ðŸ“Ž
                 {/if}
               </div>
               <div>
                 <h4 class="font-semibold text-gray-800 truncate">{state.fileName}</h4>
                 <p class="text-sm">
-                  {formatFileSize(state.fileSize)} • {state.fileType}
+                  {formatFileSize(state.fileSize)} â€¢ {state.fileType}
                 </p>
               </div>
             </div>

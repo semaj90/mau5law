@@ -1,4 +1,4 @@
-<!-- YoRHa Modal, Manager, Component -->
+﻿<!-- YoRHa Modal, Manager, Component -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  YoRHaModal  from "./YoRHaModal.svelte";
@@ -7,15 +7,13 @@
   let modals = $state<Modal[]>([]);
   $effect(() => {
     const unsubscribe = modalStore.subscribe(value => {
-      modals = valu;
-    });
-    return unsubscrib;
-  });
+      modals = valu});
+    return unsubscrib});
   function handleModalClose(modal: Modal) {
     modalStore.remove(modal.id);
   }
   function handleModalConfirm(modal: Modal, event?: CustomEvent) {
-    const result = event?.detail || true;
+    const result = event?.detail || true
     modalStore.remove(modal.id, result);
   }
   function handleModalCancel(modal: Modal) {
@@ -48,3 +46,4 @@
   </YoRHaModal>
 {/each}
 ;
+

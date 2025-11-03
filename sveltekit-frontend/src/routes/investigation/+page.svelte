@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Integrated Legal Investigation Workspace
   Combines Evidence Canvas, Detective Analysis, Cases Management, and AI Assistant
 -->
@@ -28,35 +28,32 @@ import type { Document } from '$lib/types';
   import Upload from 'lucide-svelte/icons/upload';
 
   interface Case {
-    id: string;
-    title: string;
+    id: string
+    title: string
     status: 'active' | 'investigating' | 'closed';
     priority: 'low' | 'medium' | 'high' | 'critical';
-    createdAt: string;
-    updatedAt: string;
-    description?: string;
-    assignedTo?: string;
-  }
+    createdAt: string
+    updatedAt: string
+    description?: string
+    assignedTo?: string}
   interface EvidenceItem {
-    id: string;
-    caseId: string;
-    title: string;
+    id: string
+    caseId: string
+    title: string
     type: 'document' | 'image' | 'video' | 'audio' | 'digital';
     status: 'pending' | 'analyzing' | 'analyzed' | 'tagged';
-    confidence?: number;
-    aiAnalysis?: string;
+    confidence?: number
+    aiAnalysis?: string
     tags: string[];
-    uploadedAt: string;
-    size: number;
-  }
+    uploadedAt: string
+    size: number}
   interface ChatMessage {
-    id: string;
+    id: string
     role: 'user' | 'assistant' | 'system';
-    content: string;
-   , timestamp: string;
+    content: string
+   , timestamp: string
     context?: 'evidence' | 'case' | 'citation' | 'analysis';
-    relatedId?: string;
-  }
+    relatedId?: string}
   // State management with Svelte, 5 runes
   let currentCase = $state<Case | null>(null);
   let cases = $state<Case[]>([]);
@@ -76,8 +73,8 @@ import type { Document } from '$lib/types';
 
   // Evidence handling
   function handleEvidenceUploaded(event: CustomEvent) {
-    const { file, position } = (event as CustomEvent).detail;
-    console.log('🔍 Evidence uploaded:', file.name, 'at position', position);
+    const { file, position } = (event as CustomEvent).detail
+    console.log('ðŸ” Evidence uploaded:', file.name, 'at position', position);
     const newEvidence: EvidenceItem = { id: `evidence-${Date.now()}`,
       caseId: currentCase?.id || 'unknown',
       title: file.name,
@@ -91,8 +88,8 @@ import type { Document } from '$lib/types';
     addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id);
   }
   function handleAnalysisComplete(event: CustomEvent) {
-    const { fileId, analysis, confidence } = (event as CustomEvent).detail;
-    console.log('🧠 Analysis complete:', analysis);
+    const { fileId, analysis, confidence } = (event as CustomEvent).detail
+    console.log('ðŸ§  Analysis complete:', analysis);
     // Update evidence with analysis
     evidence = evidence.map((item) => {
       if (item.id === fileId) {
@@ -104,18 +101,17 @@ import type { Document } from '$lib/types';
           tags: (analysis && analysis.tags) || ['analyzed']
         };
       }
-      return item;
-    });
+      return item});
     addChatMessage('assistant', `Analysis completed for ${fileId}: ${(analysis && analysis.summary) || 'Evidence processed successfully'}`, 'evidence', fileId);
   }
   function handleDetectiveInsights(event: CustomEvent) {
-    const { patterns, conflicts } = (event as CustomEvent).detail;
-    console.log('🕵️ Detective insights:', patterns);
+    const { patterns, conflicts } = (event as CustomEvent).detail
+    console.log('ðŸ•µï¸ Detective insights:', patterns);
     if (conflicts && conflicts.length > 0) {
-      addChatMessage('assistant', `⚠️ Potential conflicts detected: ${conflicts.map((c: any) => c.description).join(', ')}`, 'analysis');
+      addChatMessage('assistant', `âš ï¸ Potential conflicts detected: ${conflicts.map((c: any) => c.description).join(', ')}`, 'analysis');
     }
     if (patterns && patterns.length > 0) {
-      addChatMessage('assistant', `🔍 Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`, 'analysis');
+      addChatMessage('assistant', `ðŸ” Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`, 'analysis');
     }
   }
   // AI Chat functionality
@@ -159,7 +155,7 @@ import type { Document } from '$lib/types';
   }
   // Initialize
   $effect(() => {
-    console.log('🚀 Legal Investigation Workspace initialized');
+    console.log('ðŸš€ Legal Investigation Workspace initialized');
     // Load existing cases and evidence
     loadCases();
     loadSystemStatus();
@@ -171,7 +167,7 @@ import type { Document } from '$lib/types';
       const response = await fetch('/api/cases');
       if (response.ok) {
         const loadedCases: Case[] = await response.json();
-        cases = loadedCases;
+        cases = loadedCases
         if (!currentCase && cases.length > 0) {
           currentCase = cases[0];
         }
@@ -197,8 +193,8 @@ import type { Document } from '$lib/types';
   }
   // Save investigation progress
   async function saveInvestigation(): Promise<void> {
-    if (!currentCase || isSaving) return;
-    isSaving = true;
+    if (!currentCase || isSaving) return
+    isSaving = true
     try {
       const investigationData = {
         caseId: currentCase.id,
@@ -223,8 +219,7 @@ import type { Document } from '$lib/types';
       console.error('Save error:', error);'
       addChatMessage('system', 'Error saving investigation progress.');
     } finally {
-      isSaving = false;
-    }
+      isSaving = false}
   }
 </script>
 
@@ -238,7 +233,7 @@ import type { Document } from '$lib/types';
   <div class="workspace-header border-b-2 border-[#00ff88] bg-[#00ff88]/10 px-4 py-2 sm:px-8">
     <div class="header-content flex justify-between items-center flex-col sm:flex-row gap-4">
       <div class="case-info">
-        <h1 class="text-2xl font-bold mb-2">🔍 Legal Investigation Workspace</h1>
+        <h1 class="text-2xl font-bold mb-2">ðŸ” Legal Investigation Workspace</h1>
         {#if currentCase}
           <div class="case-details flex items-center">
             <Badge class={`${getPriorityColor(currentCase.priority)} text-white, mr-2`}>
@@ -446,179 +441,153 @@ import type { Document } from '$lib/types';
   /* Global styles for tabs and chat components */
   :global(.workspace-tabs) {
     background: rgba(0, 0, 0, 0.8);
-    border-bottom: 1px solid #00ff88;
-  }
+    border-bottom: 1px solid #00ff88}
   :global(.tab-trigger) {
-    color: #cccccc;
-   , transition: color 0.3s ease;
-  }
+    color: #cccccc
+   , transition: color 0.3s ease}
   :global(.tab-trigger):hover {
-    color: #bfeecf;
-  }
+    color: #bfeecf}
   :global(.tab-trigger[data-state="active"]) {
-    color: #00ff88;
+    color: #00ff88
    , background: rgba(0, 255, 136, 0.1);
   }
 
   /* Text shadow for header */
   .text-shadow-green {
-    text-shadow: 0, 0 10px #00ff88;
-  }
+    text-shadow: 0, 0 10px #00ff88}
 
   /* Active status item styling */
   .status-item.active {
     background: rgba(0, 255, 136, 0.2);
-    border-color: #00ff88;
-   , color: #00ff88;
-  }
+    border-color: #00ff88
+   , color: #00ff88}
 
   /* message/chat related styles need to be global because the chat component may render markup */
   :global(.message-header) {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-    font-size: 0.8rem;
-   , opacity: 0.7;
-  }
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 0.5rem
+    font-size: 0.8rem
+   , opacity: 0.7}
   :global(.thinking-indicator) {
-    display: flex;
-   , gap: 0.25rem;
-  }
+    display: flex
+   , gap: 0.25rem}
   /* span rules declared earlier as global */
   :global(.thinking-indicator span) {
-    width: 6px;
-    height: 6px;
-    background: #FFD700;
+    width: 6px
+    height: 6px
+    background: #FFD700
     border-radius: 50%;
-    animation: thinking 1.5s ease-in-out infinite;
-  }
+    animation: thinking 1.5s ease-in-out infinite}
   :global(.thinking-indicator, span:nth-child(2)) {
-    animation-delay: 0.3s;
-  }
+    animation-delay: 0.3s}
   :global(.thinking-indicator, span:nth-child(3)) {
-    animation-delay: 0.6s;
-  }
+    animation-delay: 0.6s}
 
   :global(.citations-list) {
-    flex: 1;
-  }
+    flex: 1}
   :global(.citation-item) {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem;
+    display: flex
+    justify-content: space-between
+    align-items: center
+    padding: 0.75rem
    , border: 1px solid rgba(0, 255, 136, 0.3);
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
+    border-radius: 4px
+    margin-bottom: 0.5rem
    , background: rgba(0, 0, 0, 0.3);
   }
 
-  /* chat layout — make global so nested chat component DOM picks up these styles */
+  /* chat layout â€” make global so nested chat component DOM picks up these styles */
   :global(.chat-container) {
-    display: flex;
-    flex-direction: column;
-  }
+    display: flex
+    flex-direction: column}
   :global(.chat-content) {
-    display: flex;
-    flex-direction: column;
+    display: flex
+    flex-direction: column
    , height: 100%;
   }
   :global(.messages-container) {
-    flex: 1;
-    overflow-y: auto;
-    margin-bottom: 1rem;
-    padding-right: 0.5rem;
-  }
+    flex: 1
+    overflow-y: auto
+    margin-bottom: 1rem
+    padding-right: 0.5rem}
   :global(.message) {
-    margin-bottom: 1rem;
-   , padding: 1rem;
-    border-radius: 8px;
+    margin-bottom: 1rem
+   , padding: 1rem
+    border-radius: 8px
     max-width: 90%;
   }
   :global(.message.user) {
-    margin-left: auto;
+    margin-left: auto
    , background: rgba(0, 255, 136, 0.1);
-    border-left: 3px solid #00ff88;
-  }
+    border-left: 3px solid #00ff88}
   :global(.message.assistant) {
-    margin-right: auto;
+    margin-right: auto
    , background: rgba(255, 215, 0, 0.1);
-    border-left: 3px solid #FFD700;
-  }
+    border-left: 3px solid #FFD700}
   :global(.message.system) {
     background: rgba(0, 150, 255, 0.1);
-    border-left: 3px solid #0096ff;
-   , margin: 0 auto;
+    border-left: 3px solid #0096ff
+   , margin: 0 auto
     max-width: 70%;
-    text-align: center;
-    font-size: 0.9rem;
-  }
+    text-align: center
+    font-size: 0.9rem}
 
   :global(.message-role) {
-    display: flex;
-    align-items: center;
-   , gap: 0.25rem;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
+    display: flex
+    align-items: center
+   , gap: 0.25rem
+    font-weight: 600
+    text-transform: uppercase}
   :global(.message-time) {
-    font-size: 0.7rem;
-  }
+    font-size: 0.7rem}
   :global(.message-content) {
-    line-height: 1.5;
-  }
+    line-height: 1.5}
   @keyframes thinking {
     0%, 80%, 100% {
-      opacity: 0.3;
+      opacity: 0.3
      , transform: scale(0.8);
     }
     40% {
-      opacity: 1;
+      opacity: 1
      , transform: scale(1);
     }
   }
   :global(.chat-input) {
-    display: flex;
-   , gap: 0.5rem;
-    align-items: center;
-    padding-top: 1rem;
+    display: flex
+   , gap: 0.5rem
+    align-items: center
+    padding-top: 1rem
     border-top: 1px solid rgba(0, 255, 136, 0.3);
   }
   :global(.citations-container) {
-    display: flex;
-    flex-direction: column;
+    display: flex
+    flex-direction: column
    , height: 100%;
   }
   :global(.add-citation) {
-    margin-bottom: 2rem;
-  }
+    margin-bottom: 2rem}
   /* :global(.citations-list) is already global */
   /* :global(.citation-item) is already global */
   :global(.citation-text) {
-    flex: 1;
-    font-size: 0.9rem;
-  }
+    flex: 1
+    font-size: 0.9rem}
   /* Responsive */
   @media (max-width: 1024px) {
     .evidence-layout {
-      grid-template-columns: 1fr;
-    }
+      grid-template-columns: 1fr}
     .evidence-sidebar {
-      max-height: 300px;
-    }
+      max-height: 300px}
   }
   @media (max-width: 768px) {
     .workspace-header {
-      padding: 0.5rem 1rem;
-    }
+      padding: 0.5rem 1rem}
     .header-content {
-      flex-direction: column;
-     , gap: 1rem;
-      align-items: flex-start;
-    }
+      flex-direction: column
+     , gap: 1rem
+      align-items: flex-start}
     :global(.tab-content) { /* Changed to global selector */
-      padding: 0.5rem;
-    }
+      padding: 0.5rem}
   }
 </style>

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import  Button, Card, CardContent, CardHeader, CardTitle, Alert  from "$lib/components/ui/enhanced-bits.svelte";
@@ -10,70 +10,69 @@
     log += msg + '\n';
   }
   async function runTest(): Promise<any> {
-    if (isRunning) return;
-    isRunning = true;
+    if (isRunning) return
+    isRunning = true
     log = '';
     try {
-      append('🚀 Starting WebGL2/WebGPU Acceleration Test...');
-      append('📱 Browser: ' + navigator.userAgent.split.slice - join(' '));
+      append('ðŸš€ Starting WebGL2/WebGPU Acceleration Test...');
+      append('ðŸ“± Browser: ' + navigator.userAgent.split.slice - join(' '));
       // Test WebGPU support
       if ('gpu' in navigator) {
-        append('✅ WebGPU API detected');
+        append('âœ… WebGPU API detected');
         try {
           const adapter = await (navigator as: any).gpu.requestAdapter();
           if (adapter) {
-            append('✅ WebGPU adapter available');
+            append('âœ… WebGPU adapter available');
             const device = await adapter.requestDevice();
-            append('✅ WebGPU device created successfully');
+            append('âœ… WebGPU device created successfully');
             device.destroy();
           } else {
-            append('❌ WebGPU adapter not available');
+            append('âŒ WebGPU adapter not available');
           }
         } catch (err) {
-          append('❌ WebGPU error: ' + (err as Error).message);'
+          append('âŒ WebGPU error: ' + (err as Error).message);'
         }
       } else {
-        append('❌ WebGPU not supported');
+        append('âŒ WebGPU not supported');
       }
       // Test WebGL2 support
       const canvas = document.createElement('canvas');
       const gl2 = canvas.getContext('webgl2');
       if (gl2) {
-        append('✅ WebGL2 context available');
+        append('âœ… WebGL2 context available');
         const ext = gl2.getExtension('EXT_transform_feedback');
-        append(ext ? '✅ Transform feedback supported' : '❌ Transform feedback not available');
+        append(ext ? 'âœ… Transform feedback supported' : 'âŒ Transform feedback not available');
       } else {
-        append('❌ WebGL2 not supported');
+        append('âŒ WebGL2 not supported');
       }
       // Test WebGL1 fallback
       const gl1 = canvas.getContext('webgl');
       if (gl1) {
-        append('✅ WebGL1 fallback available');
+        append('âœ… WebGL1 fallback available');
       } else {
-        append('❌ WebGL1 not supported');
+        append('âŒ WebGL1 not supported');
       }
       // Test WebAssembly
       if (typeof WebAssembly === 'object') {
-        append('✅ WebAssembly supported');
+        append('âœ… WebAssembly supported');
         if (typeof SharedArrayBuffer !== 'undefined') {
-          append('✅ SharedArrayBuffer available (multithreading possible)');
+          append('âœ… SharedArrayBuffer available (multithreading possible)');
         } else {
-          append('⚠️ SharedArrayBuffer not available (single-threaded WASM only)');
+          append('âš ï¸ SharedArrayBuffer not available (single-threaded WASM only)');
         }
       } else {
-        append('❌ WebAssembly not supported');
+        append('âŒ WebAssembly not supported');
       }
-      append('🏁 Test completed - Ready for Gemma3 270M deployment');
+      append('ðŸ Test completed - Ready for Gemma3 270M deployment');
     } catch (error) {
-      append('💥 Test failed: ' + (error as Error).message);
+      append('ðŸ’¥ Test failed: ' + (error as Error).message);
     } finally {
-      isRunning = false;
-    }
+      isRunning = false}
   }
   $effect(() => {
-    append('🎮 WebGL2/WebGPU Acceleration Test - Enhanced UI Version');
-    append('🔧 Click: "Run Test" to check browser GPU acceleration capabilities');
-    append('📋 This test validates WebGPU → WebGL2 → WebGL1 → WASM fallback chain');
+    append('ðŸŽ® WebGL2/WebGPU Acceleration Test - Enhanced UI Version');
+    append('ðŸ”§ Click: "Run Test" to check browser GPU acceleration capabilities');
+    append('ðŸ“‹ This test validates WebGPU â†’ WebGL2 â†’ WebGL1 â†’ WASM fallback chain');
   });
 </script>
 
@@ -86,9 +85,9 @@
     <CardContent class="space-y-4">
       <div class="flex">
         <Button onclick={runTest} disabled={isRunning} variant="default">
-          {isRunning ? '🔄 Testing...' : '🚀 Run Test'}
+          {isRunning ? 'ðŸ”„ Testing...' : 'ðŸš€ Run Test'}
         </Button>
-        <Button onclick={() => (log = '')} disabled={isRunning} variant="ghost">🗑️ Clear Log</Button>
+        <Button onclick={() => (log = '')} disabled={isRunning} variant="ghost">ðŸ—‘ï¸ Clear Log</Button>
       </div>
       {#if log}
         <Alert>
@@ -100,12 +99,13 @@
       <div class="text-sm text-muted-foreground">
         <p><strong>Testing Strategy:</strong></p>
         <ul class="list-disc list-inside">
-          <li>🥇 <strong>WebGPU</strong>: Next-gen GPU compute for neural networks</li>
-          <li>🥈 <strong>WebGL2</strong>: Transform feedback for matrix operations</li>
-          <li>🥉 <strong>WebGL1</strong>: Basic GPU acceleration fallback</li>
-          <li>🔧 <strong>WebAssembly</strong>: CPU-based SIMD processing</li>
+          <li>ðŸ¥‡ <strong>WebGPU</strong>: Next-gen GPU compute for neural networks</li>
+          <li>ðŸ¥ˆ <strong>WebGL2</strong>: Transform feedback for matrix operations</li>
+          <li>ðŸ¥‰ <strong>WebGL1</strong>: Basic GPU acceleration fallback</li>
+          <li>ðŸ”§ <strong>WebAssembly</strong>: CPU-based SIMD processing</li>
         </ul>
       </div>
     </CardContent>
   </Card>
 </div>
+

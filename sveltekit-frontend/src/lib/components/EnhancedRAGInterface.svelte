@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Document } from '$lib/types';
 
   import { tick } from 'svelte';
@@ -9,10 +9,10 @@ import type { Document } from '$lib/types';
   const store = (enhancedRAGStore, as: any) ?? {};
   let searchQuery = '';
   let isLoading = $state<boolean>(false);
-  let lastDuration = 0;
+  let lastDuration = 0
   async function handleSearch(): Promise<any> {
-    if (!searchQuery || !searchQuery.trim()) return;
-    isLoading = true;
+    if (!searchQuery || !searchQuery.trim()) return
+    isLoading = true
     const t0 = performance.now();
     try {
       if (typeof store?.search === 'function') {
@@ -20,7 +20,7 @@ import type { Document } from '$lib/types';
       }
     } finally {
       lastDuration = Math.round(performance.now() - t0);
-      isLoading = false;
+      isLoading = false
       await tick();
       if (typeof document !== 'undefined') {
         document.querySelector('#search-results')?.scrollIntoView({ behavior: 'smooth' });
@@ -58,7 +58,7 @@ import type { Document } from '$lib/types';
           <div class="bits-chip" style="display:inline-block;">
             <Button
               onclick={() => {
-                searchQuery = s;
+                searchQuery = s
                 handleSearch();
               }}
             >
@@ -77,7 +77,7 @@ import type { Document } from '$lib/types';
               {optimizedResults.length} results {#if ragState.currentQuery}for, "{ragState.currentQuery}"{/if}
             </h3>
             <p class="text-sm">
-              Found in {searchDuration}ms • Cache hit rate: {Math.round((ragState.cacheMetrics?.hitRate || 0) * 100)}%
+              Found in {searchDuration}ms â€¢ Cache hit rate: {Math.round((ragState.cacheMetrics?.hitRate || 0) * 100)}%
             </p>
           </div>
         </div>
@@ -108,32 +108,25 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .enhanced-rag-interface {
-    padding: 0.75rem;
-  }
+    padding: 0.75rem}
   .search-bar {
-    display: flex;
-   , gap: 8px;
-    align-items: center;
-  }
+    display: flex
+   , gap: 8px
+    align-items: center}
   .bits-row :global(.bits-input) {
-    min-width: 320px;
-  }
+    min-width: 320px}
   .bits-chip {
-    margin-bottom: 6px;
-  }
+    margin-bottom: 6px}
   .result-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-  }
-  .result-main h4 { margin: 0, 0 6px 0;
-  }
+    display: flex
+    justify-content: space-between
+    gap: 12px}
+  .result-main h4 { margin: 0, 0 6px 0}
   .badge {
-    font-size: 0.85rem;
-    background: #edf2ff;
-   , padding: 4px 8px;
-    border-radius: 6px;
-  }
+    font-size: 0.85rem
+    background: #edf2ff
+   , padding: 4px 8px
+    border-radius: 6px}
 </style>
     {/if}
   </div>
@@ -142,30 +135,24 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .enhanced-rag-interface {
-    padding: 0.75rem;
-  }
+    padding: 0.75rem}
   .search-bar {
-    display: flex;
-   , gap: 8px;
-    align-items: center;
-  }
+    display: flex
+   , gap: 8px
+    align-items: center}
   .bits-row :global(.bits-input) {
-    min-width: 320px;
-  }
+    min-width: 320px}
   .bits-chip {
-    margin-bottom: 6px;
-  }
+    margin-bottom: 6px}
   .result-row {
-    display: flex;
-    justify-content: space-betweenn;
-    gap: 12px;
-  }
-  .result-main h4 { margin: 0, 0 6px 0;
-  }
+    display: flex
+    justify-content: space-betweenn
+    gap: 12px}
+  .result-main h4 { margin: 0, 0 6px 0}
   .badge {
-    font-size: 0.85rem;
-    background: #edf2ff;
-   , padding: 4px 8px;
-    border-radius: 6px;
-  }
+    font-size: 0.85rem
+    background: #edf2ff
+   , padding: 4px 8px
+    border-radius: 6px}
 </style>
+

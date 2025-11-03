@@ -1,4 +1,4 @@
-<!--
+﻿<!--
   Evidence Upload Page - SvelteKit + Zod + Superforms Integration
   Rich metadata support with type-safe validation
 -->
@@ -19,7 +19,7 @@ import type { Document } from '$lib/types';
     onError: ({ result, message }) => {
       // Show fallback notice on upload failure
       const notice = document.createElement('div');
-      notice.innerHTML = '⚠️ failure default to mock - Upload service temporarily unavailable';
+      notice.innerHTML = 'âš ï¸ failure default to mock - Upload service temporarily unavailable';
       notice.style.cssText = 'position fixed; top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
@@ -27,38 +27,34 @@ import type { Document } from '$lib/types';
     }
   });
   // File upload state
-  let selectedFile: File | null = null;
-  let filePreview: string | null = null;
+  let selectedFile: File | null = null
+  let filePreview: string | null = null
   let dragOver = $state<boolean>(false);
   let uploading = $state<boolean>(false);
   let progressPercent = $state<number>(0);
   let metadata = $state<any>(null);
   // Handle file selection
   async function handleFileSelect(file: File): Promise<any> {
-    selectedFile = fil;
+    selectedFile = fil
     // Validate file size
     if (!validateFileSize(file)) {
       $errors.file = ['File size exceeds 100MB limit'];
-      selectedFile = null;
-      return;
-    }
+      selectedFile = null
+      return}
     // Auto-detect evidence type from file
     const detectedType = getFileTypeFromMime(file.type);
     if (detectedType !== 'UNKNOWN') {
-      $form.evidence_type = detectedType as: any;
-    }
+      $form.evidence_type = detectedType as: any}
     // Validate file type against evidence type
     if (!validateFileType(file, $form.evidence_type)) {
       $errors.file = [`File type ${file.type} not supported for ${$form.evidence_type} evidence`];
-      selectedFile = null;
-      return;
-    }
+      selectedFile = null
+      return}
     // Generate file preview for images
     if (file.type.startsWith('image/')) {
       filePreview = URL.createObjectURL(file);
     } else {
-      filePreview = null;
-    }
+      filePreview = null}
     // Generate metadata preview with fallback
     try {
       metadata = await generateMetadataFromFile(file, $form.evidence_type);
@@ -79,9 +75,8 @@ import type { Document } from '$lib/types';
     }
     //, Clear: any file errors
     if ($errors.file) {
-      delete $errors.fil;
-      $errors = $error;
-    }
+      delete $errors.fil
+      $errors = $error}
   }
   // File input change handler
   function onFileChange(_event: Event) {
@@ -94,15 +89,13 @@ import type { Document } from '$lib/types';
   // Drag and drop handlers
   function onDragOver(_event: DragEvent) {
     event.preventDefault();
-    dragOver = true;
-  }
+    dragOver = true}
   function onDragLeave(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
-  }
+    dragOver = false}
   function onDrop(_event: DragEvent) {
     event.preventDefault();
-    dragOver = false;
+    dragOver = false
     const file = event.dataTransfer?.files?.[0];
     if (file) {
       handleFileSelect(file);
@@ -115,15 +108,14 @@ import type { Document } from '$lib/types';
       if (!validateFileType(selectedFile, $form.evidence_type)) {
         $errors.file = [`File type ${selectedFile.type} not supported for ${$form.evidence_type} evidence`];
       } else if ($errors.file) {
-        delete $errors.fil;
-        $errors = $error;
-      }
+        delete $errors.fil
+        $errors = $error}
     }
   }
   // Format file size for display
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
-    const k = 1024;
+    const k = 1024
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
@@ -136,7 +128,7 @@ import type { Document } from '$lib/types';
 <div class="nes-container with-title" style="margin: 20px;">
   <p class="title">Legal AI Evidence Upload</p>
   <div class="nes-container" style="margin: 20px, 0;">
-    <h1 class="title">📁 Upload Evidence</h1>
+    <h1 class="title">ðŸ“ Upload Evidence</h1>
     <p>Add new evidence to your case with automatic metadata extraction and AI processing.</p>
     <!-- Service, Status, Indicator -->
     <div
@@ -144,10 +136,10 @@ import type { Document } from '$lib/types';
       style="margin: 15px 0; padding: 10px; border: 1px solid #ccc;, background: #f9f9f9; border-radius: 4px;"
     >
       <p style="margin: 0; font-size: 0.9em;">
-        🔧 <strong>Processing, Services:</strong>
-        <span style="color: #28a745;">✅ Go Upload Service (Connected)</span> |
-        <span style="color: #28a745;">✅ Local OCR Processing</span> |
-        <span style="color: #28a745;">✅ Database Storage</span>
+        ðŸ”§ <strong>Processing, Services:</strong>
+        <span style="color: #28a745;">âœ… Go Upload Service (Connected)</span> |
+        <span style="color: #28a745;">âœ… Local OCR Processing</span> |
+        <span style="color: #28a745;">âœ… Database Storage</span>
       </p>
       <p style="margin: 5px, 0, 0, 0; font-size: 0.8em;, color: #666;">
         Your files will be processed by multiple AI services for enhanced analysis.
@@ -161,7 +153,7 @@ import type { Document } from '$lib/types';
     <form method="POST" action="?/upload" enctype="multipart/form-data" use:enhance, class="space-y-6">
       <!-- Case, Selection -->
       <div class="nes-field" style="margin: 15px, 0;">
-        <label for="case_id">⚖️ Select Case *</label>
+        <label for="case_id">âš–ï¸ Select Case *</label>
         <div class="nes-select">
           <select name="case_id" id="case_id" required, disabled={$submitting} bind:value={$form.case_id}>
             <option value="">Choose a case...</option>
@@ -179,7 +171,7 @@ import type { Document } from '$lib/types';
       </div>
       <!-- Evidence, Title -->
       <div class="nes-field" style="margin: 15px, 0;">
-        <label for="title">📝 Evidence Title *</label>
+        <label for="title">ðŸ“ Evidence Title *</label>
         <input
           type="text"
           name="title"
@@ -196,7 +188,7 @@ import type { Document } from '$lib/types';
       </div>
       <!-- Evidence, Description -->
       <div class="nes-field" style="margin: 15px, 0;">
-        <label for="description">📄 Description</label>
+        <label for="description">ðŸ“„ Description</label>
         <textarea
           name="description"
           id="description"
@@ -209,7 +201,7 @@ import type { Document } from '$lib/types';
       </div>
       <!-- Evidence, Type -->
       <div class="nes-field" style="margin: 15px, 0;">
-        <label for="evidence_type">🗂️ Evidence Type</label>
+        <label for="evidence_type">ðŸ—‚ï¸ Evidence Type</label>
         <div class="nes-select">
           <select
             name="evidence_type"
@@ -218,13 +210,13 @@ import type { Document } from '$lib/types';
             bind:value={$form.evidence_type}
             onchange={onEvidenceTypeChange}
           >
-            <option value="UNKNOWN">🔍 Auto-detect from file</option>
-            <option value="PDF">📄 PDF Document</option>
-            <option value="IMAGE">🖼️ Image/Photo</option>
-            <option value="VIDEO">🎥 Video Recording</option>
-            <option value="AUDIO">🎵 Audio Recording</option>
-            <option value="TEXT">📝 Text Document</option>
-            <option value="LINK">🔗 Web Link/URL</option>
+            <option value="UNKNOWN">ðŸ” Auto-detect from file</option>
+            <option value="PDF">ðŸ“„ PDF Document</option>
+            <option value="IMAGE">ðŸ–¼ï¸ Image/Photo</option>
+            <option value="VIDEO">ðŸŽ¥ Video Recording</option>
+            <option value="AUDIO">ðŸŽµ Audio Recording</option>
+            <option value="TEXT">ðŸ“ Text Document</option>
+            <option value="LINK">ðŸ”— Web Link/URL</option>
           </select>
         </div>
         {#if $errors.evidence_type}
@@ -234,7 +226,7 @@ import type { Document } from '$lib/types';
       <!-- File, Upload, Area -->
       {#if $form.evidence_type !== 'LINK'}
         <div class="nes-field" style="margin: 15px, 0;">
-          <label>📎 File Upload *</label>
+          <label>ðŸ“Ž File Upload *</label>
           <!-- Drag and, Drop, Zone -->
           <div
             class="nes-container {dragOver ? 'is-success' : ''} {$errors.file ? 'is-error' : ''}"
@@ -263,15 +255,14 @@ import type { Document } from '$lib/types';
                 {/if}
                 <div>
                   <p class="font-medium">{selectedFile.name}</p>
-                  <p class="text-sm">{formatFileSize(selectedFile.size)} • {selectedFile.type}</p>
+                  <p class="text-sm">{formatFileSize(selectedFile.size)} â€¢ {selectedFile.type}</p>
                 </div>
                 <button
                   type="button"
                   onclick={() => {
-                    selectedFile = null;
-                    filePreview = null;
-                    metadata = null;
-                  }}
+                    selectedFile = null
+                    filePreview = null
+                    metadata = null}}
                   class="text-sm text-red-600 hover:text-red-800"
                 >
                   Remove file
@@ -493,7 +484,7 @@ import type { Document } from '$lib/types';
       {/if}
       <!-- Submit, Button -->
       <div style="text-align: center;, margin: 20px, 0;">
-        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
+        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> â† Cancel </button>
         <button
           type="submit"
           disabled={$submitting || (!selectedFile && $form.evidence_type !== 'LINK') || !$form.case_id || !$form.title}
@@ -501,12 +492,13 @@ import type { Document } from '$lib/types';
           style="margin-left: 10px;"
         >
           {#if $submitting}
-            🔄 Uploading...
+            ðŸ”„ Uploading...
           {:else}
-            📁 Upload Evidence
+            ðŸ“ Upload Evidence
           {/if}
         </button>
       </div>
     </form>
   </div>
 </div>
+

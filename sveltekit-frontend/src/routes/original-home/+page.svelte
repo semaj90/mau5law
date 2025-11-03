@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, token
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -25,7 +25,7 @@ import type { Document } from '$lib/types';
       // Setup AI search functionality
       if (browser) {
         const aiSearchBtn = document.getElementById('aiSearchBtn');
-        const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement;
+        const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement
         if (aiSearchBtn && aiSearchInputEl) {
           aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value));
           aiSearchInputEl.addEventListener('keypress', e => {
@@ -44,7 +44,7 @@ import type { Document } from '$lib/types';
     }
   }
   async function handleAiSearch(query: string): Promise<any> {
-    if (!query.trim()) return;
+    if (!query.trim()) return
     try {
       // Navigate to AI search results page
       window.location.href = `/ai/search?q=${encodeURIComponent(query)}`;
@@ -159,7 +159,7 @@ import type { Document } from '$lib/types';
               <span>Case #{caseItem.id}</span>
               <span>{new Date(caseItem.createdAt).toLocaleDateString()}</span>
             </div>
-            <a href="/cases/{caseItem.id}" class="space-y-4"> View Details → </a>
+            <a href="/cases/{caseItem.id}" class="space-y-4"> View Details â†’ </a>
           </div>
         {/each}
       </div>
@@ -239,10 +239,10 @@ import type { Document } from '$lib/types';
       radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
   }
   .line-clamp-3 {
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-   , overflow: hidden;
-  }
+    display: -webkit-box
+    -webkit-line-clamp: 3
+    line-clamp: 3
+    -webkit-box-orient: vertical
+   , overflow: hidden}
 </style>
+

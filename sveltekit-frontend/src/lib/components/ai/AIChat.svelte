@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import  useChatActor, chatActions  from "\/stores/chat.svelte";
@@ -7,12 +7,12 @@
   import  serviceStatus  from "\/stores/chat.svelte";
   // Use the XState machine through the store
   const actor = useChatActor();
-  const stateStore = actor.state;
+  const stateStore = actor.state
   let userInput = $state<string>('');
-  let chatContainer: HTMLElement | null = null;
+  let chatContainer: HTMLElement | null = null
   // Send message handler
   function handleSubmit() {
-    if (!userInput.trim()) return;
+    if (!userInput.trim()) return
     chatActions.sendMessage(userInput);
     userInput = '';
   }
@@ -23,12 +23,11 @@
   // Update scroll when messages change
   $effect(() => {
     // Accessing $stateStore will auto-subscribe
-    const msgs = $stateStore.context.messages;
+    const msgs = $stateStore.context.messages
     if (msgs && chatContainer) {
       setTimeout(() => {
         if (chatContainer) {
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
+          chatContainer.scrollTop = chatContainer.scrollHeight}
       }, 10);
     }
   });
@@ -43,11 +42,11 @@
       <h2 class="text-xl">Legal AI Assistant</h2>
       <p class="text-sm nes-text">
         {#if $serviceStatus.ollama === 'connected'}
-          <span class="text-green-500">●</span> AI Connected
+          <span class="text-green-500">â—</span> AI Connected
         {:else if $serviceStatus.ollama === 'error'}
-          <span class="text-red-500">●</span> AI Service Error
+          <span class="text-red-500">â—</span> AI Service Error
         {:else}
-          <span class="text-yellow-500">●</span> AI Status Unknown
+          <span class="text-yellow-500">â—</span> AI Status Unknown
         {/if}
       </p>
     </div>
@@ -97,51 +96,43 @@
 </div>
 <style>
   .chat-message {
-    display: flex;
-    margin-bottom: 1rem;
+    display: flex
+    margin-bottom: 1rem
     max-width: 80%;
   }
   .chat-message.user {
-    margin-left: auto;
-    justify-content: flex-end;
-  }
+    margin-left: auto
+    justify-content: flex-end}
   .chat-message.assistant {
-    margin-right: auto;
-    justify-content: flex-start;
-  }
+    margin-right: auto
+    justify-content: flex-start}
   .chat-message.error {
-    margin-right: auto;
-    justify-content: flex-start;
-  }
+    margin-right: auto
+    justify-content: flex-start}
   .message-bubble {
-    padding: 0.75rem 1rem;
-    border-radius: 1rem;
-    background-color: #e9ecef;
-    color: #212529;
-  }
+    padding: 0.75rem 1rem
+    border-radius: 1rem
+    background-color: #e9ecef
+    color: #212529}
   .user .message-bubble {
-    background-color: #3b82f6;
-    color: white;
-    border-bottom-right-radius: 0.25rem;
-  }
+    background-color: #3b82f6
+    color: white
+    border-bottom-right-radius: 0.25rem}
   .assistant .message-bubble {
-    background-color: #f3f4f6;
-    border-bottom-left-radius: 0.25rem;
-  }
+    background-color: #f3f4f6
+    border-bottom-left-radius: 0.25rem}
   .error-bubble {
-    background-color: #fee2e2;
-    color: #991b1b;
-  }
+    background-color: #fee2e2
+    color: #991b1b}
   .typing-indicator {
-    display: inline-block;
-    width: 5px;
-    height: 5px;
+    display: inline-block
+    width: 5px
+    height: 5px
     border-radius: 50%;
-    background-color: currentColor;
+    background-color: currentColor
    , animation: typing 1s infinite steps(4, end);
-    margin-left: 8px;
-    vertical-align: middl;
-  }
+    margin-left: 8px
+    vertical-align: middl}
   @keyframes typing {
     0%,
     100% {
@@ -152,3 +143,4 @@
     }
   }
 </style>
+

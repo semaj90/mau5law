@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Simple CardDescription component (shadcn-like) - Svelte, 5
   interface Props {
-    className?: string;
-    children?: import('svelte').Snippet;
-  }
+    className?: string
+    children?: import('svelte').Snippet}
   let { className = '', children }: Props = $props();
 </script>
 <p class={'text-sm, text-muted-foreground, ' + className}>
@@ -11,3 +10,4 @@
     {@render children()}
   {/if}
 </p>
+

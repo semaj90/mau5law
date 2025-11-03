@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 	import { cn } from '$lib/utils'; // Import cn utility
 
 	// Use $props() for Svelte, 5 runes mode
@@ -13,9 +13,8 @@
 		type?: 'button' | 'submit' | 'reset';
 		variant?: 'primary' | 'secondary' | 'ghost';
 		size?: 'sm' | 'md' | 'lg';
-		disabled?: boolean;
-		className?: string;
-	};
+		disabled?: boolean
+		className?: string};
 
 	const base = 'inline-flex items-center justify-center rounded-2xl border transition-colors duration-150 select-none';
 

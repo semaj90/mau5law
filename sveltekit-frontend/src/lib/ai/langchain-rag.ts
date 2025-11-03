@@ -1,4 +1,4 @@
-// LangChain.js RAG Implementation for Legal AI Platform
+﻿// LangChain.js RAG Implementation for Legal AI Platform
 // Advanced RAG with Ollama integration and legal domain specialization
 
 import type { Document as LangChainDocumentType } from '@langchain/core/documents';
@@ -20,20 +20,20 @@ const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
 // (Removed the duplicate and unsafe `type QdrantVectorStore = any;` alias)
 // Replace loose: any with a small typed interface for the parts we use
 interface QdrantCollectionInfo {
-  result?: { points_count?: number } | null;
+  result?: { points_count?: number } | null
   [key: string]: unknown; // Changed from any to unknown
 }
 interface QdrantClient {
-  url?: string;
+  url?: string
   getCollection(collectionName: string): Promise<QdrantCollectionInfo>;
 }
 // --- REPLACED: previously `type QdrantVectorStore = any;` --- // Provide a minimal typed interface for the vector store surface we use.
 interface QdrantVectorStore {
   embeddings?: OllamaHTTPEmbeddings; // Changed from OpenAIEmbeddings
-  client?: QdrantClient;
-  collectionName?: string;
-  contentPayloadKey?: string;
-  metadataPayloadKey?: string;
+  client?: QdrantClient
+  collectionName?: string
+  contentPayloadKey?: string
+  metadataPayloadKey?: string
   // Add documents and return their IDs
   addDocuments(docs: LangChainDocumentType[]): Promise<string[]>;
   // Perform a similarity search, returning documents
@@ -46,48 +46,47 @@ interface QdrantVectorStore {
 
 // Import types
 interface LegalDocumentMetadata {
-  id?: string;
-  title: string;
-  documentType: string;
-  jurisdiction?: string;
-  practiceArea?: string;
-  createdAt?: string;
+  id?: string
+  title: string
+  documentType: string
+  jurisdiction?: string
+  practiceArea?: string
+  createdAt?: string
   [key: string]: unknown; // Changed from any to unknown
 }
 export interface LegalRAGConfig {
-  qdrantUrl: string;
-  ollamaGenerationUrl: string;
-  ollamaEmbeddingUrl: string;
+  qdrantUrl: string
+  ollamaGenerationUrl: string
+  ollamaEmbeddingUrl: string
   // apiKey: string; // REMOVED: Not needed for local Ollama
-  collectionName: string;
-  embeddingDimensions: number;
+  collectionName: string
+  embeddingDimensions: number
   // NEW: Ollama-specific parameters
-  ollamaTemperature: number;
-  ollamaNumCtx: number;
-  ollamaNumPredict: number;
-}
+  ollamaTemperature: number
+  ollamaNumCtx: number
+  ollamaNumPredict: number}
 export interface RAGQueryOptions {
-  thinkingMode?: boolean;
-  verbose?: boolean;
-  documentType?: string;
-  jurisdiction?: string;
-  practiceArea?: string;
-  maxRetrievedDocs?: number;
-  useCompression?: boolean;
-  includeMetadata?: boolean;
-  confidenceThreshold?: number;
+  thinkingMode?: boolean
+  verbose?: boolean
+  documentType?: string
+  jurisdiction?: string
+  practiceArea?: string
+  maxRetrievedDocs?: number
+  useCompression?: boolean
+  includeMetadata?: boolean
+  confidenceThreshold?: number
   useEnhancedSemanticSearch?: boolean; // New option for enhanced semantic search API
 }
 export interface RAGResult {
-  answer: string;
+  answer: string
   sourceDocuments: LangChainDocumentType[];
-  confidence: number;
-  reasoning?: string;
+  confidence: number
+  reasoning?: string
   metadata: {
-    retrievedChunks: number;
-    processingTime: number;
-    usedThinkingMode: boolean;
-    usedCompression: boolean;
+    retrievedChunks: number
+    processingTime: number
+    usedThinkingMode: boolean
+    usedCompression: boolean
     enhancedSemanticSearch?: boolean; // New field for tracking enhanced search usage
     semanticProcessingTime?: number; // Processing time from semantic search API
   };
@@ -97,15 +96,15 @@ export interface RAGResult {
 export class LegalRAGService {
   private llm: Runnable<RunnableInvokeInput, RunnableInvokeOutput>; // Changed type to Runnable
   private embeddings: OllamaHTTPEmbeddings; // Changed type from OpenAIEmbeddings
-  private vectorStore: QdrantVectorStore | null = null;
-  private qdrantClient: QdrantClient;
-  private textSplitter: RecursiveCharacterTextSplitter;
-  private config: LegalRAGConfig;
+  private vectorStore: QdrantVectorStore | null = null
+  private qdrantClient: QdrantClient
+  private textSplitter: RecursiveCharacterTextSplitter
+  private config: LegalRAGConfig
   private vectorStoreInitPromise: Promise<void> | null = null; // Added back for proper initialization
   // --- NEW: lightweight runtime statistics for dynamic getSystemStats() ---
-  private queryCount = 0;
+  private queryCount = 0
   private totalQueryTime = 0; // ms
-  private totalIndexedChunks = 0;
+  private totalIndexedChunks = 0
   private totalIndexBytes = 0; // approximate bytes (sum of chunk lengths)
 
   // Legal-specific prompt templates
@@ -135,11 +134,10 @@ Generate 3 different search queries that would help find relevant legal informat
 1. A query focusing on legal concepts and principles
 2. A query focusing on specific legal terms and definitions
 3. A query focusing on practical applications and implications
-Only return the queries, one per line.`),
-  };
+Only return the queries, one per line.`)};
 
   constructor(config: LegalRAGConfig) {
-    this.config = config;
+    this.config = config
     // Initialize internal LLM and wrap it as a Runnable
     const internalLLM = new OllamaHTTPLLMInternal( // Use the renamed internal class
       config.ollamaGenerationUrl,
@@ -163,8 +161,7 @@ Only return the queries, one per line.`),
         // In a real scenario, this would make an actual API call to Qdrant
         console.log(`Mock QdrantClient: Getting collection info for ${collectionName}`);
         return { result: { points_count: this.totalIndexedChunks } };
-      },
-    };
+      }};
     // Initialize text splitter
     this.textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 1000, // Example default chunk size
@@ -179,8 +176,7 @@ Only return the queries, one per line.`),
    */
   private async ensureVectorStoreInitialized(): Promise<void> {
     if (this.vectorStoreInitPromise) {
-      return this.vectorStoreInitPromise;
-    }
+      return this.vectorStoreInitPromise}
 
     this.vectorStoreInitPromise = (async () => {
       if (this.vectorStore) {
@@ -217,9 +213,7 @@ Only return the queries, one per line.`),
               console.log(`Mock QdrantVectorStore: Retrieving documents for "${query}" (k=${opts.k}).`);
               // Simulate document retrieval
               return [];
-            },
-          }),
-        };
+            }})};
         console.log(`Qdrant vector store initialized for collection: ${this.config.collectionName}`);
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : String(error);
@@ -231,8 +225,7 @@ Only return the queries, one per line.`),
       }
     })();
 
-    return this.vectorStoreInitPromise;
-  }
+    return this.vectorStoreInitPromise}
 
   /**
    * Performs a RAG query using LangChain.js and Ollama.
@@ -251,9 +244,7 @@ Only return the queries, one per line.`),
       maxRetrievedDocs = 5,
       useCompression = false,
       confidenceThreshold = 0.5,
-      useEnhancedSemanticSearch = false,
-    } = options;
-
+      useEnhancedSemanticSearch = false} = options
     try {
       if (useEnhancedSemanticSearch) {
         // This block is commented out as `semanticSearchAPI` is not defined in the provided context.
@@ -265,8 +256,7 @@ Only return the queries, one per line.`),
             documentType,
             jurisdiction,
             practiceArea,
-            limit: maxRetrievedDocs,
-          });
+            limit: maxRetrievedDocs});
 
           if (semanticData && semanticData.results && semanticData.results.length > 0) {
             const retrievedDocs: LangChainDocumentType[] = semanticData.results.map((r: SemanticSearchResult) => ({
@@ -276,12 +266,10 @@ Only return the queries, one per line.`),
                 title: r.title,
                 score: r.semantic_score,
                 documentType: r.document_type,
-                ...r.metadata,
-              },
-            }));
+                ...r.metadata}}));
 
             const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
-            const processingTime = Date.now() - startTime;
+            const processingTime = Date.now() - startTime
             this.recordQueryMetrics(processingTime);
 
             return {
@@ -295,9 +283,7 @@ Only return the queries, one per line.`),
                 usedThinkingMode: thinkingMode,
                 usedCompression: useCompression,
                 enhancedSemanticSearch: true,
-                semanticProcessingTime: semanticData.processingTime || 0,
-              },
-            };
+                semanticProcessingTime: semanticData.processingTime || 0}};
           }
         } catch (error: unknown) {
           console.warn('Enhanced semantic search failed, falling back to traditional RAG: ', error);
@@ -313,8 +299,7 @@ Only return the queries, one per line.`),
       // Create retriever with legal-specific filtering
       const retriever = this.vectorStore.asRetriever({
         k: thinkingMode ? maxRetrievedDocs * 2 : maxRetrievedDocs,
-        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea),
-      });
+        filter: this.buildMetadataFilter(documentType, jurisdiction, practiceArea)});
 
       // Use MultiQueryRetriever for thinking mode
       // TODO: Fix MultiQueryRetriever import issue
@@ -340,27 +325,22 @@ Only return the queries, one per line.`),
       // }
 
       // Select appropriate prompt template
-      let promptTemplate = this.LEGAL_PROMPTS.STANDARD_RAG;
+      let promptTemplate = this.LEGAL_PROMPTS.STANDARD_RAG
       if (thinkingMode) {
-        promptTemplate = this.LEGAL_PROMPTS.THINKING_MODE_RAG;
-      } else if (verbose) {
-        promptTemplate = this.LEGAL_PROMPTS.VERBOSE_RAG;
-      }
+        promptTemplate = this.LEGAL_PROMPTS.THINKING_MODE_RAG} else if (verbose) {
+        promptTemplate = this.LEGAL_PROMPTS.VERBOSE_RAG}
 
       const contextRetriever = RunnableSequence.from([
         (input: string) => retriever.getRelevantDocuments(input),
-        formatDocumentsAsString,
-      ]);
+        formatDocumentsAsString]);
 
       const ragChain = RunnableSequence.from([
         RunnableMap.from({
           context: contextRetriever,
-          question: new RunnablePassthrough(),
-        }),
+          question: new RunnablePassthrough()}),
         promptTemplate,
         this.llm,
-        new StringOutputParser(),
-      ]);
+        new StringOutputParser()]);
 
       const [answer, retrievedDocs] = await Promise.all([
         ragChain.invoke(question).catch((error: unknown) => {
@@ -370,11 +350,10 @@ Only return the queries, one per line.`),
         retriever.getRelevantDocuments(question).catch((error: unknown) => {
           console.warn('Document retrieval error: ', error);
           return [];
-        }),
-      ]);
+        })]);
 
       const confidence = this.calculateConfidence(retrievedDocs, confidenceThreshold);
-      const processingTime = Date.now() - startTime;
+      const processingTime = Date.now() - startTime
       // record metrics for fallback query
       this.recordQueryMetrics(processingTime);
 
@@ -387,14 +366,12 @@ Only return the queries, one per line.`),
           retrievedChunks: retrievedDocs.length,
           processingTime: processingTime,
           usedThinkingMode: thinkingMode,
-          usedCompression: useCompression,
-        },
-      };
+          usedCompression: useCompression}};
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Error in RAG query: ', msg);
       // record metrics even on error
-      const processingTime = Date.now() - startTime;
+      const processingTime = Date.now() - startTime
       this.recordQueryMetrics(processingTime);
       return {
         answer: 'I apologize, but I encountered an error processing your query. Please try again.',
@@ -404,9 +381,7 @@ Only return the queries, one per line.`),
           retrievedChunks: 0,
           processingTime: processingTime,
           usedThinkingMode: options.thinkingMode ?? false,
-          usedCompression: options.useCompression ?? false,
-        },
-      };
+          usedCompression: options.useCompression ?? false}};
     }
   }
 
@@ -424,23 +399,20 @@ Only return the queries, one per line.`),
           ...metadata,
           chunkIndex: index,
           totalChunks: chunks.length,
-          chunkSize: chunk.length,
-        },
-      }));
+          chunkSize: chunk.length}}));
       const ids = await this.vectorStore.addDocuments(documents);
       // Update lightweight index statistics
       try {
-        this.totalIndexedChunks = (this.totalIndexedChunks || 0) + chunks.length;
+        this.totalIndexedChunks = (this.totalIndexedChunks || 0) + chunks.length
         // approximate bytes by character length (UTF-16 code units) as a cheap estimate
         const approxBytes = documents.reduce(
           (sum: number, d: LangChainDocumentType) => sum + (d.pageContent?.length || 0),
           0
         );
-        this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes;
-      } catch {
+        this.totalIndexBytes = (this.totalIndexBytes || 0) + approxBytes} catch {
         // ignore stats collection failures
       }
-      console.log(`✅ Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown'}`);
+      console.log(`âœ… Indexed ${chunks.length} chunks for document ${metadata.documentId ?? metadata.id ?? 'unknown'}`);
       return ids || [];
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -485,14 +457,14 @@ Only return the queries, one per line.`),
 
   /** * Calculate confidence score based on retrieved documents */
   private calculateConfidence(documents: LangChainDocumentType[], threshold: number): number {
-    if (documents.length === 0) return 0;
+    if (documents.length === 0) return 0
     const scores = documents.map(doc => {
-      const score = doc.metadata?.score;
-      if (typeof score === 'number') return score;
+      const score = doc.metadata?.score
+      if (typeof score === 'number') return score
       return Math.min(1.0, (doc.pageContent?.length || 0) / 1000);
     });
-    const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
-    let finalConfidence = averageScore;
+    const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length
+    let finalConfidence = averageScore
     if (typeof threshold === 'number' && threshold > 0) {
       if (averageScore < threshold) {
         finalConfidence = averageScore * (averageScore / threshold);
@@ -506,7 +478,7 @@ Only return the queries, one per line.`),
     try {
       const info = await this.qdrantClient.getCollection(this.config.collectionName);
       const collectionExists = Boolean(info?.result);
-      const documentsCount = typeof info?.result?.points_count === 'number' ? info.result.points_count : 0;
+      const documentsCount = typeof info?.result?.points_count === 'number' ? info.result.points_count : 0
       return { status: 'healthy', vectorStoreConnected: Boolean(this.vectorStore), collectionExists, documentsCount };
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -516,8 +488,7 @@ Only return the queries, one per line.`),
         vectorStoreConnected: Boolean(this.vectorStore),
         collectionExists: false,
         documentsCount: 0,
-        errorMessage: msg,
-      };
+        errorMessage: msg};
     }
   }
 
@@ -525,19 +496,18 @@ Only return the queries, one per line.`),
   async uploadDocument(filePath: string, options?: UploadOptions): Promise<UploadResult> {
     const startTime = Date.now();
     let documentContent: string = '';
-    let fileSize: number = 0;
+    let fileSize: number = 0
     let fileName: string = '';
 
     try {
       if (options?.file) {
-        fileName = options.file.name;
-        fileSize = options.file.size;
+        fileName = options.file.name
+        fileSize = options.file.size
         documentContent = await this.extractTextFromFile(options.file);
       } else if (options?.content) {
-        documentContent = options.content;
-        fileSize = new Blob([documentContent]).size;
-        fileName = filePath.split('/').pop() || filePath;
-      } else {
+        documentContent = options.content
+        fileSize = new Blob([documentContent]).size
+        fileName = filePath.split('/').pop() || filePath} else {
         const fs = await import('fs').catch(() => null);
         const path = await import('path').catch(() => null);
         if (!fs || !path) {
@@ -548,7 +518,7 @@ Only return the queries, one per line.`),
         fileName = path.basename(filePath);
         try {
           const fileBuffer = await fs.promises.readFile(filePath);
-          fileSize = fileBuffer.length;
+          fileSize = fileBuffer.length
           const fileExtension = path.extname(filePath).toLowerCase();
           documentContent = await this.extractTextFromBuffer(fileBuffer, fileExtension);
         } catch (error: unknown) {
@@ -572,33 +542,28 @@ Only return the queries, one per line.`),
           size: fileSize,
           mimeType: this.getMimeType(fileName),
           wordCount: documentContent.split(/\s+/).filter(Boolean).length,
-          language: `en`,
-        },
+          language: `en`},
         classification: {
           documentType: options?.documentType || this.inferDocumentType(fileName, documentContent),
           practiceArea: this.inferPracticeArea(documentContent),
           jurisdiction: this.inferJurisdiction(documentContent),
           confidentialityLevel: 'public',
-          tags: [],
-        },
+          tags: []},
         extraction: {
           extractedAt: new Date().toISOString(),
           extractedLength: documentContent.length,
-          confidence: this.calculateExtractionConfidence(documentContent, fileName),
-        },
+          confidence: this.calculateExtractionConfidence(documentContent, fileName)},
         ...((options?.metadata as Partial<LegalDocumentMetadata>) || {}),
         filePath: filePath,
-        caseId: options?.caseId,
-      };
+        caseId: options?.caseId};
       const chunkIds = await this.indexDocument(documentContent, metadata);
-      const processingTime = Date.now() - startTime;
+      const processingTime = Date.now() - startTime
       if (chunkIds.length > 0) {
         try {
           await this.notifySemanticSearchAPI(documentId, {
             title: metadata.title,
             content: documentContent.substring(0, 1000),
-            metadata: { chunks: chunkIds.length },
-          });
+            metadata: { chunks: chunkIds.length }});
         } catch (error: unknown) {
           console.warn('Failed to notify semantic search API: ', error);
         }
@@ -610,9 +575,7 @@ Only return the queries, one per line.`),
             fileSize: fileSize,
             extractedLength: documentContent.length,
             processingTime: processingTime,
-            chunksCreated: chunkIds.length,
-          },
-        };
+            chunksCreated: chunkIds.length}};
       }
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -623,9 +586,7 @@ Only return the queries, one per line.`),
           fileSize: fileSize,
           extractedLength: documentContent.length,
           processingTime: Date.now() - startTime,
-          chunksCreated: 0,
-        },
-      };
+          chunksCreated: 0}};
     }
     return {
       success: false,
@@ -634,9 +595,7 @@ Only return the queries, one per line.`),
         fileSize: fileSize,
         extractedLength: documentContent.length,
         processingTime: Date.now() - startTime,
-        chunksCreated: 0,
-      },
-    };
+        chunksCreated: 0}};
   }
 
   /** * Extract text from a File object (browser environment) */
@@ -662,8 +621,7 @@ Only return the queries, one per line.`),
       default: {
         const text = await file.text();
         if (this.isValidText(text)) {
-          return text;
-        }
+          return text}
         throw new Error(`Unsupported file type: ${fileExtension}`);
       }
     }
@@ -691,8 +649,7 @@ Only return the queries, one per line.`),
       default: {
         const text = buffer.toString('utf-8');
         if (this.isValidText(text)) {
-          return text;
-        }
+          return text}
         throw new Error(`Unsupported file type: ${extension}`);
       }
     }
@@ -710,7 +667,7 @@ Only return the queries, one per line.`),
     }
     // Minimal document proxy exposing page count and page accessor
     interface PDFDocumentProxy {
-      numPages?: number;
+      numPages?: number
       getPage(pageNumber: number): Promise<PDFPageProxy>;
     }
     // Loading task that may expose a promise for the document (pdfjs returns either a LoadingTask or the document)
@@ -720,34 +677,31 @@ Only return the queries, one per line.`),
     // Narrow module shape for pdfjs-dist (supports both default export and top-level functions)
     type PDFJSModule = {
       default?: {
-        getDocument(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+        getDocument(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy
         GlobalWorkerOptions?: { workerSrc?: string };
       };
-      getDocument?(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy;
+      getDocument?(src: { data: ArrayBuffer }): PDFLoadingTask | Promise<PDFDocumentProxy> | PDFDocumentProxy
       GlobalWorkerOptions?: { workerSrc?: string };
     };
 
     // Define a generic Thenable interface for type narrowing
     interface Thenable {
-      then?: (onfulfilled?: (value: unknown) => unknown, onrejected?: (reason: unknown) => unknown) => unknown;
-    }
+      then?: (onfulfilled?: (value: unknown) => unknown, onrejected?: (reason: unknown) => unknown) => unknown}
 
     try {
       // Prefer the legacy build which provides the classic API (getDocument, GlobalWorkerOptions)
       // Replace `any` with a narrow local type capturing only the members we use.
-      let pdfjsModule: PDFJSModule | null = null;
+      let pdfjsModule: PDFJSModule | null = null
       try {
         // @ts-expect-error - This path may not exist if only the main package is installed
-        pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule;
-      } catch {
+        pdfjsModule = (await import('pdfjs-dist/legacy/build/pdf')) as PDFJSModule} catch {
         // Fallback to main package if legacy build isn't present
         // @ts-expect-error - This module might not be installed
-        pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null;
-      }
+        pdfjsModule = (await import('pdfjs-dist').catch(() => null)) as PDFJSModule | null}
       if (!pdfjsModule) {
         throw new Error('PDF.js not found. Install pdfjs-dist (e.g. npm i pdfjs-dist).');
       }
-      const pdfjs = pdfjsModule?.default ?? pdfjsModule;
+      const pdfjs = pdfjsModule?.default ?? pdfjsModule
       // Attempt to set workerSrc if available to avoid worker-loading issues in browser
       try {
         if (pdfjs && pdfjs.GlobalWorkerOptions && !pdfjs.GlobalWorkerOptions.workerSrc) {
@@ -773,21 +727,18 @@ Only return the queries, one per line.`),
       ): Promise<PDFDocumentProxy> => {
         // If it's an object that exposes a `.promise` property, treat it as a LoadingTask.
         if (typeof task === 'object' && task !== null && 'promise' in task) {
-          const maybeLoading = task as PDFLoadingTask;
+          const maybeLoading = task as PDFLoadingTask
           const maybePromise = maybeLoading.promise as unknown as Thenable; // Used Thenable
           if (maybePromise && typeof maybePromise === 'object' && typeof maybePromise.then === 'function') {
             // await the loading task's promise
-            return (await (maybePromise as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
-          }
+            return (await (maybePromise as Promise<PDFDocumentProxy>)) as PDFDocumentProxy}
         }
         // If it looks like a Promise (has a then function), await it.
         if (typeof task === 'object' && task !== null && typeof (task as Thenable).then === 'function') {
           // Used Thenable
-          return (await (task as Promise<PDFDocumentProxy>)) as PDFDocumentProxy;
-        }
+          return (await (task as Promise<PDFDocumentProxy>)) as PDFDocumentProxy}
         // Otherwise assume it's already a PDFDocumentProxy
-        return task as PDFDocumentProxy;
-      };
+        return task as PDFDocumentProxy};
       const pdf = await resolvePDFDocument(loadingTask);
       let fullText = '';
       for (let pageNum = 1; pageNum <= (pdf.numPages || 0); pageNum++) {
@@ -811,7 +762,7 @@ Only return the queries, one per line.`),
       // Try to use pdf-parse if available
       const pdfParse = await import('pdf-parse').catch(() => null);
       if (pdfParse) {
-        const data = (await pdfParse.default(buffer)) as PDFParseResult;
+        const data = (await pdfParse.default(buffer)) as PDFParseResult
         return data.text ?? '';
       }
       throw new Error('PDF processing requires pdf-parse library. Please install pdf-parse package.');
@@ -830,7 +781,7 @@ Only return the queries, one per line.`),
       const mammoth = await import('mammoth').catch(() => null);
       if (mammoth) {
         const arrayBuffer = await file.arrayBuffer();
-        const result = (await mammoth.extractRawText({ arrayBuffer })) as MammothResult;
+        const result = (await mammoth.extractRawText({ arrayBuffer })) as MammothResult
         return result.value ?? '';
       }
       throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
@@ -848,7 +799,7 @@ Only return the queries, one per line.`),
       // @ts-expect-error - This module might not be installed
       const mammoth = await import('mammoth').catch(() => null);
       if (mammoth) {
-        const result = (await mammoth.extractRawText({ buffer })) as MammothResult;
+        const result = (await mammoth.extractRawText({ buffer })) as MammothResult
         return result.value ?? '';
       }
       throw new Error('Word document processing requires mammoth library. Please install mammoth package.');
@@ -871,11 +822,11 @@ Only return the queries, one per line.`),
 
   /** * Check if text content is valid and readable */
   private isValidText(text: string): boolean {
-    if (!text || text.trim().length < 10) return false;
+    if (!text || text.trim().length < 10) return false
     // Check for reasonable ratio of printable characters
     // Place: '-' at the end of the class so no escape is necessary
-    const printableChars = text.match(/[a-zA-Z0-9\s.,:!?()-]/g)?.length || 0;
-    const ratio = printableChars / text.length;
+    const printableChars = text.match(/[a-zA-Z0-9\s.,:!?()-]/g)?.length || 0
+    const ratio = printableChars / text.length
     return ratio > 0.7; // At least 70% printable characters
   }
 
@@ -971,12 +922,10 @@ Only return the queries, one per line.`),
       'ohio',
       'georgia',
       'north carolina',
-      'michigan',
-    ];
+      'michigan'];
     for (const state of states) {
       if (contentLower.includes(state)) {
-        return state;
-      }
+        return state}
     }
     return 'unknown';
   }
@@ -985,18 +934,18 @@ Only return the queries, one per line.`),
   private calculateExtractionConfidence(content: string, fileName: string): number {
     let confidence = 0.5; // Base confidence
     // Content length bonus
-    if (content.length > 1000) confidence += 0.2;
-    if (content.length > 5000) confidence += 0.1;
+    if (content.length > 1000) confidence += 0.2
+    if (content.length > 5000) confidence += 0.1
     // Structure indicators
     if (content.includes('\n\n')) confidence += 0.1; // Paragraphs
     if (content.match(/\d+\./g)) confidence += 0.1; // Numbered lists
     if (content.match(/[A-Z][a-z]+\s+[A-Z][a-z]+/g)) confidence += 0.1; // Proper names
     // Legal document indicators
-    if (content.toLowerCase().includes('whereas')) confidence += 0.1;
-    if (content.toLowerCase().includes('therefore')) confidence += 0.1;
+    if (content.toLowerCase().includes('whereas')) confidence += 0.1
+    if (content.toLowerCase().includes('therefore')) confidence += 0.1
     // File type confidence
     const extension = fileName.split('.').pop()?.toLowerCase();
-    if (['pdf', 'doc', 'docx'].includes(extension || '')) confidence += 0.1;
+    if (['pdf', 'doc', 'docx'].includes(extension || '')) confidence += 0.1
     return Math.min(1.0, confidence);
   }
 
@@ -1009,8 +958,7 @@ Only return the queries, one per line.`),
     if (lines.length > 0) {
       const firstLine = lines[0].trim();
       if (firstLine.length > 10 && firstLine.length < 100) {
-        return firstLine;
-      }
+        return firstLine}
     }
     const baseName = fileName.replace(/\.[^/.]+$/, '');
     return baseName.replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -1027,8 +975,7 @@ Only return the queries, one per line.`),
       md: 'text/markdown',
       html: 'text/html',
       htm: 'text/html',
-      rtf: `application/rtf`,
-    };
+      rtf: `application/rtf`};
     return mimeTypes[extension || ''] || 'application/octet-stream';
   }
 
@@ -1039,8 +986,7 @@ Only return the queries, one per line.`),
         await fetch('/api/documents/indexed', {
           method: 'POST',
           headers: { 'Content-Type': `application/json` },
-          body: JSON.stringify({ documentId, action: 'indexed', ...documentInfo }),
-        });
+          body: JSON.stringify({ documentId, action: 'indexed', ...documentInfo })});
       }
     } catch (error: unknown) {
       console.warn('Failed to notify semantic search API: ', error);
@@ -1051,10 +997,10 @@ Only return the queries, one per line.`),
     try {
       const health = await this.healthCheck();
       const uptimeMs = this.getUptimeMs();
-      const documentCount = health.documentsCount || this.totalIndexedChunks || 0;
+      const documentCount = health.documentsCount || this.totalIndexedChunks || 0
       const indexSizeEstimate =
         this.totalIndexBytes && this.totalIndexBytes > 0 ? this.totalIndexBytes : Math.max(0, documentCount * 1200);
-      const averageQueryTime = this.queryCount > 0 ? Math.round(this.totalQueryTime / this.queryCount) : 0;
+      const averageQueryTime = this.queryCount > 0 ? Math.round(this.totalQueryTime / this.queryCount) : 0
       return {
         documentCount: documentCount,
         queryCount: this.queryCount,
@@ -1062,8 +1008,7 @@ Only return the queries, one per line.`),
         averageQueryTime: averageQueryTime,
         averageResponseTime: averageQueryTime,
         indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
-        uptime: Math.max(0, uptimeMs),
-      };
+        uptime: Math.max(0, uptimeMs)};
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error);
       console.error('Failed to get system stats: ', msg);
@@ -1074,8 +1019,7 @@ Only return the queries, one per line.`),
         averageQueryTime: 0,
         averageResponseTime: 0,
         indexStatus: 'error',
-        uptime: 0,
-      };
+        uptime: 0};
     }
   }
 
@@ -1087,7 +1031,7 @@ Only return the queries, one per line.`),
       type ProcessLike = { uptime?: () => number };
       // Cast globalThis to a typed object that may contain `process`
       const g = globalThis as unknown as { process?: ProcessLike };
-      const maybeProcess = g?.process;
+      const maybeProcess = g?.process
       if (maybeProcess && typeof maybeProcess.uptime === 'function') {
         return Math.floor(maybeProcess.uptime() * 1000);
       }
@@ -1097,16 +1041,14 @@ Only return the queries, one per line.`),
     } catch {
       // swallow and return 0 as a safe fallback
     }
-    return 0;
-  }
+    return 0}
 
   // Added: record lightweight query metrics so calls to this.recordQueryMetrics(...) compile
   private recordQueryMetrics(processingTimeMs: number): void {
     try {
-      const ms = Number(processingTimeMs) || 0;
-      this.queryCount = (this.queryCount || 0) + 1;
-      this.totalQueryTime = (this.totalQueryTime || 0) + ms;
-    } catch {
+      const ms = Number(processingTimeMs) || 0
+      this.queryCount = (this.queryCount || 0) + 1
+      this.totalQueryTime = (this.totalQueryTime || 0) + ms} catch {
       // intentionally swallow metric collection failures
     }
   }
@@ -1115,46 +1057,40 @@ Only return the queries, one per line.`),
 // --- MOVED TYPES: place these above the class so they are available when referenced --- // Add HealthCheckResult at top-level so class methods can reference it
 type HealthCheckResult = {
   status: 'healthy' | 'unhealthy';
-  vectorStoreConnected: boolean;
-  collectionExists: boolean;
-  documentsCount: number;
-  errorMessage?: string;
-};
+  vectorStoreConnected: boolean
+  collectionExists: boolean
+  documentsCount: number
+  errorMessage?: string};
 type MetadataMatch = { value: string | number | boolean };
 type MetadataCondition = { key: string; match: MetadataMatch };
 type MetadataFilter = { must?: MetadataCondition[] } | Record<string, never>;
 type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string, unknown>;
 interface UploadOptions {
-  caseId?: string;
-  documentType?: string;
-  title?: string;
-  metadata?: UploadMetadata;
-  file?: File;
-  content?: string;
-}
+  caseId?: string
+  documentType?: string
+  title?: string
+  metadata?: UploadMetadata
+  file?: File
+  content?: string}
 type ProcessingDetails = {
-  fileSize: number;
-  extractedLength: number;
-  processingTime: number;
-  chunksCreated: number;
-};
+  fileSize: number
+  extractedLength: number
+  processingTime: number
+  chunksCreated: number};
 type UploadResultSuccess = {
-  success: true;
-  documentId: string;
-  chunks: number;
-  processingDetails: ProcessingDetails;
-};
+  success: true
+  documentId: string
+  chunks: number
+  processingDetails: ProcessingDetails};
 type UploadResultFailure = {
-  success: false;
-  error: string;
-  processingDetails: ProcessingDetails;
-};
-type UploadResult = UploadResultSuccess | UploadResultFailure;
-
+  success: false
+  error: string
+  processingDetails: ProcessingDetails};
+type UploadResult = UploadResultSuccess | UploadResultFailure
 // Add SystemStats type near the other top-level types
 type SystemStats = {
-  documentCount: number;
-  queryCount: number;
+  documentCount: number
+  queryCount: number
   indexSize: number; // bytes
   averageQueryTime: number; // ms
   averageResponseTime: number; // ms
@@ -1164,48 +1100,44 @@ type SystemStats = {
 
 // New type: strongly-typed payload for semantic search notifications
 type SemanticSearchDocumentInfo = {
-  title: string;
-  content: string;
+  title: string
+  content: string
   metadata?: Partial<LegalDocumentMetadata> | Record<string, unknown>;
-  chunks?: number;
-  summary?: string;
-  sourceUrl?: string;
+  chunks?: number
+  summary?: string
+  sourceUrl?: string
   [key: string]: unknown; // Changed from any to unknown
 };
 
 // Add a concrete type for enhanced semantic search results
 export type SemanticSearchResult = {
-  content?: string;
-  title?: string;
-  metadata?: Record<string, unknown> | null;
-  semantic_score?: number | null;
-  distance?: number | null;
-  document_type?: string | null;
+  content?: string
+  title?: string
+  metadata?: Record<string, unknown> | null
+  semantic_score?: number | null
+  distance?: number | null
+  document_type?: string | null
   [key: string]: unknown; // Changed from any to unknown
 };
 
 // New types for Runnable input/output
 type RunnableInvokeInput = string | { prompt: string; [key: string]: unknown }; // Fix: Changed 'any' to 'unknown'
-type RunnableInvokeOutput = string;
-
+type RunnableInvokeOutput = string
 // Minimal OllamaHTTPEmbeddings to replace OpenAIEmbeddings
 class OllamaHTTPEmbeddings {
-  private baseUrl: string;
-  private model: string;
-
+  private baseUrl: string
+  private model: string
   constructor(baseUrl: string, model: string, _dimensions: number) {
     // _dimensions is now unused
-    this.baseUrl = baseUrl;
-    this.model = model;
-  }
+    this.baseUrl = baseUrl
+    this.model = model}
 
   async embedQuery(text: string): Promise<number[]> {
     try {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: this.model, prompt: text }),
-      });
+        body: JSON.stringify({ model: this.model, prompt: text })});
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -1216,35 +1148,31 @@ class OllamaHTTPEmbeddings {
       if (!data.embedding || !Array.isArray(data.embedding)) {
         throw new Error('Invalid embedding response from Ollama API');
       }
-      return data.embedding;
-    } catch (error) {
+      return data.embedding} catch (error) {
       console.error('Error generating Ollama embedding:', error);
-      throw error;
-    }
+      throw error}
   }
 }
 
 // Internal implementation of Ollama LLM, not directly implementing LangChain's Runnable interface
 class OllamaHTTPLLMInternal {
   // Renamed from OllamaHTTPLLM
-  private baseUrl: string;
-  private model: string;
-  private temperature: number;
-  private numCtx: number;
-  private numPredict: number;
-
+  private baseUrl: string
+  private model: string
+  private temperature: number
+  private numCtx: number
+  private numPredict: number
   // Constructor now takes individual arguments
   constructor(baseUrl: string, model: string, temperature: number, numCtx: number, numPredict: number) {
-    this.baseUrl = baseUrl;
-    this.model = model;
-    this.temperature = temperature;
-    this.numCtx = numCtx;
-    this.numPredict = numPredict;
-  }
+    this.baseUrl = baseUrl
+    this.model = model
+    this.temperature = temperature
+    this.numCtx = numCtx
+    this.numPredict = numPredict}
 
   async invoke(input: RunnableInvokeInput): Promise<RunnableInvokeOutput> {
     // Adjusted signature for Runnable
-    const prompt = typeof input === 'string' ? input : input.prompt;
+    const prompt = typeof input === 'string' ? input : input.prompt
     if (!prompt) {
       throw new Error('Prompt is required for OllamaHTTPLLM invoke.');
     }
@@ -1259,11 +1187,9 @@ class OllamaHTTPLLMInternal {
           options: {
             temperature: this.temperature,
             num_ctx: this.numCtx,
-            num_predict: this.numPredict,
-          },
+            num_predict: this.numPredict},
           stream: false, // For simplicity, not handling streaming here
-        }),
-      });
+        })});
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -1274,59 +1200,50 @@ class OllamaHTTPLLMInternal {
       if (!data.response) {
         throw new Error('Invalid generation response from Ollama API');
       }
-      return data.response;
-    } catch (error) {
+      return data.response} catch (error) {
       console.error('Error generating Ollama response:', error);
-      throw error;
-    }
+      throw error}
   }
 }
 
 // Minimal mock for RecursiveCharacterTextSplitter to satisfy type checking
 // In a real application, this would be imported from 'langchain/text_splitter'
 class RecursiveCharacterTextSplitter {
-  private chunkSize: number;
-  private chunkOverlap: number;
+  private chunkSize: number
+  private chunkOverlap: number
   private separators: string[];
 
   constructor(options: { chunkSize: number; chunkOverlap: number; separators: string[] }) {
-    this.chunkSize = options.chunkSize;
-    this.chunkOverlap = options.chunkOverlap;
-    this.separators = options.separators;
-  }
+    this.chunkSize = options.chunkSize
+    this.chunkOverlap = options.chunkOverlap
+    this.separators = options.separators}
 
   async splitText(text: string): Promise<string[]> {
     const chunks: string[] = [];
-    let currentText = text;
-
+    let currentText = text
     while (currentText.length > 0) {
       if (currentText.length <= this.chunkSize) {
         chunks.push(currentText);
-        break;
-      }
+        break}
 
       const chunk = currentText.substring(0, this.chunkSize); // Fix: Changed 'let' to 'const'
-      let splitIndex = -1;
-
+      let splitIndex = -1
       // Try to split at a separator within the chunk or overlap area
       for (const separator of this.separators) {
         const lastSeparatorIndex = chunk.lastIndexOf(separator);
         if (lastSeparatorIndex !== -1 && lastSeparatorIndex > this.chunkSize - this.chunkOverlap) {
-          splitIndex = lastSeparatorIndex + separator.length;
-          break;
-        }
+          splitIndex = lastSeparatorIndex + separator.length
+          break}
       }
 
       if (splitIndex === -1) {
         // No good separator found, just split at chunkSize
-        splitIndex = this.chunkSize;
-      }
+        splitIndex = this.chunkSize}
 
       chunks.push(currentText.substring(0, splitIndex));
       currentText = currentText.substring(splitIndex - this.chunkOverlap); // Apply overlap
     }
-    return chunks;
-  }
+    return chunks}
 }
 
 // Export singleton instance with environment configuration
@@ -1340,3 +1257,4 @@ export const legalRAG = new LegalRAGService({
   ollamaNumCtx: 2048, // Default context window
   ollamaNumPredict: 128, // Default number of tokens to predict
 });
+

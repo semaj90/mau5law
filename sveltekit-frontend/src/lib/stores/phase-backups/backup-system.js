@@ -1,4 +1,4 @@
-import path from "path";
+﻿import path from "path";
 import fs from "fs";
 /**
  * COMPREHENSIVE PHASE BACKUP & ERROR FIX SYSTEM
@@ -12,49 +12,49 @@ import fs from "fs";
                               PHASE EVOLUTION TIMELINE
 ================================================================================
 PHASE 1: Foundation Setup (COMPLETE)
-├─ Basic SvelteKit app structure
-├─ Initial stores (auth, cases, evidence)
-├─ Simple CRUD operations
-├─ Database schema setup
-└─ Core UI components
+â”œâ”€ Basic SvelteKit app structure
+â”œâ”€ Initial stores (auth, cases, evidence)
+â”œâ”€ Simple CRUD operations
+â”œâ”€ Database schema setup
+â””â”€ Core UI components
 PHASE 2: Enhanced UI/UX with AI Foundations (COMPLETE WITH FIXES)
-├─ Bits UI v2 integration (Melt UI removed)
-├─ Svelte 5 runes + SvelteKit 2 routes
-├─ Drizzle-ORM notes added
-├─ Docker Desktop URLs used for local docker service fallbacks
-├─ WebTransport (if available) or WebSocket fallback; QUIC support noted
+â”œâ”€ Bits UI v2 integration (Melt UI removed)
+â”œâ”€ Svelte 5 runes + SvelteKit 2 routes
+â”œâ”€ Drizzle-ORM notes added
+â”œâ”€ Docker Desktop URLs used for local docker service fallbacks
+â”œâ”€ WebTransport (if available) or WebSocket fallback; QUIC support noted
 ================================================================================
                               CRITICAL ERRORS FIXED
 ================================================================================
 1. POWERSHELL SYNTAX ERRORS:
-   ├─ Issue: Ampersand (&) character not allowed
-   ├─ Issue: Unexpected token '}' in expression
-   ├─ Issue: Missing arguments in parameter lists
-   ├─ Issue: JavaScript syntax mixed with PowerShell
-   └─ Fix: Complete PowerShell rewrite with proper syntax
+   â”œâ”€ Issue: Ampersand (&) character not allowed
+   â”œâ”€ Issue: Unexpected token '}' in expression
+   â”œâ”€ Issue: Missing arguments in parameter lists
+   â”œâ”€ Issue: JavaScript syntax mixed with PowerShell
+   â””â”€ Fix: Complete PowerShell rewrite with proper syntax
 2. IMPORT DEPENDENCY ERRORS:
-   ├─ Issue: evidence-unified.ts imports non-existent "./cases"
-   ├─ Issue: Circular dependency potential
-   ├─ Issue: No fallback for missing modules
-   └─ Fix: Safe imports with try/catch and fallbacks
+   â”œâ”€ Issue: evidence-unified.ts imports non-existent "./cases"
+   â”œâ”€ Issue: Circular dependency potential
+   â”œâ”€ Issue: No fallback for missing modules
+   â””â”€ Fix: Safe imports with try/catch and fallbacks
 3. SSR COMPATIBILITY ERRORS:
-   ├─ Issue: Browser-only code in server environment
-   ├─ Issue: localStorage usage without guards
-   ├─ Issue: WebSocket creation in SSR
-   └─ Fix: Proper browser detection and guards
+   â”œâ”€ Issue: Browser-only code in server environment
+   â”œâ”€ Issue: localStorage usage without guards
+   â”œâ”€ Issue: WebSocket creation in SSR
+   â””â”€ Fix: Proper browser detection and guards
 4. WEBSOCKET CONNECTION ERRORS:
-   ├─ Issue: Hardcoded localhost URLs
-   ├─ Issue: No fallback for connection failures
-   ├─ Issue: Poor reconnection strategy
-   └─ Fix: Dynamic URLs and exponential backoff
+   â”œâ”€ Issue: Hardcoded localhost URLs
+   â”œâ”€ Issue: No fallback for connection failures
+   â”œâ”€ Issue: Poor reconnection strategy
+   â””â”€ Fix: Dynamic URLs and exponential backoff
 ================================================================================
                               BACKUP STRATEGY
 ================================================================================
 All original files backed up to:
-├─ phase-backups/original/ (pristine Phase 1 files)
-├─ phase-backups/phase2/ (Phase 2 before fixes)
-├─ phase-backups/phase2-fixed/ (Phase 2 after fixes)
-└─ phase-backups/migration-logs/ (change documentation)
+â”œâ”€ phase-backups/original/ (pristine Phase 1 files)
+â”œâ”€ phase-backups/phase2/ (Phase 2 before fixes)
+â”œâ”€ phase-backups/phase2-fixed/ (Phase 2 after fixes)
+â””â”€ phase-backups/migration-logs/ (change documentation)
 */
 class PhaseBackupSystem {
   constructor() {
@@ -86,12 +86,12 @@ ${this.listStoreFiles()}
 ${this.getPhaseContext(phase)}
 `;
     fs.writeFileSync(backupFile, backupDoc);
-    console.log(`✅ Created ${phase} backup documentation`);
+    console.log(`âœ… Created ${phase} backup documentation`);
   }
   getPhaseStatus(phase) {
     const statuses = {
-      original: "✅ Foundation complete", phase2: "🔧 Enhanced UI with conflicts", "phase2-fixed": "✅ Enhanced UI conflicts resolved"};
-    return statuses[phase] || "📋 In progress";
+      original: "âœ… Foundation complete", phase2: "ðŸ”§ Enhanced UI with conflicts", "phase2-fixed": "âœ… Enhanced UI conflicts resolved"};
+    return statuses[phase] || "ðŸ“‹ In progress";
   }
   getPhaseContext(phase) {
     const contexts = {
@@ -126,8 +126,7 @@ Phase 2 conflicts resolved:
         .filter(f => !f.includes('backup'))
         .map(f => `- ${f}`)
         .join('\n');
-      return files;
-    } catch (error) {
+      return files} catch (error) {
       return "- Error reading directory";
     }
   }
@@ -146,16 +145,14 @@ Phase 2 conflicts resolved:
  */
 ${content}`;
       fs.writeFileSync(backupPath, backupContent);
-      console.log(`📦 Backed up ${filename} to ${phase}/`);
-      return true;
-    }
-    return false;
-  }
+      console.log(`ðŸ“¦ Backed up ${filename} to ${phase}/`);
+      return true}
+    return false}
   createMigrationLog(changes) {
     const logFile = path.join(this.backupPath, 'migration-logs', `migration-${this.timestamp}.md`);
     const logContent = `# Migration Log
 **Date:** ${new Date().toISOString()}
-**Status:** Phase 2 → Phase 3 Ready
+**Status:** Phase 2 â†’ Phase 3 Ready
 ## Changes Applied:
 ${changes.map((change) => `- ${change}`).join("\n")}
 ## Error Fixes:
@@ -165,9 +162,9 @@ ${changes.map((change) => `- ${change}`).join("\n")}
 - WebSocket connection improved
 - Store unification completed
 ## Phase Readiness:
-- ✅ Phase 1: Foundation stable
-- ✅ Phase 2: Enhanced UI complete
-- 🎯 Phase 3: AI Core ready to implement
+- âœ… Phase 1: Foundation stable
+- âœ… Phase 2: Enhanced UI complete
+- ðŸŽ¯ Phase 3: AI Core ready to implement
 ## Next Steps:
 1. Implement Ollama service integration
 2. Set up vector embedding pipeline
@@ -176,9 +173,9 @@ ${changes.map((change) => `- ${change}`).join("\n")}
 5. Integrate with evidence system
 `;
     fs.writeFileSync(logFile, logContent);
-    console.log(`📝 Created migration log`);
+    console.log(`ðŸ“ Created migration log`);
   }
 }
 // Export for use
-export default PhaseBackupSystem;
-console.log("📦 Phase Backup System Ready");
+export default PhaseBackupSystem
+console.log("ðŸ“¦ Phase Backup System Ready");

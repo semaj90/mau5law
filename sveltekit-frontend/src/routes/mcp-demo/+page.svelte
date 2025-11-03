@@ -1,4 +1,4 @@
-<svelte:head>
+﻿<svelte:head>
   <title>MCP + Gemma Demo</title>
   <meta name="description" content="Demo page for querying MCP context7, via, Gemma3-Legal" />
 </svelte:head>
@@ -103,7 +103,7 @@
       onclick={fetchMcp}
       disabled={loading}
     >
-      {loading ? 'Running…' : 'Invoke MCP via Gemma'}
+      {loading ? 'Runningâ€¦' : 'Invoke MCP via Gemma'}
     </button>
   </div>
 
@@ -168,7 +168,7 @@
                 <div class="grid gap-2">
                   {#each Array.isArray(result.record.cores) ? result.record.cores : [] as core}
                     <div class="rounded border border-gray-200 bg-white p-2">
-                      <p><strong>{core.id}</strong> — {core.role}</p>
+                      <p><strong>{core.id}</strong> â€” {core.role}</p>
                       <p>Status: <span class="font-semibold">{core.status}</span></p>
                       {#if core.host}
                         <p>Host: {core.host}</p>
@@ -187,3 +187,4 @@
     </div>
   {/if}
 </section>
+

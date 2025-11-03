@@ -1,17 +1,16 @@
-<!-- Case Timeline Component for Legal, AI, App -->
+﻿<!-- Case Timeline Component for Legal, AI, App -->
 <script context="module" lang="ts">
 import type { Case } from '$lib/types';
   // Move interface here so modifiers are allowed
   export interface TimelineEvent {
-    id: string;
-    date: Date;
-    title: string;
-    description?: string;
+    id: string
+    date: Date, title: string
+    description?: string
     type: 'filing' | 'hearing' | 'evidence' | 'meeting' | 'deadline' | 'decision' | 'milestone';
    , status: 'completed' | 'pending' | 'overdue' | 'cancelled';
     participants?: string[];
     documents?: string[];
-    location?: string;
+    location?: string
     priority?: 'low' | 'medium' | 'high' | 'critical';
     metadata?: { [key: string]: any };
   }
@@ -35,7 +34,6 @@ import type { Case } from '$lib/types';
   const { className } = $props<{ className: string }>()
   // Sort events by date (reactive)
   $effect(() => {
-
     sortedEvents = (() => {
     const now = new Date();
 
@@ -52,14 +50,14 @@ import type { Case } from '$lib/types';
     deadline: { icon: AlertCircle, color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20' },
     decision: { icon: CheckCircle, color: 'text-yorha-primary', bg: 'bg-yorha-primary/10', border: 'border-yorha-primary/20' },
     milestone: { icon: Calendar, color: 'text-yorha-accent', bg: 'bg-yorha-accent/10', border: 'border-yorha-accent/20' }
-  } as const;
+  } as const
   // Status configurations (use className to match template usage)
   const statusConfig = {
     completed: { label: 'Completed', className: 'bg-green-500/20 text-green-400 border-green-500/30' },
     pending: { label: 'Pending', className: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
     overdue: { label: 'Overdue', className: 'bg-red-500/20 text-red-400 border-red-500/30' },
     cancelled: { label: 'Cancelled', className: 'bg-gray-500/20 text-gray-400 border-gray-500/30' }
-  } as const;
+  } as const
   function formatDate(date: Date): string {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -89,9 +87,9 @@ import type { Case } from '$lib/types';
       <p class="text-sm text-yorha-text-secondary">
         {caseName}
         {#if caseId}
-          <span class="mx-1 text-xs">• #{caseId.slice(-8)}</span>
+          <span class="mx-1 text-xs">â€¢ #{caseId.slice(-8)}</span>
         {/if}
-        • {sortedEvents.length} events
+        â€¢ {sortedEvents.length} events
       </p>
     </div>
     {#if onAddEvent && interactive}
@@ -130,8 +128,8 @@ import type { Case } from '$lib/types';
             aria-label={"Open event: " + (event.title ?? 'event')}
             onclick={() => interactive && onEventClick?.(event)}
             onkeydown={(e: KeyboardEvent) => {
-              if (!interactive) return;
-              const key = (e as KeyboardEvent).key;
+              if (!interactive) return
+              const key = (e as KeyboardEvent).key
               if (key === 'Enter' || key === ' ' || key === 'Spacebar') {
                 e.preventDefault(); // space should not scroll
                 onEventClick?.(event);
@@ -172,7 +170,7 @@ import type { Case } from '$lib/types';
                           isToday(event.date) && 'text-yorha-accent font-medium'
                         )}
                       >
-                        {formatDate(event.date)} • {formatTime(event.date)}
+                        {formatDate(event.date)} â€¢ {formatTime(event.date)}
                         {#if isToday(event.date)}
                           <span class="ml-1">TODAY</span>
                         {/if}
@@ -244,3 +242,4 @@ import type { Case } from '$lib/types';
   }
 </style>
       <!-- Timeline, Line -->
+

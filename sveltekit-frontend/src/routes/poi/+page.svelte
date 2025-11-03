@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -9,8 +9,7 @@ import type { Case } from '$lib/types';
   let viewMode = $state<'grid' | 'list' >('grid');
   let showFilters = $state<boolean>(false);
   // Mock persons data - replace with real API call
-  let persons = $state([
-    {
+  let persons = $state([ {
       id: '1',
       name: 'John Smith',
       alias: 'JS',
@@ -19,8 +18,7 @@ import type { Case } from '$lib/types';
       status: 'Person of Interest',
       caseIds: ['case-001', 'case-003'],
       lastUpdated: new Date().toISOString()
-    },
-    {
+    }, {
       id: '2',
       name: 'Jane Doe',
       alias: 'JD',
@@ -200,7 +198,7 @@ Clear Filters
               <div>
                 <h3 class="font-semibold text-gray-900">{person.name}</h3>
                 <p class="text-sm text-gray-500">
-                  {person.status} • {new Date(person.dateOfBirth).toLocaleDateString()}
+                  {person.status} â€¢ {new Date(person.dateOfBirth).toLocaleDateString()}
                 </p>
               </div>
             </div>

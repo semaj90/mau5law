@@ -1,9 +1,8 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { browser } from '$app/environment';
   interface Route {
-    name: string;
-   , href: string;
-  }
+    name: string
+   , href: string}
   // Svelte, 5 runes with static nav items for production
   let navItems = $state<Route[]>([
     { name: 'Home', href: '/' },
@@ -12,14 +11,12 @@
     // Use public-facing URLs without SvelteKit route-group parentheses
     { name: 'AI Chat', href: '/ai/chat' },
     { name: 'RAG Search', href: '/ai/rag' },
-    { name: 'YoRHa', href: '/yorha' },
-  ]);
+    { name: 'YoRHa', href: '/yorha' }]);
   let searchOpen = $state<boolean>(false);
   let searchQuery = $state<string>('');
-  let searchInput: HTMLInputElement | null = null;
+  let searchInput: HTMLInputElement | null = null
   function toggleSearch() {
-    searchOpen = !searchOpen;
-  }
+    searchOpen = !searchOpen}
   function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape' && searchOpen) {
       toggleSearch();
@@ -94,14 +91,11 @@
   {/if}
 <style lang="postcss">
   nav {
-    @apply relative;
-  }
+    @apply relative}
   ul {
-    @apply list-none m-0 p-0;
-  }
+    @apply list-none m-0 p-0}
   li {
-    @apply inline-block;
-  }
+    @apply inline-block}
   .search-modal-overlay {
     /* @apply fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-start justify-center pt-24 z-50; */
   }
@@ -110,13 +104,11 @@
   }
   @media (max-width: 768px) {
     nav > ul:first-of-type {
-      @apply flex flex-col gap-2 w-full;
-    }
+      @apply flex flex-col gap-2 w-full}
     li {
-      @apply w-full;
-    }
+      @apply w-full}
     .nes-container > ul > li > a {
-      @apply w-full;
-    }
+      @apply w-full}
   }
 </style>
+

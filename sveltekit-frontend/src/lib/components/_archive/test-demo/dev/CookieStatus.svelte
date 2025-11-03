@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { browser } from '$app/environment';
   let cookiesEnabled = $state<boolean>(false);
@@ -7,7 +7,7 @@
   let devMode = $state<boolean>(false);
   let sessionInfo = $state<string>('');
   $effect(() => {
-    if (!browser) return;
+    if (!browser) return
     devMode = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     // Test cookie support
     try {
@@ -16,24 +16,21 @@
       // remove test cookie
       document.cookie = 'test=; expires=Thu, 01 Jan, 1970 00:00:00 GMT; path=/';
     } catch (e) {
-      cookiesEnabled = false;
-    }
+      cookiesEnabled = false}
     // Test localStorage support
     try {
       localStorage.setItem('test', '1');
       localStorageEnabled = localStorage.getItem('test') === '1';
       localStorage.removeItem('test');
     } catch (e) {
-      localStorageEnabled = false;
-    }
+      localStorageEnabled = false}
     // Test sessionStorage support
     try {
       sessionStorage.setItem('test', '1');
       sessionStorageEnabled = sessionStorage.getItem('test') === '1';
       sessionStorage.removeItem('test');
     } catch (e) {
-      sessionStorageEnabled = false;
-    }
+      sessionStorageEnabled = false}
     // Check for existing session (safely parse cookie: string)
     const sessionCookie = document.cookie
       .split(';')
@@ -47,8 +44,7 @@
         (() => {
           const id = `dev_${Date.now()}_${Math.random().toString().substr(2, 9)}`;
           localStorage.setItem('dev_session', id);
-          return id;
-        })();
+          return id})();
       sessionInfo = `Dev session: ${devSession.substring(0, 16)}...`;
     } else {
       sessionInfo = 'No session available';
@@ -58,24 +54,24 @@
 
 {#if devMode}
   <div class="fixed bottom-4 right-4 bg-gray-900 text-white text-xs p-3 rounded-lg shadow-lg max-w-xs">
-    <div class="font-bold mb-2 flex">🧪 Development Session Status</div>
+    <div class="font-bold mb-2 flex">ðŸ§ª Development Session Status</div>
     <div class="space-y-1">
       <div class="flex">
         <span>Cookies:</span>
         <span class={cookiesEnabled ? 'text-green-400' : 'text-red-400'}>
-          {cookiesEnabled ? '✓' : '✗'}
+          {cookiesEnabled ? 'âœ“' : 'âœ—'}
         </span>
       </div>
       <div class="flex">
         <span>localStorage:</span>
         <span class={localStorageEnabled ? 'text-green-400' : 'text-red-400'}>
-          {localStorageEnabled ? '✓' : '✗'}
+          {localStorageEnabled ? 'âœ“' : 'âœ—'}
         </span>
       </div>
       <div class="flex">
         <span>sessionStorage:</span>
         <span class={sessionStorageEnabled ? 'text-green-400' : 'text-red-400'}>
-          {sessionStorageEnabled ? '✓' : '✗'}
+          {sessionStorageEnabled ? 'âœ“' : 'âœ—'}
         </span>
       </div>
       <hr class="border-gray-600" />
@@ -83,11 +79,12 @@
         {sessionInfo}
       </div>
       {#if !cookiesEnabled && (localStorageEnabled || sessionStorageEnabled)}
-        <div class="text-yellow-400 text-xs">⚠️ Using storage fallback</div>
+        <div class="text-yellow-400 text-xs">âš ï¸ Using storage fallback</div>
       {/if}
       {#if !cookiesEnabled && !localStorageEnabled && !sessionStorageEnabled}
-        <div class="text-red-400 text-xs">❌ No session storage available</div>
+        <div class="text-red-400 text-xs">âŒ No session storage available</div>
       {/if}
     </div>
   </div>
 {/if}
+

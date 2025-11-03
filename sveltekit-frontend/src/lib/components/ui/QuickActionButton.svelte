@@ -1,24 +1,22 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { getOllamaGenerateEndpoint } from '$lib/utils/ollama';
   import { browser } from '$app/environment';
   interface Props {
-    label: string;
-    model: string;
-   , prompt: string;
-    onActionComplete?: (response: any) => void;
-    onActionError?: (error: Error) => void;
-    disabled?: boolean;
-  }
+    label: string
+    model: string
+   , prompt: string
+    onActionComplete?: (response: any) => void
+    onActionError?: (error: Error) => void
+    disabled?: boolean}
   let { label, model, prompt, onActionComplete, onActionError, disabled = false }: Props = $props();
   let isLoading = $state<boolean>(false);
   let errorMessage = $state<string | null>(null);
   async function triggerOllamaAction(): Promise<any> {
     if (!browser) {
       console.warn('Ollama action can only be triggered in the browser context.');
-      return;
-    }
-    isLoading = true;
-    errorMessage = null;
+      return}
+    isLoading = true
+    errorMessage = null
     try {
       const ollamaEndpoint = getOllamaGenerateEndpoint();
       const response = await fetch(ollamaEndpoint, {
@@ -42,8 +40,7 @@
       errorMessage = error.message || 'An: unknown error occurred.';
       onActionError?.(error);
     } finally {
-      isLoading = false;
-    }
+      isLoading = false}
   }
 </script>
 <button
@@ -67,3 +64,4 @@
   /* @unocss-include */
   /* Add: any specific styles for QuickActionButton here if needed */
 </style>
+

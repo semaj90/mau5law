@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -29,11 +29,11 @@ import type { Case } from '$lib/types';
   let errorMessage = $state<string>('');
   let messagesContainer = $state<HTMLElement | undefined>();
   let inputElement = $state<HTMLTextAreaElement | undefined>();
-  let inactivityTimer: ReturnType<typeof setTimeout> | undefined;
+  let inactivityTimer: ReturnType<typeof setTimeout> | undefined
   let thinkingStyleEnabled = $state<boolean>(false);
   let analysisMode = $state<boolean>(false);
   let lastAnalysisResult = $state<any>(null);
-  const IDLE_TIMEOUT = 60_000;
+  const IDLE_TIMEOUT = 60_000
   function handleUserActivity() {
     if (inactivityTimer) clearTimeout(inactivityTimer);
     chatActions.updateActivity();
@@ -47,7 +47,7 @@ import type { Case } from '$lib/types';
     }
   }
   async function sendMessage(): Promise<any> {
-    if (!messageInput || !messageInput.trim()) return;
+    if (!messageInput || !messageInput.trim()) return
     const userMessage = messageInput.trim();
     messageInput = '';
     handleUserActivity();
@@ -59,7 +59,7 @@ import type { Case } from '$lib/types';
         userMessage.toLowerCase().includes('analyze') ||
         userMessage.toLowerCase().includes('evidence') ||
         userMessage.toLowerCase().includes('case');
-      let response: Response;
+      let response: Response
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         const payload = {
           text: userMessage,
@@ -96,8 +96,8 @@ import type { Case } from '$lib/types';
       }
       // analysis response
       if (apiResponse.analysis) {
-        lastAnalysisResult = apiResponse.analysis;
-        analysisMode = true;
+        lastAnalysisResult = apiResponse.analysis
+        analysisMode = true
         const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata || {});
         chatActions.addMessage(content, 'assistant', {
           ...(apiResponse.metadata || {}),
@@ -129,32 +129,32 @@ import type { Case } from '$lib/types';
     if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
     if (analysis.thinking && thinkingStyleEnabled) {
-      responseText += '## 🧠 Reasoning Process\n\n';
+      responseText += '## ðŸ§  Reasoning Process\n\n';
       responseText += '*Showing step-by-step AI reasoning:*\n\n';
       responseText += String(analysis.thinking).replace(/\n/g, '\n\n') + '\n\n';
       responseText += '---\n\n';
     }
-    responseText += '## 📋 Analysis Results\n\n';
+    responseText += '## ðŸ“‹ Analysis Results\n\n';
     const analysisData = analysis.analysis || analysis; // tolerate shapes
     if (analysisData) {
       if (analysisData.key_findings) {
         responseText += '**Key Findings:**\n';
         (analysisData.key_findings || []).forEach((finding: string) => {
-          responseText += `• ${finding}\n`;
+          responseText += `â€¢ ${finding}\n`;
         });
         responseText += '\n';
       }
       if (analysisData.legal_implications) {
         responseText += '**Legal Implications:**\n';
         (analysisData.legal_implications || []).forEach((implication: string) => {
-          responseText += `• ${implication}\n`;
+          responseText += `â€¢ ${implication}\n`;
         });
         responseText += '\n';
       }
       if (analysisData.recommendations) {
         responseText += '**Recommendations:**\n';
         (analysisData.recommendations || []).forEach((rec: string) => {
-          responseText += `• ${rec}\n`;
+          responseText += `â€¢ ${rec}\n`;
         });
         responseText += '\n';
       }
@@ -162,13 +162,13 @@ import type { Case } from '$lib/types';
         responseText += analysisData.raw_analysis + '\n\n';
       }
     }
-    responseText += '## 📊 Analysis Metadata\n\n';
+    responseText += '## ðŸ“Š Analysis Metadata\n\n';
     try {
       const confidence = typeof analysis.confidence === 'number' ? Math.round(analysis.confidence * 100) : 'N/A';
-      responseText += `• **Confidence:** ${confidence}%\n`;
-      responseText += `• **Model:** ${metadata?.model_used || metadata?.model || 'unknown'}\n`;
-      responseText += `• **Processing Time:** ${metadata?.processing_time ?? 'N/A'}ms\n`;
-      responseText += `• **Thinking, Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
+      responseText += `â€¢ **Confidence:** ${confidence}%\n`;
+      responseText += `â€¢ **Model:** ${metadata?.model_used || metadata?.model || 'unknown'}\n`;
+      responseText += `â€¢ **Processing Time:** ${metadata?.processing_time ?? 'N/A'}ms\n`;
+      responseText += `â€¢ **Thinking, Style:** ${metadata?.thinking_enabled ? 'Enabled' : 'Disabled'}\n`;
       if (analysis.reasoning_steps && analysis.reasoning_steps.length > 0) {
         responseText += '\n**Reasoning Steps:**\n';
         analysis.reasoning_steps.forEach((step: string, index: number) => {
@@ -178,10 +178,9 @@ import type { Case } from '$lib/types';
     } catch (e) {
       // ignore metadata formatting errors
     }
-    return responseText;
-  }
+    return responseText}
   async function handleProactiveResponse(): Promise<any> {
-    if (!$showProactivePrompt || !$currentConversation) return;
+    if (!$showProactivePrompt || !$currentConversation) return
     try {
       chatActions.setLoading(true);
       chatActions.setTyping(true);
@@ -220,17 +219,16 @@ import type { Case } from '$lib/types';
   function handleThinkingToggle(event: CustomEvent) {
     // Many components already bind enabled; but handle external toggle events too
     const enabled = event?.detail?.enabled ?? Boolean(event?.detail);
-    thinkingStyleEnabled = enabled;
+    thinkingStyleEnabled = enabled
     const message = thinkingStyleEnabled
-      ? '🧠 Thinking Style enabled. AI will now show detailed reasoning process.'
-      : '⚡ Quick Mode enabled. AI will provide concise responses.';
+      ? 'ðŸ§  Thinking Style enabled. AI will now show detailed reasoning process.'
+      : 'âš¡ Quick Mode enabled. AI will provide concise responses.';
     notifications.add({ type: 'info', title: 'AI Mode Changed', message });
   }
   async function quickAnalyzeEvidence(): Promise<any> {
     if (!caseId) {
       notifications.add({ type: 'warning', title: 'No Case Selected', message: 'Please select a case to analyze evidence.' });
-      return;
-    }
+      return}
     try {
       const analysis = await ThinkingProcessor.analyzeCase(caseId, {
         analysisType: 'reasoning',
@@ -251,8 +249,7 @@ import type { Case } from '$lib/types';
   }
   function scrollToBottom() {
     if (messagesContainer) {
-      (messagesContainer as HTMLElement).scrollTop = (messagesContainer as HTMLElement).scrollHeight;
-    }
+      (messagesContainer as HTMLElement).scrollTop = (messagesContainer as HTMLElement).scrollHeight}
   }
   function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter' && !event.shiftKey) {
@@ -310,13 +307,13 @@ import type { Case } from '$lib/types';
             onclick={quickAnalyzeEvidence}
             disabled={$isLoading}
           >
-            🔍 Quick Analysis
+            ðŸ” Quick Analysis
           </Button>
         {/if}
         <div class="mx-auto px-4">
           {#if lastAnalysisResult}
             <span class="mx-auto px-4">
-              📊 Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
+              ðŸ“Š Confidence: {Math.round(lastAnalysisResult.confidence * 100)}%
             </span>
           {/if}
           <div class="mx-auto px-4">
@@ -345,13 +342,13 @@ import type { Case } from '$lib/types';
         {#if thinkingStyleEnabled}
           <div class="mx-auto px-4">
             <p class="mx-auto px-4">
-              🧠 <strong>Thinking Style Active:</strong> I'll show my reasoning process for deeper analysis.'
+              ðŸ§  <strong>Thinking Style Active:</strong> I'll show my reasoning process for deeper analysis.'
             </p>
           </div>
         {:else}
           <div class="mx-auto px-4">
             <p class="mx-auto px-4">
-              ⚡ <strong>Quick Mode Active:</strong> I'll provide fast, concise responses.'
+              âš¡ <strong>Quick Mode Active:</strong> I'll provide fast, concise responses.'
             </p>
           {/if}
       </div>
@@ -429,15 +426,15 @@ import type { Case } from '$lib/types';
           <span>{$currentConversation?.messages?.length || 0} messages</span>
         {/if}
         {#if caseId}
-          <span>• case {caseId}</span>
+          <span>â€¢ case {caseId}</span>
         {/if}
         {#if analysisMode}
-          <span>• Analysis Mode</span>
+          <span>â€¢ Analysis Mode</span>
         {/if}
       </div>
       <div class="mx-auto px-4">
         <span class="mx-auto px-4">
-          {thinkingStyleEnabled ? "🧠 Thinking" : "⚡ Quick"}
+          {thinkingStyleEnabled ? "ðŸ§  Thinking" : "âš¡ Quick"}
         </span>
       </div>
     </div>
@@ -445,32 +442,25 @@ import type { Case } from '$lib/types';
 </div>
 <style>
   :global(.message-content p) {
-    margin-bottom: 0.5rem;
-  }
+    margin-bottom: 0.5rem}
   :global(.message-content, p:last-child) {
-    margin-bottom: 0;
-  }
+    margin-bottom: 0}
   :global(.message-content ul, .message-content ol) {
-    margin: 0.5rem 0;
-    padding-left: 1.5rem;
-  }
+    margin: 0.5rem 0
+    padding-left: 1.5rem}
   :global(.message-content code) {
     background: rgba(0, 0, 0, 0.1);
-    padding: 0.125rem 0.25rem;
-    border-radius: 0.25rem;
-    font-family: "Courier New", monospace;
-  }
+    padding: 0.125rem 0.25rem
+    border-radius: 0.25rem
+    font-family: "Courier New", monospace}
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600;
-   , margin: 1rem, 0 0.5rem 0;
-  }
+    font-weight: 600
+   , margin: 1rem, 0 0.5rem 0}
   :global(.message-content h1) {
-    font-size: 1.25rem;
-  }
+    font-size: 1.25rem}
   :global(.message-content h2) {
-    font-size: 1.125rem;
-  }
+    font-size: 1.125rem}
   :global(.message-content h3) {
-    font-size: 1rem;
-  }
+    font-size: 1rem}
 </style>
+

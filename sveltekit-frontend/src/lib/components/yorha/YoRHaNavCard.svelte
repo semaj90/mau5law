@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared;
+﻿<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte code:, Identifier: 'string' has already, been, declared -->
 <script lang="ts">
@@ -8,10 +8,10 @@ https://svelte.dev/e/js_parse_error -->
   const { title } = $props<{ title: string }>()
   export let description: string = '';
   const { path } = $props<{ path: string }>()
-  export let icon typeof SvelteComponent | null = null;
+  export let icon typeof SvelteComponent | null = null
   const { ariaLabel } = $props<{ ariaLabel: string }>()
   // ensure ariaLabel defaults to title if not provided
-  $: if (!ariaLabel) ariaLabel = title;
+  $: if (!ariaLabel) ariaLabel = title
   // Svelte component constructor
   function handleNavigate() {
     if (path) goto(path);
@@ -47,3 +47,4 @@ https://svelte.dev/e/js_parse_error -->
 </div>
 <!-- Styling inherits from parent page; only minimal overrides, if, needed -->
 <style></style>
+

@@ -1,4 +1,4 @@
-<!-- Vector Pipeline, Demo, Component -->
+﻿<!-- Vector Pipeline, Demo, Component -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { vectorPipelineState, vectorPipelineActions, type VectorPipelineJob } from '$lib/machines/vector-pipeline-machine';
@@ -10,7 +10,7 @@
     CardContent
    from "$lib/components/ui/enhanced-bits.svelte";
   // Using Svelte, 4 store pattern instead of conflicting $state runes
-  let machineState = $vectorPipelineStat;
+  let machineState = $vectorPipelineStat
   // Sample job data
   const sampleJobs: Array<Omit<VectorPipelineJob 'jobId' | 'status' | 'progress' | 'createdAt'> = [
     { ownerType: 'evidence', ownerId: 'evidence-001', event: 'upsert' },
@@ -50,7 +50,7 @@
     return status ? 'text-green-600' : 'text-red-600';
   }
   function getStatusIcon(status: boolean): string {
-    return status ? '✅' : '❌';
+    return status ? 'âœ…' : 'âŒ';
   }
 </script>
 
@@ -59,7 +59,7 @@
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary text-2xl">Vector Pipeline Demo</h3>
       <p class="text-gray-600">
-        XState machine orchestrating PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
+        XState machine orchestrating PostgreSQL â†’ Redis Streams â†’ Go microservice â†’ CUDA worker â†’ Qdrant
       </p>
     </div>
     <div class="yorha-panel-content">
@@ -305,3 +305,4 @@
     </div>
   </div>
 </div>
+

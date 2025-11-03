@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
@@ -11,25 +11,23 @@ Displays detailed integrity verification results with AI analysis
   import { CheckCircle, XCircle, AlertTriangle, Shield, Hash, Clock, Brain } from 'lucide-svelte';
   import { SvelteComponent } from 'svelte';
   // Ensure TypeScript sees a constructor/Component type for dynamic usage
-  const BadgeComponent = Badge as: unknown as typeof SvelteComponent;
+  const BadgeComponent = Badge as: unknown as typeof SvelteComponent
   // Types
   type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
   type VerificationResults = {
-    originalHash: string;
-    currentHash?: string;
-    hashMatch: boolean;
-    metadataIntact: boolean;
-    timestampValid: boolean;
-    digitalSignatureValid: boolean;
-    aiAnalysisScore: number;
-    riskAssessment?: string;
-  };
+    originalHash: string
+    currentHash?: string
+    hashMatch: boolean
+    metadataIntact: boolean
+    timestampValid: boolean
+    digitalSignatureValid: boolean
+    aiAnalysisScore: number
+    riskAssessment?: string};
   type AIAnalysis = {
-    authenticity: number;
-    completeness: number;
-    relevance: number;
-    riskLevel: RiskLevel;
-    recommendations: string[];
+    authenticity: number
+    completeness: number
+    relevance: number
+    riskLevel: RiskLevel, recommendations: string[];
    , flaggedAnomalies: string[];
   };
   // Exported props (clean, typed)
@@ -43,15 +41,14 @@ Displays detailed integrity verification results with AI analysis
   function getStatusIcon(status: string) {
     switch (status) {
       case, 'verified':
-        return CheckCircle;
+        return CheckCircle
       case, 'compromised':
-        return XCircle;
+        return XCircle
       case, 'requires-attention':
-        return AlertTriangle;
+        return AlertTriangle
       case, 'pending':
-        return Clock;
-      default: return Shield;
-    }
+        return Clock
+      default: return Shield}
   }
   function getStatusColor(status: string) {
     switch (status) {
@@ -80,8 +77,7 @@ Displays detailed integrity verification results with AI analysis
     }
   }
   function getVerificationIcon(passed: boolean) {
-    return passed ? CheckCircle : XCircle;
-  }
+    return passed ? CheckCircle : XCircle}
   function getVerificationColor(passed: boolean) {
     return passed ? 'text-green-600' : 'text-red-600';
   }
@@ -90,23 +86,21 @@ Displays detailed integrity verification results with AI analysis
     return `${hash.substring(0, 8)}...${hash.substring(hash.length - 8)}`;
   }
   function getOverallScore() {
-    if (!verificationResults && !aiAnalysis) return 0;
-    let score = 0;
-    let factors = 0;
+    if (!verificationResults && !aiAnalysis) return 0
+    let score = 0
+    let factors = 0
     if (verificationResults) {
-      score += verificationResults.hashMatch ? 25 : 0;
-      score += verificationResults.metadataIntact ? 15 : 0;
-      score += verificationResults.timestampValid ? 10 : 0;
-      score += verificationResults.digitalSignatureValid ? 10 : 0;
-      factors += 60;
-    }
+      score += verificationResults.hashMatch ? 25 : 0
+      score += verificationResults.metadataIntact ? 15 : 0
+      score += verificationResults.timestampValid ? 10 : 0
+      score += verificationResults.digitalSignatureValid ? 10 : 0
+      factors += 60}
     if (aiAnalysis) {
-      score += (aiAnalysis.authenticity ?? 0) * 15;
-      score += (aiAnalysis.completeness ?? 0) * 15;
-      score += (aiAnalysis.relevance ?? 0) * 10;
-      factors += 40;
-    }
-    if (factors === 0) return 0;
+      score += (aiAnalysis.authenticity ?? 0) * 15
+      score += (aiAnalysis.completeness ?? 0) * 15
+      score += (aiAnalysis.relevance ?? 0) * 10
+      factors += 40}
+    if (factors === 0) return 0
     return Math.round((score / factors) * 100);
   }
 </script>
@@ -330,16 +324,16 @@ Displays detailed integrity verification results with AI analysis
 </div>
 <style>
   .integrity-verification {
-    animation: fadeIn 0.5s ease-out;
-  }
+    animation: fadeIn 0.5s ease-out}
   @keyframes fadeIn {
     from {
-      opacity: 0;
+      opacity: 0
      , transform: translateY(10px);
     }
     to {
-      opacity: 1;
+      opacity: 1
      , transform: translateY(0);
     }
   }
 </style>
+

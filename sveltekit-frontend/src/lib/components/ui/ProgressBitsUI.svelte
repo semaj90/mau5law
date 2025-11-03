@@ -1,12 +1,11 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { Progress, as ProgressPrimitive } from 'bits-ui';
   interface Props {
-    value?: number;
-    max?: number;
+    value?: number
+    max?: number
     variant?: 'default' | 'success' | 'error' | 'warning' | 'yorha' | 'legal';
-    class?: string;
-    showPercentage?: boolean;
-  }
+    class?: string
+    showPercentage?: boolean}
   let { value = 0, max = 100, variant = 'default', class: className = '', showPercentage = false }: Props = $props();
   // reactive percentage using Svelte, 5 runes
   let percentage = $derived(Math.min(Math.max((value / (max || 1)) * 100, 0), 100));
@@ -50,12 +49,12 @@
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   }
-  .animate-shimmer { animation: shimmer 2s infinite; }
+  .animate-shimmer { animation: shimmer 2s infinite}
   /* minimal NES-like pattern for legal variant */
   .nes-progress.is-pattern::before {
     content: '';
-    position: absolute;, inset: 0;
+    position: absolute;, inset: 0
     background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.06) 10px, rgba(255,255,255,0.06) 20px);
-    pointer-events: none;
-  }
+    pointer-events: none}
 </style>
+

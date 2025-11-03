@@ -1,7 +1,7 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token;
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, token
 https: //svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke;
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
@@ -10,20 +10,19 @@ https://svelte.dev/e/js_parse_error -->
   import Masonry from 'masonry-layout';
   interface Props {
     items: any[];
-    columnWidth?: number;
-    gutter?: number;
-    itemSelector?: string;
-    containerClass?: string;
-    fitWidth?: boolean;
-    horizontalOrder?: boolean;
-    percentPosition?: boolean;
-    resize?: boolean;
-    initLayout?: boolean;
-    transitionDuration?: string;
-    dragDisabled?: boolean;
-    dropTargetStyle?: Record<string string> | undefined;
-    dropFromOthersDisabled?: boolean;
-  }
+    columnWidth?: number
+    gutter?: number
+    itemSelector?: string
+    containerClass?: string
+    fitWidth?: boolean
+    horizontalOrder?: boolean
+    percentPosition?: boolean
+    resize?: boolean
+    initLayout?: boolean
+    transitionDuration?: string
+    dragDisabled?: boolean
+    dropTargetStyle?: Record<string string> | undefined
+    dropFromOthersDisabled?: boolean}
   let {
     items = [],
     columnWidth = 300,
@@ -40,8 +39,8 @@ https://svelte.dev/e/js_parse_error -->
     dropTargetStyle = undefined,
     dropFromOthersDisabled = false
   }: Props = $props();
-  let container: HTMLElement;
-  let masonry: any;
+  let container: HTMLElement
+  let masonry: any
   let isInitialized = $state<boolean>(false);
   // Masonry configuration
   let masonryOptions = $derived({
@@ -60,8 +59,7 @@ https://svelte.dev/e/js_parse_error -->
     if (container) {
       const id = setTimeout(() => {
         masonry = new Masonry(container, masonryOptions);
-        isInitialized = true;
-      }, 100);
+        isInitialized = true}, 100);
       return () => clearTimeout(id);
     }
   });
@@ -80,10 +78,9 @@ https://svelte.dev/e/js_parse_error -->
   });
   // Handle drag and drop
   const handleDndConsider = (e: CustomEvent) => {
-    items = (e as CustomEvent).detail.item;
-  }
+    items = (e as CustomEvent).detail.item}
   const handleDndFinalize = (e: CustomEvent) => {
-    items = (e as CustomEvent).detail.item;
+    items = (e as CustomEvent).detail.item
     // Trigger layout update after reordering
     setTimeout(() => {
       masonry?.layout();
@@ -92,7 +89,7 @@ https://svelte.dev/e/js_parse_error -->
   // Auto-resize functionality
   let resizeTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
   const handleResize = () => {
-    if (!resize || !masonry) return;
+    if (!resize || !masonry) return
     if (resizeTimeout) clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
       masonry?.layout();
@@ -159,41 +156,34 @@ https://svelte.dev/e/js_parse_error -->
 }}
   /* Drag and drop styling */
   :global(.masonry-item.drag-disabled) {
-    cursor: default;
-  }
+    cursor: default}
   :global(.masonry-item:not(.drag-disabled)) {
-    cursor: grab;
-}
+    cursor: grab}
   :global(.masonry-item:not(.drag-disabled):active) {
-    cursor: grabbing;
-}
+    cursor: grabbing}
   :global(.masonry-item.drag-shadow) {
-    opacity: 0.5;
+    opacity: 0.5
    , transform: scale(0.95);
   }
   :global(.masonry-item.drag-ghost) {
-    opacity: 0.3;
+    opacity: 0.3
    , transform: rotate(5deg);
   }
   /* Loading state */
     .masonry-grid:empty::before { content: 'Loading...',
-    display: block;
-    text-align: center;
+    display: block
+    text-align: center
    , color: var(--pico-muted-color, #6b7280);
-    font-style: italic;
-   , padding: 2rem;
-}
+    font-style: italic
+   , padding: 2rem}
   /* Animation for new items */
   :global(.masonry-item.newly-added) {
-    animation: slideInUp 0.3s ease-out;
-  }
+    animation: slideInUp 0.3s ease-out}
   @keyframes slideInUp {
     from { transform: translateY(20px);
-      opacity: 0;
-}
+      opacity: 0}
     to { transform: translateY(0);
-      opacity: 1;
-}}
+      opacity: 1}}
   /* Hover effects */
   :global($1) {
     transform: translateY(-2px);
@@ -202,6 +192,6 @@ https://svelte.dev/e/js_parse_error -->
   /* Focus styles for accessibility */
   :global($1) {
     outline: 2px solid var(--pico-primary, #3b82f6);
-    outline-offset: 2px;
-}
+    outline-offset: 2px}
 </style>
+

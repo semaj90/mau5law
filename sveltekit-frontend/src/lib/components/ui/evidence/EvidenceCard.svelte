@@ -1,11 +1,11 @@
-<script lang="ts">
+﻿<script lang="ts">
   import { CaseLogic } from '$lib/core/logic/case-logic';
   import type { CaseFile } from '$lib/core/logic/case-logic';
   // Replace unsupported optional prop syntax with an explicit union + default
   const { caseFile } = $props<{ caseFile: CaseFile | undefined }>()
   // Reactive derived values (recompute when caseFile changes)
   let displayStatus: string = 'Unknown';
-  let riskScore = 0;
+  let riskScore = 0
   $: {
     if (caseFile) {
       displayStatus = CaseLogic.getDisplayStatus(caseFile);
@@ -35,10 +35,11 @@
   <!-- graceful fallback while props are not, yet, present -->
   <div class="nes-container is-dark with-title">
     <header class="card-header">
-      <h3 class="card-title">Loading…</h3>
+      <h3 class="card-title">Loadingâ€¦</h3>
       <p class="card-description">{displayStatus}</p>
     </header>
     <div class="card-content">
       <p>No case data available.</p>
     </div>
   {/if}
+

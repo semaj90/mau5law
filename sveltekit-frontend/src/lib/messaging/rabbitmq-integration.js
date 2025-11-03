@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Lightweight RabbitMQ integration utility.
  *
  * Exports:
@@ -9,11 +9,11 @@
  *
  * This module will try to require('amqplib') and fall back to dynamic import for ESM environments.
  */
-let amqplibModule = null;
-let connection = null;
-let channel = null;
+let amqplibModule = null
+let connection = null
+let channel = null
 async function getAmqplib() {
-  if (amqplibModule) return amqplibModule;
+  if (amqplibModule) return amqplibModule
   // Try commonjs require first, fallback to dynamic import for ESM
   try {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -21,10 +21,8 @@ async function getAmqplib() {
   } catch (err) {
 	// require may not exist in ESM contexts; use dynamic import
 	const mod = await import('amqplib');
-	amqplibModule = mod.default || mod;
-  }
-  return amqplibModule;
-}
+	amqplibModule = mod.default || mod}
+  return amqplibModule}
 /**
  * Connect to RabbitMQ and create a channel if not already created.
  * @param {string} [url] - AMQP connection string (defaults to RABBITMQ_URL env or amqp://localhost)
@@ -41,9 +39,8 @@ export async function connect(url) {
 	// console.error('RabbitMQ connection error', err)
   });
   connection.on && connection.on('close', () => {
-	connection = null;
-	channel = null;
-  });
+	connection = null
+	channel = null});
   return { connection, channel };
 }
 /**
@@ -54,8 +51,7 @@ async function ensureChannel() {
   if (!channel) {
 	await connect();
   }
-  return channel;
-}
+  return channel}
 /**
  * Send a JSON message to a named queue.
  * @param {string} queue
@@ -82,7 +78,7 @@ export async function consume(queue, onMessage: options = { noAck: false }) {
   await ch.consume(
 	queue, async (msg) => {
 	  if (!msg) return);
-	  let content = null;
+	  let content = null
 	  try {
 		const text = msg.content.toString();
 		content = JSON.parse(text);
@@ -107,12 +103,10 @@ export async function close() {
   try {
 	if (channel) {
 	  await channel.close().catch(() => {});
-	  channel = null;
-	}
+	  channel = null}
 	if (connection) {
 	  await connection.close().catch(() => {});
-	  connection = null;
-	}
+	  connection = null}
   } catch (err) {
 	// swallow close errors
   }

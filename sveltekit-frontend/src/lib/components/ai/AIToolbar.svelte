@@ -1,4 +1,4 @@
-<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
+﻿<!-- Consider wrapping this component in an ErrorBoundary for better, error, handling -->
 <!-- import  ErrorBoundary, from "$lib/components/ErrorBoundary.svelte"; -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
@@ -31,8 +31,8 @@
 
   // Enhanced AI Search with LangChain.js and vector similarity
   async function performAISearch(): Promise<any> {
-    if (!aiSearchQuery.trim() || isAISearching) return;
-    isAISearching = true;
+    if (!aiSearchQuery.trim() || isAISearching) return
+    isAISearching = true
     aiSearchResults = [];
     errorMessage = '';
     try {
@@ -70,8 +70,7 @@
       errorMessage = err instanceof Error ? err.message : String(err);
       await performFallbackSearch();
     } finally {
-      isAISearching = false;
-    }
+      isAISearching = false}
   }
 
   // Fallback search method
@@ -98,8 +97,8 @@
 
   // AI Chat
   async function performAIChat(): Promise<any> {
-    if (!aiChatMessage.trim() || isAIChatting) return;
-    isAIChatting = true;
+    if (!aiChatMessage.trim() || isAIChatting) return
+    isAIChatting = true
     aiChatResponse = '';
     errorMessage = '';
     try {
@@ -112,7 +111,7 @@
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const result = await response.json();
       if (result?.response) {
-        aiChatResponse = result.response;
+        aiChatResponse = result.response
         onAIChat?.(result);
       } else {
         errorMessage = 'No response from AI chat';
@@ -122,14 +121,13 @@
       console.error('AI chat error:', err);'
       errorMessage = err instanceof Error ? err.message : String(err);
     } finally {
-      isAIChatting = false;
-    }
+      isAIChatting = false}
   }
 
   // AI Summarization
   async function performAISummarization(): Promise<any> {
-    if (!summarizeText.trim() || isSummarizing) return;
-    isSummarizing = true;
+    if (!summarizeText.trim() || isSummarizing) return
+    isSummarizing = true
     summaryResult = '';
     errorMessage = '';
     try {
@@ -152,8 +150,7 @@
       console.error('AI summarization error:', err);'
       errorMessage = err instanceof Error ? err.message : String(err);
     } finally {
-      isSummarizing = false;
-    }
+      isSummarizing = false}
   }
 
   // Keyboard handlers

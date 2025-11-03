@@ -1,4 +1,4 @@
-<!-- Context menu, content, component -->
+﻿<!-- Context menu, content, component -->
 <script lang="ts">
   import { getContext, onMount, onDestroy } from 'svelte';
   import type { Writable } from 'svelte/store';
@@ -9,9 +9,8 @@
   const ctx = getContext<{
     isOpen: Writable<boolean>;
     position Writable<Position>;
-   , close: () => void;
-  }>('context-menu');
-  const { isOpen, position, close } = ctx;
+   , close: () => void}>('context-menu');
+  const { isOpen, position, close } = ctx
   let menuElement = $state<HTMLDivElement | null>(null);
   function handleClickOutside(event: MouseEvent) {
     if (menuElement && !menuElement.contains(event.target as Node)) {
@@ -45,13 +44,13 @@
 <style>
   /* @unocss-include */
   .context-menu-content {
-    position: fixed;
-    z-index: 1000;
-    min-width: 12rem;
-    background-color: white;
-   , border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
+    position: fixed
+    z-index: 1000
+    min-width: 12rem
+    background-color: white
+   , border: 1px solid #e5e7eb
+    border-radius: 0.375rem
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    padding: 0.25rem;
-  }
+    padding: 0.25rem}
 </style>
+

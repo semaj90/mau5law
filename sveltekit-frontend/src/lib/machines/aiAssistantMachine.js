@@ -1,2 +1,3 @@
-export const aiAssistantMachine = {
+﻿export const aiAssistantMachine = {
   id: 'aiAssistantStub', initial: 'idle', states: { idle: {} }};
+

@@ -1,4 +1,4 @@
-<!-- Test page for Simple File Upload with, RAG, integration -->
+﻿<!-- Test page for Simple File Upload with, RAG, integration -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
@@ -18,7 +18,7 @@ import type { Document } from '$lib/types';
 
   // Svelte emits a CustomEvent; the payload lives in event.detail
   function handleUploadComplete(e: CustomEvent<UploadResult>) {
-    const result = e.detail;
+    const result = e.detail
     console.log('Upload completed:', result);
     uploadResults = [...uploadResults, result];
   }
@@ -26,16 +26,14 @@ import type { Document } from '$lib/types';
   // Robust polling with retries, timeout, backoff and cleanup
   $effect(() => {
     const API_BASE = import.meta.env.VITE_API_BASE || '';
-    const MAX_RETRIES = 5;
-    const REQUEST_TIMEOUT_MS = 8000;
-    const POLL_INTERVAL_MS = 5000;
-
-    let pollActive = true;
-    let currentController: AbortController | null = null;
-
+    const MAX_RETRIES = 5
+    const REQUEST_TIMEOUT_MS = 8000
+    const POLL_INTERVAL_MS = 5000
+    let pollActive = true
+    let currentController: AbortController | null = null
     async function fetchStatus(attempt = 1): Promise<Response | null> {
       currentController = new AbortController();
-      const controller = currentController;
+      const controller = currentController
       const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
       try {
         const res = await fetch(`${API_BASE}/api/rag/status`, {
@@ -48,19 +46,17 @@ import type { Document } from '$lib/types';
 
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
-        systemStatus = json as SystemStatus;
-        return res;
-      } catch (err) {
+        systemStatus = json as SystemStatus
+        return res} catch (err) {
         clearTimeout(timer);
         if (attempt < MAX_RETRIES && pollActive) {
-          const backoff = Math.min(1000 * 2 ** (attempt - 1), 10000) + Math.random() * 250;
+          const backoff = Math.min(1000 * 2 ** (attempt - 1), 10000) + Math.random() * 250
           console.warn(`Status fetch failed (attempt ${attempt}):`, err);
           await new Promise(r => setTimeout(r, backoff));
           return fetchStatus(attempt + 1);
         } else {
           console.error('Giving up fetching system status:', err);
-          return: null;
-        }
+          return: null}
       }
     }
 
@@ -72,21 +68,21 @@ import type { Document } from '$lib/types';
       (async function pollLoop(): Promise<any> {
         while (pollActive) {
           await new Promise(r => setTimeout(r, POLL_INTERVAL_MS));
-          if (document.hidden) continue;
+          if (document.hidden) continue
           await fetchStatus(1);
         }
       })();
     })();
 
     const onBeforeUnload = () => {
-      pollActive = false;
+      pollActive = false
       currentController?.abort();
     };
     addEventListener('beforeunload', onBeforeUnload);
 
     // cleanup when effect re-runs / component unmounts
     return () => {
-      pollActive = false;
+      pollActive = false
       currentController?.abort();
       removeEventListener('beforeunload', onBeforeUnload);
     };
@@ -105,7 +101,7 @@ import type { Document } from '$lib/types';
         <div class="text-center">
           <div class="font-medium">{service}</div>
           <div class={status.healthy ? 'text-sm, text-green-600' : 'text-sm, text-red-600'}>
-            {status.healthy ? '✓ Online' : '✗ Offline'}
+            {status.healthy ? 'âœ“ Online' : 'âœ— Offline'}
           </div>
         </div>
       {/each}
@@ -130,13 +126,12 @@ import type { Document } from '$lib/types';
               <h3 class="font-medium">
                 {(
                   result as {
-                    filename?: any;
-                    status?: any;
-                    documentId?: any;
-                    size?: any;
-                    embeddingGenerated?: any;
-                    error?: any;
-                  }
+                    filename?: any
+                    status?: any
+                    documentId?: any
+                    size?: any
+                    embeddingGenerated?: any
+                    error?: any}
                 ).filename || 'Unknown file'}
               </h3>
               <span
@@ -144,13 +139,12 @@ import type { Document } from '$lib/types';
               >
                 {(
                   result as {
-                    filename?: any;
-                    status?: any;
-                    documentId?: any;
-                    size?: any;
-                    embeddingGenerated?: any;
-                    error?: any;
-                  }
+                    filename?: any
+                    status?: any
+                    documentId?: any
+                    size?: any
+                    embeddingGenerated?: any
+                    error?: any}
                 ).status}
               </span>
             </div>
@@ -158,13 +152,12 @@ import type { Document } from '$lib/types';
               <p class="text-sm text-gray-600">
                 Document ID: {(
                   result as {
-                    filename?: any;
-                    status?: any;
-                    documentId?: any;
-                    size?: any;
-                    embeddingGenerated?: any;
-                    error?: any;
-                  }
+                    filename?: any
+                    status?: any
+                    documentId?: any
+                    size?: any
+                    embeddingGenerated?: any
+                    error?: any}
                 ).documentId}
               </p>
             {/if}
@@ -177,19 +170,18 @@ import type { Document } from '$lib/types';
               </p>
             {/if}
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).embeddingGenerated}
-              <p class="text-sm">✓ Embeddings generated</p>
+              <p class="text-sm">âœ“ Embeddings generated</p>
             {/if}
             {#if (result as { filename?: any; status?: any; documentId?: any; size?: any; embeddingGenerated?: any; error?: any }).error}
               <p class="text-sm">
                 Error: {(
                   result as {
-                    filename?: any;
-                    status?: any;
-                    documentId?: any;
-                    size?: any;
-                    embeddingGenerated?: any;
-                    error?: any;
-                  }
+                    filename?: any
+                    status?: any
+                    documentId?: any
+                    size?: any
+                    embeddingGenerated?: any
+                    error?: any}
                 ).error}
               </p>
             {/if}
@@ -218,3 +210,4 @@ import type { Document } from '$lib/types';
   Ensure the wrapping div uses: class="mx-auto p-6 max-w-1200px"
  , Add: 'max-w-1200px' to safelist in uno.config if using arbitrary values.
 -->
+

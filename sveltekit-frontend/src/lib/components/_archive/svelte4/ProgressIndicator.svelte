@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { currentStep: number;, totalSteps: number; stepLabels?: string[]; }
   let { currentStep = 0, totalSteps = 5, stepLabels = [] }: Props = $props(); function getStepStatus(stepIndex: number): 'completed' | 'current' | 'upcoming' { if (stepIndex < currentStep) return 'completed'; if (stepIndex === currentStep) return 'current'; return 'upcoming'; }
   function getStepColor(status: string): string { switch (status) { case, 'completed': return 'bg-green-500 border-green-500 text-white'; case, 'current': return 'bg-blue-500 border-blue-500 text-white'; case, 'upcoming': return 'bg-gray-200 border-gray-300 text-gray-600'; default: return 'bg-gray-200 border-gray-300 text-gray-600'; }
@@ -15,6 +15,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
             ></div> {/if} </li> {/each} </ol> </nav> <!-- Progress, Bar --> <div class="mt-6"> <div class="bg-gray-200 rounded-full"> <div class="bg-blue-500 h-2 rounded-full transition-all duration-500"
         style="width: {(currentStep / (totalSteps - 1)) * 100}%"
       ></div> </div> <div class="flex justify-between text-xs text-gray-500"> <span>Start</span> <span>{Math.round((currentStep / (totalSteps - 1)) * 100)}% Complete</span> <span>Complete</span> </div> </div> </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. --> <style> /* Ensure smooth transitions and proper spacing */ li { min-width: 0 }
-  @media (max-width: 640px) { /* Responsive adjustments for mobile */ li { padding-right: 1rem; }
-    .ml-3 { margin-left: 0.5rem; }
+  @media (max-width: 640px) { /* Responsive adjustments for mobile */ li { padding-right: 1rem}
+    .ml-3 { margin-left: 0.5rem}
   } </style>
+

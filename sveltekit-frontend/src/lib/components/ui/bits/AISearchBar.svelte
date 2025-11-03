@@ -1,16 +1,15 @@
-<!-- AI Search Bar: Svelte, 5, Bits, UI, UnoCSS, analytics, logging -->
+﻿<!-- AI Search Bar: Svelte, 5, Bits, UI, UnoCSS, analytics, logging -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Input, Button } from './index.js';
   import Search from 'lucide-svelte';
   interface Props {
-    placeholder?: string;
-    userContext?: any;
-    neo4jContext?: any;
-    analyticsLog?: (_event: any) => void;
-    onResults?: (results: any) => void;
-    onsearch?: (query: string) => void;
-  }
+    placeholder?: string
+    userContext?: any
+    neo4jContext?: any
+    analyticsLog?: (_event: any) => void
+    onResults?: (results: any) => void
+    onsearch?: (query: string) => void}
   const {
     placeholder = 'Ask AI...',
     userContext = {},
@@ -22,8 +21,8 @@
   let query = $state<string>('');
   let loading = $state<boolean>(false);
   async function handleSearch(): Promise<any> {
-    if (!query) return;
-    loading = true;
+    if (!query) return
+    loading = true
     analyticsLog({ event: 'ai_search_submitted', query, userContext, timestamp: Date.now() });
     try {
       const res = await fetch('/api/semantic-search', {
@@ -38,8 +37,7 @@
     } catch (error) {
       analyticsLog({ event: 'ai_search_error', query, error: error.message, timestamp: Date.now() });
     } finally {
-      loading = false;
-    }
+      loading = false}
   }
   function handleKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter') handleSearch();

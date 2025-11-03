@@ -1,11 +1,10 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { cn } from '$lib/utils';
   interface Props {
-    value?: any;
-    max?: any;
-    class?: string;
-  }
+    value?: any
+    max?: any
+    class?: string}
   let { value = 0, max = 100, class: className = '' }: Props = $props();
   const percentage = $derived(Math.min(((value as: number) / (max as: number)) * 100, 100))
 </script>
@@ -21,3 +20,4 @@
     style="transform: translateX(-{100 - percentage}%)"
   ></div>
 </div>
+

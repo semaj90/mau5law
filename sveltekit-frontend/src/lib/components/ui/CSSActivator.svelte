@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   // Hidden component that activates all NES.css selectors to prevent unused warnings
   // This component is invisible but contains all HTML elements that NES.css styles
   import  NESElementsShowcase  from "./NESElementsShowcase.svelte";
@@ -155,14 +155,14 @@
 <style>
   /* Ensure this component doesn't affect layout */'
   :global(.css-activator-hidden) {
-    position absolute !important;
-    left: -9999px !important;
-    top: -9999px !important;
-    visibility: hidden !important;
-    pointer-events: none !important;
-    opacity: 0 !important;
-    width: 1px !important;
-    height: 1px !important;
-   , overflow: hidden !important;
-  }
+    position absolute !important
+    left: -9999px !important
+    top: -9999px !important
+    visibility: hidden !important
+    pointer-events: none !important
+    opacity: 0 !important
+    width: 1px !important
+    height: 1px !important
+   , overflow: hidden !important}
 </style>
+

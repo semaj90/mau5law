@@ -1,4 +1,4 @@
-export const concurrentSearch = {
+﻿export const concurrentSearch = {
   initialize: async () => {
     console.log('concurrentSearch initialized');
   }, search: async query => {
@@ -7,3 +7,4 @@ export const concurrentSearch = {
   }, indexTypeScriptErrors: async errors => {
     console.log('concurrentSearch indexTypeScriptErrors:', errors);
   }};
+

@@ -1,4 +1,4 @@
-<script lang="ts">
+﻿<script lang="ts">
   import {
     Dialog as BitsDialog,
     DialogContent as BitsDialogContent,
@@ -24,51 +24,51 @@
   import { cn } from '$lib/utils'; // Assuming a utility for class merging exists
 
   // --- Dialog Root Props ---
-  type $$Props = DialogProps;
+  type $$Props = DialogProps
   const { open } = $props<{ open: $$Props['open'] }>()
   const { onOpenChange } = $props<{ onOpenChange: $$Props['onOpenChange'] }>()
   const { modal } = $props<{ modal: $$Props['modal'] }>()
 
   // --- Dialog Trigger Props ---
-  type $$TriggerProps = DialogTriggerProps;
+  type $$TriggerProps = DialogTriggerProps
   const { triggerAsChild } = $props<{ triggerAsChild: $$TriggerProps['asChild'] }>()
   const { triggerClass } = $props<{ triggerClass: $$TriggerProps['class'] }>()
   const { triggerProps } = $props<{ triggerProps: Omit<$$TriggerProps, 'asChild' | 'class'> }>()
 
   // --- Dialog Overlay Props ---
-  type $$OverlayProps = DialogOverlayProps;
+  type $$OverlayProps = DialogOverlayProps
   const { overlayClass } = $props<{ overlayClass: $$OverlayProps['class'] }>()
   const { overlayProps } = $props<{ overlayProps: Omit<$$OverlayProps, 'class'> }>()
 
   // --- Dialog Content Props ---
-  type $$ContentProps = DialogContentProps;
+  type $$ContentProps = DialogContentProps
   const { contentClass } = $props<{ contentClass: $$ContentProps['class'] }>()
   const { onEscapeKeyDown } = $props<{ onEscapeKeyDown: $$ContentProps['onEscapeKeyDown'] }>()
   const { onPointerDownOutside } = $props<{ onPointerDownOutside: $$ContentProps['onPointerDownOutside'] }>()
   const { contentProps } = $props<{ contentProps: Omit<$$ContentProps, 'class' | 'onEscapeKeyDown' | 'onPointerDownOutside'> }>()
 
   // --- Dialog Header Props ---
-  type $$HeaderProps = DialogHeaderProps;
+  type $$HeaderProps = DialogHeaderProps
   const { headerClass } = $props<{ headerClass: $$HeaderProps['class'] }>()
   const { headerProps } = $props<{ headerProps: Omit<$$HeaderProps, 'class'> }>()
 
   // --- Dialog Title Props ---
-  type $$TitleProps = DialogTitleProps;
+  type $$TitleProps = DialogTitleProps
   const { titleClass } = $props<{ titleClass: $$TitleProps['class'] }>()
   const { titleProps } = $props<{ titleProps: Omit<$$TitleProps, 'class'> }>()
 
   // --- Dialog Description Props ---
-  type $$DescriptionProps = DialogDescriptionProps;
+  type $$DescriptionProps = DialogDescriptionProps
   const { descriptionClass } = $props<{ descriptionClass: $$DescriptionProps['class'] }>()
   const { descriptionProps } = $props<{ descriptionProps: Omit<$$DescriptionProps, 'class'> }>()
 
   // --- Dialog Footer Props ---
-  type $$FooterProps = DialogFooterProps;
+  type $$FooterProps = DialogFooterProps
   const { footerClass } = $props<{ footerClass: $$FooterProps['class'] }>()
   const { footerProps } = $props<{ footerProps: Omit<$$FooterProps, 'class'> }>()
 
   // --- Dialog Close Props ---
-  type $$CloseProps = DialogCloseProps;
+  type $$CloseProps = DialogCloseProps
   const { closeAsChild } = $props<{ closeAsChild: $$CloseProps['asChild'] }>()
   const { closeClass } = $props<{ closeClass: $$CloseProps['class'] }>()
   const { closeProps } = $props<{ closeProps: Omit<$$CloseProps, 'asChild' | 'class'> }>()
@@ -151,3 +151,4 @@
     </BitsDialogClose>
   </BitsDialogContent>
 </BitsDialog>
+
