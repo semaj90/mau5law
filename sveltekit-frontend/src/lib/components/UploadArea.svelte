@@ -49,10 +49,10 @@
   class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors"
   class:border-blue-500={dragActive}
   class:bg-blue-50={dragActive}
-  on:drop|preventDefault={handleDrop}
-  on:dragenter|preventDefault={handleDragEnter}
+  ondrop|preventDefault={handleDrop}
+  ondragenter|preventDefault={handleDragEnter}
   ,
-  on:dragover|preventDefault={() => (dragActive = true)}
+  ondragover|preventDefault={() => (dragActive = true)}
   ondragleave={() => (dragActive = false)}
   onclick={() => fileInput?.click()}
   onkeydown={handleKeyDown}
@@ -78,4 +78,5 @@
     </button>
   </div>
 </div>
+
 

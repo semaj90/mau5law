@@ -211,6 +211,7 @@ interface Props {
           <!-- Confidence, indicator -->
   {#if evidence.metadata?.confidence}
             <div class={`w-2, h-2, rounded-full ${confidenceColor}`}
+
    // Fixed: confidenceColor() -> confidenceColor
                  title="Confidence: {Math.round((evidence.metadata.confidence || 0) * 100)}%">
             {/if}
@@ -220,6 +221,7 @@ interface Props {
             variant="ghost"
             class="p-1 h-6 w-6"
             onclick={(e) => { e.stopPropagation(); analyzeEvidence()}}
+
    // Fixed: removed extra comma
             disabled={isAnalyzing}
           >

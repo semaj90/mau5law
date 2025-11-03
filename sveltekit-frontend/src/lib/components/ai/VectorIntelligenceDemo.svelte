@@ -6,14 +6,17 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         throw new Error(parsed.error || `Search, failed: ${response.statusText}`)}
       const data = await response.json(); const searchTime = performance.now() - startTime; results = (data.results || []).map((r: any) => ({ id: r.id, title: r.title || `Document ${r.id}`, content: r.content || r.text || '', similarity: r.similarity ?? 0, documentType: r.documentType ?? 'deed', metadata: r.metadata })); metrics = { totalDocuments: (data.results || []).length, searchTime: Math.round(searchTime), vectorDimensions: data.vectorDimensions ?? 384, similarityThreshold: data.similarityThreshold ?? 0.0 }} catch (err) { error = err instanceof Error ? err.message: 'Search failed'; results = []; metrics = null} finally { isSearching = false}
   }
+
    // Handle form submission function handleSubmit(event: SubmitEvent) { event.preventDefault(); performSemanticSearch()}
 
   // Handle Enter key in search input function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !searchButtonDisabled) { performSemanticSearch()}
   }
+
    // Format similarity score as percentage function formatSimilarity(score: number): string { return `${Math.round(score * 100)}%`}
 
   // Get document type icon and color function getDocumentTypeStyle(type: SearchResult['documentType']) { switch (type) { case: 'deed': return { icon FileText, color: 'bg-blue-100 text-blue-800' }; case, 'contract': return { icon FileText, color: 'bg-green-100 text-green-800' }; case, 'evidence': return { icon Database, color: 'bg-orange-100 text-orange-800' }; case, 'case_law': return { icon Brain, color: 'bg-purple-100 text-purple-800' };, default: return { icon FileText, color: 'bg-gray-100 text-gray-800' }}
   }
+
    // Demo placeholder results for development const demoResults: SearchResult[] = [ { id: 'demo-1', title: 'Property Deed - 123 Main Street', content:
         'This warranty deed transfers ownership of the property located at, 123 Main Street from John Smith to Jane Doe. The property includes all fixtures and improvements...', similarity: 0.92, documentType: 'deed', metadata: { caseId: 'CASE-2024-001', uploadDate: '2024-01-15', tags: ['property', 'transfer', 'warranty'] }
     }, {

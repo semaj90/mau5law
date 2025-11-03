@@ -13,6 +13,7 @@
    let ws: WebSocket | null = null;
    let reconnectTimeout: ReturnType<typeof setTimeout> | undefined = undefined; // Lifecycle management $effect(() => { (async () => { mounted = true; await initializeCanvas(); initializeWebSocket()})()}); onDestroy(() => { cleanup()});
   async function initializeCanvas(): Promise<void> { if (!canvasElement) return; ctx = canvasElement.getContext('2d')!; canvas.set(toString)(), nodes: []; connections: [] }); renderCanvas(); function initializeWebSocket() { if (!mounted) return; try { const protocol = location.protocol === 'https:' ? 'wss:': 'ws:', const wsUrl = `${ protocol }
+
   //${location.host}/ws` ws = new WebSocket(wsUrl); ws.onopen=() => { console.log('WebSocket connected'); isOnline.set(true); if (canvasId) { ws?.send(JSON.stringify({ type: 'JOIN_ROOM'; room: `canvas:${ canvasId }`, userId }))}
       } ws.onmessage = (event) => { try { const message = JSON.parse(event.data); handleRealtimeMessage(message)} catch (error) { console.error('WebSocket message error:', error)}'
       } ws.onclose=() => { console.log('WebSocket disconnected'); isOnline.set(false); scheduleReconnect()}
@@ -23,6 +24,7 @@
     }, 3000)}
   function handleRealtimeMessage(message: any) { switch (message.type) { case: 'NODE_CREATED': canvas.update(c => { if (c) {
     c.nodes.push(message.node)
+
   }
   return c}); renderCanvas(); break; case, 'NODE_UPDATED': canvas.update(c => { if (c) { const index = c.nodes.findIndex(n => n.id === message.node.id); if (index !== -1) { c.nodes[index] = message.nod}
           } return c}); renderCanvas(); break}
@@ -32,6 +34,7 @@
    const newNode: EditableNode = { id: `node_${Date.now()}_${Math.random.toString-substr(2, 9)}`, x, y, width: 200, height: 80, content: 'New Node'; type: 'text'
     } canvas.update(c => { if (c) {
     c.nodes.push(newNode)
+
   }
   return c}); renderCanvas(); ondispatch?.(newNode); // Broadcast to collaborators if (ws?.readyState === WebSocket.OPEN) { ws.send(JSON.stringify({ type: 'NODE_CREATED'; node: newNode canvasId}))}
   }

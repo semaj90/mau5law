@@ -16,9 +16,11 @@
   async function initializeWebGPUWebAssembly(): Promise<void> { loading = true; error = null;
    const startTime = performance.now(); try { console.log('ðŸš€ Initializing WebGPU + WebAssembly integration...'); // 1. Initialize WebGPU client if (enableGPU) { try { webgpuClient = new WebGPUGemmaClient(); await webgpuClient.initialize(); metrics.webgpuSupport = true; capabilities.push('webgpu_acceleration'); processingModes.push('webgpu'); console.log('âœ… WebGPU client initialized')} catch (gpuError) { console.warn('âš ï¸ WebGPU initialization failed:', gpuError); metrics.webgpuSupport = false}
       }
+
    // 2. Initialize WebAssembly service if (enableWebAssembly) { try { const wasmLoaded = await webLlamaService.loadModel(); if (wasmLoaded) { metrics.webAssemblySupport = true; metrics.modelLoaded = true; capabilities.push('webassembly_fallback', 'cpu_processing', 'basic_vector_operations'); processingModes.push('webassembly', 'cpu'); console.log('âœ… WebAssembly service initialized')}
         } catch (wasmError) { console.warn('âš ï¸ WebAssembly initialization failed:', wasmError); metrics.webAssemblySupport = false}
       }
+
    // 3. Initialize AI adapter with fallbacks try { const adapterInitialized = await webAssemblyAIAdapter.initialize(); if (adapterInitialized) { capabilities.push('hybrid_inference', 'ollama_integration', 'python_fallback'); console.log('âœ… AI adapter initialized')}
       } catch (adapterError) { console.warn('âš ï¸ AI adapter initialization failed:', adapterError)}
 

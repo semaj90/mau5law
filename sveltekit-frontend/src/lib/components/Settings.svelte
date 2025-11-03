@@ -4,7 +4,7 @@
   }; // ---, Fix: expose props via standard Svelte exports (avoid $props / $bindable) --- const { isOpen } = $props<{ isOpen: boolean }>() const { settings } = $props<{ settings: Settings }>() const dispatch = createEventDispatcher(); function saveSettings(event: Event) { // prevent default if used without preventDefault modifier event.preventDefault(); // dispatch the updated settings so parent can react dispatch('save', { settings })}
 </script>
   {#if isOpen} <div class="container mx-auto"> <div class="container mx-auto"> <h2>Settings</h2>
- <form on:submit|preventDefault={ saveSettings }> <label>, Theme: <select bind:value={settings.theme}> <option value="light">Light</option>
+ <form onsubmit|preventDefault={ saveSettings }> <label>, Theme: <select bind:value={settings.theme}> <option value="light">Light</option>
  <option value="dark">Dark</option> </select> </label>
  <label> Language: <select bind:value={settings.language}> <option value="en">English</option>
  <option value="es">Spanish</option>

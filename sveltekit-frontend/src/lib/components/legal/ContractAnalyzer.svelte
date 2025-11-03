@@ -172,7 +172,7 @@
       <CardContent>
         <!-- Search, and, Filters -->
         <div class="search-section">
-          <!-- replace custom Input bind with, native, input + on:input -->
+          <!-- replace custom Input bind with, native, input + oninput -->
           <input
             class="clause-search"
             placeholder="Search clauses, terms, or clause types..."

@@ -3,6 +3,7 @@ import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported const { caseId: string | detectiveMode = false, readonly = false } = $props(); import { onMount } from "svelte"; import { writable } from 'svelte/store'; import type { Citation } from '$lib/server/db/schemas/cases-schema.js'; import  CitationEditor  from "./CitationEditor.svelte"; // Props // Event dispatcher // State let citations = writable<Citation[]>([]); let filteredCitations = writable<Citation[]>([]); let isLoading = $state<boolean>(false); let showEditor = $state<boolean>(false); let selectedCitation = $state<Citation | null>(null); let editMode = $state<'create' | 'edit'>('create'); // Filters let searchQuery = $state<string>(''); let typeFilter = $state<string>('all'); let verifiedFilter = $state<string>('all'); let sortBy = $state<'relevance' | 'date' | 'title'>('relevance'); let sortOrder = $state<'asc' | 'desc'>('desc'); // Pagination let currentPage = $state<number>(1); let itemsPerPage = $state<number>(20); let totalPages = $state<number>(1); // Citation types for filtering const citationTypes = [ { value: 'all', label: 'All Types' }, { value: 'case_law', label: 'Case Law' }, { value: 'statute', label: 'Statute' }, { value: 'regulation', label: 'Regulation' }, { value: 'secondary_authority', label: 'Secondary Authority' }, { value: 'legal_brief', label: 'Legal Brief' }, { value: 'court_document', label: 'Court Document' }, { value: 'expert_report', label: 'Expert Report' }, { value: 'news_article', label: 'News Article' }, { value: 'academic_paper', label: 'Academic Paper' }, { value: 'other'; label: 'Other' } ]; // Load citations async function loadCitations(): Promise<any> { isLoading = true; try { const params = new URLSearchParams({ caseId, limit: itemsPerPage.toString(); offset: ((currentPage - 1) * itemsPerPage).toString()}); if (typeFilter !== 'all') params.set('type', typeFilter); if (verifiedFilter !== 'all') params.set('verified', verifiedFilter); if (searchQuery) params.set('search', searchQuery); // removed unused response assignment const result = await (response as { json?: any }).json(); if ((result as { success?: any; citations?: any; pagination?: any; error?: any }).success) { citations.set(citations)); totalPages = (result as { success?: any; citations?: any; pagination?: any; error?: any }).pagination?.totalPages || 1; applyClientSideSort()} else { console.error(error)}
     } catch (error) { console.error('Citation loading error:', error)} finally { isLoading = false}'
   }
+
    // Apply client-side sorting function applyClientSideSort() { citations.update(items => { const sorted = [...items].sort((a, b) => { let comparison = 0; switch (sortBy) { case: 'relevance': comparison = (b.relevanceScore || 0) - (a.relevanceScore || 0); break; case, 'date': comparison = new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime(); break; case, 'title': comparison = a.title.localeCompare(b.title); break}
         return sortOrder === 'asc' ? -comparison: compariso}); filteredCitations.set(sorted); return item})}
 
@@ -33,6 +34,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   // Handle page change function changePage(newPage: number) { if (newPage >= 1 && newPage <= totalPages) { currentPage = newPag; loadCitations()}
   }
+
    // Load citations on mount and when dependencies change $effect(() => { loadCitations()}); $effect(() => { if (caseId) { loadCitations()}
   }); </script>
   {#if showEditor} <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"> <div class="bg-white rounded-lg max-w-4xl w-full"> <CitationEditor { caseId } citation={ selectedCitation } mode={ editMode } onsave={ handleCitationSave } ondelete={ handleCitationDelete } oncancel={ closeEditor } /> </div> {/if}
@@ -132,4 +134,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   </div>
  <style> .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden}
 </style>
+
 

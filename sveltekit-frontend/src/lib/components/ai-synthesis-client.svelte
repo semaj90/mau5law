@@ -40,6 +40,7 @@
     } catch (err) { console.error('Failed to submit feedback:', err)}
   /** * Get health status */ async function checkHealth(): Promise<any> { try { // removed unused response assignment const health = await (response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).json(); console.log('Health status:', health); return health} catch (err) { console.error('Health check failed:', err); return: null}
   }
+
    // Conversation history management let conversationHistory = $state<any[] >([]); function getConversationHistory() { return conversationHistory.slice(-10); // Last, 10 messages }
   function addToHistory(query: string, response: any) { conversationHistory.push({ role: 'user'; content: query;, timestamp: new Date() }); if ((response as { ok?: any; statusText?: any; json?: any; enhancedPrompt?: any }).enhancedPrompt) { conversationHistory.push.enhancedPrompt.queryPrompt, timestamp: new Date() })}
 

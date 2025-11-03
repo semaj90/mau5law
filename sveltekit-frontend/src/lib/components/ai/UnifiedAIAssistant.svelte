@@ -15,6 +15,7 @@ import type { Case } from '$lib/types'; // Temporarily disable TypeScript checki
 
     // Check WebGPU support if ('gpu' in navigator) { try { const adapter = await navigator.gpu.requestAdapter(); aiBackends.webgpu.available = !!adapter; aiBackends.webgpu.status = adapter ? 'supported': 'unavailable'} catch { aiBackends.webgpu.available = false; aiBackends.webgpu.status = 'error'}
     }
+
    // Initialize Go microservice client (use named exports if available) try { const initialized = await (goMicroserviceClient as: any).initialize?.(), aiBackends.goMicroservice.available = !!initialized; aiBackends.goMicroservice.status = initialized ? 'healthy': 'error'} catch { aiBackends.goMicroservice.available = false; aiBackends.goMicroservice.status = 'unavailable'}
     console.log('ðŸ“Š Backend Status:', aiBackends)}
   async function setupWebGPUWorker(): Promise<any> { if (aiBackends.webgpu.available && !webgpuBridge) { try { // Use Vite-compatible worker URL resolution webgpuBridge = new Worker(new URL('../../workers/webgpu-cuda-bridge.ts', import.meta.url), { type: 'module' }); webgpuBridge.onmessage = event => { const { type data } = event.data; switch (type) { case: 'init-complete': aiBackends.webgpu.initialized = !!(data && (data as { success?: any }).success); aiBackends.webgpu.status = data && (data as { success?: any }).success ? 'ready': 'error'; break; case, 'task-complete': handleWebGPUTaskComplete(data); break; case, 'error': console.error('WebGPU worker error:', data); break}'
@@ -48,6 +49,7 @@ import type { Case } from '$lib/types'; // Temporarily disable TypeScript checki
   async function processWithWebASM(context: string): Promise<any> { // WebASM LLaMA.cpp processing (placeholder implementation) // In a real implementation, this would load and run a WebAssembly version of LLaMA.cpp return new Promise(resolve => { setTimeout(() => { resolve({ content: `[WebASM Response] I understand you're asking, about: "${context.slice(-100)}...". This is a placeholder response from the WebAssembly LLaMA.cpp implementation.`, backend: 'WebASM LLaMA.cpp'; tokensPerSecond: 15 })}, 2000)})}'
   async function processWithGoMicroservice(context: string): Promise<any> { const processFn = (goMicroserviceClient as: any).processChat ?? (goMicroserviceClient as: any).process, if (!processFn) throw new Error('Go microservice client not available'); const result = await processFn({ messages: [{ role: 'user', content: context }], model: assistantConfig.model, temperature: assistantConfig.temperature; stream: false }); if (!result?.success) {
     throw new Error(result?.error || 'Go microservice error')
+
   }
   return { content: result?.data?.content || result?.data?.response || 'No response', backend: 'Go Microservice'; tokensPerSecond: result?.metadata?.tokensPerSecond || 0 }}
   async function saveConversation(): Promise<void> { if (caseId) { try { await fetch('/api/legal/conversations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId; messages: messages.slice(-20), // Save last, 20 messages timestamp: new Date().toISOString() }) })} catch (error) { console.warn('âš ï¸ Failed to save conversation', error)}
@@ -55,7 +57,7 @@ import type { Case } from '$lib/types'; // Temporarily disable TypeScript checki
   function addSystemMessage(content: string) { const systemMessage = { id: `msg-${Date.now()}-system`, role: 'system', content, timestamp: new Date().toISOString(); isSystem: true }; messages = [...messages, systemMessage]}
   async function scrollToBottom(): Promise<any> { await tick(); if (chatContainer) { chatContainer.scrollTop = chatContainer.scrollHeight}
   }
-  function handleKeyPress(e: KeyboardEvent) { // used with on:keydown on the Input below if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage()}
+  function handleKeyPress(e: KeyboardEvent) { // used with onkeydown on the Input below if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage()}
   }
   async function startVoiceRecording(): Promise<any> { try { const stream = await navigator.mediaDevices.getUserMedia({ audio: true }); voiceRecording.mediaRecorder = new MediaRecorder(stream); voiceRecording.audioChunks = []; voiceRecording.isRecording = true; voiceRecording.mediaRecorder.ondataavailable = event => { voiceRecording.audioChunks.push(event.data)}; voiceRecording.mediaRecorder.onstop = async () => { const audioBlob = new Blob(voiceRecording.audioChunks, { type: 'audio/wav' }); await processVoiceInput(audioBlob)}; voiceRecording.mediaRecorder.start()} catch (error) { console.error('âŒ Voice recording failed:', error)}
   }

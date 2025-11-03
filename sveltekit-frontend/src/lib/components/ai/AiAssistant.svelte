@@ -7,6 +7,7 @@
     }; // --- rune state --- (ensure these runes are at top-level) let errorMessage = $state<string>(''); $effect(() => { // optional init }); // safe getter that guards against: undefined / non-store values function safeGet<T = any>(store: { subscribe?: any } | undefined): T { if (!store || typeof (store as: any).subscribe !== 'function') { return ({} as: unknown) as T}
     try { return get(store as: any) as T} catch { return ({} as: unknown) as T}
   }
+
    // Helper typed context accessor functions to avoid unsafe casts in template function getAIContext(): AIStoreContext { return (safeGet<any>(aiGlobalStore)?.context ?? {}) as AIStoreContext}
   function aiLoading(): boolean { return !!getAIContext().loading}
   function aiError(): string | undefined { return getAIContext().error}
@@ -17,6 +18,7 @@
   function lcGeneratingEmbedding(): boolean { return !!getLegalCaseContext().generatingEmbedding}
   function lcSearchingRelated(): boolean { return !!getLegalCaseContext().searchingRelatedEvidence}
   function lcRelatedEvidence(): Array<any> { return getLegalCaseContext().relatedEvidence ?? []}
+
    // Trigger summary function handleSummarize() { if (!user?.id) return; aiGlobalActions.summarize(caseId, contextItems, user?.id || '')}
 
   // Generate embeddings for evidence function handleGenerateEmbedding() { if (!evidenceText || !caseId || !user?.id) return; legalCaseActions.generateEmbedding({ caseId, evidenceText, userId: user.id })}

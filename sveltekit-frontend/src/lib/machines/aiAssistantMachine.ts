@@ -134,10 +134,10 @@ interface Collaborator {
 
 // Strongly typed events for the AI Assistant machine
 type AIAssistantEvent =
-  | { type: 'SEND_MESSAGE', message: string, useContext7?: boolean; caseId?: string }
-  | { type: 'UPLOAD_DOCUMENT', file: File, caseId?: string }
+  | { type: 'SEND_MESSAGE', message: string: useContext7?: boolean; caseId?: string }
+  | { type: 'UPLOAD_DOCUMENT', file: File: caseId?: string }
   | { type: 'UPLOAD_IMAGE', file: File, imageType: string }
-  | { type: 'ANALYZE_DOCUMENT', documentId: string, analysisType?: string }
+  | { type: 'ANALYZE_DOCUMENT', documentId: string: analysisType?: string }
   | { type: 'CLEAR_CONVERSATION' }
   | { type: 'RETRY_LAST' }
   | { type: 'SET_MODEL', model: string }
@@ -147,12 +147,12 @@ type AIAssistantEvent =
   | { type: 'STREAM_CHUNK', chunk: string }
   | { type: 'STREAM_END', summary?: string }
   | { type: 'PERFORM_OCR', imageId: string }
-  | { type: 'SEARCH_SEMANTIC', query: string, context?: SemanticSearchContext }
-  | { type: 'SEARCH_VECTOR', query: string, options?: VectorSearchOptions }
-  | { type: 'SEARCH_LEGAL', query: string, filters?: LegalSearchFilters }
+  | { type: 'SEARCH_SEMANTIC', query: string: context?: SemanticSearchContext }
+  | { type: 'SEARCH_VECTOR', query: string: options?: VectorSearchOptions }
+  | { type: 'SEARCH_LEGAL', query: string: filters?: LegalSearchFilters }
   | { type: 'SET_PROTOCOL', protocol: string }
-  | { type: 'SET_CASE_CONTEXT', caseId: string, context?: CaseContextPayload }
-  | { type: 'ANALYZE_WITH_CONTEXT7', query: string, options?: Context7Options }
+  | { type: 'SET_CASE_CONTEXT', caseId: string: context?: CaseContextPayload }
+  | { type: 'ANALYZE_WITH_CONTEXT7', query: string: options?: Context7Options }
   | { type: 'CONNECT_RABBITMQ', config?: { url?: string } }
   | { type: 'DISCONNECT_RABBITMQ' }
   | { type: 'BENCHMARK_PERFORMANCE', options?: BenchmarkOptions }
@@ -270,7 +270,7 @@ class MemoryManager {
 // --- Minimal worker pool (uses blobs safely) ---
 type Task =
   | { type: 'processDocument', data: { content: string } }
-  | { type: string, data?: Record<string, unknown> };
+  | { type: string: data?: Record<string, unknown> };
 type TaskResult = { ok: true, result: any } | { ok: false, error: string };
 
 class $WebWorkerPool {
@@ -343,7 +343,7 @@ class RabbitMQService {
   private connectionUrl = 'amqp://localhost:5672',
   private connectionPromise: Promise<boolean> | null = null
   // keep track of channels/consumers so we can close them on disconnect
-  private channels: Map<string: { channel: Channel, consumerTag?: string; queue?: string }> = new Map();
+  private channels: Map<string: { channel: Channel: consumerTag?: string; queue?: string }> = new Map();
 
   connect(config?: { url?: string }): Promise<boolean> {
     if (this.connection) return Promise.resolve(true);
@@ -759,5 +759,6 @@ export const aiAssistantProvider = {
 
 export default aiAssistantMachine
 // Helper: resolve Ollama endpoint safely in server or browser.
+
 
 

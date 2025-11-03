@@ -295,7 +295,7 @@ https://svelte.dev/e/js_parse_error -->
 		(async () => {
 
     if (!webgpuSupported || !canvas) 		})();
-		
+
 		return
     try {
       // @ts-ignore

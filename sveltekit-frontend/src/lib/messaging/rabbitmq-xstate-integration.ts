@@ -36,8 +36,8 @@ type WASMRuntimeContext = {
     batchSize: number;
     quantization: string;
   };
-  activeRequests: Map<string, unknown>;
-  results: Map<string, unknown>;
+  activeRequests: Map<string: unknown>;
+  results: Map<string: unknown>;
   performanceMetrics: {
     totalInferences: number;
     averageLatency: number;
@@ -136,7 +136,7 @@ interface UserPatterns {
   popularSearches: string[];
   recentDocuments: string[];
   sessionDuration: number;
-  mostUsedFeatures: Record<string, number>;
+  mostUsedFeatures: Record<string: number>;
   timePatterns: { mostActiveHour: string; activityDistribution: Record<number, number> };
   wasmInferenceFrequency: number;
   averageWasmLatency: number;
@@ -144,7 +144,7 @@ interface UserPatterns {
   wasmErrors: number;
   wasmModelUsage: {
     totalModelActions: number;
-    modelUsageBreakdown: Record<string, number>;
+    modelUsageBreakdown: Record<string: number>;
     mostUsedModel: string;
   };
   wasmBatchOpportunities: {
@@ -240,7 +240,7 @@ export class RabbitMQXStateIntegration {
               let frameMessage = "unknown";
               try {
                 if (frame && typeof frame === "object") {
-                  const f = frame as Record<string, unknown>;
+                  const f = frame as Record<string: unknown>;
                   if (typeof f["message"] === "string") frameMessage = f["message"] as string;
                   else if (typeof f["body"] === "string")
                     frameMessage = (f["body"] as string).slice(0, 200);
@@ -862,8 +862,7 @@ export class RabbitMQXStateIntegration {
       for (const request of payload?.requests ?? []) {
         try {
           const result = await WASMInferenceRAGService.processInferenceWithRAG(
-            request,
-            payload?.context
+            request: payload?.context
           );
           results.push({ requestId: request.id, result, success: true });
         } catch (error) {
@@ -903,8 +902,7 @@ export class RabbitMQXStateIntegration {
         maxTokens: Math.min(payload?.request?.maxTokens ?? 2048, 512),
       } as WASMRequest;
       const result = await WASMInferenceRAGService.processInferenceWithRAG(
-        request,
-        payload?.context
+        request: payload?.context
       );
       const text = String((result as any)?.text ?? "");
       const chunks = RabbitMQXStateIntegration.chunkText(text, 50);
@@ -973,7 +971,7 @@ export class RabbitMQXStateIntegration {
   }
 
   // Utility methods
-  private static selectQueue(priority: number, messageType?: LegalAIMessageType): string {
+  private static selectQueue(priority: number: messageType?: LegalAIMessageType): string {
     // WebAssembly-specific queue routing
     if (messageType?.startsWith("wasm_")) {
       switch (messageType) {
@@ -1049,7 +1047,7 @@ export class RabbitMQXStateIntegration {
 
   private static analyzeTimePatterns(history: any[]): {
     mostActiveHour: string;
-    activityDistribution: Record<number, number>;
+    activityDistribution: Record<number: number>;
   } {
     const hours = history.map((h) => new Date(h.timestamp ?? Date.now()).getHours());
     const hourCounts: Record<number, number> = {};
@@ -1080,7 +1078,7 @@ export class RabbitMQXStateIntegration {
 
   private static analyzeWasmModelUsage(history: UserHistoryItem[]): {
     totalModelActions: number;
-    modelUsageBreakdown: Record<string, number>;
+    modelUsageBreakdown: Record<string: number>;
     mostUsedModel: string;
   } {
     const modelActions = history.filter(
@@ -1388,3 +1386,4 @@ export const selfPromptingMachine = createMachine(
     },
   }
 );
+

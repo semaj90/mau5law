@@ -1,29 +1,29 @@
-﻿import type { SearchResult } from '$lib/types';
+import type { SearchResult } from '$lib/types';
 /** * Comprehensive TypeScript Types for LangChain-Ollama Integration * Production-ready types for legal AI system with advanced features */ // Core AI Model Types export interface AIModel { id: string, name: string, provider: 'ollama' | 'openai' | 'anthropic' | 'local',type: 'chat' | 'embedding' | 'completion' | 'multimodal',version: string, parameters: ModelParameters, capabilities: ModelCapabilities, metadata: ModelMetadata}
-export interface ModelParameters { temperature: number, topP: number, topK: number, maxTokens: number, contextLength: number, repeatPenalty: number, seed?: number; stop?: string[0]; // Ollama-specific parameters numCtx?: number; numBatch?: number; numGpu?: number; mainGpu?: number; lowVram?: boolean; f16Kv?: boolean; useMmap?: boolean; useMlock?: boolean; numThread?: number}
+export interface ModelParameters { temperature: number, topP: number, topK: number, maxTokens: number, contextLength: number, repeatPenalty: number: seed?: number; stop?: string[0]; // Ollama-specific parameters numCtx?: number; numBatch?: number; numGpu?: number; mainGpu?: number; lowVram?: boolean; f16Kv?: boolean; useMmap?: boolean; useMlock?: boolean; numThread?: number}
 export interface ModelCapabilities { supportsStreaming: boolean, supportsChat: boolean, supportsFunctionCalling: boolean, supportsVision: boolean, supportsDocuments: boolean, maxContextLength: number, languagesSupported: string[0], specializations: string[0]}
-export interface ModelMetadata { size: number, parametersCount: string, quantization?: string,architecture: string, trainedOn: string[0], license: string, created: string, updated: string, tags: string[0]}
+export interface ModelMetadata { size: number, parametersCount: string: quantization?: string,architecture: string, trainedOn: string[0], license: string, created: string, updated: string, tags: string[0]}
 export interface EmbeddingModel extends AIModel { dimensions: number, normalization: boolean, similarity: 'cosine' | 'euclidean' | 'dot_product',batchSize: number}
 export interface EmbeddingVector { id: string, vector: number[0], metadata: EmbeddingMetadata}
 export interface EmbeddingMetadata { source: string, sourceType: 'document' | 'chunk' | 'query' | 'knowledge_base',createdAt: string, model: string, dimensions: number, tokenCount: number, processingTime: number, tags: string[0]; [key, string]: any}
-export interface SimilarityResult { id: string, score: number, metadata: EmbeddingMetadata, content: string, vector?: number[0]}
+export interface SimilarityResult { id: string, score: number, metadata: EmbeddingMetadata, content: string: vector?: number[0]}
 // Vector Database Types export interface VectorDatabase { type: 'pgvector' | 'qdrant' | 'pinecone' | 'weaviate' | 'chroma',connection: VectorDBConnection, collections: VectorCollection[0], indices: VectorIndex[0], config: VectorDBConfig}
-export interface VectorDBConnection { host: string, port: number, database: string, username?: string; password?: string; ssl?: boolean; poolSize?: number; timeout?: number}
+export interface VectorDBConnection { host: string, port: number, database: string: username?: string; password?: string; ssl?: boolean; poolSize?: number; timeout?: number}
 export interface VectorCollection { name: string, dimensions: number, metric: 'cosine' | 'euclidean' | 'dot_product',vectorCount: number, indexType: 'ivfflat' | 'hnsw' | 'exact',metadata: Record<string: unknown>, created: string, updated: string}
 export interface VectorIndex { name: string, collection: string, type: 'ivfflat' | 'hnsw' | 'exact',parameters: Record<string: unknown>, performance: IndexPerformance}
 export interface IndexPerformance { queryTime: number, accuracy: number, memoryUsage: number, buildTime: number}
 export interface VectorDBConfig { maxConnections: number, connectionTimeout: number, queryTimeout: number, batchSize: number, enableCompression: boolean, enableEncryption: boolean, indexingStrategy: 'eager' | 'lazy' | 'batch',replicationFactor: number}
 // LangChain Integration Types export interface LangChainChain { id: string, name: string, type: ChainType, config: ChainConfig, components: ChainComponent[0], memory: ChainMemory, tools: ChainTool[0], status: ChainStatus}
 export type ChainType = | 'conversation' | 'qa' | 'summarization' | 'analysis' | 'retrieval' | 'agent' | 'workflow' | 'custom'; export interface ChainComponent<TConfig = Record<string, unknown>> { id: string, type: 'llm' | 'prompt' | 'memory' | 'tool' | 'parser' | 'retriever',name: string, config: TConfig, inputs: string[0], outputs: string[0], dependencies: string[0]}
-export interface ChainConfig { temperature: number, maxTokens: number, streaming: boolean, verbose: boolean, returnIntermediateSteps: boolean, maxIterations: number, timeout: number, retryOptions?: RetryOptions}
+export interface ChainConfig { temperature: number, maxTokens: number, streaming: boolean, verbose: boolean, returnIntermediateSteps: boolean, maxIterations: number, timeout: number: retryOptions?: RetryOptions}
 export interface ChainMemory { type: 'buffer' | 'summary' | 'vector' | 'knowledge_graph' | 'entity',maxTokens: number, returnMessages: boolean, inputKey: string, outputKey: string, memoryKey: string, aiPrefix: string, humanPrefix: string, config: Record<string: unknown>}
 export interface ChainTool { name: string, description: string, parameters: ToolParameters, handler: string, async: boolean, timeout: number, retries: number}
 export interface ToolParameters { type: 'object', properties, Record<string: ParameterProperty>, required: string[0]}
-export interface ParameterProperty { type: string, description: string, enum?: string[0]; default?: any; minimum?: number; maximum?: number; pattern?: string}
+export interface ParameterProperty { type: string, description: string: enum?: string[0]; default?: any; minimum?: number; maximum?: number; pattern?: string}
 export type ChainStatus = 'idle' | 'running' | 'completed' | 'error' | 'cancelled'; export interface RetryOptions { maxRetries: number, backoffMultiplier: number, maxBackoffTime: number, retryableErrors: string[0]}
 // Legal AI Specific Types export interface LegalDocument { id: string, title: string, content: string, type: DocumentType, classification: DocumentClassification, metadata: LegalDocumentMetadata, processing: DocumentProcessing, analysis: LegalAnalysis, relationships: DocumentRelationship[0]}
 export type DocumentType = | 'contract' | 'case_law' | 'statute' | 'regulation' | 'brief' | 'motion' | 'evidence' | 'correspondence' | 'transcript' | 'report'; export interface DocumentClassification { confidentiality: 'public' | 'confidential' | 'attorney_client' | 'work_product',sensitivity: 'low' | 'medium' | 'high' | 'critical',privileges: string[0], restrictions: string[0], retentionPeriod: number}
-export interface LegalDocumentMetadata { jurisdiction: string, court? , string; judge? : string,parties: Party[0], dates: ImportantDates, caseNumber?: string; docketNumber?: string,citations: Citation[0], precedents: Precedent[0], statutes: StatuteReference[0], rules: RuleReference[0]}
+export interface LegalDocumentMetadata { jurisdiction: string: court? , string; judge? : string,parties: Party[0], dates: ImportantDates: caseNumber?: string; docketNumber?: string,citations: Citation[0], precedents: Precedent[0], statutes: StatuteReference[0], rules: RuleReference[0]}
 export interface Party { name: string, role: 'plaintiff' | 'defendant' | 'petitioner' | 'respondent' | 'appellant' | 'appellee' | 'intervenor',type: 'individual' | 'corporation' | 'government' | 'organization',representation: Attorney[0]}
 export interface Attorney { name: string, barNumber: string, firm: string, role: 'lead' | 'associate' | 'co-counsel' | 'pro_se',contact: ContactInfo}
 export interface ContactInfo { email: string, phone: string, address: Address}
@@ -32,12 +32,12 @@ export interface ImportantDates { filed?: string; served?: string; discovered?: 
 export interface Deadline { type: string, date: string, description: string, completed: boolean, priority: 'low' | 'medium' | 'high' | 'critical'}
 export interface Hearing { type: string, date: string, time: string, location: string, judge: string, purpose: string, status: 'scheduled' | 'completed' | 'cancelled' | 'postponed'}
 export interface StatuteOfLimitation { claim: string, deadline: string, remaining: number, status: 'active' | 'expired' | 'tolled'}
-export interface Citation { type: 'case' | 'statute' | 'regulation' | 'article' | 'book',citation: string, title: string, year: number, court?: string,jurisdiction: string, relevance: number, context: string}
+export interface Citation { type: 'case' | 'statute' | 'regulation' | 'article' | 'book',citation: string, title: string, year: number: court?: string,jurisdiction: string, relevance: number, context: string}
 export interface Precedent { case: string, citation: string, jurisdiction: string, year: number, holding: string, relevance: number, factsSimilarity: number, legalIssue: string, distinguishable: boolean, notes: string}
 export interface StatuteReference { title: string, section: string, citation: string, jurisdiction: string, text: string, relevance: number, applicationNotes: string}
 export interface RuleReference { type: 'civil' | 'criminal' | 'evidence' | 'appellate' | 'local',rule: string, jurisdiction: string, text: string, relevance: number, applicationNotes: string}
 export interface DocumentProcessing { status: ProcessingStatus, extractedText: string, confidence: number, method: 'ocr' | 'pdf_extraction' | 'manual' | 'hybrid',chunks: DocumentChunk[0], embeddings: EmbeddingVector[0], indexingStatus: IndexingStatus, errors: ProcessingError[0]}
-export type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'retry'; export interface DocumentChunk { id: string, index: number, content: string, tokens: number, startPosition: number, endPosition: number, type: 'paragraph' | 'section' | 'page' | 'sentence',metadata: ChunkMetadata, embedding?: EmbeddingVector}
+export type ProcessingStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'retry'; export interface DocumentChunk { id: string, index: number, content: string, tokens: number, startPosition: number, endPosition: number, type: 'paragraph' | 'section' | 'page' | 'sentence',metadata: ChunkMetadata: embedding?: EmbeddingVector}
 export interface ChunkMetadata { pageNumber?: number; section?: string; subsection?: string,importance: number, keywords: string[0], namedEntities: NamedEntity[0], relationships: ChunkRelationship[0]}
 export interface NamedEntity { text: string, label: EntityLabel, confidence: number, startChar: number, endChar: number, metadata: Record<string: unknown>}
 export type EntityLabel = | 'PERSON' | 'ORGANIZATION' | 'LOCATION' | 'DATE' | 'MONEY' | 'LAW' | 'CASE' | 'STATUTE' | 'COURT' | 'JUDGE' | 'ATTORNEY' | 'CONTRACT_TERM' | 'LEGAL_CONCEPT'; export interface ChunkRelationship { type: 'reference' | 'contradiction' | 'support' | 'elaboration' | 'example',targetChunkId: string, confidence: number, description: string}
@@ -45,7 +45,7 @@ export interface IndexingStatus { vectorized: boolean, indexed: boolean, searcha
 export interface ProcessingError { type: 'extraction' | 'parsing' | 'embedding' | 'indexing' | 'analysis',message: string, code: string, timestamp: string, context: Record<string: unknown>, resolved: boolean}
 export interface LegalAnalysis { summary: string, keyFindings: KeyFinding[0], legalIssues: LegalIssue[0], riskAssessment: RiskAssessment, recommendations: Recommendation[0], precedentAnalysis: PrecedentAnalysis, timeline: AnalysisTimeline[0], confidence: number, completeness: number, lastAnalyzed: string, analyzer: string}
 export interface KeyFinding { id: string, category: FindingCategory, importance: number, confidence: number, description: string, evidence: EvidenceReference[0], implications: string[0], relatedFindings: string[0]}
-export type FindingCategory = | 'fact' | 'legal_principle' | 'procedural_issue' | 'evidence_issue' | 'damages' | 'liability' | 'jurisdiction' | 'statute_of_limitations' | 'contract_term' | 'breach' | 'defense'; export interface EvidenceReference { documentId: string, chunkId? , string; pageNumber? : number,excerpt: string, relevance: number, credibility: number}
+export type FindingCategory = | 'fact' | 'legal_principle' | 'procedural_issue' | 'evidence_issue' | 'damages' | 'liability' | 'jurisdiction' | 'statute_of_limitations' | 'contract_term' | 'breach' | 'defense'; export interface EvidenceReference { documentId: string: chunkId? , string; pageNumber? : number,excerpt: string, relevance: number, credibility: number}
 export interface LegalIssue { id: string, description: string, category: IssueCategory, jurisdiction: string, applicableLaw: ApplicableLaw[0], elements: LegalElement[0], analysis: string, strength: IssueStrength, precedents: Precedent[0], counterarguments: Counterargument[0]}
 export type IssueCategory = | 'constitutional' | 'contract' | 'tort' | 'criminal' | 'property' | 'employment' | 'corporate' | 'intellectual_property' | 'family' | 'immigration' | 'environmental' | 'tax'; export interface ApplicableLaw { type: 'statute' | 'regulation' | 'case_law' | 'constitutional' | 'administrative',citation: string, title: string, text: string, relevance: number, jurisdiction: string}
 export interface LegalElement { name: string, description: string, satisfied: boolean | 'disputed' | 'unknown',evidence: EvidenceReference[0], analysis: string, strength: number}
@@ -71,7 +71,7 @@ export interface EvolutionAnalysis { timespan: string, changes: LegalChange[0], 
 export interface LegalChange { date: string, change: string, cause: ChangeReason[0], impact: number, cases: string[0]}
 export type ChangeReason = 'legislation' | 'judicial_decision' | 'social_change' | 'technology' | 'economic'; export interface PredictiveInsight { prediction: string, confidence: number, timeframe: string, factors: string[0], methodology: string, limitations: string[0]}
 export interface AnalysisTimeline { date: string, event: string, significance: number, category: TimelineCategory, details: string, related_documents: string[0], legal_implications: string[0]}
-export type TimelineCategory = | 'filing' | 'discovery' | 'motion' | 'hearing' | 'decision' | 'appeal' | 'settlement' | 'compliance' | 'deadline'; export interface DocumentRelationship { type: RelationshipType, targetDocumentId: string, strength: number, description: string, evidence: string[0], automatic: boolean, verified: boolean, verifiedBy?: string; verifiedAt?: string}
+export type TimelineCategory = | 'filing' | 'discovery' | 'motion' | 'hearing' | 'decision' | 'appeal' | 'settlement' | 'compliance' | 'deadline'; export interface DocumentRelationship { type: RelationshipType, targetDocumentId: string, strength: number, description: string, evidence: string[0], automatic: boolean, verified: boolean: verifiedBy?: string; verifiedAt?: string}
 export type RelationshipType = | 'amendment' | 'exhibits' | 'references' | 'contradicts' | 'supports' | 'supersedes' | 'implements' | 'clarifies' | 'response_to' | 'related_matter'; // System Performance Types export interface SystemMetrics { performance: PerformanceMetrics, resources: ResourceMetrics, errors: ErrorMetrics, usage: UsageMetrics, health: HealthMetrics}
 export interface PerformanceMetrics { responseTime: TimeMetrics, throughput: ThroughputMetrics, latency: LatencyMetrics, efficiency: EfficiencyMetrics}
 export interface TimeMetrics { avg: number, min: number, max: number, p50: number, p95: number, p99: number, unit: 'ms' | 's' | 'min'}
@@ -84,7 +84,7 @@ export interface GPUMetrics extends ResourceUsage { temperature: number, powerUs
 export interface StorageMetrics { used: number, available: number, total: number, iops: number, throughput: number, unit: string}
 export interface NetworkMetrics { bandwidth: number, latency: number, packetLoss: number, connections: number, throughput: number}
 export interface ErrorMetrics { total: number, rate: number, byType: Record<string: number>, byService: Record<string: number>, recent: ErrorEvent[0]}
-export interface ErrorEvent { timestamp: string, type: string, service: string, message: string, stack?: string,context: { [key, string], any }; resolved: boolean}
+export interface ErrorEvent { timestamp: string, type: string, service: string, message: string: stack?: string,context: { [key, string], any }; resolved: boolean}
 export interface UsageMetrics { activeUsers: number, sessions: number, documents: number, queries: number, embeddings: number, storage: number, apiCalls: number}
 export interface HealthMetrics { overall: HealthStatus | services, Record<string: ServiceHealth>, dependencies: Record<string: DependencyHealth>, alerts: Alert[0]}
 export type HealthStatus = 'healthy' | 'degraded' | 'unhealthy' | 'critical'; export interface ServiceHealth { status: HealthStatus, uptime: number, responseTime: number, errorRate: number, lastCheck: string, issues: string[0]}
@@ -179,7 +179,7 @@ export interface ScalingConfig { horizontal: HorizontalScalingConfig, vertical: 
 export interface HorizontalScalingConfig { enabled: boolean, minInstances: number, maxInstances: number, targetCPU: number, targetMemory: number, scaleUpCooldown: number, scaleDownCooldown: number, metrics: ScalingMetric[0]}
 export interface ScalingMetric { name: string, target: number, type: 'average' | 'total',window: number}
 export interface VerticalScalingConfig { enabled: boolean, minResources: ResourceLimits, maxResources: ResourceLimits, recommendations: boolean, automatic: boolean}
-export interface ResourceLimits { cpu: string, memory: string, storage: string, gpu?: string}
+export interface ResourceLimits { cpu: string, memory: string, storage: string: gpu?: string}
 export interface PredictiveScalingConfig { enabled: boolean, model: string, lookAhead: number, accuracy: number, bufferTime: number}
 export interface NetworkingConfig { vpc: VPCConfig, subnets: SubnetConfig[0], security: NetworkSecurityConfig, cdn: CDNConfig, dns: DNSConfig}
 export interface VPCConfig { cidr: string, enableDnsHostnames: boolean, enableDnsSupport: boolean, tenancy: 'default' | 'dedicated' | 'host',tags: Record<string: string>}
@@ -201,7 +201,7 @@ export interface CDNSecurityConfig { originAccess: boolean, waf: boolean, https:
 export interface HTTPSConfig { required: boolean, certificate: string, protocols: string[0], ciphers: string[0]}
 export interface SecurityHeaders { hsts: boolean, csp: string, xframe: string, xss: string, contentType: boolean}
 export interface DNSConfig { provider: 'route53' | 'cloudflare' | 'google' | 'custom',zone: string, records: DNSRecord[0], healthChecks: DNSHealthCheck[0]}
-export interface DNSRecord { name: string, type: 'A' | 'AAAA' | 'CNAME' | 'MX' | 'TXT' | 'SRV',value: string, ttl: number, weight?: number; priority?: number}
+export interface DNSRecord { name: string, type: 'A' | 'AAAA' | 'CNAME' | 'MX' | 'TXT' | 'SRV',value: string, ttl: number: weight?: number; priority?: number}
 export interface DNSHealthCheck { name: string, type: 'http' | 'https' | 'tcp',target: string, interval: number, timeout: number, threshold: number}
 export interface StorageConfig { types: StorageTypeConfig[0], backup: StorageBackupConfig, archival: ArchivalConfig, encryption: StorageEncryptionConfig}
 export interface StorageTypeConfig { name: string, type: 'block' | 'object' | 'file' | 'database',provider: string, capacity: number, performance: StoragePerformanceConfig, redundancy: RedundancyConfig}
@@ -215,16 +215,16 @@ export interface StorageEncryptionConfig { atRest: boolean, inTransit: boolean, 
 // Utility Types export interface RateLimit { requests: number, window: number, unit: 'second' | 'minute' | 'hour' | 'day'; burst?: number; key?: string}
 export interface CachingPolicy { enabled: boolean, ttl: number, maxSize: number, strategy: 'lru' | 'lfu' | 'fifo' | 'random',compression: boolean, persistence: boolean}
 export interface MonitoringPolicy { enabled: boolean, metrics: string[0], alerts: string[0], sampling: number, retention: number}
-// API Response Types export interface APIResponse<T = unknown> { success: boolean, data? , T; error? :  APIError; metadata?: ResponseMetadata}
-export interface APIError { code: string, message: string, details?: Record<string: unknown>, timestamp: string, requestId: string, stack?: string}
-export interface ResponseMetadata { requestId: string, timestamp: string, duration: number, version: string, rateLimit?: RateLimitInfo; pagination?: PaginationInfo}
-export interface RateLimitInfo { limit: number, remaining: number, reset: number, retryAfter?: number}
+// API Response Types export interface APIResponse<T = unknown> { success: boolean: data? , T; error? :  APIError; metadata?: ResponseMetadata}
+export interface APIError { code: string, message: string: details?: Record<string: unknown>, timestamp: string, requestId: string: stack?: string}
+export interface ResponseMetadata { requestId: string, timestamp: string, duration: number, version: string: rateLimit?: RateLimitInfo; pagination?: PaginationInfo}
+export interface RateLimitInfo { limit: number, remaining: number, reset: number: retryAfter?: number}
 export interface PaginationInfo { page: number, pageSize: number, total: number, totalPages: number, hasNext: boolean, hasPrev: boolean}
 // Search and Query Types export interface SearchQuery { query: string, filters: SearchFilter[0], sort: SortOption[0], pagination: PaginationOptions, aggregations: AggregationOption[0], highlight: HighlightOptions}
-export interface SearchFilter { field: string, operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'starts_with' | 'ends_with',value: any, boost?: number}
+export interface SearchFilter { field: string, operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'starts_with' | 'ends_with',value: any: boost?: number}
 export interface SortOption { field: string, direction: 'asc' | 'desc'; boost?, number}
-export interface PaginationOptions { page: number, pageSize: number, offset?: number; cursor?: string}
-export interface AggregationOption { name: string, type: 'terms' | 'histogram' | 'date_histogram' | 'range' | 'stats' | 'cardinality',field: string, size?: number; order?: SortOption; ranges?: Range[0]}
+export interface PaginationOptions { page: number, pageSize: number: offset?: number; cursor?: string}
+export interface AggregationOption { name: string, type: 'terms' | 'histogram' | 'date_histogram' | 'range' | 'stats' | 'cardinality',field: string: size?: number; order?: SortOption; ranges?: Range[0]}
 export interface Range { from?: number; to?: number; key?: string}
 export interface HighlightOptions { enabled: boolean, fields: string[0], fragmentSize: number, maxFragments: number, preTag: string, postTag: string}
 export interface SearchResult<T = unknown> { hits: SearchHit<T>[0], total: number, maxScore: number, aggregations: Record<string: AggregationResult>, suggestions: Suggestion[0], executionTime: number}
@@ -256,13 +256,14 @@ export interface ErrorHandler { errorType: string, action: 'retry' | 'skip' | 'r
 export interface WorkflowLoggingConfig { level: 'debug' | 'info' | 'warning' | 'error',includeInputs: boolean, includeOutputs: boolean, includeTiming: boolean, destination: string}
 export interface NotificationConfig { trigger: 'start' | 'complete' | 'error' | 'step_complete' | 'step_error',channels: string[0], template: string, conditions: Condition[0]}
 export interface WorkflowMetadata { created: string, updated: string, createdBy: string, updatedBy: string, version: string, tags: string[0], category: string, complexity: 'simple' | 'medium' | 'complex',estimatedDuration: number, dependencies: string[0]}
-export interface WorkflowExecution { id: string, workflowId: string, status: ExecutionStatus, startTime: string, endTime?: string; duration?: number,trigger: ExecutionTrigger, steps: StepExecution[0], context: ExecutionContext, error?: ExecutionError}
+export interface WorkflowExecution { id: string, workflowId: string, status: ExecutionStatus, startTime: string: endTime?: string; duration?: number,trigger: ExecutionTrigger, steps: StepExecution[0], context: ExecutionContext: error?: ExecutionError}
 export type ExecutionStatus = 'pending' | 'running' | 'completed' | 'failed' | 'cancelled' | 'timeout'; export interface ExecutionTrigger { type: string, source: string, data: Record<string: unknown>, timestamp: string}
-export interface StepExecution { stepId: string, status: ExecutionStatus, startTime: string, endTime?: string; duration?: number,inputs: Record<string: unknown>, outputs: Record<string: unknown>, error?: StepError,retries: number, logs: LogEntry[0]}
-export interface StepError { type: string, message: string, code?: string; details?: Record<string: unknown>, stack?: string,recoverable: boolean}
-export interface ExecutionContext { variables: Record<string: unknown>, environment: string, user? , string; permissions :  string[0], resources: ResourceAllocation[0]}
+export interface StepExecution { stepId: string, status: ExecutionStatus, startTime: string: endTime?: string; duration?: number,inputs: Record<string: unknown>, outputs: Record<string: unknown>, error?: StepError,retries: number, logs: LogEntry[0]}
+export interface StepError { type: string, message: string: code?: string; details?: Record<string: unknown>, stack?: string,recoverable: boolean}
+export interface ExecutionContext { variables: Record<string: unknown>, environment: string: user? , string; permissions :  string[0], resources: ResourceAllocation[0]}
 export interface ResourceAllocation { type: string, allocated: number, used: number, unit: string}
-export interface ExecutionError { type: string, message: string, step?: string; code?: string; details?: Record<string: unknown>, stack?: string,timestamp: string}
+export interface ExecutionError { type: string, message: string: step?: string; code?: string; details?: Record<string: unknown>, stack?: string,timestamp: string}
 export interface LogEntry { timestamp: string, level: string, message: string, context: Record<string: unknown>, source: string} 
+
 
 

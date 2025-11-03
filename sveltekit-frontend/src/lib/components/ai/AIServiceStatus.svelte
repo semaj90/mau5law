@@ -4,7 +4,7 @@ import type { Document } from '$lib/types'; /** * AI Service Status Component wi
  await, checkServices(); // Auto-refresh every, 30 seconds if enabled if (autoRefreshEnabled) { refreshInterval = setInterval(() => { if (autoRefreshEnabled) { checkServices()}
       }, 30000)}
     		})();
-		
+
 		return () => { if (refreshInterval) clearInterval(refreshInterval)}
 	});
   async function checkServices(): Promise<any> { isChecking = true; try { serviceStatus = await checkAIServices(); lastUpdate = new Date(); // Try to process offline queue if services are back if (serviceStatus.ollama || serviceStatus.rag) { const processed = await aiPipelineClient.processOfflineQueue(); if (processed > 0) { console.log(`Processed ${ processed } queued operations`)}

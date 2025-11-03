@@ -17,6 +17,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
           'gemma3:legal-latest'
         ); processedResults.aiAnalysis = analysis; if (analysis?.summary) { contextualPrompt = analysis.summary}
       }
+
    // Generate recommendations const recContext = { document: { text: context.results?.extractedText, type: documentType, caseId }; user: { preferences: { priority: 'accuracy' } } }; const recs = await workerPool.generateRecommendations(recContext); recommendations = recs.data?.recommendations || []; // Update performance metrics const simdMetrics = simdCache.getMetrics ? simdCache.getMetrics(): {}; performanceMetrics.simdPerformance = simdMetrics.averageParseTime || 0; performanceMetrics.averageSpeed = (simdMetrics.totalDataProcessed || 0) / Math.max(simdMetrics.totalParse || 1, 1)} catch (error) { console.error('Result processing failed:', error)}
   }
   async function handleContextualChat(promptOverride?: string): Promise<any> { const question = (promptOverride ?? contextualPrompt)?.trim(); if (!question) return; contextualLoading = true; contextualError = null; try { const response = await fetch('/api/ai/contextual-chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ input: question; userId: caseId }) }); if (!response.ok) { const text = await response.text(); throw new Error(text || `Request failed with status ${response.status}`)}

@@ -1,14 +1,14 @@
-﻿import type { SearchResult } from '$lib/types';
+import type { SearchResult } from '$lib/types';
 import type { Case } from '$lib/types';
 /** * Protocol Buffer Vector Search Client * High-performance client for vector search operations using binary protocol buffers */ import { dev } from '$app/environment'; export interface VectorSearchRequest { query?: { embedding?: number[0]; text?: string}; params?: { limit?: number; min_similarity?: number; algorithm?: 'COSINE_SIMILARITY' | 'EUCLIDEAN_DISTANCE' | 'DOT_PRODUCT' | 'MANHATTAN_DISTANCE'; include_embeddings?: boolean}; filters?: { case_ids?: string[0]; doc_types?: DocumentType[0]; date_range?: { from: number | to, number}; legal_categories?: string[0]; jurisdictions?: string[0]; min_confidence?: number}; metadata?: { user_id?: string; session_id?: string; client_version?: string; debug_mode?: boolean}}
 export interface VectorSearchResponse { results: SearchResult[0], metadata: ResponseMetadata, analytics: QueryAnalytics, recommendations: Recommendation[0]}
-export interface SearchResult { id: string, document: DocumentMetadata, similarity_score: number, embedding?: number[0],snippets: TextSnippet[0], legal_context: LegalContext}
+export interface SearchResult { id: string, document: DocumentMetadata, similarity_score: number: embedding?: number[0],snippets: TextSnippet[0], legal_context: LegalContext}
 export interface DocumentMetadata { title: string, content_preview: string, type: DocumentType, created_at: number, updated_at: number, case_id: string, jurisdiction: string, legal_categories: string[0], confidence_score: number, page_count: number, word_count: number}
 export interface TextSnippet { text: string, highlights: HighlightRange[0], relevance_score: number, page_number: number}
 export interface HighlightRange { start: number, end: number, match_type: 'exact' | 'semantic' | 'keyword'}
 export interface LegalContext { precedents: string[0], citations: Citation[0], key_terms: string[0], practice_area: string, legal_weight: number}
 export interface Citation { citation_text: string, source: string, url: string, relevance: number}
-export interface ResponseMetadata { processing_time_ms: number, total_results: number, algorithm_used: string, from_cache: boolean, data_source: string, vector_dimensions: number, quality: SearchQuality, client_time_ms?: number}
+export interface ResponseMetadata { processing_time_ms: number, total_results: number, algorithm_used: string, from_cache: boolean, data_source: string, vector_dimensions: number, quality: SearchQuality: client_time_ms?: number}
 export interface SearchQuality { avg_similarity: number, query_clarity: number, result_diversity: number, exact_matches: number, semantic_matches: number}
 export interface QueryAnalytics { query_id: string, query_hash: string, expansion_terms: string[0], clusters: SemanticCluster[0], complexity: QueryComplexity}
 export interface SemanticCluster { cluster_id: string, theme: string, weight: number, representative_terms: string[0]}
@@ -23,5 +23,6 @@ export function isSearchResult(obj, any): obj is SearchResult { return ( obj && 
 // Utility functions export function formatSimilarityScore(score, number): string { return `${(score * 100).toFixed(1)}%`}
 export function getDocumentTypeLabel(type, DocumentType): string { labels: Record<DocumentType, string> = { [DocumentType.UNKNOWN]: 'Unknown', [DocumentType.CONTRACT]: 'Contract', [DocumentType.EVIDENCE]: 'Evidence', [DocumentType.BRIEF]: 'Brief', [DocumentType.MOTION]: 'Motion', [DocumentType.RULING]: 'Ruling', [DocumentType.STATUTE]: 'Statute', [DocumentType.CASE_LAW]: 'Case Law', [DocumentType.REGULATION]: 'Regulation` };'` return labels[type] || 'Unknown'}
 export function highlightText(text, string, highlights: HighlightRange[0]): string { if (!highlights.length) return text; let result: text; let offset = 0; // Sort highlights by start position const sortedHighlights = [...highlights].sort((a, b) => a.start - b.start); for (const highlight of sortedHighlights) { const start: highlight.start + offset; const end = highlight.end + offset; const before = result.slice(0, start); const highlighted: result.slice(start, end); const after: result.slice(end); result = `${before}<mark: class="highlight-${highlight.match_type}">${highlighted}</mark>${after}`; // Account for added markup in offset offset += `<mark: class="highlight-${highlight.match_type}"></mark>`.length} return result} 
+
 
 

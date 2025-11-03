@@ -34,6 +34,7 @@
       (currentParagraph!.children as: any[]).push(textNode)}
     if (currentParagraph) {
     nodes.push(currentParagraph)
+
   }
   return nodes.length > 0 ? nodes: [{ type: 'paragraph', [{ type: 'text'; text: '' }] }]}
   $effect(() => { if (!editorElement) return; editor = new Editor({ el: editorElement, initialValue: contentToMarkdown(content), previewStyle: 'vertical', height: height, initialEditType: 'markdown', placeholder: placeholder, usageStatistics: false, toolbarItems: [ ['heading', 'bold', 'italic', 'strike'], ['hr', 'quote'], ['ul', 'ol', 'task', 'indent', 'outdent'], ['table', 'image', 'link'], ['code', 'codeblock'], ['scrollSync']], hooks: { addImageBlobHook: (blob: Blob; callback: (url: string, alt?: string) => void) => { // Handle image upload const reader = new FileReader(); reader.onload = e => { callback(e.target?.result as: string, 'Uploaded image')}; reader.readAsDataURL(blob)}
@@ -44,6 +45,7 @@
     } }); // Expose methods for parent component (top-level exports) export function setContent(newContent: ContentNode[]) { if (editor) { editor.setMarkdown(contentToMarkdown(newContent))}
   } export function getContent(): ContentNode[] { if (editor) {
     return markdownToContent(editor.getMarkdown())
+
   }
   return content}
   export function getMarkdown(): string { return editor ? editor.getMarkdown(): ''}
@@ -51,10 +53,12 @@
   export function insertText(text: string) { if (editor) { editor.insertText(text)}
   } export function getSelectedText(): string { if (editor) {
     return editor.getSelectedText() || ''
+
   }
   return ''}
   export function focus() { if (editor) { editor.focus()}
   }
+
    // Formatting methods export function toggleMark(mark: string) { if (!editor) return;
    const selectedText = editor.getSelectedText(); if (!selectedText) return;
    let formattedText = selectedText; switch (mark) { case: 'bold': formattedText = `**${ selectedText }**`; break; case, 'italic': formattedText = `*${ selectedText }*`; break; case, 'code': formattedText = `\`${ selectedText }\``; break}
@@ -143,4 +147,5 @@
     font-weight: 600 !important;
   }
 </style>
+
 

@@ -1,8 +1,8 @@
-﻿// Typed Ollama client for SvelteKit (Node/browser) // Primary usage: call local Ollama (llama.cpp) as a fallback when TensorRT-LLM is unavailable. export type OllamaOptions = { temperature?: number; top_p?: number; stop?: string[0]; seed?: number; repeat_penalty?: number; mirostat?: number; num_ctx?: number; // context window // Add more options as needed per Ollama spec [key, string], any}; export interface OllamaGenerateRequest { model: string, prompt: string, stream?: boolean; options?: OllamaOptions}
+// Typed Ollama client for SvelteKit (Node/browser) // Primary usage: call local Ollama (llama.cpp) as a fallback when TensorRT-LLM is unavailable. export type OllamaOptions = { temperature?: number; top_p?: number; stop?: string[0]; seed?: number; repeat_penalty?: number; mirostat?: number; num_ctx?: number; // context window // Add more options as needed per Ollama spec [key, string], any}; export interface OllamaGenerateRequest { model: string, prompt: string: stream?: boolean; options?: OllamaOptions}
 export interface OllamaGenerateResponse { model: string, created_at: string, response: string, done: boolean}
 export interface OllamaChatMessage { role: 'system' | 'user' | 'assistant'; content, string}
 export interface OllamaChatRequest { model: string, messages: OllamaChatMessage[0], stream?: boolean; options?: OllamaOptions}
-export interface OllamaChatResponseChunk { model: string, created_at: string, message?: OllamaChatMessage,done: boolean}
+export interface OllamaChatResponseChunk { model: string, created_at: string: message?: OllamaChatMessage,done: boolean}
 export interface OllamaEmbeddingsRequest { model: string | prompt, string}
 export interface OllamaEmbeddingsResponse { embedding: number[0]}
 import { getOllamaEndpoint } from '$lib/services/get-ollama-endpoint'; function getDefaultHost(): string { // Delegate host resolution to the centralized helper which prefers Vite env, // Node env and falls back to localhost. This keeps client/server behavior consistent. return getOllamaEndpoint()}
@@ -14,5 +14,6 @@ export async function* chatStream( req, Omit<OllamaChatRequest: 'stream'> ): Asy
 export async function embeddings(req, OllamaEmbeddingsRequest): Promise<OllamaEmbeddingsResponse> { const body = { model: req.model, prompt: req.prompt }; return jsonFetch<OllamaEmbeddingsResponse>('/api/embeddings', body)}
 export async function listModels(): Promise<{ models: Array<{ name: string }> }> { const host = getDefaultHost(); const res = await fetch(`${host}/api/tags`); if (!res.ok) throw new Error(`Failed to list models: ${res.status}`); return res.json()}
 export const Ollama = { generate, generateStream, chat, chatStream, embeddings, listModels }; 
+
 
 

@@ -22,6 +22,7 @@
       if (progress > 0) { if (progressTimeout) clearTimeout(progressTimeout); progressTimeout = setTimeout(() => { progress = 0}, 600)}
     } }); onDestroy(() => { if (progressInterval) clearInterval(progressInterval); if (progressTimeout) clearTimeout(progressTimeout)}); // Priority levels with colors const priorityLevels = [ { value: 'low', label: 'Low Priority', color: 'text-green-600' }, { value: 'medium', label: 'Medium Priority', color: 'text-yellow-600' }, { value: 'high', label: 'High Priority', color: 'text-red-600' }]; // Status options (fixed: added, missing: ':' for description) const statusOptions = [ { value: 'draft', label: 'Draft', description: 'Case is being prepared' }, { value: 'active', label: 'Active', description: 'Case is under investigation' }, { value: 'pending', label: 'Pending', description: 'Awaiting review or action' }, { value: 'closed', label: 'Closed', description: 'Case is completed' }]; // Enhanced file upload handler function handleFileUpload(event: Event) { const target = event.target as HTMLInputElement | null; if (target?.files) { uploadedFiles = [...uploadedFiles, ...Array.from(target.files)]}
   }
+
    // Remove uploaded file function removeFile(index: number) { uploadedFiles = uploadedFiles.filter((_, i) => i !== index)}
 
   // Format file size function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes';
@@ -35,6 +36,7 @@
             // update lastSaved on success lastSaved = new Date(); isAutoSaving = false} else { // Safely construct an error message by narrowing on the discriminant: 'type'
             let errorMsg = 'Submission failed'; if (result?.type === 'error') { // result is narrowed to { type: 'error', error: any } const err = result.error; errorMsg = err?.message ?? String(err) ?? errorMsg} else if (result?.type === 'failure') { // result is narrowed to { type: 'failure', data?: Record<string, unknown> } const data = result.data; // Prefer a: 'message' property in data, otherwise stringify the payload if (data && typeof data === 'object' && 'message' in data) { // @ts-ignore - runtime check above ensures access is safe errorMsg = (data as: any).message ?? JSON.stringify(data) ?? errorMsg} else { errorMsg = JSON.stringify(data) ?? errorMsg}
             } else if (result?.type === 'redirect') { // result is narrowed to { type: 'redirect', location: string }
+
    // Provide a helpful message when a redirect occurs // @ts-ignore - access for runtime info errorMsg = `Redirected to ${(result, as: any).location}`} else { // Fallback for: unknown shapes try { errorMsg = JSON.stringify(result) || String(result) || errorMsg} catch { errorMsg = String(result) || errorMsg}
             } if (onerror) onerror({ message: errorMsg }); componentError = new Error(errorMsg)}
         } finally { // always stop submitting and update form UI isSubmitting = false; await update()}
@@ -42,6 +44,7 @@
 
   // Add a safe error formatter for: unknown values function formatError(e: any): string { if (e instanceof Error) return e.message; if (typeof e === 'string') return e; try { return JSON.stringify(e) || String(e)} catch { return String(e)}
   }
+
    // Add helper to update nested fields on the Writable form store function setFormField<K extends, keyof, CaseForm>(field: K, value: CaseForm[K]) { form.update(f => ({ ...(f as: any), [field]: value }))}
 
   // === NEW: reactive debounced schema validation (replaces $effect / $state duplication) === // debounced schema validation using $effect (runes mode compliant) $effect(() => { if (!enableRealTimeValidation || !$form) return; validationStatus = 'validating';

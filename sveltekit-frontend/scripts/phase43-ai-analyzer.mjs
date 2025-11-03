@@ -32,6 +32,7 @@ const config = {
   qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
   embeddingModel: 'embeddinggemma:latest',
+  embeddingDim: 384, // Memory-optimized dimension
   cacheTTL: 7 * 24 * 60 * 60, // 7 days
   outputDir: 'logs/phase43',
   collectionName: 'error_embeddings'
@@ -100,7 +101,7 @@ class GPUEmbeddingAnalyzer {
         console.log(`📝 Creating Qdrant collection: ${config.collectionName}`);
         await this.qdrant.createCollection(config.collectionName, {
           vectors: {
-            size: 768,
+            size: config.embeddingDim, // 384 dimensions
             distance: 'Cosine'
           }
         });

@@ -10,6 +10,7 @@
         }, body: JSON.stringify({ email: `demo-${ role }@legal.ai.dev`, role }) }); if (!response.ok) { const data = await response.json(); throw new Error(data.message || 'Demo login failed')}
       const data = await response.json(); console.log('âœ… Demo login successful:', data); // Redirect to dashboard await goto('/dashboard')} catch (err) { error = err instanceof Error ? err.message: 'Login failed'; console.error('[Demo Login Error]', error)} finally { isLoading = false}
   }
+
    // Only show in development with demo auth enabled const isDemoMode = import.meta.env.DEV || import.meta.env.VITE_DEV_BYPASS_AUTH === 'true'; </script> {#if isDemoMode} <div class="demo-login-container"> {#if error} <div class="error-message">âš ï¸ { error }{/if} <div class="button-group"> <button class="demo-btn { variant } size-{ size }"
         onclick={() => handleDemoLogin('user')} disabled={ isLoading } title="Quick login as regular user (demo mode)"
       > {#if isLoading && selectedRole === 'user'} <span class="spinner"></span> {/if} {#if showLabel} <span>ðŸ‘¤ Demo User</span> {:else} <span>Demo</span> {/if} </button> <button class="demo-btn { variant } size-{ size }"

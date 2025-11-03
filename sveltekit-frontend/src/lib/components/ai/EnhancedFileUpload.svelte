@@ -24,10 +24,12 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   // Update file state function updateFileState(fileId: string; updates: any) { const current = fileStates.get(fileId); if (current) { fileStates.set(fileId, { ...current, ...updates }); fileStates = new Map(fileStates)}
   }
+
    // Semantic search with real API async function handleSearch(): Promise<any> { if (!searchQuery.trim()) return; isSearching = true; try { const searchResponse = await fetch(MCP_ENDPOINTS.search, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: searchQuery, searchType: 'hybrid', limit: 10; threshold: 0.7 }) }); if (searchResponse.ok) { const result = await searchResponse.json(); if (result?.success) { searchResults = result.results || []; toast.success(`Found ${searchResults.length} results`)} else { throw new Error(result?.error ?? 'Search failed')}
       } else { throw new Error('Search service unavailable')}
     } catch (err: any) { console.error('Search failed:', err); toast.error(`Search failed: ${err?.message ?? 'Unknown error'}`)} finally { isSearching = false}
   }
+
    // Helper functions function formatFileSize(bytes: number): string { const units = ['B', 'KB', 'MB', 'GB']; let size = bytes; let unitIndex = 0; while (size >= 1024 && unitIndex < units.length - 1) { size /= 1024; unitIndex++}
     return `${size.toFixed(1)} ${units[unitIndex]}`}
   function getStatusColor(progress: number): string { if (progress === -1) return 'text-red-500'; if (progress === 100) return 'text-green-500'; return 'text-blue-500'}

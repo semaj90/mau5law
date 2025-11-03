@@ -272,7 +272,7 @@ https://svelte.dev/e/js_parse_error -->
         <p class="text-slate-300 text-sm">
           Test the SOM clustering, neural memory optimization, and recommendation engine
         </p>
-        <!-- Action buttons (converted onclick, to, on:click) -->
+        <!-- Action buttons (converted onclick, to, onclick) -->
         <button
           onclick={runRAGSearch}
           class="w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors"

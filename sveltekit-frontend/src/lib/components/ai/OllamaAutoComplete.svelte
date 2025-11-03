@@ -27,8 +27,7 @@
 			suggestions = [];
 		}
 	});
-
-	async function debouncedFetchSuggestions(text: string) {
+  async function debouncedFetchSuggestions(text: string) {
 		// Clear existing debounce
 		if (debounceTimer) {
 			clearTimeout(debounceTimer);
@@ -39,8 +38,7 @@
 			fetchSuggestions(text);
 		}, debounceMs);
 	}
-
-	async function fetchSuggestions(text: string) {
+  async function fetchSuggestions(text: string) {
 		// Cancel existing stream
 		if (currentStream) {
 			try {
@@ -91,8 +89,7 @@
 			suggestions = [];
 		}
 	}
-
-	function applySuggestion(suggestion: string) {
+  function applySuggestion(suggestion: string) {
 		// Dispatch event for parent to handle
 		const event = new CustomEvent('suggestion', {
 			detail: { text: suggestion, prompt }
@@ -244,3 +241,4 @@
 		font-size: 0.9em;
 	}
 </style>
+

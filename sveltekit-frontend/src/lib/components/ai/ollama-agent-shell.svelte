@@ -42,6 +42,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   function scrollToBottom() { terminalElement?.scrollTo(0, terminalElement.scrollHeight)}
   function handleKeyDown(e: KeyboardEvent) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit()}
   }
+
    // Reactive state from XState let xstateResponse = $derived($state.context.response); // TODO: Convert to $derived: if ( xstateResponse && messages.length > 0 && messages[messages.length - 1].role === "assistant"
   ) { messages[messages.length - 1].content = xstateResponse }
 </script>

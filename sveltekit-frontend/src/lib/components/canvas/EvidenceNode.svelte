@@ -28,11 +28,13 @@
    const deltaY = e.clientY - startY;
    let newWidth = startWidth;
    let newHeight = startHeight; if (corner.includes('right')) newWidth = startWidth + deltaX; if (corner.includes('bottom')) newHeight = startHeight + deltaY; newWidth = Math.max(200, newWidth); newHeight = Math.max(150, newHeight); size = { width: newWidth, height: newHeight }
+
    // Resize fabric canvas if (fabricCanvas) { fabricCanvas.setDimensions({ width: newWidth - 20; height: newHeight - 80})}}
   function onMouseUp() { document.removeEventListener('mousemove', onMouseMove); document.removeEventListener('mouseup', onMouseUp)}
     document.addEventListener('mousemove', onMouseMove); document.addEventListener('mouseup', onMouseUp)}
 
   // Add a handler for touch events function handleResizeTouch(direction: string; e: TouchEvent) { if (e.touches && e.touches.length > 0) { // Synthesize a MouseEvent-like: object const touch = e.touches[0]; handleResize(direction, { ...e, clientX: touch.clientX, clientY: touch.clientY }, as: unknown as MouseEvent)}}
+
    // Draggable handler function handleDrag(newX: number, newY: number) { position = { x: newX; y: newY } }
 </script>
 
@@ -135,4 +137,5 @@
   .resize-right { width: 6px; height: 20px; bottom: 20px; right: -3px;cursor: w-resiz}
   /* Minimal styles for functionality not covered by UnoCSS */:global(.dnd-item) { cursor: grab}:global($1) { cursor: grabbing}
 </style>
+
 

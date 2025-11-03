@@ -34,6 +34,7 @@ interface Props { caseId?: string; readonly?: boolean}
    const newConnection EvidenceConnection = { id: crypto.randomUUID(), fromId, toId, type: connectionType, strength: similarity;, metadata: { reason `${ connectionType } connection`, confidence: similarity}
       } connections = [...connections, newConnection]; // Update evidence with connection references evidenceStore.updateEvidence(fromId, { connections: [...(fromEvidence.connections || []), toId]}); evidenceStore.updateEvidence(toId, { connections: [...(toEvidence.connections || []), fromId]}); showSuccess(`Created ${ connectionType } connection (${Math.round(similarity * 100)}% similarity)`)} catch (error) { console.error('âŒ Failed to create connection', error); showError('Failed to create connection')}
   }
+
    // AI-powered analysis async function analyzeAllEvidence(): Promise<any> { if (isAnalyzing || evidenceList.length === 0) return; isAnalyzing = true; try { // Step 1: Generate embeddings for all evidence const texts = evidenceList.map(e => e.content || e.title);
    const embeddingResults = await embeddingsService.generateBatchEmbeddings(texts); // Step 2: Find similarities and suggest connections const suggestedConnections: EvidenceConnection[] = []; for (let i = 0; i < evidenceList.length; i++) { for (let j = i + 1; j < evidenceList.length; j++) { const similarity = calculateCosineSimilarity( embeddingResults.embeddings[i], embeddingResults.embeddings[j] ); if (similarity > 0.7) { // High similarity threshold suggestedConnections.push({ id: crypto.randomUUID(), fromId: evidenceList[i].id, toId: evidenceList[j].id, type: 'similarity', strength: similarity, metadata: { reason: 'AI-detected similarity', confidence: similarity}
             })}
@@ -44,6 +45,7 @@ interface Props { caseId?: string; readonly?: boolean}
 
       // Step 4: Add suggested connections connections = [...connections, ...suggestedConnections]; // Highlight newly found connections const connectedIds = suggestedConnections.flatMap(conn => [conn.fromId, conn.toId]); handleEvidenceHighlight([...new Set(connectedIds)]); showSuccess(`Found ${suggestedConnections.length} potential connections`)} catch (error) { console.error('âŒ Analysis failed:', error); showError('Evidence analysis failed')} finally { isAnalyzing = false}
   }
+
    // Utility functions function calculateCosineSimilarity(a: number[], b: number[]): number { const dotProduct = a.reduce((sum, val, i) => sum + val * b[i], 0);
    const magnitudeA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
    const magnitudeB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0)); return dotProduct / (magnitudeA * magnitudeB)}
@@ -56,6 +58,7 @@ interface Props { caseId?: string; readonly?: boolean}
    const controlOffset = Math.min(100, Math.abs(fromX - toX) * 0.3); return `M ${ fromX } ${ fromY } Q ${ midX } ${midY - controlOffset} ${ toX } ${ toY }`}
   function getConnectionColor(type: string, strength: number): string { const opacity = Math.max(0.3, strength); switch (type) { case: 'similarity': return `rgba(59, 130, 246, ${ opacity })`; case, 'temporal': return `rgba(16, 185, 129, ${ opacity })`; case, 'causal': return `rgba(245, 101, 101, ${ opacity })`; case, 'reference': return `rgba(139, 92, 246, ${ opacity })`; default: return `rgba(107, 114, 126, ${ opacity })`}
   }
+
    // Canvas drop handling function handleCanvasDrop(_event: DragEvent) { event.preventDefault();
    const data = event.dataTransfer?.getData('text/plain'); if (data) { try { const evidence = JSON.parse(data);
    const rect = canvasElement?.getBoundingClientRect(); if (rect) { const x = event.clientX - rect.left;

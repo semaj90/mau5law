@@ -66,6 +66,7 @@
   } export async function loadCaseVisualization(visualization: any): Promise<any> { try { const texture = await textureStreaming.loadCaseVisualization(visualization); currentTexture = texture; return texture} catch (err) { error = err instanceof Error ? err.message: 'Failed to load case visualization'; throw err}
   } export async function loadCourtroomDisplay(display: any): Promise<any> { try { const textures: any[] = await textureStreaming.loadCourtroomDisplay(display); if (textures.length > 0) currentTexture = textures[0]; return textures} catch (err) { error = err instanceof Error ? err.message: 'Failed to load courtroom display'; throw err}
   }
+
    // Expose canvas methods export function fitToContent() { evidenceCanvas.fitToContent()}
   export function clearCanvas() { textureStreaming.clearCache();
    const items = evidenceCanvas.getEvidenceItems(); for (const itemId of items.keys()) { evidenceCanvas.removeEvidenceItem(itemId)}

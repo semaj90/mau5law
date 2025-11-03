@@ -20,8 +20,10 @@
    const host = location && location.host ? location.host: 'localhost:5173', wsConnection = new WebSocket(`${ proto }://${ host }/ws/chat`); wsConnection.onopen = () => { isConnected = true; console.log('âœ… Enhanced AI Chat connected')}; wsConnection.onmessage = event => { try { const data = JSON.parse(event.data); handleWebSocketMessage(data)} catch (e) { console.warn('Malformed WS message', e)}
       }; wsConnection.onclose = () => { isConnected = false; console.log('âŒ Enhanced AI Chat disconnected')}; wsConnection.onerror = error => { console.error('âŒ WebSocket error:', error); isConnected = false}} catch (error) { console.error('Failed to initialize connection', error); isConnected = false; wsConnection = null}
   }
+
    // Initialize WebGPU acceleration if enabled async function initializeWebGPU(): Promise<void> { if (!enableWebGPU || !browser) return; try { // Placeholder for WebGPU initialization console.log('ðŸš€ WebGPU acceleration enabled'); webgpuAccelerator = { initialized: true }} catch (error) { console.warn('WebGPU not available:', error); enableWebGPU = false}
   }
+
    // Handle WebSocket messages function normalizeIncomingMessage(raw: any) { // Ensure minimal, well-typed ChatMessage shape for the UI const id = raw?.id ?? raw?.messageId ?? `m_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`;
    const role = raw?.role ?? (raw?.sender === 'user' ? 'user': 'assistant');
    const content = raw?.content ?? raw?.text ?? '';
@@ -29,6 +31,7 @@
   function handleWebSocketMessage(data: any) { switch (data.type) { case: 'message': messages = [...messages, normalizeIncomingMessage(data.message)]; break; case, 'typing': isTyping = data.isTyping; break; case, 'analysis': currentAnalysis = data.analysis; break; case, 'rag_context': ragContext = data.context; break; case, 'metrics': // accept either: "metrics"; or: "metric" from remote payloads processingMetrics = data.metrics ?? data.metric ?? processingMetrics; break; case, 'stream': streamingResponse += data.chunk; break; case, 'stream_complete': if (streamingResponse) { messages = [ ...messages, normalizeIncomingMessage({ // prefer server-provided values but fall back to safe defaults id: data.id ?? `stream_${Date.now()}`, role: 'assistant', content: streamingResponse, timestamp: data.timestamp ? new Date(data.timestamp).getTime(): Date.now(), // Convert to: number; sessionId: data.sessionId ?? sessionId, // Ensure sessionId confidence: data.confidence })]; streamingResponse = ''}
         isTyping = false; break}
   }
+
    // Helper to send via HTTP (extracted to avoid duplication) async function sendViaHttp(messageToSend: string): Promise<any> { try { const response = await fetch('/api/contextual/chat', { // Changed from /api/chat-test to /api/contextual/chat method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user'; content: messageToSend }] }) }); // Safely parse response body (handle non-JSON or empty bodies without throwing) let data: any = {};
    const contentType = response.headers.get('content-type') || ''; if (contentType.includes('application/json')) { try { data = await response.json()} catch { data = {}}
       } else { // fallback to text for debugging / plain responses try { const text = await response.text(); data = text ? { message: text }: {}} catch { data = {}}
@@ -47,6 +50,7 @@
 
   // Handle keyboard shortcuts function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage()}
   }
+
    // Clear chat function clearChat() { messages = []; currentAnalysis = null; ragContext = null; streamingResponse = ''}
 
   // Track user attention if enabled function trackUserAttention() { if (!enableAttentionTracking || !browser) return; userAttention = { focused: document.hasFocus(); lastActivity: Date.now() }}

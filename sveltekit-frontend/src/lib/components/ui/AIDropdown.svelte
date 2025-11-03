@@ -105,13 +105,14 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
   function handleGlobalKey(e: KeyboardEvent) { if (!(e.ctrlKey && e.shiftKey)) return; const k = e.key.toLowerCase(); // Tools if (!disabled && !isGenerating && hasContent) { if (k === 's') { e.preventDefault(); onSummarize?.(); open = false; return}
       if (k === 'a') { e.preventDefault(); onAnalyze?.(); open = false; return}
     }
+
    // Reports (match last letter of shortcut) const match = reportTypes.find((r) => r.shortcut?.toLowerCase().endsWith(k)); if (match && !disabled && !isGenerating) { e.preventDefault(); onReportGenerate?.(match.id); open = false}
   } onMount(() => { window.addEventListener('keydown', handleGlobalKey); return () => window.removeEventListener('keydown', handleGlobalKey)}); </script>
  <details class="ai-dropdown" bind:open={ open }> <summary class="ai-trigger"
     role="button"
     aria-haspopup="menu"
     aria-expanded={ open } aria-controls="ai-menu"
-    aria-disabled={disabled || isGenerating} on:click|preventDefault={disabled || isGenerating} >
+    aria-disabled={disabled || isGenerating} onclick|preventDefault={disabled || isGenerating} >
     <span class="ai-trigger__content"> <Brain class="icon" /> <span class="label">AI Actions</span> </span>
  <ChevronDown class="chevron" /> </summary>
  <div id="ai-menu" role="menu" class="ai-menu" aria-labelledby="ai-summary"> <div class="ai-menu__section"> <div class="ai-menu__header">Generate Reports</div>
@@ -171,4 +172,4 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
   }
 </style>
 
-
+

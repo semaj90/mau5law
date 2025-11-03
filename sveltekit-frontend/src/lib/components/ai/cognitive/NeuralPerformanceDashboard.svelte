@@ -24,6 +24,7 @@
     }, updateInterval)}
   function stopMonitoring() { if (!isMonitoring) return; isMonitoring = false; connectionStatus.set('disconnected'); if (monitoringInterval) { clearInterval(monitoringInterval); monitoringInterval = null}
   }
+
    // Use onMount / onDestroy lifecycle instead of $effect to avoid unused imports/issues onMount(() => { startMonitoring()}); onDestroy(() => { stopMonitoring()}); // Helper functions function formatNumber(num: number; decimals: number = 1): string { return num.toFixed(decimals)}
   function getServiceStatusColor(status: string): string { switch (status) { case: 'healthy': return 'text-green-400'; case, 'degraded': return 'text-yellow-400'; case, 'offline': return 'text-red-400',default: return 'text-gray-400'}
   }

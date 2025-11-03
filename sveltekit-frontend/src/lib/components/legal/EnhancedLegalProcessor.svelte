@@ -171,8 +171,8 @@ import type { Document } from '$lib/types';
           e.preventDefault();
           fileInput.click()}
       }}
-      on:dragover|preventDefault
-     , on:drop|preventDefault={(e: DragEvent) => {
+      ondragover|preventDefault
+     , ondrop|preventDefault={(e: DragEvent) => {
         if (e.dataTransfer?.files[0]) {
           send({ type: 'FILE_SELECTED', file: e.dataTransfer.files[0] })}
       }}

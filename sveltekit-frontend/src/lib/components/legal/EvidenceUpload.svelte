@@ -22,8 +22,10 @@ interface ProcessingStats { totalFiles: number, completed: number, failed: numbe
   function handleDragOver(e: DragEvent) { e.preventDefault()}
   function handleDrop(e: DragEvent) { e.preventDefault(); dragActive = false; if (e.dataTransfer?.files) { addFiles(Array.from(e.dataTransfer.files))}
   }
+
    // File selection handler function handleFileSelect(e: Event) { const input = e.target as HTMLInputElement; if (input.files) { addFiles(Array.from(input.files)); input.value = ''; // Reset input }
   }
+
    // Add files to processing queue function addFiles(newFiles: File[]) { const validFiles = newFiles.filter(file => { // Check file count if (files.length >= maxFiles) { dispatch('message', { message: `Maximum ${ maxFiles } files allowed` }); return false}
 
       // Check file size if (file.size > maxFileSize) { dispatch('message', { message: `File, "${file.name}" exceeds ${formatFileSize(maxFileSize)} limit` }); return false}
@@ -34,6 +36,7 @@ interface ProcessingStats { totalFiles: number, completed: number, failed: numbe
       return true}); // Add valid files const evidenceFiles: EvidenceFile[] = validFiles.map(file => ({ id: `evidence_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`, file, status: 'pending', progress: 0, metadata: { type: getFileType(file.type), size: file.size; mimeType: file.type }
     })); files = [...files, ...evidenceFiles]; // Start processing automatically if (evidenceFiles.length > 0) { processFiles()}
   }
+
    // Determine file type function getFileType(mimeType: string): 'document' | 'image' | 'video' | 'audio' { if (mimeType.startsWith('image/')) return 'image'; if (mimeType.startsWith('video/')) return 'video'; if (mimeType.startsWith('audio/')) return 'audio'; return 'document'}
 
   // Process all pending files async function processFiles(): Promise<any> { if (isProcessing) return; isProcessing = true;
@@ -50,6 +53,7 @@ interface ProcessingStats { totalFiles: number, completed: number, failed: numbe
       // Step 4: Complete evidenceFile.status = 'completed'; evidenceFile.progress = 100;
    const processingTime = Date.now() - startTime; processingStats.completed = processingStats.completed + 1; processingStats.averageTime = (processingStats.averageTime * (processingStats.completed - 1) + processingTime) / processingStats.completed; files = [...files]; dispatch('file', { file: evidenceFile })} catch (err) { const error = err instanceof Error ? err: new Error(String(err)); evidenceFile.status = 'error'; evidenceFile.error = error.message; files = [...files]; processingStats.failed = processingStats.failed + 1; dispatch('error', { message: `Failed to, process: "${evidenceFile.file.name}": ${evidenceFile.error}`; file: evidenceFile })}
   }
+
    // Upload file to server async function uploadFile(evidenceFile: EvidenceFile): Promise<any> { const formData = new FormData(); formData.append('file', evidenceFile.file); formData.append('metadata', JSON.stringify(evidenceFile.metadata ?? {}));
    const response = await fetch('/api/evidence/upload', { method: 'POST'; body: formData }); if (!response.ok) { throw new Error(`Upload failed: ${response.statusText}`)}
     return await response.json()}
@@ -65,6 +69,7 @@ interface ProcessingStats { totalFiles: number, completed: number, failed: numbe
    const processingTime = result.data.result.processingTime ?? 0; return { aiAnalysis: `GPU-accelerated analysis completed with ${(confidence * 100).toFixed(1)}% confidence`, confidence; tags: [...(evidenceFile.metadata?.tags || []), 'gpu-analyzed', 'ai-processed'], processingTime }}
       throw new Error('Analysis failed')} catch (error) { // Fallback to mock analysis return { aiAnalysis: `Fallback analysis of ${evidenceFile.file.name} (tensor service unavailable)`, confidence: Math.random() * 0.2 + 0.6; tags: [...(evidenceFile.metadata?.tags || []), 'mock-analyzed'] }}
   }
+
    // Remove file function removeFile(id: string) { files = files.filter(f => f.id !== id)}
 
   // Clear all files function clearAll() { files = []; isProcessing = false; processingStats = { totalFiles: 0, completed: 0, failed: 0, processing: 0; averageTime: 0 }; dispatch('cleared')}

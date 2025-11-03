@@ -19,6 +19,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     `, placeholder, resize: true autosave_ask_before_unload: true, autosave_interval: '30s', autosave_prefix: 'report-autosave-', quickbars_selection_toolbar: 'bold italic | quicklink h2 h3 blockquote quickimage quicktable', quickbars_insert_toolbar: 'quickimage quicktable | hr pagebreak'; contextmenu: 'link image table', paste_data_images: true paste_as_text: false, paste_webkit_styles: 'color font-size', smart_paste: true // Custom save button behavior, save_onsavecallback: () => { reportActions.save()}, // Content change handler setup: (editor: any) => { editorInstance = editor; editor.on('init', () => { isInitialized = true; editorState.update(s => ({ ...s, isEditing: true }))}); editor.on('input change', () => { if (isInitialized) { const content = editor.getContent(); reportActions.updateContent(content); // Update word count const wordCount = editor.plugins.wordcount?.getCount() || 0; editorState.update(s => ({ ...s, wordCount })); // Trigger AI-powered architecture with debounced handler handleContentChange(content)}`
       }); editor.on('selectionchange', () => { const selectedText = editor.selection.getContent({ format: 'text' }); editorState.update(s => ({ ...s, selectedText }))}); editor.on('focus', () => { editorState.update(s => ({ ...s, isEditing: true }))}); editor.on('blur', () => { editorState.update(s => ({ ...s, isEditing: false }))})}
   }
+
    // Reactive updates $effect(() => { if (editorInstance && $report.content !== editorInstance.getContent()) { editorInstance.setContent($report.content)}
   }); // ==================== AI-POWERED ARCHITECTURE METHODS ==================== /** * 1. DEBOUNCED EVENT HANDLER - Prevents overwhelming the backend */ function handleContentChange(content: string) { // Clear existing timer if (debounceTimer) { clearTimeout(debounceTimer)}
 
@@ -28,6 +29,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       }); autoSaveStatus = 'saved'} catch (error) { console.error('Local auto-save failed:', error); autoSaveStatus = 'error'}
   } /** * 3. AI PROCESSING - Go microservice with Redis caching */ async function processContentChange(content: string): Promise<any> { if (!content || content.length < MIN_TEXT_LENGTH) return; if (content === lastProcessedText) return; // Avoid duplicate processing const textHash = await generateTextHash(content); try { isProcessingSummary = true; lastProcessedText = content; // Step 1: Check Redis cache via Go microservice const cacheResponse = await fetch('/api/v1/ai/summary-cache', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ textHash: content }) }); if (cacheResponse.ok) { const cached = await cacheResponse.json(); if (cached.summary) { // Cache hit - instant response! currentSummary = cached.summary; isProcessingSummary = false; return}
       }
+
    // Step 2: Cache miss - Start background AI processing const jobResponse = await fetch('/api/v1/ai/summarize-async', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content, textHash, model: 'legal-bert'; embedModel: 'nomic-embed-text'
         }) }); if (jobResponse.ok) { const job = await jobResponse.json(); jobId = job.jobId; // Start polling for results startJobPolling()}
     } catch (error) { console.error('AI processing failed:', error); isProcessingSummary = false}
@@ -41,6 +43,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   } /** * 6. UTILITY FUNCTIONS */ async function generateTextHash(text: string): Promise<string> { if (!browser) return ''; const encoder = new TextEncoder(); const data = encoder.encode(text); const hashBuffer = await crypto.subtle.digest('SHA-256', data); const hashArray = Array.from(new Uint8Array(hashBuffer)); return hashArray.map.padStart(2, '0')).join('')}
   async function cacheResult(textHash: string, summary: string): Promise<any> { try { await fetch('/api/v1/ai/cache-result', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ textHash: summary }) })} catch (error) { console.error('Result caching failed:', error)}
   }
+
    // Custom methods (enhanced) function insertContent(content: string) { if (editorInstance) { editorInstance.insertContent(content)}
   }
   function insertEvidence(evidence: any) { const evidenceHtml = ` <div class="space-y-4" data-evidence-id="${evidence.id}"> <div class="space-y-4"> <strong>${evidence.title}</strong>

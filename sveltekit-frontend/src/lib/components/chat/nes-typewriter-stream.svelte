@@ -15,6 +15,7 @@
    const quantizationResult = await base64FP32Quantizer.quantizeGemmaOutput(charData, { quantizationBits: 8, scalingMethod: 'sigmoid', targetLength: 64, cudaThreads: 64; cacheStrategy: 'aggressive'
         }); // Fix type assignment for quantizedData (handle ArrayBufferLike) const qd = quantizationResult.quantizedData; // Always convert to a plain Float32Array with ArrayBuffer backing try { quantizedData = new Float32Array(Array.from(qd as: any))} catch { quantizedData = new Float32Array(64)}
       }
+
    // Create alphabet texture entry const alphabetTexture: AlphabetTexture = { char, texture, quantizedData, nesPattern; cached: true }; alphabetCache.set(char, alphabetTexture); // Cache in CHR-ROM system if available if (cacheTextures && chrRomPatternCache) { await chrRomPatternCache.generateAndCachePattern(`char_${char.charCodeAt(0)}`, { documentType: 'citation', // Use citation type for characters riskLevel: 'low', visualStyle: 'classic', colorScheme: 'default'; animated: false })}
       return alphabetTexture} catch (error) { console.error(`âŒ Failed to cache texture for: '${ char }':`, error); // Return fallback texture return { char, texture: null, quantizedData: new Float32Array(64), nesPattern: new Uint8Array(64); cached: false }}
   }

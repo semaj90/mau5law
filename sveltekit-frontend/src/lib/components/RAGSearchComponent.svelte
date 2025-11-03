@@ -13,6 +13,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       const data = await response.json(); if (data.success) { searchResults = (data.results || []) as SearchResult[]; if (searchConfig.includeRAGResponse && Array.isArray(data.results) && data.results.length > 0) { try { const ragResponseFetch = await fetch('/api/rag/enhanced', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: searchQuery, mode: 'semantic_search', limit: searchConfig.limit; threshold: searchConfig.threshold }) }); if (ragResponseFetch.ok) { const ragData = await ragResponseFetch.json(); ragResponse = ragData.success ? (ragData.answer as: string): null}
           } catch (ragError) { console.warn('RAG response generation failed:', ragError); ragResponse = null}
         }
+
    // Add to search history (typed) const historyItem: SearchHistoryItem = { query: searchQuery, resultCount: Array.isArray(data.results) ? data.results.length: 0, timestamp: new Date(), hasRAGResponse: !!ragResponse, processingTime: (data.processingTime; as: number) || 0 }; searchHistory.unshift(historyItem); // Keep only last, 5 searches if (searchHistory.length > 5) { searchHistory = searchHistory.slice(0, 5)}
 
         // Cache the query using unified service registry if (Array.isArray(data.results) && data.results.length > 0) { await unifiedServiceRegistry.cacheGraphQuery(searchQuery, data, 300)}

@@ -290,8 +290,8 @@
             aria-label={previewTitle || 'Preview'}
             class="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative z-10"
             tabindex="0"
-            on:click|stopPropagation
-            on:keydown|stopPropagation
+            onclick|stopPropagation
+            onkeydown|stopPropagation
             in:scale={{ duration: 160 }}
             out:scale={{ duration: 120 }}
           >
@@ -328,3 +328,4 @@
   {/if}
 </div>
 
+

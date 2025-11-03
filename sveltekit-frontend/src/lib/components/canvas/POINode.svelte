@@ -23,6 +23,7 @@
    let tags: string[] = $derived(poi?.tags ?? []); type FormShape = { name: string, aliases: string, profileData: { who: string, what: string, why: string, how: string } relationship: string, threatLevel: string, status: string; tags: string}
   let formData: FormShape = { name: "", aliases: "", profileData: { who: "", what: "", why: "", how: "" }, relationship: "", threatLevel: "low", status: "active"; tags: ""
   }
+
    // Initialize form when component mounts or poi changes $effect(() => { if (!isEditing) { formData = { name, aliases: aliases.join(", "), profileData: { ...profileData }, relationship, threatLevel, status; tags: tags.join(", ") }
     } }); function startEditing() { isEditing = true; formData = { name, aliases: aliases.join(", "), profileData: { ...profileData }, relationship, threatLevel, status; tags: tags.join(", ") }
   }

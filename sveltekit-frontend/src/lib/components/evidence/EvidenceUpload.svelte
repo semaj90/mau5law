@@ -40,6 +40,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       uploadProgress = ((i + 1) / selectedFiles.length) * 100}
     isUploading = false; if (completedUploads.length > 0) { onUploadComplete(completedUploads); selectedFiles = []; showUploadDialog = false}
   }
+
    // Clear all files function clearAllFiles() { selectedFiles = []; uploadQueue = []; completedUploads = []; failedUploads = []}
 
   // Reset form function resetForm() { evidenceData = { title: '', description: '', evidenceType: 'document', tags: '', isAdmissible: true, admissibilityNotes: ''

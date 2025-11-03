@@ -32,7 +32,7 @@
   <div class="space-y-4">
     <!-- Logo, and, Brand -->
     <div class="brand-section">
-      <!-- changed, on:click -> onclick -->
+      <!-- changed, onclick -> onclick -->
       <button class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
         <!-- replaced lucide icon with simple, inline, marker -->
         <span class="icon" aria-hidden="true">ðŸŽ¨</span>
@@ -43,7 +43,7 @@
 
     <!-- Navigation -->
     <nav class="main-nav" aria-label="Main, navigation">
-      <!-- changed, on:click -> onclick for each button -->
+      <!-- changed, onclick -> onclick for each button -->
       <button class="nav-button" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
         <span class="icon">ðŸ </span>
 
@@ -76,7 +76,7 @@
 
     <!-- Search -->
     <div class="search-section">
-      <!-- changed, on:search -> onsearch and added cast to satisfy TS -->
+      <!-- changed, onsearch -> onsearch and added cast to satisfy TS -->
       <SearchInput
         placeholder="Search cases, evidence, notes..."
         bind:value={searchQuery}
@@ -88,7 +88,7 @@
     <div class="user-section">
   {#if user}
         <div>
-          <!-- changed, on:click -> onclick -->
+          <!-- changed, onclick -> onclick -->
           <button
             class="user-button"
             onclick={() => toggleUserMenu()}
@@ -109,7 +109,7 @@
           </button>
   {#if userMenuOpen}
             <div class="user-menu" role="menu">
-              <!-- changed, on:click -> onclick for menu items -->
+              <!-- changed, onclick -> onclick for menu items -->
               <button class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem">
                 <span class="icon">ðŸ‘¤</span>
                 Profile
@@ -128,7 +128,7 @@
             {/if}
   </div>
       {:else}
-        <!-- changed, on:click -> onclick -->
+        <!-- changed, onclick -> onclick -->
         <button class="sign-in-button" onclick={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
       {/if}
   </div>

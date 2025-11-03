@@ -13,13 +13,16 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     errors.set(newErrors); return Object.keys(errors).length === 0}
   function isValidUrl(url: string): boolean { try { new URL(url); return true} catch { return false}
   }
+
    // Save citation async function handleSave(): Promise<void> { if (!validateForm()) return; isLoading = true; try { const endpoint = '/api/citations'; const method = mode === 'create' ? 'POST': 'PUT'; const payload = { ...formData, caseId, publicationDate: formData.publicationDate ? new Date(formData.publicationDate): null ...(mode === 'edit' && { id: citation?.id }) }
       const response = await fetch(endpoint, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)}); const result = await (response as { json?: any }).json(); if ((result as { success?: any; citation?: any; error?: any }).success) { ondispatch?.((result as { success?: any; citation?: any; error?: any }).citation)} else { console.error(error)}
     } catch (error) { console.error('Save error:', error)} finally { isLoading = false}'
   }
+
    // Delete citation async function handleDelete(): Promise<void> { if (!citation?.id || mode === 'create') return; if (!confirm('Are you sure you want to delete this citation?')) return; isLoading = true; try { const response = await fetch('/api/citations', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: citation.id }) }); const result = await (response as { json?: any }).json(); if ((result as { success?: any; citation?: any; error?: any }).success) { ondispatch?.(citation.id)} else { console.error(error)}
     } catch (error) { console.error('Delete error:', error)} finally { isLoading = false}'
   }
+
    // Add tag function addTag(_event: KeyboardEvent) { if (event.key === 'Enter' && event.target) { event.preventDefault(); const input = event.target as HTMLInputElement; const tag = input.value.trim.toLowerCase(); if (tag && !formData.tags.includes(tag)) { formData.tags = [...formData.tags, tag]; input.value = ''}
     } }
 

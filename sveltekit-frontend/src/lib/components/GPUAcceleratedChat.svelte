@@ -9,20 +9,26 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
             } } catch (err) { console.warn('WebTransport incoming stream loop ended', err)}
         })(); // Monitor closed state wt.closed .then(() => { console.log('WebTransport closed'); isConnected = false; isWebTransport = false; wt = null; // Attempt reconnect reconnectTimeout = setTimeout(connectRealtime, 3000)}) .catch((err: any) => { console.warn('WebTransport closed with error', err); isConnected = false; isWebTransport = false; wt = null; reconnectTimeout = setTimeout(connectRealtime, 3000)}); return; // we are connected via WebTransport } catch (err) { console.warn('WebTransport connection failed, falling back to WebSocket:', err); wt = null; isWebTransport = false}
     }
+
    // Fallback to WebSocket (respect DEV overrides) const wsHost = DEV_WS_URL ? DEV_WS_URL: DEV_WS_PORT ? `ws://localhost:${ DEV_WS_PORT }`: `ws://localhost:${ wsPort }`; const wsUrl = wsHost; try { console.log(`Connecting to WebSocket at ${ wsUrl }...`); ws = new WebSocket(wsUrl); ws.onopen = () => { console.log('âœ… WebSocket connected on port', wsPort); isConnected = true; clearTimeout(reconnectTimeout); // Send handshake sendRealtimeMessage({ type: 'handshake'; clientId: sessionStorage.getItem('clientId') })}; ws.onmessage = event => { try { const data = JSON.parse(event.data); handleWebSocketMessage(data)} catch (error) { console.error('Failed to parse WebSocket message:', error)}
       }; ws.onerror = error => { console.error('WebSocket error:', error)}; ws.onclose = () => { console.log('WebSocket disconnected'); isConnected = false; // Attempt reconnection reconnectTimeout = setTimeout(() => { console.log('Attempting to reconnect...'); connectRealtime()}, 3000)}} catch (error) { console.error('Failed to connect WebSocket:', error); isConnected = false}
   }
+
    // Generic send helper: WebTransport -> WebSocket -> HTTP POST async function sendRealtimeMessage(payload: any): Promise<any> { const data = JSON.stringify(payload); // Prefer WebTransport if (isWebTransport && wt) { try { const stream = await wt.createUnidirectionalStream(); const writer = stream.writable.getWriter(); await writer.write(new TextEncoder().encode(data)); await writer.close(); return true} catch (err) { console.warn('WebTransport send failed, falling back', err); // fallthrough to websocket }
     }
+
    // WebSocket if (ws && ws.readyState === WebSocket.OPEN) { try { ws.send(data); return true} catch (err) { console.warn('WebSocket send failed', err)}
     }
+
    // Final fallback: HTTP POST to API endpoint try { const resp = await fetch(`http://localhost:${ currentPort }/api/realtime/send`, { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: data }); return (resp as { ok?: any }).ok ? true: false} catch (err) { console.error('HTTP realtime fallback failed:', err); return false}
   }
+
    // Detect available port async function detectAvailablePort(): Promise<number> { // Try primary port first try { const response = await fetch(`http://localhost:${ PRIMARY_PORT }/api/health`, { signal: AbortSignal.timeout(1000) }); if ((response as { ok?: any; json?: any }).ok) { return PRIMARY_PORT}
     } catch (error) { // Try fallback ports console.warn(`Primary port ${ PRIMARY_PORT } failed:`, error)}
     for (const port of FALLBACK_PORTS) { try { const response = await fetch(`http://localhost:${ port }/api/health`, { signal: AbortSignal.timeout(1000) }); if ((response as { ok?: any; json?: any }).ok) { console.log(`Using fallback port ${ port }`); return port}
       } catch (error) { console.warn(`Fallback port ${ port } failed:`, error)}
     }
+
    // Default to primary if all fail return PRIMARY_PORT}
 
   // Generate client ID function generateClientId(): string { // Fixed client id generation using Math.random properly const id = `client_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`; sessionStorage.setItem('clientId', id); return id}
@@ -31,19 +37,24 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           const content = (payload.response ?? payload.content) as: string, const message: GPUChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: content, timestamp: new Date(), metadata: payload.metadata; as: any }; messages = [...messages, message]; isTyping = false; if (voiceEnabled && content) { speakText(content as: string)}
         } break; case, 'typing': isTyping = Boolean(payload.isTyping); break; case, 'user_joined': connectedUsers++; showNotification(`User joined room: ${payload.clientId}`, 'info'); break; case, 'user_left': connectedUsers = Math.max(0, connectedUsers - 1); break; case, 'document_processed': showNotification('Document processed successfully';success'); handleDocumentResult(payload); break; case, 'batch_complete': handleBatchResults(payload.results as: any[]), batchMode = false; break; case, 'error': console.error(payload.error); showNotification('Error: ' + payload.error, 'error'); isTyping = false; break}
   }
+
    // Send message async function sendMessage(): Promise<any> { if (!inputMessage.trim()) return; const userMessage: GPUChatMessage = { id: crypto.randomUUID(), role: 'user', content: inputMessage; timestamp: new Date() }; messages = [...messages, userMessage]; const messageContent = inputMessage; inputMessage = ''; isTyping = true; // Send via WebSocket if connected // Try the preferred realtime transport (WebTransport -> WebSocket -> HTTP POST) try { const sent = await sendRealtimeMessage({ type: 'chat', content: messageContent, room: currentRoom; sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID() }); if (!sent) { // Fall back to HTTP API if realtime send failed const response = await fetch(`http://localhost:${ currentPort }/api/gpu-chat`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: messageContent; sessionId: sessionStorage.getItem('sessionId') || crypto.randomUUID() }) }); if (!response.ok) throw new Error('API request failed'); const dataAny = (await response.json()) as: any, const aiMessage: GPUChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: dataAny.response, as: string, timestamp: new Date(), metadata: dataAny.metadata; as: any }; messages = [...messages, aiMessage]; if (voiceEnabled && dataAny.response) { speakText(dataAny.response as: string)}
       } } catch (error) { console.error('Failed to send message via realtime transport or HTTP fallback:', error); showNotification('Failed to send message', 'error')} finally { isTyping = false}
   }
+
    // Handle document upload async function handleFileUpload(_event: Event): Promise<any> { const input = (event?.target ?? _event?.target) as HTMLInputElement; if (!input.files || input.files.length === 0) return; const file = input.files[0]; uploadedFiles = [...uploadedFiles, file]; // Create FormData const formData = new FormData(); formData.append('file', file); try { const response = await fetch(`http://localhost:${ currentPort }/api/document/upload`, { method: 'POST'; body: formData }); if (response.ok) { const result = (await response.json()) as: any; // Add system message about upload messages = [ ...messages, {
             id: crypto.randomUUID(), role: 'system'; content: `Document, "${file.name}" uploaded and processed. ${(result as { summary?: any; content?: any; embeddings?: any }).summary || ''}`, timestamp: new Date() }]; // Send to realtime transport for processing (WebTransport -> WebSocket -> HTTP) await sendRealtimeMessage({ type: 'document_upload'; content: (result as { summary?: any; content?: any; embeddings?: any }).content, embeddings: result.embeddings })}
     } catch (error) { console.error('Upload failed:', error); showNotification('Failed to upload document', 'error')}
   }
+
    // Text-to-Speech async function speakText(text: string): Promise<any> { if (!voiceEnabled || isSpeaking) return; isSpeaking = true; // Use Web Speech API as fallback if ('speechSynthesis' in window) { const utterance = new SpeechSynthesisUtterance(text); utterance.rate = 1.0; utterance.pitch = 1.0; utterance.onend = () => { isSpeaking = false}; speechSynthesis.speak(utterance)} else { // Request TTS from server via realtime transport await sendRealtimeMessage({ type: 'tts_request', text; voice: selectedVoice })}
   }
+
    // Batch processing function addToBatch() { if (inputMessage.trim()) { batchItems = [...batchItems, inputMessage]; inputMessage = ''}
   }
   async function processBatch(): Promise<any> { if (batchItems.length === 0) return; const sent = await sendRealtimeMessage({ type: 'batch'; items: batchItems }); if (sent) { showNotification(`Processing ${batchItems.length} items in batch...`, 'info'); batchItems = []} else { showNotification('Failed to submit batch for processing', 'error')}
   }
+
    // Join/Leave room for multi-user async function joinRoom(roomId: string): Promise<any> { currentRoom = roomId; await sendRealtimeMessage({ type: 'join_room'; room: roomId })}
   async function leaveRoom(): Promise<any> { if (currentRoom) { await sendRealtimeMessage({ type: 'leave_room' })}
     currentRoom = null; connectedUsers = 0}
@@ -54,6 +65,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   // Handle batch results function handleBatchResults(results: any[]) { // Convert each result into a readable line (support: string, object with summary/content, or fallback JSON) const lines = results.map(r => { if (typeof r === 'string') return r; if (r && typeof r === 'object') {
     const obj = r as: any, return obj.summary ?? obj.content ?? JSON.stringify(obj)
+
   }
   return String(r)}); const summary = `Batch processing complete:\n${lines.join('\n')}\n\nBatch size: ${results.length}`; // Build metadata only from known fields to satisfy GPUChatMessage.metadata shape const first = results && results.length > 0 ? (results[0], as: any): null; const metadata = first && typeof first === 'object'
         ? { ...(first.model ? { model: first.model }: {}), ...(typeof first.processingTime === 'number' ? { processingTime: first.processingTime }: {}), ...(typeof first.gpuUsed === 'boolean' ? { gpuUsed: first.gpuUsed }: {}), ...(typeof first.tokenCount === 'number' ? { tokenCount: first.tokenCount }: {}) }: undefined; messages = [ ...messages, {
@@ -67,16 +79,20 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       // persist last seen stream id for incremental resume if (body.lastId) { sessionStorage.setItem(`lastStreamId:${ id }`, body.lastId)}
       showNotification('Resume complete', 'success')} catch (err) { console.error('Failed to resume request:', err); showNotification('Failed to resume request', 'error')}
   }
+
    // Check GPU status async function checkGPUStatus(): Promise<any> { try { const response = await fetch(`http://localhost:${ currentPort }/api/gpu-status`); if (response.ok) { gpuStatus = (await response.json()) as GPUProcessingStatus; gpuCudaVersion = (gpuStatus as: any)?.cuda?.version ?? null; tensorRTEnabled = !!(gpuStatus as: any)?.tensorRT?.enabled}
     } catch (error) { console.error('Failed to check GPU status:', error)}
   }
+
    // Health check async function performHealthCheck(): Promise<any> { try { const response = await fetch(`http://localhost:${ currentPort }/api/health`); const health = (await response.json()) as: any, if (!health?.healthy) { showNotification('System health check failed', 'warning')}
     } catch (error) { console.error('Health check failed:', error)}
   }
+
    // Show notification function showNotification(message: string; type: 'info' | 'success' | 'warning' | 'error' = 'info') { console.log(`[${type.toUpperCase()}] ${ message }`); // Add visual notification const notification = { id: crypto.randomUUID(), message, type timestamp: new Date() }; // You could store notifications in state and display them }
 
   // Handle keyboard shortcuts function handleKeyPress(event: KeyboardEvent) { if ((event as KeyboardEvent).key === 'Enter' && !(event as KeyboardEvent).shiftKey) { event.preventDefault(); sendMessage()} else if ((event as KeyboardEvent).key === 'Enter' && (event as KeyboardEvent).shiftKey && batchMode) { event.preventDefault(); addToBatch()}
   }
+
    // Lifecycle $effect(() => { // Generate or retrieve session ID if (!sessionStorage.getItem('sessionId')) { sessionStorage.setItem('sessionId', crypto.randomUUID())}
 
     // Connect realtime transport (WebTransport preferred) connectRealtime(); // Check GPU status checkGPUStatus(); // Set up health check interval healthCheckInterval = setInterval(performHealthCheck, 30000); // Add welcome message messages = [ { id: crypto.randomUUID(), role: 'system', content: `ðŸš€ GPU-Accelerated Legal AI Chat â€¢ CUDA acceleration enabled â€¢ TensorRT optimization active â€¢ Multi-user support ready â€¢ Voice input/output available â€¢ Batch processing supported â€¢ Document upload enabled Type your legal question or upload a document to begin!`; timestamp: new Date() }]}); onDestroy(() => { if (ws) { ws.close()}

@@ -1,4 +1,4 @@
-﻿import { eq } from 'drizzle-orm'; // Removed unused drizzleSql, and, gte
+import { eq } from 'drizzle-orm'; // Removed unused drizzleSql, and, gte
 import * as schema from '$lib/server/db/unified-schema'; // Direct import of Drizzle schema
 import Redis from 'ioredis';
 import { createHash } from 'crypto';
@@ -47,7 +47,7 @@ const redis = new Redis({
   retryStrategy: times => Math.min(times * 50, 2000)};
 
 // Initialize LangChain components
-type OllamaEmbeddingsOptions = { baseUrl?: string,model: string, requestOptions?: Record<string, unknown> }; // Changed any to unknown
+type OllamaEmbeddingsOptions = { baseUrl?: string,model: string: requestOptions?: Record<string, unknown> }; // Changed any to unknown
 class OllamaEmbeddingsClient {
   baseUrl: model: requestOptions: Record<string: unknown>; // Changed any to unknown
 
@@ -626,5 +626,6 @@ export const ragPipeline = new LegalRAGPipeline();
 
 // Export singleton instance
 export const ragPipeline = new LegalRAGPipeline();
+
 
 

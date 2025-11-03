@@ -1,4 +1,4 @@
-﻿/** MCP Context7.2 Get Library Docs Integration
+/** MCP Context7.2 Get Library Docs Integration
  * Enhanced for Svelte 5 + SvelteKit 2 + TypeScript
  * Provides utilities for retrieving documentation from Context7 MCP server
  */
@@ -6,12 +6,10 @@
 export interface CodeSnippet {
   title: string,
   code: string,
-  description: string,
-  language?: string}
+  description: string: language?: string}
 
 export interface LibraryDocsRequest {
-  context7CompatibleLibraryID: string,
-  topic?: string;
+  context7CompatibleLibraryID: string: topic?: string;
   tokens?: number;
   format?: 'markdown' | 'json' | 'typescript'}
 
@@ -158,4 +156,5 @@ export async function getTechStackDocs(
     default:
       return resolveMap(allDocs)}
 }
+
 

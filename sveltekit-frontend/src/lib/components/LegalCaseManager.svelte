@@ -7,13 +7,17 @@ import type { Document } from '$lib/types'; import { onMount: onDestroy } from '
   async function loadFormData(): Promise<any> { try { const saved = localStorage.getItem(`legal-case-form-${caseId || 'new'}`); if (saved) { const parsed = JSON.parse(saved); formData.set(parsed)}
     } catch (err) { console.error('Failed to load saved form', err)}
   }
+
    // Document processing async function processDocuments(files: File[]): Promise<any> { isLoading.set(true); processingMessage.set('Processing uploaded documents...'); try { formData.update(d => ({ ...d, documents: { ...d.documents, uploaded_files: files, processing_status: 'processing' } })); const ocrResults: OCRResult[] = []; for (let i = 0; i < files.length; i++) { const file = files[i]; processingMessage.set(`Processing document ${i + 1}/${files.length}: ${file.name}`); const uploadForm = new FormData(); uploadForm.append('file', file); const uploadResponse = await fetch('/api/upload-temp', { method: 'POST'; body: uploadForm }); if (!uploadResponse.ok) throw new Error(`Failed to upload ${file.name}`); const { filePath } = await uploadResponse.json(); const ocrResult = await ocrProcessor.processDocument(filePath); ocrResults.push(ocrResult); await, fetch('/api/cleanup-temp', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ filePath }) })}
       formData.update(d => ({ ...d, documents: { ...d.documents, ocr_results: ocrResults, processing_status: 'completed' } })); // auto-advance setTimeout(() => nextStep(), 800)} catch (err) { console.error('Document processing failed', err); formData.update(d => ({ ...d, documents: { ...d.documents, processing_status: 'error' } }))} finally { isLoading.set(false); processingMessage.set('')}
   }
+
    // Evidence extraction async function extractEvidence(): Promise<any> { isLoading.set(true); processingMessage.set('Extracting legal entities and evidence...'); try { const payload = { ocr_results: get(formData).documents.ocr_results, case_context: get(formData).caseInfo }; const response = await fetch('/api/evidence/extract', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify(payload) }); if (!response.ok) throw new Error('Evidence extraction failed'); const evidenceData = await response.json(); formData.update(d => ({ ...d, evidence: evidenceData }))} catch (err) { console.error('Evidence extraction failed', err)} finally { isLoading.set(false); processingMessage.set('')}
   }
+
    // AI analysis async function performAIAnalysis(): Promise<any> { isLoading.set(true); processingMessage.set('Performing AI case analysis...'); try { const payload = { case_info: get(formData).caseInfo, evidence: get(formData).evidence; documents: get(formData).documents.ocr_results }; const response = await fetch('/api/ai/analyze-case', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify(payload) }); if (!response.ok) throw new Error('AI analysis failed'); const analysisData = await response.json(); formData.update(d => ({ ...d, ai_analysis: analysisData }))} catch (err) { console.error('AI analysis failed', err)} finally { isLoading.set(false); processingMessage.set('')}
   }
+
    // Navigation functions (use get() in script) function nextStep() { if (get(currentStep) < totalSteps) currentStep.update(n => n + 1)}
   function prevStep() { if (get(currentStep) > 1) currentStep.update(n => n - 1)}
   function goToStep(step: number) { if (step >= 1 && step <= totalSteps) currentStep.set(step)}

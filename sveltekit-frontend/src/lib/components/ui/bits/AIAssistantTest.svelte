@@ -15,7 +15,7 @@
  <CardContent class="space-y-4"> <!-- Status, Alert -->
   {#if testStatus === 'ready'} <div class="border-green-200 bg-green-50"> <Alert> <div class="flex items-center gap-2"> <CheckCircle class="w-4 h-4" /> <span class="text-green-800">AI Assistant components loaded successfully. Ready for testing.</span> </div> </Alert> </div> {:else if testStatus === 'searching'} <div class="border-blue-200 bg-blue-50"> <Alert> <div class="flex items-center gap-2"> <Bot class="w-4 h-4 text-blue-600" /> <span class="text-blue-800">Processing AI search query...</span> </div> </Alert> </div> {:else if testStatus === 'completed'} <div class="border-purple-200 bg-purple-50"> <Alert> <div class="flex items-center gap-2"> <CheckCircle class="w-4 h-4" /> <span class="text-purple-800">AI search completed. Results added to conversation.</span> </div> </Alert> {/if}
   <!-- AI Search Bar Test (local, replacement) --> <div class="space-y-2"> <h3 class="font-semibold">AI Search Bar Component</h3>
- <!-- prevent default full-page, submit --> <form on:submit|preventDefault={() => handleAISearch(aiSearchTerm)}> <div class="flex"> <input class="form-control"
+ <!-- prevent default full-page, submit --> <form onsubmit|preventDefault={() => handleAISearch(aiSearchTerm)}> <div class="flex"> <input class="form-control"
               name="ai-search"
               aria-label="AI search"
               placeholder="Test AI search functionality..."

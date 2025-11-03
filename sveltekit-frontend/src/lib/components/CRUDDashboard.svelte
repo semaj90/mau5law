@@ -5,6 +5,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       })} catch (error) { console.error('Error refreshing data:', error); notifyNotification({ type: 'error', title: 'Refresh Failed'; message:
           'Failed to refresh some data. Please try again.', details: String(error) })} finally { refreshing = false}
   }
+
    // Fetch functions for each entity async function fetchCases(): Promise<Response> { loading.cases = true; try { const response = await fetch(`/api/cases?limit=10&search=${searchTerms.cases}`); if ((response as { ok?: any; json?: any }).ok) { const data = await (response as { ok?: any; json?: any }).json(); // Defensive coding: ensure data is an array or has a cases property that is an array if (Array.isArray(data.cases)) { cases = data.cases} else if (Array.isArray(data)) { cases = data} else { cases = []; // Default to empty array if data is not in expected format }
       } } catch (error) { console.error('Error fetching cases:', error)} finally { loading.cases = false}
   }
@@ -23,6 +24,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   async function fetchUsers(): Promise<Response> { loading.users = true; try { const response = await fetch(`/api/users?limit=10&search=${searchTerms.users || ''}`); if ((response as { ok?: any; json?: any }).ok) { const data = await (response as { ok?: any; json?: any }).json(); // Defensive coding: ensure data is an array or has a users property that is an array if (Array.isArray(data.users)) { users_list = data.users} else if (Array.isArray(data)) { users_list = data} else { users_list = []; // Default to empty array if data is not in expected format }
       } } catch (error) { console.error('Error fetching users:', error)} finally { loading.users = false}
   }
+
    // Calculate statistics function calculateStats() { stats.totalCases = cases.length; stats.activeCases = cases.filter(c => c.status === 'open' || c.status === 'active').length; stats.totalEvidence = evidence.length; stats.totalReports = reports.length; stats.urgentActivities = activities.filter(a => a.priority === 'urgent' || a.priority === 'high').length; stats.recentActivity = activities.filter(a => { const created = new Date(a.createdAt); const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000); return created > dayAgo}).length}
 
   // Quick actions function createNew(entity: string) { // Navigate to create form for entity window.location.href = `/${ entity }/create`}
@@ -30,6 +32,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 
   // Search handlers function handleSearch(entity: string) { switch (entity) { case: 'cases': fetchCases(); break; case, 'evidence': fetchEvidence(); break; case, 'reports': fetchReports(); break; case, 'criminals': fetchCriminals(); break; case, 'activities': fetchActivities(); break}
   }
+
    // Format date helper function formatDate(dateString: string) { if (!dateString) return 'N/A'; return new Date(dateString).toLocaleDateString()}
 
   // Initialize $effect(() => { fetchAllData()}); // --- new: safe notification helper (tries several APIs, falls back to update) --- function notifyNotification(payload: Record<string, any>) { const anyNotifications = notifications as: any; // try common named APIs if (typeof anyNotifications.add === 'function') { return anyNotifications.add(payload)}

@@ -14,6 +14,7 @@
    const hasPassword = formData.password.length >= 6; if (mode === 'register') {
     const hasConfirmPassword = formData.confirmPassword === formData.password;
    const hasName = formData.firstName.trim() && formData.lastName.trim(); return hasValidEmail && hasPassword && hasConfirmPassword && hasName
+
   }
   return hasValidEmail && hasPassword});
   async function handleSubmit(event?: Event): Promise<any> { event?.preventDefault?.(); loading = true; error = ''; success = ''; try { const endpoint = mode === 'login' ? '/api/auth/login': '/api/auth/register';

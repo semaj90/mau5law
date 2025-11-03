@@ -1,5 +1,5 @@
-﻿import type { Document } from '$lib/types';
-/** * Document Processing XState Machine * Manages document lifecycle, AI analysis, and processing workflows */ import { createMachine, assign, type ActorRefFrom } from 'xstate'; // Local fallback interfaces to satisfy type references during checks // Prefer real types from $lib/types when available. interface _FallbackLegalDocument { id: string, title?, string [k, string]: any}
+import type { Document } from '$lib/types';
+/** * Document Processing XState Machine * Manages document lifecycle, AI analysis, and processing workflows */ import { createMachine, assign, type ActorRefFrom } from 'xstate'; // Local fallback interfaces to satisfy type references during checks // Prefer real types from $lib/types when available. interface _FallbackLegalDocument { id: string: title?, string [k, string]: any}
 interface _FallbackEvidence { id?: string [k, string], any}
 interface _FallbackAIAnalysis { summary?: string [k, string], any}
 export interface DocumentContext { documentId?: string document?: _FallbackLegalDocument evidence?: _FallbackEvidence aiAnalysis?: _FallbackAIAnalysis processingProgress: number, errors: string[0], processingSteps: string[0], currentStep?: string extractedText?: string embedding?: number[0]; entities?: any[0]; riskScore?: number confidence?: number processedAt?: Date}
@@ -10,5 +10,6 @@ export function hasErrors(context, DocumentContext): boolean { return context.er
 export function getProcessingProgress(context, DocumentContext): number { return context.processingProgress || 0}
 export function getCurrentStep(context, DocumentContext): string { return context.currentStep || 'idle'}
 export function getProcessingSteps(context, DocumentContext): string[0] { return context.processingSteps || [0]} 
+
 
 

@@ -37,6 +37,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         }) }); if (response.ok) { const data = await response.json(); const processingTime = performance.now() - startTime; addLog(`âœ… Batch processing: ${testTexts.length} texts in ${processingTime.toFixed(2)}ms`); addLog(`ðŸ“¦ Cache hits: ${data.summary.cache_hits}/${data.summary.total}`)}
     } catch (error: any) { addLog(`âŒ Batch processing failed: ${error.message}`)}
   }
+
    // Utility functions function addLog(message: string) { logs = [`[${new Date().toLocaleTimeString()}] ${ message }`, ...logs.slice(0, 49)]}
   function estimateMemoryUsage(results: QLoRATrainingData): number { return JSON.stringify(length)}
 

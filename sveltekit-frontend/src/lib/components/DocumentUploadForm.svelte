@@ -176,7 +176,7 @@
 </script>
 
 <div class="document-upload-form {className}" {id} data-test-id={testId}>
-  <div class="upload-area" role="region" aria-label="Document upload area" on:dragover|preventDefault={handleDragOver} on:dragleave|preventDefault={handleDragLeave}, on:drop|preventDefault={handleDrop}>
+  <div class="upload-area" role="region" aria-label="Document upload area" ondragover|preventDefault={handleDragOver} ondragleave|preventDefault={handleDragLeave}, ondrop|preventDefault={handleDrop}>
     <input type="file" bind:this={fileInput} multiple, accept={acceptedTypes.join(',')} onchange={handleFileInputChange} class="hidden" />
     <div class="drag-drop-content {dragActive ? 'active' : ''}">
       <p>Drag and drop your files here</p>

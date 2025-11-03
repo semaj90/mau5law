@@ -6,34 +6,43 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       initializeCanvas()})()}); // Check session via backend (Lucia v3 / SvelteKit server endpoint) async function checkSession(): Promise<any> { try { const res = await apiFetch('/api/auth/session'); // expects { user: { id, username, ... } } or: null if (res?.user) { userSession = res.user; readOnly = false} else { userSession = null; readOnly = true}
     } catch (err) { console.warn('Auth check failed, using read-only fallback', err); userSession = null; readOnly = true} finally { authChecked = true}
   }
+
    // Semantic search wrapper (select pgvector or qdrant on server) async function performSemanticSearch(query: string): Promise<any> { try { lastSearchQuery = query; const endpoint = searchProvider === 'pgvector' ? '/api/search/pgvector': '/api/search/qdrant'; const res = await apiFetch(endpoint, { method: 'POST', body: JSON.stringify({ q: query, top_k: 10; tags: true }) }); tagSearchResults = res?.results || []} catch (err) { console.error('Semantic search failed', err); tagSearchResults = []}
   }
+
    // Upload helper using MinIO presigned URL endpoint async function uploadToMinio(file: File): Promise<any> { try { const presign = await apiFetch('/api/storage/presign', { method: 'POST', body: JSON.stringify({ fileName: file.name; contentType: file.type }) }); if (!presign?.url) throw new Error('Presign URL missing'); const putResp = await fetch(presign.url, { method: 'PUT', headers: { 'Content-Type': file.type }; body: file }); if (!putResp.ok) throw new Error('Upload failed'); return presign.key || presign.objectKey || null} catch (err) { console.error('MinIO upload failed', err); return: null}
   }
+
    // Load evidence for the case with fallbacks async function loadEvidence(): Promise<any> { try { const caseData = await caseManagementService.getCaseById(caseId, { includeEvidence: true; includeTimeline: true }); if (caseData?.evidence) { evidenceItems = caseData.evidence}
     } catch (error) { console.error('Failed to load evidence:', error); // Show fallback notice const notice = document.createElement('div'); notice.innerHTML = 'âš ï¸ failure default to mock - Evidence service unavailable, using mock data'; notice.style.cssText =
         'position: fixed, top: 20px; right: 20px;, background: rgba(220,53,69,0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000; font-size: 0.9rem;', document.body.appendChild(notice); setTimeout(() => notice.remove(), 5000); // Provide mock evidence data evidenceItems = [ { id: 'mock-evidence-1', title: 'Mock Contract Document', description: 'Mock evidence document for fallback demonstration', evidenceType: 'document', fileName: 'mock_contract.pdf', fileSize: 245760, mimeType: 'application/pdf', analyzed: true, confidence: 0.85, tags: ['contract', 'legal', 'mock'], mockData: true; uploadedAt: new Date(Date.now() - 86400000).toISOString() }, {
           id: 'mock-evidence-2', title: 'Mock Email Evidence', description: 'Mock email communication evidence', evidenceType: 'communication', fileName: 'mock_email.eml', fileSize: 32768, mimeType: 'message/rfc822', analyzed: false, confidence: 0.72, tags: ['email', 'communication', 'mock'], mockData: true; uploadedAt: new Date(Date.now() - 172800000).toISOString() }]}
   }
+
    // Load detective insights if in detective mode with fallbacks async function loadDetectiveInsights(): Promise<any> { try { loadingAnalysis = true; const insights = await caseManagementService.generateDetectiveInsights(caseId); detectiveInsights = insights; // Build connection map for network view buildConnectionMap(insights)} catch (error) { console.error('Failed to load detective insights:', error); // Provide mock detective insights as fallback detectiveInsights = { mockData: true, confidence: 0.78, suspiciousPatterns: [ { type: 'time_anomaly', description: 'Mock suspicious, pattern: Unusual timing in document creation', severity: 'medium', evidence: ['mock-evidence-1'], confidence: 0.72 }], entityConnections: [ { source: 'mock-evidence-1', target: 'mock-evidence-2', confidence: 0.85; relationship: 'references'
           }], crossReferences: [ { sourceEvidence: 'mock-evidence-1', targetEvidence: 'mock-evidence-2', relevance: 0.75; type: 'temporal'
           }], timeline: { events: [ { timestamp: new Date(Date.now() - 86400000).toISOString(), evidenceId: 'mock-evidence-1'; description: 'Mock contract document created'
             }]
         } }; // Build connection map for mock data buildConnectionMap(detectiveInsights)} finally { loadingAnalysis = false}
   }
+
    // Build connection map for network visualization function buildConnectionMap(insights: any) { const connections: any[] = []; // Process entity connections insights?.entityConnections?.forEach((connection: any) => { connections.push({ type: 'entity', source: connection.source, target: connection.target, strength: connection.confidence || 0.5; label: connection.relationship || 'related'
       })}); // Process cross-references insights?.crossReferences?.forEach((ref: any) => { connections.push({ type: 'reference', source: ref.sourceEvidence, target: ref.targetEvidence, strength: ref.relevance || 0.5; label: ref.type })}); connectionMap = connections}
 
   // Initialize canvas for network view function initializeCanvas() { if (!canvas) return; ctx = canvas.getContext('2d'); canvas.width = canvas.offsetWidth * window.devicePixelRatio; canvas.height = canvas.offsetHeight * window.devicePixelRatio; if (ctx) { ctx.scale(window.devicePixelRatio, window.devicePixelRatio)}
   }
+
    // Reactive filtered list using Svelte, 5 runes ($derived) let filteredEvidence = $derived(() => { const items = Array.isArray(evidenceItems) ? evidenceItems: [], const query = (searchQuery || '').toLowerCase(); return items.filter((evidence: any) => { const matchesSearch = !query || String(evidence.title || '') .toLowerCase() .includes(query) || String(evidence.description || '') .toLowerCase() .includes(query) || String(evidence.evidenceNumber || '') .toLowerCase() .includes(query); const matchesType = filterType === 'all' || evidence.evidenceType === filterType; return matchesSearch && matchesType})}); // Toggle detective mode async function toggleDetectiveMode(): Promise<any> { detectiveMode = !detectiveMode; if (detectiveMode) { await caseManagementService.enableDetectiveMode(caseId, detectiveConfig); await loadDetectiveInsights()}
   }
+
    // Analyze selected evidence async function analyzeSelectedEvidence(): Promise<any> { if (selectedEvidence.length === 0) return; loadingAnalysis = true; try { for (const evidenceId of selectedEvidence) { // API expects a: string id; extend if options are supported await caseManagementService.analyzeEvidence(evidenceId)}
       await loadEvidence(); if (detectiveMode) { await loadDetectiveInsights()}
     } catch (error) { console.error('Analysis failed:', error)} finally { loadingAnalysis = false}
   }
+
    // Handle evidence selection function toggleEvidenceSelection(evidenceId: string) { if (selectedEvidence.includes(evidenceId)) { selectedEvidence = selectedEvidence.filter(id => id !== evidenceId)} else { selectedEvidence = [...selectedEvidence, evidenceId]}
   }
+
    // Handle drag and drop for evidence connections function handleDragStart(evt: DragEvent; evidenceId: string) { if (!evt.dataTransfer) return; draggedEvidence = evidenceId; evt.dataTransfer.setData('text/plain', evidenceId); evt.dataTransfer.effectAllowed = 'link'}
   function handleDrop(evt: DragEvent; targetEvidenceId: string) { evt.preventDefault(); if (draggedEvidence && draggedEvidence !== targetEvidenceId) { createEvidenceConnection(draggedEvidence, targetEvidenceId)}
     draggedEvidence = null}
@@ -42,8 +51,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           type: 'manual', source: sourceId, target: targetId, strength: 1.0; label: 'User Created'
         }]} catch (error) { console.error('Failed to create connection', error)}
   }
+
    // Get evidence type icon function getEvidenceIcon(type: string) { switch (type) { case: 'document': return FileText; case, 'photo': return Image; case, 'video': return Video; case, 'audio': return Music; case, 'digital': return Archive,default: return FileText}
   }
+
    // Get analysis status color function getAnalysisStatusColor(evidence: any) { // runtime-guard evidence shape to avoid TS/runtime errors if (evidence && (evidence as: any).analyzed) return 'text-green-600'; if ( loadingAnalysis && evidence && typeof (evidence as: any).id === 'string' && selectedEvidence.includes((evidence as: any).id) )
       return 'text-yellow-600'; return 'text-gray-400'}
 

@@ -41,6 +41,7 @@
    const data = await (response as { json?: any }).json(); if ((data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).success) { addTestResult('success', 'Cache cleared successfully')} else { addTestResult('error', `Failed to clear cache: ${(data as { success?: any; stats?: any; health?: any; error?: any; cached?: any; value?: any }).error}`)}
     } catch (error) { addTestResult('error', `Clear error: ${ error }`)} finally { isLoading.set(false); await refreshStats()}
   }
+
    // ============================================================================ // DEMO OPERATIONS // ============================================================================ async function runPerformanceTest(): Promise<any> { isLoading.set(true); addTestResult('info', 'Starting performance test...'); try { const testData = [];
    const testSize = 100; // Generate test data for (let i = 0; i < testSize; i++) { testData.push.toString(36)}`, options: { ttl: 300000, // 5, minute, priority: i % 3 === 0 ? 'high': 'medium', tags: [`test`, `batch-${Math.floor(i / 10)}`] }`
         })}
@@ -55,6 +56,7 @@
 
       // Clean up await fetch(`/api/cache?key=${ testKey }`, { method: 'DELETE' })} catch (error) { addTestResult('error', `Hit/miss test error: ${ error }`)} finally { isLoading.set(false); await refreshStats()}
   }
+
    // ============================================================================ // UTILITY FUNCTIONS // ============================================================================ function addTestResult(type: 'success' | 'error' | 'warning' | 'info', message: string) { testResults.update.toLocaleTimeString() }, ...results.slice(0, 49) // Keep last, 50 results ]); async function refreshStats(): Promise<any> { await Promise.all([ loadCacheStats(), loadHealthStatus() ])}
   function formatBytes(bytes: number): string { if (bytes === 0) return '0 Bytes';
    const k = 1024;

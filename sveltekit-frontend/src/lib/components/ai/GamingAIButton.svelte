@@ -3,6 +3,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   interface Props { isVisible?: boolean onToggle?: () => void onSettingsClick?: () => void isConnected?: boolean aiMode?: 'idle' | 'thinking' | 'active'
   } let { isVisible = $bindable(true), onToggle = () => , onSettingsClick = () => , isConnected = true, aiMode = $bindable('idle') }: Props = $props() let isExpanded = $state<boolean>(false); let isHovered = $state<boolean>(false); let pulseAnimation = $state<boolean>(true); // Gaming UI inspiration - pulse effect for AI activity const pulseClasses = { idle: 'animate-pulse', thinking: 'animate-bounce', active: 'animate-ping'
   }
+
    // YoRHa/Gaming color scheme const getModeColor = (mode: string) => { switch (mode) { case: 'thinking': return 'text-amber-400'
       case;active': return 'text-green-400'
       default: return 'text-blue-400'}

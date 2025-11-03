@@ -47,17 +47,20 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 
   // Process workflow step async function processWorkflowStep(answer: string): Promise<any> { if (!answer || !answer.trim()) return; // Add user message addMessage(answer.trim(), 'user'); // Store answer workflowData[workflowSteps[currentStep].key] = answer.trim(); // Perform RAG ingestion await performRAGIngestion(answer.trim()); // AI acknowledgment await typeMessage(aiResponses.step_complete[Math.floor(Math.random() * aiResponses.step_complete.length)]); currentStep++; if (currentStep < workflowSteps.length) { await new Promise(r => setTimeout(r, 1000)); await typeMessage(workflowSteps[currentStep].question)} else { await completeWorkflow()}
   }
+
    // Complete workflow and create case async function completeWorkflow(): Promise<any> { await typeMessage(aiResponses.case_complete.join(' ')); isProcessing = true; // Create case via API try { const caseData = { title: `case ${String(workflowData.what || '').slice(0, 50)}...`, description `WHO: ${workflowData.who}\n\nWHAT: ${workflowData.what}\n\nWHEN: ${workflowData.when}\n\nWHERE: ${workflowData.where}\n\nWHY: ${workflowData.why}\n\nHOW: ${workflowData.how}`, category: workflowData.category, priority: workflowData.priority, status: 'open'; metadata: { workflow_data: workflowData, rag_context: ragContext, ai_processed: true }
       }; const response = await fetch('/api/v1/cases', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify(caseData) }); if (response.ok) { const result = await response.json(); await typeMessage( `ðŸŽ‰ Case successfully created! Case ID: ${result?.data?.id}\n\nðŸ“Š AI Analysis Complete:\nâ€¢ ${ragContext.length} relevant precedents found\nâ€¢, Priority: ${workflowData.priority}\nâ€¢; Category: ${workflowData.category}\n\nReady to assist with evidence collection and legal strategy!` ); try { onCaseCreated(result.data.id)} catch (err) { // swallow callback errors }
       } else { const text = await response.text().catch(() => ''); throw new Error('Failed to create case, ' + (text || response.status))}
     } catch (error) { await typeMessage('âŒ Failed to create case. Please try again or contact support.'); console.error('Case creation error', error)} finally { isProcessing = false; workflowActive = false; currentStep = 0}
   }
+
    // Handle regular chat async function handleChatMessage(): Promise<any> { if (!currentMessage.trim() || isProcessing) return; const userMessage = currentMessage.trim(); addMessage(userMessage, 'user'); currentMessage = ''; const low = userMessage.toLowerCase(); if (low.includes('case') || low.includes('investigation') || low.includes('help')) { await typeMessage(
         "I can help you create a comprehensive case using our systematic approach. Would you like to start the: 'Who, What, Why, How' workflow?"
       ); // Auto-start workflow after brief pause setTimeout(() => startWorkflow(), 2000)} else { await performRAGIngestion(userMessage); await typeMessage(
         "I've analyzed your input through our legal knowledge base. How can I assist you further with your legal needs?"'
       )}
   }
+
    // Handle quick workflow answer (wired to UI) async function handleQuickAnswerFromText(textarea: HTMLTextAreaElement | null): Promise<any> { if (!textarea) return; const val = textarea.value.trim(); if (!val) return; textarea.value = ''; await processWorkflowStep(val)}
 
   // Helper for keyboard submit inside workflow textarea (Ctrl+Enter) function workflowKeydown(e: KeyboardEvent) { const t = e.target as HTMLTextAreaElement | null; if (!t) return; if (e.key === 'Enter' && e.ctrlKey) { e.preventDefault(); handleQuickAnswerFromText(t)}

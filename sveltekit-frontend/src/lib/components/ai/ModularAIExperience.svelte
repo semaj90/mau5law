@@ -36,9 +36,11 @@
   function pickUpWhereLeftOff() { if (computationHistory.length > 0) { const lastComputation = computationHistory[computationHistory.length - 1]; console.log('ðŸ”„ Resuming from:', lastComputation); aiActor.send({ type: 'PICK_UP_WHERE_LEFT_OFF'
       })}
   }
+
    // Format numbers for display function formatArray(arr: any): string { if (!arr) return ''; if (Array.isArray(arr)) { return ( arr .slice(0, 8) .map(n => n.toFixed(3)) .join(', ') + (arr.length > 8 ? '...': '') )}
     if (arr.constructor === Float32Array) {
     return ( Array.from(arr.slice(0, 8)) .map(n => n.toFixed(3)) .join(', ') + (arr.length > 8 ? '...': '') )
+
   }
   return String(arr)}
 </script>

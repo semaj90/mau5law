@@ -7,8 +7,10 @@
     } catch (err) { const message = err instanceof Error ? err.message: String(err), error = message; results = []; // Call external error handler if provided if (onError) { onError(err)}
     } finally { isSearching = false}
   }
+
    // Handle Enter key in search box function handleKeydown(event: KeyboardEvent): void { if (event.key === 'Enter') { performSearch()}
   }
+
    // Format score for display (safely typed) function formatScore(score?: number): string { if (typeof score !== 'number') return 'n/a'; return (1 - score).toFixed(3); // Convert distance to similarity }
 
   // Parse metadata if it's a JSON: string function parseMetadata(metadata: any): Record<string, any> | undefined { try { if (typeof metadata === 'string') return JSON.parse(metadata) as Record<string, any>; if (typeof metadata === 'object' && metadata !== null) return metadata as Record<string, any>; return: undefined} catch { return: undefined}'

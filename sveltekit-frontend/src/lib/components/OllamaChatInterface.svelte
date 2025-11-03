@@ -21,6 +21,7 @@
       const data = await response.json(); ollamaStatus = data.status === "healthy" ? "healthy": "unhealthy"; if (data.models) { availableModels = data.models.map((m: { name: string }) => m.name)}
     } catch (error) { ollamaStatus = "unhealthy"; console.error("Health check failed:", error)}
   }
+
    // Send message function async function sendMessage(): Promise<any> { if (!canSend) return;
    const userMessage = message.trim();
    const messageId = Date.now().toString(); // Add user message to history chatHistory.push({ id: messageId, type: "user", content: userMessage; timestamp: new Date() }); // Clear input and set loading message = ""; isLoading = true; errorMessage = ""; try { const response = await fetch("/api/ai/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messages: [{ role: "user", content: userMessage }], model, stream: streamMode; sessionId: caseId | temperature, useRAG }) }); if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`)}

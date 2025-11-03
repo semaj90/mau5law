@@ -18,15 +18,18 @@ from pathlib import Path
 from tqdm import tqdm
 
 class CUDATensorAggregator:
-    def __init__(self, redis_url='redis://localhost:6379', device='cuda'):
+    def __init__(self, redis_url='redis://localhost:6379', device='cuda', embedding_dim=384):
         self.redis = redis.from_url(redis_url)
         self.device = torch.device(device if torch.cuda.is_available() else 'cpu')
+        self.embedding_dim = embedding_dim  # Memory-optimized 384d
         
         if self.device.type == 'cuda':
             print(f"✅ CUDA available: {torch.cuda.get_device_name(0)}")
-            print(f"   Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB\n")
+            print(f"   Memory: {torch.cuda.get_device_properties(0).total_memory / 1e9:.1f} GB")
+            print(f"   Embedding dimensions: {self.embedding_dim}\n")
         else:
-            print("⚠️  CUDA not available, using CPU\n")
+            print(f"⚠️  CUDA not available, using CPU")
+            print(f"   Embedding dimensions: {self.embedding_dim}\n")
     
     def load_embeddings_from_redis(self, pattern='ai:embedding:*', limit=None):
         """Load embeddings from Redis cache into GPU tensors"""
@@ -216,6 +219,7 @@ def main():
     parser.add_argument('--limit', type=int, default=10000, help='Max embeddings to load')
     parser.add_argument('--output', default='logs/phase44-batch.pt', help='Output tensor file')
     parser.add_argument('--redis-url', default='redis://localhost:6379', help='Redis URL')
+    parser.add_argument('--embedding-dim', type=int, default=384, help='Embedding dimensions (384 or 768)')
     parser.add_argument('--compute-similarity', action='store_true', help='Compute similarity matrix')
     parser.add_argument('--cluster', type=int, help='Number of clusters for k-means')
     
@@ -225,7 +229,7 @@ def main():
     print("║        PHASE 44 CUDA TENSOR AGGREGATION                ║")
     print("╚════════════════════════════════════════════════════════╝\n")
     
-    aggregator = CUDATensorAggregator(redis_url=args.redis_url)
+    aggregator = CUDATensorAggregator(redis_url=args.redis_url, embedding_dim=args.embedding_dim)
     
     # Load embeddings
     embedding_matrix, metadata = aggregator.load_embeddings_from_redis(limit=args.limit)

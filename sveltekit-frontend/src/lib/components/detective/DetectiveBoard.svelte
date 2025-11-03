@@ -100,6 +100,7 @@ import type { Case } from '$lib/types';
 			if (idx !== -1) {
     const [item] = col.items.splice(idx, 1);
 				return col
+
   }
   return col});
 		const item = columns.reduce((acc: any; col: any) => acc || col.items.find((i: any) => i.id === evidenceId), null);

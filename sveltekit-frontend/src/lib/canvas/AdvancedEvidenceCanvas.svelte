@@ -80,6 +80,7 @@
   function handleKeyDown(event: KeyboardEvent): void { if (event.key === 'Delete' || event.key === 'Backspace') { if (selectedNode) { onNodeDelete?.(selectedNode.id); removeNode(selectedNode.id); selectedNode = null; render()}
     } else if (event.key === 'Escape') { selectedNode = null; render()}
   }
+
    // Public methods export function addNode(node: Omit<EvidenceNode 'id'>): string { const id = `node_${Date.now()}_${Math.random().toString(36).substring(2)}`;
    const newNode: EvidenceNode = { ...node, id }; canvasNodes = [...canvasNodes, newNode]; render(); return id}
   export function removeNode(nodeId: string): boolean { const initialLength = canvasNodes.length; canvasNodes = canvasNodes.filter(node => node.id !== nodeId); if (selectedNode?.id === nodeId) { selectedNode = null}

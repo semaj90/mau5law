@@ -233,7 +233,7 @@
 
     <div class="yorha-panel-content">
       <div class="space-y-2">
-        <form on:submit|preventDefault={performAIChat} class="space-y-2">
+        <form onsubmit|preventDefault={performAIChat} class="space-y-2">
           <textarea
             name="aiChat"
             placeholder="Ask a legal question..."
@@ -348,4 +348,5 @@
   {#if errorMessage}
     <div class="text-center text-sm text-red-600">{errorMessage}{/if}
   </div>
+
 

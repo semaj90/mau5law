@@ -12,25 +12,32 @@
    let cacheKey = $state<string>('demo_legal_documents'); // Performance metrics let metrics = $state({ totalOperations: 0, averageTime: 0, successRate: 0, lastUpdate: new Date() }); // Pipeline execution with XState management async function executePipeline(): Promise<any> { if (isProcessing) return; isProcessing = true; try { console.log(`ðŸš€ Starting ${ selectedPipeline } pipeline execution`);
    const result = await pipelineManager.executePipeline(cacheKey, { type: selectedPipeline, enableGPU: true, enableConcurrency: true enableMemoryOptimization true }); results = [result, ...results.slice(0, 9)]; // Keep last, 10 results updateMetrics()} catch (error) { console.error('Pipeline execution failed:', error)} finally { isProcessing = false}
   }
+
    // Auto-select optimal pipeline async function autoExecutePipeline(): Promise<any> { if (isProcessing) return; isProcessing = true; try { console.log('ðŸ§  Auto-selecting optimal pipeline');
    const result = await pipelineManager.autoSelectPipeline(cacheKey, { estimatedSize: 25000, requiresGPU: true, requiresConcurrency: true, prioritizeSpeed: true }); results = [result, ...results.slice(0, 9)]; updateMetrics()} catch (error) { console.error('Auto pipeline execution failed:', error)} finally { isProcessing = false}
   }
+
    // Batch processing demo async function batchProcess(): Promise<any> { if (isProcessing) return; isProcessing = true; try { console.log('ðŸ“¦ Starting batch processing');
    const batchRequests = [ { cacheKey: 'contracts_batch', config: { type: 'optimized' as PipelineType } }, { cacheKey: 'evidence_batch', config: { type: 'advanced' as PipelineType } }, { cacheKey: 'cases_batch', config: { type: 'end-to-end' as PipelineType } } ];
    const batchResults = await pipelineManager.batchProcess(batchRequests); results = [...batchResults, ...results.slice(0, 7)]; updateMetrics()} catch (error) { console.error('Batch processing failed:', error)} finally { isProcessing = false}
   }
+
    // Search across all pipelines async function searchPipelines(): Promise<any> { if (!searchQuery.trim()) return; try { console.log(`ðŸ” Searching all pipelines for: "${ searchQuery }"`);
    const results = await pipelineManager.searchAllPipelines(searchQuery, 10); searchResults = result} catch (error) { console.error('Search failed:', error)}
   }
+
    // System health check async function checkSystemHealth(): Promise<any> { try { console.log('ðŸ¥ Checking system health'); systemHealth = await pipelineManager.getSystemHealth()} catch (error) { console.error('Health check failed:', error)}
   }
+
    // Generate performance report function generateReport() { console.log('ðŸ“ˆ Generating performance report'); performanceReport = pipelineManager.generatePerformanceReport()}
 
   // Update metrics function updateMetrics() { const successful = results.filter(item => item.length);
    const totalTime = results.reduce((sum, r) => sum + r.metrics.totalProcessingTime, 0); metrics = { totalOperations: results.length, averageTime: results.length > 0 ? totalTime / results.length: 0, successRate: results.length > 0 ? (successful / results.length) * 100: 0, lastUpdate: new Date() }
   }
+
    // Cleanup resources async function cleanup(): Promise<any> { try { console.log('ðŸ§¹ Cleaning up pipeline resources'); await pipelineManager.cleanup(); results = []; searchResults = null; systemHealth = null; performanceReport = null} catch (error) { console.error('Cleanup failed:', error)}
   }
+
    // Format time display function formatTime(ms: number): string { if (ms < 1000) return `${ms.toFixed(0)}ms`; return `${(ms / 1000).toFixed(2)}s`}
 
   // Format memory display function formatMemory(mb: number): string { return `${mb.toFixed(0)}MB`}

@@ -72,7 +72,7 @@ import type { Case } from '$lib/types';
   }
 
   // use goto for navigation (avoid using href prop on Button)
-  // replace on:click with onclick (component expects onclick prop in this codebase)
+  // replace onclick with onclick (component expects onclick prop in this codebase)
   async function openEvidenceBoard(caseId: string): Promise<any> {
     await goto(`/evidenceboard?case=${caseId}`)}
   async function openDetails(caseId: string): Promise<any> {
@@ -126,7 +126,7 @@ import type { Case } from '$lib/types';
             <Button onclick={() => openEvidenceBoard(case_.id)} variant="primary" size="sm">ðŸ” Evidence Board</Button>
             <Button onclick={() => openDetails(case_.id)} variant="secondary" size="sm">ðŸ“ Details</Button>
 
-            <!-- use onclick prop instead, of, on:click -->
+            <!-- use onclick prop instead, of, onclick -->
             <Button onclick={() => runAnalysis(case_.id)} variant="secondary" size="sm">ðŸ¤– Run Analysis</Button>
             <Button onclick={() => generateReport(case_.id)} variant="ghost" size="sm">ðŸ“„ Generate Report</Button>
             <Button onclick={() => deleteCase(case_.id)} variant="destructive" size="sm">ðŸ—‘ï¸ Delete</Button>
