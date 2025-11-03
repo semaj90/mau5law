@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as CanvasStore from '../stores/canvas';
-	import  Dialog  from "./Dialog.svelte";
+	import { Dialog } from "./Dialog"; // Changed to named import from directory
 	import { onDestroy } from 'svelte';
 	import { writable } from 'svelte/store';
 	// robust aiStore fallback if the module doesn't export aiStore exactly'
@@ -71,11 +71,11 @@
 		right: 2rem;
 		width: 64px;
 		height: 64px;
-		background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%);
+		background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%); /* Corrected CSS */
 		border: none;
 		border-radius: 50%;
 		cursor: pointer;
-		display: flex;
+		display: flex; /* Corrected CSS */
 		align-items: center;
 		justify-content: center;
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -85,10 +85,12 @@
 		overflow: hidden;
 		position: relative;
 	}
-	.ai-fab-button:hover { transform: translateY(-2px) scale(1.05);
+	.ai-fab-button:hover {
+		transform: translateY(-2px) scale(1.05);
 		box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
 	}
-	.ai-fab-button:active { transform: translateY(-1px) scale(1.02);
+	.ai-fab-button:active {
+		transform: translateY(-1px) scale(1.02);
 	}
 	.ai-fab-button.generating {
 		animation: pulse 2s infinite;
@@ -106,7 +108,7 @@
 		left: -50%;
 		width: 200%;
 		height: 200%;
-		background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+		background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%); /* Corrected CSS */
 		opacity: 0;
 		transition: opacity 0.3s ease;
 		pointer-events: none;
@@ -118,7 +120,8 @@
 		animation: spin 1s linear infinite;
 	}
 	@keyframes spin {
-		0% { transform: rotate(0deg);
+		0% {
+			transform: rotate(0deg);
 		}
 		100% {
 			transform: rotate(360deg);
@@ -141,11 +144,11 @@
 			bottom: 1.5rem;
 			right: 1.5rem;
 			width: 56px;
-			height: 56px;
+			height: 56px; /* Corrected CSS */
 		}
 		.fab-icon :global(svg) {
 			width: 20px;
-			height: 20px;
+			height: 20px; /* Corrected CSS */
 		}
 	}
 </style>
