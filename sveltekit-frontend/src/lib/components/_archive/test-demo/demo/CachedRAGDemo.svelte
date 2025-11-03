@@ -272,7 +272,7 @@ import type { Document } from '$lib/types';
   .cached-rag-demo {
     max-width: 1200px
     margin: 0 auto
-   , padding: 20px
+   ;padding: 20px
     font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     text-align: center
@@ -298,8 +298,7 @@ import type { Document } from '$lib/types';
     font-weight: 600
     color: #4a5568}
   .input-group textarea {
-    width: 100%,
-    padding: 10px
+    width: 100%, padding: 10px
     border: 1px solid #e2e8f0
     border-radius: 6px
     font-size: 14px
@@ -320,7 +319,7 @@ import type { Document } from '$lib/types';
     border-radius: 4px
     cursor: pointer
     font-size: 12px
-   , transition: background-color 0.2}
+   ;transition: background-color 0.2}
   .sample-btn:hover:not(:disabled) {
     background: #cbd5e0}
   .sample-btn:disabled {
@@ -338,7 +337,7 @@ import type { Document } from '$lib/types';
     border-radius: 6px
     cursor: pointer
     font-weight: 600
-   , transition: background-color 0.2}
+   ;transition: background-color 0.2}
   .primary-btn:hover:not(:disabled) {
     background: #3182c}
   .secondary-btn {
@@ -348,7 +347,7 @@ import type { Document } from '$lib/types';
     padding: 12px 16px
     border-radius: 6px
     cursor: pointer
-   , transition: background-color 0.2}
+   ;transition: background-color 0.2}
   .secondary-btn:hover:not(:disabled) {
     background: #cbd5e0}
   .primary-btn: disabled
@@ -382,8 +381,7 @@ import type { Document } from '$lib/types';
     color: #22543d
     margin-bottom: 15px}
   .stats-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 10px}
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 10px}
   .stat {
     display: flex
     justify-content: space-betweenn
@@ -457,8 +455,7 @@ import type { Document } from '$lib/types';
     color: #2d3748
     margin-bottom: 20px}
   .metrics-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px}
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)), gap: 20px}
   .metric-card {
     background: white
     border: 1px solid #e2e8f0
@@ -478,7 +475,7 @@ import type { Document } from '$lib/types';
     border-bottom: 1px solid #f1f5f9}
   .hit-rate {
     font-weight: 600
-   , color: #38a169}
+   ;color: #38a169}
 </style>
 
 

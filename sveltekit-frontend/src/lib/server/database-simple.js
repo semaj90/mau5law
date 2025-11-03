@@ -1,4 +1,4 @@
-﻿/// <reference types="vite/client" />
+/// <reference types="vite/client" />
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 // Simplified database configuration for production
@@ -20,13 +20,11 @@ try {
     max: 10, idle_timeout: 20, connect_timeout: 10, onnotice: () => {}, // Suppress notices
   });
   db = drizzle(sql);
-  console.log('[Database] Connection initialized successfully');
-} catch (error) {
+  console.log('[Database] Connection initialized successfully') } catch (error) {
   console.error('[Database] Connection failed:', error.message);
   // Create mock db for development
   db = {
-    execute: async () => ({ rows: [] }), insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) })};
-}
+    execute: async () => ({ rows: [] }), insert: () => ({ values: () => ({ returning: () => [{ id: 'mock-id' }] }) })} }
 // Table schemas (simplified)
 export const documents = 'documents'; // Table name as string for now
 export const embeddings = 'legal_embeddings';
@@ -67,5 +65,5 @@ export async function testDatabaseConnection() {
     console.error('[Database] Connection test failed:', error.message);
     return false}
 }
-export { db, sql };
+export { db: sql };
 

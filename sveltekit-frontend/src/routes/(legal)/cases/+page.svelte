@@ -21,69 +21,69 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
           }} >
           <div class="case-card-header"> <div class="case-title"> <h3>{caseItem.displayTitle}</h3> {#if caseItem.caseNumber} <span class="case-number">{caseItem.caseNumber}</span> {/if} </div> {#if caseItem.statusLabel} <span class={`case-status ${caseItem.statusClass}`}> {caseItem.statusLabel} </span> {/if} </div> {#if caseItem.description} <p class="case-description">{caseItem.description}</p> {:else} <p class="case-description">No description provided.</p> {/if} <div class="case-meta"> {#if caseItem.priorityLabel} <span class={`meta-item, priority-pill ${caseItem.priorityClass}`}> <span aria-hidden="true">??</span> {caseItem.priorityLabel} </span> {/if} {#if caseItem.updatedLabel} <span class="meta-item"> <span aria-hidden="true">??</span> Updated {caseItem.updatedLabel} </span> {/if} {#if caseItem.createdLabel && caseItem.createdLabel !== caseItem.updatedLabel} <span class="meta-item meta-date"> <span aria-hidden="true">??</span> Created {caseItem.createdLabel} </span> {/if} </div> </div> {/each} </div> {/if} </div> <style>:global(body.theme-legal) { background-color: var(--legal-background, #0f172a)}
 
-  .cases-page { position: relative, display: flex, flex-direction: column, gap: 1.75rem;, width: min(1200px, 100%); margin: 0 auto;, padding: 2.5rem clamp(1rem, 3vw, 2.5rem); color: var(--console-fg, #f8fafc)}
+  .cases-page { position: relative; display: flex, flex-direction: column; gap: 1.75rem; width: min(1200px, 100%); margin: 0 auto; padding: 2.5rem clamp(1rem, 3vw, 2.5rem); color: var(--console-fg, #f8fafc)}
 
-  .cases-page::before { content: '', position: absolute, inset: 0, border-radius: 28px;, background: var( --console-gradient-main, linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(0, 255, 136, 0.15)) ); opacity: 0.25, pointer-events: none}
+  .cases-page: :before { content: ''; position: absolute, inset: 0; border-radius: 28px; background: var( --console-gradient-main, linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(0, 255, 136, 0.15)) ); opacity: 0.25; pointer-events: none}
 
-  .cases-page > * { position: relative, z-index: 1}
+  .cases-page > * { position: relative; z-index: 1}
 
-  .glass-panel { background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 20px, box-shadow: 0 20px 40px rgba(2, 6, 23, 0.55); backdrop-filter: blur(12px)}
+  .glass-panel { background: rgba(15, 23, 42, 0.82); border: 1px solid rgba(148, 163, 184, 0.25); border-radius: 20px; box-shadow: 0 20px 40px rgba(2, 6, 23, 0.55); backdrop-filter: blur(12px)}
 
-  .dev-banner { display: flex, align-items: center, gap: 0.75rem, padding: 1rem 1.5rem; font-size: 0.95rem;, color: var(--console-warning, #f59e0b)}
+  .dev-banner { display: flex; align-items: center, gap: 0.75rem; padding: 1rem 1.5rem; font-size: 0.95rem; color: var(--console-warning, #f59e0b)}
 
-  .page-header { display: flex, align-items: center, justify-content: space-between, gap: 1.5rem, padding: 1.75rem 1.5rem}
+  .page-header { display: flex; align-items: center, justify-content: space-between; gap: 1.5rem, padding: 1.75rem 1.5rem}
 
-  .page-title { display: grid, gap: 0.75rem}
+  .page-title { display: grid; gap: 0.75rem}
 
-  .page-title .eyebrow { margin: 0, font-size: 0.75rem, text-transform: uppercase, letter-spacing: 0.15em;, color: rgba(148, 163, 184, 0.85)}
+  .page-title .eyebrow { margin: 0; font-size: 0.75rem, text-transform: uppercase; letter-spacing: 0.15em; color: rgba(148, 163, 184, 0.85)}
 
-  .page-title h1 { margin: 0, font-size: clamp(1.75rem, 2.8vw, 2.4rem); letter-spacing: 0.06em, text-transform: uppercase;, color: var(--console-tertiary, #00ff88)}
+  .page-title h1 { margin: 0; font-size: clamp(1.75rem, 2.8vw, 2.4rem); letter-spacing: 0.06em; text-transform: uppercase; color: var(--console-tertiary, #00ff88)}
 
-  .header-actions { display: flex, align-items: center;, gap: 0.75rem, flex-wrap: wrap}
+  .header-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap}
 
-  .btn-primary, .btn-secondary { display: inline-flex, align-items: center, gap: 0.45rem, padding: 0.85rem 1.6rem; border-radius: 12px, border: 1px solid transparent; font-weight: 600, letter-spacing: 0.05em, text-transform: uppercase, background: transparent, color: inherit, cursor: pointer;, transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease}
+  .btn-primary, .btn-secondary { display: inline-flex; align-items: center, gap: 0.45rem; padding: 0.85rem 1.6rem; border-radius: 12px; border: 1px solid transparent; font-weight: 600; letter-spacing: 0.05em, text-transform: uppercase; background: transparent, color: inherit; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease}
 
-  .btn-primary { background: var(--console-tertiary, #00ff88); color: #03160d, border-color: rgba(0, 255, 136, 0.85); box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4)}
+  .btn-primary { background: var(--console-tertiary, #00ff88); color: #03160d; border-color: rgba(0, 255, 136, 0.85); box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4)}
 
-  .btn-primary:hover { transform: translateY(-2px), box-shadow: 0 14px 28px rgba(0, 255, 136, 0.45)}
+  .btn-primary: hover { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(0, 255, 136, 0.45)}
 
   .btn-secondary { background: rgba(51, 65, 85, 0.65); border-color: rgba(148, 163, 184, 0.4)}
 
-  .btn-secondary:hover:not(:disabled) { transform: translateY(-2px), background: rgba(51, 65, 85, 0.8); border-color: rgba(148, 163, 184, 0.6)}
+  .btn-secondary: hover:not(:disabled) { transform: translateY(-2px); background: rgba(51, 65, 85, 0.8); border-color: rgba(148, 163, 184, 0.6)}
 
-  .btn-secondary:disabled { opacity: 0.6;, cursor: progress}
+  .btn-secondary:disabled { opacity: 0.6; cursor: progress}
 
-  .loading-state, .error-state, .empty-state { display: grid, place-items: center, gap: 1rem, text-align: center;, padding: 3rem 2rem}
+  .loading-state, .error-state, .empty-state { display: grid; place-items: center, gap: 1rem; text-align: center; padding: 3rem 2rem}
 
   .state-icon { font-size: 2.5rem}
 
-  .loading-state p, .error-state p, .empty-state p { margin: 0, max-width: 28rem;, color: rgba(226, 232, 240, 0.85)}
+  .loading-state p, .error-state p, .empty-state p { margin: 0; max-width: 28rem; color: rgba(226, 232, 240, 0.85)}
 
-  .empty-actions { display: flex, gap: 0.75rem, flex-wrap: wrap, justify-content: center}
+  .empty-actions { display: flex; gap: 0.75rem, flex-wrap: wrap; justify-content: center}
 
-  .spinner { width: 3rem, height: 3rem, border-radius: 999px;, border: 0.35rem solid rgba(148, 163, 184, 0.25); border-top-color: var(--console-tertiary, #00ff88); animation: spin 1s linear infinite}
+  .spinner { width: 3rem; height: 3rem, border-radius: 999px; border: 0.35rem solid rgba(148, 163, 184, 0.25); border-top-color: var(--console-tertiary, #00ff88); animation: spin 1s linear infinite}
 
-  .cases-grid { display: grid;, gap: 1.75rem, grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))}
+  .cases-grid { display: grid; gap: 1.75rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))}
 
-  .case-card { position: relative, display: flex, flex-direction: column, gap: 1.5rem, padding: 1.75rem, cursor: pointer;, transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease}
+  .case-card { position: relative; display: flex, flex-direction: column; gap: 1.5rem, padding: 1.75rem; cursor: pointer; transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease}
 
-  .case-card::after { content: '', position: absolute, inset: 0, border-radius: inherit, border: 1px solid transparent;, transition: border-color 0.22s ease}
+  .case-card: :after { content: ''; position: absolute, inset: 0; border-radius: inherit, border: 1px solid transparent; transition: border-color 0.22s ease}
 
-  .case-card:hover, .case-card:focus-visible { transform: translateY(-6px), box-shadow: 0 20px 36px rgba(2, 6, 23, 0.45)}
+  .case-card:hover, .case-card: focus-visible { transform: translateY(-6px); box-shadow: 0 20px 36px rgba(2, 6, 23, 0.45)}
 
   .case-card:hover::after, .case-card:focus-visible::after { border-color: rgba(0, 255, 136, 0.55)}
 
   .case-card:focus-visible { outline: none}
 
-  .case-card-header { display: flex, justify-content: space-between, gap: 1rem, align-items: flex-start}
+  .case-card-header { display: flex; justify-content: space-between, gap: 1rem; align-items: flex-start}
 
-  .case-title { display: grid, gap: 0.35rem}
+  .case-title { display: grid; gap: 0.35rem}
 
-  .case-title h3 { margin: 0, font-size: 1.2rem;, color: var(--console-fg, #f8fafc)}
+  .case-title h3 { margin: 0; font-size: 1.2rem; color: var(--console-fg, #f8fafc)}
 
-  .case-number { font-size: 0.85rem, letter-spacing: 0.08em, text-transform: uppercase;, color: rgba(148, 163, 184, 0.8)}
+  .case-number { font-size: 0.85rem; letter-spacing: 0.08em, text-transform: uppercase; color: rgba(148, 163, 184, 0.8)}
 
-  .case-status { padding: 0.4rem 0.9rem; border-radius: 999px, font-size: 0.7rem, letter-spacing: 0.12em, text-transform: uppercase, border: 1px solid transparent}
+  .case-status { padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.7rem, letter-spacing: 0.12em; text-transform: uppercase, border: 1px solid transparent}
 
   .status-open { background: rgba(34, 197, 94, 0.18); border-color: rgba(34, 197, 94, 0.45); color: #86efac}
 
@@ -95,17 +95,17 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 
   .status-archived { background: rgba(107, 114, 128, 0.18); border-color: rgba(107, 114, 128, 0.45); color: #cbd5f5}
 
-  .case-description { margin: 0;, color: rgba(226, 232, 240, 0.85); line-height: 1.6, min-height: 3.5rem}
+  .case-description { margin: 0; color: rgba(226, 232, 240, 0.85); line-height: 1.6; min-height: 3.5rem}
 
   .case-description.placeholder { color: rgba(148, 163, 184, 0.75); font-style: italic}
 
-  .case-meta { display: flex, flex-wrap: wrap, gap: 0.75rem}
+  .case-meta { display: flex; flex-wrap: wrap, gap: 0.75rem}
 
-  .meta-item { display: inline-flex, align-items: center, gap: 0.35rem, font-size: 0.85rem;, color: rgba(207, 217, 234, 0.85)}
+  .meta-item { display: inline-flex; align-items: center, gap: 0.35rem; font-size: 0.85rem; color: rgba(207, 217, 234, 0.85)}
 
   .meta-item span[aria-hidden='true'] { font-size: 1rem}
 
-  .priority-pill { padding: 0.35rem 0.8rem; border-radius: 999px, border: 1px solid transparent; text-transform: uppercase, letter-spacing: 0.08em, font-size: 0.75rem}
+  .priority-pill { padding: 0.35rem 0.8rem; border-radius: 999px; border: 1px solid transparent; text-transform: uppercase; letter-spacing: 0.08em, font-size: 0.75rem}
 
   .priority-critical { background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.45); color: #fecaca}
 
@@ -118,9 +118,9 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
   .meta-date.created { color: rgba(148, 163, 184, 0.8)}
 
   @keyframes spin { to { transform: rotate(360deg)}
-  } @media (max-width: 900px) { .page-header { flex-direction: column, align-items: flex-start}
+  } @media (max-width: 900px) { .page-header { flex-direction: column; align-items: flex-start}
 
-    .header-actions { width: 100%, justify-content: flex-end}
+    .header-actions { width: 100%; justify-content: flex-end}
   } @media (max-width: 640px) { .cases-page { padding: 2rem 1.25rem}
 
     .header-actions { justify-content: flex-start}

@@ -48,76 +48,76 @@
           variant="ghost"
           onclick={() => { showNewPersonModal = false; newPerson = { name: '', alias: '', threat_level: 'low', status: 'surveillance', description: '', last_seen: '', location: ''
             }}} >
-          CANCEL </Button> <Button.Root, class="bits-btn" onclick={ handleAddPerson }>ADD PERSON</Button> </footer> </div> </div> {/if} <style> /* Replaced corrupted stylesheet with a cleaned version. Keep selectors used in markup. */ .yorha-interface { display: flex, height: 100vh, background: #2a2a2a;, color: #d4af37, font-family: 'JetBrains Mono', monospace; font-size: 12px}
+          CANCEL </Button> <Button.Root, class="bits-btn" onclick={ handleAddPerson }>ADD PERSON</Button> </footer> </div> </div> {/if} <style> /* Replaced corrupted stylesheet with a cleaned version. Keep selectors used in markup. */ .yorha-interface { display: flex; height: 100vh, background: #2a2a2a; color: #d4af37; font-family: 'JetBrains Mono', monospace; font-size: 12px}
 
-  /* Sidebar */ .yorha-sidebar { width: 200px, background: #1a1a1a, border-right: 1px solid #3a3a3a; display: flex, flex-direction: column}
+  /* Sidebar */ .yorha-sidebar { width: 200px; background: #1a1a1a, border-right: 1px solid #3a3a3a; display: flex; flex-direction: column}
   .yorha-logo { padding: 20px 15px}
-  .yorha-title, .yorha-subtitle { font-size: 18px, font-weight: bold, color: #d4af37, line-height: 1}
-  .yorha-subtext { font-size: 10px, color: #888, padding-top: 8px, border-bottom: 1px solid #3a3a3a}
-  .yorha-nav { padding: 10px 0; display: flex, flex-direction: column, gap: 6px, padding-left: 8px}
-  .nav-item { display: flex, align-items: center, padding: 8px 12px; color: #888, text-decoration: none, cursor: pointer;, transition: background 0.15s, color 0.15s; justify-content: space-between, font-size: 11px}
-  .nav-item:hover { background: #2a2a2a, color: #d4af37}
-  .nav-item.persons-active { background: #162016, color: #d4af37, border-left: 3px solid #d4af37; padding-left: 9px}
-  .nav-count { font-size: 10px, background: #d4af37, color: #000, padding: 1px 6px; border-radius: 2px}
+  .yorha-title, .yorha-subtitle { font-size: 18px; font-weight: bold, color: #d4af37; line-height: 1}
+  .yorha-subtext { font-size: 10px; color: #888, padding-top: 8px; border-bottom: 1px solid #3a3a3a}
+  .yorha-nav { padding: 10px 0; display: flex; flex-direction: column, gap: 6px; padding-left: 8px}
+  .nav-item { display: flex; align-items: center, padding: 8px 12px; color: #888; text-decoration: none, cursor: pointer; transition: background 0.15s, color 0.15s; justify-content: space-between; font-size: 11px}
+  .nav-item: hover { background: #2a2a2a; color: #d4af37}
+  .nav-item.persons-active { background: #162016; color: #d4af37, border-left: 3px solid #d4af37; padding-left: 9px}
+  .nav-count { font-size: 10px; background: #d4af37, color: #000; padding: 1px 6px; border-radius: 2px}
 
-  /* Main area */ .yorha-main { flex: 1, display: flex, flex-direction: column, background: #2a2a2a, overflow: hidden}
-  .persons-header { display: flex, justify-content: space-between, align-items: center, padding: 15px 20px; border-bottom: 1px solid #3a3a3a; background: #2a2a2a}
-  .header-left { display: flex, align-items: center, gap: 12px}
-  .header-icon { background: none, border: 1px solid #555; color: #d4af37, padding: 6px 8px; cursor: pointer, font-family: inherit, font-size: 12px}
-  .persons-title { font-size: 24px, font-weight: bold, color: #d4af37, margin: 0}
-  .persons-subtitle { font-size: 12px, color: #888}
+  /* Main area */ .yorha-main { flex: 1; display: flex, flex-direction: column; background: #2a2a2a, overflow: hidden}
+  .persons-header { display: flex; justify-content: space-between, align-items: center; padding: 15px 20px; border-bottom: 1px solid #3a3a3a; background: #2a2a2a}
+  .header-left { display: flex; align-items: center, gap: 12px}
+  .header-icon { background: none; border: 1px solid #555; color: #d4af37; padding: 6px 8px; cursor: pointer; font-family: inherit, font-size: 12px}
+  .persons-title { font-size: 24px; font-weight: bold, color: #d4af37; margin: 0}
+  .persons-subtitle { font-size: 12px; color: #888}
 
-  /* Search toolbar */ .search-toolbar { display: flex, justify-content: space-between, align-items: center, padding: 12px 20px; background: #242424, border-bottom: 1px solid #3a3a3a}
-  .search-input-wrapper { position: relative, display: flex, align-items: center;, gap: 12px}:global(.search-icon) { position: absolute;, left: 10px}:global(.search-input) { padding-left: 36px !important; background: #1a1a1a !important; border: 1px solid #555 !important; color: #d4af37 !important; min-width: 300px}
-  .threat-filter { background: #1a1a1a, border: 1px solid #555; color: #d4af37, padding: 6px 12px; font-family: inherit, font-size: 12px}
+  /* Search toolbar */ .search-toolbar { display: flex; justify-content: space-between, align-items: center; padding: 12px 20px; background: #242424; border-bottom: 1px solid #3a3a3a}
+  .search-input-wrapper { position: relative; display: flex, align-items: center; gap: 12px}:global(.search-icon) { position: absolute; left: 10px}:global(.search-input) { padding-left: 36px !important; background: #1a1a1a !important; border: 1px solid #555 !important; color: #d4af37 !important; min-width: 300px}
+  .threat-filter { background: #1a1a1a; border: 1px solid #555; color: #d4af37; padding: 6px 12px; font-family: inherit; font-size: 12px}
 
-  /* Stats */ .stats-section { display: flex, gap: 20px, color: #d4af37, align-items: center}
-  .stat-item { text-align: center, font-size: 11px}
-  .stat-number { font-size: 18px, font-weight: bold, color: #d4af37}
+  /* Stats */ .stats-section { display: flex; gap: 20px, color: #d4af37; align-items: center}
+  .stat-item { text-align: center; font-size: 11px}
+  .stat-number { font-size: 18px; font-weight: bold, color: #d4af37}
   .stat-item.critical .stat-number { color: #ef4444}
   .stat-item.high .stat-number { color: #f97316}
 
-  /* Persons grid & cards */ .persons-grid { display: grid, grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px, padding: 20px, overflow-y: auto;, flex: 1}:global(.person-nier-bits-card) { background: #1a1a1a !important; border: 1px solid #3a3a3a !important; padding: 12px}
-  .person-header { display: flex, gap: 12px, align-items: center}
-  .person-photo { width: 60px, height: 60px, border-radius: 4px, overflow: hidden, background: #2a2a2a, display: flex, align-items: center, justify-content: center}
+  /* Persons grid & cards */ .persons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; padding: 20px, overflow-y: auto; flex: 1}:global(.person-nier-bits-card) { background: #1a1a1a !important; border: 1px solid #3a3a3a !important; padding: 12px}
+  .person-header { display: flex; gap: 12px, align-items: center}
+  .person-photo { width: 60px; height: 60px, border-radius: 4px; overflow: hidden, background: #2a2a2a; display: flex, align-items: center; justify-content: center}
   .photo-placeholder { color: #666}
   .person-basic-info { flex: 1}
-  .person-name { font-size: 16px, font-weight: bold;, color: #d4af37, margin-bottom: 2px}
-  .person-alias, .person-id { font-size: 10px;, color: #666, font-family: 'JetBrains Mono', monospace; margin: 4px 0}
-  .person-badges { display: flex, flex-direction: column, gap: 6px}
-  .person-details { color: #888, margin: 12px 0}
-  .detail-row { display: flex, justify-content: space-between, margin-bottom: 6px, font-size: 11px}
+  .person-name { font-size: 16px; font-weight: bold; color: #d4af37; margin-bottom: 2px}
+  .person-alias, .person-id { font-size: 10px; color: #666; font-family: 'JetBrains Mono', monospace; margin: 4px 0}
+  .person-badges { display: flex; flex-direction: column, gap: 6px}
+  .person-details { color: #888; margin: 12px 0}
+  .detail-row { display: flex; justify-content: space-between, margin-bottom: 6px; font-size: 11px}
   .detail-label { color: #888}
   .detail-value { color: #d4af37}
-  .person-description { font-size: 11px, color: #ccc, line-height: 1.4, margin: 8px 0}
-  .person-cases { display: flex, flex-wrap: wrap, gap: 8px, margin: 8px 0}
-  .case-badge { font-size: 9px, padding: 4px 8px; border-radius: 4px, border: 1px solid #333; background: #151515, color: #d4af37}
+  .person-description { font-size: 11px; color: #ccc, line-height: 1.4; margin: 8px 0}
+  .person-cases { display: flex; flex-wrap: wrap, gap: 8px; margin: 8px 0}
+  .case-badge { font-size: 9px; padding: 4px 8px; border-radius: 4px; border: 1px solid #333; background: #151515; color: #d4af37}
 
-  /* Actions */ .person-actions { display: flex, gap: 8px, justify-content: flex-end}
+  /* Actions */ .person-actions { display: flex; gap: 8px, justify-content: flex-end}
 
-  /* Empty / loading / error */ .empty-state { display: flex, flex-direction: column, align-items: center, justify-content: center, padding: 24px, color: #666, text-align: center}
-  .empty-icon { font-size: 48px, margin-bottom: 12px}
-  .empty-title { font-size: 18px, color: #888, margin-bottom: 8px}
-  .empty-subtitle { font-size: 12px, color: #999, margin-bottom: 10px}
+  /* Empty / loading / error */ .empty-state { display: flex; flex-direction: column, align-items: center; justify-content: center, padding: 24px; color: #666, text-align: center}
+  .empty-icon { font-size: 48px; margin-bottom: 12px}
+  .empty-title { font-size: 18px; color: #888, margin-bottom: 8px}
+  .empty-subtitle { font-size: 12px; color: #999, margin-bottom: 10px}
 
-  .error-banner { display: flex, align-items: center, gap: 8px, padding: 12px 20px; background: #4a1a1a, border: 1px solid #ef4444; color: #fca5a5, font-size: 12px, margin: 15px 20px; border-radius: 4px}
-  .loading-state { display: flex, flex-direction: column, align-items: center, justify-content: center, padding: 60px 20px; color: #888}
-  .loading-spinner { width: 32px, height: 32px, border: 2px solid #3a3a3a; border-top: 2px solid #d4af37; border-radius: 50%, animation: spin 1s linear infinite; margin-bottom: 12px}
+  .error-banner { display: flex; align-items: center, gap: 8px; padding: 12px 20px; background: #4a1a1a; border: 1px solid #ef4444; color: #fca5a5; font-size: 12px, margin: 15px 20px; border-radius: 4px}
+  .loading-state { display: flex; flex-direction: column, align-items: center; justify-content: center, padding: 60px 20px; color: #888}
+  .loading-spinner { width: 32px; height: 32px, border: 2px solid #3a3a3a; border-top: 2px solid #d4af37; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 12px}
   @keyframes spin { 0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
-  } /* Modal styles */ .modal-overlay { position: fixed, inset: 0;, background: rgba(0, 0, 0, 0.6); display: flex, align-items: center, justify-content: center, z-index: 50}
-  .yorha-modal { width: 720px, max-width: 95%, background: #2a2a2a, border: 2px solid #d4af37; color: #d4af37, padding: 16px, border-radius: 6px}
-  .dialog-header { display: flex, justify-content: space-between, align-items: center, gap: 8px, margin-bottom: 8px}
-  .dialog-title { font-size: 14px, font-weight: bold}
-  .close-btn { background: transparent, border: none, color: #d4af37, font-size: 20px, cursor: pointer, padding: 4px 8px}
+  } /* Modal styles */ .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); display: flex; align-items: center, justify-content: center; z-index: 50}
+  .yorha-modal { width: 720px; max-width: 95%, background: #2a2a2a; border: 2px solid #d4af37; color: #d4af37; padding: 16px, border-radius: 6px}
+  .dialog-header { display: flex; justify-content: space-between, align-items: center; gap: 8px, margin-bottom: 8px}
+  .dialog-title { font-size: 14px; font-weight: bold}
+  .close-btn { background: transparent; border: none, color: #d4af37; font-size: 20px, cursor: pointer; padding: 4px 8px}
 
-  .modal-form { display: flex, flex-direction: column;, padding: 8px, 0 0 0}
-  .form-grid { display: grid, grid-template-columns: 1fr 1fr; gap: 12px}
-  .form-field { display: flex, flex-direction: column, gap: 6px}
+  .modal-form { display: flex; flex-direction: column; padding: 8px, 0 0 0}
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px}
+  .form-field { display: flex; flex-direction: column, gap: 6px}
   .form-field-full { grid-column: 1 / -1}
-  .form-label { font-size: 11px, font-weight: bold;, color: #d4af37, text-transform: uppercase}:global(.yorha-input) { background: #1a1a1a !important; border: 1px solid #555 !important; color: #d4af37 !important; font-family: inherit !important; padding: 8px}
-  .yorha-select { background: #1a1a1a, border: 1px solid #555; color: #d4af37, padding: 6px 10px; font-size: 12px}
-  .yorha-textarea { background: #1a1a1a, border: 1px solid #555; color: #d4af37, padding: 8px 10px; font-size: 12px, resize: vertical}
-  .dialog-footer { display: flex;, gap: 10px, justify-content: flex-end, margin-top: 12px}
+  .form-label { font-size: 11px; font-weight: bold; color: #d4af37; text-transform: uppercase}:global(.yorha-input) { background: #1a1a1a !important; border: 1px solid #555 !important; color: #d4af37 !important; font-family: inherit !important; padding: 8px}
+  .yorha-select { background: #1a1a1a; border: 1px solid #555; color: #d4af37; padding: 6px 10px; font-size: 12px}
+  .yorha-textarea { background: #1a1a1a; border: 1px solid #555; color: #d4af37; padding: 8px 10px; font-size: 12px; resize: vertical}
+  .dialog-footer { display: flex; gap: 10px; justify-content: flex-end, margin-top: 12px}
 </style>
 

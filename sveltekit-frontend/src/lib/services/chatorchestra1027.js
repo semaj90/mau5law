@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env zx
+#!/usr/bin/env zx
 /**
  * LangChain Chat Orchestrator â€“ Hybrid Triton + TensorFlow + Ollama
  * - Triton embeddings cached in Redis (keyed by SHA256(question))
@@ -37,7 +37,7 @@ const redis = new Redis(redisUrl);
 const TRITON_CACHE_TTL_SECONDS = parseInt(process.env.TRITON_CACHE_TTL_SECONDS || "86400", 10); // 24h default
 
 function sha256Hex(input) {
-  return crypto.createHash("sha256").update(input).digest("hex");
+  return crypto.createHash("sha256").update(input).digest("hex")
 }
 
 /* ------------------------------------------------------------------ */
@@ -51,12 +51,10 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
     const key = `triton:embed:${sha256Hex(question)}`;
     const cached = await redis.get(key);
     if (cached) {
-      return `Triton embedding (cached): ${cached}`;
-    }
+      return `Triton embedding (cached): ${cached}` }
   } catch (e) {
     // non-fatal, log and continue
-    console.warn("Redis cache read failed", e?.message || e);
-  }
+    console.warn("Redis cache read failed", e?.message || e) }
 
   // If a client preference exists in Redis, respect it unless explicit prefer passed
   let pref = prefer
@@ -64,8 +62,7 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
     try {
       const p = await redis.get(`langchain:pref:${clientId}`);
       if (p) pref = p} catch (e) {
-      console.warn("Redis pref read failed", e?.message || e);
-    }
+      console.warn("Redis pref read failed", e?.message || e) }
   }
 
   // Helper to call Triton and cache
@@ -81,25 +78,21 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
     // cache representation (JSON string)
     try {
       const key = `triton:embed:${sha256Hex(q)}`;
-      await redis.set(key, JSON.stringify(summary), "EX", TRITON_CACHE_TTL_SECONDS);
-    } catch (e) {
-      console.warn("Redis cache write failed", e?.message || e);
-    }
+      await redis.set(key, JSON.stringify(summary), "EX", TRITON_CACHE_TTL_SECONDS) } catch (e) {
+      console.warn("Redis cache write failed", e?.message || e) }
 
-    return `Triton embedding: ${JSON.stringify(summary)}`;
-  }
+    return `Triton embedding: ${JSON.stringify(summary)}` }
 
   // Attempt according to preference
   if (pref === "triton" || pref === "auto") {
     try {
       // Prefer Triton if ready
       await axios.get(tritonHealth, { timeout: 1000 });
-      return await callTriton(question);
-    } catch (err) {
+      return await callTriton(question) } catch (err) {
       console.warn("Triton call failed or not ready:", err?.message || err);
       if (pref === "triton") {
         // explicit prefer but failed
-        return "Triton requested but unavailable.";
+        return "Triton requested but unavailable."
       }
       // else fall through to TensorFlow
     }
@@ -108,11 +101,9 @@ async function getContextFromModel(question: opts = { prefer: "auto", clientId: 
   // Fallback to TensorFlow Serving
   try {
     const { data } = await axios.post(tfURL, { instances: [{ text: question }] }, { timeout: 3000 });
-    return `TensorFlow context: ${JSON.stringify(data.predictions?.[0])}`;
-  } catch (e) {
+    return `TensorFlow context: ${JSON.stringify(data.predictions?.[0])}` } catch (e) {
     console.warn("TensorFlow call failed", e?.message || e);
-    return "No GPU model context available.";
-  }
+    return "No GPU model context available." }
 }
 
 /* LangChain setup */
@@ -144,23 +135,18 @@ app.get("/api/choose", async (req, res) => {
   const clientId = req.query.clientId || "global";
   try {
     const pref = (await redis.get(`langchain:pref:${clientId}`)) || "auto";
-    res.json({ clientId: preference: pref });
-  } catch (e) {
-    res.status(500).json({ error: "Failed to read preference", detail: e?.message || e });
-  }
+    res.json({ clientId: preference: pref }) } catch (e) {
+    res.status(500).json({ error: "Failed to read preference", detail: e?.message || e }) }
 });
 
 app.post("/api/choose", express.json(), async (req, res) => {
   const { clientId = "global", backend } = req.body || {};
   if (!["triton", "tensorflow", "auto"].includes(backend)) {
-    return res.status(400).json({ error: "backend must be one of triton|tensorflow|auto" });
-  }
+    return res.status(400).json({ error: "backend must be one of triton|tensorflow|auto" }) }
   try {
-    await redis.set(`langchain:pref:${clientId}`, backend, "EX", 60 * 60 * 24 * 7); // 7 days
-    res.json({ ok: true, clientId: preference: backend });
-  } catch (e) {
-    res.status(500).json({ error: "Failed to set preference", detail: e?.message || e });
-  }
+    await redis.set(`langchain:pref:${clientId}`, backend: "EX", 60 * 60 * 24 * 7); // 7 days
+    res.json({ ok: true, clientId: preference: backend }) } catch (e) {
+    res.status(500).json({ error: "Failed to set preference", detail: e?.message || e }) }
 });
 
 /* Chat endpoint */
@@ -169,13 +155,11 @@ app.post("/api/chat", express.json(), async (req, res) => {
     const question = req.body.question ?? "";
     const clientId = req.body.clientId ?? null
     const prefer = req.body.prefer ?? "auto";
-    const context = await getContextFromModel(question, { prefer, clientId });
-    const result = await chain.call({ context, question });
-    res.json({ context: answer: result.text });
-  } catch (err) {
+    const context = await getContextFromModel(question, { prefer: clientId });
+    const result = await chain.call({ context: question });
+    res.json({ context: answer: result.text }) } catch (err) {
     console.error("Chat handler error", err?.message || err);
-    res.status(500).json({ error: "chat failed", detail: err?.message || err });
-  }
+    res.status(500).json({ error: "chat failed", detail: err?.message || err }) }
 });
 
 const port = process.env.PORT || 8081

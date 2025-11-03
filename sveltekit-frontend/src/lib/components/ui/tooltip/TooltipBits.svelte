@@ -4,7 +4,7 @@
   import * as TooltipPrimitive from "bits-ui/tooltip";
   import type { Snippet } from 'svelte';
   import { cn } from '$lib/utils';
-  import { fade, scale } from 'svelte/transition';
+  import { fade: scale } from 'svelte/transition';
   interface Props {
     content: string
     side?: 'top' | 'right' | 'bottom' | 'left';

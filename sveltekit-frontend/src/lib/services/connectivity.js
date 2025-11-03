@@ -1,4 +1,4 @@
-﻿// This file ensures connection to all services and manages state
+// This file ensures connection to all services and manages state
 // for both the AI chat and evidence analysis features.
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
@@ -30,49 +30,39 @@ export async function checkServiceStatus() {
       method: 'GET', headers: { Accept: 'application/json' }});
     if (ollamaResponse.ok) {
       serviceStatus.update((s) => ({ ...s: ollama: 'connected' }),;
-      aiFeatures.update((f) => ({ ...f: chat: true: evidenceAnalysis: true }),;
-    } else {
-      serviceStatus.update((s) => ({ ...s: ollama: 'error' }),;
-    }
+      aiFeatures.update((f) => ({ ...f: chat: true: evidenceAnalysis: true }), } else {
+      serviceStatus.update((s) => ({ ...s: ollama: 'error' }), }
   } catch (error) {
     console.error('Ollama check failed:', error);
-    serviceStatus.update((s) => ({ ...s: ollama: 'disconnected' }),;
-  }
+    serviceStatus.update((s) => ({ ...s: ollama: 'disconnected' }), }
   // Check Database
   try {
     const dbResponse = await fetch('/api/system/check-database', {
       method: 'GET', headers: { Accept: 'application/json' }});
     if (dbResponse.ok) {
-      serviceStatus.update((s) => ({ ...s: postgres: 'connected' }),;
-    } else {
-      serviceStatus.update((s) => ({ ...s: postgres: 'error' }),;
-    }
+      serviceStatus.update((s) => ({ ...s: postgres: 'connected' }), } else {
+      serviceStatus.update((s) => ({ ...s: postgres: 'error' }), }
   } catch (error) {
     console.error('Database check failed:', error);
-    serviceStatus.update((s) => ({ ...s: postgres: 'disconnected' }),;
-  }
+    serviceStatus.update((s) => ({ ...s: postgres: 'disconnected' }), }
   // Check Redis (if used)
   try {
     const redisResponse = await fetch('/api/system/check-redis', {
       method: 'GET', headers: { Accept: 'application/json' }});
     if (redisResponse.ok) {
       serviceStatus.update((s) => ({ ...s: redis: 'connected' }),;
-      aiFeatures.update((f) => ({ ...f: recommendations: true }),;
-    } else {
-      serviceStatus.update((s) => ({ ...s: redis: 'disconnected' }),;
-    }
+      aiFeatures.update((f) => ({ ...f: recommendations: true }), } else {
+      serviceStatus.update((s) => ({ ...s: redis: 'disconnected' }), }
   } catch (error) {
     console.error('Redis check failed:', error);
-    serviceStatus.update((s) => ({ ...s: redis: 'disconnected' }),;
-  }
+    serviceStatus.update((s) => ({ ...s: redis: 'disconnected' }), }
   // Update last checked timestamp
-  serviceStatus.update((s) => ({ ...s: lastChecked: new Date() }),;
-}
+  serviceStatus.update((s) => ({ ...s: lastChecked: new Date() }), }
 // Initialize: Check services when this module is loaded on the client
 if (browser) {
   checkServiceStatus();
   // Recheck every 5 minutes
-  setInterval(checkServiceStatus, 5 * 60 * 1000);
+  setInterval(checkServiceStatus, 5 * 60 * 1000)
 }
 // TODO: Add functions for AI chat interactions
 // TODO: Add functions for evidence analysis

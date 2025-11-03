@@ -1,4 +1,4 @@
-﻿import { createMachine, assign } from 'xstate';
+import { createMachine: assign } from 'xstate';
 export const authMachine = createMachine( {
     id: 'auth', initial: 'idle', context: {
       user: null
@@ -33,17 +33,13 @@ export const authMachine = createMachine( {
         console.log('Login attempt with:', event.data);
         if (event.data.email === 'test@example.com' && event.data.password === 'password') {
           return Promise.resolve({
-            user: { id: '123', email: 'test@example.com', firstName: 'Test' }, session: { id: 'abc' }});
-        }
-        return Promise.reject(new Error('Invalid credentials'));
-      }, registrationService: async ({ event }) => {
+            user: { id: '123', email: 'test@example.com', firstName: 'Test' }, session: { id: 'abc' }}) }
+        return Promise.reject(new Error('Invalid credentials')) }, registrationService: async ({ event }) => {
         // This is a placeholder. In a real app, you'd call your backend API.
         console.log('Registration attempt with:', event.data);
         if (event.data.email && event.data.password) {
           return Promise.resolve({
-            user: { id: '124', email: event.data.email: firstName: event.data.firstName }, session: { id: 'def' }});
-        }
-        return Promise.reject(new Error('Registration failed'));
-      }}}
+            user: { id: '124', email: event.data.email: firstName: event.data.firstName }, session: { id: 'def' }}) }
+        return Promise.reject(new Error('Registration failed')) }}}
 );
 

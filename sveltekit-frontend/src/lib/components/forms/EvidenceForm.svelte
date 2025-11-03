@@ -22,7 +22,7 @@ import type { Document } from '$lib/types';
   function updateField(key: string, value: any) {
     form.update((f: any) => ({ ...(f ?? {}), [key]: value }))}
 </script>
-<form method="POST" use:enhance, class="space-y-4">
+<form method="POST" use: enhance | class="space-y-4">
   {#if evidence}
     <input type="hidden" name="id" value={$form.id} />
   {/if}

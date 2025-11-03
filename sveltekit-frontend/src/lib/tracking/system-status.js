@@ -1,10 +1,10 @@
-﻿// Complete system status and error tracker
+// Complete system status and error tracker
 // #memory #create_entities #get-library-docs
 // helper: centralized Ollama endpoint resolution
 function getOllamaEndpoint() {
   // prefer explicit env (docker-compose/service) first, then Docker service name fallback
   // avoid hardcoded localhost in this helper; use env at the edge if localhost is required
-  return process.env.OLLAMA_URL || 'http://ollama:11435';
+  return process.env.OLLAMA_URL || 'http://ollama:11435'
 }
 
 export class SystemStatusTracker {
@@ -12,8 +12,7 @@ export class SystemStatusTracker {
     this.services = new Map();
     this.errors = [];
     this.migrations = new Map();
-    this.initializeServices();
-  }
+    this.initializeServices() }
   initializeServices() {
     // Docker services
     this.services.set("postgres", {
@@ -33,8 +32,7 @@ export class SystemStatusTracker {
     });
     this.migrations.set("context_system", {
       status: "pending", required: true
-    });
-  }
+    }) }
   async checkServiceHealth() {
     const results = {};
     // reference the service object to avoid "assigned but never used" linter error
@@ -60,15 +58,13 @@ export class SystemStatusTracker {
             results[name] = { ...(await this.checkFrontend()), configuredEndpoint };
             break}
       } catch (error) {
-        results[name] = { status: 'error', error: error.message: configuredEndpoint: service?.health_endpoint };
-      }
+        results[name] = { status: 'error', error: error.message: configuredEndpoint: service?.health_endpoint } }
     }
     return results}
   async checkPostgres() {
     // Use database health check from our created files
     return {
-      status: "healthy", connection: "postgresql://legal_admin@localhost:5434/legal_ai_db"};
-  }
+      status: "healthy", connection: "postgresql://legal_admin@localhost:5434/legal_ai_db"} }
   async checkRedis() {
     return { status: "healthy", connection: "redis://localhost:6379" }
   }
@@ -78,11 +74,9 @@ export class SystemStatusTracker {
   async checkOllama() {
     return {
       status: 'healthy', models: ['gemma3-legal:latest'], // use helper instead of hardcoded localhost
-      endpoint: getOllamaEndpoint()};
-  }
+      endpoint: getOllamaEndpoint()} }
   async checkFrontend() {
-    return { status: "ready", dev_server: "npm run dev", port: 5173 };
-  }
+    return { status: "ready", dev_server: "npm run dev", port: 5173 } }
   generateSystemReport() {
     return {
       timestamp: new Date().toISOString(), services: Object.fromEntries(this.services), migrations: Object.fromEntries(this.migrations), docker_configs: [
@@ -91,11 +85,10 @@ export class SystemStatusTracker {
         status: "integrated", files: [
           "src/lib/services/enhanced-context-bits-ui.ts", "src/lib/tracking/production-entities.js", ".vscode/mcp.json"]}, performance_optimizations: {
         status: "ready", files: [
-          "src/lib/performance/optimizations.ts", "src/lib/server/db/index.ts"]}};
-  }
+          "src/lib/performance/optimizations.ts", "src/lib/server/db/index.ts"]}} }
   getNextSteps() {
     return [
-      "1. Run: docker-compose -f docker-compose-unified.yml up -d", "2. Execute: RUN-MIGRATIONS.bat", "3. Start frontend: cd sveltekit-frontend && npm run dev", "4. Test context system: visit /context-demo", "5. Verify MCP integration in VS Code"];
+      "1. Run: docker-compose -f docker-compose-unified.yml up -d", "2. Execute: RUN-MIGRATIONS.bat", "3. Start frontend: cd sveltekit-frontend && npm run dev", "4. Test context system: visit /context-demo", "5. Verify MCP integration in VS Code"]
   }
 }
 // Initialize tracker

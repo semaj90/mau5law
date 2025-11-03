@@ -72,7 +72,7 @@ import type { Document } from '$lib/types';
       ...initialContext
     }
   });
-  const { state, send } = useMachine(machineWithContext);
+  const { state: send } = useMachine(machineWithContext);
   // AI Enhancement Services
   const modelSwitcher = enableAIEnhancements ? new IntelligentModelSwitcher() : null
   const intentPredictionSystem = enableAIEnhancements ? new UserIntentPredictionSystem() : null
@@ -476,7 +476,7 @@ import type { Document } from '$lib/types';
     max-width: none}
   .prose pre {
     background: #f5f5f5
-   , padding: 1rem
+   ;padding: 1rem
     border-radius: 0.5rem
     overflow-x: auto}
 </style>

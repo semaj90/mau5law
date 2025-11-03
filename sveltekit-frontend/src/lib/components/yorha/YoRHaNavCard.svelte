@@ -32,7 +32,7 @@ https://svelte.dev/e/js_parse_error -->
 >
   <div class="yorha-nav-header">
     {#if icon}
-      <svelte:component, this={icon} size={28} />
+      <svelte: component | this={icon} size={28} />
     {/if}
     <h3>{title}</h3>
   </div>

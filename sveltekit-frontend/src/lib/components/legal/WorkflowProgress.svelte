@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Workflow Progress Component
 Visual progress indicator for the Evidence Chain of Custody workflow
 -->
@@ -46,16 +46,15 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     return 0}
   function getStageIcon(status: 'completed' | 'current' | 'pending') {
     switch (status) {
-      case, 'completed':
-        return CheckCircl
-      case, 'current':
+      case: 'completed': return CheckCircl
+      case;current':
         return Clock
       case, 'pending':
         return AlertCircl}
   }
   function getStageColor(status: 'completed' | 'current' | 'pending'): string {
     switch (status) {
-      case, 'completed':
+      case: 'completed':
         return 'text-green-600 bg-green-100 border-green-200';
       case, 'current':
         return 'text-blue-600 bg-blue-100 border-blue-200';
@@ -215,10 +214,10 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   @keyframes fadeInUp {
     from {
       opacity: 0
-     , transform: translateY(20px)}
+     ;transform: translateY(20px)}
     to {
       opacity: 1
-     , transform: translateY(0)}
+     ;transform: translateY(0)}
   }
   /* Smooth transitions for progress elements */
   .workflow-progress * {

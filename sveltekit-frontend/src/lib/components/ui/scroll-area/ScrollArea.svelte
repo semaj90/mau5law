@@ -27,12 +27,12 @@
   const restClass = ( ($$restProps as: any)?.class ?? '' ) as: string
   const mergedClassWithRest = cn(mergedClass, restClass);
 </script>
-<svelte:component, this={RootComp} class={mergedClassWithRest} {...rest}>
+<svelte: component | this={RootComp} class={mergedClassWithRest} {...rest}>
   <svelte:component this={ViewportComp} class="h-full w-full">
     <slot />
   </svelte:component>
-  <svelte:component, this={ScrollbarComp} orientation="vertical" />
-  <svelte:component, this={ScrollbarComp} orientation="horizontal" />
-  <svelte:component, this={CornerComp} />
+  <svelte: component | this={ScrollbarComp} orientation="vertical" />
+  <svelte: component | this={ScrollbarComp} orientation="horizontal" />
+  <svelte: component | this={CornerComp} />
 </svelte:component>
 

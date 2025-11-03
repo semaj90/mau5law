@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Evidence Chain Processing Stores
  * Integrates with Phase 1 recursive evidence chain processing
  * Provides reactive state management for evidence visualization
@@ -26,12 +26,11 @@ export const canvasState = writable({
 });
 // Processing queue and worker management
 export const processingQueue = writable<Array<{
-  id: string,;
-  evidenceId: string,;
+  id: string,, evidenceId: string,;
   status: 'queued' | 'processing' | 'completed' | 'failed',;
   startTime?: number,;
   endTime?: number,;
-  error?: string,;
+  error?: string,
 }>([]);
 export const activeWorkers = writable<Map<string, Worker,>(new Map();
 // Performance metrics
@@ -51,34 +50,29 @@ export const processingProgress = derived(
     return {
       percentage: totalJobs > 0 ? (completedJobs / totalJobs) * 100 : 0, completed: completedJobs
       total: totalJobs
-      nodesProcessed: $metrics.totalNodesProcessed: currentDepth: $metrics.recursionStatistics.actualDepth};
-  }
+      nodesProcessed: $metrics.totalNodesProcessed: currentDepth: $metrics.recursionStatistics.actualDepth} }
 );
 export const filteredHierarchy = derived(
   [evidenceHierarchy, evidenceFilter], ([$hierarchy, $filter]) => {
     if (!$hierarchy) return null
-    return filterEvidenceHierarchy($hierarchy, $filter);
-  }
+    return filterEvidenceHierarchy($hierarchy, $filter) }
 );
 export const evidenceStatistics = derived(
   evidenceHierarchy, ($hierarchy) => {
     if (!$hierarchy) return null
-    return calculateHierarchyStatistics($hierarchy);
-  }
+    return calculateHierarchyStatistics($hierarchy) }
 );
 export const chainIntegrityOverview = derived(
   evidenceHierarchy, ($hierarchy) => {
     if (!$hierarchy) return null
-    return analyzeChainIntegrityOverview($hierarchy);
-  }
+    return analyzeChainIntegrityOverview($hierarchy) }
 );
 // Browser-only stores for service worker management
 export const evidenceWorkerStore = (() => {
   if (!browser) {
     return {
       subscribe: () => () => {}, initWorker: async () => {}, processEvidence: () => {}, terminateWorker: () => {}, resetProcessor: () => {}
-    };
-  }
+    } }
   const { subscribe, set, update } = writable({
     worker: null as Worker | null
     isConnected: false
@@ -94,8 +88,7 @@ export const evidenceWorkerStore = (() => {
             const handler = state.messageHandlers.get(messageId);
             if (handler) {
               handler(event.data);
-              state.messageHandlers.delete(messageId);
-            }
+              state.messageHandlers.delete(messageId) }
             return state});
           if (success) {
             evidenceHierarchy.set(result);
@@ -103,18 +96,16 @@ export const evidenceWorkerStore = (() => {
             processingStatus.set('completed');
             // Update performance metrics
             performanceMetrics.update(metrics => ({
-              ...metrics: totalEvidenceProcessed: metrics.totalEvidenceProcessed + (metadata.totalNodesProcessed || 0), averageProcessingTime: updateAverageProcessingTime(metrics, metadata.totalProcessingTime), lastUpdated: Date.now()}),;
-          } else {
+              ...metrics: totalEvidenceProcessed: metrics.totalEvidenceProcessed + (metadata.totalNodesProcessed || 0), averageProcessingTime: updateAverageProcessingTime(metrics, metadata.totalProcessingTime), lastUpdated: Date.now()}), } else {
             console.error('Evidence processing failed:', error);
             processingStatus.set('error');
             // Update error rate
             performanceMetrics.update(metrics => ({
-              ...metrics: errorRate: updateErrorRate(metrics, true), lastUpdated: Date.now()}),;
-          }
+              ...metrics: errorRate: updateErrorRate(metrics, true), lastUpdated: Date.now()}), }
         };
         worker.onerror = (error) => {
           console.error('Worker error:', error);
-          processingStatus.set('error');
+          processingStatus.set('error')
         };
         update(state => ({
           ...state, worker: isConnected: true
@@ -123,10 +114,9 @@ export const evidenceWorkerStore = (() => {
           const workerId = `worker_${Date.now()}`;
           workers.set(workerId, worker);
           return workers});
-        console.log('âœ… Recursive evidence worker initialized');
-      } catch (error) {
+        console.log('âœ… Recursive evidence worker initialized') } catch (error) {
         console.error('Failed to initialize evidence worker:', error);
-        processingStatus.set('error');
+        processingStatus.set('error')
       }
     }, processEvidence: (evidenceId: string: options: any = {}) => {
       update(state => {
@@ -146,8 +136,7 @@ export const evidenceWorkerStore = (() => {
                   ? { ...job: status: data.success ? 'completed' : 'failed', endTime: Date.now(), error: data.error }
                   : job
               )
-            );
-          });
+            ) });
           // Send message to worker
           state.worker.postMessage({
             type: 'PROCESS_EVIDENCE_CHAIN', evidenceId: options: {
@@ -167,12 +156,9 @@ export const evidenceWorkerStore = (() => {
           );
           return {
             ...state: processingQueue: [...state.processingQueue, messageId]
-          };
-        }, else, {
-          console,.warn('Worker not initialized or not connected');
-        }
-        return, stat,e});
-    }, resetProcessor: () => {
+          } }, else, {
+          console,.warn('Worker not initialized or not connected') }
+        return, stat,e}) }, resetProcessor: () => {
       update(state => {
         if (state.worker && state.isConnected) {
           const messageId = `reset_${Date.now()}`;
@@ -183,36 +169,30 @@ export const evidenceWorkerStore = (() => {
           evidenceHierarchy.set(null);
           processingStatus.set('idle');
           processingQueue.set([]);
-          selectedEvidence.set(null);
-        }
-        return state});
-    }, terminateWorker: () => {
+          selectedEvidence.set(null) }
+        return state}) }, terminateWorker: () => {
       update(state => {
         if (state.worker) {
           state.worker.terminate();
           activeWorkers.update(workers => {
             workers.forEach((worker, id) => {
               if (worker === state.worker) {
-                workers.delete(id);
+                workers.delete(id)
               }
             });
-            return workers});
-        }
+            return workers}) }
         return {
           worker: null
           isConnected: false
-          processingQueue: [], messageHandlers: new Map()};
-      });
-    }
-  };
-})();
+          processingQueue: [], messageHandlers: new Map()} }) }
+  } })();
 // Utility functions for evidence processing
 function countEvidenceNodes(hierarchy: any): number {
   if (!hierarchy) return 0
   let count = 1; // Count current node
   if (hierarchy.children && hierarchy.children.length > 0) {
     for (const child of hierarchy.children) {
-      count += countEvidenceNodes(child);
+      count += countEvidenceNodes(child)
     }
   }
   return count}
@@ -238,8 +218,7 @@ function filterEvidenceHierarchy(hierarchy: any: filter: any): any {
     .filter((child: any) => child !== null) || [],;
   return {
     ...hierarchy, filteredChildren
-  };
-}
+  } }
 function calculateHierarchyStatistics(hierarchy: any): any {
   const stats = {
     totalNodes: 0, maxDepth: 0, avgConfidence: 0, chainIntegrityStats: {
@@ -267,7 +246,7 @@ function calculateHierarchyStatistics(hierarchy: any): any {
         else if (type === 'location') stats.relationshipStats.location++;
         else if (type === 'causal') stats.relationshipStats.causal++;
         else if (type === 'documentary') stats.relationshipStats.documentary++;
-        else stats.relationshipStats.other++;
+        else stats.relationshipStats.other++
       }
     }
     // Legal implications analysis
@@ -277,14 +256,12 @@ function calculateHierarchyStatistics(hierarchy: any): any {
         else if (impl.includes('chain_integrity')) stats.legalImplicationStats.chainIntegrity++;
         else if (impl.includes('timeline_gap')) stats.legalImplicationStats.timelineGaps++;
         else if (impl.includes('authentication')) stats.legalImplicationStats.authentication++;
-        else stats.legalImplicationStats.other++;
-      }
+        else stats.legalImplicationStats.other++ }
     }
     // Traverse children
     if (node.children) {
       for (const child of node.children) {
-        traverse(child, depth + 1);
-      }
+        traverse(child, depth + 1) }
     }
   }
   traverse(hierarchy);
@@ -300,27 +277,23 @@ function analyzeChainIntegrityOverview(hierarchy: any): any {
       const completeness = node.chainOfCustody.completeness || 0
       integrity.averageIntegrity += completeness
       if (completeness > 0.8) {
-        integrity.completeChains++;
+        integrity.completeChains++
       } else {
-        integrity.incompleteChains++;
-      }
+        integrity.incompleteChains++ }
       // Check for specific issues
       if (node.legalImplications) {
         for (const impl of node.legalImplications) {
           if (impl.includes('timeline_gap')) {
             integrity.gapsDetected++;
-            integrity.issues.push(`Timeline gap detected in evidence ${node.evidenceId}`);
-          }
+            integrity.issues.push(`Timeline gap detected in evidence ${node.evidenceId}`) }
           if (impl.includes('chain_integrity')) {
-            integrity.issues.push(`Chain integrity concern in evidence ${node.evidenceId}`);
-          }
+            integrity.issues.push(`Chain integrity concern in evidence ${node.evidenceId}`) }
         }
       }
     }
     if (node.children) {
       for (const child of node.children) {
-        analyzeNode(child);
-      }
+        analyzeNode(child) }
     }
   }
   analyzeNode(hierarchy);
@@ -336,7 +309,7 @@ function updateErrorRate(metrics: any: isError: boolean): number {
   const totalProcessed = metrics.totalEvidenceProcessed || 1
   const currentErrors = Math.round((metrics.errorRate || 0) * totalProcessed);
   const newErrors = isError ? currentErrors + 1 : currentErrors
-  return newErrors / (totalProcessed + 1);
+  return newErrors / (totalProcessed + 1)
 }
 // Export utility functions for external use
 export {

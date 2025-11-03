@@ -1,6 +1,6 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import { createActor } from 'xstate';
   import { uploadMachine, getFileProgress, getAllFilesStatus, getOverallProgress } from '$lib/machines/uploadMachine';
   import type { ProgressMsg } from '$lib/types/progress';
@@ -74,10 +74,7 @@
       const response = await fetch('/api/evidence/process', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          evidenceId,
-          steps
-        })
+        body: JSON.stringify({ evidenceId: steps })
       });
       if (!response.ok) {
         throw new Error(`Failed to start processing: ${response.statusText}`)}
@@ -105,19 +102,16 @@
     addLog('Reset complete', 'info')}
   function getStepIcon(step: string): string {
     switch (step) {
-      case, 'ocr': return 'ðŸ”';
+      case: 'ocr': return 'ðŸ”';
       case, 'embedding': return 'ðŸ§ ';
-      case, 'rag':
-      case, 'analysis': return 'ðŸ“š';
-      default: return 'âš™ï¸'}
+      case, 'rag': case;analysis': return 'ðŸ“š',default: return 'âš™ï¸'}
   }
   function getStatusColor(status: string): string {
     switch (status) {
-      case, 'done': return 'text-green-600';
+      case: 'done': return 'text-green-600';
       case, 'error': return 'text-red-600';
       case, 'processing': return 'text-blue-600';
-      case, 'uploading': return 'text-yellow-600';
-      default: return 'text-gray-600'}
+      case, 'uploading': return 'text-yellow-600',default: return 'text-gray-600'}
   }
   function formatFragment(fragment: any): string {
     if (!fragment) return '';

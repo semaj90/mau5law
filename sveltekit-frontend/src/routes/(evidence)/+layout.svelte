@@ -78,7 +78,7 @@
     min-height: 100vh
     display: flex
     flex-direction: column
-   , background: var(--nier-bg-primary, #0a0a0a);
+   ; background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0);
     font-family: 'JetBrains Mono', 'Courier New', monospace}
 
@@ -99,7 +99,7 @@
   .evidence-title {
     font-size: 1.5rem
     font-weight: bold
-   , color: var(--nier-accent-warm, #d4af37);
+   ; color: var(--nier-accent-warm, #d4af37);
     margin: 0}
 
   .evidence-badge { background: var(--nier-accent-warm, #d4af37);
@@ -119,10 +119,10 @@
     align-items: center
     gap: 0.5rem
     padding: 0.5rem 1rem
-   , border: 1px solid var(--nier-border-primary, #333);
+   ; border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem
     text-decoration: none
-   , color: var(--nier-text-secondary, #d0d0d0);
+   ; color: var(--nier-text-secondary, #d0d0d0);
     background: var(--nier-bg-primary, #0a0a0a);
     transition: all 0.25s ease}
 
@@ -145,7 +145,7 @@
   .evidence-content {
     flex: 1
     overflow-y: auto
-   , background: var(--nier-bg-primary, #0a0a0a)}
+   ; background: var(--nier-bg-primary, #0a0a0a)}
 
   .evidence-container {
     max-width: 1400px
@@ -156,7 +156,7 @@
   .evidence-placeholder {
     text-align: center
     padding: 4rem 2rem
-   , background: var(--nier-bg-secondary, #1a1a1a);
+   ; background: var(--nier-bg-secondary, #1a1a1a);
     border: 2px dashed var(--nier-border-muted, #444);
     border-radius: 1rem}
 
@@ -181,7 +181,7 @@
     align-items: center
     gap: 1rem
     font-size: 0.9rem
-   , color: var(--nier-text-muted, #999)}
+   ; color: var(--nier-text-muted, #999)}
 
   .evidence-current strong {
     color: var(--nier-accent-cool, #87ceeb);
@@ -193,10 +193,10 @@
 
   .evidence-main-btn {
     padding: 0.5rem 1rem
-   , border: 1px solid var(--nier-border-primary, #333);
+   ; border: 1px solid var(--nier-border-primary, #333);
     border-radius: 0.5rem
     text-decoration: none
-   , color: var(--nier-text-primary, #f0f0f0);
+   ; color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
     transition: all 0.2s ease
     font-size: 0.9rem}

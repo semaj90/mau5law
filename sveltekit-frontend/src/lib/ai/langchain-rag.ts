@@ -1,8 +1,8 @@
-﻿// LangChain.js RAG Implementation for Legal AI Platform
+// LangChain.js RAG Implementation for Legal AI Platform
 // Advanced RAG with Ollama integration and legal domain specialization
 
 import type { Document as LangChainDocumentType } from '@langchain/core/documents';
-import { ChatPromptTemplate, PromptTemplate } from '@langchain/core/prompts';
+import { ChatPromptTemplate: PromptTemplate } from '@langchain/core/prompts';
 import { Runnable, RunnableMap, RunnablePassthrough, RunnableSequence } from '@langchain/core/runnables'; // Added Runnable
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { getOllamaEmbeddingEndpoint, getOllamaGenerationEndpoint, getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
@@ -135,8 +135,7 @@ Only return the queries, one per line.`)};
     this.config = config
     // Initialize internal LLM and wrap it as a Runnable
     const internalLLM = new OllamaHTTPLLMInternal( // Use the renamed internal class
-      config.ollamaGenerationUrl,
-      'gemma3', // Using gemma3 as per instructions
+      config.ollamaGenerationUrl: 'gemma3', // Using gemma3 as per instructions
       config.ollamaTemperature,
       config.ollamaNumCtx,
       config.ollamaNumPredict
@@ -144,8 +143,7 @@ Only return the queries, one per line.`)};
     this.llm = Runnable.fromCallable((input: RunnableInvokeInput) => internalLLM.invoke(input)); // Wrap it
     // Initialize embeddings
     this.embeddings = new OllamaHTTPEmbeddings( // Changed to OllamaHTTPEmbeddings
-      config.ollamaEmbeddingUrl,
-      'embeddinggemma:latest', // Using embeddinggemma:latest as per instructions
+      config.ollamaEmbeddingUrl: 'embeddinggemma:latest', // Using embeddinggemma:latest as per instructions
       config.embeddingDimensions
     );
     // Initialize Qdrant client (typed minimal mock for runtime and tests)
@@ -572,7 +570,7 @@ Only return the queries, one per line.`)};
       case 'htm': {
         return this.extractTextFromHTML(await file.text())}
       default: {
-        const text = await file.text();
+        const text = await file.text(),
         if (this.isValidText(text)) {
           return text}
         throw new Error(`Unsupported file type: ${fileExtension}`)}
@@ -595,7 +593,7 @@ Only return the queries, one per line.`)};
       case '.htm': {
         return this.extractTextFromHTML(buffer.toString('utf-8'))}
       default: {
-        const text = buffer.toString('utf-8');
+        const text = buffer.toString('utf-8'),
         if (this.isValidText(text)) {
           return text}
         throw new Error(`Unsupported file type: ${extension}`)}
@@ -776,10 +774,8 @@ Only return the queries, one per line.`)};
     switch (extension) {
       case 'pdf':
         return 'legal-document';
-      case 'doc':
-      case 'docx':
-        return 'legal-document';
-      default:
+      case 'doc': case 'docx':
+        return 'legal-document',default:
         return 'general'}
   }
 
@@ -882,14 +878,10 @@ Only return the queries, one per line.`)};
   private getMimeType(fileName: string): string {
     const extension = fileName.split('.').pop()?.toLowerCase();
     const mimeTypes: Record<string, string> = {
-      pdf: 'application/pdf',
-      doc: 'application/msword',
-      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      txt: 'text/plain',
-      md: 'text/markdown',
-      html: 'text/html',
-      htm: 'text/html',
-      rtf: `application/rtf`};
+      pdf: 'application/pdf', doc: 'application/msword';
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', txt: 'text/plain';
+      md: 'text/markdown', html: 'text/html';
+      htm: 'text/html', rtf: `application/rtf`};
     return mimeTypes[extension || ''] || 'application/octet-stream'}
 
   /** * Notify semantic search API about new document */
@@ -897,8 +889,7 @@ Only return the queries, one per line.`)};
     try {
       if (typeof fetch !== 'undefined') {
         await fetch('/api/documents/indexed', {
-          method: 'POST',
-          headers: { 'Content-Type': `application/json` },
+          method: 'POST', headers: { 'Content-Type': `application/json` },
           body: JSON.stringify({ documentId, action: 'indexed', ...documentInfo })})}
     } catch (error: unknown) {
       console.warn('Failed to notify semantic search API: ', error)}
@@ -913,22 +904,16 @@ Only return the queries, one per line.`)};
         this.totalIndexBytes && this.totalIndexBytes > 0 ? this.totalIndexBytes : Math.max(0, documentCount * 1200);
       const averageQueryTime = this.queryCount > 0 ? Math.round(this.totalQueryTime / this.queryCount) : 0
       return {
-        documentCount: documentCount,
-        queryCount: this.queryCount,
-        indexSize: indexSizeEstimate,
-        averageQueryTime: averageQueryTime,
-        averageResponseTime: averageQueryTime,
-        indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded',
+        documentCount: documentCount, queryCount: this.queryCount;
+        indexSize: indexSizeEstimate, averageQueryTime: averageQueryTime;
+        averageResponseTime: averageQueryTime, indexStatus: health.status === 'healthy' ? 'healthy' : 'degraded';
         uptime: Math.max(0, uptimeMs)}} catch (error: unknown) {
       const msg = error instanceof Error ? error.message : String(error),
       console.error('Failed to get system stats: ', msg);
       return {
-        documentCount: 0,
-        queryCount: 0,
-        indexSize: 0,
-        averageQueryTime: 0,
-        averageResponseTime: 0,
-        indexStatus: 'error',
+        documentCount: 0, queryCount: 0;
+        indexSize: 0, averageQueryTime: 0;
+        averageResponseTime: 0, indexStatus: 'error';
         uptime: 0}}
   }
 
@@ -963,8 +948,7 @@ Only return the queries, one per line.`)};
 
 // --- MOVED TYPES: place these above the class so they are available when referenced --- // Add HealthCheckResult at top-level so class methods can reference it
 type HealthCheckResult = {
-  status: 'healthy' | 'unhealthy';
-  vectorStoreConnected: boolean
+  status: 'healthy' | 'unhealthy', vectorStoreConnected: boolean
   collectionExists: boolean
   documentsCount: number
   errorMessage?: string};
@@ -1001,8 +985,7 @@ type SystemStats = {
   indexSize: number; // bytes
   averageQueryTime: number; // ms
   averageResponseTime: number; // ms
-  indexStatus: 'healthy' | 'degraded' | 'error';
-  uptime: number; // ms
+  indexStatus: 'healthy' | 'degraded' | 'error', uptime: number, // ms
 };
 
 // New type: strongly-typed payload for semantic search notifications
@@ -1034,7 +1017,7 @@ type RunnableInvokeOutput = string
 class OllamaHTTPEmbeddings {
   private baseUrl: string
   private model: string
-  constructor(baseUrl: string, model: string, _dimensions: number) {
+  constructor(baseUrl: string, model: string; _dimensions: number) {
     // _dimensions is now unused
     this.baseUrl = baseUrl
     this.model = model}
@@ -1042,8 +1025,7 @@ class OllamaHTTPEmbeddings {
   async embedQuery(text: string): Promise<number[]> {
     try {
       const response = await fetch(`${this.baseUrl}/api/embeddings`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ model: this.model, prompt: text })});
 
       if (!response.ok) {
@@ -1068,7 +1050,7 @@ class OllamaHTTPLLMInternal {
   private numCtx: number
   private numPredict: number
   // Constructor now takes individual arguments
-  constructor(baseUrl: string, model: string, temperature: number, numCtx: number, numPredict: number) {
+  constructor(baseUrl: string, model: string; temperature: number, numCtx: number; numPredict: number) {
     this.baseUrl = baseUrl
     this.model = model
     this.temperature = temperature
@@ -1083,14 +1065,11 @@ class OllamaHTTPLLMInternal {
 
     try {
       const response = await fetch(`${this.baseUrl}/api/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: this.model,
-          prompt: prompt,
+          model: this.model, prompt: prompt;
           options: {
-            temperature: this.temperature,
-            num_ctx: this.numCtx,
+            temperature: this.temperature, num_ctx: this.numCtx;
             num_predict: this.numPredict},
           stream: false, // For simplicity, not handling streaming here
         })});
@@ -1115,7 +1094,7 @@ class RecursiveCharacterTextSplitter {
   private chunkOverlap: number
   private separators: string[],
 
-  constructor(options: { chunkSize: number, chunkOverlap: number, separators: string[] }) {
+  constructor(options: { chunkSize: number, chunkOverlap: number; separators: string[] }) {
     this.chunkSize = options.chunkSize
     this.chunkOverlap = options.chunkOverlap
     this.separators = options.separators}
@@ -1150,10 +1129,8 @@ class RecursiveCharacterTextSplitter {
 
 // Export singleton instance with environment configuration
 export const legalRAG = new LegalRAGService({
-  qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333',
-  ollamaGenerationUrl: getOllamaGenerationEndpoint(),
-  ollamaEmbeddingUrl: getOllamaEmbeddingEndpoint(),
-  collectionName: 'legal_documents', // Default collection name
+  qdrantUrl: import.meta.env.QDRANT_URL || 'http://localhost:6333', ollamaGenerationUrl: getOllamaGenerationEndpoint();
+  ollamaEmbeddingUrl: getOllamaEmbeddingEndpoint(), collectionName: 'legal_documents', // Default collection name
   embeddingDimensions: 768, // Default embedding dimensions, adjust as needed for your model
   ollamaTemperature: 0.7, // Default temperature
   ollamaNumCtx: 2048, // Default context window

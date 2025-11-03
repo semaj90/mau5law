@@ -1,9 +1,9 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { writable } from 'svelte/store'; import { createEventDispatcher } from 'svelte'; // Import createEventDispatcher interface NodeData { name?: string; type?: string; content?: string; metadata?: Record<string any>; customTags?: string[]; aiTags?: { title?: string; summary?: string; tags?: string[]; people?: string[]; locations?: string[]; organizations?: string[]; dates?: string[]; evidenceType?: string; legalRelevance?: 'critical' | 'high' | 'medium' | 'low'; legalCategories?: string[]; confidentialityLevel?: 'public' | 'internal' | 'confidential' | 'restricted'; urgencyLevel?: 'immediate' | 'high' | 'normal' | 'low'; keyFacts?: string[]; potentialWitnesses?: string[]; relatedCases?: string[]; statutes?: string[]; monetaryAmounts?: string[]; actions?: string[]; qualityScore?: number; extractionConfidence?: Record<string number>; redFlags?: string[]; recommendations?: string[]}}
 
   interface Props { selectedNode?: NodeData | null; readOnly?: boolean}
 
-  let { selectedNode = $bindable(null), readOnly = $bindable(false) }: Props = $props(); const dispatch = createEventDispatcher<{ nodeUpdated: NodeData, toast: { type: 'success' | 'error';, message: string }}>(); // Enhanced form fields with auto-population type FormDataValue = { title: string, description: string, tags: string[], customTags: string[], people: string[], locations: string[], organizations: string[], dates: string[], evidenceType: string, legalRelevance: 'critical' | 'high' | 'medium' | 'low'; legalCategories: string[], confidentialityLevel: 'public' | 'internal' | 'confidential' | 'restricted'; urgencyLevel: 'immediate' | 'high' | 'normal' | 'low'; keyFacts: string[], potentialWitnesses: string[], relatedCases: string[], statutes: string[], monetaryAmounts: string[], actions: string[], qualityScore: number;, extractionConfidence: Record<string number>; redFlags: string[], recommendations: string[]}; let formData = writable<FormDataValue>({ // Basic fields, title: '', description: '', tags: [], customTags: [], // Entity fields (auto-populated by AI) people: [], locations: [], organizations: [], dates: [], // Legal fields evidenceType: 'other', legalRelevance: 'medium', legalCategories: [], confidentialityLevel: 'internal', urgencyLevel: 'normal', // Analysis fields keyFacts: [], potentialWitnesses: [], relatedCases: [], statutes: [], monetaryAmounts: [], actions: [], // Quality metrics qualityScore: 0, extractionConfidence: { people: 0, locations: 0, dates: 0, organizations: 0 }, // Warnings and recommendations redFlags: [], recommendations: [] }); // Form state let isLoading = $state<boolean>(false); let isSaving = $state<boolean>(false); let hasUnsavedChanges = $state<boolean>(false); let lastSavedAt = $state<Date | null>(null); let autoSaveTimer: ReturnType<typeof setTimeout>; // Custom input fields let customTag = $state<string>(''); let customPerson = $state<string>(''); let customLocation = $state<string>(''); let customOrganization = $state<string>(''); let customAction = $state<string>(''); // Evidence type options with icons const evidenceTypes = [ { value: 'document', label: 'Document', icon: 'ðŸ“„' }, { value: 'photo', label: 'Photo', icon: 'ðŸ–¼ï¸' }, { value: 'video', label: 'Video', icon: 'ðŸŽ¥' }, { value: 'audio', label: 'Audio', icon: 'ðŸŽµ' }, { value: 'physical', label: 'Physical Evidence', icon: 'ðŸ”' }, { value: 'digital', label: 'Digital Evidence', icon: 'ðŸ’¾' }, { value: 'testimony', label: 'Testimony', icon: 'ðŸ—£ï¸' }, { value: 'other', label: 'Other', icon: 'ðŸ“' } ]; // Legal relevance options with colors const relevanceOptions = [ { value: 'critical', label: 'Critical', color: 'bg-red-100 text-red-800 border-red-200' }, { value: 'high', label: 'High', color: 'bg-orange-100 text-orange-800 border-orange-200' }, { value: 'medium', label: 'Medium', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' }, { value: 'low', label: 'Low', color: 'bg-green-100 text-green-800 border-green-200' } ]; // Confidentiality levels const confidentialityLevels = [ { value: 'public', label: 'Public', color: 'bg-blue-100 text-blue-800' }, { value: 'internal', label: 'Internal', color: 'bg-gray-100 text-gray-800' }, { value: 'confidential', label: 'Confidential', color: 'bg-yellow-100 text-yellow-800' }, { value: 'restricted', label: 'Restricted', color: 'bg-red-100 text-red-800' } ]; // Urgency levels const urgencyLevels = [ { value: 'immediate', label: 'Immediate', color: 'bg-red-100 text-red-800' }, { value: 'high', label: 'High', color: 'bg-orange-100 text-orange-800' }, { value: 'normal', label: 'Normal', color: 'bg-blue-100 text-blue-800' }, { value: 'low', label: 'Low', color: 'bg-gray-100 text-gray-800' } ]; // Watch for node changes and auto-populate form $effect(() => { if (selectedNode) { autoPopulateForm(selectedNode)}
+  let { selectedNode = $bindable(null), readOnly = $bindable(false) }: Props = $props(); const dispatch = createEventDispatcher<{ nodeUpdated: NodeData, toast: { type: 'success' | 'error';, message: string }}>(); // Enhanced form fields with auto-population type FormDataValue = { title: string, description: string, tags: string[], customTags: string[], people: string[], locations: string[], organizations: string[], dates: string[], evidenceType: string, legalRelevance: 'critical' | 'high' | 'medium' | 'low',legalCategories: string[], confidentialityLevel: 'public' | 'internal' | 'confidential' | 'restricted',urgencyLevel: 'immediate' | 'high' | 'normal' | 'low',keyFacts: string[], potentialWitnesses: string[], relatedCases: string[], statutes: string[], monetaryAmounts: string[], actions: string[], qualityScore: number;, extractionConfidence: Record<string number>,redFlags: string[], recommendations: string[]}; let formData = writable<FormDataValue>({ // Basic fields, title: '', description: '', tags: [], customTags: [], // Entity fields (auto-populated by AI) people: [], locations: [], organizations: [], dates: [], // Legal fields evidenceType: 'other', legalRelevance: 'medium', legalCategories: [], confidentialityLevel: 'internal', urgencyLevel: 'normal', // Analysis fields keyFacts: [], potentialWitnesses: [], relatedCases: [], statutes: [], monetaryAmounts: [], actions: [], // Quality metrics qualityScore: 0, extractionConfidence: { people: 0, locations: 0, dates: 0, organizations: 0 }, // Warnings and recommendations redFlags: [], recommendations: [] }); // Form state let isLoading = $state<boolean>(false); let isSaving = $state<boolean>(false); let hasUnsavedChanges = $state<boolean>(false); let lastSavedAt = $state<Date | null>(null); let autoSaveTimer: ReturnType<typeof setTimeout>; // Custom input fields let customTag = $state<string>(''); let customPerson = $state<string>(''); let customLocation = $state<string>(''); let customOrganization = $state<string>(''); let customAction = $state<string>(''); // Evidence type options with icons const evidenceTypes = [ { value: 'document', label: 'Document', icon: 'ðŸ“„' }, { value: 'photo', label: 'Photo', icon: 'ðŸ–¼ï¸' }, { value: 'video', label: 'Video', icon: 'ðŸŽ¥' }, { value: 'audio', label: 'Audio', icon: 'ðŸŽµ' }, { value: 'physical', label: 'Physical Evidence', icon: 'ðŸ”' }, { value: 'digital', label: 'Digital Evidence', icon: 'ðŸ’¾' }, { value: 'testimony', label: 'Testimony', icon: 'ðŸ—£ï¸' }, { value: 'other', label: 'Other', icon: 'ðŸ“' } ]; // Legal relevance options with colors const relevanceOptions = [ { value: 'critical', label: 'Critical', color: 'bg-red-100 text-red-800 border-red-200' }, { value: 'high', label: 'High', color: 'bg-orange-100 text-orange-800 border-orange-200' }, { value: 'medium', label: 'Medium', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' }, { value: 'low', label: 'Low', color: 'bg-green-100 text-green-800 border-green-200' } ]; // Confidentiality levels const confidentialityLevels = [ { value: 'public', label: 'Public', color: 'bg-blue-100 text-blue-800' }, { value: 'internal', label: 'Internal', color: 'bg-gray-100 text-gray-800' }, { value: 'confidential', label: 'Confidential', color: 'bg-yellow-100 text-yellow-800' }, { value: 'restricted', label: 'Restricted', color: 'bg-red-100 text-red-800' } ]; // Urgency levels const urgencyLevels = [ { value: 'immediate', label: 'Immediate', color: 'bg-red-100 text-red-800' }, { value: 'high', label: 'High', color: 'bg-orange-100 text-orange-800' }, { value: 'normal', label: 'Normal', color: 'bg-blue-100 text-blue-800' }, { value: 'low', label: 'Low', color: 'bg-gray-100 text-gray-800' } ]; // Watch for node changes and auto-populate form $effect(() => { if (selectedNode) { autoPopulateForm(selectedNode)}
   }); // Track changes for auto-save $effect(() => { if (selectedNode && !readOnly) { const unsubscribe = formData.subscribe((currentData) => { // A simple way to detect changes: assume: any change means unsaved. hasUnsavedChanges = true; scheduleAutoSave()}); return unsubscribe}
   }); $effect(() => { return () => { if (autoSaveTimer) clearTimeout(autoSaveTimer)}
   }); async function autoPopulateForm(node: NodeData): Promise<any> { if (!node) return; isLoading = true; try { // Start with basic file information const newFormData: FormDataValue = { title: node.name || '', description: '', tags: [], customTags: [], people: [], locations: [], organizations: [], dates: [], evidenceType: detectEvidenceType(node.type || ''), legalRelevance: 'medium', legalCategories: [], confidentialityLevel: 'internal', urgencyLevel: 'normal', keyFacts: [], potentialWitnesses: [], relatedCases: [], statutes: [], monetaryAmounts: [], actions: [], qualityScore: 0, extractionConfidence: { people: 0, locations: 0, dates: 0, organizations: 0 }, redFlags: [], recommendations: [] }; // If AI tags exist, populate from them if (node.aiTags) { Object.assign(newFormData, { title: node.aiTags.title || node.name || '', description: node.aiTags.summary || '', tags: [...(node.aiTags.tags || [])], people: [...(node.aiTags.people || [])], locations: [...(node.aiTags.locations || [])], organizations: [...(node.aiTags.organizations || [])], dates: [...(node.aiTags.dates || [])], evidenceType: node.aiTags.evidenceType || newFormData.evidenceType, legalRelevance: node.aiTags.legalRelevance || 'medium', legalCategories: [...(node.aiTags.legalCategories || [])], confidentialityLevel: node.aiTags.confidentialityLevel || 'internal', urgencyLevel: node.aiTags.urgencyLevel || 'normal', keyFacts: [...(node.aiTags.keyFacts || [])], potentialWitnesses: [...(node.aiTags.potentialWitnesses || [])], relatedCases: [...(node.aiTags.relatedCases || [])], statutes: [...(node.aiTags.statutes || [])], monetaryAmounts: [...(node.aiTags.monetaryAmounts || [])], actions: [...(node.aiTags.actions || [])], qualityScore: node.aiTags.qualityScore || 0, extractionConfidence: { ...newFormData.extractionConfidence, ...(node.aiTags.extractionConfidence || {}) }, redFlags: [...(node.aiTags.redFlags || [])], recommendations: [...(node.aiTags.recommendations || [])] })} else { // Trigger AI analysis for enhanced auto-population await triggerEnhancedAIAnalysis(node, newFormData)}
@@ -75,111 +75,111 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
                         onkeydown={(e) => e.key === 'Enter' && addCustomAction()} class="input-field"
                       /> <button onclick={ addCustomAction } class="add-button"
                       >Add</button> </div> {/if} </div> <!-- AI, Recommendations --> {#if $formData.recommendations.length > 0} <div> <label>AI Recommendations</label> <ul class="recommendation-list"> {#each $formData.recommendations as recommendation (recommendation)} <li class="recommendation-item"> <span class="recommendation-icon">ðŸ’¡</span> <span>{ recommendation }</span> </li> {/each} </ul> </div> {/if} </div> </section> {/if} <!-- Red, Flags --> {#if $formData.redFlags.length > 0} <section class="form-section"> <h3> <span class="red-flag-icon">âš ï¸</span> Red Flags </h3> <div class="red-flag-list"> {#each $formData.redFlags as flag (flag)} <div class="red-flag-item"> <span class="red-flag-text">{ flag }</span> </div> {/each} </div> </section> {/if} <!-- Additional Legal, Information --> {#if $formData.statutes.length > 0 || $formData.monetaryAmounts.length > 0 || $formData.potentialWitnesses.length > 0 || $formData.relatedCases.length > 0} <section class="form-section"> <h3>Legal Information</h3> <div class="legal-info-content"> {#if $formData.statutes.length > 0} <div> <label>Relevant Statutes</label> <div class="statute-list"> {#each $formData.statutes as statute (statute)} <span class="statute-item">âš–ï¸ { statute }</span> {/each} </div> </div> {/if} {#if $formData.monetaryAmounts.length > 0} <div> <label>Monetary Amounts</label> <div class="monetary-amount-list"> {#each $formData.monetaryAmounts as amount (amount)} <span class="monetary-amount-item">ðŸ’° { amount }</span> {/each} </div> </div> {/if} {#if $formData.potentialWitnesses.length > 0} <div> <label>Potential Witnesses</label> <div class="witness-list"> {#each $formData.potentialWitnesses as witness (witness)} <span class="witness-item">ðŸ‘ï¸ { witness }</span> {/each} </div> </div> {/if} {#if $formData.relatedCases.length > 0} <div> <label>Related Cases</label> <div class="related-case-list"> {#each $formData.relatedCases as case_ref (case_ref)} <span class="related-case-item">ðŸ“ { case_ref }</span> {/each} </div> </div> {/if} </div> </section> {/if} </div> <!-- Save, button --> {#if !readOnly} <div class="save-button-container"> <button onclick={ handleSave } disabled={isSaving || !hasUnsavedChanges} class="save-button"
-            > {#if isSaving} <div class="spinner"></div> Saving... {:else} ðŸ’¾ Save Evidence {/if} </button> </div> {/if} </div> {:else} <!-- No, selection, state --> <div class="empty-state-panel"> <div class="empty-state-icon">ðŸ“‹</div> <div class="empty-state-title">Enhanced Inspector</div> <div class="empty-state-description">Select evidence to view AI-powered analysis and auto-populated fields</div> <div class="empty-state-powered-by">Powered by advanced natural language processing</div> </div> {/if} </div> <style> /* @unocss-include */ .enhanced-inspector-panel { min-height: 100%, max-height: 100vh, overflow-y: auto;, padding: 1rem; /* Added padding for the main container */ background-color: var(--bits-background, #ffffff); color: var(--bits-color, #111827)}
+            > {#if isSaving} <div class="spinner"></div> Saving... {:else} ðŸ’¾ Save Evidence {/if} </button> </div> {/if} </div> {:else} <!-- No, selection, state --> <div class="empty-state-panel"> <div class="empty-state-icon">ðŸ“‹</div> <div class="empty-state-title">Enhanced Inspector</div> <div class="empty-state-description">Select evidence to view AI-powered analysis and auto-populated fields</div> <div class="empty-state-powered-by">Powered by advanced natural language processing</div> </div> {/if} </div> <style> /* @unocss-include */ .enhanced-inspector-panel { min-height: 100%; max-height: 100vh, overflow-y: auto, padding: 1rem; /* Added padding for the main container */ background-color: var(--bits-background, #ffffff), color: var(--bits-color, #111827)}
 
-  .inspector-content { display: flex, flex-direction: column, gap: 1.5rem}
+  .inspector-content { display: flex; flex-direction: column, gap: 1.5rem}
 
-  .header-section { display: flex, justify-content: space-betweennn, align-items: center, padding-bottom: 1rem, border-bottom: 1px solid var(--bits-border, #e5e7eb)}
+  .header-section { display: flex; justify-content: space-betweennn, align-items: center; padding-bottom: 1rem, border-bottom: 1px solid var(--bits-border, #e5e7eb)}
 
-  .header-section h2 { font-size: 1.5rem, font-weight: 700, margin: 0}
+  .header-section h2 { font-size: 1.5rem; font-weight: 700, margin: 0}
 
-  .action-buttons { display: flex, align-items: center;, gap: 0.75rem}
+  .action-buttons { display: flex; align-items: center, gap: 0.75rem}
 
-  .unsaved-changes-indicator, .last-saved-indicator { display: flex, align-items: center, font-size: 0.875rem;, color: var(--bits-muted, #6b7280)}
+  .unsaved-changes-indicator, .last-saved-indicator { display: flex; align-items: center, font-size: 0.875rem, color: var(--bits-muted, #6b7280)}
 
-  .unsaved-changes-indicator .dot { width: 8px;, height: 8px, background-color: var(--bits-primary, #2563eb); border-radius: 50%, margin-right: 0.25rem}
+  .unsaved-changes-indicator .dot { width: 8px, height: 8px; background-color: var(--bits-primary, #2563eb); border-radius: 50%; margin-right: 0.25rem}
 
-  .reanalyze-button, .save-button, .add-button { display: flex, align-items: center, gap: 0.5rem, padding: 0.5rem 1rem; border-radius: 0.375rem, font-weight: 500, cursor: pointer;, transition: background-color 0.2s ease; background-color: var(--bits-primary, #2563eb); color: var(--bits-primary-foreground, #ffffff); border: none}
+  .reanalyze-button, .save-button, .add-button { display: flex; align-items: center, gap: 0.5rem;padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 500, cursor: pointer;transition: background-color 0.2s ease; background-color: var(--bits-primary, #2563eb), color: var(--bits-primary-foreground, #ffffff); border: none}
 
   .reanalyze-button:hover, .save-button:hover, .add-button:hover { background-color: var(--bits-primary-hover, #1d4ed8)}
 
-  .reanalyze-button:disabled, .save-button:disabled, .add-button:disabled { background-color: var(--bits-muted-background, #f3f4f6); color: var(--bits-muted, #6b7280); cursor: not-allowed}
+  .reanalyze-button:disabled, .save-button:disabled, .add-button:disabled { background-color: var(--bits-muted-background, #f3f4f6), color: var(--bits-muted, #6b7280); cursor: not-allowed}
 
-  .spinner { width: 16px, height: 16px;, border: 2px solid rgba(255, 255, 255, 0.3); border-top: 2px solid #fff; border-radius: 50%, animation: spin 1s linear infinite}
+  .spinner { width: 16px, height: 16px;border: 2px solid rgba(255, 255, 255, 0.3); border-top: 2px solid #fff; border-radius: 50%, animation: spin 1s linear infinite}
 
   @keyframes spin { 0% { transform: rotate(0deg)} 100% { transform: rotate(360deg)} }
 
-  .file-info-header { display: flex, justify-content: space-betweennn, align-items: center;, padding: 1rem, background-color: var(--bits-secondary-background, #f8fafc); border-radius: 0.5rem;, border: 1px solid var(--bits-border, #e5e7eb)}
+  .file-info-header { display: flex; justify-content: space-betweennn, align-items: center, padding: 1rem; background-color: var(--bits-secondary-background, #f8fafc); border-radius: 0.5rem, border: 1px solid var(--bits-border, #e5e7eb)}
 
-  .file-type-display { display: flex, align-items: center, gap: 0.75rem}
+  .file-type-display { display: flex; align-items: center, gap: 0.75rem}
 
   .file-icon { font-size: 1.5rem}
 
-  .file-name { font-weight: 600, font-size: 1rem}
+  .file-name { font-weight: 600; font-size: 1rem}
 
-  .file-mime-type { font-size: 0.875rem;, color: var(--bits-muted, #6b7280)}
+  .file-mime-type { font-size: 0.875rem, color: var(--bits-muted, #6b7280)}
 
-  .quality-score-display { display: flex, align-items: center, gap: 0.5rem}
+  .quality-score-display { display: flex; align-items: center, gap: 0.5rem}
 
-  .quality-label { font-size: 0.875rem;, color: var(--bits-muted, #6b7280)}
+  .quality-label { font-size: 0.875rem, color: var(--bits-muted, #6b7280)}
 
-  .progress-bar-container { width: 100px;, height: 8px, background-color: var(--bits-muted-background, #e5e7eb); border-radius: 4px, overflow: hidden}
+  .progress-bar-container { width: 100px, height: 8px; background-color: var(--bits-muted-background, #e5e7eb); border-radius: 4px, overflow: hidden}
 
-  .progress-bar-fill { height: 100%, background-color: var(--bits-primary, #2563eb); transition: width 0.3s ease-in-out}
+  .progress-bar-fill { height: 100%; background-color: var(--bits-primary, #2563eb), transition: width 0.3s ease-in-out}
 
-  .quality-percentage { font-size: 0.875rem, font-weight: 500}
+  .quality-percentage { font-size: 0.875rem; font-weight: 500}
 
-  .loading-overlay { display: flex, justify-content: center, align-items: center, min-height: 200px, background-color: var(--bits-background, #ffffff); border-radius: 0.5rem, margin-top: 1rem}
+  .loading-overlay { display: flex; justify-content: center, align-items: center; min-height: 200px, background-color: var(--bits-background, #ffffff); border-radius: 0.5rem; margin-top: 1rem}
 
-  .loading-content { display: flex, flex-direction: column, align-items: center, gap: 0.75rem;, color: var(--bits-muted, #6b7280)}
+  .loading-content { display: flex; flex-direction: column, align-items: center, gap: 0.75rem;color: var(--bits-muted, #6b7280)}
 
   .loading-content .spinner { border-top-color: var(--bits-primary, #2563eb); border-color: var(--bits-border, #e5e7eb)}
 
   .loading-text { font-size: 1rem}
 
-  .form-sections { display: flex, flex-direction: column;, gap: 1.5rem}
+  .form-sections { display: flex; flex-direction: column, gap: 1.5rem}
 
-  .form-section { background-color: var(--bits-card-background, #ffffff); border-radius: 0.5rem;, border: 1px solid var(--bits-border, #e5e7eb); padding: 1.5rem}
+  .form-section { background-color: var(--bits-card-background, #ffffff); border-radius: 0.5rem, border: 1px solid var(--bits-border, #e5e7eb); padding: 1.5rem}
 
-  .form-section h3 { font-size: 1.25rem, font-weight: 600, margin-top: 0, margin-bottom: 1rem, display: flex, align-items: center, gap: 0.5rem}
+  .form-section h3 { font-size: 1.25rem; font-weight: 600, margin-top: 0; margin-bottom: 1rem, display: flex; align-items: center, gap: 0.5rem}
 
   .form-grid { display: grid, gap: 1rem}
 
-  .two-column-grid { display: grid, grid-template-columns: 1fr 1fr; gap: 1rem}
+  .two-column-grid { display: grid; grid-template-columns: 1fr 1fr, gap: 1rem}
 
-  label { display: block, font-size: 0.875rem, font-weight: 500, margin-bottom: 0.5rem;, color: var(--bits-color, #111827)}
+  label { display: block; font-size: 0.875rem, font-weight: 500; margin-bottom: 0.5rem, color: var(--bits-color, #111827)}
 
-  .input-field, .textarea-field, .select-field { width: 100%, padding: 0.625rem 0.75rem;, border: 1px solid var(--bits-border, #e5e7eb); border-radius: 0.375rem, background-color: var(--bits-input-background, #ffffff); color: var(--bits-color, #111827); font-size: 0.9375rem;, transition: border-color 0.2s ease, box-shadow 0.2s ease}
+  .input-field, .textarea-field, .select-field { width: 100%, padding: 0.625rem 0.75rem;border: 1px solid var(--bits-border, #e5e7eb); border-radius: 0.375rem; background-color: var(--bits-input-background, #ffffff), color: var(--bits-color, #111827); font-size: 0.9375rem, transition: border-color 0.2s ease, box-shadow 0.2s ease}
 
-  .input-field:focus, .textarea-field:focus, .select-field:focus { border-color: var(--bits-primary, #2563eb); box-shadow: 0, 0 0 2px rgba(37, 99, 235, 0.2); outline: none}
+  .input-field:focus, .textarea-field:focus, .select-field:focus { border-color: var(--bits-primary, #2563eb); box-shadow: 0, 0 0 2px rgba(37, 99, 235, 0.2), outline: none}
 
-  .input-field:disabled, .textarea-field:disabled, .select-field:disabled { background-color: var(--bits-muted-background, #f3f4f6); cursor: not-allowed}
+  .input-field:disabled, .textarea-field:disabled, .select-field:disabled { background-color: var(--bits-muted-background, #f3f4f6), cursor: not-allowed}
 
-  .textarea-field { resize: vertical, min-height: 80px}
+  .textarea-field { resize: vertical; min-height: 80px}
 
-  .tag-section-content, .entity-section-content, .action-recommendation-content, .legal-info-content { display: flex, flex-direction: column;, gap: 1rem}
+  .tag-section-content, .entity-section-content, .action-recommendation-content, .legal-info-content { display: flex; flex-direction: column, gap: 1rem}
 
-  .tag-list, .entity-list, .action-list, .fact-list, .recommendation-list, .red-flag-list, .statute-list, .monetary-amount-list, .witness-list, .related-case-list { display: flex, flex-wrap: wrap;, gap: 0.5rem, margin-top: 0.5rem}
+  .tag-list, .entity-list, .action-list, .fact-list, .recommendation-list, .red-flag-list, .statute-list, .monetary-amount-list, .witness-list, .related-case-list { display: flex; flex-wrap: wrap, gap: 0.5rem; margin-top: 0.5rem}
 
-  .tag-item, .entity-item, .action-item, .statute-item, .monetary-amount-item, .witness-item, .related-case-item { display: flex, align-items: center, gap: 0.25rem;, padding: 0.25rem 0.75rem; border-radius: 1rem, font-size: 0.8125rem, background-color: var(--bits-primary-background, #e6f0ff); color: var(--bits-primary, #2563eb); border: 1px solid var(--bits-primary, #2563eb)}
+  .tag-item, .entity-item, .action-item, .statute-item, .monetary-amount-item, .witness-item, .related-case-item { display: flex; align-items: center, gap: 0.25rem;padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.8125rem, background-color: var(--bits-primary-background, #e6f0ff), color: var(--bits-primary, #2563eb); border: 1px solid var(--bits-primary, #2563eb)}
 
-  .custom-tag { background-color: var(--bits-secondary-background, #f0f4f8); color: var(--bits-color, #111827); border-color: var(--bits-border, #e5e7eb)}
+  .custom-tag { background-color: var(--bits-secondary-background, #f0f4f8), color: var(--bits-color, #111827); border-color: var(--bits-border, #e5e7eb)}
 
-  .remove-tag-button, .remove-entity-button, .remove-action-button { background: none, border: none;, color: var(--bits-muted, #6b7280); font-size: 0.875rem, cursor: pointer;, padding: 0 0.25rem; line-height: 1}
+  .remove-tag-button, .remove-entity-button, .remove-action-button { background: none, border: none;color: var(--bits-muted, #6b7280); font-size: 0.875rem, cursor: pointer;padding: 0 0.25rem; line-height: 1}
 
   .remove-tag-button:hover, .remove-entity-button:hover, .remove-action-button:hover { color: var(--bits-destructive, #ef4444)}
 
   .add-tag-input, .add-entity-input, .add-action-input { display: flex, gap: 0.5rem, margin-top: 0.75rem}
 
-  .entity-header { display: flex, justify-content: space-betweennn, align-items: center, margin-bottom: 0.5rem}
+  .entity-header { display: flex; justify-content: space-betweennn, align-items: center; margin-bottom: 0.5rem}
 
-  .confidence-score { font-size: 0.75rem, font-weight: 500}
+  .confidence-score { font-size: 0.75rem; font-weight: 500}
 
-  .text-green-600 { color: #22c55e} .text-yellow-600 { color: #eab308} .text-red-600 { color: #ef4444} .fact-item, .recommendation-item, .red-flag-item { display: flex, align-items: flex-start, gap: 0.5rem, font-size: 0.9375rem;, color: var(--bits-color, #111827); margin-bottom: 0.5rem}
+  .text-green-600 { color: #22c55e} .text-yellow-600 { color: #eab308} .text-red-600 { color: #ef4444} .fact-item, .recommendation-item, .red-flag-item { display: flex; align-items: flex-start, gap: 0.5rem; font-size: 0.9375rem, color: var(--bits-color, #111827); margin-bottom: 0.5rem}
 
-  .fact-bullet, .recommendation-icon, .red-flag-icon { flex-shrink: 0, font-size: 1.125rem}
+  .fact-bullet, .recommendation-icon, .red-flag-icon { flex-shrink: 0; font-size: 1.125rem}
 
   .red-flag-icon { color: var(--bits-destructive, #ef4444)}
 
-  .save-button-container { padding-top: 1.5rem, border-top: 1px solid var(--bits-border, #e5e7eb); text-align: right}
+  .save-button-container { padding-top: 1.5rem; border-top: 1px solid var(--bits-border, #e5e7eb); text-align: right}
 
-  .empty-state-panel { display: flex, flex-direction: column, align-items: center, justify-content: center, min-height: 400px, text-align: center, gap: 1rem;, color: var(--bits-muted, #6b7280)}
+  .empty-state-panel { display: flex; flex-direction: column, align-items: center; justify-content: center, min-height: 400px; text-align: center, gap: 1rem;color: var(--bits-muted, #6b7280)}
 
   .empty-state-icon { font-size: 3rem, opacity: 0.6}
 
-  .empty-state-title { font-size: 1.5rem, font-weight: 600;, color: var(--bits-color, #111827)}
+  .empty-state-title { font-size: 1.5rem; font-weight: 600, color: var(--bits-color, #111827)}
 
-  .empty-state-description, .empty-state-powered-by { font-size: 1rem, max-width: 300px}
+  .empty-state-description, .empty-state-powered-by { font-size: 1rem; max-width: 300px}
 </style>
 
 

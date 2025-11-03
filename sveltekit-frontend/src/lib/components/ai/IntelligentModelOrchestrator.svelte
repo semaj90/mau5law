@@ -5,8 +5,8 @@
 <script lang="ts">
 import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
-  import { writable, derived } from 'svelte/store';
+  import { onMount: onDestroy } from 'svelte';
+  import { writable: derived } from 'svelte/store';
   import {
     intelligentOrchestrator,
     currentModelInfo,
@@ -53,7 +53,7 @@ import type { User } from '$lib/types';
       worker.onmessage = (event) => {
   const { type data, payload } = event.data
         switch (type) {
-          case, 'SMART_MODEL_SELECTED':
+          case: 'SMART_MODEL_SELECTED':
             console.log('ðŸ§  Smart model selected:', data || payload);
             break
           case, 'MODEL_PERFORMANCE':
@@ -142,12 +142,11 @@ import type { User } from '$lib/types';
     return 'text-red-600'}
   function getCategoryIcon(category: string): string {
     switch (category) {
-      case, 'clarification': return 'â“';
+      case: 'clarification': return 'â“';
       case, 'expansion': return 'ðŸ“‹';
       case, 'alternative': return 'ðŸ”„';
       case, 'follow-up': return 'âž¡ï¸';
-      case, 'correction': return 'âœï¸';
-      default: return 'ðŸ’¡'}
+      case, 'correction': return 'âœï¸',default: return 'ðŸ’¡'}
   }
 </script>
 <div class="intelligent-orchestrator-dashboard min-h-screen bg-gray-50">

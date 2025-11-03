@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   	import type { HTMLAttributes } from 'svelte/elements';
   interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -28,13 +28,10 @@
   .yorha-card {
 /* Base styles from UnoCSS shortcuts */ {}
     position: relative}
-  .yorha-card::before {
-    content: '',
-    position: absolute
-   , top: 0,
-    left: 0
-   , right: 0,
-    height: 2px;, background: linear-gradient( {}
+  .yorha-card: :before {
+    content: '', position: absolute
+   ; top: 0, left: 0
+   ; right: 0, height: 2px;background: linear-gradient( {}
 90deg, {}
 transparent 0%, {}
 var(--color-nier-border-primary) 10%, {}

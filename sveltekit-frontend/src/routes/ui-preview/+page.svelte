@@ -34,47 +34,47 @@ import type { Document } from '$lib/types'; // Enhanced UI Preview with Session-
 </div> {/if} <div class="nes-btn"> <ButtonComponent onclick={ simulateRefreshSession }>Refresh Session</ButtonComponent>
 </div> </div> {#if currentUser} <div class="user-details"> <span>ðŸ‘¤ {currentUser.email || currentUser.id}</span> <span class="nes-badge">{currentUser.role}</span> </div> <div class="user-stats"> <h4>User Data Stats:</h4> <div class="stats-grid-demo"> <div class="stat-card"> <span class="stat-number">{stats.totalCases}</span> <span class="stat-label">Cases</span> </div> <div class="stat-card"> <span class="stat-number">{stats.totalEvidence}</span> <span class="stat-label">Evidence</span> </div> <div class="stat-card"> <span class="stat-number">{stats.totalCitations}</span> <span class="stat-label">Citations</span> </div> <div class="stat-card"> <span class="stat-number">{stats.totalReports}</span> <span class="stat-label">Reports</span> </div> </div> </div> {/if} </section> {/if} {#if selectedTab === 'formatting'} <section class="section-wrap"> <h2 class="section">Formatting Utilities</h2> <div class="formatting-demos"> <div class="demo-group"> <h3>Timestamp Formatting:</h3> <div class="timestamp-examples"> {#each Array.isArray(mockTimestamps) ? mockTimestamps: [] as timestamp} <div class="timestamp-row"> <span class="original">Original: {timestamp.toISOString()}</span> <span class="relative">Relative: {formatRelativeTime(timestamp)}</span> <span class="detailed" title={formatDetailedTimestamp(timestamp, 'demo-user')}> Detailed: {formatDetailedTimestamp(timestamp, 'demo-user')} </span> </div> {/each} </div> </div> <div class="demo-group"> <h3>Filename Truncation</h3> <div class="filename-examples"> {#each Array.isArray(mockFilenames) ? mockFilenames: [] as filename} <div class="filename-row"> <span class="file-icon">{getFileIcon(filename.split('.').pop() || '')}</span> <span class="original" title={ filename }>{ filename }</span> <span class="truncated" title={ filename }>{truncateFilename(filename, 30)}</span> </div> {/each} </div> </div> <div class="demo-group"> <h3>Case Title & Status Formatting:</h3> <div class="case-examples"> {#each Array.isArray(mockCases) ? mockCases: [] as case_} <div class="case-row"> <div class="case-header"> <span class="case-title" title={case_.title}> {truncateText(case_.title, 50)} </span> <span class="nes-badge">{case_.status}</span> </div> <div class="case-meta"> <span class="nes-badge">{case_.priority}</span> </div> </div> {/each} </div> </div> </div> </section> {/if} {#if selectedTab === 'sidebar'} <section class="section-wrap"> <h2 class="section">Global Sidebar Demo</h2> <div class="sidebar-controls"> <h3>Sidebar Configuration</h3> <div class="control-group"> <label class="nes-text"> <input type="checkbox" class="nes-checkbox" bind:checked={ showSidebar } /> <span>Show Sidebar</span> </label> </div> <div class="sidebar-info"> <p class="nes-text">The GlobalSidebar component provides:</p> <ul class="feature-list"> <li>ðŸ” Session-aware user profile display</li> <li>ðŸ“Š Real-time user data statistics</li> <li>ðŸ” Universal search across all user content</li> <li>ðŸ“ Quick access to cases, evidence, citations</li> <li>ðŸ“‹ Reports and AI conversation history</li> <li>âš¡ Quick actions for common tasks</li> <li>ðŸ“± Responsive design with collapse/expand</li> <li>ðŸ’¾ Persistent storage and caching</li> </ul> </div> <div class="integration-notes"> <h4>Integration Notes:</h4> <p>To use GlobalSidebar app-wide:</p> <ol> <li>Import in your layout file</li> <li>Initialize session store in +layout.ts</li> <li>Ensure drizzle-orm API endpoints exist</li> <li>Configure user data sync preferences</li> </ol> </div> </div> </section> {/if} </div> <!-- Conditional Global Sidebar, Demo --> {#if selectedTab === 'sidebar' && showSidebar} <KeyboardShortcutProvider /> {/if} <!-- Enhanced, Modal --> {#if showModal} <dialog class="nes-dialog" open> <form method="dialog"> <p class="title">Enhanced Modal - {modalVariant.charAt(0).toUpperCase() + modalVariant.slice(1)} Style</p> <div class="space-y-6"> <!-- Modal Content based on, variant --> {#if modalVariant === 'gradient'} <div class="space-y-4"> <h3 class="text-xl font-bold">Gradient Modal Content</h3> <p class="text-enhanced-text-secondary"> This modal features beautiful gradient backgrounds combining Harvard crimson, gold, and grey tones. The gradients create visual depth while maintaining readability. </p> <div class="grid grid-cols-1 md:grid-cols-2"> <div class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20"> <h4 class="font-semibold">Crimson to Gold</h4> <p class="text-sm">Harvard signature colors</p> </div> <div class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20"> <h4 class="font-semibold">Grey to Crimson</h4> <p class="text-sm">NES-style balance</p> </div> </div> </div> {:else if modalVariant === 'diamond'} <div class="space-y-4"> <h3 class="text-xl font-bold text-enhanced-text-primary">Diamond Pattern Modal</h3> <p class="text-enhanced-text-secondary"> This modal showcases NES-style diamond patterns with repeating gradients. The patterns are created using CSS background images. </p> <div class="grid grid-cols-1"> <div class="p-4 rounded-lg"> <h4 class="font-semibold">Small Diamond Pattern</h4> <p class="text-sm">Fine detail background</p> </div> <div class="p-4 rounded-lg"> <h4 class="font-semibold">Large Diamond Pattern</h4> <p class="text-sm">Bold pattern background</p> </div> <div class="p-4 rounded-lg"> <h4 class="font-semibold">Crimson Diamonds</h4> <p class="text-sm">Harvard-themed pattern</p> </div> </div> </div> {:else if modalVariant === 'gaming'} <div class="space-y-4"> <h3 class="text-xl font-bold text-enhanced-text-primary"
                 style="font-family: 'Press Start 2P', monospace;"
-              > Gaming Modal </h3> <p class="text-enhanced-text-secondary"> A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements. </p> <div class="space-y-4"> <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent"> <h4 class="font-semibold text-enhanced-text-primary">Terminal Interface</h4> <div class="font-mono text-green-400"> <div>> System Status: ONLINE</div> <div>> AI Models: LOADED</div> <div>> GPU Acceleration ENABLED</div> <div>> Legal, Database: CONNECTED</div> </div> </div> <div class="flex"> <!-- use the: any-typed alias to allow arbitrary onclick handlers without, TS, errors --> <QuickActionButtonAny onclick={() => { /* execute action */ }}>Execute</QuickActionButtonAny> <QuickActionButtonAny onclick={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny> <button class="nes-btn">Success</button> </div> </div> </div> {:else if modalVariant === 'legal'} <div class="space-y-4"> <h3 class="text-xl font-bold">Legal Document Modal</h3> <p class="text-enhanced-text-secondary"> Professional modal styling for legal documents, case management, and court filings. </p> <div class="space-y-4"> <StatsCard title="Case, File #2024-001" value="Harvard, Law" /> </div> </div> {:else} <div class="space-y-4"> <h3 class="text-xl font-bold">Default Modal Content</h3> <p class="text-enhanced-text-secondary"> This is the default modal styling with clean, professional appearance. </p> <div class="grid grid-cols-1 md:grid-cols-2"> <StatsCard title="Feature, Card" value="Standard" /> <StatsCard title="Grey, Card" value="NES-style" /> </div> </div> {/if} <!-- Common, Modal, Footer --> <div class="flex justify-end space-x-2 pt-4 border-t"> <QuickActionButtonAny onclick={() => closeModal()}>Cancel</QuickActionButtonAny> <QuickActionButtonAny onclick={() => closeModal()}>Confirm</QuickActionButtonAny> </div> </div> </form> </dialog> {/if} <style> .layout { display: grid, gap: 1.25rem, padding: 1.5rem}
-  .tabs { display: flex, gap: 0.5rem, flex-wrap: wrap}
+              > Gaming Modal </h3> <p class="text-enhanced-text-secondary"> A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements. </p> <div class="space-y-4"> <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent"> <h4 class="font-semibold text-enhanced-text-primary">Terminal Interface</h4> <div class="font-mono text-green-400"> <div>> System Status: ONLINE</div> <div>> AI Models: LOADED</div> <div>> GPU Acceleration ENABLED</div> <div>> Legal, Database: CONNECTED</div> </div> </div> <div class="flex"> <!-- use the: any-typed alias to allow arbitrary onclick handlers without, TS, errors --> <QuickActionButtonAny onclick={() => { /* execute action */ }}>Execute</QuickActionButtonAny> <QuickActionButtonAny onclick={() => { /* open terminal */ }}>Terminal</QuickActionButtonAny> <button class="nes-btn">Success</button> </div> </div> </div> {:else if modalVariant === 'legal'} <div class="space-y-4"> <h3 class="text-xl font-bold">Legal Document Modal</h3> <p class="text-enhanced-text-secondary"> Professional modal styling for legal documents, case management, and court filings. </p> <div class="space-y-4"> <StatsCard title="Case, File #2024-001" value="Harvard, Law" /> </div> </div> {:else} <div class="space-y-4"> <h3 class="text-xl font-bold">Default Modal Content</h3> <p class="text-enhanced-text-secondary"> This is the default modal styling with clean, professional appearance. </p> <div class="grid grid-cols-1 md:grid-cols-2"> <StatsCard title="Feature, Card" value="Standard" /> <StatsCard title="Grey, Card" value="NES-style" /> </div> </div> {/if} <!-- Common, Modal, Footer --> <div class="flex justify-end space-x-2 pt-4 border-t"> <QuickActionButtonAny onclick={() => closeModal()}>Cancel</QuickActionButtonAny> <QuickActionButtonAny onclick={() => closeModal()}>Confirm</QuickActionButtonAny> </div> </div> </form> </dialog> {/if} <style> .layout { display: grid; gap: 1.25rem, padding: 1.5rem}
+  .tabs { display: flex; gap: 0.5rem, flex-wrap: wrap}
   .tab-btn { cursor: pointer}
   .tab-btn.active { outline: 3px solid var(--nes-primary, #212529)}
-  .grid { display: grid;, gap: 1rem}
+  .grid { display: grid; gap: 1rem}
   .grid.buttons { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr))}
   .grid.avatars { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))}
-  .cards-grid { display: grid;, gap: 1rem, grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))}
-  .dialog-actions { display: flex;, gap: 0.75rem, justify-content: flex-end, margin-top: 1.25rem}
+  .cards-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))}
+  .dialog-actions { display: flex; gap: 0.75rem; justify-content: flex-end, margin-top: 1.25rem}
   h1 { font-family: 'Press Start 2P', monospace; font-size: 1.1rem}
-  h2.section { margin: 0, 0 0.75rem; font-size: 0.9rem, letter-spacing: 0.5px}
-  .section-wrap { padding: 1rem, border: 2px dashed #ccc; border-radius: 8px, background: #fff}
-  .meta { font-size: 0.65rem, opacity: 0.7, margin-top: 0.4rem}
-  /* Session Demo Styles */ .session-controls { display: flex, flex-direction: column, gap: 1rem}
-  .status-display { display: flex, align-items: center, gap: 1rem, flex-wrap: wrap}
-  .user-details { display: flex, align-items: center, gap: 0.5rem}
-  .session-actions { display: flex, gap: 0.5rem, flex-wrap: wrap}
+  h2.section { margin: 0, 0 0.75rem; font-size: 0.9rem; letter-spacing: 0.5px}
+  .section-wrap { padding: 1rem; border: 2px dashed #ccc; border-radius: 8px; background: #fff}
+  .meta { font-size: 0.65rem; opacity: 0.7, margin-top: 0.4rem}
+  /* Session Demo Styles */ .session-controls { display: flex; flex-direction: column, gap: 1rem}
+  .status-display { display: flex; align-items: center, gap: 1rem; flex-wrap: wrap}
+  .user-details { display: flex; align-items: center, gap: 0.5rem}
+  .session-actions { display: flex; gap: 0.5rem, flex-wrap: wrap}
   .user-stats h4 { margin: 0.5rem 0}
-  .stats-grid-demo { display: grid, grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem}
-  .stat-card { text-align: center, padding: 0.5rem}
-  .stat-number { display: block, font-weight: bold, font-size: 1.2rem, color: #007bff}
-  .stat-label { display: block, font-size: 0.8rem, opacity: 0.8}
-  /* Formatting Demo Styles */ .formatting-demos { display: flex, flex-direction: column, gap: 1.5rem}
+  .stats-grid-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem}
+  .stat-card { text-align: center; padding: 0.5rem}
+  .stat-number { display: block; font-weight: bold, font-size: 1.2rem; color: #007bff}
+  .stat-label { display: block; font-size: 0.8rem, opacity: 0.8}
+  /* Formatting Demo Styles */ .formatting-demos { display: flex; flex-direction: column, gap: 1.5rem}
   .demo-group h3 { margin: 0, 0 0.75rem; font-size: 0.9rem}
-  .timestamp-examples, .filename-examples, .case-examples { display: flex, flex-direction: column, gap: 0.5rem}
-  .timestamp-row { display: grid, grid-template-columns: 1fr 100px 1fr; gap: 0.5rem, padding: 0.5rem, background: #f8f9fa, border-radius: 4px}
+  .timestamp-examples, .filename-examples, .case-examples { display: flex; flex-direction: column, gap: 0.5rem}
+  .timestamp-row { display: grid; grid-template-columns: 1fr 100px 1fr; gap: 0.5rem; padding: 0.5rem, background: #f8f9fa; border-radius: 4px}
   .timestamp-row span { font-size: 0.8rem}
-  .relative { font-weight: bold, color: #007bff}
-  .detailed { color: #666, cursor: help}
-  .filename-row { display: grid, grid-template-columns: 30px 1fr 1fr; gap: 0.5rem, padding: 0.5rem, background: #f8f9fa, border-radius: 4px, align-items: center}
-  .file-icon { font-size: 1.2rem, text-align: center}
-  .filename-row .original { font-family: monospace, font-size: 0.8rem}
-  .filename-row .truncated { font-family: monospace, font-size: 0.8rem, font-weight: bold, color: #007bff}
+  .relative { font-weight: bold; color: #007bff}
+  .detailed { color: #666; cursor: help}
+  .filename-row { display: grid; grid-template-columns: 30px 1fr 1fr; gap: 0.5rem; padding: 0.5rem, background: #f8f9fa; border-radius: 4px, align-items: center}
+  .file-icon { font-size: 1.2rem; text-align: center}
+  .filename-row .original { font-family: monospace; font-size: 0.8rem}
+  .filename-row .truncated { font-family: monospace; font-size: 0.8rem, font-weight: bold; color: #007bff}
   .case-row { margin-bottom: 0.5rem}
-  .case-header { display: flex, justify-content: space-betweenn, align-items: center, margin-bottom: 0.25rem}
+  .case-header { display: flex; justify-content: space-betweenn, align-items: center; margin-bottom: 0.25rem}
   .case-title { font-weight: bold}
-  .case-meta { display: flex, gap: 0.5rem}
-  /* Sidebar Demo Styles */ .sidebar-controls { display: flex, flex-direction: column, gap: 1rem}
-  .control-group { display: flex, gap: 1rem, align-items: center}
+  .case-meta { display: flex; gap: 0.5rem}
+  /* Sidebar Demo Styles */ .sidebar-controls { display: flex; flex-direction: column, gap: 1rem}
+  .control-group { display: flex; gap: 1rem, align-items: center}
   .sidebar-info { color: inherit}
-  .feature-list { list-style: none, padding: 0, margin: 0.5rem 0}
+  .feature-list { list-style: none; padding: 0, margin: 0.5rem 0}
   .feature-list li { margin: 0.25rem 0; padding: 0.25rem 0}
   .integration-notes { margin-top: 1rem}
   .integration-notes ol { margin: 0.5rem 0; padding-left: 1.5rem}

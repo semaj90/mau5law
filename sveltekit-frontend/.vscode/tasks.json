@@ -991,6 +991,63 @@
 				"$tsc - stylish"
 			],
 			"group": "test"
+		},
+		{
+			"label": "🔧 Phase 34D: Install Babel + ts-morph",
+			"type": "shell",
+			"command": "pwsh",
+			"args": [
+				"-ExecutionPolicy",
+				"Bypass",
+				"-File",
+				"${workspaceFolder}/scripts/install-babel-tsmorph.ps1"
+			],
+			"problemMatcher": [],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Install AST parsing and transformation stack (Babel + ts-morph)"
+		},
+		{
+			"label": "🤖 Phase 34D: AI Pattern Repair",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"--max-old-space-size=8192",
+				"${workspaceFolder}/scripts/fix-phase34d-ai-patterns.mjs"
+			],
+			"problemMatcher": [],
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "AI-guided AST pattern repair using Gemma3/Ollama (creates phase34d-ai-report.log)"
+		},
+		{
+			"label": "🚀 Phase 34D: Full Pipeline (Install + Repair)",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"🔧 Phase 34D: Install Babel + ts-morph",
+				"🤖 Phase 34D: AI Pattern Repair"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Complete Phase 34D workflow: Install dependencies → Run AI-assisted repair"
 		}
 	]
 }

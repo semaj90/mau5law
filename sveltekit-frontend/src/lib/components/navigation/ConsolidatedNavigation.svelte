@@ -1,4 +1,4 @@
-﻿<!-- Consolidated Navigation - Shows ALL, functionality, preserved -->
+<!-- Consolidated Navigation - Shows ALL, functionality, preserved -->
 <script lang="ts">
   import { routeGroups } from '$lib/data/route-groups-config';
   import { page } from '$app/stores';
@@ -83,12 +83,9 @@
 <style>
   .consolidated-navigation {
     position: fixed
-   , top: 0,
-    left: 0
-    z-index: 1000,
-    background: var(--surface-primary, #0a0a0a);
-    border-right: 1px solid var(--border-primary, #333333);
-    height: 100vh
+   ;top: 0, left: 0
+    z-index: 1000, background: var(--surface-primary, #0a0a0a);
+    border-right: 1px solid var(--border-primary, #333333), height: 100vh
     width: 64px
     transition: width: 0.3s ease
     overflow: hidden}
@@ -100,11 +97,9 @@
     display: flex
     align-items: center
     gap: 0.75rem
-    width: 100%,
-    background: none
+    width: 100%, background: none
     border: none
-   , color: var(--text-primary, #ffffff);
-    cursor: pointer
+   ;color: var(--text-primary, #ffffff), cursor: pointer
     padding: 0.5rem
     border-radius: 4px
     transition: background 0.2s}
@@ -121,12 +116,12 @@
     gap: 0.5rem
     margin-top: 0.5rem
     padding: 0.5rem
-   , background: rgba(var(--theme-color), 0.1);
+   ;background: rgba(var(--theme-color), 0.1);
     border-radius: 4px
-   , color: var(--theme-color)}
+   ;color: var(--theme-color)}
   .nav-content {
     padding: 1rem 0
-   , height: calc(100vh - 120px);
+   ;height: calc(100vh - 120px);
     overflow-y: auto}
   .route-group {
     margin-bottom: 1.5rem}
@@ -135,7 +130,7 @@
     align-items: center
     gap: 0.5rem
     padding: 0.5rem 1rem
-   , color: var(--text-secondary, #888888);
+   ;color: var(--text-secondary, #888888);
     font-size: 0.9rem
     font-weight: bold
     text-transform: uppercase
@@ -151,7 +146,7 @@
     align-items: center
     gap: 0.75rem
     padding: 0.75rem 1rem
-   , color: var(--text-primary, #ffffff);
+   ;color: var(--text-primary, #ffffff);
     text-decoration none
     transition: all 0.2s
     border-left: 3px solid transparent}
@@ -159,18 +154,16 @@
     border-left-color: var(--accent-primary, #00ff00)}
   .route-link.active {
     background: rgba(var(--accent-primary), 0.1);
-    border-left-color: var(--accent-primary, #00ff00);
-    color: var(--accent-primary, #00ff00)}
+    border-left-color: var(--accent-primary, #00ff00), color: var(--accent-primary, #00ff00)}
   .route-icon {
     font-size: 1.1rem
     min-width: 20px}
   .route-label {
     font-size: 0.9rem
     white-space: nowrap}
-  .beta-badge { background: var(--warning, #ff6600);
-    color: white
+  .beta-badge { background: var(--warning, #ff6600), color: white
     font-size: 0.6rem
-   , padding: 0.1rem 0.3rem
+   ; padding: 0.1rem 0.3rem
     border-radius: 2px
     font-weight: bold
     margin-left: auto}
@@ -188,9 +181,8 @@
   .route-group[data-theme='retro'] .group-header { color: #ff6600}
   @media (max-width: 768px) {
     .consolidated-navigation {
-      width: 100%,
-      height: auto
-     , position: relative
+      width: 100%, height: auto
+     ; position: relative
       border-right: none
       border-bottom: 1px solid var(--border-primary, #333333)}
     .consolidated-navigation.expanded {

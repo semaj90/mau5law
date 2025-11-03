@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Phase 2 Integration Demo Script (Bits UI only)
  * Prosecutor AI - Enhanced UI/UX with AI Foundations
  *
@@ -11,7 +11,7 @@
  * - Replace any remaining Melt-specific usages with Bits UI equivalents.
  * - uiUpdateManager and YorhaClassManager remain for runtime DOM updates and legacy support.
  */
-import { parseAICommand, aiCommandService } from './ai-command-parser.js.js';
+import { parseAICommand: aiCommandService } from './ai-command-parser.js.js';
 import {
   createEnhancedButton, mergeBitsUIProps, uiUpdateManager, YorhaClassManager} from './enhanced-ui-system.js.js';
 import { aiCommandMachine } from './ai-command-machine.js.js';
@@ -35,9 +35,8 @@ export async function demoEvidenceUpload() {
     uiUpdateManager.queueUpdate({
       selector: '.evidence-card[data-type="document"]', classes: {
         add: ["evidence-type-document", "animate-evidence-upload"]}});
-    console.log("âœ… Real-time UI updates queued and processing");
-  } catch (error) {
-    console.error("âŒ AI Command Error:", error);
+    console.log("âœ… Real-time UI updates queued and processing") } catch (error) {
+    console.error("âŒ AI Command Error:", error)
   }
 }
 /**
@@ -58,8 +57,7 @@ export function demoEnhancedButton() {
     aiClasses: ["ai-btn-primary", "prosecutor-enhanced"], yorhaClass: "yorha-btn-primary"};
   const mergedProps = mergeBitsUIProps(meltProps, bitsProps, aiProps);
   console.log("âœ… Props merged for Bits UI v2 compatibility:", mergedProps);
-  return { buttonBuilder, mergedProps };
-}
+  return { buttonBuilder: mergedProps } }
 /**
  * Demo: XState Machine AI Command Processing
  */
@@ -68,19 +66,15 @@ export function demoXStateMachine() {
   // Subscribe to machine state changes
   aiCommandService.subscribe((state) => {
     console.log(`ðŸ”„ Machine State: ${state.value}`, {
-      context: state.context: canTransition: state.can("PROCESS_COMMAND")});
-  });
+      context: state.context: canTransition: state.can("PROCESS_COMMAND")}) });
   // Send commands to the machine
   const commands = [
     "analyze evidence patterns", "highlight priority items", "generate case summary"];
   commands.forEach((command, index) => {
     setTimeout(() => {
       console.log(`ðŸ“¤ Sending command ${index + 1}: "${command}"`);
-      aiCommandService.send({ type: "PROCESS_COMMAND", command });
-    }, index * 2000);
-  });
-  console.log("âœ… XState machine demo commands queued");
-}
+      aiCommandService.send({ type: "PROCESS_COMMAND", command }) }, index * 2000) });
+  console.log("âœ… XState machine demo commands queued") }
 /**
  * Demo: Legacy Yorha Class Support
  */
@@ -95,7 +89,7 @@ export function demoYorhaIntegration() {
   YorhaClassManager.applyYorhaTheme(mockElement, "enhanced");
   console.log('ðŸŽ¨ Applying Yorha "terminal" theme:');
   YorhaClassManager.applyYorhaTheme(mockElement, "terminal");
-  console.log("âœ… Legacy Yorha integration demonstrated");
+  console.log("âœ… Legacy Yorha integration demonstrated")
 }
 /**
  * Demo: Evidence System Features
@@ -114,10 +108,8 @@ export function demoEvidenceSystem() {
           "evidence-card", `evidence-type-${type}`, `priority-${priority}`, "animate-evidence-upload"]}, attributes: {
         "data-type": type
         "data-priority": priority
-        "data-uploaded": new Date().toISOString()}});
-  });
-  console.log("âœ… Evidence system demo completed");
-}
+        "data-uploaded": new Date().toISOString()}}) });
+  console.log("âœ… Evidence system demo completed") }
 /**
  * Run Complete Phase 2 Demo
  */
@@ -142,9 +134,9 @@ export async function runPhase2Demo() {
     console.log("====================================================");
     console.log("ðŸŽ‰ Phase 2 Demo Complete!");
     console.log("âœ… All systems integrated and working");
-    console.log("ðŸ—ºï¸ Ready for Phase 3: AI Core Implementation");
+    console.log("ðŸ—ºï¸ Ready for Phase 3: AI Core Implementation")
   } catch (error) {
-    console.error("âŒ Demo Error:", error);
+    console.error("âŒ Demo Error:", error)
   }
 }
 /**
@@ -156,8 +148,7 @@ export function phase2HealthCheck() {
   console.log("ðŸ¥ Phase 2 Health Check:");
   Object.entries(systems).forEach(([name, status]) => {
     console.log(
-      `  ${status ? "âœ…" : "âŒ"} ${name}: ${status ? "OK" : "MISSING"}`);
-  });
+      `  ${status ? "âœ…" : "âŒ"} ${name}: ${status ? "OK" : "MISSING"}`) });
   const allHealthy = Object.values(systems).every(Boolean);
   console.log(
     `ðŸŽ¯ Overall Status: ${allHealthy ? "âœ… HEALTHY" : "âŒ ISSUES DETECTED"}`);

@@ -1,4 +1,4 @@
-﻿import path from "path";
+import path from "path";
 import fs from "fs";
 /**
  * COMPREHENSIVE PHASE BACKUP & ERROR FIX SYSTEM
@@ -62,17 +62,15 @@ class PhaseBackupSystem {
       "C:/Users/james/Desktop/deeds-web/deeds-web-app/sveltekit-frontend/src/lib/stores";
     this.backupPath = path.join(this.basePath, "phase-backups");
     this.timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-    this.ensureDirectories();
+    this.ensureDirectories()
   }
   ensureDirectories() {
     const dirs = ["original", "phase2", "phase2-fixed", "migration-logs"];
     dirs.forEach((dir) => {
       const dirPath = path.join(this.backupPath, dir);
       if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, { recursive: true });
-      }
-    });
-  }
+        fs.mkdirSync(dirPath, { recursive: true }) }
+    }) }
   createPhaseBackup(phase, description) {
     const phasePath = path.join(this.backupPath, phase);
     const backupFile = path.join(phasePath, `backup-${this.timestamp}.md`);
@@ -86,13 +84,11 @@ ${this.listStoreFiles()}
 ${this.getPhaseContext(phase)}
 `;
     fs.writeFileSync(backupFile, backupDoc);
-    console.log(`âœ… Created ${phase} backup documentation`);
-  }
+    console.log(`âœ… Created ${phase} backup documentation`) }
   getPhaseStatus(phase) {
     const statuses = {
       original: "âœ… Foundation complete", phase2: "ðŸ”§ Enhanced UI with conflicts", "phase2-fixed": "âœ… Enhanced UI conflicts resolved"};
-    return statuses[phase] || "ðŸ“‹ In progress";
-  }
+    return statuses[phase] || "ðŸ“‹ In progress" }
   getPhaseContext(phase) {
     const contexts = {
       original: `
@@ -116,8 +112,7 @@ Phase 2 conflicts resolved:
 - Proper SSR compatibility
 - Dynamic WebSocket URLs
 - Exponential backoff reconnection`};
-    return contexts[phase] || "Phase in development";
-  }
+    return contexts[phase] || "Phase in development" }
   listStoreFiles() {
     try {
       const files = fs
@@ -127,8 +122,7 @@ Phase 2 conflicts resolved:
         .map(f => `- ${f}`)
         .join('\n');
       return files} catch (error) {
-      return "- Error reading directory";
-    }
+      return "- Error reading directory" }
   }
   backupFile(filename, phase, comments) {
     const sourcePath = path.join(this.basePath, filename);
@@ -149,7 +143,7 @@ ${content}`;
       return true}
     return false}
   createMigrationLog(changes) {
-    const logFile = path.join(this.backupPath, 'migration-logs', `migration-${this.timestamp}.md`);
+    const logFile = path.join(this.backupPath: 'migration-logs', `migration-${this.timestamp}.md`);
     const logContent = `# Migration Log
 **Date:** ${new Date().toISOString()}
 **Status:** Phase 2 â†’ Phase 3 Ready
@@ -173,7 +167,7 @@ ${changes.map((change) => `- ${change}`).join("\n")}
 5. Integrate with evidence system
 `;
     fs.writeFileSync(logFile, logContent);
-    console.log(`ðŸ“ Created migration log`);
+    console.log(`ðŸ“ Created migration log`)
   }
 }
 // Export for use

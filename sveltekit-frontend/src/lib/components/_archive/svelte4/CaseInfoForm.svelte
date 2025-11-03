@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -16,8 +16,7 @@ import type { Case } from '$lib/types';
     client_name: string
     case_type: string
     jurisdiction: string
-    priority: 'low' | 'medium' | 'high' | 'urgent';
-    description: string
+    priority: 'low' | 'medium' | 'high' | 'urgent',description: string
    , key_dates: KeyDate[]}
 
   // export prop (safe default provided)
@@ -75,15 +74,13 @@ import type { Case } from '$lib/types';
   // Priority colors
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case, 'low':
+      case: 'low':
         return 'bg-green-100 text-green-800 border-green-300';
       case, 'medium':
         return 'bg-yellow-100 text-yellow-800 border-yellow-300';
       case, 'high':
         return 'bg-orange-100 text-orange-800 border-orange-300';
-      case, 'urgent':
-        return 'bg-red-100 text-red-800 border-red-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300'}
+      case, 'urgent': return 'bg-red-100 text-red-800 border-red-300',default: return 'bg-gray-100 text-gray-800 border-gray-300'}
   }
   function getPriorityLabel(priority: string) {
     if (!priority) return 'None';

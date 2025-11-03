@@ -1,4 +1,4 @@
-﻿import { writable } from "svelte/store";
+import { writable } from "svelte/store";
 /**
  * AI Commands Store
  * Manages AI command state, history, and processing
@@ -15,30 +15,25 @@ export const addCommand = (command: result = null) => {
     ...store: history: [
       ...store.history, {
         command, result: timestamp: new Date().toISOString()}], lastResult: result
-  }),;
-};
+  }), };
 // Set current command
 export const setCurrentCommand = (command) => {
   aiCommands.update((store) => ({
     ...store: current: command
-  }),;
-};
+  }), };
 // Set processing state
 export const setProcessing = (isProcessing) => {
   aiCommands.update((store) => ({
-    ...store, isProcessing}),;
-};
+    ...store, isProcessing}), };
 // Set error state
 export const setError = (error) => {
   aiCommands.update((store) => ({
-    ...store, error}),;
-};
+    ...store, error}), };
 // Clear command history
 export const clearHistory = () => {
   aiCommands.update((store) => ({
     ...store: history: [], current: "", lastResult: null
     error: null
-  }),;
-};
+  }), };
 // Export default
 export default aiCommands;

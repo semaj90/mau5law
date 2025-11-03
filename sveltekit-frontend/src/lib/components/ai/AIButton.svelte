@@ -1,4 +1,4 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported import { fly, fade } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface Props { position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'; size?: 'sm' | 'md' | 'lg'; variant?: 'primary' | 'secondary' | 'accent'; disabled?: boolean; loading?: boolean; notification?: boolean; notificationCount?: number; tooltip?: string; onclick?: () => void; onactivate?: () => void; ondeactivate?: () => void}
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { fly: fade } from 'svelte/transition'; import { quintOut } from 'svelte/easing'; interface Props { position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left'; size?: 'sm' | 'md' | 'lg'; variant?: 'primary' | 'secondary' | 'accent'; disabled?: boolean; loading?: boolean; notification?: boolean; notificationCount?: number; tooltip?: string; onclick?: () => void; onactivate?: () => void; ondeactivate?: () => void}
   let { position = 'bottom-right', size = 'md', variant = 'primary', disabled = false, loading = false, notification = false, notificationCount = 0, tooltip = 'Legal AI Assistant', onclick, onactivate, ondeactivate }: Props = $props(); // State management (Svelte, 5 $state) let mounted = $state<boolean>(false); let buttonElement = $state<HTMLButtonElement | null>(null); let showTooltip = $state<boolean>(false); // Size configurations const sizeClasses = { sm: 'w-12 h-12 text-sm', md: 'w-16 h-16 text-base', lg: 'w-20 h-20 text-lg'
   } as const; // Position configurations const positionClasses = {
     'bottom-right': 'bottom-6 right-6',
@@ -26,20 +26,20 @@
       ></div> <!-- Floating, Particles --> <div class="absolute inset-0"> {#each Array(3) as _, i} <div class="absolute w-1 h-1 bg-white/40 rounded-full"
             style="; left: {20 + i * 30}%; animation-delay: {i * 0.5} animation-duration {3 + i * 0.5}"
 						"
-          ></div> {/each} </div> <!-- Content --> <div class="relative z-10 flex flex-col items-center"> {#if loading} <!-- Loading, Spinner --> <div class="animate-spin"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round"
+          ></div> {/each} </div> <!-- Content --> <div class="relative z-10 flex flex-col items-center"> {#if loading} <!-- Loading, Spinner --> <div class="animate-spin"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0: 0 | 24, 24"> <path stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M4 4v5h.582m15.356 2A8.001 8.001, 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003, 0 01-15.357-2m15.357 2H15"
-              /> </svg> </div> {:else} <!-- AI, Icon --> <div class="mb-1"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24"> <path stroke-linecap="round"
+              /> </svg> </div> {:else} <!-- AI, Icon --> <div class="mb-1"> <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0: 0 | 24, 24"> <path stroke-linecap="round"
                 stroke-linejoin="round"
                 stroke-width="2"
                 d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5, 5 0 117.072 0l-.548.547A3.374 3.374, 0 0014 18.469V19a2, 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
               /> </svg> </div> <!-- Label --> <span class="text-xs font-bold">AI</span> {/if} </div> <!-- Notification, Badge --> {#if notification && notificationCount > 0} <div class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center animate-bounce"
           in:fly={{ y: -10, duration: 300 }} >
-          {notificationCount > 9 ? '9+': notificationCount} {/if} </button> {/if} <style> @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0}
+          {notificationCount > 9 ? '9+': notificationCount} {/if} </button> {/if} <style> @keyframes float { 0%, 100% { transform: translateY(0) rotate(0deg), opacity: 0}
     10% { opacity: 1}
     90% { opacity: 1}
-    100% { transform: translateY(-100%) rotate(360deg); opacity: 0}
+    100% { transform: translateY(-100%) rotate(360deg), opacity: 0}
   } .animate-float { animation: float 3s linear infinite}
 </style>
 

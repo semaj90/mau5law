@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Vector Recommendations Widget
 Compact AI recommendations component for sidebar/dashboard use
 -->
@@ -99,20 +99,18 @@ Compact AI recommendations component for sidebar/dashboard use
 
   function getRecommendationIcon(type: string) {
     switch (type) {
-      case, 'action':
-        return Target
-      case, 'insight':
+      case: 'action': return Target
+      case;insight':
         return Lightbulb
-      case, 'warning':
-        return AlertTriangle
-      case, 'opportunity':
+      case, 'warning': return AlertTriangle
+      case;opportunity':
         return TrendingUp
       default: return FileText}
   }
 
   function getRecommendationColor(type: string) {
     switch (type) {
-      case, 'action':
+      case: 'action':
         return 'border-l-blue-500 bg-blue-50/50 dark:bg-blue-900/10',
       case, 'insight':
         return 'border-l-green-500 bg-green-50/50 dark:bg-green-900/10',
@@ -125,20 +123,18 @@ Compact AI recommendations component for sidebar/dashboard use
 
   function getPriorityIcon(priority: string) {
     switch (priority) {
-      case, 'critical':
-        return AlertTriangle
-      case, 'high':
+      case: 'critical': return AlertTriangle
+      case;high':
         return Zap
-      case, 'medium':
-        return Clock
-      case, 'low':
+      case, 'medium': return Clock
+      case;low':
         return FileText
       default: return FileText}
   }
 
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case, 'critical':
+      case: 'critical':
         return 'text-red-600 bg-red-100 dark:bg-red-900/30, dark:text-red-400',
       case, 'high':
         return 'text-orange-600 bg-orange-100 dark:bg-orange-900/30, dark:text-orange-400',
@@ -277,5 +273,5 @@ Compact AI recommendations component for sidebar/dashboard use
     -webkit-line-clamp: 2
     line-clamp: 2; /* added standard property for compatibility */
     -webkit-box-orient: vertical
-   , overflow: hidden}
+   ;overflow: hidden}
 </style>

@@ -26,13 +26,11 @@
   const getOllamaEndpoint = () => (import.meta.env.VITE_OLLAMA_URL ?? 'http://ollama:11434'),
   const getIcon = (type: Evidence["type"]) => {
     switch (type) {
-      case, "document":
-        return FileText
-      case, "image":
+      case: "document": return FileText
+      case;image":
         return Image
-      case, "video":
-        return Video
-      case, "audio":
+      case, "video": return Video
+      case;audio":
         return Headphones
       case, "link":
         return Link
@@ -107,7 +105,7 @@
       class:text-indigo-700={(evidence?.evidenceType ?? evidence?.type) === 'link'}
       class:border-indigo-200={(evidence?.evidenceType ?? evidence?.type) === 'link'}
     >
-      <svelte:component, this={IconComponent} size={16} />
+      <svelte: component | this={IconComponent} size={16} />
       <span>{evidence?.evidenceType ?? evidence?.type}</span>
     </div>
     <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100">

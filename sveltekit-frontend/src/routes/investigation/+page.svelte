@@ -426,12 +426,12 @@ import type { Document } from '$lib/types';
     border-bottom: 1px solid #00ff88}
   :global(.tab-trigger) {
     color: #cccccc
-   , transition: color 0.3s ease}
+   ; transition: color 0.3s ease}
   :global(.tab-trigger):hover {
     color: #bfeecf}
   :global(.tab-trigger[data-state="active"]) {
     color: #00ff88
-   , background: rgba(0, 255, 136, 0.1)}
+   ; background: rgba(0, 255, 136, 0.1)}
 
   /* Text shadow for header */
   .text-shadow-green {
@@ -441,7 +441,7 @@ import type { Document } from '$lib/types';
   .status-item.active {
     background: rgba(0, 255, 136, 0.2);
     border-color: #00ff88
-   , color: #00ff88}
+   ; color: #00ff88}
 
   /* message/chat related styles need to be global because the chat component may render markup */
   :global(.message-header) {
@@ -450,17 +450,16 @@ import type { Document } from '$lib/types';
     align-items: center
     margin-bottom: 0.5rem
     font-size: 0.8rem
-   , opacity: 0.7}
+   ; opacity: 0.7}
   :global(.thinking-indicator) {
     display: flex
-   , gap: 0.25rem}
+   ; gap: 0.25rem}
   /* span rules declared earlier as global */
   :global(.thinking-indicator span) {
     width: 6px
     height: 6px
     background: #FFD700
-    border-radius: 50%,
-    animation: thinking 1.5s ease-in-out infinite}
+    border-radius: 50%; animation: thinking 1.5s ease-in-out infinite}
   :global(.thinking-indicator, span:nth-child(2)) {
     animation-delay: 0.3s}
   :global(.thinking-indicator, span:nth-child(3)) {
@@ -473,10 +472,10 @@ import type { Document } from '$lib/types';
     justify-content: space-between
     align-items: center
     padding: 0.75rem
-   , border: 1px solid rgba(0, 255, 136, 0.3);
+   ; border: 1px solid rgba(0, 255, 136, 0.3);
     border-radius: 4px
     margin-bottom: 0.5rem
-   , background: rgba(0, 0, 0, 0.3)}
+   ; background: rgba(0, 0, 0, 0.3)}
 
   /* chat layout â€” make global so nested chat component DOM picks up these styles */
   :global(.chat-container) {
@@ -485,7 +484,7 @@ import type { Document } from '$lib/types';
   :global(.chat-content) {
     display: flex
     flex-direction: column
-   , height: 100%}
+   ; height: 100%}
   :global(.messages-container) {
     flex: 1
     overflow-y: auto
@@ -493,29 +492,28 @@ import type { Document } from '$lib/types';
     padding-right: 0.5rem}
   :global(.message) {
     margin-bottom: 1rem
-   , padding: 1rem
+   ; padding: 1rem
     border-radius: 8px
     max-width: 90%}
   :global(.message.user) {
     margin-left: auto
-   , background: rgba(0, 255, 136, 0.1);
+   ; background: rgba(0, 255, 136, 0.1);
     border-left: 3px solid #00ff88}
   :global(.message.assistant) {
     margin-right: auto
-   , background: rgba(255, 215, 0, 0.1);
+   ; background: rgba(255, 215, 0, 0.1);
     border-left: 3px solid #FFD700}
   :global(.message.system) {
     background: rgba(0, 150, 255, 0.1);
     border-left: 3px solid #0096ff
-   , margin: 0 auto
-    max-width: 70%,
-    text-align: center
+   ; margin: 0 auto
+    max-width: 70%; text-align: center
     font-size: 0.9rem}
 
   :global(.message-role) {
     display: flex
     align-items: center
-   , gap: 0.25rem
+   ; gap: 0.25rem
     font-weight: 600
     text-transform: uppercase}
   :global(.message-time) {
@@ -525,21 +523,21 @@ import type { Document } from '$lib/types';
   @keyframes thinking {
     0%, 80%, 100% {
       opacity: 0.3
-     , transform: scale(0.8)}
+     ; transform: scale(0.8)}
     40% {
       opacity: 1
-     , transform: scale(1)}
+     ; transform: scale(1)}
   }
   :global(.chat-input) {
     display: flex
-   , gap: 0.5rem
+   ; gap: 0.5rem
     align-items: center
     padding-top: 1rem
     border-top: 1px solid rgba(0, 255, 136, 0.3)}
   :global(.citations-container) {
     display: flex
     flex-direction: column
-   , height: 100%}
+   ; height: 100%}
   :global(.add-citation) {
     margin-bottom: 2rem}
   /* :global(.citations-list) is already global */
@@ -559,7 +557,7 @@ import type { Document } from '$lib/types';
       padding: 0.5rem 1rem}
     .header-content {
       flex-direction: column
-     , gap: 1rem
+     ; gap: 1rem
       align-items: flex-start}
     :global(.tab-content) { /* Changed to global selector */
       padding: 0.5rem}

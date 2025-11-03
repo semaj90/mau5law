@@ -54,7 +54,7 @@
     >
       <div class="flex justify-between items-center mb-4">
         <div class="nes-text is-primary font-bold">{title}</div>
-        <button class="nes-btn" style="padding:4px, 8px;" type="button" onclick={closeModal} aria-label="Close">Ã—</button>
+        <button class="nes-btn" style="padding: 4px | 8px;" type="button" onclick={closeModal} aria-label="Close">Ã—</button>
       </div>
       <div class="modal-content px-4">
         <slot />
@@ -73,10 +73,10 @@
   @keyframes modalSlideIn {
     from {
       opacity: 0
-     , transform: translateY(-20px)}
+     ;transform: translateY(-20px)}
     to {
       opacity: 1
-     , transform: translateY(0)}
+     ;transform: translateY(0)}
   }
   .retro-modal-overlay {
     background: rgba(0, 0, 0, 0.5)}

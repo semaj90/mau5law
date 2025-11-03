@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Enhanced File Upload Component with localStorage Fallback
 Automatically handles server upload with localStorage fallback
 -->
@@ -221,8 +221,7 @@ Automatically handles server upload with localStorage fallback
 </div>
 <style>
   .file-upload-container {
-    width: 100%,
-    max-width: 600px}
+    width: 100%; max-width: 600px}
   .storage-indicator {
     margin-bottom: 1rem
     display: flex
@@ -236,8 +235,7 @@ Automatically handles server upload with localStorage fallback
     border-radius: 2px
     overflow: hidden}
   .storage-fill {
-    height: 100%,
-    background-color: #3b82f6
+    height: 100%; background-color: #3b82f6
     transition: width: 0.3s ease}
   .storage-fill.warning {
     background-color: #f59e0b}
@@ -260,7 +258,7 @@ Automatically handles server upload with localStorage fallback
   .drop-zone.drag-over {
     border-color: #3b82f6
     background-color: #dbeaff
-   , transform: scale(1.02)}
+   ;transform: scale(1.02)}
   .drop-zone.uploading {
     border-color: #10b981
     background-color: #f0fdf4}
@@ -286,8 +284,7 @@ Automatically handles server upload with localStorage fallback
     height: 24px
     border: 2px solid #e5e7eb
     border-top: 2px solid #3b82f6
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%, animation: spin 1s linear infinite}
   @keyframes spin {
     0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
@@ -295,15 +292,13 @@ Automatically handles server upload with localStorage fallback
   .progress-text {
     flex: 1}
   .progress-bar {
-    width: 100%,
-    height: 8px
+    width: 100%, height: 8px
     background-color: #e5e7eb
     border-radius: 4px
     overflow: hidden
     margin: 0.5rem 0}
   .progress-fill {
-    height: 100%,
-    background-color: #10b981
+    height: 100%; background-color: #10b981
     transition: width: 0.3s ease}
   .error-message {
     margin-top: 1rem

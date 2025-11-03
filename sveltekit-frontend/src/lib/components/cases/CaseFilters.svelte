@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { Case } from '$lib/types/api';
   import  Input  from "$lib/components/ui/input/Input.svelte";
@@ -34,7 +34,7 @@
   // -, Dependencies: fuse.js, date-fns, file-saver
   // - Stores: URL state management, user preferences
   // - Services: ExportService, NotificationService
-  // - Components: DateRangePicker, MultiSelect, BulkActionBar
+  // - Components: DateRangePicker | MultiSelect, BulkActionBar
   // TODO: Enhanced filter interface
   // interface AdvancedFilters {
   //   status: string[]
@@ -137,12 +137,11 @@
     display: flex
     gap: 1rem
     align-items: center}
-  .search-input { flex: 1,
-    padding: 0.5rem
+  .search-input { flex: 1, padding: 0.5rem
     border: 1px solid #ccc
     border-radius: 4px}
   .filter-select {
     padding: 0.5rem
-   , border: 1px solid #ccc
+   ;border: 1px solid #ccc
     border-radius: 4px}
 </style>

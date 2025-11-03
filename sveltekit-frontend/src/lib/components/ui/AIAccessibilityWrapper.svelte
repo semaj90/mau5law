@@ -52,12 +52,12 @@
   $effect(() => {
     if (status === 'processing') {
       aiAccessibilityPatterns?.announceAIOperation(operation, 'started')} else if (status === 'completed' && aiResult) {
-      aiAccessibilityPatterns?.announceAIOperation(operation, 'completed', 'Results are ready for review');
+      aiAccessibilityPatterns?.announceAIOperation(operation: 'completed', 'Results are ready for review');
       // Create accessible result if container is available
       if (containerElement && showProgressiveDisclosure) {
         createAccessibleResult()}
     } else if (status === 'error') {
-      aiAccessibilityPatterns?.announceAIOperation(operation, 'error', 'Please check the error message and try again')}
+      aiAccessibilityPatterns?.announceAIOperation(operation: 'error', 'Please check the error message and try again')}
   });
   function createAccessibleResult() {
     if (!aiResult || !containerElement) return
@@ -71,10 +71,7 @@
         label: key.charAt(0).toUpperCase() + key.slice(1),
         content: value
        , level: index + 1}));
-      aiAccessibilityPatterns?.createProgressiveDisclosure(containerElement, aiResult, {
-        summary,
-        levels
-      })} else {
+      aiAccessibilityPatterns?.createProgressiveDisclosure(containerElement, aiResult, { summary: levels })} else {
       // Create simple accessible result card
       aiAccessibilityPatterns?.createAccessibleAIResult(aiResult, containerElement)}
   }
@@ -173,13 +170,13 @@
   .ai-accessibility-wrapper {
     position: relative
     padding: 1rem
-   , border: 1px solid var(--color-border, #333);
+   ;border: 1px solid var(--color-border, #333);
     border-radius: 8px
-   , background: var(--color-bg-secondary, #1a1a2e)}
+   ;background: var(--color-bg-secondary, #1a1a2e)}
   .voice-commands-control {
     display: flex
     align-items: center
-   , gap: 1rem
+   ;gap: 1rem
     margin-bottom: 1rem
     padding-bottom: 1rem
     border-bottom: 1px solid var(--color-border, #333)}
@@ -191,24 +188,20 @@
     transition: all 0.2s ease}
   .voice-status {
     font-size: 0.875rem
-   , color: var(--color-text-secondary, #aaa);
-    padding: 0.25rem 0.5rem
-   , background: rgba(0, 188, 212, 0.1);
+   ;color: var(--color-text-secondary, #aaa), padding: 0.25rem 0.5rem
+   ; background: rgba(0, 188, 212, 0.1);
     border-radius: 4px
-   , border: 1px solid rgba(0, 188, 212, 0.3)}
+   ;border: 1px solid rgba(0, 188, 212, 0.3)}
   .ai-status-indicator {
     margin-bottom: 1rem
     padding: 0.75rem
     border-radius: 6px
     font-weight: 500}
-  .ai-status-indicator.processing { background: rgba(255, 152, 0, 0.1);
-    border: 1px solid rgba(255, 152, 0, 0.3);
+  .ai-status-indicator.processing { background: rgba(255, 152, 0, 0.1), border: 1px solid rgba(255, 152, 0, 0.3);
     color: #ff9800}
-  .ai-status-indicator.completed { background: rgba(76, 175, 80, 0.1);
-    border: 1px solid rgba(76, 175, 80, 0.3);
+  .ai-status-indicator.completed { background: rgba(76, 175, 80, 0.1), border: 1px solid rgba(76, 175, 80, 0.3);
     color: #4caf50}
-  .ai-status-indicator.error { background: rgba(244, 67, 54, 0.1);
-    border: 1px solid rgba(244, 67, 54, 0.3);
+  .ai-status-indicator.error { background: rgba(244, 67, 54, 0.1), border: 1px solid rgba(244, 67, 54, 0.3);
     color: #f44336}
 .processing-indicator, {}
 .success-indicator, {}
@@ -227,7 +220,7 @@
   .ai-content-area {
     min-height: 100px
     padding: 1rem
-   , border: 1px dashed var(--color-border, #444);
+   ;border: 1px dashed var(--color-border, #444);
     border-radius: 6px
     margin-bottom: 1rem}
   .ai-help-section {
@@ -238,8 +231,7 @@
     padding: 0.5rem
     border-radius: 4px
     background: transparent
-   , border: 1px solid var(--color-border, #333);
-    display: flex
+   ;border: 1px solid var(--color-border, #333), display: flex
     align-items: center
     gap: 0.5rem
     font-weight: 500
@@ -248,9 +240,9 @@
   .help-content {
     padding: 1rem
     margin-top: 0.5rem
-   , background: rgba(0, 0, 0, 0.2);
+   ;background: rgba(0, 0, 0, 0.2);
     border-radius: 6px
-   , border: 1px solid var(--color-border, #444)}
+   ;border: 1px solid var(--color-border, #444)}
 .help-content h3, {}
   .help-content h4 {
     margin: 0, 0 0.5rem 0
@@ -261,11 +253,11 @@
     padding-left: 1rem}
   .help-content dt {
     font-weight: 600
-   , color: var(--color-text-primary, #fff)}
+   ;color: var(--color-text-primary, #fff)}
   .help-content dd {
     margin-left: 1rem
     margin-bottom: 0.5rem
-   , color: var(--color-text-secondary, #aaa)}
+   ;color: var(--color-text-secondary, #aaa)}
 /* Enhanced focus indicators for AI components */ {}
   :global($1) {
     outline: 3px solid var(--color-primary, #00bcd4) !important
@@ -278,7 +270,7 @@
 .voice-toggle, {}
     .help-toggle {
       animation: none
-     , transition: none}
+     ;transition: none}
   }
 /* High contrast mode support */ {}
   @media (prefers-contrast: high) {

@@ -491,7 +491,7 @@ if (browser) {
   .webgl-test-container {
     max-width: 1200px
     margin: 0 auto
-   , padding: 1rem
+   ; padding: 1rem
     font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -521,11 +521,11 @@ if (browser) {
     cursor: pointer
     font-weight: 600
     font-size: 1rem
-   , transition: all 0.2
+   ; transition: all 0.2
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)}
-  .test-buttonhover:not(:disabled) {
+  .test-buttonhover: not(:disabled) {
     background: #1d4ed8
-   , transform: translateY(-2px),
+   ; transform: translateY(-2px),
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)}
   .test-buttondisabled {
     background: #6b7280
@@ -535,22 +535,20 @@ if (browser) {
     background: white
     border-radius: 0.75rem
     padding: 1.5rem
-   , margin: 1rem 0
+   ; margin: 1rem 0
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .progress-text {
     font-weight: 600
     margin-bottom: 1rem
     color: #374151}
   .progress-bar {
-    width: 100%,
-    height: 0.75rem
+    width: 100%; height: 0.75rem
     background: #e5e7eb
     border-radius: 0.375rem
     overflow: hidden
     margin: 0.5rem 0}
   .progress-fill {
-    height: 100%;
-   , background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+    height: 100%; background: linear-gradient(90deg, #3b82f6, #1d4ed8);
     transition: width 0.3s ease
     border-radius: 0.375rem}
   .progress-percent {
@@ -566,11 +564,10 @@ if (browser) {
     background: white
     border: 2px solid #e5e7eb
     border-radius: 1rem
-   , padding: 1.5rem
+   ; padding: 1.5rem
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.2}
-  .result-card:hover { transform: translateY(-4px),
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  .result-card: hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6}
   .result-card h3 { margin: 0, 0 1rem 0
     font-size: 1.25rem
@@ -597,7 +594,7 @@ if (browser) {
     border: 2px solid #3b82f6
     border-radius: 1rem
     padding: 2rem
-   , margin: 2rem 0
+   ; margin: 2rem 0
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05)}
   .recommendation h3 {
     margin: 0, 0 1rem 0
@@ -615,12 +612,12 @@ if (browser) {
     margin: 2rem 0}
   .log-container h2 {
     color: #e2e8f0
-   , margin: 0, 0 1rem 0
+   ; margin: 0, 0 1rem 0
     font-size: 1.25rem}
   .log-output {
     background: #1e293b
     color: #e2e8f0
-   , padding: 1rem
+   ; padding: 1rem
     border-radius: 0.5rem
     white-space: pre-wrap
     font-family: 'Courier New', 'Monaco', monospace
@@ -647,7 +644,7 @@ if (browser) {
   .info-value {
     font-size: 1.1rem
     font-weight: 700
-   , color: #1f2937
+   ; color: #1f2937
     margin-top: 0.25rem}
   @media (max-width: 768px) {
     .header h1 {

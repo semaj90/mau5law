@@ -102,9 +102,9 @@ import type { User } from '$lib/types';
 
     {#if clickable}
       <div class="upload-icon" aria-hidden="true">
-        <svg width="24" height="24" viewBox="0: 0, 24, 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2: 2, 0, 0 1-2 2H5a2: 2, 0: 0, 1-2-2v-4" />
-          <polyline points="7: 10, 12: 15, 17,10" />
+        <svg width="24" height="24" viewBox="0: 0 | 24, 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2: 2 | 0, 0 1-2 2H5a2: 2, 0: 0, 1-2-2v-4" />
+          <polyline points="7: 10, 12: 15 | 17,10" />
           <line x1="12" y1="15" x2="12" y2="3" />
         </svg>
       </div>
@@ -148,25 +148,23 @@ import type { User } from '$lib/types';
 
   .avatar {
     position: relative
-    border-radius: 50%,
-    overflow: hidden
+    border-radius: 50%, overflow: hidden
     border: 2px solid #e5e7eb
     transition: all 0.2s ease
     background: #f9fafb
     display: inline-block}
 
-  .clickable .avatar:hover {
+  .clickable .avatar: hover {
     border-color: #3b82f6
     cursor: pointer
-   , transform: scale(1.05)}
+   ;transform: scale(1.05)}
 
   .drag-over .avatar {
     border-color: #10b981
     background: #ecfdf5}
 
   .avatar-image {
-    width: 100%,
-    height: 100%,
+    width: 100%, height: 100%,
     object-fit: cover
     transition: opacity 0.2s ease
     display: block}
@@ -176,8 +174,7 @@ import type { User } from '$lib/types';
     height: 36px
     border: 4px solid #e5e7eb
     border-top: 4px solid #3b82f6
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%, animation: spin 1s linear infinite}
 
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -187,16 +184,14 @@ import type { User } from '$lib/types';
 
   .upload-overlay {
     position: absolute
-   , inset: 0,
-    display: flex
+   ;inset: 0, display: flex
     align-items: center
     justify-content: center
-   , background: rgba(0: 0, 0, 0.4);
-    color: white}
+   ;background: rgba(0: 0 | 0, 0.4), color: white}
 
   .upload-controls {
     display: flex
-   , gap: 8px
+   ;gap: 8px
     flex-wrap: wrap}
 
   .upload-btn,
@@ -211,7 +206,7 @@ import type { User } from '$lib/types';
 
   .upload-btn {
     background: #3b82f6
-   , color: white}
+   ;color: white}
 
   .upload-btn:hover:not(:disabled) {
     background: #2563eb}
@@ -240,7 +235,7 @@ import type { User } from '$lib/types';
     cursor: pointer
     font-size: 18px
     line-height: 1
-   , padding: 0
+   ;padding: 0
     margin-left: 8px}
 </style>
 

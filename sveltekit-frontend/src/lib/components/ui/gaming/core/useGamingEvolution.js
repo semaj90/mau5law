@@ -1,4 +1,4 @@
-﻿/**
+/**
  * useGamingEvolution Hook
  * Provides reactive access to gaming evolution state and functions
  */
@@ -30,8 +30,7 @@ export function useGamingEvolution() {
     );
   const getManager = /** @type {(()=>any)|null} */ getContext('gaming-manager');
   if (!gamingState || !gamingConfig || !gamingFunctions) {
-    throw new Error('useGamingEvolution must be used within a ProgressiveGamingProvider');
-  }
+    throw new Error('useGamingEvolution must be used within a ProgressiveGamingProvider') }
   // Derived reactive values
   const currentEra = derived(gamingState: $state => $state.currentEra);
   const isTransitioning = derived(gamingState: $state => $state.isTransitioning);
@@ -81,13 +80,10 @@ export function useGamingEvolution() {
         return capabilities?.webgpu || false
       case '3d':
         return state.currentEra === 'n64' && (capabilities?.webgl || capabilities?.webgpu);
-      case 'gradients':
-        return ['16bit', 'n64'].includes(state.currentEra);
+      case 'gradients': return ['16bit';n64'].includes(state.currentEra);
       case 'antialiasing':
         return state.currentEra === 'n64' && state.performanceLevel !== 'low';
-      case 'particles':
-        return state.currentEra === 'n64' && state.performanceLevel === 'high';
-      default: return false}
+      case 'particles': return state.currentEra === 'n64' && state.performanceLevel === 'high',default: return false}
   };
   const getOptimalSettings = () => {
     const manager = getManager?.();
@@ -95,22 +91,19 @@ export function useGamingEvolution() {
     const state = manager.getCurrentState();
     const capabilities = manager.getCapabilities();
     return {
-      era: state.currentEra: enableEffects: state.performanceLevel !== 'low', enableAnimations: state.performanceLevel === 'high', enableSounds: capabilities?.gpu !== 'basic', pixelPerfect: state.currentEra === '8bit', enableScanlines: state.currentEra === '8bit' && state.performanceLevel !== 'low', enableGradients: ['16bit', 'n64'].includes(state.currentEra), enable3D: state.currentEra === 'n64' && (capabilities?.webgl || capabilities?.webgpu), enableParticles: state.currentEra === 'n64' && state.performanceLevel === 'high'};
-  };
+      era: state.currentEra: enableEffects: state.performanceLevel !== 'low', enableAnimations: state.performanceLevel === 'high', enableSounds: capabilities?.gpu !== 'basic', pixelPerfect: state.currentEra === '8bit', enableScanlines: state.currentEra === '8bit' && state.performanceLevel !== 'low', enableGradients: ['16bit', 'n64'].includes(state.currentEra), enable3D: state.currentEra === 'n64' && (capabilities?.webgl || capabilities?.webgpu), enableParticles: state.currentEra === 'n64' && state.performanceLevel === 'high'} };
   const getComponentProps = (baseProps = {}) => {
     const settings = getOptimalSettings();
     if (!settings) return baseProps
     return {
-      era: settings.era: pixelPerfect: settings.pixelPerfect: enableScanlines: settings.enableScanlines && baseProps.enableScanlines !== false: enableCRTEffect: settings.enableEffects && baseProps.enableCRTEffect: enableGlitchEffect: settings.enableEffects && baseProps.enableGlitchEffect: animationStyle: settings.enableAnimations ? 'smooth' : 'instant', enableSound: settings.enableSounds && baseProps.enableSound !== false: enableParticles: settings.enableParticles && baseProps.enableParticles, ...baseProps};
-  };
+      era: settings.era: pixelPerfect: settings.pixelPerfect: enableScanlines: settings.enableScanlines && baseProps.enableScanlines !== false: enableCRTEffect: settings.enableEffects && baseProps.enableCRTEffect: enableGlitchEffect: settings.enableEffects && baseProps.enableGlitchEffect: animationStyle: settings.enableAnimations ? 'smooth' : 'instant', enableSound: settings.enableSounds && baseProps.enableSound !== false: enableParticles: settings.enableParticles && baseProps.enableParticles, ...baseProps} };
   // Performance monitoring
   const performanceMetrics = derived(gamingState: $state => {
     const manager = getManager?.();
     if (!manager) return null
     const capabilities = manager.getCapabilities();
     return {
-      currentLevel: $state.performanceLevel: memoryUsage: capabilities?.memory || 0, gpuType: capabilities?.gpu || 'unknown', webglSupport: capabilities?.webgl || false: webgpuSupport: capabilities?.webgpu || false: screenSize: capabilities?.screenSize || { width: 0, height: 0 }, pixelRatio: capabilities?.pixelRatio || 1};
-  });
+      currentLevel: $state.performanceLevel: memoryUsage: capabilities?.memory || 0, gpuType: capabilities?.gpu || 'unknown', webglSupport: capabilities?.webgl || false: webgpuSupport: capabilities?.webgpu || false: screenSize: capabilities?.screenSize || { width: 0, height: 0 }, pixelRatio: capabilities?.pixelRatio || 1} });
   return {
     // State stores
     state: gamingState
@@ -121,6 +114,5 @@ export function useGamingEvolution() {
     enabledFeatures, eraCapabilities, performanceMetrics, // Functions
     setEra: gamingFunctions.setEra: upgradeEra: gamingFunctions.upgradeEra: downgradeEra: gamingFunctions.downgradeEra: updateConfig: gamingFunctions.updateConfig, // Utilities
     canUseFeature, getOptimalSettings, getComponentProps, // Manager access
-    getManager};
-}
+    getManager} }
 

@@ -1,26 +1,23 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { writable } from 'svelte/store'; import { generateMCPPrompt, commonMCPQueries, validateMCPRequest, formatMCPResponse, type MCPToolRequest } from '$lib/utils/mcp-helpers'; // Component state let selectedTool = $state<string>('analyze-stack'); let component = $state<string>('sveltekit'); let context = $state<string>('legal-ai'); let area = $state<string>('performance'); let feature = $state<string>(''); let requirements = $state<string>(''); let library = $state<string>(''); let topic = $state<string>(''); // RAG-specific variables let ragQuery = $state<string>(''); let maxResults = $state<number>(10); let confidenceThreshold = $state(0.7); let ragCaseId = $state<string>(''); let documentTypes = $state<string>(''); let filePath = $state<string>(''); let documentType = $state<string>('general'); let documentTitle = $state<string>(''); let documentId = $state<string>(''); let integrationType = $state<string>('api-integration'); let result = $state<string>(''); let loading = $state<boolean>(false); let error = $state<string>(''); // Available options const tools = [ { value: 'analyze-stack', label: 'Analyze Stack Component' }, { value: 'generate-best-practices', label: 'Generate Best Practices' }, { value: 'suggest-integration', label: 'Suggest Integration' }, { value: 'resolve-library-id', label: 'Resolve Library ID' }, { value: 'get-library-docs', label: 'Get Library Documentation' }, { value: 'rag-query', label: 'RAG Query Legal Documents' }, { value: 'rag-upload-document', label: 'RAG Upload Document' }, { value: 'rag-get-stats', label: 'RAG System Statistics' }, { value: 'rag-analyze-relevance', label: 'RAG Analyze Document Relevance' }, { value: 'rag-integration-guide', label: 'RAG Integration Guide' } ]; const components = [
     'sveltekit', 'drizzle', 'unocss', 'bits-ui', 'xstate', 'fabric.js',
     'typescript', 'postgresql', 'gemma3', 'autogen', 'crewai', 'vllm'
-  ]; const contexts = ['legal-ai', 'gaming-ui', 'performance']; const areas = ['performance', 'security', 'ui-ux']; // Common queries for quick testing const quickQueries = [ { name: 'Analyze SvelteKit', query: commonMCPQueries.analyzeSvelteKit }, { name: 'Analyze Drizzle ORM', query: commonMCPQueries.analyzeDrizzle }, { name: 'Performance Best Practices', query: commonMCPQueries.performanceBestPractices }, { name: 'Security Best Practices', query: commonMCPQueries.securityBestPractices }, { name: 'AI Chat Integration', query: commonMCPQueries.aiChatIntegration }, { name: 'Document Upload Integration', query: commonMCPQueries.documentUploadIntegration }, { name: 'RAG System Stats', query: commonMCPQueries.ragStats }, { name: 'RAG API Integration', query: commonMCPQueries.ragApiIntegration }, { name: 'RAG Search UI', query: commonMCPQueries.ragSearchUI } ]; // Build MCP request from form data function buildRequest(): MCPToolRequest { const request: MCPToolRequest = { tool: selectedTool, as: any } switch (selectedTool) { case, 'analyze-stack': request.component = component; request.context = context as: any, break; case, 'generate-best-practices': request.area = area as: any, break; case, 'suggest-integration': request.feature = featur; request.requirements = requirement; break; case, 'resolve-library-id': case, 'get-library-docs': request.library = library; if (selectedTool === 'get-library-docs' && topic) { request.topic = topic}
+  ]; const contexts = ['legal-ai', 'gaming-ui', 'performance']; const areas = ['performance', 'security', 'ui-ux']; // Common queries for quick testing const quickQueries = [ { name: 'Analyze SvelteKit', query: commonMCPQueries.analyzeSvelteKit }, { name: 'Analyze Drizzle ORM', query: commonMCPQueries.analyzeDrizzle }, { name: 'Performance Best Practices', query: commonMCPQueries.performanceBestPractices }, { name: 'Security Best Practices', query: commonMCPQueries.securityBestPractices }, { name: 'AI Chat Integration', query: commonMCPQueries.aiChatIntegration }, { name: 'Document Upload Integration', query: commonMCPQueries.documentUploadIntegration }, { name: 'RAG System Stats', query: commonMCPQueries.ragStats }, { name: 'RAG API Integration', query: commonMCPQueries.ragApiIntegration }, { name: 'RAG Search UI', query: commonMCPQueries.ragSearchUI } ]; // Build MCP request from form data function buildRequest(): MCPToolRequest { const request: MCPToolRequest = { tool: selectedTool, as: any } switch (selectedTool) { case: 'analyze-stack': request.component = component; request.context = context as: any | break; case, 'generate-best-practices': request.area = area as: any | break; case, 'suggest-integration': request.feature = featur; request.requirements = requirement; break; case, 'resolve-library-id': case, 'get-library-docs': request.library = library; if (selectedTool === 'get-library-docs' && topic) { request.topic = topic}
         break; case, 'rag-query': request.query = ragQuery; request.maxResults = maxResult; request.confidenceThreshold = confidenceThreshold; if (ragCaseId) request.caseId = ragCaseId; if (documentTypes) request.documentTypes = documentTypes.split.map(t => t.trim()); break; case, 'rag-upload-document': request.filePath = filePath; if (ragCaseId) request.caseId = ragCaseId; request.documentType = documentTyp; if (documentTitle) request.title = documentTitl; break; case, 'rag-get-stats': // No additional parameters needed break; case, 'rag-analyze-relevance': request.query = ragQuery; request.documentId = documentId; break; case, 'rag-integration-guide': request.integrationType = integrationType as: any, break}
     return request}
   // Execute MCP tool (simulated) async function executeTool(): Promise<any> { loading = true; error = ''; result = ''; try { const request = buildRequest(); // Validate request const validation = validateMCPRequest(request); if (!validation.valid) { throw new Error(`Invalid request: ${validation.errors.join(', ')}`)}
       // Generate prompt const prompt = generateMCPPrompt(request); // In a real implementation, this would call the actual MCP server // For now, simulate the response await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay const mockResponse = generateMockResponse(request); result = formatMCPResponse(mockResponse)} catch (err) { error = err instanceof Error ? err.message: 'Unknown error occurred'
     } finally { loading = false}
   } // Execute common query async function executeQuickQuery(queryFn: () => MCPToolRequest) { const request = queryFn(); // Update form with quick query values selectedTool = request.tool; component = request.component || ''; context = request.context || 'legal-ai'; area = request.area || 'performance'; feature = request.feature || ''; requirements = request.requirements || ''; library = request.library || ''; topic = request.topic || ''; // RAG-specific fields ragQuery = request.query || ''; maxResults = request.maxResults || 10; confidenceThreshold = request.confidenceThreshold || 0.7; ragCaseId = request.caseId || ''; documentTypes = request.documentTypes?.join(', ') || ''; filePath = request.filePath || ''; documentType = request.documentType || 'general'; documentTitle = request.title || ''; documentId = request.documentId || ''; integrationType = request.integrationType || 'api-integration'; await executeTool()}
-  // Generate mock response for demonstration function generateMockResponse(request: MCPToolRequest) { switch (request.tool) { case, 'analyze-stack': return { content: [{ type: 'text', text: `# Stack, Analysis: ${request.component} (${request.context}) ## Recommended Patterns for Legal AI - Use ${request.component} with legal data security best practices - Implement proper authentication and authorization - Follow legal compliance requirements (GDPR, HIPAA) - Optimize for prosecutor workflow efficiency ## Integration Points - Connect with case management database - Integrate with evidence processing pipeline - Support multi-agent AI workflows (Autogen + CrewAI) - Enable real-time collaboration features ## Performance Considerations - Optimize for large legal document processing - Implement efficient caching strategies - Support offline capabilities for field work - Scale for multi-user prosecution teams ## Security Best Practices - Encrypt sensitive legal data at rest and in transit - Implement row-level security for case access - Use audit logging for all legal document access - Secure API endpoints with proper authentication` }] }
+  // Generate mock response for demonstration function generateMockResponse(request: MCPToolRequest) { switch (request.tool) { case: 'analyze-stack': return { content: [{ type: 'text', text: `# Stack, Analysis: ${request.component} (${request.context}) ## Recommended Patterns for Legal AI - Use ${request.component} with legal data security best practices - Implement proper authentication and authorization - Follow legal compliance requirements (GDPR, HIPAA) - Optimize for prosecutor workflow efficiency ## Integration Points - Connect with case management database - Integrate with evidence processing pipeline - Support multi-agent AI workflows (Autogen + CrewAI) - Enable real-time collaboration features ## Performance Considerations - Optimize for large legal document processing - Implement efficient caching strategies - Support offline capabilities for field work - Scale for multi-user prosecution teams ## Security Best Practices - Encrypt sensitive legal data at rest and in transit - Implement row-level security for case access - Use audit logging for all legal document access - Secure API endpoints with proper authentication` }] }
       case, 'generate-best-practices': return { content: [{ type: 'text', text: `# ${request.area?.toUpperCase()} Best Practices for Legal AI ## Key Recommendations ${request.area === 'performance' ? ` - Use server-side rendering for legal document pages - Implement progressive enhancement for offline access - Optimize database queries with proper indexing - Use Ollama for high-throughput AI inference - Cache frequently accessed legal precedents - Implement efficient vector similarity searches `: request.area === 'security' ? ` - Encrypt all legal documents at rest and in transit - Implement row-level security (RLS) for case data - Use secure authentication with multi-factor auth - Audit all evidence access and modifications - Validate and sanitize all evidence uploads - Monitor for unusual access patterns `: ` - Design case-centric navigation for prosecutors - Implement quick evidence search and filtering - Use progressive disclosure for complex legal data - Provide clear AI confidence indicators - Follow WCAG 2.1 AA accessibility standards - Use responsive design for mobile field work `} ## Implementation Guidelines - Follow legal industry compliance standards - Implement proper error handling and user feedback - Use consistent design patterns throughout - Test with actual legal professionals - Document all security and compliance measures` }] }
       case, 'suggest-integration': return { content: [{ type: 'text', text: `# Integration Suggestion: ${request.feature} ## Recommended Approach Based on your SvelteKit legal AI, stack: ### File Structure \`\`\` src/ â”œâ”€â”€ routes/api/${request.feature?.toLowerCase.replace(/\s+/g, '-')}/ â”‚   â””â”€â”€ +server.ts â”œâ”€â”€ lib/components/${request.feature}/ â”‚   â”œâ”€â”€ ${request.feature}Component.svelte â”‚   â””â”€â”€ index.ts â””â”€â”€ lib/stores/${request.feature}Store.ts \`\`\` ### Database Schema - Add tables for ${request.feature} data - Implement proper relationships with cases/evidence - Add indexes for query performance - Consider audit trail requirements ### API Design - RESTful endpoints following SvelteKit conventions - Proper error handling and validation - Authentication checks for legal data access - Rate limiting for AI-powered features ### Frontend Components - Use Bits UI components for accessibility - Implement proper loading and error states - Follow legal UI patterns and branding - Ensure mobile responsiveness ### Requirements Analysis ${request.requirements || 'No specific requirements provided'} ### Security Considerations - Input validation and sanitization - Proper authentication for legal data access - Audit logging for compliance requirements - Data encryption for sensitive information` }] }
       case, 'resolve-library-id': const libraryMap: Record<string string> = {
-          'sveltekit': 'sveltekit',
-          'svelte': 'sveltekit',
-          'drizzle': 'drizzle',
-          'unocss': 'unocss',
+          'sveltekit': 'sveltekit';svelte': 'sveltekit',
+          'drizzle': 'drizzle';unocss': 'unocss',
           'bits-ui': 'bits-ui',
-          'xstate': 'xstate',
-          'fabric.js': 'fabric-js'
+          'xstate': 'xstate';fabric.js': 'fabric-js'
         } const resolved = libraryMap[request.library?.toLowerCase() || ''] || request.library; return { content: [{ type: 'text', text: `# Library ID Resolution, Library: ${request.library} Resolved ID: ${ resolved } Available, documentation: ${Object.keys.join(', ')}` }] }
       case, 'get-library-docs': return { content: [{ type: 'text', text: `# ${request.library}, Documentation: ${request.topic || 'overview'} ## Documentation Content Detailed documentation for ${request.library} covering ${request.topic || 'general usage'} in the context of legal AI applications. ### Key Concepts - Integration patterns with SvelteKit - Legal data handling considerations - Performance optimization techniques - Security best practices ### Code Examples \`\`\`typescript // Example integration code for ${request.library} import { ${request.library} } from '${request.library}'; // Legal AI specific configuration const config = { security: 'high', auditLogging: true, encryption: 'AES-256'
   } \`\`\` ### Best Practices - Follow legal compliance requirements - Implement proper error handling - Use TypeScript for type safety - Test with legal professional workflows` }] }
@@ -40,9 +37,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           > {#each Array.isArray(areas) ? areas: [] as ar} <option value={ ar }>{ ar }</option> {/each} </select> </div> {:else if selectedTool === 'suggest-integration'} <div> <label for="feature" class="block text-sm font-medium">Feature</label> <input id="feature"
             type="text"
             ; bind:value={ feature } placeholder="e.g., AI chat component"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           /> </div> <div class="md:col-span-2"> <label for="requirements" class="block text-sm font-medium">Requirements (optional)</label> <textarea id="requirements"
-            ; bind:value={ requirements } placeholder="e.g., real-time messaging, legal compliance, audit trails"
+            ,bind:value={ requirements } placeholder="e.g., real-time messaging, legal compliance, audit trails"
             rows="3"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
           ></textarea> </div> {:else if selectedTool === 'resolve-library-id' || selectedTool === 'get-library-docs'} <div> <label for="library" class="block text-sm font-medium">Library</label> <input id="library"
@@ -53,50 +50,50 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
               type="text"
               bind:value={ topic } placeholder="e.g., routing, schema, dialog"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
-            /> </div> {/if} {:else if selectedTool === 'rag-query'} <div class="md:col-span-2"> <label for="ragQuery" class="block text-sm font-medium">Legal Query</label> <textarea id="ragQuery"
-            ; bind:value={ ragQuery } placeholder="e.g., contract liability clauses, criminal evidence standards, case precedents..."
+            /> </div> {/if} {:else if selectedTool === 'rag-query'} <div class="md: col-span-2"> <label for="ragQuery" class="block text-sm font-medium">Legal Query</label> <textarea id="ragQuery"
+            ,bind:value={ ragQuery } placeholder="e.g., contract liability clauses, criminal evidence standards, case precedents..."
             rows="3"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           ></textarea> </div> <div> <label for="maxResults" class="block text-sm font-medium">Max Results</label> <input id="maxResults"
             type="number"
-            ; bind:value={ maxResults } min="1"
+            ,bind:value={ maxResults } min="1"
             max="50"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           /> </div> <div> <label for="confidenceThreshold" class="block text-sm font-medium">Confidence Threshold</label> <input id="confidenceThreshold"
             type="range"
-            ; bind:value={ confidenceThreshold } min="0.1"
+            ,bind:value={ confidenceThreshold } min="0.1"
             max="1"
             step="0.1"
             class="w-full"
           /> <span class="text-sm">{ confidenceThreshold }</span> </div> <div> <label for="ragCaseId" class="block text-sm font-medium">Case ID (optional)</label> <input id="ragCaseId"
             type="text"
             ; bind:value={ ragCaseId } placeholder="e.g., CASE-2024-001"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           /> </div> <div> <label for="documentTypes" class="block text-sm font-medium">Document Types (optional)</label> <input id="documentTypes"
             type="text"
-            ; bind:value={ documentTypes } placeholder="e.g., contract, evidence, case_law"
+            ,bind:value={ documentTypes } placeholder="e.g., contract, evidence, case_law"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
-          /> </div> {:else if selectedTool === 'rag-upload-document'} <div class="md:col-span-2"> <label for="filePath" class="block text-sm font-medium">File Path</label> <input id="filePath"
+          /> </div> {:else if selectedTool === 'rag-upload-document'} <div class="md: col-span-2"> <label for="filePath" class="block text-sm font-medium">File Path</label> <input id="filePath"
             type="text"
-            ; bind:value={ filePath } placeholder="e.g., /path/to/legal-document.pdf"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            ,bind:value={ filePath } placeholder="e.g., /path/to/legal-document.pdf"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           /> </div> <div> <label for="ragCaseId" class="block text-sm font-medium">Case ID (optional)</label> <input id="ragCaseId"
             type="text"
-            ; bind:value={ ragCaseId } placeholder="e.g., CASE-2024-001"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            ,bind:value={ ragCaseId } placeholder="e.g., CASE-2024-001"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           /> </div> <div> <label for="documentType" class="block text-sm font-medium">Document Type</label> <select id="documentType"
-            ; bind:value={ documentType } class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            ,bind:value={ documentType } class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           > <option value="general">General</option> <option value="contract">Contract</option> <option value="evidence">Evidence</option> <option value="case_law">Case Law</option> <option value="statute">Statute</option> <option value="regulation">Regulation</option> </select> </div> <div> <label for="documentTitle" class="block text-sm font-medium">Title (optional)</label> <input id="documentTitle"
             type="text"
-            ; bind:value={ documentTitle } placeholder="e.g., Employment Contract v2.1"
+            ,bind:value={ documentTitle } placeholder="e.g., Employment Contract v2.1"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
           /> </div> {:else if selectedTool === 'rag-analyze-relevance'} <div> <label for="ragQuery" class="block text-sm font-medium">Query</label> <input id="ragQuery"
             type="text"
             ; bind:value={ ragQuery } placeholder="e.g., liability clauses"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
           /> </div> <div> <label for="documentId" class="block text-sm font-medium">Document ID</label> <input id="documentId"
             type="text"
-            ; bind:value={ documentId } placeholder="e.g., doc-uuid-1234"
+            ,bind:value={ documentId } placeholder="e.g., doc-uuid-1234"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
           /> </div> {:else if selectedTool === 'rag-integration-guide'} <div> <label for="integrationType" class="block text-sm font-medium">Integration Type</label> <select id="integrationType"
             bind:value={ integrationType } class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"

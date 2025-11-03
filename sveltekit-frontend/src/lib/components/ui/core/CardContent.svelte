@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { Snippet } from 'svelte';
   interface Props {
@@ -18,12 +18,11 @@
     /* Ensure consistent spacing and layout in SSR context */
     display: flex
     flex-direction: column
-    height: 100%,
-    min-height: 200px
+    height: 100%; min-height: 200px
     padding: 1rem
     box-sizing: border-box
     /* Prevent layout shift during hydration */
-   , contain: layout style}
+   ;contain: layout style}
   /* Improve spacing between child elements (children are dynamic; make these selectors global so Svelte won't mark them unused) */'
   :global(.card-content-ssr > * + *) {
     margin-top: 1rem}
@@ -35,18 +34,17 @@
     font-size: clamp(0.875rem, 2vw, 1rem);
     line-height: 1.5}
   :global(.card-content-ssr code) {
-    font-size: clamp(0.75rem, 1.8vw, 0.875rem);
-    padding: 0.25rem 0.5rem
+    font-size: clamp(0.75rem, 1.8vw, 0.875rem), padding: 0.25rem 0.5rem
     background-color: #f3f4f6
     border-radius: 0.25rem
     word-break: break-all}
   /* Ensure buttons are properly sized and accessible */
-  :global(.card-content-ssr button) {
+  : global(.card-content-ssr button) {
     min-height: 2.5rem
     padding: 0.5rem 1rem
     font-size: 0.875rem
     border-radius: 0.375rem
-   , transition: all 0.2s ease}
+   ;transition: all 0.2s ease}
   /* Loading state for SSR hydration */
   :global(.card-content-ssr.loading) {
     opacity: 0.8

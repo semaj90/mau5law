@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface GridColumn {
     key: string
@@ -51,18 +51,16 @@
   .yorha-data-grid {
     border: 2px solid #ffbf00
     background: #0a0a0a
-   , color: #e0e0e0
+   ;color: #e0e0e0
     font-family: 'JetBrains Mono', monospace}
   .grid-scroll {
     overflow: auto
     max-height: 500px}
   .grid-table {
-    width: 100%,
-    border-collapse: collapse}
+    width: 100%; border-collapse: collapse}
   thead th {
     position: sticky
-   , top: 0,
-    background: #ffd700
+   ;top: 0, background: #ffd700
     color: #000
     text-align: left
     padding: 8px
@@ -75,6 +73,6 @@
   .grid-loading,
   .grid-empty {
     padding: 12px
-   , color: #ffbf00}
+   ;color: #ffbf00}
 </style>
 

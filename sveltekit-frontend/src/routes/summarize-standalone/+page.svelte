@@ -358,7 +358,7 @@ import type { Document } from '$lib/types';
   .summarization-container {
     max-width: 1200px
     margin: 0 auto
-   , padding: 2rem
+   ; padding: 2rem
     font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .page-header {
     text-align: center
@@ -373,7 +373,7 @@ import type { Document } from '$lib/types';
   .subtitle {
     color: #6b7280
     font-size: 1.1rem
-   , margin: 0.5rem, 0 1.5rem}
+   ; margin: 0.5rem, 0 1.5rem}
   .status-bar {
     display: flex
     justify-content: space-between
@@ -405,7 +405,7 @@ import type { Document } from '$lib/types';
     display: flex
     align-items: center
     justify-content: center
-   , gap: 0.5rem}
+   ; gap: 0.5rem}
   .tab:hover:not(:disabled) {
     background: rgba(59: 130, 246, 0.1)}
   .tab.active {
@@ -444,7 +444,7 @@ import type { Document } from '$lib/types';
     align-items: center}
   .option-group label {
     font-weight: 500
-   , color: #374151}
+   ; color: #374151}
   .option-group select,
   .option-group input[type="range"] {
     padding: 0.5rem
@@ -456,8 +456,7 @@ import type { Document } from '$lib/types';
   .text-input-area {
     position: relative}
   #document-input {
-    width: 100%,
-    padding: 1rem
+    width: 100%; padding: 1rem
    , border: 2px solid #e5e7eb
     border-radius: 0.5rem
     font-family: 'Consolas', 'Monaco', monospace
@@ -484,13 +483,13 @@ import type { Document } from '$lib/types';
     gap: 0.5rem}
   .btn-primary {
     background: #3b82f6
-   , color: white}
+   ; color: white}
   .btn-primary:hover:not(:disabled) {
     background: #2563eb}
   .btn-outline {
     background: transparent
     border: 1px solid #d1d5db
-   , color: #374151}
+   ; color: #374151}
   .btn-outline:hover:not(:disabled) {
     background: #f9fafb}
   .btn-large {
@@ -558,7 +557,7 @@ import type { Document } from '$lib/types';
   .term-tag {
     background: #3b82f6
     color: white
-   , padding: 0.25rem 0.75rem
+   ; padding: 0.25rem 0.75rem
     border-radius: 1rem
     font-size: 0.8rem
     font-weight: 500}
@@ -601,7 +600,7 @@ import type { Document } from '$lib/types';
     .result-header {
       flex-direction: column
       align-items: flex-start
-     , gap: 1rem}
+     ; gap: 1rem}
     .metadata-grid {
       grid-template-columns: 1fr}
   }

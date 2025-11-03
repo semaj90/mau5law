@@ -1,4 +1,4 @@
-﻿<!-- Enhanced Case Form with proper, schema, mapping -->
+<!-- Enhanced Case Form with proper, schema, mapping -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { notifications } from '$lib/stores/unified';
@@ -367,7 +367,7 @@
     margin: 0 auto
     background: white
     border-radius: 8px
-   , padding: 2rem
+   ;padding: 2rem
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)}
   .form-grid {
     display: grid
@@ -389,21 +389,18 @@
     margin-bottom: 0.5rem
     font-weight: 500
     color: #374151}
-  label.required::after {
-    content: "*";
-   , color: #ef4444
+  label.required: :after {
+    content: "*", color: #ef4444
     margin-left: 0.25rem}
   input,
   select,
   textarea {
-    width: 100%,
-    padding: 0.75rem
+    width: 100%, padding: 0.75rem
     border: 1px solid #d1d5db
     border-radius: 6px
     font-size: 1rem
-   , transition: border-color 0.2s, box-shadow 0.2s}
-  input:focus,
-  select:focus,
+   ;transition: border-color 0.2s, box-shadow 0.2s}
+  input: focus, select: focus;
   textarea:focus { outline: none
     border-color: #3b82f6
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
@@ -456,8 +453,7 @@
     display: flex
     align-items: center
     justify-content: center
-    border-radius: 50%,
-    transition: background-color 0.2s}
+    border-radius: 50%, transition: background-color 0.2s}
   .tag button:hover {
     background: #d1d5db
     color: #374151}
@@ -486,9 +482,9 @@
   .form-actions button.primary:hover {
     background: #2563eb
     border-color: #2563eb}
-  .form-actions button:disabled {
+  .form-actions button: disabled {
     opacity: 0.5
-   , cursor: not-allowed}
+   ;cursor: not-allowed}
   @media (max-width: 768px) {
     .enhanced-case-form {
       padding: 1rem}

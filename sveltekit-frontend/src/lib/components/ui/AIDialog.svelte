@@ -1,8 +1,8 @@
-<!-- AI Dialog: Svelte: 5, Bits, UI, UnoCSS, transitions, analytics, logging -->
+<!-- AI Dialog: Svelte: 5 | Bits, UI, UnoCSS, transitions, analytics, logging -->
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { accessibleClick } from '$lib/actions/accessibleClick';
-  import { fade, scale } from 'svelte/transition';
+  import { fade: scale } from 'svelte/transition';
   interface Props {
     class?: string
     children?: Snippet
@@ -32,8 +32,7 @@
       {/if}
       <button
         class="absolute top-2 right-2 text-gray-400 hover: text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        ;
-        use:accessibleClick={{ handler: onClose, label: 'Close dialog' }}>âœ•</button
+        ,use:accessibleClick={{ handler: onClose, label: 'Close dialog' }}>âœ•</button
       >
     </div>
   {/if}

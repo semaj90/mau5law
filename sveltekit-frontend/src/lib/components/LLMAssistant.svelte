@@ -79,6 +79,6 @@
 </div>
 <style>
   .messages::-webkit-scrollbar { height: 8px}
-  .messages::-webkit-scrollbar-thumb { background: #cbd5e1, border-radius: 6px}
+  .messages: :-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 6px}
 </style>
 

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
     class?: string
@@ -16,12 +16,11 @@
   /* Ensure consistent spacing and layout in SSR context */
   display: flex
   flex-direction: column
-  height: 100%,
-  min-height: 200px
+  height: 100%; min-height: 200px
   padding: 1rem
   box-sizing: border-box
   /* Prevent layout shift during hydration */
- , contain: layout style}
+ ;contain: layout style}
 /* Improve spacing between child elements */
 .card-content-ssr > * + * {
   margin-top: 1rem}
@@ -33,8 +32,7 @@
   font-size: clamp(0.875rem, 2vw, 1rem);
   line-height: 1.5}
 .card-content-ssr code {
-  font-size: clamp(0.75rem, 1.8vw, 0.875rem);
-  padding: 0.25rem 0.5rem
+  font-size: clamp(0.75rem, 1.8vw, 0.875rem), padding: 0.25rem 0.5rem
   background-color: #f3f4f6
   border-radius: 0.25rem
   word-break: break-all}

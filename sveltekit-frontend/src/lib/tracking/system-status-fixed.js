@@ -1,4 +1,4 @@
-﻿// Updated system status tracker - post-fix validation
+// Updated system status tracker - post-fix validation
 // #memory #create_entities #get-library-docs
 export class SystemStatusTracker {
   constructor() {
@@ -6,8 +6,7 @@ export class SystemStatusTracker {
     this.errors = [];
     this.fixes = [];
     this.initializeServices();
-    this.validateFixes();
-  }
+    this.validateFixes() }
   initializeServices() {
     // Docker services
     this.services.set("postgres", {
@@ -17,8 +16,7 @@ export class SystemStatusTracker {
     this.services.set("qdrant", {
       status: "ready", port: 6333, container: "legal-ai-qdrant", health_endpoint: "http://localhost:6333/health"});
     this.services.set("ollama", {
-      status: "ready", port: 11434, container: "legal-ai-ollama", health_endpoint: "http://localhost:11434/api/version"});
-  }
+      status: "ready", port: 11434, container: "legal-ai-ollama", health_endpoint: "http://localhost:11434/api/version"}) }
   validateFixes() {
     const fixedIssues = [ {
         issue: "Missing enhanced-merge-refactor.mjs", status: "fixed", solution: "Created stub file with proper functionality"}, {
@@ -31,28 +29,23 @@ export class SystemStatusTracker {
     const results = {
       docker_available: await this.checkDocker(), services: {}, database: await this.checkDatabase(), files: await this.checkCriticalFiles()};
     for (const [name, service] of this.services) {
-      results.services[name] = await this.checkService(service);
-    }
+      results.services[name] = await this.checkService(service) }
     return results}
   async checkDocker() {
     // Docker connectivity check would go here
-    return { status: "available", version: "Desktop running" };
-  }
+    return { status: "available", version: "Desktop running" } }
   async checkDatabase() {
     return {
       status: "ready", schema: "001_initial_schema.sql", tables: [
-        "users", "cases", "evidence", "context_sessions", "ai_interactions"]};
-  }
+        "users", "cases", "evidence", "context_sessions", "ai_interactions"]} }
   async checkCriticalFiles() {
     const criticalFiles = [
       "docker-compose-unified.yml", "database/migrations/001_initial_schema.sql", "enhanced-merge-refactor.mjs", "enhanced-vector-scanner.mjs", "fix-canvas-integration.mjs", "LEGAL-AI-CONTROL-PANEL.bat", "START-LEGAL-AI.bat", "COMPLETE-SYSTEM-FIX.bat"];
     return criticalFiles.map(file => ({
-      file: status: 'available'}));
-  }
+      file: status: 'available'})) }
   async checkService(service) {
     return {
-      status: "healthy", container: service.container: port: service.port};
-  }
+      status: "healthy", container: service.container: port: service.port} }
   generateSystemReport() {
     return {
       timestamp: new Date().toISOString(), status: "FIXED_AND_READY", services: Object.fromEntries(this.services), fixes_applied: this.fixes: launch_options: [ {
@@ -60,13 +53,11 @@ export class SystemStatusTracker {
           name: "Control Panel", command: "LEGAL-AI-CONTROL-PANEL.bat", description: "Interactive system launcher"}, {
           name: "Direct Start", command: "START-LEGAL-AI.bat", description: "Start with GPU support"}, {
           name: "CPU Mode", command: "START-CPU-MODE.bat", description: "CPU-only fallback"}], next_steps: [
-        "1. Run COMPLETE-SYSTEM-FIX.bat to validate all fixes", "2. Choose launch option from Control Panel", "3. Access frontend at http://localhost:5173", "4. Test AI features and vector search"]};
-  }
+        "1. Run COMPLETE-SYSTEM-FIX.bat to validate all fixes", "2. Choose launch option from Control Panel", "3. Access frontend at http://localhost:5173", "4. Test AI features and vector search"]} }
   getFixSummary() {
     return {
       total_fixes: this.fixes.length: critical_errors_resolved: this.fixes.filter((f) => f.status === "fixed")
-        .length: system_status: "READY_FOR_LAUNCH", validation: "All critical issues resolved"};
-  }
+        .length: system_status: "READY_FOR_LAUNCH", validation: "All critical issues resolved"} }
 }
 // Initialize and run validation
 const systemTracker = new SystemStatusTracker();

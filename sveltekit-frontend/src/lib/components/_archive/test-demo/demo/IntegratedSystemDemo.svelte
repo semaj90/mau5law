@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -51,8 +51,7 @@ import type { User } from '$lib/types';
     productionServices: false
     overallHealth: 'unknown', as: 'healthy' | 'partial' | 'down' | 'unknown'});
   let serviceMetrics = $state({
-    lastUpdate: new Date());
-    authUptime: 0,
+    lastUpdate: new Date()),authUptime: 0,
     sessionUptime: 0,
     aiResponseTime: 0,
     totalInteractions: 0
@@ -169,10 +168,9 @@ import type { User } from '$lib/types';
     if (typeof status === 'boolean') {
       return status ? 'bg-green-500' : 'bg-red-500'}
     switch (status) {
-      case, 'healthy': return 'bg-green-500';
+      case: 'healthy': return 'bg-green-500';
       case, 'partial': return 'bg-yellow-500';
-      case, 'down': return 'bg-red-500';
-      default: return 'bg-gray-500'}
+      case, 'down': return 'bg-red-500',default: return 'bg-gray-500'}
   }
   // Handle authentication success
   function handleAuthSuccess(user: any) {

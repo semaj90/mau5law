@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
 </script>
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import  WebGPUWebAssemblyBridge  from "$lib/components/webgpu/WebGPUWebAssemblyBridge.svelte";
   import 
     Card,

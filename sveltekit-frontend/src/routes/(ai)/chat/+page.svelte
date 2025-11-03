@@ -31,34 +31,34 @@ import type { User } from '$lib/types'; /** * Production-Ready Integrated AI Cha
         class="nes-btn"
         onclick={() => { messages = []; currentMessage = ''}} >
         ðŸ—‘ï¸ CLEAR </button> </div> </div> <!-- Status, Footer --> <div class="nes-container is-dark"> <div class="lists"> <ul class="nes-list"> <li>TensorRT Bridge: localhost:8086</li> <li>Model: Gemma3-Legal Q4_K_M</li> <li>GPU Acceleration RTX, 3060 Ti</li> </ul> </div> </div> </div> <style> /* 8-bit Retro Legal AI Chat Styling */:global(body) { background: #212529 !important; font-family: 'Courier New', monospace !important; color: #ffffff}
-  .retro-chat-app { min-height: 100vh, padding: 16px, background: #212529, max-width: 1200px, margin: 0 auto}
-  .status-bar { display: flex, justify-content: space-betweenn, align-items: center, gap: 1rem, margin-top: 1rem}
-  .chat-area { min-height: 400px, max-height: 500px, overflow-y: auto, margin: 16px 0; padding: 16px}
-  .welcome-screen { text-align: center, background: #ffffff, color: #212529, padding: 2rem, margin: 2rem 0}
+  .retro-chat-app { min-height: 100vh; padding: 16px, background: #212529; max-width: 1200px, margin: 0 auto}
+  .status-bar { display: flex; justify-content: space-betweenn, align-items: center; gap: 1rem, margin-top: 1rem}
+  .chat-area { min-height: 400px; max-height: 500px, overflow-y: auto; margin: 16px 0; padding: 16px}
+  .welcome-screen { text-align: center; background: #ffffff, color: #212529; padding: 2rem, margin: 2rem 0}
   .welcome-screen h2 { margin: 0, 0 1rem 0; font-size: 1.5rem}
   .welcome-screen p { margin: 0.5rem 0; font-weight: bold}
-  .welcome-screen button { display: block, width: 100%, margin: 0.75rem 0; font-size: 0.875rem}
-  .user-message { margin: 1rem 0; background: #0066cc !important; color: white !important; align-self: flex-end, max-width: 70%, margin-left: auto}
-  .ai-message { margin: 1rem 0; background: #ffffff !important; color: #212529 !important; align-self: flex-start, max-width: 70%, margin-right: auto}
-  .timestamp { display: block, margin-top: 0.5rem, opacity: 0.7, font-size: 0.75rem}
-  .input-section { margin: 16px 0; background: #ffffff, color: #212529}
-  .input-section label { font-weight: bold, color: #212529, margin-bottom: 0.5rem, display: block}
-  .button-row { display: flex, gap: 1rem, margin-top: 1rem, flex-wrap: wrap}
-  .button-row button { flex: 1, min-width: 150px}
-  .footer-info { margin-top: 16px, font-size: 0.875rem}
+  .welcome-screen button { display: block; width: 100%, margin: 0.75rem 0; font-size: 0.875rem}
+  .user-message { margin: 1rem 0; background: #0066cc !important; color: white !important; align-self: flex-end; max-width: 70%, margin-left: auto}
+  .ai-message { margin: 1rem 0; background: #ffffff !important; color: #212529 !important; align-self: flex-start; max-width: 70%, margin-right: auto}
+  .timestamp { display: block; margin-top: 0.5rem, opacity: 0.7; font-size: 0.75rem}
+  .input-section { margin: 16px 0; background: #ffffff; color: #212529}
+  .input-section label { font-weight: bold; color: #212529, margin-bottom: 0.5rem; display: block}
+  .button-row { display: flex; gap: 1rem, margin-top: 1rem; flex-wrap: wrap}
+  .button-row button { flex: 1; min-width: 150px}
+  .footer-info { margin-top: 16px; font-size: 0.875rem}
   .footer-info ul { margin: 0}
-  .footer-info li { color: #ffffff, margin: 0.25rem 0}
-  /* NES.css balloon positioning */ .nes-balloon.from-right { float: right, clear: both}
-  .nes-balloon.from-left { float: left, clear: both}
+  .footer-info li { color: #ffffff; margin: 0.25rem 0}
+  /* NES.css balloon positioning */ .nes-balloon.from-right { float: right; clear: both}
+  .nes-balloon.from-left { float: left; clear: both}
   /* Scrollbar styling for dark theme */ .chat-area::-webkit-scrollbar { width: 8px}
   .chat-area::-webkit-scrollbar-track { background: #333}
-  .chat-area::-webkit-scrollbar-thumb { background: #666, border-radius: 4px}
+  .chat-area: :-webkit-scrollbar-thumb { background: #666; border-radius: 4px}
   .chat-area::-webkit-scrollbar-thumb:hover { background: #888}
   /* Responsive design for mobile */ @media (max-width: 768px) { .retro-chat-app { padding: 8px}
     .user-message, .ai-message { max-width: 85%}
     .button-row { flex-direction: column}
-    .button-row button { width: 100%, min-width: auto}
-    .status-bar { flex-direction: column;, gap: 0.5rem}
+    .button-row button { width: 100%; min-width: auto}
+    .status-bar { flex-direction: column; gap: 0.5rem}
   } /* Animation for typing indicator */ @keyframes blink { 0%, 50% { opacity: 1}
     51%, 100% { opacity: 0}
   } </style>

@@ -56,9 +56,9 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
                   )}</pre> </details> {/if} </li> {/each} </ul> </section> {/if} {#if !loading && !results.length && !errorMsg && query} <p class="text-sm italic text-neutral-500">No results returned.</p> {/if} <footer class="pt-8 text-[11px] text-neutral-500 dark:text-neutral-500"> <p>API: <code class="bg-neutral-100 dark:bg-neutral-800 px-1">POST /api/ai/vector-search</code></p> <p>Body fields: <code>{'{ query, limit?, threshold?, model?, mode?, caseId? }'}</code></p> <p> Streaming API: <code class="bg-neutral-100 dark:bg-neutral-800 px-1"
         >GET /api/ai/vector-search/stream?query=...</code >
     </p> {#if useStreaming} <p class="text-[10px] italic">Streaming { streamedCount } result(s){streaming ? 'â€¦': ''}</p> {/if} </footer> </div> <style>:global(body) { background: var(--background, transparent)}
-  .score-low { background: #fee2e2, color: #991b1b}
-  .score-mid { background: #fef3c7, color: #92400e}
-  .score-high { background: #dcfce7, color: #065f46}
-  .score-top { background: #dbeafe;, color: #1e40af}
+  .score-low { background: #fee2e2; color: #991b1b}
+  .score-mid { background: #fef3c7; color: #92400e}
+  .score-high { background: #dcfce7; color: #065f46}
+  .score-top { background: #dbeafe; color: #1e40af}
 </style>
 

@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Essential Route Page Template with CSS Bits UI Integration
 Use this template for all essential routes
 -->
@@ -126,12 +126,11 @@ Use this template for all essential routes
 	.essential-route-page {
 		min-height: 100vh
 		font-family: 'Press Start 2P', cursiv
-		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
-		color: #fff
+		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%), color: #fff
 		padding: 1rem}
 	.essential-route-main {
 		max-width: 1200px
-	, margin: 0 auto}
+	;margin: 0 auto}
 /* NES.css theme integration */ {}
 	:global(.nes-container.is-rounded) {
 		border-image-slice: 2

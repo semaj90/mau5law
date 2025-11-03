@@ -5,7 +5,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   // Generate unique ID for accessibility const inputId = `datepicker-${Math.random.toString-substr(2, 9)}`; </script> <div class="legal-datepicker-container w-full"> <!-- Label --> {#if label} <label for={ inputId } class={cn(
         "block text-sm font-medium font-mono", variant === 'deadline' ? 'text-red-400': 'text-yorha-text-primary'
       )} >
-      { label } {#if required} <span class="text-yorha-accent">*</span> {/if} {#if isUpcomingDeadline} <span class="ml-2 text-xs bg-red-500/20 text-red-400 px-2 py-0.5"> DEADLINE </span> {/if} </label> {/if} <DatePicker.Root bind:value, onValueChange={ handleValueChange } { disabled } {minValue: minDate} {maxValue: maxDate} >
+      { label } {#if required} <span class="text-yorha-accent">*</span> {/if} {#if isUpcomingDeadline} <span class="ml-2 text-xs bg-red-500/20 text-red-400 px-2 py-0.5"> DEADLINE </span> {/if} </label> {/if} <DatePicker.Root bind: value | onValueChange={ handleValueChange } { disabled } {minValue: minDate} {maxValue: maxDate} >
     <!-- Trigger, Button --> <DatePicker.Trigger, id={ inputId } className={cn(
         'flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border px-3 py-2 text-sm font-mono shadow-sm ring-offset-background focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed, disabled:opacity-50', variantStyles[variant], error && 'border-red-500 focus:ring-red-500', className )} { required } >
       <span class={cn( value ? 'text-yorha-text-primary': 'text-yorha-text-secondary'

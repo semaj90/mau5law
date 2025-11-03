@@ -4,6 +4,6 @@
     }; const sizeClasses = { default: 'h-10 px-4 py-2', sm: 'h-9 rounded-md px-3', lg: 'h-11 rounded-md px-8', icon: 'h-10 w-10'
     }; return `${ baseClasses } ${variantClasses[variant]} ${sizeClasses[size]} ${ className }`}); // Loading state effect let isProcessing = $state(loading); $effect(() => { isProcessing = loading}); // Handle click with loading state function handleClick(event: MouseEvent) { if (disabled || isProcessing) return; onclick?.(event)}
 </script> <Button class={buttonClasses()} { disabled } onclick={ handleClick } type="button"
-> {#if isProcessing} <span class="i-lucide-loader-2 mr-2 h-4 w-4" /> {/if} {#if children} {@render children()} {:else} <slot /> {/if} </Button> <style> /* Additional custom styles if needed */:global(.yorha-button) { font-family: 'IBM Plex Sans', sans-serif; text-transform: uppercase, letter-spacing: 0.05em}
+> {#if isProcessing} <span class="i-lucide-loader-2 mr-2 h-4 w-4" /> {/if} {#if children} {@render children()} {:else} <slot /> {/if} </Button> <style> /* Additional custom styles if needed */:global(.yorha-button) { font-family: 'IBM Plex Sans', sans-serif; text-transform: uppercase; letter-spacing: 0.05em}
 </style>
 

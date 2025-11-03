@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
   $effect(() => {
     progressValue.set(progress);
     switch (status) {
-      case, 'idle':
+      case: 'idle':
         opacity.set(0);
         break
       case, 'model-loading':
@@ -103,7 +103,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center">
           <!-- GPU, Icon -->
           <div class="relative">
-            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0: 0, 24, 24">
+            <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0: 0 | 24, 24">
               <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2, 2h8v2H8V8zm0, 4h8v2H8v-2z"/>
             </svg>
             {#if status === 'model-loading' || status === 'inference'}
@@ -209,10 +209,10 @@ https://svelte.dev/e/js_parse_error -->
 /* Custom animations for GPU activity */ @keyframes gpu-pulse {
     0%, 100% {
       opacity: 0.3
-     , transform: scale(0.95)}
+     ;transform: scale(0.95)}
     50% {
       opacity: 1
-     , transform: scale(1.05)}
+     ;transform: scale(1.05)}
   }
   .animate-gpu-pulse {
     animation: gpu-pulse 1.5s infinite}

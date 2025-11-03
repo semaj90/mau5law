@@ -125,7 +125,7 @@ class KMeansWorker {
         let minDist = Infinity
         for (const centroid of centroids) {
           const dist = this.euclideanDistance(point.embedding, centroid);
-          minDist = Math.min(minDist, dist);
+          minDist = Math.min(minDist, dist)
         }
         return minDist * minDist; // Square for probability weighting
       });
@@ -150,8 +150,7 @@ class KMeansWorker {
       const silhouette = this.calculateSilhouetteScore(clusterData, clusters, centroids, i);
       const memoryUsage = this.estimateClusterMemoryUsage(clusterData);
       return {
-        id: `cluster_${i}`, centroid: centroids[i];
-        size: cluster.length, cohesion, silhouette: separability: this.calculateSeparability(centroids, i), memoryUsage: processingTime: processingTime / Math.max(1, clusters.length), dataIndices: cluster};
+        id: `cluster_${i}`, centroid: centroids[i],size: cluster.length, cohesion, silhouette: separability: this.calculateSeparability(centroids, i), memoryUsage: processingTime: processingTime / Math.max(1, clusters.length), dataIndices: cluster};
     });
   }
   calculateCohesion(clusterData, centroid) {

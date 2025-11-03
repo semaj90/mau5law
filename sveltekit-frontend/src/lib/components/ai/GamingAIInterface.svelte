@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { scale, fly, fade } from 'svelte/transition'; import { spring } from 'svelte/motion'; import { Bot, MessageSquare, Brain, Search, FileText, Zap, X, Maximize2, Minimize2, Settings, Power, Activity, Database, Shield, Target } from 'lucide-svelte'; import  GamingAIButton  from "./GamingAIButton.svelte"; import  NierAIAssistant  from "./NierAIAssistant.svelte"; interface AIMessage { id: string, role: 'user' | 'assistant' | 'system'; content: string, timestamp: Date, status?: 'sending' | 'sent' | 'error'; metadata?: { tokens?: number; model?: string; processingTime?: number; confidence?: number}}
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { scale, fly, fade } from 'svelte/transition'; import { spring } from 'svelte/motion'; import { Bot, MessageSquare, Brain, Search, FileText, Zap, X, Maximize2, Minimize2, Settings, Power, Activity, Database, Shield, Target } from 'lucide-svelte'; import  GamingAIButton  from "./GamingAIButton.svelte"; import  NierAIAssistant  from "./NierAIAssistant.svelte"; interface AIMessage { id: string, role: 'user' | 'assistant' | 'system',content: string, timestamp: Date, status?: 'sending' | 'sent' | 'error'; metadata?: { tokens?: number; model?: string; processingTime?: number; confidence?: number}}
   interface Props { caseContext?: { id: string, title: string;, status: string}; isVisible?: boolean}
   let { caseContext, isVisible = true }: Props = $props(); // Component States let showAIInterface = $state<boolean>(false); let showNierAssistant = $state<boolean>(false); let isExpanded = $state<boolean>(false); let aiMode = $state<'idle' | 'thinking' | 'active'>('idle'); let isConnected = $state<boolean>(true); let systemStatus = $state<'online' | 'processing' | 'offline'>('online'); // Gaming UI States let scanlinePosition = spring(0, { stiffness: 0.1, damping: 0.8 }); let glitchEffect = $state<boolean>(false); let terminalMode = $state<boolean>(false); // AI Messages let messages = $state<AIMessage[]>([ {
       id: '1', role: 'system', content:
@@ -50,6 +50,6 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           )[1]}-400/50 to-transparent animate-[scanner_3s_infinite]"
         ></div> </div> </div> {/if} <!-- Nier, Assistant, Integration --> {#if showNierAssistant} <NierAIAssistant isOpen={ showNierAssistant } { caseContext } onClose={() => (showNierAssistant = false)} /> {/if} <style> @keyframes scanner { 0% { top: 0%, opacity: 1}
     50% { opacity: 0.3}
-    100% { top: 100%;, opacity: 1}
+    100% { top: 100%, opacity: 1}
   } </style>
 

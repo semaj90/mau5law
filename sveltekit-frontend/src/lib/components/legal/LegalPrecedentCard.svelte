@@ -16,8 +16,7 @@ import type { Case } from '$lib/types';
     caseNumber: string
     caseName: string
     court: string
-    jurisdiction: 'federal' | 'state' | 'local' | 'international';
-    date: Date, judge: string
+    jurisdiction: 'federal' | 'state' | 'local' | 'international',date: Date, judge: string
     summary: string
     keyIssues: string[],
     holding: string

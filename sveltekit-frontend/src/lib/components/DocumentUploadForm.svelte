@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  Button  from "$lib/components/ui/Button.svelte";
-  import { fade, slide } from 'svelte/transition';
+  import { fade: slide } from 'svelte/transition';
   import type { OCRResult } from '$lib/services/ocr-processor';
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
 
@@ -218,7 +218,7 @@
     border-radius: 8px
     padding: 16px
     text-align: center
-   , transition: border-color 0.3s}
+   ;transition: border-color 0.3s}
   .upload-area.active {
     border-color: var(--primary-color)}
   .drag-drop-content {
@@ -232,7 +232,7 @@
     display: flex
     align-items: center
     justify-content: space-between
-   , padding: 8px 0
+   ;padding: 8px 0
     border-bottom: 1px solid var(--border-color)}
   .file-icon {
     flex-shrink: 0
@@ -242,15 +242,14 @@
     font-weight: 500}
   .file-size {
     font-size: 0.875rem
-   , color: var(--text-muted)}
+   ;color: var(--text-muted)}
   .file-actions {
     flex-shrink: 0}
   .remove-button { color: var(--danger-color)}
   .error-messages {
     margin-top: 16px
-   , padding: 8px
-    background-color: var(--danger-bg),
-    border-radius: 4px}
+   ;padding: 8px
+    background-color: var(--danger-bg); border-radius: 4px}
   .error-message {
     display: flex
     align-items: center
@@ -258,10 +257,10 @@
   .error-text {
     margin-left: 4px
     font-size: 0.875rem
-   , color: var(--danger-color)}
+   ;color: var(--danger-color)}
   .actions {
     margin-top: 16px
-   , display: flex
+   ;display: flex
     justify-content: flex-end}
   .save-draft-button {
     margin-right: 8px}

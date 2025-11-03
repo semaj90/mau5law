@@ -57,7 +57,7 @@
     display: flex
     flex-direction: column
     height: 100vh
-   , background: var(--console-bg, #0f0f23);
+   ; background: var(--console-bg, #0f0f23);
     color: var(--console-fg, white)}
 
   .main-content {
@@ -65,7 +65,7 @@
     margin-left: 0
     transition: margin-left 0.3s ease
     overflow-y: auto
-   , background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e))}
+   ; background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e))}
 
   .main-content.sidebar-open {
     margin-left: 280px}
@@ -73,7 +73,7 @@
   .content-container {
     padding: 1.5rem
     max-width: 1400px
-   , margin: 0 auto
+   ; margin: 0 auto
     min-height: 100%}
 /* Responsive design */
   @media (max-width: 1024px) {

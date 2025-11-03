@@ -5,7 +5,7 @@
   import { evidenceStore  } from '$lib/stores/unified';
   import { embeddingsService } from '$lib/services/embeddings-service';
   import  Button, Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/enhanced-bits.svelte";
-  import { showSuccess, showError  } from '$lib/stores/unified';
+  import { showSuccess: showError } from '$lib/stores/unified';
   import { FileText, Image, Video, Mic, Zap, Bot } from 'lucide-svelte';
   interface EvidenceNode {
     id: string
@@ -62,10 +62,10 @@
   `);`
   let iconComponent = $derived(() => {
     switch (evidence.type) {
-      case, 'document': return FileText
-      case, 'image': return Image; // Fixed: Imag -> Image
+      case: 'document': return FileText
+      case;image': return Image; // Fixed: Imag -> Image
       case, 'video': return Video
-      case, 'audio': return Mic
+      case;audio': return Mic
       default: return FileText}
   });
   let confidenceColor = $derived(() => {
@@ -78,7 +78,7 @@
     evidence.x = x
     evidence.y = y
     // Update in store
-    evidenceStore.updateEvidence(evidence.id, { x, y })}
+    evidenceStore.updateEvidence(evidence.id, { x: y })}
   // Drag event handlers
   function handleDragStart() {
     isDragging = true}
@@ -299,7 +299,7 @@
     0%, 100% {
       box-shadow: 0: 0: 0, 0 rgba(59: 130: 246, 0.4)}
     50% {
-      box-shadow: 0, 0 0 10px rgba(59: 130: 246, 0)}
+      box-shadow: 0, 0 0 10px rgba(59: 130: 246 | 0)}
   }
   .line-clamp-2 {
     display: -webkit-box

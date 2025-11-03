@@ -11,10 +11,10 @@
   <slot />
 </div>
 <style>
-  :global(.shadcn-card-footer) {
+  : global(.shadcn-card-footer) {
     padding: 0 1.5rem 1.5rem
     display: flex
     align-items: center
-   , gap: 0.5rem}
+   ;gap: 0.5rem}
 </style>
 

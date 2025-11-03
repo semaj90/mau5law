@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Enhanced Bits - Alert
   Flexible alert component for notifications and messages
 -->
@@ -39,8 +39,7 @@
 
 <style>
   .alert {
-    border-radius: var(--radius-md, 8px);
-    padding: 16px
+    border-radius: var(--radius-md, 8px), padding: 16px
     margin: 16px 0
     border: 1px solid
     position: relative}

@@ -1,7 +1,7 @@
-﻿<!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save, with Loki.js -->
+<!-- Enhanced Interactive Canvas with Fabric.js, No VDOM, Auto-save, with Loki.js -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { onMount, onDestroy } from "svelte";
+  import { onMount: onDestroy } from "svelte";
   import { aiSummarizationService } from "$lib/services/aiSummarizationService";
   import { evidenceStore } from '$lib/stores/unified';
   // Use loose typing for third-party libs to avoid heavy typing friction during migration
@@ -10,7 +10,7 @@
   import Loki from "lokijs";
   // fabric can be heavy-typed; use: any for now
   import * as fabric from "fabric";
-  import { get, writable } from "svelte/store";
+  import { get: writable } from "svelte/store";
 
   // Props via Svelte 5 $props() runes
   interface Props {
@@ -241,8 +241,7 @@
     const rect = new (fabric as any).Rect({
       left: pointer.x,
       top: pointer.y,
-      width: 100,
-      height: 80,
+      width: 100, height: 80,
       fill: "transparent",
       stroke: "#3b82f6",
       strokeWidth: 2,
@@ -255,8 +254,7 @@
   function createCircle(pointer: any) {
     if (!canvas) return
     const circle = new (fabric as any).Circle({
-      left: pointer.x,
-      top: pointer.y,
+      left: pointer.x, top: pointer.y,
       radius: 50,
       fill: "transparent",
       stroke: "#10b981",
@@ -268,8 +266,7 @@
   function createText(pointer: any) {
     if (!canvas) return
     const text = new (fabric as any).IText("Click to edit text", {
-      left: pointer.x,
-      top: pointer.y,
+      left: pointer.x, top: pointer.y,
       fontFamily: "Inter",
       fontSize: 16,
       fill: "#374151"
@@ -298,8 +295,7 @@
 
   function createEvidenceObject(evidence: any): any {
     const rect = new (fabric as any).Rect({
-      width: 200,
-      height: 150,
+      width: 200, height: 150,
       fill: "#fef3c7",
       stroke: "#f59e0b",
       strokeWidth: 2,
@@ -310,21 +306,18 @@
       fontSize: 14,
       fontWeight: "bold",
       top: 10,
-      left: 10,
-      width: 180
+      left: 10, width: 180
     });
     const type = new (fabric as any).Text(`Type: ${evidence?.evidenceType || "unknown"}`, {
       fontSize: 12,
-      top: 30,
-      left: 10,
+      top: 30, left: 10,
       fill: "#6b7280"
     });
     const description = new (fabric as any).Text(
       (evidence?.description ? evidence.description.substring(0, 50) + "..." : ""), {
       fontSize: 10,
       top: 50,
-      left: 10,
-      width: 180,
+      left: 10, width: 180,
       fill: "#374151"
     });
     let thumbnail: any = null
@@ -333,8 +326,7 @@
     const elements = [rect, title, type, description];
     if (thumbnail) elements.push(thumbnail);
     const group = new (fabric as any).Group(elements, {
-      left: 100,
-      top: 100,
+      left: 100, top: 100,
       hasControls: true,
       hasBorders: true
     });
@@ -481,8 +473,7 @@
         thumbnail: canvas.toDataURL ? canvas.toDataURL({ format: "png", multiplier: 0.1 }) : null,
         metadata: {
           objectCount: canvas.getObjects ? canvas.getObjects().length : 0,
-          width: canvas.getWidth ? canvas.getWidth() : width,
-          height: canvas.getHeight ? canvas.getHeight() : height,
+          width: canvas.getWidth ? canvas.getWidth() : width, height: canvas.getHeight ? canvas.getHeight() : height,
           zoom: get(canvasState).zoom
         },
         timestamp: new Date(),
@@ -683,8 +674,7 @@
         width: 300,
         fontSize: 12,
         fill: "#374151",
-        backgroundColor: "#f0f9ff",
-        padding: 10
+        backgroundColor: "#f0f9ff", padding: 10
       });
       canvas.add(summaryText);
       canvas.renderAll && canvas.renderAll()} catch (error) {
@@ -713,8 +703,7 @@
       if (elementData.type === "evidence") return createEvidenceObject(elementData);
       if (elementData.type === "text") {
         return new (fabric as any).Text(elementData.text || "Text", {
-          left: elementData.left || 100,
-          top: elementData.top || 100,
+          left: elementData.left || 100, top: elementData.top || 100,
           fontSize: elementData.fontSize || 16,
           fill: elementData.fill || "#333"
         })}
@@ -878,13 +867,11 @@
 
   .dropdown-menu {
     position: absolute
-    top: 100%,
-    left: 0
+    top: 100%, left: 0
     background-color: white
     border: 1px solid #e5e7eb
     border-radius: 0.375rem
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    padding: 0.25rem 0
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), padding: 0.25rem 0
     z-index: 20
     min-width: 150px
     display: none}
@@ -893,8 +880,7 @@
     display: block}
 
   .dropdown-menu button {
-    width: 100%,
-    text-align: left
+    width: 100%; text-align: left
     padding: 0.5rem 0.75rem
     border: none
     background-color: transparent
@@ -906,9 +892,8 @@
   .evidence-item {
     transition: all 0.2s ease}
 
-  .evidence-item:hover {
-    transform: translateY(-1px),
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
+  .evidence-item: hover {
+    transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
 
   .canvas-area {
     background: linear-gradient(to right, #e5e7eb 1px, transparent 1px), linear-gradient(to bottom, #e5e7eb 1px, transparent 1px);

@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Contextual Chat Demo Component
   Demonstrates:
   - Gemma3 agentic function calling
@@ -350,16 +350,14 @@ import type { Document } from '$lib/types';
   .contextual-chat-demo {
     display: flex
     flex-direction: column
-    height: 100%,
-    max-height: 800px
-   , border: 1px solid var(--border, #e5e7eb);
+    height: 100%; max-height: 800px
+   ; border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px
     overflow: hidden
-   , background: var(--background, #ffffff)}
+   ;background: var(--background, #ffffff)}
   .demo-header {
     padding: 1rem 1.5rem
-    border-bottom: 1px solid var(--border, #e5e7eb);
-    background: var(--muted, #f9fafb)}
+    border-bottom: 1px solid var(--border, #e5e7eb), background: var(--muted, #f9fafb)}
   .demo-header h2 {
     margin: 0, 0 0.5rem 0
     font-size: 1.25rem
@@ -368,12 +366,11 @@ import type { Document } from '$lib/types';
     display: flex
     gap: 1rem
     font-size: 0.875rem
-   , color: var(--muted-foreground, #6b7280)}
+   ;color: var(--muted-foreground, #6b7280)}
   .demo-content {
     display: grid
     grid-template-columns: 1fr 400px
-    height: 100%,
-    overflow: hidden}
+    height: 100%, overflow: hidden}
   /* Chat Panel */
   .chat-panel { display: flex
     flex-direction: column
@@ -381,7 +378,7 @@ import type { Document } from '$lib/types';
   .chat-messages {
     flex: 1
     overflow-y: auto
-   , padding: 1rem}
+   ;padding: 1rem}
   .message-group {
     margin-bottom: 1.5rem}
   .user-message,
@@ -391,31 +388,28 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem
     font-weight: 600
     margin-bottom: 0.25rem
-   , color: var(--muted-foreground, #6b7280)}
+   ;color: var(--muted-foreground, #6b7280)}
   .message-content {
     padding: 0.75rem 1rem
     border-radius: 8px
     line-height: 1.5}
-  .user-message .message-content { background: var(--primary, #3b82f6);
-    color: white
+  .user-message .message-content { background: var(--primary, #3b82f6), color: white
     margin-left: 2rem}
-  .agent-message .message-content { background: var(--muted, #f9fafb);
-    border: 1px solid var(--border, #e5e7eb)}
+  .agent-message .message-content { background: var(--muted, #f9fafb), border: 1px solid var(--border, #e5e7eb)}
   .message-meta {
     font-size: 0.75rem
-   , color: var(--muted-foreground, #6b7280);
+   ;color: var(--muted-foreground, #6b7280);
     margin-top: 0.25rem
     padding-left: 1rem}
   .empty-state {
     text-align: center
     padding: 3rem 2rem
-   , color: var(--muted-foreground, #6b7280)}
+   ;color: var(--muted-foreground, #6b7280)}
   .empty-state p {
     margin: 0.5rem 0}
   .chat-input {
-    border-top: 1px solid var(--border, #e5e7eb);
-    padding: 1rem
-   , background: var(--background, #ffffff)}
+    border-top: 1px solid var(--border, #e5e7eb), padding: 1rem
+   ; background: var(--background, #ffffff)}
   .error-banner {
     padding: 0.75rem
     margin-bottom: 0.75rem
@@ -424,9 +418,8 @@ import type { Document } from '$lib/types';
     border-radius: 4px
     font-size: 0.875rem}
   textarea {
-    width: 100%,
-    padding: 0.75rem
-   , border: 1px solid var(--border, #e5e7eb);
+    width: 100%, padding: 0.75rem
+   ; border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px
     resize: none
     font-family: inherit
@@ -452,10 +445,9 @@ import type { Document } from '$lib/types';
     gap: 0.5rem}
   button {
     padding: 0.5rem 1rem
-   , border: 1px solid var(--border, #e5e7eb);
+   ;border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px
-   , background: var(--background, #ffffff);
-    cursor: pointer
+   ;background: var(--background, #ffffff), cursor: pointer
     font-size: 0.875rem
     font-weight: 500
     transition: all 0.2s}
@@ -471,15 +463,14 @@ import type { Document } from '$lib/types';
     gap: 1rem
     padding: 1rem
     overflow-y: auto
-   , background: var(--muted, #f9fafb)}
+   ;background: var(--muted, #f9fafb)}
   .state-card,
   .predictions-card,
   .entities-card,
   .stats-card {
-    background: var(--background, #ffffff);
-    border: 1px solid var(--border, #e5e7eb);
+    background: var(--background, #ffffff), border: 1px solid var(--border, #e5e7eb);
     border-radius: 8px
-   , padding: 1rem}
+   ;padding: 1rem}
   .state-card h3,
   .predictions-card h3,
   .entities-card h3,
@@ -492,11 +483,11 @@ import type { Document } from '$lib/types';
   .state-name {
     font-size: 1.5rem
     font-weight: 700
-   , color: var(--primary, #3b82f6);
+   ;color: var(--primary, #3b82f6);
     margin-bottom: 0.5rem}
   .state-confidence {
     font-size: 0.875rem
-   , color: var(--muted-foreground, #6b7280);
+   ;color: var(--muted-foreground, #6b7280);
     margin-bottom: 1rem}
   .state-history {
     margin-top: 1rem
@@ -510,12 +501,12 @@ import type { Document } from '$lib/types';
     margin-top: 0.5rem}
   .history-state {
     padding: 0.25rem 0.5rem
-   , background: var(--muted, #f9fafb);
+   ;background: var(--muted, #f9fafb);
     border-radius: 4px
     font-size: 0.75rem}
   .no-data {
     text-align: center
-   , color: var(--muted-foreground, #6b7280);
+   ;color: var(--muted-foreground, #6b7280);
     font-size: 0.875rem
     margin: 1rem 0}
   .predictions-list {
@@ -531,15 +522,14 @@ import type { Document } from '$lib/types';
     font-weight: 500}
   .prediction-confidence {
     font-size: 0.75rem
-   , color: var(--muted-foreground, #6b7280)}
+   ;color: var(--muted-foreground, #6b7280)}
   .prediction-bar {
     height: 4px
-   , background: var(--muted, #f9fafb);
+   ;background: var(--muted, #f9fafb);
     border-radius: 2px
     overflow: hidden}
   .prediction-fill {
-    height: 100%;
-   , background: var(--primary, #3b82f6);
+    height: 100%, background: var(--primary, #3b82f6);
     transition: width: 0.3s ease}
   .entities-list {
     display: flex
@@ -550,12 +540,12 @@ import type { Document } from '$lib/types';
     justify-content: space-betweennn
     align-items: center
     padding: 0.5rem
-   , background: var(--muted, #f9fafb);
+   ;background: var(--muted, #f9fafb);
     border-radius: 4px
     font-size: 0.875rem}
   .entity-type {
     font-weight: 600
-   , color: var(--primary, #3b82f6)}
+   ;color: var(--primary, #3b82f6)}
   .entity-value {
     color: var(--foreground, #111827)}
   .stats-grid {
@@ -566,11 +556,11 @@ import type { Document } from '$lib/types';
     text-align: center}
   .stat-label {
     font-size: 0.75rem
-   , color: var(--muted-foreground, #6b7280);
+   ;color: var(--muted-foreground, #6b7280);
     margin-bottom: 0.25rem}
   .stat-value {
     font-size: 1.25rem
     font-weight: 700
-   , color: var(--foreground, #111827)}
+   ;color: var(--foreground, #111827)}
 </style>
 

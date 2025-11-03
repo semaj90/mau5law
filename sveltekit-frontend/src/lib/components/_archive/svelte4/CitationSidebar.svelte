@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -213,13 +213,12 @@ import type { Case } from '$lib/types';
   .citation-sidebar {
     display: flex
     flex-direction: column
-    height: 100%,
-    background: white}
+    height: 100%, background: white}
   .sidebar-title {
     font-size: 18px
     font-weight: 600
     color: #1f2937
-   , margin: 0, 0 4px 0}
+   ;margin: 0, 0 4px 0}
   .sidebar-subtitle {
     font-size: 14px
     color: #6b7280
@@ -233,25 +232,24 @@ import type { Case } from '$lib/types';
   :global(.search-input) {
     padding-left: 40px !important}
   .category-select {
-    width: 100%,
-    padding: 8px 12px
+    width: 100%, padding: 8px 12px
     border: 1px solid #d1d5db
     border-radius: 6px
     background: white
     font-size: 14px
     color: #374151
-   , outline: none}
+   ;outline: none}
   .category-select:focus {
     border-color: #3b82f6
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
   .citations-list {
     flex: 1
     overflow-y: auto
-   , padding: 16px 24px}
-  :global(.citation-card) {
+   ;padding: 16px 24px}
+  : global(.citation-card) {
     margin-bottom: 16px
     transition: box-shadow 0.2s ease
-   , cursor: pointer}
+   ;cursor: pointer}
   :global(.citation-card:hover) {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)}
   :global(.citation-content) {
@@ -272,7 +270,7 @@ import type { Case } from '$lib/types';
     display: flex
     gap: 4px
     opacity: 0
-   , transition: opacity 0.2s ease}
+   ;transition: opacity 0.2s ease}
   :global(.citation-card:hover .citation-actions) {
     opacity: 1}
   :global(.favorite-btn.favorited) {
@@ -285,23 +283,23 @@ import type { Case } from '$lib/types';
     font-size: 13px
     color: #374151
     line-height: 1.5
-   , margin: 0, 0 8px 0}
+   ;margin: 0, 0 8px 0}
   .citation-source {
     font-size: 12px
     color: #6b7280
     font-style: italic
-   , margin: 0, 0 8px 0}
+   ;margin: 0, 0 8px 0}
   .citation-notes {
     font-size: 12px
     color: #4b5563
     background: #f3f4f6
     padding: 8px
     border-radius: 4px
-   , margin: 8px, 0 0 0}
+   ;margin: 8px, 0 0 0}
   .citation-tags {
     display: flex
     flex-wrap: wrap
-   , gap: 6px
+   ;gap: 6px
     margin-bottom: 12px}
   :global(.tag) {
     font-size: 11px !important
@@ -344,7 +342,7 @@ import type { Case } from '$lib/types';
     color: #9ca3af}
   .saved-date {
     font-size: 11px
-   , color: #9ca3af}
+   ;color: #9ca3af}
   :global(.category-badge) {
     font-size: 10px !important
     padding: 2px 6px !important
@@ -355,11 +353,11 @@ import type { Case } from '$lib/types';
   .empty-message {
     font-size: 14px
     color: #6b7280
-   , margin: 0, 0 8px 0}
+   ;margin: 0, 0 8px 0}
   .empty-submessage {
     font-size: 12px
     color: #9ca3af
-   , margin: 0, 0 16px 0
+   ;margin: 0, 0 16px 0
     line-height: 1.4}
 </style>
 

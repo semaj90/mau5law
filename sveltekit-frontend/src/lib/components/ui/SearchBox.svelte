@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Document } from '$lib/types';
   // onMount was unused â€” removed
   // Use a namespace import to safely access public env vars without TS named-export errors
@@ -148,9 +148,8 @@ import type { Document } from '$lib/types';
 <style>
   .search-container {
     position: relative
-    width: 100%,
-    max-width: 600px
-   , margin: 0 auto
+    width: 100%; max-width: 600px
+   ; margin: 0 auto
     font-family: 'Press Start 2P', monospace}
   .search-field {
     margin-bottom: 0}
@@ -172,9 +171,7 @@ import type { Document } from '$lib/types';
   .clear-btn {
     position: absolute
     right: 40px
-    top: 50%;
-   , transform: translateY(-50%),
-    width: 32px
+    top: 50%, transform: translateY(-50%);width: 32px
     height: 32px
     padding: 0
     font-size: 16px
@@ -183,9 +180,7 @@ import type { Document } from '$lib/types';
   .loading-indicator {
     position: absolute
     right: 8px
-    top: 50%;
-   , transform: translateY(-50%),
-    animation: bounce 1s infinite}
+    top: 50%, transform: translateY(-50%);animation: bounce 1s infinite}
   @keyframes bounce {
     0%, 20%, 50%, 80%, 100% {
       transform: translateY(-50%)}
@@ -196,11 +191,10 @@ import type { Document } from '$lib/types';
   }
   .results-container {
     position: absolute
-    top: 100%,
-    left: 0
+    top: 100%, left: 0
     right: 0
     z-index: 1000
-   , background: white
+   ;background: white
     margin-top: 8px
     max-height: 400px
     overflow-y: auto}
@@ -226,8 +220,7 @@ import type { Document } from '$lib/types';
     max-height: 300px
     overflow-y: auto}
   .result-item {
-    width: 100%,
-    text-align: left
+    width: 100%; text-align: left
     border: none
     border-bottom: 1px solid #dee2e6
     margin: 0
@@ -251,7 +244,7 @@ import type { Document } from '$lib/types';
     margin-bottom: 8px}
   .result-metadata {
     display: flex
-   , gap: 8px
+   ;gap: 8px
     margin-bottom: 4px}
   .case-tag,
   .type-tag {
@@ -268,7 +261,7 @@ import type { Document } from '$lib/types';
     color: #155724}
   .similarity-score {
     font-size: 8px
-   , color: #007bff
+   ;color: #007bff
     text-align: right}
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -280,7 +273,7 @@ import type { Document } from '$lib/types';
       position: fixed
       top: auto
       left: 16px
-     , right: 16px
+     ;right: 16px
       max-height: 50vh}
   }
 </style>

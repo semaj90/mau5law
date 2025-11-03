@@ -337,8 +337,7 @@ import type { Case } from '$lib/types';
     height: 40px
     border: 4px solid #f3f4f6
     border-top: 4px solid #3b82f6
-    border-radius: 50%,
-    animation: spin 1s linear infinite
+    border-radius: 50%; animation: spin 1s linear infinite
     margin: 0 auto 1rem}
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -369,7 +368,7 @@ import type { Case } from '$lib/types';
   .timeline-container {
     display: flex
     flex-direction: column
-   , gap: 1rem}
+   ; gap: 1rem}
   /* alias for old class name used in markup migrations */
   .transition-card,
   .transition-nier-bits-card {
@@ -378,8 +377,7 @@ import type { Case } from '$lib/types';
     padding: 1.5rem
     cursor: pointer
     transition: all 0.2s ease}
-  .transition-card:hover { transform: translateY(-1px),
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
+  .transition-card: hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .transition-card.selected {
     border-color: #3b82f6
     box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.2)}
@@ -390,7 +388,7 @@ import type { Case } from '$lib/types';
   .transition-flow {
     display: flex
     align-items: center
-   , gap: 1rem}
+   ; gap: 1rem}
   .state-from 
   .state-to {
     padding: 0.25rem 0.75rem
@@ -446,7 +444,7 @@ import type { Case } from '$lib/types';
     border-radius: 6px
     font-size: 0.75rem
     overflow-x: auto
-   , margin: 0}
+   ; margin: 0}
   .guards-list,
   .actions-list {
     display: flex
@@ -478,7 +476,7 @@ import type { Case } from '$lib/types';
     border-radius: 12px
     padding: 1rem}
   .controls-header { margin-bottom: 0.5rem}
-  .controls-title { margin: 0, font-size: 1.125rem}
+  .controls-title { margin: 0; font-size: 1.125rem}
   .controls-content { padding-top: 0.5rem}
   .control-buttons {
     display: flex
@@ -488,7 +486,7 @@ import type { Case } from '$lib/types';
   .control-note {
     font-size: 0.875rem
     color: #6b7280
-   , margin: 0}
+   ; margin: 0}
   @media (max-width: 768px) {
     .page-container {
       padding: 1rem}
@@ -512,8 +510,7 @@ import type { Case } from '$lib/types';
     -moz-appearance: none
     background-color: transparent
     text-align: left; /* keep inner layout same as div */
-    width: 100%,
-    border: inherit; /* let .transition-card CSS control border */
+    width: 100%; border: inherit; /* let .transition-card CSS control border */
     cursor: pointer}
 
   /* Visible focus style for keyboard users */

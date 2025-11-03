@@ -25,9 +25,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .stat-card { transition: transform 0.2s ease}
   .stat-card:hover { transform: translateY(-2px)}
   .result-card { transition: all 0.2s ease}
-  .result-card:hover { transform: translateX(4px), box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
+  .result-card: hover { transform: translateX(4px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .document-card { transition: all 0.2s ease}
-  .document-card:hover { border-color: #3b82f6, box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1)}
-  .embedding-indicator { font-size: 0.6rem, padding: 2px 4px;, background: rgba(34, 197, 94, 0.1); border-radius: 4px}
+  .document-card: hover { border-color: #3b82f6; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1)}
+  .embedding-indicator { font-size: 0.6rem, padding: 2px 4px;background: rgba(34, 197, 94, 0.1); border-radius: 4px}
 </style>
 

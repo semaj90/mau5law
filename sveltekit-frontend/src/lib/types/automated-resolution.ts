@@ -7,10 +7,10 @@ export interface DocumentationResult { name: string, description: string, parame
 export interface ParameterInfo { name: string, type: string, description: string, optional?: boolean; // Changed from `any` to `unknown` to avoid unexpected: any lint/type errors default?: any}
 export interface ExampleResult { name: string, code: string, description: string, language: string}
 export interface FallbackResult { name: string, implementation: string, types: string, warning?: string}
-export interface Context7Integration { svelteComplete: Context7Documentation | null; drizzleOrmDocs, Context7Documentation | null; xStateDocs: Context7Documentation | null; bestPractices: Map<string: string[]>}
+export interface Context7Integration { svelteComplete: Context7Documentation | null; drizzleOrmDocs, Context7Documentation | null; xStateDocs: Context7Documentation | null,bestPractices: Map<string: string[]>}
 export interface Context7Documentation { library: string, version? , string; topics :  string, documentation: string, examples: ExampleResult[], bestPractices: string[], apiReference?: ApiReference[]}
-export interface ApiReference { name: string, type: 'function' | 'class' | 'interface' | 'type'; signature: string, description: string, parameters?: ParameterInfo[]; returnType?: string; examples?: string[]}
-// Specific error pattern types export interface TypeScriptErrorPattern { pattern: string, category: 'missing-function' | 'missing-property' | 'missing-module' | 'missing-export' | 'type-error'; severity: 'error' | 'warning'; suggestion?, string}
+export interface ApiReference { name: string, type: 'function' | 'class' | 'interface' | 'type',signature: string, description: string, parameters?: ParameterInfo[]; returnType?: string; examples?: string[]}
+// Specific error pattern types export interface TypeScriptErrorPattern { pattern: string, category: 'missing-function' | 'missing-property' | 'missing-module' | 'missing-export' | 'type-error',severity: 'error' | 'warning'; suggestion?, string}
 export interface ErrorResolutionStrategy { pattern: TypeScriptErrorPattern, resolution: 'barrel-store' | 'type-definition' | 'polyfill' | 'dependency' | 'fallback'; implementation?, string; confidence: number}
 // Package-specific interfaces export interface SvelteKitMissingItems { runes: string[], stores: string[], utilities: string[], components: string[], actions: string[]}
 export interface DrizzleOrmMissingItems { columnTypes: string[], queryOperators: string[], schemaBuilders: string[], connections: string[]}

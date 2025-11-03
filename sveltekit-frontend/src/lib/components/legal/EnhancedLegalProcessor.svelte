@@ -183,7 +183,7 @@ import type { Document } from '$lib/types';
         accept=".pdf,.doc,.docx,.txt"
       />
       <p class="text-gray-500">Drag & drop a document here, or click to select a file.</p>
-      <p class="text-xs text-gray-400">Supported formats: PDF, DOC, DOCX, TXT</p>
+      <p class="text-xs text-gray-400">Supported formats: PDF | DOC, DOCX, TXT</p>
     {/if}
   <!-- READY TO, UPLOAD, STATE -->
   {#if $state.matches('readyToUpload')}

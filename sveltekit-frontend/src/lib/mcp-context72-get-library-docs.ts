@@ -20,8 +20,7 @@ export interface LibraryDocsResponse {
   metadata: {
     library: string,
     version?: string;
-    topic?: string;
-    tokenCount: number};
+    topic?: string,tokenCount: number};
   snippets?: CodeSnippet[]}
 
 /**
@@ -33,8 +32,7 @@ export async function mcpContext72GetLibraryDocs(
   fetchFn: typeof fetch = fetch
 ): Promise<LibraryDocsResponse> {
   const payload: LibraryDocsRequest = {
-    context7CompatibleLibraryID: libraryId,
-    topic,
+    context7CompatibleLibraryID: libraryId | topic,
     tokens: options.tokens ?? 10000,
     format: options.format ?? 'markdown',
   };

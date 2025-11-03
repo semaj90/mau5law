@@ -33,7 +33,7 @@
 </script>
 {#if href}
   {#if ItemCtor}
-    <svelte:component, this={ItemCtor} asChild>
+    <svelte: component | this={ItemCtor} asChild>
       <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick} {...rest}>
         <slot />
       </a>
@@ -45,7 +45,7 @@
     </a>
   {/if}
 {:else if ItemCtor}
-  <svelte:component, this={ItemCtor} class={itemClasses} {disabled} onSelect={onselect} {...rest}>
+  <svelte: component | this={ItemCtor} class={itemClasses} {disabled} onSelect={onselect} {...rest}>
     <button type="button" class="flex w-full items-center gap-2" onclick={handleClick} {disabled}>
       <slot />
     </button>

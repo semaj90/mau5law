@@ -487,16 +487,16 @@ https://svelte.dev/e/js_parse_error -->
   .container {
     max-width: 1400px
     margin: 0 auto
-   , padding: 2rem
+   ; padding: 2rem
     font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
 
-  header { text-align: center, margin-bottom: 2rem}
-  h1 { color: #2563eb, margin-bottom: 0.5rem}
+  header { text-align: center; margin-bottom: 2rem}
+  h1 { color: #2563eb; margin-bottom: 0.5rem}
 
   .stats-section, .search-section, .results-section {
     background: white
     border-radius: 12px
-   , padding: 1.5rem
+   ; padding: 1.5rem
     margin-bottom: 1.5rem
     box-shadow: 0 4px 6px rgba(0,0,0,0.06)}
 
@@ -506,46 +506,46 @@ https://svelte.dev/e/js_parse_error -->
     gap: 1rem
     margin-bottom: 1rem}
 
-  .stat-number { font-size: 1.5rem, font-weight: 700, color: #111827}
+  .stat-number { font-size: 1.5rem; font-weight: 700, color: #111827}
   .stat-number.webgpu-color { color: #10b981}
   .stat-number.webgl-color { color: #f59e0b}
 
-  .search-input-group { display:flex, gap:1rem, margin-bottom:1rem}
-  .search-input { flex: 1, padding: 0.75rem, border: 2px solid #e5e7eb; border-radius: 8px, font-size: 1rem}
-  .search-button { background: #2563eb, color: white, border: none, padding: 0.6rem 1rem; border-radius: 8px, cursor: pointer}
+  .search-input-group { display: flex; gap:1rem, margin-bottom:1rem}
+  .search-input { flex: 1; padding: 0.75rem, border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem}
+  .search-button { background: #2563eb; color: white, border: none; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer}
 
-  .filters-row { display:flex, gap:1rem, flex-wrap:wrap, align-items:end, margin-bottom:1rem}
-  .filter-group { display:flex, flex-direction:column, gap:0.5rem}
-  .filter-group label { font-weight:500, color:#374151}
-  .filter-group select { padding:0.4rem, border:1px solid #e5e7eb; border-radius:6px}
+  .filters-row { display: flex; gap:1rem, flex-wrap: wrap; align-items:end, margin-bottom:1rem}
+  .filter-group { display: flex; flex-direction:column, gap:0.5rem}
+  .filter-group label { font-weight: 500; color:#374151}
+  .filter-group select { padding: 0.4rem; border:1px solid #e5e7eb; border-radius:6px}
 
   .tags-section { margin-top: 1rem}
-  .tag-filters { display:flex, gap:0.5rem, flex-wrap:wrap, margin-top:0.5rem}
-  .tag-button { background:#f3f4f6, border:1px solid #d1d5db; padding:0.25rem 0.75rem; border-radius:15px, cursor:pointer}
-  .tag-button.selected { background:#2563eb, color:white, border-color:#2563eb}
+  .tag-filters { display: flex; gap:0.5rem, flex-wrap: wrap; margin-top:0.5rem}
+  .tag-button { background: #f3f4f6; border:1px solid #d1d5db; padding:0.25rem 0.75rem; border-radius: 15px; cursor:pointer}
+  .tag-button.selected { background: #2563eb; color:white, border-color:#2563eb}
 
-  .results-header { display:flex, justify-content:space-between, align-items:center, margin-bottom:1rem}
-  .results-grid { display:grid, grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem}
+  .results-header { display: flex; justify-content:space-between, align-items: center; margin-bottom:1rem}
+  .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem}
 
   .shader-nier-bits-card {
-    border:1px solid #e5e7eb
+    border: 1px solid #e5e7eb
     border-radius:8px
     padding:1rem
     cursor:pointer
-   , transition: transform 0.15s ease, box-shadow 0.15s ease}
-  .shader-nier-bits-card:hover { transform: translateY(-4px), box-shadow: 0 8px 20px rgba(0,0,0,0.06)}
+   ; transition: transform 0.15s ease, box-shadow 0.15s ease}
+  .shader-nier-bits-card: hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06)}
 
-  .modal-backdrop { position: fixed, top: 0, left: 0, right: 0, bottom: 0;, background: rgba(0,0,0,0.5); display:flex, align-items:center, justify-content:center, z-index:1000}
-  .modal { background:white, border-radius:12px, width:90%, max-width:1000px, max-height:90vh, overflow:hidden, display:flex, flex-direction:column}
-  .modal-header { display:flex, justify-content:space-between, align-items:center, padding:1rem, border-bottom:1px solid #e5e7eb}
+  .modal-backdrop { position: fixed; top: 0, left: 0; right: 0, bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items:center, justify-content: center; z-index:1000}
+  .modal { background: white; border-radius:12px, width: 90%; max-width:1000px, max-height: 90vh; overflow:hidden, display: flex; flex-direction:column}
+  .modal-header { display: flex; justify-content:space-between, align-items: center; padding:1rem, border-bottom:1px solid #e5e7eb}
 
-  pre { white-space: pre-wrap, word-break: break-word, color: #111827}
+  pre { white-space: pre-wrap; word-break: break-word, color: #111827}
 
   /* small additions for button styles to visually match prior span styles */
-  .operation-tag { background: transparent, border: none, padding: 0.25rem 0.5rem; cursor: pointer, border-radius: 8px}
+  .operation-tag { background: transparent; border: none, padding: 0.25rem 0.5rem; cursor: pointer; border-radius: 8px}
   .operation-tag[aria-pressed="true"] { background:#e6f2ff}
-  .selected-tag { background: #f3f4f6, border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px, cursor: pointer, margin-right:0.5rem}
-  .selected-tag[aria-pressed="true"] { background: #2563eb, color:white, border-color:#2563eb}
-  .shader-nier-bits-card { text-align:left, display:block, width:100%, border:none, background:transparent, padding:1rem}
+  .selected-tag { background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px; cursor: pointer, margin-right:0.5rem}
+  .selected-tag[aria-pressed="true"] { background: #2563eb; color:white, border-color:#2563eb}
+  .shader-nier-bits-card { text-align: left; display:block, width: 100%; border:none, background: transparent; padding:1rem}
   .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25)}
 </style>

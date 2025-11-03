@@ -35,6 +35,6 @@
     transform: translateY(0)}
   .yorha-buttondisabled {
     transform: none
-   , cursor: not-allowed}
+   ;cursor: not-allowed}
 </style>
 

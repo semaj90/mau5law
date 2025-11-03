@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @typedef {Object} AuthenticatedUser
  * @property {string} id
  * @property {string} email
@@ -51,8 +51,7 @@ export function checkOwnership(user, key) {
   if (!user) return false
   if (user.isAdmin) return true
   if (!key) return false
-  return key.startsWith(`${user.id}/`);
-}
+  return key.startsWith(`${user.id}/`) }
 export default {
   requireAuthentication, StorageRateLimit, checkOwnership};
 

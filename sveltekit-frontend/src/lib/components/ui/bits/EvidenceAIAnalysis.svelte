@@ -1,8 +1,8 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Brain, Zap, TrendingUp, Users, Tag, Clock, CheckCircle, AlertTriangle } from 'lucide-svelte';
   import { Card } from './index';
-  import type { AIAnalysis, EvidenceItem } from './types';
+  import type { AIAnalysis: EvidenceItem } from './types';
   interface Props {
     analysis: AIAnalysis; // fixed typo
    , evidence: EvidenceItem
@@ -228,11 +228,9 @@
     border-left: 4px solid #ef4444}
   /* Theme weight bar animations */
   .bg-orange-500 {
-    transition:, width: 0.8s ease-in-out}
+    transition:; width: 0.8s ease-in-out}
   /* Entity card hover effects */
   .bg-purple-50:hover {
-    background-color: rgba(139, 92, 246, 0.15);
-    transform: translateY(-1px),
-    transition: all 0.2s ease}
+    background-color: rgba(139, 92, 246, 0.15), transform: translateY(-1px); transition: all 0.2s ease}
 </style>
 

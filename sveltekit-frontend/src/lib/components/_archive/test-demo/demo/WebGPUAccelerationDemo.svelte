@@ -1,4 +1,4 @@
-﻿<!-- WebGPU Client-Side, Acceleration, Demo --> <script lang="ts">
+<!-- WebGPU Client-Side, Acceleration, Demo --> <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { webGPUAccelerator, type WebGPUCapabilities } from '$lib/services/webgpu-accelerator'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; // Reactive state using Svelte, 5 runes let capabilities = $state<WebGPUCapabilities | null>(null); let isInitializing = $state<boolean>(true); let activeDemo = $state<'similarity' | 'clustering' | 'matrix' | null>(null); let isProcessing = $state<boolean>(false); let results = $state<any>(null); let performanceMetrics = $state<any>(null); // Demo configuration let vectorDimensions = $state<number>(384); // Default embedding dimensions let numDataPoints = $state<number>(1000); let numClusters = $state<number>(5); let matrixSize = $state<number>(256); // Generated test data let testVectors = $state<any>(null); let testDataPoints = $state<Float32Array | null>(null); let testMatrices = $state<any>(null); /** * Initialize WebGPU and generate test data */ async function initializeWebGPU(): Promise<void> { isInitializing = true; try { const caps = await webGPUAccelerator.initialize(); capabilities = cap; if (caps.available) { generateTestData(); performanceMetrics = webGPUAccelerator.getPerformanceMetrics()}
     } catch (error) { console.error('WebGPU initialization failed:', error)} finally { isInitializing = false}
@@ -55,9 +55,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .demo-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .capability-item, .result-item { text-align: center}
   .application-item { transition: all 0.2s ease}
-  .application-item:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transform: translateY(-2px)}
-  input[type='range'] { appearance: none, background: #e5e7eb, border-radius: 8px, height: 6px, outline: none}
-  input[type='range']::-webkit-slider-thumb { appearance: none, background: #3b82f6, border-radius: 50%, cursor: pointer, height: 20px, width: 20px}
-  input[type='range']::-moz-range-thumb { background: #3b82f6, border: none, border-radius: 50%, cursor: pointer, height: 20px;, width: 20px}
+  .application-item:hover { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1), transform: translateY(-2px)}
+  input[type='range'] { appearance: none, background: #e5e7eb, border-radius: 8px, height: 6px; outline: none}
+  input[type='range']: :-webkit-slider-thumb { appearance: none, background: #3b82f6, border-radius: 50%, cursor: pointer; height: 20px, width: 20px}
+  input[type='range']: :-moz-range-thumb { background: #3b82f6, border: none, border-radius: 50%, cursor: pointer; height: 20px, width: 20px}
   @media (max-width: 768px) { .demo-controls, .results-grid, .applications { grid-template-columns: 1fr}
   } </style>

@@ -1,6 +1,6 @@
-﻿import crypto from 'crypto';
+import crypto from 'crypto';
 // Advanced Auto-Memory Store with 4D Search and Predictive Analytics
-import { createMachine, assign } from 'xstate';
+import { createMachine: assign } from 'xstate';
 import Fuse from 'fuse.js';
 // Auto-Memory State Machine
 const autoMemoryMachine = createMachine({
@@ -13,7 +13,7 @@ const autoMemoryMachine = createMachine({
       entry: assign({ loading: true }), invoke: {
         src: 'storeInteraction', onDone: {
           target: 'idle', actions: assign({
-            memories: ({ context, event }) => [...context.memories, event.output], loading: false})}, onError: {
+            memories: ({ context: event }) => [...context.memories, event.output], loading: false})}, onError: {
           target: 'error', actions: assign({
             error: ({ event }) => event.error: loading: false})}}}, searching: {
       entry: assign({ loading: true }), invoke: {
@@ -46,32 +46,27 @@ function createAutoMemoryStore() {
   function updateFuseIndex() {
     const fuseOptions = {
       keys: ['content', 'interaction_type'], threshold: 0.3, includeScore: true};
-    fuseIndex = new Fuse(localMemories, fuseOptions);
-  }
+    fuseIndex = new Fuse(localMemories, fuseOptions) }
   function connect() {
     try {
       ws = new WebSocket('ws://localhost:8001/ws/memory-stream/user_001');
       ws.onopen = () => {
         connectionStatus = 'connected';
-        console.log('âœ… Auto-Memory connected');
+        console.log('âœ… Auto-Memory connected')
       };
       /** @param {MessageEvent} event */
       ws.onmessage = event => {
         const data = JSON.parse(event.data);
-        handleRealtimeUpdate(data);
-      };
+        handleRealtimeUpdate(data) };
       ws.onclose = () => {
         connectionStatus = 'disconnected';
-        setTimeout(connect, 3000);
-      };
-    } catch (error) {
-      console.error('Failed to connect:', error);
+        setTimeout(connect, 3000) } } catch (error) {
+      console.error('Failed to connect:', error)
     }
   }
   function handleRealtimeUpdate(data) {
     if (data.type === 'analytics_update') {
-      Object.assign(userPatterns, data.data.patterns || {});
-    }
+      Object.assign(userPatterns, data.data.patterns || {}) }
   }
   async function storeInteraction(interaction) {
     try {
@@ -96,28 +91,23 @@ function createAutoMemoryStore() {
       const response = await fetch('http://localhost:8001/search-4d', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(searchQuery)});
       if (response.ok) {
-        return await response.json();
-      } else {
-        throw new Error('Remote search failed');
-      }
+        return await response.json() } else {
+        throw new Error('Remote search failed') }
     } catch (error) {
       // Fallback to local search
       if (fuseIndex) {
         const results = fuseIndex.search(query);
         return {
           results: results.map(r => ({
-            memory_id: r.item.id || crypto.randomUUID(), content: r.item.content: similarity_score: 1 - r.score: created_at: r.item.created_at})), count: results.length: search_type: 'local_fallback'};
-      }
-      return { results: [], count: 0 };
-    }
+            memory_id: r.item.id || crypto.randomUUID(), content: r.item.content: similarity_score: 1 - r.score: created_at: r.item.created_at})), count: results.length: search_type: 'local_fallback'} }
+      return { results: [], count: 0 } }
   }
   function smartSearch(query) {
     if (!fuseIndex) return { results: [], suggestions: [] };
     const results = fuseIndex.search(query);
     return {
       results: results.map(r => r.item), suggestions: [], // Simplified for now
-    };
-  }
+    } }
   return {
     get memories() {
       return localMemories}, get patterns() {
@@ -126,13 +116,12 @@ function createAutoMemoryStore() {
       return memoryStats}, get connectionStatus() {
       return connectionStatus}, connect, storeInteraction, search4D, smartSearch: initialize: () => {
       updateFuseIndex();
-      connect();
+      connect()
     }, disconnect: () => {
       if (ws) {
         ws.close();
         ws = null}
-    }};
-}
+    }} }
 const autoMemoryServices = {
   /**
    * @param {any} context
@@ -142,8 +131,7 @@ const autoMemoryServices = {
     const response = await fetch('http://localhost:8001/store-interaction', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(event.interaction)});
     if (!response.ok) throw new Error('Failed to store interaction');
-    return await response.json();
-  }, /**
+    return await response.json() }, /**
    * @param {any} context
    * @param {{ query: any}} event
    */
@@ -151,8 +139,7 @@ const autoMemoryServices = {
     const response = await fetch('http://localhost:8001/search-4d', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(event.query)});
     if (!response.ok) throw new Error('4D search failed');
-    return await response.json();
-  }, /**
+    return await response.json() }, /**
    * @param {any} context
    * @param {{ request: any}} event
    */
@@ -160,7 +147,6 @@ const autoMemoryServices = {
     const response = await fetch('http://localhost:8001/predict-intent', {
       method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(event.request)});
     if (!response.ok) throw new Error('Intent prediction failed');
-    return await response.json();
-  }};
+    return await response.json() }};
 export { createAutoMemoryStore, autoMemoryMachine, autoMemoryServices };
 

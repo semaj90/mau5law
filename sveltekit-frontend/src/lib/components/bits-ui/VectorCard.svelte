@@ -8,8 +8,8 @@ import type { Document } from '$lib/types';
   <div class="meta">Score: {r?.score ?? r?.distance ?? 'n/a'}</div>
 </div>
 <style>
-.vector-card{ padding:.5rem, border:1px solid #e5e7eb; border-radius:6px, margin-bottom:.5rem }
+.vector-card{ padding: .5rem, border:1px solid #e5e7eb; border-radius: 6px; margin-bottom:.5rem }
 .title{ font-weight:600 }
-.snippet{ color:#6b7280, font-size:.9rem }
-.meta{ font-size:.8rem;, color:#9ca3af }
+.snippet{ color: #6b7280; font-size:.9rem }
+.meta{ font-size: .8rem, color:#9ca3af }
 </style>

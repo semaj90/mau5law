@@ -49,18 +49,18 @@
   :global(.bits-ui-fallback.variant-outline) {
     border: 1px solid rgba(0, 0, 0, 0.2);
     background: transparent}
-  :global(.bits-ui-fallback.variant-ghost) {
+  : global(.bits-ui-fallback.variant-ghost) {
     border: none
-   , background: transparent}
-  :global(.bits-ui-fallback.size-sm) {
+   ;background: transparent}
+  : global(.bits-ui-fallback.size-sm) {
     font-size: 0.875rem
-   , padding: 0.25rem 0.5rem}
+   ;padding: 0.25rem 0.5rem}
   :global(.bits-ui-fallback.disabled) {
     opacity: 0.5
     pointer-events: none}
-/* Button-like fallback */ :global(.bits-ui-fallback[role="button"]) {
+/* Button-like fallback */ : global(.bits-ui-fallback[role="button"]) {
     cursor: pointer
-   , padding: 0.5rem 1rem
+   ;padding: 0.5rem 1rem
     border-radius: 0.375rem
     transition all 0.2s ease}
   :global(.bits-ui-fallback[role="button"]:hover:not(.disabled)) {

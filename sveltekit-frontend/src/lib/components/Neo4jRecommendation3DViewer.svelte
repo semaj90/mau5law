@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <!-- Neo4j 3D Recommendation Viewer with QUIC Streaming & Bit-Encoded Vertex Buffers Real-time 3D legal knowledge graph with GPU-accelerated rendering and progress animations --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <!-- Neo4j 3D Recommendation Viewer with QUIC Streaming & Bit-Encoded Vertex Buffers Real-time 3D legal knowledge graph with GPU-accelerated rendering and progress animations --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let { nodeId = '', nodeType = 'Case', maxNodes = 100, maxDepth = 3, autoStart = true, enableStreaming = true, showProgress = true, theme = 'yorha', ondispatch // Assuming ondispatch is a prop function for events }: { nodeId?: string; nodeType?: string; maxNodes?: number; maxDepth?: number; autoStart?: boolean; enableStreaming?: boolean; showProgress?: boolean; theme?: 'light' | 'dark' | 'yorha'; ondispatch?: (event: any) => void} = $props(); import { onDestroy } from "svelte"; import xstateIntegration from '$lib/services/xstate-integration'; // Import central XState service import { neo4j3DEngine, type RecommendationGraph, type Neo4jNode } from '$lib/services/neo4j-3d-recommendation-engine.js'; import { webgpuSOMCache } from '$lib/services/webgpu-som-enhanced-cache.js'; // Props // Component state let canvasRef: HTMLCanvasElement, let containerRef: HTMLDivElement, let gpuDevice: GPUDevice | null = null; let context: GPUCanvasContext | null = null; let animationFrame: number | null = null; let mounted = $state<boolean>(false); // Use $state for reactive primitive let initialLoadDone = $state<boolean>(false); // New state to track initial load // Reactive state let currentGraph: RecommendationGraph | null = null; let isLoading = $state<boolean>(false); let progress = $state<number>(0); let error = $state<string | null>(null); let streamingActive = $state<boolean>(false); let renderStats = $state({ fps: 0, vertices: 0, relationships: 0, streamingChunks: 0 }); // XState machine for idle detection and self-prompting let idleState = $state<any>(null); // Reactive state for idle detection machine // Event dispatcher // Camera and animation: state let camera = $state({ position: { x: 0, y: 0, z: 50 }, rotation: { x: 0, y: 0, z: 0 }, fov: 45, target: { x: 0, y: 0, z: 0 } }); let animation = $state({ time: 0, phase: 0, speed: 1.0, enabled: true }); // Progress animation: state let progressAnimation = $state({ value: 0, target: 0, speed: 0.05, segments: [] as Array<{ start: number, end: number;, active: boolean;, color: string }> }); /** * Initialize WebGPU and canvas context */ async function initializeWebGPU(): Promise<void> { if (!canvasRef || !mounted) return; try { // Request WebGPU adapter const adapter = await navigator.gpu?.requestAdapter({ powerPreference: 'high-performance'
       }); if (!adapter) { throw new Error('WebGPU not supported')}
       // Request device gpuDevice = await adapter.requestDevice({ requiredFeatures: ['shader-f16'], requiredLimits: { maxStorageBufferBindingSize: 1024 * 1024 * 1024 // 1GB }
@@ -45,37 +45,37 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let
       onclick={() => camera = { ...camera, position: { x: 0, y: 0, z: 50 } }} title="Reset Camera"
     > ðŸŽ¯ </button> {#if streamingActive} <button class="control-button"
         title="QUIC Streaming Active"
-      > ðŸ“¡ </button> {/if} </div> </div> <!-- Styles --> <style> .neo4j-3d-viewer { position: relative; /* Fixed syntax */ width: 100%, height: 100%, min-height: 400px;, background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 12px;, overflow: hidden, font-family: 'Roboto Mono', monospace; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)}
-  .yorha-theme { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%); border: 1px solid #00ff00; box-shadow: 0, 0 20px rgba(0, 255, 0, 0.2)}
+      > ðŸ“¡ </button> {/if} </div> </div> <!-- Styles --> <style> .neo4j-3d-viewer { position: relative; /* Fixed syntax */ width: 100%, height: 100%, min-height: 400px, background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 12px, overflow: hidden; font-family: 'Roboto Mono', monospace; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)}
+  .yorha-theme { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%), border: 1px solid #00ff00; box-shadow: 0, 0 20px rgba(0, 255, 0, 0.2)}
   .dark-theme { background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%)}
   /* Corrected selector for loading state */ .neo4j-3d-viewer.loading .render-canvas { filter: blur(2px) brightness(0.7)}
-  /* Progress Bar Styles */ .progress-container { position: absolute; /* Fixed syntax */ top: 20px, left: 20px, right: 20px, z-index: 10; /* Fixed syntax */, background: rgba(0, 0, 0, 0.8); padding: 16px, border-radius: 8px, backdrop-filter: blur(8px)}
-  .progress-label { color: white, font-size: 14px, font-weight: 600, margin-bottom: 8px, text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5)}
-  .progress-bar { position: relative; /* Fixed syntax */ width: 100%, height: 8px;, background: rgba(255, 255, 255, 0.1); border-radius: 4px, overflow: hidden, margin-bottom: 8px}
-  .progress-segment { position: absolute; /* Fixed syntax */ top: 0; /* Fixed syntax */ height: 100%;, background: var(--segment-color, #0ea5e9); width: var(--segment-width, 8.33%); /* left property is now set inline in the template */ opacity: 0, transition: opacity 0.2s ease}
+  /* Progress Bar Styles */ .progress-container { position: absolute; /* Fixed syntax */ top: 20px, left: 20px; right: 20px; z-index: 10; /* Fixed syntax */, background: rgba(0, 0, 0, 0.8), padding: 16px; border-radius: 8px, backdrop-filter: blur(8px)}
+  .progress-label { color: white; font-size: 14px, font-weight: 600; margin-bottom: 8px, text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5)}
+  .progress-bar { position: relative; /* Fixed syntax */ width: 100%, height: 8px;background: rgba(255, 255, 255, 0.1); border-radius: 4px, overflow: hidden, margin-bottom: 8px}
+  .progress-segment { position: absolute; /* Fixed syntax */ top: 0; /* Fixed syntax */ height: 100%, background: var(--segment-color, #0ea5e9); width: var(--segment-width, 8.33%); /* left property is now set inline in the template */ opacity: 0, transition: opacity 0.2s ease}
   .progress-segment.active { opacity: 0.6, animation: pulse 0.5s ease-in-out}
-  .progress-fill { position: absolute; /* Fixed syntax */ top: 0; /* Fixed syntax */ left: 0, height: 100%;, background: linear-gradient(90deg, #0ea5e9, #06b6d4); border-radius: 4px, transition: width: 0.3s ease-out}
+  .progress-fill { position: absolute; /* Fixed syntax */ top: 0; /* Fixed syntax */ left: 0, height: 100%;background: linear-gradient(90deg, #0ea5e9, #06b6d4); border-radius: 4px, transition: width: 0.3s ease-out}
   .yorha-theme .progress-fill { background: linear-gradient(90deg, #00ff00, #00cc00)}
-  .progress-info { display: flex, justify-content: space-between, align-items: center, color: white, font-size: 12px}
-  .streaming-indicator { color: #00ff00, font-weight: 600, animation: blink 1s infinite}
-  /* Stats Overlay */ .stats-overlay { position: absolute; /* Fixed syntax */ bottom: 20px, left: 20px;, background: rgba(0, 0, 0, 0.8); padding: 12px, border-radius: 6px, backdrop-filter: blur(8px), display: grid, grid-template-columns: repeat(2, 1fr); gap: 8px, min-width: 200px}
-  .stat { display: flex, justify-content: space-between, align-items: center, color: white, font-size: 12px}
+  .progress-info { display: flex; justify-content: space-between, align-items: center, color: white; font-size: 12px}
+  .streaming-indicator { color: #00ff00; font-weight: 600, animation: blink 1s infinite}
+  /* Stats Overlay */ .stats-overlay { position: absolute; /* Fixed syntax */ bottom: 20px, left: 20px;background: rgba(0, 0, 0, 0.8), padding: 12px; border-radius: 6px, backdrop-filter: blur(8px), display: grid, grid-template-columns: repeat(2, 1fr), gap: 8px; min-width: 200px}
+  .stat { display: flex; justify-content: space-between, align-items: center, color: white; font-size: 12px}
   .stat-label { opacity: 0.7}
   .stat-value { font-weight: 600, color: #0ea5e9}
   .yorha-theme .stat-value { color: #00ff00}
-  /* Camera Controls */ .camera-controls { position: absolute; /* Fixed syntax */ bottom: 20px, right: 20px, display: flex, gap: 8px}
-  .control-button { width: 40px, height: 40px;, background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px, color: white, font-size: 16px, cursor: pointer;, transition: all 0.2s ease; backdrop-filter: blur(8px)}
-  .control-button:hover { /* Fixed syntax */, background: rgba(14, 165, 233, 0.2); border-color: #0ea5e9;, transform: translateY(-2px)}
-  .control-button.streaming { border-color: #00ff00, color: #00ff00, animation: pulse 2s infinite}
-  /* Error Display */ .error-container { position: absolute; /* Fixed syntax */ top: 50%, left: 50%;, transform: translate(-50%, -50%); background: rgba(220, 38, 38, 0.9); color: white;, padding: 24px, border-radius: 8px, text-align: center, max-width: 400px, backdrop-filter: blur(8px)}
-  .error-title { font-size: 18px, font-weight: 700, margin-bottom: 12px}
-  .error-message { font-size: 14px, margin-bottom: 16px, opacity: 0.9}
-  .retry-button { background: white, color: #dc2626, border: none, padding: 8px 16px; border-radius: 4px, font-weight: 600, cursor: pointer, transition: opacity 0.2s ease}
-  .retry-button:disabled { /* Fixed syntax */ opacity: 0.5;, cursor: not-allowed}
+  /* Camera Controls */ .camera-controls { position: absolute; /* Fixed syntax */ bottom: 20px, right: 20px; display: flex, gap: 8px}
+  .control-button { width: 40px, height: 40px;background: rgba(0, 0, 0, 0.8), border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 6px, color: white; font-size: 16px, cursor: pointer;transition: all 0.2s ease; backdrop-filter: blur(8px)}
+  .control-button: hover { /* Fixed syntax */, background: rgba(14, 165, 233, 0.2); border-color: #0ea5e9, transform: translateY(-2px)}
+  .control-button.streaming { border-color: #00ff00, color: #00ff00; animation: pulse 2s infinite}
+  /* Error Display */ .error-container { position: absolute; /* Fixed syntax */ top: 50%, left: 50%;transform: translate(-50%, -50%), background: rgba(220, 38, 38, 0.9); color: white, padding: 24px; border-radius: 8px, text-align: center; max-width: 400px, backdrop-filter: blur(8px)}
+  .error-title { font-size: 18px; font-weight: 700, margin-bottom: 12px}
+  .error-message { font-size: 14px; margin-bottom: 16px, opacity: 0.9}
+  .retry-button { background: white, color: #dc2626; border: none, padding: 8px 16px; border-radius: 4px; font-weight: 600, cursor: pointer;transition: opacity 0.2s ease}
+  .retry-button: disabled { /* Fixed syntax */ opacity: 0.5, cursor: not-allowed}
   /* Animations */ @keyframes pulse { 0%, 100% { opacity: 0.6} 50% { opacity: 1} }
   @keyframes blink { 0%, 50% { opacity: 1} 51%, 100% { opacity: 0.3} }
   /* Responsive */ @media (max-width: 768px) { .progress-container, .stats-overlay { left: 10px, right: 10px}
-    .camera-controls { right: 10px;, bottom: 10px}
-    .stats-overlay { grid-template-columns: 1fr, min-width: auto}
+    .camera-controls { right: 10px, bottom: 10px}
+    .stats-overlay { grid-template-columns: 1fr; min-width: auto}
   } </style>
 

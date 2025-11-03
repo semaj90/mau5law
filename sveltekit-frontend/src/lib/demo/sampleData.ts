@@ -3,8 +3,7 @@ export interface DemoCase {
   id: string
   title: string
   description: string
-  status: 'active' | 'pending' | 'closed';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  status: 'active' | 'pending' | 'closed',priority: 'low' | 'medium' | 'high' | 'urgent',
   createdAt: Date, updatedAt: Date
   assignedTo?: string
   tags: string[]}
@@ -19,16 +18,14 @@ export interface DemoEvidence {
     | 'financial_records'
     | 'digital_forensics'
     | 'physical_evidence'
-    | 'expert_testimony';
-  status: 'new' | 'reviewing' | 'approved';
+    | 'expert_testimony',status: 'new' | 'reviewing' | 'approved',
   content: string
   uploadedAt: Date, fileSize: number
   tags: string[]}
 export interface DemoPerson {
   id: string
   name: string
-  role: 'suspect' | 'witness' | 'victim' | 'officer' | 'expert' | 'other';
-  contactInfo: { phone?: string; email?: string; address?: string };
+  role: 'suspect' | 'witness' | 'victim' | 'officer' | 'expert' | 'other',contactInfo: { phone?: string, email?: string; address?: string };
   notes: string}
 class DemoDataGenerator {
   private caseCounter = 1

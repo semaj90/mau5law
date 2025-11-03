@@ -110,6 +110,6 @@ Cancel
   .input.input-bordered {
     border: 1px solid #d1d5db
     border-radius: 0.375rem
-   , padding: 0.5rem 0.75rem
+   ;padding: 0.5rem 0.75rem
     font-size: 1rem}
 </style>

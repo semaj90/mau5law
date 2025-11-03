@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   WebAssembly GPU Initialization Demo
   Real-time monitoring and testing interface for the WASM GPU system
 -->
@@ -7,7 +7,7 @@ import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { createWasmGpuService, WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
+  import { createWasmGpuService: WasmGpuHelpers } from '$lib/wasm/gpu-wasm-init';
   import { WebGPUBufferUtils_Extended } from '$lib/utils/webgpu-buffer-uploader.js';
   import { quantizeWithStats, type LegalAIProfile } from '$lib/utils/typed-array-quantization.js';
   // Initialize WASM GPU service with RTX, 3060 configuration
@@ -125,7 +125,7 @@ import type { Document } from '$lib/types';
       const executionTime = performance.now() - startTime
       similarityResults = result
       // Find top similarities
-      const topSimilarities = Array.from.map((similarity, index) => ({ similarity, index }))
+      const topSimilarities = Array.from.map((similarity, index) => ({ similarity: index }))
         .sort((a, b) => b.similarity - a.similarity)
         .slice(0, 10);
       console.log(`âœ… ${selectedScenario.name} completed in ${Math.round(executionTime)}ms`);
@@ -138,13 +138,11 @@ import type { Document } from '$lib/types';
    */
   function getStatusColor(status: string): string {
     switch (status) {
-      case, 'healthy': case, 'optimal': case, 'good': case, 'efficient':
+      case: 'healthy': case;optimal': case, 'good': case;efficient':
         return 'text-green-400';
-      case, 'warning': case, 'high': case, 'overhead':
+      case, 'warning': case;high': case, 'overhead':
         return 'text-yellow-400';
-      case, 'error': case, 'critical':
-        return 'text-red-400';
-      default: return 'text-gray-400'}
+      case, 'error': case;critical': return 'text-red-400',default: return 'text-gray-400'}
   }
   /**
    * Format throughput for display
@@ -158,11 +156,10 @@ import type { Document } from '$lib/types';
    */
   function getGradeColor(grade: string): string {
     switch (grade) {
-      case, 'S': return 'text-purple-400';
+      case: 'S': return 'text-purple-400';
       case, 'A': return 'text-green-400';
       case, 'B': return 'text-blue-400';
-      case, 'C': return 'text-yellow-400';
-      default: return 'text-gray-400'}
+      case, 'C': return 'text-yellow-400',default: return 'text-gray-400'}
   }
 </script>
 <div class="wasm-gpu-demo p-6 bg-gray-900 text-white">
@@ -303,8 +300,7 @@ import type { Document } from '$lib/types';
     <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
       <h3 class="text-xl font-semibold mb-4">Legal AI Test Scenarios</h3>
       <div class="mb-4">
-        <label class="block text-sm font-medium" for="select-test-scenario">Select Test Scenario: </label><select id="select-test-scenario" ;
-          bind:value={selectedScenario}
+        <label class="block text-sm font-medium" for="select-test-scenario">Select Test Scenario: </label><select id="select-test-scenario" ,bind:value={selectedScenario}
           class="bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 w-full"
           disabled={benchmarkRunning}
         >

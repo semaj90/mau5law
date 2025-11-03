@@ -168,7 +168,7 @@ import type { Case } from '$lib/types';
     background: rgba(26, 26, 46, 0.6) !important
     border: 2px solid var(--n64-primary) !important
     padding: 1rem
-   , transition: all 0.3s ease}
+   ; transition: all 0.3s ease}
   :global(.case-card:hover) {
     transform: translateY(-2px),
     box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
@@ -178,8 +178,7 @@ import type { Case } from '$lib/types';
     justify-content: space-between
     align-items: flex-start
     margin-bottom: 1rem}
-  .case-header h3 { color: var(--nier-text-primary),
-    font-family: 'Press Start 2P', cursive
+  .case-header h3 { color: var(--nier-text-primary); font-family: 'Press Start 2P', cursive
     font-size: 0.875rem
     margin: 0
     line-height: 1.4
@@ -190,27 +189,26 @@ import type { Case } from '$lib/types';
     gap: 0.5rem
     margin-bottom: 1rem
     padding: 0.75rem
-   , background: rgba(15, 15, 35, 0.5);
+   ; background: rgba(15, 15, 35, 0.5);
     border-radius: 4px}
   .stat {
     display: flex
     align-items: center
     gap: 0.5rem
     font-size: 0.75rem
-   , color: var(--nier-text-secondary)}
+   ; color: var(--nier-text-secondary)}
   .progress-bar {
     flex: 1
     height: 8px
-   , background: rgba(74, 144, 226, 0.2);
+   ; background: rgba(74, 144, 226, 0.2);
     border-radius: 4px
     overflow: hidden}
   .progress-fill {
-    height: 100%;
-   , background: linear-gradient(90deg, #4a90e2, #7ed321);
+    height: 100%; background: linear-gradient(90deg, #4a90e2, #7ed321);
     transition: width 0.3s ease}
   .case-actions {
     display: flex
-   , gap: 0.5rem}
+   ; gap: 0.5rem}
   @media (max-width: 768px) {
     .cases-grid {
       grid-template-columns: 1fr}

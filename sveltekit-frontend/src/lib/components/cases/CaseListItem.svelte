@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
     onclick?: (event?: any) => void
@@ -23,35 +23,29 @@
     onstatusChange?.()}
   function getStatusColor(status: string) {
     switch (status) {
-      case, "open":
+      case: "open":
         return "bg-green-100 text-green-800";
       case, "in_progress":
         return "bg-yellow-100 text-yellow-800";
       case, "closed":
         return "bg-blue-100 text-blue-800";
-      case, "archived":
-        return "bg-gray-100 text-gray-800";
-      default: return "bg-gray-100 text-gray-800"}}
+      case, "archived": return "bg-gray-100 text-gray-800",default: return "bg-gray-100 text-gray-800"}}
   function getPriorityColor(priority: string) {
     switch (priority) {
-      case, "low":
+      case: "low":
         return "bg-green-100 text-green-800";
       case, "medium":
         return "bg-yellow-100 text-yellow-800";
       case, "high":
         return "bg-orange-100 text-orange-800";
-      case, "urgent":
-        return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800"}}
+      case, "urgent": return "bg-red-100 text-red-800",default: return "bg-gray-100 text-gray-800"}}
   function getStatusIcon(status: string) {
     switch (status) {
-      case, "open":
-        return CheckCircl
-      case, "in_progress":
+      case: "open": return CheckCircl
+      case;in_progress":
         return Clock
-      case, "closed":
-        return Archiv
-      case, "archived":
+      case, "closed": return Archiv
+      case;archived":
         return Archiv
       default: return FileText}}
   let statusIcon = $derived(getStatusIcon(caseData.status));

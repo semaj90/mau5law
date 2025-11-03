@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   // removed static uploadStore import because the module has no exported member: 'uploadStore'
   import { writable, type Writable } from 'svelte/store';
   // Props (exported to avoid $props() compile issues in this environment)
@@ -19,8 +19,7 @@ import type { Document } from '$lib/types';
     stage: string
     progress: number
     status: string
-   , metrics: Record<string unknown>;
-    error: string | null};
+   , metrics: Record<string unknown>,error: string | null};
   const progressData: Writable<Progress> = writable({ stage: 'idle',
     progress: 0,
     status: 'pending',

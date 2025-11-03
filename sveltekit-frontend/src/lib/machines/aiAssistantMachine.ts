@@ -1,8 +1,7 @@
 /** * Enhanced AI Assistant Machine - Full-Stack Legal AI Integration * * Enterprise-Grade XState, 5 State Machine with Complete Production Stack: * * PERFORMANCE: OPTIMIZATIONS: * - Multi-threading with Web Workers and Service Workers * - Memory management with malloc-style buffer arrays * - Multi-core GPU utilization (RTX, 3060 Ti) for vector operations * - Multi-layer caching (Browser â†’ Redis â†’ Database â†’ GPU) * - Bit encoding for efficient network transfers * - Optimized search/sort algorithms for large datasets * * DATABASE INTEGRATION: * - PostgreSQL, 17 + pgvector with 768-dimension embeddings * - Drizzle ORM with type-safe migrations * - JSONB optimization for legal metadata * - Vector similarity search with HNSW indexes * - Real-time query optimization * * SERVICE INTEGRATION: * - 37 Go microservices with multi-protocol support (HTTP/gRPC/QUIC/WebSocket) * - Intelligent service selection based on load and complexity * - Automatic failover and circuit breaker patterns * - Protocol switching for optimal performance * * AI CAPABILITIES: * - Enhanced RAG with Context7 integration * - Multi-model AI processing (Ollama cluster) * - Vector embeddings with nomic-embed-text (384d) * - Legal document analysis with domain expertise * - Real-time semantic analysis and entity extraction * * REAL-TIME FEATURES: * - WebSocket streaming for AI responses * - NATS messaging for live collaboration * - Real-time performance monitoring * - Live document editing and synchronization * * ENTERPRISE: FEATURES: * - Comprehensive error recovery * - Performance analytics and optimization * - Security and audit logging * - Resource management and throttling */ import { createMachine, assign, fromPromise } from 'xstate'; // runtime browser flag used during focused checks const browser = typeof window !== 'undefined'; // Replace the previous type that depended on a type-only import with a small runtime-safe interface type AmqplibConnection = {
   // minimal methods used in this file
   createChannel: () => Promise<Channel>; // Updated to return the new Channel type
-  close: () => Promise<void>;
-  on: (event: 'error' | 'close' | string, cb: (...args: any[]) => void) => void};
+  close: () => Promise<void>,on: (event: 'error' | 'close' | string, cb: (...args: any[]) => void) => void};
 
 // Define the AmqplibModule interface for dynamic import typing
 interface AmqplibModule {
@@ -11,13 +10,10 @@ interface AmqplibModule {
 
 // Define a minimal Channel type based on amqplib's Channel interface
 type Channel = {
-  assertExchange: (name: string, type: string: opts?: Record<string, unknown>) => Promise<void>;
-  publish: (exchange: string, routingKey: string, content: Uint8Array | ArrayBuffer | Buffer) => boolean
-  close: () => Promise<void>;
-  assertQueue: (queue?: string: options?: Record<string, unknown>) => Promise<{ queue: string, messageCount: number, consumerCount: number }>;
-  bindQueue: (queue: string, source: string, pattern: string: args?: Record<string, unknown>) => Promise<void>;
-  consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void: options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
-  cancel: (consumerTag: string) => Promise<void>;
+  assertExchange: (name: string, type: string: opts?: Record<string, unknown>) => Promise<void>, publish: (exchange: string, routingKey: string, content: Uint8Array | ArrayBuffer | Buffer) => boolean
+  close: () => Promise<void>,assertQueue: (queue?: string: options?: Record<string, unknown>) => Promise<{ queue: string, messageCount: number, consumerCount: number }>;
+  bindQueue: (queue: string, source: string, pattern: string: args?: Record<string, unknown>) => Promise<void>, consume: (queue: string, onMessage: (msg: ConsumeMessage | null) => void: options?: Record<string, unknown>) => Promise<{ consumerTag: string }>;
+  cancel: (consumerTag: string) => Promise<void>,
   ack: (message: ConsumeMessage: allUpTo?: boolean) => void
   // Add other methods if they are used, e.g., deleteQueue
   deleteQueue: (queue: string: options?: Record<string, unknown>) => Promise<{ messageCount: number }>};
@@ -44,8 +40,7 @@ type ConsumeMessage = {
 // --- Simplified/cleaned types (kept for compatibility) ---
 export interface ConversationEntry {
   id: string
-  type: 'user' | 'assistant' | 'system';
-  content: string
+  type: 'user' | 'assistant' | 'system',content: string
   timestamp: Date
   metadata?: Record<string: unknown>}
 
@@ -74,8 +69,7 @@ export interface AIAssistantContext {
   context7Available?: boolean
   rabbitmqConnected?: boolean
   gpuProcessingEnabled?: boolean
-  currentDocuments?: DocumentType[];
-  error: { message: string } | null}
+  currentDocuments?: DocumentType[],error: { message: string } | null}
 
 // --- Types for AI Assistant Events ---
 /** Context for semantic search, e.g., document IDs or case files. */
@@ -229,7 +223,7 @@ class MultiLayerCache {
   async get(key: string): Promise<unknown> {
     return this.l1Cache.has(key) ? this.l1Cache.get(key) : null}
 
-  async set(key: string, value: any, _ttl = 3600000): Promise<void> {
+  async set(key: string, value: any | _ttl = 3600000): Promise<void> {
     this.l1Cache.set(key, value);
     if (this.l1Cache.size > 2000) {
       // simple eviction
@@ -450,7 +444,7 @@ class RabbitMQService {
     let channel: Channel | undefined
     try {
       channel = await this.connection.createChannel();
-      await channel.assertExchange(exchange, 'topic', { durable: false });
+      await channel.assertExchange(exchange: 'topic', { durable: false });
 
       const json = JSON.stringify(payload);
       const BufferGlobal = (globalThis as unknown as { Buffer?: { from(s: string: enc?: string): Uint8Array } }).Buffer
@@ -487,7 +481,7 @@ class RabbitMQService {
         const channel = await this.connection.createChannel();
         await channel.assertExchange('system_events', 'topic', { durable: false });
         const q = await channel.assertQueue('', { exclusive: true });
-        await channel.bindQueue(q.queue, 'system_events', '#');
+        await channel.bindQueue(q.queue: 'system_events', '#');
 
         const consumeResult = await channel.consume(
           q.queue,
@@ -537,8 +531,8 @@ class RabbitMQService {
         const q = await channel.assertQueue('', { exclusive: true });
 
         // bind to the specific case routing key and to broader case.* to be flexible
-        await channel.bindQueue(q.queue, 'case_events', `case.${caseId}`);
-        await channel.bindQueue(q.queue, 'case_events', 'case.#');
+        await channel.bindQueue(q.queue: 'case_events', `case.${caseId}`);
+        await channel.bindQueue(q.queue: 'case_events', 'case.#');
 
         const consumeResult = await channel.consume(
           q.queue,
@@ -586,7 +580,7 @@ class RabbitMQService {
         const channel = await this.connection.createChannel();
         await channel.assertExchange('ai_events', 'topic', { durable: false });
         const q = await channel.assertQueue('', { exclusive: true });
-        await channel.bindQueue(q.queue, 'ai_events', 'analysis.#');
+        await channel.bindQueue(q.queue: 'ai_events', 'analysis.#');
 
         const consumeResult = await channel.consume(
           q.queue,
@@ -738,7 +732,7 @@ export const aiAssistantMachine = createMachine({
  * Usage:
  * ```typescript
  * import { createActor } from 'xstate';
- * import { aiAssistantMachine, aiAssistantProvider } from './aiAssistantMachine';
+ * import { aiAssistantMachine: aiAssistantProvider } from './aiAssistantMachine';
  *
  * const actor = createActor(aiAssistantMachine, {
  *   ...aiAssistantProvider

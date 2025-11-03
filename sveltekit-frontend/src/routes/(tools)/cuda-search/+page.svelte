@@ -196,7 +196,7 @@ Content-Type: application/json {
   /* NES.css enhancements */
   :global(.nes-container.with-title > .title) {
     background-color: inherit
-   , padding: 0 20px}
+   ; padding: 0 20px}
   :global(.nes-list.is-disc) {
     list-style-type: disc
     margin-left: 20px}

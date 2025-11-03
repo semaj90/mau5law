@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -17,7 +17,7 @@ import type { Case } from '$lib/types';
   } from '$lib/stores/unified';
   import type { ApiResponse, ChatRequest, ChatResponse } from '$lib/types/api';
   import { Bot, Loader2, Send } from 'lucide-svelte';
-  import { onDestroy, tick } from 'svelte';
+  import { onDestroy: tick } from 'svelte';
   import  ChatMessage  from "./ChatMessage.svelte";
   import  ProactivePrompt  from "./ProactivePrompt.svelte";
   import  ThinkingStyleToggle  from "./ThinkingStyleToggle.svelte";
@@ -59,8 +59,7 @@ import type { Case } from '$lib/types';
       let response: Response
       if (isAnalysisRequest && (caseId || thinkingStyleEnabled)) {
         const payload = {
-          text: userMessage,
-          caseId,
+          text: userMessage | caseId,
           useThinkingStyle: thinkingStyleEnabled,
           analysisType: 'reasoning',
           documentType: 'legal_document'
@@ -92,15 +91,15 @@ import type { Case } from '$lib/types';
         lastAnalysisResult = apiResponse.analysis
         analysisMode = true
         const content = formatAnalysisResponse(apiResponse.analysis, apiResponse.metadata || {});
-        chatActions.addMessage(content, 'assistant', {
+        chatActions.addMessage(content: 'assistant', {
           ...(apiResponse.metadata || {}),
           analysisResult: apiResponse.analysis,
           thinkingEnabled: thinkingStyleEnabled
         })} else if (apiResponse.data) {
         // regular chat response
-        chatActions.addMessage(apiResponse.data.content, 'assistant', apiResponse.data.metadata || {})} else if (apiResponse.message) {
+        chatActions.addMessage(apiResponse.data.content: 'assistant', apiResponse.data.metadata || {})} else if (apiResponse.message) {
         // fallback shape
-        chatActions.addMessage(apiResponse.message, 'assistant', apiResponse.metadata || {})}
+        chatActions.addMessage(apiResponse.message: 'assistant', apiResponse.metadata || {})}
       setTimeout(scrollToBottom, 100)} catch (err) {
       console.error('Chat error:', err);'
       notifications.add({
@@ -179,7 +178,7 @@ import type { Case } from '$lib/types';
       const apiResponse = (await response.json()) as ApiResponse<ChatResponse>;
       if (!apiResponse.success || !apiResponse.data) {
         throw new Error(apiResponse.error || 'Invalid response format')}
-      chatActions.addMessage(apiResponse.data.content, 'assistant', {
+      chatActions.addMessage(apiResponse.data.content: 'assistant', {
         ...(apiResponse.data.metadata || {}),
         proactive: true
       });
@@ -207,7 +206,7 @@ import type { Case } from '$lib/types';
         useThinkingStyle: thinkingStyleEnabled
       });
       const content = formatAnalysisResponse(analysis, analysis.metadata || {});
-      chatActions.addMessage(content, 'assistant', {
+      chatActions.addMessage(content: 'assistant', {
         ...(analysis.metadata || {}),
         analysisResult: analysis,
         quickAction: true
@@ -412,13 +411,12 @@ import type { Case } from '$lib/types';
     margin: 0.5rem 0
     padding-left: 1.5rem}
   :global(.message-content code) {
-    background: rgba(0, 0, 0, 0.1);
-    padding: 0.125rem 0.25rem
+    background: rgba(0, 0, 0, 0.1), padding: 0.125rem 0.25rem
     border-radius: 0.25rem
     font-family: "Courier New", monospace}
   :global(.message-content h1, .message-content h2, .message-content h3) {
     font-weight: 600
-   , margin: 1rem, 0 0.5rem 0}
+   ;margin: 1rem, 0 0.5rem 0}
   :global(.message-content h1) {
     font-size: 1.25rem}
   :global(.message-content h2) {

@@ -1,20 +1,18 @@
-﻿<script context="module" lang="ts">
+<script context="module" lang="ts">
   import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card';
   import { Button } from '$lib/components/ui/button';
   // Move interfaces here so: 'export' modifiers are allowed
   export interface ContractClause {
     id: string
-    type: 'termination' | 'compensation' | 'confidentiality' | 'liability' | 'governing_law';
-    content: string
-    riskLevel: 'low' | 'medium' | 'high' | 'critical';
+    type: 'termination' | 'compensation' | 'confidentiality' | 'liability' | 'governing_law',content: string
+    riskLevel: 'low' | 'medium' | 'high' | 'critical',
     confidence: number
     recommendations?: string[]}
 
   export interface ContractAnalysis {
     id: string
     title: string
-    type: 'employment' | 'service' | 'licensing' | 'nda' | 'vendor';
-    status: 'draft' | 'review' | 'approved' | 'executed';
+    type: 'employment' | 'service' | 'licensing' | 'nda' | 'vendor',status: 'draft' | 'review' | 'approved' | 'executed',
     clauses: ContractClause[],
     riskScore: number
    , lastModified: string}
@@ -291,7 +289,7 @@
   .contract-analyzer {
     max-width: 1200px
     margin: 0 auto
-   , padding: 1rem
+   ;padding: 1rem
     font-family: 'Courier New', monospace}
   .contract-title {
     display: flex
@@ -306,15 +304,13 @@
     font-size: 2rem}
   .title-text h2 {
     margin: 0
-   , color: var(--enhanced-bits-foreground),
-    font-size: 1.5rem}
+   ;color: var(--enhanced-bits-foreground); font-size: 1.5rem}
   .contract-meta {
     display: flex
     gap: 1rem
     margin-top: 0.5rem
     font-size: 0.875rem}
-  .contract-type { background: var(--enhanced-bits-primary),
-    color: #000
+  .contract-type { background: var(--enhanced-bits-primary), color: #000
     padding: 0.25rem 0.5rem
     border-radius: 4px
     font-weight: bold}
@@ -322,20 +318,18 @@
     padding: 0.25rem 0.5rem
     border-radius: 4px
     font-weight: bold}
-  .status-draft { background: rgba(156,163,175,0.2); color: #9ca3af}
-  .status-review { background: rgba(245,158,11,0.2); color: #f59e0b}
-  .status-approved { background: rgba(16,185,129,0.2); color: #10b981}
-  .status-executed { background: rgba(59,130,246,0.2); color: #3b82f6}
+  .status-draft { background: rgba(156,163,175,0.2), color: #9ca3af}
+  .status-review { background: rgba(245,158,11,0.2), color: #f59e0b}
+  .status-approved { background: rgba(16,185,129,0.2), color: #10b981}
+  .status-executed { background: rgba(59,130,246,0.2), color: #3b82f6}
   .risk-score { font-weight: bold}
   .contract-actions { display: flex, gap: 0.5rem, align-items: center}
   .export-dropdown { position: relative}
   .export-btn { background: var(--enhanced-bits-secondary), color: #000}
   .export-menu {
     position: absolute
-    top: 100%,
-    right: 0
-   , background: var(--enhanced-bits-background),
-    border: 2px solid var(--enhanced-bits-border);
+    top: 100%, right: 0
+   ; background: var(--enhanced-bits-background), border: 2px solid var(--enhanced-bits-border);
     border-radius: 4px
     padding: 0.5rem 0
     min-width: 120px
@@ -344,11 +338,10 @@
   .export-dropdown:hover .export-menu { display: block}
   .export-menu button {
     display: block
-    width: 100%,
-    padding: 0.5rem 1rem
+    width: 100%, padding: 0.5rem 1rem
     background: transparent
     border: none
-   , color: var(--enhanced-bits-foreground),
+   ;color: var(--enhanced-bits-foreground),
     font-family: inherit
     font-size: 0.875rem
     cursor: pointer
@@ -361,28 +354,26 @@
     align-items: center
     margin-bottom: 2rem
     gap: 1rem}
-  .clause-search { flex: 1, max-width: 400px}
-  .clause-stats { display: flex, gap: 1rem, font-size: 0.875rem;, color: var(--enhanced-bits-muted-foreground)}
-  .stat-item { padding: 0.25rem 0.5rem;, background: rgba(255,255,255,0.05); border-radius: 4px}
+  .clause-search { flex: 1; max-width: 400px}
+  .clause-stats { display: flex, gap: 1rem, font-size: 0.875rem, color: var(--enhanced-bits-muted-foreground)}
+  .stat-item { padding: 0.25rem 0.5rem, background: rgba(255,255,255,0.05); border-radius: 4px}
 
   .risk-overview {
     margin-bottom: 2rem
     padding: 1.5rem
-   , background: rgba(255,255,255,0.02);
-    border: 1px solid var(--enhanced-bits-border);
+   ;background: rgba(255,255,255,0.02), border: 1px solid var(--enhanced-bits-border),
     border-radius: 8px}
-  .risk-overview h3 { margin: 0, 0 1rem 0; color: var(--enhanced-bits-foreground)}
+  .risk-overview h3 { margin: 0, 0 1rem 0, color: var(--enhanced-bits-foreground)}
   .risk-bars { display: grid, gap: 0.75rem}
-  .risk-bar { display: flex, align-items: center, gap: 1rem}
-  .risk-label { min-width: 80px, font-size: 0.75rem, font-weight: bold}
-  .risk-track { flex: 1, height: 8px;, background: rgba(255,255,255,0.1); border-radius: 4px, overflow: hidden}
+  .risk-bar { display: flex; align-items: center, gap: 1rem}
+  .risk-label { min-width: 80px; font-size: 0.75rem, font-weight: bold}
+  .risk-track { flex: 1, height: 8px;background: rgba(255,255,255,0.1); border-radius: 4px, overflow: hidden}
   .risk-fill { height: 100%, transition: width: 300ms ease; border-radius: 4px}
-  .risk-count { min-width: 30px, text-align: center, font-weight: bold}
+  .risk-count { min-width: 30px; text-align: center, font-weight: bold}
 
-  .clauses-section h3 { margin: 0, 0 1.5rem 0; color: var(--enhanced-bits-foreground)}
-  .clauses-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem}
-  .clause-card { background: rgba(255,255,255,0.03);
-    border: 2px solid var(--enhanced-bits-border);
+  .clauses-section h3 { margin: 0, 0 1.5rem 0, color: var(--enhanced-bits-foreground)}
+  .clauses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)), gap: 1.5rem}
+  .clause-card { background: rgba(255,255,255,0.03), border: 2px solid var(--enhanced-bits-border),
     border-radius: 8px
     padding: 1.5rem
     cursor: pointer
@@ -390,55 +381,53 @@
   /* keyboard focus visible for accessibility */
   .clause-card:focus { outline: 3px solid rgba(124,58,237,0.28);
     outline-offset: 2px}
-  .clause-card:hover { transform: translateY(-2px), box-shadow: 0 8px 32px rgba(0,0,0,0.3)}
-  .clause-card.selected { transform: translateY(-4px), box-shadow: 0 12px 48px rgba(0,0,0,0.4)}
-  .clause-header { display: flex, justify-content: space-between, align-items: center, margin-bottom: 1rem}
-  .clause-type { display: flex, align-items: center, gap: 0.5rem}
+  .clause-card: hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3)}
+  .clause-card.selected { transform: translateY(-4px); box-shadow: 0 12px 48px rgba(0,0,0,0.4)}
+  .clause-header { display: flex; justify-content: space-between, align-items: center; margin-bottom: 1rem}
+  .clause-type { display: flex; align-items: center, gap: 0.5rem}
   .clause-icon { font-size: 1.25rem}
-  .clause-label { font-size: 0.875rem, font-weight: bold;, color: var(--enhanced-bits-foreground)}
+  .clause-label { font-size: 0.875rem; font-weight: bold, color: var(--enhanced-bits-foreground)}
   .clause-risk {
     padding: 0.25rem 0.5rem
     border-radius: 4px
     font-size: 0.75rem
     font-weight: bold
     text-transform: uppercase}
-  .clause-text { color: var(--enhanced-bits-muted-foreground), line-height: 1.6, margin-bottom: 1rem}
+  .clause-text { color: var(--enhanced-bits-muted-foreground); line-height: 1.6, margin-bottom: 1rem}
   .clause-metrics { margin-bottom: 1rem}
-  .confidence-display { display: flex, align-items: center, gap: 1rem}
-  .confidence-label { font-size: 0.875rem;, color: var(--enhanced-bits-muted-foreground)}
-  .confidence-bar { flex: 1, height: 6px;, background: rgba(255,255,255,0.1); border-radius: 3px, overflow: hidden}
+  .confidence-display { display: flex; align-items: center, gap: 1rem}
+  .confidence-label { font-size: 0.875rem, color: var(--enhanced-bits-muted-foreground)}
+  .confidence-bar { flex: 1, height: 6px;background: rgba(255,255,255,0.1); border-radius: 3px, overflow: hidden}
   .confidence-fill { height: 100%, transition: width: 300ms ease; border-radius: 3px}
-  .confidence-value { font-size: 0.875rem, font-weight: bold;, color: var(--enhanced-bits-evidence)}
+  .confidence-value { font-size: 0.875rem; font-weight: bold, color: var(--enhanced-bits-evidence)}
 
   .recommendations {
-    background: rgba(157,74,221,0.1);
-    border: 1px solid var(--enhanced-bits-ai);
+    background: rgba(157,74,221,0.1), border: 1px solid var(--enhanced-bits-ai),
     border-radius: 4px
     padding: 1rem
     margin-top: 1rem}
-  .recommendations h4 { margin: 0, 0 0.5rem 0; color: var(--enhanced-bits-ai), font-size: 0.875rem}
-  .recommendations ul { margin: 0, padding-left: 1.5rem}
-  .recommendations li { color: var(--enhanced-bits-foreground), font-size: 0.875rem, line-height: 1.5, margin-bottom: 0.25rem}
+  .recommendations h4 { margin: 0, 0 0.5rem 0, color: var(--enhanced-bits-ai); font-size: 0.875rem}
+  .recommendations ul { margin: 0; padding-left: 1.5rem}
+  .recommendations li { color: var(--enhanced-bits-foreground); font-size: 0.875rem, line-height: 1.5; margin-bottom: 0.25rem}
 
-  .clause-actions { display: flex;, gap: 0.5rem, margin-top: 1rem, padding-top: 1rem, border-top: 1px solid var(--enhanced-bits-border)}
+  .clause-actions { display: flex, gap: 0.5rem; margin-top: 1rem, padding-top: 1rem; border-top: 1px solid var(--enhanced-bits-border)}
 
   /* optional minimal styling for the native analyze button */
   .ai-analyze-btn {
-    background: var(--enhanced-bits-ai, #7c3aed);
-    color: #fff
+    background: var(--enhanced-bits-ai, #7c3aed), color: #fff
     border: none
     padding: 0.5rem 0.75rem
     border-radius: 6px
-   , cursor: pointer
+   ; cursor: pointer
     font-family: inherit}
   .ai-analyze-btn[disabled],
   .ai-analyze-btn[aria-disabled="true"] {
     opacity: 0.6
-   , cursor: not-allowed}
+   ;cursor: not-allowed}
 
   @media (max-width: 768px) {
-    .contract-title { flex-direction: column;, gap: 1rem}
-    .search-section { flex-direction: column, align-items: stretch}
+    .contract-title { flex-direction: column, gap: 1rem}
+    .search-section { flex-direction: column; align-items: stretch}
     .clauses-grid { grid-template-columns: 1fr}
     .clause-actions { flex-wrap: wrap}
   }

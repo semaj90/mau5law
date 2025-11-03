@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Custody Timeline Component
 Displays the chronological chain of custody events with detailed audit trail
 -->
@@ -13,7 +13,7 @@ import type { User } from '$lib/types';
   // use simple emoji/icon fallbacks to avoid external icon import issues
   function getEventIcon(eventType: string) {
     switch (eventType) {
-      case, 'intake':
+      case: 'intake':
         return 'ðŸ›¡ï¸';
       case, 'transfer':
         return 'ðŸ”';
@@ -23,13 +23,11 @@ import type { User } from '$lib/types';
         return 'ðŸ§ ';
       case, 'approval':
         return 'âœ…';
-      case, 'finalization':
-        return 'ðŸ';
-      default: return 'â±ï¸'}
+      case, 'finalization': return 'ðŸ',default: return 'â±ï¸'}
   }
   function getEventColor(eventType: string) {
     switch (eventType) {
-      case, 'intake':
+      case: 'intake':
         return 'bg-blue-100 text-blue-800';
       case, 'transfer':
         return 'bg-purple-100 text-purple-800';
@@ -39,9 +37,7 @@ import type { User } from '$lib/types';
         return 'bg-indigo-100 text-indigo-800';
       case, 'approval':
         return 'bg-emerald-100 text-emerald-800';
-      case, 'finalization':
-        return 'bg-gray-100 text-gray-800';
-      default: return 'bg-gray-100 text-gray-800'}
+      case, 'finalization': return 'bg-gray-100 text-gray-800',default: return 'bg-gray-100 text-gray-800'}
   }
   function formatEventTitle(eventType: string) {
     // support snake_case, kebab-case and space separated
@@ -57,7 +53,7 @@ import type { User } from '$lib/types';
   function getEventDetails(evt: any) {
     const details = evt?.details ?? {};
     switch (evt?.eventType) {
-      case, 'intake':
+      case: 'intake':
         return {
           primary: `Evidence taken into custody`,
           secondary: `Hash, verified: ${details.hashMatch ? 'Yes' : 'No'}`,

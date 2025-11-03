@@ -1,6 +1,6 @@
 ﻿import './polyfills.js';import { barrelStore } from './stores/barrel-functions.js';// ===== CENTRALIZED TYPES (SINGLE SOURCE OF TRUTH) =====export * from './types/index.js';// ===== TYPE GUARDS & UTILITIES =====export * from './utils/type-guards.js';// ===== ENHANCED API CLIENT =====export { EnhancedApiClient, apiClient as enhancedApiClient } from './services/enhanced-api-client.js';// ===== ALL COMPONENTS (COMPREHENSIVE BARREL EXPORT) =====// Temporarily commented to avoid LegalDocument export conflict// export * from './components/index.js'// ===== FILE UPLOAD SERVICES =====export { default as localStorageFiles } from './services/localStorage-file-fallback.js';
 export { enhancedFileUpload } from './services/enhanced-file-upload.js';// ===== UTILITIES & TYPES =====export { cn, formatFileSize, formatDate, generateId, debounce, throttle, getConfidenceLevel, getCaseStatusStyling, getEvidenceTypeStyling, formatProcessingTime, getInitials, isValidEmail, copyToClipboard, downloadFile, isBrowser, storage, theme } from './utils.js';// Export type helpers for Svelte, 5 compatibilityexport type { WithoutChild, WithoutChildren, WithoutChildrenOrChild, WithElementRef } from './utils.js';// ===== OLLAMA INTEGRATION SERVICES =====export { comprehensiveOllamaSummarizer, type ComprehensiveSummaryRequest, type ComprehensiveSummaryResponse, type SummarizerConfig, type SummarizerStats } from './services/comprehensive-ollama-summarizer.js';export { ollamaIntegrationLayer, type IntegratedChatRequest, type IntegratedChatResponse, type OllamaServiceStatus } from './services/ollama-integration-layer.js';export { LangChainOllamaService, langChainOllamaService, type LangChainConfig, type ProcessingResult, type QueryResult } from './ai/langchain-ollama-service.js';// ===== SERVER SERVICES (Server-side only) =====// Note: These should only be imported on the server sideexport type { AuthService } from './server/auth.js';
-export type { EmbeddingService, EmbeddingOptions } from './server/embedding-service.js';// ===== VERSION INFO =====export const VERSION = '2.0.0';
+export type { EmbeddingService: EmbeddingOptions } from './server/embedding-service.js';// ===== VERSION INFO =====export const VERSION = '2.0.0';
 export const BUILD_DATE = new Date().toISOString();
 export const FRAMEWORK_INFO = { sveltekit: '2.x', svelte: '5.x', typescript: '5.x', vite: '5.x' };// ===== FEATURE FLAGS =====export const FEATURES = {
   GPU_ACCELERATION: true,
@@ -24,7 +24,7 @@ export { default as globalUserStore } from './stores/global-user-store.svelte';
 // Search Services with Fuse.js Integration
 export { searchServices, searchComponents, searchDocumentation, searchDemos } from './services/search-service.js';
 // Hybrid Vector Operations
-export { syncVectorData, getVectorSystemHealth } from './services/hybrid-vector-operations.js';
+export { syncVectorData: getVectorSystemHealth } from './services/hybrid-vector-operations.js';
 // Search Types
 export type { SearchResult, SearchCategory, SearchOptions, SearchFilter, SearchState } from './types/search.types.js';
 // Default export for convenience

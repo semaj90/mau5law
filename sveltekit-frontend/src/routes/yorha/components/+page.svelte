@@ -53,7 +53,7 @@
   .yorha-component-label { @apply block font-semibold text-amber-400}
   .yorha-component-desc { @apply block text-xs text-amber-300 opacity-60 truncate}
   /* Mode Buttons */ .yorha-mode-buttons { @apply grid grid-cols-3 gap-2}
-  .yorha-mode-btn { @apply px-3 py-2 text-xs font-mono border border-amber-400 border-opacity-30; @apply hover:border-opacity-60 hover:bg-amber-400, hover:bg-opacity-10 transition-all; @apply flex items-center justify-center gap-2}
+  .yorha-mode-btn { @apply px-3 py-2 text-xs font-mono border border-amber-400 border-opacity-30; @apply hover: border-opacity-60 hover:bg-amber-400; hover:bg-opacity-10 transition-all; @apply flex items-center justify-center gap-2}
   .yorha-mode-active { @apply border-amber-400 bg-amber-400 bg-opacity-20 text-amber-400}
   /* Configuration Form */ .yorha-config-form { @apply space-y-4}
   .yorha-config-group { @apply space-y-2}
@@ -86,5 +86,5 @@
   @keyframes spin { to { transform: rotate(360deg)}
   } /* Responsive */ @media (max-width: 1024px) { .yorha-components-layout { @apply flex-col}
     .yorha-controls-sidebar { @apply w-full border-r-0 border-b}
-  } .yorha-icon { display:inline-flex, width:1.1rem, height:1.1rem, align-items:center, justify-content:center, font-size:0.9rem} .yorha-icon-large { display:inline-flex, width:3rem;, height:3rem, align-items:center, justify-content:center, font-size:2rem, margin-right:0.5rem} </style>
+  } .yorha-icon { display: inline-flex; width:1.1rem, height: 1.1rem; align-items:center, justify-content: center; font-size:0.9rem} .yorha-icon-large { display: inline-flex; width:3rem; height: 3rem; align-items:center, justify-content: center; font-size:2rem, margin-right:0.5rem} </style>
 

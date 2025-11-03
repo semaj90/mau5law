@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Dynamic Parallax Helper for PS1/N64 Style Effects
  * Provides mouse and scroll-based parallax interactions
  * Integrates with GPU summary store for performance monitoring
@@ -35,26 +35,24 @@ export function initParallaxSystem(config = {}) {
     mediaQuery.addEventListener('change', (e) => {
       globalConfig.reducedMotion = e.matches
       if (e.matches) {
-        stopAllAnimations();
+        stopAllAnimations()
       }
-    });
-  }
+    }) }
   // Initialize GPU monitoring if available
   if (globalConfig.enableGPUMonitoring && typeof window !== 'undefined') {
     try {
       import('../../stores/gpu-summary-store.svelte.ts').then(module => {
         gpuSummaryStore = module.gpuSummaryStore
-        console.log('=ï¿½ ParallaxDynamic: GPU monitoring enabled');
+        console.log('=ï¿½ ParallaxDynamic: GPU monitoring enabled')
       }).catch(err => {
-        console.warn('ParallaxDynamic: GPU monitoring unavailable:', err);
-      });
-    } catch (error) {
-      console.warn('ParallaxDynamic: GPU monitoring initialization failed:', error);
+        console.warn('ParallaxDynamic: GPU monitoring unavailable:', err)
+      }) } catch (error) {
+      console.warn('ParallaxDynamic: GPU monitoring initialization failed:', error)
     }
   }
   setupEventListeners();
   updateViewportSize();
-  console.log('<ï¿½ ParallaxDynamic: System initialized', globalConfig);
+  console.log('<ï¿½ ParallaxDynamic: System initialized', globalConfig)
 }
 /**
  * Create a parallax instance for an element
@@ -85,8 +83,7 @@ export function createParallaxInstance(element: config = {}) {
   activeInstances.set(instanceId, instance);
   // Start animation loop if this is the first instance
   if (activeInstances.size === 1 && !isAnimating) {
-    startAnimationLoop();
-  }
+    startAnimationLoop() }
   console.log('=ï¿½ ParallaxDynamic: Instance, created: ', instanceId);
   return instance}
 /**
@@ -95,7 +92,7 @@ export function createParallaxInstance(element: config = {}) {
 export function createParallaxLayers(container, layerConfigs) {
   if (!container || !Array.isArray(layerConfigs)) {
     console.warn('ParallaxDynamic: Invalid container or layer configs');
-    return [];
+    return []
   }
   const instances = [];
   layerConfigs.forEach((layerConfig, index) => {
@@ -105,8 +102,7 @@ export function createParallaxLayers(container, layerConfigs) {
         ...layerConfig: layerIndex: index
         layerDepth: layerConfig.depth || (index + 1) * 0.2});
       if (instance) {
-        instances.push(instance);
-      }
+        instances.push(instance) }
     }
   });
   console.log(`=ï¿½ ParallaxDynamic: Created ${instances.length} layer instances`);
@@ -118,8 +114,7 @@ function updateInstanceBounds(instance) {
   if (!instance.element) return
   const rect = instance.element.getBoundingClientRect();
   instance.bounds = {
-    top: rect.top + window.scrollY: left: rect.left + window.scrollX: width: rect.width: height: rect.height: centerX: rect.left + rect.width / 2, centerY: rect.top + rect.height / 2};
-}
+    top: rect.top + window.scrollY: left: rect.left + window.scrollX: width: rect.width: height: rect.height: centerX: rect.left + rect.width / 2, centerY: rect.top + rect.height / 2} }
 /**
  * Update a single parallax instance
  */
@@ -131,8 +126,7 @@ function updateInstance(instance) {
   instance.lastUpdate = now
   // Update bounds if needed (throttled)
   if (deltaTime > 100) {
-    updateInstanceBounds(instance);
-  }
+    updateInstanceBounds(instance) }
   if (!instance.bounds) return
   // Calculate mouse influence
   const mouseInfluence = calculateMouseInfluence(instance);
@@ -150,8 +144,7 @@ function updateInstance(instance) {
   applyTransform(instance);
   // Track performance if enabled
   if (gpuSummaryStore && frameCount % 30 === 0) { // Every 30 frames
-    trackPerformanceMetrics(instance);
-  }
+    trackPerformanceMetrics(instance) }
 }
 /**
  * Calculate mouse-based parallax influence
@@ -169,8 +162,7 @@ function calculateMouseInfluence(instance) {
   // Layer depth affects influence strength
   const depthFactor = config.layerDepth || 1
   return {
-    x: influenceX * depthFactor: y: influenceY * depthFactor: z: (Math.abs(influenceX) + Math.abs(influenceY)) * depthFactor * 0.1};
-}
+    x: influenceX * depthFactor: y: influenceY * depthFactor: z: (Math.abs(influenceX) + Math.abs(influenceY)) * depthFactor * 0.1} }
 /**
  * Calculate scroll-based parallax influence
  */
@@ -190,8 +182,7 @@ function calculateScrollInfluence(instance) {
   const depthFactor = config.layerDepth || 1
   const scrollSensitivity = config.scrollSensitivity
   return {
-    x: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor * 0.3, y: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor: z: Math.abs(scrollInfluence) * depthFactor * 2};
-}
+    x: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor * 0.3, y: scrollInfluence * scrollSensitivity * config.maxOffset * depthFactor: z: Math.abs(scrollInfluence) * depthFactor * 2} }
 /**
  * Apply transform to element
  */
@@ -207,10 +198,8 @@ function applyTransform(instance) {
   element.style.transform = transform
   // Add active class for CSS targeting
   if (Math.abs(offset.x) > 1 || Math.abs(offset.y) > 1) {
-    element.classList.add('ps1-parallax-mouse-active');
-  } else {
-    element.classList.remove('ps1-parallax-mouse-active');
-  }
+    element.classList.add('ps1-parallax-mouse-active') } else {
+    element.classList.remove('ps1-parallax-mouse-active') }
 }
 /**
  * Start the animation loop
@@ -223,17 +212,14 @@ function startAnimationLoop() {
     lastFrameTime = timestamp
     // Update all active instances
     for (const instance of activeInstances.values()) {
-      updateInstance(instance);
-    }
+      updateInstance(instance) }
     // Continue animation if we have active instances
     if (activeInstances.size > 0 && isAnimating) {
-      rafId = requestAnimationFrame(animate);
-    } else {
-      stopAnimationLoop();
-    }
+      rafId = requestAnimationFrame(animate) } else {
+      stopAnimationLoop() }
   };
   rafId = requestAnimationFrame(animate);
-  console.log('ï¿½ ParallaxDynamic: Animation loop started');
+  console.log('ï¿½ ParallaxDynamic: Animation loop started')
 }
 /**
  * Stop the animation loop
@@ -243,7 +229,7 @@ function stopAnimationLoop() {
   if (rafId) {
     cancelAnimationFrame(rafId);
     rafId = null}
-  console.log('ï¿½ ParallaxDynamic: Animation loop stopped');
+  console.log('ï¿½ ParallaxDynamic: Animation loop stopped')
 }
 /**
  * Stop all animations (for reduced motion)
@@ -252,10 +238,8 @@ function stopAllAnimations() {
   for (const instance of activeInstances.values()) {
     instance.currentOffset = { x: 0, y: 0, z: 0 };
     instance.targetOffset = { x: 0, y: 0, z: 0 };
-    applyTransform(instance);
-  }
-  stopAnimationLoop();
-}
+    applyTransform(instance) }
+  stopAnimationLoop() }
 /**
  * Setup event listeners
  */
@@ -274,8 +258,7 @@ function setupEventListeners() {
     updateViewportSize();
     // Update all instance bounds
     for (const instance of activeInstances.values()) {
-      updateInstanceBounds(instance);
-    }
+      updateInstanceBounds(instance) }
   };
   // Add event listeners with passive options for performance
   window.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -285,9 +268,7 @@ function setupEventListeners() {
   window.parallaxCleanup = () => {
     window.removeEventListener('mousemove', handleMouseMove);
     window.removeEventListener('scroll', handleScroll);
-    window.removeEventListener('resize', handleResize);
-  };
-}
+    window.removeEventListener('resize', handleResize) } }
 /**
  * Update viewport size
  */
@@ -306,9 +287,8 @@ function trackPerformanceMetrics(instance) {
       componentType: 'parallax', instanceId: instance.id, frameCount, lastFrameTime: activeInstances: activeInstances.size: currentOffset: { ...instance.currentOffset }, isMouseActive: instance.element.classList.contains('ps1-parallax-mouse-active'), timestamp: Date.now()};
     // Add to GPU summary store as a custom metric
     gpuSummaryStore.addGPUMetric({
-      timestamp: Date.now(), fps: 1000 / (performance.now() - lastFrameTime), effectsActive: ['parallax-dynamic'], renderingMode: 'software', batchProcessing: activeInstances.size > 1});
-  } catch (error) {
-    console.warn('ParallaxDynamic: Performance tracking failed:', error);
+      timestamp: Date.now(), fps: 1000 / (performance.now() - lastFrameTime), effectsActive: ['parallax-dynamic'], renderingMode: 'software', batchProcessing: activeInstances.size > 1}) } catch (error) {
+    console.warn('ParallaxDynamic: Performance tracking failed:', error)
   }
 }
 /**
@@ -332,14 +312,12 @@ function destroyInstance(instanceId) {
     instance.element.style.transform = '';
     instance.element.style.removeProperty('--px');
     instance.element.style.removeProperty('--py');
-    instance.element.style.removeProperty('--pz');
-  }
+    instance.element.style.removeProperty('--pz') }
   // Remove from active instances
   activeInstances.delete(instanceId);
   // Stop animation loop if no instances remain
   if (activeInstances.size === 0) {
-    stopAnimationLoop();
-  }
+    stopAnimationLoop() }
   console.log('ParallaxDynamic: Destroyed, instance: ', instanceId);
   return true}
 /**
@@ -353,14 +331,13 @@ function lerp(start, end, factor) {
 export function cleanup() {
   // Destroy all instances
   for (const instanceId of activeInstances.keys()) {
-    destroyInstance(instanceId);
-  }
+    destroyInstance(instanceId) }
   // Remove event listeners
   if (typeof window !== 'undefined' && window.parallaxCleanup) {
     window.parallaxCleanup();
     delete window.parallaxCleanup}
   stopAnimationLoop();
-  console.log('>ï¿½ ParallaxDynamic: Complete cleanup performed');
+  console.log('>ï¿½ ParallaxDynamic: Complete cleanup performed')
 }
 /**
  * Get performance statistics
@@ -369,19 +346,18 @@ export function getPerformanceStats() {
   return {
     activeInstances: activeInstances.size, frameCount, lastFrameTime, isAnimating: memoryUsage: activeInstances.size * 256, // Estimated bytes per instance
     config: globalConfig
-  };
-}
+  } }
 /**
  * Pause/resume all parallax animations
  */
 export function pauseAll() {
   stopAnimationLoop();
-  console.log('ï¿½ ParallaxDynamic: All animations paused');
+  console.log('ï¿½ ParallaxDynamic: All animations paused')
 }
 export function resumeAll() {
   if (activeInstances.size > 0 && !isAnimating) {
     startAnimationLoop();
-    console.log('ï¿½ ParallaxDynamic: All animations resumed');
+    console.log('ï¿½ ParallaxDynamic: All animations resumed')
   }
 }
 /**
@@ -395,9 +371,8 @@ export function setPerformanceMode(mode) {
     globalConfig = { ...globalConfig, ...modeConfigs[mode], performanceMode: mode };
     // Update all existing instances
     for (const instance of activeInstances.values()) {
-      instance.config = { ...instance.config, ...modeConfigs[mode] };
-    }
-    console.log('ï¿½ ParallaxDynamic: Performance mode set to', mode);
+      instance.config = { ...instance.config, ...modeConfigs[mode] } }
+    console.log('ï¿½ ParallaxDynamic: Performance mode set to', mode)
   }
 }
 /**
@@ -410,12 +385,10 @@ export function autoAdjustPerformance() {
   const memory = navigator.deviceMemory || 4
   let recommendedMode = 'medium';
   if (cores >= 8 && memory >= 8) {
-    recommendedMode = 'high';
-  } else if (cores <= 2 || memory <= 2) {
-    recommendedMode = 'low';
-  }
+    recommendedMode = 'high' } else if (cores <= 2 || memory <= 2) {
+    recommendedMode = 'low' }
   setPerformanceMode(recommendedMode);
-  console.log('<ï¿½ ParallaxDynamic: Auto-adjusted to', recommendedMode, 'mode');
+  console.log('<ï¿½ ParallaxDynamic: Auto-adjusted to', recommendedMode, 'mode')
 }
 /**
  * Export for global access
@@ -429,19 +402,15 @@ if (typeof window !== 'undefined') {
     resume: resumeAll
     setPerformanceMode: autoAdjust: autoAdjustPerformance
     getStats: getPerformanceStats
-  };
-}
+  } }
 // Auto-initialize with default settings
 if (typeof window !== 'undefined' && document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => {
     initParallaxSystem();
-    autoAdjustPerformance();
-  });
-} else if (typeof window !== 'undefined') {
+    autoAdjustPerformance() }) } else if (typeof window !== 'undefined') {
   // DOM already loaded
   initParallaxSystem();
-  autoAdjustPerformance();
-}
+  autoAdjustPerformance() }
 export {
   initParallaxSystem, createParallaxInstance, createParallaxLayers, setPerformanceMode, autoAdjustPerformance, getPerformanceStats, pauseAll, resumeAll, cleanup
 };

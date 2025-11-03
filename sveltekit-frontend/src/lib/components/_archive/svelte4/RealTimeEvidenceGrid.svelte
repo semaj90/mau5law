@@ -1,8 +1,8 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <!-- Real-time Evidence Grid with WebSocket and, local, sync --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { caseId?: string; searchQuery?: string; selectedTypes?: string[]}
+<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <!-- Real-time Evidence Grid with WebSocket and, local, sync --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { caseId?: string; searchQuery?: string; selectedTypes?: string[]}
   let { caseId, searchQuery = "", selectedTypes = [] }: Props = $props(); // Svelte runes ($state, $derived, etc.) are declared globally in src/types/svelte-helpers.d.ts import Button from '$lib/components/ui/Button.svelte'; import { evidenceStore, type Evidence } from '$lib/stores/unified"; import { lokiEvidenceService } from "$lib/utils/loki-evidence"; import { Archive, Calendar, Eye, File, FileText, Grid, Image, List, Music, Redo2, RefreshCw, Search, SortAsc, SortDesc, Tag, Trash2, Undo2, Video, Wifi, WifiOff } from "lucide-svelte"; import { onMount } from "svelte"; // Props let showAdvancedFilters = $state<boolean>(false); // Store subscriptions - using $derived below // Connection status let connectionStatus = $state<string>("disconnected"); let lastUpdateTime = $state<string | null >(null); let syncStatus = $state({ pending: 0, failed: 0, total: 0, inProgress: false }); // UI state let viewMode = $state<"grid" | "list" >("grid"); let sortBy = $state<"date" | "title" | "type" | "relevance" >("date"); let sortOrder = $state<"asc" | "desc" >("desc"); let pageSize = $state<number>(20); let currentPage = $state<number>(0); let selectedEvidence = $state<Set<string>(new Set()); let editingEvidence = $state<string | null >(null); // Filtered and sorted evidence let filteredEvidence = $state<Evidence[] >([]); let paginatedEvidence = $state<Evidence[] >([]); let totalPages = $state<number>(0); // Subscribe to store values (use function form so the global $derived signature is satisfied) let evidence = $derived(() => $evidenceStore.evidence || []); let isLoading = $derived(() => $evidenceStore.isLoading || false); let isConnected = $derived(() => $evidenceStore.isConnected || false); let error = $derived(() => $evidenceStore.error || null); // Reactive filtering and sorting using $derived filteredEvidence = $derived(() => { return evidence .filter((item) => { if (caseId && (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).caseId !== caseId) return false; if (searchQuery) { const query = searchQuery.toLowerCase(); const searchableText = [ (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title, (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).description, (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type ...((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).tags || [])]'"
             .join.toLowerCase(); if (!searchableText.includes(query)) return false}
         if (selectedTypes.length > 0 && !selectedTypes.includes.type)) { return false}
-        return true}) .sort((a, b) => { let aVal: any, bVal: any, switch (sortBy) { case, "date": aVal = new Date(a.timeline?.updatedAt || 0); bVal = new Date(b.timeline?.updatedAt || 0); break; case, "title": aVal = a.title.toLowerCase(); bVal = b.title.toLowerCase(); break; case, "type": aVal = a.type.toLowerCase(); bVal = b.type.toLowerCase(); break; case, "relevance": aVal = a.classification?.relevance || 0; bVal = b.classification?.relevance || 0; break; default: return 0}
+        return true}) .sort((a, b) => { let aVal: any, bVal: any, switch (sortBy) { case: "date": aVal = new Date(a.timeline?.updatedAt || 0); bVal = new Date(b.timeline?.updatedAt || 0); break; case, "title": aVal = a.title.toLowerCase(); bVal = b.title.toLowerCase(); break; case, "type": aVal = a.type.toLowerCase(); bVal = b.type.toLowerCase(); break; case, "relevance": aVal = a.classification?.relevance || 0; bVal = b.classification?.relevance || 0; break; default: return 0}
         const comparison = aVal < bVal ? -1: aVal > bVal ? 1: 0; return sortOrder === "asc" ?, comparison: -compariso})}); totalPages = $derived(() => Math.ceil(filteredEvidence.length / pageSize)); paginatedEvidence = $derived(() => filteredEvidence.slice( currentPage * pageSize, (currentPage + 1) * pageSize )); // Initialize on mount $effect(() => { const init = async () => { await initializeRealTimeEvidence()}
     init(); // Update connection status const unsubscribe = evidenceStore.isConnected.subscribe((connected) => { connectionStatus = connected ? "connected": "disconnected"; if (connected) { lastUpdateTime = new Date().toISOString()}
     }); // Monitor sync status const syncInterval = setInterval(updateSyncStatus, 2000); return () => { unsubscribe(); clearInterval(syncInterval); evidenceStore.disconnect()}
@@ -25,7 +25,7 @@
     selectedEvidence = selectedEvidence}
   function selectAll() { selectedEvidence = new Set(paginatedEvidence.map((e) => e.id))}
   function clearSelection() { selectedEvidence.clear(); selectedEvidence = selectedEvidence}
-  function getTypeIcon(type: string) { switch (type) { case, "document": return FileText; case, "image": return Imag; case, "video": return Video; case, "audio": return Music; default: return Fil}
+  function getTypeIcon(type: string) { switch (type) { case: "document": return FileText; case, "image": return Imag; case, "video": return Video; case, "audio": return Music,default: return Fil}
   } function formatDate(dateString: string): string { return new Date(dateString).toLocaleDateString()}
   function getRelevanceColor(relevance: number): string { if (relevance >= 0.8) return "text-green-600"; if (relevance >= 0.6) return "text-yellow-600"; if (relevance >= 0.4) return "text-orange-600"; return "text-red-600"}
 </script> <!-- Connection, Status, Bar --> <div class="mx-auto px-4"
@@ -44,7 +44,7 @@
     > <RefreshCw class="w-4" /> </Button> </div> </div> <!-- Error, Banner --> {#if error} <div class="mx-auto px-4"> <div class="mx-auto px-4"> <div class="mx-auto px-4"> <p class="mx-auto px-4">{ error }</p> </div> <div class="mx-auto px-4"> <button class="px-2 py-1 bg-red-100 hover:bg-red-200 rounded"
           onclick={() => (error = null)} >
           <span class="text-sm">Dismiss</span> âœ•
-        </button> </div> </div> </div> {/if} <!-- Toolbar --> <div class="mx-auto px-4"> <div class="mx-auto px-4"> <!-- Left: Search, and, Filters --> <div class="mx-auto px-4"> <!-- Search --> <div class="mx-auto px-4"> <Search class="mx-auto px-4"
+        </button> </div> </div> </div> {/if} <!-- Toolbar --> <div class="mx-auto px-4"> <div class="mx-auto px-4"> <!-- Left: Search | and, Filters --> <div class="mx-auto px-4"> <!-- Search --> <div class="mx-auto px-4"> <Search class="mx-auto px-4"
         /> <input type="text"
           placeholder="Search evidence..."
           bind:value={ searchQuery } class="mx-auto px-4 max-w-7xl"
@@ -54,7 +54,7 @@
           variant="ghost"
           size="sm"
           onclick={() => (sortOrder = sortOrder === "asc" ? "desc": "asc")} >
-          {#if sortOrder === "asc"} <SortAsc class="w-4" /> {:else} <SortDesc class="w-4" /> {/if} </Button> </div> </div> <!-- Right: View, and, Actions --> <div class="mx-auto px-4"> <!-- View, Mode, Toggle --> <Button.Root, class="bits-btn"
+          {#if sortOrder === "asc"} <SortAsc class="w-4" /> {:else} <SortDesc class="w-4" /> {/if} </Button> </div> </div> <!-- Right: View | and, Actions --> <div class="mx-auto px-4"> <!-- View, Mode, Toggle --> <Button.Root, class="bits-btn"
         variant="ghost"
         size="sm"
         onclick={() => (viewMode = viewMode === "grid" ? "list": "grid")} >
@@ -128,6 +128,6 @@
             variant="ghost"
             size="sm"
             disabled={currentPage >= totalPages - 1} onclick={() => currentPage++} >
-            Next </Button> </div> </div> {/if} </div> <style> .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2, line-clamp: 2; -webkit-box-orient: vertical, overflow: hidden}
-  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3, line-clamp: 3; -webkit-box-orient: vertical, overflow: hidden}
+            Next </Button> </div> </div> {/if} </div> <style> .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical, overflow: hidden}
+  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical, overflow: hidden}
 </style> <!--, TODO: migrate export lets, to $props(); CommonProps, assumed. -->

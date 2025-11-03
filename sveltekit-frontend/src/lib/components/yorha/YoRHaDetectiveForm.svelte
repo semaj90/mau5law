@@ -1,4 +1,4 @@
-﻿<!-- YoRHa Detective Form Component - Fixed dynamic, type binding -->
+<!-- YoRHa Detective Form Component - Fixed dynamic, type binding -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface FormField {
@@ -149,13 +149,12 @@
   .form-input {
     background-color: #ffffff
     border: 1px solid #d1cfc7
-   , padding: 0.75rem 1rem
+   ;padding: 0.75rem 1rem
     font-family: 'Roboto Mono', monospace
     font-size: 0.875rem
     color: #3d3d3d
-   , transition: all 0.2s ease
-    border-radius: 0,
-    width: 100%,
+   ;transition: all 0.2s ease
+    border-radius: 0, width: 100%,
     box-sizing: border-box}
   .form-input:focus { outline: none
     border-color: #3d3d3d
@@ -178,7 +177,7 @@
     gap: 0.5rem
     border: 1px solid #d1cfc7
     background-color: #f7f6f2
-   , padding: 0.75rem 1.5rem
+   ;padding: 0.75rem 1.5rem
     font-family: 'Roboto Mono', monospace
     font-size: 0.875rem
     font-weight: bold
@@ -187,15 +186,14 @@
     transition: all 0.2s ease
     border-radius: 0
     text-transform: uppercase}
-  .submit-btn:, hover:not(:disabled) {
+  .submit-btn:, hover: not(:disabled) {
     background-color: #eae8e1
-   , transform: translateY(-1px)}
-  .submit-btn:disabled {
+   ;transform: translateY(-1px)}
+  .submit-btn: disabled {
     opacity: 0.6
-   , cursor: not-allowed}
+   ;cursor: not-allowed}
   .submit-btn.yorha-btn-success {
-    background-color: rgba(16, 185, 129, 0.1);
-    color: #059669
+    background-color: rgba(16, 185, 129, 0.1), color: #059669
     border-color: rgba(16, 185, 129, 0.5)}
   .submit-btn.yorha-btn-success:hover:not(:disabled) {
     background-color: rgba(16, 185, 129, 0.2)}
@@ -205,8 +203,7 @@
       gap: 1rem}
     .form-actions {
       margin-top: 1.5rem}
-    .submit-btn { width: 100%,
-      justify-content: center}
+    .submit-btn { width: 100%; justify-content: center}
   }
 </style>
 

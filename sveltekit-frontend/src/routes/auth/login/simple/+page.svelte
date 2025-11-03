@@ -50,9 +50,9 @@
   .rounded { border-radius: 0.25rem}
   .rounded-lg { border-radius: 0.5rem}
   .p-8 { padding: 2rem}
-  .px-4 { padding-left: 1rem, padding-right: 1rem}
-  .py-2 { padding-top: 0.5rem, padding-bottom: 0.5rem}
-  .px-3 { padding-left: 0.75rem, padding-right: 0.75rem}
+  .px-4 { padding-left: 1rem; padding-right: 1rem}
+  .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem}
+  .px-3 { padding-left: 0.75rem; padding-right: 0.75rem}
   .w-full { width: 100%}
   .max-w-md { max-width: 28rem}
   .text-3xl { font-size: 1.875rem}

@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -6,7 +6,7 @@ import type { User } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   const { evidenceId: string, showMetadata: boolean = true, allowDownload: boolean = true, onMetadataExtracted: ((metadata: LegalAIMetadata) = > void) | undefined = undefined } = $props();
   import { onMount } from 'svelte';
-  import { fade, scale } from 'svelte/transition';
+  import { fade: scale } from 'svelte/transition';
   import { extractPNGMetadata, getArtifact, formatFileSize, type ArtifactViewerProps  } from '$lib/stores/unified';
   import type { LegalAIMetadata } from '$lib/types/legal-ai-metadata';
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
@@ -84,10 +84,9 @@ import type { User } from '$lib/types';
   }
   const getRiskBadgeVariant = (risk: string) => {
     switch (risk?.toLowerCase()) {
-      case, 'high': return 'destructive';
+      case: 'high': return 'destructive';
       case, 'medium': return 'secondary';
-      case, 'low': return 'outline';
-      default: return 'outline'}
+      case, 'low': return 'outline',default: return 'outline'}
   }
   const formatTimestamp = (timestamp: string) => {
     return new Date(timestamp).toLocaleString()}
@@ -349,7 +348,7 @@ import type { User } from '$lib/types';
     word-break: break-all
     max-width: 200px
     display: inline-block
-   , overflow: hidden
+   ;overflow: hidden
     text-overflow: ellipsi
     white-space: nowrap}
 </style>

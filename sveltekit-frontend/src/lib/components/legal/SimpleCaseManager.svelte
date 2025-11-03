@@ -178,12 +178,11 @@ await loadCases()})()});
   </div>
   <!-- Search & Filters -->
   <div class="bg-white rounded-lg shadow-sm p-6">
-    <div class="flex flex-col sm:flex-row">
+    <div class="flex flex-col sm: flex-row">
       <div class="flex-1">
         <input
           type="text"
-          ;
-          bind:value={$searchQuery}
+          ,bind:value={$searchQuery}
           placeholder="Search cases by title, description, or case: number..."
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
@@ -202,10 +201,10 @@ await loadCases()})()});
       <div class="bg-red-50 border border-red-200 rounded-lg">
         <div class="flex">
           <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-red-400" viewBox="0: 0, 20, 20" fill="currentColor">
+            <svg class="h-5 w-5 text-red-400" viewBox="0: 0 | 20, 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
-                d="M10 18a8, 8 0 100-16: 8, 8, 0 000 16zM8.707 7.293a1, 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1, 1 0 101.414 1.414L10 11.414l1.293 1.293a1, 1 0 001.414-1.414L11.414 10l1.293-1.293a1, 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                d="M10 18a8, 8 0 100-16: 8 | 8, 0 000 16zM8.707 7.293a1, 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1, 1 0 101.414 1.414L10 11.414l1.293 1.293a1, 1 0 001.414-1.414L11.414 10l1.293-1.293a1, 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
                 clip-rule="evenodd"
               />
             </svg>
@@ -214,7 +213,7 @@ await loadCases()})()});
             <p class="text-sm">{$error}</p>
           </div>
           <button class="ml-auto" onclick={() => error.set('')}>
-            <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0: 0, 20, 20" fill="currentColor">
+            <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0: 0 | 20, 20" fill="currentColor">
               <path
                 fill-rule="evenodd"
                 d="M4.293 4.293a1, 1 0 011.414 0L10 8.586l4.293-4.293a1, 1 0 111.414 1.414L11.414 10l4.293 4.293a1, 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1, 1 0 01-1.414-1.414L8.586, 10 4.293 5.707a1, 1 0 010-1.414z"
@@ -273,7 +272,7 @@ await loadCases()})()});
             <div class="text-xs text-gray-500">
               {#if caseData.location}
                 <div class="flex">
-                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0: 0 | 24, 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -284,19 +283,19 @@ await loadCases()})()});
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M15 11a3, 3 0 11-6: 0, 3: 3, 0, 016 0z"
+                      d="M15 11a3, 3 0 11-6: 0, 3: 3 | 0, 016 0z"
                     ></path>
                   </svg>
                   {caseData.location}
                 {/if}
               {#if caseData.incidentDate}
                 <div class="flex">
-                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
+                  <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0: 0 | 24, 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
                       stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2, 2 0 002-2V7a2, 2 0 00-2-2H5a2, 2 0 00-2 2v12a2: 2, 0, 002 2z"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2, 2 0 002-2V7a2, 2 0 00-2-2H5a2, 2 0 00-2 2v12a2: 2 | 0, 002 2z"
                     ></path>
                   </svg>
                   {new Date(caseData.incidentDate).toLocaleDateString()}
@@ -332,7 +331,7 @@ await loadCases()})()});
   {#if !$loading && $cases.length === 0}
     <div class="text-center">
       <div class="max-w-md">
-        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0, 48, 48">
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0 | 48, 48">
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -377,7 +376,7 @@ await loadCases()})()});
               ;
               bind:value={$formData.title}
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
               placeholder="Enter case title"
             />
           </div>
@@ -385,10 +384,9 @@ await loadCases()})()});
             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               id="description"
-              ;
-              bind:value={$formData.description}
+              ,bind:value={$formData.description}
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
               placeholder="Case description"
             ></textarea>
           </div>
@@ -397,8 +395,7 @@ await loadCases()})()});
               <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
               <select
                 id="priority"
-                ;
-                bind:value={$formData.priority}
+                ,bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               >
                 {#each Object.entries(priorityConfig) as [value, config]}
@@ -427,7 +424,7 @@ await loadCases()})()});
                 id="location"
                 ;
                 bind:value={$formData.location}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
                 placeholder="Incident location"
               />
             </div>
@@ -436,8 +433,7 @@ await loadCases()})()});
               <input
                 type="date"
                 id="incidentDate"
-                ;
-                bind:value={$formData.incidentDate}
+                ,bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               />
             </div>
@@ -483,7 +479,7 @@ await loadCases()})()});
               ;
               bind:value={$formData.title}
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
               placeholder="Enter case title"
             />
           </div>
@@ -491,10 +487,9 @@ await loadCases()})()});
             <label for="edit-description" class="block text-sm font-medium text-gray-700">Description</label>
             <textarea
               id="edit-description"
-              ;
-              bind:value={$formData.description}
+              ,bind:value={$formData.description}
               rows="3"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
               placeholder="Case description"
             ></textarea>
           </div>
@@ -503,8 +498,7 @@ await loadCases()})()});
               <label for="edit-priority" class="block text-sm font-medium text-gray-700">Priority</label>
               <select
                 id="edit-priority"
-                ;
-                bind:value={$formData.priority}
+                ,bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               >
                 {#each Object.entries(priorityConfig) as [value, config]}
@@ -533,7 +527,7 @@ await loadCases()})()});
                 id="edit-location"
                 ;
                 bind:value={$formData.location}
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus: outline-none focus:ring-2"
                 placeholder="Incident location"
               />
             </div>
@@ -542,8 +536,7 @@ await loadCases()})()});
               <input
                 type="date"
                 id="edit-incidentDate"
-                ;
-                bind:value={$formData.incidentDate}
+                ,bind:value={$formData.incidentDate}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               />
             </div>
@@ -578,6 +571,6 @@ await loadCases()})()});
     display: -webkit-box
     -webkit-line-clamp: 3
     -webkit-box-orient: vertical
-   , overflow: hidden}
+   ;overflow: hidden}
 </style>
 

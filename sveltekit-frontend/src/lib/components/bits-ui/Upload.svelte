@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   const { uploadUrl } = $props<{ uploadUrl: string }>()
   const { onDone } = $props<{ onDone: (res: any) }>()
   let file: File | null = null

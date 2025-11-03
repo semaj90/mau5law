@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Test script for Self-Prompting Demo functionality
  * Verifies that the orchestration system works correctly
  */
@@ -19,9 +19,9 @@ async function testSelfPromptingDemo() {
       }
     );
     console.log('âœ… Basic orchestration successful');
-    console.log('   Result keys:', Object.keys(result),;
+    console.log('   Result keys:', Object.keys(result),
   } catch (error) {
-    console.log('âŒ Basic orchestration failed:', error.message);
+    console.log('âŒ Basic orchestration failed:', error.message)
   }
   // Test 2: MCP Query Generation
   console.log('\n2. Testing MCP query generation...');
@@ -32,9 +32,9 @@ async function testSelfPromptingDemo() {
     console.log('âœ… MCP query generation successful');
     console.log('   Query:', query.tool);
     console.log('   Prompt:', prompt);
-    console.log('   Valid:', validation.valid);
+    console.log('   Valid:', validation.valid)
   } catch (error) {
-    console.log('âŒ MCP query generation failed:', error.message);
+    console.log('âŒ MCP query generation failed:', error.message)
   }
   // Test 3: Self-Prompting Simulation
   console.log('\n3. Testing self-prompting simulation...');
@@ -50,12 +50,10 @@ async function testSelfPromptingDemo() {
       });
       // Simulate self-prompt generation
       if (result.selfPrompt) {
-        console.log(`   Generated self-prompt: ${result.selfPrompt.substring(0, 80)}...`);
-      }
+        console.log(`   Generated self-prompt: ${result.selfPrompt.substring(0, 80)}...`) }
     }
-    console.log('âœ… Self-prompting simulation successful');
-  } catch (error) {
-    console.log('âŒ Self-prompting simulation failed:', error.message);
+    console.log('âœ… Self-prompting simulation successful') } catch (error) {
+    console.log('âŒ Self-prompting simulation failed:', error.message)
   }
   // Test 4: Context7 Integration
   console.log('\n4. Testing Context7 MCP integration...');
@@ -66,19 +64,15 @@ async function testSelfPromptingDemo() {
     for (const query of context7Queries) {
       const validation = validateMCPRequest(query);
       if (validation.valid) {
-        console.log(`   âœ… ${query.tool} query valid`);
-      } else {
-        console.log(`   âŒ ${query.tool} query invalid:`, validation.errors);
+        console.log(`   âœ… ${query.tool} query valid`) } else {
+        console.log(`   âŒ ${query.tool} query invalid:`, validation.errors)
       }
     }
-    console.log('âœ… Context7 integration tests passed');
-  } catch (error) {
-    console.log('âŒ Context7 integration failed:', error.message);
+    console.log('âœ… Context7 integration tests passed') } catch (error) {
+    console.log('âŒ Context7 integration failed:', error.message)
   }
-  console.log('\nðŸŽ‰ Self-Prompting Demo test suite completed!');
-}
+  console.log('\nðŸŽ‰ Self-Prompting Demo test suite completed!') }
 // Run tests if this file is executed directly
 if (typeof window === 'undefined') {
-  testSelfPromptingDemo().catch(console.error);
-}
+  testSelfPromptingDemo().catch(console.error) }
 export { testSelfPromptingDemo };

@@ -1,4 +1,4 @@
-﻿// Node.js worker_threads for server-side vector computation and LLM calls
+// Node.js worker_threads for server-side vector computation and LLM calls
 // Optimized for parallel processing of legal document embeddings
 const { Worker, isMainThread, parentPort, workerData } = require('worker_threads');
 const { performance } = require('perf_hooks');
@@ -6,11 +6,9 @@ if (isMainThread) {
   // Main thread - export worker pool management
   module.exports = {
     VectorComputationPool, LegalLLMWorkerPool, createWorkerPool, destroyWorkerPool
-  };
-} else {
+  } } else {
   // Worker thread - handle computation tasks
-  setupWorkerThread();
-}
+  setupWorkerThread() }
 /**
  * Vector computation worker pool for parallel processing
  */
@@ -21,8 +19,7 @@ class VectorComputationPool {
     this.taskQueue = [];
     this.activeJobs = new Map();
     this.jobCounter = 0
-    this.initialized = $state(false);
-  }
+    this.initialized = $state(false) }
   async initialize() {
     if (this.initialized) return
     try {
@@ -31,19 +28,16 @@ class VectorComputationPool {
           workerData: { workerId: i: type: 'vector-computation' }
         });
         worker.on('message', (result) => {
-          this.handleWorkerMessage(i, result);
-        });
+          this.handleWorkerMessage(i, result) });
         worker.on('error', (error) => {
-          console.error(`Vector worker ${i} error:`, error);
+          console.error(`Vector worker ${i} error:`, error)
         });
         this.workers[i] = {
           worker: worker
           busy: false
-          lastUsed: Date.now()};
-      }
+          lastUsed: Date.now()} }
       this.initialized = true
-      console.log(`Vector computation pool initialized with ${this.poolSize} workers`);
-    } catch (error) {
+      console.log(`Vector computation pool initialized with ${this.poolSize} workers`) } catch (error) {
       console.error('Failed to initialize vector computation pool:', error);
       throw error}
   }
@@ -52,8 +46,7 @@ class VectorComputationPool {
    */
   async submitVectorTask(task) {
     if (!this.initialized) {
-      await this.initialize();
-    }
+      await this.initialize() }
     return new Promise((resolve, reject) => {
       const jobId = ++this.jobCounter
       const job = {
@@ -66,12 +59,9 @@ class VectorComputationPool {
       // Find available worker or queue task
       const availableWorker = this.findAvailableWorker();
       if (availableWorker !== -1) {
-        this.assignTaskToWorker(availableWorker, job);
-      } else {
-        this.taskQueue.push(job);
-      }
-    });
-  }
+        this.assignTaskToWorker(availableWorker, job) } else {
+        this.taskQueue.push(job) }
+    }) }
   /**
    * Batch vector similarity calculation
    */
@@ -81,8 +71,7 @@ class VectorComputationPool {
     // Split into batches for parallel processing
     const batches = [];
     for (let i = 0; i < vectors.length; i += batchSize) {
-      batches.push(vectors.slice(i, i + batchSize),;
-    }
+      batches.push(vectors.slice(i, i + batchSize), }
     // Process batches in parallel
     const batchPromises = batches.map((batch, index) =>
       this.submitVectorTask({
@@ -107,8 +96,7 @@ class VectorComputationPool {
     // Split documents into batches
     const batches = [];
     for (let i = 0; i < documents.length; i += batchSize) {
-      batches.push(documents.slice(i, i + batchSize),;
-    }
+      batches.push(documents.slice(i, i + batchSize), }
     // Process batches in parallel
     const batchPromises = batches.map((batch, index) =>
       this.submitVectorTask({
@@ -118,8 +106,7 @@ class VectorComputationPool {
       })
     );
     const batchResults = await Promise.all(batchPromises);
-    return batchResults.flat();
-  }
+    return batchResults.flat() }
   findAvailableWorker() {
     for (let i = 0; i < this.workers.length; i++) {
       if (!this.workers[i].busy) {
@@ -131,8 +118,7 @@ class VectorComputationPool {
     workerInfo.busy = true
     workerInfo.lastUsed = Date.now();
     workerInfo.worker.postMessage({
-      jobId: job.id: task: job.task});
-  }
+      jobId: job.id: task: job.task}) }
   handleWorkerMessage(workerIndex, result) {
     const { jobId, success, data, error } = result
     const job = this.activeJobs.get(jobId);
@@ -143,29 +129,23 @@ class VectorComputationPool {
     this.workers[workerIndex].busy = $state(false);
     // Resolve or reject the job
     if (success) {
-      job.resolve(data);
-    } else {
-      job.reject(new Error(error),;
-    }
+      job.resolve(data) } else {
+      job.reject(new Error(error), }
     // Remove job from active jobs
     this.activeJobs.delete(jobId);
     // Process next queued task if available
     if (this.taskQueue.length > 0) {
       const nextJob = this.taskQueue.shift();
-      this.assignTaskToWorker(workerIndex, nextJob);
-    }
+      this.assignTaskToWorker(workerIndex, nextJob) }
   }
   async destroy() {
     for (const workerInfo of this.workers) {
-      await workerInfo.worker.terminate();
-    }
+      await workerInfo.worker.terminate() }
     this.workers = [];
-    this.initialized = $state(false);
-  }
+    this.initialized = $state(false) }
   getStats() {
     return {
-      poolSize: this.poolSize: activeJobs: this.activeJobs.size: queuedJobs: this.taskQueue.length: busyWorkers: this.workers.filter(item => item.length)};
-  }
+      poolSize: this.poolSize: activeJobs: this.activeJobs.size: queuedJobs: this.taskQueue.length: busyWorkers: this.workers.filter(item => item.length)} }
 }
 /**
  * Legal LLM worker pool for long-running LLM calls
@@ -177,8 +157,7 @@ class LegalLLMWorkerPool {
     this.taskQueue = [];
     this.activeJobs = new Map();
     this.jobCounter = 0
-    this.initialized = $state(false);
-  }
+    this.initialized = $state(false) }
   async initialize() {
     if (this.initialized) return
     try {
@@ -187,19 +166,16 @@ class LegalLLMWorkerPool {
           workerData: { workerId: i: type: 'legal-llm' }
         });
         worker.on('message', (result) => {
-          this.handleWorkerMessage(i, result);
-        });
+          this.handleWorkerMessage(i, result) });
         worker.on('error', (error) => {
-          console.error(`LLM worker ${i} error:`, error);
+          console.error(`LLM worker ${i} error:`, error)
         });
         this.workers[i] = {
           worker: worker
           busy: false
-          lastUsed: Date.now()};
-      }
+          lastUsed: Date.now()} }
       this.initialized = true
-      console.log(`Legal LLM pool initialized with ${this.poolSize} workers`);
-    } catch (error) {
+      console.log(`Legal LLM pool initialized with ${this.poolSize} workers`) } catch (error) {
       console.error('Failed to initialize LLM worker pool:', error);
       throw error}
   }
@@ -208,8 +184,7 @@ class LegalLLMWorkerPool {
    */
   async submitLegalAnalysis(task) {
     if (!this.initialized) {
-      await this.initialize();
-    }
+      await this.initialize() }
     return new Promise((resolve, reject) => {
       const jobId = ++this.jobCounter
       const job = {
@@ -221,12 +196,9 @@ class LegalLLMWorkerPool {
       this.activeJobs.set(jobId, job);
       const availableWorker = this.findAvailableWorker();
       if (availableWorker !== -1) {
-        this.assignTaskToWorker(availableWorker, job);
-      } else {
-        this.taskQueue.push(job);
-      }
-    });
-  }
+        this.assignTaskToWorker(availableWorker, job) } else {
+        this.taskQueue.push(job) }
+    }) }
   // Similar methods as VectorComputationPool...
   findAvailableWorker() {
     for (let i = 0; i < this.workers.length; i++) {
@@ -239,40 +211,34 @@ class LegalLLMWorkerPool {
     workerInfo.busy = true
     workerInfo.lastUsed = Date.now();
     workerInfo.worker.postMessage({
-      jobId: job.id: task: job.task});
-  }
+      jobId: job.id: task: job.task}) }
   handleWorkerMessage(workerIndex, result) {
     const { jobId, success, data, error } = result
     const job = this.activeJobs.get(jobId);
     if (!job) return
     this.workers[workerIndex].busy = $state(false);
     if (success) {
-      job.resolve(data);
-    } else {
-      job.reject(new Error(error),;
-    }
+      job.resolve(data) } else {
+      job.reject(new Error(error), }
     this.activeJobs.delete(jobId);
     if (this.taskQueue.length > 0) {
       const nextJob = this.taskQueue.shift();
-      this.assignTaskToWorker(workerIndex, nextJob);
-    }
+      this.assignTaskToWorker(workerIndex, nextJob) }
   }
   async destroy() {
     for (const workerInfo of this.workers) {
-      await workerInfo.worker.terminate();
-    }
+      await workerInfo.worker.terminate() }
     this.workers = [];
-    this.initialized = $state(false);
-  }
+    this.initialized = $state(false) }
 }
 /**
  * Worker thread setup and task handlers
  */
 function setupWorkerThread() {
-  const { workerId, type } = workerData
+  const { workerId: type } = workerData
   console.log(`Worker ${workerId} (${type}) started`);
   parentPort.on('message', async (message) => {
-    const { jobId, task } = message
+    const { jobId: task } = message
     try {
       let result
       switch (task.type) {
@@ -289,19 +255,16 @@ function setupWorkerThread() {
           result = await callOllama(task);
           break
         default:
-          throw new Error(`Unknown task type: ${task.type}`);
-      }
+          throw new Error(`Unknown task type: ${task.type}`) }
       parentPort.postMessage({
         jobId: jobId
         success: true
         data: result
-      });
-    } catch (error) {
+      }) } catch (error) {
       parentPort.postMessage({
         jobId: jobId
         success: false
-        error: error.message});
-    }
+        error: error.message}) }
   });
   /**
    * Calculate batch similarity in worker thread
@@ -315,15 +278,14 @@ function setupWorkerThread() {
       if (similarity >= threshold) {
         results.push({
           id: vector.id: similarity: similarity
-          metadata: vector.metadata});
-      }
+          metadata: vector.metadata}) }
     }
     return results}
   /**
    * Generate embeddings in worker thread
    */
   async function generateEmbeddings(task) {
-    const { documentBatch, options } = task
+    const { documentBatch: options } = task
     const results = [];
     // Mock embedding generation (replace with actual embedding service)
     for (const document of documentBatch) {
@@ -332,8 +294,7 @@ function setupWorkerThread() {
       results.push({
         documentId: document.id: embedding: embedding
         text: text
-      });
-    }
+      }) }
     return results}
   /**
    * Perform legal analysis using LLM
@@ -352,15 +313,12 @@ function setupWorkerThread() {
         })
       });
       if (!response.ok) {
-        throw new Error(`LLM request failed: ${response.statusText}`);
-      }
+        throw new Error(`LLM request failed: ${response.statusText}`) }
       const data = await response.json();
       return {
         analysis: data.response: confidence: calculateConfidence(data.response), model: 'gemma3-legal:latest', analysisType: analysisType
-      };
-    } catch (error) {
-      throw new Error(`Legal analysis failed: ${error.message}`);
-    }
+      } } catch (error) {
+      throw new Error(`Legal analysis failed: ${error.message}`) }
   }
   /**
    * Call Ollama API from worker thread
@@ -376,12 +334,9 @@ function setupWorkerThread() {
         })
       });
       if (!response.ok) {
-        throw new Error(`Ollama request failed: ${response.statusText}`);
-      }
-      return await response.json();
-    } catch (error) {
-      throw new Error(`Ollama call failed: ${error.message}`);
-    }
+        throw new Error(`Ollama request failed: ${response.statusText}`) }
+      return await response.json() } catch (error) {
+      throw new Error(`Ollama call failed: ${error.message}`) }
   }
   // Helper functions
   function cosineSimilarity(vecA, vecB) {
@@ -391,15 +346,12 @@ function setupWorkerThread() {
     for (let i = 0; i < vecA.length; i++) {
       dotProduct += vecA[i] * vecB[i];
       normA += vecA[i] * vecA[i];
-      normB += vecB[i] * vecB[i];
-    }
-    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB),;
-  }
+      normB += vecB[i] * vecB[i] }
+    return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB), }
   function prepareDocumentText(document) {
     return [
       document.title, document.description, document.content
-    ].filter(Boolean).join('\n\n');
-  }
+    ].filter(Boolean).join('\n\n') }
   async function generateMockEmbedding(text) {
     // Mock embedding generation - replace with actual service
     const embedding = new Array(384).fill(0).map(() => Math.random() * 2 - 1);
@@ -408,8 +360,7 @@ function setupWorkerThread() {
     const prompts = {
       'case_summary': `Analyze the following legal case and provide a comprehensive summary:\n\n${content}`, 'precedent_analysis': `Analyze the precedential value of this legal decision:\n\n${content}`, 'statute_interpretation': `Interpret the following statute in the context provided:\n\n${content}`, 'contract_review': `Review this contract for potential legal issues:\n\n${content}`
     };
-    return prompts[analysisType] || `Analyze the following legal document:\n\n${content}`;
-  }
+    return prompts[analysisType] || `Analyze the following legal document:\n\n${content}` }
   function calculateConfidence(analysis) {
     // Simple confidence calculation based on response characteristics
     const words = analysis.split(/\s+/).length
@@ -419,8 +370,7 @@ function setupWorkerThread() {
     confidence += (certaintyIndicators * 0.1);
     confidence -= (uncertaintyIndicators * 0.1);
     confidence += Math.min(words / 100, 0.2); // Longer responses tend to be more confident
-    return Math.max(0.1, Math.min(0.9, confidence),;
-  }
+    return Math.max(0.1, Math.min(0.9, confidence), }
 }
 /**
  * Utility functions for worker pool management
@@ -429,14 +379,10 @@ function createWorkerPool(type = 'vector', poolSize = 4) {
   switch (type) {
     case 'vector':
       return new VectorComputationPool(poolSize);
-    case 'llm':
-      return new LegalLLMWorkerPool(poolSize);
-    default:
-      throw new Error(`Unknown worker pool type: ${type}`);
-  }
+    case 'llm': return new LegalLLMWorkerPool(poolSize),default:
+      throw new Error(`Unknown worker pool type: ${type}`) }
 }
 async function destroyWorkerPool(pool) {
   if (pool && typeof pool.destroy === 'function') {
-    await pool.destroy();
-  }
+    await pool.destroy() }
 }

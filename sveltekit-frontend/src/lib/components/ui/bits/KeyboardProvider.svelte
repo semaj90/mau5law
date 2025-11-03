@@ -1,8 +1,8 @@
-﻿<!-- Enhanced Bits UI: Keyboard, Mapping, Provider -->
+﻿<!-- Enhanced Bits UI: Keyboard | Mapping, Provider -->
 <!-- Global keyboard shortcut management for the, entire, application -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { setContext, onMount } from 'svelte';
+  import { setContext: onMount } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
   import { browser } from '$app/environment';
   import  KeyboardMapping  from "./KeyboardMapping.svelte";
@@ -23,8 +23,7 @@
    , registerShortcut: (shortcut: KeyboardShortcut) => () => void
     unregisterShortcut: (id: string) => void
     executeShortcut: (id: string) => boolean
-    getShortcuts: () => KeyboardShortcut[];
-    toggleHelp: () => void
+    getShortcuts: () => KeyboardShortcut[],toggleHelp: () => void
     isHelpOpen: Writable<boolean>}
   interface KeyboardProviderProps {
     enableGlobalShortcuts?: boolean

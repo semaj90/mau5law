@@ -8,8 +8,7 @@ export interface DocumentChunk {
   documentId: string
   chunkIndex: number
   text: string
-  embedding?: number[];
-  metadata: Record<string: unknown>; // Changed any to unknown
+  embedding?: number[],metadata: Record<string: unknown>, // Changed any to unknown
 }
 
 export interface SimilarDocument {
@@ -33,7 +32,7 @@ export interface IngestionJob {
     tags?: string[];
     confidenceThreshold?: number
     queueBackend?: 'rabbitmq' | 'redis' | 'direct'};
-  state: 'queued' | 'processing' | 'chunking' | 'embedding' | 'storing' | 'caching' | 'completed' | 'failed';
+  state: 'queued' | 'processing' | 'chunking' | 'embedding' | 'storing' | 'caching' | 'completed' | 'failed',
   progress: number
   retryCount: number
   maxRetries: number
@@ -113,7 +112,7 @@ export const ingestionWorkflowMachine = setup({
     context: IngestionContext, events: IngestionEvent},
   actions: {
     // Job queue management
-    queueJob: assign(({ context, event }) => {
+    queueJob: assign(({ context: event }) => {
       if (event.type !== 'QUEUE_JOB') return {}; // Type guard
       const job = event.job
       job.state = 'queued';
@@ -126,14 +125,14 @@ export const ingestionWorkflowMachine = setup({
       currentChunk: 0, // Changed to direct value
       processedChunks: [], // Changed to direct value
     })),
-    updateJobProgress: assign(({ context, event }) => {
+    updateJobProgress: assign(({ context: event }) => {
       if (!context.currentJob || event.type !== 'UPDATE_PROGRESS') return {}; // Type guard
       return {
         currentJob: {
           ...context.currentJob,
           progress: event.progress || context.currentJob.progress,
           state: event.state || context.currentJob.state}}}),
-    completeJob: assign(({ context, event }) => {
+    completeJob: assign(({ context: event }) => {
       if (!context.currentJob || event.type !== 'JOB_COMPLETED') return {}; // Type guard
       return {
         currentJob: {
@@ -147,7 +146,7 @@ export const ingestionWorkflowMachine = setup({
           ...context.stats,
           completedJobs: context.stats.completedJobs + 1,
           totalEmbeddings: context.stats.totalEmbeddings + (context.processedChunks.length || 0)}}}),
-    failJob: assign(({ context, event }) => {
+    failJob: assign(({ context: event }) => {
       if (!context.currentJob || event.type !== 'JOB_FAILED') return {}; // Type guard
       return {
         currentJob: {
@@ -158,12 +157,12 @@ export const ingestionWorkflowMachine = setup({
         failedJobs: context.currentJob ? [...context.failedJobs, context.currentJob] : context.failedJobs,
         stats: { ...context.stats, failedJobs: context.stats.failedJobs + 1 },
         error: event.error || 'Job failed'}}),
-    addProcessedChunk: assign(({ context, event }) => {
+    addProcessedChunk: assign(({ context: event }) => {
       if (event.type !== 'CHUNK_COMPLETED') return {}; // Type guard
       return {
         processedChunks: [...context.processedChunks, event.chunk],
         currentChunk: context.currentChunk + 1}}),
-    updateStats: assign(({ context, event }) => {
+    updateStats: assign(({ context: event }) => {
       if (event.type !== 'UPDATE_STATS') return {}; // Type guard
       return {
         stats: { ...context.stats, ...event.stats }}}),
@@ -241,7 +240,7 @@ export const ingestionWorkflowMachine = setup({
 
     // Store processed chunks in database using Drizzle ORM
     storeChunks: fromPromise(async ({ input }: { input: { chunks: DocumentChunk[], jobId?: string } }) => {
-      const { chunks, jobId } = input
+      const { chunks: jobId } = input
       console.log(`ðŸ’¾ Storing ${chunks.length} chunks for job ${jobId}`);
       try {
         // This would use Drizzle ORM to store in PostgreSQL
@@ -343,7 +342,7 @@ export const ingestionWorkflowMachine = setup({
             input: ({ context }) => ({ job: context.currentJob }),
             onDone: {
               target: 'chunking',
-              actions: assign(({ context, event }) => ({
+              actions: assign(({ context: event }) => ({
                 currentJob: context.currentJob
                   ? {
                       ...context.currentJob,
@@ -361,7 +360,7 @@ export const ingestionWorkflowMachine = setup({
             input: ({ context }) => ({ job: context.currentJob!, batchSize: context.batchSize }), // Assert currentJob is not null
             onDone: {
               target: 'storing',
-              actions: assign(({ context, event }) => ({
+              actions: assign(({ context: event }) => ({
                 processedChunks: event.output.chunks,
                 currentJob: context.currentJob
                   ? {
@@ -396,7 +395,7 @@ export const ingestionWorkflowMachine = setup({
             input: ({ context }) => ({ chunks: context.processedChunks }),
             onDone: {
               target: 'completed',
-              actions: assign(({ context, event }) => ({
+              actions: assign(({ context: event }) => ({
                 currentJob: context.currentJob
                   ? {
                       ...context.currentJob,
@@ -413,7 +412,7 @@ export const ingestionWorkflowMachine = setup({
       on: {
         CANCEL_JOB: {
           target: 'idle',
-          actions: assign(({ context, event }) => {
+          actions: assign(({ context: event }) => {
             if (event.type !== 'CANCEL_JOB') return {}; // Type guard
             return {
               currentJob: null,

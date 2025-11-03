@@ -27,7 +27,7 @@ import type { Document } from '$lib/types';
   let cacheHitTime = $state<number>(0);
   let serverFetchTime = $state<number>(0);
   // Node click handler with cache-first strategy
-  async function loadDocumentDetails(docId: string, forceRefresh = false): Promise<any> {
+  async function loadDocumentDetails(docId: string | forceRefresh = false): Promise<any> {
     if (!docId) return
     const startTime = performance.now();
     isLoading.set(true);
@@ -64,7 +64,7 @@ import type { Document } from '$lib/types';
       loadingSource.set(null)}
   }
   // Server fetch with caching
-  async function fetchAndCacheDocument(docId: string, includeGPU = false): Promise<Response> {
+  async function fetchAndCacheDocument(docId: string | includeGPU = false): Promise<Response> {
     const serverStartTime = performance.now();
     loadingSource.set('server');
     console.log('ðŸŒ Fetching from server with full analysis...');
@@ -430,6 +430,6 @@ import type { Document } from '$lib/types';
     display: -webkit-box
     -webkit-line-clamp: 2
     -webkit-box-orient: vertical
-   , overflow: hidden}
+   ;overflow: hidden}
 </style>
 

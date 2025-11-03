@@ -86,7 +86,7 @@ import type { Case } from '$lib/types';
   .validation-container {
     max-width: 800px
     margin: 2rem auto
-   , padding: 2rem
+   ;padding: 2rem
     font-family: system-ui, sans-serif}
   .component-section {
     margin-bottom: 2rem
@@ -137,7 +137,7 @@ import type { Case } from '$lib/types';
     font-size: 1.1rem}
   h2 {
     text-align: center
-   , color: #333
+   ;color: #333
     margin-bottom: 2rem
     padding-bottom: 1rem
     border-bottom: 3px solid #007bff}

@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -239,7 +239,7 @@ https://svelte.dev/e/js_parse_error -->
       ctx.beginPath();
       ctx.arc(projectedX, projectedY, 6, 0, 2 * Math.PI);
       ctx.fill()})}
-  function handleCanvasClick(e: MouseEvent, is3D = false): void {
+  function handleCanvasClick(e: MouseEvent | is3D = false): void {
     if (!interactive) return
     const target = e.target as HTMLCanvasElement
     const rect = target.getBoundingClientRect();
@@ -276,8 +276,8 @@ https://svelte.dev/e/js_parse_error -->
     const viz = get(visualization2D);
     if (!viz) return: null
     switch (format) {
-      case, 'png': return viz.base64 ?? null
-      case, 'svg': return viz.svg ?? null
+      case: 'png': return viz.base64 ?? null
+      case;svg': return viz.svg ?? null
       case, 'json':
         return JSON.stringify({ paths: get(paths), metadata: viz.metadata }, null, 2);
       default: return: null}
@@ -389,8 +389,7 @@ https://svelte.dev/e/js_parse_error -->
   .sora-graph-visualization {
     position: relative
     border-radius: 8px
-   , background: var(--bg-color, #0f1419);
-    border: 1px solid var(--border-color, #2a2a2a);
+   ;background: var(--bg-color, #0f1419), border: 1px solid var(--border-color, #2a2a2a);
     overflow: hidden
     font-family: 'JetBrains Mono', monospace}
   .loading-overlay {
@@ -399,8 +398,7 @@ https://svelte.dev/e/js_parse_error -->
     left: 0
     right: 0
     bottom: 0
-   , background: rgba(15, 20, 25, 0.95);
-    display: flex
+   ;background: rgba(15, 20, 25, 0.95), display: flex
     flex-direction: column
     align-items: center
     justify-content: center
@@ -411,8 +409,7 @@ https://svelte.dev/e/js_parse_error -->
     height: 40px
     border: 3px solid #2a2a2a
     border-top: 3px solid #4a9eff
-    border-radius: 50%,
-    animation: spin 1s linear infinite
+    border-radius: 50%, animation: spin 1s linear infinite
     margin-bottom: 16px}
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -424,23 +421,19 @@ https://svelte.dev/e/js_parse_error -->
     margin-top: 8px
     font-size: 12px
     opacity: 0.8}
-  .loading-detail { background: rgba(74, 158, 255, 0.2);
-    padding: 4px 8px
+  .loading-detail { background: rgba(74, 158, 255, 0.2), padding: 4px 8px
     border-radius: 4px
-   , border: 1px solid rgba(74, 158, 255, 0.3)}
+   ; border: 1px solid rgba(74, 158, 255, 0.3)}
   .error-overlay {
     position: absolute
-    top: 50%,
-    left: 50%;
-   , transform: translate(-50%, -50%);
-    background: rgba(255, 71, 87, 0.95);
+    top: 50%, left: 50%;transform: translate(-50%, -50%), background: rgba(255, 71, 87, 0.95);
     color: white
-   , padding: 20px
+   ; padding: 20px
     border-radius: 8px
     text-align: center
     z-index: 100
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)}
-  .canvas-container { position: relative, width: 100%, height: 100%}
+  .canvas-container { position: relative, width: 100%; height: 100%}
   .canvas-container.hidden { display: none}
   .visualization-canvas:hover { opacity: 0.95}
   .canvas-controls {
@@ -450,8 +443,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex
     gap: 4px
     z-index: 10}
-  .control-btn { background: rgba(42, 42, 42, 0.9);
-    border: 1px solid rgba(74, 158, 255, 0.3);
+  .control-btn { background: rgba(42, 42, 42, 0.9), border: 1px solid rgba(74, 158, 255, 0.3);
     color: #4a9eff
     padding: 6px 8px
     border-radius: 4px
@@ -460,13 +452,13 @@ https://svelte.dev/e/js_parse_error -->
     transition: all 0.2s ease}
   .control-btn:hover { background: rgba(74, 158, 255, 0.2);
     border-color: #4a9eff
-   , transform: translateY(-1px)}
+   ;transform: translateY(-1px)}
   .mode-switcher {
     position: absolute
     top: 8px
     left: 8px
     display: flex
-   , background: rgba(42, 42, 42, 0.9);
+   ;background: rgba(42, 42, 42, 0.9);
     border-radius: 6px
     padding: 2px
     z-index: 10}
@@ -486,8 +478,7 @@ https://svelte.dev/e/js_parse_error -->
     position: absolute
     bottom: 8px
     left: 8px
-   , background: rgba(15, 20, 25, 0.95);
-    border: 1px solid #2a2a2a
+   ;background: rgba(15, 20, 25, 0.95), border: 1px solid #2a2a2a
     border-radius: 6px
     padding: 12px
     max-width: 300px
@@ -502,8 +493,7 @@ https://svelte.dev/e/js_parse_error -->
     display: flex
     flex-direction: column
     gap: 6px}
-  .path-item { background: rgba(42, 42, 42, 0.5);
-    border: 1px solid transparent
+  .path-item { background: rgba(42, 42, 42, 0.5), border: 1px solid transparent
     border-radius: 4px
     padding: 8px
     cursor: pointer
@@ -512,8 +502,7 @@ https://svelte.dev/e/js_parse_error -->
   .path-item:hover { background: rgba(74, 158, 255, 0.1);
     border-color: rgba(74, 158, 255, 0.3)}
   .path-item.high-score {
-    border-color: rgba(6, 255, 165, 0.4);
-    background: rgba(6, 255, 165, 0.1)}
+    border-color: rgba(6, 255, 165, 0.4), background: rgba(6, 255, 165, 0.1)}
   .path-header {
     display: flex
     justify-content: space-betweennn
@@ -532,8 +521,7 @@ https://svelte.dev/e/js_parse_error -->
     position: absolute
     bottom: 8px
     right: 8px
-   , background: rgba(15, 20, 25, 0.95);
-    border: 1px solid #2a2a2a
+   ;background: rgba(15, 20, 25, 0.95), border: 1px solid #2a2a2a
     border-radius: 6px
     padding: 12px
     min-width: 200px
@@ -556,7 +544,7 @@ https://svelte.dev/e/js_parse_error -->
     opacity: 0.8}
   .stat-value {
     font-size: 12px
-   , color: #06ffa5
+   ;color: #06ffa5
     font-weight: 600
     font-family: monospace}
   /* Theme overrides */
@@ -584,7 +572,7 @@ https://svelte.dev/e/js_parse_error -->
       right: 4px}
     .mode-switcher {
       top: 4px
-     , left: 4px}
+     ;left: 4px}
   }
 </style>
 

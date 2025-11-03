@@ -1,4 +1,4 @@
-﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; import { MessageSquare, Brain, Zap, Cpu } from 'lucide-svelte'; // Props interface Props { collapsed?: boolean; showStatus?: boolean}
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { webAssemblyAIAdapter } from '$lib/adapters/webasm-ai-adapter'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; import { MessageSquare, Brain, Zap, Cpu } from 'lucide-svelte'; // Props interface Props { collapsed?: boolean; showStatus?: boolean}
   let { collapsed = false, showStatus = true }: Props = $props(); // State let chatInput = $state<string>(''); let messages = $state<any[]>([]); let isProcessing = $state<boolean>(false); let isInitialized = $state<boolean>(false); let error = $state<string | null>(null); // System status let systemStatus = $state({ webgpu: false, webasm: false, model: false, adapter: false }); // Quick prompts let quickPrompts = [
     'What are the key legal considerations for AI in healthcare?',
     'Explain GDPR compliance for AI systems.',
@@ -22,26 +22,26 @@
               onclick={ clearChat } class="text-xs text-gray-400 hover:text-gray-300 font-mono"
             > Clear </button> </div> </div> {:else} <div class="text-center"> <div class="text-xs text-gray-400"> {isInitialized ? `${messages.length} messages`: 'Initializing...'} </div> {#if isInitialized && systemStatus.model} <Badge class="bg-green-600" variant="secondary">Gemma 270MB Ready</Badge> {/if} {/if} </div> </div> </div> <style> .client-ai-chat { font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace; max-width: 320px}
   .client-ai-chat.collapsed { max-width: 200px}
-  .messages-container { scrollbar-width: thin, scrollbar-color: #4B5563 transparent}
+  .messages-container { scrollbar-width: thin; scrollbar-color: #4B5563 transparent}
   .messages-container::-webkit-scrollbar { width: 4px}
   .messages-container::-webkit-scrollbar-track { background: transparent}
-  .messages-container::-webkit-scrollbar-thumb { background: #4B5563, border-radius: 2px}
-  .message { padding: 8px, border-radius: 6px, margin: 4px 0}
-  .message.user { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3)}
-  .message.assistant { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3)}
-  .message.processing { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3)}
-  .icon { display: flex, align-items: center, justify-content: center, width: 20px, height: 20px, border-radius: 50%, flex-shrink: 0, margin-top: 2px}
-  .icon.user { background: rgba(59, 130, 246, 0.2); color: #60A5FA}
-  .icon.assistant { background: rgba(16, 185, 129, 0.2); color: #34D399}
-  .content { flex: 1, min-width: 0}
+  .messages-container: :-webkit-scrollbar-thumb { background: #4B5563; border-radius: 2px}
+  .message { padding: 8px; border-radius: 6px, margin: 4px 0}
+  .message.user { background: rgba(59, 130, 246, 0.1), border: 1px solid rgba(59, 130, 246, 0.3)}
+  .message.assistant { background: rgba(16, 185, 129, 0.1), border: 1px solid rgba(16, 185, 129, 0.3)}
+  .message.processing { background: rgba(251, 191, 36, 0.1), border: 1px solid rgba(251, 191, 36, 0.3)}
+  .icon { display: flex; align-items: center, justify-content: center, width: 20px; height: 20px; border-radius: 50%, flex-shrink: 0; margin-top: 2px}
+  .icon.user { background: rgba(59, 130, 246, 0.2), color: #60A5FA}
+  .icon.assistant { background: rgba(16, 185, 129, 0.2), color: #34D399}
+  .content { flex: 1; min-width: 0}
   .typing-indicator { display: flex, gap: 2px, align-items: center}
-  .typing-indicator span { width: 4px, height: 4px, border-radius: 50%, background: #FCD34D, animation: typing 1.4s ease-in-out infinite}
+  .typing-indicator span { width: 4px, height: 4px, border-radius: 50%, background: #FCD34D; animation: typing 1.4s ease-in-out infinite}
   .typing-indicator, span:nth-child(2) { animation-delay: 0.2s}
   .typing-indicator, span:nth-child(3) { animation-delay: 0.4s}
   @keyframes typing { 0%, 60%, 100% { transform: translateY(0), opacity: 0.7}
     30% { transform: translateY(-6px), opacity: 1}
   } .quick-prompts button { font-size: 10px, transition: all 0.2s ease}
-  .quick-prompts, button:hover:not(:disabled) { transform: translateY(-1px), box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2)}
+  .quick-prompts, button: hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2)}
   .error-message { animation: shake 0.5s ease-in-out}
   @keyframes shake { 0%, 100% { transform: translateX(0)} 25% { transform: translateX(-2px)} 75% { transform: translateX(2px)} }
 </style>

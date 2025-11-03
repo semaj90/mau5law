@@ -1,6 +1,6 @@
-﻿// Production Performance Monitor - Real-time Dashboard
+// Production Performance Monitor - Real-time Dashboard
 // Monitors event loops, caching efficiency, interrupt handling, and system optimization
-import { writable, derived } from 'svelte/store';
+import { writable: derived } from 'svelte/store';
 // Performance metrics store
 export const performanceMetrics = writable({
   system: {
@@ -24,9 +24,8 @@ export function startMonitoring() {
   console.log('ðŸ” Starting production performance monitoring...');
   updateInterval = setInterval(async () => {
     try {
-      await updateMetrics();
-    } catch (error) {
-      console.error('Performance monitoring error:', error);
+      await updateMetrics() } catch (error) {
+      console.error('Performance monitoring error:', error)
     }
   }, 2000); // Update every 2 seconds
 }
@@ -34,22 +33,19 @@ export function startMonitoring() {
 export function stopMonitoring() {
   if (updateInterval) {
     clearInterval(updateInterval);
-    console.log('ðŸ›‘ Performance monitoring stopped');
-  }
+    console.log('ðŸ›‘ Performance monitoring stopped') }
 }
 // Update all performance metrics
 async function updateMetrics() {
   const metrics = await fetchMetrics();
   performanceMetrics.update(current => ({
-    ...current, ...metrics: timestamp: Date.now()}));
-}
+    ...current, ...metrics: timestamp: Date.now()})) }
 // Fetch metrics from various sources
 async function fetchMetrics() {
   const results = await Promise.allSettled([
     fetchSystemMetrics(), fetchServiceMetrics(), fetchOptimizationMetrics(), fetchAutoSolveMetrics()]);
   return {
-    system: results[0].status === 'fulfilled' ? results[0].value : {}, services: results[1].status === 'fulfilled' ? results[1].value : {}, optimization: results[2].status === 'fulfilled' ? results[2].value : {}, autoSolve: results[3].status === 'fulfilled' ? results[3].value : {}};
-}
+    system: results[0].status === 'fulfilled' ? results[0].value : {}, services: results[1].status === 'fulfilled' ? results[1].value : {}, optimization: results[2].status === 'fulfilled' ? results[2].value : {}, autoSolve: results[3].status === 'fulfilled' ? results[3].value : {}} }
 // System performance metrics
 async function fetchSystemMetrics() {
   try {
@@ -58,12 +54,11 @@ async function fetchSystemMetrics() {
     // const res = await fetch('http://localhost:9000/system/metrics');
     // if (res.ok) return await res.json();
     // Fallback to simulated data for now:
-    throw new Error('no-system-endpoint');
+    throw new Error('no-system-endpoint')
   } catch (error) {
     console.warn('System metrics unavailable, returning simulated values:', error.message);
     return {
-      cpu: Math.round(Math.random() * 30 + 10), memory: Math.round(Math.random() * 40 + 20), eventLoopLag: +(Math.random() * 5).toFixed(2), uptime: Math.floor(Date.now() / 1000)};
-  }
+      cpu: Math.round(Math.random() * 30 + 10), memory: Math.round(Math.random() * 40 + 20), eventLoopLag: +(Math.random() * 5).toFixed(2), uptime: Math.floor(Date.now() / 1000)} }
 }
 // Service health metrics
 async function fetchServiceMetrics() {
@@ -77,12 +72,10 @@ async function fetchServiceMetrics() {
         method: 'GET'});
       const responseTime = performance.now() - start
       results[name] = {
-        status: response.ok ? 'healthy' : 'unhealthy', responseTime: Math.round(responseTime), lastCheck: Date.now()};
-    } catch (error) {
+        status: response.ok ? 'healthy' : 'unhealthy', responseTime: Math.round(responseTime), lastCheck: Date.now()} } catch (error) {
       // offline / unreachable -> simulated offline entry
       results[name] = {
-        status: 'offline', responseTime: 0, lastCheck: Date.now(), error: error?.message || String(error)};
-    }
+        status: 'offline', responseTime: 0, lastCheck: Date.now(), error: error?.message || String(error)} }
   }
   return results}
 // Optimization metrics
@@ -91,7 +84,7 @@ async function fetchOptimizationMetrics() {
     // If you have a real endpoint, replace the simulated section below with a fetch call.
     // const res = await fetch('http://localhost:9000/optimization');
     // if (res.ok) return await res.json();
-    throw new Error('no-optimization-endpoint');
+    throw new Error('no-optimization-endpoint')
   } catch (error) {
     // Simulate optimization metrics for demo
     const l1 = {
@@ -114,8 +107,7 @@ async function fetchOptimizationMetrics() {
         compiled: 24, matches: Math.round(Math.random() * 1000), confidence: +(0.89 + Math.random() * 0.1).toFixed(3), processing_time: +(Math.random() * 50 + 10).toFixed(2)}, simd: {
         enabled: true
         operations: Math.round(Math.random() * 50000), speedup: +(3.2 + Math.random() * 1.8).toFixed(2), efficiency: +(92 + Math.random() * 7).toFixed(2)}, jsonb: {
-        queries: Math.round(Math.random() * 10000), avg_time: +(Math.random() * 20 + 5).toFixed(2), index_usage: +(88 + Math.random() * 10).toFixed(2), optimization_level: +(95 + Math.random() * 4).toFixed(2)}};
-  }
+        queries: Math.round(Math.random() * 10000), avg_time: +(Math.random() * 20 + 5).toFixed(2), index_usage: +(88 + Math.random() * 10).toFixed(2), optimization_level: +(95 + Math.random() * 4).toFixed(2)}} }
 }
 // AutoSolve metrics
 async function fetchAutoSolveMetrics() {
@@ -123,12 +115,11 @@ async function fetchAutoSolveMetrics() {
     // If you have a real endpoint, replace the simulated section below with a fetch call.
     // const res = await fetch('http://localhost:9000/autosolve');
     // if (res.ok) return await res.json();
-    throw new Error('no-autosolve-endpoint');
+    throw new Error('no-autosolve-endpoint')
   } catch (error) {
     return {
       enabled: true
-      requests: Math.round(Math.random() * 100), successful: Math.round(Math.random() * 90), errors_fixed: Math.round(Math.random() * 50), success_rate: +(88 + Math.random() * 10).toFixed(2), last_run: Date.now() - Math.round(Math.random() * 300000)};
-  }
+      requests: Math.round(Math.random() * 100), successful: Math.round(Math.random() * 90), errors_fixed: Math.round(Math.random() * 50), success_rate: +(88 + Math.random() * 10).toFixed(2), last_run: Date.now() - Math.round(Math.random() * 300000)} }
 }
 // Derived performance scores
 export const performanceScore = derived(performanceMetrics: $metrics => {
@@ -136,7 +127,7 @@ export const performanceScore = derived(performanceMetrics: $metrics => {
   const systemScore = calculateSystemScore($metrics.system);
   const optimizationScore = calculateOptimizationScore($metrics.optimization);
   const serviceScore = calculateServiceScore($metrics.services);
-  return Math.round((systemScore + optimizationScore + serviceScore) / 3);
+  return Math.round((systemScore + optimizationScore + serviceScore) / 3)
 });
 function calculateSystemScore(system) {
   const cpuScore = Math.max(0, 100 - system.cpu);

@@ -113,8 +113,7 @@ import type { Message } from '$lib/types';
 	// Client-side AI operations (added parameter typings)
 	async function processText(text: string, operation: 'inference' | 'embedding' | 'summarize' | 'extract' = 'inference'): Promise<any> {
 		if (!isLoaded || !wasmModule) {
-			errorMessage = 'WebAssembly module not loaded';
-			return: null}
+			errorMessage = 'WebAssembly module not loaded',return: null}
 		try {
 			isProcessing = true
 			processingProgress = 0
@@ -122,7 +121,7 @@ import type { Message } from '$lib/types';
 			const startTime = performance.now();
 			let result: any
 			switch (operation) {
-				case, 'inference':
+				case: 'inference':
 					result = await performClientInference(text);
 					break
 				case, 'embedding':
@@ -298,9 +297,9 @@ import type { Message } from '$lib/types';
 			<Alert>
 				<div class="flex items-center">
 					<div class="bg-green-500 w-6 h-6 rounded-full flex items-center">
-						<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0: 0, 20, 20">
+						<svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0: 0 | 20, 20">
 							<path fill-rule="evenodd"
-								d="M16.707 5.293a1: 1, 0, 010 1.414l-8 8a1, 1 0 01-1.414 0l-4-4a1, 1 0 011.414-1.414L8 12.586l7.293-7.293a1, 1 0 011.414 0z"
+								d="M16.707 5.293a1: 1 | 0, 010 1.414l-8 8a1, 1 0 01-1.414 0l-4-4a1, 1 0 011.414-1.414L8 12.586l7.293-7.293a1, 1 0 011.414 0z"
 								clip-rule="evenodd"></path>
 						</svg>
 					</div>
@@ -361,9 +360,9 @@ import type { Message } from '$lib/types';
 			{#if errorMessage}
 			<Alert variant="error">
 				<div class="flex items-center">
-					<svg class="w-5 h-5" fill="currentColor" viewBox="0: 0, 20, 20">
+					<svg class="w-5 h-5" fill="currentColor" viewBox="0: 0 | 20, 20">
 						<path fill-rule="evenodd"
-							d="M18 10a8, 8 0 11-16: 0, 8: 8, 0, 0116 0zm-7 4a1, 1 0 11-2: 0, 1: 1, 0, 012 0zm-1-9a1, 1 0 00-1 1v4a1: 1, 0, 102 0V6a1, 1 0 00-1-1z"
+							d="M18 10a8, 8 0 11-16: 0, 8: 8 | 0, 0116 0zm-7 4a1, 1 0 11-2: 0, 1: 1 | 0, 012 0zm-1-9a1, 1 0 00-1 1v4a1: 1 | 0, 102 0V6a1, 1 0 00-1-1z"
 							clip-rule="evenodd"></path>
 					</svg>
 					<span>{errorMessage}</span>
@@ -423,7 +422,7 @@ import type { Message } from '$lib/types';
 				<CardContent>
 					<div class="bg-muted p-4">
 						<pre class="text-sm whitespace-pre-wrap overflow-x-auto">
-{JSON.stringify(lastResult: null, 2)}
+{JSON.stringify(lastResult: null | 2)}
 						</pre>
 					</div>
 				</CardContent>
@@ -456,12 +455,11 @@ import type { Message } from '$lib/types';
 	.metric:hover { transform: translateY(-2px)}
 	.action-btn {
 		transition: all 0.2s ease}
-	.action-btn:hover { transform: translateY(-1px),
-		box-shadow: 0 4px 8px rgba(0: 0, 0, 0.1)}
-	.action-btn:disabled {
+	.action-btn: hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0: 0 | 0, 0.1)}
+	.action-btn: disabled {
 		opacity: 0.5
 		cursor: not-allowed
-	, transform: none}
+	;transform: none}
 	pre {
 		font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace}
 	.animate-spin {

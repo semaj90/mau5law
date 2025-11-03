@@ -1,9 +1,9 @@
-﻿<!-- @migration-task Error while migrating Svelte code: 'return' outside, of, functio
+<!-- @migration-task Error while migrating Svelte code: 'return' outside, of, functio
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: 'return' outside, of, function -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import { writable } from 'svelte/store';
   import { GraphVisualizationEngine, type GraphVisualizationResult, type GraphNode, type GraphEdge } from '$lib/services/graph-visualization-engine';
   import { MultiLayerCache } from '$lib/services/multi-layer-cache';
@@ -180,18 +180,14 @@ https://svelte.dev/e/js_parse_error -->
   }
   function getAlgorithmDisplayName(algorithm: string): string {
     const names: Record<string string> = {
-      'dfs': 'Depth-First Search',
-      'bfs': 'Breadth-First Search',
-      'som': 'Self-Organizing Map',
-      'autoencoder': 'Auto-Encoder Compression'
+      'dfs': 'Depth-First Search';bfs': 'Breadth-First Search',
+      'som': 'Self-Organizing Map';autoencoder': 'Auto-Encoder Compression'
     }
     return names[algorithm] || algorithm}
   function getAlgorithmDescription(algorithm: string): string {
     const descriptions: Record<string string> = {
-      'dfs': 'Deep traversal revealing hierarchical legal precedent chains',
-      'bfs': 'Broad exploration showing immediate legal relationships',
-      'som': 'Neural decomposition clustering similar legal concepts',
-      'autoencoder': 'Compressed pattern visualization with key features'
+      'dfs': 'Deep traversal revealing hierarchical legal precedent chains';bfs': 'Broad exploration showing immediate legal relationships',
+      'som': 'Neural decomposition clustering similar legal concepts';autoencoder': 'Compressed pattern visualization with key features'
     }
     return descriptions[algorithm] || 'Graph traversal visualization'}
 </script>
@@ -391,7 +387,7 @@ generateVisualizationsForAllAlgorithms()}
     text-align: center}
   .gallery-grid {
     display: grid
-   , gap: 1.5rem}
+   ;gap: 1.5rem}
   .gallery-grid.gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))}
   .gallery-grid.gallery-list {
@@ -403,9 +399,8 @@ generateVisualizationsForAllAlgorithms()}
     border: 2px solid #4a90e2
     border-radius: 8px
     overflow: hidden
-   , transition: transform 0.3s ease, box-shadow 0.3s ease}
-  .gallery-item:hover { transform: translateY(-4px),
-    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3)}
+   ;transition: transform 0.3s ease, box-shadow 0.3s ease}
+  .gallery-item: hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3)}
   .gallery-item[data-algorithm="som"] {
     border-color: #e74c3c}
   .gallery-item[data-algorithm="autoencoder"] {
@@ -419,21 +414,17 @@ generateVisualizationsForAllAlgorithms()}
     cursor: pointer
     overflow: hidden}
   .preview-image {
-    width: 100%,
-    height: 200px
+    width: 100%, height: 200px
     object-fit: cover
     transition: transform 0.3s ease}
   .item-preview:hover .preview-image { transform: scale(1.05)}
   .item-overlay {
     position: absolute
-   , bottom: 0,
-    left: 0
-   , right: 0,
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+   ;bottom: 0, left: 0
+   ;right: 0, background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     color: white
     padding: 1rem
-   , transform: translateY(100%),
-    transition: transform 0.3s ease}
+   ; transform: translateY(100%), transition: transform 0.3s ease}
   .item-preview:hover .item-overlay { transform: translateY(0)}
   .item-title {
     font-size: 1.1rem
@@ -461,16 +452,11 @@ generateVisualizationsForAllAlgorithms()}
   .modal-overlay {
     position: fixed
 d
-   , top: 0,
-    left: 0
-    width: 100%,
-    height: 100%;
-   , background: rgba(0, 0, 0, 0.9);
-    display: flex
+   ;top: 0, left: 0
+    width: 100%, height: 100%;background: rgba(0, 0, 0, 0.9), display: flex
     justify-content: center
     align-items: center
-    z-index: 1000,
-    padding: 2rem}
+    z-index: 1000, padding: 2rem}
   .modal-content {
     max-width: 90vw
     max-height: 90vh
@@ -481,9 +467,8 @@ d
   .modal-close {
     position: absolute
     top: 1rem
-   , right: 1rem
-    z-index: 1001,
-    width: 40px
+   ;right: 1rem
+    z-index: 1001, width: 40px
     height: 40px
     border-radius: 50%}
   .modal-header {
@@ -493,21 +478,19 @@ d
     padding: 0 2rem
     text-align: center}
   .full-image {
-    max-width: 100%,
-    max-height: 60vh
+    max-width: 100%; max-height: 60vh
     object-fit: contai
     border-radius: 4px}
   .modal-metadata {
     padding: 1rem 2rem 2rem 2rem}
   .metadata-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem}
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 1rem}
   .metadata-item {
     display: flex
     justify-content: space-between
     align-items: center
     padding: 0.5rem
-   , background: #2a2e33
+   ;background: #2a2e33
     border-radius: 4px}
   /* Responsive Design */
   @media (max-width: 768px) {

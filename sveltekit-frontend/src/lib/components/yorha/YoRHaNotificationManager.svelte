@@ -1,4 +1,4 @@
-﻿<!-- YoRHa Notification, Manager, Component -->
+<!-- YoRHa Notification, Manager, Component -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  YoRHaNotification  from "./YoRHaNotification.svelte";
@@ -50,10 +50,9 @@
   .notification-group {
     position: fixed
 d
-    z-index: 9999,
-    display: flex
+    z-index: 9999, display: flex
     flex-direction: column
-   , gap: 12px
+   ;gap: 12px
     pointer-events: none}
   .notification-group > :global(.yorha-notification) {
     pointer-events: auto}
@@ -73,9 +72,7 @@ d
     left: 20px
     flex-direction: column-rever}
   .notification-group-center {
-    top: 50%,
-    left: 50%;
-   , transform: translate(-50%, -50%);
+    top: 50%, left: 50%;transform: translate(-50%, -50%);
     align-items: center}
   /* Responsive adjustments */
   @media (max-width: 768px) {
@@ -83,12 +80,12 @@ d
     .notification-group-top-left {
       top: 10px
       right: 10px
-     , left: 10px}
+     ;left: 10px}
     .notification-group-bottom-right,
     .notification-group-bottom-left {
       bottom: 10px
       right: 10px
-     , left: 10px}
+     ;left: 10px}
   }
 </style>
 

@@ -206,7 +206,7 @@ export class RAGMinIOGPUSOMCache {
     return null}
 
   // Semantic search within clusters (simulated GPU)
-  async semanticSearch(queryVector: Float32Array, limit = 10): Promise<CacheEntry[]> {
+  async semanticSearch(queryVector: Float32Array | limit = 10): Promise<CacheEntry[]> {
     const bmu = await this.findBMU(queryVector);
     const results: Array<{ entry: CacheEntry, similarity: number }> = [];
 
@@ -214,7 +214,7 @@ export class RAGMinIOGPUSOMCache {
       const entry = this.l1Cache.get(docId) || this.l2Cache.get(docId) || this.l3Cache.get(docId);
       if (entry) {
         const similarity = await this.computeSimilarityGPU(queryVector, entry.vector);
-        results.push({ entry, similarity })}
+        results.push({ entry: similarity })}
     };
 
     const clusterDocs = this.somGrid[bmu.y][bmu.x].documents.slice(0, limit);

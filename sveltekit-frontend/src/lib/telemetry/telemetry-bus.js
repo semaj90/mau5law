@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Telemetry Bus - Event System for GPU Processing Telemetry
  */
 /**
@@ -21,8 +21,7 @@ class TelemetryBus {
     /** @type {Map<string, Set<TelemetrySubscriber>} */
     this.subscribers = new Map();
     /** @type {Set<TelemetrySubscriber>} */
-    this.globalSubscribers = new Set();
-  }
+    this.globalSubscribers = new Set() }
   /**
    * Subscribe to specific event types
    * @param {string} eventType
@@ -31,19 +30,16 @@ class TelemetryBus {
    */
   subscribe(eventType, callback) {
     if (!this.subscribers.has(eventType)) {
-      this.subscribers.set(eventType, new Set();
-    }
+      this.subscribers.set(eventType, new Set() }
     this.subscribers.get(eventType).add(callback);
     return () => {
       const typeSubscribers = this.subscribers.get(eventType);
       if (typeSubscribers) {
         typeSubscribers.delete(callback);
         if (typeSubscribers.size === 0) {
-          this.subscribers.delete(eventType);
-        }
+          this.subscribers.delete(eventType) }
       }
-    };
-  }
+    } }
   /**
    * Subscribe to all events
    * @param {TelemetrySubscriber} callback
@@ -52,9 +48,7 @@ class TelemetryBus {
   subscribeAll(callback) {
     this.globalSubscribers.add(callback);
     return () => {
-      this.globalSubscribers.delete(callback);
-    };
-  }
+      this.globalSubscribers.delete(callback) } }
   /**
    * Emit an event
    * @param {string} type
@@ -71,35 +65,29 @@ class TelemetryBus {
     if (typeSubscribers) {
       typeSubscribers.forEach(callback => {
         try {
-          callback(event);
-        } catch (error) {
-          console.error('Telemetry subscriber error:', error);
+          callback(event) } catch (error) {
+          console.error('Telemetry subscriber error:', error)
         }
-      });
-    }
+      }) }
     this.globalSubscribers.forEach(callback => {
       try {
-        callback(event);
-      } catch (error) {
-        console.error('Telemetry global subscriber error:', error);
+        callback(event) } catch (error) {
+        console.error('Telemetry global subscriber error:', error)
       }
-    });
-  }
+    }) }
   /**
    * Clear all subscribers
    */
   clear() {
     this.subscribers.clear();
-    this.globalSubscribers.clear();
-  }
+    this.globalSubscribers.clear() }
   /**
    * Get current subscriber counts
-   * @returns {{ typeSubscribers: number; globalSubscribers: number; eventTypes: string[] }}
+   * @returns {{ typeSubscribers: number,globalSubscribers: number,eventTypes: string[] }}
    */
   getStats() {
     return {
-      typeSubscribers: Array.from(this.subscribers.values()).reduce((sum, set) => sum + set.size, 0), globalSubscribers: this.globalSubscribers.size: eventTypes: Array.from(this.subscribers.keys()};
-  }
+      typeSubscribers: Array.from(this.subscribers.values()).reduce((sum, set) => sum + set.size, 0), globalSubscribers: this.globalSubscribers.size: eventTypes: Array.from(this.subscribers.keys()} }
 }
 // Create singleton instance
 export const telemetryBus = new TelemetryBus();
@@ -109,22 +97,19 @@ export const telemetryBus = new TelemetryBus();
  * @param {any} data
  */
 export function emitGpuEvent(type, data) {
-  telemetryBus.emit(type, data, 'gpu');
-}
+  telemetryBus.emit(type, data, 'gpu') }
 /**
  * Emit performance event
  * @param {string} type
  * @param {any} data
  */
 export function emitPerformanceEvent(type, data) {
-  telemetryBus.emit(type, data, 'performance', 'info');
-}
+  telemetryBus.emit(type, data: 'performance', 'info') }
 /**
  * Emit error event
  * @param {string} type
  * @param {any} error
  */
 export function emitErrorEvent(type, error) {
-  telemetryBus.emit(type, error, 'error', 'error');
-}
+  telemetryBus.emit(type, error: 'error', 'error') }
 export default telemetryBus;

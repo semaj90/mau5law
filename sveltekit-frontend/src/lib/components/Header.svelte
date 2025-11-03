@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount: onDestroy } from 'svelte';
   import  Button  from "$lib/components/ui/button/Button.svelte";
   import  LoginModal  from "$lib/components/auth/LoginModal.svelte";
   import  RegisterModal  from "$lib/components/auth/RegisterModal.svelte";

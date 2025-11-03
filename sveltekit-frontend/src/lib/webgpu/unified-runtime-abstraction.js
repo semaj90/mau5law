@@ -5,13 +5,13 @@
     if (navigator.gpu) {
       try {
         await navigator.gpu.requestAdapter();
-        console.log('[Unified Runtime] WebGPU adapter found.');
+        console.log('[Unified Runtime] WebGPU adapter found.')
       } catch (e) {
-        console.warn('[Unified Runtime] WebGPU adapter request failed:', e);
+        console.warn('[Unified Runtime] WebGPU adapter request failed:', e)
       }
     }
   }, dispose: () => {
-    console.log('[Unified Runtime] Disposing mock runtime.');
+    console.log('[Unified Runtime] Disposing mock runtime.')
   }, getCapabilities: () => ({
     webgpu: { available: !!navigator.gpu }, webgl2: { available: !!document.createElement('canvas').getContext('webgl2') }, wasmSIMD: { available: typeof WebAssembly.validate === 'function' }, // Check if WebAssembly.validate exists
     tensorRT: { available: false }, // Mocked as false for client-side abstraction

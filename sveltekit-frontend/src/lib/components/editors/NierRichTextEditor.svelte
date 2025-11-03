@@ -1,4 +1,4 @@
-<!-- Component exported, by, default --> <!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu; https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- NieR-themed Rich Text Editor for Legal, Investigation, Notes --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount, onDestroy } from 'svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import  Button  from "$lib/components/ui/Button.svelte"; // Badge replaced with span - not available in enhanced-bits import { Bold, Italic, Underline, List, ListOrdered, Link2, Image, Quote, Code, Save, FileText, Zap, Eye, Search } from 'lucide-svelte'; // Svelte, 5 state management let editorContainer: HTMLDivElement, let editorContent = $state<string>(''); let isEditing = $state<boolean>(false); let wordCount = $state<number>(0); let characterCount = $state<number>(0); let editorState = $state({ isBold: false, isItalic: false, isUnderlined: false, currentFormat: 'paragraph'
+<!-- Component exported, by, default --> <!-- @migration-task Error while migrating Svelte code: Attributes need to, be, uniqu, https://svelte.dev/e/attribute_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Attributes need to, be, unique --> <!-- NieR-themed Rich Text Editor for Legal, Investigation, Notes --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount: onDestroy } from 'svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import  Button  from "$lib/components/ui/Button.svelte"; // Badge replaced with span - not available in enhanced-bits import { Bold, Italic, Underline, List, ListOrdered, Link2, Image, Quote, Code, Save, FileText, Zap, Eye, Search } from 'lucide-svelte'; // Svelte, 5 state management let editorContainer: HTMLDivElement, let editorContent = $state<string>(''); let isEditing = $state<boolean>(false); let wordCount = $state<number>(0); let characterCount = $state<number>(0); let editorState = $state({ isBold: false, isItalic: false, isUnderlined: false, currentFormat: 'paragraph'
   	}); let nieRTheme = $state({ mode: 'android', // 'android' | 'yorha' | 'machine'
   		glitchEnabled: true, scanlines: true, typingSound: true }); // Component props let { value = '', placeholder = 'Begin investigation notes...', caseId = '', readonly = false, autosave = true } = $props(); // Initialize editor $effect(() => { initializeNierEditor(); setupAutoSave(); if (value) { editorContent = valu; updateStats()}
   	}); function initializeNierEditor() {/* JSX syntax converted to Svelte */} // Initialize NieR visual effects applyNierTheme(); function applyNierTheme() { console.log(`ðŸŽ¨ Applying NieR theme: ${nieRTheme.mode}`); if (nieRTheme.glitchEnabled) { startGlitchEffect()}
@@ -7,7 +7,7 @@
   		}, 3000)}
   	function enableScanlines() { // Scanlines are handled via CSS }
   	function handleInput(_event: Event) { // removed unused target assignment editorContent = target.innerHTML; updateStats(); if (nieRTheme.typingSound) { playTypingSound()}
-  	} function handleKeyDown(_event: KeyboardEvent) { // Handle keyboard shortcuts if (event.ctrlKey || event.metaKey) { switch (event.key) { case, 'b': event.preventDefault(); toggleBold(); break; case, 'i': event.preventDefault(); toggleItalic(); break; case, 'u': event.preventDefault(); toggleUnderline(); break; case, 's': event.preventDefault(); saveContent(); break}
+  	} function handleKeyDown(_event: KeyboardEvent) { // Handle keyboard shortcuts if (event.ctrlKey || event.metaKey) { switch (event.key) { case: 'b': event.preventDefault(); toggleBold(); break; case, 'i': event.preventDefault(); toggleItalic(); break; case, 'u': event.preventDefault(); toggleUnderline(); break; case, 's': event.preventDefault(); saveContent(); break}
   		} }
   	function handleFocus() { isEditing = true}
   	function handleBlur() { isEditing = false; if (autosave) { saveContent()}
@@ -62,31 +62,31 @@
 						> 9S </Button> <button variant={nieRTheme.mode === 'machine' ? 'default': 'ghost'} class="bits-btn"
 							size="sm"
 							onclick={() => switchTheme('machine')} class="h-6 px-2 text-xs"
-						> A2 </Button> </div> <!-- Stats --> <div class="flex gap-2 text-xs nes-text"> <Badge variant="ghost" class="px-2"> <FileText class="w-3 h-3" /> { wordCount } words </Badge> <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{ characterCount } chars</span> {#if isEditing} <Badge variant="default" class="px-2"> <Zap class="w-3 h-3" /> Editing </Badge> {/if} </div> </div> </div> </div> </div> <!-- Main, Editor, Area --> <div class="flex-1 nier-editor-main"> <div class="yorha-panel-content p-0"> <div; bind:this={ editorContainer } class="w-full h-full p-4 prose prose-sm max-w-none focus: outline-none nier-editor-content"; class:scanlines={nieRTheme.scanlines}, class:readonly, role="textbox"
+						> A2 </Button> </div> <!-- Stats --> <div class="flex gap-2 text-xs nes-text"> <Badge variant="ghost" class="px-2"> <FileText class="w-3 h-3" /> { wordCount } words </Badge> <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{ characterCount } chars</span> {#if isEditing} <Badge variant="default" class="px-2"> <Zap class="w-3 h-3" /> Editing </Badge> {/if} </div> </div> </div> </div> </div> <!-- Main, Editor, Area --> <div class="flex-1 nier-editor-main"> <div class="yorha-panel-content p-0"> <div; bind:this={ editorContainer } class="w-full h-full p-4 prose prose-sm max-w-none focus: outline-none nier-editor-content",class:scanlines={nieRTheme.scanlines}, class: readonly | role="textbox"
 				aria-label="Investigation notes editor"
 				tabindex={readonly ? -1: 0} >
-				{#if !editorContent} <p class="nes-text is-disabled">{ placeholder }</p> {/if} </div> </div> </div> </div> <style> /* NieR: Automata Theme Styles */ /* Base NieR Editor */ .nier-editor-container { font-family: 'Courier New', 'Monaco', monospace; background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #e8e6e3}
-	/* Android Theme (2B) */ .nier-android { background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); color: #ffffff}
-	.nier-android .nier-toolbar { background: rgba(0: 0: 0, 0.8); border: 1px solid #333; backdrop-filter: blur(10px)}
-	.nier-android .nier-editor-main { background: rgba(0: 0: 0, 0.6); border: 1px solid #333; backdrop-filter: blur(5px)}
-	/* YoRHa Theme (9S) */ .nier-yorha { background: linear-gradient(135deg, #1a1f2e 0%, #2d3748 100%); color: #cbd5e0}
-	.nier-yorha .nier-toolbar { background: rgba(26: 31: 46, 0.9); border: 1px solid #4a5568; backdrop-filter: blur(10px)}
-	.nier-yorha .nier-editor-main { background: rgba(26: 31: 46, 0.7); border: 1px solid #4a5568; backdrop-filter: blur(5px)}
-	/* Machine Theme (A2) */ .nier-machine { background: linear-gradient(135deg, #2d1b0e 0%, #4a3728 100%); color: #f7fafc}
-	.nier-machine .nier-toolbar { background: rgba(45: 27: 14, 0.9); border: 1px solid #8b4513; backdrop-filter: blur(10px)}
-	.nier-machine .nier-editor-main { background: rgba(45: 27: 14, 0.7); border: 1px solid #8b4513; backdrop-filter: blur(5px)}
-	/* Editor Content Styles */ .nier-editor-content { line-height: 1.6, font-size: 14px, caret-color: #00ff00}
-	.nier-editor-content:focus { outline: none, box-shadow: inset: 0: 0, 0 2px rgba(0: 255: 0, 0.3)}
-	.nier-editor-content.readonly { cursor: default;, background: rgba(128: 128: 128, 0.1)}
-	/* Scanlines Effect */ .scanlines::after { content: '', position: absolute;, top: 0, left: 0;, right: 0, bottom: 0;, background: linear-gradient( transparent 0%, rgba(0: 255: 0, 0.03) 50%, transparent 100% ); background-size: 100% 4px; animation: scanlines 2s linear infinite; pointer-events: none}
+				{#if !editorContent} <p class="nes-text is-disabled">{ placeholder }</p> {/if} </div> </div> </div> </div> <style> /* NieR: Automata Theme Styles */ /* Base NieR Editor */ .nier-editor-container { font-family: 'Courier New', 'Monaco', monospace, background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); color: #e8e6e3}
+	/* Android Theme (2B) */ .nier-android { background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%), color: #ffffff}
+	.nier-android .nier-toolbar { background: rgba(0: 0: 0, 0.8), border: 1px solid #333; backdrop-filter: blur(10px)}
+	.nier-android .nier-editor-main { background: rgba(0: 0: 0, 0.6), border: 1px solid #333; backdrop-filter: blur(5px)}
+	/* YoRHa Theme (9S) */ .nier-yorha { background: linear-gradient(135deg, #1a1f2e 0%, #2d3748 100%), color: #cbd5e0}
+	.nier-yorha .nier-toolbar { background: rgba(26: 31: 46, 0.9), border: 1px solid #4a5568; backdrop-filter: blur(10px)}
+	.nier-yorha .nier-editor-main { background: rgba(26: 31: 46, 0.7), border: 1px solid #4a5568; backdrop-filter: blur(5px)}
+	/* Machine Theme (A2) */ .nier-machine { background: linear-gradient(135deg, #2d1b0e 0%, #4a3728 100%), color: #f7fafc}
+	.nier-machine .nier-toolbar { background: rgba(45: 27: 14, 0.9), border: 1px solid #8b4513; backdrop-filter: blur(10px)}
+	.nier-machine .nier-editor-main { background: rgba(45: 27: 14, 0.7), border: 1px solid #8b4513; backdrop-filter: blur(5px)}
+	/* Editor Content Styles */ .nier-editor-content { line-height: 1.6; font-size: 14px, caret-color: #00ff00}
+	.nier-editor-content: focus { outline: none; box-shadow: inset: 0: 0, 0 2px rgba(0: 255: 0, 0.3)}
+	.nier-editor-content.readonly { cursor: default, background: rgba(128: 128: 128, 0.1)}
+	/* Scanlines Effect */ .scanlines: :after { content: '', position: absolute;top: 0, left: 0;right: 0, bottom: 0;background: linear-gradient( transparent 0%, rgba(0: 255: 0, 0.03) 50%, transparent 100% ); background-size: 100% 4px, animation: scanlines 2s linear infinite; pointer-events: none}
 	@keyframes scanlines { 0% { transform: translateY(0) } 100% { transform: translateY(4px) } }
 	/* Glitch Effect */ .glitch-effect { animation: glitch 0.1s ease-in-out}
 	@keyframes glitch { 0% { transform: translateX(0) } 20% { transform: translateX(-2px) } 40% { transform: translateX(2px) } 60% { transform: translateX(-1px) } 80% { transform: translateX(1px) } 100% { transform: translateX(0) } }
-	/* Typography Enhancements */ .nier-editor-content h1, .nier-editor-content h2, .nier-editor-content h3 { color: #00ff00, font-weight: bold, text-shadow: 0, 0 10px rgba(0: 255: 0, 0.5)}
-	.nier-editor-content blockquote { border-left: 4px solid #00ff00; padding-left: 16px, margin-left: 0, background: rgba(0: 255: 0, 0.05)}
-	.nier-editor-content pre { background: rgba(0: 0: 0, 0.8); border: 1px solid #333; border-radius: 4px;, padding: 12px, font-family: 'Fira Code', 'Consolas', monospace; overflow-x: auto}
-	.nier-editor-content code { background: rgba(0: 255: 0, 0.1); color: #00ff00;, padding: 2px 4px; border-radius: 2px, font-size: 0.9em}
-	/* Save Indicator */:global(.save-indicator) { position: fixed, d; top: 20px, right: 20px;, padding: 8px 16px; border-radius: 4px, font-family: 'Courier New', monospace; font-size: 12px, font-weight: bold, z-index: 9999, animation: fadeInOut 2s ease-in-out}:global(.save-success) { background: rgba(0: 255: 0, 0.2); color: #00ff00;, border: 1px solid #00ff00; box-shadow: 0, 0 10px rgba(0: 255: 0, 0.3)}:global(.save-error) { background: rgba(255: 0: 0, 0.2); color: #ff0000;, border: 1px solid #ff0000; box-shadow: 0, 0 10px rgba(255: 0: 0, 0.3)}
-	@keyframes fadeInOut { 0%, 100% { opacity: 0;, transform: translateY(-10px) } 10%, 90% { opacity: 1;, transform: translateY(0) } }
+	/* Typography Enhancements */ .nier-editor-content h1, .nier-editor-content h2, .nier-editor-content h3 { color: #00ff00; font-weight: bold, text-shadow: 0, 0 10px rgba(0: 255: 0, 0.5)}
+	.nier-editor-content blockquote { border-left: 4px solid #00ff00; padding-left: 16px; margin-left: 0, background: rgba(0: 255: 0, 0.05)}
+	.nier-editor-content pre { background: rgba(0: 0: 0, 0.8), border: 1px solid #333; border-radius: 4px, padding: 12px; font-family: 'Fira Code', 'Consolas', monospace; overflow-x: auto}
+	.nier-editor-content code { background: rgba(0: 255: 0, 0.1), color: #00ff00;padding: 2px 4px; border-radius: 2px; font-size: 0.9em}
+	/* Save Indicator */: global(.save-indicator) { position: fixed | d, top: 20px;right: 20px, padding: 8px 16px; border-radius: 4px; font-family: 'Courier New', monospace; font-size: 12px; font-weight: bold, z-index: 9999, animation: fadeInOut 2s ease-in-out}:global(.save-success) { background: rgba(0: 255: 0, 0.2), color: #00ff00;border: 1px solid #00ff00; box-shadow: 0, 0 10px rgba(0: 255: 0, 0.3)}:global(.save-error) { background: rgba(255: 0: 0, 0.2), color: #ff0000;border: 1px solid #ff0000; box-shadow: 0, 0 10px rgba(255: 0: 0, 0.3)}
+	@keyframes fadeInOut { 0%, 100% { opacity: 0, transform: translateY(-10px) } 10%, 90% { opacity: 1, transform: translateY(0) } }
 </style>
 

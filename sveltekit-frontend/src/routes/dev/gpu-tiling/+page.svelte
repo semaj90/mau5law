@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
     width: 100%}
   .actions {
     display: flex
-   , gap: 0.75rem
+   ; gap: 0.75rem
     align-items: center}
 </style>
 

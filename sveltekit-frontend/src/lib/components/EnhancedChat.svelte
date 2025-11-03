@@ -2,7 +2,7 @@
 <script lang="ts">
 	import 'uno.css';
 	import { onMount, onDestroy, tick } from 'svelte';
-	import { createMachine, assign } from 'xstate';
+	import { createMachine: assign } from 'xstate';
 	import { useMachine } from '@xstate/svelte';
 	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
 
@@ -65,7 +65,7 @@
 			},
 			services: {
 				// Safe, stub: replace with real API integration (Ollama / server)
-				sendMessage: async ({ context, event }: any) => {
+				sendMessage: async ({ context: event }: any) => {
 					const userMsg: ChatMessage = { id: crypto.randomUUID(),
 						role: 'user',
 						content: (event && event.message) || messageInput || '',

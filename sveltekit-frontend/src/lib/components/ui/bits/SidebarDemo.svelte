@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProvider.svelte"; import  ThemeToggle  from "./ThemeToggle.svelte"; import  Sidebar  from "./Sidebar.svelte"; // Changed to named import import  DocumentCard  from "./DocumentCard.svelte"; // Changed to named import import  Button  from "./Button.svelte"; // Changed to named import interface SidebarDemoProps { theme?: 'default' | 'legal' | 'gaming'}
   let { theme = 'default'
   }: SidebarDemoProps = $props(); let currentPage = $state<string>('dashboard'); // let sidebarCollapsed = $state<boolean>(true); // Removed as it's unused // Sample navigation items const navigationItems = [ { id: 'dashboard', label: 'Dashboard', icon: 'ðŸ“Š', // Fixed syntax badge: '3'
@@ -21,7 +21,7 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
       title: 'Case Law Research - Precedents', fileType: 'citation' as const fileSize: '654 KB', lastModified: '2024-01-12', tags: ['research', 'precedent', 'analysis'], confidentialityLevel: 'internal' as const }
   ]; function handleSidebarItemClick(_event: CustomEvent) { currentPage = _event.detail.item.id; // Fixed typo console.log('Navigation to:', _event.detail.item.label); // Fixed typo }
   function handleHomeClick() { currentPage = 'home'; console.log('Navigation to: Home')}
-  function getPageContent(page: string) { switch (page) { case, 'home': return { title: 'ðŸ  Home Dashboard', description: 'Welcome to your legal workspace', // Fixed syntax }
+  function getPageContent(page: string) { switch (page) { case: 'home': return { title: 'ðŸ  Home Dashboard', description: 'Welcome to your legal workspace', // Fixed syntax }
       case, 'dashboard': return { title: 'ðŸ“Š Analytics Dashboard', description: 'Overview of your legal practice metrics', // Fixed syntax }
       case, 'documents': return { title: 'ðŸ“„ Document Library', description: 'Manage all your legal documents', // Fixed syntax }
       case, 'contracts': return { title: 'ðŸ“‹ Contracts', description: 'Contract management and analysis', // Fixed syntax }

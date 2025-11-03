@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { interpret } from 'xstate';
   import { chatMachine } from '$lib/machines/chatMachine.js';
   import { onMount } from 'svelte'; // Import onMount for initial scroll
@@ -28,7 +28,7 @@
           const reader = response.body.getReader();
           const decoder = new TextDecoder();
           while (true) {
-            const { done, value } = await reader.read();
+            const { done: value } = await reader.read();
             if (done) break
             const chunk = decoder.decode(value, { stream: true });
             const lines = chunk.split('\n').filter((line: string) => line.trim().startsWith('data:')),
@@ -133,10 +133,10 @@
 
 <style>
   /* Styles from previous Chat.svelte component can be reused here */
-  .chat-message { display: flex, max-width: 80%}
-  .chat-message.user { margin-left: auto, flex-direction: row-reverse}
+  .chat-message { display: flex; max-width: 80%}
+  .chat-message.user { margin-left: auto; flex-direction: row-reverse}
   .chat-message.assistant { margin-right: auto}
-  .message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem, word-wrap: break-word, position: relative}
+  .message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem; word-wrap: break-word, position: relative}
   .user .message-bubble { background-color: #2563eb, color: white, border-bottom-right-radius: 0.25rem}
   .assistant .message-bubble { background-color: #e5e7eb, color: #111827, border-bottom-left-radius: 0.25rem}
   .dark .assistant .message-bubble { background-color: #374151, color: #f9fafb}
@@ -146,8 +146,7 @@
     display: inline-block
     width: 5px
     height: 5px
-    border-radius: 50%,
-    background-color: currentColor; /* Removed extra comma */
+    border-radius: 50%; background-color: currentColor; /* Removed extra comma */
     animation: typing 1s infinite steps(4, end);
     margin-left: 8px
     vertical-align: bottom}

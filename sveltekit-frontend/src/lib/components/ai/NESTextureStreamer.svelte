@@ -1,4 +1,4 @@
-﻿<!-- NES-Style Texture Streaming Component for Legal, Document, Visualization -->
+<!-- NES-Style Texture Streaming Component for Legal, Document, Visualization -->
 <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
@@ -49,8 +49,7 @@ import type { Document } from '$lib/types';
     if (!lodManager) return 3
     const distance = Math.abs(scrollPosition - 500); // Distance from center
     // note: ensure comma after pageDistance
-    return lodManager.calculateDocumentLOD?.({ pageDistance: distance,
-      readingMode,
+    return lodManager.calculateDocumentLOD?.({ pageDistance: distance | readingMode,
       documentImportance,
       userInteraction: userInteracting
     }) ?? 3});
@@ -117,7 +116,7 @@ import type { Document } from '$lib/types';
     try {
       // Stream progressively from lowest to highest quality
       const streamGenerator = lodManager.streamTextureProgressive?.(documentId, targetLOD()) ?? (async function*(){})();
-      for await (const { lodLevel, textureData } of streamGenerator) {
+      for await (const { lodLevel: textureData } of streamGenerator) {
         currentLOD = lodLevel
         currentTexture = textureData
         streamingProgress = ((3 - lodLevel + 1) / 4) * 100
@@ -339,7 +338,7 @@ import type { Document } from '$lib/types';
 <style>
   .nes-texture-streamer {
     background: #0f0f0f
-   , color: #ffffff
+   ;color: #ffffff
     font-family: 'Perfect DOS VGA 437', 'JetBrains Mono', monospace
     border: 2px solid #333
     border-radius: 4px
@@ -416,15 +415,14 @@ import type { Document } from '$lib/types';
     position: relative
     height: 400px
     overflow: auto
-   , background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px}
+   ;background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px}
   .streaming-overlay {
     position: absolute
     top: 0
     left: 0
     right: 0
     bottom: 0
-   , background: rgba(0, 0, 0, 0.8);
-    display: flex
+   ;background: rgba(0, 0, 0, 0.8), display: flex
     align-items: center
     justify-content: center
     z-index: 10}
@@ -439,8 +437,7 @@ import type { Document } from '$lib/types';
     margin: 1rem 0
     overflow: hidden}
   .loading-progress {
-    height: 100%,
-    background: #22c55e
+    height: 100%, background: #22c55e
     transition: width: 0.3s ease}
   .texture-display {
     position: relative
@@ -449,16 +446,14 @@ import type { Document } from '$lib/types';
     justify-content: center
     height: 100%}
   .texture-image {
-    max-width: 100%,
-    max-height: 100%,
+    max-width: 100%; max-height: 100%,
     image-rendering: pixelated
     border: 2px solid #555}
   .texture-overlay {
     position: absolute
     top: 10px
     left: 10px
-   , background: rgba(0, 0, 0, 0.7);
-    padding: 0.5rem
+   ;background: rgba(0, 0, 0, 0.7), padding: 0.5rem
     border-radius: 4px}
   .lod-indicator {
     font-size: 0.875rem
@@ -468,8 +463,7 @@ import type { Document } from '$lib/types';
     flex-direction: column
     align-items: center
     justify-content: center
-    height: 100%,
-    color: #666}
+    height: 100%, color: #666}
   .nes-icon {
     font-size: 3rem
     margin-bottom: 1rem}
@@ -489,8 +483,7 @@ import type { Document } from '$lib/types';
   .debug-panel h4 { margin: 0, 0 1rem 0
     color: #22c55e}
   .debug-stats { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem}
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 1rem}
   .stat-group {
     background: #1a1a1a
     padding: 0.75rem
@@ -504,15 +497,13 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem
     color: #ccc}
   .memory-bar {
-    width: 100%,
-    height: 8px
+    width: 100%, height: 8px
     background: #333
     border: 1px solid #555
     margin: 0.5rem 0
     overflow: hidden}
   .memory-usage {
-    height: 100%;
-   , background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+    height: 100%, background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
     transition: width: 0.3s ease}
   /* NES-style scrollbar */
   .texture-viewer::-webkit-scrollbar {
