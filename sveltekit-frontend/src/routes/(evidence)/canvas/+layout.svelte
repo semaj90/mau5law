@@ -19,7 +19,7 @@
 <style>
   .evidence-canvas-layout {
     min-height: 100vh
-    width: 100%;
+    width: 100%,
     opacity: 0
     transition: opacity 0.2s ease-in-out}
   .evidence-canvas-layout.mounted { opacity: 1}
