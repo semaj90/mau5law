@@ -16,8 +16,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const r = await embedText(text, { simdParse, gpuTile });
       result = r} catch (e: any) {
-      result = { error: e?.message || String(e) };
-    } finally {
+      result = { error: e?.message || String(e) }} finally {
       runBusy = false}
   }
   async function onImageSelected(e: Event): Promise<any> {
@@ -31,10 +30,8 @@ https://svelte.dev/e/js_parse_error -->
       const resp = await fetch('/api/ocr', { method: 'POST', body: form });
       const data = await resp.json();
       if (!resp.ok) throw new Error(data?.error || 'OCR failed');
-      text = data?.text || '';
-    } catch (e: any) {
-      alert(e?.message || String(e));
-    } finally {
+      text = data?.text || ''} catch (e: any) {
+      alert(e?.message || String(e))} finally {
       ocrBusy = false}
   }
 </script>
@@ -90,8 +87,7 @@ https://svelte.dev/e/js_parse_error -->
     display: grid
     gap: 0.75rem}
   .inputs .text textarea {
-    width: 100%;
-  }
+    width: 100%}
   .actions {
     display: flex
    , gap: 0.75rem

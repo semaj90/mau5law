@@ -1,0 +1,96 @@
+/* Import theme variable mappings (UnoCSS tokens -> CSS variables) */
+@import './lib/styles/theme-vars.css';
+
+/* Import UnoCSS base styles */
+/* This line should be at the top to ensure UnoCSS utilities are available */
+@import 'uno.css';
+
+/* Import nes.css for retro styling */
+/* You can choose to import the minified version or the full version */
+/* Make sure nes.css is installed via npm/yarn */
+@import 'nes.css/css/nes.min.css';
+
+/* Import the new fallback CSS */
+@import '$lib/styles/fallback.css'; /* Import the new fallback CSS */
+
+/* ✅ LOCAL FONT LOADING - No Network Dependency */
+/* Use project alias for static fonts in code imports to make paths explicit in editor tooling.
+  Note: These files live in static/fonts and are served at runtime from /fonts/*; keeping
+  browser-facing HTML and static css unchanged is safer. These imports are updated for
+  maintainability in source files that are bundled by Vite. */
+@import '@/sveltekit-frontend/static/fonts/inter.css';
+@import '@/sveltekit-frontend/static/fonts/jetbrains-mono.css';
+@import '@/sveltekit-frontend/static/fonts/press-start-2p.css';
+
+/* NES.css Framework for Retro Gaming UI */
+@import 'nes.css/css/nes.min.css';
+
+/* Professional Legal AI Platform Theme */
+@import './lib/styles/professional-theme.css';
+
+/* Golden Ratio CSS Utilities */
+@import './lib/styles/golden-ratio-utilities.css';
+
+/* YoRHa-specific global styles */
+@import './lib/styles/yorha-global.css';
+
+@layer base {
+  :root {
+    --yorha-gold: #ffd700;
+    --yorha-green: #00ff41;
+    --yorha-dark: #1a1a1a;
+    --yorha-accent: #ff6b35;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'JetBrains Mono', 'Press Start 2P', monospace;
+    background: var(--yorha-dark);
+    color: white;
+
+    /* Replaced Tailwind @apply antialiased with cross-browser font smoothing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* UnoCSS compatibility helpers */
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .text-amber-400 {
+    color: var(--yorha-gold);
+  }
+
+  .text-green-400 {
+    color: var(--yorha-green);
+  }
+
+  .bg-gradient-to-br {
+    background: linear-gradient(to bottom right, #000 0%, #1f2937 50%, #000 100%);
+  }
+
+  /* NES.css overrides for YoRHa theme */
+  .nes-btn {
+    color: var(--yorha-gold);
+    border-color: var(--yorha-gold);
+  }
+
+  .nes-btn:hover {
+    background-color: var(--yorha-gold);
+    color: var(--yorha-dark);
+  }
+}
+
+/* (theme-vars already imported at top) */
+
+/* Removed Tailwind directives:
+   - @tailwind base;
+   - @tailwind components;
+   - @tailwind utilities;
+   This project uses UnoCSS. Import UnoCSS once in your root layout (e.g. src/routes/+layout.svelte)
+   via: import 'uno.css';
+*/
+
