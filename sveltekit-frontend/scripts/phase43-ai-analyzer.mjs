@@ -283,8 +283,11 @@ class GPUEmbeddingAnalyzer {
   }
 
   generateId(line, index) {
+    // Generate a stable integer ID from hash for Qdrant compatibility
     const hash = createHash('sha256').update(line).digest('hex');
-    return `err-${hash.substring(0, 16)}`;
+    // Convert first 8 hex chars to integer (max ~4 billion)
+    const intId = parseInt(hash.substring(0, 8), 16);
+    return intId;
   }
 
   async getCachedEmbedding(id) {
@@ -304,12 +307,14 @@ class GPUEmbeddingAnalyzer {
   }
 
   async cacheEmbedding(id, data) {
+    // Use UUID format for cache key to match Qdrant ID
     await this.redis.hSet(`ai:embedding:${id}`, {
+      id: id, // Store the UUID
       summary: data.summary,
       vector: JSON.stringify(data.vector),
       timestamp: new Date().toISOString(),
       file: data.metadata.file || '',
-      line: data.metadata.line || '',
+      line: String(data.metadata.line || ''),
       errorCode: data.metadata.errorCode || ''
     });
     
@@ -359,7 +364,11 @@ class GPUEmbeddingAnalyzer {
         }]
       });
     } catch (error) {
-      console.error('Qdrant upsert failed:', error.message);
+      // Log detailed error for debugging
+      if (error.message && !error.message.includes('Bad Request')) {
+        console.error('Qdrant upsert detailed error:', error.message);
+      }
+      // Don't throw - Redis cache is primary, Qdrant is secondary
     }
   }
 

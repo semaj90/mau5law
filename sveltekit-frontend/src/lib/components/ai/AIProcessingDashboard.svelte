@@ -14,8 +14,8 @@ import type { Document } from '$lib/types';
   import { fly } from 'svelte/transition';
 
   // Reactive local state (Svelte, 5 runes $state used; kept as simple reactive variables)
-  let taskQueue: any[] = [];
-  let workerStatus: any[] = [];
+  let taskQueue: unknown[] = [];
+  let workerStatus: unknown[] = [];
   let systemMetrics: {
     totalTasksProcessed: number
     averageResponseTime: number
@@ -49,9 +49,9 @@ import type { Document } from '$lib/types';
   // Event handlers (kept simple)
   const handleProviderSelected = (event: CustomEvent) => {
     // If LLMProviderSelector emits provider in detail, keep this handler as fallback
-    selectedProvider = (event as: any).detail?.provider ?? selectedProvider};
+    selectedProvider = (event as: unknown).detail?.provider ?? selectedProvider};
   const handleStatusChanged = (event: CustomEvent) => {
-    console.log(`Provider status changed`, (event as: any).detail)};
+    console.log(`Provider status changed`, (event as: unknown).detail)};
 
   // Process single task
   const processTask = async (taskTemplate: typeof demoTasks[0]) => {
@@ -159,11 +159,11 @@ import type { Document } from '$lib/types';
   onMount(() => {
     try {
       if (aiServiceWorkerManager?.taskQueue$?.subscribe) {
-        subs.push(aiServiceWorkerManager.taskQueue$.subscribe((q: any[]) => (taskQueue = q || [])))}
+        subs.push(aiServiceWorkerManager.taskQueue$.subscribe((q: unknown[]) => (taskQueue = q || [])))}
       if (aiServiceWorkerManager?.workerStatus$?.subscribe) {
-        subs.push(aiServiceWorkerManager.workerStatus$.subscribe((w: any[]) => (workerStatus = w || [])))}
+        subs.push(aiServiceWorkerManager.workerStatus$.subscribe((w: unknown[]) => (workerStatus = w || [])))}
       if (aiServiceWorkerManager?.systemMetrics$?.subscribe) {
-        subs.push(aiServiceWorkerManager.systemMetrics$.subscribe((m: any) => (systemMetrics = m || systemMetrics)))}
+        subs.push(aiServiceWorkerManager.systemMetrics$.subscribe((m: unknown) => (systemMetrics = m || systemMetrics)))}
     } catch (err) {
       console.warn('Subscription to aiServiceWorkerManager failed:', err)}
     return () => subs.forEach(s => s.unsubscribe && s.unsubscribe())});

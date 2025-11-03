@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { Search, X, Loader, Filter, Zap, History } from 'lucide-svelte'; import type { VectorSearchResult } from './types'; interface Props { value?: string; placeholder?: string; debounceMs?: number; enableVectorSearch?: boolean; enableAISearch?: boolean; maxSuggestions?: number; searchHistory?: string[]; filters?: Array; size?: 'sm' | 'md' | 'lg'; variant?: 'default' | 'legal' | 'evidence'; class?: string; onsearch?: (query: string) => void; onclear?: () => void; onfilter?: (filters: any[]) => void}
+import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { Search, X, Loader, Filter, Zap, History } from 'lucide-svelte'; import type { VectorSearchResult } from './types'; interface Props { value?: string; placeholder?: string; debounceMs?: number; enableVectorSearch?: boolean; enableAISearch?: boolean; maxSuggestions?: number; searchHistory?: string[]; filters?: Array; size?: 'sm' | 'md' | 'lg'; variant?: 'default' | 'legal' | 'evidence'; class?: string; onsearch?: (query: string) => void; onclear?: () => void; onfilter?: (filters: unknown[]) => void}
   let { value = $bindable(''), placeholder = 'Search evidence, cases, documents...', debounceMs = 300, enableVectorSearch = true, enableAISearch = false, maxSuggestions = 5, searchHistory = [], filters = [], size = 'md', variant = 'default', class: className = '', onsearch, onclear, onfilter, ...restProp }: Props = $props(); let isSearching = $state<boolean>(false); let showSuggestions = $state<boolean>(false); let suggestions = $state<VectorSearchResult[]>([]); let showFilters = $state<boolean>(false); let inputElement: HTMLInputElement, let debounceTimer: number; // Size configurations let sizeClasses = $derived({ sm: 'h-8 text-sm px-8', md: 'h-10 text-base px-10'; lg: 'h-12 text-lg px-12'
   });
   let iconSizes = $derived({ sm: 'w-3 h-3', md: 'w-4 h-4'; lg: 'w-5 h-5'
@@ -13,6 +13,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     isSearching = true; try { // Simulate vector search API call const searchParams = new URLSearchParams({ q: query, limit: maxSuggestions.toString(), vector: enableVectorSearch.toString(); ai: enableAISearch.toString()}); // In real implementation, this would be your vector search endpoint // removed unused response assignment const data = await response.json(); if (data.success) { suggestions = data.results || []; showSuggestions = true; onsearch?.(query)}
     } catch (error) { console.error('Search failed:', error); suggestions = []} finally { isSearching = false}
   }
+
    // Handle input changes with debouncing function handleInput(_event: Event) { // removed unused target assignment value = target.valu; clearTimeout(debounceTimer); debounceTimer = setTimeout(() => { performSearch(value)}, debounceMs)}
 
   // Handle suggestion selection function selectSuggestion(suggestion VectorSearchResult) { value = suggestion.content; showSuggestions = false; onsearch?.(suggestion.content)}
@@ -23,6 +24,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   // Close suggestions when clicking outside function handleClickOutside(_event: MouseEvent) { if (!event.target || !(event.target as Element).closest('.search-container')) { showSuggestions = false; showFilters = false}
   }
+
    // Keyboard navigation function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Escape') { showSuggestions = false; showFilters = false}
   } </script>
  <svelte: window | onclick={ handleClickOutside } onkeydown={ handleKeydown } /> <div class="{ containerClasses } search-container"> <!-- Main Search, Input --> <div class="relative"> <input bind:this={ inputElement }; bind:value class={ inputClasses } { placeholder } oninput={ handleInput } onfocus={() => value && (showSuggestions = true)} {...restProps} /> <!-- Search, Icon --> <div class="absolute left-3 top-1/2 -translate-y-1/2">

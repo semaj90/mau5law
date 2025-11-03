@@ -1,7 +1,7 @@
 <!-- Gaming-Themed User Menu with, Console, Aesthetics --> <script lang="ts">
 import type { User } from '$lib/types'; import { goto } from '$app/navigation'; import type { ConsolePaletteName } from '$lib/themes/retro-console-palettes'; interface User { id: string, name?: string; email?: string; avatar?: string; role?: string}
   interface Props { user: User, theme?: ConsolePaletteName}
-  let { user, theme = 'legal' }: Props = $props(); // State management let showDropdown = $state<boolean>(false); let dropdownElement: HTMLElement = $state(undefined; as: any); // Close dropdown when clicking outside $effect(() => { function handleClickOutside(_event: MouseEvent) { if (dropdownElement && !dropdownElement.contains(event.target as Node)) { showDropdown = false}
+  let { user, theme = 'legal' }: Props = $props(); // State management let showDropdown = $state<boolean>(false); let dropdownElement: HTMLElement = $state(undefined; as: unknown); // Close dropdown when clicking outside $effect(() => { function handleClickOutside(_event: MouseEvent) { if (dropdownElement && !dropdownElement.contains(event.target as Node)) { showDropdown = false}
     } if (showDropdown) { document.addEventListener('click', handleClickOutside); return () => document.removeEventListener('click', handleClickOutside)}
   }); // Close dropdown on escape key function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Escape') { showDropdown = false}
   }

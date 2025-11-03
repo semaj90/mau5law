@@ -5,6 +5,7 @@ import type { Case } from '$lib/types'; import  ThemeProvider  from "./ThemeProv
     }, {
       id: 'documents', label: 'Documents', icon: 'ðŸ“„', // Fixed syntax badge: '12', [
         { id: 'contracts', label: 'Contracts', icon: 'ðŸ“‹', badge: '5' }, // Fixed syntax { id: 'evidence', label: 'Evidence', icon: 'ðŸ”', badge: '7' }, // Fixed syntax { id: 'briefs', label: 'Legal Briefs', icon: 'âš–ï¸' }
+
    // Fixed syntax ]
     }, {
       id: 'cases', label: 'Cases', icon: 'ðŸ“š', // Fixed syntax badge: '8'

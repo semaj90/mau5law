@@ -4,9 +4,9 @@
  import { ArrowLeft, ArrowRight, Check, Lightbulb, MousePointer, Pause, Play, SkipForward, Target, X
   } from 'lucide-svelte'; interface OnboardingStep { id: string; title: string;, description: string, target?: string; targetSelector?: string; position?: 'top' | 'bottom' | 'left' | 'right' | 'center'; action?: () => void; validate?: () => boolean; type?: 'info' | 'action' | 'input' | 'success'; content?: string; image?: string; video?: string}
 
-interface Props { open?: boolean; currentStep?: number; steps?: OnboardingStep[]; autoProgress?: boolean; progressDelay?: number; showMinimap?: boolean; allowSkip?: boolean; onclose?: (event?: any) => void; oncomplete?: (event?: any) => void}
+interface Props { open?: boolean; currentStep?: number; steps?: OnboardingStep[]; autoProgress?: boolean; progressDelay?: number; showMinimap?: boolean; allowSkip?: boolean; onclose?: (event?: unknown) => void; oncomplete?: (event?: unknown) => void}
 
-  // Props interface interface Props { open?: boolean; currentStep?: number; steps?: OnboardingStep[]; autoProgress?: boolean; progressDelay?: number; showMinimap?: boolean; allowSkip?: boolean; onclose?: ((event?: any) => void) | undefined; oncomplete?: ((event?: any) => void) | undefined}
+  // Props interface interface Props { open?: boolean; currentStep?: number; steps?: OnboardingStep[]; autoProgress?: boolean; progressDelay?: number; showMinimap?: boolean; allowSkip?: boolean; onclose?: ((event?: unknown) => void) | undefined; oncomplete?: ((event?: unknown) => void) | undefined}
   let { open = false, currentStep = 0, steps = [], autoProgress = false, progressDelay = 3000, showMinimap = true, allowSkip = true, onclose, oncomplete }: Props = $props();
    let overlayEl = $state<HTMLElement;
    let autoProgressTimer: number | undefinedlet isPlaying>(null)(autoProgress);
@@ -15,6 +15,7 @@ interface Props { open?: boolean; currentStep?: number; steps?: OnboardingStep[]
 
   // Reactive derived value for current step data // TODO: Convert to $derived: currentStepData = steps[currentStep] || null $effect(() => { if (browser) {
     document.addEventListener("keydown", handleKeydown); window.addEventListener("resize", updateTargetHighlight)
+
   }
   return () => { if (browser) { document.removeEventListener("keydown", handleKeydown); window.removeEventListener("resize", updateTargetHighlight)}
       if (autoProgressTimer) { clearTimeout(autoProgressTimer)}

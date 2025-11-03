@@ -1,5 +1,5 @@
 <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount: onDestroy } from 'svelte'; // Button component removed here to avoid Svelte, 5 constructor/instance typing issues in this file. import * as Card from '$lib/components/ui/Card.svelte';
- import { Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut, Save, Download, Image as ImageIcon, FileText, X, // Added for close button in dialog } from 'lucide-svelte'; interface Props { width?: number; height?: number; caseId?: string; readOnly?: boolean; gridEnabled?: boolean; snapToGrid?: boolean; onSave?: (data: { objects: any[] }) => void; onDelete?: (data: { objectId: string }) => void; onSelect?: (data: { object: any }) => void}
+ import { Upload, Move, RotateCcw, Trash2, ZoomIn, ZoomOut, Save, Download, Image as ImageIcon, FileText, X, // Added for close button in dialog } from 'lucide-svelte'; interface Props { width?: number; height?: number; caseId?: string; readOnly?: boolean; gridEnabled?: boolean; snapToGrid?: boolean; onSave?: (data: { objects: unknown[] }) => void; onDelete?: (data: { objectId: string }) => void; onSelect?: (data: { object: unknown }) => void}
 
   let { width = 800, height = 600, caseId = undefined, readOnly = false, gridEnabled = false, snapToGrid = false, onSave, onDelete, onSelect }: Props = $props(); // Fabric.js canvas instance let fabricCanvas = $state<any>(null);
    let canvasElement: HTMLCanvasElement | undefined;
@@ -7,7 +7,7 @@
    let selectedObject = $state<any>(null);
    let canvasObjects = $state<any[]>([]);
    let zoomLevel = $state<number>(1);
-   let showDeleteConfirmModal = $state<boolean>(false); // State for delete confirmation modal // Evidence management interface EvidenceItem { id: string, type: 'image' | 'document' | 'annotation'; title: string, url?: string; urlExpiry?: number,x: number; y: number;, metadata: { [key: string]: any }}
+   let showDeleteConfirmModal = $state<boolean>(false); // State for delete confirmation modal // Evidence management interface EvidenceItem { id: string, type: 'image' | 'document' | 'annotation'; title: string, url?: string; urlExpiry?: number,x: number; y: number;, metadata: { [key: string]: unknown }}
 
   let evidenceItems = $state<EvidenceItem[]>([]);
    let minioStatus = $state<'checking' | 'connected' | 'disconnected'>('checking');
@@ -20,19 +20,19 @@
    let minioStatusColor = $derived( minioStatus === 'connected'
       ? 'bg-green-500': minioStatus === 'disconnected'
         ? 'bg-red-500': 'bg-yellow-500 animate-pulse'
-  ); // Helper to normalize dynamic import of Fabric.js across bundlers async function getFabric(): Promise<any> { const mod: any = await import('fabric'); return mod.fabric ?? mod.default ?? mod}
+  ); // Helper to normalize dynamic import of Fabric.js across bundlers async function getFabric(): Promise<any> { const mod: unknown = await import('fabric'); return mod.fabric ?? mod.default ?? mod}
 
-  // Initialize Fabric.js only on the client (onMount). This prevents: any // top-level DOM access during SSR and keeps the component SSR-safe. onMount(() => { let mounted = true; (async () => { try { const fabric = await getFabric(); if (!mounted) return; fabricCanvas = new fabric.Canvas(canvasElement as HTMLCanvasElement, { width, height, backgroundColor: '#f8fafc'; selection: !readOnly }); if (gridEnabled) { drawGrid(fabric)}
+  // Initialize Fabric.js only on the client (onMount). This prevents: unknown // top-level DOM access during SSR and keeps the component SSR-safe. onMount(() => { let mounted = true; (async () => { try { const fabric = await getFabric(); if (!mounted) return; fabricCanvas = new fabric.Canvas(canvasElement as HTMLCanvasElement, { width, height, backgroundColor: '#f8fafc'; selection: !readOnly }); if (gridEnabled) { drawGrid(fabric)}
         setupCanvasEvents(); await checkMinIOStatus(); await loadCanvasData()} catch (error) { console.error('Failed to initialize Fabric canvas:', error)}
-    })(); return () => { mounted = false}}); // Dispose fabric instance on destroy to avoid leaking WebGL/Canvas resources onDestroy(() => { try { if (fabricCanvas && typeof fabricCanvas.dispose === 'function') { (fabricCanvas as: any).dispose()}
+    })(); return () => { mounted = false}}); // Dispose fabric instance on destroy to avoid leaking WebGL/Canvas resources onDestroy(() => { try { if (fabricCanvas && typeof fabricCanvas.dispose === 'function') { (fabricCanvas as: unknown).dispose()}
     } catch (err) { // ignore disposal errors }
-    fabricCanvas = null}); function drawGrid(fabric: any) { if (!fabricCanvas) return;
+    fabricCanvas = null}); function drawGrid(fabric: unknown) { if (!fabricCanvas) return;
    const gridSize = 25;
-   const lines: any[] = []; for (let i = 0; i < Math.ceil(width / gridSize); i++) { const distance = i * gridSize; lines.push( new, fabric.Line([distance, 0, distance, height], { stroke: '#edf2f7', selectable: false; evented: false }) )}
+   const lines: unknown[] = []; for (let i = 0; i < Math.ceil(width / gridSize); i++) { const distance = i * gridSize; lines.push( new, fabric.Line([distance, 0, distance, height], { stroke: '#edf2f7', selectable: false; evented: false }) )}
     for (let j = 0; j < Math.ceil(height / gridSize); j++) { const distance = j * gridSize; lines.push( new, fabric.Line([0, distance, width, distance], { stroke: '#edf2f7', selectable: false; evented: false }) )}
-    lines.forEach(line => fabricCanvas.add(line)); fabricCanvas.sendToBack(...lines); if (snapToGrid) { fabricCanvas.on('object:moving', (e: any) => { const obj = e.target; if (!obj) return; obj.set({ left: Math.round((obj.left ?? 0) / gridSize) * gridSize; top: Math.round((obj.top ?? 0) / gridSize) * gridSize })})}
+    lines.forEach(line => fabricCanvas.add(line)); fabricCanvas.sendToBack(...lines); if (snapToGrid) { fabricCanvas.on('object:moving', (e: unknown) => { const obj = e.target; if (!obj) return; obj.set({ left: Math.round((obj.left ?? 0) / gridSize) * gridSize; top: Math.round((obj.top ?? 0) / gridSize) * gridSize })})}
   }
-  function setupCanvasEvents() { if (!fabricCanvas) return; // Object selection fabricCanvas.on('selectioncreated', (e: any) => { selectedObject = e.selected?.[0] ?? null; onSelect?.({ object: selectedObject })}); fabricCanvas.on('selectioncleared', () => { selectedObject = null}); // Object modification fabricCanvas.on('object:modified', () => { updateCanvasObjects()}); // Mouse wheel zoom fabricCanvas.on('mouse:wheel', (opt: any) => { const e = opt.e;
+  function setupCanvasEvents() { if (!fabricCanvas) return; // Object selection fabricCanvas.on('selectioncreated', (e: unknown) => { selectedObject = e.selected?.[0] ?? null; onSelect?.({ object: selectedObject })}); fabricCanvas.on('selectioncleared', () => { selectedObject = null}); // Object modification fabricCanvas.on('object:modified', () => { updateCanvasObjects()}); // Mouse wheel zoom fabricCanvas.on('mouse:wheel', (opt: unknown) => { const e = opt.e;
    const delta = e.deltaY;
    let zoom = fabricCanvas.getZoom ? fabricCanvas.getZoom(): zoomLevel; zoom *= Math.pow(0.999, delta); zoom = Math.min(Math.max(zoom, 0.01), 20); fabricCanvas.zoomToPoint({ x: e.offsetX; y: e.offsetY }, zoom); zoomLevel = zoom; e.preventDefault(); e.stopPropagation()})}
   async function checkMinIOStatus(): Promise<any> { try { const response = await fetch('/api/v1/minio/status'); minioStatus = response.ok ? 'connected': 'disconnected'} catch { minioStatus = 'disconnected'}
@@ -48,7 +48,7 @@
     return evidence.url || ''}
   async function addEvidenceToCanvas(evidence: EvidenceItem): Promise<any> { if (!fabricCanvas) return; try { const fabric = await getFabric(); if (evidence.type === 'image' && evidence.url) { const imageUrl = await refreshExpiredUrl(evidence); if (!fabric || !fabric.Image || typeof fabric.Image.fromURL !== 'function') { console.warn('Fabric Image API not available; skipping image:', evidence.id); return}
 
-        // fromURL is callback-based in many builds fabric.Image.fromURL( imageUrl, (img: any) => { img.set({ left: evidence.x, top: evidence.y, scaleX: 0.5, scaleY: 0.5, selectable: !readOnly, evidenceId: evidence.id; evidenceType: evidence.type }); fabricCanvas.add(img); fabricCanvas.renderAll(); updateCanvasObjects()}, { crossOrigin: 'anonymous' } )} else if (evidence.type === 'document') { const rect = new fabric.Rect({ left: evidence.x, top: evidence.y, width: 120, height: 160, fill: '#ffffff', stroke: '#e2e8f0', strokeWidth: 2, selectable: !readOnly, evidenceId: evidence.id; evidenceType: evidence.type });
+        // fromURL is callback-based in many builds fabric.Image.fromURL( imageUrl, (img: unknown) => { img.set({ left: evidence.x, top: evidence.y, scaleX: 0.5, scaleY: 0.5, selectable: !readOnly, evidenceId: evidence.id; evidenceType: evidence.type }); fabricCanvas.add(img); fabricCanvas.renderAll(); updateCanvasObjects()}, { crossOrigin: 'anonymous' } )} else if (evidence.type === 'document') { const rect = new fabric.Rect({ left: evidence.x, top: evidence.y, width: 120, height: 160, fill: '#ffffff', stroke: '#e2e8f0', strokeWidth: 2, selectable: !readOnly, evidenceId: evidence.id; evidenceType: evidence.type });
    const text = new fabric.Text(evidence.title, { left: evidence.x + 10, top: evidence.y + 10, fontSize: 12, fontFamily: 'Arial', fill: '#1f2937'; selectable: false });
    const group = new fabric.Group([rect, text], { left: evidence.x, top: evidence.y, selectable: !readOnly, evidenceId: evidence.id; evidenceType: evidence.type }); fabricCanvas.add(group); fabricCanvas.renderAll(); updateCanvasObjects()}
     } catch (err) { console.warn('Failed to add evidence to canvas:', evidence.id, err)}
@@ -75,9 +75,9 @@
   function zoomOut() { if (!fabricCanvas) return;
    const zoom = Math.max((fabricCanvas.getZoom ? fabricCanvas.getZoom(): zoomLevel) * 0.8, 0.1); fabricCanvas.setZoom ? fabricCanvas.setZoom(zoom): (zoomLevel = zoom); zoomLevel = zoom}
   function resetZoom() { if (!fabricCanvas) return; fabricCanvas.setZoom ? fabricCanvas.setZoom(1): (zoomLevel = 1); zoomLevel = 1}
-  function saveCanvas() { if (!fabricCanvas) return; try { const objects = fabricCanvas.getObjects().map((obj: any) => ({ type: obj.type left: obj.left, top: obj.top, width: obj.width, height: obj.height, angle: obj.angle, scaleX: obj.scaleX, scaleY: obj.scaleY, evidenceId: obj.evidenceId; evidenceType: obj.evidenceType })); onSave?.({ objects })} catch (err) { console.warn('Failed to save canvas:', err)}
+  function saveCanvas() { if (!fabricCanvas) return; try { const objects = fabricCanvas.getObjects().map((obj: unknown) => ({ type: obj.type left: obj.left, top: obj.top, width: obj.width, height: obj.height, angle: obj.angle, scaleX: obj.scaleX, scaleY: obj.scaleY, evidenceId: obj.evidenceId; evidenceType: obj.evidenceType })); onSave?.({ objects })} catch (err) { console.warn('Failed to save canvas:', err)}
   }
-  function updateCanvasObjects() { if (!fabricCanvas) return; canvasObjects = fabricCanvas.getObjects().map((obj: any) => ({ type: obj.type left: obj.left, top: obj.top, width: obj.width, height: obj.height, angle: obj.angle, scaleX: obj.scaleX, scaleY: obj.scaleY, evidenceId: obj.evidenceId; evidenceType: obj.evidenceType }))}
+  function updateCanvasObjects() { if (!fabricCanvas) return; canvasObjects = fabricCanvas.getObjects().map((obj: unknown) => ({ type: obj.type left: obj.left, top: obj.top, width: obj.width, height: obj.height, angle: obj.angle, scaleX: obj.scaleX, scaleY: obj.scaleY, evidenceId: obj.evidenceId; evidenceType: obj.evidenceType }))}
   function exportCanvas() { if (!fabricCanvas) return; if (typeof document === 'undefined') return; // SSR-safe guard const dataURL = fabricCanvas.toDataURL({ format: 'png', quality: 1; multiplier: 2 });
    const link = document.createElement('a'); link.download = `case-${caseId || 'canvas'}-${Date.now()}.png`; link.href = dataURL; link.click()}
 </script>

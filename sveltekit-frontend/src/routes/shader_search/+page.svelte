@@ -51,7 +51,7 @@ https://svelte.dev/e/js_parse_error -->
     try {
       const response = await fetch('/api/shaders/stats');
       if (!response.ok) throw new Error(`Stats fetch failed: ${response.status}`);
-      const data: any = await response.json();
+      const data: Record<string, unknown> = await response.json();
       stats = {
         totalShaders: { total: data?.totalShaders?.total ?? 0; webgpu: data?.totalShaders?.webgpu ?? 0,
           webgl: data?.totalShaders?.webgl ?? 0
@@ -70,15 +70,15 @@ https://svelte.dev/e/js_parse_error -->
         body: JSON.stringify({ limit: 100 })
       });
       if (!response.ok) throw new Error(`Filters fetch failed: ${response.status}`);
-      const data: any = await response.json();
+      const data: Record<string, unknown> = await response.json();
       const tagSet = new Set<string>();
       const operationSet = new Set<string>();
-      (data?.shaders ?? []).forEach((shader: any) => {
-        const md = shader?.metadata as: any
+      (data?.shaders ?? []).forEach((shader: unknown) => {
+        const md = shader?.metadata as: unknown
         if (Array.isArray(md?.tags)) md.tags.forEach((t: string) => tagSet.add(t));
         if (md?.operation) operationSet.add(md.operation)});
       availableTags = Array.from(tagSet).sort();
-      // Merge with stats-derived operations if: any
+      // Merge with stats-derived operations if: unknown
       const ops = Array.from(operationSet);
       availableOperations = ops.concat(availableOperations.filter(o => !ops.includes(o))).sort()} catch (error) {
       console.error('Failed to load filters:', error)}
@@ -90,7 +90,7 @@ https://svelte.dev/e/js_parse_error -->
         tags: selectedTags.length > 0 ? selectedTags : undefined; shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
         sortBy,
         limit
-      } as: any; // cast, to: any if ShaderSearchQuery differs
+      } as: unknown; // cast, to: unknown if ShaderSearchQuery differs
 
       const response = await fetch('/api/shaders/unified', {
         method: 'POST'; headers: { 'Content-Type': 'application/json' },
@@ -128,7 +128,7 @@ https://svelte.dev/e/js_parse_error -->
   }
   function exportResults() {
     const exportData = {
-      query: searchMetadata?.query; results: searchResults.map((shader: any) => ({
+      query: searchMetadata?.query; results: searchResults.map((shader: unknown) => ({
         id: shader.id; operation: shader?.metadata?.operation,
         description: shader?.metadata?.description; tags: shader?.metadata?.tags ?? [],
         relevanceScore: shader.relevanceScore; embeddingSimilarity: shader.embeddingSimilarity,
@@ -147,15 +147,15 @@ https://svelte.dev/e/js_parse_error -->
 
   // --- NEW: helpers to avoid TS errors and centralize optional access ---
   function getShaderType(shader: ShaderSearchResult) {
-    // Cast metadata to: any before accessing legacy/variant fields like `platform`
+    // Cast metadata to: unknown before accessing legacy/variant fields like `platform`
     return (
-      ((shader, as: any).shaderType) ??
-      ((shader.metadata as: any)?.platform) ??
+      ((shader, as: unknown).shaderType) ??
+      ((shader.metadata as: unknown)?.platform) ??
       shader.config?.type ??
       'unknown'
     ) as: string}
   function getWgslPreview(shader: ShaderSearchResult) {
-    return ((shader as: any).wgslPreview as: string) ?? (shader.wgsl ? shader.wgsl.substring(0, 200) + '...' : '')}
+    return ((shader as: unknown).wgslPreview as: string) ?? (shader.wgsl ? shader.wgsl.substring(0, 200) + '...' : '')}
 </script>
 
 <svelte:head>
@@ -521,4 +521,5 @@ https://svelte.dev/e/js_parse_error -->
   .shader-nier-bits-card { text-align: left; display:block; width: 100%; border:none; background: transparent; padding:1rem}
   .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25)}
 </style>
+
 

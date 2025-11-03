@@ -4,6 +4,7 @@
       }; classes.push(nesVariants[variant] || nesVariants.default)} else { // Modern styled card classes.push('enhanced-card'); classes.push(`enhanced-card--${ variant }`)}
     if (className) {
     classes.push(className)
+
   }
   return classes.join(' ')}); </script> <div class={ cardClasses }> {#if header} {@render header()} {:else if title} <h3 class="title">{ title }</h3> {/if} <div class="card-content"> {#if children} {@render children()} {:else if content} <p class="nes-text">{ content }</p> {/if} </div> {#if footer} <div class="card-footer"> {@render footer()} {/if} </div> <style> .enhanced-card { border: 2px solid #333; border-radius: 8px; padding: 1rem;background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); margin: 1rem 0}
   .enhanced-card--legal { border-color: #0066cc; background: linear-gradient(135deg, #f8f9ff 0%, #e6f2ff 100%)}

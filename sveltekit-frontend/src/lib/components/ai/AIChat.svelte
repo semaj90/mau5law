@@ -38,7 +38,7 @@
   });
   // Check service status on mount
   $effect(() => {
-    // Add: any initialization here
+    // Add: unknown initialization here
   });
 </script>
 

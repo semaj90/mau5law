@@ -1,7 +1,7 @@
 <!-- N64 3D Button Component Advanced 3D styling with texture filtering, anti-aliasing, and fog effects Features: - True 3D perspective transformations - Texture filtering and anti-aliasing - Fog effects and depth testing - 64-bit color depth - Advanced lighting simulation - Integration with YoRHa 3D system --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { Button, as BitsButton } from 'bits-ui';
  import { onMount } from "svelte";
  import type { GamingComponentProps: N64RenderingOptions } from '../types/gaming-types.js';
- import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js'; interface Props extends GamingComponentProps { // Button specific props type?: 'button' | 'submit' | 'reset'; form?: string; name?: string; value?: string; // N64-specific styling meshComplexity?: 'low' | 'medium' | 'high'; materialType?: 'basic' | 'phong' | 'pbr'; enableTextureFiltering?: boolean; enableMipMapping?: boolean; enableFog?: boolean; enableLighting?: boolean; enableReflections?: boolean; // 3D transformations rotationX?: number; rotationY?: number; rotationZ?: number; perspective?: number; // Advanced effects enableParticles?: boolean; glowIntensity?: number; // Content children?: any; class?: string}
+ import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js'; interface Props extends GamingComponentProps { // Button specific props type?: 'button' | 'submit' | 'reset'; form?: string; name?: string; value?: string; // N64-specific styling meshComplexity?: 'low' | 'medium' | 'high'; materialType?: 'basic' | 'phong' | 'pbr'; enableTextureFiltering?: boolean; enableMipMapping?: boolean; enableFog?: boolean; enableLighting?: boolean; enableReflections?: boolean; // 3D transformations rotationX?: number; rotationY?: number; rotationZ?: number; perspective?: number; // Advanced effects enableParticles?: boolean; glowIntensity?: number; // Content children?: unknown; class?: string}
   let { era = 'n64', variant = 'primary', size = 'medium', disabled = false, loading = false, animationStyle = 'smooth', renderOptions, type = 'button', form, name, value, meshComplexity = 'medium', materialType = 'phong', enableTextureFiltering = true, enableMipMapping = false, enableFog = true, enableLighting = true, enableReflections = false, rotationX = 0, rotationY = 0, rotationZ = 0, perspective = 1000, enableParticles = false, glowIntensity = 0.5, children, class: className = '', onClick, onHover, onFocu}: Props = $props(); // Events now handled via props in Svelte, 5 // let isPressed = $state<boolean>(false);
    let isHovered = $state<boolean>(false);
    let isFocused = $state<boolean>(false);
@@ -11,7 +11,7 @@
    let buttonElement = $state<HTMLButtonElement | null >(null);
    let animationId = $state<number | null >(null); // Default to balanced N64 rendering options const effectiveRenderOptions: N64RenderingOptions = { ...N64_TEXTURE_PRESETS.balanced, enableTextureFiltering, enableMipMapping, enableFog, ...renderOptions }
 
-  // Create N64-style spatial audio const playN64Sound = async () => { try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext()}
+  // Create N64-style spatial audio const playN64Sound = async () => { try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext()}
 
       // Create 3D spatial audio effect const oscillator = audioContext.createOscillator();
    const gainNode = audioContext.createGain();
@@ -32,6 +32,7 @@
   const createParticleEffect = () => { // Simple particle effect using CSS animations const particles = 8;
    const container = buttonElement?.parentElement; if (!container) return; for (let i = 0; i < particles; i++) { const particle = document.createElement('div'); particle.className = 'n64-particle'; particle.style.cssText = ` position: absolute, width: 4px; height: 4px;, background: radial-gradient(circle, #fff, #4a90e2); border-radius: 50%; pointer-events: none;, animation: particleExplosion 0.8s ease-out, forward; --angle: ${(360 / particles) * i}deg; --distance: ${50 + Math.random() * 30}px; top: 50%; left: 50%;, transform: translate(-50%, -50%); z-index: 1000; `; container.appendChild(particle); setTimeout(() => { particle.remove()}, 800)}
   }
+
    // Generate texture filtering CSS classes based on render options const getTextureFilteringClasses = (): string => { const classes: string[] = []; // Apply texture quality class if (effectiveRenderOptions.textureQuality === 'ultra') { classes.push('texture-ultra')}
 
     // Apply filtering type classes if (effectiveRenderOptions.enableBilinearFiltering) { classes.push('filtering-bilinear')}
@@ -39,6 +40,7 @@
 
     // Apply anisotropic filtering level const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1; if (anisotropicLevel >= 16) { classes.push('anisotropic-16x')} else if (anisotropicLevel >= 8) { classes.push('anisotropic-8x')} else if (anisotropicLevel >= 4) {
     classes.push('anisotropic-4x')
+
   }
   return classes.join(' ')}
 

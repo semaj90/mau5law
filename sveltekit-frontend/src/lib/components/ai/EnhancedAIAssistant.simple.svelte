@@ -9,18 +9,18 @@
    let maxResults = $state<number>(5);
    let temperature = $state(0.7);
    let enabledSources = $state(['cases', 'statutes', 'regulations', 'secondary']); // Voice input support let isListening = $state<boolean>(false);
-   let recognition: SpeechRecognition | null = null; $effect(() => { // Initialize speech recognition if available and enabled if (enableVoiceInput && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) { const SpeechRecognition = (window as: any).SpeechRecognition || (window as: any).webkitSpeechRecognition, recognition = new SpeechRecognition(); recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-US'; recognition.onresult = (event) => { const transcript = event.results[0][0].transcript; query = transcript; isListening = false}; recognition.onerror = (event) => { console.error('Speech recognition error:', event.error); isListening = false}; recognition.onend = () => { isListening = false}}'
+   let recognition: SpeechRecognition | null = null; $effect(() => { // Initialize speech recognition if available and enabled if (enableVoiceInput && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) { const SpeechRecognition = (window as: unknown).SpeechRecognition || (window as: unknown).webkitSpeechRecognition, recognition = new SpeechRecognition(); recognition.continuous = false; recognition.interimResults = false; recognition.lang = 'en-US'; recognition.onresult = (event) => { const transcript = event.results[0][0].transcript; query = transcript; isListening = false}; recognition.onerror = (event) => { console.error('Speech recognition error:', event.error); isListening = false}; recognition.onend = () => { isListening = false}}'
   });
   async function handleSubmit(event: SubmitEvent): Promise<any> { event.preventDefault(); if (!query.trim() || isLoading) return; isLoading = true;
    const userMessage = { role: 'user'; content: query }; messages = [...messages, userMessage];
    const messageToSend = query; query = ''; try { // Frontend component sends the selected model name to the SvelteKit backend. // The SvelteKit backend (/api/contextual/chat) is responsible for // resolving the actual Ollama endpoint (e.g., using OLLAMA_URL env var // and getOllamaEndpoint() helper) and interacting with the Ollama service. const response = await fetch('/api/contextual/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type: 'message', content: messageToSend | caseId, evidenceIds; model: selectedModel, // Model name passed to backend temperature, searchThreshold, maxResults, enabledSources, // Add other parameters as needed by your backend }) });
-  let data: any = {};
+  let data: Record<string, unknown> = {};
    const contentType = response.headers.get('content-type') || ''; if (contentType.includes('application/json')) { data = await response.json()} else { const text = await response.text(); data = text ? { message: text }: {}}
       if (response.ok && data?.message) { const aiResponse = { role: 'assistant', content: data.message; references: data.references || [], // Assume backend provides references }; messages = [...messages, aiResponse]} else { const serverErr = data?.error ?? data?.message ?? `HTTP ${response.status}`; throw new Error(serverErr)}
     } catch (error) { console.error('Failed to send message via API:', error); messages = [ ...messages, {
           role: 'assistant', content: `âŒ Sorry, I encountered an error: ${error instanceof Error ? error.message: 'Unknown error'}`; error: true }]} finally { isLoading = false}
   }
-  function handleReferenceClick(reference: any) { selectedCitation = `${reference.title} - ${reference.citation}`; showCitationDialog = true}
+  function handleReferenceClick(reference: unknown) { selectedCitation = `${reference.title} - ${reference.citation}`; showCitationDialog = true}
   function insertCitation() { ondispatch?.(selectedCitation); showCitationDialog = false}
   function clearMessages() { messages = []}
   function toggleVoiceInput() { if (!recognition) return; if (isListening) { recognition.stop()} else { recognition.start(); isListening = true}

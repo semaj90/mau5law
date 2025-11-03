@@ -27,7 +27,7 @@ import type { Document } from '$lib/types';
     enableOCR?: boolean,
     enableSmartSuggestions?: boolean,
     documentTypes?: string[],
-    ondispatch?: ((payload: any) => void) | undefined
+    ondispatch?: ((payload: unknown) => void) | undefined
   } = $props();
   const dispatch = createEventDispatcher();
   // Component state
@@ -66,8 +66,8 @@ import type { Document } from '$lib/types';
     if (!uploadedFile || !enableOCR) return
     try {
       isProcessing = true
-      const result: any = await ocrService.processDocument(uploadedFile, {
-        documentType: selectedDocumentType, as: any,
+      const result: unknown = await ocrService.processDocument(uploadedFile, {
+        documentType: selectedDocumentType, as: unknown,
         extractFields: true,
         qualityEnhancement: true
       });
@@ -120,10 +120,10 @@ import type { Document } from '$lib/types';
     const errors = { ...get(formErrors) };
     // Required field validation
     if (field.required && !value?.toString().trim()) {
-      errors[fieldName] = 'This field is required'} else if ((field as: any).validation) {
+      errors[fieldName] = 'This field is required'} else if ((field as: unknown).validation) {
       try {
-        (field as: any).validation.parse(value),
-        delete errors[fieldName]} catch (error: any) {
+        (field as: unknown).validation.parse(value),
+        delete errors[fieldName]} catch (error: Error | unknown) {
         errors[fieldName] = error?.errors?.[0]?.message || 'Invalid value'}
     } else {
       delete errors[fieldName]}
@@ -138,7 +138,7 @@ import type { Document } from '$lib/types';
     if (isFormValid) {
       const formData = populatedFields.reduce((acc: Record<string, any>, field) => {
         acc[field.name] = field.value || '';
-        return acc}, {} as { [key: string]: any });
+        return acc}, {} as { [key: string]: unknown });
       if (ondispatch) ondispatch({ formData, extractedFields: $extractedFields });
       else dispatch('submit', { formData, extractedFields: $extractedFields })}
   };

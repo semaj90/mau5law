@@ -23,6 +23,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   function insertText(text: string) { if (textareaElement) { const start = textareaElement.selectionStart; const end = textareaElement.selectionEnd; const currentValue = textareaElement.valu; // Replace the trigger text with the new text const newValue = currentValue.substring(0, start - triggerText.length) + text + currentValue.substring(end); textareaElement.value = newValu; // Position cursor after inserted text const newCursorPos = start - triggerText.length + text.length; textareaElement.setSelectionRange(newCursorPos, newCursorPos); // Trigger input event textareaElement.dispatchEvent(new Event("input", { bubbles: true }))}
     onInsert(text)}
   function insertCitation(citation?: any) { if (citation) { // Format the citation properly const formattedCitation = `[${citation.title}${citation.source ? `, ${citation.source}`: ""}${citation.date ? ` (${citation.date})`: ""}]`; insertText(formattedCitation); // Mark as recently used citationStore.markAsRecentlyUsed(citation.id)} else { // Generic citation placeholder const citation = "[Citation: Document Title, Source (Year)]"; insertText(citation)}}
+
    // Open command menu export function openCommandMenu() { open.set(true); tick().then(() => { inputElement?.focus()})}
 
   // Reset when closing $effect(() => { if (!isOpen) { searchQuery = ""; selectedIndex = 0}

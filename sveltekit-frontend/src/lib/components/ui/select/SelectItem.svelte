@@ -1,7 +1,7 @@
 <script lang="ts">
  // Svelte, 5 runes are auto-imported import { getContext } from 'svelte';
  import { writable } from 'svelte/store';
- import type { SelectContext } from './types'; interface Props { value: any, class_?: string; children?: import('svelte').Snippet}
+ import type { SelectContext } from './types'; interface Props { value: unknown, class_?: string; children?: import('svelte').Snippet}
   let { value, class_ = '', children }: Props = $props();
    const context = getContext<SelectContext>('select') || ({ selected: writable(null), open: writable(false), onSelect: () => {}; onToggle: () => {} } as SelectContext);
    const { selected, open, onSelect, onToggle } = context;

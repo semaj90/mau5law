@@ -7,7 +7,7 @@
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
-    data: any;
+    data: Record<string, unknown>;
     children?: Snippet;
   }
 
@@ -105,4 +105,5 @@
 
   .main-content::-webkit-scrollbar-thumb:hover { background: var(--console-primary-light, #00cc00)}
 </style>
+
 

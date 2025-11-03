@@ -23,8 +23,8 @@ export interface LegalParserModule {
 }
 
 export interface SimdJsonParserModule {
-  parse(json: string): any;
-  stringify(obj: any): string
+  parse(json: string): unknown;
+  stringify(obj: unknown): string
 }
 
 /**

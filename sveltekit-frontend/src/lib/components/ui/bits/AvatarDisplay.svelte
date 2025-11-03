@@ -1,4 +1,4 @@
-<!-- Enhanced Bits - Avatar Display Avatar display container with title and description --> <script lang="ts"> interface Props { title?: string; description?: string; layout?: 'horizontal' | 'vertical'; children?: any}
+<!-- Enhanced Bits - Avatar Display Avatar display container with title and description --> <script lang="ts"> interface Props { title?: string; description?: string; layout?: 'horizontal' | 'vertical'; children?: unknown}
   let { title, description, layout = 'horizontal', children }: Props = $props(); </script>
  <div class="avatar-display"> <div class="avatar-content"> <slot /> </div>
   {#if title || description} <div class="avatar-info">

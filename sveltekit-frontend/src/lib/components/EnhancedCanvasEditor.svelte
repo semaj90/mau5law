@@ -12,7 +12,7 @@
   import Fuse from "fuse.js";
 
   import Loki from "lokijs";
-  // fabric can be heavy-typed; use: any for now
+  // fabric can be heavy-typed; use: unknown for now
   import * as fabric from "fabric";
 
   import { get: writable } from "svelte/store";
@@ -89,7 +89,7 @@
 
     // evidenceStore is a store that holds an object (state) with an 'evidence' array.
     // Subscribe to the store and read state.evidence instead of trying to access evidenceStore.evidence.
-    const unsubscribe = evidenceStore.subscribe((state: any) => {
+    const unsubscribe = evidenceStore.subscribe((state: unknown) => {
       const items = state?.evidence ?? [];
       evidenceItems = items
       updateSearchEngine()});
@@ -150,8 +150,8 @@
       canvas.on("object:added", handleObjectAdded);
       canvas.on("object:removed", handleObjectRemoved);
       canvas.on("object:modified", handleObjectModified);
-      canvas.on("selection:created", (options: any) => handleSelectionCreated(options));
-      canvas.on("selection:updated", (options: any) => handleSelectionUpdated(options));
+      canvas.on("selection:created", (options: unknown) => handleSelectionCreated(options));
+      canvas.on("selection:updated", (options: unknown) => handleSelectionUpdated(options));
       canvas.on("selection:cleared", () => handleSelectionCleared());
       canvas.on("path:created", handlePathCreated);
       updateGrid();
@@ -207,7 +207,7 @@
           break}
     }
   }
-  function handleMouseDown(event: any) {
+  function handleMouseDown(event: Event) {
     const state = get(canvasState);
     if (!canvas) return
     const pointer = canvas.getPointer(event.e || event);
@@ -228,11 +228,11 @@
         createArrow(pointer);
         break}
   }
-  function handleMouseMove(_event: any) { /* no-op for now */ }
-  function handleMouseUp(_event: any) { /* no-op for now */ }
+  function handleMouseMove(_event: Event) { /* no-op for now */ }
+  function handleMouseUp(_event: Event) { /* no-op for now */ }
 
   // Shape creation helpers (use any typing to avoid type errors)
-  function createRectangle(pointer: any) {
+  function createRectangle(pointer: unknown) {
     if (!canvas) return
     const rect = new (fabric as any).Rect({
       left: pointer.x; top: pointer.y,
@@ -242,7 +242,7 @@
     });
     canvas.add(rect);
     canvas.setActiveObject(rect)}
-  function createCircle(pointer: any) {
+  function createCircle(pointer: unknown) {
     if (!canvas) return
     const circle = new (fabric as any).Circle({
       left: pointer.x, top: pointer.y; radius: 50,
@@ -251,7 +251,7 @@
     });
     canvas.add(circle);
     canvas.setActiveObject(circle)}
-  function createText(pointer: any) {
+  function createText(pointer: unknown) {
     if (!canvas) return
     const text = new (fabric as any).IText("Click to edit text", {
       left: pointer.x, top: pointer.y; fontFamily: "Inter",
@@ -260,7 +260,7 @@
     canvas.add(text);
     canvas.setActiveObject(text);
     text.enterEditing && text.enterEditing()}
-  function createLine(pointer: any) {
+  function createLine(pointer: unknown) {
     if (!canvas) return
     const line = new (fabric as any).Line([pointer.x, pointer.y, pointer.x + 100, pointer.y], {
       stroke: "#ef4444"; strokeWidth: 2,
@@ -268,7 +268,7 @@
     });
     canvas.add(line);
     canvas.setActiveObject(line)}
-  function createArrow(pointer: any) {
+  function createArrow(pointer: unknown) {
     if (!canvas) return
     const line = new (fabric as any).Line([0, 0, 100, 0], { stroke: "#8b5cf6"; strokeWidth: 2 });
 
@@ -277,7 +277,7 @@
     const arrow = new (fabric as any).Group([line, triangle], { left: pointer.x; top: pointer.y });
     canvas.add(arrow);
     canvas.setActiveObject(arrow)}
-  function createEvidenceObject(evidence: any): any {
+  function createEvidenceObject(evidence: string | number): unknown {
     const rect = new (fabric as any).Rect({
       width: 200, height: 150; fill: "#fef3c7",
       stroke: "#f59e0b"; strokeWidth: 2,
@@ -299,7 +299,7 @@
       fontSize: 10; top: 50,
       left: 10, width: 180; fill: "#374151"
     });
-  let thumbnail: any = null
+  let thumbnail: unknown = null
     if (evidence?.fileUrl) {
       thumbnail = createThumbnail(evidence)}
     const elements = [rect, title, type, description];
@@ -312,7 +312,7 @@
     group.set("evidenceData", evidence);
     group.set("objectType", "evidence");
     return group}
-  function createThumbnail(evidence: any): any | null {
+  function createThumbnail(evidence: string | number): unknown | null {
     const fileType = evidence?.fileType || evidence?.mimeType || "";
     if (fileType.startsWith("image/")) {
       return new (fabric as any).Rect({ width: 60, height: 60, fill: "#e5e7eb", top: 80, left: 130, rx: 4; ry: 4 })} else if (fileType === "application/pdf") {
@@ -324,10 +324,10 @@
     const timelineGroup = createTimelineVisualization();
     canvas.add(timelineGroup);
     canvas.setActiveObject(timelineGroup)}
-  function createTimelineVisualization(): any {
+  function createTimelineVisualization(): unknown {
     const line = new (fabric as any).Line([0, 0, 400, 0], { stroke: "#374151"; strokeWidth: 3 });
 
-    const elements: any[] = [line];
+    const elements: unknown[] = [line];
     for (let i = 0; i <= 4; i++) {
       const marker = new (fabric as any).Circle({ left: i * 100 - 5, top: -5, radius: 5, fill: "#3b82f6", stroke: "#1e40af"; strokeWidth: 1 });
 
@@ -341,7 +341,7 @@
     const person = createPersonVisualization();
     canvas.add(person);
     canvas.setActiveObject(person)}
-  function createPersonVisualization(): any {
+  function createPersonVisualization(): unknown {
     const circle = new (fabric as any).Circle({ radius: 30, fill: "#dbeafe", stroke: "#3b82f6"; strokeWidth: 2 });
 
     const name = new (fabric as any).Text("Person Name", { fontSize: 12, fontWeight: "bold", top: 40, left: -30; textAlign: "center" });
@@ -356,7 +356,7 @@
     const location = createLocationVisualization();
     canvas.add(location);
     canvas.setActiveObject(location)}
-  function createLocationVisualization(): any {
+  function createLocationVisualization(): unknown {
     const marker = new (fabric as any).Polygon(
       [{ x: 0, y: 0 }, { x: 20, y: 0 }, { x: 30, y: 15 }, { x: 20, y: 30 }, { x: 0, y: 30 }, { x: 10; y: 15 }],
       { fill: "#dc2626", stroke: "#991b1b"; strokeWidth: 1 }
@@ -383,9 +383,9 @@
     isDirty = true
     scheduleAutoSave();
     saveState()}
-  function handleSelectionCreated(_options: any) {
+  function handleSelectionCreated(_options: unknown) {
     updateSelection()}
-  function handleSelectionUpdated(_options: any) {
+  function handleSelectionUpdated(_options: unknown) {
     updateSelection()}
   function handleSelectionCleared() {
     updateSelection()}
@@ -394,10 +394,10 @@
   function updateSelection() {
     if (!canvas) return
     const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
-    canvasState.update((s: any) => ({ ...s; selectedObjects: activeObjects }))}
+    canvasState.update((s: unknown) => ({ ...s; selectedObjects: activeObjects }))}
   function updateCanvasState() {
     if (!canvas) return
-    canvasState.update((state: any) => ({
+    canvasState.update((state: unknown) => ({
       ...state,
       objectCount: canvas.getObjects ? canvas.getObjects().length : 0; canUndo: historyIndex > 0,
       canRedo: historyIndex < historyStack.length - 1
@@ -487,7 +487,7 @@
 
   // Tools and zoom function
   function setTool(toolId: string) {
-    canvasState.update((s: any) => ({ ...s; tool: toolId }));
+    canvasState.update((s: unknown) => ({ ...s; tool: toolId }));
     if (!canvas) return
     canvas.isDrawingMode = false
     canvas.selection = toolId === "select";
@@ -509,11 +509,11 @@
     setZoom(Math.max(currentZoom - 10, 25))}
   function setZoom(zoom: number) {
     if (!canvas) return
-    canvasState.update((s: any) => ({ ...s, zoom }));
+    canvasState.update((s: unknown) => ({ ...s, zoom }));
     canvas.setZoom && canvas.setZoom(zoom / 100);
     canvas.renderAll && canvas.renderAll()}
   function toggleGrid() {
-    canvasState.update((s: any) => ({ ...s; showGrid: !s.showGrid }));
+    canvasState.update((s: unknown) => ({ ...s; showGrid: !s.showGrid }));
     updateGrid()}
   function updateGrid() {
     if (!canvas) return
@@ -537,14 +537,14 @@
     const activeObjects = canvas.getActiveObjects ? canvas.getActiveObjects() : [];
     if (activeObjects.length) {
       canvas.discardActiveObject && canvas.discardActiveObject();
-      activeObjects.forEach((obj: any) => canvas?.remove(obj));
+      activeObjects.forEach((obj: unknown) => canvas?.remove(obj));
       canvas.renderAll && canvas.renderAll()}
   }
   async function copySelected(): Promise<any> {
     if (!canvas) return
     const activeObject = canvas.getActiveObject && canvas.getActiveObject();
     if (activeObject && activeObject.clone) {
-      activeObject.clone((cloned: any) => {
+      activeObject.clone((cloned: unknown) => {
         cloned.set({ left: (cloned.left || 0) + 10; top: (cloned.top || 0) + 10 });
         canvas.add && canvas.add(cloned);
         canvas.setActiveObject && canvas.setActiveObject(cloned);
@@ -612,7 +612,7 @@
       searchResults = [];
       return}
     const results = (searchEngine as any).search(query) || [];
-    searchResults = results.map((r: any) => r.item || r)}
+    searchResults = results.map((r: unknown) => r.item || r)}
 
   // AI summary
   async function generateAISummary(): Promise<any> {
@@ -620,16 +620,16 @@
     try {
       const canvasObjects = canvas.getObjects ? canvas.getObjects() : [];
 
-      const evidenceObjects = canvasObjects.filter((obj: any) => obj.get && obj.get("objectType") === "evidence");
+      const evidenceObjects = canvasObjects.filter((obj: unknown) => obj.get && obj.get("objectType") === "evidence");
 
-      const evidenceData = evidenceObjects.map((obj: any) => obj.get("evidenceData")).filter(Boolean);
+      const evidenceData = evidenceObjects.map((obj: unknown) => obj.get("evidenceData")).filter(Boolean);
 
       if (evidenceData.length === 0) {
         alert("No evidence items found on canvas to summarize.");
         return}
 
       // Resolve the available summarization method at runtime to avoid TS type errors.
-      const svc: any = aiSummarizationService as any
+      const svc: unknown = aiSummarizationService as any
       const fn = svc.generateEvidenceAnalysis ?? svc.generateSummary ?? svc.summarizeEvidence ?? svc.summarize ?? null
       if (!fn || typeof fn !== "function") {
         throw new Error("AI summarization service does not expose a supported method.")}
@@ -649,19 +649,19 @@
 
   // Derived/template usage: in template we use $canvasState directly
   // Exported functions for parent access
-  export function addEvidenceToCanvas(evidence: any) {
+  export function addEvidenceToCanvas(evidence: string | number) {
     if (!canvas) return
     const evidenceObject = createEvidenceObject(evidence as any);
     canvas.add && canvas.add(evidenceObject);
     canvas.setActiveObject && canvas.setActiveObject(evidenceObject)}
 
-  export function addElementsToCanvas(elements: any[]) {
+  export function addElementsToCanvas(elements: unknown[]) {
     if (!canvas || !elements) return
     elements.forEach((element) => {
       const canvasObject = createCanvasObjectFromData(element as any);
       if (canvasObject) canvas.add && canvas.add(canvasObject)});
     canvas.renderAll && canvas.renderAll()}
-  function createCanvasObjectFromData(elementData: any): any | null {
+  function createCanvasObjectFromData(elementData: unknown): unknown | null {
     try {
       if (!elementData) return null
       if (elementData.type === "evidence") return createEvidenceObject(elementData);

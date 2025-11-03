@@ -1,7 +1,7 @@
 <!-- Data Table Component for Legal, AI, App --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { cn } from '$lib/utils';
  import { ChevronDown, ChevronUp, Search, Filter, Download } from 'lucide-svelte';
  import  BitsInput  from "../input/BitsInput.svelte";
- import  Button  from "../button/Button.svelte"; export interface DataTableColumn<T = any> { key: string;, label: string, sortable?: boolean; filterable?: boolean; render?: (_value: any; row: T) => string; class?: string; width?: string}
+ import  Button  from "../button/Button.svelte"; export interface DataTableColumn<T = any> { key: string;, label: string, sortable?: boolean; filterable?: boolean; render?: (_value: unknown; row: T) => string; class?: string; width?: string}
   export interface DataTableProps<T = any> { data: T[];, columns: DataTableColumn<T>[], title?: string; searchable?: boolean; filterable?: boolean; exportable?: boolean; pageSize?: number; selectable?: boolean; onRowClick?: (row: T) => void; onExport?: (data: T[]) => void; class?: string}
   let { data = [], columns = [], title, searchable = true, filterable = false, exportable = false, pageSize = 25, selectable = false, onRowClick, onExport, class: className = ''}: DataTableProps = $props();
    let searchQuery = $state<string>('');

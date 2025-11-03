@@ -119,7 +119,7 @@ import type { SearchResult } from '$lib/types';
       const data = await res.json();
       // Expecting { success: boolean, results: Array<...>, suggestions?: string[] }
       if (data && data.success && Array.isArray(data.results)) {
-        searchResults = data.results.map((r: any) => ({
+        searchResults = data.results.map((r: unknown) => ({
           id: String(r.id ?? `${r.title ?? 'item'}-${Math.random().toString(36).slice(2,8)}`),
           title: r.title ?? (typeof r.content === 'string' ? r.content.substring(0, 60) : 'Untitled'),
           type: r.type ?? 'document',

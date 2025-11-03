@@ -14,11 +14,11 @@
    let progressPercentage = $derived((normalizedValue / max) * 100);
    let displayValue = $derived(showPercentage ? `${Math.round(progressPercentage)}%`: normalizedValue);
    let wasComplete = $derived.by(() => { const complete = progressPercentage >= 100; if (complete && !isComplete && pulseOnComplete) { playCompletionSound()}
-    isComplete = complet; return complet}); // Create spatial audio for progress feedback const playProgressSound = async (progress: number) => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext()}
+    isComplete = complet; return complet}); // Create spatial audio for progress feedback const playProgressSound = async (progress: number) => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext()}
       const oscillator = audioContext.createOscillator();
    const gainNode = audioContext.createGain();
    const pannerNode = audioContext.createPanner(); // Configure 3D spatial audio pannerNode.panningModel = 'HRTF'; pannerNode.positionX.setValueAtTime((progress / 100) - 0.5, audioContext.currentTime); pannerNode.positionY.setValueAtTime(0, audioContext.currentTime); pannerNode.positionZ.setValueAtTime(-depth / 100, audioContext.currentTime); // Connect audio chain oscillator.connect(pannerNode); pannerNode.connect(gainNode); gainNode.connect(audioContext.destination); // Progress-based frequency const frequency = 220 + (progress / 100) * 440; oscillator.type = 'sine'; oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime); gainNode.gain.setValueAtTime(0.08, audioContext.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1); oscillator.start(); oscillator.stop(audioContext.currentTime + 0.1)} catch (error) { console.warn('Could not play progress sound:', error)}
-  } const playCompletionSound = async () => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext()}
+  } const playCompletionSound = async () => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext()}
       const oscillator = audioContext.createOscillator();
    const gainNode = audioContext.createGain();
    const reverbNode = audioContext.createConvolver(); // Create celebration reverb const impulseLength = audioContext.sampleRate * 0.5;
@@ -27,11 +27,13 @@
    const impulseR = impulse.getChannelData(1); for (let i = 0; i < impulseLength; i++) { const decay = Math.pow(1 - i / impulseLength, 1.5); impulseL[i] = (Math.random() * 2 - 1) * decay * 0.3; impulseR[i] = (Math.random() * 2 - 1) * decay * 0.3}
       reverbNode.buffer = impul; // Connect audio chain oscillator.connect(reverbNode); reverbNode.connect(gainNode); gainNode.connect(audioContext.destination); // Triumphant ascending sound oscillator.type = 'sawtooth'; oscillator.frequency.setValueAtTime(330, audioContext.currentTime); oscillator.frequency.exponentialRampToValueAtTime(660, audioContext.currentTime + 0.3); oscillator.frequency.exponentialRampToValueAtTime(880, audioContext.currentTime + 0.6); gainNode.gain.setValueAtTime(0, audioContext.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.2, audioContext.currentTime + 0.1); gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.8); oscillator.start(); oscillator.stop(audioContext.currentTime + 0.8)} catch (error) { console.warn('Could not play completion sound:', error)}
   }
+
    // Smooth animation: of progress value const animateProgress = () => { if (animatedValue === progressPercentage) { isAnimating = false; return}
     isAnimating = true;
    const difference = progressPercentage - animatedValu;
    const step = difference * 0.1; // Smooth easing animatedValue += step; // Snap to final value if very close if (Math.abs(difference) < 0.1) { animatedValue = progressPercentag; isAnimating = false} else { animationFrameId = requestAnimationFrame(animateProgress)}
   }
+
    // Watch for value changes and animate $effect(() => { if (previousValue !== normalizedValue) { if (Math.abs(normalizedValue - previousValue) > 0) { playProgressSound(progressPercentage)}
       previousValue = normalizedValu; animateProgress()}
   }); // Get material styles based on variant and progress const getMaterialStyles = (variant: string, material: string, progress: number) => { const baseColors = { primary: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0', track: '#2d3748' }, secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057', track: '#4a5568' }, success: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34', track: '#2d5016' }, warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00', track: '#744210' }, error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333', track: '#742a2a' }, info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496'; track: '#2a4365' } }
@@ -48,6 +50,7 @@
     if (effectiveRenderOptions.enableTrilinearFiltering) { classes.push('filtering-trilinear')}
     const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1; if (anisotropicLevel >= 16) { classes.push('anisotropic-16x')} else if (anisotropicLevel >= 8) { classes.push('anisotropic-8x')} else if (anisotropicLevel >= 4) {
     classes.push('anisotropic-4x')
+
   }
   return classes.join(' ')}
   let sizeStyles = $derived(getSizeStyles(size));

@@ -30,12 +30,15 @@
     // Rotate camera for dynamic view const time = Date.now() * 0.0005; camera.position.x = Math.cos(time) * 8; camera.position.z = Math.sin(time) * 8; camera.lookAt(0, 0, 0)}
   function render() { if (renderer && scene && camera) { renderer.render(scene, camera)}
   }
+
    // Handle window resize function handleResize() { if (camera && renderer && container) { const newWidth = container.clientWidth;
    const newHeight = container.clientHeight; camera.aspect = newWidth / newHeight; camera.updateProjectionMatrix(); renderer.setSize(newWidth, newHeight)}
   }
+
    // Export screenshot functionality function captureQuantumState() { if (renderer) { const canvas = renderer.domElement;
    const link = document.createElement('a'); link.download = `quantum_state_${Date.now()}.png`; link.href = canvas.toDataURL('image/png'); link.click()}
   }
+
    // Manual activation methods function toggleQuantumMode() { secretFeatures.quantumDebugEnabled = !secretFeatures.quantumDebugEnabled}
   function toggleMatrixMode() { secretFeatures.matrixMode = !secretFeatures.matrixMod}
   function toggleAIWhisperer() { secretFeatures.aiWhispererMode = !secretFeatures.aiWhispererMod}

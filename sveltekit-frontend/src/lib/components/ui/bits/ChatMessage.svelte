@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string } analyticsLog?: (_event: any) => void;
+<!-- @migration-task Error while migrating Svelte code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { message: { role: 'user' | 'assistant' | 'error', content: string, timestamp?: string } analyticsLog?: (_event: Event) => void;
    let { message, analyticsLog = () => }: Props = $props();
  import { User, Bot, AlertTriangle } from 'lucide-svelte'; $effect(() => { if (message && message.content) { analyticsLog({ event: 'chat_message_rendered', role: message.role, timestamp: Date.now() })}
   }); </script>

@@ -6,7 +6,7 @@ import type { Document } from '$lib/types';
   import { onDestroy } from 'svelte';
   import { N64LODManager } from '$lib/services/n64-lod-manager';
   import  SSRWebGPULoader_  from "$lib/components/ui/enhanced-bits/SSRWebGPULoader.svelte";
-  const SSRWebGPULoader = SSRWebGPULoader_ as: any
+  const SSRWebGPULoader = SSRWebGPULoader_ as: unknown
   import { fade, scale, slide } from 'svelte/transition';
   // Svelte, 5 props
   let {
@@ -23,7 +23,7 @@ import type { Document } from '$lib/types';
     debugMode?: boolean} = $props();
   // State management
   // use `any` for lodManager to avoid tight type errors for runtime helper methods
-  let lodManager: any
+  let lodManager: unknown
   let currentTexture = $state<ArrayBuffer | null>(null);
   let currentLOD = $state<number>(3);
   let isStreaming = $state<boolean>(false);

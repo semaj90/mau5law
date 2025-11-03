@@ -6,7 +6,7 @@
     label: string;
     model: string;
     prompt: string;
-    onActionComplete?: (response: any) => void;
+    onActionComplete?: (response: Response) => void;
     onActionError?: (error: Error) => void;
     disabled?: boolean;
   }
@@ -42,7 +42,7 @@
       }
       const data = await response.json();
       onActionComplete?.(data);
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       console.error('Ollama action failed:', error);
       errorMessage = error.message || 'An: unknown error occurred.';
       onActionError?.(error);
@@ -72,5 +72,5 @@
 
 <style>
   /* @unocss-include */
-  /* Add: any specific styles for QuickActionButton here if needed */
+  /* Add: unknown specific styles for QuickActionButton here if needed */
 </style>

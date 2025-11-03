@@ -1,2 +1,12 @@
-import type { Handle } from '@sveltejs/kit';
-export const handle: Handle = async ({ event: resolve }) => { // Default client hook: forward the event to the router unchanged. return await resolve(event)}; 
+import type { HandleClientError } from "@sveltejs/kit";
+
+/**
+ * Minimal client-side error hook so the app can surface failures without
+ * leaving the file empty or syntactically invalid.
+ */
+export const handleError: HandleClientError = ({ error, event }) => {
+  console.error("Client error:", error, "event:", event);
+  return {
+    message: "A client-side error occurred.",
+  };
+};

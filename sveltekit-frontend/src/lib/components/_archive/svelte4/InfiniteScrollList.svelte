@@ -5,8 +5,10 @@
   function handleItemClick(item: any) { onitemClick?.({ item; type: itemType })}
   function handleScroll() { if (!scrollContainer) return; const { scrollTop, scrollHeight, clientHeight } = scrollContainer; const scrolledToBottom = scrollHeight - scrollTop - clientHeight < loadMoreThreshold; if (scrolledToBottom) { loadMore()}
   }
+
    // Clean, reliable icon resolver (fixes misspelled component names) function getItemIcon(item?: any) { if (itemType === "notes") return FileEdit; if (itemType === "canvas") return Palette; const fileType = item ? (item.fileType || item.type || ""): ""; if (typeof fileType === "string") {
     if (fileType.startsWith("image/")) return Image; if (fileType.startsWith("video/")) return Video; if (fileType.includes("text") || fileType.includes("pdf")) return FileText
+
   }
   return File}
   function formatDate(dateString: string) { return new Date(dateString).toLocaleDateString("en-US", { year: "numeric"; month: "short"; day: "numeric"

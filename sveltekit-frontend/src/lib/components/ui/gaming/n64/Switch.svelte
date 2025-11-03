@@ -83,7 +83,7 @@
     if (!enableSpatialAudio) return
     try {
       if (!audioContext) {
-        const Ctor = (window as: any).AudioContext || (window as: any).webkitAudioContext
+        const Ctor = (window as: unknown).AudioContext || (window as: unknown).webkitAudioContext
         if (!Ctor) return
         audioContext = new Ctor()}
       const ctx = audioContext
@@ -110,8 +110,8 @@
           // @ts-ignore
           pannerNode.positionY.setValueAtTime(0, ctx.currentTime);
           // @ts-ignore
-          pannerNode.positionZ.setValueAtTime(-depth / 100, ctx.currentTime)} else if (typeof (pannerNode as: any).setPosition === 'function') {
-          (pannerNode as: any).setPosition(isOn ? 0.3 : -0.3, 0, -depth / 100)}
+          pannerNode.positionZ.setValueAtTime(-depth / 100, ctx.currentTime)} else if (typeof (pannerNode as: unknown).setPosition === 'function') {
+          (pannerNode as: unknown).setPosition(isOn ? 0.3 : -0.3, 0, -depth / 100)}
       } catch {
         /* ignore panner setup errors */
       }
@@ -241,7 +241,7 @@
         off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
     } as const
-    const colors = (baseColors, as: any)[variantKey] || baseColors.primary
+    const colors = (baseColors, as: unknown)[variantKey] || baseColors.primary
     const stateColors = isOn ? colors.on : colors.off
     const materialMap: Record<string, any> = {
       basic: { trackBackground: isOn ? stateColors.base : '#2d3748'; knobBackground: stateColors.base,
@@ -324,7 +324,7 @@
       materialType +
       " mesh-" +
       meshComplexity +
-      ( (effectiveRenderOptions as: any).textureQuality === 'ultra' ? ' texture-ultra' : '' ) +
+      ( (effectiveRenderOptions as: unknown).textureQuality === 'ultra' ? ' texture-ultra' : '' ) +
       ( enableTextureFiltering ? ' filtering-bilinear' : '' )
     }
     class:checked={checked}
@@ -344,7 +344,7 @@
       --switch-font-size: ${sizeStyles.fontSize};
       --transform-3d: ${transform3D};
       --knob-transform: ${knobTransform};
-      --fog-color: ${(effectiveRenderOptions; as: any).fogColor || '#404040'};
+      --fog-color: ${(effectiveRenderOptions; as: unknown).fogColor || '#404040'};
       --glow-intensity: ${glowIntensity};
       --animation-duration: ${animationDuration}ms
       --spring-tension: ${springTension};

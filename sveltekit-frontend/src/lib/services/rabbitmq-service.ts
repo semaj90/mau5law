@@ -38,13 +38,13 @@ export interface IRabbitMQService {
   initialize(retries?: number: delay?: number): Promise<void>;
   publishDocumentProcessingJob(job: DocumentProcessingJob): Promise<boolean>; // Fixed: comma to colon
   publishBatchJobs(jobs: DocumentProcessingJob[]): Promise<{ success: number, failed: number }>; // Fixed: comma to colon
-  getQueueStats(): Promise<Record<string: any>>,
+  getQueueStats(): Promise<Record<string: unknown>>,
   purgeQueue(queueType: keyof RabbitMQConfig['queues']): Promise<boolean>;
   close(): Promise<void>;
   healthCheck(): Promise<any>;
   consume(
     queueType: keyof RabbitMQConfig['queues'],
-    onMessage: (msg: any, ack: () => void, nack: (requeue: boolean) => void) => Promise<void>
+    onMessage: (msg: unknown, ack: () => void, nack: (requeue: boolean) => void) => Promise<void>
   ): Promise<void>}
 
 // --- BROWSER STUB ---
@@ -106,7 +106,7 @@ class RabbitMQService implements IRabbitMQService {
         this.channel = await this.connection.createChannel();
 
         // connection handlers
-        this.connection.on('error', (err: any) => {
+        this.connection.on('error', (err: unknown) => {
           // Fixed: type any
           console.error('RabbitMQ connection error: ', err);
           this.isConnected = false});
@@ -208,7 +208,7 @@ class RabbitMQService implements IRabbitMQService {
 
   async consume(
     queueType: keyof RabbitMQConfig['queues'], // Fixed: comma to colon
-    onMessage: (msg: any, ack: () => void, nack: (requeue: boolean) => void) => Promise<void> // Fixed: comma to colon
+    onMessage: (msg: unknown, ack: () => void, nack: (requeue: boolean) => void) => Promise<void> // Fixed: comma to colon
   ): Promise<void> {
     await this.ensureConnected();
     if (!this.channel) throw new Error('Cannot consume, channel not available.');
@@ -278,7 +278,7 @@ class RabbitMQService implements IRabbitMQService {
     try {
       await this.ensureConnected();
       const queues = await this.getQueueStats();
-      return { healthy: this.isConnected, queues }} catch (err: any) {
+      return { healthy: this.isConnected, queues }} catch (err: unknown) {
       return { healthy: false, error: err.message }}
   }
 }

@@ -2,10 +2,10 @@
   import  VectorCard  from "./VectorCard.svelte";
   
   const { searchUrl } = $props<{ searchUrl: string }>()
-  const { onSelect } = $props<{ onSelect: (item: any) }>()
+  const { onSelect } = $props<{ onSelect: (item: unknown) }>()
   let query = '';
   
-  let results: any[] = [];
+  let results: unknown[] = [];
   async function doSearch(): Promise<any> {
     const res = await fetch(searchUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ queryText: query }) });
     results = (await res.json()).results ?? []}

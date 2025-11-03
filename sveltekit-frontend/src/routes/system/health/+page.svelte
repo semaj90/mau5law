@@ -10,14 +10,14 @@
 		lastCheck?: number
 		errorCount?: number
 		uptime?: number
-		[key: string]: any};
+		[key: string]: unknown};
 	interface ServiceHealth {
 		name: string
 		url: string
 		status: 'online' | 'offline' | 'degraded';
 		responseTime?: number
 		lastCheck: number
-		details?: any}
+		details?: unknown}
 	interface HealthData {
 		timestamp: number
 		overall_status: 'healthy' | 'degraded' | 'critical';
@@ -46,7 +46,7 @@
 	let selectedTier: 'all' | string = 'all';
 	let showOnlyIssues = $state<boolean>(false);
 	// Real-time snapshot holder for coordinator data (populated during fetch)
-	let systemStatusSnapshot: any = { services: new Map<string any>(),
+	let systemStatusSnapshot: unknown = { services: new Map<string any>(),
 		errors: [],
 		summary: { totalServices: 0, healthyServices: 0 },
 		metrics: { successRate: 1, avgResponseTime: 0 }
@@ -76,11 +76,11 @@
 			error.set(err instanceof Error ? err.message: 'Unknown error')} finally {
 			loading.set(false)}
 	}
-	const mergeHealthData = (legacy: any, coordinator: any): HealthData => {
+	const mergeHealthData = (legacy: unknown, coordinator: unknown): HealthData => {
 		const now = Date.now();
 		// Use coordinator data if available, fallback to legacy
-		if ((coordinator as: any)?.success && (coordinator as: any).data) {
-			const data = (coordinator as: any).data
+		if ((coordinator as: unknown)?.success && (coordinator as: unknown).data) {
+			const data = (coordinator as: unknown).data
 			// use the snapshot from the coordinator store (if present) for per-service status
 			const servicesMap = systemStatusSnapshot?.services instanceof Map ? systemStatusSnapshot.services : new Map<string ServiceStatus>();
 			const errors = systemStatusSnapshot?.errors || [];
@@ -99,7 +99,7 @@
 					response_time: data.performance?.avgResponseTime || null
 				},
 				services: mapServicesToHealthFormat(servicesMap),
-				summary: { critical_services: errors.map((e: any) => e.description || String(e)),
+				summary: { critical_services: errors.map((e: unknown) => e.description || String(e)),
 					degraded_services: serviceEntries
 						.filter(([, status]) => status?.status === 'degraded')
 						.map(([id]) => masterServiceCoordinator.services.find(s => s.id === id)?.displayName || id),
@@ -277,7 +277,7 @@
 			let services = hd.services ?? [];
 			if (selectedTier !== 'all') {
 				const tierNum = Number(selectedTier);
-				services = services.filter(s => (s.details as: any)?.tier === tierNum)}
+				services = services.filter(s => (s.details as: unknown)?.tier === tierNum)}
 			if (showOnlyIssues) {
 				services = services.filter(s => s.status !== 'online')}
 			displayServicesArray = services}
@@ -511,4 +511,5 @@
 		white-space: pre-wrap
 		word-break: break-all}
 </style>
+
 

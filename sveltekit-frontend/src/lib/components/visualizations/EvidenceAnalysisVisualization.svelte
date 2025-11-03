@@ -1,6 +1,6 @@
-<script lang="ts"> // Chart is dynamically imported in the browser to avoid TS/build errors / SSR issues let Chart: any = null; import type { EvidenceAnalysis, Finding, Correlation } from '$lib/services/ai-evidence-analyzer'; interface Props { analysis: EvidenceAnalysis; // Fixed, typo: EvidenceAnalysi -> EvidenceAnalysis }
+<script lang="ts"> // Chart is dynamically imported in the browser to avoid TS/build errors / SSR issues let Chart: unknown = null; import type { EvidenceAnalysis, Finding, Correlation } from '$lib/services/ai-evidence-analyzer'; interface Props { analysis: EvidenceAnalysis; // Fixed, typo: EvidenceAnalysi -> EvidenceAnalysis }
 
-  let { analysis }: Props = $props(); let canvasRisk: HTMLCanvasElement, let canvasEntities: HTMLCanvasElement, let canvasTimeline: HTMLCanvasElement, let canvasCorrelations: HTMLCanvasElement, let canvasSentiment: HTMLCanvasElement, let charts: any[] = []; $effect(() => { // Guard for SSR/build-time: only run in browser if (typeof window === 'undefined') return; let cancelled = $state<boolean>(false); (async () => { if (!Chart) { // dynamic import so TS doesn't require: 'chart.js/auto' at build-time const mod = await import('chart.js/auto'); Chart = mod?.default ?? mod}'
+  let { analysis }: Props = $props(); let canvasRisk: HTMLCanvasElement, let canvasEntities: HTMLCanvasElement, let canvasTimeline: HTMLCanvasElement, let canvasCorrelations: HTMLCanvasElement, let canvasSentiment: HTMLCanvasElement, let charts: unknown[] = []; $effect(() => { // Guard for SSR/build-time: only run in browser if (typeof window === 'undefined') return; let cancelled = $state<boolean>(false); (async () => { if (!Chart) { // dynamic import so TS doesn't require: 'chart.js/auto' at build-time const mod = await import('chart.js/auto'); Chart = mod?.default ?? mod}'
       if (cancelled) return; // render charts after Chart is available renderRiskChart(); renderEntitiesChart(); renderTimelineChart(); renderCorrelationsChart(); renderSentimentChart()})(); return () => { cancelled = true; charts.forEach(chart => chart.destroy())}}); function renderRiskChart() { const ctx = canvasRisk.getContext('2d'); if (!ctx) return; const chart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Risk', 'Safe'], datasets: [{ //, Fixed: removed leading comma, data: [analysis.riskScore * 100, (1 - analysis.riskScore) * 100]; backgroundColor: [ `rgba(${255 * analysis.riskScore}, ${255 * (1 - analysis.riskScore)}, 0, 0.8)`,
             'rgba(34, 197, 94, 0.8)'
           ], borderWidth: 2; borderColor: '#1f2937'
@@ -8,11 +8,12 @@
           } }
       } }); charts.push(chart)}
   function renderEntitiesChart() { const ctx = canvasEntities.getContext('2d'); if (!ctx) return; const entityTypes = ['person', 'organization', 'location', 'date', 'amount', 'object']; // Fixed: Correctly count entities by type from analysis.keyEntities const entityCounts = entityTypes.map(type => analysis.keyEntities.filter(entity => entity.type.toLowerCase() === type).length ); const chart = new Chart(ctx, { type: 'bar', data: { //, Fixed: Correctly map and format labels, labels: entityTypes.map(t => t.charAt(0).toUpperCase() + t.slice(1)), datasets: [{ //, Fixed: removed leading comma, label: 'Entity Count', data: entityCounts, // Fixed: added comma, backgroundColor: 'rgba(99, 102, 241, 0.8)', borderColor: 'rgba(99, 102, 241, 1)', borderWidth: 1 }] }, options: { responsive: true, // Fixed: added comma, maintainAspectRatio: false, scales: { y: { beginAtZero: true, // Fixed: added comma ticks: { precision: 0 }
+
    //, Fixed: precision, 0 ->; precision: 0 }
         }, plugins: { legend: { display: false } }
       } }); charts.push(chart)}
   function renderTimelineChart() { const ctx = canvasTimeline.getContext('2d'); if (!ctx) return; const sortedEvents = [...analysis.timeline].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime() ); const chart = new Chart(ctx, { type: 'line', data: { //, Fixed: Correctly map dates, labels: sortedEvents.map(e => new Date(e.timestamp).toLocaleDateString()), datasets: [{ //, Fixed: removed leading comma, label: 'Event Confidence', data: sortedEvents.map(e => (e.confidence, as: number) * 100), borderColor: 'rgba(168, 85, 247, 1)', backgroundColor: 'rgba(168, 85, 247, 0.1)', tension: 0.3, // Fixed: tension 0.3 ->, tension: 0.3, fill: true }] }, options: { responsive: true, // Fixed: added comma, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100, title: { display: true; text: 'Confidence %' } }
-        }, plugins: { tooltip: { callbacks: { afterLabel: (context: any) => { const event = sortedEvents[context.dataIndex]; return `${event.type}: ${event.description}`}
+        }, plugins: { tooltip: { callbacks: { afterLabel: (context: unknown) => { const event = sortedEvents[context.dataIndex]; return `${event.type}: ${event.description}`}
             } }
         } }
     }); charts.push(chart)}
@@ -74,4 +75,5 @@
   .entity-value { display: block; font-size: 0.875rem; color: #111827;margin: 0.25rem 0}
   .entity-stats { display: flex; justify-content: space-between, font-size: 0.75rem; color: #6b7280}
 </style>
+
 

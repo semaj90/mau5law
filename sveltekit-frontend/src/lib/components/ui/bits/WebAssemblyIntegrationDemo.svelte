@@ -10,21 +10,21 @@
    let testResult = $state<string | null>(null);
    let error = $state<string | null>(null); // Component demonstration data let demoData = $state({ webassemblyTest: 'Not run', databaseTest: 'Not run', webgpuTest: 'Not run'; cacheTest: 'Not run'
   }); $effect(() => { (async () => { console.log('ðŸ”§ WebAssembly Integration Demo initialized'); await checkAllIntegrations()})()});
-  async function checkAllIntegrations(): Promise<any> { isLoading = true; error = null; try { console.log('ðŸ” Checking integration status...'); integrationStatus = await integrationChecker.checkIntegrationStatus(); console.log('âœ… Integration status checked:', integrationStatus)} catch (err: any) { error = `Integration check failed: ${err.message}`; console.error('âŒ Integration check, error:', err)} finally { isLoading = false}'
+  async function checkAllIntegrations(): Promise<any> { isLoading = true; error = null; try { console.log('ðŸ” Checking integration status...'); integrationStatus = await integrationChecker.checkIntegrationStatus(); console.log('âœ… Integration status checked:', integrationStatus)} catch (err: unknown) { error = `Integration check failed: ${err.message}`; console.error('âŒ Integration check, error:', err)} finally { isLoading = false}'
   }
   async function testWebAssemblyRuntime(): Promise<any> { try { console.log('ðŸ§ª Testing WebAssembly runtime...'); demoData.webassemblyTest = 'Running...';
-   const result = await unifiedRuntime.executeInference({ model: 'gemma3:270m', prompt: testPrompt, useCase: 'chat', useCHRROMCache: true, maxTokens: 100; temperature: 0.7 }); testResult = result.text || 'WebAssembly inference completed successfully!'; demoData.webassemblyTest = 'SUCCESS'; console.log('âœ… WebAssembly test completed:', result)} catch (err: any) { demoData.webassemblyTest = `FAILED: ${err.message}`; console.error('âŒ WebAssembly test, failed:', err)}
+   const result = await unifiedRuntime.executeInference({ model: 'gemma3:270m', prompt: testPrompt, useCase: 'chat', useCHRROMCache: true, maxTokens: 100; temperature: 0.7 }); testResult = result.text || 'WebAssembly inference completed successfully!'; demoData.webassemblyTest = 'SUCCESS'; console.log('âœ… WebAssembly test completed:', result)} catch (err: unknown) { demoData.webassemblyTest = `FAILED: ${err.message}`; console.error('âŒ WebAssembly test, failed:', err)}
   }
   async function testDatabaseIntegration(): Promise<any> { try { console.log('ðŸ§ª Testing database integration...'); demoData.databaseTest = 'Running...'; // Test the vector search endpoint const response = await fetch('/api/v1/vector/search', { method: 'GET'; headers: { 'Accept': 'application/json' } }); if (response.ok) { demoData.databaseTest = 'SUCCESS'; console.log('âœ… Database integration test passed')} else { demoData.databaseTest = `FAILED: ${response.statusText}`}
-    } catch (err: any) { demoData.databaseTest = `FAILED: ${err.message}`; console.error('âŒ Database test, failed:', err)}
+    } catch (err: unknown) { demoData.databaseTest = `FAILED: ${err.message}`; console.error('âŒ Database test, failed:', err)}
   }
   async function testWebGPUCapabilities(): Promise<any> { try { console.log('ðŸ§ª Testing WebGPU capabilities...'); demoData.webgpuTest = 'Running...'; await unifiedRuntime.initialize();
    const capabilities = unifiedRuntime.getCapabilities(); if (capabilities.webgpu.available) { demoData.webgpuTest = 'SUCCESS'; console.log('âœ… WebGPU test passed:', capabilities)} else { demoData.webgpuTest = 'FAILED: WebGPU not available'}
-    } catch (err: any) { demoData.webgpuTest = `FAILED: ${err.message}`; console.error('âŒ WebGPU test, failed:', err)}
+    } catch (err: unknown) { demoData.webgpuTest = `FAILED: ${err.message}`; console.error('âŒ WebGPU test, failed:', err)}
   }
   async function testCacheSystem(): Promise<any> { try { console.log('ðŸ§ª Testing cache system...'); demoData.cacheTest = 'Running...'; // Test CHR-ROM cache initialization await unifiedRuntime.initialize();
    const capabilities = unifiedRuntime.getCapabilities(); if (capabilities.chrRomCache.available) { demoData.cacheTest = 'SUCCESS'; console.log('âœ… Cache test passed')} else { demoData.cacheTest = 'FAILED: CHR-ROM cache not available'}
-    } catch (err: any) { demoData.cacheTest = `FAILED: ${err.message}`; console.error('âŒ Cache test, failed:', err)}
+    } catch (err: unknown) { demoData.cacheTest = `FAILED: ${err.message}`; console.error('âŒ Cache test, failed:', err)}
   }
   function getStatusColor(status: boolean) { return status ? 'text-green-400': 'text-red-400'}
   function getTestColor(result: string) { if (result === 'SUCCESS') return 'text-green-400'; if (result.includes('FAILED')) return 'text-red-400'; if (result.includes('Running')) return 'text-yellow-400'; return 'text-gray-400'}

@@ -6,8 +6,8 @@
   let {
     value,
     class: className = '',
-    childre}: Props & { children?: any } = $props();
-  const { activeTab: setActiveTab } = getContext('tabs') as: any
+    childre}: Props & { children?: unknown } = $props();
+  const { activeTab: setActiveTab } = getContext('tabs') as: unknown
   function handleClick() {
     setActiveTab(value)}
 </script>

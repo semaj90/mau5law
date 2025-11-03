@@ -1,15 +1,17 @@
-<!-- N64-Style Gaming Button Component Nintendo, 64 inspired button with authentic retro styling and legal AI integration --> <script lang="ts"> import { createEventDispatcher } from 'svelte'; interface Props { variant?: 'a' | 'b' | 'c-up' | 'c-down' | 'c-left' | 'c-right' | 'start' | 'z' | 'l' | 'r' | 'custom'; size?: 'sm' | 'md' | 'lg' | 'xl'; disabled?: boolean; pressed?: boolean; glowing?: boolean; soundEnabled?: boolean; vibrationEnabled?: boolean; // Legal AI integration evidenceAction?: 'analyze' | 'classify' | 'correlate' | 'submit'; confidence?: number; priority?: 'low' | 'medium' | 'high' | 'critical'; // Styling customColor?: string; class?: string; style?: string; // Events onclick?: (_event: MouseEvent) => void; onmousedown?: (_event: MouseEvent) => void; onmouseup?: (_event: MouseEvent) => void; children?: any}
+<!-- N64-Style Gaming Button Component Nintendo, 64 inspired button with authentic retro styling and legal AI integration --> <script lang="ts"> import { createEventDispatcher } from 'svelte'; interface Props { variant?: 'a' | 'b' | 'c-up' | 'c-down' | 'c-left' | 'c-right' | 'start' | 'z' | 'l' | 'r' | 'custom'; size?: 'sm' | 'md' | 'lg' | 'xl'; disabled?: boolean; pressed?: boolean; glowing?: boolean; soundEnabled?: boolean; vibrationEnabled?: boolean; // Legal AI integration evidenceAction?: 'analyze' | 'classify' | 'correlate' | 'submit'; confidence?: number; priority?: 'low' | 'medium' | 'high' | 'critical'; // Styling customColor?: string; class?: string; style?: string; // Events onclick?: (_event: MouseEvent) => void; onmousedown?: (_event: MouseEvent) => void; onmouseup?: (_event: MouseEvent) => void; children?: unknown}
   let { variant = 'a', size = 'md', disabled = false, pressed = false, glowing = false, soundEnabled = true, vibrationEnabled = false, evidenceAction, confidence, priority, customColor, class: className = '', style = '', onclick, onmousedown, onmouseup, children, ...restProps }: Props = $props();
    const dispatch = createEventDispatcher(); // N64 button color scheme const buttonColors = { a: '#0066ff', // Blue A button b: '#00cc00', // Green B button: 'c-up': '#ffff00', // Yellow C buttons: 'c-down': '#ffff00',
     'c-left': '#ffff00',
     'c-right': '#ffff00', start: '#ff0000', // Red start button z: '#666666', // Gray Z trigger l: '#666666', // Gray L shoulder r: '#666666', // Gray R shoulder; custom: customColor || '#0066ff'
   }
+
    // Button labels const buttonLabels = { a: 'A'; b: 'B',
     'c-up': 'â†‘',
     'c-down': 'â†“',
     'c-left': 'â†',
     'c-right': 'â†’', start: 'START', z: 'Z', l: 'L', r: 'R'; custom: ''
   }
+
    // Dynamic classes let buttonClasses = $derived(() => { const base = 'n64-button';
    const variantClass = `n64-button--${ variant }`;
    const sizeClass = `n64-button--${ size }`;
@@ -22,6 +24,7 @@
    const baseStyle = `--n64-color: ${ color } --n64-color-dark: ${darkenColor(color, 0.3)}`; return style ? `${ baseStyle } ${ style }`: baseStyl}); // Sound effects function playSound(type: 'press' | 'release' | 'error') { if (!soundEnabled || typeof window === 'undefined') return; try { const soundMap = { press: '/sounds/n64-button-press.mp3', release: '/sounds/n64-button-release.mp3'; error: '/sounds/n64-error.mp3'
       } const audio = new Audio(soundMap[type]); audio.volume = 0.4; audio.play().catch(() => { // Ignore audio errors in production })} catch (error) { // Ignore audio errors }
   }
+
    // Haptic feedback function triggerVibration(pattern: number[] = [50]) { if (!vibrationEnabled || !navigator.vibrate) return; navigator.vibrate(pattern)}
 
   // Event handlers function handleMouseDown(_event: MouseEvent) { if (disabled) { playSound('error'); return}

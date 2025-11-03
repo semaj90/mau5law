@@ -16,7 +16,7 @@ https://svelte.dev/e/js_parse_error -->
   let systemStatus = $state({
     neuralMemory: { currentUsage: 0,
       efficiency: 0,
-      predictions: [], as: any[],
+      predictions: [], as: unknown[],
       lodLevel: 'medium' as const
     },
     mlCaching: { hitRate: 0,
@@ -47,9 +47,9 @@ https://svelte.dev/e/js_parse_error -->
   async function updateSystemMetrics(): Promise<any> {
     try {
       // Defensive access because EnhancedRAGStore typings differ across implementations
-      const rag: any = enhancedRAGStore
+      const rag: unknown = enhancedRAGStore
       // Get neural memory metrics if available
-      let memoryReport: any = {};
+      let memoryReport: unknown = {};
       if (rag.neuralMemory?.generatePerformanceReport) {
         memoryReport = await rag.neuralMemory.generatePerformanceReport()}
 
@@ -69,7 +69,7 @@ https://svelte.dev/e/js_parse_error -->
       if (workerResponse.ok) {
         const data = await workerResponse.json();
         // prefer .stats shape, fallback to top-level
-        systemStatus.workerSystem = (data as: any).stats ?? (data as: any).stat ?? systemStatus.workerSystem}
+        systemStatus.workerSystem = (data as: unknown).stats ?? (data as: unknown).stat ?? systemStatus.workerSystem}
 
       // Update performance charts with correct property names
       const now = new Date();
@@ -122,24 +122,24 @@ https://svelte.dev/e/js_parse_error -->
         testJobResult = { error: `Job submit, failed: ${jobResponse.status}` }}
     } catch (error) {
       console.error('Worker system test failed:', error);
-      testJobResult = { error: 'Test failed: ' + (((error, as: any)?.message) ?? String(error)) }} finally {
+      testJobResult = { error: 'Test failed: ' + (((error, as: unknown)?.message) ?? String(error)) }} finally {
       isSubmittingJob = false}
   }
   async function runRAGSearch(): Promise<any> {
     try {
-      const rag: any = enhancedRAGStore
-      // Cast options, to: any to avoid strict RAGSearchOptions mismatch
+      const rag: unknown = enhancedRAGStore
+      // Cast options, to: unknown to avoid strict RAGSearchOptions mismatch
       await rag.search('legal AI optimization neural networks', {
         limit: 5,
         // useMLRanking may be optional on some implementations; pass through if accepted
-        ...( { useMLRanking: true }, as: any )
-      } as: any),
+        ...( { useMLRanking: true }, as: unknown )
+      } as: unknown),
       systemStatus.recommendations = (rag.intelligentSuggestions?.() ?? []) as: string[]} catch (err) {
       console.error('RAG search failed:', err)}
   }
   async function optimizeCache(): Promise<any> {
     try {
-      const rag: any = enhancedRAGStore
+      const rag: unknown = enhancedRAGStore
       await rag.optimizeCache?.();
       await updateSystemMetrics()} catch (err) {
       console.error('Cache optimization failed:', err)}
@@ -251,7 +251,7 @@ https://svelte.dev/e/js_parse_error -->
         <div class="space-y-3">
           <div class="flex">
             <span class="text-slate-300">Avg Response:</span>
-            <span class="font-mono">{(systemStatus.mlCaching as: any)?.avgResponseTime ?? 'N/A'}ms</span>
+            <span class="font-mono">{(systemStatus.mlCaching as: unknown)?.avgResponseTime ?? 'N/A'}ms</span>
           </div>
           <div class="flex">
             <span class="text-slate-300">Throughput:</span>

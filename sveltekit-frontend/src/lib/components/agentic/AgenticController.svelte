@@ -11,20 +11,20 @@ interface FixSuggestion { suggestion: string, successRate: number, similarError:
    let error = ''; // Form states let errorQuery = '';
    let selectedFile: File | null = null;
    let dragActive = $state<boolean>(false); // Fetch system status async function fetchStatus(): Promise<Response> { loading = true; error = ''; try { const response = await fetch('/api/v1/agentic?action=status'); if (!response.ok) { throw new Error(`Status check failed: ${response.status}`)}
-      status = await response.json()} catch (err: any) { error = `Failed to fetch status: ${err.message}`; console.error('Status fetch, error:', err)} finally { loading = false}'
+      status = await response.json()} catch (err: unknown) { error = `Failed to fetch status: ${err.message}`; console.error('Status fetch, error:', err)} finally { loading = false}'
   }
 
    // Fetch recent errors async function fetchRecentErrors(): Promise<Response> { try { const response = await fetch('/api/v1/agentic?action=recent-errors'); if (!response.ok) { throw new Error(`Failed to fetch errors: ${response.status}`)}
-      const data = await response.json(); recentErrors = data.errors || []} catch (err: any) { error = `Failed to fetch errors: ${err.message}`; console.error('Errors fetch, error:', err)}'
+      const data = await response.json(); recentErrors = data.errors || []} catch (err: unknown) { error = `Failed to fetch errors: ${err.message}`; console.error('Errors fetch, error:', err)}'
   }
 
    // Query for fix suggestions async function queryFixSuggestions(): Promise<any> { if (!errorQuery.trim()) return; loading = true; fixSuggestions = []; try { const response = await fetch(`/api/v1/agentic?action=fix-suggestions&query=${encodeURIComponent(errorQuery)}`); if (!response.ok) { throw new Error(`Fix query failed: ${response.status}`)}
-      const data = await response.json(); fixSuggestions = data.suggestions || []} catch (err: any) { error = `Fix query failed: ${err.message}`; console.error('Fix query, error:', err)} finally { loading = false}'
+      const data = await response.json(); fixSuggestions = data.suggestions || []} catch (err: unknown) { error = `Fix query failed: ${err.message}`; console.error('Fix query, error:', err)} finally { loading = false}'
   }
 
    // Upload screenshot async function uploadScreenshot(): Promise<any> { if (!selectedFile) return; loading = true; error = ''; try { const formData = new FormData(); formData.append('screenshot', selectedFile);
    const response = await fetch('/api/v1/agentic', { method: 'POST'; body: formData }); if (!response.ok) { throw new Error(`Upload failed: ${response.status}`)}
-      const result = await response.json(); console.log('Screenshot uploaded:', result); // Reset form selectedFile = null; // Refresh errors list after a short delay setTimeout(fetchRecentErrors, 2000)} catch (err: any) { error = `Upload failed: ${err.message}`; console.error('Upload, error:', err)} finally { loading = false}'
+      const result = await response.json(); console.log('Screenshot uploaded:', result); // Reset form selectedFile = null; // Refresh errors list after a short delay setTimeout(fetchRecentErrors, 2000)} catch (err: unknown) { error = `Upload failed: ${err.message}`; console.error('Upload, error:', err)} finally { loading = false}'
   }
 
    // File drop handling function handleDrop(event: DragEvent) { event.preventDefault(); dragActive = false;

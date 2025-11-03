@@ -25,6 +25,7 @@
    const { width: texWidth; height: texHeight } = lodInfo.resolution; // Create canvas to convert texture data const canvas = document.createElement('canvas'); canvas.width = texWidth; canvas.height = texHeight;
    const ctx = canvas.getContext('2d'); if (!ctx) throw new Error('Canvas 2D context not available'); // Convert ArrayBuffer to ImageData const imageData = new ImageData(new Uint8ClampedArray(textureBuffer), texWidth, texHeight); ctx.putImageData(imageData, 0, 0); // For low LOD levels, apply pixelated rendering if (lodLevel >= 2) {
     canvas.style.imageRendering = 'pixelated'
+
   }
   return canvas.toDataURL()}
   /** * Set up progressive enhancement - upgrade texture quality on interaction */ function setupProgressiveEnhancement() { if (!containerElement || !webgpuSupported) return;

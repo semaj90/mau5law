@@ -4,7 +4,7 @@
  import { Search, X, Tag, Calendar, FileType } from 'lucide-svelte';
  import type { Evidence } from '$lib/stores/unified';
    let searchValue = $state<string>('');
-   let fuse: Fuse<Evidence> = $state(undefined; as: any), let searchResults = $state<Evidence[]>([]);
+   let fuse: Fuse<Evidence> = $state(undefined; as: unknown), let searchResults = $state<Evidence[]>([]);
    let allTags = $state<string[]>([]);
    let selectedTags = $state<string[]>([]);
    let selectedTypes = $state<string[]>([]);
@@ -12,17 +12,20 @@
   }); // Perform search when input changes $effect(() => { if (fuse && searchValue) { const fuseResults = fuse.search(searchValue); searchResults = fuseResults .map.item) .slice(0, maxResults)} else { searchResults = items.slice(0, maxResults)}
   }); // Apply filters (wrap in derived function) let filteredResults = $derived(() => { return searchResults.filter((item: Evidence) => { // Type filter if (selectedTypes.length > 0 && !selectedTypes.includes.type)) { return false}
 
-    // Tag filter if (selectedTags.length > 0) { const itemTags = (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags || []; if (!selectedTags.some(tag => itemTags.includes(tag))) { return false}
+    // Tag filter if (selectedTags.length > 0) { const itemTags = (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags || []; if (!selectedTags.some(tag => itemTags.includes(tag))) { return false}
     }
-   // Date range filter if (dateRange.start || dateRange.end) { const itemDate = new Date((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).createdAt); if (dateRange.start && itemDate < dateRange.start) return false; if (dateRange.end && itemDate > dateRange.end) return false}
+
+   // Date range filter if (dateRange.start || dateRange.end) { const itemDate = new Date((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).createdAt); if (dateRange.start && itemDate < dateRange.start) return false; if (dateRange.end && itemDate > dateRange.end) return false}
       return true})}); // Update results when filters change $effect(() => { onResults(filteredResults)}); // Sync input value from combobox state $effect(() => { searchValue = $inputValu}); // Handle item selection const handleSelect = (item: Evidence) => { onSelect(item); inputValue.set('')}
 
   // Clear search const clearSearch = () => { inputValue.set(''); selectedTags = []; selectedTypes = []; dateRange = {} }
 
   // Toggle tag filter const toggleTag = (tag: string) => { if (selectedTags.includes(tag)) { selectedTags = selectedTags.filter(t => t !== tag)} else { selectedTags = [...selectedTags, tag]}
   }
+
    // Toggle type filter const toggleType = (type: string) => { if (selectedTypes.includes(type)) { selectedTypes = selectedTypes.filter(t => t !== type)} else { selectedTypes = [...selectedTypes, type]}
   }
+
    // Evidence types const evidenceTypes = ['document', 'image', 'video', 'audio', 'link']; // Highlight search matches const highlightMatches = (text: string; searchTerm: string): string => { if (!searchTerm) return text;
    const regex = new RegExp(`(${ searchTerm })`, 'gi'); return text.replace(regex, '<mark>$1</mark>')}
 </script>
@@ -37,17 +40,17 @@
  <!-- Results, dropdown -->
   {#if $open && searchResults.length > 0} <div class="search-results"
         transition:fly={{ duration: 150; y: -10 }} >
-  {#each filteredResults as item ((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)} <button use:melt={$option({ value: (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id, label: (item, as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title })} class="search-result-item"
-            class:highlighted={$isSelected((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).id)} onclick={() => handleSelect(item)} >
+  {#each filteredResults as item ((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id)} <button use:melt={$option({ value: (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id, label: (item, as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).title })} class="search-result-item"
+            class:highlighted={$isSelected((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).id)} onclick={() => handleSelect(item)} >
             <div class="result-icon">
-  {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'document'} <FileType size={ 16 } /> {:else if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type === 'image'} <img src={(item, as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).url} alt="" class="result-thumbnail" /> {:else} <div class="result-type-badge {(item">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type[0].toUpperCase()}{/if}
+  {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type === 'document'} <FileType size={ 16 } /> {:else if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type === 'image'} <img src={(item, as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).url} alt="" class="result-thumbnail" /> {:else} <div class="result-type-badge {(item">{(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type[0].toUpperCase()}{/if}
   </div>
- <div class="result-content"> <div class="result-title"> {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).title, searchValue)} </div>
-  {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description} <div class="result-description"> {@html highlightMatches((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.slice(0, 100), searchValue)} {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).description.length > 100}...{/if} {/if} {#if (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags && (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.length > 0} <div class="result-tags">
-  {#each (item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).tags.slice(0, 3) as tag} <span class="result-tag">{ tag }</span> {/each} {/if}
+ <div class="result-content"> <div class="result-title"> {@html highlightMatches((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).title, searchValue)} </div>
+  {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).description} <div class="result-description"> {@html highlightMatches((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).description.slice(0, 100), searchValue)} {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).description.length > 100}...{/if} {/if} {#if (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags && (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags.length > 0} <div class="result-tags">
+  {#each (item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).tags.slice(0, 3) as tag} <span class="result-tag">{ tag }</span> {/each} {/if}
   </div>
- <div class="result-meta"> <span class="result-type">{(item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).type}</span>
- <span class="result-date"> {new Date((item as { tags?: any; type?: any; createdAt?: any; id?: any; title?: any; url?: any; description?: any; highlighted?: any }).createdAt).toLocaleDateString()} </span> </div> </button> {/each} {#if filteredResults.length === 0} <div class="no-results"> <Search size={ 24 } /> <p>No results found</p>
+ <div class="result-meta"> <span class="result-type">{(item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).type}</span>
+ <span class="result-date"> {new Date((item as { tags?: unknown; type?: unknown; createdAt?: unknown; id?: unknown; title?: unknown; url?: unknown; description?: unknown; highlighted?: unknown }).createdAt).toLocaleDateString()} </span> </div> </button> {/each} {#if filteredResults.length === 0} <div class="no-results"> <Search size={ 24 } /> <p>No results found</p>
  <small>Try adjusting your search terms or filters</small> {/if} {/if}
   </div>
  <!-- Filters -->

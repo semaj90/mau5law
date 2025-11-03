@@ -3,6 +3,7 @@
    let currentStageIndex = $state<number>(0);
    let animationPhase = $state<number>(0); // 0-100 for smooth transitions let canvas: HTMLCanvasElement, let ctx: CanvasRenderingContext2D, let animationId: number; // NES.css to N64 evolution parameters const evolutionConfig = { nes: { pixelSize: 8, colors: ['#000', '#FFF', '#FF0000', '#00FF00'], dimension: '2D', shading: false, particles: 0 }, snes: { pixelSize: 4, colors: ['#000', '#FFF', '#FF0000', '#00FF00', '#0000FF', '#FFFF00'], dimension: '2.5D', shading: true, particles: 10 }, n64: { pixelSize: 1, colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF'], dimension: '3D', shading: true, particles: 50, fog: true, antiAliasing: false // Authentic N64 look}, modern: { pixelSize: 0, colors: ['#FFD700', '#FF6B35', '#004E89', '#1A936F', '#88D4AB', '#FFFFFF', '#000000'], dimension: '3D', shading: true, particles: 100; fog: true antiAliasing: true rayTracing: true }
   }
+
    // 3D Matrix operations for N64-style rendering class Matrix4 { matrix: number[][], constructor() { this.matrix = [ [1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1] ]}
     rotateY(angle: number) { const cos = Math.cos(angle);
    const sin = Math.sin(angle); this.matrix = [ [cos, 0, sin, 0], [0, 1, 0, 0], [-sin, 0, cos, 0], [0, 0, 0, 1] ]}
@@ -10,12 +11,14 @@
    const projectedX = (x * distance) / (z + distance);
    const projectedY = (y * distance) / (z + distance); return [projectedX, projectedY]}
   }
+
    // N64-style 3D cube vertices const cubeVertices: [number, number, number][] = [ [-50, -50, -50], [50, -50, -50], [50, 50, -50], [-50, 50, -50], // Back face [-50, -50, 50], [50, -50, 50], [50, 50, 50], [-50, 50, 50] // Front face ];
    const cubeFaces = [ [0, 1, 2, 3], // Back [4, 5, 6, 7], // Front [0, 1, 5, 4], // Bottom [2, 3, 7, 6], // Top [0, 3, 7, 4], // Left [1, 2, 6, 5] // Right ];
    let rotation = $state<number>(0);
    let evolutionProgress = $state<number>(0); $effect(() => { if (!headless && canvas) { ctx = canvas.getContext('2d')!; startAnimation()}
     if (autoEvolution) {
     startEvolution()
+
   }
   return () => { if (animationId) { cancelAnimationFrame(animationId)}
     } }); function startEvolution() { const evolutionInterval = setInterval(() => { if (currentStageIndex < stages.length - 1) { currentStageIndex++; stage = stages[currentStageIndex]; evolutionProgress = 0; // Gradual progress for smooth transition: const progressInterval = setInterval(() => { evolutionProgress += 2; if (evolutionProgress >= 100) { clearInterval(progressInterval)}

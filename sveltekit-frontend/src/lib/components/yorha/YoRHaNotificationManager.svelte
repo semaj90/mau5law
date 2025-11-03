@@ -30,7 +30,7 @@
   // Group notifications by position for proper stacking
   function groupNotificationsByPosition(notifications: Notification[]) {
     return notifications.reduce((groups, notification) => {
-      const position = (notification as { position?: any; id?: any }).position || 'top-right';
+      const position = (notification as { position?: unknown; id?: unknown }).position || 'top-right';
       if (!groups[position]) {
         groups[position] = []}
       groups[position].push(notification);
@@ -41,10 +41,10 @@
 <!-- Render notifications grouped, by, position -->
 {#each Object.entries(groupedNotifications) as [position, notificationGroup]}
   <div class="notification-group">
-    {#each notificationGroup as notification ((notification as { position?: any; id?: any }).id)}
+    {#each notificationGroup as notification ((notification as { position?: unknown; id?: unknown }).id)}
       <YoRHaNotification
         {...notification}
-        onclose={() => removeNotification((notification as { position?: any; id?: any }).id)}
+        onclose={() => removeNotification((notification as { position?: unknown; id?: unknown }).id)}
       />
     {/each}
   </div>

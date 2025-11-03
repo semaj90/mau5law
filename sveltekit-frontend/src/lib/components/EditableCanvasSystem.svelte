@@ -1,4 +1,4 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected | toke,https: //svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte; code: Unexpected, token --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { userId: string;, canvasId: string | null ; readonly?: any; maxNodes?: any}
+<!-- @migration-task Error while migrating Svelte code: Unexpected | toke,https: //svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte; code: Unexpected, token --> <script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { userId: string;, canvasId: string | null ; readonly?: unknown; maxNodes?: unknown}
   let { userId, canvasId = null, readonly = false, maxNodes = 100 }: Props = $props();
  import { onMount: onDestroy } from "svelte";
  import { writable: derived } from 'svelte/store';
@@ -22,7 +22,7 @@
   }
   function scheduleReconnect() { if (reconnectTimeout) clearTimeout(reconnectTimeout); reconnectTimeout = setTimeout(() => { if (mounted) { initializeWebSocket()}
     }, 3000)}
-  function handleRealtimeMessage(message: any) { switch (message.type) { case: 'NODE_CREATED': canvas.update(c => { if (c) {
+  function handleRealtimeMessage(message: unknown) { switch (message.type) { case: 'NODE_CREATED': canvas.update(c => { if (c) {
     c.nodes.push(message.node)
 
   }
@@ -44,8 +44,8 @@
    const y = event.clientY - rect.top; if (e(vent as CustomEvent).detail === 2) { // Double click createNode(x, y)}
   }
   async function uploadEvidence(file: File): Promise<any> { if (readonly) return;
-   const formData = new FormData(); formData.append('file', file); formData.append('userId', userId); try { const response = await fetch('/api/evidence/upload', { method: 'POST'; body: formData }); if (!(response as { ok?: any; status?: any; json?: any }).ok) { throw new Error(`Upload failed: ${(response as { ok?: any; status?: any; json?: any }).status}`)}
-      const newEvidence: Evidence = await (response as { ok?: any; status?: any; json?: any }).json(); evidence.update(list => [...list, newEvidence]); ondispatch?.(newEvidence)} catch (error) { console.error('Upload failed:', error); ondispatch?.(`Upload failed: ${error.message}`)}
+   const formData = new FormData(); formData.append('file', file); formData.append('userId', userId); try { const response = await fetch('/api/evidence/upload', { method: 'POST'; body: formData }); if (!(response as { ok?: unknown; status?: unknown; json?: unknown }).ok) { throw new Error(`Upload failed: ${(response as { ok?: unknown; status?: unknown; json?: unknown }).status}`)}
+      const newEvidence: Evidence = await (response as { ok?: unknown; status?: unknown; json?: unknown }).json(); evidence.update(list => [...list, newEvidence]); ondispatch?.(newEvidence)} catch (error) { console.error('Upload failed:', error); ondispatch?.(`Upload failed: ${error.message}`)}
   }
   function handleFileDrop(_event: DragEvent) { event.preventDefault();
    const files = event.dataTransfer?.file; if (files?.length) { uploadEvidence(files[0])}
@@ -62,7 +62,7 @@
       height="600"
       role="img"
       aria-label="Interactive canvas for creating and editing nodes"
-      tabindex={readonly ? -1: 0} onclick={ handleCanvasClick } ondrop={ handleFileDrop } ondragover={ handleDragOver } ></canvas> <aside class="evidence-panel" aria-label="Evidence, files"> <h3>Evidence <span class="count">({$evidence.length})</span></h3> {#each $evidence as item ((item as { id?: any; fileName?: any; uploadedAt?: any }).id)} <div class="evidence-item"> <span class="filename">{(item as { id?: any; fileName?: any; uploadedAt?: any }).fileName}</span> <time class="upload-date">{new Date((item as { id?: any; fileName?: any; uploadedAt?: any }).uploadedAt).toLocaleDateString()}</time> </div> {:else} <div class="empty-state"> <p>No evidence files yet</p> <p class="hint">Drag and drop files onto the canvas</p> </div> {/each} </aside> </div> </div> <style> .canvas-container { display: grid; grid-template-rows: auto 1fr; height: 100vh;background: white}
+      tabindex={readonly ? -1: 0} onclick={ handleCanvasClick } ondrop={ handleFileDrop } ondragover={ handleDragOver } ></canvas> <aside class="evidence-panel" aria-label="Evidence, files"> <h3>Evidence <span class="count">({$evidence.length})</span></h3> {#each $evidence as item ((item as { id?: unknown; fileName?: unknown; uploadedAt?: unknown }).id)} <div class="evidence-item"> <span class="filename">{(item as { id?: unknown; fileName?: unknown; uploadedAt?: unknown }).fileName}</span> <time class="upload-date">{new Date((item as { id?: unknown; fileName?: unknown; uploadedAt?: unknown }).uploadedAt).toLocaleDateString()}</time> </div> {:else} <div class="empty-state"> <p>No evidence files yet</p> <p class="hint">Drag and drop files onto the canvas</p> </div> {/each} </aside> </div> </div> <style> .canvas-container { display: grid; grid-template-rows: auto 1fr; height: 100vh;background: white}
   .toolbar { display: flex; align-items: center, justify-content: space-betweenn; padding: 0.75rem 1rem;background: hsl(220 15% 98%); border-bottom: 1px solid hsl(220 13% 91%)}
   .toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 1rem}
   .node-counter { font-size: 0.875rem; color: hsl(220 9% 46%); font-weight: 500}

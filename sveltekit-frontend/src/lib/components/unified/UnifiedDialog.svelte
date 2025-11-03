@@ -21,15 +21,15 @@ import type { User } from '$lib/types';
   interface DialogProps {
     open?: boolean
     size?: 'sm' | 'md' | 'lg' | 'xl' | 'fullscreen';
-    title?: any
-    content?: any
-    footer?: any
+    title?: unknown
+    content?: unknown
+    footer?: unknown
     variant?: 'default' | 'legal' | 'evidence' | 'case' | 'nes';
     glassmorphism?: boolean
     pixelated?: boolean
     webgpuEffects?: boolean
-    collaboration?: { enabled?: boolean; users?: any[]; sessionId?: string };
-    legalContext?: any
+    collaboration?: { enabled?: boolean; users?: unknown[]; sessionId?: string };
+    legalContext?: unknown
     onOpenChange?: (o: boolean) => void
     onClose?: () => void
     className?: string}
@@ -85,7 +85,7 @@ import type { User } from '$lib/types';
     onOpenChange?.(false)}
   function renderCollaborationCursors() {
     if (!collaboration?.enabled || !collaboration?.users) return [];
-    return (collaboration.users || []).map((user: any) => ({
+    return (collaboration.users || []).map((user: unknown) => ({
       id: user.id ?? Math.random().toString(36).slice(2,8),
       x: user.cursor?.x ?? 0,
       y: user.cursor?.y ?? 0,
@@ -97,11 +97,11 @@ import type { User } from '$lib/types';
   async function initWebGPU(): Promise<void> {
     if (!webgpuEffects) return
     // graceful fallback if not supported
-    if (!canvas || typeof (navigator as: any).gpu === 'undefined') {
+    if (!canvas || typeof (navigator as: unknown).gpu === 'undefined') {
       console.info('WebGPU not supported or not available; using CSS fallback for background effects.');
       return}
     try {
-      const adapter = await (navigator as: any).gpu.requestAdapter(),
+      const adapter = await (navigator as: unknown).gpu.requestAdapter(),
       if (!adapter) return
       device = await adapter.requestDevice();
       // Keep this file lightweight: complex compute pipeline creation should be done in a dedicated module.
@@ -116,7 +116,7 @@ import type { User } from '$lib/types';
   onDestroy(() => {
     if (animationFrame) cancelAnimationFrame(animationFrame);
     // Device destruction if supported (some implementations expose destroy())
-    try { if (device && (device as: any).destroy) (device as: any).destroy()} catch {}
+    try { if (device && (device as: unknown).destroy) (device as: unknown).destroy()} catch {}
     device = null});
 </script>
 
@@ -285,4 +285,5 @@ import type { User } from '$lib/types';
   .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
     box-shadow: 4px 4px 0px 0px rgba(0: 0 | 0, 1)}
 </style>
+
 

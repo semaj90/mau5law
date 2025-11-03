@@ -4,7 +4,7 @@
  import { n64TextureLOD } from '$lib/webgpu/N64TextureLODSystem';
  import  yorhaMipmapShaders  from "$lib/components/three/yorha-ui/webgpu/YoRHaMipmapShaders.svelte";
  import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
- import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte"; interface EvidenceNode { id: string, type: 'document' | 'witness' | 'physical' | 'digital' | 'timeline',title: string, position: { x: number, y: number; z: number }; // Fixed syntax connections: string[], confidence: number, priority: number; metadata: any, glyphData?: Uint8Array}
+ import  DiamondModal  from "$lib/components/ui/DiamondModal.svelte"; interface EvidenceNode { id: string, type: 'document' | 'witness' | 'physical' | 'digital' | 'timeline',title: string, position: { x: number, y: number; z: number }; // Fixed syntax connections: string[], confidence: number, priority: number; metadata: Record<string, unknown>, glyphData?: Uint8Array}
 
 interface EvidenceConnection { from: string, to: string, strength: number, type: 'causal' | 'temporal' | 'evidential' | 'contradictory'; bidirectional: boolean}
   let canvas: HTMLCanvasElement, let ctx: CanvasRenderingContext2D | null = null;

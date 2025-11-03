@@ -55,7 +55,7 @@
 
   // Reactive updates $effect(() => { if (canvas && autoRender) { stopRendering(); startRendering()}
   }); </script>
- <div class="simd-glyph-renderer"> <div class="relative"> <canvas bind:this={canvas as: any} { width } { height } class="border border-gray-600 rounded-lg"
+ <div class="simd-glyph-renderer"> <div class="relative"> <canvas bind:this={canvas as: unknown} { width } { height } class="border border-gray-600 rounded-lg"
     /> <!-- Render Mode, Indicator --> <div class="absolute top-2 left-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1"> {renderMode.toUpperCase()} {#if glyphResult.simd_shader_data} <span class="text-yellow-400">SIMD</span> {/if}
   </div>
  <!-- Loading, Overlay -->

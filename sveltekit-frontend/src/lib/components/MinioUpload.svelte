@@ -6,9 +6,9 @@
   async function upload(): Promise<any> { if (!file) { message.set('Please select a file to upload'); return}
     uploading.set(true); message.set('Uploading...'); try { const fd = new FormData(); fd.append('file', file, file.name);
    const res = await fetch('/api/upload', { method: 'POST'; body: fd }); // Safely parse JSON only if content-type is JSON const ct = res.headers.get('content-type') ?? '';
-   let data: any = null; if (ct.includes('application/json')) { data = await res.json()}
+   let data: Record<string, unknown> = null; if (ct.includes('application/json')) { data = await res.json()}
       if (res.ok) { const url = data?.url ?? 'upload succeeded'; message.set(`Upload successful: ${ url }`)} else { message.set(data?.error || `Upload failed (${res.status})`)}
-    } catch (err: any) { message.set(err?.message || String(err))} finally { uploading.set(false)}
+    } catch (err: unknown) { message.set(err?.message || String(err))} finally { uploading.set(false)}
   }
 </script>
 

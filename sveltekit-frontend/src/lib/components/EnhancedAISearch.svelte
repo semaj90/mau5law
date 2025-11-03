@@ -61,30 +61,30 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
  <!-- Search, Results -->
   {#if results.length > 0} <div class="mt-6">
   {#each Array.isArray(results) ? results: [] as result} <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-6"
-        > <!-- Result, Header --> <div class="flex items-start justify-between"> <div class="flex-1"> <h3 class="text-lg font-semibold text-gray-900 dark:text-white"> {( result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any}
-                ).title || `Document ${(result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).id}`} </h3>
- <div class="flex items-center gap-3 text-sm text-gray-600"> <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"> {( result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any}
+        > <!-- Result, Header --> <div class="flex items-start justify-between"> <div class="flex-1"> <h3 class="text-lg font-semibold text-gray-900 dark:text-white"> {( result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown}
+                ).title || `Document ${(result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).id}`} </h3>
+ <div class="flex items-center gap-3 text-sm text-gray-600"> <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"> {( result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown}
                   ).documentType} </span>
-  {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).practiceArea} <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
-                  > {( result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any}
+  {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).practiceArea} <span class="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
+                  > {( result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown}
                     ).practiceArea.replace('_', ' ')} </span> {/if}
-  <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"> {( result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any}
+  <span class="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300"> {( result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown}
                   ).jurisdiction} </span> </div> </div>
  <div class="text-right"> <div class="text-2xl font-bold text-blue-600"> {formatScore( (
-                    result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any}
+                    result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown}
                   ).similarity)} </div>
  <div class="text-xs text-gray-500">relevance</div> </div> </div>
  <!-- Content, Preview --> <div class="prose dark:prose-invert"> <p class="text-gray-700 dark:text-gray-300"> {@html highlightContent( (
-                  result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any}
+                  result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown}
                 ).content.substring(0, 300) + '...', query)} </p> </div>
  <!-- Analysis, Results -->
-  {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults} <div class="mt-4 pt-4 border-t border-gray-200"> <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-  {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.keyInsights?.length} <div> <h4 class="font-medium text-gray-900 dark:text-white">Key Insights</h4>
+  {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults} <div class="mt-4 pt-4 border-t border-gray-200"> <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+  {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.keyInsights?.length} <div> <h4 class="font-medium text-gray-900 dark:text-white">Key Insights</h4>
  <ul class="space-y-1">
-  {#each (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.keyInsights.slice(0, 3) as insight} <li class="text-gray-600 dark:text-gray-400 flex items-start"> <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2"></span> { insight } </li> {/each}
-  </ul> {/if} {#if (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.risks?.length} <div> <h4 class="font-medium text-gray-900 dark:text-white">Risk Factors</h4>
+  {#each (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.keyInsights.slice(0, 3) as insight} <li class="text-gray-600 dark:text-gray-400 flex items-start"> <span class="w-1.5 h-1.5 bg-blue-500 rounded-full mt-2"></span> { insight } </li> {/each}
+  </ul> {/if} {#if (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.risks?.length} <div> <h4 class="font-medium text-gray-900 dark:text-white">Risk Factors</h4>
  <ul class="space-y-1">
-  {#each (result as { title?: any; id?: any; documentType?: any; practiceArea?: any; jurisdiction?: any; similarity?: any; content?: any; analysisResults?: any }).analysisResults.risks.slice(0, 3) as risk} <li class="text-red-600 dark:text-red-400 flex items-start"> <span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-2"></span> { risk } </li> {/each}
+  {#each (result as { title?: unknown; id?: unknown; documentType?: unknown; practiceArea?: unknown; jurisdiction?: unknown; similarity?: unknown; content?: unknown; analysisResults?: unknown }).analysisResults.risks.slice(0, 3) as risk} <li class="text-red-600 dark:text-red-400 flex items-start"> <span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-2"></span> { risk } </li> {/each}
   </ul> {/if}
   </div> {/if}
   <!-- Actions --> <div class="mt-4 flex"> <Button variant="ghost" size="sm" class="flex items-center gap-2 bits-btn"> <span class="i-tabler-eye w-4"></span> View Details </Button>

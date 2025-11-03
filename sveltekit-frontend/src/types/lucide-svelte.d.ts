@@ -1,3 +1,3 @@
-﻿declare module, 'lucide-svelte' { // minimal untyped stubs for icons used in the app export const Activity: any, export const BarChart3: any, export const Command: any, export const FileSearch: any, export const FileText: any, export const Play: any, export const RefreshCw: any, export const Search: any, export const Terminal: any, export const Users: any; // allow default import if used elsewhere const: _default: any, export default _default} 
+﻿declare module, 'lucide-svelte' { // minimal untyped stubs for icons used in the app export const Activity: unknown, export const BarChart3: unknown, export const Command: unknown, export const FileSearch: unknown, export const FileText: unknown, export const Play: unknown, export const RefreshCw: unknown, export const Search: unknown, export const Terminal: unknown, export const Users: unknown; // allow default import if used elsewhere const: _default: unknown, export default _default} 
 
 

@@ -22,6 +22,7 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
   function showHelp(args: string[]) { if (args.length > 0) { const cmd = args[0].toLowerCase(); const cmdDef = getCommand(cmd); if (cmdDef) { addOutput(`${ cmd }: ${cmdDef.description}`, 'info'); addOutput(`Usage: ${cmdDef.usage}`, 'info')} else { addOutput(`Unknown command: ${ cmd }`, 'error')}
     } else { addOutput('Available commands:', 'info'); // iterate the array for help output commands.forEach(c => { addOutput(` ${c.name.padEnd(10)} - ${c.description}`, 'info')})}
   }
+
    // Replace getSystemStatus and executeRAG with runtime-safe implementations async function safeGetSystemStatus(): Promise<any> { // Try multiple possible client method names at runtime to avoid type errors try { if (typeof (YoRHaAPIClient as any)?.getSystemStatus === 'function') { return await (YoRHaAPIClient as any).getSystemStatus()}
       if (typeof (YoRHaAPIClient as any)?.getStatus === 'function') { return await (YoRHaAPIClient as any).getStatus()}
       if (typeof (YoRHaAPIClient as any)?.status === 'function') { return await (YoRHaAPIClient as any).status()}
@@ -36,7 +37,7 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
     } catch (error) { const e = error as Error; addOutput(`RAG query error: ${e?.message || String(error)}`, 'error')}
   }
   async function searchDatabase(term: string): Promise<any> { if (!term) { addOutput('Error: Please provide a search term. Usage: search <term>', 'error'); return}
-    try { addOutput(`Searching database for: "${ term }"`, 'info'); const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`); // minimal endpoint if (response.ok) { const result = await response.json(); addOutput('=== SEARCH RESULTS ===', 'success'); if (Array.isArray(result.results) && result.results.length > 0) { result.results.forEach((item: any; index: number) => { addOutput(`${index + 1}. ${item.title || item.name || 'Untitled'}`, 'info')})} else { addOutput('No results found.', 'info')}
+    try { addOutput(`Searching database for: "${ term }"`, 'info'); const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`); // minimal endpoint if (response.ok) { const result = await response.json(); addOutput('=== SEARCH RESULTS ===', 'success'); if (Array.isArray(result.results) && result.results.length > 0) { result.results.forEach((item: unknown; index: number) => { addOutput(`${index + 1}. ${item.title || item.name || 'Untitled'}`, 'info')})} else { addOutput('No results found.', 'info')}
       } else { addOutput(`Search failed: HTTP ${response.status}`, 'error')}
     } catch (error) { const e = error as Error; addOutput(`Search error: ${e?.message || String(error)}`, 'error')}
   }
@@ -327,4 +328,5 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
     }
   }
 </style>
+
 

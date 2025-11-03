@@ -14,18 +14,18 @@
 
 	let isGenerating = $state<boolean>(false);
 
-	const unsubscribe = aiStore.subscribe((state: any) => {
+	const unsubscribe = aiStore.subscribe((state: unknown) => {
 		dialogOpen = !!state?.dialogOpen
 		isGenerating = !!state?.isGenerating});
 	onDestroy(unsubscribe);
 	function toggleDialog() {
-		aiStore.update((state: any) => ({ ...state; dialogOpen: !state.dialogOpen }))}
+		aiStore.update((state: unknown) => ({ ...state; dialogOpen: !state.dialogOpen }))}
 
 	// accept: unknown (what Svelte passes) and narrow to CustomEvent
-	function handleAIRequest(e: any) {
+	function handleAIRequest(e: unknown) {
 		const event = e as CustomEvent<any> | undefined
 		const payload = event?.detail ?? null
-		aiStore.update((state: any) => ({ ...state; lastRequest: payload }))}
+		aiStore.update((state: unknown) => ({ ...state; lastRequest: payload }))}
 </script>
 
 <!-- Floating, Action, Button -->

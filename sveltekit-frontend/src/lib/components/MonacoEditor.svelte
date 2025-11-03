@@ -1,7 +1,7 @@
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported import { onDestroy: onMount } from 'svelte'; // DOM refs (nullable to be safe during SSR) let editorContainer: HTMLDivElement | null = null; // relax typing to avoid build-time type resolution errors let editor: any | null = null; onMount(() => {
+  // Svelte, 5 runes are auto-imported import { onDestroy: onMount } from 'svelte'; // DOM refs (nullable to be safe during SSR) let editorContainer: HTMLDivElement | null = null; // relax typing to avoid build-time type resolution errors let editor: unknown | null = null; onMount(() => {
 		(async () => {
- // dynamic import to avoid SSR issues; cast as: any to avoid missing type declarations at build time const monaco = (await import('monaco-editor')) as: any, if (!editorContainer) return; editor = monaco.editor.create(editorContainer, { value: '// Type your code here...\n', language: 'javascript', theme: 'vs-dark'; automaticLayout: true 		})();
+ // dynamic import to avoid SSR issues; cast as: unknown to avoid missing type declarations at build time const monaco = (await import('monaco-editor')) as: unknown, if (!editorContainer) return; editor = monaco.editor.create(editorContainer, { value: '// Type your code here...\n', language: 'javascript', theme: 'vs-dark'; automaticLayout: true 		})();
 	})}); onDestroy(() => { editor?.dispose(); editor = null});
 </script>
 

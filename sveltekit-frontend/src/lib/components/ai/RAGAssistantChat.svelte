@@ -24,7 +24,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       'Outstanding! I have all the essential information for your case.',
       "Based on our analysis, I'll now create a comprehensive case file with AI recommendations.",'
       'Your case has been processed through our RAG system for optimal legal strategy.']
-  }; // Utility: push message and keep reactivity function pushMessage(msg: any) { messages = [...messages, msg]; scrollToBottom()}
+  }; // Utility: push message and keep reactivity function pushMessage(msg: unknown) { messages = [...messages, msg]; scrollToBottom()}
 
   // Add message helper function addMessage(content: string; type: 'user' | 'assistant' | 'system' = 'assistant', metadata = {}) { pushMessage({ id: crypto?.randomUUID ? crypto.randomUUID(): String(Date.now()) + Math.random(), content, type timestamp: new Date().toISOString(), metadata })}
 

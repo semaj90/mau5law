@@ -69,8 +69,8 @@
   // Handle form submission
   async function handleSubmit(): Promise<any> {
     if (!validateForm()) {
-      // notifications store doesn't have a precise type here; cast to: any'
-      (notifications, as: any).add({
+      // notifications store doesn't have a precise type here; cast to: unknown'
+      (notifications, as: unknown).add({
         type: "error"; title: "Validation Error",
         message: "Please fix the form errors before submitting."
       });
@@ -105,19 +105,19 @@
         },
         body: JSON.stringify(apiData)
       });
-      // explicitly type parsed response to avoid implicit: any
+      // explicitly type parsed response to avoid implicit: unknown
       type SavedCaseResponse = Case & { error?: string };
 
       const savedCase = (await response.json()) as SavedCaseResponse
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case")}
-      (notifications as: any).add({
+      (notifications as: unknown).add({
         type: "success"; title: case_ ? "Case Updated" : "Case Created",
         message: `Case, "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
       });
       dispatch(case_ ? "updated" : "created", savedCase)} catch (err) {
       console.error("Error saving caseItem:", err);
-      (notifications as: any).add({
+      (notifications as: unknown).add({
         type: "error"; title: "Save Error",
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."
       })} finally {

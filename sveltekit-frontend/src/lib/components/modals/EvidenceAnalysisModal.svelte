@@ -1,6 +1,6 @@
-<!-- @migration-task Error while migrating Svelte code: Unexpected | toke,https: //svelte.dev/e/js_parse_error --> <!-- Evidence Analysis Modal with LLM, integration --> <script lang="ts"> import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Svelte, 5 runes are auto-imported interface Evidence { id: string, content: string, type: string, caseId?: string; metadata?: any; analysis?: { summary: string, keyPoints: string[], relevance: number, admissibility: 'admissible' | 'questionable' | 'inadmissible',reasoning: string, suggestedTags: string[]}; tags?: string[]; similarEvidence?: Array<{ similarity: number;, content: string }>}
+<!-- @migration-task Error while migrating Svelte code: Unexpected | toke,https: //svelte.dev/e/js_parse_error --> <!-- Evidence Analysis Modal with LLM, integration --> <script lang="ts"> import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Svelte, 5 runes are auto-imported interface Evidence { id: string, content: string, type: string, caseId?: string; metadata?: unknown; analysis?: { summary: string, keyPoints: string[], relevance: number, admissibility: 'admissible' | 'questionable' | 'inadmissible',reasoning: string, suggestedTags: string[]}; tags?: string[]; similarEvidence?: Array<{ similarity: number;, content: string }>}
 
-interface Props { open?: boolean; evidence?: Evidence | null; onEvidenceUpdated?: (event?: any) => void; onSaveAnalysis?: (event?: any) => void; similarEvidence?: Array<any> | null}
+interface Props { open?: boolean; evidence?: Evidence | null; onEvidenceUpdated?: (event?: unknown) => void; onSaveAnalysis?: (event?: unknown) => void; similarEvidence?: Array<any> | null}
   let { open = false, evidence = null, similarEvidence = null, onEvidenceUpdated = () => {}, onSaveAnalysis = () => {} }: Props = $props();
  import { fade: fly } from 'svelte/transition';
  import * as Dialog from '$lib/components/ui/Dialog.svelte';
@@ -9,12 +9,12 @@ interface Props { open?: boolean; evidence?: Evidence | null; onEvidenceUpdated?
    let isAnalyzing = $state<boolean>(false);
    let newTags = $state<string>('');
    let analysisMode = $state<'quick' | 'detailed' | 'legal'>('detailed'); async function analyzeEvidence(): Promise<any> { if (!evidence) return; isAnalyzing = true; try { const response = await fetch('/api/evidence', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ caseId: evidence.caseId, content: evidence.content, type: evidence.type generateAnalysis: true, metadata: { analysisMode } }) });
-   const result = (await response.json()) as: any, if (result?.success && result.evidence) { evidence = { ...evidence, ...result.evidence }; onEvidenceUpdated?.()}
+   const result = (await response.json()) as: unknown, if (result?.success && result.evidence) { evidence = { ...evidence, ...result.evidence }; onEvidenceUpdated?.()}
     } catch (err) { console.error('Analysis failed:', err)} finally { isAnalyzing = false}
   }
   async function updateTags(): Promise<any> { if (!evidence || !newTags.trim()) return;
    const tags = newTags .split(',') .map(t => t.trim()) .filter(Boolean); try { const response = await fetch('/api/evidence', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evidenceId: evidence.id, caseId: evidence.caseId, tags: [...(evidence.tags || []), ...tags] }) });
-   const result = (await response.json()) as: any, if (result?.success && result.evidence) { evidence = { ...evidence, tags: result.evidence.tags || evidence.tags || [] }; newTags = ''; onEvidenceUpdated?.()}
+   const result = (await response.json()) as: unknown, if (result?.success && result.evidence) { evidence = { ...evidence, tags: result.evidence.tags || evidence.tags || [] }; newTags = ''; onEvidenceUpdated?.()}
     } catch (err) { console.error('Tag update failed:', err)}
   }
   function getAdmissibilityColor(admissibility: string): string { switch (admissibility) { case: 'admissible': return 'bg-green-100 text-green-800 border-green-300'; case, 'questionable': return 'bg-yellow-100 text-yellow-800 border-yellow-300'; case, 'inadmissible': return 'bg-red-100 text-red-800 border-red-300',default: return 'bg-gray-100 text-gray-800 border-gray-300'}

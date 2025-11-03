@@ -16,6 +16,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
 
       // Mark files as analyzed uploadedFiles.forEach(file => { file.analyzed = true}); currentTab = 'results'} catch (error) { console.error('Batch analysis failed:', error); alert(`Analysis failed: ${error.message}`)} finally { isAnalyzing = false}
   }
+
    // Timeline extraction async function extractUnifiedTimeline(): Promise<any> { try { const allContent = uploadedFiles .filter(file => file.content) .map(file => file.content) .join('\n\n---\n\n'); const response = await fetch('/api/v1/timeline', { method: 'POST'; headers: {
           'Content-Type': 'application/json',
           'x-test-mode': 'true'
@@ -23,9 +24,11 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
         }) }); if (response.ok) { const result = await response.json(); timelineData = result.data.timeline}
     } catch (error) { console.error('Timeline extraction failed:', error)}
   }
+
    // Citations discovery async function discoverCitations(): Promise<any> { try { // removed unused response assignment if (response.ok) { const result = await response.json(); citationsData = result.data}
     } catch (error) { console.error('Citations discovery failed:', error)}
   }
+
    // Canvas integration function handleCanvasSave(data) { canvasData = data}
 
   // Export functionality function exportResults() { const exportData = { caseId, timestamp: new Date().toISOString(), files: uploadedFiles.map(f => ({ id: f.id, filename: f.filename, type: f.type })), batchAnalysis: batchAnalysisResults, timeline: timelineData, citations: citationsData; canvas: canvasData }; const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json'

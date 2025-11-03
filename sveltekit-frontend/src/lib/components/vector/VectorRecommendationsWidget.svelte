@@ -56,6 +56,7 @@ Compact AI recommendations component for sidebar/dashboard use
     loadRecommendations();
     if (autoRefresh) {
     refreshTimer = setInterval(loadRecommendations, refreshInterval * 60 * 1000)
+
   }
   return () => {
       if (refreshTimer) {
@@ -86,9 +87,9 @@ Compact AI recommendations component for sidebar/dashboard use
 
       // Safely handle result that may be an array or wrapped: object
       if (Array.isArray(result)) {
-        recommendations = result.slice(0, maxRecommendations)} else if (result && Array.isArray((result as: any).items)) {
-        recommendations = (result as: any).items.slice(0, maxRecommendations)} else if ((result as: any).slice) {
-        recommendations = (result as: any).slice(0, maxRecommendations)} else {
+        recommendations = result.slice(0, maxRecommendations)} else if (result && Array.isArray((result as: unknown).items)) {
+        recommendations = (result as: unknown).items.slice(0, maxRecommendations)} else if ((result as: unknown).slice) {
+        recommendations = (result as: unknown).slice(0, maxRecommendations)} else {
         recommendations = []}
 
       lastUpdated = new Date()} catch (error) {
@@ -269,4 +270,5 @@ Compact AI recommendations component for sidebar/dashboard use
     -webkit-box-orient: vertical
    ;overflow: hidden}
 </style>
+
 

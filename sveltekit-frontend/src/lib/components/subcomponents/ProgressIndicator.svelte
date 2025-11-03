@@ -5,7 +5,7 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
     interface Props {
-        steps?: any[];
+        steps?: unknown[];
         currentStep?: number
         validationResults?: Record<number {
             isValid: boolean
@@ -22,6 +22,7 @@ https://svelte.dev/e/js_parse_error -->
             if (validation) {
                 if (!validation.isValid) return 'error';
                 if (validation.warnings.length > 0) return 'warning'
+
   }
   return 'completed'} else if (stepIndex === currentStep) {
             return 'current'} else {

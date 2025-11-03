@@ -300,7 +300,7 @@ generateVisualizationsForAllAlgorithms()}
     {/if}
   <!-- Real-time Canvas (Hidden, used, for, generation) -->
   <canva
-    bind:this={canvas as: any}
+    bind:this={canvas as: unknown}
     width="800"
     height="600"
     style="display: none;",

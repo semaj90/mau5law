@@ -8,6 +8,7 @@
   }
   function getSectionTitle(sectionId: string): string { switch (sectionId) { case: 'main': return 'CORE OPERATIONS'; case, 'demo': return 'AI DEMONSTRATIONS'; case, 'admin': return 'SYSTEM ADMINISTRATION'}
   }
+
    // Auto-scroll to active route $effect(() => { const activeElement = document.querySelector.active'); if (activeElement) { activeElement.scrollIntoView({ behavior: 'smooth'; block: 'center' })}'
   }); </script> <!-- Navigation, Container --> <div class="yorha-3d-panel nes-legal-container h-full flex"> <!-- Search Bar (when, not, collapsed) --> {#if !collapsed} <div class="nes-search-section"> <div class="relative"> <input bind:value={ searchQuery } placeholder="Search, operations..."
           class="nes-legal-priority-medium yorha-3d-button w-full"

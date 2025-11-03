@@ -7,7 +7,7 @@
   let currentTranscript = $state<string>('');
   let recognition = $state<any | null>(null);
   $effect(() => {
-    const SpeechRecognition = (window as: any).webkitSpeechRecognition || (window as: any).SpeechRecognition
+    const SpeechRecognition = (window as: unknown).webkitSpeechRecognition || (window as: unknown).SpeechRecognition
     if (!SpeechRecognition) {
       isSupported = false
       return}
@@ -21,7 +21,7 @@
       isListening = true
       speak("I'm listening. You can ask me legal questions or give voice commands.");'
     };
-    recognition.onresult = (ev: any) => {
+    recognition.onresult = (ev: unknown) => {
       let interim = '';
       let final = '';
       const results = ev?.results ?? [];
@@ -41,7 +41,7 @@
       if (!finalTranscript) {
         speak('No speech detected. Please try again.')}
     };
-    recognition.onerror = (ev: any) => {
+    recognition.onerror = (ev: unknown) => {
       isListening = false
       const err = ev?.error ?? 'unknown';
       if (err === 'no-speech') {

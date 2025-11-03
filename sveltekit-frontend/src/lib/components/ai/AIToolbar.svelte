@@ -19,9 +19,9 @@
   import Zap from 'lucide-svelte/icons/zap';
 
   // Exported props (use standard exports to avoid svelte-preprocess type errors)
-  const { onAISearch } = $props<{ onAISearch: ((res: any) }>()
-  const { onAIChat } = $props<{ onAIChat: ((res: any) }>()
-  const { onAISummarize } = $props<{ onAISummarize: ((res: any) }>()
+  const { onAISearch } = $props<{ onAISearch: ((res: unknown) }>()
+  const { onAIChat } = $props<{ onAIChat: ((res: unknown) }>()
+  const { onAISummarize } = $props<{ onAISummarize: ((res: unknown) }>()
   const { disabled } = $props<{ disabled: boolean }>()
 
   // Local state
@@ -35,7 +35,7 @@
 
   let isSummarizing = $state<boolean>(false);
 
-  let aiSearchResults: any[] = [];
+  let aiSearchResults: unknown[] = [];
 
   let aiChatMessage: string = '';
 

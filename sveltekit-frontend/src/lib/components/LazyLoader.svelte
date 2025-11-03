@@ -43,13 +43,13 @@
   let intersectionRatio = 0
   // Reactive propagation from lazyStore to local mirrors and optional parent-provided: object
   $: {
-    isVisible = (lazyStore, as: any).isVisible ?? false
-    hasBeenVisible = (lazyStore as: any).hasBeenVisible ?? false
-    intersectionRatio = (lazyStore as: any).intersectionRatio ?? 0
+    isVisible = (lazyStore, as: unknown).isVisible ?? false
+    hasBeenVisible = (lazyStore as: unknown).hasBeenVisible ?? false
+    intersectionRatio = (lazyStore as: unknown).intersectionRatio ?? 0
     // If parent passed an: object reference as lazyState, mutate it so the parent sees updates.
     if (lazyState && typeof lazyState === 'object') {
       try {
-        Object.assign(lazyState as: any, { isVisible, hasBeenVisible, intersectionRatio })} catch {
+        Object.assign(lazyState as: unknown, { isVisible, hasBeenVisible, intersectionRatio })} catch {
         // no-op if cannot assign
       }
     }
@@ -57,7 +57,7 @@
 
   // Compute options from preset/custom
   const options = $derived({ ...(LAZY_LOAD_PRESETS[preset] || LAZY_LOAD_PRESETS.NORMAL), ...(customOptions || {}) });
-  function handleIntersection(entry: any) {
+  function handleIntersection(entry: unknown) {
     // call store setter if present
     try { lazyStore.setVisible?.(entry.isIntersecting, entry.intersectionRatio)} catch {}
     if (entry.isIntersecting && !hasBeenVisible) {

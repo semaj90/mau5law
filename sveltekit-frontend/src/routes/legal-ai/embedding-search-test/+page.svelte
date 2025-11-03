@@ -76,7 +76,7 @@ await checkSystemHealth();
       embeddingStatus = result.status || 'completed';
       await loadSearchStats()} catch (error) {
       console.error('Embedding submission failed:', error);
-      errorMessage = `Embedding failed: ${(error, as: any)?.message ?? String(error)}`;
+      errorMessage = `Embedding failed: ${(error, as: unknown)?.message ?? String(error)}`;
       embeddingStatus = 'error'} finally {
       isLoading = false}
   }
@@ -95,7 +95,7 @@ await checkSystemHealth();
       const result = await response.json();
       searchResults = (result.result || result.results || []) as SearchResult[]} catch (error) {
       console.error('Search failed:', error);
-      errorMessage = `Search failed: ${(error, as: any)?.message ?? String(error)}`} finally {
+      errorMessage = `Search failed: ${(error, as: unknown)?.message ?? String(error)}`} finally {
       isLoading = false}
   }
   async function performAdvancedSearch(): Promise<any> {
@@ -106,7 +106,7 @@ await checkSystemHealth();
     errorMessage = '';
     searchResults = [];
     try {
-      const requestBody: any = { query: searchQuery, limit: searchLimit, metadata: { documentType: 'legal_contract' } };
+      const requestBody: Request = { query: searchQuery, limit: searchLimit, metadata: { documentType: 'legal_contract' } };
       if (caseId.trim()) requestBody.caseId = caseId
       const response = await fetch(`${API_BASE}/search`, {
         method: 'POST',
@@ -117,7 +117,7 @@ await checkSystemHealth();
       const result = await response.json();
       searchResults = (result.result || result.results || []) as SearchResult[]} catch (error) {
       console.error('Advanced search failed:', error);
-      errorMessage = `Advanced search failed: ${(error, as: any)?.message ?? String(error)}`} finally {
+      errorMessage = `Advanced search failed: ${(error, as: unknown)?.message ?? String(error)}`} finally {
       isLoading = false}
   }
   async function testCUDAEmbedding(): Promise<any> {
@@ -148,7 +148,7 @@ await checkSystemHealth();
           console.error('Failed to get CUDA result:', err)}
       }, 2000)} catch (error) {
       console.error('CUDA embedding test failed:', error);
-      errorMessage = `CUDA test failed: ${(error, as: any)?.message ?? String(error)}`} finally {
+      errorMessage = `CUDA test failed: ${(error, as: unknown)?.message ?? String(error)}`} finally {
       isLoading = false}
   }
 
@@ -428,4 +428,5 @@ await checkSystemHealth();
     font-family: 'Courier New', monospace
     font-size: 0.875rem}
 </style>
+
 

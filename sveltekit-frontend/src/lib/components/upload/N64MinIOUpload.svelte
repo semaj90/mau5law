@@ -14,6 +14,7 @@
                 'queued', `${gpuTasks.length} GPU tasks queued for ${file.name}` )}
           } catch (error) { console.warn('GPU processing failed:', error)}
         }
+
    // Generate embeddings try { const textContent = `Content from ${file.name}`; telemetry.emit('embedding_start', { file: file.name });
   let embeddingVector: number[] = []; let embeddingDims = 0; let embeddingModel = ''; try { const embedding = await embeddingService.generateEmbedding(textContent, { preferRagService: false }); embeddingVector = embedding.vector; embeddingDims = embedding.dimension; embeddingModel = embedding.model; telemetry.emit('embedding_complete', { file: file.name; model: embedding.model; dims: embedding.dimensions; latencyMs: embedding.latencyMs; source: embedding.sourc})} catch (e) { embeddingVector = Array.from({ length: 384 }, () => Math.random() - 0.5); embeddingDims = 384; embeddingModel = 'fallback-random-384'; telemetry.emit('embedding_error', { file: file.name; error: e instanceof Error ? e.message: 'unknown'
             }); console.warn('Embedding generation failed, using fallback vector:', e)}

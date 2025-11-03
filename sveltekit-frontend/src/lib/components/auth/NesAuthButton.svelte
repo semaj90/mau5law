@@ -10,7 +10,7 @@
     variant?: 'primary' | 'warning' | 'success' | 'error';
     size?: 'small' | 'medium' | 'large';
     icon?: string
-    form?: any}
+    form?: unknown}
   let { text = 'Retro Auth', variant = 'primary', size = 'medium', icon = 'ðŸŽ®', form }: Props = $props();
 
   let isModalOpen = $state<boolean>(false);

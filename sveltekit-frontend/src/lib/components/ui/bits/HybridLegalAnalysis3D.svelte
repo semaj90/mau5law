@@ -23,10 +23,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       analysisProgress = 100; // Final clustering and relationship analysis await performDocumentClustering(); notifications.add({ type: "success", title: "Hybrid Analysis Complete"; message: `Analyzed ${documents.length} documents using ${ vectorBackend } backend` })} catch (error) { console.error('Hybrid analysis failed:', error); notifications.add({ type: "error", title: "Analysis Failed"; message: error instanceof Error ? error.message: "Unknown error"
       })} finally { isAnalyzing = false}
   }
-  function update3DVisualization(result: AnalysisResult; index: number) { if (!scene || index >= analysisComponents.length - 2) return; const docComponent = analysisComponents[index + 2]; // Skip container and status panel if (docComponent && (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).position3D) { // Update position based on semantic clustering docComponent.position.copy.position3D); // Update color based on confidence and risk level const material = docComponent.mesh?.material; if (material instanceof THREE.MeshBasicMaterial) { const riskColors = { low: NES_YORHA_PALETTE.nesSuccess, medium: NES_YORHA_PALETTE.nesWarning, high: NES_YORHA_PALETTE.nesError; critical: NES_YORHA_PALETTE.nesError}
+  function update3DVisualization(result: AnalysisResult; index: number) { if (!scene || index >= analysisComponents.length - 2) return; const docComponent = analysisComponents[index + 2]; // Skip container and status panel if (docComponent && (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).position3D) { // Update position based on semantic clustering docComponent.position.copy.position3D); // Update color based on confidence and risk level const material = docComponent.mesh?.material; if (material instanceof THREE.MeshBasicMaterial) { const riskColors = { low: NES_YORHA_PALETTE.nesSuccess, medium: NES_YORHA_PALETTE.nesWarning, high: NES_YORHA_PALETTE.nesError; critical: NES_YORHA_PALETTE.nesError}
         material.color.setHex.riskLevel])}
 
-      // Add confidence scaling const confidenceScale = 0.5 + ((result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).confidenceScore * 0.5); docComponent.scale.setScalar(confidenceScale)}
+      // Add confidence scaling const confidenceScale = 0.5 + ((result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).confidenceScore * 0.5); docComponent.scale.setScalar(confidenceScale)}
   }
   async function performDocumentClustering(): Promise<any> { if (analysisData.length < 2) return; // Simple k-means clustering based on embeddings const embeddings = analysisData.map(d => d.embedding); const clusters = performKMeansClustering(embeddings, Math.min(3, Math.ceil(embeddings.length / 2))); documentClusters = clusters.map((cluster, index) => ({ id: index; documents: cluster;, center: calculateClusterCenter(cluster); color: [NES_YORHA_PALETTE.yorhaGold, NES_YORHA_PALETTE.nesSuccess, NES_YORHA_PALETTE.nesInfo][index % 3]})); // Update 3D visualization with clusters if (enable3DVisualization) { visualizeClusters()}
   }
@@ -54,12 +54,13 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       "Ensure all parties understand their obligations"
     ]; if (riskLevel === 'critical' || riskLevel === 'high') {
     recommendations.unshift("Immediate legal review recommended")
+
   }
   return recommendation}
   function performKMeansClustering(embeddings: number[][]; k: number): number[][] { // Simplified k-means clustering const clusters: number[][] = Array.from({ length: k }, () => []); embeddings.forEach((_, index) => { const clusterIndex = index % k; // Simple assignment for demo clusters[clusterIndex].push(index)}); return cluster}
   function calculateClusterCenter(cluster: number[]): number[] { if (cluster.length === 0) return []; const dim = analysisData[0]?.embedding.length || 384; const center = new Array(dim).fill(0); cluster.forEach(docIndex => { const embedding = analysisData[docIndex]?.embedding || []; embedding.forEach((val, i) => { center[i] += val / cluster.length})}); return center}
 
-  // Public methods for external control export function loadDocuments(docs: any[]) { documents = docs.map(doc => doc.content || doc.toString()); notifications.add({ type: "info", title: "Documents Loaded"; message: `Loaded ${documents.length} documents for analysis` })}
+  // Public methods for external control export function loadDocuments(docs: unknown[]) { documents = docs.map(doc => doc.content || doc.toString()); notifications.add({ type: "info", title: "Documents Loaded"; message: `Loaded ${documents.length} documents for analysis` })}
   export function generateEmbeddings() { if (documents.length === 0) { notifications.add({ type: "warning", title: "No Documents"; message: "Load documents first before generating embeddings"
       }); return}
     startHybridAnalysis()}
@@ -104,22 +105,22 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   {#each analysisData as result, index} <div class="nes-container is-rounded document-result risk-{(result"> <div class="document-header"> <FileText class="w-5" /> <span class="doc-title">Document {index + 1}
 </span>
  <span class="confidence-badge"> {Math.round.confidenceScore * 100)}% </span> </div>
- <div class="document-details"> <p><strong>Practice Area:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).practiceArea}
+ <div class="document-details"> <p><strong>Practice Area:</strong> {(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).practiceArea}
 </p>
  <p><strong>Risk Level:</strong>
- <span class="risk-{(result">{(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).riskLevel.toUpperCase()}
+ <span class="risk-{(result">{(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).riskLevel.toUpperCase()}
 </span> </p>
- <p><strong>Legal Entities:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).legalEntities.join(', ') || 'None identified'}
+ <p><strong>Legal Entities:</strong> {(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).legalEntities.join(', ') || 'None identified'}
 </p>
- <p><strong>Topics:</strong> {(result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).semanticTopics.join(', ') || 'General'}
+ <p><strong>Topics:</strong> {(result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).semanticTopics.join(', ') || 'General'}
 </p> </div>
-  {#if (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).keyFindings.length > 0} <div class="key-findings"> <strong>Key Findings:</strong>
+  {#if (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).keyFindings.length > 0} <div class="key-findings"> <strong>Key Findings:</strong>
  <ul class="nes-list">
-  {#each (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).keyFindings as finding} <li>{ finding }
+  {#each (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).keyFindings as finding} <li>{ finding }
 </li> {/each}
-  </ul> {/if} {#if (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).recommendations.length > 0} <div class="recommendations"> <strong>Recommendations:</strong>
+  </ul> {/if} {#if (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).recommendations.length > 0} <div class="recommendations"> <strong>Recommendations:</strong>
  <ul class="nes-list">
-  {#each (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).recommendations as rec} <li>{ rec }
+  {#each (result as { position3D?: unknown; riskLevel?: unknown; confidenceScore?: unknown; practiceArea?: unknown; legalEntities?: unknown; semanticTopics?: unknown; keyFindings?: unknown; recommendations?: unknown; risk?: unknown }).recommendations as rec} <li>{ rec }
 </li> {/each}
   </ul> {/if}
   </div> {/each}

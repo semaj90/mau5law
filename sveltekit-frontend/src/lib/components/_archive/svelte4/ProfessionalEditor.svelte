@@ -20,8 +20,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
     // Focus mode (F10) if (event.key === 'F10') { event.preventDefault(); toggleFocusMode(); return}
   }
+
    // Fullscreen functionality function toggleFullscreen() { isFullscreen = !isFullscreen; if (isFullscreen) { // prefer editor element if available (editorElement ?? document.documentElement).requestFullscreen?.()} else { document.exitFullscreen?.()}
   }
+
    // Focus mode function toggleFocusMode() { isFocusMode = !isFocusMode}
 
   // Text formatting function formatText(command: string, value?: string) { document.execCommand(command, false, value ?? ''); editorElement?.focus(); updateStatistics()}

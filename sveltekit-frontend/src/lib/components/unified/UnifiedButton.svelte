@@ -152,6 +152,7 @@ https://svelte.dev/e/js_parse_error -->
       console.warn('Shader compile failed:', info);
       gl.deleteShader(shader);
       return: null
+
   }
   return shader}
   function createShaderProgram(vertexSource: string; fragmentSource: string) {
@@ -297,4 +298,5 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Courier New', 'Monaco', monospace
     font-feature-settings: normal}
 </style>
+
 

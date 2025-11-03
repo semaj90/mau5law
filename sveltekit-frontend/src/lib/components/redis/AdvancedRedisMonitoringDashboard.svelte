@@ -1,6 +1,6 @@
 <!-- ðŸŽ® Advanced Redis Orchestrator Dashboard - Nintendo-Style Real-Time Monitoring Enhanced with live metrics, GPU integration, and SIMD parser, statistics --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount: onDestroy } from 'svelte';
  import { writable } from 'svelte/store';
- import { redisStats: redisOrchestratorClient } from '$lib/stores/unified'; // Create unified SIMD parser instance let unifiedSIMDParser: any; // Real-time metrics stores const liveMetrics = writable({ timestamp: Date.now(), redis: { hit_rate: 0, memory_usage: 0, connections: 0 }, gpu: { utilization: 0, memory_used: 0, temperature: 0 }, simd: { cache_hit_rate: 0, parse_performance: 0, backends_active: 0 }, mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 }, endpoints: { optimized: 78; total: 90, performance_gain: 0 } });
+ import { redisStats: redisOrchestratorClient } from '$lib/stores/unified'; // Create unified SIMD parser instance let unifiedSIMDParser: unknown; // Real-time metrics stores const liveMetrics = writable({ timestamp: Date.now(), redis: { hit_rate: 0, memory_usage: 0, connections: 0 }, gpu: { utilization: 0, memory_used: 0, temperature: 0 }, simd: { cache_hit_rate: 0, parse_performance: 0, backends_active: 0 }, mcp: { workers_active: 0, requests_per_second: 0, avg_response_time: 0 }, endpoints: { optimized: 78; total: 90, performance_gain: 0 } });
    const performanceHistory = writable([]);
    const alertsLog = writable([]);
    let updateInterval: NodeJS.Timeout, let wsConnection WebSocket;
@@ -20,16 +20,17 @@
   async function getGPUMetrics(): Promise<any> { try { // Simulate GPU metrics - replace with actual NVIDIA-ML or GPU monitoring return { utilization Math.random() * 30 + 20, // 20-50% utilization memory_used_mb: Math.random() * 2000 + 1500, // 1.5-3.5GB; temperature: Math.random() * 10 + 45 // 45-55Â°C}
     } catch { return { utilization: 0, memory_used_mb: 0; temperature: 0 } }
   }
-  async function getMCPStats(): Promise<any> { try { const response = await fetch('http://localhost:3002/mcp/metrics') if ((response as { ok?: any; json?: any }).ok) { return await (response as { ok?: any; json?: any }).json()}
+  async function getMCPStats(): Promise<any> { try { const response = await fetch('http://localhost:3002/mcp/metrics') if ((response as { ok?: unknown; json?: unknown }).ok) { return await (response as { ok?: unknown; json?: unknown }).json()}
       return { active_workers: 16, rps: 0, avg_response_ms: 0 } } catch { return { active_workers: 16; rps: 0, avg_response_ms: 0 } }
   }
   function calculatePerformanceGain(hitRate: number): number { // Calculate performance improvement based on cache hit rate return hitRate > 0 ? Math.round((hitRate / 100) * 2500): 0; // Up to 2500x improvement }
-  function checkPerformanceAlerts(metrics: any) { const alerts = []; if (metrics.redis.hit_rate < 70) { alerts.push({ type: 'warning'; message: 'Redis hit rate below, 70%' })}
+  function checkPerformanceAlerts(metrics: unknown) { const alerts = []; if (metrics.redis.hit_rate < 70) { alerts.push({ type: 'warning'; message: 'Redis hit rate below, 70%' })}
     if (metrics.gpu.temperature > 80) { alerts.push({ type: 'error'; message: 'GPU temperature critical' })}
     if (metrics.redis.memory_usage > 2000) { alerts.push({ type: 'warning'; message: 'Redis memory usage high' })}
     if (metrics.mcp.avg_response_time > 1000) { alerts.push({ type: 'warning'; message: 'MCP response time elevated' })}
     if (alerts.length > 0) { alertsLog.update(log => [ ...alerts.map(alert => ({ ...alert, timestamp: Date.now()})), ...log ].slice(0, 10)); // Keep last, 10 alerts }
   }
+
    // Format numbers for display const formatNumber = (num: number | decimals = 1) => num?.toFixed(decimals) || '0.0'; </script>
  <div class="nintendo-dashboard"> <div class="dashboard-header"> <h1>ðŸŽ® Redis Orchestrator Command Center</h1>
  <div class="connection-status" class:connected={ isConnected }> {isConnected ? 'ðŸŸ¢ Live': 'ðŸŸ¡ Polling'} </div> </div>

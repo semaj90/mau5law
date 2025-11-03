@@ -2,8 +2,8 @@
   // Svelte, 5 runes are auto-imported
   import { cn } from '$lib/utils';
   interface Props {
-    value?: any
-    max?: any
+    value?: unknown
+    max?: unknown
     class?: string}
   let { value = 0, max = 100, class: className = '' }: Props = $props();
   

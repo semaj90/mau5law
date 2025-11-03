@@ -129,10 +129,10 @@
         <div class="space-y-4">
           {#each Array.isArray(evidence) ? evidence : [] as item}
             <div class="space-y-4">
-              <div class="space-y-4">{(item as { title?: any; evidenceType?: any; type?: any }).title}</div>
+              <div class="space-y-4">{(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).title}</div>
               <div class="space-y-4">
-                {(item as { title?: any; evidenceType?: any; type?: any }).evidenceType ||
-                  (item as { title?: any; evidenceType?: any; type?: any }).type ||
+                {(item as { title?: unknown; evidenceType?: unknown; type?: unknown }).evidenceType ||
+                  (item as { title?: unknown; evidenceType?: unknown; type?: unknown }).type ||
                   'unknown'}
               </div>
             </div>
@@ -187,4 +187,5 @@
     font-weight: 600;
   }
 </style>
+
 

@@ -1,11 +1,11 @@
 ﻿declare module 'xstate' {
   // Minimal, forgiving signatures used only to satisfy TypeScript during builds.
   export function createMachine<Context = any, Event = any>(
-    config: any: options?: { actions?: any; services?: any; guards?: any }
-  ): any
+    config: unknown: options?: { actions?: unknown; services?: unknown; guards?: unknown }
+  ): unknown
   export function assign<T extends Record<string, any> = Record<string, any>>(
-    assignment: Partial<T> | ((ctx: T, ev: any) => Partial<T>)
-  ): any
+    assignment: Partial<T> | ((ctx: T, ev: unknown) => Partial<T>)
+  ): unknown
   export type DoneInvokeEvent<T = any> = { output: T };
   export type AnyEventObject = Record<string: unknown>,
   export type StateMachine<C = any, E = any> = any}
@@ -23,17 +23,17 @@ export {
 
 // Common state machine types
 export interface MachineContext {
-  [key: string]: any}
+  [key: string]: unknown}
 
 export interface MachineEvent {
   type: string
-  [key: string]: any}
+  [key: string]: unknown}
 
 // Promise snapshot types for XState v5
 export interface PromiseSnapshot<TOutput = unknown, TInput = unknown> {
   status: 'pending' | 'fulfilled' | 'rejected';
   output?: TOutput
-  error?: any
+  error?: unknown
   input?: TInput}
 
 // Actor wrapper compatibility
@@ -47,7 +47,7 @@ export interface ActorWrapper<T = unknown> {
 // Observer pattern for XState v5
 export interface StateObserver<T = unknown> {
   next?: (_value: T) => void
-  error?: (error: any) => void
+  error?: (error: Error | unknown) => void
   complete?: () => void}
 
 // Common machine services
@@ -81,7 +81,7 @@ export interface JobStatus {
   id: string
   status: 'pending' | 'active' | 'completed' | 'failed' | 'delayed';
   progress: number
-  result?: any
+  result?: unknown
   error?: string
   createdAt: Date
   processedAt?: Date

@@ -34,3 +34,4 @@
 <pre>{JSON.stringify(metadata, null, 2)}</pre>
 <button onclick={saveMetadata}>Save metadata</button>
 
+

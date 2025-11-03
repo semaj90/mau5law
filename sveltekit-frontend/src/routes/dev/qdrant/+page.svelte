@@ -2,7 +2,7 @@
   import { onMount, onDestroy } from 'svelte';
   import { fade, scale } from 'svelte/transition';
   let loading = $state<boolean>(false);
-  let result: any = null
+  let result: unknown = null
   let error: string | null = null
   let limit = 6
   let page = 1
@@ -15,7 +15,7 @@
   let previewSnippet = '';
   // Copy feedback
   let copiedId: string | null = null
-  let copyTimeout: any = null
+  let copyTimeout: unknown = null
   function buildQuery() {
     const params = new URLSearchParams();
     params.set('limit', String(limit));
@@ -35,10 +35,10 @@
       error = e instanceof Error ? e.message : String(e)} finally {
       loading = false}
   }
-  function extractTitle(payload: any): string {
+  function extractTitle(payload: unknown): string {
     if (!payload) return '';
     return payload.title || payload.metadata?.title || payload.fileName || payload.name || payload.id || ''}
-  function extractSnippet(payload: any): string {
+  function extractSnippet(payload: unknown): string {
     if (!payload) return '';
     const s = payload.snippet || payload.text || payload.metadata?.snippet || payload.metadata?.text || '';
     return typeof s === 'string' ? s.slice(0, 400) : ''}
@@ -80,10 +80,10 @@
   async function ensureMarkdownLibs(): Promise<any> {
     if (!purified || !markdownToHtml) {
       try {
-        // use awaited dynamic imports and cast to: any to avoid TS type errors when types are missing
+        // use awaited dynamic imports and cast to: unknown to avoid TS type errors when types are missing
         const [DOMPurifyMod, markedMod] = await Promise.all([
-          (await import('dompurify')) as: any,
-          (await import('marked')) as: any]),
+          (await import('dompurify')) as: unknown,
+          (await import('marked')) as: unknown]),
         const DOMPurify = DOMPurifyMod.default ?? DOMPurifyMod
         const marked = markedMod.default ?? markedMod
         purified = (html: string) => DOMPurify.sanitize(html);
@@ -328,4 +328,4 @@
   {/if}
 </div>
 
-
+

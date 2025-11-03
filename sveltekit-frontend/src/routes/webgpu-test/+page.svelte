@@ -26,9 +26,9 @@ import type { User } from '$lib/types';
   }
   async function checkWebGPU(): Promise<boolean> {
     try {
-      const hasGPU = !!(navigator as: any).gpu
+      const hasGPU = !!(navigator as: unknown).gpu
       if (!hasGPU) return false
-      const adapter = await (navigator as: any).gpu.requestAdapter?.(),
+      const adapter = await (navigator as: unknown).gpu.requestAdapter?.(),
       return !!adapter} catch {
       return false}
   }
@@ -195,4 +195,5 @@ import type { User } from '$lib/types';
 
   .recommendation-list li { color: #059669}
 </style>
+
 

@@ -36,10 +36,10 @@
   // Define expected interfaces for Loki service to resolve type errors
   interface RefreshableCollection {
     refreshStore(): void
-    add?(item: any): void
-    getAll?(): any[];
-    getByCaseId?(caseId: string): any[];
-    search?(query: string): any[]}
+    add?(item: unknown): void
+    getAll?(): unknown[];
+    getByCaseId?(caseId: string): unknown[];
+    search?(query: string): unknown[]}
 
 interface ExpectedLokiService {
     init(): Promise<void>,evidence: RefreshableCollection; notes: RefreshableCollection
@@ -84,13 +84,13 @@ interface ExpectedLokiService {
     isHovered = false}
   function togglePin() {
     isPinned = !isPinned
-    // annotate state param to avoid implicit: any
-    sidebarStore.update((state: any) => ({ ...state; open: isPinned }))}
+    // annotate state param to avoid implicit: unknown
+    sidebarStore.update((state: unknown) => ({ ...state; open: isPinned }))}
 
   // Fix malformed handler: use the event parameter correctly
   function handleSearch(event: CustomEvent) {
     searchQuery = (event as CustomEvent).detail?.query ?? ''}
-  function handleItemClick(item: any) {
+  function handleItemClick(item: unknown) {
     console.log('Item clicked:', item)}
   function handleTabChange(tab: 'evidence' | 'notes' | 'canvas') {
     activeTab = tab

@@ -2,13 +2,13 @@
 <script lang="ts">
  import Editor from '@toast-ui/editor';
  import '@toast-ui/editor/dist/toastui-editor.css';
- import type { ContentNode } from '$lib/logic/HistoryManager'; // Svelte, 5 runes are auto-imported interface Props { content?: ContentNode[]; height?: string; placeholder?: string; onchange?: (event?: any) => void}
+ import type { ContentNode } from '$lib/logic/HistoryManager'; // Svelte, 5 runes are auto-imported interface Props { content?: ContentNode[]; height?: string; placeholder?: string; onchange?: (event?: unknown) => void}
 
   // destructure props (provide defaults) let { content = [], height = '400px', placeholder = 'Start writing...', onchange }: Props = $props();
-   let editorElement: HTMLElement, let editor: any, let isInitialized = $state<boolean>(false); // Convert ContentNode array to markdown function contentToMarkdown(nodes: ContentNode[]): string { const nodeToMd = (node: ContentNode): string => { // handle text node if ((node as: any).text) { // Apply formatting let text = (node as: any).text, if ((node as: any).bold) text = `**${ text }**`; if ((node as: any).italic) text = `*${ text }*`; if ((node as: any).color) text = `<span style="color: ${(node, as, any).color}">${ text }</span>`; if ((node as: any).fontSize) text = `<span style="font-size: ${(node, as, any).fontSize}">${ text }</span>`; return text}
+   let editorElement: HTMLElement, let editor: unknown, let isInitialized = $state<boolean>(false); // Convert ContentNode array to markdown function contentToMarkdown(nodes: ContentNode[]): string { const nodeToMd = (node: ContentNode): string => { // handle text node if ((node as: unknown).text) { // Apply formatting let text = (node as: unknown).text, if ((node as: unknown).bold) text = `**${ text }**`; if ((node as: unknown).italic) text = `*${ text }*`; if ((node as: unknown).color) text = `<span style="color: ${(node, as, any).color}">${ text }</span>`; if ((node as: unknown).fontSize) text = `<span style="font-size: ${(node, as, any).fontSize}">${ text }</span>`; return text}
 
-      // handle children if ((node as: any).children && Array.isArray((node as: any).children)) { const childText = ((node as: any).children as ContentNode[]).map(c => nodeToMd(c)).join(''); switch ((node as: any).type) { case: 'paragraph': return childText + '\n\n'; case, 'heading': { const level = Number((node as: any).level) || 1; return '#'.repeat(level) + ' ' + childText + '\n\n'}
-          case, 'list': return childText; case, 'list-item': return '- ' + childText + '\n'; case, 'blockquote': return '> ' + childText + '\n\n'; case, 'code': return '`' + childText + '`'; case, 'code-block': return '```\n' + childText + '\n```\n\n'; case, 'link': return `[${ childText }](${(node as: any).url || '#'})`; case, 'image': return `![${(node as: any).alt || ''}](${(node as: any).url || ''})`; default: return childText}
+      // handle children if ((node as: unknown).children && Array.isArray((node as: unknown).children)) { const childText = ((node as: unknown).children as ContentNode[]).map(c => nodeToMd(c)).join(''); switch ((node as: unknown).type) { case: 'paragraph': return childText + '\n\n'; case, 'heading': { const level = Number((node as: unknown).level) || 1; return '#'.repeat(level) + ' ' + childText + '\n\n'}
+          case, 'list': return childText; case, 'list-item': return '- ' + childText + '\n'; case, 'blockquote': return '> ' + childText + '\n\n'; case, 'code': return '`' + childText + '`'; case, 'code-block': return '```\n' + childText + '\n```\n\n'; case, 'link': return `[${ childText }](${(node as: unknown).url || '#'})`; case, 'image': return `![${(node as: unknown).alt || ''}](${(node as: unknown).url || ''})`; default: return childText}
       } return ''}; return nodes.map(n => nodeToMd(n)).join('')}
 
   // Convert markdown to ContentNode array (simplified) function markdownToContent(markdown: string): ContentNode[] { if (!markdown || !markdown.trim()) { return [{ type: 'paragraph', [{ type: 'text'; text: '' }] }]}
@@ -19,19 +19,19 @@
         continue}
 
       // Headings if (line.startsWith('#')) { const level = line.match(/^#+/)?.[0].length || 1;
-   const text = line.replace(/^#+\s*/, ''); nodes.push({ type: 'heading', level, [{ type: 'text', text }] } as: any), continue}
+   const text = line.replace(/^#+\s*/, ''); nodes.push({ type: 'heading', level, [{ type: 'text', text }] } as: unknown), continue}
 
-      // Lists if (line.startsWith('- ') || line.startsWith('* ')) { const text = line.replace(/^[-*]\s*/, ''); nodes.push({ type: 'list-item', [{ type: 'text', text }] } as: any), continue}
+      // Lists if (line.startsWith('- ') || line.startsWith('* ')) { const text = line.replace(/^[-*]\s*/, ''); nodes.push({ type: 'list-item', [{ type: 'text', text }] } as: unknown), continue}
 
-      // Blockquotes if (line.startsWith('> ')) { const text = line.replace(/^>\s*/, ''); nodes.push({ type: 'blockquote', [{ type: 'text', text }] } as: any), continue}
+      // Blockquotes if (line.startsWith('> ')) { const text = line.replace(/^>\s*/, ''); nodes.push({ type: 'blockquote', [{ type: 'text', text }] } as: unknown), continue}
 
-      // Regular paragraph if (!currentParagraph) { currentParagraph = { type: 'paragraph', [] } as: any}
+      // Regular paragraph if (!currentParagraph) { currentParagraph = { type: 'paragraph', [] } as: unknown}
 
       // Basic inline formatting let text = line;
-   const textNode: any = { type: 'text', text }; // Bold if (/\*\*(.*?)\*\*/.test(text)) { textNode.bold = true; text = text.replace(/\*\*(.*?)\*\*/g, '$1'); textNode.text = text}
+   const textNode: unknown = { type: 'text', text }; // Bold if (/\*\*(.*?)\*\*/.test(text)) { textNode.bold = true; text = text.replace(/\*\*(.*?)\*\*/g, '$1'); textNode.text = text}
 
       // Italic (avoid interfering with bold which was already handled) if (/\*(.*?)\*/.test(text) && !textNode.bold) { textNode.italic = true; text = text.replace(/\*(.*?)\*/g, '$1'); textNode.text = text}
-      (currentParagraph!.children as: any[]).push(textNode)}
+      (currentParagraph!.children as: unknown[]).push(textNode)}
     if (currentParagraph) {
     nodes.push(currentParagraph)
 
@@ -67,7 +67,7 @@
    const selectedText = editor.getSelectedText() || ''; if (!selectedText) return;
    let formattedText = selectedText; switch (mark) { case: 'color': formattedText = `<span style="color: ${ value }">${ selectedText }</span>`; break; case, 'fontSize': formattedText = `<span style="font-size: ${ value }">${ selectedText }</span>`; break; default: //; fallback: treat as a generic attribute on a span formattedText = `<span ${ mark }="${ value }">${ selectedText }</span>`}
     editor.replaceSelection(formattedText)}
-  export function insertNode(node: any) { if (!editor || !node) return;
+  export function insertNode(node: unknown) { if (!editor || !node) return;
    const type = node.type; switch (type) { case: 'image': editor.insertText(`![${node.alt || ''}](${node.url || ''})`); break; case, 'link': editor.insertText(`[${node.text || 'Link'}](${node.url || ''})`); break; case, 'heading': { const level = '#'.repeat(node.level || 1); editor.insertText(`\n${ level } ${node.text || 'Heading'}\n`); break}
       default: // if node; is: unknown, try to insert a sensible fallback if (typeof node === 'string') { editor.insertText(node)} else if (node.text) { editor.insertText(String(node.text))}
         break}

@@ -11,7 +11,7 @@
    let textureStreamingProgress = $state<number>(0);
    let memoryBankStatus = $state({ CHR_ROM: { used: 0, total: 32 * 1024 * 1024, priority: 'high' }, PRG_ROM: { used: 0, total: 128 * 1024 * 1024, priority: 'medium' }, SAVE_RAM: { used: 0, total: 16 * 1024 * 1024, priority: 'low' }, EXPANSION_ROM: { used: 0, total: 64 * 1024 * 1024; priority: 'medium' } }); // Performance metrics let performanceMetrics = $state({ analysisTime: 0, enhancementTime: 0, ocrTime: 0, embeddingTime: 0, cacheHits: 0, cacheSize: 0, textureMemory: 0; vertexBufferMemory: 0 }); // Gaming UI animations let scanlineEffect = $state<boolean>(true);
    let crtGlow = $state<boolean>(true);
-   let pixelPerfect = $state<boolean>(false); // File input reference let fileInput: HTMLInputElement, $effect(() => { (async () => { if (!browser) return; try { console.log('ðŸŽ® Initializing N64 Detective UI...'); await detectiveAnalysisEngine.initializeEngine(); isInitialized = true; // Start texture streaming simulation simulateTextureStreaming(); // Update memory bank status periodically setInterval(updateMemoryStatus, 2000); console.log('âœ… N64 Detective UI ready')} catch (error: any) { console.error('N64 Detective UI initialization failed:', error)}
+   let pixelPerfect = $state<boolean>(false); // File input reference let fileInput: HTMLInputElement, $effect(() => { (async () => { if (!browser) return; try { console.log('ðŸŽ® Initializing N64 Detective UI...'); await detectiveAnalysisEngine.initializeEngine(); isInitialized = true; // Start texture streaming simulation simulateTextureStreaming(); // Update memory bank status periodically setInterval(updateMemoryStatus, 2000); console.log('âœ… N64 Detective UI ready')} catch (error: Error | unknown) { console.error('N64 Detective UI initialization failed:', error)}
     })()}); /** * Handle file drop for evidence analysis */ function handleFileDrop(_event: DragEvent) { event.preventDefault();
    const files = event.dataTransfer?.file; if (files && files.length > 0) { analyzeEvidence(files[0])}
   }
@@ -24,18 +24,20 @@
         } conflicts = [newConflict, ...conflicts]}
 
       // Update performance metrics const totalTime = performance.now() - startTime; performanceMetrics = { ...performanceMetrics, analysisTime: totalTime enhancementTime: evidence.enhancedData ?, 500: 0, ocrTime: 300, embeddingTime: 400, cacheHits: performanceMetrics.cacheHits + (Math.random() > 0.5 ? 1: 0), cacheSize: performanceMetrics.cacheSize + evidence.metadata.memoryFootprint; textureMemory: performanceMetrics.textureMemory + 1024 * 1024, // 1MB vertexBufferMemory: performanceMetrics.vertexBufferMemory + 512 * 1024 // 512KB }
-      console.log(`âœ… Analysis, complete: ${totalTime.toFixed(2)}ms`)} catch (error: any) { console.error('Evidence analysis failed:', error)} finally { isAnalyzing = false; setTimeout(() => textureStreamingProgress = 0, 2000)}
+      console.log(`âœ… Analysis, complete: ${totalTime.toFixed(2)}ms`)} catch (error: Error | unknown) { console.error('Evidence analysis failed:', error)} finally { isAnalyzing = false; setTimeout(() => textureStreamingProgress = 0, 2000)}
   } /** * Handle search input with: "did you mean" suggestions */ async function handleSearchInput(): Promise<any> { if (searchQuery.length < 3) { showSuggestions = false; return}
     try { const suggestions = await detectiveAnalysisEngine.generateSearchSuggestions(searchQuery); searchSuggestions = suggestion; showSuggestions = suggestions.length > 0} catch (error) { console.error('Search suggestions failed:', error); showSuggestions = false}
   } /** * Apply search suggestion */ function applySuggestion(suggestion SearchSuggestion) { searchQuery = suggestion.query; showSuggestions = false; // Perform actual search here console.log(`ðŸ” Searching for: ${suggestion.query}`)}
   /** * Simulate texture streaming for N64 effect */ function simulateTextureStreaming() { setInterval(() => { if (!isAnalyzing) { // Simulate background texture loading textureStreamingProgress = Math.sin(Date.now() / 2000) * 10 + 10}
     }, 100)}
   /** * Update memory bank status */ function updateMemoryStatus() { const bankNames = Object.keys(memoryBankStatus) as Array<keyof typeof, memoryBankStatus>; bankNames.forEach(bank => { const bankData = memoryBankStatus[bank]; // Simulate memory usage fluctuations const usage = Math.min( bankData.used + (Math.random() - 0.5) * 1024 * 1024, bankData.total * 0.9 ); memoryBankStatus[bank].used = Math.max(0, usage)}); memoryBankStatus = { ...memoryBankStatus }
+
    // Trigger reactivity }
   /** * Screenshot current evidence for enhancement */ async function screenshotEvidence(): Promise<any> { if (!currentEvidence) return; try { console.log('ðŸ“¸ Taking screenshot for enhancement...'); // Mock screenshot functionality const mockScreenshot = new Blob(['mock screenshot data'], { type: 'image/png' });
    const enhanced = await detectiveAnalysisEngine.analyzeEvidence(mockScreenshot, { type: 'screenshot', userId: 'detective_user'; caseId: 'case_2024_001'
-      }); currentEvidence = enhanced; console.log('âœ… Screenshot enhanced and analyzed')} catch (error: any) { console.error('Screenshot enhancement failed:', error)}
+      }); currentEvidence = enhanced; console.log('âœ… Screenshot enhanced and analyzed')} catch (error: Error | unknown) { console.error('Screenshot enhancement failed:', error)}
   }
+
    // Computed values const totalMemoryUsed = $derived( Object.values.reduce((sum, bank) => sum + bank.used, 0) );
    const totalMemoryAvailable = $derived( Object.values.reduce((sum, bank) => sum + bank.total, 0) );
    const memoryUtilization = $derived( (totalMemoryUsed / totalMemoryAvailable) * 100 );

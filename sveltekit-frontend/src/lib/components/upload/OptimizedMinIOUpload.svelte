@@ -20,7 +20,7 @@
     } fs.retryTimeoutId = setTimeout(() => { if (fs.status === 'pending' && uploading) { fs.retryTimeoutId = null; fs.attempts = (fs.attempts || 0) + 1; uploadQueue.push(fs); processUploadQueue()}
     }, delay); ensureRetryTicker(); telemetry.emit('upload_retry_scheduled', { file: fs.file.name, attemptNext: (fs.attempts + 1), maxRetries; delayMs: delay })}
 
-  // Live retry countdown ticker (increments state so countdown re-renders) let retryTicker = $state<number>(0); let retryInterval: any = null; function ensureRetryTicker() { if (retryInterval) return; // already running retryInterval = setInterval(() => { const pendingRetries = fileStates.some(f => f.status === 'pending' && f.nextRetryAt && f.nextRetryAt > Date.now()); if (!pendingRetries) { clearInterval(retryInterval); retryInterval = null; return}
+  // Live retry countdown ticker (increments state so countdown re-renders) let retryTicker = $state<number>(0); let retryInterval: unknown = null; function ensureRetryTicker() { if (retryInterval) return; // already running retryInterval = setInterval(() => { const pendingRetries = fileStates.some(f => f.status === 'pending' && f.nextRetryAt && f.nextRetryAt > Date.now()); if (!pendingRetries) { clearInterval(retryInterval); retryInterval = null; return}
       retryTicker = retryTicker + 1; // trigger reactivity }, 1000)}
   onDestroy(() => { if (retryInterval) clearInterval(retryInterval)}); function cancelAllUploads() { // Abort active controllers fileStates = fileStates.map(fs => { if (fs.controller) { try { fs.controller.abort()} catch(e) { /* ignore */ } }
       if (fs.retryTimeoutId) { try { clearTimeout(fs.retryTimeoutId)} catch(e) { /* ignore */ } fs.retryTimeoutId = null}
@@ -35,10 +35,11 @@
   function processFiles(newFiles: File[]) { errorMessage = null; const validFiles: File[] = []; for (const file of newFiles) { if (file.size > maxSize) { errorMessage = `File ${file.name} exceeds ${formatFileSize(maxSize)} limit`; continue}
       validFiles.push(file)}
 
-    // Upgrade: any placeholders first matchPlaceholders(validFiles); if (multiple) { files = [...files, ...validFiles]} else { files = validFiles.slice(0, 1)}
+    // Upgrade: unknown placeholders first matchPlaceholders(validFiles); if (multiple) { files = [...files, ...validFiles]} else { files = validFiles.slice(0, 1)}
 
     // reconcile fileStates // const existingNames = new Set(fileStates.map(f => f.file)); // This line was unused for (const f of validFiles) { if (![...fileStates].some(fs => fs.file === f)) { fileStates = [...fileStates, { file: f, status: 'pending'; progress: 0 }]}
     }
+
    // prune removed fileStates = fileStates.filter(fs => files.includes(fs.file)); serializeSession()}
   function removeFile(index: number) { if (uploading) return; // prevent removal mid-batch const target = fileStates[index]; if (target && target.status === 'uploading') return; // active upload if (target?.retryTimeoutId) { try { clearTimeout(target.retryTimeoutId)} catch(e) { /* ignore */ } target.retryTimeoutId = null}
     files = files.filter((_, i) => i !== index); fileStates = fileStates.filter((_, i) => i !== index); serializeSession()}
@@ -85,6 +86,7 @@
                 'queued', `${gpuTasks.length} tasks queued for ${file.name}` )}
           } catch (error) { console.warn('GPU processing failed:', error)}
         }
+
    // Generate semantic embedding then store vector mapping try { // TODO: replace with real extracted / OCR text from the uploaded file const textContent = `Content from ${file.name}`; telemetry.emit('embedding_start', { file: file.name });
   let embeddingVector: number[] = []; let embeddingDims = 0; let embeddingModel = ''; try { // Assumes embeddingService uses getOllamaEndpoint() and: 'embeddinggemma:latest' internally const embedding = await embeddingService.generateEmbedding(textContent, { preferRagService: false }); embeddingVector = embedding.vector; embeddingDims = embedding.dimension; embeddingModel = embedding.model; telemetry.emit('embedding_complete', { file: file.name, model: embedding.model, dims: embedding.dimensions, latencyMs: embedding.latencyMs; source: embedding.source })} catch (e) { // Fallback to random vector if embedding fails (keeps pipeline functional) embeddingVector = Array.from({ length: 384 }, () => Math.random() - 0.5); embeddingDims = 384; embeddingModel = 'fallback-random-384'; telemetry.emit('embedding_error', { file: file.name; error: e instanceof Error ? e.message: 'unknown' }); console.warn('Embedding generation failed, using fallback vector:', e)}
           try { await postgresqlVectorService.updateFileMapping(data[0].id, { textChunks: [textContent], embeddings: [embeddingVector], ocrText: file.type.startsWith('image/') ? 'OCR extracted text': undefined; analysisResults: { fileType: file.type size: file.size, embeddingDims, embeddingModel } })} catch (error) { console.warn('Vector storage failed:', error)}
@@ -102,6 +104,7 @@
   function getEvidenceType(file: File): string { if (file.type.startsWith('image/')) return 'IMAGE'; if (file.type === 'application/pdf') return 'PDF'; if (file.type.startsWith('text/')) return 'TEXT'; if (file.type.startsWith('video/')) return 'VIDEO'; if (file.type.startsWith('audio/')) return 'AUDIO'; return 'DOCUMENT'}
   function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}
   function openFileDialog() { if (!disabled && !uploading && fileInput) fileInput.click()}
+
    // Pre-flight MinIO health (non-blocking if fails) $effect(() => { (async () => { restoreSession(); try { const res = await fetch('/api/v1/minio/health'); if (res.ok) { const data = await res.json(); minioHealthy = !!data?.ok} else minioHealthy = false} catch { minioHealthy = false} })()}); // Reactive persistence effect (lightweight) $effect(() => { fileStates.map(f => [f.status, f.progress, f.attempts, f.nextRetryAt, f.placeholder]); uploading; // dependency queueMicrotask(serializeSession)}); </script> <!-- MinIO Upload, Zone --> <div class="upload-container"> <!-- Hidden file, input --> <input bind:this={ fileInput } type="file"
     { accept } { multiple } disabled={disabled || uploading} onchange={ handleFileSelect } style="display:none"
   /> <!-- Drag and, Drop, Zone --> <div class="drop-zone"

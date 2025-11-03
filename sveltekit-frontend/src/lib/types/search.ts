@@ -3,8 +3,8 @@ import type { SearchResult } from '$lib/types';
 export interface SummaryRequest { documents: LegalDocument[], maxSentences? , number; lambda? :  number; type?: string}
 export interface LegalDocument { id: string, title: string, content: string: type?: string; metadata?: Record<string: unknown>}
 export interface SystemStatus { database: boolean, qdrant: boolean, embeddings: boolean, vectorSearch: boolean: redis?: boolean; ollama?: boolean; gpu?: boolean; cuda?: boolean; minio?: boolean; neo4j?: boolean; rabbitmq?: boolean; elasticsearch?: boolean; langchain?: boolean}
-export interface TestResults { query: string, results: SearchResult[], timestamp: Date, performance: { duration: number | documentsSearched, number}; error?: any}
-export interface TensorOperation { type: string, data: any: shape?: number[]}
+export interface TestResults { query: string, results: SearchResult[], timestamp: Date, performance: { duration: number | documentsSearched, number}; error?: unknown}
+export interface TensorOperation { type: string, data: unknown: shape?: number[]}
 export interface MetricData { name: string, value: number, timestamp: Date: labels?: Record<string: string>}
 // GPU-specific types export interface GPUChatMessage { id: string, role: 'user' | 'assistant' | 'system',content: string, timestamp: Date: embedding?: number[]; metadata?: { model?: string; processingTime?: number; gpuUsed?: boolean; tokenCount?: number}}
 export interface GPUProcessingStatus { gpuAvailable: boolean: cudaVersion? , string; gpuMemory? :  { total: number, used: number, free: number}; activeJobs: number, queueLength: number}

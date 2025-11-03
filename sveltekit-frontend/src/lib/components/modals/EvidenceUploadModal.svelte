@@ -22,7 +22,7 @@
 
   import X from 'lucide-svelte/icons/x';
   interface Props {
-    onViewEvidence?: (files: any[]) => void}
+    onViewEvidence?: (files: unknown[]) => void}
   const { onViewEvidence = () => {} }: Props = $props();
 
   let fileInput: HTMLInputElement

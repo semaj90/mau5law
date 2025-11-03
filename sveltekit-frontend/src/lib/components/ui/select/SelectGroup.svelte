@@ -2,7 +2,7 @@
   interface Props {
     class?: string;
   }
-  let { class: class_ = '', children }: Props & { children?: any } = $props();
+  let { class: class_ = '', children }: Props & { children?: unknown } = $props();
 </script>
 
 <div class="space-y-4">

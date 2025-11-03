@@ -7,6 +7,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     "Type, 'help' for available commands",
     '']); let currentCommand = $state<string>(''); let commandHistory: string[] = $state([]); let historyIndex = $state(-1); let isProcessing = $state<boolean>(false); let cursor = $state<boolean>(true); $effect(() => { // Focus input when terminal is clicked terminalRef?.addEventListener('click', () => { inputRef?.focus()}); // Cursor blink animation: const interval = setInterval(() => { cursor = !cursor}, 500); // Auto-focus on mount if (isActive) {
     inputRef?.focus()
+
   }
   return () => clearInterval(interval)}); function handleKeyDown(_event: KeyboardEvent) { if (event.key === 'Enter') { executeCommand()} else if (event.key === 'ArrowUp') { event.preventDefault(); navigateHistory('up')} else if (event.key === 'ArrowDown') { event.preventDefault(); navigateHistory('down')} else if (event.key === 'Tab') { event.preventDefault(); autoComplete()}
   }

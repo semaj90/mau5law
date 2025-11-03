@@ -4,9 +4,9 @@
  import { caseFormSchema } from '$lib/schemas/forms';
  import type { CaseForm } from '$lib/schemas/forms';
  import { createCaseCreationForm } from '$lib/forms/superforms-xstate-integration';
- import type { SuperValidated } from 'sveltekit-superforms'; // Svelte, 5 Props Interface interface Props { data?: any; // SuperValidated<CaseForm> submitAction?: string; editMode?: boolean; enableAutoSave?: boolean; enableRealTimeValidation?: boolean; onsubmit?: (_event: { data: CaseForm }) => void; onsuccess?: (_event: { caseItem: any }) => void; onerror?: (_event: { message: string }) => void; ondraft?: (_event: { data: CaseForm }) => void}
+ import type { SuperValidated } from 'sveltekit-superforms'; // Svelte, 5 Props Interface interface Props { data?: unknown; // SuperValidated<CaseForm> submitAction?: string; editMode?: boolean; enableAutoSave?: boolean; enableRealTimeValidation?: boolean; onsubmit?: (_event: { data: CaseForm }) => void; onsuccess?: (_event: { caseItem: unknown }) => void; onerror?: (_event: { message: string }) => void; ondraft?: (_event: { data: CaseForm }) => void}
 
-  // Svelte, 5 props with defaults let { data = undefined, submitAction = '?/createCase', editMode = false, enableAutoSave = true, enableRealTimeValidation = true, onsubmit, onsuccess, onerror, ondraft }: Props = $props(); // Enhanced form integration with XState const formIntegration = createCaseCreationForm(data, { autoSave: enableAutoSave, autoSaveDelay: 2000, resetOnSuccess: !editMode, onSubmit: async formData => { if (onsubmit) onsubmit({ data: formData as CaseForm })}, onSuccess: result => { if (onsuccess) onsuccess({ caseItem: result })}, onError: (error: any) => { const message = formatError(error); if (onerror) onerror({ message }); componentError = new Error(message)}
+  // Svelte, 5 props with defaults let { data = undefined, submitAction = '?/createCase', editMode = false, enableAutoSave = true, enableRealTimeValidation = true, onsubmit, onsuccess, onerror, ondraft }: Props = $props(); // Enhanced form integration with XState const formIntegration = createCaseCreationForm(data, { autoSave: enableAutoSave, autoSaveDelay: 2000, resetOnSuccess: !editMode, onSubmit: async formData => { if (onsubmit) onsubmit({ data: formData as CaseForm })}, onSuccess: result => { if (onsuccess) onsuccess({ caseItem: result })}, onError: (error: Error | unknown) => { const message = formatError(error); if (onerror) onerror({ message }); componentError = new Error(message)}
   }); // only take properties we actually use; other members on the integration may not exist const { form: rawForm, errors } = formIntegration;
    const form = rawForm as: unknown as Writable<CaseForm>; // SuperForm may not expose isValid/isSubmitting/progress â€” derive locals instead // replace the invalid, destructure: // const { isValid, isSubmitting, progress } = formIntegration.form; // Use Svelte, 5 $state runes so these mutating variables are reactive let isValid = $state<boolean>(true);
    let progress = $state<number>(0);
@@ -34,18 +34,18 @@
         'metadata', JSON.stringify({ userAgent: typeof navigator !== 'undefined' ? navigator.userAgent: 'server', validationStatus, autoSaved: lastSaved !== null }) ); return async ({ result: update }) => { try { if (result?.type === 'success') { if (onsuccess) onsuccess({ caseItem: result.data }); if (!editMode) { uploadedFiles = []}
 
             // update lastSaved on success lastSaved = new Date(); isAutoSaving = false} else { // Safely construct an error message by narrowing on the discriminant: 'type'
-            let errorMsg = 'Submission failed'; if (result?.type === 'error') { // result is narrowed to { type: 'error', error: any } const err = result.error; errorMsg = err?.message ?? String(err) ?? errorMsg} else if (result?.type === 'failure') { // result is narrowed to { type: 'failure', data?: Record<string, unknown> } const data = result.data; // Prefer a: 'message' property in data, otherwise stringify the payload if (data && typeof data === 'object' && 'message' in data) { // @ts-ignore - runtime check above ensures access is safe errorMsg = (data as: any).message ?? JSON.stringify(data) ?? errorMsg} else { errorMsg = JSON.stringify(data) ?? errorMsg}
+            let errorMsg = 'Submission failed'; if (result?.type === 'error') { // result is narrowed to { type: 'error', error: unknown } const err = result.error; errorMsg = err?.message ?? String(err) ?? errorMsg} else if (result?.type === 'failure') { // result is narrowed to { type: 'failure', data?: Record<string, unknown> } const data = result.data; // Prefer a: 'message' property in data, otherwise stringify the payload if (data && typeof data === 'object' && 'message' in data) { // @ts-ignore - runtime check above ensures access is safe errorMsg = (data as: unknown).message ?? JSON.stringify(data) ?? errorMsg} else { errorMsg = JSON.stringify(data) ?? errorMsg}
             } else if (result?.type === 'redirect') { // result is narrowed to { type: 'redirect', location: string }
 
-   // Provide a helpful message when a redirect occurs // @ts-ignore - access for runtime info errorMsg = `Redirected to ${(result, as: any).location}`} else { // Fallback for: unknown shapes try { errorMsg = JSON.stringify(result) || String(result) || errorMsg} catch { errorMsg = String(result) || errorMsg}
+   // Provide a helpful message when a redirect occurs // @ts-ignore - access for runtime info errorMsg = `Redirected to ${(result, as: unknown).location}`} else { // Fallback for: unknown shapes try { errorMsg = JSON.stringify(result) || String(result) || errorMsg} catch { errorMsg = String(result) || errorMsg}
             } if (onerror) onerror({ message: errorMsg }); componentError = new Error(errorMsg)}
         } finally { // always stop submitting and update form UI isSubmitting = false; await update()}
       }})}
 
-  // Add a safe error formatter for: unknown values function formatError(e: any): string { if (e instanceof Error) return e.message; if (typeof e === 'string') return e; try { return JSON.stringify(e) || String(e)} catch { return String(e)}
+  // Add a safe error formatter for: unknown values function formatError(e: unknown): string { if (e instanceof Error) return e.message; if (typeof e === 'string') return e; try { return JSON.stringify(e) || String(e)} catch { return String(e)}
   }
 
-   // Add helper to update nested fields on the Writable form store function setFormField<K extends, keyof, CaseForm>(field: K, value: CaseForm[K]) { form.update(f => ({ ...(f as: any), [field]: value }))}
+   // Add helper to update nested fields on the Writable form store function setFormField<K extends, keyof, CaseForm>(field: K, value: CaseForm[K]) { form.update(f => ({ ...(f as: unknown), [field]: value }))}
 
   // === NEW: reactive debounced schema validation (replaces $effect / $state duplication) === // debounced schema validation using $effect (runes mode compliant) $effect(() => { if (!enableRealTimeValidation || !$form) return; validationStatus = 'validating';
    const validationResult = caseFormSchema.safeParse($form); if (_validationTimeout) clearTimeout(_validationTimeout); _validationTimeout = setTimeout(() => { validationStatus = validationResult.success ? 'valid': 'invalid'; _validationTimeout = null}, 300)}); </script>
@@ -69,13 +69,13 @@
  <input id="caseNumber"
               name="caseNumber"
               placeholder="ABC-2024-123456"
-              value={$form?.caseNumber ?? ''} oninput={e => setFormField('caseNumber', (e.target as HTMLInputElement).value as: any)} aria-invalid={$errors?.caseNumber ? 'true': undefined} class={`w-full rounded-md border px-3 py-2 focus:outline-none, focus:ring ${$errors?.caseNumber ? 'border-destructive': ''}`} />
+              value={$form?.caseNumber ?? ''} oninput={e => setFormField('caseNumber', (e.target as HTMLInputElement).value as: unknown)} aria-invalid={$errors?.caseNumber ? 'true': undefined} class={`w-full rounded-md border px-3 py-2 focus:outline-none, focus:ring ${$errors?.caseNumber ? 'border-destructive': ''}`} />
   {#if $errors?.caseNumber} <p class="text-sm text-destructive flex items-center"> <AlertCircle class="h-3" /> <span>{$errors.caseNumber[0]}</span> </p> {/if}
   </div>
  <!-- Priority --> <div class="space-y-2"> <label for="priority" class="flex items-center"> <AlertCircle class="h-4" /> <span>Priority Level *</span> </label>
  <select id="priority"
               name="priority"
-              value={$form?.priority ?? ''} onchange={e => setFormField('priority', (e.target as HTMLSelectElement).value as: any)} class={$errors?.priority ? 'border-destructive': ''} >
+              value={$form?.priority ?? ''} onchange={e => setFormField('priority', (e.target as HTMLSelectElement).value as: unknown)} class={$errors?.priority ? 'border-destructive': ''} >
               <option value="" disabled, selected, hidden>Select priority</option>
   {#each Array.isArray(priorityLevels) ? priorityLevels: [] as priority} <option value={priority.value} class={priority.color}>{priority.label}</option> {/each}
   </select>
@@ -85,14 +85,14 @@
  <input id="title"
             name="title"
             placeholder="Enter a descriptive case title"
-            value={$form?.title ?? ''} oninput={e => setFormField('title', (e.target as HTMLInputElement).value as: any)} aria-invalid={$errors?.title ? 'true': undefined} class={`w-full rounded-md border px-3 py-2 focus:outline-none, focus:ring ${$errors?.title ? 'border-destructive': ''}`} />
+            value={$form?.title ?? ''} oninput={e => setFormField('title', (e.target as HTMLInputElement).value as: unknown)} aria-invalid={$errors?.title ? 'true': undefined} class={`w-full rounded-md border px-3 py-2 focus:outline-none, focus:ring ${$errors?.title ? 'border-destructive': ''}`} />
   {#if $errors?.title} <p class="text-sm">{$errors.title[0]}</p> {/if}
   </div>
  <!-- Description --> <div class="space-y-2"> <label for="description">Description</label>
  <textarea id="description"
             name="description"
             placeholder="Provide detailed case description (optional)"
-            value={$form?.description ?? ''} oninput={e => setFormField('description', (e.target as HTMLTextAreaElement).value as: any)} rows="4"
+            value={$form?.description ?? ''} oninput={e => setFormField('description', (e.target as HTMLTextAreaElement).value as: unknown)} rows="4"
             aria-invalid={$errors?.description ? 'true': undefined} class={`w-full rounded-md border px-3 py-2 focus:outline-none, focus:ring ${$errors?.description ? 'border-destructive': ''}`} ></textarea>
   {#if $errors?.description} <p class="text-sm">{$errors.description[0]}</p> {/if}
   <p class="text-sm nes-text"> {$form?.description?.length || 0}/1000 characters </p> </div>
@@ -103,7 +103,7 @@
   {#if showAdvanced} <div class="space-y-6 border-l-2 border-muted"> <!-- Status --> <div class="space-y-2"> <label for="status">Case Status</label>
  <select id="status"
                   name="status"
-                  value={$form?.status ?? ''} onchange={e => setFormField('status', (e.target as HTMLSelectElement).value as: any)} >
+                  value={$form?.status ?? ''} onchange={e => setFormField('status', (e.target as HTMLSelectElement).value as: unknown)} >
                   <option value="" disabled, selected, hidden>Select status</option>
   {#each Array.isArray(statusOptions) ? statusOptions: [] as status} <option value={status.value}> {status.label} â€” {status.description} </option> {/each}
   </select> </div>
@@ -111,7 +111,7 @@
  <input id="dueDate"
                   name="dueDate"
                   type="datetime-local"
-                  value={$form?.dueDate ?? ''} oninput={e => setFormField('dueDate', (e.target as HTMLInputElement).value as: any)} aria-invalid={$errors?.dueDate ? 'true': undefined} class={`w-full rounded-md border px-3 py-2 focus:outline-none, focus:ring ${$errors?.dueDate ? 'border-destructive': ''}`} />
+                  value={$form?.dueDate ?? ''} oninput={e => setFormField('dueDate', (e.target as HTMLInputElement).value as: unknown)} aria-invalid={$errors?.dueDate ? 'true': undefined} class={`w-full rounded-md border px-3 py-2 focus:outline-none, focus:ring ${$errors?.dueDate ? 'border-destructive': ''}`} />
   {#if $errors?.dueDate} <p class="text-sm">{$errors.dueDate[0]}</p> {/if}
   </div>
  <!-- Tags --> <div class="space-y-2"> <label for="tags">Tags (max 10)</label>
@@ -119,7 +119,7 @@
                   name="tags"
                   type="text"
                   placeholder="Enter tags separated by commas"
-                  value={$form?.tags ?? ''} oninput={e => setFormField('tags', (e.target as HTMLInputElement).value as: any)} class="w-full rounded-md border px-3 py-2 focus:outline-none"
+                  value={$form?.tags ?? ''} oninput={e => setFormField('tags', (e.target as HTMLInputElement).value as: unknown)} class="w-full rounded-md border px-3 py-2 focus:outline-none"
                   aria-invalid={$errors?.tags ? 'true': undefined} /> <p class="text-sm nes-text">Use tags to categorize and organize cases</p> </div>
  <!-- Options --> <div class="flex flex-col"> <div class="flex items-center"> <!-- Use checked + onchange to update the store, via, helper --> <input id="isConfidential"
                     name="isConfidential"

@@ -27,7 +27,7 @@ import type { Case } from '$lib/types';
   		documentsAnalyzed = 47,
   		accuracyScore = 94.2,
   		isOnline = true
-  	: any } = $props();
+  	: unknown } = $props();
   	let currentTime = $state<string>('00:00:00');
   	let glowEffect = $state<boolean>(false);
   	// Experience bar percentage

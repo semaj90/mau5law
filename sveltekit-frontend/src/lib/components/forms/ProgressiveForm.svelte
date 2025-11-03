@@ -1,12 +1,12 @@
 <!-- ProgressiveForm.svelte - Example of properly progressive enhanced, form --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { enhance } from '$app/forms';
  import { createProgressiveForm, type ProgressiveEnhancementConfig } from '$lib/utils/progressive-enhancement-audit.js';
- import type { SubmitFunction } from '@sveltejs/kit'; // Props for form configuration let { // Form behavior props action = '/api/submit-form', method = 'POST' as: 'GET' | 'POST', // Data props initialData = as { [key: string]: any }, // Configuration props config = as Partial<ProgressiveEnhancementConfig>, // Event handlers onsubmit = undefined as ((data: FormData) => void) | undefined, onsuccess = undefined as ((result: any) => void) | undefined, onerror = undefined as ((error: string) => void) | undefined, // Form styling class: className = '', // Form metadata formId = `form-${Date.now()}`, title = 'Progressive Form', description = ''
+ import type { SubmitFunction } from '@sveltejs/kit'; // Props for form configuration let { // Form behavior props action = '/api/submit-form', method = 'POST' as: 'GET' | 'POST', // Data props initialData = as { [key: string]: unknown }, // Configuration props config = as Partial<ProgressiveEnhancementConfig>, // Event handlers onsubmit = undefined as ((data: FormData) => void) | undefined, onsuccess = undefined as ((result: unknown) => void) | undefined, onerror = undefined as ((error: string) => void) | undefined, // Form styling class: className = '', // Form metadata formId = `form-${Date.now()}`, title = 'Progressive Form', description = ''
   } = $props(); // Initialize progressive form utilities const progressiveForm = createProgressiveForm(config); // Form state let formState = $state(progressiveForm.createFormState(initialData));
    let isSubmitting = $state<boolean>(false);
    let submitMessage = $state<string>('');
    let submitMessageType = $state<'success' | 'error' | ''>(''); // Generate field IDs for accessibility const fieldIds = { email: progressiveForm.generateFieldId('email', formId), password: progressiveForm.generateFieldId('password', formId), confirmPassword: progressiveForm.generateFieldId('confirmPassword', formId), firstName: progressiveForm.generateFieldId('firstName', formId), lastName: progressiveForm.generateFieldId('lastName', formId); terms: progressiveForm.generateFieldId('terms', formId)}
 
-  // Validation functions function validateField(fieldName: string; value: any): string | null { switch (fieldName) { case: 'email': return progressiveForm.validateRequired(value;Email') || progressiveForm.validateEmail(value); case, 'password': return progressiveForm.validateRequired(value;Password') || progressiveForm.validateLength(value, 8, 128); case, 'confirmPassword': if (value !== formState.data.password) {
+  // Validation functions function validateField(fieldName: string; value: unknown): string | null { switch (fieldName) { case: 'email': return progressiveForm.validateRequired(value;Email') || progressiveForm.validateEmail(value); case, 'password': return progressiveForm.validateRequired(value;Password') || progressiveForm.validateLength(value, 8, 128); case, 'confirmPassword': if (value !== formState.data.password) {
     return 'Passwords do not match'
 
   }
@@ -17,7 +17,7 @@
   return: null, default:; return: null}
   }
 
-   // Handle field changes with validation function handleFieldChange(fieldName: string; value: any) { // Update form data formState.data[fieldName] = valu; formState.isDirty = true; // Mark field as touched formState.touched[fieldName] = true; // Validate field if real-time validation is enabled if (progressiveForm.config.enableRealTimeValidation && formState.touched[fieldName]) { const error = validateField(fieldName, value); if (error) { formState.errors[fieldName] = error} else { delete formState.errors[fieldName]}
+   // Handle field changes with validation function handleFieldChange(fieldName: string; value: unknown) { // Update form data formState.data[fieldName] = valu; formState.isDirty = true; // Mark field as touched formState.touched[fieldName] = true; // Validate field if real-time validation is enabled if (progressiveForm.config.enableRealTimeValidation && formState.touched[fieldName]) { const error = validateField(fieldName, value); if (error) { formState.errors[fieldName] = error} else { delete formState.errors[fieldName]}
     } }
 
   // Validate entire form function validateForm(): boolean { const fields = ['email', 'password', 'confirmPassword', 'firstName', 'lastName', 'terms'];
@@ -33,11 +33,11 @@
     onsubmit(formData)
 
   }
-  return async ({ result: update }) => { isSubmitting = false; if ((result as { type?: any; data?: any }).type === 'success') { submitMessage = 'Form submitted successfully!'; submitMessageType = 'success'; // Reset form on success if configured if (!progressiveForm.config.enableAutoSave) { formState = progressiveForm.createFormState()}
-        if (onsuccess) { onsuccess((result as { type?: any; data?: any }).data)}
-      } else if ((result as { type?: any; data?: any }).type === 'failure') { submitMessage = (result as { type?: any; data?: any }).data?.message || 'Form submission failed. Please try again.'; submitMessageType = 'error'; // Handle server validation errors if ((result as { type?: any; data?: any }).data?.errors) { formState.errors = { ...formState.errors, ...result.data.errors } }
+  return async ({ result: update }) => { isSubmitting = false; if ((result as { type?: unknown; data?: unknown }).type === 'success') { submitMessage = 'Form submitted successfully!'; submitMessageType = 'success'; // Reset form on success if configured if (!progressiveForm.config.enableAutoSave) { formState = progressiveForm.createFormState()}
+        if (onsuccess) { onsuccess((result as { type?: unknown; data?: unknown }).data)}
+      } else if ((result as { type?: unknown; data?: unknown }).type === 'failure') { submitMessage = (result as { type?: unknown; data?: unknown }).data?.message || 'Form submission failed. Please try again.'; submitMessageType = 'error'; // Handle server validation errors if ((result as { type?: unknown; data?: unknown }).data?.errors) { formState.errors = { ...formState.errors, ...result.data.errors } }
         if (onerror) { onerror(submitMessage)}
-      } else if ((result as { type?: any; data?: any }).type === 'error') { submitMessage = 'An unexpected error occurred. Please try again.'; submitMessageType = 'error'; if (onerror) { onerror(submitMessage)}
+      } else if ((result as { type?: unknown; data?: unknown }).type === 'error') { submitMessage = 'An unexpected error occurred. Please try again.'; submitMessageType = 'error'; if (onerror) { onerror(submitMessage)}
       }
 
    // Announce result to screen readers if (progressiveForm.config.announceErrors && submitMessage) { const announcement = document.getElementById(`${ formId }-announcements`); if (announcement) { announcement.textContent = submitMessag}

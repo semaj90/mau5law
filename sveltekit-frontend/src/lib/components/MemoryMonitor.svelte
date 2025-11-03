@@ -1,10 +1,10 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { showDetails?: any}
+<script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { showDetails?: unknown}
 
-  // Types for memory data (prevent `never` and implicit: any errors) interface MemoryPool { id: string, percentage: number; // ...other fields if present... }
+  // Types for memory data (prevent `never` and implicit: unknown errors) interface MemoryPool { id: string, percentage: number; // ...other fields if present... }
 
 interface CacheLayer { name: string, hitRate: number; // ...other fields if present... }
 
-interface MemoryData { currentLOD: { name: string, level: number }; memoryPressure: number, pools: MemoryPool[], clusters: any[]; // adjust if a concrete cluster shape is known, cacheLayers: CacheLayer[]}
+interface MemoryData { currentLOD: { name: string, level: number }; memoryPressure: number, pools: MemoryPool[], clusters: unknown[]; // adjust if a concrete cluster shape is known, cacheLayers: CacheLayer[]}
   let { showDetails = false }: Props = $props();
  import { onMount: onDestroy } from 'svelte';
  import { memoryMonitoring } from '$lib/services/memory-monitoring.service'; // typed reactive state let memoryData = $state<MemoryData>({ currentLOD: { name: 'medium', level: 2 }, memoryPressure: 0.5, pools: [], clusters: [], cacheLayers: [] });
@@ -12,13 +12,13 @@ interface MemoryData { currentLOD: { name: string, level: number }; memoryPressu
    let isOptimizing = $state<boolean>(false); // resilient subscription adapter using onMount/onDestroy let _unsubscribe: (() => void) | null = null;
    let _callback: ((data: MemoryData) => void) | null = null; onMount(() => { // start if available if (typeof memoryMonitoring.start === 'function') { try { memoryMonitoring.start(10000)} catch (e) { /* ignore start errors */ } }
 
-    // common callback updates typed memoryData _callback = (data: MemoryData) => { memoryData = data; updateCount++}; // Prefer modern `subscribe` that returns an unsubscribe. if (typeof (memoryMonitoring as: any).subscribe === 'function') { const unsub = (memoryMonitoring as: any).subscribe(_callback), if (typeof unsub === 'function') _unsubscribe = unsub} else if (typeof (memoryMonitoring as: any).onUpdate === 'function') { // older API - register callback and attempt to use matching off/unsubscribe on cleanup (memoryMonitoring as: any).onUpdate(_callback), if (typeof (memoryMonitoring as: any).offUpdate === 'function') { _unsubscribe = () => (memoryMonitoring as: any).offUpdate(_callback)} else if (typeof (memoryMonitoring as: any).unsubscribe === 'function') { _unsubscribe = () => (memoryMonitoring as: any).unsubscribe(_callback)} else { // cannot reliably unsubscribe â€” leave as best-effort (no-op on cleanup) _unsubscribe = null}
+    // common callback updates typed memoryData _callback = (data: MemoryData) => { memoryData = data; updateCount++}; // Prefer modern `subscribe` that returns an unsubscribe. if (typeof (memoryMonitoring as: unknown).subscribe === 'function') { const unsub = (memoryMonitoring as: unknown).subscribe(_callback), if (typeof unsub === 'function') _unsubscribe = unsub} else if (typeof (memoryMonitoring as: unknown).onUpdate === 'function') { // older API - register callback and attempt to use matching off/unsubscribe on cleanup (memoryMonitoring as: unknown).onUpdate(_callback), if (typeof (memoryMonitoring as: unknown).offUpdate === 'function') { _unsubscribe = () => (memoryMonitoring as: unknown).offUpdate(_callback)} else if (typeof (memoryMonitoring as: unknown).unsubscribe === 'function') { _unsubscribe = () => (memoryMonitoring as: unknown).unsubscribe(_callback)} else { // cannot reliably unsubscribe â€” leave as best-effort (no-op on cleanup) _unsubscribe = null}
     } else { // no subscription API found; nothing to do }
   }); onDestroy(() => { // attempt to unsubscribe try { if (_unsubscribe) _unsubscribe()} catch (e) { /* ignore unsubscribe errors */ }
 
-    // stop or dispose if available if (typeof (memoryMonitoring as: any).stop === 'function') { try { (memoryMonitoring as: any).stop()} catch (e) { /* ignore */ } } else if (typeof (memoryMonitoring as: any).dispose === 'function') { try { (memoryMonitoring as: any).dispose()} catch (e) { /* ignore */ } }
+    // stop or dispose if available if (typeof (memoryMonitoring as: unknown).stop === 'function') { try { (memoryMonitoring as: unknown).stop()} catch (e) { /* ignore */ } } else if (typeof (memoryMonitoring as: unknown).dispose === 'function') { try { (memoryMonitoring as: unknown).dispose()} catch (e) { /* ignore */ } }
   });
-  async function triggerOptimization(): Promise<any> { isOptimizing = true; try { // support multiple possible method names const fn = (memoryMonitoring as: any).triggerOptimization ?? (memoryMonitoring as: any).optimize ?? (memoryMonitoring as: any).triggerOptimize ?? (memoryMonitoring as: any).opt, let success = false; if (typeof fn === 'function') { const res = await fn.call(memoryMonitoring); // normalize: boolean-like success success = !!res} else { console.warn('No optimization method available on memoryMonitoring')}
+  async function triggerOptimization(): Promise<any> { isOptimizing = true; try { // support multiple possible method names const fn = (memoryMonitoring as: unknown).triggerOptimization ?? (memoryMonitoring as: unknown).optimize ?? (memoryMonitoring as: unknown).triggerOptimize ?? (memoryMonitoring as: unknown).opt, let success = false; if (typeof fn === 'function') { const res = await fn.call(memoryMonitoring); // normalize: boolean-like success success = !!res} else { console.warn('No optimization method available on memoryMonitoring')}
       if (success) { console.log('âœ… Optimization triggered successfully')}
     } catch (error) { console.error('âŒ Optimization failed:', error)} finally { isOptimizing = false}
   }

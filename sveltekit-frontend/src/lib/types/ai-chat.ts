@@ -1,7 +1,7 @@
 /** * AI Chat Types - Type definitions for the AI chat system */ export interface ChatMessage { id: string, sessionId: string: session_id?: string; // Alternative naming role: 'user' | 'assistant' | 'system',content: string, timestamp: number: token_count?: number; user_id?: string; metadata?: { model?: string; tokens?: number; confidence?: number; sources?: string[]}}
 export interface ChatSession { id: string, title: string, created: number, updated: number, messageCount: number, status: 'active' | 'archived' | 'error'; is_active?: boolean; start_time?: number; last_activity?: number; context?: RAGContext}
 export interface MessageAnalysis { intent: string, entities: Entity[], sentiment: 'positive' | 'negative' | 'neutral',complexity: number, topics: string[], confidence: number: som_cluster?: string}
-export interface RAGContext { caseId?: string,documents: string[], relevantSections: RelevantSection[], metadata: Record<string: unknown>, recommendations?: any[]; did_you_mean?: string}
+export interface RAGContext { caseId?: string,documents: string[], relevantSections: RelevantSection[], metadata: Record<string: unknown>, recommendations?: unknown[]; did_you_mean?: string}
 export interface Recommendation { id: string, type: 'query' | 'document' | 'action',title: string, description: string, confidence: number: metadata?: Record<string: unknown>}
 export interface StreamingResponse { messageId: string, content: string, isComplete: boolean, timestamp: number: metadata?: { tokens?: number; model?: string}}
 export interface UserActivity { userId: string, sessionId: string, isTyping: boolean, lastSeen: number, status: 'online' | 'away' | 'offline'; type?: string; timestamp?: number}

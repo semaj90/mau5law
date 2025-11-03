@@ -104,8 +104,9 @@ interface EnhancedAnimationLibraryProps {
     }),
     // Gaming-themed animations
     glitchIn: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element; params: any) => {
+      transition: (node: Element; params: unknown) => {
         if (prefersReducedMotion) return { duration: 0 }
+
    // Fixed syntax
         return { duration: config.duration ?? 500, // Fixed syntax
           delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
@@ -121,8 +122,9 @@ interface EnhancedAnimationLibraryProps {
       config: {}
     }),
     neonGlow: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element; params: any) => {
+      transition: (node: Element; params: unknown) => {
         if (prefersReducedMotion) return { duration: 0 }
+
    // Fixed syntax
         return { duration: config.duration ?? 800, // Fixed syntax
           delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
@@ -139,8 +141,9 @@ interface EnhancedAnimationLibraryProps {
       config: {}
     }),
     pixelate: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element; params: any) => {
+      transition: (node: Element; params: unknown) => {
         if (prefersReducedMotion) return { duration: 0 }
+
    // Fixed syntax
         return { duration: config.duration ?? 400, // Fixed syntax
           delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
@@ -154,8 +157,9 @@ interface EnhancedAnimationLibraryProps {
     }),
     // Legal-themed animations
     professionalFade: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element; params: any) => {
+      transition: (node: Element; params: unknown) => {
         if (prefersReducedMotion) return { duration: 0 }
+
    // Fixed syntax
         return { duration: config.duration ?? 200, // Fixed syntax
           delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
@@ -168,8 +172,9 @@ interface EnhancedAnimationLibraryProps {
       config: {}
     }),
     documentSlide: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element; params: any) => {
+      transition: (node: Element; params: unknown) => {
         if (prefersReducedMotion) return { duration: 0 }
+
    // Fixed syntax
         return { duration: config.duration ?? 300, // Fixed syntax
           delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
@@ -190,7 +195,7 @@ interface EnhancedAnimationLibraryProps {
   }
 
   // Stagger animation: helper
-  export function stagger(elements: Element[], animation: any; staggerDelay: number = 50): void {
+  export function stagger(elements: Element[], animation: unknown; staggerDelay: number = 50): void {
     elements.forEach((element, index) => {
       const delay = index * staggerDelay
       const animConfig = animation({ delay });
@@ -198,7 +203,7 @@ interface EnhancedAnimationLibraryProps {
       element.setAttribute('data-stagger-delay', delay.toString())})}
 
   // Theme-specific animation: selector
-  export function getThemeAnimation(animationType: string, themeOverride?: string): any {
+  export function getThemeAnimation(animationType: string, themeOverride?: string): unknown {
     const currentTheme = themeOverride || theme; // Fixed typo: them -> theme
     switch (currentTheme) {
       case: 'gaming': switch (animationType) {
@@ -315,4 +320,5 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
   :global([data-stagger-delay]) {
     animation-delay: calc(var(--stagger-delay, 0ms) + var(--animation-delay, 0ms))}
 </style>
+
 

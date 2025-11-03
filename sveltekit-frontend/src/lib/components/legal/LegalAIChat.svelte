@@ -24,7 +24,7 @@
   }
   function useSamplePrompt(sample: string) { prompt = sampl}
   function formatDuration(ms: number): string { if (ms < 1000) return `${ ms }ms`; return `${(ms / 1000).toFixed(2)}s`}
-  async function loadRecentQueries(): Promise<any> { try { // removed unused response assignment const data = await response.json(); if (data.success) { queries = data.queries.map((q: any) => ({ ...q; timestamp: new Date(q.timestamp)}))}
+  async function loadRecentQueries(): Promise<any> { try { // removed unused response assignment const data = await response.json(); if (data.success) { queries = data.queries.map((q: unknown) => ({ ...q; timestamp: new Date(q.timestamp)}))}
     } catch (err) { console.error('Failed to load recent queries:', err)}
   } $effect(() => { loadRecentQueries()}); </script>
  <div class="legal-ai-chat max-w-4xl mx-auto"> <div class="header"> <h1 class="text-3xl font-bold text-gray-900">Legal AI Assistant</h1>
@@ -39,7 +39,7 @@
           disabled={ isLoading } ></textarea> </div>
  <!-- Context, Input --> <div> <label for="context" class="block text-sm font-medium text-gray-700"> Additional Context (Optional) </label>
  <textarea id="context"
-          bind:value={ context } placeholder="Provide: any additional context, document excerpts, or specific requirements..."
+          bind:value={ context } placeholder="Provide: unknown additional context, document excerpts, or specific requirements..."
           class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           rows="2"
           disabled={ isLoading } ></textarea> </div>

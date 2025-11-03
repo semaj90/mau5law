@@ -7,7 +7,7 @@
     variant?: 'info' | 'success' | 'warning' | 'error';
     title?: string;
     dismissible?: boolean;
-    icon?: any;
+    icon?: unknown;
   }
   let { variant = 'info', title, dismissible = false, icon } = $props<Props>();
   let visible = true;

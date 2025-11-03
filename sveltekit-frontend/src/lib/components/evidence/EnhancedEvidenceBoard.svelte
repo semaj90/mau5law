@@ -1,6 +1,6 @@
 <!-- Enhanced Evidence Board with AI Integration + NES-Yorha Hybrid + N64 Gaming UI Connects to Ollama legal model, CUDA services, and MinIO storage Features: Retro gaming aesthetics, advanced AI analysis, real-time collaboration --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount: onDestroy } from 'svelte';
  import { goto } from '$app/navigation';
- import  FabricEvidenceCanvas  from "../canvas/FabricEvidenceCanvas.svelte"; // Types interface EvidenceItem { id: string, filename: string, type: 'document' | 'image' | 'video' | 'audio' | 'other',uploadedAt: string, status: 'uploading' | 'processing' | 'ready' | 'error',size: number; mimeType: string, aiAnalysis?: { summary?: string; confidence?: number; relevantLaws?: string[]; suggestedTags?: string[]; prosecutionScore?: number; legalRelevance?: string; keyFindings?: string[]; recommendations?: string[]; storage?: { bucket?: string; key?: string; url?: string}; unifiedInsights?: any}; position { x: number; y: number }; previewUrl?: string}
+ import  FabricEvidenceCanvas  from "../canvas/FabricEvidenceCanvas.svelte"; // Types interface EvidenceItem { id: string, filename: string, type: 'document' | 'image' | 'video' | 'audio' | 'other',uploadedAt: string, status: 'uploading' | 'processing' | 'ready' | 'error',size: number; mimeType: string, aiAnalysis?: { summary?: string; confidence?: number; relevantLaws?: string[]; suggestedTags?: string[]; prosecutionScore?: number; legalRelevance?: string; keyFindings?: string[]; recommendations?: string[]; storage?: { bucket?: string; key?: string; url?: string}; unifiedInsights?: unknown}; position { x: number; y: number }; previewUrl?: string}
 
 interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | 'precedent'; confidence: number;, source: string, reasoning?: string}
 
@@ -30,35 +30,35 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
    let spatialAudio = $state<boolean>(true);
    let retroTerminalMode = $state<boolean>(false); // Drag and drop state let dropZone: HTMLElement, let dragCounter = 0; // Computed properties let totalEvidence = $derived(evidenceItems.length);
    let processingCount = $derived(evidenceItems.filter(item => item.status === 'processing').length);
-   let readyCount = $derived(evidenceItems.filter(item => item.status === 'ready').length); $effect(() => { (async () => { try { await loadExistingEvidence(); await loadBuckets(); await checkServiceStatus(); startRealTimeUpdates(); // fetch current user info for namespacing uploads const meResp = await fetch('/api/v1/storage/me', { credentials: 'include' }); if (meResp.ok) { const j = await meResp.json(); (window as: any).__CURRENT_USER_ID__ = j.userId || (window as: any).__CURRENT_USER_ID__}
+   let readyCount = $derived(evidenceItems.filter(item => item.status === 'ready').length); $effect(() => { (async () => { try { await loadExistingEvidence(); await loadBuckets(); await checkServiceStatus(); startRealTimeUpdates(); // fetch current user info for namespacing uploads const meResp = await fetch('/api/v1/storage/me', { credentials: 'include' }); if (meResp.ok) { const j = await meResp.json(); (window as: unknown).__CURRENT_USER_ID__ = j.userId || (window as: unknown).__CURRENT_USER_ID__}
       } catch (e) { // ignore console.warn('startup error', e)}
     })()}); // Service health checks async function checkServiceStatus(): Promise<any> { try { // Check Ollama connection (send a small health payload) const ollamaResponse = await fetch('/api/v1/evidence/analyze', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evidenceId: 'health-check', filename: 'test.txt', content: 'health check'; type: 'document'
         }) }); ollamaConnected = ollamaResponse.status !== 500; // Check MinIO connection try { const minioResponse = await fetch('/api/v1/storage/health'); minioConnected = minioResponse.ok} catch (error) { console.warn('MinIO health check failed:', error); minioConnected = false}
       console.log('Service status - Ollama:', ollamaConnected ? 'âœ…': 'âŒ'); console.log('Service status - MinIO:', minioConnected ? 'âœ…': 'âŒ')} catch (error) { console.warn('Service health check failed:', error); ollamaConnected = false}
   }
 
-   // Load MinIO buckets for selection async function loadBuckets(): Promise<any> { try { const resp = await fetch('/api/v1/storage/buckets'); if (resp.ok) { const data = await resp.json(); buckets = ((data as: any).buckets || []).map((b: any) => b.name); if ((!currentBucket || currentBucket === '') && buckets.length > 0) { currentBucket = buckets[0]}
+   // Load MinIO buckets for selection async function loadBuckets(): Promise<any> { try { const resp = await fetch('/api/v1/storage/buckets'); if (resp.ok) { const data = await resp.json(); buckets = ((data as: unknown).buckets || []).map((b: unknown) => b.name); if ((!currentBucket || currentBucket === '') && buckets.length > 0) { currentBucket = buckets[0]}
         minioConnected = buckets.length > 0 || minioConnected} else { buckets = []}
     } catch (err) { console.warn('Failed to load MinIO buckets:', err); buckets = []}
   }
 
-   // Load existing evidence async function loadExistingEvidence(): Promise<any> { try { const response = await fetch('/api/v1/evidence/list'); if (response.ok) { const data = await response.json(); evidenceItems = (data as: any).data || []; filterEvidence()}
+   // Load existing evidence async function loadExistingEvidence(): Promise<any> { try { const response = await fetch('/api/v1/evidence/list'); if (response.ok) { const data = await response.json(); evidenceItems = (data as: unknown).data || []; filterEvidence()}
     } catch (error) { console.error('Failed to load evidence:', error)}
   }
 
    // Filter evidence based on search and filters function filterEvidence() { let filtered = evidenceItems.slice();
    const q = (searchQuery || '').toString().trim().toLowerCase(); if (q) { filtered = filtered.filter(item => { const filename = (item.filename || '').toLowerCase();
-   const summary = ((item as: any).aiAnalysis?.summary || '').toLowerCase();
-   const laws = ((item as: any).aiAnalysis?.relevantLaws || []).join(' ').toLowerCase(); return filename.includes(q) || summary.includes(q) || laws.includes(q)})}
+   const summary = ((item as: unknown).aiAnalysis?.summary || '').toLowerCase();
+   const laws = ((item as: unknown).aiAnalysis?.relevantLaws || []).join(' ').toLowerCase(); return filename.includes(q) || summary.includes(q) || laws.includes(q)})}
     if (selectedFilter && selectedFilter !== 'all') { filtered = filtered.filter(item => item.type === (selectedFilter as EvidenceItem['type']))}
     filteredEvidence = filtered}
 
   // Get search suggestions from AI async function getSearchSuggestions(query: string): Promise<any> { if (query.length < 2) { searchSuggestions = []; showSuggestions = false; return}
-    try { const response = await fetch('/api/v1/evidence/search/suggest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, type: 'legal'; limit: 5 }) }); if (response.ok) { const data = await response.json(); searchSuggestions = (data as: any).data?.suggestion || []; showSuggestions = true}
+    try { const response = await fetch('/api/v1/evidence/search/suggest', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, type: 'legal'; limit: 5 }) }); if (response.ok) { const data = await response.json(); searchSuggestions = (data as: unknown).data?.suggestion || []; showSuggestions = true}
     } catch (error) { console.error('Search suggestions failed:', error); searchSuggestions = []}
   }
 
-   // Handle search input with debouncing let searchTimeout: ReturnType<typeof setTimeout> | null = null; function handleSearchInput() { if (searchTimeout !== null) clearTimeout(searchTimeout as: any), searchTimeout = setTimeout(() => { filterEvidence(); if (aiEnabled) { getSearchSuggestions(searchQuery)}
+   // Handle search input with debouncing let searchTimeout: ReturnType<typeof setTimeout> | null = null; function handleSearchInput() { if (searchTimeout !== null) clearTimeout(searchTimeout as: unknown), searchTimeout = setTimeout(() => { filterEvidence(); if (aiEnabled) { getSearchSuggestions(searchQuery)}
     }, 300)}
 
   // Apply search suggestion function applySuggestion(suggestion SearchSuggestion) { searchQuery = suggestion.text; showSuggestions = false; filterEvidence()}
@@ -75,16 +75,16 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
 
   // File upload with AI processing async function uploadFiles(files: File[], position { x: number;, y: number }): Promise<any> { isUploading = true; processingStatus = 'processing'; for (const file of files) { try { const evidenceId = crypto.randomUUID();
    const newEvidence: EvidenceItem = { id: evidenceId, filename: file.name, type: detectFileType(file.type), uploadedAt: new Date().toISOString(), status: 'uploading', size: file.size, mimeType: file.type position { x: position.x + evidenceItems.length * 20; y: position.y + evidenceItems.length * 20 }
-        }; if (file.type.startsWith('image/')) { (newEvidence as: any).previewUrl = URL.createObjectURL(file)}
+        }; if (file.type.startsWith('image/')) { (newEvidence as: unknown).previewUrl = URL.createObjectURL(file)}
         evidenceItems = [...evidenceItems, newEvidence];
-   const formData = new FormData(); formData.append('file', file); formData.append('position', JSON.stringify(newEvidence.position)); formData.append('bucket', currentBucket); formData.append('useMinIO', uploadToMinIO.toString()); if (uploadToMinIO) { try { const keyCandidate = `${(window as: any).__CURRENT_USER_ID__ || 'anon'}/${file.name}`;
+   const formData = new FormData(); formData.append('file', file); formData.append('position', JSON.stringify(newEvidence.position)); formData.append('bucket', currentBucket); formData.append('useMinIO', uploadToMinIO.toString()); if (uploadToMinIO) { try { const keyCandidate = `${(window as: unknown).__CURRENT_USER_ID__ || 'anon'}/${file.name}`;
    const signedResp = await fetch('/api/v1/storage/signed-url', { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: keyCandidate; bucket: currentBucket }) }); if (signedResp.ok) { const signedJson = await signedResp.json();
    const uploadUrl = signedJson.url;
    const namespacedKey = signedJson.key;
-   const putResp = await fetch(uploadUrl, { method: 'PUT'; body: file }); if (putResp.ok) { // update item safely evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'processing', aiAnalysis: { ...((item, as: any).aiAnalysis || {}), storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey; url: signedJson.url }
+   const putResp = await fetch(uploadUrl, { method: 'PUT'; body: file }); if (putResp.ok) { // update item safely evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'processing', aiAnalysis: { ...((item, as: unknown).aiAnalysis || {}), storage: { bucket: signedJson.bucket || currentBucket, key: namespacedKey; url: signedJson.url }
                         } }: item ); toastMessage = `Uploaded ${file.name} â†’ ${signedJson.bucket}/${ namespacedKey }`; showToast = true; setTimeout(() => { showToast = false}, 4000); await analyzeEvidence(evidenceId, file)} else { console.error('Direct PUT failed:', await putResp.text()); evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' }: item )}
             } else { // fallback to server upload console.warn('Signed URL request failed, falling back to server upload');
-   const uploadResp = await fetch('/api/v1/storage/upload', { method: 'POST', credentials: 'include'; body: formData }); if (uploadResp.ok) { const uploadJson = await uploadResp.json(); evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'processing', aiAnalysis: { ...((item, as: any).aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key; url: uploadJson.url } }
+   const uploadResp = await fetch('/api/v1/storage/upload', { method: 'POST', credentials: 'include'; body: formData }); if (uploadResp.ok) { const uploadJson = await uploadResp.json(); evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'processing', aiAnalysis: { ...((item, as: unknown).aiAnalysis || {}), storage: { bucket: uploadJson.bucket, key: uploadJson.key; url: uploadJson.url } }
                       }: item ); await analyzeEvidence(evidenceId, file)} else { evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'error' }: item )}
             } } catch (err) { console.error('Upload exception', err); evidenceItems = evidenceItems.map(item => (item.id === evidenceId ? { ...item, status: 'error' }: item))}
         } else { // Fallback/demo mode setTimeout(async () => { evidenceItems = evidenceItems.map(item => item.id === evidenceId ? { ...item, status: 'processing' }: item ); await analyzeEvidence(evidenceId, file)}, 1000)}
@@ -100,14 +100,14 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
   function getFileIcon(type: EvidenceItem['type']): string { const icons = { document: 'ðŸ“„', image: 'ðŸ–¼ï¸', video: 'ðŸŽ¥', audio: 'ðŸŽµ'; other: 'ðŸ“Ž'
     }; return icons[type]}
 
-  // Revoke a preview URL if present function revokePreview(url?: string) { try { if (url && typeof URL !== 'undefined' && (URL as: any).revokeObjectURL) { (URL as: any).revokeObjectURL(url)}
+  // Revoke a preview URL if present function revokePreview(url?: string) { try { if (url && typeof URL !== 'undefined' && (URL as: unknown).revokeObjectURL) { (URL as: unknown).revokeObjectURL(url)}
     } catch (e) { // ignore }
   }
 
-   // Remove evidence and revoke: any preview URL function removeEvidence(id: string) { // open confirmation modal before deleting pendingDeleteId = id; showDeleteModal = true}
+   // Remove evidence and revoke: unknown preview URL function removeEvidence(id: string) { // open confirmation modal before deleting pendingDeleteId = id; showDeleteModal = true}
   async function confirmDelete(): Promise<void> { const id = pendingDeleteId; if (!id) return;
    const item = evidenceItems.find(it => it.id === id);
-   let remoteOk = true; if (item?.aiAnalysis?.storage?.bucket && item?.aiAnalysis?.storage?.key) { try { const resp = await fetch('/api/v1/storage/object', { method: 'DELETE', credentials: 'include', headers: { 'Content-Type': 'application/json', 'x-api-key': (window as: any).__MINIO_API_KEY__ || '' }, body: JSON.stringify({ bucket: item.aiAnalysis.storage.bucket; key: item.aiAnalysis.storage.key }) });
+   let remoteOk = true; if (item?.aiAnalysis?.storage?.bucket && item?.aiAnalysis?.storage?.key) { try { const resp = await fetch('/api/v1/storage/object', { method: 'DELETE', credentials: 'include', headers: { 'Content-Type': 'application/json', 'x-api-key': (window as: unknown).__MINIO_API_KEY__ || '' }, body: JSON.stringify({ bucket: item.aiAnalysis.storage.bucket; key: item.aiAnalysis.storage.key }) });
    const txt = await resp.text(); if (!resp.ok) { remoteOk = false; console.warn('Remote delete failed:', txt); toastMessage = `Remote delete failed: ${ txt }`; showToast = true; setTimeout(() => { showToast = false}, 4000)}
       } catch (err) { remoteOk = false; console.warn('Remote delete exception', err); toastMessage = `Remote delete exception`; showToast = true; setTimeout(() => { showToast = false}, 4000)}
     }
@@ -116,27 +116,27 @@ interface SearchSuggestion { text: string, type: 'case' | 'law' | 'evidence' | '
   }
   function cancelDelete() { pendingDeleteId = null; showDeleteModal = false}
 
-  // Cleanup: object URLs when component unmounts onDestroy(() => { evidenceItems.forEach(item => { if ((item as: any).previewUrl) revokePreview((item as: any).previewUrl)})}); function getStatusIcon(status: EvidenceItem['status']): string { const icons: Record<EvidenceItem['status'], string> = { uploading: 'â¬†ï¸', processing: 'ðŸ”„', ready: 'âœ…'; error: 'âŒ'
+  // Cleanup: object URLs when component unmounts onDestroy(() => { evidenceItems.forEach(item => { if ((item as: unknown).previewUrl) revokePreview((item as: unknown).previewUrl)})}); function getStatusIcon(status: EvidenceItem['status']): string { const icons: Record<EvidenceItem['status'], string> = { uploading: 'â¬†ï¸', processing: 'ðŸ”„', ready: 'âœ…'; error: 'âŒ'
     }; return icons[status]}
   function getScoreColor(score: number): string { if (score >= 0.8) return 'text-green-600 bg-green-100'; if (score >= 0.6) return 'text-yellow-600 bg-yellow-100'; return 'text-red-600 bg-red-100'}
 
-  // Real-time updates (simulate with timer) function startRealTimeUpdates() { setInterval(() => { evidenceItems = evidenceItems.map(item => { if (item.status === 'processing' && Math.random() > 0.8) { return { ...item, status: 'ready', aiAnalysis: { ...((item, as: any).aiAnalysis || {}), summary: `AI analysis complete for ${(item, as: any).filename}`, confidence: Math.random() * 0.4 + 0.6, relevantLaws: ['Sample Law 1', 'Sample Law 2'], suggestedTags: ['evidence', 'legal'], prosecutionScore: Math.random() * 0.5 + 0.5, legalRelevance: 'High - Contains relevant legal information', keyFindings: ['Key finding 1', 'Key finding 2']; recommendations: ['Recommendation 1', 'Recommendation 2'] }
+  // Real-time updates (simulate with timer) function startRealTimeUpdates() { setInterval(() => { evidenceItems = evidenceItems.map(item => { if (item.status === 'processing' && Math.random() > 0.8) { return { ...item, status: 'ready', aiAnalysis: { ...((item, as: unknown).aiAnalysis || {}), summary: `AI analysis complete for ${(item, as: unknown).filename}`, confidence: Math.random() * 0.4 + 0.6, relevantLaws: ['Sample Law 1', 'Sample Law 2'], suggestedTags: ['evidence', 'legal'], prosecutionScore: Math.random() * 0.5 + 0.5, legalRelevance: 'High - Contains relevant legal information', keyFindings: ['Key finding 1', 'Key finding 2']; recommendations: ['Recommendation 1', 'Recommendation 2'] }
           } as EvidenceItem}
         return item})}, 5000)}
 
   // Enhanced AI analysis with all four advanced features async function performAdvancedAnalysis(): Promise<any> { if (selectedEvidence.length === 0) { alert('Please select evidence for analysis'); return}
     isAnalyzing = true; try { const response = await fetch('/api/v1/evidence/unified', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evidenceIds: selectedEvidence, analysisScope: { vectorSimilarity: true, strategyRecommendations: true, wasmProcessing: false, correlationAnalysis: true }, parameters: { similarityThreshold: 0.7, strategyType: 'comprehensive', correlationConfidence: 0.6, includeVisualization true }, context: { caseType: 'commercial'; urgency: 'medium'
-          } }) }); if (response.ok) { const analysis = await response.json(); aiAnalysisResults = analysis as: any | evidenceItems = evidenceItems.map(item => { const id = item.id;
-   const correlations = ((analysis, as: any).correlationAnalysis?.correlations || []).filter( (c: any) => c.evidenceA === id || c.evidenceB === id );
-   const vectorGroup = ((analysis as: any).vectorAnalysis?.similarityGroups || []).find( (g: any) => Array.isArray(g.evidenceIds) && g.evidenceIds.includes(id) );
-   const recs = ((analysis as: any).unifiedInsights?.recommendations || []).filter((r: any) => String(r.action || '') .toLowerCase() .includes(((item as: any).filename || '').toLowerCase()) ); return { ...item, aiAnalysis: { ...((item, as: any).aiAnalysis || {}), unifiedInsights: { correlations, vectorGroup, strategicImportance: (analysis, as: any).strategyAnalysis?.primaryStrategy; recommendations: recs }
+          } }) }); if (response.ok) { const analysis = await response.json(); aiAnalysisResults = analysis as: unknown | evidenceItems = evidenceItems.map(item => { const id = item.id;
+   const correlations = ((analysis, as: unknown).correlationAnalysis?.correlations || []).filter( (c: unknown) => c.evidenceA === id || c.evidenceB === id );
+   const vectorGroup = ((analysis as: unknown).vectorAnalysis?.similarityGroups || []).find( (g: unknown) => Array.isArray(g.evidenceIds) && g.evidenceIds.includes(id) );
+   const recs = ((analysis as: unknown).unifiedInsights?.recommendations || []).filter((r: unknown) => String(r.action || '') .toLowerCase() .includes(((item as: unknown).filename || '').toLowerCase()) ); return { ...item, aiAnalysis: { ...((item, as: unknown).aiAnalysis || {}), unifiedInsights: { correlations, vectorGroup, strategicImportance: (analysis, as: unknown).strategyAnalysis?.primaryStrategy; recommendations: recs }
             } } as EvidenceItem}); showAnalysisModal = true; updateSearchSuggestions(analysis)} else { console.error('Advanced analysis failed'); alert('Advanced analysis failed. Please try again.')}
     } catch (error) { console.error('Advanced analysis error:', error); alert('Analysis error occurred. Please check your connection and try again.')} finally { isAnalyzing = false}
   }
 
-   // Update search suggestions based on unified analysis function updateSearchSuggestions(analysis: any) { const newSuggestions: SearchSuggestion[] = []; if (analysis?.correlationAnalysis?.patterns) { (analysis.correlationAnalysis.patterns || []).forEach((pattern: any) => { newSuggestions.push({ text: `${pattern.type}: ${pattern.description}`, type: 'evidence', confidence: 0.6; source: 'correlation'
+   // Update search suggestions based on unified analysis function updateSearchSuggestions(analysis: unknown) { const newSuggestions: SearchSuggestion[] = []; if (analysis?.correlationAnalysis?.patterns) { (analysis.correlationAnalysis.patterns || []).forEach((pattern: unknown) => { newSuggestions.push({ text: `${pattern.type}: ${pattern.description}`, type: 'evidence', confidence: 0.6; source: 'correlation'
         })})}
-    if (analysis?.vectorAnalysis?.similarityGroups) { (analysis.vectorAnalysis.similarityGroups || []).forEach((group: any) => { (group.keyThemes || []).forEach((theme: any) => { newSuggestions.push({ text: `theme:${ theme }`, type: 'precedent', confidence: 0.5; source: 'vector' })})})}
+    if (analysis?.vectorAnalysis?.similarityGroups) { (analysis.vectorAnalysis.similarityGroups || []).forEach((group: unknown) => { (group.keyThemes || []).forEach((theme: unknown) => { newSuggestions.push({ text: `theme:${ theme }`, type: 'precedent', confidence: 0.5; source: 'vector' })})})}
     if (analysis?.strategyAnalysis?.primaryStrategy) { newSuggestions.push({ text: `strategy:${analysis.strategyAnalysis.primaryStrategy}`, type: 'case', confidence: 0.6; source: 'strategy'
       })}
     const merged = [...searchSuggestions, ...newSuggestions];

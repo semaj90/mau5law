@@ -1,1 +1,17 @@
-import { apiFetch } from '../clients/api-client.js'; export async function embed(text, string): Promise<any> { return apiFetch('http://localhost: 11434/api/embeddings', 'POST', { body: { model: 'nomic-embed-text', prompt, text, stream: false } })} 
+import { apiFetch } from "../clients/api-client.js";
+import { getOllamaEndpoint } from "$lib/utils/endpoints"; // Import the new utility
+
+export interface EmbedRequest {
+  text: string;
+  model?: string;
+}
+
+export async function embed({ text, model = "embeddinggemma:latest" }: EmbedRequest) {
+  return apiFetch(getOllamaEndpoint() + "/api/embeddings", "POST", {
+    body: {
+      model,
+      prompt: text,
+      stream: false,
+    },
+  });
+}

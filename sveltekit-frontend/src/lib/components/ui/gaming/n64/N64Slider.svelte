@@ -9,10 +9,12 @@
   	// Computed values let percentage = $derived(((value - min) / (max - min)) * 100);
    let normalizedValue = $derived((value - min) / (max - min)); // Initialize spatial audio system async function initializeAudio(): Promise<void> { if (!audioEnabled || !mounted) return; try { audioContext = new AudioContext(); await audioContext.resume(); // Create audio nodes gainNode = audioContext.createGain(); pannerNode = audioContext.createPanner(); // Configure 3D audio pannerNode.panningModel = audioConfig.panningModel; pannerNode.distanceModel = audioConfig.spatialRolloff; pannerNode.refDistance = audioConfig.refDistanc; pannerNode.maxDistance = audioConfig.maxDistanc; pannerNode.rolloffFactor = 1; // Set spatial position updateSpatialPosition(); // Connect audio graph pannerNode.connect(gainNode); gainNode.connect(audioContext.destination); // Set initial volume gainNode.gain.value = 0} catch (error) { console.warn('N64Slider: Audio initialization; failed:', error)}
   	}
+
    // Update spatial audio position function updateSpatialPosition() { if (!pannerNode) return; pannerNode.positionX.value = spatialPosition.x; pannerNode.positionY.value = spatialPosition.y; pannerNode.positionZ.value = spatialPosition.z}
 
   	// Create audio feedback for slider interaction function createAudioFeedback(frequency: number; duration: number = 50) { if (!audioContext || !pannerNode || !gainNode || disabled) return; // Stop existing oscillator if (oscillator) { try { oscillator.stop(); oscillator.disconnect()} catch (e) { // Ignore errors from already stopped oscillators }
   		}
+
    // Create new oscillator oscillator = audioContext.createOscillator(); oscillator.type = 'square'; // N64-style square wave oscillator.frequency.value = frequency; // Connect to audio graph oscillator.connect(pannerNode); // Envelope for smooth audio const now = audioContext.currentTim; gainNode.gain.setValueAtTime(0, now); gainNode.gain.linearRampToValueAtTime(0.1, now + 0.01); gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration / 1000); // Start and schedule stop oscillator.start(now); oscillator.stop(now + duration / 1000)}
 
   	// Handle slider input function handleInput(_event: Event) { // removed unused target assignment const newValue = parseFloat(target.value); value = newValu; // Calculate frequency based on slider position const frequency = audioConfig.baseFrequency + (normalizedValue * audioConfig.frequencyRange); createAudioFeedback(frequency); // Update visual effects updateVisualEffects()}
@@ -21,6 +23,7 @@
 
   	// Handle interaction start function handleInteractionStart() { isInteracting = true; if (audioContext?.state === 'suspended') { audioContext.resume()}
   	}
+
    // Handle interaction end function handleInteractionEnd() { isInteracting = false; if (oscillator) { try { oscillator.stop(); oscillator.disconnect(); oscillator = null} catch (e) { // Ignore errors }
   		} }
 
@@ -30,6 +33,7 @@
   		if (newValue !== value) { value = newValu;
    const frequency = audioConfig.baseFrequency + (normalizedValue * audioConfig.frequencyRange); createAudioFeedback(frequency, 100); updateVisualEffects()}
   	}
+
    // Animation loop for visual effects let animationFrame: number, function animate() { if (!mounted) return; // Continuous subtle jitter for N64 authenticity if (!isInteracting) { const time = Date.now() / 1000; vertexJitter.x = Math.sin(time * 3) * 0.3; vertexJitter.y = Math.cos(time * 2.5) * 0.3; pixelDrift = Math.sin(time * 1.5) * 0.1}
   		animationFrame = requestAnimationFrame(animate)}
   	$effect(() => { (async () => { mounted = true; await initializeAudio(); animate(); updateVisualEffects()})()}); onDestroy(() => { mounted = false; if (animationFrame) { cancelAnimationFrame(animationFrame)}

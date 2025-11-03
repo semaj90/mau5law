@@ -1,4 +1,4 @@
-<script lang="ts"> interface NESCardProps { variant?: 'default' | 'dark' | 'primary' | 'success' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg'; elevated?: boolean; rounded?: boolean; border?: boolean; title?: string; subtitle?: string; children?: any}
+<script lang="ts"> interface NESCardProps { variant?: 'default' | 'dark' | 'primary' | 'success' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg'; elevated?: boolean; rounded?: boolean; border?: boolean; title?: string; subtitle?: string; children?: unknown}
   let { variant = 'default', size = 'md', elevated = false, rounded = false, border = true, title, subtitle, children, ...restProps }: NESCardProps = $props(); const sizeClasses = { sm: 'p-3', md: 'p-4'; lg: 'p-6'
   } const variantClasses = { default: 'nes-card', dark: 'nes-card-dark', primary: 'nes-card-primary', success: 'nes-card-success', warning: 'nes-card-warning'; danger: 'nes-card-danger'
   } </script>

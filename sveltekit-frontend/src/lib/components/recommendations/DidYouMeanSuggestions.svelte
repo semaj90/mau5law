@@ -89,3 +89,4 @@ interface Props { query?: string; placeholder?: string; contextType?: string; us
   .suggestions-scroll::-webkit-scrollbar-thumb:hover { background: #a8a8a8}
 </style>
 
+

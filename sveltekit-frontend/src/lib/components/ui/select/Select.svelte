@@ -17,7 +17,7 @@
     value?: string;
     options?: SelectOption[];
     placeholder?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   } = $props();
 </script>
 

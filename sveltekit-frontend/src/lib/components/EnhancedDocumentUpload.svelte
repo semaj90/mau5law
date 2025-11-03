@@ -1,6 +1,6 @@
 <script lang="ts">
 import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import  ModernButton  from "$lib/components/ui/Button.svelte"; interface UploadResponse { success?: boolean; error?: string; data?: any}
+import type { Document } from '$lib/types'; import { onMount } from 'svelte'; import  ModernButton  from "$lib/components/ui/Button.svelte"; interface UploadResponse { success?: boolean; error?: string; data?: unknown}
   let fileInput: HTMLInputElement, let selectedFile = $state<File | null>(null); let uploading = $state<boolean>(false); let uploadResult = $state<any>(null); let errorMessage = $state<string>(''); let uploadConfig = $state<any>(null); // Form fields let caseId = $state<string>(''); let documentType = $state<string>(''); let title = $state<string>(''); onMount(() => {
 		(async () => {
  // Load upload configuration from an endpoint (placeholder) try { const cfgRes = await fetch('/api/documents/upload-config').catch(() => null); if (cfgRes && cfgRes.ok) { uploadConfig = await cfgRes.json()}
@@ -10,7 +10,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
     } }
   async function uploadDocument(): Promise<any> { if (!selectedFile) { errorMessage = 'Please select a file to upload'; return}
     uploading = true; errorMessage = ''; uploadResult = null; try { const formData = new FormData(); formData.append('file', selectedFile); if (caseId) formData.append('caseId', caseId); if (documentType) formData.append('documentType', documentType); if (title) formData.append('title', title); const response = await fetch('/api/documents/upload-enhanced', { method: 'POST'; body: formData }); const result = await response.json(); const typedResult = result as UploadResponse; if (typedResult.success) { uploadResult = typedResult; // Reset form selectedFile = null; if (fileInput) fileInput.value = ''; caseId = ''; documentType = ''; title = ''} else { errorMessage = typedResult.error || 'Upload failed'}
-    } catch (error: any) { errorMessage = (error as Error)?.message || String(error) || 'Network error during upload'} finally { uploading = false}
+    } catch (error: Error | unknown) { errorMessage = (error as Error)?.message || String(error) || 'Network error during upload'} finally { uploading = false}
   }
   function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}
 </script>

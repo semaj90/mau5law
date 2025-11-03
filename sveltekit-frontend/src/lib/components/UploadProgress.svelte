@@ -10,9 +10,9 @@ import type { Document } from '$lib/types';
   const { showTensorMetrics } = $props<{ showTensorMetrics: boolean }>()
   const { enableAttentionTracking } = $props<{ enableAttentionTracking: boolean }>()
   // Socket instance - don't import socket.io-client at module-level (SSR safe)'
-  let socket: any = null
+  let socket: unknown = null
   // local optional reference for uploadStore (populated via dynamic import in onMount)
-  let uploadStoreRef: any = null
+  let uploadStoreRef: unknown = null
   // Stores used by the template (template uses $-prefix)
   const connectionStatus = writable<'disconnected' | 'connecting' | 'connected'>('disconnected');
   type Progress = {
@@ -27,9 +27,9 @@ import type { Document } from '$lib/types';
     error: null
   });
   type TensorResultsType = {
-    clusters: any[],
-    embeddings: any[],
-    interpolationResults: any[];
+    clusters: unknown[],
+    embeddings: unknown[],
+    interpolationResults: unknown[];
    , metrics: Record<string, unknown>};
   const tensorResults: Writable<TensorResultsType> = writable({ clusters: [],
     embeddings: [],
@@ -54,7 +54,7 @@ import type { Document } from '$lib/types';
     // attempt optional dynamic import of uploadStore (safe if module doesn't export it)'
     try {
       const mod = await import('$lib/stores/unified');
-      uploadStoreRef = (mod as: any).uploadStore ?? (mod as: any).default ?? null} catch {
+      uploadStoreRef = (mod as: unknown).uploadStore ?? (mod as: unknown).default ?? null} catch {
       uploadStoreRef = null}
     await initializeWebSocket();
     if (enableAttentionTracking) {
@@ -82,7 +82,7 @@ import type { Document } from '$lib/types';
     socket.on('disconnect', () => {
       console.log('ðŸ”Œ WebSocket disconnected');
       connectionStatus.set('disconnected')});
-    socket.on('upload-progress', (data: any) => {
+    socket.on('upload-progress', (data: Record<string, unknown>) => {
       // Merge incoming progress safely
       progressData.update((current) => ({
         ...current,
@@ -107,11 +107,11 @@ import type { Document } from '$lib/types';
         // swallow to avoid breaking UI if store API differs
       }
     });
-    socket.on('case-progress', (data: any) => {
+    socket.on('case-progress', (data: Record<string, unknown>) => {
       console.log('ðŸ“‚ Case progress:', data);
       // handle if required
     });
-    socket.on('tensor-result', (data: any) => {
+    socket.on('tensor-result', (data: Record<string, unknown>) => {
       console.log('ðŸ§® Tensor result:', data);
       if (showTensorMetrics) {
         const result = data?.result ?? {};
@@ -133,14 +133,14 @@ import type { Document } from '$lib/types';
       try {
         // uploadStoreRef?.send?.({ type: 'tensor.completed', payload: data })} catch {}
     });
-    socket.on('ai-context-suggestion', (data: any) => {
+    socket.on('ai-context-suggestion', (data: Record<string, unknown>) => {
       console.log('ðŸ¤– AI suggestions:', data);
       aiSuggestions.set({
         suggestions: data?.suggestions ?? [],
         relevantDocuments: data?.relevantDocuments ?? [],
         confidence: data?.confidence ?? 0
       })});
-    socket.on('upload-error', (data: any) => {
+    socket.on('upload-error', (data: Record<string, unknown>) => {
       console.error('âŒ Upload error:', data);'
       progressData.update((current) => ({
         ...current,
@@ -150,11 +150,11 @@ import type { Document } from '$lib/types';
       try {
         // uploadStoreRef?.send?.({ type: 'upload.error', payload: data })} catch {}
     });
-    socket.on('document-change', (data: any) => {
+    socket.on('document-change', (data: Record<string, unknown>) => {
       console.log('ðŸ“ Document change:', data);
       // future collaboration handling
     });
-    socket.on('search-results', (data: any) => {
+    socket.on('search-results', (data: Record<string, unknown>) => {
       console.log('ðŸ” Search results:', data);
       // streaming search handling
     })}
@@ -167,7 +167,7 @@ import type { Document } from '$lib/types';
   let attentionListeners: Array<() => void> = [];
   function setupAttentionTracking() {
     if (!socket) return
-    const trackEvent = (type: string, metadata?: any) => {
+    const trackEvent = (type: string, metadata?: unknown) => {
       socket?.emit('attention', {
         type metadata,
         timestamp: new Date().toISOString()
@@ -365,7 +365,7 @@ import type { Document } from '$lib/types';
       {/if}
   {/if}
 <style>
-  /* Add: any custom styles here */
+  /* Add: unknown custom styles here */
   .transition-all {
     transition-property: all
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);

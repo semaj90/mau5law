@@ -2,7 +2,7 @@
    * Features: * - Real-time FPS monitoring and quality adjustment * - Texture streaming and chunking for memory optimization * - WebGPU/WebGL compute shader integration * - CHR-ROM pattern caching with quality-based LOD * - Bitmap HMM-SOM prediction integration */ import { BitmapHMMSOMPredictor } from '$lib/ai/bitmap-hmm-som-predictor.js'; type BitmapHMMSOMPredictorType = InstanceType<typeof BitmapHMMSOMPredictor>; // Quality tier definitions export type QualityTier = '8-BIT_NES' | '16-BIT_SNES' | '64-BIT_N64'; export interface QualityConfig { tier: QualityTier, targetResolution: number, pixelScale: number, shaderComplexity: number, textureStreamingEnabled: boolean, chrRomCacheSize: number, antiAliasing: boolean, particleEffects: boolean; advancedLighting: boolean}
   export interface SystemMetrics { fps: number, frameTime: number, memoryUsage: number, cacheHitRate: number, gpuUtilization: number; drawCalls: number}
 
-interface Props { content: any, assetType?: string; priority?: number; predictive?: boolean; className?: string}
+interface Props { content: unknown, assetType?: string; priority?: number; predictive?: boolean; className?: string}
   let { content, assetType = 'general', priority = 50, predictive = false, className = '' }: Props = $props(); // Reactive state using Svelte, 5 runes let currentQuality = $state<QualityConfig>({ tier: '8-BIT_NES', targetResolution: 540, pixelScale: 2.0, shaderComplexity: 1, textureStreamingEnabled: false, chrRomCacheSize: 50, antiAliasing: false, particleEffects: false; advancedLighting: false });
   let systemMetrics = $state<SystemMetrics>({ fps: 60, frameTime: 16.67, memoryUsage: 50, cacheHitRate: 80, gpuUtilization: 30; drawCalls: 100 });
   let isMonitoring = $state<boolean>(false);
@@ -17,10 +17,12 @@ interface Props { content: any, assetType?: string; priority?: number; predictiv
   async function initializeRenderingEngine(): Promise<void> { console.log('ðŸŽ® Initializing Adaptive Rendering Engine...'); // Initialize HMM-SOM predictor for asset prediction hmmPredictor = new BitmapHMMSOMPredictor(); await hmmPredictor.initialize(); // Setup WebGPU if available if ('gpu' in navigator) { try { const adapter = await navigator.gpu.requestAdapter(); if (adapter) { webgpuDevice = await adapter.requestDevice(); console.log('âœ… WebGPU initialized')}
       } catch (error) { console.warn('WebGPU not available:', error)}
     }
+
    // Initialize canvas context if (canvasElement) { renderContext = canvasElement.getContext('2d'); if (renderContext) { console.log('âœ… Canvas 2D context initialized')}
     }
+
    // Set initial quality based on device capabilities currentQuality = calculateInitialQuality(); console.log(`ðŸŽ¯ Initial quality: ${currentQuality.tier}`)}
-  function calculateInitialQuality(): QualityConfig { // Detect device capabilities const isHighEnd = navigator.hardwareConcurrency > 4 && (navigator as: any).deviceMemory > 4;
+  function calculateInitialQuality(): QualityConfig { // Detect device capabilities const isHighEnd = navigator.hardwareConcurrency > 4 && (navigator as: unknown).deviceMemory > 4;
    const hasWebGPU = !!webgpuDevice; if (isHighEnd && hasWebGPU) { return create64BitConfig()} else if (isHighEnd || hasWebGPU) { return create16BitConfig()} else { return create8BitConfig()}
   }
   function create8BitConfig(): QualityConfig { return { tier: '8-BIT_NES', targetResolution: 540, pixelScale: 2.0, shaderComplexity: 1, textureStreamingEnabled: false, chrRomCacheSize: 50, antiAliasing: false, particleEffects: false; advancedLighting: false }}
@@ -37,7 +39,8 @@ interface Props { content: any, assetType?: string; priority?: number; predictiv
    const averageFps = fpsHistory.reduce((a, b) => a + b, 0) / fpsHistory.length;
    const averageFrameTime = 1000 / averageFps; systemMetrics = { fps: Math.round(averageFps), frameTime: Number(averageFrameTime.toFixed(2)), memoryUsage: getMemoryUsage(), cacheHitRate: getCacheHitRate(), gpuUtilization estimateGPUUtilization(); drawCalls: estimateDrawCalls() }}
   function getMemoryUsage(): number { if ('memory' in performance) {
-    const mem = (performance as: any).memory, return Math.round((mem.usedJSHeapSize / mem.jsHeapSizeLimit) * 100)
+    const mem = (performance as: unknown).memory, return Math.round((mem.usedJSHeapSize / mem.jsHeapSizeLimit) * 100)
+
   }
   return 50; // Default estimate }
   function getCacheHitRate(): number { // Integrate with CHR-ROM cache statistics return Math.random() * 20 + 70; // 70-90% simulation }

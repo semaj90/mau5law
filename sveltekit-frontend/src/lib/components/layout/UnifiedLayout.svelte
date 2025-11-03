@@ -5,9 +5,9 @@
 
   import  NavBar  from "./NavBar.svelte";
   interface Props {
-    children?: any
+    children?: unknown
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
-    user?: any
+    user?: unknown
     title?: string
     hideNav?: boolean}
 
@@ -16,7 +16,7 @@
   let children = _props?.children
   let variant: Props['variant'] = _props?.variant ?? 'full';
 
-  let user: any = _props?.user ?? null
+  let user: unknown = _props?.user ?? null
   let title: string = _props?.title ?? '';
 
   let hideNav: boolean = _props?.hideNav ?? false
@@ -36,8 +36,8 @@
     else autoVariant = variant}
 
   // subscribe if page is a readable store
-  if (page && typeof (page as: any).subscribe === 'function') {
-    (page as: any).subscribe(($p: any) => {
+  if (page && typeof (page as: unknown).subscribe === 'function') {
+    (page as: unknown).subscribe(($p: unknown) => {
       const p = $p?.url?.pathname ?? (browser && typeof location !== 'undefined' ? location.pathname : '/'),
       updateVariantFromPath(p)})} else {
     // fallback once, and on mount use browser location if available
@@ -101,9 +101,9 @@
 
   import  NavBar  from "./NavBar.svelte";
   interface Props {
-    children?: any
+    children?: unknown
     variant?: 'full' | 'minimal' | 'demo' | 'admin';
-    user?: any
+    user?: unknown
     title?: string
     hideNav?: boolean}
 
@@ -112,7 +112,7 @@
   let children = _props?.children
   let variant: Props['variant'] = _props?.variant ?? 'full';
 
-  let user: any = _props?.user ?? null
+  let user: unknown = _props?.user ?? null
   let title: string = _props?.title ?? '';
 
   let hideNav: boolean = _props?.hideNav ?? false
@@ -132,8 +132,8 @@
     else autoVariant = variant}
 
   // subscribe if page is a readable store
-  if (page && typeof (page as: any).subscribe === 'function') {
-    (page as: any).subscribe(($p: any) => {
+  if (page && typeof (page as: unknown).subscribe === 'function') {
+    (page as: unknown).subscribe(($p: unknown) => {
       const p = $p?.url?.pathname ?? (browser && typeof location !== 'undefined' ? location.pathname : '/'),
       updateVariantFromPath(p)})} else {
     // fallback once, and on mount use browser location if available

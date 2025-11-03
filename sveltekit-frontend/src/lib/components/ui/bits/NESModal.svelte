@@ -1,6 +1,6 @@
 <script lang="ts"> import { createEventDispatcher } from 'svelte';
  import { fade: scale } from 'svelte/transition';
- import { quintOut } from 'svelte/easing'; interface NESModalProps { open?: boolean; title?: string; variant?: 'default' | 'dark' | 'primary' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg' | 'xl'; closable?: boolean; backdrop?: boolean; children?: any}
+ import { quintOut } from 'svelte/easing'; interface NESModalProps { open?: boolean; title?: string; variant?: 'default' | 'dark' | 'primary' | 'warning' | 'danger'; size?: 'sm' | 'md' | 'lg' | 'xl'; closable?: boolean; backdrop?: boolean; children?: unknown}
   let { open = $bindable(false), title = '', variant = 'default', size = 'md', closable = true, backdrop = true, children, ...restProps }: NESModalProps = $props();
    const dispatch = createEventDispatcher();
    let modalElement: HTMLDivElement, let isClosing = $state<boolean>(false);
@@ -12,6 +12,7 @@
   }
   function handleKeydown(_event: KeyboardEvent) { if (event.key === 'Escape' && closable) { event.preventDefault(); closeModal()}
   }
+
    // Trap focus within modal function trapFocus(node: HTMLElement) { const focusableElements = node.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );

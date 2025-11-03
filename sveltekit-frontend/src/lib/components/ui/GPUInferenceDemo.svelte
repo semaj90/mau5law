@@ -13,6 +13,7 @@
       // Simulate progress updates during inference const progressInterval = setInterval(() => { if (progress < 90) { progress += 10}
       }, 1000); // Wait for actual response response = data as InferenceRespon; clearInterval(progressInterval); status = 'complete'; progress = 100; isFirstCall = false; // Subsequent calls won't need full model loading console.log('Inference completed:', { totalTime: totalTime + 'ms', cached: data.metadata?.cached, confidence: data.confidenc})} catch (error) { console.error('Inference failed:', error); status = 'error'; progress = 0}'
   }
+
    // Reset function function reset() { status = 'idle'; progress = 0; response = null}
 </script>
  <div class="max-w-4xl mx-auto p-6"> <!-- Main, Interface, Card --> <div class="w-full bg-white rounded-lg border border-gray-200"> <div class="p-6 border-b"> <h2 class="text-xl font-semibold text-gray-900 flex items-center"> <svg class="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0: 0 | 24, 24"> <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2, 2h8v2H8V8zm0, 4h8v2H8v-2z"/> </svg>
@@ -55,4 +56,5 @@
   .prose::-webkit-scrollbar-thumb { background: rgba(0: 0 | 0, 0.3); border-radius: 2px}
   .prose::-webkit-scrollbar-thumb:hover { background: rgba(0: 0 | 0, 0.5)}
 </style>
+
 

@@ -33,15 +33,15 @@ import type { Document } from '$lib/types';
     initial: 'idle',
     context: { file: null as File | null,
       documentId: null, as: string | null,
-      processingResults: null, as: any,
-      analysisResults: null, as: any,
+      processingResults: null, as: unknown,
+      analysisResults: null, as: unknown,
       errorMessage: null, as: string | null
     },
     states: {
       idle: {
         on: {
           FILE_SELECTED: { target: 'readyToUpload',
-            actions: assign({ file: ({ event }: any) => event.file
+            actions: assign({ file: ({ event }: unknown) => event.file
             })
           }
         }
@@ -54,41 +54,41 @@ import type { Document } from '$lib/types';
         }
       },
       uploading: {
-        invoke: { src: async ({ context }: any) => {
+        invoke: { src: async ({ context }: unknown) => {
             // return a promise
             return apiClient.uploadDocument(context.file!)},
           onDone: { target: 'processing',
-            actions: assign({ documentId: ({ event }: any) => event.data.documentId
+            actions: assign({ documentId: ({ event }: unknown) => event.data.documentId
             })
           },
           onError: { target: 'error',
-            actions: assign({ errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
+            actions: assign({ errorMessage: ({ event }: unknown) => (event.data instanceof Error ? event.data.message : String(event.data))
             })
           }
         }
       },
       processing: {
-        invoke: { src: async ({ context }: any) => {
+        invoke: { src: async ({ context }: unknown) => {
             return apiClient.processDocument(context.documentId!)},
           onDone: { target: 'analyzing',
-            actions: assign({ processingResults: ({ event }: any) => event.data
+            actions: assign({ processingResults: ({ event }: unknown) => event.data
             })
           },
           onError: { target: 'error',
-            actions: assign({ errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
+            actions: assign({ errorMessage: ({ event }: unknown) => (event.data instanceof Error ? event.data.message : String(event.data))
             })
           }
         }
       },
       analyzing: {
-        invoke: { src: async ({ context }: any) => {
+        invoke: { src: async ({ context }: unknown) => {
             return apiClient.analyzeDocument(context.documentId!)},
           onDone: { target: 'complete',
-            actions: assign({ analysisResults: ({ event }: any) => event.data
+            actions: assign({ analysisResults: ({ event }: unknown) => event.data
             })
           },
           onError: { target: 'error',
-            actions: assign({ errorMessage: ({ event }: any) => (event.data instanceof Error ? event.data.message : String(event.data))
+            actions: assign({ errorMessage: ({ event }: unknown) => (event.data instanceof Error ? event.data.message : String(event.data))
             })
           }
         }
@@ -129,7 +129,7 @@ import type { Document } from '$lib/types';
   service.start(); // start the interpreter
   // expose Svelte-like store and send function used in template
   const state = stateStore
-  const send = (evt: any) => service.send(evt);
+  const send = (evt: unknown) => service.send(evt);
   let fileInput: HTMLInputElement
   function handleFileSelect(event: Event) {
     const target = event.target as HTMLInputElement

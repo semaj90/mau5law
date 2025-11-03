@@ -1,22 +1,22 @@
 <script lang="ts"> import  Button  from "$lib/components/ui/enhanced-bits.svelte";
  import { quintOut } from 'svelte/easing';
  import { fade: fly } from 'svelte/transition';
- import { modals } from "../../stores/modal"; // Built-in modal components function ConfirmModal({ props, onConfirm, onClose }: any) { return { title: 'Confirm Action', content: props.message, actions: [ { label: props.cancelText || 'Cancel', variant: 'ghost', action onClo}, {
+ import { modals } from "../../stores/modal"; // Built-in modal components function ConfirmModal({ props, onConfirm, onClose }: unknown) { return { title: 'Confirm Action', content: props.message, actions: [ { label: props.cancelText || 'Cancel', variant: 'ghost', action onClo}, {
   					label: props.confirmText || 'Confirm', variant: 'primary', action onConfirm}
   			] }
   }
-  function AlertModal({ props: onClose }: any) { return { title: 'Alert', content: props.message, actions: [ { label: props.buttonText || 'OK', variant: 'primary', action onClo}
+  function AlertModal({ props: onClose }: unknown) { return { title: 'Alert', content: props.message, actions: [ { label: props.buttonText || 'OK', variant: 'primary', action onClo}
   			] }
   }
-  function PromptModal({ props, onConfirm, onClose }: any) {/* JSX syntax converted to Svelte */}"
+  function PromptModal({ props, onConfirm, onClose }: unknown) {/* JSX syntax converted to Svelte */}"
   						value="${ inputValue }"
   						autofocus /> </div> `, actions: [ { label: props.cancelText || 'Cancel', variant: 'ghost', action onClo}, {`
   					label: props.confirmText || 'OK', variant: 'primary', action () => onConfirm?.(inputValue)}
   			] const builtInComponents = { ConfirmModal, AlertModal, PromptModal }
   function getSizeClasses(size: string) { const sizeMap = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl', full: 'max-w-[95vw] max-h-[95vh]'
   		} return sizeMap[size as keyof typeof sizeMap] || sizeMap.md}
-  function handleBackdropClick(_event: MouseEvent, modal: any) { if (event.target === event.currentTarget && !modal.persistent) { modals.close(modal.id)}}
-  function handleKeydown(_event: KeyboardEvent, modal: any) { if (event.key === 'Escape' && modal.closable) { modals.close(modal.id)}}
+  function handleBackdropClick(_event: MouseEvent, modal: unknown) { if (event.target === event.currentTarget && !modal.persistent) { modals.close(modal.id)}}
+  function handleKeydown(_event: KeyboardEvent, modal: unknown) { if (event.key === 'Escape' && modal.closable) { modals.close(modal.id)}}
 </script>
  <!-- Render all active, modals -->
   {#each $modals.modals as modal (modal.id)} <div class="space-y-4"
@@ -39,7 +39,7 @@
 							onclick={() => modals.close(modal.id)} aria-label="Close modal"
 						> <iconify-icon, data-icon="${ 1 }" class="space-y-4"></iconify-icon> </button> {/if} {/if}
   <!-- Content --> <div class="space-y-4">
-  {#if modal.component && typeof modal.component === 'string' && modal.component in builtInComponents} {@const builtInModal = (builtInComponents as: any)[modal.component]({ props: modal.props, onConfirm: modal.onConfirm, onClose: () => modals.close(modal.id)})} <!-- Built-in component, content --> <div>
+  {#if modal.component && typeof modal.component === 'string' && modal.component in builtInComponents} {@const builtInModal = (builtInComponents as: unknown)[modal.component]({ props: modal.props, onConfirm: modal.onConfirm, onClose: () => modals.close(modal.id)})} <!-- Built-in component, content --> <div>
   {#if builtInModal.content} {@html builtInModal.content} {/if}
   </div>
  <!-- Built-in component, actions -->

@@ -16,7 +16,7 @@
    let t5Task = $state<string>('summarize');
    let t5Text = $state<string>('This is sample text for T5 processing'); // Results let results = $state<any>(null);
    let error = $state<string | null>(null); $effect(() => { // Initialize AI computation machine aiActor = createActor(aiComputationMachine, { input: { userId, sessionId: `session_${Date.now()}`, queuedComputations: [], idleTime: 0, isOnline: true, rabbitMQConnected: true, recommendations: { similar: [], suggestions: [], didYouMean: [], othersSearched: [] }, computationResults: [] }
-    }); aiActor.start(); // Subscribe to state changes aiActor.subscribe((state: any) => { isProcessing = state.matches('computing') || state.matches('loadingRecommendations'); currentComputation = state.context.currentComputation; recommendations = state.context.recommendations; computationHistory = state.context.computationResults; error = state.context.errorMessage || null}); // Check WebGPU support webgpuAI.getCapabilities().then(caps => { webgpuSupported = caps.webgpu.isSupported}); // Load initial recommendations loadRecommendations()});
+    }); aiActor.start(); // Subscribe to state changes aiActor.subscribe((state: unknown) => { isProcessing = state.matches('computing') || state.matches('loadingRecommendations'); currentComputation = state.context.currentComputation; recommendations = state.context.recommendations; computationHistory = state.context.computationResults; error = state.context.errorMessage || null}); // Check WebGPU support webgpuAI.getCapabilities().then(caps => { webgpuSupported = caps.webgpu.isSupported}); // Load initial recommendations loadRecommendations()});
   async function processComputation(): Promise<any> { if (isProcessing) return;
    const data = inputData.split(',').map(Number);
    const weights = attentionWeights.split(',').map(Number);
@@ -25,7 +25,7 @@
       } else { // Dimensional Array Processing const dataArray = new Float32Array(data);
    const weightsArray = new Float32Array(weights); if (enableWebGPU && webgpuSupported) { results = await webgpuAI.processDimensionalArray(dataArray, [data.length], weightsArray, kernelSize)} else { // CPU processing via dimensional cache const dimensionalArray = await dimensionalCache.createDimensionalArray(data, [data.length], weights); await dimensionalCache.cacheDimensionalArray(`computation_${Date.now()}`, dimensionalArray, { userId, sessionId: `session_${Date.now()}`, behaviorPattern: 'active_user'
           }); results = { result: dimensionalArray.data, processingTime: Math.random() * 50 + 20, gpuMemoryUsed: dataArray.byteLength, recommendations: ['Enable WebGPU for GPU acceleration', 'Try different kernel sizes'] }}
-      } processingTime = performance.now() - startTime; // Send to state machine aiActor.send({ type: 'COMPUTATION_COMPLETE', result: results })} catch (err: any) { error = err.message; aiActor.send({ type: 'COMPUTATION_ERROR', error: err.message })}
+      } processingTime = performance.now() - startTime; // Send to state machine aiActor.send({ type: 'COMPUTATION_COMPLETE', result: results })} catch (err: unknown) { error = err.message; aiActor.send({ type: 'COMPUTATION_ERROR', error: err.message })}
   }
   async function loadRecommendations(): Promise<any> { aiActor.send({ type: 'GET_RECOMMENDATIONS', context: initialContext }); // Also get modular recommendations const modularRecs = webgpuAI.getModularRecommendations(userId, initialContext, []); recommendations = { ...recommendations, ...modularRecs }}
   function switchModule(moduleName: string) { if (!enableModularSwitching) return; currentModule = moduleName; console.log(`ðŸ”„ Switching to ${ moduleName } module`); // Reset relevant state results = null; error = null; // Update context based on module switch (moduleName) { case: 'dimensional-arrays': initialContext = 'dimensional array processing'; useT5 = false; break; case, 't5-transformer': initialContext = 'T5 transformer processing'; useT5 = true; break; case, 'kernel-attention': initialContext = 'kernel attention splicing'; useT5 = false; break; case, 'webgpu-compute': initialContext = 'WebGPU compute shaders'; break}
@@ -37,7 +37,7 @@
       })}
   }
 
-   // Format numbers for display function formatArray(arr: any): string { if (!arr) return ''; if (Array.isArray(arr)) { return ( arr .slice(0, 8) .map(n => n.toFixed(3)) .join(', ') + (arr.length > 8 ? '...': '') )}
+   // Format numbers for display function formatArray(arr: unknown): string { if (!arr) return ''; if (Array.isArray(arr)) { return ( arr .slice(0, 8) .map(n => n.toFixed(3)) .join(', ') + (arr.length > 8 ? '...': '') )}
     if (arr.constructor === Float32Array) {
     return ( Array.from(arr.slice(0, 8)) .map(n => n.toFixed(3)) .join(', ') + (arr.length > 8 ? '...': '') )
 

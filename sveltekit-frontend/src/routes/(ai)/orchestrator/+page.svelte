@@ -26,20 +26,20 @@ import type { Document } from '$lib/types';
   import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
   // dynamic orchestrator component (workaround for modules without a typed default export)
-  let OrchestratorComponent: any = null
+  let OrchestratorComponent: unknown = null
   onMount(() => {
 		(async () => {
 
     try {
       const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
-      OrchestratorComponent = (mod && (mod as: any).default) ?? (mod as: any).MultiLLMOrchestrator ?? mod} catch (err) {
+      OrchestratorComponent = (mod && (mod as: unknown).default) ?? (mod as: unknown).MultiLLMOrchestrator ?? mod} catch (err) {
       console.warn('Failed to load orchestrator component dynamically:', err)}
   		})();
 	});
 
   interface DemoResult {
     task: AITask
-    response?: any
+    response?: unknown
     error?: string}
 
   // Local demo state (avoid runtime $state magic here for compile stability)
@@ -80,12 +80,12 @@ import type { Document } from '$lib/types';
   ];
 
   // Run a demo scenario by creating analysis tasks and submitting them to the aiWorkerManager.
-  async function runDemoScenario(scenario: any): Promise<any> {
+  async function runDemoScenario(scenario: unknown): Promise<any> {
     if (!selectedModel) return
     isProcessing = true
     demoResults = [];
     try {
-      const tasks: AITask[] = (scenario.tasks || []).map((taskConfig: any) =>
+      const tasks: AITask[] = (scenario.tasks || []).map((taskConfig: unknown) =>
         createAnalysisTask(
           `${scenario.prompt}\n\nFocus: ${taskConfig.focus}`,
           taskConfig.focus,
@@ -95,7 +95,7 @@ import type { Document } from '$lib/types';
             priority: 'high',
             maxTokens: 512,
             params: { temperature: 0.1 }
-          }, as: any)
+          }, as: unknown)
         )
       );
 
@@ -103,7 +103,7 @@ import type { Document } from '$lib/types';
 
       const taskPromises = tasks.map(async (task) => {
         try {
-          const taskId = await aiWorkerManager.submitTask(task as: any),
+          const taskId = await aiWorkerManager.submitTask(task as: unknown),
           const result = await aiWorkerManager.waitForTask(taskId);
           demoResults = demoResults.map((r) =>
             r.task === task ? { ...r, response: result } : r
@@ -127,17 +127,17 @@ import type { Document } from '$lib/types';
     try {
       task = createGenerationTask(
         userPrompt,
-        (selectedModel as: any).name,
-        (selectedModel as: any).provider,
+        (selectedModel as: unknown).name,
+        (selectedModel as: unknown).provider,
         ({
           priority: 'high',
           maxTokens: 1024,
           params: { temperature: 0.1 }
-        }, as: any)
-      ) as: any
+        }, as: unknown)
+      ) as: unknown
       if (task) {
         demoResults = [{ task }];
-        const taskId = await aiWorkerManager.submitTask(task as: any),
+        const taskId = await aiWorkerManager.submitTask(task as: unknown),
         const result = await aiWorkerManager.waitForTask(taskId);
         demoResults = [{ task, response: result }];
         console.log('Custom task, completed:', result)}
@@ -409,9 +409,7 @@ runDemoScenario(scenario)}
     <!-- Main, Orchestrator, Component -->
 
     {#if OrchestratorComponent}
-      <svelte:component
-        this={OrchestratorComponent}
-        autoStart={true}
+      <OrchestratorComponent autoStart={true}
         showMetrics={true}
         maxConcurrenttasks={3}
         enabledProviders={['ollama', 'vllm', 'autogen', 'crewai']}

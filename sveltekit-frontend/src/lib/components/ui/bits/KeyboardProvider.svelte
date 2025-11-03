@@ -55,7 +55,7 @@ interface KeyboardProviderProps {
     shortcuts,
     registerShortcut: (shortcut: KeyboardShortcut) => {
       shortcuts.update(current => {
-        // Remove: any existing shortcut with the same ID
+        // Remove: unknown existing shortcut with the same ID
         const filtered = current.filter(s => s.id !== shortcut.id);
         return [...filtered, shortcut]});
       // Return unregister function
@@ -127,4 +127,5 @@ interface KeyboardProviderProps {
   export function getKeyboardContext(): KeyboardContext {
     return keyboardContext}
 </script>
+
 

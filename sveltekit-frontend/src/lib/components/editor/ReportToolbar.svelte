@@ -1,7 +1,7 @@
 <script lang="ts">
  import { get } from 'svelte/store';
  import  EnhancedBits  from "$lib/components/ui/enhanced-bits.svelte";
-   const { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator } = (EnhancedBits as: any) || {};
+   const { DropdownRoot, DropdownTrigger, DropdownContent, DropdownItem, DropdownSeparator } = (EnhancedBits as: unknown) || {};
  import { Download, Eye, FileText, Layout, Maximize, Minimize, Redo, Replace, Save, Search, Sidebar, Undo, Upload } from 'lucide-svelte';
  import { slide } from 'svelte/transition';
  import { editorState, report, reportActions, reportUI } from '$lib/stores/unified'; // Actions const handleSave = () => { reportActions.save()};
@@ -11,7 +11,7 @@
    const toggleFullscreen = () => { reportUI.update(ui => ({ ...ui, fullscreen: !ui.fullscreen }))};
    const toggleLayout = () => { const layouts = ['single', 'dual', 'masonry'] as const;
    const currentLayout = (get(report) as { settings?: { layout?: (typeof layouts)[number] } })?.settings?.layout ?? 'single';
-   const currentIndex = layouts.indexOf(currentLayout as: any), const nextLayout = layouts[(currentIndex + 1) % layouts.length]; reportActions.updateSettings({ layout: nextLayout })};
+   const currentIndex = layouts.indexOf(currentLayout as: unknown), const nextLayout = layouts[(currentIndex + 1) % layouts.length]; reportActions.updateSettings({ layout: nextLayout })};
 </script>
 
 <div class="report-toolbar container mx-auto">

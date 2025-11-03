@@ -6,11 +6,11 @@ interface CaseData { id: string, title: string, status: string, evidence?: Evide
 
 interface UserData { id: string; name: string, email?: string; role?: string}
 
-interface AIStoreContext { loading?: boolean; error?: string; summary?: string; stream?: string; sources?: Array<{ id?: string; title?: string; [k: string]: any }>}
+interface AIStoreContext { loading?: boolean; error?: string; summary?: string; stream?: string; sources?: Array<{ id?: string; title?: string; [k: string]: unknown }>}
 
 interface AIStore { context: AIStoreContext}
 
-  // Component props using Svelte, 5 $props() interface Props { contextItems?: any[]; caseId?: string}
+  // Component props using Svelte, 5 $props() interface Props { contextItems?: unknown[]; caseId?: string}
   let { contextItems = [], caseId = '' }: Props = $props(); // Get user from context (SSR-safe) const getUser = getContext<unknown>('user');
    const user = typeof getUser === 'function' ? getUser(): undefined;
    let errorMessage = $state<string>(''); // Component lifecycle $effect(() => { // Initialize if needed }); // Trigger summary function handleSummarize() { if (!user?.id) return; aiGlobalActions.summarize(caseId, contextItems, user?.id || '')}

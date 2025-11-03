@@ -1,7 +1,7 @@
 ﻿<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
   
-  let ItemCtor: any = null
+  let ItemCtor: unknown = null
   (async () => {
     const ns = await getBitsNamespace();
     ItemCtor = ns.DropdownMenu?.Item ?? ns.DropdownMenuItem ?? ns.Item ?? ns})();

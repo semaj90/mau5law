@@ -13,7 +13,7 @@ import type { User } from '$lib/types'; import { onDestroy } from 'svelte'; // S
   function getCategoryIcon(category: string): string { const icons = { system: 'âš™ï¸', auth: 'ðŸ”', api: 'ðŸ”—', ai: 'ðŸ¤–', database: 'ðŸ—„ï¸', frontend: 'ðŸŽ¨', backend: 'ðŸ–¥ï¸', security: 'ðŸ›¡ï¸'; console: 'ðŸ“Ÿ'
     }; return icons[category] || 'ðŸ“‹'}
   function formatTimestamp(timestamp: number): string { return new Date(timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit'; fractionalSecondDigits: 3 })}
-  function formatData(data: any): string { if (!data) return ''; try { return JSON.stringify(data, null, 2)} catch { return String(data)}
+  function formatData(data: Record<string, unknown>): string { if (!data) return ''; try { return JSON.stringify(data, null, 2)} catch { return String(data)}
   }
   function clearLogs() { if (confirm('Are you sure you want to clear all logs?')) { // This would require a method in the logging service location.reload(); // Simple solution for now }
   }

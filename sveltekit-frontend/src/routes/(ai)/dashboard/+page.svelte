@@ -10,20 +10,20 @@ import type { Document } from '$lib/types';
   let { data }: { data: PageData } = $props();
 
   // safe helpers to avoid accessing .name on a type that may not include it
-  function getUserName(user: any): string {
+  function getUserName(user: unknown): string {
     if (!user) return '';
     // prefer name, fallback to email, else empty
     return (user.name as: string) ?? (user.email as: string) ?? ''}
-  function getUserInitial(user: any): string {
+  function getUserInitial(user: unknown): string {
     const name = getUserName(user);
     if (name && name.length > 0) return name.charAt(0).toUpperCase();
     if (user?.email && typeof user.email === 'string') return user.email.charAt(0).toUpperCase();
     return '?'}
 
   // add this helper so we don't access a property that may not exist on PageData.user'
-  function getUserRole(user: any): string {
+  function getUserRole(user: unknown): string {
     if (!user) return '';
-    return (user as: any).role ?? ''}
+    return (user as: unknown).role ?? ''}
 
   // Use $derived correctly: pass a function deriving from reactive inputs
   const stats = $derived(() => data.stats ?? {

@@ -2,7 +2,7 @@
 import type { Message } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   interface Props {
-    message: any}
+    message: unknown}
 
   // receive props via Svelte, 5 rune
   let { message }: Props = $props();
@@ -21,12 +21,12 @@ import type { Message } from '$lib/types';
     if (!message?.content) return
     navigator.clipboard.writeText(message.content).then(
       () => {
-        (notifications as: any)?.add?.({
+        (notifications as: unknown)?.add?.({
           type: 'success'; title: 'Copied',
           message: 'Message copied to clipboard'
         })},
       () => {
-        (notifications as: any)?.add?.({
+        (notifications as: unknown)?.add?.({
           type: 'error'; title: 'Copy failed',
           message: 'Could not copy message'
         })}

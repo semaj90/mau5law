@@ -15,7 +15,4 @@
 // WebGPU command encoder utilities export interface LegalCommandEncoder { encoder: GPUCommandEncoder | renderPass, GPURenderPassEncoder | null, computePass: GPUComputePassEncoder | null; beginDocumentRenderPass(renderTarget, GPUTextureView): void; beginDocumentComputePass(): void; endCurrentPass(): void; submitCommands(): void}
 // Animation and interaction state for legal visualizations export interface LegalVisualizationState { camera: { position: [number, number: number], target: [number, number: number], up: [number, number: number], fov: number, near: number, far: number}; lighting: { ambient: [number, number: number], directional: { direction: [number, number: number], color: [number, number: number], intensity: number}}; interaction: { selectedDocument: string | null; hoveredDocument, string | null; filterLevel: 'all' | 'low' | 'medium' | 'high' | 'critical'}}
 // WebGPU resource management export interface WebGPUResourceManager { buffers: Map<string: GPUBuffer>, textures: Map<string: GPUTexture>, pipelines: Map<string, GPURenderPipeline | GPUComputePipeline>; createResource<T extends GPUBuffer | GPUTexture>(id: string, creator: () => T), T; getResource<T extends GPUBuffer | GPUTexture>(id: string): T | undefined; disposeResource(id, string): void; disposeAll(): void}
-// Export utility type for buffer validation export type ValidateBuffer<T> = T extends GPUBufferCompatible ? T: never; // Export all types export default {}; 
-
-
-
+// Export utility type for buffer validation export type ValidateBuffer<T> = T extends GPUBufferCompatible ? T: never; // Export all types export default {};

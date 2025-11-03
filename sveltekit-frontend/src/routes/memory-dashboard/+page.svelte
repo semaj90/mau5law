@@ -36,11 +36,11 @@ if (browser) {
     isLoading = true
     try {
       // removed unused response assignment
-      const result = await (response as { json?: any }).json();
-      if ((result as { success?: any; error?: any }).success) {
+      const result = await (response as { json?: unknown }).json();
+      if ((result as { success?: unknown; error?: unknown }).success) {
         // Reload data after optimization
         await loadData()} else {
-        error = (result as { success?: any; error?: any }).error || 'Optimization failed'}
+        error = (result as { success?: unknown; error?: unknown }).error || 'Optimization failed'}
     } catch (err) {
       console.error('Optimization failed:', err);
       error = err.messag} finally {
@@ -225,4 +225,5 @@ if (browser) {
     <p>Last updated: {new Date().toLocaleString()}</p>
   </div>
 </div>;
+
 

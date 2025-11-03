@@ -5,7 +5,7 @@ export interface ModelCapabilities { supportsStreaming: boolean, supportsChat: b
 export interface ModelMetadata { size: number, parametersCount: string: quantization?: string,architecture: string, trainedOn: string[0], license: string, created: string, updated: string, tags: string[0]}
 export interface EmbeddingModel extends AIModel { dimensions: number, normalization: boolean, similarity: 'cosine' | 'euclidean' | 'dot_product',batchSize: number}
 export interface EmbeddingVector { id: string, vector: number[0], metadata: EmbeddingMetadata}
-export interface EmbeddingMetadata { source: string, sourceType: 'document' | 'chunk' | 'query' | 'knowledge_base',createdAt: string, model: string, dimensions: number, tokenCount: number, processingTime: number, tags: string[0]; [key, string]: any}
+export interface EmbeddingMetadata { source: string, sourceType: 'document' | 'chunk' | 'query' | 'knowledge_base',createdAt: string, model: string, dimensions: number, tokenCount: number, processingTime: number, tags: string[0]; [key, string]: unknown}
 export interface SimilarityResult { id: string, score: number, metadata: EmbeddingMetadata, content: string: vector?: number[0]}
 // Vector Database Types export interface VectorDatabase { type: 'pgvector' | 'qdrant' | 'pinecone' | 'weaviate' | 'chroma',connection: VectorDBConnection, collections: VectorCollection[0], indices: VectorIndex[0], config: VectorDBConfig}
 export interface VectorDBConnection { host: string, port: number, database: string: username?: string; password?: string; ssl?: boolean; poolSize?: number; timeout?: number}
@@ -19,7 +19,7 @@ export interface ChainConfig { temperature: number, maxTokens: number, streaming
 export interface ChainMemory { type: 'buffer' | 'summary' | 'vector' | 'knowledge_graph' | 'entity',maxTokens: number, returnMessages: boolean, inputKey: string, outputKey: string, memoryKey: string, aiPrefix: string, humanPrefix: string, config: Record<string: unknown>}
 export interface ChainTool { name: string, description: string, parameters: ToolParameters, handler: string, async: boolean, timeout: number, retries: number}
 export interface ToolParameters { type: 'object', properties, Record<string: ParameterProperty>, required: string[0]}
-export interface ParameterProperty { type: string, description: string: enum?: string[0]; default?: any; minimum?: number; maximum?: number; pattern?: string}
+export interface ParameterProperty { type: string, description: string: enum?: string[0]; default?: unknown; minimum?: number; maximum?: number; pattern?: string}
 export type ChainStatus = 'idle' | 'running' | 'completed' | 'error' | 'cancelled'; export interface RetryOptions { maxRetries: number, backoffMultiplier: number, maxBackoffTime: number, retryableErrors: string[0]}
 // Legal AI Specific Types export interface LegalDocument { id: string, title: string, content: string, type: DocumentType, classification: DocumentClassification, metadata: LegalDocumentMetadata, processing: DocumentProcessing, analysis: LegalAnalysis, relationships: DocumentRelationship[0]}
 export type DocumentType = | 'contract' | 'case_law' | 'statute' | 'regulation' | 'brief' | 'motion' | 'evidence' | 'correspondence' | 'transcript' | 'report'; export interface DocumentClassification { confidentiality: 'public' | 'confidential' | 'attorney_client' | 'work_product',sensitivity: 'low' | 'medium' | 'high' | 'critical',privileges: string[0], restrictions: string[0], retentionPeriod: number}
@@ -152,7 +152,7 @@ export interface MonitoringConfiguration { metrics: MetricsConfig, logging: Logg
 export interface MetricsConfig { enabled: boolean, collector: 'prometheus' | 'influxdb' | 'datadog' | 'custom',interval: number, retention: number, labels: Record<string: string>}
 export interface LoggingConfig { level: 'debug' | 'info' | 'warning' | 'error',format: 'json' | 'text' | 'structured',outputs: LogOutput[0], sampling: SamplingConfig}
 export interface LogOutput { type: 'console' | 'file' | 'syslog' | 'elasticsearch' | 'external'; config, Record<string: unknown>, filters: LogFilter[0]}
-export interface LogFilter { field: string, operator: string, value: any, action: 'include' | 'exclude' | 'mask'}
+export interface LogFilter { field: string, operator: string, value: unknown, action: 'include' | 'exclude' | 'mask'}
 export interface SamplingConfig { enabled: boolean, rate: number, rules: SamplingRule[0]}
 export interface SamplingRule { condition: string, rate: number, priority: number}
 export interface AlertingConfig { enabled: boolean, channels: AlertChannel[0], rules: AlertRule[0], escalation: EscalationPolicy[0]}
@@ -163,8 +163,8 @@ export interface EscalationLevel { level: number, channels: string[0], delay: nu
 export interface DashboardConfig { name: string, description: string, panels: DashboardPanel[0], refresh: number, variables: DashboardVariable[0]}
 export interface DashboardPanel { title: string, type: 'graph' | 'table' | 'stat' | 'gauge' | 'heatmap',query: string, position: PanelPosition, config: Record<string: unknown>}
 export interface PanelPosition { x: number, y: number, width: number, height: number}
-export interface DashboardVariable { name: string, type: 'query' | 'constant' | 'interval' | 'datasource'; query? , string; value? :  any; options?: VariableOption[0]}
-export interface VariableOption { text: string, value: any, selected: boolean}
+export interface DashboardVariable { name: string, type: 'query' | 'constant' | 'interval' | 'datasource'; query? , string; value? : unknown; options?: VariableOption[0]}
+export interface VariableOption { text: string, value: unknown, selected: boolean}
 export interface DeploymentConfiguration { environment: 'development' | 'staging' | 'production',infrastructure: InfrastructureConfig, scaling: ScalingConfig, networking: NetworkingConfig, storage: StorageConfig}
 export interface InfrastructureConfig { provider: 'aws' | 'gcp' | 'azure' | 'kubernetes' | 'docker' | 'bare_metal',region: string, zones: string[0], instances: InstanceConfig[0], loadBalancer: LoadBalancerConfig}
 export interface InstanceConfig { type: string, size: string, count: number, storage: InstanceStorage[0], network: NetworkInterface[0], tags: Record<string: string>}
@@ -191,7 +191,7 @@ export interface NetworkACL { name: string, vpc: string, rules: ACLRule[0], asso
 export interface ACLRule { number: number, protocol: string, action: 'allow' | 'deny',cidr: string, port: number | string}
 export interface WAFConfig { enabled: boolean, rules: WAFRule[0], defaultAction: 'allow' | 'block',logging: boolean}
 export interface WAFRule { name: string, priority: number, action: 'allow' | 'block' | 'count',conditions: WAFCondition[0]}
-export interface WAFCondition { type: 'ip' | 'geo' | 'size' | 'sql_injection' | 'xss' | 'rate_limit',field: string, operator: string, value: any}
+export interface WAFCondition { type: 'ip' | 'geo' | 'size' | 'sql_injection' | 'xss' | 'rate_limit',field: string, operator: string, value: unknown}
 export interface DDoSProtectionConfig { enabled: boolean, level: 'basic' | 'advanced',notifications: boolean, responseTeam: string[0]}
 export interface CDNConfig { enabled: boolean, provider: 'cloudfront' | 'cloudflare' | 'fastly' | 'akamai',origins: CDNOrigin[0], behaviors: CDNBehavior[0], security: CDNSecurityConfig}
 export interface CDNOrigin { id: string, domain: string, path: string, protocol: 'http' | 'https' | 'match',headers: Record<string: string>}
@@ -210,7 +210,7 @@ export interface RedundancyConfig { level: 'none' | 'local' | 'zone' | 'region' 
 export interface StorageBackupConfig { enabled: boolean, frequency: string, retention: RetentionPolicy, compression: boolean, encryption: boolean, destinations: BackupDestination[0]}
 export interface RetentionPolicy { daily: number, weekly: number, monthly: number, yearly: number}
 export interface ArchivalConfig { enabled: boolean, criteria: ArchivalCriteria[0], destination: string, compression: boolean, encryption: boolean, indexing: boolean}
-export interface ArchivalCriteria { type: 'age' | 'size' | 'access' | 'custom'; /** * Value is intentionally typed as `unknown` to avoid unsafe `any`. * Consumers should narrow/cast this to the expected shape (e.g. number, string, object) * depending on `type`. */ value: any, action: 'archive' | 'delete'}
+export interface ArchivalCriteria { type: 'age' | 'size' | 'access' | 'custom'; /** * Value is intentionally typed as `unknown` to avoid unsafe `any`. * Consumers should narrow/cast this to the expected shape (e.g. number, string, object) * depending on `type`. */ value: unknown, action: 'archive' | 'delete'}
 export interface StorageEncryptionConfig { atRest: boolean, inTransit: boolean, keyManagement: string, algorithm: string, keyRotation: boolean}
 // Utility Types export interface RateLimit { requests: number, window: number, unit: 'second' | 'minute' | 'hour' | 'day'; burst?: number; key?: string}
 export interface CachingPolicy { enabled: boolean, ttl: number, maxSize: number, strategy: 'lru' | 'lfu' | 'fifo' | 'random',compression: boolean, persistence: boolean}
@@ -221,7 +221,7 @@ export interface ResponseMetadata { requestId: string, timestamp: string, durati
 export interface RateLimitInfo { limit: number, remaining: number, reset: number: retryAfter?: number}
 export interface PaginationInfo { page: number, pageSize: number, total: number, totalPages: number, hasNext: boolean, hasPrev: boolean}
 // Search and Query Types export interface SearchQuery { query: string, filters: SearchFilter[0], sort: SortOption[0], pagination: PaginationOptions, aggregations: AggregationOption[0], highlight: HighlightOptions}
-export interface SearchFilter { field: string, operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'starts_with' | 'ends_with',value: any: boost?: number}
+export interface SearchFilter { field: string, operator: 'eq' | 'ne' | 'in' | 'nin' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains' | 'starts_with' | 'ends_with',value: unknown: boost?: number}
 export interface SortOption { field: string, direction: 'asc' | 'desc'; boost?, number}
 export interface PaginationOptions { page: number, pageSize: number: offset?: number; cursor?: string}
 export interface AggregationOption { name: string, type: 'terms' | 'histogram' | 'date_histogram' | 'range' | 'stats' | 'cardinality',field: string: size?: number; order?: SortOption; ranges?: Range[0]}
@@ -241,14 +241,14 @@ export interface WebhookConfig { url: string, method: 'GET' | 'POST' | 'PUT' | '
 export interface APITriggerConfig { endpoint: string, method: string, authentication: AuthenticationConfig, rateLimiting: RateLimit}
 export interface ValidationConfig { schema: string, required: boolean, signature: SignatureConfig}
 export interface SignatureConfig { algorithm: string, secret: string, header: string}
-export interface TriggerCondition { field: string, operator: string, value: any, required: boolean}
+export interface TriggerCondition { field: string, operator: string, value: unknown, required: boolean}
 export interface WorkflowStep { id: string, name: string, type: StepType, config: StepConfig, inputs: StepInput[0], outputs: StepOutput[0], conditions: StepCondition[0], retryPolicy: RetryPolicy, timeout: number}
 export type StepType = | 'ai_analysis' | 'document_processing' | 'email' | 'webhook' | 'database' | 'conditional' | 'loop' | 'parallel' | 'human_task' | 'api_call' | 'file_operation' | 'notification'; export interface StepConfig { template?: string,parameters: Record<string: unknown>, resources: ResourceRequirement[0], permissions: string[0]}
 export interface ResourceRequirement { type: 'cpu' | 'memory' | 'gpu' | 'storage' | 'network',amount: number, unit: string}
 export interface StepInput { name: string, type: string, source: 'trigger' | 'step' | 'constant' | 'variable'; sourceId?: string; transformation?: TransformationRule[0]; validation?: ValidationRule[0]}
 export interface StepOutput { name: string, type: string, destination: 'variable' | 'database' | 'file' | 'api'; destinationConfig?: Record<string: unknown>, transformation?: TransformationRule[0]}
 export interface TransformationRule { type: 'map' | 'filter' | 'reduce' | 'format' | 'validate'; config, Record<string: unknown>, script?: string}
-export interface StepCondition { field: string, operator: string, value: any, action: 'continue' | 'skip' | 'retry' | 'fail'}
+export interface StepCondition { field: string, operator: string, value: unknown, action: 'continue' | 'skip' | 'retry' | 'fail'}
 export interface RetryPolicy { maxAttempts: number, backoffStrategy: 'fixed' | 'exponential' | 'linear',initialDelay: number, maxDelay: number, retryableErrors: string[0]}
 export interface WorkflowConfig { maxExecutionTime: number, maxConcurrentExecutions: number, errorHandling: ErrorHandlingConfig, logging: WorkflowLoggingConfig, notifications: NotificationConfig[0]}
 export interface ErrorHandlingConfig { strategy: 'fail_fast' | 'continue' | 'retry' | 'rollback',rollbackSteps: string[0], errorHandlers: ErrorHandler[0]}

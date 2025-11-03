@@ -84,7 +84,7 @@ import type { Message } from '$lib/types';
           }
         ]} else {
         throw new Error(data.error || 'Unknown error')}
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       messages = [
         ...messages, {
           role: 'system',

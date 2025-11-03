@@ -1,7 +1,7 @@
 <!-- Contextual Intelligence Dashboard Modern Svelte, 5 implementation using headless components from our enhanced-bits system. Provides real-time contextual insights for legal AI operations with advanced analytics. Features: - Real-time intelligence metrics with WebGPU acceleration - Contextual evidence analysis with Gemma embeddings - Multi-modal intelligence processing (text, image, document) - Collaborative intelligence workspace - Advanced AI reasoning chains with vector, intelligence --> <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { page } from '$app/state'; // Headless components from our enhanced architecture import { HeadlessDialog } from '$lib/headless'; import  OptimisticList, type Item  from "$lib/headless/OptimisticList.svelte"; import DocumentUploader from '$lib/components/headless/DocumentUploader.svelte'; import { LoadingButton } from '$lib/headless'; import { FormField } from '$lib/headless'; // Enhanced UI components import * as Card from '$lib/components/ui/Card.svelte'; import Button from '$lib/components/ui/enhanced-bits.svelte'; import Progress from '$lib/components/ui/progress/Progress.svelte'; import Badge from '$lib/components/ui/badge/Badge.svelte'; // Icons import { Brain, Network, Zap, Eye, Target, TrendingUp, Activity, FileSearch, MessageSquare, BarChart3, Users, Clock, Cpu, Database, Search, AlertCircle, CheckCircle } from 'lucide-svelte'; // Intelligence data interfaces interface IntelligenceMetric { id: string, name: string, value: number; trend: 'up' | 'down' | 'stable'; confidence: number; lastUpdate: Date}
   interface ContextualInsight { id: string; type: 'pattern' | 'anomaly' | 'prediction' | 'recommendation'; title: string, description: string, confidence: number, relevance: number, timestamp: Date; sources: string[]}
-  interface ProcessingTask { id: string, name: string; status: 'pending' | 'processing' | 'completed' | 'failed'; progress: number, estimatedTime?: number;, context: { [key: string]: any } }
+  interface ProcessingTask { id: string, name: string; status: 'pending' | 'processing' | 'completed' | 'failed'; progress: number, estimatedTime?: number;, context: { [key: string]: unknown } }
 
   // Svelte, 5 runes state management let intelligenceMetrics = $state<IntelligenceMetric[]>([ {
       id: 'semantic_accuracy', name: 'Semantic Accuracy', value: 94.7, trend: 'up', confidence: 0.92; lastUpdate: new Date()}, {
@@ -51,13 +51,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 
             {#snippet item({ item, isOptimistic })} <div class="insight-item"; class:optimistic={ isOptimistic } role="button"
                 tabindex="0"
-                onclick={() => openInsightDetails((item as { id?: any; data?: any; optimistic?: any }).data)} >
-                <div class="insight-header"> <div class="insight-type {getInsightTypeColor((item"> {@render getInsightTypeIcon((item as { id?: any; data?: any; optimistic?: any }).data.type)({ class: "w-4 h-4" })}
-</div> <div class="insight-meta"> <span class="insight-title">{(item as { id?: any; data?: any; optimistic?: any }).data.title}
-</span> <span class="insight-time">{formatRelativeTime((item as { id?: any; data?: any; optimistic?: any }).data.timestamp)}
-</span> </div> <div class="insight-confidence"> <Badge variant="secondary"> {Math.round.data.confidence * 100)}% </Badge> </div> </div> <p class="insight-description">{(item as { id?: any; data?: any; optimistic?: any }).data.description}
+                onclick={() => openInsightDetails((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data)} >
+                <div class="insight-header"> <div class="insight-type {getInsightTypeColor((item"> {@render getInsightTypeIcon((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.type)({ class: "w-4 h-4" })}
+</div> <div class="insight-meta"> <span class="insight-title">{(item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.title}
+</span> <span class="insight-time">{formatRelativeTime((item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.timestamp)}
+</span> </div> <div class="insight-confidence"> <Badge variant="secondary"> {Math.round.data.confidence * 100)}% </Badge> </div> </div> <p class="insight-description">{(item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.description}
 </p> <div class="insight-sources">
- {#each (item as { id?: any; data?: any; optimistic?: any }).data.sources.slice(0, 3) as source} <Badge variant="ghost" class="source-tag"> { source }
+ {#each (item as { id?: unknown; data?: unknown; optimistic?: unknown }).data.sources.slice(0, 3) as source} <Badge variant="ghost" class="source-tag"> { source }
 </Badge> {/each}
 </div> </div> {/snippet} {#snippet empty()} <div class="empty-insights"> <Brain class="w-16 h-16 text-gray-300 mx-auto" /> <p class="text-gray-500">No insights generated yet</p> <p class="text-sm">Run an analysis to generate contextual insights</p> </div> {/snippet}
 </OptimisticList> </div.Content> </div.Root> </section> <!-- Processing, Tasks --> <section class="tasks-section"> <div.Root class="h-full"> <div.Header> <div.Title class="flex items-center"> <Cpu class="w-5" /> Processing Tasks {#if processingProgress} <div class="processing-indicator"></div> {/if}

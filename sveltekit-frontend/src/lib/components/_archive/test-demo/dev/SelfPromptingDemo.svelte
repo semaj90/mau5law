@@ -23,6 +23,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
             '',
             'Generated new prompt for next iteration', { nextPrompt: currentPrompt, reasoning: selfPromptResult.reasoning } )}
       }
+
    // Phase 5: Result Synthesis and Analysis currentPhase.set('synthesis'); await synthesizeIterationResults(results, i + 1, workflow); // Break early if agents decide the task is complete if (await checkTaskCompletion(results)) { addLogEntry('task-completion', '', 'Agents determined task is complete', results); break}
 
       // Simulate processing delay for demo await new Promise((resolve) => setTimeout(resolve, 1000))}
@@ -73,6 +74,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
           'Optimize performance for large document processing'
         ] }; addLogEntry('context7-demo', 'context7', `Result: ${formatMCPResponse(mockResult)}`, mockResult)}
   }
+
    // Helper: compute classes for agent status dot function statusDotClass(status: string) { const base = 'w-3 h-3 rounded-full'; if (status === 'processing') return `${ base } bg-blue-500 animate-pulse`; if (status === 'completed') return `${ base } bg-green-500`; if (status === 'error') return `${ base } bg-red-500`; return `${ base } bg-gray-400`}
 
   // Helper: compute classes for orchestration log entry container function logEntryClasses(phase: string) { if (phase === 'error') return 'border-l-4 pl-4 py-2 border-red-500 bg-red-50'; if (phase === 'final-report') return 'border-l-4 pl-4 py-2 border-green-500 bg-green-50'; if (phase === 'self-prompting') return 'border-l-4 pl-4 py-2 border-purple-500 bg-purple-50'; return 'border-l-4 pl-4 py-2 border-blue-500 bg-blue-50'}

@@ -30,6 +30,7 @@
   			} request.onsuccess = () => { console.log('âœ… WebGPU-accelerated IndexDB cache initialized')}
   		} catch (error) { console.error('Failed to initialize WebGPU cache:', error)}
   	}
+
    // SOM Visualization helpers function generateSOMVisualization(analysis: SemanticAnalysis) { // Create 20x20 SOM grid visualization const som = Array(20).fill.map((_, x) => Array(20).fill.map((_, y) => ({ x, y, active: x === analysis.som_cluster.x && y === analysis.som_cluster.y, intensity: Math.random() // Placeholder for actual weight})) ); return som}
 
   	// PageRank Graph visualization function generatePageRankGraph(todos: IntelligentTodo[]) { const nodes = todos.map(todo => ({ id: todo.id, title: todo.title, category: todo.category, priority: todo.priority, pagerank: todo.pagerank_score || 0, x: Math.random() * 400, y: Math.random() * 300})); const edges = []; // Create edges based on category similarity for (let i = 0; i < nodes.length; i++) { for (let j = i + 1; j < nodes.length; j++) { if (nodes[i].category === nodes[j].category) { edges.push({ from nodes[i].id, to: nodes[j].id, weight: Math.random()})}
@@ -39,6 +40,7 @@
   	// Real-time updates let updateInterval = $state<any; function startRealTimeUpdates() { if (updateInterval) clearInterval(updateInterval)updateInterval | null>(null); const data = setInterval(async () => { await Promise.all([ fetchCacheStats(), checkSystemStatus() ]))}, 5000); // Update every, 5 seconds }
   function stopRealTimeUpdates() { if (updateInterval) { clearInterval(updateInterval); updateInterval = null}
   	}
+
    // Lifecycle $effect(() => { (async () => { await initializeWebGPU(); await checkSystemStatus(); await fetchCacheStats(); startRealTimeUpdates(); return () => { stopRealTimeUpdates()}
     })()}); // Reactive statements for automatic updates // TODO: Convert to $derived: if ($todos.length > 0 && showPageRankGraph) { ondispatch?.(generatePageRankGraph($todos)) }
 

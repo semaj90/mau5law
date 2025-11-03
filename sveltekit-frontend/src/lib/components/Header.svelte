@@ -14,9 +14,9 @@
   let showLoginModal = $state<boolean>(false);
 
   let showRegisterModal = $state<boolean>(false);
-  // component refs (typed as: any to avoid strict typing issues)
-  let loginModalRef: any = null
-  let registerModalRef: any = null
+  // component refs (typed as: unknown to avoid strict typing issues)
+  let loginModalRef: unknown = null
+  let registerModalRef: unknown = null
   // unsubscribers returned by $on
   let loginUnsub: (() => void) | null = null
   let registerUnsub: (() => void) | null = null

@@ -26,15 +26,15 @@
         }),
       });
       const result = await res.json();
-      if ((result as { success?: any; summary?: any; metadata?: any; error?: any }).success) {
-        summary = (result as { success?: any; summary?: any; metadata?: any; error?: any }).summary;
+      if ((result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).success) {
+        summary = (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).summary;
         confidence =
-          (result as { success?: any; summary?: any; metadata?: any; error?: any }).metadata?.confidence || 0.85;
-        ragScore = (result as { success?: any; summary?: any; metadata?: any; error?: any }).metadata?.ragScore || 0.82;
+          (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata?.confidence || 0.85;
+        ragScore = (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata?.ragScore || 0.82;
       } else {
-        summary = `API Error: ${(result as { success?: any; summary?: any; metadata?: any; error?: any }).error}`;
+        summary = `API Error: ${(result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).error}`;
       }
-    } catch (error: any) {
+    } catch (error: Error | unknown) {
       // Explicitly type error as any
       summary = `Connection Error: ${error.message}`;
     }

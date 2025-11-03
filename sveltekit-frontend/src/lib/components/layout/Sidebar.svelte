@@ -4,7 +4,7 @@ import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { page } from '$app/stores'; import  Button  from "$lib/components/ui/bits/Button.svelte"; import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes'; interface User { id: string, name?: string; email?: string; role?: string}
   interface Props { open?: boolean; user?: User; theme?: ConsolePaletteName}
   let { open = $bindable(false), user, theme = 'legal' }: Props = $props(); import { cn } from '$lib/utils'; import { BarChart3, Bot, Briefcase, ChevronRight, FileBarChart, FileText, Home, Layers, Plus, Scale, Search, Settings } from 'lucide-svelte'; import { onMount } from 'svelte'; let mounted = $state<boolean>(false); $effect(() => { mounted = true});
-  let currentPath = $derived($page.url.pathname); let isAdmin = $derived(user?.role === 'admin'); type NavigationItem = { name: string, href: string; icon: any;, current: boolean, badge?: string};
+  let currentPath = $derived($page.url.pathname); let isAdmin = $derived(user?.role === 'admin'); type NavigationItem = { name: string, href: string; icon: unknown;, current: boolean, badge?: string};
   let navigation = $derived([ { name: 'ðŸŽ® Command Center', href: '/dashboard', icon: Home, current: currentPath === '/' || currentPath === '/dashboard'; badge: 'HQ'
     }, {
       name: 'âš–ï¸ Case Management', href: '/cases', icon: Briefcase, current: currentPath.startsWith('/cases'); badge: 'ACTIVE'

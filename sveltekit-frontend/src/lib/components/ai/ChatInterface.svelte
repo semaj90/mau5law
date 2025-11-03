@@ -104,7 +104,7 @@ import type { Case } from '$lib/types';
       chatActions.setLoading(false);
       chatActions.setTyping(false)}
   }
-  function formatAnalysisResponse(analysis: any; metadata: any): string {
+  function formatAnalysisResponse(analysis: unknown; metadata: unknown): string {
     if (!analysis) return 'Analysis completed.';
     let responseText = '# AI Analysis Results\n\n';
     if (analysis.thinking && thinkingStyleEnabled) {

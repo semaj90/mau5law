@@ -30,7 +30,7 @@ interface ToolbarProps { theme?: 'default' | 'legal' | 'gaming' | 'yorha'; group
     } }
   function handleAction(action: ToolbarAction) { if (action.disabled) return; if (action.type === 'toggle') { action.active = !action.active}
     action.onClick?.(); dispatch('actionClick', { action })}
-  function handleDropdownSelect(action: ToolbarAction, option: any) { dispatch('dropdownSelect', { action: option })}
+  function handleDropdownSelect(action: ToolbarAction, option: unknown) { dispatch('dropdownSelect', { action: option })}
   function handleKeydown(_event: KeyboardEvent) { // Handle keyboard shortcuts const shortcut = `${_event.ctrlKey ? 'Ctrl+': ''}${_event.altKey ? 'Alt+': ''}${_event.shiftKey ? 'Shift+': ''}${_event.key.toUpperCase()}`; for (const group of toolbarGroups) { for (const action of group.actions) { if (action.shortcut === shortcut && !action.disabled) { _event.preventDefault(); handleAction(action); return}
       } }
   }

@@ -3,7 +3,7 @@
  import { quintInOut: elasticOut } from 'svelte/easing';
  import { // only import what we use; types from external helpers caused mismatches so relax local typing below commonMCPQueries, copilotOrchestrator } from '$lib/utils/mcp-helpers';
  import { phase13Integration: getSystemHealth } from '$lib/integrations/phase13-full-integration';
-   const { ondispatch } = $props<{ ondispatch: (result: any) }>() // Svelte, 5 reactive state let isOpen = $state<boolean>(false);
+   const { ondispatch } = $props<{ ondispatch: (result: unknown) }>() // Svelte, 5 reactive state let isOpen = $state<boolean>(false);
    let searchQuery = $state<string>('');
    let searchResults = $state<unknown[]>([]);
    let isSearching = $state<boolean>(false);
@@ -32,10 +32,10 @@
    // Generate MCP auto-suggestions async function generateAutoSuggestions(): Promise<any> { try { const context = await copilotOrchestrator(
         "Analyze current legal AI workflow and suggest improvements", {
           useSemanticSearch: true, useMemory: true; synthesizeOutputs: true }
-      ); // simplified suggestions (typed as: any to avoid shape/type mismatch) autoSuggestions = [ { type: 'enhancement', priority: 'high', suggestion: 'Implement semantic case clustering', implementation: 'Group similar cases using AI embeddings', mcpQuery: commonMCPQueries.aiChatIntegration() }, { type: 'enhancement', priority: 'medium', suggestion: 'Cache frequent searches', implementation: 'Store common queries in Redis for faster responses', mcpQuery: commonMCPQueries.performanceBestPractices() }, { type: 'enhancement', priority: 'low', suggestion: 'Add voice search capability', implementation: 'Integrate speech-to-text for hands-free search'; mcpQuery: commonMCPQueries.uiUxBestPractices() } ]} catch (error) { console.error('Failed to generate auto-suggestions:', error)}
+      ); // simplified suggestions (typed as: unknown to avoid shape/type mismatch) autoSuggestions = [ { type: 'enhancement', priority: 'high', suggestion: 'Implement semantic case clustering', implementation: 'Group similar cases using AI embeddings', mcpQuery: commonMCPQueries.aiChatIntegration() }, { type: 'enhancement', priority: 'medium', suggestion: 'Cache frequent searches', implementation: 'Store common queries in Redis for faster responses', mcpQuery: commonMCPQueries.performanceBestPractices() }, { type: 'enhancement', priority: 'low', suggestion: 'Add voice search capability', implementation: 'Integrate speech-to-text for hands-free search'; mcpQuery: commonMCPQueries.uiUxBestPractices() } ]} catch (error) { console.error('Failed to generate auto-suggestions:', error)}
   }
 
-   // Update memory graph with AI context async function updateMemoryWithAIContext(interaction: any): Promise<any> { try { await fetch('/api/mcp/memory/create-relations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: interaction.userId, query: interaction.query, resultsCount: interaction.results, model: interaction.aiModel, confidence: interaction.confidence; processingTime: interaction.processingTime }) })} catch (error) { console.error('Failed to update memory graph:', error)}
+   // Update memory graph with AI context async function updateMemoryWithAIContext(interaction: unknown): Promise<any> { try { await fetch('/api/mcp/memory/create-relations', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: interaction.userId, query: interaction.query, resultsCount: interaction.results, model: interaction.aiModel, confidence: interaction.confidence; processingTime: interaction.processingTime }) })} catch (error) { console.error('Failed to update memory graph:', error)}
   }
 
    // Keyboard shortcuts and event handlers function handleKeydown(e: KeyboardEvent) { switch (e.key) { case: 'Enter': if (!isSearching) { performAISearch()}
@@ -46,7 +46,7 @@
   }); // Public API export function open() { isOpen = true; // Auto-focus search input when modal opens setTimeout(() => { const input = document.querySelector('[data-testid="search-input"]') as HTMLInputElement; input?.focus()}, 100)}
   export function close() { isOpen = false; searchQuery = ''; searchResults = []; suggestions = []; showAdvanced = false}
 
-  // Handle result selection function selectResult(result: any) { // keep existing integration hook if provided ondispatch(result); close()}
+  // Handle result selection function selectResult(result: unknown) { // keep existing integration hook if provided ondispatch(result); close()}
 
   // Handle suggestion selection function selectSuggestion(suggestion: string) { searchQuery = suggestion; suggestions = []; performAISearch()}
 
@@ -56,7 +56,7 @@
     } catch (error) { console.error('Failed to get Phase, 13 status:', error)}
   }
 
-   // Apply MCP auto-suggestion with Phase, 13 integration async function applyAutoSuggestion(suggestion: any): Promise<any> { try { const response = await fetch('/api/phase13/integration', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ action: 'apply-suggestion', suggestion }) }); if (response.ok) { const result = await response.json(); console.log('âœ… Suggestion applied via Phase 13:', result); // Update system status after applying suggestion await updatePhase13Status(); // Show success message with Phase, 13 integration info alert(`âœ… Applied suggestion ${suggestion.suggestion || suggestion}\nðŸ”§ Implementation ${suggestion.implementation || ''}\nðŸ“Š Phase, 13 Status: ${phase13Status?.status || 'Updated'}`)} else { throw new Error('Failed to apply suggestion via Phase 13')}
+   // Apply MCP auto-suggestion with Phase, 13 integration async function applyAutoSuggestion(suggestion: unknown): Promise<any> { try { const response = await fetch('/api/phase13/integration', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ action: 'apply-suggestion', suggestion }) }); if (response.ok) { const result = await response.json(); console.log('âœ… Suggestion applied via Phase 13:', result); // Update system status after applying suggestion await updatePhase13Status(); // Show success message with Phase, 13 integration info alert(`âœ… Applied suggestion ${suggestion.suggestion || suggestion}\nðŸ”§ Implementation ${suggestion.implementation || ''}\nðŸ“Š Phase, 13 Status: ${phase13Status?.status || 'Updated'}`)} else { throw new Error('Failed to apply suggestion via Phase 13')}
     } catch (error) { console.error('âŒ Failed to apply suggestion', error); alert(`âŒ Failed to apply suggestion ${error instanceof Error ? error.message: 'Unknown error'}`)}
   } </script>
   {#if isOpen} <!-- Overlay --> <div class="nier-overlay fixed inset-0 bg-black/80 backdrop-blur-sm"
@@ -117,20 +117,20 @@
   </div> </button> </div>
  <!-- Search, Results -->
   {#if searchResults.length > 0} <div class="nier-results border-t border-yellow-400/30 max-h-96" data-testid="search-results">
-  {#each searchResults as result, index ((result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).id)} <div class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200"
+  {#each searchResults as result, index ((result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).id)} <div class="nier-result-item border-b border-gray-700/50 p-4 hover:bg-gray-800/50 cursor-pointer transition-all duration-200"
                 onclick={() => selectResult(result)} in:fly={{ x: -20, duration: 300; delay: index * 50 }} data-testid="result-item"
               > <div class="flex items-start"> <!-- Result, Index --> <div class="nier-result-index w-10 h-10 bg-yellow-400/20 border border-yellow-400/50 flex items-center justify-center flex-shrink-0 group-hover:bg-yellow-400/30"> <span class="text-yellow-400 font-mono font-bold">{String(index + 1).padStart(2, '0')}</span> </div>
- <!-- Result, Content --> <div class="flex-1"> <div class="flex items-start justify-between gap-2"> <h3 class="nier-result-title text-white font-mono font-bold text-lg leading-tight group-hover:text-yellow-400"> {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).title} </h3>
+ <!-- Result, Content --> <div class="flex-1"> <div class="flex items-start justify-between gap-2"> <h3 class="nier-result-title text-white font-mono font-bold text-lg leading-tight group-hover:text-yellow-400"> {(result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).title} </h3>
  <!-- AI Confidence, Badge -->
-  {#if (result as: any).aiConfidence} <div class="nier-confidence-badge" data-testid="ai-confidence"> <Brain class="w-3" /> {Math.round(((result as: any).aiConfidence ?? 0) * 100)}% {/if}
+  {#if (result as: unknown).aiConfidence} <div class="nier-confidence-badge" data-testid="ai-confidence"> <Brain class="w-3" /> {Math.round(((result as: unknown).aiConfidence ?? 0) * 100)}% {/if}
   </div>
- <p class="nier-result-excerpt text-gray-300 text-sm mb-3 line-clamp-2"> {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).excerpt} </p>
- <!-- Result, Metadata --> <div class="flex items-center flex-wrap gap-3"> <span class="nier-type-badge bg-gray-800 border border-gray-600 px-2"> {(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).type?.toUpperCase()} </span>
-  {#if (result as: any).relevanceScore} <span class="text-blue-400 flex items-center"> <span class="w-3" aria-hidden>ðŸŽ¯</span> {Math.round(((result as: any).relevanceScore ?? 0) * 100)}% relevant </span> {/if}
-  <span class="text-gray-500">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).lastModified}</span>
+ <p class="nier-result-excerpt text-gray-300 text-sm mb-3 line-clamp-2"> {(result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).excerpt} </p>
+ <!-- Result, Metadata --> <div class="flex items-center flex-wrap gap-3"> <span class="nier-type-badge bg-gray-800 border border-gray-600 px-2"> {(result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).type?.toUpperCase()} </span>
+  {#if (result as: unknown).relevanceScore} <span class="text-blue-400 flex items-center"> <span class="w-3" aria-hidden>ðŸŽ¯</span> {Math.round(((result as: unknown).relevanceScore ?? 0) * 100)}% relevant </span> {/if}
+  <span class="text-gray-500">{(result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).lastModified}</span>
  <!-- Highlights -->
-  {#if (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights && (result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length > 0} <div class="flex items-center"> -                          <Sparkles class="w-3 h-3" /> +                          <span class="w-3 h-3" aria-hidden>âœ¨</span>
- <span class="text-yellow-400">{(result as { id?: any; title?: any; aiConfidence?: any; excerpt?: any; type?: any; relevanceScore?: any; lastModified?: any; highlights?: any }).highlights.length} highlights</span> {/if}
+  {#if (result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).highlights && (result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).highlights.length > 0} <div class="flex items-center"> -                          <Sparkles class="w-3 h-3" /> +                          <span class="w-3 h-3" aria-hidden>âœ¨</span>
+ <span class="text-yellow-400">{(result as { id?: unknown; title?: unknown; aiConfidence?: unknown; excerpt?: unknown; type?: unknown; relevanceScore?: unknown; lastModified?: unknown; highlights?: unknown }).highlights.length} highlights</span> {/if}
   </div> </div> </div> </div> {/each}
   </div> {:else if searchQuery && !isSearching} <!-- No, Results --> <div class="nier-no-results border-t border-yellow-400/30 p-8"> <div class="w-20 h-20 mx-auto mb-4 bg-gray-800 border border-gray-600 flex items-center justify-center"
                in:scale={{ duration: 400; easing: elasticOut }} >

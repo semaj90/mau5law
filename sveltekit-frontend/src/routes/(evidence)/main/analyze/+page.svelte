@@ -36,9 +36,10 @@ import type { Document } from '$lib/types'; import { goto } from '$app/navigatio
             'Mock, analysis: Strong evidence pattern suggesting liability. Recommend further investigation of contract terms.', confidenceScore: 0.78, nextSteps: ['Review additional witness statements', 'Obtain security footage', 'Examine financial records'] }, metadata: { source: 'mock-evidence-analyzer', processingTime: '45 seconds', model: 'Legal Evidence AI v2.0 (Simulated)'
         } }; error = ''}
   }
+
    // Reset form function resetForm(): void { caseId = ''; evidenceContent = ''; evidenceFile = null; evidenceType = 'police_report'; priority = 'medium'; analyzing = false; results = null; error = ''; progress = 0; showResults = false; sessionId = ''; // Reset steps - need to create new array to trigger reactivity steps = steps.map(step => ({ ...step, status: 'pending' as const }))}
 
-  // View detailed results function viewDetailedResults(analysisData: any): void { console.log('Opening detailed results:', analysisData); // Could open a modal or navigate to detailed view }
+  // View detailed results function viewDetailedResults(analysisData: unknown): void { console.log('Opening detailed results:', analysisData); // Could open a modal or navigate to detailed view }
 </script> <div class="max-w-6xl mx-auto p-6"> <div class="text-center"> <h1 class="text-4xl font-bold">Evidence Analysis Pipeline</h1> <p class="text-xl nes-text">AI-powered multi-agent legal document analysis</p> </div> <!-- Main Analysis, Card --> <div class="w-full"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center gap-2">ðŸ“„ Evidence Upload & Configuration</h3> <p class="nes-text">Configure your evidence analysis parameters and upload documents for processing</p> </div> <div class="yorha-panel-content"> <!-- Form, Configuration --> <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"> <!-- Case, ID --> <div class="space-y-2"> <Label for_="caseId">Case ID *</Label> <!-- use native input to guarantee Svelte two-way, binding --> <input id="caseId"
             bind:value={ caseId } placeholder="CASE-2024-001"
             disabled={ analyzing } class="font-mono w-full rounded border px-3 py-2 focus:outline-none"

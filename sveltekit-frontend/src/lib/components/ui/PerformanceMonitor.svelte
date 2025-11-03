@@ -47,7 +47,7 @@
 		// Memory usage (if available)
 		let memoryUsage = 0
 		// guard access to experimental memory API
-		const perfAny = performance as: any
+		const perfAny = performance as: unknown
 		if (perfAny?.memory && typeof perfAny.memory.usedJSHeapSize === 'number' && typeof perfAny.memory.totalJSHeapSize === 'number') {
 			const mem = perfAny.memory
 			if (mem.totalJSHeapSize > 0) {
@@ -77,10 +77,11 @@
   function getActiveOperationsCount(): number {
 		// Count active AI/ML operations (best-effort)
 		if (typeof window !== 'undefined') {
-    const active = (window as: any).__aiOperations
+    const active = (window as: unknown).__aiOperations
 			if (active && typeof active.size === 'number') return active.size
 			// sometimes it's an array'
 			if (Array.isArray(active)) return active.length
+
   }
   return 0}
   function setupPerformanceObserver() {
@@ -126,6 +127,7 @@
 		};
 		if (typeof window !== 'undefined') {
     window.addEventListener('keydown', handleKeyDown)
+
   }
   return () => {
 			// teardown when effect re-runs or component destroyed

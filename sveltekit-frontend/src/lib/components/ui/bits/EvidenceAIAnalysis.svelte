@@ -13,7 +13,7 @@
     showExport?: boolean
     class?: string
     // allow other arbitrary props passed through
-    [key: string]: any}
+    [key: string]: unknown}
   let {
     analysis,
     evidence,

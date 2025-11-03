@@ -1,19 +1,21 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; // Import services conditionally to avoid SSR issues import { browser } from '$app/environment'; // Only import in browser environment let accessibilityService: any = null;
-   let enhancedRouteAccessibility: any = null; if (browser) { import('$lib/services/accessibility-service').then(module => { accessibilityService = module.accessibilityServic}); import('$lib/services/enhanced-route-accessibility').then(module => { enhancedRouteAccessibility = module.enhancedRouteAccessibility})}
+<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; // Import services conditionally to avoid SSR issues import { browser } from '$app/environment'; // Only import in browser environment let accessibilityService: unknown = null;
+   let enhancedRouteAccessibility: unknown = null; if (browser) { import('$lib/services/accessibility-service').then(module => { accessibilityService = module.accessibilityServic}); import('$lib/services/enhanced-route-accessibility').then(module => { enhancedRouteAccessibility = module.enhancedRouteAccessibility})}
   import type { Snippet } from 'svelte'; interface Props { children?: Snippet; component?: 'button' | 'input' | 'dialog' | 'card' | 'select' | 'tabs' | 'tooltip' | 'dropdown'; variant?: string; size?: string; enhanceForRoute?: boolean; customAriaLabel?: string; contextualHelp?: string; keyboardShortcut?: string}
   const { children, component = 'button', variant, size, enhanceForRoute = true, customAriaLabel, contextualHelp, keyboardShortcut }: Props = $props();
-   let containerElement: HTMLElement, let currentRouteConfig = $state<any>(null); // Local fallback for screen reader announcements function announceToScreenReader(message: string) { if ((accessibilityService as: any)?.announceToScreenReader) { (accessibilityService as: any).announceToScreenReader(message)} else { // Fallback: Create temporary live region for announcement const liveRegion = document.createElement('div'); liveRegion.setAttribute('aria-live', 'polite'); liveRegion.setAttribute('aria-atomic', 'true'); liveRegion.className = 'sr-only'; liveRegion.style.cssText =
+   let containerElement: HTMLElement, let currentRouteConfig = $state<any>(null); // Local fallback for screen reader announcements function announceToScreenReader(message: string) { if ((accessibilityService as: unknown)?.announceToScreenReader) { (accessibilityService as: unknown).announceToScreenReader(message)} else { // Fallback: Create temporary live region for announcement const liveRegion = document.createElement('div'); liveRegion.setAttribute('aria-live', 'polite'); liveRegion.setAttribute('aria-atomic', 'true'); liveRegion.className = 'sr-only'; liveRegion.style.cssText =
         'positionabsolute;width:1px,height:1px,padding:0, margin:-1px,overflow:hidden; clip:rect(0,0,0,0);white-space:nowrap; border:0', document.body.appendChild(liveRegion); liveRegion.textContent = messag; // Clean up after announcement setTimeout(() => { if (liveRegion.parentNode) { liveRegion.parentNode.removeChild(liveRegion)}
       }, 1000)}
-  } $effect(() => { // Update route config when route changes const interval = setInterval(() => { const newConfig = (enhancedRouteAccessibility as: any)?.getCurrentConfig?.(), if (newConfig !== currentRouteConfig) { currentRouteConfig = newConfig}
+  } $effect(() => { // Update route config when route changes const interval = setInterval(() => { const newConfig = (enhancedRouteAccessibility as: unknown)?.getCurrentConfig?.(), if (newConfig !== currentRouteConfig) { currentRouteConfig = newConfig}
     }, 1000); // Enhance the component based on current route if (enhanceForRoute && containerElement) {
     enhanceComponentAccessibility()
+
   }
   return () => { clearInterval(interval)}}); function enhanceComponentAccessibility() { if (!containerElement || !currentRouteConfig) return;
    const bitsUIElement = containerElement.querySelector(
       '[data-bits-ui], .legal-ai-btn, .legal-ai-input, .legal-ai-card'
     ); if (!bitsUIElement) return; // Add route-specific enhancements const routeContext = currentRouteConfig.category; // Enhance ARIA attributes if (customAriaLabel) { bitsUIElement.setAttribute('aria-label', `${ customAriaLabel } (${ routeContext })`)} else if (!bitsUIElement.getAttribute('aria-label')) { const elementText = bitsUIElement.textContent?.trim(); if (elementText) { bitsUIElement.setAttribute('aria-label', `${ elementText } - ${ routeContext }`)}
     }
+
    // Add contextual help if (contextualHelp) { bitsUIElement.setAttribute('title', contextualHelp); bitsUIElement.setAttribute('aria-describedby', 'contextual-help')}
 
     // Add keyboard shortcut indication if (keyboardShortcut) { const currentLabel = bitsUIElement.getAttribute('aria-label') || ''; bitsUIElement.setAttribute('aria-label', `${ currentLabel } (${ keyboardShortcut })`); bitsUIElement.setAttribute(
@@ -28,6 +30,7 @@
         } })}); observer.observe(element, { attributes: true })}
   function enhanceInput(element: HTMLElement) { // Ensure proper labeling const label = element.closest('label') || document.querySelector(`label[for="${element.id}"]`); if (!label && !element.getAttribute('aria-label')) { const placeholder = element.getAttribute('placeholder'); if (placeholder) { element.setAttribute('aria-label', placeholder)}
     }
+
    // Add validation support element.addEventListener('invalid', () => { const validationMessage = (element as HTMLInputElement).validationMessag; announceToScreenReader(`Input error: ${ validationMessage }`)})}
   function enhanceDialog(element: HTMLElement) { // Ensure proper dialog semantics if (!element.getAttribute('role')) { element.setAttribute('role', 'dialog')}
     if (!element.getAttribute('aria-modal')) { element.setAttribute('aria-modal', 'true')}

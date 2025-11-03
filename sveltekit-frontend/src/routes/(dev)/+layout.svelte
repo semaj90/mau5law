@@ -4,7 +4,7 @@
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: { any; data: any } = $props();
+  let { children, data }: { any; data: unknown } = $props();
 
   // Derive user and UI state for NavBar/Sidebar props
   const user = data?.user ?? null;
@@ -103,4 +103,5 @@
       border-bottom: 1px solid var(--border-primary, #cc99ff)}
   }
 </style>
+
 

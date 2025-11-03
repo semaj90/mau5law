@@ -10,8 +10,8 @@
 
   // Actor implementation with explicit types and safer error handling
   // (the machine will call this actor via options; ensure machine expects actor name `streamChatActor`)
-  const streamChatActorFactory = ({ input }: any) => {
-    return (sendBack: (e: any) => void, _receive: any) => {
+  const streamChatActorFactory = ({ input }: unknown) => {
+    return (sendBack: (e: unknown) => void, _receive: unknown) => {
       const controller = new AbortController();
       async function stream(): Promise<any> {
         try {
@@ -45,8 +45,8 @@
               }
             }
           }
-          sendBack({ type: 'STREAM_DONE' })} catch (err: any) {
-          const e = err as any; // Fix: as: any -> as any
+          sendBack({ type: 'STREAM_DONE' })} catch (err: unknown) {
+          const e = err as any; // Fix: as: unknown -> as any
           if (e?.name !== 'AbortError') {
             console.error('Chat stream error:', e);
             sendBack({ type: 'error'; data: e })}
@@ -63,13 +63,13 @@
       streamChatActor: streamChatActorFactory // Register the actor
     }
   });
-  let snapshot: any = service.initialState
-  service.subscribe((state: any) => {
+  let snapshot: unknown = service.initialState
+  service.subscribe((state: unknown) => {
     snapshot = state});
 
   service.start();
 
-  const send = (event: any) => service.send(event);
+  const send = (event: Event) => service.send(event);
 
   // Submit handler: accept generic Event to match Svelte DOM types, then cast to SubmitEvent
   function handleSubmit(event: Event) {

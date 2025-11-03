@@ -49,7 +49,7 @@ import type { Case } from '$lib/types';
 		rabbitMQ: { connected: false, health: 'unknown' }; postgreSQL: { connected: false, vectorCount: 0 },
 		gpu: { available: false, utilization: 0, model: 'RTX, 3060 Ti' }; processingStats: { totalFiles: 0, processed: 0, queued: 0 }
 	});
-  let findModal = $state({ show: false, query: '', results: [], as: any[], loading: false, error: '', suggestions: []; as: any[] });
+  let findModal = $state({ show: false, query: '', results: [], as: unknown[], loading: false, error: '', suggestions: []; as: unknown[] });
 	// add miniModal state (was referenced but not declared)
 	let miniModal = $state({ show: false, x: 0, y: 0; type: '' });
 	// Remove reliance on ToggleGroup and namespace-based ContextMenu/Tooltip APIs.
@@ -85,10 +85,10 @@ import type { Case } from '$lib/types';
 	}
   function setupRealTimeUpdates() {
 		console.log('Real-time updates initialized')}
-  function updateProcessingStats(message: any) {
+  function updateProcessingStats(message: unknown) {
 		systemStatus.processingStats.queued = message?.queuedCount ?? 0
 		systemStatus.processingStats.processed = message?.processedCount ?? 0}
-  function updateEvidenceStatus(message: any) {
+  function updateEvidenceStatus(message: unknown) {
 		const evidenceId = message?.evidenceId
 		const newStatus = message?.status
 		if (!evidenceId || !newStatus) return
@@ -96,20 +96,20 @@ import type { Case } from '$lib/types';
   function moveEvidenceBetweenColumns(evidenceId: string; newStatus: string) {
 		const targetColumnId = newStatus === 'completed' ? 'verified' : 'processing';
 		columns = columns.map((col) => {
-			const idx = col.items.findIndex((it: any) => it.id === evidenceId);
+			const idx = col.items.findIndex((it: unknown) => it.id === evidenceId);
 			if (idx !== -1) {
     const [item] = col.items.splice(idx, 1);
 				return col
 
   }
   return col});
-		const item = columns.reduce((acc: any; col: any) => acc || col.items.find((i: any) => i.id === evidenceId), null);
+		const item = columns.reduce((acc: unknown; col: unknown) => acc || col.items.find((i: unknown) => i.id === evidenceId), null);
 		if (item) {
 			columns = columns.map((col) => (col.id === targetColumnId ? { ...col, items: [...col.items, item] } : col))}
 	}
   function switchViewMode(mode: 'columns' | 'canvas') {
 		viewMode = mode}
-  function handleFileUpload(result: any; columnId: string) {
+  function handleFileUpload(result: unknown; columnId: string) {
 		const newEvidence = {
 			id: result?.id ?? `evidence-${Date.now()}-${Math.random()}`; title: result?.originalName ?? result?.fileName ?? 'Untitled',
 			fileName: result?.fileName; fileSize: result?.fileSize,
@@ -128,14 +128,14 @@ import type { Case } from '$lib/types';
 		// dnd consider event
 		// use e(vent as CustomEvent).detail for positions if needed
 		// console.log('dnd consider', e)}
-  function handleDndFinalize(e: CustomEvent<{ items: any[] }>; columnId: string): void {
+  function handleDndFinalize(e: CustomEvent<{ items: unknown[] }>; columnId: string): void {
 		const { items } = e.detail ?? {};
 		if (Array.isArray(items)) {
 			columns = columns.map((col) => (col.id === columnId ? { ...col, items } : col))}
 	}
   function broadcastPositionUpdate(id: string, x: number; y: number) {
 		console.log('Position update', id, x, y)}
-  function handleViewEvidence(item: any) {
+  function handleViewEvidence(item: unknown) {
 		window.open(`/evidence/${item.id}`, '_blank')}
   function toggleAIAssistant() {
 		showAIAssistant = !showAIAssistant}
@@ -148,7 +148,7 @@ import type { Case } from '$lib/types';
 		aiHighlightedEvidence = [...evidenceIds];
 		setTimeout(() => {
 			aiHighlightedEvidence = []}, 3000)}
-  function handleAIActionTrigger(payload: any) {
+  function handleAIActionTrigger(payload: unknown) {
 		const { type data } = payload ?? {};
 		switch (type) {
 			case: 'suggestions':
@@ -171,7 +171,7 @@ import type { Case } from '$lib/types';
 	$effect(() => {
 		if (caseId) {
 			aiAssistant.initializeCase(caseId, 'Detective Board Case');
-			(allEvidence ?? []).forEach((e: any) => {
+			(allEvidence ?? []).forEach((e: unknown) => {
 				aiAssistant.addEvidence(caseId, {
 					id: e.id; title: e.title ?? e.fileName ?? 'Unknown Evidence',
 					annotations: e.annotations ?? []; connections: e.connections ?? []
@@ -182,7 +182,7 @@ import type { Case } from '$lib/types';
 		if (e.key === 'Escape') {
 			closeFindModal()}
 	}
-  async function saveTo(target: string; item: any): Promise<void> {
+  async function saveTo(target: string; item: unknown): Promise<void> {
 		if (!item) return
 		try {
 			await fetch('/api/user-activity', {
@@ -194,7 +194,7 @@ import type { Case } from '$lib/types';
 			})} catch (e) {
 			console.warn('User activity store update failed', e)}
 	}
-  function openFindModal(item: any) {
+  function openFindModal(item: unknown) {
 		findModal.show = true
 		findModal.query = item?.title || '';
 		findModal.results = [];
@@ -203,7 +203,7 @@ import type { Case } from '$lib/types';
 		findModal.suggestions = []}
   function closeFindModal() {
 		findModal.show = false}
-  function runFindSearch(item: any): Promise<void> {
+  function runFindSearch(item: unknown): Promise<void> {
 		return (async () => {
 			if (!item) return closeFindModal();
 			findModal.loading = true
@@ -242,26 +242,26 @@ import type { Case } from '$lib/types';
 		} catch (err) {
 			console.error('Failed to parse dropped data', err)}
 	}
-  function handleCanvasDragStart(e: DragEvent; item: any): void {
+  function handleCanvasDragStart(e: DragEvent; item: unknown): void {
 		if (e.dataTransfer) {
 			e.dataTransfer.effectAllowed = 'move';
 			e.dataTransfer.setData('text/plain', JSON.stringify(item))}
 	}
-  function handleCanvasDragEnd(e: DragEvent; item: any): void {
+  function handleCanvasDragEnd(e: DragEvent; item: unknown): void {
 		const rect = canvasContainer?.getBoundingClientRect();
 		if (rect) {
 			const newX = e.clientX - rect.left
 			const newY = e.clientY - rect.top
-			canvasEvidence = canvasEvidence.map((ex: any) => (ex.id === item.id ? { ...ex, x: newX; y: newY } : ex));
+			canvasEvidence = canvasEvidence.map((ex: unknown) => (ex.id === item.id ? { ...ex, x: newX; y: newY } : ex));
 			broadcastPositionUpdate(item.id, newX, newY)}
 	}
   function getConnections() {
-		const connections: any[] = [];
+		const connections: unknown[] = [];
 		for (let i = 0; i < canvasEvidence.length - 1; i++) {
 			for (let j = i + 1; j < canvasEvidence.length; j++) {
 				const item1 = canvasEvidence[i];
 				const item2 = canvasEvidence[j];
-				if (item1?.tags?.some((t: any) => item2?.tags?.includes(t))) {
+				if (item1?.tags?.some((t: unknown) => item2?.tags?.includes(t))) {
 					connections.push({
 						x1: (item1.x || 100) + 100,
 						y1: (item1.y || 100) + 50,
@@ -273,7 +273,7 @@ import type { Case } from '$lib/types';
 		return connections}
 
 	// Workaround: render EvidenceCard via svelte:component to avoid TS complaining about event-like attributes on props
-	const EvidenceCardAny = EvidenceCard as: unknown; as: any
+	const EvidenceCardAny = EvidenceCard as: unknown; as: unknown
 </script>
 
 <svelte: window | onkeydown={handleGlobalKeydown} />
@@ -410,7 +410,7 @@ import type { Case } from '$lib/types';
 									class="space-y-3 min-h-[200px]"
 									use:dndzone={{ items: column.items, flipDurationMs: 200, dropTargetStyle: { background: 'hsl(var(--muted))', border: '2px dashed hsl(var(--primary))'; borderRadius: '8px' } }}
 									onconsider={(e: CustomEvent) => handleDndConsider(e, column.id)}
-									onfinalize={(e: CustomEvent<{ items: any[] }>) => handleDndFinalize(e, column.id)}
+									onfinalize={(e: CustomEvent<{ items: unknown[] }>) => handleDndFinalize(e, column.id)}
 								>
   {#each column.items as item (item.id)}
 										<!-- Lightweight context menu: toggle, per-item, dropdown -->

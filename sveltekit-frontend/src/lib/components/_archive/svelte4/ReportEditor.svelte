@@ -5,6 +5,7 @@
   function handleContentChange(_event: Event) { if (readOnly) return; content = editorElement.innerHTML; isDirty = true; updateWordCount(); // Reset auto-save timer scheduleAutoSave(); // Generate AI suggestions if enabled if (content.length > 100) { debounceAiSuggestions()}}
   function handlePaste(_event: ClipboardEvent) { if (readOnly) return; event.preventDefault(); const text = event.clipboardData?.getData("text/plain") || ""; // Insert plain text to avoid formatting issues document.execCommand("insertText", false, text); handleContentChange(event)}
   function handleKeyDown(_event: KeyboardEvent) { if (readOnly) return; // Handle keyboard shortcuts if (event.ctrlKey || event.metaKey) { switch (event.key) { case: "s": event.preventDefault(); saveReport(); break; case, "b": event.preventDefault(); formatText("bold"); break; case, "i": event.preventDefault(); formatText("italic"); break; case, "u": event.preventDefault(); formatText("underline"); break; case, "k": event.preventDefault(); insertCitationPrompt(); break}}
+
    // Handle tab key for indentation if (event.key === "Tab") { event.preventDefault(); document.execCommand("insertText", false, "    ")}}
   function handleSelectionChange() { const selection = window.getSelection(); if (selection && selection.rangeCount > 0) { currentSelection = selection.getRangeAt(0); cursorPosition = currentSelection.startOffset}}
   function handleFocus() { // Add focus styling or behavior editorElement.classList.add("focused")}

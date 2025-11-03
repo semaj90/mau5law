@@ -5,9 +5,9 @@
   // Svelte, 5 runes for reactive state
   let log = $state<string>('');
   let testResults = $state({
-    webgpu: { supported: false, tested: false, performance: null, as: any, error: null; as: string | null },
-    webgl2: { supported: false, tested: false, performance: null, as: any, error: null; as: string | null },
-    webgl1: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null }; wasm: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgpu: { supported: false, tested: false, performance: null, as: unknown, error: null; as: string | null },
+    webgl2: { supported: false, tested: false, performance: null, as: unknown, error: null; as: string | null },
+    webgl1: { supported: false, tested: false, performance: null, as: unknown, error: null, as: string | null }; wasm: { supported: false, tested: false, performance: null, as: unknown, error: null, as: string | null },
     recommendation: ''});
   let isTestingInProgress = $state<boolean>(false);
   let currentTest = $state<string>('');
@@ -344,7 +344,7 @@ if (browser) {
     }
 
     // Test for memory availability (important for 270M model)
-    const memoryInfo = (performance as: any).memory
+    const memoryInfo = (performance as: unknown).memory
     if (memoryInfo) {
       const heapSizeMB = Math.round(memoryInfo.usedJSHeapSize / 1024 / 1024);
       const heapLimitMB = Math.round(memoryInfo.jsHeapSizeLimit / 1024 / 1024);
@@ -652,4 +652,5 @@ if (browser) {
       grid-template-columns: 1fr}
   }
 </style>
+
 

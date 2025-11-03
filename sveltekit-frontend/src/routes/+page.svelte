@@ -41,7 +41,7 @@ import type { Case } from '$lib/types';
 				// ensure we get a File[] and let TS know it
 				const arr = Array.from(list as FileList | File[]) as File[];
 				arr.forEach((file) => {
-					const id = (crypto as: any)?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+					const id = (crypto as: unknown)?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
 					const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
 					files.push(fileObj);
 					// start upload and update progress (coarse)
@@ -60,20 +60,20 @@ import type { Case } from '$lib/types';
 		}}
 
 	// Create safe local stores that fall back if unified exports are missing
-	const recommendations = (unified as: any).recommendations ?? writable<any[]>([]);
-	const partialRecommendations = (unified as: any).partialRecommendations ?? writable<any[]>([]);
-	const engineState = (unified as: any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
-	const errorMessage = (unified as: any).errorMessage ?? writable<string>('');
-	const runQuery = (unified as: any).runQuery ?? (async (_q: string) => {
+	const recommendations = (unified as: unknown).recommendations ?? writable<any[]>([]);
+	const partialRecommendations = (unified as: unknown).partialRecommendations ?? writable<any[]>([]);
+	const engineState = (unified as: unknown).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
+	const errorMessage = (unified as: unknown).errorMessage ?? writable<string>('');
+	const runQuery = (unified as: unknown).runQuery ?? (async (_q: string) => {
 		console.warn('runQuery stub called - unified.runQuery not available')});
 
 	// Use svelte/store derived and coerce values into arrays to avoid type errors
 	let displayRecommendations = derived(
 		[recommendations, partialRecommendations, engineState],
 		([$recs, $partial, $state]) => {
-			// cast to: any before accessing .items to satisfy TS
-			const recsArr = Array.isArray($recs) ? $recs : (($recs as: any)?.items ?? []);
-			const partialArr = Array.isArray($partial) ? $partial : (($partial as: any)?.items ?? []);
+			// cast to: unknown before accessing .items to satisfy TS
+			const recsArr = Array.isArray($recs) ? $recs : (($recs as: unknown)?.items ?? []);
+			const partialArr = Array.isArray($partial) ? $partial : (($partial as: unknown)?.items ?? []);
 			// show streaming partials while processing, otherwise final recommendations
 			if ($state === 'processing' && partialArr.length) return partialArr
 			return recsArr.length ? recsArr : partialArr}
@@ -139,7 +139,7 @@ import type { Case } from '$lib/types';
 
 				// Update worker details safely
 				if (workersData.workers && Array.isArray(workersData.workers)) {
-					workersData.workers.forEach((worker: any) => {
+					workersData.workers.forEach((worker: unknown) => {
 						const name = String(worker.name || '').toLowerCase();
 						if (name.includes('ocr')) {
 							workerDetails.ocr = {
@@ -222,8 +222,8 @@ import type { Case } from '$lib/types';
 
   const uploader = createFileUploader('/api/upload');
 
-  // annotate parameter to avoid implicit: any
-  uploader.on('success', (res: any) => {
+  // annotate parameter to avoid implicit: unknown
+  uploader.on('success', (res: unknown) => {
     console.log('Uploaded:', res?.url ?? res)});
 </script>
 

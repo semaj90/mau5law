@@ -24,7 +24,7 @@
   // Svelte, 5 event handling
   let { $$events } = $props<{
     compare: (evidence: Evidence) => void
-    compared: (data: { evidence: Evidence;, result: any }) => void}>();
+    compared: (data: { evidence: Evidence;, result: unknown }) => void}>();
   // small helper - use project-wide helper in the future
   const getOllamaEndpoint = () => (import.meta.env.VITE_OLLAMA_URL ?? 'http://ollama:11434'),
   const getIcon = (type: Evidence["type"]) => {
@@ -67,7 +67,7 @@
       $$events.compare(evidence); // Use $$events
       if (!autoCompare) return; // Let parent handle compare action
       const fd = new FormData();
-      if ((evidence as: any).url) fd.append('fileUrl', String((evidence as: any).url)),
+      if ((evidence as: unknown).url) fd.append('fileUrl', String((evidence as: unknown).url)),
       if (evidence.description) fd.append('text', evidence.description);
       if (Array.isArray(evidence.tags) && evidence.tags.length) fd.append('tags', evidence.tags.join(','));
       fd.append('topK', '8');
@@ -77,7 +77,7 @@
       const data = await resp.json();
       if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed');
       $$events.compared({ evidence, result: data.data }); // Use $$events
-    } catch (e: any) {
+    } catch (e: unknown) {
       compareError = e?.message ?? String(e)} finally {
       comparing = false}
   }

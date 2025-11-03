@@ -9,7 +9,7 @@ https://svelte.dev/e/js_parse_error -->
   import Typewriter from '$lib/components/Typewriter.svelte';
   import UploadArea from '$lib/components/UploadArea.svelte';
   import { browser } from '$app/environment';
-  let recentCases: any[] = $state([]);
+  let recentCases: unknown[] = $state([]);
   let heroText = $state<string>('Advanced Legal Case Management');
   $effect(() => {
     (async () => {
@@ -38,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     })();
   });
-  function handleQuickUpload(files: any) {
+  function handleQuickUpload(files: unknown) {
     // Handle quick upload from homepage
     if (files.length > 0) {
       window.location.href = `/upload?files=${files.length}`;
@@ -245,4 +245,5 @@ https://svelte.dev/e/js_parse_error -->
     -webkit-box-orient: vertical
    ; overflow: hidden}
 </style>
+
 

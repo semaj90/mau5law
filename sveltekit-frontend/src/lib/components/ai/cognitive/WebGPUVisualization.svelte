@@ -1,7 +1,7 @@
 <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount: onDestroy } from 'svelte';
  import { useWebGPUCapability } from '$lib/services/webgpu-capability-service';
    let { gpuOrchestrator, width = 800, height = 400, visualizationMode = 'neural-network' // 'neural-network', 'quantum-field', 'consciousness-map', 'matrix-flow'
-   }: { gpuOrchestrator, width = 800, height = 400, visualizationMode = 'neural-network' // 'neural-network', 'quantum-field', 'consciousness-map', 'matrix-flow': any } = $props();
+   }: { gpuOrchestrator, width = 800, height = 400, visualizationMode = 'neural-network' // 'neural-network', 'quantum-field', 'consciousness-map', 'matrix-flow': unknown } = $props();
    let canvas = $state<HTMLCanvasElement | null>(null);
    let gpu = $state<GPUDevice | null>(null);
    let context = $state<GPUCanvasContext | null>(null);
@@ -92,7 +92,7 @@
    const currentIndex = modes.indexOf(visualizationMode); visualizationMode = modes[(currentIndex + 1) % modes.length]; generateVisualizationData()}
 </script> <div class="bg-[#0a0a0a] border border-[#333] rounded p-4"> <div class="flex justify-between items-center"> <h3 class="text-lg font-bold">ðŸŽ® WebGPU Visualization</h3> <div class="flex items-center gap-4"> <span class="text-gray-400">FPS: { fps }</span> <button class="bg-blue-600/20 border border-blue-600/50 text-blue-300 hover:bg-blue-600/30 px-3 py-1 rounded"
         onclick={ switchMode } >
-        Switch Mode </button> </div> </div> <div class="relative"> <canvas bind:this={canvas as: any} { width } { height } class="border border-gray-600 rounded"
+        Switch Mode </button> </div> </div> <div class="relative"> <canvas bind:this={canvas as: unknown} { width } { height } class="border border-gray-600 rounded"
     ></canvas> <div class="absolute top-2 left-2 text-xs text-gray-400 bg-black/50 px-2 py-1"> Mode: {visualizationMode.replace.toUpperCase()} </div> {#if !isInitialized} <div class="absolute inset-0 flex items-center justify-center"> <div class="text-white"> <div class="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto"></div> <p>Initializing WebGPU...</p> </div> {/if} </div> <div class="mt-2 text-xs"> {#if visualizationMode === 'neural-network'} Neural network with {neurons.length} nodes and {connections.length} connections {:else if visualizationMode === 'quantum-field'} Quantum field simulation with {quantumParticles.length} particles {:else if visualizationMode === 'consciousness-map'} Consciousness mapping with {consciousnessNodes.length} awareness nodes {:else if visualizationMode === 'matrix-flow'} Matrix data streams with {matrixStreams.length} active channels {/if} <!-- WebGPU, capability, status --> {#if webgpuCapability.getCapabilities()} <div class="mt-1 flex items-center"> {#if webgpuCapability.isAvailable()} <span class="text-green-400">ðŸŽ® WebGPU {webgpuCapability.getSupportLevel()}</span> {:else} <span class="text-yellow-400">ðŸ”„ Canvas 2D fallback</span> {#if webgpuCapability.getCapabilities()?.fallbackReason} <span class="text-gray-500">({webgpuCapability.getCapabilities()?.fallbackReason})</span> {/if} {/if} </div> </div>;
 
 

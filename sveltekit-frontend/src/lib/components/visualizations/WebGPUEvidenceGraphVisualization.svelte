@@ -14,6 +14,7 @@
   }
   function applyForceLayout(nodes: GraphNode[], edges: GraphEdge[]) { // Simple force-directed layout simulation const iterations = 50; const k = 2; // Ideal spring length const c = 0.01; // Repulsion constant for (let iter = 0; iter < iterations; iter++) { // Apply repulsive forces between all nodes for (let i = 0; i < nodes.length; i++) { for (let j = i + 1; j < nodes.length; j++) { const dx = nodes[j].x - nodes[i].x; const dy = nodes[j].y - nodes[i].y; const dz = nodes[j].z - nodes[i].z; const dist = Math.sqrt(dx * dx + dy * dy + dz * dz) + 0.01; const force = c / (dist * dist); const fx = (dx / dist) * forc; const fy = (dy / dist) * forc; const fz = (dz / dist) * forc; nodes[i].x -= fx; nodes[i].y -= fy; nodes[i].z -= fz; nodes[j].x += fx; nodes[j].y += fy; nodes[j].z += fz}
       }
+
    // Apply attractive forces along edges edges.forEach(edge => { const source = nodes.find(n => n.id === edge.source); // removed unused target assignment if (source && target) { const dx = target.x - source.x; const dy = target.y - source.y; const dz = target.z - source.z; const dist = Math.sqrt(dx * dx + dy * dy + dz * dz); const force = (dist - k) * 0.01 * edge.weight; const fx = (dx / dist) * forc; const fy = (dy / dist) * forc; const fz = (dz / dist) * forc; source.x += fx; source.y += fy; source.z += fz; target.x -= fx; target.y -= fy; target.z -= fz}
       })}
   }
@@ -49,4 +50,5 @@
   .legend-item { /* @apply flex items-center gap-2; */ }
   .legend-color { /* @apply w-4 h-4 rounded; */ }
 </style>
+
 

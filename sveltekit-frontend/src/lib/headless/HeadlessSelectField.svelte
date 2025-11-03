@@ -3,11 +3,11 @@
   import * as Select from '$lib/components/ui/select/index.js';
   import  FormField  from "./FormField.svelte";
   // Using custom wrapper and bits-ui re-exports; some may be: undefined if not provided
-  const SelectRoot = (Select, as: any).Select || (Select as: any).Root || Select.default || (Select as: any),
-  const SelectTrigger = (Select as: any).SelectTrigger || (Select as: any).Trigger || (Select as: any).SelectTrigger || (Select as: any).Select?.Trigger
-  const SelectContent = (Select as: any).SelectContent || (Select as: any).Content || (Select as: any).Select?.Content
-  const SelectValue = (Select as: any).SelectValue || (Select as: any).Value || (Select as: any).Select?.Valu
-  const SelectItem = (Select as: any).SelectItem || (Select as: any).Item || (Select as: any).Select?.Item
+  const SelectRoot = (Select, as: unknown).Select || (Select as: unknown).Root || Select.default || (Select as: unknown),
+  const SelectTrigger = (Select as: unknown).SelectTrigger || (Select as: unknown).Trigger || (Select as: unknown).SelectTrigger || (Select as: unknown).Select?.Trigger
+  const SelectContent = (Select as: unknown).SelectContent || (Select as: unknown).Content || (Select as: unknown).Select?.Content
+  const SelectValue = (Select as: unknown).SelectValue || (Select as: unknown).Value || (Select as: unknown).Select?.Valu
+  const SelectItem = (Select as: unknown).SelectItem || (Select as: unknown).Item || (Select as: unknown).Select?.Item
   interface SelectOption {
     value: string
     label?: string}
@@ -101,4 +101,5 @@
   {/snippet}
 </FormField>
 ;
+
 

@@ -7,7 +7,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         }, size: { default: 'h-10 px-4 py-2', sm: 'h-9 rounded-md px-3', lg: 'h-11 rounded-md px-8', icon: 'h-8 w-8', icon_sm: 'h-6 w-6', icon_lg: 'h-12 w-12', xs: 'h-8 rounded px-2 text-xs'
         } }, defaultVariants: { variant: 'default', size: 'default'
       } }
-  ); interface Props { variant?: VariantProps<typeof buttonVariants>['variant']; size?: VariantProps<typeof buttonVariants>['size']; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; href?: string; target?: string; loading?: boolean; loadingText?: string; class?: string; /** React-style compatibility â€“ mapped to class */ className?: string; children?: Snippet; onclick?: (_event: MouseEvent) => void; // Enhanced modular properties id?: string; analyticsCategory?: string; analyticsAction?: string; analyticsLabel?: string; xstateContext?: any; uiJsonConfig?: UIJsonSSRConfig; searchKeywords?: string[]; cacheKey?: string; role?: string
+  ); interface Props { variant?: VariantProps<typeof buttonVariants>['variant']; size?: VariantProps<typeof buttonVariants>['size']; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; href?: string; target?: string; loading?: boolean; loadingText?: string; class?: string; /** React-style compatibility â€“ mapped to class */ className?: string; children?: Snippet; onclick?: (_event: MouseEvent) => void; // Enhanced modular properties id?: string; analyticsCategory?: string; analyticsAction?: string; analyticsLabel?: string; xstateContext?: unknown; uiJsonConfig?: UIJsonSSRConfig; searchKeywords?: string[]; cacheKey?: string; role?: string
     'data-testid'?: string; // Accessibility props /** ARIA label for screen readers (especially important for icon-only buttons) */
     'aria-label'?: string; /** ID of element that describes this button */
     'aria-describedby'?: string; /** Whether button controls expanded state (for dropdowns, etc.) */
@@ -23,6 +23,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     // Cache interaction if cacheKey provided if (cacheKey && browser) { lokiButtonCache.recordInteraction(cacheKey, analyticsEvent); onCache?.({ key: cacheKey, action: 'click' })}
     onClickAnalytics?.(analyticsEvent); // Call the onclick prop if provided if (onclick) { onclick(event)}
   }
+
    // Register with searchable index on mount $effect(() => { if (browser && searchKeywords.length > 0) { searchableButtonIndex.addButton({ id, keywords: searchKeywords | variant, size, label: analyticsLabel, element: document.getElementById(id) })}
   }); </script>
   {#if href} <a { href } { target } class={ buttonClass } role="button"

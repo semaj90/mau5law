@@ -7,16 +7,16 @@
   // Minimal, permissive props shape used at runtime by the dropdown creator.
   type Props = {
     // arbitrary runtime props that the bits-ui factory may accept
-    [key: string]: any
+    [key: string]: unknown
     class?: string
     // Svelte, 5 snippet for rendering children
     children?: Snippet};
   let { class: className | children, ...props }: Props = $props();
   $effect(() => {
     console.log('Dropdown menu props changed:', props)});
-  let trigger: any = null
-  let menu: any = null
-  let open: any = false
+  let trigger: unknown = null
+  let menu: unknown = null
+  let open: unknown = false
   (async () => {
     const ns = await getBitsNamespace();
 

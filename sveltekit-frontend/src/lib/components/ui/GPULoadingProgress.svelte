@@ -81,6 +81,7 @@ https://svelte.dev/e/js_parse_error -->
       { time: 8000, progress: 60 }, // Quantization
       { time: 12000, progress: 85 }, // GPU memory allocation
       { time: 15000, progress: 100 }
+
    // Ready
     ];
     intervals.forEach(({ time, progress: targetProgress }) => {

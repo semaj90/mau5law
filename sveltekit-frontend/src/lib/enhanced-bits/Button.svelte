@@ -9,7 +9,7 @@
     type?: string;
     disabled?: boolean;
   }>();
-  // forward: any other props via rest
+  // forward: unknown other props via rest
 </script>
 
 <!-- Svelte, 5: Direct component usage instead, of, svelte:component -->

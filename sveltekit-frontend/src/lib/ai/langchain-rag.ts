@@ -17,7 +17,7 @@ const formatDocumentsAsString = (documents: LangChainDocumentType[]) => {
 
 // Temporary type placeholders until proper imports are available
 // (Removed the duplicate and unsafe `type QdrantVectorStore = any;` alias)
-// Replace loose: any with a small typed interface for the parts we use
+// Replace loose: unknown with a small typed interface for the parts we use
 interface QdrantCollectionInfo {
   result?: { points_count?: number } | null
   [key: string]: unknown; // Changed from any to unknown

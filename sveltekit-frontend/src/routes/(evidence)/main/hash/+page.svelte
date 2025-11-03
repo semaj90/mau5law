@@ -6,7 +6,7 @@
   let hashInput = $state<string>(
     '81d9c48f998f9025eb8f72e28a6c4f921ed407dd75891a9e9a8778c9ad5711bd'
   );
-  let searchResult: any = null;
+  let searchResult: unknown = null;
   let loading = $state<boolean>(false);
   let error = $state<string>('');
 
@@ -18,7 +18,6 @@
       searchByHash();
     }
   });
-
   async function searchByHash(): Promise<any> {
     if (!hashInput || hashInput.length !== 64) {
       error = 'Please enter a valid 64-character SHA256 hash';
@@ -48,7 +47,6 @@
       loading = false;
     }
   }
-
   async function verifyIntegrity(evidenceId: string): Promise<any> {
     if (!evidenceId) return;
 
@@ -74,7 +72,6 @@
       loading = false;
     }
   }
-
   function copyToClipboard(text: string) {
     navigator.clipboard.writeText(text).then(() => {
       alert('Copied to clipboard!');
@@ -90,24 +87,24 @@
                       > ðŸ“‹ </button> </div> {#if item.description} <p class="space-y-4"> {item.description} </p> {/if} <div class="space-y-4"> <button onclick={() => verifyIntegrity(item.id)} disabled={ loading } class="space-y-4"
                       > Verify Integrity </button> {#if item.fileUrl} <a href={item.fileUrl} target="_blank" class="space-y-4"
                         > View File </a> {/if} </div> </div> </div> {/each} </div> {:else} <div class="space-y-4"> <strong>âš ï¸ {searchResult.message}</strong> </div> {/if} </div> {/if} </div> </div> <div class="space-y-4"> <div class="space-y-4"> <h2 class="space-y-4">About Hash Verification</h2> <div class="space-y-4"> <p>This tool allows you to search for evidence files by their SHA256 hash and verify file integrity.</p> <h3>How it works:</h3> <ul> <li> <strong>File, Upload:</strong> When evidence is uploaded, a SHA256 hash is automatically calculated and stored </li> <li><strong>Hash Search:</strong> Search for evidence using the exact 64-character SHA256 hash</li> <li> <strong>Integrity Verification</strong> Compare provided hashes with stored hashes to detect file tampering </li> </ul> <h3>Use, cases:</h3> <ul> <li>Verify that an evidence file hasn't been modified</li> <li>Find evidence files by their cryptographic fingerprint</li> <li>Ensure chain of custody integrity</li> <li>Cross-reference files across different cases</li> </ul> <div class="space-y-4"> <p class="space-y-4"> <strong>Security Note:</strong> SHA256 hashes provide cryptographic assurance that files have not been altered. Each file has a unique hash that changes if even a single byte is modified. </p> </div> </div> </div> </div> </div> ;
-                                  item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
-                                ).fileSize / 1024 ).toFixed(1) + ' KB': 'N/A'} </p> <p> <strong>Type:</strong> {( item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
-                          ).fileType || 'N/A'} </p> </div> <div> <p> <strong>Case:</strong> {( item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
-                          ).caseName || 'N/A'} ({( item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
-                          ).caseNumber || 'N/A'}) </p> <p> <strong>Uploaded by:</strong> {( item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
-                          ).uploaderName || 'N/A'} </p> <p> <strong>Uploaded:</strong> {( item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
+                                  item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
+                                ).fileSize / 1024 ).toFixed(1) + ' KB': 'N/A'} </p> <p> <strong>Type:</strong> {( item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
+                          ).fileType || 'N/A'} </p> </div> <div> <p> <strong>Case:</strong> {( item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
+                          ).caseName || 'N/A'} ({( item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
+                          ).caseNumber || 'N/A'}) </p> <p> <strong>Uploaded by:</strong> {( item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
+                          ).uploaderName || 'N/A'} </p> <p> <strong>Uploaded:</strong> {( item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
                           ).uploadedAt ? new Date( (
-                                  item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
-                                ).uploadedAt ).toLocaleString(): 'N/A'} </p> </div> </div> <div class="space-y-4"> <strong>Hash:</strong> {( item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
+                                  item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
+                                ).uploadedAt ).toLocaleString(): 'N/A'} </p> </div> </div> <div class="space-y-4"> <strong>Hash:</strong> {( item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
                       ).hash} <button onclick={() => copyToClipboard( (
-                              item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
+                              item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
                             ).hash )} class="space-y-4"
                         title="Copy hash"
-                      > ðŸ“‹ </button> </div> {#if (item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).description} <p class="space-y-4"> {( item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
+                      > ðŸ“‹ </button> </div> {#if (item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown }).description} <p class="space-y-4"> {( item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
                         ).description} </p> {/if} <div class="space-y-4"> <button onclick={() => verifyIntegrity( (
-                              item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
+                              item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
                             ).id )} disabled={ loading } class="space-y-4"
-                      > Verify Integrity </button> {#if (item as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any }).fileUrl} <a href={( item, as { title?: any; id?: any; fileName?: any; fileSize?: any; fileType?: any; caseName?: any; caseNumber?: any; uploaderName?: any; uploadedAt?: any; hash?: any; description?: any; fileUrl?: any}
+                      > Verify Integrity </button> {#if (item as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown }).fileUrl} <a href={( item, as { title?: unknown; id?: unknown; fileName?: unknown; fileSize?: unknown; fileType?: unknown; caseName?: unknown; caseNumber?: unknown; uploaderName?: unknown; uploadedAt?: unknown; hash?: unknown; description?: unknown; fileUrl?: unknown}
                           ).fileUrl} target="_blank"
                           class="space-y-4"
                         > View File </a> {/if} </div> </div> </div> {/each} </div> {:else} <div class="space-y-4"> <strong>âš ï¸ {searchResult.message}</strong> </div> {/if} </div> {/if} </div> </div> <div class="space-y-4"> <div class="space-y-4"> <h2 class="space-y-4">About Hash Verification</h2> <div class="space-y-4"> <p>This tool allows you to search for evidence files by their SHA256 hash and verify file integrity.</p> <h3>How it works:</h3> <ul> <li> <strong>File, Upload:</strong> When evidence is uploaded, a SHA256 hash is automatically calculated and stored </li> <li><strong>Hash Search:</strong> Search for evidence using the exact 64-character SHA256 hash</li> <li> <strong>Integrity Verification</strong> Compare provided hashes with stored hashes to detect file tampering </li> </ul> <h3>Use, cases:</h3> <ul> <li>Verify that an evidence file hasn't been modified</li> <li>Find evidence files by their cryptographic fingerprint</li> <li>Ensure chain of custody integrity</li> <li>Cross-reference files across different cases</li> </ul> <div class="space-y-4"> <p class="space-y-4"> <strong>Security Note:</strong> SHA256 hashes provide cryptographic assurance that files have not been altered. Each file has a unique hash that changes if even a single byte is modified. </p> </div> </div> </div> </div> </div> ;'

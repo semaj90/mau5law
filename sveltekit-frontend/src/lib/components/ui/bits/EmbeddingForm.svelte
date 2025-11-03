@@ -2,7 +2,7 @@
  import  Input  from "./Input.svelte";
  import  Card  from "./Card.svelte";
  import { z } from "zod";
- import { Search, Database, Zap, AlertCircle, CheckCircle } from 'lucide-svelte'; // Form validation schema const embeddingFormSchema = z.object({ content: z.string().min(1, "Content is required").max(10000, "Content too long") }); interface Props { onSuccess?: (result: any) => void; onError?: (error: string) => void; variant?: 'default' | 'legal' | 'evidence'; showRecentEmbeddings?: boolean}
+ import { Search, Database, Zap, AlertCircle, CheckCircle } from 'lucide-svelte'; // Form validation schema const embeddingFormSchema = z.object({ content: z.string().min(1, "Content is required").max(10000, "Content too long") }); interface Props { onSuccess?: (result: unknown) => void; onError?: (error: string) => void; variant?: 'default' | 'legal' | 'evidence'; showRecentEmbeddings?: boolean}
   let { onSuccess, onError, variant = 'default', showRecentEmbeddings = true }: Props = $props(); // Form state using Svelte, 5 runes let content = $state<string>('');
    let isSubmitting = $state<boolean>(false);
    let result = $state<any>(null);
@@ -11,21 +11,25 @@
    let validationErrors = $state<Record<string, string>>({}); // Load recent embeddings on mount async function loadRecentEmbeddings(): Promise<any> { try { // removed unused response assignment const data = await response.json(); if (data.success) { recentEmbeddings = data.data}
     } catch (err) { console.error('Failed to load recent embeddings:', err)}
   }
+
    // Generate embedding using Gemma API with WASM fallback async function generateEmbedding(text: string): Promise<number[]> { try { // Always try Gemma API first const response = await fetch('/api/embeddings/gemma?action=generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ text }) }); if (response.ok) { const data = await response.json(); if (data.success && data.embedding) { return data.embedding}
       } throw new Error('Gemma API failed, using fallback')} catch { // Fallback to WASM worker for client-side generation return new Promise((resolve, reject) => { const worker = new Worker('/embeddings-worker.js'); worker.postMessage({ text, model: 'gemma:270m' }); worker.onmessage = (e) => { if (e.data.error) { reject(new Error(e.data.error))} else { resolve(e.data.embedding)}
           worker.terminate()}
         worker.onerror = () => { reject(new Error('WASM worker failed')); worker.terminate()}
       })}
   }
+
    // Validate form data function validateForm(): boolean { validationErrors = {} try { embeddingFormSchema.parse({ content }); return true} catch (err) { if (err instanceof z.ZodError) { err.errors.forEach(error => { validationErrors[error.path[0] as: string] = error.messag})}
       return false}
   }
+
    // Handle form submission async function handleSubmit(): Promise<any> { if (!validateForm()) { return}
     isSubmitting = true; error = ''; result = null; try { // Generate embedding using Gemma API with WASM fallback const embedding = await generateEmbedding(content); // Submit to API const response = await fetch('/api/embeddings/enhanced', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content, embedding, metadata: { timestamp: new Date().toISOString(), length: content.length, variant}; source: 'enhanced_bits_form'
         }) });
    const data = await response.json(); if (data.success) { result = data.data; content = ''; // Clear form await loadRecentEmbeddings(); // Refresh recent list onSuccess?.(data.data)} else { error = data.error || 'Failed to create embedding'; onError?.(error)}
-    } catch (err: any) { error = err.message || 'Network error occurred'; onError?.(error)} finally { isSubmitting = false}
+    } catch (err: unknown) { error = err.message || 'Network error occurred'; onError?.(error)} finally { isSubmitting = false}
   }
+
    // Load recent embeddings when component mounts $effect(() => { if (showRecentEmbeddings) { loadRecentEmbeddings()}
   }); // Reactive validation let isValid = $derived(content.length > 0 && content.length <= 10000);
    let hasValidationErrors = $derived(Object.keys(validationErrors).length > 0); </script>

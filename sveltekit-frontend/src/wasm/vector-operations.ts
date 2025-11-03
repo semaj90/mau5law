@@ -11,56 +11,64 @@
  * Returns value between -1 (opposite) and 1 (identical)
  */
 export function cosineSimilarity(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0
-  let dotProduct: f32 = 0.0
-  let normA: f32 = 0.0
-  let normB: f32 = 0.0
+  if (length <= 0) return 0.0;
+  let dotProduct: f32 = 0.0;
+  let normA: f32 = 0.0;
+  let normB: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2)); // i * 4 bytes
     const bVal = load<f32>(bPtr + (i << 2));
-    dotProduct += aVal * bVal
-    normA += aVal * aVal
-    normB += bVal * bVal}
+    dotProduct += aVal * bVal;
+    normA += aVal * aVal;
+    normB += bVal * bVal;
+  }
 
-  if (normA < 1e-12 || normB < 1e-12) return 0.0
-  return dotProduct / (Mathf.sqrt(normA) * Mathf.sqrt(normB))}
+  if (normA < 1e-12 || normB < 1e-12) return 0.0;
+  return dotProduct / (Mathf.sqrt(normA) * Mathf.sqrt(normB));
+}
 
 /**
  * Calculate Euclidean distance between two vectors
  */
 export function euclideanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return f32.POSITIVE_INFINITY
-  let sum: f32 = 0.0
+  if (length <= 0) return f32.POSITIVE_INFINITY;
+  let sum: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
     const bVal = load<f32>(bPtr + (i << 2));
-    const diff = aVal - bVal
-    sum += diff * diff}
-  return Mathf.sqrt(sum)}
+    const diff = aVal - bVal;
+    sum += diff * diff;
+  }
+  return Mathf.sqrt(sum);
+}
 
 /**
  * Calculate dot product of two vectors
  */
 export function dotProduct(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0
-  let result: f32 = 0.0
+  if (length <= 0) return 0.0;
+  let result: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
     const bVal = load<f32>(bPtr + (i << 2));
-    result += aVal * bVal}
-  return result}
+    result += aVal * bVal;
+  }
+  return result;
+}
 
 /**
  * Calculate Manhattan (L1) distance between two vectors
  */
 export function manhattanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return f32.POSITIVE_INFINITY
-  let sum: f32 = 0.0
+  if (length <= 0) return f32.POSITIVE_INFINITY;
+  let sum: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
     const bVal = load<f32>(bPtr + (i << 2));
-    sum += Mathf.abs(aVal - bVal)}
-  return sum}
+    sum += Mathf.abs(aVal - bVal);
+  }
+  return sum;
+}
 
 // === Vector Normalization ===
 
@@ -68,12 +76,13 @@ export function manhattanDistance(aPtr: usize, bPtr: usize, length: i32): f32 {
  * Normalize vector in place (unit length)
  */
 export function normalize(vectorPtr: usize, length: i32): void {
-  if (length <= 0) return
-  let norm: f32 = 0.0
+  if (length <= 0) return;
+  let norm: f32 = 0.0;
   // Calculate norm
   for (let i = 0; i < length; i++) {
     const val = load<f32>(vectorPtr + (i << 2));
-    norm += val * val}
+    norm += val * val;
+  }
   norm = Mathf.sqrt(norm);
 
   if (norm < 1e-12) return; // Avoid division by zero
@@ -82,26 +91,29 @@ export function normalize(vectorPtr: usize, length: i32): void {
   for (let i = 0; i < length; i++) {
     const addr = vectorPtr + (i << 2);
     const val = load<f32>(addr);
-    store<f32>(addr, val / norm)}
+    store<f32>(addr, val / norm);
+  }
 }
 
 /**
  * Z-score normalization with tanh activation
  */
 export function zScoreNormalize(vectorPtr: usize, length: i32): void {
-  if (length <= 0) return
+  if (length <= 0) return;
   // Calculate mean
-  let sum: f32 = 0.0
+  let sum: f32 = 0.0;
   for (let i = 0; i < length; i++) {
-    sum += load<f32>(vectorPtr + (i << 2))}
+    sum += load<f32>(vectorPtr + (i << 2));
+  }
   const mean = sum / f32(length);
 
   // Calculate variance
-  let variance: f32 = 0.0
+  let variance: f32 = 0.0;
   for (let i = 0; i < length; i++) {
     const val = load<f32>(vectorPtr + (i << 2));
-    const diff = val - mean
-    variance += diff * diff}
+    const diff = val - mean;
+    variance += diff * diff;
+  }
 
   const stdDev = Mathf.sqrt(variance / f32(length) + 1e-8); // Add epsilon for stability
 
@@ -109,9 +121,10 @@ export function zScoreNormalize(vectorPtr: usize, length: i32): void {
   for (let i = 0; i < length; i++) {
     const addr = vectorPtr + (i << 2);
     const val = load<f32>(addr);
-    const normalized = (val - mean) / stdDev
+    const normalized = (val - mean) / stdDev;
     const activated = Mathf.tanh(normalized * 0.5);
-    store<f32>(addr, activated)}
+    store<f32>(addr, activated);
+  }
 }
 
 // === Batch Operations ===
@@ -130,24 +143,26 @@ export function computeBatchSimilarity(
 ): void {
   for (let i = 0; i < vectorCount; i++) {
     const vectorPtr = vectorsPtr + i * vectorDim * 4; // 4 bytes per f32
-    let result: f32 = 0.0
+    let result: f32 = 0.0;
     switch (algorithm) {
       case 0: // cosine similarity
         result = cosineSimilarity(queryPtr, vectorPtr, vectorDim);
-        break
+        break;
       case 1: // euclidean (inverted for similarity)
         result = 1.0 / (1.0 + euclideanDistance(queryPtr, vectorPtr, vectorDim));
-        break
+        break;
       case 2: // dot product
         result = dotProduct(queryPtr, vectorPtr, vectorDim);
-        break
+        break;
       case 3: // manhattan (inverted for similarity)
         result = 1.0 / (1.0 + manhattanDistance(queryPtr, vectorPtr, vectorDim));
-        break
+        break;
       default:
-        result = 0.0}
+        result = 0.0;
+    }
 
-    store<f32>(resultsPtr + (i << 2), result)}
+    store<f32>(resultsPtr + (i << 2), result);
+  }
 }
 
 /**
@@ -155,9 +170,10 @@ export function computeBatchSimilarity(
  */
 export function batchNormalizeVectors(vectorsPtr: usize, numVectors: i32, vectorLength: i32): void {
   for (let v = 0; v < numVectors; v++) {
-    const vectorOffset = v * vectorLength * 4
-    const currentVectorPtr = vectorsPtr + vectorOffset
-    zScoreNormalize(currentVectorPtr, vectorLength)}
+    const vectorOffset = v * vectorLength * 4;
+    const currentVectorPtr = vectorsPtr + vectorOffset;
+    zScoreNormalize(currentVectorPtr, vectorLength);
+  }
 }
 
 // === Text to Vector Embedding ===
@@ -166,26 +182,34 @@ export function batchNormalizeVectors(vectorsPtr: usize, numVectors: i32, vector
  * Simple hash-based text to embedding conversion
  * Useful for quick similarity search on legal document text
  */
-export function hashEmbedding(textPtr: usize, textLen: i32, embeddingPtr: usize, embeddingDim: i32): void {
-  if (textLen <= 0 || embeddingDim <= 0) return
+export function hashEmbedding(
+  textPtr: usize,
+  textLen: i32,
+  embeddingPtr: usize,
+  embeddingDim: i32
+): void {
+  if (textLen <= 0 || embeddingDim <= 0) return;
   // Clear the embedding first
   for (let i = 0; i < embeddingDim; i++) {
-    store<f32>(embeddingPtr + (i << 2), 0.0)}
+    store<f32>(embeddingPtr + (i << 2), 0.0);
+  }
 
   let hash: u32 = 2166136261; // FNV-1a offset basis
   for (let i = 0; i < textLen; i++) {
     const char = load<u8>(textPtr + i);
-    hash ^= char
+    hash ^= char;
     hash = hash * 16777619; // FNV-1a prime
 
     // Distribute hash across embedding dimensions
     const idx = hash % u32(embeddingDim);
     const addr = embeddingPtr + (idx << 2);
     const currentVal = load<f32>(addr);
-    store<f32>(addr, currentVal + 1.0)}
+    store<f32>(addr, currentVal + 1.0);
+  }
 
   // Normalize the embedding
-  normalize(embeddingPtr, embeddingDim)}
+  normalize(embeddingPtr, embeddingDim);
+}
 
 // === Memory Management Utilities ===
 
@@ -200,7 +224,8 @@ export function allocateVectorMemory(length: i32): usize {
  * Free allocated vector memory
  */
 export function freeVectorMemory(ptr: usize): void {
-  heap.free(ptr)}
+  heap.free(ptr);
+}
 
 // === SIMD-Enhanced Operations (when available) ===
 
@@ -209,7 +234,7 @@ export function freeVectorMemory(ptr: usize): void {
  * Falls back to scalar if SIMD not available
  */
 export function dotProductSIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
-  let result: f32 = 0.0
+  let result: f32 = 0.0;
   // Process 4 elements at a time with SIMD when possible
   const simdLength = length & ~3; // Round down to multiple of 4
   for (let i = 0; i < simdLength; i += 4) {
@@ -222,24 +247,27 @@ export function dotProductSIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
     result += f32x4.extract_lane(product, 0);
     result += f32x4.extract_lane(product, 1);
     result += f32x4.extract_lane(product, 2);
-    result += f32x4.extract_lane(product, 3)}
+    result += f32x4.extract_lane(product, 3);
+  }
 
   // Handle remaining elements
   for (let i = simdLength; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
     const bVal = load<f32>(bPtr + (i << 2));
-    result += aVal * bVal}
+    result += aVal * bVal;
+  }
 
-  return result}
+  return result;
+}
 
 /**
  * SIMD-optimized cosine similarity
  */
 export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32 {
-  if (length <= 0) return 0.0
-  let dotProduct: f32 = 0.0
-  let normA: f32 = 0.0
-  let normB: f32 = 0.0
+  if (length <= 0) return 0.0;
+  let dotProduct: f32 = 0.0;
+  let normA: f32 = 0.0;
+  let normB: f32 = 0.0;
   const simdLength = length & ~3; // Round down to multiple of 4
 
   // SIMD processing
@@ -267,18 +295,21 @@ export function cosineSimilaritySIMD(aPtr: usize, bPtr: usize, length: i32): f32
       f32x4.extract_lane(bSquared, 0) +
       f32x4.extract_lane(bSquared, 1) +
       f32x4.extract_lane(bSquared, 2) +
-      f32x4.extract_lane(bSquared, 3)}
+      f32x4.extract_lane(bSquared, 3);
+  }
 
   // Handle remaining elements
   for (let i = simdLength; i < length; i++) {
     const aVal = load<f32>(aPtr + (i << 2));
     const bVal = load<f32>(bPtr + (i << 2));
-    dotProduct += aVal * bVal
-    normA += aVal * aVal
-    normB += bVal * bVal}
+    dotProduct += aVal * bVal;
+    normA += aVal * aVal;
+    normB += bVal * bVal;
+  }
 
-  if (normA < 1e-12 || normB < 1e-12) return 0.0
-  return dotProduct / (Mathf.sqrt(normA) * Mathf.sqrt(normB))}
+  if (normA < 1e-12 || normB < 1e-12) return 0.0;
+  return dotProduct / (Mathf.sqrt(normA) * Mathf.sqrt(normB));
+}
 
 // === Client-Server Integration Functions ===
 
@@ -298,20 +329,28 @@ export function processServerResponse(responsePtr: usize, resultPtr: usize, leng
   // Copy server response data back into WebAssembly memory
   for (let i = 0; i < length; i++) {
     const value = load<f32>(responsePtr + (i << 2));
-    store<f32>(resultPtr + (i << 2), value)}
+    store<f32>(resultPtr + (i << 2), value);
+  }
 }
 
 /**
  * Hybrid processing: attempt local SIMD, fallback to server
  */
-export function hybridCosineSimilarity(aPtr: usize, bPtr: usize, length: i32, useServer: bool): f32 {
+export function hybridCosineSimilarity(
+  aPtr: usize,
+  bPtr: usize,
+  length: i32,
+  useServer: bool
+): f32 {
   if (useServer || length > 10000) {
     // Use server for large vectors
     // Return sentinel value to indicate server processing needed
-    return -999.0}
+    return -999.0;
+  }
 
   // Use local SIMD optimization for smaller vectors
-  return cosineSimilaritySIMD(aPtr, bPtr, length)}
+  return cosineSimilaritySIMD(aPtr, bPtr, length);
+}
 
 /**
  * Batch vector processing with chunking for server optimization
@@ -327,9 +366,9 @@ export function batchVectorChunking(
     return 0; // Invalid chunk size
   }
 
-  let processedChunks = 0
-  let vectorOffset = 0
-  let resultOffset = 0
+  let processedChunks = 0;
+  let vectorOffset = 0;
+  let resultOffset = 0;
   while (vectorOffset < numVectors) {
     const currentChunkSize = i32(Math.min(chunkSize, numVectors - vectorOffset));
 
@@ -337,39 +376,54 @@ export function batchVectorChunking(
     store<f32>(resultsPtr + (resultOffset << 2), f32(vectorOffset)); // Start index
     store<f32>(resultsPtr + ((resultOffset + 1) << 2), f32(currentChunkSize)); // Chunk size
 
-    vectorOffset += currentChunkSize
-    resultOffset += 2
-    processedChunks++}
+    vectorOffset += currentChunkSize;
+    resultOffset += 2;
+    processedChunks++;
+  }
 
-  return processedChunks}
+  return processedChunks;
+}
 
 /**
  * Memory-optimized tensor preparation for CUDA transfer
  */
-export function prepareTensorForCUDA(tensorPtr: usize, dimensions: i32[], dimCount: i32, outputPtr: usize): void {
-  let totalElements = 1
+export function prepareTensorForCUDA(
+  tensorPtr: usize,
+  dimensions: i32[],
+  dimCount: i32,
+  outputPtr: usize
+): void {
+  let totalElements = 1;
   // Calculate total elements
   for (let i = 0; i < dimCount; i++) {
-    totalElements *= dimensions[i]}
+    totalElements *= dimensions[i];
+  }
 
   // Prepare tensor metadata for CUDA
   store<i32>(outputPtr, dimCount); // Number of dimensions
 
-  let metadataOffset = 4
+  let metadataOffset = 4;
   for (let i = 0; i < dimCount; i++) {
     store<i32>(outputPtr + metadataOffset, dimensions[i]);
-    metadataOffset += 4}
+    metadataOffset += 4;
+  }
 
   // Store total element count
-  store<i32>(outputPtr + metadataOffset, totalElements)}
+  store<i32>(outputPtr + metadataOffset, totalElements);
+}
 
 /**
  * Optimized memory transfer for large embeddings
  */
-export function optimizedEmbeddingTransfer(embeddingPtr: usize, length: i32, compressionLevel: i32): usize {
+export function optimizedEmbeddingTransfer(
+  embeddingPtr: usize,
+  length: i32,
+  compressionLevel: i32
+): usize {
   if (compressionLevel == 0) {
     // No compression, direct transfer
-    return embeddingPtr}
+    return embeddingPtr;
+  }
 
   // Quantization for reduced bandwidth
   const quantizedPtr = allocateVectorMemory(length);
@@ -377,15 +431,16 @@ export function optimizedEmbeddingTransfer(embeddingPtr: usize, length: i32, com
   if (compressionLevel == 1) {
     // 8-bit quantization
     let minVal = load<f32>(embeddingPtr);
-    let maxVal = minVal
+    let maxVal = minVal;
     // Find min/max
     for (let i = 1; i < length; i++) {
       const val = load<f32>(embeddingPtr + (i << 2));
-      if (val < minVal) minVal = val
-      if (val > maxVal) maxVal = val}
+      if (val < minVal) minVal = val;
+      if (val > maxVal) maxVal = val;
+    }
 
-    const range = maxVal - minVal
-    const scale = range / 255.0
+    const range = maxVal - minVal;
+    const scale = range / 255.0;
     // Store quantization parameters
     store<f32>(quantizedPtr, minVal);
     store<f32>(quantizedPtr + 4, scale);
@@ -394,11 +449,14 @@ export function optimizedEmbeddingTransfer(embeddingPtr: usize, length: i32, com
     for (let i = 0; i < length; i++) {
       const val = load<f32>(embeddingPtr + (i << 2));
       const quantized = i32((val - minVal) / scale);
-      store<u8>(quantizedPtr + 8 + i, u8(Math.min(255, Math.max(0, quantized))))}
+      store<u8>(quantizedPtr + 8 + i, u8(Math.min(255, Math.max(0, quantized))));
+    }
 
-    return quantizedPtr}
+    return quantizedPtr;
+  }
 
-  return embeddingPtr}
+  return embeddingPtr;
+}
 
 /**
  * Smart routing: local vs server processing decision
@@ -416,15 +474,16 @@ export function shouldUseServer(
 
   switch (operationType) {
     case 0: // Similarity
-      return dataSize > 1000 || complexityScore > 50
+      return dataSize > 1000 || complexityScore > 50;
     case 1: // Matrix
       return true; // Always use GPU for matrix ops
     case 2: // Embedding
       return true; // Always use server for embedding generation
     case 3: // Search
-      return dataSize > 100 || complexityScore > 30
+      return dataSize > 100 || complexityScore > 30;
     default:
-      return false}
+      return false;
+  }
 }
 
 // === JavaScript-Friendly Wrappers ===
@@ -434,19 +493,22 @@ export function shouldUseServer(
  */
 export function cosineSimJS(aPtr: usize, bPtr: usize, length: i32): f32 {
   const useServer = shouldUseServer(0, length, 10);
-  return hybridCosineSimilarity(aPtr, bPtr, length, useServer)}
+  return hybridCosineSimilarity(aPtr, bPtr, length, useServer);
+}
 
 /**
  * JS-callable dot product wrapper
  */
 export function dotProductJS(aPtr: usize, bPtr: usize, length: i32): f32 {
-  return dotProduct(aPtr, bPtr, length)}
+  return dotProduct(aPtr, bPtr, length);
+}
 
 /**
  * JS-callable SIMD cosine similarity wrapper
  */
 export function cosineSimSIMDJS(aPtr: usize, bPtr: usize, length: i32): f32 {
-  return cosineSimilaritySIMD(aPtr, bPtr, length)}
+  return cosineSimilaritySIMD(aPtr, bPtr, length);
+}
 
 /**
  * Get memory usage statistics
@@ -460,10 +522,9 @@ export function getMemoryStats(): i32 {
  */
 export function benchmarkOperation(operation: i32, dataSize: i32, iterations: i32): i32 {
   // Simple benchmark based on operation type
-  let ops: i32 = 0
+  let ops: i32 = 0;
   for (let i = 0; i < iterations; i++) {
     ops += dataSize * operation; // Simulate work
   }
   return ops; // Return simulated operation count
 }
-

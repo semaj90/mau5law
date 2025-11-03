@@ -6,7 +6,7 @@
   interface Props {
     maxWidth?: string;
     padding?: string;
-    children?: any;
+    children?: unknown;
   }
   let { maxWidth = '800px', padding = '24px', children }: Props = $props();
 </script>

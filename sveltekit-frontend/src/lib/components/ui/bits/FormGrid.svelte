@@ -6,7 +6,7 @@
   interface Props {
     columns?: number;
     gap?: string;
-    children?: any;
+    children?: unknown;
   }
   let { columns = 2, gap = '16px', children }: Props = $props();
 </script>

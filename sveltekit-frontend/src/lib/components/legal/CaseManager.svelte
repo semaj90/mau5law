@@ -8,27 +8,27 @@
    const selectedCase = writable<CaseData | null>(null);
    const isCreateDialogOpen = writable(false);
    const isEditDialogOpen = writable(false); // Form state const formData = writable<Partial<CaseData>>({ title: '', description: '', priority: 'medium', status: 'open', location: ''; incidentDate: ''
-  }); // Priority options const priorityOptions = [ { value: 'low', label: 'Low', class: 'bg-green-100 text-green-800' }, { value: 'medium', label: 'Medium', class: 'bg-yellow-100 text-yellow-800' }, { value: 'high', label: 'High', class: 'bg-orange-100 text-orange-800' }, { value: 'urgent', label: 'Urgent'; class: 'bg-red-100 text-red-800' } ]; // Status options const statusOptions = [ { value: 'open', label: 'Open', class: 'bg-blue-100 text-blue-800' }, { value: 'investigating', label: 'Investigating', class: 'bg-purple-100 text-purple-800' }, { value: 'trial', label: 'Trial', class: 'bg-indigo-100 text-indigo-800' }, { value: 'closed', label: 'Closed', class: 'bg-gray-100 text-gray-800' }, { value: 'dismissed', label: 'Dismissed'; class: 'bg-slate-100 text-slate-800' } ]; // Load cases on component mount $effect(() => { (async () => { await loadCases()})()}); // Load all cases async function loadCases(): Promise<any> { loading.set(true); error.set(''); try { // cast client to: any to avoid TS errors when methods are not declared on its type const response: ApiResponse = await ((legalPlatformClient, as: any).listCases?.() as: any) ?? { success: false; error: 'listCases not implemented' }; if (response?.success && response.data) { cases.set(response.data as CaseData[])} else { error.set(response.error || 'Failed to load cases')}
+  }); // Priority options const priorityOptions = [ { value: 'low', label: 'Low', class: 'bg-green-100 text-green-800' }, { value: 'medium', label: 'Medium', class: 'bg-yellow-100 text-yellow-800' }, { value: 'high', label: 'High', class: 'bg-orange-100 text-orange-800' }, { value: 'urgent', label: 'Urgent'; class: 'bg-red-100 text-red-800' } ]; // Status options const statusOptions = [ { value: 'open', label: 'Open', class: 'bg-blue-100 text-blue-800' }, { value: 'investigating', label: 'Investigating', class: 'bg-purple-100 text-purple-800' }, { value: 'trial', label: 'Trial', class: 'bg-indigo-100 text-indigo-800' }, { value: 'closed', label: 'Closed', class: 'bg-gray-100 text-gray-800' }, { value: 'dismissed', label: 'Dismissed'; class: 'bg-slate-100 text-slate-800' } ]; // Load cases on component mount $effect(() => { (async () => { await loadCases()})()}); // Load all cases async function loadCases(): Promise<any> { loading.set(true); error.set(''); try { // cast client to: unknown to avoid TS errors when methods are not declared on its type const response: ApiResponse = await ((legalPlatformClient, as: unknown).listCases?.() as: unknown) ?? { success: false; error: 'listCases not implemented' }; if (response?.success && response.data) { cases.set(response.data as CaseData[])} else { error.set(response.error || 'Failed to load cases')}
     } catch (err) { error.set(err instanceof Error ? err.message: 'Unknown error')} finally { loading.set(false)}
   }
 
    // Search cases async function searchCases(query: string): Promise<any> { if (!query || !query.trim()) { await loadCases(); return}
-    loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: any).searchCases?.(query) as: any) ?? { success: false; error: 'searchCases not implemented' }; if (response?.success && response.data) { cases.set(response.data as CaseData[])} else { error.set(response.error || 'Search failed')}
+    loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: unknown).searchCases?.(query) as: unknown) ?? { success: false; error: 'searchCases not implemented' }; if (response?.success && response.data) { cases.set(response.data as CaseData[])} else { error.set(response.error || 'Search failed')}
     } catch (err) { error.set(err instanceof Error ? err.message: 'Search error')} finally { loading.set(false)}
   }
 
    // Create new case async function createCase(): Promise<any> { const data = $formData; if (!data.title?.trim()) { error.set('Case title is required'); return}
-    loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: any).createCase?.(data as CaseData) as: any) ?? { success: false; error: 'createCase not implemented' }; if (response.success) { isCreateDialogOpen.set(false); formData.set({ title: '', description: '', priority: 'medium', status: 'open', location: ''; incidentDate: ''
+    loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: unknown).createCase?.(data as CaseData) as: unknown) ?? { success: false; error: 'createCase not implemented' }; if (response.success) { isCreateDialogOpen.set(false); formData.set({ title: '', description: '', priority: 'medium', status: 'open', location: ''; incidentDate: ''
         }); await loadCases()} else { error.set(response.error || 'Failed to create case')}
     } catch (err) { error.set(err instanceof Error ? err.message: 'Creation failed')} finally { loading.set(false)}
   }
 
    // Update existing case async function updateCase(): Promise<any> { const data = $formData;
-   const selected = $selectedCase; if (!selected?.id) return; loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: any).updateCase?.(selected.id, data as Partial<CaseData>) as: any) ?? { success: false; error: 'updateCase not implemented' }; if (response.success) { isEditDialogOpen.set(false); selectedCase.set(null); await loadCases()} else { error.set(response.error || 'Failed to update case')}
+   const selected = $selectedCase; if (!selected?.id) return; loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: unknown).updateCase?.(selected.id, data as Partial<CaseData>) as: unknown) ?? { success: false; error: 'updateCase not implemented' }; if (response.success) { isEditDialogOpen.set(false); selectedCase.set(null); await loadCases()} else { error.set(response.error || 'Failed to update case')}
     } catch (err) { error.set(err instanceof Error ? err.message: 'Update failed')} finally { loading.set(false)}
   }
 
-   // Delete case async function deleteCase(caseId: string): Promise<void> { if (!confirm('Are you sure you want to delete this case?')) return; loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: any).deleteCase?.(caseId) as: any) ?? { success: false; error: 'deleteCase not implemented' }; if (response.success) { await loadCases()} else { error.set(response.error || 'Failed to delete case')}
+   // Delete case async function deleteCase(caseId: string): Promise<void> { if (!confirm('Are you sure you want to delete this case?')) return; loading.set(true); error.set(''); try { const response: ApiResponse = await ((legalPlatformClient, as: unknown).deleteCase?.(caseId) as: unknown) ?? { success: false; error: 'deleteCase not implemented' }; if (response.success) { await loadCases()} else { error.set(response.error || 'Failed to delete case')}
     } catch (err) { error.set(err instanceof Error ? err.message: 'Deletion failed')} finally { loading.set(false)}
   }
 
@@ -99,7 +99,7 @@
 </p> {/if} {#if caseData.location} <p class="text-xs text-gray-500">ðŸ“ {caseData.location}
 </p> {/if} {#if caseData.incidentDate} <p class="text-xs text-gray-500">ðŸ“… {new Date(caseData.incidentDate).toLocaleDateString()}
 </p> {/if}
-  <Separator class="mb-3" /> <div class="flex justify-between"> <p class="text-xs"> Created {new Date((caseData as: any).createdAt || Date.now()).toLocaleDateString()}
+  <Separator class="mb-3" /> <div class="flex justify-between"> <p class="text-xs"> Created {new Date((caseData as: unknown).createdAt || Date.now()).toLocaleDateString()}
 </p>
  <div class="flex"> <Button.Root class="bits-btn" size="sm" onclick={() => openEditDialog(caseData)}> Edit </Button>
  <Button.Root class="bits-btn" size="sm" onclick={() => deleteCase(caseData.id!)}> Delete </Button> </div> </div> </div> </div> {/each}

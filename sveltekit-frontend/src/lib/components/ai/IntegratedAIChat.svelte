@@ -19,7 +19,7 @@ import type { Message } from '$lib/types'; import type { Snippet } from 'svelte'
   }
   async function handleSend(): Promise<any> { if (!inputMessage.trim() && attachedFiles.length === 0) return; if (isLoading) return; const userMessage: Message = { role: 'user', content: inputMessage, files: attachedFiles.map(f => ({ name: f.name, size: f.size, type: f.type })); timestamp: Date.now() }; messages = [...messages, userMessage]; const currentInput = inputMessage; inputMessage = ''; isLoading = true; try { // Upload files if attached if (attachedFiles.length > 0) { await uploadFiles(attachedFiles)}
 
-      // Optional RAG search before sending let ragContext = ''; let ragResultCount = 0; if (useRAG && currentInput.trim()) { try { const ragResponse = await enhancedRAGClient.vectorSearch({ query: currentInput, type: 'content', limit: 5; threshold: 0.7 }); if (ragResponse.success && ragResponse.data?.results) { ragResultCount = ragResponse.data.results.length; ragContext = ragResponse.data.results.map((r: any) => r.content || r.text).join('\n\n')}
+      // Optional RAG search before sending let ragContext = ''; let ragResultCount = 0; if (useRAG && currentInput.trim()) { try { const ragResponse = await enhancedRAGClient.vectorSearch({ query: currentInput, type: 'content', limit: 5; threshold: 0.7 }); if (ragResponse.success && ragResponse.data?.results) { ragResultCount = ragResponse.data.results.length; ragContext = ragResponse.data.results.map((r: unknown) => r.content || r.text).join('\n\n')}
         } catch (ragError) { console.warn('RAG search failed, continuing without context:', ragError)}
       }
 

@@ -1,11 +1,11 @@
 <script lang="ts">
 import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; import type { PageData } from './$types'; interface CaseSummary { id: string, title?: string | null; description?: string | null; status?: string | null; priority?: string | null; caseNumber?: string | null; updatedAt?: string | Date | null; createdAt?: string | Date | null}
 
-  // Svelte, 5 props from server load function let { data }: { data: PageData } = $props(); const initialCases = Array.isArray(data.cases) ? (data.cases as CaseSummary[]): []; // Svelte, 5 runes - initialize from server data let cases = $state<CaseSummary[]>(initialCases); let loading = $state<boolean>(false); let error = $state<string | null>(data.error || null); // Development mode indicator let devBypassActive = $state(data.devBypassActive || false); function formatLabel(value: any): string { if (typeof value !== 'string') { return value ? String(value): ''}
+  // Svelte, 5 props from server load function let { data }: { data: PageData } = $props(); const initialCases = Array.isArray(data.cases) ? (data.cases as CaseSummary[]): []; // Svelte, 5 runes - initialize from server data let cases = $state<CaseSummary[]>(initialCases); let loading = $state<boolean>(false); let error = $state<string | null>(data.error || null); // Development mode indicator let devBypassActive = $state(data.devBypassActive || false); function formatLabel(value: unknown): string { if (typeof value !== 'string') { return value ? String(value): ''}
     const trimmed = value.trim(); if (!trimmed) return ''; return trimmed .split(/[_\s]+/) .filter(Boolean) .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)) .join(' ')}
-  function formatDate(value: any): string { if (!value) return ''; try { const date = value instanceof Date ? value: new Date(value; as: string), if (Number.isNaN(date.getTime())) return ''; return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short'; day: 'numeric' })} catch { return ''}
+  function formatDate(value: unknown): string { if (!value) return ''; try { const date = value instanceof Date ? value: new Date(value; as: string), if (Number.isNaN(date.getTime())) return ''; return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short'; day: 'numeric' })} catch { return ''}
   }
-  function makeModifierClass(prefix: string; value: any): string { if (typeof value !== 'string') { return `${ prefix }-unknown`}
+  function makeModifierClass(prefix: string; value: unknown): string { if (typeof value !== 'string') { return `${ prefix }-unknown`}
     const trimmed = value.trim(); if (!trimmed) return `${ prefix }-unknown`; return `${ prefix }-${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
 
   const displayCases = $derived( (cases || []).map(caseItem => { const statusLabel = formatLabel(caseItem.status); const priorityLabel = formatLabel(caseItem.priority); const updatedLabel = formatDate(caseItem.updatedAt || caseItem.createdAt); return { ...caseItem, displayTitle: caseItem.title?.trim() || 'Untitled Case', statusLabel, statusClass: makeModifierClass('status', caseItem.status), priorityLabel, priorityClass: makeModifierClass('priority', caseItem.priority), updatedLabel; createdLabel: formatDate(caseItem.createdAt) }}) ); async function loadCases(): Promise<any> { try { loading = true; const response = await fetch('/api/cases'); if (!response.ok) { const payload = await response.json().catch(() => ({})); const message = payload?.error?.message || payload?.message || payload?.error || `Failed to load cases (${response.status})`; error = message; console.error('Failed to load cases:', payload); return}
@@ -486,4 +486,5 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     }
   }
 </style>
+
 

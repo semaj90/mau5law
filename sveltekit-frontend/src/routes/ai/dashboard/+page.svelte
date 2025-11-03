@@ -38,7 +38,7 @@ import type { Document } from '$lib/types';
 				postgres: data?.services?.postgres === 'connected',
 				neo4j: data?.services?.neo4j === 'active'
 			};
-			pushToast('Cluster health updated', 'success')} catch (e: any) {
+			pushToast('Cluster health updated', 'success')} catch (e: unknown) {
 			console.error('Health check error', e);
 			error = String(e ?? 'Unknown error');
 			systemStatus = {

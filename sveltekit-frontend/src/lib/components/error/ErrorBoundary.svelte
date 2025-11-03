@@ -8,8 +8,8 @@
 
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   interface Props {
-    children?: any
-    fallback?: any
+    children?: unknown
+    fallback?: unknown
     title?: string
     showReportButton?: boolean
     showRefreshButton?: boolean}

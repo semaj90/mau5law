@@ -35,3 +35,4 @@
 /* Disable transitions on theme change if requested */ {}:global(.disable-transitions *) { transition: none !important}
 </style>
 
+

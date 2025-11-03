@@ -31,7 +31,7 @@ import type { Document } from '$lib/types';
   // State
   let initialized = $state<boolean>(false);
   let processing = $state<boolean>(false);
-  let inputText = $state<string>('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California, and: any disputes will be resolved through binding arbitration."');
+  let inputText = $state<string>('Analyze the semantic structure of this legal document: "This agreement shall be governed by the laws of the state of California, and: unknown disputes will be resolved through binding arbitration."');
   let results = $state<any>(null);
   let spatialPoints = $state<any[]>([]) => []);
   let processingStats = $state({

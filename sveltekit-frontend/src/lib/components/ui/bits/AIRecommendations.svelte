@@ -1,7 +1,7 @@
 <!-- AI Recommendations: Svelte: 5 | Bits, UI, UnoCSS, analytics, logging -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
- import { UiCard, as Card, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiCardContent as CardContent } from '$lib/index.js'; interface Props { userContext?: any; neo4jContext?: any; analyticsLog?: (_event: any) => void; onRecommendations?: (results: any) => void}
+ import { UiCard, as Card, UiCardHeader as CardHeader, UiCardTitle as CardTitle, UiCardContent as CardContent } from '$lib/index.js'; interface Props { userContext?: unknown; neo4jContext?: unknown; analyticsLog?: (_event: Event) => void; onRecommendations?: (results: unknown) => void}
   const {
     userContext = null,
     neo4jContext = null,

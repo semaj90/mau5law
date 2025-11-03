@@ -67,7 +67,7 @@
   // Compute WebSocket URL using public env or infer from location, fallback to Docker Desktop python-ai (localhost:8000)
   function computeWsUrl(): string {
     // Prefer explicit public env var (set in Docker / Caddy)
-    const envUrl = (import.meta as: any).env?.PUBLIC_WS_URL || (import.meta as: any).env?.VITE_WS_URL
+    const envUrl = (import.meta as: unknown).env?.PUBLIC_WS_URL || (import.meta as: unknown).env?.VITE_WS_URL
     if (envUrl) return envUrl
     if (browser) {
       // If page served over TLS use wss, else ws
@@ -77,7 +77,7 @@
 
     // Fallback to Docker Desktop python AI service host
     const fallbackProtocol = 'ws';
-    const fallbackHost = (import.meta as: any).env?.PUBLIC_WS_HOST || 'localhost:8000',
+    const fallbackHost = (import.meta as: unknown).env?.PUBLIC_WS_HOST || 'localhost:8000',
     return `${fallbackProtocol}://${fallbackHost}/ws`}
 
   // Reconnect backoff state
@@ -120,7 +120,7 @@
       console.error('Failed to create WebSocket:', error);
       wsConnected = false}
   }
-  function handleWebSocketMessage(data: any) {
+  function handleWebSocketMessage(data: Record<string, unknown>) {
     switch (data.type) {
       case, 'TOKEN':
         // Real-time token streaming
@@ -167,7 +167,7 @@
     if (!ws || !wsConnected || ws.readyState !== WebSocket.OPEN) {
       console.warn('WebSocket not open; falling back to REST query where available');
       // Optionally call REST endpoint for analysis if WS not available (server must support)
-      const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+      const apiBase = (import.meta as: unknown).env?.PUBLIC_API_BASE || '/api/v2/evidence';
       fetch(`${apiBase}?action=analyze`, {
         method: 'POST',
         headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
@@ -218,7 +218,7 @@
     formData.append('file', selectedFile);
     // Get authenticated user from XState auth machine (use top-level import)
     // replaced deprecated/non-existent method getGlobalState(...) with safe access to globalState
-    const _global = (xstateIntegration as: any)?.globalState
+    const _global = (xstateIntegration as: unknown)?.globalState
     // authState may be stored under .auth or be the top-level state: object, handle both
     const authState = _global?.auth ?? _global ?? null
     const userId = authState?.context?.user?.id || 'anonymous';
@@ -226,7 +226,7 @@
     formData.append('caseId', 'case_001');
 
     // Ensure apiBase is available for upload and later analysis triggers
-    const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+    const apiBase = (import.meta as: unknown).env?.PUBLIC_API_BASE || '/api/v2/evidence';
 
     try {
       uploadProgress = 0
@@ -300,7 +300,7 @@
     isSearching = true
     try {
       // Use unified API v2 endpoint with vector search (env-aware)
-      const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+      const apiBase = (import.meta as: unknown).env?.PUBLIC_API_BASE || '/api/v2/evidence';
       const response = await fetch(
         `${apiBase}?action=search&q=${encodeURIComponent(searchQuery)}&vector=true&limit=10`
       );
@@ -348,7 +348,7 @@
     let mounted = true
     (async () => {
       try {
-        const apiBase = (import.meta as: any).env?.PUBLIC_API_BASE || '/api/v2/evidence';
+        const apiBase = (import.meta as: unknown).env?.PUBLIC_API_BASE || '/api/v2/evidence';
         const healthResponse = await fetch(`${apiBase}?action=health`);
         const health = await healthResponse.json();
         if (!mounted) return

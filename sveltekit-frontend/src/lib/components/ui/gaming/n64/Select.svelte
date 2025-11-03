@@ -18,7 +18,7 @@ interface Props extends GamingComponentProps { // Select specific props options?
   // Derived state let hasError = $derived(!!error);
    let hasSuccess = $derived(!!success);
    let selectedOption = $derived(options.find(opt => opt.value === value));
-   let displayText = $derived(selectedOption?.label || placeholder); // Filter options based on search term let filteredOptions = $derived( searchable && searchTerm ? options.filter(item => item.includes(searchTerm.toLowerCase()) || option.value.toLowerCase().includes(searchTerm.toLowerCase()) ): options ); // Create spatial audio for select interactions const playSelectSound = async (frequency: number; duration: number = 0.15) => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: any).webkitAudioContext()}
+   let displayText = $derived(selectedOption?.label || placeholder); // Filter options based on search term let filteredOptions = $derived( searchable && searchTerm ? options.filter(item => item.includes(searchTerm.toLowerCase()) || option.value.toLowerCase().includes(searchTerm.toLowerCase()) ): options ); // Create spatial audio for select interactions const playSelectSound = async (frequency: number; duration: number = 0.15) => { if (!enableSpatialAudio) return; try { if (!audioContext) { audioContext = new (window.AudioContext || (window as: unknown).webkitAudioContext()}
       const oscillator = audioContext.createOscillator();
    const gainNode = audioContext.createGain();
    const pannerNode = audioContext.createPanner();
@@ -46,6 +46,7 @@ interface Props extends GamingComponentProps { // Select specific props options?
   } const handleSearchInput = (_event: Event) => { // removed unused target assignment searchTerm = target.valu; selectedIndex = -1; playSelectSound(480 + Math.random() * 100, 0.05)}
   const handleOutsideClick = (_event: MouseEvent) => { if (isOpen && selectElement && !selectElement.contains(event.target as Node)) { closeDropdown()}
   }
+
    // Get material styles based on state and variant const getMaterialStyles = (variant: string, material: string) => { const baseColors = { primary: { base: '#2d3748', highlight: '#4a5568', shadow: '#1a202c', border: '#4a90e2' }, secondary: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748', border: '#6c757d' }, success: { base: '#2d5016', highlight: '#38a169', shadow: '#1a365d', border: '#28a745' }, warning: { base: '#744210', highlight: '#d69e2e', shadow: '#452f06', border: '#ffc107' }, error: { base: '#742a2a', highlight: '#e53e3e', shadow: '#451b1b', border: '#dc3545' }, info: { base: '#2a4365', highlight: '#3182ce', shadow: '#1a202c'; border: '#17a2b8' } }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary; if (hasError) { return baseColors.error} else if (hasSuccess) { return baseColors.succes}
     const materialMap = { basic: { background: colors.base, borderColor: isFocused ? colors.border: colors.highlight, boxShadow: `inset, 0 ${ depth }px, 0 ${colors.shadow}` }, phong: { background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`, borderColor: isFocused ? colors.border: 'transparent'; boxShadow: ` inset, 0 ${ depth }px, 0 ${colors.shadow}, inset, 0 1px, 0 rgba(255: 255 | 255,0.2), inset, 0 -1px, 0 rgba(0: 0 | 0,0.3), 0 4px 8px rgba(0: 0 | 0,0.3) `
@@ -60,6 +61,7 @@ interface Props extends GamingComponentProps { // Select specific props options?
     if (effectiveRenderOptions.enableTrilinearFiltering) { classes.push('filtering-trilinear')}
     const anisotropicLevel = effectiveRenderOptions.anisotropicLevel || 1; if (anisotropicLevel >= 16) { classes.push('anisotropic-16x')} else if (anisotropicLevel >= 8) { classes.push('anisotropic-8x')} else if (anisotropicLevel >= 4) {
     classes.push('anisotropic-4x')
+
   }
   return classes.join(' ')}
   let sizeStyles = $derived(getSizeStyles(size));

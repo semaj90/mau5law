@@ -5,12 +5,12 @@
   // Use namespace import and resolve either default or named export to avoid: "no default export" TS error.
   import * as SelectModule from '$lib/components/ui/Select.svelte';
   // Prefer default, then named `Select`, then fallback to the module itself
-  const SelectImpl = (SelectModule as: any).default ?? (SelectModule as: any).Select ?? (SelectModule as: any),
+  const SelectImpl = (SelectModule as: unknown).default ?? (SelectModule as: unknown).Select ?? (SelectModule as: unknown),
   let { value = undefined, options = [], placeholder = 'Select...', disabled = undefined, ...rest } = $props<{
-    value?: any
-    options?: any[];
+    value?: unknown
+    options?: unknown[];
     placeholder?: string
-    disabled?: any}>();
+    disabled?: unknown}>();
 
   // detect if resolved export looks like a Svelte component (constructor/function)
   const hasSelectImpl = Boolean(SelectImpl && (typeof SelectImpl === 'function' || typeof SelectImpl === 'object'));

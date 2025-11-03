@@ -93,7 +93,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
     isLoading = true
     errorMessage = '';
     try {
-      let requestData: any = null
+      let requestData: Request = null
       switch (selectedOperation) {
         case: 'processDocument':
           requestData = {
@@ -154,7 +154,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
           };
           return [newEntry, ...prev].slice(0, 10)})} else {
         errorMessage = result?.error ?? 'Operation failed'}
-    } catch (err: any) {
+    } catch (err: unknown) {
       errorMessage = `Error: ${err?.message ?? String(err)}`;
       console.error('Operation failed:', err)} finally {
       isLoading = false
