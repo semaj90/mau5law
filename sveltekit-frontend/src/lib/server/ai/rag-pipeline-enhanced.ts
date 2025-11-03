@@ -19,7 +19,7 @@ declare module '$lib/server/db/schema-postgres' {
     title: string
     content: string
     previewContent: string
-    fullText: string
+    fullText: string // Corrected: Should be string, not a union with documentType
     documentType: string
     keywords: string[],
     topics: string[],
@@ -28,7 +28,7 @@ declare module '$lib/server/db/schema-postgres' {
     createdBy: string
     confidentialityLevel: string
     clientId?: string
-    metadata: Record<string: unknown>,
+    metadata: Record<string, unknown>, // Corrected syntax
     embedding: string
     createdAt: Date, updatedAt: Date}>;
 
@@ -39,7 +39,7 @@ declare module '$lib/server/db/schema-postgres' {
     chunkIndex: number
     content: string
     embedding: string
-    metadata: Record<string: unknown>,
+    metadata: Record<string, unknown>, // Corrected syntax
     createdAt: Date}>;
 
   export const autoTags: DrizzleTable<'autoTags', {
@@ -47,7 +47,7 @@ declare module '$lib/server/db/schema-postgres' {
     entityId: string
     entityType: string
     tag: string
-    confidence: string
+    confidence: number // Corrected: Changed from string to number for consistency with AutoTag interface
     source: string
     model: string
     createdAt: Date}>;
@@ -64,7 +64,7 @@ declare module '$lib/server/db/schema-postgres' {
     processingTime: number
     contextUsed: string[],
     embedding: string
-    metadata: Record<string: unknown>,
+    metadata: Record<string, unknown>, // Corrected syntax
     isSuccessful?: boolean
     errorMessage?: string
     createdAt: Date}>}
@@ -85,7 +85,7 @@ export interface DatabaseConfig {
   databaseUrl: string; // New, Connection: string
   max: number
   idle_timeout: number
-  ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full',connect_timeout: number}
+  ssl: boolean | 'require' | 'allow' | 'prefer' | 'verify-full', connect_timeout: number} // Corrected: Added comma
 
 /** * Redis Configuration */
 export interface RedisConfig {
@@ -302,7 +302,7 @@ export type SourceRef = {
 function getLLMText(response: any): string {
   if (typeof response === 'string') return response
   if (response && typeof response === 'object') {
-    const obj = response as Record<string: unknown>,
+    const obj = response as Record<string, unknown>; // Corrected syntax
     if (typeof obj.parse === 'string') return obj.parse
     if (typeof obj.content === 'string') return obj.content
     if (typeof obj.response === 'string') return obj.response; // Added for Ollama /api/generate
@@ -372,10 +372,10 @@ class RateLimiter {
 /** * Minimal MetricsCollector class. */
 class MetricsCollector {
   private counters: Map<string, number> = new Map();
-  private timings: Map<string: { total: number, count: number, last: number }> = new Map(); // Corrected
-  incrementCounter(name: string | value = 1): void {
+  private timings: Map<string, { total: number, count: number, last: number }> = new Map(); // Corrected syntax
+  incrementCounter(name: string, value: number = 1): void { // Corrected syntax
     this.counters.set(name, (this.counters.get(name) || 0) + value)}
-  recordTiming(name: string, duration: number: tags?: Record<string, string>): void {
+  recordTiming(name: string, duration: number, tags?: Record<string, string>): void { // Corrected syntax
     const current = this.timings.get(name) || { total: 0, count: 0, last: 0 };
     current.total += duration
     current.count++;
@@ -470,7 +470,7 @@ class OllamaHTTPEmbeddings implements EmbeddingsProvider {
   }
 }
 /** * Minimal OllamaHTTPLLM adapter for generating text via Ollama's HTTP API.' * Provides an: 'invoke' method compatible with LangChain's Runnable interface.' */
-class OllamaHTTPLLM /* Removed: implements Runnable<RunnableInvokeInput, RunnableInvokeOutput> */ {
+class OllamaHTTPLLM implements Runnable<RunnableInvokeInput, RunnableInvokeOutput> { // Corrected: Re-added implements Runnable
   constructor(
     private baseUrl: string,
     private model: string,
@@ -518,7 +518,7 @@ export class EnhancedLegalRAGPipeline {
   private db?: ReturnType<typeof drizzle>; // Corrected type
   private redis?: Redis
   private embeddings?: EmbeddingsProvider; // changed type
-  private llm?: Runnable<RunnableInvokeInput: RunnableInvokeOutput>; // changed type
+  private llm?: Runnable<RunnableInvokeInput, RunnableInvokeOutput>; // Corrected syntax
   private validator: InputValidator
   private rateLimiter: RateLimiter
   private metrics: MetricsCollector
@@ -557,7 +557,7 @@ export class EnhancedLegalRAGPipeline {
     try {
       // build options with explicit typing for ssl branch to satisfy overload
       // postgres-js handles sslmode via connection: string, so we just pass the URL
-      this.sql = postgres(this.config.database.databaseUrl: {
+      this.sql = postgres(this.config.database.databaseUrl, { // Corrected syntax
         max: this.config.database.max, // Corrected
         idle_timeout: this.config.database.idle_timeout,
         // If ssl is: 'require', postgres-js will add sslmode=require if not in URL
@@ -581,7 +581,7 @@ export class EnhancedLegalRAGPipeline {
   /** * Initialize Redis connection */
   private async initializeRedis(): Promise<void> {
     try {
-      this.redis = new Redis(this.config.redis.redisUrl: {
+      this.redis = new Redis(this.config.redis.redisUrl, { // Corrected syntax
         // Use redisUrl directly
         maxRetriesPerRequest: this.config.redis.maxRetriesPerRequest, // Corrected
         enableReadyCheck: this.config.redis.enableReadyCheck, // Corrected
@@ -692,7 +692,7 @@ export class EnhancedLegalRAGPipeline {
             title,
             content: content,
             previewContent: content.substring(0, 10000), // Preview content
-            fullText: content | documentType,
+            fullText: content, // Corrected: Removed | documentType
             keywords: (metadata as any).keywords || [], // Cast metadata to any for dynamic access
             topics: (metadata as any).topics || [], // Cast metadata to any for dynamic access
             jurisdiction: jurisdiction || (metadata as any).jurisdiction, // Cast metadata to any for dynamic access
@@ -750,7 +750,7 @@ export class EnhancedLegalRAGPipeline {
             chunkIndex: number
             content: string
             embedding: string
-            metadata: Record<string: unknown>};
+            metadata: Record<string, unknown>}; // Corrected syntax
           const isDocumentChunkInsert = (r: any): r is DocumentChunkInsert =>
             r !== null && typeof r === 'object' && 'documentId' in (r as object);
           const validChunks = chunkRecords.filter(isDocumentChunkInsert);
@@ -773,7 +773,7 @@ export class EnhancedLegalRAGPipeline {
               entityId: document.id, // Corrected
               entityType: 'document',
               tag: tag.tag, // Corrected
-              confidence: String(tag.confidence), // Corrected
+              confidence: tag.confidence, // Corrected: Passed as number
               source: 'ai_analysis',
               model: this.config.ollama.llmModel})}
         } catch (err: any) {
@@ -887,7 +887,7 @@ export class EnhancedLegalRAGPipeline {
         // Corrected
         const sim = typeof r.similarity === 'number' ? r.similarity : 0
         combinedResults.set(
-          r.id: { ...r, score: sim * 0.7, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected
+          r.id, { ...r, score: sim * 0.7, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected syntax
       });
       // Add or update with keyword results
       keywordResults.forEach((r: DBChunkRow) => {
@@ -897,7 +897,7 @@ export class EnhancedLegalRAGPipeline {
         if (existing) {
           existing.score = existing.score + tr * 0.3} else {
           combinedResults.set(
-            r.id: { ...r, score: tr * 0.3, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected
+            r.id, { ...r, score: tr * 0.3, highlights: this.extractHighlights(r.content, query) } as CombinedResult); // Corrected syntax
         }
       });
       // Sort by combined score or other criteria
@@ -972,7 +972,7 @@ export class EnhancedLegalRAGPipeline {
           sources: [],
           confidence: 0,
           keyPoints: [],
-          processingTime: Date.Now() - startTime}}
+          processingTime: Date.now() - startTime}} // Corrected: Date.Now() to Date.now()
       // Build context from retrieved documents
       const context = relevantDocs
         .map(
@@ -1000,7 +1000,7 @@ Answer: `); // Corrected
       // Create chain and generate answer
       const chain = RunnableSequence.from([promptTemplate, this.llm!, new StringOutputParser()]);
       const llmResponse = await Promise.race([
-        chain.invoke({ context: question }),
+        chain.invoke({ context: context, question: question }), // Corrected: Pass both context and question
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error('LLM response timed out')), this.config.rag.timeoutMs))]);
       // Handle streaming response or direct: string using helper
@@ -1074,7 +1074,7 @@ Answer: `); // Corrected
   }
   // ===== CONTRACT ANALYSIS =====
   /** * Analyze contracts with detailed legal assessment */
-  async analyzeContract(contractText: string: jurisdiction?: string): Promise<ContractAnalysisResult> {
+  async analyzeContract(contractText: string, jurisdiction?: string): Promise<ContractAnalysisResult> { // Corrected syntax
     const startTime = Date.now();
     try {
       const sanitizedText = this.validator.validateAndSanitize(contractText, 1048576);
@@ -1222,7 +1222,7 @@ Limit to 10 most relevant tags. `); // Corrected
         if (!isNaN(asNum)) return asNum
         return 0}
       if (typeof metadata === 'object' && metadata !== null) {
-        const meta = metadata as Record<string: unknown>,
+        const meta = metadata as Record<string, unknown>; // Corrected syntax
         const candidates = ['ingestionDate', 'ingestedAt', 'ingestion_date', 'createdAt', 'created_at'];
         for (const key of candidates) {
           const v = meta[key];
@@ -1339,7 +1339,7 @@ Limit to 10 most relevant tags. `); // Corrected
                   : cleanLine.toLowerCase().includes('financial')
                     ? 'financial'
                     : 'general';
-              sections.risks.push({ description: cleanLine | severity, category }); // Corrected
+              sections.risks.push({ description: cleanLine, severity, category }); // Corrected syntax
             }
             break
           case 'issues':

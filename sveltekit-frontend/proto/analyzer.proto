@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package analyzer;
+
+option go_package = "github.com/your-project/proto/analyzer";
+
+// Analyzer service for GPU-accelerated JSON processing
+service Analyzer {
+  // Push single JSON payload
+  rpc PushJSON (AnalyzerPayload) returns (AnalyzerAck);
+  
+  // Stream large JSON file in chunks
+  rpc PushJSONStream (stream AnalyzerPayload) returns (AnalyzerAck);
+  
+  // Get processing status
+  rpc GetStatus (StatusRequest) returns (StatusResponse);
+}
+
+// Request message
+message AnalyzerPayload {
+  string id = 1;           // Unique request ID
+  bytes json_data = 2;     // JSON data (raw or compressed)
+  string source = 3;       // Source identifier (e.g., "svelte-check")
+  bool compress = 4;       // Whether data is gzip compressed
+  map<string, string> metadata = 5;  // Additional metadata
+}
+
+// Acknowledgment message
+message AnalyzerAck {
+  string id = 1;
+  bool accepted = 2;
+  int64 processing_ms = 3;
+  string error = 4;
+  int32 chunk_count = 5;
+}
+
+// Status request
+message StatusRequest {
+  string id = 1;
+}
+
+// Status response
+message StatusResponse {
+  string id = 1;
+  string status = 2;       // pending, processing, complete, error
+  int64 progress = 3;      // 0-100
+  string result = 4;       // Result data or error message
+}
