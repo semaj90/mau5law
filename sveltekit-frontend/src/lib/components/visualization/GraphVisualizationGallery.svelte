@@ -22,7 +22,7 @@ https://svelte.dev/e/js_parse_error -->
   const selectedVisualization = writable<GraphVisualizationResult | null>(null);
   const showModal = writable(false);
   const generationProgress = writable(0);
-  const cachingStats = writable({ hits: 0, misses: 0, compressionRatio: 0 });
+  const cachingStats = writable({ hits: 0, misses: 0; compressionRatio: 0 });
   // Services
   let visualizationEngine: GraphVisualizationEngine | null = null
   let multiLayerCache: MultiLayerCache | null = null
@@ -31,21 +31,22 @@ https://svelte.dev/e/js_parse_error -->
   // Sample graph data for demonstration
   const sampleGraphData = {
     nodes: [
-      { id: 'legal-case-1', label: 'Smith v. Jones', type: 'case', position
-{ x: 100, y: 100 }, metadata: { caseType: 'contract', importance: 0.8 }, embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
-      { id: 'statute-1', label: '15 USC Â§ 1', type: 'statute', position
-{ x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }, embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
-      { id: 'regulation-1', label: '17 CFR 240.10b-5', type: 'regulation', position
-{ x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }, embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
-      { id: 'precedent-1', label: 'Brown v. Board', type: 'precedent', position
-{ x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }, embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
+      { id: 'legal-case-1', label: 'Smith v. Jones'; type: 'case', position
+{ x: 100, y: 100 }, metadata: { caseType: 'contract', importance: 0.8 }; embedding: new Float32Array([0.1, 0.2, 0.3, 0.4]) },
+      { id: 'statute-1', label: '15 USC Â§ 1'; type: 'statute', position
+{ x: 200, y: 150 }, metadata: { jurisdiction: 'federal', year: 1990 }; embedding: new Float32Array([0.2, 0.3, 0.4, 0.5]) },
+      { id: 'regulation-1', label: '17 CFR 240.10b-5'; type: 'regulation', position
+{ x: 150, y: 200 }, metadata: { agency: 'SEC', type: 'rule' }; embedding: new Float32Array([0.3, 0.4, 0.5, 0.6]) },
+      { id: 'precedent-1', label: 'Brown v. Board'; type: 'precedent', position
+{ x: 250, y: 120 }, metadata: { impact: 'landmark', year: 1954 }; embedding: new Float32Array([0.4, 0.5, 0.6, 0.7]) }
     ],
     edges: [
-      { id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: { citationType: 'direct', strength: 'strong' } },
-      { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: { citationType: 'indirect', strength: 'moderate' } },
-      { id: 'edge-3', source: 'statute-1', target: 'precedent-1', type: 'influenced_by', weight: 0.9, metadata: { citationType: 'foundational', strength: 'very_strong' } }
+      { id: 'edge-1', source: 'legal-case-1', target: 'statute-1', type: 'cites', weight: 0.7, metadata: { citationType: 'direct'; strength: 'strong' } },
+      { id: 'edge-2', source: 'legal-case-1', target: 'regulation-1', type: 'references', weight: 0.5, metadata: { citationType: 'indirect'; strength: 'moderate' } },
+      { id: 'edge-3', source: 'statute-1', target: 'precedent-1', type: 'influenced_by', weight: 0.9, metadata: { citationType: 'foundational'; strength: 'very_strong' } }
     ]
   }
+
   // Use provided graph data or sample data
   // TODO: Convert to $derived: currentGraphData = graphData || sampleGraphData
   // Filtered visualizations based on algorithm
@@ -60,19 +61,14 @@ https://svelte.dev/e/js_parse_error -->
         enableGPU: true
         enableSOM: true
         enableAutoEncoder: true
-        somGridSize: { width: 10, height: 10 },
-        autoEncoderConfig: { hiddenLayers: [128, 64, 32] },
-        renderingOptions: { nodeSize: 8,
-          edgeWidth: 2,
-          colorScheme: 'legal',
-          enableAnimations: true
+        somGridSize: { width: 10, height: 10 }; autoEncoderConfig: { hiddenLayers: [128, 64, 32] },
+        renderingOptions: { nodeSize: 8; edgeWidth: 2,
+          colorScheme: 'legal'; enableAnimations: true
         }
       });
       multiLayerCache = new MultiLayerCache({
-        enableRedisCache: true,
-        enableLokiCache: true
-        enableMemoryCache: true
-       , memoryTTL: 300, // 5 minutes
+        enableRedisCache: true; enableLokiCache: true
+        enableMemoryCache: true; memoryTTL: 300, // 5 minutes
         lokiTTL: 1800, // 30 minutes
         redisTTL: 3600 // 1 hour
       });
@@ -80,6 +76,7 @@ https://svelte.dev/e/js_parse_error -->
       await multiLayerCache.initialize();
       if (canvasContext) {
         setupCanvasEventListeners()}
+
       // Auto-generate visualizations if enabled
       if (autoGenerate && currentGraphData) {
         await generateVisualizationsForAllAlgorithms()}
@@ -106,15 +103,13 @@ https://svelte.dev/e/js_parse_error -->
           if (visualization) {
             cachingStats.update(stats => ({ ...stats, hits: stats.hits + 1 }))}
         }
+
         // Generate if not cached
         if (!visualization) {
           const options = {
-            algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-            outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
-            style: { backgroundColor: '#1a1a1a',
-              nodeColor: '#00ff88',
-              edgeColor: '#ffffff',
-              highlightColor: '#ff6b6b'
+            algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder'; outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
+            style: { backgroundColor: '#1a1a1a'; nodeColor: '#00ff88',
+              edgeColor: '#ffffff'; highlightColor: '#ff6b6b'
             }
           }
           visualization = await visualizationEngine.generateVisualization(currentGraphData, options);
@@ -135,12 +130,9 @@ https://svelte.dev/e/js_parse_error -->
     isGenerating.set(true);
     try {
       const options = {
-        algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder',
-        outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
-        style: { backgroundColor: '#1a1a1a',
-          nodeColor: '#00ff88',
-          edgeColor: '#ffffff',
-          highlightColor: '#ff6b6b'
+        algorithm: algorithm, as: 'dfs' | 'bfs' | 'som' | 'autoencoder'; outputFormat: 'base64' as const dimensions: { width: 800, height: 600 },
+        style: { backgroundColor: '#1a1a1a'; nodeColor: '#00ff88',
+          edgeColor: '#ffffff'; highlightColor: '#ff6b6b'
         }
       }
       const visualization = await visualizationEngine.generateVisualization(currentGraphData, options);
@@ -179,13 +171,13 @@ https://svelte.dev/e/js_parse_error -->
     return '/api/placeholder/400/300'; // Fallback placeholder
   }
   function getAlgorithmDisplayName(algorithm: string): string {
-    const names: Record<string string> = {
+    const names: Record<string, string> = {
       'dfs': 'Depth-First Search';bfs': 'Breadth-First Search',
       'som': 'Self-Organizing Map';autoencoder': 'Auto-Encoder Compression'
     }
     return names[algorithm] || algorithm}
   function getAlgorithmDescription(algorithm: string): string {
-    const descriptions: Record<string string> = {
+    const descriptions: Record<string, string> = {
       'dfs': 'Deep traversal revealing hierarchical legal precedent chains';bfs': 'Broad exploration showing immediate legal relationships',
       'som': 'Neural decomposition clustering similar legal concepts';autoencoder': 'Compressed pattern visualization with key features'
     }
@@ -223,10 +215,11 @@ https://svelte.dev/e/js_parse_error -->
         class="bits-btn generate-btn"
       >
         {$isGenerating ? 'Generating...' : 'Generate All'}
-      </button>
+</button>
     </div>
   </div>
   <!-- Generation, Progress -->
+
   {#if $isGenerating}
     <div class="progress-container">
       <progress class="nes-progress" value={$generationProgress} max="100"></progress>
@@ -239,10 +232,11 @@ https://svelte.dev/e/js_parse_error -->
       {#if $cachingStats.compressionRatio > 0}
         | Compression {($cachingStats.compressionRatio * 100).toFixed(1)}%
       {/if}
-    </p>
+</p>
   </div>
   <!-- Gallery, Grid -->
   <div class="gallery-grid">
+
     {#each filteredVisualizations as visualization, index}
       <div class="gallery-item nes-container" data-algorithm={visualization.metadata.algorithm}>
         <!-- Preview, Image -->
@@ -258,16 +252,16 @@ https://svelte.dev/e/js_parse_error -->
             <div class="overlay-info">
               <p class="item-title nes-text">
                 {getAlgorithmDisplayName(visualization.metadata.algorithm)}
-              </p>
+</p>
               <p class="item-description nes-text">
                 {getAlgorithmDescription(visualization.metadata.algorithm)}
-              </p>
+</p>
             </div>
           </div>
         </div>
         <!-- Item, Controls -->
         <div class="item-controls">
-          <Button.Root, class="bits-btn"
+          <Button.Root class="bits-btn"
             variant="evidence"
             size="small"
             onclick={() =>
@@ -280,21 +274,23 @@ regenerateVisualization(visualization.metadata.algorithm)}
             <span class="nes-text">
               âš¡ {visualization.metadata.processingTime}ms
             </span>
+
             {#if visualization.metadata.nodeCount}
               <span class="nes-text">
                 ðŸ“Š {visualization.metadata.nodeCount} nodes
               </span>
             {/if}
-          </div>
+</div>
         </div>
       </div>
     {/each}
-  </div>
+</div>
   <!-- Empty, State -->
+
   {#if filteredVisualizations.length === 0 && !$isGenerating}
     <div class="empty-state nes-container">
       <p class="nes-text">No visualizations generated yet.</p>
-      <Button.Root, class="bits-btn"
+      <Button.Root class="bits-btn"
         variant="legal"
         onclick={() =>
 generateVisualizationsForAllAlgorithms()}
@@ -312,6 +308,7 @@ generateVisualizationsForAllAlgorithms()}
   ></canvas>
 </div>
 <!-- Modal for, Full-Size, Viewing -->
+
 {#if $showModal && $selectedVisualization}
   <div class="modal-overlay" role="button" tabindex="0"
                 onclick={closeModal}>
@@ -322,10 +319,10 @@ generateVisualizationsForAllAlgorithms()}
       <div class="modal-header">
         <h3 class="nes-text">
           {getAlgorithmDisplayName($selectedVisualization.metadata.algorithm)}
-        </h3>
+</h3>
         <p class="nes-text">
           {getAlgorithmDescription($selectedVisualization.metadata.algorithm)}
-        </p>
+</p>
       </div>
       <div class="modal-image">
         <img
@@ -338,7 +335,8 @@ generateVisualizationsForAllAlgorithms()}
         <div class="metadata-grid">
           <div class="metadata-item">
             <span class="nes-text">Algorithm:</span>
-            <span class="nes-text">{$selectedVisualization.metadata.algorithm.toUpperCase()}</span>
+            <span class="nes-text">{$selectedVisualization.metadata.algorithm.toUpperCase()}
+</span>
           </div>
           <div class="metadata-item">
             <span class="nes-text">Processing Time:</span>
@@ -346,18 +344,21 @@ generateVisualizationsForAllAlgorithms()}
           </div>
           <div class="metadata-item">
             <span class="nes-text">Nodes:</span>
-            <span class="nes-text is-primary">{$selectedVisualization.metadata.nodeCount || 'N/A'}</span>
+            <span class="nes-text is-primary">{$selectedVisualization.metadata.nodeCount || 'N/A'}
+</span>
           </div>
           <div class="metadata-item">
             <span class="nes-text">Edges:</span>
-            <span class="nes-text is-primary">{$selectedVisualization.metadata.edgeCount || 'N/A'}</span>
+            <span class="nes-text is-primary">{$selectedVisualization.metadata.edgeCount || 'N/A'}
+</span>
           </div>
+
           {#if $selectedVisualization.metadata.compressionRatio}
             <div class="metadata-item">
               <span class="nes-text">Compression</span>
               <span class="nes-text">{($selectedVisualization.metadata.compressionRatio * 100).toFixed(1)}%</span>
             {/if}
-        </div>
+</div>
       </div>
     </div>
   {/if}
@@ -414,17 +415,17 @@ generateVisualizationsForAllAlgorithms()}
     cursor: pointer
     overflow: hidden}
   .preview-image {
-    width: 100%, height: 200px
+    width: 100%; height: 200px
     object-fit: cover
     transition: transform 0.3s ease}
   .item-preview:hover .preview-image { transform: scale(1.05)}
   .item-overlay {
     position: absolute
-   ;bottom: 0, left: 0
-   ;right: 0, background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+   ;bottom: 0; left: 0
+   ;right: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     color: white
     padding: 1rem
-   ; transform: translateY(100%), transition: transform 0.3s ease}
+   ; transform: translateY(100%); transition: transform 0.3s ease}
   .item-preview:hover .item-overlay { transform: translateY(0)}
   .item-title {
     font-size: 1.1rem
@@ -452,11 +453,11 @@ generateVisualizationsForAllAlgorithms()}
   .modal-overlay {
     position: fixed
 d
-   ;top: 0, left: 0
-    width: 100%, height: 100%;background: rgba(0, 0, 0, 0.9), display: flex
+   ;top: 0; left: 0
+    width: 100%; height: 100%;background: rgba(0, 0, 0, 0.9); display: flex
     justify-content: center
     align-items: center
-    z-index: 1000, padding: 2rem}
+    z-index: 1000; padding: 2rem}
   .modal-content {
     max-width: 90vw
     max-height: 90vh
@@ -468,7 +469,7 @@ d
     position: absolute
     top: 1rem
    ;right: 1rem
-    z-index: 1001, width: 40px
+    z-index: 1001; width: 40px
     height: 40px
     border-radius: 50%}
   .modal-header {
@@ -484,7 +485,7 @@ d
   .modal-metadata {
     padding: 1rem 2rem 2rem 2rem}
   .metadata-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 1rem}
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
   .metadata-item {
     display: flex
     justify-content: space-between
@@ -514,4 +515,5 @@ d
   .gallery-item:has(.generate-btn:disabled) {
     animation: pulse 2s infinite}
 </style>
+
 

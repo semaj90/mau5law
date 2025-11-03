@@ -1,10 +1,13 @@
-﻿<script lang="ts">
+<script lang="ts">
   interface Props {
-    title?: string
-    value?: string | number | null}
+    title?: string;
+    value?: string | number | null;
+  }
+
   // Use Svelte, 5 runes API for props to avoid export-let / legacy mismatches
   let { title = '', value = null }: Props = $props();
 </script>
+
 <div class="stats-card">
   <h3 class="title">{title}</h3>
   {#if value !== null && value !== undefined}
@@ -13,6 +16,7 @@
     <p class="value">â€”</p>
   {/if}
 </div>
+
 <style>
   .stats-card {
     padding: 1rem

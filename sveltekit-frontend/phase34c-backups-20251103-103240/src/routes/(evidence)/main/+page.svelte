@@ -1,14 +1,15 @@
 ﻿<script lang="ts">
-import type { Case } from '$lib/types';
+  import type { Case } from '$lib/types';
   import { page } from '$app/stores';
 
   let caseId = $derived($page.url.searchParams.get('caseId') || '');
   let uploadFile = $state<File | null>(null);
 
   function handleFileUpload(event: Event) {
-    const target = event.target as HTMLInputElement
+    const target = event.target as HTMLInputElement;
     if (target.files && target.files.length > 0) {
-      uploadFile = target.files[0]}
+      uploadFile = target.files[0];
+    }
   }
 
   function submitEvidence() {
@@ -81,8 +82,7 @@ import type { Case } from '$lib/types';
     margin-bottom: 3rem}
 
   .hero-section h1 {
-    font-size: 2.5rem
-   , color: #ffd700
+    font-size: 2.5rem; color: #ffd700
     margin-bottom: 1rem
     text-shadow: 0, 0 10px rgba(255, 215, 0, 0.3)}
 
@@ -103,8 +103,7 @@ import type { Case } from '$lib/types';
   .action-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
     border: 1px solid #444
     border-radius: 8px
-    padding: 2rem
-   , transition: all 0.3s ease}
+    padding: 2rem; transition: all 0.3s ease}
 
   .action-card:hover {
     border-color: #ffd700
@@ -118,13 +117,11 @@ import type { Case } from '$lib/types';
 
   .file-input,
   .search-input {
-    width: 100%,
-    padding: 0.5rem
+    width: 100%; padding: 0.5rem
     margin: 0.5rem 0
     background: #1a1a1a
     border: 1px solid #444
-    border-radius: 4px
-   , color: white}
+    border-radius: 4px; color: white}
 
   .upload-btn,
   .search-btn {
@@ -132,8 +129,7 @@ import type { Case } from '$lib/types';
     color: #1a1a1a
     border: none
     padding: 0.5rem 1rem
-    border-radius: 4px
-   , cursor: pointer
+    border-radius: 4px; cursor: pointer
     font-weight: bold}
 
   .upload-btn:hover,
@@ -159,8 +155,5 @@ import type { Case } from '$lib/types';
     transition: all 0.3s ease}
 
   .action-link:hover {
-    background: #ffd700
-   , color: #1a1a1a}
+    background: #ffd700; color: #1a1a1a}
 </style>
-
-

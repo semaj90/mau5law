@@ -1,4 +1,4 @@
-﻿<!--
+<!--
 Multi-LLM Orchestrator Demo Page
 Showcases the service worker-based AI orchestration system
 -->
@@ -27,12 +27,15 @@ import type { Document } from '$lib/types';
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
   // dynamic orchestrator component (workaround for modules without a typed default export)
   let OrchestratorComponent: any = null
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     try {
       const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
       OrchestratorComponent = (mod && (mod as: any).default) ?? (mod as: any).MultiLLMOrchestrator ?? mod} catch (err) {
       console.warn('Failed to load orchestrator component dynamically:', err)}
-  });
+  		})();
+	});
 
   interface DemoResult {
     task: AITask
@@ -117,7 +120,6 @@ import type { Document } from '$lib/types';
       console.error('Demo scenario failed:', error)} finally {
       isProcessing = false}
   }
-
   async function submitCustomTask(): Promise<any> {
     if (!selectedModel || !userPrompt || !userPrompt.trim()) return
     isProcessing = true
@@ -146,10 +148,8 @@ import type { Document } from '$lib/types';
     } finally {
       isProcessing = false}
   }
-
   function clearResults() {
     demoResults = []}
-
   function getProviderIcon(providerId: string) {
     switch (providerId) {
       case, 'ollama':
@@ -162,7 +162,6 @@ import type { Document } from '$lib/types';
         return Database
       default: return Activity}
   }
-
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
@@ -220,22 +219,26 @@ import type { Document } from '$lib/types';
       </div>
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
           {#each Array.isArray(demoScenarios) ? demoScenarios : [] as scenario}
             <div class="border rounded-lg p-4 hover:shadow-md">
-              <h3 class="font-semibold">{scenario.name}</h3>
+              <h3 class="font-semibold">{scenario.name}
+</h3>
               <p class="text-sm text-gray-600 dark:text-gray-400">
                 {scenario.description}
-              </p>
+</p>
               <div class="space-y-2">
+
                 {#each Array.isArray(scenario.tasks) ? scenario.tasks : [] as task}
                   {@const SvelteComponent = getProviderIcon(task.provider)}
                   <div class="flex items-center gap-2">
                     <div class="h-3 w-3">
   <SvelteComponent />
-                    <span class="text-gray-600">{task.focus}</span>
+                    <span class="text-gray-600">{task.focus}
+</span>
                   </div>
                 {/each}
-              </div>
+</div>
               <Button
                 variant="ghost"
                 size="sm"
@@ -244,6 +247,7 @@ import type { Document } from '$lib/types';
 runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
+
                 {#if isProcessing}
                   <Pause class="h-4 w-4" />
                   Processing...
@@ -251,10 +255,10 @@ runDemoScenario(scenario)}
                   <Play class="h-4 w-4" />
                   Run Demo
                 {/if}
-              </Button>
+</Button>
             </div>
           {/each}
-        </div>
+</div>
       </div>
     </div>
     <!-- Custom, Task, Section -->
@@ -292,6 +296,7 @@ runDemoScenario(scenario)}
               disabled={isProcessing || !selectedModel}
               class="flex-1 bits-btn bits-btn"
             >
+
               {#if isProcessing}
                 <Pause class="h-4 w-4" />
                 Processing...
@@ -299,8 +304,8 @@ runDemoScenario(scenario)}
                 <Play class="h-4 w-4" />
                 Submit Task
               {/if}
-            </Button>
-            <Button.Root, class="bits-btn" variant="ghost" onclick={clearResults}>
+</Button>
+            <Button.Root class="bits-btn" variant="ghost" onclick={clearResults}>
               <RotateCcw class="h-4" />
             </Button>
           </div>
@@ -314,14 +319,16 @@ runDemoScenario(scenario)}
               <Activity class="h-5" />
               Task Results ({demoResults.length})
             </span>
+
             {#if demoResults.length > 0}
-              <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
+              <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={clearResults}>
                 Clear
               </Button>
             {/if}
-          </h3>
+</h3>
         </div>
         <div class="yorha-panel-content">
+
           {#if demoResults.length === 0}
             <div class="text-center py-8 text-gray-500">
               <Activity class="h-12 w-12 mx-auto mb-3" />
@@ -329,6 +336,7 @@ runDemoScenario(scenario)}
             </div>
           {:else}
             <div class="space-y-3 max-h-96">
+
               {#each Array.isArray(demoResults) ? demoResults : [] as result}
                 {@const SvelteComponent_1 = getProviderIcon(result.task.providerId)}
                 <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50">
@@ -336,13 +344,15 @@ runDemoScenario(scenario)}
                     <div class="flex items-center">
                       <div class="h-4 w-4">
   <SvelteComponent _1
-                        
+
                       />
                       <span class="font-medium">
                         {result.task.providerId} - {result.task.model}
-                      </span>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{result.task.type}</span>
+</span>
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{result.task.type}
+</span>
                     </div>
+
                     {#if result.response}
                       <Badge class="bg-green-100 text-green-800">
                         Completed
@@ -356,27 +366,32 @@ runDemoScenario(scenario)}
                         Processing
                       </Badge>
                     {/if}
-                  </div>
+</div>
                   <p class="text-xs text-gray-600 dark:text-gray-400">
                     {result.task.prompt.substring(0, 100)}...
                   </p>
+
                   {#if result.response}
                     <div class="mt-2 p-2 bg-white dark:bg-gray-800 rounded">
                       <p class="font-medium">Response:</p>
                       <p class="text-gray-700">
                         {result.response.response?.content || 'Task completed successfully'}
-                      </p>
+</p>
+
                       {#if result.response.metrics}
                         <div class="flex items-center gap-4 mt-2 text-xs">
-                          <span>Processing: {formatDuration(result.response.metrics.processingTime || 0)}</span>
-                          <span>Tokens: {result.response.metrics.tokensProcessed || 0}</span>
+                          <span>Processing: {formatDuration(result.response.metrics.processingTime || 0)}
+</span>
+                          <span>Tokens: {result.response.metrics.tokensProcessed || 0}
+</span>
                         </div>
                       {/if}
-                    </div>
+</div>
                   {:else if result.error}
                     <div class="mt-2 p-2 bg-red-100 dark:bg-red-900/30 rounded">
                       <p class="font-medium text-red-700 dark:text-red-400">Error:</p>
-                      <p class="text-red-600">{result.error}</p>
+                      <p class="text-red-600">{result.error}
+</p>
                     </div>
                   {:else}
                     <div class="mt-2 flex items-center gap-2 text-xs">
@@ -384,14 +399,15 @@ runDemoScenario(scenario)}
                       <span>Processing task...</span>
                     </div>
                   {/if}
-                </div>
+</div>
               {/each}
-            </div>
+</div>
           {/if}
-        </div>
+</div>
       </div>
     </div>
     <!-- Main, Orchestrator, Component -->
+
     {#if OrchestratorComponent}
       <svelte:component
         this={OrchestratorComponent}
@@ -464,3 +480,5 @@ runDemoScenario(scenario)}
 <style>
   /* @unocss-include */
 </style>
+
+

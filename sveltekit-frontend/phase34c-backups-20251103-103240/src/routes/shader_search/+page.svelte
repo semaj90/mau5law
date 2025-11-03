@@ -7,8 +7,7 @@ https://svelte.dev/e/js_parse_error -->
   import type { ShaderSearchResult, ShaderSearchQuery } from '$lib/webgpu/shader-cache-manager';
 
   interface SearchResponse {
-    shaders: ShaderSearchResult[],
-    metadata: {
+    shaders: ShaderSearchResult[]; metadata: {
       totalResults: number
       searchTime: number
       query: ShaderSearchQuery
@@ -23,9 +22,8 @@ https://svelte.dev/e/js_parse_error -->
       total: number
       webgpu: number
       webgl: number}
-    topOperations: { operation: string, count: number }[];
-    averagePerformance: number
-   , totalUsage: number}
+    topOperations: { operation: string; count: number }[];
+    averagePerformance: number; totalUsage: number}
 
   // Reactive state (Svelte, 5 runes)
   let searchQuery = $state<string>('');
@@ -56,12 +54,10 @@ https://svelte.dev/e/js_parse_error -->
       if (!response.ok) throw new Error(`Stats fetch failed: ${response.status}`);
       const data: any = await response.json();
       stats = {
-        totalShaders: { total: data?.totalShaders?.total ?? 0,
-          webgpu: data?.totalShaders?.webgpu ?? 0,
+        totalShaders: { total: data?.totalShaders?.total ?? 0; webgpu: data?.totalShaders?.webgpu ?? 0,
           webgl: data?.totalShaders?.webgl ?? 0
         },
-        topOperations: (data?.supportedOperations ?? []).map((op: string) => ({ operation: op, count: 0 })),
-        averagePerformance: data?.averagePerformance ?? 0,
+        topOperations: (data?.supportedOperations ?? []).map((op: string) => ({ operation: op, count: 0 })); averagePerformance: data?.averagePerformance ?? 0,
         totalUsage: data?.totalUsage ?? 0
       };
       // if the API provided a list of operations, seed availableOperations
@@ -72,8 +68,7 @@ https://svelte.dev/e/js_parse_error -->
   async function loadAvailableFilters(): Promise<any> {
     try {
       const response = await fetch('/api/shaders/unified', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ limit: 100 })
       });
       if (!response.ok) throw new Error(`Filters fetch failed: ${response.status}`);
@@ -94,17 +89,14 @@ https://svelte.dev/e/js_parse_error -->
   async function performSearch(): Promise<any> {
     isSearching = true
     try {
-      const query: ShaderSearchQuery = { text: (searchQuery || '').trim() || undefined,
-        operation: selectedOperation || undefined,
-        tags: selectedTags.length > 0 ? selectedTags : undefined,
-        shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
+      const query: ShaderSearchQuery = { text: (searchQuery || '').trim() || undefined; operation: selectedOperation || undefined,
+        tags: selectedTags.length > 0 ? selectedTags : undefined; shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
         sortBy,
         limit
       } as: any; // cast, to: any if ShaderSearchQuery differs
 
       const response = await fetch('/api/shaders/unified', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(query)
       });
 
@@ -145,16 +137,11 @@ https://svelte.dev/e/js_parse_error -->
 
   function exportResults() {
     const exportData = {
-      query: searchMetadata?.query,
-      results: searchResults.map((shader: any) => ({
-        id: shader.id,
-        operation: shader?.metadata?.operation,
-        description: shader?.metadata?.description,
-        tags: shader?.metadata?.tags ?? [],
-        relevanceScore: shader.relevanceScore,
-        embeddingSimilarity: shader.embeddingSimilarity,
-        performance: { usageCount: shader?.metadata?.usageCount,
-          averageExecutionTime: shader?.metadata?.averageExecutionTime
+      query: searchMetadata?.query; results: searchResults.map((shader: any) => ({
+        id: shader.id; operation: shader?.metadata?.operation,
+        description: shader?.metadata?.description; tags: shader?.metadata?.tags ?? [],
+        relevanceScore: shader.relevanceScore; embeddingSimilarity: shader.embeddingSimilarity,
+        performance: { usageCount: shader?.metadata?.usageCount; averageExecutionTime: shader?.metadata?.averageExecutionTime
         }
       })),
       timestamp: new Date().toISOString()
@@ -297,8 +284,8 @@ https://svelte.dev/e/js_parse_error -->
                 class="tag-button"
                 class:selected={selectedTags.includes(tag)}
                 aria-pressed={selectedTags.includes(tag)}
-                onclick={() => toggleTag(tag)
-              }>
+                onclick={() => toggleTag(tag)}
+              >
                 {tag}
               </button>
             {/each}
@@ -310,12 +297,7 @@ https://svelte.dev/e/js_parse_error -->
           <strong>Selected Tags:</strong>
           {#each Array.isArray(selectedTags) ? selectedTags : [] as tag}
             <!-- REPLACED: non-interactive, span -> accessible button -->
-            <button
-              type="button"
-              class="selected-tag"
-              aria-pressed="true"
-              onclick={() => toggleTag(tag)}
-            >
+            <button type="button" class="selected-tag" aria-pressed="true" onclick={() => toggleTag(tag)}>
               {tag} Ã—
             </button>
           {/each}
@@ -332,7 +314,7 @@ https://svelte.dev/e/js_parse_error -->
           <span>
             {searchMetadata.totalResults} results in {searchMetadata.searchTime.toFixed(2)}ms
             {#if searchMetadata.breakdown}
-              â€¢ WebGPU: {searchMetadata.breakdown.webgpu} â€¢, WebGL: {searchMetadata.breakdown.webgl}
+              â€¢ WebGPU: {searchMetadata.breakdown.webgpu} â€¢; WebGL: {searchMetadata.breakdown.webgl}
             {/if}
           </span>
           {#if searchResults.length > 0}
@@ -355,11 +337,7 @@ https://svelte.dev/e/js_parse_error -->
       <div class="results-grid">
         {#each Array.isArray(searchResults) ? searchResults : [] as shader}
           <!-- REPLACED: div, role=button -> real <button> for accessibility -->
-          <button
-            type="button"
-            class="shader-nier-bits-card"
-            onclick={() => (selectedShader = shader)}
-          >
+          <button type="button" class="shader-nier-bits-card" onclick={() => (selectedShader = shader)}>
             <div class="shader-header">
               <h3>{shader.id}</h3>
               <div class="shader-badges">
@@ -427,7 +405,9 @@ https://svelte.dev/e/js_parse_error -->
       >
         <div class="modal-header">
           <h2 id="shader-dialog-title">{selectedShader.id}</h2>
-          <button type="button" aria-label="Close" onclick={() => (selectedShader = null)} class="close-button">Ã—</button>
+          <button type="button" aria-label="Close" onclick={() => (selectedShader = null)} class="close-button"
+            >Ã—</button
+          >
         </div>
         <div class="modal-content">
           <div class="shader-details">
@@ -466,7 +446,9 @@ https://svelte.dev/e/js_parse_error -->
             <div class="detail-group">
               <div class="code-header">
                 <h3>WGSL Code</h3>
-                <button type="button" onclick={() => copyShaderCode(selectedShader!)} class="copy-button"> ðŸ“‹ Copy Code </button>
+                <button type="button" onclick={() => copyShaderCode(selectedShader!)} class="copy-button">
+                  ðŸ“‹ Copy Code
+                </button>
               </div>
               <div class="code-container">
                 <pre><code>{selectedShader.wgsl}</code></pre>
@@ -486,17 +468,15 @@ https://svelte.dev/e/js_parse_error -->
 
   .container {
     max-width: 1400px
-    margin: 0 auto
-   , padding: 2rem
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    margin: 0 auto; padding: 2rem
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
 
-  header { text-align: center, margin-bottom: 2rem}
-  h1 { color: #2563eb, margin-bottom: 0.5rem}
+  header { text-align: center; margin-bottom: 2rem}
+  h1 { color: #2563eb; margin-bottom: 0.5rem}
 
   .stats-section, .search-section, .results-section {
     background: white
-    border-radius: 12px
-   , padding: 1.5rem
+    border-radius: 12px; padding: 1.5rem
     margin-bottom: 1.5rem
     box-shadow: 0 4px 6px rgba(0,0,0,0.06)}
 
@@ -506,46 +486,45 @@ https://svelte.dev/e/js_parse_error -->
     gap: 1rem
     margin-bottom: 1rem}
 
-  .stat-number { font-size: 1.5rem, font-weight: 700, color: #111827}
+  .stat-number { font-size: 1.5rem, font-weight: 700; color: #111827}
   .stat-number.webgpu-color { color: #10b981}
   .stat-number.webgl-color { color: #f59e0b}
 
-  .search-input-group { display:flex, gap:1rem, margin-bottom:1rem}
-  .search-input { flex: 1, padding: 0.75rem, border: 2px solid #e5e7eb; border-radius: 8px, font-size: 1rem}
-  .search-button { background: #2563eb, color: white, border: none, padding: 0.6rem 1rem; border-radius: 8px, cursor: pointer}
+  .search-input-group { display:flex, gap:1rem; margin-bottom:1rem}
+  .search-input { flex: 1, padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem}
+  .search-button { background: #2563eb, color: white, border: none; padding: 0.6rem 1rem; border-radius: 8px; cursor: pointer}
 
-  .filters-row { display:flex, gap:1rem, flex-wrap:wrap, align-items:end, margin-bottom:1rem}
-  .filter-group { display:flex, flex-direction:column, gap:0.5rem}
-  .filter-group label { font-weight:500, color:#374151}
-  .filter-group select { padding:0.4rem, border:1px solid #e5e7eb; border-radius:6px}
+  .filters-row { display:flex, gap:1rem, flex-wrap:wrap, align-items:end; margin-bottom:1rem}
+  .filter-group { display:flex, flex-direction:column; gap:0.5rem}
+  .filter-group label { font-weight:500; color:#374151}
+  .filter-group select { padding:0.4rem; border:1px solid #e5e7eb; border-radius:6px}
 
   .tags-section { margin-top: 1rem}
-  .tag-filters { display:flex, gap:0.5rem, flex-wrap:wrap, margin-top:0.5rem}
-  .tag-button { background:#f3f4f6, border:1px solid #d1d5db; padding:0.25rem 0.75rem; border-radius:15px, cursor:pointer}
-  .tag-button.selected { background:#2563eb, color:white, border-color:#2563eb}
+  .tag-filters { display:flex, gap:0.5rem, flex-wrap:wrap; margin-top:0.5rem}
+  .tag-button { background:#f3f4f6; border:1px solid #d1d5db; padding:0.25rem 0.75rem; border-radius:15px; cursor:pointer}
+  .tag-button.selected { background:#2563eb, color:white; border-color:#2563eb}
 
-  .results-header { display:flex, justify-content:space-between, align-items:center, margin-bottom:1rem}
-  .results-grid { display:grid, grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem}
+  .results-header { display:flex, justify-content:space-between, align-items:center; margin-bottom:1rem}
+  .results-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem}
 
   .shader-nier-bits-card {
     border:1px solid #e5e7eb
     border-radius:8px
     padding:1rem
-    cursor:pointer
-   , transition: transform 0.15s ease, box-shadow 0.15s ease}
-  .shader-nier-bits-card:hover { transform: translateY(-4px), box-shadow: 0 8px 20px rgba(0,0,0,0.06)}
+    cursor:pointer; transition: transform 0.15s ease, box-shadow 0.15s ease}
+  .shader-nier-bits-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06)}
 
-  .modal-backdrop { position: fixed, top: 0, left: 0, right: 0, bottom: 0;, background: rgba(0,0,0,0.5); display:flex, align-items:center, justify-content:center, z-index:1000}
-  .modal { background:white, border-radius:12px, width:90%, max-width:1000px, max-height:90vh, overflow:hidden, display:flex, flex-direction:column}
-  .modal-header { display:flex, justify-content:space-between, align-items:center, padding:1rem, border-bottom:1px solid #e5e7eb}
+  .modal-backdrop { position: fixed, top: 0, left: 0, right: 0; bottom: 0;, background: rgba(0,0,0,0.5); display:flex, align-items:center, justify-content:center; z-index:1000}
+  .modal { background:white, border-radius:12px, width:90%, max-width:1000px, max-height:90vh, overflow:hidden, display:flex; flex-direction:column}
+  .modal-header { display:flex, justify-content:space-between, align-items:center, padding:1rem; border-bottom:1px solid #e5e7eb}
 
-  pre { white-space: pre-wrap, word-break: break-word, color: #111827}
+  pre { white-space: pre-wrap, word-break: break-word; color: #111827}
 
   /* small additions for button styles to visually match prior span styles */
-  .operation-tag { background: transparent, border: none, padding: 0.25rem 0.5rem; cursor: pointer, border-radius: 8px}
+  .operation-tag { background: transparent, border: none; padding: 0.25rem 0.5rem; cursor: pointer; border-radius: 8px}
   .operation-tag[aria-pressed="true"] { background:#e6f2ff}
-  .selected-tag { background: #f3f4f6, border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px, cursor: pointer, margin-right:0.5rem}
-  .selected-tag[aria-pressed="true"] { background: #2563eb, color:white, border-color:#2563eb}
-  .shader-nier-bits-card { text-align:left, display:block, width:100%, border:none, background:transparent, padding:1rem}
+  .selected-tag { background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px, cursor: pointer; margin-right:0.5rem}
+  .selected-tag[aria-pressed="true"] { background: #2563eb, color:white; border-color:#2563eb}
+  .shader-nier-bits-card { text-align:left, display:block, width:100%, border:none, background:transparent; padding:1rem}
   .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25)}
 </style>

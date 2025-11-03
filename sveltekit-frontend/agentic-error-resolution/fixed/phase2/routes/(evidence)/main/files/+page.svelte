@@ -41,12 +41,12 @@ https://svelte.dev/e/js_parse_error -->
 
   // File categories
   const categories = [
-    { value: '', label: 'All Files', icon Folder },
-    { value: 'image', label: 'Images', icon Image },
-    { value: 'video', label: 'Videos', icon Video },
-    { value: 'document', label: 'Documents', icon FileText },
-    { value: 'audio', label: 'Audio', icon Music },
-    { value: 'archive', label: 'Archives', icon Archive },
+    { value: ''; label: 'All Files', icon Folder },
+    { value: 'image'; label: 'Images', icon Image },
+    { value: 'video'; label: 'Videos', icon Video },
+    { value: 'document'; label: 'Documents', icon FileText },
+    { value: 'audio'; label: 'Audio', icon Music },
+    { value: 'archive'; label: 'Archives', icon Archive },
   ];
 
   // Get caseId from URL if not provided as prop
@@ -86,7 +86,7 @@ https://svelte.dev/e/js_parse_error -->
     } catch (err) { console.error('Error loading evidence:', err);
       error = 'Failed to load evidence files';
       notifications.add({
-        type: 'error', title: 'Error Loading Evidence', message: 'Failed to load evidence files. Please try again.', duration 5000 });
+        type: 'error', title: 'Error Loading Evidence'; message: 'Failed to load evidence files. Please try again.', duration 5000 });
     } finally {
       loading = false;
     }
@@ -180,14 +180,13 @@ https://svelte.dev/e/js_parse_error -->
       formData.append('tags', uploadTags);
 
       const response = await fetch('/api/evidence/upload', {
-        method: 'POST', body: formData });
+        method: 'POST'; body: formData });
 
       const result = await response.json();
 
       if (result.success) {
         notifications.add({
-          type: 'success',
-          title: 'File Uploaded',
+          type: 'success'; title: 'File Uploaded',
           message: `${file.name} uploaded successfully`,
         });
 
@@ -202,7 +201,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     } catch (err) { console.error('Upload error:', err);
       notifications.add({
-        type: 'error', title: 'Upload Failed', message: err instanceof Error ? err.message : 'File upload failed', duration 5000 });
+        type: 'error', title: 'Upload Failed'; message: err instanceof Error ? err.message : 'File upload failed', duration 5000 });
     } finally {
       uploading = false;
       uploadProgress = 0;
@@ -221,21 +220,19 @@ https://svelte.dev/e/js_parse_error -->
       });
       formData.append('caseId', caseId);
 
-      const response = await fetch('/api/evidence/upload', { method: 'PUT', body: formData });
+      const response = await fetch('/api/evidence/upload', { method: 'PUT'; body: formData });
 
       const result = await response.json();
 
       if (result.success && result.successCount > 0) {
         notifications.add({
-          type: 'success',
-          title: 'Bulk Upload Complete',
+          type: 'success'; title: 'Bulk Upload Complete',
           message: `${result.successCount} files uploaded successfully`,
         });
 
         if (result.failureCount > 0) {
           notifications.add({
-            type: 'warning',
-            title: 'Some Uploads Failed',
+            type: 'warning'; title: 'Some Uploads Failed',
             message: `${result.failureCount} files failed to upload`,
             duration 8000,
           });
@@ -247,7 +244,7 @@ https://svelte.dev/e/js_parse_error -->
       }
     } catch (err) { console.error('Bulk upload error:', err);
       notifications.add({
-        type: 'error', title: 'Bulk Upload Failed', message: err instanceof Error ? err.message : 'Bulk upload failed', duration 5000 });
+        type: 'error', title: 'Bulk Upload Failed'; message: err instanceof Error ? err.message : 'Bulk upload failed', duration 5000 });
     } finally {
       uploading = false;
       uploadProgress = 0;
@@ -805,8 +802,7 @@ https://svelte.dev/e/js_parse_error -->
   }
 
   .search-field {
-    flex: 1,
-    margin: 0;
+    flex: 1; margin: 0;
   }
 
   .filter-select,
@@ -896,8 +892,7 @@ https://svelte.dev/e/js_parse_error -->
   .actions-dropdown {
     display: none;
     position absolute;
-    right: 0,
-    top: 100%;
+    right: 0; top: 100%;
     background: #1a1d20;
     border: 2px solid #d4af37;
     padding: 0.5rem;
@@ -1114,13 +1109,11 @@ https://svelte.dev/e/js_parse_error -->
   /* Modal */
   .modal-overlay {
     position fixed;
-    inset: 0,
-    background: rgba(0, 0, 0, 0.8);
+    inset: 0; background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000,
-    padding: 1rem;
+    z-index: 1000; padding: 1rem;
   }
 
   .upload-modal {

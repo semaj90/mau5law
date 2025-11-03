@@ -2,6 +2,7 @@
   import IntegrationValidator from '$lib/components/validation/IntegrationValidator.svelte';
   let pageTitle = 'Integration Validation - Legal AI Platform';
 </script>
+
 <svelte:head>
   <title>{pageTitle}</title>
   <meta name="description" content="Comprehensive integration validation for the Legal, AI, Platform" />
@@ -10,12 +11,8 @@
   <div class="max-w-7xl">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-4xl font-bold text-white">
-        ðŸ—ï¸ Legal AI Platform Integration Validation
-      </h1>
-      <p class="text-xl">
-        Comprehensive testing suite for all integrated components and systems
-      </p>
+      <h1 class="text-4xl font-bold text-white">ðŸ—ï¸ Legal AI Platform Integration Validation</h1>
+      <p class="text-xl">Comprehensive testing suite for all integrated components and systems</p>
       <div class="mt-4 text-sm">
         <span>âœ¨ Testing Phase 1-3 Integration</span>
         <span class="mx-2">â€¢</span>
@@ -34,23 +31,29 @@
           <span class="text-white">Integration Status: Active</span>
         </div>
         <div class="text-slate-400">â€¢</div>
-        <div class="text-sm">
-          Phase 1-3 Complete (12/12 Components Integrated)
-        </div>
+        <div class="text-sm">Phase 1-3 Complete (12/12 Components Integrated)</div>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   /* Global dark theme styles */
   :global(body) {
-    background: #0f172a
-   ; color: #f8fafc}
+    background: #0f172a;
+    color: #f8fafc;
+  }
   /* Animation for the status indicator */
   @keyframes pulse {
-    0%, 100% { opacity: 1}
-    50% { opacity: 0.5}
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
-  .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite}
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
 </style>
-

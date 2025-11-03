@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import  Button, Card, CardContent, CardHeader, CardTitle, Alert  from "$lib/components/ui/enhanced-bits.svelte";
@@ -27,10 +27,12 @@
             device.destroy()} else {
             append('âŒ WebGPU adapter not available')}
         } catch (err) {
-          append('âŒ WebGPU error: ' + (err as Error).message);'
+          append('âŒ WebGPU error: ' + (err as Error).message);
+'
         }
       } else {
         append('âŒ WebGPU not supported')}
+
       // Test WebGL2 support
       const canvas = document.createElement('canvas');
       const gl2 = canvas.getContext('webgl2');
@@ -39,11 +41,13 @@
         const ext = gl2.getExtension('EXT_transform_feedback');
         append(ext ? 'âœ… Transform feedback supported' : 'âŒ Transform feedback not available')} else {
         append('âŒ WebGL2 not supported')}
+
       // Test WebGL1 fallback
       const gl1 = canvas.getContext('webgl');
       if (gl1) {
         append('âœ… WebGL1 fallback available')} else {
         append('âŒ WebGL1 not supported')}
+
       // Test WebAssembly
       if (typeof WebAssembly === 'object') {
         append('âœ… WebAssembly supported');

@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Unified Vector Search - Legal AI Dashboard
   Enhanced-Bits orchestrated components with Svelte, 5 runes
 -->
@@ -125,11 +125,11 @@ import type { Document } from '$lib/types';
       searchInfo = data.query_info || null
       suggestions = data.suggestions || [];
       console.log('Vector search results:', data)} catch (err) {
-      console.error('Search error:', err);'
+      console.error('Search error:', err);
+'
       error = err instanceof Error ? err.message : 'Search failed'} finally {
       loading = false}
   }
-
   function handleKeyPress(e: KeyboardEvent) {
     if (e.key === 'Enter') {
       performSearch()}
@@ -139,14 +139,12 @@ import type { Document } from '$lib/types';
   function setSuggestionQuery(suggestion: string) {
     query = suggestion
     performSearch()}
-
   function toggleDocumentType(type: string) {
     if (selectedTypes.has(type)) {
       selectedTypes.delete(type)} else {
       selectedTypes.add(type)}
     selectedTypes = new Set(selectedTypes); // Trigger reactivity
   }
-
   function getSimilarityColor(score: number): string {
     if (score >= 0.9) return 'text-green-600 bg-green-100';
     if (score >= 0.7) return 'text-blue-600 bg-blue-100';
@@ -172,7 +170,6 @@ import type { Document } from '$lib/types';
   function viewResult(documentId: string) {
     // TODO: replace with real view logic (navigate/open modal)
     console.log('View document', documentId)}
-
   function openResultDetails(documentId: string) {
     // TODO: replace with real details logic (navigate/open drawer)
     console.log('Open details for', documentId)}
@@ -203,7 +200,13 @@ import type { Document } from '$lib/types';
 
       <!-- Wrap Button so we don't pass `class` directly to the, Button, component -->'
       <div class="bits-btn">
-        <Button variant="ghost" size="sm" onclick={() => {/* open settings */}}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onclick={() => {
+            /* open settings */
+          }}
+        >
           <span class="w-4 h-4 mr-2">{ICON.settings}</span>
           Settings
         </Button>
@@ -233,265 +236,278 @@ import type { Document } from '$lib/types';
             <Button
               variant="primary"
               size="sm"
-              onclick={() => { void performSearch()}}
+              onclick={() => {
+                void performSearch();
+              }}
               disabled={loading || !query.trim()}
             >
-               {#if loading}
-                 <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent"></div>
-                 Searching...
-               {:else}
-                 <span class="w-4">{ICON.zap}</span>
-                  Search
-               {/if}
-             </Button>
-           </div>
+              {#if loading}
+                <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent"></div>
+                Searching...
+              {:else}
+                <span class="w-4">{ICON.zap}</span>
+                Search
+              {/if}
+            </Button>
+          </div>
         </div>
 
-         <!-- Search, Mode, Tabs -->
-         <!-- simple inline tab buttons to avoid external Tabs, API, mismatch -->
-         <div class="grid w-full grid-cols-3">
-            <button class={"gap-2 px-3 py-2 rounded, " + (searchMode === 'semantic' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
-              onclick={() => (searchMode = 'semantic')}>
-              <span class="inline-block">{ICON.brain}</span> Semantic
-            </button>
-            <button class={"gap-2 px-3 py-2 rounded, " + (searchMode === 'keyword' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
-              onclick={() => (searchMode = 'keyword')}>
-              <span class="inline-block">{ICON.target}</span> Keyword
-            </button>
-            <button class={"gap-2 px-3 py-2 rounded, " + (searchMode === 'hybrid' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
-              onclick={() => (searchMode = 'hybrid')}>
-              <span class="inline-block">{ICON.sparkles}</span> Hybrid
-            </button>
+        <!-- Search, Mode, Tabs -->
+        <!-- simple inline tab buttons to avoid external Tabs, API, mismatch -->
+        <div class="grid w-full grid-cols-3">
+          <button
+            class={'gap-2 px-3 py-2 rounded, ' +
+              (searchMode === 'semantic' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
+            onclick={() => (searchMode = 'semantic')}
+          >
+            <span class="inline-block">{ICON.brain}</span> Semantic
+          </button>
+          <button
+            class={'gap-2 px-3 py-2 rounded, ' +
+              (searchMode === 'keyword' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
+            onclick={() => (searchMode = 'keyword')}
+          >
+            <span class="inline-block">{ICON.target}</span> Keyword
+          </button>
+          <button
+            class={'gap-2 px-3 py-2 rounded, ' +
+              (searchMode === 'hybrid' ? 'bg-nier-accent-warm, text-white' : 'bg-transparent, border')}
+            onclick={() => (searchMode = 'hybrid')}
+          >
+            <span class="inline-block">{ICON.sparkles}</span> Hybrid
+          </button>
+        </div>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap gap-4">
+          <div class="flex items-center">
+            <span class="w-4 h-4">{ICON.filter}</span>
+            <span class="text-sm">Document Types:</span>
           </div>
 
-         <!-- Filters -->
-         <div class="flex flex-wrap gap-4">
-           <div class="flex items-center">
-              <span class="w-4 h-4">{ICON.filter}</span>
-             <span class="text-sm">Document Types:</span>
-           </div>
+          {#each Array.isArray(documentTypes) ? documentTypes : [] as docType}
+            <button
+              onclick={() => toggleDocumentType(docType.value)}
+              class={'flex items-center gap-2 px-3 py-1 rounded-full border transition-all, ' +
+                (selectedTypes.has(docType.value)
+                  ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
+                  : 'border-nier-border-muted hover:border-nier-accent-warm')}
+            >
+              <span class="w-3">{docType.iconEmoji}</span>
+              <span class="text-xs">{docType.label}</span>
+            </button>
+          {/each}
 
-           {#each Array.isArray(documentTypes) ? documentTypes : [] as docType}
-             <button
-                onclick={() => toggleDocumentType(docType.value)}
-                class={
-                  "flex items-center gap-2 px-3 py-1 rounded-full border transition-all, " +
-                  (selectedTypes.has(docType.value)
-                    ? 'border-nier-accent-warm bg-nier-accent-warm text-nier-bg-primary'
-                    : 'border-nier-border-muted hover:border-nier-accent-warm')
-                }
-              >
-                <span class="w-3">{docType.iconEmoji}</span>
-                <span class="text-xs">{docType.label}</span>
-              </button>
-           {/each}
+          <div class="ml-auto flex items-center">
+            <span class="text-xs">Similarity:</span>
+            <input type="range" , bind:value={similarityThreshold} min="0.1" max="1" step="0.1" class="w-20" />
+            <span class="text-xs">{similarityThreshold}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-           <div class="ml-auto flex items-center">
-             <span class="text-xs">Similarity:</span>
-             <input
-               type="range"
-              , bind:value={similarityThreshold}
-               min="0.1"
-               max="1"
-               step="0.1"
-               class="w-20"
-             />
-             <span class="text-xs">{similarityThreshold}</span>
-           </div>
-         </div>
-       </div>
-     </div>
-   </div>
+  <!-- Search, Results -->
+  {#if searchInfo}
+    <!-- replaced OrchestratedCard.Evidence with a plain wrapper to avoid namespace-component, typing, issues -->
+    <div class="orchestrated-card">
+      <div class="nes-container">
+        <div class="flex items-center">
+          <div class="flex items-center">
+            <span class="w-5">{ICON.database}</span>
+            <h2 class="text-lg">Search Results ({results.length})</h2>
+          </div>
+          <div class="flex items-center gap-4 text-sm">
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300"
+              >{formatSearchTime(searchInfo.search_time_ms)}</span
+            >
+            <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{searchInfo.embedding_model}</span>
+          </div>
+        </div>
+        <!-- changed <p> to <div> to avoid invalid nesting when template blocks render inside -->
+        <div class="text-sm text-nier-text-muted">
+          Query: "{searchInfo.processed_query}" â€¢, Total: {searchInfo.total_results} matches
+        </div>
+      </div>
 
-   <!-- Search, Results -->
-   {#if searchInfo}
-     <!-- replaced OrchestratedCard.Evidence with a plain wrapper to avoid namespace-component, typing, issues -->
-     <div class="orchestrated-card">
-       <div class="nes-container">
-         <div class="flex items-center">
-           <div class="flex items-center">
-             <span class="w-5">{ICON.database}</span>
-             <h2 class="text-lg">Search Results ({results.length})</h2>
-           </div>
-           <div class="flex items-center gap-4 text-sm">
-             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{formatSearchTime(searchInfo.search_time_ms)}</span>
-             <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{searchInfo.embedding_model}</span>
-           </div>
-         </div>
-         <!-- changed <p> to <div> to avoid invalid nesting when template blocks render inside -->
-         <div class="text-sm text-nier-text-muted">Query: "{searchInfo.processed_query}" â€¢, Total: {searchInfo.total_results} matches</div>
-       </div>
+      <div class="space-y-4">
+        {#if loading}
+          <div class="text-center">
+            <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full"></div>
+            <p class="mt-2">Searching vector space...</p>
+          </div>
+        {:else if error}
+          <div class="text-center">
+            <div class="w-8 h-8 text-red-500 mx-auto mb-2">{ICON.alert}</div>
+            <p class="text-red-600">{error}</p>
+            <!-- wrap retry Button so we don't give `class` to the, Button, component -->'
+            <div class="mt-2">
+              <Button onclick={performSearch} variant="ghost" size="sm">Retry Search</Button>
+            </div>
+          </div>
+        {:else if results.length === 0}
+          <div class="text-center">
+            <div class="w-8 h-8 text-nier-text-muted mx-auto mb-2">{ICON.search}</div>
+            <p class="text-nier-text-muted">No matching documents found</p>
+            <p class="text-sm text-nier-text-muted">Try adjusting your query or filters</p>
+          </div>
+        {:else}
+          {#each results as result, i}
+            <div class="border border-nier-border-muted rounded-lg p-4 hover:bg-nier-bg-tertiary">
+              <div class="flex items-start justify-between">
+                <div class="flex items-center">
+                  <div
+                    class="w-8 h-8 bg-nier-accent-warm/10 rounded-lg flex items-center justify-center text-nier-accent-warm font-bold"
+                  >
+                    {i + 1}
+                  </div>
+                  <div>
+                    <h3 class="font-medium text-nier-text-primary hover:text-nier-accent-warm">
+                      {result.title || `Document ${result.document_id.slice(0, 8)}`}
+                    </h3>
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300"
+                        >{result.document_type.replace('_', ' ')}</span
+                      >
+                      {#if result.case_id}
+                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200"
+                          >case {result.case_id.slice(0, 8)}</span
+                        >
+                      {/if}
+                      {#if result.metadata?.file_type}
+                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300"
+                          >{result.metadata.file_type.toUpperCase()}</span
+                        >
+                      {/if}
+                    </div>
+                  </div>
+                </div>
 
-       <div class="space-y-4">
-         {#if loading}
-           <div class="text-center">
-             <div class="animate-spin w-8 h-8 border-4 border-nier-accent-warm border-t-transparent rounded-full"></div>
-             <p class="mt-2">Searching vector space...</p>
-           </div>
-         {:else if error}
-           <div class="text-center">
-             <div class="w-8 h-8 text-red-500 mx-auto mb-2">{ICON.alert}</div>
-             <p class="text-red-600">{error}</p>
-             <!-- wrap retry Button so we don't give `class` to the, Button, component -->'
-             <div class="mt-2">
-               <Button onclick={performSearch} variant="ghost" size="sm">
-                 Retry Search
-               </Button>
-             </div>
-           </div>
-         {:else if results.length === 0}
-           <div class="text-center">
-             <div class="w-8 h-8 text-nier-text-muted mx-auto mb-2">{ICON.search}</div>
-             <p class="text-nier-text-muted">No matching documents found</p>
-             <p class="text-sm text-nier-text-muted">Try adjusting your query or filters</p>
-           </div>
-         {:else}
-           {#each results as result, i}
-             <div class="border border-nier-border-muted rounded-lg p-4 hover:bg-nier-bg-tertiary">
-               <div class="flex items-start justify-between">
-                 <div class="flex items-center">
-                   <div class="w-8 h-8 bg-nier-accent-warm/10 rounded-lg flex items-center justify-center text-nier-accent-warm font-bold">
-                     {i + 1}
-                   </div>
-                   <div>
-                     <h3 class="font-medium text-nier-text-primary hover:text-nier-accent-warm">
-                       {result.title || `Document ${result.document_id.slice(0, 8)}`}
-                     </h3>
-                     <div class="flex items-center gap-2">
-                       <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{result.document_type.replace('_', ' ')}</span>
-                       {#if result.case_id}
-                         <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">case {result.case_id.slice(0, 8)}</span>
-                       {/if}
-                       {#if result.metadata?.file_type}
-                         <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">{result.metadata.file_type.toUpperCase()}</span>
-                       {/if}
-                     </div>
-                   </div>
-                 </div>
+                <div class="flex items-center">
+                  <div class={'text-xs, ' + getSimilarityColor(result.similarity_score)}>
+                    <Badge>
+                      {getSimilarityLabel(result.similarity_score)}
+                    </Badge>
+                  </div>
+                  <span class="text-xs font-mono">
+                    {(result.similarity_score * 100).toFixed(1)}%
+                  </span>
+                </div>
+              </div>
 
-                 <div class="flex items-center">
-                   <div class={"text-xs, " + getSimilarityColor(result.similarity_score)}>
-                     <Badge>
-                       {getSimilarityLabel(result.similarity_score)}
-                     </Badge>
-                   </div>
-                   <span class="text-xs font-mono">
-                     {(result.similarity_score * 100).toFixed(1)}%
-                   </span>
-                 </div>
-               </div>
+              <p class="text-sm text-nier-text-secondary leading-relaxed">
+                {result.content_preview}
+              </p>
 
-               <p class="text-sm text-nier-text-secondary leading-relaxed">
-                 {result.content_preview}
-               </p>
+              {#if result.highlights && result.highlights.length > 0}
+                <div class="mb-3">
+                  <h4 class="text-xs font-medium text-nier-text-muted">Key Highlights:</h4>
+                  <div class="flex flex-wrap">
+                    {#each Array.isArray(result.highlights.slice(0, 3)) ? result.highlights.slice(0, 3) : [] as highlight}
+                      <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm">
+                        {highlight}
+                      </span>
+                    {/each}
+                  </div>
+                </div>
+              {/if}
 
-               {#if result.highlights && result.highlights.length > 0}
-                 <div class="mb-3">
-                   <h4 class="text-xs font-medium text-nier-text-muted">Key Highlights:</h4>
-                   <div class="flex flex-wrap">
-                     {#each Array.isArray(result.highlights.slice(0, 3)) ? result.highlights.slice(0, 3) : [] as highlight}
-                       <span class="text-xs px-2 py-1 bg-nier-accent-warm/10 text-nier-accent-warm">
-                         {highlight}
-                       </span>
-                     {/each}
-                   </div>
-                 </div>
-               {/if}
+              <div class="flex items-center">
+                <div class="flex items-center gap-4 text-xs">
+                  {#if result.metadata?.upload_date}
+                    <div class="flex items-center">
+                      <span class="w-3">{ICON.clock}</span>
+                      {new Date(result.metadata.upload_date).toLocaleDateString()}
+                    </div>
+                  {/if}
+                  {#if typeof result.metadata?.confidence === 'number'}
+                    <!-- tightened spacing, per, selection -->
+                    <div class="flex items-center">
+                      <span class="w-3">{ICON.check}</span>
+                      {(result.metadata.confidence * 100).toFixed(1)}% confidence
+                    </div>
+                  {/if}
+                </div>
 
-               <div class="flex items-center">
-                 <div class="flex items-center gap-4 text-xs">
-                   {#if result.metadata?.upload_date}
-                     <div class="flex items-center">
-                       <span class="w-3">{ICON.clock}</span>
-                       {new Date(result.metadata.upload_date).toLocaleDateString()}
-                     </div>
-                   {/if}
-                   {#if typeof result.metadata?.confidence === 'number'}
-                     <!-- tightened spacing, per, selection -->
-                     <div class="flex items-center">
-                       <span class="w-3">{ICON.check}</span>
-                       {(result.metadata.confidence * 100).toFixed(1)}% confidence
-                     </div>
-                   {/if}
-                 </div>
+                <div class="flex items-center">
+                  <div class="bits-btn">
+                    <!-- added, onclick -->
+                    <Button variant="ghost" size="sm" onclick={() => viewResult(result.document_id)}>
+                      <span class="w-4 h-4">{ICON.eye}</span>
+                      View
+                    </Button>
+                  </div>
 
-                 <div class="flex items-center">
-                   <div class="bits-btn">
-                     <!-- added, onclick -->
-                     <Button variant="ghost" size="sm" onclick={() => viewResult(result.document_id)}>
-                       <span class="w-4 h-4">{ICON.eye}</span>
-                       View
-                     </Button>
-                   </div>
+                  <div class="bits-btn">
+                    <!-- added, onclick -->
+                    <Button variant="ghost" size="sm" onclick={() => openResultDetails(result.document_id)}>
+                      <span class="w-4">{ICON.chevronRight}</span>
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {/each}
+        {/if}
+      </div>
+    </div>
+  {/if}
 
-                   <div class="bits-btn">
-                     <!-- added, onclick -->
-                     <Button variant="ghost" size="sm" onclick={() => openResultDetails(result.document_id)}>
-                       <span class="w-4">{ICON.chevronRight}</span>
-                     </Button>
-                   </div>
-                 </div>
-               </div>
-             </div>
-           {/each}
-         {/if}
-       </div>
-     </div>
-   {/if}
+  <!-- Search, Suggestions -->
+  <section class="nes-container">
+    <div class="flex items-center">
+      <span class="w-5">{ICON.lightbulb}</span>
+      <h3 class="text-lg">Search Suggestions</h3>
+    </div>
+    <p class="text-sm text-nier-text-muted">Try these common legal research queries</p>
 
-   <!-- Search, Suggestions -->
-   <section class="nes-container">
-     <div class="flex items-center">
-       <span class="w-5">{ICON.lightbulb}</span>
-       <h3 class="text-lg">Search Suggestions</h3>
-     </div>
-     <p class="text-sm text-nier-text-muted">Try these common legal research queries</p>
-
-     <div class="nes-container">
-       <div class="grid grid-cols-1 md:grid-cols-2">
-         {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
-           <button
+    <div class="nes-container">
+      <div class="grid grid-cols-1 md:grid-cols-2">
+        {#each Array.isArray(searchSuggestions) ? searchSuggestions : [] as suggestion}
+          <button
             onclick={() => setSuggestionQuery(suggestion)}
-             class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent"
-             disabled={loading}
-           >
-             <div class="flex items-center">
-               <span>{suggestion}</span>
-               <span class="w-4 h-4">{ICON.chevronRight}</span>
-             </div>
-           </button>
-         {/each}
-       </div>
-     </div>
-   </section>
+            class="text-left p-3 text-sm bg-nier-bg-tertiary hover:bg-nier-accent-warm/10 rounded-lg transition-colors border border-transparent"
+            disabled={loading}
+          >
+            <div class="flex items-center">
+              <span>{suggestion}</span>
+              <span class="w-4 h-4">{ICON.chevronRight}</span>
+            </div>
+          </button>
+        {/each}
+      </div>
+    </div>
+  </section>
 
-   <!-- Performance, Metrics -->
-   {#if searchInfo}
-     <section class="nes-container">
-       <div class="flex items-center">
-         <span class="w-5">{ICON.trendingUp}</span>
-         <h3 class="text-lg">Search Performance</h3>
-       </div>
-       <div class="nes-container">
-         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-           <div>
-             <div class="text-nier-text-muted">Query Processing</div>
-             <div class="font-medium">{formatSearchTime(searchInfo.search_time_ms)}</div>
-           </div>
-           <div>
-             <div class="text-nier-text-muted">Results Found</div>
-             <div class="font-medium">{searchInfo.total_results}</div>
-           </div>
-           <div>
-             <div class="text-nier-text-muted">Embedding Model</div>
-             <div class="font-medium">{searchInfo.embedding_model}</div>
-           </div>
-           <div>
-             <div class="text-nier-text-muted">Search Mode</div>
-             <div class="font-medium">{searchMode}</div>
-           </div>
-         </div>
-       </div>
-     </section>
-   {/if}
- </div>
+  <!-- Performance, Metrics -->
+  {#if searchInfo}
+    <section class="nes-container">
+      <div class="flex items-center">
+        <span class="w-5">{ICON.trendingUp}</span>
+        <h3 class="text-lg">Search Performance</h3>
+      </div>
+      <div class="nes-container">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <div class="text-nier-text-muted">Query Processing</div>
+            <div class="font-medium">{formatSearchTime(searchInfo.search_time_ms)}</div>
+          </div>
+          <div>
+            <div class="text-nier-text-muted">Results Found</div>
+            <div class="font-medium">{searchInfo.total_results}</div>
+          </div>
+          <div>
+            <div class="text-nier-text-muted">Embedding Model</div>
+            <div class="font-medium">{searchInfo.embedding_model}</div>
+          </div>
+          <div>
+            <div class="text-nier-text-muted">Search Mode</div>
+            <div class="font-medium">{searchMode}</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  {/if}
+</div>
+

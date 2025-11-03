@@ -1,5 +1,5 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';, https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
+﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected; keyword: 'class';, https://svelte.dev/e/js_parse_error -->
+<!-- @migration-task Error while migrating Svelte, code: Unexpected; keyword: 'class' -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  CommandMenu  from "./CommandMenu.svelte";
@@ -36,7 +36,7 @@
   let textarea = $state<HTMLTextAreaElement | null>(null);
   let commandMenu = $state<any>(null);
   let showCommandMenu = $state<boolean>(false);
-  let commandMenuPosition = $state({ x: 0, y: 0 });
+  let commandMenuPosition = $state({ x: 0; y: 0 });
   let lastCursorPosition = $state<number>(0);
   function handleInput(e: Event) {
     const target = e.target as HTMLTextAreaElement
@@ -120,8 +120,7 @@
 </script>
 <div class={className}>
   <textarea
-    bind:this={textarea}
-   , bind:value={value}
+    bind:this={textarea}; bind:value={value}
     placeholder={placeholder}
     rows={rows}
     {disabled}
@@ -136,7 +135,7 @@
   {#if showCommandMenu}
     <div
       class="command-menu"
-      style="position: absolute, left: {commandMenuPosition.x}px;, top: {commandMenuPosition.y}px; z-index:9999;"
+      style="position: absolute; left: {commandMenuPosition.x}px;, top: {commandMenuPosition.y}px; z-index:9999;"
       role="listbox"
     >
       <!-- CommandMenu API may vary; provide a callback prop that CommandMenu, can, call -->
@@ -148,16 +147,13 @@
   .smart-textarea-container {
     position: relative}
   .smart-textarea {
-    width: 100%,
-    min-height: 100px
-    resize: vertical
-   , border: 1px solid var(--pico-border-color, #e2e8f0);
+    width: 100%; min-height: 100px
+    resize: vertical; border: 1px solid var(--pico-border-color, #e2e8f0);
     border-radius: 0.5rem
     padding: 0.75rem
     font-family: inherit
     font-size: 0.875rem
-    line-height: 1.5
-   , background: var(--pico-card-background-color, #ffffff);
+    line-height: 1.5; background: var(--pico-card-background-color, #ffffff);
     color: var(--pico-color, #111827);
     transition: border-color 0.15s ease, box-shadow 0.15s ease}
   .smart-textarea:focus { outline: none
@@ -165,8 +161,7 @@
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
   .smart-textarea:disabled {
     opacity: 0.6
-    cursor: not-allowed
-   , background: var(--pico-card-sectioning-background-color, #f8fafc)}
+    cursor: not-allowed; background: var(--pico-card-sectioning-background-color, #f8fafc)}
   .smart-textarea[readonly] {
     background: var(--pico-card-sectioning-background-color, #f8fafc)}
   .smart-textarea::placeholder { color: var(--pico-muted-color, #6b7280)}
@@ -178,8 +173,7 @@
     position: absolute
     bottom: -1.5rem
     right: 0
-    font-size: 0.75rem
-   , color: var(--pico-muted-color, #6b7280);
+    font-size: 0.75rem; color: var(--pico-muted-color, #6b7280);
     opacity: 0
     transition: opacity 0.15s ease}
   .smart-textarea-container:hover::after {

@@ -20,61 +20,39 @@ import type { Case } from '$lib/types';
   // Mock transition data (fixed syntax: colons, property names)
   let mockTransitions: Record<string any> = {
     'auth-machine': {
-      currentState: 'authenticated',
-      transitions: [ {
-          id: 'logout',
-          event: 'LOGOUT',
-          from: 'authenticated',
-          to: 'unauthenticated',
-          timestamp: new Date().toISOString(),
-          duration: 150,
-          context: { userId: 'user_123', sessionId: 'sess_456' },
-          guards: ['isValidSession'],
+      currentState: 'authenticated'; transitions: [ {
+          id: 'logout'; event: 'LOGOUT',
+          from: 'authenticated'; to: 'unauthenticated',
+          timestamp: new Date().toISOString(); duration: 150,
+          context: { userId: 'user_123', sessionId: 'sess_456' }; guards: ['isValidSession'],
           actions: ['clearToken', 'redirectToLogin']
         }, {
-          id: 'refresh',
-          event: 'REFRESH_TOKEN',
-          from: 'authenticated',
-          to: 'refreshing',
-          timestamp: new Date(Date.now() - 30000).toISOString(),
-          duration: 300,
-          context: { userId: 'user_123', tokenExp: 1642435200 },
-          guards: ['tokenNearExpiry'],
+          id: 'refresh'; event: 'REFRESH_TOKEN',
+          from: 'authenticated'; to: 'refreshing',
+          timestamp: new Date(Date.now() - 30000).toISOString(); duration: 300,
+          context: { userId: 'user_123', tokenExp: 1642435200 }; guards: ['tokenNearExpiry'],
           actions: ['refreshAuthToken']
         }, {
-          id: 'profile',
-          event: 'VIEW_PROFILE',
-          from: 'authenticated',
-          to: 'authenticated.profile',
-          timestamp: new Date(Date.now() - 60000).toISOString(),
-          duration: 50,
-          context: { userId: 'user_123', route: '/profile' },
-          guards: [],
+          id: 'profile'; event: 'VIEW_PROFILE',
+          from: 'authenticated'; to: 'authenticated.profile',
+          timestamp: new Date(Date.now() - 60000).toISOString(); duration: 50,
+          context: { userId: 'user_123', route: '/profile' }; guards: [],
           actions: ['navigateToProfile', 'trackPageView']
         }
       ]
     },
     'case-management-machine': {
-      currentState: 'reviewing',
-      transitions: [ {
-          id: 'submit',
-          event: 'SUBMIT_CASE',
-          from: 'reviewing',
-          to: 'submitting',
-          timestamp: new Date().toISOString(),
-          duration: 500,
-          context: { caseId: 'case_789', reviewerId: 'user_123' },
-          guards: ['allFieldsComplete', 'hasPermission'],
+      currentState: 'reviewing'; transitions: [ {
+          id: 'submit'; event: 'SUBMIT_CASE',
+          from: 'reviewing'; to: 'submitting',
+          timestamp: new Date().toISOString(); duration: 500,
+          context: { caseId: 'case_789', reviewerId: 'user_123' }; guards: ['allFieldsComplete', 'hasPermission'],
           actions: ['validateCase', 'submitToDatabase', 'notifyStakeholders']
         }, {
-          id: 'save-draft',
-          event: 'SAVE_DRAFT',
-          from: 'reviewing',
-          to: 'draft',
-          timestamp: new Date(Date.now() - 45000).toISOString(),
-          duration: 200,
-          context: { caseId: 'case_789', autosave: true },
-          guards: [],
+          id: 'save-draft'; event: 'SAVE_DRAFT',
+          from: 'reviewing'; to: 'draft',
+          timestamp: new Date(Date.now() - 45000).toISOString(); duration: 200,
+          context: { caseId: 'case_789', autosave: true }; guards: [],
           actions: ['saveToDraft', 'updateTimestamp']
         }
       ]
@@ -95,7 +73,7 @@ import type { Case } from '$lib/types';
     try {
       // production: fetch(`/api/state/machines/${machineId}/transitions`)
       await new Promise((resolve) => setTimeout(resolve, 800));
-      const machineData = mockTransitions[machineId] || { currentState: 'unknown', transitions: [] };
+      const machineData = mockTransitions[machineId] || { currentState: 'unknown'; transitions: [] };
       currentState = machineData.currentState
       transitions = machineData.transitions || []} catch (error) {
       console.error('Failed to load transitions:', error);
@@ -337,8 +315,7 @@ import type { Case } from '$lib/types';
     height: 40px
     border: 4px solid #f3f4f6
     border-top: 4px solid #3b82f6
-    border-radius: 50%,
-    animation: spin 1s linear infinite
+    border-radius: 50%; animation: spin 1s linear infinite
     margin: 0 auto 1rem}
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -368,8 +345,7 @@ import type { Case } from '$lib/types';
     color: #6b7280}
   .timeline-container {
     display: flex
-    flex-direction: column
-   , gap: 1rem}
+    flex-direction: column; gap: 1rem}
   /* alias for old class name used in markup migrations */
   .transition-card,
   .transition-nier-bits-card {
@@ -378,8 +354,7 @@ import type { Case } from '$lib/types';
     padding: 1.5rem
     cursor: pointer
     transition: all 0.2s ease}
-  .transition-card:hover { transform: translateY(-1px),
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
+  .transition-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .transition-card.selected {
     border-color: #3b82f6
     box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.2)}
@@ -389,8 +364,7 @@ import type { Case } from '$lib/types';
     align-items: center}
   .transition-flow {
     display: flex
-    align-items: center
-   , gap: 1rem}
+    align-items: center; gap: 1rem}
   .state-from 
   .state-to {
     padding: 0.25rem 0.75rem
@@ -445,8 +419,7 @@ import type { Case } from '$lib/types';
     padding: 0.75rem
     border-radius: 6px
     font-size: 0.75rem
-    overflow-x: auto
-   , margin: 0}
+    overflow-x: auto; margin: 0}
   .guards-list,
   .actions-list {
     display: flex
@@ -478,7 +451,7 @@ import type { Case } from '$lib/types';
     border-radius: 12px
     padding: 1rem}
   .controls-header { margin-bottom: 0.5rem}
-  .controls-title { margin: 0, font-size: 1.125rem}
+  .controls-title { margin: 0; font-size: 1.125rem}
   .controls-content { padding-top: 0.5rem}
   .control-buttons {
     display: flex
@@ -487,8 +460,7 @@ import type { Case } from '$lib/types';
     flex-wrap: wrap}
   .control-note {
     font-size: 0.875rem
-    color: #6b7280
-   , margin: 0}
+    color: #6b7280; margin: 0}
   @media (max-width: 768px) {
     .page-container {
       padding: 1rem}
@@ -512,8 +484,7 @@ import type { Case } from '$lib/types';
     -moz-appearance: none
     background-color: transparent
     text-align: left; /* keep inner layout same as div */
-    width: 100%,
-    border: inherit; /* let .transition-card CSS control border */
+    width: 100%; border: inherit; /* let .transition-card CSS control border */
     cursor: pointer}
 
   /* Visible focus style for keyboard users */

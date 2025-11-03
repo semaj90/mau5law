@@ -1,8 +1,8 @@
 ﻿<!-- NES-Style Container, Component --> <script lang="ts"> import type { Snippet } from 'svelte'; interface Props { variant?: 'window' | 'panel' | 'dialog' | 'card' | 'screen'; size?: 'small' | 'medium' | 'large' | 'fullscreen'; title?: string; subtitle?: string; closable?: boolean; scrollable?: boolean; bordered?: boolean; elevated?: boolean; onClose?: () => void; children?: Snippet; header?: Snippet; footer?: Snippet; class?: string; style?: string}
   let { variant = 'panel', size = 'medium', title, subtitle, closable = false, scrollable = false, bordered = true, elevated = true, onClose, children, header, footer, class: className = '', style = ''
-  }: Props = $props(); let isMinimized = $state<boolean>(false); let isDragging = $state<boolean>(false); let dragOffset = $state({ x: 0, y: 0 }); function handleClose() { onClose?.(); }
+  }: Props = $props(); let isMinimized = $state<boolean>(false); let isDragging = $state<boolean>(false); let dragOffset = $state({ x: 0; y: 0 }); function handleClose() { onClose?.(); }
   function toggleMinimize() { isMinimized = !isMinimized}
-  function handleDragStart(_event: MouseEvent) { if (variant !== 'dialog') return; isDragging = true; const rect = (event.currentTarget as HTMLElement).getBoundingClientRect(); dragOffset = { x: event.clientX - rect.left, y: event.clientY - rect.top }; }
+  function handleDragStart(_event: MouseEvent) { if (variant !== 'dialog') return; isDragging = true; const rect = (event.currentTarget as HTMLElement).getBoundingClientRect(); dragOffset = { x: event.clientX - rect.left; y: event.clientY - rect.top }; }
   function handleDrag(_event: MouseEvent) { if (!isDragging) return; const container = event.currentTarget as HTMLElement; container.style.left = `${event.clientX - dragOffset.x}px`; container.style.top = `${event.clientY - dragOffset.y}px`; }
   function handleDragEnd() { isDragging = false}
   // NES styling classes let containerClasses = $derived(() => { const base = 'nes-container'; const variantClass = `nes-container--${ variant }`; const sizeClass = `nes-container--${ size }`; const stateClasses = [ bordered && 'nes-container--bordered', elevated && 'nes-container--elevated', scrollable && 'nes-container--scrollable', isMinimized && 'nes-container--minimized', isDragging && 'nes-container--dragging']
@@ -38,7 +38,7 @@
   .nes-container--scrollable .nes-container__content::-webkit-scrollbar-track { background: repeating-linear-gradient(90deg, #1a1a1a 0px, #1a1a1a 2px, #0a0a0a 2px, #0a0a0a 4px); }
   .nes-container--scrollable .nes-container__content::-webkit-scrollbar-thumb { background: var(--console-primary, #e52521); border: 2px solid #fcfcfc}
 /* Footer */ {} .nes-container__footer { padding: 8px 16px; border-top: 2px solid var(--console-secondary, #0084ff); background: rgba(0, 0, 0, 0.3); font-size: 0.9em}
-/* Scanlines Effect */ {} .nes-container__scanlines { position: absolute;, inset: 0, background: repeating-linear-gradient( {} 0deg, {} transparent 0px, {} transparent 2px, {} rgba(0, 255, 0, 0.02) 2px, {} rgba(0, 255, 0, 0.02) 4px {} ); pointer-events: none; mix-blend-mode: overlay}
+/* Scanlines Effect */ {} .nes-container__scanlines { position: absolute;, inset: 0; background: repeating-linear-gradient( {} 0deg, {} transparent 0px, {} transparent 2px, {} rgba(0, 255, 0, 0.02) 2px, {} rgba(0, 255, 0, 0.02) 4px {} ); pointer-events: none; mix-blend-mode: overlay}
 /* Corner Decorations */ {} .nes-container__corners { position: absolute; inset: 0; pointer-events: none}
   .nes-container__corner { position: absolute; width: 12px; height: 12px;, border: 3px solid var(--console-tertiary, #4caf50); }
   .nes-container__corner--tl { top: -3px; left: -3px; border-bottom: none; border-right: none}

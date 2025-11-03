@@ -1,54 +1,6 @@
-# Dependencies
-node_modules/
-package-lock.json
-yarn.lock
-
-# Build outputs
-build/
-dist/
-.svelte-kit/
-
-# Generated files
-src/app.d.ts
-src/ambient.d.ts
-src/global.d.ts
-
-# Archives and problematic components
-archived-components/
-src/lib/experimental/
-
-# Test files
-src/tests/
-src/stories/
-**/*.test.ts
-**/*.spec.ts
-
-# Large auto-generated files
-src/lib/types/drizzle-generated.ts
-src/lib/services/gpu-cache-orchestrator.ts
-src/lib/server/thread-safe-postgres.ts
-src/lib/server/gpu-thread-coordinator.ts
-
-# Protobuf and generated content
-src/proto/
-src/grpc/
-src/flatbuf/
-src/wasm/
-
-# Configuration files
-*.config.js
-*.config.ts
-vite.config.*
-tailwind.config.*
-postcss.config.*
-
-# Documentation
-*.md
-CHANGELOG.md
-README.md
-
-# Other
-.git/
-.vscode/
-temp/
-tmp/
+node_modules
+.svelte-kit
+dist
+build
+*.log
+*.lock

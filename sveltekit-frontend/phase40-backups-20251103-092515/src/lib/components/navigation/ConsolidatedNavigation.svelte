@@ -44,8 +44,7 @@
               <a
                 href={route.route}
                 class="route-link"
-                class:active={$page.url.pathname === route.route}
-               , class:beta={route.status === 'beta'}
+                class:active={$page.url.pathname === route.route}; class:beta={route.status === 'beta'}
               >
                 <span class="route-icon">{route.icon}</span>
                 <span class="route-label">{route.label}</span>
@@ -82,11 +81,9 @@
 </nav>
 <style>
   .consolidated-navigation {
-    position: fixed
-   , top: 0,
+    position: fixed; top: 0,
     left: 0
-    z-index: 1000,
-    background: var(--surface-primary, #0a0a0a);
+    z-index: 1000; background: var(--surface-primary, #0a0a0a);
     border-right: 1px solid var(--border-primary, #333333);
     height: 100vh
     width: 64px
@@ -103,8 +100,7 @@
     gap: 0.75rem
     width: 100%;
     background: none
-    border: none
-   , color: var(--text-primary, #ffffff);
+    border: none; color: var(--text-primary, #ffffff);
     cursor: pointer
     padding: 0.5rem
     border-radius: 4px
@@ -122,14 +118,11 @@
     align-items: center
     gap: 0.5rem
     margin-top: 0.5rem
-    padding: 0.5rem
-   , background: rgba(var(--theme-color), 0.1);
-    border-radius: 4px
-   , color: var(--theme-color);
+    padding: 0.5rem; background: rgba(var(--theme-color), 0.1);
+    border-radius: 4px; color: var(--theme-color);
   }
   .nav-content {
-    padding: 1rem 0
-   , height: calc(100vh - 120px);
+    padding: 1rem 0; height: calc(100vh - 120px);
     overflow-y: auto}
   .route-group {
     margin-bottom: 1.5rem}
@@ -137,8 +130,7 @@
     display: flex
     align-items: center
     gap: 0.5rem
-    padding: 0.5rem 1rem
-   , color: var(--text-secondary, #888888);
+    padding: 0.5rem 1rem; color: var(--text-secondary, #888888);
     font-size: 0.9rem
     font-weight: bold
     text-transform: uppercase
@@ -153,8 +145,7 @@
     display: flex
     align-items: center
     gap: 0.75rem
-    padding: 0.75rem 1rem
-   , color: var(--text-primary, #ffffff);
+    padding: 0.75rem 1rem; color: var(--text-primary, #ffffff);
     text-decoration none
     transition: all 0.2s
     border-left: 3px solid transparent}
@@ -174,8 +165,7 @@
     white-space: nowrap}
   .beta-badge { background: var(--warning, #ff6600);
     color: white
-    font-size: 0.6rem
-   , padding: 0.1rem 0.3rem
+    font-size: 0.6rem; padding: 0.1rem 0.3rem
     border-radius: 2px
     font-weight: bold
     margin-left: auto}
@@ -194,8 +184,7 @@
   @media (max-width: 768px) {
     .consolidated-navigation {
       width: 100%;
-      height: auto
-     , position: relative
+      height: auto; position: relative
       border-right: none
       border-bottom: 1px solid var(--border-primary, #333333);
     }

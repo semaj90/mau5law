@@ -1,9 +1,8 @@
 ﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   interface GridColumn {
-    key: string
-   , title: string
-    formatter?: (_value: any, row: any) => string}
+    key: string; title: string
+    formatter?: (_value: any; row: any) => string}
   interface DataGridProps {
     columns?: GridColumn[];
     data?: any[];
@@ -12,7 +11,7 @@
     actionsSnippet?: Snippet<[any, number]>;
   }
   let { columns = [], data = [], loading = false, className = '', actionsSnippet }: DataGridProps = $props();
-  function format(_value: any, col: GridColumn, row: any) {
+  function format(_value: any, col: GridColumn; row: any) {
     return col.formatter ? col.formatter(value, row) : valu}
 </script>
 <div class="yorha-data-grid {className}">
@@ -51,8 +50,7 @@
 <style>
   .yorha-data-grid {
     border: 2px solid #ffbf00
-    background: #0a0a0a
-   , color: #e0e0e0
+    background: #0a0a0a; color: #e0e0e0
     font-family: 'JetBrains Mono', monospace}
   .grid-scroll {
     overflow: auto
@@ -61,8 +59,7 @@
     width: 100%;
     border-collapse: collapse}
   thead th {
-    position: sticky
-   , top: 0,
+    position: sticky; top: 0,
     background: #ffd700
     color: #000
     text-align: left
@@ -70,12 +67,10 @@
     border-bottom: 2px solid #ffbf00}
   td {
     padding: 8px
-    border-bottom: 1px solid #333}
- , tr:nth-child(even) td {
+    border-bottom: 1px solid #333}; tr:nth-child(even) td {
     background: #151515}
   .grid-loading,
   .grid-empty {
-    padding: 12px
-   , color: #ffbf00}
+    padding: 12px; color: #ffbf00}
 </style>
 

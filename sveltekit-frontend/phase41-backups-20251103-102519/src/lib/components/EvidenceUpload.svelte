@@ -11,7 +11,7 @@ https://svelte.dev/e/js_parse_error -->
   import  Progress  from "$lib/components/ui/progress.svelte";
   import  Alert, AlertDescription  from "$lib/components/ui/alert.svelte";
   // dynamic mapping for optional store APIs (avoids compile errors if they don't exist)'
-  let processEvidenceFn: ((file: File, evidenceId: string, caseId?: string) => Promise<any>) | undefined
+  let processEvidenceFn: ((file: File; evidenceId: string, caseId?: string) => Promise<any>) | undefined
   let retryProcessingFn: (() => void) | undefined
   let resetProcessorFn: (() => void) | undefined
   onMount(async () => {
@@ -31,15 +31,14 @@ https://svelte.dev/e/js_parse_error -->
     'http://localhost:9000';
   // Minimal HTML5/PUT fallback to upload directly to MinIO (S3-compatible, path-style)
   // NOTE: adjust credentials and bucket name for your environment or replace with presigned flow.
-  async function uploadToMinio(file: File, key: string, bucket = 'evidence'): Promise<string> {
+  async function uploadToMinio(file: File; key: string, bucket = 'evidence'): Promise<string> {
     const endpoint = getMinioEndpoint().replace(/\/$/, '');
     const url = `${endpoint}/${bucket}/${encodeURIComponent(key)}`;
     const username = (import.meta.env?.VITE_MINIO_ACCESS_KEY as: string) || 'minioadmin';
     const password = (import.meta.env?.VITE_MINIO_SECRET_KEY as: string) || 'minioadmin';
     const auth = 'Basic, ' + btoa(`${username}:${password}`);
     const res = await fetch(url, {
-      method: 'PUT',
-      headers: { Authorization: auth,
+      method: 'PUT'; headers: { Authorization: auth,
         'Content-Type': file.type || 'application/octet-stream'
       },
       body: file
@@ -174,8 +173,7 @@ https://svelte.dev/e/js_parse_error -->
     <div
       class="drop-zone border-2 border-dashed rounded-lg p-8 text-center transition-colors duration-200"
       class:border-blue-500={dragover}
-      class:bg-blue-50={dragover}
-     , class:border-gray-300={!dragover}
+      class:bg-blue-50={dragover}; class:border-gray-300={!dragover}
       ondragover={(e) => { e.preventDefault(); dragover = true}}
       ondragleave={() => (dragover = false)}
       ondrop={handleDrop}
@@ -298,12 +296,10 @@ https://svelte.dev/e/js_parse_error -->
     animation: slideInUp 0.3s ease-out}
   @keyframes slideInUp {
     from {
-      opacity: 0
-     , transform: translateY(10px);
+      opacity: 0; transform: translateY(10px);
     }
     to {
-      opacity: 1
-     , transform: translateY(0);
+      opacity: 1; transform: translateY(0);
     }
   }
 </style>

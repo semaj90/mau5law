@@ -13,4 +13,3 @@
   <p class="text-xs">Server time: {data.now}</p>
 </div>
 ;
-

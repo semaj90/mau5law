@@ -1,11 +1,12 @@
 ﻿<svelte:head>
-	<title>Minimal Landing Â· Deeds Web App</title>
-	<meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Minimal Landing Â· Deeds Web App</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
 </svelte:head>
 <main class="minimal-landing" aria-labelledby="minimal-heading">
-	<h1 id="minimal-heading">Hello SvelteKit! ðŸš€</h1>
-	<p>If you can see this, the minimal setup component is available (former +page.minimal.svelte).</p>
+  <h1 id="minimal-heading">Hello SvelteKit! ðŸš€</h1>
+  <p>If you can see this, the minimal setup component is available (former +page.minimal.svelte).</p>
 </main>
+
 <style>
 	:root {
 		--accent: #ff3e00
@@ -26,4 +27,3 @@
 		margin: 0
 		line-height: 1.5}
 </style>
-

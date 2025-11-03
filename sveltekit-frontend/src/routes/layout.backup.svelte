@@ -32,4 +32,3 @@
    ; padding: 1rem
     border-radius: 0.5rem}
 </style>
-

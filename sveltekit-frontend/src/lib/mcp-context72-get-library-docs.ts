@@ -18,9 +18,8 @@ export interface LibraryDocsRequest {
 export interface LibraryDocsResponse {
   content: string,
   metadata: {
-    library: string,
-    version?: string;
-    topic?: string,tokenCount: number};
+    library: string | version?: string;
+    topic?: string | tokenCount: number};
   snippets?: CodeSnippet[]}
 
 /**

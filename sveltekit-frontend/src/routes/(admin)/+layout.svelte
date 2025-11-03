@@ -4,13 +4,14 @@
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: {  any; data: { user?: any } } = $props();
+  let { children, data }: { any; data: { user?: any } } = $props();
 
   // Admin-focused console theme (amber on black for admin work)
   const consolePalette: ConsolePaletteName = 'cyberpunk'; // Changed to a valid type from the allowed list
 
   $effect(() => {
-    applyConsolePalette(consolePalette)});
+    applyConsolePalette(consolePalette);
+  });
 </script>
 
 <svelte:head>
@@ -74,5 +75,3 @@
       border-bottom: 1px solid var(--border-primary, #ffaa00)}
   }
 </style>
-
-

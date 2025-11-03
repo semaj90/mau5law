@@ -30,7 +30,7 @@
   let yorhaCanvasBoardRef: any;
   // State management
   const canvasState = writable({ mode: initialMode
-    evidenceObjects: [], drawingObjects: [], selectedObjects: [], lastSync: 0 });
+    evidenceObjects: [], drawingObjects: [], selectedObjects: []; lastSync: 0 });
   let currentMode = $state(initialMode);
   let showYoRHaBoard = $state(false);
   let canvasObjects = $state([]);
@@ -57,8 +57,7 @@
       ondispatch?.({
         evidenceObjects,
         drawingObjects: yorhaDrawings
-        totalObjects: canvasObjects.length,
-        timestamp: Date.now();
+        totalObjects: canvasObjects.length; timestamp: Date.now();
       });
       console.log(`✅ Canvas sync complete: ${canvasObjects.length} objects`);
     } catch (error) {
@@ -120,16 +119,15 @@
     canvasObjects = [];
     canvasState.update(state => ({
       ...state,
-      evidenceObjects: [],
-      drawingObjects: [],
+      evidenceObjects: []; drawingObjects: [],
       selectedObjects: []
     }));
     // ondispatch removed;
   }
   function exportCanvasState() { const state = {
-      timestamp: Date.now(), caseId, mode: currentMode
-      evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'), drawings: canvasObjects.filter(obj => obj.type === 'drawing'), canvasJson evidenceCanvasRef?.getCanvasJSON(), metadata: {
-        objectCount: canvasObjects.length, lastSync: Date.now(), version: '1.0' }
+      timestamp: Date.now(), caseId; mode: currentMode
+      evidenceObjects: canvasObjects.filter(obj => obj.type !== 'drawing'), drawings: canvasObjects.filter(obj => obj.type === 'drawing'), canvasJson evidenceCanvasRef?.getCanvasJSON(); metadata: {
+        objectCount: canvasObjects.length, lastSync: Date.now(); version: '1.0' }
     }
     ondispatch?.(state);
     return stat;
@@ -298,15 +296,14 @@
     box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
   }
   .canvas-container {
-    flex: 1,
-    display: flex;
+    flex: 1; display: flex;
     overflow: hidden;
   }
   .canvas-container.split-view {
     flex-direction row;
   }
   .evidence-canvas-section,
-  .yorha-canvas-section { flex: 1, display: flex;
+  .yorha-canvas-section { flex: 1; display: flex;
     flex-direction: column;
     min-width: 0 }
   .evidence-canvas-section.full-width,

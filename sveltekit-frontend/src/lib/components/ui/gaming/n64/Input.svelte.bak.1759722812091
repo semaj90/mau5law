@@ -276,18 +276,18 @@
   <div class="n64-input-wrapper">
     <input
       bind:this={inputElement}
-      type={type}
-      name={name}
-      id={id}
-      required={required}
-      minlength={minlength}
-      maxlength={maxlength}
-      pattern={pattern}
-      readonly={readonly}
-      disabled={disabled}
-      autocomplete={autocomplete}
-      bind:value={value}
-      placeholder={placeholder}
+      {type}
+      {name}
+      {id}
+      {required}
+      {minlength}
+      {maxlength}
+      {pattern}
+      {readonly}
+      {disabled}
+      {autocomplete}
+      bind:value
+      {placeholder}
       oninput={handleInput}
       onfocus={handleFocus}
       onblur={handleBlur}
@@ -303,7 +303,7 @@
         --input-font-size: ${sizeStyles.fontSize};
         --input-min-height: ${sizeStyles.minHeight};
         --transform-3d: ${transform3D};
-        --fog-color: ${((effectiveRenderOptions as any)?.fogColor) ?? '#404040'};
+        --fog-color: ${(effectiveRenderOptions as any)?.fogColor ?? '#404040'};
         --glow-intensity: ${typeof glowIntensity !== 'undefined' ? glowIntensity : 0};
         --input-depth: ${typeof depth !== 'undefined' ? depth + 'px' : '8px'};
       `}
@@ -377,8 +377,7 @@
     overflow: hidden;
     /* Fog effect background */
     background-image:
-      var(--material-bg),
-      radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
+      var(--material-bg), radial-gradient(circle at 50% 120%, var(--fog-color, #404040) 0%, transparent 70%);
   }
 
   /* Placeholder styling */
@@ -420,12 +419,7 @@
     left: 15%;
     right: 70%;
     bottom: 70%;
-    background: linear-gradient(
-      45deg,
-      rgba(255, 255, 255, 0.4) 0%,
-      rgba(255, 255, 255, 0.1) 50%,
-      transparent 100%
-    );
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
     border-radius: 2px;
     pointer-events: none;
     z-index: 3;
@@ -439,12 +433,7 @@
     left: -2px;
     right: -2px;
     bottom: -2px;
-    background: linear-gradient(
-      45deg,
-      rgba(74, 144, 226, 0.3),
-      rgba(74, 144, 226, 0.1),
-      rgba(74, 144, 226, 0.3)
-    );
+    background: linear-gradient(45deg, rgba(74, 144, 226, 0.3), rgba(74, 144, 226, 0.1), rgba(74, 144, 226, 0.3));
     border-radius: 6px;
     pointer-events: none;
     z-index: 0;
@@ -453,8 +442,13 @@
   }
 
   @keyframes inputGlow {
-    0%, 100% { opacity: var(--glow-intensity); }
-    50% { opacity: calc(var(--glow-intensity) * 1.5); }
+    0%,
+    100% {
+      opacity: var(--glow-intensity);
+    }
+    50% {
+      opacity: calc(var(--glow-intensity) * 1.5);
+    }
   }
 
   /* Material type variations */
@@ -487,8 +481,8 @@
     transform: perspective(1000px) scale(0.98);
     box-shadow:
       inset 0 4px 0 #1a202c,
-      inset 0 1px 0 rgba(255,255,255,0.05),
-      0 2px 4px rgba(0,0,0,0.2);
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   /* Focus styles */
@@ -501,7 +495,7 @@
   }
 
   /* Error state */
-  :global(.n64-input[aria-invalid="true"]) {
+  :global(.n64-input[aria-invalid='true']) {
     border-color: #dc3545;
     box-shadow:
       var(--material-shadow),
@@ -527,7 +521,9 @@
   }
 
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   /* Input message styling */
@@ -549,10 +545,7 @@
   :global(.n64-input.texture-ultra) {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    filter:
-      contrast(1.02)
-      brightness(1.01)
-      saturate(1.05);
+    filter: contrast(1.02) brightness(1.01) saturate(1.05);
   }
   :global(.n64-input.filtering-bilinear) {
     filter: blur(0.25px) contrast(1.1);
@@ -578,11 +571,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(
-      ellipse at center bottom,
-      var(--fog-color, #404040) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70%);
     opacity: 0.2;
     pointer-events: none;
     z-index: 0;
@@ -606,7 +595,9 @@
   @media (prefers-reduced-motion: reduce) {
     :global(.n64-input) {
       transform: none !important;
-      transition: border-color 150ms ease, box-shadow 150ms ease;
+      transition:
+        border-color 150ms ease,
+        box-shadow 150ms ease;
     }
     .input-glow-effect {
       animation: none;

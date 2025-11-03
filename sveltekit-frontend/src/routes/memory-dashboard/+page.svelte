@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { browser } from '$app/environment';
@@ -225,3 +225,4 @@ if (browser) {
     <p>Last updated: {new Date().toLocaleString()}</p>
   </div>
 </div>;
+

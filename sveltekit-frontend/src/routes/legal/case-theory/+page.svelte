@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -59,7 +59,7 @@ import type { Case } from '$lib/types';
 
   interface StrengthAnalysis {
     overall: number
-   , components: Record<string number>}
+   , components: Record<string, number>}
 
   interface NewTheoryForm {
     name: string
@@ -93,7 +93,7 @@ import type { Case } from '$lib/types';
   let aiSuggestions = $state<string[]>([]);
   let logicalChain = $state<LogicalStep[]>([]);
   let riskAssessment = $state<RiskAssessment | null>(null);
-  let theoryScores = $state<Record<string any>>({});
+  let theoryScores = $state<Record<string, any>>({});
   const theoryTypes = [
     { id: 'prosecution', label: 'Prosecution Theory', icon: Scale },
     { id: 'defense', label: 'Defense Theory', icon: Users },
@@ -398,7 +398,7 @@ import type { Case } from '$lib/types';
 
   interface StrengthAnalysis {
     overall: number
-   , components: Record<string number>}
+   , components: Record<string, number>}
 
   interface NewTheoryForm {
     name: string
@@ -432,7 +432,7 @@ import type { Case } from '$lib/types';
   let aiSuggestions = $state<string[]>([]);
   let logicalChain = $state<LogicalStep[]>([]);
   let riskAssessment = $state<RiskAssessment | null>(null);
-  let theoryScores = $state<Record<string any>>({});
+  let theoryScores = $state<Record<string, any>>({});
   const theoryTypes = [
     { id: 'prosecution', label: 'Prosecution Theory', icon: Scale },
     { id: 'defense', label: 'Defense Theory', icon: Users },
@@ -677,4 +677,5 @@ import type { Case } from '$lib/types';
       }, {
         id: '3',
         title: 'Medical Examiner Report',
+
 

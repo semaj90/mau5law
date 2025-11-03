@@ -2,8 +2,8 @@
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+  import type { Case } from '$lib/types';
+  import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import Typewriter from '$lib/components/Typewriter.svelte';
@@ -17,32 +17,40 @@ import type { Document } from '$lib/types';
       try {
         const casesRes = await fetch('/api/cases/recent');
         if (casesRes.ok) {
-          recentCases = await casesRes.json()}
+          recentCases = await casesRes.json();
+        }
       } catch (error) {
-        console.error('Failed to load dashboard data:', error)}
+        console.error('Failed to load dashboard data:', error);
+      }
       // Setup AI search functionality
       if (browser) {
         const aiSearchBtn = document.getElementById('aiSearchBtn');
-        const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement
+        const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement;
         if (aiSearchBtn && aiSearchInputEl) {
           aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value));
           aiSearchInputEl.addEventListener('keypress', e => {
             if (e.key === 'Enter') {
-              handleAiSearch(aiSearchInputEl.value)}
-          })}
+              handleAiSearch(aiSearchInputEl.value);
+            }
+          });
+        }
       }
-    })()});
+    })();
+  });
   function handleQuickUpload(files: any) {
     // Handle quick upload from homepage
     if (files.length > 0) {
-      window.location.href = `/upload?files=${files.length}`}
+      window.location.href = `/upload?files=${files.length}`;
+    }
   }
   async function handleAiSearch(query: string): Promise<any> {
-    if (!query.trim()) return
+    if (!query.trim()) return;
     try {
       // Navigate to AI search results page
-      window.location.href = `/ai/search?q=${encodeURIComponent(query)}`} catch (error) {
-      console.error('AI search failed:', error)}
+      window.location.href = `/ai/search?q=${encodeURIComponent(query)}`;
+    } catch (error) {
+      console.error('AI search failed:', error);
+    }
   }
 </script>
 
@@ -128,7 +136,7 @@ import type { Document } from '$lib/types';
         </div>
         <h3 class="space-y-4">Case Analytics</h3>
         <p class="space-y-4">View insights and patterns across your cases</p>
-  <a href="/ai/dashboard" class="space-y-4"> View Dashboard </a>
+        <a href="/ai/dashboard" class="space-y-4"> View Dashboard </a>
       </div>
     </div>
   </div>
@@ -233,7 +241,5 @@ import type { Document } from '$lib/types';
     display: -webkit-box
     -webkit-line-clamp: 3
     line-clamp: 3
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
 </style>
-

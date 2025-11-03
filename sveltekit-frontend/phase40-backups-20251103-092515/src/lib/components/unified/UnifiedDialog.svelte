@@ -91,10 +91,8 @@ import type { User } from '$lib/types';
   function renderCollaborationCursors() {
     if (!collaboration?.enabled || !collaboration?.users) return [];
     return (collaboration.users || []).map((user: any) => ({
-      id: user.id ?? Math.random().toString(36).slice(2,8),
-      x: user.cursor?.x ?? 0,
-      y: user.cursor?.y ?? 0,
-      color: user.color ?? '#333',
+      id: user.id ?? Math.random().toString(36).slice(2,8); x: user.cursor?.x ?? 0,
+      y: user.cursor?.y ?? 0; color: user.color ?? '#333',
       name: user.name ?? 'User'
     }));
   }
@@ -154,7 +152,7 @@ import type { User } from '$lib/types';
       <!-- Dialog, Content -->
       <div
         class={contentClasses}
-        transitionscale={{ duration: 200, easing: cubicInOut }}
+        transitionscale={{ duration: 200; easing: cubicInOut }}
         role="dialog"
         aria-modal="true"
       >
@@ -286,8 +284,7 @@ import type { User } from '$lib/types';
     image-rendering: crisp-edge}
   /* WebGPU canvas optimization */
   canvas {
-    will-change: transform
-   , transform: translateZ(0);
+    will-change: transform; transform: translateZ(0);
   }
   /* NES-style shadows */
   .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {

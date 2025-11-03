@@ -83,9 +83,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           "Type, 'help' for available commands.",
           '']; }
     // Call external command handler if provided onCommand?.(cmd); // Keep terminal history within limits if (terminalHistory.length > maxLines) { terminalHistory = terminalHistory.slice(-maxLines); }
-  } function scrollToBottom() { setTimeout(() => { terminalRef?.scrollTo({ top: terminalRef.scrollHeight, behavior: 'smooth'
+  } function scrollToBottom() { setTimeout(() => { terminalRef?.scrollTo({ top: terminalRef.scrollHeight; behavior: 'smooth'
       }); }, 10); }
-</script> <div class="yorha-terminal" bind:this={ terminalRef }> <!-- Terminal, Header --> <div class="terminal-header"> <div class="header-left"> <div class="terminal-dots"> <div class="dot"></div> <div class="dot"></div> <div class="dot"></div> </div> <span class="terminal-title">{ title }</span> </div> <div class="header-right"> <div class="status-indicator {isActive ? 'active': 'inactive'}"> {isActive ? 'ACTIVE': 'INACTIVE'} </div> </div> </div> <!-- Terminal, Content --> <div class="terminal-content"> <!-- History --> {#each terminalHistory as line, index} <div class="terminal-line" class:command={line.startsWith(prompt)}> <pre>{ line }</pre> </div> {/each} <!-- Current, Input, Line --> <div class="terminal-line" class:processing={ isProcessing }> <span class="prompt-text">{ prompt }</span> <input bind:this={ inputRef }, bind:value={ currentCommand } class="command-input"
+</script> <div class="yorha-terminal" bind:this={ terminalRef }> <!-- Terminal, Header --> <div class="terminal-header"> <div class="header-left"> <div class="terminal-dots"> <div class="dot"></div> <div class="dot"></div> <div class="dot"></div> </div> <span class="terminal-title">{ title }</span> </div> <div class="header-right"> <div class="status-indicator {isActive ? 'active': 'inactive'}"> {isActive ? 'ACTIVE': 'INACTIVE'} </div> </div> </div> <!-- Terminal, Content --> <div class="terminal-content"> <!-- History --> {#each terminalHistory as line, index} <div class="terminal-line" class:command={line.startsWith(prompt)}> <pre>{ line }</pre> </div> {/each} <!-- Current, Input, Line --> <div class="terminal-line" class:processing={ isProcessing }> <span class="prompt-text">{ prompt }</span> <input bind:this={ inputRef }; bind:value={ currentCommand } class="command-input"
         disabled={ isProcessing } onkeydown={ handleKeyDown } placeholder=""
         spellcheck="false"
         autocomplete="off"
@@ -93,7 +93,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .terminal-header { background: var(--yorha-bg-secondary, #1a1a1a); border-bottom: 2px solid var(--yorha-secondary, #ffd700); display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; min-height: 40px}
   .header-left { display: flex; align-items: center; gap: 12px}
   .terminal-dots { display: flex; gap: 6px}
-  .dot { width: 12px;, height: 12px; border-radius: 0, border: 1px solid var(--yorha-text-muted, #808080); }
+  .dot { width: 12px;, height: 12px; border-radius: 0; border: 1px solid var(--yorha-text-muted, #808080); }
   .dot.red { background: var(--yorha-danger, #ff0041); }
   .dot.yellow { background: var(--yorha-warning, #ffaa00); }
   .dot.green { background: var(--yorha-accent, #00ff41); }

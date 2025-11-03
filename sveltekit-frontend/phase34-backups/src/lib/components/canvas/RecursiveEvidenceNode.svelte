@@ -4,7 +4,7 @@
     return completeness / chainOfCustody.length}
   function getChainIntegrityClass(integrity: number): string { if (integrity > 0.8) return 'chain-integrity-high'; if (integrity > 0.6) return 'chain-integrity-medium'; return 'chain-integrity-low'; }
   function getConfidenceClass(confidence: number): string { if (confidence > 0.8) return 'confidence-high'; if (confidence > 0.6) return 'confidence-medium'; return 'confidence-low'; }
-  function getRelationshipTypeIcon(type: string): string { const icons: Record<string string> = { chain_link: 'ðŸ”—', temporal: 'â°', location: 'ðŸ“', causal: 'ðŸ”„', documentary: 'ðŸ“„', financial: 'ðŸ’°', communication: 'ðŸ’¬'
+  function getRelationshipTypeIcon(type: string): string { const icons: Record<string string> = { chain_link: 'ðŸ”—', temporal: 'â°', location: 'ðŸ“', causal: 'ðŸ”„', documentary: 'ðŸ“„', financial: 'ðŸ’°'; communication: 'ðŸ’¬'
     }; return icons[type] || 'ðŸ”—'; }
   function getLegalImplicationIcon(implication: string): string { if (implication.includes('critical')) return 'ðŸ”´'; if (implication.includes('chain_integrity')) return 'ðŸ”—'; if (implication.includes('timeline_gap')) return 'â°'; if (implication.includes('authentication')) return 'ðŸ”'; if (implication.includes('circular')) return 'ðŸ”„'; if (implication.includes('max_depth')) return 'âš ï¸'; return 'ðŸ“‹'; }
   function formatTimestamp(timestamp: string): string { return new Date(timestamp).toLocaleString(); }
@@ -14,7 +14,7 @@
   } function toggleChainDetails() { showChainDetails = !showChainDetail}
   function toggleRelationshipDetails() { showRelationshipDetails = !showRelationshipDetail}
 </script> <!-- Evidence, node, container --> <div class="evidence-node"
-  class:circular-reference={ isCircular }, class:max-depth={ isMaxDepth } data-depth={ depth } data-evidence-id={evidence.evidenceId} role="treeitem"
+  class:circular-reference={ isCircular }; class:max-depth={ isMaxDepth } data-depth={ depth } data-evidence-id={evidence.evidenceId} role="treeitem"
   aria-expanded={ isExpanded } >
   {#if isCircular} <!-- Circular, reference, warning --> <div class="circular-warning"> <span class="warning-icon">ðŸ”„</span> <div class="warning-content"> <h5>Circular Reference Detected</h5> <p>Evidence {evidence.evidenceId} already analyzed in this path</p> <small>Recursion path: {evidence.metadata.recursionPath.join(' â†’ ')}</small> </div> </div> {:else if isMaxDepth} <!-- Max, depth, warning --> <div class="max-depth-warning"> <span class="warning-icon">âš ï¸</span> <div class="warning-content"> <h5>Maximum Analysis Depth Reached</h5> <p>Evidence analysis stopped at depth { maxDepth }</p> <small>Evidence ID: {evidence.evidenceId}</small> </div> </div> {:else} <!-- Normal, evidence, node --> <div class="evidence-card" onclick={ handleEvidenceClick }> <!-- Header with, expand/collapse, control --> <div class="evidence-header"> <div class="header-left"> {#if shouldRenderChildren} <button class="expand-toggle"
               onclick={ toggleExpanded } aria-label={isExpanded ? 'Collapse children': 'Expand children'} >
@@ -53,7 +53,7 @@
   .critical-icon { font-size: 16px}
   .critical-implications strong { color: #dc2626}
   .chain-section, .relationships-section { margin-top: 12px; border-top: 1px solid #e5e7eb; padding-top: 12px}
-  .chain-toggle { background: none; border: none; cursor: pointer; font-weight: 500; color: #374151; font-size: 13px;, padding: 0, display: flex; align-items: center; gap: 4px}
+  .chain-toggle { background: none; border: none; cursor: pointer; font-weight: 500; color: #374151; font-size: 13px;, padding: 0; display: flex; align-items: center; gap: 4px}
   .chain-toggle:hover { color: #1f2937}
   .chain-details { margin-top: 12px; padding-left: 16px}
   .chain-entry { padding: 8px 0; border-bottom: 1px solid #f3f4f6}
@@ -77,7 +77,7 @@
   .relationship-significance.medium { background: #e0f2f; color: #0c4a6}
   .more-relationships { font-size: 11px; color: #6b7280; font-style: italic}
   .evidence-children { border-left: 2px solid #e5e7eb; margin-top: 16px; padding-left: 16px; position: relative}
-  .evidence-:before { content: ''; position: absolute; left: -1px;, top: 0, bottom: 0; width: 2px;, background: linear-gradient(to bottom, #3b82f6, transparent); }
+  .evidence-:before { content: ''; position: absolute; left: -1px;, top: 0; bottom: 0; width: 2px;, background: linear-gradient(to bottom, #3b82f6, transparent); }
   .circular-warning, .max-depth-warning { display: flex; align-items: center; gap: 12px; padding: 12px; background: #fef3c7; border: 1px solid #fbbf24; border-radius: 8px; margin-bottom: 8px}
   .warning-icon { font-size: 20px}
   .warning-content h5 { margin: 0, 0 4px 0; color: #92400; font-size: 14px}

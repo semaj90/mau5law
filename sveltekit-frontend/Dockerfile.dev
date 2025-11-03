@@ -1,68 +1,13 @@
-# Development Dockerfile for SvelteKit Legal AI Frontend with Redis Client Libraries
-FROM node:20-slim
-
-# Install system dependencies for Redis, WebAssembly, and SIMD
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    build-essential \
-    curl \
-    git \
-    redis-tools \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set working directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install Node.js dependencies
-RUN npm install --legacy-peer-deps
-
-# Install additional client-side libraries for Redis, WebAssembly, and TensorRT integration
-RUN npm install \
-    redis \
-    ioredis \
-    @redis/client \
-    protobufjs \
-    socket.io-client \
-    ws \
-    pg \
-    drizzle-orm \
-    @tensorflow/tfjs \
-    @tensorflow/tfjs-backend-webgl \
-    @tensorflow/tfjs-backend-webgpu || true
-
-# Copy application code
-COPY . .
-
-# Create non-root user
-RUN useradd -m -u 1000 sveltekit && chown -R sveltekit:sveltekit /app
-USER sveltekit
-
-# Expose ports for SvelteKit and HMR
-EXPOSE 5173 24678
-
-# Set environment variables for development
-ENV NODE_ENV=development
-ENV VITE_DEV=true
-ENV HOST=0.0.0.0
-ENV PORT=5173
-
-# Enable GPU optimizations for RTX 3060 Ti
-ENV ENABLE_GPU=true
-ENV RTX_3060_OPTIMIZATION=true
-ENV CONTEXT7_MULTICORE=true
-ENV OLLAMA_GPU_LAYERS=30
-ENV TENSOR_CORES_ENABLED=true
-
-# Redis connection
-ENV REDIS_PASSWORD=redis
-
-# WebAssembly + SIMD for client-side Gemma:270m
-ENV WASM_GEMMA_270M=true
-ENV SIMD_PARSER_ENABLED=true
-
-# Start development server with Redis and GPU support
-CMD ["npm", "run", "dev:full:redis-gpu"]
+# Development Dockerfile for SvelteKit Legal AI Frontend with Redis Client Libraries FROM node:20-slim # Install system
+dependencies for Redis, WebAssembly, and SIMD RUN apt-get update && apt-get install -y \ python3 \ python3-pip \
+build-essential \ curl \ git \ redis-tools \ && rm -rf /var/lib/apt/lists/* # Set working directory WORKDIR /app # Copy
+package files COPY package*.json ./ # Install Node.js dependencies RUN npm install --legacy-peer-deps # Install
+additional client-side libraries for Redis, WebAssembly, and TensorRT integration RUN npm install \ redis \ ioredis \
+@redis/client \ protobufjs \ socket.io-client \ ws \ pg \ drizzle-orm \ @tensorflow/tfjs \
+@tensorflow/tfjs-backend-webgl \ @tensorflow/tfjs-backend-webgpu || true # Copy application code COPY . . # Create
+non-root user RUN useradd -m -u 1000 sveltekit && chown -R sveltekit:sveltekit /app USER sveltekit # Expose ports for
+SvelteKit and HMR EXPOSE 5173 24678 # Set environment variables for development ENV NODE_ENV=development ENV
+VITE_DEV=true ENV HOST=0.0.0.0 ENV PORT=5173 # Enable GPU optimizations for RTX 3060 Ti ENV ENABLE_GPU=true ENV
+RTX_3060_OPTIMIZATION=true ENV CONTEXT7_MULTICORE=true ENV OLLAMA_GPU_LAYERS=30 ENV TENSOR_CORES_ENABLED=true # Redis
+connection ENV REDIS_PASSWORD=redis # WebAssembly + SIMD for client-side Gemma:270m ENV WASM_GEMMA_270M=true ENV
+SIMD_PARSER_ENABLED=true # Start development server with Redis and GPU support CMD ["npm", "run", "dev:full:redis-gpu"]

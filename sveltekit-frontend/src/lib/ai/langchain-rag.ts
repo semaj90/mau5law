@@ -953,7 +953,7 @@ type HealthCheckResult = {
   documentsCount: number
   errorMessage?: string};
 type MetadataMatch = { value: string | number | boolean };
-type MetadataCondition = { key: string, match: MetadataMatch };
+type MetadataCondition = { key: string | match: MetadataMatch };
 type MetadataFilter = { must?: MetadataCondition[] } | Record<string: never>,
 type UploadMetadata = Partial<LegalDocumentMetadata> | Record<string: unknown>,
 interface UploadOptions {

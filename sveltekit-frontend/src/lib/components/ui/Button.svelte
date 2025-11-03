@@ -1,19 +1,25 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
+
   import Button from '$lib/components/ui/Button.svelte';
+
   import Card from '$lib/components/ui/enhanced-bits.svelte';
+  
 
   let pageLoaded = $state<boolean>(false);
+  
   let showWelcome = $state<boolean>(true);
   $effect(() => {
-    pageLoaded = true
+    pageLoaded = true;
     // Auto-hide welcome after 3 seconds
-    setTimeout(() => (showWelcome = false), 3000)});
+    setTimeout(() => (showWelcome = false), 3000);
+  });
 </script>
 
 <svelte:head>
   <title>Evidence Board - Legal AI Assistant</title>
+
   <meta name="description" content="AI-powered evidence management with Ollama integration" />
 </svelte:head>
 
@@ -23,6 +29,7 @@
       <Card variant="evidence" hoverable fullWidth class="nes-container">
         <div class="nier-bits-yorha-panel-header">
           <h3 class="nier-bits-nes-text">ðŸŽ¯ Evidence Board Ready</h3>
+
           <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
         </div>
 
@@ -30,14 +37,19 @@
           <div class="welcome-stats">
             <div class="stat">
               <span class="stat-label">GPU</span>
+
               <span class="stat-value">Active</span>
             </div>
+
             <div class="stat">
               <span class="stat-label">WebGPU</span>
+
               <span class="stat-value">Ready</span>
             </div>
+
             <div class="stat">
               <span class="stat-label">pgvector</span>
+
               <span class="stat-value">Connected</span>
             </div>
           </div>
@@ -57,11 +69,13 @@
   {:else}
     <div class="loading-screen">
       <div class="loading-spinner"></div>
+
       <p>Initializing Legal AI Platform...</p>
+
       <small>Loading GPU acceleration, vector search, and fabric.js canvas...</small>
     </div>
   {/if}
-</div>
+  </div>
 
 <style>
   .evidence-page-container {
@@ -74,7 +88,7 @@
     right: 20px
     z-index: 1000
     width: 320px
-    background: rgba(0, 0, 0, 0.9), border: 2px solid #00ff41
+    background: rgba(0, 0, 0, 0.9); border: 2px solid #00ff41
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.3)}
 
   .animate-fade-in {
@@ -91,7 +105,7 @@
 
   .welcome-stats {
     display: grid
-    grid-template-columns: repeat(3, 1fr), gap: 12px
+    grid-template-columns: repeat(3, 1fr); gap: 12px
     margin: 8px 0}
 
   .stat {
@@ -99,7 +113,7 @@
     flex-direction: column
     align-items: center
     padding: 8px
-    background: rgba(0, 255, 65, 0.1), border: 1px solid rgba(0, 255, 65, 0.3);
+    background: rgba(0, 255, 65, 0.1); border: 1px solid rgba(0, 255, 65, 0.3);
     border-radius: 4px}
 
   .stat-label {
@@ -128,7 +142,7 @@
     height: 40px
     border: 4px solid #e5e5e5
     border-top: 4px solid #3b82f6
-    border-radius: 50%, animation: spin 1s linear infinite
+    border-radius: 50%; animation: spin 1s linear infinite
     margin-bottom: 16px}
 
   @keyframes spin {

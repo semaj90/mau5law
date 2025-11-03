@@ -72,32 +72,37 @@
   );
   const mode7Transform = $derived(getMode7Transform(isPressed, isHovered, enableMode7));
 </script>
-<div class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7
+
+<div
+  class="snes-16bit-button {className} {enableLayerEffects ? 'layer-effects' : ''} {enableMode7
     ? 'mode7'
-    : ''} {plasmaEffect ? 'plasma' : ''}">
-  <BitsButton bind:el={buttonElement}
-  {type}
-  {disabled}
-  {form}
-  {name}
-  {value}
-  onclick={handleClick}
-  onmouseenter={handleHover}
-  onmouseleave={handleUnhover}
-  onfocus={handleFocus}
-  
-  style="--button-gradient: {variantGradient}; --button-padding: {sizeStyles.padding}; --button-font-size: {sizeStyles.fontSize}; --button-min-height: {sizeStyles.minHeight}; --mode7-transform: {mode7Transform};">
-  {#if loading}
-    <div class="loading-spinner" role="status" aria-label="Loading">
-      <div class="enhanced-spinner"></div>
-    </div>
-  {:else if children}
-    {#if typeof children === 'function'}
-      {@render children()}
+    : ''} {plasmaEffect ? 'plasma' : ''}"
+>
+  <BitsButton
+    bind:el={buttonElement}
+    {type}
+    {disabled}
+    {form}
+    {name}
+    {value}
+    onclick={handleClick}
+    onmouseenter={handleHover}
+    onmouseleave={handleUnhover}
+    onfocus={handleFocus}
+    style="--button-gradient: {variantGradient}; --button-padding: {sizeStyles.padding}; --button-font-size: {sizeStyles.fontSize}; --button-min-height: {sizeStyles.minHeight}; --mode7-transform: {mode7Transform};"
+  >
+    {#if loading}
+      <div class="loading-spinner" role="status" aria-label="Loading">
+        <div class="enhanced-spinner"></div>
+      </div>
+    {:else if children}
+      {#if typeof children === 'function'}
+        {@render children()}
+      {/if}
     {/if}
-  {/if}
-</BitsButton>
+  </BitsButton>
 </div>
+
 <style>
   :global(.snes-16bit-button) {
     font-family: 'Orbitron', 'Arial', sans-serif;

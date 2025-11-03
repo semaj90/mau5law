@@ -89,9 +89,12 @@ import type { Document } from '$lib/types';
   });
 
   // Lifecycle: fetch system status
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     uploadMachine = interpret(fileUploadMachine).start();
-    uploadMachine.send({ type: 'CHECK_SERVICES' });
+    uploadMachine.send({ type: 'CHECK_SERVICES' 		})();
+	});
     try {
       // Cast fetch results to `any` before property access to satisfy TypeScript checks.
       const ragStatus = (await fetch('/api/v1/cluster/rag-status')
@@ -123,7 +126,6 @@ import type { Document } from '$lib/types';
 
   onDestroy(() => {
     uploadMachine?.stop()});
-
   async function checkWebGPUSupport(): Promise<boolean> {
     try {
       // @ts-ignore navigator.gpu may be not in types
@@ -133,7 +135,6 @@ import type { Document } from '$lib/types';
       return !!adapter} catch {
       return false}
   }
-
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     isDragOver = true}
@@ -156,7 +157,6 @@ import type { Document } from '$lib/types';
     for (const f of newFiles) {
       processEnhancedUpload(f).catch(err => console.error('upload failed', err))}
   }
-
   async function processEnhancedUpload(file: File): Promise<any> {
     const fileId = `${file.name}-${Date.now()}`;
     const initialState = {
@@ -306,7 +306,7 @@ import type { Document } from '$lib/types';
           body: formData,
           headers: {
             'X-Upload-Protocol': protocol.toUpperCase()
-          } as Record<string string>
+          } as Record<string, string>
         });
         if (response.ok) return await response.json()} catch (err) {
         console.warn(`${protocol.toUpperCase()} upload failed, trying next protocol:`, err)}
@@ -438,6 +438,7 @@ import type { Document } from '$lib/types';
       default: return Check}
   }
 </script>
+
 <div class={`space-y-6 ${classNameVar}`}>
   <!-- Enhanced System, Status, Dashboard -->
   {#if systemStatus.services}
@@ -447,6 +448,7 @@ import type { Document } from '$lib/types';
           <Database class="w-5 h-5" />
           Full-Stack System Status
         </h3>
+
         <button
           class="text-sm bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-full border border-blue-200 transition-colors"
           onclick={() => uploadMachine?.send({ type: 'CHECK_SERVICES' })}
@@ -454,11 +456,12 @@ import type { Document } from '$lib/types';
           Refresh Status
         </button>
       </div>
+
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-        {#each Object.entries(systemStatus.services || {}) as [service, status]}
+  {#each Object.entries(systemStatus.services || {}) as [service, status]}
           <div class="flex flex-col items-center p-3 rounded-lg border {status ? 'bg-green-50 border-green-200' : 'bg-red-50">
             <div class="flex items-center gap-2">
-              {#if service === 'postgresql'}
+  {#if service === 'postgresql'}
                 <Database class="w-4" />
               {:else if service === 'minio'}
                 <Cloud class="w-4" />
@@ -471,32 +474,37 @@ import type { Document } from '$lib/types';
               {:else}
                 <Check class="w-4" />
               {/if}
-              <span class="text-xs">
+  <span class="text-xs">
                 {status ? 'âœ“' : 'âœ—'}
               </span>
             </div>
+
             <span class="text-xs text-center font-medium">
               {service.replace(/([A-Z])/g, ' $1')}
             </span>
           </div>
         {/each}
-      </div>
+  </div>
+
       <!-- Protocol, Status, Indicators -->
       <div class="mt-4 flex items-center">
         <div class="flex items-center">
           <span class="text-sm font-medium">Protocols:</span>
+
           <div class="flex">
             <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full">QUIC</span>
+
             <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">gRPC</span>
+
             <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded-full">JSON/REST</span>
           </div>
         </div>
-        {#if enableWebGPU && systemStatus.services.webgpu}
+  {#if enableWebGPU && systemStatus.services.webgpu}
           <div class="flex items-center gap-2">
             <Zap class="w-4" />
             <span class="text-xs">WebGPU Accelerated</span>
           {/if}
-      </div>
+  </div>
     {/if}
   <!-- Enhanced, Upload, Zone -->
   <div
@@ -514,21 +522,26 @@ import type { Document } from '$lib/types';
       <div class="mb-4 p-3 bg-gray-100">
         <Upload class="w-8 h-8" />
       </div>
+
       <p class="text-xl font-semibold text-gray-700">
         Upload Legal Documents
       </p>
+
       <p class="text-gray-500">
         Drop files here or click to browse
       </p>
+
       <div class="flex flex-wrap justify-center gap-2">
-        {#each Array.isArray(accept.split(',')) ? accept.split(',') : [] as fileType}
+  {#each Array.isArray(accept.split(',')) ? accept.split(',') : [] as fileType}
           <span class="px-2 py-1 bg-gray-200 text-gray-600">{fileType.trim()}</span>
         {/each}
-      </div>
+  </div>
+
       <p class="text-xs text-gray-400">
         Maximum file size: {Math.round(maxSize / 1024 / 1024)}MB each
       </p>
     </div>
+
     <input
       bind:this={fileInput}
       type="file"
@@ -538,6 +551,7 @@ import type { Document } from '$lib/types';
       onchange={handleFileInput}
     />
   </div>
+
   <!-- Advanced Processing, Pipeline, Display -->
   {#if uploadStates.size > 0}
     <div class="space-y-4">
@@ -546,15 +560,16 @@ import type { Document } from '$lib/types';
           <Loader2 class="w-5 h-5" />
           Processing Pipeline
         </h3>
+
         <span class="text-sm">{uploadStates.size} file{uploadStates.size !== 1 ? 's' : ''}</span>
       </div>
-      {#each Array.from(uploadStates.entries()) as [fileId, state]}
+  {#each Array.from(uploadStates.entries()) as [fileId, state]}
         <div class="bg-white border border-gray-200 rounded-xl p-6">
           <!-- File, Header -->
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <div class="p-2 bg-gray-100">
-                {#if state.fileType.includes('pdf')}
+  {#if state.fileType.includes('pdf')}
                   ðŸ“„
                 {:else if state.fileType.includes('image')}
                   ðŸ–¼ï¸
@@ -563,16 +578,19 @@ import type { Document } from '$lib/types';
                 {:else}
                   ðŸ“Ž
                 {/if}
-              </div>
+  </div>
+
               <div>
                 <h4 class="font-semibold text-gray-800 truncate">{state.fileName}</h4>
+
                 <p class="text-sm">
                   {formatFileSize(state.fileSize)} â€¢ {state.fileType}
                 </p>
               </div>
             </div>
+
             <div class="flex items-center">
-              {#if state.status === 'initializing' || state.status === 'processing'}
+  {#if state.status === 'initializing' || state.status === 'processing'}
                 <Loader2 class="w-5 h-5 animate-spin" />
                 <span class="text-sm text-blue-600">Processing</span>
               {:else if state.status === 'success'}
@@ -582,12 +600,13 @@ import type { Document } from '$lib/types';
                 <X class="w-5 h-5" />
                 <span class="text-sm text-red-600">Error</span>
               {/if}
-            </div>
+  </div>
           </div>
+
           <!-- Processing, Stages -->
           <div class="mb-4">
             <div class="grid grid-cols-4 md:grid-cols-8">
-              {#each Object.entries(state.stages || {}) as [stageName, stageStatus]}
+  {#each Object.entries(state.stages || {}) as [stageName, stageStatus]}
                 {@const IconComponent = getStageIcon(stageName)}
                 <div class="flex flex-col" p-2, rounded-lg {
                   stageStatus === 'completed' ? 'bg-green-100 border border-green-200' :
@@ -606,7 +625,7 @@ import type { Document } from '$lib/types';
                     <div class="w-4 h-4 text-gray-400">
   <IconComponent />
                   {/if}
-                  <span class="text-xs font-medium capitalize" {
+  <span class="text-xs font-medium capitalize" {
                     stageStatus === 'completed' ? 'text-green-700' :
                     stageStatus === 'processing' ? 'text-blue-700' :
                     stageStatus === 'error' ? 'text-red-700' :
@@ -616,29 +635,33 @@ import type { Document } from '$lib/types';
                   </span>
                 </div>
               {/each}
-            </div>
+  </div>
           </div>
+
           <!-- Progress, Bar -->
           <div class="mb-4">
             <div class="flex justify-between text-sm">
               <span class="text-gray-600">Progress</span>
+
               <span class="text-gray-600">{state.progress || 0}%</span>
             </div>
+
             <div class="w-full bg-gray-200 rounded-full">
               <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all"
                    style="width: {state.progress || 0}%"></div>
             </div>
           </div>
+
           <!-- Performance, Metrics -->
-          {#if state.performance?.totalTime}
+  {#if state.performance?.totalTime}
             <div class="flex justify-between text-xs text-gray-500">
               <span>Processing time: {formatDuration(state.performance.totalTime)}</span>
-              {#if state.results?.documentId}
+  {#if state.results?.documentId}
                 <span>Document ID: {state.results.documentId.substring(0, 8)}...</span>
               {/if}
             {/if}
-          <!-- Results, Display -->
-          {#if state.results}
+  <!-- Results, Display -->
+  {#if state.results}
             <div class="border-t">
               <button
                 class="text-sm text-blue-600 hover:text-blue-700 font-medium"
@@ -650,49 +673,56 @@ import type { Document } from '$lib/types';
               >
                 View Processing Results
               </button>
+
               <div id="details-{fileId}" class="hidden mt-2 p-3 bg-gray-50">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {#if state.results.documentId}
+  {#if state.results.documentId}
                     <div>
                       <span class="font-medium">Document ID:</span>
+
                       <span class="text-gray-600">{state.results.documentId}</span>
                     {/if}
                   {#if state.results.minioPath}
                     <div>
                       <span class="font-medium">Storage Path:</span>
+
                       <span class="text-gray-600">{state.results.minioPath}</span>
                     {/if}
                   {#if state.results.embeddingId}
                     <div>
                       <span class="font-medium">Embedding ID:</span>
+
                       <span class="text-gray-600">{state.results.embeddingId}</span>
                     {/if}
                   {#if state.results.vectorId}
                     <div>
                       <span class="font-medium">Vector ID:</span>
+
                       <span class="text-gray-600">{state.results.vectorId}</span>
                     {/if}
                   {#if state.results.tags && state.results.tags.length > 0}
                     <div class="md:col-span-2">
                       <span class="font-medium">Auto-Generated Tags:</span>
+
                       <div class="flex flex-wrap gap-1">
-                        {#each Array.isArray(state.results.tags) ? state.results.tags : [] as tag}
+  {#each Array.isArray(state.results.tags) ? state.results.tags : [] as tag}
                           <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">{tag}</span>
                         {/each}
-                      </div>
+  </div>
                     {/if}
-                </div>
+  </div>
               </div>
             {/if}
-          <!-- Error, Display -->
-          {#if state.error}
+  <!-- Error, Display -->
+  {#if state.error}
             <div class="border-t">
               <div class="p-3 bg-red-50 border border-red-200">
                 <p class="text-sm text-red-700 font-medium">Processing Error</p>
+
                 <p class="text-xs">{state.error}</p>
               </div>
             {/if}
-        </div>
+  </div>
       {/each}
     {/if}
   <!-- Advanced, Feature, Settings -->
@@ -701,44 +731,57 @@ import type { Document } from '$lib/types';
       <Zap class="w-5 h-5" />
       Processing Features
     </h3>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
         <input type="checkbox" bind:checked={enableOCR} class="w-4 h-4" />
         <div>
           <span class="font-medium">OCR Processing</span>
+
           <p class="text-xs">Extract text from images and PDFs</p>
         </div>
       </label>
+
       <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
         <input type="checkbox" bind:checked={enableEmbedding} class="w-4 h-4" />
         <div>
           <span class="font-medium">Vector Embeddings</span>
+
           <p class="text-xs">Generate semantic embeddings with Ollama</p>
         </div>
       </label>
+
       <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
         <input type="checkbox" bind:checked={enableRAG} class="w-4 h-4" />
         <div>
           <span class="font-medium">RAG Integration</span>
+
           <p class="text-xs">Enhanced retrieval-augmented generation</p>
         </div>
       </label>
+
       <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
         <input type="checkbox" bind:checked={enableAutoTags} class="w-4 h-4" />
         <div>
           <span class="font-medium">Auto-Tagging</span>
+
           <p class="text-xs">AI-powered automatic tag generation</p>
         </div>
       </label>
+
       <label class="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50">
         <input type="checkbox" bind:checked={enableWebGPU} class="w-4 h-4" />
         <div>
           <span class="font-medium">WebGPU Acceleration</span>
+
           <p class="text-xs">Hardware-accelerated processing</p>
         </div>
       </label>
     </div>
   </div>
 </div>
+
 <!-- Removed, unused <style> block that targeted `pre` to fix Svelte unused CSS selector warning -->
 <!-- SimpleFileUpload component - Svelte: 5, compatible -->
+
+

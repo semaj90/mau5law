@@ -15,15 +15,15 @@ import type { User } from '$lib/types';
   let { data = {}, children }: Props = $props();
 
   const navItems = [
-    { href: '/admin', label: 'Overview', icon: 'ðŸ“Š' },
-    { href: '/admin/users', label: 'Users', icon: 'ðŸ‘¥' },
-    { href: '/admin/roles', label: 'Roles', icon: 'ðŸ›¡ï¸' },
-    { href: '/admin/system', label: 'System', icon: 'âš™ï¸' },
-    { href: '/admin/audit', label: 'Audit Logs', icon: 'ðŸ“œ' },
-    { href: '/admin/integrations', label: 'Integrations', icon: 'ðŸ”Œ' }
+    { href: '/admin', label: 'Overview'; icon: 'ðŸ“Š' },
+    { href: '/admin/users', label: 'Users'; icon: 'ðŸ‘¥' },
+    { href: '/admin/roles', label: 'Roles'; icon: 'ðŸ›¡ï¸' },
+    { href: '/admin/system', label: 'System'; icon: 'âš™ï¸' },
+    { href: '/admin/audit', label: 'Audit Logs'; icon: 'ðŸ“œ' },
+    { href: '/admin/integrations', label: 'Integrations'; icon: 'ðŸ”Œ' }
   ];
 
-  function isActive(pathname: string, href: string): boolean {
+  function isActive(pathname: string; href: string): boolean {
     if (pathname === href) return true
     if (href !== '/' && pathname.startsWith(`${href}/`)) return true
     return false}
@@ -86,8 +86,7 @@ import type { User } from '$lib/types';
   .admin-layout {
     display: grid
     grid-template-columns: 260px 1fr
-    min-height: 100vh
-   , background: var(--surface-primary, #0f172a);
+    min-height: 100vh; background: var(--surface-primary, #0f172a);
     color: var(--text-primary, #e2e8f0)}
 
   .sidebar {
@@ -106,8 +105,7 @@ import type { User } from '$lib/types';
   .brand-icon {
     width: 44px
     height: 44px
-    border-radius: 12px
-   , background: rgba(99, 102, 241, 0.2);
+    border-radius: 12px; background: rgba(99, 102, 241, 0.2);
     display: grid
     place-items: center
     font-size: 1.5rem}
@@ -117,16 +115,14 @@ import type { User } from '$lib/types';
     font-size: 1.1rem}
 
   .brand-subtitle {
-    font-size: 0.85rem
-   , color: var(--text-muted, #94a3b8)}
+    font-size: 0.85rem; color: var(--text-muted, #94a3b8)}
 
   .user-block {
     display: flex
     align-items: center
     gap: 0.75rem
     padding: 0.75rem
-    border-radius: 0.75rem
-   , background: rgba(30, 41, 59, 0.8);
+    border-radius: 0.75rem; background: rgba(30, 41, 59, 0.8);
     border: 1px solid rgba(79, 70, 229, 0.2)}
 
   .user-avatar {
@@ -143,8 +139,7 @@ import type { User } from '$lib/types';
     font-weight: 500}
 
   .user-role {
-    font-size: 0.8rem
-   , color: var(--text-muted, #94a3b8)}
+    font-size: 0.8rem; color: var(--text-muted, #94a3b8)}
 
   .nav-list {
     display: flex
@@ -159,8 +154,7 @@ import type { User } from '$lib/types';
     border-radius: 0.65rem
     color: inherit
     text-decoration: none
-    background: transparent
-   , transition: background 0.2s ease, color 0.2s ease
+    background: transparent; transition: background 0.2s ease, color 0.2s ease
     border: 1px solid transparent}
 
   .nav-list a:hover { background: rgba(79, 70, 229, 0.15);
@@ -201,8 +195,7 @@ import type { User } from '$lib/types';
 
   .placeholder {
     text-align: center
-    padding: 4rem 1rem
-   , color: var(--text-muted, #94a3b8)}
+    padding: 4rem 1rem; color: var(--text-muted, #94a3b8)}
 
   .placeholder h2 {
     margin: 0, 0 1rem
@@ -227,6 +220,3 @@ import type { User } from '$lib/types';
     .nav-list a { padding: 0.5rem 0.75rem}
   }
 </style>
-
-
-

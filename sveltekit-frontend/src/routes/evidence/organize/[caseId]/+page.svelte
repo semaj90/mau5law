@@ -64,8 +64,7 @@ if (!caseId) {
     const { evidence, organization } = e(vent as CustomEvent).detail;
     // Add to organization history
     organizationHistory = [{
-      timestamp: new Date().toISOString(),
-      mode: organization.type evidenceCount: evidence.length,
+      timestamp: new Date().toISOString(); mode: organization.type evidenceCount: evidence.length,
       structure: organizatio}, ...organizationHistory].slice(0, 10); // Keep last, 10 organization attempts
     console.log('[Evidence Organization] Evidence reorganized:', organization.type)}
   /**
@@ -85,8 +84,7 @@ if (!caseId) {
     // Update organization stats
     organizationStats = {
       ...organizationStats,
-      currentMode: mode
-     , lastUpdate: new Date().toISOString(),
+      currentMode: mode; lastUpdate: new Date().toISOString(),
       structure: structur}
     console.log('[Organization Change] Mode changed, to:', mode)}
   /**
@@ -99,12 +97,10 @@ if (!caseId) {
     try {
       const exportData = {
         caseId,
-        caseTitle: caseData?.title,
-        organizationMode: organizationStats.currentMode,
+        caseTitle: caseData?.title; organizationMode: organizationStats.currentMode,
         structure: organizationStats.structure,
         selectedEvidence,
-        exportedAt: new Date().toISOString(),
-        exportedBy: 'user' // Would be actual user ID in productio}
+        exportedAt: new Date().toISOString(); exportedBy: 'user' // Would be actual user ID in productio}
       const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -127,14 +123,12 @@ if (!caseId) {
       return}
     try {
       const response = await fetch('/api/v1/reports/evidence-organization', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           caseId,
           organizationData: organizationStats
           selectedEvidence,
-          includeCharts: true
-         , includeRecommendations: true
+          includeCharts: true; includeRecommendations: true
         })
       });
       if (response.ok) {
@@ -256,7 +250,7 @@ if (!caseId) {
                 <button
                   type="button"
                   class="remove-btn"
-                  onclick={() => handleEvidenceSelected({ detail: { evidence, context: 'removal' } })}
+                  onclick={() => handleEvidenceSelected({ detail: { evidence; context: 'removal' } })}
                 >
                   ✕
                 </button>
@@ -328,13 +322,9 @@ if (!caseId) {
 <style>
   .loading-container,
   .error-container {
-    display: flex; flex-direction: column,
-    align-items: center; justify-content: center,
-    height: 100vh; gap: 1rem,
-    text-align: center}
+    display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; gap: 1rem; text-align: center}
   .loading-spinner {
-    width: 2rem; height: 2rem,
-    border: 3px solid #f3f4f6;
+    width: 2rem; height: 2rem; border: 3px solid #f3f4f6;
     border-top: 3px solid #3b82f6;
     border-radius: 50%; animation: spin 1s linear infinite}
   @keyframes spin {
@@ -347,8 +337,7 @@ if (!caseId) {
   .error-container button,
   .back-link {
     padding: 0.5rem 1rem;
-    background: #3b82f6; color: white,
-    border: none; border-radius: 0.375rem,
+    background: #3b82f6; color: white; border: none; border-radius: 0.375rem,
     text-decoration none; cursor: pointer; font-weight: 500}
   .error-container buttonhover,
   .back-link:hover {
@@ -363,26 +352,19 @@ if (!caseId) {
     grid-area: header; background: white; border-bottom: 1px solid #e2e8f0;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
   .header-content {
-    display: flex; justify-content: space-between,
-    align-items: flex-start; padding: 1.5rem 2rem;
+    display: flex; justify-content: space-between; align-items: flex-start; padding: 1.5rem 2rem;
     gap: 2rem}
   .case-info h1 { margin: 0, 0 0.75rem 0;
-    font-size: 1.75rem; color: #1e293b,
-    font-weight: 700}
+    font-size: 1.75rem; color: #1e293b; font-weight: 700}
   .case-details {
-    display: flex; flex-wrap: wrap,
-    gap: 1rem; align-items: center}
+    display: flex; flex-wrap: wrap; gap: 1rem; align-items: center}
   .case-title {
-    font-size: 1.125rem; font-weight: 600,
-    color: #374151}
+    font-size: 1.125rem; font-weight: 600; color: #374151}
   .case-number {
-    font-size: 0.875rem; color: #6b7280,
-    font-family: monospace}
+    font-size: 0.875rem; color: #6b7280; font-family: monospace}
   .case-status {
     padding: 0.25rem 0.75rem;
-    border-radius: 1rem; font-size: 0.75rem,
-    font-weight: 600; text-transform: uppercase,
-    letter-spacing: 0.05em}
+    border-radius: 1rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em}
   .status-active {
     background: #dcfce7; color: #166534}
   .status-closed {
@@ -390,19 +372,15 @@ if (!caseId) {
   .status-pending {
     background: #fef3c7; color: #92400e}
   .page-actions {
-    display: flex; flex-direction: column,
-    gap: 1rem; align-items: flex-end}
+    display: flex; flex-direction: column; gap: 1rem; align-items: flex-end}
   .selection-info {
-    display: flex; align-items: center,
-    gap: 0.75rem; font-size: 0.875rem}
+    display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem}
   .selection-count {
     color: #3b82f6; font-weight: 600}
   .clear-btn {
     padding: 0.25rem 0.75rem;
-    background: #f3f4f6; color: #374151,
-    border: 1px solid #d1d5db;
-    border-radius: 0.375rem; cursor: pointer,
-    font-size: 0.75rem}
+    background: #f3f4f6; color: #374151; border: 1px solid #d1d5db;
+    border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem}
   .clear-btn:hover {
     background: #e5e7eb}
   .action-buttons {
@@ -413,9 +391,7 @@ if (!caseId) {
     border-radius: 0.375rem; font-weight: 500,
     text-decoration none;
     cursor: pointer; transition: all 0.2;
-    font-size: 0.875rem; border: none,
-    display: flex; align-items: center,
-    gap: 0.25rem}
+    font-size: 0.875rem; border: none; display: flex; align-items: center; gap: 0.25rem}
   .export-btn {
     background: #059669; color: white}
   .export-btn:hover {
@@ -429,12 +405,10 @@ if (!caseId) {
   .view-case-btn:hover {
     background: #2563eb}
   .stats-bar {
-    display: flex; gap: 2rem,
-    padding: 0.75rem 2rem;
+    display: flex; gap: 2rem; padding: 0.75rem 2rem;
     background: #f8fafc; border-top: 1px solid #e2e8f0}
   .stat {
-    display: flex; align-items: center,
-    gap: 0.5rem; font-size: 0.875rem}
+    display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem}
   .stat-label {
     color: #6b7280; font-weight: 500}
   .stat-value {
@@ -442,94 +416,58 @@ if (!caseId) {
   .organizer-main {
     grid-area: mai; overflow: hidden}
   .sidebar {
-    grid-area: sidebar; background: #f8fafc,
-    border-left: 1px solid #e2e8f0;
-    overflow-y: auto; padding: 1.5rem,
-    display: flex; flex-direction: column,
-    gap: 1.5rem}
+    grid-area: sidebar; background: #f8fafc; border-left: 1px solid #e2e8f0;
+    overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem}
   .sidebar-panel {
     background: white; border-radius: 0.5rem; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
   .sidebar-panel h3 {
     margin: 0, 0 1rem 0;
-    font-size: 1rem; font-weight: 600,
-    color: #1e293b}
+    font-size: 1rem; font-weight: 600; color: #1e293b}
   .selected-evidence-list {
-    display: flex; flex-direction: column,
-    gap: 0.75rem; max-height: 300px,
-    overflow-y: auto}
+    display: flex; flex-direction: column; gap: 0.75rem; max-height: 300px; overflow-y: auto}
   .selected-evidence-item {
-    display: flex; justify-content: space-between,
-    align-items: flex-start; padding: 0.75rem,
-    background: #f8fafc; border-radius: 0.375rem,
-    border: 1px solid #e2e8f0}
-  .evidence-info { flex: 1; display: flex,
-    flex-direction: column; gap: 0.25rem}
+    display: flex; justify-content: space-between; align-items: flex-start; padding: 0.75rem; background: #f8fafc; border-radius: 0.375rem; border: 1px solid #e2e8f0}
+  .evidence-info { flex: 1; display: flex; flex-direction: column; gap: 0.25rem}
   .evidence-info h4 {
-    margin: 0; font-size: 0.875rem,
-    font-weight: 600; color: #1e293b,
-    line-height: 1.2}
+    margin: 0; font-size: 0.875rem; font-weight: 600; color: #1e293b; line-height: 1.2}
   .evidence-type {
-    font-size: 0.75rem; color: #3b82f6,
-    font-weight: 500}
+    font-size: 0.75rem; color: #3b82f6; font-weight: 500}
   .selection-context {
-    font-size: 0.7rem; color: #6b7280,
-    font-style: italic}
+    font-size: 0.7rem; color: #6b7280; font-style: italic}
   .remove-btn {
-    background: none; border: none,
-    color: #ef4444; cursor: pointer,
-    padding: 0.25rem; border-radius: 0.25rem,
-    transition: background-color 0.2}
+    background: none; border: none; color: #ef4444; cursor: pointer; padding: 0.25rem; border-radius: 0.25rem; transition: background-color 0.2}
   .remove-btn:hover {
     background: #fef2f2}
   .selection-actions {
-    margin-top: 1rem; display: flex,
-    flex-direction: column; gap: 0.5rem}
+    margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem}
   .bulk-action-btn {
-    padding: 0.5rem; background: #f1f5f9,
-    color: #475569; border: 1px solid #cbd5e1;
-    border-radius: 0.375rem; cursor: pointer,
-    font-size: 0.75rem; font-weight: 500,
-    transition: all 0.2}
+    padding: 0.5rem; background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1;
+    border-radius: 0.375rem; cursor: pointer; font-size: 0.75rem; font-weight: 500; transition: all 0.2}
   .bulk-action-btn:hover {
     background: #e2e8f0}
   .history-list {
-    display: flex; flex-direction: column,
-    gap: 0.5rem; max-height: 200px,
-    overflow-y: auto}
+    display: flex; flex-direction: column; gap: 0.5rem; max-height: 200px; overflow-y: auto}
   .history-item {
-    display: flex; justify-content: space-between,
-    align-items: center; padding: 0.75rem,
-    background: #f8fafc; border-radius: 0.375rem,
-    border: 1px solid #e2e8f0}
+    display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: #f8fafc; border-radius: 0.375rem; border: 1px solid #e2e8f0}
   .history-info {
-    display: flex; flex-direction: column,
-    gap: 0.25rem}
+    display: flex; flex-direction: column; gap: 0.25rem}
   .history-mode {
     font-size: 0.875rem; font-weight: 600; color: #1e293b}
   .history-time,
   .history-count {
     font-size: 0.75rem; color: #6b7280}
   .restore-btn {
-    background: none; border: none,
-    color: #3b82f6; cursor: pointer,
-    padding: 0.25rem; border-radius: 0.25rem,
-    font-size: 1rem; transition: background-color 0.2}
+    background: none; border: none; color: #3b82f6; cursor: pointer; padding: 0.25rem; border-radius: 0.25rem; font-size: 1rem; transition: background-color 0.2}
   .restore-btn:hover {
     background: #eff6ff}
   .quick-stats {
-    display: flex; flex-direction: column,
-    gap: 1rem}
+    display: flex; flex-direction: column; gap: 1rem}
   .quick-stat {
-    display: flex; flex-direction: column,
-    align-items: center; text-align: center,
-    padding: 1rem; background: #f8fafc,
-    border-radius: 0.375rem; border: 1px solid #e2e8f0}
+    display: flex; flex-direction: column; align-items: center; text-align: center; padding: 1rem; background: #f8fafc; border-radius: 0.375rem; border: 1px solid #e2e8f0}
   .stat-number {
-    font-size: 1.5rem; font-weight: 700,
-    color: #3b82f6}
+    font-size: 1.5rem; font-weight: 700; color: #3b82f6}
   .stat-description {
-    font-size: 0.75rem; color: #6b7280; text-transform: uppercase,
-    letter-spacing: 0.05em; margin-top: 0.25rem}
+    font-size: 0.75rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem}
   /* Mobile responsive */
   @media (max-width: 1024px) {
     .evidence-organization-page {

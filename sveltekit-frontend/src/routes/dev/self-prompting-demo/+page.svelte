@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-import type { Case } from '$lib/types';
+  import type { Case } from '$lib/types';
   import SelfPromptingDemo from '$lib/components/dev/SelfPromptingDemo.svelte';
 </script>
 
@@ -88,8 +88,7 @@ import type { Case } from '$lib/types';
 <style>
   /* Ensure full-width layout */
   :global(body) {
-    margin: 0
-   ; padding: 0}
+    margin: 0;
+    padding: 0;
+  }
 </style>
-
-

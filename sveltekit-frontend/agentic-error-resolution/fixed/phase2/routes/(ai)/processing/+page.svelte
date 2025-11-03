@@ -506,11 +506,7 @@
 <!-- New Job Dialog -->
 {#if showJobDialog}
   <!-- Overlay -->
-  <div
-    class="fixed inset-0 z-40 flex items-center justify-center"
-    role="dialog"
-    aria-modal="true"
-  >
+  <div class="fixed inset-0 z-40 flex items-center justify-center" role="dialog" aria-modal="true">
     <button
       type="button"
       class="absolute inset-0 bg-black bg-opacity-50"
@@ -602,19 +598,19 @@
           >
             Cancel
           </button>
-          <div class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-  <LoadingButton type="submit"
-            loading={isProcessing}>
-            {#if isProcessing}
-              Creating Job...
-            {:else}
-              Create Job
-            {/if}
-          </LoadingButton>
-</div>
+          <div
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            <LoadingButton type="submit" loading={isProcessing}>
+              {#if isProcessing}
+                Creating Job...
+              {:else}
+                Create Job
+              {/if}
+            </LoadingButton>
+          </div>
         </div>
       </form>
     </div>
   </div>
 {/if}
-

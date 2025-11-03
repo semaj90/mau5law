@@ -5,6 +5,7 @@
   const { size } = $props<{ size: string | undefined }>()
   const { class } = $props<{ class: string }>()
 </script>
+
 <button
   onclick={() => onclick && onclick()}
   disabled={disabled}
@@ -12,7 +13,8 @@
 >
   <slot />
 </button>
+
 <style>
-  button[disabled] { opacity: 0.6, cursor: not-allowed}
+  button[disabled] { opacity: 0.6; cursor: not-allowed}
 </style>
 

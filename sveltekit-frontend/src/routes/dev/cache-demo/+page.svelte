@@ -11,9 +11,7 @@
   <div class="container mx-auto">
     <div class="mb-8">
       <h1 class="text-3xl font-bold">Multi-Layer Cache System Demo</h1>
-      <p class="nes-text is-disabled">
-        Interactive demonstration of Loki.js + Redis + PostgreSQL caching architecture
-      </p>
+      <p class="nes-text is-disabled">Interactive demonstration of Loki.js + Redis + PostgreSQL caching architecture</p>
     </div>
     <CacheDemo />
   </div>

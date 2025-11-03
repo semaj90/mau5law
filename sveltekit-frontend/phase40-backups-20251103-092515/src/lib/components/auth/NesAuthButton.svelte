@@ -45,11 +45,9 @@
 <style>
   /* Custom button size classes */
   :global(.nes-btn-small) {
-    font-size: 0.6rem
-   , padding: 0.5rem 1rem}
+    font-size: 0.6rem; padding: 0.5rem 1rem}
   :global(.nes-btn-large) {
-    font-size: 1rem
-   , padding: 1rem 2rem}
+    font-size: 1rem; padding: 1rem 2rem}
   /* Button hover effects */
   :global(.nes-btn) {
     transition: transform 0.1s ease}

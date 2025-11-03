@@ -14,10 +14,10 @@
     value = '',
     showFilters = true,
     sortOptions = [
-      { id: 'relevance', label: 'Relevance' },
-      { id: 'date', label: 'Date' },
-      { id: 'name', label: 'Name' },
-      { id: 'type', label: 'Type' }
+      { id: 'relevance'; label: 'Relevance' },
+      { id: 'date'; label: 'Date' },
+      { id: 'name'; label: 'Name' },
+      { id: 'type'; label: 'Type' }
     ],
     onsearch,
     onsortChanged,
@@ -54,8 +54,7 @@
     dispatchFilters()}
   function dispatchFilters() {
     onfiltersChanged?.(new CustomEvent('filtersChanged', {
-      detail: { fileTypes: selectedFileTypes,
-        dateRange: dateRange
+      detail: { fileTypes: selectedFileTypes; dateRange: dateRange
       }
     }))}
 </script>
@@ -234,8 +233,7 @@
     display: block
     font-size: 0.875rem
     font-weight: 600
-   ;color: var(--text-primary),
-    margin-bottom: 0.5rem}
+   ;color: var(--text-primary); margin-bottom: 0.5rem}
   .filter-options {
     display: flex
     gap: 1rem

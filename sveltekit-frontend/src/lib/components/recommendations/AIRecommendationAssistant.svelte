@@ -9,7 +9,7 @@ import type { Document } from '$lib/types';
   import { getCurrentPalette } from '$lib/themes/retro-console-palettes';
   interface AIRecommendation {
     id: string
-    type: 'case' | 'document' | 'search' | 'workflow' | 'precedent',title: string
+    type: 'case' | 'document' | 'search' | 'workflow' | 'precedent'; title: string
     description: string
     confidence: number
     priority: number
@@ -18,7 +18,7 @@ import type { Document } from '$lib/types';
   interface AIAction {
     action: string
     description: string
-    priority: 'low' | 'medium' | 'high' | 'critical',estimatedTime: string
+    priority: 'low' | 'medium' | 'high' | 'critical'; estimatedTime: string
     tools?: string[]}
   interface Props { open: boolean
     context?: {
@@ -28,6 +28,7 @@ import type { Document } from '$lib/types';
       userRole?: string
       recentSearches?: string[];
       workHistory?: string[]}}
+
   // Keep Svelte, 5 runes usage
   let {
     open = $bindable(),
@@ -47,27 +48,26 @@ import type { Document } from '$lib/types';
   let thinkingMessage = $state<string>('Analyzing your legal context...');
   let processingSteps = $state<string[]>([]);
   const AI_ANALYSIS_TYPES = [ {
-      value: 'case-analysis',
-      label: 'âš–ï¸ Case Analysis',
+      value: 'case-analysis'; label: 'âš–ï¸ Case Analysis',
       description: 'Deep analysis of current case strategy and opportunities'
     }, {
-      value: 'search-suggestion',
-      label: 'ðŸ” Search Optimization',
+      value: 'search-suggestion'; label: 'ðŸ” Search Optimization',
       description: 'AI-powered search query suggestions and filters'
     }, {
-      value: 'workflow-optimization',
-      label: 'âš¡ Workflow Efficiency',
+      value: 'workflow-optimization'; label: 'âš¡ Workflow Efficiency',
       description: 'Identify bottlenecks and optimization opportunities'
     }, {
-      value: 'precedent-discovery',
-      label: 'ðŸ“š Precedent Discovery',
+      value: 'precedent-discovery'; label: 'ðŸ“š Precedent Discovery',
       description: 'Find relevant precedents and emerging legal trends'
     }
   ] as const
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     if (open && context) {
       await generateRecommendations()}
-  });
+  		})();
+	});
   async function generateRecommendations(): Promise<any> {
     isLoading = true
     isThinking = true
@@ -77,12 +77,10 @@ import type { Document } from '$lib/types';
       // Simulate AI thinking process
       await simulateAIThinking();
       const response = await fetch('/api/ai/recommendation-assistant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           context,
-          query: customQuery || undefined,
-          type: selectedType
+          query: customQuery || undefined; type: selectedType
         })
       });
       if (!response.ok) {
@@ -101,30 +99,20 @@ import type { Document } from '$lib/types';
       usingMockData = true
       // Fallback to mock AI recommendations (valid JS: object syntax)
       recommendations = [ {
-          id: 'mock-ai-001',
-          type: 'case',
-          title: 'Employment Dispute Analysis',
-          description: 'Similar pattern detected in, 3 recent cases with 85% success rate',
-          confidence: 0.87,
-          priority: 220,
-          metadata: { caseType: 'employment', successRate: 0.85 },
-          aiInsight: 'Focus on wrongful termination precedents and timeline discrepancies'
+          id: 'mock-ai-001'; type: 'case',
+          title: 'Employment Dispute Analysis'; description: 'Similar pattern detected in, 3 recent cases with 85% success rate',
+          confidence: 0.87; priority: 220,
+          metadata: { caseType: 'employment', successRate: 0.85 }; aiInsight: 'Focus on wrongful termination precedents and timeline discrepancies'
         }, {
-          id: 'mock-ai-002',
-          type: 'precedent',
-          title: 'Recent 9th Circuit Decision',
-          description: 'New precedent strengthens constructive dismissal claims',
-          confidence: 0.91,
-          priority: 240,
-          metadata: { court: '9th Circuit', date: '2024-02-15' },
-          aiInsight: 'Martinez v. TechSolutions establishes new standard for at-will employment'
+          id: 'mock-ai-002'; type: 'precedent',
+          title: 'Recent 9th Circuit Decision'; description: 'New precedent strengthens constructive dismissal claims',
+          confidence: 0.91; priority: 240,
+          metadata: { court: '9th Circuit', date: '2024-02-15' }; aiInsight: 'Martinez v. TechSolutions establishes new standard for at-will employment'
         }
       ];
       suggestedActions = [ {
-          action: 'Document Discovery Request',
-          description: 'Subpoena HR files including contract amendments',
-          priority: 'high',
-          estimatedTime: '3-5 business days',
+          action: 'Document Discovery Request'; description: 'Subpoena HR files including contract amendments',
+          priority: 'high'; estimatedTime: '3-5 business days',
           tools: ['Subpoena Generator', 'Document Templates']
         }
       ];
@@ -138,7 +126,7 @@ import type { Document } from '$lib/types';
         const notice = document.createElement('div');
         notice.innerHTML = 'âš ï¸ failure default to mock';
         notice.style.cssText =
-          'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9), color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
+          'position: fixed, top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000; font-size: 0.9rem;',
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000)}
     }
@@ -163,8 +151,7 @@ import type { Document } from '$lib/types';
     isProcessing = true
     try {
       const response = await fetch('/api/ai/execute-action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: action.action, context })
       });
       if (!response.ok) {
@@ -179,7 +166,7 @@ import type { Document } from '$lib/types';
       const notice = document.createElement('div');
       notice.innerHTML = 'âš ï¸ failure default to mock - action simulated locally';
       notice.style.cssText =
-        'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9), color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
+        'position: fixed, top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000; font-size: 0.9rem;',
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock success - simulate action execution
@@ -224,13 +211,14 @@ import type { Document } from '$lib/types';
       case, 'low': return palette.colors?.accent?.[2] ?? '#9f7aea',default: return palette.colors?.primary ?? '#6b7280'}
   }
 </script>
+
 <DiamondModal bind:open title="ðŸ¤– AI, Legal, Assistant" size="large">
   <div class="ai-assistant-modal">
     <!-- Header, Controls -->
     <div class="modal-header">
       <!-- Analysis, Type, Selector -->
       <div class="analysis-types">
-        {#each Array.isArray(AI_ANALYSIS_TYPES) ? AI_ANALYSIS_TYPES : [] as analysisType}
+  {#each Array.isArray(AI_ANALYSIS_TYPES) ? AI_ANALYSIS_TYPES : [] as analysisType}
           <button
             class="type-btn"
             class:active={selectedType === analysisType.value}
@@ -240,13 +228,13 @@ import type { Document } from '$lib/types';
             {analysisType.label}
           </button>
         {/each}
-      </div>
+  </div>
+
       <!-- Custom, Query, Input -->
       <div class="query-section">
         <input
           type="text"
-          placeholder="Optional: Specific question or context for AI analysis..."
-         , bind:value={customQuery}
+          placeholder="Optional: Specific question or context for AI analysis..."; bind:value={customQuery}
           class="query-input"
         />
         <button class="analyze-btn" onclick={generateRecommendations} disabled={isLoading || isThinking}>
@@ -254,30 +242,36 @@ import type { Document } from '$lib/types';
         </button>
       </div>
     </div>
+
     <!-- AI, Thinking, Process -->
-    {#if isThinking}
+  {#if isThinking}
       <div class="ai-thinking" transition:slide={{ duration: 300 }}>
         <div class="thinking-header">
           <div class="thinking-icon">ðŸ§ </div>
+
           <h3>Gemma3:legal-latest Processing</h3>
+
           <div class="thinking-spinner"></div>
         </div>
+
         <div class="thinking-message">{thinkingMessage}</div>
+
         <div class="processing-steps">
-          {#each processingSteps as step, i}
-            <div class="processing-step" transition:slide={{ duration: 200, delay: i * 100 }}>
+  {#each processingSteps as step, i}
+            <div class="processing-step" transition:slide={{ duration: 200; delay: i * 100 }}>
               âœ“ {step}
             </div>
           {/each}
-        </div>
+  </div>
       {/if}
-    <!-- AI, Analysis, Results -->
-    {#if !isThinking && recommendations.length > 0}
+  <!-- AI, Analysis, Results -->
+  {#if !isThinking && recommendations.length > 0}
       <div class="ai-results" transition:fade={{ duration: 400 }}>
         <!-- AI, Reasoning -->
         <div class="ai-reasoning">
           <div class="reasoning-header">
             <h3>ðŸ§  AI Analysis</h3>
+
             <div
               class="confidence-badge"
               style="background-color: {getConfidenceColor(confidence)}20; border-color: {getConfidenceColor(confidence)}"
@@ -285,23 +279,29 @@ import type { Document } from '$lib/types';
               {Math.round(confidence * 100)}% Confidence
             </div>
           </div>
+
           <p class="reasoning-text">{aiReasoning}</p>
         </div>
+
         <!-- Recommendations -->
         <div class="recommendations-section">
           <h4>ðŸ“‹ AI Recommendations ({recommendations.length})</h4>
+
           <div class="recommendations-grid">
-            {#each recommendations as recommendation, i (recommendation.id)}
+  {#each recommendations as recommendation, i (recommendation.id)}
               <div
                 class="recommendation-card"
-                transition:fly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
+                transition:fly={{ y: 20, delay: i * 100, duration: 300; easing: elasticOut }}
               >
                 <div class="rec-header">
                   <span class="rec-icon">{getTypeIcon(recommendation.type)}</span>
+
                   <div class="rec-info">
                     <h5 class="rec-title">{recommendation.title}</h5>
+
                     <p class="rec-description">{recommendation.description}</p>
                   </div>
+
                   <div class="rec-stats">
                     <div
                       class="confidence-meter"
@@ -309,6 +309,7 @@ import type { Document } from '$lib/types';
                     >
                       {Math.round(recommendation.confidence * 100)}%
                     </div>
+
                     <div
                       class="priority-indicator"
                       style="background-color: {getPriorityColor(recommendation.priority)}20; border-color: {getPriorityColor(recommendation.priority)}"
@@ -317,41 +318,49 @@ import type { Document } from '$lib/types';
                     </div>
                   </div>
                 </div>
+
                 <div class="ai-insight">
                   <div class="insight-label">ðŸ¤– AI Insight:</div>
+
                   <div class="insight-text">{recommendation.aiInsight}</div>
                 </div>
-                {#if recommendation.metadata && Object.keys(recommendation.metadata).length > 0}
+  {#if recommendation.metadata && Object.keys(recommendation.metadata).length > 0}
                   <details class="metadata-details">
                     <summary>ðŸ“Š Additional Data</summary>
+
                     <div class="metadata-content">
-                      {#each Object.entries(recommendation.metadata) as [key, value]}
+  {#each Object.entries(recommendation.metadata) as [key, value]}
                         <div class="metadata-item">
                           <span class="metadata-key">{key}:</span>
+
                           <span class="metadata-value">
                             {typeof value === 'object' ? JSON.stringify(value) : value}
                           </span>
                         </div>
                       {/each}
-                    </div>
+  </div>
                   </details>
                 {/if}
-              </div>
+  </div>
             {/each}
-          </div>
+  </div>
         </div>
+
         <!-- Suggested, Actions -->
-        {#if suggestedActions.length > 0}
+  {#if suggestedActions.length > 0}
           <div class="actions-section">
             <h4>âš¡ Suggested Actions ({suggestedActions.length})</h4>
+
             <div class="actions-list">
-              {#each suggestedActions as action, i (action.action)}
-                <div class="action-card" transition:slide={{ duration: 200, delay: i * 50 }}>
+  {#each suggestedActions as action, i (action.action)}
+                <div class="action-card" transition:slide={{ duration: 200; delay: i * 50 }}>
                   <div class="action-header">
                     <div class="action-info">
                       <h5 class="action-title">{action.action}</h5>
+
                       <p class="action-description">{action.description}</p>
                     </div>
+
                     <div class="action-meta">
                       <span
                         class="action-priority"
@@ -359,46 +368,51 @@ import type { Document } from '$lib/types';
                       >
                         {action.priority}
                       </span>
+
                       <span class="action-time">{action.estimatedTime}</span>
                     </div>
                   </div>
-                  {#if action.tools && action.tools.length > 0}
+  {#if action.tools && action.tools.length > 0}
                     <div class="action-tools">
                       <span class="tools-label">Tools:</span>
-                      {#each Array.isArray(action.tools) ? action.tools : [] as tool}
+  {#each Array.isArray(action.tools) ? action.tools : [] as tool}
                         <span class="tool-chip">{tool}</span>
                       {/each}
                     {/if}
-                  <button class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
+  <button class="execute-btn" onclick={() => executeAction(action)} disabled={isProcessing}>
                     {isProcessing ? 'â³ Processing...' : 'ðŸš€ Execute'}
                   </button>
                 </div>
               {/each}
-            </div>
+  </div>
           {/if}
-        <!-- Related, Topics -->
-        {#if relatedTopics.length > 0}
+  <!-- Related, Topics -->
+  {#if relatedTopics.length > 0}
           <div class="topics-section">
             <h4>ðŸ”— Related Topics</h4>
+
             <div class="topics-tags">
-              {#each Array.isArray(relatedTopics) ? relatedTopics : [] as topic}
+  {#each Array.isArray(relatedTopics) ? relatedTopics : [] as topic}
                 <button class="topic-tag" onclick={() => (customQuery = topic)}>
                   {topic}
                 </button>
               {/each}
-            </div>
+  </div>
           </div>
         {/if>
       {/if}
-    <!-- Empty, State -->
-    {#if !isThinking && !isLoading && recommendations.length === 0}
+  <!-- Empty, State -->
+  {#if !isThinking && !isLoading && recommendations.length === 0}
       <div class="empty-state">
         <div class="empty-icon">ðŸ¤–</div>
+
         <h3>AI Assistant Ready</h3>
+
         <p>Select an analysis type and click: "Analyze" to get AI-powered legal recommendations</p>
       {/if}
   </div>
 </DiamondModal>
+
 <style>
   .ai-assistant-modal {
     max-height: 85vh
@@ -411,11 +425,11 @@ import type { Document } from '$lib/types';
     border-bottom: 1px solid rgba(255, 255, 255, 0.1)}
   .analysis-types {
     display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 0.5rem
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem
     margin-bottom: 1rem}
   .type-btn {
     padding: 0.75rem
-   ;background: rgba(255, 255, 255, 0.05), border: 1px solid rgba(255, 255, 255, 0.2);
+   ;background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px
    ;color: rgba(255, 255, 255, 0.8);
     font-size: 0.85rem
@@ -426,21 +440,21 @@ import type { Document } from '$lib/types';
     border-color: rgba(138, 43, 226, 0.5)}
   .type-btn.active {
     background: rgba(138, 43, 226, 0.2);
-    border-color: rgba(138, 43, 226, 0.6), color: #fff}
+    border-color: rgba(138, 43, 226, 0.6); color: #fff}
   .query-section {
     display: flex
     gap: 1rem}
   .query-input {
     flex: 1
     padding: 0.75rem
-   ;background: rgba(255, 255, 255, 0.05), border: 1px solid rgba(255, 255, 255, 0.2);
+   ;background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px
     color: #fff
     font-size: 0.9rem}
   .query-input::placeholder { color: rgba(255, 255, 255, 0.5)}
   .analyze-btn {
     padding: 0.75rem 1.5rem
-   ;background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5)), border: 1px solid rgba(138, 43, 226, 0.6);
+   ;background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5)); border: 1px solid rgba(138, 43, 226, 0.6);
     border-radius: 8px
     color: #fff
     font-weight: 500
@@ -448,11 +462,11 @@ import type { Document } from '$lib/types';
    ;transition: all 0.2s
     white-space: nowrap}
   .analyze-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, rgba(138, 43, 226, 0.4), rgba(138, 43, 226, 0.6)), transform: translateY(-1px)}
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.4), rgba(138, 43, 226, 0.6)); transform: translateY(-1px)}
   .analyze-btn:disabled {
     opacity: 0.6
     cursor: not-allowed}
-  .ai-thinking { background: rgba(138, 43, 226, 0.1), border: 1px solid rgba(138, 43, 226, 0.3);
+  .ai-thinking { background: rgba(138, 43, 226, 0.1); border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 12px
     padding: 1.5rem
     margin-bottom: 1.5rem}
@@ -473,7 +487,7 @@ import type { Document } from '$lib/types';
     height: 24px
    ;border: 2px solid rgba(255, 255, 255, 0.2);
     border-top: 2px solid rgba(138, 43, 226, 0.8);
-    border-radius: 50%, animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
   .thinking-message {
     font-size: 1rem
    ;color: rgba(255, 255, 255, 0.8);
@@ -485,11 +499,11 @@ import type { Document } from '$lib/types';
     gap: 0.5rem}
   .processing-step {
     font-size: 0.85rem
-   ;color: rgba(255, 255, 255, 0.7), padding: 0.25rem 0}
+   ;color: rgba(255, 255, 255, 0.7); padding: 0.25rem 0}
   .ai-results {
     flex: 1
     overflow-y: auto}
-  .ai-reasoning { background: rgba(255, 255, 255, 0.05), border: 1px solid rgba(255, 255, 255, 0.1);
+  .ai-reasoning { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px
     padding: 1rem
     margin-bottom: 1.5rem}
@@ -526,7 +540,7 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     gap: 1rem}
-  .recommendation-card { background: rgba(255, 255, 255, 0.03), border: 1px solid rgba(255, 255, 255, 0.1);
+  .recommendation-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px
     padding: 1rem
     transition: all 0.2s}
@@ -562,7 +576,7 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem
     font-weight: bold
     text-align: center}
-  .ai-insight { background: rgba(138, 43, 226, 0.1), border: 1px solid rgba(138, 43, 226, 0.2);
+  .ai-insight { background: rgba(138, 43, 226, 0.1); border: 1px solid rgba(138, 43, 226, 0.2);
     border-radius: 6px
     padding: 0.75rem
     margin-bottom: 0.75rem}
@@ -600,7 +614,7 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     gap: 1rem}
-  .action-card { background: rgba(255, 255, 255, 0.03), border: 1px solid rgba(255, 255, 255, 0.1);
+  .action-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px
     padding: 1rem}
   .action-header {
@@ -651,14 +665,14 @@ import type { Document } from '$lib/types';
    ;color: rgba(255, 255, 255, 0.8)}
   .execute-btn {
     padding: 0.5rem 1rem
-   ;background: rgba(76, 175, 80, 0.2), border: 1px solid rgba(76, 175, 80, 0.4);
+   ;background: rgba(76, 175, 80, 0.2); border: 1px solid rgba(76, 175, 80, 0.4);
     border-radius: 6px
     color: #fff
     font-size: 0.85rem
     cursor: pointer
    ;transition: all 0.2s}
   .execute-btn:hover:not(:disabled) {
-    background: rgba(76, 175, 80, 0.3), transform: translateY(-1px)}
+    background: rgba(76, 175, 80, 0.3); transform: translateY(-1px)}
   .execute-btn:disabled {
     opacity: 0.6
     cursor: not-allowed}
@@ -668,7 +682,7 @@ import type { Document } from '$lib/types';
     gap: 0.5rem}
   .topic-tag {
     padding: 0.5rem 1rem
-   ;background: rgba(138, 43, 226, 0.1), border: 1px solid rgba(138, 43, 226, 0.3);
+   ;background: rgba(138, 43, 226, 0.1); border: 1px solid rgba(138, 43, 226, 0.3);
     border-radius: 16px
    ;color: rgba(255, 255, 255, 0.8);
     font-size: 0.8rem
@@ -710,4 +724,5 @@ import type { Document } from '$lib/types';
     border-radius: 3px}
   .ai-results::-webkit-scrollbar-thumb:hover { background: rgba(138, 43, 226, 0.7)}
 </style>
+
 

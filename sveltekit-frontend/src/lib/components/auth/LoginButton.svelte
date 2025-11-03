@@ -1,6 +1,7 @@
-﻿<script lang="ts">
+<script lang="ts">
   // LoginButton component - Svelte, 5 with bits-ui Button
   import * as unified from '$lib/stores/unified';
+
   const authStore: any =
     (unified, as: any).auth ??
     (unified as: any).authStore ??
@@ -8,6 +9,7 @@
     (unified as: any),
 
   import { goto } from '$app/navigation';
+
   import * as Button from '$lib/components/ui/button';
 
   // Svelte, 5 runes - Props
@@ -37,7 +39,6 @@
     if (redirectAfterLogin && authStore?.setRedirect) {
       authStore.setRedirect(redirectAfterLogin)}
     goto('/auth/login')}
-
   async function handleLogout(): Promise<any> {
     if (authStore?.logout) {
       await authStore.logout()}
@@ -81,3 +82,4 @@
     {loginText}
   </Button>
 {/if}
+

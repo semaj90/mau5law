@@ -1,7 +1,9 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { aiAccessibilityPatterns } from '$lib/services/ai-accessibility-patterns';
+
   import { accessibilityService } from '$lib/services/accessibility-service';
+
   import type { Snippet } from 'svelte';
   interface Props {
     children?: Snippet
@@ -18,6 +20,7 @@
     enableVoiceCommands = true,
     showProgressiveDisclosure = true
   }: Props = $props();
+
   let containerElement: HTMLElement
   let voiceCommandsActive = $state<boolean>(false);
   $effect(() => {
@@ -26,8 +29,7 @@
       enableVoiceCommands,
       progressiveDisclosure: showProgressiveDisclosure
       enhancedFocusIndicators: true
-      aiResultSummaries: true
-     , contextualHelp: true
+      aiResultSummaries: true; contextualHelp: true
     });
     // Set up keyboard shortcuts for voice commands
     const handleKeyboard = (_event: KeyboardEvent) => {
@@ -48,6 +50,7 @@
       aiAccessibilityPatterns?.startVoiceCommands();
       voiceCommandsActive = true}
   }
+
   // React to status changes
   $effect(() => {
     if (status === 'processing') {
@@ -65,11 +68,12 @@
     containerElement.innerHTML = '';
     if (showProgressiveDisclosure && typeof aiResult === 'object') {
       // Create progressive disclosure for complex results
-      const obj = aiResult as Record<string unknown>;
+      const obj = aiResult as Record<string, unknown>;
+
       const summary = (obj as: any).summary || `${operation} completed with ${Object.keys(obj).length} sections`;
+
       const levels = Object.entries(obj).map(([key, value], index) => ({
-        label: key.charAt(0).toUpperCase() + key.slice(1),
-        content: value
+        label: key.charAt(0).toUpperCase() + key.slice(1); content: value
        , level: index + 1}));
       aiAccessibilityPatterns?.createProgressiveDisclosure(containerElement, aiResult, { summary: levels })} else {
       // Create simple accessible result card
@@ -81,7 +85,9 @@
 <div
   class="ai-accessibility-wrapper"
   role="region"
-  aria-label={`${operation} interface with accessibility enhancements`}
+  aria-label={`${operation}
+
+interface with accessibility enhancements`}
 >
   <!-- Voice, Commands, Toggle -->
   {#if enableVoiceCommands}
@@ -188,7 +194,7 @@
     transition: all 0.2s ease}
   .voice-status {
     font-size: 0.875rem
-   ;color: var(--color-text-secondary, #aaa), padding: 0.25rem 0.5rem
+   ;color: var(--color-text-secondary, #aaa); padding: 0.25rem 0.5rem
    ; background: rgba(0, 188, 212, 0.1);
     border-radius: 4px
    ;border: 1px solid rgba(0, 188, 212, 0.3)}
@@ -197,11 +203,11 @@
     padding: 0.75rem
     border-radius: 6px
     font-weight: 500}
-  .ai-status-indicator.processing { background: rgba(255, 152, 0, 0.1), border: 1px solid rgba(255, 152, 0, 0.3);
+  .ai-status-indicator.processing { background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3);
     color: #ff9800}
-  .ai-status-indicator.completed { background: rgba(76, 175, 80, 0.1), border: 1px solid rgba(76, 175, 80, 0.3);
+  .ai-status-indicator.completed { background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3);
     color: #4caf50}
-  .ai-status-indicator.error { background: rgba(244, 67, 54, 0.1), border: 1px solid rgba(244, 67, 54, 0.3);
+  .ai-status-indicator.error { background: rgba(244, 67, 54, 0.1); border: 1px solid rgba(244, 67, 54, 0.3);
     color: #f44336}
 .processing-indicator, {}
 .success-indicator, {}
@@ -231,7 +237,7 @@
     padding: 0.5rem
     border-radius: 4px
     background: transparent
-   ;border: 1px solid var(--color-border, #333), display: flex
+   ;border: 1px solid var(--color-border, #333); display: flex
     align-items: center
     gap: 0.5rem
     font-weight: 500
@@ -282,4 +288,5 @@
       outline-width: 4px !important}
   }
 </style>
+
 

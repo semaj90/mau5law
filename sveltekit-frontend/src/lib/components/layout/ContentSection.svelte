@@ -4,12 +4,17 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     } const paddingClasses = { none: "p-0", sm: "p-2", md: "p-4", lg: "p-6", xl: "p-8"
     } const gapClasses = { none: "gap-0", sm: "gap-2", md: "gap-4", lg: "gap-6", xl: "gap-8"
     } const columnClasses = variant === 'grid' ? { 1: "grid-cols-1", 2: "grid-cols-1, md:grid-cols-2", 3: "grid-cols-1 md:grid-cols-2, lg:grid-cols-3", 4: "grid-cols-1 md:grid-cols-2, lg:grid-cols-4", 6: "grid-cols-2 md:grid-cols-3, lg:grid-cols-6", 12: "grid-cols-4 md:grid-cols-6, lg:grid-cols-12"
-    }: null; return cn( baseClass, variantClasses[variant], paddingClasses[padding], gapClasses[gap], variant === 'grid' && columnClasses?.[columns], className)}); let headerClass = $derived(() => { return cn(
+    }: null; return cn( baseClass, variantClasses[variant], paddingClasses[padding], gapClasses[gap], variant === 'grid' && columnClasses?.[columns], className)});
+  let headerClass = $derived(() => { return cn(
       "flex flex-col", gap === 'none' ? 'mb-0': gap === 'sm' ? 'mb-2': gap === 'md' ? 'mb-4': gap === 'lg' ? 'mb-6': 'mb-8'
-    )}); let contentClass = $derived(() => { if (variant === 'grid') { return cn(
-        "grid", gap === 'none' ? 'gap-0': gap === 'sm' ? 'gap-2': gap === 'md' ? 'gap-4': gap === 'lg' ? 'gap-6': 'gap-8'
-      )}
+    )});
+  let contentClass = $derived(() => { if (variant === 'grid') {
     return cn(
+        "grid", gap === 'none' ? 'gap-0': gap === 'sm' ? 'gap-2': gap === 'md' ? 'gap-4': gap === 'lg' ? 'gap-6': 'gap-8'
+      )
+  }
+  return cn(
       "flex flex-col", gap === 'none' ? 'gap-0': gap === 'sm' ? 'gap-2': gap === 'md' ? 'gap-4': gap === 'lg' ? 'gap-6': 'gap-8'
     )}); </script> <section class={cn(sectionClass, className)} {...restProps}> {#if title || subtitle} <header class={ headerClass }> {#if title} <h2 class="nes-legal-title text-2xl md:text-3xl font-bold"> { title } </h2> {/if} {#if subtitle} <p class="nes-legal-subtitle text-gray-300"> { subtitle } </p> {/if} </header> {/if} <div class={ contentClass }> {#if children} {@render children()} {:else} <!-- TODO: Default content goes here when no children, provided Examples based on variant: - 'default': Main page content, forms, data displays - 'card': Card body content, action buttons - 'panel': Dashboard widgets, status indicators - 'grid': Grid items, responsive components Usage patterns from architecture: - Legal case data tables - AI analysis results - User dashboards - Admin panels - Demo components --> <div class="nes-text is-disabled text-center">Content section ready for children components{/if} </div> </section> ;
+
 

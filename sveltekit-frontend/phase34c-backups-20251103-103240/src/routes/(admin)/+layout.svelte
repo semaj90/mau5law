@@ -4,13 +4,14 @@
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: {  any; data: { user?: any } } = $props();
+  let { children, data }: { any; data: { user?: any } } = $props();
 
   // Admin-focused console theme (amber on black for admin work)
   const consolePalette: ConsolePaletteName = 'cyberpunk'; // Changed to a valid type from the allowed list
 
   $effect(() => {
-    applyConsolePalette(consolePalette)});
+    applyConsolePalette(consolePalette);
+  });
 </script>
 
 <svelte:head>
@@ -32,8 +33,7 @@
 
 <style>
   .admin-layout {
-    min-height: 100vh
-   , background: var(--surface-primary, #0a0a0a);
+    min-height: 100vh; background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #ffaa00);
     font-family: 'JetBrains Mono', 'Courier New', monospace}
 
@@ -42,8 +42,7 @@
     min-height: calc(100vh - 60px)}
 
   .admin-sidebar {
-    width: 280px
-   , background: var(--surface-secondary, #111111);
+    width: 280px; background: var(--surface-secondary, #111111);
     border-right: 1px solid var(--border-primary, #ffaa00)}
 
   .admin-main {
@@ -57,8 +56,7 @@
     position: fixed; /* Added semicolon */
     top: 70px
     right: 20px
-    font-size: 0.75rem
-   , color: var(--text-secondary, #ff6600);
+    font-size: 0.75rem; color: var(--text-secondary, #ff6600);
     opacity: 0.6
     pointer-events: none
     z-index: 1000; /* Added semicolon */
@@ -75,5 +73,3 @@
       border-bottom: 1px solid var(--border-primary, #ffaa00)}
   }
 </style>
-
-

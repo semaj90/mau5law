@@ -1,23 +1,5 @@
-# Lightweight development Dockerfile - just Node.js and essentials
-FROM node:22-alpine
-
-# Install only essential dependencies
-RUN apk add --no-cache git curl bash
-
-# Set working directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install only production + dev dependencies (skip heavy ML libs)
-RUN npm install --omit=optional
-
-# Copy source code
-COPY . .
-
-# Expose ports
-EXPOSE 5174 24678
-
-# Lightweight development command
-CMD ["npm", "run", "dev:docker:light"]
+# Lightweight development Dockerfile - just Node.js and essentials FROM node:22-alpine # Install only essential
+dependencies RUN apk add --no-cache git curl bash # Set working directory WORKDIR /app # Copy package files COPY
+package*.json ./ # Install only production + dev dependencies (skip heavy ML libs) RUN npm install --omit=optional #
+Copy source code COPY . . # Expose ports EXPOSE 5174 24678 # Lightweight development command CMD ["npm", "run",
+"dev:docker:light"]

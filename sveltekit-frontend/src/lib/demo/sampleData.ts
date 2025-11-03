@@ -25,7 +25,7 @@ export interface DemoEvidence {
 export interface DemoPerson {
   id: string
   name: string
-  role: 'suspect' | 'witness' | 'victim' | 'officer' | 'expert' | 'other',contactInfo: { phone?: string, email?: string; address?: string };
+  role: 'suspect' | 'witness' | 'victim' | 'officer' | 'expert' | 'other',contactInfo: { phone?: string | email?: string; address?: string };
   notes: string}
 class DemoDataGenerator {
   private caseCounter = 1

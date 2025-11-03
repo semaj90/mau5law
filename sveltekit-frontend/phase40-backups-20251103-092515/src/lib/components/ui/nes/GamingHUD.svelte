@@ -70,7 +70,7 @@ import type { Case } from '$lib/types';
     </div>
     <!-- System, Status -->
     <div class="status-section">
-      <div class="status-indicator" class:online={isOnline}, class:offline={!isOnline}>
+      <div class="status-indicator" class:online={isOnline}; class:offline={!isOnline}>
         <div class="status-dot"></div>
         <span>{isOnline ? 'ONLINE' : 'OFFLINE'}</span>
       </div>
@@ -106,11 +106,9 @@ import type { Case } from '$lib/types';
 	.gaming-hud {
 		position: fixed
 d
-	, top: 0,
-		left: 0
+	, top: 0; left: 0
 	, right: 0
-		z-index: 1000,
-		background: linear-gradient(180deg, var(--yorha-bg-secondary, #1a1a1a) 0%, var(--yorha-bg-tertiary, #2a2a2a) 100%);
+		z-index: 1000; background: linear-gradient(180deg, var(--yorha-bg-secondary, #1a1a1a) 0%, var(--yorha-bg-tertiary, #2a2a2a) 100%);
 		border-bottom: 3px solid var(--yorha-secondary, #ffd700);
 		box-shadow:
 			0 3px, 0 0 var(--yorha-secondary, #ffd700),
@@ -122,8 +120,7 @@ d
 		display: flex
 		justify-content: space-betweenn
 		align-items: center
-		padding: 12px 24px
-	, background: var(--yorha-bg-primary, #0a0a0a);
+		padding: 12px 24px; background: var(--yorha-bg-primary, #0a0a0a);
 		border-bottom: 1px solid var(--yorha-text-muted, #808080);
 	}
 	/* Level Section */
@@ -133,12 +130,10 @@ d
 		gap: 16px}
 	.level-badge {
 		display: flex
-		align-items: center
-	, background: var(--yorha-secondary, #ffd700);
+		align-items: center; background: var(--yorha-secondary, #ffd700);
 		color: var(--yorha-bg-primary, #0a0a0a);
 		padding: 8px 16px
-		border-radius: 0,
-		border: 2px solid var(--yorha-secondary, #ffd700);
+		border-radius: 0; border: 2px solid var(--yorha-secondary, #ffd700);
 		box-shadow: 0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a);
 		transition: all 0.2s ease
 		text-transform: uppercase
@@ -151,30 +146,25 @@ d
 	}
 	.level-text {
 		font-size: 12px
-		font-weight: 600
-	, color: var(--yorha-bg-primary, #0a0a0a);
+		font-weight: 600; color: var(--yorha-bg-primary, #0a0a0a);
 		margin-right: 4px}
 	.level-number {
 		font-size: 18px
-		font-weight: 700
-	, color: var(--yorha-bg-primary, #0a0a0a);
+		font-weight: 700; color: var(--yorha-bg-primary, #0a0a0a);
 	}
 	.experience-bar {
 		position: relative
 		width: 200px}
 	.exp-background {
 		width: 100%;
-		height: 10px
-	, background: var(--yorha-bg-primary, #0a0a0a);
-		border-radius: 0,
-		overflow: hidden
+		height: 10px; background: var(--yorha-bg-primary, #0a0a0a);
+		border-radius: 0; overflow: hidden
 	, border: 2px solid var(--yorha-text-muted, #808080);
 	}
 	.exp-fill {
 		height: 100%;
 	, background: linear-gradient(90deg, var(--yorha-accent, #00ff41), var(--yorha-secondary, #ffd700));
-		border-radius: 0,
-		transition: width: 0.5s ease
+		border-radius: 0; transition: width: 0.5s ease
 		box-shadow:
 			inset, 0 0 10px rgba(0, 255, 65, 0.3),
 			0, 0 5px rgba(255, 215, 0, 0.5);
@@ -183,8 +173,7 @@ d
 		position: absolute
 		top: -22px
 		left: 0
-		font-size: 11px
-	, color: var(--yorha-accent, #00ff41);
+		font-size: 11px; color: var(--yorha-accent, #00ff41);
 		font-weight: 600
 		text-transform: uppercase
 		letter-spacing: 1px}
@@ -192,14 +181,12 @@ d
 	.case-section {
 		text-align: center}
 	.case-label {
-		font-size: 10px
-	, color: var(--yorha-text-muted, #808080);
+		font-size: 10px; color: var(--yorha-text-muted, #808080);
 		margin-bottom: 2px
 		letter-spacing: 1px
 		text-transform: uppercase}
 	.case-id {
-		font-size: 16px
-	, color: var(--yorha-secondary, #ffd700);
+		font-size: 16px; color: var(--yorha-secondary, #ffd700);
 		font-weight: 700
 		text-shadow: 0, 0 8px rgba(255, 215, 0, 0.5);
 		text-transform: uppercase
@@ -239,8 +226,7 @@ d
 			0, 0 10px rgba(255, 0, 65, 0.7);
 	}
 	.system-time {
-		font-size: 14px
-	, color: var(--yorha-text-primary, #e0e0e0);
+		font-size: 14px; color: var(--yorha-text-primary, #e0e0e0);
 		font-family: var(--yorha-font-primary, 'JetBrains Mono', monospace);
 		text-transform: uppercase
 		letter-spacing: 1px}
@@ -249,19 +235,16 @@ d
 		display: flex
 		justify-content: center
 		gap: 32px
-		padding: 8px 24px 12px
-	, background: var(--yorha-bg-primary, #0a0a0a);
+		padding: 8px 24px 12px; background: var(--yorha-bg-primary, #0a0a0a);
 		border-top: 1px solid var(--yorha-text-muted, #808080);
 	}
 	.stat-item {
 		display: flex
 		align-items: center
 		gap: 8px
-		padding: 8px 16px
-	, background: var(--yorha-bg-secondary, #1a1a1a);
+		padding: 8px 16px; background: var(--yorha-bg-secondary, #1a1a1a);
 		border: 2px solid var(--yorha-text-muted, #808080);
-		border-radius: 0,
-		transition: all 0.2s ease}
+		border-radius: 0; transition: all 0.2s ease}
 	.stat-item:hover { background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
 		transform: translateY(-1px);
@@ -274,14 +257,12 @@ d
 	.stat-content {
 		text-align: center}
 	.stat-label {
-		font-size: 9px
-	, color: var(--yorha-text-muted, #808080);
+		font-size: 9px; color: var(--yorha-text-muted, #808080);
 		margin-bottom: 2px
 		letter-spacing: 1px
 		text-transform: uppercase}
 	.stat-value {
-		font-size: 14px
-	, color: var(--yorha-accent, #00ff41);
+		font-size: 14px; color: var(--yorha-accent, #00ff41);
 		font-weight: 700
 		text-transform: uppercase
 		letter-spacing: 1px}

@@ -16,7 +16,7 @@ export interface RuleReference extends LegalReference { ruleNumber: string, cate
 export interface Amendment { date: Date, description: string, impact: 'major' | 'minor' | 'technical'}
 export interface PerformanceData { loadTime: number, queryTime: number, renderTime: number, memoryUsage: number, cacheHitRatio: number, errorRate: number}
 export interface AuditLogEntry { id: string, timestamp: Date, userId: string, action: string, resource: string, oldValue?: any; newValue?: any; metadata: Record<string: unknown>}
-export interface CaseFilters { status?: CaseForm['status'][]; priority?: CaseForm['priority'][]; caseType?: CaseForm['caseType'][]; assignedTo?: string[]; dateRange?: { start: Date, end, Date }tags?: string[]}
+export interface CaseFilters { status?: CaseForm['status'][]; priority?: CaseForm['priority'][]; caseType?: CaseForm['caseType'][]; assignedTo?: string[]; dateRange?: { start: Date | end | Date }tags?: string[]}
 export interface SortOptions { field: keyof CaseForm | 'lastActivity' | 'priority' | 'dueDate'; direction: 'asc' | 'desc'}
 export interface ErrorState { code: string, message: string, details?: string; timestamp: Date, recoverable: boolean, context?: Record<string: unknown>}
 export interface CasePermissions { canView: boolean, canEdit: boolean, canDelete: boolean, canAddEvidence: boolean, canAddDocuments: boolean, canAssignUsers: boolean, canExport: boolean, canArchive: boolean}

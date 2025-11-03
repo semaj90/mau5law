@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Service Dependency Graph Interactive Dashboard
   Real-time visualization with health status, performance metrics, and dependency analysis
 
@@ -31,7 +31,7 @@
   let showDependencies: boolean = true
   let showHealth: boolean = true
   let autoRefresh: boolean = false
-  const serviceTypeColors: Record<string string> = {
+  const serviceTypeColors: Record<string, string> = {
     frontend: 'bg-red-500',
     core: 'bg-teal-500',
     gpu: 'bg-blue-500',
@@ -48,19 +48,21 @@
     queue: 'bg-orange-600'
   };
 
-  const healthColors: Record<string string> = {
+  const healthColors: Record<string, string> = {
     healthy: 'text-green-500',
     degraded: 'text-yellow-500',
     unhealthy: 'text-red-500',
     unknown: 'text-gray-500'
   };
 
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     await loadGraph();
     if (autoRefresh) {
       setInterval(loadGraph, 5000)}
-  });
-
+  		})();
+	});
   async function loadGraph(): Promise<any> {
     try {
       const response = await fetch('/api/admin/service-graph');
@@ -68,7 +70,6 @@
       graph = data} catch (error) {
       console.error('Failed to load service graph:', error)}
   }
-
   function getFilteredServices() {
     if (!graph) return [];
     return graph.nodes.filter(service => {
@@ -78,17 +79,14 @@
         service.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
         service.description.toLowerCase().includes(searchQuery.toLowerCase());
       return typeMatch && searchMatch})}
-
   function getDependentServices(serviceId: string): Service[] {
     if (!graph) return [];
     const dependentIds = graph.edges
       .filter(e => e.target === serviceId)
       .map(e => e.source);
     return graph.nodes.filter(n => dependentIds.includes(n.id))}
-
   function selectService(service: Service) {
     selectedService = service}
-
   async function checkServiceHealth(serviceId: string): Promise<any> {
     try {
       const response = await fetch(`/api/admin/service-health?service=${serviceId}`);
@@ -105,7 +103,6 @@
     } catch (error) {
       console.error(`Failed to check health for ${serviceId}:`, error)}
   }
-
   function exportAsJSON() {
     if (!graph) return
     const json = JSON.stringify(graph, null, 2);
@@ -115,7 +112,6 @@
     a.href = url
     a.download = `service-graph-${new Date().toISOString().split('T')[0]}.json`;
     a.click()}
-
   function exportAsCSV() {
     if (!graph) return
     const csv = [
@@ -379,6 +375,5 @@
   :global(body) {
     background-color: #111827}
 </style>
-
 
 

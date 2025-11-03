@@ -32,8 +32,7 @@
     font-size: 1.25rem
     line-height: 1.2}
   .subtitle {
-    margin: 0
-   , color: #6b7280
+    margin: 0; color: #6b7280
     font-size: 0.9rem}
   main {
     min-height: 200px}

@@ -94,6 +94,7 @@ import type { User } from '$lib/types';
         const serviceHealth = await productionServiceClient.checkAllServicesHealth();
         servicesHealthy = Object.values.some(Boolean)} catch (error) {
         console.warn('Service health check failed:', error)}
+
       // Update system status
       systemStatus.authentication = authHealthy
       systemStatus.sessionManagement = sessionHealthy
@@ -115,6 +116,7 @@ import type { User } from '$lib/types';
       console.error('System health check failed:', error);
       systemStatus.overallHealth = 'unknown'}
   }
+
   // Update system metrics
   function updateMetrics() {
     const now = new Date());
@@ -125,6 +127,7 @@ import type { User } from '$lib/types';
       Math.floor((now.getTime() - (sessionAnalytics().loginTime?.getTime() || now.getTime())) / 1000) : 0
     serviceMetrics.aiResponseTime = aiUsage().averageResponseTim
     serviceMetrics.totalInteractions = sessionAnalytics().activityCount + aiUsage().totalQuerie}
+
   // Demo authentication flow
   async function demoLogin(): Promise<any> {
     try {
@@ -137,6 +140,7 @@ import type { User } from '$lib/types';
       console.error('Demo login error:', error);'
     }
   }
+
   // Demo logout
   async function demoLogout(): Promise<any> {
     try {
@@ -146,6 +150,7 @@ import type { User } from '$lib/types';
       console.error('Demo logout error:', error);'
     }
   }
+
   // Demo AI interaction
   async function demoAIInteraction(): Promise<any> {
     try {
@@ -157,12 +162,14 @@ import type { User } from '$lib/types';
       console.error('Demo AI interaction error:', error);'
     }
   }
+
   // Format uptime
   function formatUptime(seconds: number): string {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60
     return `${hours}h ${minutes}m ${secs}s`}
+
   // Get status color
   function getStatusColor(status: boolean | string): string {
     if (typeof status === 'boolean') {
@@ -172,6 +179,7 @@ import type { User } from '$lib/types';
       case, 'partial': return 'bg-yellow-500';
       case, 'down': return 'bg-red-500',default: return 'bg-gray-500'}
   }
+
   // Handle authentication success
   function handleAuthSuccess(user: any) {
     console.log('Authentication successful in demo:', user);
@@ -192,11 +200,12 @@ import type { User } from '$lib/types';
         <div class="flex items-center">
           <div class="flex items-center">
             <div class={`w-3, h-3, rounded-full ${getStatusColor(systemStatus.overallHealth)}`}></div>
-            <span class="text-sm font-medium">{systemStatus.overallHealth}</span>
+            <span class="text-sm font-medium">{systemStatus.overallHealth}
+</span>
           </div>
           <Badge variant={isSystemHealthy ? 'default' : 'destructive'}>
             {isSystemHealthy ? 'All Systems Operational' : 'Some Issues Detected'}
-          </Badge>
+</Badge>
         </div>
       </div>
     </div>
@@ -209,18 +218,20 @@ import type { User } from '$lib/types';
         <div class="flex items-center">
           <div>
             <p class="text-sm font-medium">Authentication</p>
-            <p class="text-2xl">{authenticatedUser ? 'Active' : 'Inactive'}</p>
+            <p class="text-2xl">{authenticatedUser ? 'Active' : 'Inactive'}
+</p>
           </div>
           <div class={`w-4, h-4, rounded-full ${getStatusColor(systemStatus.authentication)}`}></div>
         </div>
+
         {#if authenticatedUser}
           <div class="mt-2 text-sm">
             User: {authenticatedUser.email}<br>
             Role: {authenticatedUser.role}<br>
            , Uptime: {formatUptime(serviceMetrics.authUptime)}
-          </div>
+</div>
         {/if}
-      </div>
+</div>
     </div>
     <!-- Session, Management, Status -->
     <div class="nes-container">
@@ -228,10 +239,12 @@ import type { User } from '$lib/types';
         <div class="flex items-center">
           <div>
             <p class="text-sm font-medium">Session Management</p>
-            <p class="text-2xl">{activeSession ? 'Active' : 'Inactive'}</p>
+            <p class="text-2xl">{activeSession ? 'Active' : 'Inactive'}
+</p>
           </div>
           <div class={`w-4, h-4, rounded-full ${getStatusColor(systemStatus.sessionManagement)}`}></div>
         </div>
+
         {#if activeSession}
           <div class="mt-2 text-sm">
             Security: {securityLevel()}<br>
@@ -239,7 +252,7 @@ import type { User } from '$lib/types';
             Health: {sessionHealth().warningCount} warnings
           </div>
         {/if}
-      </div>
+</div>
     </div>
     <!-- AI, Assistant, Status -->
     <div class="nes-container">
@@ -247,18 +260,20 @@ import type { User } from '$lib/types';
         <div class="flex items-center">
           <div>
             <p class="text-sm font-medium">AI Assistant</p>
-            <p class="text-2xl">{aiClusterReady ? 'Ready' : 'Offline'}</p>
+            <p class="text-2xl">{aiClusterReady ? 'Ready' : 'Offline'}
+</p>
           </div>
           <div class={`w-4, h-4, rounded-full ${getStatusColor(systemStatus.aiAssistant)}`}></div>
         </div>
+
         {#if aiClusterReady}
           <div class="mt-2 text-sm">
             Queries: {aiUsage().totalQueries}<br>
             Avg Response: {Math.round(serviceMetrics.aiResponseTime)}ms<br>
             Conversations: {conversationHistory().length}
-          </div>
+</div>
         {/if}
-      </div>
+</div>
     </div>
     <!-- Production, Services, Status -->
     <div class="nes-container">
@@ -266,7 +281,8 @@ import type { User } from '$lib/types';
         <div class="flex items-center">
           <div>
             <p class="text-sm font-medium">Production Services</p>
-            <p class="text-2xl">{systemStatus.productionServices ? 'Online' : 'Offline'}</p>
+            <p class="text-2xl">{systemStatus.productionServices ? 'Online' : 'Offline'}
+</p>
           </div>
           <div class={`w-4, h-4, rounded-full ${getStatusColor(systemStatus.productionServices)}`}></div>
         </div>
@@ -274,7 +290,7 @@ import type { User } from '$lib/types';
           Enhanced RAG: {systemStatus.productionServices ? 'Running' : 'Stopped'}<br>
           Upload Service: {systemStatus.productionServices ? 'Running' : 'Stopped'}<br>
           Total, Interactions: {serviceMetrics.totalInteractions}
-        </div>
+</div>
       </div>
     </div>
   </div>
@@ -313,11 +329,11 @@ import type { User } from '$lib/types';
             <div class="space-y-2">
               <h4 class="font-semibold">ðŸŽ¯ Demo Actions:</h4>
               <div class="space-y-2">
-                <Button.Root, class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
+                <Button.Root class="bits-btn" onclick={demoLogin} disabled={authenticatedUser !== null}>
 Demo Login
-                <Button.Root, class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
+                <Button.Root class="bits-btn" onclick={demoAIInteraction} disabled={!authenticatedUser}>
 Test AI Assistant
-                <Button.Root, class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
+                <Button.Root class="bits-btn" onclick={demoLogout} disabled={!authenticatedUser} variant="ghost">
 Demo Logout
               </div>
             </div>
@@ -332,12 +348,13 @@ Demo Logout
           <h3 class="nes-text">Authentication System</h3>
         </div>
         <div class="yorha-panel-content">
+
           {#if !authenticatedUser}
             <div class="space-y-4">
               <p class="text-gray-600">
                 Demonstrate the modern authentication system with Svelte, 5 runes and XState integration.
               </p>
-              <Button.Root, class="bits-btn" onclick={() =>
+              <Button.Root class="bits-btn" onclick={() =>
 showAuthDialog = true}>
                 Open Authentication Dialog
             </div>
@@ -346,16 +363,19 @@ showAuthDialog = true}>
               <div class="p-4 bg-green-50 border border-green-200">
                 <h4 class="font-semibold">âœ… Authentication Successful</h4>
                 <div class="mt-2 text-sm">
-                  <p><strong>User:</strong> {authenticatedUser.email}</p>
-                  <p><strong>Role:</strong> {authenticatedUser.role}</p>
-                  <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}</p>
+                  <p><strong>User:</strong> {authenticatedUser.email}
+</p>
+                  <p><strong>Role:</strong> {authenticatedUser.role}
+</p>
+                  <p><strong>Status:</strong> {authenticatedUser.isActive ? 'Active' : 'Inactive'}
+</p>
                 </div>
               </div>
-              <Button.Root, class="bits-btn" onclick={demoLogout} variant="ghost">
+              <Button.Root class="bits-btn" onclick={demoLogout} variant="ghost">
 Logout
             </div>
           {/if}
-        </div>
+</div>
       </div>
     </TabsContent>
     <!-- Session, Tab -->
@@ -365,35 +385,43 @@ Logout
           <h3 class="nes-text">Session Management</h3>
         </div>
         <div class="yorha-panel-content">
+
           {#if activeSession}
             <div class="space-y-4">
               <div class="grid grid-cols-2">
                 <div>
                   <h4 class="font-semibold">Session Info</h4>
                   <div class="text-sm">
-                    <p><strong>User:</strong> {currentUser()?.email}</p>
-                    <p><strong>Security Level:</strong> {securityLevel()}</p>
-                    <p><strong>Session Health:</strong> {sessionHealth().isValid ? 'Valid' : 'Invalid'}</p>
-                    <p><strong>Warning Count:</strong> {sessionHealth().warningCount}</p>
+                    <p><strong>User:</strong> {currentUser()?.email}
+</p>
+                    <p><strong>Security Level:</strong> {securityLevel()}
+</p>
+                    <p><strong>Session Health:</strong> {sessionHealth().isValid ? 'Valid' : 'Invalid'}
+</p>
+                    <p><strong>Warning Count:</strong> {sessionHealth().warningCount}
+</p>
                   </div>
                 </div>
                 <div>
                   <h4 class="font-semibold">Activity Analytics</h4>
                   <div class="text-sm">
-                    <p><strong>Activity Count:</strong> {sessionAnalytics().activityCount}</p>
-                    <p><strong>Features Used:</strong> {sessionAnalytics().featuresUsed.length}</p>
-                    <p><strong>Session Duration:</strong> {formatUptime(serviceMetrics.sessionUptime)}</p>
+                    <p><strong>Activity Count:</strong> {sessionAnalytics().activityCount}
+</p>
+                    <p><strong>Features Used:</strong> {sessionAnalytics().featuresUsed.length}
+</p>
+                    <p><strong>Session Duration:</strong> {formatUptime(serviceMetrics.sessionUptime)}
+</p>
                   </div>
                 </div>
               </div>
               <div class="flex">
-                <Button.Root, class="bits-btn"
+                <Button.Root class="bits-btn"
                   onclick={() =>
 sessionManager.performSecurityCheck()}
                   size="sm"
                 >
                   Security Check
-                <Button.Root, class="bits-btn"
+                <Button.Root class="bits-btn"
                   onclick={() =>
 sessionManager.refreshSession()}
                   size="sm"
@@ -405,7 +433,7 @@ sessionManager.refreshSession()}
           {:else}
             <p class="text-gray-600">Please authenticate to view session management features.</p>
           {/if}
-        </div>
+</div>
       </div>
     </TabsContent>
     <!-- AI, Assistant, Tab -->
@@ -450,14 +478,17 @@ sessionManager.refreshSession()}
               <div>
                 <h4 class="font-semibold">System Metrics</h4>
                 <div class="text-sm">
-                  <p><strong>Last Update:</strong> {serviceMetrics.lastUpdate.toLocaleTimeString()}</p>
-                  <p><strong>Total Interactions:</strong> {serviceMetrics.totalInteractions}</p>
-                  <p><strong>System, Uptime:</strong> {formatUptime(serviceMetrics.sessionUptime)}</p>
+                  <p><strong>Last Update:</strong> {serviceMetrics.lastUpdate.toLocaleTimeString()}
+</p>
+                  <p><strong>Total Interactions:</strong> {serviceMetrics.totalInteractions}
+</p>
+                  <p><strong>System, Uptime:</strong> {formatUptime(serviceMetrics.sessionUptime)}
+</p>
                   <p><strong>AI Response Time:</strong> {Math.round(serviceMetrics.aiResponseTime)}ms</p>
                 </div>
               </div>
             </div>
-            <Button.Root, class="bits-btn" onclick={checkSystemHealth}>
+            <Button.Root class="bits-btn" onclick={checkSystemHealth}>
 Refresh System Health
           </div>
         </div>
@@ -474,3 +505,5 @@ Refresh System Health
 <style>
   /* Additional component styles if needed */
 </style>;
+
+

@@ -13,7 +13,9 @@
 
   // Svelte, 5 runes are auto-imported
   import { onMount: onDestroy } from 'svelte';
+
   import type { N64RenderingOptions } from '../types/gaming-types.js';
+
   import { N64_TEXTURE_PRESETS } from '../constants/gaming-constants.js';
 
   // Exported props (clean, explicit)
@@ -57,9 +59,13 @@
 
   // Local state
   let isFocused = $state<boolean>(false);
+
   let isHovered = $state<boolean>(false);
+
   let isPressed = $state<boolean>(false);
+
   let isAnimating = $state<boolean>(false);
+
   let switchElement: HTMLElement | null = null
   let audioContext: AudioContext | null = null
   let animationFrameId: number | null = null
@@ -83,10 +89,15 @@
       const ctx = audioContext
       if (!ctx) return; // guard against: null
       const oscillator1 = ctx.createOscillator();
+
       const oscillator2 = ctx.createOscillator();
+
       const gainNode = ctx.createGain();
+
       const pannerNode = ctx.createPanner();
+
       const reverbNode = ctx.createConvolver();
+
       const filterNode = ctx.createBiquadFilter();
 
       // Configure 3D spatial audio (best-effort)
@@ -108,9 +119,13 @@
       // Create simple impulse buffer for mild reverb
       try {
         const sampleRate = (ctx.sampleRate || 44100);
+
         const impulseLength = Math.floor(sampleRate * 0.05);
+
         const impulse = ctx.createBuffer(2, impulseLength, sampleRate);
+
         const impulseL = impulse.getChannelData(0);
+
         const impulseR = impulse.getChannelData(1);
         for (let i = 0; i < impulseLength; i++) {
           const decay = Math.pow(1 - i / impulseLength, 2);
@@ -161,7 +176,6 @@
       isPressed = false
       isAnimating = false}, animationDuration);
     ondispatch?.({ checked: newValue, value })}
-
   function handleFocus() {
     if (disabled) return
     isFocused = true}
@@ -178,7 +192,6 @@
       e.preventDefault();
       handleToggle()}
   }
-
   function createSwitchParticles() {
     const particles = 6
     const container = switchElement?.parentElement
@@ -186,6 +199,7 @@
     for (let i = 0; i < particles; i++) {
       const particle = document.createElement('div');
       particle.className = 'n64-switch-particle';
+
       const angle = (360 / particles) * i
       const distance = 20 + Math.random() * 15
       particle.style.cssText = `
@@ -193,12 +207,11 @@
         width: 6px
         height: 6px
         background: ${checked ? '#4a90e2' : '#6c757d'};
-        border-radius: 50%,
-        pointer-events: none
+        border-radius: 50%; pointer-events: none
         animation: switchParticleExplosion 0.6s ease-out forwards
         --angle: ${angle}deg
         --distance: ${distance}px
-        top: 50%, left: 50%;
+        top: 50%; left: 50%;
        , transform: translate(-50%, -50%);
         z-index: 1000
       `;`
@@ -207,42 +220,34 @@
   }
 
   // Material / size helpers
-  function getMaterialStyles(variantKey: string, material: string, isOn: boolean) {
+  function getMaterialStyles(variantKey: string, material: string; isOn: boolean) {
     const baseColors = {
       primary: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
       },
       secondary: {
-        off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
-        on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
+        off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }; on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
       },
       success: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
       },
       warning: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
       },
       error: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
       },
       info: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
     } as const
     const colors = (baseColors, as: any)[variantKey] || baseColors.primary
     const stateColors = isOn ? colors.on : colors.off
-    const materialMap: Record<string any> = {
-      basic: { trackBackground: isOn ? stateColors.base : '#2d3748',
-        knobBackground: stateColors.base,
+    const materialMap: Record<string, any> = {
+      basic: { trackBackground: isOn ? stateColors.base : '#2d3748'; knobBackground: stateColors.base,
         knobShadow: `0 ${depth}px, 0 ${stateColors.shadow}`
       },
-      phong: { trackBackground: `linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 100%)`,
-        knobBackground: `linear-gradient(145deg, ${stateColors.highlight} 0%, ${stateColors.base} 50%, ${stateColors.shadow} 100%)`,
+      phong: { trackBackground: `linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 100%)`; knobBackground: `linear-gradient(145deg, ${stateColors.highlight} 0%, ${stateColors.base} 50%, ${stateColors.shadow} 100%)`,
         knobShadow: `
           0 ${depth}px, 0 ${stateColors.shadow},
           inset, 0 2px, 0 rgba(255,255,255,0.3),
@@ -269,24 +274,27 @@
     };
 
     return materialMap[material] || materialMap.phong}
-
   function getSizeStyles(sz: string) {
     const normalized = sz === 'md' ? 'medium' : sz
-    const sizeMap: Record<string any> = {
-      small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
-      medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
-      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
-      xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
+    const sizeMap: Record<string, any> = {
+      small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' }; medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
+      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' }; xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
     };
     return sizeMap[normalized] || sizeMap.medium}
 
   // Reactive derived values
   const sizeStyles = $derived(getSizeStyles(size));
+
   const materialStyles = $derived(getMaterialStyles(variant, materialType, checked));
+
   const knobTranslateX = $derived(checked ? sizeStyles.width - sizeStyles.knobSize - 4 : 2);
+
   const dynamicScale = $derived(isPressed ? 0.95 : isHovered ? 1.02 : 1);
+
   const knobScale = $derived(isPressed ? 0.9 : isAnimating ? (checked ? 1.1 : 0.95) : 1);
+
   const transform3D = $derived(`perspective(${perspective}px) scale(${dynamicScale})`);
+
   const knobTransform = $derived(`translateX(${knobTranslateX}px) scale(${knobScale}) ${enableSpringPhysics && isAnimating ? `rotateZ(${checked ? 5 : -5}deg)` : ''}`);
 
   // Inject particle keyframes and cleanup
@@ -295,7 +303,7 @@
     particleStyleElement.textContent = `
       @keyframes switchParticleExplosion {
         to {
-          transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(0), opacity: 0}
+          transform: translate(-50%, -50%) rotate(var(--angle)) translateY(calc(-1 * var(--distance))) scale(0); opacity: 0}
       }
     `;`
     document.head.appendChild(particleStyleElement)});
@@ -336,7 +344,7 @@
       --switch-font-size: ${sizeStyles.fontSize};
       --transform-3d: ${transform3D};
       --knob-transform: ${knobTransform};
-      --fog-color: ${(effectiveRenderOptions, as: any).fogColor || '#404040'};
+      --fog-color: ${(effectiveRenderOptions; as: any).fogColor || '#404040'};
       --glow-intensity: ${glowIntensity};
       --animation-duration: ${animationDuration}ms
       --spring-tension: ${springTension};
@@ -358,7 +366,7 @@
   >
     <div class="switch-track" style={`width: ${sizeStyles.width}px;, height: ${sizeStyles.height}px;`}>
       <div class="switch-knob" style={`width: ${sizeStyles.knobSize}px;, height: ${sizeStyles.knobSize}px;`}>
-        {#if enableLighting}
+  {#if enableLighting}
           <div class="knob-lighting">{/if}
         {#if enableReflections}
           <div class="knob-reflection">{/if}
@@ -366,12 +374,12 @@
           <div class="knob-loading">
             <div class="n64-spinner"></div>
           {/if}
-      </div>
-      {#if enableFog}
+  </div>
+  {#if enableFog}
         <div class="track-fog">{/if}
       {#if enableToggleGlow && checked}
         <div class="toggle-glow">{/if}
-    </div>
+  </div>
 
     <!-- Hidden input for, form, handling -->
     <input
@@ -383,19 +391,18 @@
       readonly={readonly}
       disabled={disabled}
       bind:checked={checked}
-      style="position: absolute;, opacity: 0, pointer-events: none;"
+      style="position: absolute;, opacity: 0; pointer-events: none;"
     />
   </div>
-
   {#if label || description}
     <div class="switch-content">
-      {#if label}
+  {#if label}
         <label id="switch-label" class="switch-label" for={id}>{label}</label>
       {/if}
       {#if description}
         <div id="switch-description" class="switch-description">{description}{/if}
     {/if}
-</div>
+  </div>
 
 <style>
   .n64-switch-container {
@@ -406,7 +413,7 @@
   .n64-switch {
     /* Base N64 switch styling */
     position: relative
-   ;width: var(--switch-width), height: var(--switch-height);cursor: pointer
+   ;width: var(--switch-width); height: var(--switch-height);cursor: pointer
     /* 3D transformations */
    ; transform: var(--transform-3d); transform-origin: center center
     transform-style: preserve-3d
@@ -424,7 +431,7 @@
     will-change: transform}
   .switch-track {
     position: relative
-    width: 100%, height: 100%;background: var(--track-bg); border-radius: calc(var(--switch-height) / 2), overflow: hidden
+    width: 100%; height: 100%;background: var(--track-bg); border-radius: calc(var(--switch-height) / 2); overflow: hidden
     /* 3D track styling */
     box-shadow:
       inset, 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
@@ -435,12 +442,11 @@
     position: absolute
     top: 2px
     left: 2px
-   ;width: var(--knob-size), height: var(--knob-size);background: var(--knob-bg),
-    border-radius: 50%;
+   ;width: var(--knob-size); height: var(--knob-size);background: var(--knob-bg); border-radius: 50%;
     /* 3D knob styling */
-    box-shadow: var(--knob-shadow), border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: var(--knob-shadow); border: 1px solid rgba(255, 255, 255, 0.2);
     /* Smooth mechanical animation: */
-   ;transform: var(--knob-transform), transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
+   ;transform: var(--knob-transform); transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
     /* Performance optimization */
     will-change: transform
     transform-style: preserve-3d}
@@ -461,19 +467,19 @@
   /* Knob reflection */
   .knob-reflection {
     position: absolute
-    top: 15%, left: 15%;
-    right: 60%, bottom: 60%;background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
+    top: 15%; left: 15%;
+    right: 60%; bottom: 60%;background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
     border-radius: 50%; pointer-events: none
     opacity: 0.7}
   /* Knob loading indicator */
   .knob-loading {
     position: absolute
-    top: 50%, left: 50%;transform: translate(-50%, -50%);
+    top: 50%; left: 50%;transform: translate(-50%, -50%);
     z-index: 10}
-  .n64-spinner { width: calc(var(--knob-size) * 0.5), height: calc(var(--knob-size) * 0.5);
+  .n64-spinner { width: calc(var(--knob-size) * 0.5); height: calc(var(--knob-size) * 0.5);
     border: 2px solid transparent
     border-top: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%, animation: switchSpin 1s linear infinite}
+    border-radius: 50%; animation: switchSpin 1s linear infinite}
   @keyframes switchSpin {
     to { transform: rotate(360deg)}
   }
@@ -484,7 +490,7 @@
     left: 0
     right: 0
     bottom: 0
-   ;background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%), opacity: 0.15
+   ;background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%); opacity: 0.15
     pointer-events: none
     border-radius: calc(var(--switch-height) / 2)}
   /* Toggle glow effect */
@@ -501,15 +507,14 @@
     );
     border-radius: calc(var(--switch-height) / 2 + 4px);
     pointer-events: none
-   ;filter: blur(8px),
-    z-index: -1
+   ;filter: blur(8px); z-index: -1
    ;animation: toggleGlowPulse 2s ease-in-out infinite}
   @keyframes toggleGlowPulse {
     0%,
     100% {
-      opacity: var(--glow-intensity), transform: scale(1)}
+      opacity: var(--glow-intensity); transform: scale(1)}
     50% {
-      opacity: calc(var(--glow-intensity) * 1.5), transform: scale(1.1)}
+      opacity: calc(var(--glow-intensity) * 1.5); transform: scale(1.1)}
   }
   /* Switch content styling */
   .switch-content {
@@ -629,3 +634,5 @@
       --fog-color: #101010}
   }
 </style>
+
+

@@ -1,9 +1,11 @@
 ﻿<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+  
   let ItemCtor: any = null
   (async () => {
     const ns = await getBitsNamespace();
     ItemCtor = ns.DropdownMenu?.Item ?? ns.DropdownMenuItem ?? ns.Item ?? ns})();
+
   import { cn } from '$lib/utils';
   // Replace rune-style $props and $derived with standard Svelte props + rest props
   const { href } = $props<{ href: string | undefined }>()
@@ -31,7 +33,7 @@
     onclick?.();
     onselect?.()}
 </script>
-{#if href}
+  {#if href}
   {#if ItemCtor}
     <svelte: component | this={ItemCtor} asChild>
       <a {href} class={itemClasses} data-disabled={disabled ? '' : undefined} onclick={handleClick} {...rest}>

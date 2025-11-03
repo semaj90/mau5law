@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
   interface Props {
-    data: { message: string, path: string, targetExample: string, now: string }}
+    data: { message: string; path: string; targetExample: string; now: string };
+  }
   let { data }: Props = $props();
 </script>
 
@@ -12,4 +13,3 @@
   <p class="text-xs">Server time: {data.now}</p>
 </div>
 ;
-

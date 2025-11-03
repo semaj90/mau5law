@@ -1,10 +1,10 @@
 <script lang="ts">
 import type { User } from, '$lib/types'; // Svelte, 5 runes are auto-imported import { enhance } from, '$app/forms'; import { page } from, '$app/state'; import type { PageData, ActionData } from, './$types'; import { goto } from, '$app/navigation'; let { data }: { data: PageData } = $props(); let showProfileModal = $state<boolean>(false); let showPasswordModal = $state<boolean>(false); let showSessionModal = $state<boolean>(false); let selectedSession = $state<any>(null); let formLoading = $state<boolean>(false); // Profile form let profileForm = $state({ firstName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.firstName || '', lastName: (data as { user?: any; stats?: any; recentCases?: any; recentAIInteractions?: any; activeSessions?: any }).user.lastName || ''
-  }); // Password form let passwordForm = $state({ newPassword: '', confirmPassword: ''
-  }); function formatDate(dateStr: string | Date) { const date = typeof dateStr === 'string' ? new Date(dateStr): dateStr; return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+  }); // Password form let passwordForm = $state({ newPassword: ''; confirmPassword: ''
+  }); function formatDate(dateStr: string | Date) { const date = typeof dateStr === 'string' ? new Date(dateStr): dateStr; return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit'; minute: '2-digit'
     })}
   function formatTokens(tokens: number | null) { if (!tokens) return '0'; return tokens.toLocaleString()}
-  function truncateText(text: string, maxLength: number = 100) { return text.length > maxLength ? text.substring(0, maxLength) + '...': text}
+  function truncateText(text: string; maxLength: number = 100) { return text.length > maxLength ? text.substring(0, maxLength) + '...': text}
   function getPriorityColor(priority: string) { switch (priority) { case, 'critical': return 'text-red-400 border-red-500'; case, 'high': return 'text-orange-400 border-orange-500'; case, 'medium': return 'text-yellow-400 border-yellow-500'; case, 'low': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'}
   } function getStatusColor(status: string) { switch (status) { case, 'open': return 'text-blue-400 border-blue-500'; case, 'in_progress': return 'text-yellow-400 border-yellow-500'; case, 'closed': return 'text-green-400 border-green-500'; default: return 'text-gray-400 border-gray-500'}
   } function openSessionModal(session: unknown) { selectedSession = sessio; showSessionModal = true}
@@ -76,6 +76,6 @@ import type { User } from, '$lib/types'; // Svelte, 5 runes are auto-imported im
             > {formLoading ? '[REVOKING...]': '[REVOKE SESSION]'} </button> </div> </form> </div> </div> </div> {/if} <style> /* YoRHa cyberpunk aesthetic */:global(body) { background: #000;, color: #fbbf24}
   /* Custom scrollbar */ .overflow-y-auto::-webkit-scrollbar, .overflow-x-auto::-webkit-scrollbar { width: 8px;, height: 8px}
   .overflow-y-auto::-webkit-scrollbar-track, .overflow-x-auto::-webkit-scrollbar-track { background: #1f2937}
-  .overflow-y-auto::-webkit-scrollbar-thumb, .overflow-x-auto::-webkit-scrollbar-thumb { background: #fbbf24, border-radius: 4px}
+  .overflow-y-auto::-webkit-scrollbar-thumb, .overflow-x-auto::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 4px}
   .overflow-y-auto::-webkit-scrollbar-thumb: hover .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #f59e0b}
 </style>

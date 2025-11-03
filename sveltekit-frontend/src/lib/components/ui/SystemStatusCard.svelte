@@ -14,6 +14,7 @@ https://svelte.dev/e/js_parse_error -->
 	if (s === "WARN" || s === "WARNING") return "status-warn";
 	if (s === "ERROR" || s === "FAIL" || s === "FAILED") return "status-error";
 	return "status-unknown"}
+
   // TODO: Convert to $derived: formattedUpdatedAt = updatedAt
 	? (updatedAt instanceof Date ? updatedAt.toLocaleString() : new Date(updatedAt).toLocaleString())
 	: ""
@@ -62,7 +63,7 @@ https://svelte.dev/e/js_parse_error -->
   .dot {
 	width: 10px
 	height: 10px
-	border-radius: 50%, background: currentColor
+	border-radius: 50%; background: currentColor
 	opacity: 0.95}
   .meta {
 	font-size: 0.8rem
@@ -81,4 +82,5 @@ https://svelte.dev/e/js_parse_error -->
 	<div class="meta">Updated: {formattedUpdatedAt}{/if}
   <slot />
 </div>
+
 

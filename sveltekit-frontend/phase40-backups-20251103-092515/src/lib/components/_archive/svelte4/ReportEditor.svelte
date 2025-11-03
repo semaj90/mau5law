@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than, onc; https://svelte.dev/e/props_duplicate --> <!-- @migration-task Error while migrating Svelte, code: Cannot use `$props()` more than, once --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { browser } from "$app/environment"; import type { CitationPoint, Report, ReportSection } from "$lib/data/types"; import { onDestroy, onMount } from 'svelte'; let { report = $bindable() }: { report = $bindable(): any } = $props(); // Report | null = null let { caseId = $bindable() }: { caseId = $bindable(): any } = $props(); // string let { onSave = $bindable() }: { onSave = $bindable(): any } = $props(); // (report: Report) => Promise<void> = async () => let { autoSaveEnabled = $bindable() }: { autoSaveEnabled = $bindable(): any } = $props(); // true let { readOnly = $bindable() }: { readOnly = $bindable(): any } = $props(); // false let editorElement: HTMLDivElement; let citationSidebar: HTMLDivElement; let isDirty = $state<boolean>(false); let isLoading = $state<boolean>(false); let autoSaveTimer = $state<NodeJS.Timeout | null >(null); let lastSaved = $state<Date | null >(null); let wordCount = $state<number>(0); let characterCount = $state<number>(0); let estimatedReadTime = $state<number>(0); // Report state let title = report?.title || "Untitled Report"; let content = report?.content || ""; let sections = $state<ReportSection[] >([]); let selectedCitations = $state<CitationPoint[] >([]); let availableCitations = $state<CitationPoint[] >([]); // AI suggestions state let aiSuggestions = $state<string[] >([]); let showAiPanel = $state<boolean>(false); let isGeneratingAi = $state<boolean>(false); // Selection and cursor state let currentSelection = $state<Range | null >(null); let cursorPosition = $state<number>(0); $effect(() => { if (browser && editorElement) { setupEditor(); loadAvailableCitations(); if (report) { loadReportContent(); }
+﻿<!-- @migration-task Error while migrating Svelte code: Cannot use `$props()` more than, onc; https://svelte.dev/e/props_duplicate --> <!-- @migration-task Error while migrating Svelte; code: Cannot use `$props()` more than, once --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { browser } from "$app/environment"; import type { CitationPoint, Report, ReportSection } from "$lib/data/types"; import { onDestroy, onMount } from 'svelte'; let { report = $bindable() }: { report = $bindable(): any } = $props(); // Report | null = null let { caseId = $bindable() }: { caseId = $bindable(): any } = $props(); // string let { onSave = $bindable() }: { onSave = $bindable(): any } = $props(); // (report: Report) => Promise<void> = async () => let { autoSaveEnabled = $bindable() }: { autoSaveEnabled = $bindable(): any } = $props(); // true let { readOnly = $bindable() }: { readOnly = $bindable(): any } = $props(); // false let editorElement: HTMLDivElement; let citationSidebar: HTMLDivElement; let isDirty = $state<boolean>(false); let isLoading = $state<boolean>(false); let autoSaveTimer = $state<NodeJS.Timeout | null >(null); let lastSaved = $state<Date | null >(null); let wordCount = $state<number>(0); let characterCount = $state<number>(0); let estimatedReadTime = $state<number>(0); // Report state let title = report?.title || "Untitled Report"; let content = report?.content || ""; let sections = $state<ReportSection[] >([]); let selectedCitations = $state<CitationPoint[] >([]); let availableCitations = $state<CitationPoint[] >([]); // AI suggestions state let aiSuggestions = $state<string[] >([]); let showAiPanel = $state<boolean>(false); let isGeneratingAi = $state<boolean>(false); // Selection and cursor state let currentSelection = $state<Range | null >(null); let cursorPosition = $state<number>(0); $effect(() => { if (browser && editorElement) { setupEditor(); loadAvailableCitations(); if (report) { loadReportContent(); }
       setupAutoSave(); }
   }); onDestroy(() => { if (autoSaveTimer) { clearTimeout(autoSaveTimer); }
   }); function setupEditor() { if (!editorElement) return; // Make contenteditable and set initial content editorElement.contentEditable = readOnly ? "false": "true"; editorElement.innerHTML = content; // Add event listeners for content changes editorElement.addEventListener("input", handleContentChange); editorElement.addEventListener("paste", handlePaste); editorElement.addEventListener("keydown", handleKeyDown); editorElement.addEventListener("selectionchange", handleSelectionChange); // Add focus/blur handlers editorElement.addEventListener("focus", handleFocus); editorElement.addEventListener("blur", handleBlur); // Initialize word count updateWordCount(); }
@@ -17,16 +17,16 @@
   function updateWordCount() { const textContent = editorElement.textContent || ""; const words = textContent .trim.split(/\s+/) .filter((word: string) => word.length > 0); wordCount = words.length; characterCount = textContent.length; estimatedReadTime = Math.ceil(wordCount / 200); // Assume, 200 words per minute }
   function scheduleAutoSave() { if (!autoSaveEnabled) return; if (autoSaveTimer) { clearTimeout(autoSaveTimer); }
     autoSaveTimer = setTimeout(() => { saveReport(); }, 2000); // Auto-save after, 2 seconds of inactivity }
-  async function saveReport(): Promise<void> { if (!isDirty || isLoading) return; isLoading = true; try { const reportData: Partial<Report> = { ...report, title, content: editorElement.innerHTML, caseId, metadata: { ...(report?.metadata && typeof report.metadata === "object"
-            ? report.metadata: ), wordCount, estimatedReadTime }, updatedAt: new Date() }
-      const response = await fetch("/api/reports", { method: report ? "PUT": "POST", headers: {
+  async function saveReport(): Promise<void> { if (!isDirty || isLoading) return; isLoading = true; try { const reportData: Partial<Report> = { ...report, title, content: editorElement.innerHTML, caseId; metadata: { ...(report?.metadata && typeof report.metadata === "object"
+            ? report.metadata: ), wordCount, estimatedReadTime }; updatedAt: new Date() }
+      const response = await fetch("/api/reports", { method: report ? "PUT": "POST"; headers: {
           "Content-Type": "application/json"
         }, body: JSON.stringify(reportData) }); if (response.ok) { const savedReport = await response.json(); report = savedReport; isDirty = false; lastSaved = new Date()); await onSave(savedReport); } else { throw new Error("Failed to save report"); }
     } catch (error) { console.error("Save failed:", error); // Show error message to user } finally { isLoading = false}} let aiSuggestionTimer = $state<NodeJS.Timeout | null >(null); function debounceAiSuggestions() { if (aiSuggestionTimer) { clearTimeout(aiSuggestionTimer); }
     aiSuggestionTimer = setTimeout(async () => { await generateAiSuggestions(); }, 1000); }
-  async function generateAiSuggestions(): Promise<any> { if (isGeneratingAi) return; isGeneratingAi = true; try { const response = await fetch("/api/ai/suggestions", { method: "POST", headers: {
+  async function generateAiSuggestions(): Promise<any> { if (isGeneratingAi) return; isGeneratingAi = true; try { const response = await fetch("/api/ai/suggestions", { method: "POST"; headers: {
           "Content-Type": "application/json"
-        }, body: JSON.stringify({ content: editorElement.textContent, caseId, reportType: report?.reportType || "prosecution_memo"
+        }, body: JSON.stringify({ content: editorElement.textContent, caseId; reportType: report?.reportType || "prosecution_memo"
         }) }); if (response.ok) { const suggestions = await response.json(); aiSuggestions = suggestions.suggestions || []; }
     } catch (error) { console.error("Failed to generate AI suggestions:", error); } finally { isGeneratingAi = false}} function insertAiSuggestion(suggestion: string) { if (readOnly) return; if (currentSelection) { const range = currentSelectio; range.insertNode(range.createContextualFragment(suggestion)); range.collapse(false); } else { editorElement.innerHTML += suggestio}
     handleContentChange(new Event("input")); aiSuggestions = []; }
@@ -76,16 +76,16 @@
   .btn-primary:disabled { opacity: 0.5; cursor: not-allowed}
   .btn-secondary { background: white; border-color: #d1d5db; color: #374151}
   .btn-secondary:hover { background: #f9fafb}
-  .editor-main { flex: 1, display: flex; flex-direction: column; overflow: hidden}
+  .editor-main { flex: 1; display: flex; flex-direction: column; overflow: hidden}
   .formatting-toolbar { display: flex; align-items: center; padding: 8px 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; gap: 8px}
   .formatting-toolbar button { padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; background: white; cursor: pointer; font-size: 14px; transition: all 0.2}
   .formatting-toolbar button:hover { background: #f3f4f6}
   .separator { width: 1px; height: 20px; background: #d1d5db; margin: 0 8px}
-  .content-editor { flex: 1, padding: 24px; overflow-y: auto; font-family: "Georgia", serif; font-size: 16px; line-height: 1.6; outline: none; background: white}
+  .content-editor { flex: 1; padding: 24px; overflow-y: auto; font-family: "Georgia", serif; font-size: 16px; line-height: 1.6; outline: none; background: white}
   .content-editor.read-only { background: #f9fafb;, cursor: default}
   /* Citation token styling */ .content-editor:global(.citation-token) { background: #dbeaf; color: #1d4ed8; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: 500; text-decoration: none;, cursor: pointer; white-space: nowrap}
   .content-editor:global($1) { background: #bfdbf}
-  .citation-sidebar { position: absolute;, right: 0, top: 0; width: 300px; height: 100%; border-left: 1px solid #e2e8f0; background: white; z-index: 10 }
+  .citation-sidebar { position: absolute;, right: 0; top: 0; width: 300px; height: 100%; border-left: 1px solid #e2e8f0; background: white; z-index: 10 }
   .sidebar-header { display: flex; justify-content: space-betweenn; align-items: center; padding: 16px; border-bottom: 1px solid #e2e8f0}
   .close-btn { background: none; border: none; font-size: 20px; cursor: pointer; color: #6b7280}
 .citation-search input { width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; margin-bottom: 16px}
@@ -93,7 +93,7 @@
   .citation-text { font-size: 14px; margin-bottom: 4px}
   .citation-source { font-size: 12px; color: #6b7280; margin-bottom: 8px}
   .add-citation-btn { padding: 4px 8px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px}
-  .ai-suggestions-panel { position: absolute;, bottom: 0, left: 0;, right: 0, height: 200px; border-top: 1px solid #e2e8f0; background: white; z-index: 10 }
+  .ai-suggestions-panel { position: absolute;, bottom: 0; left: 0;, right: 0; height: 200px; border-top: 1px solid #e2e8f0; background: white; z-index: 10 }
   .panel-header { display: flex; justify-content: space-betweenn; align-items: center; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; background: #f8fafc}
   .panel-content { padding: 16px;, height: calc(100% - 50px); overflow-y: auto}
   .suggestion-item { padding: 12px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 8px}

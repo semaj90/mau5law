@@ -1,8 +1,11 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import  Button  from "$lib/components/ui/Button.svelte";
+
   import { fade: slide } from 'svelte/transition';
+
   import type { OCRResult } from '$lib/services/ocr-processor';
+
   import type { DocumentUploadFormProps } from '$lib/types/component-props.js';
 
   // Local types
@@ -11,7 +14,6 @@
     uploaded_files: File[],
     ocr_results: OCRResult[];
    , processing_status: ProcessingStatus}
-
   function createDefaultFormData(): InternalFormData {
     return {
       uploaded_files: [],
@@ -36,9 +38,10 @@
 
   // Local state variables
   let dragActive = $state<boolean>(false);
+
   let fileInput: HTMLInputElement | null = null
-  let uploadProgress: Record<string number> = {};
-  let processingErrors: Record<string string> = {};
+  let uploadProgress: Record<string, number> = {};
+  let processingErrors: Record<string, string> = {};
 
   // Accepted file types (combine user allowedTypes with a canonical set; de-dupe)
   const canonicalTypes = [
@@ -47,14 +50,17 @@
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ];
+
   const acceptedTypes: string[] = Array.from(new Set([...canonicalTypes, ...allowedTypes]));
 
   function isValidFileType(file: File): boolean {
     return acceptedTypes.includes(file.type)}
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
+
     const k = 1024
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}
   function handleDragOver(e: DragEvent) {
@@ -81,6 +87,7 @@
       // no-op; optionally set an error
       return}
     const slice = files.slice(0, remainingSlots);
+
     const rejectedForOverflow = files.length - slice.length
     if (rejectedForOverflow > 0) {
       for (const f of files.slice(slice.length)) {
@@ -120,6 +127,7 @@
       };
       uploadProgress = { ...uploadProgress, [file.name]: 100 };
       formData.ocr_results = [...formData.ocr_results, ocrResult];
+
       const newErrors = { ...processingErrors };
       delete newErrors[file.name];
       processingErrors = newErrors} catch (error) {
@@ -142,6 +150,7 @@
     if (!removedFile) return
     formData.uploaded_files = formData.uploaded_files.filter((_, i) => i !== index);
     formData.ocr_results = formData.ocr_results.filter((item) => item.metadata?.title !== removedFile.name);
+
     const newErrors = { ...processingErrors };
     delete newErrors[removedFile.name];
     processingErrors = newErrors}
@@ -171,20 +180,28 @@
     <input type="file" bind:this={fileInput} multiple, accept={acceptedTypes.join(',')} onchange={handleFileInputChange} class="hidden" />
     <div class="drag-drop-content {dragActive ? 'active' : ''}">
       <p>Drag and drop your files here</p>
+
       <p>or</p>
+
       <Button onclick={() => fileInput?.click()} variant="outline" class="browse-button">
         Browse files
       </Button>
     </div>
   </div>
+
   <div class="file-info">
-    {#each formData.uploaded_files as file, index (file.name)}
+  {#each formData.uploaded_files as file, index (file.name)}
       <div class="file-item">
       <span class="file-icon">
         <i class={getFileIcon(file.type)} aria-hidden="true"></i>
       </span>
-        <span class="file-name">{file.name}</span>
-        <span class="file-size">{formatFileSize(file.size)}</span>
+
+        <span class="file-name">{file.name}
+</span>
+
+        <span class="file-size">{formatFileSize(file.size)}
+</span>
+
         <div class="file-actions">
           <Button onclick={() => removeFile(index)} variant="text" class="remove-button" aria-label="Remove file">
             <i class="i-lucide-trash" aria-hidden="true"></i>
@@ -195,18 +212,21 @@
   </div>
   {#if Object.keys(processingErrors).length > 0}
     <div class="error-messages">
-      {#each Object.entries(processingErrors) as [_fileName, errorMessage]}
+  {#each Object.entries(processingErrors) as [_fileName, errorMessage]}
         <div class="error-message" role="alert">
           <i class="i-lucide-alert-triangle" aria-hidden="true"></i>
-          <span class="error-text">{errorMessage}</span>
+
+          <span class="error-text">{errorMessage}
+</span>
         </div>
       {/each}
     {/if}
   <div class="actions">
-    <Button.Root, onclick={handleSaveDraft} variant="secondary" class="save-draft-button">
+    <Button.Root onclick={handleSaveDraft} variant="secondary" class="save-draft-button">
       Save Draft
     </Button>
-    <Button.Root, onclick={handleNext} variant="primary" class="next-button">
+
+    <Button.Root onclick={handleNext} variant="primary" class="next-button">
       Continue to Next Step
     </Button>
   </div>
@@ -265,3 +285,5 @@
   .save-draft-button {
     margin-right: 8px}
 </style>
+
+

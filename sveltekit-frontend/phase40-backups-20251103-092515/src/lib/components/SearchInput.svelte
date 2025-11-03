@@ -26,22 +26,26 @@
     }
   }
   function handleFocus() {
-    isFocused = true}
+    isFocused = true;
+  }
   function handleBlur() {
-    isFocused = false}
+    isFocused = false;
+  }
   function clearValue() {
     value = '';
     triggerSearch();
     inputElement?.focus();
   }
 </script>
+
 <div class="search-input-container" class:focused={isFocused}>
   <div class="search-icon" aria-hidden="true">
     <Search size={18} />
   </div>
   <input
     bind:this={inputElement}
-   , bind:value={value}
+    ;
+    bind:value
     {placeholder}
     class="search-input"
     type="text"
@@ -57,16 +61,15 @@
     </button>
   {/if}
 </div>
+
 <style>
   /* @unocss-include */
   .search-input-container {
     position: relative
     display: flex
-    align-items: center
-   , background: var(--bg-primary);
+    align-items: center; background: var(--bg-primary);
     border: 1px solid var(--border-light);
-    border-radius: 8px
-   , transition: all 0.2s ease
+    border-radius: 8px; transition: all 0.2s ease
     min-height: 40px}
   .search-input-container:hover {
     border-color: var(--harvard-crimson);
@@ -79,16 +82,14 @@
     display: flex
     align-items: center
     justify-content: center
-    padding: 0 12px
-   , color: var(--text-muted);
+    padding: 0 12px; color: var(--text-muted);
     pointer-events: none}
   .search-input {
     flex: 1
     padding: 8px 0
     background: transparent
     border: none
-    outline: none
-   , color: var(--text-primary);
+    outline: none; color: var(--text-primary);
     font-size: 0.875rem}
   .search-input::placeholder { color: var(--text-muted);
     opacity: 1; /* Ensure consistent placeholder opacity across browsers */
@@ -100,8 +101,7 @@
     padding: 8px 12px
     background: transparent
     border: none
-    cursor: pointer
-   , color: var(--text-muted);
+    cursor: pointer; color: var(--text-muted);
     border-radius: 4px
     transition: all 0.2s ease}
   .clear-button:hover { color: var(--text-primary);
@@ -110,4 +110,3 @@
   .clear-button:active { transform: scale(0.95);
   }
 </style>
-

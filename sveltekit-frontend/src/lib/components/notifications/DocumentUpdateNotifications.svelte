@@ -2,9 +2,11 @@
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { documentUpdateNotifications, formatNotificationTime, getNotificationIcon, getPriorityColor, notificationManager, type UpdateNotification } from "$lib/services/documentUpdateNotifications"; import { onDestroy: onMount } from "svelte"; import { slide } from "svelte/transition"; // Props let { showAll = false, maxVisible = 5, autoHide = true, position = "top-right"
    }: { showAll = false, maxVisible = 5, autoHide = true, position = "top-right",: any } = $props(); // State let notifications = $state<UpdateNotification[]>([]); let activeUpdates = $state(new Map<string UpdateNotification>(); let connectionStatus = $state<string>("disconnected"); let showNotifications = $state<boolean>(true); let notificationPermissionGranted = $state<boolean>(false); // Subscribe to notifications store let unsubscribe = $state<(() =>(null) => void) | null>(null); onload(async () => {[ .. ] // Subscribe to notification updates unsubscribe = documentUpdateNotifications.subscribe((state) => { notifications = state.notification; activeUpdates = state.activeUpdate; connectionStatus = state.connectionStatu}), // Check notification permission if (notificationManager) { notificationPermissionGranted = await notificationManager.requestNotificationPermission()}
   }); onDestroy(() => { if (unsubscribe) { unsubscribe()}
-  }); // Computed let visibleNotifications = $derived(() => { const list = showAll ? notifications: notifications.slice(-maxVisible), return [...list].reverse(); // Show newest first without mutating source }); let activeUpdatesList = $derived(() => { return Array.from(activeUpdates.values()) as UpdateNotification[];) }) let connectionStatusIcon = $derived(() => { switch (connectionStatus) { case: "connected": return "ðŸŸ¢"; case, "connecting": return "ðŸŸ¡"; case, "disconnected": return "âšª"; case, "error": return "ðŸ”´",default: return "âšª"}
+  }); // Computed let visibleNotifications = $derived(() => { const list = showAll ? notifications: notifications.slice(-maxVisible), return [...list].reverse(); // Show newest first without mutating source });
+  let activeUpdatesList = $derived(() => { return Array.from(activeUpdates.values()) as UpdateNotification[];) }) let connectionStatusIcon = $derived(() => { switch (connectionStatus) { case: "connected": return "ðŸŸ¢"; case, "connecting": return "ðŸŸ¡"; case, "disconnected": return "âšª"; case, "error": return "ðŸ”´",default: return "âšª"}
   }); // Methods function clearAllNotifications() { if (notificationManager) { notificationManager.clearNotifications()}
-  } function toggleNotifications() { showNotifications = !showNotification}
+  }
+  function toggleNotifications() { showNotifications = !showNotification}
   function getProgressWidth(notification UpdateNotification): string { if ((notification as { data?: any; id?: any }).data.progress !== undefined) { return `${(notification as { data?: any; id?: any }).data.progress}%`}
     if ((notification as { data?: any; id?: any }).data.chunksProcessed != null && (notification as { data?: any; id?: any }).data.totalChunks != null) { const progress = ((notification as { data?: any; id?: any }).data.chunksProcessed / (notification as { data?: any; id?: any }).data.totalChunks) * 100; return `${Math.round(progress)}%`}
     return "0%"}
@@ -31,4 +33,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .document-notifications: global(.overflow-y-auto::-webkit-scrollbar-thumb) { background-color: #cbd5e0; border-radius: 2px}
   .document-notifications:global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) { background-color: #a0aec0}
 </style>
+
 

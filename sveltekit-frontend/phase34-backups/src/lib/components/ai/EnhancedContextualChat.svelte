@@ -25,7 +25,7 @@ import type { Document } from '$lib/types';
   } from '$lib/types/sharedTypes';
   import { onMount } from 'svelte';
   // NOTE: This frontend component interacts with SvelteKit API routes (e.g., /api/contextual/chat, /api/contextual/state).
-  // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest, embeddinggemma:latest),
+  // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest; embeddinggemma:latest),
   // Drizzle-ORM, and Docker environment variables for production readiness
   // occurs within those server-side SvelteKit API routes (+server.ts files).
   // This component correctly uses relative paths for API calls, allowing SvelteKit to handle routing.
@@ -44,11 +44,9 @@ import type { Document } from '$lib/types';
     sessionId,
     userId,
     caseId,
-    message: '',
-    enableFunctions: true
+    message: ''; enableFunctions: true
   }, {
-    validators: zodClient(chatMessageSchema),
-    resetForm: false,
+    validators: zodClient(chatMessageSchema); resetForm: false,
     onSubmit: async () => {
       // Form submission handled by enhance
     },
@@ -57,12 +55,9 @@ import type { Document } from '$lib/types';
         // Add to conversation history
         conversationHistory = [
           ...conversationHistory, {
-            userMessage: $form.message,
-            agentResponse: result.data.response,
-            timestamp: Date.now(),
-            intent: 'general_query',
-            entities: result.data.entities || [],
-            hmmState: result.data.metadata?.currentState || 0
+            userMessage: $form.message; agentResponse: result.data.response,
+            timestamp: Date.now(); intent: 'general_query',
+            entities: result.data.entities || []; hmmState: result.data.metadata?.currentState || 0
           }
         ];
         // Clear message
@@ -412,8 +407,7 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     height: 100vh
-    max-height: 900px
-   , background: #212529
+    max-height: 900px; background: #212529
     font-family: 'Press Start 2P', 'Courier New', monospace
     font-size: 12px}
   .chat-header {
@@ -454,8 +448,7 @@ import type { Document } from '$lib/types';
     border-right: 4px solid #d4af37}
   .messages-container {
     flex: 1
-    overflow-y: auto
-   , padding: 1rem}
+    overflow-y: auto; padding: 1rem}
   .message-group {
     margin-bottom: 1.5rem}
   .user-message,
@@ -548,8 +541,7 @@ import type { Document } from '$lib/types';
     color: #888}
   .dialog-overlay {
     position: fixed
-    inset: 0
-   , background: rgba(0, 0, 0, 0.8);
+    inset: 0; background: rgba(0, 0, 0, 0.8);
     z-index: 50}
   .dialog-content {
     position: fixed

@@ -19,8 +19,8 @@
     ...restProps
   }: EnhancedModalProps = $props();
   const dispatch = createEventDispatcher();
-  const sizeClasses = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl', xl: 'max-w-4xl' };
-  const variantClasses = { default: 'enhanced-modal-default', gradient: 'enhanced-modal-gradient', diamond: 'enhanced-modal-diamond nes-diamond-pattern', gaming: 'enhanced-modal-gaming', legal: 'enhanced-modal-legal' };
+  const sizeClasses = { sm: 'max-w-md', md: 'max-w-lg', lg: 'max-w-2xl'; xl: 'max-w-4xl' };
+  const variantClasses = { default: 'enhanced-modal-default', gradient: 'enhanced-modal-gradient', diamond: 'enhanced-modal-diamond nes-diamond-pattern', gaming: 'enhanced-modal-gaming'; legal: 'enhanced-modal-legal' };
   function handleBackdropClick(_event: MouseEvent) {
     if (event.target === event.currentTarget) {
       closeModal();
@@ -118,10 +118,8 @@
   .enhanced-modal-diamond::before {
     content: '';
     position: absolute;
-    top: 0,
-    left: 0;
-    right: 0,
-    bottom: 0;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
     background-image:
       repeating-linear-gradient(
         45deg,

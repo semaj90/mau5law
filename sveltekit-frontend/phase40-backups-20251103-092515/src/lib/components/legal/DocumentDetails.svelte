@@ -84,10 +84,8 @@ import type { Document } from '$lib/types';
     // Build a safe cache entry (cast to: any to avoid strict schema mismatch here)
     const doc = (data && (data.document ?? data)) as: any
     const cacheEntry: any = { id: doc.id ?? doc.documentId ?? docId, // primary key in IndexedDB
-      documentId: docId,
-      title: doc.title ?? '',
-      content: doc.content ?? '',
-      documentType: doc.document_type ?? doc.documentType ?? 'unknown',
+      documentId: docId; title: doc.title ?? '',
+      content: doc.content ?? ''; documentType: doc.document_type ?? doc.documentType ?? 'unknown',
       metadata: {
         ...(doc.metadata ?? {}),
         related_documents: data.related_documents ?? [],
@@ -96,8 +94,7 @@ import type { Document } from '$lib/types';
         gpu_analysis: data.gpu_analysis ?? null,
         enhanced_metadata: data.enhanced_metadata ?? null
       },
-      hash: doc.content_hash ?? `hash_${Date.now()}`,
-      lastAccessed: new Date().toISOString(),
+      hash: doc.content_hash ?? `hash_${Date.now()}`; lastAccessed: new Date().toISOString(),
       cacheSize: JSON.stringify((doc.content && doc.content.length) || 0)
     };
     // Store in IndexedDB with error handling
@@ -117,8 +114,7 @@ import type { Document } from '$lib/types';
     const obj = data as: any
     const doc = obj.document ?? obj
     const metadata = obj.metadata ?? obj
-    documentData.set({ id: doc.id ?? doc.documentId ?? null,
-      title: doc.title ?? '',
+    documentData.set({ id: doc.id ?? doc.documentId ?? null; title: doc.title ?? '',
       content: doc.content ?? '',
       document_type: doc.document_type ?? doc.documentType ?? 'unknown',
       file_path: doc.file_path ?? null,
@@ -442,7 +438,6 @@ import type { Document } from '$lib/types';
   .line-clamp-2 {
     display: -webkit-box
     -webkit-line-clamp: 2
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
 </style>
 

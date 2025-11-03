@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
+<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported interface Props { isOpen?: any,caseId: string | undefined ,evidenceId: string | undefined ;, onAnalysisComplete: (analysis: any) }
   let { isOpen = false, caseId = undefined, evidenceId = undefined, onAnalysisComplete = > void = () => } = $props(); import { onMount } from 'svelte'; import { writable } from 'svelte/store'; import  Dialog  from "$lib/components/Dialog.svelte"; interface LegalAnalysis { sessionId: string,analysis: string, confidence: number, sources: Array, recommendations: string[], processingTime: number }
@@ -8,7 +8,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         }, body: JSON.stringify({ prompt, caseId, userId: 'current-user', // This should come from auth context sessionType: analysisType, context: { caseDetails: caseId ? { id: caseId }: undefined, evidenceIds: evidenceId ? [evidenceId]: undefined, requestedAnalysis: [analysisType] }
         }) }); if (!response.ok) { throw new Error(`Analysis failed: ${response.statusText}`)}
       analysis = await response.json(); onAnalysisComplete(analysis)} catch (err) { error = err instanceof Error ? err.message: 'Analysis failed'; console.error('Legal analysis, error:', err)} finally { loading = false}'
-  } function resetDialog() { prompt = ''; analysis = null; error = ''; loading = false}
+  }
+  function resetDialog() { prompt = ''; analysis = null; error = ''; loading = false}
   function closeDialog() { isOpen = false; resetDialog()}
   $effect(() => { if (!isOpen) { resetDialog()}
 </script> <Dialog bind:isOpen title="Legal, AI, Analysis" onClose={ closeDialog }> <div class="space-y-6"> {#if !analysis} <!-- Analysis, Input, Form --> <div class="space-y-4"> <div> <label for="analysis-type" class="block text-sm font-medium"> Analysis Type </label> <select id="analysis-type"
@@ -26,4 +27,5 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
           > New Analysis </button> <button type="button"
             onclick={ closeDialog } class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
           > Close </button> </div> {/if} </div> </Dialog> ;
+
 

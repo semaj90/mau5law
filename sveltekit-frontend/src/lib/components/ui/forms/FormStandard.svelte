@@ -1,13 +1,16 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import type { HTMLFormAttributes } from "svelte/elements";
+
   import type {     Snippet     } from 'svelte';
+
   import { enhance } from "$app/forms";
+
   import type { SubmitFunction } from "@sveltejs/kit";
   interface Props extends HTMLFormAttributes {
     // Form validation and submission
     onSubmit?: SubmitFunctio
-    validationErrors?: Record<string string[]>;
+    validationErrors?: Record<string, string[]>;
     isSubmitting?: boolean
     // Layout and styling
     variant?: 'default' | 'card' | 'inline';
@@ -35,6 +38,7 @@
     class: className = '',
     ...formProp
   }: Props = $props();
+
   const variantClasses = {
     default: '',
     card: 'bg-white rounded-lg border border-gray-200 shadow-sm p-6',
@@ -48,6 +52,7 @@
     normal: 'space-y-4',
     relaxed: 'space-y-6'
   }
+
   // Enhanced submit function with error handling
   const enhancedSubmit: SubmitFunction = ({ formElement, formData, action, cancel, submitter, controller }) => {
     if (onSubmit) {
@@ -57,9 +62,11 @@
         validationErrors = (result as { type?: any; data?: any }).data.validationError}
       await update()}
   }
+
   // Global form error display
   let hasErrors = $derived(Object.keys(errors).length > 0);
 </script>
+
 <form
   use:enhance={enhancedSubmit}
   aria-label={ariaLabel}
@@ -82,16 +89,18 @@
             clip-rule="evenodd"
           />
         </svg>
+
         <div class="ml-3">
           <h3 class="text-sm font-medium">Please correct the following errors:</h3>
+
           <div class="mt-2 text-sm">
             <ul class="list-disc pl-5">
-              {#each Object.entries(validationErrors) as [field, errors]}
+  {#each Object.entries(validationErrors) as [field, errors]}
                 {#each Array.isArray(errors) ? errors : [] as error}
                   <li>{error}</li>
                 {/each}
               {/each}
-            </ul>
+  </ul>
           </div>
         </div>
       </div>
@@ -107,12 +116,15 @@
     <div class="form-loading absolute inset-0 bg-white/80 flex items-center justify-center">
       <div class="flex items-center">
         <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
+
         <span class="text-sm">Submitting...</span>
       </div>
     {/if}
-</form>
+  </form>
+
 <style>
   .form-standard {
     position: relative}
 </style>
+
 

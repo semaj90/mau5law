@@ -41,6 +41,7 @@
       return}
     onclick?.(event)}
 </script>
+
 <button
   {type}
   class={buttonClasses}
@@ -70,6 +71,7 @@
     </span>
   </div>
 </button>
+
 <style>
   .loading-button {
     position: relative
@@ -173,4 +175,3 @@
     50% { opacity: 0.8}
   }
 </style>
-

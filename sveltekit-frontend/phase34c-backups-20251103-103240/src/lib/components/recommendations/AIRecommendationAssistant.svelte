@@ -49,20 +49,16 @@ import type { Document } from '$lib/types';
   let thinkingMessage = $state<string>('Analyzing your legal context...');
   let processingSteps = $state<string[]>([]);
   const AI_ANALYSIS_TYPES = [ {
-      value: 'case-analysis',
-      label: 'âš–ï¸ Case Analysis',
+      value: 'case-analysis'; label: 'âš–ï¸ Case Analysis',
       description: 'Deep analysis of current case strategy and opportunities'
     }, {
-      value: 'search-suggestion',
-      label: 'ðŸ” Search Optimization',
+      value: 'search-suggestion'; label: 'ðŸ” Search Optimization',
       description: 'AI-powered search query suggestions and filters'
     }, {
-      value: 'workflow-optimization',
-      label: 'âš¡ Workflow Efficiency',
+      value: 'workflow-optimization'; label: 'âš¡ Workflow Efficiency',
       description: 'Identify bottlenecks and optimization opportunities'
     }, {
-      value: 'precedent-discovery',
-      label: 'ðŸ“š Precedent Discovery',
+      value: 'precedent-discovery'; label: 'ðŸ“š Precedent Discovery',
       description: 'Find relevant precedents and emerging legal trends'
     }
   ] as const
@@ -79,12 +75,10 @@ import type { Document } from '$lib/types';
       // Simulate AI thinking process
       await simulateAIThinking();
       const response = await fetch('/api/ai/recommendation-assistant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           context,
-          query: customQuery || undefined,
-          type: selectedType
+          query: customQuery || undefined; type: selectedType
         })
       });
       if (!response.ok) {
@@ -103,30 +97,20 @@ import type { Document } from '$lib/types';
       usingMockData = true
       // Fallback to mock AI recommendations (valid JS: object syntax)
       recommendations = [ {
-          id: 'mock-ai-001',
-          type: 'case',
-          title: 'Employment Dispute Analysis',
-          description: 'Similar pattern detected in, 3 recent cases with 85% success rate',
-          confidence: 0.87,
-          priority: 220,
-          metadata: { caseType: 'employment', successRate: 0.85 },
-          aiInsight: 'Focus on wrongful termination precedents and timeline discrepancies'
+          id: 'mock-ai-001'; type: 'case',
+          title: 'Employment Dispute Analysis'; description: 'Similar pattern detected in, 3 recent cases with 85% success rate',
+          confidence: 0.87; priority: 220,
+          metadata: { caseType: 'employment', successRate: 0.85 }; aiInsight: 'Focus on wrongful termination precedents and timeline discrepancies'
         }, {
-          id: 'mock-ai-002',
-          type: 'precedent',
-          title: 'Recent 9th Circuit Decision',
-          description: 'New precedent strengthens constructive dismissal claims',
-          confidence: 0.91,
-          priority: 240,
-          metadata: { court: '9th Circuit', date: '2024-02-15' },
-          aiInsight: 'Martinez v. TechSolutions establishes new standard for at-will employment'
+          id: 'mock-ai-002'; type: 'precedent',
+          title: 'Recent 9th Circuit Decision'; description: 'New precedent strengthens constructive dismissal claims',
+          confidence: 0.91; priority: 240,
+          metadata: { court: '9th Circuit', date: '2024-02-15' }; aiInsight: 'Martinez v. TechSolutions establishes new standard for at-will employment'
         }
       ];
       suggestedActions = [ {
-          action: 'Document Discovery Request',
-          description: 'Subpoena HR files including contract amendments',
-          priority: 'high',
-          estimatedTime: '3-5 business days',
+          action: 'Document Discovery Request'; description: 'Subpoena HR files including contract amendments',
+          priority: 'high'; estimatedTime: '3-5 business days',
           tools: ['Subpoena Generator', 'Document Templates']
         }
       ];
@@ -140,7 +124,7 @@ import type { Document } from '$lib/types';
         const notice = document.createElement('div');
         notice.innerHTML = 'âš ï¸ failure default to mock';
         notice.style.cssText =
-          'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
+          'position: fixed, top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000; font-size: 0.9rem;',
         document.body.appendChild(notice);
         setTimeout(() => notice.remove(), 3000)}
     }
@@ -165,8 +149,7 @@ import type { Document } from '$lib/types';
     isProcessing = true
     try {
       const response = await fetch('/api/ai/execute-action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: action.action, context })
       });
       if (!response.ok) {
@@ -181,7 +164,7 @@ import type { Document } from '$lib/types';
       const notice = document.createElement('div');
       notice.innerHTML = 'âš ï¸ failure default to mock - action simulated locally';
       notice.style.cssText =
-        'position: fixed, top: 20px, right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
+        'position: fixed, top: 20px; right: 20px;, background: rgba(220, 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000; font-size: 0.9rem;',
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
       // Mock success - simulate action execution
@@ -251,8 +234,7 @@ import type { Document } from '$lib/types';
       <div class="query-section">
         <input
           type="text"
-          placeholder="Optional: Specific question or context for AI analysis..."
-         , bind:value={customQuery}
+          placeholder="Optional: Specific question or context for AI analysis..."; bind:value={customQuery}
           class="query-input"
         />
         <button class="analyze-btn" onclick={generateRecommendations} disabled={isLoading || isThinking}>
@@ -271,7 +253,7 @@ import type { Document } from '$lib/types';
         <div class="thinking-message">{thinkingMessage}</div>
         <div class="processing-steps">
           {#each processingSteps as step, i}
-            <div class="processing-step" transition:slide={{ duration: 200, delay: i * 100 }}>
+            <div class="processing-step" transition:slide={{ duration: 200; delay: i * 100 }}>
               âœ“ {step}
             </div>
           {/each}
@@ -300,7 +282,7 @@ import type { Document } from '$lib/types';
             {#each recommendations as recommendation, i (recommendation.id)}
               <div
                 class="recommendation-card"
-                transition:fly={{ y: 20, delay: i * 100, duration: 300, easing: elasticOut }}
+                transition:fly={{ y: 20, delay: i * 100, duration: 300; easing: elasticOut }}
               >
                 <div class="rec-header">
                   <span class="rec-icon">{getTypeIcon(recommendation.type)}</span>
@@ -352,7 +334,7 @@ import type { Document } from '$lib/types';
             <h4>âš¡ Suggested Actions ({suggestedActions.length})</h4>
             <div class="actions-list">
               {#each suggestedActions as action, i (action.action)}
-                <div class="action-card" transition:slide={{ duration: 200, delay: i * 50 }}>
+                <div class="action-card" transition:slide={{ duration: 200; delay: i * 50 }}>
                   <div class="action-header">
                     <div class="action-info">
                       <h5 class="action-title">{action.action}</h5>
@@ -408,8 +390,7 @@ import type { Document } from '$lib/types';
 <style>
   .ai-assistant-modal {
     max-height: 85vh
-    overflow: hidden
-   , display: flex
+    overflow: hidden; display: flex
     flex-direction: column}
   .modal-header {
     margin-bottom: 1.5rem
@@ -421,11 +402,9 @@ import type { Document } from '$lib/types';
     gap: 0.5rem
     margin-bottom: 1rem}
   .type-btn {
-    padding: 0.75rem
-   , background: rgba(255, 255, 255, 0.05);
+    padding: 0.75rem; background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px
-   , color: rgba(255, 255, 255, 0.8);
+    border-radius: 8px; color: rgba(255, 255, 255, 0.8);
     font-size: 0.85rem
     cursor: pointer
     transition: all 0.2s
@@ -441,22 +420,19 @@ import type { Document } from '$lib/types';
     gap: 1rem}
   .query-input {
     flex: 1
-    padding: 0.75rem
-   , background: rgba(255, 255, 255, 0.05);
+    padding: 0.75rem; background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 8px
     color: #fff
     font-size: 0.9rem}
   .query-input::placeholder { color: rgba(255, 255, 255, 0.5)}
   .analyze-btn {
-    padding: 0.75rem 1.5rem
-   , background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5));
+    padding: 0.75rem 1.5rem; background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(138, 43, 226, 0.5));
     border: 1px solid rgba(138, 43, 226, 0.6);
     border-radius: 8px
     color: #fff
     font-weight: 500
-    cursor: pointer
-   , transition: all 0.2s
+    cursor: pointer; transition: all 0.2s
     white-space: nowrap}
   .analyze-btn:hover:not(:disabled) {
     background: linear-gradient(135deg, rgba(138, 43, 226, 0.4), rgba(138, 43, 226, 0.6));
@@ -479,18 +455,14 @@ import type { Document } from '$lib/types';
     animation: pulse 2s infinite}
   .thinking-header h3 {
     margin: 0
-    flex: 1
-   , color: rgba(255, 255, 255, 0.9)}
+    flex: 1; color: rgba(255, 255, 255, 0.9)}
   .thinking-spinner {
     width: 24px
-    height: 24px
-   , border: 2px solid rgba(255, 255, 255, 0.2);
+    height: 24px; border: 2px solid rgba(255, 255, 255, 0.2);
     border-top: 2px solid rgba(138, 43, 226, 0.8);
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
   .thinking-message {
-    font-size: 1rem
-   , color: rgba(255, 255, 255, 0.8);
+    font-size: 1rem; color: rgba(255, 255, 255, 0.8);
     margin-bottom: 1rem
     font-style: italic}
   .processing-steps {
@@ -498,8 +470,7 @@ import type { Document } from '$lib/types';
     flex-direction: column
     gap: 0.5rem}
   .processing-step {
-    font-size: 0.85rem
-   , color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem; color: rgba(255, 255, 255, 0.7);
     padding: 0.25rem 0}
   .ai-results {
     flex: 1
@@ -515,8 +486,7 @@ import type { Document } from '$lib/types';
     justify-content: space-between
     margin-bottom: 0.75rem}
   .reasoning-header h3 {
-    margin: 0
-   , color: rgba(255, 255, 255, 0.9);
+    margin: 0; color: rgba(255, 255, 255, 0.9);
     font-size: 1.1rem}
   .confidence-badge {
     padding: 0.25rem 0.75rem
@@ -525,8 +495,7 @@ import type { Document } from '$lib/types';
     font-size: 0.8rem
     font-weight: bold}
   .reasoning-text {
-    margin: 0
-   , color: rgba(255, 255, 255, 0.8);
+    margin: 0; color: rgba(255, 255, 255, 0.8);
     line-height: 1.5}
   .recommendations-section,
   .actions-section,
@@ -563,14 +532,12 @@ import type { Document } from '$lib/types';
     font-size: 1rem
     font-weight: 500}
   .rec-description {
-    margin: 0
-   , color: rgba(255, 255, 255, 0.7);
+    margin: 0; color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem
     line-height: 1.4}
   .rec-stats {
     display: flex
-    flex-direction: column
-   , gap: 0.5rem}
+    flex-direction: column; gap: 0.5rem}
   .confidence-meter,
   .priority-indicator {
     padding: 0.25rem 0.5rem
@@ -585,21 +552,18 @@ import type { Document } from '$lib/types';
     padding: 0.75rem
     margin-bottom: 0.75rem}
   .insight-label {
-    font-size: 0.8rem
-   , color: rgba(138, 43, 226, 0.9);
+    font-size: 0.8rem; color: rgba(138, 43, 226, 0.9);
     font-weight: 500
     margin-bottom: 0.25rem}
   .insight-text {
-    font-size: 0.85rem
-   , color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem; color: rgba(255, 255, 255, 0.8);
     line-height: 1.4
     font-style: italic}
   .metadata-details {
     margin-top: 0.75rem}
   .metadata-details summary {
     cursor: pointer
-    font-size: 0.8rem
-   , color: rgba(255, 255, 255, 0.6);
+    font-size: 0.8rem; color: rgba(255, 255, 255, 0.6);
     margin-bottom: 0.5rem}
   .metadata-content { background: rgba(0, 0, 0, 0.2);
     border-radius: 4px
@@ -634,8 +598,7 @@ import type { Document } from '$lib/types';
     font-size: 1rem
     font-weight: 500}
   .action-description {
-    margin: 0
-   , color: rgba(255, 255, 255, 0.7);
+    margin: 0; color: rgba(255, 255, 255, 0.7);
     font-size: 0.9rem
     line-height: 1.4}
   .action-meta {
@@ -651,8 +614,7 @@ import type { Document } from '$lib/types';
     font-weight: bold
     text-transform: uppercase}
   .action-time {
-    font-size: 0.8rem
-   , color: rgba(255, 255, 255, 0.6)}
+    font-size: 0.8rem; color: rgba(255, 255, 255, 0.6)}
   .action-tools {
     display: flex
     flex-wrap: wrap
@@ -660,23 +622,18 @@ import type { Document } from '$lib/types';
     align-items: center
     margin-bottom: 0.75rem}
   .tools-label {
-    font-size: 0.8rem
-   , color: rgba(255, 255, 255, 0.6)}
+    font-size: 0.8rem; color: rgba(255, 255, 255, 0.6)}
   .tool-chip {
-    padding: 0.25rem 0.5rem
-   , background: rgba(255, 255, 255, 0.1);
+    padding: 0.25rem 0.5rem; background: rgba(255, 255, 255, 0.1);
     border-radius: 4px
-    font-size: 0.75rem
-   , color: rgba(255, 255, 255, 0.8)}
+    font-size: 0.75rem; color: rgba(255, 255, 255, 0.8)}
   .execute-btn {
-    padding: 0.5rem 1rem
-   , background: rgba(76, 175, 80, 0.2);
+    padding: 0.5rem 1rem; background: rgba(76, 175, 80, 0.2);
     border: 1px solid rgba(76, 175, 80, 0.4);
     border-radius: 6px
     color: #fff
     font-size: 0.85rem
-    cursor: pointer
-   , transition: all 0.2s}
+    cursor: pointer; transition: all 0.2s}
   .execute-btn:hover:not(:disabled) {
     background: rgba(76, 175, 80, 0.3);
     transform: translateY(-1px)}
@@ -688,11 +645,9 @@ import type { Document } from '$lib/types';
     flex-wrap: wrap
     gap: 0.5rem}
   .topic-tag {
-    padding: 0.5rem 1rem
-   , background: rgba(138, 43, 226, 0.1);
+    padding: 0.5rem 1rem; background: rgba(138, 43, 226, 0.1);
     border: 1px solid rgba(138, 43, 226, 0.3);
-    border-radius: 16px
-   , color: rgba(255, 255, 255, 0.8);
+    border-radius: 16px; color: rgba(255, 255, 255, 0.8);
     font-size: 0.8rem
     cursor: pointer
     transition: all 0.2s}
@@ -704,8 +659,7 @@ import type { Document } from '$lib/types';
     align-items: center
     justify-content: center
     padding: 3rem
-    text-align: center
-   , color: rgba(255, 255, 255, 0.7)}
+    text-align: center; color: rgba(255, 255, 255, 0.7)}
   .empty-icon {
     font-size: 4rem
     margin-bottom: 1rem

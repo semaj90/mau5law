@@ -1,4 +1,4 @@
-﻿<!-- Criminal Profile Component for Legal, AI, App -->
+<!-- Criminal Profile Component for Legal, AI, App -->
 <script lang="ts">
 import type { Case } from '$lib/types';
   // Removed invalid runes import and problematic lucide-svelte named imports
@@ -40,6 +40,7 @@ import type { Case } from '$lib/types';
     warrants?: any[];
     criminalHistory?: CriminalRecord[];
     notes?: string}
+
   // --- CHANGED: Exported props made safe and renamed `class` -> `className` to avoid TS/Svelte edge cases ---
   const { profile } = $props<{ profile: CriminalProfile | undefined }>()
   const { viewMode } = $props<{ viewMode: 'full' | 'summary' | 'identification' }>()
@@ -81,6 +82,7 @@ import type { Case } from '$lib/types';
     const m = today.getMonth() - b.getMonth();
     if (m < 0 || (m === 0 && today.getDate() < b.getDate())) a--;
     return a}
+
   // Replace $derived runes with reactive statements
   let age: number | undefined
   $effect(() => {
@@ -405,4 +407,5 @@ import type { Case } from '$lib/types';
 <style>
   .criminal-profile { transition: all 0.2s ease}
 </style>
+
 

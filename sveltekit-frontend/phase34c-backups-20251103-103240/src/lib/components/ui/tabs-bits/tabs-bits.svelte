@@ -13,6 +13,7 @@
     children = undefined,
     ...restProps} = $props();
 </script>
+
 <TabsPrimitive.Root
   bind:value
   {onValueChange}
@@ -30,4 +31,3 @@
     {@render children()}
   {/if}
 </TabsPrimitive.Root>;
-

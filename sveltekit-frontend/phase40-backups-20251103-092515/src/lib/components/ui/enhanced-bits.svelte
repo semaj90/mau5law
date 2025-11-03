@@ -12,7 +12,7 @@
     fullWidth = false,
     ...restAttrs // Capture all other attributes/props
   } = $props<{
-    onclick?: ((e: MouseEvent) => void);
+    onclick?: (e: MouseEvent) => void;
     disabled?: boolean;
     variant?: string;
     size?: string;
@@ -68,12 +68,11 @@
     color: inherit;
   }
 
-  article[data-hoverable="true"]:hover {
+  article[data-hoverable='true']:hover {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
   }
 
-  article[data-fullwidth="true"] {
+  article[data-fullwidth='true'] {
     width: 100%;
   }
 </style>
-

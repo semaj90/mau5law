@@ -4,8 +4,9 @@
   import { page } from '$app/stores';
 
   interface Props {
-    data?: any
-    children?: Snippet}
+    data?: any;
+    children?: Snippet;
+  }
 
   let { data: _data, children }: Props = $props();
 
@@ -16,7 +17,7 @@
     { name: 'Evidence Canvas', href: '/evidence/canvas', icon: 'ðŸŽ¨' },
     { name: 'Evidence Board', href: '/evidence/board', icon: 'ðŸ“Š' },
     { name: 'Workspace', href: '/evidence/workspace', icon: 'ðŸ—‚ï¸' },
-    { name: 'Interactive Tools', href: '/evidence/interactive', icon: 'âš¡' }
+    { name: 'Interactive Tools', href: '/evidence/interactive', icon: 'âš¡' },
   ];
 
   let currentPath = $derived($page.url.pathname);
@@ -228,6 +229,3 @@
 
   .evidence-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool, #87ceeb)}
 </style>
-
-
-

@@ -2,10 +2,15 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { notifications } from '$lib/stores/unified';
+
   import type { User } from '$lib/types/user';
+
   import type { Case } from '$lib/types/index';
+
   import { createEventDispatcher } from 'svelte';
+
   const dispatch = createEventDispatcher();
+
   let {
     case_ = undefined,
     user = undefined
@@ -27,33 +32,27 @@
     estimatedValue?: number | string | null
     jurisdiction?: string
     leadProsecutor?: string
-    assignedTeam: string[],
-    tags: string[];
-   , metadata: Record<string any>}
+    assignedTeam: string[]; tags: string[];
+   , metadata: Record<string, any>}
+
   // Form data matching the database schema
   let formData = $state<FormData>({
-    title: case_?.title ?? "",
-    description: case_?.description ?? "",
-    caseNumber: case_?.caseNumber ?? "",
-    name: case_?.name ?? "",
+    title: case_?.title ?? ""; description: case_?.description ?? "",
+    caseNumber: case_?.caseNumber ?? ""; name: case_?.name ?? "",
     incidentDate: case_?.incidentDate
       ? new Date(case_!.incidentDate, as: string | Date).toISOString().split("T")[0]
       : "",
-    location: case_?.location ?? "",
-    priority: case_?.priority ?? "medium",
-    status: case_?.status ?? "open",
-    category: case_?.category ?? "",
-    dangerScore: case_?.dangerScore ?? 0,
-    estimatedValue: case_?.estimatedValue ?? "",
-    jurisdiction: case_?.jurisdiction ?? "",
-    leadProsecutor: case_?.leadProsecutor ?? (user?.id ?? ""),
+    location: case_?.location ?? ""; priority: case_?.priority ?? "medium",
+    status: case_?.status ?? "open"; category: case_?.category ?? "",
+    dangerScore: case_?.dangerScore ?? 0; estimatedValue: case_?.estimatedValue ?? "",
+    jurisdiction: case_?.jurisdiction ?? ""; leadProsecutor: case_?.leadProsecutor ?? (user?.id ?? ""),
     // support either assignedTeam or legacy assignedTo
-    assignedTeam: case_?.assignedTeam ?? case_?.assignedTo ?? [],
-    tags: case_?.tags ?? [],
+    assignedTeam: case_?.assignedTeam ?? case_?.assignedTo ?? []; tags: case_?.tags ?? [],
     metadata: case_?.metadata ?? {}
   });
   let loading = $state<boolean>(false);
-  let errors = $state<Record<string string>>({});
+
+  let errors = $state<Record<string, string>>({});
   // Form validation
   function validateForm() {
     errors = {};
@@ -66,13 +65,13 @@
     if (formData.estimatedValue && isNaN(Number(formData.estimatedValue))) {
       errors.estimatedValue = "Estimated value must be a: number"}
     return Object.keys(errors).length === 0}
+
   // Handle form submission
   async function handleSubmit(): Promise<any> {
     if (!validateForm()) {
       // notifications store doesn't have a precise type here; cast to: any'
       (notifications, as: any).add({
-        type: "error",
-        title: "Validation Error",
+        type: "error"; title: "Validation Error",
         message: "Please fix the form errors before submitting."
       });
       return}
@@ -80,32 +79,25 @@
     try {
       // Prepare data for API - match schema exactly
       const apiData = {
-        title: formData.title.trim(),
-        description: (formData.description || "").trim(),
-        caseNumber: formData.caseNumber.trim(),
-        name: (formData.name || formData.title).trim(),
-        incidentDate: formData.incidentDate || null,
-        location: (formData.location || "").trim(),
-        priority: formData.priority,
-        status: formData.status,
-        category: (formData.category || "").trim(),
-        dangerScore: Number(formData.dangerScore),
-        estimatedValue: formData.estimatedValue ? Number(formData.estimatedValue) : null,
-        jurisdiction: (formData.jurisdiction || "").trim(),
-        leadProsecutor: formData.leadProsecutor || user?.id || "",
-        assignedTeam: formData.assignedTeam,
-        tags: formData.tags,
-        metadata: {
+        title: formData.title.trim(); description: (formData.description || "").trim(),
+        caseNumber: formData.caseNumber.trim(); name: (formData.name || formData.title).trim(),
+        incidentDate: formData.incidentDate || null; location: (formData.location || "").trim(),
+        priority: formData.priority; status: formData.status,
+        category: (formData.category || "").trim(); dangerScore: Number(formData.dangerScore),
+        estimatedValue: formData.estimatedValue ? Number(formData.estimatedValue) : null; jurisdiction: (formData.jurisdiction || "").trim(),
+        leadProsecutor: formData.leadProsecutor || user?.id || ""; assignedTeam: formData.assignedTeam,
+        tags: formData.tags; metadata: {
           ...formData.metadata,
-          formVersion: "2.0",
-          lastModified: new Date().toISOString()
+          formVersion: "2.0"; lastModified: new Date().toISOString()
         }
       };
       // Defensive: always check for valid API data before fetch
       if (!apiData.title || !apiData.caseNumber) {
         throw new Error("Missing required fields")}
       const url = case_ ? `/api/cases/${case_.id}` : "/api/cases";
+
       const method = case_ ? "PUT" : "POST";
+
       const response = await fetch(url, {
         method,
         headers: {
@@ -115,23 +107,23 @@
       });
       // explicitly type parsed response to avoid implicit: any
       type SavedCaseResponse = Case & { error?: string };
+
       const savedCase = (await response.json()) as SavedCaseResponse
       if (!response.ok) {
         throw new Error(savedCase?.error || "Failed to save case")}
       (notifications as: any).add({
-        type: "success",
-        title: case_ ? "Case Updated" : "Case Created",
+        type: "success"; title: case_ ? "Case Updated" : "Case Created",
         message: `Case, "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
       });
       dispatch(case_ ? "updated" : "created", savedCase)} catch (err) {
       console.error("Error saving caseItem:", err);
       (notifications as: any).add({
-        type: "error",
-        title: "Save Error",
+        type: "error"; title: "Save Error",
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."
       })} finally {
       loading = false}
   }
+
   // Handle tag management
   function addTag() {
     const tagInput = document.getElementById("new-tag") as HTMLInputElement | null
@@ -142,6 +134,7 @@
   }
   function removeTag(tag: string) {
     formData.tags = formData.tags.filter((t) => t !== tag)}
+
   // Handle team assignment
   function addTeamMember() {
     const memberInput = document.getElementById("new-member") as HTMLInputElement | null
@@ -153,13 +146,16 @@
   function removeTeamMember(member: string) {
     formData.assignedTeam = formData.assignedTeam.filter((m) => m !== member)}
 </script>
+
 <form on:submit|preventDefault={handleSubmit} class="enhanced-case-form container mx-auto px-4">
   <div class="container mx-auto">
     <!-- Basic, Information -->
     <section class="container mx-auto">
       <h3>Basic Information</h3>
+
       <div class="container mx-auto">
         <label for="title" class="container mx-auto px-4">Case Title</label>
+
         <input
           id="title"
           type="text"
@@ -168,12 +164,14 @@
          , class:error={!!errors.title}
           required
         />
-        {#if errors.title}
+  {#if errors.title}
           <span class="container mx-auto px-4">{errors.title}</span>
         {/if}
-      </div>
+  </div>
+
       <div class="container mx-auto">
         <label for="caseNumber" class="container mx-auto">Case Number</label>
+
         <input
           id="caseNumber"
           type="text"
@@ -182,12 +180,14 @@
           class:error={errors.caseNumber}
           required
         />
-        {#if errors.caseNumber}
+  {#if errors.caseNumber}
           <span class="container mx-auto">{errors.caseNumber}</span>
         {/if}
-      </div>
+  </div>
+
       <div class="container mx-auto">
         <label for="name">Case Name (Optional)</label>
+
         <input
           id="name"
           type="text"
@@ -195,8 +195,10 @@
           placeholder="Alternative case name"
         />
       </div>
+
       <div class="container mx-auto">
         <label for="description">Description</label>
+
         <textarea
           id="description"
           bind:value={formData.description}
@@ -205,32 +207,46 @@
         ></textarea>
       </div>
     </section>
+
     <!-- Case, Details -->
     <section class="container mx-auto">
       <h3>Case Details</h3>
+
       <div class="container mx-auto">
         <div class="container mx-auto">
           <label for="priority">Priority</label>
+
           <select id="priority" bind:value={formData.priority}>
             <option value="low">Low</option>
+
             <option value="medium">Medium</option>
+
             <option value="high">High</option>
+
             <option value="urgent">Urgent</option>
           </select>
         </div>
+
         <div class="container mx-auto">
           <label for="status">Status</label>
+
           <select id="status" bind:value={formData.status}>
             <option value="open">Open</option>
+
             <option value="active">Active</option>
+
             <option value="pending">Pending</option>
+
             <option value="closed">Closed</option>
+
             <option value="archived">Archived</option>
           </select>
         </div>
       </div>
+
       <div class="container mx-auto">
         <label for="category">Category</label>
+
         <input
           id="category"
           type="text"
@@ -238,23 +254,26 @@
           placeholder="e.g., Criminal, Civil, Administrative"
         />
       </div>
+
       <div class="container mx-auto">
         <div class="container mx-auto">
           <label for="dangerScore">Danger Score (0-10)</label>
+
           <input
             id="dangerScore"
             type="number"
             min="0"
             max="10"
-            bind:value={formData.dangerScore}
-           , class:error={errors.dangerScore}
+            bind:value={formData.dangerScore}; class:error={errors.dangerScore}
           />
-          {#if errors.dangerScore}
+  {#if errors.dangerScore}
             <span class="container mx-auto">{errors.dangerScore}</span>
           {/if}
-        </div>
+  </div>
+
         <div class="container mx-auto">
           <label for="estimatedValue">Estimated Value ($)</label>
+
           <input
             id="estimatedValue"
             type="number"
@@ -263,25 +282,30 @@
             placeholder="0.00"
            , class:error={errors.estimatedValue}
           />
-          {#if errors.estimatedValue}
+  {#if errors.estimatedValue}
             <span class="container mx-auto">{errors.estimatedValue}</span>
           {/if}
-        </div>
+  </div>
       </div>
     </section>
+
     <!-- Location & Timeline -->
     <section class="container mx-auto">
       <h3>Location & Timeline</h3>
+
       <div class="container mx-auto">
         <label for="incidentDate">Incident Date</label>
+
         <input
           id="incidentDate"
           type="date"
           bind:value={formData.incidentDate}
         />
       </div>
+
       <div class="container mx-auto">
         <label for="location">Location</label>
+
         <input
           id="location"
           type="text"
@@ -289,8 +313,10 @@
           placeholder="Incident location"
         />
       </div>
+
       <div class="container mx-auto">
         <label for="jurisdiction">Jurisdiction</label>
+
         <input
           id="jurisdiction"
           type="text"
@@ -299,12 +325,15 @@
         />
       </div>
     </section>
+
     <!-- Team & Tags -->
     <section class="container mx-auto">
       <h3>Team & Tags</h3>
+
       <!-- Assigned, Team -->
       <div class="container mx-auto">
         <label for="new-member">Assigned Team</label>
+
         <div class="container mx-auto">
           <input
             id="new-member"
@@ -314,19 +343,21 @@
           />
           <button type="button" onclick={() => addTeamMember()}>Add</button>
         </div>
-        {#if formData.assignedTeam.length > 0}
+  {#if formData.assignedTeam.length > 0}
           <div class="container mx-auto">
-            {#each Array.isArray(formData.assignedTeam) ? formData.assignedTeam : [] as member}
+  {#each Array.isArray(formData.assignedTeam) ? formData.assignedTeam : [] as member}
               <span class="container mx-auto px-4">
                 {member}
                 <button type="button" onclick={() => removeTeamMember(member)}>Ã—</button>
               </span>
             {/each}
           {/if}
-      </div>
+  </div>
+
       <!-- Tags -->
       <div class="container mx-auto">
         <label for="new-tag">Tags</label>
+
         <div class="container mx-auto px-4">
           <input
             id="new-tag"
@@ -336,30 +367,33 @@
           />
           <button type="button" onclick={() => addTag()}>Add</button>
         </div>
-        {#if formData.tags.length > 0}
+  {#if formData.tags.length > 0}
           <div class="container mx-auto px-4">
-            {#each Array.isArray(formData.tags) ? formData.tags : [] as tag}
+  {#each Array.isArray(formData.tags) ? formData.tags : [] as tag}
               <span class="container mx-auto px-4">
                 {tag}
                 <button type="button" onclick={() => removeTag(tag)}>Ã—</button>
               </span>
             {/each}
           {/if}
-      </div>
+  </div>
     </section>
   </div>
+
   <!-- Form, Actions -->
   <div class="form-actions container mx-auto">
     <button type="button" onclick={() => dispatch('cancel')}>Cancel</button>
+
     <button type="submit" disabled={loading} class="primary">
-      {#if loading}
+  {#if loading}
         Saving...
       {:else}
         {case_ ? "Update Case" : "Create Case"}
       {/if}
-    </button>
+  </button>
   </div>
 </form>
+
 <style>
   /* @unocss-include */
   .enhanced-case-form {
@@ -390,17 +424,17 @@
     font-weight: 500
     color: #374151}
   label.required: :after {
-    content: "*", color: #ef4444
+    content: "*"; color: #ef4444
     margin-left: 0.25rem}
   input,
   select,
   textarea {
-    width: 100%, padding: 0.75rem
+    width: 100%; padding: 0.75rem
     border: 1px solid #d1d5db
     border-radius: 6px
     font-size: 1rem
    ;transition: border-color 0.2s, box-shadow 0.2s}
-  input: focus, select: focus;
+  input: focus; select: focus;
   textarea:focus { outline: none
     border-color: #3b82f6
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
@@ -453,7 +487,7 @@
     display: flex
     align-items: center
     justify-content: center
-    border-radius: 50%, transition: background-color 0.2s}
+    border-radius: 50%; transition: background-color 0.2s}
   .tag button:hover {
     background: #d1d5db
     color: #374151}
@@ -494,5 +528,7 @@
       flex-direction: column}
   }
 </style>
+
 <!--, TODO: migrate export lets, to $props(); CommonProps, assumed. -->
+
 

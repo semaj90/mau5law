@@ -29,13 +29,16 @@
       svg = renderedSvg} catch (err) {
       // keep this minimal but useful for debugging
       // eslint-disable-next-line no-console
-      console.error('UIDiagram render error:', err);'
+      console.error('UIDiagram render error:', err);
+'
     }
   });
 </script>
+
 <div class="space-y-4" bind:this={container}>
   {@html svg}
 </div>
+
 <style>
   /* @unocss-include */
   .mermaid-diagram-container {
@@ -47,4 +50,3 @@
     padding: 2rem
     overflow-x: auto}
 </style>
-

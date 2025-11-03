@@ -293,23 +293,20 @@
         <h1>🎮 YoRHa Legal AI</h1>
         <div class="subtitle">Anonymous Demo - Gemma 3 Legal + Embeddings + CHR-ROM Cache</div>
         <div class="subtitle" style="font-size: 1rem; color: #888">
-          Full pipeline integration with 11.8B legal model, 768-dim embeddings, and Visual Memory
-          Palace
+          Full pipeline integration with 11.8B legal model, 768-dim embeddings, and Visual Memory Palace
         </div>
       </header>
 
       <div class="status-grid">
         <div class="status-card">
           <h3>
-            <span class="status-indicator status-loading" id="frontend-status"></span>Frontend
-            Server
+            <span class="status-indicator status-loading" id="frontend-status"></span>Frontend Server
           </h3>
           <div id="frontend-info">Checking connection...</div>
         </div>
         <div class="status-card">
           <h3>
-            <span class="status-indicator status-loading" id="ollama-status"></span>Ollama AI
-            Service
+            <span class="status-indicator status-loading" id="ollama-status"></span>Ollama AI Service
           </h3>
           <div id="ollama-info">Checking models...</div>
         </div>
@@ -412,8 +409,7 @@
       function log(message, type = 'info') {
         const timestamp = new Date().toTimeString().split(' ')[0];
         const logElement = document.getElementById('system-log');
-        const prefix =
-          type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+        const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
         logElement.innerHTML += `[${timestamp}] ${prefix} ${message}<br>`;
         logElement.scrollTop = logElement.scrollHeight;
         console.log(`${prefix} ${message}`);
@@ -430,9 +426,7 @@
       function updateStats() {
         document.getElementById('models-count').textContent = `${stats.modelsLoaded}/3`;
         document.getElementById('cache-hit-rate').textContent =
-          stats.totalRequests > 0
-            ? `${Math.round((stats.cacheHits / stats.totalRequests) * 100)}%`
-            : '0%';
+          stats.totalRequests > 0 ? `${Math.round((stats.cacheHits / stats.totalRequests) * 100)}%` : '0%';
         document.getElementById('avg-response').textContent =
           stats.responseTimes.length > 0
             ? `${Math.round(stats.responseTimes.reduce((a, b) => a + b, 0) / stats.responseTimes.length)}ms`
@@ -477,13 +471,12 @@
             const data = await response.json();
             const models = data.models || [];
             const legalModels = models.filter(
-              (m) =>
-                m.name.includes('gemma') || m.name.includes('legal') || m.name.includes('nomic')
+              m => m.name.includes('gemma') || m.name.includes('legal') || m.name.includes('nomic')
             );
             stats.modelsLoaded = legalModels.length;
             updateStatus('ollama-status', 'online', `${legalModels.length} models available ✅`);
             log(
-              `Ollama AI: ${legalModels.length} models loaded (${legalModels.map((m) => m.name.split(':')[0]).join(', ')})`,
+              `Ollama AI: ${legalModels.length} models loaded (${legalModels.map(m => m.name.split(':')[0]).join(', ')})`,
               'success'
             );
           } else {
@@ -500,7 +493,7 @@
         try {
           worker = new Worker('./workers/llama-rl-worker.js');
           worker.onmessage = handleWorkerMessage;
-          worker.onerror = (error) => {
+          worker.onerror = error => {
             log(`Worker error: ${error.message}`, 'error');
             updateStatus('worker-status', 'offline', 'Worker failed');
           };
@@ -541,10 +534,7 @@
           case 'PIPELINE_READY':
             updateStatus('worker-status', 'online', 'Pipeline ready ✅');
             isInitialized = true;
-            log(
-              'YoRHa AI Pipeline: Fully operational with Gemma3-Legal + CHR-ROM + NES Memory',
-              'success'
-            );
+            log('YoRHa AI Pipeline: Fully operational with Gemma3-Legal + CHR-ROM + NES Memory', 'success');
             break;
 
           case 'LEGAL_ANALYSIS_RESULT':
@@ -581,10 +571,7 @@
         document.getElementById('send-btn').textContent = 'Send';
 
         updateStats();
-        log(
-          `Chat response generated: ${responseTime}ms ${cacheHit ? '(cache hit)' : ''}`,
-          'success'
-        );
+        log(`Chat response generated: ${responseTime}ms ${cacheHit ? '(cache hit)' : ''}`, 'success');
       }
 
       async function sendMessageDirectAPI(message) {
@@ -687,7 +674,7 @@ In production, I would provide detailed legal analysis, cite relevant cases, ext
                 <div class="metric"><span class="metric-label">Dimensions</span><span class="metric-value">${data.length}</span></div>
                 <div class="metric"><span class="metric-label">Sample Values</span><span class="metric-value">[${data
                   .slice(0, 3)
-                  .map((v) => v.toFixed(3))
+                  .map(v => v.toFixed(3))
                   .join(', ')}...]</span></div>
                 <div class="metric"><span class="metric-label">Vector Norm</span><span class="metric-value">${Math.sqrt(data.reduce((sum, val) => sum + val * val, 0)).toFixed(3)}</span></div>
             `;

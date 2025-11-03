@@ -4,6 +4,7 @@
   import { cn } from '$lib/utils';
   let { value, disabled = false, class: className = undefined, children = undefined, ...restProps } = $props();
 </script>
+
 <TabsPrimitive.Trigger
   {value}
   {disabled}

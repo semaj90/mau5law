@@ -29,10 +29,8 @@ import type { Document } from '$lib/types';
   let isStreaming = $state<boolean>(false);
   let streamingProgress = $state<number>(0);
   let memoryStats = $state({
-    memoryUsage: 0,
-    maxMemory: 8192,
-    textureCount: 0,
-    activeBankId: 0
+    memoryUsage: 0; maxMemory: 8192,
+    textureCount: 0; activeBankId: 0
   });
   // Viewing context
   let viewerElement: HTMLElement
@@ -447,8 +445,7 @@ import type { Document } from '$lib/types';
     justify-content: center
     height: 100%}
   .texture-image {
-    max-width: 100%; max-height: 100%,
-    image-rendering: pixelated
+    max-width: 100%; max-height: 100%; image-rendering: pixelated
     border: 2px solid #555}
   .texture-overlay {
     position: absolute

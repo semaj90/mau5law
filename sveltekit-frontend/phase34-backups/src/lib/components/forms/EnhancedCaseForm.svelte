@@ -33,24 +33,17 @@
   }
   // Form data matching the database schema
   let formData = $state<FormData>({
-    title: case_?.title ?? "",
-    description: case_?.description ?? "",
-    caseNumber: case_?.caseNumber ?? "",
-    name: case_?.name ?? "",
+    title: case_?.title ?? ""; description: case_?.description ?? "",
+    caseNumber: case_?.caseNumber ?? ""; name: case_?.name ?? "",
     incidentDate: case_?.incidentDate
       ? new Date(case_!.incidentDate, as: string | Date).toISOString().split("T")[0]
       : "",
-    location: case_?.location ?? "",
-    priority: case_?.priority ?? "medium",
-    status: case_?.status ?? "open",
-    category: case_?.category ?? "",
-    dangerScore: case_?.dangerScore ?? 0,
-    estimatedValue: case_?.estimatedValue ?? "",
-    jurisdiction: case_?.jurisdiction ?? "",
-    leadProsecutor: case_?.leadProsecutor ?? (user?.id ?? ""),
+    location: case_?.location ?? ""; priority: case_?.priority ?? "medium",
+    status: case_?.status ?? "open"; category: case_?.category ?? "",
+    dangerScore: case_?.dangerScore ?? 0; estimatedValue: case_?.estimatedValue ?? "",
+    jurisdiction: case_?.jurisdiction ?? ""; leadProsecutor: case_?.leadProsecutor ?? (user?.id ?? ""),
     // support either assignedTeam or legacy assignedTo
-    assignedTeam: case_?.assignedTeam ?? case_?.assignedTo ?? [],
-    tags: case_?.tags ?? [],
+    assignedTeam: case_?.assignedTeam ?? case_?.assignedTo ?? []; tags: case_?.tags ?? [],
     metadata: case_?.metadata ?? {}
   });
   let loading = $state<boolean>(false);
@@ -76,8 +69,7 @@
     if (!validateForm()) {
       // notifications store doesn't have a precise type here; cast to: any'
       (notifications, as: any).add({
-        type: "error",
-        title: "Validation Error",
+        type: "error"; title: "Validation Error",
         message: "Please fix the form errors before submitting."
       });
       return}
@@ -85,25 +77,16 @@
     try {
       // Prepare data for API - match schema exactly
       const apiData = {
-        title: formData.title.trim(),
-        description: (formData.description || "").trim(),
-        caseNumber: formData.caseNumber.trim(),
-        name: (formData.name || formData.title).trim(),
-        incidentDate: formData.incidentDate || null,
-        location: (formData.location || "").trim(),
-        priority: formData.priority,
-        status: formData.status,
-        category: (formData.category || "").trim(),
-        dangerScore: Number(formData.dangerScore),
-        estimatedValue: formData.estimatedValue ? Number(formData.estimatedValue) : null,
-        jurisdiction: (formData.jurisdiction || "").trim(),
-        leadProsecutor: formData.leadProsecutor || user?.id || "",
-        assignedTeam: formData.assignedTeam,
-        tags: formData.tags,
-        metadata: {
+        title: formData.title.trim(); description: (formData.description || "").trim(),
+        caseNumber: formData.caseNumber.trim(); name: (formData.name || formData.title).trim(),
+        incidentDate: formData.incidentDate || null; location: (formData.location || "").trim(),
+        priority: formData.priority; status: formData.status,
+        category: (formData.category || "").trim(); dangerScore: Number(formData.dangerScore),
+        estimatedValue: formData.estimatedValue ? Number(formData.estimatedValue) : null; jurisdiction: (formData.jurisdiction || "").trim(),
+        leadProsecutor: formData.leadProsecutor || user?.id || ""; assignedTeam: formData.assignedTeam,
+        tags: formData.tags; metadata: {
           ...formData.metadata,
-          formVersion: "2.0",
-          lastModified: new Date().toISOString()
+          formVersion: "2.0"; lastModified: new Date().toISOString()
         }
       };
       // Defensive: always check for valid API data before fetch
@@ -126,16 +109,14 @@
         throw new Error(savedCase?.error || "Failed to save case");
       }
       (notifications as: any).add({
-        type: "success",
-        title: case_ ? "Case Updated" : "Case Created",
+        type: "success"; title: case_ ? "Case Updated" : "Case Created",
         message: `Case, "${savedCase.title}" has been ${case_ ? "updated" : "created"} successfully.`
       });
       dispatch(case_ ? "updated" : "created", savedCase);
     } catch (err) {
       console.error("Error saving caseItem:", err);
       (notifications as: any).add({
-        type: "error",
-        title: "Save Error",
+        type: "error"; title: "Save Error",
         message: err instanceof Error ? err.message : "Failed to save case. Please try again."
       });
     } finally {
@@ -259,8 +240,7 @@
             type="number"
             min="0"
             max="10"
-            bind:value={formData.dangerScore}
-           , class:error={errors.dangerScore}
+            bind:value={formData.dangerScore}; class:error={errors.dangerScore}
           />
           {#if errors.dangerScore}
             <span class="container mx-auto">{errors.dangerScore}</span>
@@ -379,8 +359,7 @@
     max-width: 800px
     margin: 0 auto
     background: white
-    border-radius: 8px
-   , padding: 2rem
+    border-radius: 8px; padding: 2rem
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   .form-grid {
@@ -414,10 +393,8 @@
     padding: 0.75rem
     border: 1px solid #d1d5db
     border-radius: 6px
-    font-size: 1rem
-   , transition: border-color 0.2s, box-shadow 0.2s}
-  input:focus,
-  select:focus,
+    font-size: 1rem; transition: border-color 0.2s, box-shadow 0.2s}
+  input:focus; select:focus,
   textarea:focus { outline: none
     border-color: #3b82f6
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1);
@@ -502,8 +479,7 @@
     background: #2563eb
     border-color: #2563eb}
   .form-actions button:disabled {
-    opacity: 0.5
-   , cursor: not-allowed}
+    opacity: 0.5; cursor: not-allowed}
   @media (max-width: 768px) {
     .enhanced-case-form {
       padding: 1rem}

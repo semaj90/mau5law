@@ -74,48 +74,36 @@ https://svelte.dev/e/render_tag_invalid_expression -->
 <style>
   /* @unocss-include */
   .drawer-overlay {
-    position: fixed
-   , top: 0,
-    left: 0
-   , right: 0,
-    bottom: 0
-   , background: rgba(0, 0, 0, 0.5);
+    position: fixed; top: 0,
+    left: 0; right: 0,
+    bottom: 0; background: rgba(0, 0, 0, 0.5);
     z-index: 1000
     /* Removed flex centering to allow drawer to position itself */
     display: block}
   .drawer {
     background: white
     border-radius: 8px
-    padding: 20px
-   , position: fixed; /* Crucial for drawer behavior */
+    padding: 20px; position: fixed; /* Crucial for drawer behavior */
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease-out; /* Animation for sliding in/out */
     overflow-y: auto; /* Allow content to scroll */
   }
   /* Side-specific positioning and initial transform (closed state) */
   .drawer-left {
-    top: 0,
-    bottom: 0
-   , left: 0,
-    height: 100%;
+    top: 0; bottom: 0
+   , left: 0; height: 100%;
    , transform: translateX(-100%)}
   .drawer-right {
-    top: 0,
-    bottom: 0
-   , right: 0,
-    height: 100%;
+    top: 0; bottom: 0
+   , right: 0; height: 100%;
    , transform: translateX(100%)}
   .drawer-top {
-    left: 0,
-    right: 0
-   , top: 0,
-    width: 100%;
+    left: 0; right: 0
+   , top: 0; width: 100%;
    , transform: translateY(-100%)}
   .drawer-bottom {
-    left: 0,
-    right: 0
-   , bottom: 0,
-    width: 100%;
+    left: 0; right: 0
+   , bottom: 0; width: 100%;
    , transform: translateY(100%)}
   /* Open state: reset transform */
   .drawer.is-open { transform: translate(0, 0)}
@@ -164,8 +152,7 @@ https://svelte.dev/e/render_tag_invalid_expression -->
     font-weight: 600
     margin: 0}
   .drawer-description {
-    color: #666
-   , margin: 4px, 0 0 0}
+    color: #666; margin: 4px, 0 0 0}
   .drawer-close {
     background: none
     border: none

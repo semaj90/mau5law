@@ -2,7 +2,7 @@
   LegalAnalysisDialog.svelte
   Dialog component for AI-powered legal case analysis.
   Props:
-    -, open: boolean (controls dialog visibility)
+    -; open: boolean (controls dialog visibility)
     - onOpenChange: (open: boolean) => void
   Integrates with legalCaseStore for case selection and analysis.
 -->
@@ -29,10 +29,8 @@ import type { Document } from '$lib/types';
   // Prefer exported store if present, otherwise provide a safe no-op stub.
   const legalCaseStore: MinimalLegalCaseStore =
     (unified, as: any).legalCaseStore ?? {
-      filteredCases: () => [],
-      aiInsights: {},
-      loading: { analysis: false },
-      analyzeCase: async () => { /* stub */ },
+      filteredCases: () => []; aiInsights: {},
+      loading: { analysis: false }; analyzeCase: async () => { /* stub */ },
       loadCases: async () => { /* stub */ }
     };
   // Store access (unchanged usage)
@@ -119,8 +117,7 @@ import type { Document } from '$lib/types';
         <label for="case-select" class="text-sm font-medium">Select Case for Analysis</label>
         <select
           id="case-select"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-         , bind:value={selectedCaseForAnalysis}
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"; bind:value={selectedCaseForAnalysis}
           disabled={loading.analysis}
         >
           <option value="" disabled>Choose a case to analyze...</option>
@@ -288,12 +285,10 @@ import type { Document } from '$lib/types';
   }
   @keyframes dialog-content-show {
     from {
-      opacity: 0
-     , transform: translate(-50%, -48%) scale(0.96);
+      opacity: 0; transform: translate(-50%, -48%) scale(0.96);
     }
     to {
-      opacity: 1
-     , transform: translate(-50%, -50%) scale(1);
+      opacity: 1; transform: translate(-50%, -50%) scale(1);
     }
   }
   .legal-action-btn {

@@ -144,8 +144,7 @@
     align-items: center;
 }
   .search-input {
-    flex: 1,
-    padding: 0.5rem;
+    flex: 1; padding: 0.5rem;
     border: 1px solid #ccc;
     border-radius: 4px;
 }

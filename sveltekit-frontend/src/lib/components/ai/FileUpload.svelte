@@ -109,6 +109,7 @@ import type { Document } from '$lib/types';
     xhr.send(formData)}
 </script>
 
+
 <FeedbackIntegration
   bind:this={feedbackIntegration}
   interactionType="document_upload"
@@ -125,41 +126,46 @@ import type { Document } from '$lib/types';
       </h3>
     </div>
 
+
     <div class="yorha-panel-content">
       <div class="grid w-full items-center">
         <Label for="file-upload">PDF or XML Document</Label>
+
         <!-- <-- CHANGED: use native input so, bind: files | works, reliably -->
         <input id="file-upload" type="file" bind: files | accept=".pdf,.xml" />
       </div>
+
 
       <div class="flex items-center">
         <div class="flex items-center">
           <input type="checkbox" id="verbose-mode" bind:checked={verboseMode} />
           <Label for="verbose-mode" class="flex items-center"><BrainCircuit size={16} /> Verbose Mode</Label>
         </div>
+
         <div class="flex items-center">
           <input type="checkbox" id="thinking-mode" bind:checked={thinkingMode} />
           <Label for="thinking-mode" class="flex items-center"><Search size={16} /> Thinking Mode</Label>
         </div>
       </div>
 
+
       <Button onclick={handleUpload} disabled={isUploading} class="w-full">
-        {#if isUploading}
+  {#if isUploading}
           <Loader2 class="mr-2 h-4 w-4" />
           Uploading...
         {:else}
           <FileUp class="mr-2 h-4" />
           Upload and Analyze
         {/if}
-      </Button>
-
-      {#if isUploading}
+  </Button>
+  {#if isUploading}
         <Progress value={uploadProgress} class="w-full" />
       {/if}
 
       {#if error}
         <Alert variant="error">
           <AlertTitle>Error</AlertTitle>
+
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       {/if}
@@ -169,10 +175,11 @@ import type { Document } from '$lib/types';
           <div class="yorha-panel-header">
             <h3 class="nes-text">Analysis Summary</h3>
           </div>
+
           <div class="yorha-panel-content">
             <pre class="whitespace-pre-wrap">{JSON.stringify(analysisResult, null, 2)}</pre>
           </div>
         {/if}
-    </div>
+  </div>
   </div>
 </FeedbackIntegration>

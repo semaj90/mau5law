@@ -21,7 +21,6 @@ import type { Document } from '$lib/types';
     averageResponseTime: number
     currentLoad: number
     availableWorkers: number} = { totalTasksProcessed: 0, averageResponseTime: 0, currentLoad: 0, availableWorkers: 0 };
-
   let selectedProvider: LLMProvider | null = null
   let isProcessing = $state<boolean>(false);
   let processingResults: AITaskResult[] = [];
@@ -203,13 +202,16 @@ import type { Document } from '$lib/types';
   <div class="flex items-center">
     <div>
       <h1 class="text-2xl font-bold">AI Processing Dashboard</h1>
+
       <p class="text-yorha-text-secondary">Multi-LLM orchestration and task management</p>
     </div>
+
     <!-- System, Status -->
     <div class="flex items-center">
       <Badge class={selectedProvider?.status === 'online' ? 'bg-yorha-success' : 'bg-yorha-danger'}>
         {selectedProvider?.status?.toUpperCase() || 'NO PROVIDER'}
       </Badge>
+
       <div class="text-sm">
         Queue: {taskQueue?.length || 0} |, Workers: {systemMetrics?.availableWorkers || 0}
       </div>
@@ -221,6 +223,7 @@ import type { Document } from '$lib/types';
     <div class="yorha-panel-header">
       <h3 class="nes-text">LLM Provider Configuration</h3>
     </div>
+
     <div class="yorha-panel-content">
       <LLMProviderSelector
         bind:selectedProvider
@@ -233,27 +236,35 @@ import type { Document } from '$lib/types';
     <div class="nes-container">
       <div class="yorha-panel-content">
         <div class="text-2xl font-bold text-yorha-primary">{systemMetrics?.totalTasksProcessed || 0}</div>
+
         <div class="text-sm">Tasks Processed</div>
       </div>
     </div>
+
     <div class="nes-container">
       <div class="yorha-panel-content">
         <div class="text-2xl font-bold text-yorha-accent">{Math.round(systemMetrics?.averageResponseTime || 0)}ms</div>
+
         <div class="text-sm">Avg Response Time</div>
       </div>
     </div>
+
     <div class="nes-container">
       <div class="yorha-panel-content">
         <div class="flex items-center">
           <div class="text-2xl font-bold text-yorha-warning">{(systemMetrics?.currentLoad || 0).toFixed(1)}%</div>
+
           <Progress value={systemMetrics?.currentLoad || 0} class="flex-1 h-2" />
         </div>
+
         <div class="text-sm">System Load</div>
       </div>
     </div>
+
     <div class="nes-container">
       <div class="yorha-panel-content">
         <div class="text-2xl font-bold text-yorha-success">{systemMetrics?.availableWorkers || 0}</div>
+
         <div class="text-sm">Available Workers</div>
       </div>
     </div>
@@ -264,12 +275,14 @@ import type { Document } from '$lib/types';
     <div class="yorha-panel-header">
       <h3 class="nes-text">AI Task Processing</h3>
     </div>
+
     <div class="yorha-panel-content">
       <!-- Test, Input -->
       <div>
         <label class="block text-sm font-medium text-yorha-text-primary" for="-test-input-">
           Test Input
         </label>
+
         <textarea
           id="-test-input-"
           bind:value={testInput}
@@ -280,7 +293,7 @@ import type { Document } from '$lib/types';
 
       <!-- Individual, Task, Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4">
-        {#each demoTasks as task (task.name)}
+  {#each demoTasks as task (task.name)}
           <button
             aria-label="Action button"
             class="bits-btn h-auto p-3 flex flex-col items-start space-y-1 nes-btn"
@@ -289,12 +302,14 @@ import type { Document } from '$lib/types';
           >
             <div class="flex items-center">
               <div class={`w-3, h-3, rounded-full ${getTaskTypeColor(task.type)}`}></div>
+
               <span class="font-medium">{task.name}</span>
             </div>
+
             <span class="text-xs text-yorha-text-secondary">{task.description}</span>
           </button>
         {/each}
-      </div>
+  </div>
 
       <!-- Parallel, Processing -->
       <div class="flex items-center justify-center pt-4 border-t">
@@ -303,13 +318,13 @@ import type { Document } from '$lib/types';
           onclick={() => processParallelTasks()}
           class="bg-yorha-primary hover:bg-yorha-primary/80 bits-btn"
         >
-          {#if isProcessing}
+  {#if isProcessing}
             <div class="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
             Processing...
           {:else}
             ðŸš€ Run All Tasks in Parallel
           {/if}
-        </Button>
+  </Button>
       </div>
     </div>
   </div>
@@ -320,25 +335,27 @@ import type { Document } from '$lib/types';
       <div class="yorha-panel-header">
         <h3 class="nes-text">Processing Results</h3>
       </div>
+
       <div class="yorha-panel-content">
         <div class="space-y-3 max-h-96">
-          {#each processingResults as result (result.taskId)}
+  {#each processingResults as result (result.taskId)}
             <div class="p-3 bg-yorha-bg-secondary rounded-md border" transition:fly={{ y: -20, duration: 300 }}>
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
                   <Badge class={result.success ? 'bg-yorha-success' : 'bg-yorha-danger'}>
                     {result.success ? 'SUCCESS' : 'ERROR'}
                   </Badge>
+
                   <span class="text-sm">
                     Task ID: {String(result.taskId).slice(-8)}
                   </span>
                 </div>
+
                 <div class="text-xs">
                   {formatDuration(result.duration)}
                 </div>
               </div>
-
-              {#if result.success && result.result}
+  {#if result.success && result.result}
                 <div class="text-sm bg-yorha-bg-primary p-2 rounded">
                   <pre class="whitespace-pre-wrap text-yorha-text-primary">{JSON.stringify(result.result, null, 2)}</pre>
                 {/if}
@@ -346,27 +363,30 @@ import type { Document } from '$lib/types';
               {#if result.metrics}
                 <div class="flex items-center space-x-4 mt-2 text-xs">
                   <span>Tokens: {result.metrics.tokensProcessed}</span>
+
                   <span>Throughput: {result.metrics.throughput} t/s</span>
+
                   <span>Memory: {result.metrics.memoryUsed}</span>
                 {/if}
-            </div>
+  </div>
           {/each}
-        </div>
+  </div>
       </div>
     {/if}
-
   <!-- Worker, Status -->
   {#if workerStatus && workerStatus.length > 0}
     <div class="nes-container">
       <div class="yorha-panel-header">
         <h3 class="nes-text">Worker Status</h3>
       </div>
+
       <div class="yorha-panel-content">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-          {#each workerStatus as worker (worker.id)}
+  {#each workerStatus as worker (worker.id)}
             <div class="p-3 bg-yorha-bg-secondary rounded">
               <div class="flex items-center justify-between">
                 <span class="font-medium">{worker.id}</span>
+
                 <Badge class={
                   worker.status === 'idle' ? 'bg-yorha-success' :
                   worker.status === 'busy' ? 'bg-yorha-warning' :
@@ -375,20 +395,25 @@ import type { Document } from '$lib/types';
                   {String(worker.status).toUpperCase()}
                 </Badge>
               </div>
+
               <div class="text-xs text-yorha-text-secondary">
                 <div>Type: {worker.type}</div>
+
                 <div>Completed: {worker.tasksCompleted}</div>
+
                 <div>Avg, Time: {formatDuration(worker.averageTaskTime)}</div>
+
                 <div>Load: {(worker.load || 0).toFixed(1)}%</div>
               </div>
             </div>
           {/each}
-        </div>
+  </div>
       </div>
     {/if}
-</main>
+  </main>
 
 <style>
   .ai-processing-dashboard {
     background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)}
 </style>
+

@@ -5,10 +5,12 @@ https://svelte.dev/e/js_parse_error -->
   // Svelte, 5 runes are auto-imported
   import type { HTMLAttributes } from 'svelte/elements';
   interface Props extends HTMLAttributes<HTMLHeadingElement> {
-    level?: 1 | 2 | 3 | 4 | 5 | 6}
+    level?: 1 | 2 | 3 | 4 | 5 | 6;
+  }
   let { level = 3, class: className = '', children, ...restProps }: Props & { children?: any } = $props();
   let classes = $derived(['nier-card-title', className].filter(Boolean).join(' '));
 </script>
+
 {#if level === 1}
   <h1 class={classes} {...restProps}>
     <slot />
@@ -34,12 +36,11 @@ https://svelte.dev/e/js_parse_error -->
     <slot />
   </h6>
 {/if}
+
 <style>
   :global(.nier-card-title) {
     font-family: 'Oswald', 'Montserrat', sans-serif
     font-weight: 600
-    color: #f59e0b
-   , margin: 0, 0 0.5rem 0
+    color: #f59e0b; margin: 0, 0 0.5rem 0
     line-height: 1.2}
 </style>
-

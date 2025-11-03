@@ -28,138 +28,92 @@ import type { Document } from '$lib/types';
 
   // Use $derived correctly: pass a function deriving from reactive inputs
   const stats = $derived(() => data.stats ?? {
-    activeCases: 12,
-    activeChats: 3,
-    ragQueries: 47,
-    documentsAnalyzed: 234,
-    citationsFound: 89,
-    casesProcessed: 12,
-    assistantSessions: 8,
-    evidenceUploaded: 156,
-    tasksCompleted: 89,
-    recentActivity: 24
+    activeCases: 12; activeChats: 3,
+    ragQueries: 47; documentsAnalyzed: 234,
+    citationsFound: 89; casesProcessed: 12,
+    assistantSessions: 8; evidenceUploaded: 156,
+    tasksCompleted: 89; recentActivity: 24
   });
 
   const recentCases = $derived(() => data.recentCases ?? []);
 
   const aiStats = $derived(() => ({
-    activeChats: stats.activeChats ?? 0,
-    ragQueries: stats.ragQueries ?? 0,
-    documentsAnalyzed: stats.documentsAnalyzed ?? 0,
-    citationsFound: stats.citationsFound ?? 0,
-    casesProcessed: stats.casesProcessed ?? 0,
-    assistantSessions: stats.assistantSessions ?? 0
+    activeChats: stats.activeChats ?? 0; ragQueries: stats.ragQueries ?? 0,
+    documentsAnalyzed: stats.documentsAnalyzed ?? 0; citationsFound: stats.citationsFound ?? 0,
+    casesProcessed: stats.casesProcessed ?? 0; assistantSessions: stats.assistantSessions ?? 0
   }));
 
-  const statusColors: Record<string { bg: string, text: string, label: string }> = {
-    open: { bg: '#4caf50', text: '#fff', label: 'ðŸŸ¢ Open' },
-    investigating: { bg: '#ff9800', text: '#fff', label: 'ðŸ” Investigating' },
-    pending: { bg: '#ffd700', text: '#000', label: 'â³ Pending' },
-    closed: { bg: '#666', text: '#fff', label: 'âœ… Closed' },
-    archived: { bg: '#999', text: '#fff', label: 'ðŸ“¦ Archived' }
+  const statusColors: Record<string { bg: string, text: string; label: string }> = {
+    open: { bg: '#4caf50', text: '#fff', label: 'ðŸŸ¢ Open' }; investigating: { bg: '#ff9800', text: '#fff', label: 'ðŸ” Investigating' },
+    pending: { bg: '#ffd700', text: '#000', label: 'â³ Pending' }; closed: { bg: '#666', text: '#fff', label: 'âœ… Closed' },
+    archived: { bg: '#999', text: '#fff'; label: 'ðŸ“¦ Archived' }
   };
 
   const priorityColors: Record<string string> = {
-    Critical: '#ff1744',
-    High: '#ff9800',
-    Medium: '#ffd700',
-    Low: '#4caf50'
+    Critical: '#ff1744'; High: '#ff9800',
+    Medium: '#ffd700'; Low: '#4caf50'
   };
 
   const aiServices = [ {
-      name: 'AI Chat',
-      icon: 'ðŸ’¬',
-      href: '/ai/chat',
-      description: 'Interactive AI chat with legal document context.',
-      status: 'active',
-      stats: () => `${aiStats.activeChats} active chats`
+      name: 'AI Chat'; icon: 'ðŸ’¬',
+      href: '/ai/chat'; description: 'Interactive AI chat with legal document context.',
+      status: 'active'; stats: () => `${aiStats.activeChats} active chats`
     }, {
-      name: 'AI Assistant',
-      icon: 'ðŸ¤–',
-      href: '/ai/assistant',
-      description: 'Legal AI assistant for document analysis.',
-      status: 'active',
-      stats: () => `${aiStats.assistantSessions} sessions`
+      name: 'AI Assistant'; icon: 'ðŸ¤–',
+      href: '/ai/assistant'; description: 'Legal AI assistant for document analysis.',
+      status: 'active'; stats: () => `${aiStats.assistantSessions} sessions`
     }, {
-      name: 'RAG Query System',
-      icon: 'ðŸ“š',
-      href: '/ai/rag',
-      description: 'Retrieval-Augmented Generation for legal research.',
-      status: 'active',
-      stats: () => `${aiStats.ragQueries} queries processed`
+      name: 'RAG Query System'; icon: 'ðŸ“š',
+      href: '/ai/rag'; description: 'Retrieval-Augmented Generation for legal research.',
+      status: 'active'; stats: () => `${aiStats.ragQueries} queries processed`
     }, {
-      name: 'GPU Chat',
-      icon: 'âš¡',
-      href: '/ai/gpu-chat',
-      description: 'High-performance GPU-accelerated chat.',
-      status: 'active',
-      stats: () => 'RTX acceleration enabled'
+      name: 'GPU Chat'; icon: 'âš¡',
+      href: '/ai/gpu-chat'; description: 'High-performance GPU-accelerated chat.',
+      status: 'active'; stats: () => 'RTX acceleration enabled'
     }, {
-      name: 'Vector Search',
-      icon: 'ðŸ”',
-      href: '/ai/vector-search',
-      description: 'Semantic search across legal documents.',
-      status: 'active',
-      stats: () => `${aiStats.citationsFound} citations tracked`
+      name: 'Vector Search'; icon: 'ðŸ”',
+      href: '/ai/vector-search'; description: 'Semantic search across legal documents.',
+      status: 'active'; stats: () => `${aiStats.citationsFound} citations tracked`
     }, {
-      name: 'Document Analysis',
-      icon: 'ðŸ“',
-      href: '/ai/processing',
-      description: 'AI-powered document processing and analysis.',
-      status: 'active',
-      stats: () => `${aiStats.documentsAnalyzed} documents`
+      name: 'Document Analysis'; icon: 'ðŸ“',
+      href: '/ai/processing'; description: 'AI-powered document processing and analysis.',
+      status: 'active'; stats: () => `${aiStats.documentsAnalyzed} documents`
     }, {
-      name: 'Case Scoring',
-      icon: 'âš–ï¸',
-      href: '/ai/case-scoring',
-      description: 'AI-driven case strength assessment.',
-      status: 'active',
-      stats: () => `${aiStats.casesProcessed} cases scored`
+      name: 'Case Scoring'; icon: 'âš–ï¸',
+      href: '/ai/case-scoring'; description: 'AI-driven case strength assessment.',
+      status: 'active'; stats: () => `${aiStats.casesProcessed} cases scored`
     }, {
-      name: 'Pattern Detection',
-      icon: 'ðŸ§ ',
-      href: '/ai/pattern-detection',
-      description: 'Legal pattern and anomaly detection.',
-      status: 'active',
-      stats: () => 'ML models active'
+      name: 'Pattern Detection'; icon: 'ðŸ§ ',
+      href: '/ai/pattern-detection'; description: 'Legal pattern and anomaly detection.',
+      status: 'active'; stats: () => 'ML models active'
     }
   ];
 
   const recentActivities = $state([ {
-      type: 'chat',
-      title: 'Contract Review Session',
-      time: '2 minutes ago',
-      user: 'Legal Analyst',
+      type: 'chat'; title: 'Contract Review Session',
+      time: '2 minutes ago'; user: 'Legal Analyst',
       status: 'completed'
     }, {
-      type: 'rag',
-      title: 'Precedent Research Query',
-      time: '5 minutes ago',
-      user: 'Senior Associate',
+      type: 'rag'; title: 'Precedent Research Query',
+      time: '5 minutes ago'; user: 'Senior Associate',
       status: 'completed'
     }, {
-      type: 'analysis',
-      title: 'Document Classification',
-      time: '8 minutes ago',
-      user: 'Paralegal',
+      type: 'analysis'; title: 'Document Classification',
+      time: '8 minutes ago'; user: 'Paralegal',
       status: 'processing'
     }, {
-      type: 'assistant',
-      title: 'Case Strategy Discussion',
-      time: '12 minutes ago',
-      user: 'Partner',
+      type: 'assistant'; title: 'Case Strategy Discussion',
+      time: '12 minutes ago'; user: 'Partner',
       status: 'completed'
     }
   ]);
 
   const systemHealth = $state({
-    aiModels: 'online',
-    vectorDB: 'online',
-    gpuAcceleration: 'active',
-    ragPipeline: 'healthy'
+    aiModels: 'online'; vectorDB: 'online',
+    gpuAcceleration: 'active'; ragPipeline: 'healthy'
   });
 
-  function badgeClass(condition: boolean, positive: string, negative: string) {
+  function badgeClass(condition: boolean, positive: string; negative: string) {
     return condition ? positive : negative}
 
   function umamiAttrs(serviceName: string) {
@@ -412,8 +366,7 @@ import type { Document } from '$lib/types';
     height: 60px
     border-radius: 50%;
    , background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white
-   , display: flex
+    color: white; display: flex
     align-items: center
     justify-content: center
     font-size: 1.5rem
@@ -425,19 +378,16 @@ import type { Document } from '$lib/types';
 
   .user-status {
     margin: 0
-    font-size: 0.85rem
-   , color: var(--text-muted),
+    font-size: 0.85rem; color: var(--text-muted),
     text-transform: uppercase
     font-weight: 500}
 
   .user-display-name { margin: 0.25rem, 0 0.5rem
-    font-size: 1.3rem
-   , color: var(--text-primary)}
+    font-size: 1.3rem; color: var(--text-primary)}
 
   .user-role-info {
     margin: 0
-    font-size: 0.85rem
-   , color: var(--text-muted)}
+    font-size: 0.85rem; color: var(--text-muted)}
 
   .dashboard-header h1 {
     font-size: 2rem
@@ -452,12 +402,10 @@ import type { Document } from '$lib/types';
 
   .user-name {
     font-size: 1.1rem
-    font-weight: 600
-   , color: var(--text-primary)}
+    font-weight: 600; color: var(--text-primary)}
 
   .user-role {
-    font-size: 0.85rem
-   , color: var(--text-muted),
+    font-size: 0.85rem; color: var(--text-muted),
     text-transform: capitalize}
 
   .subtitle { margin: 0.5rem, 0 0
@@ -475,8 +423,7 @@ import type { Document } from '$lib/types';
 
   .status-item {
     display: flex
-    flex-direction: column
-   , gap: 0.5rem
+    flex-direction: column; gap: 0.5rem
     font-size: 0.9rem}
 
   :global(.status-online) {
@@ -516,8 +463,7 @@ import type { Document } from '$lib/types';
     font-weight: bold}
 
   .stat-label {
-    margin-top: 0.5rem
-   , color: var(--text-muted)}
+    margin-top: 0.5rem; color: var(--text-muted)}
 
   .section-header h2 {
     margin: 0
@@ -533,8 +479,7 @@ import type { Document } from '$lib/types';
 
   :global(.service-card) {
     display: flex
-    flex-direction: column
-   , height: 100%}
+    flex-direction: column; height: 100%}
 
   :global(.service-card) :global(.card-content) {
     display: flex
@@ -546,8 +491,7 @@ import type { Document } from '$lib/types';
     margin-right: 0.75rem}
 
   .service-description {
-    margin: 0
-   , color: var(--text-muted)}
+    margin: 0; color: var(--text-muted)}
 
   .service-meta {
     display: flex
@@ -564,8 +508,7 @@ import type { Document } from '$lib/types';
     display: flex
     align-items: center
     gap: 1rem
-    padding: 1rem
-   , border: 1px solid var(--border-muted);
+    padding: 1rem; border: 1px solid var(--border-muted);
     border-radius: 0.75rem}
 
   .activity-icon {
@@ -576,8 +519,7 @@ import type { Document } from '$lib/types';
     font-size: 1rem}
 
   .activity-content p { margin: 0.25rem, 0 0
-    color: var(--text-muted),
-    font-size: 0.85rem}
+    color: var(--text-muted); font-size: 0.85rem}
 
   :global(.activity-status) {
     margin-left: auto
@@ -597,8 +539,7 @@ import type { Document } from '$lib/types';
 
   .cases-section-title { margin: 0, 0 0.5rem 0
     font-size: 1.5rem
-    font-weight: bold
-   , color: #d4af37
+    font-weight: bold; color: #d4af37
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .cases-section-subtitle {
@@ -633,8 +574,7 @@ import type { Document } from '$lib/types';
 
   .case-card-wrapper:hover {
     border-color: #d4af37 !important
-    background: #0f172a !important
-   , transform: translateY(-3px),
+    background: #0f172a !important; transform: translateY(-3px),
     box-shadow:
       0, 0 0 2px #d4af37,
       0 4px 12px rgba(212, 175, 55, 0.3)}
@@ -643,8 +583,7 @@ import type { Document } from '$lib/types';
     display: flex
     flex-direction: column
     gap: 0.75rem
-    width: 100%,
-    position: relative
+    width: 100%; position: relative
     z-index: 1}
 
   .case-status-badge {
@@ -676,8 +615,7 @@ import type { Document } from '$lib/types';
 
   .case-card-title { margin: 0.5rem, 0 0 0
     font-size: 1rem
-    font-weight: bold
-   , color: #fff
+    font-weight: bold; color: #fff
     line-height: 1.3
     word-break: break-word
     font-family: 'Press Start 2P', 'Courier New', monospace}
@@ -733,8 +671,7 @@ import type { Document } from '$lib/types';
     .cases-section-title {
       font-size: 1.25rem}
 
-    .view-all-cases-btn { width: 100%,
-      min-width: unset}
+    .view-all-cases-btn { width: 100%; min-width: unset}
 
     .case-card-title {
       font-size: 0.9rem}

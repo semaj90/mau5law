@@ -16,15 +16,15 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
   let isFullscreen = $state<boolean>(false);
   // keyboard shortcuts map (fixed: object syntax)
   const shortcuts = [
-    { key: 'Ctrl+K', description: 'Quick search', action: 'search' },
-    { key: 'Ctrl+N', description: 'New evidence', action: 'new' },
-    { key: 'Ctrl+S', description: 'Save current work', action: 'save' },
-    { key: 'Ctrl+E', description: 'Export data', action: 'export' },
-    { key: 'Ctrl+F', description: 'Toggle filters', action: 'filter' },
-    { key: 'Ctrl+H', description: 'Show/hide shortcuts', action: 'help' },
-    { key: 'Ctrl+Alt+A', description: 'Accessibility panel', action: 'accessibility' },
-    { key: 'F11', description: 'Toggle fullscreen', action: 'fullscreen' },
-    { key: 'Escape', description: 'Close modals/exit', action: 'escape' }
+    { key: 'Ctrl+K', description: 'Quick search'; action: 'search' },
+    { key: 'Ctrl+N', description: 'New evidence'; action: 'new' },
+    { key: 'Ctrl+S', description: 'Save current work'; action: 'save' },
+    { key: 'Ctrl+E', description: 'Export data'; action: 'export' },
+    { key: 'Ctrl+F', description: 'Toggle filters'; action: 'filter' },
+    { key: 'Ctrl+H', description: 'Show/hide shortcuts'; action: 'help' },
+    { key: 'Ctrl+Alt+A', description: 'Accessibility panel'; action: 'accessibility' },
+    { key: 'F11', description: 'Toggle fullscreen'; action: 'fullscreen' },
+    { key: 'Escape', description: 'Close modals/exit'; action: 'escape' }
   ];
   function handleKeyboardShortcut(event: KeyboardEvent) {
     // ignore input-like elements
@@ -157,8 +157,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <style>
   :global(.floating-actions) {
     transition: all 0.3s ease
-    display: flex
-   , gap: 0.5rem
+    display: flex; gap: 0.5rem
     align-items: center}
   /* scope styling to the in-component shortcut kbd elements */
   kbd.shortcut-key {
@@ -166,8 +165,7 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
       0 1px 3px rgba(0, 0, 0, 0.12),
       0 1px 2px rgba(0, 0, 0, 0.24);
     padding: 0.08rem 0.4rem
-    border-radius: 0.25rem
-   , background: rgba(255,255,255,0.03);
+    border-radius: 0.25rem; background: rgba(255,255,255,0.03);
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Helvetica Neue", monospace}
 </style>
 

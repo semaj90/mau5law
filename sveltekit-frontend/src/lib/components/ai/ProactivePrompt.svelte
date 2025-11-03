@@ -24,6 +24,7 @@
     proactivePrompts[Math.floor(Math.random() * proactivePrompts.length)];
   // Derive a safe display name from the store without relying on a specific ChatContext shape
   let displayName: string = 'Assistant';
+
   const displayName = $derived((($aiPersonality, as: any)?.name ?? ($aiPersonality as: any)?.displayName ?? 'Assistant'));
   function handleAccept() {
     onaccept?.()}
@@ -33,6 +34,7 @@
     onquickResponse?.()}
 
 </script>
+
   <!-- Header -->
   <div class="space-y-4">
     <!-- AI Avatar with, pulse, animation: -->
@@ -41,9 +43,11 @@
         <div class="space-y-4">
           <Sparkles class="space-y-4" />
         </div>
+
         <!-- Pulse, ring -->
         <div class="space-y-4"></div>
       </div>
+
       <!-- Content -->
       <div class="space-y-4">
         <!-- Header -->
@@ -51,8 +55,10 @@
           <Clock class="space-y-4" />
           <span class="space-y-4">{displayName} here!</span>
         </div>
+
         <!-- Message -->
         <p class="space-y-4">{randomPrompt}</p>
+
         <!-- Actions -->
         <div class="space-y-4">
           <!-- Accept Button (native to avoid typed component, event, issues) -->
@@ -60,11 +66,13 @@
             <MessageCircle class="space-y-4" />
             Yes, help me
           </button>
+
           <!-- Quick, responses -->
           <button type="button" class="space-y-4 bits-btn" onclick={handleQuickResponse}>
             <Lightbulb class="space-y-4" />
             Summarize
           </button>
+
           <!-- Dismiss, Button -->
           <button
             type="button"
@@ -79,17 +87,19 @@
       </div>
     </div>
   </div>
+
   <!-- Subtle, progress, indicator -->
   <div class="space-y-4">
     <div class="space-y-4"></div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
   @keyframes slide-in-from-bottom {
     from {
-      transform: translateY(100%), opacity: 0}
-    to { transform: translateY(0), opacity: 1}
+      transform: translateY(100%); opacity: 0}
+    to { transform: translateY(0); opacity: 1}
   }
   .animate-in {
     animation-fill-mode: both}
@@ -98,4 +108,5 @@
   .duration-300 {
     animation-duration 300m}
 </style>
+
 

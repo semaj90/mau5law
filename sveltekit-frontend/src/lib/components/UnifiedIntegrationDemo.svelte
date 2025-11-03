@@ -19,7 +19,6 @@ import type { Document } from '$lib/types';
   const results = writable<any[]>([]);
   // fixed typo: latestMetric
   const metrics = writable<any>({ metrics: [], count: 0, latestMetric: null });
-
   let isLoading: boolean = false
   let selectedOperation: string = 'processDocument';
   let testInput: string = '';
@@ -36,7 +35,7 @@ import type { Document } from '$lib/types';
     return { pixels, format: 'RGBA', width, height }}
 
   // Demo data for different operations (valid JS objects / strings)
-  const demoInputs: Record<string string> = {
+  const demoInputs: Record<string, string> = {
     processDocument: `LEGAL CONTRACT AGREEMENT`
 This Service Agreement is entered into between Company A and Company B.
 TERMS AND CONDITIONS:
@@ -71,7 +70,6 @@ Both parties acknowledge they have read and agree to these terms.`,`
       updateSystemHealth();
       updateMetrics()}, 5000);
     return () => clearInterval(interval)});
-
   async function updateSystemHealth(): Promise<any> {
     try {
       const resp = await fetch('/api/health/status');
@@ -82,7 +80,6 @@ Both parties acknowledge they have read and agree to these terms.`,`
       console.error('Failed to fetch system health:', err);
       systemHealth.set(null)}
   }
-
   async function updateMetrics(): Promise<any> {
     try {
       const resp = await fetch('/api/admin/status');
@@ -91,7 +88,6 @@ Both parties acknowledge they have read and agree to these terms.`,`
       else metrics.set(data ?? { metrics: [], count: 0, latestMetric: null })} catch (err) {
       console.error('Failed to fetch metrics:', err)}
   }
-
   async function executeOperation(): Promise<any> {
     if (!testInput || !testInput.trim()) return
     isLoading = true
@@ -165,11 +161,9 @@ Both parties acknowledge they have read and agree to these terms.`,`
       updateSystemHealth();
       updateMetrics()}
   }
-
   function onOperationChange() {
     testInput = demoInputs[selectedOperation] ?? '';
     errorMessage = ''}
-
   function getHealthColor(status: string) {
     switch (status) {
       case: 'healthy':
@@ -178,7 +172,6 @@ Both parties acknowledge they have read and agree to these terms.`,`
         return 'text-yellow-600';
       case, 'critical': return 'text-red-600',default: return 'text-gray-600'}
   }
-
   function getServiceColor(status: string) {
     switch (status) {
       case: 'online':
@@ -426,3 +419,5 @@ Both parties acknowledge they have read and agree to these terms.`,`
     min-height: 100vh
    ;background: #f8fafc}
 </style>
+
+

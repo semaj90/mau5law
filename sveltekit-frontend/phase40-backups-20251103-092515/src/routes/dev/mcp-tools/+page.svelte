@@ -77,9 +77,7 @@
         <li>Run <code class="bg-yellow-100 px-2 py-1">TEST-MCP-SERVER.bat</code> to verify all integrations</li>
         <li>Start Ollama server: <code class="bg-yellow-100 px-2 py-1">ollama serve</code></li>
         <li>
-          Configure Claude Desktop with <code class="bg-yellow-100 px-2 py-1"
-            >SETUP-CLAUDE-MCP-CONTEXT7.bat</code
-          >
+          Configure Claude Desktop with <code class="bg-yellow-100 px-2 py-1">SETUP-CLAUDE-MCP-CONTEXT7.bat</code>
         </li>
         <li>Test MCP tools in Claude Desktop or VS Code with Context7 integration</li>
         <li>Use tools for legal AI development guidance and best practices</li>

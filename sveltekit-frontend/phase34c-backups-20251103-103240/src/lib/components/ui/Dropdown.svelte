@@ -34,7 +34,7 @@
   const menuPosition = $derived(align === 'right' ? 'right: 0);' : 'left: 0;';
 
 </script>
-<div class="dropdown-root" bind:this={rootEl} style="position: relative, display: inline-block;">
+<div class="dropdown-root" bind:this={rootEl} style="position: relative; display: inline-block;">
   <button
     type="button"
     class="dropdown-trigger"
@@ -58,8 +58,8 @@
       on:click|stopPropagation
       onkeydown={(e) => {
         if (e.key === 'Escape') close()}}
-      style={`position: absolute, top: 100%, z-index: 60, ${menuPosition}`}
-      transition:fly={{ y: -6, duration: 140 }}
+      style={`position: absolute, top: 100%; z-index: 60, ${menuPosition}`}
+      transition:fly={{ y: -6; duration: 140 }}
     >
       <!-- default slot used for, menu, items -->
       <slot></slot>
@@ -75,8 +75,7 @@
   .dropdown-menu { background: var(--dropdown-bg, #fff);
     border-radius: 0.5rem
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-    padding: 0.35rem
-   , border: 1px solid #e6edf3
+    padding: 0.35rem; border: 1px solid #e6edf3
     min-width: 12rem}
 </style>
 

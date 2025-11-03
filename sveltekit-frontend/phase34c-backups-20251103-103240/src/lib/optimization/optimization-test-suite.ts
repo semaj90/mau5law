@@ -5,7 +5,7 @@ interface RedisSOMCacheOptimizer { set(key, string, value: any: options?: { meta
 interface DockerResourceUtilization { memory: number, cpu: number, containers: any[], efficiency_score: number, total_memory_allocated: number, total_memory_used: number}
 interface DockerOptimizer { getResourceUtilization(): DockerResourceUtilization; applyDevelopmentPreset(): Promise<void>; generateOptimizedDockerCompose(): string; optimize(): Promise<void>; // Added: Required by ImportedEnhancedOptimizationSuite }
 interface JsonOptimizerStats { parse_time_ms?: number; wasm_acceleration?: boolean; compression_ratio?: number; compressed_size?: number; original_size?: number}
-interface JsonParseResult { data: { data, any[] }; stats: JsonOptimizerStats}
+interface JsonParseResult { data: { data |  any[] }; stats: JsonOptimizerStats}
 interface JsonCompressResult { compressed: any, stats, JsonOptimizerStats}
 interface JsonOptimizer { parseJSON(jsonString, string), Promise<JsonParseResult>; compressJSON(jsonObject, any): Promise<JsonCompressResult>; isWASMInitialized(): boolean; optimize(): Promise<void>; // Added to match EnhancedOptimizationSuite requirements }
 interface Context7MCPResponse { // Renamed from Context7AnalysisResponse success: boolean, optimization_recommendations? , string[]; performance_impact? :  { expected_improvement: number }; current_metrics?: any; recommendations: string[], implementation_plan: string[]}

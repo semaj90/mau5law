@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-import type { User } from '$lib/types';
+  import type { User } from '$lib/types';
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { page } from '$app/stores';
@@ -14,7 +14,7 @@ import type { User } from '$lib/types';
       const response = await fetch('/api/auth/user');
       if (response.ok) {
         const user = await response.json();
-        isAuthenticated = true
+        isAuthenticated = true;
         userName = user.username || user.email || 'User';
       } else {
         // Redirect to login if not authenticated
@@ -40,9 +40,7 @@ import type { User } from '$lib/types';
     </div>
 
     <nav class="header-nav">
-      <button onclick={() => goto('/dashboard')} class="nav-button">
-        â† Back to Dashboard
-      </button>
+      <button onclick={() => goto('/dashboard')} class="nav-button"> â† Back to Dashboard </button>
       {#if userName}
         <span class="user-info">ðŸ‘¤ {userName}</span>
       {/if}
@@ -180,8 +178,7 @@ import type { User } from '$lib/types';
 
 <style>
   .search-page {
-    min-height: 100vh
-   , background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    min-height: 100vh; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
     color: var(--console-fg, white);
     font-family: 'Courier New', monospace}
 
@@ -198,8 +195,7 @@ import type { User } from '$lib/types';
     flex: 1}
 
   .page-title { margin: 0, 0 0.5rem 0
-    font-size: 2rem
-   , color: var(--console-primary, #00aa00);
+    font-size: 2rem; color: var(--console-primary, #00aa00);
     letter-spacing: 1px}
 
   .page-subtitle {
@@ -214,11 +210,9 @@ import type { User } from '$lib/types';
 
   .nav-button {
     padding: 0.75rem 1.5rem
-    background: transparent
-   , border: 2px solid var(--console-primary, #00aa00);
+    background: transparent; border: 2px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
-    border-radius: 4px
-   , cursor: pointer
+    border-radius: 4px; cursor: pointer
     font-family: 'Courier New', monospace
     font-weight: bold
     transition: all 0.2s}
@@ -228,16 +222,14 @@ import type { User } from '$lib/types';
   }
 
   .user-info {
-    padding: 0.75rem 1rem
-   , background: rgba(0, 170, 0, 0.1);
+    padding: 0.75rem 1rem; background: rgba(0, 170, 0, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px
     font-size: 0.9rem}
 
   .page-content {
     max-width: 1200px
-    margin: 0 auto
-   , padding: 2rem}
+    margin: 0 auto; padding: 2rem}
 
   .features-section,
   .how-it-works,
@@ -245,8 +237,7 @@ import type { User } from '$lib/types';
     margin: 3rem 0}
 
   .section-title {
-    font-size: 1.5rem
-   , color: var(--console-primary, #00aa00);
+    font-size: 1.5rem; color: var(--console-primary, #00aa00);
     margin: 0, 0 1.5rem 0
     letter-spacing: 1px
     border-bottom: 2px solid var(--console-primary, #00aa00);
@@ -257,8 +248,7 @@ import type { User } from '$lib/types';
     gap: 1rem}
 
   .feature-card {
-    padding: 1.5rem
-   , background: rgba(0, 170, 0, 0.05);
+    padding: 1.5rem; background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px
     transition: all 0.2s}
@@ -285,16 +275,14 @@ import type { User } from '$lib/types';
   .step {
     display: flex
     gap: 1rem
-    padding: 1.5rem
-   , background: rgba(0, 170, 0, 0.05);
+    padding: 1.5rem; background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px}
 
   .step-number {
     min-width: 40px
     width: 40px
-    height: 40px
-   , background: var(--console-primary, #00aa00);
+    height: 40px; background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
     border-radius: 50%;
     display: flex
@@ -321,8 +309,7 @@ import type { User } from '$lib/types';
     flex-direction: column
     align-items: center
     text-align: center
-    padding: 1rem
-   , background: rgba(0, 170, 0, 0.05);
+    padding: 1rem; background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px
     transition: all 0.2s}
@@ -336,8 +323,7 @@ import type { User } from '$lib/types';
     margin-bottom: 0.5rem}
 
   .tech-name {
-    font-weight: bold
-   , color: var(--console-primary, #00aa00);
+    font-weight: bold; color: var(--console-primary, #00aa00);
     margin-bottom: 0.25rem}
 
   .tech-detail {
@@ -345,8 +331,7 @@ import type { User } from '$lib/types';
     opacity: 0.7}
 
   .loading {
-    text-align: center
-   , padding: 3rem
+    text-align: center; padding: 3rem
     font-size: 1.2rem}
 
   @media (max-width: 768px) {
@@ -363,6 +348,3 @@ import type { User } from '$lib/types';
       grid-template-columns: 1fr}
   }
 </style>
-
-
-

@@ -67,8 +67,7 @@ https://svelte.dev/e/js_parse_error -->
 	background: currentColor
 	opacity: 0.95}
   .meta {
-	font-size: 0.8rem
-, color: #6b7280
+	font-size: 0.8rem; color: #6b7280
 	margin-top: 0.5rem}
 </style>
 <div class="nier-bits-card" role="group" aria-label={title}>

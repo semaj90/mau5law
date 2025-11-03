@@ -23,32 +23,24 @@ import type { Document } from '$lib/types';
 
   // Sample documents for testing
   const sampleDocuments = $state([ {
-      id: 'doc1',
-      title: 'Employment Contract - Software Engineer',
+      id: 'doc1'; title: 'Employment Contract - Software Engineer',
       content:
-        'This employment agreement is entered into between TechCorp Inc. and John Smith for the position of Senior Software Engineer. The employee will receive a salary of $150,000 per year with benefits including health insurance, 401k matching, and stock options. The employment is at-will and can be terminated by either party with, 2 weeks notice.',
-      source: 'sample',
+        'This employment agreement is entered into between TechCorp Inc. and John Smith for the position of Senior Software Engineer. The employee will receive a salary of $150,000 per year with benefits including health insurance, 401k matching, and stock options. The employment is at-will and can be terminated by either party with, 2 weeks notice.'; source: 'sample',
       createdAt: new Date().toISOString()
     }, {
-      id: 'doc2',
-      title: 'Non-Disclosure Agreement',
+      id: 'doc2'; title: 'Non-Disclosure Agreement',
       content:
-        'This NDA protects confidential information shared between the parties. The receiving party agrees not to disclose or use the confidential information, for: any purpose other than the agreed business relationship. This agreement remains in effect for, 5 years from the date of signing.',
-      source: 'sample',
+        'This NDA protects confidential information shared between the parties. The receiving party agrees not to disclose or use the confidential information, for: any purpose other than the agreed business relationship. This agreement remains in effect for, 5 years from the date of signing.'; source: 'sample',
       createdAt: new Date().toISOString()
     }, {
-      id: 'doc3',
-      title: 'Service Level Agreement - Cloud Services',
+      id: 'doc3'; title: 'Service Level Agreement - Cloud Services',
       content:
-        'CloudProvider guarantees 99.9% uptime for all cloud services. In case of downtime exceeding the SLA, customers are entitled to service credits. The provider will respond to critical incidents within, 1 hour and resolve them within, 4 hours.',
-      source: 'sample',
+        'CloudProvider guarantees 99.9% uptime for all cloud services. In case of downtime exceeding the SLA, customers are entitled to service credits. The provider will respond to critical incidents within, 1 hour and resolve them within, 4 hours.'; source: 'sample',
       createdAt: new Date().toISOString()
     }, {
-      id: 'doc4',
-      title: 'Intellectual Property Assignment',
+      id: 'doc4'; title: 'Intellectual Property Assignment',
       content:
-        'All work product, inventions, and creative works produced by the employee during employment are the sole property of the employer. This includes software code, documentation, designs, and: any patentable inventions.',
-      source: 'sample',
+        'All work product, inventions, and creative works produced by the employee during employment are the sole property of the employer. This includes software code, documentation, designs, and: any patentable inventions.'; source: 'sample',
       createdAt: new Date().toISOString()
     }
   ]);
@@ -63,10 +55,8 @@ import type { Document } from '$lib/types';
   function addDocument() {
     documents = [
       ...documents, {
-        id: `custom_${Date.now()}`,
-        title: `Custom Document ${documents.length + 1}`,
-        content: '',
-        source: 'manual',
+        id: `custom_${Date.now()}`; title: `Custom Document ${documents.length + 1}`,
+        content: ''; source: 'manual',
         createdAt: new Date().toISOString()
       }
     ];
@@ -94,14 +84,13 @@ import type { Document } from '$lib/types';
       // Stage 2: Process through RAG pipeline
       processingStage = 'Embedding with, embeddinggemma:latest...';
       const response = await fetch('/api/rag/hybrid-pipeline/direct', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'PUT'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           documents,
           query,
           config: {
             ranking: {
-              weights: { relevance: 0.5, keywords: 0.3, synthesis: 0.2 }
+              weights: { relevance: 0.5, keywords: 0.3; synthesis: 0.2 }
             }
           }
         })
@@ -180,9 +169,7 @@ import type { Document } from '$lib/types';
   <!-- Header -->
   <header class="mb-8">
     <h1 class="text-3xl font-bold text-gold-400">ðŸ§  Hybrid RAG Pipeline Demo</h1>
-    <p class="text-sm">
-      embeddinggemma:latest + Gemma Function Calling + Synthesis Ranking
-    </p>
+    <p class="text-sm">embeddinggemma:latest + Gemma Function Calling + Synthesis Ranking</p>
   </header>
 
   <!-- Configuration, Panel -->
@@ -263,11 +250,7 @@ import type { Document } from '$lib/types';
         Process & Search
       </button>
 
-      <button
-        class="nes-btn is-primary"
-        onclick={searchKnowledgeBase}
-        disabled={isProcessing || !query.trim()}
-      >
+      <button class="nes-btn is-primary" onclick={searchKnowledgeBase} disabled={isProcessing || !query.trim()}>
         <Search class="inline w-4 h-4" />
         Search Existing
       </button>
@@ -411,8 +394,7 @@ import type { Document } from '$lib/types';
 
 <style>
   .hybrid-rag-demo {
-    background: #212529
-   , color: #d4af37
+    background: #212529; color: #d4af37
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .text-gold-400 {
@@ -435,4 +417,3 @@ import type { Document } from '$lib/types';
     }
   }
 </style>
-

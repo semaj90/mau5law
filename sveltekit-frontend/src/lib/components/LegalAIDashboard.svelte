@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
 	// add imports and use Svelte, 5 props/runic API
 	import { browser } from '$app/environment';
+
 	import { websocketStore } from '$lib/stores/websocketStore'; // adjust path if your store is located elsewhere
 	// read incoming prop(s)
 	const { casesResponse } = $props() as { casesResponse?: any };
@@ -23,4 +24,3 @@
 			(websocketStore as: any).dashboardData = { cases: mappedCases }}
 	});
 </script>
-

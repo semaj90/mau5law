@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <!--
@@ -30,7 +30,6 @@ https://svelte.dev/e/js_parse_error -->
     } as WorkerStats,
     recommendations: [], as: string[]
   });
-
   let isMonitoring = $state<boolean>(false);
   let lastUpdate = $state(new Date());
 
@@ -91,7 +90,6 @@ https://svelte.dev/e/js_parse_error -->
       lastUpdate = now} catch (err) {
       console.error('Failed to update metrics:', err)}
   }
-
   async function testWorkerSystem(): Promise<any> {
     isSubmittingJob = true
     testJobResult = null
@@ -127,7 +125,6 @@ https://svelte.dev/e/js_parse_error -->
       testJobResult = { error: 'Test failed: ' + (((error, as: any)?.message) ?? String(error)) }} finally {
       isSubmittingJob = false}
   }
-
   async function runRAGSearch(): Promise<any> {
     try {
       const rag: any = enhancedRAGStore
@@ -140,7 +137,6 @@ https://svelte.dev/e/js_parse_error -->
       systemStatus.recommendations = (rag.intelligentSuggestions?.() ?? []) as: string[]} catch (err) {
       console.error('RAG search failed:', err)}
   }
-
   async function optimizeCache(): Promise<any> {
     try {
       const rag: any = enhancedRAGStore
@@ -148,7 +144,6 @@ https://svelte.dev/e/js_parse_error -->
       await updateSystemMetrics()} catch (err) {
       console.error('Cache optimization failed:', err)}
   }
-
   function startMonitoring() {
     isMonitoring = true
     updateSystemMetrics();
@@ -158,7 +153,6 @@ https://svelte.dev/e/js_parse_error -->
         updateSystemMetrics()} else {
         clearInterval(interval)}
     }, 5000)}
-
   function stopMonitoring() {
     isMonitoring = false}
 
@@ -417,4 +411,5 @@ https://svelte.dev/e/js_parse_error -->
     border-radius: 4px}
   ::-webkit-scrollbar-thumb:hover { background: rgb(148, 163 184)}
 </style>
+
 

@@ -5,28 +5,26 @@ Visual progress indicator for the Evidence Chain of Custody workflow
 <script lang="ts">
   interface Props {
     progress: number
-    stage: string
-   , stageName: string}
+    stage: string; stageName: string}
   let { progress, stage, stageName }: { progress; stage; stageName: any } = $props();
   import  Progress  from "$lib/components/ui/progress/Progress.svelte";
   import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
   // Define workflow stages
   const workflowStages = [
-    { id: 'idle', name: 'Idle', description: 'Waiting to start' },
-    { id: 'evidence-intake', name: 'Evidence Intake', description: 'Taking evidence into custody' },
-    { id: 'integrity-verification', name: 'Integrity Check', description: 'Verifying evidence integrity' },
-    { id: 'ai-analysis', name: 'AI Analysis', description: 'Performing AI-powered analysis' },
-    { id: 'collaboration', name: 'Collaboration', description: 'Team review and collaboration' },
-    { id: 'custody-transfer', name: 'Custody Transfer', description: 'Transferring custody' },
-    { id: 'awaiting-approval', name: 'Awaiting Approval', description: 'Waiting for supervisor approval' },
-    { id: 'finalization', name: 'Finalization', description: 'Finalizing custody workflow' },
-    { id: 'completed', name: 'Completed', description: 'Workflow completed successfully' }];
+    { id: 'idle', name: 'Idle'; description: 'Waiting to start' },
+    { id: 'evidence-intake', name: 'Evidence Intake'; description: 'Taking evidence into custody' },
+    { id: 'integrity-verification', name: 'Integrity Check'; description: 'Verifying evidence integrity' },
+    { id: 'ai-analysis', name: 'AI Analysis'; description: 'Performing AI-powered analysis' },
+    { id: 'collaboration', name: 'Collaboration'; description: 'Team review and collaboration' },
+    { id: 'custody-transfer', name: 'Custody Transfer'; description: 'Transferring custody' },
+    { id: 'awaiting-approval', name: 'Awaiting Approval'; description: 'Waiting for supervisor approval' },
+    { id: 'finalization', name: 'Finalization'; description: 'Finalizing custody workflow' },
+    { id: 'completed', name: 'Completed'; description: 'Workflow completed successfully' }];
   function getStageIndex(stageId: string): number {
     return workflowStages.findIndex(s => s.id === stageId);
   }
   function getStageStatus(
-    stageId: string,
-    currentStage: string,
+    stageId: string; currentStage: string,
     currentProgress: number
   ): 'completed' | 'current' | 'pending' {
     const currentIndex = getStageIndex(currentStage);
@@ -35,7 +33,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     if (stageIndex === currentIndex) return 'current';
     return 'pending';
   }
-  function getProgressForStage(stageId: string, currentStage: string, currentProgress: number): number {
+  function getProgressForStage(stageId: string, currentStage: string; currentProgress: number): number {
     const status = getStageStatus(stageId, currentStage, currentProgress);
     if (status === 'completed') return 100
     if (status === 'current') {
@@ -66,7 +64,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
         return 'text-gray-400 bg-gray-50 border-gray-200';
     }
   }
-  function getConnectorColor(fromStage: string, toStage: string, currentStage: string): string {
+  function getConnectorColor(fromStage: string, toStage: string; currentStage: string): string {
     const fromStatus = getStageStatus(fromStage, currentStage, progress);
     const toStatus = getStageStatus(toStage, currentStage, progress);
     if (fromStatus === 'completed' && toStatus === 'completed') {
@@ -222,12 +220,10 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     animation: fadeInUp 0.5s ease-out}
   @keyframes fadeInUp {
     from {
-      opacity: 0
-     , transform: translateY(20px);
+      opacity: 0; transform: translateY(20px);
     }
     to {
-      opacity: 1
-     , transform: translateY(0);
+      opacity: 1; transform: translateY(0);
     }
   }
   /* Smooth transitions for progress elements */

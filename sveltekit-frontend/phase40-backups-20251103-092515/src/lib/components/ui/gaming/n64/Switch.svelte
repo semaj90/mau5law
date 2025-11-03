@@ -218,42 +218,34 @@
   }
 
   // Material / size helpers
-  function getMaterialStyles(variantKey: string, material: string, isOn: boolean) {
+  function getMaterialStyles(variantKey: string, material: string; isOn: boolean) {
     const baseColors = {
       primary: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }
       },
       secondary: {
-        off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
-        on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
+        off: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }; on: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' }
       },
       success: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }
       },
       warning: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' }
       },
       error: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }
       },
       info: {
-        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' },
-        on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
+        off: { base: '#4a5568', highlight: '#718096', shadow: '#2d3748' }; on: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
       }
     } as const
     const colors = (baseColors, as: any)[variantKey] || baseColors.primary
     const stateColors = isOn ? colors.on : colors.off
     const materialMap: Record<string any> = {
-      basic: { trackBackground: isOn ? stateColors.base : '#2d3748',
-        knobBackground: stateColors.base,
+      basic: { trackBackground: isOn ? stateColors.base : '#2d3748'; knobBackground: stateColors.base,
         knobShadow: `0 ${depth}px, 0 ${stateColors.shadow}`
       },
-      phong: { trackBackground: `linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 100%)`,
-        knobBackground: `linear-gradient(145deg, ${stateColors.highlight} 0%, ${stateColors.base} 50%, ${stateColors.shadow} 100%)`,
+      phong: { trackBackground: `linear-gradient(145deg, ${isOn ? stateColors.highlight : '#2d3748'} 0%, ${isOn ? stateColors.base : '#1a202c'} 100%)`; knobBackground: `linear-gradient(145deg, ${stateColors.highlight} 0%, ${stateColors.base} 50%, ${stateColors.shadow} 100%)`,
         knobShadow: `
           0 ${depth}px, 0 ${stateColors.shadow},
           inset, 0 2px, 0 rgba(255,255,255,0.3),
@@ -284,10 +276,8 @@
   function getSizeStyles(sz: string) {
     const normalized = sz === 'md' ? 'medium' : sz
     const sizeMap: Record<string any> = {
-      small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' },
-      medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
-      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' },
-      xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
+      small: { width: 44, height: 24, knobSize: 18, fontSize: '12px' }; medium: { width: 56, height: 32, knobSize: 24, fontSize: '14px' },
+      large: { width: 68, height: 40, knobSize: 30, fontSize: '16px' }; xl: { width: 80, height: 48, knobSize: 36, fontSize: '18px' }
     };
     return sizeMap[normalized] || sizeMap.medium}
 
@@ -349,7 +339,7 @@
       --switch-font-size: ${sizeStyles.fontSize};
       --transform-3d: ${transform3D};
       --knob-transform: ${knobTransform};
-      --fog-color: ${(effectiveRenderOptions, as: any).fogColor || '#404040'};
+      --fog-color: ${(effectiveRenderOptions; as: any).fogColor || '#404040'};
       --glow-intensity: ${glowIntensity};
       --animation-duration: ${animationDuration}ms
       --spring-tension: ${springTension};
@@ -418,8 +408,7 @@
     gap: 12px}
   .n64-switch {
     /* Base N64 switch styling */
-    position: relative
-   , width: var(--switch-width);
+    position: relative; width: var(--switch-width);
     height: var(--switch-height);
     cursor: pointer
     /* 3D transformations */
@@ -429,8 +418,7 @@
     /* Enhanced rendering */
     -webkit-font-smoothing: antialiased
     -moz-osx-font-smoothing: grayscale
-    text-rendering: optimizeLegibility
-   , transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
+    text-rendering: optimizeLegibility; transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
     /* Remove default styles */
     -webkit-appearance: none
     -moz-appearance: none
@@ -455,16 +443,14 @@
   .switch-knob {
     position: absolute
     top: 2px
-    left: 2px
-   , width: var(--knob-size);
+    left: 2px; width: var(--knob-size);
     height: var(--knob-size);
     background: var(--knob-bg);
     border-radius: 50%;
     /* 3D knob styling */
     box-shadow: var(--knob-shadow);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    /* Smooth mechanical animation: */
-   , transform: var(--knob-transform);
+    /* Smooth mechanical animation: */; transform: var(--knob-transform);
     transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
     /* Performance optimization */
     will-change: transform
@@ -475,8 +461,7 @@
     top: 0
     left: 0
     right: 0
-    bottom: 0
-   , background: radial-gradient(
+    bottom: 0; background: radial-gradient(
       circle at 30% 30%,
       rgba(255, 255, 255, 0.6) 0%,
       rgba(255, 255, 255, 0.3) 30%,
@@ -518,8 +503,7 @@
     top: 0
     left: 0
     right: 0
-    bottom: 0
-   , background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%);
+    bottom: 0; background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%);
     opacity: 0.15
     pointer-events: none
     border-radius: calc(var(--switch-height) / 2);
@@ -530,17 +514,14 @@
     top: -4px
     left: -4px
     right: -4px
-    bottom: -4px
-   , background: radial-gradient(
+    bottom: -4px; background: radial-gradient(
       ellipse at center,
       rgba(74, 144, 226, calc(var(--glow-intensity) * 0.6)) 0%,
       transparent 70%
     );
     border-radius: calc(var(--switch-height) / 2 + 4px);
-    pointer-events: none
-   , filter: blur(8px);
-    z-index: -1
-   , animation: toggleGlowPulse 2s ease-in-out infinite}
+    pointer-events: none; filter: blur(8px);
+    z-index: -1; animation: toggleGlowPulse 2s ease-in-out infinite}
   @keyframes toggleGlowPulse {
     0%,
     100% {
@@ -583,8 +564,7 @@
   }
   .n64-switch.disabled {
     opacity: 0.5
-    cursor: not-allowed
-   , filter: grayscale(0.8);
+    cursor: not-allowed; filter: grayscale(0.8);
   }
   .n64-switch.disabled .switch-knob {
     background: linear-gradient(145deg, #6c757d 0%, #495057 50%, #343a40 100%);
@@ -647,8 +627,7 @@
     .toggle-glow {
       animation: none}
     .n64-spinner {
-      animation: none
-     , border: 2px solid rgba(255, 255, 255, 0.8);
+      animation: none; border: 2px solid rgba(255, 255, 255, 0.8);
       border-right-color: transparent}
   }
   /* High contrast mode */

@@ -9,6 +9,7 @@
   let { value = 0, max = 100, variant = 'default', class: className = '', showPercentage = false }: Props = $props();
   // reactive percentage using Svelte, 5 runes
   let percentage = $derived(Math.min(Math.max((value / (max || 1)) * 100, 0), 100));
+  
   let variantClass = $derived(
     variant === 'success'
       ? 'bg-green-500'
@@ -22,6 +23,7 @@
       ? 'bg-indigo-600'
       : 'bg-gray-600'
   );
+  
   let sizeClasses = $derived('h-2'); // keep simple, allow override via class prop
 </script>
 <!-- accessible, SSR-friendly, progress, bar -->
@@ -52,7 +54,7 @@
   .animate-shimmer { animation: shimmer 2s infinite}
   /* minimal NES-like pattern for legal variant */
   .nes-progress.is-pattern: :before {
-    content: '', position: absolute;inset: 0
+    content: ''; position: absolute;inset: 0
     background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.06) 10px, rgba(255,255,255,0.06) 20px);
     pointer-events: none}
 </style>

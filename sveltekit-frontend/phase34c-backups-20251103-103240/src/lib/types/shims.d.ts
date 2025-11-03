@@ -15,7 +15,7 @@ declare namespace QdrantClientType { interface Client { search: any, upsert: any
 declare namespace MultiLayerCache { interface CacheConfig { maxSize: number, ttl: number, layers: number} interface CacheInstance { get: any, set: any, clear: any} }
 // Common Postgres types used across the codebase type PgClient = any; type PoolConfig = any; type Pool = any; type PoolClient = any; // TensorFlow and AI processing types declare interface ActivationIdentifier extends: string { readonly __brand: 'ActivationIdentifier'}
 declare interface TensorSlice { data: Float32Array, dimensions: number[]}
-declare interface SOMConfig { gridSize: { width: number, height: number }; learningRate: number, neighborhoodRadius: number, epochs: number, enableGPU: boolean, inputDimension: number, decayRate: number}
+declare interface SOMConfig { gridSize: { width: number | height: number }; learningRate: number, neighborhoodRadius: number, epochs: number, enableGPU: boolean, inputDimension: number, decayRate: number}
 declare interface RerankResult { id: string, content: string, score: number, metadata?: any}
 declare interface UserContext { sessionId: string, preferences: any, history: any[]}
 // Processing path types for routing type ProcessingPath = 'ollama' | 'webasm-cache' | 'nes-orchestrator' | 'llamacpp-cuda' | 'ollama-fallback'; // Route decision interface interface RouteDecision { engine: string, reasoning: string, expectedLatency: number, fallbackChain: any[], confidence: number}

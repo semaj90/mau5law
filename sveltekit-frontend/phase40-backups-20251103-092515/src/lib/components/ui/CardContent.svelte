@@ -1,15 +1,18 @@
 ﻿<script lang="ts">
   import type { Snippet } from 'svelte';
   interface Props {
-    class?: string
-    children?: Snippet}
+    class?: string;
+    children?: Snippet;
+  }
   let { class: className = '', children }: Props = $props();
 </script>
+
 <div class={`card-content-ssr ${className}`.trim()}>
   {#if children}
     {@render children()}
   {/if}
 </div>
+
 <style>
 /* SSR-optimized CardContent for consistent rendering */
 .card-content-ssr {
@@ -54,4 +57,3 @@
   outline-offset: 2px
   border-radius: 0.5rem}
 </style>
-

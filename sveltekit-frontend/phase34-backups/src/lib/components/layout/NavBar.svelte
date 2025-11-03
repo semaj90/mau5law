@@ -185,8 +185,7 @@ import type { User } from '$lib/types';
   .navbar {
     position: sticky
     top: 0
-    z-index: 1000
-   , background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
+    z-index: 1000; background: var(--console-gradient-main, linear-gradient(45deg, #0f0f23, #1a1a2e));
     border-bottom: 2px solid var(--console-primary, #00aa00);
     backdrop-filter: blur(10px);
   }
@@ -242,8 +241,7 @@ import type { User } from '$lib/types';
     gap: 0.5rem
     padding: 0.5rem 1rem
     background: none
-    border: none
-   , color: var(--console-fg, white);
+    border: none; color: var(--console-fg, white);
     font-size: 1.25rem
     font-weight: bold
     cursor: pointer
@@ -262,8 +260,7 @@ import type { User } from '$lib/types';
     display: flex
     align-items: center
     gap: 0.5rem
-    padding: 0.75rem 1rem
-   , color: var(--console-fg, white);
+    padding: 0.75rem 1rem; color: var(--console-fg, white);
     text-decoration: none
     border-radius: 6px
     transition: all 0.2s
@@ -296,8 +293,7 @@ import type { User } from '$lib/types';
     display: flex
     align-items: center
     gap: 0.5rem
-    padding: 0.5rem 0.75rem
-   , background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0.75rem; background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     border-radius: 6px
@@ -315,8 +311,7 @@ import type { User } from '$lib/types';
     position: absolute
     top: 100%;
     right: 0
-    margin-top: 0.5rem
-   , background: var(--console-bg, #0f0f23);
+    margin-top: 0.5rem; background: var(--console-bg, #0f0f23);
     border: 2px solid var(--console-primary, #00aa00);
     border-radius: 8px
     min-width: 280px
@@ -330,10 +325,8 @@ import type { User } from '$lib/types';
     width: 100%;
     padding: 0.75rem 1rem
     background: none
-    border: none
-   , color: var(--console-fg, white);
-    cursor: pointer
-   , transition: background 0.2s
+    border: none; color: var(--console-fg, white);
+    cursor: pointer; transition: background 0.2s
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
   .theme-option:hover { background: rgba(255, 255, 255, 0.1);
@@ -370,8 +363,7 @@ import type { User } from '$lib/types';
     display: inline-flex
     align-items: center
     gap: 0.5rem
-    padding: 0.5rem 0.75rem
-   , background: rgba(255, 255, 255, 0.1);
+    padding: 0.5rem 0.75rem; background: rgba(255, 255, 255, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     border-radius: 9999px
@@ -380,12 +372,10 @@ import type { User } from '$lib/types';
     list-style: none}
   .profile-trigger:hover { background: rgba(255, 255, 255, 0.2); }
   .user-avatar {
-    width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center
-   , background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem}
+    width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.12); border-radius: 50%; font-size: 0.9rem}
   .user-avatar-img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover;, border: 1px solid rgba(255,255,255,0.2); }
   .profile-menu {
-    position: absolute;, top: calc(100% + 0.5rem); right: 0; min-width: 240px
-   , background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
+    position: absolute;, top: calc(100% + 0.5rem); right: 0; min-width: 240px; background: var(--console-bg, #0f0f23); border: 2px solid var(--console-primary, #00aa00);
     border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); padding: 0.5rem; z-index: 1000}
   .profile-header { padding: 0.25rem 0.5rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); margin-bottom: 0.25rem}
   .profile-row { display: flex; align-items: center; justify-content: space-betweennn}
@@ -402,13 +392,10 @@ import type { User } from '$lib/types';
     display: flex
     align-items: center
     gap: 0.5rem
-    padding: 0.5rem 0.75rem
-   , background: rgba(255, 255, 255, 0.1);
-    border: 1px solid transparent
-   , color: var(--console-fg, white);
+    padding: 0.5rem 0.75rem; background: rgba(255, 255, 255, 0.1);
+    border: 1px solid transparent; color: var(--console-fg, white);
     border-radius: 6px
-    cursor: pointer
-   , transition: all 0.2s}
+    cursor: pointer; transition: all 0.2s}
   .user-btn:hover {
     border-color: var(--console-primary, #00aa00);
   }
@@ -416,8 +403,7 @@ import type { User } from '$lib/types';
     display: flex
     align-items: center
     gap: 0.5rem
-    padding: 0.5rem 0.75rem
-   , background: var(--console-error, #ff5555);
+    padding: 0.5rem 0.75rem; background: var(--console-error, #ff5555);
     border: none
     color: white
     border-radius: 6px
@@ -427,12 +413,10 @@ import type { User } from '$lib/types';
   .logout-btn:hover { background: var(--console-error, #cc4444);
   }
   .auth-buttons {
-    display: flex
-   , gap: 0.5rem}
+    display: flex; gap: 0.5rem}
   .login-btn,
   .signup-btn {
-    padding: 0.5rem 1rem
-   , border: 1px solid var(--console-primary, #00aa00);
+    padding: 0.5rem 1rem; border: 1px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
     background: none
     border-radius: 6px
@@ -446,8 +430,7 @@ import type { User } from '$lib/types';
     color: var(--console-bg, #0f0f23);
   }
   .signup-btn:hover {
-    background: transparent
-   , color: var(--console-primary, #00aa00);
+    background: transparent; color: var(--console-primary, #00aa00);
   }
   /* Mobile Responsive */
   @media (max-width: 768px) {

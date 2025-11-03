@@ -13,6 +13,7 @@
       close()}
   }
 </script>
+
 <button
   class="context-menu-item"
   class:disabled
@@ -23,6 +24,7 @@
 >
   <slot />
 </button>
+
 <style>
   /* @unocss-include */
   .context-menu-item {
@@ -45,4 +47,3 @@
     opacity: 0.5
    ;cursor: not-allowed}
 </style>
-

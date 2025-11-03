@@ -2,8 +2,9 @@
   import { setContext } from 'svelte';
   import type { Snippet } from 'svelte';
   interface Props {
-    theme?: string
-    children?: Snippet}
+    theme?: string;
+    children?: Snippet;
+  }
   let { theme = 'light', children }: Props = $props();
 
   // expose theme to descendants via context and update when `theme` changes
@@ -11,6 +12,10 @@
     setContext('theme', theme);
   });
 </script>
+
+<div class={'theme-provider, ' + theme}>
+  <slot />
+</div>
 
 <style>
   .theme-provider {
@@ -29,7 +34,3 @@
 	color: var(--text);
   }
 </style>
-
-<div class={"theme-provider, " + theme}>
-  <slot />
-</div>

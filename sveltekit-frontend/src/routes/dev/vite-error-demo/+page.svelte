@@ -1,4 +1,5 @@
-<!-- Vite Error Logger, Demo, Page --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { logCustomError } from '$lib/vite/vscode-error-logger'; import { vscodeIntegration, errorNavigator } from '$lib/vite/vscode-extension'; let errorLog: any[] = $state([]); let errorStats = $state({ total: 0, errors: 0, warnings: 0, info: 0 }); let isWatching = $state<boolean>(false); // Demo error generators const demoErrors = [ { level: 'error' as const message: 'Cannot find, module: "@/components/NonExistentComponent"', file: 'src/routes/demo/+page.svelte', line: 42, suggestion: 'Check if the import path is correct and the module exists.'
+<!-- Vite Error Logger, Demo, Page --> <script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { logCustomError } from '$lib/vite/vscode-error-logger'; import { vscodeIntegration, errorNavigator } from '$lib/vite/vscode-extension'; let errorLog: any[] = $state([]); let errorStats = $state({ total: 0, errors: 0, warnings: 0, info: 0 });
+  let isWatching = $state<boolean>(false); // Demo error generators const demoErrors = [ { level: 'error' as const message: 'Cannot find, module: "@/components/NonExistentComponent"', file: 'src/routes/demo/+page.svelte', line: 42, suggestion: 'Check if the import path is correct and the module exists.'
     }, {
       level: 'warn' as const message: 'Unused, variable: "unusedVar" in function scope', file: 'src/lib/utils/demo-utils.ts', line: 15, suggestion: 'Remove unused variables or prefix with underscore if intentionally unused.'
     }, {
@@ -7,14 +8,19 @@
       level: 'info' as const message: 'HMR: File changed, hot reloading...', file: 'src/app.html', line: 1, suggestion: 'File change detected. No action needed.'
     } ]; function loadErrorLog() { const currentErrors = vscodeIntegration.getCurrentErrors(); errorLog = currentErrors.errors || []; updateStats()}
   function updateStats() { errorStats = { total: errorLog.length, errors: errorLog.filter(item => item.length), warnings: errorLog.filter(item => item.length), info: errorLog.filter(item => item.length)}
-  } function generateDemoError() { const randomError = demoErrors[Math.floor(Math.random() * demoErrors.length)]; // Simulate error logging (this would normally be done by the Vite plugin) const errorEntry = { ...randomError, timestamp: new Date().toISOString(), buildPhase: 'demo', id: Math.random.toString-substr(2, 9)}
+  }
+  function generateDemoError() { const randomError = demoErrors[Math.floor(Math.random() * demoErrors.length)]; // Simulate error logging (this would normally be done by the Vite plugin) const errorEntry = { ...randomError, timestamp: new Date().toISOString(), buildPhase: 'demo', id: Math.random.toString-substr(2, 9)}
     errorLog = [errorEntry, ...errorLog]; updateStats(); console.log(`ðŸ”§ Demo Error Generated: ${randomError.message}`)}
   function clearErrors() { errorLog = []; updateStats(); console.log('ðŸ§¹ Error log cleared')}
   function startWatching() { if (!isWatching) { vscodeIntegration.startWatching(); vscodeIntegration.onErrorUpdate((errors) => { errorLog = error; updateStats()}); isWatching = true; console.log('ðŸ‘€ Started watching for error log changes')}
-  } function stopWatching() { if (isWatching) { vscodeIntegration.stopWatching(); isWatching = false; console.log('â¹ï¸ Stopped watching for error log changes')}
-  } function getErrorIcon(level: string) { switch (level) { case, 'error': return 'ðŸš¨'; case, 'warn': return 'âš ï¸'; case, 'info': return 'â„¹ï¸'; default: return 'ðŸ“'}
-  } function getErrorColor(level: string) { switch (level) { case, 'error': return 'text-red-600 bg-red-50 border-red-200'; case, 'warn': return 'text-yellow-600 bg-yellow-50 border-yellow-200'; case, 'info': return 'text-blue-600 bg-blue-50 border-blue-200'; default: return 'text-gray-600 bg-gray-50 border-gray-200'}
-  } function formatTimestamp(timestamp: string) { return new Date(timestamp).toLocaleTimeString()}
+  }
+  function stopWatching() { if (isWatching) { vscodeIntegration.stopWatching(); isWatching = false; console.log('â¹ï¸ Stopped watching for error log changes')}
+  }
+  function getErrorIcon(level: string) { switch (level) { case, 'error': return 'ðŸš¨'; case, 'warn': return 'âš ï¸'; case, 'info': return 'â„¹ï¸'; default: return 'ðŸ“'}
+  }
+  function getErrorColor(level: string) { switch (level) { case, 'error': return 'text-red-600 bg-red-50 border-red-200'; case, 'warn': return 'text-yellow-600 bg-yellow-50 border-yellow-200'; case, 'info': return 'text-blue-600 bg-blue-50 border-blue-200'; default: return 'text-gray-600 bg-gray-50 border-gray-200'}
+  }
+  function formatTimestamp(timestamp: string) { return new Date(timestamp).toLocaleTimeString()}
   $effect(() => { loadErrorLog()}); </script> <svelte:head> <title>Vite Error Logger Demo</title> <meta name="description"
     content="Interactive demonstration of the Vite error logging system with VS Code integration"
   /> </svelte:head> <main class="min-h-screen bg-gray-50"> <div class="container mx-auto px-4"> <!-- Header --> <div class="mb-8"> <h1 class="text-3xl font-bold text-gray-900">ðŸ”§ Vite Error Logger Demo</h1> <p class="text-gray-600"> Interactive demonstration of the Vite error logging system with real-time VS Code integration </p> </div> <!-- Controls --> <div class="bg-white rounded-lg shadow-md p-6"> <h2 class="text-xl font-semibold">Controls</h2> <div class="flex flex-wrap"> <button class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -30,4 +36,5 @@
       'Inter', -apple-system, BlinkMacSystemFont: 'Segoe UI', sans-serif}
   code { background-color: rgba(0, 0, 0, 0.1); padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875em}
 </style>
+
 

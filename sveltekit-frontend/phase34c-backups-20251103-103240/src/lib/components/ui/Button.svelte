@@ -7,9 +7,10 @@
   let pageLoaded = $state<boolean>(false);
   let showWelcome = $state<boolean>(true);
   $effect(() => {
-    pageLoaded = true
+    pageLoaded = true;
     // Auto-hide welcome after 3 seconds
-    setTimeout(() => (showWelcome = false), 3000)});
+    setTimeout(() => (showWelcome = false), 3000);
+  });
 </script>
 
 <svelte:head>
@@ -131,8 +132,7 @@
     height: 40px
     border: 4px solid #e5e5e5
     border-top: 4px solid #3b82f6
-    border-radius: 50%,
-    animation: spin 1s linear infinite
+    border-radius: 50%; animation: spin 1s linear infinite
     margin-bottom: 16px}
 
   @keyframes spin {

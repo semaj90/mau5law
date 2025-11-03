@@ -3,11 +3,15 @@
   interface Props {
     user: User | null}
   let { user = null }: Props = $props();
+
   import { goto } from '$app/navigation';
+
   import  SearchInput  from "./SearchInput.svelte";
+
   import type { User } from '$lib/types/user';
   // Svelte, 5 reactive state
   let searchQuery = $state<string>('');
+
   let userMenuOpen = $state<boolean>(false);
   // Expect SearchInput to dispatch `search` CustomEvent<{ query: string }>
   function handleSearch(event: CustomEvent<{ query: string }>) {
@@ -23,6 +27,7 @@
   function closeUserMenu() {
     userMenuOpen = false}
 </script>
+
 <header class="space-y-4">
   <div class="space-y-4">
     <!-- Logo, and, Brand -->
@@ -31,24 +36,32 @@
       <button class="brand-button" onclick={() => handleNavigation('/')} aria-label="Go to homepage">
         <!-- replaced lucide icon with simple, inline, marker -->
         <span class="icon" aria-hidden="true">ðŸŽ¨</span>
+
         <span class="brand-text">Prosecutor Canvas</span>
       </button>
     </div>
+
     <!-- Navigation -->
     <nav class="main-nav" aria-label="Main, navigation">
       <!-- changed, on:click -> onclick for each button -->
       <button class="nav-button" onclick={() => handleNavigation('/dashboard')} aria-label="Dashboard">
         <span class="icon">ðŸ </span>
+
         <span>Dashboard</span>
       </button>
+
       <button class="nav-button" onclick={() => handleNavigation('/cases')} aria-label="Cases">
         <span class="icon">ðŸ“</span>
+
         <span>Cases</span>
       </button>
+
       <button class="nav-button" onclick={() => handleNavigation('/interactive-canvas')} aria-label="Interactive Canvas">
         <span class="icon">ðŸ–Œï¸</span>
+
         <span>Canvas</span>
       </button>
+
       <button
         class="nav-button"
         onclick={() => handleNavigation('/evidence/hash')}
@@ -56,9 +69,11 @@
         title="Verify evidence file integrity"
       >
         <span class="icon">ðŸ›¡ï¸</span>
+
         <span>Hash Verify</span>
       </button>
     </nav>
+
     <!-- Search -->
     <div class="search-section">
       <!-- changed, on:search -> onsearch and added cast to satisfy TS -->
@@ -68,9 +83,10 @@
         onsearch={(e) => handleSearch(e as CustomEvent<{ query: string }>)}
       />
     </div>
+
     <!-- User, Menu -->
     <div class="user-section">
-      {#if user}
+  {#if user}
         <div>
           <!-- changed, on:click -> onclick -->
           <button
@@ -80,42 +96,47 @@
             aria-expanded={userMenuOpen}
           >
             <div class="user-avatar">
-              {#if user.avatarUrl}
+  {#if user.avatarUrl}
                 <img src={user.avatarUrl} alt={user.name} />
               {:else}
                 <span class="avatar-fallback">{user.name?.charAt(0)?.toUpperCase() || 'U'}</span>
               {/if}
-            </div>
+  </div>
+
             <span class="user-name">{user.name}</span>
+
             <span class="icon">â‹¯</span>
           </button>
-          {#if userMenuOpen}
+  {#if userMenuOpen}
             <div class="user-menu" role="menu">
               <!-- changed, on:click -> onclick for menu items -->
               <button class="menu-item" onclick={() => handleNavigation('/profile')} role="menuitem">
                 <span class="icon">ðŸ‘¤</span>
                 Profile
               </button>
+
               <button class="menu-item" onclick={() => handleNavigation('/settings')} role="menuitem">
                 <span class="icon">âš™ï¸</span>
                 Settings
               </button>
+
               <hr class="menu-separator" />
               <button class="menu-item" onclick={() => handleLogout()} role="menuitem">
                 <span class="icon">ðŸšª</span>
                 Sign Out
               </button>
             {/if}
-        </div>
+  </div>
       {:else}
         <!-- changed, on:click -> onclick -->
         <button class="sign-in-button" onclick={() => handleNavigation('/login')} aria-label="Sign in"> Sign In </button>
       {/if}
-    </div>
+  </div>
   </div>
 </header>
+
 <!-- Click outside to, close, menu -->
-{#if userMenuOpen}
+  {#if userMenuOpen}
   <div
     class="menu-overlay"
     onclick={() => closeUserMenu()}
@@ -124,7 +145,7 @@
     tabindex={-1}
     aria-label="Close user menu"
   >{/if}
-<style>
+  <style>
   /* @unocss-include */
   .app-header {
     position: fixed
@@ -132,14 +153,13 @@
     left: 0
     right: 0
     height: 60px
-   ;background: var(--bg-secondary),
-    border-bottom: 1px solid var(--border-light);
+   ;background: var(--bg-secondary); border-bottom: 1px solid var(--border-light);
     z-index: 30
     backdrop-filter: blur(8px)}
   .header-content {
     display: flex
     align-items: center
-    height: 100%, padding: 0 1rem
+    height: 100%; padding: 0 1rem
     max-width: 1400px
     margin: 0 auto
     gap: 1rem}
@@ -153,7 +173,7 @@
     gap: 0.75rem
     padding: 0.5rem 1rem
     font-weight: 600
-   ;color: var(--harvard-crimson), background: transparent
+   ;color: var(--harvard-crimson); background: transparent
     border: none
     cursor: pointer
     border-radius: 6px
@@ -172,12 +192,12 @@
     align-items: center
     gap: 0.5rem
     padding: 0.5rem 1rem
-   ;color: var(--text-muted), background: transparent
+   ;color: var(--text-muted); background: transparent
     border: none
     cursor: pointer
     border-radius: 6px
     transition: all 0.2s ease}
-  .nav-button: hover { color: var(--text-primary), background: var(--bg-tertiary)}
+  .nav-button: hover { color: var(--text-primary); background: var(--bg-tertiary)}
   .search-section {
     flex: 1
     max-width: 400px
@@ -203,14 +223,13 @@
   .user-avatar {
     width: 32px
     height: 32px
-    border-radius: 50%, overflow: hidden
+    border-radius: 50%; overflow: hidden
     display: flex
     align-items: center
     justify-content: center
-   ;background: var(--bg-secondary), color: var(--harvard-crimson)}
+   ;background: var(--bg-secondary); color: var(--harvard-crimson)}
   .user-avatar img {
-    width: 100%, height: 100%,
-    object-fit: cover}
+    width: 100%, height: 100%; object-fit: cover}
   .avatar-fallback {
     font-weight: 600
     font-size: 0.875rem}
@@ -219,11 +238,11 @@
    ;color: var(--text-primary)}
   .user-menu {
     position: absolute
-    top: 100%, right: 0
+    top: 100%; right: 0
     min-width: 180px
-   ;background: var(--bg-secondary), border: 1px solid var(--border-light);
+   ;background: var(--bg-secondary); border: 1px solid var(--border-light);
     border-radius: 8px
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), padding: 0.5rem
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); padding: 0.5rem
     z-index: 1000
     margin-top: 0.5rem}
   .menu-item {
@@ -231,24 +250,23 @@
     align-items: center
     gap: 0.75rem
     padding: 0.5rem
-    width: 100%, background: transparent
+    width: 100%; background: transparent
     border: none
     cursor: pointer
     border-radius: 4px
     transition: background 0.2s ease
-   ;color: var(--text-primary),
-    text-align: left}
+   ;color: var(--text-primary); text-align: left}
   .menu-item:hover { background: var(--bg-tertiary)}
   .menu-separator {
     border: none
-    border-top: 1px solid var(--border-light), margin: 0.5rem 0}
+    border-top: 1px solid var(--border-light); margin: 0.5rem 0}
   .sign-in-button {
     padding: 0.5rem 1rem
     background: transparent
-   ;border: 1px solid var(--harvard-crimson), color: var(--harvard-crimson), border-radius: 6px
+   ;border: 1px solid var(--harvard-crimson), color: var(--harvard-crimson); border-radius: 6px
     cursor: pointer
     transition: all 0.2s ease}
-  .sign-in-button: hover { background: var(--harvard-crimson), color: var(--text-inverse)}
+  .sign-in-button: hover { background: var(--harvard-crimson); color: var(--text-inverse)}
   .menu-overlay {
     position: fixed
     top: 0
@@ -278,4 +296,5 @@
      ;margin: 0 0.5rem}
   }
 </style>
+
 

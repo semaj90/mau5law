@@ -1,4 +1,4 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
+<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
 https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
@@ -56,6 +56,7 @@ import type { Document } from '$lib/types';
         } else {
           console.log('âŒ CACHE MISS! Document not in IndexedDB')}
       }
+
       // THE SLOW PATH: Fetch from server
       await fetchAndCacheDocument(docId, forceRefresh)} catch (error) {
       console.error('Document loading failed:', error);
@@ -63,6 +64,7 @@ import type { Document } from '$lib/types';
       isLoading.set(false);
       loadingSource.set(null)}
   }
+
   // Server fetch with caching
   async function fetchAndCacheDocument(docId: string | includeGPU = false): Promise<Response> {
     const serverStartTime = performance.now();
@@ -101,10 +103,12 @@ import type { Document } from '$lib/types';
       await legalDB.documentCache.put(cacheEntry);
       console.log('ðŸ’¾ Document cached successfully in IndexedDB')} catch (cacheError) {
       console.warn('âš ï¸ Failed to cache document:', cacheError)}
+
     // Update UI with server data
     displayDocumentDetails(data);
     loadingSource.set(null);
     isLoading.set(false)}
+
   // Display document details (unified function for cache and server data)
   function displayDocumentDetails(data: any) {
     const obj = data as: any
@@ -123,6 +127,7 @@ import type { Document } from '$lib/types';
     caseAssociations.set(obj.case_associations ?? metadata.case_associations ?? []);
     gpuAnalysis.set(obj.gpu_analysis ?? metadata.gpu_analysis ?? null);
     processingMetrics.set(obj.enhanced_metadata ?? metadata.enhanced_metadata ?? null)}
+
   // Reactive updates when documentId or visibility changes
   // CHANGED: use Svelte, 5 rune $effect instead of legacy $:
   $effect(() => {
@@ -432,4 +437,5 @@ import type { Document } from '$lib/types';
     -webkit-box-orient: vertical
    ;overflow: hidden}
 </style>
+
 

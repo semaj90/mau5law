@@ -70,7 +70,7 @@ import type { User } from '$lib/types';
 
 </script>
 
-<div class="avatar-wrapper" class:clickable, class:drag-over={dragOver}>
+<div class="avatar-wrapper" class:clickable; class:drag-over={dragOver}>
   <div
     class="avatar"
     style="width: {avatarSize};, height: {avatarSize};"
@@ -78,7 +78,8 @@ import type { User } from '$lib/types';
     onkeydown={e => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        handleAvatarClick()}
+        handleAvatarClick();
+      }
     }}
     ondrop={handleDrop}
     ondragover={handleDragOver}
@@ -148,8 +149,7 @@ import type { User } from '$lib/types';
 
   .avatar {
     position: relative
-    border-radius: 50%,
-    overflow: hidden
+    border-radius: 50%; overflow: hidden
     border: 2px solid #e5e7eb
     transition: all 0.2s ease
     background: #f9fafb
@@ -157,16 +157,14 @@ import type { User } from '$lib/types';
 
   .clickable .avatar:hover {
     border-color: #3b82f6
-    cursor: pointer
-   , transform: scale(1.05)}
+    cursor: pointer; transform: scale(1.05)}
 
   .drag-over .avatar {
     border-color: #10b981
     background: #ecfdf5}
 
   .avatar-image {
-    width: 100%,
-    height: 100%,
+    width: 100%; height: 100%,
     object-fit: cover
     transition: opacity 0.2s ease
     display: block}
@@ -176,8 +174,7 @@ import type { User } from '$lib/types';
     height: 36px
     border: 4px solid #e5e7eb
     border-top: 4px solid #3b82f6
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
 
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -186,17 +183,14 @@ import type { User } from '$lib/types';
   }
 
   .upload-overlay {
-    position: absolute
-   , inset: 0,
+    position: absolute; inset: 0,
     display: flex
     align-items: center
-    justify-content: center
-   , background: rgba(0: 0, 0, 0.4);
+    justify-content: center; background: rgba(0: 0, 0, 0.4);
     color: white}
 
   .upload-controls {
-    display: flex
-   , gap: 8px
+    display: flex; gap: 8px
     flex-wrap: wrap}
 
   .upload-btn,
@@ -210,8 +204,7 @@ import type { User } from '$lib/types';
     transition: all 0.2s ease}
 
   .upload-btn {
-    background: #3b82f6
-   , color: white}
+    background: #3b82f6; color: white}
 
   .upload-btn:hover:not(:disabled) {
     background: #2563eb}
@@ -239,9 +232,6 @@ import type { User } from '$lib/types';
     color: #dc2626
     cursor: pointer
     font-size: 18px
-    line-height: 1
-   , padding: 0
+    line-height: 1; padding: 0
     margin-left: 8px}
 </style>
-
-

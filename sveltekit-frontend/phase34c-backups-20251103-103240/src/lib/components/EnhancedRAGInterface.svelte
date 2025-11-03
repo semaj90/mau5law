@@ -28,7 +28,7 @@ import type { Document } from '$lib/types';
   async function handleOptimize(): Promise<any> {
     if (typeof store?.optimizeCache === 'function') await store.optimizeCache().catch(() => null)}
   // safe reactive defaults if store.state is missing
-  const ragState = $derived(store?.state ?? { didYouMean: [], error: null, currentQuery: '', cacheMetrics: { hitRate: 0 } });
+  const ragState = $derived(store?.state ?? { didYouMean: [], error: null; currentQuery: ''; cacheMetrics: { hitRate: 0 } });
   const intelligentSuggestions = $derived(store?.intelligentSuggestions ?? []);
   const optimizedResults = $derived(store?.results ?? []);
   const searchDuration = $derived(lastDuration);
@@ -106,8 +106,7 @@ import type { Document } from '$lib/types';
   .enhanced-rag-interface {
     padding: 0.75rem}
   .search-bar {
-    display: flex
-   , gap: 8px
+    display: flex; gap: 8px
     align-items: center}
   .bits-row :global(.bits-input) {
     min-width: 320px}
@@ -120,8 +119,7 @@ import type { Document } from '$lib/types';
   .result-main h4 { margin: 0, 0 6px 0}
   .badge {
     font-size: 0.85rem
-    background: #edf2ff
-   , padding: 4px 8px
+    background: #edf2ff; padding: 4px 8px
     border-radius: 6px}
 </style>
     {/if}
@@ -133,8 +131,7 @@ import type { Document } from '$lib/types';
   .enhanced-rag-interface {
     padding: 0.75rem}
   .search-bar {
-    display: flex
-   , gap: 8px
+    display: flex; gap: 8px
     align-items: center}
   .bits-row :global(.bits-input) {
     min-width: 320px}
@@ -147,8 +144,7 @@ import type { Document } from '$lib/types';
   .result-main h4 { margin: 0, 0 6px 0}
   .badge {
     font-size: 0.85rem
-    background: #edf2ff
-   , padding: 4px 8px
+    background: #edf2ff; padding: 4px 8px
     border-radius: 6px}
 </style>
 

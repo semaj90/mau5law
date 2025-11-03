@@ -10,7 +10,7 @@ export interface RegulationAnalysis { regulation: string, applicability: number,
 export interface ComplianceGap { requirement: string, currentState: string, targetState: string, effort: 'low' | 'medium' | 'high',timeline: string}
 export interface ComplianceAction { action: string, priority: 'immediate' | 'high' | 'medium' | 'low',effort: string, dependencies: string[]}
 export interface ActionRecommendation { category: 'immediate' | 'short-term' | 'long-term' | 'monitoring',action: string, rationale: string, priority: number, estimatedEffort: string, expectedOutcome: string, dependencies: string[]}
-export interface SemanticMap { conceptNodes: ConceptNode[], relationshipEdges: RelationshipEdge[], clusters: ConceptCluster[], centrality: { [concept, string], number }}
+export interface SemanticMap { conceptNodes: ConceptNode[], relationshipEdges: RelationshipEdge[], clusters: ConceptCluster[], centrality: { [concept | string] | number }}
 export interface ConceptNode { id: string, concept: string, importance: number, category: string, embedding: Float32Array}
 export interface RelationshipEdge { source: string, target: string, relationship: string, strength: number, bidirectional: boolean}
 export interface CrossReferenceMap { sourceDocument: string, targetReferences: string[], relationshipType: 'citation' | 'amendment' | 'supersedes' | 'incorporates',confidence: number}

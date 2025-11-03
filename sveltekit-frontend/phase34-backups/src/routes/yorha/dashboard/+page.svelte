@@ -1,4 +1,5 @@
-﻿<script lang="ts"> // YoRHa System Dashboard import { onDestroy, onMount } from 'svelte'; import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'; import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte'; // Import YoRHaDataViz Svelte component (default export) // import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte'; // Removed direct import import type { PageData } from './$types'; // Removed import * as d3 from 'd3'; // Removed direct import of ForceLink, Simulation, force functions, drag function DragEvent import type { SvelteComponent } from 'svelte'; // Changed from ComponentType<SvelteComponent> // runtime d3 namespace holder let d3: any = null; // Add strongly-typed graph interfaces (do NOT extend d3 namespaces) type Position = { x: number; y: number}; interface GraphNode { id: string; type: 'database' | 'service' | 'component' | string; label: string; status: 'healthy' | 'warning' | 'error' | string; position?: Position; x?: number; y?: number; vx?: number; vy?: number; fx?: number | null; fy?: number | null}
+﻿<script lang="ts">
+ // YoRHa System Dashboard import { onDestroy, onMount } from 'svelte'; import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'; import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte'; // Import YoRHaDataViz Svelte component (default export) // import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte'; // Removed direct import import type { PageData } from './$types'; // Removed import * as d3 from 'd3'; // Removed direct import of ForceLink, Simulation, force functions, drag function DragEvent import type { SvelteComponent } from 'svelte'; // Changed from ComponentType<SvelteComponent> // runtime d3 namespace holder let d3: any = null; // Add strongly-typed graph interfaces (do NOT extend d3 namespaces) type Position = { x: number; y: number}; interface GraphNode { id: string; type: 'database' | 'service' | 'component' | string; label: string; status: 'healthy' | 'warning' | 'error' | string; position?: Position; x?: number; y?: number; vx?: number; vy?: number; fx?: number | null; fy?: number | null}
   interface GraphEdge { id: string; source: string | GraphNode; target: string | GraphNode; type: string; traffic: number; latency: number}
   interface YoRHaGraphData { nodes: GraphNode[];, edges: GraphEdge[]; }
 
@@ -27,7 +28,177 @@
     }, 5000); // Update realtime charts every, 2 seconds realtimeInterval = setInterval(() => { realtimeData = { cpuHistory: [...realtimeData.cpuHistory.slice(-29), systemMetrics.backend.cpuUsage], memoryHistory: [...realtimeData.memoryHistory.slice(-29), systemMetrics.backend.memoryUsage], networkHistory: [...realtimeData.networkHistory.slice(-29), systemMetrics.database.latency], timestamp: Date.now() }; }, 2000); }
 
   function generateHistoryData(baseValue: number, points = 30): number[] { return Array.from({ length: points }, (_, _i) => { // Changed: 'i', to: '_i' to mark as unused const variation = (Math.random() - 0.5) * 20; return Math.max(0, Math.min(100, baseValue + variation)); }); }
-</script> <svelte:head> <title>YoRHa Dashboard - System Monitoring</title> </svelte:head> <div class="yorha-dashboard-page"> <!-- Page, Header --> <header class="yorha-page-header"> <div class="yorha-header-content"> <!-- Header title: replaced icon component with inline SVG, glyph --> <div class="yorha-header-title"> <span class="yorha-icon" aria-hidden="true" style="font-size:48px">ðŸ–¥ï¸</span> <h1>SYSTEM DASHBOARD</h1> <div class="yorha-header-subtitle">REAL-TIME MONITORING &amp; ANALYTICS</div> </div> <div class="yorha-header-status"> <div class="yorha-status-item"> <span aria-hidden="true">ðŸ”„</span> <span>LIVE DATA</span> </div> <div class="yorha-status-item"> <span>LAST UPDATE: {lastUpdate.toLocaleTimeString()}</span> </div> </div> </div> </header> {#if isLoading} <div class="yorha-loading"> <div class="yorha-loading-spinner"></div> <span>INITIALIZING DASHBOARD...</span> </div> {:else if errorMessage} <div class="yorha-error-message"> <span style="font-size:24px">âš ï¸</span> <span>ERROR: { errorMessage }</span> </div> {:else} <!-- System Overview, Cards --> <section class="yorha-overview"> <div class="yorha-metrics-grid"> <!-- Database, Status --> <div class="yorha-metric-card"> <div class="yorha-metric-header"> <span aria-hidden="true">ðŸ—„ï¸</span> <h3>DATABASE</h3> </div> <div class="yorha-metric-stats"> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.database.latency}ms</span> <span class="yorha-stat-label">LATENCY</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.database.activeConnections}</span> <span class="yorha-stat-label">CONNECTIONS</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.database.queryCount.toLocaleString()}</span> <span class="yorha-stat-label">QUERIES</span> </div> </div> </div> <!-- Backend, Status --> <div class="yorha-metric-card"> <div class="yorha-metric-header"> <span aria-hidden="true">âš™ï¸</span> <h3>BACKEND</h3> </div> <div class="yorha-metric-stats"> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.backend.cpuUsage}%</span> <span class="yorha-stat-label">CPU</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.backend.memoryUsage}%</span> <span class="yorha-stat-label">MEMORY</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.backend.activeServices}</span> <span class="yorha-stat-label">SERVICES</span> </div> </div> </div> <!-- Frontend, Status --> <div class="yorha-metric-card"> <div class="yorha-metric-header"> <span aria-hidden="true">ðŸ–¥ï¸</span> <h3>FRONTEND</h3> </div> <div class="yorha-metric-stats"> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.frontend.renderFPS}</span> <span class="yorha-stat-label">FPS</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.frontend.activeComponents}</span> <span class="yorha-stat-label">ACTIVE</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.frontend.webGPUEnabled ? 'YES': 'NO'}</span> <span class="yorha-stat-label">WEBGPU</span> </div> </div> </div> <!-- System, Health --> <div class="yorha-metric-card"> <div class="yorha-metric-header"> <span aria-hidden="true">âš¡</span> <h3>HEALTH</h3> </div> <div class="yorha-metric-stats"> <div class="yorha-stat"> <span class="yorha-stat-value">{systemMetrics.backend.uptime}%</span> <span class="yorha-stat-label">UPTIME</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">8/8</span> <span class="yorha-stat-label">SERVICES</span> </div> <div class="yorha-stat"> <span class="yorha-stat-value">0</span> <span class="yorha-stat-label">ERRORS</span> </div> </div> </div> </div> </section> <!-- Real-time, Charts --> <section class="yorha-charts"> <!-- Charts header: replaced icon component with, glyph --> <h2 class="yorha-section-title"> <span aria-hidden="true">ðŸ“ˆ</span> REAL-TIME METRICS </h2> <div class="yorha-charts-grid"> <div class="yorha-chart-card"> <h3>CPU USAGE</h3> <div class="yorha-chart"> <div class="yorha-chart-line" style="--height: {systemMetrics.backend.cpuUsage}%;"></div> <span class="yorha-chart-value">{systemMetrics.backend.cpuUsage}%</span> </div> </div> <div class="yorha-chart-card"> <h3>MEMORY USAGE</h3> <div class="yorha-chart"> <div class="yorha-chart-line" style="--height: {systemMetrics.backend.memoryUsage}%;"></div> <span class="yorha-chart-value">{systemMetrics.backend.memoryUsage}%</span> </div> </div> <div class="yorha-chart-card"> <h3>NETWORK LATENCY</h3> <div class="yorha-chart"> <div class="yorha-chart-line" style="--height: {Math.min(100, systemMetrics.database.latency)}%;"></div> <span class="yorha-chart-value">{systemMetrics.database.latency}ms</span> </div> </div> </div> </section> <!-- YoRHa System Status, Component --> <section class="yorha-system-status"> <YoRHaSystemStatus systemLoad={systemMetrics.systemLoad || systemMetrics.backend?.cpuUsage || 45} gpuUtilization={systemMetrics.gpuUtilization || 78} memoryUsage={systemMetrics.backend?.memoryUsage || 62} networkLatency={systemMetrics.networkLatency || systemMetrics.database?.latency || 23} /> </section> <!-- Data, Visualization --> <section class="yorha-data-viz"> {#if YoRHaDataVizComponent} <YoRHaDataVizComponent /> {:else} <p class="yorha-loading">Loading data visualization...</p> {/if} </section> <!-- System, Graph --> <section class="yorha-graph"> <!-- Graph header: replaced icon component with, glyph --> <h2 class="yorha-section-title"> <span aria-hidden="true">ðŸ•¸ï¸</span> SYSTEM ARCHITECTURE </h2> <!-- Replace manual Svelte loop markup with a D3-managed, container --> <div class="yorha-graph-container" bind:this={ graphContainer }></div> </section> {/if} </div> <style> /* Header */ .yorha-page-header { padding: 3rem 1.5rem; border-bottom: 1px solid rgba(255, 191, 0, 0.3); background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%); }
+</script>
+
+<svelte:head><title>YoRHa Dashboard - System Monitoring</title></svelte:head>
+<div class="yorha-dashboard-page">
+  <!-- Page, Header -->
+  <header class="yorha-page-header">
+    <div class="yorha-header-content">
+      <!-- Header title: replaced icon component with inline SVG, glyph -->
+      <div class="yorha-header-title">
+        <span class="yorha-icon" aria-hidden="true" style="font-size:48px">ðŸ–¥ï¸</span>
+        <h1>SYSTEM DASHBOARD</h1>
+        <div class="yorha-header-subtitle">REAL-TIME MONITORING &amp; ANALYTICS</div>
+      </div>
+      <div class="yorha-header-status">
+        <div class="yorha-status-item"><span aria-hidden="true">ðŸ”„</span> <span>LIVE DATA</span></div>
+        <div class="yorha-status-item"><span>LAST UPDATE: {lastUpdate.toLocaleTimeString()}</span></div>
+      </div>
+    </div>
+  </header>
+  {#if isLoading}
+    <div class="yorha-loading">
+      <div class="yorha-loading-spinner"></div>
+      <span>INITIALIZING DASHBOARD...</span>
+    </div>
+  {:else if errorMessage}
+    <div class="yorha-error-message"><span style="font-size:24px">âš ï¸</span> <span>ERROR: {errorMessage}</span></div>
+  {:else}
+    <!-- System Overview, Cards -->
+    <section class="yorha-overview">
+      <div class="yorha-metrics-grid">
+        <!-- Database, Status -->
+        <div class="yorha-metric-card">
+          <div class="yorha-metric-header">
+            <span aria-hidden="true">ðŸ—„ï¸</span>
+            <h3>DATABASE</h3>
+          </div>
+          <div class="yorha-metric-stats">
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.database.latency}ms</span>
+              <span class="yorha-stat-label">LATENCY</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.database.activeConnections}</span>
+              <span class="yorha-stat-label">CONNECTIONS</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.database.queryCount.toLocaleString()}</span>
+              <span class="yorha-stat-label">QUERIES</span>
+            </div>
+          </div>
+        </div>
+        <!-- Backend, Status -->
+        <div class="yorha-metric-card">
+          <div class="yorha-metric-header">
+            <span aria-hidden="true">âš™ï¸</span>
+            <h3>BACKEND</h3>
+          </div>
+          <div class="yorha-metric-stats">
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.backend.cpuUsage}%</span>
+              <span class="yorha-stat-label">CPU</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.backend.memoryUsage}%</span>
+              <span class="yorha-stat-label">MEMORY</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.backend.activeServices}</span>
+              <span class="yorha-stat-label">SERVICES</span>
+            </div>
+          </div>
+        </div>
+        <!-- Frontend, Status -->
+        <div class="yorha-metric-card">
+          <div class="yorha-metric-header">
+            <span aria-hidden="true">ðŸ–¥ï¸</span>
+            <h3>FRONTEND</h3>
+          </div>
+          <div class="yorha-metric-stats">
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.frontend.renderFPS}</span>
+              <span class="yorha-stat-label">FPS</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.frontend.activeComponents}</span>
+              <span class="yorha-stat-label">ACTIVE</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.frontend.webGPUEnabled ? 'YES' : 'NO'}</span>
+              <span class="yorha-stat-label">WEBGPU</span>
+            </div>
+          </div>
+        </div>
+        <!-- System, Health -->
+        <div class="yorha-metric-card">
+          <div class="yorha-metric-header">
+            <span aria-hidden="true">âš¡</span>
+            <h3>HEALTH</h3>
+          </div>
+          <div class="yorha-metric-stats">
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">{systemMetrics.backend.uptime}%</span>
+              <span class="yorha-stat-label">UPTIME</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">8/8</span> <span class="yorha-stat-label">SERVICES</span>
+            </div>
+            <div class="yorha-stat">
+              <span class="yorha-stat-value">0</span> <span class="yorha-stat-label">ERRORS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Real-time, Charts -->
+    <section class="yorha-charts">
+      <!-- Charts header: replaced icon component with, glyph -->
+      <h2 class="yorha-section-title"><span aria-hidden="true">ðŸ“ˆ</span> REAL-TIME METRICS</h2>
+      <div class="yorha-charts-grid">
+        <div class="yorha-chart-card">
+          <h3>CPU USAGE</h3>
+          <div class="yorha-chart">
+            <div class="yorha-chart-line" style="--height: {systemMetrics.backend.cpuUsage}%;"></div>
+            <span class="yorha-chart-value">{systemMetrics.backend.cpuUsage}%</span>
+          </div>
+        </div>
+        <div class="yorha-chart-card">
+          <h3>MEMORY USAGE</h3>
+          <div class="yorha-chart">
+            <div class="yorha-chart-line" style="--height: {systemMetrics.backend.memoryUsage}%;"></div>
+            <span class="yorha-chart-value">{systemMetrics.backend.memoryUsage}%</span>
+          </div>
+        </div>
+        <div class="yorha-chart-card">
+          <h3>NETWORK LATENCY</h3>
+          <div class="yorha-chart">
+            <div class="yorha-chart-line" style="--height: {Math.min(100, systemMetrics.database.latency)}%;"></div>
+            <span class="yorha-chart-value">{systemMetrics.database.latency}ms</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- YoRHa System Status, Component -->
+    <section class="yorha-system-status">
+      <YoRHaSystemStatus
+        systemLoad={systemMetrics.systemLoad || systemMetrics.backend?.cpuUsage || 45}
+        gpuUtilization={systemMetrics.gpuUtilization || 78}
+        memoryUsage={systemMetrics.backend?.memoryUsage || 62}
+        networkLatency={systemMetrics.networkLatency || systemMetrics.database?.latency || 23}
+      />
+    </section>
+    <!-- Data, Visualization -->
+    <section class="yorha-data-viz">
+      {#if YoRHaDataVizComponent}
+        <YoRHaDataVizComponent />
+      {:else}
+        <p class="yorha-loading">Loading data visualization...</p>
+      {/if}
+    </section>
+    <!-- System, Graph -->
+    <section class="yorha-graph">
+      <!-- Graph header: replaced icon component with, glyph -->
+      <h2 class="yorha-section-title"><span aria-hidden="true">ðŸ•¸ï¸</span> SYSTEM ARCHITECTURE</h2>
+      <!-- Replace manual Svelte loop markup with a D3-managed, container -->
+      <div class="yorha-graph-container" bind:this={graphContainer}></div>
+    </section>
+  {/if}
+</div>
+
+<style>
+ /* Header */ .yorha-page-header { padding: 3rem 1.5rem; border-bottom: 1px solid rgba(255, 191, 0, 0.3); background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%); }
 .yorha-header-content { max-width: 72rem; margin-left: auto; margin-right: auto; display: flex; flex-direction: column;, gap: 1.5rem; align-items: center; justify-content: space-betweenn}
 @media (min-width: 768px) { .yorha-header-content { flex-direction: row} }
 
@@ -61,5 +232,5 @@
 /* type-specific node decorations used by D3 */:global(.yorha-node-database) { border-color: rgba(59,130,246,0.55); background: rgba(59,130,246,0.06); }:global(.yorha-node-service) { border-color: rgba(34,197,94,0.55); background: rgba(34,197,94,0.06); }:global(.yorha-node-component) { border-color: rgba(139,92,246,0.55); background: rgba(139,92,246,0.06); } /* icon/label/status (all applied dynamically) */:global(.yorha-node-icon) { color: currentColor}:global(.yorha-node-label) { font-size: 0.75rem; font-family: monospace;, color: currentColor}:global(.yorha-node-status) { width: 0.5rem;, height: 0.5rem; border-radius: 9999px} /* status color helpers (used dynamically) */:global(.yorha-status-healthy) { background: #34d399}:global(.yorha-status-warning) { background: #fbbf24}:global(.yorha-status-error) { background: #f87171} /* single @keyframes spin definition (removed duplicate) */ @keyframes spin { to { transform: rotate(360deg); }
 } /* Responsive tweaks */ @media (max-width: 768px) { .yorha-header-title h1 { font-size: 1.25rem; flex-direction: column; align-items: center} .yorha-metrics-grid, .yorha-charts-grid { grid-template-columns: 1fr; gap: 1rem} }
 
-/* Replaced Tailwind @apply rules with plain CSS equivalents */ /* Removed duplicate scoped selectors because D3 applies classes at runtime and, the:global(...) rules above already cover them. Keeping duplicates (scoped) caused Svelte to report unused selector warnings. No visual or runtime behavior is changed. */ </style>
-
+/* Replaced Tailwind @apply rules with plain CSS equivalents */ /* Removed duplicate scoped selectors because D3 applies classes at runtime and, the:global(...) rules above already cover them. Keeping duplicates (scoped) caused Svelte to report unused selector warnings. No visual or runtime behavior is changed. */
+</style>

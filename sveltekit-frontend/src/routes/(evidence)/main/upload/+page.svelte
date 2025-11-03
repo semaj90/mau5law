@@ -40,26 +40,32 @@ import type { Document } from '$lib/types';
       $errors.file = ['File size exceeds 100MB limit'];
       selectedFile = null
       return}
+
     // Auto-detect evidence type from file
     const detectedType = getFileTypeFromMime(file.type);
     if (detectedType !== 'UNKNOWN') {
-      $form.evidence_type = detectedType as: any}
+      $form.evidence_type = detectedType as any;
+    }
+
     // Validate file type against evidence type
     if (!validateFileType(file, $form.evidence_type)) {
       $errors.file = [`File type ${file.type} not supported for ${$form.evidence_type} evidence`];
       selectedFile = null
       return}
+
     // Generate file preview for images
     if (file.type.startsWith('image/')) {
       filePreview = URL.createObjectURL(file)} else {
       filePreview = null}
+
     // Generate metadata preview with fallback
     try {
       metadata = await generateMetadataFromFile(file, $form.evidence_type)} catch (error) {
       console.warn('Failed to generate metadata preview:', error);
       // Provide mock metadata as fallback
       metadata = {
-        mockData: true,
+        mockData: true
+,
         error: 'failure default to mock',
         fallbackMetadata: { fileName: file.name,
           fileSize: file.size,
@@ -70,11 +76,13 @@ import type { Document } from '$lib/types';
         }
       }
     }
+
     //, Clear: any file errors
     if ($errors.file) {
       delete $errors.fil
       $errors = $error}
   }
+
   // File input change handler
   function onFileChange(_event: Event) {
     // removed unused target assignment
@@ -82,6 +90,7 @@ import type { Document } from '$lib/types';
     if (file) {
       handleFileSelect(file)}
   }
+
   // Drag and drop handlers
   function onDragOver(_event: DragEvent) {
     event.preventDefault();
@@ -96,6 +105,7 @@ import type { Document } from '$lib/types';
     if (file) {
       handleFileSelect(file)}
   }
+
   // Evidence type change handler
   function onEvidenceTypeChange() {
     if (selectedFile) {
@@ -106,6 +116,7 @@ import type { Document } from '$lib/types';
         $errors = $error}
     }
   }
+
   // Format file size for display
   function formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 B';
@@ -253,9 +264,10 @@ import type { Document } from '$lib/types';
                 <button
                   type="button"
                   onclick={() => {
-                    selectedFile = null
-                    filePreview = null
-                    metadata = null}}
+                    selectedFile = null;
+                    filePreview = null;
+                    metadata = null;
+                  }}
                   class="text-sm text-red-600 hover:text-red-800"
                 >
                   Remove file
@@ -459,9 +471,7 @@ import type { Document } from '$lib/types';
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600"
               />
-              <label for="enableSummarization" class="ml-2 block text-sm">
-                Generate document summary
-              </label>
+              <label for="enableSummarization" class="ml-2 block text-sm"> Generate document summary </label>
             </div>
           </div>
         </div>

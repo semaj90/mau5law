@@ -1,24 +1,25 @@
 ﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   interface Props {
-    onFileSelected?: (files: File[]) => void
-    accept?: string
-    multiple?: boolean
-    maxFiles?: number}
+    onFileSelected?: (files: File[]) => void;
+    accept?: string;
+    multiple?: boolean;
+    maxFiles?: number;
+  }
   let { onFileSelected = (files: File[]) => {}, accept = '*', multiple = false }: Props = $props();
   let dragActive = $state<boolean>(false);
   let fileInput = $state<HTMLInputElement | null>(null);
   function handleDrop(e: DragEvent) {
     e.preventDefault();
-    dragActive = false
-    const dt = e.dataTransfer
+    dragActive = false;
+    const dt = e.dataTransfer;
     if (dt?.files && dt.files.length) {
       const files = Array.from(dt.files) as File[];
       onFileSelected(files);
     }
   }
   function handleFileSelect(e: Event) {
-    const target = e.target as HTMLInputElement | null
+    const target = e.target as HTMLInputElement | null;
     if (target?.files && target.files.length) {
       const files = Array.from(target.files) as File[];
       onFileSelected(files);
@@ -37,8 +38,10 @@
   // new: ensure dragenter sets active state reliably
   function handleDragEnter(e: DragEvent) {
     e.preventDefault();
-    dragActive = true}
+    dragActive = true;
+  }
 </script>
+
 <!-- new: click opens dialog; keyboard opens dialog; region, is, focusable -->
 <div
   class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-gray-400 transition-colors"
@@ -46,7 +49,8 @@
   class:bg-blue-50={dragActive}
   on:drop|preventDefault={handleDrop}
   on:dragenter|preventDefault={handleDragEnter}
- , on:dragover|preventDefault={() => (dragActive = true)}
+  ,
+  on:dragover|preventDefault={() => (dragActive = true)}
   ondragleave={() => (dragActive = false)}
   onclick={() => fileInput?.click()}
   onkeydown={handleKeyDown}
@@ -72,4 +76,3 @@
     </button>
   </div>
 </div>
-

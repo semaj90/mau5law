@@ -96,8 +96,7 @@ import type { Message } from '$lib/types';
       maxlength={maxLength}
       class="chat-input"
       class:disabled
-      class:near-limit={isNearLimit}
-     , class:at-limit={isAtLimit}
+      class:near-limit={isNearLimit}; class:at-limit={isAtLimit}
       {rows}
       oninput={debouncedHandleInput}
       onkeydown={handleKeydown}
@@ -153,11 +152,9 @@ import type { Message } from '$lib/types';
     display: flex
     align-items: flex-end
     gap: 8px
-    padding: 12px
-   , background: var(--bg-primary, #ffffff);
+    padding: 12px; background: var(--bg-primary, #ffffff);
     border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 8px
-   , transition: border-color 0.2s ease,
+    border-radius: 8px; transition: border-color 0.2s ease,
       box-shadow 0.2s ease}
   .input-container:focus-within {
     border-color: var(--accent-color, #3b82f6);
@@ -174,8 +171,7 @@ import type { Message } from '$lib/types';
     resize: none
     font-family: inherit
     font-size: 0.875rem
-    line-height: 1.5
-   , color: var(--text-primary, #1e293b);
+    line-height: 1.5; color: var(--text-primary, #1e293b);
     overflow-y: auto
     scrollbar-width: thin}
   .chat-input::placeholder { color: var(--text-placeholder, #94a3b8);
@@ -194,8 +190,7 @@ import type { Message } from '$lib/types';
     flex-shrink: 0; /* Fixed typo: changed comma to semicolon */
   }
   .character-count {
-    font-size: 0.75rem
-   , color: var(--text-muted, #94a3b8);
+    font-size: 0.75rem; color: var(--text-muted, #94a3b8);
     font-variant-numeric: tabular-num}
   .character-count.near-limit { color: var(--text-warning, #d97706);
   }
@@ -207,13 +202,11 @@ import type { Message } from '$lib/types';
     align-items: center
     justify-content: center
     width: 36px
-    height: 36px
-   , background: var(--bg-muted, #f1f5f9);
+    height: 36px; background: var(--bg-muted, #f1f5f9);
     color: var(--text-muted, #64748b);
     border: none
     border-radius: 6px
-    cursor: pointer
-   , transition: all 0.2s ease}
+    cursor: pointer; transition: all 0.2s ease}
   .send-button:hover:not(:disabled) { /* Corrected selector for hover state */
     background: var(--bg-hover, #e2e8f0);
     color: var(--text-primary, #1e293b);
@@ -231,17 +224,14 @@ import type { Message } from '$lib/types';
     margin-top: 8px
     padding: 0 12px}
   .hint-text {
-    font-size: 0.75rem
-   , color: var(--text-muted, #94a3b8);
+    font-size: 0.75rem; color: var(--text-muted, #94a3b8);
   }
   .hint-text kbd {
     font-size: 0.6875rem
-    padding: 2px 4px
-   , background: var(--bg-secondary, #f8fafc);
+    padding: 2px 4px; background: var(--bg-secondary, #f8fafc);
     border: 1px solid var(--border-color, #e2e8f0);
     border-radius: 3px
-    font-family: monospace
-   , color: var(--text-secondary, #64748b);
+    font-family: monospace; color: var(--text-secondary, #64748b);
   }
   /* Scrollbar styling */
   .chat-input::-webkit-scrollbar {
@@ -283,8 +273,7 @@ import type { Message } from '$lib/types';
       width: 32px
       height: 32px}
     .send-button svg {
-      width: 16px
-     , height: 16px}
+      width: 16px; height: 16px}
   }
 </style>
 

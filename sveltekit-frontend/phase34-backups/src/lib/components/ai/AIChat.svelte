@@ -129,8 +129,7 @@
     width: 5px
     height: 5px
     border-radius: 50%;
-    background-color: currentColor
-   , animation: typing 1s infinite steps(4, end);
+    background-color: currentColor; animation: typing 1s infinite steps(4, end);
     margin-left: 8px
     vertical-align: middl}
   @keyframes typing {

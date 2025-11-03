@@ -9,7 +9,7 @@ import type { Case } from '$lib/types';
 
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)'
 	function createFileUploader(url: string) {
-		type UploadFile = { id: string, file: File, name: string, progress: number, error?: boolean };
+		type UploadFile = { id: string, file: File, name: string; progress: number, error?: boolean };
 		const events: Record<string Function[]> = {};
 		const files: UploadFile[] = [];
 
@@ -19,8 +19,7 @@ import type { Case } from '$lib/types';
 				formData.append('file', file);
 
 				const response = await fetch(url, {
-					method: 'POST',
-					body: formData
+					method: 'POST'; body: formData
 				});
 
 				if (!response.ok) {
@@ -42,7 +41,7 @@ import type { Case } from '$lib/types';
 				const arr = Array.from(list as FileList | File[]) as File[];
 				arr.forEach((file) => {
 					const id = (crypto as: any)?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
-					const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
+					const fileObj: UploadFile = { id, file, name: file.name; progress: 0 };
 					files.push(fileObj);
 					// start upload and update progress (coarse)
 					uploadImpl(file)
@@ -53,8 +52,7 @@ import type { Case } from '$lib/types';
 							fileObj.progress = 0
 							fileObj.error = true
 							events['error']?.forEach(fn => fn(fileObj))})})},
-			upload: uploadImpl,
-      on: (event: string, callback: Function) => {
+			upload: uploadImpl; on: (event: string, callback: Function) => {
         if (!events[event]) events[event] = [];
         events[event].push(callback)}
 		}}
@@ -81,20 +79,17 @@ import type { Case } from '$lib/types';
 
 	// --- Add missing reactive state used by the template / health checks ---
 	let systemStatus: Record<string string> = {
-		database: 'checking',
-		redis: 'checking',
-		ollama: 'checking',
-		gpu: 'checking',
+		database: 'checking'; redis: 'checking',
+		ollama: 'checking'; gpu: 'checking',
 		workers: 'checking'
 	};
 
 	let workerDetails = {
-		ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
+		ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }; embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+		autotag: { status: 'checking', healthy: false, queueDepth: 0; processedJobs: 0 }
 	};
 
-	let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
+	let stats = $state({ totalCases: 0, totalEvidence: 0; processingJobs: 0 });
 	let loading = $state<boolean>(true);
 	let userQuery = $state<string>('');
 	let registerOpen = $state<boolean>(false);
@@ -146,22 +141,16 @@ import type { Case } from '$lib/types';
 						const name = String(worker.name || '').toLowerCase();
 						if (name.includes('ocr')) {
 							workerDetails.ocr = {
-								status: worker.status ?? 'offline',
-								healthy: !!worker.healthy,
-								queueDepth: worker.queueDepth || 0,
-								processedJobs: worker.processedJobs || 0
+								status: worker.status ?? 'offline'; healthy: !!worker.healthy,
+								queueDepth: worker.queueDepth || 0; processedJobs: worker.processedJobs || 0
 							}} else if (name.includes('embed') || name.includes('embedding')) {
 							workerDetails.embedding = {
-								status: worker.status ?? 'offline',
-								healthy: !!worker.healthy,
-								queueDepth: worker.queueDepth || 0,
-								processedJobs: worker.processedJobs || 0
+								status: worker.status ?? 'offline'; healthy: !!worker.healthy,
+								queueDepth: worker.queueDepth || 0; processedJobs: worker.processedJobs || 0
 							}} else if (name.includes('autotag')) {
 							workerDetails.autotag = {
-								status: worker.status ?? 'offline',
-								healthy: !!worker.healthy,
-								queueDepth: worker.queueDepth || 0,
-								processedJobs: worker.processedJobs || 0
+								status: worker.status ?? 'offline'; healthy: !!worker.healthy,
+								queueDepth: worker.queueDepth || 0; processedJobs: worker.processedJobs || 0
 							}}
 					})}
 			} else {
@@ -517,7 +506,7 @@ import type { Case } from '$lib/types';
     {/if}
 
     {#if $errorMessage}
-      <div style="color:#c53030, margin-top:.6rem">{$errorMessage}</div>
+      <div style="color:#c53030; margin-top:.6rem">{$errorMessage}</div>
     {/if}
 
     {#if $displayRecommendations && $displayRecommendations.length > 0}
@@ -592,13 +581,11 @@ import type { Case } from '$lib/types';
   .nes-container.hero-section-custom {
     text-align: center
     margin-bottom: 3rem
-    padding: 3rem 1rem
-   , background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
+    padding: 3rem 1rem; background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
     border: 2px solid rgba(255, 215, 0, 0.3)}
 
   .hero-section-custom .nes-text.is-primary {
-    font-size: 3rem
-   , color: #ffd700; /* Override NES.css primary color */
+    font-size: 3rem; color: #ffd700; /* Override NES.css primary color */
     margin-bottom: 1rem
     text-shadow: 0, 0 20px rgba(255, 215, 0, 0.5);
     font-weight: 800}
@@ -610,8 +597,7 @@ import type { Case } from '$lib/types';
     font-weight: 600}
 
   .hero-section-custom .nes-text.is-disabled.tech-stack-custom {
-    font-size: 0.95rem
-   , color: #888; /* Override NES.css disabled color */
+    font-size: 0.95rem; color: #888; /* Override NES.css disabled color */
     font-family: 'JetBrains Mono', monospace}
 
   .status-section-custom,
@@ -665,8 +651,7 @@ import type { Case } from '$lib/types';
 
   .tech-badge {
     display: inline-block
-    padding: 0.25rem 0.75rem
-   , background: rgba(168, 85, 247, 0.2);
+    padding: 0.25rem 0.75rem; background: rgba(168, 85, 247, 0.2);
     border: 1px solid #a855f7
     border-radius: 12px
     font-size: 0.75rem
@@ -681,8 +666,7 @@ import type { Case } from '$lib/types';
     padding: 2rem
     display: flex
     align-items: center
-    gap: 1.5rem
- , transition: all 0.3s ease}
+    gap: 1.5rem; transition: all 0.3s ease}
 
   .stat-card-custom:hover {
     border-color: #ffd700
@@ -690,8 +674,7 @@ import type { Case } from '$lib/types';
     transform: translateY(-4px)}
 
   .stat-icon-custom {
-    font-size: 3rem
-   , filter: drop-shadow(0, 0 10px rgba(255, 215, 0, 0.5))}
+    font-size: 3rem; filter: drop-shadow(0, 0 10px rgba(255, 215, 0, 0.5))}
 
   .stat-content-custom h3 {
     margin: 0, 0 0.5rem 0
@@ -701,8 +684,7 @@ import type { Case } from '$lib/types';
 
   .stat-value-custom {
     font-size: 2rem
-    font-weight: bold
-   , margin: 0
+    font-weight: bold; margin: 0
     font-family: 'JetBrains Mono', monospace}
 
   .action-grid-custom {
@@ -718,8 +700,7 @@ import type { Case } from '$lib/types';
     position: relative
     overflow: hidden
     display: flex
-    flex-direction: column
-   , gap: 1rem}
+    flex-direction: column; gap: 1rem}
 
   .action-card-custom:hover {
     border-color: #ffd700
@@ -727,19 +708,16 @@ import type { Case } from '$lib/types';
     transform: translateY(-4px)}
 
   .action-card-custom::before {
-    content: '',
-    position: absolute
+    content: ''; position: absolute
     top: 0
     left: 0
     right: 0
-    height: 4px
-   , background: linear-gradient(90deg, #ffd700, #00ff41);
+    height: 4px; background: linear-gradient(90deg, #ffd700, #00ff41);
     opacity: 0
     transition: opacity 0.3s ease}
 
   .card-icon-custom {
-    font-size: 3rem
-   , filter: drop-shadow(0, 0 15px rgba(255, 215, 0, 0.5))}
+    font-size: 3rem; filter: drop-shadow(0, 0 15px rgba(255, 215, 0, 0.5))}
 
   .card-button-custom {
     display: inline-block
@@ -755,8 +733,7 @@ import type { Case } from '$lib/types';
   .featured-card-custom {
     position: relative
     display: block
-    padding: 3rem
-   , background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+    padding: 3rem; background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
     border: 3px solid #00ff41
     border-radius: 16px
     text-decoration: none
@@ -765,13 +742,11 @@ import type { Case } from '$lib/types';
     overflow: hidden}
 
   .featured-card-custom::before {
-    content: '',
-    position: absolute
+    content: ''; position: absolute
     top: 0
     left: 0
     right: 0
-    height: 6px
-   , background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
+    height: 6px; background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
     background-size: 200% 100%;
     animation: shimmer 3s linear infinite}
 
@@ -786,8 +761,7 @@ import type { Case } from '$lib/types';
     position: absolute
     top: 1rem
     right: 1rem
-    padding: 0.5rem 1rem
-   , background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
+    padding: 0.5rem 1rem; background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
     color: #000
     font-weight: 900
     font-size: 0.75rem
@@ -798,10 +772,8 @@ import type { Case } from '$lib/types';
   @keyframes pulse {
     0%,
     100% {
-      transform: scale(1),
-      opacity: 1}
-    50% { transform: scale(1.05),
-      opacity: 0.9}
+      transform: scale(1); opacity: 1}
+    50% { transform: scale(1.05); opacity: 0.9}
   }
 
   .featured-icon-custom {
@@ -810,8 +782,7 @@ import type { Case } from '$lib/types';
     text-shadow: 0, 0 20px rgba(0, 255, 65, 0.5)}
 
   .featured-card-custom .nes-text.is-success {
-    font-size: 2rem
-   , color: #00ff41
+    font-size: 2rem; color: #00ff41
     margin-bottom: 1rem
     text-shadow: 0, 0 15px rgba(0, 255, 65, 0.3)}
 
@@ -832,8 +803,7 @@ import type { Case } from '$lib/types';
     padding: 1rem 2rem
     font-weight: 900
     font-size: 1.2rem
-    border-radius: 8px
- , transition: all 0.3s ease
+    border-radius: 8px; transition: all 0.3s ease
     box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3)}
 
   .featured-card-custom:hover .featured-button-custom { background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */
@@ -875,21 +845,18 @@ import type { Case } from '$lib/types';
 
   .card {
     background: #ffffff
-    border-radius: 12px
-   , padding: 1rem
+    border-radius: 12px; padding: 1rem
     box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
   transition: transform 200ms ease, opacity 200ms ease
     overflow: hidden}
 
   .card.streaming {
     opacity: 0.95
-    animation: pulse 1.2s infinite alternate
-   , border: 1px dashed rgba(43, 108, 176, 0.12)}
+    animation: pulse 1.2s infinite alternate; border: 1px dashed rgba(43, 108, 176, 0.12)}
 
   .card.dym {
     color: #ff6600
-    border-left: 4px solid #ff9a3c
-   , background: linear-gradient(90deg, #fffaf5, #fff)}
+    border-left: 4px solid #ff9a3c; background: linear-gradient(90deg, #fffaf5, #fff)}
 
   @keyframes pulse {
     from {
@@ -902,8 +869,7 @@ import type { Case } from '$lib/types';
     font-size: 0.85rem
     color: #6b7280
     margin-top: 0.5rem
-    display: flex
-   , gap: 1rem
+    display: flex; gap: 1rem
     align-items: center}
 
   /* Responsive Design */

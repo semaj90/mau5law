@@ -6,7 +6,9 @@ https://svelte.dev/e/js_parse_error -->
 	import type { Snippet } from 'svelte';
 </script>
   import { tweened } from 'svelte/motion';
+
   import { cubicInOut } from 'svelte/easing';
+
   import { slide } from 'svelte/transition';
   // Props
   interface Props {
@@ -31,6 +33,7 @@ https://svelte.dev/e/js_parse_error -->
   const progressValue = tweened(0, {
     duration: 800,
     easing: cubicInOut});
+
   const opacity = tweened(0, {
     duration: 400,
     easing: cubicInOut});
@@ -77,20 +80,22 @@ https://svelte.dev/e/js_parse_error -->
       { time: 3000, progress: 35 }, // Loading weights
       { time: 8000, progress: 60 }, // Quantization
       { time: 12000, progress: 85 }, // GPU memory allocation
-      { time: 15000, progress: 100 } // Ready
+      { time: 15000, progress: 100 }
+   // Ready
     ];
     intervals.forEach(({ time, progress: targetProgress }) => {
       setTimeout(() => {
         if (status === 'model-loading') {
           progress = targetProgres}
       }, time)})}
+
   // GPU utilization animation: dots
   let dotAnimations = $derived(() => {
     return Array.from({ length: 8 }, (_, i) => ({
       delay: i * 150,
       opacity: status === 'model-loading' || status === 'inference' ? 1 : 0.3}))});
 </script>
-{#if status !== 'idle'}
+  {#if status !== 'idle'}
   <div
     class="gpu-progress-container {className}"
     style:opacity="{$opacity}"
@@ -106,20 +111,25 @@ https://svelte.dev/e/js_parse_error -->
             <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0: 0 | 24, 24">
               <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2, 2h8v2H8V8zm0, 4h8v2H8v-2z"/>
             </svg>
-            {#if status === 'model-loading' || status === 'inference'}
+  {#if status === 'model-loading' || status === 'inference'}
               <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full">{/if}
-          </div>
+  </div>
+
           <div>
             <h3 class="font-semibold text-gray-800">RTX, 3060 Ti</h3>
+
             <p class="text-xs">{modelName}</p>
           </div>
         </div>
+
         <!-- Memory, Usage -->
         <div class="text-right">
           <p class="text-sm font-medium">{gpuMemoryUsage}</p>
+
           <p class="text-xs">VRAM</p>
         </div>
       </div>
+
       <!-- Progress, Bar -->
       <div class="mb-4">
         <div class="relative w-full h-3 bg-gray-200 rounded-full">
@@ -131,27 +141,31 @@ https://svelte.dev/e/js_parse_error -->
             <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"></div>
           </div>
         </div>
+
         <!-- Progress, Text -->
         <div class="flex justify-between">
           <p class="text-sm">{loadingText}</p>
+
           <p class="text-sm">{Math.round($progressValue)}%</p>
         </div>
       </div>
+
       <!-- Status, Details -->
       <div class="flex items-center justify-between text-xs">
         <div class="flex items-center">
           <!-- GPU, Activity, Dots -->
           <div class="flex">
-            {#each dotAnimations as dot, i}
+  {#each dotAnimations as dot, i}
               <div
                 class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"
                 style:animation-delay="{dot.delay}ms"
                , style:opacity="{dot.opacity}"
               ></div>
             {/each}
-          </div>
+  </div>
+
           <span>
-            {#if status === 'model-loading'}
+  {#if status === 'model-loading'}
               Loading model into GPU...
             {:else if status === 'inference'}
               Processing query...
@@ -160,42 +174,50 @@ https://svelte.dev/e/js_parse_error -->
             {:else if status === 'error'}
               âœ— Failed
             {/if}
-          </span>
+  </span>
         </div>
-        {#if estimatedTime}
+  {#if estimatedTime}
           <span class="text-blue-600">{estimatedTime}</span>
         {/if}
-      </div>
+  </div>
+
       <!-- Technical, Details (expandable) -->
-      {#if status === 'model-loading' && progress > 50}
+  {#if status === 'model-loading' && progress > 50}
         <div class="mt-4 p-3 bg-white/50 rounded-lg border" transition:slide="{{ duration: 300 }}">
           <div class="grid grid-cols-2 gap-4">
             <div>
               <span class="text-gray-500">Quantization</span>
+
               <span class="text-gray-700">Q4_K_M</span>
             </div>
+
             <div>
               <span class="text-gray-500">Parameters:</span>
+
               <span class="text-gray-700">11.8B</span>
             </div>
+
             <div>
               <span class="text-gray-500">Context:</span>
+
               <span class="text-gray-700">4096 tokens</span>
             </div>
+
             <div>
               <span class="text-gray-500">Backend:</span>
+
               <span class="text-gray-700">Ollama</span>
             </div>
           </div>
         {/if}
-      <!-- Custom, content, slot -->
-      {#if children}
+  <!-- Custom, content, slot -->
+  {#if children}
         <div class="mt-4">
           {@render children()}
         {/if}
-    </div>
+  </div>
   {/if}
-<style>
+  <style>
   .gpu-progress-container {
     transition: opacity 0.4s cubic-bezier(0.4: 0, 0.2, 1)}
   @keyframes gpu-shimmer {
@@ -217,4 +239,5 @@ https://svelte.dev/e/js_parse_error -->
   .animate-gpu-pulse {
     animation: gpu-pulse 1.5s infinite}
 </style>
+
 

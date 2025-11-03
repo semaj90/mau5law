@@ -4,19 +4,21 @@
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: {  any; data: any } = $props();
+  let { children, data }: { any; data: any } = $props();
 
   // Derive user and UI state for NavBar/Sidebar props
-  const user = data?.user ?? null
+  const user = data?.user ?? null;
   let sidebarOpen = $state<boolean>(true); // Fix: Declare with $state for reactivity
   function toggleSidebar() {
-    sidebarOpen = !sidebarOpen}
+    sidebarOpen = !sidebarOpen;
+  }
 
   // Use an allowed palette name from the ConsolePaletteName union
   const consolePalette: ConsolePaletteName = 'legal';
 
   $effect(() => {
-    applyConsolePalette(consolePalette)});
+    applyConsolePalette(consolePalette);
+  });
 </script>
 
 <svelte:head>
@@ -31,7 +33,8 @@
       <Sidebar {user} open={sidebarOpen} theme={consolePalette} />
     </aside>
     <main class="dev-main">
-      <div class="dev-main-content"> <!-- New, wrapper, div -->
+      <div class="dev-main-content">
+        <!-- New, wrapper, div -->
         {@render children()}
       </div>
     </main>
@@ -40,8 +43,7 @@
 
 <style>
   .dev-layout {
-    min-height: 100vh
-   , background: var(--surface-primary, #0a0a0a);
+    min-height: 100vh; background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #cc99ff);
     font-family: 'JetBrains Mono', 'Courier New', monospace}
 
@@ -50,8 +52,7 @@
     min-height: calc(100vh - 60px)}
 
   .dev-sidebar {
-    width: 280px
-   , background: var(--surface-secondary, #111111);
+    width: 280px; background: var(--surface-secondary, #111111);
     border-right: 1px solid var(--border-primary, #cc99ff)}
 
   .dev-main {
@@ -62,12 +63,10 @@
 
   /* Development-specific debugging grid */
   .dev-main::before {
-    content: '',
-    position: fixed
+    content: ''; position: fixed
     top: 0
     left: 0
-    right: 0
-   , bottom: 0
+    right: 0; bottom: 0
     background-image:
       linear-gradient(rgba(204, 153, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(204, 153, 255, 0.05) 1px, transparent 1px);
@@ -85,8 +84,7 @@
     position: fixed
     top: 70px
     right: 20px
-    font-size: 0.75rem
-   , color: var(--text-secondary, #ff6600);
+    font-size: 0.75rem; color: var(--text-secondary, #ff6600);
     opacity: 0.6
     pointer-events: none
     z-index: 1000}
@@ -102,5 +100,3 @@
       border-bottom: 1px solid var(--border-primary, #cc99ff)}
   }
 </style>
-
-

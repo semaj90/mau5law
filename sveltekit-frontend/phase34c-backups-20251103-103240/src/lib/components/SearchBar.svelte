@@ -14,10 +14,10 @@
     value = '',
     showFilters = true,
     sortOptions = [
-      { id: 'relevance', label: 'Relevance' },
-      { id: 'date', label: 'Date' },
-      { id: 'name', label: 'Name' },
-      { id: 'type', label: 'Type' }
+      { id: 'relevance'; label: 'Relevance' },
+      { id: 'date'; label: 'Date' },
+      { id: 'name'; label: 'Name' },
+      { id: 'type'; label: 'Type' }
     ],
     onsearch,
     onsortChanged,
@@ -54,8 +54,7 @@
     dispatchFilters()}
   function dispatchFilters() {
     onfiltersChanged?.(new CustomEvent('filtersChanged', {
-      detail: { fileTypes: selectedFileTypes,
-        dateRange: dateRange
+      detail: { fileTypes: selectedFileTypes; dateRange: dateRange
       }
     }))}
 </script>
@@ -189,56 +188,46 @@
     display: flex
     align-items: center}
   .sort-select {
-    appearance: none
-   , background: var(--bg-primary),
+    appearance: none; background: var(--bg-primary),
     border: 1px solid var(--border-light);
     border-radius: 6px
     padding: 0.5rem 2rem 0.5rem 0.75rem
-    font-size: 0.875rem
-   , color: var(--text-primary),
+    font-size: 0.875rem; color: var(--text-primary),
     cursor: pointer
     min-width: 100px}
   .sort-container :global(svg) {
     position: absolute
     right: 0.5rem
     top: 50%;
-   , transform: translateY(-50%),
-    pointer-events: none
+   , transform: translateY(-50%); pointer-events: none
    , color: var(--text-muted)}
   .filter-button {
     display: flex
     align-items: center
     justify-content: center
     width: 36px
-    height: 36px
-   , background: var(--bg-primary),
+    height: 36px; background: var(--bg-primary),
     border: 1px solid var(--border-light);
     border-radius: 6px
     cursor: pointer
-    transition: all 0.2s ease
-   , color: var(--text-muted)}
-  .filter-button:hover { background: var(--bg-tertiary),
-    border-color: var(--harvard-crimson),
+    transition: all 0.2s ease; color: var(--text-muted)}
+  .filter-button:hover { background: var(--bg-tertiary); border-color: var(--harvard-crimson),
     color: var(--harvard-crimson)}
   .filter-button.active {
-    background: var(--harvard-crimson),
-    border-color: var(--harvard-crimson),
+    background: var(--harvard-crimson); border-color: var(--harvard-crimson),
     color: var(--text-inverse)}
   .filters-panel {
     margin-top: 1rem
-    padding: 1rem
-   , background: var(--bg-secondary),
+    padding: 1rem; background: var(--bg-secondary),
     border: 1px solid var(--border-light);
     border-radius: 8px
     display: flex
-    flex-direction: column
-   , gap: 1rem}
+    flex-direction: column; gap: 1rem}
   .filter-group label,
   .filter-group .filter-label {
     display: block
     font-size: 0.875rem
-    font-weight: 600
-   , color: var(--text-primary),
+    font-weight: 600; color: var(--text-primary),
     margin-bottom: 0.5rem}
   .filter-options {
     display: flex
@@ -258,10 +247,8 @@
     align-items: center
     gap: 0.5rem}
   .date-input {
-    padding: 0.5rem
-   , border: 1px solid var(--border-light);
-    border-radius: 4px
-   , background: var(--bg-primary),
+    padding: 0.5rem; border: 1px solid var(--border-light);
+    border-radius: 4px; background: var(--bg-primary),
     color: var(--text-primary)}
   .filter-actions {
     display: flex
@@ -270,15 +257,12 @@
     border-top: 1px solid var(--border-light)}
   .clear-filters-btn {
     padding: 0.5rem 1rem
-    background: transparent
-   , border: 1px solid var(--border-light);
-    border-radius: 4px
-   , color: var(--text-muted),
+    background: transparent; border: 1px solid var(--border-light);
+    border-radius: 4px; color: var(--text-muted),
     cursor: pointer
     font-size: 0.875rem
     transition: all 0.2s ease}
-  .clear-filters-btn:hover { background: var(--bg-tertiary),
-    border-color: var(--harvard-crimson),
+  .clear-filters-btn:hover { background: var(--bg-tertiary); border-color: var(--harvard-crimson),
     color: var(--harvard-crimson)}
   /* Responsive */
   @media (max-width: 768px) {
@@ -288,8 +272,7 @@
     .sort-select {
       min-width: auto}
     .filter-options {
-      flex-direction: column
-     , gap: 0.5rem}
+      flex-direction: column; gap: 0.5rem}
     .date-range {
       flex-direction: column
       align-items: stretch}

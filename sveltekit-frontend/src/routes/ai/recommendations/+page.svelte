@@ -4,15 +4,21 @@
   let recommendations = $state<any[]>([]);
   let loading = $state<boolean>(true);
 
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     try {
       const response = await fetch('/api/recommendations');
       if (response.ok) {
-        recommendations = await response.json()}
+        recommendations = await response.json();
+      }
     } catch (error) {
-      console.error('Error loading recommendations:', error)} finally {
-      loading = false}
-  });
+      console.error('Error loading recommendations:', error);
+    } finally {
+      loading = false;
+    }
+  		})();
+	});
 </script>
 
 <div class="container mx-auto">
@@ -40,4 +46,3 @@
     <p class="text-gray-500 text-center">No recommendations available</p>
   {/if}
 </div>
-

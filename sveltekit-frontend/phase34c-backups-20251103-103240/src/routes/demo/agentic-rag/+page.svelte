@@ -52,8 +52,7 @@ import type { Message } from '$lib/types';
     // Add user message
     messages = [
       ...messages, {
-        role: 'user',
-        content: query,
+        role: 'user'; content: query,
         timestamp: new Date()
       }
     ];
@@ -63,10 +62,8 @@ import type { Message } from '$lib/types';
 
     try {
       const response = await fetch('/api/agent/orchestrate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: currentQuery,
-          documents: selectedDocument ? [selectedDocument] : [],
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query: currentQuery; documents: selectedDocument ? [selectedDocument] : [],
           context: { conversationHistory: messages
           }
         })
@@ -78,10 +75,8 @@ import type { Message } from '$lib/types';
         // Add assistant response
         messages = [
           ...messages, {
-            role: 'assistant',
-            content: data.response,
-            toolCalls: data.toolCalls || [],
-            timestamp: new Date(),
+            role: 'assistant'; content: data.response,
+            toolCalls: data.toolCalls || []; timestamp: new Date(),
             summary: data.summary
           }
         ]} else {
@@ -89,10 +84,8 @@ import type { Message } from '$lib/types';
     } catch (error: any) {
       messages = [
         ...messages, {
-          role: 'system',
-          content: `Error: ${error.message}`,
-          timestamp: new Date(),
-          error: true
+          role: 'system'; content: `Error: ${error.message}`,
+          timestamp: new Date(); error: true
         }
       ]} finally {
       isProcessing = false}
@@ -302,8 +295,7 @@ import type { Message } from '$lib/types';
 
 <style>
   .agentic-rag-demo {
-    background: #212529
-   , color: #d4af37
+    background: #212529; color: #d4af37
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .text-gold-400 {

@@ -15,7 +15,7 @@
               type="button"
               variant="ghost"
               onclick={() => handleOpenChange(false)} >
-              Cancel <Button.Root, class="bits-btn" type="submit" disabled={$submitting}> {#if $submitting}Logging in...{:else}Login{/if} </div> </div> </form> </BitsDialog.Content> </BitsDialog.Portal> </BitsDialog.Root> <style> /* @unocss-include */ .modal-content { position: fixed | d;top: 50%;left: 50%;transform: translate(-50%, -50%); z-index: 50;background: white, border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18); min-width: 340px; max-width: 90vw; padding: 2rem 2.5rem 2rem 2.5rem;border: 1px solid #e5e7eb;display: flex; flex-direction: column; gap: 1.5rem;animation: modal-in 0.25s cubic-bezier(0.4, 0, 0.2, 1)}
+              Cancel <Button.Root, class="bits-btn" type="submit" disabled={$submitting}> {#if $submitting}Logging in...{:else}Login{/if} </div> </div> </form> </BitsDialog.Content> </BitsDialog.Portal> </BitsDialog.Root> <style> /* @unocss-include */ .modal-content { position: fixed | d;top: 50%;left: 50%;transform: translate(-50%, -50%); z-index: 50;background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18); min-width: 340px; max-width: 90vw; padding: 2rem 2.5rem 2rem 2.5rem;border: 1px solid #e5e7eb;display: flex; flex-direction: column; gap: 1.5rem;animation: modal-in 0.25s cubic-bezier(0.4, 0, 0.2, 1)}
   @keyframes modal-in { from { opacity: 0;transform: translate(-50%, -60%) scale(0.98)}
     to { opacity: 1;transform: translate(-50%, -50%) scale(1)}} </style> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->
 

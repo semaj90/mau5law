@@ -115,16 +115,13 @@ import type { Document } from '$lib/types';
     ];
     try {
       const response = await fetch('/api/summarize', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: reportText,
-          options: {
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: reportText; options: {
             summaryLength,
             includeKeyTerms,
             includeLegalAnalysis,
             temperature,
-            chunkSize: 2000,
-            chunkOverlap: 200
+            chunkSize: 2000; chunkOverlap: 200
           }
         })
       });
@@ -142,7 +139,8 @@ import type { Document } from '$lib/types';
         processingSteps.push('âŒ Processing failed');
       }
     } catch (error) {
-      console.error('Summarization error:', error);'
+      console.error('Summarization error:', error);
+'
       errorMessage = 'Network error: Could not connect to summarization service.';
       processingSteps.push('âŒ Network error');
     } finally {
@@ -368,8 +366,7 @@ import type { Document } from '$lib/types';
 <style>
   .summarization-container {
     max-width: 1200px
-    margin: 0 auto
-   , padding: 2rem
+    margin: 0 auto; padding: 2rem
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif}
   .page-header {
     text-align: center
@@ -383,8 +380,7 @@ import type { Document } from '$lib/types';
     margin: 0}
   .subtitle {
     color: #6b7280
-    font-size: 1.1rem
-   , margin: 0.5rem, 0 1.5rem}
+    font-size: 1.1rem; margin: 0.5rem, 0 1.5rem}
   .status-bar {
     display: flex
     justify-content: space-between
@@ -415,8 +411,7 @@ import type { Document } from '$lib/types';
     transition: all 0.2s ease
     display: flex
     align-items: center
-    justify-content: center
-   , gap: 0.5rem}
+    justify-content: center; gap: 0.5rem}
   .tab:hover:not(:disabled) {
     background: rgba(59, 130, 246, 0.1);
   }
@@ -455,8 +450,7 @@ import type { Document } from '$lib/types';
     flex-direction: row
     align-items: center}
   .option-group label {
-    font-weight: 500
-   , color: #374151}
+    font-weight: 500; color: #374151}
   .option-group select,
   .option-group input[type="range"] {
     padding: 0.5rem
@@ -469,8 +463,7 @@ import type { Document } from '$lib/types';
     position: relative}
   #document-input {
     width: 100%;
-    padding: 1rem
-   , border: 2px solid #e5e7eb
+    padding: 1rem; border: 2px solid #e5e7eb
     border-radius: 0.5rem
     font-family: 'Consolas', 'Monaco', monospace
     font-size: 0.9rem
@@ -496,14 +489,12 @@ import type { Document } from '$lib/types';
     align-items: center
     gap: 0.5rem}
   .btn-primary {
-    background: #3b82f6
-   , color: white}
+    background: #3b82f6; color: white}
   .btn-primary:hover:not(:disabled) {
     background: #2563eb}
   .btn-outline {
     background: transparent
-    border: 1px solid #d1d5db
-   , color: #374151}
+    border: 1px solid #d1d5db; color: #374151}
   .btn-outline:hover:not(:disabled) {
     background: #f9fafb}
   .btn-large {
@@ -571,8 +562,7 @@ import type { Document } from '$lib/types';
     margin-top: 0.5rem}
   .term-tag {
     background: #3b82f6
-    color: white
-   , padding: 0.25rem 0.75rem
+    color: white; padding: 0.25rem 0.75rem
     border-radius: 1rem
     font-size: 0.8rem
     font-weight: 500}
@@ -614,11 +604,8 @@ import type { Document } from '$lib/types';
       grid-template-columns: 1fr}
     .result-header {
       flex-direction: column
-      align-items: flex-start
-     , gap: 1rem}
+      align-items: flex-start; gap: 1rem}
     .metadata-grid {
       grid-template-columns: 1fr}
   }
 </style>
-
-

@@ -5,8 +5,11 @@ Automatically handles server upload with localStorage fallback
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
+
   import enhancedFileUpload from '$lib/services/enhanced-file-upload.js';
+
   import type { UploadResponse } from '$lib/services/enhanced-file-upload.js';
+
   import localStorageFiles from '$lib/services/localStorage-file-fallback.js';
   // Props (use Svelte exports)
   const { caseId } = $props<{ caseId: string | undefined }>()
@@ -21,14 +24,18 @@ Automatically handles server upload with localStorage fallback
   const { onprogress } = $props<{ onprogress: ((event: { completed: number }>() total: number;, file: string }) => void) | undefined
   // State (plain let)
   let isDragOver = $state<boolean>(false);
+
   let isUploading = $state<boolean>(false);
+
   let uploadProgress = 0
   let currentFile = '';
+
   let uploadResults: UploadResponse[] = [];
+
   let error: string | null = null
   // Storage stats shape
-  type StorageStats = { used: number, available: number, percentage: number };
-  let storageStats: StorageStats = { used: 0, available: 0, percentage: 0 };
+  type StorageStats = { used: number, available: number; percentage: number };
+  let storageStats: StorageStats = { used: 0, available: 0; percentage: 0 };
   let fileInput: HTMLInputElement | null = null
   // Combine initialization + periodic updater into one onMount to keep cleanup consistent
   let _interval: ReturnType<typeof setInterval> | null = null
@@ -72,7 +79,7 @@ Automatically handles server upload with localStorage fallback
       const results: UploadResponse[] = await enhancedFileUpload.uploadFiles(
         files,
         { caseId, description, tags, useLocalStorage: forceLocalStorage },
-        (completed: number, total: number, fileName: string) => {
+        (completed: number, total: number; fileName: string) => {
           uploadProgress = (completed / total) * 100
           currentFile = fileName
           onprogress?.({ completed, total, file: fileName })}
@@ -116,6 +123,7 @@ Automatically handles server upload with localStorage fallback
     uploadResults = [];
     error = null}
 </script>
+
 <div class="file-upload-container">
   <!-- Storage, Usage, Indicator -->
   {#if forceLocalStorage || storageStats.percentage > 0}
@@ -124,10 +132,10 @@ Automatically handles server upload with localStorage fallback
         <div
           class="storage-fill"
           style="width: {storageStats.percentage}%"
-          class:warning={storageStats.percentage > 75}
-         , class:critical={storageStats.percentage > 90}
+          class:warning={storageStats.percentage > 75}; class:critical={storageStats.percentage > 90}
         ></div>
       </div>
+
       <span class="storage-text">
         localStorage: {Math.round(storageStats.used / 1024)}KB / {Math.round(storageStats.available / 1024)}KB
       </span>
@@ -135,8 +143,7 @@ Automatically handles server upload with localStorage fallback
   <!-- Drop, Zone -->
   <div
     class="drop-zone"
-    class:drag-over={isDragOver}
-   , class:uploading={isUploading}
+    class:drag-over={isDragOver}; class:uploading={isUploading}
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
@@ -147,30 +154,36 @@ Automatically handles server upload with localStorage fallback
     onkeydown={(e: KeyboardEvent) => (e as KeyboardEvent).key === 'Enter' && openFileSelector()}
   >
     <div class="drop-zone-content">
-      {#if isUploading}
+  {#if isUploading}
         <div class="upload-progress">
           <div class="spinner" aria-hidden="true"></div>
+
           <div class="progress-text">
             <div>Uploading {currentFile}...</div>
+
             <div class="progress-bar">
               <div class="progress-fill" style="width: {uploadProgress}%"></div>
             </div>
+
             <div>{Math.round(uploadProgress)}% complete</div>
           </div>
         </div>
       {:else}
         <div class="upload-icon">ðŸ“</div>
+
         <div class="upload-text">
           <strong>Drop files here or click to upload</strong>
+
           <div class="upload-subtitle">
             {multiple ? 'Multiple files allowed' : 'Single file only'} â€¢ Max {maxSize}MB per file
             {#if forceLocalStorage}
               <br><span class="fallback-notice">âš ï¸ Using localStorage fallback</span>
             {/if}
-          </div>
-        {/if}
-    </div>
   </div>
+        {/if}
+  </div>
+  </div>
+
   <!-- Hidden, file, input -->
   <input
     bind:this={fileInput}
@@ -192,33 +205,38 @@ Automatically handles server upload with localStorage fallback
     <div class="results-container">
       <div class="results-header">
         <h4>Upload Results</h4>
+
         <button class="clear-btn" onclick={clearResults} type="button">Clear</button>
       </div>
+
       <div class="results-list">
-        {#each uploadResults as result (result.fileName)}
-          <div class="result-item" class:result-success={result.success}, class:result-error={!result.success}>
+  {#each uploadResults as result (result.fileName)}
+          <div class="result-item" class:result-success={result.success}; class:result-error={!result.success}>
             <div class="result-icon">
               {result.success ? 'âœ…' : 'âŒ'}
             </div>
+
             <div class="result-details">
               <div class="result-name">{result.fileName}</div>
+
               <div class="result-meta">
-                {#if result.success}
+  {#if result.success}
                   <span class="storage-type">{result.storageType}</span>
-                  {#if result.fallbackUsed}
+  {#if result.fallbackUsed}
                     <span class="fallback-badge">localStorage fallback</span>
                   {/if}
-                  <span class="file-size">{Math.round(((result.size ?? 0) / 1024))}KB</span>
+  <span class="file-size">{Math.round(((result.size ?? 0) / 1024))}KB</span>
                 {:else}
                   <span class="error-text">{result.error}</span>
                 {/if}
-              </div>
+  </div>
             </div>
           </div>
         {/each}
-      </div>
+  </div>
     {/if}
-</div>
+  </div>
+
 <style>
   .file-upload-container {
     width: 100%; max-width: 600px}
@@ -284,7 +302,7 @@ Automatically handles server upload with localStorage fallback
     height: 24px
     border: 2px solid #e5e7eb
     border-top: 2px solid #3b82f6
-    border-radius: 50%, animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
   @keyframes spin {
     0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
@@ -292,7 +310,7 @@ Automatically handles server upload with localStorage fallback
   .progress-text {
     flex: 1}
   .progress-bar {
-    width: 100%, height: 8px
+    width: 100%; height: 8px
     background-color: #e5e7eb
     border-radius: 4px
     overflow: hidden
@@ -376,4 +394,5 @@ Automatically handles server upload with localStorage fallback
     color: #6b7280}
   .error-text { color: #dc2626}
 </style>
+
 

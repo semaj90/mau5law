@@ -1,4 +1,4 @@
-﻿<!--
+<!--
   Browser RAG Demo - Privacy-Preserving Legal AI
 
   Complete RAG system running 100% in browser:
@@ -9,7 +9,7 @@
   NO DATA LEAVES THE BROWSER!
 -->
 <script lang="ts">
-import type { Document } from '$lib/types';
+  import type { Document } from '$lib/types';
   import { browserRAG } from '$lib/ai/browser-rag-chain';
   import { onMount } from 'svelte';
   import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from 'lucide-svelte';
@@ -21,19 +21,25 @@ import type { Document } from '$lib/types';
   let error = $state<string | null>(null);
 
   // Demo documents
-  let sampleDocuments = $state([ {
+  let sampleDocuments = $state([
+    {
       id: 'contract1',
-      content: 'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
-      metadata: { type: 'contract', jurisdiction: 'California', date: '2024-01-15' }
-    }, {
+      content:
+        'Employment contracts in California must include at-will employment clauses unless otherwise specified. Non-compete agreements are generally unenforceable except in limited circumstances involving trade secrets.',
+      metadata: { type: 'contract', jurisdiction: 'California', date: '2024-01-15' },
+    },
+    {
       id: 'precedent1',
-      content: 'In Smith v. Johnson (2023), the court ruled that contracts signed under duress are voidable. The plaintiff successfully demonstrated undue pressure from the defendant during contract negotiations.',
-      metadata: { type: 'case_law', year: 2023, court: 'Superior Court' }
-    }, {
+      content:
+        'In Smith v. Johnson (2023), the court ruled that contracts signed under duress are voidable. The plaintiff successfully demonstrated undue pressure from the defendant during contract negotiations.',
+      metadata: { type: 'case_law', year: 2023, court: 'Superior Court' },
+    },
+    {
       id: 'statute1',
-      content: 'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
-      metadata: { type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' }
-    }
+      content:
+        'Federal law requires all employment contracts to comply with minimum wage requirements under the Fair Labor Standards Act (FLSA). Exempt employees must meet specific salary and duties tests.',
+      metadata: { type: 'statute', jurisdiction: 'Federal', topic: 'Labor Law' },
+    },
   ]);
 
   // Query input
@@ -46,10 +52,12 @@ import type { Document } from '$lib/types';
   // Streaming
   let isStreaming = $state<boolean>(false);
 
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     try {
       currentStep = 'Initializing Browser RAG (this may take 2-5 minutes on first load)...';
-      isLoading = true
+      isLoading = true;
       // Initialize RAG chain
       await browserRAG.initialize();
 
@@ -57,19 +65,22 @@ import type { Document } from '$lib/types';
       // Add sample documents
       await browserRAG.addDocuments(sampleDocuments);
 
-      isInitialized = true
+      isInitialized = true;
       currentStep = 'âœ… Ready! Ask a legal question.';
-      error = null} catch (err) {
+      error = null;
+    } catch (err) {
       error = `Initialization failed: ${err}`;
-      console.error('RAG Init, Error:', err)} finally {
-      isLoading = false}
-  });
-
+      console.error('RAG Init, Error:', err);
+    } finally {
+      isLoading = false;
+    }
+  		})();
+	});
   async function handleQuery(): Promise<any> {
-    if (!query.trim() || !isInitialized) return
+    if (!query.trim() || !isInitialized) return;
     try {
-      isLoading = true
-      error = null
+      isLoading = true;
+      error = null;
       answer = '';
       sources = [];
 
@@ -77,23 +88,25 @@ import type { Document } from '$lib/types';
         topK: 3,
         temperature: 0.7,
         maxTokens: 300,
-        minSimilarity: 0.2
+        minSimilarity: 0.2,
       });
 
-      answer = result.answer
-      sources = result.sources
-      confidence = result.confidence
-      duration = result.duration} catch (err) {
+      answer = result.answer;
+      sources = result.sources;
+      confidence = result.confidence;
+      duration = result.duration;
+    } catch (err) {
       error = `Query failed: ${err}`;
-      console.error('Query, Error:', err)} finally {
-      isLoading = false}
+      console.error('Query, Error:', err);
+    } finally {
+      isLoading = false;
+    }
   }
-
   async function handleStreamQuery(): Promise<any> {
-    if (!query.trim() || !isInitialized) return
+    if (!query.trim() || !isInitialized) return;
     try {
-      isStreaming = true
-      error = null
+      isStreaming = true;
+      error = null;
       answer = '';
       sources = [];
 
@@ -102,29 +115,32 @@ import type { Document } from '$lib/types';
       for await (const chunk of browserRAG.queryStream(query, {
         topK: 3,
         temperature: 0.7,
-        maxTokens: 300
+        maxTokens: 300,
       })) {
-        answer += chunk.text
+        answer += chunk.text;
         if (chunk.done && chunk.sources) {
-          sources = chunk.sources
-          duration = performance.now() - startTime}
+          sources = chunk.sources;
+          duration = performance.now() - startTime;
+        }
       }
     } catch (err) {
       error = `Streaming failed: ${err}`;
-      console.error('Streaming, Error:', err)} finally {
-      isStreaming = false}
+      console.error('Streaming, Error:', err);
+    } finally {
+      isStreaming = false;
+    }
   }
-
   function addCustomDocument() {
     const newDoc = {
       id: `custom-${Date.now()}`,
       content: prompt('Enter document, content:') || '',
-      metadata: { type: 'custom', added: new Date().toISOString() }
+      metadata: { type: 'custom', added: new Date().toISOString() },
     };
 
     if (newDoc.content) {
       sampleDocuments = [...sampleDocuments, newDoc];
-      browserRAG.addDocuments([newDoc])}
+      browserRAG.addDocuments([newDoc]);
+    }
   }
 
   const stats = $derived(browserRAG.getStats());
@@ -211,20 +227,12 @@ import type { Document } from '$lib/types';
       </div>
 
       <div class="flex">
-        <button
-          class="nes-btn is-primary"
-          onclick={handleQuery}
-          disabled={isLoading || isStreaming}
-        >
+        <button class="nes-btn is-primary" onclick={handleQuery} disabled={isLoading || isStreaming}>
           <MessageSquare size={16} class="inline" />
           Ask Question
         </button>
 
-        <button
-          class="nes-btn is-success"
-          onclick={handleStreamQuery}
-          disabled={isLoading || isStreaming}
-        >
+        <button class="nes-btn is-success" onclick={handleStreamQuery} disabled={isLoading || isStreaming}>
           <Zap size={16} class="inline" />
           Stream Response
         </button>

@@ -5,7 +5,40 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; type O
   } onMount(() => { loadOptions(); }); const handleSubmit = async () => { // In a real application, you would send this data to your backend API const payload = { notesContent, selectedCaseForNotes, selectedPoiForNotes }; console.log('Add Notes Data:', payload); // Simulate API call await new Promise(resolve => setTimeout(resolve, 1000)); // Notify parent via callback prop when provided (Svelte, 5 pattern) if (typeof onsaved === 'function') { try { onsaved(payload); } catch (e) { // swallow callback errors to avoid breaking the component console.error('onsaved handler threw', e); }
     } else { // fallback to console and lightweight feedback console.info('onsaved not provided; saved payload:', payload); // guard alert behind browser environment check to avoid SSR issues try { if (typeof window !== 'undefined' && typeof window.alert === 'function') { window.alert('Notes saved successfully!'); }
       } catch (e) { // ignore in non-browser contexts }
-    } // Reset form notesContent = ''; selectedCaseForNotes = ''; selectedPoiForNotes = ''; }; </script> <div class="nier-bits-card"> <div class="nier-bits-yorha-panel-header"> <h3>Add Notes</h3> </div> <div class="nier-bits-card-body"> <div class="mb-3"> <label for="notesContent" class="form-label">Notes:</label> <textarea id="notesContent" class="form-control" bind:value={ notesContent } rows="5"></textarea> </div> <div class="mb-3"> <label for="caseSelectNotes" class="form-label">Link to Case (Optional):</label> <select id="caseSelectNotes" class="form-control" bind:value={ selectedCaseForNotes }> <option value="">Select a case</option> {#each Array.isArray(caseOptions) ? caseOptions: [] as option} <option value={option.value}>{option.label}</option> {/each} </select> </div> <div class="mb-3"> <label for="poiSelectNotes" class="form-label">Link to POI (Optional):</label> <select id="poiSelectNotes" class="form-control" bind:value={ selectedPoiForNotes }> <option value="">Select a POI</option> {#each Array.isArray(poiOptions) ? poiOptions: [] as option} <option value={option.value}>{option.label}</option> {/each} </select> </div> <button type="button" aria-label="Action button" class="btn nes-btn" onclick={ handleSubmit }> Save Notes </button> </div> </div> <style> /* Align styles with actual markup classes used in the template */ .nier-bits-card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); padding: 1.25rem}
+    } // Reset form notesContent = ''; selectedCaseForNotes = ''; selectedPoiForNotes = ''; };
+</script>
+
+<div class="nier-bits-card">
+  <div class="nier-bits-yorha-panel-header"><h3>Add Notes</h3></div>
+  <div class="nier-bits-card-body">
+    <div class="mb-3">
+      <label for="notesContent" class="form-label">Notes:</label>
+      <textarea id="notesContent" class="form-control" bind:value={notesContent} rows="5"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="caseSelectNotes" class="form-label">Link to Case (Optional):</label>
+      <select id="caseSelectNotes" class="form-control" bind:value={selectedCaseForNotes}>
+        <option value="">Select a case</option>
+        {#each Array.isArray(caseOptions) ? caseOptions : [] as option}
+          <option value={option.value}>{option.label}</option>
+        {/each}
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="poiSelectNotes" class="form-label">Link to POI (Optional):</label>
+      <select id="poiSelectNotes" class="form-control" bind:value={selectedPoiForNotes}>
+        <option value="">Select a POI</option>
+        {#each Array.isArray(poiOptions) ? poiOptions : [] as option}
+          <option value={option.value}>{option.label}</option>
+        {/each}
+      </select>
+    </div>
+    <button type="button" aria-label="Action button" class="btn nes-btn" onclick={handleSubmit}> Save Notes </button>
+  </div>
+</div>
+
+<style>
+ /* Align styles with actual markup classes used in the template */ .nier-bits-card { background-color: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); padding: 1.25rem}
   .nier-bits-yorha-panel-header { border-bottom: 1px solid #eee; padding-bottom: 0.75rem; margin-bottom: 1rem}
   .nier-bits-yorha-panel-header h3 { margin: 0; font-size: 1.125rem; color: #222}
   .nier-bits-card-body { /* body wrapper spacing */ }
@@ -16,4 +49,3 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; type O
   button.btn.nes-btn.is-primary:hover, .btn.nes-btn.is-primary:hover { background-color: #0056b3}
   /* Utility spacing used in markup (mb-3 etc.) */ .mb-3 { margin-bottom: 0.75rem}
 </style>
-

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Message } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import type { HTMLInputAttributes } from 'svelte/elements';
@@ -71,6 +71,7 @@ import type { Message } from '$lib/types';
     value = '';
     onclear?.();
     inputElement?.focus()}
+
   // Dynamic classes
   const containerClasses = 'relative flex flex-col gap-1';
   const labelClasses = $derived(
@@ -122,6 +123,7 @@ import type { Message } from '$lib/types';
       hasError ? 'text-red-600 dark:text-red-400' : 'text-gray-500, dark:text-gray-400'].join(' ')
   );
 </script>
+
 <div class={containerClasses}>
   <!-- Label -->
   {#if label}
@@ -132,12 +134,12 @@ import type { Message } from '$lib/types';
   <!-- Input, Container -->
   <div class={inputContainerClasses}>
     <!-- Left, Icon -->
-    {#if icon && iconPosition === 'left'}
+  {#if icon && iconPosition === 'left'}
       <div class={iconClasses}>
         <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       {/if}
-    <!-- Input -->
-    {#if type === 'password'}
+  <!-- Input -->
+  {#if type === 'password'}
       <input
         bind:this={inputElement}
         id={inputId}
@@ -195,8 +197,8 @@ import type { Message } from '$lib/types';
         {...restProps}
       />
     {/if}
-    <!-- Right Icon, or, Status -->
-    {#if loading}
+  <!-- Right Icon, or, Status -->
+  {#if loading}
       <div class="space-y-4">
         <div class="space-y-4"></div>
       </div>
@@ -212,13 +214,14 @@ import type { Message } from '$lib/types';
       <div class={iconClasses}>
         <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       {/if}
-    <!-- Clear, Button -->
-    {#if showClearButton}
+  <!-- Clear, Button -->
+  {#if showClearButton}
       <button type="button" class="space-y-4" onclick={handleClear} tabindex={-1} aria-label="Clear, input">
         <iconify-icon, data-icon="${1}" class="space-y-4"></iconify-icon>
       </button>
     {/if}
   </div>
+
   <!-- Error, Message -->
   {#if hasError}
     <p id={errorId} class={hintClasses} role="alert">
@@ -231,6 +234,7 @@ import type { Message } from '$lib/types';
       {hint}
     </p>
   {/if}
-</div>
+  </div>
 ;
+
 

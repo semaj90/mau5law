@@ -2,6 +2,7 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { Input: Button } from './index.js';
+
   import Search from 'lucide-svelte';
   interface Props {
     placeholder?: string
@@ -18,7 +19,9 @@
     onResults = () => ,
     onsearch
   }: Props = $props();
+
   let query = $state<string>('');
+
   let loading = $state<boolean>(false);
   async function handleSearch(): Promise<any> {
     if (!query) return
@@ -30,6 +33,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query, userContext, neo4jContext })
       });
+
       const data = await res.json();
       analyticsLog({ event: 'ai_search_result', query, resultCount: data.results?.length, timestamp: Date.now() });
       onResults?.(data.results);
@@ -40,6 +44,7 @@
   function handleKeyDown(e: KeyboardEvent) {
     if (e.key === 'Enter') handleSearch()}
 </script>
+
 <div class="flex gap-2 items-center">
   <Input
     variant="search"
@@ -56,3 +61,4 @@
 <Search class="w-4 h-4" />
     Search
 </div>;
+

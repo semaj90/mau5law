@@ -4,6 +4,7 @@
   import { cn } from '$lib/utils';
   let { value, forceMount = false, class: className = undefined, children = undefined, ...restProps } = $props();
 </script>
+
 <TabsPrimitive.Content
   {value}
   {forceMount}

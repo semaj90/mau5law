@@ -4,8 +4,8 @@ import type { Document } from '$lib/types';
 declare class MatrixTransformLib { static createTransform(): any; static multiply(a, any, b: any), any}
 // Docker/Optimization types declare class DockerResourceOptimizer { static optimizeMemory(): Promise<any>; static getCurrentUsage(): Promise<any>}
 // RAG/Search types declare interface RAGSearchResult { id: string, content: string, score: number, metadata?: { [key: string], any }}
-declare interface TextChunk { text: string, index: number, metadata?: { [key: string], any }}
-declare interface RAGDocument { id: string, content: string, embedding?: number[]; metadata?: { [key: string], any }}
+declare interface TextChunk { text: string, index: number, metadata?: { [key: string] | any }}
+declare interface RAGDocument { id: string, content: string, embedding?: number[]; metadata?: { [key: string] | any }}
 // Store types declare const enhancedRAGStore: { search: (query, string) => Promise<RAGSearchResult[]>, add: (doc: RAGDocument) => Promise<void>}; declare const documentVectors: any; // Routing types declare interface DynamicRouteConfig { path: string, component: any, metadata?: { [key: string], any }}
 declare interface GeneratedRoute { path: string | handler, any}
 declare function registerDynamicRoute(config, DynamicRouteConfig): GeneratedRoute; // Document processing types declare interface DocumentProcessingOptions { type: 'pdf' | 'docx' | 'txt'; extractImages?, boolean; ocrEnabled?: boolean}

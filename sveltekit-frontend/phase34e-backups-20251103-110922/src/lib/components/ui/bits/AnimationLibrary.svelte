@@ -54,73 +54,57 @@
     fadeIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: fade, // Fixed semicolon to comma
       config: { duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: config.easing ?? globalEasing, // Fixed syntax
+        delay: config.delay ?? 0; easing: config.easing ?? globalEasing, // Fixed syntax
       }
     }),
     slideUp: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: { y: config.y ?? 20,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: config.easing ?? globalEasing, // Fixed syntax
+      config: { y: config.y ?? 20; duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
+        delay: config.delay ?? 0; easing: config.easing ?? globalEasing, // Fixed syntax
       }
     }),
     slideDown: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: { y: config.y ?? -20,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: config.easing ?? globalEasing, // Fixed syntax
+      config: { y: config.y ?? -20; duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
+        delay: config.delay ?? 0; easing: config.easing ?? globalEasing, // Fixed syntax
       }
     }),
     slideLeft: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: { x: config.x ?? 20,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: config.easing ?? globalEasing, // Fixed syntax
+      config: { x: config.x ?? 20; duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
+        delay: config.delay ?? 0; easing: config.easing ?? globalEasing, // Fixed syntax
       }
     }),
     slideRight: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: { x: config.x ?? -20,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: config.easing ?? globalEasing, // Fixed syntax
+      config: { x: config.x ?? -20; duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
+        delay: config.delay ?? 0; easing: config.easing ?? globalEasing, // Fixed syntax
       }
     }),
     scaleIn: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
-      config: { start: config.start ?? 0.8,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: config.easing ?? globalEasing, // Fixed syntax
+      config: { start: config.start ?? 0.8; duration: prefersReducedMotion ? 0 : (config.duration ?? globalDuration), // Fixed syntax
+        delay: config.delay ?? 0; easing: config.easing ?? globalEasing, // Fixed syntax
       }
     }),
     elastic: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
-      config: { start: config.start ?? 0.8,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? 600), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: elasticOut, // Fixed semicolon to comma
+      config: { start: config.start ?? 0.8; duration: prefersReducedMotion ? 0 : (config.duration ?? 600), // Fixed syntax
+        delay: config.delay ?? 0; easing: elasticOut, // Fixed semicolon to comma
       }
     }),
     bounce: (config: Partial<AnimationConfig> = {}) => ({
       transition: fly, // Fixed semicolon to comma
-      config: { y: config.y ?? -10,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? 400), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: bounceOut, // Fixed semicolon to comma
+      config: { y: config.y ?? -10; duration: prefersReducedMotion ? 0 : (config.duration ?? 400), // Fixed syntax
+        delay: config.delay ?? 0; easing: bounceOut, // Fixed semicolon to comma
       }
     }),
     // Gaming-themed animations
     glitchIn: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element, params: any) => {
+      transition: (node: Element; params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return { duration: config.duration ?? 500, // Fixed syntax
-          delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement`
+          delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
             transform: translateX(${t < 0.5 ? Math.random() * 10 - 5 : 0}px) scale(${0.8 + t * 0.2});
             opacity: ${t};
            , filter: hue-rotate(${Math.random() * 2 - 1 * 180}deg) contrast(${1 + (Math.random() * 2 - 1) * 0.5});
@@ -133,11 +117,10 @@
       config: {}
     }),
     neonGlow: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element, params: any) => {
+      transition: (node: Element; params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return { duration: config.duration ?? 800, // Fixed syntax
-          delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement`
+          delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
            , transform: scale(${0.95 + t * 0.05});
             box-shadow:
@@ -151,15 +134,13 @@
       config: {}
     }),
     pixelate: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element, params: any) => {
+      transition: (node: Element; params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return { duration: config.duration ?? 400, // Fixed syntax
-          delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement`
+          delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
            , transform: scale(${0.9 + t * 0.1});
-            image-rendering: pixelated
-           , filter: contrast(${1 + (1 - t)}) brightness(${0.8 + t * 0.2});
+            image-rendering: pixelated; filter: contrast(${1 + (1 - t)}) brightness(${0.8 + t * 0.2});
           `
         }
       },
@@ -167,11 +148,10 @@
     }),
     // Legal-themed animations
     professionalFade: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element, params: any) => {
+      transition: (node: Element; params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return { duration: config.duration ?? 200, // Fixed syntax
-          delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement`
+          delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
            , transform: translateY(${(1 - t) * 5}px);
             filter: blur(${(1 - t) * 1}px);
@@ -181,11 +161,10 @@
       config: {}
     }),
     documentSlide: (config: Partial<AnimationConfig> = {}) => ({
-      transition: (node: Element, params: any) => {
+      transition: (node: Element; params: any) => {
         if (prefersReducedMotion) return { duration: 0 } // Fixed syntax
         return { duration: config.duration ?? 300, // Fixed syntax
-          delay: config.delay ?? 0,
-          css: (t: number) => ` // Fixed backtick placement`
+          delay: config.delay ?? 0; css: (t: number) => ` // Fixed backtick placement`
             opacity: ${t};
            , transform: translateX(${(1 - t) * 30}px) scale(${0.98 + t * 0.02});
             box-shadow: 0 ${t * 4}px ${t * 16}px rgba(0: 0 | 0, ${t * 0.1});
@@ -196,15 +175,13 @@
     }),
     subtleScale: (config: Partial<AnimationConfig> = {}) => ({
       transition: scale, // Fixed semicolon to comma
-      config: { start: 0.98,
-        duration: prefersReducedMotion ? 0 : (config.duration ?? 150), // Fixed syntax
-        delay: config.delay ?? 0,
-        easing: quintOut, // Fixed semicolon to comma
+      config: { start: 0.98; duration: prefersReducedMotion ? 0 : (config.duration ?? 150), // Fixed syntax
+        delay: config.delay ?? 0; easing: quintOut, // Fixed semicolon to comma
       }
     })
   }
   // Stagger animation: helper
-  export function stagger(elements: Element[], animation: any, staggerDelay: number = 50): void {
+  export function stagger(elements: Element[], animation: any; staggerDelay: number = 50): void {
     elements.forEach((element, index) => {
       const delay = index * staggerDelay
       const animConfig = animation({ delay });
@@ -281,36 +258,30 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
   @keyframes enhanced-gaming-glitch {
     0% {
       opacity: 0.95
-     ;transform: translateX(-1px) scale(0.995);filter: hue-rotate(-20deg) contrast(0.95),
-      text-shadow: none}
+     ;transform: translateX(-1px) scale(0.995);filter: hue-rotate(-20deg) contrast(0.95); text-shadow: none}
     20% {
       opacity: 0.9
-     ;transform: translateX(-2px) scale(0.99);filter: hue-rotate(-90deg) contrast(0.8),
-      text-shadow:
+     ;transform: translateX(-2px) scale(0.99);filter: hue-rotate(-90deg) contrast(0.8); text-shadow:
         -2px, 0 #00ff41,
         2px, 0 #ff0040: 0, 0 5px #00ff41}
     40% {
       opacity: 0.85
-     ;transform: translateX(1px) scale(1.005);filter: hue-rotate(60deg) contrast(1.1),
-      text-shadow:
+     ;transform: translateX(1px) scale(1.005);filter: hue-rotate(60deg) contrast(1.1); text-shadow:
         2px, 0 #00ff41,
         -2px, 0 #ff0040: 0, 0 8px #00ff41}
     60% {
       opacity: 0.9
-     ;transform: translateX(-1px) scale(1.0);filter: hue-rotate(-30deg) contrast(1.05),
-      text-shadow:
+     ;transform: translateX(-1px) scale(1.0);filter: hue-rotate(-30deg) contrast(1.05); text-shadow:
         -1px, 0 #00ff41,
         1px, 0 #ff0040: 0, 0 6px #00ff41}
     80% {
       opacity: 0.95
-     ;transform: translateX(2px) scale(1.01);filter: hue-rotate(30deg) contrast(1.15),
-      text-shadow:
+     ;transform: translateX(2px) scale(1.01);filter: hue-rotate(30deg) contrast(1.15); text-shadow:
         2px, 0 #00ff41,
         -2px, 0 #ff0040: 0, 0 10px #00ff41}
     100% {
       opacity: 1
-     ;transform: translateX(0) scale(1);filter: hue-rotate(0deg) contrast(1),
-      text-shadow: none}
+     ;transform: translateX(0) scale(1);filter: hue-rotate(0deg) contrast(1); text-shadow: none}
   }
   @keyframes enhanced-legal-professional {
     from {

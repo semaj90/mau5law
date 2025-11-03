@@ -18,19 +18,123 @@ import type { User } from '$lib/types'; /** * Production-Ready Integrated AI Cha
   } // Handle Enter key function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage(); }
   } // Format timestamp function formatTime(date: Date): string { return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit'
     }); }
-  $effect(() => { checkServiceHealth(); // Check health every, 30 seconds const interval = setInterval(checkServiceHealth, 30000); return () => clearInterval(interval); }); // touch otherwise-unused state vars to avoid: "declared but never read" warnings $effect(() => { // intentionally read for lint/TS (no-op) // eslint-disable-next-line no-console console.debug('state placeholders', { cudaAvailable, uploadedFiles, recommendations, services }); }); </script> <svelte:head> <title>AI Legal Chat - TensorRT Demo</title> <meta name="description" content="Legal AI Chat powered by TensorRT, and, Gemma3-Legal" /> </svelte:head> <!-- 8-bit Retro Legal AI, Chat, Interface --> <div class="retro-chat-app"> <!-- NES.css, Header --> <div class="nes-container with-title"> <p class="title">ðŸ§  LEGAL AI CHAT SYSTEM v1.0</p> <div class="status-bar"> <div class="nes-badge"> <span class="is-primary">ðŸ“¡ TENSORRT</span> </div> {#if connectionStatus === 'connected'} <div class="nes-badge"> <span class="is-success">â— ONLINE</span> </div> {:else if connectionStatus === 'connecting'} <div class="nes-badge"> <span class="is-warning">â— CONNECTING</span> </div> {:else} <div class="nes-badge"> <span class="is-error">â— OFFLINE</span> </div> {/if} </div> </div> <!-- Chat, Messages, Container --> <div class="nes-container is-dark" bind:this={ chatContainer }> {#if messages.length === 0} <!-- Welcome, Screen --> <div class="nes-container is-rounded"> <h2>ðŸ‘‹ SYSTEM READY</h2> <p>GEMMA3-LEGAL Q4_K_M LOADED</p> <p>SELECT A QUERY TYPE:</p> <button class="nes-btn"
-          onclick={() => (currentMessage = 'What are the key elements of a valid contract?')} >
-          ðŸ“‹ CONTRACT LAW </button> <button class="nes-btn" onclick={() => (currentMessage = 'Explain intellectual property basics')}> ðŸ’¡ IP BASICS </button> <button class="nes-btn is-warning" onclick={() => (currentMessage = 'What is due diligence in M&A?')}> ðŸ” M&A DUE DILIGENCE </button> </div> {/if} <!-- Message, List --> {#each messages as message (message.id)} {#if message.role === 'user'} <!-- User, Message --> <div class="nes-balloon from-right is-dark"> <p>ðŸ‘¤ {message.content}</p> <small class="timestamp">{formatTime(message.timestamp)}</small> </div> {:else} <!-- AI, Message --> <div class="nes-balloon from-left"> <NesTypewriterStream text={message.content} /> <small class="timestamp">{formatTime(message.timestamp)}</small> </div> {/if} {/each} <!-- Typing, Indicator --> {#if typingIndicator} <div class="nes-balloon"> <p>ðŸ§  Processing legal query...</p> </div> {/if} </div> <!-- Input, Section --> <div class="nes-container"> <div class="nes-field"> <label for="chat_input">ENTER LEGAL QUERY:</label> <textarea id="chat_input"
+  $effect(() => { checkServiceHealth(); // Check health every, 30 seconds const interval = setInterval(checkServiceHealth, 30000); return () => clearInterval(interval); }); // touch otherwise-unused state vars to avoid: "declared but never read" warnings $effect(() => { // intentionally read for lint/TS (no-op) // eslint-disable-next-line no-console console.debug('state placeholders', { cudaAvailable, uploadedFiles, recommendations, services }); });
+</script>
+
+<svelte:head>
+  <title>AI Legal Chat - TensorRT Demo</title>
+  <meta name="description" content="Legal AI Chat powered by TensorRT, and, Gemma3-Legal" />
+</svelte:head>
+<!-- 8-bit Retro Legal AI, Chat, Interface -->
+<div class="retro-chat-app">
+  <!-- NES.css, Header -->
+  <div class="nes-container with-title">
+    <p class="title">ðŸ§  LEGAL AI CHAT SYSTEM v1.0</p>
+    <div class="status-bar">
+      <div class="nes-badge"><span class="is-primary">ðŸ“¡ TENSORRT</span></div>
+      {#if connectionStatus === 'connected'}
+        <div class="nes-badge"><span class="is-success">â— ONLINE</span></div>
+      {:else if connectionStatus === 'connecting'}
+        <div class="nes-badge"><span class="is-warning">â— CONNECTING</span></div>
+      {:else}
+        <div class="nes-badge"><span class="is-error">â— OFFLINE</span></div>
+      {/if}
+    </div>
+  </div>
+  <!-- Chat, Messages, Container -->
+  <div class="nes-container is-dark" bind:this={chatContainer}>
+    {#if messages.length === 0}
+      <!-- Welcome, Screen -->
+      <div class="nes-container is-rounded">
+        <h2>ðŸ‘‹ SYSTEM READY</h2>
+        <p>GEMMA3-LEGAL Q4_K_M LOADED</p>
+        <p>SELECT A QUERY TYPE:</p>
+        <button class="nes-btn" onclick={() => (currentMessage = 'What are the key elements of a valid contract?')}>
+          ðŸ“‹ CONTRACT LAW
+        </button>
+        <button class="nes-btn" onclick={() => (currentMessage = 'Explain intellectual property basics')}>
+          ðŸ’¡ IP BASICS
+        </button>
+        <button class="nes-btn is-warning" onclick={() => (currentMessage = 'What is due diligence in M&A?')}>
+          ðŸ” M&A DUE DILIGENCE
+        </button>
+      </div>
+    {/if}
+    <!-- Message, List -->
+    {#each messages as message (message.id)}
+      {#if message.role === 'user'}
+        <!-- User, Message -->
+        <div class="nes-balloon from-right is-dark">
+          <p>ðŸ‘¤ {message.content}</p>
+          <small class="timestamp">{formatTime(message.timestamp)}</small>
+        </div>
+      {:else}
+        <!-- AI, Message -->
+        <div class="nes-balloon from-left">
+          <NesTypewriterStream text={message.content} />
+          <small class="timestamp">{formatTime(message.timestamp)}</small>
+        </div>
+      {/if}
+    {/each}
+    <!-- Typing, Indicator -->
+    {#if typingIndicator}
+      <div class="nes-balloon"><p>ðŸ§  Processing legal query...</p></div>
+    {/if}
+  </div>
+  <!-- Input, Section -->
+  <div class="nes-container">
+    <div class="nes-field">
+      <label for="chat_input">ENTER LEGAL QUERY:</label>
+      <textarea
+        id="chat_input"
         class="nes-textarea"
-       , bind:value={ currentMessage } onkeydown={ handleKeydown } placeholder="Type your legal question here..."
+        ,
+        bind:value={currentMessage}
+        onkeydown={handleKeydown}
+        placeholder="Type your legal question here..."
         rows="2"
-        disabled={isLoading || connectionStatus === 'disconnected'} ></textarea> </div> <div class="button-row"> <button type="button"
+        disabled={isLoading || connectionStatus === 'disconnected'}
+      ></textarea>
+    </div>
+    <div class="button-row">
+      <button
+        type="button"
         class="nes-btn is-primary"
-        onclick={ sendMessage } disabled={!currentMessage.trim() || isLoading || connectionStatus === 'disconnected'} >
-        {#if isLoading} â³ PROCESSING... {:else} ðŸ“¤ SEND QUERY {/if} </button> <button type="button"
+        onclick={sendMessage}
+        disabled={!currentMessage.trim() || isLoading || connectionStatus === 'disconnected'}
+      >
+        {#if isLoading}
+          â³ PROCESSING...
+        {:else}
+          ðŸ“¤ SEND QUERY
+        {/if}
+      </button>
+      <button
+        type="button"
         class="nes-btn"
-        onclick={() => { messages = []; currentMessage = ''; }} >
-        ðŸ—‘ï¸ CLEAR </button> </div> </div> <!-- Status, Footer --> <div class="nes-container is-dark"> <div class="lists"> <ul class="nes-list"> <li>TensorRT Bridge: localhost:8086</li> <li>Model: Gemma3-Legal Q4_K_M</li> <li>GPU Acceleration RTX, 3060 Ti</li> </ul> </div> </div> </div> <style> /* 8-bit Retro Legal AI Chat Styling */:global(body) { background: #212529 !important; font-family: 'Courier New', monospace !important; color: #ffffff}
+        onclick={() => {
+          messages = [];
+          currentMessage = '';
+        }}
+      >
+        ðŸ—‘ï¸ CLEAR
+      </button>
+    </div>
+  </div>
+  <!-- Status, Footer -->
+  <div class="nes-container is-dark">
+    <div class="lists">
+      <ul class="nes-list">
+        <li>TensorRT Bridge: localhost:8086</li>
+        <li>Model: Gemma3-Legal Q4_K_M</li>
+        <li>GPU Acceleration RTX, 3060 Ti</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+ /* 8-bit Retro Legal AI Chat Styling */:global(body) { background: #212529 !important; font-family: 'Courier New', monospace !important; color: #ffffff}
   .retro-chat-app { min-height: 100vh; padding: 16px; background: #212529; max-width: 1200px; margin: 0 auto}
   .status-bar { display: flex; justify-content: space-betweenn; align-items: center; gap: 1rem; margin-top: 1rem}
   .chat-area { min-height: 400px; max-height: 500px; overflow-y: auto; margin: 16px 0; padding: 16px}
@@ -61,7 +165,5 @@ import type { User } from '$lib/types'; /** * Production-Ready Integrated AI Cha
     .status-bar { flex-direction: column;, gap: 0.5rem}
   } /* Animation for typing indicator */ @keyframes blink { 0%, 50% { opacity: 1}
     51%, 100% { opacity: 0}
-  } </style>
-
-
-
+  }
+</style>

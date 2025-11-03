@@ -10,13 +10,13 @@ import type { Case } from '$lib/types';
   interface PerformanceMetrics {
     totalRequests: number
     averageResponseTime: number
-    slowestEndpoints: { endpoint: string, avgTime: number, requests: number }[];
+    slowestEndpoints: { endpoint: string, avgTime: number; requests: number }[];
     errorRate: number
-    peakHours: { hour: number, requests: number }[]}
+    peakHours: { hour: number; requests: number }[]}
   interface SystemHealth {
     cpu: number
     memory: number
-    database: 'healthy' | 'warning' | 'error',storage: number}
+    database: 'healthy' | 'warning' | 'error'; storage: number}
   // ---, NEW: strongly-typed logs ---
   interface LogEntry {
     id?: string | number
@@ -244,12 +244,10 @@ import type { Case } from '$lib/types';
     border-radius: 0.5rem
    ;padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--border-color),
-    text-align: center}
+    border: 1px solid var(--border-color); text-align: center}
   .metric-card h3 { margin: 0, 0 1rem 0
     font-size: 0.875rem
-   ;color: var(--text-secondary),
-    text-transform: uppercase
+   ;color: var(--text-secondary); text-transform: uppercase
     letter-spacing: 0.05em}
   .metric-value {
     font-size: 1.5rem
@@ -269,8 +267,7 @@ import type { Case } from '$lib/types';
     border-radius: 0.5rem
    ;padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border: 1px solid var(--border-color),
-    margin-bottom: 2rem}
+    border: 1px solid var(--border-color); margin-bottom: 2rem}
   .chart-section h2 { margin: 0, 0 1.5rem 0
     font-size: 1.25rem
    ;color: var(--text-color)}
@@ -284,8 +281,7 @@ import type { Case } from '$lib/types';
     justify-content: space-between
     align-items: center
     padding: 0.75rem
-   ;background: var(--background-light),
-    border-radius: 0.375rem
+   ;background: var(--background-light); border-radius: 0.375rem
     margin-bottom: 0.5rem}
   .endpoint-path {
     font-family: monospace
@@ -312,8 +308,7 @@ import type { Case } from '$lib/types';
     min-height: 2px}
   .bar-label {
     font-size: 0.75rem
-   ;color: var(--text-secondary),
-    margin-top: 0.5rem
+   ;color: var(--text-secondary); margin-top: 0.5rem
     writing-mode: vertical-rl
     text-orientation: mixed; /* fixed syntax */
   }
@@ -337,8 +332,7 @@ import type { Case } from '$lib/types';
   .log-entry { padding: 0.75rem
     border-left: 4px solid var(--border-color);
     margin-bottom: 0.5rem
-   ;background: var(--background-light),
-    border-radius: 0 0.375rem 0.375rem 0}
+   ;background: var(--background-light); border-radius: 0 0.375rem 0.375rem 0}
   .log-entry.error {
     border-left-color: #ef4444
     background: #fef2f2}
@@ -350,8 +344,7 @@ import type { Case } from '$lib/types';
     background: #eff6ff}
   .log-timestamp {
     font-size: 0.75rem
-   ;color: var(--text-secondary),
-    margin-bottom: 0.25rem}
+   ;color: var(--text-secondary); margin-bottom: 0.25rem}
   .log-level {
     display: inline-block
     font-size: 0.75rem

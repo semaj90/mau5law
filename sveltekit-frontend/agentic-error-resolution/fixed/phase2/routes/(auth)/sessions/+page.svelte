@@ -56,11 +56,13 @@
     }
   }
 
-  async function revokeAllOtherSessions() { if (!confirm('This will log you out from all other devices. Continue?')) return;
+  async function revokeAllOtherSessions() {
+    if (!confirm('This will log you out from all other devices. Continue?')) return;
 
     try {
       const response = await fetch('/api/auth/sessions/revoke-others', {
-        method: 'POST' });
+        method: 'POST',
+      });
 
       if (response.ok) {
         message = 'All other sessions revoked';
@@ -81,7 +83,8 @@
         return Smartphone;
       case 'tablet':
         return Smartphone;
-      default: return Monitor;
+      default:
+        return Monitor;
     }
   }
 
@@ -105,9 +108,7 @@
     <div class="bg-white p-8 rounded-lg shadow-md text-center">
       <h1 class="text-2xl font-bold text-gray-900 mb-4">Not Authenticated</h1>
       <p class="text-gray-600 mb-6">Please log in to manage your sessions</p>
-      <a href="/" class="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Back to Home
-      </a>
+      <a href="/" class="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"> Back to Home </a>
     </div>
   </div>
 {:else}
@@ -120,7 +121,9 @@
 
         {#if message}
           <div
-            class="mt-4 p-4 rounded {messageType === 'success' ? 'bg-green-50 border border-green-200 text-green-700' : 'bg-red-50 border border-red-200 text-red-700'}"
+            class="mt-4 p-4 rounded {messageType === 'success'
+              ? 'bg-green-50 border border-green-200 text-green-700'
+              : 'bg-red-50 border border-red-200 text-red-700'}"
           >
             {message}
           </div>
@@ -199,15 +202,13 @@
         </div>
 
         <!-- Revoke All Button -->
-        {#if sessions.some((s) => !s.isCurrent)}
+        {#if sessions.some(s => !s.isCurrent)}
           <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-6">
             <div class="flex items-start gap-4">
               <AlertCircle class="w-6 h-6 text-yellow-600 flex-shrink-0 mt-1" />
               <div class="flex-1">
                 <h3 class="font-semibold text-yellow-900 mb-2">Quick Actions</h3>
-                <p class="text-sm text-yellow-700 mb-4">
-                  Sign out from all other devices for enhanced security.
-                </p>
+                <p class="text-sm text-yellow-700 mb-4">Sign out from all other devices for enhanced security.</p>
                 <Button
                   onclick={revokeAllOtherSessions}
                   class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"

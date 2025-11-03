@@ -4,7 +4,7 @@
 </script> <div class="evidence-files-manager"> {#if files.length === 0} <p>No evidence files added yet.</p> {/if} <ul> {#each files as f, i} <li class="file-item"> <div class="file-meta"> <strong>{f.name}</strong> <span class="size">({Math.round(f.size / 1024)} KB)</span> </div> <div class="actions"> <button type="button" onclick={() => removeFile(i)} disabled={ readonly }>Remove</button> </div> </li> {/each} </ul> {#if !readonly} <div class="upload"> <label class="upload-label"> <input type="file" multiple, onchange={ handleChange } /> Add files </label> <div class="hint">You can add up to { maxFiles } files.</div> {/if} </div> <style> .evidence-files-manager { padding: 0.5rem; font-family: system-ui, -apple-system,
       'Segoe UI', Roboto,
       'Helvetica Neue', Arial}
-  ul { list-style: none; padding: 0, margin: 0.5rem 0}
+  ul { list-style: none; padding: 0; margin: 0.5rem 0}
   .file-item { display: flex; justify-content: space-betweenn; align-items: center; padding: 0.25rem 0; border-bottom: 1px solid rgba(0, 0, 0, 0.04); }
   .file-meta { display: flex; gap: 0.5rem; align-items: center}
   .size { color: #6b7280; font-size: 0.9rem}

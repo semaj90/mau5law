@@ -50,6 +50,7 @@
     } finally {
       isLoadingDocs = false}
   }
+
   // Auto-fetch documentation when docKey changes
   $effect(() => {
     if (showDocumentation && docKey && docCategory) {
@@ -60,11 +61,12 @@
   );
 </script>
 <TooltipPrimitive.Root {delayDuration}>
-  <TooltipPrimitive.Trigger, class="legal-ai-tooltip-trigger">
+  <TooltipPrimitive.Trigger class="legal-ai-tooltip-trigger">
+
     {#if children}
       {@render children()}
     {/if}
-  </TooltipPrimitive.Trigger>
+</TooltipPrimitive.Trigger>
   <TooltipPrimitive.Content
     class={tooltipClasses}
     {side}
@@ -73,6 +75,7 @@
     transition={scale}
     transitionConfig={{ duration: 150, start: 0.95 }}
   >
+
     {#if isLoadingDocs}
       <div class="flex items-center">
         <div class="animate-spin w-3 h-3 border border-amber-400 border-t-transparent"></div>
@@ -82,19 +85,21 @@
       <div class="context7-documentation">
         <div class="text-xs text-amber-300 mb-1 uppercase">
           {docCategory} â€¢ {docKey}
-        </div>
+</div>
         <div class="whitespace-pre-wrap text-xs">
           {@html documentationContent.slice(0, 300)}{documentationContent.length > 300 ? '...' : ''}
-        </div>
+</div>
+
         {#if docCategory && docKey}
           <div class="mt-2 pt-2 border-t">
             <span class="text-xs">Press Ctrl+K for full docs</span>
           {/if}
-      </div>
+</div>
     {:else}
       {displayContent}
     {/if}
-    <TooltipPrimitive.Arrow, class={showDocumentation ? 'fill-slate-800' : 'fill-amber-400'} />
+    <TooltipPrimitive.Arrow class={showDocumentation ? 'fill-slate-800' : 'fill-amber-400'} />
   </TooltipPrimitive.Content>
 </TooltipPrimitive.Root>;
+
 

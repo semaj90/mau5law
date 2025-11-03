@@ -9,6 +9,7 @@
     results = (await res.json()).results ?? [];
   }
 </script>
+
 <div class="bits-search">
   <div class="search-bar">
     <input bind:value={query} placeholder="Search, legal, documents..." />
@@ -20,9 +21,9 @@
     {/each}
   </div>
 </div>
+
 <style>
 .bits-search { display: block}
 .search-bar { display:flex;, gap:.5rem }
 .results { margin-top: .75rem }
 </style>
-

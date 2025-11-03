@@ -5,13 +5,15 @@
 <script lang="ts">
   interface Props {
     variant?: 'info' | 'success' | 'warning' | 'error';
-    title?: string
-    dismissible?: boolean
-    icon?: any}
+    title?: string;
+    dismissible?: boolean;
+    icon?: any;
+  }
   let { variant = 'info', title, dismissible = false, icon } = $props<Props>();
-  let visible = true
+  let visible = true;
   function dismiss() {
-    visible = false}
+    visible = false;
+  }
 </script>
 
 {#if visible}
@@ -97,4 +99,3 @@
       margin: 12px 0}
   }
 </style>
-

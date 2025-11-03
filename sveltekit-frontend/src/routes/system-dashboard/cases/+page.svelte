@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import  Button, Card, Input  from "$lib/components/ui/enhanced-bits.svelte";
@@ -13,7 +13,6 @@ import type { Case } from '$lib/types';
     progress: number
     evidenceCount: number
     lastUpdate: string | number | Date};
-
   let { data }: { data: PageData & { cases?: Case[] } } = $props();
 
   // replace server-provided data usage with local state that can be refreshed
@@ -27,7 +26,9 @@ import type { Case } from '$lib/types';
     return cases.filter((c) => c.title.toLowerCase().includes(q))});
 
   // load cases from API on mount
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     try {
       const res = await fetch('/api/cases');
       if (res.ok) {
@@ -35,13 +36,12 @@ import type { Case } from '$lib/types';
         console.warn('Failed to load cases:', res.status)}
     } catch (err) {
       console.error('Error fetching cases:', err)}
-  });
-
+  		})();
+	});
   async function runAnalysis(caseId: string): Promise<any> {
     try {
       const res = await fetch(`/api/cases/${caseId}`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        method: 'POST'; headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ action: 'analyze' })
       });
       if (!res.ok) throw new Error(`analysis failed: ${res.status}`);
@@ -50,12 +50,10 @@ import type { Case } from '$lib/types';
       cases = cases.map(c => c.id === caseId ? { ...c, ...updated } : c)} catch (err) {
       console.error('Triggering AI analysis failed:', err)}
   }
-
   async function generateReport(caseId: string): Promise<any> {
     try {
       const res = await fetch(`/api/cases/${caseId}`, {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        method: 'POST'; headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ action: 'report' })
       });
       if (!res.ok) throw new Error(`report failed: ${res.status}`);
@@ -63,7 +61,6 @@ import type { Case } from '$lib/types';
       cases = cases.map(c => c.id === caseId ? { ...c, ...updated } : c)} catch (err) {
       console.error('Generating report failed:', err)}
   }
-
   async function deleteCase(caseId: string): Promise<void> {
     if (!confirm(`Are you sure you want to delete this case? This action cannot be undone.`)) return
     try {
@@ -96,15 +93,17 @@ import type { Case } from '$lib/types';
     <Button variant="primary">âž• NEW CASE</Button>
   </div>
   <div class="cases-grid">
+
     {#if filteredCases.length > 0}
       {#each filteredCases as case_ (case_.id)}
-        <Card.Root, class="case-card">
+        <Card.Root class="case-card">
           <div class="case-header">
-            <h3>{case_.title}</h3>
+            <h3>{case_.title}
+</h3>
             <span class="status-badge">
               <span class={case_.status === 'active' ? 'is-success' : case_.status === 'error' ? 'is-error' : 'is-warning'}>
                 {case_.status.toUpperCase()}
-              </span>
+</span>
             </span>
           </div>
           <div class="case-stats">
@@ -118,7 +117,8 @@ import type { Case } from '$lib/types';
               <span>Evidence: {case_.evidenceCount} items</span>
             </div>
             <div class="stat">
-              <span>Updated: {new Date(case_.lastUpdate).toLocaleString()}</span>
+              <span>Updated: {new Date(case_.lastUpdate).toLocaleString()}
+</span>
             </div>
           </div>
           <div class="case-actions">
@@ -139,7 +139,7 @@ import type { Case } from '$lib/types';
         <p>No cases match your search query, or no cases are available.</p>
       </div>
     {/if}
-  </div>
+</div>
 </div>
 
 <style>
@@ -170,8 +170,7 @@ import type { Case } from '$lib/types';
     padding: 1rem
    ; transition: all 0.3s ease}
   :global(.case-card:hover) {
-    transform: translateY(-2px),
-    box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
+    transform: translateY(-2px); box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
     border-color: var(--n64-secondary) !important}
   .case-header {
     display: flex

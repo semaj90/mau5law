@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
   import { Button } from 'bits-ui';
@@ -83,7 +83,6 @@
   // Reconnect backoff state
   let reconnectAttempts = 0
   function resetBackoff() { reconnectAttempts = 0}
-
   function connectWebSocket() {
     if (!browser) return
     const url = computeWsUrl();
@@ -121,7 +120,6 @@
       console.error('Failed to create WebSocket:', error);
       wsConnected = false}
   }
-
   function handleWebSocketMessage(data: any) {
     switch (data.type) {
       case, 'TOKEN':
@@ -165,7 +163,6 @@
         console.log('ðŸ’“ Pong received');
         break}
   }
-
   function sendQuery(query: string, fileId?: string) {
     if (!ws || !wsConnected || ws.readyState !== WebSocket.OPEN) {
       console.warn('WebSocket not open; falling back to REST query where available');
@@ -189,7 +186,6 @@
     // Reset streaming state
     streamingTokens = '';
     isStreaming = true}
-
   function subscribeToWorkflow(fileId: string) {
     if (!ws || ws.readyState !== WebSocket.OPEN) return
     ws.send(JSON.stringify({ type: 'SUBSCRIBE_WORKFLOW', file_id: fileId }))}
@@ -201,11 +197,9 @@
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
     isDragging = true}
-
   function handleDragLeave(event: DragEvent) {
     event.preventDefault();
     isDragging = false}
-
   function handleDrop(event: DragEvent) {
     event.preventDefault();
     isDragging = false
@@ -213,13 +207,11 @@
     if (files && files.length > 0) {
       selectedFile = files[0]}
   }
-
   function handleFileSelect(event: Event) {
     const input = event.target as HTMLInputElement
     if (input.files && input.files.length > 0) {
       selectedFile = input.files[0]}
   }
-
   async function uploadFile(): Promise<any> {
     if (!selectedFile) return
     const formData = new FormData();
@@ -392,9 +384,8 @@
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB'}
-
   function getStageIcon(stage: string): string {
-    const icons: Record<string string> = {
+    const icons: Record<string, string> = {
       idle: 'â¸ï¸',
       uploading: 'ðŸ“¤',
       upload: 'ðŸ“¤',
@@ -406,7 +397,6 @@
       error: 'âŒ'
     };
     return icons[stage] ?? 'â„¹ï¸'}
-
   function getProgressColor(progress: number): string {
     // Use UnoCSS theme tokens for colors
     if (progress < 30) return 'bg-red-500';

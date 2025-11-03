@@ -74,9 +74,25 @@
   let filteredPois = $state<Poi[]>([]); // Use Poi interface
 
   // Form data
-  let formData = $state<Poi>({ // Use Poi interface
-    name: '', aliases: [], dateOfBirth: '', address: '', phone: '', email: '', status: 'person_of_interest', priority: 'medium', threatLevel: 'low', physicalDescription: { // Corrected syntax
-      height: '', weight: '', hair: '', eyes: '', distinguishingMarks: '' },
+  let formData = $state<Poi>({
+    // Use Poi interface
+    name: '',
+    aliases: [],
+    dateOfBirth: '',
+    address: '',
+    phone: '',
+    email: '',
+    status: 'person_of_interest',
+    priority: 'medium',
+    threatLevel: 'low',
+    physicalDescription: {
+      // Corrected syntax
+      height: '',
+      weight: '',
+      hair: '',
+      eyes: '',
+      distinguishingMarks: '',
+    },
     profileData: { modusOperandi: '', knownHabits: [], associates: [] },
     lastKnownLocation: '', // Corrected syntax
     lastSeen: '',
@@ -171,7 +187,8 @@
   }
 
   // Delete POI
-  async function deletePoi(poi: Poi) { // Explicitly type poi
+  async function deletePoi(poi: Poi) {
+    // Explicitly type poi
     if (!confirm(`Are you sure you want to delete ${poi.name}?`)) return;
 
     try {
@@ -192,9 +209,25 @@
   }
 
   // Reset form
-  function resetForm() { formData = {
-      name: '', aliases: [], dateOfBirth: '', address: '', phone: '', email: '', status: 'person_of_interest', priority: 'medium', threatLevel: 'low', physicalDescription: { // Corrected syntax
-        height: '', weight: '', hair: '', eyes: '', distinguishingMarks: '' },
+  function resetForm() {
+    formData = {
+      name: '',
+      aliases: [],
+      dateOfBirth: '',
+      address: '',
+      phone: '',
+      email: '',
+      status: 'person_of_interest',
+      priority: 'medium',
+      threatLevel: 'low',
+      physicalDescription: {
+        // Corrected syntax
+        height: '',
+        weight: '',
+        hair: '',
+        eyes: '',
+        distinguishingMarks: '',
+      },
       profileData: { modusOperandi: '', knownHabits: [], associates: [] },
       lastKnownLocation: '', // Corrected syntax
       lastSeen: '',
@@ -204,11 +237,27 @@
   }
 
   // Edit POI
-  function editPoi(poi: Poi) { // Explicitly type poi
+  function editPoi(poi: Poi) {
+    // Explicitly type poi
     selectedPoi = poi;
     formData = {
-      name: poi.name, aliases: poi.aliases || [], dateOfBirth: poi.dateOfBirth ? new Date(poi.dateOfBirth).toISOString().split('T')[0] : '', address: poi.address || '', phone: poi.phone || '', email: poi.email || '', status: poi.status, priority: poi.priority, threatLevel: poi.threatLevel, physicalDescription: poi.physicalDescription || { // Corrected syntax
-        height: '', weight: '', hair: '', eyes: '', distinguishingMarks: '' },
+      name: poi.name,
+      aliases: poi.aliases || [],
+      dateOfBirth: poi.dateOfBirth ? new Date(poi.dateOfBirth).toISOString().split('T')[0] : '',
+      address: poi.address || '',
+      phone: poi.phone || '',
+      email: poi.email || '',
+      status: poi.status,
+      priority: poi.priority,
+      threatLevel: poi.threatLevel,
+      physicalDescription: poi.physicalDescription || {
+        // Corrected syntax
+        height: '',
+        weight: '',
+        hair: '',
+        eyes: '',
+        distinguishingMarks: '',
+      },
       profileData: poi.profileData || { modusOperandi: '', knownHabits: [], associates: [] },
       lastKnownLocation: poi.lastKnownLocation || '', // Corrected syntax
       lastSeen: poi.lastSeen ? new Date(poi.lastSeen).toISOString().split('T')[0] : '',
@@ -253,10 +302,21 @@
   });
 
   // Priority colors
-  const priorityColors = { low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300', medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300', high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300', critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300' };
+  const priorityColors = {
+    low: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+    medium: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    high: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
+    critical: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+  };
 
   // Status colors
-  const statusColors = { person_of_interest: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', witness: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300', suspect: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300', victim: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', informant: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300' };
+  const statusColors = {
+    person_of_interest: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
+    witness: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+    suspect: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    victim: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+    informant: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  };
 </script>
 
 <svelte:head>
@@ -286,22 +346,14 @@
         <Filter class="w-4 h-4 mr-2" />
         Filters
       </button>
-      <button
-        type="button"
-        class="bits-btn"
-        onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
-      >
+      <button type="button" class="bits-btn" onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}>
         {#if viewMode === 'grid'}
           <List class="w-4 h-4" />
         {:else}
           <Grid class="w-4 h-4" />
         {/if}
       </button>
-      <button
-        type="button"
-        class="bits-btn"
-        onclick={() => (showCreateDialog = true)}
-      >
+      <button type="button" class="bits-btn" onclick={() => (showCreateDialog = true)}>
         <Plus class="w-4 h-4 mr-2" />
         Add Person
       </button>
@@ -327,7 +379,9 @@
       <div class="grid md:grid-cols-3 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="status-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+          <label for="status-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Status</label
+          >
           <Select
             options={[
               { value: 'all', label: 'All Statuses' },
@@ -344,7 +398,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="priority-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
+          <label for="priority-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Priority</label
+          >
           <Select
             options={[
               { value: 'all', label: 'All Priorities' },
@@ -360,7 +416,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="threat-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Threat Level</label>
+          <label for="threat-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Threat Level</label
+          >
           <Select
             options={[
               { value: 'all', label: 'All Threat Levels' },
@@ -402,11 +460,7 @@
         {searchQuery ? 'Try adjusting your search criteria' : 'Add persons to get started'}
       </p>
       {#if !searchQuery}
-        <button
-          type="button"
-          class="bits-btn"
-          onclick={() => (showCreateDialog = true)}
-        >
+        <button type="button" class="bits-btn" onclick={() => (showCreateDialog = true)}>
           <Plus class="w-4 h-4 mr-2" />
           Add First Person
         </button>
@@ -504,7 +558,13 @@
 <Dialog bind:open={showCreateDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Add New Person of Interest</h2>
-    <form onsubmit={(e) => { e.preventDefault(); createPoi(); }} class="space-y-4">
+    <form
+      onsubmit={e => {
+        e.preventDefault();
+        createPoi();
+      }}
+      class="space-y-4"
+    >
       <div class="grid grid-cols-2 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
@@ -551,7 +611,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Threat Level</label>
+          <label for="threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Threat Level</label
+          >
           <Select
             options={[
               { value: 'low', label: 'Low' },
@@ -590,7 +652,13 @@
 <Dialog bind:open={showEditDialog}>
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Edit Person of Interest</h2>
-    <form onsubmit={(e) => { e.preventDefault(); updatePoi(); }} class="space-y-4">
+    <form
+      onsubmit={e => {
+        e.preventDefault();
+        updatePoi();
+      }}
+      class="space-y-4"
+    >
       <div class="grid grid-cols-2 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
@@ -605,7 +673,8 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="edit-status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+          <label for="edit-status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label
+          >
           <Select
             options={[
               { value: 'person_of_interest', label: 'Person of Interest' },
@@ -623,7 +692,9 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="edit-priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
+          <label for="edit-priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Priority</label
+          >
           <Select
             options={[
               { value: 'low', label: 'Low' },
@@ -637,7 +708,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="edit-threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Threat Level</label>
+          <label for="edit-threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Threat Level</label
+          >
           <Select
             options={[
               { value: 'low', label: 'Low' },

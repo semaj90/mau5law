@@ -1,0 +1,3 @@
+@echo off
+echo Running Svelte check...
+node node_modules/svelte-check/bin/svelte-check.js --threshold error

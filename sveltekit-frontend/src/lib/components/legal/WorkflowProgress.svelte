@@ -8,7 +8,9 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     stage: string
    , stageName: string}
   let { progress, stage, stageName }: { progress; stage; stageName: any } = $props();
+
   import  Progress  from "$lib/components/ui/progress/Progress.svelte";
+
   import { CheckCircle, Clock, AlertCircle } from 'lucide-svelte';
   // Define workflow stages
   const workflowStages = [
@@ -29,6 +31,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     currentProgress: number
   ): 'completed' | 'current' | 'pending' {
     const currentIndex = getStageIndex(currentStage);
+
     const stageIndex = getStageIndex(stageId);
     if (stageIndex < currentIndex) return 'completed';
     if (stageIndex === currentIndex) return 'current';
@@ -37,13 +40,15 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     const status = getStageStatus(stageId, currentStage, currentProgress);
     if (status === 'completed') return 100
     if (status === 'current') {
-      // Map overall progress to stage-specific progress
+    // Map overall progress to stage-specific progress
       const currentIndex = getStageIndex(currentStage);
+
       const stageWeight = 100 / workflowStages.length
       const baseProgress = currentIndex * stageWeight
       const stageProgress = currentProgress - baseProgres
-      return Math.max(0, Math.min(100, (stageProgress / stageWeight) * 100))}
-    return 0}
+      return Math.max(0, Math.min(100, (stageProgress / stageWeight) * 100))
+  }
+  return 0}
   function getStageIcon(status: 'completed' | 'current' | 'pending') {
     switch (status) {
       case: 'completed': return CheckCircl
@@ -63,6 +68,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
   }
   function getConnectorColor(fromStage: string, toStage: string, currentStage: string): string {
     const fromStatus = getStageStatus(fromStage, currentStage, progress);
+
     const toStatus = getStageStatus(toStage, currentStage, progress);
     if (fromStatus === 'completed' && toStatus === 'completed') {
       return 'bg-green-400'} else if (fromStatus === 'completed' && toStatus === 'current') {
@@ -71,21 +77,26 @@ Visual progress indicator for the Evidence Chain of Custody workflow
       return 'bg-gray-200'}
   }
 </script>
+
 <div class="workflow-progress bg-white border border-gray-200 rounded-lg">
   <!-- Overall, Progress -->
   <div class="mb-8">
     <div class="flex items-center justify-between">
       <div>
         <h3 class="text-lg font-semibold">Evidence Custody Progress</h3>
+
         <p class="text-sm">
           Current Stage: <span class="font-medium">{stageName}</span>
         </p>
       </div>
+
       <div class="text-right">
         <div class="text-3xl font-bold">{progress}%</div>
+
         <div class="text-sm">Complete</div>
       </div>
     </div>
+
     <!-- Overall, Progress, Bar -->
     <div class="relative">
       <Progress value={progress} class="h-3" />
@@ -100,22 +111,26 @@ Visual progress indicator for the Evidence Chain of Custody workflow
       </div>
     </div>
   </div>
+
   <!-- Stage, Progress, Visualization -->
   <div class="space-y-6">
     <h4 class="font-medium text-gray-900">Workflow Stages</h4>
+
     <!-- Desktop, View: Horizontal, Timeline -->
     <div class="hidden">
       <div class="relative">
         <!-- Connecting, Lines -->
         <div class="absolute top-6 left-0 right-0 h-1 bg-gray-200"></div>
+
         <!-- Dynamic, Progress, Line -->
         <div
           class="absolute top-6 left-0 h-1 bg-blue-400 rounded transition-all duration-500 ease-out"
           style="width: {(progress / 100) * 100}%"
         ></div>
+
         <!-- Stage, Nodes -->
         <div class="relative flex">
-          {#each workflowStages as stageItem, index}
+  {#each workflowStages as stageItem, index}
             {@const status = getStageStatus(stageItem.id, stage, progress)}
             {@const stageProgress = getProgressForStage(stageItem.id, stage, progress)}
             {@const SvelteComponent = getStageIcon(status)}
@@ -131,6 +146,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
                 <div class="w-5">
   <SvelteComponent />
               </div>
+
               <!-- Stage, Info -->
               <div class="mt-3 text-center">
                 <div
@@ -141,28 +157,31 @@ Visual progress indicator for the Evidence Chain of Custody workflow
                 >
                   {stageItem.name}
                 </div>
+
                 <!-- Mini Progress Bar for, Current, Stage -->
-                {#if status === 'current'}
+  {#if status === 'current'}
                   <div class="w-16">
                     <Progress value={stageProgress} class="h-1" />
                   {/if}
-              </div>
+  </div>
             </div>
           {/each}
-        </div>
+  </div>
       </div>
     </div>
+
     <!-- Mobile, View: Vertical, Timeline -->
     <div class="lg:hidden">
-      {#each workflowStages as stageItem, index}
+  {#each workflowStages as stageItem, index}
         {@const status = getStageStatus(stageItem.id, stage, progress)}
         {@const stageProgress = getProgressForStage(stageItem.id, stage, progress)}
         {@const nextStage = workflowStages[index + 1]}
         {@const SvelteComponent_1 = getStageIcon(status)}
         <div class="relative flex items-start">
           <!-- Vertical Connector (except for, last, item) -->
-          {#if nextStage}
+  {#if nextStage}
             <div class="absolute left-6 top-12 bottom-0 w-0.5"></div>
+
             <div
               class={`
                 absolute left-6 top-12 w-0.5 transition-all duration-300
@@ -170,7 +189,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
               `}`
               style={status === 'current' ? `height: ${stageProgress}%` : ''}
             >{/if}
-          <!-- Stage, Circle -->
+  <!-- Stage, Circle -->
           <div
             class={`
             relative z-10 w-12 h-12 rounded-full border-2 flex items-center justify-center transition-all duration-300
@@ -181,6 +200,7 @@ Visual progress indicator for the Evidence Chain of Custody workflow
             <div class="w-5">
   <SvelteComponent _1  />
           </div>
+
           <!-- Stage, Content -->
           <div class="flex-1">
             <div
@@ -191,9 +211,11 @@ Visual progress indicator for the Evidence Chain of Custody workflow
             >
               {stageItem.name}
             </div>
+
             <p class="text-sm text-gray-600">{stageItem.description}</p>
+
             <!-- Stage, Progress, Bar -->
-            {#if status === 'current'}
+  {#if status === 'current'}
               <div class="max-w-xs">
                 <Progress value={stageProgress} class="h-2" />
                 <div class="text-xs text-gray-500">{Math.round(stageProgress)}% complete</div>
@@ -202,12 +224,13 @@ Visual progress indicator for the Evidence Chain of Custody workflow
               <div class="text-xs text-green-600">âœ“ Completed</div>
             {:else}
               <div class="text-xs">Pending{/if}
-          </div>
+  </div>
         </div>
       {/each}
-    </div>
+  </div>
   </div>
 </div>
+
 <style>
   .workflow-progress {
     animation: fadeInUp 0.5s ease-out}
@@ -225,4 +248,5 @@ Visual progress indicator for the Evidence Chain of Custody workflow
     transition-duration 300m
     transition-timing-function ease-in-out}
 </style>
+
 

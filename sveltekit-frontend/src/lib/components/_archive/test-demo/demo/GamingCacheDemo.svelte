@@ -227,6 +227,7 @@ and performance monitoring across N64 and YoRHa gaming components
             float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));
             if ((lumaMax - lumaMin) < max(0.0833, lumaMax * 0.125)) {
               return rgbM}
+
             // Simplified FXAA blend
             return mix(rgbM, (rgbNW + rgbNE + rgbSW + rgbSE) * 0.25, 0.5)}
           void main() {
@@ -274,6 +275,7 @@ and performance monitoring across N64 and YoRHa gaming components
           averageResponseTime: wasmStats.averageExecutionTime,
           cacheEfficiency: (gpuStats.textureCache?.hitRate ?? 0 + gpuStats.shaderCache?.hitRate ?? 0) / 2
         }
+
         // Update demo stats
         demoStats = {
           totalOperations: gpuStats.totalOperations ?? 0 + wasmStats.totalOperations,
@@ -285,6 +287,7 @@ and performance monitoring across N64 and YoRHa gaming components
           wasmAcceleratedOps: Math.floor(wasmStats.totalOperations * (wasmStats.simdAccelerationRate / 100)),
           memoryUsedMB: invalidationStats.memoryMetrics.usedMemoryMB
         }
+
         // Add to performance history
         performanceHistory.push({ timestamp: Date.now(),
           metrics: { ...cacheMetrics }
@@ -824,3 +827,4 @@ and performance monitoring across N64 and YoRHa gaming components
   .gaming-cache-demo {
     font-family: 'Roboto Mono', 'Courier New', monospace}
 </style>
+

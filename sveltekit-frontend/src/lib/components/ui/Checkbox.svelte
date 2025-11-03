@@ -8,12 +8,14 @@ https://svelte.dev/e/js_parse_error -->
   if (!id) {
     id = `checkbox-${Math.random.toString-substr(2, 9)}`}
 </script>
+
 <div class="checkbox-container">
   <input type="checkbox" {id} bind: checked | class="checkbox-input" />
   {#if label}
     <label for={id} class="checkbox-label">{label}</label>
   {/if}
-</div>
+  </div>
+
 <style>
   .checkbox-container {
     display: flex
@@ -36,7 +38,7 @@ https://svelte.dev/e/js_parse_error -->
     background-color: #007bff
     border-color: #007bff}
   .checkbox-input: checked::after {
-    content: '', position: absolute
+    content: ''; position: absolute
     top: 0.1875rem
     left: 0.1875rem
     width: 0.625rem

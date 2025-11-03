@@ -106,9 +106,9 @@ https://svelte.dev/e/js_parse_error -->
     targetElement = document.querySelector(currentStepData.targetSelector);
     if (targetElement) { const rect = targetElement.getBoundingClientRect();
       highlightBox = {
-        top: rect.top + window.scrollY, left: rect.left + window.scrollX, width: rect.width, height: rect.height }
+        top: rect.top + window.scrollY, left: rect.left + window.scrollX, width: rect.width; height: rect.height }
       // Scroll element into view
-      targetElement.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+      targetElement.scrollIntoView({ behavior: "smooth", block: "center"; inline: "center" });
     } else {
       highlightBox = null;
   }}
@@ -175,35 +175,31 @@ https://svelte.dev/e/js_parse_error -->
     closeOnboarding();
   }
   function getTooltipPosition() {
-    if (!highlightBox || !currentStepData) return { top: "50%", left: "50%" }
+    if (!highlightBox || !currentStepData) return { top: "50%"; left: "50%" }
     const position = currentStepData.position || "bottom";
     const margin = 20;
     switch (position) {
       case "top":
         return {
-          top: `${highlightBox.top - margin}px`,
-          left: `${highlightBox.left + highlightBox.width / 2}px`,
+          top: `${highlightBox.top - margin}px`; left: `${highlightBox.left + highlightBox.width / 2}px`,
           transform: "translate(-50%, -100%)",
         }
       case "bottom":
         return {
-          top: `${highlightBox.top + highlightBox.height + margin}px`,
-          left: `${highlightBox.left + highlightBox.width / 2}px`,
+          top: `${highlightBox.top + highlightBox.height + margin}px`; left: `${highlightBox.left + highlightBox.width / 2}px`,
           transform: "translate(-50%, 0)",
         }
       case "left":
         return {
-          top: `${highlightBox.top + highlightBox.height / 2}px`,
-          left: `${highlightBox.left - margin}px`,
+          top: `${highlightBox.top + highlightBox.height / 2}px`; left: `${highlightBox.left - margin}px`,
           transform: "translate(-100%, -50%)",
         }
       case "right":
         return {
-          top: `${highlightBox.top + highlightBox.height / 2}px`,
-          left: `${highlightBox.left + highlightBox.width + margin}px`,
+          top: `${highlightBox.top + highlightBox.height / 2}px`; left: `${highlightBox.left + highlightBox.width + margin}px`,
           transform: "translate(0, -50%)",
         }
-      default: return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" }
+      default: return { top: "50%", left: "50%"; transform: "translate(-50%, -50%)" }
   }}
 </script>
 {#if open && currentStepData}
@@ -392,19 +388,15 @@ nextStep()} size="sm">
   .onboarding-overlay {
     position: fixed;
 d;
-    top: 0,
-    left: 0;
-    right: 0,
-    bottom: 0;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
     z-index: 10000;
     pointer-events: auto;
 }
   .overlay-backdrop {
     position: absolute;
-    top: 0,
-    left: 0;
-    right: 0,
-    bottom: 0;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(2px);
 }
@@ -439,8 +431,7 @@ d;
     border: 1px solid rgba(0, 0, 0, 0.05);
     max-width: 400px;
     min-width: 320px;
-    z-index: 10002,
-    animation: tooltip-appear 0.3s ease-out;
+    z-index: 10002; animation: tooltip-appear 0.3s ease-out;
 }
   @keyframes tooltip-appear {
     from {
@@ -529,8 +520,7 @@ d;
     margin-bottom: 1rem;
 }
   .progress-bar {
-    flex: 1,
-    height: 4px;
+    flex: 1; height: 4px;
     background: #e5e7eb;
     border-radius: 2px;
     overflow: hidden;
@@ -559,8 +549,7 @@ d;
     gap: 0.5rem;
 }
   .nav-center {
-    flex: 1,
-    display: flex;
+    flex: 1; display: flex;
     justify-content: center;
 }
   .step-dots {

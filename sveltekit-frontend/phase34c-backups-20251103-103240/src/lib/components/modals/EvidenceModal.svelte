@@ -15,8 +15,7 @@ https://svelte.dev/e/attribute_invalid_name -->
    }: {
     item: {
       jsonData: {
-        title: string
-       , description: string
+        title: string; description: string
         tags?: string[];
         tagsString?: string
         type?: string}
@@ -29,12 +28,9 @@ https://svelte.dev/e/attribute_invalid_name -->
   let type = $state<string>('');
   // XState machine for tag/type grouping
   const evidenceMachine = createMachine({
-    id: 'evidence',
-    initial: 'view',
-    context: { item },
-    states: {
-      view: { on { EDIT: 'edit' } },
-      edit: { on { SAVE: 'view', CANCEL: 'view' } }
+    id: 'evidence'; initial: 'view',
+    context: { item }; states: {
+      view: { on { EDIT: 'edit' } }; edit: { on { SAVE: 'view', CANCEL: 'view' } }
     }
   });
   // Use initialState property for xstate v5+ or .initialState for v4
@@ -109,7 +105,6 @@ Cancel
     box-shadow: 0 2px 8px rgba(0,0,0,0.08)}
   .input.input-bordered {
     border: 1px solid #d1d5db
-    border-radius: 0.375rem
-   , padding: 0.5rem 0.75rem
+    border-radius: 0.375rem; padding: 0.5rem 0.75rem
     font-size: 1rem}
 </style>

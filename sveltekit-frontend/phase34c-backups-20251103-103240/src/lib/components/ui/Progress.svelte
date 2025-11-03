@@ -17,7 +17,7 @@
         >{/if} </div> </div> {#if showPercentage} <div class="text-xs font-mono text-gray-600 dark:text-gray-400 mt-1 text-right"> {Math.round(percentage)}% {/if} </div> <style> @keyframes shimmer { 0% { transform: translateX(-100%)}
     100% { transform: translateX(100%)}
   } .animate-shimmer { animation: shimmer 2s infinite}
-  /* NES.css integration for legal/yorha variants */ .nes-progress { position: relative, border-radius: 0}
-  .nes-progress.is-pattern::before { content: '', position: absolute, top: 0, left: 0, right: 0, bottom: 0, background-image: repeating-linear-gradient( 45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px ); pointer-events: none}
+  /* NES.css integration for legal/yorha variants */ .nes-progress { position: relative; border-radius: 0}
+  .nes-progress.is-pattern::before { content: '', position: absolute, top: 0, left: 0, right: 0, bottom: 0; background-image: repeating-linear-gradient( 45deg, transparent, transparent 10px, rgba(255, 255, 255, 0.1) 10px, rgba(255, 255, 255, 0.1) 20px ); pointer-events: none}
 </style>
 

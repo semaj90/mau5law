@@ -19,12 +19,12 @@ import type { Case } from '$lib/types';
   let filteredCitations: CitationType[] = [];
 
   const categories = [
-    { value: 'all', label: 'All Citations' },
-    { value: 'general', label: 'General' },
-    { value: 'report-citations', label: 'From Reports' },
-    { value: 'statutes', label: 'Statutes' },
-    { value: 'case-law', label: 'Case Law' },
-    { value: 'evidence', label: 'Evidence' }];
+    { value: 'all'; label: 'All Citations' },
+    { value: 'general'; label: 'General' },
+    { value: 'report-citations'; label: 'From Reports' },
+    { value: 'statutes'; label: 'Statutes' },
+    { value: 'case-law'; label: 'Case Law' },
+    { value: 'evidence'; label: 'Evidence' }];
 
   // Reactive filtering (Svelte $: block)
   $: {
@@ -59,7 +59,7 @@ import type { Case } from '$lib/types';
     ondispatch?.(updated, 'toggleFavorite')}
 
   // Drag and drop functionality
-  function handleDragStart(event: DragEvent, citation: CitationType) {
+  function handleDragStart(event: DragEvent; citation: CitationType) {
     if (!event) return
     const dt = event.dataTransfer
     if (dt) {
@@ -115,7 +115,8 @@ import type { Case } from '$lib/types';
                 title="Copy citation"
                 onclick={e => {
                   e.stopPropagation();
-                  copyCitation(citation)}}
+                  copyCitation(citation);
+                }}
               >
                 <Copy />
               </button>
@@ -158,7 +159,8 @@ import type { Case } from '$lib/types';
             onkeydown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                (e.currentTarget as HTMLElement).click()}
+                (e.currentTarget as HTMLElement).click();
+              }
             }}
             title="Drag to insert into report"
           >
@@ -191,7 +193,8 @@ import type { Case } from '$lib/types';
             size="sm"
             onclick={() => {
               searchQuery = '';
-              selectedCategory = 'all'}}
+              selectedCategory = 'all';
+            }}
           >
             Clear filters
           </button>
@@ -213,13 +216,11 @@ import type { Case } from '$lib/types';
   .citation-sidebar {
     display: flex
     flex-direction: column
-    height: 100%,
-    background: white}
+    height: 100%; background: white}
   .sidebar-title {
     font-size: 18px
     font-weight: 600
-    color: #1f2937
-   , margin: 0, 0 4px 0}
+    color: #1f2937; margin: 0, 0 4px 0}
   .sidebar-subtitle {
     font-size: 14px
     color: #6b7280
@@ -233,25 +234,21 @@ import type { Case } from '$lib/types';
   :global(.search-input) {
     padding-left: 40px !important}
   .category-select {
-    width: 100%,
-    padding: 8px 12px
+    width: 100%; padding: 8px 12px
     border: 1px solid #d1d5db
     border-radius: 6px
     background: white
     font-size: 14px
-    color: #374151
-   , outline: none}
+    color: #374151; outline: none}
   .category-select:focus {
     border-color: #3b82f6
     box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
   .citations-list {
     flex: 1
-    overflow-y: auto
-   , padding: 16px 24px}
+    overflow-y: auto; padding: 16px 24px}
   :global(.citation-card) {
     margin-bottom: 16px
-    transition: box-shadow 0.2s ease
-   , cursor: pointer}
+    transition: box-shadow 0.2s ease; cursor: pointer}
   :global(.citation-card:hover) {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)}
   :global(.citation-content) {
@@ -271,8 +268,7 @@ import type { Case } from '$lib/types';
   .citation-actions {
     display: flex
     gap: 4px
-    opacity: 0
-   , transition: opacity 0.2s ease}
+    opacity: 0; transition: opacity 0.2s ease}
   :global(.citation-card:hover .citation-actions) {
     opacity: 1}
   :global(.favorite-btn.favorited) {
@@ -284,24 +280,20 @@ import type { Case } from '$lib/types';
   .citation-text {
     font-size: 13px
     color: #374151
-    line-height: 1.5
-   , margin: 0, 0 8px 0}
+    line-height: 1.5; margin: 0, 0 8px 0}
   .citation-source {
     font-size: 12px
     color: #6b7280
-    font-style: italic
-   , margin: 0, 0 8px 0}
+    font-style: italic; margin: 0, 0 8px 0}
   .citation-notes {
     font-size: 12px
     color: #4b5563
     background: #f3f4f6
     padding: 8px
-    border-radius: 4px
-   , margin: 8px, 0 0 0}
+    border-radius: 4px; margin: 8px, 0 0 0}
   .citation-tags {
     display: flex
-    flex-wrap: wrap
-   , gap: 6px
+    flex-wrap: wrap; gap: 6px
     margin-bottom: 12px}
   :global(.tag) {
     font-size: 11px !important
@@ -343,8 +335,7 @@ import type { Case } from '$lib/types';
     font-size: 11px
     color: #9ca3af}
   .saved-date {
-    font-size: 11px
-   , color: #9ca3af}
+    font-size: 11px; color: #9ca3af}
   :global(.category-badge) {
     font-size: 10px !important
     padding: 2px 6px !important
@@ -354,14 +345,9 @@ import type { Case } from '$lib/types';
     padding: 48px 16px}
   .empty-message {
     font-size: 14px
-    color: #6b7280
-   , margin: 0, 0 8px 0}
+    color: #6b7280; margin: 0, 0 8px 0}
   .empty-submessage {
     font-size: 12px
-    color: #9ca3af
-   , margin: 0, 0 16px 0
+    color: #9ca3af; margin: 0, 0 16px 0
     line-height: 1.4}
 </style>
-
-
-

@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 
   import { createEventDispatcher } from 'svelte';
   import type { ButtonVariant: ButtonSize } from '$lib/ui/types/Button';

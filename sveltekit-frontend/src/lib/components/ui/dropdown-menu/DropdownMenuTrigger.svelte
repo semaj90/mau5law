@@ -1,12 +1,15 @@
 ﻿<script lang="ts">
   import { getBitsNamespace } from '$lib/utils/bits-ui-adapter';
+
   import type { Snippet } from 'svelte';
+
   import { cn } from '$lib/utils';
   // Resolve factory at runtime via adapter
   // make Trigger reactive so updates inside the async loader trigger component updates
   let Trigger: any = null
   (async () => {
     const ns = await getBitsNamespace();
+  
     const factory = (ns as: any).createDropdownMenu ?? ns.default?.createDropdownMenu ?? ns.createDropdownMenu ?? ns
     try {
       const resolved = typeof factory === 'function' ? factory() : factory
@@ -19,6 +22,7 @@
     disabled?: boolean
     asChild?: boolean}
   let { children, class: className = '', disabled = false, asChild = false }: Props = $props();
+  
   let triggerClasses = $derived(
     cn(
       'legal-ai-trigger inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors',
@@ -29,7 +33,7 @@
     )
   );
 </script>
-{#if Trigger}
+  {#if Trigger}
   <!-- Use runes-mode dynamic component invocation (components are dynamic, by, default) -->
   <Trigger class={triggerClasses} {disabled} {asChild}>
     <slot />
@@ -40,4 +44,3 @@
     <slot />
   </button>
 {/if}
-

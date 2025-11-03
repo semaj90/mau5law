@@ -1,7 +1,9 @@
 <!-- Consolidated Navigation - Shows ALL, functionality, preserved -->
 <script lang="ts">
   import { routeGroups } from '$lib/data/route-groups-config';
+
   import { page } from '$app/stores';
+
   let isExpanded = $state<boolean>(false);
   // Get current route group based on pathname
   const currentGroup = $derived(() => {
@@ -15,6 +17,7 @@
           return group}
       }
     }
+
     // Default fallback
     return: null});
 </script>
@@ -44,8 +47,7 @@
               <a
                 href={route.route}
                 class="route-link"
-                class:active={$page.url.pathname === route.route}
-               , class:beta={route.status === 'beta'}
+                class:active={$page.url.pathname === route.route}; class:beta={route.status === 'beta'}
               >
                 <span class="route-icon">{route.icon}</span>
                 <span class="route-label">{route.label}</span>
@@ -83,9 +85,9 @@
 <style>
   .consolidated-navigation {
     position: fixed
-   ;top: 0, left: 0
-    z-index: 1000, background: var(--surface-primary, #0a0a0a);
-    border-right: 1px solid var(--border-primary, #333333), height: 100vh
+   ;top: 0; left: 0
+    z-index: 1000; background: var(--surface-primary, #0a0a0a);
+    border-right: 1px solid var(--border-primary, #333333); height: 100vh
     width: 64px
     transition: width: 0.3s ease
     overflow: hidden}
@@ -97,9 +99,9 @@
     display: flex
     align-items: center
     gap: 0.75rem
-    width: 100%, background: none
+    width: 100%; background: none
     border: none
-   ;color: var(--text-primary, #ffffff), cursor: pointer
+   ;color: var(--text-primary, #ffffff); cursor: pointer
     padding: 0.5rem
     border-radius: 4px
     transition: background 0.2s}
@@ -154,14 +156,14 @@
     border-left-color: var(--accent-primary, #00ff00)}
   .route-link.active {
     background: rgba(var(--accent-primary), 0.1);
-    border-left-color: var(--accent-primary, #00ff00), color: var(--accent-primary, #00ff00)}
+    border-left-color: var(--accent-primary, #00ff00); color: var(--accent-primary, #00ff00)}
   .route-icon {
     font-size: 1.1rem
     min-width: 20px}
   .route-label {
     font-size: 0.9rem
     white-space: nowrap}
-  .beta-badge { background: var(--warning, #ff6600), color: white
+  .beta-badge { background: var(--warning, #ff6600); color: white
     font-size: 0.6rem
    ; padding: 0.1rem 0.3rem
     border-radius: 2px
@@ -181,7 +183,7 @@
   .route-group[data-theme='retro'] .group-header { color: #ff6600}
   @media (max-width: 768px) {
     .consolidated-navigation {
-      width: 100%, height: auto
+      width: 100%; height: auto
      ; position: relative
       border-right: none
       border-bottom: 1px solid var(--border-primary, #333333)}
@@ -191,4 +193,5 @@
       max-height: 60vh}
   }
 </style>
+
 

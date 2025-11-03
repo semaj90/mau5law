@@ -28,8 +28,6 @@
     padding: 1rem
     border-radius: 0.5rem}
   .app-main {
-    background: #1a1a1a
-   , padding: 1rem
+    background: #1a1a1a; padding: 1rem
     border-radius: 0.5rem}
 </style>
-

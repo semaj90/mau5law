@@ -224,6 +224,7 @@ https://svelte.dev/e/js_parse_error -->
       className
     ].filter(Boolean).join(' ')}
 </script>
+
 <div class="unified-button-wrapper" aria-hidden={disabled ? 'true' : 'false'}>
   <div class="canvas-layer" aria-hidden="true">
     <!-- make canvas non-self-closing to avoid potential, parsing, issues -->
@@ -233,7 +234,7 @@ https://svelte.dev/e/js_parse_error -->
     type="button"
     class={btnClass()}
     disabled={disabled || loading}
-    onclick={onclick}
+    {onclick}
     onpointerenter={() => (isHovered = true)}
     onpointerleave={() => (isHovered = false)}
     onpointerdown={() => (isPressed = true)}
@@ -246,6 +247,7 @@ https://svelte.dev/e/js_parse_error -->
     {/if}
   </button>
 </div>
+
 <style>
   /* minimal styling + CSS fallback glow when WebGL not available */
   .unified-button-wrapper {
@@ -293,4 +295,3 @@ https://svelte.dev/e/js_parse_error -->
     font-family: 'Courier New', 'Monaco', monospace
     font-feature-settings: normal}
 </style>
-

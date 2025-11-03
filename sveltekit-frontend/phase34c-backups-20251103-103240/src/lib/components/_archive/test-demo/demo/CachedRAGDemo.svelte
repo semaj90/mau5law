@@ -26,17 +26,13 @@ import type { Document } from '$lib/types';
     try {
       console.log('ðŸš€ Running cached RAG query...');
       const response = await fetch('/api/v1/rag/cached', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          action: 'query',
-          query: { query: query.trim(),
-            semantic: { useEmbeddings: true,
-              expandConcepts: true
+          action: 'query'; query: { query: query.trim(),
+            semantic: { useEmbeddings: true; expandConcepts: true
              , includeRelated: true
             },
-            filters: { confidenceThreshold: 0.7,
-              legalCategories: ['CONTRACT', 'TORT']
+            filters: { confidenceThreshold: 0.7; legalCategories: ['CONTRACT', 'TORT']
             }
           }
         })
@@ -76,8 +72,7 @@ import type { Document } from '$lib/types';
     loading = true
     try {
       const response = await fetch('/api/v1/rag/cached', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'warmup' })
       });
       const data = await (response as { json?: any }).json();
@@ -271,9 +266,8 @@ import type { Document } from '$lib/types';
 <style>
   .cached-rag-demo {
     max-width: 1200px
-    margin: 0 auto
-   , padding: 20px
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    margin: 0 auto; padding: 20px
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     text-align: center
     margin-bottom: 30px
@@ -298,8 +292,7 @@ import type { Document } from '$lib/types';
     font-weight: 600
     color: #4a5568}
   .input-group textarea {
-    width: 100%,
-    padding: 10px
+    width: 100%; padding: 10px
     border: 1px solid #e2e8f0
     border-radius: 6px
     font-size: 14px
@@ -319,8 +312,7 @@ import type { Document } from '$lib/types';
     border: none
     border-radius: 4px
     cursor: pointer
-    font-size: 12px
-   , transition: background-color 0.2}
+    font-size: 12px; transition: background-color 0.2}
   .sample-btn:hover:not(:disabled) {
     background: #cbd5e0}
   .sample-btn:disabled {
@@ -337,8 +329,7 @@ import type { Document } from '$lib/types';
     padding: 12px 20px
     border-radius: 6px
     cursor: pointer
-    font-weight: 600
-   , transition: background-color 0.2}
+    font-weight: 600; transition: background-color 0.2}
   .primary-btn:hover:not(:disabled) {
     background: #3182c}
   .secondary-btn {
@@ -347,8 +338,7 @@ import type { Document } from '$lib/types';
     border: none
     padding: 12px 16px
     border-radius: 6px
-    cursor: pointer
-   , transition: background-color 0.2}
+    cursor: pointer; transition: background-color 0.2}
   .secondary-btn:hover:not(:disabled) {
     background: #cbd5e0}
   .primary-btn: disabled
@@ -477,8 +467,7 @@ import type { Document } from '$lib/types';
     padding: 4px 0
     border-bottom: 1px solid #f1f5f9}
   .hit-rate {
-    font-weight: 600
-   , color: #38a169}
+    font-weight: 600; color: #38a169}
 </style>
 
 

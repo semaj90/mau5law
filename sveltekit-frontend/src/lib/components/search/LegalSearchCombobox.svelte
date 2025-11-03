@@ -65,7 +65,7 @@ import type { SearchResult } from '$lib/types';
   let suggestions = $state<string[]>([]);
 
   // Icon/color mappings
-  const typeIcons: Record<string any> = {
+  const typeIcons: Record<string, any> = {
     case Scale,
     evidence: Shield,
     precedent: FileText,
@@ -74,7 +74,7 @@ import type { SearchResult } from '$lib/types';
     document: FileText,
     recent: Clock
   };
-  const typeColors: Record<string string> = {
+  const typeColors: Record<string, string> = {
     case: 'text-blue-600',
     evidence: 'text-red-600',
     precedent: 'text-purple-600',
@@ -174,6 +174,7 @@ import type { SearchResult } from '$lib/types';
       try {
         localStorage.setItem('legalSearchHistory', JSON.stringify(recentSearches))} catch { /* ignore */ }
     }
+
     // forward event via DOM CustomEvent so parent can listen with onselect
     if (rootEl) {
       rootEl.dispatchEvent(new CustomEvent('select', { detail: result, bubbles: true }))}
@@ -215,7 +216,7 @@ import type { SearchResult } from '$lib/types';
 
   <!-- Search, Icon -->
   <div class="absolute left-4 top-1/2 -translate-y-1/2">
-    {#if isLoading}
+  {#if isLoading}
       <div class="animate-spin">
         <Zap class="h-5" />
       </div>
@@ -238,7 +239,6 @@ import type { SearchResult } from '$lib/types';
       </svg>
     </button>
   {/if}
-
   <!-- Results, Dropdown -->
   <div
     id="legal-search-list"
@@ -250,10 +250,10 @@ import type { SearchResult } from '$lib/types';
     aria-hidden={displayResults.length === 0 && inputValue.length >= 2 ? "false" : "false"}
   >
     <!-- Search, Categories, Filter -->
-    {#if inputValue.length >= 2}
+  {#if inputValue.length >= 2}
       <div class="border-b border-gray-100">
         <div class="flex flex-wrap">
-          {#each Array.isArray(categories) ? categories : [] as category}
+  {#each Array.isArray(categories) ? categories : [] as category}
             <span class={cn(
               "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium",
               "bg-blue-50 text-blue-700"
@@ -270,21 +270,21 @@ import type { SearchResult } from '$lib/types';
               AI Search
             </span>
           {/if}
-        </div>
+  </div>
       {/if}
-
-    <!-- Results, List -->
+  <!-- Results, List -->
     <div class="max-h-80 overflow-auto">
-      {#if displayResults.length === 0 && inputValue.length >= 2}
+  {#if displayResults.length === 0 && inputValue.length >= 2}
         <div class="p-4 text-center">
           <Search class="mx-auto h-8 w-8 mb-2" />
           <p class="text-sm">No results found</p>
+
           <p class="text-xs">Try different keywords or check spelling</p>
         </div>
       {:else if displayResults.length === 0 && inputValue.length < 2}
         <div class="p-4">
           <!-- Recent, Searches -->
-          {#if recentSearches.length > 0}
+  {#if recentSearches.length > 0}
             <div class="mb-4">
               <p class="text-xs font-medium text-gray-500 mb-2 flex">
                 <Clock class="mr-1 h-3" />
@@ -312,9 +312,8 @@ import type { SearchResult } from '$lib/types';
 +                </div>
                {/each}
             {/if}
-
-          <!-- AI, Suggestions -->
-          {#if suggestions.length > 0}
+  <!-- AI, Suggestions -->
+  {#if suggestions.length > 0}
             <div>
               <p class="text-xs font-medium text-gray-500 mb-2 flex">
                 <Zap class="mr-1 h-3" />
@@ -342,7 +341,7 @@ import type { SearchResult } from '$lib/types';
 +                </div>
                {/each}
             {/if}
-        </div>
+  </div>
       {:else}
         {#each Array.isArray(displayResults) ? displayResults : [] as result}
           <div
@@ -366,24 +365,23 @@ import type { SearchResult } from '$lib/types';
                 <p class="font-medium text-gray-900">
                   {result.title}
                 </p>
-                {#if result.score != null}
+  {#if result.score != null}
                   <span class="flex-shrink-0 ml-2 text-xs text-gray-500 bg-gray-100 rounded px-1.5">
                     {Math.round((result.score ?? 0) * 100)}%
                   </span>
                 {/if}
-              </div>
+  </div>
 
               <!-- Content, Preview -->
-              {#if result.content}
+  {#if result.content}
                 <p class="text-gray-600 text-xs mt-1">
                   {result.content.substring(0, 120)}...
                 </p>
               {/if}
-
-              <!-- Metadata -->
-              {#if result.metadata && (result.metadata.date || result.metadata.status || result.metadata.jurisdiction)}
+  <!-- Metadata -->
+  {#if result.metadata && (result.metadata.date || result.metadata.status || result.metadata.jurisdiction)}
                 <div class="flex items-center space-x-2">
-                  {#if result.metadata.date}
+  {#if result.metadata.date}
                     <span class="text-xs">
                       {new Date(result.metadata.date).toLocaleDateString()}
                     </span>
@@ -399,27 +397,26 @@ import type { SearchResult } from '$lib/types';
                     </span>
                   {/if}
                 {/if}
-
-              <!-- Highlights -->
-              {#if result.highlights && result.highlights.length > 0}
+  <!-- Highlights -->
+  {#if result.highlights && result.highlights.length > 0}
                 <div class="mt-1 text-xs">
                   <span class="bg-yellow-100 px-1">
                     ...{result.highlights[0]}...
                   </span>
                 {/if}
-            </div>
+  </div>
           </div>
         {/each}
       {/if}
-    </div>
+  </div>
 
     <!-- Footer with, search, stats -->
-    {#if searchResults.length > 0}
+  {#if searchResults.length > 0}
       <div class="border-t border-gray-100">
         <p class="text-xs text-gray-500">
           {searchResults.length} result{searchResults.length !== 1 ? 's' : ''}
           {#if enableVectorSearch} â€¢ AI-powered search{/if}
-        </p>
+  </p>
       {/if}
   </div>
 </div>
@@ -431,3 +428,5 @@ import type { SearchResult } from '$lib/types';
     -webkit-box-orient: vertical
    ;overflow: hidden}
 </style>
+
+

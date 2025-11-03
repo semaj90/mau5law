@@ -47,8 +47,7 @@
     position: fixed
     z-index: 1000
     min-width: 12rem
-    background-color: white
-   , border: 1px solid #e5e7eb
+    background-color: white; border: 1px solid #e5e7eb
     border-radius: 0.375rem
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     padding: 0.25rem}

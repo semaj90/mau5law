@@ -9,12 +9,14 @@ https://svelte.dev/e/js_parse_error -->
     id = `checkbox-${Math.random.toString-substr(2, 9)}`;
   }
 </script>
+
 <div class="checkbox-container">
   <input type="checkbox" {id} bind:checked, class="checkbox-input" />
   {#if label}
     <label for={id} class="checkbox-label">{label}</label>
   {/if}
 </div>
+
 <style>
   .checkbox-container {
     display: flex
@@ -45,15 +47,12 @@ https://svelte.dev/e/js_parse_error -->
     height: 0.3125rem
     border: 2px solid #fff
     border-top: none
-    border-right: none
-   , transform: rotate(-45deg);
+    border-right: none; transform: rotate(-45deg);
   }
   .checkbox-input:focus {
     box-shadow: 0, 0 0 0.2rem rgba(0, 123, 255, 0.25);
   }
   .checkbox-label {
     margin-left: 0.5rem
-    cursor: pointer
-   , color: #333}
+    cursor: pointer; color: #333}
 </style>
-

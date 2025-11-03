@@ -65,7 +65,8 @@ import type { Document } from '$lib/types';
     files.forEach(async (file) => {
       try {
         await ragStore.uploadDocument(file, {
-          case_id: selectedCaseId,
+          case_id: selectedCaseId
+,
           document_type: 'upload',
           uploaded_by: 'user'
         })} catch (error) {
@@ -110,7 +111,8 @@ import type { Document } from '$lib/types';
         onkeydown={e => {
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
-            handleQuerySubmit()}
+            handleQuerySubmit();
+          }
         }}
       />
       <button
@@ -401,5 +403,4 @@ import type { Document } from '$lib/types';
      ;gap: 0.5rem}
   }
 </style>
-
 

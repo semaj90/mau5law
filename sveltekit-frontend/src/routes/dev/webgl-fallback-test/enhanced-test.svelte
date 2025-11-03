@@ -5,10 +5,9 @@
   // Svelte, 5 runes for reactive state
   let log = $state<string>('');
   let testResults = $state({
-    webgpu: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    webgl2: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    webgl1: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
-    wasm: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
+    webgpu: { supported: false, tested: false, performance: null, as: any, error: null; as: string | null },
+    webgl2: { supported: false, tested: false, performance: null, as: any, error: null; as: string | null },
+    webgl1: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null }; wasm: { supported: false, tested: false, performance: null, as: any, error: null, as: string | null },
     recommendation: ''});
   let isTestingInProgress = $state<boolean>(false);
   let currentTest = $state<string>('');
@@ -43,12 +42,14 @@ if (browser) {
     if (webgl2Context) {
       const ext = webgl2Context.getExtension('EXT_color_buffer_float');
       append(`WebGL2: ${testResults.webgl2.supported ? 'âœ… Supported' : 'âŒ Not supported'} ${ext ? '(Float, textures: âœ…)' : '(Float textures: âŒ)'}`)}
+
     // WebGL1 support check
     const webgl1Context = canvas2d.getContext('webgl') || canvas2d.getContext('experimental-webgl');
     testResults.webgl1.supported = !!webgl1Context
     if (webgl1Context) {
       const ext = webgl1Context.getExtension('OES_texture_float');
       append(`WebGL1: ${testResults.webgl1.supported ? 'âœ… Supported' : 'âŒ Not supported'} ${ext ? '(Float, textures: âœ…)' : '(Float textures: âŒ)'}`)}
+
     // WebAssembly support check
     testResults.wasm.supported = typeof WebAssembly !== 'undefined';
     append(`WebAssembly: ${testResults.wasm.supported ? 'âœ… Supported' : 'âŒ Not supported'}`);
@@ -73,31 +74,36 @@ if (browser) {
         progressPercent = 10
         await testWebGPU();
         progressPercent = 25}
+
       // Test WebGL2 (excellent fallback for Gemma3 270M)
       if (testResults.webgl2.supported) {
         currentTest = 'Testing WebGL2 transform feedback for Gemma3 270M...';
         progressPercent = 35
         await testWebGL2();
         progressPercent = 50}
+
       // Test WebGL1 (compatibility fallback)
       if (testResults.webgl1.supported) {
         currentTest = 'Testing WebGL1 texture operations...';
         progressPercent = 65
         await testWebGL1();
         progressPercent = 80}
+
       // Test WebAssembly CPU (final fallback)
       if (testResults.wasm.supported) {
         currentTest = 'Testing WebAssembly SIMD CPU fallback...';
         progressPercent = 85
         await testWebAssemblyCPU();
         progressPercent = 95}
+
       // Generate recommendation for Gemma3 270M deployment
       currentTest = 'Analyzing results for optimal Gemma3 270M deployment...';
       generateGemma270MRecommendation();
       progressPercent = 100
       append('ðŸŽ‰ Gemma3 270M performance analysis completed successfully')} catch (error) {
       append(`âŒ Test error: ${error}`);
-      console.error('Performance test error:', error);'
+      console.error('Performance test error:', error);
+'
     } finally {
       isTestingInProgress = false
       currentTest = ''}
@@ -132,8 +138,7 @@ if (browser) {
       `;`
       const computeShader = device.createShaderModule({ code: computeShaderSource });
       const computePipeline = device.createComputePipeline({
-        layout: 'auto',
-        compute: { module: computeShader, entryPoint: 'main' }
+        layout: 'auto'; compute: { module: computeShader, entryPoint: 'main' }
       });
       // Performance benchmark for Gemma3 270M operations
       const startTime = performance.now();
@@ -142,10 +147,8 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.webgpu.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / iterations).toFixed(2),
-        opsPerSecond: (iterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / iterations).toFixed(2),
+        opsPerSecond: (iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
       }
       append(`âœ…, WebGPU: ${iterations} Gemma3 270M operations in ${totalTime.toFixed(2)}ms (${(iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgpu.error = (error as Error).messag
@@ -169,10 +172,8 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.webgl2.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / webgl2Iterations).toFixed(2),
-        opsPerSecond: (webgl2Iterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / webgl2Iterations).toFixed(2),
+        opsPerSecond: (webgl2Iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
       }
       append(`âœ…, WebGL2: ${webgl2Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl2Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgl2.error = (error as Error).messag
@@ -196,11 +197,9 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.webgl1.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / webgl1Iterations).toFixed(2),
-        opsPerSecond: (webgl1Iterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
-        note: `Reduced, iterations: ${webgl1Iterations} (WebGL1 limitations)`
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / webgl1Iterations).toFixed(2),
+        opsPerSecond: (webgl1Iterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
+        note: `Reduced; iterations: ${webgl1Iterations} (WebGL1 limitations)`
       }
       append(`âœ… WebGL1: ${webgl1Iterations} operations in ${totalTime.toFixed(2)}ms (${(webgl1Iterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.webgl1.error = (error as Error).messag
@@ -220,16 +219,15 @@ if (browser) {
       const endTime = performance.now();
       const totalTime = endTime - startTime
       testResults.wasm.performance = {
-        totalTime: totalTime.toFixed(2),
-        avgTime: (totalTime / cpuIterations).toFixed(2),
-        opsPerSecond: (cpuIterations / (totalTime / 1000)).toFixed(2),
-        matrixSize: matrixSize
-       , note: `CPU-based SIMD, iterations: ${cpuIterations}`
+        totalTime: totalTime.toFixed(2); avgTime: (totalTime / cpuIterations).toFixed(2),
+        opsPerSecond: (cpuIterations / (totalTime / 1000)).toFixed(2); matrixSize: matrixSize
+       , note: `CPU-based SIMD; iterations: ${cpuIterations}`
       }
       append(`âœ…, WebAssembly: ${cpuIterations} operations in ${totalTime.toFixed(2)}ms (${(cpuIterations / (totalTime / 1000)).toFixed(1)} ops/sec)`)} catch (error) {
       testResults.wasm.error = (error as Error).messag
       append(`âŒ WebAssembly failed: ${(error as Error).message}`)}
   }
+
   // Helper functions for matrix operations
   function generateTestMatrices(size: number) {
     const matrixA = new Float32Array(size * size);
@@ -240,25 +238,21 @@ if (browser) {
       matrixB[i] = (Math.random() * 2 - 1) * 0.1}
     return { matrixA, matrixB }
   }
-  async function performWebGPUMatrixMultiplication(device: GPUDevice, computePipeline: GPUComputePipeline): Promise<any> {
+  async function performWebGPUMatrixMultiplication(device: GPUDevice; computePipeline: GPUComputePipeline): Promise<any> {
     const matrixSizeBytes = matrixSize * matrixSize * 4
     const bufferA = device.createBuffer({
-      size: matrixSizeBytes
-     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
+      size: matrixSizeBytes; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
     const bufferB = device.createBuffer({
-      size: matrixSizeBytes
-     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
+      size: matrixSizeBytes; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST});
     const resultBuffer = device.createBuffer({
-      size: matrixSizeBytes
-     , usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC});
+      size: matrixSizeBytes; usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC});
     device.queue.writeBuffer(bufferA, 0, testData!.matrixA);
     device.queue.writeBuffer(bufferB, 0, testData!.matrixB);
     const bindGroup = device.createBindGroup({
-      layout: computePipeline.getBindGroupLayout(0),
-      entries: [
-        { binding: 0, resource: { buffer: bufferA } },
-        { binding: 1, resource: { buffer: bufferB } },
-        { binding: 2, resource: { buffer: resultBuffer } }
+      layout: computePipeline.getBindGroupLayout(0); entries: [
+        { binding: 0; resource: { buffer: bufferA } },
+        { binding: 1; resource: { buffer: bufferB } },
+        { binding: 2; resource: { buffer: resultBuffer } }
       ]
     });
     const commandEncoder = device.createCommandEncoder();
@@ -294,7 +288,7 @@ if (browser) {
   async function createWebAssemblyMatrixModule(): Promise<any> {
     // Simulated high-performance WebAssembly SIMD module for Gemma3 270M
     return {
-      matrixMultiply: (matrixA: Float32Array, matrixB: Float32Array, size: number) => {
+      matrixMultiply: (matrixA: Float32Array, matrixB: Float32Array; size: number) => {
         const result = new Float32Array(size * size);
         // Optimized matrix multiplication with simulated SIMD operations
         for (let i = 0; i < size; i++) {
@@ -348,6 +342,7 @@ if (browser) {
         append(`WASM streaming (fast model loading): ${streaming ? 'âœ… Available' : 'âŒ Not available'}`)} catch (e) {
         append('WASM streaming: âŒ Error testing')}
     }
+
     // Test for memory availability (important for 270M model)
     const memoryInfo = (performance as: any).memory
     if (memoryInfo) {
@@ -492,7 +487,7 @@ if (browser) {
     max-width: 1200px
     margin: 0 auto
    ; padding: 1rem
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white
@@ -525,8 +520,7 @@ if (browser) {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)}
   .test-buttonhover: not(:disabled) {
     background: #1d4ed8
-   ; transform: translateY(-2px),
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)}
+   ; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)}
   .test-buttondisabled {
     background: #6b7280
     cursor: not-allowed
@@ -658,5 +652,4 @@ if (browser) {
       grid-template-columns: 1fr}
   }
 </style>
-
 

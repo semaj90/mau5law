@@ -56,7 +56,7 @@ mcp<script lang="ts">
       gainNode.connect(audioContext.destination);
       // Different frequencies for different notification types
       const frequencies = {
-        success: 800, error: 400, warning: 600, info: 500 }
+        success: 800, error: 400, warning: 600; info: 500 }
       oscillator.frequency.setValueAtTime(
         frequencies[type],
         audioContext.currentTime
@@ -84,7 +84,7 @@ mcp<script lang="ts">
     // ondispatch removed;
   }
   // Action to set notification element in the Map
-  function setNotificationElement(node: HTMLElement, notificationId: string) {
+  function setNotificationElement(node: HTMLElement; notificationId: string) {
     notificationElements.set(notificationId, node);
     return {
       destroy() {
@@ -150,8 +150,7 @@ mcp<script lang="ts">
     const isTop = position.includes("top");
     const enterFrom = isTop ? "-translate-y-2" : "translate-y-2";
     return {
-      enter: `transition-all duration-300 ease-out transform ${enterFrom} opacity-0`,
-      enterActive: "transform translate-y-0 opacity-100",
+      enter: `transition-all duration-300 ease-out transform ${enterFrom} opacity-0`; enterActive: "transform translate-y-0 opacity-100",
       exit: `transition-all duration-200 ease-in transform ${enterFrom} opacity-0`,
     }
   }
@@ -385,7 +384,7 @@ dismissAll()}
   .sr-only { position: absolute;
     width: 1px;
     height: 1px;
-    padding: 0, margin: -1px;
+    padding: 0; margin: -1px;
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;

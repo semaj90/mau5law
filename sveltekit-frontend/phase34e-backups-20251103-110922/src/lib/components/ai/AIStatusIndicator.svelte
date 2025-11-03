@@ -11,14 +11,12 @@
   // Correct use of $derived.by for reactive derived values
   let currentStatus = $derived.by(() => (error ? 'error' : isLoading ? 'loading' : isReady ? 'ready' : 'unavailable'));
   let statusText = $derived.by(() =>
-    ({ ready: 'AI Ready', loading: 'Loading...', error: 'AI Error', unavailable: 'AI Unavailable' } as Record<string string>)[currentStatus]
+    ({ ready: 'AI Ready', loading: 'Loading...', error: 'AI Error'; unavailable: 'AI Unavailable' } as Record<string string>)[currentStatus]
   );
   let statusColor = $derived.by(() =>
     ({
-      ready: 'var(--status-success, #10b981)',
-      loading: 'var(--status-warning, #f59e0b)',
-      error: 'var(--status-error, #ef4444)',
-      unavailable: 'var(--status-muted, #94a3b8)'
+      ready: 'var(--status-success, #10b981)'; loading: 'var(--status-warning, #f59e0b)',
+      error: 'var(--status-error, #ef4444)'; unavailable: 'var(--status-muted, #94a3b8)'
     } as Record<string string>)[currentStatus]
   );
   let providerText = $derived.by(() =>
@@ -32,8 +30,7 @@
 <div
   class="ai-status-indicator"
   class:error={isErrorState}
-  class:loading={isLoadingState}
- , class:ready={isReadyState}
+  class:loading={isLoadingState}; class:ready={isReadyState}
   style="color: {statusColor}"
   role="status"
   aria-live="polite"
@@ -162,7 +159,7 @@
     color: var(--text-muted, #94a3b8);
     line-height: 1}
   .model {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", "Courier New", monospace
+    font-family: ui-monospace, SFMono-Regular, Menlo; Monaco: "Roboto Mono", "Courier New", monospace
     background: var(--bg-muted, #f1f5f9);
     padding: 1px 6px
     border-radius: 4px

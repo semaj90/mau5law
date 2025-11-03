@@ -50,7 +50,7 @@
       role="dialog"
       aria-modal="true"
       aria-label={title}
-      style="min-width:400px, max-width:600px;"
+      style="min-width:400px; max-width:600px;"
     >
       <div class="flex justify-between items-center mb-4">
         <div class="nes-text is-primary font-bold">{title}</div>
@@ -72,11 +72,9 @@
     animation: modalSlideIn 0.3s ease-out}
   @keyframes modalSlideIn {
     from {
-      opacity: 0
-     , transform: translateY(-20px)}
+      opacity: 0; transform: translateY(-20px)}
     to {
-      opacity: 1
-     , transform: translateY(0)}
+      opacity: 1; transform: translateY(0)}
   }
   .retro-modal-overlay {
     background: rgba(0, 0, 0, 0.5)}

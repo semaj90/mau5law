@@ -2,7 +2,8 @@
   import '../app.css';
   import type { Snippet } from 'svelte';
   interface Props {
-     Snippet}
+    Snippet;
+  }
   let { children }: Props = $props();
 </script>
 
@@ -26,4 +27,3 @@
     padding: 1rem}
   main { padding: 1rem}
 </style>
-

@@ -64,6 +64,7 @@
       recognition = null};
   });
 </script>
+
 {#if isSupported}
   <div>
     {#if isListening}
@@ -75,7 +76,8 @@
       onclick={() => {
         if (isListening) {
           recognition?.stop();
-          isListening = false} else {
+          isListening = false;
+        } else {
           try {
             recognition?.start();
           } catch (err) {
@@ -96,8 +98,8 @@
 {:else}
   <p>Speech recognition is not supported in this browser.</p>
 {/if}
+
 <style>
   /* @unocss-include */
   /* Add your styles here */
 </style>
-

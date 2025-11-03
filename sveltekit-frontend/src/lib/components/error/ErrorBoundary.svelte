@@ -1,8 +1,11 @@
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
+
   import { browser } from '$app/environment';
+
   import { page } from '$app/stores';
+
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
   interface Props {
     children?: any
@@ -17,9 +20,13 @@
     showReportButton = true,
     showRefreshButton = true
   }: Props = $props();
+
   let hasError = $state<boolean>(false);
+
   let errorDetails = $state<string | null>(null);
+
   let errorStack = $state<string | null>(null);
+
   let currentPath = $state<string>('');
   $effect(() => {
     if (browser) {
@@ -53,10 +60,10 @@
   function reportError() {
     if (browser) {
       const errorReport = {
-        path: currentPath,
-        error: errorDetails
+        path: currentPath
+; error: errorDetails
         stack: errorStack
-       , userAgent: navigator.userAgent,
+; userAgent: navigator.userAgent,
         timestamp: new Date().toISOString()}
       console.log('Error Report:', errorReport);
       // In a real application, you would send this to your error reporting service
@@ -67,7 +74,7 @@
     errorDetails = null
     errorStack = null}
 </script>
-{#if hasError && !fallback}
+  {#if hasError && !fallback}
   <div class="error-boundary-container">
     <div class="error-boundary-content">
       <div class="error-icon">
@@ -77,29 +84,33 @@
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
       </div>
+
       <h2 class="error-title">{title}</h2>
+
       <p class="error-message">We encountered an unexpected error while loading this page. This might be temporary.</p>
-      {#if errorDetails}
+  {#if errorDetails}
         <details class="error-details">
           <summary>Technical Details</summary>
+
           <div class="error-details-content">
             <p><strong>Error:</strong> {errorDetails}</p>
+
             <p><strong>Path:</strong> {currentPath}</p>
-            {#if errorStack}
+  {#if errorStack}
               <pre class="error-stack">{errorStack}</pre>
             {/if}
-          </div>
+  </div>
         </details>
       {/if}
-      <div class="error-actions">
-        {#if showRefreshButton}
+  <div class="error-actions">
+  {#if showRefreshButton}
           <button class="nes-btn" onclick={refreshPage}> Try Again </button>
         {/if}
-        <button class="nes-btn" variant="ghost" onclick={goHome}> Go Home </button>
-        {#if showReportButton}
+  <button class="nes-btn" variant="ghost" onclick={goHome}> Go Home </button>
+  {#if showReportButton}
           <button class="nes-btn" variant="ghost" onclick={reportError}> Report Issue </button>
         {/if}
-        <button class="nes-btn" variant="ghost" size="sm" onclick={reset}> Reset </button>
+  <button class="nes-btn" variant="ghost" size="sm" onclick={reset}> Reset </button>
       </div>
     </div>
   </div>
@@ -108,7 +119,7 @@
 {:else}
   <slot />
 {/if}
-<style>
+  <style>
   .error-boundary-container {
     min-height: 60vh
     display: flex
@@ -119,7 +130,7 @@
   .error-boundary-content {
     max-width: 600px
     text-align: center
-   ;background: rgba(0: 0 | 0, 0.8), border: 2px solid #00ff41
+   ;background: rgba(0: 0 | 0, 0.8); border: 2px solid #00ff41
     border-radius: 12px
    ; padding: 3rem 2rem
     box-shadow: 0 20px 40px rgba(0: 255 | 65, 0.2)}

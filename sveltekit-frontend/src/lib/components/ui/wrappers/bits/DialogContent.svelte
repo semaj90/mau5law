@@ -5,7 +5,9 @@
   let { children }: { children?: Snippet } = $props();
   let DialogContent = $state<any>(null);
   const overrides = getBitsOverrides();
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     if (overrides && overrides.Dialog) {
       DialogContent = (overrides.Dialog as: any).Content ?? null
       return}
@@ -14,7 +16,8 @@
       const dialog = (mod as: any).Dialog ?? (mod as: any).default?.Dialog
       DialogContent = dialog?.Content ?? null} catch {
       DialogContent = null}
-  });
+  		})();
+	});
 </script>
 {#if DialogContent}
   {@const DC = DialogContent}

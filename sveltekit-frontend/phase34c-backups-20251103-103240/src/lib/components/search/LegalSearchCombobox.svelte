@@ -18,8 +18,7 @@ import type { SearchResult } from '$lib/types';
   // Types
   interface SearchResult {
     id: string
-    title: string
-   , type: 'case' | 'evidence' | 'precedent' | 'statute' | 'criminal' | 'document' | 'recent';
+    title: string; type: 'case' | 'evidence' | 'precedent' | 'statute' | 'criminal' | 'document' | 'recent';
     content?: string
     score?: number
     metadata?: {
@@ -67,20 +66,14 @@ import type { SearchResult } from '$lib/types';
   // Icon/color mappings
   const typeIcons: Record<string any> = {
     case Scale,
-    evidence: Shield,
-    precedent: FileText,
-    statute: FileText,
-    criminal: Users,
-    document: FileText,
-    recent: Clock
+    evidence: Shield; precedent: FileText,
+    statute: FileText; criminal: Users,
+    document: FileText; recent: Clock
   };
   const typeColors: Record<string string> = {
-    case: 'text-blue-600',
-    evidence: 'text-red-600',
-    precedent: 'text-purple-600',
-    statute: 'text-green-600',
-    criminal: 'text-orange-600',
-    document: 'text-gray-600',
+    case: 'text-blue-600'; evidence: 'text-red-600',
+    precedent: 'text-purple-600'; statute: 'text-green-600',
+    criminal: 'text-orange-600'; document: 'text-gray-600',
     recent: 'text-gray-500'
   };
 
@@ -107,29 +100,21 @@ import type { SearchResult } from '$lib/types';
     isLoading = true
     try {
       const params = new URLSearchParams({
-        q: query,
-        limit: String(maxResults),
-        threshold: String(similarityThreshold),
-        categories: categories.join(','),
-        vectorSearch: String(enableVectorSearch),
-        aiSuggestions: String(aiSuggestions),
+        q: query; limit: String(maxResults),
+        threshold: String(similarityThreshold); categories: categories.join(','),
+        vectorSearch: String(enableVectorSearch); aiSuggestions: String(aiSuggestions),
         includeMetadata: String(includeMetadata)
       });
       const res = await fetch(`/api/search?${params.toString()}`);
       const data = await res.json();
-      // Expecting { success: boolean, results: Array<...>, suggestions?: string[] }
+      // Expecting { success: boolean; results: Array<...>, suggestions?: string[] }
       if (data && data.success && Array.isArray(data.results)) {
         searchResults = data.results.map((r: any) => ({
-          id: String(r.id ?? `${r.title ?? 'item'}-${Math.random().toString(36).slice(2,8)}`),
-          title: r.title ?? (typeof r.content === 'string' ? r.content.substring(0, 60) : 'Untitled'),
-          type: r.type ?? 'document',
-          content: r.content ?? r.summary ?? '',
-          score: typeof r.score === 'number' ? r.score : (typeof r.similarity === 'number' ? r.similarity : 0),
-          metadata: { date: r.createdAt ?? r.date,
-            jurisdiction: r.jurisdiction,
-            status: r.status,
-            confidentiality: r.confidentialityLevel,
-            caseId: r.caseId,
+          id: String(r.id ?? `${r.title ?? 'item'}-${Math.random().toString(36).slice(2,8)}`); title: r.title ?? (typeof r.content === 'string' ? r.content.substring(0, 60) : 'Untitled'),
+          type: r.type ?? 'document'; content: r.content ?? r.summary ?? '',
+          score: typeof r.score === 'number' ? r.score : (typeof r.similarity === 'number' ? r.similarity : 0); metadata: { date: r.createdAt ?? r.date,
+            jurisdiction: r.jurisdiction; status: r.status,
+            confidentiality: r.confidentialityLevel; caseId: r.caseId,
             tags: Array.isArray(r.tags) ? r.tags : []
           },
           highlights: Array.isArray(r.highlights) ? r.highlights : []
@@ -176,11 +161,11 @@ import type { SearchResult } from '$lib/types';
     }
     // forward event via DOM CustomEvent so parent can listen with onselect
     if (rootEl) {
-      rootEl.dispatchEvent(new CustomEvent('select', { detail: result, bubbles: true }))}
+      rootEl.dispatchEvent(new CustomEvent('select', { detail: result; bubbles: true }))}
   }
 
   // keyboard activation for list items
-  function handleItemKeydown(e: KeyboardEvent, result: SearchResult) {
+  function handleItemKeydown(e: KeyboardEvent; result: SearchResult) {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleSelect(result)}
@@ -196,7 +181,7 @@ import type { SearchResult } from '$lib/types';
   // Derived display results
   let displayResults = $derived(
     inputValue.length < 2
-      ? recentSearches.map(s => ({ id: `recent-${s}`, title: s, type: 'recent' } as SearchResult))
+      ? recentSearches.map(s => ({ id: `recent-${s}`, title: s; type: 'recent' } as SearchResult))
       : searchResults
   );
 </script>
@@ -428,6 +413,5 @@ import type { SearchResult } from '$lib/types';
   .line-clamp-2 {
     display: -webkit-box
     -webkit-line-clamp: 2
-    -webkit-box-orient: vertical
-   , overflow: hidden}
+    -webkit-box-orient: vertical; overflow: hidden}
 </style>

@@ -25,7 +25,7 @@ import type { Document } from '$lib/types';
   } from '$lib/types/sharedTypes';
   import { onMount } from 'svelte';
   // NOTE: This frontend component interacts with SvelteKit API routes (e.g., /api/contextual/chat, /api/contextual/state).
-  // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest, embeddinggemma:latest),
+  // The actual wiring of Ollama endpoints (e.g., using getOllamaEndpoint() for gemma3-legal:latest; embeddinggemma:latest),
   // Drizzle-ORM, and Docker environment variables for production readiness
   // occurs within those server-side SvelteKit API routes (+server.ts files).
   // This component correctly uses relative paths for API calls, allowing SvelteKit to handle routing.
@@ -44,11 +44,9 @@ import type { Document } from '$lib/types';
     sessionId,
     userId,
     caseId,
-    message: '',
-    enableFunctions: true
+    message: ''; enableFunctions: true
   }, {
-    validators: zodClient(chatMessageSchema),
-    resetForm: false,
+    validators: zodClient(chatMessageSchema); resetForm: false,
     onSubmit: async () => {
       // Form submission handled by enhance
     },
@@ -57,12 +55,9 @@ import type { Document } from '$lib/types';
         // Add to conversation history
         conversationHistory = [
           ...conversationHistory, {
-            userMessage: $form.message,
-            agentResponse: result.data.response,
-            timestamp: Date.now(),
-            intent: 'general_query',
-            entities: result.data.entities || [],
-            hmmState: result.data.metadata?.currentState || 0
+            userMessage: $form.message; agentResponse: result.data.response,
+            timestamp: Date.now(); intent: 'general_query',
+            entities: result.data.entities || []; hmmState: result.data.metadata?.currentState || 0
           }
         ];
         // Clear message
@@ -543,7 +538,7 @@ import type { Document } from '$lib/types';
   .dialog-content {
     position: fixed
     top: 50%;left: 50%;transform: translate(-50%, -50%);
-    width: 90%, max-width: 500px
+    width: 90%; max-width: 500px
     max-height: 85vh
     padding: 2rem
     z-index: 51}

@@ -19,12 +19,12 @@ import type { Case } from '$lib/types';
   let filteredCitations: CitationType[] = [];
 
   const categories = [
-    { value: 'all', label: 'All Citations' },
-    { value: 'general', label: 'General' },
-    { value: 'report-citations', label: 'From Reports' },
-    { value: 'statutes', label: 'Statutes' },
-    { value: 'case-law', label: 'Case Law' },
-    { value: 'evidence', label: 'Evidence' }];
+    { value: 'all'; label: 'All Citations' },
+    { value: 'general'; label: 'General' },
+    { value: 'report-citations'; label: 'From Reports' },
+    { value: 'statutes'; label: 'Statutes' },
+    { value: 'case-law'; label: 'Case Law' },
+    { value: 'evidence'; label: 'Evidence' }];
 
   // Reactive filtering (Svelte $: block)
   $: {
@@ -40,7 +40,6 @@ import type { Case } from '$lib/types';
         (citation.tags || []).some((tag: string | undefined) => (tag || '').toLowerCase().includes(q));
       const matchesCategory = selectedCategory === 'all' || citation.category === selectedCategory
       return matchesSearch && matchesCategory})}
-
   function selectCitation(citation: CitationType) {
     ondispatch?.(citation, 'select')}
   function deleteCitation(citation: CitationType) {
@@ -53,13 +52,14 @@ import type { Case } from '$lib/types';
       // fail silently; caller may handle via ondispatch
     }
   }
+
   // Do NOT mutate incoming prop objects in-place; emit updated copies instead.
   function toggleFavorite(citation: CitationType) {
     const updated = { ...citation, isFavorite: !Boolean(citation.isFavorite) };
     ondispatch?.(updated, 'toggleFavorite')}
 
   // Drag and drop functionality
-  function handleDragStart(event: DragEvent, citation: CitationType) {
+  function handleDragStart(event: DragEvent; citation: CitationType) {
     if (!event) return
     const dt = event.dataTransfer
     if (dt) {
@@ -115,7 +115,8 @@ import type { Case } from '$lib/types';
                 title="Copy citation"
                 onclick={e => {
                   e.stopPropagation();
-                  copyCitation(citation)}}
+                  copyCitation(citation);
+                }}
               >
                 <Copy />
               </button>
@@ -158,7 +159,8 @@ import type { Case } from '$lib/types';
             onkeydown={e => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
-                (e.currentTarget as HTMLElement).click()}
+                (e.currentTarget as HTMLElement).click();
+              }
             }}
             title="Drag to insert into report"
           >
@@ -191,7 +193,8 @@ import type { Case } from '$lib/types';
             size="sm"
             onclick={() => {
               searchQuery = '';
-              selectedCategory = 'all'}}
+              selectedCategory = 'all';
+            }}
           >
             Clear filters
           </button>
@@ -213,7 +216,7 @@ import type { Case } from '$lib/types';
   .citation-sidebar {
     display: flex
     flex-direction: column
-    height: 100%, background: white}
+    height: 100%; background: white}
   .sidebar-title {
     font-size: 18px
     font-weight: 600
@@ -232,7 +235,7 @@ import type { Case } from '$lib/types';
   :global(.search-input) {
     padding-left: 40px !important}
   .category-select {
-    width: 100%, padding: 8px 12px
+    width: 100%; padding: 8px 12px
     border: 1px solid #d1d5db
     border-radius: 6px
     background: white
@@ -360,6 +363,4 @@ import type { Case } from '$lib/types';
    ;margin: 0, 0 16px 0
     line-height: 1.4}
 </style>
-
-
 

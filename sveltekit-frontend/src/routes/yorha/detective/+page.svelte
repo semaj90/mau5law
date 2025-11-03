@@ -1,4 +1,4 @@
-﻿<svelte:head>
+<svelte:head>
   <title>YoRHa Detective Command Center</title>
   <meta name="description" content="Monitor cases, evidence, and AI signals inside the YoRHa, detective, suite." />
 </svelte:head>
@@ -83,7 +83,9 @@ import type { Case } from '$lib/types';
 
   // dynamic loader for YoRHaModal to handle modules that export named or default
   let YoRHaModalComponent: any = null
-  onMount(async () => {
+  onMount(() => {
+		(async () => {
+
     try {
       // cast import to: unknown, then: any so TypeScript won't complain about missing properties'
       const mod = (await import('$lib/components/yorha/YoRHaModal.svelte')) as: unknown
@@ -92,7 +94,8 @@ import type { Case } from '$lib/types';
       const LoadedComponent = modAny?.default ?? modAny?.YoRHaModal ?? modAny?.YoRHaModalComponent ?? modAny
       YoRHaModalComponent = LoadedComponent as: any} catch (e) {
       console.warn('Failed to load YoRHaModal component', e)}
-  });
+  		})();
+	});
 
   // standard Svelte prop (page data)
   const { data } = $props<{ data: DetectiveData }>()
@@ -122,7 +125,6 @@ import type { Case } from '$lib/types';
     if (section === 'evidence') goto('/evidence');
     if (section === 'search') goto('/search');
     if (section === 'terminal') goto('/yorha/terminal')}
-
   async function handleCreateCase(event: SubmitEvent): Promise<any> {
     event.preventDefault();
     statusMessage = 'Creating caseâ€¦';
@@ -146,11 +148,9 @@ import type { Case } from '$lib/types';
     } catch (error) {
       statusMessage = error instanceof Error ? error.message : 'Failed to create case.'}
   }
-
   function cancelNewCase() {
     showNewCaseModal = false
     newCaseData = { title: '', description: '', priority: 'medium' }}
-
   function priorityBadge(priority?: string) {
     switch (priority) {
       case, 'critical':
@@ -400,4 +400,5 @@ import type { Case } from '$lib/types';
      </div>
    {/if}
 {/if}
+
 

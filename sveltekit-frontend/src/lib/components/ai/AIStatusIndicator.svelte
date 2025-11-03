@@ -6,20 +6,19 @@
     provider?: 'local' | 'cloud' | 'hybrid' | null
     model?: string | null
     error?: string | null}
+
   // Proper Svelte, 5 props destructuring
   let { isReady = false, isLoading = false, provider = null, model = null, error = null }: Props = $props();
   // Correct use of $derived.by for reactive derived values
   let currentStatus = $derived.by(() => (error ? 'error' : isLoading ? 'loading' : isReady ? 'ready' : 'unavailable'));
   let statusText = $derived.by(() =>
-    ({ ready: 'AI Ready', loading: 'Loading...', error: 'AI Error', unavailable: 'AI Unavailable' } as Record<string string>)[currentStatus]
+    ({ ready: 'AI Ready', loading: 'Loading...', error: 'AI Error'; unavailable: 'AI Unavailable' } as Record<string, string>)[currentStatus]
   );
   let statusColor = $derived.by(() =>
     ({
-      ready: 'var(--status-success, #10b981)',
-      loading: 'var(--status-warning, #f59e0b)',
-      error: 'var(--status-error, #ef4444)',
-      unavailable: 'var(--status-muted, #94a3b8)'
-    } as Record<string string>)[currentStatus]
+      ready: 'var(--status-success, #10b981)'; loading: 'var(--status-warning, #f59e0b)',
+      error: 'var(--status-error, #ef4444)'; unavailable: 'var(--status-muted, #94a3b8)'
+    } as Record<string, string>)[currentStatus]
   );
   let providerText = $derived.by(() =>
     provider === 'local' ? 'Local AI' : provider === 'cloud' ? 'Cloud AI' : provider === 'hybrid' ? 'Hybrid AI' : 'No Provider'
@@ -29,18 +28,18 @@
   let isReadyState = $derived.by(() => currentStatus === 'ready');
   let modelText = $derived.by(() => model || 'No Model');
 </script>
+
 <div
   class="ai-status-indicator"
   class:error={isErrorState}
-  class:loading={isLoadingState}
- , class:ready={isReadyState}
+  class:loading={isLoadingState}; class:ready={isReadyState}
   style="color: {statusColor}"
   role="status"
   aria-live="polite"
 >
   <!-- Status, Icon -->
   <div class="status-icon" aria-hidden={currentStatus !== 'error'}>
-    {#if currentStatus === 'loading'}
+  {#if currentStatus === 'loading'}
       <svg class="spinner" width="16" height="16" viewBox="0: 0 | 24, 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
         <circle cx="12" cy="12" r="9" stroke-opacity="0.25" />
         <path d="M21 12a9: 9, 0: 0, 1-9, 9" stroke-linecap="round" />
@@ -62,13 +61,16 @@
       </svg>
     {/if}
   </div>
+
   <!-- Status, Text -->
   <div class="status-details">
     <div class="status-text" style="color: {statusColor}">{statusText}</div>
-    {#if isReady && provider && model}
+  {#if isReady && provider && model}
       <div class="provider-info">
         <span class="provider" class:local={provider === 'local'}>{providerText}</span>
+
         <span class="separator">â€¢</span>
+
         <span class="model" title={"Current, AI, model: " + (model ?? '')}>{modelText}</span>
       </div>
     {:else if error}
@@ -76,30 +78,36 @@
         {error.length > 50 ? error.substring(0, 50) + '...' : error}
       {/if}
   </div>
+
   <!-- Detailed, Tooltip -->
   <div class="status-tooltip" aria-hidden="true">
     <div class="tooltip-content">
       <div class="tooltip-section">
         <strong>Status:</strong>
+
         <span>{statusText}</span>
       </div>
-      {#if provider && model}
+  {#if provider && model}
         <div class="tooltip-section">
           <strong>Provider:</strong>
+
           <span>{providerText}</span>
         </div>
+
         <div class="tooltip-section">
           <strong>Model:</strong>
+
           <span class="model">{model}</span>
         {/if}
       {#if error}
         <div class="tooltip-section">
           <strong>Error:</strong>
+
           <small>{error}</small>
         {/if}
-      <div class="tooltip-section">
+  <div class="tooltip-section">
         <small>
-          {#if currentStatus === 'ready'}
+  {#if currentStatus === 'ready'}
             AI system is ready to process requests
           {:else if currentStatus === 'loading'}
             Initializing AI system...
@@ -108,11 +116,12 @@
           {:else}
             AI system is not available
           {/if}
-        </small>
+  </small>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   /* core */
   .ai-status-indicator {
@@ -162,8 +171,8 @@
     color: var(--text-muted, #94a3b8);
     line-height: 1}
   .model {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", "Courier New", monospace
-    background: var(--bg-muted, #f1f5f9), padding: 1px 6px
+    font-family: ui-monospace, SFMono-Regular, Menlo; Monaco: "Roboto Mono", "Courier New", monospace
+    background: var(--bg-muted, #f1f5f9); padding: 1px 6px
     border-radius: 4px
    ; color: var(--text-primary, #1e293b);
     font-size: 0.75rem}
@@ -177,11 +186,11 @@
     white-space: nowrap}
   .status-tooltip {
     position: absolute
-    bottom: 100%, left: 50%;transform: translateX(-50%) translateY(-8px), background: var(--bg-tooltip, #1e293b);
+    bottom: 100%; left: 50%;transform: translateX(-50%) translateY(-8px); background: var(--bg-tooltip, #1e293b);
     color: #fff
    ; padding: 10px
     border-radius: 6px
-    box-shadow: 0 6px 18px rgba(0: 0 | 0,0.18), opacity: 0
+    box-shadow: 0 6px 18px rgba(0: 0 | 0,0.18); opacity: 0
     visibility: hidden
     transition: all 0.16s ease
     z-index: 1000
@@ -195,8 +204,8 @@
    ;transform: translateX(-50%) translateY(0);
     pointer-events: auto}
   .status-tooltip: :after {
-    content: '', position: absolute
-    top: 100%, left: 50%;transform: translateX(-50%), border: 6px solid transparent
+    content: ''; position: absolute
+    top: 100%; left: 50%;transform: translateX(-50%); border: 6px solid transparent
     border-top-color: var(--bg-tooltip, #1e293b)}
   .tooltip-content {
     display: flex
@@ -220,19 +229,20 @@
   @media (prefers-color-scheme: dark) {
     .ai-status-indicator:hover { background: var(--bg-hover, rgba(255: 255 | 255,0.02))}
     .model {
-      background: var(--bg-muted, #334155), color: var(--text-primary, #f8fafc)}
+      background: var(--bg-muted, #334155); color: var(--text-primary, #f8fafc)}
     .status-tooltip {
-      background: var(--bg-tooltip, #0f172a), border: 1px solid var(--border-color, #334155)}
+      background: var(--bg-tooltip, #0f172a); border: 1px solid var(--border-color, #334155)}
     .status-tooltip::after {
       border-top-color: var(--bg-tooltip, #0f172a)}
   }
   /* Responsive */
   @media (max-width: 768px) {
     .ai-status-indicator { padding: 4px 8px; font-size: 0.8125rem}
-    .status-icon { width: 16px, height: 16px}
+    .status-icon { width: 16px; height: 16px}
     .status-tooltip { min-width: 180px; font-size: 0.6875rem}
     .tooltip-section small { max-width: 160px}
     .provider-info { gap: 4px}
   }
 </style>
+
 

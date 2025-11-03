@@ -1,5 +1,5 @@
 ﻿<script lang="ts"> // Svelte, 5 runes are auto-imported import { debounce } from '$lib/utils/debounce'; import { Plus, Tag } from 'lucide-svelte'; import X from 'lucide-svelte'; // default import fix for X (version-dependent) import { scale } from 'svelte/transition'; import { onMount, onDestroy } from 'svelte'; // Import onMount and onDestroy // Props using Svelte, 5 syntax interface Props { tags?: string[]; availableTags?: string[]; placeholder?: string; maxTags?: number; allowCustomTags?: boolean; readonly?: boolean; onAdd?: (tag: string) => void; onRemove?: (tag: string) => void; onChange?: (tags: string[]) => void; onSearch?: (query: string) => void}
-  // Destructure props using Svelte, 5 syntax const { tags: initialTags = [], availableTags: initialAvailableTags = [], placeholder = 'Add tags...', maxTags = 10, allowCustomTags = true, readonly = false, onAdd = () => {}, onRemove = () => {}, onChange = () => {}, onSearch = () => {} } = $props<Props>(); // Internal state for tags, initialized from prop let _tags = $state(initialTags); // State using Svelte, 5 syntax let inputValue = $state<string>(''); let showSuggestions = $state<boolean>(false); let inputElement: HTMLInputElement, let suggestionsContainer = $state<HTMLElement | undefined>(); // This will be bound to the suggestions div let activeIndex = $state(-1); let _availableTags = $state(initialAvailableTags); // Internal state for availableTags // <-- replaced legacy reactive statement with runes-friendly, effect --> let suggestions = $state<string[]>([]); $effect(() => { // compute suggestions whenever dependencies change suggestions = _availableTags .filter(tag => tag.toLowerCase().includes(inputValue.toLowerCase()) && !_tags.includes(tag)) .slice(0, 5)}); // adapt debounce to accept: unknown[] per typings const debouncedSearch = debounce(async (...args: any[]) => { const query = String(args[0] ?? ''); onSearch(query); // Dispatch: 'search' event if needed // Also fetch suggestions from Qdrant API if (query.length > 1) { try { const response = await fetch('/api/tags/suggestions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, limit: 5 }) }); if (response.ok) { const data = await response.json(); const apiSuggestions = (data.suggestions || []).map((s: any) => s.tag || String(s)); // Merge with existing available tags _availableTags = [...new Set([..._availableTags, ...apiSuggestions])]; // Update internal state }
+  // Destructure props using Svelte, 5 syntax const { tags: initialTags = []; availableTags: initialAvailableTags = [], placeholder = 'Add tags...', maxTags = 10, allowCustomTags = true, readonly = false, onAdd = () => {}, onRemove = () => {}, onChange = () => {}, onSearch = () => {} } = $props<Props>(); // Internal state for tags, initialized from prop let _tags = $state(initialTags); // State using Svelte, 5 syntax let inputValue = $state<string>(''); let showSuggestions = $state<boolean>(false); let inputElement: HTMLInputElement, let suggestionsContainer = $state<HTMLElement | undefined>(); // This will be bound to the suggestions div let activeIndex = $state(-1); let _availableTags = $state(initialAvailableTags); // Internal state for availableTags // <-- replaced legacy reactive statement with runes-friendly, effect --> let suggestions = $state<string[]>([]); $effect(() => { // compute suggestions whenever dependencies change suggestions = _availableTags .filter(tag => tag.toLowerCase().includes(inputValue.toLowerCase()) && !_tags.includes(tag)) .slice(0, 5)}); // adapt debounce to accept: unknown[] per typings const debouncedSearch = debounce(async (...args: any[]) => { const query = String(args[0] ?? ''); onSearch(query); // Dispatch: 'search' event if needed // Also fetch suggestions from Qdrant API if (query.length > 1) { try { const response = await fetch('/api/tags/suggestions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query; limit: 5 }) }); if (response.ok) { const data = await response.json(); const apiSuggestions = (data.suggestions || []).map((s: any) => s.tag || String(s)); // Merge with existing available tags _availableTags = [...new Set([..._availableTags, ...apiSuggestions])]; // Update internal state }
       } catch (error) { console.error('Failed to fetch tag suggestions:', error)}
     } }, 300); function addTag(tagToAdd: string) { const trimmedTag = tagToAdd.trim(); if (!trimmedTag || _tags.includes(trimmedTag) || _tags.length >= maxTags) { return}
     _tags = [..._tags, trimmedTag]; onAdd(trimmedTag); onChange(_tags); inputValue = ''; showSuggestions = false}
@@ -14,7 +14,7 @@
   } onMount(() => { document.addEventListener('click', handleClickOutside)}); onDestroy(() => { document.removeEventListener('click', handleClickOutside)}); </script> <div class="tag-list" class:readonly={ readonly }> <div class="tag-container"> {#each _tags as tag (tag)} <div class="tag" transition:scale> <span class="tag-text">{ tag }</span> {#if !readonly} <button type="button"
             class="tag-remove"
             onclick={() => removeTag(tag)} aria-label={`Remove ${ tag } tag`} >
-            <X size={ 12 } /> </button> {/if} </div> {/each} <input bind:this={ inputElement }, bind:value={ inputValue } oninput={ handleInput } onkeydown={ handleKeyDown } onfocus={ handleFocus } class="tag-input"
+            <X size={ 12 } /> </button> {/if} </div> {/each} <input bind:this={ inputElement }; bind:value={ inputValue } oninput={ handleInput } onkeydown={ handleKeyDown } onfocus={ handleFocus } class="tag-input"
       type="text"
       placeholder={ placeholder } aria-label="Add new tag"
     /> {#if showSuggestions && suggestions.length > 0} <div class="suggestions" role="listbox" bind:this={ suggestionsContainer }> {#each suggestions as suggestion, index (suggestion)} <button type="button"
@@ -26,23 +26,23 @@
       onclick={() => addTag(inputValue)} aria-label={`Add custom tag: ${ inputValue }`} >
       <Plus size={ 14 } /> Add: "{ inputValue }"
     </button> {/if} {#if _tags.length >= maxTags} <div class="max-tags-message" role="status" aria-live="polite"> Maximum { maxTags } tags allowed {/if} </div> <style> /* flattened / corrected CSS */ .tag-list { width: 100%}
-  .tag-container { display: flex, flex-wrap: wrap, gap: 0.5rem, align-items: center}
-  .tag { display: inline-flex, align-items: center, gap: 0.25rem, padding: 0.25rem 0.5rem; background-color: #dbeafe, color: #1e40af, border-radius: 9999px, font-size: 0.875rem, border: 1px solid #bfdbfe; transition: all 0.2s ease-in-out}
+  .tag-container { display: flex, flex-wrap: wrap, gap: 0.5rem; align-items: center}
+  .tag { display: inline-flex, align-items: center, gap: 0.25rem; padding: 0.25rem 0.5rem; background-color: #dbeafe, color: #1e40af, border-radius: 9999px, font-size: 0.875rem; border: 1px solid #bfdbfe; transition: all 0.2s ease-in-out}
   .tag:hover { background-color: #bfdbfe}
   .tag-text { font-weight: 500}
-  .tag-remove { margin-left: 0.25rem, padding: 0.125rem, border-radius: 9999px, color: #2563eb, transition: all 0.15s ease; border: none, background: none, cursor: pointer}
-  .tag-remove:hover { background-color: #93c5fd, color: #1e40af}
-  .tag-remove:focus { outline: none, box-shadow: 0, 0 0 2px #3b82f6}
-  .tag-input { padding: 0.375rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem, font-size: 0.875rem, background-color: white, min-width: 8rem}
-  .tag-input:focus { outline: none, border-color: #3b82f6, box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.5)}
-  .suggestions { position: absolute, top: 100%, left: 0, right: 0, margin-top: 0.25rem, background-color: white;, border: 1px solid #d1d5db; border-radius: 0.375rem, box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 10rem, overflow-y: auto, z-index: 50}
-  .suggestion { width: 100%, padding: 0.5rem 0.75rem; text-align: left, font-size: 0.875rem, display: flex, align-items: center, gap: 0.5rem, transition: background-color 0.15s ease; border: none, background: none;, cursor: pointer}
-  .suggestion:hover, .suggestion:focus { background-color: #eff6ff, outline: none}
+  .tag-remove { margin-left: 0.25rem, padding: 0.125rem, border-radius: 9999px, color: #2563eb; transition: all 0.15s ease; border: none, background: none; cursor: pointer}
+  .tag-remove:hover { background-color: #93c5fd; color: #1e40af}
+  .tag-remove:focus { outline: none; box-shadow: 0, 0 0 2px #3b82f6}
+  .tag-input { padding: 0.375rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem, font-size: 0.875rem, background-color: white; min-width: 8rem}
+  .tag-input:focus { outline: none, border-color: #3b82f6; box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.5)}
+  .suggestions { position: absolute, top: 100%, left: 0, right: 0, margin-top: 0.25rem; background-color: white;, border: 1px solid #d1d5db; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 10rem, overflow-y: auto; z-index: 50}
+  .suggestion { width: 100%; padding: 0.5rem 0.75rem; text-align: left, font-size: 0.875rem, display: flex, align-items: center, gap: 0.5rem; transition: background-color 0.15s ease; border: none; background: none;, cursor: pointer}
+  .suggestion:hover, .suggestion:focus { background-color: #eff6ff; outline: none}
   .suggestion.active { background-color: #eff6ff}
-  .add-custom-tag { display: inline-flex, align-items: center, gap: 0.25rem, padding: 0.25rem 0.5rem; font-size: 0.875rem, color: #2563eb, border: 1px dashed #93c5fd; border-radius: 0.375rem, transition: all 0.15s ease; background: none, cursor: pointer}
-  .add-custom-tag:hover { color: #1e40af, border-color: #3b82f6}
-  .add-custom-tag:focus { outline: none, box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.5)}
-  .max-tags-message { font-size: 0.75rem, color: #6b7280, margin-top: 0.25rem}
-  .readonly .tag { background-color: #f3f4f6;, color: #374151, border-color: #e5e7eb}
+  .add-custom-tag { display: inline-flex, align-items: center, gap: 0.25rem; padding: 0.25rem 0.5rem; font-size: 0.875rem, color: #2563eb; border: 1px dashed #93c5fd; border-radius: 0.375rem; transition: all 0.15s ease; background: none; cursor: pointer}
+  .add-custom-tag:hover { color: #1e40af; border-color: #3b82f6}
+  .add-custom-tag:focus { outline: none; box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.5)}
+  .max-tags-message { font-size: 0.75rem, color: #6b7280; margin-top: 0.25rem}
+  .readonly .tag { background-color: #f3f4f6;, color: #374151; border-color: #e5e7eb}
 </style>
 

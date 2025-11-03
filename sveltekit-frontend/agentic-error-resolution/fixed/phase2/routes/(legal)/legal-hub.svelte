@@ -34,7 +34,12 @@
   }
 
   // Legal system statistics - Svelte 5 $state
-  const legalStats: LegalStats = { activeCases: 23, documentsAnalyzed: 1847, citationsFound: 542, complianceScore: 96.2 };
+  const legalStats: LegalStats = {
+    activeCases: 23,
+    documentsAnalyzed: 1847,
+    citationsFound: 542,
+    complianceScore: 96.2,
+  };
 
   // Legal services - corrected and well-formed
   const legalServices: LegalService[] = [
@@ -42,38 +47,38 @@
       name: 'Case Management',
       icon: '⚖️',
       href: '/legal/cases',
-      description: 'Comprehensive case tracking and management system'
+      description: 'Comprehensive case tracking and management system',
     },
     {
       name: 'Document Analysis',
       icon: '📄',
       href: '/legal/documents',
-      description: 'AI-powered legal document analysis and review'
+      description: 'AI-powered legal document analysis and review',
     },
     {
       name: 'Citation Research',
       icon: '📚',
       href: '/legal/citations',
-      description: 'Advanced legal citation search and verification'
+      description: 'Advanced legal citation search and verification',
     },
     {
       name: 'Compliance Monitoring',
       icon: '✅',
       href: '/legal/compliance',
-      description: 'Automated compliance monitoring and reporting'
+      description: 'Automated compliance monitoring and reporting',
     },
     {
       name: 'Contracts',
       icon: '📝',
       href: '/legal/contracts',
-      description: 'Smart contract analysis and risk assessment'
+      description: 'Smart contract analysis and risk assessment',
     },
     {
       name: 'Legal Research',
       icon: '🔍',
       href: '/legal/research',
-      description: 'Comprehensive legal research and case law analysis'
-    }
+      description: 'Comprehensive legal research and case law analysis',
+    },
   ];
 
   // Recent legal activities
@@ -398,5 +403,3 @@
     }
   }
 </style>
-
-

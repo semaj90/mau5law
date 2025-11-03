@@ -1,5 +1,5 @@
 ﻿<script lang="ts">
-import type { Document } from '$lib/types';
+  import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import SearchBox from '$lib/components/ui/SearchBox.svelte';
   import Button from '$lib/components/ui/enhanced-bits/Button.svelte'; // Import enhanced Button
@@ -7,17 +7,17 @@ import type { Document } from '$lib/types';
   import 'nes.css/css/nes.min.css'; // Add nes.css import
 
   interface VectorResult {
-    title?: string
-    similarity?: number
-    content?: string
+    title?: string;
+    similarity?: number;
+    content?: string;
     metadata?: {
-      caseId?: string
-      documentType?: string
-      priority?: string
+      caseId?: string;
+      documentType?: string;
+      priority?: string;
       [key: string]: any; // Allow other metadata properties
     };
     embedding?: number[]; // Assuming embedding is an array of numbers
-    vectorMagnitude?: number
+    vectorMagnitude?: number;
     [key: string]: any; // Allow other top-level properties
   }
 
@@ -25,19 +25,24 @@ import type { Document } from '$lib/types';
   let selectedDocument = $state<VectorResult | null>(null); // Use VectorResult type
   let isAnalyzing = $state<boolean>(false);
 
-  const handleSearchResults = (results: VectorResult[]) => { // Use VectorResult type
+  const handleSearchResults = (results: VectorResult[]) => {
+    // Use VectorResult type
     searchResults = results; // Corrected typo: result -> results
-    selectedDocument = null};
+    selectedDocument = null;
+  };
 
-  const viewDocument = (_document: VectorResult) => { // Use VectorResult type and corrected typo
+  const viewDocument = (_document: VectorResult) => {
+    // Use VectorResult type and corrected typo
     selectedDocument = _document; // Corrected typo: document -> _document
   };
 
   const closeDocument = () => {
-    selectedDocument = null};
+    selectedDocument = null;
+  };
 
-  const analyzeDocument = async (_document: VectorResult) => { // Use VectorResult type and corrected typo
-    isAnalyzing = true
+  const analyzeDocument = async (_document: VectorResult) => {
+    // Use VectorResult type and corrected typo
+    isAnalyzing = true;
     try {
       // Simulate AI analysis
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -46,12 +51,13 @@ import type { Document } from '$lib/types';
     } catch (error) {
       console.error('Analysis failed:', error);
     } finally {
-      isAnalyzing = false}
+      isAnalyzing = false;
+    }
   };
 
   // Utility function for score formatting
   function getScorePercent(score: any): string {
-    const n = typeof score === 'number' && Number.isFinite(score) ? score : 0
+    const n = typeof score === 'number' && Number.isFinite(score) ? score : 0;
     return (n * 100).toFixed(1);
   }
 
@@ -128,13 +134,8 @@ import type { Document } from '$lib/types';
                   </div>
                 {/if}
                 <div class="result-actions">
-                  <Button onclick={() => viewDocument(result)} variant="primary" size="sm"> View </Button>
-                  <Button
-                    onclick={() => analyzeDocument(result)}
-                    variant="success"
-                    size="sm"
-                    disabled={isAnalyzing}
-                  >
+                  <Button onclick={() => viewDocument(result)} variant="primary" size="sm">View</Button>
+                  <Button onclick={() => analyzeDocument(result)} variant="success" size="sm" disabled={isAnalyzing}>
                     {isAnalyzing ? 'Analyzing...' : 'AI Analysis'}
                   </Button>
                 </div>
@@ -153,7 +154,7 @@ import type { Document } from '$lib/types';
               {selectedDocument.title || 'Document Viewer'}
             </h3>
             <div class="close-btn">
-              <Button onclick={closeDocument} variant="error" size="sm"> Ã— </Button>
+              <Button onclick={closeDocument} variant="error" size="sm">Ã—</Button>
             </div>
           </div>
           <div class="modal-content">
@@ -219,8 +220,7 @@ import type { Document } from '$lib/types';
   .search-header {
     margin-bottom: 32px}
   .header-content {
-    text-align: center
-   , background: rgba(255, 255, 255, 0.95);
+    text-align: center; background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
   }
   .page-title {
@@ -240,8 +240,7 @@ import type { Document } from '$lib/types';
     max-width: 1200px
     margin: 0 auto}
   .search-section {
-    margin-bottom: 32px
-   , display: flex
+    margin-bottom: 32px; display: flex
     justify-content: center}
   :global(.main-search) {
     max-width: 800px
@@ -334,8 +333,7 @@ import type { Document } from '$lib/types';
     line-height: 1}
   .modal-content h4 {
     font-size: 10px
-    color: #495057
-   , margin: 20px, 0 12px 0}
+    color: #495057; margin: 20px, 0 12px 0}
   .content-text {
     font-size: 9px
     line-height: 1.6
@@ -369,8 +367,7 @@ import type { Document } from '$lib/types';
   .footer-content {
     display: flex
     justify-content: space-between; /* Corrected typo: space-betweenn -> space-between */
-    align-items: center
-   , background: rgba(255, 255, 255, 0.9);
+    align-items: center; background: rgba(255, 255, 255, 0.9);
   }
   .footer-text {
     display: flex
@@ -386,8 +383,7 @@ import type { Document } from '$lib/types';
     display: flex
     align-items: center
     gap: 6px
-    font-size: 8px
-   , color: #495057}
+    font-size: 8px; color: #495057}
   /* Responsive design */
   @media (max-width: 768px) {
     .search-page {
@@ -412,8 +408,7 @@ import type { Document } from '$lib/types';
       width: 100%;
     }
     .modal-header {
-      flex-direction: column
-     , gap: 12px}
+      flex-direction: column; gap: 12px}
     .close-btn {
       align-self: flex-end}
   }

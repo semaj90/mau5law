@@ -3,10 +3,11 @@
   type BadgeVariant = 'default' | 'success' | 'destructive' | 'warning' | 'info' | 'outline';
   type BadgeSize = 'sm' | 'md' | 'lg';
   interface Props {
-    variant?: BadgeVariant
-    size?: BadgeSize
-    class?: string
-    children?: Snippet}
+    variant?: BadgeVariant;
+    size?: BadgeSize;
+    class?: string;
+    children?: Snippet;
+  }
   let { variant = 'default', size = 'md', class: className = '', children }: Props = $props();
   let variantClasses = $derived(
     variant === 'success'
@@ -25,10 +26,10 @@
     size === 'sm' ? 'text-xs px-2 py-0.5' : size === 'lg' ? 'text-base px-3 py-1.5' : 'text-sm px-2.5 py-1'
   );
 </script>
+
 <span
   class="inline-flex items-center rounded-full border font-medium transition-colors {variantClasses} {sizeClasses} {className}"
   role="status"
 >
   <slot />
 </span>
-

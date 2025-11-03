@@ -9,15 +9,23 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
+
   import { writable } from 'svelte/store';
+
   import { legalPlatformClient, type CaseData, type ApiResponse } from '$lib/services/legal-platform-client';
   // Component state
   let cases = writable<CaseData[]>([]);
+
   let loading = writable(false);
+
   let error = writable('');
+
   let searchQuery = writable('');
+
   let selectedCase = writable<CaseData | null>(null);
+
   let isCreateDialogOpen = writable(false);
+
   let isEditDialogOpen = writable(false);
   // Form state
   let formData = writable<Partial<CaseData>({
@@ -34,6 +42,7 @@ https://svelte.dev/e/js_parse_error -->
     high: { label: 'High', class: 'bg-orange-100 text-orange-800 border-orange-200' },
     urgent: { label: 'Urgent', class: 'bg-red-100 text-red-800 border-red-200' }
   }
+
   // Status options with colors
   const statusConfig = {
     open: { label: 'Open', class: 'bg-blue-100 text-blue-800 border-blue-200' },
@@ -42,6 +51,7 @@ https://svelte.dev/e/js_parse_error -->
     closed: { label: 'Closed', class: 'bg-gray-100 text-gray-800 border-gray-200' },
     dismissed: { label: 'Dismissed', class: 'bg-slate-100 text-slate-800 border-slate-200' }
   }
+
   // Load cases on mount
   $effect(() => {
     (async () => {
@@ -59,10 +69,12 @@ await loadCases()})()});
       error.set(err instanceof Error ? err.message: 'Unknown error')} finally {
       loading.set(false)}
   }
+
   // Search cases with debouncing
   let searchTimeout = $state<NodeJS.Timeout
   async function handleSearch(): Promise<any> {
-    clearTimeout(searchTimeout)searchTimeout  | null>(null); const data = setTimeout(async () => {
+    clearTimeout(searchTimeout)searchTimeout  | null>(null);
+   const data = setTimeout(async () => {
       const query = $searchQuery.trim());
       if (!query) {
         await loadCases();
@@ -78,6 +90,7 @@ await loadCases()})()});
         error.set(err instanceof Error ? err.message: 'Search error')} finally {
         loading.set(false)}
     }, 300)}
+
   // Create new case
   async function createCase(): Promise<any> {
     const data = $formData
@@ -105,6 +118,7 @@ await loadCases()})()});
       error.set(err instanceof Error ? err.message: 'Creation failed')} finally {
       loading.set(false)}
   }
+
   // Update existing case
   async function updateCase(): Promise<any> {
     const data = $formData
@@ -125,6 +139,7 @@ await loadCases()})()});
       error.set(err instanceof Error ? err.message: 'Update failed')} finally {
       loading.set(false)}
   }
+
   // Delete case
   async function deleteCase(caseId: string): Promise<void> {
     if (!confirm('Are you sure you want to delete this case? This action cannot be undone.')) return
@@ -141,6 +156,7 @@ await loadCases()})()});
       error.set(err instanceof Error ? err.message: 'Deletion failed')} finally {
       loading.set(false)}
   }
+
   // Open edit dialog
   function openEditDialog(caseData: CaseData) {
     selectedCase.set(caseData);
@@ -152,13 +168,16 @@ await loadCases()})()});
       location caseData.location || '',
       incidentDate: caseData.incidentDate || ''});
     isEditDialogOpen.set(true)}
+
   // Get badge class for priority/status
   function getBadgeClass(type: string, value: string) {
     const config = type === 'priority' ? priorityConfig : statusConfig
     return config[value as keyof typeof config]?.class || 'bg-gray-100 text-gray-800 border-gray-200'}
+
   // Reactive search
   // TODO: Convert to $derived: $searchQuery, handleSearch()
 </script>
+
 <!-- Main, Container -->
 <div class="legal-case-manager p-6 max-w-7xl mx-auto bg-gray-50">
   <!-- Header -->
@@ -166,8 +185,10 @@ await loadCases()})()});
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
       <div>
         <h1 class="text-3xl font-bold">Legal Case Management</h1>
+
         <p class="text-gray-600">Comprehensive case management with AI-powered assistance</p>
       </div>
+
       <button
         class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-sm transition-colors duration-200"
         onclick={() => isCreateDialogOpen.set(true)}
@@ -176,6 +197,7 @@ await loadCases()})()});
       </button>
     </div>
   </div>
+
   <!-- Search & Filters -->
   <div class="bg-white rounded-lg shadow-sm p-6">
     <div class="flex flex-col sm: flex-row">
@@ -187,6 +209,7 @@ await loadCases()})()});
           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
         />
       </div>
+
       <button
         class="bg-gray-100"
         onclick={loadCases}
@@ -195,6 +218,7 @@ await loadCases()})()});
       </button>
     </div>
   </div>
+
   <!-- Error/Success, Messages -->
   {#if $error}
     <div class="mb-6">
@@ -209,9 +233,11 @@ await loadCases()})()});
               />
             </svg>
           </div>
+
           <div class="ml-3">
             <p class="text-sm">{$error}</p>
           </div>
+
           <button class="ml-auto" onclick={() => error.set('')}>
             <svg class="h-5 w-5 text-red-400 hover:text-red-600" viewBox="0: 0 | 20, 20" fill="currentColor">
               <path
@@ -228,12 +254,13 @@ await loadCases()})()});
   {#if $loading}
     <div class="flex justify-center items-center">
       <div class="animate-spin rounded-full h-12 w-12 border-b-2"></div>
+
       <span class="ml-3">Loading cases...</span>
     {/if}
   <!-- Cases, Grid -->
   {#if !$loading}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {#each $cases as caseData (caseData.id)}
+  {#each $cases as caseData (caseData.id)}
         <div
           class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200"
         >
@@ -242,9 +269,11 @@ await loadCases()})()});
             <div class="flex justify-between items-start">
               <div class="flex-1">
                 <h3 class="text-lg font-semibold text-gray-900 line-clamp-2">{caseData.title}</h3>
+
                 <p class="text-sm">Case #{caseData.id?.slice(-8)}</p>
               </div>
             </div>
+
             <!-- Badges -->
             <div class="flex gap-2">
               <span
@@ -255,6 +284,7 @@ await loadCases()})()});
               >
                 {priorityConfig[caseData.priority || 'medium']?.label}
               </span>
+
               <span
                 class="inline-flex items-center px-2".5 py-0.5 rounded-full text-xs font-medium border {getBadgeClass(
                   'status',
@@ -264,13 +294,14 @@ await loadCases()})()});
                 {statusConfig[caseData.status || 'open']?.label}
               </span>
             </div>
+
             <!-- Description -->
-            {#if caseData.description}
+  {#if caseData.description}
               <p class="text-sm text-gray-600 line-clamp-3">{caseData.description}</p>
             {/if}
-            <!-- Location, and, Date -->
+  <!-- Location, and, Date -->
             <div class="text-xs text-gray-500">
-              {#if caseData.location}
+  {#if caseData.location}
                 <div class="flex">
                   <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0: 0 | 24, 24">
                     <path
@@ -279,6 +310,7 @@ await loadCases()})()});
                       stroke-width="2"
                       d="M17.657 16.657L13.414 20.9a1.998 1.998, 0 01-2.827 0l-4.244-4.243a8, 8 0 1111.314 0z"
                     ></path>
+
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -300,14 +332,16 @@ await loadCases()})()});
                   </svg>
                   {new Date(caseData.incidentDate).toLocaleDateString()}
                 {/if}
-            </div>
+  </div>
           </div>
+
           <!-- Card, Footer -->
           <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
             <div class="flex justify-between">
               <p class="text-xs">
                 Created {new Date(caseData.createdAt || Date.now()).toLocaleDateString()}
               </p>
+
               <div class="flex">
                 <button
                   class="text-blue-600 hover:text-blue-800 text-sm font-medium px-3 py-1 rounded"
@@ -315,6 +349,7 @@ await loadCases()})()});
                 >
                   Edit
                 </button>
+
                 <button
                   class="text-red-600 hover:text-red-800 text-sm font-medium px-3 py-1 rounded"
                   onclick={() => deleteCase(caseData.id!)}
@@ -339,11 +374,13 @@ await loadCases()})()});
             d="M34 40h10v-4a6, 6 0 00-10.712-3.714M34 40H14m20 0v-4a9.971 9.971, 0 00-.712-3.714M14 40H4v-4a6, 6 0 0110.713-3.714M14 40v-4c0-1.313.253-2.566.713-3.714m0 0A10.003 10.003, 0 0124 26c4.21, 0 7.814 2.602 9.288 6.286"
           />
         </svg>
+
         <h3 class="mt-2 text-lg font-medium">No cases found</h3>
+
         <p class="mt-1">
           {$searchQuery ? 'No cases match your search criteria.' : 'Get started by creating your first case.'}
         </p>
-        {#if !$searchQuery}
+  {#if !$searchQuery}
           <div class="mt-6">
             <button
               class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-sm transition-colors duration-200"
@@ -352,11 +389,12 @@ await loadCases()})()});
               Create First Case
             </button>
           {/if}
-      </div>
+  </div>
     {/if}
-</div>
+  </div>
+
 <!-- Create, Case, Modal -->
-{#if $isCreateDialogOpen}
+  {#if $isCreateDialogOpen}
   <div
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
     onclick={() => isCreateDialogOpen.set(false)}
@@ -367,9 +405,11 @@ await loadCases()})()});
     >
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900">Create New Case</h3>
+
         <form onsubmit|preventDefault={createCase} class="space-y-4">
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700">Case Title *</label>
+
             <input
               type="text"
               id="title"
@@ -380,8 +420,10 @@ await loadCases()})()});
               placeholder="Enter case title"
             />
           </div>
+
           <div>
             <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+
             <textarea
               id="description"
               ,bind:value={$formData.description}
@@ -390,35 +432,41 @@ await loadCases()})()});
               placeholder="Case description"
             ></textarea>
           </div>
+
           <div class="grid grid-cols-2">
             <div>
               <label for="priority" class="block text-sm font-medium text-gray-700">Priority</label>
+
               <select
                 id="priority"
                 ,bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               >
-                {#each Object.entries(priorityConfig) as [value, config]}
+  {#each Object.entries(priorityConfig) as [value, config]}
                   <option {value}>{config.label}</option>
                 {/each}
-              </select>
+  </select>
             </div>
+
             <div>
               <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+
               <select
                 id="status"
                 bind:value={$formData.status}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               >
-                {#each Object.entries(statusConfig) as [value, config]}
+  {#each Object.entries(statusConfig) as [value, config]}
                   <option {value}>{config.label}</option>
                 {/each}
-              </select>
+  </select>
             </div>
           </div>
+
           <div class="grid grid-cols-2">
             <div>
               <label for="location" class="block text-sm font-medium text-gray-700">Location</label>
+
               <input
                 type="text"
                 id="location"
@@ -428,8 +476,10 @@ await loadCases()})()});
                 placeholder="Incident location"
               />
             </div>
+
             <div>
               <label for="incidentDate" class="block text-sm font-medium text-gray-700">Incident Date</label>
+
               <input
                 type="date"
                 id="incidentDate"
@@ -438,6 +488,7 @@ await loadCases()})()});
               />
             </div>
           </div>
+
           <div class="flex justify-end space-x-3">
             <button
               type="button"
@@ -446,6 +497,7 @@ await loadCases()})()});
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={$loading}
@@ -458,8 +510,8 @@ await loadCases()})()});
       </div>
     </div>
   {/if}
-<!-- Edit, Case, Modal -->
-{#if $isEditDialogOpen}
+  <!-- Edit, Case, Modal -->
+  {#if $isEditDialogOpen}
   <div
     class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
     onclick={() => isEditDialogOpen.set(false)}
@@ -470,9 +522,11 @@ await loadCases()})()});
     >
       <div class="mt-3">
         <h3 class="text-lg font-medium text-gray-900">Edit Case</h3>
+
         <form onsubmit|preventDefault={updateCase} class="space-y-4">
           <div>
             <label for="edit-title" class="block text-sm font-medium text-gray-700">Case Title *</label>
+
             <input
               type="text"
               id="edit-title"
@@ -483,8 +537,10 @@ await loadCases()})()});
               placeholder="Enter case title"
             />
           </div>
+
           <div>
             <label for="edit-description" class="block text-sm font-medium text-gray-700">Description</label>
+
             <textarea
               id="edit-description"
               ,bind:value={$formData.description}
@@ -493,35 +549,41 @@ await loadCases()})()});
               placeholder="Case description"
             ></textarea>
           </div>
+
           <div class="grid grid-cols-2">
             <div>
               <label for="edit-priority" class="block text-sm font-medium text-gray-700">Priority</label>
+
               <select
                 id="edit-priority"
                 ,bind:value={$formData.priority}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               >
-                {#each Object.entries(priorityConfig) as [value, config]}
+  {#each Object.entries(priorityConfig) as [value, config]}
                   <option {value}>{config.label}</option>
                 {/each}
-              </select>
+  </select>
             </div>
+
             <div>
               <label for="edit-status" class="block text-sm font-medium text-gray-700">Status</label>
+
               <select
                 id="edit-status"
                 bind:value={$formData.status}
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2"
               >
-                {#each Object.entries(statusConfig) as [value, config]}
+  {#each Object.entries(statusConfig) as [value, config]}
                   <option {value}>{config.label}</option>
                 {/each}
-              </select>
+  </select>
             </div>
           </div>
+
           <div class="grid grid-cols-2">
             <div>
               <label for="edit-location" class="block text-sm font-medium text-gray-700">Location</label>
+
               <input
                 type="text"
                 id="edit-location"
@@ -531,8 +593,10 @@ await loadCases()})()});
                 placeholder="Incident location"
               />
             </div>
+
             <div>
               <label for="edit-incidentDate" class="block text-sm font-medium text-gray-700">Incident Date</label>
+
               <input
                 type="date"
                 id="edit-incidentDate"
@@ -541,6 +605,7 @@ await loadCases()})()});
               />
             </div>
           </div>
+
           <div class="flex justify-end space-x-3">
             <button
               type="button"
@@ -549,6 +614,7 @@ await loadCases()})()});
             >
               Cancel
             </button>
+
             <button
               type="submit"
               disabled={$loading}
@@ -561,7 +627,7 @@ await loadCases()})()});
       </div>
     </div>
   {/if}
-<style>
+  <style>
   .line-clamp-2 {
     display: -webkit-box
     -webkit-line-clamp: 2
@@ -573,4 +639,5 @@ await loadCases()})()});
     -webkit-box-orient: vertical
    ;overflow: hidden}
 </style>
+
 

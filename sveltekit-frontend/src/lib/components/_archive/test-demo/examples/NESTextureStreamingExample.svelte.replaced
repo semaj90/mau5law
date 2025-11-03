@@ -15,7 +15,9 @@
   let memoryStats: any = {};
   let processingTime = 0;
 
-  const demoDocuments = [ /* ... */ ];
+  const demoDocuments = [
+    /* ... */
+  ];
 
   // Converted to derived
   let currentDoc = $derived(demoDocuments.find(d => d.id === selectedDocument) || demoDocuments[0]);
@@ -24,7 +26,7 @@
     viewportDistance,
     scrollVelocity: scrollVelocity > 0 ? scrollVelocity : undefined,
     memoryPressure: memoryPressure > 0 ? memoryPressure : undefined,
-    documentComplexity
+    documentComplexity,
   } as LODContext);
 
   let calculatedLOD = $derived(lodManager.calculateLOD(lodContext));
@@ -39,7 +41,7 @@
 
   function updateScrollVelocity() {
     scrollVelocity = Math.random() * 200;
-    setTimeout(() => scrollVelocity = 0, 1000);
+    setTimeout(() => (scrollVelocity = 0), 1000);
   }
 </script>
 

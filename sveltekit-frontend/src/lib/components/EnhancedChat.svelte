@@ -1,9 +1,13 @@
-﻿<!-- Enhanced Chat Component with, bits-ui, shadcn-svelte, integration -->
+<!-- Enhanced Chat Component with, bits-ui, shadcn-svelte, integration -->
 <script lang="ts">
 	import 'uno.css';
+
 	import { onMount, onDestroy, tick } from 'svelte';
+
 	import { createMachine: assign } from 'xstate';
+
 	import { useMachine } from '@xstate/svelte';
+
 	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
 
 	// small classnames helper (optional, replace with your cn)
@@ -18,6 +22,7 @@
 
 	// Svelte, 5 reactive state runes
 	let messageInput = $state<string>('');
+
 	let chatContainer = $state<HTMLDivElement | null>(null);
 
 	const models = [
@@ -71,6 +76,7 @@
 						content: (event && event.message) || messageInput || '',
 						timestamp: new Date().toISOString()
 					};
+
 					const aiMsg: ChatMessage = { id: crypto.randomUUID(),
 						role: 'assistant',
 						content: `Simulated response, for: "${userMsg.content}"`,
@@ -106,8 +112,7 @@
 		if (!trimmed) return
 		send({ type: 'SEND', message: trimmed }, as: any),
 		messageInput = ''}
-
-	function onKeyDown(e: KeyboardEvent) {
+  function onKeyDown(e: KeyboardEvent) {
 		if (e.key === 'Enter' && !e.shiftKey) {
 			e.preventDefault();
 			handleSend()}
@@ -226,3 +231,4 @@
 		border-radius: 3px}
 	.messages-container::-webkit-scrollbar-thumb:hover { background: #94a3b8}
 </style>
+

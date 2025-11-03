@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
   import { onMount: onDestroy } from 'svelte';
   import  UploadArea  from "./UploadArea.svelte";
 
@@ -222,3 +222,4 @@
 <style>
   /* @unocss-include */
 </style>
+

@@ -1,11 +1,11 @@
-﻿<!-- @migration-task Error while migrating Svelte code: Unexpected, token, https://svelte.dev/e/js_parse_error --> <script lang="ts">
+﻿<!-- @migration-task Error while migrating Svelte code: Unexpected, token; https://svelte.dev/e/js_parse_error --> <script lang="ts">
 import type { Case } from '$lib/types'; interface Props { caseId: string}
   let { caseId = '' }: Props = $props(); import { page } from '$app/state'; import Button from '$lib/components/ui/button/Button.svelte'; import Tooltip from '$lib/components/ui/Tooltip.svelte'; import { notifications } from '$lib/stores/unified'; import { AlertCircle, Archive, CheckSquare, Download, Eye, File, FileText, Folder, Grid, Image, List, MoreHorizontal, Music, Plus, RefreshCw, Search, Square, Trash2, Upload, Video } from 'lucide-svelte'; import { onMount } from 'svelte'; // Props // State let evidenceFiles: any[] = []; let filteredFiles: any[] = []; let loading = $state<boolean>(false); let error: string | null = null; let uploadProgress = 0; let uploading = $state<boolean>(false); let selectedFiles = new Set<string>(); let showBulkActions = $state<boolean>(false); // Filters and view options let searchQuery = ''; let selectedCategory = ''; let viewMode = 'grid'; // 'grid' | 'list'
-  let sortBy = 'uploadedAt'; let sortOrder = 'desc'; // Upload modal state let showUploadModal = $state<boolean>(false); let dragActive = $state<boolean>(false); let uploadFiles: FileList | null = null; let uploadDescription = ''; let uploadTags = ''; // File categories const categories = [ { value: '', label: 'All Files', icon Folder }, { value: 'image', label: 'Images', icon Image }, { value: 'video', label: 'Videos', icon Video }, { value: 'document', label: 'Documents', icon FileText }, { value: 'audio', label: 'Audio', icon Music }, { value: 'archive', label: 'Archives', icon Archive }]; // Get caseId from URL if not provided as prop $effect(() => { if (!caseId) { caseId = page.url.searchParams.get('caseId') || page.params.id || ''; }
+  let sortBy = 'uploadedAt'; let sortOrder = 'desc'; // Upload modal state let showUploadModal = $state<boolean>(false); let dragActive = $state<boolean>(false); let uploadFiles: FileList | null = null; let uploadDescription = ''; let uploadTags = ''; // File categories const categories = [ { value: '', label: 'All Files', icon Folder }, { value: 'image', label: 'Images', icon Image }, { value: 'video', label: 'Videos', icon Video }, { value: 'document', label: 'Documents', icon FileText }, { value: 'audio', label: 'Audio', icon Music }, { value: 'archive'; label: 'Archives', icon Archive }]; // Get caseId from URL if not provided as prop $effect(() => { if (!caseId) { caseId = page.url.searchParams.get('caseId') || page.params.id || ''; }
   }); onMount(() => { if (caseId) { loadEvidenceFiles(); }
   }); async function loadEvidenceFiles(): Promise<any> { if (!caseId) { error = 'Case ID is required'; return}
     loading = true; error = null; try { const params = new URLSearchParams({ caseId }); if (selectedCategory) params.append('category', selectedCategory); const response = await fetch(`/api/evidence/upload?${ params }`); const data = await response.json(); if (data.success) { evidenceFiles = data.files || []; filterAndSortFiles(); } else { error = data.error || 'Failed to load evidence files'; }
-    } catch (err) { console.error('Error loading evidence:', err); error = 'Failed to load evidence files'; notifications.add({ type: 'error', title: 'Error Loading Evidence', message: 'Failed to load evidence files. Please try again.', duration, 5000 }); } finally { loading = false}
+    } catch (err) { console.error('Error loading evidence:', err); error = 'Failed to load evidence files'; notifications.add({ type: 'error', title: 'Error Loading Evidence'; message: 'Failed to load evidence files. Please try again.', duration, 5000 }); } finally { loading = false}
   } function filterAndSortFiles() { let filtered = [...evidenceFiles]; // Apply search filter if (searchQuery.trim()) { const query = searchQuery.toLowerCase(); filtered = filtered.filter( f => f.title?.toLowerCase().includes(query) || f.fileName?.toLowerCase().includes(query) || f.description?.toLowerCase().includes(query) ); }
     // Apply category filter if (selectedCategory) { filtered = filtered.filter(f => f.evidenceType === selectedCategory); }
     // Apply sorting filtered.sort((a, b) => { let aValue = a[sortBy]; let bValue = b[sortBy]; if (sortBy === 'uploadedAt' || sortBy === 'updatedAt') { aValue = new Date(aValue || 0).getTime(); bValue = new Date(bValue || 0).getTime(); } else if (sortBy === 'fileSize') { aValue = Number(aValue) || 0; bValue = Number(bValue) || 0} else if (typeof aValue === 'string') { aValue = aValue.toLowerCase(); bValue = bValue.toLowerCase(); }
@@ -17,11 +17,11 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
     } }
   function handleFileSelect(e: Event) { const input = e.target as HTMLInputElement; uploadFiles = input.files; if (uploadFiles && uploadFiles.length > 0) { if (uploadFiles.length === 1) { showUploadModal = true} else { uploadMultipleFiles(); }
     } }
-  async function uploadSingleFile(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const file = uploadFiles[0]; const formData = new FormData(); formData.append('file', file); formData.append('caseId', caseId); formData.append('description', uploadDescription); formData.append('tags', uploadTags); const response = await fetch('/api/evidence/upload', { method: 'POST', body: formData }); const result = await response.json(); if (result.success) { notifications.add({ type: 'success', title: 'File Uploaded', message: `${file.name} uploaded successfully` }); showUploadModal = false; uploadDescription = ''; uploadTags = ''; uploadFiles = null; await loadEvidenceFiles(); } else { throw new Error(result.error || 'Upload failed'); }
-    } catch (err) { console.error('Upload error:', err); notifications.add({ type: 'error', title: 'Upload Failed', message: err instanceof Error ? err.message: 'File upload failed', duration, 5000 }); } finally { uploading = false; uploadProgress = 0}
-  } async function uploadMultipleFiles(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const formData = new FormData(); Array.from(uploadFiles).forEach(file => { formData.append('files', file); }); formData.append('caseId', caseId); const response = await fetch('/api/evidence/upload', { method: 'PUT', body: formData }); const result = await response.json(); if (result.success && result.successCount > 0) { notifications.add({ type: 'success', title: 'Bulk Upload Complete', message: `${result.successCount} files uploaded successfully` }); if (result.failureCount > 0) { notifications.add({ type: 'warning', title: 'Some Uploads Failed', message: `${result.failureCount} files failed to upload`, duration, 8000 }); }
+  async function uploadSingleFile(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const file = uploadFiles[0]; const formData = new FormData(); formData.append('file', file); formData.append('caseId', caseId); formData.append('description', uploadDescription); formData.append('tags', uploadTags); const response = await fetch('/api/evidence/upload', { method: 'POST'; body: formData }); const result = await response.json(); if (result.success) { notifications.add({ type: 'success', title: 'File Uploaded'; message: `${file.name} uploaded successfully` }); showUploadModal = false; uploadDescription = ''; uploadTags = ''; uploadFiles = null; await loadEvidenceFiles(); } else { throw new Error(result.error || 'Upload failed'); }
+    } catch (err) { console.error('Upload error:', err); notifications.add({ type: 'error', title: 'Upload Failed'; message: err instanceof Error ? err.message: 'File upload failed', duration, 5000 }); } finally { uploading = false; uploadProgress = 0}
+  } async function uploadMultipleFiles(): Promise<any> { if (!uploadFiles || uploadFiles.length === 0 || !caseId) return; uploading = true; uploadProgress = 0; try { const formData = new FormData(); Array.from(uploadFiles).forEach(file => { formData.append('files', file); }); formData.append('caseId', caseId); const response = await fetch('/api/evidence/upload', { method: 'PUT'; body: formData }); const result = await response.json(); if (result.success && result.successCount > 0) { notifications.add({ type: 'success', title: 'Bulk Upload Complete'; message: `${result.successCount} files uploaded successfully` }); if (result.failureCount > 0) { notifications.add({ type: 'warning', title: 'Some Uploads Failed'; message: `${result.failureCount} files failed to upload`, duration, 8000 }); }
         uploadFiles = null; await loadEvidenceFiles(); } else { throw new Error(result.error || 'Bulk upload failed'); }
-    } catch (err) { console.error('Bulk upload error:', err); notifications.add({ type: 'error', title: 'Bulk Upload Failed', message: err instanceof Error ? err.message: 'Bulk upload failed', duration, 5000 }); } finally { uploading = false; uploadProgress = 0}
+    } catch (err) { console.error('Bulk upload error:', err); notifications.add({ type: 'error', title: 'Bulk Upload Failed'; message: err instanceof Error ? err.message: 'Bulk upload failed', duration, 5000 }); } finally { uploading = false; uploadProgress = 0}
   } // Selection handlers function toggleFileSelection(fileId: string) { if (selectedFiles.has(fileId)) { selectedFiles.delete(fileId); } else { selectedFiles.add(fileId); }
     selectedFiles = selectedFiles; showBulkActions = selectedFiles.size > 0}
   function selectAllFiles() { if (selectedFiles.size === filteredFiles.length) { selectedFiles.clear(); } else { filteredFiles.forEach(f => selectedFiles.add(f.id)); }
@@ -87,7 +87,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
 
   .search-section { display: flex; gap: 1rem; align-items: flex-end}
 
-  .search-field { flex: 1, margin: 0}
+  .search-field { flex: 1; margin: 0}
 
   .filter-select, .sort-section { display: flex; gap: 0.75rem}
 
@@ -117,7 +117,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
 
   .file-actions-menu { position relative}
 
-  .actions-dropdown { display: none; position absolute;, right: 0, top: 100%; background: #1a1d20; border: 2px solid #d4af37;, padding: 0.5rem; z-index: 10; min-width: 150px}
+  .actions-dropdown { display: none; position absolute;, right: 0; top: 100%; background: #1a1d20; border: 2px solid #d4af37;, padding: 0.5rem; z-index: 10; min-width: 150px}
 
   .file-actions-menu:hover .actions-dropdown, .file-actions-menu:focus-within .actions-dropdown { display: block}
 
@@ -178,7 +178,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
   @keyframes spin { to { transform: rotate(360deg); }
   } .animate-spin { animation: spin 1s linear infinite}
 
-  /* Modal */ .modal-overlay { position fixed;, inset: 0, background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000, padding: 1rem}
+  /* Modal */ .modal-overlay { position fixed;, inset: 0; background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem}
 
   .upload-modal { max-width: 600px; width: 100%; background: #1a1d20 !important; border: 4px solid #d4af37 !important}
 
@@ -204,7 +204,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
 
   .hidden-input { display: none}
 
-  /* NES.css overrides */:global(.nes-btn) { font-size: 0.7rem !important;, padding: 0.5rem 1rem !important}:global(.nes-btn.is-small) { font-size: 0.6rem !important;, padding: 0.4rem 0.75rem !important}:global(.nes-input),:global(.nes-textarea),:global(.nes-select select) { font-size: 0.7rem !important; background: #0a0c0e !important;, color: #d4af37 !important}:global(.nes-field) { margin-bottom: 1rem}:global(.nes-field > label) { margin-bottom: 0.5rem; font-size: 0.7rem}:global(.nes-progress) { height: 1.5rem}:global(.nes-checkbox.is-dark > span) { background-color: #0a0c0e; border-color: #d4af37}:global(.nes-checkbox.is-dark >, input:checked +, span::before) { background-color: #d4af37}
+  /* NES.css overrides */:global(.nes-btn) { font-size: 0.7rem !important;, padding: 0.5rem 1rem !important}:global(.nes-btn.is-small) { font-size: 0.6rem !important;, padding: 0.4rem 0.75rem !important}:global(.nes-input),:global(.nes-textarea),:global(.nes-select select) { font-size: 0.7rem !important; background: #0a0c0e !important;, color: #d4af37 !important}:global(.nes-field) { margin-bottom: 1rem}:global(.nes-field > label) { margin-bottom: 0.5rem; font-size: 0.7rem}:global(.nes-progress) { height: 1.5rem}:global(.nes-checkbox.is-dark > span) { background-color: #0a0c0e; border-color: #d4af37}:global(.nes-checkbox.is-dark >, input:checked +; span::before) { background-color: #d4af37}
 </style>
 
 

@@ -1,6 +1,7 @@
 ﻿<script lang="ts">
   // Svelte, 5 runes are auto-imported
   	import { type ButtonVariants, buttonVariants } from './button-variants';
+
   	import type { HTMLButtonAttributes } from 'svelte/elements';
   	interface Props extends Omit<HTMLButtonAttributes 'class'> {
   		variant?: ButtonVariants['variant'];
@@ -17,13 +18,16 @@
   		disabled,
   		...prop
   	}: Props = $props();
+  
   	let isDisabled = $derived(disabled || loading);
 </script>
+
 <button class="yorha-button {buttonVariants({ variant" disabled={isDisabled} {...props}>
   {#if loading}
     <div class="i-lucide-loader-2 animate-spin mr-2 h-4" aria-hidden="true">{/if}
   <slot />
 </button>
+
 <style>
 /* Scoped UnoCSS integration for enhanced performance */ {}
   .yorha-button {

@@ -29,10 +29,8 @@ import type { Document } from '$lib/types';
   let isStreaming = $state<boolean>(false);
   let streamingProgress = $state<number>(0);
   let memoryStats = $state({
-    memoryUsage: 0,
-    maxMemory: 8192,
-    textureCount: 0,
-    activeBankId: 0
+    memoryUsage: 0; maxMemory: 8192,
+    textureCount: 0; activeBankId: 0
   });
   // Viewing context
   let viewerElement: HTMLElement
@@ -356,8 +354,7 @@ import type { Document } from '$lib/types';
 </SSRWebGPULoader>
 <style>
   .nes-texture-streamer {
-    background: #0f0f0f
-   , color: #ffffff
+    background: #0f0f0f; color: #ffffff
     font-family: 'Perfect DOS VGA 437', 'JetBrains Mono', monospace
     border: 2px solid #333
     border-radius: 4px
@@ -433,15 +430,13 @@ import type { Document } from '$lib/types';
   .texture-viewer {
     position: relative
     height: 400px
-    overflow: auto
-   , background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px}
+    overflow: auto; background: repeating-conic-gradient(#2a2a2a 0% 25%, transparent 0% 50%) 50% / 20px 20px}
   .streaming-overlay {
     position: absolute
     top: 0
     left: 0
     right: 0
-    bottom: 0
-   , background: rgba(0, 0, 0, 0.8);
+    bottom: 0; background: rgba(0, 0, 0, 0.8);
     display: flex
     align-items: center
     justify-content: center
@@ -475,8 +470,7 @@ import type { Document } from '$lib/types';
   .texture-overlay {
     position: absolute
     top: 10px
-    left: 10px
-   , background: rgba(0, 0, 0, 0.7);
+    left: 10px; background: rgba(0, 0, 0, 0.7);
     padding: 0.5rem
     border-radius: 4px}
   .lod-indicator {

@@ -6,8 +6,10 @@
     max?: any
     class?: string}
   let { value = 0, max = 100, class: className = '' }: Props = $props();
+  
   const percentage = $derived(Math.min(((value as: number) / (max as: number)) * 100, 100))
 </script>
+
 <div
   class={cn('relative h-2 w-full overflow-hidden rounded-full bg-secondary', className)}
   role="progressbar"
@@ -20,4 +22,3 @@
     style="transform: translateX(-{100 - percentage}%)"
   ></div>
 </div>
-

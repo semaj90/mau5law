@@ -38,8 +38,7 @@
     formData.append("caseId", caseId);
     try {
       const res = await fetch("/api/evidence/upload", {
-        method: "POST",
-        body: formData
+        method: "POST"; body: formData
       });
       if (res.ok) {
         console.log("Evidence uploaded!");
@@ -54,7 +53,7 @@
       input.value = "";
     }
   }
-  function handleDragStart(ev: DragEvent, evd: Evidence) {
+  function handleDragStart(ev: DragEvent; evd: Evidence) {
     ev.dataTransfer?.setData("application/json", JSON.stringify(evd));
     ev.dataTransfer!.effectAllowed = "copy";
   }
@@ -142,11 +141,9 @@
   .evidence-nier-bits-card {
     background: #f9fafb
     border: 1px solid #e5e7eb
-    border-radius: 8px
-   , padding: 0.75rem
+    border-radius: 8px; padding: 0.75rem
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    cursor: grab
-   , transition: all 0.2s ease
+    cursor: grab; transition: all 0.2s ease
     min-width: 180px
     max-width: 220px
     user-select: none}
@@ -163,8 +160,7 @@
     display: flex
     gap: 0.5em}
   .evidence-tags {
-    font-size: 0.75rem
-   , background: rgba(59, 130, 246, 0.1);
+    font-size: 0.75rem; background: rgba(59, 130, 246, 0.1);
     color: #3b82f6
     padding: 0.125rem 0.5rem
     border-radius: 12px
@@ -193,7 +189,6 @@
     color: #6b7280}
   .empty-hint {
     font-size: 0.875rem
-    margin-top: 0.5rem
-   , opacity: 0.8}
+    margin-top: 0.5rem; opacity: 0.8}
 </style>
 

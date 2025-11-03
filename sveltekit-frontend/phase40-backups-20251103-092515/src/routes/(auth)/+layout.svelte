@@ -7,8 +7,9 @@
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
   interface Props {
-    data: any
-    children?: Snippet}
+    data: any;
+    children?: Snippet;
+  }
 
   let { data, children }: Props = $props();
 
@@ -21,14 +22,15 @@
 
   // Sidebar toggle handler
   function toggleSidebar() {
-    sidebarOpen = !sidebarOpen}
+    sidebarOpen = !sidebarOpen;
+  }
 
   // Initialize theme on mount
   $effect(() => {
     if (typeof localStorage !== 'undefined') {
-      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName
+      const stored = localStorage.getItem('legal-ai-theme') as ConsolePaletteName;
       if (stored) {
-        selectedTheme = stored
+        selectedTheme = stored;
         applyConsolePalette(stored);
       } else {
         applyConsolePalette('legal');
@@ -58,8 +60,7 @@
   .auth-layout {
     display: flex
     flex-direction: column
-    height: 100vh
-   , background: var(--console-bg, #0f0f23);
+    height: 100vh; background: var(--console-bg, #0f0f23);
     color: var(--console-fg, white);
   }
 
@@ -67,8 +68,7 @@
     flex: 1
     margin-left: 0
     transition: margin-left 0.3s ease
-    overflow-y: auto
-   , background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
+    overflow-y: auto; background: var(--console-gradient-main, linear-gradient(135deg, #0f0f23, #1a1a2e));
   }
 
   .main-content.sidebar-open {
@@ -76,8 +76,7 @@
 
   .content-container {
     padding: 1.5rem
-    max-width: 1400px
-   , margin: 0 auto
+    max-width: 1400px; margin: 0 auto
     min-height: 100%;
   }
 /* Responsive design */
@@ -109,6 +108,3 @@
   .main-content::-webkit-scrollbar-thumb:hover { background: var(--console-primary-light, #00cc00);
   }
 </style>
-
-
-

@@ -45,6 +45,7 @@
     }
     return});
 </script>
+
 <div class="theme-selector" role="group" aria-label="Theme, selector">
   <button
     type="button"
@@ -68,6 +69,7 @@
     ðŸ–¥ï¸ System
   </button>
 </div>
+
 <style>
   .theme-selector {
     display: inline-flex
@@ -85,4 +87,3 @@
     color: white
     border-color: transparent}
 </style>
-

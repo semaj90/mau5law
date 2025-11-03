@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
   import  Button  from "$lib/components/ui/core.svelte";
   import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
@@ -20,9 +20,11 @@ import type { Case } from '$lib/types';
   let searchQuery = $state<string>('');
   let citationType = $state<string>('all');
 
-  onMount(async () => {
-    await loadCitations()});
+  onMount(() => {
+		(async () => {
 
+    await loadCitations()		})();
+	});
   async function loadCitations(): Promise<any> {
     try {
       loading = true
@@ -36,7 +38,6 @@ import type { Case } from '$lib/types';
       console.error('Failed to load citations:', error)} finally {
       loading = false}
   }
-
   async function handleSearch(): Promise<any> {
     await loadCitations()}
 </script>
@@ -53,7 +54,7 @@ import type { Case } from '$lib/types';
   </div>
 
   <!-- Search, and, Filters -->
-  <Card.Root, class="search-card">
+  <Card.Root class="search-card">
     <CardContent>
       <div class="search-controls">
         <div class="search-input">
@@ -72,12 +73,13 @@ import type { Case } from '$lib/types';
             <option value="regulation">Regulation Citations</option>
           </select>
         </div>
-        <Button.Root, onclick={handleSearch} class="search-button">ðŸ” Search</Button>
+        <Button.Root onclick={handleSearch} class="search-button">ðŸ” Search</Button>
       </div>
     </CardContent>
   </Card>
 
   <!-- Citations, Results -->
+
   {#if loading}
     <div class="loading-state">
       <div class="loading-spinner"></div>
@@ -91,20 +93,21 @@ import type { Case } from '$lib/types';
     </div>
   {:else}
     <div class="citations-grid">
+
       {#each Array.isArray(citations) ? citations : [] as citation}
-        <Card.Root, class="citation-card">
+        <Card.Root class="citation-card">
           <CardHeader>
             <CardTitle class="citation-type">
               {citation.citationType.toUpperCase()}
               {#if citation.isKeyAuthority}
                 <span class="key-authority-badge">KEY</span>
               {/if}
-            </CardTitle>
+</CardTitle>
           </CardHeader>
           <CardContent>
             <div class="formatted-citation">
               {citation.formattedCitation}
-            </div>
+</div>
 
             {#if citation.quotedText}
               <blockquote class="quoted-text">
@@ -116,7 +119,7 @@ import type { Case } from '$lib/types';
               <div class="legal-principle">
                 <strong>Legal Principle:</strong>
                 {citation.legalPrinciple}
-              </div>
+</div>
             {/if}
 
             <div class="citation-footer">
@@ -124,14 +127,14 @@ import type { Case } from '$lib/types';
                 Relevance: {Math.round(parseFloat(citation.relevanceScore) * 100)}%
               </div>
               <div class="citation-actions">
-                <Button.Root, size="sm" class="copy-button">ðŸ“‹ Copy</Button>
-                <Button.Root, size="sm" class="edit-button">âœï¸ Edit</Button>
+                <Button.Root size="sm" class="copy-button">ðŸ“‹ Copy</Button>
+                <Button.Root size="sm" class="edit-button">âœï¸ Edit</Button>
               </div>
             </div>
           </CardContent>
         </Card>
       {/each}
-    </div>
+</div>
   {/if}
 </div>
 
@@ -271,6 +274,5 @@ import type { Case } from '$lib/types';
       font-size: 2rem}
   }
 </style>
-
 
 

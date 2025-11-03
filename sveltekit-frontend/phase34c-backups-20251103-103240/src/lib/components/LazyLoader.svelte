@@ -82,8 +82,7 @@
 </script>
 <!-- Container element with, intersection, observer -->
 <div
-  bind:this={containerElement}
- , use:lazyLoad={{ ...options, onIntersect: handleIntersection }}
+  bind:this={containerElement}; use:lazyLoad={{ ...options, onIntersect: handleIntersection }}
   class={"lazy-loader-container, " + className}
   style={style}
   aria-label={ariaLabel}
@@ -134,8 +133,7 @@
   .lazy-loader-placeholder {
     display: flex
     align-items: center
-    justify-content: center
-   , background: linear-gradient(
+    justify-content: center; background: linear-gradient(
       90deg,
       rgba(255, 255, 255, 0.1) 25%,
       rgba(255, 255, 255, 0.2) 50%,
@@ -149,23 +147,19 @@
     display: flex
     flex-direction: column
     align-items: center
-    gap: 12px
-   , color: rgba(255, 255, 255, 0.7)}
+    gap: 12px; color: rgba(255, 255, 255, 0.7)}
   /* Loading spinner */
   .loading-spinner {
     width: 32px
-    height: 32px
-   , border: 3px solid rgba(255, 255, 255, 0.2);
+    height: 32px; border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(255, 255, 255, 0.8);
-    border-radius: 50%,
-    animation: spin 1s linear infinite}
+    border-radius: 50%; animation: spin 1s linear infinite}
   .loading-text {
     margin: 0
     font-size: 14px
     text-align: center}
   .debug-info {
-    font-size: 12px
-   , color: rgba(255, 255, 255, 0.5);
+    font-size: 12px; color: rgba(255, 255, 255, 0.5);
     font-family: monospace}
   /* Error styles */
   .lazy-loader-error {
@@ -173,8 +167,7 @@
     flex-direction: column
     align-items: center
     gap: 12px
-    padding: 24px
-   , background: rgba(255, 0, 0, 0.1);
+    padding: 24px; background: rgba(255, 0, 0, 0.1);
     border: 1px solid rgba(255, 0, 0, 0.3);
     border-radius: 4px
     color: #ff6b6b}
@@ -185,8 +178,7 @@
     text-align: center
     font-size: 14px}
   .retry-button {
-    padding: 8px 16px
-   , background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px; background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 4px
     color: #ffffff
@@ -214,8 +206,7 @@
     .placeholder-content {
       gap: 8px}
     .loading-spinner {
-      width: 24px
-     , height: 24px
+      width: 24px; height: 24px
       border-width: 2px}
     .loading-text {
       font-size: 12px}

@@ -27,7 +27,8 @@
             device.destroy()} else {
             append('âŒ WebGPU adapter not available')}
         } catch (err) {
-          append('âŒ WebGPU error: ' + (err as Error).message);'
+          append('âŒ WebGPU error: ' + (err as Error).message);
+'
         }
       } else {
         append('âŒ WebGPU not supported')}
@@ -94,4 +95,3 @@
     </CardContent>
   </Card>
 </div>
-

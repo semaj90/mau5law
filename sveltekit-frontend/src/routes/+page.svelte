@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types';
 	// Replace broken named imports with safe namespace import + fallbacks
 	import { browser } from '$app/environment';
@@ -10,7 +10,7 @@ import type { Case } from '$lib/types';
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)'
 	function createFileUploader(url: string) {
 		type UploadFile = { id: string, file: File, name: string, progress: number, error?: boolean };
-		const events: Record<string Function[]> = {};
+		const events: Record<string, Function[]> = {};
 		const files: UploadFile[] = [];
 
 		async function uploadImpl(file: File): Promise<any> {
@@ -80,22 +80,20 @@ import type { Case } from '$lib/types';
 	);
 
 	// --- Add missing reactive state used by the template / health checks ---
-	let systemStatus: Record<string string> = {
+	let systemStatus: Record<string, string> = {
 		database: 'checking',
 		redis: 'checking',
 		ollama: 'checking',
 		gpu: 'checking',
 		workers: 'checking'
 	};
-
-	let workerDetails = {
+  let workerDetails = {
 		ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
 		embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
 		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
 	};
-
-	let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
-	let loading = $state<boolean>(true);
+  let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
+  let loading = $state<boolean>(true);
 	let userQuery = $state<string>('');
 	let registerOpen = $state<boolean>(false);
   // ---------------------------------------------------------------
@@ -110,8 +108,7 @@ import type { Case } from '$lib/types';
 			const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
 			return () => clearInterval(interval)}
 	});
-
-	async function checkSystemHealth(): Promise<any> {
+  async function checkSystemHealth(): Promise<any> {
 		try {
 			// Check database
 			const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false }));
@@ -181,8 +178,7 @@ import type { Case } from '$lib/types';
 			console.error('Health check error:', err);'
 			loading = false}
 	}
-
-	function getStatusColor(status: string) {
+  function getStatusColor(status: string) {
 		switch (status) {
 			case, 'online':
 				return 'is-success'; // NES.css success color
@@ -193,8 +189,7 @@ import type { Case } from '$lib/types';
 			default: return 'is-disabled'; // NES.css disabled/default color
 		}
 	}
-
-	function getStatusIcon(status: string) {
+  function getStatusIcon(status: string) {
 		switch (status) {
 			case, 'online':
 				return 'âœ…';
@@ -215,7 +210,7 @@ import type { Case } from '$lib/types';
 	// lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
   function escapeHtml(str: string) {
     const s = String(str ?? '');
-    const map: Record<string string> = {
+    const map: Record<string, string> = {
 			'&': '&amp;',
 			'<': '&lt;',
 			'>': '&gt;',

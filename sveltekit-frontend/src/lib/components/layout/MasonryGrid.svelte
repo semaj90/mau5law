@@ -6,7 +6,9 @@ https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onDestroy } from 'svelte';
+
   import { dndzone } from 'svelte-dnd-action';
+
   import Masonry from 'masonry-layout';
   interface Props {
     items: any[],
@@ -21,7 +23,7 @@ https://svelte.dev/e/js_parse_error -->
     initLayout?: boolean
     transitionDuration?: string
     dragDisabled?: boolean
-    dropTargetStyle?: Record<string string> | undefined
+    dropTargetStyle?: Record<string, string> | undefined
     dropFromOthersDisabled?: boolean}
   let {
     items = [],
@@ -39,6 +41,7 @@ https://svelte.dev/e/js_parse_error -->
     dropTargetStyle = undefined,
     dropFromOthersDisabled = false
   }: Props = $props();
+
   let container: HTMLElement
   let masonry: any
   let isInitialized = $state<boolean>(false);
@@ -80,8 +83,10 @@ https://svelte.dev/e/js_parse_error -->
     // Trigger layout update after reordering
     setTimeout(() => {
       masonry?.layout()}, 100)}
+
   // Auto-resize functionality
   let resizeTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
+
   const handleResize = () => {
     if (!resize || !masonry) return
     if (resizeTimeout) clearTimeout(resizeTimeout);
@@ -89,8 +94,9 @@ https://svelte.dev/e/js_parse_error -->
       masonry?.layout()}, 150)}
   $effect(() => {
     if (resize) {
-      window.addEventListener('resize', handleResize)}
-    return () => {
+    window.addEventListener('resize', handleResize)
+  }
+  return () => {
       window.removeEventListener('resize', handleResize);
       if (resizeTimeout) clearTimeout(resizeTimeout)}
   });
@@ -177,4 +183,5 @@ https://svelte.dev/e/js_parse_error -->
     outline: 2px solid var(--pico-primary, #3b82f6);
     outline-offset: 2px}
 </style>
+
 

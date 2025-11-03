@@ -19,23 +19,39 @@
   let svg = $state<string>('');
   let container = $state<HTMLElement | null>(null);
   // Render the mermaid diagram when the container is mounted / diagram changes
-  $effect(async () => {
+  $effect(() => {
     if (!container) return; // wait until element is mounted
-    try {
-      const mod = (await import('mermaid')) as: any
-      const mermaid = mod?.default ?? mod
-      mermaid.initialize({ startOnLoad: false });
-      const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);
-      svg = renderedSvg} catch (err) {
-      // keep this minimal but useful for debugging
-      // eslint-disable-next-line no-console
-      console.error('UIDiagram render error:', err);'
-    }
+
+    let cancelled = false;
+
+    const renderDiagram = async () => {
+      try {
+        const mod = (await import('mermaid')) as: any
+        const mermaid = mod?.default ?? mod
+        mermaid.initialize({ startOnLoad: false });
+        const { svg: renderedSvg } = await mermaid.render('ui-diagram', diagram);
+        if (!cancelled) {
+          svg = renderedSvg
+        }
+      } catch (err) {
+        // keep this minimal but useful for debugging
+        // eslint-disable-next-line no-console
+        console.error('UIDiagram render error:', err);
+      }
+    };
+
+    renderDiagram();
+
+    return () => {
+      cancelled = true;
+    };
   });
 </script>
+
 <div class="space-y-4" bind:this={container}>
   {@html svg}
 </div>
+
 <style>
   /* @unocss-include */
   .mermaid-diagram-container {
@@ -43,7 +59,6 @@
     margin: 2rem auto
    ;background: var(--pico-background, #fff);
     border-radius: 1rem
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), padding: 2rem
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); padding: 2rem
     overflow-x: auto}
 </style>
-

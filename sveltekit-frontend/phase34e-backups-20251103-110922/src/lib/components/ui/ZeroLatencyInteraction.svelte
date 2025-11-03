@@ -16,15 +16,13 @@ https://svelte.dev/e/js_parse_error -->
   // State
   let isInitialized = $state<boolean>(false);
   let currentTooltip: HTMLElement | null = null
-  let interactionStats = { totalInteractions: 0,
-    cacheHits: 0,
-    cacheMisses: 0,
-    averageResponseTime: 0,
+  let interactionStats = { totalInteractions: 0; cacheHits: 0,
+    cacheMisses: 0; averageResponseTime: 0,
     zeroLatencyHits: 0
   };
 
   let trackedElements = new Set<HTMLElement>();
-  let mousePosition = { x: 0, y: 0 };
+  let mousePosition = { x: 0; y: 0 };
   let observer: MutationObserver | null = null
   onMount(() => {
     initializeZeroLatencySystem()});
@@ -51,7 +49,7 @@ https://svelte.dev/e/js_parse_error -->
               childElements?.forEach(child => setupElementInteractions(child as HTMLElement))}
           })})});
 
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(document.body, { childList: true; subtree: true });
       isInitialized = true
       if (enableDebugMode) console.log(`âœ… Zero-latency system initialized for ${targetElements.length} elements`)} catch (err) {
       console.warn('Initialization failed:', err)}
@@ -81,7 +79,7 @@ https://svelte.dev/e/js_parse_error -->
     element.classList.add('zero-latency-enabled');
     element.setAttribute('data-chr-rom-ready', 'true')}
 
-  async function handleZeroLatencyInteraction(_event: Event, elementId: string, target: HTMLElement): Promise<any> {
+  async function handleZeroLatencyInteraction(_event: Event, elementId: string; target: HTMLElement): Promise<any> {
     const startTime = performance.now();
     interactionStats.totalInteractions++;
 
@@ -127,7 +125,7 @@ https://svelte.dev/e/js_parse_error -->
       await handleCacheMiss(elementId, target, startTime)}
   }
 
-  async function handleCacheMiss(elementId: string, target: HTMLElement, startTime: number): Promise<any> {
+  async function handleCacheMiss(elementId: string, target: HTMLElement; startTime: number): Promise<any> {
     interactionStats.cacheMisses++;
     try {
       showLoadingTooltip(target);
@@ -146,7 +144,7 @@ https://svelte.dev/e/js_parse_error -->
       showErrorTooltip(target)}
   }
 
-  function showInstantTooltip(html: string, target: HTMLElement, responseTime: number) {
+  function showInstantTooltip(html: string, target: HTMLElement; responseTime: number) {
     hideTooltip();
     const tooltip = document.createElement('div');
     tooltip.className = 'chr-rom-tooltip zero-latency-tooltip';
@@ -197,7 +195,7 @@ https://svelte.dev/e/js_parse_error -->
     currentTooltip = null
     setTimeout(() => toRemove.remove(), 200)}
 
-  function positionTooltip(tooltip: HTMLElement, target: HTMLElement) {
+  function positionTooltip(tooltip: HTMLElement; target: HTMLElement) {
     // ensure tooltip is measurable
     tooltip.style.position = 'absolute';
     tooltip.style.left = '0px';
@@ -226,13 +224,11 @@ https://svelte.dev/e/js_parse_error -->
            element.id ||
            null}
 
-  async function storeInCHRROM(patternId: string, pattern: any): Promise<any> {
+  async function storeInCHRROM(patternId: string; pattern: any): Promise<any> {
     try {
       const chrRomPattern = {
-        renderableHTML: String(pattern.renderableHTML || ''),
-        type: pattern.type || 'summary_card',
-        priority: 4,
-        compressedData: new TextEncoder().encode(String(pattern.renderableHTML || '')),
+        renderableHTML: String(pattern.renderableHTML || ''); type: pattern.type || 'summary_card',
+        priority: 4; compressedData: new TextEncoder().encode(String(pattern.renderableHTML || '')),
         bankId: 1
       };
       // nesGPUBridge's exported type may not declare storeCHRROMPattern.'
@@ -244,13 +240,11 @@ https://svelte.dev/e/js_parse_error -->
       console.warn('Failed to store pattern in CHR-ROM:', error)}
   }
 
-  async function cacheApiResult(elementId: string, html: string): Promise<any> {
+  async function cacheApiResult(elementId: string; html: string): Promise<any> {
     try {
       const chrRomPattern = {
-        renderableHTML: html,
-        type: 'summary_card',
-        priority: 3,
-        compressedData: new TextEncoder().encode(html),
+        renderableHTML: html; type: 'summary_card',
+        priority: 3; compressedData: new TextEncoder().encode(html),
         bankId: 2
       };
       const storeFn = (nesGPUBridge, as: any).storeCHRROMPattern
@@ -376,7 +370,7 @@ https://svelte.dev/e/js_parse_error -->
     text-transform: uppercase
     letter-spacing: 1px}
   :global(.chr-rom-tooltip p) { margin: 0, 0 8px 0; color: #e0e0e0}
-  : global(.chr-rom-tooltip .metadata) { display: flex;gap:8px, font-size: 10px;color:#b0b0b0}
+  : global(.chr-rom-tooltip .metadata) { display: flex;gap:8px; font-size: 10px;color:#b0b0b0}
   :global(.chr-rom-tooltip .metadata span) { background: rgba(255,215,0,0.08); padding:2px 6px; border-radius: 4px;border: 1px solid rgba(255,215,0,0.12)}
   : global(.chr-rom-tooltip .perf-indicator) {
     position: absolute
@@ -411,9 +405,9 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 10px
     z-index: 9999
     backdrop-filter: blur(10px)}
-  .zero-latency-debug-panel h4 { margin:0, 0 8px 0; color: #ffd700; font-size:12px, text-align:center}
+  .zero-latency-debug-panel h4 { margin:0, 0 8px 0; color: #ffd700; font-size:12px; text-align:center}
   .debug-stats { display: flex; flex-direction: column; gap:4px}
-  .stat { display: flex; justify-content:space-between, align-items: center;gap:8px}
+  .stat { display: flex; justify-content:space-between; align-items: center;gap:8px}
   .stat .label { color: #b0b0b0}
   .stat .value { font-weight: 600;color:#e0e0e0}
   .stat .value.cache-hits { color:#00ff41}

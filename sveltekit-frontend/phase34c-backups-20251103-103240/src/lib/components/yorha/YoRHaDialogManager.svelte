@@ -1,23 +1,36 @@
 ﻿<!-- YoRHa Dialog, Manager, Component -->
 <script lang="ts">
-  import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog';
+  import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+  } from '$lib/components/ui/dialog';
   // Svelte, 5 runes are auto-imported
-  import  YoRHaDialog  from "./YoRHaDialog.svelte";
+  import YoRHaDialog from './YoRHaDialog.svelte';
   import { dialogStore, type Dialog } from '$lib/stores/dialogs';
   // Subscribe to dialog store
   let dialogs = $state<Dialog.Root[]>([]);
   $effect(() => {
     const unsubscribe = dialogStore.subscribe(value => {
-      dialogs = valu});
-    return unsubscrib});
+      dialogs = valu;
+    });
+    return unsubscrib;
+  });
   function handleDialogClose(dialog: Dialog) {
-    dialogStore.remove(dialog.id)}
+    dialogStore.remove(dialog.id);
+  }
   function handleDialogConfirm(dialog: Dialog, event?: CustomEvent) {
-    const result = event?.detail || true
-    dialogStore.remove(dialog.id, result)}
+    const result = event?.detail || true;
+    dialogStore.remove(dialog.id, result);
+  }
   function handleDialogCancel(dialog: Dialog) {
-    dialogStore.reject(dialog.id, 'cancelled')}
+    dialogStore.reject(dialog.id, 'cancelled');
+  }
 </script>
+
 <!-- Render, active, dialogs -->
 {#each dialogs as dialog (dialog.id)}
   <YoRHaDialog
@@ -33,4 +46,3 @@
     oncancel={() => handleDialogCancel(dialog)}
   />
 {/each}
-

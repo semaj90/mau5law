@@ -1,17 +1,23 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts"> import { Input } from '$lib/components/ui/input';
+<!-- @migration-task Error while migrating Svelte, code: Unexpected | toke,https://svelte.dev/e/js_parse_error --> <!-- @migration-task Error while migrating Svelte, code: Unexpected, token --> <script lang="ts"> import { Input } from '$lib/components/ui/input';
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // Use modular components import  Card, CardHeader, CardTitle, CardContent, Input  from "$lib/components/ui/enhanced-bits.svelte"; import  Button  from "$lib/components/ui/Button.svelte"; import type { UploadFile } from '$lib/components/ui/modular/types.svelte'; import  Alert  from "$lib/components/ui/alert/Alert.svelte"; import  AlertDescription  from "$lib/components/ui/alert/AlertDescription.svelte"; import  Label  from "$lib/components/ui/label/Label.svelte"; import  Select, SelectContent, SelectItem, SelectTrigger, SelectValue  from "$lib/components/ui/select.svelte"; import  Switch  from "$lib/components/ui/switch/Switch.svelte"; import  Textarea  from "$lib/components/ui/textarea/Textarea.svelte"; import { fileUploadSchema } from '$lib/schemas/upload'; import  Form  from "$lib/components/ui/Form.svelte"; import  FileUpload  from "$lib/components/ui/modular/FileUpload.svelte"; import { Binary, CheckCircle, FileText, Film, HardDrive, Image, Music, Upload, X
   } from 'lucide-svelte'; import { superForm } from 'sveltekit-superforms'; import { zodClient } from 'sveltekit-superforms/adapters'; interface Props { data: { form: any } caseId?: string}
 
   let { data, caseId = '' }: Props = $props(); const { form, errors, enhance, submitting, delayed, message } = superForm(data.form, { validators: zodClient(fileUploadSchema), multipleSubmits: 'prevent', onSubmit: ({ formData }) => { // Set the file in formData if (uploadFiles.length > 0) { formData.set('file', uploadFiles[0].file)}
-    } }); let uploadFiles: UploadFile[] = $state([]); let uploadProgress = $state<number>(0); // Initialize form with caseId if provided $effect(() => { if (caseId) { $form.caseId = caseId}
+    } });
+  let uploadFiles: UploadFile[] = $state([]); let uploadProgress = $state<number>(0); // Initialize form with caseId if provided $effect(() => { if (caseId) { $form.caseId = caseId}
   }); // File type icons const fileTypeIcons = { document: FileText, image: Image, video: Film, audio: Music, physical: HardDrive, digital: Binary }
+
   // Handle file changes from FileUpload component function handleFilesChange(files: UploadFile[]) { uploadFiles = files; if (files.length > 0) { const file = files[0]; // Auto-detect file type if (file.type.startsWith('image/')) { $form.type = 'image'} else if (file.type.startsWith('video/')) { $form.type = 'video'} else if (file.type.startsWith('audio/')) { $form.type = 'audio'} else if ( file.type.includes('pdf') || file.type.includes('document') || file.type.includes('text') ) { $form.type = 'document'} else { $form.type = 'digital'}
+
       // Set default title from filename if (!$form.title) { $form.title = file.name.replace(/\.[^/.]+$/, '')}
     } }
+
   // Handle file upload progress async function handleFileUpload(file: UploadFile): Promise<void> { // Simulate upload progress const simulateProgress = () => { let progress = 0; const interval = setInterval(() => { progress += 10; file.progress = progress; uploadFiles = [...uploadFiles]; // Trigger reactivity if (progress >= 100) { clearInterval(interval); file.status = 'completed'; uploadFiles = [...uploadFiles]}
       }, 100)}
     file.status = 'uploading'; file.progress = 0; uploadFiles = [...uploadFiles]; try { simulateProgress()} catch (error) { file.status = 'error'; file.error = 'Upload failed'; uploadFiles = [...uploadFiles]}
-  } // Handle file removal function handleFileRemove(fileId: string) { uploadFiles = uploadFiles.filter(f => f.id !== fileId)}
+  }
+   // Handle file removal function handleFileRemove(fileId: string) { uploadFiles = uploadFiles.filter(f => f.id !== fileId)}
+
   // Format file size function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}
 </script> <div variant="legal" class="w-full max-w-2xl"> {#snippet header()} <div class="space-y-2"> <h3 class="text-xl">Upload Evidence</h3> <p class="nes-text"> Upload documents, images, videos, or other evidence files for AI analysis </p> </div> {/snippet} <Form method="POST" enctype="multipart/form-data" onsubmit={ enhance } variant="legal"> <!-- File, Upload, Component --> <div class="space-y-2"> <Label for="file">File</Label> <FileUpload variant="evidence"
         multiple={ false } maxFiles={ 1 } maxSize={50 * 1024 * 1024} accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.mp4,.mp3,.wav"
@@ -36,3 +42,4 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
           class="w-full bits-btn bits-btn"
           loading={$submitting} >
 {#snippet children()} {#if $submitting} Uploading Evidence... {:else} <Upload class="mr-2 h-4" /> Upload Evidence {/if} {/snippet} </Form> </div> <!-- TODO: migrate export lets, to $props(); CommonProps, assumed. -->
+

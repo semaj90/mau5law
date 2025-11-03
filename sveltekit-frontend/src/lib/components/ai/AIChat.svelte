@@ -1,23 +1,31 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
+
   import  useChatActor, chatActions  from "\/stores/chat.svelte";
+
   import  Button  from "$lib/components/ui/Button.svelte";
+
   import  Input  from "$lib/components/ui/bits/Input.svelte";
+
   import  serviceStatus  from "\/stores/chat.svelte";
   // Use the XState machine through the store
   const actor = useChatActor();
+
   const stateStore = actor.state
   let userInput = $state<string>('');
+
   let chatContainer: HTMLElement | null = null
   // Send message handler
   function handleSubmit() {
     if (!userInput.trim()) return
     chatActions.sendMessage(userInput);
     userInput = ''}
+
   // Clear chat handler
   function handleClear() {
     chatActions.resetChat()}
+
   // Update scroll when messages change
   $effect(() => {
     // Accessing $stateStore will auto-subscribe
@@ -33,42 +41,49 @@
     // Add: any initialization here
   });
 </script>
+
 <div class="flex flex-col h-[70vh] max-w-3xl mx-auto my-8">
   <div class="flex items-center justify-between border-b">
     <div>
       <h2 class="text-xl">Legal AI Assistant</h2>
+
       <p class="text-sm nes-text">
-        {#if $serviceStatus.ollama === 'connected'}
+  {#if $serviceStatus.ollama === 'connected'}
           <span class="text-green-500">â—</span> AI Connected
         {:else if $serviceStatus.ollama === 'error'}
           <span class="text-red-500">â—</span> AI Service Error
         {:else}
           <span class="text-yellow-500">â—</span> AI Status Unknown
         {/if}
-      </p>
+  </p>
     </div>
-    <Button.Root, class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button>
+
+    <Button.Root class="bits-btn" variant="ghost" size="sm" onclick={handleClear}>Clear Chat</Button>
   </div>
+
   <!-- Chat, messages -->
   <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4">
-    {#each $stateStore.context.messages as message, i (message.id)}
+  {#each $stateStore.context.messages as message, i (message.id)}
       <div class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
         <div class="message-bubble">
           {@html message.content.replace(/\n/g, '<br>')}
           {#if $stateStore.matches('loading') && i === $stateStore.context.messages.length - 1}
             <span class="typing-indicator"></span>
           {/if}
-        </div>
+  </div>
       </div>
     {/each}
     {#if $stateStore.matches('error')}
       <div class="chat-message" aria-live="polite" role="alert">
         <div class="message-bubble" aria-live="polite" role="alert">
-          <p>Error: {$stateStore.context.error?.message || 'Unknown error'}</p>
+          <p>Error: {$stateStore.context.error?.message || 'Unknown error'}
+</p>
+
           <p>Please try again.</p>
         </div>
       {/if}
   </div>
+
   <!-- Input, area -->
   <div class="border-t">
     <form
@@ -86,10 +101,11 @@
       />
       <Button class="bits-btn" type="submit" disabled={$stateStore.matches('loading') || !userInput.trim()}>
         {$stateStore.matches('loading') ? 'Thinking...' : 'Send'}
-      </Button>
+</Button>
     </form>
   </div>
 </div>
+
 <style>
   .chat-message {
     display: flex
@@ -135,4 +151,5 @@
       transform: translateY(-5px)}
   }
 </style>
+
 

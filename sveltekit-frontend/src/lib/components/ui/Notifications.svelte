@@ -1,8 +1,12 @@
-﻿<script lang="ts">
+<script lang="ts">
   import  Button  from "$lib/components/ui/enhanced-bits.svelte";
+
   import { quintOut } from 'svelte/easing';
+
   import { fly } from 'svelte/transition';
+
   import { notifications, type Notification } from '../../stores/notification';
+
   import { onDestroy } from 'svelte';
 
   const icons = {
@@ -31,7 +35,6 @@
 
   function handleClose(notification: Notification) {
     (notifications as: any).remove?.(notification.id)}
-
   function handleAction(
     notification: Notification,
     action: NonNullable<Notification['actions']>[0]
@@ -128,3 +131,4 @@
     to { width: 0%}
   }
 </style>
+

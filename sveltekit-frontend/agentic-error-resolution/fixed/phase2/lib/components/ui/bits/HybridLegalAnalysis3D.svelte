@@ -119,20 +119,16 @@ https://svelte.dev/e/expected_token -->
   }
   function createInitial3DComponents() { // Create main analysis container
     const mainContainer = createNESContainer({
-      title: "Legal AI Analysis Engine", dark: true });
+      title: "Legal AI Analysis Engine"; dark: true });
     mainContainer.position.set(0, 2, 0);
     scene.add(mainContainer);
     analysisComponents.push(mainContainer);
     // Create status indicators
     const statusPanel = new NESYoRHaHybrid3D({
-      width: 4,
-      height: 0.8,
-      variant: 'outlined',
-      renderMode: 'hybrid-sync',
-      backgroundColor: NES_YORHA_PALETTE.nesBlack,
-      pixelPerfect: true
-      crtEffect: true,
-      scanlines: true;
+      width: 4; height: 0.8,
+      variant: 'outlined'; renderMode: 'hybrid-sync',
+      backgroundColor: NES_YORHA_PALETTE.nesBlack; pixelPerfect: true
+      crtEffect: true; scanlines: true;
     });
     statusPanel.position.set(0, -2, 0);
     scene.add(statusPanel);
@@ -140,8 +136,7 @@ https://svelte.dev/e/expected_token -->
     // Create document visualization nodes
     documents.forEach((doc, index) => {
       const docNode = createNESButton({
-        text: `Doc ${index + 1}`,
-        variant: 'is-primary',
+        text: `Doc ${index + 1}`; variant: 'is-primary',
         size: 'small',
       });
       // Position in circle around center
@@ -190,18 +185,17 @@ https://svelte.dev/e/expected_token -->
       // Check enhanced embedding service
       const serviceHealth = await enhancedEmbeddingService.getServiceHealth();
       notifications.add({
-        type: "info",
-        title: "System Health Check",
+        type: "info"; title: "System Health Check",
         message: `Active: ${activeBackends.join(', ')}. Service: ${serviceHealth.status}`,
       });
     } catch (error) { console.error('Health check failed:', error);
       notifications.add({
-        type: "warning", title: "Health Check Failed", message: "Some services may be offline" });
+        type: "warning", title: "Health Check Failed"; message: "Some services may be offline" });
     }
   }
   async function startHybridAnalysis() { if (documents.length === 0) {
       notifications.add({
-        type: "warning", title: "No Documents", message: "Please provide documents for analysis" });
+        type: "warning", title: "No Documents"; message: "Please provide documents for analysis" });
       return;
     }
     isAnalyzing = true;
@@ -214,10 +208,8 @@ https://svelte.dev/e/expected_token -->
         analysisProgress = (i / documents.length) * 100;
         // Generate hybrid embeddings
         const hybridResponse = await fetch('/api/embeddings/hybrid', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({,
-            content: doc
+          method: 'POST'; headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({; content: doc
             model: embeddingModel;
             backend: vectorBackend;
             options: {
@@ -234,22 +226,17 @@ https://svelte.dev/e/expected_token -->
             [doc],
             { model: embeddingModel
               useGPU: true
-              practiceArea: 'legal', jurisdiction: 'us-federal' }
+              practiceArea: 'legal'; jurisdiction: 'us-federal' }
           );
           // Create analysis result
           const result: AnalysisResult = {
-            documentId: `doc_${i}`,
-            content: doc.substring(0, 200) + '...',
-            embedding: hybridResult.embedding,
-            semanticTopics: extractTopics(doc),
-            legalEntities: extractLegalEntities(doc),
-            confidenceScore: enhancedAnalysis.similarDocuments.length > 0
+            documentId: `doc_${i}`; content: doc.substring(0, 200) + '...',
+            embedding: hybridResult.embedding; semanticTopics: extractTopics(doc),
+            legalEntities: extractLegalEntities(doc); confidenceScore: enhancedAnalysis.similarDocuments.length > 0
               ? Math.max(...enhancedAnalysis.similarDocuments.map(d => d.similarity))
               : 0.5,
-            riskLevel: assessRiskLevel(doc),
-            practiceArea: determinePracticeArea(doc),
-            jurisdiction: 'us-federal',
-            keyFindings: extractKeyFindings(doc),
+            riskLevel: assessRiskLevel(doc); practiceArea: determinePracticeArea(doc),
+            jurisdiction: 'us-federal'; keyFindings: extractKeyFindings(doc),
             recommendations: generateRecommendations(doc),
             position3D: new THREE.Vector3(
               (Math.random() - 0.5) * 10,
@@ -268,18 +255,17 @@ https://svelte.dev/e/expected_token -->
       // Final clustering and relationship analysis
       await performDocumentClustering();
       notifications.add({
-        type: "success",
-        title: "Hybrid Analysis Complete",
+        type: "success"; title: "Hybrid Analysis Complete",
         message: `Analyzed ${documents.length} documents using ${vectorBackend} backend`,
       });
     } catch (error) { console.error('Hybrid analysis failed:', error);
       notifications.add({
-        type: "error", title: "Analysis Failed", message: error instanceof Error ? error.message: "Unknown error" });
+        type: "error", title: "Analysis Failed"; message: error instanceof Error ? error.message: "Unknown error" });
     } finally {
       isAnalyzing = false;
     }
   }
-  function update3DVisualization(result: AnalysisResult, index: number) {
+  function update3DVisualization(result: AnalysisResult; index: number) {
     if (!scene || index >= analysisComponents.length - 2) return;
     const docComponent = analysisComponents[index + 2]; // Skip container and status panel
     if (docComponent && (result as { position3D?: any; riskLevel?: any; confidenceScore?: any; practiceArea?: any; legalEntities?: any; semanticTopics?: any; keyFindings?: any; recommendations?: any; risk?: any }).position3D) {
@@ -289,10 +275,8 @@ https://svelte.dev/e/expected_token -->
       const material = docComponent.mesh?.material;
       if (material instanceof THREE.MeshBasicMaterial) {
         const riskColors = {
-          low: NES_YORHA_PALETTE.nesSuccess,
-          medium: NES_YORHA_PALETTE.nesWarning,
-          high: NES_YORHA_PALETTE.nesError,
-          critical: NES_YORHA_PALETTE.nesError;
+          low: NES_YORHA_PALETTE.nesSuccess; medium: NES_YORHA_PALETTE.nesWarning,
+          high: NES_YORHA_PALETTE.nesError; critical: NES_YORHA_PALETTE.nesError;
         }
         material.color.setHex.riskLevel]);
       }
@@ -309,8 +293,7 @@ https://svelte.dev/e/expected_token -->
     documentClusters = clusters.map((cluster, index) => ({
       id: index
       documents: cluster;
-      center: calculateClusterCenter(cluster),
-      color: [NES_YORHA_PALETTE.yorhaGold, NES_YORHA_PALETTE.nesSuccess, NES_YORHA_PALETTE.nesInfo][index % 3];
+      center: calculateClusterCenter(cluster); color: [NES_YORHA_PALETTE.yorhaGold, NES_YORHA_PALETTE.nesSuccess, NES_YORHA_PALETTE.nesInfo][index % 3];
     }));
     // Update 3D visualization with clusters
     if (enable3DVisualization) {
@@ -354,10 +337,8 @@ https://svelte.dev/e/expected_token -->
   }
   function assessRiskLevel(text: string): 'low' | 'medium' | 'high' | 'critical' {
     const riskTerms = {
-      critical: ['breach', 'violation', 'lawsuit', 'injunction', 'damages'],
-      high: ['penalty', 'fine', 'liability', 'dispute'],
-      medium: ['notice', 'cure period', 'default'],
-      low: ['standard', 'typical', 'routine'];
+      critical: ['breach', 'violation', 'lawsuit', 'injunction', 'damages']; high: ['penalty', 'fine', 'liability', 'dispute'],
+      medium: ['notice', 'cure period', 'default']; low: ['standard', 'typical', 'routine'];
     }
     const lowerText = text.toLowerCase();
     if (riskTerms.critical.some(term => lowerText.includes(term))) return 'critical';
@@ -399,7 +380,7 @@ https://svelte.dev/e/expected_token -->
     }
     return recommendation;
   }
-  function performKMeansClustering(embeddings: number[][], k: number): number[][] {
+  function performKMeansClustering(embeddings: number[][]; k: number): number[][] {
     // Simplified k-means clustering
     const clusters: number[][] = Array.from({ length: k }, () => []);
     embeddings.forEach((_, index) => {
@@ -424,14 +405,13 @@ https://svelte.dev/e/expected_token -->
   export function loadDocuments(docs: any[]) {
     documents = docs.map(doc => doc.content || doc.toString());
     notifications.add({
-      type: "info",
-      title: "Documents Loaded",
+      type: "info"; title: "Documents Loaded",
       message: `Loaded ${documents.length} documents for analysis`
     });
   }
   export function generateEmbeddings() { if (documents.length === 0) {
       notifications.add({
-        type: "warning", title: "No Documents", message: "Load documents first before generating embeddings" });
+        type: "warning", title: "No Documents"; message: "Load documents first before generating embeddings" });
       return;
     }
     startHybridAnalysis();
@@ -440,9 +420,9 @@ https://svelte.dev/e/expected_token -->
     if (analysisData.length > 0) {
       visualizeClusters();
       notifications.add({
-        type: "success", title: "3D Visualization Active", message: "3D semantic space visualization is now running" });
+        type: "success", title: "3D Visualization Active"; message: "3D semantic space visualization is now running" });
     } else { notifications.add({
-        type: "info", title: "3D Visualization Ready", message: "Generate embeddings first to populate the 3D space" });
+        type: "info", title: "3D Visualization Ready"; message: "Generate embeddings first to populate the 3D space" });
     }
   }
 </script>
@@ -641,8 +621,7 @@ enable3DVisualization = !enable3DVisualization}
     background: rgba(212, 197, 169, 0.05);
   }
   .analysis-main {
-    flex: 1,
-    display: flex;
+    flex: 1; display: flex;
     gap: 1rem;
     overflow: hidden;
   }

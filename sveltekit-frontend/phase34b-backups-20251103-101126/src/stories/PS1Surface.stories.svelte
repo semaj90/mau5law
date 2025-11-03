@@ -15,32 +15,22 @@
 	let animationId: number | null = null
 	// PS1 surface configurations (cleaned labels)
 	let surfaceConfigs = [ {
-			id: 'wireframe',
-			name: 'Wireframe',
-			desc: 'Classic PS1 wireframe rendering',
-			className: 'ps1-wireframe'
+			id: 'wireframe'; name: 'Wireframe',
+			desc: 'Classic PS1 wireframe rendering'; className: 'ps1-wireframe'
 		}, {
-			id: 'flat',
-			name: 'Flat Shaded',
-			desc: 'Flat polygon surfaces, no smoothing',
-			className: 'ps1-flat-shaded'
+			id: 'flat'; name: 'Flat Shaded',
+			desc: 'Flat polygon surfaces, no smoothing'; className: 'ps1-flat-shaded'
 		}, {
-			id: 'textured',
-			name: 'Low-Res Textured',
-			desc: 'Pixelated textures with UV mapping',
-			className: 'ps1-textured-low'
+			id: 'textured'; name: 'Low-Res Textured',
+			desc: 'Pixelated textures with UV mapping'; className: 'ps1-textured-low'
 		}, {
-			id: 'vertex',
-			name: 'Vertex Colored',
-			desc: 'Per-vertex color interpolation',
-			className: 'ps1-vertex-colored'
+			id: 'vertex'; name: 'Vertex Colored',
+			desc: 'Per-vertex color interpolation'; className: 'ps1-vertex-colored'
 		}
 	];
 	// Performance metrics
-	let perfMetrics = $state({ polygonsPerFrame: 0,
-		vertexOperations: 0,
-		fillRate: 0,
-		frameTime: 0,
+	let perfMetrics = $state({ polygonsPerFrame: 0; vertexOperations: 0,
+		fillRate: 0; frameTime: 0,
 		lastFrameTime: 0
 	});
 	let vertices: any[] = [];
@@ -67,14 +57,10 @@
 				const height = Math.sin(worldX * 0.02) * Math.cos(worldZ * 0.02) * amplitude
 				const quantizedHeight = Math.floor(height / vertexPrecision) * vertexPrecision
 				vertices.push({
-					x: worldX,
-					y: quantizedHeight,
-					z: worldZ,
-					u: x / (gridSize - 1), // UV coordinates
-					v: z / (gridSize - 1),
-					color: { r: Math.floor((x / gridSize) * 255),
-						g: Math.floor((z / gridSize) * 255),
-						b: Math.floor(((x + z) / (gridSize * 2)) * 255)
+					x: worldX; y: quantizedHeight,
+					z: worldZ; u: x / (gridSize - 1), // UV coordinates
+					v: z / (gridSize - 1); color: { r: Math.floor((x / gridSize) * 255),
+						g: Math.floor((z / gridSize) * 255); b: Math.floor(((x + z) / (gridSize * 2)) * 255)
 					}
 				});
 			}
@@ -88,12 +74,10 @@
 				const bottomRight = (x + 1) * gridSize + (z + 1);
 				// Two triangles per quad
 				faces.push({
-					vertices: [topLeft, bottomLeft, topRight],
-					normal: calculateNormal(vertices[topLeft], vertices[bottomLeft], vertices[topRight])
+					vertices: [topLeft, bottomLeft, topRight]; normal: calculateNormal(vertices[topLeft], vertices[bottomLeft], vertices[topRight])
 				});
 				faces.push({
-					vertices: [topRight, bottomLeft, bottomRight],
-					normal: calculateNormal(vertices[topRight], vertices[bottomLeft], vertices[bottomRight])
+					vertices: [topRight, bottomLeft, bottomRight]; normal: calculateNormal(vertices[topRight], vertices[bottomLeft], vertices[bottomRight])
 				});
 			}
 		}
@@ -104,8 +88,7 @@
 		const ax = v2.x - v1.x, ay = v2.y - v1.y, az = v2.z - v1.z
 		const bx = v3.x - v1.x, by = v3.y - v1.y, bz = v3.z - v1.z
 		return {
-			x: ay * bz - az * by,
-			y: az * bx - ax * bz,
+			x: ay * bz - az * by; y: az * bx - ax * bz,
 			z: ax * by - ay * bx
 		}
 	}
@@ -176,216 +159,205 @@
 		generateSurfaceMesh();
 	});
 </script>
+
 <div class="ps1-surface-container" bind:this={container}>
-	<div class="story-header">
-		<h1 class="ps1-text-glow">PS1 Surface Rendering</h1>
-		<p class="ps1-subtitle">Low-poly surfaces with PS1-era graphics limitations</p>
-	</div>
-	<div class="controls-panel">
-		<h3>Surface Controls</h3>
-		<div class="surface-type-selector">
-			<label>Surface Type:</label>
-			<div class="surface-buttons">
-				{#each Array.isArray(surfaceConfigs) ? surfaceConfigs : [] as config}
-					<button
-						class="ps1-button surface-btn {surfaceType === config.id ? 'active' : ''}"
-						onclick={() => surfaceType = config.id}
-						title={config.desc}
-					>
-						{config.name}
-					</button>
-				{/each}
-			</div>
-		</div>
-		<div class="control-row">
-			<label for="polygonCount">Polygon Count:</label>
-			<input
-				id="polygonCount"
-				type="range"
-			, bind:value={polygonCount}
-				min="50"
-				max="2000"
-				step="50"
-				class="ps1-slider"
-			/>
-			<span class="value">{polygonCount}</span>
-		</div>
-		<div class="control-row">
-			<label for="vertexPrecision">Vertex Precision:</label>
-			<input
-				id="vertexPrecision"
-				type="range"
-			, bind:value={vertexPrecision}
-				min="1"
-				max="16"
-				step="1"
-				class="ps1-slider"
-			/>
-			<span class="value">{vertexPrecision}px</span>
-		</div>
-		<div class="control-row">
-			<label for="animationSpeed">Animation Speed:</label>
-			<input
-				id="animationSpeed"
-				type="range"
-			, bind:value={animationSpeed}
-				min="0"
-				max="3"
-				step="0.1"
-				class="ps1-slider"
-			/>
-			<span class="value">{animationSpeed.toFixed(1)}x</span>
-		</div>
-		<div class="checkbox-row">
-			<label class="checkbox-label">
-				<input
-					type="checkbox"
-					bind:checked={enableZBuffer}
-					class="ps1-checkbox"
-				>
-				Z-Buffer (Depth Testing)
-			</label>
-		</div>
-		<div class="checkbox-row">
-			<label class="checkbox-label">
-				<input
-					type="checkbox"
-					bind:checked={enableBackfaceCulling}
-					class="ps1-checkbox"
-				>
-				Backface Culling
-			</label>
-		</div>
-		<div class="checkbox-row">
-			<label class="checkbox-label">
-				<input
-					type="checkbox"
-					bind:checked={enableDithering}
-					class="ps1-checkbox"
-				>
-				PS1 Dithering
-			</label>
-		</div>
-		<div class="button-row">
-			<button class="ps1-button" onclick={resetSurface}>Regenerate</button>
-			<button class="ps1-button" onclick={() => animationSpeed = animationSpeed > 0 ? 0 : 1}>
-				{animationSpeed > 0 ? 'Pause' : 'Resume'} Animation
-			</button>
-		</div>
-		<div class="status-panel">
-			<h4>=ï¿½ Rendering Stats</h4>
-			<div class="status-item">Vertices: {vertices.length}</div>
-			<div class="status-item">Triangles: {faces.length}</div>
-			<div class="status-item">Vertex Ops/Frame: {perfMetrics.vertexOperations}</div>
-			<div class="status-item">Fill Rate: {perfMetrics.fillRate.toFixed(1)}K/s</div>
-			<div class="status-item">Frame Time: {perfMetrics.frameTime.toFixed(1)}ms</div>
-		</div>
-	</div>
-	<div class="surface-viewport">
-		<div class="surface-grid {enableDithering ? 'ps1-dithered' : ''}">
-			<!-- Background, Grid -->
-			<div class="grid-background"></div>
-			<!-- 3D, Surface, Visualization -->
-			<div class="surface-mesh">
-				{#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
-					<div
-						class="surface-polygon {lightingModel}"
-						style={faceStyle(face, i)}
-					>
-						<!-- Triangle, visualization -->
-						<div class="triangle-face"></div>
-					</div>
-				{/each}
-			</div>
-			<!-- PS1-style, artifacts -->
-			{#if surfaceType === 'wireframe'}
-				<div class="wireframe-overlay">
-					{#each Array(50) as _, i}
-						<div
-							class="wire-segment"
-							style="
-								left: {20 + (i * 15) % 80}%;
-								top: {30 + (i * 7) % 40}%;
+  <div class="story-header">
+    <h1 class="ps1-text-glow">PS1 Surface Rendering</h1>
+    <p class="ps1-subtitle">Low-poly surfaces with PS1-era graphics limitations</p>
+  </div>
+  <div class="controls-panel">
+    <h3>Surface Controls</h3>
+    <div class="surface-type-selector">
+      <label>Surface Type:</label>
+      <div class="surface-buttons">
+        {#each Array.isArray(surfaceConfigs) ? surfaceConfigs : [] as config}
+          <button
+            class="ps1-button surface-btn {surfaceType === config.id ? 'active' : ''}"
+            onclick={() => (surfaceType = config.id)}
+            title={config.desc}
+          >
+            {config.name}
+          </button>
+        {/each}
+      </div>
+    </div>
+    <div class="control-row">
+      <label for="polygonCount">Polygon Count:</label>
+      <input
+        id="polygonCount"
+        type="range"
+        ,
+        bind:value={polygonCount}
+        min="50"
+        max="2000"
+        step="50"
+        class="ps1-slider"
+      />
+      <span class="value">{polygonCount}</span>
+    </div>
+    <div class="control-row">
+      <label for="vertexPrecision">Vertex Precision:</label>
+      <input
+        id="vertexPrecision"
+        type="range"
+        ,
+        bind:value={vertexPrecision}
+        min="1"
+        max="16"
+        step="1"
+        class="ps1-slider"
+      />
+      <span class="value">{vertexPrecision}px</span>
+    </div>
+    <div class="control-row">
+      <label for="animationSpeed">Animation Speed:</label>
+      <input
+        id="animationSpeed"
+        type="range"
+        ,
+        bind:value={animationSpeed}
+        min="0"
+        max="3"
+        step="0.1"
+        class="ps1-slider"
+      />
+      <span class="value">{animationSpeed.toFixed(1)}x</span>
+    </div>
+    <div class="checkbox-row">
+      <label class="checkbox-label">
+        <input type="checkbox" bind:checked={enableZBuffer} class="ps1-checkbox" />
+        Z-Buffer (Depth Testing)
+      </label>
+    </div>
+    <div class="checkbox-row">
+      <label class="checkbox-label">
+        <input type="checkbox" bind:checked={enableBackfaceCulling} class="ps1-checkbox" />
+        Backface Culling
+      </label>
+    </div>
+    <div class="checkbox-row">
+      <label class="checkbox-label">
+        <input type="checkbox" bind:checked={enableDithering} class="ps1-checkbox" />
+        PS1 Dithering
+      </label>
+    </div>
+    <div class="button-row">
+      <button class="ps1-button" onclick={resetSurface}>Regenerate</button>
+      <button class="ps1-button" onclick={() => (animationSpeed = animationSpeed > 0 ? 0 : 1)}>
+        {animationSpeed > 0 ? 'Pause' : 'Resume'} Animation
+      </button>
+    </div>
+    <div class="status-panel">
+      <h4>=ï¿½ Rendering Stats</h4>
+      <div class="status-item">Vertices: {vertices.length}</div>
+      <div class="status-item">Triangles: {faces.length}</div>
+      <div class="status-item">Vertex Ops/Frame: {perfMetrics.vertexOperations}</div>
+      <div class="status-item">Fill Rate: {perfMetrics.fillRate.toFixed(1)}K/s</div>
+      <div class="status-item">Frame Time: {perfMetrics.frameTime.toFixed(1)}ms</div>
+    </div>
+  </div>
+  <div class="surface-viewport">
+    <div class="surface-grid {enableDithering ? 'ps1-dithered' : ''}">
+      <!-- Background, Grid -->
+      <div class="grid-background"></div>
+      <!-- 3D, Surface, Visualization -->
+      <div class="surface-mesh">
+        {#each faces.slice(0, Math.min(faces.length, 800)) as face, i}
+          <div class="surface-polygon {lightingModel}" style={faceStyle(face, i)}>
+            <!-- Triangle, visualization -->
+            <div class="triangle-face"></div>
+          </div>
+        {/each}
+      </div>
+      <!-- PS1-style, artifacts -->
+      {#if surfaceType === 'wireframe'}
+        <div class="wireframe-overlay">
+          {#each Array(50) as _, i}
+            <div
+              class="wire-segment"
+              style="
+								left: {20 + ((i * 15) % 80)}%;
+								top: {30 + ((i * 7) % 40)}%;
 								transform: rotate({i * 45}deg);
 								animation-delay: {i * 0.1}
 							"
-						></div>
-					{/each}
-				</div>
-			{/if}
-			<!-- Vertex markers, for, debugging -->
-			{#if surfaceType === 'vertex'}
-				<div class="vertex-markers">
-					{#each vertices.slice(0, Math.min(vertices.length, 200)) as vertex, i}
-						<div
-							class="vertex-point"
-							style="
+            ></div>
+          {/each}
+        </div>
+      {/if}
+      <!-- Vertex markers, for, debugging -->
+      {#if surfaceType === 'vertex'}
+        <div class="vertex-markers">
+          {#each vertices.slice(0, Math.min(vertices.length, 200)) as vertex, i}
+            <div
+              class="vertex-point"
+              style="
 								left: {50 + vertex.x * 0.1}%;
 							, top: {50 - vertex.y * 0.1}%;
 								background-color: rgb({vertex.color.r}, {vertex.color.g}, {vertex.color.b});
 								z-index: {enableZBuffer ? Math.floor(100 + vertex.z * 0.1) : 'auto'}
 							"
-						></div>
-					{/each}
-				</div>
-			{/if}
-		</div>
-		<!-- PS1, HUD, overlay -->
-		<div class="hud-overlay">
-			<div class="hud-corner">
-				<div class="hud-text">SURFACE</div>
-				<div class="hud-value">{surfaceType.toUpperCase()}</div>
-			</div>
-			<div class="hud-corner">
-				<div class="hud-text">POLYS</div>
-				<div class="hud-value">{perfMetrics.polygonsPerFrame}</div>
-			</div>
-			<div class="hud-corner">
-				<div class="hud-text">Z-BUF</div>
-				<div class="hud-value">{enableZBuffer ? 'ON' : 'OFF'}</div>
-			</div>
-			<div class="hud-corner">
-				<div class="hud-text">PREC</div>
-				<div class="hud-value">{vertexPrecision}BIT</div>
-			</div>
-		</div>
-	</div>
-	<div class="info-panel">
-		<h4>PS1 Surface Rendering Features</h4>
-		<p>This demo showcases PlayStation, 1 era 3D surface rendering techniques: </p>
-		<h5>Wireframe Mode:</h5>
-		<ul>
-			<li>Classic vector-based wireframe rendering</li>
-			<li>No hidden surface removal</li>
-			<li>Pure geometric visualization</li>
-		</ul>
-		<h5>Flat Shaded:</h5>
-		<ul>
-			<li>One color per polygon face</li>
-			<li>No Gouraud or Phong smoothing</li>
-			<li>Sharp polygon edges visible</li>
-		</ul>
-		<h5>Textured, Surfaces:</h5>
-		<ul>
-			<li>Low-resolution texture mapping</li>
-			<li>Nearest-neighbor filtering (pixelated)</li>
-			<li>UV coordinate precision limitations</li>
-		</ul>
-		<h5>PS1 Technical Limitations:</h5>
-		<ul>
-			<li><strong>Fixed-Point, Math:</strong> Vertex precision limited to avoid floating-point</li>
-			<li><strong>No Z-Buffer:</strong> Optional depth testing (expensive on PS1)</li>
-			<li><strong>Vertex Wobble:</strong> Precision errors cause vertex jitter</li>
-			<li><strong>Polygon Limits:</strong> ~300-500 polygons per frame typical</li>
-			<li><strong>Backface Culling:</strong> Essential for performance</li>
-		</ul>
-	</div>
+            ></div>
+          {/each}
+        </div>
+      {/if}
+    </div>
+    <!-- PS1, HUD, overlay -->
+    <div class="hud-overlay">
+      <div class="hud-corner">
+        <div class="hud-text">SURFACE</div>
+        <div class="hud-value">{surfaceType.toUpperCase()}</div>
+      </div>
+      <div class="hud-corner">
+        <div class="hud-text">POLYS</div>
+        <div class="hud-value">{perfMetrics.polygonsPerFrame}</div>
+      </div>
+      <div class="hud-corner">
+        <div class="hud-text">Z-BUF</div>
+        <div class="hud-value">{enableZBuffer ? 'ON' : 'OFF'}</div>
+      </div>
+      <div class="hud-corner">
+        <div class="hud-text">PREC</div>
+        <div class="hud-value">{vertexPrecision}BIT</div>
+      </div>
+    </div>
+  </div>
+  <div class="info-panel">
+    <h4>PS1 Surface Rendering Features</h4>
+    <p>This demo showcases PlayStation, 1 era 3D surface rendering techniques:</p>
+    <h5>Wireframe Mode:</h5>
+    <ul>
+      <li>Classic vector-based wireframe rendering</li>
+      <li>No hidden surface removal</li>
+      <li>Pure geometric visualization</li>
+    </ul>
+    <h5>Flat Shaded:</h5>
+    <ul>
+      <li>One color per polygon face</li>
+      <li>No Gouraud or Phong smoothing</li>
+      <li>Sharp polygon edges visible</li>
+    </ul>
+    <h5>Textured, Surfaces:</h5>
+    <ul>
+      <li>Low-resolution texture mapping</li>
+      <li>Nearest-neighbor filtering (pixelated)</li>
+      <li>UV coordinate precision limitations</li>
+    </ul>
+    <h5>PS1 Technical Limitations:</h5>
+    <ul>
+      <li><strong>Fixed-Point, Math:</strong> Vertex precision limited to avoid floating-point</li>
+      <li><strong>No Z-Buffer:</strong> Optional depth testing (expensive on PS1)</li>
+      <li><strong>Vertex Wobble:</strong> Precision errors cause vertex jitter</li>
+      <li><strong>Polygon Limits:</strong> ~300-500 polygons per frame typical</li>
+      <li><strong>Backface Culling:</strong> Essential for performance</li>
+    </ul>
+  </div>
 </div>
+
 <style>
 	.ps1-surface-container {
 		min-height: 100vh
-		background: #0a0a0a
-	, color: #fff
+		background: #0a0a0a; color: #fff
 		font-family: 'Courier New', monospace
 		overflow-x: hidden
 		position: relative}
@@ -394,8 +366,7 @@
 		padding: 20px
 		margin-bottom: 20px}
 	.story-header h1 {
-		font-size: 2.5em
-	, color: #ff6600
+		font-size: 2.5em; color: #ff6600
 		text-shadow: 0, 0 20px rgba(255, 102, 0, 0.5);
 		margin-bottom: 10px}
 	.ps1-subtitle {
@@ -503,8 +474,7 @@
 		border: 2px solid #333
 		border-radius: 8px
 		perspective: 800px
-		transform-style: preserve-3d
-	, background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000);
+		transform-style: preserve-3d; background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000);
 	}
 	.surface-grid {
 		position: relative
@@ -538,8 +508,7 @@
 		transform-origin: center
 		animation: polygonFloat 3s ease-in-out infinite}
 	.triangle-face {
-		width: 0
-	, height: 0
+		width: 0; height: 0
 		border-left: 10px solid transparent
 		border-right: 10px solid transparent
 		border-bottom: 15px solid rgba(255, 102, 0, 0.6);
@@ -552,20 +521,16 @@
 		width: 15px
 		height: 15px}
 	.ps1-flat-shaded .triangle-face {
-		border-bottom-color: #ff4400
-	, filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)));
+		border-bottom-color: #ff4400; filter: brightness(calc(0.5 + 0.5 * var(--normal-y, 0)));
 	}
 	.ps1-textured-low .triangle-face {
-		border-bottom-color: transparent
-	, background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
+		border-bottom-color: transparent; background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
 		width: 18px
 		height: 18px
-		image-rendering: pixelated
-	, filter: contrast(1.2) saturate(0.8);
+		image-rendering: pixelated; filter: contrast(1.2) saturate(0.8);
 	}
 	.ps1-vertex-colored .triangle-face {
-		border-bottom-color: transparent
-	, background: linear-gradient(45deg,
+		border-bottom-color: transparent; background: linear-gradient(45deg,
 			hsl(calc(var(--face-index, 0) * 5), 70%, 50%),
 			hsl(calc(var(--face-index, 0) * 7 + 60), 60%, 60%)
 		);
@@ -583,8 +548,7 @@
 	.wire-segment {
 		position: absolute
 		width: 40px
-		height: 2px
-	, background: linear-gradient(90deg, transparent, #ff6600, transparent);
+		height: 2px; background: linear-gradient(90deg, transparent, #ff6600, transparent);
 		animation: wireGlow 2s ease-in-out infinite}
 	.vertex-markers {
 		position: absolute
@@ -606,8 +570,7 @@
 		top: 0
 		left: 0
 		right: 0
-		bottom: 0
-	, background: repeating-conic-gradient(
+		bottom: 0; background: repeating-conic-gradient(
 			from 0deg at 2px 2px,
 			transparent 0deg 90deg,
 			rgba(255, 102, 0, 0.05) 90deg 180deg
@@ -625,8 +588,7 @@
 		z-index: 20}
 	.hud-corner {
 		position: absolute
-		padding: 8px 12px
-	, background: rgba(0, 0, 0, 0.8);
+		padding: 8px 12px; background: rgba(0, 0, 0, 0.8);
 		border: 1px solid #ff6600
 		font-size: 10px}
 	.hud-corner.top-left {
@@ -663,8 +625,7 @@
 		color: #ff6600
 		margin-bottom: 15px}
 	.info-panel h5 {
-		color: #ffaa00
-	, margin: 15px, 0 8px 0}
+		color: #ffaa00; margin: 15px, 0 8px 0}
 	.info-panel ul {
 		margin: 10px 0
 		padding-left: 20px}
@@ -691,12 +652,10 @@
 	}
 	@keyframes wireGlow {
 		0%, 100% {
-			opacity: 0.3
-		, filter: brightness(1);
+			opacity: 0.3; filter: brightness(1);
 		}
 		50% {
-			opacity: 0.8
-		, filter: brightness(1.5);
+			opacity: 0.8; filter: brightness(1.5);
 		}
 	}
 	@keyframes vertexPulse {
@@ -713,8 +672,7 @@
 		top: 0
 		left: 0
 		right: 0
-		bottom: 0
-	, background: repeating-linear-gradient(
+		bottom: 0; background: repeating-linear-gradient(
 			90deg,
 			transparent,
 			transparent 2px,
@@ -742,8 +700,7 @@
 			margin: 10px}
 		.surface-viewport {
 			height: 50vh
-			min-height: 300px
-		, margin: 10px}
+			min-height: 300px; margin: 10px}
 		.story-header h1 {
 			font-size: 2em}
 		.surface-buttons {

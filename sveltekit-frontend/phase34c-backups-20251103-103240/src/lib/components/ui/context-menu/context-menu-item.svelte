@@ -13,6 +13,7 @@
       close()}
   }
 </script>
+
 <button
   class="context-menu-item"
   class:disabled
@@ -23,19 +24,18 @@
 >
   <slot />
 </button>
+
 <style>
   /* @unocss-include */
   .context-menu-item {
     display: flex
     align-items: center
-    width: 100%,
-    padding: 0.375rem 0.5rem
+    width: 100%; padding: 0.375rem 0.5rem
     font-size: 0.875rem
     border: none
     border-radius: 0.25rem
     background: transparent
-    cursor: pointer
-   , transition: background-color 0.15s
+    cursor: pointer; transition: background-color 0.15s
     text-align: left}
   .context-menu-item:hover:not(.disabled) {
     background-color: #f3f4f6}
@@ -43,7 +43,5 @@
     outline: 2px solid #3b82f6
     outline-offset: -2px}
   .context-menu-item.disabled {
-    opacity: 0.5
-   , cursor: not-allowed}
+    opacity: 0.5; cursor: not-allowed}
 </style>
-

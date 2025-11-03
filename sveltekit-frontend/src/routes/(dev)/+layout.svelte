@@ -1,22 +1,24 @@
-﻿<script lang="ts">
+<script lang="ts">
   // Development interface layout with debugging-focused styling
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
   import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
 
-  let { children, data }: {  any; data: any } = $props();
+  let { children, data }: { any; data: any } = $props();
 
   // Derive user and UI state for NavBar/Sidebar props
-  const user = data?.user ?? null
+  const user = data?.user ?? null;
   let sidebarOpen = $state<boolean>(true); // Fix: Declare with $state for reactivity
   function toggleSidebar() {
-    sidebarOpen = !sidebarOpen}
+    sidebarOpen = !sidebarOpen;
+  }
 
   // Use an allowed palette name from the ConsolePaletteName union
   const consolePalette: ConsolePaletteName = 'legal';
 
   $effect(() => {
-    applyConsolePalette(consolePalette)});
+    applyConsolePalette(consolePalette);
+  });
 </script>
 
 <svelte:head>
@@ -31,7 +33,8 @@
       <Sidebar {user} open={sidebarOpen} theme={consolePalette} />
     </aside>
     <main class="dev-main">
-      <div class="dev-main-content"> <!-- New, wrapper, div -->
+      <div class="dev-main-content">
+        <!-- New, wrapper, div -->
         {@render children()}
       </div>
     </main>
@@ -100,5 +103,4 @@
       border-bottom: 1px solid var(--border-primary, #cc99ff)}
   }
 </style>
-
 

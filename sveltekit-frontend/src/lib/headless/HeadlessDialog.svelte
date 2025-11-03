@@ -1,15 +1,19 @@
 <script lang="ts"> // Svelte, 5 runes are auto-imported import { tick } from 'svelte'; interface HeadlessDialogProps { open?: boolean; initialFocus?: (() => HTMLElement | null) | null; restoreFocus?: boolean; closeOnEsc?: boolean; closeOnBackdrop?: boolean; ariaLabelledby?: string; ariaDescribedby?: string; onOpen?: () => void; onClose?: () => void}
   let { title, children, footer, open = $bindable(), initialFocus = null, restoreFocus = true, closeOnEsc = true, closeOnBackdrop = true, ariaLabelledby, ariaDescribedby, onOpen, onClose }: HeadlessDialogProps = $props(); let container = $state<HTMLElement | null>(null); let previousActive = $state<HTMLElement | null>(null); let mounted = $state<boolean>(false); function setOpen(v: boolean) { open = v; if (v && onOpen) onOpen(); if (!v && onClose) onClose()}
   function handleKey(e: KeyboardEvent) { if (!open) return; if (e.key === 'Escape' && closeOnEsc) { e.preventDefault(); e.stopPropagation(); setOpen(false)}
-  } function handleTabKey(e: KeyboardEvent) { if (!open || !container) return; if (e.key !== 'Tab') return; const focusableElements = container.querySelectorAll<HTMLElement>(
+  }
+  function handleTabKey(e: KeyboardEvent) { if (!open || !container) return; if (e.key !== 'Tab') return; const focusableElements = container.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     ); const firstElement = focusableElements[0]; const lastElement = focusableElements[focusableElements.length - 1]; if (!firstElement) return; if (e.shiftKey) { if (document.activeElement === firstElement) { e.preventDefault(); lastElement?.focus()}
     } else { if (document.activeElement === lastElement) { e.preventDefault(); firstElement?.focus()}
     } }
   async function trapFocus(): Promise<any> { if (!open || !container || !mounted) return; await tick(); const target = initialFocus?.() || container.querySelector<HTMLElement>('[data-autofocus]') || container.querySelector<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'); target?.focus()}
+
   // Handle dialog open/close effects $effect(() => { if (!mounted) return; if (open) { // Store current focus previousActive = document.activeElement as HTMLElement; // Add event listeners document.addEventListener('keydown', handleKey, true); document.addEventListener('keydown', handleTabKey, true); // Prevent body scroll document.body.style.overflow = 'hidden'; // Focus management trapFocus()} else { // Remove event listeners document.removeEventListener('keydown', handleKey, true); document.removeEventListener('keydown', handleTabKey, true); // Restore body scroll document.body.style.overflow = ''; // Restore focus if (restoreFocus && previousActive) { previousActive.focus()}
-    } // Cleanup function return () => { document.removeEventListener('keydown', handleKey, true); document.removeEventListener('keydown', handleTabKey, true); document.body.style.overflow = ''}}); // Mount effect $effect(() => { mounted = true; return () => { mounted = false}}); function backdropClick(e: MouseEvent) { if (!closeOnBackdrop) return; if (e.target === container) { setOpen(false)}
-  } function handleContentClick(e: MouseEvent) { // Prevent backdrop click when clicking inside dialog content e.stopPropagation()}
+    }
+   // Cleanup function return () => { document.removeEventListener('keydown', handleKey, true); document.removeEventListener('keydown', handleTabKey, true); document.body.style.overflow = ''}}); // Mount effect $effect(() => { mounted = true; return () => { mounted = false}}); function backdropClick(e: MouseEvent) { if (!closeOnBackdrop) return; if (e.target === container) { setOpen(false)}
+  }
+  function handleContentClick(e: MouseEvent) { // Prevent backdrop click when clicking inside dialog content e.stopPropagation()}
 </script> {#if open && mounted} <!-- Portal to body for proper z-index, stacking --> <div bind:this={ container } class="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
     role="dialog"
     aria-modal="true"
@@ -27,7 +31,8 @@
               clip-rule="evenodd"
             /> </svg> </button> </div> </div> {/if} <style> @keyframes fadeIn { from { opacity: 0}
     to { opacity: 1}
-  } @keyframes slideIn { from { opacity: 0, transform: scale(0.95) translateY(-10px)}
-    to { opacity: 1, transform: scale(1) translateY(0)}
+  } @keyframes slideIn { from { opacity: 0; transform: scale(0.95) translateY(-10px)}
+    to { opacity: 1; transform: scale(1) translateY(0)}
   } </style>
+
 

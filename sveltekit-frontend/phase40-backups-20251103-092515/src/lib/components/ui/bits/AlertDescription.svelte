@@ -6,11 +6,10 @@ Description content for alerts with NES styling
   // Svelte, 5 runes are auto-imported
   import { cn } from '$lib/utils';
   interface AlertDescriptionProps {
-    class?: string
-    children?: import('svelte').Snippet}
-  let {
-    class: className = '',
-    childre}: AlertDescriptionProps = $props();
+    class?: string;
+    children?: import('svelte').Snippet;
+  }
+  let { class: className = '', childre }: AlertDescriptionProps = $props();
   // NES-style alert description classes
   const descriptionClasses = $derived(
     cn(
@@ -21,11 +20,13 @@ Description content for alerts with NES styling
     )
   );
 </script>
+
 <div class={descriptionClasses}>
   {#if children}
     {@render children()}
   {/if}
 </div>
+
 <style>
   .bits-alert-description {
     font-family: 'Courier New', monospace
@@ -49,4 +50,3 @@ Description content for alerts with NES styling
     font-family: 'Courier New', monospace
     font-size: 0.875em}
 </style>
-

@@ -1,5 +1,5 @@
-﻿ /** * AI Processing XState Machine * Orchestrates AI tasks across multiple providers and services */ import { createMachine, assign, fromPromise } from "xstate"; import type { AIProcessingContext, AITask, AITaskResult } from './types.js'; type StartProcessing = { type: 'START_PROCESSING', task, AITask }
-type ProcessingProgress = { type: 'PROCESSING_PROGRESS', progress, number }
+﻿ /** * AI Processing XState Machine * Orchestrates AI tasks across multiple providers and services */ import { createMachine, assign, fromPromise } from "xstate"; import type { AIProcessingContext, AITask, AITaskResult } from './types.js'; type StartProcessing = { type: 'START_PROCESSING' | task | AITask }
+type ProcessingProgress = { type: 'PROCESSING_PROGRESS' | progress | number }
 type CancelProcessing = { type: 'CANCEL_PROCESSING' }
 type RetryProcessing = { type: 'RETRY_PROCESSING' }
 type AnyEvt = StartProcessing | ProcessingProgress | CancelProcessing | RetryProcessing | { type: string; [k, string]: any }

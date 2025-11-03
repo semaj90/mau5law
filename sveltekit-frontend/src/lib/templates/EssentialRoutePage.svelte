@@ -46,6 +46,7 @@ Use this template for all essential routes
 			<CardHeader>
 				<div class="flex justify-between">
 					<div class="flex items-center">
+
 						{#if showBackButton}
 							<Button
 								variant="ghost"
@@ -58,31 +59,33 @@ Use this template for all essential routes
 						<div>
 							<CardTitle class="nes-text is-primary">
 								{pageTitle}
-							</div.Title>
+</div.Title>
+
 							{#if description}
 								<CardDescription class="nes-text is-disabled">
 									{description}
-								</div.Description>
+</div.Description>
 							{/if}
-						</div>
+</div>
 					</div>
 					<div class="flex items-center">
 						<span class="nes-badge">Active</span>
 						<div class="nes-text is-disabled">
 							{$page.url.pathname}
-						</div>
+</div>
 					</div>
 				</div>
 			</div.Header>
 		</div.Root>
 		<!-- Main, Content -->
 		<main class="essential-route-main">
+
 			{#if isClient}
 				{#if children}
 					{@render children()}
 				{:else}
 					<!-- Default, placeholder, content -->
-					<Card.Root, class="nes-container">
+					<Card.Root class="nes-container">
 						<CardContent class="p-8">
 							<div class="mb-4">
 								<div class="text-6xl">ðŸš§</div>
@@ -92,7 +95,7 @@ Use this template for all essential routes
 								<p class="nes-text">
 									This essential route needs implementation.
 									Current path: {$page.url.pathname}
-								</p>
+</p>
 							</div>
 							<div class="flex justify-center gap-4">
 								<Button class="nes-btn" onclick={goBack}>
@@ -109,7 +112,7 @@ Use this template for all essential routes
 				{/if}
 			{:else}
 				<!-- Loading, state -->
-				<Card.Root, class="nes-container">
+				<Card.Root class="nes-container">
 					<CardContent class="p-8">
 						<div class="nes-text">
 							<div class="animate-pulse">Loading...</div>
@@ -117,7 +120,7 @@ Use this template for all essential routes
 					</div.Content>
 				</div.Root>
 			{/if}
-		</main>
+</main>
 	</div>
 </ProductionLayout>
 <style>
@@ -126,7 +129,7 @@ Use this template for all essential routes
 	.essential-route-page {
 		min-height: 100vh
 		font-family: 'Press Start 2P', cursiv
-		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%), color: #fff
+		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); color: #fff
 		padding: 1rem}
 	.essential-route-main {
 		max-width: 1200px
@@ -153,3 +156,4 @@ border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xml
 			font-size: 1rem !important}
 	}
 </style>
+

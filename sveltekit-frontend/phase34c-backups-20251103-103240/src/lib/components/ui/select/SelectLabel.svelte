@@ -1,13 +1,16 @@
 ﻿<script lang="ts">
   interface Props {
-    class?: string}
+    class?: string;
+  }
   let { class: class_ = '', children }: Props & { children?: any } = $props();
 </script>
+
 <span class="space-y-4">
   {#if children}
     {@render children()}
   {/if}
 </span>
+
 <style>
   /* @unocss-include */
   .select-label {
@@ -17,4 +20,3 @@
     margin-bottom: 4px
     display: block}
 </style>
-

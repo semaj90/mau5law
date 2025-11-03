@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Message } from '$lib/types';
   /**
    * ðŸ¤– Agentic RAG Demo
@@ -34,7 +34,6 @@ import type { Message } from '$lib/types';
   // Load available tools on mount
   $effect(() => {
     loadTools()});
-
   async function loadTools(): Promise<any> {
     try {
       const response = await fetch('/api/agent/tools');
@@ -45,7 +44,6 @@ import type { Message } from '$lib/types';
     } catch (error) {
       console.error('Failed to load tools:', error)}
   }
-
   async function sendQuery(): Promise<any> {
     if (!query.trim() || isProcessing) return
     isProcessing = true
@@ -97,19 +95,15 @@ import type { Message } from '$lib/types';
       ]} finally {
       isProcessing = false}
   }
-
   function useSampleQuery(sample: string) {
     query = sample}
-
   function clearConversation() {
     messages = [];
     query = ''}
-
   function formatTimestamp(date: Date): string {
     return new Date(date).toLocaleTimeString()}
-
   function getToolIcon(toolName: string): string {
-    const icons: Record<string string> = {
+    const icons: Record<string, string> = {
       rag_search: 'ðŸ”',
       ocr_extract: 'ðŸ“·',
       code_analyze: 'ðŸ’»',
@@ -330,4 +324,5 @@ import type { Message } from '$lib/types';
   .message.system {
     border-left: 4px solid #ef4444}
 </style>
+
 

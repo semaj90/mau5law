@@ -10,9 +10,9 @@ import type { Case } from '$lib/types';
   interface PerformanceMetrics {
     totalRequests: number
     averageResponseTime: number
-    slowestEndpoints: { endpoint: string, avgTime: number, requests: number }[];
+    slowestEndpoints: { endpoint: string, avgTime: number; requests: number }[];
     errorRate: number
-    peakHours: { hour: number, requests: number }[]}
+    peakHours: { hour: number; requests: number }[]}
   interface SystemHealth {
     cpu: number
     memory: number
@@ -203,8 +203,7 @@ import type { Case } from '$lib/types';
     margin-bottom: 2rem}
   .dashboard-header h1 {
     font-size: 2rem
-    font-weight: bold
-   , color: var(--primary-color)}
+    font-weight: bold; color: var(--primary-color)}
   .controls {
     display: flex
     gap: 1rem}
@@ -216,10 +215,8 @@ import type { Case } from '$lib/types';
     font-weight: 500
     transition: all 0.2s ease; /* added unit + easing */
   }
-  .btn-primary { background: var(--primary-color),
-    color: white}
-  .btn-secondary { background: var(--secondary-color),
-    color: var(--text-color)}
+  .btn-primary { background: var(--primary-color); color: white}
+  .btn-secondary { background: var(--secondary-color); color: var(--text-color)}
   .health-grid {
     display: grid
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -227,14 +224,12 @@ import type { Case } from '$lib/types';
     margin-bottom: 2rem}
   .health-card {
     background: white
-    border-radius: 0.5rem
-   , padding: 1.5rem
+    border-radius: 0.5rem; padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color)}
   .health-card h3 {
     margin: 0, 0 1rem 0
-    font-size: 1rem
-   , color: var(--text-secondary)}
+    font-size: 1rem; color: var(--text-secondary)}
   .health-status {
     font-size: 1.25rem
     font-weight: bold
@@ -246,43 +241,35 @@ import type { Case } from '$lib/types';
     margin-bottom: 2rem}
   .metric-card {
     background: white
-    border-radius: 0.5rem
-   , padding: 1.5rem
+    border-radius: 0.5rem; padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
     text-align: center}
   .metric-card h3 { margin: 0, 0 1rem 0
-    font-size: 0.875rem
-   , color: var(--text-secondary),
+    font-size: 0.875rem; color: var(--text-secondary),
     text-transform: uppercase
     letter-spacing: 0.05em}
   .metric-value {
     font-size: 1.5rem
-    font-weight: bold
-   , color: var(--primary-color)}
+    font-weight: bold; color: var(--primary-color)}
   .metric-value.large {
     font-size: 2rem}
   .progress-bar {
-    width: 100%,
-    height: 0.5rem
-   , background: var(--border-color),
-    border-radius: 0.25rem
+    width: 100%; height: 0.5rem
+   , background: var(--border-color); border-radius: 0.25rem
     overflow: hidden
     margin-top: 0.5rem}
   .progress-fill {
     height: 100%;
-   , background: var(--primary-color),
-    transition: width: 0.3s ease}
+   , background: var(--primary-color); transition: width: 0.3s ease}
   .chart-section {
     background: white
-    border-radius: 0.5rem
-   , padding: 1.5rem
+    border-radius: 0.5rem; padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color);
     margin-bottom: 2rem}
   .chart-section h2 { margin: 0, 0 1.5rem 0
-    font-size: 1.25rem
-   , color: var(--text-color)}
+    font-size: 1.25rem; color: var(--text-color)}
   .endpoints-list {
     display: flex
     flex-direction: column
@@ -292,8 +279,7 @@ import type { Case } from '$lib/types';
     display: flex
     justify-content: space-between
     align-items: center
-    padding: 0.75rem
-   , background: var(--background-light),
+    padding: 0.75rem; background: var(--background-light),
     border-radius: 0.375rem
     margin-bottom: 0.5rem}
   .endpoint-path {
@@ -302,8 +288,7 @@ import type { Case } from '$lib/types';
   .endpoint-stats {
     display: flex
     gap: 1rem
-    font-size: 0.875rem
-   , color: var(--text-secondary)}
+    font-size: 0.875rem; color: var(--text-secondary)}
   .peak-hours-chart {
     display: flex
     align-items: end
@@ -318,12 +303,10 @@ import type { Case } from '$lib/types';
     height: 100%}
   .bar-fill {
     width: 100%;
-   , background: var(--primary-color),
-    border-radius: 0.25rem 0.25rem, 0 0
+   , background: var(--primary-color); border-radius: 0.25rem 0.25rem, 0 0
     min-height: 2px}
   .bar-label {
-    font-size: 0.75rem
-   , color: var(--text-secondary),
+    font-size: 0.75rem; color: var(--text-secondary),
     margin-top: 0.5rem
     writing-mode: vertical-rl
     text-orientation: mixed; /* fixed syntax */
@@ -334,21 +317,18 @@ import type { Case } from '$lib/types';
     margin-top: 0.25rem}
   .logs-section {
     background: white
-    border-radius: 0.5rem
-   , padding: 1.5rem
+    border-radius: 0.5rem; padding: 1.5rem
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border-color)}
   .logs-section h2 {
     margin: 0, 0 1.5rem 0
-    font-size: 1.25rem
-   , color: var(--text-color)}
+    font-size: 1.25rem; color: var(--text-color)}
   .logs-container {
     max-height: 400px
     overflow-y: auto}
   .log-entry { padding: 0.75rem
     border-left: 4px solid var(--border-color);
-    margin-bottom: 0.5rem
-   , background: var(--background-light),
+    margin-bottom: 0.5rem; background: var(--background-light),
     border-radius: 0 0.375rem 0.375rem 0}
   .log-entry.error {
     border-left-color: #ef4444
@@ -360,16 +340,14 @@ import type { Case } from '$lib/types';
     border-left-color: #3b82f6
     background: #eff6ff}
   .log-timestamp {
-    font-size: 0.75rem
-   , color: var(--text-secondary),
+    font-size: 0.75rem; color: var(--text-secondary),
     margin-bottom: 0.25rem}
   .log-level {
     display: inline-block
     font-size: 0.75rem
     font-weight: bold
     padding: 0.125rem 0.5rem
-    border-radius: 0.25rem
-   , background: var(--text-secondary),
+    border-radius: 0.25rem; background: var(--text-secondary),
     color: white
     margin-bottom: 0.5rem}
   .log-message {
@@ -377,8 +355,7 @@ import type { Case } from '$lib/types';
     margin-bottom: 0.25rem}
   .log-metadata {
     font-family: monospace
-    font-size: 0.75rem
-   , color: var(--text-secondary),
+    font-size: 0.75rem; color: var(--text-secondary),
     background: white
     padding: 0.5rem
     border-radius: 0.25rem

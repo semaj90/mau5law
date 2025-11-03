@@ -146,12 +146,8 @@
         <h3>📤 File Upload & Processing</h3>
         <input type="file" id="fileInput" multiple accept=".pdf,.txt,.doc,.docx" />
         <br /><br />
-        <button class="button" onclick="startProcessing()" id="startBtn">
-          🚀 Start Evidence Processing
-        </button>
-        <button class="button" onclick="testWithoutFile()" id="testBtn">
-          🧪 Test Without File
-        </button>
+        <button class="button" onclick="startProcessing()" id="startBtn"> 🚀 Start Evidence Processing </button>
+        <button class="button" onclick="testWithoutFile()" id="testBtn"> 🧪 Test Without File </button>
         <button class="button" onclick="clearLog()" id="clearBtn">🗑️ Clear Log</button>
       </div>
 
@@ -176,12 +172,8 @@
         <div id="wsStatus">
           <span class="status warning">Disconnected</span>
         </div>
-        <button class="button" onclick="connectWebSocket()" id="connectBtn">
-          🔌 Connect WebSocket
-        </button>
-        <button class="button" onclick="disconnectWebSocket()" id="disconnectBtn">
-          ❌ Disconnect
-        </button>
+        <button class="button" onclick="connectWebSocket()" id="connectBtn"> 🔌 Connect WebSocket </button>
+        <button class="button" onclick="disconnectWebSocket()" id="disconnectBtn"> ❌ Disconnect </button>
       </div>
 
       <div class="section">
@@ -204,8 +196,7 @@
       function log(message, type = 'info') {
         const timestamp = new Date().toLocaleTimeString();
         const logElement = document.getElementById('systemLog');
-        const prefix =
-          type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+        const prefix = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
         logElement.textContent += `[${timestamp}] ${prefix} ${message}\n`;
         logElement.scrollTop = logElement.scrollHeight;
         console.log(`[${type.toUpperCase()}] ${message}`);
@@ -399,9 +390,7 @@
 
           if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(
-              `API request failed: ${response.status} ${response.statusText} - ${errorText}`
-            );
+            throw new Error(`API request failed: ${response.status} ${response.statusText} - ${errorText}`);
           }
 
           const result = await response.json();

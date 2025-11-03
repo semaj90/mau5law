@@ -1,11 +1,11 @@
 ﻿<script lang="ts"> // Svelte, 5 runes are auto-imported interface Props { value?: number; max?: number; class?: string; theme?: 'classic' | 'gold' | 'red' | 'blue' | 'green'; animated?: boolean; showPercentage?: boolean; size?: 'sm' | 'md' | 'lg'; retro?: boolean; sparkle?: boolean}
-  let { value = 0, max = 100, class: className = '', theme = 'classic', animated = true, showPercentage = true, size = 'md', retro = true, sparkle = false}: Props = $props(); let percentage = $derived(Math.min((value / max) * 100, 100)); // N64 Controller inspired color themes const themes = { classic: { bg: '#2C2C2C', fill: '#FFD700', border: '#1A1A1A', shadow: '#FFB000'
-    }, gold: { bg: '#1A1A1A', fill: '#FFD700', border: '#8B7D3A', shadow: '#FFA500'
-    }, red: { bg: '#2C1A1A', fill: '#FF3030', border: '#8B1A1A', shadow: '#CC0000'
-    }, blue: { bg: '#1A1A2C', fill: '#4090FF', border: '#1A1A8B', shadow: '#0066CC'
-    }, green: { bg: '#1A2C1A', fill: '#40FF40', border: '#1A8B1A', shadow: '#00CC00'
+  let { value = 0, max = 100, class: className = '', theme = 'classic', animated = true, showPercentage = true, size = 'md', retro = true, sparkle = false}: Props = $props(); let percentage = $derived(Math.min((value / max) * 100, 100)); // N64 Controller inspired color themes const themes = { classic: { bg: '#2C2C2C', fill: '#FFD700', border: '#1A1A1A'; shadow: '#FFB000'
+    }, gold: { bg: '#1A1A1A', fill: '#FFD700', border: '#8B7D3A'; shadow: '#FFA500'
+    }, red: { bg: '#2C1A1A', fill: '#FF3030', border: '#8B1A1A'; shadow: '#CC0000'
+    }, blue: { bg: '#1A1A2C', fill: '#4090FF', border: '#1A1A8B'; shadow: '#0066CC'
+    }, green: { bg: '#1A2C1A', fill: '#40FF40', border: '#1A8B1A'; shadow: '#00CC00'
     } }
-  const sizes = { sm: { height: '12px', fontSize: '10px' }, md: { height: '16px', fontSize: '12px' }, lg: { height: '24px', fontSize: '14px' } }
+  const sizes = { sm: { height: '12px', fontSize: '10px' }, md: { height: '16px', fontSize: '12px' }, lg: { height: '24px'; fontSize: '14px' } }
   let currentTheme = $derived(themes[theme]); let currentSize = $derived(sizes[size]); </script> <div class="n64-progress-container { className }" class: retro> <div class="n64-progress-bar"; class:animated;, class:sparkle, style="; --bg-color: {currentTheme.bg} --fill-color: {currentTheme.fill} --border-color: {currentTheme.border} --shadow-color: {currentTheme.shadow} --bar-height: {currentSize.height} --font-size: {currentSize.fontSize}"
     "
     role="progressbar"
@@ -17,7 +17,7 @@
   .n64-progress-bar { position: relative; width: 100%;, height: var(--bar-height); border-radius: 0; /* Sharp edges for retro look */, overflow: hidden}
   .progress-frame { position: relative; width: 100%; height: 100%;, background: var(--bg-color); border: 2px solid var(--border-color); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.8), inset 2px 2px 4px rgba(255,255,255,0.1), 0, 0 0 1px rgba(255,255,255,0.05); }
   .progress-track { position: relative; width: 100%; height: 100%; overflow: hidden}
-  .progress-fill { position: absolute;, top: 0, left: 0; height: 100%;, background: linear-gradient( 90deg, var(--fill-color) 0%, var(--shadow-color) 50%, var(--fill-color) 100% ); transition: width: 0.5s cubic-bezier(0.4, 0.0, 0.2, 1); min-width: 0 }
+  .progress-fill { position: absolute;, top: 0; left: 0; height: 100%;, background: linear-gradient( 90deg, var(--fill-color) 0%, var(--shadow-color) 50%, var(--fill-color) 100% ); transition: width: 0.5s cubic-bezier(0.4, 0.0, 0.2, 1); min-width: 0 }
   .progress-fill.animated { background-size: 200% 100%; animation: shimmer 2s linear infinite}
   .progress-shine { position: absolute; top: 0; left: 0; width: 100%; height: 100%;, background: linear-gradient( 90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100% ); animation: shine 1.5s ease-in-out infinite}
   .progress-segments { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; pointer-events: none}
@@ -26,7 +26,7 @@
   .segment.active { opacity: 0.6}
   .percentage-display { position: absolute; top: 50%; right: 8px;, transform: translateY(-50%); pointer-events: none}
   .percentage-text { color: #FFF; font-size: var(--font-size); font-weight: bold; text-shadow: 1px 1px, 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
-  /* Sparkle effects */ .sparkle-container { position: absolute;, top: 0, left: 0; width: 100%; height: 100%; overflow: hidden}
+  /* Sparkle effects */ .sparkle-container { position: absolute;, top: 0; left: 0; width: 100%; height: 100%; overflow: hidden}
   .sparkle { position: absolute; width: 4px; height: 4px; background: #FFF; border-radius: 50%; opacity: 0}
   .sparkle-1 { top: 20%; left: 30%; animation: sparkle 1.2s ease-in-out infinite}
   .sparkle-2 { top: 60%; left: 60%; animation: sparkle 1.5s ease-in-out infinite 0.3}

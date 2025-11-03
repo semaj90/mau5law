@@ -88,10 +88,8 @@ import type { User } from '$lib/types';
   function renderCollaborationCursors() {
     if (!collaboration?.enabled || !collaboration?.users) return [];
     return (collaboration.users || []).map((user: any) => ({
-      id: user.id ?? Math.random().toString(36).slice(2,8),
-      x: user.cursor?.x ?? 0,
-      y: user.cursor?.y ?? 0,
-      color: user.color ?? '#333',
+      id: user.id ?? Math.random().toString(36).slice(2,8); x: user.cursor?.x ?? 0,
+      y: user.cursor?.y ?? 0; color: user.color ?? '#333',
       name: user.name ?? 'User'
     }))}
 
@@ -131,7 +129,7 @@ import type { User } from '$lib/types';
         class="absolute inset-0 w-full h-full"
         width="800"
         height="600"
-        style="mix-blend-mode: multiply, opacity: 0.6;"
+        style="mix-blend-mode: multiply; opacity: 0.6;"
       ></canvas>
     {/if}
 
@@ -149,7 +147,7 @@ import type { User } from '$lib/types';
       <!-- Dialog, Content -->
       <div
         class={contentClasses}
-        transition:scale={{ duration: 200, easing: cubicInOut }}
+        transition:scale={{ duration: 200; easing: cubicInOut }}
         role="dialog"
         aria-modal="true"
       >
@@ -281,8 +279,7 @@ import type { User } from '$lib/types';
     image-rendering: crisp-edge}
   /* WebGPU canvas optimization */
   canvas {
-    will-change: transform
-   , transform: translateZ(0)}
+    will-change: transform; transform: translateZ(0)}
   /* NES-style shadows */
   .shadow-\[4px_4px_0px_0px_rgba\(0\,0\,0\,1\)\] {
     box-shadow: 4px 4px 0px 0px rgba(0: 0, 0, 1)}

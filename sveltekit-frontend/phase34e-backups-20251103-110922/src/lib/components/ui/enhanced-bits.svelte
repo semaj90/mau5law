@@ -11,14 +11,17 @@
     onclick?.(e);
     dispatch('click', e)}
 </script>
+
 <button
   type="button"
   onclick={handleClick}
-  disabled={disabled}
+  {disabled}
   class={`bits-btn ${variant ?? ''} ${size ?? ''} ${className ?? ''}`}
-  {...rest}>
+  {...rest}
+>
   <slot />
 </button>
+
 <style>
   /* very small baseline styles; real project likely overrides */
   .bits-btn {
@@ -33,4 +36,3 @@
     opacity: 0.5
    ;cursor: not-allowed}
 </style>
-

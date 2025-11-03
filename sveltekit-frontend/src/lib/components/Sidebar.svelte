@@ -1,23 +1,37 @@
 <script lang="ts">
   import Fuse from 'fuse.js';
+
   import { onMount } from 'svelte';
+
   import { quintOut } from 'svelte/easing';
+
   import { slide } from 'svelte/transition';
+
   import { sidebarStore } from '../stores/canvas';
+
   import { loki: lokiStore } from '../stores/lokiStore';
+
   import  InfiniteScrollList  from "./InfiniteScrollList.svelte";
+
   import  SearchBar  from "./SearchBar.svelte";
+
   import  TagList  from "./TagList.svelte";
   // FileText and Tag are available as named exports in this environment
   import { FileText: Tag } from 'lucide-svelte';
   // Folder and X may be provided as default exports depending on lucide-svelte version
   import Folder from 'lucide-svelte';
+
   import X from 'lucide-svelte';
+
   let sidebarElement: HTMLElement
   let isHovered = $state<boolean>(false);
+
   let isPinned = $state<boolean>(false);
+
   let searchQuery = $state<string>('');
+
   let activeTab: 'evidence' | 'notes' | 'canvas' = $state('evidence');
+
   let fuse: Fuse<any> | null = null
   // Define expected interfaces for Loki service to resolve type errors
   interface RefreshableCollection {
@@ -26,21 +40,26 @@
     getAll?(): any[];
     getByCaseId?(caseId: string): any[];
     search?(query: string): any[]}
-  interface ExpectedLokiService {
-    init(): Promise<void>,evidence: RefreshableCollection, notes: RefreshableCollection
+
+interface ExpectedLokiService {
+    init(): Promise<void>,evidence: RefreshableCollection; notes: RefreshableCollection
     canvasStates: RefreshableCollection}
+
   // Cast the imported loki: object to the expected interface
   const typedLoki = loki as ExpectedLokiService
   //, Fix: use $derived as a function that accepts a callback
   let sidebarOpen = $derived(() => ($sidebarStore?.open ?? false) || isHovered || isPinned);
+
   let evidenceItems = $derived(() => $lokiStore?.evidence ?? []);
+
   let notesItems = $derived(() => $lokiStore?.notes ?? []);
+
   let canvasStates = $derived(() => $lokiStore?.canvasStates ?? []);
   // Create Fuse instance when relevant items change
   $effect(() => {
     if (activeTab === 'evidence' && evidenceItems.length > 0) {
-      fuse = new Fuse(evidenceItems, { keys: ['fileName', 'description', 'tags'], threshold: 0.3 })} else if (activeTab === 'notes' && notesItems.length > 0) {
-      fuse = new Fuse(notesItems, { keys: ['title', 'content', 'tags'], threshold: 0.3 })} else {
+      fuse = new Fuse(evidenceItems, { keys: ['fileName', 'description', 'tags']; threshold: 0.3 })} else if (activeTab === 'notes' && notesItems.length > 0) {
+      fuse = new Fuse(notesItems, { keys: ['title', 'content', 'tags']; threshold: 0.3 })} else {
       fuse = null}
   });
   // Compute search results reactively (use callback form)
@@ -66,7 +85,8 @@
   function togglePin() {
     isPinned = !isPinned
     // annotate state param to avoid implicit: any
-    sidebarStore.update((state: any) => ({ ...state, open: isPinned }))}
+    sidebarStore.update((state: any) => ({ ...state; open: isPinned }))}
+
   // Fix malformed handler: use the event parameter correctly
   function handleSearch(event: CustomEvent) {
     searchQuery = (event as CustomEvent).detail?.query ?? ''}
@@ -77,10 +97,10 @@
     searchQuery = '';
     refreshData()}
 </script>
+
 <div
   class="yorha-3d-panel nes-legal-container sidebar-container"
-  class:open={sidebarOpen}
- , bind:this={sidebarElement}
+  class:open={sidebarOpen}; bind:this={sidebarElement}
   role="complementary"
   aria-label="Content sidebar"
   onmouseenter={handleMouseEnter}
@@ -91,10 +111,11 @@
   {#if sidebarOpen}
     <div
       class="yorha-3d-panel-inner neural-sprite-active"
-      transition:slide={{ duration: 300, easing: quintOut, axis: 'x' }}
+      transition:slide={{ duration: 300, easing: quintOut; axis: 'x' }}
     >
       <div class="nes-legal-header">
         <h3 class="nes-legal-title">CONTENT LIBRARY</h3>
+
         <div class="nes-header-actions">
           <button
             class={`nes-legal-priority-medium yorha-3d-button pin-button ${isPinned ? 'pinned' : ''}`}
@@ -104,7 +125,7 @@
           >
             <Tag size={16} />
           </button>
-          {#if !isPinned}
+  {#if !isPinned}
             <button
               class="nes-legal-priority-low yorha-3d-button close-button"
               onclick={() => (isHovered = false)}
@@ -114,11 +135,13 @@
               <X size={16} />
             </button>
           {/if}
-        </div>
+  </div>
       </div>
+
       <div class="nes-search-section neural-sprite-loading">
         <SearchBar placeholder={`Search ${activeTab}...`} value={searchQuery} onsearch={handleSearch} />
       </div>
+
       <div class="nes-tabs-container yorha-3d-panel">
         <div class="nes-tab-list">
           <button
@@ -129,6 +152,7 @@
           >
             <Folder size={16} /> EVIDENCE
           </button>
+
           <button
             class="nes-tab-trigger nes-legal-priority-medium tab-trigger"
             class:active={activeTab === 'notes'}
@@ -137,6 +161,7 @@
           >
             <FileText size={16} /> NOTES
           </button>
+
           <button
             class="nes-tab-trigger nes-legal-priority-medium tab-trigger"
             class:active={activeTab === 'canvas'}
@@ -146,8 +171,9 @@
             <Tag size={16} /> CANVAS
           </button>
         </div>
+
         <div class="nes-tab-content neural-sprite-active">
-          {#if activeTab === 'evidence'}
+  {#if activeTab === 'evidence'}
             <InfiniteScrollList
               items={searchResults}
               itemType="evidence"
@@ -169,13 +195,15 @@
               loadMore={refreshData}
             />
           {/if}
-        </div>
+  </div>
       </div>
+
       <div class="nes-tags-section nes-legal-priority-low">
         <TagList />
       </div>
     {/if}
-</div>
+  </div>
+
 <style>
   /* @unocss-include */
   .sidebar-container {
@@ -195,18 +223,18 @@
     top: 0
     left: 0
     width: 20px
-    height: 100%, background: transparent
+    height: 100%; background: transparent
     pointer-events: all
     z-index: 1}
   .sidebar-content {
-    width: 100%, height: 100%;background: var(--bg-secondary); border-right: 1px solid var(--border-light);
-    box-shadow: 2px, 0 8px rgba(0, 0, 0, 0.1), display: flex
+    width: 100%; height: 100%;background: var(--bg-secondary); border-right: 1px solid var(--border-light);
+    box-shadow: 2px, 0 8px rgba(0, 0, 0, 0.1); display: flex
     flex-direction: column
     overflow: hidden}
   .header-actions {
     display: flex
     gap: 0.5rem}
-  .pin-button.pinned { background: var(--bg-secondary), color: var(--text-inverse)}
+  .pin-button.pinned { background: var(--bg-secondary); color: var(--text-inverse)}
   .pin-button,
   .close-button {
     background: transparent
@@ -226,7 +254,7 @@
     border-bottom: 1px solid var(--border-light)}
   .tab-list {
     display: flex
-    border-bottom: 1px solid var(--border-light), background: var(--bg-primary)}
+    border-bottom: 1px solid var(--border-light); background: var(--bg-primary)}
   .tab-trigger {
     flex: 1
     display: flex
@@ -235,12 +263,11 @@
     padding: 0.75rem 1rem
     background: transparent
     border: none
-   ;color: var(--text-muted), cursor: pointer
+   ;color: var(--text-muted); cursor: pointer
     transition: all 0.2s ease}
-  .tab-trigger: hover { background: var(--bg-tertiary), color: var(--text-primary)}
+  .tab-trigger: hover { background: var(--bg-tertiary); color: var(--text-primary)}
   .tab-trigger.active {
-    background: var(--bg-secondary), color: var(--text-inverse),
-    border-bottom: 2px solid var(--harvard-crimson)}
+    background: var(--bg-secondary), color: var(--text-inverse); border-bottom: 2px solid var(--harvard-crimson)}
   .tab-content {
     flex: 1
     overflow: hidden
@@ -252,11 +279,12 @@
     flex-direction: column
     overflow: hidden}
   .tags-section { padding: 1rem
-    border-top: 1px solid var(--border-light), background: var(--bg-primary)}
+    border-top: 1px solid var(--border-light); background: var(--bg-primary)}
   /* Responsive */
   @media (max-width: 768px) {
     .sidebar-container {
       width: 280px}
   }
 </style>
+
 

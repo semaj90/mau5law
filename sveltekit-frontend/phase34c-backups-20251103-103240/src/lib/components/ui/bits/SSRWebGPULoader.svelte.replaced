@@ -30,7 +30,11 @@
       isLoading = false;
       return;
     }
-    try { await initializeTextureStreaming(); } catch (err) { console.error(err); }
+    try {
+      await initializeTextureStreaming();
+    } catch (err) {
+      console.error(err);
+    }
   });
 
   /* Helper functions omitted for brevity in dry-run file */

@@ -111,7 +111,7 @@ Content-Type: application/json {
       <div class="status-item">
         <p class="nes-text">
           ðŸ¤– <strong>Ollama:</strong>
-          <a href="http://localhost:11434/api/tags" target="_blank" class="nes-text">, localhost:11434 </a>
+          <a href="http://localhost:11434/api/tags" target="_blank" class="nes-text">; localhost:11434 </a>
         </p>
       </div>
       <div class="status-item">
@@ -195,8 +195,7 @@ Content-Type: application/json {
   }
   /* NES.css enhancements */
   :global(.nes-container.with-title > .title) {
-    background-color: inherit
-   , padding: 0 20px}
+    background-color: inherit; padding: 0 20px}
   :global(.nes-list.is-disc) {
     list-style-type: disc
     margin-left: 20px}

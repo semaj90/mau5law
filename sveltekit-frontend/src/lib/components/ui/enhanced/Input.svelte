@@ -23,6 +23,7 @@ https://svelte.dev/e/js_parse_error -->
   		value = $bindable(''),
   		...prop
   	}: Props = $props();
+  
   	let inputClasses = $derived([
   		'yorha-input bits-input',
   		error && 'border-destructive focus:border-destructive',
@@ -31,6 +32,7 @@ https://svelte.dev/e/js_parse_error -->
   		class
   	].filter(Boolean).join(' '));
 </script>
+
 <div class="space-y-2">
   {#if label}
     <label for={id} class="bits-label">
@@ -38,11 +40,11 @@ https://svelte.dev/e/js_parse_error -->
     </label>
   {/if}
   <div class="relative">
-    {#if icon}
+  {#if icon}
       <div class="absolute left-3 top-1/2 -translate-y-1/2 nes-text">
         <div class="i-lucide-{icon} h-4"></div>
       {/if}
-    <input
+  <input
       {id}
       bind:value
       class={inputClasses}
@@ -50,7 +52,7 @@ https://svelte.dev/e/js_parse_error -->
       aria-describedby={error ? `${id}-error` : hint ? `${id}-hint` : undefined}
       {...props}
     />
-    {#if loading}
+  {#if loading}
       <div class="absolute right-3">
         <div class="i-lucide-loader-2 h-4 w-4 animate-spin nes-text"></div>
       {/if}
@@ -64,7 +66,8 @@ https://svelte.dev/e/js_parse_error -->
       {hint}
     </p>
   {/if}
-</div>
+  </div>
+
 <style>
   /* Enhanced Input with NieR styling */
   .yorha-input {

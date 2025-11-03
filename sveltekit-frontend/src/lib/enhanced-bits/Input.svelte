@@ -6,10 +6,11 @@
     placeholder?: string
     disabled?: boolean}>();
 </script>
+
 <RealInput {value} {placeholder} {disabled} {...rest}>
   <slot />
 </RealInput>
+
 <style>
   /* shim - no styles */
 </style>
-

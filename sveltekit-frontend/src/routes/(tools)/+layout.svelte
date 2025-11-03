@@ -4,7 +4,8 @@
   import { page } from '$app/stores';
 
   interface Props {
-    children?: Snippet}
+    children?: Snippet;
+  }
 
   let { children }: Props = $props();
 
@@ -17,7 +18,8 @@
     { name: 'Upload Tools', href: '/tools/upload', icon: 'â¬†ï¸' },
     { name: 'Cache Manager', href: '/tools/cache', icon: 'ðŸ’¾' },
     { name: 'Brain Interface', href: '/tools/brain', icon: 'ðŸ§ ' },
-    { name: 'Detective Tools', href: '/tools/detective', icon: 'ðŸ•µï¸' }];
+    { name: 'Detective Tools', href: '/tools/detective', icon: 'ðŸ•µï¸' },
+  ];
 </script>
 
 <div class="tools-layout">
@@ -234,6 +236,3 @@
 
   .tools-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-warm, #d4af37)}
 </style>
-
-
-

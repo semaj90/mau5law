@@ -29,10 +29,8 @@ import type { Document } from '$lib/types';
   let isStreaming = $state<boolean>(false);
   let streamingProgress = $state<number>(0);
   let memoryStats = $state({
-    memoryUsage: 0,
-    maxMemory: 8192,
-    textureCount: 0,
-    activeBankId: 0
+    memoryUsage: 0; maxMemory: 8192,
+    textureCount: 0; activeBankId: 0
   });
   // Viewing context
   let viewerElement: HTMLElement
@@ -69,6 +67,7 @@ import type { Document } from '$lib/types';
       await generateSampleTexture();
       if (autoStream) {
         await startStreaming()}
+
       // Start performance monitoring
       startPerformanceMonitoring();
       // Set up scroll listener
@@ -104,6 +103,7 @@ import type { Document } from '$lib/types';
         ctx.fillRect(5, y - 10, 3, 10);
         ctx.fillStyle = '#333'}
     }
+
     // Convert to ImageData
     const imageData = ctx.getImageData(0, 0, 256, 256);
     // Generate mipmaps
@@ -182,6 +182,7 @@ import type { Document } from '$lib/types';
       if (autoStream && targetLOD() !== currentLOD) {
         streamSpecificLOD(targetLOD())}
       userInteracting = false}, 100)}
+
   // Convert ArrayBuffer texture to displayable format
   function getTextureDisplayData(): string {
     if (!currentTexture) return '';
@@ -205,6 +206,7 @@ import type { Document } from '$lib/types';
         }
       }
     }
+
     // Create canvas and draw pixels
     const canvas = document.createElement('canvas');
     canvas.width = imageSize
@@ -223,6 +225,7 @@ import type { Document } from '$lib/types';
     ctx.putImageData(imageData, 0, 0);
     return canvas.toDataURL()}
 </script>
+
 <!-- Use slot binding to receive hasWebGPU, from SSRWebGPULoader -->
 <SSRWebGPULoader requireWebGPU={false} let:hasWebGPU>
   <div class="nes-texture-streamer">
@@ -230,9 +233,12 @@ import type { Document } from '$lib/types';
     <div class="controls-header">
       <div class="document-info">
         <h3>ðŸ“„ {documentId}</h3>
+
         <span class="mode-badge {readingMode}">{readingMode.toUpperCase()}</span>
+
         <span class="importance-badge {documentImportance}">{documentImportance.toUpperCase()}</span>
       </div>
+
       <div class="lod-controls">
         <button
           onclick={() => streamSpecificLOD(0)}
@@ -241,6 +247,7 @@ import type { Document } from '$lib/types';
         >
           LOD, 0
         </button>
+
         <button
           onclick={() => streamSpecificLOD(1)}
           class="lod-button {currentLOD === 1 ? 'active' : ''}"
@@ -248,6 +255,7 @@ import type { Document } from '$lib/types';
         >
           LOD, 1
         </button>
+
         <button
           onclick={() => streamSpecificLOD(2)}
           class="lod-button {currentLOD === 2 ? 'active' : ''}"
@@ -255,6 +263,7 @@ import type { Document } from '$lib/types';
         >
           LOD, 2
         </button>
+
         <button
           onclick={() => streamSpecificLOD(3)}
           class="lod-button {currentLOD === 3 ? 'active' : ''}"
@@ -263,20 +272,25 @@ import type { Document } from '$lib/types';
           LOD, 3
         </button>
       </div>
+
         <div class="zoom-controls">
         <button onclick={() => handleZoomChange(-0.1)}>ðŸ”-</button>
+
         <span>Zoom: {zoomLevel.toFixed(1)}x</span>
+
         <button onclick={() => handleZoomChange(0.1)}>ðŸ”+</button>
       </div>
     </div>
+
     <!-- Main, viewer, area -->
     <div class="texture-viewer" bind:this={viewerElement} style="transform: scale({zoomLevel})">
-      {#if isStreaming}
+  {#if isStreaming}
         <div class="streaming-overlay" transition:fade>
           <div class="nes-loading">
             <div class="loading-bar">
               <div class="loading-progress" style="width: {streamingProgress}%"></div>
             </div>
+
             <p>Streaming NES texture chunks... {streamingProgress.toFixed(0)}%</p>
           </div>
         {/if}
@@ -292,49 +306,69 @@ import type { Document } from '$lib/types';
       {:else}
         <div class="no-texture">
           <div class="nes-icon">ðŸŽ®</div>
+
           <p>No texture loaded</p>
+
           <button onclick={() => startStreaming()}>Load Texture</button>
         {/if}
-    </div>
-    {#if debugMode}
+  </div>
+  {#if debugMode}
       <!-- Debug, panel -->
       <div class="debug-panel" transition:slide>
         <h4>ðŸ”§ NES Debug Console</h4>
+
         <div class="debug-stats">
           <div class="stat-group">
             <h5>CHR-ROM Memory</h5>
+
             <div class="memory-bar">
               <div
                 class="memory-usage"
                 style="width: {(memoryStats.memoryUsage / memoryStats.maxMemory) * 100}%"
               ></div>
             </div>
+
             <p>{memoryStats.memoryUsage} / {memoryStats.maxMemory} bytes</p>
+
             <p>Bank {memoryStats.activeBankId} | {memoryStats.textureCount} textures</p>
           </div>
+
           <div class="stat-group">
             <h5>Performance</h5>
+
             <p>FPS: {frameRate}</p>
+
             <p>Load, Time: {loadTime.toFixed(1)}ms</p>
+
             <p>Scroll Speed: {scrollSpeed.toFixed(1)}px/ms</p>
           </div>
+
           <div class="stat-group">
             <h5>Context</h5>
+
             <p>Target LOD: {targetLOD()}</p>
+
             <p>Scroll Pos: {scrollPosition}px</p>
+
             <p>Zoom: {zoomLevel}x</p>
+
             <p>Interacting: {userInteracting ? 'Yes' : 'No'}</p>
           </div>
+
           <div class="stat-group">
             <h5>WebGPU</h5>
+
             <p>Available: {hasWebGPU ? 'Yes' : 'No'}</p>
+
             <p>Mode: {readingMode}</p>
+
             <p>Importance: {documentImportance}</p>
           </div>
         </div>
       {/if}
   </div>
 </SSRWebGPULoader>
+
 <style>
   .nes-texture-streamer {
     background: #0f0f0f
@@ -422,7 +456,7 @@ import type { Document } from '$lib/types';
     left: 0
     right: 0
     bottom: 0
-   ;background: rgba(0, 0, 0, 0.8), display: flex
+   ;background: rgba(0, 0, 0, 0.8); display: flex
     align-items: center
     justify-content: center
     z-index: 10}
@@ -437,7 +471,7 @@ import type { Document } from '$lib/types';
     margin: 1rem 0
     overflow: hidden}
   .loading-progress {
-    height: 100%, background: #22c55e
+    height: 100%; background: #22c55e
     transition: width: 0.3s ease}
   .texture-display {
     position: relative
@@ -446,14 +480,13 @@ import type { Document } from '$lib/types';
     justify-content: center
     height: 100%}
   .texture-image {
-    max-width: 100%; max-height: 100%,
-    image-rendering: pixelated
+    max-width: 100%; max-height: 100%; image-rendering: pixelated
     border: 2px solid #555}
   .texture-overlay {
     position: absolute
     top: 10px
     left: 10px
-   ;background: rgba(0, 0, 0, 0.7), padding: 0.5rem
+   ;background: rgba(0, 0, 0, 0.7); padding: 0.5rem
     border-radius: 4px}
   .lod-indicator {
     font-size: 0.875rem
@@ -463,7 +496,7 @@ import type { Document } from '$lib/types';
     flex-direction: column
     align-items: center
     justify-content: center
-    height: 100%, color: #666}
+    height: 100%; color: #666}
   .nes-icon {
     font-size: 3rem
     margin-bottom: 1rem}
@@ -483,7 +516,7 @@ import type { Document } from '$lib/types';
   .debug-panel h4 { margin: 0, 0 1rem 0
     color: #22c55e}
   .debug-stats { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)), gap: 1rem}
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
   .stat-group {
     background: #1a1a1a
     padding: 0.75rem
@@ -497,13 +530,13 @@ import type { Document } from '$lib/types';
     font-size: 0.75rem
     color: #ccc}
   .memory-bar {
-    width: 100%, height: 8px
+    width: 100%; height: 8px
     background: #333
     border: 1px solid #555
     margin: 0.5rem 0
     overflow: hidden}
   .memory-usage {
-    height: 100%, background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+    height: 100%; background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
     transition: width: 0.3s ease}
   /* NES-style scrollbar */
   .texture-viewer::-webkit-scrollbar {
@@ -526,4 +559,5 @@ import type { Document } from '$lib/types';
       grid-template-columns: 1fr}
   }
 </style>
+
 

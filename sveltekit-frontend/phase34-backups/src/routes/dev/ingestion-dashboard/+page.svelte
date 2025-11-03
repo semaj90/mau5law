@@ -107,7 +107,8 @@ import type { Document } from '$lib/types';
         console.log('controlWorkflow result:', result.message ?? result);
         await fetchDashboardData();
       } else {
-        console.error('controlWorkflow error:', result?.error ?? result);'
+        console.error('controlWorkflow error:', result?.error ?? result);
+'
       }
     } catch (err) {
       console.error(`âŒ ${action} failed:`, err);

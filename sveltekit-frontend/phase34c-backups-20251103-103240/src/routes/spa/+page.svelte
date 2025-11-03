@@ -1,8 +1,8 @@
 ﻿<script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /** * Single Page App Demo Route * Full-screen canvas UX with gemma3:legal-latest integration */ // Import component with the name used in the template import SPACanvasComp from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte'; import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic'; // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import) import '$lib/styles/hybrid-theme.css'; // Sample legal data for demonstration const initialLegalData = { documents: [] as LegalDocument[], evidence: [] as EvidenceItem[], cases: [], chatMessages: [] }; // reactive state for the data and flags let legalData = $state<typeof initialLegalData>(initialLegalData); let currentView = $state<'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases'>('dashboard'); let isLoading = $state<boolean>(true); $effect(() => { (async () => { // Simulate loading legal data await loadSampleData(); isLoading = false})()}); async function loadSampleData(): Promise<any> { // Generate sample legal documents legalData.documents = Array.from({ length: 150 }, (_, i) => ({ id: `doc-${ i }`, title: `Legal Document ${i + 1}: ${getRandomDocumentType()}`, content: generateSampleLegalContent(), confidence: Math.floor(Math.random() * 40) + 60, // 60-100%; priority: getRandomPriority(), metadata: { gemmaModel: 'gemma3:legal-latest', processingTime: Math.floor(Math.random() * 500) + 100, analysisDate: new Date().toISOString() }
-    })); // Generate sample evidence items legalData.evidence = Array.from({ length: 75 }, (_, i) => ({ id: `evidence-${ i }`, title: `Evidence Item ${i + 1}: ${getRandomEvidenceType()}`, type: getRandomEvidenceTypeEnum(), priority: getRandomPriority(), confidence: Math.floor(Math.random() * 30) + 70, // 70-100%; metadata: { collectedBy: 'Legal AI Assistant', verifiedBy: 'gemma3:legal-latest', chainOfCustody: true }
-    })); // Generate sample cases legalData.cases = Array.from({ length: 25 }, (_, i) => ({ id: `case-${ i }`, title: `Case ${i + 1}: ${getRandomCaseType()}`, status: getRandomCaseStatus(), priority: getRandomPriority(), aiAnalysis: { model: 'gemma3:legal-latest', confidence: Math.floor(Math.random() * 20) + 80, riskAssessment: getRandomRisk() }
-    })); console.log('ðŸ“Š Sample legal data loaded for SPA Canvas', { documents: legalData.documents.length, evidence: legalData.evidence.length, cases: legalData.cases.length, useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData) })}
+import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /** * Single Page App Demo Route * Full-screen canvas UX with gemma3:legal-latest integration */ // Import component with the name used in the template import SPACanvasComp from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte'; import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic'; // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import) import '$lib/styles/hybrid-theme.css'; // Sample legal data for demonstration const initialLegalData = { documents: [] as LegalDocument[], evidence: [] as EvidenceItem[], cases: []; chatMessages: [] }; // reactive state for the data and flags let legalData = $state<typeof initialLegalData>(initialLegalData); let currentView = $state<'dashboard' | 'evidence' | 'documents' | 'chat' | 'cases'>('dashboard'); let isLoading = $state<boolean>(true); $effect(() => { (async () => { // Simulate loading legal data await loadSampleData(); isLoading = false})()}); async function loadSampleData(): Promise<any> { // Generate sample legal documents legalData.documents = Array.from({ length: 150 }, (_, i) => ({ id: `doc-${ i }`, title: `Legal Document ${i + 1}: ${getRandomDocumentType()}`, content: generateSampleLegalContent(); confidence: Math.floor(Math.random() * 40) + 60, // 60-100%; priority: getRandomPriority(), metadata: { gemmaModel: 'gemma3:legal-latest', processingTime: Math.floor(Math.random() * 500) + 100; analysisDate: new Date().toISOString() }
+    })); // Generate sample evidence items legalData.evidence = Array.from({ length: 75 }, (_, i) => ({ id: `evidence-${ i }`, title: `Evidence Item ${i + 1}: ${getRandomEvidenceType()}`, type: getRandomEvidenceTypeEnum(), priority: getRandomPriority(); confidence: Math.floor(Math.random() * 30) + 70, // 70-100%; metadata: { collectedBy: 'Legal AI Assistant', verifiedBy: 'gemma3:legal-latest'; chainOfCustody: true }
+    })); // Generate sample cases legalData.cases = Array.from({ length: 25 }, (_, i) => ({ id: `case-${ i }`, title: `Case ${i + 1}: ${getRandomCaseType()}`, status: getRandomCaseStatus(), priority: getRandomPriority(), aiAnalysis: { model: 'gemma3:legal-latest', confidence: Math.floor(Math.random() * 20) + 80; riskAssessment: getRandomRisk() }
+    })); console.log('ðŸ“Š Sample legal data loaded for SPA Canvas', { documents: legalData.documents.length, evidence: legalData.evidence.length, cases: legalData.cases.length; useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData) })}
   function getRandomDocumentType(): string { const types = [
       'Employment Contract Analysis',
       'Merger Agreement Review',
@@ -62,10 +62,51 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
       'Document review complete. Gemma3:legal-latest found, 2 potential compliance issues that require attention...',
       'Risk assessment indicates moderate exposure. I recommend reviewing sections 4.2 and 7.1 of the agreement...',
       'Legal entity extraction successful. Found, 12 parties, 8 jurisdictions, and, 15 key dates for timeline analysis...']; // Select a response so `response` is defined and aiResponses is used const response = aiResponses[Math.floor(Math.random() * aiResponses.length)]; console.log('ðŸ¤– AI Response (gemma3:legal-latest):', response)}
-</script> <!-- Page, metadata --> <svelte:head> <title>Legal AI SPA - Single Page Canvas Application</title> <meta name="description" content="Full-screen legal AI canvas application powered, by, gemma3:legal-latest" /> </svelte:head> {#if isLoading} <!-- Loading screen with, NES, styling --> <div class="loading-screen nes-container"> <div class="loading-content"> <h1 class="nes-text">âš–ï¸ LEGAL AI SPA</h1> <p class="nes-text">Loading gemma3:legal-latest...</p> <div class="nes-text"> <span class="loading-dot">â—</span> <span class="loading-dot">â—</span> <span class="loading-dot">â—</span> </div> <div class="loading-stats"> <p class="nes-text">Documents: {legalData.documents.length}</p> <p class="nes-text">Evidence: {legalData.evidence.length}</p> <p class="nes-text">Cases: {legalData.cases.length}</p> </div> </div> </div> {:else} <!-- Full-screen SPA, Canvas: direct component, invocation (runes, mode) --> <SPACanvasComp { legalData } { currentView } fullscreen={ true } onnavigate={ handleNavigation } oninteract={ handleInteraction } /> <!-- Debug info (remove, in, production) --> <div class="debug-info"> <p>ðŸŽ® Gaming Canvas: {LegalAILogic.requiresGlyphEngine(legalData) ? 'Active': 'Inactive'}</p> <p>ðŸ¤– AI Model: gemma3:legal-latest</p> <p>ðŸ“Š, Data: {legalData.documents.length} docs, {legalData.evidence.length} evidence</p> </div> {/if} <style> .loading-screen { position: fixed, top: 0, left: 0, width: 100vw, height: 100vh, display: flex, align-items: center, justify-content: center;, background: var(--yorha-black), z-index: 2000}
-  .loading-content { text-align: center, max-width: 400px}
-  .loading-content h1 { font-size: 2rem, margin-bottom: 1rem, font-family: 'Courier New', monospace}
-  .loading-dots { font-size: 1.5rem, margin: 1rem 0}
+</script>
+
+<!-- Page, metadata -->
+<svelte:head>
+  <title>Legal AI SPA - Single Page Canvas Application</title>
+  <meta name="description" content="Full-screen legal AI canvas application powered, by, gemma3:legal-latest" />
+</svelte:head>
+{#if isLoading}
+  <!-- Loading screen with, NES, styling -->
+  <div class="loading-screen nes-container">
+    <div class="loading-content">
+      <h1 class="nes-text">âš–ï¸ LEGAL AI SPA</h1>
+      <p class="nes-text">Loading gemma3:legal-latest...</p>
+      <div class="nes-text">
+        <span class="loading-dot">â—</span> <span class="loading-dot">â—</span> <span class="loading-dot">â—</span>
+      </div>
+      <div class="loading-stats">
+        <p class="nes-text">Documents: {legalData.documents.length}</p>
+        <p class="nes-text">Evidence: {legalData.evidence.length}</p>
+        <p class="nes-text">Cases: {legalData.cases.length}</p>
+      </div>
+    </div>
+  </div>
+{:else}
+  <!-- Full-screen SPA, Canvas: direct component, invocation (runes, mode) -->
+  <SPACanvasComp
+    {legalData}
+    {currentView}
+    fullscreen={true}
+    onnavigate={handleNavigation}
+    oninteract={handleInteraction}
+  />
+  <!-- Debug info (remove, in, production) -->
+  <div class="debug-info">
+    <p>ðŸŽ® Gaming Canvas: {LegalAILogic.requiresGlyphEngine(legalData) ? 'Active' : 'Inactive'}</p>
+    <p>ðŸ¤– AI Model: gemma3:legal-latest</p>
+    <p>ðŸ“Š, Data: {legalData.documents.length} docs, {legalData.evidence.length} evidence</p>
+  </div>
+{/if}
+
+<style>
+ .loading-screen { position: fixed, top: 0, left: 0, width: 100vw, height: 100vh, display: flex, align-items: center; justify-content: center;, background: var(--yorha-black); z-index: 2000}
+  .loading-content { text-align: center; max-width: 400px}
+  .loading-content h1 { font-size: 2rem, margin-bottom: 1rem; font-family: 'Courier New', monospace}
+  .loading-dots { font-size: 1.5rem; margin: 1rem 0}
   .loading-dot { animation: blink 1.5s infinite;, margin: 0 0.2rem}
   .loading-dot:nth-child(2) { animation-delay: 0.3s}
   .loading-dot:nth-child(3) { animation-delay: 0.6s}
@@ -73,10 +114,8 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
     51%, 100% { opacity: 0.3}
   } .loading-stats { margin-top: 2rem}
   .loading-stats p { margin: 0.5rem 0; font-family: 'Courier New', monospace}
-  .debug-info { position: fixed, top: 10px, right: 10px;, background: rgba(0, 0, 0, 0.8); color: var(--yorha-white), padding: 0.5rem, border-radius: 4px, font-family: 'Courier New', monospace; font-size: 0.8rem, z-index: 1001, pointer-events: none}
+  .debug-info { position: fixed, top: 10px; right: 10px;, background: rgba(0, 0, 0, 0.8); color: var(--yorha-white), padding: 0.5rem, border-radius: 4px; font-family: 'Courier New', monospace; font-size: 0.8rem, z-index: 1001; pointer-events: none}
   .debug-info p { margin: 0.2rem 0}
   /* Hide debug info on mobile */ @media (max-width: 768px) { .debug-info { display: none}
-  } /* Ensure full-screen coverage */:global(body) { margin: 0, padding: 0;, overflow: hidden}
+  } /* Ensure full-screen coverage */:global(body) { margin: 0; padding: 0;, overflow: hidden}
 </style>
-
-

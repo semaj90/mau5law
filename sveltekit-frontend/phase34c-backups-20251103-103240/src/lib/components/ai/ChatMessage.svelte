@@ -21,14 +21,12 @@ import type { Message } from '$lib/types';
     navigator.clipboard.writeText(message.content).then(
       () => {
         (notifications as: any)?.add?.({
-          type: 'success',
-          title: 'Copied',
+          type: 'success'; title: 'Copied',
           message: 'Message copied to clipboard'
         })},
       () => {
         (notifications as: any)?.add?.({
-          type: 'error',
-          title: 'Copy failed',
+          type: 'error'; title: 'Copy failed',
           message: 'Could not copy message'
         })}
     )}
@@ -36,7 +34,7 @@ import type { Message } from '$lib/types';
     chatActions.toggleMessageSaved?.(message.id)}
   function formatTime(timestamp: Date | string | number): string {
     const date = new Date(timestamp ?? Date.now());
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+    return date.toLocaleTimeString([], { hour: '2-digit'; minute: '2-digit' })}
   function getEmotionalToneColor(tone: string): string {
     switch (tone) {
       case, 'encouraging': return 'text-green-600';
@@ -61,7 +59,7 @@ import type { Message } from '$lib/types';
       <Bot class="w-8 h-8 nes-text" />
     {/if}
   <div class="message-content-wrapper flex flex-col">
-    <div class="message-bubble nes-container" class:is-dark={isUser}, class:is-rounded={isUser}>
+    <div class="message-bubble nes-container" class:is-dark={isUser}; class:is-rounded={isUser}>
       <!-- Proactive, Indicator -->
       {#if isProactive}
         <div class="flex items-center gap-1 text-xs text-gray-400">
@@ -83,7 +81,7 @@ import type { Message } from '$lib/types';
         {/if}
     </div>
     <!-- Message Actions, and, Timestamp -->
-    <div class="flex items-center gap-2 mt-1 text-xs" class:justify-end={isUser}, class:justify-start={!isUser}>
+    <div class="flex items-center gap-2 mt-1 text-xs" class:justify-end={isUser}; class:justify-start={!isUser}>
       <span class="timestamp">
         {formatTime(message.timestamp)}
       </span>
@@ -117,9 +115,9 @@ import type { Message } from '$lib/types';
     </div>
     <!-- Metadata (for, AI, messages) -->
     {#if isAssistant && message.metadata}
-      <div class="message-metadata text-xs text-gray-500" class:text-right={isUser}, class:text-left={!isUser}>
+      <div class="message-metadata text-xs text-gray-500" class:text-right={isUser}; class:text-left={!isUser}>
         {#if message.metadata.model}
-          <div class="flex items-center" class:justify-end={isUser}, class:justify-start={!isUser}>
+          <div class="flex items-center" class:justify-end={isUser}; class:justify-start={!isUser}>
             <span>Model: {message.metadata.model}</span>
             {#if message.metadata.latency}
               <span>â€¢ {message.metadata.latency}ms</span>
@@ -158,12 +156,10 @@ import type { Message } from '$lib/types';
     font-size: 0.875em}
   :global(.message-content blockquote) {
     border-left: 3px solid rgba(0, 0, 0, 0.2);
-    padding-left: 1rem
-   , margin: 0.5rem 0
+    padding-left: 1rem; margin: 0.5rem 0
     font-style: italic}
   :global(.message-content h1, .message-content h2, .message-content h3) {
-    font-weight: 600
-   , margin: 0.75rem, 0 0.5rem 0}
+    font-weight: 600; margin: 0.75rem, 0 0.5rem 0}
   :global(.message-content h1) {
     font-size: 1.25em}
   :global(.message-content h2) {

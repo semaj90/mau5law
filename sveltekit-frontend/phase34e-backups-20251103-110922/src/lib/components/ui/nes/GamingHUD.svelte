@@ -68,7 +68,7 @@ import type { Case } from '$lib/types';
     </div>
     <!-- System, Status -->
     <div class="status-section">
-      <div class="status-indicator" class:online={isOnline}, class:offline={!isOnline}>
+      <div class="status-indicator" class:online={isOnline}; class:offline={!isOnline}>
         <div class="status-dot"></div>
         <span>{isOnline ? 'ONLINE' : 'OFFLINE'}</span>
       </div>
@@ -245,7 +245,7 @@ d
 		border-radius: 0;transition: all 0.2s ease}
 	.stat-item:hover { background: var(--yorha-bg-tertiary, #2a2a2a);
 		border-color: var(--yorha-secondary, #ffd700);
-		transform: translateY(-1px), box-shadow:
+		transform: translateY(-1px); box-shadow:
 			0, 0 0 1px var(--yorha-secondary, #ffd700),
 			0 4px 12px rgba(255, 215, 0, 0.3)}
 	.stat-icon {

@@ -31,7 +31,7 @@ export interface RabbitMQConfig {
     deadLetter: string};
   exchanges: {
     documents: string
-    deadLetter: string, // Fixed: comma to colon
+    deadLetter: string | // Fixed: comma to colon
   }}
 
 export interface IRabbitMQService {

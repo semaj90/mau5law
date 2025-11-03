@@ -24,50 +24,38 @@ import type { Document } from '$lib/types';
   const machineWithContext = aiAssistantMachine.provide({
     context: {
       // Default context merged with props
-     , currentQuery: '',
-      response: '',
-      conversationHistory: [],
-      sessionId: `session-${Date.now()}`,
-      isProcessing: false
-     , model: 'gemma3-legal',
-      temperature: 0.7,
-      maxTokens: 2048,
+     , currentQuery: ''; response: '',
+      conversationHistory: []; sessionId: `session-${Date.now()}`,
+      isProcessing: false; model: 'gemma3-legal',
+      temperature: 0.7; maxTokens: 2048,
       availableModels: [
-        { name: 'gemma3-legal', displayName: 'Gemma, 3 Legal', capabilities: ['text', 'legal'] },
-        { name: 'nomic-embed-text', displayName: 'Nomic Embeddings', capabilities: ['embeddings'] }
+        { name: 'gemma3-legal', displayName: 'Gemma, 3 Legal'; capabilities: ['text', 'legal'] },
+        { name: 'nomic-embed-text', displayName: 'Nomic Embeddings'; capabilities: ['embeddings'] }
       ],
       modelLoadBalancing: false
       databaseConnected: true
       vectorSearchEnabled: true
-      databasePerformance: { queryLatency: 45,
-        connectionPool: 8,
+      databasePerformance: { queryLatency: 45; connectionPool: 8,
         cacheHitRatio: 0.85
       },
-      vectorIndexStatus: { totalVectors: 15432,
-        indexHealth: 'excellent',
+      vectorIndexStatus: { totalVectors: 15432; indexHealth: 'excellent',
         lastUpdated: new Date().toISOString()
       },
       context7Available: true
-     , context7Cache: new Map(),
-      currentDocuments: [],
-      currentImages: [],
-      processingQueue: [],
+     , context7Cache: new Map(); currentDocuments: [],
+      currentImages: []; processingQueue: [],
       gpuProcessingEnabled: true
-      serviceHealth: { overallHealth: 'excellent',
-        services: {
-          'enhanced-rag': { status: 'healthy', latency: 25 },
-          'upload-service': { status: 'healthy', latency: 15 },
-          'vector-service': { status: 'healthy', latency: 35 }
+      serviceHealth: { overallHealth: 'excellent'; services: {
+          'enhanced-rag': { status: 'healthy'; latency: 25 },
+          'upload-service': { status: 'healthy'; latency: 15 },
+          'vector-service': { status: 'healthy'; latency: 35 }
         }
       },
       preferredProtocol,
       activeProtocol: preferredProtocol
-      serviceLoadBalancer: { strategy: 'round_robin',
-        currentIndex: 0},
-      circuitBreakers: new Map(),
-      natsConnected: true
-      activeStreaming: enableStreamingMode
-     , streamBuffer: '',
+      serviceLoadBalancer: { strategy: 'round_robin'; currentIndex: 0},
+      circuitBreakers: new Map(); natsConnected: true
+      activeStreaming: enableStreamingMode; streamBuffer: '',
       collaborationUsers: [],
       ...initialContext
     }
@@ -97,7 +85,7 @@ import type { Document } from '$lib/types';
           console.error('Model switching error:', error);'
         }
       }
-      send({ type: 'QUERY', query, model: currentModel });
+      send({ type: 'QUERY', query; model: currentModel });
       queryInput = '';
       showSuggestions = false}
   }
@@ -105,16 +93,19 @@ import type { Document } from '$lib/types';
     send({ type: 'CLEAR_HISTORY' })}
   function toggleStreaming() {
     send({ type: 'TOGGLE_STREAMING' })}
+
   // Handle suggestion selection
   function handleSuggestionSelect(_event: CustomEvent) {
     const { suggestion } = e(vent as CustomEvent).detail
     queryInput = suggestion.term || suggestion.suggestion || suggestion.text || '';
     showSuggestions = false}
+
   // Handle task selection
   function handleTaskSelect(_event: CustomEvent) {
     const { task } = e(vent as CustomEvent).detail
     queryInput = task.task
     showSuggestions = false}
+
   // Load user insights
   async function loadUserInsights(): Promise<any> {
     if (intentPredictionSystem && enableAIEnhancements) {
@@ -123,6 +114,7 @@ import type { Document } from '$lib/types';
         console.error('Error loading user insights:', error)}
     }
   }
+
   // Load user insights on component mount
   $effect(() => {
     loadUserInsights()});
@@ -471,7 +463,7 @@ import type { Document } from '$lib/types';
 </div>
 <style>
   .ai-assistant-machine-demo {
-    font-family: -apple-system, BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .prose {
     max-width: none}
   .prose pre {
@@ -480,4 +472,5 @@ import type { Document } from '$lib/types';
     border-radius: 0.5rem
     overflow-x: auto}
 </style>
+
 

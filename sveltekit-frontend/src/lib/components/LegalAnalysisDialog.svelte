@@ -21,7 +21,7 @@ import type { Document } from '$lib/types';
   // Minimal local type for the parts we use (keeps TS happy)
   type MinimalLegalCaseStore = {
     filteredCases: () => Array<{ id: string, title: string, caseNumber?: string; status?: string }>;
-   , aiInsights: Record<string any>,loading: { analysis?: boolean };
+   , aiInsights: Record<string, any>,loading: { analysis?: boolean };
    , analyzeCase: (id: string) => Promise<any>,loadCases: () => Promise<any>};
   // Prefer exported store if present, otherwise provide a safe no-op stub.
   const legalCaseStore: MinimalLegalCaseStore =
@@ -69,6 +69,7 @@ import type { Document } from '$lib/types';
       analysisStatus = 'error';
       console.error('Analysis failed:', error)}
   }
+
   // Replace variant mapping to only return allowed Badge variants.
   function getRiskBadgeVariant(level: string) {
     // Allowed variants in this codebase: 'default' | 'destructive' | 'outline' (avoid, 'secondary'/'ghost')
@@ -288,4 +289,5 @@ import type { Document } from '$lib/types';
     transition: all 0.2s ease-in-out}
   .legal-action-btn: hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59: 130 | 246, 0.15)}
 </style>
+
 

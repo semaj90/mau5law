@@ -28,7 +28,7 @@ Automatically handles server upload with localStorage fallback
   let error: string | null = null
   // Storage stats shape
   type StorageStats = { used: number; available: number; percentage: number };
-  let storageStats: StorageStats = { used: 0, available: 0, percentage: 0 };
+  let storageStats: StorageStats = { used: 0, available: 0; percentage: 0 };
   let fileInput: HTMLInputElement | null = null
   // Combine initialization + periodic updater into one onMount to keep cleanup consistent
   let _interval: ReturnType<typeof setInterval> | null = null
@@ -76,7 +76,7 @@ Automatically handles server upload with localStorage fallback
       const results: UploadResponse[] = await enhancedFileUpload.uploadFiles(
         files,
         { caseId, description, tags, useLocalStorage: forceLocalStorage },
-        (completed: number, total: number, fileName: string) => {
+        (completed: number, total: number; fileName: string) => {
           uploadProgress = (completed / total) * 100
           currentFile = fileName
           onprogress?.({ completed, total, file: fileName });
@@ -135,8 +135,7 @@ Automatically handles server upload with localStorage fallback
         <div
           class="storage-fill"
           style="width: {storageStats.percentage}%"
-          class:warning={storageStats.percentage > 75}
-         , class:critical={storageStats.percentage > 90}
+          class:warning={storageStats.percentage > 75}; class:critical={storageStats.percentage > 90}
         ></div>
       </div>
       <span class="storage-text">
@@ -146,8 +145,7 @@ Automatically handles server upload with localStorage fallback
   <!-- Drop, Zone -->
   <div
     class="drop-zone"
-    class:drag-over={isDragOver}
-   , class:uploading={isUploading}
+    class:drag-over={isDragOver}; class:uploading={isUploading}
     ondrop={handleDrop}
     ondragover={handleDragOver}
     ondragleave={handleDragLeave}
@@ -208,7 +206,7 @@ Automatically handles server upload with localStorage fallback
       </div>
       <div class="results-list">
         {#each uploadResults as result (result.fileName)}
-          <div class="result-item" class:result-success={result.success}, class:result-error={!result.success}>
+          <div class="result-item" class:result-success={result.success}; class:result-error={!result.success}>
             <div class="result-icon">
               {result.success ? 'âœ…' : 'âŒ'}
             </div>
@@ -271,8 +269,7 @@ Automatically handles server upload with localStorage fallback
     background-color: #f0f9ff}
   .drop-zone.drag-over {
     border-color: #3b82f6
-    background-color: #dbeaff
-   , transform: scale(1.02);
+    background-color: #dbeaff; transform: scale(1.02);
   }
   .drop-zone.uploading {
     border-color: #10b981

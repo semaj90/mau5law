@@ -99,7 +99,7 @@
         formData.append('extractText', 'true');
         formData.append('generateEmbedding', 'true');
         const response = await fetch(uploadEndpoint, {
-          method: 'POST', body: formData });
+          method: 'POST'; body: formData });
         // Simulate progress (real implementation would use XMLHttpRequest)
         const progressInterval = setInterval(() => {
           uploadProgress[file.name] = Math.min(uploadProgress[file.name] + 10, 90);
@@ -113,7 +113,7 @@
         clearInterval(progressInterval);
         uploadProgress[file.name] = 100;
         uploadProgress = { ...uploadProgress };
-        uploadResults.push({ file: file.name, result, timestamp: new Date() });
+        uploadResults.push({ file: file.name, result; timestamp: new Date() });
         console.log(`✅ Uploaded ${file.name}:`, result);
       }
       // Success - clear files and notify parent
@@ -121,7 +121,7 @@
       files = [];
       uploadProgress = {};
       if (onUploadComplete) { onUploadComplete({
-          message: successMessage, results: uploadResults, totalFiles: uploadResults.length });
+          message: successMessage, results: uploadResults; totalFiles: uploadResults.length });
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';
@@ -145,9 +145,8 @@
     try {
       // Extract text content based on file type
       const response = await fetch('/api/rag/process', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileId: fileResult.id, operations: ['extract_text', 'generate_embedding', 'semantic_chunk'] }),
+        method: 'POST'; headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileId: fileResult.id; operations: ['extract_text', 'generate_embedding', 'semantic_chunk'] }),
       });
       if (response.ok) {
         const processed = await response.json();
@@ -378,8 +377,7 @@
     min-width: 120px;
   }
   .progress-bar {
-    flex: 1,
-    height: 6px;
+    flex: 1; height: 6px;
     background: var(--yorha-bg-primary);
     border-radius: 3px;
     overflow: hidden;

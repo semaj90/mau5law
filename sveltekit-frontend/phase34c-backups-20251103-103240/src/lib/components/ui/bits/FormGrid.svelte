@@ -4,14 +4,17 @@
 -->
 <script lang="ts">
   interface Props {
-    columns?: number
-    gap?: string
-    children?: any}
+    columns?: number;
+    gap?: string;
+    children?: any;
+  }
   let { columns = 2, gap = '16px', children }: Props = $props();
 </script>
+
 <div class="form-grid" style="--columns: {columns} --gap: {gap}">
   <slot />
 </div>
+
 <style>
   .form-grid {
     display: grid
@@ -24,4 +27,3 @@
       gap: calc(var(--gap, 16px) * 0.75)}
   }
 </style>
-

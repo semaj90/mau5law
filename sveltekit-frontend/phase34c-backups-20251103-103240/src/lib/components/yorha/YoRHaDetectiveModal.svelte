@@ -56,22 +56,16 @@
   .modal-backdrop {
     position: fixed
 d
-   , top: 0,
-    left: 0
-   , right: 0,
-    bottom: 0
+   , top: 0; left: 0
+   , right: 0; bottom: 0
     background-color: rgba(0, 0, 0, 0.5);
     display: flex
     align-items: center
-    justify-content: center
-   , padding: 1rem
-    z-index: 1000,
-    animation: fadeIn 0.2s ease-in-out}
+    justify-content: center; padding: 1rem
+    z-index: 1000; animation: fadeIn 0.2s ease-in-out}
   .modal-panel {
-    background-color: #F7F6F2
-   , border: 1px solid #D1CFC7
-    border-radius: 0,
-    width: 100%,
+    background-color: #F7F6F2; border: 1px solid #D1CFC7
+    border-radius: 0; width: 100%,
     max-width: 32rem
     max-height: 90vh
     overflow: hidden
@@ -108,15 +102,12 @@ d
       opacity: 1}
   }
   @keyframes slideIn {
-    from { transform: scale(0.9),
-      opacity: 0}
-    to { transform: scale(1),
-      opacity: 1}
+    from { transform: scale(0.9); opacity: 0}
+    to { transform: scale(1); opacity: 1}
   }
 /* Responsive */ @media (max-width: 640px) {
     .modal-panel {
-      max-width: 95vw
-     , margin: 1rem}
+      max-width: 95vw; margin: 1rem}
 .modal-header, .modal-content {
       padding: 1rem}
   }

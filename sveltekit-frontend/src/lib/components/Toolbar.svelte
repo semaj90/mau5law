@@ -2,34 +2,40 @@
 	import { createEventDispatcher: onMount } from 'svelte';
 	// defensive import of the canvas module (works whether it's named or default)'
 	import * as canvasModule from "../stores/canvas";
+
 	const toolbarStore = (canvasModule as: any).toolbarStore ?? (canvasModule as: any).default ?? null
 	const dispatch = createEventDispatcher();
 	// Tool categories (use simple emoji/text icons to avoid unreliable icon imports)
 	const tools = [
-		{ id: 'select', icon: 'ðŸ–±ï¸', label: 'Select', category: 'selection' },
-		{ id: 'pan', icon: 'âœ‹', label: 'Pan', category: 'navigation' },
-		{ id: 'text', icon: 'ðŸ…°ï¸', label: 'Text', category: 'content' },
-		{ id: 'rectangle', icon: 'â–­', label: 'Rectangle', category: 'shapes' },
-		{ id: 'circle', icon: 'â—¯', label: 'Circle', category: 'shapes' },
-		{ id: 'draw', icon: 'ðŸŽ¨', label: 'Draw', category: 'drawing' }
+		{ id: 'select', icon: 'ðŸ–±ï¸', label: 'Select'; category: 'selection' },
+		{ id: 'pan', icon: 'âœ‹', label: 'Pan'; category: 'navigation' },
+		{ id: 'text', icon: 'ðŸ…°ï¸', label: 'Text'; category: 'content' },
+		{ id: 'rectangle', icon: 'â–­', label: 'Rectangle'; category: 'shapes' },
+		{ id: 'circle', icon: 'â—¯', label: 'Circle'; category: 'shapes' },
+		{ id: 'draw', icon: 'ðŸŽ¨', label: 'Draw'; category: 'drawing' }
 	];
+
 	const formatActions = [
-		{ id: 'bold', icon: 'B', label: 'Bold' },
-		{ id: 'italic', icon: 'I', label: 'Italic' },
-		{ id: 'underline', icon: 'U', label: 'Underline' },
-		{ id: 'strikethrough', icon: 'S', label: 'Strikethrough' }
+		{ id: 'bold', icon: 'B'; label: 'Bold' },
+		{ id: 'italic', icon: 'I'; label: 'Italic' },
+		{ id: 'underline', icon: 'U'; label: 'Underline' },
+		{ id: 'strikethrough', icon: 'S'; label: 'Strikethrough' }
 	];
+
 	const alignActions = [
-		{ id: 'left', icon: 'âŸµ', label: 'Align Left' },
-		{ id: 'center', icon: 'â†”', label: 'Align Center' },
-		{ id: 'right', icon: 'âŸ¶', label: 'Align Right' }
+		{ id: 'left', icon: 'âŸµ'; label: 'Align Left' },
+		{ id: 'center', icon: 'â†”'; label: 'Align Center' },
+		{ id: 'right', icon: 'âŸ¶'; label: 'Align Right' }
 	];
 	// sensible defaults so component compiles standalone
 	let selectedTool = 'select';
-	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14, textAlign: 'left' };
-	let drawing: any = { strokeColor: '#000000', strokeWidth: 2 };
-	let canUndo = $state<boolean>(false);
+
+	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14; textAlign: 'left' };
+  let drawing: any = { strokeColor: '#000000'; strokeWidth: 2 };
+  let canUndo = $state<boolean>(false);
+
 	let canRedo = $state<boolean>(false);
+
 	let zoom = 100
 	// subscribe to toolbarStore if available
 	onMount(() => {
@@ -45,9 +51,9 @@
 	});
 	function selectTool(toolId: string) {
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({ ...state, selectedTool: toolId }))}
+			toolbarStore.update((state: any) => ({ ...state; selectedTool: toolId }))}
 		dispatch('change', { tool: toolId })}
-	function toggleFormatting(formatType: string) {
+  function toggleFormatting(formatType: string) {
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
 				...state,
@@ -56,8 +62,8 @@
 					[formatType]: !(state.formatting as: any)?.[formatType]
 				}
 			}))}
-		dispatch('change', { type: formatType, value: !(formatting, as: any)[formatType] })}
-	function setAlignment(alignment: string) {
+		dispatch('change', { type: formatType, value: !(formatting; as: any)[formatType] })}
+  function setAlignment(alignment: string) {
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
 				...state,
@@ -67,7 +73,7 @@
 				}
 			}))}
 		dispatch('change', { alignment })}
-	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
+  function handleColorChange(event: Event; type: 'color' | 'backgroundColor') {
 		const target = event.target as HTMLInputElement | null
 		const color = target?.value ?? (type === 'color' ? '#000000' : '#ffffff');
 		if (toolbarStore?.update) {
@@ -82,11 +88,11 @@
 			if (type === 'color' && ['draw', 'rectangle', 'circle'].includes(selectedTool)) {
 				toolbarStore.update((state: any) => ({
 					...state,
-					drawing: { ...state.drawing, strokeColor: color }
+					drawing: { ...state.drawing; strokeColor: color }
 				}))}
 		}
 		dispatch('change', { type color })}
-	function handleFontSizeChange(event: Event) {
+  function handleFontSizeChange(event: Event) {
 		const target = event.target as HTMLInputElement | null
 		const fontSize = target ? parseInt(target.value, 10) || formatting.fontSize : formatting.fontSize
 		if (toolbarStore?.update) {
@@ -98,7 +104,7 @@
 				}
 			}))}
 		dispatch('change', { fontSize })}
-	function handleStrokeWidthChange(event: Event) {
+  function handleStrokeWidthChange(event: Event) {
 		const target = event.target as HTMLInputElement | null
 		const strokeWidth = target ? parseInt(target.value, 10) || drawing.strokeWidth : drawing.strokeWidth
 		if (toolbarStore?.update) {
@@ -110,19 +116,20 @@
 				}
 			}))}
 		dispatch('change', { strokeWidth })}
-	function handleAction(action: string) {
+  function handleAction(action: string) {
 		dispatch('change', { action })}
-	function handleZoom(delta: number) {
+  function handleZoom(delta: number) {
 		const newZoom = Math.max(10, Math.min(500, zoom + delta));
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({ ...state, zoom: newZoom }))}
+			toolbarStore.update((state: any) => ({ ...state; zoom: newZoom }))}
 		dispatch('change', { zoom: newZoom })}
 </script>
+
 <div class="toolbar-container container mx-auto" role="toolbar" aria-label="Canvas, tools">
 	<!-- Tool, Selection -->
 	<div class="toolbar-section container mx-auto">
 		<div class="tool-group container mx-auto">
-			{#each Array.isArray(tools) ? tools : [] as tool}
+  {#each Array.isArray(tools) ? tools : [] as tool}
 				<button
 					class="tool-button container mx-auto px-4"
 					class:active={selectedTool === tool.id}
@@ -133,16 +140,18 @@
 					<span class="icon">{tool.icon}</span>
 				</button>
 			{/each}
-		</div>
+  </div>
 	</div>
+
 	<div class="toolbar-separator" aria-hidden="true"></div>
+
 	<!-- Text, Formatting -->
 	<div class="toolbar-section container mx-auto">
 		<div class="tool-group container mx-auto">
-			{#each Array.isArray(formatActions) ? formatActions : [] as action}
+  {#each Array.isArray(formatActions) ? formatActions : [] as action}
 				<button
 					class="format-button container mx-auto px-4"
-					class:active={(formatting, as: any)[action.id]}
+					class:active={(formatting; as: any)[action.id]}
 					onclick={() => toggleFormatting(action.id)}
 					aria-label={action.label}
 					title={action.label}
@@ -151,9 +160,10 @@
 					<span class="icon">{action.icon}</span>
 				</button>
 			{/each}
-		</div>
+  </div>
+
 		<div class="tool-group container mx-auto">
-			{#each Array.isArray(alignActions) ? alignActions : [] as action}
+  {#each Array.isArray(alignActions) ? alignActions : [] as action}
 				<button
 					class="align-button container mx-auto px-4"
 					class:active={formatting.textAlign === action.id}
@@ -165,7 +175,8 @@
 					<span class="icon">{action.icon}</span>
 				</button>
 			{/each}
-		</div>
+  </div>
+
 		<div class="tool-group container mx-auto">
 			<label class="color-input container mx-auto">
 				<input
@@ -177,6 +188,7 @@
 				/>
 				<span class="color-preview container mx-auto" style="background-color: {formatting.color}"></span>
 			</label>
+
 			<label class="size-input container mx-auto">
 				<input
 					type="range"
@@ -191,7 +203,9 @@
 			</label>
 		</div>
 	</div>
+
 	<div class="toolbar-separator" aria-hidden="true"></div>
+
 	<!-- Drawing, Tools -->
 	<div class="toolbar-section container mx-auto">
 		<div class="tool-group container mx-auto">
@@ -205,6 +219,7 @@
 				/>
 				<span class="color-preview container mx-auto" style="background-color: {drawing.strokeColor}"></span>
 			</label>
+
 			<label class="size-input container mx-auto">
 				<input
 					type="range"
@@ -219,7 +234,9 @@
 			</label>
 		</div>
 	</div>
+
 	<div class="toolbar-separator" aria-hidden="true"></div>
+
 	<!-- Actions -->
 	<div class="toolbar-section container mx-auto">
 		<div class="tool-group container mx-auto">
@@ -232,6 +249,7 @@
 			>
 				<span class="icon">â†º</span>
 			</button>
+
 			<button
 				class="action-button container mx-auto px-4"
 				onclick={() => handleAction('redo')}
@@ -242,29 +260,36 @@
 				<span class="icon">â†»</span>
 			</button>
 		</div>
+
 		<div class="tool-group container mx-auto">
 			<button class="action-button container mx-auto" onclick={() => handleAction('copy')} aria-label="Copy" title="Copy">
 				<span class="icon">â§‰</span>
 			</button>
+
 			<button class="action-button container mx-auto" onclick={() => handleAction('delete')} aria-label="Delete" title="Delete">
 				<span class="icon">ðŸ—‘ï¸</span>
 			</button>
 		</div>
 	</div>
+
 	<div class="toolbar-separator" aria-hidden="true"></div>
+
 	<!-- Zoom, Controls -->
 	<div class="toolbar-section container mx-auto">
 		<div class="tool-group container mx-auto">
 			<button class="action-button container mx-auto" onclick={() => handleZoom(-10)} aria-label="Zoom Out" title="Zoom Out">
 				<span class="icon">âž–</span>
 			</button>
+
 			<span class="zoom-level container mx-auto">{zoom}%</span>
+
 			<button class="action-button container mx-auto" onclick={() => handleZoom(10)} aria-label="Zoom In" title="Zoom In">
 				<span class="icon">âž•</span>
 			</button>
 		</div>
 	</div>
 </div>
+
 <style>
 	/* @unocss-include */
 	.toolbar-container {
@@ -272,8 +297,7 @@
 		align-items: center
 		gap: 0.5rem
 		padding: 0.75rem 1rem
-	;background: var(--bg-secondary),
-		border-bottom: 1px solid var(--border-light);
+	;background: var(--bg-secondary); border-bottom: 1px solid var(--border-light);
 		overflow-x: auto
 		min-height: 60px}
 	.toolbar-section {
@@ -286,8 +310,7 @@
 		align-items: center
 		gap: 0.25rem
 		padding: 0.25rem
-	;background: var(--bg-primary),
-		border-radius: 6px
+	;background: var(--bg-primary); border-radius: 6px
 	;border: 1px solid var(--border-light)}
 	.tool-button,
 	.format-button,
@@ -311,7 +334,7 @@
 	.tool-button.active,
 	.format-button.active,
 	.align-button.active {
-		background: var(--harvard-crimson), color: var(--text-inverse)}
+		background: var(--harvard-crimson); color: var(--text-inverse)}
 	.tool-button:disabled,
 	.format-button:disabled,
 	.align-button:disabled,
@@ -324,14 +347,14 @@
 	.color-input input[type='color'] {
 		position: absolute
 		opacity: 0
-		width: 100%, height: 100%;
+		width: 100%; height: 100%;
 		cursor: pointer}
 	.color-preview {
 		display: block
 		width: 24px
 		height: 24px
 		border-radius: 4px
-	;border: 2px solid var(--border-light), cursor: pointer}
+	;border: 2px solid var(--border-light); cursor: pointer}
 	.size-input {
 		display: flex
 		align-items: center
@@ -340,31 +363,27 @@
 	.size-input input[type='range'] {
 		width: 80px
 		height: 4px
-	;background: var(--muted-background),
-		border-radius: 2px
+	;background: var(--muted-background); border-radius: 2px
 		outline: none
 		cursor: pointer}
 	.size-input input[type='range']: :-webkit-slider-thumb {
 		appearance: none
 		width: 16px
 		height: 16px
-	;background: var(--harvard-crimson),
-		border-radius: 50%, cursor: pointer}
+	;background: var(--harvard-crimson); border-radius: 50%, cursor: pointer}
 	.size-label {
 		font-size: 0.75rem
-	;color: var(--text-muted),
-		min-width: 35px
+	;color: var(--text-muted); min-width: 35px
 		text-align: center}
 	.zoom-level {
 		font-size: 0.875rem
-	;color: var(--text-primary),
-		min-width: 45px
+	;color: var(--text-primary); min-width: 45px
 		text-align: center
 		font-weight: 500}
 	.toolbar-separator {
 		width: 1px
 		height: 32px
-	;background: var(--border-light), margin: 0 0.5rem
+	;background: var(--border-light); margin: 0 0.5rem
 		flex-shrink: 0}
 	/* Responsive */
 	@media (max-width: 768px) {
@@ -376,4 +395,5 @@
 		.size-label { display: none}
 	}
 </style>
+
 

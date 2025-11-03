@@ -8,6 +8,7 @@ import type { User } from '$lib/types';
     events: any[],
     signature?: string
     currentStage?: string}
+
   // read props (Svelte, 5 runtime helper)
   let { events = [], signature, currentStage } = $props<Props>();
   // use simple emoji/icon fallbacks to avoid external icon import issues
@@ -202,4 +203,5 @@ import type { User } from '$lib/types';
     border-radius: 3px}
   .custody-timeline::-webkit-scrollbar-thumb:hover { background: #a8a8a8}
 </style>
+
 

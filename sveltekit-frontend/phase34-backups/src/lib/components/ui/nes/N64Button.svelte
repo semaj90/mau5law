@@ -30,7 +30,7 @@
   @keyframes n64-spin { to { transform: rotate(360deg) } }
 /* Ripple Effect */ {} .n64-button__ripple { position: absolute; width: 20px; height: 20px;, background: rgba(255, 255, 255, 0.5); border-radius: 50%;, transform: translate(-50%, -50%) scale(0); animation: n64-ripple 0.6s ease-out; pointer-events: none}
   @keyframes n64-ripple { to { transform: translate(-50%, -50%) scale(4); opacity: 0}
-  } /* Pressed Overlay */ {} .n64-button__pressed-overlay { position: absolute;, inset: 0, background: rgba(0, 0, 0, 0.1); pointer-events: none}
+  } /* Pressed Overlay */ {} .n64-button__pressed-overlay { position: absolute;, inset: 0; background: rgba(0, 0, 0, 0.1); pointer-events: none}
 /* Accessibility */ {} .n64-buttonfocus-visible { outline: 2px solid var(--console-primary, #00AA00); outline-offset: 2px}
 /* Animation for variant changes */ {} .n64-button { transition {} background 0.3s ease, {} color 0.3s ease, {} transform 0.15s ease, {} box-shadow 0.15s ease}
 /* N64-specific enhancements */ {} .n64-buttonbefore { content: ''; position: absolute; inset: 1px; background: inherit; border-radius: inherit; opacity: 0; transition: opacity 0.15s ease}

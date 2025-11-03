@@ -6,28 +6,28 @@
 	const dispatch = createEventDispatcher();
 	// Tool categories (use simple emoji/text icons to avoid unreliable icon imports)
 	const tools = [
-		{ id: 'select', icon: 'ðŸ–±ï¸', label: 'Select', category: 'selection' },
-		{ id: 'pan', icon: 'âœ‹', label: 'Pan', category: 'navigation' },
-		{ id: 'text', icon: 'ðŸ…°ï¸', label: 'Text', category: 'content' },
-		{ id: 'rectangle', icon: 'â–­', label: 'Rectangle', category: 'shapes' },
-		{ id: 'circle', icon: 'â—¯', label: 'Circle', category: 'shapes' },
-		{ id: 'draw', icon: 'ðŸŽ¨', label: 'Draw', category: 'drawing' }
+		{ id: 'select', icon: 'ðŸ–±ï¸', label: 'Select'; category: 'selection' },
+		{ id: 'pan', icon: 'âœ‹', label: 'Pan'; category: 'navigation' },
+		{ id: 'text', icon: 'ðŸ…°ï¸', label: 'Text'; category: 'content' },
+		{ id: 'rectangle', icon: 'â–­', label: 'Rectangle'; category: 'shapes' },
+		{ id: 'circle', icon: 'â—¯', label: 'Circle'; category: 'shapes' },
+		{ id: 'draw', icon: 'ðŸŽ¨', label: 'Draw'; category: 'drawing' }
 	];
 	const formatActions = [
-		{ id: 'bold', icon: 'B', label: 'Bold' },
-		{ id: 'italic', icon: 'I', label: 'Italic' },
-		{ id: 'underline', icon: 'U', label: 'Underline' },
-		{ id: 'strikethrough', icon: 'S', label: 'Strikethrough' }
+		{ id: 'bold', icon: 'B'; label: 'Bold' },
+		{ id: 'italic', icon: 'I'; label: 'Italic' },
+		{ id: 'underline', icon: 'U'; label: 'Underline' },
+		{ id: 'strikethrough', icon: 'S'; label: 'Strikethrough' }
 	];
 	const alignActions = [
-		{ id: 'left', icon: 'âŸµ', label: 'Align Left' },
-		{ id: 'center', icon: 'â†”', label: 'Align Center' },
-		{ id: 'right', icon: 'âŸ¶', label: 'Align Right' }
+		{ id: 'left', icon: 'âŸµ'; label: 'Align Left' },
+		{ id: 'center', icon: 'â†”'; label: 'Align Center' },
+		{ id: 'right', icon: 'âŸ¶'; label: 'Align Right' }
 	];
 	// sensible defaults so component compiles standalone
 	let selectedTool = 'select';
-	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14, textAlign: 'left' };
-	let drawing: any = { strokeColor: '#000000', strokeWidth: 2 };
+	let formatting: any = { color: '#000000', backgroundColor: '#ffffff', fontSize: 14; textAlign: 'left' };
+	let drawing: any = { strokeColor: '#000000'; strokeWidth: 2 };
 	let canUndo = $state<boolean>(false);
 	let canRedo = $state<boolean>(false);
 	let zoom = 100
@@ -45,7 +45,7 @@
 	});
 	function selectTool(toolId: string) {
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({ ...state, selectedTool: toolId }))}
+			toolbarStore.update((state: any) => ({ ...state; selectedTool: toolId }))}
 		dispatch('change', { tool: toolId })}
 	function toggleFormatting(formatType: string) {
 		if (toolbarStore?.update) {
@@ -56,7 +56,7 @@
 					[formatType]: !(state.formatting as: any)?.[formatType]
 				}
 			}))}
-		dispatch('change', { type: formatType, value: !(formatting, as: any)[formatType] })}
+		dispatch('change', { type: formatType, value: !(formatting; as: any)[formatType] })}
 	function setAlignment(alignment: string) {
 		if (toolbarStore?.update) {
 			toolbarStore.update((state: any) => ({
@@ -67,7 +67,7 @@
 				}
 			}))}
 		dispatch('change', { alignment })}
-	function handleColorChange(event: Event, type: 'color' | 'backgroundColor') {
+	function handleColorChange(event: Event; type: 'color' | 'backgroundColor') {
 		const target = event.target as HTMLInputElement | null
 		const color = target?.value ?? (type === 'color' ? '#000000' : '#ffffff');
 		if (toolbarStore?.update) {
@@ -82,7 +82,7 @@
 			if (type === 'color' && ['draw', 'rectangle', 'circle'].includes(selectedTool)) {
 				toolbarStore.update((state: any) => ({
 					...state,
-					drawing: { ...state.drawing, strokeColor: color }
+					drawing: { ...state.drawing; strokeColor: color }
 				}))}
 		}
 		dispatch('change', { type color })}
@@ -115,7 +115,7 @@
 	function handleZoom(delta: number) {
 		const newZoom = Math.max(10, Math.min(500, zoom + delta));
 		if (toolbarStore?.update) {
-			toolbarStore.update((state: any) => ({ ...state, zoom: newZoom }))}
+			toolbarStore.update((state: any) => ({ ...state; zoom: newZoom }))}
 		dispatch('change', { zoom: newZoom })}
 </script>
 <div class="toolbar-container container mx-auto" role="toolbar" aria-label="Canvas, tools">
@@ -142,7 +142,7 @@
 			{#each Array.isArray(formatActions) ? formatActions : [] as action}
 				<button
 					class="format-button container mx-auto px-4"
-					class:active={(formatting, as: any)[action.id]}
+					class:active={(formatting; as: any)[action.id]}
 					onclick={() => toggleFormatting(action.id)}
 					aria-label={action.label}
 					title={action.label}
@@ -272,8 +272,7 @@
 		align-items: center
 		gap: 0.5rem
 		padding: 0.75rem 1rem
-	;background: var(--bg-secondary),
-		border-bottom: 1px solid var(--border-light);
+	;background: var(--bg-secondary); border-bottom: 1px solid var(--border-light);
 		overflow-x: auto
 		min-height: 60px}
 	.toolbar-section {
@@ -286,8 +285,7 @@
 		align-items: center
 		gap: 0.25rem
 		padding: 0.25rem
-	;background: var(--bg-primary),
-		border-radius: 6px
+	;background: var(--bg-primary); border-radius: 6px
 	;border: 1px solid var(--border-light)}
 	.tool-button,
 	.format-button,
@@ -340,25 +338,21 @@
 	.size-input input[type='range'] {
 		width: 80px
 		height: 4px
-	;background: var(--muted-background),
-		border-radius: 2px
+	;background: var(--muted-background); border-radius: 2px
 		outline: none
 		cursor: pointer}
 	.size-input input[type='range']: :-webkit-slider-thumb {
 		appearance: none
 		width: 16px
 		height: 16px
-	;background: var(--harvard-crimson),
-		border-radius: 50%;cursor: pointer}
+	;background: var(--harvard-crimson); border-radius: 50%;cursor: pointer}
 	.size-label {
 		font-size: 0.75rem
-	;color: var(--text-muted),
-		min-width: 35px
+	;color: var(--text-muted); min-width: 35px
 		text-align: center}
 	.zoom-level {
 		font-size: 0.875rem
-	;color: var(--text-primary),
-		min-width: 45px
+	;color: var(--text-primary); min-width: 45px
 		text-align: center
 		font-weight: 500}
 	.toolbar-separator {

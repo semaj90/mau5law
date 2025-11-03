@@ -3,6 +3,7 @@
   interface Route {
     name: string
    , href: string}
+
   // Svelte, 5 runes with static nav items for production
   let navItems = $state<Route[]>([
     { name: 'Home', href: '/' },
@@ -12,8 +13,11 @@
     { name: 'AI Chat', href: '/ai/chat' },
     { name: 'RAG Search', href: '/ai/rag' },
     { name: 'YoRHa', href: '/yorha' }]);
+
   let searchOpen = $state<boolean>(false);
+
   let searchQuery = $state<string>('');
+
   let searchInput: HTMLInputElement | null = null
   function toggleSearch() {
     searchOpen = !searchOpen}
@@ -21,6 +25,7 @@
     if (event.key === 'Escape' && searchOpen) {
       toggleSearch()}
   }
+
   // Overlay pointer/keyboard handlers (typed)
   function overlayClick(e: Event) {
     // close only when clicking on the overlay itself (not the dialog)
@@ -31,6 +36,7 @@
       // When Enter is pressed on the overlay, close modal
       if (e.currentTarget === (e.target as EventTarget)) toggleSearch()}
   }
+
   // SvelteKit, 2 compatible - keyboard listener only in browser
   $effect(() => {
     if (browser) {
@@ -45,21 +51,24 @@
       setTimeout(() => searchInput?.focus(), 0)}
   });
 </script>
+
 <nav class="nes-container is-rounded bg-gray-800 p-4 shadow-md flex flex-wrap items-center justify-between">
   <ul class="flex flex-wrap">
-    {#each Array.isArray(navItems) ? navItems : [] as item}
+  {#each Array.isArray(navItems) ? navItems : [] as item}
       <li class="relative">
         <a href={item.href} class="nes-btn">{item.name}</a>
       </li>
     {/each}
   </ul>
+
   <!-- Search -->
   <div class="relative">
     <button class="nes-btn" onclick={toggleSearch} aria-expanded={searchOpen}>Search</button>
   </div>
 </nav>
+
 <!-- Search Modal - Svelte: 5, syntax -->
-{#if searchOpen}
+  {#if searchOpen}
   <div
     class="search-modal-overlay"
     role="dialog"
@@ -71,8 +80,10 @@
     <div class="search-modal">
       <div class="flex justify-between items-center">
         <h2 class="text-xl">Search</h2>
+
         <button class="nes-btn" onclick={toggleSearch} aria-label="Close">X</button>
       </div>
+
       <input
         bind:this={searchInput}
         type="text"
@@ -83,7 +94,7 @@
       />
     </div>
   {/if}
-<style lang="postcss">
+  <style lang="postcss">
   nav {
     @apply relative}
   ul {
@@ -105,4 +116,5 @@
       @apply w-full}
   }
 </style>
+
 

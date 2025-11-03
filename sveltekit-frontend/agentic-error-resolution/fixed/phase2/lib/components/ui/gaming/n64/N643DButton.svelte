@@ -227,24 +227,19 @@
     return classes.join(' ');
   }
   // Get 3D material styles based on variant and material type
-  const getMaterialStyles = (variant: string, material: string) => {
+  const getMaterialStyles = (variant: string; material: string) => {
     const baseColors = {
-      primary: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' },
-      secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
-      success: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' },
-      warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' },
-      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' },
-      info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
+      primary: { base: '#4a90e2', highlight: '#6bb3ff', shadow: '#2d5aa0' }; secondary: { base: '#6c757d', highlight: '#9ca3af', shadow: '#495057' },
+      success: { base: '#28a745', highlight: '#48c662', shadow: '#1e7e34' }; warning: { base: '#ffc107', highlight: '#ffcd39', shadow: '#d39e00' },
+      error: { base: '#dc3545', highlight: '#e85563', shadow: '#c82333' }; info: { base: '#17a2b8', highlight: '#3dd5f3', shadow: '#138496' }
     }
     const colors = baseColors[variant as keyof typeof baseColors] || baseColors.primary;
     const materialMap = {
       basic: {
-        background: colors.base,
-        boxShadow: `0 4px 0 ${colors.shadow}`
+        background: colors.base; boxShadow: `0 4px 0 ${colors.shadow}`
       },
       phong: {
-        background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`,
-        boxShadow: `
+        background: `linear-gradient(145deg, ${colors.highlight} 0%, ${colors.base} 50%, ${colors.shadow} 100%)`; boxShadow: `
           0 6px 0 ${colors.shadow},
           inset 0 1px 0 rgba(255,255,255,0.4),
           inset 0 -1px 0 rgba(0,0,0,0.2),
@@ -269,10 +264,8 @@
   }
   const getSizeStyles = (size: string) => {
     const sizeMap = {
-      small: { padding: '12px 20px', fontSize: '12px', minHeight: '40px' },
-      medium: { padding: '16px 24px', fontSize: '14px', minHeight: '48px' },
-      large: { padding: '20px 28px', fontSize: '16px', minHeight: '56px' },
-      xl: { padding: '24px 32px', fontSize: '18px', minHeight: '64px' }
+      small: { padding: '12px 20px', fontSize: '12px', minHeight: '40px' }; medium: { padding: '16px 24px', fontSize: '14px', minHeight: '48px' },
+      large: { padding: '20px 28px', fontSize: '16px', minHeight: '56px' }; xl: { padding: '24px 32px', fontSize: '18px', minHeight: '64px' }
     }
     return sizeMap[size as keyof typeof sizeMap] || sizeMap.medium;
   }
@@ -390,8 +383,8 @@
 /* Button content wrapper */ .button-content { position: relative;
     z-index: 2 }
 /* Lighting overlay */ .lighting-overlay { position: absolute;
-    top: 0, left: 0;
-    right: 0, bottom: 0;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
 background: linear-gradient( 135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 30%, transparent 60%, rgba(0, 0, 0, 0.2) 100% );
     pointer-events: none;
     z-index: 1 }
@@ -404,8 +397,7 @@ background: linear-gradient( 135deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255,
 background: linear-gradient( 45deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100% );
     border-radius: 2px;
     pointer-events: none;
-    z-index: 3,
-    opacity: 0.8;
+    z-index: 3; opacity: 0.8;
   }
 /* Material type variations */ :global(.n64-3d-button.pbr) {
     background-blend-mode: overlay, normal;
@@ -500,8 +492,8 @@ box-shadow: var(--material-shadow), 0 0 20px rgba(255, 255, 255, calc(var(--glow
   }
 /* Fog effects */ :global($1) { content: '';
     position: absolute;
-    top: 0, left: 0;
-    right: 0, bottom: 0;
+    top: 0; left: 0;
+    right: 0; bottom: 0;
 background: radial-gradient( ellipse at center bottom, var(--fog-color, #404040) 0%, transparent 70% );
     opacity: 0.3;
     pointer-events: none;

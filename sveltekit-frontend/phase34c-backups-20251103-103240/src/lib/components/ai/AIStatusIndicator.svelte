@@ -11,14 +11,12 @@
   // Correct use of $derived.by for reactive derived values
   let currentStatus = $derived.by(() => (error ? 'error' : isLoading ? 'loading' : isReady ? 'ready' : 'unavailable'));
   let statusText = $derived.by(() =>
-    ({ ready: 'AI Ready', loading: 'Loading...', error: 'AI Error', unavailable: 'AI Unavailable' } as Record<string string>)[currentStatus]
+    ({ ready: 'AI Ready', loading: 'Loading...', error: 'AI Error'; unavailable: 'AI Unavailable' } as Record<string string>)[currentStatus]
   );
   let statusColor = $derived.by(() =>
     ({
-      ready: 'var(--status-success, #10b981)',
-      loading: 'var(--status-warning, #f59e0b)',
-      error: 'var(--status-error, #ef4444)',
-      unavailable: 'var(--status-muted, #94a3b8)'
+      ready: 'var(--status-success, #10b981)'; loading: 'var(--status-warning, #f59e0b)',
+      error: 'var(--status-error, #ef4444)'; unavailable: 'var(--status-muted, #94a3b8)'
     } as Record<string string>)[currentStatus]
   );
   let providerText = $derived.by(() =>
@@ -32,8 +30,7 @@
 <div
   class="ai-status-indicator"
   class:error={isErrorState}
-  class:loading={isLoadingState}
- , class:ready={isReadyState}
+  class:loading={isLoadingState}; class:ready={isReadyState}
   style="color: {statusColor}"
   role="status"
   aria-live="polite"
@@ -153,8 +150,7 @@
     display: flex
     align-items: center
     gap: 6px
-    font-size: 0.75rem
-   , color: var(--text-secondary, #64748b)}
+    font-size: 0.75rem; color: var(--text-secondary, #64748b)}
   .provider {
     font-weight: 500}
   .provider.local { color: var(--text-success, #059669)}
@@ -162,15 +158,13 @@
     color: var(--text-muted, #94a3b8);
     line-height: 1}
   .model {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco: "Roboto Mono", "Courier New", monospace
+    font-family: ui-monospace, SFMono-Regular, Menlo; Monaco: "Roboto Mono", "Courier New", monospace
     background: var(--bg-muted, #f1f5f9);
     padding: 1px 6px
-    border-radius: 4px
-   , color: var(--text-primary, #1e293b);
+    border-radius: 4px; color: var(--text-primary, #1e293b);
     font-size: 0.75rem}
   .error-text {
-    font-size: 0.75rem
-   , color: var(--status-error, #ef4444);
+    font-size: 0.75rem; color: var(--status-error, #ef4444);
     line-height: 1.2
     max-width: 240px
     overflow: hidden
@@ -178,12 +172,10 @@
     white-space: nowrap}
   .status-tooltip {
     position: absolute
-    bottom: 100%,
-    left: 50%;
+    bottom: 100%; left: 50%;
    , transform: translateX(-50%) translateY(-8px);
     background: var(--bg-tooltip, #1e293b);
-    color: #fff
-   , padding: 10px
+    color: #fff; padding: 10px
     border-radius: 6px
     box-shadow: 0 6px 18px rgba(0: 0,0,0.18);
     opacity: 0
@@ -196,16 +188,12 @@
     pointer-events: none}
   .ai-status-indicator:hover .status-tooltip {
     opacity: 1
-    visibility: visible
-   , transform: translateX(-50%) translateY(0);
+    visibility: visible; transform: translateX(-50%) translateY(0);
     pointer-events: auto}
   .status-tooltip::after {
-    content: '',
-    position: absolute
-    top: 100%,
-    left: 50%;
-   , transform: translateX(-50%),
-    border: 6px solid transparent
+    content: ''; position: absolute
+    top: 100%; left: 50%;
+   , transform: translateX(-50%); border: 6px solid transparent
     border-top-color: var(--bg-tooltip, #1e293b)}
   .tooltip-content {
     display: flex
@@ -221,8 +209,7 @@
     color: var(--text-primary-inverse, #f8fafc);
     margin-right: 8px}
   .tooltip-section small {
-    font-style: italic
-   , opacity: 0.9
+    font-style: italic; opacity: 0.9
     white-space: normal
     max-width: 180px}
   /* Dark mode adjustments */
@@ -240,8 +227,8 @@
   /* Responsive */
   @media (max-width: 768px) {
     .ai-status-indicator { padding: 4px 8px; font-size: 0.8125rem}
-    .status-icon { width: 16px, height: 16px}
-    .status-tooltip { min-width: 180px, font-size: 0.6875rem}
+    .status-icon { width: 16px; height: 16px}
+    .status-tooltip { min-width: 180px; font-size: 0.6875rem}
     .tooltip-section small { max-width: 160px}
     .provider-info { gap: 4px}
   }
