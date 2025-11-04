@@ -1,0 +1,619 @@
+{
+  "totalFiles": 241,
+  "filesRepaired": 72,
+  "filesSkipped": 169,
+  "totalIssuesFixed": 337,
+  "issues": {
+    "collapsedMarkup": 226,
+    "strayCommas": 0,
+    "straySemicolons": 0,
+    "missingCommas": 288,
+    "duplicateContent": 16,
+    "malformedObjects": 73
+  },
+  "timestamp": "2025-11-04T20:45:28.078Z",
+  "files": [
+    {
+      "file": "(admin)\\+layout.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(ai)\\case-scoring\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "(ai)\\document-drafting\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "(ai)\\pattern-detection\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "(ai)\\processing\\+page.svelte",
+      "issuesFixed": 7,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 5 missing commas in object properties",
+        "Fixed 1 malformed property patterns"
+      ]
+    },
+    {
+      "file": "(ai)\\recommendations\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "(ai)\\summary\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(demo)\\showcase\\+page.svelte",
+      "issuesFixed": 4,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(demo)\\[slug]\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "(dev)\\+layout.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(evidence)\\main\\organize\\[caseId]\\+page.svelte",
+      "issuesFixed": 4,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 malformed property patterns",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(evidence)\\main\\upload\\+page.svelte",
+      "issuesFixed": 6,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 missing commas in object properties",
+        "Fixed 2 malformed property patterns",
+        "Fixed 2 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(legal)\\+layout.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(legal)\\citations\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "(tools)\\cuda-search\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "(tools)\\report-builder\\+page.svelte",
+      "issuesFixed": 12,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 10 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "+error.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "admin\\+layout.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "admin\\service-graph\\+page.svelte",
+      "issuesFixed": 4,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 3 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "agent-demo\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "agent-demo\\page-backup.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "ai\\dashboard\\+page.svelte",
+      "issuesFixed": 6,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 4 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "auth\\test\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "copilot\\autonomous\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "demo\\agentic-rag\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "demo\\hybrid-ml\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "demo\\integrated-rag\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "demo\\legal-research\\+page.svelte",
+      "issuesFixed": 1,
+      "issues": [
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "detective\\+page.svelte",
+      "issuesFixed": 21,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 18 missing commas in object properties",
+        "Removed 1 duplicate content section(s)",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "detective\\[caseId]\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "dev\\copilot-optimizer\\+page.svelte",
+      "issuesFixed": 4,
+      "issues": [
+        "Fixed 3 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "dev\\dynamic-routing-test\\+page.svelte",
+      "issuesFixed": 6,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 4 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "dev\\gpu-tiling\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "dev\\pgvector-test\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "dev\\qdrant\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "dev\\route-explorer\\+page.svelte",
+      "issuesFixed": 17,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 15 missing commas in object properties",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "dev\\tensor-demo\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "dev\\webgl-fallback-test\\enhanced-test.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "evidence\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "evidence\\analyze\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "evidence\\organize\\[caseId]\\+page.svelte",
+      "issuesFixed": 4,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 malformed property patterns",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "evidence-ai\\+page.svelte",
+      "issuesFixed": 9,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 5 missing commas in object properties",
+        "Fixed 2 malformed property patterns",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "import\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 missing commas in object properties",
+        "Fixed 2 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "investigation\\+page.svelte",
+      "issuesFixed": 7,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 6 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "laws\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "layout.complex.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "legal\\case-theory\\+page.svelte",
+      "issuesFixed": 20,
+      "issues": [
+        "Fixed 18 missing commas in object properties",
+        "Fixed 2 malformed property patterns"
+      ]
+    },
+    {
+      "file": "legal\\research\\+page.svelte",
+      "issuesFixed": 20,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 16 missing commas in object properties",
+        "Fixed 3 malformed property patterns"
+      ]
+    },
+    {
+      "file": "page.complex.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "persons\\+page.svelte",
+      "issuesFixed": 14,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 13 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "rag\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "reports\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "reports-generator\\+page.svelte",
+      "issuesFixed": 11,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 9 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "saved-citations\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "shader_search\\+page.svelte",
+      "issuesFixed": 6,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 missing commas in object properties",
+        "Fixed 1 malformed property patterns",
+        "Fixed 2 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "simple-upload-test\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "state\\persistence\\+page.svelte",
+      "issuesFixed": 7,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 5 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "state\\transitions\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "status\\+page.svelte",
+      "issuesFixed": 10,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 8 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "system\\health\\+page.svelte",
+      "issuesFixed": 11,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 8 missing commas in object properties",
+        "Fixed 1 malformed property patterns",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "system-dashboard\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "system-dashboard\\cases\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 2 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "system-dashboard\\search\\+page.svelte",
+      "issuesFixed": 9,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 8 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "system-status\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)"
+      ]
+    },
+    {
+      "file": "upload\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "webgpu-test\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 missing commas in object properties"
+      ]
+    },
+    {
+      "file": "yorha\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Removed 1 duplicate content section(s)",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "yorha\\analysis\\+page.svelte",
+      "issuesFixed": 3,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 missing commas in object properties",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "yorha\\api-test\\+page.svelte",
+      "issuesFixed": 2,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 1 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "yorha\\components\\+page.svelte",
+      "issuesFixed": 4,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 3 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "yorha\\detective\\+page.svelte",
+      "issuesFixed": 8,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 4 missing commas in object properties",
+        "Fixed 3 incomplete closing tags"
+      ]
+    },
+    {
+      "file": "yorha\\persons\\+page.svelte",
+      "issuesFixed": 5,
+      "issues": [
+        "Fixed 1 collapsed markup regions",
+        "Fixed 4 incomplete closing tags"
+      ]
+    }
+  ]
+}

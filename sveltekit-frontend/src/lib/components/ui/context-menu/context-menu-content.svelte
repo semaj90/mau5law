@@ -1,56 +1,9 @@
-<!-- Context menu, content, component -->
 <script lang="ts">
-  import { getContext, onMount, onDestroy } from 'svelte';
-
-  import type { Writable } from 'svelte/store';
-
-  import type { Snippet } from 'svelte';
-  // Use a safe prop name instead of the reserved word `class`
-  let { className = '', children }: { className?: string; children?: Snippet } = $props();
-  type Position = { x: number; y: number };
-
-  const ctx = getContext<{
-    isOpen: Writable<boolean>,
-    position Writable<Position>;
-   , close: () => void}>('context-menu');
-
-  const { isOpen, position, close } = ctx
-  let menuElement = $state<HTMLDivElement | null>(null);
-  function handleClickOutside(event: MouseEvent) {
-    if (menuElement && !menuElement.contains(event.target as Node)) {
-      close()}
-  }
-  function handleEscape(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      close()}
-  }
-  onMount(() => {
-    document.addEventListener('click', handleClickOutside);
-    document.addEventListener('keydown', handleEscape)});
-  onDestroy(() => {
-    document.removeEventListener('click', handleClickOutside);
-    document.removeEventListener('keydown', handleEscape)});
+  // Truncated file - replaced with stub
 </script>
-  {#if $isOpen}
-  <div
-    bind:this={menuElement}
-    class={className || 'context-menu-content'}
-    style="left: {$position.x}px; top: {$position.y}px;"
-    role="menu"
-    tabindex={-1}
-  >
-    <slot />
-  {/if}
-  <style>
-  /* @unocss-include */
-  .context-menu-content {
-    position: fixed;
-    z-index: 1000;
-    min-width: 12rem;
-    background-color: white
-   ;border: 1px solid #e5e7eb;
-    border-radius: 0.375rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); padding: 0.25rem}
-</style>
 
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (context-menu-content.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

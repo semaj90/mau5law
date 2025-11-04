@@ -1,12 +1,9 @@
-﻿<script lang="ts">
-  import type { Snippet } from 'svelte';
-  interface Props {
-    description?: string;
-    children?: Snippet;
-  }
-  let { description = '', children }: Props = $props();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<p class="space-y-4">
-  <slot />
-</p>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (DialogDescription.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

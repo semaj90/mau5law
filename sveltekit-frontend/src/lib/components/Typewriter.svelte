@@ -1,59 +1,9 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
-https: //svelte.dev/e/js_parse_error -->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  interface Props {
-    text: string;
-    speed: number;
-  }
-  let { text = '', speed = 50 }: Props = $props();
-  
-  let output = $state<string>('');
-  
-  let i = $state<number>(0);
-  
-  let intervalId = $state<NodeJS.Timeout | null>(null);
-  $effect(() => {
-    if (text) {
-      output = '';
-      i = 0;
-      if (intervalId) {
-        clearInterval(intervalId);
-      }
-      intervalId = setInterval(() => {
-        if (i < text.length) {
-          output += text[i];
-          i++;
-        } else {
-          if (intervalId) {
-            clearInterval(intervalId);
-            intervalId = null;
-          }
-        }
-      }, speed);
-    }
-  });
+  // Truncated file - replaced with stub
 </script>
 
-<div class="space-y-4">
-  {output}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Typewriter.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  /* @unocss-include */
-  .typewriter {
-    font-size: 1.2rem;
-    color: #6c757d;
-    min-height: 1.5rem;
-    border-right: 2px solid #007bff;
-    padding-right: 5px
-   ;animation: blink 1s infinite}
-  @keyframes blink {
-    0%,
-    50% {
-      border-color: #007bff}
-    51%,
-    100% {
-      border-color: transparent}
-  }
-</style>

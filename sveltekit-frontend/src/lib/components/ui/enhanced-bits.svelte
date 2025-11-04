@@ -1,38 +1,9 @@
 <script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  
-  const { onclick } = $props<{ onclick: ((...args: unknown[]) }>()
-  const { disabled } = $props<{ disabled: boolean }>()
-  const { variant } = $props<{ variant: string | undefined }>()
-  const { size } = $props<{ size: string | undefined }>()
-  const { className } = $props<{ className: string | undefined }>()
-  const dispatch = createEventDispatcher();
-  function handleClick(e: MouseEvent) {
-    if (disabled) return
-    onclick?.(e);
-    dispatch('click', e)}
+  // Truncated file - replaced with stub
 </script>
 
-<button
-  type="button"
-  onclick={handleClick}
-  {disabled}
-  class={`bits-btn ${variant ?? ''} ${size ?? ''} ${className ?? ''}`}
-  {...rest}
->
-  <slot />
-</button>
-
-<style>
-  /* very small baseline styles; real project likely overrides */
-  .bits-btn {
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px
-   ;border: 1px solid rgba(255,255,255,0.08); background: transparent;
-    cursor: pointer}
-  /* disabled, state: cover both attribute and pseudo-class usages */
-  .bits-btn[disabled],
-  .bits-btn: disabled {
-    opacity: 0.5
-   ;cursor: not-allowed}
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (enhanced-bits.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

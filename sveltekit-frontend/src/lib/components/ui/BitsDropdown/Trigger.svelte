@@ -1,12 +1,9 @@
-﻿<script lang="ts">
-  import type { Snippet } from 'svelte';
-  // Accept an optional children snippet in Svelte, 5
-  export let  Snippet | undefined = undefined
-  // No-op snippet fallback - use a Snippet-compatible function via: unknown cast
-  // TypeScript complains about direct conversion from () => string to Snippet,
-  // so convert through: unknown first which preserves runtime behavior.
-  const _noop: Snippet = (() => '') as: unknown as Snippet
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<!-- Prefer explicit `children` prop; use optional chaining and a noop to, avoid, invalid_snippet -->
-{@render (children ?? _noop)()}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Trigger.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

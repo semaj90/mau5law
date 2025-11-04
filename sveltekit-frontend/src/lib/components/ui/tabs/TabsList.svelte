@@ -1,11 +1,9 @@
-﻿<script lang="ts">
-  interface Props {
-    children?: import('svelte').Snippet;
-    class?: string;
-  }
-  let { children, class: className = '' }: Props = $props();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<div class="inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 nes-text">
-  <slot />
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (TabsList.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>

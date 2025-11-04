@@ -20,7 +20,7 @@ interface QueryCacheEntry {
 interface CacheStats {
   embeddings: { hits: number, misses: number, size: number };
   queries: { hits: number, misses: number, size: number };
-  sessions: { active: number, total: number }}
+  sessions: { :active number, total: number }}
 
 class EmbeddingCacheService {
   // Cache prefixes
@@ -208,7 +208,7 @@ class EmbeddingCacheService {
     const defaultStats: CacheStats = {
       embeddings: { hits: 0, misses: 0, size: 0 },
       queries: { hits: 0, misses: 0, size: 0 },
-      sessions: { active: 0, total: 0 }};
+      sessions: { :active 0, total: 0 }};
     if (!redisService.isHealthy()) return defaultStats
     try {
       const stats = (await redisService.hgetall(`${this.STATS_PREFIX}all`)) || {};
@@ -222,7 +222,7 @@ class EmbeddingCacheService {
           misses: parseInt(stats['query_misses'] || '0'),
           size: await this.getCacheSize('queries')},
         sessions: {
-          active: parseInt(stats['session_active'] || '0'),
+          :active parseInt(stats['session_active'] || '0'),
           total: parseInt(stats['session_total'] || '0')}}} catch (error) {
       console.warn('Stats retrieval error: ', error);
       return defaultStats}

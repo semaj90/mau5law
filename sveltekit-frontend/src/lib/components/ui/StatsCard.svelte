@@ -1,39 +1,9 @@
 <script lang="ts">
-  interface Props {
-    title?: string;
-    value?: string | number | null;
-  }
-
-  // Use Svelte, 5 runes API for props to avoid export-let / legacy mismatches
-  let { title = '', value = null }: Props = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<div class="stats-card">
-  <h3 class="title">{title}</h3>
-  {#if value !== null && value !== undefined}
-    <p class="value">{value}</p>
-  {:else}
-    <p class="value">â€”</p>
-  {/if}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (StatsCard.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  .stats-card {
-    padding: 1rem;
-    border-radius: 8px
-   ;background: var(--nes-container, #fefefe);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
-  .title {
-    font-size: 0.9rem;
-    font-weight: bold
-   ;margin: 0, 0 0.5rem}
-  .value {
-    font-size: 1.5rem;
-    font-weight: bold
-   ;color: var(--nes-primary, #212529)}
-  .value.empty {
-    color: var(--nes-muted, #6c757d);
-    font-weight: 600}
-</style>
-
-

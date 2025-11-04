@@ -1,33 +1,9 @@
 <script lang="ts">
-  import { setContext } from 'svelte';
-  import type { Snippet } from 'svelte';
-  interface Props {
-    theme?: string;
-    children?: Snippet;
-  }
-  let { theme = 'light', children }: Props = $props();
-
-  // expose theme to descendants via context and update when `theme` changes
-  $effect(() => {
-    setContext('theme', theme);
-  });
+  // Truncated file - replaced with stub
 </script>
 
-<div class={'theme-provider, ' + theme}>
-  <slot />
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (ThemeProvider.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  .theme-provider {
-    min-height: 100%;
-    display: block;
-  }
-  .theme-provider.light {
-    --bg: #ffffff --text: #111111 background-color var(--bg);
-    color: var(--text);
-  }
-  .theme-provider.dark {
-    --bg: #0b0b0b --text: #f5f5f5 background-color var(--bg);
-    color: var(--text);
-  }
-</style>

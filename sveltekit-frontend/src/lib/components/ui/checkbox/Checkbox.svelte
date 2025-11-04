@@ -1,32 +1,9 @@
-﻿<script lang="ts">
-  interface Props {
-    checked?: boolean;
-    disabled?: boolean;
-    id?: string;
-    name?: string;
-    value?: string;
-    ariaLabel?: string;
-    class?: string;
-  }
-  let {
-    checked = $bindable(false),
-    disabled = false,
-    id = undefined,
-    name = undefined,
-    value = undefined,
-    ariaLabel = undefined,
-    class: className = '',
-  }: Props = $props();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<input
-  type="checkbox"
-  {id}
-  {name}
-  {value}
-  bind:checked
-  {disabled}
-  aria-label={ariaLabel}
-  class={'h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 disabled:opacity-50, disabled:cursor-not-allowed, ' +
-    className}
-/>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Checkbox.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

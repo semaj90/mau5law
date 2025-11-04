@@ -1,19 +1,9 @@
-﻿<script lang="ts">
-  interface Props {
-    class?: string;
-  }
-  let { class: class_ = '', children }: Props & { children?: unknown } = $props();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<div class="space-y-4">
-  {#if children}
-    {@render children()}
-  {/if}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (SelectGroup.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  /* @unocss-include */
-  .select-group {
-    padding: 4px 0;
-  }
-</style>

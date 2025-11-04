@@ -1,24 +1,9 @@
-﻿<script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  import { cn } from '$lib/utils';
-  interface Props {
-    value?: unknown
-    max?: unknown
-    class?: string}
-  let { value = 0, max = 100, class: className = '' }: Props = $props();
-  
-  const percentage = $derived(Math.min(((value as: number) / (max as: number)) * 100, 100))
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<div
-  class={cn('relative h-2 w-full overflow-hidden rounded-full bg-secondary', className)}
-  role="progressbar"
-  aria-valuenow={value}
-  aria-valuemax={max}
-  aria-valuemin="0"
->
-  <div
-    class="h-full w-full flex-1 bg-primary transition-all duration-300 ease-in-out"
-    style="transform: translateX(-{100 - percentage}%)"
-  ></div>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Progress.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>

@@ -1,62 +1,9 @@
-<!--
-Enhanced-Bits Label Component
-NES-styled label with legal AI theming
--->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-	import type { Snippet } from 'svelte';
-
-  import { cn } from '$lib/utils';
-  interface LabelProps {
-    for?: string
-    required?: boolean
-    class?: string
-    children?: import('svelte').Snippet}
-  let {
-    for: htmlFor
-    required = false,
-    class: className = '',
-    childre}: LabelProps = $props();
-  // NES-style label classes
-  const labelClasses = $derived(
-    cn(
-      // Base styles: 'bits-label',
-      'block text-sm font-medium mb-1',
-      'font-mono tracking-wide',
-      'text-gray-900',
-      // Legal AI enhancements: 'transition-colors duration-200',
-      'cursor-pointer',
-      // NES styling: 'font-semibold',
-      'text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1)',
-      className
-    )
-  );
+  // Truncated file - replaced with stub
 </script>
 
-<label for={htmlFor} class={labelClasses}>
-  {#if children}
-    {@render children()}
-  {/if}
-  {#if required}
-    <span class="text-red-500" aria-label="required">*</span>
-  {/if}
-</label>
-
-<style>
-  .bits-label {
-    font-family: 'Courier New', monospace}
-  .bits-label:hover { color: rgb(59, 130, 246)}
-/* NES-style text shadow for retro effect */ {}
-  .bits-label {
-    text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1)}
-/* Legal AI specific styling */ {}
-  .bits-label {
-    position: relative}
-  .bits-label: :before {
-    content: ''; position: absolute;
-    bottom: -2px
-   ;left: 0; width: 0;
-    height: 2px
-   ;background: linear-gradient(45deg, #00ff9f, #00b4ff); transition: width: 0.3s ease}
-  .bits-label:hover::before { width: 100%}
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Label.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

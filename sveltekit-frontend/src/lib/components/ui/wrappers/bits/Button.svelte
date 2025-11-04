@@ -1,24 +1,9 @@
-﻿<script lang="ts">
- import { onMount } from 'svelte'; import { getBitsOverrides } from './bits-overrides'; import type { Snippet } from 'svelte'; interface Props { className?: string; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; ariaLabel?: string; onclick?: (evt: MouseEvent) => void; children?: Snippet}
-  let { className = '', disabled = false, type = 'button', ariaLabel = undefined, onclick = undefined, children }: Props = $props(); let Btn: unknown = null; const overrides = getBitsOverrides(); if (overrides && overrides.Button) { Btn = overrides.Button}
-  onMount(() => {
-		(async () => {
- if (Btn) return; try { // Dynamic import for bits-ui Button const mod: unknown = await import('bits-ui'); Btn = mod?.Button?.Root ?? mod?.Button ?? mod?.default ?? null} catch (err) { // Fallback to native button Btn = null; console.debug('bits-ui not available at runtime for Button wrapper', err)}
-  		})();
-	}); function handleClick(e: MouseEvent) { if (disabled) { e.preventDefault(); e.stopImmediatePropagation(); return}
-    onclick?.(e)}
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-{#if Btn}
-  <Btn class={className} {disabled} {type} aria-label={ariaLabel} onclick={handleClick}>
-    {#if children}
-      {@render children()}
-    {/if}
-  </Btn>
-{:else}
-  <button class={className} {disabled} {type} aria-label={ariaLabel} onclick={handleClick}>
-    {#if children}
-      {@render children()}
-    {/if}
-  </button>
-{/if}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Button.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

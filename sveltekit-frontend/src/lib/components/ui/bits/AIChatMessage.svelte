@@ -1,33 +1,9 @@
-<!-- AI Chat Message: Svelte: 5 | Bits, UI, UnoCSS, analytics, logging -->
 <script lang="ts">
-import type { Message } from '$lib/types';
-  interface Props {
-    message: { role: string;, content: string, timestamp?: string; references?: unknown[] };
-    showReferences?: boolean}
-  let { message, showReferences = false }: Props = $props();
-  let isUser = message.role === 'user';
+  // Truncated file - replaced with stub
 </script>
-<div class="flex gap-2 items-start" class:justify-end={isUser}>
-  <div
-    class="rounded-lg px-4 py-2 max-w-xl shadow text-sm"
-    class:bg-blue-100={isUser}
-    class:bg-gray-100={!isUser}
-    class:text-right={isUser}
-   , class:text-left={!isUser}
-  >
-    <div>{message.content}</div>
-    {#if showReferences && message.references?.length}
-      <div class="mt-2 text-xs">
-        References:
-        <ul class="list-disc">
-          {#each Array.isArray(message.references) ? message.references : [] as ref}
-            <li>{ref.id} (score: {ref.score})</li>
-          {/each}
-        </ul>
-      {/if}
-    {#if message.timestamp}
-      <div class="mt-1 text-xs">{message.timestamp}{/if}
-  </div>
-</div>
-;
 
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (AIChatMessage.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

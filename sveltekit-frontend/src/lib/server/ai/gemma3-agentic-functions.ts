@@ -162,7 +162,7 @@ export const agenticGemma3 = {
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(text)) !== null) {
-      const [, name, paramsRaw] = match;
+      const [ name, paramsRaw] = match;
       const parameters: Record<string, unknown> = {};
       if (paramsRaw.trim().length > 0) {
         for (const chunk of paramsRaw.split(",")) {

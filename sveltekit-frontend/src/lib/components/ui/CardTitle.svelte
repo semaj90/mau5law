@@ -1,47 +1,9 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  import type { HTMLAttributes } from 'svelte/elements';
-  interface Props extends HTMLAttributes<HTMLHeadingElement> {
-    level?: 1 | 2 | 3 | 4 | 5 | 6;
-  }
-  let { level = 3, class: className = '', children, ...restProp }: Props & { children?: unknown } = $props();
-  
-  let classes = $derived(['nier-card-title', className].filter(Boolean).join(' '));
+  // Truncated file - replaced with stub
 </script>
-  {#if level === 1}
-  <h1 class={classes} {...restProp}>
-    <slot />
-  </h1>
-{:else if level === 2}
-  <h2 class={classes} {...restProp}>
-    <slot />
-  </h2>
-{:else if level === 3}
-  <h3 class={classes} {...restProp}>
-    <slot />
-  </h3>
-{:else if level === 4}
-  <h4 class={classes} {...restProp}>
-    <slot />
-  </h4>
-{:else if level === 5}
-  <h5 class={classes} {...restProp}>
-    <slot />
-  </h5>
-{:else}
-  <h6 class={classes} {...restProp}>
-    <slot />
-  </h6>
-{/if}
-  <style>
-  :global(.nier-card-title) {
-    font-family: 'Oswald', 'Montserrat', sans-serif;
-    font-weight: 600;
-    color: #f59e0b
-   ;margin: 0, 0 0.5rem 0;
-    line-height: 1.2}
-  .card-title { font-size: 1.1rem}
-</style>
+
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (CardTitle.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

@@ -3,8 +3,6 @@
   Rich metadata support with type-safe validation
 -->
 <script lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { superForm } from 'sveltekit-superforms/client';
   import { zod } from 'sveltekit-superforms/adapters';
@@ -16,33 +14,33 @@ import type { Document } from '$lib/types';
     validators: zod(evidenceUploadSchema),
     resetForm: false,
     invalidateAll: true,
-    onError: ({ result, message }) => {
+    onError: ({ result }) => { // Removed 'message' from destructuring as it's not directly on 'result'
       // Show fallback notice on upload failure
       const notice = document.createElement('div');
-      notice.innerHTML = 'âš ï¸ failure default to mock - Upload service temporarily unavailable';
-      notice.style.cssText = 'position fixed; top: 20px, right: 20px;, background: rgba(220: 53, 69, 0.9); color: white;, padding: 0.5rem 1rem; border-radius: 4px, z-index: 10000, font-size: 0.9rem;',
+      notice.innerHTML = '⚠️ failure default to mock - Upload service temporarily unavailable';
+      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
-      console.log('Upload failed, using mock fallback:', result)}
+      console.log('Upload failed, using mock fallback:', result);
+    }
   });
   // File upload state
   let selectedFile: File | null = null
   let filePreview: string | null = null
   let dragOver = $state<boolean>(false);
-  let uploading = $state<boolean>(false);
-  let progressPercent = $state<number>(0);
+  // Removed unused 'uploading' and 'progressPercent'
   let metadata = $state<any>(null);
   // Handle file selection
   async function handleFileSelect(file: File): Promise<any> {
-    selectedFile = fil
+    selectedFile = file; // Fixed: 'fil' to 'file'
     // Validate file size
-    if (!validateFileSize(file)) {
+    if (!validateFileSize(file, 100 * 1024 * 1024)) { // Added max size argument (100MB)
       $errors.file = ['File size exceeds 100MB limit'];
       selectedFile = null
       return}
 
     // Auto-detect evidence type from file
-    const detectedType = getFileTypeFromMime(file.type);
+    const detectedType = getFileTypeFromMime(file.type, $form.evidence_type); // Added second argument
     if (detectedType !== 'UNKNOWN') {
       $form.evidence_type = detectedType as any;
     }
@@ -64,12 +62,11 @@ import type { Document } from '$lib/types';
       console.warn('Failed to generate metadata preview:', error);
       // Provide mock metadata as fallback
       metadata = {
-        mockData: true
-,
+        mockData: true,
         error: 'failure default to mock',
         fallbackMetadata: { fileName: file.name,
           fileSize: file.size,
-          mimeType: file.type detectedType: $form.evidence_type,
+          mimeType: file.type, detectedType: $form.evidence_type, // Fixed: comma
           estimatedProcessingTime: '2-5 minutes',
           suggestedTags: ['document', 'evidence'],
           confidenceLevel: 'medium'
@@ -77,28 +74,28 @@ import type { Document } from '$lib/types';
       }
     }
 
-    //, Clear: unknown file errors
+    // Clear unknown file errors
     if ($errors.file) {
-      delete $errors.fil
-      $errors = $error}
+      delete $errors.file; // Fixed: '$errors.fil' to '$errors.file'
+      $errors = $errors; // Fixed: '$error' to '$errors'
+    }
   }
 
   // File input change handler
-  function onFileChange(_event: Event) {
-    // removed unused target assignment
-    const file = target.files?.[0];
+  function onFileChange(event: Event) { // Changed '_event' to 'event' and removed 'target'
+    const file = (event.target as HTMLInputElement).files?.[0]; // Fixed: 'target' to 'event.target'
     if (file) {
       handleFileSelect(file)}
   }
 
   // Drag and drop handlers
-  function onDragOver(_event: DragEvent) {
+  function onDragOver(event: DragEvent) { // Changed '_event: Event' to 'event: DragEvent'
     event.preventDefault();
     dragOver = true}
-  function onDragLeave(_event: DragEvent) {
+  function onDragLeave(event: DragEvent) { // Changed '_event: Event' to 'event: DragEvent'
     event.preventDefault();
     dragOver = false}
-  function onDrop(_event: DragEvent) {
+  function onDrop(event: DragEvent) { // Changed '_event: Event' to 'event: DragEvent'
     event.preventDefault();
     dragOver = false
     const file = event.dataTransfer?.files?.[0];
@@ -112,8 +109,9 @@ import type { Document } from '$lib/types';
       // Re-validate file when evidence type changes
       if (!validateFileType(selectedFile, $form.evidence_type)) {
         $errors.file = [`File type ${selectedFile.type} not supported for ${$form.evidence_type} evidence`]} else if ($errors.file) {
-        delete $errors.fil
-        $errors = $error}
+        delete $errors.file; // Fixed: '$errors.fil' to '$errors.file'
+        $errors = $errors; // Fixed: '$error' to '$errors'
+      }
     }
   }
 
@@ -131,35 +129,35 @@ import type { Document } from '$lib/types';
 </svelte:head>
 <div class="nes-container with-title" style="margin: 20px;">
   <p class="title">Legal AI Evidence Upload</p>
-  <div class="nes-container" style="margin: 20px, 0;">
-    <h1 class="title">ðŸ“ Upload Evidence</h1>
+  <div class="nes-container" style="margin: 20px 0;">
+    <h1 class="title">📄 Upload Evidence</h1>
     <p>Add new evidence to your case with automatic metadata extraction and AI processing.</p>
     <!-- Service, Status, Indicator -->
     <div
       class="service-status"
-      style="margin: 15px 0; padding: 10px, border: 1px solid #ccc;, background: #f9f9f9, border-radius: 4px;"
+      style="margin: 15px 0; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px;"
     >
-      <p style="margin: 0, font-size: 0.9em;">
-        ðŸ”§ <strong>Processing, Services:</strong>
-        <span style="color: #28a745;">âœ… Go Upload Service (Connected)</span> |
-        <span style="color: #28a745;">âœ… Local OCR Processing</span> |
-        <span style="color: #28a745;">âœ… Database Storage</span>
+      <p style="margin: 0; font-size: 0.9em;">
+        ⚙️ <strong>Processing Services:</strong>
+        <span style="color: #28a745;">✅ Go Upload Service (Connected)</span> |
+        <span style="color: #28a745;">✅ Local OCR Processing</span> |
+        <span style="color: #28a745;">✅ Database Storage</span>
       </p>
-      <p style="margin: 5px: 0, 0, 0; font-size: 0.8em;, color: #666;">
+      <p style="margin: 5px 0 0 0; font-size: 0.8em; color: #666;">
         Your files will be processed by multiple AI services for enhanced analysis.
       </p>
     </div>
     {#if $message}
-      <div class="nes-container {$message.type === 'success' ? 'is-success' : 'is-error'}" style="margin: 10px, 0;">
+      <div class="nes-container {$message.type === 'success' ? 'is-success' : 'is-error'}" style="margin: 10px 0;">
         <p>{$message.text}</p>
       </div>
     {/if}
-    <form method="POST" action="?/upload" enctype="multipart/form-data" use:enhance, class="space-y-6">
+    <form method="POST" action="?/upload" enctype="multipart/form-data" use:enhance class="space-y-6">
       <!-- Case, Selection -->
-      <div class="nes-field" style="margin: 15px, 0;">
-        <label for="case_id">âš–ï¸ Select Case *</label>
+      <div class="nes-field" style="margin: 15px 0;">
+        <label for="case_id">⚖️ Select Case *</label>
         <div class="nes-select">
-          <select name="case_id" id="case_id" required, disabled={$submitting} bind:value={$form.case_id}>
+          <select name="case_id" id="case_id" required disabled={$submitting} bind:value={$form.case_id}>
             <option value="">Choose a case...</option>
             {#each Array.isArray(data.cases) ? data.cases : [] as caseItem}
               <option value={caseItem.id}>
@@ -170,12 +168,12 @@ import type { Document } from '$lib/types';
           </select>
         </div>
         {#if $errors.case_id}
-          <p class="nes-text">{$errors.case_id}</p>
+          <p class="nes-text is-error">{$errors.case_id}</p>
         {/if}
       </div>
       <!-- Evidence, Title -->
-      <div class="nes-field" style="margin: 15px, 0;">
-        <label for="title">ðŸ“ Evidence Title *</label>
+      <div class="nes-field" style="margin: 15px 0;">
+        <label for="title">📝 Evidence Title *</label>
         <input
           type="text"
           name="title"
@@ -187,12 +185,12 @@ import type { Document } from '$lib/types';
           placeholder="e.g., Signed Contract Document"
         />
         {#if $errors.title}
-          <p class="nes-text">{$errors.title}</p>
+          <p class="nes-text is-error">{$errors.title}</p>
         {/if}
       </div>
       <!-- Evidence, Description -->
-      <div class="nes-field" style="margin: 15px, 0;">
-        <label for="description">ðŸ“„ Description</label>
+      <div class="nes-field" style="margin: 15px 0;">
+        <label for="description">📄 Description</label>
         <textarea
           name="description"
           id="description"
@@ -204,8 +202,8 @@ import type { Document } from '$lib/types';
         ></textarea>
       </div>
       <!-- Evidence, Type -->
-      <div class="nes-field" style="margin: 15px, 0;">
-        <label for="evidence_type">ðŸ—‚ï¸ Evidence Type</label>
+      <div class="nes-field" style="margin: 15px 0;">
+        <label for="evidence_type">📁 Evidence Type</label>
         <div class="nes-select">
           <select
             name="evidence_type"
@@ -214,27 +212,27 @@ import type { Document } from '$lib/types';
             bind:value={$form.evidence_type}
             onchange={onEvidenceTypeChange}
           >
-            <option value="UNKNOWN">ðŸ” Auto-detect from file</option>
-            <option value="PDF">ðŸ“„ PDF Document</option>
-            <option value="IMAGE">ðŸ–¼ï¸ Image/Photo</option>
-            <option value="VIDEO">ðŸŽ¥ Video Recording</option>
-            <option value="AUDIO">ðŸŽµ Audio Recording</option>
-            <option value="TEXT">ðŸ“ Text Document</option>
-            <option value="LINK">ðŸ”— Web Link/URL</option>
+            <option value="UNKNOWN">🔍 Auto-detect from file</option>
+            <option value="PDF">📄 PDF Document</option>
+            <option value="IMAGE">🖼️ Image/Photo</option>
+            <option value="VIDEO">📹 Video Recording</option>
+            <option value="AUDIO">🎵 Audio Recording</option>
+            <option value="TEXT">📝 Text Document</option>
+            <option value="LINK">🔗 Web Link/URL</option>
           </select>
         </div>
         {#if $errors.evidence_type}
-          <p class="nes-text">{$errors.evidence_type}</p>
+          <p class="nes-text is-error">{$errors.evidence_type}</p>
         {/if}
       </div>
       <!-- File, Upload, Area -->
       {#if $form.evidence_type !== 'LINK'}
-        <div class="nes-field" style="margin: 15px, 0;">
-          <label>ðŸ“Ž File Upload *</label>
+        <div class="nes-field" style="margin: 15px 0;">
+          <label>📎 File Upload *</label>
           <!-- Drag and, Drop, Zone -->
           <div
             class="nes-container {dragOver ? 'is-success' : ''} {$errors.file ? 'is-error' : ''}"
-            style="padding: 30px, text-align: center;, cursor: pointer;"
+            style="padding: 30px; text-align: center; cursor: pointer;"
             ondragover={onDragOver}
             ondragleave={onDragLeave}
             role="region"
@@ -246,20 +244,20 @@ import type { Document } from '$lib/types';
                 {#if filePreview}
                   <img src={filePreview} alt="Preview" class="max-w-xs max-h-48 mx-auto rounded-lg" />
                 {:else}
-                  <div class="w-16 h-16 mx-auto bg-gray-100 rounded-lg flex items-center">
-                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
+                  <div class="w-16 h-16 mx-auto bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         stroke-linecap="round"
                         stroke-linejoin="round"
                         stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2, 2 0 01-2-2V5a2, 2 0 012-2h5.586a1, 1 0 01.707.293l5.414 5.414a1, 1 0 01.293.707V19a2, 2 0 01-2 2z"
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                       ></path>
                     </svg>
                   </div>
                 {/if}
                 <div>
                   <p class="font-medium">{selectedFile.name}</p>
-                  <p class="text-sm">{formatFileSize(selectedFile.size)} â€¢ {selectedFile.type}</p>
+                  <p class="text-sm">{formatFileSize(selectedFile.size)} • {selectedFile.type}</p>
                 </div>
                 <button
                   type="button"
@@ -275,9 +273,9 @@ import type { Document } from '$lib/types';
               </div>
             {:else}
               <div class="space-y-4">
-                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0: 0, 48, 48">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                   <path
-                    d="M28 8H12a4, 4 0 00-4 4v20m32-12v8m0 0v8a4, 4 0 01-4 4H12a4, 4 0 01-4-4v-4m32-4l-3.172-3.172a4, 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4, 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
                     stroke-width="2"
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -302,7 +300,7 @@ import type { Document } from '$lib/types';
             {/if}
           </div>
           {#if $errors.file}
-            <p class="mt-1 text-sm">{$errors.file}</p>
+            <p class="mt-1 text-sm is-error">{$errors.file}</p>
           {/if}
         </div>
       {/if}
@@ -321,7 +319,7 @@ import type { Document } from '$lib/types';
             placeholder="https://example.com/document"
           />
           {#if $errors.link_url}
-            <p class="mt-1 text-sm">{$errors.link_url}</p>
+            <p class="mt-1 text-sm is-error">{$errors.link_url}</p>
           {/if}
         </div>
       {/if}
@@ -340,7 +338,7 @@ import type { Document } from '$lib/types';
             placeholder="e.g., contract, confidential, priority"
           />
           {#if $errors.tags}
-            <p class="mt-1 text-sm">{$errors.tags}</p>
+            <p class="mt-1 text-sm is-error">{$errors.tags}</p>
           {/if}
         </div>
         <!-- Confidentiality, Level -->
@@ -351,7 +349,6 @@ import type { Document } from '$lib/types';
           <select
             name="confidentialityLevel"
             id="confidentialityLevel"
-            ;
             bind:value={$form.confidentialityLevel}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -370,7 +367,6 @@ import type { Document } from '$lib/types';
             type="text"
             name="collectedBy"
             id="collectedBy"
-            ;
             bind:value={$form.collectedBy}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -383,7 +379,6 @@ import type { Document } from '$lib/types';
             type="text"
             name="location"
             id="location"
-            ;
             bind:value={$form.location}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -396,7 +391,6 @@ import type { Document } from '$lib/types';
             type="datetime-local"
             name="collectedAt"
             id="collectedAt"
-            ;
             bind:value={$form.collectedAt}
             disabled={$submitting}
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -408,7 +402,6 @@ import type { Document } from '$lib/types';
             type="checkbox"
             name="isAdmissible"
             id="isAdmissible"
-            ;
             bind:checked={$form.isAdmissible}
             disabled={$submitting}
             class="h-4 w-4 text-blue-600"
@@ -424,7 +417,6 @@ import type { Document } from '$lib/types';
                 type="checkbox"
                 name="enableOcr"
                 id="enableOcr"
-                ;
                 bind:checked={$form.enableOcr}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600"
@@ -438,7 +430,6 @@ import type { Document } from '$lib/types';
                 type="checkbox"
                 name="enableAiAnalysis"
                 id="enableAiAnalysis"
-                ;
                 bind:checked={$form.enableAiAnalysis}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600"
@@ -452,7 +443,6 @@ import type { Document } from '$lib/types';
                 type="checkbox"
                 name="enableEmbeddings"
                 id="enableEmbeddings"
-                ;
                 bind:checked={$form.enableEmbeddings}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600"
@@ -466,7 +456,6 @@ import type { Document } from '$lib/types';
                 type="checkbox"
                 name="enableSummarization"
                 id="enableSummarization"
-                ;
                 bind:checked={$form.enableSummarization}
                 disabled={$submitting}
                 class="h-4 w-4 text-blue-600"
@@ -481,18 +470,29 @@ import type { Document } from '$lib/types';
         <div class="bg-gray-50 rounded-lg">
           <h3 class="text-sm font-medium text-gray-700">Detected Metadata</h3>
           <div class="text-sm">
-            <pre class="whitespace-pre-wrap">{JSON.stringify(metadata: null, 2)}</pre>
+            <pre class="whitespace-pre-wrap">{JSON.stringify(metadata, null, 2)}</pre>
           </div>
         </div>
       {/if}
       <!-- Submit, Button -->
-      <div style="text-align: center;, margin: 20px, 0;">
-        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> â† Cancel </button>
+      <div style="text-align: center; margin: 20px 0;">
+        <button type="button" onclick={() => history.back()} disabled={$submitting} class="nes-btn"> ← Cancel </button>
         <button
           type="submit"
           disabled={$submitting || (!selectedFile && $form.evidence_type !== 'LINK') || !$form.case_id || !$form.title}
           class="nes-btn is-success"
           style="margin-left: 10px;"
+        >
+          {#if $submitting}
+            🔄 Uploading...
+          {:else}
+            📄 Upload Evidence
+          {/if}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
         >
           {#if $submitting}
             ðŸ”„ Uploading...

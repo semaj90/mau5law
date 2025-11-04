@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Concurrent AST Error Fixer
- * 
+ *
  * Uses VS Code tasks + MCP workers + GPU embedding pipeline
  * to auto-fix svelte-check errors with AI assistance.
- * 
+ *
  * Features:
  * - 8-16 parallel worker infrastructure
  * - SIMD JSON parsing (500+ MB/s)
@@ -12,16 +12,32 @@
  * - Redis tensor cache
  * - Python NER API integration
  * - AST-based code transformations
- * 
+ *
  * Usage:
  *   node scripts/concurrent-ast-fixer.mjs [--workers 8] [--batch-size 100]
  */
 
 import { spawn } from 'child_process';
 import { cpus } from 'os';
-import PQueueModule from 'p-queue';
-const PQueue = PQueueModule.default;
+// Import cli-progress (used later in the file)
+import cliProgress from 'cli-progress';
 import { readFileSync, writeFileSync } from 'fs';
+
+// p-queue has different export shapes across versions (default export, named PQueue, CJS interop).
+// Use dynamic import with top-level await to robustly resolve the constructor.
+let PQueueModule;
+try {
+  PQueueModule = await import('p-queue');
+} catch (err) {
+  // Re-throw with clearer message
+  throw new Error(`Failed to import 'p-queue': ${err?.message || err}`);
+}
+const resolvePQueueCtor = (mod) =>
+  mod?.default?.default ?? mod?.default ?? mod?.PQueue ?? mod;
+const PQueue = resolvePQueueCtor(PQueueModule);
+if (typeof PQueue !== 'function') {
+  throw new Error("'p-queue' did not export a constructor (default or named). Please check installed package version.");
+}
 
 // Simple progress tracker (cli-progress is CommonJS only)
 class SimpleProgress {
@@ -93,7 +109,7 @@ class ConcurrentASTFixer {
 
   async runSvelteCheck() {
     console.log('📊 Running svelte-check...');
-    
+
     return new Promise((resolve, reject) => {
       const proc = spawn('npx', ['svelte-check', '--output', 'machine'], {
         cwd: process.cwd(),
@@ -103,7 +119,7 @@ class ConcurrentASTFixer {
       let output = '';
       proc.stdout.on('data', (data) => { output += data.toString(); });
       proc.stderr.on('data', (data) => { output += data.toString(); });
-      
+
       proc.on('close', (code) => {
         // Save raw output
         writeFileSync('svelte-check-latest.log', output);
@@ -115,7 +131,7 @@ class ConcurrentASTFixer {
 
   async categorizeErrors() {
     console.log('🗂️  Categorizing errors...');
-    
+
     return new Promise((resolve, reject) => {
       const proc = spawn('node', [
         'scripts/categorize-svelte-check-log.mjs',
@@ -129,7 +145,7 @@ class ConcurrentASTFixer {
 
       let output = '';
       proc.stdout.on('data', (data) => { output += data.toString(); });
-      
+
       proc.on('close', (code) => {
         try {
           const categories = JSON.parse(output);
@@ -145,7 +161,7 @@ class ConcurrentASTFixer {
 
   async embedErrors() {
     console.log('🧠 Generating embeddings with GPU...');
-    
+
     return new Promise((resolve, reject) => {
       const proc = spawn('node', [
         'scripts/phase43-ai-analyzer.mjs',
@@ -159,7 +175,7 @@ class ConcurrentASTFixer {
 
       proc.stdout.on('data', (data) => { process.stdout.write(data); });
       proc.stderr.on('data', (data) => { process.stderr.write(data); });
-      
+
       proc.on('close', (code) => {
         console.log(`  ✅ Embeddings generated\n`);
         resolve();
@@ -220,7 +236,7 @@ class ConcurrentASTFixer {
         try {
           // Find similar fixes
           const similarFixes = await this.findSimilarFixes(error);
-          
+
           if (similarFixes.length > 0) {
             // Apply best matching fix
             const success = await this.applyFix(error.file, error, similarFixes[0].payload);
@@ -267,22 +283,22 @@ class ConcurrentASTFixer {
 
 async function main() {
   const fixer = new ConcurrentASTFixer();
-  
+
   await fixer.initialize();
-  
+
   // Step 1: Run svelte-check
   await fixer.runSvelteCheck();
-  
+
   // Step 2: Categorize errors
   const categories = await fixer.categorizeErrors();
-  
+
   // Step 3: Generate embeddings
   await fixer.embedErrors();
-  
+
   // Step 4: Process errors with AI fixes (placeholder)
   console.log('🔧 AI-assisted fixing coming soon...');
   console.log('   For now, use Phase 44 to analyze error clusters\n');
-  
+
   fixer.printSummary();
 }
 

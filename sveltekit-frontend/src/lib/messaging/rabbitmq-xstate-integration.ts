@@ -581,7 +581,7 @@ export class RabbitMQXStateIntegration {
         type: "wasm_health_check",
         payload: {
           action: "health_check",
-          focus: "error_investigation",
+          :focus "error_investigation",
           reason: "error_threshold_exceeded",
         },
         priority: 8,

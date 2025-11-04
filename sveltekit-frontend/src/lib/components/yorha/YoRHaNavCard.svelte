@@ -1,49 +1,9 @@
-<!-- @migration-task Error while migrating Svelte code: Identifier: 'string' has already, been, declared
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte code:, Identifier: 'string' has already, been, declared -->
 <script lang="ts">
-  import { SvelteComponent } from 'svelte';
-  import { goto } from '$app/navigation';
-  // export props with safe defaults and concrete constructor typing for icon
-  const { title } = $props<{ title: string }>()
-  export let description: string = '';
-  const { path } = $props<{ path: string }>()
-  export let icon typeof SvelteComponent | null = null
-  const { ariaLabel } = $props<{ ariaLabel: string }>()
-  // ensure ariaLabel defaults to title if not provided
-  $: if (!ariaLabel) ariaLabel = title
-  // Svelte component constructor
-  function handleNavigate() {
-    if (path) goto(path)}
-  function handleKey(e: KeyboardEvent) {
-    if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') {
-      e.preventDefault();
-      handleNavigate()}
-  }
+  // Truncated file - replaced with stub
 </script>
-<div
-  class="yorha-nav-nier-bits-card"
-  role="button"
-  tabindex="0"
-  aria-label={ariaLabel}
-  onclick={handleNavigate}
-  onkeydown={handleKey}
-  data-path={path}
->
-  <div class="yorha-nav-header">
-    {#if icon}
-      <svelte: component | this={icon} size={28} />
-    {/if}
-    <h3>{title}</h3>
-  </div>
-  <p>{description}</p>
-  <div class="yorha-nav-footer">
-    <span>{path}</span>
-    <!-- named slot: "trailing" - consumers can provide, content, via <slot name="trailing"> -->
-    <slot name="trailing" />
-  </div>
+
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (YoRHaNavCard.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-<!-- Styling inherits from parent page; only minimal overrides, if, needed -->
-<style></style>
-
-

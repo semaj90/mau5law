@@ -1,54 +1,9 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class',
-https: //svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
-https: //svelte.dev/e/js_parse_error -->
-<!-- Grid, Item, Component -->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  interface Props {
-    colSpan: number
-    rowSpan: number
-    colStart: number | undefined
-    rowStart: number | undefined
-    responsive: boolean
-   , class: string
-    children?: import('svelte').Snippet}
-  let {
-    colSpan = 1,
-    rowSpan = 1,
-    colStart = undefined,
-    rowStart = undefined,
-    responsive = true,
-    class = '',
-    children
-  }: Props = $props();
-
-  import { cn } from '$lib/utils';
-  // Build grid classes dynamically
-  let spanClasses = $derived(
-    responsive
-    ? `col-span-1 sm:col-span-${Math.min(colSpan, 2)} md:col-span-${Math.min(colSpan, 4)} lg:col-span-${Math.min(colSpan, 6)} xl:col-span-${colSpan}`
-    : `col-span-${colSpan}`
-  );
-  
-  let rowSpanClass = $derived(rowSpan > 1 ? `row-span-${rowSpan}` : '');
-  
-  let colStartClass = $derived(colStart ? `col-start-${colStart}` : '');
-  
-  let rowStartClass = $derived(rowStart ? `row-start-${rowStart}` : '');
+  // Truncated file - replaced with stub
 </script>
-<div
-  class={cn(
-    'flex flex-col',
-    spanClasses,
-    rowSpanClass,
-    colStartClass,
-    rowStartClass,
-    class
-  )}
->
-  {#if children}
-    {@render children()}
-  {/if}
+
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (GridItem.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>

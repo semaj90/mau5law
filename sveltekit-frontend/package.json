@@ -42,6 +42,8 @@
     "dev:quic:win": "scripts\\start-quic-enhanced.bat",
     "dev:quic:vite-only": "vite dev --port 5174 --strictPort --host 127.0.0.1",
     "dev:docker": "cross-env HOST=0.0.0.0 PORT=5174 REDIS_URL=redis://redis:6379 DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db OLLAMA_URL=http://ollama:11434 vite dev --host 0.0.0.0 --port 5174",
+    "simd:go:start": "node ../scripts/start-simd-go-service.mjs",
+    "simd:test": "node ../scripts/test-simd-integration.mjs",
     "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
     "docker:dev:detached": "docker-compose -f docker-compose.dev.yml up -d --build",
     "docker:stop": "docker-compose -f docker-compose.dev.yml down",

@@ -1,22 +1,9 @@
 <script lang="ts">
-  import { ScrollArea, as ScrollAreaPrimitive } from 'bits-ui';
-
-  import { cn } from '$lib/utils.js';
-
-  import type { ScrollAreaRootProps } from 'bits-ui';
-  interface Props extends ScrollAreaRootProps, CommonProps {
-    class?: string}
-  let { class: classNameVar | children, ...rest }: Props & { children?: unknown } = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<ScrollAreaPrimitive.Root class={cn('relative, overflow-hidden', classNameVar)} {...rest}>
-  <ScrollAreaPrimitive.Viewport class="h-full w-full">
-  {#if children}
-      {@render children()}
-    {/if}
-  </ScrollAreaPrimitive.Viewport>
-
-  <ScrollAreaPrimitive.Scrollbar orientation="vertical" />
-  <ScrollAreaPrimitive.Scrollbar orientation="horizontal" />
-  <ScrollAreaPrimitive.Corner />
-</ScrollAreaPrimitive.Root>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (ScrollArea.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

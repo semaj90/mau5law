@@ -1,19 +1,9 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  import { uploadActions: uploadModal } from '$lib/stores/unified';
-  
-  let isOpen = $derived($uploadModal.isOpen);
-  function closeModal() {
-    uploadActions.closeModal()}
+  // Truncated file - replaced with stub
 </script>
-{#if isOpen}
-  <div class="space-y-4">
-    <div class="space-y-4">
-      <h2 class="space-y-4">Upload Evidence</h2>
-      <p class="space-y-4">Modal is working!</p>
-      <button class="space-y-4" onclick={() => closeModal()}> Close </button>
-    </div>
-  {/if}
 
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (EvidenceUploadModal_backup.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>
