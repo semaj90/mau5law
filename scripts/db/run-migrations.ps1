@@ -1,6 +1,6 @@
 Param(
   [string]$DatabaseUrl,
-  [ValidateSet('migrate','push')]
+  [ValidateSet('push','canvas-only')]
   [string]$Mode = 'push',
   [switch]$Verbose
 )
@@ -94,22 +94,48 @@ function Invoke-Drizzle([string]$cmd, [string[]]$args) {
 # 4) Run action
 try {
   $env:FORCE_COLOR = '1'
-  if ($Mode -eq 'migrate') {
-    Invoke-Drizzle 'generate' @()
-    if ($LASTEXITCODE -ne 0) { throw "drizzle-kit generate exited with code $LASTEXITCODE" }
-    Invoke-Drizzle 'migrate' @()
-  } else {
+  if ($Mode -eq 'push') {
     Invoke-Drizzle 'push' @()
+    if ($LASTEXITCODE -ne 0) { throw "drizzle-kit push exited with code $LASTEXITCODE" }
+    Write-Ok "Migrations completed successfully"
   }
-  if ($LASTEXITCODE -ne 0) {
-    throw "drizzle-kit $Mode exited with code $LASTEXITCODE"
+  elseif ($Mode -eq 'canvas-only') {
+    $sqlFile = Join-Path $frontend 'drizzle\migrations\20251103_canvas_autosaves_safe.sql'
+    if (-not (Test-Path $sqlFile)) { Write-Err "Missing $sqlFile"; Pop-Location; exit 1 }
+    # Try psql first
+    $applied = $false
+    $psql = (Get-Command psql -ErrorAction SilentlyContinue)
+    if ($psql) {
+      Write-Info "Applying via psql"
+      $uri = [System.Uri]$env:DATABASE_URL
+      $userInfo = $uri.UserInfo.Split(':')
+      $pgUser = $userInfo[0]
+      $pgPass = if ($userInfo.Length -gt 1) { $userInfo[1] } else { '' }
+      $pgHost = $uri.Host
+      $pgPort = if ($uri.Port -gt 0) { $uri.Port } else { 5432 }
+      $pgDb = $uri.AbsolutePath.TrimStart('/')
+      $env:PGPASSWORD = $pgPass
+      & psql -h $pgHost -p $pgPort -U $pgUser -d $pgDb -f $sqlFile | Out-Host
+      if ($LASTEXITCODE -eq 0) { $applied = $true }
+    }
+    if (-not $applied) {
+      Write-Info "Applying via tsx/postgres-js fallback"
+      if (-not (Test-Path (Join-Path $frontend 'node_modules'))) { npm i | Out-Host }
+      # Ensure tsx is available
+      if (-not (Test-Path (Join-Path $frontend 'node_modules\tsx'))) { npm i -D tsx | Out-Host }
+      npx tsx scripts/apply-sql.ts $sqlFile | Out-Host
+      if ($LASTEXITCODE -ne 0) { Write-Err "Failed to apply $sqlFile"; Pop-Location; exit 1 }
+    }
+    Write-Ok "Canvas autosaves migration applied safely"
   }
-  Write-Ok "Migrations completed successfully"
+  else {
+    Write-Err "Unknown mode: $Mode"; Pop-Location; exit 1
+  }
 } catch {
   $msg = $_.Exception.Message
   Write-Err "Migration failed: $msg"
 
-  if ($msg -match 'permission denied|must be owner|42501') {
+  if ($Mode -eq 'push' -and ($msg -match 'permission denied|must be owner|42501')) {
     Write-Warn "Ownership/permission error detected. Retrying with ADMIN_DATABASE_URL if available..."
     if (-not [string]::IsNullOrWhiteSpace($adminUrl)) {
       $env:DATABASE_URL = $adminUrl

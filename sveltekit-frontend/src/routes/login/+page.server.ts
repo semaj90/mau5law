@@ -1,5 +1,7 @@
 import { loginSchema } from "$lib/schemas/auth";
-import { db, helpers, users } from "$lib/server/db";
+import { db } from "$lib/server/db/client";
+import { users } from "$lib/server/db/schema-postgres";
+import { eq } from "drizzle-orm";
 import { createUserSession, setSessionCookie, verifyPassword } from "$lib/server/lucia";
 import { fail, redirect } from "@sveltejs/kit";
 import { message, superValidate } from "sveltekit-superforms/server";
@@ -45,11 +47,11 @@ export const actions: Actions = {
       // Find user by email (guard shape because db helper wiring can vary)
       let existingUser: unknown[] = [];
       try {
-        // use helpers.eq directly (avoid casting, to, any)
+        // use eq directly
         existingUser = await db
           .select()
           .from(users)
-          .where(helpers.eq(users.email, email as string))
+          .where(eq(users.email, email as string)) // Use eq directly
           .limit(1);
       } catch (e: unknown) {
         console.error("[Login] DB select failed: ", e);
@@ -96,5 +98,4 @@ export const actions: Actions = {
       return message(form, "Login failed. Please try again.", { status: 500 });
     }
   },
-};
 };

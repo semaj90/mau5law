@@ -1,26 +1,182 @@
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error -->
 <!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; // Debounce + streaming support let debounceMs = $state<number>(400); let autoSearch = $state<boolean>(true); let lastTimer = $state<any>(null); let useStreaming = $state<boolean>(true); let streaming = $state<boolean>(false); let streamedCount = $state<number>(0); let query = $state<string>(''); let mode = $state<'simple' | 'enhanced'>('simple'); let limit = $state<number>(8); let threshold = $state<number | null>(null); let model = $state<string>(''); let caseId = $state<string>(''); let autoFocus = $state<boolean>(true); let loading = $state<boolean>(false); let controller = $state<AbortController | null>(null); let results = $state<any[]>([]); let responseMeta = $state<any>(null); let errorMsg = $state<string | null>(null); function reset() { results = []; responseMeta = null; errorMsg = null; streamedCount = 0}
-  function scheduleDebounced() { if (!autoSearch) return; if (lastTimer) clearTimeout(lastTimer); lastTimer = setTimeout(() => { if (query.trim()) runSearch()}, debounceMs)}
-  async function runSearch(): Promise<any> { if (!query.trim()) return; reset(); loading = true; controller?.abort(); controller = new AbortController(); const body: unknown = { query, limit, mode }; if (threshold !== null && threshold >= 0) body.threshold = threshold; if (model.trim()) body.model = model.trim(); if (caseId.trim()) body.caseId = caseId.trim(); if (useStreaming) { await runStreaming(body); return}
-    try { const res = await fetch('/api/ai/vector-search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal }); if (!res.ok) { errorMsg = `Request failed (${res.status})`} else { const data = await res.json(); results = data.results || []; responseMeta = data}
-    } catch (e) { if (e?.name !== 'AbortError') errorMsg = e?.message || String(e)} finally { loading = false}
+  import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
+  // Debounce + streaming support
+  let debounceMs = $state<number>(400);
+  let autoSearch = $state<boolean>(true);
+  let lastTimer = $state<any>(null);
+  let useStreaming = $state<boolean>(true);
+  let streaming = $state<boolean>(false);
+  let streamedCount = $state<number>(0);
+  let query = $state<string>('');
+  let mode = $state<'simple' | 'enhanced'>('simple');
+  let limit = $state<number>(8);
+  let threshold = $state<number | null>(null);
+  let model = $state<string>('');
+  let caseId = $state<string>('');
+  let autoFocus = $state<boolean>(true);
+  let loading = $state<boolean>(false);
+  let controller = $state<AbortController | null>(null);
+  let results = $state<any[]>([]);
+  let responseMeta = $state<any>(null);
+  let errorMsg = $state<string | null>(null);
+
+  function reset() {
+    results = [];
+    responseMeta = null;
+    errorMsg = null;
+    streamedCount = 0;
   }
-  async function runStreaming(body: unknown): Promise<any> { streaming = true; try { const params = new URLSearchParams({ query: body.query, limit: String(body.limit || 8), mode: body.mode || 'simple'
-      }); if (body.threshold != null) params.set('threshold', String(body.threshold)); if (body.model) params.set('model', body.model); if (body.caseId) params.set('caseId', body.caseId); const url = `/api/ai/vector-search/stream?${params.toString()}`; const res = await fetch(url, { signal: controller!.signal }); if (!res.ok || !res.body) { errorMsg = `Stream failed (${res.status})`; return}
-      const reader = res.body.getReader(); const decoder = new TextDecoder(); let buffer = ''; while (true) { const { value, done } = await reader.read(); if (done) break; buffer += decoder.decode(value, { stream: true });
-  let idx; while ((idx = buffer.indexOf('\n\n')) !== -1) { const raw = buffer.slice(0, idx).trim(); buffer = buffer.slice(idx + 2); if (!raw) continue; // removed unused lines assignment let event = 'message'; let dataStr = ''; for (const line of lines) { if (line.startsWith('event:')) event = line.slice(6).trim(); else if (line.startsWith('data:')) dataStr += line.slice(5).trim()}
-          if (dataStr) { try { handleStreamEvent(event, JSON.parse(dataStr))} catch (e) { console.error('Failed to parse stream data:', e)}
-          } }
-      } } catch (e) { if (e?.name !== 'AbortError') errorMsg = e?.message || String(e)} finally { streaming = false; loading = false}
+
+  function scheduleDebounced() {
+    if (!autoSearch) return;
+    if (lastTimer) clearTimeout(lastTimer);
+    lastTimer = setTimeout(() => {
+      if (query.trim()) runSearch();
+    }, debounceMs);
   }
-  function handleStreamEvent(_event: string, data: unknown) { if (event === 'meta') { responseMeta = { ...(responseMeta || {}), ...data }} else if (event === 'result') { results = [...results, data]; streamedCount = results.length} else if (event === 'error') { errorMsg = data.message || 'Stream error'} else if (event === 'done') { responseMeta = { ...(responseMeta || {}), ...data, count: results.length }}
+
+  async function runSearch(): Promise<any> {
+    if (!query.trim()) return;
+    reset();
+    loading = true;
+    controller?.abort();
+    controller = new AbortController();
+    const body: unknown = { query, limit, mode };
+    if (threshold !== null && threshold >= 0) (body as { threshold: number }).threshold = threshold;
+    if (model.trim()) (body as { model: string }).model = model.trim();
+    if (caseId.trim()) (body as { caseId: string }).caseId = caseId.trim();
+
+    if (useStreaming) {
+      await runStreaming(body);
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/ai/vector-search', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: controller.signal
+      });
+      if (!res.ok) {
+        errorMsg = `Request failed (${res.status})`;
+      } else {
+        const data = await res.json();
+        results = data.results || [];
+        responseMeta = data;
+      }
+    } catch (e) {
+      if ((e as Error)?.name !== 'AbortError') errorMsg = (e as Error)?.message || String(e);
+    } finally {
+      loading = false;
+    }
   }
-  function submit(e: Event) { e.preventDefault(); runSearch()}
-  function abort() { controller?.abort(); loading = false; streaming = false}
-  $effect(() => { if (autoFocus) { const el = document.getElementById('query-input'); el?.focus()}
-  }); function scoreClass(score: number) { if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700, dark:text-neutral-200', if (score >= 0.9) return 'score-top'; if (score >= 0.8) return 'score-high'; if (score >= 0.65) return 'score-mid'; return 'score-low'}
+
+  async function runStreaming(body: unknown): Promise<any> {
+    streaming = true;
+    try {
+      const params = new URLSearchParams({
+        query: (body as { query: string }).query,
+        limit: String((body as { limit: number }).limit || 8),
+        mode: (body as { mode: string }).mode || 'simple'
+      });
+      if ((body as { threshold?: number }).threshold != null)
+        params.set('threshold', String((body as { threshold: number }).threshold));
+      if ((body as { model?: string }).model) params.set('model', (body as { model: string }).model);
+      if ((body as { caseId?: string }).caseId) params.set('caseId', (body as { caseId: string }).caseId);
+
+      const url = `/api/ai/vector-search/stream?${params.toString()}`;
+      const res = await fetch(url, { signal: controller!.signal });
+
+      if (!res.ok || !res.body) {
+        errorMsg = `Stream failed (${res.status})`;
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        let idx;
+        while ((idx = buffer.indexOf('\n\n')) !== -1) {
+          const raw = buffer.slice(0, idx).trim();
+          buffer = buffer.slice(idx + 2);
+          if (!raw) continue;
+
+          let eventType = 'message';
+          let dataStr = '';
+          const lines = raw.split('\n'); // Split raw chunk into lines
+
+          for (const line of lines) {
+            if (line.startsWith('event:')) {
+              eventType = line.slice(6).trim();
+            } else if (line.startsWith('data:')) {
+              dataStr += line.slice(5).trim();
+            }
+          }
+
+          if (dataStr) {
+            try {
+              handleStreamEvent(eventType, JSON.parse(dataStr));
+            } catch (e) {
+              console.error('Failed to parse stream data:', e);
+            }
+          }
+        }
+      }
+    } catch (e) {
+      if ((e as Error)?.name !== 'AbortError') errorMsg = (e as Error)?.message || String(e);
+    } finally {
+      streaming = false;
+      loading = false;
+    }
+  }
+
+  function handleStreamEvent(eventType: string, data: unknown) {
+    if (eventType === 'meta') {
+      responseMeta = { ...(responseMeta || {}), ...data };
+    } else if (eventType === 'result') {
+      results = [...results, data];
+      streamedCount = results.length;
+    } else if (eventType === 'error') {
+      errorMsg = (data as { message?: string }).message || 'Stream error';
+    } else if (eventType === 'done') {
+      responseMeta = { ...(responseMeta || {}), ...data, count: results.length };
+    }
+  }
+
+  function submit(e: Event) {
+    e.preventDefault();
+    runSearch();
+  }
+
+  function abort() {
+    controller?.abort();
+    loading = false;
+    streaming = false;
+  }
+
+  $effect(() => {
+    if (autoFocus) {
+      const el = document.getElementById('query-input');
+      el?.focus();
+    }
+  });
+
+  function scoreClass(score: number) {
+    if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
+    if (score >= 0.9) return 'score-top';
+    if (score >= 0.8) return 'score-high';
+    if (score >= 0.65) return 'score-mid';
+    return 'score-low';
+  }
 </script>
 
 <div class="mx-auto max-w-5xl p-6">
@@ -35,7 +191,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     class="grid gap-4 md:grid-cols-7 items-end bg-neutral-50 dark:bg-neutral-900/40 p-4 rounded-lg border border-neutral-200"
     onsubmit={e => {
       e.preventDefault();
-      submit();
+      submit(e);
     }}
   >
     <div class="md:col-span-3 flex flex-col">
@@ -52,7 +208,6 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       <label for="streaming-toggle" class="text-xs font-medium uppercase">Streaming</label>
       <select
         id="streaming-toggle"
-        ;
         bind:value={useStreaming}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
       >
@@ -63,7 +218,6 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       <label for="mode-select" class="text-xs font-medium uppercase">Mode</label>
       <select
         id="mode-select"
-        ;
         bind:value={mode}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
       >
@@ -77,7 +231,6 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         type="number"
         min="1"
         max="50"
-        ;
         bind:value={limit}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
       />
@@ -90,7 +243,6 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         step="0.01"
         min="0"
         max="1"
-        ;
         bind:value={threshold}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
         placeholder="optional"
@@ -100,7 +252,6 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       <label for="model-input" class="text-xs font-medium uppercase">Model</label>
       <input
         id="model-input"
-        ;
         bind:value={model}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
         placeholder="(auto)"
@@ -110,7 +261,6 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       <label for="case-input" class="text-xs font-medium uppercase">Case ID</label>
       <input
         id="case-input"
-        ;
         bind:value={caseId}
         class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
         placeholder="optional"
@@ -121,7 +271,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         type="submit"
         class="px-4 py-2 rounded bg-indigo-600 text-white text-sm font-medium disabled:opacity-50"
         disabled={loading}
-        >{loading ? (useStreaming ? (streaming ? 'Streamingâ€¦' : 'Startingâ€¦') : 'Searchingâ€¦') : 'Search'}</button
+        >{loading ? (useStreaming ? (streaming ? 'Streaming…' : 'Starting…') : 'Searching…') : 'Search'}</button
       >
       {#if loading}
         <button type="button" onclick={abort} class="px-3 py-2 rounded bg-neutral-200 dark:bg-neutral-700">Abort</button
@@ -149,8 +299,8 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         <span><strong>Count:</strong> {responseMeta.count}</span>
         {#if responseMeta.timings}<span><strong>Total:</strong> {responseMeta.timings.totalMs}ms</span>{/if}
         {#if responseMeta.health}
-          <span><strong>Go:</strong> {responseMeta.health.goService ? 'up' : 'â€”'}</span>
-          <span><strong>Summarizer:</strong> {responseMeta.health.summarizer ? 'up' : 'â€”'}</span>
+          <span><strong>Go:</strong> {responseMeta.health.goService ? 'up' : '—'}</span>
+          <span><strong>Summarizer:</strong> {responseMeta.health.summarizer ? 'up' : '—'}</span>
         {/if}
       </div>
       {#if responseMeta.errors && (responseMeta.errors.primary || responseMeta.errors.enhanced)}
@@ -173,7 +323,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
           <li class="p-4 rounded border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
             <div class="flex justify-between items-start">
               <div class="text-sm font-mono truncate" title={r.id}>{r.id}</div>
-              <div class="text-xs px-2 py-0.5 rounded">{(r.score ?? 0).toFixed(3)}</div>
+              <div class="text-xs px-2 py-0.5 rounded {scoreClass(r.score)}">{(r.score ?? 0).toFixed(3)}</div>
             </div>
             <p class="mt-2 text-sm leading-snug whitespace-pre-wrap">{r.content}</p>
             {#if r.metadata}
@@ -203,7 +353,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       >
     </p>
     {#if useStreaming}
-      <p class="text-[10px] italic">Streaming {streamedCount} result(s){streaming ? 'â€¦' : ''}</p>
+      <p class="text-[10px] italic">Streaming {streamedCount} result(s){streaming ? '…' : ''}</p>
     {/if}
   </footer>
 </div>
