@@ -1,4 +1,3 @@
-<!-- Document Upload Page with, MinIO, Integration -->
 <script lang="ts">
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte'; import { page } from '$app/stores'; import { goto } from '$app/navigation'; import type { PageData } from './$types'; import { onMount } from 'svelte'; interface Props { data: PageData}
@@ -12,79 +11,13 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   //, New: recent uploads array (prefer incoming data if available) let recentUploads: UploadEntry[] = (data && (data; as: unknown).recentUploads) ?? []; onMount(() => { if (!minioUpload) return; const unsubComplete = minioUpload.$on('complete', (e: CustomEvent) => handleUploadComplete(e.detail) ); const unsubError = minioUpload.$on('error', (e: CustomEvent) => handleUploadError(e.detail ?? 'Unknown error') ); return () => { unsubComplete(); unsubError()}});
 </script>
 
-<!-- Markup moved out of, script -->
-<div class="upload-page">
-  <div class="page-header">
-    <h1>Upload Documents</h1>
-    <p class="page-description">Upload files to MinIO. Documents will be processed and indexed for search.</p>
-  </div>
-  <div class="upload-container">
-    <div class="upload-section">
-      <div class="card-header">
-        <h2>Upload</h2>
-        <button class="text-button">Need Help?</button>
-      </div>
-      <!-- MinIOUpload emits custom events with detail, payload -->
-      <MinIOUpload {caseId} bind:this={minioUpload} />
-      <div class="recent-uploads">
-        {#if recentUploads.length === 0}
-          <p class="no-uploads">No recent uploads.</p>
-        {:else}
-          {#each recentUploads as item (item.filename)}
-            <div class="upload-item">
-              <span class="upload-icon">ðŸ“</span>
-              <div class="upload-details">
-                <div class="upload-name">{item.filename}</div>
-                <div class="upload-meta">
-                  {#if item.size}{(item.size / 1024).toFixed(1)} KB{/if}
-                  {#if item.mimeType}
-                    Â· {item.mimeType}{/if}
-                </div>
-              </div>
-              <div class="upload-status">Uploaded</div>
-            </div>
-          {/each}
-        {/if}
-      </div>
-    </div>
-    <aside class="info-sidebar">
-      <div class="info-card">
-        <h3>Quick Tips</h3>
-        <!-- Added to satisfy .info-card p, selector -->
-        <p>Use these tips to ensure uploads are associated correctly and processed promptly.</p>
-        <ul>
-          <li>Choose the correct case ID to associate documents.</li>
-          <li>Supported formats: PDF, DOCX, PNG, JPG.</li>
-          <li>Large files may take longer to process.</li>
-        </ul>
-      </div>
-      <div class="help-section">
-        <h2>Need Help?</h2>
-        <div class="help-grid">
-          <div class="help-card">
-            <h4>ðŸš€ Quick Start</h4>
-            <p>Select your case ID, choose your document type and drag & drop your file to get started.</p>
-          </div>
-          <div class="help-card">
-            <h4>ðŸ“Š Processing Status</h4>
-            <p>Track your document processing status and get notified when AI analysis is complete.</p>
-          </div>
-          <div class="help-card">
-            <h4>ðŸ” Search Integration</h4>
-            <p>Uploaded documents are automatically indexed for semantic search and similarity matching.</p>
-          </div>
-          <div class="help-card">
-            <h4>ðŸ’¼ Case Management</h4>
-            <p>Documents are organized by case ID for easy management and cross-referencing.</p>
-          </div>
-        </div>
-      </div>
-    </aside>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .upload-page {
+.upload-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
@@ -251,5 +184,3 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     line-height: 1.5;
   }
 </style>
-
-

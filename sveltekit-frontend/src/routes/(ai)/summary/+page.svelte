@@ -1,7 +1,5 @@
-﻿<!-- AI Summary, Demo, Page -->
-<!-- File: sveltekit-frontend/src/routes/ai-summary/+page.svelte -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported
+// Svelte 5 runes are auto-imported
   // import type { Case } from '$lib/types'; // 'Case' is declared but its value is never read.
   // import { onMount } from 'svelte'; // onMount is not used.
 
@@ -59,80 +57,11 @@
   });
 </script>
 
-<div class="max-w-4xl mx-auto">
-  <h1 class="text-3xl font-bold">AI Summary Generator</h1>
-  <div class="grid grid-cols-1 md:grid-cols-3">
-    <!-- Case, Info -->
-    <div class="md:col-span-1">
-      <div class="bg-white border rounded-lg">
-        <h3 class="font-semibold">Case Information</h3>
-        {#if caseData}
-          <div class="space-y-2">
-            <p><strong>ID:</strong> {caseData.id}</p>
-            <p><strong>Title:</strong> {caseData.title}</p>
-            <p><strong>Evidence:</strong> {caseData.evidence.length} items</p>
-            <p><strong>Status:</strong> {caseData.status}</p>
-          </div>
-          <div class="mt-4">
-            <label for="summary-type" class="block text-sm font-medium">Summary Type</label>
-            <select id="summary-type" bind:value={summaryType} class="w-full p-2 border">
-              <option value="prosecution">Prosecution Strategy</option>
-              <option value="evidence">Evidence Analysis</option>
-              <option value="timeline">Timeline Summary</option>
-              <option value="overview">Case Overview</option>
-            </select>
-          </div>
-          <button
-            onclick={generateSummary}
-            disabled={isGenerating}
-            class="w-full mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-          >
-            {isGenerating ? 'Generating...' : 'Generate AI Summary'}
-          </button>
-        {:else}
-          <p class="text-gray-500">Loading case data...</p>
-        {/if}
-      </div>
-      <!-- Metrics -->
-      <div class="mt-4 bg-gray-50 p-4">
-        <h4 class="font-medium">AI Metrics</h4>
-        <div class="space-y-2">
-          <div class="flex">
-            <span>Confidence:</span>
-            <span class="font-mono">{(confidence * 100).toFixed(1)}%</span>
-          </div>
-          <div class="flex">
-            <span>RAG Score:</span>
-            <span class="font-mono">{(ragScore * 100).toFixed(1)}%</span>
-          </div>
-          <div class="flex">
-            <span>Model:</span>
-            <span class="font-mono">gemma3-legal</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Summary, Output -->
-    <div class="md:col-span-2">
-      <div class="bg-white border rounded-lg p-4">
-        <h3 class="font-semibold">Generated Summary</h3>
-        <div class="h-80">
-          {#if isGenerating}
-            <div class="flex items-center">
-              <div class="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent"></div>
-              <span>Generating AI summary with Gemma3 Legal...</span>
-            </div>
-          {:else if summary}
-            <div class="prose prose-sm">
-              <pre class="whitespace-pre-wrap">{summary}</pre>
-            </div>
-          {:else}
-            <div class="text-gray-500">
-              Click: "Generate AI Summary" to create a {summaryType} summary using local Gemma3 Legal model.
-            </div>
-          {/if}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

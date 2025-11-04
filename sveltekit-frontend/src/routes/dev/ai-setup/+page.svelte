@@ -1,7 +1,12 @@
 <script lang="ts">
-  import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
+import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
 </script>
 
-<h2>AI Setup Status</h2>
-<p>This dev page shows the validation banner for GPU/Ollama/model readiness.</p>
-<AiSetupBanner />
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

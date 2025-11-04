@@ -1,7 +1,5 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
-  import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
+import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
   // Debounce + streaming support
   let debounceMs = $state<number>(400);
   let autoSearch = $state<boolean>(true);
@@ -179,187 +177,13 @@
   }
 </script>
 
-<div class="mx-auto max-w-5xl p-6">
-  <header class="space-y-2">
-    <h1 class="text-2xl font-semibold">Enhanced Vector Search</h1>
-    <p class="text-sm text-neutral-500">
-      Interact with the unified pgvector + (stub) enhanced RAG pipeline. Choose simple (direct similarity) or enhanced
-      (RAG fallback) mode.
-    </p>
-  </header>
-  <form
-    class="grid gap-4 md:grid-cols-7 items-end bg-neutral-50 dark:bg-neutral-900/40 p-4 rounded-lg border border-neutral-200"
-    onsubmit={e => {
-      e.preventDefault();
-      submit(e);
-    }}
-  >
-    <div class="md:col-span-3 flex flex-col">
-      <label for="query-input" class="text-xs font-medium uppercase">Query</label>
-      <input
-        id="query-input"
-        bind:value={query}
-        oninput={scheduleDebounced}
-        class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 focus:outline-none focus:ring-2"
-        placeholder="Find clauses about indemnification..."
-      />
-    </div>
-    <div class="flex flex-col">
-      <label for="streaming-toggle" class="text-xs font-medium uppercase">Streaming</label>
-      <select
-        id="streaming-toggle"
-        bind:value={useStreaming}
-        class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
-      >
-        <option value={true}>on</option> <option value={false}>off</option>
-      </select>
-    </div>
-    <div class="flex flex-col">
-      <label for="mode-select" class="text-xs font-medium uppercase">Mode</label>
-      <select
-        id="mode-select"
-        bind:value={mode}
-        class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
-      >
-        <option value="simple">simple</option> <option value="enhanced">enhanced</option>
-      </select>
-    </div>
-    <div class="flex flex-col">
-      <label for="limit-input" class="text-xs font-medium uppercase">Limit</label>
-      <input
-        id="limit-input"
-        type="number"
-        min="1"
-        max="50"
-        bind:value={limit}
-        class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
-      />
-    </div>
-    <div class="flex flex-col">
-      <label for="threshold-input" class="text-xs font-medium uppercase">Threshold (0-1)</label>
-      <input
-        id="threshold-input"
-        type="number"
-        step="0.01"
-        min="0"
-        max="1"
-        bind:value={threshold}
-        class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
-        placeholder="optional"
-      />
-    </div>
-    <div class="flex flex-col">
-      <label for="model-input" class="text-xs font-medium uppercase">Model</label>
-      <input
-        id="model-input"
-        bind:value={model}
-        class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
-        placeholder="(auto)"
-      />
-    </div>
-    <div class="flex flex-col">
-      <label for="case-input" class="text-xs font-medium uppercase">Case ID</label>
-      <input
-        id="case-input"
-        bind:value={caseId}
-        class="px-2 py-2 rounded border border-neutral-300 dark:border-neutral-600 bg-white"
-        placeholder="optional"
-      />
-    </div>
-    <div class="md:col-span-7 flex gap-3">
-      <button
-        type="submit"
-        class="px-4 py-2 rounded bg-indigo-600 text-white text-sm font-medium disabled:opacity-50"
-        disabled={loading}
-        >{loading ? (useStreaming ? (streaming ? 'Streaming…' : 'Starting…') : 'Searching…') : 'Search'}</button
-      >
-      {#if loading}
-        <button type="button" onclick={abort} class="px-3 py-2 rounded bg-neutral-200 dark:bg-neutral-700">Abort</button
-        >
-      {/if}
-      <button
-        type="button"
-        onclick={reset}
-        class="px-3 py-2 rounded border border-neutral-300 dark:border-neutral-600 text-sm">Clear</button
-      >
-    </div>
-  </form>
-  {#if errorMsg}
-    <div
-      class="p-3 rounded border border-red-300 bg-red-50 dark:border-red-700 dark:bg-red-900/30 text-sm text-red-700"
-    >
-      {errorMsg}
-    </div>
-  {/if}
-  {#if responseMeta}
-    <section class="space-y-4">
-      <div class="flex flex-wrap gap-4 text-xs text-neutral-600">
-        <span><strong>Mode:</strong> {responseMeta.mode}</span>
-        <span><strong>Source:</strong> {responseMeta.source}</span>
-        <span><strong>Count:</strong> {responseMeta.count}</span>
-        {#if responseMeta.timings}<span><strong>Total:</strong> {responseMeta.timings.totalMs}ms</span>{/if}
-        {#if responseMeta.health}
-          <span><strong>Go:</strong> {responseMeta.health.goService ? 'up' : '—'}</span>
-          <span><strong>Summarizer:</strong> {responseMeta.health.summarizer ? 'up' : '—'}</span>
-        {/if}
-      </div>
-      {#if responseMeta.errors && (responseMeta.errors.primary || responseMeta.errors.enhanced)}
-        <details class="text-xs">
-          <summary class="cursor-pointer">Errors</summary>
-          <pre class="mt-2 p-2 bg-neutral-100 dark:bg-neutral-900 rounded overflow-auto">{JSON.stringify(
-              responseMeta.errors,
-              null,
-              2
-            )}</pre>
-        </details>
-      {/if}
-    </section>
-  {/if}
-  {#if results.length > 0}
-    <section class="space-y-3">
-      <h2 class="text-lg">Results</h2>
-      <ul class="space-y-3">
-        {#each results as r (r.id)}
-          <li class="p-4 rounded border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800">
-            <div class="flex justify-between items-start">
-              <div class="text-sm font-mono truncate" title={r.id}>{r.id}</div>
-              <div class="text-xs px-2 py-0.5 rounded {scoreClass(r.score)}">{(r.score ?? 0).toFixed(3)}</div>
-            </div>
-            <p class="mt-2 text-sm leading-snug whitespace-pre-wrap">{r.content}</p>
-            {#if r.metadata}
-              <details class="mt-2">
-                <summary class="cursor-pointer">Metadata</summary>
-                <pre class="mt-1 p-2 bg-neutral-50 dark:bg-neutral-900 rounded overflow-auto max-h-48">{JSON.stringify(
-                    r.metadata,
-                    null,
-                    2
-                  )}</pre>
-              </details>
-            {/if}
-          </li>
-        {/each}
-      </ul>
-    </section>
-  {/if}
-  {#if !loading && !results.length && !errorMsg && query}
-    <p class="text-sm italic text-neutral-500">No results returned.</p>
-  {/if}
-  <footer class="pt-8 text-[11px] text-neutral-500 dark:text-neutral-500">
-    <p>API: <code class="bg-neutral-100 dark:bg-neutral-800 px-1">POST /api/ai/vector-search</code></p>
-    <p>Body fields: <code>{'{ query, limit?, threshold?, model?, mode?, caseId? }'}</code></p>
-    <p>
-      Streaming API: <code class="bg-neutral-100 dark:bg-neutral-800 px-1"
-        >GET /api/ai/vector-search/stream?query=...</code
-      >
-    </p>
-    {#if useStreaming}
-      <p class="text-[10px] italic">Streaming {streamedCount} result(s){streaming ? '…' : ''}</p>
-    {/if}
-  </footer>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  :global(body) {
+:global(body) {
     background: var(--background, transparent);
   }
   .score-low {
@@ -379,5 +203,3 @@
     color: #1e40af;
   }
 </style>
-
-

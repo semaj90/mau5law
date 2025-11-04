@@ -1,5 +1,5 @@
 <script lang="ts">
- // Svelte, 5 runes are auto-imported // Define interfaces for API response and internal person data interface APIPerson { name: string, aliases?: string[]; profileData?: { role?: string; height?: string; age?: number | string; hair?: string; eyes?: string; what?: string; // Modus Operandi lastKnownLocation?: string; dangerLevel?: number; associates?: string[]; habits?: string[]}; status?: string; threatLevel?: 'low' | 'medium' | 'high' | 'critical'}
+// Svelte, 5 runes are auto-imported // Define interfaces for API response and internal person data interface APIPerson { name: string, aliases?: string[]; profileData?: { role?: string; height?: string; age?: number | string; hair?: string; eyes?: string; what?: string; // Modus Operandi lastKnownLocation?: string; dangerLevel?: number; associates?: string[]; habits?: string[]}; status?: string; threatLevel?: 'low' | 'medium' | 'high' | 'critical'}
 
   interface FugitiveDexPerson { id: string, name: string, alias: string, role: string, status: string, priority: string, height: string; age: number | string; hair: string, eyes: string, modusOperandi: string, lastSeen: string, dangerLevel: number, photo: string, knownAssociates: string[], knownHabits: string[], attributes: { stealth: number, intelligence: number, strength: number, speed: number; dangerousness: number}}
 
@@ -38,215 +38,13 @@
    // Load on component mount using $effect $effect(() => { loadPersonsFromAPI()});
 </script>
 
-<svelte:head>
-  <title>YoRHa Pod Network - Person of Interest Database</title>
-  <!-- Add nes.css for, retro, styling --> <link rel="stylesheet" href="/nes.css/css/nes.min.css" />
-</svelte:head>
-<div class="fugitive-dex">
-  <!-- Header -->
-  <div class="header-section">
-    <div class="fugitive-title">
-      <h1>YoRHa Pod Network</h1>
-      <div class="case-info">
-        <span>Operation <strong>Digital Hunt Protocol</strong></span>
-        <div class="case-badges">
-          <span class="case-badge">âš¡ ONLINE</span> <span class="case-badge">ðŸ“¡ DATA</span>
-          <span class="case-badge">ðŸ” SCAN</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="main-layout">
-    <!-- Left, Sidebar - Person, List -->
-    <div class="person-list">
-      <div class="list-header">
-        <!-- Fix 1: Add conditional rendering, for, selectedPerson -->
-        {#if selectedPerson}
-          <h3>{selectedPerson.name}</h3>
-        {/if}
-        <div class="person-matches"><p>Persons of Interest Matches</p></div>
-      </div>
-      <div class="search-section">
-        <!-- Use a native input to avoid Svelte component type mismatch and, implicit, any -->
-        <input type="search" bind:value={searchQuery} placeholder="Search..." class="search-input" />
-      </div>
-      <div class="person-entries">
-        {#each persons as person (person.id)}
-          <button
-            class="person-entry"
-            class:selected={selectedPerson?.id === person.id}
-            onclick={() => (selectedPerson = person)}
-            type="button"
-            aria-pressed={selectedPerson?.id === person.id}
-          >
-            <span class="person-number">#{person.id}</span> <span class="person-name">{person.alias}</span>
-          </button>
-        {/each}
-      </div>
-      <div class="filter-section">
-        <h4>Search Filters</h4>
-        <div class="filter-controls">
-          <div class="filter-group">
-            <!-- Fix 2: Change label to span, for, accessibility --> <span>Status</span>
-            <div class="status-filters">
-              <button class="filter-btn">ALL</button> <button class="filter-btn">WANTED</button>
-              <button class="filter-btn">MONITORING</button>
-            </div>
-          </div>
-          <div class="filter-group">
-            <!-- Fix 2: Associate label with input, using, for/id --> <label for="priority-range">Priority</label>
-            <div class="priority-slider"><input type="range" id="priority-range" min="0" max="100" value="50" /></div>
-          </div>
-          <div class="filter-group">
-            <!-- Fix 2: Associate label with input, using, for/id -->
-            <label for="danger-level-range">Danger Level</label>
-            <div class="danger-slider">
-              <input type="range" id="danger-level-range" min="0" max="10" value="5" step="0.1" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Main, Content - Person, Detail -->
-    <!-- Fix 1: Add conditional rendering, for, selectedPerson -->
-    {#if selectedPerson}
-      <div class="person-detail">
-        <div class="person-header-main"><h2>{selectedPerson.name} #{selectedPerson.id}</h2></div>
-        <div class="person-content">
-          <!-- Photo and, Basic, Info -->
-          <div class="person-photo-section">
-            <div class="photo-container">
-              <div class="placeholder-photo">
-                <span>ðŸ“·</span>
-                <p>No Photo Available</p>
-              </div>
-            </div>
-            <div class="basic-info">
-              <div class="info-row">
-                <span class="label">Aliases:</span> <span class="value">{selectedPerson.alias}</span>
-              </div>
-              <div class="status-badges">
-                <span class="status-badge {selectedPerson.status ? selectedPerson.status.toLowerCase() : ''}"
-                  >{selectedPerson.status}</span
-                >
-                <span class="priority-badge {selectedPerson.priority ? selectedPerson.priority.toLowerCase() : ''}"
-                  >{selectedPerson.priority}</span
-                >
-              </div>
-              <div class="physical-stats">
-                <div class="stat">
-                  <span class="stat-label">Height:</span> <span class="stat-value">{selectedPerson.height}</span>
-                  <span class="stat-number">{selectedPerson.age}</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-label">Age:</span> <span class="stat-value">{selectedPerson.age}</span>
-                  <span class="stat-number">85</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-label">Hair:</span> <span class="stat-value">{selectedPerson.hair}</span>
-                  <span class="stat-label">Eyes:</span> <span class="stat-value">{selectedPerson.eyes}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Modus, Operandi -->
-          <div class="modus-section">
-            <h3>Modus Operandi</h3>
-            <p>{selectedPerson.modusOperandi}</p>
-          </div>
-          <!-- Known, Associates -->
-          <div class="associates-section">
-            <h3>Known Associates</h3>
-            <ul class="associates-list">
-              {#each Array.isArray(selectedPerson.knownAssociates) ? selectedPerson.knownAssociates : [] as associate}
-                <li>{associate}</li>
-              {/each}
-            </ul>
-          </div>
-          <!-- Known, Habits -->
-          <div class="habits-section">
-            <h3>Known Habits</h3>
-            <ul class="habits-list">
-              {#each Array.isArray(selectedPerson.knownHabits) ? selectedPerson.knownHabits : [] as habit}
-                <li>{habit}</li>
-              {/each}
-            </ul>
-          </div>
-          <!-- Attributes, Section (within, person-detail) -->
-          <div class="attributes-section">
-            <h4>Attributes</h4>
-            <div class="attribute-bars flex flex-col">
-              {#each Object.entries(selectedPerson.attributes) as [attr, value]}
-                <div class="attribute-row">
-                  <span class="attr-label">{attr}</span>
-                  <div class="attr-bar"><div class="attr-fill" style="width: {value}%"></div></div>
-                  <span class="attr-value">{value}</span>
-                </div>
-              {/each}
-            </div>
-          </div>
-          <!-- Location, Section (within, person-detail) -->
-          <div class="location-section">
-            <h4>Last Known Location</h4>
-            <div class="location-info">
-              <p>ðŸ“ Sector {Math.floor(Math.random() * 26) + 1}Alpha</p>
-              <p>â±ï¸ {selectedPerson.lastSeen}</p>
-              <p class="pod-signal">ðŸ“¡ Signal Strength: 87%</p>
-            </div>
-          </div>
-          <!-- Actions, Section (within, person-detail) -->
-          <div class="actions-section">
-            <button type="button" class="action-btn" aria-label="Track, Location">ðŸŽ¯ Track Location</button>
-            <button type="button" class="action-btn" aria-label="Contact, Team">ðŸ“ž Contact Team</button>
-            <button type="button" class="action-btn" aria-label="Generate, Report">ðŸ“‹ Generate Report</button>
-          </div>
-        </div>
-      </div>
-      <!-- Right, Panel - Stats -->
-      <div class="stats-panel nes-container">
-        <div class="stats-header">
-          <h3>Combat Assessment</h3>
-          <div class="danger-rating"><span class="danger-number">{selectedPerson.dangerLevel}/10</span></div>
-          <div class="pod-status">
-            <div class="pod-indicator"></div>
-            <span class="pod-text">Pod, 042 - Analysis Complete</span>
-          </div>
-        </div>
-        <!-- Attributes, Section (within, stats-panel) -->
-        <div class="attributes-section">
-          <h4>Attributes</h4>
-          <div class="attribute-bars flex flex-col">
-            {#each Object.entries(selectedPerson.attributes) as [attr, value]}
-              <div class="attribute-row">
-                <span class="attr-label">{attr}</span>
-                <div class="attr-bar"><div class="attr-fill" style="width: {value}%"></div></div>
-                <span class="attr-value">{value}</span>
-              </div>
-            {/each}
-          </div>
-        </div>
-        <!-- Location, Section (within, stats-panel) -->
-        <div class="location-section">
-          <h4>Last Known Location</h4>
-          <div class="location-info">
-            <p>ðŸ“ Sector {Math.floor(Math.random() * 26) + 1}Alpha</p>
-            <p>â±ï¸ {selectedPerson.lastSeen}</p>
-            <p class="pod-signal">ðŸ“¡ Signal Strength: 87%</p>
-          </div>
-        </div>
-        <!-- Actions, Section (within, stats-panel) -->
-        <div class="actions-section">
-          <button type="button" class="action-btn" aria-label="Track, Location">ðŸŽ¯ Track Location</button>
-          <button type="button" class="action-btn" aria-label="Contact, Team">ðŸ“ž Contact Team</button>
-          <button type="button" class="action-btn" aria-label="Generate, Report">ðŸ“‹ Generate Report</button>
-        </div>
-      </div>
-    {/if}
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .fugitive-dex {
+.fugitive-dex {
     background: linear-gradient(135deg, #0d1117, #161b22);
     min-height: 100vh;
     color: #f0f6fc;
@@ -737,5 +535,3 @@
     background: rgba(16, 185, 129, 0.04);
   } /* ..existing styles.. */
 </style>
-
-

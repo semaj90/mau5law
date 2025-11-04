@@ -1,4 +1,3 @@
-<!-- Test page for YoRHa, Detective, functionality -->
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; let testResult = $state<string>(''); let isLoading = $state<boolean>(false); async function testCaseCreation(): Promise<any> { isLoading = true; try { const response = await fetch('/api/cases', { method: 'POST', headers: {
           'Content-Type': 'application/json'
@@ -11,39 +10,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }
 </script>
 
-<div class="test-page p-8 bg-gray-900 text-green-400 min-h-screen">
-  <h1 class="text-3xl font-bold mb-8">YoRHa Detective API Test</h1>
-  <div class="space-y-4">
-    <button
-      class="px-4 py-2 bg-blue-600 text-white border border-blue-400 hover:bg-blue-700 transition-colors"
-      onclick={testCaseCreation}
-      disabled={isLoading}
-    >
-      {isLoading ? 'Testing...' : 'Test Case Creation'}
-    </button>
-    <button
-      class="px-4 py-2 bg-green-600 text-white border border-green-400 hover:bg-green-700 transition-colors"
-      onclick={testCaseList}
-      disabled={isLoading}
-    >
-      {isLoading ? 'Testing...' : 'Test Case Listing'}
-    </button>
-  </div>
-  {#if testResult}
-    <div class="bg-black p-4 border border-gray-600">
-      <h3 class="text-lg font-bold mb-2">Test Result:</h3>
-      <pre class="whitespace-pre-wrap">{testResult}</pre>
-    </div>
-  {/if}
-  <div class="mt-8">
-    <h2 class="text-xl font-bold mb-4">Route Info</h2>
-    <ul class="space-y-2">
-      <li>âœ… Test Page: <code>/yorha/detective/test</code></li>
-      <li>ðŸŽ¯ Main Page: <code>/yorha/detective</code></li>
-      <li>ðŸ”— API Endpoint: <code>/api/cases</code></li>
-      <li>ðŸ“Š, Database: PostgreSQL with Drizzle ORM</li>
-    </ul>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
-
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

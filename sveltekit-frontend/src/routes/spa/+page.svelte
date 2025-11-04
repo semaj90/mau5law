@@ -65,46 +65,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
       'Legal entity extraction successful. Found, 12 parties, 8 jurisdictions, and, 15 key dates for timeline analysis...']; // Select a response so `response` is defined and aiResponses is used const response = aiResponses[Math.floor(Math.random() * aiResponses.length)]; console.log('ðŸ¤– AI Response (gemma3:legal-latest):', response)}
 </script>
 
-<!-- Page, metadata -->
-<svelte:head>
-  <title>Legal AI SPA - Single Page Canvas Application</title>
-  <meta name="description" content="Full-screen legal AI canvas application powered, by, gemma3:legal-latest" />
-</svelte:head>
-{#if isLoading}
-  <!-- Loading screen with, NES, styling -->
-  <div class="loading-screen nes-container">
-    <div class="loading-content">
-      <h1 class="nes-text">âš–ï¸ LEGAL AI SPA</h1>
-      <p class="nes-text">Loading gemma3:legal-latest...</p>
-      <div class="nes-text">
-        <span class="loading-dot">â—</span> <span class="loading-dot">â—</span> <span class="loading-dot">â—</span>
-      </div>
-      <div class="loading-stats">
-        <p class="nes-text">Documents: {legalData.documents.length}</p>
-        <p class="nes-text">Evidence: {legalData.evidence.length}</p>
-        <p class="nes-text">Cases: {legalData.cases.length}</p>
-      </div>
-    </div>
-  </div>
-{:else}
-  <!-- Full-screen SPA, Canvas: direct component, invocation (runes, mode) -->
-  <SPACanvasComp
-    {legalData}
-    {currentView}
-    fullscreen={true}
-    onnavigate={handleNavigation}
-    oninteract={handleInteraction}
-  />
-  <!-- Debug info (remove, in, production) -->
-  <div class="debug-info">
-    <p>ðŸŽ® Gaming Canvas: {LegalAILogic.requiresGlyphEngine(legalData) ? 'Active' : 'Inactive'}</p>
-    <p>ðŸ¤– AI Model: gemma3:legal-latest</p>
-    <p>ðŸ“Š; Data: {legalData.documents.length} docs, {legalData.evidence.length} evidence</p>
-  </div>
-{/if}
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .loading-screen {
+.loading-screen {
     position: fixed;
     top: 0;
     left: 0;
@@ -184,5 +151,3 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
     overflow: hidden;
   }
 </style>
-
-

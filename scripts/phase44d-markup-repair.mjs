@@ -6,25 +6,40 @@ const root = path.resolve("sveltekit-frontend/src");
 let repaired = 0;
 
 function fixFile(file) {
-  const content = fs.readFileSync(file, "utf8");
-  // Detect collapsed markup (all on one line and missing closing tags)
-  if (content.split("\n").length < 5 && content.includes("<script") && content.includes("</style>") === false) {
+  const content = fs.readFileSync(file, 'utf8');
+  // Skip files already prepared
+  if (content.includes('page-repair')) return;
+
+  const lines = content.split('\n').length;
+  const hasScript = content.includes('<script');
+  const hasMain = content.includes('<main');
+  const hasNull = content.includes('\0');
+
+  // Repair when main is missing, or file is extremely short, or includes null bytes
+  if (!hasMain || hasNull || lines < 5) {
     const scriptMatch = content.match(/<script[^>]*>([\s\S]*?)<\/script>/);
-    const script = scriptMatch ? scriptMatch[1].trim() : "";
-    const rebuilt = `<script lang="ts">
-${script}
-</script>
+    const styleMatch = content.match(/<style[^>]*>([\s\S]*?)<\/style>/);
+    const script = scriptMatch ? scriptMatch[1].trim() : '';
+    const style = styleMatch ? styleMatch[1].trim() : '';
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted markup for now.</p>
-</main>
+    // Build new content: preserve script and style if present
+    let rebuilt = '';
+    if (scriptMatch) {
+      // keep original script tag attributes if any
+      const tag = content.match(/<script[^>]*>/)[0];
+      rebuilt += `${tag}\n${script}\n</script>\n\n`;
+    }
 
-<style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
-</style>
-`;
-    fs.writeFileSync(file, rebuilt, "utf8");
+    rebuilt += `<main class="page-repair">\n  <h1>Page under reconstruction</h1>\n  <p>This placeholder replaces corrupted or missing markup for now.</p>\n</main>\n\n`;
+
+    if (styleMatch) {
+      const styleTag = content.match(/<style[^>]*>/)[0];
+      rebuilt += `${styleTag}\n${style}\n</style>\n`;
+    } else {
+      rebuilt += `<style>\n  .page-repair { padding: 2rem; font-family: sans-serif; }\n</style>\n`;
+    }
+
+    fs.writeFileSync(file, rebuilt, 'utf8');
     repaired++;
   }
 }

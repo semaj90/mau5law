@@ -52,52 +52,15 @@ import type { User } from '$lib/types'; import type { PageData } from './$types'
   }
   function handleRagUploadComplete(result: RagUploadSummary) { ragSummary = result; const files = result?.totalFiles ?? 0; const message = result?.message ?? 'Document ingestion completed'; setFeedback(`Success: ${ message } - ${ files } file${files === 1 ? '': 's'} processed`, 'success')}
   function handleRagUploadError(error: string) { setFeedback(`RAG upload failed: ${ error }`, 'error')}
-</script> <svelte:head> <title>Profile Settings - Legal AI Platform</title> </svelte:head>
- {#if isHydrating} <div class="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-gray-600"> <span class="nes-text is-primary animate-pulse">Loading your profile...</span> <span class="text-sm">Connecting to secure Drizzle-backed services</span> </div> {:else if !profileLoaded} <div class="mx-auto max-w-xl space-y-6 py-16"> <h1 class="text-2xl font-semibold text-gray-900">Authentication Required</h1> <p class="text-gray-600"> Sign in to manage your account, knowledge base uploads, and Docker-connected services. </p> <div class="flex items-center justify-center"> <a href="/login?redirect=/profile"
-        class="nes-btn is-primary px-6 py-2"
-      > Go to Login </a> <a href="/" class="nes-btn px-6"> Return Home </a> </div> </div> {:else} <div class="mx-auto max-w-6xl space-y-8 px-4"> <header class="flex flex-col gap-6 md:flex-row md:items-center"> <div class="space-y-2"> <h1 class="text-3xl font-semibold text-gray-900">Hello, { displayName }
-</h1> <p class="text-sm text-gray-600"> Keep your profile in sync across UnoCSS-powered UI, Bits-UI dialogs, and Docker-discovered microservices. </p> </div> <div class="flex items-center"> <div class="hidden"> <Avatar type="nes-pokeball" size="large" /> </div> <div class="rounded-lg border border-dashed border-gray-300 bg-white p-3 text-xs text-gray-500 shadow-sm dark:border-gray-700 dark:bg-gray-900"> <p class="font-semibold">Environment</p> <p>API Base: {apiOrigin || 'Same-origin'}
-</p> <p>Docker Discovery: { dockerDiscoveryFlag }
-</p> </div> </div> </header>
- {#if feedback.text} <div class={`rounded-lg border px-4 py-3 text-sm transition-all duration-200 ${ feedback.intent === 'success'`
-            ? 'border-green-300 bg-green-50 text-green-700 dark:border-green-500/60 dark:bg-green-500/10 dark:text-green-200': feedback.intent === 'error'
-              ? 'border-red-300 bg-red-50 text-red-700 dark:border-red-500/60 dark:bg-red-500/10 dark:text-red-200': 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-500/60 dark:bg-blue-500/10; dark:text-blue-200'
-        }`} >`
-        <div class="flex items-start justify-between"> <span>{feedback.text}
-</span> <button class="text-xs uppercase tracking-wide opacity-70" onclick={ clearFeedback }> Dismiss </button> </div> </div> {/if} <div class="grid gap-6"> <Card.Root variant="legal" class="space-y-6" title="Account, Information"> <form class="space-y-5" onsubmit={ submitProfileUpdate }> <div class="grid gap-5"> <Input label="First, Name"
-              placeholder="Enter your first name"
-              bind:value={profileForm.firstName} autocomplete="given-name"
-            /> <Input label="Last, Name"
-              placeholder="Enter your last name"
-              bind:value={profileForm.lastName} autocomplete="family-name"
-            /> </div> <Input label="Email, Address"
-            type="email"
-            placeholder="your.email@example.com"
-            bind:value={profileForm.email} autocomplete="email"
-            required /> <div class="flex flex-wrap items-center gap-3 text-sm text-gray-500"> <span class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1"> <span class="nes-text is-success text-xs">Role</span> <span>{user?.role ?? 'user'}
-</span> </span> <span class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-3 py-1"> <span class="text-xs uppercase tracking-wide">User ID</span> <code class="font-mono"> {typeof user?.id === 'string' ? user?.id: user?.id?.toString() ?? '-'}
-</code> </span> </div> <div class="flex flex-wrap items-center"> <Button type="submit"
-              disabled={ isSaving } className="nes-btn is-primary flex items-center gap-2 px-4 py-2"
-            > <span>{isSaving ? 'Saving...': 'Save Changes'}
-</span> </Button> <Button type="button"
-              disabled={ isSaving } onclick={ refreshProfile } className="nes-btn px-4 py-2"
-            > Reset </Button> </div> </form> <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700"> <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500"> Profile Picture </h3> <AvatarUpload userId={typeof user?.id === 'string' ? user?.id: user?.id?.toString()} currentAvatar={user?.avatarUrl ?? undefined} /> </div> </Card> <Card.Root variant="case" class="space-y-4" title="Account, Statistics"> <div class="grid"> <div class="stat-card"> <span class="stat-value">{stats.totalCases}
-</span> <span class="stat-label">Total Cases</span> </div> <div class="stat-card"> <span class="stat-value">{stats.openCases}
-</span> <span class="stat-label">Active Cases</span> </div> <div class="stat-card"> <span class="stat-value">{stats.closedCases}
-</span> <span class="stat-label">Closed Cases</span> </div> <div class="stat-card"> <span class="stat-value">{stats.totalEvidence}
-</span> <span class="stat-label">Evidence Files</span> </div> <div class="stat-card"> <span class="stat-value">{stats.personsOfInterest}
-</span> <span class="stat-label">Persons of Interest</span> </div> </div> <div class="rounded-lg border border-dashed border-indigo-300 bg-indigo-50 p-4 text-xs text-indigo-700 dark:border-indigo-500/50 dark:bg-indigo-500/10"> <p> Stats are powered by Drizzle ORM queries and stay in sync with Docker-discovered Postgres services. </p> </div> </Card> </div> <Card variant="evidence" class="space-y-6" title="AI, Knowledge, Base"> <p class="text-sm text-gray-600"> Upload briefs, filings, exhibits, or research memos to enrich the GPU-backed RAG pipeline. Files are processed through the UnoCSS-friendly pipeline and vectorized via Drizzle-managed workflows. </p> <div class="flex flex-wrap items-center"> <Button type="button"
-          className={`nes-btn ${showRagUpload ? 'is-warning': 'is-success'} px-4 py-2`} onclick={() => (showRagUpload = !showRagUpload)} >
-          {showRagUpload ? 'Hide Upload': 'Upload Documents'}
-</Button> <a class="nes-btn is-error px-3 py-2 text-xs uppercase"
-          href="/docs/rag-playbook"
-          rel="noreferrer"
-        > RAG Playbook </a> </div>
- {#if showRagUpload} <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700"> <DocumentUpload multiple={ true } maxSize={ 25 } acceptedTypes={['.txt', '.md', '.pdf', '.docx', '.json', '.csv']} uploadEndpoint={ ragUploadEndpoint } onUploadComplete={ handleRagUploadComplete } onError={ handleRagUploadError } /> </div> {/if} {#if ragSummary} <div class="rounded-lg border border-sky-300 bg-sky-50 p-4 text-sm text-sky-800 dark:border-sky-500/60 dark:bg-sky-500/10"> <h3 class="mb-3 text-base">Recent Upload Summary</h3> <div class="grid gap-4"> <div class="rag-stat"> <span class="stat-value">{ragSummary.totalFiles ?? 0}
-</span> <span class="stat-label">Files Processed</span> </div> <div class="rag-stat"> <span class="stat-value">{ totalChunks }
-</span> <span class="stat-label">Semantic Chunks</span> </div> <div class="rag-stat"> <span class="stat-value">{ totalEmbeddings }
-</span> <span class="stat-label">Embeddings Generated</span> </div> </div> </div> {/if}
-</Card> </div> {/if} <style> .stat-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease}
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.stat-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease}
   .stat-card: hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12)}
   .stat-value { font-size: 1.6rem; font-weight: 600; color: #111827}
   .stat-label { margin-top: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280}
@@ -113,5 +76,3 @@ import type { User } from '$lib/types'; import type { PageData } from './$types'
     .rag-stat .stat-label { color: rgba(191, 219, 254, 0.85)}
   }
 </style>
-
-
