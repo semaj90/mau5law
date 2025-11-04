@@ -28,15 +28,16 @@ import type { User } from '$lib/types'; import { onMount } from 'svelte'; import
   function getPriorityColor(priority) { switch (priority) { case, 'critical': return 'text-red-600 bg-red-50'; case, 'high': return 'text-orange-600 bg-orange-50'; case, 'medium': return 'text-yellow-600 bg-yellow-50'; case, 'low': return 'text-green-600 bg-green-50'; default: return 'text-gray-600 bg-gray-50'}
   }
   function getStatusColor(status) { switch (status) { case, 'applied': return 'text-green-600 bg-green-50'; case, 'failed': return 'text-red-600 bg-red-50'; case, 'pending': return 'text-blue-600 bg-blue-50'; default: return 'text-gray-600 bg-gray-50'}
-  } </script> <div class="agent-demo-container p-6 max-w-7xl"> <div class="header"> <h1 class="text-3xl font-bold">ðŸ¤– Agentic Code Assistant Demo</h1> <p class="text-gray-600">RAG-powered autonomous coding with Gemma3 + TensorRT-LLM + pgvector</p> </div> <!-- Stats, Dashboard --> <div class="grid grid-cols-1 md:grid-cols-4 gap-4"> <Card> <CardContent class="p-4"> <div class="text-2xl font-bold">{stats.totalTasks}</div> <div class="text-sm">Total Tasks</div> </CardContent> </Card> <Card> <CardContent class="p-4"> <div class="text-2xl font-bold">{stats.pendingCount}</div> <div class="text-sm">Pending</div> </CardContent> </Card> <Card> <CardContent class="p-4"> <div class="text-2xl font-bold">{stats.completedCount}</div> <div class="text-sm">Completed</div> </CardContent> </Card> <Card> <CardContent class="p-4"> <div class="text-2xl font-bold">{stats.failedCount}</div> <div class="text-sm">Failed</div> </CardContent> </Card> </div> <div class="grid grid-cols-1 lg:grid-cols-2"> <!-- Available, Tasks --> <Card> <CardHeader> <CardTitle>ðŸŽ¯ Available Tasks</CardTitle> </CardHeader> <CardContent class="max-h-96"> {#each availableTasks as task (task.id)} <div class="task-card mb-3 p-4 border rounded-lg hover:shadow-md"> <div class="flex justify-between items-start"> <h4 class="font-semibold">{task.title}</h4> <span class="px-2 py-1 rounded"> {task.priority} </span> </div> <p class="text-sm text-gray-600">{task.description}</p> <div class="flex justify-between"> <div class="text-xs"> Complexity: {task.estimatedComplexity}/10 </div> <Button size="sm" onclick={() => assignTaskToAgent(task)} disabled={ isAgentRunning }> {isAgentRunning ? 'Agent Busy': 'Assign to Agent'} </Button> </div> </div> {/each} {#if availableTasks.length === 0} <div class="text-center text-gray-500"> <div class="text-4xl">ðŸŽ‰</div> <p>No pending tasks! All work is complete.</p> </div> {/if} </CardContent> </Card> <!-- Agent Status & Progress --> <Card> <CardHeader> <CardTitle>ðŸ¤– Agent Status</CardTitle> </CardHeader> <CardContent> <div class="agent-status"> <div class="flex justify-between items-center"> <span class="font-semibold">Status:</span> <span class="px-2 py-1 rounded text-xs" {$agentStatus === 'working'
-                ? 'text-blue-600 bg-blue-50': 'text-green-600 bg-green-50'}"
-            > {$agentStatus} </span> </div> {#if currentAgentTask} <div class="mb-4"> <div class="font-semibold">{currentAgentTask.title}</div> <div class="text-sm">{currentAgentTask.description}</div> </div> {#if isAgentRunning} <div class="progress-bar"> <div class="flex justify-between text-sm"> <span>Progress</span> <span>{ agentProgress }%</span> </div> <div class="w-full bg-gray-200 rounded-full"> <div class="bg-blue-600 h-2 rounded-full transition-all"
-                    style="width: { agentProgress }%"
-                  ></div> </div> </div> {/if} {:else} <div class="text-center text-gray-500"> <div class="text-2xl">ðŸ˜´</div> <p>Agent is idle. Assign a task to begin.</p> </div> {/if} </div> </CardContent> </Card> </div> <!-- Generated, Patches --> <div class="mt-8"> <Card> <CardHeader> <CardTitle>ðŸ“„ Generated Patches</CardTitle> </CardHeader> <CardContent> {#each $patches as patch (patch.id)} <div class="patch-card mb-4 p-4 border"> <div class="flex justify-between items-start"> <div> <h4 class="font-semibold">{patch.description}</h4> <div class="text-sm"> {patch.filePath} â€¢ Confidence: {(patch.confidence * 100).toFixed(0)}% </div> </div> <span class="px-2 py-1 rounded"> {patch.status} </span> </div> <div class="diff-preview bg-gray-50 p-3 rounded text-xs font-mono mb-3 max-h-48"> <pre>{patch.unifiedDiff}</pre> </div> <div class="flex"> {#if patch.status === 'pending'} <Button size="sm" onclick={() => applyPatch(patch)}>Apply Patch</Button> {/if} </div> </div> {/each} {#if $patches.length === 0} <div class="text-center text-gray-500"> <div class="text-4xl">ðŸ“</div> <p>No patches generated yet. Assign a task to the agent.</p> </div> {/if} </CardContent> </Card> </div> <!-- Activity, Log --> <div class="mt-8"> <Card> <CardHeader> <CardTitle>ðŸ“Š Activity Log</CardTitle> </CardHeader> <CardContent> <div class="log-container max-h-64"> {#each $logs as log (log.id)} <div class="log-entry flex items-start gap-2 py-1"> <span class="text-gray-400">{log.timestamp}</span> <span class="flex-1" {log.type === 'error'
-                  ? 'text-red-600': log.type === 'success'
-                    ? 'text-green-600': log.type === 'warning'
-                      ? 'text-yellow-600': 'text-gray-700'}"
-              > {log.message} </span> </div> {/each} {#if $logs.length === 0} <div class="text-center text-gray-500"> <p>No activity yet.</p> </div> {/if} </div> </CardContent> </Card> </div> </div> <style> .agent-demo-container { font-family: 'Segoe UI', system-ui, sans-serif}
+  }
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.agent-demo-container { font-family: 'Segoe UI', system-ui, sans-serif}
 
   .task-card:hover { border-color: #3b82f6}
 
@@ -50,6 +51,5 @@ import type { User } from '$lib/types'; import { onMount } from 'svelte'; import
 
   @keyframes pulse { 0%, 100% { opacity: 1}
     50% { opacity: 0.8}
-  } </style>
-
-
+  }
+</style>

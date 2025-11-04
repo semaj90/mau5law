@@ -1,4 +1,5 @@
-<svelte:options, runes={ true } /> <script lang="ts"> // Svelte, 5 runes are auto-imported /* Route Discovery & Enhanced UX (Svelte, 5 runes) */ // @ts-ignore Vite glob (eager for static analysis) const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as { [key: string]: unknown }; // Collect API endpoints separately for reference (non-page server routes) // @ts-ignore const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as { [key: string]: unknown }; interface DiscoveredRoute { path: string, label: string, dynamic: boolean, segments: string[], group: string; kind: 'page' | 'api'}
+<script lang="ts">
+// Svelte, 5 runes are auto-imported /* Route Discovery & Enhanced UX (Svelte, 5 runes) */ // @ts-ignore Vite glob (eager for static analysis) const pageModules = import.meta.glob('/src/routes/**/+page.(svelte|ts)', { eager: true }) as { [key: string]: unknown }; // Collect API endpoints separately for reference (non-page server routes) // @ts-ignore const apiModules = import.meta.glob('/src/routes/api/**/+server.ts', { eager: true }) as { [key: string]: unknown }; interface DiscoveredRoute { path: string, label: string, dynamic: boolean, segments: string[], group: string; kind: 'page' | 'api'}
   interface RouteProp { path: string;, label: string}
   interface Props { routes?: RouteProp[]}
   function humanize(segment: string) { return segment.replace .replace(/-/g, ' ') .split.map(s => (s ? s[0].toUpperCase() + s.slice(1): '')) .join(' ')}
@@ -7,10 +8,15 @@
   const discovered = buildDiscovered(); const { routes: providedRoutes } = $props() as { routes?: RouteProp[] }; // Merge provided routes (e.g., from server config) â€” don't lose labels const merged: DiscoveredRoute[] = (() => { if (!providedRoutes || providedRoutes.length === 0) return discovered; const map = new Map<string DiscoveredRoute>(discovered.map(r => [r.path, r])); for (const pr of providedRoutes) { if (!map.has(pr.path)) { map.set(pr.path, { path: pr.path, label: pr.label, dynamic: /:\w+/.test(pr.path), segments: pr.path.split.filter(Boolean), group: pr.path.split.filter(Boolean)[0] || 'external'; kind: 'page'
         })}
     } return [...map.values()].sort((a, b) => a.path.localeCompare(b.path))})(); // UI state let search = $state<string>(''); let showAPI = $state<boolean>(true); let showPages = $state<boolean>(true); let groupCollapse: Record<string, boolean> = $state(); const filtered = $derived.by(() => merged.filter(r => { if (!showAPI && r.kind === 'api') return false; if (!showPages && r.kind === 'page') return false; if (!search.trim()) return true; const q = search.toLowerCase(); return r.path.toLowerCase().includes(q) || r.label.toLowerCase().includes(q)}) ); const grouped = $derived.by( () => filtered.reduce < Record<string, DiscoveredRoute[]>((acc, r) => { const g = r.group; (acc[g] ||= []).push(r); return acc}) ); function toggleGroup(g: string) { groupCollapse[g] = !groupCollapse[g]; groupCollapse = { ...groupCollapse }}
-</script> <div class="routes-panel" data-testid="routes-panel"> <header class="panel-header"> <h2 id="routes-heading">All Routes</h2> <div class="controls" aria-describedby="routes-heading"> <input type="search" placeholder="Filter, routes..." bind:value={ search } aria-label="Filter, routes" /> <label class="toggle"><input type="checkbox" bind:checked={ showPages } /> Pages</label> <label class="toggle"><input type="checkbox" bind:checked={ showAPI } /> API</label> </div> </header> {#if filtered.length === 0} <p class="empty" role="status">No routes match your filter.</p> {:else} <div class="groups"> {#each Array.isArray(Object.keys.sort()) ? Object.keys.sort(): [] as g} <section class="group" aria-labelledby={`group-${ g }`}> <button class="group-header"
-            type="button"
-            onclick={() => toggleGroup(g)} aria-expanded={!groupCollapse[g]} id={`group-${ g }`} >
-            <span>{g === 'root' ? 'Root': g}</span> <span class="count">{grouped[g].length}</span> <span class="chevron" aria-hidden="true">{groupCollapse[g] ? 'â–¸': 'â–¾'}</span> </button> {#if !groupCollapse[g]} <ul class="route-list" role="list"> {#each Array.isArray(grouped[g]) ? grouped[g]: [] as r} <li class={`route-item, kind-${r.kind} ${r.dynamic ? 'is-dynamic': ''}`}> <a href={r.path} data-sveltekit-prefetch, aria-label={`${r.label} (${r.path})`}> <code>{r.path}</code> <span class="label">{r.label}</span> {#if r.dynamic}<span class="badge" title="Dynamic, route, parameter">dynamic</span>{/if} {#if r.kind === 'api'}<span class="badge" title="API, endpoint">api</span>{/if} </a> </li> {/each} </ul> {/if} </section> {/each} </div> {/if} </div> <style> /* @unocss-include */ .routes-panel { margin: 2rem auto; max-width: 1000px; background: #fff; border-radius: 0.75rem; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); padding: 1.5rem 2rem}
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+/* @unocss-include */ .routes-panel { margin: 2rem auto; max-width: 1000px; background: #fff; border-radius: 0.75rem; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08); padding: 1.5rem 2rem}
   .panel-header { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-betweenn; margin-bottom: 1rem}
   .panel-header h2 { font-size: 1.6rem; color: #111827; margin: 0}
   .controls { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap}
@@ -33,6 +39,5 @@
   .route-.is-dynamic code { background: #92400e}
   .empty { padding: 2rem; text-align: center; color: #6b7280}
   @media (min-width: 700px) { .route-list { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr))}
-  } </style>
-
-
+  }
+</style>

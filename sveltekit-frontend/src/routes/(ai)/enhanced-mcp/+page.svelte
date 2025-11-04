@@ -1,5 +1,3 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte; code: Unexpected, token -->
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /** * Enhanced MCP Integration Demo Page * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit */ import { onMount } from 'svelte'; import { get, writable } from 'svelte/store'; // Dynamically-loaded component (avoids TypeScript: "no default export" error) let EnhancedMCPIntegration = $state<any>(null); // load component on client mount onMount(() => {
 		(async () => {
@@ -43,150 +41,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
   function clearLogs() { systemLogs.set([]); logMessage('info', 'System logs cleared', 'system')}
 </script>
 
-<svelte:head>
-  <title>Enhanced MCP Integration - Legal AI System</title>
-  <meta
-    name="description"
-    content="Comprehensive MCP integration with cluster system, Context7 documentation, and real-time AI orchestration"
-  />
-</svelte:head>
-<div class="enhanced-mcp-demo">
-  <header class="demo-header">
-    <h1>ðŸ¤– Enhanced MCP Integration Demo</h1>
-    <p class="demo-subtitle">
-      Comprehensive integration of cluster system, MCP tools, Context7 documentation, and multi-agent orchestration for
-      legal AI workflows
-    </p>
-  </header>
-  <div class="system-status">
-    <h2>ðŸ” System Status Overview</h2>
-    <div class="status-grid">
-      <div class="status-nier-bits-card">
-        <div class="status-icon">ðŸ“¡</div>
-        <div class="status-info">
-          <div class="status-title">Context7 MCP Server</div>
-          <div class="status-subtitle">{$integrationStatus.mcpServerRunning ? 'Online' : 'Offline'}</div>
-        </div>
-      </div>
-      <div class="status-nier-bits-card">
-        <div class="status-icon">âš¡</div>
-        <div class="status-info">
-          <div class="status-title">Cluster System</div>
-          <div class="status-subtitle">{$integrationStatus.clusterSystemOnline ? 'Validated' : 'Not Tested'}</div>
-        </div>
-      </div>
-      <div class="status-nier-bits-card">
-        <div class="status-icon">ðŸ§</div>
-        <div class="status-info">
-          <div class="status-title">Ollama Models</div>
-          <div class="status-subtitle">{$integrationStatus.ollamaModelsLoaded ? 'Loaded' : 'Not Available'}</div>
-        </div>
-      </div>
-      <div class="status-nier-bits-card">
-        <div class="status-icon">ðŸ’»</div>
-        <div class="status-info">
-          <div class="status-title">VS Code Extension</div>
-          <div class="status-subtitle">{$integrationStatus.vsCodeExtensionActive ? 'Active' : 'Not Detected'}</div>
-        </div>
-      </div>
-      <div class="status-nier-bits-card">
-        <div class="status-icon">ðŸŽ¯</div>
-        <div class="status-info">
-          <div class="status-title">Contextual Analysis</div>
-          <div class="status-subtitle">{$integrationStatus.contextualAnalysisReady ? 'Ready' : 'Pending'}</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="demo-controls">
-    <h2>âš™ï¸ Integration Controls</h2>
-    <div class="controls-grid">
-      <div class="control-group">
-        <label for="case-selector">Select Case ID:</label>
-        <select id="case-selector" bind:value={selectedCaseId}>
-          <option value="demo-case-001">Demo Case 001</option> <option value="demo-case-002">Demo Case 002</option>
-          <option value="complex-case-003">Complex Case 003</option>
-        </select>
-      </div>
-      <div class="control-group">
-        <label> <input type="checkbox" bind:checked={enableRealtimeUpdates} /> Enable Real-time Updates </label>
-      </div>
-      <div class="control-group">
-        <label> <input type="checkbox" bind:checked={showMetrics} /> Show Performance Metrics </label>
-      </div>
-      <div class="control-group">
-        <label> <input type="checkbox" bind:checked={enableClusterMode} /> Enable Cluster Mode </label>
-      </div>
-    </div>
-    <div class="action-buttons">
-      <button onclick={runSystemDiagnostics} class="diagnostic-button"> ðŸ”¬ Run System Diagnostics </button>
-      <button onclick={clearLogs} class="clear-logs-button"> ðŸ§¹ Clear Logs </button>
-    </div>
-  </div>
-  <div class="main-integration">
-    {#if EnhancedMCPIntegration}
-      <EnhancedMCPIntegration caseId={selectedCaseId} {enableRealtimeUpdates} {showMetrics} {enableClusterMode} />
-    {:else}
-      <div class="loading-component">Loading integration component...</div>
-    {/if}
-  </div>
-  <div class="system-logs">
-    <h2>ðŸ“‹ System Activity Logs</h2>
-    <div class="logs-container">
-      {#each Array.isArray($systemLogs) ? $systemLogs : [] as log}
-        <div class="log-entry">
-          <span class="log-timestamp">{log.timestamp.toLocaleTimeString()}</span>
-          <span class="log-source">[{log.source}]</span> <span class="log-message">{log.message}</span>
-        </div>
-      {/each}
-      {#if $systemLogs.length === 0}
-        <div class="no-logs">No system logs available</div>
-      {/if}
-    </div>
-  </div>
-  <div class="integration-features">
-    <h2>âœ¨ Enhanced Integration Features</h2>
-    <div class="features-grid">
-      <div class="feature-nier-bits-card">
-        <div class="feature-icon">ðŸš€</div>
-        <div class="feature-title">Cluster Performance</div>
-        <div class="feature-description">
-          Multi-worker cluster system with load balancing and performance monitoring
-        </div>
-      </div>
-      <div class="feature-nier-bits-card">
-        <div class="feature-icon">ðŸ¤–</div>
-        <div class="feature-title">Multi-Agent Orchestration</div>
-        <div class="feature-description">
-          Claude, CrewAI, and AutoGen agents with intelligent routing and coordination
-        </div>
-      </div>
-      <div class="feature-nier-bits-card">
-        <div class="feature-icon">ðŸ§</div>
-        <div class="feature-title">Enhanced RAG System</div>
-        <div class="feature-description">Semantic search with Context7 integration and intelligent caching</div>
-      </div>
-      <div class="feature-nier-bits-card">
-        <div class="feature-icon">ðŸ“š</div>
-        <div class="feature-title">Context7 Documentation</div>
-        <div class="feature-description">Real-time access to library documentation and best practices</div>
-      </div>
-      <div class="feature-nier-bits-card">
-        <div class="feature-icon">ðŸ•¸ï¸</div>
-        <div class="feature-title">Memory Graph</div>
-        <div class="feature-description">Knowledge graph with entity relations and contextual memory</div>
-      </div>
-      <div class="feature-nier-bits-card">
-        <div class="feature-icon">ðŸ“¡</div>
-        <div class="feature-title">Real-time WebSocket</div>
-        <div class="feature-description">Live updates and bidirectional communication with MCP server</div>
-      </div>
-    </div>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .enhanced-mcp-demo {
+.enhanced-mcp-demo {
     min-height: 100vh;
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
     color: #e5e7eb;
@@ -437,5 +298,3 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
     line-height: 1.5;
   }
 </style>
-
-

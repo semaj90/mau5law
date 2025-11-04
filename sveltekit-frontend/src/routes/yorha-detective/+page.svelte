@@ -1,6 +1,5 @@
-<!-- YoRHa Detective Interface, Demo, Page -->
 <script lang="ts">
-  import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
+import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
   let isBooting = $state<boolean>(true);
   let bootProgress = $state<number>(0);
@@ -29,68 +28,13 @@
   }, 500);
 </script>
 
-<svelte:head>
-  <title>YoRHa Detective Interface | Enhanced-Bits Gaming UI</title>
-  <meta name="description" content="Cyberpunk detective interface using, Enhanced-Bits, components" />
-</svelte:head>
-{#if isBooting}
-  <div class="boot-screen fixed inset-0 flex justify-center items-center z-1000 text-white" transition:fade>
-    <div class="boot-content text-center">
-      <div class="boot-logo flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4">
-        <div class="logo-symbol">âš”ï¸</div>
-        <div class="logo-text">
-          <div class="logo-main text-[2rem] md:text-[2.5rem] font-bold">YoRHa</div>
-          <div class="logo-sub text-[1rem] text-[#cccccc] mt-1">DETECTIVE SYSTEM</div>
-        </div>
-      </div>
-      <div class="boot-progress">
-        <div class="progress-bar w-full h-2 bg-white/10 border border-[#333333] rounded overflow-hidden">
-          <div
-            class="progress-fill h-full rounded-[3px] transition-width duration-800"
-            style="width: {(bootProgress / bootSequence.length) * 100}%"
-          ></div>
-        </div>
-        <div class="progress-text">
-          {Math.round((bootProgress / bootSequence.length) * 100)}% Complete
-        </div>
-      </div>
-      <div class="boot-messages text-left bg-black/80 border border-[#333333] rounded-lg p-4 md:p-8 mb-8">
-        {#each bootMessages as message, index}
-          <div class="boot-message flex items-center gap-4 mb-3" transition:fade={{ delay: 200 }}>
-            <span class="message-prefix text-[#666666] font-bold">[{(index + 1).toString().padStart(2, '0')}]</span>
-            <span class="message-text flex-1">{message}</span>
-            <span class="message-status">âœ“</span>
-          </div>
-        {/each}
-        {#if bootProgress < bootSequence.length}
-          <div
-            class="boot-message current flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2 bg-[#00ff41]/10 border-l-3"
-          >
-            <span class="message-prefix text-[#666666] font-bold"
-              >[{(bootProgress + 1).toString().padStart(2, '0')}]</span
-            >
-            <span class="message-text flex-1">
-              {bootSequence[bootProgress] || 'Finalizing...'}
-            </span>
-            <span class="loading-dots">...</span>
-          </div>
-        {/if}
-      </div>
-      <div class="boot-footer border-t">
-        <div class="system-info text-[0.75rem] text-[#666666] leading-normal">
-          YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework
-        </div>
-      </div>
-    </div>
-  </div>
-{:else}
-  <div transition:fade={{ delay: 300, duration: 800 }}>
-    <YorHADetectiveInterface />
-  </div>
-{/if}
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* Custom styles for gradients, shadows, and animations not easily expressed with UnoCSS */
+/* Custom styles for gradients, shadows, and animations not easily expressed with UnoCSS */
   .boot-screen {
     background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%)}
   .logo-symbol {

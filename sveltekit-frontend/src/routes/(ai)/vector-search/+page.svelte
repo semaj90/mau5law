@@ -7,26 +7,15 @@ import type { Case } from '$lib/types'; import  Button  from "$lib/components/ui
   }
   function getSimilarityColor(similarity: number): string { if (similarity > 0.9) return '#00ff00'; if (similarity > 0.8) return '#66ff66'; if (similarity > 0.7) return '#ffaa00'; if (similarity > 0.6) return '#ff6600'; return '#ff3333'}
   function formatContent(content: string): string { return content.length > 200 ? content.substring(0, 200) + '...': content}
-</script> <svelte:head> <title>Vector Search | YoRHa Legal AI</title> <meta name="description" content="Semantic vector search powered by AI, embeddings" /> </svelte:head> <div class="vector-search-page"> <div class="page-header"> <h1>ðŸŽ¯ Vector Search</h1> <p>Semantic similarity search using AI embeddings</p> </div> <!-- Search, Interface --> <Card.Root class="search-card"> <CardHeader> <CardTitle>ðŸ” Semantic Search Query</CardTitle> </CardHeader> <CardContent> <div class="search-form"> <div class="query-input"> <textarea bind:value={ query } onkeydown={ handleKeydown } placeholder="Enter your search query... (e.g., 'contract breach damages', 'evidence tampering cases')"
-            class="query-textarea"
-            rows="3"
-          ></textarea> </div> <div class="search-options"> <div class="option-group"> <label>Search Type:</label> <select bind:value={ searchType } class="search-type-select"> <option value="content">General Content</option> <option value="cases">Legal Cases</option> <option value="evidence">Evidence</option> </select> </div> <div class="option-group"> <label>Similarity Threshold:</label> <input type="range" bind:value={ threshold } min="0.1" max="1.0" step="0.1" class="threshold-slider" /> <span class="threshold-value">{ threshold }
-</span> </div> <div class="option-group"> <label>Results Limit:</label> <input type="number" bind:value={ limit } min="1" max="50" class="limit-input" /> </div> </div> <div class="search-actions"> <Button onclick={ performVectorSearch } disabled={!query.trim() || loading} class="search-button">
- {#if loading} ðŸ”„ Searching... {:else} ðŸŽ¯ Vector Search {/if}
-</Button> </div> </div> </CardContent> </Card> <!-- Search, Results -->
- {#if loading} <div class="loading-state"> <div class="loading-spinner"></div> <p>Performing semantic vector search...</p> </div> {:else if results.length === 0 && query} <div class="empty-state"> <div class="empty-icon">ðŸŽ¯</div> <h3>No similar results found</h3> <p>Try lowering the similarity threshold or using different search terms</p> </div> {:else if results.length > 0} <div class="results-section"> <div class="results-header"> <h3>ðŸ“Š Search Results</h3> <div class="results-meta"> Found {results.length} results in { processingTime }ms </div> </div> <div class="results-grid">
- {#each Array.isArray(results) ? results: [] as result} <Card.Root class="result-card"> <CardHeader> <CardTitle class="result-title">
- {#if result.contentType} <span class="content-type-badge">{result.contentType.toUpperCase()}
-</span> {/if} Result #{result.id}
-</CardTitle> <div class="similarity-badge" style="color: {getSimilarityColor(result.similarity)}"> {Math.round(result.similarity * 100)}% Match </div> </CardHeader> <CardContent> <div class="result-content"> {formatContent(result.content || result.textContent || 'No content available')}
-</div>
- {#if result.metadata && Object.keys(result.metadata).length > 0} <div class="metadata-section"> <strong>Metadata:</strong> <div class="metadata-content"> {JSON.stringify(result.metadata, null, 2)}
-</div> </div> {/if} <div class="result-footer"> <div class="result-source"> Source: {result.source}
-</div> <div class="result-actions">
- {#if result.caseId} <Button size="sm" href="/cases/{result.caseId}">ðŸ“ View Case</Button> {/if} {#if result.evidenceId} <Button size="sm" href="/evidence/{result.evidenceId}">ðŸ” View Evidence</Button> {/if} <Button.Root size="sm" class="analyze-button">ðŸ§  AI Analysis</Button> </div> </div> </CardContent> </Card> {/each}
-</div> </div> {/if} <!-- Search, Tips -->
- {#if !query} <Card.Root class="tips-card"> <CardHeader> <CardTitle>ðŸ’¡ Vector Search Tips</CardTitle> </CardHeader> <CardContent> <ul class="tips-list"> <li>Use natural language queries like: "contract breach damages"; or: "witness credibility issues"</li> <li>Vector search finds semantically similar content, not just keyword matches</li> <li>Lower similarity thresholds will return more results but may be less relevant</li> <li>Try different search types (content/cases/evidence) for specialized results</li> <li>The AI understands legal concepts and relationships between terms</li> </ul> </CardContent> </Card> {/if}
-</div> <style> .vector-search-page { max-width: 1400px; margin: 0 auto; padding: 0 1rem}
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.vector-search-page { max-width: 1400px; margin: 0 auto; padding: 0 1rem}
 
   .page-header { text-align: center; margin-bottom: 2rem}
 
@@ -99,5 +88,3 @@ import type { Case } from '$lib/types'; import  Button  from "$lib/components/ui
     .page-header h1 { font-size: 2rem}
   }
 </style>
-
-

@@ -16,104 +16,13 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
   function createNewCase() { goto('/cases/create')}
 </script>
 
-<svelte:head><title>Cases - Legal AI Platform</title></svelte:head>
-<div class="cases-page">
-  {#if devBypassActive}
-    <div class="dev-banner">
-      <span aria-hidden="true">??</span>
-      <p>Development bypass active â€” responses use demo user context.</p>
-    </div>
-  {/if}
-  <header class="page-header">
-    <div class="page-title">
-      <p class="eyebrow">Case Operations</p>
-      <h1>Legal Cases</h1>
-    </div>
-    <div class="header-actions">
-      <button class="btn-secondary" onclick={loadCases} disabled={loading}>
-        <span aria-hidden="true">?â€?</span>
-        {loading ? 'Refreshing' : 'Refresh'}
-      </button>
-      <button class="btn-primary" onclick={createNewCase}> <span aria-hidden="true">+</span> Create Case </button>
-    </div>
-  </header>
-  {#if loading}
-    <div class="loading-state">
-      <div class="spinner" role="status" aria-live="polite"></div>
-      <p>Loading cases...</p>
-    </div>
-  {:else if error}
-    <div class="error-state" role="alert">
-      <div class="state-icon">??</div>
-      <h2>Unable to load cases</h2>
-      <p>{error}</p>
-      <button class="btn-secondary" onclick={loadCases}> <span aria-hidden="true">?â€?</span> Retry </button>
-    </div>
-  {:else if displayCases.length === 0}
-    <div class="empty-state">
-      <div class="state-icon">??</div>
-      <h2>No cases yet</h2>
-      <p>Spin up your first matter to unlock AI-assisted workflows.</p>
-      <div class="empty-actions">
-        <button class="btn-primary" onclick={createNewCase}>Create Case</button>
-        <button class="btn-secondary" onclick={loadCases}> <span aria-hidden="true">?â€?</span> Refresh </button>
-      </div>
-    </div>
-  {:else}
-    <div class="cases-grid">
-      {#each displayCases as caseItem (caseItem.id)}
-        <div
-          class="case-card"
-          role="button"
-          tabindex="0"
-          onclick={() => navigateToCase(caseItem.id)}
-          onkeydown={event => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              navigateToCase(caseItem.id);
-            }
-          }}
-        >
-          <div class="case-card-header">
-            <div class="case-title">
-              <h3>{caseItem.displayTitle}</h3>
-              {#if caseItem.caseNumber}
-                <span class="case-number">{caseItem.caseNumber}</span>
-              {/if}
-            </div>
-            {#if caseItem.statusLabel}
-              <span class={`case-status ${caseItem.statusClass}`}> {caseItem.statusLabel} </span>
-            {/if}
-          </div>
-          {#if caseItem.description}
-            <p class="case-description">{caseItem.description}</p>
-          {:else}
-            <p class="case-description">No description provided.</p>
-          {/if}
-          <div class="case-meta">
-            {#if caseItem.priorityLabel}
-              <span class={`meta-item, priority-pill ${caseItem.priorityClass}`}>
-                <span aria-hidden="true">??</span>
-                {caseItem.priorityLabel}
-              </span>
-            {/if}
-            {#if caseItem.updatedLabel}
-              <span class="meta-item"> <span aria-hidden="true">??</span> Updated {caseItem.updatedLabel} </span>
-            {/if}
-            {#if caseItem.createdLabel && caseItem.createdLabel !== caseItem.updatedLabel}
-              <span class="meta-item meta-date">
-                <span aria-hidden="true">??</span> Created {caseItem.createdLabel}
-              </span>
-            {/if}
-          </div>
-        </div>
-      {/each}
-    </div>
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  :global(body.theme-legal) {
+:global(body.theme-legal) {
     background-color: var(--legal-background, #0f172a);
   }
 
@@ -486,5 +395,3 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     }
   }
 </style>
-
-

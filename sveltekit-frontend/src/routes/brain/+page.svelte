@@ -1,7 +1,5 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke; https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
- // onMount not used; Svelte, 5 runes are used instead import  YoRHaAPIClient  from "$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte"; import * as THREE from 'three'; let layout = $state<any>(null) as: unknown; // --- added types to make node/link shapes explicit --- type GraphNode = { id: string, type?: string; [key: string]: unknown }; type GraphLink = { source: string, target: string, kind?: string; [key: string]: unknown }; type GraphData = { nodes: GraphNode[], links: GraphLink[] }; // CHANGED: narrow graphData typing let graphData = $state({ nodes: [], links: [] }) as GraphData; const client = new YoRHaAPIClient({ onData: (id, data) => { if (id === 'brainGraph') { graphData = data; updateScene()}
+// onMount not used; Svelte, 5 runes are used instead import  YoRHaAPIClient  from "$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte"; import * as THREE from 'three'; let layout = $state<any>(null) as: unknown; // --- added types to make node/link shapes explicit --- type GraphNode = { id: string, type?: string; [key: string]: unknown }; type GraphLink = { source: string, target: string, kind?: string; [key: string]: unknown }; type GraphData = { nodes: GraphNode[], links: GraphLink[] }; // CHANGED: narrow graphData typing let graphData = $state({ nodes: [], links: [] }) as GraphData; const client = new YoRHaAPIClient({ onData: (id, data) => { if (id === 'brainGraph') { graphData = data; updateScene()}
     } });
   let canvasContainer = $state<any>(null) as HTMLDivElement | null; let renderer = $state<any>(null) as THREE.WebGLRenderer | null; let scene: THREE.Scene | undefined; let camera: THREE.PerspectiveCamera | undefined; let animationId: number; // CHANGED:, allow: undefined entries when resetting/replacing meshes let nodeMeshes = $state<Record<string, any>>({}) as Record<string, THREE.Mesh | undefined>; let linkLines = $state<any[]>([]) as THREE.Line[]; const nodeGeometry = new THREE.SphereGeometry(0.25, 24, 24); const typeColor: Record<string, number> = { db: 0x3b82f6, cache: 0x0ea5e9, vector: 0x6366f1, llm: 0xf59e0b, service: 0x10b981, edge: 0xef4444,
     'ui-lib': 0x94a3b8, routing: 0x22c55e, automation 0x14b8a6, table: 0x8b5cf6, default: 0xffffff }; function initThree() { if (!canvasContainer) return; scene = new THREE.Scene(); scene.background = new THREE.Color('#0b0d11'); camera = new THREE.PerspectiveCamera(55, canvasContainer.clientWidth / 400, 0.1, 100); camera.position.set(0, 4, 9); renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(canvasContainer.clientWidth, 400); canvasContainer.appendChild(renderer.domElement); const light = new THREE.DirectionalLight(0xffffff, 0.8); light.position.set(4, 6, 5); scene.add(light); scene.add(new THREE.AmbientLight(0x404040))}
@@ -16,38 +14,13 @@
     }});
 </script>
 
-<h1 class="text-2xl font-bold mb-4">ðŸ§  System Brain Graph</h1>
-<p class="mb-4">Live topology of backend services, database entities and frontend modules.</p>
-<div class="grid gap-4">
-  <div class="col-span-2 flex flex-col">
-    <div bind:this={canvasContainer} class="w-full border rounded bg-zinc-900/40">
-      {#if !graphData.nodes.length}
-        <div class="absolute inset-0 flex items-center justify-center text-sm">Loading 3D graph...</div>
-      {/if}
-    </div>
-    <div class="p-3 border rounded">
-      <h2 class="font-semibold">Nodes ({graphData.nodes.length})</h2>
-      <div class="flex flex-wrap gap-2">
-        {#each Array.isArray(graphData.nodes) ? graphData.nodes : [] as n}
-          <span class="px-2 py-1 rounded bg-zinc-800/70 border"><code>{n.id}</code></span>
-        {/each}
-      </div>
-    </div>
-  </div>
-  <div class="p-4 border rounded">
-    <h2 class="font-semibold">Links ({graphData.links.length})</h2>
-    <ul class="text-xs max-h-72 overflow-auto">
-      {#each Array.isArray(graphData.links) ? graphData.links : [] as l}
-        <li><code>{l.source} â†’ {l.target}</code> <span class="opacity-60">{l.kind}</span></li>
-      {/each}
-    </ul>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  :global(body) {
+:global(body) {
     font-family: system-ui, sans-serif;
   }
 </style>
-
-

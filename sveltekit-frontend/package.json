@@ -16,7 +16,7 @@
     "dev:8g": "cross-env NODE_OPTIONS=\"--max-old-space-size=8192\" vite dev",
     "dev:auto": "node scripts/start-dev-with-ollama.mjs",
     "dev:auto:quic": "node scripts/start-dev-with-ollama.mjs --quic",
-    "dev:quic": "concurrently -n \"Ollama,Vite-QUIC\" -c \"magenta,cyan\" \"ollama serve\" \"timeout /t 3 && node scripts/start-dev-quic.mjs\"",
+    "dev:quic": "concurrently -n \"Ollama,Vite-QUIC\" -c \"magenta,cyan\" \"ollama serve\" \"node scripts/delay-spawn.mjs --delay 3000 -- node scripts/start-dev-quic.mjs\"",
     "dev:quic:with-chat": "concurrently -n \"Ollama-Serve,Ollama-Chat,Vite-QUIC\" -c \"magenta,yellow,cyan\" \"ollama serve\" \"timeout /t 5 && ollama run gemma3-legal:latest\" \"node scripts/start-dev-quic.mjs\"",
     "dev:quic:minimal": "node scripts/start-dev-quic.mjs",
     "dev:quic:health": "npm-run-all -p -r dev:quic health:check:wait",

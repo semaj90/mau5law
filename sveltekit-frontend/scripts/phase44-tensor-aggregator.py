@@ -10,9 +10,11 @@ Usage:
 
 import argparse
 import json
+from typing import Optional
+
+import numpy as np
 import redis
 import torch
-import numpy as np
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
@@ -37,7 +39,10 @@ class CUDATensorAggregator:
         
         keys = []
         for key in self.redis.scan_iter(pattern):
-            keys.append(key.decode())
+            if isinstance(key, (bytes, bytearray)):
+                keys.append(key.decode())
+            else:
+                keys.append(str(key))
             if limit and len(keys) >= limit:
                 break
         
@@ -55,7 +60,12 @@ class CUDATensorAggregator:
                     continue
                 
                 # Parse vector
-                vector = json.loads(data[b'vector'].decode())
+                raw_vector = data.get(b'vector', data.get('vector'))
+                if isinstance(raw_vector, (bytes, bytearray)):
+                    vector_payload = raw_vector.decode()
+                else:
+                    vector_payload = str(raw_vector)
+                vector = json.loads(vector_payload)
                 
                 # Convert to tensor and move to GPU
                 tensor = torch.tensor(vector, dtype=torch.float16, device=self.device)
@@ -63,11 +73,11 @@ class CUDATensorAggregator:
                 
                 # Store metadata
                 metadata.append({
-                    'id': key.decode(),
-                    'summary': data.get(b'summary', b'').decode(),
-                    'file': data.get(b'file', b'').decode(),
-                    'line': data.get(b'line', b'').decode(),
-                    'timestamp': data.get(b'timestamp', b'').decode()
+                    'id': key.decode() if isinstance(key, (bytes, bytearray)) else str(key),
+                    'summary': (data.get(b'summary') or data.get('summary', b'')).decode() if isinstance(data.get(b'summary') or data.get('summary', b''), (bytes, bytearray)) else str(data.get(b'summary') or data.get('summary', '')),
+                    'file': (data.get(b'file') or data.get('file', b'')).decode() if isinstance(data.get(b'file') or data.get('file', b''), (bytes, bytearray)) else str(data.get(b'file') or data.get('file', '')),
+                    'line': (data.get(b'line') or data.get('line', b'')).decode() if isinstance(data.get(b'line') or data.get('line', b''), (bytes, bytearray)) else str(data.get(b'line') or data.get('line', '')),
+                    'timestamp': (data.get(b'timestamp') or data.get('timestamp', b'')).decode() if isinstance(data.get(b'timestamp') or data.get('timestamp', b''), (bytes, bytearray)) else str(data.get(b'timestamp') or data.get('timestamp', ''))
                 })
                 
             except Exception as e:
@@ -77,8 +87,32 @@ class CUDATensorAggregator:
         if not tensors:
             raise ValueError("No valid embeddings found in Redis")
         
+        # Ensure all tensors share the same dimensionality (mixed runs can leave stale cache entries)
+        filtered_tensors: list[torch.Tensor] = []
+        expected_dim: Optional[int] = None
+
+        for tensor in tensors:
+            current_dim = tensor.shape[0]
+            if expected_dim is None:
+                expected_dim = current_dim
+                filtered_tensors.append(tensor)
+                continue
+
+            if current_dim != expected_dim:
+                if self.verbose:
+                    print(
+                        f"⚠️  Skipping embedding with dimensionality {current_dim} "
+                        f"(expected {expected_dim}). Redis key may be stale."
+                    )
+                continue
+
+            filtered_tensors.append(tensor)
+
+        if not filtered_tensors:
+            raise ValueError("No embeddings matched the expected dimensionality.")
+
         # Stack into matrix
-        embedding_matrix = torch.stack(tensors)
+        embedding_matrix = torch.stack(filtered_tensors)
         
         print(f"\n✅ Loaded tensor matrix: {embedding_matrix.shape}")
         print(f"   Dtype: {embedding_matrix.dtype}")

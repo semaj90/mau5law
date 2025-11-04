@@ -80,47 +80,14 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 
   // Initialize on mount $effect(() => { (async () => { await checkAuth(); if (isAuthenticated) { await testAuthenticatedGET()}
 
-      // Diagnostic: attempt to get a server-exposed public env variable (client cannot use process.env) // This will log a helpful message explaining why process.env can't be read from the browser. await fetchPublicEnvVar('DB_ENV')})()}); </script> <div class="container mx-auto p-6"> <div class="text-center"> <h1 class="text-3xl font-bold">Authenticated CRUD Operations Test</h1> <p class="text-gray-600"> Testing authenticated CRUD operations with PostgreSQL, pgvector embeddings, and user sessions </p> </div> <!-- Authentication, Status --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center">
- {#if isAuthenticated} <span class="w-3 h-3 bg-green-500"></span> Authentication Status: Connected {:else} <span class="w-3 h-3 bg-red-500"></span> Authentication Status: Not Authenticated {/if}
-</h3> </div> <div class="yorha-panel-content">
- {#if isAuthenticated && currentUser} <div class="space-y-2"> <p><strong>User:</strong> {currentUser.email}
-</p> <p><strong>Role:</strong> {currentUser.role}
-</p> <p><strong>User, ID:</strong> {currentUser.id}
-</p> </div> {:else if authError} <div class="text-red-600"> <p><strong>Error:</strong> { authError }
-</p> <Button.Root class="bits-btn" onclick={ goToLogin } variant="default">Go to Login</Button> </div> {:else} <p class="text-gray-500">Checking authentication...</p> {/if}
-</div> </div> <!-- Test, Controls --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text">Test Controls</h3> </div> <div class="yorha-panel-content"> <div class="flex flex-wrap"> <Button class="bits-btn"'
-          onclick={ runAuthenticatedCRUDTest } disabled={isLoading || !isAuthenticated} variant="default"
-        > {isLoading ? 'â³ Testing...': 'ðŸš€ Run Authenticated CRUD Test'}
-</Button> <Button.Root class="bits-btn" onclick={() => checkAuth()} disabled={ isLoading } variant="secondary"> ðŸ” Check Auth </Button> <Button class="bits-btn"
-          onclick={ testAuthenticatedGET } disabled={isLoading || !isAuthenticated} variant="secondary"
-        > ðŸ“‹ Test GET </Button> <Button class="bits-btn"
-          onclick={ testAuthenticatedPOST } disabled={isLoading || !isAuthenticated} variant="secondary"
-        > ðŸ“ Test POST </Button> <Button class="bits-btn"
-          onclick={() => testAuthenticatedPUT()} disabled={isLoading || !isAuthenticated} variant="secondary"
-        > âœï¸ Test PUT </Button> <Button class="bits-btn"
-          onclick={() => testAuthenticatedDELETE()} disabled={isLoading || !isAuthenticated} variant="secondary"
-        > ðŸ—‘ï¸ Test DELETE </Button> <Button.Root class="bits-btn" onclick={ clearResults } variant="ghost">ðŸ§¹ Clear Results</Button> </div>
- {#if !isAuthenticated} <p class="text-sm text-gray-500">âš ï¸ Authentication required to run tests. Please log in first.</p> {/if}
-</div> </div> <!-- Test Results, Summary --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text">Test Results Summary</h3> </div> <div class="yorha-panel-content"> <div class="grid grid-cols-2 md:grid-cols-5"> <div class="bg-blue-50 p-3"> <div class="text-2xl font-bold">{testSummary.total}
-</div> <div class="text-sm">Total Tests</div> </div> <div class="bg-green-50 p-3"> <div class="text-2xl font-bold">{testSummary.passed}
-</div> <div class="text-sm">Passed</div> </div> <div class="bg-red-50 p-3"> <div class="text-2xl font-bold">{testSummary.failed}
-</div> <div class="text-sm">Failed</div> </div> <div class="bg-yellow-50 p-3"> <div class="text-2xl font-bold">{testSummary.warnings}
-</div> <div class="text-sm">Warnings</div> </div> <div class="bg-purple-50 p-3"> <div class="text-2xl font-bold">{testSummary.successRate}%</div> <div class="text-sm">Success Rate</div> </div> </div> </div> </div> <!-- Current User's, Cases --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text">Your Cases ({cases.length})</h3> </div> <div class="yorha-panel-content">
- {#if !isAuthenticated} <p class="text-gray-500">Login required to view your cases</p> {:else if cases.length === 0} <p class="text-gray-500">No cases found. Create some test cases to see them here.</p> {:else} <div class="space-y-2">
- {#each Array.isArray(cases) ? cases: [] as caseItem} <div class="border rounded p-3"> <div class="flex justify-between"> <div> <h4 class="font-semibold">{caseItem.title}
-</h4> <p class="text-sm">Case #: {caseItem.caseNumber}
-</p> <p class="text-sm"> Status: {caseItem.status} |, Priority: {caseItem.priority}
-</p> <p class="text-sm"> Created: {new Date(caseItem.createdAt).toLocaleDateString()}
-</p>
- {#if caseItem.metadata?.embedding} <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded"> ðŸ§  Has Embedding </span> {/if}
-</div> <div class="text-xs"> ID: {caseItem.id.substring(0, 8)}... </div> </div> </div> {/each}
-</div> {/if}
-</div> </div> <!-- Test Results, Log --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text">Test Results Log</h3> </div> <div class="yorha-panel-content">
- {#if testResults.length === 0} <p class="text-gray-500">No test results yet. Run some tests to see results here.</p> {:else} <div class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto">
- {#each Array.isArray(testResults) ? testResults: [] as result} <div class={(result as { includes?: unknown }).includes('âŒ') ? 'text-red-400': (result as { includes?: unknown }).includes('âš ï¸') ? 'text-yellow-400': (result as { includes?: unknown }).includes('âœ…') ? 'text-green-400': 'text-gray-300'} >'
-              { result }
-</div> {/each}
-</div> {/if}
-</div> </div> </div> ;
+      // Diagnostic: attempt to get a server-exposed public env variable (client cannot use process.env) // This will log a helpful message explaining why process.env can't be read from the browser. await fetchPublicEnvVar('DB_ENV')})()});
+</script>
 
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

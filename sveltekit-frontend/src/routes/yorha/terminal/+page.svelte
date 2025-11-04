@@ -1,6 +1,5 @@
-<!-- YoRHa Terminal, Interface -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
+// Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
   import { onMount } from 'svelte';
   // YoRHa API client is exported as a named export.
   import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClient.ts";
@@ -252,79 +251,13 @@
   }
 </script>
 
-<svelte:head><title>YoRHa Terminal - Command Interface</title></svelte:head>
-<div class="yorha-terminal-page">
-  <!-- Page, Header -->
-  <header class="yorha-page-header">
-    <div class="yorha-header-content">
-      <div class="yorha-header-title">
-        <!-- icon placeholder (emoji) to avoid lucide, import issues -->
-        <span style="font-size:48px; line-height:1">&#x1F5A5;&#xFE0F;</span>
-        <h1>YORHA TERMINAL</h1>
-        <div class="yorha-header-subtitle">COMMAND LINE INTERFACE</div>
-      </div>
-    </div>
-  </header>
-  <!-- Terminal, Container -->
-  <section class="yorha-terminal-section">
-    <div class="yorha-terminal-container">
-      <!-- Terminal, Header -->
-      <div class="yorha-terminal-header">
-        <div class="yorha-terminal-title">
-          <span style="font-size:16px; line-height:1">&#x1F5A5;&#xFE0F;</span> <span>YoRHa Terminal</span>
-        </div>
-        <div class="yorha-terminal-controls">
-          <button class="yorha-terminal-control" onclick={() => clearTerminal()}> &#x1F50D; </button>
-          <button class="yorha-terminal-control"> &#x2699;&#xFE0F; </button>
-        </div>
-      </div>
-      <!-- Terminal, Output -->
-      <div class="yorha-terminal-output">
-        {#each terminalHistory as entry (entry.id)}
-          <div class="yorha-terminal-line">
-            <span class="yorha-terminal-timestamp">[{entry.timestamp}]</span>
-            <span class="yorha-terminal-text">{entry.text}</span>
-          </div>
-        {/each}
-        {#if isExecuting}
-          <div class="yorha-terminal-line">
-            <span class="yorha-terminal-timestamp">[{new Date().toLocaleTimeString()}]</span>
-            <span class="yorha-terminal-text"> <span class="yorha-terminal-spinner">&#x231B;</span> Executing... </span>
-          </div>
-        {/if}
-      </div>
-      <!-- Terminal, Input -->
-      <div class="yorha-terminal-input-container">
-        <span class="yorha-terminal-prompt"> &#x27A4; YORHA:~$ </span>
-        <input
-          type="text"
-          bind:value={currentInput}
-          onkeydown={handleKeydown}
-          disabled={isExecuting}
-          class="yorha-terminal-input"
-          placeholder="Type command... (try 'help')"
-          autocomplete="off"
-          spellcheck="false"
-        />
-      </div>
-    </div>
-    <!-- Command, Reference -->
-    <div class="yorha-command-reference">
-      <h3>Quick Reference</h3>
-      <div class="yorha-command-grid">
-        <div class="yorha-command-item"><strong>help</strong> - Show available commands</div>
-        <div class="yorha-command-item"><strong>status</strong> - System status</div>
-        <div class="yorha-command-item"><strong>rag &lt;query&gt;</strong> - AI analysis</div>
-        <div class="yorha-command-item"><strong>search &lt;term&gt;</strong> - Database search</div>
-        <div class="yorha-command-item"><strong>cluster &lt;action&gt;</strong> - Cluster management</div>
-        <div class="yorha-command-item"><strong>clear</strong> - Clear terminal</div>
-      </div>
-    </div>
-  </section>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .yorha-terminal-page {
+.yorha-terminal-page {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -526,5 +459,3 @@
     }
   }
 </style>
-
-

@@ -57,13 +57,13 @@ class SimpleProgress {
 
 // Configuration
 const config = {
-  batchSize: parseInt(process.env.BATCH_SIZE || '1000', 10),
+  batchSize: parseInt(process.env.BATCH_SIZE || '500', 10),
   concurrency: parseInt(process.env.CONCURRENCY || '8', 10),
   redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
   qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
   ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
   embeddingModel: 'embeddinggemma:latest',
-  embeddingDim: 384, // Memory-optimized dimension
+  embeddingDim: parseInt(process.env.EMBED_DIM || '768', 10),
   cacheTTL: 7 * 24 * 60 * 60, // 7 days
   outputDir: 'logs/phase43',
   collectionName: 'error_embeddings'
