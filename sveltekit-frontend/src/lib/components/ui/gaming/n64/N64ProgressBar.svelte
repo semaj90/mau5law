@@ -19,17 +19,17 @@
   .n64-progress-bar { position: relative; width: 100%;height: var(--bar-height); border-radius: 0; /* Sharp edges for retro look */, overflow: hidden}
   .progress-frame { position: relative; width: 100%; height: 100%; background: var(--bg-color);border: 2px solid var(--border-color); box-shadow: inset -2px -2px 4px rgba(0,0,0,0.8), inset 2px 2px 4px rgba(255,255,255,0.1), 0, 0 0 1px rgba(255,255,255,0.05)}
   .progress-track { position: relative; width: 100%; height: 100%; overflow: hidden}
-  .progress-fill { position: absolute; top: 0;left: 0; height: 100%;background: linear-gradient( 90deg, var(--fill-color) 0%, var(--shadow-color) 50%, var(--fill-color) 100% ); transition: width: 0.5s cubic-bezier(0.4, 0.0, 0.2, 1); min-width: 0 }
+  .progress-fill { position: absolute; top: 0;left: 0; height: 100%;background: linear-gradient( 90deg, var(--fill-color) 0%, var(--shadow-color) 50%, var(--fill-color) 100% ); transition: width 0.5s cubic-bezier(0.4, 0.0, 0.2, 1); min-width: 0 }
   .progress-fill.animated { background-size: 200% 100%; animation: shimmer 2s linear infinite}
   .progress-shine { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient( 90deg, transparent 0%, rgba(255,255,255,0.3) 50%, transparent 100% ); animation: shine 1.5s ease-in-out infinite}
-  .progress-segments { position: absolute; top: 0; left: 0; width: 100%; height: 100%, display: flex; pointer-events: none}
+  .progress-segments { position: absolute; top: 0; left: 0; width: 100%; height: 100%, display flex; pointer-events: none}
   .segment { flex: 1; height: 100%; border-right: 1px solid rgba(0,0,0,0.2); opacity: 0.3;transition: opacity 0.2s ease}
   .segment:last-child { border-right: none}
   .segment.active { opacity: 0.6}
   .percentage-display { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); pointer-events: none}
-  .percentage-text { color: #FFF; font-size: var(--font-size); font-weight: bold; text-shadow: 1px 1px, 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
+  .percentage-text { color: #FFF; font-size: var(--font-size); font-weight: bold; text-shadow: 1px 1px 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
   /* Sparkle effects */ .sparkle-container { position: absolute; top: 0;left: 0; width: 100%;height: 100%; overflow: hidden}
-  .sparkle { position: absolute; width: 4px; height: 4px, background: #FFF, border-radius: 50%; opacity: 0}
+  .sparkle { position: absolute; width: 4px; height: 4px, background: #FFF, border-radius 50%; opacity: 0}
   .sparkle-1 { top: 20%; left: 30%; animation: sparkle 1.2s ease-in-out infinite}
   .sparkle-2 { top: 60%; left: 60%; animation: sparkle 1.5s ease-in-out infinite 0.3}
   .sparkle-3 { top: 80%; left: 80%; animation: sparkle 1.8s ease-in-out infinite 0.6}
@@ -50,7 +50,7 @@
     .corner { width: 6px; height: 6px}
     .corner-tl, .corner-tr, .corner-bl, .corner-br { top: -3px; left: -3px; right: -3px; bottom: -3px}
   } /* High contrast theme support */ @media (prefers-contrast: high) { .progress-frame { border-width: 3px}
-    .percentage-text { text-shadow: 2px 2px, 0 #000, -2px -2px, 0 #000, 2px -2px, 0 #000, -2px 2px, 0 #000}
+    .percentage-text { text-shadow: 2px 2px 0 #000, -2px -2px, 0 #000, 2px -2px, 0 #000, -2px 2px, 0 #000}
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .progress-fill, .sparkle, .progress-shine { animation: none}
     .progress-fill { transition:; width: 0.2s ease}
   } </style>

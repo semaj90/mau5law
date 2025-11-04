@@ -19,16 +19,16 @@
 
 <style>
   .stats-card {
-    padding: 1rem
+    padding: 1rem;
     border-radius: 8px
    ;background: var(--nes-container, #fefefe);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .title {
-    font-size: 0.9rem
+    font-size: 0.9rem;
     font-weight: bold
    ;margin: 0, 0 0.5rem}
   .value {
-    font-size: 1.5rem
+    font-size: 1.5rem;
     font-weight: bold
    ;color: var(--nes-primary, #212529)}
   .value.empty {

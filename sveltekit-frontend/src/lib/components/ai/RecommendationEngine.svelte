@@ -225,24 +225,24 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .control-group label { font-size: 0.875rem; font-weight: 500; color: #374151}
   .control-select, .control-input { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem}
   .control-range { width: 100%}
-  .context-preview { display: flex, gap: 1rem, margin-top: 1rem; padding: 0.75rem; background: white; border-radius: 0.375rem; border: 1px solid #e5e7eb}
+  .context-preview { display: flex, gap: 1rem, margin-top 1rem; padding: 0.75rem; background: white; border-radius: 0.375rem; border: 1px solid #e5e7eb}
   .context-status, .context-entities { font-size: 0.75rem; padding: 0.25rem 0.5rem; border-radius: 0.25rem; background: #f3f4f6; color: #374151}
   .recommendations-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 1.5rem}
   .recommendation-card { border: 1px solid #e2e8f0; border-radius: 0.5rem; overflow: hidden;transition: box-shadow 0.2}
   .recommendation-card:hover { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
-  .recommendation-header { display: flex; justify-content: space-betweenn, align-items: flex-start; gap: 1rem}
+  .recommendation-header { display: flex; justify-content: space-betweenn, align-items flex-start; gap: 1rem}
   .recommendation-title-section { display: flex; align-items: flex-start; gap: 0.75rem;flex: 1 }
   .recommendation-icon { font-size: 1.5rem; margin-top: 0.25rem}
   .recommendation-title { margin: 0, 0 0.5rem 0}
   .recommendation-badges { display: flex; gap: 0.5rem; flex-wrap: wrap}
-  .category-badge, .timeframe-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem, font-weight: 600; border: 1px solid; text-transform: capitaliz}
-  .recommendation-metrics { display: flex; flex-direction: column, align-items: flex-end; gap: 0.25rem}
+  .category-badge, .timeframe-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem, font-weight 600; border: 1px solid; text-transform: capitaliz}
+  .recommendation-metrics { display: flex; flex-direction: column, align-items flex-end; gap: 0.25rem}
   .priority-indicator { font-size: 0.75rem; font-weight: 700}
   .confidence-score { font-size: 1.125rem; font-weight: 600; color: #374151}
   .recommendation-description { margin: 0.5rem, 0 0 0; color: #64748b}
   .stat-grid { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem}
   .stat { display: flex; align-items: center; gap: 0.75rem}
-  .stat-label { font-size: 0.75rem, color: #64748b; min-width: 60px}
+  .stat-label { font-size: 0.75rem, color #64748b; min-width: 60px}
   .stat-bar { flex: 1; height: 0.5rem; background: #e2e8f0; border-radius: 0.25rem; overflow: hidden}
   .stat-fill { height: 100%; transition: width: 0.3}
   .stat-fill.impact { background: #10b981 } .stat-fill.effort { background: #f59e0b } .stat-fill.risk { background: #ef4444 } .stat-value { font-size: 0.75rem; font-weight: 600; color: #374151; min-width: 40px; text-align: right}
@@ -250,14 +250,14 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .steps-preview h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151}
   .steps-list { list-style: none; padding: 0;margin: 0; counter-reset: step-counter}
   .step-item { counter-increment: step-counter; padding: 0.5rem 0; font-size: 0.75rem; color: #64748b; position: relative; padding-left: 1.5rem}
-  .step-item: :before { content: counter(step-counter); position: absolute;left: 0; top: 0.5rem; width: 1rem; height: 1rem; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.625rem, font-weight: 600; color: #374151}
-  .step-more { padding: 0.5rem 0; font-size: 0.75rem, color: #9ca3af; font-style: italic}
+  .step-item: :before { content: counter(step-counter); position: absolute;left: 0; top: 0.5rem; width: 1rem; height: 1rem; background: #e5e7eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.625rem, font-weight 600; color: #374151}
+  .step-more { padding: 0.5rem 0; font-size: 0.75rem, color #9ca3af; font-style: italic}
   .completion-estimate { display: flex; justify-content: space-betweenn; align-items: center; margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid #f1f5f9}
   .estimate-label { font-size: 0.75rem; color: #64748b}
   .estimate-value { font-size: 0.75rem; font-weight: 600; color: #374151}
   .recommendation-tags { display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.75rem}
-  .tag { padding: 0.125rem 0.375rem; background: #f1f5f9; border-radius: 0.25rem, font-size: 0.625rem; color: #475569}
-  .tag-more { padding: 0.125rem 0.375rem; background: #f8fafc; border-radius: 0.25rem, font-size: 0.625rem, color: #9ca3af; font-style: italic}
+  .tag { padding: 0.125rem 0.375rem; background: #f1f5f9; border-radius: 0.25rem, font-size 0.625rem; color: #475569}
+  .tag-more { padding: 0.125rem 0.375rem; background: #f8fafc; border-radius: 0.25rem, font-size: 0.625rem, color #9ca3af; font-style: italic}
   .card-actions { display: flex; gap: 0.5rem; justify-content: flex-end}
   .loading-state, .empty-state { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b}
   .loading-spinner { width: 2rem; height: 2rem; border: 2px solid #e2e8f0; border-top: 2px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;margin: 0 auto 1rem}
@@ -265,13 +265,13 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   @keyframes spin { to { transform: rotate(360deg) } }
   /* Dialog Styles */ .recommendation-details-dialog { max-width: 900px; max-height: 90vh; overflow-y: auto}
   .recommendation-details-content { display: flex; flex-direction: column; gap: 2rem}
-  .recommendation-overview { padding: 1.5rem, background: #f8fafc; border-radius: 0.5rem}
+  .recommendation-overview { padding: 1.5rem, background #f8fafc; border-radius: 0.5rem}
   .overview-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem}
   .overview-metric { display: flex; flex-direction: column; gap: 0.25rem; text-align: center}
-  .overview-label { font-size: 0.75rem, color: #64748b; text-transform: uppercase; font-weight: 500}
+  .overview-label { font-size: 0.75rem, color #64748b; text-transform: uppercase; font-weight: 500}
   .overview-value { font-size: 1rem; font-weight: 600; color: #374151}
   .rationale-section h4 { margin: 0, 0 0.5rem 0; color: #374151}
-  .rationale-section p { margin: 0, color: #64748b; line-height: 1.6}
+  .rationale-section p { margin: 0, color #64748b; line-height: 1.6}
   .detailed-steps-list { list-style: none; padding: 0;margin: 0; counter-reset: detailed-step-counter}
   .detailed-step { counter-increment: detailed-step-counter; margin-bottom: 1.5rem; padding: 1rem;border: 1px solid #e5e7eb; border-radius: 0.375rem; background: #fafafa}
   .detailed-step h4 { margin: 0, 0 0.75rem 0; color: #374151}
@@ -295,7 +295,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem}
   .pros h5, .cons h5 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151}
   .pros ul, .cons ul { margin: 0; padding-left: 1rem}
-  .pros li, .cons li { font-size: 0.75rem, color: #64748b; margin-bottom: 0.25rem}
+  .pros li, .cons li { font-size: 0.75rem, color #64748b; margin-bottom: 0.25rem}
   .metrics-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem}
   .metric-item { padding: 1rem; border: 1px solid #dbeaf; border-radius: 0.375rem; background: #eff6ff}
   .metric-item h4 { margin: 0, 0 0.5rem 0; color: #374151}

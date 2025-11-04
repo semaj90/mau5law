@@ -74,7 +74,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .upload-icon { /* @apply w-12 h-12 text-gray-400 mb-2; */ }
   .upload-text { /* @apply text-sm text-gray-600 dark:text-gray-400; */ }
   .evidence-list { /* @apply space-y-2 max-h-96 overflow-y-auto; */ }
-  .evidence-item { /* @apply w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-start gap-3; */ }
+  .evidence-item { /* @apply w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark: hover bg-gray-800 transition-colors flex items-start gap-3; */ }
   .evidence-item.selected { /* @apply bg-indigo-50 dark:bg-indigo-900/30 border-indigo-500; */ }
   .evidence-icon { /* @apply text-2xl flex-shrink-0; */ }
   .evidence-info { /* @apply flex-1; */ }

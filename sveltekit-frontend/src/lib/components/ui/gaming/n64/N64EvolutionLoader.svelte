@@ -104,15 +104,15 @@
           bind:checked={ yorhaMode } /> YoRHa Mode </label>
  <label> <input type="checkbox"
           bind:checked={ autoEvolution } /> Auto Evolution </label> </div> {/if}
-  <style> .n64-evolution-container { display: flex; flex-direction: column, align-items: center; gap: 1rem; padding: 1rem; background: #000; border-radius: 8px; font-family: 'Courier New', monospace}
+  <style> .n64-evolution-container { display: flex; flex-direction: column, align-items center; gap: 1rem; padding: 1rem; background: #000; border-radius: 8px; font-family: 'Courier New', monospace}
   .evolution-canv.stage-indicator { width: 100%; text-align: center}
-  .stage-label { color: #FFD700; font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; text-shadow: 1px 1px, 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
+  .stage-label { color: #FFD700; font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; text-shadow: 1px 1px 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
   .evolution-progress { width: 100%; height: 8px; background: #333; border: 1px solid #666;overflow: hidden}
   .progress-bar { height: 100%; background: linear-gradient(90deg, #FFD700, #FF6B35); transition: width: 0.3s ease}
   .controls { display: flex; gap: 0.5rem}
   .control-btn { padding: 0.5rem 1rem; background: #333;color: #FFF; border: 1px solid #666; font-family: 'Courier New', monospace; cursor: pointer;transition: all 0.2s ease}
   .control-btn: hover { background: #444; border-color: #FFD700}
-  .control-btn.active { background: #FFD700, color: #000; border-color: #FFA500}
+  .control-btn.active { background: #FFD700, color #000; border-color: #FFA500}
   .feature-toggles { display: flex; gap: 1rem; color: #FFF; font-size: 0.9rem}
   .feature-toggles label { display: flex; align-items: center; gap: 0.3rem;cursor: pointer}
   .feature-toggles input[type="checkbox"] { accent-color: #FFD700}

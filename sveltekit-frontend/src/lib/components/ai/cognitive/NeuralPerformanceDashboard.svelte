@@ -39,18 +39,18 @@
   .dashboard-header { display: flex; justify-content: space-between; /* fixed typo */ align-items: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #3b82f6}
   .header-title h2 { margin: 0; color: #e2e8f0; font-size: 1.8rem}
   .connection-status { display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; color: #94a3b8; margin-top: 0.5rem}
-  .status-dot { width: 8px, height: 8px, border-radius: 50%; display: block}
+  .status-dot { width: 8px, height: 8px, border-radius 50%; display: block}
   .status-dot.connected { background: #10b981}
   .status-dot.error { background: #ef4444}
   .status-dot.disconnected { background: #6b7280}
-  .header-controls { display: flex, gap: 1rem; align-items: center}
-  .time-range-select { background: #1e293b; border: 1px solid #475569;color: #e2e8f0, padding: 0.5rem; border-radius: 6px}
+  .header-controls { display: flex, gap 1rem; align-items: center}
+  .time-range-select { background: #1e293b; border: 1px solid #475569;color: #e2e8f0, padding 0.5rem; border-radius: 6px}
   .control-buttons .btn { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem}
   .btn-primary { background: #3b82f6; color: white}
   .btn-warning { background: #f59e0b; color: white}
-  .performance-grade { display: flex; justify-content: space-between; /* fixed typo */ align-items: center, padding: 2rem; border-radius: 12px; margin-bottom: 2rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2)}
+  .performance-grade { display: flex; justify-content: space-between; /* fixed typo */ align-items: center, padding 2rem; border-radius: 12px; margin-bottom: 2rem; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2)}
   .grade-content { display: flex; align-items: center; gap: 1.5rem}
-  .grade-badge { font-size: 3rem; font-weight: bold, text-align: center; width: 80px; height: 80px, display: flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.1); border-radius: 50%; border: 2px solid currentColor}
+  .grade-badge { font-size: 3rem; font-weight: bold, text-align center; width: 80px; height: 80px, display flex; align-items: center; justify-content: center; background: rgba(255, 255, 255, 0.1); border-radius: 50%; border: 2px solid currentColor}
   .grade-info h3 { margin: 0, 0 0.5rem 0; color: #e2e8f0}
   .grade-info p { margin: 0; color: #94a3b8}
   .system-health { text-align: right}
@@ -67,7 +67,7 @@
   .metric-status.warning, .efficiency-indicator.needs-improvement { color: #f59e0b}
   .efficiency-indicator.excellent { color: #10b981}
   .efficiency-indicator.good { color: #3b82f6}
-  .metric-bar { width: 100%; height: 6px; background: #334155; border-radius: 3px, margin-top: 0.75rem; overflow: hidden}
+  .metric-bar { width: 100%; height: 6px; background: #334155; border-radius: 3px, margin-top 0.75rem; overflow: hidden}
   .metric-fill { height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 3px; transition: width: 0.3s ease}
   .service-status { background: linear-gradient(145deg, #1e293b, #0f172a); padding: 1.5rem; border-radius: 12px; border: 1px solid #334155; margin-bottom: 2rem}
   .service-status h3 { margin: 0, 0 1.5rem 0; color: #e2e8f0}
@@ -77,18 +77,18 @@
   .service-icon { font-size: 1.5rem}
   .service-info h4 { margin: 0, 0 0.25rem 0; color: #e2e8f0; font-size: 0.9rem}
   .service-status-text { font-size: 0.8rem; font-weight: 500; text-transform: uppercase}
-  .last-check { font-size: 0.8rem, color: #64748b; text-align: center; padding-top: 1rem; border-top: 1px solid #334155}
+  .last-check { font-size: 0.8rem, color #64748b; text-align: center; padding-top: 1rem; border-top: 1px solid #334155}
   .performance-chart { background: linear-gradient(145deg, #1e293b, #0f172a); padding: 1.5rem; border-radius: 12px; border: 1px solid #334155}
   .performance-chart h3 { margin: 0, 0 1rem 0; color: #e2e8f0}
-  .chart-legend { display: flex, gap: 1rem; margin-bottom: 1rem}
+  .chart-legend { display: flex, gap 1rem; margin-bottom: 1rem}
   .legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; color: #94a3b8}
-  .legend-color { width: 12px, height: 12px; border-radius: 2px}
+  .legend-color { width: 12px, height 12px; border-radius: 2px}
   .legend-color.gpu { background: #3b82f6}
   .legend-color.neural { background: #10b981}
   .legend-color.memory { background: #f59e0b}
   .simple-chart { position: relative; /* fixed missing colon */ height: 150px; background: rgba(0, 0, 0, 0.2); border-radius: 6px; margin-top: 1rem}
   .chart-point { position: absolute; /* fixed missing colon */, width: 2px}
-  .point-gpu, .point-neural, .point-memory { position: absolute; /* fixed missing colon */ width: 2px, height: 2px; border-radius: 50%}
+  .point-gpu, .point-neural, .point-memory { position: absolute; /* fixed missing colon */ width: 2px, height 2px; border-radius: 50%}
   .point-gpu { background: #3b82f6}
   .point-neural { background: #10b981}
   .point-memory { background: #f59e0b}
@@ -100,7 +100,7 @@
   .text-orange-400 { color: #fb923c}
   .text-emerald-400 { color: #34d399}
   /* Responsive */ @media (max-width: 768px) { .neural-dashboard { padding: 1rem}
-    .dashboard-header { flex-direction: column, gap: 1rem; align-items: stretch}
+    .dashboard-header { flex-direction: column, gap 1rem; align-items: stretch}
     .performance-grade { flex-direction: column; gap: 1rem; text-align: center}
     .metrics-grid { grid-template-columns: 1fr}
     .services-grid { grid-template-columns: 1fr}

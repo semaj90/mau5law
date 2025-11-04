@@ -446,47 +446,47 @@ if (!browser || !enableWebGPU) return
 </div>
 <style>
   .document-lod-viewer {
-    background: linear-gradient(135deg, #0f0f23, #1a1a2e); color: #fff
+    background: linear-gradient(135deg, #0f0f23, #1a1a2e); color: #fff;
     min-height: 600px}
   .document-controls {
-    display: grid
-    grid-template-columns: auto 1fr auto
-    gap: 1rem
-    align-items: center
-    margin-bottom: 1rem
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1rem;
     padding: 1rem
    ;background: rgba(0, 0, 0, 0.3);
     border-radius: 4px}
   .navigation-controls {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.5rem}
   .view-controls {
-    display: flex
-    align-items: center
-    gap: 0.5rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     justify-self: center}
   .zoom-info {
     padding: 0.25rem 0.5rem
    ;background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px
-    font-size: 0.875rem
-    min-width: 60px
+    border-radius: 4px;
+    font-size: 0.875rem;
+    min-width: 60px;
     text-align: center}
   .lod-controls {
-    display: flex
-    align-items: center
-    gap: 0.5rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     justify-self: end}
   .lod-badge {
     font-size: 0.75rem}
   .document-canvas-container {
-    position: relative
-    height: 500px
-    background: #2a2a3
-    border: 2px solid #444
-    border-radius: 4px
-    overflow: hidden
+    position: relative;
+    height: 500px;
+    background: #2a2a3;
+    border: 2px solid #444;
+    border-radius: 4px;
+    overflow: hidden;
     margin-bottom: 1rem}
   .document-canv.document-canvas:active {
     cursor: grabbing}
@@ -494,25 +494,25 @@ if (!browser || !enableWebGPU) return
     position: absolute
    ;top: 0; left: 0
    ;right: 0; bottom: 0
-   ;background: rgba(0, 0, 0, 0.8); display: flex
-    flex-direction: column
-    justify-content: center
-    align-items: center
+   ;background: rgba(0, 0, 0, 0.8); display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 1rem}
   .lod-stats { background: rgba(0, 0, 0, 0.4)}
   .stats-grid {
-    display: grid
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;
     margin-top: 0.5rem}
   .stat-item {
-    display: flex
-    justify-content: space-between
+    display: flex;
+    justify-content: space-between;
     align-items: center}
   .label {
-    font-size: 0.875rem
+    font-size: 0.875rem;
     color: #ccc}
   .value {
-    font-weight: bold
+    font-weight: bold;
     color: #4ade80}
   .value.success {
     color: #4ade80}

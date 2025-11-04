@@ -49,7 +49,7 @@
     font-family: 'JetBrains Mono', 'Courier New', monospace}
 
   .dev-content {
-    display: flex
+    display: flex;
     min-height: calc(100vh - 60px)}
 
   .dev-sidebar {
@@ -58,39 +58,39 @@
     border-right: 1px solid var(--border-primary, #cc99ff)}
 
   .dev-main {
-    flex: 1
-    padding: 1.5rem
-    overflow-x: auto
+    flex: 1;
+    padding: 1.5rem;
+    overflow-x: auto;
     position: relative}
 
   /* Development-specific debugging grid */
   .dev-main: :before {
-    content: ''; position: fixed
-    top: 0
-    left: 0
+    content: ''; position: fixed;
+    top: 0;
+    left: 0;
     right: 0
-   ; bottom: 0
+   ; bottom: 0;
     background-image:
       linear-gradient(rgba(204, 153, 255, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(204, 153, 255, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px
-    pointer-events: none
+    background-size: 20px 20px;
+    pointer-events: none;
     z-index: 0}
 
-  .dev-main .dev-main-content { /* Fix: Target the new wrapper div */
-    position: relative
+  .dev-main .dev-main-content { /* Fix: Target the new wrapper div */;
+    position: relative;
     z-index: 1}
 
   /* Development mode indicator */
   .dev-main::after {
     content: 'ðŸ› ï¸ DEV MODE';
-    position: fixed
-    top: 70px
-    right: 20px
+    position: fixed;
+    top: 70px;
+    right: 20px;
     font-size: 0.75rem
    ; color: var(--text-secondary, #ff6600);
-    opacity: 0.6
-    pointer-events: none
+    opacity: 0.6;
+    pointer-events: none;
     z-index: 1000}
 
   @media (max-width: 768px) {
@@ -98,8 +98,8 @@
       flex-direction: column}
 
     .dev-sidebar {
-      width: 100%; height: auto
-      border-right: none
+      width: 100%; height: auto;
+      border-right: none;
       border-bottom: 1px solid var(--border-primary, #cc99ff)}
   }
 </style>

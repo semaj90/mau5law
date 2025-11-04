@@ -103,7 +103,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .acceleration-toggle.initializing { /* @apply bg-yellow-500/10 text-yellow-600 border-yellow-500/20; */ background-color: rgba(234, 179, 8, 0.08); /* yellow-500/10 */ color: #b45309; /* yellow-600 */ border-color: rgba(234, 179, 8, 0.12); animation: pulse 2s infinite}
   .acceleration-toggle.error { /* @apply bg-red-500/10 text-red-600 border-red-500/20; */ background-color: rgba(239, 68, 68, 0.08); /* red-500/10 */ color: #dc2626; /* red-600 */ border-color: rgba(239, 68, 68, 0.12)}
   .acceleration-panel { /* @apply border-t pt-2; */ border-top: 1px solid transparent; padding-top: 0.5rem}
-  .acceleration-header { /* @apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-color; */ display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem, font-weight: 600; color: #16a34a; cursor: pointer}
+  .acceleration-header { /* @apply flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-color; */ display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem, font-weight 600; color: #16a34a; cursor: pointer}
   .acceleration-content { /* @apply space-y-3 mt-2; */ margin-top: 0.5rem; row-gap: 0.75rem}
   .performance-metrics { /* @apply grid grid-cols-2 gap-2 text-x; */, display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; font-size: 0.875rem}
   .metric { /* @apply flex justify-between p-1.5 bg-green-50 rounded border border-green-200; */ display: flex; justify-content: space-betweennn; padding: 0.375rem; background-color: #ecfdf5; /* green-50 */ border-radius: 0.375rem; border: 1px solid #bbf7d0; /* green-200-ish */ }
@@ -115,12 +115,12 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .rec-description { /* @apply text-sm mt-1; */ font-size: 0.875rem; margin-top: 0.25rem}
   .rec-confidence { /* @apply text-xs text-blue-500 mt-1; */ font-size: 0.75rem; color: #3b82f6; /* blue-500 */ margin-top: 0.25rem}
   .insights-panel { padding-top: 0.5rem}
-  .insights-header { /* @apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-color; */ display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem, font-weight: 600; color: inherit; cursor: pointer}
+  .insights-header { /* @apply flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-color; */ display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem, font-weight 600; color: inherit; cursor: pointer}
   .insights-content { /* @apply space-y-2 mt-2; */ margin-top: 0.5rem; row-gap: 0.5rem}
   .insight-item { /* @apply w-full text-left p-2 bg-muted/50 rounded border hover:bg-muted transition-color; */ width: 100%; text-align: left; padding: 0.5rem; background-color: rgba(15, 23, 42, 0.03); /* muted-ish */ border-radius: 0.375rem; border: 1px solid rgba(15, 23, 42, 0.04); cursor: pointer}
   .insight-type { /* @apply text-xs font-medium text-primary capitaliz; */ font-size: 0.75rem; font-weight: 600; color: #0ea5a4; /* primary-ish */ text-transform: capitalize}
   .insight-description { /* @apply text-sm mt-1; */ font-size: 0.875rem; margin-top: 0.25rem}
-  .insight-confidence { /* @apply text-xs text-muted-foreground mt-1; */ font-size: 0.75rem, opacity: 0.75; margin-top: 0.25rem}
+  .insight-confidence { /* @apply text-xs text-muted-foreground mt-1; */ font-size: 0.75rem, opacity 0.75; margin-top: 0.25rem}
   .hidden { /* @apply hidden; */ display: none !important}
   @keyframes pulse { 0% { opacity: 1}
     50% { opacity: 0.6}

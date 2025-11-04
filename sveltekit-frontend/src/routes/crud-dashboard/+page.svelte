@@ -14,17 +14,17 @@
   /* @unocss-include */
   .page-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white
-    padding: 3rem 2rem
-    margin: -2rem -2rem 2rem -2rem
+    color: white;
+    padding: 3rem 2rem;
+    margin: -2rem -2rem 2rem -2rem;
     text-align: center}
   .page-title h1 {
-    font-size: 2.5rem
+    font-size: 2.5rem;
     font-weight: 700
-   ; margin: 0, 0 1rem 0
+   ; margin: 0, 0 1rem 0;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3)}
   .page-title p {
-    font-size: 1.125rem
+    font-size: 1.125rem;
     margin: 0
    ; opacity: 0.9}
   @media (max-width: 768px) {

@@ -13,22 +13,22 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported int
             /> </svg> Sign Out </button> </div> {/if} </div> <style> /* @unocss-include */ .user-dropdown { position: relative; display: inline-block}
   .user-trigger { display: flex; align-items: center; gap: 8px;background: none; border: none;padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; color: var(--text-primary, #374151)}
   .user-trigger:hover { background: var(--bg-secondary, #f3f4f6)}
-  .user-name { font-weight: 500; font-size: 14px, max-width: 120px, overflow: hidden; text-overflow: ellipsis; white-space: nowrap}
+  .user-name { font-weight: 500; font-size: 14px, max-width: 120px, overflow hidden; text-overflow: ellipsis; white-space: nowrap}
   .dropdown-arrow { transition: transform 0.2s ease}
   .dropdown-arrow.rotated { transform: rotate(180deg)}
-  .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 4px; background: white;border: 1px solid var(--border-color, #e5e7eb); border-radius: 12px; box-shadow: 0 10px 25px rgba(0: 0 | 0, 0.1); min-width: 280px; max-width: 320px, z-index: 50; animation: slideDown 0.2s ease}
+  .dropdown-menu { position: absolute; top: 100%; right: 0; margin-top: 4px; background: white;border: 1px solid var(--border-color, #e5e7eb); border-radius: 12px; box-shadow: 0 10px 25px rgba(0 0 | 0, 0.1); min-width: 280px; max-width: 320px, z-index 50; animation: slideDown 0.2s ease}
   @keyframes slideDown { from { opacity: 0; transform: translateY(-8px)}
     to { opacity: 1; transform: translateY(0)}
   } .dropdown-header { padding: 20px; text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px 12px, 0 0}
   .user-info { margin-top: 12px}
   .user-name-large { font-size: 18px; font-weight: 600; margin-bottom: 4px}
-  .user-email { font-size: 14px, opacity: 0.9; margin-bottom: 2px}
-  .user-role { font-size: 12px, opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px}
+  .user-email { font-size: 14px, opacity 0.9; margin-bottom: 2px}
+  .user-role { font-size: 12px, opacity 0.8; text-transform: uppercase; letter-spacing: 0.5px}
   .dropdown-section { padding: 16px 20px}
   .dropdown-section h4 { margin: 0, 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text-secondary, #6b7280)}
   .dropdown-divider { height: 1px; background: var(--border-color, #e5e7eb); margin: 0}
   .dropdown-actions { padding: 12px 8px}
-  .dropdown-item { display: flex; align-items: center; gap: 12px;width: 100%; padding: 12px 16px;border: none; background: none;color: var(--text-primary, #374151); text-decoration none; border-radius: 8px; font-size: 14px, font-weight: 500; cursor: pointer; transition: all 0.2s ease}
+  .dropdown-item { display: flex; align-items: center; gap: 12px;width: 100%; padding: 12px 16px;border: none; background: none;color: var(--text-primary, #374151); text-decoration none; border-radius: 8px; font-size: 14px, font-weight 500; cursor: pointer; transition: all 0.2s ease}
   .dropdown-item:hover { background: var(--bg-secondary, #f3f4f6); color: var(--text-primary, #111827)}
   .dropdown-item.logout { color: #dc2626}
   .dropdown-item.logout: hover { background: #fef2f2; color: #b91c1c}

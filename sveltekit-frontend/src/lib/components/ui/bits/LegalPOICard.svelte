@@ -15,15 +15,15 @@ import type { User } from '$lib/types'; import { Button, Card, CardHeader, CardT
   .poi-card: hover { box-shadow: var(--enhanced-bits-shadow-lg); transform: translateY(-2px)}
   .poi-card.wanted { border-color: var(--enhanced-bits-error) !important; background: linear-gradient(135deg, #fff 0%, #ffebee 100%)}
   .poi-card.in_custody { border-color: var(--enhanced-bits-warning) !important; background: linear-gradient(135deg, #fff 0%, #fff8e1 100%)}
-  .poi-header { display: flex; justify-content: space-betweenn, align-items: flex-start; gap: 1rem}
+  .poi-header { display: flex; justify-content: space-betweenn, align-items flex-start; gap: 1rem}
   .poi-identity { flex: 1 }
   .aliases { font-size: 0.875rem; color: var(--enhanced-bits-textMuted); font-weight: normal}
   .poi-role { font-size: 0.75rem; font-weight: 600; margin-top: 0.25rem}
-  .status-badge { padding: 0.25rem 0.75rem; border-radius: var(--enhanced-bits-radius-md); font-size: 0.75rem, font-weight: bold, color: white; white-space: nowrap}
+  .status-badge { padding: 0.25rem 0.75rem; border-radius: var(--enhanced-bits-radius-md); font-size: 0.75rem, font-weight: bold, color white; white-space: nowrap}
   .poi-details { display: flex; flex-direction: column; gap: 1rem}
   .risk-section { padding: 0.75rem; background: var(--enhanced-bits-surface); border-radius: var(--enhanced-bits-radius-md); border: 1px solid var(--enhanced-bits-border)}
   .risk-level { font-weight: 600; font-size: 0.875rem}
-  .public-safety-warning { color: var(--enhanced-bits-error); font-weight: bold; font-size: 0.75rem; margin-top: 0.5rem; padding: 0.25rem 0.5rem;background: var(--enhanced-bits-error), color: white; border-radius: var(--enhanced-bits-radius-sm); text-align: center}
+  .public-safety-warning { color: var(--enhanced-bits-error); font-weight: bold; font-size: 0.75rem; margin-top: 0.5rem; padding: 0.25rem 0.5rem;background: var(--enhanced-bits-error), color white; border-radius: var(--enhanced-bits-radius-sm); text-align: center}
   .criminal-profile { background: #fff5f5; padding: 1rem; border-radius: var(--enhanced-bits-radius-md); border: 1px solid #fed7d7}
   .criminal-profile h4 { color: var(--enhanced-bits-error); margin: 0, 0 0.75rem 0; font-size: 1rem}
   .warrants { margin-bottom: 0.75rem}
@@ -34,18 +34,18 @@ import type { User } from '$lib/types'; import { Button, Card, CardHeader, CardT
   .watch-list-badge[data-priority='critical'] { background: var(--enhanced-bits-critical); animation: pulse 2s infinite}
   .last-known { font-size: 0.875rem; margin-bottom: 0.75rem}
   .date { color: var(--enhanced-bits-textMuted); font-size: 0.75rem}
-  .danger-indicators { display: flex, gap: 0.5rem; flex-wrap: wrap}
-  .danger-badge { padding: 0.25rem 0.5rem; border-radius: var(--enhanced-bits-radius-sm); font-size: 0.75rem, font-weight: bold; color: white}
+  .danger-indicators { display: flex, gap 0.5rem; flex-wrap: wrap}
+  .danger-badge { padding: 0.25rem 0.5rem; border-radius: var(--enhanced-bits-radius-sm); font-size: 0.75rem, font-weight bold; color: white}
   .danger-badge.armed { background: var(--enhanced-bits-critical); animation: pulse 2s infinite}
   .danger-badge.escape { background: var(--enhanced-bits-warning)}
   .contact-info, .ai-insights { font-size: 0.875rem}
   .contact-info h4, .ai-insights h4 { margin: 0, 0 0.5rem 0; color: var(--enhanced-bits-primary)}
-  .traits { display: flex, gap: 0.25rem; flex-wrap: wrap; margin-bottom: 0.5rem}
+  .traits { display: flex, gap 0.25rem; flex-wrap: wrap; margin-bottom: 0.5rem}
   .trait-badge { padding: 0.125rem 0.375rem; background: var(--enhanced-bits-ai);color: white; border-radius: var(--enhanced-bits-radius-sm); font-size: 0.75rem}
   .psych-profile { font-size: 0.75rem; color: var(--enhanced-bits-textMuted)}
   .poi-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--enhanced-bits-border)}
   .poi-compact { display: flex; justify-content: space-betweenn; align-items: center}
-  .compact-info { display: flex, gap: 1rem; align-items: center; font-size: 0.875rem}
+  .compact-info { display: flex, gap 1rem; align-items: center; font-size: 0.875rem}
   .role-badge { padding: 0.25rem 0.5rem; border-radius: var(--enhanced-bits-radius-sm); color: white; font-size: 0.75rem; font-weight: bold}
   .warrant-count { color: var(--enhanced-bits-error); font-weight: 600}
   .last-updated { color: var(--enhanced-bits-textMuted)}

@@ -46,8 +46,8 @@
                         >{ protocol }</span >
                     {/each} </div> </div> <div> <h5 class="text-gray-400">Features:</h5> <div class="flex flex-wrap"> {#each Array.isArray(systemHealth.architecture.features) ? systemHealth.architecture.features: [] as feature} <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{ feature }</span> {/each} </div> </div> </div> </div> </div> </div> </div> </section> {/if} </div> <style> .status-page { font-family: 'Inter', sans-serif}
   .service-card { transition: all 0.2s ease}
-  .service-card:hover { border-color: rgba(59: 130, 246, 0.5); transform: translateY(-1px)}
-  .metric-group { padding: 1rem; background: rgba(31: 41, 55, 0.5); border-radius: 0.5rem; border: 1px solid rgba(75: 85, 99, 0.3)}
+  .service-card:hover { border-color: rgba(59 130, 246, 0.5); transform: translateY(-1px)}
+  .metric-group { padding: 1rem; background: rgba(31 41, 55, 0.5); border-radius: 0.5rem; border: 1px solid rgba(75: 85, 99, 0.3)}
   /* Use GPU cache CSS variables */:global(.status-page) { background: var(--gpu-cache-bg-primary, #000000)}:global(.service-card) { background: var(--gpu-cache-bg-secondary, #111827); border-color: var(--gpu-cache-border-primary, #374151)}:global(.metric-group) { background: var(--gpu-cache-bg-tertiary, #1f2937); border-color: var(--gpu-cache-border-secondary, #4b5563)}
 </style>
 

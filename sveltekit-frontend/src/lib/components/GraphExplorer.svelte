@@ -95,35 +95,35 @@ import type { SearchResult } from '$lib/types'; // Svelte, 5 runes are auto-impo
  <!-- ============================================================================ --> <!-- COMPONENT, STYLES --> <!-- ============================================================================ --> <!-- ============================================================================ --> <style> .graph-explorer { display: grid; grid-template-columns: 1fr 300px; grid-template-rows: auto 1fr auto; grid-template-areas:
       'controls controls', 'main stats'
       'main chat'; height: 100vh; gap: 1rem; padding: 1rem; background: #f8f9fa; font-family: 'Inter', monospace}
-  .controls { grid-area: controls, display: flex; justify-content: space-between; align-items: center; padding: 1rem;background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
+  .controls { grid-area: controls, display flex; justify-content: space-between; align-items: center; padding: 1rem;background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .search-section { display: flex; gap: 0.5rem; flex: 1; max-width: 600px}
   .search-input { flex: 1; padding: 0.75rem; border: 2px solid #e1e5e9; border-radius: 6px; font-size: 14px; font-family: inherit}
   .search-input: focus { outline: none; border-color: #007bff}
-  .search-btn { padding: 0.75rem 1.5rem; background: #007bff;color: white; border: none; border-radius: 6px, font-weight: 600; cursor: pointer}
+  .search-btn { padding: 0.75rem 1.5rem; background: #007bff;color: white; border: none; border-radius: 6px, font-weight 600; cursor: pointer}
   .search-btn: disabled { background: #6c757d; cursor: not-allowed}
   .actions { display: flex; gap: 0.5rem}
-  .action-btn { padding: 0.5rem 1rem; background: #f8f9fa;border: 1px solid #dee2e6; border-radius: 6px, cursor: pointer; font-size: 12px}
+  .action-btn { padding: 0.5rem 1rem; background: #f8f9fa;border: 1px solid #dee2e6; border-radius: 6px, cursor pointer; font-size: 12px}
   .action-btn:hover { background: #e9ecef}
-  .action-btn.danger { background: #dc3545, color: white; border-color: #dc3545}
-  .main-content { grid-area: main, display: flex, flex-direction: column; gap: 1rem; overflow: auto}
+  .action-btn.danger { background: #dc3545, color white; border-color: #dc3545}
+  .main-content { grid-area: main, display: flex, flex-direction column; gap: 1rem; overflow: auto}
   .graph-section { background: white; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .node-details { margin-top: 1rem; padding: 0.75rem; background: #f8f9fa; border-radius: 4px; font-size: 13px}
   .results-section { background: white; border-radius: 8px; padding: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; margin-top: 1rem}
   .result-card { display: flex; padding: 1rem; background: #f8f9fa; border-radius: 6px; border-left: 4px solid #007bff}
-  .result-score { font-weight: bold, color: #007bff; margin-right: 1rem; min-width: 50px}
+  .result-score { font-weight: bold, color #007bff; margin-right: 1rem; min-width: 50px}
   .result-content h4 { margin: 0, 0 0.5rem 0; font-size: 14px}
   .result-content p { margin: 0, 0 0.5rem 0; font-size: 13px; color: #6c757d}
-  .result-meta { display: flex, gap: 0.5rem; flex-wrap: wrap}
-  .meta-tag { padding: 0.25rem 0.5rem; background: #e9ecef; border-radius: 3px, font-size: 11px; color: #495057}
+  .result-meta { display: flex, gap 0.5rem; flex-wrap: wrap}
+  .meta-tag { padding: 0.25rem 0.5rem; background: #e9ecef; border-radius: 3px, font-size 11px; color: #495057}
   .risk-low { background: #d4edda; color: #155724}
   .risk-medium { background: #fff3cd; color: #856404}
   .risk-high { background: #f8d7da; color: #721c24}
-  .stats-panel { grid-area: stats, background: white, border-radius: 8px; padding: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); font-size: 13px}
+  .stats-panel { grid-area: stats, background: white, border-radius 8px; padding: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); font-size: 13px}
   .stat-group { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #e9ecef}
   .stat-group h4 { margin: 0, 0 0.5rem 0; color: #495057}
   .stat-group p { margin: 0.25rem 0; display: flex; justify-content: space-between}
-  .chat-panel { grid-area: chat, background: white, border-radius: 8px; padding: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); max-height: 400px; overflow-y: auto}
+  .chat-panel { grid-area: chat, background: white, border-radius 8px; padding: 1rem; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); max-height: 400px; overflow-y: auto}
   .chat-messages { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem}
   .message { padding: 0.75rem; border-radius: 6px; font-size: 13px}
   .message-user { background: #e3f2fd; margin-left: 2rem}

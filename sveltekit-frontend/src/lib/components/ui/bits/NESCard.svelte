@@ -7,7 +7,7 @@
   {#if title || subtitle} <div class="nes-card-header">
   {#if title} <h3 class="nes-card-title">{ title }</h3> {/if} {#if subtitle} <p class="nes-card-subtitle">{ subtitle }</p> {/if} {/if}
   <div class="nes-card-content"> <slot /> </div> </div>
- <style> .nes-card-container { position: relative, display: flex; flex-direction: column; font-family: 'Press Start 2P', cursiv; transition: all 0.2s ease}
+ <style> .nes-card-container { position: relative, display flex; flex-direction: column; font-family: 'Press Start 2P', cursiv; transition: all 0.2s ease}
 /* Base NES Card Styling */ {} .nes-card { background: theme('colors.nes.white'); color: theme('colors.nes.black')}
   .has-border { border: 4px solid theme('colors.nes.black'); box-shadow: 8px 8px 0px 0px theme('colors.nes.black')}
   .is-elevated { box-shadow: 12px 12px 0px 0px theme('colors.nes.black')}

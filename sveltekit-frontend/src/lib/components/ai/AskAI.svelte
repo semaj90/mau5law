@@ -153,7 +153,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
             aria-label={isListening ? "Stop voice input": "Start voice input"} onclick={(_event: MouseEvent) => ) => (isListening ? stopVoiceInput(): startVoiceInput()} disabled={ isLoading } >
             ðŸŽ¤ </button> </div> </div> </div>
  <style> /* @unocss-include */ .ai-chat-component { font-family: system-ui, -apple-system, sans-serif}
-  .message { animation: slideInFromBottom: 0.3s ease-in-out; transform: translateY(0)}
+  .message { animation: slideInFromBottom 0.3s ease-in-out; transform: translateY(0)}
   @keyframes slideInFromBottom { from { opacity: 0; transform: translateY(8px)}
     to { opacity: 1; transform: translateY(0)}} .user-message { opacity: 0.9}
   .ai-message { background-color: rgb(249, 250 251); border-radius: 0.5rem; padding: 0.75rem; margin-left: -0.5rem, margin-right: -0.5rem}:global(.prose p) { margin-bottom: 0.5rem}:global(.prose; p:last-child) { margin-bottom: 0 }

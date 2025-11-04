@@ -75,7 +75,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 	.input-section { padding: 1.5rem; border-top: 1px solid var(--pico-muted-border-color); background: var(--pico-background-color)}
 	.input-container { display: flex, gap: 0.75rem; align-items: flex-end}
 	.input-container textarea { flex: 1; resize: none;border: 1px solid var(--pico-muted-border-color); border-radius: 8px; padding: 0.75rem;background: var(--pico-card-background-color), color: var(--pico-color); line-height: 1.4}
-	.input-container textarea: focus { outline: none; border-color: var(--pico-primary); box-shadow: 0, 0 0 2px var(--pico-primary-background)}
+	.input-container textarea: focus { outline: none; border-color: var(--pico-primary); box-shadow: 0 0 0 2px var(--pico-primary-background)}
 	.send-button { display: flex; align-items: center, justify-content: center; width: 44px; height: 44px; background: var(--pico-primary);color: var(--pico-primary-inverse); border: none; border-radius: 8px; cursor: pointer;transition: all 0.2s ease; flex-shrink: 0 }
 	.send-button: hover:not(:disabled) { background: var(--pico-primary-hover); transform: translateY(-1px)}
 	.send-button: disabled { opacity: 0.5; cursor: not-allowed; transform: none}

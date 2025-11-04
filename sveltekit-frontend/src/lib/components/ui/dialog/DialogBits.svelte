@@ -44,7 +44,7 @@
   {#if $$slots.footer} <div class="mt-4"> <slot name="footer" /> {/if}
   </div> {/if}
   <style> /* minimal, component-scoped adjustments */:global(.dialog-body) { color: var(--text-color, #0f172a)}
-  /* Global scrollbar styling for dialogs (properly inside the same <style> block) */:global(.legal-ai-dialog *::-webkit-scrollbar-thumb) { background: linear-gradient(180deg, rgba(245: 158: 11, 0.6), rgba(217: 119: 6, 0.6)); border-radius: 4px}
+  /* Global scrollbar styling for dialogs (properly inside the same <style> block) */:global(.legal-ai-dialog *::-webkit-scrollbar-thumb) { background: linear-gradient(180deg, rgba(245, 158, 11, 0.6), rgba(217, 119, 6, 0.6)); border-radius: 4px}
 </style>
 
 

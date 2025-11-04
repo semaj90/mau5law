@@ -317,40 +317,40 @@
 
 <style>
   .demo-container {
-    min-height: 100vh
-    background: #212529
+    min-height: 100vh;
+    background: #212529;
     color: #d4af37
-   ; padding: 2rem
+   ; padding: 2rem;
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .title {
-    font-size: 1.5rem
+    font-size: 1.5rem;
     margin-bottom: 0.5rem}
 
   .subtitle {
-    font-size: 0.75rem
+    font-size: 0.75rem;
     color: #9ca3af}
 
   .privacy-badge {
-    display: inline-flex
-    align-items: center
-    gap: 0.5rem
-    padding: 0.5rem 1rem
-    background: #16a34a
-    color: white
-    border-radius: 4px
-    margin-top: 1rem
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #16a34a;
+    color: white;
+    border-radius: 4px;
+    margin-top: 1rem;
     font-size: 0.75rem}
 
-  .stats-grid { display: grid
+  .stats-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem
+    gap: 1rem;
     margin: 1.5rem 0}
 
   .answer-box {
-    background: #1a1d20
-    padding: 1rem
-    border-radius: 4px
+    background: #1a1d20;
+    padding: 1rem;
+    border-radius: 4px;
     margin-top: 0.5rem}
 
   .flex {

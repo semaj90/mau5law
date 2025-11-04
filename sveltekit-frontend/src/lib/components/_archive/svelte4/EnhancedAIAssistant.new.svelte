@@ -61,11 +61,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .ref-citation { color: #6b7280; font-size: 0.875rem}
   .input-form { display: flex; gap: 8px; padding: 16px; border-top: 1px solid #e5e7eb}
   .input { flex: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;transition: border-color 0.2}
-  .input: focus { border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+  .input: focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
   .submit-btn { padding: 12px; background: #3b82f6; color: white, border: none, border-radius: 6px; cursor: pointer;transition: background 0.2}
   .submit-btn:hover:not(:disabled) { background: #2563eb}
   .submit-btn: disabled { opacity: 0.5; cursor: not-allowed}
-  .settings-panel { position: absolute; top: 0;right: 0; width: 300px;height: 100%; background: white; border-left: 1px solid #e5e7eb; box-shadow: -2px, 0 10px rgba(0, 0, 0, 0.1); z-index: 10 }
+  .settings-panel { position: absolute; top: 0;right: 0; width: 300px;height: 100%; background: white; border-left: 1px solid #e5e7eb; box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1); z-index: 10 }
   .settings-header { display: flex; justify-content: space-betweenn, align-items: center, padding: 16px; border-bottom: 1px solid #e5e7eb}
   .settings-header h4 { margin: 0; font-weight: 600; color: #111827}
   .close-btn { background: none, border: none, font-size: 20px; cursor: pointer; color: #6b7280}

@@ -85,38 +85,38 @@
 <style>
   .consolidated-navigation {
     position: fixed
-   ;top: 0; left: 0
+   ;top: 0; left: 0;
     z-index: 1000; background: var(--surface-primary, #0a0a0a);
-    border-right: 1px solid var(--border-primary, #333333); height: 100vh
-    width: 64px
-    transition: width: 0.3s ease
+    border-right: 1px solid var(--border-primary, #333333); height: 100vh;
+    width: 64px;
+    transition: width 0.3s ease;
     overflow: hidden}
   .consolidated-navigation.expanded {
     width: 320px}
-  .nav-header { padding: 1rem
+  .nav-header { padding: 1rem;
     border-bottom: 1px solid var(--border-primary, #333333)}
   .nav-toggle {
-    display: flex
-    align-items: center
-    gap: 0.75rem
-    width: 100%; background: none
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%; background: none;
     border: none
-   ;color: var(--text-primary, #ffffff); cursor: pointer
-    padding: 0.5rem
-    border-radius: 4px
+   ;color: var(--text-primary, #ffffff); cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
     transition: background 0.2s}
   .nav-toggle:hover { background: var(--surface-secondary, #1a1a1a)}
   .nav-icon {
-    font-size: 1.2rem
+    font-size: 1.2rem;
     min-width: 20px}
   .nav-title {
-    font-weight: bold
+    font-weight: bold;
     white-space: nowrap}
   .current-group {
-    display: flex
-    align-items: center
-    gap: 0.5rem
-    margin-top: 0.5rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
     padding: 0.5rem
    ;background: rgba(var(--theme-color), 0.1);
     border-radius: 4px
@@ -128,29 +128,29 @@
   .route-group {
     margin-bottom: 1.5rem}
   .group-header {
-    display: flex
-    align-items: center
-    gap: 0.5rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1rem
    ;color: var(--text-secondary, #888888);
-    font-size: 0.9rem
-    font-weight: bold
-    text-transform: uppercase
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-transform: uppercase;
     letter-spacing: 0.5px}
   .route-count { color: var(--text-tertiary, #666666);
     font-size: 0.8rem}
   .group-routes {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 2px}
   .route-link {
-    display: flex
-    align-items: center
-    gap: 0.75rem
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     padding: 0.75rem 1rem
    ;color: var(--text-primary, #ffffff);
-    text-decoration none
-    transition: all 0.2s
+    text-decoration none;
+    transition: all 0.2s;
     border-left: 3px solid transparent}
   .route-link:hover { background: var(--surface-secondary, #1a1a1a);
     border-left-color: var(--accent-primary, #00ff00)}
@@ -158,20 +158,20 @@
     background: rgba(var(--accent-primary), 0.1);
     border-left-color: var(--accent-primary, #00ff00); color: var(--accent-primary, #00ff00)}
   .route-icon {
-    font-size: 1.1rem
+    font-size: 1.1rem;
     min-width: 20px}
   .route-label {
-    font-size: 0.9rem
+    font-size: 0.9rem;
     white-space: nowrap}
-  .beta-badge { background: var(--warning, #ff6600); color: white
+  .beta-badge { background: var(--warning, #ff6600); color: white;
     font-size: 0.6rem
-   ; padding: 0.1rem 0.3rem
-    border-radius: 2px
-    font-weight: bold
+   ; padding: 0.1rem 0.3rem;
+    border-radius: 2px;
+    font-weight: bold;
     margin-left: auto}
   .standalone-routes {
     border-top: 1px solid var(--border-primary, #333333);
-    margin-top: 1rem
+    margin-top: 1rem;
     padding-top: 1rem}
   /* Theme-specific styling */
   .route-group[data-theme='matrix'] .group-header {
@@ -184,12 +184,12 @@
   @media (max-width: 768px) {
     .consolidated-navigation {
       width: 100%; height: auto
-     ; position: relative
-      border-right: none
+     ; position: relative;
+      border-right: none;
       border-bottom: 1px solid var(--border-primary, #333333)}
     .consolidated-navigation.expanded {
       width: 100%}
-    .nav-content { height: auto
+    .nav-content { height: auto;
       max-height: 60vh}
   }
 </style>

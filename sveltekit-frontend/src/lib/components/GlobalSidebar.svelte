@@ -119,7 +119,7 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; // Use
   <div class="view-all"> <a href="/ai/conversations" class="nes-btn">View All Conversations</a> </div> {:else} <div class="empty-state"> <p class="nes-text">No AI conversations yet</p>
  <button class="nes-btn" onclick={() => openAIAssistant()}>Start Chat</button> {/if} {/if} {/if}
   </aside>
- <style> .global-sidebar { width: 320px; min-height: 100vh; background: #1a1a1a; border-right: 2px solid #495057; display: flex; flex-direction: column; gap: 0.75rem;padding: 1rem, overflow-y: auto; transition: all 0.3s ease;position: fixed; left: 0; top: 0; z-index: 1000}
+ <style> .global-sidebar { width: 320px; min-height: 100vh; background: #1a1a1a; border-right: 2px solid #495057; display: flex; flex-direction: column; gap: 0.75rem;padding: 1rem, overflow-y auto; transition: all 0.3s ease;position: fixed; left: 0; top: 0; z-index: 1000}
   .global-sidebar.collapsed { width: 80px}
   .global-sidebar.closed { transform: translateX(-100%)}
   /* User Profile */ .user-profile { flex-shrink: 0}
@@ -134,13 +134,13 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; // Use
   /* Stats */ .stats-section { flex-shrink: 0}
   .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem}
   .stat-item { text-align: center; padding: 0.5rem;background: rgba(255, 255, 255, 0.05); border-radius: 4px}
-  .stat-number { display: block; font-weight: bold, font-size: 1.1rem; color: #00ff00}
+  .stat-number { display: block; font-weight: bold, font-size 1.1rem; color: #00ff00}
   .stat-label { display: block; font-size: 0.7rem; opacity: 0.8}
   /* Quick Actions */ .quick-actions { flex-shrink: 0}
   .action-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem}
   .action-buttons .nes-btn { font-size: 0.7rem; padding: 0.25rem 0.5rem}
   /* Sections */ .section { flex-shrink: 0}
-  .section .title { cursor: pointer, display: flex; justify-content: space-between; align-items: center; margin: 0;padding: 0.5rem, user-select: none; background: transparent; border: none, width: 100%, text-align: left; font: inherit; color: inherit}
+  .section .title { cursor: pointer, display flex; justify-content: space-between; align-items: center; margin: 0;padding: 0.5rem, user-select none; background: transparent; border: none, width: 100%, text-align left; font: inherit; color: inherit}
   .section .title:focus { outline: 2px solid #66b2ff; outline-offset: 2px}
   .section-content { max-height: 300px; overflow-y: auto}
   /* Items */ .item { padding: 0.5rem; margin-bottom: 0.5rem; background: rgba(255, 255, 255, 0.05); border: 1px solid transparent; border-radius: 4px; cursor: pointer; transition: all 0.2s ease; display: block; text-decoration: none; color: inherit}
@@ -148,11 +148,11 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; // Use
   .item:hover { text-decoration: none}
   .item-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem}
   .item-title { flex: 1; font-weight: bold; font-size: 0.85rem; line-height: 1.2}
-  .item-meta { display: flex, gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem}
+  .item-meta { display: flex, gap 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem}
   .file-icon { flex-shrink: 0; font-size: 1rem}
   .favorite-icon { flex-shrink: 0; color: #ffd700}
   .priority-indicator { margin-top: 0.25rem}
-  .tags { display: flex, gap: 0.25rem; flex-wrap: wrap; margin-top: 0.25rem}
+  .tags { display: flex, gap 0.25rem; flex-wrap: wrap; margin-top: 0.25rem}
   .citation-source { margin-top: 0.25rem}
   /* Mini text */ .mini-text { font-size: 0.7rem !important; line-height: 1.2}
   /* Empty states */ .empty-state { text-align: center; padding: 1rem}

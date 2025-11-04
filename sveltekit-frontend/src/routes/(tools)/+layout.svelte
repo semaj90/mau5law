@@ -77,8 +77,8 @@
 
 <style>
   .tools-layout {
-    min-height: 100vh
-    display: flex
+    min-height: 100vh;
+    display: flex;
     flex-direction: column
    ; background: var(--nier-bg-primary, #0a0a0a);
     color: var(--nier-text-primary, #f0f0f0)}
@@ -90,40 +90,40 @@
     padding: 1rem}
 
   .tools-brand {
-    display: flex
-    align-items: center
-    gap: 1rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem}
 
   .tools-icon {
     font-size: 2rem}
 
   .tools-title {
-    font-size: 1.5rem
+    font-size: 1.5rem;
     font-weight: bold
    ; color: var(--nier-accent-cool, #87ceeb);
     margin: 0}
 
   .tools-badge { background: var(--nier-accent-cool, #87ceeb);
     color: var(--nier-bg-primary, #0a0a0a);
-    padding: 0.25rem 0.75rem
-    border-radius: 1rem
-    font-size: 0.8rem
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
     font-weight: bold}
 
   /* Navigation */
   .tools-nav {
-    display: flex
-    flex-wrap: wrap
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem}
 
   .tools-nav-item {
-    display: flex
-    align-items: center
-    gap: 0.5rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1rem
    ; border: 1px solid var(--nier-border-primary, #333);
-    border-radius: 0.5rem
+    border-radius: 0.5rem;
     text-decoration: none
    ; color: var(--nier-text-secondary, #ccc);
     background: var(--nier-bg-primary, #0a0a0a);
@@ -148,18 +148,18 @@
 
   /* Content */
   .tools-content {
-    flex: 1
+    flex: 1;
     overflow-y: auto
    ; background: var(--nier-bg-primary, #0a0a0a)}
 
   .tools-container {
-    max-width: 1400px
-    margin: 0 auto
-    padding: 2rem
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
     min-height: 100%}
 
   .tools-placeholder {
-    text-align: center
+    text-align: center;
     padding: 4rem 2rem
    ; background: var(--nier-bg-secondary, #1a1a1a);
     border: 2px dashed var(--nier-border-muted, #444);
@@ -175,17 +175,17 @@
     padding: 1rem}
 
   .tools-footer-content {
-    max-width: 1400px
-    margin: 0 auto
-    display: flex
-    justify-content: space-betweennn
-    align-items: center
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
     gap: 2rem}
 
   .tools-info {
-    display: flex
-    align-items: center
-    gap: 1rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     font-size: 0.9rem
    ; color: var(--nier-text-muted, #999)}
 
@@ -194,17 +194,17 @@
     text-transform: uppercase}
 
   .tools-controls {
-    display: flex
+    display: flex;
     gap: 1rem}
 
   .tools-main-btn {
     padding: 0.5rem 1rem
    ; border: 1px solid var(--nier-border-primary, #333);
-    border-radius: 0.5rem
+    border-radius: 0.5rem;
     text-decoration: none
    ; color: var(--nier-text-primary, #f0f0f0);
     background: var(--nier-bg-primary, #0a0a0a);
-    transition: all 0.2s ease
+    transition: all 0.2s ease;
     font-size: 0.9rem}
 
   .tools-main-btn:hover {
@@ -217,8 +217,8 @@
       padding: 1rem}
 
     .tools-footer-content {
-      flex-direction: column
-      text-align: center
+      flex-direction: column;
+      text-align: center;
       gap: 1rem}
 
     .tools-nav {

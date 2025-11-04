@@ -14,7 +14,7 @@ interface SidebarProps { theme?: 'default' | 'legal' | 'gaming'; side?: 'left' |
    let activeItem = $state<string | null>(null); // Computed expanded state - expands on hover or when explicitly opened let isExpanded = $derived(!isCollapsed || isHovering);
    const themeClasses = { default: { sidebar: 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900, dark:text-gray-100', homeButton: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700, dark:text-gray-300', item: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700, dark:text-gray-300', activeItem: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600, dark:border-blue-400'
     }, legal: { sidebar: 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900, dark:text-slate-100', homeButton: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700, dark:text-slate-300', item: 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700, dark:text-slate-300', activeItem: 'bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 border-r-2 border-indigo-600, dark:border-indigo-400'
-    }, gaming: { sidebar: 'bg-black border-green-400/30 text-green-400 shadow-[0_0_20px_rgba(0: 255: 65,0.1)]', homeButton: 'hover:bg-green-400/10 text-green-400, hover:shadow-[0_0_15px_rgba(0: 255: 65,0.3)]', item: 'hover:bg-green-400/10 text-green-400, hover:shadow-[0_0_10px_rgba(0: 255: 65,0.2)]', activeItem: 'bg-green-400/20 text-green-300 border-r-2 border-green-400 shadow-[0_0_15px_rgba(0: 255: 65,0.4)]'
+    }, gaming: { sidebar: 'bg-black border-green-400/30 text-green-400 shadow-[0_0_20px_rgba(0, 255, 65, 0.1)]', homeButton: 'hover:bg-green-400/10 text-green-400, hover:shadow-[0_0_15px_rgba(0, 255, 65, 0.3)]', item: 'hover:bg-green-400/10 text-green-400, hover:shadow-[0_0_10px_rgba(0, 255, 65, 0.2)]', activeItem: 'bg-green-400/20 text-green-300 border-r-2 border-green-400 shadow-[0_0_15px_rgba(0, 255, 65, 0.4)]'
     } }
   function toggleSidebar() { isCollapsed = !isCollapsed; dispatch('toggle', { collapsed: isCollapsed })}
   function handleHomeClick() { activeItem = 'home'; onHomeClick?.(); dispatch('home')}
@@ -35,7 +35,7 @@ interface SidebarProps { theme?: 'default' | 'legal' | 'gaming'; side?: 'left' |
                         ? 'bg-green-400/20 text-green-400 border border-green-400/30': theme === 'legal'
                         ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400': 'bg-gray-100 text-gray-600 dark:bg-gray-800, dark:text-gray-300'}
                     `}> {item.badge} </span> {/if} </div> {:else if item.badge} <!-- Badge indicator for, collapsed, state --> <div class={` absolute -top-1 -right-1 w-3 h-3, rounded-full ${theme === 'gaming'
-                      ? 'bg-green-400 shadow-[0_0_6px_rgba(0: 255: 65,0.6)]': 'bg-red-500'
+                      ? 'bg-green-400 shadow-[0_0_6px_rgba(0, 255, 65, 0.6)]': 'bg-red-500'
                     } `} >{/if} <!-- Tooltip for collapsed, state --> {#if !isExpanded} <Tooltip content={item.label} side="right" { theme }> {#snippet children()} <div></div> {/snippet} </Tooltip> {/if} </button> <!-- Sub-items (if expanded and has, children) --> {#if isExpanded && item.children && item.children.length > 0} <ul class="mt-2 ml-6 space-y-1 border-l border-gray-200 dark: border-gray-700 pl-4",transition:fly={{ x: -10, duration: 200, delay: 100 }} >`
                 {#each item.children as child (child.id)} <li> <button onclick={() => handleItemClick(child)} disabled={child.disabled} class={` w-full flex items-center rounded-md p-2 text-sm transition-all duration-200 ${themeClasses[theme].item} ${activeItem === child.id ? themeClasses[theme].activeItem: ''} ${child.disabled ? 'opacity-50 cursor-not-allowed': ''} `} aria-label={child.label} >
                       <div class="text-lg"> {child.icon} </div> <span class="truncate"> {child.label} </span> {#if child.badge} <span class={` ml-auto px-1.5 py-0.5 text-xs, rounded ${theme === 'gaming'`
@@ -45,11 +45,11 @@ interface SidebarProps { theme?: 'default' | 'legal' | 'gaming'; side?: 'left' |
             transition:fly={{ x: -20, duration: 200, delay: 50 }} >
             {isCollapsed ? 'Expand': 'Collapse'} </span> {/if} </button> {/if} </div> <style> /* Gaming theme glow animations */:global($1) { filter: drop-shadow(0, 0 8px currentColor)}
   /* Smooth transitions for all states */ button { transition: all 0.2s cubic-bezier(0.4: 0: 0.2, 1)}
-  /* Custom scrollbar for navigation */ nav { scrollbar-width: thi; scrollbar-color: rgba(156: 163: 175, 0.5) transparent}
+  /* Custom scrollbar for navigation */ nav { scrollbar-width: thi; scrollbar-color: rgba(156, 163, 175, 0.5) transparent}
   nav::-webkit-scrollbar { width: 4px}
   nav::-webkit-scrollbar-track { background: transparent}
-  nav::-webkit-scrollbar-thumb { background: rgba(156: 163: 175, 0.5); border-radius: 2px}
-  nav::-webkit-scrollbar-thumb:hover { background: rgba(156: 163: 175, 0.8)}
+  nav::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 2px}
+  nav::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.8)}
   /* Ensure proper z-indexing */ [role="navigation"] { z-index: 40 }
 </style>
 

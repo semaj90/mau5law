@@ -94,9 +94,7 @@ interface Props { options: SelectOption[],
     transition: all 0.2s ease;
   }
   :global(.legal-select-trigger:hover) {
-    box-shadow:
-      0,
-      0 0 1px rgb(var(--yorha-primary) / 0.3);
+    box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.3);
   }
   :global(.legal-select-content) {
     backdrop-filter: blur(8px);

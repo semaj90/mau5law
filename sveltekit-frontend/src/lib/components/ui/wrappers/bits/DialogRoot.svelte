@@ -13,8 +13,8 @@
           }} role="dialog"
           aria-modal="true"
           tabindex="-1"
-        > <slot /> </div> {/if} {/if} {/if} <style> .fallback-dialog-overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center, justify-content: center; animation: fadeIn 0.2s ease-out}
-  .fallback-dialog { background: #1a1a1a; border: 2px solid #ffd700; border-radius: 12px, padding: 2rem; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0, 0 40px rgba(255, 215, 0, 0.3); animation: slideIn 0.3s ease-out}
+        > <slot /> </div> {/if} {/if} {/if} <style> .fallback-dialog-overlay { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, 0.75); display: flex; align-items: center, justify-content center; animation: fadeIn 0.2s ease-out}
+  .fallback-dialog { background: #1a1a1a; border: 2px solid #ffd700; border-radius: 12px, padding 2rem; max-width: 90vw; max-height: 90vh; overflow: auto; box-shadow: 0 0 40px rgba(255, 215, 0, 0.3); animation: slideIn 0.3s ease-out}
   @keyframes fadeIn { from { opacity: 0}
     to { opacity: 1}
   } @keyframes slideIn { from { transform: translateY(-20px); opacity: 0}

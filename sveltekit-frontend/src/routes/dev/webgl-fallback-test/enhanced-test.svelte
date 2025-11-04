@@ -484,167 +484,167 @@ if (browser) {
 
 <style>
   .webgl-test-container {
-    max-width: 1200px
+    max-width: 1200px;
     margin: 0 auto
-   ; padding: 1rem
+   ; padding: 1rem;
     font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white
-    padding: 2rem
-    border-radius: 1rem
-    margin-bottom: 2rem
+    color: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
     text-align: center}
-  .header h1 { margin: 0, 0 1rem 0
-    font-size: 2rem
+  .header h1 { margin: 0, 0 1rem 0;
+    font-size: 2rem;
     font-weight: 700}
   .header p {
-    margin: 0.5rem 0
+    margin: 0.5rem 0;
     opacity: 0.9}
   .test-controls {
-    margin: 2rem 0
-    display: flex
-    gap: 1rem
-    flex-wrap: wrap
+    margin: 2rem 0;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
     justify-content: center}
   .test-button {
-    background: #2563eb
-    color: white
-    border: none
-    padding: 1rem 2rem
-    border-radius: 0.75rem
-    cursor: pointer
-    font-weight: 600
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    font-weight: 600;
     font-size: 1rem
-   ; transition: all 0.2
+   ; transition: all 0.2;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)}
   .test-buttonhover: not(:disabled) {
     background: #1d4ed8
    ; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)}
   .test-buttondisabled {
-    background: #6b7280
-    cursor: not-allowed
+    background: #6b7280;
+    cursor: not-allowed;
     transform: none}
   .progress-container {
-    background: white
-    border-radius: 0.75rem
+    background: white;
+    border-radius: 0.75rem;
     padding: 1.5rem
-   ; margin: 1rem 0
+   ; margin: 1rem 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .progress-text {
-    font-weight: 600
-    margin-bottom: 1rem
+    font-weight: 600;
+    margin-bottom: 1rem;
     color: #374151}
   .progress-bar {
-    width: 100%; height: 0.75rem
-    background: #e5e7eb
-    border-radius: 0.375rem
-    overflow: hidden
+    width: 100%; height: 0.75rem;
+    background: #e5e7eb;
+    border-radius: 0.375rem;
+    overflow: hidden;
     margin: 0.5rem 0}
   .progress-fill {
     height: 100%; background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-    transition: width 0.3s ease
+    transition: width 0.3s ease;
     border-radius: 0.375rem}
   .progress-percent {
-    text-align: center
-    font-size: 0.9em
-    color: #6b7280
+    text-align: center;
+    font-size: 0.9em;
+    color: #6b7280;
     margin-top: 0.5rem}
-  .results-grid { display: grid
+  .results-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem
+    gap: 1.5rem;
     margin: 2rem 0}
   .result-card {
-    background: white
-    border: 2px solid #e5e7eb
+    background: white;
+    border: 2px solid #e5e7eb;
     border-radius: 1rem
-   ; padding: 1.5rem
+   ; padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.2}
   .result-card: hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6}
-  .result-card h3 { margin: 0, 0 1rem 0
-    font-size: 1.25rem
-    font-weight: 700
+  .result-card h3 { margin: 0, 0 1rem 0;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: #1f2937}
   .status-success {
-    color: #059669
+    color: #059669;
     font-weight: 600}
   .status-error {
-    color: #dc2626
+    color: #dc2626;
     font-weight: 600}
   .performance-metric {
-    margin: 0.5rem 0
+    margin: 0.5rem 0;
     font-size: 0.9rem}
   .performance-highlight {
-    font-size: 1.1rem
+    font-size: 1.1rem;
     font-weight: 700}
   .performance-note {
-    font-size: 0.8rem
-    color: #6b7280
-    font-style: italic
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-style: italic;
     margin-top: 0.5rem}
   .recommendation { background: linear-gradient(135deg, #dbeafe 0%, #dcfce7 100%);
-    border: 2px solid #3b82f6
-    border-radius: 1rem
+    border: 2px solid #3b82f6;
+    border-radius: 1rem;
     padding: 2rem
-   ; margin: 2rem 0
+   ; margin: 2rem 0;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05)}
   .recommendation h3 {
-    margin: 0, 0 1rem 0
-    color: #1e40af
-    font-size: 1.5rem
+    margin: 0, 0 1rem 0;
+    color: #1e40af;
+    font-size: 1.5rem;
     font-weight: 700}
   .recommendation-text {
-    font-size: 1.1rem
-    line-height: 1.6
+    font-size: 1.1rem;
+    line-height: 1.6;
     color: #1f2937}
   .log-container {
-    background: #0f172a
-    border-radius: 1rem
-    padding: 1.5rem
+    background: #0f172a;
+    border-radius: 1rem;
+    padding: 1.5rem;
     margin: 2rem 0}
   .log-container h2 {
     color: #e2e8f0
-   ; margin: 0, 0 1rem 0
+   ; margin: 0, 0 1rem 0;
     font-size: 1.25rem}
   .log-output {
-    background: #1e293b
+    background: #1e293b;
     color: #e2e8f0
-   ; padding: 1rem
-    border-radius: 0.5rem
-    white-space: pre-wrap
-    font-family: 'Courier New', 'Monaco', monospace
-    font-size: 0.9rem
-    line-height: 1.4
-    max-height: 400px
-    overflow-y: auto
+   ; padding: 1rem;
+    border-radius: 0.5rem;
+    white-space: pre-wrap;
+    font-family: 'Courier New', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    max-height: 400px;
+    overflow-y: auto;
     border: 1px solid #334155}
-  .info-grid { display: grid
+  .info-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem
-    margin: 1rem 0
-    background: #f8fafc
-    padding: 1.5rem
+    gap: 1rem;
+    margin: 1rem 0;
+    background: #f8fafc;
+    padding: 1.5rem;
     border-radius: 1rem}
   .info-item {
     text-align: center}
   .info-label {
-    font-size: 0.8rem
-    color: #6b7280
-    text-transform: uppercase
-    font-weight: 600
+    font-size: 0.8rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 600;
     letter-spacing: 0.5px}
   .info-value {
-    font-size: 1.1rem
+    font-size: 1.1rem;
     font-weight: 700
-   ; color: #1f2937
+   ; color: #1f2937;
     margin-top: 0.25rem}
   @media (max-width: 768px) {
     .header h1 {
       font-size: 1.5rem}
     .test-controls {
-      flex-direction: column
+      flex-direction: column;
       align-items: center}
     .results-grid {
       grid-template-columns: 1fr}

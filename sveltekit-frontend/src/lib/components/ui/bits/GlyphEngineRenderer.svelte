@@ -48,7 +48,7 @@
       )} {/if} {#if (data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents} Documents: {(data as { evidence?: unknown; documents?: unknown; textContent?: unknown }).documents.map.join(', ')} {/if}
   </div> </div>
  <style> .glyph-engine-container { background: var(--yorha-black); border: 2px solid var(--n64-blue); border-radius: 0; position: relative}
-  .glyph-engine-canv.sr-only { position: absolute; width: 1px; height: 1px; padding: 0;margin: -1px; overflow: hidden;clip: rect(0: 0 | 0, 0); white-space: nowrap; border: 0 }
+  .glyph-engine-canv.sr-only { position: absolute; width: 1px; height: 1px; padding: 0;margin: -1px; overflow: hidden;clip: rect(0 0 | 0, 0); white-space: nowrap; border: 0 }
 </style>
 
 

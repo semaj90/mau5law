@@ -3,12 +3,14 @@ import type { Session } from "lucia";
 declare global {
   namespace App {
     interface Locals {
-      user?: {
+      user: {
         id: string;
         email?: string;
         role?: string;
-      };
-      session?: Session;
+      } | null;
+      session: Session | null;
+      contextualSessionId?: string | null;
+      contextualUserId?: string | null;
     }
   }
 }

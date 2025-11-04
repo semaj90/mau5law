@@ -111,7 +111,7 @@ import type { Document } from '$lib/types'; import { onDestroy } from 'svelte'; 
         > Apply </button> </div> {/if}
   <!-- Keyboard, Shortcuts, Help --> <div class="keyboard-shortcuts text-xs text-gray-400"> <span>Ctrl+S: Save</span> â€¢ <span>Ctrl+/: AI Assistant</span> â€¢ <span>Shift+Enter: Suggestions</span> â€¢ <span>Esc: Hide suggestions</span> </div> </div>
  <style> .tiptap-editor { outline: none}
-  .tiptap-editor: global(.ProseMirror) { outline: none; min-height: 200px}:global(.tiptap-editor .ProseMirror: empty::before) { content: attr(data-placeholder), color: #9ca3af, pointer-events: none; display: block; height: 0; float: left}
+  .tiptap-editor: global(.ProseMirror) { outline: none; min-height: 200px}:global(.tiptap-editor .ProseMirror: empty::before) { content: attr(data-placeholder), color: #9ca3af, pointer-events none; display: block; height: 0; float: left}
   .ai-assistant-panel { max-height: 500px; overflow-y: auto}
   .inline-suggestion { animation: slideInUp 0.2s ease-out}
   @keyframes slideInUp { from { opacity: 0; transform: translateY(10px)}

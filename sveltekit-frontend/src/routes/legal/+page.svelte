@@ -12,7 +12,7 @@
 
   .dashboard-header { text-align: center; margin-bottom: 2rem}
 
-  .dashboard-header h1 { font-size: 2.5rem; color: var(--text-primary, #00ff00); margin-bottom: 0.5rem; text-shadow: 0, 0 10px currentColor}
+  .dashboard-header h1 { font-size: 2.5rem; color: var(--text-primary, #00ff00); margin-bottom: 0.5rem; text-shadow: 0 0 10px currentColor}
 
   .dashboard-header p { color: var(--text-secondary, #888888); font-size: 1.1rem}
 
@@ -50,9 +50,9 @@
 
   .status-dot { width: 8px; height: 8px; border-radius: 50%}
 
-  .status-dot.green { background: #00ff00; box-shadow: 0, 0 6px #00ff00}
+  .status-dot.green { background: #00ff00; box-shadow: 0 0 6px #00ff00}
 
-  .status-dot.amber { background: #ff6600; box-shadow: 0, 0 6px #ff6600}
+  .status-dot.amber { background: #ff6600; box-shadow: 0 0 6px #ff6600}
 
   @media (max-width: 768px) { .stats-grid { grid-template-columns: 1fr}
 

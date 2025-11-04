@@ -85,12 +85,12 @@ interface Props { evidence: EvidenceNod, depth?: number; maxDepth?: number; visi
   </div>
  <style> .evidence-node { margin: 8px 0; border-radius: 8px; transition: all 0.2s ease}
   .evidence-card { background: #ffffff; border: 2px solid #e5e7eb; border-radius: 8px; padding: 16px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 1px 3px rgba(0: 0 | 0, 0.1)}
-  .evidence-card: hover { border-color: #3b82f6; box-shadow: 0 4px 6px rgba(0: 0 | 0, 0.1); transform: translateY(-1px)}
+  .evidence-card: hover { border-color: #3b82f6; box-shadow: 0 4px 6px rgba(0 0 | 0, 0.1); transform: translateY(-1px)}
   .evidence-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 12px}
   .header-left { display: flex; align-items: center; gap: 8px}
-  .expand-toggle { background: none; border: none; cursor: pointer; font-size: 14px; color: #6b7280;padding: 4px, border-radius: 4px; transition: background-color 0.2}
+  .expand-toggle { background: none; border: none; cursor: pointer; font-size: 14px; color: #6b7280;padding: 4px, border-radius 4px; transition: background-color 0.2}
   .expand-toggle:hover { background-color: #f3f4f6}
-  .evidence-id { margin: 0; font-size: 16px, font-weight: 600; color: #1f2937}
+  .evidence-id { margin: 0; font-size: 16px, font-weight 600; color: #1f2937}
   .header-right { display: flex; gap: 12px; align-items: center}
   .chain-integrity, .confidence-score { font-size: 12px; padding: 4px 8px; border-radius: 12px; font-weight: 500}
   .chain-integrity-high { background: #d1fae5; color: #065f46}
@@ -103,7 +103,7 @@ interface Props { evidence: EvidenceNod, depth?: number; maxDepth?: number; visi
   .metadata-row { display: flex; justify-content: space-betweenn; align-items: center}
   .metadata-row .label { font-weight: 500; color: #6b7280; font-size: 12px}
   .metadata-row .value { color: #374151; font-size: 12px; font-weight: 600}
-  .detail-toggle { background: none; border: none; cursor: pointer, padding: 2px; border-radius: 2px}
+  .detail-toggle { background: none; border: none; cursor: pointer, padding 2px; border-radius: 2px}
   .detail-toggle:hover { background: #e5e7eb}
   .legal-implications { margin-bottom: 12px}
   .legal-implications h5 { margin: 0, 0 8px 0; font-size: 13px; font-weight: 600; color: #374151}
@@ -114,16 +114,16 @@ interface Props { evidence: EvidenceNod, depth?: number; maxDepth?: number; visi
   .critical-icon { font-size: 16px}
   .critical-implications strong { color: #dc2626}
   .chain-section, .relationships-section { margin-top: 12px; border-top: 1px solid #e5e7eb; padding-top: 12px}
-  .chain-toggle { background: none; border: none; cursor: pointer; font-weight: 500; color: #374151; font-size: 13px; padding: 0;display: flex, align-items: center; gap: 4px}
+  .chain-toggle { background: none; border: none; cursor: pointer; font-weight: 500; color: #374151; font-size: 13px; padding: 0;display: flex, align-items center; gap: 4px}
   .chain-toggle:hover { color: #1f2937}
   .chain-details { margin-top: 12px; padding-left: 16px}
   .chain-entry { padding: 8px 0; border-bottom: 1px solid #f3f4f6}
   .chain-entry:last-child { border-bottom: none}
-  .entry-info { display: flex, gap: 12px; margin-bottom: 4px}
+  .entry-info { display: flex, gap 12px; margin-bottom: 4px}
   .officer { font-weight: 500; color: #1f2937}
   .action { color: #6b7280}
   .entry-timestamp { font-size: 11px; color: #9ca3af}
-  .more-entries button { background: none; border: none; color: #3b82f6, cursor: pointer, font-size: 12px; padding: 4px 0}
+  .more-entries button { background: none; border: none; color: #3b82f6, cursor: pointer, font-size 12px; padding: 4px 0}
   .more-entries buttonhover { text-decoration underli}
   .relationships-section h5 { margin: 0, 0 8px 0; font-size: 13px; font-weight: 600; color: #374151}
   .relationship-item { display: flex; align-items: center; gap: 8px;padding: 6px 0; border-bottom: 1px solid #f3f4f6}
@@ -132,11 +132,11 @@ interface Props { evidence: EvidenceNod, depth?: number; maxDepth?: number; visi
   .relationship-info { display: flex; flex-direction: column; gap: 2px}
   .relationship-type { font-size: 12px; font-weight: 500; color: #1f2937; text-transform: capitaliz}
   .relationship-strength { font-size: 11px; color: #6b7280}
-  .relationship-significance { font-size: 10px; padding: 2px 6px; border-radius: 8px; font-weight: 500, text-transform: uppercase; width: fit-content}
+  .relationship-significance { font-size: 10px; padding: 2px 6px; border-radius: 8px; font-weight: 500, text-transform uppercase; width: fit-content}
   .relationship-significance.critical { background: #fee2e2; color: #991b1b}
   .relationship-significance.high { background: #fef3c7; color: #92400}
   .relationship-significance.medium { background: #e0f2f; color: #0c4a6}
-  .more-relationships { font-size: 11px, color: #6b7280; font-style: italic}
+  .more-relationships { font-size: 11px, color #6b7280; font-style: italic}
   .evidence-children { border-left: 2px solid #e5e7eb; margin-top: 16px; padding-left: 16px; position: relative}
   .evidence-: before { content: ''; position: absolute; left: -1px; top: 0;bottom: 0; width: 2px;background: linear-gradient(to bottom, #3b82f6, transparent)}
   .circular-warning, .max-depth-warning { display: flex; align-items: center; gap: 12px;padding: 12px; background: #fef3c7;border: 1px solid #fbbf24; border-radius: 8px; margin-bottom: 8px}

@@ -147,10 +147,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .title { font-size: 1.5rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem}
   .gpu-badge { background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%); color: #000;padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px}
   .ai-badge { background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%); color: #000;padding: 0.25rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 700; text-transform: uppercase}
-  .status-indicators { display: flex, gap: 2rem; align-items: center}
+  .status-indicators { display: flex, gap 2rem; align-items: center}
   .connection-status { display: flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 2rem; font-size: 0.875rem}
   .port-info { opacity: 0.7; font-size: 0.75rem}
-  .status-dot { width: 8px, height: 8px, border-radius: 50%; background: #ff4444; animation: pulse 2s infinite}
+  .status-dot { width: 8px, height: 8px, border-radius 50%; background: #ff4444; animation: pulse 2s infinite}
   .connection-status.connected .status-dot { background: #44ff44}
   .gpu-status { display: flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; background: rgba(0, 255, 136, 0.1); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 0.5rem; font-size: 0.875rem}
   .cuda-info { padding: 0.125rem 0.5rem; background: rgba(118, 185, 0, 0.2); border-radius: 0.25rem; font-size: 0.75rem}
@@ -167,12 +167,12 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .join-room-btn, .leave-room-btn { padding: 0.25rem 1rem; background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%); border: none; border-radius: 0.5rem; color: #000; font-weight: 600; cursor: pointer;transition: all 0.3s ease}
   .leave-room-btn { background: linear-gradient(135deg, #ff4444 0%, #ff8844 100%)}
   /* Messages */ .messages-container { flex: 1; overflow: hidden; padding: 2rem}
-  .messages-scroll { height: 100%; overflow-y: auto, max-width: 1200px; margin: 0 auto}
+  .messages-scroll { height: 100%; overflow-y: auto, max-width 1200px; margin: 0 auto}
   .message { margin-bottom: 1.5rem; animation: slideIn 0.3s ease-out}
   .message.user { margin-left: auto; max-width: 70%}
   .message.assistant, .message.system { max-width: 70%}
   .message-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.875rem; opacity: 0.7}
-  .message-content { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem, padding: 1rem; line-height: 1.6; white-space: pre-wrap}
+  .message-content { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem, padding 1rem; line-height: 1.6; white-space: pre-wrap}
   .message.user .message-content { background: linear-gradient(135deg, rgba(0, 136, 255, 0.1) 0%, rgba(0, 204, 255, 0.1) 100%); border-color: rgba(0, 204, 255, 0.3)}
   .message.assistant .message-content { background: linear-gradient(135deg, rgba(0, 255, 136, 0.05) 0%, rgba(0, 255, 204, 0.05) 100%); border-color: rgba(0, 255, 136, 0.2)}
   .message.system .message-content { background: linear-gradient(135deg, rgba(255, 136, 0, 0.05) 0%, rgba(255, 204, 0, 0.05) 100%); border-color: rgba(255, 204, 0, 0.2)}
@@ -194,9 +194,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .file-item { padding: 0.5rem; background: rgba(255, 255, 255, 0.05); border-radius: 0.25rem; margin-bottom: 0.5rem; font-size: 0.875rem}
   /* Input Area */ .input-container { display: flex; gap: 1rem; padding: 2rem; background: rgba(30, 35, 48, 0.95); border-top: 1px solid rgba(100, 255, 218, 0.2); max-width: 1200px; margin: 0 auto;width: 100%}
   .message-input { flex: 1; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 0.75rem; padding: 1rem; color: #e0e0e0; font-size: 1rem; resize: none;transition: all 0.3s ease}
-  .message-input: focus { outline: none; border-color: rgba(0, 255, 136, 0.5); background: rgba(255, 255, 255, 0.08); box-shadow: 0, 0 20px rgba(0, 255, 136, 0.2)}
+  .message-input: focus { outline: none; border-color: rgba(0, 255, 136, 0.5); background: rgba(255, 255, 255, 0.08); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2)}
   .input-actions { display: flex; flex-direction: column; gap: 0.5rem}
-  .send-button, .add-batch-btn { padding: 1rem 2rem; background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%); border: none; border-radius: 0.75rem; color: #000; font-weight: 600, font-size: 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem}
+  .send-button, .add-batch-btn { padding: 1rem 2rem; background: linear-gradient(135deg, #00ff88 0%, #00ccff 100%); border: none; border-radius: 0.75rem; color: #000; font-weight: 600, font-size 1rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem}
   .add-batch-btn { background: linear-gradient(135deg, #ff00ff 0%, #00ffff 100%); padding: 0.75rem 1.5rem}
   .send-button:hover:not(:disabled), .add-batch-btn: hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3)}
   .send-button: disabled { opacity: 0.5; cursor: not-allowed}

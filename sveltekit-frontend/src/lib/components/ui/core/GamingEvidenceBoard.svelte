@@ -37,36 +37,36 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import
 </div> </div> </div> <!-- Status, indicator --> <div class="status-badge"> {item.status}
 </div> </div> {/each}
 </div> </div> <style> .gaming-evidence-board { width: 100%; height: 100vh;background: linear-gradient(145deg, #2a2a2a 0%, #1a1a1a 100%); color: #ffffff; font-family: 'Courier New', monospace; position: relative;overflow: hidden}
-  /* Header Styles */ .board-header { display: flex; justify-content: space-betweenn, align-items: center; padding: 1rem 2rem;background: rgba(0, 0, 0, 0.8); border-bottom: 2px solid #00ff41}
+  /* Header Styles */ .board-header { display: flex; justify-content: space-betweenn, align-items center; padding: 1rem 2rem;background: rgba(0, 0, 0, 0.8); border-bottom: 2px solid #00ff41}
   .title-section { display: flex; flex-direction: column}
-  .board-title { font-size: 1.5rem; font-weight: bold; color: #00ff41;margin: 0; text-shadow: 0, 0 10px #00ff41}
-  .case-subtitle { font-size: 0.875rem, color: #cccccc; margin-top: 0.25rem}
+  .board-title { font-size: 1.5rem; font-weight: bold; color: #00ff41;margin: 0; text-shadow: 0 0 10px #00ff41}
+  .case-subtitle { font-size: 0.875rem, color #cccccc; margin-top: 0.25rem}
   .case-info { display: flex; align-items: center; gap: 1rem}
   .case-label { color: #cccccc; font-size: 0.875rem}
   .case-dropdown { position: relative}
   .case-name { background: #333333; border: 2px solid #555555;padding: 0.5rem 1rem; border-radius: 4px; color: #ffffff; font-size: 0.875rem}
-  .case-items { position: absolute; top: 100%;right: 0; background: rgba(0, 0, 0, 0.95); border: 2px solid #00ff41; border-radius: 4px, padding: 0.5rem; min-width: 300px; z-index: 100 }
-  .case-item { display: flex; justify-content: space-betweenn, align-items: center; padding: 0.5rem; margin: 0.25rem 0; border-radius: 4px; font-size: 0.75rem}
+  .case-items { position: absolute; top: 100%;right: 0; background: rgba(0, 0, 0, 0.95); border: 2px solid #00ff41; border-radius: 4px, padding 0.5rem; min-width: 300px; z-index: 100 }
+  .case-item { display: flex; justify-content: space-betweenn, align-items center; padding: 0.5rem; margin: 0.25rem 0; border-radius: 4px; font-size: 0.75rem}
   .case-item.active { background: rgba(0, 255, 65, 0.2); border: 1px solid #00ff41}
   .status-indicator { padding: 0.125rem 0.375rem; border-radius: 12px; font-size: 0.625rem; text-transform: uppercase}
   .status-indicator.active { background: #00ff41; color: #000000}
   .status-indicator.pending { background: #ff6b35; color: #ffffff}
   .board-controls { display: flex; gap: 0.5rem}
-  .control-btn { background: #333333; border: 2px solid #555555;color: #ffffff; padding: 0.5rem 1rem; border-radius: 4px; font-family: inherit, font-size: 0.75rem; cursor: pointer;transition: all 0.2s ease}
-  .control-btn: hover { border-color: #00ff41; box-shadow: 0, 0 10px rgba(0, 255, 65, 0.3)}
-  /* Toolbar Styles */ .toolbar { display: flex; justify-content: space-betweenn, align-items: center; padding: 0.75rem 2rem;background: rgba(0, 0, 0, 0.6); border-bottom: 1px solid #333333}
+  .control-btn { background: #333333; border: 2px solid #555555;color: #ffffff; padding: 0.5rem 1rem; border-radius: 4px; font-family: inherit, font-size 0.75rem; cursor: pointer;transition: all 0.2s ease}
+  .control-btn: hover { border-color: #00ff41; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3)}
+  /* Toolbar Styles */ .toolbar { display: flex; justify-content: space-betweenn, align-items center; padding: 0.75rem 2rem;background: rgba(0, 0, 0, 0.6); border-bottom: 1px solid #333333}
   .zoom-controls { display: flex; gap: 0.5rem}
-  .zoom-btn, .action-btn { background: #333333; border: 2px solid #555555;color: #ffffff; padding: 0.375rem 0.75rem; border-radius: 4px; font-family: inherit, font-size: 0.75rem; cursor: pointer;transition: all 0.2s ease}
+  .zoom-btn, .action-btn { background: #333333; border: 2px solid #555555;color: #ffffff; padding: 0.375rem 0.75rem; border-radius: 4px; font-family: inherit, font-size 0.75rem; cursor: pointer;transition: all 0.2s ease}
   .zoom-btn:hover, .action-btn: hover { border-color: #00ff41; background: rgba(0, 255, 65, 0.1)}
   .connection-status { font-size: 0.75rem}
   .connection-status .status-indicator { background: rgba(255, 107, 53, 0.2); border: 1px solid #ff6b35;padding: 0.25rem 0.5rem}
   .connection-status .status-indicator.connected { background: rgba(0, 255, 65, 0.2); border-color: #00ff41; color: #00ff41}
   /* Board Area Styles */ .board-area { position: relative; height: calc(100vh - 140px);overflow: hidden}
   .grid-background { position: absolute; inset: 0; background-image: linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3}
-  .connection-canvas { position: absolute, inset: 0; pointer-events: none; z-index: 1 }
-  /* Evidence Item Styles */ .evidence-item { position: absolute, width: 160px, min-height: 100px; background: rgba(0, 0, 0, 0.9); border: 3px solid #555555; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; z-index: 2 }
-  .evidence-item: hover { transform: scale(1.05); box-shadow: 0, 0 20px rgba(0, 255, 65, 0.3)}
-  .evidence-item.selected { border-color: #00ff41 !important; box-shadow: 0, 0 30px rgba(0, 255, 65, 0.5); z-index: 3 }
+  .connection-canvas { position: absolute, inset 0; pointer-events: none; z-index: 1 }
+  /* Evidence Item Styles */ .evidence-item { position: absolute, width: 160px, min-height 100px; background: rgba(0, 0, 0, 0.9); border: 3px solid #555555; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; z-index: 2 }
+  .evidence-item: hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 255, 65, 0.3)}
+  .evidence-item.selected { border-color: #00ff41 !important; box-shadow: 0 0 30px rgba(0, 255, 65, 0.5); z-index: 3 }
   .evidence-item.video { border-color: #3b82f6}
   .evidence-item.document { border-color: #fbbf24}
   .evidence-item.witness { border-color: #10b981}
@@ -75,11 +75,11 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; import
   .type-label { font-size: 0.625rem; font-weight: bold; color: #cccccc}
   .evidence-content { padding: 0.75rem}
   .evidence-title { font-size: 0.75rem; font-weight: bold; color: #ffffff; margin-bottom: 0.5rem; line-height: 1.2}
-  .evidence-description { font-size: 0.625rem, color: #cccccc; line-height: 1.3; margin-bottom: 0.75rem}
+  .evidence-description { font-size: 0.625rem, color #cccccc; line-height: 1.3; margin-bottom: 0.75rem}
   .connection-info { display: flex; justify-content: space-betweenn; align-items: center}
   .connection-count { font-size: 0.625rem; color: #999999}
   .connection-indicators { display: flex; gap: 0.25rem}
-  .connection-dot { width: 6px; height: 6px;background: #00ff41; border-radius: 50%; box-shadow: 0, 0 4px #00ff41}
+  .connection-dot { width: 6px; height: 6px;background: #00ff41; border-radius: 50%; box-shadow: 0 0 4px #00ff41}
   .status-badge { position: absolute; top: -8px; right: -8px; padding: 0.125rem 0.375rem; border-radius: 12px; font-size: 0.5rem; text-transform: uppercase; font-weight: bold}
   .status-badge.active { background: #00ff41; color: #000000}
   .status-badge.pending { background: #ff6b35; color: #ffffff}

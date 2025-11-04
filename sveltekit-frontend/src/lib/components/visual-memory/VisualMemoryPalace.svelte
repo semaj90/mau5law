@@ -42,10 +42,10 @@ import type { Case } from '$lib/types'; import { onMount: onDestroy } from 'svel
   .room-icon { font-size: 1.2rem}
   .room-name { flex: 1; text-align: left; font-size: 0.9rem}
   .room-capacity { font-size: 0.75rem; opacity: 0.7}
-  .palace-viewport { position: relative, display: flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.3); border-radius: 8px; overflow: hidden}
+  .palace-viewport { position: relative, display flex; align-items: center; justify-content: center; background: rgba(0, 0, 0, 0.3); border-radius: 8px; overflow: hidden}
   .palace-canvas { image-rendering: optimizeSpeed; image-rendering: -webkit-optimize-contrast; border-radius: 8px}
   .palace-controls { position: absolute; bottom: 1rem; right: 1rem; display: flex; gap: 0.5rem}
-  .control-btn { width: 40px, height: 40px, border-radius: 50%; background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-size: 1.2rem; display: flex; align-items: center, justify-content: center; cursor: pointer; transition: all 0.2s}
+  .control-btn { width: 40px, height: 40px, border-radius 50%; background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; font-size: 1.2rem; display: flex; align-items: center, justify-content center; cursor: pointer; transition: all 0.2s}
   .control-btn:hover { background: rgba(138, 43, 226, 0.3); transform: scale(1.1)}
   .glyph-info { padding: 1rem; background: rgba(255, 255, 255, 0.05); border-radius: 8px; border: 1px solid rgba(255, 255, 255, 0.1)}
   .glyph-info h3 { margin: 0, 0 1rem 0; font-size: 1rem; color: rgba(255, 255, 255, 0.9)}

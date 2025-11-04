@@ -203,7 +203,7 @@
 
 /* header title: use column layout and responsive text alignment */ .yorha-header-title { display: flex; flex-direction: column; gap: 0.5rem; text-align: center; align-items: center}
 @media (min-width: 768px) { .yorha-header-title { text-align: left; align-items: flex-start}
-} .yorha-header-title h1 { display: flex; align-items: center; gap: 1rem; font-size: 1.875rem; /* text-3xl */ font-weight: 700; letter-spacing: 0.03em; color: #f59e0b; /* amber-400 */, margin: 0; text-shadow: 0, 0 20px rgba(255, 191, 0, 0.5)}
+} .yorha-header-title h1 { display: flex; align-items: center; gap: 1rem; font-size: 1.875rem; /* text-3xl */ font-weight: 700; letter-spacing: 0.03em; color: #f59e0b; /* amber-400 */, margin: 0; text-shadow: 0 0 20px rgba(255, 191, 0, 0.5)}
 @media (min-width: 768px) { .yorha-header-title h1 { font-size: 2.25rem; /* md:text-4xl */ } }
  .yorha-header-subtitle { font-size: 1.125rem; /* text-lg */ color: #fbbf24; /* amber-300 */ letter-spacing: 0.01em; opacity: 0.8}
 
@@ -231,7 +231,7 @@
 /* type-specific node decorations used by D3 */:global(.yorha-node-database) { border-color: rgba(59,130,246,0.55); background: rgba(59,130,246,0.06)}:global(.yorha-node-service) { border-color: rgba(34,197,94,0.55); background: rgba(34,197,94,0.06)}:global(.yorha-node-component) { border-color: rgba(139,92,246,0.55); background: rgba(139,92,246,0.06)} /* icon/label/status (all applied dynamically) */:global(.yorha-node-icon) { color: currentColor}:global(.yorha-node-label) { font-size: 0.75rem; font-family: monospace; color: currentColor}:global(.yorha-node-status) { width: 0.5rem; height: 0.5rem; border-radius: 9999px} /* status color helpers (used dynamically) */:global(.yorha-status-healthy) { background: #34d399}:global(.yorha-status-warning) { background: #fbbf24}:global(.yorha-status-error) { background: #f87171} /* single @keyframes spin definition (removed duplicate) */ @keyframes spin { to { transform: rotate(360deg)}
 } /* Responsive tweaks */ @media (max-width: 768px) { .yorha-header-title h1 { font-size: 1.25rem; flex-direction: column; align-items: center} .yorha-metrics-grid, .yorha-charts-grid { grid-template-columns: 1fr; gap: 1rem} }
 
-/* Replaced Tailwind @apply rules with plain CSS equivalents */ /* Removed duplicate scoped selectors because D3 applies classes at runtime and, the:global(...) rules above already cover them. Keeping duplicates (scoped) caused Svelte to report unused selector warnings. No visual or runtime behavior is changed. */
+/* Replaced Tailwind @apply rules with plain CSS equivalents */ /* Removed duplicate scoped selectors because D3 applies classes at runtime and, the:global(..) rules above already cover them. Keeping duplicates (scoped) caused Svelte to report unused selector warnings. No visual or runtime behavior is changed. */
 </style>
 
 

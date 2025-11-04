@@ -74,9 +74,9 @@
   .nes-loading-text { font-size: 8px; text-transform: uppercase; letter-spacing: 1px}
   .nes-error-container { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;height: 100%; gap: 4px}
   .nes-error-icon { font-size: 12px}
-  .nes-error-text { font-size: 6px, color: #f83800; text-align: center}
-  .nes-fallback-container { display: flex; align-items: center, justify-content: center; width: 100%; height: 100%}
-  .nes-pattern-block { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 8px, font-weight: bold; color: #000; text-shadow: 1px 1px, 0 #fff}
+  .nes-error-text { font-size: 6px, color #f83800; text-align: center}
+  .nes-fallback-container { display: flex; align-items: center, justify-content center; width: 100%; height: 100%}
+  .nes-pattern-block { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 8px, font-weight bold; color: #000; text-shadow: 1px 1px 0 #fff}
   @keyframes nes-blink { 0% { opacity: 0.6}
     50% { opacity: 1}
     100% { opacity: 0.6}

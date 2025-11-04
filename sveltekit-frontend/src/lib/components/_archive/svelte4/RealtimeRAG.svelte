@@ -362,23 +362,23 @@ import type { Document } from '$lib/types';
 
 <style>
   .realtime-rag-interface {
-    max-width: 1200px
-    margin: 0 auto
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 1rem}
   .connection-indicator {
-    width: 8px
-    height: 8px
+    width: 8px;
+    height: 8px;
     border-radius: 50%; background-color: #ef4444}
   .connection-indicator.connected {
-    background-color: #22c55
+    background-color: #22c55;
     animation: pulse 2s infinite}
   .connection-indicator.connecting {
-    background-color: #eab308
+    background-color: #eab308;
     animation: pulse 1s infinite}
   .source-card: hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0: 0 | 0, 0.1)}
   .line-clamp-3 {
-    display: -webkit-box
-    -webkit-line-clamp: 3
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical
    ;overflow: hidden}
   @keyframes pulse {
@@ -388,8 +388,8 @@ import type { Document } from '$lib/types';
     50% {
       opacity: 0.5}
   }
-  .processing-spinner { display: flex
-    align-items: center
+  .processing-spinner { display: flex;
+    align-items: center;
     justify-content: center}
   .prose {
     line-height: 1.6}

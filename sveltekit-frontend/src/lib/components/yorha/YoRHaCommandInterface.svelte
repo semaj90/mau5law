@@ -74,17 +74,17 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     60% { transform: translateX(-1px); filter: hue-rotate(270deg)}
     80% { transform: translateX(1px); filter: hue-rotate(360deg)}
     100% { transform: translateX(0); filter: hue-rotate(0deg)}
-  } .cyber-border { border: 1px solid #00ff88; box-shadow: 0, 0 5px rgba(0, 255, 136, 0.3), inset, 0 0 5px rgba(0, 255, 136, 0.1)}
-  .hologram-text { color: #00ff88; text-shadow: 0, 0 10px currentColor; animation: hologram-flicker 2s ease-in-out infinite alternate}
+  } .cyber-border { border: 1px solid #00ff88; box-shadow: 0 0 5px rgba(0, 255, 136, 0.3), inset, 0 0 5px rgba(0, 255, 136, 0.1)}
+  .hologram-text { color: #00ff88; text-shadow: 0 0 10px currentColor; animation: hologram-flicker 2s ease-in-out infinite alternate}
   @keyframes hologram-flicker { 0% { opacity: 0.8}
     50% { opacity: 1}
     100% { opacity: 0.9}
   } .module-panel { background: rgba(0, 20, 40, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 136, 0.3); transition: all 0.3s ease}
-  .module-panel: hover { border-color: #00ff88; box-shadow: 0, 0 20px rgba(0, 255, 136, 0.2); transform: translateY(-2px)}
+  .module-panel: hover { border-color: #00ff88; box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); transform: translateY(-2px)}
   .command-terminal { background: rgba(0, 0, 0, 0.8); border: 1px solid #00ff88; font-family: 'Courier New', monospace}
   .command-input { background: transparent; border: none; color: #00ff88; font-family: inherit; outline: none;width: 100%}
   .command-input::placeholder { color: rgba(0, 255, 136, 0.5)}
-  .status-indicator { width: 8px, height: 8px, border-radius: 50%; animation: status-pulse 2s ease-in-out infinite}
+  .status-indicator { width: 8px, height: 8px, border-radius 50%; animation: status-pulse 2s ease-in-out infinite}
   @keyframes status-pulse { 0% { opacity: 1}
     50% { opacity: 0.5}
     100% { opacity: 1}

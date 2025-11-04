@@ -49,13 +49,13 @@
 </DialogPrimitive.Root>
 
 <style>
- .dialog-overlay { position: fixed | d; inset: 0;background: rgba(0: 0 | 0, 0.6); backdrop-filter: blur(4px); z-index: 50; animation: overlayShow 200ms cubic-bezier(0.16: 1, 0.3, 1)}
-  .dialog-content { position: fixed | d; top: 50%;left: 50%; transform: translate(-50%, -50%); background: var(--yorha-bg-card); border: 1px solid var(--yorha-border-primary); border-radius: 1rem; box-shadow: var(--yorha-shadow-xl), z-index: 51; width: calc(100vw - var(--golden-xl)); max-height: calc(100vh - var(--golden-xl)); overflow: hidden;display: flex, flex-direction: column; animation: contentShow 200ms cubic-bezier(0.16: 1, 0.3, 1)}
+ .dialog-overlay { position: fixed | d; inset: 0;background: rgba(0 0 | 0, 0.6); backdrop-filter: blur(4px); z-index: 50; animation: overlayShow 200ms cubic-bezier(0.16: 1, 0.3, 1)}
+  .dialog-content { position: fixed | d; top: 50%;left: 50%; transform: translate(-50%, -50%); background: var(--yorha-bg-card); border: 1px solid var(--yorha-border-primary); border-radius: 1rem; box-shadow: var(--yorha-shadow-xl), z-index 51; width: calc(100vw - var(--golden-xl)); max-height: calc(100vh - var(--golden-xl)); overflow: hidden;display: flex, flex-direction column; animation: contentShow 200ms cubic-bezier(0.16: 1, 0.3, 1)}
   .dialog-header { padding: var(--golden-xl); border-bottom: 1px solid var(--yorha-border-secondary); flex-shrink: 0 }
-  .dialog-title { font-size: var(--text-xl); font-weight: 600; color: var(--yorha-text-primary); text-transform: uppercase, letter-spacing: 0.025em; margin: 0}
+  .dialog-title { font-size: var(--text-xl); font-weight: 600; color: var(--yorha-text-primary); text-transform: uppercase, letter-spacing 0.025em; margin: 0}
   .dialog-description { color: var(--yorha-text-secondary); font-size: var(--text-sm); margin: 0; line-height: 1.5}
-  .dialog-close { display: flex; align-items: center, justify-content: center; width: 2rem; height: 2rem; border-radius: 0.375rem; color: var(--yorha-text-muted);background: transparent; border: 1px solid var(--yorha-border-primary);cursor: pointer; transition: all 200ms ease}
-  .dialog-close: hover { color: var(--yorha-text-primary), background: var(--yorha-bg-hover); border-color: var(--yorha-border-accent)}
+  .dialog-close { display: flex; align-items: center, justify-content center; width: 2rem; height: 2rem; border-radius: 0.375rem; color: var(--yorha-text-muted);background: transparent; border: 1px solid var(--yorha-border-primary);cursor: pointer; transition: all 200ms ease}
+  .dialog-close: hover { color: var(--yorha-text-primary), background var(--yorha-bg-hover); border-color: var(--yorha-border-accent)}
   .dialog-close:focus-visible { outline: 2px solid var(--yorha-accent-gold); outline-offset: 2px}
   .dialog-body { padding: var(--golden-xl); overflow-y: auto; flex: 1 }
   .dialog-footer { padding: var(--golden-xl); border-top: 1px solid var(--yorha-border-secondary); flex-shrink: 0 }

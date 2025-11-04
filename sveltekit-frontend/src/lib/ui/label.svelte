@@ -36,13 +36,13 @@
 <style>
   /* Minimal sr-only helper if project doesn't already provide one */'
   :global(.sr-only) {
-    position: absolute !important
-    width: 1px !important
-    height: 1px !important
-    padding: 0 !important
-    margin: -1px !important
-    overflow: hidden !important
-    clip: rect(0,0,0,0) !important
-    white-space: nowrap !important
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
     border: 0 !important}
 </style>

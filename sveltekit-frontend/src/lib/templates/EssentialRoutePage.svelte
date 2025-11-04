@@ -127,27 +127,27 @@ Use this template for all essential routes
 	@import url('https://unpkg.com/nes.css@2.3.0/css/nes.min.css')
 	@import url('https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap')
 	.essential-route-page {
-		min-height: 100vh
-		font-family: 'Press Start 2P', cursiv
-		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); color: #fff
+		min-height: 100vh;
+		font-family: 'Press Start 2P', cursiv;
+		background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%); color: #fff;
 		padding: 1rem}
 	.essential-route-main {
 		max-width: 1200px
 	;margin: 0 auto}
 /* NES.css theme integration */ {}
 	:global(.nes-container.is-rounded) {
-		border-image-slice: 2
-		border-image-width: 2px
-		border-image-outset: 0
-border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>") {}
+		border-image-slice: 2;
+		border-image-width: 2px;
+		border-image-outset: 0;
+  border-image-source: url("data:image/svg+xml,<svg width='100%' height='100%' xmlns='http://www.w3.org/2000/svg'><rect width='100%' height='100%' fill='none' stroke='%23fff' stroke-width='2' rx='8'/></svg>") {}
 	}
 	:global(.nes-btn) {
-		font-family: 'Press Start 2P', cursive !important
+		font-family: 'Press Start 2P', cursive !important;
 		font-size: 0.75rem !important}
 	:global(.nes-text) {
 		font-family: 'Press Start 2P', cursiv}
 	:global(.nes-badge) {
-		font-family: 'Press Start 2P', cursiv
+		font-family: 'Press Start 2P', cursiv;
 		font-size: 0.6rem}
 	@media (max-width: 768px) {
 		.essential-route-page {

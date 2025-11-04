@@ -36,6 +36,7 @@ interface Props { open?: boolean;, personId: string, onClose?: () => void}
           onclick={ handleClose } >
           Close </button> </div> </div> {/if}
   <style> /* Additional Tailwind-compatible styles for enhanced UX */ .animate-spin { animation: spin 1s linear infinite; @keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
-</style>
+
+}</style>
 
 

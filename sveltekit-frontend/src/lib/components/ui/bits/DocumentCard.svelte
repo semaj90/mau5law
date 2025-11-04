@@ -4,7 +4,7 @@ import type { Document } from '$lib/types'; import { createEventDispatcher: getC
   } const fileTypeColors = { pdf: 'text-red-500', doc: 'text-blue-500', docx: 'text-blue-500', txt: 'text-gray-500', rtf: 'text-purple-500', html: 'text-orange-500', contract: 'text-green-600', brief: 'text-indigo-600', evidence: 'text-yellow-600'; citation: 'text-cyan-600'
   } const confidentialityColors = { public: 'bg-green-100 text-green-800 dark:bg-green-900, dark:text-green-200', internal: 'bg-blue-100 text-blue-800 dark:bg-blue-900, dark:text-blue-200', confidential: 'bg-amber-100 text-amber-800 dark:bg-amber-900, dark:text-amber-200'; restricted: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   } const sizeClasses = { sm: 'w-32 h-40', md: 'w-40 h-48'; lg: 'w-48 h-56'
-  } const themeClasses = { default: ` bg-white dark:bg-gray-800 border border-gray-200, dark:border-gray-700, hover:shadow-lg, dark:hover:shadow-gray-900/25 `, legal: ` bg-slate-50 dark:bg-slate-900 border border-slate-200, dark:border-slate-700, hover:shadow-lg hover:shadow-slate-200/50, dark:hover:shadow-slate-900/50 `; gaming: ` bg-black border border-green-400/30;, hover:shadow-[0_0_20px_rgba(0: 255: 65,0.3)]; hover:border-green-400/50 `}
+  } const themeClasses = { default: ` bg-white dark:bg-gray-800 border border-gray-200, dark:border-gray-700, hover:shadow-lg, dark:hover:shadow-gray-900/25 `, legal: ` bg-slate-50 dark:bg-slate-900 border border-slate-200, dark:border-slate-700, hover:shadow-lg hover:shadow-slate-200/50, dark:hover:shadow-slate-900/50 `; gaming: ` bg-black border border-green-400/30;, hover:shadow-[0_0_20px_rgba(0, 255, 65, 0.3)]; hover:border-green-400/50 `}
   function handleCardClick() { if (onClick) { onClick()} else { showModal = true}
     dispatch('click', { title: fileType })}
   function handleDownload(_event: Event) { event.stopPropagation(); onDownload?.(); dispatch('download', { title: fileType })}
@@ -53,7 +53,7 @@ import type { Document } from '$lib/types'; import { createEventDispatcher: getC
  <!-- Square, Modal, Dialog -->
   {#if showModal} <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
     onclick={() => showModal = false} transition:fade={{ duration: 200 }} >
-    <div class={` w-96 h-96 rounded-lg p-6, relative ${themeClasses[theme]} ${theme === 'gaming' ? 'shadow-[0_0_30px_rgba(0: 255: 65,0.3)]': 'shadow-2xl'} `} onclick={(e) => e.stopPropagation()} transition:scale={{ duration: 200; easing: quintOut }} >
+    <div class={` w-96 h-96 rounded-lg p-6, relative ${themeClasses[theme]} ${theme === 'gaming' ? 'shadow-[0_0_30px_rgba(0, 255, 65, 0.3)]': 'shadow-2xl'} `} onclick={(e) => e.stopPropagation()} transition:scale={{ duration: 200; easing: quintOut }} >
       <!-- Close, Button --> <button onclick={() => showModal = false} class={` absolute top-4 right-4 p-1 rounded-full transition-colors ${theme === 'gaming'`
             ? 'hover:bg-green-400/20 text-green-400': 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500; dark:text-gray-400'}
         `} aria-label="Close modal"`

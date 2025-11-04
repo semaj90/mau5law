@@ -918,6 +918,138 @@
 				"scripts/analyze-errors-by-file.mjs"
 			],
 			"group": "test"
+		},
+		{
+			"label": "🚀 Phase43: GPU Embedding Pipeline",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/phase43-ai-analyzer.mjs",
+				"svelte-check-fronten1d.log",
+				"--batch-size",
+				"5000"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend",
+				"env": {
+					"BATCH_SIZE": "5000",
+					"CONCURRENCY": "8",
+					"REDIS_URL": "redis://localhost:6379",
+					"QDRANT_URL": "http://localhost:6333",
+					"OLLAMA_URL": "http://localhost:11434"
+				}
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"group": "build",
+			"detail": "GPU-accelerated error embedding with Redis cache + Qdrant (384d)"
+		},
+		{
+			"label": "🎯 Phase44: CUDA Tensor Aggregation",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"scripts/phase44-tensor-aggregator.py",
+				"--limit",
+				"10000",
+				"--cluster",
+				"20",
+				"--compute-similarity"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"group": "build",
+			"detail": "Load embeddings from Redis → CUDA → PCA/clustering → PyTorch export"
+		},
+		{
+			"label": "⚡ Concurrent AST Fixer",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/concurrent-ast-fixer.mjs",
+				"--workers=8",
+				"--batch-size=100"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"group": "build",
+			"detail": "8-16 parallel workers + SIMD + Qdrant + MCP for AI-assisted error fixing"
+		},
+		{
+			"label": "🎨 Prettier: Format All Code",
+			"type": "shell",
+			"command": "npx",
+			"args": [
+				"prettier",
+				"--write",
+				"\"src/**/*.{svelte,ts,js,mjs}\"",
+				"--log-level",
+				"warn"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}/sveltekit-frontend"
+			},
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": false,
+				"clear": false
+			},
+			"group": "build",
+			"detail": "Format all source files with Prettier"
+		},
+		{
+			"label": "🔥 Full GPU Pipeline: Embed → Aggregate → Fix",
+			"dependsOrder": "sequence",
+			"dependsOn": [
+				"🚀 Phase43: GPU Embedding Pipeline",
+				"🎯 Phase44: CUDA Tensor Aggregation",
+				"⚡ Concurrent AST Fixer"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"clear": true
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Complete GPU pipeline: Embed errors → CUDA clustering → AI-assisted fixes"
 		}
 	]
 }

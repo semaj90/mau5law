@@ -1,0 +1,12 @@
+{
+  "timestamp": "2025-11-03T23:36:54.494Z",
+  "mode": "apply",
+  "filesScanned": 1152,
+  "filesFixed": 384,
+  "fixTypes": {
+    "rgbaColons": 556,
+    "missingSemicolons": 4661,
+    "invalidCommas": 531,
+    "otherCss": 0
+  }
+}

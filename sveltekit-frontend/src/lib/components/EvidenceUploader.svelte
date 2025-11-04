@@ -62,17 +62,17 @@
  <div class="file-info"> <div class="file-name">{file.name}</div>
  <div class="file-meta"> {formatFileSize(file.size)} â€¢ {file.type} </div> </div> </div> {/each} {/if} {/if}
   <style> .evidence-uploader { width: 100%}
-  .upload-zone { border: 2px dashed #ccc; border-radius: 12px, padding: 2rem, text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--background-alt, #f8f9fa)}
+  .upload-zone { border: 2px dashed #ccc; border-radius: 12px, padding: 2rem, text-align center; cursor: pointer; transition: all 0.3s ease; background: var(--background-alt, #f8f9fa)}
   .upload-zone:hover { border-color: var(--primary, #007bff); background: var(--background-hover, #e9ecef)}
   .upload-zone.drag-active { border-color: var(--primary, #007bff); background: var(--primary-light, #e7f3ff); transform: scale(1.02)}
   .upload-zone.uploading { border-color: var(--warning, #ffc107); cursor: not-allowed}
   .upload-prompt .upload-icon { font-size: 3rem; margin-bottom: 1rem}
   .upload-prompt h3 { margin: 0, 0 0.5rem 0; color: var(--text-primary, #333)}
   .upload-prompt p { margin: 0, 0 1rem 0; color: var(--text-secondary, #666)}
-  .file-types { display: flex, gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem}
+  .file-types { display: flex, gap 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1rem}
   .file-type { padding: 0.25rem 0.5rem; background: var(--surface, #fff); border-radius: 4px; font-size: 0.875rem; color: var(--text-secondary, #666)}
   .size-limit { font-size: 0.875rem; color: var(--text-muted, #999)}
-  .upload-progress { display: flex; flex-direction: column, align-items: center; gap: 1rem}
+  .upload-progress { display: flex; flex-direction: column, align-items center; gap: 1rem}
   .upload-spinner { font-size: 2rem; animation: spin 1s linear infinite}
   @keyframes spin { from { transform: rotate(0deg)} to { transform: rotate(360deg)} }
   .upload-message { font-weight: 500; color: var(--text-primary, #333)}

@@ -3,7 +3,7 @@
 <style>
   /* @unocss-include */
   .context-menu-separator {
-    height: 1px
-    background-color: #e5e7eb
+    height: 1px;
+    background-color: #e5e7eb;
     margin: 0.25rem -0.25rem}
 </style>

@@ -152,15 +152,15 @@
   .case-filters {
     margin-bottom: 1rem}
   .filter-row {
-    display: flex
-    gap: 1rem
+    display: flex;
+    gap: 1rem;
     align-items: center}
-  .search-input { flex: 1; padding: 0.5rem
-    border: 1px solid #ccc
+  .search-input { flex: 1; padding: 0.5rem;
+    border: 1px solid #ccc;
     border-radius: 4px}
   .filter-select {
     padding: 0.5rem
-   ;border: 1px solid #ccc
+   ;border: 1px solid #ccc;
     border-radius: 4px}
 </style>
 

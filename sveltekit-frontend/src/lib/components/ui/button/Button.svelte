@@ -93,8 +93,8 @@
     opacity: 0.6
    ;cursor: not-allowed}
   : global(.nier-btn.btn-loading) {
-    opacity: 0.6
-    cursor: not-allowed
+    opacity: 0.6;
+    cursor: not-allowed;
     background: #23272e
    ;color: #bcbcbc}
   /* Variant styles */
@@ -103,11 +103,11 @@
   :global(.btn-primary) {
     background: linear-gradient(90deg, #23272e 0%, #393e46 100%); color: #fff}
   : global(.btn-secondary) {
-    background: #f3f3f3
+    background: #f3f3f3;
     color: #23272e
    ;border: 1px solid #393e46}
   : global(.btn-outline) {
-    background: transparent
+    background: transparent;
     color: #23272e
    ;border: 1.5px solid #393e46}
   : global(.btn-danger) {
@@ -126,7 +126,7 @@
     background: #1976d2
    ;color: #fff}
   : global(.btn-ghost) {
-    background: transparent
+    background: transparent;
     color: #23272e
    ;border: none}
   :global(.btn-ghost:hover) {
@@ -151,15 +151,15 @@
     font-size: 1.125rem
    ;padding: 0.75rem 1.5rem}
   :global(.btn-xl) {
-    font-size: 1.25rem
+    font-size: 1.25rem;
     padding: 1rem 2rem}
   .loader {
-    width: 1rem
-    height: 1rem
-    border: 2px solid currentColor
-    border-right-color: transparent
-    border-radius: 50%; animation: spin 0.75s linear infinite
-    display: inline-block
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%; animation: spin 0.75s linear infinite;
+    display: inline-block;
     vertical-align: middle}
   @keyframes spin {
     to { transform: rotate(360deg)}

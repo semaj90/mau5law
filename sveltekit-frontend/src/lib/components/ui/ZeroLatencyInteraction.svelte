@@ -313,57 +313,57 @@ https://svelte.dev/e/js_parse_error -->
 <style>
   /* Zero-latency interaction styles */
   : global(.zero-latency-enabled) {
-    position: relative
+    position: relative;
     cursor: pointer
    ;transition: all 0.1s ease}
   : global(.zero-latency-enabled: :after) {
-    content: 'âš¡'; position: absolute
-    top: -6px
-    right: -6px
-    font-size: 10px
+    content: 'âš¡'; position: absolute;
+    top: -6px;
+    right: -6px;
+    font-size: 10px;
     opacity: 0.85
-   ;color: #ffd700
+   ;color: #ffd700;
     pointer-events: none}
 
   /* CHR-ROM Tooltip Styles */
   :global(.chr-rom-tooltip) {
-    background: linear-gradient(135deg, #1a1a1a, #2a2a2a); border: 2px solid #ffd700
+    background: linear-gradient(135deg, #1a1a1a, #2a2a2a); border: 2px solid #ffd700;
     border-radius: 8px
-   ; padding: 12px
-    max-width: 300px
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5); color: #e0e0e0
-    font-family: 'JetBrains Mono', monospace
-    font-size: 12px
-    line-height: 1.4
+   ; padding: 12px;
+    max-width: 300px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5); color: #e0e0e0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.4;
     opacity: 0
    ;transform: translateY(-5px) scale(0.95); transition: all 0.15s cubic-bezier(0.2, 0, 0.2, 1)}
   : global(.chr-rom-tooltip.visible) {
     opacity: 1
    ;transform: translateY(0) scale(1)}
   :global(.chr-rom-tooltip.zero-latency-tooltip) {
-    border-color: #00ff41
+    border-color: #00ff41;
     box-shadow: 0 4px 20px rgba(0,255,65,0.2)}
   :global(.chr-rom-tooltip h4) {
-    margin: 0, 0 8px 0
-    color: #ffd700
-    font-size: 14px
-    font-weight: 600
-    text-transform: uppercase
+    margin: 0, 0 8px 0;
+    color: #ffd700;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
     letter-spacing: 1px}
   :global(.chr-rom-tooltip p) { margin: 0, 0 8px 0; color: #e0e0e0}
-  : global(.chr-rom-tooltip .metadata) { display: flex, gap:8px, font-size: 10px; color:#b0b0b0}
+  : global(.chr-rom-tooltip .metadata) { display: flex, gap: 8px, font-size 10px; color:#b0b0b0}
   :global(.chr-rom-tooltip .metadata span) { background: rgba(255,215,0,0.08); padding:2px 6px; border-radius: 4px; border: 1px solid rgba(255,215,0,0.12)}
   : global(.chr-rom-tooltip .perf-indicator) {
-    position: absolute
-    top: -8px
-    right: -8px
-    background: #00ff41
-    color: #000
-    font-size: 10px
-    font-weight: 700
-    padding: 2px 6px
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #00ff41;
+    color: #000;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
     border-radius: 4px
-   ;border: 1px solid #000
+   ;border: 1px solid #000;
     box-shadow: 0 2px 8px rgba(0,255,65,0.4)}
   :global(.chr-rom-tooltip .loading-content) { display: flex; align-items: center; gap:8px}
   : global(.chr-rom-tooltip .loading-spinner) {
@@ -374,20 +374,20 @@ https://svelte.dev/e/js_parse_error -->
 
   /* Debug Panel */
   .zero-latency-debug-panel {
-    position: fixed
-    top: 20px
+    position: fixed;
+    top: 20px;
     right: 20px
-   ;background: rgba(0,0,0,0.9); border: 1px solid #ffd700
-    border-radius: 6px
+   ;background: rgba(0,0,0,0.9); border: 1px solid #ffd700;
+    border-radius: 6px;
     padding: 12px
-   ; color: #e0e0e0
-    font-family: 'JetBrains Mono', monospace
-    font-size: 10px
-    z-index: 9999
+   ; color: #e0e0e0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    z-index: 9999;
     backdrop-filter: blur(10px)}
   .zero-latency-debug-panel h4 { margin:0, 0 8px 0; color: #ffd700; font-size:12px; text-align:center}
   .debug-stats { display: flex; flex-direction: column; gap:4px}
-  .stat { display: flex; justify-content:space-between, align-items: center; gap:8px}
+  .stat { display: flex; justify-content: space-between, align-items center; gap:8px}
   .stat .label { color: #b0b0b0}
   .stat .value { font-weight: 600; color:#e0e0e0}
   .stat .value.cache-hits { color:#00ff41}

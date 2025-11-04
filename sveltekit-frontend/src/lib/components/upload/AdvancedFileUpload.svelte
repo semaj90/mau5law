@@ -136,26 +136,26 @@
   .drop-zone.disabled { opacity: 0.6; cursor: not-allowed}
   .drop-zone:focus { outline: 2px solid #3b82f6; outline-offset: 2px}
   .upload-icon { margin-bottom: 1rem; color: #6b7280}
-  .upload-actions { display: flex, gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem}
+  .upload-actions { display: flex, gap 0.75rem; justify-content: center; flex-wrap: wrap; margin-top: 1rem}
   .file-list { margin-top: 2rem; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden}
-  .file-list-header { display: flex; justify-content: space-between, align-items: center; padding: 1rem; background: #f9fafb; border-bottom: 1px solid #e5e7eb}
+  .file-list-header { display: flex; justify-content: space-between, align-items center; padding: 1rem; background: #f9fafb; border-bottom: 1px solid #e5e7eb}
   .file-list-actions { display: flex; gap: 0.5rem}
   .total-progress { display: flex; align-items: center; gap: 1rem;padding: 1rem; background: #f9fafb; border-bottom: 1px solid #e5e7eb}
   .progress-bar { flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden}
   .progress-fill { height: 100%; background: #3b82f6; transition: width: 0.3s ease}
   .progress-text { font-size: 0.875rem; font-weight: 500; color: #6b7280; min-width: 3rem; text-align: right}
   .files { max-height: 400px; overflow-y: auto}
-  .file-item { display: flex; align-items: center; gap: 1rem;padding: 1rem, border-bottom: 1px solid #e5e7eb; transition: background-color 0.2s ease}
+  .file-item { display: flex; align-items: center; gap: 1rem;padding: 1rem, border-bottom 1px solid #e5e7eb; transition: background-color 0.2s ease}
   .file-item:last-child { border-bottom: none}
   .file-item:hover { background: #f9fafb}
   .file-.uploading { background: #eff6ff}
-  .file-preview { width: 48px, height: 48px, border-radius: 6px, overflow: hidden; flex-shrink: 0 }
-  .file-preview img { width: 100%, height: 100%; object-fit: cover}
-  .file-icon { width: 48px; height: 48px; display: flex; align-items: center, justify-content: center, background: #f3f4f6, border-radius: 6px, color: #6b7280; flex-shrink: 0 }
+  .file-preview { width: 48px, height: 48px, border-radius: 6px, overflow hidden; flex-shrink: 0 }
+  .file-preview img { width: 100%, height 100%; object-fit: cover}
+  .file-icon { width: 48px; height: 48px; display: flex; align-items: center, justify-content: center, background: #f3f4f6, border-radius: 6px, color #6b7280; flex-shrink: 0 }
   .file-info { flex: 1; min-width: 0 }
-  .file-name { font-weight: 500, color: #111827, text-overflow: ellipsi, overflow: hidden; white-space: nowrap; margin-bottom: 0.25rem}
+  .file-name { font-weight: 500, color: #111827, text-overflow: ellipsi, overflow hidden; white-space: nowrap; margin-bottom: 0.25rem}
   .file-meta { display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; color: #6b7280}
-  .file-error { color: #ef4444, display: flex; align-items: center}
+  .file-error { color: #ef4444, display flex; align-items: center}
   .file-progress { display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem}
   .file-progress .progress-bar { height: 4px}
   .file-progress .progress-text { font-size: 0.75rem; min-width: 2.5rem}

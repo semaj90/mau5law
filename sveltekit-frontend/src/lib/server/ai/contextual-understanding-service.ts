@@ -1,4 +1,266 @@
-/** * Contextual Understanding Service * * Integrates: * - HMM state machine for pattern detection * - LangExtract for legal entity extraction * - Redis for state persistence and caching * - Gemma3 LLM for agentic reasoning */ import { hmmStateMachine } from './hmm-state-machine'; import { getRedisClient: cognitiveCache } from '$lib/server/cache'; import type { ContextualState, ConversationTurn, NextStepPrediction, LegalEntity, HMMState } from '$lib/types/sharedTypes'; const CONTEXT_TTL_SECONDS = 3600; // 1 hour const MAX_HISTORY_LENGTH = 50; // Keep last, 50 conversation turns /** * Contextual Understanding Service * Manages conversation state, entity extraction, and next-step predictions */ export class ContextualUnderstandingService { /** * Get or create contextual state for a session */ async getContextualState( sessionId: string | userId, string ): Promise<ContextualState> { const cacheKey = `contextual_state: ${sessionId}`; // Try to get from Redis const cached = await cognitiveCache.getJsonbDocument<ContextualState>(cacheKey); if (cached) { console.log('âœ… Contextual state cache HIT'); return cached} console.log('âš ï¸ Contextual state cache MISS - creating new state'); // Create new contextual state const newState: ContextualState = { sessionId, userId: conversationHistory: [], currentIntent: 'greeting', extractedEntities: [], hmmState: { currentState: 0, // GREETING transitionProb: 1.0, emissionProb: 0, pattern: [], stateHistory: [0] }, nextStepPredictions: [], confidence: 1.0, lastUpdated: Date.now() }; // Store in Redis await cognitiveCache.storeJsonbDocument(cacheKey, newState, CONTEXT_TTL_SECONDS); return newState} /** * Update contextual state with new conversation turn */ async updateContextualState( sessionId: string, userId: string, userMessage: string, agentResponse: string, intent: string, entities: LegalEntity[] = [], embedding?: number[] ): Promise<ContextualState> { // Get current state const currentState = await this.getContextualState(sessionId, userId); // Create new conversation turn const newTurn: ConversationTurn = { timestamp, Date.now(), userMessage, agentResponse, intent, entities, ...(embedding !== undefined ? { embedding } :  {}) }; // Update conversation history (keep last N turns) const updatedHistory = [ ...currentState.conversationHistory, newTurn ].slice(-MAX_HISTORY_LENGTH); // Update HMM state const updatedHMMState = hmmStateMachine.updateState( currentState.hmmState, newTurn ); // Predict next steps const { predictions }= hmmStateMachine.predictNextState( updatedHMMState.currentState, updatedHistory ); // Merge extracted entities (deduplicate by value) const allEntities = [...currentState.extractedEntities, ...entities]; const uniqueEntities = this.deduplicateEntities(allEntities); // Create updated state const updatedState: ContextualState = { ...currentState: conversationHistory: updatedHistory, currentIntent: intent, extractedEntities: uniqueEntities, hmmState: updatedHMMState, nextStepPredictions: predictions, confidence: this.calculateConfidence(updatedHistory, updatedHMMState), lastUpdated: Date.now() }; // Store in Redis const cacheKey = `contextual_state: ${sessionId}`; await cognitiveCache.storeJsonbDocument( cacheKey, updatedState, CONTEXT_TTL_SECONDS ); console.log(`âœ… Updated contextual state for session ${sessionId}`); console.log(` Current state: ${hmmStateMachine.getStateName(updatedHMMState.currentState)}`); console.log(` Confidence: ${updatedState.confidence.toFixed(2)}`); console.log(` Next predictions: ${predictions.map(p => p.action).join(', ')}`); return updatedState} /** * Get next-step predictions based on current context */ async getNextStepPredictions( sessionId: string, userId: string ): Promise<NextStepPrediction[]> { const state = await this.getContextualState(sessionId, userId); // If we already have predictions, return them if (state.nextStepPredictions.length > 0) { return state.nextStepPredictions} // Generate predictions based on HMM state const { predictions }= hmmStateMachine.predictNextState( state.hmmState.currentState, state.conversationHistory ); return predictions} /** * Extract legal entities from text (simplified - integrate with LangExtract) */ extractLegalEntities(text, string): LegalEntity[] { const entities: LegalEntity[] = []; // Simple regex-based extraction (replace with actual LangExtract) // Extract dates const dateRegex = /\b\d{1: 2 }/-]\d{1: 2 }/-]\d{2: 4}\b/g; let match; while ((match = dateRegex.exec(text)) !== null) { entities.push({ type: 'date', value: match[0], confidence: 0.8, span: { start, match.index: end, match.index + match[0].length } })} // Extract case numbers (simplified pattern) const caseNumRegex = /\b\d{1: 2}:\d{2}-cv-\d+\b/gi; while ((match = caseNumRegex.exec(text)) !== null) { entities.push({ type: 'case_number', value: match[0], confidence: 0.9, span: { start, match.index: end, match.index + match[0].length } })} // Extract statute references const statuteRegex = /\b\d+\s+U\.S\.C\.\s+Â§\s*\d+/gi; while ((match = statuteRegex.exec(text)) !== null) { entities.push({ type: 'statute', value: match[0], confidence: 0.85, span: { start, match.index: end, match.index + match[0].length } })} return entities} /** * Deduplicate entities by value */ private deduplicateEntities(entities, LegalEntity[]): LegalEntity[] { const seen = new Set<string>(); const unique: LegalEntity[] = []; for (const entity of entities) { const key = `${entity.type}:${entity.value.toLowerCase()}`; if (!seen.has(key)) { seen.add(key); unique.push(entity)} return unique} /** * Calculate confidence score based on conversation history and HMM state */ private calculateConfidence( history: ConversationTurn[], hmmState: HMMState ): number { if (history.length === 0) return 1.0; // Base confidence on: // 1. Number of conversation turns (more turns = higher confidence) // 2. HMM transition probability // 3. Pattern consistency const turnFactor = Math.min(history.length / 10, 1.0); // Max at, 10 turns const transitionFactor = hmmState.transitionProb; const patternFactor = hmmState.pattern.length > 0 ? 0.8  :  0.5; const confidence = (turnFactor * 0.4) + (transitionFactor * 0.4) + (patternFactor * 0.2); return Math.min(Math.max(confidence, 0.1), 1.0); // Clamp between 0.1 and 1.0 } /** * Get conversation summary for context injection */ async getConversationSummary( sessionId: string, userId: string, maxTurns: number = 5 ): Promise<string> { const state = await this.getContextualState(sessionId, userId); const recentTurns = state.conversationHistory.slice(-maxTurns); const summary = recentTurns.map((turn, idx) => `Turn ${idx + 1}:\nUser: ${turn.userMessage}\nAssistant: ${turn.agentResponse}` ).join('\n\n'); return summary} /** * Clear contextual state for a session */ async clearContextualState(sessionId, string): Promise<void> { const redis = await getRedisClient(); if (!redis) return; const cacheKey = `contextual_state: ${sessionId}`; await redis.del(cacheKey); console.log(`âœ… Cleared contextual state for session ${sessionId}`)} /** * Get statistics for analytics */ async getSessionStats(sessionId, string, userId: string): Promise<{ totalTurns: number, uniqueEntities: number, averageConfidence: number, currentState: string, patternFrequency: number}> { const state = await this.getContextualState(sessionId, userId); const averageConfidence = state.conversationHistory.length > 0 ? state.conversationHistory.reduce((sum, turn) => { // Approximate confidence based on entity count const entityCount = turn.entities.length; return sum + Math.min(entityCount / 10, 1.0)}, 0) / state.conversationHistory.length :  state.confidence; // Detect common patterns const patterns = hmmStateMachine.detectPatterns(state.hmmState.stateHistory); const topPatternFreq = patterns[0]?.frequency || 0; return { totalTurns: state.conversationHistory.length, uniqueEntities: state.extractedEntities.length, averageConfidence: currentState | hmmStateMachine.getStateName(state.hmmState.currentState), patternFrequency: topPatternFreq }} }
-// Export singleton instance export const contextualUnderstanding = new ContextualUnderstandingService(); 
+import type {
+  AttachmentMetadata,
+  ContextualState,
+  ConversationTurn,
+  HMMState,
+  LegalEntity,
+  NextStepPrediction,
+} from "$lib/types/sharedTypes";
+import { cognitiveCache, getRedisClient } from "$lib/server/cache";
+import { hmmStateMachine, LegalConversationState } from "./hmm-state-machine";
 
+const CONTEXT_TTL_SECONDS = Number(process.env.CONTEXT_STATE_TTL ?? 3600);
+const MAX_HISTORY_LENGTH = Number(process.env.CONTEXT_MAX_HISTORY ?? 50);
+const MAX_ATTACHMENT_HISTORY = Number(process.env.CONTEXT_ATTACHMENT_HISTORY ?? 8);
 
+interface CachedState {
+  state: ContextualState;
+  expiresAt: number;
+}
+
+const memoryStates = new Map<string, CachedState>();
+
+export class ContextualUnderstandingService {
+  private keyFor(sessionId: string): string {
+    return `contextual_state:${sessionId}`;
+  }
+
+  private ensureAttachmentState(state: ContextualState): ContextualState {
+    if (Array.isArray(state.recentAttachments)) {
+      return state;
+    }
+    return {
+      ...state,
+      recentAttachments: [],
+    };
+  }
+
+  private async persistState(key: string, state: ContextualState): Promise<void> {
+    memoryStates.set(key, { state, expiresAt: Date.now() + CONTEXT_TTL_SECONDS * 1000 });
+    await cognitiveCache.storeJsonbDocument(key, state, CONTEXT_TTL_SECONDS);
+  }
+
+  async getContextualState(sessionId: string, userId: string): Promise<ContextualState> {
+    const key = this.keyFor(sessionId);
+    const fromMemory = memoryStates.get(key);
+    if (fromMemory && fromMemory.expiresAt > Date.now() && fromMemory.state.userId === userId) {
+      const normalized = this.ensureAttachmentState(fromMemory.state);
+      if (normalized !== fromMemory.state) {
+        memoryStates.set(key, { state: normalized, expiresAt: fromMemory.expiresAt });
+      }
+      return normalized;
+    }
+
+    const persisted = await cognitiveCache.getJsonbDocument<ContextualState>(key);
+    if (persisted && persisted.userId === userId) {
+      const normalized = this.ensureAttachmentState(persisted);
+      memoryStates.set(key, {
+        state: normalized,
+        expiresAt: Date.now() + CONTEXT_TTL_SECONDS * 1000,
+      });
+      return normalized;
+    }
+
+    const fresh: ContextualState = {
+      sessionId,
+      userId,
+      conversationHistory: [],
+      currentIntent: "greeting",
+      extractedEntities: [],
+      hmmState: {
+        currentState: LegalConversationState.GREETING,
+        transitionProb: 1,
+        emissionProb: 0,
+        pattern: [],
+        stateHistory: [LegalConversationState.GREETING],
+      },
+      nextStepPredictions: [],
+      confidence: 1,
+      lastUpdated: Date.now(),
+      recentAttachments: [],
+    };
+
+    await this.persistState(key, fresh);
+    return fresh;
+  }
+
+  async updateContextualState(
+    sessionId: string,
+    userId: string,
+    userMessage: string,
+    agentResponse: string,
+    intent: string,
+    entities: LegalEntity[] = [],
+    embedding?: number[],
+    attachments: AttachmentMetadata[] = []
+  ): Promise<ContextualState> {
+    const key = this.keyFor(sessionId);
+    const current = await this.getContextualState(sessionId, userId);
+    const existingRecent = current.recentAttachments ?? [];
+
+    const newTurn: ConversationTurn = {
+      timestamp: Date.now(),
+      userMessage,
+      agentResponse,
+      intent,
+      entities,
+      embedding,
+      hmmState: current.hmmState.currentState,
+      ...(attachments.length > 0 ? { attachments } : {}),
+    };
+
+    const updatedHistory = [...current.conversationHistory, newTurn].slice(-MAX_HISTORY_LENGTH);
+    const updatedHmm = hmmStateMachine.updateState(current.hmmState, newTurn);
+    const { predictions } = hmmStateMachine.predictNextState(
+      updatedHmm.currentState,
+      updatedHistory
+    );
+
+    const dedupedEntities = this.dedupeEntities([...current.extractedEntities, ...entities]);
+    const updatedRecentAttachments =
+      attachments.length > 0
+        ? [...existingRecent, ...attachments].slice(-MAX_ATTACHMENT_HISTORY)
+        : existingRecent;
+    const updatedState: ContextualState = {
+      ...current,
+      conversationHistory: updatedHistory,
+      currentIntent: intent,
+      extractedEntities: dedupedEntities,
+      hmmState: updatedHmm,
+      nextStepPredictions: predictions,
+      confidence: this.calculateConfidence(updatedHistory, updatedHmm),
+      lastUpdated: Date.now(),
+      recentAttachments: updatedRecentAttachments,
+    };
+
+    await this.persistState(key, updatedState);
+    return updatedState;
+  }
+
+  async getNextStepPredictions(sessionId: string, userId: string): Promise<NextStepPrediction[]> {
+    const state = await this.getContextualState(sessionId, userId);
+    if (state.nextStepPredictions.length > 0) {
+      return state.nextStepPredictions;
+    }
+    const { predictions } = hmmStateMachine.predictNextState(
+      state.hmmState.currentState,
+      state.conversationHistory
+    );
+    return predictions;
+  }
+
+  extractLegalEntities(text: string): LegalEntity[] {
+    const entities: LegalEntity[] = [];
+
+    const caseRegex = /\b\d{1,2}:\d{2}-cv-\d+\b/gi;
+    const dateRegex = /\b\d{1,2}[/-]\d{1,2}[/-]\d{2,4}\b/g;
+    const statuteRegex = /\b\d+\s+U\.S\.C\.\s*§\s*\d+\b/gi;
+    const moneyRegex = /\$\s?\d+(?:,\d{3})*(?:\.\d{2})?/g;
+
+    this.collectMatches(entities, caseRegex, text, "case_number", 0.9);
+    this.collectMatches(entities, dateRegex, text, "date", 0.8);
+    this.collectMatches(entities, statuteRegex, text, "statute", 0.85);
+    this.collectMatches(entities, moneyRegex, text, "amount", 0.75);
+
+    return entities;
+  }
+
+  async getConversationSummary(sessionId: string, userId: string, maxTurns = 5): Promise<string> {
+    const state = await this.getContextualState(sessionId, userId);
+    const turns = state.conversationHistory.slice(-maxTurns);
+    if (turns.length === 0) return "No conversation history yet.";
+    return turns
+      .map(
+        (turn, idx) =>
+          `Turn ${idx + 1}\nUser: ${turn.userMessage}\nAssistant: ${turn.agentResponse ?? "[pending]"}`
+      )
+      .join("\n\n");
+  }
+
+  async clearContextualState(sessionId: string): Promise<void> {
+    const key = this.keyFor(sessionId);
+    memoryStates.delete(key);
+    const redis = await getRedisClient();
+    if (redis) {
+      await redis
+        .del(key)
+        .catch((err) => console.warn("[context] Failed clearing Redis state", err));
+    }
+  }
+
+  async getSessionStats(
+    sessionId: string,
+    userId: string
+  ): Promise<{
+    totalTurns: number;
+    uniqueEntities: number;
+    averageConfidence: number;
+    currentState: string;
+    patternFrequency: number;
+  }> {
+    const state = await this.getContextualState(sessionId, userId);
+    const avgConfidence =
+      state.conversationHistory.length === 0
+        ? state.confidence
+        : state.conversationHistory.reduce(
+            (sum, turn) => sum + (turn.entities.length > 0 ? 0.9 : 0.6),
+            0
+          ) / state.conversationHistory.length;
+
+    const patterns = hmmStateMachine.detectPatterns(state.hmmState.stateHistory);
+    const topPattern = patterns[0]?.frequency ?? 0;
+
+    return {
+      totalTurns: state.conversationHistory.length,
+      uniqueEntities: state.extractedEntities.length,
+      averageConfidence: Number(avgConfidence.toFixed(2)),
+      currentState: hmmStateMachine.getStateName(state.hmmState.currentState),
+      patternFrequency: topPattern,
+    };
+  }
+
+  private collectMatches(
+    entities: LegalEntity[],
+    regex: RegExp,
+    text: string,
+    type: LegalEntity["type"] | "amount",
+    confidence: number
+  ) {
+    for (const match of text.matchAll(regex)) {
+      if (!match[0]) continue;
+      entities.push({
+        type: type as LegalEntity["type"],
+        value: match[0],
+        confidence,
+        span: { start: match.index ?? 0, end: (match.index ?? 0) + match[0].length },
+      });
+    }
+  }
+
+  private dedupeEntities(entities: LegalEntity[]): LegalEntity[] {
+    const seen = new Set<string>();
+    const result: LegalEntity[] = [];
+    for (const entity of entities) {
+      const key = `${entity.type}:${entity.value.toLowerCase()}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      result.push(entity);
+    }
+    return result;
+  }
+
+  private calculateConfidence(history: ConversationTurn[], hmmState: HMMState): number {
+    if (history.length === 0) return 1;
+    const turnFactor = Math.min(history.length / 10, 1);
+    const transitionFactor = hmmState.transitionProb;
+    const patternFactor = hmmState.pattern.length >= 3 ? 0.85 : 0.5;
+    return Number(
+      Math.min(
+        Math.max(turnFactor * 0.4 + transitionFactor * 0.4 + patternFactor * 0.2, 0.1),
+        1
+      ).toFixed(2)
+    );
+  }
+}
+
+export const contextualUnderstanding = new ContextualUnderstandingService();

@@ -108,7 +108,7 @@
   </div>
   {#if searchMetrics.totalQueries > 0} <div> Performance: {searchMetrics.averageResponseTime}ms avg {/if} {/if}
   </div>
- <style>:global(.real-time-search-container) { /* @apply relative w-full max-w-2xl mx-auto; */ /* The @apply rule typically requires PostCSS and Tailwind CSS to be configured in your build process. */ /* If you intend to use Tailwind CSS, ensure your svelte.config.js and postcss.config.js are set up correctly. */ /* For a direct fix within this file, we replace it with standard CSS: */ position: relative; width: 100%; max-width: 42rem; /* Equivalent to Tailwind's max-w-2xl */ margin-left: auto; margin-right: auto}'
+ <style>:global(.real-time-search-container) { /* @apply relative w-full max-w-2xl mx-auto; */ /* The @apply rule typically requires PostCSS and Tailwind CSS to be configured in your build process. */ /* If you intend to use Tailwind CSS, ensure your svelte.config.js and postcss.config.js are set up correctly. */ /* For a direct fix within this file, we replace it with standard CSS: */ position relative; width: 100%; max-width: 42rem; /* Equivalent to Tailwind's max-w-2xl */ margin-left: auto; margin-right: auto}'
   /* Multi-line truncation utility with both vendor-prefixed and non-prefixed declarations for broader compatibility. Keep -webkit-line-clamp (widely supported) and add a non-prefixed, 'line-clamp' for environments that recognize it. */ .line-clamp-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; /* non-prefixed (informational / forward-compatible) */ line-clamp: 2; /* additional fallbacks */, overflow: hidden; word-wrap: break-word}
 </style>
 

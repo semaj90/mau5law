@@ -297,7 +297,7 @@ import type { Message } from '$lib/types';
 <style>
   .agentic-rag-demo {
     background: #212529
-   ; color: #d4af37
+   ; color: #d4af37;
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .text-gold-400 {
