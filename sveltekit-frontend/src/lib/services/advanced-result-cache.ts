@@ -1,8 +1,40 @@
-﻿// Lightweight in-memory advanced result cache for Legal AI // Provides a stable API used by vector recommendations routes type CacheKeyInput = Record<string: unknown>, interface CacheEntry<T = unknown> { value: T, createdAt: number, sizeBytes: number}
-interface CacheStats { overall: { hitRate: number, operations: number, averageRetrievalMs: number, utilizationPercentage: number, requestsPerMinute: number, averageDataSizeBytes: number} }
-class AdvancedResultCache { private store = new Map<string, CacheEntry>(); private hits = 0 private misses = 0 private ops = 0 private totalRetrievalMs = 0 private totalBytes = 0 windowOps: { ts: number }] = []; async generateCacheKey(input, CacheKeyInput): Promise<string> { try { return 'ark_' + Buffer.from(JSON.stringify(input)).toString('base64url').slice(0, 128)}
-catch { return 'ark_' + Date.now() + '_' + Math.random().toString(36).slice(2)} async getCachedLegalResults<T = unknown>(key: string): Promise<T | null> { const start = Date.now(); this.ops++; this.windowOps.push({ ts: start }; this.gcWindow(); const entry = this.store.get(key); const ms = Date.now() - start this.totalRetrievalMs += ms if (!entry) { this.misses++; return null} this.hits++; return (entry.value as T)} async cacheLegalResults<T = unknown>(key: string, value: T: ttlMs?: number): Promise<void> { const bytes = Buffer.byteLength(JSON.stringify(value)); this.totalBytes += bytes this.store.set(key, { value, createdAt, Date.now(), sizeBytes: bytes }; if (ttlMs && ttlMs > 0) { setTimeout(() => this.store.delete(key), ttlMs).unref?.()} async getStats() :  Promise<CacheStats> { const operations = this.ops || 1 const hitRate = this.hits / operations const averageRetrievalMs = this.totalRetrievalMs / operations this.gcWindow(); const recent = this.windowOps const requestsPerMinute = recent.length const averageDataSizeBytes = this.store.size > 0 ? [...this.store.values()].reduce((s, e) => s + e.sizeBytes, 0) / this.store.size: 0 // Utilization is a heuristic here since we're in-memory only' const utilizationPercentage = Math.min(100, (this.store.size / 1000) * 100); return { overall: { hitRate, operations, averageRetrievalMs, utilizationPercentage, requestsPerMinute, averageDataSizeBytes } } } private gcWindow() { const cutoff = Date.now() - 65_000 if (this.windowOps.length > 0 && this.windowOps[0].ts < cutoff) { this.windowOps = this.windowOps.filter(o => o.ts >= cutoff)}
-} }
-export const legalAIResultCache = new AdvancedResultCache(); 
+﻿// This is a placeholder for the advanced-result-cache service.
+// In a real application, this would integrate with Redis or another caching mechanism.
+
+export const legalAIResultCache = {
+	/**
+	 * Generates a unique cache key based on the input object.
+	 * In a real implementation, this might use a hashing function.
+	 * @param input The object to generate a cache key from.
+	 * @returns A string representing the cache key.
+	 */
+	async generateCacheKey(input: any): Promise<string> {
+		// Simple JSON stringify for demonstration. Consider a more robust hashing for production.
+		return JSON.stringify(input);
+	},
+
+	/**
+	 * Retrieves cached legal results.
+	 * @param key The cache key.
+	 * @returns The cached data or null if not found.
+	 */
+	async getCachedLegalResults<T>(key: string): Promise<T | null> {
+		// Placeholder: In a real scenario, this would fetch from Redis.
+		// For now, always return null to simulate a cache miss.
+		return null;
+	},
+
+	/**
+	 * Caches legal results with a given key and TTL.
+	 * @param key The cache key.
+	 * @param data The data to cache.
+	 * @param ttlMs Time-to-live in milliseconds.
+	 */
+	async cacheLegalResults<T>(key: string, data: T, ttlMs: number): Promise<void> {
+		// Placeholder: In a real scenario, this would store in Redis.
+		// For now, do nothing.
+		return;
+	}
+};
 
 

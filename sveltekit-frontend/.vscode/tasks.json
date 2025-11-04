@@ -62,6 +62,23 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "🔍 Inspect Ollama Endpoints",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/get-ollama-endpoints.mjs"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Print resolved Ollama endpoints and list installed embedding models",
+			"problemMatcher": []
+		},
+		{
 			"label": "🔄 Refresh Error Cache (Full Scan)",
 			"type": "shell",
 			"command": "node",
@@ -101,6 +118,41 @@
 				"panel": "dedicated"
 			},
 			"detail": "Quick: Only scan files changed since last commit (< 1 min)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧪 Test Full Stack Integration",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/test-full-stack-integration.mjs"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Test Redis, Qdrant, pgvector, Ollama, Go RAG integration",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧪 Test Integration (Verbose)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/test-full-stack-integration.mjs",
+				"--verbose"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Test all services with detailed output",
 			"problemMatcher": []
 		},
 		{

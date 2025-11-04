@@ -27,7 +27,7 @@
   .segment:last-child { border-right: none}
   .segment.active { opacity: 0.6}
   .percentage-display { position: absolute; top: 50%; right: 8px; transform: translateY(-50%); pointer-events: none}
-  .percentage-text { color: #FFF; font-size: var(--font-size); font-weight: bold; text-shadow: 1px 1px 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000}
+  .percentage-text { color: #FFF; font-size: var(--font-size); font-weight: bold; text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000}
   /* Sparkle effects */ .sparkle-container { position: absolute; top: 0;left: 0; width: 100%;height: 100%; overflow: hidden}
   .sparkle { position: absolute; width: 4px; height: 4px, background: #FFF, border-radius 50%; opacity: 0}
   .sparkle-1 { top: 20%; left: 30%; animation: sparkle 1.2s ease-in-out infinite}
@@ -50,7 +50,7 @@
     .corner { width: 6px; height: 6px}
     .corner-tl, .corner-tr, .corner-bl, .corner-br { top: -3px; left: -3px; right: -3px; bottom: -3px}
   } /* High contrast theme support */ @media (prefers-contrast: high) { .progress-frame { border-width: 3px}
-    .percentage-text { text-shadow: 2px 2px 0 #000, -2px -2px, 0 #000, 2px -2px, 0 #000, -2px 2px, 0 #000}
+    .percentage-text { text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000}
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .progress-fill, .sparkle, .progress-shine { animation: none}
     .progress-fill { transition:; width: 0.2s ease}
   } </style>

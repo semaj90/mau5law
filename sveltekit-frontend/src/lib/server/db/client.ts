@@ -1,12 +1,116 @@
-﻿import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres'; import postgres from 'postgres'; import { drizzle as drizzleJs } from 'drizzle-orm/postgres-js'; import * as schema from './schema-postgres.js'; // =============================== // Configuration & Environment // =============================== const isDev = process.env.NODE_ENV !== 'production'; // Simple env helpers (you can centralize these later) function getDatabaseUrl(): string { return ( process.env.DATABASE_URL || `postgresql://legal_admin: 123456@${process.env.DATABASE_HOST ?? 'postgres` }:${`'` process.env.DATABASE_PORT ?? '5434` }/legal_ai_db`' )}
-function getAdminDatabaseUrl(): string { return ( process.env.ADMIN_DATABASE_URL || (process.env.ADMIN_DATABASE_HOST && `postgresql: //postgres, postgres@${process.env.ADMIN_DATABASE_HOST}:${` process.env.ADMIN_DATABASE_PORT ?? '5432` }/postgres`) ||' getDatabaseUrl() )}
-// =============================== // Connection Singletons // =============================== let runtimeConnectionSingleton: postgres.Sql | null = null; let adminConnectionSingleton: postgres.Sql | null = null; let runtimeDb: NodePgDatabase<typeof schema> | null = null; let adminDb: NodePgDatabase<typeof schema> | null = null; // =============================== // Connection Creators // =============================== export function createRuntimeConnection(): NodePgDatabase<typeof schema> { if (!runtimeConnectionSingleton) { const url = getDatabaseUrl(); runtimeConnectionSingleton = postgres(url, { max, Number(process.env.PG_MAX_CLIENTS ?? 10) }); // drizzle's inferred return may be typed as unknown here -> cast to the expected NodePgDatabase type' runtimeDb = drizzle(runtimeConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof schema>} return runtimeDb!}
-export function createAdminConnection(): NodePgDatabase<typeof schema> { if (!adminConnectionSingleton) { const url = getAdminDatabaseUrl(); adminConnectionSingleton = postgres(url, { max, Number(process.env.PG_ADMIN_MAX_CLIENTS ?? 5) }); // same cast for admin DB adminDb = drizzle(adminConnectionSingleton, { schema }) as unknown as NodePgDatabase<typeof schema>} return adminDb!}
-// =============================== // Health Checks // =============================== export async function testRuntimeConnection(): Promise<boolean> { try { const client = runtimeConnectionSingleton ? ? postgres(getDatabaseUrl()); // avoid `any` by using :  unknown and runtime checks const res, Array<{ ok: number }> = await client`SELECT 1 as ok`; // Only close if we created a temporary connection and it supports .end() if (!runtimeConnectionSingleton && typeof (client as { end?: () => Promise<void> }).end === 'function') { await (client as { end: () => Promise<void> }).end()} return Array.isArray(res) && (res as unknown[]).length > 0}catch (err) { console.error('âŒ Runtime DB connection test failed: ', err); return false} }
-export async function testAdminConnection(): Promise<boolean> { try { const client = adminConnectionSingleton ? ? postgres(getAdminDatabaseUrl()); const res :  Array<{ ok: number }> = await client`SELECT 1 as ok`; // Only close the connection if we created a new one and it's not the singleton' if (!adminConnectionSingleton && typeof (client as unknown as { end?: () => Promise<void> }).end === 'function') { await (client as unknown as { end: () => Promise<void> }).end()} return Array.isArray(res) && (res as unknown[]).length > 0}catch (err) { console.error('âŒ Admin DB connection test failed: ', err); return false} }
-// =============================== // Connection Cleanup // =============================== export async function closeConnections(): Promise<void> { try { if (runtimeConnectionSingleton && typeof runtimeConnectionSingleton.end === 'function') { await runtimeConnectionSingleton.end(); runtimeConnectionSingleton = null; runtimeDb = null; console.log('ðŸ”Œ Runtime database connection closed')} if (adminConnectionSingleton && typeof adminConnectionSingleton.end === 'function') { await adminConnectionSingleton.end(); adminConnectionSingleton = null; adminDb = null; console.log('ðŸ”Œ Admin database connection closed')}catch (err) { console.warn('âš ï¸ Error closing DB connections: ', err)} }
-// Legacy alias removed for consistency export const closeConnection = closeConnections; // =============================== // Optional Initialization // =============================== let initialized = false; async function initializeDatabase(): Promise<void> { if (initialized) return; if (!isDev) { console.log('ðŸ”„ initializeDatabase, production initialization placeholder'); // Recommended, Use Drizzle ORM migrations. //, Example: import { migrate } from 'drizzle-orm/node-postgres/migrator'; // await migrate(runtimeDb, { migrationsFolder: `./drizzle/migrations` }); // See https://orm.drizzle.team/docs/migrations for details. } // mark as initialized to prevent re-run initialized = true}
-// Single fire-and-forget initialization in non-dev if (!isDev) { initializeDatabase().catch(e => { console.warn('[DB] Production initialization error in initializeDatabase: ', e)})}
-// =============================== // Default Export // =============================== const dbManager = { getDb: createRuntimeConnection, getAdminDb: createAdminConnection, closeConnections }; export default dbManager; // =============================== // Convenience Exports for hooks.server.ts // =============================== export const getDbClient = createRuntimeConnection; export const getAdminDbClient = createAdminConnection; // =============================== // Re-export schema // =============================== export * from './schema-postgres.js'; // =============================== // Export raw postgres-js client // =============================== const connection = postgres(process.env.DATABASE_URL!); export const db = drizzleJs(connection, { schema }); // Drizzle ORM instance export const rawDb = connection; // Raw postgres-js client for direct queries 
+import { Pool } from 'pg';
+import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
 
+import * as baseSchema from './schema-postgres';
+import { canvasAutosaves } from './schema-canvas-autosaves';
 
+const schema = { ...baseSchema, canvasAutosaves };
+type AppSchema = typeof schema;
+
+const DEFAULT_DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
+
+function getDatabaseUrl(): string {
+	return process.env.DATABASE_URL || DEFAULT_DATABASE_URL;
+}
+
+function getAdminDatabaseUrl(): string {
+	return process.env.ADMIN_DATABASE_URL || getDatabaseUrl();
+}
+
+function createPool(connectionString: string, maxClientsEnv?: string): Pool {
+	const max = Number(maxClientsEnv ?? '10');
+	return new Pool({
+		connectionString,
+		max: Number.isNaN(max) ? 10 : max,
+		ssl:
+			process.env.PGSSLMODE === 'require'
+				? { rejectUnauthorized: process.env.PGSSLREJECTUNAUTHORIZED !== 'false' }
+				: undefined
+	});
+}
+
+let runtimePool: Pool | null = null;
+let adminPool: Pool | null = null;
+let runtimeDb: NodePgDatabase<AppSchema> | null = null;
+let adminDb: NodePgDatabase<AppSchema> | null = null;
+
+function ensureRuntimePool(): Pool {
+	if (!runtimePool) {
+		runtimePool = createPool(getDatabaseUrl(), process.env.PG_MAX_CLIENTS);
+		runtimePool.on('error', (err) => {
+			console.error('[db] runtime pool error', err);
+		});
+	}
+	return runtimePool;
+}
+
+function ensureAdminPool(): Pool {
+	if (!adminPool) {
+		adminPool = createPool(getAdminDatabaseUrl(), process.env.PG_ADMIN_MAX_CLIENTS ?? '5');
+		adminPool.on('error', (err) => {
+			console.error('[db] admin pool error', err);
+		});
+	}
+	return adminPool;
+}
+
+export function createRuntimeConnection(): NodePgDatabase<AppSchema> {
+	if (!runtimeDb) {
+		runtimeDb = drizzle(ensureRuntimePool(), { schema });
+	}
+	return runtimeDb;
+}
+
+export function createAdminConnection(): NodePgDatabase<AppSchema> {
+	if (!adminDb) {
+		adminDb = drizzle(ensureAdminPool(), { schema });
+	}
+	return adminDb;
+}
+
+export async function closeConnections(): Promise<void> {
+	const closes: Promise<void>[] = [];
+
+	if (runtimePool) {
+		closes.push(
+			runtimePool.end().catch((err) => {
+				console.warn('[db] error closing runtime pool', err);
+			})
+		);
+		runtimePool = null;
+		runtimeDb = null;
+	}
+
+	if (adminPool) {
+		closes.push(
+			adminPool.end().catch((err) => {
+				console.warn('[db] error closing admin pool', err);
+			})
+		);
+		adminPool = null;
+		adminDb = null;
+	}
+
+	await Promise.all(closes);
+}
+
+export const db = createRuntimeConnection();
+export const adminDb = createAdminConnection();
+
+export const pools = {
+	get runtime() {
+		return ensureRuntimePool();
+	},
+	get admin() {
+		return ensureAdminPool();
+	}
+};
+
+export * from './schema-postgres';
+export { canvasAutosaves } from './schema-canvas-autosaves';
+
+export default {
+	getDb: createRuntimeConnection,
+	getAdminDb: createAdminConnection,
+	closeConnections
+};

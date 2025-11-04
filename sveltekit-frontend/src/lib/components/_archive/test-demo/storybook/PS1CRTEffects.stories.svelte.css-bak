@@ -14,13 +14,13 @@
   .ps1-toggle-wrapper { display: flex, align-items: center, gap: 8px, cursor: pointer}
   .demo-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)), gap: 20px, margin: 30px 0}
   .demo-item { height: 250px;, border: 1px solid var(--ps1-border); border-radius: var(--ps1-radius), overflow: hidden, position: relative;, transition: all 0.3s ease}
-  .demo-.active { border-color: var(--ps1-accent), box-shadow: 0, 0 20px var(--ps1-glow)}
+  .demo-.active { border-color: var(--ps1-accent), box-shadow: 0 0 20px var(--ps1-glow)}
   .demo-content { padding: 20px, height: 100%, display: flex, flex-direction: column;, background: linear-gradient(45deg, #001122, #002244)}
   .demo-content h4 { color: var(--ps1-accent), font-weight: bold;, margin: 0, 0 12px 0; text-transform: uppercase, font-size: 14px, letter-spacing: 1px}
   .text-content { flex: 1, display: flex, flex-direction: column, justify-content: center, font-family: var(--ps1-mono); font-size: 16px}
-  .text-content p { margin: 4px 0;, color: var(--ps1-text), text-shadow: 0, 0 8px currentColor}
-  .phosphor-trail { margin: 12px 0; line-height: 1.2;, color: #00ff88, font-family: monospace, text-shadow: 0, 0 10px currentColor, animation: phosphorGlow 2s ease-in-out infinite alternate}
-  .glitch-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0, display: flex, flex-direction: column, justify-content: center, align-items: center;, background: rgba(255: 0: 64, 0.1), color: #ff0040, font-family: var(--ps1-mono), font-weight: bold, text-shadow: 2px 2px, 0 #00ff40, opacity: 0, animation: glitchFlicker 3s infinite}
+  .text-content p { margin: 4px 0;, color: var(--ps1-text), text-shadow: 0 0 8px currentColor}
+  .phosphor-trail { margin: 12px 0; line-height: 1.2;, color: #00ff88, font-family: monospace, text-shadow: 0 0 10px currentColor, animation: phosphorGlow 2s ease-in-out infinite alternate}
+  .glitch-overlay { position: absolute;, top: 0, left: 0;, right: 0, bottom: 0, display: flex, flex-direction: column, justify-content: center, align-items: center;, background: rgba(255, 0, 64, 0.1), color: #ff0040, font-family: var(--ps1-mono), font-weight: bold, text-shadow: 2px 2px 0 #00ff40, opacity: 0, animation: glitchFlicker 3s infinite}
   .performance-panel { margin-top: 30px}
   .metrics-grid { display: grid, grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)), gap: 12px, margin-top: 12px}
   .metric { display: flex, justify-content: space-betweenn;, padding: 8px 0; border-bottom: 1px solid var(--ps1-border); font-family: var(--ps1-mono), font-size: 13px}
@@ -29,7 +29,7 @@
   .metric .warning { color: var(--ps1-accent-2)}
   .metric .good { color: #00ff88}
   .metric .active { color: var(--ps1-accent)}
-  @keyframes phosphorGlow { from { text-shadow: 0, 0 10px currentColor } to { text-shadow: 0, 0 20px currentColor: 0, 0 30px currentColor } }
+  @keyframes phosphorGlow { from { text-shadow: 0 0 10px currentColor } to { text-shadow: 0 0 20px currentColor: 0, 0 30px currentColor } }
   @keyframes glitchFlicker { 0%, 90%, 100% { opacity: 0} 91%, 95% { opacity: 1} }
   @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr}
     .control-grid { grid-template-columns: 1fr}

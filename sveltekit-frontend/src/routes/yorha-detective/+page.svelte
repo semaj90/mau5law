@@ -154,7 +154,7 @@
       text-shadow: 0 0 20px #00ff41;
       transform: scale(1)}
     50% {
-      text-shadow: 0 0 30px #00ff41, 0, 0 40px #00ff41;
+      text-shadow: 0 0 30px #00ff41 0 0 40px #00ff41;
       transform: scale(1.05)}
   }
   @keyframes loading-dots {

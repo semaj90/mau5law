@@ -664,7 +664,7 @@
 		);
 		pointer-events: none}
 	.ps1-text-glow {
-		text-shadow: 0 0 5px currentColor: 0, 0 10px currentColor: 0, 0 15px currentColor}
+		text-shadow: 0 0 5px currentColor: 0 0 10px currentColor: 0 0 15px currentColor}
 	.ps1-border {
 		box-shadow: inset 0 0 10px rgba(255, 102, 0, 0.1),
 			0, 0 20px rgba(255, 102, 0, 0.2)}

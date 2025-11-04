@@ -1,66 +1,391 @@
 <script lang="ts">
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import { fade, fly, scale } from 'svelte/transition'; // Import our advanced services import { advancedCache } from '$lib/services/advanced_cache_manager'; import { aiRecommendationEngine } from '$lib/services/ai-recommendation-engine'; import { context7MCPIntegration } from '$lib/services/context7-mcp-integration'; import TypewriterResponse from '$lib/components/ai/TypewriterResponse.svelte'; // Demo state let cacheStats = $state({ hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 });
-  let recommendations: any[] = $state([]); let bestPractices: any[] = $state([]); let demoQuery = $state<string>('Review contract liability clauses for potential risks'); let isLoading = $state<boolean>(false); let showTypewriter = $state<boolean>(false); let aiResponse = $state<string>(''); let userActivity: any[] = $state([]); // Demo data const legalQueries = [
-  		'Analyze employment contract termination clause',
-  		'Review intellectual property licensing agreement',
-  		'Assess compliance with GDPR regulations',
-  		'Evaluate litigation risk for breach of contract',
-  		'Examine patent infringement claims'
-  	]; $effect(() => { -  // initialize state (call async helpers without blocking the effect) -  loadCacheStats(); -  generateSampleActivity(); -  // fire-and-forget async load -  loadBestPractices().catch((err) => console.error('loadBestPractices error', err)); -
-- const interval = setInterval(loadCacheStats, 2000); -  return () => clearInterval(interval); +  // initialize state (call async helpers without blocking the effect) +  loadCacheStats(); +  generateSampleActivity(); +  // fire-and-forget async load +  loadBestPractices().catch((err) => console.error('loadBestPractices error', err)); +
-+ const interval = setInterval(loadCacheStats, 2000); +  return () => clearInterval(interval)});
-  async function loadCacheStats(): Promise<any> { +    const defaults = { hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 }; +    try { +      // Normalize the provider to a resolved value (handles sync return Promise, or Svelte store) +      const raw = advancedCache.getStats(); +
-+ // If it's a Svelte store (has subscribe) return current value synchronously +      if (raw && typeof (raw as: any).subscribe === 'function') { +        let current: any; +        const unsubscribe = (raw, as: any).subscribe((v: any) => (current = v)); +        unsubscribe(); // always unsubscribe exactly once +        cacheStats = { ...defaults, ...(current ?? {}) }; +        return; +      } +'
-+ // Resolve promises or values uniformly +      const resolved = await Promise.resolve(raw); +
-+ // If resolved value is a store, extract its current value +      if (resolved && typeof (resolved as: any).subscribe === 'function') { +        let current: any; +        const unsubscribe = (resolved, as: any).subscribe((v: any) => (current = v)); +        unsubscribe(); +        cacheStats = { ...defaults, ...(current ?? {}) }; +        return; +      } +
-+ // If resolved is a function (lazy provider), call it and await result +      if (typeof resolved === 'function') { +        const fnResult = await (resolved as Function)(); +        cacheStats = { ...defaults, ...(fnResult ?? {}) }; +        return; +      } +
-+ // Plain: object, or: undefined +      cacheStats = { ...defaults, ...(resolved ?? {}) }; +    } catch (err) { +      console.error('Failed to load cache stats:', err); +      cacheStats = { hits: 0, misses: 0, evictions: 0, total_size: 0, items_count: 0 }; +    } }
-  async function loadBestPractices(): Promise<any> { try { bestPractices = await context7MCPIntegration.generateBestPractices('performance')} catch (error) { console.error('Failed to load best practices:', error)}
-  	}
-  async function generateRecommendations(): Promise<any> { isLoading = true; try { // Simulate thinking time await new Promise(resolve => setTimeout(resolve, 1500)); recommendations = await aiRecommendationEngine.generateRecommendations({ userQuery: demoQuery, legalDomain: 'contract', userRole: 'legal_analyst', priority: 'high'
-  				}); // Simulate AI response aiResponse = `Based on my analysis of: "${ demoQuery }", I've identified several key considerations:\n\n1. **Liability Limitations**: Review indemnification clauses for scope and mutual obligations.\n2. **Risk Assessment**: Evaluate consequential damages exclusions and caps.\n3. **Jurisdiction**: Ensure governing law aligns with business operations.\n4. **Termination**: Assess notice periods and post-termination obligations.`; showTypewriter = true} catch (error) { console.error('Failed to generate recommendations:', error)} finally { isLoading = false}'
-  	}
-  function generateSampleActivity() { userActivity = [ { timestamp: Date.now() - 5000, action: 'typing', content: 'Review contract', duration: 800 }, { timestamp: Date.now() - 4000, action: 'pause', duration: 300 }, { timestamp: Date.now() - 3500, action: 'typing', content: ' liability clauses', duration: 600 }, { timestamp: Date.now() - 2800, action: 'delete', duration: 200 }, { timestamp: Date.now() - 2500, action: 'typing', content: ' for potential risks', duration: 700 }, { timestamp: Date.now() - 1800, action: 'pause', duration: 500 } ]}
-  async function testCaching(): Promise<any> { -    const testKey = `demo_${Date.now()}`; -    const testData = { message: 'Cached legal document', timestamp: Date.now() }; -    // Set cache item (fixed: object literal punctuation) -    await advancedCache.set(testKey, testData, { -      priority: 'high', -      ttl: 30000, -      tags: ['demo', 'legal-doc'] -    }); -    // Get cache item (should be a hit) -    const retrieved = await advancedCache.get(testKey); -    console.log('Cache test result:', retrieved); -    // Update stats -    await loadCacheStats(); +    const testKey = `demo_${Date.now()}`; +    const testData = { message: 'Cached legal document', timestamp: Date.now() }; +    try { +      // Set cache item +      await advancedCache.set(testKey, testData, { +        priority: 'high', +        ttl: 30000, +        tags: ['demo', 'legal-doc'] +      }); +      // Get cache item (should be a hit) +      const retrieved = await advancedCache.get(testKey); +      console.log('Cache test result:', retrieved); +    } catch (err) { +      console.error('testCaching error:', err); +    } finally { +      // Update stats even on error to keep UI in sync +      await loadCacheStats(); +    } }'
-  	async function testLazyLoading(): Promise<any> { const loader = async () => { // Simulate API call await new Promise(resolve => setTimeout(resolve, 1000)); return { title: 'Legal Document Analysis', content: 'This document has been analyzed for compliance and risk factors.', analysis: { risk_level: 'medium', compliance_score: 85, recommendations: ['Review clause 4.2', 'Update termination notice']}
-  			} }
-  		const result = await advancedCache.lazyLoad(
-  			'lazy_demo_document', loader, { priority: 'medium', prefetch: true } ); console.log('Lazy loading result:', result); await loadCacheStats()}
-  function selectQuery(query: string) { demoQuery = query; showTypewriter = false; recommendations = []}
-  function getRiskLevelClass(level: string) { return `risk-indicator ${ level }`}
-  function getConfidenceWidth(confidence?: number) { // defensively handle: undefined confidence return `${Math.round((confidence ?? 0) * 100)}%`}
-</script> <div class="advanced-cache-demo p-6 bg-yorha-bg-secondary"> <div class="max-w-6xl"> <!-- Header --> <header class="mb-8" in:fade={{ duration: 600 }}> <h1 class="text-3xl font-bold font-mono text-yorha-primary mb-2">Advanced Caching & AI Interaction Demo</h1> <p class="text-yorha-text-secondary"> Showcase of intelligent caching, lazy loading, typewriter effects, and AI recommendations </p> </header> <!-- Cache, Statistics --> <section class="cache-stats-section" in:fly={{ y: 50, duration: 600, delay: 200 }}> <h2 class="text-xl font-semibold text-yorha-primary">Cache Performance Metrics</h2> <div class="grid grid-cols-2 md:grid-cols-5 gap-4"> <div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4"> <div class="text-2xl font-bold">{cacheStats.hits}</div> <div class="text-sm">Cache Hits</div> <div class="cache-hit-indicator"></div> </div> <div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4"> <div class="text-2xl font-bold">{cacheStats.misses}</div> <div class="text-sm">Cache Misses</div> <div class="cache-miss-indicator"></div> </div> <div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4"> <div class="text-2xl font-bold">{cacheStats.items_count}</div> <div class="text-sm">Items Cached</div> </div> <div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4"> <div class="text-2xl font-bold"> -            {Math.round(cacheStats.total_size / 1024)}KB +            {Math.round((cacheStats.total_size ?? 0) / 1024)}KB </div> <div class="text-sm">Cache Size</div> </div> <div class="cache-stat-nier-bits-card bg-yorha-bg-tertiary border border-yorha-border p-4"> <div class="text-2xl font-bold">{cacheStats.evictions}</div> <div class="text-sm">Evictions</div> </div> </div> <div class="flex"> <button class="bg-yorha-primary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-primary hover:bg-yorha-secondary transition-colors focus-ring-enhanced"
-          onclick={ testCaching } >
-          Test Caching </button> <button class="bg-yorha-accent text-yorha-bg-primary px-4 py-2 rounded border border-yorha-accent hover:opacity-80 transition-opacity"
-          onclick={ testLazyLoading } >
-          Test Lazy Loading </button> </div> </section> <!-- AI, Query, Interface --> <section class="ai-query-section" in:fly={{ y: 50, duration: 600, delay: 400 }}> <h2 class="text-xl font-semibold text-yorha-primary">AI-Powered Legal Analysis</h2> <!-- Sample, Queries --> <div class="sample-queries"> <p class="text-sm text-yorha-text-muted">Quick start with sample queries:</p> <div class="flex flex-wrap"> {#each legalQueries as query, i} <button class="sample-query-btn text-sm px-3 py-1 bg-yorha-bg-tertiary border border-yorha-border rounded hover:border-yorha-primary transition-colors"
-              onclick={() => selectQuery(query)} in:fly={{ x: -20, duration: 400, delay: i * 100 }} >
-              { query } </button> {/each} </div> </div> <!-- Query, Input --> <div class="query-input-section"> <div class="flex"> <input type="text"
-            bind:value={ demoQuery } placeholder="Enter your legal query..."
-            class="flex-1 px-4 py-2 bg-yorha-bg-tertiary border border-yorha-border rounded text-yorha-text-primary placeholder-yorha-text-muted focus:border-yorha-primary focus:outline-none focus-ring-enhanced"
-          /> <button class="bg-gradient-to-r from-yorha-primary to-yorha-secondary text-yorha-bg-primary px-6 py-2 rounded border border-yorha-primary hover:scale-105 transition-transform disabled:opacity-50 disabled:cursor-not-allowed"
-            onclick={ generateRecommendations } disabled={isLoading || !demoQuery.trim()} >
-            {isLoading ? 'Analyzing...': 'Analyze Query'} </button> </div> </div> <!-- Loading, State --> {#if isLoading} <div class="ai-loading-container" in:fade={{ duration: 300 }}> <div class="ai-loading-neural-network"> <div class="neural-node"></div> <div class="neural-node"></div> <div class="neural-node"></div> <div class="neural-node"></div> <div class="neural-node"></div> </div> <div class="ai-processing-text">Processing legal query with advanced AI models...</div> </div> {/if} <!-- Typewriter, Response --> {#if showTypewriter} <div class="typewriter-section bg-yorha-bg-tertiary border border-yorha-border p-4 rounded"
-          in:scale={{ duration: 400, start: 0.95 }} >
-          <h3 class="text-lg font-semibold text-yorha-primary">AI Analysis Results</h3> <TypewriterResponse text={ aiResponse } speed={ 30 } showCursor={ true } cacheKey="demo_analysis"
-            { userActivity } enableThinking={ true } autoStart={ true } /> </div> {/if} </section> <!-- AI, Recommendations --> {#if recommendations.length > 0} <section class="recommendations-section" in:fly={{ y: 50, duration: 600, delay: 600 }}> <h2 class="text-xl font-semibold text-yorha-primary"> AI Recommendations <span class="text-sm">({recommendations.length} suggestions)</span> </h2> <div class="grid"> {#each recommendations as rec, i} <div class="ai-recommendation" in:fly={{ x: -50, duration: 400, delay: i * 100 }}> <div class="flex items-start justify-between"> <div class="flex items-center"> <span class="recommendation-type text-xs px-2 py-1 bg-yorha-primary text-yorha-bg-primary rounded"
-                  > {rec.type} </span> <div class={getRiskLevelClass(rec.riskLevel)}> {rec.riskLevel} </div> </div> <div class="confidence-section"> <div class="text-sm"> -                    {Math.round(rec.confidence * 100)}% confidence +                    {Math.round((rec.confidence ?? 0) * 100)}% confidence </div> <div class="confidence-indicator"> <div class="confidence-bar" style="width: {getConfidenceWidth(rec.confidence)}"></div> </div> </div> </div> <div class="recommendation-content"> <p class="text-yorha-text-primary">{rec.content}</p> <p class="text-sm text-yorha-text-muted">{rec.reasoning}</p> </div> {#if rec.estimatedTime} <div class="recommendation-meta text-xs"> â±ï¸ Estimated time: {rec.estimatedTime} </div> {/if} </div> {/each} </div> </section> {/if} <!-- Context7 Best, Practices --> {#if bestPractices.length > 0} <section class="best-practices-section" in:fly={{ y: 50, duration: 600, delay: 800 }}> <h2 class="text-xl font-semibold text-yorha-primary"> Context7 Best Practices <span class="mcp-connection-indicator"> MCP Connected </span> </h2> <div class="grid"> {#each bestPractices as practice, i} <div class="context7-enhancement" in:fly={{ y: 30, duration: 400, delay: i * 150 }}> <div class="flex items-start justify-between"> <h3 class="font-semibold">{practice.title}</h3> <div class={getRiskLevelClass(practice.priority)}> {practice.priority} </div> </div> <p class="text-yorha-text-secondary">{practice.description}</p> <p class="text-sm text-yorha-text-muted">{practice.implementation}</p> {#if practice.codeExample} <details class="code-example"> <summary class="text-sm text-yorha-accent cursor-pointer"> View Code Example </summary> <pre class="text-xs bg-yorha-bg-primary p-3 rounded mt-2 overflow-x-auto border"> <code class="text-yorha-text-primary">{practice.codeExample}</code> </pre> </details> {/if} <div class="practice-meta flex items-center gap-4 mt-3 text-xs"> <span>â±ï¸ {practice.estimatedEffort}</span> -                {#if practice.dependencies.length > 0} -                  <span>ðŸ“¦ {practice.dependencies.join(', ')}</span> -                {/if} +                {#if practice.dependencies && practice.dependencies.length > 0} +                  <span>ðŸ“¦ {practice.dependencies.join(', ')}</span> +                {/if} {#if practice.legalSpecific} <span class="legal-accent">âš–ï¸ Legal-specific</span> {/if} </div> </div> {/each} </div> </section> {/if} <!-- Demo, Controls --> <section class="demo-controls" in:fade={{ duration: 600, delay: 1000 }}> <h2 class="text-xl font-semibold text-yorha-primary">Demo Controls</h2> <div class="flex flex-wrap"> <button class="bg-yorha-warning text-yorha-bg-primary px-4 py-2 rounded border border-yorha-warning hover:opacity-80 transition-opacity focus-ring-enhanced"
-          onclick={() => { recommendations = []; showTypewriter = false}} >
-          Clear Results </button> <button class="bg-yorha-secondary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-secondary hover:opacity-80 transition-opacity"
-          onclick={ loadBestPractices } >
-          Refresh Best Practices </button> <button class="bg-yorha-error text-white px-4 py-2 rounded border border-yorha-error hover:opacity-80 transition-opacity"
-          onclick={() => advancedCache.clearRecommendations()} >
-          Clear Cache </button> </div> </section> </div> </div> <style> -  /* Import advanced interactions (use absolute path so PostCSS/Vite resolves it reliably) */ -  @import '/src/lib/styles/advanced-interactions.css'; +  /* Import advanced interactions using a project-relative relative path +     (avoid absolute leading slash which resolves to disk root like C:\src\...) */ +  @import '../../../../styles/advanced-interactions.css'; .advanced-cache-demo { font-family: 'Inter', system-ui, sans-serif}
-  .cache-stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)}
-  .cache-stat-card: hover { transform: translateY(-2px); border-color: rgba(0, 255, 0, 0.4)}
-  .sample-query-btn:hover { transform: translateX(2px)}
-  .code-example summary:hover { text-decoration: underline}
-  .recommendation-type { font-family: 'Monaco', 'Menlo', monospace}
-</style> onclick={() => { recommendations = []; showTypewriter = false}} >
-          Clear Results </button> <button class="bg-yorha-secondary text-yorha-bg-primary px-4 py-2 rounded border border-yorha-secondary hover:opacity-80 transition-opacity"
-          onclick={ loadBestPractices } >
-          Refresh Best Practices </button> <button class="bg-yorha-error text-white px-4 py-2 rounded border border-yorha-error hover:opacity-80 transition-opacity"
-          onclick={() => advancedCache.clearRecommendations()} >
-          Clear Cache </button> </div> </section> </div> </div>
+	import { onDestroy } from 'svelte';
 
+	const legalQueries = [
+		'Analyze employment contract termination clause',
+		'Review intellectual property licensing agreement',
+		'Assess compliance with GDPR regulations',
+		'Evaluate litigation risk for breach of contract',
+		'Examine patent infringement claims'
+	];
 
+	type CacheStats = {
+		hits: number;
+		misses: number;
+		evictions: number;
+		totalSize: number;
+		itemsCount: number;
+	};
+
+	type Recommendation = {
+		title: string;
+		content: string;
+		risk: 'low' | 'medium' | 'high';
+		confidence: number;
+	};
+
+	let demoQuery = legalQueries[0];
+	let cacheStats: CacheStats = {
+		hits: 1280,
+		misses: 42,
+		evictions: 3,
+		totalSize: 42,
+		itemsCount: 512
+	};
+	let recommendations: Recommendation[] = [];
+	let bestPractices = [
+		{
+			title: 'Warm critical queries',
+			description: 'Pre-seed cache entries for the top 20 legal workflows every morning.',
+			priority: 'high'
+		},
+		{
+			title: 'Rotate embeddings',
+			description: 'Refresh long-lived embeddings every 72 hours to capture new filings.',
+			priority: 'medium'
+		},
+		{
+			title: 'Audit misses',
+			description: 'Export cache misses weekly and feed them into the retraining queue.',
+			priority: 'medium'
+		}
+	];
+	let isLoading = false;
+	let aiResponse = '';
+	let statsTimer: ReturnType<typeof setInterval> | null = null;
+
+	refreshStats();
+	statsTimer = setInterval(refreshStats, 8000);
+	onDestroy(() => {
+		if (statsTimer) {
+			clearInterval(statsTimer);
+		}
+	});
+
+	function refreshStats(): void {
+		cacheStats = {
+			hits: cacheStats.hits + Math.floor(Math.random() * 40),
+			misses: cacheStats.misses + Math.floor(Math.random() * 3),
+			evictions: Math.max(0, cacheStats.evictions + (Math.random() > 0.85 ? 1 : 0)),
+			totalSize: 40 + Math.random() * 8,
+			itemsCount: cacheStats.itemsCount
+		};
+	}
+
+	function formatPercent(val: number): string {
+		return `${(val * 100).toFixed(1)}%`;
+	}
+
+	async function analyzeQuery(): Promise<void> {
+		if (isLoading) return;
+		isLoading = true;
+		recommendations = [];
+		aiResponse = '';
+
+		await new Promise((resolve) => setTimeout(resolve, 900));
+
+		recommendations = [
+			{
+				title: 'Highlight liability caps',
+				content: 'Compare liability sections 4.1 and 7.2 to ensure mutual caps are aligned.',
+				risk: 'medium',
+				confidence: 0.82
+			},
+			{
+				title: 'Verify governing law',
+				content: 'Current clause references Delaware; confirm that matches the latest term sheet.',
+				risk: 'low',
+				confidence: 0.71
+			},
+			{
+				title: 'Escalate termination clause',
+				content: 'Termination for convenience is one-sided; flag to litigation for review.',
+				risk: 'high',
+				confidence: 0.65
+			}
+		];
+
+		aiResponse = `Based on "${demoQuery}" the cache suggests reviewing liability language, verifying governing law, and double-checking the termination clause for unilateral triggers.`;
+		isLoading = false;
+	}
+
+	function clearResults(): void {
+		recommendations = [];
+		aiResponse = '';
+	}
+</script>
+
+<section class="advanced-cache-demo">
+	<header class="demo-header">
+		<div>
+			<p class="eyebrow">Context7 cache demo</p>
+			<h1>AI-Assisted Legal Workflow</h1>
+			<p class="subtitle">
+				Simulated flow that warms cache entries, inspects embeddings, and surfaces best practices.
+			</p>
+		</div>
+		<div class="controls">
+			<label>
+				<span>Pick a sample query</span>
+				<select bind:value={demoQuery}>
+					{#each legalQueries as query}
+						<option value={query}>{query}</option>
+					{/each}
+				</select>
+			</label>
+			<button class="primary" on:click={analyzeQuery} disabled={isLoading}>
+				{isLoading ? 'Analyzing…' : 'Analyze query'}
+			</button>
+			<button class="ghost" on:click={clearResults}>Clear results</button>
+		</div>
+	</header>
+
+	<section class="stats-grid">
+		<div class="stat-card">
+			<p class="label">Cache hits</p>
+			<p class="value">{cacheStats.hits.toLocaleString()}</p>
+		</div>
+		<div class="stat-card">
+			<p class="label">Cache misses</p>
+			<p class="value">{cacheStats.misses.toLocaleString()}</p>
+		</div>
+		<div class="stat-card">
+			<p class="label">Evictions</p>
+			<p class="value">{cacheStats.evictions}</p>
+		</div>
+		<div class="stat-card">
+			<p class="label">Approx size</p>
+			<p class="value">{cacheStats.totalSize.toFixed(1)} MB</p>
+		</div>
+	</section>
+
+	<section class="results-panel">
+		<h2>AI insight</h2>
+		{#if aiResponse}
+			<p class="ai-response">{aiResponse}</p>
+		{:else if isLoading}
+			<p class="muted">Generating answer…</p>
+		{:else}
+			<p class="muted">Run an analysis to see responses.</p>
+		{/if}
+
+		{#if recommendations.length > 0}
+			<ul class="recommendations">
+				{#each recommendations as rec}
+					<li>
+						<div class="recommendation-header">
+							<span class="pill {rec.risk}">{rec.risk} risk</span>
+							<span class="confidence">{formatPercent(rec.confidence)} confidence</span>
+						</div>
+						<h3>{rec.title}</h3>
+						<p>{rec.content}</p>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+	</section>
+
+	<section class="best-practices">
+		<h2>Cache best practices</h2>
+		<div class="practice-grid">
+			{#each bestPractices as practice}
+				<article>
+					<header>
+						<h3>{practice.title}</h3>
+						<span class="pill">{practice.priority}</span>
+					</header>
+					<p>{practice.description}</p>
+				</article>
+			{/each}
+		</div>
+	</section>
+</section>
+
+<style>
+	.advanced-cache-demo {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+		padding: 2rem;
+		border-radius: 1rem;
+		background: radial-gradient(circle at top, rgba(80, 90, 255, 0.15), rgba(0, 0, 0, 0));
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		color: var(--yorha-text-primary, #f8fafc);
+	}
+
+	.demo-header {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.eyebrow {
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+		color: var(--yorha-text-muted, #9ca3af);
+		margin-bottom: 0.3rem;
+	}
+
+	.subtitle {
+		color: var(--yorha-text-secondary, #cbd5f5);
+		margin-top: 0.2rem;
+	}
+
+	.controls {
+		display: flex;
+		gap: 0.75rem;
+		align-items: flex-end;
+		flex-wrap: wrap;
+	}
+
+	select {
+		min-width: 18rem;
+		padding: 0.65rem 0.75rem;
+		border-radius: 0.5rem;
+		border: 1px solid rgba(255, 255, 255, 0.15);
+		background: rgba(0, 0, 0, 0.35);
+		color: inherit;
+	}
+
+	.primary,
+	.ghost {
+		padding: 0.65rem 1.2rem;
+		border-radius: 0.5rem;
+		border: 1px solid transparent;
+		transition: opacity 0.2s ease;
+	}
+
+	.primary {
+		background: linear-gradient(120deg, #5eead4, #6366f1);
+		color: #0b1120;
+		font-weight: 600;
+	}
+
+	.primary:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
+	}
+
+	.ghost {
+		border-color: rgba(255, 255, 255, 0.2);
+		background: transparent;
+		color: inherit;
+	}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+		gap: 1rem;
+	}
+
+	.stat-card {
+		padding: 1rem;
+		border-radius: 0.75rem;
+		border: 1px solid rgba(255, 255, 255, 0.05);
+		background: rgba(15, 23, 42, 0.6);
+		backdrop-filter: blur(8px);
+	}
+
+	.stat-card .label {
+		font-size: 0.85rem;
+		color: var(--yorha-text-muted, #94a3b8);
+		margin-bottom: 0.25rem;
+	}
+
+	.stat-card .value {
+		font-size: 1.6rem;
+		font-weight: 600;
+		color: inherit;
+	}
+
+	.results-panel {
+		border-radius: 1rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		padding: 1.5rem;
+		background: rgba(15, 23, 42, 0.35);
+		backdrop-filter: blur(12px);
+	}
+
+	.ai-response {
+		margin: 0.5rem 0 1rem;
+		line-height: 1.5;
+	}
+
+	.muted {
+		color: var(--yorha-text-muted, #94a3b8);
+	}
+
+	.recommendations {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.recommendations li {
+		list-style: none;
+		padding: 1rem;
+		border-radius: 0.75rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		background: rgba(2, 6, 23, 0.4);
+	}
+
+	.recommendation-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.5rem;
+	}
+
+	.pill {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.2rem 0.6rem;
+		border-radius: 999px;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		background: rgba(255, 255, 255, 0.08);
+	}
+
+	.pill.low {
+		background: rgba(16, 185, 129, 0.15);
+		color: #34d399;
+	}
+
+	.pill.medium {
+		background: rgba(234, 179, 8, 0.15);
+		color: #facc15;
+	}
+
+	.pill.high {
+		background: rgba(248, 113, 113, 0.15);
+		color: #f87171;
+	}
+
+	.confidence {
+		font-size: 0.85rem;
+		color: var(--yorha-text-muted, #94a3b8);
+	}
+
+	.best-practices .practice-grid {
+		display: grid;
+		gap: 1rem;
+		grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	}
+
+	.best-practices article {
+		border-radius: 0.75rem;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		padding: 1rem;
+		background: rgba(8, 12, 30, 0.5);
+	}
+
+	.best-practices header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 0.5rem;
+	}
+</style>

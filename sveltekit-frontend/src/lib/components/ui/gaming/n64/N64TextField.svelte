@@ -39,7 +39,7 @@ https://svelte.dev/e/js_parse_error -->
     font-size: 0.95rem
    ;transition: box-shadow 0.12s ease,
       transform 0.06s ease;
-    box-shadow: inset 0 -2px, 0 rgba(0, 0, 0, 0.08)}
+    box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08)}
   .n64-textfield:focus {
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.12),
       inset, 0 -2px, 0 rgba(0, 0, 0, 0.08);

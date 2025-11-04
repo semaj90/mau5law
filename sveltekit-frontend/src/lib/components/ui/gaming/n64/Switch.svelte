@@ -617,7 +617,7 @@
     .n64-switch {
       transform: none}
     .switch-track {
-      box-shadow: inset 0 2px, 0 rgba(0, 0, 0, 0.4)}
+      box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4)}
     .switch-knob {
       box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4)}
     .knob-lighting,

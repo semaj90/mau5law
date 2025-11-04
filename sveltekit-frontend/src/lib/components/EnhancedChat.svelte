@@ -5,7 +5,7 @@
 
 	import type { AttachmentMetadata } from '$lib/types/sharedTypes';
 
-	import Button from '$lib/components/ui/enhanced-bits.svelte';
+	import ContextualComposer from '$lib/components/chat/ContextualComposer.svelte';
 
 	type Role = 'user' | 'assistant';
 	interface ChatMessage {
@@ -34,14 +34,10 @@
 	let lastConfidence = $state<number | null>(null);
 
 	let attachment = $state<File | null>(null);
-	let attachmentInput = $state<HTMLInputElement | null>(null);
-	let dragActive = $state<boolean>(false);
 
 	const attachmentLabel = $derived(
 		attachment ? `${attachment.name} (${(attachment.size / 1024).toFixed(1)} KB)` : ''
 	);
-
-	const canSend = $derived(messageInput.trim().length > 0 && !isSending);
 
 	async function handleSend(): Promise<void> {
 		const trimmed = messageInput.trim();
@@ -120,40 +116,8 @@
 		}
 	}
 
-	function onKeyDown(event: KeyboardEvent): void {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			void handleSend();
-		}
-	}
-
-	function handleFileChange(event: Event): void {
-		const file = (event.currentTarget as HTMLInputElement)?.files?.[0];
-		attachment = file ?? null;
-	}
-
 	function clearAttachment(): void {
 		attachment = null;
-		if (attachmentInput) {
-			attachmentInput.value = '';
-		}
-	}
-
-	function handleDragOver(event: DragEvent): void {
-		event.preventDefault();
-		dragActive = true;
-	}
-
-	function handleDragLeave(event: DragEvent): void {
-		event.preventDefault();
-		dragActive = false;
-	}
-
-	function handleDrop(event: DragEvent): void {
-		event.preventDefault();
-		dragActive = false;
-		const file = event.dataTransfer?.files?.[0];
-		attachment = file ?? null;
 	}
 
 	$effect(() => {
@@ -251,46 +215,20 @@
 	<!-- Input -->
 	<div class="composer nes-container with-title rounded-2xl space-y-3">
 		<p class="title">Compose</p>
-		<div
-			class={`dropzone ${dragActive ? 'dragging' : ''}`}
-			on:dragover|preventDefault={handleDragOver}
-			on:dragleave={handleDragLeave}
-			on:drop={handleDrop}
-		>
-			<div>
-				<p class="font-semibold">Evidence uploader</p>
-				<p class="text-sm text-slate-500">Drag & drop or browse to ground the AI response</p>
-			</div>
-			<label class="dropzone-action">
-				<input type="file" class="sr-only" bind:this={attachmentInput} on:change={handleFileChange} />
-				<span>Browse files</span>
-			</label>
-		</div>
-
-		{#if attachment}
-			<div class="attachment-chip">
-				<span>{attachmentLabel}</span>
-				<button class="nes-btn is-error" type="button" on:click={clearAttachment}>Remove</button>
-			</div>
-		{/if}
-
-		<div class="input-row">
-			<textarea
-				class="flex-1 border rounded-xl px-4 py-3 resize-none"
-				placeholder="Draft a cross-examination, summarize opposing counsel's argument..."
-				bind:value={messageInput}
-				rows="3"
-				on:keydown={onKeyDown}
-			/>
-
-			<Button
-				on:click={handleSend}
-				disabled={!canSend}
-				class={`send-button ${canSend ? 'active' : ''}`}
-			>
-				Send
-			</Button>
-		</div>
+		<ContextualComposer
+			variant="retro"
+			value={messageInput}
+			isSending={isSending}
+			buttonLabel="Send"
+			attachmentLabel={attachment ? attachmentLabel : null}
+			placeholder="Draft a cross-examination, summarize opposing counsel's argument..."
+			dropzoneTitle="Evidence uploader"
+			dropzoneHint="Drag & drop or browse to ground the AI response"
+			on:input={(event) => (messageInput = event.detail)}
+			on:send={() => void handleSend()}
+			on:attachmentSelected={(event) => (attachment = event.detail)}
+			on:clearAttachment={clearAttachment}
+		/>
 	</div>
 </div>
 
@@ -370,71 +308,9 @@
 		font-size: 0.9rem;
 	}
 
-	.dropzone {
-		border: 1.5px dashed rgba(99, 102, 241, 0.5);
-		border-radius: 1rem;
-		padding: 1rem 1.5rem;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		background: rgba(99, 102, 241, 0.05);
-		transition: border-color 0.2s ease;
-	}
-
-	.dropzone.dragging {
-		border-color: #2563eb;
-		background: rgba(37, 99, 235, 0.08);
-	}
-
-	.dropzone-action {
-		font-weight: 600;
-		cursor: pointer;
-		color: #2563eb;
-	}
-
-	.attachment-chip {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 0.5rem 0.75rem;
-		border-radius: 0.75rem;
-		background: rgba(37, 99, 235, 0.08);
-		gap: 0.75rem;
-	}
-
-	.input-row {
-		display: flex;
-		gap: 1rem;
-		align-items: flex-end;
-	}
-
-	.send-button {
-		min-width: 140px;
-		height: 52px;
-		border-radius: 1rem;
-		background: linear-gradient(135deg, #2563eb, #7c3aed);
-		color: #fff;
-		font-weight: 600;
-		opacity: 0.4;
-		transition: opacity 0.2s ease, transform 0.2s ease;
-	}
-
-	.send-button.active {
-		opacity: 1;
-	}
-
-	.send-button:disabled {
-		cursor: not-allowed;
-	}
-
 	@media (max-width: 768px) {
-		.input-row {
-			flex-direction: column;
-		}
-
-		.send-button {
-			width: 100%;
+		.messages-container {
+			max-height: none;
 		}
 	}
 </style>

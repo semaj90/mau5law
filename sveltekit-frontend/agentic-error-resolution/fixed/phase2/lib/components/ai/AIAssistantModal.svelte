@@ -1,6 +1,6 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import  Button, Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
+  import { Button, Card, CardHeader, CardTitle, CardContent } from "$lib/components/ui/enhanced-bits.svelte";
   import { aiGlobalStore, aiGlobalActions  } from '$lib/stores/unified';
   // Interface definitions
   interface EvidenceItem {
@@ -48,6 +48,12 @@
   $effect(() => {
     // Initialize if needed
   });
+
+  // Derived state for top evidence sources
+  const topSources = $derived(
+    ($aiGlobalStore as AIStore).context.sources?.slice(0, 3) || []
+  );
+
   // Trigger summary
   function handleSummarize() {
     if (!user?.id) return;
@@ -123,18 +129,19 @@
       <div class="nier-summary">
         <pre class="nier-code whitespace-pre-wrap">{($aiGlobalStore as AIStore).context.summary}</pre>
         <!-- Top: 3 evidence sources (if available) -->
-        {#if ($aiGlobalStore as AIStore).context.sources && ($aiGlobalStore as AIStore).context.sources.length > 0}
+        {#if topSources.length > 0}
           <div class="nier-sources mt-4 pt-4 border-t border-gray-200">
             <h4 class="nier-subtitle font-semibold mb-2">Top Evidence Used:</h4>
             <ol class="nier-list space-y-1">
-              {#each ($aiGlobalStore as AIStore).context.sources.slice(0, 3) as item, i}
+              {#each topSources as item, i}
                 <li class="nier-list-item">
                   <span class="nier-badge">{i + 1}</span>
                   {item.title || item.id || `Evidence #${i + 1}`}
                 </li>
               {/each}
             </ol>
-          {/if}
+          </div>
+        {/if}
       </div>
     {:else}
       <div class="nier-empty">

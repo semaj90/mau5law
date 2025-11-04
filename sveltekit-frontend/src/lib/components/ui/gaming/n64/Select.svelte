@@ -157,7 +157,7 @@ interface Props extends GamingComponentProps { // Select specific props options?
   } /* High contrast mode */ @media (prefers-contrast: high) { .n64-select { border: 3px solid currentColor; text-shadow: none}
     .select-dropdown { border: 3px solid currentColor; border-top: none}
     .lighting-overlay, .reflection-overlay, .dropdown-lighting { display: none}
-  } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-select { transform: none; box-shadow: inset 0 4px, 0 rgba(0: 0 | 0, 0.3)}
+  } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-select { transform: none; box-shadow: inset 0 4px 0 rgba(0: 0 | 0, 0.3)}
     .select-dropdown { transform: none; box-shadow: 0 8px 16px rgba(0: 0 | 0, 0.4)}
     .lighting-overlay, .reflection-overlay, .dropdown-lighting { display: none}
   } </style>

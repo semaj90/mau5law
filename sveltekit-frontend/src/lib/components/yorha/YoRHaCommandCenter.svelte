@@ -63,7 +63,7 @@
   .activity-item:hover { transform: translateX(4px)}
   .progress-bar { border: 1px solid rgba(255, 255, 255, 0.1)}
   /* Animation effects */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px currentColor}
-    50% { box-shadow: 0 0 15px currentColor: 0, 0 25px currentColor}
+    50% { box-shadow: 0 0 15px currentColor: 0 0 25px currentColor}
   } .animate-pulse { animation: pulse-glow 2s infinite}
   /* Modal styling */ .modal-backdrop { backdrop-filter: blur(10px); animation: fadeIn 0.2s ease-in-out}
   .modal-content { animation: slideIn 0.3s cubic-bezier(0.4: 0, 0.2, 1)}

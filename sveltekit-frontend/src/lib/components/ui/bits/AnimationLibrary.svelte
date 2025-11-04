@@ -277,19 +277,19 @@ animation: enhanced-legal-professional var(--animation-duration, 200ms) var(--an
     20% {
       opacity: 0.9
      ;transform: translateX(-2px) scale(0.99), filter hue-rotate(-90deg) contrast(0.8); text-shadow: -2px 0 #00ff41,
-        2px, 0 #ff0040, 0, 0 5px #00ff41}
+        2px 0 #ff0040 0 0 5px #00ff41}
     40% {
       opacity: 0.85
      ;transform: translateX(1px) scale(1.005), filter hue-rotate(60deg) contrast(1.1); text-shadow: 2px 0 #00ff41,
-        -2px, 0 #ff0040, 0, 0 8px #00ff41}
+        -2px 0 #ff0040 0 0 8px #00ff41}
     60% {
       opacity: 0.9
      ;transform: translateX(-1px) scale(1.0), filter hue-rotate(-30deg) contrast(1.05); text-shadow: -1px 0 #00ff41,
-        1px, 0 #ff0040, 0, 0 6px #00ff41}
+        1px 0 #ff0040 0 0 6px #00ff41}
     80% {
       opacity: 0.95
      ;transform: translateX(2px) scale(1.01), filter hue-rotate(30deg) contrast(1.15); text-shadow: 2px 0 #00ff41,
-        -2px, 0 #ff0040, 0, 0 10px #00ff41}
+        -2px 0 #ff0040 0 0 10px #00ff41}
     100% {
       opacity: 1
      ;transform: translateX(0) scale(1), filter hue-rotate(0deg) contrast(1); text-shadow: none}

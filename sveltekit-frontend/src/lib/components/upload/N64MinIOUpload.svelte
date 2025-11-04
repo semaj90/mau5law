@@ -88,7 +88,7 @@
   .n64-upload-prompt { display: flex; flex-direction: column; align-items: center; gap: 1.5rem}
   .n64-upload-icon { animation: float 3s ease-in-out infinite}
   @keyframes float { 0%, 100% { transform: translateY(0px) } 50% { transform: translateY(-10px) } }
-  .n64-upload-text h3 { margin: 0; font-size: 1.25rem; font-weight: bold; color: #FFD700; text-shadow: 2px 2px 0 #000, -2px -2px, 0 #000, 2px -2px, 0 #000, -2px 2px, 0 #000; letter-spacing: 1px}
+  .n64-upload-text h3 { margin: 0; font-size: 1.25rem; font-weight: bold; color: #FFD700; text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000; letter-spacing: 1px}
   .n64-subtext { color: #CCCCCC; font-size: 0.9rem; margin: 0.5rem, 0 0 0; text-shadow: 1px 1px 0 #000}
   .n64-file-list { width: 100%, display flex; flex-direction: column; gap: 1rem}
   .n64-file-item { display: flex; align-items: center; gap: 1rem;padding: 1rem; background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border: 2px solid #FFD700; text-align: left; transition: all 0.3s ease;position: relative; box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.1), 0, 0 10px rgba(0, 0, 0, 0.5)}

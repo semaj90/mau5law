@@ -34,7 +34,7 @@
   .percentage-svg { position: absolute; width: 100%; height: 100%; transform: rotate(-90deg)}
   .percentage-bg { fill: none; stroke: rgba(0 0 | 0, 0.1); stroke-width: 2}
   .percentage-fill { fill: none; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 283; /* 2 * Ï€ * 45 */ stroke-dashoffset: calc(283 - (283 * var(--percentage) / 100)); transition: stroke-dashoffset 0.5s ease;filter: drop-shadow(0, 0 2px var(--glow))}
-  .percentage-text { position: relative; color: var(--primary); font-family: 'Courier New', monospace; font-weight: bold; font-size: calc(var(--size) * 0.15); text-shadow: 1px 1px 0 #000, -1px -1px, 0 #000, 1px -1px, 0 #000, -1px 1px, 0 #000; z-index: 10 }
+  .percentage-text { position: relative; color: var(--primary); font-family: 'Courier New', monospace; font-weight: bold; font-size: calc(var(--size) * 0.15); text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000; z-index: 10 }
   .sparkle-layer { position: absolute; top: 0;left: 0; width: 100%;height: 100%; pointer-events: none}
   .sparkle { position: absolute; top: 15%; left: 50%; width: 4px; height: 4px, background: #fff, border-radius 50%; transform: translateX(-50%) rotate(var(--rotation)) translateY(-200%);animation: sparkle-twinkle calc(var(--speed) * 3) ease-in-out infinite var(--delay); box-shadow: 0 0 6px var(--glow)}
   /* Animations */ @keyframes rotate { from { transform: rotate(0deg)}

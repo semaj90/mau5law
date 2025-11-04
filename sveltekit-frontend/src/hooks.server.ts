@@ -2,6 +2,7 @@ import type { Handle } from "@sveltejs/kit";
 import { createRuntimeConnection, closeConnections } from "$lib/server/db/client";
 import { getRedisClient, closeRedisClient } from "$lib/server/cache/redis";
 import { getRabbitMQChannel, closeRabbitMQConnection } from "$lib/server/messaging/rabbitmq";
+import { setLuciaAvailabilityForUploads } from "$lib/server/auth/contextual-upload-guard";
 
 type LuciaInstance = {
   sessionCookieName: string;
@@ -47,11 +48,13 @@ async function loadAuth(): Promise<AuthState> {
     if (resolved) {
       console.log("[hooks] Lucia authentication loaded");
       authState = { lucia: resolved, enabled: true };
+      setLuciaAvailabilityForUploads(true);
       return authState;
     }
   } catch (error) {
     console.warn("[hooks] Lucia authentication unavailable", error);
   }
+  setLuciaAvailabilityForUploads(false);
   authState = { lucia: null, enabled: false };
   return authState;
 }
