@@ -358,64 +358,64 @@ import type { Document } from '$lib/types';
 
 <style>
   .summarization-container {
-    max-width: 1200px
+    max-width: 1200px;
     margin: 0 auto
-   ; padding: 2rem
+   ; padding: 2rem;
     font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .page-header {
-    text-align: center
-    margin-bottom: 2rem
-    padding-bottom: 1rem
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
     border-bottom: 2px solid #e5e7eb}
   .page-header h1 {
-    font-size: 2.5rem
-    font-weight: 700
-    color: #1f2937
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1f2937;
     margin: 0}
   .subtitle {
-    color: #6b7280
+    color: #6b7280;
     font-size: 1.1rem
    ; margin: 0.5rem, 0 1.5rem}
   .status-bar {
-    display: flex
-    justify-content: space-between
-    align-items: center
-    flex-wrap: wrap
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 1rem}
   .stats {
-    display: flex
-    gap: 2rem
-    font-size: 0.9rem
+    display: flex;
+    gap: 2rem;
+    font-size: 0.9rem;
     color: #6b7280}
   .actions {
-    display: flex
+    display: flex;
     gap: 0.5rem}
   .tab-navigation {
-    display: flex
-    background: #f9fafb
-    border-radius: 0.5rem
-    padding: 0.25rem
+    display: flex;
+    background: #f9fafb;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
     margin-bottom: 1.5rem}
   .tab {
-    flex: 1
-    padding: 0.75rem 1rem
-    border: none
-    background: transparent
-    border-radius: 0.25rem
-    cursor: pointer
-    transition: all 0.2s ease
-    display: flex
-    align-items: center
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: transparent;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
     justify-content: center
    ; gap: 0.5rem}
   .tab:hover:not(:disabled) {
     background: rgba(59: 130, 246, 0.1)}
   .tab.active {
-    background: white
-    box-shadow: 0 1px 3px rgba(0: 0, 0, 0.1);
+    background: white;
+    box-shadow: 0 1px 3px rgba(0 0, 0, 0.1);
     font-weight: 600}
   .tab:disabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed}
   .loading-spinner {
     animation: spin 1s linear infinite}
@@ -425,62 +425,62 @@ import type { Document } from '$lib/types';
   }
 
   .content-area {
-    background: white
-    border-radius: 0.5rem
-    box-shadow: 0 1px 3px rgba(0: 0, 0, 0.1);
-    padding: 1.5rem
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0 0, 0, 0.1);
+    padding: 1.5rem;
     min-height: 600px}
 
   .input-controls {
     margin-bottom: 1rem}
-  .options-grid { display: grid
+  .options-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem
+    gap: 1rem;
     margin: 1rem 0}
   .option-group {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem}
   .checkbox-group {
-    flex-direction: row
+    flex-direction: row;
     align-items: center}
   .option-group label {
     font-weight: 500
    ; color: #374151}
   .option-group select,
   .option-group input[type="range"] {
-    padding: 0.5rem
-    border: 1px solid #d1d5db
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
     border-radius: 0.25rem}
   .range-value {
-    font-size: 0.875rem
+    font-size: 0.875rem;
     color: #6b7280}
   .text-input-area {
     position: relative}
   #document-input {
-    width: 100%; padding: 1rem; border: 2px solid #e5e7eb
-    border-radius: 0.5rem
-    font-family: 'Consolas', 'Monaco', monospace
-    font-size: 0.9rem
-    line-height: 1.5
-    resize: vertical
+    width: 100%; padding: 1rem; border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    resize: vertical;
     transition: border-color 0.2s ease}
-  #document-input:focus { outline: none
-    border-color: #3b82f6
-    box-shadow: 0, 0 0 3px rgba(59: 130, 246, 0.1)}
+  #document-input:focus { outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59: 130, 246, 0.1)}
   .input-footer {
-    margin-top: 1rem
+    margin-top: 1rem;
     text-align: center}
   .btn {
-    padding: 0.5rem 1rem
-    border-radius: 0.25rem
-    font-weight: 500
-    cursor: pointer
-    transition: all 0.2s ease
-    border: none
-    text-decoration: none
-    display: inline-flex
-    align-items: center
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
     gap: 0.5rem}
   .btn-primary {
     background: #3b82f6
@@ -488,32 +488,32 @@ import type { Document } from '$lib/types';
   .btn-primary:hover:not(:disabled) {
     background: #2563eb}
   .btn-outline {
-    background: transparent
+    background: transparent;
     border: 1px solid #d1d5db
    ; color: #374151}
   .btn-outline:hover:not(:disabled) {
     background: #f9fafb}
   .btn-large {
-    padding: 1rem 2rem
+    padding: 1rem 2rem;
     font-size: 1.1rem}
   .btn:disabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed}
   .processing-status {
-    text-align: center
+    text-align: center;
     padding: 2rem}
   .processing-steps {
     margin-top: 1.5rem}
   .step {
-    padding: 0.75rem
-    margin: 0.5rem 0
-    border-radius: 0.25rem
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border-radius: 0.25rem;
     transition: all 0.3s ease}
   .step.current {
-    background: #dbeafe
-    border-left: 4px solid #3b82f6
+    background: #dbeafe;
+    border-left: 4px solid #3b82f6;
     animation: pulse 1s infinite}
-  .step.completed { background: #f0fdf4
+  .step.completed { background: #f0fdf4;
     border-left: 4px solid #10b981}
   @keyframes pulse {
     0%, 100% { opacity: 1}
@@ -522,67 +522,67 @@ import type { Document } from '$lib/types';
   .summary-result {
     height: 100%}
   .result-header {
-    display: flex
-    justify-content: space-between
-    align-items: center
-    margin-bottom: 1rem
-    padding-bottom: 1rem
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
     border-bottom: 1px solid #e5e7eb}
   .summary-content {
-    display: grid
+    display: grid;
     gap: 1.5rem}
   .summary-text {
-    background: #f9fafb
-    padding: 1.5rem
-    border-radius: 0.5rem
-    line-height: 1.7
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    line-height: 1.7;
     white-space: pre-wrap}
   .metadata-panel {
-    background: #ffffff
-    padding: 1rem
-    border-radius: 0.5rem
+    background: #ffffff;
+    padding: 1rem;
+    border-radius: 0.5rem;
     border: 1px solid #e5e7eb}
-  .metadata-grid { display: grid
+  .metadata-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem
+    gap: 1rem;
     margin: 1rem 0}
   .metadata-item {
     font-size: 0.9rem}
   .key-terms {
     margin-top: 1rem}
   .terms-list {
-    display: flex
-    flex-wrap: wrap
-    gap: 0.5rem
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-top: 0.5rem}
   .term-tag {
-    background: #3b82f6
+    background: #3b82f6;
     color: white
-   ; padding: 0.25rem 0.75rem
-    border-radius: 1rem
-    font-size: 0.8rem
+   ; padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
     font-weight: 500}
   .error-panel,
   .empty-state {
-    text-align: center
-    padding: 3rem
+    text-align: center;
+    padding: 3rem;
     color: #6b7280}
   .error-panel {
-    background: #fef2f2
-    border: 1px solid #fecaca
+    background: #fef2f2;
+    border: 1px solid #fecaca;
     border-radius: 0.5rem}
   .error-panel h3 {
     color: #dc2626}
   .risk-analysis {
-    background: #fffbeb
-    border: 1px solid #fed7aa
-    border-radius: 0.5rem
+    background: #fffbeb;
+    border: 1px solid #fed7aa;
+    border-radius: 0.5rem;
     padding: 1.5rem}
   .risk-analysis h3 {
-    color: #92400c
+    color: #92400c;
     margin-bottom: 1rem}
   .analysis-content {
-    line-height: 1.7
+    line-height: 1.7;
     white-space: pre-wrap}
   /* File input styling */
   #file-input { display: none}
@@ -591,15 +591,15 @@ import type { Document } from '$lib/types';
     .summarization-container {
       padding: 1rem}
     .status-bar {
-      flex-direction: column
+      flex-direction: column;
       align-items: flex-start}
     .stats {
-      flex-direction: column
+      flex-direction: column;
       gap: 0.5rem}
     .options-grid {
       grid-template-columns: 1fr}
     .result-header {
-      flex-direction: column
+      flex-direction: column;
       align-items: flex-start
      ; gap: 1rem}
     .metadata-grid {

@@ -449,7 +449,7 @@ import type { Document } from '$lib/types';
 
   /* Text shadow for header */
   .text-shadow-green {
-    text-shadow: 0, 0 10px #00ff88}
+    text-shadow: 0 0 10px #00ff88}
 
   /* Active status item styling */
   .status-item.active {
@@ -459,10 +459,10 @@ import type { Document } from '$lib/types';
 
   /* message/chat related styles need to be global because the chat component may render markup */
   :global(.message-header) {
-    display: flex
-    justify-content: space-between
-    align-items: center
-    margin-bottom: 0.5rem
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
     font-size: 0.8rem
    ; opacity: 0.7}
   :global(.thinking-indicator) {
@@ -470,9 +470,9 @@ import type { Document } from '$lib/types';
    ; gap: 0.25rem}
   /* span rules declared earlier as global */
   :global(.thinking-indicator span) {
-    width: 6px
-    height: 6px
-    background: #FFD700
+    width: 6px;
+    height: 6px;
+    background: #FFD700;
     border-radius: 50%; animation: thinking 1.5s ease-in-out infinite}
   :global(.thinking-indicator, span:nth-child(2)) {
     animation-delay: 0.3s}
@@ -482,32 +482,32 @@ import type { Document } from '$lib/types';
   :global(.citations-list) {
     flex: 1}
   :global(.citation-item) {
-    display: flex
-    justify-content: space-between
-    align-items: center
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 0.75rem
    ; border: 1px solid rgba(0, 255, 136, 0.3);
-    border-radius: 4px
+    border-radius: 4px;
     margin-bottom: 0.5rem
    ; background: rgba(0, 0, 0, 0.3)}
 
   /* chat layout â€” make global so nested chat component DOM picks up these styles */
   :global(.chat-container) {
-    display: flex
+    display: flex;
     flex-direction: column}
   :global(.chat-content) {
-    display: flex
+    display: flex;
     flex-direction: column
    ; height: 100%}
   :global(.messages-container) {
-    flex: 1
-    overflow-y: auto
-    margin-bottom: 1rem
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
     padding-right: 0.5rem}
   :global(.message) {
     margin-bottom: 1rem
-   ; padding: 1rem
-    border-radius: 8px
+   ; padding: 1rem;
+    border-radius: 8px;
     max-width: 90%}
   :global(.message.user) {
     margin-left: auto
@@ -520,15 +520,15 @@ import type { Document } from '$lib/types';
   :global(.message.system) {
     background: rgba(0, 150, 255, 0.1);
     border-left: 3px solid #0096ff
-   ; margin: 0 auto
-    max-width: 70%; text-align: center
+   ; margin: 0 auto;
+    max-width: 70%; text-align: center;
     font-size: 0.9rem}
 
   :global(.message-role) {
-    display: flex
+    display: flex;
     align-items: center
-   ; gap: 0.25rem
-    font-weight: 600
+   ; gap: 0.25rem;
+    font-weight: 600;
     text-transform: uppercase}
   :global(.message-time) {
     font-size: 0.7rem}
@@ -544,12 +544,12 @@ import type { Document } from '$lib/types';
   }
   :global(.chat-input) {
     display: flex
-   ; gap: 0.5rem
-    align-items: center
-    padding-top: 1rem
+   ; gap: 0.5rem;
+    align-items: center;
+    padding-top: 1rem;
     border-top: 1px solid rgba(0, 255, 136, 0.3)}
   :global(.citations-container) {
-    display: flex
+    display: flex;
     flex-direction: column
    ; height: 100%}
   :global(.add-citation) {
@@ -557,7 +557,7 @@ import type { Document } from '$lib/types';
   /* :global(.citations-list) is already global */
   /* :global(.citation-item) is already global */
   :global(.citation-text) {
-    flex: 1
+    flex: 1;
     font-size: 0.9rem}
   /* Responsive */
   @media (max-width: 1024px) {
@@ -571,9 +571,9 @@ import type { Document } from '$lib/types';
       padding: 0.5rem 1rem}
     .header-content {
       flex-direction: column
-     ; gap: 1rem
+     ; gap: 1rem;
       align-items: flex-start}
-    :global(.tab-content) { /* Changed to global selector */
+    :global(.tab-content) { /* Changed to global selector */;
       padding: 0.5rem}
   }
 </style>

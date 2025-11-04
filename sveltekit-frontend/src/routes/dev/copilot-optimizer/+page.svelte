@@ -57,4 +57,5 @@
             }} class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
           > Reset to Defaults </button> </div> </div> {/if} </main> </div> <style> .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; .slider: :-webkit-slider-thumb { appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #7c3aed; cursor: pointer; border: 2px solid #a855f7}
   .slider::-webkit-slider-thumb:hover { background: #8b5cf6}
-</style>
+
+}</style>

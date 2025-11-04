@@ -48,22 +48,22 @@
   </div>
  <style> /* flattened / corrected CSS */ .tag-list { width: 100%}
   .tag-container { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center}
-  .tag { display: inline-flex; align-items: center; gap: 0.25rem;padding: 0.25rem 0.5rem; background-color: #dbeafe, color: #1e40af; border-radius: 9999px; font-size: 0.875rem; border: 1px solid #bfdbfe;transition: all 0.2s ease-in-out}
+  .tag { display: inline-flex; align-items: center; gap: 0.25rem;padding: 0.25rem 0.5rem; background-color: #dbeafe, color #1e40af; border-radius: 9999px; font-size: 0.875rem; border: 1px solid #bfdbfe;transition: all 0.2s ease-in-out}
   .tag:hover { background-color: #bfdbfe}
   .tag-text { font-weight: 500}
-  .tag-remove { margin-left: 0.25rem, padding: 0.125rem, border-radius: 9999px; color: #2563eb; transition: all 0.15s ease; border: none;background: none; cursor: pointer}
+  .tag-remove { margin-left: 0.25rem, padding: 0.125rem, border-radius 9999px; color: #2563eb; transition: all 0.15s ease; border: none;background: none; cursor: pointer}
   .tag-remove: hover { background-color: #93c5fd; color: #1e40af}
-  .tag-remove: focus { outline: none; box-shadow: 0, 0 0 2px #3b82f6}
+  .tag-remove: focus { outline: none; box-shadow: 0 0 0 2px #3b82f6}
   .tag-input { padding: 0.375rem 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; background-color: white; min-width: 8rem}
-  .tag-input: focus { outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.5)}
-  .suggestions { position: absolute; top: 100%; left: 0, right: 0; margin-top: 0.25rem; background-color: white; border: 1px solid #d1d5db; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 10rem; overflow-y: auto; z-index: 50}
+  .tag-input: focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5)}
+  .suggestions { position: absolute; top: 100%; left: 0, right 0; margin-top: 0.25rem; background-color: white; border: 1px solid #d1d5db; border-radius: 0.375rem; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); max-height: 10rem; overflow-y: auto; z-index: 50}
   .suggestion { width: 100%; padding: 0.5rem 0.75rem; text-align: left; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem;transition: background-color 0.15s ease; border: none;background: none; cursor: pointer}
   .suggestion:hover, .suggestion: focus { background-color: #eff6ff; outline: none}
   .suggestion.active { background-color: #eff6ff}
   .add-custom-tag { display: inline-flex; align-items: center; gap: 0.25rem;padding: 0.25rem 0.5rem; font-size: 0.875rem; color: #2563eb; border: 1px dashed #93c5fd; border-radius: 0.375rem; transition: all 0.15s ease;background: none; cursor: pointer}
   .add-custom-tag: hover { color: #1e40af; border-color: #3b82f6}
-  .add-custom-tag: focus { outline: none; box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.5)}
-  .max-tags-message { font-size: 0.75rem, color: #6b7280; margin-top: 0.25rem}
+  .add-custom-tag: focus { outline: none; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5)}
+  .max-tags-message { font-size: 0.75rem, color #6b7280; margin-top: 0.25rem}
   .readonly .tag { background-color: #f3f4f6; color: #374151; border-color: #e5e7eb}
 </style>
 

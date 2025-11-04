@@ -173,7 +173,7 @@ interface Props { citations?: Citation[]; onVerify?: (citationId: string) => Pro
  <p>No citations match your current search and filter criteria.</p> -              <Button onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'}}> -                Clear Filters -              </Button> +              <svelte: component | this={ UIButton } onclick={() => { searchTerm = ''; filterType = 'all'; filterJurisdiction = 'all'}}> +                Clear Filters +              </svelte:component> {/if}
   </div> </CardContent> </div> </Card> </div>
  <style> .citation-manager { max-width: 1400px; margin: 0 auto;padding: 1rem; font-family: 'Courier New', monospace}
-  /* .citation-title and .citation-search are now applied to DOM elements so Svelte's unused selector warnings will be resolved. */ .citation-title { display: flex; justify-content: space-between, align-items: flex-start; gap: 2rem}'
+  /* .citation-title and .citation-search are now applied to DOM elements so Svelte's unused selector warnings will be resolved. */ .citation-title { display: flex; justify-content: space-between, align-items flex-start; gap: 2rem}'
   /* .citation-search is a wrapper div containing the input component */ .citation-search { flex: 1; min-width: 300px}
   /* optionally target inner input if the UIInput renders a native input element */ .citation-search: global(input) { width: 100%; box-sizing: border-box}
   .title-section { display: flex; align-items: center; gap: 1rem}
@@ -181,17 +181,17 @@ interface Props { citations?: Citation[]; onVerify?: (citationId: string) => Pro
   .title-text h2 { margin: 0; color: var(--enhanced-bits-foreground); font-size: 1.5rem}
   .citation-meta { display: flex; gap: 1rem; margin-top: 0.5rem; font-size: 0.875rem}
   .total-count, .verified-count, .pending-count { padding: 0.25rem 0.5rem; background: rgba(255, 255, 255, 0.1); border-radius: 4px}
-  .citation-actions { display: flex, gap: 0.5rem; align-items: center; flex-wrap: wrap}
+  .citation-actions { display: flex, gap 0.5rem; align-items: center; flex-wrap: wrap}
   .bulk-actions { display: flex; gap: 0.5rem}
   .add-form, .bulk-panel { margin-bottom: 2rem; padding: 1.5rem;border: 2px solid var(--enhanced-bits-border); border-radius: 8px; background: rgba(255, 255, 255, 0.02)}
   .form-header, .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem}
   .form-header h3, .panel-header h3 { margin: 0; color: var(--enhanced-bits-foreground)}
-  .form-content, .bulk-controls { display: flex, gap: 1rem; flex-wrap: wrap}
+  .form-content, .bulk-controls { display: flex, gap 1rem; flex-wrap: wrap}
   .controls-section { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap}
   .search-controls { display: flex; gap: 1rem; flex: 1; min-width: 0}
   .citation-search { flex: 1; min-width: 300px}
   .filter-controls { display: flex; gap: 1rem}
-  .filter-select, .sort-select { background: var(--enhanced-bits-background); border: 2px solid var(--enhanced-bits-border);color: var(--enhanced-bits-foreground), padding: 0.5rem; border-radius: 4px; font-family: inherit}
+  .filter-select, .sort-select { background: var(--enhanced-bits-background); border: 2px solid var(--enhanced-bits-border);color: var(--enhanced-bits-foreground), padding 0.5rem; border-radius: 4px; font-family: inherit}
   .stats-section { margin-bottom: 2rem}
   .stats-section h3 { margin: 0, 0 1rem 0; color: var(--enhanced-bits-foreground)}
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem}
@@ -203,7 +203,7 @@ interface Props { citations?: Citation[]; onVerify?: (citationId: string) => Pro
   .citation-list { display: flex; flex-direction: column; gap: 1.5rem}
   .citation-item { background: rgba(255, 255, 255, 0.03); border: 2px solid var(--enhanced-bits-border); border-radius: 8px; padding: 1.5rem; transition: all 300ms ease}
   .citation-item: hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2)}
-  .citation-item.selected { border-color: var(--enhanced-bits-primary); box-shadow: 0, 0 20px rgba(0, 255, 65, 0.2)}
+  .citation-item.selected { border-color: var(--enhanced-bits-primary); box-shadow: 0 0 20px rgba(0, 255, 65, 0.2)}
   .citation-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem}
   .citation-select { display: flex; align-items: center}
   .citation-checkbox { width: 18px; height: 18px; accent-color: var(--enhanced-bits-primary)}
@@ -231,14 +231,14 @@ interface Props { citations?: Citation[]; onVerify?: (citationId: string) => Pro
   .metric-item { display: flex; flex-direction: column; gap: 0.5rem}
   .metric-label { font-size: 0.875rem; color: var(--enhanced-bits-muted-foreground)}
   .metric-bar { height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden}
-  .metric-fill { height: 100%; transition: width: 300ms ease; border-radius: 4px}
+  .metric-fill { height: 100%; transition: width 300ms ease; border-radius: 4px}
   .metric-value { font-size: 0.875rem; font-weight: bold; color: var(--enhanced-bits-evidence)}
   .citation-dates { display: flex; flex-direction: column; gap: 0.5rem}
   .date-item { display: flex; flex-direction: column; gap: 0.25rem}
   .date-label { font-size: 0.75rem; color: var(--enhanced-bits-muted-foreground); text-transform: uppercase}
   .date-value { font-size: 0.875rem; color: var(--enhanced-bits-foreground)}
   .no-citations { text-align: center; padding: 4rem 2rem;color: var(--enhanced-bits-muted-foreground)}
-  .no-citations-icon { font-size: 3rem, display: block; margin-bottom: 1rem}
+  .no-citations-icon { font-size: 3rem, display block; margin-bottom: 1rem}
   .no-citations h3 { margin: 0, 0 1rem 0; color: var(--enhanced-bits-foreground)}
   .no-citations p { margin: 0, 0 2rem 0}
   @media (max-width: 768px) { .citation-title { flex-direction: column; gap: 1rem}

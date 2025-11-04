@@ -468,8 +468,8 @@ import type { Document } from '$lib/types';
     max-width: none}
   .prose pre {
     background: #f5f5f5
-   ;padding: 1rem
-    border-radius: 0.5rem
+   ;padding: 1rem;
+    border-radius: 0.5rem;
     overflow-x: auto}
 </style>
 

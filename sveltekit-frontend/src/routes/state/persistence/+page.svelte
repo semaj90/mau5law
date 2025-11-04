@@ -192,7 +192,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
  /* Load local fonts from the static/ folder */ @font-face { font-family: "Inter"; src: url("@/sveltekit-frontend/static/fonts/Inter-Variable.woff2") format("woff2"), url("@/sveltekit-frontend/static/fonts/Inter-Regular.woff") format("woff"); font-weight: 100 900; font-style: normal; font-display: swap}
 @font-face { font-family: "SF Mono"; src: url("@/sveltekit-frontend/static/fonts/SFMono-Regular.woff2") format("woff2"), url("@/sveltekit-frontend/static/fonts/SFMono-Regular.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap}
 
-/* use the local Inter as the page font; fall back to system fonts */ .page-container { max-width: 1600px; margin: 0 auto; padding: 2rem; font-family: "Inter", system-ui, -apple-system: "Segoe UI"; Roboto: "Helvetica Neue", Arial}
+/* use the local Inter as the page font; fall back to system fonts */ .page-container { max-width: 1600px; margin: 0 auto; padding: 2rem; font-family: "Inter", system-ui, -apple-system "Segoe UI"; Roboto: "Helvetica Neue", Arial}
 
 .page-header { margin-bottom: 2rem}
   .header-content { margin-bottom: 1.5rem}
@@ -218,7 +218,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .states-container { display: flex; flex-direction: column; gap: 1rem}
   .state-card { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.2s ease}
   .state-card: hover { border-color: #d1d5db; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
-  .state-card.selected { border-color: #3b82f6; box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.2)}
+  .state-card.selected { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2)}
   .state-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem}
   .state-info { display: flex; align-items: center; gap: 1rem}
   .state-title { font-size: 1.125rem; font-weight: 600; color: #1f2937; margin: 0}

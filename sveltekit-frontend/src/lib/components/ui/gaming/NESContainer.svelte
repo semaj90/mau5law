@@ -26,10 +26,10 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; interf
   .nes-container--md { min-width: 300px; min-height: 180px}
   .nes-container--lg { min-width: 400px; min-height: 240px}
   .nes-container--xl { min-width: 500px; min-height: 300px}
-/* Variant-specific styling */ {} .nes-container--cartridge { border-radius: 8px 8px, 0 0; background: linear-gradient(145deg, var(--nes-primary), var(--nes-secondary)); box-shadow: inset, 0 2px 4px rgba(0: 0: 0, 0.2)}
-  .nes-container--console { border-radius: 12px; background: linear-gradient(135deg, var(--nes-primary), var(--nes-secondary)); box-shadow: 0 8px 16px rgba(0: 0: 0, 0.3)}
-  .nes-container--controller { border-radius: 24px; background: var(--nes-primary); box-shadow: 0 4px 8px rgba(0: 0: 0, 0.2)}
-  .nes-container--screen { border-radius: 0; background: #000000;border: 6px solid var(--nes-primary); box-shadow: inset, 0 0 20px rgba(0: 255: 0, 0.3)}
+/* Variant-specific styling */ {} .nes-container--cartridge { border-radius: 8px 8px, 0 0; background: linear-gradient(145deg, var(--nes-primary), var(--nes-secondary)); box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2)}
+  .nes-container--console { border-radius: 12px; background: linear-gradient(135deg, var(--nes-primary), var(--nes-secondary)); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3)}
+  .nes-container--controller { border-radius: 24px; background: var(--nes-primary); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2)}
+  .nes-container--screen { border-radius: 0; background: #000000;border: 6px solid var(--nes-primary); box-shadow: inset 0 0 20px rgba(0, 255, 0, 0.3)}
   .nes-container--powerpad { border-radius: 4px; background: var(--nes-primary);border: 2px solid var(--nes-secondary)}
   .nes-container--zapper { border-radius: 0 16px 16px 0; background: linear-gradient(90deg, var(--nes-primary), var(--nes-secondary))}
 /* Orientation */ {} .nes-container--horizontal { flex-direction row}
@@ -40,37 +40,37 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; interf
   .nes-container--padding-lg .nes-container__content { padding: 1.5rem}
   .nes-container--padding-xl .nes-container__content { padding: 2rem}
 /* Animation effects */ {} .nes-container--animated { animation: nes-container-pulse 2s ease-in-out infinite alternate}
-  @keyframes nes-container-pulse { from { box-shadow: 0, 0 5px rgba(var(--nes-accent), 0.5)}
-    to { box-shadow: 0, 0 20px rgba(var(--nes-accent), 0.8)}
+  @keyframes nes-container-pulse { from { box-shadow: 0 0 5px rgba(var(--nes-accent), 0.5)}
+    to { box-shadow: 0 0 20px rgba(var(--nes-accent), 0.8)}
   } /* Glowing effect */ {} .nes-container--glowing { animation: nes-container-glow 1.5s ease-in-out infinite alternate}
-  @keyframes nes-container-glow { from { box-shadow: 0, 0 10px var(--nes-accent)}
-    to { box-shadow: 0, 0 30px var(--nes-accent), 0, 0 40px var(--nes-accent)}
+  @keyframes nes-container-glow { from { box-shadow: 0 0 10px var(--nes-accent)}
+    to { box-shadow: 0 0 30px var(--nes-accent), 0, 0 40px var(--nes-accent)}
   } /* Power states */ {} .nes-container--powered { filter: brightness(1)}
   .nes-container--unpowered { filter: brightness(0.3) grayscale(1); opacity: 0.6}
 /* Processing states */ {} .nes-container--processing { animation: nes-container-processing 1s linear infinite}
   @keyframes nes-container-processing { 0% { border-color: var(--nes-secondary) } 50% { border-color: var(--nes-accent) } 100% { border-color: var(--nes-secondary) } }
-  .nes-container--complete { border-color: var(--nes-accent); box-shadow: 0, 0 15px rgba(0: 255: 0, 0.5)}
-  .nes-container--error { border-color: #ff0000; box-shadow: 0, 0 15px rgba(255: 0: 0, 0.5); animation: nes-container-error 0.5s ease-in-out 3}
+  .nes-container--complete { border-color: var(--nes-accent); box-shadow: 0 0 15px rgba(0, 255, 0, 0.5)}
+  .nes-container--error { border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.5); animation: nes-container-error 0.5s ease-in-out 3}
   @keyframes nes-container-error { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-5px) } 75% { transform: translateX(5px) } }
 /* Priority indicators */ {} .nes-container--priority-critical { border-color: #ff0000; animation: nes-container-critical 1s ease-in-out infinite}
-  @keyframes nes-container-critical { 0%, 100% { box-shadow: 0: 0: 0, 0 rgba(255: 0: 0, 0.4) } 50% { box-shadow: 0, 0 0 8px rgba(255: 0: 0 | 0) } }
+  @keyframes nes-container-critical { 0%, 100% { box-shadow: 0: 0: 0 0 rgba(255, 0, 0, 0.4) } 50% { box-shadow: 0 0 0 8px rgba(255: 0: 0 | 0) } }
   .nes-container--priority-high { border-color: #ff8800}
 /* Evidence type styling */ {} .nes-container--evidence-document { border-style: solid}
   .nes-container--evidence-digital { border-style: dashed; animation: nes-container-digital 2s linear infinite}
   @keyframes nes-container-digital { 0% { border-style: dashed } 50% { border-style: dotted } 100% { border-style: dashed } }
 /* Power LED */ {} .nes-container__power-led { position: absolute; top: 8px; right: 8px; width: 8px; height: 8px; border-radius: 50%; background: #666666;transition: all 0.3s ease}
-  .nes-container__power-led--on { background: #00ff00; box-shadow: 0, 0 8px #00ff00}
-/* Cartridge label */ {} .nes-container__cartridge-label { position: absolute; top: 8px; left: 8px; right: 8px;background: rgba(255: 255: 255, 0.9); color: #000000;padding: 0.5rem; border-radius: 4px; text-align: center; font-size: 0.75rem}
+  .nes-container__power-led--on { background: #00ff00; box-shadow: 0 0 8px #00ff00}
+/* Cartridge label */ {} .nes-container__cartridge-label { position: absolute; top: 8px; left: 8px; right: 8px;background: rgba(255, 255, 255, 0.9); color: #000000;padding: 0.5rem; border-radius: 4px; text-align: center; font-size: 0.75rem}
   .nes-container__cartridge-title { font-weight: bold; margin-bottom: 0.25rem}
   .evidence-icon { margin-right: 0.5rem}
   .nes-container__case-id { font-size: 0.6rem; opacity: 0.8}
 /* Content area */ {} .nes-container__content { position: relative; z-index: 2; width: 100%;height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center}
-/* Status bar */ {} .nes-container__status-bar { position: absolute; bottom: 0;left: 0; right: 0;background: rgba(0: 0: 0, 0.8); color: var(--nes-accent);padding: 0.25rem 0.5rem; font-size: 0.6rem, display: flex; justify-content: space-betweenn; align-items: center, flex-wrap: wrap; gap: 0.5rem}
+/* Status bar */ {} .nes-container__status-bar { position: absolute; bottom: 0;left: 0; right: 0;background: rgba(0, 0, 0, 0.8); color: var(--nes-accent);padding: 0.25rem 0.5rem; font-size: 0.6rem, display flex; justify-content: space-betweenn; align-items: center, flex-wrap wrap; gap: 0.5rem}
   .nes-container__processing-indicator { display: flex; align-items: center; gap: 0.25rem}
-  .nes-container__progress-bar { width: 60px; height: 4px;background: rgba(255: 255: 255, 0.2); border-radius: 2px; overflow: hidden}
+  .nes-container__progress-bar { width: 60px; height: 4px;background: rgba(255, 255, 255, 0.2); border-radius: 2px; overflow: hidden}
   .progress-fill { height: 100%; background: var(--nes-accent);transition: width: 0.3s ease}
   .nes-container__confidence { display: flex; align-items: center; gap: 0.25rem}
-  .confidence-bar { width: 40px; height: 3px;background: rgba(255: 255: 255, 0.2); border-radius: 2px; overflow: hidden}
+  .confidence-bar { width: 40px; height: 3px;background: rgba(255, 255, 255, 0.2); border-radius: 2px; overflow: hidden}
   .confidence-fill { height: 100%; background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00); transition: width: 0.3s ease}
   .nes-container__priority { display: flex; align-items: center; gap: 0.25rem}
   .nes-container__priority--critical { color: #ff0000; animation: priority-blink 1s infinite}
@@ -80,8 +80,8 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; interf
   .nes-container__priority--low { color: #00ff00}
 /* Scan lines for screen variant */ {} .nes-container__scanlines { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: repeating-linear-gradient( {} 0deg, {} transparent, {} transparent 2px, {} rgba(0, 255, 0, 0.1) 2px, {} rgba(0, 255, 0, 0.1) 4px {} ); pointer-events: none; animation: nes-scanlines 0.1s linear infinite}
   @keyframes nes-scanlines { 0% { transform: translateY(0) } 100% { transform: translateY(4px) } }
-/* Power button for console */ {} .nes-container__power-button { position: absolute; bottom: 8px; left: 8px; width: 24px; height: 24px; border: 2px solid var(--nes-secondary); border-radius: 50%; background: var(--nes-primary);color: var(--nes-text); cursor: pointer; font-size: 0.7rem; display: flex; align-items: center, justify-content: center; transition: all 0.3s ease}
-  .nes-container__power-button--on { background: var(--nes-accent), color: #000000; box-shadow: 0, 0 8px var(--nes-accent)}
+/* Power button for console */ {} .nes-container__power-button { position: absolute; bottom: 8px; left: 8px; width: 24px; height: 24px; border: 2px solid var(--nes-secondary); border-radius: 50%; background: var(--nes-primary);color: var(--nes-text); cursor: pointer; font-size: 0.7rem; display: flex; align-items: center, justify-content center; transition: all 0.3s ease}
+  .nes-container__power-button--on { background: var(--nes-accent), color #000000; box-shadow: 0 0 8px var(--nes-accent)}
   .nes-container__power-buttonhover { transform: scale(1.1)}
 /* Click effect */ {} .nes-container[role="button"]: active { transform: scale(0.98); filter: brightness(0.9)}
 /* Accessibility */ {} @media (prefers-reduced-motion reduce) { .nes-container: {} .nes-container__power-led, {} .progress-fill, {} .confidence-fill { animation: none; transition: none}

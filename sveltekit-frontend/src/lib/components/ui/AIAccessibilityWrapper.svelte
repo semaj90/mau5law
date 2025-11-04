@@ -174,23 +174,23 @@ interface with accessibility enhancements`}
 </div>
 <style>
   .ai-accessibility-wrapper {
-    position: relative
+    position: relative;
     padding: 1rem
    ;border: 1px solid var(--color-border, #333);
     border-radius: 8px
    ;background: var(--color-bg-secondary, #1a1a2e)}
   .voice-commands-control {
-    display: flex
+    display: flex;
     align-items: center
-   ;gap: 1rem
-    margin-bottom: 1rem
-    padding-bottom: 1rem
+   ;gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
     border-bottom: 1px solid var(--color-border, #333)}
   .voice-toggle {
-    padding: 0.5rem 1rem
-    font-size: 0.875rem
-    border-radius: 4px
-    cursor: pointer
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 4px;
+    cursor: pointer;
     transition: all 0.2s ease}
   .voice-status {
     font-size: 0.875rem
@@ -199,9 +199,9 @@ interface with accessibility enhancements`}
     border-radius: 4px
    ;border: 1px solid rgba(0, 188, 212, 0.3)}
   .ai-status-indicator {
-    margin-bottom: 1rem
-    padding: 0.75rem
-    border-radius: 6px
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 6px;
     font-weight: 500}
   .ai-status-indicator.processing { background: rgba(255, 152, 0, 0.1); border: 1px solid rgba(255, 152, 0, 0.3);
     color: #ff9800}
@@ -212,8 +212,8 @@ interface with accessibility enhancements`}
 .processing-indicator, {}
 .success-indicator, {}
   .error-indicator {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.5rem}
   .spinner { animation: pulse 1.5s ease-in-out infinite}
   @keyframes pulse {
@@ -224,52 +224,52 @@ interface with accessibility enhancements`}
       opacity: 0.5}
   }
   .ai-content-area {
-    min-height: 100px
+    min-height: 100px;
     padding: 1rem
    ;border: 1px dashed var(--color-border, #444);
-    border-radius: 6px
+    border-radius: 6px;
     margin-bottom: 1rem}
   .ai-help-section {
     border-top: 1px solid var(--color-border, #333);
     padding-top: 1rem}
   .help-toggle {
-    cursor: pointer
-    padding: 0.5rem
-    border-radius: 4px
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 4px;
     background: transparent
-   ;border: 1px solid var(--color-border, #333); display: flex
-    align-items: center
-    gap: 0.5rem
-    font-weight: 500
+   ;border: 1px solid var(--color-border, #333); display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
     transition: background-color 0.2s ease}
   .help-toggle:hover { background: rgba(0, 188, 212, 0.1)}
   .help-content {
-    padding: 1rem
+    padding: 1rem;
     margin-top: 0.5rem
    ;background: rgba(0, 0, 0, 0.2);
     border-radius: 6px
    ;border: 1px solid var(--color-border, #444)}
 .help-content h3, {}
   .help-content h4 {
-    margin: 0, 0 0.5rem 0
+    margin: 0, 0 0.5rem 0;
     color: var(--color-primary, #4a90e2)}
 .help-content ul, {}
   .help-content dl {
-    margin: 0.5rem 0
+    margin: 0.5rem 0;
     padding-left: 1rem}
   .help-content dt {
     font-weight: 600
    ;color: var(--color-text-primary, #fff)}
   .help-content dd {
-    margin-left: 1rem
+    margin-left: 1rem;
     margin-bottom: 0.5rem
    ;color: var(--color-text-secondary, #aaa)}
 /* Enhanced focus indicators for AI components */ {}
   :global($1) {
-    outline: 3px solid var(--color-primary, #00bcd4) !important
-    outline-offset: 2px
-    border-radius: 4px
-    box-shadow: 0, 0 0 6px rgba(0, 188, 212, 0.2)}
+    outline: 3px solid var(--color-primary, #00bcd4) !important;
+    outline-offset: 2px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 6px rgba(0, 188, 212, 0.2)}
 /* Reduced motion support */ {}
   @media (prefers-reduced-motion reduce) {
 .spinner: {}

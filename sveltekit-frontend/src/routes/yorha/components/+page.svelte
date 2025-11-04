@@ -302,7 +302,7 @@
   </div>
 </div>
 
-<style lang="postcss">
+<style>
   .yorha-components-page {
     @apply min-h-screen;
   }
@@ -316,9 +316,7 @@
   }
   .yorha-header-title h1 {
     @apply text-3xl md:text-4xl font-bold tracking-wider text-amber-400 flex items-center justify-center gap-4;
-    text-shadow:
-      0,
-      0 20px rgba(255, 191, 0, 0.5);
+    text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {
     @apply text-lg text-amber-300 tracking-wide opacity-80 mt-2;
@@ -344,7 +342,7 @@
   }
   .yorha-component-btn {
     @apply w-full p-4 text-left flex items-center gap-3 border border-amber-400 border-opacity-30;
-    @apply hover:border-opacity-60 hover:bg-amber-400 hover:bg-opacity-10 transition-all;
+    @apply hover:border-opacity-60 hover: bg-amber-400 hover bg-opacity-10 transition-all;
   }
   .yorha-component-active {
     @apply border-amber-400 bg-amber-400 bg-opacity-20;
@@ -364,7 +362,7 @@
   }
   .yorha-mode-btn {
     @apply px-3 py-2 text-xs font-mono border border-amber-400 border-opacity-30;
-    @apply hover: border-opacity-60 hover:bg-amber-400;
+    @apply hover: border-opacity-60 hover bg-amber-400;
     hover: bg-opacity-10 transition-all;
     @apply flex items-center justify-center gap-2;
   }
@@ -384,7 +382,7 @@
   .yorha-config-group input,
   .yorha-config-group select {
     @apply w-full px-3 py-2 bg-black border border-amber-400 border-opacity-30 text-amber-300;
-    @apply focus:border-opacity-60 focus:outline-none font-mono text-sm;
+    @apply focus: border-opacity-60 focus outline-none font-mono text-sm;
   }
   .yorha-checkbox {
     @apply flex items-center gap-2 cursor-pointer;
@@ -400,13 +398,13 @@
     @apply px-3 py-2 text-xs font-mono border transition-all;
   }
   .yorha-btn-save {
-    @apply border-green-400 text-green-400 hover:bg-green-400 hover:text-black;
+    @apply border-green-400 text-green-400 hover: bg-green-400 hover text-black;
   }
   .yorha-btn-reset {
-    @apply border-orange-400 text-orange-400 hover:bg-orange-400 hover:text-black;
+    @apply border-orange-400 text-orange-400 hover: bg-orange-400 hover text-black;
   }
   .yorha-btn-export {
-    @apply border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black;
+    @apply border-blue-400 text-blue-400 hover: bg-blue-400 hover text-black;
   }
   /* Preview Area */
   .yorha-preview-area {

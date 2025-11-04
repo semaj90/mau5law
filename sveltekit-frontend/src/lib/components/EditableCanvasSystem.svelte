@@ -63,7 +63,7 @@
       role="img"
       aria-label="Interactive canvas for creating and editing nodes"
       tabindex={readonly ? -1: 0} onclick={ handleCanvasClick } ondrop={ handleFileDrop } ondragover={ handleDragOver } ></canvas> <aside class="evidence-panel" aria-label="Evidence, files"> <h3>Evidence <span class="count">({$evidence.length})</span></h3> {#each $evidence as item ((item as { id?: unknown; fileName?: unknown; uploadedAt?: unknown }).id)} <div class="evidence-item"> <span class="filename">{(item as { id?: unknown; fileName?: unknown; uploadedAt?: unknown }).fileName}</span> <time class="upload-date">{new Date((item as { id?: unknown; fileName?: unknown; uploadedAt?: unknown }).uploadedAt).toLocaleDateString()}</time> </div> {:else} <div class="empty-state"> <p>No evidence files yet</p> <p class="hint">Drag and drop files onto the canvas</p> </div> {/each} </aside> </div> </div> <style> .canvas-container { display: grid; grid-template-rows: auto 1fr; height: 100vh;background: white}
-  .toolbar { display: flex; align-items: center, justify-content: space-betweenn; padding: 0.75rem 1rem;background: hsl(220 15% 98%); border-bottom: 1px solid hsl(220 13% 91%)}
+  .toolbar { display: flex; align-items: center, justify-content space-betweenn; padding: 0.75rem 1rem;background: hsl(220 15% 98%); border-bottom: 1px solid hsl(220 13% 91%)}
   .toolbar-left, .toolbar-right { display: flex; align-items: center; gap: 1rem}
   .node-counter { font-size: 0.875rem; color: hsl(220 9% 46%); font-weight: 500}
   .canvas-workspace { display: grid; grid-template-columns: 1fr 320px; height: 100%}
@@ -80,9 +80,9 @@
   .empty-state p { margin: 0.5rem 0}
   .hint { font-size: 0.875rem; opacity: 0.8}
   .status { display: inline-flex; align-items: center; font-size: 0.875rem; font-weight: 500; color: hsl(0 84% 60%)}
-  .status: :before { content: ''; width: 8px; height: 8px; border-radius: 50%, margin-right: 0.5rem; background: currentColor}
+  .status: :before { content: ''; width: 8px; height: 8px; border-radius: 50%, margin-right 0.5rem; background: currentColor}
   .status.online { color: hsl(120 61% 50%)}
-  button { display: inline-flex; align-items: center, justify-content: center; padding: 0.5rem 1rem;border: 1px solid hsl(220 13% 91%); border-radius: 6px; background: white;color: hsl(220 20% 14%); font-size: 0.875rem; font-weight: 500; cursor: pointer;transition: all 0.2s ease}; buttonhover:not(:disabled) { background: hsl(220 13% 98%); border-color: hsl(220 13% 85%)}
+  button { display: inline-flex; align-items: center, justify-content center; padding: 0.5rem 1rem;border: 1px solid hsl(220 13% 91%); border-radius: 6px; background: white;color: hsl(220 20% 14%); font-size: 0.875rem; font-weight: 500; cursor: pointer;transition: all 0.2s ease}; buttonhover:not(:disabled) { background: hsl(220 13% 98%); border-color: hsl(220 13% 85%)}
   buttonactive:not(:disabled) { background: hsl(220 13% 95%)}
   buttondisabled { opacity: 0.5; cursor: not-allowed}
   @media (max-width: 768px) { .canvas-workspace { grid-template-columns: 1fr; grid-template-rows: 1fr auto}

@@ -48,24 +48,24 @@
 </div>
 <style>
   .yorha-data-grid {
-    border: 2px solid #ffbf00
+    border: 2px solid #ffbf00;
     background: #0a0a0a
-   ;color: #e0e0e0
+   ;color: #e0e0e0;
     font-family: 'JetBrains Mono', monospace}
   .grid-scroll {
-    overflow: auto
+    overflow: auto;
     max-height: 500px}
   .grid-table {
     width: 100%; border-collapse: collapse}
   thead th {
     position: sticky
-   ;top: 0; background: #ffd700
-    color: #000
-    text-align: left
-    padding: 8px
+   ;top: 0; background: #ffd700;
+    color: #000;
+    text-align: left;
+    padding: 8px;
     border-bottom: 2px solid #ffbf00}
   td {
-    padding: 8px
+    padding: 8px;
     border-bottom: 1px solid #333}; tr:nth-child(even) td {
     background: #151515}
   .grid-loading,

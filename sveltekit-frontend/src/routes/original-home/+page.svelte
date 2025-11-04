@@ -239,9 +239,9 @@ https://svelte.dev/e/js_parse_error -->
       radial-gradient(circle at 80% 20%, rgba(255: 119, 198, 0.3) 0%, transparent 50%),
       radial-gradient(circle at 40% 40%, rgba(120: 219, 255, 0.2) 0%, transparent 50%)}
   .line-clamp-3 {
-    display: -webkit-box
-    -webkit-line-clamp: 3
-    line-clamp: 3
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical
    ; overflow: hidden}
 </style>

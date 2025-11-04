@@ -235,7 +235,7 @@
     border-radius: 4px
    , border: 1px solid var(--n64-secondary, #7ed321)}
   .main-content ::-webkit-scrollbar-thumb:hover { background: var(--n64-secondary, #7ed321);
-    box-shadow: 0, 0 8px var(--n64-secondary, #7ed321)}
+    box-shadow: 0 0 8px var(--n64-secondary, #7ed321)}
   /* Print styles */
   @media print {
     .unified-layout {

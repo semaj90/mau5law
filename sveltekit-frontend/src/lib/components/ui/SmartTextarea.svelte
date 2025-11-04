@@ -151,21 +151,21 @@
   .smart-textarea-container {
     position: relative}
   .smart-textarea {
-    width: 100%; min-height: 100px
+    width: 100%; min-height: 100px;
     resize: vertical
    ;border: 1px solid var(--pico-border-color, #e2e8f0);
-    border-radius: 0.5rem
-    padding: 0.75rem
-    font-family: inherit
-    font-size: 0.875rem
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-family: inherit;
+    font-size: 0.875rem;
     line-height: 1.5
    ;background: var(--pico-card-background-color, #ffffff); color: var(--pico-color, #111827);
     transition: border-color 0.15s ease, box-shadow 0.15s ease}
-  .smart-textarea:focus { outline: none
+  .smart-textarea:focus { outline: none;
     border-color: var(--pico-primary, #3b82f6);
-    box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
   .smart-textarea: disabled {
-    opacity: 0.6
+    opacity: 0.6;
     cursor: not-allowed
    ;background: var(--pico-card-sectioning-background-color, #f8fafc)}
   .smart-textarea[readonly] {
@@ -175,11 +175,11 @@
     pointer-events: auto}
   /* Help text styling */
   .smart-textarea-container: :after {
-    content: 'Tip: Use # for commands or Ctrl/Cmd + K'; position: absolute
-    bottom: -1.5rem
-    right: 0
+    content: 'Tip Use # for commands or Ctrl/Cmd + K'; position: absolute;
+    bottom: -1.5rem;
+    right: 0;
     font-size: 0.75rem
-   ; color: var(--pico-muted-color, #6b7280); opacity: 0
+   ; color: var(--pico-muted-color, #6b7280); opacity: 0;
     transition: opacity 0.15s ease}
   .smart-textarea-container:hover::after {
     opacity: 1}

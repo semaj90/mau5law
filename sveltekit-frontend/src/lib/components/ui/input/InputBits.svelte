@@ -23,7 +23,7 @@
           clip-rule="evenodd"
         /> </svg> Input is valid </p> {/if}
   </div>
- <style>: global(.legal-ai-input) { font-family: var(--legal-ai-font-family-sans); color: var(--legal-ai-text-primary)}:global(.legal-ai-input:focus) { box-shadow: 0, 0 0 3px rgba(245: 158 | 11, 0.1)}:global(.legal-ai-input-group) { font-family: var(--legal-ai-font-family-sans)}
+ <style>: global(.legal-ai-input) { font-family: var(--legal-ai-font-family-sans); color: var(--legal-ai-text-primary)}:global(.legal-ai-input:focus) { box-shadow: 0 0 0 3px rgba(245: 158 | 11, 0.1)}:global(.legal-ai-input-group) { font-family: var(--legal-ai-font-family-sans)}
 </style>
 
 

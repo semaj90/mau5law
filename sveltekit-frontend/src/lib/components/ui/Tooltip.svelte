@@ -27,20 +27,20 @@
 <style>
 /* @unocss-include */
 .tooltip-wrapper {
-  position: relative
+  position: relative;
   display: inline-block}
 .tooltip {
-  position: absolute
-  z-index: 9999
-  background: #1f2937
-  color: white
-  padding: 0.5rem 0.75rem
-  border-radius: 0.375rem
-  font-size: 0.875rem
-  line-height: 1.25rem
-  max-width: 200px
-  word-wrap: break-word
-  white-space: normal
+  position: absolute;
+  z-index: 9999;
+  background: #1f2937;
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  max-width: 200px;
+  word-wrap: break-word;
+  white-space: normal;
   pointer-events: none}
 .tooltip-top {
   bottom: 100%; left: 50%;transform: translateX(-50%); margin-bottom: 0.5rem}

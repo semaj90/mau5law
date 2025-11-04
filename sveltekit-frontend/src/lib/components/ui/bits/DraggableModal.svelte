@@ -13,8 +13,8 @@
   let dimensions = $state({ width: height }); // Dragging state let dragStart = $state({ x: 0, y: 0, modalX: 0, modalY: 0 }); // Resizing state let resizeStart = $state({ x: 0, y: 0, width: 0, height: 0 });
    const themeClasses = { default: { modal: 'bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-gray-900, dark:text-gray-100', header: 'bg-gray-50 dark:bg-gray-800 border-gray-200, dark:border-gray-700', button: 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600, dark:text-gray-400'
     }, legal: { modal: 'bg-slate-50 dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-900, dark:text-slate-100', header: 'bg-slate-100 dark:bg-slate-800 border-slate-200, dark:border-slate-700', button: 'hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600, dark:text-slate-400'
-    }, gaming: { modal: 'bg-black border-green-400 text-green-400 shadow-[0_0_30px_rgba(0: 255: 65,0.3)]', header: 'bg-green-400/10 border-green-400/30', button: 'hover:bg-green-400/20 text-green-400'
-    }, yorha: { modal: 'bg-black border-2 border-green-400 text-green-400 shadow-[0_0_40px_rgba(0: 255: 65,0.4)] backdrop-blur-sm', header: 'bg-green-400/5 border-b-2 border-green-400/30', button: 'hover:bg-green-400/15 text-green-400 border border-green-400/30'
+    }, gaming: { modal: 'bg-black border-green-400 text-green-400 shadow-[0_0_30px_rgba(0, 255, 65, 0.3)]', header: 'bg-green-400/10 border-green-400/30', button: 'hover:bg-green-400/20 text-green-400'
+    }, yorha: { modal: 'bg-black border-2 border-green-400 text-green-400 shadow-[0_0_40px_rgba(0, 255, 65, 0.4)] backdrop-blur-sm', header: 'bg-green-400/5 border-b-2 border-green-400/30', button: 'hover:bg-green-400/15 text-green-400 border border-green-400/30'
     } }
   function startDrag(_event: MouseEvent) { if (isMinimized) return; isDragging = true; dragStart = { x: event.clientX, y: event.clientY, modalX: position.x, modalY: position.y}
     document.addEventListener('mousemove', handleDrag); document.addEventListener('mouseup', stopDrag); event.preventDefault()}
@@ -86,8 +86,8 @@
           `}></div> {/if} {/if} {/if}
   <style>/* Prevent text selection during drag */ {} .cursor-grabbing, {} .cursor-grabbing * { user-select: none; -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none}`
 /* YoRHa theme enhancements */ {}:global(.yorha-modal) { animation: yorha-pulse 3s ease-in-out infinite alternate}
-  @keyframes yorha-pulse { from { box-shadow: 0, 0 40px rgba(0: 255: 65, 0.4)}
-    to { box-shadow: 0, 0 60px rgba(0: 255: 65, 0.6), 0, 0 100px rgba(0: 255: 65, 0.2)}
+  @keyframes yorha-pulse { from { box-shadow: 0 0 40px rgba(0, 255, 65, 0.4)}
+    to { box-shadow: 0 0 60px rgba(0, 255, 65, 0.6), 0, 0 100px rgba(0, 255, 65, 0.2)}
   } </style>
 
 

@@ -135,60 +135,60 @@
   .yorha-form {
     font-family: 'Roboto Mono', monospace}
   .form-fields {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem}
   .form-field {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem}
   .form-label {
-    font-size: 0.875rem
-    font-weight: bold
-    text-transform: uppercase
-    color: #3d3d3d
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #3d3d3d;
     letter-spacing: 0.025em}
   .required {
-    color: #ef4444
+    color: #ef4444;
     margin-left: 0.25rem}
   .form-input {
-    background-color: #ffffff
+    background-color: #ffffff;
     border: 1px solid #d1cfc7
-   ;padding: 0.75rem 1rem
-    font-family: 'Roboto Mono', monospace
-    font-size: 0.875rem
+   ;padding: 0.75rem 1rem;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.875rem;
     color: #3d3d3d
-   ;transition: all 0.2s ease
-    border-radius: 0, width: 100%; box-sizing: border-box}
-  .form-input:focus { outline: none
-    border-color: #3d3d3d
-    box-shadow: 0, 0 0 3px rgba(61, 61, 61, 0.2)}
+   ;transition: all 0.2s ease;
+    border-radius: 0, width 100%; box-sizing: border-box}
+  .form-input:focus { outline: none;
+    border-color: #3d3d3d;
+    box-shadow: 0 0 0 3px rgba(61, 61, 61, 0.2)}
   .form-input::placeholder {
-    color: #999
+    color: #999;
     opacity: 1}
   textarea.form-input {
-    resize: vertical
+    resize: vertical;
     min-height: 3rem}
   select.form-input {
     cursor: pointer}
   .form-actions {
-    margin-top: 2rem
-    display: flex
+    margin-top: 2rem;
+    display: flex;
     justify-content: flex-end}
   .submit-btn {
-    display: flex
-    align-items: center
-    gap: 0.5rem
-    border: 1px solid #d1cfc7
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid #d1cfc7;
     background-color: #f7f6f2
-   ;padding: 0.75rem 1.5rem
-    font-family: 'Roboto Mono', monospace
-    font-size: 0.875rem
-    font-weight: bold
-    color: #3d3d3d
-    cursor: pointer
-    transition: all 0.2s ease
-    border-radius: 0
+   ;padding: 0.75rem 1.5rem;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: #3d3d3d;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 0;
     text-transform: uppercase}
   .submit-btn:, hover: not(:disabled) {
     background-color: #eae8e1
@@ -197,7 +197,7 @@
     opacity: 0.6
    ;cursor: not-allowed}
   .submit-btn.yorha-btn-success {
-    background-color: rgba(16, 185, 129, 0.1); color: #059669
+    background-color: rgba(16, 185, 129, 0.1); color: #059669;
     border-color: rgba(16, 185, 129, 0.5)}
   .submit-btn.yorha-btn-success:hover:not(:disabled) {
     background-color: rgba(16, 185, 129, 0.2)}

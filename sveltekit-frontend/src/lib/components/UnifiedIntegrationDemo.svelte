@@ -415,7 +415,7 @@ Both parties acknowledge they have read and agree to these terms.`,`
 <style>
   .unified-integration-demo {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background-attachment: fixed
+    background-attachment: fixed;
     min-height: 100vh
    ;background: #f8fafc}
 </style>

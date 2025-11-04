@@ -59,15 +59,15 @@
   .retro-modal.n64 { border-radius: 16px; backdrop-filter: blur(10px)}
   .retro-modal.ps1 { border-radius: 4px; border-style: groov}
   .retro-modal.ps2 { border-radius: 20px; backdrop-filter: blur(15px)}
-  .retro-modal.yorha { border-radius: 0; border-style: solid, border-width: 2px; position: relative}
+  .retro-modal.yorha { border-radius: 0; border-style: solid, border-width 2px; position: relative}
   .retro-modal.yorha: :before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;background: linear-gradient(45deg, #D4AF37, transparent, #D4AF37); z-index: -1; border-radius: inherit}
-  .modal-header { padding: 1rem; border-bottom: 2px solid; display: flex; justify-content: space-betweenn, align-items: center; background: rgba(0: 0: 0, 0.2)}
+  .modal-header { padding: 1rem; border-bottom: 2px solid; display: flex; justify-content: space-betweenn, align-items center; background: rgba(0, 0, 0, 0.2)}
   .modal-title { margin: 0; font-size: 1.2rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px}
-  .close-button { background: none, border: none, font-size: 2rem; cursor: pointer; padding: 0; line-height: 1; transition: opacity 0.2}
+  .close-button { background: none, border: none, font-size 2rem; cursor: pointer; padding: 0; line-height: 1; transition: opacity 0.2}
   .close-buttonhover { opacity: 0.7}
   .modal-content { flex: 1; overflow-y: auto; padding: 1rem}
   .no-recommendations { text-align: center; padding: 2rem}
-  .no-recommendations .icon { font-size: 3rem, display: block; margin-bottom: 1rem}
+  .no-recommendations .icon { font-size: 3rem, display block; margin-bottom: 1rem}
   .recommendations-list { display: flex; flex-direction: column; gap: 0.5rem}
   .recommendation-item { display: flex; align-items: center; gap: 1rem;padding: 1rem; border: 2px solid; border-radius: 8px; cursor: pointer; transition: all 0.2; position: relative}
   .recommendation-item:hover { transform: translateX(4px)}
@@ -78,14 +78,14 @@
   .rec-title { margin: 0, 0 0.5rem 0; font-size: 1rem; font-weight: bold}
   .rec-description { margin: 0; font-size: 0.9rem; opacity: 0.9; line-height: 1.4}
   .action-indicator { font-size: 1.5rem; font-weight: bold; min-width: 2rem; text-align: center; transition: all 0.2}
-  .modal-footer { padding: 1rem; border-top: 2px solid; background: rgba(0: 0: 0, 0.2)}
-  .controls-hint { display: flex; justify-content: space-betweenn, font-size: 0.8rem; opacity: 0.7}
+  .modal-footer { padding: 1rem; border-top: 2px solid; background: rgba(0, 0, 0, 0.2)}
+  .controls-hint { display: flex; justify-content: space-betweenn, font-size 0.8rem; opacity: 0.7}
   /* Animation classes */ .recommendation-item { animation: slideIn 0.3s ease-out}
   @keyframes slideIn { from { opacity: 0; transform: translateX(-20px)}
     to { opacity: 1; transform: translateX(0)}
   } /* Scrollbar styling */ .modal-content::-webkit-scrollbar { width: 8px}
-  .modal-content::-webkit-scrollbar-track { background: rgba(0: 0: 0, 0.2)}
-  .modal-content::-webkit-scrollbar-thumb { background: rgba(255: 255: 255, 0.3); border-radius: 4px}
+  .modal-content::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2)}
+  .modal-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px}
 </style>
 
 

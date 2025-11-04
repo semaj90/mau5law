@@ -205,28 +205,28 @@ import type { Document } from '$lib/types';
 
 <style>
 	.ai-dashboard-container {
-		padding: 1rem
-		max-width: 1200px
+		padding: 1rem;
+		max-width: 1200px;
 		margin: 0 auto}
 
 	.header {
-		display: flex
-		flex-direction: column
-		gap: 0.25rem
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
 		margin-bottom: 1rem}
 
 	.title {
-		font-size: 1.25rem
+		font-size: 1.25rem;
 		margin: 0}
 
 	.subtitle { color: var(--muted, #6b7280);
-		font-size: 0.95rem
+		font-size: 0.95rem;
 		margin: 0}
 
 	.grid {
-		display: grid
-		grid-template-columns: 1fr 360px
-		gap: 1rem
+		display: grid;
+		grid-template-columns: 1fr 360px;
+		gap: 1rem;
 		align-items: start}
 
 	.mt {
@@ -236,8 +236,8 @@ import type { Document } from '$lib/types';
 		margin: 0.75rem 0}
 
 	.status-row {
-		display: flex
-		gap: 0.75rem
+		display: flex;
+		gap: 0.75rem;
 		flex-wrap: wrap}
 
 	.status-item {
@@ -249,41 +249,41 @@ import type { Document } from '$lib/types';
 		margin-bottom: 0.25rem}
 
 	.pill {
-		display: inline-block
-		padding: 0.25rem 0.6rem
-		border-radius: 999px
-		font-size: 0.85rem
+		display: inline-block;
+		padding: 0.25rem 0.6rem;
+		border-radius: 999px;
+		font-size: 0.85rem;
 		font-weight: 600}
 
 	.pill.on {
-		background: #ecfdf5
+		background: #ecfdf5;
 		color: #065f46}
 
 	.pill.off {
-		background: #fff7f7
+		background: #fff7f7;
 		color: #7f1d1d}
 
 	.actions {
-		display: flex
-		gap: 0.5rem
-		margin-top: 0.75rem
+		display: flex;
+		gap: 0.5rem;
+		margin-top: 0.75rem;
 		flex-wrap: wrap}
 
 	.muted { color: var(--muted, #6b7280);
 		font-size: 0.95rem}
 
 	.error {
-		margin-top: 0.5rem
-		color: #9b2c2c
-		background: #fff5f5
-		padding: 0.5rem
+		margin-top: 0.5rem;
+		color: #9b2c2c;
+		background: #fff5f5;
+		padding: 0.5rem;
 		border-radius: 6px}
 
 	.health-table {
 		width: 100%; border-collapse: collapse}
 
 	.health-table th {
-		text-align: left
+		text-align: left;
 		padding: 0.5rem 0
 	; color: var(--muted, #6b7280);
 		font-size: 0.85rem}
@@ -292,18 +292,18 @@ import type { Document } from '$lib/types';
 		padding: 0.5rem 0}
 
 	.toasts {
-		position: fixed
-		right: 1rem
-		top: 1rem
-		display: flex
-		flex-direction: column
-		gap: 0.5rem
+		position: fixed;
+		right: 1rem;
+		top: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
 		z-index: 9999}
 
 	.toast {
-		padding: 0.5rem 0.75rem
+		padding: 0.5rem 0.75rem;
 		border-radius: 6px
-	; color: white
+	; color: white;
 		box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 		font-size: 0.92rem}
 

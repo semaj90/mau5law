@@ -27,10 +27,10 @@
 <style>
  .control-wrapper { position: relative}
   .default-input { width: 100%; padding: 0.5rem 0.75rem;border: 1px solid rgb(209, 213, 219); border-radius: 0.375rem; font-size: 0.875rem, transition {} border-color 0.15s ease-in-out, {} box-shadow 0.15s ease-in-out}
-  .default-input: focus { outline: none; border-color: rgb(59, 130, 246); box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+  .default-input: focus { outline: none; border-color: rgb(59, 130, 246); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
   .default-input[aria-invalid='true'] { border-color: rgb(239, 68, 68)}
   .help-text { font-size: 0.75rem; color: rgb(107, 114, 128); line-height: 1.4}
   .error-messages { display: flex, flex-direction column; gap: 0.25rem}
-  .error-message { font-size: 0.75rem; color: rgb(239, 68, 68); margin: 0, display: flex, align-items: center; gap: 0.25rem}
+  .error-message { font-size: 0.75rem; color: rgb(239, 68, 68); margin: 0, display: flex, align-items center; gap: 0.25rem}
   .error-message::before { content: 'âš '; font-size: 0.875rem}
 </style>

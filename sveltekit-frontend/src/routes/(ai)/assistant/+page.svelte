@@ -37,7 +37,7 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .assistant-header { text-align: center; margin-bottom: 2rem}
 
-  .assistant-header h1 { font-size: 2.5rem; color: var(--text-primary, #00ccff); margin-bottom: 0.5rem; text-shadow: 0, 0 15px currentColor}
+  .assistant-header h1 { font-size: 2.5rem; color: var(--text-primary, #00ccff); margin-bottom: 0.5rem; text-shadow: 0 0 15px currentColor}
 
   .assistant-header p { color: var(--text-secondary, #888888); font-size: 1.1rem; margin-bottom: 1rem}
 
@@ -89,13 +89,13 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .message-input { flex: 1; background: var(--surface-primary, #0a0a0a); border: 1px solid rgba(0, 204, 255, 0.3); border-radius: 4px; padding: 0.75rem; color: var(--text-primary, #ffffff); font-family: inherit; resize: vertical; min-height: 60px}
 
-  .message-input: focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0, 0 10px rgba(0, 204, 255, 0.3)}
+  .message-input: focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0 0 10px rgba(0, 204, 255, 0.3)}
 
   .message-input::placeholder { color: var(--text-secondary, #888888)}
 
   .send-button { background: var(--text-primary, #00ccff); color: var(--surface-secondary, #000000); border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: bold; transition: all 0.2s}
 
-  .send-button: hover:not(:disabled) { transform: scale(1.05); box-shadow: 0, 0 15px rgba(0, 204, 255, 0.5)}
+  .send-button: hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 204, 255, 0.5)}
 
   .send-button: disabled { opacity: 0.5; cursor: not-allowed}
 

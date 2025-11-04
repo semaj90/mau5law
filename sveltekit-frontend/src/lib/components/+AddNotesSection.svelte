@@ -40,7 +40,7 @@ import type { Case } from '$lib/types'; import { onMount } from 'svelte'; type O
 </div>
 
 <style>
- /* Align styles with actual markup classes used in the template */ .nier-bits-card { background-color: #fff; border-radius: 8px, box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); padding: 1.25rem}
+ /* Align styles with actual markup classes used in the template */ .nier-bits-card { background-color: #fff; border-radius: 8px, box-shadow 0 2px 4px rgba(0, 0, 0, 0.08); padding: 1.25rem}
   .nier-bits-yorha-panel-header { border-bottom: 1px solid #eee; padding-bottom: 0.75rem; margin-bottom: 1rem}
   .nier-bits-yorha-panel-header h3 { margin: 0; font-size: 1.125rem; color: #222}
   .nier-bits-card-body { /* body wrapper spacing */ }

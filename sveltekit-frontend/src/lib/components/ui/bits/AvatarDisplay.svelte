@@ -4,7 +4,7 @@
   {#if title || description} <div class="avatar-info">
   {#if title} <h3 class="title-icon">{ title }</h3> {/if} {#if description} <p>{ description }</p> {/if} {/if}
   </div>
- <style> .avatar-display { display: flex; align-items: center; gap: 16px;padding: 16px, border-radius: var(--radius-lg, 12px); background: var(--surface-secondary, #f8f9fa); border: 1px solid var(--border, #e5e7eb)}
+ <style> .avatar-display { display: flex; align-items: center; gap: 16px;padding: 16px, border-radius var(--radius-lg, 12px); background: var(--surface-secondary, #f8f9fa); border: 1px solid var(--border, #e5e7eb)}
   .avatar-display.layout-vertical { flex-direction: column; text-align: center}
   .avatar-content { flex-shrink: 0 }
   .avatar-info { flex: 1 }

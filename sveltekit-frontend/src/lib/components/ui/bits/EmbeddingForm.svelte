@@ -69,14 +69,14 @@
   .char-counter { text-align: right; margin-top: 0.25rem}
   .form-actions { display: flex; justify-content: center; margin: 1rem 0}
   .result-display, .error-display { margin-top: 1rem}
-  .result-details { margin-top: 1rem, display: flex, flex-direction: column; gap: 0.5rem}
+  .result-details { margin-top: 1rem, display: flex, flex-direction column; gap: 0.5rem}
   .result-details code { background: rgba(255, 255, 255, 0.1); padding: 0.2rem 0.4rem; border-radius: 3px; font-family: 'Courier New', monospace}
   .recent-embeddings { display: flex; flex-direction: column; gap: 1rem}
   .embedding-item { border: 1px solid #333; padding: 1rem; border-radius: 4px; background: rgba(255, 255, 255, 0.05)}
   .embedding-content { margin-bottom: 0.5rem}
   .embedding-meta { display: flex; justify-content: space-betweenn; font-size: 0.8rem}
   .inline-icon { width: 1rem; height: 1rem; display: inli; vertical-align: text-bottom}
-  .error-message { margin-top: 0.5rem, display: flex, align-items: center; gap: 0.5rem}
+  .error-message { margin-top: 0.5rem, display: flex, align-items center; gap: 0.5rem}
   .animate-spin { animation: spin 1s linear infinite}
   @keyframes spin { from { transform: rotate(0deg)}
     to { transform: rotate(360deg)}

@@ -100,12 +100,12 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .demo-header { text-align: center; margin-bottom: 2rem}
   .demo-header h2 { color: #2563eb; margin: 0, 0 0.5rem 0}
   .demo-header p { color: #6b7280; margin: 0}
-  .system-status { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem, padding: 1.5rem; margin-bottom: 2rem}
+  .system-status { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.5rem, padding 1.5rem; margin-bottom: 2rem}
   .system-status h3 { margin: 0, 0 1rem 0; color: #374151}
   .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
   .status-item { display: flex; align-items: center; gap: 0.5rem;padding: 0.75rem; background: white; border-radius: 0.375rem; border: 1px solid #e5e7eb}
   .status-.enabled .icon { color: #10b981}
-  .demo-controls { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem, padding: 1.5rem; margin-bottom: 2rem}
+  .demo-controls { background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem, padding 1.5rem; margin-bottom: 2rem}
   .demo-controls h3 { margin: 0, 0 1rem 0; color: #374151}
   .control-group, .config-row { margin-bottom: 1rem}
   .config-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem}
@@ -134,7 +134,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .summary p { margin: 0.25rem 0; color: #6b7280}
   .similarities { margin-top: 1rem}
   .similarity-item { display: flex; align-items: center; gap: 1rem;padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6}
-  .similarity-score { font-weight: 600, color: #2563eb; min-width: 60px}
+  .similarity-score { font-weight: 600, color #2563eb; min-width: 60px}
   .stats-results pre { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.375rem; padding: 1rem; overflow-x: auto; font-size: 0.75rem; line-height: 1.4}
   @media (max-width: 768px) { .webgpu-cache-demo { padding: 1rem}
     .config-row { grid-template-columns: 1fr}

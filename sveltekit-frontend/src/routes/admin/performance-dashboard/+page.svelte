@@ -209,14 +209,10 @@
 <style>
   /* Additional terminal-style animations */
   .text-green-400 {
-    text-shadow:
-      0,
-      0 5px currentColor;
+    text-shadow: 0 0 5px currentColor;
   }
   .text-green-300 {
-    text-shadow:
-      0,
-      0 3px currentColor;
+    text-shadow: 0 0 3px currentColor;
   }
   /* Subtle pulse animation: for critical alerts */
   .text-red-500 {

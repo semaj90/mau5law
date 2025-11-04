@@ -83,14 +83,14 @@ https://svelte.dev/e/render_tag_invalid_expression -->
    ;right: 0; bottom: 0
    ;background: rgba(0, 0, 0, 0.5);
     z-index: 1000
-    /* Removed flex centering to allow drawer to position itself */
+    /* Removed flex centering to allow drawer to position itself */;
     display: block}
   .drawer {
-    background: white
-    border-radius: 8px
+    background: white;
+    border-radius: 8px;
     padding: 20px
-   ;position: fixed; /* Crucial for drawer behavior */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transition: transform 0.3s ease-out, /* Animation for sliding in/out */
+   ;position: fixed; /* Crucial for drawer behavior */;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); transition: transform 0.3s ease-out, /* Animation for sliding in/out */;
     overflow-y: auto; /* Allow content to scroll */
   }
   /* Side-specific positioning and initial transform (closed state) */
@@ -112,54 +112,54 @@ https://svelte.dev/e/render_tag_invalid_expression -->
   /* For left/right drawers (width) */
   .drawer-left.drawer-sm,
   .drawer-right.drawer-sm {
-    width: 300px
+    width: 300px;
     max-width: 90vw}
   .drawer-left.drawer-md,
   .drawer-right.drawer-md {
-    width: 500px
+    width: 500px;
     max-width: 90vw}
   .drawer-left.drawer-lg,
   .drawer-right.drawer-lg {
-    width: 700px
+    width: 700px;
     max-width: 90vw}
   .drawer-left.drawer-xl,
   .drawer-right.drawer-xl {
-    width: 900px
+    width: 900px;
     max-width: 90vw}
   /* For top/bottom drawers (height) */
   .drawer-top.drawer-sm,
   .drawer-bottom.drawer-sm {
-    height: 200px
+    height: 200px;
     max-height: 90vh}
   .drawer-top.drawer-md,
   .drawer-bottom.drawer-md {
-    height: 300px
+    height: 300px;
     max-height: 90vh}
   .drawer-top.drawer-lg,
   .drawer-bottom.drawer-lg {
-    height: 400px
+    height: 400px;
     max-height: 90vh}
   .drawer-top.drawer-xl,
   .drawer-bottom.drawer-xl {
-    height: 500px
+    height: 500px;
     max-height: 90vh}
   .drawer-header {
-    display: flex
-    justify-content: space-betweennn
-    align-items: flex-start
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: flex-start;
     margin-bottom: 20px}
   .drawer-title {
-    font-size: 1.25rem
-    font-weight: 600
+    font-size: 1.25rem;
+    font-weight: 600;
     margin: 0}
   .drawer-description {
     color: #666
    ;margin: 4px, 0 0 0}
   .drawer-close {
-    background: none
-    border: none
-    padding: 4px
-    cursor: pointer
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
     border-radius: 4px}
   .drawer-close:hover { background: #f5f5f5}
 </style>

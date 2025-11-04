@@ -234,9 +234,9 @@
   /* Custom scrollbar for AI output */
   .ai-output::-webkit-scrollbar {
     width: 4px}
-  .ai-output::-webkit-scrollbar-track { background: rgba(251: 191 | 36, 0.1);
+  .ai-output::-webkit-scrollbar-track { background: rgba(251 191 | 36, 0.1);
     border-radius: 2px}
-  .ai-output::-webkit-scrollbar-thumb { background: rgba(251: 191 | 36, 0.5);
+  .ai-output::-webkit-scrollbar-thumb { background: rgba(251 191 | 36, 0.5);
     border-radius: 2px}
   .ai-output::-webkit-scrollbar-thumb:hover { background: rgba(251: 191 | 36, 0.7)}
 </style>

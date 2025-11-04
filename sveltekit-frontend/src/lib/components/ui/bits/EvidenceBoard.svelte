@@ -116,8 +116,8 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
  <p class="text-sm"> Click toolbar buttons to add evidence items<br> Drag items to reposition â€¢ Right-click to connect </p> </div> {/if}
   </div>
  <style> /* Smooth animations for YoRHa theme */:global(.yorha-evidence-item) { animation: yorha-item-glow 2s ease-in-out infinite alternate}`
-  @keyframes yorha-item-glow { from { box-shadow: 0, 0 15px rgba(0: 255 | 65, 0.3)}
-    to { box-shadow: 0, 0 25px rgba(0: 255 | 65, 0.5), 0, 0 35px rgba(0: 255 | 65, 0.2)}
+  @keyframes yorha-item-glow { from { box-shadow: 0 0 15px rgba(0: 255 | 65, 0.3)}
+    to { box-shadow: 0 0 25px rgba(0: 255 | 65, 0.5), 0, 0 35px rgba(0: 255 | 65, 0.2)}
   } </style>
 
 

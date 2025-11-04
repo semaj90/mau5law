@@ -34,6 +34,8 @@ import type { Document } from '$lib/types';
   let contextualState = $state<ContextualState | null>(null);
   let predictions = $state<NextStepPrediction[]>([]);
   let entities = $state<LegalEntity[]>([]);
+  let attachment = $state<File | null>(null);
+  let attachmentInput: HTMLInputElement | null = null;
   let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
   let stats = $state<{
@@ -59,6 +61,9 @@ import type { Document } from '$lib/types';
   const confidencePercentage = $derived(
     contextualState ? (contextualState.confidence * 100).toFixed(1) : '0.0'
   );
+  const attachmentLabel = $derived(
+    attachment ? `${attachment.name} (${(attachment.size / 1024).toFixed(1)} KB)` : ''
+  );
   /**
    * Send message to contextual chat API
    */
@@ -67,15 +72,31 @@ import type { Document } from '$lib/types';
     isLoading = true
     error = null
     try {
-      const response = await fetch('/api/contextual/chat', {
-        method: 'POST'; headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message,
-          sessionId,
-          userId,
-          enableFunctions
-        })
-      });
+      const useFormData = !!attachment;
+      let response: Response;
+      if (useFormData) {
+        const formData = new FormData();
+        formData.set('message', message);
+        formData.set('sessionId', sessionId);
+        formData.set('userId', userId);
+        formData.set('enableFunctions', enableFunctions ? 'true' : 'false');
+        attachment && formData.set('file', attachment);
+        response = await fetch('/api/contextual/chat', {
+          method: 'POST',
+          body: formData
+        });
+      } else {
+        response = await fetch('/api/contextual/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message,
+            sessionId,
+            userId,
+            enableFunctions
+          })
+        });
+      }
       if (!response.ok) {
         throw new Error(`API error: ${response.statusText}`)}
       const result = await response.json();
@@ -85,11 +106,14 @@ import type { Document } from '$lib/types';
           ...conversationHistory, {
             userMessage: message; agentResponse: result.data.response,
             timestamp: Date.now(); intent: 'general_query',
-            entities: []; hmmState: contextualState?.hmmState.currentState ?? 0
+            entities: []; hmmState: contextualState?.hmmState.currentState ?? 0,
+            attachments: result.data.attachments ?? []
           }
         ];
         // Clear input
         message = '';
+        attachment = null
+        if (attachmentInput) attachmentInput.value = ''
         // Fetch updated contextual state
         await fetchContextualState();
         await fetchPredictions();
@@ -185,6 +209,15 @@ import type { Document } from '$lib/types';
       event.preventDefault();
       sendMessage()}
   }
+  function handleAttachmentChange(event: Event) {
+    const target = event.currentTarget as HTMLInputElement;
+    attachment = target.files?.[0] ?? null}
+
+  function clearAttachment() {
+    attachment = null
+    if (attachmentInput) {
+      attachmentInput.value = ''
+    }}
   /**
    * Initialize on mount
    */
@@ -220,6 +253,19 @@ import type { Document } from '$lib/types';
 
               <div class="message-content">{turn.agentResponse}</div>
 
+              {#if turn.attachments && turn.attachments.length > 0}
+                <div class="message-attachments">
+                  <strong>Attachment metadata</strong>
+                  <ul>
+                    {#each turn.attachments as file}
+                      <li>
+                        {file.originalName ?? file.key} — {file.contentType}
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              {/if}
+
               <div class="message-meta">
                 State: {stateNames[turn.hmmState as keyof typeof stateNames]}
               </div>
@@ -244,6 +290,25 @@ import type { Document } from '$lib/types';
           rows="3"
           disabled={isLoading}
         ></textarea>
+
+        <div class="attachment-field">
+          <label for="contextual-attachment">Attachment (optional)</label>
+          <div class="attachment-controls">
+            <input
+              id="contextual-attachment"
+              type="file"
+              bind:this={attachmentInput}
+              onchange={handleAttachmentChange}
+              disabled={isLoading}
+            />
+          {#if attachment}
+            <span class="attachment-chip">{attachmentLabel}</span>
+            <button type="button" onclick={clearAttachment} disabled={isLoading}>
+              Clear
+            </button>
+          {/if}
+    </div>
+        </div>
 
         <div class="input-controls">
           <label>
@@ -376,35 +441,35 @@ import type { Document } from '$lib/types';
 
 <style>
   .contextual-chat-demo {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     height: 100%; max-height: 800px
    ; border: 1px solid var(--border, #e5e7eb);
-    border-radius: 8px
+    border-radius: 8px;
     overflow: hidden
    ;background: var(--background, #ffffff)}
   .demo-header {
-    padding: 1rem 1.5rem
+    padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--border, #e5e7eb); background: var(--muted, #f9fafb)}
   .demo-header h2 {
-    margin: 0, 0 0.5rem 0
-    font-size: 1.25rem
+    margin: 0, 0 0.5rem 0;
+    font-size: 1.25rem;
     font-weight: 600}
   .session-info {
-    display: flex
-    gap: 1rem
+    display: flex;
+    gap: 1rem;
     font-size: 0.875rem
    ;color: var(--muted-foreground, #6b7280)}
   .demo-content {
-    display: grid
-    grid-template-columns: 1fr 400px
+    display: grid;
+    grid-template-columns: 1fr 400px;
     height: 100%; overflow: hidden}
   /* Chat Panel */
-  .chat-panel { display: flex
-    flex-direction: column
+  .chat-panel { display: flex;
+    flex-direction: column;
     border-right: 1px solid var(--border, #e5e7eb)}
   .chat-messages {
-    flex: 1
+    flex: 1;
     overflow-y: auto
    ;padding: 1rem}
   .message-group {
@@ -413,24 +478,46 @@ import type { Document } from '$lib/types';
   .agent-message {
     margin-bottom: 0.75rem}
   .message-label {
-    font-size: 0.75rem
-    font-weight: 600
+    font-size: 0.75rem;
+    font-weight: 600;
     margin-bottom: 0.25rem
    ;color: var(--muted-foreground, #6b7280)}
   .message-content {
-    padding: 0.75rem 1rem
-    border-radius: 8px
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
     line-height: 1.5}
-  .user-message .message-content { background: var(--primary, #3b82f6); color: white
+  .user-message .message-content { background: var(--primary, #3b82f6); color: white;
     margin-left: 2rem}
   .agent-message .message-content { background: var(--muted, #f9fafb); border: 1px solid var(--border, #e5e7eb)}
   .message-meta {
     font-size: 0.75rem
    ;color: var(--muted-foreground, #6b7280);
-    margin-top: 0.25rem
+    margin-top: 0.25rem;
     padding-left: 1rem}
+.message-attachments {
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--muted, #f3f4f6);
+    border-radius: 6px;
+    font-size: 0.8rem}
+.message-attachments ul {
+    margin: 0.25rem 0 0;
+    padding-left: 1.25rem}
+.attachment-field {
+    margin-top: 0.75rem}
+.attachment-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.35rem}
+.attachment-chip {
+    background: var(--muted, #f3f4f6);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem}
   .empty-state {
-    text-align: center
+    text-align: center;
     padding: 3rem 2rem
    ;color: var(--muted-foreground, #6b7280)}
   .empty-state p {
@@ -439,56 +526,56 @@ import type { Document } from '$lib/types';
     border-top: 1px solid var(--border, #e5e7eb); padding: 1rem
    ; background: var(--background, #ffffff)}
   .error-banner {
-    padding: 0.75rem
-    margin-bottom: 0.75rem
-    background: #fee2e2
-    color: #991b1b
-    border-radius: 4px
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    background: #fee2e2;
+    color: #991b1b;
+    border-radius: 4px;
     font-size: 0.875rem}
   textarea {
     width: 100%; padding: 0.75rem
    ; border: 1px solid var(--border, #e5e7eb);
-    border-radius: 4px
-    resize: none
-    font-family: inherit
+    border-radius: 4px;
+    resize: none;
+    font-family: inherit;
     font-size: 0.875rem}
-  textarea:focus { outline: none
+  textarea:focus { outline: none;
     border-color: var(--primary, #3b82f6);
-    box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.1)}
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1)}
   textarea:disabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed}
   .input-controls {
-    display: flex
-    justify-content: space-betweennn
-    align-items: center
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
     margin-top: 0.75rem}
   .input-controls label {
-    font-size: 0.875rem
-    display: flex
-    align-items: center
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
     gap: 0.5rem}
   .button-group {
-    display: flex
+    display: flex;
     gap: 0.5rem}
   button {
     padding: 0.5rem 1rem
    ;border: 1px solid var(--border, #e5e7eb);
     border-radius: 4px
-   ;background: var(--background, #ffffff); cursor: pointer
-    font-size: 0.875rem
-    font-weight: 500
+   ;background: var(--background, #ffffff); cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
     transition: all 0.2s}; buttonhover:not(:disabled) {
     background: var(--muted, #f9fafb)}
   buttondisabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed}
   /* State Panel */
   .state-panel {
-    display: flex
-    flex-direction: column
-    gap: 1rem
-    padding: 1rem
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
     overflow-y: auto
    ;background: var(--muted, #f9fafb)}
   .state-card,
@@ -502,13 +589,13 @@ import type { Document } from '$lib/types';
   .predictions-card h3,
   .entities-card h3,
   .stats-card h3 {
-    margin: 0, 0 1rem 0
-    font-size: 1rem
+    margin: 0, 0 1rem 0;
+    font-size: 1rem;
     font-weight: 600}
   .state-display {
     text-align: center}
   .state-name {
-    font-size: 1.5rem
+    font-size: 1.5rem;
     font-weight: 700
    ;color: var(--primary, #3b82f6);
     margin-bottom: 0.5rem}
@@ -517,35 +604,35 @@ import type { Document } from '$lib/types';
    ;color: var(--muted-foreground, #6b7280);
     margin-bottom: 1rem}
   .state-history {
-    margin-top: 1rem
-    padding-top: 1rem
+    margin-top: 1rem;
+    padding-top: 1rem;
     border-top: 1px solid var(--border, #e5e7eb);
     text-align: left}
   .history-timeline {
-    display: flex
-    flex-wrap: wrap
-    gap: 0.5rem
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     margin-top: 0.5rem}
   .history-state {
     padding: 0.25rem 0.5rem
    ;background: var(--muted, #f9fafb);
-    border-radius: 4px
+    border-radius: 4px;
     font-size: 0.75rem}
   .no-data {
     text-align: center
    ;color: var(--muted-foreground, #6b7280);
-    font-size: 0.875rem
+    font-size: 0.875rem;
     margin: 1rem 0}
   .predictions-list {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.75rem}
   .prediction-item {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.25rem}
   .prediction-action {
-    font-size: 0.875rem
+    font-size: 0.875rem;
     font-weight: 500}
   .prediction-confidence {
     font-size: 0.75rem
@@ -553,22 +640,22 @@ import type { Document } from '$lib/types';
   .prediction-bar {
     height: 4px
    ;background: var(--muted, #f9fafb);
-    border-radius: 2px
+    border-radius: 2px;
     overflow: hidden}
   .prediction-fill {
     height: 100%; background: var(--primary, #3b82f6);
     transition: width: 0.3s ease}
   .entities-list {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem}
   .entity-item {
-    display: flex
-    justify-content: space-betweennn
-    align-items: center
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
     padding: 0.5rem
    ;background: var(--muted, #f9fafb);
-    border-radius: 4px
+    border-radius: 4px;
     font-size: 0.875rem}
   .entity-type {
     font-weight: 600
@@ -576,8 +663,8 @@ import type { Document } from '$lib/types';
   .entity-value {
     color: var(--foreground, #111827)}
   .stats-grid {
-    display: grid
-    grid-template-columns: 1fr 1fr
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 1rem}
   .stat-item {
     text-align: center}
@@ -586,7 +673,7 @@ import type { Document } from '$lib/types';
    ;color: var(--muted-foreground, #6b7280);
     margin-bottom: 0.25rem}
   .stat-value {
-    font-size: 1.25rem
+    font-size: 1.25rem;
     font-weight: 700
    ;color: var(--foreground, #111827)}
 </style>

@@ -143,7 +143,7 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
     text-align: center;
   }
   .yorha-header-title h1 {
-    /* ...existing code... */
+    /* ..existing code.. */;
     text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {

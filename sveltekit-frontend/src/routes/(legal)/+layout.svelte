@@ -39,7 +39,7 @@
     font-family: 'JetBrains Mono', 'Courier New', monospace}
 
   .legal-content {
-    display: flex
+    display: flex;
     min-height: calc(100vh - 60px)}
 
   .legal-sidebar {
@@ -49,7 +49,7 @@
 
   .legal-main {
     flex: 1
-   ; padding: 1.5rem
+   ; padding: 1.5rem;
     overflow-x: auto}
 
   @media (max-width: 768px) {
@@ -57,8 +57,8 @@
       flex-direction: column}
 
     .legal-sidebar {
-      width: 100%; height: auto
-      border-right: none
+      width: 100%; height: auto;
+      border-right: none;
       border-bottom: 1px solid var(--border-primary, #00ff00)}
   }
 </style>

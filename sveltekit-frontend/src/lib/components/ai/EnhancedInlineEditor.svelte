@@ -84,11 +84,11 @@
     > <div class="suggestions-header"> <span class="suggestions-title">AI Suggestions</span> {#if isProcessing} <div class="processing-indicator">â—{/if} </div> <div class="suggestions-list"> {#each currentSuggestions as suggestion, index} <button class="suggestion-item {index === selectedSuggestionIndex ? 'selected': ''}"
             onclick={() => applySuggestion(suggestion)} type="button"
           > <div class="suggestion-content"> <span class="suggestion-text">{suggestion.text}</span> <span class="suggestion-type">{suggestion.type}</span> </div> <div class="suggestion-meta"> <span class="confidence">{Math.round(suggestion.confidence * 100)}%</span> <span class="reasoning">{suggestion.reasoning}</span> </div> </button> {/each} </div> <div class="suggestions-footer"> <span class="keyboard-hint">â†‘â†“ Navigate â€¢ Enter/Tab Apply â€¢ Esc Close</span> </div> {/if} </div> <style> .enhanced-inline-editor { position: relative; /*, Fixed: missing colon */ font-family: var(--font-sans, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont)}
-  .editor-content { min-height: 120px; max-height: 400px, overflow-y: auto; padding: 12px 16px;border: 2px solid var(--console-secondary, #e5e7eb); border-radius: 8px; background: var(--console-bg, white); color: var(--console-fg, #1f2937); font-size: 14px; line-height: 1.5; outline: none;transition: all 0.2s ease}
-  .editor-content:focus { border-color: var(--console-primary, #3b82f6); box-shadow: 0, 0 0 3px var(--console-primary, rgba(59, 130, 246, 0.1))}
+  .editor-content { min-height: 120px; max-height: 400px, overflow-y auto; padding: 12px 16px;border: 2px solid var(--console-secondary, #e5e7eb); border-radius: 8px; background: var(--console-bg, white); color: var(--console-fg, #1f2937); font-size: 14px; line-height: 1.5; outline: none;transition: all 0.2s ease}
+  .editor-content:focus { border-color: var(--console-primary, #3b82f6); box-shadow: 0 0 0 3px var(--console-primary, rgba(59, 130, 246, 0.1))}
   .editor-content: empty::before { content: attr(placeholder); color: var(--console-accent-0, #9ca3af); pointer-events: none}
-  .suggestions-popup { position: absolute; /* Fixed: missing colon */ z-index: 1000; min-width: 320px, max-width: 480px; background: var(--console-bg, white); border: 2px solid var(--console-primary, #3b82f6); border-radius: 8px; box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1)); overflow: hidden}
-  .suggestions-header { display: flex; align-items: center; justify-content: space-between; /* Fixed: typo: 'space-betweennn' */ padding: 8px 12px; background: var(--console-primary, #3b82f6); color: var(--console-bg, white); font-size: 12px; font-weight: 600}
+  .suggestions-popup { position: absolute; /* Fixed: missing colon */ z-index 1000; min-width: 320px, max-width 480px; background: var(--console-bg, white); border: 2px solid var(--console-primary, #3b82f6); border-radius: 8px; box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1)); overflow: hidden}
+  .suggestions-header { display: flex; align-items: center; justify-content: space-between; /* Fixed: typo: 'space-betweennn' */ padding 8px 12px; background: var(--console-primary, #3b82f6); color: var(--console-bg, white); font-size: 12px; font-weight: 600}
   .suggestions-title { flex: 1; /* Fixed: missing semicolon */ }
   .processing-indicator { color: var(--console-accent-1, #fbbf24); animation: pulse 1s infinite}
   @keyframes pulse { 0%, 100% { opacity: 1}
@@ -98,7 +98,7 @@
   .suggestion-item:hover { background: var(--console-accent-0, #f3f4f6)}
   .suggestion-item.selected { background: var(--console-secondary, #dbeafe)}
   .suggestion-content { margin-bottom: 4px}
-  .suggestion-text { display: block; font-size: 14px, font-weight: 500; color: var(--console-fg, #1f2937); margin-bottom: 2px}
+  .suggestion-text { display: block; font-size: 14px, font-weight 500; color: var(--console-fg, #1f2937); margin-bottom: 2px}
   .suggestion-type { display: inline-block; padding: 2px 6px;background: var(--console-tertiary, #10b981); color: white; font-size: 10px; font-weight: 600; text-transform: uppercase; border-radius: 3px}
   .suggestion-meta { display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--console-accent-1, #6b7280)}
   .confidence { font-weight: 600; color: var(--console-success, #059669)}

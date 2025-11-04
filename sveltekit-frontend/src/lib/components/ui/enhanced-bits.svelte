@@ -26,9 +26,9 @@
 <style>
   /* very small baseline styles; real project likely overrides */
   .bits-btn {
-    padding: 0.5rem 0.75rem
+    padding: 0.5rem 0.75rem;
     border-radius: 6px
-   ;border: 1px solid rgba(255,255,255,0.08); background: transparent
+   ;border: 1px solid rgba(255,255,255,0.08); background: transparent;
     cursor: pointer}
   /* disabled, state: cover both attribute and pseudo-class usages */
   .bits-btn[disabled],

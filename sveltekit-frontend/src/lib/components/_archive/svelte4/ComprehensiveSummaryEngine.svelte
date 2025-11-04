@@ -304,7 +304,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     /* @apply text-2xl font-bold text-gray-900; */
   }
   .btn-advanced {
-    /* Example property to avoid empty ruleset */
+    /* Example property to avoid empty ruleset */;
     cursor: pointer;
     .btn-advanced.active {
       /* @apply bg-purple-100 text-purple-700; */

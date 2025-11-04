@@ -63,113 +63,111 @@
   .yorha-nav {
     background: var(--yorha-bg-secondary, #1a1a1a);
     border-bottom: 3px solid var(--yorha-secondary, #ffd700); position: sticky
-   ; top: 0
-    z-index: 1000
-    box-shadow:
-      0 3px, 0 0 var(--yorha-secondary, #ffd700),
+   ; top: 0;
+    z-index: 1000;
+    box-shadow: 0 3px 0 0 var(--yorha-secondary, #ffd700),
       0 6px 20px rgba(0, 0, 0, 0.8)}
   .yorha-nav-container {
-    align-items: center
-    display: flex
-    justify-content: space-between
-    max-width: 1400px
-    margin: 0 auto
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
     padding: 16px 24px}
   .yorha-brand {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 12px}
   .yorha-brand-icon {
-    display: flex
-    align-items: center
-    justify-content: center
-    width: 48px
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
     height: 48px
    ;background: var(--yorha-secondary, #ffd700); color: var(--yorha-bg-primary, #0a0a0a);
     font-size: 24px
    ;border: 2px solid var(--yorha-secondary, #ffd700);
-    box-shadow: 0, 0 0 2px var(--yorha-bg-secondary, #1a1a1a)}
+    box-shadow: 0 0 0 2px var(--yorha-bg-secondary, #1a1a1a)}
   .yorha-brand-info {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 2px}
   .yorha-brand-text { color: var(--yorha-secondary, #ffd700);
-    font-family: var(--yorha-font-secondary: 'Orbitron', monospace);
-    font-size: 18px
-    font-weight: 700
-    letter-spacing: 2px
-    text-transform: uppercase
+    font-family: var(--yorha-font-secondary 'Orbitron', monospace);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     line-height: 1}
   .yorha-brand-version { color: var(--yorha-text-muted, #808080);
-    font-family: var(--yorha-font-primary: 'JetBrains Mono', monospace);
-    font-size: 11px
-    letter-spacing: 1px
+    font-family: var(--yorha-font-primary 'JetBrains Mono', monospace);
+    font-size: 11px;
+    letter-spacing: 1px;
     text-transform: uppercase}
   .yorha-nav-links {
-    display: flex
+    display: flex;
     gap: 8px}
   .yorha-nav-link {
-    position: relative
-    display: flex
-    align-items: center
+    position: relative;
+    display: flex;
+    align-items: center;
     gap: 8px
    ;color: var(--yorha-text-secondary, #b0b0b0);
-    font-family: var(--yorha-font-primary: 'JetBrains Mono', monospace);
-    font-size: 14px
-    font-weight: 500
-    letter-spacing: 1px
-    text-decoration: none
-    text-transform: uppercase
-    padding: 12px 16px
-    border: 2px solid transparent
-    transition: all 0.2s ease
+    font-family: var(--yorha-font-primary 'JetBrains Mono', monospace);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-decoration: none;
+    text-transform: uppercase;
+    padding: 12px 16px;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
     overflow: hidden}
   .yorha-nav-link:hover { color: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-text-muted, #808080); background: var(--yorha-bg-tertiary, #2a2a2a)}
   .yorha-nav-link.active {
     color: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-secondary, #ffd700); background: var(--yorha-bg-tertiary, #2a2a2a);
-    box-shadow:
-      inset, 0 3px, 0 var(--yorha-secondary, #ffd700),
+    box-shadow: inset 0 3px, 0 var(--yorha-secondary, #ffd700),
       0, 0 10px rgba(255, 215, 0, 0.2)}
   .nav-icon {
     font-size: 16px}
   .active-bar {
-    position: absolute
-    bottom: 0
-    left: 0
-    right: 0
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     height: 2px
    ;background: var(--yorha-secondary, #ffd700);
-    box-shadow: 0, 0 8px rgba(255, 215, 0, 0.5)}
+    box-shadow: 0 0 8px rgba(255, 215, 0, 0.5)}
   .yorha-nav-actions {
-    display: flex
+    display: flex;
     gap: 8px}
   .yorha-toolbar-btn {
-    position: relative
-    display: flex
-    flex-direction: column
-    align-items: center
-    justify-content: center
-    gap: 2px
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
     padding: 8px 12px
    ;background: var(--yorha-bg-secondary, #1a1a1a); border: 2px solid var(--yorha-text-muted, #808080);
-    color: var(--yorha-text-secondary, #b0b0b0); cursor: pointer
-    transition: all 0.2s ease
-    min-width: 60px
+    color: var(--yorha-text-secondary, #b0b0b0); cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 60px;
     height: 60px}
   .yorha-toolbar-btn:hover { background: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-secondary, #ffd700); color: var(--yorha-bg-primary, #0a0a0a);
-    box-shadow: 0, 0 0 1px var(--yorha-secondary, #ffd700)}
+    box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700)}
   .btn-icon {
-    font-size: 18px
+    font-size: 18px;
     line-height: 1}
   .btn-label {
-    font-family: var(--yorha-font-primary: 'JetBrains Mono', monospace);
-    font-size: 8px
-    font-weight: 600
-    letter-spacing: 1px
-    text-transform: uppercase
+    font-family: var(--yorha-font-primary 'JetBrains Mono', monospace);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
     line-height: 1}
   /* Responsive Design */
   @media (max-width: 768px) {
@@ -180,7 +178,7 @@
     .yorha-nav-links {
       gap: 4px}
     .yorha-nav-link {
-      padding: 8px 12px
+      padding: 8px 12px;
       font-size: 12px}
     .btn-label {
       display: none}

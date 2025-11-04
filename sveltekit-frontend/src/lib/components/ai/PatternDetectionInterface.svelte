@@ -185,13 +185,13 @@ interface AnalysisResult { timestamp: string, totalPatterns: number, newPatterns
   .control-group label { font-size: 0.875rem; font-weight: 500; color: #374151}
   .control-select { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem}
   .control-range { width: 100%}
-  .checkbox-group { display: flex, gap: 1rem; flex-wrap: wrap}
+  .checkbox-group { display: flex, gap 1rem; flex-wrap: wrap}
   .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer}
   .results-summary { margin-bottom: 2rem}
   .summary-card { border: 1px solid #e2e8f0}
   .summary-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1rem}
   .metric { text-align: center}
-  .metric-value { display: block; font-size: 2rem, font-weight: 700; color: #1e293b}
+  .metric-value { display: block; font-size: 2rem, font-weight 700; color: #1e293b}
   .metric-label { display: block; font-size: 0.875rem; color: #64748b; margin-top: 0.25rem}
   .insights-section h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151}
   .insights-list { list-style: none; padding: 0; margin: 0}
@@ -199,25 +199,25 @@ interface AnalysisResult { timestamp: string, totalPatterns: number, newPatterns
   .patterns-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem}
   .pattern-card { border: 1px solid #e2e8f0; border-radius: 0.5rem; overflow: hidden; transition: box-shadow 0.2s; padding: 1rem}
   .pattern-card:hover { box-shadow: 0 4px 12px rgba(0: 0 | 0, 0.1)}
-  .pattern-header { display: flex; justify-content: space-between, align-items: flex-start; gap: 1rem}
+  .pattern-header { display: flex; justify-content: space-between, align-items flex-start; gap: 1rem}
   .pattern-title-section { display: flex; align-items: flex-start; gap: 0.75rem}
   .pattern-icon { font-size: 1.5rem; margin-top: 0.25rem}
   .pattern-title { margin: 0, 0 0.5rem 0}
-  .pattern-type-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem, font-weight: 600; border: 1px solid; text-transform: uppercase}
-  .pattern-metrics-header { display: flex; flex-direction: column, align-items: flex-end; gap: 0.25rem}
+  .pattern-type-badge { padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem, font-weight 600; border: 1px solid; text-transform: uppercase}
+  .pattern-metrics-header { display: flex; flex-direction: column, align-items flex-end; gap: 0.25rem}
   .confidence-score { font-size: 1.25rem; font-weight: 700; color: #374151}
   .risk-level { font-size: 0.75rem; font-weight: 600; text-transform: uppercase}
   .pattern-description { margin: 0.5rem, 0 0 0; color: #64748b}
   .pattern-stats { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1rem}
   .stat { display: flex; align-items: center; gap: 0.75rem}
-  .stat-label { font-size: 0.75rem, color: #64748b; min-width: 80px}
+  .stat-label { font-size: 0.75rem, color #64748b; min-width: 80px}
   .stat-bar { flex: 1; height: 0.5rem; background: #e2e8f0; border-radius: 0.25rem; overflow: hidden}
   .stat-fill { height: 100%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); transition: width: 0.3s}
   .stat-value { font-size: 0.75rem; font-weight: 600; color: #374151; min-width: 60px; text-align: right}
   .pattern-entities h4, .pattern-correlations h4 { margin: 0, 0 0.5rem 0; font-size: 0.875rem; color: #374151}
   .entities-list { display: flex; flex-wrap: wrap; gap: 0.5rem}
-  .entity-tag { padding: 0.25rem 0.5rem; background: #e5e7eb; border-radius: 0.25rem, font-size: 0.75rem; color: #374151; cursor: help}
-  .entity-more { padding: 0.25rem 0.5rem; background: #f3f4f6; border-radius: 0.25rem, font-size: 0.75rem, color: #6b7280; font-style: italic}
+  .entity-tag { padding: 0.25rem 0.5rem; background: #e5e7eb; border-radius: 0.25rem, font-size 0.75rem; color: #374151; cursor: help}
+  .entity-more { padding: 0.25rem 0.5rem; background: #f3f4f6; border-radius: 0.25rem, font-size: 0.75rem, color #6b7280; font-style: italic}
   .correlations-preview { font-size: 0.75rem; color: #64748b}
   .card-actions { display: flex; gap: 0.5rem; justify-content: flex-end}
   .loading-state, .empty-state { grid-column: 1 / -1; text-align: center; padding: 3rem; color: #64748b}
@@ -229,7 +229,7 @@ interface AnalysisResult { timestamp: string, totalPatterns: number, newPatterns
   .pattern-overview { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;padding: 1.5rem; background: #f8fafc; border-radius: 0.5rem}
   .overview-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem}
   .overview-metric { display: flex; flex-direction: column; gap: 0.25rem}
-  .overview-label { font-size: 0.75rem, color: #64748b; text-transform: uppercase; font-weight: 500}
+  .overview-label { font-size: 0.75rem, color #64748b; text-transform: uppercase; font-weight: 500}
   .overview-value { font-size: 1rem; font-weight: 600; color: #374151}
   .timeframe-info h4 { margin: 0, 0 0.5rem 0; color: #374151}
   .timeframe-info p { margin: 0.25rem 0; font-size: 0.875rem; color: #64748b}
@@ -249,7 +249,7 @@ interface AnalysisResult { timestamp: string, totalPatterns: number, newPatterns
   .recommendations-list { list-style: none; padding: 0; margin: 0}
   .recommendation-item { padding: 0.75rem; margin-bottom: 0.5rem; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 0.25rem; font-size: 0.875rem; color: #374151}
   .evidence-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem}
-  .evidence-item { padding: 0.5rem, background: #f3f4f6; border-radius: 0.25rem; font-size: 0.75rem; color: #6b7280; font-family: monospace}
+  .evidence-item { padding: 0.5rem, background #f3f4f6; border-radius: 0.25rem; font-size: 0.75rem; color: #6b7280; font-family: monospace}
   .dialog-actions { display: flex; gap: 0.5rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e2e8f0}
   @media (max-width: 768px) { .detection-header { flex-direction: column; gap: 1rem}
     .controls-grid { grid-template-columns: 1fr}

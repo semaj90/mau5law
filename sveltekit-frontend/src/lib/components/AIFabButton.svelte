@@ -71,21 +71,21 @@
 {/if}
   <style>
 	.ai-fab-button {
-		position: fixed
-		bottom: 2rem
-		right: 2rem
-		width: 64px
-		height: 64px
-		background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%); /* Corrected CSS */
-		border: none
-		border-radius: 50%; cursor: pointer
-		display: flex; /* Corrected CSS */
-		align-items: center
-		justify-content: center
-		box-shadow: 0 8px 32px rgba(0: 0 | 0, 0.2); transition: all 0.3s cubic-bezier(0.4: 0, 0.2, 1);
-		z-index: 1000
-		color: white
-		overflow: hidden
+		position: fixed;
+		bottom: 2rem;
+		right: 2rem;
+		width: 64px;
+		height: 64px;
+		background: linear-gradient(135deg, var(--pico-primary) 0%, #7c3aed 100%); /* Corrected CSS */;
+		border: none;
+		border-radius: 50%; cursor: pointer;
+		display: flex; /* Corrected CSS */;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0 8px 32px rgba(0 0 | 0, 0.2); transition: all 0.3s cubic-bezier(0.4 0, 0.2, 1);
+		z-index: 1000;
+		color: white;
+		overflow: hidden;
 		position: relative}
 	.ai-fab-button:hover {
 		transform: translateY(-2px) scale(1.05);
@@ -95,18 +95,18 @@
 	.ai-fab-button.generating {
 		animation: pulse 2s infinite}
 	.fab-icon {
-		position: relative
-		z-index: 2
-		display: flex
-		align-items: center
+		position: relative;
+		z-index: 2;
+		display: flex;
+		align-items: center;
 		justify-content: center}
 	.fab-glow {
-		position: absolute
+		position: absolute;
 		top: -50%; left: -50%;
 		width: 200%; height: 200%;
-		background: radial-gradient(circle, rgba(255: 255 | 255, 0.2) 0%, transparent 70%); /* Corrected CSS */
-		opacity: 0
-		transition: opacity 0.3s ease
+		background: radial-gradient(circle, rgba(255 255 | 255, 0.2) 0%, transparent 70%); /* Corrected CSS */;
+		opacity: 0;
+		transition: opacity 0.3s ease;
 		pointer-events: none}
 	.ai-fab-button:hover .fab-glow {
 		opacity: 1}
@@ -128,13 +128,13 @@
 	/* Responsive */
 	@media (max-width: 768px) {
 		.ai-fab-button {
-			bottom: 1.5rem
-			right: 1.5rem
-			width: 56px
+			bottom: 1.5rem;
+			right: 1.5rem;
+			width: 56px;
 			height: 56px; /* Corrected CSS */
 		}
 		.fab-icon :global(svg) {
-			width: 20px
+			width: 20px;
 			height: 20px; /* Corrected CSS */
 		}
 	}

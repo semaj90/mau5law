@@ -163,16 +163,16 @@
  <style> .yorha-aa-cache-container { position: relative; display: inline-block; font-family: 'Rajdhani', 'Courier New', monospace; border: 1px solid rgba(186, 175, 137, 0.3); border-radius: 0; background: rgba(0, 0, 0, 0.05)}
   .yorha-aa-canvas { display: block; border: 1px solid rgba(186, 175, 137, 0.5); image-rendering: pixelated; transition: all 0.3s ease}
   /* AA Quality Classes */ .standard-aa { border-color: rgba(255, 255, 255, 0.3)}
-  .high-aa { border-color: rgba(74, 144, 226, 0.5); box-shadow: 0, 0 8px rgba(74, 144, 226, 0.2)}
-  .ultra-aa { border-color: rgba(0, 255, 0, 0.7); box-shadow: 0, 0 12px rgba(0, 255, 0, 0.3)}
+  .high-aa { border-color: rgba(74, 144, 226, 0.5); box-shadow: 0 0 8px rgba(74, 144, 226, 0.2)}
+  .ultra-aa { border-color: rgba(0, 255, 0, 0.7); box-shadow: 0 0 12px rgba(0, 255, 0, 0.3)}
   /* Canvas States */ .yorha-aa-canvas.compiling { opacity: 0.7; filter: blur(1px)}
-  .yorha-aa-canvas.error { border-color: rgba(255, 0, 0, 0.8); box-shadow: 0, 0 10px rgba(255, 0, 0, 0.4)}
-  /* AA Type Indicator */ .aa-type-indicator { position: absolute; top: 6px; left: 6px, display: flex, align-items: center; gap: 4px;background: rgba(0, 0, 0, 0.9); padding: 3px 8px;border: 1px solid var(--aa-color, #ffffff); color: white; font-size: 9px; font-weight: bold; z-index: 10}
+  .yorha-aa-canvas.error { border-color: rgba(255, 0, 0, 0.8); box-shadow: 0 0 10px rgba(255, 0, 0, 0.4)}
+  /* AA Type Indicator */ .aa-type-indicator { position: absolute; top: 6px; left: 6px, display: flex, align-items center; gap: 4px;background: rgba(0, 0, 0, 0.9); padding: 3px 8px;border: 1px solid var(--aa-color, #ffffff); color: white; font-size: 9px; font-weight: bold; z-index: 10}
   .aa-icon { font-size: 11px; color: var(--aa-color, #ffffff)}
   .aa-label { color: var(--aa-color, #ffffff)}
   .aa-quality { color: rgba(255, 255, 255, 0.7); font-size: 8px}
   /* Shader Metrics Overlay */ .shader-metrics-overlay { position: absolute; top: 6px; right: 6px; background: rgba(0, 0, 0, 0.95); border: 1px solid rgba(186, 175, 137, 0.3); padding: 6px; font-size: 8px; color: #baa989; min-width: 120px; z-index: 10}
-  .metrics-title { font-weight: bold; margin-bottom: 4px, text-align: center; color: #ffffff; font-size: 9px; border-bottom: 1px solid rgba(186, 175, 137, 0.3); padding-bottom: 2px}
+  .metrics-title { font-weight: bold; margin-bottom: 4px, text-align center; color: #ffffff; font-size: 9px; border-bottom: 1px solid rgba(186, 175, 137, 0.3); padding-bottom: 2px}
   .metrics-content { display: flex; flex-direction: column; gap: 1px}
   .metric-row { display: flex; justify-content: space-between; align-items: center}
   .metric-label { color: rgba(186, 175, 137, 0.8); font-size: 7px}
@@ -182,17 +182,17 @@
   .metric-value.poor { color: #ff6600; animation: pulse 2s infinite}
   .metric-value.aa-quality { color: #ff00ff}
   .metric-value.adaptive { color: #00ffff}
-  /* Compilation Overlay */ .compilation-overlay { position: absolute; inset: 0; display: flex; align-items: center, justify-content: center; background: rgba(0, 0, 0, 0.9); z-index: 20}
-  .compilation-spinner { display: flex; flex-direction: column, align-items: center; gap: 8px; color: #baa989}
+  /* Compilation Overlay */ .compilation-overlay { position: absolute; inset: 0; display: flex; align-items: center, justify-content center; background: rgba(0, 0, 0, 0.9); z-index: 20}
+  .compilation-spinner { display: flex; flex-direction: column, align-items center; gap: 8px; color: #baa989}
   .spinner-rings { position: relative; width: 50px; height: 50px}
   .spinner-rings div { position: absolute; border: 2px solid transparent; border-radius: 50%; animation: spin 2s linear infinite}
-  .ring-1 { width: 50px, height: 50px; border-top: 2px solid #baa989; animation-duration: 2s}
-  .ring-2 { width: 35px; height: 35px; top: 7px, left: 7px; border-right: 2px solid #74a0e2; animation-duration: 1.5s; animation-direction: reverse}
-  .ring-3 { width: 20px; height: 20px; top: 15px, left: 15px; border-bottom: 2px solid #ff6b9d; animation-duration: 1s}
+  .ring-1 { width: 50px, height 50px; border-top: 2px solid #baa989; animation-duration: 2s}
+  .ring-2 { width: 35px; height: 35px; top: 7px, left 7px; border-right: 2px solid #74a0e2; animation-duration: 1.5s; animation-direction: reverse}
+  .ring-3 { width: 20px; height: 20px; top: 15px, left 15px; border-bottom: 2px solid #ff6b9d; animation-duration: 1s}
   /* Error Overlay */ .error-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;background: rgba(139, 0, 0, 0.95); color: white; text-align: center; z-index: 20}
   .error-icon { font-size: 24px; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))}
   .error-title { font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px}
-  .error-message { font-size: 9px; max-width: 200px, line-height: 1.3; opacity: 0.9}
+  .error-message { font-size: 9px; max-width: 200px, line-height 1.3; opacity: 0.9}
   .error-actions { display: flex; gap: 6px; margin-top: 4px}
   .retry-button, .hotreload-button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 3px 8px; font-size: 8px; font-weight: bold; cursor: pointer;transition: all 0.2s ease}
   .retry-button:hover, .hotreload-button:hover { background: rgba(255, 255, 255, 0.2); transform: translateY(-1px)}
@@ -201,7 +201,7 @@
   .debug-content { display: flex; flex-direction: column; gap: 1px}
   .debug-content div { display: flex; justify-content: space-between}
   .debug-content strong { color: #ffff00; margin-right: 8px}
-  /* Hot Reload Controls */ .hotreload-controls { position: absolute; bottom: 6px; right: 6px, display: flex, align-items: center, gap: 4px; z-index: 10}
+  /* Hot Reload Controls */ .hotreload-controls { position: absolute; bottom: 6px; right: 6px, display: flex, align-items: center, gap 4px; z-index: 10}
   .hotreload-trigger { background: rgba(255, 100, 0, 0.9); border: 1px solid #ff6400;color: white; padding: 2px 6px; font-size: 8px; font-weight: bold; cursor: pointer;transition: all 0.2s ease}
   .hotreload-trigger: hover { background: #ff6400; transform: scale(1.05)}
   .hotreload-count { background: rgba(0, 0, 0, 0.8); color: #ff6400;padding: 2px 4px; font-size: 7px; font-weight: bold; border: 1px solid rgba(255, 100, 0, 0.3)}

@@ -123,9 +123,9 @@
  <div class="font-semibold">{currentSession.peakUsage}</div> </div> </div>
   {#if autoOptimize} <div class="mt-2 text-xs" data-testid="context-compressed">âœ“ Context optimization enabled{/if} {/if}
   </div> </div>
- <style> .slider: :-webkit-slider-thumb { appearance: none; height: 20px; width: 20px, background: #3b82f6, border-radius: 50%; cursor: pointer}
+ <style> .slider: :-webkit-slider-thumb { appearance: none; height: 20px; width: 20px, background: #3b82f6, border-radius 50%; cursor: pointer}
   .slider: :-moz-range-thumb { height: 20px; width: 20px; background: #3b82f6; border-radius: 50%; cursor: pointer;border: none}
-  .toggle { appearance: none; width: 40px; height: 20px, background: #e5e7eb, border-radius: 20px; position: relative; cursor: pointer; transition: background 0.2s}
+  .toggle { appearance: none; width: 40px; height: 20px, background: #e5e7eb, border-radius 20px; position: relative; cursor: pointer; transition: background 0.2s}
   .toggle:checked { background: #3b82f6}
   .toggle: :before { content: ''; position: absolute; width: 18px; height: 18px; background: white; border-radius: 50%; top: 1px;left: 1px; transition: transform 0.2s}
   .toggle:checked::before { transform: translateX(20px)}

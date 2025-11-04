@@ -163,9 +163,7 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
   .form-group input: focus {
     outline: none;
     border-color: #d4af37;
-    box-shadow:
-      0,
-      0 10px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
   }
 
   .form-group input.error {

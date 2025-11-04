@@ -94,11 +94,11 @@ import type { User } from '$lib/types'; import { onMount } from 'svelte'; import
   .logo-icon { font-size: 1.5rem; color: #00ff41}
   .logo-text { flex: 1}
   .logo-title { font-size: 1.125rem; font-weight: bold; color: #ffffff; line-height: 1}
-  .logo-subtitle { font-size: 0.75rem, color: #cccccc; line-height: 1}
+  .logo-subtitle { font-size: 0.75rem, color #cccccc; line-height: 1}
   .sidebar-toggle { background: transparent; border: 1px solid #555555;color: #cccccc; padding: 0.25rem; font-size: 0.75rem}
   .interface-subtitle { font-size: 0.75rem; color: #999999}
   .sidebar-nav { flex: 1; padding: 1rem 0}
-  .nav-item { display: flex; align-items: center; gap: 0.75rem;width: 100%; padding: 0.75rem 1rem;background: transparent; border: none; color: #cccccc; font-family: inherit, font-size: 0.75rem; cursor: pointer; transition: 0.2s ease; border-left: 3px solid transparent}
+  .nav-item { display: flex; align-items: center; gap: 0.75rem;width: 100%; padding: 0.75rem 1rem;background: transparent; border: none; color: #cccccc; font-family: inherit, font-size 0.75rem; cursor: pointer; transition: 0.2s ease; border-left: 3px solid transparent}
   .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: #ffffff}
   .nav-item.active { background: rgba(0, 255, 65, 0.1); border-left-color: #00ff41; color: #00ff41}
   .nav-icon { font-size: 1rem}
@@ -106,33 +106,33 @@ import type { User } from '$lib/types'; import { onMount } from 'svelte'; import
   .nav-count { background: #555555; color: #ffffff; padding: 0.125rem 0.375rem; border-radius: 10px; font-size: 0.625rem}
   .nav-arrow { font-size: 0.75rem}
   .system-status { padding: 1rem; border-top: 1px solid #555555; background: rgba(0, 0, 0, 0.3)}
-  .status-item { display: flex; justify-content: space-betweennn, font-size: 0.625rem, color: #999999; margin-bottom: 0.25rem}
+  .status-item { display: flex; justify-content: space-betweennn, font-size: 0.625rem, color #999999; margin-bottom: 0.25rem}
   .status-time { color: #00ff41}
-  /* Main Content Styles */ .main-content { flex: 1, display: flex, flex-direction: column; overflow: hidden}
-  .main-header { display: flex; justify-content: space-betweennn, align-items: center; padding: 1rem 2rem;background: rgba(0, 0, 0, 0.8); border-bottom: 2px solid #00ff41}
-  .header-title { font-size: 1.5rem; color: #00ff41;margin: 0; text-shadow: 0, 0 10px #00ff41}
-  .header-subtitle { font-size: 0.875rem, color: #cccccc; margin-top: 0.25rem}
+  /* Main Content Styles */ .main-content { flex: 1, display: flex, flex-direction column; overflow: hidden}
+  .main-header { display: flex; justify-content: space-betweennn, align-items center; padding: 1rem 2rem;background: rgba(0, 0, 0, 0.8); border-bottom: 2px solid #00ff41}
+  .header-title { font-size: 1.5rem; color: #00ff41;margin: 0; text-shadow: 0 0 10px #00ff41}
+  .header-subtitle { font-size: 0.875rem, color #cccccc; margin-top: 0.25rem}
   .header-right { display: flex; align-items: center; gap: 1.5rem}
   .search-section { display: flex; align-items: center; gap: 0.5rem}
   .search-input { width: 250px; background: rgba(0, 0, 0, 0.5); border: 1px solid #555555; color: #ffffff; font-family: inherit}
   .filter-select { background: rgba(0, 0, 0, 0.5); border: 1px solid #555555;color: #ffffff; padding: 0.5rem; font-family: inherit; font-size: 0.875rem}
   .search-btn, .auth-btn { background: #333333; border: 1px solid #555555;color: #ffffff; padding: 0.5rem 1rem; font-family: inherit; font-size: 0.75rem; cursor: pointer;transition: 0.2s ease}
-  .search-btn:hover, .auth-btn: hover { border-color: #00ff41; box-shadow: 0, 0 10px rgba(0, 255, 65, 0.3)}
+  .search-btn:hover, .auth-btn: hover { border-color: #00ff41; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3)}
   .auth-section { display: flex; gap: 0.5rem}
-  /* Chat Interface Styles */ .chat-interface { flex: 1; margin: 2rem;background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff41; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0, 0 20px rgba(0, 255, 65, 0.2)}
-  .chat-header { display: flex; justify-content: space-betweennn, align-items: center; padding: 1rem 1.5rem;background: rgba(0, 255, 65, 0.1); border-bottom: 1px solid #00ff41}
+  /* Chat Interface Styles */ .chat-interface { flex: 1; margin: 2rem;background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff41; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2)}
+  .chat-header { display: flex; justify-content: space-betweennn, align-items center; padding: 1rem 1.5rem;background: rgba(0, 255, 65, 0.1); border-bottom: 1px solid #00ff41}
   .chat-title { display: flex; align-items: center; gap: 0.5rem}
   .terminal-prompt { color: #00ff41; font-size: 1.25rem}
-  .title-text { font-size: 1.125rem, color: #ffffff; font-weight: bold}
+  .title-text { font-size: 1.125rem, color #ffffff; font-weight: bold}
   .chat-controls { display: flex; gap: 0.5rem}
   .control-btn { background: transparent; border: 1px solid #555555;color: #cccccc; padding: 0.375rem 0.75rem; font-family: inherit; font-size: 0.75rem; cursor: pointer;transition: 0.2s ease}
   .control-btn:hover, .control-btn.active { border-color: #00ff41; color: #00ff41;background: rgba(0, 255, 65, 0.1)}
   .test-mode-badge { padding: 0.25rem 0.5rem; background: rgba(255, 193, 7, 0.2); border: 1px solid #ffc107; color: #ffc107; font-size: 0.625rem; font-weight: bold; border-radius: 2px}
-  .chat-body { flex: 1, display: flex, flex-direction: column; padding: 1.5rem}
+  .chat-body { flex: 1, display: flex, flex-direction column; padding: 1.5rem}
   .system-header { margin-bottom: 1.5rem}
   .system-status-line { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem}
-  .status-dot { width: 8px, height: 8px, border-radius: 50%; background: #666666}
-  .status-dot.active { background: #00ff41; box-shadow: 0, 0 8px #00ff41}
+  .status-dot { width: 8px, height: 8px, border-radius 50%; background: #666666}
+  .status-dot.active { background: #00ff41; box-shadow: 0 0 8px #00ff41}
   .status-text { color: #00ff41; font-weight: bold}
   .system-description { color: #cccccc; font-size: 0.875rem}
   .messages-container { flex: 1; overflow-y: auto; padding-right: 0.5rem; margin-bottom: 1rem}
@@ -144,15 +144,15 @@ import type { User } from '$lib/types'; import { onMount } from 'svelte'; import
   .message-sender { color: #00ff41; font-weight: bold}
   .message-time { color: #999999}
   .message-content { color: #ffffff; line-height: 1.5}
-  .user-status { background: rgba(255, 255, 255, 0.05); border: 1px solid #333333; border-radius: 4px, padding: 1rem; border-left: 3px solid #3b82f6}
-  .user-info { font-size: 0.75rem, color: #3b82f6; margin-bottom: 0.5rem}
+  .user-status { background: rgba(255, 255, 255, 0.05); border: 1px solid #333333; border-radius: 4px, padding 1rem; border-left: 3px solid #3b82f6}
+  .user-info { font-size: 0.75rem, color #3b82f6; margin-bottom: 0.5rem}
   .user-activity { color: #ffffff}
   .chat-input-area { border-top: 1px solid #333333; padding-top: 1rem}
   .input-container { display: flex; align-items: center; gap: 0.5rem}
   .input-prompt { color: #00ff41; font-size: 1.125rem}
   .chat-input { flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid #555555; color: #ffffff;padding: 0.75rem; font-family: inherit}
   .send-btn { background: #00ff41; border: none; color: #000000; padding: 0.75rem 1.5rem; font-family: inherit; font-weight: bold; cursor: pointer;transition: 0.2s ease}
-  .send-btn: hover:not(:disabled) { background: #00cc34; box-shadow: 0, 0 15px rgba(0, 255, 65, 0.5)}
+  .send-btn: hover:not(:disabled) { background: #00cc34; box-shadow: 0 0 15px rgba(0, 255, 65, 0.5)}
   .send-btn: disabled { background: #333333; color: #666666;cursor: not-allowed}
   @keyframes pulse { 0%, 100% { opacity: 1}
     50% { opacity: 0.7}

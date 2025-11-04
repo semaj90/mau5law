@@ -45,7 +45,7 @@
       ></div> {/if}
   </div>
  <style> /* Additional hover effects for legal evidence */ .nes-container: hover { border-color: #007bff; transform: scale(1.02)}
-  /* Special styling for critical evidence */ .nes-container[data-priority='critical'] { border-color: #dc3545; box-shadow: 0, 0 10px rgba(220, 53, 69, 0.3)}
+  /* Special styling for critical evidence */ .nes-container[data-priority='critical'] { border-color: #dc3545; box-shadow: 0 0 10px rgba(220, 53, 69, 0.3)}
 </style>
 
 

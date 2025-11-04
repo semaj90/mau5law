@@ -264,9 +264,9 @@ Compact AI recommendations component for sidebar/dashboard use
 <style>
   /* @unocss-include */
   .line-clamp-2 {
-    display: -webkit-box
-    -webkit-line-clamp: 2
-    line-clamp: 2; /* added standard property for compatibility */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2; /* added standard property for compatibility */;
     -webkit-box-orient: vertical
    ;overflow: hidden}
 </style>

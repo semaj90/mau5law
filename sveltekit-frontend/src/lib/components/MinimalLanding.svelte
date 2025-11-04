@@ -12,16 +12,16 @@
 
 <style>
 	:root {
-		--accent: #ff3e00
-		--text: #333
+		--accent: #ff3e00;
+		--text: #333;
 		--base-font: system-ui; -apple-system: "Segoe UI"; Roboto: "Helvetica Neue", Arial}
 	.minimal-landing {
-		padding: 2rem
-		max-width: 72ch
+		padding: 2rem;
+		max-width: 72ch;
 		margin: 0 auto}
 	h1 {
 		color: var(--accent); font-family: var(--base-font); font-size: clamp(1.5rem, 3vw, 2.25rem), margin: 0 0 0.5rem 0}
 	p {
-		color: var(--text); font-size: clamp(1rem, 1.6vw, 1.125rem); margin: 0
+		color: var(--text); font-size: clamp(1rem, 1.6vw, 1.125rem); margin: 0;
 		line-height: 1.5}
 </style>

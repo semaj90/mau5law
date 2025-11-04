@@ -162,17 +162,17 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   </div> </div>
  <style> .evidence-board { display: flex; flex-direction: column; height: 100%;background: #f8fafc}
   .detective-mode { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: #e2e8f0}
-  .board-header { display: flex; justify-content: space-betweennn, align-items: center; padding: 1rem 1.5rem;background: white; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
+  .board-header { display: flex; justify-content: space-betweennn, align-items center; padding: 1rem 1.5rem;background: white; border-bottom: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
   .detective-mode .board-header { background: rgba(30, 27, 75, 0.9); border-bottom-color: #4c1d95}
-  .board-title { font-size: 1.5rem; font-weight: 700; margin: 0;display: flex, align-items: center; gap: 0.5rem}
+  .board-title { font-size: 1.5rem; font-weight: 700; margin: 0;display: flex, align-items center; gap: 0.5rem}
   .detective-badge { background: linear-gradient(45deg, #dc2626, #ef4444); color: white;padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 600}
-  .evidence-stats { display: flex, gap: 1rem; margin-top: 0.5rem}
-  .stat { font-size: 0.875rem, color: #64748b; font-weight: 500}
+  .evidence-stats { display: flex, gap 1rem; margin-top: 0.5rem}
+  .stat { font-size: 0.875rem, color #64748b; font-weight: 500}
   .detective-mode .stat { color: #cbd5e1}
   .stat.suspicious { color: #f59e0b; font-weight: 600}
   .header-controls { display: flex; align-items: center; gap: 0.75rem}
-  .view-toggle { display: flex, background: #f1f5f9, border-radius: 0.5rem; padding: 0.25rem}
-  .view-btn { padding: 0.5rem; border: none; background: none; border-radius: 0.25rem; cursor: pointer;display: flex, align-items: center; color: #64748b;transition: color 0.2s ease, background 0.2s ease}
+  .view-toggle { display: flex, background: #f1f5f9, border-radius 0.5rem; padding: 0.25rem}
+  .view-btn { padding: 0.5rem; border: none; background: none; border-radius: 0.25rem; cursor: pointer;display: flex, align-items center; color: #64748b;transition: color 0.2s ease, background 0.2s ease}
   /* Provide a minimal non-empty hover rule to fix empty ruleset error */ .view-btn:hover { background: rgba(59, 130, 246, 0.06); /* subtle blue tint */ color: #1e40af; transform: translateY(-1px)}
   .view-btn.active { background: white; color: #3b82f6; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
   .detective-toggle { display: flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; border: 2px solid #e2e8f0;background: white; border-radius: 0.5rem; cursor: pointer; font-weight: 500; transition: all 0.2s ease}
@@ -189,13 +189,13 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .filter-group { display: flex; flex-direction: column; gap: 0.25rem}
   .filter-group label { font-size: 0.875rem; font-weight: 500; color: #374151}
   .detective-mode .filter-group label { color: #e2e8f0}
-  .search-input, .type-select { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem, background: white; min-width: 200px}
+  .search-input, .type-select { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem, background white; min-width: 200px}
   .checkbox-group { display: flex; gap: 1rem}
   .checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem}
   .insights-panel { background: rgba(239, 68, 68, 0.06); border: 1px solid #fecaca; border-radius: 0.5rem; margin: 1rem 1.5rem;overflow: hidden}
-  .insights-header { display: flex; justify-content: space-betweennn, align-items: center; padding: 0.75rem 1rem;background: rgba(239, 68, 68, 0.12); font-weight: 600}
+  .insights-header { display: flex; justify-content: space-betweennn, align-items center; padding: 0.75rem 1rem;background: rgba(239, 68, 68, 0.12); font-weight: 600}
   .insights-content { padding: 1rem}
-  .insight-item { padding: 0.75rem, background: white; border-radius: 0.375rem; margin-bottom: 0.5rem; border-left: 4px solid #f59e0b}
+  .insight-item { padding: 0.75rem, background white; border-radius: 0.375rem; margin-bottom: 0.5rem; border-left: 4px solid #f59e0b}
   .insight-item.high-confidence { border-left-color: #dc2626}
   .insight-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem}
   .confidence { color: #64748b; font-size: 0.875rem}
@@ -207,27 +207,27 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .evidence-card.analyzed { border-left: 4px solid #10b981}
   .evidence-card.suspicious { border-left: 4px solid #f59e0b}
   .card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem}
-  .evidence-icon { padding: 0.5rem, background: #f3f4f6, border-radius: 0.5rem; color: #6b7280}
+  .evidence-icon { padding: 0.5rem, background: #f3f4f6, border-radius 0.5rem; color: #6b7280}
   .evidence-info { flex: 1; min-width: 0 }
-  .evidence-title { font-weight: 600; margin: 0, 0 0.25rem 0; white-space: nowrap, overflow: hidden; text-overflow: ellipsis}
+  .evidence-title { font-weight: 600; margin: 0, 0 0.25rem 0; white-space: nowrap, overflow hidden; text-overflow: ellipsis}
   .evidence-number { font-size: 0.875rem; color: #64748b}
   .card-content { margin-bottom: 1rem}
-  .evidence-description { color: #4b5563; font-size: 0.875rem, line-height: 1.5; margin: 0, 0 0.75rem 0}
-  .preview-image { width: 100%, height: 120px; object-fit: cover; border-radius: 0.375rem; margin-bottom: 0.75rem}
-  .ocr-text { background: #f8fafc, padding: 0.75rem; border-radius: 0.375rem; font-size: 0.875rem}
+  .evidence-description { color: #4b5563; font-size: 0.875rem, line-height 1.5; margin: 0, 0 0.75rem 0}
+  .preview-image { width: 100%, height 120px; object-fit: cover; border-radius: 0.375rem; margin-bottom: 0.75rem}
+  .ocr-text { background: #f8fafc, padding 0.75rem; border-radius: 0.375rem; font-size: 0.875rem}
   .detective-indicators { display: flex; gap: 0.5rem; margin-bottom: 0.75rem}
   .suspicious-badge, .references-badge { display: flex; align-items: center; gap: 0.25rem;padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; font-weight: 500}
   .suspicious-badge { background: #fef3c7; color: #92400e}
   .references-badge { background: #dbeafe; color: #1d4ed8}
-  .card-footer { display: flex; justify-content: space-betweennn, font-size: 0.75rem; color: #64748b}
+  .card-footer { display: flex; justify-content: space-betweennn, font-size 0.75rem; color: #64748b}
   .evidence-timeline { display: flex; flex-direction: column; gap: 1rem;position: relative; padding-left: 2rem}
   .evidence-timeline: :before { content: ''; position: absolute; left: 0.875rem; top: 0;bottom: 0; width: 2px;background: #e2e8f0}
-  .timeline-item { position: relative, background: white, border-radius: 0.5rem; padding: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
-  .timeline-marker { position: absolute; left: -2.125rem; top: 1rem; width: 1.75rem; height: 1.75rem; background: white; border: 2px solid #3b82f6; border-radius: 50%, display: flex; align-items: center; justify-content: center; color: #3b82f6}
+  .timeline-item { position: relative, background: white, border-radius 0.5rem; padding: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
+  .timeline-marker { position: absolute; left: -2.125rem; top: 1rem; width: 1.75rem; height: 1.75rem; background: white; border: 2px solid #3b82f6; border-radius: 50%, display flex; align-items: center; justify-content: center; color: #3b82f6}
   .network-view { position: relative; height: 600px}
   .network-legend { position: absolute; top: 1rem; right: 1rem; background: white; border: 1px solid #e2e8f0; border-radius: 0.5rem; padding: 0.75rem}
   .legend-item { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.875rem}
-  .legend-color { width: 1rem, height: 0.25rem; border-radius: 0.125rem}
+  .legend-color { width: 1rem, height 0.25rem; border-radius: 0.125rem}
   .legend-color.entity { background: #3b82f6}
   .legend-color.reference { background: #ef4444}
   .legend-color.manual { background: #6b7280; background-image: linear-gradient(45deg, transparent 40%, white 40%, white 60%, transparent 60%); background-size: 0.25rem 0.25rem}

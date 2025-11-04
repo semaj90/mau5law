@@ -75,13 +75,13 @@ import type { Message } from '$lib/types';
     animation: spin 1s linear infinite}
   /* visually-hidden helper for screen readers */
   .sr-only {
-    position: absolute !important
-    height: 1px
-    width: 1px
+    position: absolute !important;
+    height: 1px;
+    width: 1px;
     overflow: hidden
    ;clip: rect(1px, 1px, 1px, 1px);
-    white-space: nowrap
-    border: 0
+    white-space: nowrap;
+    border: 0;
     padding: 0
    ;margin: -1px}
 </style>

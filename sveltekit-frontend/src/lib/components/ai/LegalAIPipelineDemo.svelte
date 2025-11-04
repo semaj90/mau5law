@@ -23,7 +23,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         > {#if isBulkProcessing} ðŸ”„ Processing {bulkDocuments.length} documents... {:else} ðŸš€ Process {bulkDocuments.length} Documents {/if} </button> </div> <div class="bulk-documents"> <h4>ðŸ“„ Test Documents ({bulkDocuments.length})</h4> {#each bulkDocuments as doc, i} <div class="bulk-doc-item"> <strong>{doc.id}:</strong> {doc.content} </div> {/each} </div> {#if bulkResults.length > 0} <div class="bulk-results"> <h4>ðŸ“Š Bulk Results ({bulkResults.length} documents)</h4> <div class="bulk-summary"> <div class="summary-item"> <strong>Total Entities:</strong> {bulkResults.reduce((sum, r) => sum + (r.metadata.entities?.length || 0), 0)} </div> <div class="summary-item"> <strong>Total Citations:</strong> {bulkResults.reduce((sum, r) => sum + (r.metadata.citations?.length || 0), 0)} </div> <div class="summary-item"> <strong>Average Confidence:</strong> {(bulkResults.reduce((sum, r) => sum + r.metadata.confidence, 0) / bulkResults.length * 100).toFixed(1)}% </div> </div> <div class="bulk-documents-results"> {#each bulkResults as result, i} <div class="bulk-result-item"> <strong>Document {i + 1}:</strong> {(result as { metadata?: unknown; metrics?: unknown }).metadata.entities?.length || 0} entities, {(result as { metadata?: unknown; metrics?: unknown }).metadata.citations?.length || 0} citations, {(result as { metadata?: unknown; metrics?: unknown }).metadata.processingTime.toFixed(2)}ms </div> {/each} </div> {/if} </div> <!-- Processing, Log --> <div class="panel"> <div class="log-header"> <h3>ðŸ“ Processing Log</h3> <button onclick={ clearLogs } class="btn">ðŸ§¹ Clear</button> </div> <div class="log-container"> {#each Array.isArray(processingLog) ? processingLog: [] as logEntry} <div class="log-entry">{ logEntry }</div> {/each} {#if processingLog.length === 0} <div class="log-entry">No log entries yet...{/if} </div> </div> </div> </div> <style> .legal-ai-pipeline-demo { max-width: 1200px; margin: 0 auto;padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif}
   .demo-header { margin-bottom: 30px; text-align: center}
   .demo-header h2 { color: #2563eb; margin-bottom: 15px}
-  .pipeline-status { display: flex; align-items: center, justify-content: center, gap: 15px; flex-wrap: wrap}
+  .pipeline-status { display: flex; align-items: center, justify-content: center, gap 15px; flex-wrap: wrap}
   .status-badge { padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 600; text-transform: uppercase}
   .status-ready { background: #dcfce7, color: #166534 } .status-initializing { background: #fef3c7, color: #92400e } .status-processing { background: #dbeafe, color: #1d4ed8 } .status-error { background: #fecaca, color: #dc2626 } .progress-bar { width: 200px; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden}
   .progress-fill { height: 100%; background: #3b82f6; transition: width: 0.3s ease}
@@ -31,15 +31,15 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .panel { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
   .panel h3 { margin: 0, 0 15px 0; color: #1f2937; font-size: 18px}
   .capabilities-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px}
-  .capability { display: flex; align-items: center; gap: 8px;padding: 8px, border-radius: 6px; background: #f9fafb}
+  .capability { display: flex; align-items: center; gap: 8px;padding: 8px, border-radius 6px; background: #f9fafb}
   .capability.enabled { background: #ecfdf5}
   .metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px}
   .metric { display: flex; flex-direction: column; gap: 4px}
-  .metric-label { font-size: 12px, color: #6b7280; font-weight: 500}
+  .metric-label { font-size: 12px, color #6b7280; font-weight: 500}
   .metric-value { font-size: 18px; font-weight: 700; color: #1f2937}
   .processing-panel, .bulk-panel { grid-column: 1 / -1}
-  .processing-controls, .bulk-controls { display: flex, gap: 10px; margin-bottom: 20px; flex-wrap: wrap}
-  .btn { padding: 10px 20px; border: none; border-radius: 8px, font-weight: 500; cursor: pointer; transition: all 0.2s ease; font-size: 14px}
+  .processing-controls, .bulk-controls { display: flex, gap 10px; margin-bottom: 20px; flex-wrap: wrap}
+  .btn { padding: 10px 20px; border: none; border-radius: 8px, font-weight 500; cursor: pointer; transition: all 0.2s ease; font-size: 14px}
   .btn: disabled { opacity: 0.5; cursor: not-allowed}
   .btn-primary { background: #3b82f6; color: white}
   .btn-primary:hover:not(:disabled) { background: #2563eb}
@@ -53,15 +53,15 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .result-item, .summary-item { padding: 8px; background: white; border-radius: 4px; font-size: 14px}
   .entities-list, .citations-list { margin-top: 15px}
   .entities-list h5, .citations-list h5 { margin: 0, 0 10px 0; color: #374151}
-  .entity-item, .citation-item { display: flex; gap: 10px; padding: 6px, background: white; border-radius: 4px; margin-bottom: 4px; font-size: 13px}
+  .entity-item, .citation-item { display: flex; gap: 10px; padding: 6px, background white; border-radius: 4px; margin-bottom: 4px; font-size: 13px}
   .entity-type { background: #dbeaf; color: #1d4ed8;padding: 2px 6px; border-radius: 3px; font-size: 11px; font-weight: 500}
   .entity-confidence, .citation-court { color: #6b7280; font-size: 11px}
   .bulk-documents { margin: 15px 0}
-  .bulk-doc-item, .bulk-result-item { padding: 8px, background: #f9fafb; border-radius: 4px; margin-bottom: 6px; font-size: 14px}
+  .bulk-doc-item, .bulk-result-item { padding: 8px, background #f9fafb; border-radius: 4px; margin-bottom: 6px; font-size: 14px}
   .log-panel { grid-column: 1 / -1; max-height: 400px}
   .log-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 15px}
   .log-container { height: 300px; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px;background: #1f2937; font-family: 'Courier New', monospace}
-  .log-entry { color: #d1d5db; font-size: 12px, line-height: 1.4; padding: 2px 0}
+  .log-entry { color: #d1d5db; font-size: 12px, line-height 1.4; padding: 2px 0}
   .log-empty { color: #6b7280; font-style: italic}
   @media (max-width: 768px) { .demo-content { grid-template-columns: 1fr}
     .capabilities-grid, .metrics-grid { grid-template-columns: 1fr}

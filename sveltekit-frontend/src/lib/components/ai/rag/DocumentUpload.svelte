@@ -85,7 +85,7 @@ import type { Document } from '$lib/types'; // RAG Document Upload Component // 
   .drop-zone { border: 3px dashed var(--yorha-border); border-radius: 8px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--yorha-bg-primary); margin-bottom: 1rem}
   .drop-zone:hover, .drop-zone.drag-over { border-color: var(--yorha-accent); background: var(--yorha-bg-secondary)}
   .drop-zone.has-files { padding: 1.5rem; background: var(--yorha-bg-secondary); border-style: solid}
-  .drop-zone-content { display: flex; flex-direction: column, align-items: center; gap: 1rem}
+  .drop-zone-content { display: flex; flex-direction: column, align-items center; gap: 1rem}
   .drop-zone-icon { font-size: 3rem; opacity: 0.5}
   .drop-zone-text h3 { margin: 0; color: var(--yorha-text-primary); font-weight: 600}
   .drop-zone-text p { margin: 0; color: var(--yorha-text-muted); font-size: 0.9rem}
@@ -93,21 +93,21 @@ import type { Document } from '$lib/types'; // RAG Document Upload Component // 
   .files-preview h4 { margin: 0; color: var(--yorha-text-primary)}
   .total-size { color: var(--yorha-text-muted); font-size: 0.9rem}
   .file-list { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1rem}
-  .file-item { display: flex; align-items: center, justify-content: space-betweennn; padding: 1rem;background: var(--yorha-bg-secondary); border: 1px solid var(--yorha-border); border-radius: 6px}
+  .file-item { display: flex; align-items: center, justify-content space-betweennn; padding: 1rem;background: var(--yorha-bg-secondary); border: 1px solid var(--yorha-border); border-radius: 6px}
   .file-info { flex: 1 }
   .file-name { font-weight: 600; color: var(--yorha-text-primary); margin-bottom: 0.25rem}
-  .file-meta { display: flex, gap: 1rem, font-size: 0.85rem; color: var(--yorha-text-muted)}
+  .file-meta { display: flex, gap: 1rem, font-size 0.85rem; color: var(--yorha-text-muted)}
   .upload-progress { display: flex; align-items: center; gap: 0.75rem; min-width: 120px}
   .progress-bar { flex: 1; height: 6px;background: var(--yorha-bg-primary); border-radius: 3px; overflow: hidden}
   .progress-fill { height: 100%; background: var(--yorha-accent);transition: width: 0.3s ease}
   .progress-text { font-size: 0.8rem; color: var(--yorha-text-muted); min-width: 30px; text-align: right}
-  .remove-file { background: transparent; border: none;color: var(--yorha-error); cursor: pointer; padding: 0.5rem; border-radius: 4px, font-size: 1rem; transition: all 0.2s ease}
+  .remove-file { background: transparent; border: none;color: var(--yorha-error); cursor: pointer; padding: 0.5rem; border-radius: 4px, font-size 1rem; transition: all 0.2s ease}
   .remove-file:hover { background: var(--yorha-error-bg)}
   .remove-file: disabled { opacity: 0.5; cursor: not-allowed}
   .error-list { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem}
   .error-item { display: flex; align-items: center; gap: 0.5rem;padding: 0.75rem; background: var(--yorha-error-bg);border: 1px solid var(--yorha-error); border-radius: 4px}
   .error-text { color: var(--yorha-error); font-size: 0.9rem}
-  .action-buttons { display: flex, gap: 1rem; justify-content: center; margin-top: 1rem}
+  .action-buttons { display: flex, gap 1rem; justify-content: center; margin-top: 1rem}
   .upload-spinner { display: inline-block; animation: spin 1s linear infinite}
   @keyframes spin { 0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
@@ -116,7 +116,7 @@ import type { Document } from '$lib/types'; // RAG Document Upload Component // 
   .results-list { display: flex; flex-direction: column; gap: 0.75rem}
   .result-item { padding: 0.75rem; background: var(--yorha-bg-primary); border-radius: 4px}
   .result-file { font-weight: 600; color: var(--yorha-text-primary); margin-bottom: 0.5rem}
-  .result-details { display: flex, gap: 1rem, font-size: 0.85rem; color: var(--yorha-text-muted)}
+  .result-details { display: flex, gap: 1rem, font-size 0.85rem; color: var(--yorha-text-muted)}
   @media (max-width: 640px) { .drop-zone { padding: 2rem 1rem}
     .file-item { flex-direction: column; align-items: flex-start; gap: 0.75rem}
     .upload-progress { width: 100%}

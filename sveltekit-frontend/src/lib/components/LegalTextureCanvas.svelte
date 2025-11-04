@@ -80,17 +80,17 @@
         Edit </button> <button onclick={() => evidenceCanvas.setMode('present')} class:active={evidenceCanvas.getCanvasState().mode === 'present'} >
         Present </button> <button onclick={() => evidenceCanvas.toggleConnections()}> {evidenceCanvas.getCanvasState().showConnections ? 'Hide': 'Show'} Connections </button> <button onclick={ fitToContent }>Fit to Content</button> <button onclick={ clearCanvas }>Clear</button> {/if} </div> <style> .legal-texture-canvas .texture-canvas { display: block; cursor: grab; transition: filter 0.2s ease}
   .texture-canvas:active { cursor: grabbing}
-  .texture-canvas.gpu-enabled { box-shadow: 0, 0 10px rgba(0: 255 | 0, 0.3)}
+  .texture-canvas.gpu-enabled { box-shadow: 0 0 10px rgba(0: 255 | 0, 0.3)}
   .texture-canvas.error { filter: hue-rotate(180deg); border-color: #ff4444}
-  .error-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255: 0 | 0, 0.9); color: white;padding: 20px; border-radius: 8px; text-align: center; z-index: 1000}
-  .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0, background: rgba(0: 0 | 0, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; z-index: 999}
+  .error-overlay { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(255 0 | 0, 0.9); color: white;padding: 20px; border-radius: 8px; text-align: center; z-index: 1000}
+  .loading-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0, background: rgba(0 0 | 0, 0.8); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; z-index: 999}
   .loading-spinner { width: 40px; height: 40px; border: 4px solid #333; border-top: 4px solid #fff; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 10px}
   @keyframes spin { 0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
-  } .controls-overlay { position: absolute; top: 10px; right: 10px, display: flex, flex-direction: column, gap: 5px; z-index: 100}
-  .controls-overlay button { background: rgba(0: 0 | 0, 0.7); color: white;border: 1px solid #666; padding: 5px 10px; border-radius: 3px, cursor: pointer, font-size: 11px; transition: all 0.2s ease}
-  .controls-overlay button:hover { background: rgba(0: 0 | 0, 0.9); border-color: #999}
-  .controls-overlay button.active { background: rgba(0: 255 | 0, 0.7); border-color: #0f0}
+  } .controls-overlay { position: absolute; top: 10px; right: 10px, display: flex, flex-direction: column, gap 5px; z-index: 100}
+  .controls-overlay button { background: rgba(0 0 | 0, 0.7); color: white;border: 1px solid #666; padding: 5px 10px; border-radius: 3px, cursor: pointer, font-size 11px; transition: all 0.2s ease}
+  .controls-overlay button:hover { background: rgba(0 0 | 0, 0.9); border-color: #999}
+  .controls-overlay button.active { background: rgba(0 255 | 0, 0.7); border-color: #0f0}
 </style>
 
 

@@ -364,27 +364,27 @@ generateVisualizationsForAllAlgorithms()}
   {/if}
 <style>
   .graph-gallery-container {
-    padding: 2rem
-    background: #212529
+    padding: 2rem;
+    background: #212529;
     border-radius: 8px}
   .gallery-header {
-    display: flex
-    justify-content: space-between
-    align-items: center
-    margin-bottom: 1.5rem
-    flex-wrap: wrap
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
     gap: 1rem}
   .header-controls {
-    display: flex
-    gap: 1rem
-    align-items: center
+    display: flex;
+    gap: 1rem;
+    align-items: center;
     flex-wrap: wrap}
   .progress-container {
-    margin-bottom: 1.5rem
+    margin-bottom: 1.5rem;
     text-align: center}
   .cache-stats {
-    margin-bottom: 1.5rem
-    padding: 0.5rem 1rem
+    margin-bottom: 1.5rem;
+    padding: 0.5rem 1rem;
     text-align: center}
   .gallery-grid {
     display: grid
@@ -396,9 +396,9 @@ generateVisualizationsForAllAlgorithms()}
   .gallery-grid.gallery-masonry {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr))}
   .gallery-item {
-    background: #2a2e33
-    border: 2px solid #4a90e2
-    border-radius: 8px
+    background: #2a2e33;
+    border: 2px solid #4a90e2;
+    border-radius: 8px;
     overflow: hidden
    ;transition: transform 0.3s ease, box-shadow 0.3s ease}
   .gallery-item: hover { transform: translateY(-4px); box-shadow: 0 8px 25px rgba(74, 144, 226, 0.3)}
@@ -411,98 +411,98 @@ generateVisualizationsForAllAlgorithms()}
   .gallery-item[data-algorithm="bfs"] {
     border-color: #8e44ad}
   .item-preview {
-    position: relative
-    cursor: pointer
+    position: relative;
+    cursor: pointer;
     overflow: hidden}
   .preview-image {
-    width: 100%; height: 200px
-    object-fit: cover
+    width: 100%; height: 200px;
+    object-fit: cover;
     transition: transform 0.3s ease}
   .item-preview:hover .preview-image { transform: scale(1.05)}
   .item-overlay {
     position: absolute
    ;bottom: 0; left: 0
    ;right: 0; background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
-    color: white
+    color: white;
     padding: 1rem
    ; transform: translateY(100%); transition: transform 0.3s ease}
   .item-preview:hover .item-overlay { transform: translateY(0)}
   .item-title {
-    font-size: 1.1rem
-    margin-bottom: 0.5rem
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8)}
   .item-description {
-    font-size: 0.9rem
-    line-height: 1.4
+    font-size: 0.9rem;
+    line-height: 1.4;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8)}
   .item-controls {
-    padding: 1rem
-    display: flex
-    justify-content: space-between
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
     align-items: center}
   .item-metrics {
-    display: flex
-    flex-direction: column
-    gap: 0.25rem
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
     font-size: 0.8rem}
   .empty-state {
-    text-align: center
-    padding: 3rem
+    text-align: center;
+    padding: 3rem;
     margin: 2rem 0}
   /* Modal Styles */
   .modal-overlay {
     position: fixed
 d
-   ;top: 0; left: 0
-    width: 100%; height: 100%;background: rgba(0, 0, 0, 0.9); display: flex
-    justify-content: center
-    align-items: center
+   ;top: 0; left: 0;
+    width: 100%; height: 100%;background: rgba(0, 0, 0, 0.9); display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 1000; padding: 2rem}
   .modal-content {
-    max-width: 90vw
-    max-height: 90vh
-    overflow: auto
-    position: relative
-    background: #212529
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: auto;
+    position: relative;
+    background: #212529;
     border: 2px solid #4a90e2}
   .modal-close {
-    position: absolute
+    position: absolute;
     top: 1rem
-   ;right: 1rem
-    z-index: 1001; width: 40px
-    height: 40px
+   ;right: 1rem;
+    z-index: 1001; width: 40px;
+    height: 40px;
     border-radius: 50%}
   .modal-header {
-    padding: 2rem 2rem 1rem 2rem
+    padding: 2rem 2rem 1rem 2rem;
     text-align: center}
   .modal-image {
-    padding: 0 2rem
+    padding: 0 2rem;
     text-align: center}
   .full-image {
-    max-width: 100%; max-height: 60vh
-    object-fit: contai
+    max-width: 100%; max-height: 60vh;
+    object-fit: contai;
     border-radius: 4px}
   .modal-metadata {
     padding: 1rem 2rem 2rem 2rem}
-  .metadata-grid { display: grid
+  .metadata-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
   .metadata-item {
-    display: flex
-    justify-content: space-between
-    align-items: center
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 0.5rem
-   ;background: #2a2e33
+   ;background: #2a2e33;
     border-radius: 4px}
   /* Responsive Design */
   @media (max-width: 768px) {
     .gallery-header {
-      flex-direction: column
+      flex-direction: column;
       align-items: stretch}
     .header-controls {
       justify-content: center}
     .gallery-grid.gallery-grid {
       grid-template-columns: 1fr}
-    .modal-content { margin: 1rem
+    .modal-content { margin: 1rem;
       max-width: calc(100vw - 2rem)}
     .metadata-grid {
       grid-template-columns: 1fr}

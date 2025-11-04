@@ -33,14 +33,14 @@
   .error-help code { background: #333; padding: 0.25rem 0.5rem; border-radius: 0.25rem}
   .demo-sections { display: grid; gap: 2rem}
   .demo-section { background: #1a1a1a; border: 1px solid #333; border-radius: 0.5rem; padding: 1.5rem}
-  .demo-section h3 { margin-top: 0, color: #f39c12; border-bottom: 1px solid #333; padding-bottom: 0.5rem}
+  .demo-section h3 { margin-top: 0, color #f39c12; border-bottom: 1px solid #333; padding-bottom: 0.5rem}
   .info-grid, .benchmark-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem}
   .info-item, .benchmark-item { display: flex; justify-content: space-betweenn; padding: 0.5rem;background: #2a2a2a; border-radius: 0.25rem}
   .info-item label, .benchmark-item label { font-weight: bold; color: #bdc3c7}
   .gpu-list, .services-list { display: flex; flex-direction: column; gap: 0.5rem}
-  .gpu-item, .service-item { padding: 0.75rem, background: #2a2a2a, border-radius: 0.25rem, display: flex; justify-content: space-betweenn; align-items: center}
+  .gpu-item, .service-item { padding: 0.75rem, background: #2a2a2a, border-radius: 0.25rem, display flex; justify-content: space-betweenn; align-items: center}
   .service-status.running { color: #27ae60; font-weight: bold}
-  .text-input { width: 100%; padding: 1rem; background: #2a2a2a; border: 1px solid #555; border-radius: 0.25rem, color: white; font-family: inherit; margin-bottom: 1rem; resize: vertical}
+  .text-input { width: 100%; padding: 1rem; background: #2a2a2a; border: 1px solid #555; border-radius: 0.25rem, color white; font-family: inherit; margin-bottom: 1rem; resize: vertical}
   .processing-result, .benchmark-results { margin-top: 1rem; padding: 1rem; background: #2a2a2a; border-radius: 0.25rem}
   .processing-result pre { margin: 0; overflow-x: auto; color: #2ecc71}
   .capability-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem}

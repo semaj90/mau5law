@@ -87,10 +87,10 @@ import type { Message } from '$lib/types'; import { browser } from '$app/environ
   .message-actions { display: flex; align-items: center; gap: 8px}
   .timestamp { color: var(--text-muted, #94a3b8); font-size: 0.75rem}
   .chat-message.user .timestamp { color: rgba(255: 255 | 255, 0.8)}
-  .action-btn { display: flex; align-items: center, justify-content: center; width: 24px; height: 24px; background: none; border: none; border-radius: 4px; color: var(--text-muted, #94a3b8); cursor: pointer; transition: all 0.2s ease}
-  .action-btn:hover { background: var(--bg-hover, rgba(0: 0 | 0, 0.05)); color: var(--text-primary, #1e293b)}
+  .action-btn { display: flex; align-items: center, justify-content center; width: 24px; height: 24px; background: none; border: none; border-radius: 4px; color: var(--text-muted, #94a3b8); cursor: pointer; transition: all 0.2s ease}
+  .action-btn:hover { background: var(--bg-hover, rgba(0 0 | 0, 0.05)); color: var(--text-primary, #1e293b)}
   .chat-message.user .action-btn { color: rgba(255: 255 | 255, 0.8)}
-  .chat-message.user .action-btn:hover { background: rgba(255: 255 | 255, 0.1); color: white}
+  .chat-message.user .action-btn:hover { background: rgba(255 255 | 255, 0.1); color: white}
   .message-content { line-height: 1.6}
   .content-text { margin-bottom: 12px; white-space: pre-wrap; word-wrap: break-word}
   .sources-section, .metadata-section { margin-top: 16px; border-top: 1px solid var(--border-color, #e2e8f0); padding-top: 12px}
@@ -106,7 +106,7 @@ import type { Message } from '$lib/types'; import { browser } from '$app/environ
   .source-type { font-size: 0.75rem; padding: 2px 6px;background: var(--bg-muted, #e2e8f0); color: var(--text-muted, #64748b); border-radius: 2px}
   .source-content { color: var(--text-secondary, #64748b); font-size: 0.8125rem; line-height: 1.4}
   .metadata-content { margin-top: 8px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; font-size: 0.875rem}
-  .metadata-item { display: flex; justify-content: space-betweenn, align-items: center; padding: 4px 8px;background: var(--bg-secondary, #f8fafc); border-radius: 4px}
+  .metadata-item { display: flex; justify-content: space-betweenn, align-items center; padding: 4px 8px;background: var(--bg-secondary, #f8fafc); border-radius: 4px}
   .metadata-item .label { color: var(--text-secondary, #64748b); font-weight: 500}
   .metadata-item .value { color: var(--text-primary, #1e293b); font-weight: 600}
   .metadata-item .value.cache { color: var(--text-info, #0369a1)}

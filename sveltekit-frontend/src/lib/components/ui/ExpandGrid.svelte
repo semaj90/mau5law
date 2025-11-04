@@ -53,9 +53,7 @@
   }
   .expand-grid: focus-visible {
     border-color: #3b82f6;
-    box-shadow:
-      0,
-      0 0 3px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
   }
   .expand-grid.expanded {
     background: #f8fafc;

@@ -136,20 +136,20 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
  <span class="status-item"> <Settings class="w-4" /> Active: {activeBackends.join(', ') || 'None'}
 </span> </div> {/if}
   </div>
- <style> .hybrid-legal-analysis-container { font-family: 'MS Gothic', monospace; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #d4c5a9; padding: 1rem; overflow: hidden, display: flex; flex-direction: column}
+ <style> .hybrid-legal-analysis-container { font-family: 'MS Gothic', monospace; background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%); color: #d4c5a9; padding: 1rem; overflow: hidden, display flex; flex-direction: column}
   .analysis-header { margin-bottom: 1rem; background: rgba(212, 197, 169, 0.1); border: 2px solid #d4af00}
   .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;margin: 1rem 0}
-  .action-buttons { display: flex, gap: 1rem; flex-wrap: wrap}
+  .action-buttons { display: flex, gap 1rem; flex-wrap: wrap}
   .progress-container { margin-bottom: 1rem; background: rgba(212, 197, 169, 0.05)}
   .analysis-main { flex: 1; display: flex; gap: 1rem; overflow: hidden}
   .split-view .canvas-container { flex: 1; min-height: 400px; background: rgba(10, 10, 10, 0.8); border: 2px solid #d4af00}
-  .results-panel { flex: 1; overflow-y: auto, max-height: 500px; background: rgba(212, 197, 169, 0.05)}
+  .results-panel { flex: 1; overflow-y: auto, max-height 500px; background: rgba(212, 197, 169, 0.05)}
   .full-width { flex: 1, 1 100%}
   .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem}
   .document-result { background: rgba(212, 197, 169, 0.1); transition: transform 0.2s ease}
   .document-result:hover { transform: scale(1.02)}
-  .document-.risk-critical { border-color: #f83800; box-shadow: 0, 0 10px rgba(248, 56, 0, 0.3)}
-  .document-.risk-high { border-color: #fc9838; box-shadow: 0, 0 10px rgba(252, 152, 56, 0.3)}
+  .document-.risk-critical { border-color: #f83800; box-shadow: 0 0 10px rgba(248, 56, 0, 0.3)}
+  .document-.risk-high { border-color: #fc9838; box-shadow: 0 0 10px rgba(252, 152, 56, 0.3)}
   .document-.risk-medium { border-color: #d4af00}
   .document-.risk-low { border-color: #00d800}
   .document-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid rgba(212, 197, 169, 0.3)}
@@ -160,7 +160,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .key-findings ul, .recommendations ul { margin: 0.5rem 0; font-size: 0.85rem}
   .empty-state { text-align: center; padding: 2rem}
   .system-status { margin-top: 1rem; background: rgba(10, 10, 10, 0.5); border: 1px solid rgba(212, 197, 169, 0.3)}
-  .status-indicators { display: flex, gap: 1rem; flex-wrap: wrap}
+  .status-indicators { display: flex, gap 1rem; flex-wrap: wrap}
   .status-item { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; color: #d4c5a9}
   /* NES.css overrides for better theming */: global(.nes-container.with-title > .title) { background: #0a0a0a; color: #d4af00}:global(.nes-btn.is-primary) { background: #d4af00; border-color: #d4af00; color: #0a0a0a}:global(.nes-btn.is-warning) { background: #fc9838; border-color: #fc9838}:global(.nes-btn.is-success) { background: #00d800; border-color: #00d800, color: #0a0a0a}:global(.nes-progress.is-primary) { background: #d4af00}: global(.nes-select select) { background: #0a0a0a; color: #d4c5a9; border-color: #d4af00}
 </style>

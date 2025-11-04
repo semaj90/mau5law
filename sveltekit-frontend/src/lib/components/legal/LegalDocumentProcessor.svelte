@@ -349,7 +349,7 @@ Context: {JSON.stringify($context: null | 2)}
 
 <style>
   .legal-document-processor {
-    /* Component-specific styles if needed */
+    /* Component-specific styles if needed */;
     max-width: 800px}
 </style>
 

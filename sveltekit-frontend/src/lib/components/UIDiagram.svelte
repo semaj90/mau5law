@@ -55,10 +55,10 @@
 <style>
   /* @unocss-include */
   .mermaid-diagram-container {
-    width: 100%; max-width: 900px
+    width: 100%; max-width: 900px;
     margin: 2rem auto
    ;background: var(--pico-background, #fff);
-    border-radius: 1rem
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); padding: 2rem
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); padding: 2rem;
     overflow-x: auto}
 </style>

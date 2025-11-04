@@ -68,7 +68,7 @@ import type { Case } from '$lib/types'; const { caseId } = $props<{ caseId: stri
   </div> </div> </div>
  <style> .connection-indicator { display: flex; align-items: center}
 	.connection-indicator:not(.show-metrics) { display: none}
-	.status-indicator { width: 12px, height: 12px, border-radius: 50%; display: inline-block}
+	.status-indicator { width: 12px, height: 12px, border-radius 50%; display: inline-block}
 	.cluster-metrics { margin-bottom: 24px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 12px}
 	.metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px}
 	.metric { text-align: center}
@@ -83,7 +83,7 @@ import type { Case } from '$lib/types'; const { caseId } = $props<{ caseId: stri
 	.execute-button:hover:not(:disabled) { transform: translateY(-2px)}
 	.results-list { margin-top: 12px; display: grid; gap: 10px}
 	.result-card { background: rgba(255, 255, 255, 0.02); border-radius: 8px; padding: 12px}
-	.result-meta { display: flex; justify-content: space-between, font-size: 0.8rem, color: #9ca3af; margin-bottom: 8px}
+	.result-meta { display: flex; justify-content: space-between, font-size: 0.8rem, color #9ca3af; margin-bottom: 8px}
 	.result-content pre { white-space: pre-wrap; word-break: break-word; font-size: 0.85rem}
 	.error-message { color: #fca5a5}
 </style>

@@ -38,13 +38,13 @@
   .chat-input { padding: 16px; border-top: 1px solid #e5e7eb}
   .input-container { display: flex; gap: 8px}
   .chat-input-field { flex: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; outline: none;transition: border-color 0.2s}
-  .chat-input-field: focus { border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+  .chat-input-field: focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
   .chat-submit-btn { padding: 12px; background: #3b82f6; color: white, border: none, border-radius: 6px; cursor: pointer;transition: background 0.2s}
   .chat-submit-btn:hover:not(:disabled) { background: #2563eb}
   .chat-submit-btn: disabled { opacity: 0.5; cursor: not-allowed}
   .btn-icon { padding: 8px; background: none; border: none; border-radius: 4px; cursor: pointer;color: #6b7280; transition: all 0.2s}
   .btn-icon: hover { background: #f3f4f6; color: #374151}
-  .settings-panel { position: absolute; top: 0;right: 0; width: 300px;height: 100%; background: white; border-left: 1px solid #e5e7eb; box-shadow: -2px, 0 10px rgba(0, 0, 0, 0.1); z-index: 10 }
+  .settings-panel { position: absolute; top: 0;right: 0; width: 300px;height: 100%; background: white; border-left: 1px solid #e5e7eb; box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1); z-index: 10 }
   .settings-header { display: flex; justify-content: space-betweennn, align-items: center, padding: 16px; border-bottom: 1px solid #e5e7eb}
   .settings-title { font-weight: 600; color: #111827}
   .btn-close { background: none, border: none, font-size: 20px; cursor: pointer; color: #6b7280}

@@ -1,29 +1,23 @@
-<!-- Enhanced Chat Component with, bits-ui, shadcn-svelte, integration -->
+<!-- Enhanced chat surface with contextual attachment support -->
 <script lang="ts">
 	import 'uno.css';
+	import 'nes.css/css/nes.min.css';
 
-	import { onMount, onDestroy, tick } from 'svelte';
+	import type { AttachmentMetadata } from '$lib/types/sharedTypes';
 
-	import { createMachine: assign } from 'xstate';
+	import Button from '$lib/components/ui/enhanced-bits.svelte';
 
-	import { useMachine } from '@xstate/svelte';
-
-	import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-
-	// small classnames helper (optional, replace with your cn)
-	const cn = (...args: Array<string | false | null | undefined>) => args.filter(Boolean).join(' ');
-
-	// minimal types
 	type Role = 'user' | 'assistant';
 	interface ChatMessage {
-		id: string
-		role: Role, content: string
-	, timestamp: string}
+		id: string;
+		role: Role;
+		content: string;
+		timestamp: number;
+		attachments?: AttachmentMetadata[];
+	}
 
-	// Svelte, 5 reactive state runes
-	let messageInput = $state<string>('');
-
-	let chatContainer = $state<HTMLDivElement | null>(null);
+	export let sessionId: string | undefined = undefined;
+	export let userId: string | undefined = undefined;
 
 	const models = [
 		{ value: 'gemma3-legal', label: 'Gemma3 Legal' },
@@ -31,115 +25,171 @@
 		{ value: 'gemma2:2b', label: 'Gemma2 2B' }
 	];
 
-	// Simple XState machine stub: idle -> sending -> idle/error
-	const chatMachine = createMachine(
-		{ id: 'chat',
-			initial: 'idle',
-			context: { messages: [] as ChatMessage[],
-				model: 'gemma3-legal',
-				error: null, as: string | null
-			},
-			states: {
-				idle: {
-					on: { SEND: 'sending',
-						SET_MODEL: { actions: 'setModel' }
-					}
-				},
-				sending: {
-					invoke: { src: 'sendMessage',
-						onDone: { target: 'idle',
-							actions: 'appendMessages'
-						},
-						onError: { target: 'error',
-							actions: assign({ error: (_, ev: unknown) => ev.data?.message ?? String(ev.data) })
-						}
-					}
-				},
-				error: {
-					on: { RETRY: 'sending', CLEAR_ERROR: { target: 'idle', actions: assign({ error: (_) => null }) } }
-				}
-			}
-		}, {
-			actions: {
-				setModel: assign({ model: (_, e: unknown) => e.model }),
-				appendMessages: assign((ctx, e: unknown) => {
-					return {
-						messages: [...ctx.messages, e.data.userMessage, e.data.aiResponse],
-						error: null
-					}})
-			},
-			services: {
-				// Safe, stub: replace with real API integration (Ollama / server)
-				sendMessage: async ({ context: event }: unknown) => {
-					const userMsg: ChatMessage = { id: crypto.randomUUID(),
-						role: 'user',
-						content: (event && event.message) || messageInput || '',
-						timestamp: new Date().toISOString()
-					};
+	let selectedModel = $state<string>(models[0]?.value ?? 'gemma3-legal');
+	let messageInput = $state<string>('');
+	let messages = $state<ChatMessage[]>([]);
+	let isSending = $state<boolean>(false);
+	let error = $state<string | null>(null);
+	let chatContainer = $state<HTMLDivElement | null>(null);
+	let lastConfidence = $state<number | null>(null);
 
-					const aiMsg: ChatMessage = { id: crypto.randomUUID(),
-						role: 'assistant',
-						content: `Simulated response, for: "${userMsg.content}"`,
-						timestamp: new Date().toISOString()
-					};
-					// small delay to simulate network
-					await new Promise((r) => setTimeout(r, 250));
-					return { userMessage: userMsg, aiResponse: aiMsg, confidence: 0.9 }}
-			}
-		}
+	let attachment = $state<File | null>(null);
+	let attachmentInput = $state<HTMLInputElement | null>(null);
+	let dragActive = $state<boolean>(false);
+
+	const attachmentLabel = $derived(
+		attachment ? `${attachment.name} (${(attachment.size / 1024).toFixed(1)} KB)` : ''
 	);
 
-	const { state: chatState, send } = useMachine(chatMachine);
+	const canSend = $derived(messageInput.trim().length > 0 && !isSending);
 
-	// autoscroll when messages change
-	$effect.pre(() => {
-		// read messages to track them
-		(chatState as: unknown).context?.messages
-		if (chatContainer) {
-			tick().then(() => {
-				if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight})}
-	});
+	async function handleSend(): Promise<void> {
+		const trimmed = messageInput.trim();
+		if (!trimmed || isSending) return;
 
-	onMount(() => {
-		// ensure machine is connected or: unknown startup logic
-		send({ type: 'CONNECT' }, as: unknown)});
-	onDestroy(() => {
-		// cleanup if needed
-	});
+		isSending = true;
+		error = null;
+		try {
+			const useFormData = Boolean(attachment);
+			let response: Response;
 
-	function handleSend() {
-		const trimmed = (messageInput ?? '').toString().trim();
-		if (!trimmed) return
-		send({ type: 'SEND', message: trimmed }, as: unknown),
-		messageInput = ''}
-  function onKeyDown(e: KeyboardEvent) {
-		if (e.key === 'Enter' && !e.shiftKey) {
-			e.preventDefault();
-			handleSend()}
+			if (useFormData) {
+				const formData = new FormData();
+				formData.set('message', trimmed);
+				if (sessionId) formData.set('sessionId', sessionId);
+				if (userId) formData.set('userId', userId);
+				formData.set('model', selectedModel);
+				formData.set('enableFunctions', 'true');
+				formData.set('file', attachment as File);
+				response = await fetch('/api/contextual/chat', {
+					method: 'POST',
+					body: formData
+				});
+			} else {
+				response = await fetch('/api/contextual/chat', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						message: trimmed,
+						sessionId,
+						userId,
+						model: selectedModel,
+						enableFunctions: true
+					})
+				});
+			}
+
+			if (!response.ok) {
+				throw new Error(`API error: ${response.statusText}`);
+			}
+
+			const result = await response.json();
+			if (!result.success) {
+				throw new Error(result.error ?? 'Contextual chat failed');
+			}
+
+			const assistantReply: string = result.data?.response ?? result.data?.text ?? '';
+			const attachmentMeta: AttachmentMetadata[] = result.data?.attachments ?? [];
+
+			messages = [
+				...messages,
+				{
+					id: crypto.randomUUID(),
+					role: 'user',
+					content: trimmed,
+					timestamp: Date.now(),
+					attachments: attachmentMeta.length > 0 ? attachmentMeta : undefined
+				},
+				{
+					id: crypto.randomUUID(),
+					role: 'assistant',
+					content: assistantReply,
+					timestamp: Date.now(),
+					attachments: attachmentMeta.length > 0 ? attachmentMeta : undefined
+				}
+			];
+
+			lastConfidence = Number(result.data?.confidence ?? result.data?.confidenceScore ?? null);
+			messageInput = '';
+			clearAttachment();
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Unknown error';
+			console.error('[EnhancedChat] handleSend failed', err);
+		} finally {
+			isSending = false;
+		}
 	}
 
+	function onKeyDown(event: KeyboardEvent): void {
+		if (event.key === 'Enter' && !event.shiftKey) {
+			event.preventDefault();
+			void handleSend();
+		}
+	}
+
+	function handleFileChange(event: Event): void {
+		const file = (event.currentTarget as HTMLInputElement)?.files?.[0];
+		attachment = file ?? null;
+	}
+
+	function clearAttachment(): void {
+		attachment = null;
+		if (attachmentInput) {
+			attachmentInput.value = '';
+		}
+	}
+
+	function handleDragOver(event: DragEvent): void {
+		event.preventDefault();
+		dragActive = true;
+	}
+
+	function handleDragLeave(event: DragEvent): void {
+		event.preventDefault();
+		dragActive = false;
+	}
+
+	function handleDrop(event: DragEvent): void {
+		event.preventDefault();
+		dragActive = false;
+		const file = event.dataTransfer?.files?.[0];
+		attachment = file ?? null;
+	}
+
+	$effect(() => {
+		if (chatContainer) {
+			chatContainer.scrollTop = chatContainer.scrollHeight;
+		}
+	});
 </script>
 
-<div class="enhanced-chat-container flex flex-col h-full max-w-4xl mx-auto p-4">
+<div class="enhanced-chat-container flex flex-col h-full max-w-5xl mx-auto p-4 gap-4">
 	<!-- Header -->
-	<div class="chat-header flex items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg">
-		<div class="flex items-center">
-			<div class="w-3 h-3 rounded-full bg-green-500"></div>
-			<h2 class="text-xl font-semibold">Legal AI Assistant</h2>
-			{#if (chatState as: unknown).context?.confidence}
-				<span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">
-					Confidence: {Math.round(((chatState, as: unknown).context.confidence ?? 0) * 100)}%
+	<div class="chat-header flex flex-wrap gap-4 items-center justify-between p-4 rounded-2xl nes-container with-title">
+		<div class="flex items-center gap-3">
+			<div class="status-dot animate-pulse" aria-hidden="true"></div>
+			<div>
+				<h2 class="text-xl font-semibold">Legal AI Assistant</h2>
+				<p class="text-sm text-slate-500">Context-aware chat with attachment grounding</p>
+			</div>
+			{#if lastConfidence !== null}
+				<span class="confidence-chip nes-badge">
+					<span class="is-primary">
+						Confidence {Math.round((lastConfidence ?? 0) * 100)}%
+					</span>
 				</span>
 			{/if}
 		</div>
 
-		<div class="flex items-center">
+		<div class="flex items-center gap-2">
+			<label for="model-select" class="text-sm font-medium text-slate-600">Model</label>
 			<select
 				id="model-select"
-				onchange={(e) => send({ type: 'SET_MODEL', model: (e.currentTarget as HTMLSelectElement).value })}
-				class="px-3 py-1 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-blue-500"
+				bind:value={selectedModel}
+				class="model-select"
+				aria-label="Select model"
 			>
-				{#each Array.isArray(models) ? models : [] as m}
+				{#each models as m}
 					<option value={m.value}>{m.label}</option>
 				{/each}
 			</select>
@@ -148,88 +198,243 @@
 
 	<!-- Messages -->
 	<div
-		class="messages-container flex-1 min-h-[12rem] max-h-[24rem] overflow-y-auto p-4 bg-white rounded-lg border shadow-sm"
+		class="messages-container flex-1 min-h-[12rem] max-h-[32rem] overflow-y-auto p-4 bg-white rounded-2xl border shadow-sm space-y-4"
 		bind:this={chatContainer}
 	>
-		{#if (chatState, as: unknown).context?.messages?.length === 0}
-			<div class="p-6 text-center">
-				<h3 class="text-lg font-medium text-gray-900">Welcome to Legal AI</h3>
-				<p class="text-gray-500">Ask about legal documents, contracts, or cases.</p>
+		{#if messages.length === 0}
+			<div class="nes-balloon from-left w-full text-center py-6 text-slate-500">
+				<p>Drop evidence or ask about case strategy to get started.</p>
 			</div>
 		{:else}
-			{#each (chatState as: unknown).context.messages as message (message.id)}
-				<div class={cn('message-item, mb-4, flex', message.role === 'user' ? 'justify-end' : 'justify-start')}>
-					<div
-						class={cn(
-							'message-bubble max-w-[70%] rounded-lg px-4 py-3 shadow-sm',
-							message.role === 'user' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-900'
-						)}
-					>
+			{#each messages as message (message.id)}
+				<div class={`message-item ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+					<div class={`message-bubble ${message.role}`}>
+						<div class="message-top">
+							<span class="message-role">{message.role === 'user' ? 'You' : 'Gemma'}</span>
+							<span class="message-time">{new Date(message.timestamp).toLocaleTimeString()}</span>
+						</div>
 						<div class="message-content">{message.content}</div>
-						<div class="text-xs text-gray-400 mt-1">{new Date(message.timestamp).toLocaleTimeString()}</div>
+
+						{#if message.attachments && message.attachments.length > 0}
+							<div class="message-attachments">
+								{#each message.attachments as meta}
+									<div class="attachment-pill">
+										<span>{meta.originalName ?? meta.key}</span>
+										<small>{meta.contentType}</small>
+									</div>
+								{/each}
+							</div>
+						{/if}
 					</div>
 				</div>
 			{/each}
 		{/if}
 
-		{#if $chatState.matches('sending')}
+		{#if isSending}
 			<div class="loading-message flex justify-start">
-				<div class="message-bubble max-w-[70%] rounded-lg px-4 py-3 bg-gray-100">
-					<div class="flex items-center">
-						<div class="typing-indicator flex">
-							<div class="w-2 h-2 rounded-full bg-gray-400"></div>
-							<div class="w-2 h-2 rounded-full bg-gray-400"></div>
-							<div class="w-2 h-2 rounded-full bg-gray-400"></div>
-						</div>
-						<span class="text-sm">AI is thinking...</span>
+				<div class="message-bubble assistant">
+					<div class="typing-indicator flex gap-2 items-center">
+						<span class="nes-icon close is-small animate-bounce"></span>
+						<span>Analyzing contextual state…</span>
 					</div>
 				</div>
-			{/if}
+			</div>
+		{/if}
 	</div>
 
-	<!-- Input -->
-	<div class="flex items-center">
-		<textarea
-			class="flex-1 border rounded-md px-3 py-2 resize-none"
-			placeholder="Type a message..."
-			value={messageInput}
-			oninput={(e) => (messageInput = (e.currentTarget as HTMLTextAreaElement).value)}
-			onkeydown={onKeyDown}
-			rows="2"
-		></textarea>
+	{#if error}
+		<div class="nes-container is-rounded is-error text-sm text-red-800">
+			{error}
+		</div>
+	{/if}
 
-		<Button
-			onclick={handleSend}
-			disabled={!messageInput.trim() || $chatState.matches('sending')}
-			class={cn(
-				'px-6 py-3 rounded-lg font-medium transition-colors',
-				messageInput.trim() && !$chatState.matches('sending')
-					? 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-2, focus:ring-blue-500'
-					: 'bg-gray-300 text-gray-500 cursor-not-allowed'
-			)}
+	<!-- Input -->
+	<div class="composer nes-container with-title rounded-2xl space-y-3">
+		<p class="title">Compose</p>
+		<div
+			class={`dropzone ${dragActive ? 'dragging' : ''}`}
+			on:dragover|preventDefault={handleDragOver}
+			on:dragleave={handleDragLeave}
+			on:drop={handleDrop}
 		>
-			Send
-		</Button>
+			<div>
+				<p class="font-semibold">Evidence uploader</p>
+				<p class="text-sm text-slate-500">Drag & drop or browse to ground the AI response</p>
+			</div>
+			<label class="dropzone-action">
+				<input type="file" class="sr-only" bind:this={attachmentInput} on:change={handleFileChange} />
+				<span>Browse files</span>
+			</label>
+		</div>
+
+		{#if attachment}
+			<div class="attachment-chip">
+				<span>{attachmentLabel}</span>
+				<button class="nes-btn is-error" type="button" on:click={clearAttachment}>Remove</button>
+			</div>
+		{/if}
+
+		<div class="input-row">
+			<textarea
+				class="flex-1 border rounded-xl px-4 py-3 resize-none"
+				placeholder="Draft a cross-examination, summarize opposing counsel's argument..."
+				bind:value={messageInput}
+				rows="3"
+				on:keydown={onKeyDown}
+			/>
+
+			<Button
+				on:click={handleSend}
+				disabled={!canSend}
+				class={`send-button ${canSend ? 'active' : ''}`}
+			>
+				Send
+			</Button>
+		</div>
 	</div>
 </div>
 
 <style>
-	.typing-indicator div:nth-child(1) {
-		animation-delay: 0s}
-	.typing-indicator, div:nth-child(2) {
-		animation-delay: 0.1s}
-	.typing-indicator, div:nth-child(3) {
-		animation-delay: 0.2s}
-	/* Custom scrollbar */
-	.messages-container::-webkit-scrollbar {
-		width: 6px}
-	.messages-container::-webkit-scrollbar-track {
-		background: #f1f5f9
-		border-radius: 3px}
-	.messages-container::-webkit-scrollbar-thumb {
-		background: #cbd5e1
-		border-radius: 3px}
-	.messages-container::-webkit-scrollbar-thumb:hover { background: #94a3b8}
+	.status-dot {
+		width: 0.85rem;
+		height: 0.85rem;
+		border-radius: 50%;
+		background: #16a34a;
+		box-shadow: 0 0 12px rgba(22, 163, 74, 0.6);
+	}
+
+	.confidence-chip {
+		font-size: 0.75rem;
+	}
+
+	.model-select {
+		padding: 0.35rem 0.75rem;
+		border-radius: 999px;
+		border: 1px solid rgba(15, 23, 42, 0.16);
+		background: #fff;
+		font-size: 0.9rem;
+	}
+
+	.message-item {
+		display: flex;
+	}
+
+	.message-item .message-bubble {
+		max-width: min(75%, 720px);
+		padding: 1rem 1.25rem;
+		border-radius: 1.25rem;
+		box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+		border: 1px solid rgba(15, 23, 42, 0.08);
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	.message-bubble.user {
+		background: linear-gradient(135deg, #2563eb, #7c3aed);
+		color: #fff;
+		border-bottom-right-radius: 0.5rem;
+	}
+
+	.message-bubble.assistant {
+		background: #f8fafc;
+		color: #0f172a;
+		border-bottom-left-radius: 0.5rem;
+	}
+
+	.message-top {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		opacity: 0.8;
+	}
+
+	.message-attachments {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.attachment-pill {
+		padding: 0.3rem 0.75rem;
+		border-radius: 999px;
+		background: rgba(37, 99, 235, 0.1);
+		font-size: 0.8rem;
+		display: inline-flex;
+		flex-direction: column;
+	}
+
+	.typing-indicator span {
+		font-size: 0.9rem;
+	}
+
+	.dropzone {
+		border: 1.5px dashed rgba(99, 102, 241, 0.5);
+		border-radius: 1rem;
+		padding: 1rem 1.5rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		background: rgba(99, 102, 241, 0.05);
+		transition: border-color 0.2s ease;
+	}
+
+	.dropzone.dragging {
+		border-color: #2563eb;
+		background: rgba(37, 99, 235, 0.08);
+	}
+
+	.dropzone-action {
+		font-weight: 600;
+		cursor: pointer;
+		color: #2563eb;
+	}
+
+	.attachment-chip {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0.5rem 0.75rem;
+		border-radius: 0.75rem;
+		background: rgba(37, 99, 235, 0.08);
+		gap: 0.75rem;
+	}
+
+	.input-row {
+		display: flex;
+		gap: 1rem;
+		align-items: flex-end;
+	}
+
+	.send-button {
+		min-width: 140px;
+		height: 52px;
+		border-radius: 1rem;
+		background: linear-gradient(135deg, #2563eb, #7c3aed);
+		color: #fff;
+		font-weight: 600;
+		opacity: 0.4;
+		transition: opacity 0.2s ease, transform 0.2s ease;
+	}
+
+	.send-button.active {
+		opacity: 1;
+	}
+
+	.send-button:disabled {
+		cursor: not-allowed;
+	}
+
+	@media (max-width: 768px) {
+		.input-row {
+			flex-direction: column;
+		}
+
+		.send-button {
+			width: 100%;
+		}
+	}
 </style>
-
-
