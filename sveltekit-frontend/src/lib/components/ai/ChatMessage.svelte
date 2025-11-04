@@ -144,7 +144,7 @@ import type { Message } from '$lib/types';
 <style>
   /* @unocss-include */
   :global(.message-content) {
-    word-wrap: break-word
+    word-wrap: break-word;
     overflow-wrap: break-word}
   :global(.message-content p) {
     margin-bottom: 0.5rem}
@@ -152,19 +152,19 @@ import type { Message } from '$lib/types';
     margin-bottom: 0; /* Corrected comma to semicolon */
   }
   :global(.message-content ul, .message-content ol) {
-    margin: 0.5rem 0
+    margin: 0.5rem 0;
     padding-left: 1.25rem}
   :global(.message-content li) {
     margin-bottom: 0.25rem}
   :global(.message-content code) {
-    background: rgba(0, 0, 0, 0.1); padding: 0.125rem 0.25rem
-    border-radius: 0.25rem
-    font-family: 'Courier New', monospace
+    background: rgba(0, 0, 0, 0.1); padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
     font-size: 0.875em}
   :global(.message-content blockquote) {
     border-left: 3px solid rgba(0, 0, 0, 0.2);
     padding-left: 1rem
-   ;margin: 0.5rem 0
+   ;margin: 0.5rem 0;
     font-style: italic}
   :global(.message-content h1, .message-content h2, .message-content h3) {
     font-weight: 600

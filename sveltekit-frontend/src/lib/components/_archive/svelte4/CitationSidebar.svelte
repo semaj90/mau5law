@@ -214,43 +214,43 @@ import type { Case } from '$lib/types';
 <style>
   /* @unocss-include */
   .citation-sidebar {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     height: 100%; background: white}
   .sidebar-title {
-    font-size: 18px
-    font-weight: 600
+    font-size: 18px;
+    font-weight: 600;
     color: #1f2937
    ;margin: 0, 0 4px 0}
   .sidebar-subtitle {
-    font-size: 14px
-    color: #6b7280
+    font-size: 14px;
+    color: #6b7280;
     margin: 0}
   .search-section {
-    padding: 16px 24px
-    border-bottom: 1px solid #e5e7eb
+    padding: 16px 24px;
+    border-bottom: 1px solid #e5e7eb;
     background: #fafafa}
-  .search-input-container { position: relative
+  .search-input-container { position: relative;
     margin-bottom: 12px}
   :global(.search-input) {
     padding-left: 40px !important}
   .category-select {
-    width: 100%; padding: 8px 12px
-    border: 1px solid #d1d5db
-    border-radius: 6px
-    background: white
-    font-size: 14px
+    width: 100%; padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    font-size: 14px;
     color: #374151
    ;outline: none}
   .category-select:focus {
-    border-color: #3b82f6
-    box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
   .citations-list {
-    flex: 1
+    flex: 1;
     overflow-y: auto
    ;padding: 16px 24px}
   : global(.citation-card) {
-    margin-bottom: 16px
+    margin-bottom: 16px;
     transition: box-shadow 0.2s ease
    ;cursor: pointer}
   :global(.citation-card:hover) {
@@ -258,20 +258,20 @@ import type { Case } from '$lib/types';
   :global(.citation-content) {
     padding: 16px !important}
   .citation-header {
-    display: flex
-    justify-content: space-betweennn
-    align-items: flex-start
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: flex-start;
     margin-bottom: 12px}
   .citation-title {
-    font-size: 14px
-    font-weight: 600
-    color: #1f2937
-    margin: 0
-    flex: 1
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+    flex: 1;
     padding-right: 8px}
   .citation-actions {
-    display: flex
-    gap: 4px
+    display: flex;
+    gap: 4px;
     opacity: 0
    ;transition: opacity 0.2s ease}
   :global(.citation-card:hover .citation-actions) {
@@ -283,84 +283,84 @@ import type { Case } from '$lib/types';
   .citation-body {
     margin-bottom: 12px}
   .citation-text {
-    font-size: 13px
-    color: #374151
+    font-size: 13px;
+    color: #374151;
     line-height: 1.5
    ;margin: 0, 0 8px 0}
   .citation-source {
-    font-size: 12px
-    color: #6b7280
+    font-size: 12px;
+    color: #6b7280;
     font-style: italic
    ;margin: 0, 0 8px 0}
   .citation-notes {
-    font-size: 12px
-    color: #4b5563
-    background: #f3f4f6
-    padding: 8px
+    font-size: 12px;
+    color: #4b5563;
+    background: #f3f4f6;
+    padding: 8px;
     border-radius: 4px
    ;margin: 8px, 0 0 0}
   .citation-tags {
-    display: flex
+    display: flex;
     flex-wrap: wrap
-   ;gap: 6px
+   ;gap: 6px;
     margin-bottom: 12px}
   :global(.tag) {
-    font-size: 11px !important
-    padding: 2px 6px !important
+    font-size: 11px !important;
+    padding: 2px 6px !important;
     height: auto !important}
   .drag-handle {
-    display: flex
-    align-items: center
-    gap: 8px
-    padding: 8px
-    background: #f8fafc
-    border: 1px dashed #cbd5e1
-    border-radius: 4px
-    cursor: grab
-    margin-bottom: 12px
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e1;
+    border-radius: 4px;
+    cursor: grab;
+    margin-bottom: 12px;
     transition: all 0.2s ease}
   .drag-handle:hover {
-    background: #e2e8f0
+    background: #e2e8f0;
     border-color: #94a3b8}
   .drag-handle:active {
     cursor: grabbing}
   .drag-indicator {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 2px}
   .drag-line {
-    width: 12px
-    height: 2px
-    background: #94a3b8
+    width: 12px;
+    height: 2px;
+    background: #94a3b8;
     border-radius: 1px}
   .drag-text {
-    font-size: 12px
-    color: #64748b
+    font-size: 12px;
+    color: #64748b;
     font-weight: 500}
   .citation-meta {
-    display: flex
-    justify-content: space-betweennn
-    align-items: center
-    font-size: 11px
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
+    font-size: 11px;
     color: #9ca3af}
   .saved-date {
     font-size: 11px
    ;color: #9ca3af}
   :global(.category-badge) {
-    font-size: 10px !important
-    padding: 2px 6px !important
+    font-size: 10px !important;
+    padding: 2px 6px !important;
     height: auto !important}
   .empty-state {
-    text-align: center
+    text-align: center;
     padding: 48px 16px}
   .empty-message {
-    font-size: 14px
+    font-size: 14px;
     color: #6b7280
    ;margin: 0, 0 8px 0}
   .empty-submessage {
-    font-size: 12px
+    font-size: 12px;
     color: #9ca3af
-   ;margin: 0, 0 16px 0
+   ;margin: 0, 0 16px 0;
     line-height: 1.4}
 </style>
 

@@ -1,167 +1,283 @@
 <script lang="ts">
-  import { interpret } from 'xstate';
+	import 'uno.css';
 
-  import { chatMachine } from '$lib/machines/chatMachine.js';
+	import type { AttachmentMetadata } from '$lib/types/sharedTypes';
+	import ContextualComposer from '$lib/components/chat/ContextualComposer.svelte';
 
-  import { onMount } from 'svelte'; // Import onMount for initial scroll
+	type Role = 'user' | 'assistant';
 
-  let chatContainer: HTMLDivElement | null = null
-  let userInput = $state<string>('');
+	interface ChatMessage {
+		id: string;
+		role: Role;
+		content: string;
+		timestamp: number;
+		attachments?: AttachmentMetadata[];
+	}
 
-  // Actor implementation with explicit types and safer error handling
-  // (the machine will call this actor via options; ensure machine expects actor name `streamChatActor`)
-  const streamChatActorFactory = ({ input }: unknown) => {
-    return (sendBack: (e: unknown) => void, _receive: unknown) => {
-      const controller = new AbortController();
-      async function stream(): Promise<any> {
-        try {
-          const response = await fetch('/api/chat', {
-            method: 'POST'; headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ messages: input?.messages ?? [] }); signal: controller.signal
-          });
+	export let sessionId: string | undefined = undefined;
+	export let userId: string | undefined = undefined;
 
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`)}
-          if (!response.body) { // Add null check for response.body
-            throw new Error('Response body is null.')}
+	let messages = $state<ChatMessage[]>([]);
+	let userInput = $state<string>('');
+	let isSending = $state<boolean>(false);
+	let error = $state<string | null>(null);
+	let chatContainer = $state<HTMLDivElement | null>(null);
+	let attachment = $state<File | null>(null);
+	const attachmentLabel = $derived(
+		attachment ? `${attachment.name} (${(attachment.size / 1024).toFixed(1)} KB)` : ''
+	);
 
-          const reader = response.body.getReader();
+	async function sendMessage(): Promise<void> {
+		const trimmed = userInput.trim();
+		if (!trimmed || isSending) return;
 
-          const decoder = new TextDecoder();
-          while (true) {
-            const { done: value } = await reader.read();
-            if (done) break
-            const chunk = decoder.decode(value, { stream: true });
+		isSending = true;
+		error = null;
+		try {
+			const useFormData = Boolean(attachment);
+			let response: Response;
 
-            const lines = chunk.split('\n').filter((line: string) => line.trim().startsWith('data:')),
-            for (const line of lines) {
-              try {
-                const jsonResponse = JSON.parse(line.replace('data:', '').trim());
-                if (jsonResponse?.message?.content) {
-                  sendBack({ type: 'STREAM_CHUNK'; chunk: jsonResponse.message.content })} else if (jsonResponse?.type === 'token' && jsonResponse.content) {
-                  sendBack({ type: 'STREAM_CHUNK'; chunk: jsonResponse.content })}
-              } catch (_err) {
-                // ignore incomplete chunks
-              }
-            }
-          }
-          sendBack({ type: 'STREAM_DONE' })} catch (err: unknown) {
-          const e = err as any; // Fix: as: unknown -> as any
-          if (e?.name !== 'AbortError') {
-            console.error('Chat stream error:', e);
-            sendBack({ type: 'error'; data: e })}
-        }
-      }
-      stream();
-      return () => {
-        controller.abort()}}};
+			if (useFormData) {
+				const formData = new FormData();
+				formData.set('message', trimmed);
+				if (sessionId) formData.set('sessionId', sessionId);
+				if (userId) formData.set('userId', userId);
+				formData.set('enableFunctions', 'true');
+				formData.set('file', attachment as File);
+				response = await fetch('/api/contextual/chat', {
+					method: 'POST',
+					body: formData
+				});
+			} else {
+				response = await fetch('/api/contextual/chat', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({
+						message: trimmed,
+						sessionId,
+						userId,
+						enableFunctions: true
+					})
+				});
+			}
 
-  // Create and start XState service manually so we don't rely on @xstate/svelte types.
-  // Register the actor here.
-  const service = interpret(chatMachine, {
-    actors: {
-      streamChatActor: streamChatActorFactory // Register the actor
-    }
-  });
-  let snapshot: unknown = service.initialState
-  service.subscribe((state: unknown) => {
-    snapshot = state});
+			if (!response.ok) {
+				throw new Error(`API error: ${response.statusText}`);
+			}
 
-  service.start();
+			const result = await response.json();
+			if (!result.success) {
+				throw new Error(result.error ?? 'Contextual chat failed');
+			}
 
-  const send = (event: Event) => service.send(event);
+			const assistantReply: string = result.data?.response ?? result.data?.text ?? '';
+			const attachmentMeta: AttachmentMetadata[] = result.data?.attachments ?? [];
 
-  // Submit handler: accept generic Event to match Svelte DOM types, then cast to SubmitEvent
-  function handleSubmit(event: Event) {
-    const submitEvent = event as SubmitEvent
-    submitEvent.preventDefault();
-    if (!userInput.trim()) return
-    send({ type: 'SUBMIT'; message: userInput });
-    userInput = ''}
+			messages = [
+				...messages,
+				{
+					id: crypto.randomUUID(),
+					role: 'user',
+					content: trimmed,
+					timestamp: Date.now(),
+					attachments: attachmentMeta.length > 0 ? attachmentMeta : undefined
+				},
+				{
+					id: crypto.randomUUID(),
+					role: 'assistant',
+					content: assistantReply,
+					timestamp: Date.now(),
+					attachments: attachmentMeta.length > 0 ? attachmentMeta : undefined
+				}
+			];
 
-  // Reactive statement to scroll down when messages change
-  $effect(() => {
-    if (snapshot?.context?.messages && typeof window !== 'undefined') {
-      // Use a microtask to wait for the DOM to update
-      Promise.resolve().then(() => {
-        if (chatContainer) {
-          chatContainer.scrollTop = chatContainer.scrollHeight}
-      })}
-  });
+			userInput = '';
+			clearAttachment();
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Unknown error';
+			console.error('[AIChat] sendMessage failed', err);
+		} finally {
+			isSending = false;
+		}
+	}
 
-  // Initial scroll to bottom on mount
-  onMount(() => {
-    if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight}
-  });
+	function clearAttachment(): void {
+		attachment = null;
+	}
+
+	$effect(() => {
+		if (chatContainer) {
+			chatContainer.scrollTop = chatContainer.scrollHeight;
+		}
+	});
 </script>
 
-<div class="flex flex-col h-[calc(100vh-4rem)] bg-gray-50">
-  <div bind:this={chatContainer} class="flex-1 overflow-y-auto p-4">
-  {#each snapshot.context.messages as message, i (i)}
-      <div class="chat-message {message.role === 'user' ? 'user' : 'assistant'}">
-        <div class="message-bubble">
-          {@html message.content.replace(/\n/g, '<br>')}
-          {#if snapshot.matches('loading') && i === snapshot.context.messages.length - 1}
-            <span class="typing-indicator"></span>
-          {/if}
-  </div>
-      </div>
-    {/each}
-    {#if snapshot.matches('error')}
-      <div class="chat-message">
-        <div class="message-bubble error-bubble">
-          <!-- Added error-bubble class for styling -->
-          <p>Sorry, an error occurred: {snapshot.context.error?.message || 'Unknown error'}</p>
+<div class="ai-chat-shell bg-base-100 dark:bg-neutral-900 text-base-content">
+	<div bind:this={chatContainer} class="messages-panel">
+		{#if messages.length === 0}
+			<div class="empty-state">
+				<h3>Start a contextual conversation</h3>
+				<p>Attach supplemental evidence to enrich the agent's understanding.</p>
+			</div>
+		{:else}
+			{#each messages as message (message.id)}
+				<div class={`chat-message ${message.role}`}>
+					<div class="message-bubble">
+						<div class="message-meta">
+							<span class="message-role">{message.role === 'user' ? 'You' : 'Gemma'}</span>
+							<span class="message-time">{new Date(message.timestamp).toLocaleTimeString()}</span>
+						</div>
+						<div class="message-content" {@html message.content.replace(/\n/g, '<br />')}></div>
 
-          <p>Please try again.</p>
-        </div>
-      </div>
-    {/if}
-  </div>
+						{#if message.attachments && message.attachments.length > 0}
+							<div class="message-attachments">
+								<h5>Attachments</h5>
+								<ul>
+									{#each message.attachments as file}
+										<li>
+											<span class="attachment-name">{file.originalName ?? file.key}</span>
+											<span class="attachment-meta">{file.contentType}</span>
+										</li>
+									{/each}
+								</ul>
+							</div>
+						{/if}
+					</div>
+				</div>
+			{/each}
+		{/if}
+	</div>
 
-  <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200">
-    <form onsubmit={handleSubmit} class="flex items-center">
-      <input
-        type="text"
-        bind:value={userInput}
-        placeholder="Ask about your case..."
-        class="flex-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600"
-        disabled={snapshot.matches('loading')}
-      />
-      <button
-        type="submit"
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
-        disabled={snapshot.matches('loading') || !userInput.trim()}
-      >
-        Send
-      </button>
-    </form>
-  </div>
+	{#if error}
+		<div class="error-banner">
+			<p>{error}</p>
+		</div>
+	{/if}
+
+	<ContextualComposer
+		value={userInput}
+		isSending={isSending}
+		attachmentLabel={attachment ? attachmentLabel : null}
+		placeholder="Summarize the latest deposition, highlight risks..."
+		on:input={(event) => (userInput = event.detail)}
+		on:send={() => void sendMessage()}
+		on:attachmentSelected={(event) => (attachment = event.detail)}
+		on:clearAttachment={clearAttachment}
+	/>
 </div>
 
 <style>
-  /* Styles from previous Chat.svelte component can be reused here */
-  .chat-message { display: flex; max-width: 80%}
-  .chat-message.user { margin-left: auto; flex-direction: row-reverse}
-  .chat-message.assistant { margin-right: auto}
-  .message-bubble { padding: 0.75rem 1rem; border-radius: 1.25rem; word-wrap: break-word; position: relative}
-  .user .message-bubble { background-color: #2563eb, color: white; border-bottom-right-radius: 0.25rem}
-  .assistant .message-bubble { background-color: #e5e7eb, color: #111827; border-bottom-left-radius: 0.25rem}
-  .dark .assistant .message-bubble { background-color: #374151; color: #f9fafb}
-  .error-bubble { background-color: #fef2f2; color: #991b1b}
-  .dark .error-bubble { background-color: #4c1d1d; color: #fca5a5}
-  .typing-indicator {
-    display: inline-block
-    width: 5px
-    height: 5px
-    border-radius: 50%; background-color: currentColor; /* Removed extra comma */
-    animation: typing 1s infinite steps(4, end);
-    margin-left: 8px
-    vertical-align: bottom}
-  @keyframes typing {
-    to { transform: translateY(-0.25rem)}
-  }
+	.ai-chat-shell {
+		display: flex;
+		flex-direction: column;
+		height: 100%;
+		border-radius: 1.5rem;
+		border: 1px solid rgba(15, 23, 42, 0.08);
+		box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+	}
+
+	.messages-panel {
+		flex: 1;
+		overflow-y: auto;
+		padding: 2rem;
+		background: linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(255, 255, 255, 0.5));
+	}
+
+	.empty-state {
+		text-align: center;
+		padding: 3rem 1rem;
+		color: #64748b;
+	}
+
+	.chat-message {
+		display: flex;
+		margin-bottom: 1.25rem;
+	}
+
+	.chat-message.user {
+		justify-content: flex-end;
+	}
+
+	.chat-message.assistant {
+		justify-content: flex-start;
+	}
+
+	.message-bubble {
+		max-width: min(80%, 720px);
+		padding: 1.25rem;
+		border-radius: 1.25rem;
+		background: #fff;
+		border: 1px solid rgba(99, 102, 241, 0.1);
+		box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+	}
+
+	.chat-message.user .message-bubble {
+		background: linear-gradient(135deg, #2563eb, #1d4ed8);
+		color: #fff;
+		border-bottom-right-radius: 0.5rem;
+	}
+
+	.chat-message.assistant .message-bubble {
+		background: #fff;
+		color: #0f172a;
+		border-bottom-left-radius: 0.5rem;
+	}
+
+	.message-meta {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.75rem;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		margin-bottom: 0.75rem;
+		opacity: 0.7;
+	}
+
+	.message-attachments {
+		margin-top: 1rem;
+		padding-top: 0.75rem;
+		border-top: 1px solid rgba(148, 163, 184, 0.3);
+	}
+
+	.message-attachments h5 {
+		margin: 0 0 0.5rem 0;
+		font-size: 0.85rem;
+		font-weight: 600;
+	}
+
+	.message-attachments ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+	}
+
+	.message-attachments li {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.85rem;
+		color: inherit;
+		opacity: 0.9;
+	}
+
+	.error-banner {
+		padding: 0.75rem 1.25rem;
+		margin: 0 2rem;
+		border-radius: 0.75rem;
+		background: #fee2e2;
+		color: #991b1b;
+		font-size: 0.9rem;
+	}
+
+	@media (max-width: 768px) {
+		.ai-chat-shell {
+			border-radius: 1rem;
+		}
+
+		.messages-panel {
+			padding: 1.25rem;
+		}
+	}
 </style>
-
-

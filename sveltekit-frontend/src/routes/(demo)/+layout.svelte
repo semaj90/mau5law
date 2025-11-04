@@ -78,8 +78,8 @@
 
 <style>
   .demo-layout {
-    min-height: 100vh
-    display: flex
+    min-height: 100vh;
+    display: flex;
     flex-direction: column
    ; background: var(--nier-bg-primary); color: var(--nier-text-primary)}
 
@@ -89,37 +89,37 @@
     padding: 1rem}
 
   .demo-brand {
-    display: flex
-    align-items: center
-    gap: 1rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem}
 
   .demo-icon {
     font-size: 2rem}
 
   .demo-title {
-    font-size: 1.5rem
+    font-size: 1.5rem;
     font-weight: bold
    ; color: var(--nier-accent-warm); margin: 0}
 
-  .demo-badge { background: var(--nier-accent-warm); color: var(--nier-bg-primary); padding: 0.25rem 0.75rem
-    border-radius: 1rem
-    font-size: 0.8rem
+  .demo-badge { background: var(--nier-accent-warm); color: var(--nier-bg-primary); padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.8rem;
     font-weight: bold}
 
   /* Navigation */
   .demo-nav {
-    display: flex
-    flex-wrap: wrap
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem}
 
   .demo-nav-item {
-    display: flex
-    align-items: center
-    gap: 0.5rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1rem
    ; border: 1px solid var(--nier-border-primary);
-    border-radius: 0.5rem
+    border-radius: 0.5rem;
     text-decoration: none
    ; color: var(--nier-text-secondary); background: var(--nier-bg-primary); transition: all 0.2s ease}
 
@@ -137,18 +137,18 @@
 
   /* Content */
   .demo-content {
-    flex: 1
+    flex: 1;
     overflow-y: auto
    ; background: var(--nier-bg-primary)}
 
   .demo-container {
-    max-width: 1400px
-    margin: 0 auto
-    padding: 2rem
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
     min-height: 100%}
 
   .demo-placeholder {
-    text-align: center
+    text-align: center;
     padding: 4rem 2rem
    ; background: var(--nier-bg-secondary); border: 2px dashed var(--nier-border-muted);
     border-radius: 1rem}
@@ -161,17 +161,17 @@
     background: var(--nier-bg-secondary); padding: 1rem}
 
   .demo-footer-content {
-    max-width: 1400px
-    margin: 0 auto
-    display: flex
-    justify-content: space-betweennn
-    align-items: center
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
     gap: 2rem}
 
   .demo-info {
-    display: flex
-    align-items: center
-    gap: 1rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     font-size: 0.9rem
    ; color: var(--nier-text-muted)}
 
@@ -186,9 +186,9 @@
   .demo-main-btn {
     padding: 0.5rem 1rem
    ; border: 1px solid var(--nier-border-primary);
-    border-radius: 0.5rem
+    border-radius: 0.5rem;
     text-decoration: none
-   ; color: var(--nier-text-primary); background: var(--nier-bg-primary); transition: all 0.2s ease
+   ; color: var(--nier-text-primary); background: var(--nier-bg-primary); transition: all 0.2s ease;
     font-size: 0.9rem}
 
   .demo-home-btn:hover,
@@ -201,8 +201,8 @@
       padding: 1rem}
 
     .demo-footer-content {
-      flex-direction: column
-      text-align: center
+      flex-direction: column;
+      text-align: center;
       gap: 1rem}
 
     .demo-nav {

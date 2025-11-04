@@ -1,19 +1,19 @@
-import { defineConfig } from 'drizzle-kit';
+import type { Config } from "drizzle-kit";
+import * as dotenv from "dotenv";
 
-export default defineConfig({
-  // point to your TS schema files
-  schema: 'src/lib/db/schema.ts',
-  // where generated migrations / client code will be written
-  out: 'drizzle',
-  // use postgresql dialect
-  dialect: 'postgresql',
+dotenv.config({ path: ".env" });
+
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set in .env file");
+}
+
+export default {
+  schema: "./src/lib/server/db/schema-postgres.ts",
+  out: "./drizzle",
+  dialect: "postgresql",
   dbCredentials: {
-    // postgres-js expects a full connection URL
-    url: process.env.DATABASE_URL ?? 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+    url: process.env.DATABASE_URL!,
   },
-  // optional: keep your migrations in a specific folder
-  migrations: {
-    prefix: 'supabase',
-  },
-  // Note: JSONB is supported by postgres-js; in your schema use drizzle-orm/pg-core json()/jsonb() column helpers.
-});
+  verbose: true,
+  strict: true,
+} satisfies Config;

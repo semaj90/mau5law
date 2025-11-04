@@ -1062,7 +1062,7 @@
 <style>
   /* Enhanced SSR-optimized 3-Column Flexbox Layout */
   .ssr-flexbox-container {
-    /* Ensure proper layout calculation on server-side rendering */
+    /* Ensure proper layout calculation on server-side rendering */;
     min-height: 400px;
     width: 100%;
     box-sizing: border-box;
@@ -1084,13 +1084,13 @@
 
   /* SSR Card optimizations for consistent rendering */
   .ssr-card {
-    /* Ensure consistent card heights in flexbox layout */
+    /* Ensure consistent card heights in flexbox layout */;
     display: flex;
     flex-direction: column;
     min-height: 280px;
     max-height: 400px;
     overflow: hidden;
-    /* Enhanced border and shadow for better visual hierarchy */
+    /* Enhanced border and shadow for better visual hierarchy */;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
   }
@@ -1123,11 +1123,11 @@
 
   /* API Service Grid optimizations */
   .api-service-grid {
-    /* Ensure consistent grid layout across different viewport sizes */
+    /* Ensure consistent grid layout across different viewport sizes */;
     display: grid;
     gap: 1.5rem;
     align-items: start;
-    /* Responsive grid template with proper proportions */
+    /* Responsive grid template with proper proportions */;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   }
   @media (min-width: 768px) and (max-width: 1023px) {

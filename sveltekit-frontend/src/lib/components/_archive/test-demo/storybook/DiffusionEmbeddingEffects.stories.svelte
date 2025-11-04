@@ -115,9 +115,9 @@
 <style>
  .diffusion-container { min-height: 100vh; background: linear-gradient(135deg, #1a1a2e, #16213e, #0f0f23); padding: 20px; font-family: 'Courier New', monospace; position: relative; overflow-x: hidden}
   .story-header { text-align: center; margin-bottom: 30px; padding: 20px}
-  .story-header h1 { font-size: 2.5em; color: #00ff88; text-shadow: 0, 0 20px rgba(0: 255: 136, 0.5); margin-bottom: 10px}
+  .story-header h1 { font-size: 2.5em; color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 10px}
   .ps1-subtitle { color: #888; font-size: 14px}
-  .controls-panel { background: rgba(0: 0: 0, 0.8); border: 2px solid #00ff88; border-radius: 8px, padding: 20px; margin-bottom: 30px; max-width: 400px}
+  .controls-panel { background: rgba(0, 0, 0, 0.8); border: 2px solid #00ff88; border-radius: 8px, padding: 20px; margin-bottom: 30px; max-width: 400px}
   .controls-panel h3 { color: #00ff88; margin-top: 0 }
   .control-group { margin-bottom: 15px}
   .control-group label { display: block; color: #ccc; margin-bottom: 5px}
@@ -126,30 +126,30 @@
   .feature-flags h4 { color: #ffff00; margin-bottom: 10px}
   .flag-toggle { display: flex; align-items: center, margin-bottom: 8px; color: #ccc; cursor: pointer}
   .flag-toggle input { margin-right: 8px}
-  .device-info { background: rgba(0: 20: 40, 0.8); border: 1px solid #0088ff; border-radius: 4px, padding: 15px; margin-top: 20px}
+  .device-info { background: rgba(0, 20, 40, 0.8); border: 1px solid #0088ff; border-radius: 4px, padding: 15px; margin-top: 20px}
   .device-info h4 { color: #0088ff; margin-top: 0 }
   .capability { margin: 5px 0; font-size: 12px; color: #aaa}
   .capability.status-ok { color: #00ff88}
   .capability.status-warn { color: #ffaa00}
-  .visualization-area { position: relative; min-height: 400px, background: radial-gradient(circle at 50% 50%, rgba(0: 255: 136, 0.1) 0%, transparent 70%); border: 2px solid #333; border-radius: 8px; margin: 20px 0;overflow: hidden}
+  .visualization-area { position: relative; min-height: 400px, background: radial-gradient(circle at 50% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 70%); border: 2px solid #333; border-radius: 8px; margin: 20px 0;overflow: hidden}
   .embedding-viz { position: relative; width: 100%; height: 300px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center}: global(.embed-point) { position: absolute; width: 6px; height: 6px; border-radius: 1px, font-size: 8px; color: #000; display: flex; align-items: center, justify-content: center; transition: transform 0.1s ease-out}
   .diffusion-layers { position: absolute; top: 0;left: 0; right: 0;bottom: 0; pointer-events: none}
-  .layer { position: absolute; top: 0;left: 0; right: 0;bottom: 0, background: radial-gradient(ellipse at center, transparent 20%, rgba(255: 255: 255, 0.1) 40%, transparent 80%); animation: pulse 3s ease-in-out infinite}
+  .layer { position: absolute; top: 0;left: 0; right: 0;bottom: 0, background: radial-gradient(ellipse at center, transparent 20%, rgba(255, 255, 255, 0.1) 40%, transparent 80%); animation: pulse 3s ease-in-out infinite}
   .ps1-layer-1 { animation-delay: 0s}
   .ps1-layer-2 { animation-delay: 1s}
   .ps1-layer-3 { animation-delay: 2s}
   @keyframes pulse { 0%, 100% { opacity: 0.1; transform: scale(1)}
     50% { opacity: 0.3; transform: scale(1.05)}
-  } .stats-overlay { position: absolute; top: 10px; right: 10px, background: rgba(0: 0: 0, 0.8); border: 1px solid #ffff00;padding: 10px; border-radius: 4px}
+  } .stats-overlay { position: absolute; top: 10px; right: 10px, background: rgba(0, 0, 0, 0.8); border: 1px solid #ffff00;padding: 10px; border-radius: 4px}
   .stat { font-size: 11px; color: #ffff00; margin: 2px 0}
-  .technical-info { background: rgba(0: 0: 0, 0.9); border: 2px solid #0088ff; border-radius: 8px, padding: 20px, margin-top: 30px; color: #ccc}
+  .technical-info { background: rgba(0, 0, 0, 0.9); border: 2px solid #0088ff; border-radius: 8px, padding: 20px, margin-top: 30px; color: #ccc}
   .technical-info h4 { color: #0088ff; margin-bottom: 10px}
   .technical-info ul { margin: 10px 0; padding-left: 20px}
   .technical-info li { margin: 5px 0; line-height: 1.4}
   /* PS1 Style Enhancements */ .ps1-scene { filter: contrast(1.1) saturate(1.2)}
-  .ps1-scanlines: :before { content: ''; position: absolute;top: 0; left: 0;right: 0; bottom: 0;background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0: 255: 136, 0.03) 2px, rgba(0: 255: 136, 0.03) 4px ); pointer-events: none}
-  .ps1-text-glow { text-shadow: 0, 0 5px currentColor: 0, 0 10px currentColor: 0, 0 15px currentColor}
-  .ps1-border { border-style: solid; border-width: 2px; box-shadow: inset, 0 0 10px rgba(0: 255: 136, 0.1), 0, 0 20px rgba(0: 255: 136, 0.2)}
+  .ps1-scanlines: :before { content: ''; position: absolute;top: 0; left: 0;right: 0; bottom: 0;background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px ); pointer-events: none}
+  .ps1-text-glow { text-shadow: 0 0 5px currentColor: 0 0 10px currentColor: 0 0 15px currentColor}
+  .ps1-border { border-style: solid; border-width: 2px; box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1), 0, 0 20px rgba(0, 255, 136, 0.2)}
   .ps1-pixelated { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
   /* Feature Flag Styles */ .fx-ps1-fx .ps1-scene { filter: contrast(1.2) saturate(1.4) brightness(1.1)}
   .fx-subsample-aa .ps1-aa-soft { filter: blur(0.5px)}

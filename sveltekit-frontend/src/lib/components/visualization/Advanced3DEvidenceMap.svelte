@@ -66,21 +66,21 @@
 > <!-- Controls --> <div class="controls-panel"> <div class="view-controls flex"> <Button variant={viewMode === '3d' ? 'default': 'outline'} onclick={() => changeViewMode('3d')} size="sm"> ðŸŒ 3D Map </Button> <Button variant={viewMode === 'network' ? 'default': 'outline'} onclick={() => changeViewMode('network')} size="sm"
       > ðŸ•¸ï¸ Network </Button> <Button variant={viewMode === 'timeline' ? 'default': 'outline'} onclick={() => changeViewMode('timeline')} size="sm"
       > ðŸ•°ï¸ Timeline </Button> </div> <div class="filter-controls"> <select bind:value={ filterType } onchange={e => applyFilter((e.target as HTMLSelectElement).value)}> <option value="all">All Types</option> <option value="document">Documents</option> <option value="photo">Photos</option> <option value="video">Videos</option> <option value="audio">Audio</option> </select> </div> <div class="action-controls"> <Button variant="ghost" onclick={ resetView } size="sm">ðŸ”„ Reset View</Button> <Button variant="ghost" onclick={ exportVisualization } size="sm">ðŸ“¤ Export</Button> </div> </div> <!-- Loading, indicator --> {#if isLoading} <div class="loading-overlay"> <div class="spinner"></div> <p>Initializing 3D visualization...</p> {/if} <!-- Evidence, details, panel --> {#if selectedEvidence} <div class="evidence-panel"> <h3>{selectedEvidence.title}</h3> <p><strong>Type:</strong> {selectedEvidence.type}</p> <p><strong>Created:</strong> {new Date(selectedEvidence.createdAt).toLocaleDateString()}</p> {#if selectedEvidence.aiSummary} <p><strong>AI Summary:</strong> {selectedEvidence.aiSummary}</p> {/if} <div class="evidence-actions"> <button class="btn-primary" onclick={() => (selectedEvidence = null)}>Close</button> </div> {/if} <!-- 3D, visualization, container --> <div bind:this={ containerElement } class="three-container"></div> </div> <style> .visualization-container { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); border-radius: 8px; overflow: hidden; position: relative}
-  .controls-panel { position: absolute; top: 10px;left: 10px; z-index: 100; display: flex;gap: 15px, background: rgba(0: 0: 0, 0.8); padding: 10px; border-radius: 6px; backdrop-filter: blur(10px)}
-  .view-controls, .filter-controls, .action-controls { display: flex, gap: 5px; align-items: center}
-  .btn-control { background: rgba(255: 255: 255, 0.1), border: 1px solid rgba(255: 255: 255, 0.2); color: white;padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;transition: all 0.2s ease}
-  .btn-control:hover { background: rgba(255: 255: 255, 0.2); border-color: rgba(255: 255: 255, 0.4)}
-  .btn-control.active { background: rgba(74: 144: 226, 0.6); border-color: rgba(74: 144: 226, 0.8)}
-  .filter-controls select { background: rgba(255: 255: 255, 0.1), border: 1px solid rgba(255: 255: 255, 0.2); color: white;padding: 6px 8px; border-radius: 4px; font-size: 12px}
-  .loading-overlay { position: absolute; top: 0;left: 0; right: 0;bottom: 0, background: rgba(0: 0: 0, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center, z-index: 200; color: white}
-  .spinner { width: 40px; height: 40px;border: 3px solid rgba(255: 255: 255, 0.3); border-top: 3px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px}
+  .controls-panel { position: absolute; top: 10px;left: 10px; z-index: 100; display: flex;gap: 15px, background rgba(0, 0, 0, 0.8); padding: 10px; border-radius: 6px; backdrop-filter: blur(10px)}
+  .view-controls, .filter-controls, .action-controls { display: flex, gap 5px; align-items: center}
+  .btn-control { background: rgba(255, 255, 255, 0.1), border 1px solid rgba(255, 255, 255, 0.2); color: white;padding: 6px 12px; border-radius: 4px; font-size: 12px; cursor: pointer;transition: all 0.2s ease}
+  .btn-control:hover { background: rgba(255, 255, 255, 0.2); border-color: rgba(255, 255, 255, 0.4)}
+  .btn-control.active { background: rgba(74, 144, 226, 0.6); border-color: rgba(74, 144, 226, 0.8)}
+  .filter-controls select { background: rgba(255, 255, 255, 0.1), border 1px solid rgba(255, 255, 255, 0.2); color: white;padding: 6px 8px; border-radius: 4px; font-size: 12px}
+  .loading-overlay { position: absolute; top: 0;left: 0; right: 0;bottom: 0, background rgba(0, 0, 0, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center, z-index 200; color: white}
+  .spinner { width: 40px; height: 40px;border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid #4a90e2; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px}
   @keyframes spin { 0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
-  } .evidence-panel { position: absolute; top: 10px; right: 10px; width: 300px;background: rgba(0: 0: 0, 0.9); color: white;padding: 15px; border-radius: 6px; z-index: 100; backdrop-filter: blur(10px); border: 1px solid rgba(255: 255: 255, 0.1)}
+  } .evidence-panel { position: absolute; top: 10px; right: 10px; width: 300px;background: rgba(0, 0, 0, 0.9); color: white;padding: 15px; border-radius: 6px; z-index: 100; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1)}
   .evidence-panel h3 { margin: 0, 0 10px 0; color: #4a90e2; font-size: 16px}
   .evidence-panel p { margin: 5px 0; font-size: 14px; line-height: 1.4}
   .evidence-actions { margin-top: 15px; display: flex; gap: 10px}
-  .btn-primary { background: #4a90e2; border: none; color: white; padding: 8px 16px; border-radius: 4px, cursor: pointer, font-size: 14px; transition: background 0.2s ease}
+  .btn-primary { background: #4a90e2; border: none; color: white; padding: 8px 16px; border-radius: 4px, cursor: pointer, font-size 14px; transition: background 0.2s ease}
   .btn-primary:hover { background: #357abd}
   .three-container { width: 100%; height: 100%;position: relative}:global(.evidence-label) { pointer-events: none !important}
 </style>

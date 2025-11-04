@@ -293,22 +293,22 @@
 <style>
 	/* @unocss-include */
 	.toolbar-container {
-		display: flex
-		align-items: center
-		gap: 0.5rem
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 		padding: 0.75rem 1rem
 	;background: var(--bg-secondary); border-bottom: 1px solid var(--border-light);
-		overflow-x: auto
+		overflow-x: auto;
 		min-height: 60px}
 	.toolbar-section {
-		display: flex
-		align-items: center
-		gap: 0.5rem
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 		flex-shrink: 0}
 	.tool-group {
-		display: flex
-		align-items: center
-		gap: 0.25rem
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
 		padding: 0.25rem
 	;background: var(--bg-primary); border-radius: 6px
 	;border: 1px solid var(--border-light)}
@@ -316,15 +316,15 @@
 	.format-button,
 	.align-button,
 	.action-button {
-		display: flex
-		align-items: center
-		justify-content: center
-		width: 36px
-		height: 36px
-		background: transparent
-		border: none
-		cursor: pointer
-		border-radius: 4px
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 36px;
+		background: transparent;
+		border: none;
+		cursor: pointer;
+		border-radius: 4px;
 		transition: all 0.2s ease
 	;color: var(--text-primary)}
 	.tool-button:hover,
@@ -339,56 +339,56 @@
 	.format-button:disabled,
 	.align-button:disabled,
 	.action-button:disabled {
-		opacity: 0.5
+		opacity: 0.5;
 		cursor: not-allowed}
 	.color-input {
-		position: relative
+		position: relative;
 		cursor: pointer}
 	.color-input input[type='color'] {
-		position: absolute
-		opacity: 0
+		position: absolute;
+		opacity: 0;
 		width: 100%; height: 100%;
 		cursor: pointer}
 	.color-preview {
-		display: block
-		width: 24px
-		height: 24px
+		display: block;
+		width: 24px;
+		height: 24px;
 		border-radius: 4px
 	;border: 2px solid var(--border-light); cursor: pointer}
 	.size-input {
-		display: flex
-		align-items: center
-		gap: 0.5rem
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 		padding: 0.5rem}
 	.size-input input[type='range'] {
-		width: 80px
+		width: 80px;
 		height: 4px
-	;background: var(--muted-background); border-radius: 2px
-		outline: none
+	;background: var(--muted-background); border-radius: 2px;
+		outline: none;
 		cursor: pointer}
 	.size-input input[type='range']: :-webkit-slider-thumb {
-		appearance: none
-		width: 16px
+		appearance: none;
+		width: 16px;
 		height: 16px
 	;background: var(--harvard-crimson); border-radius: 50%, cursor: pointer}
 	.size-label {
 		font-size: 0.75rem
-	;color: var(--text-muted); min-width: 35px
+	;color: var(--text-muted); min-width: 35px;
 		text-align: center}
 	.zoom-level {
 		font-size: 0.875rem
-	;color: var(--text-primary); min-width: 45px
-		text-align: center
+	;color: var(--text-primary); min-width: 45px;
+		text-align: center;
 		font-weight: 500}
 	.toolbar-separator {
-		width: 1px
+		width: 1px;
 		height: 32px
-	;background: var(--border-light); margin: 0 0.5rem
+	;background: var(--border-light); margin: 0 0.5rem;
 		flex-shrink: 0}
 	/* Responsive */
 	@media (max-width: 768px) {
 		.toolbar-container {
-			padding: 0.5rem
+			padding: 0.5rem;
 			gap: 0.25rem}
 		.size-input input[type='range'] {
 			width: 60px}

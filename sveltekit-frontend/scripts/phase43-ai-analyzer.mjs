@@ -20,9 +20,20 @@ import { appendFileSync, writeFileSync, existsSync, readFileSync } from 'fs';
 import { createInterface } from 'readline';
 import { createClient } from 'redis';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import PQueue from 'p-queue';
-import cliProgress from 'cli-progress';
+import PQueueModule from 'p-queue';
+const PQueue = PQueueModule.default;
 import { createHash } from 'crypto';
+
+// Simple progress tracker (cli-progress is CommonJS only)
+class SimpleProgress {
+  constructor() { this.current = 0; this.total = 0; }
+  start(total) { this.total = total; console.log(`📊 Processing ${total} items...`); }
+  update(current) { 
+    this.current = current;
+    if (current % 100 === 0) process.stdout.write(`\r⏳ Progress: ${current}/${this.total} (${((current/this.total)*100).toFixed(1)}%)`);
+  }
+  stop() { console.log(`\n✅ Complete: ${this.current}/${this.total}`); }
+}
 
 // Configuration
 const config = {
@@ -131,16 +142,13 @@ class GPUEmbeddingAnalyzer {
     
     console.log(`📊 Total lines to process: ${totalLines.toLocaleString()}\n`);
     
-    // Initialize progress bar
-    this.progressBar = new cliProgress.MultiBar({
-      clearOnComplete: false,
-      hideCursor: true,
-      format: '{label} |{bar}| {percentage}% | {value}/{total} | ETA: {eta}s | Speed: {speed}/s'
-    }, cliProgress.Presets.shades_classic);
+    // Initialize simple progress tracker
+    this.progressBar = new SimpleProgress();
+    this.progressBar.start(totalLines);
     
-    const mainBar = this.progressBar.create(totalLines, 0, { label: 'Processing', speed: 0 });
-    const cacheBar = this.progressBar.create(totalLines, 0, { label: 'Cache Hits', speed: 0 });
-    const embedBar = this.progressBar.create(totalLines, 0, { label: 'Embeddings', speed: 0 });
+    const mainBar = { update: (v) => this.progressBar.update(v) };
+    const cacheBar = { update: () => {} };
+    const embedBar = { update: () => {} };
     
     // Stream and batch process
     const fileStream = createReadStream(logPath, { encoding: 'utf8' });

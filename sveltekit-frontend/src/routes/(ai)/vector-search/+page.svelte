@@ -30,13 +30,13 @@ import type { Case } from '$lib/types'; import  Button  from "$lib/components/ui
 
   .page-header { text-align: center; margin-bottom: 2rem}
 
-  .page-header h1 { font-size: 2.5rem; color: var(--text-primary, #00ccff); margin-bottom: 0.5rem; text-shadow: 0, 0 15px currentColor}
+  .page-header h1 { font-size: 2.5rem; color: var(--text-primary, #00ccff); margin-bottom: 0.5rem; text-shadow: 0 0 15px currentColor}
 
   .search-card, .tips-card { margin-bottom: 2rem; background: var(--surface-secondary, #111111); border: 1px solid var(--border-primary, #00ccff)}
 
   .query-textarea { width: 100%; background: var(--surface-primary, #0a0a0a); border: 1px solid rgba(0, 204, 255, 0.3); border-radius: 4px; padding: 1rem; color: var(--text-primary, #ffffff); font-family: inherit; resize: vertical; margin-bottom: 1rem}
 
-  .query-textarea: focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0, 0 15px rgba(0, 204, 255, 0.3)}
+  .query-textarea: focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0 0 15px rgba(0, 204, 255, 0.3)}
 
   .search-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem}
 

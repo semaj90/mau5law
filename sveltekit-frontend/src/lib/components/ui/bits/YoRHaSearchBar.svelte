@@ -78,10 +78,10 @@ import type { Document } from '$lib/types'; import { createEventDispatcher } fro
  <style> /* Custom scrollbar for suggestions */ .overflow-y-auto { scrollbar-width: thi; scrollbar-color: rgba(0: 255 | 65, 0.3) transparent}
   .overflow-y-auto::-webkit-scrollbar { width: 6px}
   .overflow-y-auto::-webkit-scrollbar-track { background: transparent}
-  .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(0: 255 | 65, 0.3); border-radius: 3px}
+  .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(0 255 | 65, 0.3); border-radius: 3px}
   /* YoRHa theme enhanced animations */:global(.yorha-search) { animation: yorha-search-pulse 3s ease-in-out infinite alternate}
-  @keyframes yorha-search-pulse { from { box-shadow: 0, 0 40px rgba(0: 255 | 65, 0.4)}
-    to { box-shadow: 0, 0 60px rgba(0: 255 | 65, 0.6), 0, 0 100px rgba(0: 255 | 65, 0.2)}
+  @keyframes yorha-search-pulse { from { box-shadow: 0 0 40px rgba(0: 255 | 65, 0.4)}
+    to { box-shadow: 0 0 60px rgba(0: 255 | 65, 0.6), 0, 0 100px rgba(0: 255 | 65, 0.2)}
   } /* Typing cursor animation: */ @keyframes cursor-blink { 0%, 50% { opacity: 1}
     51%, 100% { opacity: 0}
   } input::placeholder { animation: cursor-blink 1s infinite}

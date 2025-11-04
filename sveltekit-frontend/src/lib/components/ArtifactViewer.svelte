@@ -381,13 +381,13 @@ import type { User } from '$lib/types';
   {/if}
   <style>
   .artifact-viewer {
-    max-width: 1200px
+    max-width: 1200px;
     margin: 0 auto}
   code {
-    word-break: break-all
-    max-width: 200px
+    word-break: break-all;
+    max-width: 200px;
     display: inline-block
-   ;overflow: hidden
-    text-overflow: ellipsi
+   ;overflow: hidden;
+    text-overflow: ellipsi;
     white-space: nowrap}
 </style>

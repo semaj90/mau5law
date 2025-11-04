@@ -86,8 +86,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
                   onclick={() => viewDetailedResults(data)} >
                   View Details â†’ </Button> </div> </div> {/each}
 </div> <DialogFooter> <Button.Root class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button> <Button.Root class="bits-btn" onclick={() => goto(`/cases/${ caseId }`)}>View Case Details</Button> </DialogFooter> </DialogContent> </Dialog> {/if}
-</div> <style> /* Custom animations for progress indicators */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0, 0 5px rgba(59, 130, 246, 0.3)}
-    50% { box-shadow: 0, 0 20px rgba(59, 130, 246, 0.6)}
+</div> <style> /* Custom animations for progress indicators */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3)}
+    50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6)}
   } .animate-pulse-glow { animation: pulse-glow 2s infinite}
 </style>
 

@@ -48,7 +48,7 @@ interface SelectProps { value?: string; onValueChange?: (_value: string) => void
   <style> .select-wrapper { position: relative}:global(.bits-select-content) { animation: select-content-show 200ms cubic-bezier(0.16, 1, 0.3, 1)}
   @keyframes select-content-show { from { opacity: 0; transform: scale(0.96) translateY(-2px)}
     to { opacity: 1; transform: scale(1) translateY(0)}
-  }:global(.nier-bits-select) { background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%); border: 2px solid var(--color-nier-border-secondary);transition: all 0.2s ease}:global(.nier-bits-select:focus) { border-color: var(--color-nier-border-primary); box-shadow: 0, 0 0 1px var(--color-nier-border-primary)}:global(.nier-panel-elevated) { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), inset, 0 1px, 0 rgba(255, 255, 255, 0.1)}
+  }:global(.nier-bits-select) { background: linear-gradient(135deg, var(--color-nier-bg-primary) 0%, var(--color-nier-bg-secondary) 100%); border: 2px solid var(--color-nier-border-secondary);transition: all 0.2s ease}:global(.nier-bits-select:focus) { border-color: var(--color-nier-border-primary); box-shadow: 0 0 0 1px var(--color-nier-border-primary)}:global(.nier-panel-elevated) { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), inset, 0 1px, 0 rgba(255, 255, 255, 0.1)}
   @media (max-width: 640px) {:global(.bits-select-content) { max-height: 60vh}
   } </style>
 

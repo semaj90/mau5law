@@ -156,163 +156,163 @@
 <style>
   .app-footer {
     margin-top: auto
-   ;background: linear-gradient(135deg, var(--nier-bg-secondary, #1e293b), var(--nier-bg-tertiary, #0f1419)) !important
-    border-top: 3px solid var(--n64-primary, #4a90e2) !important
+   ;background: linear-gradient(135deg, var(--nier-bg-secondary, #1e293b), var(--nier-bg-tertiary, #0f1419)) !important;
+    border-top: 3px solid var(--n64-primary, #4a90e2) !important;
     font-family: 'Press Start 2P', cursive}
   .footer-content {
-    max-width: 1200px
-    margin: 0 auto
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 1rem 0.5rem 0.5rem}
   /* Full Footer Layout */
-  .footer-sections { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem
+  .footer-sections { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
     margin-bottom: 1rem}
   .footer-section {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem}
   .footer-title {
-    font-size: 0.625rem !important
+    font-size: 0.625rem !important;
     margin: 0 !important
-   ;color: var(--nes-warning, #f5a623) !important
-    text-transform: uppercase
+   ;color: var(--nes-warning, #f5a623) !important;
+    text-transform: uppercase;
     letter-spacing: 0.1em}
   .section-title {
-    font-size: 0.5rem !important
+    font-size: 0.5rem !important;
     margin: 0 !important
-   ;color: var(--n64-primary, #4a90e2) !important
-    text-transform: uppercase
+   ;color: var(--n64-primary, #4a90e2) !important;
+    text-transform: uppercase;
     letter-spacing: 0.05em}
   .footer-description {
     font-size: 0.5rem
    ;color: var(--nier-text-secondary, #94a3b8);
-    line-height: 1.3
+    line-height: 1.3;
     margin: 0}
   /* Gaming Badges */
   .gaming-badges {
-    display: flex
-    flex-wrap: wrap
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem}
   .badge {
     font-size: 0.4rem !important}
   /* Footer Navigation */
   .footer-nav {
-    display: flex
+    display: flex;
     flex-direction: column
    ;gap: 0.5rem}
   :global(.footer-link) {
-    justify-content: flex-start !important
-    padding: 0.25rem 0.5rem !important
-    font-size: 0.5rem !important
+    justify-content: flex-start !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.5rem !important;
     text-align: left !important}
   .link-icon {
-    margin-right: 0.5rem
+    margin-right: 0.5rem;
     font-size: 0.75rem}
   .link-label {
     font-size: 0.5rem}
   /* Status Indicators */
   .status-indicators {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.75rem}
   .status-item {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.5rem}
   .status-dot {
-    width: 8px !important
-    height: 8px !important
-    min-width: 8px
-    border-radius: 50% !important
-    padding: 0 !important
+    width: 8px !important;
+    height: 8px !important;
+    min-width: 8px;
+    border-radius: 50% !important;
+    padding: 0 !important;
     margin: 0 !important}
   .status-label {
     font-size: 0.5rem
    ;color: var(--nier-text-secondary, #94a3b8)}
   /* Resource Links */
   .resource-links {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem}
   .resource-link {
-    display: flex !important
-    align-items: center !important
-    justify-content: flex-start !important
-    padding: 0.25rem 0.5rem !important
-    font-size: 0.5rem !important
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.5rem !important;
     text-decoration: none !important}
   .resource-icon {
-    margin-right: 0.5rem
+    margin-right: 0.5rem;
     font-size: 0.75rem}
   .resource-label {
     font-size: 0.5rem}
   /* Footer Bottom */
   .footer-bottom {
-    display: flex
-    flex-wrap: wrap
-    justify-content: space-between
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center
-   ;gap: 0.5rem
-    padding-top: 0.5rem
+   ;gap: 0.5rem;
+    padding-top: 0.5rem;
     border-top: 1px solid var(--n64-secondary, #7ed321)}
   .copyright-text,
   .version-info {
-    font-size: 0.4rem !important
+    font-size: 0.4rem !important;
     margin: 0 !important
    ;color: var(--nier-text-muted, #64748b) !important}
   .tech-stack {
-    display: flex
-    flex-wrap: wrap
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem}
   .tech-badge {
     font-size: 0.4rem !important}
   /* Minimal Footer */
   .minimal-footer {
-    display: flex
-    justify-content: space-between
-    align-items: center
-    flex-wrap: wrap
-    gap: 0.5rem
-    padding: 0.5rem 0
-    font-size: 0.5rem !important
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+    font-size: 0.5rem !important;
     margin: 0 !important}
   .minimal-links {
-    display: flex
+    display: flex;
     gap: 1rem}
   /* Demo Footer */
-  .demo-footer { background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important
+  .demo-footer { background: linear-gradient(135deg, var(--n64-primary, #4a90e2), var(--n64-secondary, #7ed321)) !important;
     margin: 1rem, 0 !important}
   .demo-footer .title {
-    color: white !important
-    font-size: 0.875rem !important
+    color: white !important;
+    font-size: 0.875rem !important;
     margin-bottom: 1rem !important}
   .demo-info {
-    display: flex
-    flex-direction: column
-    gap: 1rem
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     align-items: center}
   .demo-text {
-    font-size: 0.5rem !important
-    text-align: center
-    margin: 0 !important
+    font-size: 0.5rem !important;
+    text-align: center;
+    margin: 0 !important;
     color: white !important}
   .demo-actions {
     display: flex
-   ;gap: 1rem
-    flex-wrap: wrap
+   ;gap: 1rem;
+    flex-wrap: wrap;
     justify-content: center}
   /* Responsive Design */
   @media (max-width: 768px) {
     .footer-sections {
-      grid-template-columns: 1fr
+      grid-template-columns: 1fr;
       gap: 1.5rem}
     .footer-bottom {
-      flex-direction: column
+      flex-direction: column;
       align-items: flex-start}
     .tech-stack {
       align-self: stretch}
     .minimal-footer {
-      flex-direction: column
+      flex-direction: column;
       align-items: flex-start}
     .demo-actions {
       flex-direction: column
@@ -330,7 +330,7 @@
   @media print {
     .app-footer {
       background: white !important
-     ;color: black !important
+     ;color: black !important;
       border-top: 1px solid black !important}
     .gaming-badges,
     .status-indicators,

@@ -123,13 +123,13 @@
   </div> </details> {/if}
   </div>
  <style> .ai-synthesis-client { max-width: 1200px; margin: 0 auto;padding: 20px; font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
-  .config-panel { background: #f5f5f5, padding: 15px; border-radius: 8px; margin-bottom: 20px}
+  .config-panel { background: #f5f5f5, padding 15px; border-radius: 8px; margin-bottom: 20px}
   .config-panel label { display: block; margin: 10px 0}
   .query-panel { margin-bottom: 20px}
   textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px}
   .submit-btn { margin-top: 10px; padding: 10px 20px;background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px}
   .submit-btn: disabled { background: #ccc; cursor: not-allowed}
-  .progress-panel { background: #e3f2fd, padding: 20px; border-radius: 8px; margin-bottom: 20px}
+  .progress-panel { background: #e3f2fd, padding 20px; border-radius: 8px; margin-bottom: 20px}
   .progress-bar { width: 100%; height: 30px; background: #ddd; border-radius: 15px; overflow: hidden}
   .progress-fill { height: 100%; background: linear-gradient(90deg, #4caf50, #8bc34a); transition: width: 0.3s ease}
   .stage-info { margin-top: 10px; font-style: italic}
@@ -142,13 +142,13 @@
   .content-preview { color: #666; font-size: 0.9em; margin-top: 5px}
   details { margin: 10px 0}
   summary { cursor: pointer; font-weight: bold}
-  pre { background: white, padding: 10px; border-radius: 4px; overflow-x: auto; font-size: 12px}
+  pre { background: white, padding 10px; border-radius: 4px; overflow-x: auto; font-size: 12px}
   .rating-buttons button { margin-right: 10px; padding: 5px 10px;background: #f0f0f0; border: 1px solid #ddd; border-radius: 4px; cursor: pointer}
   .rating-buttons buttonhover { background: #e0e0e0}
   .event-log { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px}
   .events-list { max-height: 400px; overflow-y: auto}
   .event-item { padding: 10px; margin: 5px 0;background: white; border-radius: 4px; font-size: 12px}
-  .event-type { font-weight: bold, color: #007bff; margin-right: 10px}
+  .event-type { font-weight: bold, color #007bff; margin-right: 10px}
   .event-time { color: #666}
 </style>
 

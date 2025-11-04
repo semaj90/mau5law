@@ -39,60 +39,60 @@
 {/if}
   <style>
   .alert {
-    border-radius: var(--radius-md, 8px); padding: 16px
-    margin: 16px 0
-    border: 1px solid
+    border-radius: var(--radius-md, 8px); padding: 16px;
+    margin: 16px 0;
+    border: 1px solid;
     position: relative}
   .alert-content {
-    display: flex
-    align-items: flex-start
+    display: flex;
+    align-items: flex-start;
     gap: 12px}
   .alert-icon {
-    flex-shrink: 0
-    width: 20px
+    flex-shrink: 0;
+    width: 20px;
     height: 20px}
   .alert-body {
     flex: 1}
   .alert-title {
-    font-weight: 600
+    font-weight: 600;
     margin-bottom: 4px}
   .alert-message {
     line-height: 1.5}
   .alert-dismiss {
-    position: absolute
-    top: 12px
-    right: 12px
-    background: none
-    border: none
-    font-size: 20px
-    line-height: 1
-    cursor: pointer
-    padding: 4px
-    border-radius: 4px
-    opacity: 0.6
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    opacity: 0.6;
     transition: opacity 0.2s ease}
   .alert-dismiss:hover {
     opacity: 1}
   /* Variants */
   .alert-info {
-    background: #eff6ff
-    border-color: #3b82f6
+    background: #eff6ff;
+    border-color: #3b82f6;
     color: #1e40af}
   .alert-success {
-    background: #f0fdf4
-    border-color: #10b981
+    background: #f0fdf4;
+    border-color: #10b981;
     color: #166534}
   .alert-warning {
-    background: #fefce8
-    border-color: #f59e0b
+    background: #fefce8;
+    border-color: #f59e0b;
     color: #a16207}
   .alert-error {
-    background: #fef2f2
-    border-color: #ef4444
+    background: #fef2f2;
+    border-color: #ef4444;
     color: #dc2626}
   @media (max-width: 768px) {
     .alert {
-      padding: 12px
+      padding: 12px;
       margin: 12px 0}
   }
 </style>

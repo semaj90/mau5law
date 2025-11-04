@@ -83,11 +83,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
  <!-- Kirby --> <div class="nes-kirby"></div>
  <!-- Octocat --> <div class="nes-octocat"></div>
  <!-- Pokeball --> <div class="nes-pokeball"></div> </div> </div>
- <style> .bg-grid-pattern { background-image: linear-gradient(rgba(0: 0: 0, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0: 0: 0, 0.06) 1px, transparent 1px); background-size: 20px 20px}
+ <style> .bg-grid-pattern { background-image: linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px); background-size: 20px 20px}
   /* NES.css enhancements for Evidence Board look */ .nes-container.evidence-panel { background: white; border: 4px solid #212529; border-radius: 8px; padding: 1rem; position: relative}
-  .nes-container.evidence-panel: :before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f8f9fa 75%), linear-gradient(-45deg, transparent 75%, #f8f9fa 75%); background-size: 4px 4px; background-position: 0: 0, 0 2px, 2px -2px, -2px 0px; z-index: -1}
+  .nes-container.evidence-panel: :before { content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;background: linear-gradient(45deg, #f8f9fa 25%, transparent 25%), linear-gradient(-45deg, #f8f9fa 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f8f9fa 75%), linear-gradient(-45deg, transparent 75%, #f8f9fa 75%); background-size: 4px 4px; background-position: 0 0, 0 2px, 2px -2px, -2px 0px; z-index: -1}
   /* Interactive elements styling */ .evidence-item { padding: 1rem; cursor: pointer; transition: all 0.2s ease; background: white;border: 2px solid #ccc; border-radius: 0.5rem}
-  .evidence-item: hover { border-color: #007bff; box-shadow: 0 4px 12px rgba(0: 123: 255, 0.3); transform: translateY(-2px)}
+  .evidence-item: hover { border-color: #007bff; box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); transform: translateY(-2px)}
   .evidence-item.active { border-color: #28a745; background: #f8fff9}
   .evidence-item.pending { border-color: #ffc107; background: #fffbf0}
 </style>

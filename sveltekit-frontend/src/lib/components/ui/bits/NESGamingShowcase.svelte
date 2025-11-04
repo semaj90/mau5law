@@ -48,7 +48,7 @@
   .feature-large-icon { font-size: 3rem; filter: drop-shadow(2px 2px 0px theme('colors.nes.black'))}
   .feature-stats, .system-stats { display: flex; flex-direction: column; gap: 0.5rem;padding: 1rem; border: 2px solid currentColor;background: rgba(0, 0, 0, 0.3)}
   .stat-row { display: flex; justify-content: space-between; font-size: 0.625rem}
-  .modal-actions { display: flex, gap: 1rem; justify-content: flex-end}
+  .modal-actions { display: flex, gap 1rem; justify-content: flex-end}
   /* Animations */ @keyframes score-pulse { 0% { transform: scale(1)}
     50% { transform: scale(1.1); color: theme('colors.nes.yellow')}
     100% { transform: scale(1)}

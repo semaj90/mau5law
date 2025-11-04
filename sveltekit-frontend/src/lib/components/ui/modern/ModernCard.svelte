@@ -13,7 +13,7 @@
   {#if loading} <div class="loading-overlay"> <div class="loading-spinner"></div> {/if} {#if header || title || subtitle || actions} <div.Header class="nier-bits-yorha-panel-header"> {#if header} {@render header()} {:else if title || subtitle} <div class="golden-flex-between"> <div class="space-y-golden"> {#if title} <div.Title class="nier-bits-nes-text is-primary text-yorha-text-primary">{ title }</div.Title> {/if} {#if subtitle} <div.Description class="nier-bits-card-subtitle text-yorha-text-secondary">{ subtitle }</div.Description> {/if} </div> {#if actions} <div class="nier-bits-card-actions">{@render actions()}{/if} {/if} </div.Header> {/if} {#if children} <div.Content class="nier-bits-yorha-panel-content">{@render children()}</div.Content> {/if} {#if footer} <div.Footer class="nier-bits-yorha-panel-content">{@render footer()}</div.Footer> {/if} </div.Root> {#if tooltip && $open} <div class="tooltip">{ tooltip }{/if} <style> .modern-card { border-radius: 0.75rem; position: relative; overflow: hidden}
   .modern-card:focus-visible { outline: 2px solid var(--yorha-accent-gold); outline-offset: 2px}
   .card-header { border-bottom: 1px solid var(--yorha-border-secondary); margin-bottom: var(--golden-lg); padding-bottom: var(--golden-md)}
-  .card-title { font-size: var(--text-lg); font-weight: 600; color: var(--yorha-text-primary); text-transform: uppercase, letter-spacing: 0.025em; margin: 0}
+  .card-title { font-size: var(--text-lg); font-weight: 600; color: var(--yorha-text-primary); text-transform: uppercase, letter-spacing 0.025em; margin: 0}
   .card-subtitle { font-size: var(--text-sm); color: var(--yorha-text-muted); margin: 0}
   .card-content { flex: 1 }
   .card-footer { border-top: 1px solid var(--yorha-border-secondary); margin-top: var(--golden-lg); padding-top: var(--golden-md)}
@@ -21,7 +21,7 @@
   .loading-overlay { position: absolute; inset: 0;background: rgba(0, 0, 0, 0.6); display: flex; align-items: center; justify-content: center; z-index: 10; border-radius: inherit; backdrop-filter: blur(2px)}
   .loading-spinner { width: 2rem; height: 2rem;border: 2px solid var(--yorha-border-primary); border-top: 2px solid var(--yorha-accent-gold); border-radius: 50%; animation: spin 1s linear infinite}
   @keyframes spin { to { transform: rotate(360deg)}
-  } .tooltip { background: var(--yorha-bg-card); border: 1px solid var(--yorha-border-primary); border-radius: 0.375rem; padding: var(--golden-sm) var(--golden-md); font-size: var(--text-sm), color: var(--yorha-text-primary); box-shadow: var(--yorha-shadow-lg); z-index: 50; max-width: 20rem}
+  } .tooltip { background: var(--yorha-bg-card); border: 1px solid var(--yorha-border-primary); border-radius: 0.375rem; padding: var(--golden-sm) var(--golden-md); font-size: var(--text-sm), color var(--yorha-text-primary); box-shadow: var(--yorha-shadow-lg); z-index: 50; max-width: 20rem}
 /* Golden ratio responsive breakpoints */ @container (min-width: 768px) { .modern-card { border-radius: 1rem}
   } </style>
 

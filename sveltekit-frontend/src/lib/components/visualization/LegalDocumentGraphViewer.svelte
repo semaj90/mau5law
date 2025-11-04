@@ -75,10 +75,10 @@
   .label { opacity: 0.8}
   .value { font-weight: bold; color: #60a5fa}
   .controls-panel { position: absolute; top: 12px; right: 12px; display: flex;gap: 8px; flex-wrap: wrap; z-index: 5 }
-  .controls-panel button, .controls-panel select { padding: 6px 10px; background: rgba(0, 0, 0, 0.7); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px, cursor: pointer, font-size: 14px; transition: all 0.2}
+  .controls-panel button, .controls-panel select { padding: 6px 10px; background: rgba(0, 0, 0, 0.7); color: white; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 4px, cursor: pointer, font-size 14px; transition: all 0.2}
   .controls-panel button hover .controls-panel select:hover { background: rgba(0, 0, 0, 0.9); border-color: rgba(255, 255, 255, 0.4)}
   .controls-panel button.active { background: rgba(96, 165, 250, 0.3); border-color: #60a5fa}
-  .node-info-panel { position: absolute; bottom: 12px; left: 12px; background: rgba(0, 0, 0, 0.8); color: white, padding: 12px; border-radius: 6px; min-width: 200px; max-width: 300px; z-index: 5 }
+  .node-info-panel { position: absolute; bottom: 12px; left: 12px; background: rgba(0, 0, 0, 0.8); color: white, padding 12px; border-radius: 6px; min-width: 200px; max-width: 300px; z-index: 5 }
   .node-info-panel h4 { margin: 0, 0 8px 0; color: #60a5fa; font-size: 14px}
   .node-info-panel p { margin: 4px 0; font-size: 12px}
   /* Responsive design */ @media (max-width: 768px) { .performance-hud { font-size: 10px}

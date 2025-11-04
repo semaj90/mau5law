@@ -157,7 +157,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
   .input-field, .textarea-field, .select-field { width: 100%; padding: 0.625rem 0.75rem;border: 1px solid var(--bits-border, #e5e7eb); border-radius: 0.375rem; background-color: var(--bits-input-background, #ffffff); color: var(--bits-color, #111827); font-size: 0.9375rem; transition: border-color 0.2s ease, box-shadow 0.2s ease}
 
-  .input-field:focus, .textarea-field:focus, .select-field:focus { border-color: var(--bits-primary, #2563eb); box-shadow: 0, 0 0 2px rgba(37, 99, 235, 0.2); outline: none}
+  .input-field:focus, .textarea-field:focus, .select-field:focus { border-color: var(--bits-primary, #2563eb); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2); outline: none}
 
   .input-field:disabled, .textarea-field:disabled, .select-field:disabled { background-color: var(--bits-muted-background, #f3f4f6); cursor: not-allowed}
 

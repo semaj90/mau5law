@@ -268,7 +268,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }
   .yorha-nav {
     flex: 1;
-    padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */
+    padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */;
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
@@ -281,8 +281,8 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .nav-item {
     display: flex;
     align-items: center;
-    padding: 8px 0; /* Removed horizontal padding from item itself */
-    padding-left: 15px; /* Added explicit left padding for content alignment */
+    padding: 8px 0; /* Removed horizontal padding from item itself */;
+    padding-left: 15px; /* Added explicit left padding for content alignment */;
     background: none;
     border: none;
     color: #888;
@@ -332,7 +332,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }
   .analysis-header {
     display: flex;
-    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */;
     align-items: center;
     padding: 15px 20px;
     border-bottom: 1px solid #3a3a3a;
@@ -517,7 +517,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }
   .analysis-header {
     display: flex;
-    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */;
     align-items: center;
     margin-bottom: 10px;
   }
@@ -553,7 +553,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   }
   .analysis-footer {
     display: flex;
-    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */
+    justify-content: space-between; /* Fixed typo: space-betweenn to space-between */;
     align-items: center;
     margin-top: 10px;
   }

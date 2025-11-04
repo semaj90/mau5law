@@ -30,21 +30,21 @@
               onchange={e => handleFieldChange(field.id, (e.target as HTMLInputElement).files?.[0])} /> {/if} {#if field.type !== 'checkbox'} <div class="field-border">{/if} </div> {#if errors[field.id]} <div class="field-error"> <span class="error-icon">âš </span> {errors[field.id]} {/if} </div> {/each} </div> <!-- Form, Footer --> <div class="form-footer"> <div class="form-actions"> {#if showCancel} <button type="button" class="form-button" disabled={ loading } onclick={ handleCancel }> <span class="button-icon">âœ•</span> { cancelLabel } </button> {/if} <button type="submit"
         class="form-button submit"
         disabled={loading || Object.keys(errors).length > 0} onclick={ handleSubmit } >
-        {#if loading} <span class="button-spinner">â—Œ</span> {:else} <span class="button-icon">âž¤</span> {/if} { submitLabel } </button> </div> <div class="form-hints"> <div class="hint"> <span class="hint-key">Ctrl+Enter</span> to submit </div> <div class="hint"> <span class="hint-key">Esc</span> to cancel </div> </div> </div> </div> <style> .yorha-form { background: var(--yorha-bg-secondary, #1a1a1a); border: 2px solid var(--yorha-text-muted, #808080); font-family: var(--yorha-font-primary: 'JetBrains Mono', monospace); color: var(--yorha-text-primary, #e0e0e0); max-width: 600px; overflow: hidden}
-  .form-header { background: var(--yorha-bg-tertiary, #2a2a2a); border-bottom: 2px solid var(--yorha-secondary, #ffd700); display: flex; align-items: flex-start, justify-content: space-between; padding: 16px 20px}
+        {#if loading} <span class="button-spinner">â—Œ</span> {:else} <span class="button-icon">âž¤</span> {/if} { submitLabel } </button> </div> <div class="form-hints"> <div class="hint"> <span class="hint-key">Ctrl+Enter</span> to submit </div> <div class="hint"> <span class="hint-key">Esc</span> to cancel </div> </div> </div> </div> <style> .yorha-form { background: var(--yorha-bg-secondary, #1a1a1a); border: 2px solid var(--yorha-text-muted, #808080); font-family: var(--yorha-font-primary 'JetBrains Mono', monospace); color: var(--yorha-text-primary, #e0e0e0); max-width: 600px; overflow: hidden}
+  .form-header { background: var(--yorha-bg-tertiary, #2a2a2a); border-bottom: 2px solid var(--yorha-secondary, #ffd700); display: flex; align-items: flex-start, justify-content space-between; padding: 16px 20px}
   .form-title { color: var(--yorha-secondary, #ffd700); font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin: 0, 0 4px 0}
-  .form-subtitle { color: var(--yorha-text-muted, #808080); font-size: 12px, margin: 0; text-transform: uppercase; letter-spacing: 1px}
+  .form-subtitle { color: var(--yorha-text-muted, #808080); font-size: 12px, margin 0; text-transform: uppercase; letter-spacing: 1px}
   .form-status { flex-shrink: 0 }
   .status-indicator { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; padding: 4px 8px;border: 1px solid currentColor}
   .status-indicator.ready { color: var(--yorha-accent, #00ff41); background: rgba(0, 255, 65, 0.1)}
   .status-indicator.processing { color: var(--yorha-warning, #ffaa00); background: rgba(255, 170, 0, 0.1); animation: pulse 1.5s infinite}
-  .form-body { padding: 20px, display: flex, flex-direction: column; gap: 20px}
+  .form-body { padding: 20px, display: flex, flex-direction column; gap: 20px}
   .form-field { display: flex; flex-direction: column; gap: 8px}
   .field-label { font-size: 12px; font-weight: 600; color: var(--yorha-text-secondary, #b0b0b0); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 4px}
   .required-indicator { color: var(--yorha-danger, #ff0041); font-weight: 700}
   .field-input-wrapper { position: relative}
   .field-input, .field-textarea, .field-select { width: 100%; background: var(--yorha-bg-primary, #0a0a0a); border: 2px solid var(--yorha-text-muted, #808080); color: var(--yorha-text-primary, #e0e0e0); font-family: inherit; font-size: 14px; padding: 12px 16px;transition: all 0.2s ease; border-radius: 0 }
-  .field-input: focus .field-textarea: focus .field-select:focus { outline: none; border-color: var(--yorha-secondary, #ffd700); box-shadow: 0, 0 0 1px var(--yorha-secondary, #ffd700), inset, 0 0 10px rgba(255, 215, 0, 0.1)}
+  .field-input: focus .field-textarea: focus .field-select:focus { outline: none; border-color: var(--yorha-secondary, #ffd700); box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700), inset, 0 0 10px rgba(255, 215, 0, 0.1)}
   .field-input:: placeholder .field-textarea::placeholder { color: var(--yorha-text-muted, #808080)}
   .field-textarea { resize: vertical; min-height: 80px}
   .field-select { cursor: pointer}
@@ -63,26 +63,26 @@
   .field-radio: checked + .radio-indicator::after { content: ''; position: absolute; top: 50%; left: 50%;transform: translate(-50%, -50%); width: 8px;height: 8px; background: var(--yorha-secondary, #ffd700); border-radius: 50%}
   /* File Input Styling */ .field-file { width: 100%; padding: 12px 16px;background: var(--yorha-bg-primary, #0a0a0a); border: 2px solid var(--yorha-text-muted, #808080); color: var(--yorha-text-primary, #e0e0e0); font-family: inherit; cursor: pointer}
   .field-file::-webkit-file-upload-button { background: var(--yorha-secondary, #ffd700); color: var(--yorha-bg-primary, #0a0a0a); border: none; padding: 8px 12px; font-family: inherit; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; margin-right: 12px}
-  /* Error Styling */ .form-field.has-error .field-input, .form-field.has-error .field-textarea, .form-field.has-error .field-select { border-color: var(--yorha-danger, #ff0041); box-shadow: 0, 0 0 1px var(--yorha-danger, #ff0041)}
+  /* Error Styling */ .form-field.has-error .field-input, .form-field.has-error .field-textarea, .form-field.has-error .field-select { border-color: var(--yorha-danger, #ff0041); box-shadow: 0 0 0 1px var(--yorha-danger, #ff0041)}
   .field-error { display: flex; align-items: center; gap: 8px;color: var(--yorha-danger, #ff0041); font-size: 12px; font-weight: 500}
   .error-icon { font-size: 14px}
   /* Form Footer */ .form-footer { background: var(--yorha-bg-primary, #0a0a0a); border-top: 2px solid var(--yorha-text-muted, #808080); padding: 16px 20px;display: flex; justify-content: space-between; align-items: center}
   .form-actions { display: flex; gap: 12px}
-  .form-button { display: flex; align-items: center; gap: 8px;padding: 10px 16px; background: var(--yorha-bg-secondary, #1a1a1a); border: 2px solid var(--yorha-text-muted, #808080); color: var(--yorha-text-secondary, #b0b0b0); font-family: inherit; font-size: 12px; font-weight: 600; text-transform: uppercase, letter-spacing: 1px; cursor: pointer;transition: all 0.2s ease}
+  .form-button { display: flex; align-items: center; gap: 8px;padding: 10px 16px; background: var(--yorha-bg-secondary, #1a1a1a); border: 2px solid var(--yorha-text-muted, #808080); color: var(--yorha-text-secondary, #b0b0b0); font-family: inherit; font-size: 12px; font-weight: 600; text-transform: uppercase, letter-spacing 1px; cursor: pointer;transition: all 0.2s ease}
   .form-buttonhover:not(:disabled) { transform: translateY(-1px)}
   .form-button.submit { border-color: var(--yorha-secondary, #ffd700); color: var(--yorha-secondary, #ffd700)}
-  .form-button.submit:hover:not(:disabled) { background: var(--yorha-secondary, #ffd700); color: var(--yorha-bg-primary, #0a0a0a); box-shadow: 0, 0 0 1px var(--yorha-secondary, #ffd700)}
+  .form-button.submit:hover:not(:disabled) { background: var(--yorha-secondary, #ffd700); color: var(--yorha-bg-primary, #0a0a0a); box-shadow: 0 0 0 1px var(--yorha-secondary, #ffd700)}
   .form-button.cancel { border-color: var(--yorha-danger, #ff0041); color: var(--yorha-danger, #ff0041)}
   .form-button.cancel:hover:not(:disabled) { background: var(--yorha-danger, #ff0041); color: var(--yorha-text-primary, #e0e0e0)}
   .form-buttondisabled { opacity: 0.5; cursor: not-allowed; transform: none !important}
   .button-spinner { animation: spin 1s linear infinite}
-  .form-hints { display: flex, gap: 16px, font-size: 10px; color: var(--yorha-text-muted, #808080)}
+  .form-hints { display: flex, gap: 16px, font-size 10px; color: var(--yorha-text-muted, #808080)}
   .hint-key { color: var(--yorha-secondary, #ffd700); font-weight: 600}
   /* Animations */ @keyframes pulse { 0%, 100% { opacity: 1} 50% { opacity: 0.6} }
   @keyframes spin { from { transform: rotate(0deg) } to { transform: rotate(360deg) } }
-  /* Responsive Design */ @media (max-width: 768px) { .form-header { flex-direction: column, gap: 8px; align-items: flex-start}
+  /* Responsive Design */ @media (max-width: 768px) { .form-header { flex-direction: column, gap 8px; align-items: flex-start}
     .form-body { padding: 16px}
-    .form-footer { flex-direction: column, gap: 12px; align-items: stretch}
+    .form-footer { flex-direction: column, gap 12px; align-items: stretch}
     .form-actions { justify-content: stretch}
     .form-button { flex: 1; justify-content: center}
     .form-hints { justify-content: center}

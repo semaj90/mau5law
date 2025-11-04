@@ -5,7 +5,7 @@ export const PGVECTOR_CONFIG = {
     host: process.env.PGVECTOR_HOST || 'localhost', port: parseInt(process.env.PGVECTOR_PORT || '5432'), database: process.env.PGVECTOR_DB || 'legal_ai_db', user: process.env.PGVECTOR_USER || 'legal_admin', password: process.env.PGVECTOR_PASSWORD || '123456', // Connection URL for services
     url: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db', // pgvector specific settings
     vector: {
-      dimensions: 384, // Gemma embedding dimensions (nomic-embed-text)
+      dimensions: 384, // Gemma embedding dimensions (embeddinggemma:latest)
       indexMethod: 'hnsw', // GPU-optimized index
       metric: 'cosine', // Similarity metric
       // HNSW parameters for GPU optimization
@@ -18,7 +18,7 @@ export const PGVECTOR_CONFIG = {
   ollama: {
     url: process.env.OLLAMA_URL || 'http://localhost:11436', models: {
       embedding: 'embeddinggemma:latest', // Primary embedding model
-      fallback: ['embeddinggemma', 'nomic-embed-text'], // Fallback models
+      fallback: ['nomic-embed-text:latest'], // Fallback models
       chat: 'gemma3:legal-latest'  // Chat model}
   }, // CUDA service for GPU acceleration
   cuda: {

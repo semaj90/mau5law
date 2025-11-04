@@ -47,7 +47,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   <!-- Error, Message -->
   {#if error} <p class="text-xs text-red-500"> { error } </p> {/if}
   </div>
- <style>:global(.legal-combobox-container input) { transition: all 0.2s ease}:global(.legal-combobox-container; input:focus) { box-shadow: 0, 0 0 1px rgb(var(--yorha-primary) / 0.5)}
+ <style>:global(.legal-combobox-container input) { transition: all 0.2s ease}:global(.legal-combobox-container; input:focus) { box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5)}
 </style>
 
 

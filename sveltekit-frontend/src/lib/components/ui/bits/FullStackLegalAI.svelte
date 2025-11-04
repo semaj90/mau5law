@@ -133,8 +133,8 @@ let { placeholder = "Ask a legal question or search documents...", maxResults = 
   .full-stack-legal-ai::-webkit-scrollbar-track { background: rgb(var(--muted))}
   .full-stack-legal-ai: :-webkit-scrollbar-thumb { background: rgb(var(--border)); border-radius: 3px}
   .full-stack-legal-ai::-webkit-scrollbar-thumb:hover { background: rgb(var(--primary))}
-  /* Animation for search indicator */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0, 0 5px rgb(var(--primary) / 0.3)}
-    50% { box-shadow: 0, 0 20px rgb(var(--primary) / 0.6)}
+  /* Animation for search indicator */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgb(var(--primary) / 0.3)}
+    50% { box-shadow: 0 0 20px rgb(var(--primary) / 0.6)}
   } .full-stack-legal-ai:global(.animate-pulse-glow) { animation: pulse-glow 2s ease-in-out infinite}
 </style>
 

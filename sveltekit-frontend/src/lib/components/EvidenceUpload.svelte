@@ -322,15 +322,15 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .drop-zone {
-    cursor: pointer
+    cursor: pointer;
     transition: all 0.2s ease}
   .drop-zone:hover {
-    border-color: #3b82f6
+    border-color: #3b82f6;
     background-color: #eff6ff}
   .processing-status {
-    border: 1px solid #e5e7eb
-    border-radius: 0.5rem
-    padding: 1rem
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1rem;
     background-color: #f9fafb}
   .completion-status {
     animation: slideInUp 0.3s ease-out}

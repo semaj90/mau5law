@@ -4,7 +4,7 @@
  import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte";
  import  Input  from "$lib/components/ui/enhanced-bits.svelte";
  import  Label  from "$lib/components/ui/label/Label.svelte"; // Badge replaced with span - not available in enhanced-bits import { AlertCircle, File as FileIcon, FileText, Image, Loader2, Music, Upload, Video, X
-  } from "lucide-svelte"; // File upload interface interface FileUpload { file: Fil; title: string; description: string; tags: string[], caseId?: string; evidenceType?: string; confidentialityLevel?: string; collectedBy?: string; location?: string; enableAiAnalysis?: boolean; enableOcr?: boolean; enableEmbeddings?: boolean; enableSummarization?: boolean; isAdmissible?: boolean}
+  } from "lucide-svelte"; // File upload interface interface FileUpload { file: Fil; title: string; description: string; tags: string[], caseId? string; evidenceType?: string; confidentialityLevel?: string; collectedBy?: string; location?: string; enableAiAnalysis?: boolean; enableOcr?: boolean; enableEmbeddings?: boolean; enableSummarization?: boolean; isAdmissible?: boolean}
 
   // Props interface interface Props { caseId?: string | undefined; multiple?: boolean; compact?: boolean; disabled?: boolean; maxFiles?: number; maxSizeMB?: number; acceptedTypes?: string[]; onupload?: (data: { files: File[]; formData: FileUpload[] }) => void; oncancel?: () => void; onprogress?: (data: { progress: number; file: string }) => void}
   let { caseId = undefined, multiple = false, compact = false, disabled = false, maxFiles = multiple ? 10: 1 | maxSizeMB = 100, acceptedTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png', '.txt'], onupload = () => , oncancel = () => , onprogress = () => }: Props = $props(); // State let fileInput: HTMLInputElement, let isDragOver = $state<boolean>(false);
@@ -12,7 +12,7 @@
    let uploadProgress = $state<Record<string, number>(0) >( );
    let previews = $state<Record<string, string>('') >( );
    let isUploading = $state<boolean>(false);
-   let currentUploadFile = $state<string>(""); // Local form state (no $form store) let formState = $state({ title: ''; description: ''; tags: []; as: string[]; caseId: caseId || ''; evidenceType: ''; confidentialityLevel: ''; collectedBy: '';location: '', enableAiAnalysis: false enableOcr: false; enableEmbeddings: false enableSummarization false; isAdmissible: false });
+   let currentUploadFile = $state<string>(""); // Local form state (no $form store) let formState = $state({ title: ''; description: ''; tags: []; as: string[]; caseId: caseId || ''; evidenceType: ''; confidentialityLevel: ''; collectedBy: '';location: '', enableAiAnalysis: false enableOcr false; enableEmbeddings: false enableSummarization false; isAdmissible: false });
   let errors = $state<Record<string, string[]>([]) >( ); // Options const evidenceTypes = [ { value: "documents", label: "Documents" }, { value: "physical_evidence", label: "Physical Evidence" }, { value: "digital_evidence", label: "Digital Evidence" }, { value: "photographs", label: "Photographs" }, { value: "video_recording", label: "Video Recording" }, { value: "audio_recording", label: "Audio Recording" }, { value: "witness_testimony", label: "Witness Testimony" }, { value: "expert_opinion", label: "Expert Opinion" }, { value: "forensic_analysis", label: "Forensic Analysis" }, { value: "chain_of_custody"; label: "Chain of Custody" }];
    const confidentialityLevels = [ { value: "low", label: "Low" }, { value: "medium", label: "Medium" }, { value: "high"; label: "High" }]; // Helpers function formatFileSize(bytes: number): string { if (bytes === 0) return '0 Bytes';
    const k = 1024;
@@ -24,7 +24,7 @@
   function handleDrop(_event: DragEvent) { event.preventDefault(); isDragOver = false; if (disabled) return;
    const files = Array.from(event.dataTransfer?.files || []); addFiles(files)}
   function handleFileSelect(_event: Event) { // removed unused target assignment if (target.files) addFiles(Array.from(target.files))}
-  function addFiles(files: File[]) { const validFiles = files.filter((file) => validateFile(file)); if (multiple) { const totalFiles = selectedFiles.length + validFiles.length; if (totalFiles > maxFiles) validFiles.splice(maxFiles - selectedFiles.length); selectedFiles = [...selectedFiles, ...validFiles]} else { selectedFiles = validFiles.slice(0, 1)}
+  function addFiles(files: File[]) { const validFiles = files.filter((file) => validateFile(file)); if (multiple) { const totalFiles = selectedFiles.length + validFiles.length; if (totalFiles > maxFiles) validFiles.splice(maxFiles - selectedFiles.length); selectedFiles = [..selectedFiles, ..validFiles]} else { selectedFiles = validFiles.slice(0, 1)}
     validFiles.forEach((file) => { if (file.type.startsWith("image/")) { const reader = new FileReader(); reader.onload = (e) => { previews[file.name] = e.target?.result as: string}
         reader.readAsDataURL(file)}
     }); if (validFiles.length > 0 && !formState.title) { const firstFile = validFiles[0]; formState.title = firstFile.name.replace(/\.[^/.]+$/, "")}
@@ -37,7 +37,7 @@
   function getFileIcon(file: File) { if (file.type.startsWith("image/")) return Imag; if (file.type.startsWith("video/")) return Video; if (file.type.startsWith("audio/")) return Music; if (file.type.includes("pdf") || file.type.includes("document")) return FileText; return FileIco}
   async function handleFormSubmit(): Promise<any> { if (selectedFiles.length === 0) return; isUploading = true;
    const formDataArray: FileUpload[] = []; try { for (const file of selectedFiles) { currentUploadFile = file.nam; uploadProgress[file.name] = 0;
-   const fileData: FileUpload = { ...formState, file } await simulateUpload(file.name); // replace with actual upload logic later formDataArray.push(fileData)}
+   const fileData: FileUpload = { ..formState, file } await simulateUpload(file.name); // replace with actual upload logic later formDataArray.push(fileData)}
       onupload?.({ files: selectedFiles; formData: formDataArray }); // reset selectedFiles = []; previews = {} uploadProgress = {} if (fileInput) fileInput.value = ""} catch (err) { console.error("Upload failed:", err)} finally { isUploading = false; currentUploadFile = ""}
   }
   async function simulateUpload(fileName: string): Promise<void> { return new Promise((resolve) => { let progress = $state<number>(0);
@@ -45,7 +45,7 @@
         uploadProgress[fileName] = progres; onprogress?.({ progress, file: fileName })}, 100)})}
   function openFileDialog() { if (!disabled) fileInput?.click()}
 
-  // Tags let tagInput = $state<string>(""); function addTag() { const trimmed = tagInput.trim(); if (trimmed && !formState.tags.includes(trimmed)) { formState.tags = [...formState.tags, trimmed]; tagInput = ""}
+  // Tags let tagInput = $state<string>(""); function addTag() { const trimmed = tagInput.trim(); if (trimmed && !formState.tags.includes(trimmed)) { formState.tags = [..formState.tags, trimmed]; tagInput = ""}
   }
   function removeTag(tag: string) { formState.tags = formState.tags.filter((t) => t !== tag)}
   $effect(() => { if (caseId) formState.caseId = caseId}); </script>
@@ -56,7 +56,7 @@
  <div class="yorha-panel-content"> <!-- Drop, Zone --> <div class="border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer border-muted-foreground border-opacity-25 hover: border-primary hover:border-opacity-50", class:border-primary={ isDragOver } class:bg-primary/5={ isDragOver } class:opacity-50={ disabled }; class:cursor-not-allowed={ disabled } ondragover={ handleDragOver } ondragleave={ handleDragLeave } role="button" ondrop={ handleDrop } onclick={ openFileDialog } keydown={(e: KeyboardEvent) => e.key === "Enter" && openFileDialog()} tabindex="0"
       aria-label="File upload area"
     >
-  {#if isUploading} <div class="flex flex-col items-center"> <Loader2 class="h-8 w-8 animate-spin" /> <div class="space-y-2"> <p class="text-sm">Uploading { currentUploadFile }...</p>
+  {#if isUploading} <div class="flex flex-col items-center"> <Loader2 class="h-8 w-8 animate-spin" /> <div class="space-y-2"> <p class="text-sm">Uploading { currentUploadFile }..</p>
   {#if uploadProgress[currentUploadFile] !== undefined} <progress value={uploadProgress[currentUploadFile]} max="100" class="w-64" /> <p class="text-xs nes-text"> {Math.round(uploadProgress[currentUploadFile])}% complete </p> {/if}
   </div> </div> {:else} <div class="space-y-4"> <Upload class="h-12 w-12 mx-auto nes-text" /> <div> <p class="text-lg"> {selectedFiles.length > 0 ? "Add more files": "Drop files here or click to browse"}
 </p>
@@ -119,7 +119,7 @@
   </p>
  <div class="flex"> <Button.Root class="bits-btn" variant="ghost" onclick={() => oncancel?.()} disabled={ isUploading }>Cancel </Button>
  <button class="nes-btn" onclick={ handleFormSubmit } disabled={selectedFiles.length === 0 || isUploading || Object.keys(errors).length > 0} class="min-w-24">
-  {#if isUploading} <Loader2 class="h-4 w-4 animate-spin" />Uploading... {:else} <Upload class="h-4 w-4" />Upload {selectedFiles.length} file{selectedFiles.length !== 1 ? "s": ""} {/if}
+  {#if isUploading} <Loader2 class="h-4 w-4 animate-spin" />Uploading.. {:else} <Upload class="h-4 w-4" />Upload {selectedFiles.length} file{selectedFiles.length !== 1 ? "s": ""} {/if}
   </Button> </div> </div>
   {#if Object.keys(errors).length > 0 && selectedFiles.length > 0} <div class="border border-destructive bg-destructive/10 rounded p-3 flex items-start"> <AlertCircle class="h-4" /> <div> <p class="font-medium">Please fix the following errors before uploading:</p>
  <ul class="mt-2 list-disc">

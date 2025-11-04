@@ -457,25 +457,25 @@ https://svelte.dev/e/js_parse_error -->
      Keep visual parity but ensure all declarations are syntactically correct. */
 
   .container {
-    max-width: 1400px
+    max-width: 1400px;
     margin: 0 auto
-   ; padding: 2rem
+   ; padding: 2rem;
     font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
 
   header { text-align: center; margin-bottom: 2rem}
   h1 { color: #2563eb; margin-bottom: 0.5rem}
 
   .stats-section, .search-section, .results-section {
-    background: white
+    background: white;
     border-radius: 12px
-   ; padding: 1.5rem
-    margin-bottom: 1.5rem
+   ; padding: 1.5rem;
+    margin-bottom: 1.5rem;
     box-shadow: 0 4px 6px rgba(0,0,0,0.06)}
 
   .stats-grid {
-    display: grid
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem
+    gap: 1rem;
     margin-bottom: 1rem}
 
   .stat-number { font-size: 1.5rem; font-weight: 700; color: #111827}
@@ -500,9 +500,9 @@ https://svelte.dev/e/js_parse_error -->
   .results-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px,1fr)); gap:1rem}
 
   .shader-nier-bits-card {
-    border: 1px solid #e5e7eb
-    border-radius:8px
-    padding:1rem
+    border: 1px solid #e5e7eb;
+    border-radius:8px;
+    padding:1rem;
     cursor:pointer
    ; transition: transform 0.15s ease, box-shadow 0.15s ease}
   .shader-nier-bits-card: hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06)}

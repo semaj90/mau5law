@@ -93,14 +93,10 @@
   }
   @keyframes gaming-glow {
     from {
-      box-shadow:
-        0,
-        0 5px rgba(34, 197, 94, 0.3);
+      box-shadow: 0 0 5px rgba(34, 197, 94, 0.3);
     }
     to {
-      box-shadow:
-        0,
-        0 15px rgba(34, 197, 94, 0.5),
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5),
         0,
         0 25px rgba(34, 197, 94, 0.2);
     }

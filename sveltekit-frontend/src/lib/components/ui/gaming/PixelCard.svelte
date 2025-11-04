@@ -69,7 +69,7 @@
   <!-- Glow, effect -->
   {#if glowing} <div class="pixel-card__glow">{/if}
   </div>
- <style> .pixel-card { position: relative; background: var(--pixel-primary);color: var(--pixel-text); font-family: 'Courier New', monospace; font-weight: bold; overflow: hidden;transition: all 0.3s cubic-bezier(0.4: 0, 0.2, 1); image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
+ <style> .pixel-card { position: relative; background: var(--pixel-primary);color: var(--pixel-text); font-family: 'Courier New', monospace; font-weight: bold; overflow: hidden;transition: all 0.3s cubic-bezier(0.4 0, 0.2, 1); image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
 /* Size variants */ {} .pixel-card--xs { min-width: 120px; min-height: 80px; font-size: 0.7rem}
   .pixel-card--sm { min-width: 160px; min-height: 120px; font-size: 0.8rem}
   .pixel-card--md { min-width: 240px; min-height: 180px; font-size: 0.9rem}
@@ -87,43 +87,43 @@
 /* Interactive states */ {} .pixel-card--interactive { cursor: pointer}
   .pixel-card--interactive:hover { transform: translateY(-2px) scale(1.02)}
   .pixel-card--interactive: active { transform: translateY(1px) scale(0.98); filter: brightness(0.9)}
-  .pixel-card--hovered { border-color: var(--pixel-accent); box-shadow: 0, 0 calc(var(--pixel-size) * 4) var(--pixel-accent)}
+  .pixel-card--hovered { border-color: var(--pixel-accent); box-shadow: 0 0 calc(var(--pixel-size) * 4) var(--pixel-accent)}
 /* Animation effects */ {} .pixel-card--animated { animation: pixel-card-idle 3s ease-in-out infinite alternate}
   @keyframes pixel-card-idle { from { filter: brightness(1)}
     to { filter: brightness(1.05)}
   } /* Glowing effect */ {} .pixel-card--glowing { animation: pixel-card-glow 2s ease-in-out infinite alternate}
-  @keyframes pixel-card-glow { from { box-shadow: 0, 0 calc(var(--pixel-size) * 2) var(--pixel-accent)}
-    to { box-shadow: 0, 0 calc(var(--pixel-size) * 6) var(--pixel-accent)}
+  @keyframes pixel-card-glow { from { box-shadow: 0 0 calc(var(--pixel-size) * 2) var(--pixel-accent)}
+    to { box-shadow: 0 0 calc(var(--pixel-size) * 6) var(--pixel-accent)}
   } /* Status styling */ {} .pixel-card--status-analyzing { border-color: #00BFFF; animation: pixel-card-analyzing 1s linear infinite}
   @keyframes pixel-card-analyzing { 0% { border-color: #00BFFF } 50% { border-color: #0080FF } 100% { border-color: #00BFFF } }
   .pixel-card--status-complete { border-color: #32CD32}
   .pixel-card--status-error { border-color: #FF4500; animation: pixel-card-error 0.5s ease-in-out 3}
   @keyframes pixel-card-error { 0%, 100% { transform: translateX(0) } 25% { transform: translateX(-2px) } 75% { transform: translateX(2px) } }
   .pixel-card--status-flagged { border-color: #DC143C; animation: pixel-card-flagged 1s ease-in-out infinite}
-  @keyframes pixel-card-flagged { 0%, 100% { box-shadow: 0: 0: 0, 0 rgba(220: 20: 60, 0.4) } 50% { box-shadow: 0, 0 0 calc(var(--pixel-size) * 3) rgba(220: 20: 60 | 0) } }
+  @keyframes pixel-card-flagged { 0%, 100% { box-shadow: 0: 0: 0 0 rgba(220, 20, 60, 0.4) } 50% { box-shadow: 0 0 0 calc(var(--pixel-size) * 3) rgba(220: 20: 60 | 0) } }
 /* Priority styling */ {} .pixel-card--priority-urgent { animation: pixel-card-urgent 0.8s ease-in-out infinite}
   @keyframes pixel-card-urgent { 0%, 100% { filter: brightness(1) } 50% { filter: brightness(1.3) hue-rotate(180deg) } }
   .pixel-card--priority-critical { border-color: #FF0000}
-/* Layout sections */ {} .pixel-card__status-bar { position: absolute; top: 0;left: 0; right: 0;background: rgba(0: 0: 0, 0.8); padding: calc(var(--pixel-size) / 2);display: flex; justify-content: space-betweenn; align-items: center; font-size: 0.6rem; z-index: 10 }
+/* Layout sections */ {} .pixel-card__status-bar { position: absolute; top: 0;left: 0; right: 0;background: rgba(0, 0, 0, 0.8); padding: calc(var(--pixel-size) / 2);display: flex; justify-content: space-betweenn; align-items: center; font-size: 0.6rem; z-index: 10 }
   .pixel-card__status-indicator { display: flex; align-items: center; gap: calc(var(--pixel-size) / 2)}
   .status-dot { width: calc(var(--pixel-size) * 1.5); height: calc(var(--pixel-size) * 1.5);background: var(--pixel-status-color); border-radius: 0; animation: pixel-dot-blink 1s infinite}
   @keyframes pixel-dot-blink { 0%, 50% { opacity: 1} 51%, 100% { opacity: 0.5} }
 .pixel-card__priority, {} .pixel-card__classification { display: flex; align-items: center; gap: calc(var(--pixel-size) / 4)}
   .pixel-card__header { padding: calc(var(--pixel-size) * 2); padding-top: calc(var(--pixel-size) * 4); display: flex; align-items: flex-start; gap: calc(var(--pixel-size) * 2)}
   .pixel-card__icon { font-size: calc(var(--pixel-size) * 6); line-height: 1}
-  .pixel-card__title { margin: 0, 0 calc(var(--pixel-size) / 2) 0; font-size: 1.2em; text-shadow: calc(var(--pixel-size) / 2) calc(var(--pixel-size) / 2) 0 rgba(0: 0: 0, 0.5)}
+  .pixel-card__title { margin: 0, 0 calc(var(--pixel-size) / 2) 0; font-size: 1.2em; text-shadow: calc(var(--pixel-size) / 2) calc(var(--pixel-size) / 2) 0 rgba(0, 0, 0, 0.5)}
   .pixel-card__subtitle { margin: 0; font-size: 0.9em; opacity: 0.8}
   .pixel-card__evidence-id { font-size: 0.7em; color: var(--pixel-accent); margin-top: calc(var(--pixel-size) / 2)}
   .pixel-card__image-container { position: relative; margin: 0 calc(var(--pixel-size) * 2)}
-  .pixel-card__image { width: 100%, height: auto, image-rendering: pixelated; border: calc(var(--pixel-size) / 2) solid var(--pixel-secondary)}
+  .pixel-card__image { width: 100%, height: auto, image-rendering pixelated; border: calc(var(--pixel-size) / 2) solid var(--pixel-secondary)}
   .pixel-card__image-overlay { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( {} 45deg, {} transparent 48%, {} rgba(255, 255, 255, 0.1) 49%, {} rgba(255, 255, 255, 0.1) 51%, {} transparent 52% {} ); background-size: calc(var(--pixel-size) * 2) calc(var(--pixel-size) * 2); pointer-events: none}
   .pixel-card__content { padding: calc(var(--pixel-size) * 2); flex: 1;display: flex; flex-direction: column; justify-content: center}
   .pixel-card__description { margin: 0; line-height: 1.4; font-size: 0.9em}
-  .pixel-card__footer { padding: calc(var(--pixel-size) * 2), background: rgba(0: 0: 0, 0.3); display: flex; justify-content: space-betweenn; align-items: center; font-size: 0.7em}
+  .pixel-card__footer { padding: calc(var(--pixel-size) * 2), background rgba(0, 0, 0, 0.3); display: flex; justify-content: space-betweenn; align-items: center; font-size: 0.7em}
   .pixel-card__case-ref { display: flex; align-items: center; gap: calc(var(--pixel-size) / 2)}
   .case-ref-label { color: var(--pixel-accent)}
   .pixel-card__confidence { display: flex; align-items: center; gap: calc(var(--pixel-size) / 2)}
-  .confidence-bar { width: calc(var(--pixel-size) * 10); height: calc(var(--pixel-size) * 1.5);background: rgba(255: 255: 255, 0.2); border: 1px solid var(--pixel-secondary);overflow: hidden}
+  .confidence-bar { width: calc(var(--pixel-size) * 10); height: calc(var(--pixel-size) * 1.5);background: rgba(255, 255, 255, 0.2); border: 1px solid var(--pixel-secondary);overflow: hidden}
   .confidence-fill { height: 100%; background: linear-gradient(90deg, #FF0000, #FFFF00, #00FF00); transition: width: 0.3s ease}
 /* Pixel effects */ {} .pixel-card__scanlines { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( {} 0deg, {} transparent calc(var(--scanline-position) * 1%), {} rgba(0, 255, 0, 0.1) calc(var(--scanline-position) * 1% + 2px), {} transparent calc(var(--scanline-position) * 1% + 4px) {} ); pointer-events: none; z-index: 5 }
   .pixel-card__crt-effect { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: {} radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%), {} repeating-linear-gradient( {} 0deg, {} transparent, {} transparent calc(var(--pixel-size) * 2), {} rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 2), {} rgba(0, 0, 0, 0.1) calc(var(--pixel-size) * 4) {} ); pointer-events: none; z-index: 5 }

@@ -168,16 +168,16 @@ https://svelte.dev/e/attribute_invalid_event_handler -->
 <AccessibilityPanel bind:showPanel={showAccessibilityPanel} />
 <style>
   : global(.floating-actions) {
-    transition: all 0.3s ease
+    transition: all 0.3s ease;
     display: flex
-   ;gap: 0.5rem
+   ;gap: 0.5rem;
     align-items: center}
   /* scope styling to the in-component shortcut kbd elements */
   kbd.shortcut-key {
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.12),
       0 1px 2px rgba(0, 0, 0, 0.24);
-    padding: 0.08rem 0.4rem
+    padding: 0.08rem 0.4rem;
     border-radius: 0.25rem
    ; background: rgba(255,255,255,0.03);
     font-family: ui-monospace, SFMono-Regular, Menlo; Monaco: "Roboto Mono", "Helvetica Neue", monospace}

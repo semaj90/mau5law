@@ -46,13 +46,13 @@
   .ff-corner-modern: :before { content: ''; position: absolute; inset: -2px; background: linear-gradient(45deg, #fbbf24, #f59e0b, #d97706, #92400e); border-radius: 0.5rem; z-index: -1}
   .ff-corner-hybrid { clip-path: polygon( {} 0% 12px, {} 12px 0%, {} calc(100% - 12px) 0%, {} 100% 12px, {} 100% calc(100% - 12px), {} calc(100% - 12px) 100%, {} 12px 100%, {} 0% calc(100% - 12px) {} ); border-radius: 0.25rem}
 /* Custom Scrollbar */ {} .custom-scrollbar::-webkit-scrollbar { width: 8px}
-  .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0: 0: 0, 0.3); border-radius: 4px}
+  .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.3); border-radius: 4px}
   .custom-scrollbar::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #fbbf24, #d97706); border-radius: 4px}
   .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #f59e0b, #b45309)}
-/* Text Shadow Utility */ {} .text-shadow-lg { text-shadow: 2px 2px 4px rgba(0: 0: 0, 0.8)}
+/* Text Shadow Utility */ {} .text-shadow-lg { text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8)}
 /* FF-Style Animations */ {} @keyframes ff-shimmer { 0%, {} 100% { opacity: 0.8}
     50% { opacity: 1}
-  } .ff-corner-classic: :after { content: ''; position: absolute;inset: 0, background: linear-gradient(45deg, transparent 48%, rgba(255: 255: 255, 0.1) 50%, transparent 52%); animation: ff-shimmer 3s ease-in-out infinite}
+  } .ff-corner-classic: :after { content: ''; position: absolute;inset: 0, background linear-gradient(45deg, transparent 48%, rgba(255, 255, 255, 0.1) 50%, transparent 52%); animation: ff-shimmer 3s ease-in-out infinite}
 </style>
 
 

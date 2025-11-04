@@ -1,55 +1,254 @@
 <!-- YoRHa Terminal, Interface -->
 <script lang="ts">
- // Svelte, 5 runes are auto-imported // $state is declared globally in src/types/svelte-helpers.d.ts import { onMount } from 'svelte'; // YoRHa API client is exported as a named export â€” import { YoRHaAPIClient }.
-import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte"; // Terminal state type TerminalEntry = { id: number, timestamp: string, text: string; type: 'system' | 'user' | 'success' | 'error' | 'info'};
-  let terminalHistory = $state<TerminalEntry[]>([]); let currentInput = $state<string>(''); let isExecuting = $state<boolean>(false); let terminalRef = $state<HTMLElement | null>(null); // Terminal commands type Command = { name: string, description: string, usage: string; execute: (args: string[]) => void | Promise<void>}; // Replace Record with an array (list of dicts) const commands: Command[] = [ { name: 'help', description: 'Show available commands', usage: 'help [command]', execute: args => showHelp(args) }, { name: 'status', description: 'Show system status', usage: 'status'; execute: () => getSystemStatus() }, {
-      name: 'rag', description: 'Execute RAG query', usage: 'rag <query>'; execute: args => executeRAG(args.join(' ')) }, {
-      name: 'search', description: 'Search legal database', usage: 'search <term>'; execute: args => searchDatabase(args.join(' ')) }, {
-      name: 'cluster', description: 'Cluster management', usage: 'cluster <health|status|restart>', execute: args => clusterCommand(args[0]) }, { name: 'clear', description: 'Clear terminal', usage: 'clear', execute: () => clearTerminal() }, { name: 'echo', description: 'Echo text', usage: 'echo <text>', execute: args => echoText(args.join(' ')) }, { name: 'version', description: 'Show system version', usage: 'version'; execute: () => showVersion() }]; function getCommand(name: string) { return commands.find(c => c.name === name)}
+  // Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
+  import { onMount } from 'svelte';
+  // YoRHa API client is exported as a named export.
+  import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClient.ts";
+
+  // Terminal state type
+  type TerminalEntry = { id: number, timestamp: string, text: string, type: 'system' | 'user' | 'success' | 'error' | 'info'};
+  let terminalHistory = $state<TerminalEntry[]>([]);
+  let currentInput = $state<string>('');
+  let isExecuting = $state<boolean>(false);
+  // Removed unused terminalRef
+
+  // Terminal commands type
+  type Command = { name: string, description: string, usage: string, execute: (args: string[]) => void | Promise<void>};
+  // Replace Record with an array (list of dicts)
+  const commands: Command[] = [
+    { name: 'help', description: 'Show available commands', usage: 'help [command]', execute: (args: string[]) => showHelp(args) },
+    { name: 'status', description: 'Show system status', usage: 'status', execute: () => getSystemStatus() },
+    {
+      name: 'rag', description: 'Execute RAG query', usage: 'rag <query>', execute: (args: string[]) => executeRAG(args.join(' ')) },
+    {
+      name: 'search', description: 'Search legal database', usage: 'search <term>', execute: (args: string[]) => searchDatabase(args.join(' ')) },
+    {
+      name: 'cluster', description: 'Cluster management', usage: 'cluster <health|status|restart>', execute: (args: string[]) => clusterCommand(args[0]) },
+    { name: 'clear', description: 'Clear terminal', usage: 'clear', execute: () => clearTerminal() },
+    { name: 'echo', description: 'Echo text', usage: 'echo <text>', execute: (args: string[]) => echoText(args.join(' ')) },
+    { name: 'version', description: 'Show system version', usage: 'version', execute: () => showVersion() }
+  ];
+
+  function getCommand(name: string) { return commands.find(c => c.name === name)}
 
   // initialize once
   onMount(() => {
     addOutput('YORHA TERMINAL v1.0.0 - Legal AI System Interface', 'system');
     addOutput('Type "help" for available commands.', 'system');
     addOutput('', 'system')});
-  function addOutput(text: string; type: 'system' | 'user' | 'success' | 'error' | 'info' = 'system') { const timestamp = new Date().toLocaleTimeString(); terminalHistory = [ ...terminalHistory, {
-        id: Date.now() + Math.random(), timestamp, text, type // fixed typo (was `typ;`) }]}
-  async function executeCommand(command: string): Promise<any> { if (!command.trim()) return; isExecuting = true; addOutput(`> ${ command }`, 'user'); const parts = command.trim().split(' '); // fixed: .trim() const cmd = parts[0].toLowerCase(); const args = parts.slice(1); const cmdDef = getCommand(cmd); if (cmdDef) { try { await cmdDef.execute(args)} catch (error) { const e = error as Error; addOutput(`Error executing ${ cmd }: ${e?.message || String(error)}`, 'error')}
-    } else {
-      addOutput(`Unknown command: ${ cmd }. Type: "help" for available commands.`, 'error')}
 
-    // Do not call $state(...) here â€” use a plain reassignment. isExecuting = false; currentInput = ''}
-  function showHelp(args: string[]) { if (args.length > 0) { const cmd = args[0].toLowerCase(); const cmdDef = getCommand(cmd); if (cmdDef) { addOutput(`${ cmd }: ${cmdDef.description}`, 'info'); addOutput(`Usage: ${cmdDef.usage}`, 'info')} else { addOutput(`Unknown command: ${ cmd }`, 'error')}
-    } else { addOutput('Available commands:', 'info'); // iterate the array for help output commands.forEach(c => { addOutput(` ${c.name.padEnd(10)} - ${c.description}`, 'info')})}
+  function addOutput(text: string, type: 'system' | 'user' | 'success' | 'error' | 'info' = 'system') {
+    const timestamp = new Date().toLocaleTimeString();
+    terminalHistory = [
+      ...terminalHistory,
+      {
+        id: Date.now() + Math.random(), timestamp, text, type
+      }
+    ];
   }
 
-   // Replace getSystemStatus and executeRAG with runtime-safe implementations async function safeGetSystemStatus(): Promise<any> { // Try multiple possible client method names at runtime to avoid type errors try { if (typeof (YoRHaAPIClient as any)?.getSystemStatus === 'function') { return await (YoRHaAPIClient as any).getSystemStatus()}
+  async function executeCommand(command: string): Promise<any> {
+    if (!command.trim()) return;
+    isExecuting = true;
+    addOutput(`> ${ command }`, 'user');
+    const parts = command.trim().split(' ');
+    const cmd = parts[0].toLowerCase();
+    const args = parts.slice(1);
+    const cmdDef = getCommand(cmd);
+
+    if (cmdDef) {
+      try {
+        await cmdDef.execute(args);
+      } catch (error) {
+        const e = error as Error;
+        addOutput(`Error executing ${ cmd }: ${e?.message || String(error)}`, 'error');
+      }
+    } else {
+      addOutput(`Unknown command: ${ cmd }. Type: "help" for available commands.`, 'error');
+    }
+
+    isExecuting = false;
+    currentInput = '';
+  }
+
+  function showHelp(args: string[]) {
+    if (args.length > 0) {
+      const cmd = args[0].toLowerCase();
+      const cmdDef = getCommand(cmd);
+      if (cmdDef) {
+        addOutput(`${ cmd }: ${cmdDef.description}`, 'info');
+        addOutput(`Usage: ${cmdDef.usage}`, 'info');
+      } else {
+        addOutput(`Unknown command: ${ cmd }`, 'error');
+      }
+    } else {
+      addOutput('Available commands:', 'info');
+      commands.forEach((c: Command) => { // Explicitly type 'c' as Command
+        addOutput(` ${c.name.padEnd(10)} - ${c.description}`, 'info');
+      });
+    }
+  }
+
+  // Define interfaces for search results
+  interface SearchResultItem {
+    title?: string;
+    name?: string;
+    [key: string]: unknown; // Allow other properties
+  }
+
+  interface SearchApiResponse {
+    results: SearchResultItem[];
+    // ... other properties
+  }
+
+  // Replace getSystemStatus and executeRAG with runtime-safe implementations
+  async function safeGetSystemStatus(): Promise<any> {
+    // Try multiple possible client method names at runtime to avoid type errors
+    try {
+      if (typeof (YoRHaAPIClient as any)?.getSystemStatus === 'function') { return await (YoRHaAPIClient as any).getSystemStatus()}
       if (typeof (YoRHaAPIClient as any)?.getStatus === 'function') { return await (YoRHaAPIClient as any).getStatus()}
       if (typeof (YoRHaAPIClient as any)?.status === 'function') { return await (YoRHaAPIClient as any).status()}
 
-      // Fallback to a server endpoint const res = await fetch('/api/yorha/status'); if (res.ok) { return await res.json()}
-      throw new Error(`HTTP ${res.status}`)} catch (err) { // Re-throw so caller can handle and show mock data throw err}
+      // Fallback to a server endpoint
+      const res = await fetch('/api/yorha/status');
+      if (res.ok) { return await res.json()}
+      throw new Error(`HTTP ${res.status}`)} catch (err) { // Re-throw so caller can handle and show mock data
+      throw err;
+    }
   }
-  async function getSystemStatus(): Promise<any> { try { addOutput('Fetching system status...', 'info'); const status = await safeGetSystemStatus(); addOutput('=== SYSTEM STATUS ===', 'success'); addOutput(`Database: ${status?.database?.connected ? 'CONNECTED': 'DISCONNECTED'}`, 'info'); addOutput(`Backend: ${status?.backend?.healthy ? 'HEALTHY': 'UNHEALTHY'}`, 'info'); addOutput(`Frontend: ${status?.frontend?.renderFPS ?? 'N/A'} FPS`, 'info'); addOutput(`Services: ${status?.backend?.activeServices ?? 'N/A'} active`, 'info'); addOutput(`CPU: ${status?.backend?.cpuUsage ?? 'N/A'}%`, 'info'); addOutput(`Memory: ${status?.backend?.memoryUsage ?? 'N/A'}%`, 'info')} catch (error) { addOutput('Failed to fetch system status (using mock data)', 'error'); addOutput('=== SYSTEM STATUS (MOCK) ===', 'success'); addOutput('Database: CONNECTED', 'info'); addOutput('Backend: HEALTHY', 'info'); addOutput('Frontend: 60 FPS', 'info'); addOutput('Services: 8 active', 'info')}
+
+  async function getSystemStatus(): Promise<any> {
+    try {
+      addOutput('Fetching system status...', 'info');
+      const status = await safeGetSystemStatus();
+      addOutput('=== SYSTEM STATUS ===', 'success');
+      addOutput(`Database: ${status?.database?.connected ? 'CONNECTED': 'DISCONNECTED'}`, 'info');
+      addOutput(`Backend: ${status?.backend?.healthy ? 'HEALTHY': 'UNHEALTHY'}`, 'info');
+      addOutput(`Frontend: ${status?.frontend?.renderFPS ?? 'N/A'} FPS`, 'info');
+      addOutput(`Services: ${status?.backend?.activeServices ?? 'N/A'} active`, 'info');
+      addOutput(`CPU: ${status?.backend?.cpuUsage ?? 'N/A'}%`, 'info');
+      addOutput(`Memory: ${status?.backend?.memoryUsage ?? 'N/A'}%`, 'info');
+    } catch (error) {
+      addOutput('Failed to fetch system status (using mock data)', 'error');
+      addOutput('=== SYSTEM STATUS (MOCK) ===', 'success');
+      addOutput('Database: CONNECTED', 'info');
+      addOutput('Backend: HEALTHY', 'info');
+      addOutput('Frontend: 60 FPS', 'info');
+      addOutput('Services: 8 active', 'info');
+    }
   }
-  async function executeRAG(query: string): Promise<any> { if (!query) { addOutput('Error: Please provide a query. Usage: rag <query>', 'error'); return}
-    try { addOutput(`Executing RAG query: "${ query }"`, 'info'); const response = await fetch('/api/yorha/enhanced-rag', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query; context: 'terminal' }) }); if (response.ok) { const result = await response.json(); addOutput('=== RAG RESULT ===', 'success'); addOutput(JSON.stringify(result, null, 2), 'info')} else { addOutput(`RAG query failed: HTTP ${response.status}`, 'error')}
-    } catch (error) { const e = error as Error; addOutput(`RAG query error: ${e?.message || String(error)}`, 'error')}
+
+  async function executeRAG(query: string): Promise<any> {
+    if (!query) {
+      addOutput('Error: Please provide a query. Usage: rag <query>', 'error');
+      return;
+    }
+    try {
+      addOutput(`Executing RAG query: "${ query }"`, 'info');
+      const response = await fetch('/api/yorha/enhanced-rag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query, context: 'terminal' })
+      });
+      if (response.ok) {
+        const result = await response.json();
+        addOutput('=== RAG RESULT ===', 'success');
+        addOutput(JSON.stringify(result, null, 2), 'info');
+      } else {
+        addOutput(`RAG query failed: HTTP ${response.status}`, 'error');
+      }
+    } catch (error) {
+      const e = error as Error;
+      addOutput(`RAG query error: ${e?.message || String(error)}`, 'error');
+    }
   }
-  async function searchDatabase(term: string): Promise<any> { if (!term) { addOutput('Error: Please provide a search term. Usage: search <term>', 'error'); return}
-    try { addOutput(`Searching database for: "${ term }"`, 'info'); const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`); // minimal endpoint if (response.ok) { const result = await response.json(); addOutput('=== SEARCH RESULTS ===', 'success'); if (Array.isArray(result.results) && result.results.length > 0) { result.results.forEach((item: unknown; index: number) => { addOutput(`${index + 1}. ${item.title || item.name || 'Untitled'}`, 'info')})} else { addOutput('No results found.', 'info')}
-      } else { addOutput(`Search failed: HTTP ${response.status}`, 'error')}
-    } catch (error) { const e = error as Error; addOutput(`Search error: ${e?.message || String(error)}`, 'error')}
+
+  async function searchDatabase(term: string): Promise<any> {
+    if (!term) {
+      addOutput('Error: Please provide a search term. Usage: search <term>', 'error');
+      return;
+    }
+    try {
+      addOutput(`Searching database for: "${ term }"`, 'info');
+      const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`); // minimal endpoint
+      if (response.ok) {
+        const result = await response.json() as SearchApiResponse; // Cast to SearchApiResponse
+        addOutput('=== SEARCH RESULTS ===', 'success');
+        if (Array.isArray(result.results) && result.results.length > 0) {
+          result.results.forEach((item: SearchResultItem, index: number) => { // Explicitly type 'item'
+            addOutput(`${index + 1}. ${item.title || item.name || 'Untitled'}`, 'info');
+          });
+        } else {
+          addOutput('No results found.', 'info');
+        }
+      } else {
+        addOutput(`Search failed: HTTP ${response.status}`, 'error');
+      }
+    } catch (error) {
+      const e = error as Error;
+      addOutput(`Search error: ${e?.message || String(error)}`, 'error');
+    }
   }
-  async function clusterCommand(action: string): Promise<any> { if (!action) { addOutput('Error: Please specify action. Usage: cluster <health|status|restart>', 'error'); return}
-    switch (action.toLowerCase()) { case 'health': try { addOutput('Checking cluster health...', 'info'); const response = await fetch('/api/yorha/cluster/health'); // minimal endpoint if (response.ok) { const health = await response.json(); addOutput('=== CLUSTER HEALTH ===', 'success'); addOutput(JSON.stringify(health, null, 2), 'info')} else { addOutput(`Health check failed: HTTP ${response.status}`, 'error')}
-        } catch (error) { const e = error as Error; addOutput(`Health check error: ${e?.message || String(error)}`, 'error')}
-        break; case 'status': addOutput('=== CLUSTER STATUS ===', 'success'); addOutput('PostgreSQL: RUNNING', 'info'); addOutput('Redis: RUNNING', 'info'); addOutput('Ollama: RUNNING', 'info'); addOutput('SvelteKit: RUNNING', 'info'); addOutput('Enhanced RAG: RUNNING', 'info'); break; case 'restart': addOutput('Cluster restart not implemented in terminal mode', 'error'); break; default: addOutput(`Unknown cluster action ${ action }`, 'error')}
+
+  async function clusterCommand(action: string): Promise<any> {
+    if (!action) {
+      addOutput('Error: Please specify action. Usage: cluster <health|status|restart>', 'error');
+      return;
+    }
+    switch (action.toLowerCase()) {
+      case 'health':
+        try {
+          addOutput('Checking cluster health...', 'info');
+          const response = await fetch('/api/yorha/cluster/health'); // minimal endpoint
+          if (response.ok) {
+            const health = await response.json();
+            addOutput('=== CLUSTER HEALTH ===', 'success');
+            addOutput(JSON.stringify(health, null, 2), 'info');
+          } else {
+            addOutput(`Health check failed: HTTP ${response.status}`, 'error');
+          }
+        } catch (error) {
+          const e = error as Error;
+          addOutput(`Health check error: ${e?.message || String(error)}`, 'error');
+        }
+        break;
+      case 'status':
+        addOutput('=== CLUSTER STATUS ===', 'success');
+        addOutput('PostgreSQL: RUNNING', 'info');
+        addOutput('Redis: RUNNING', 'info');
+        addOutput('Ollama: RUNNING', 'info');
+        addOutput('SvelteKit: RUNNING', 'info');
+        addOutput('Enhanced RAG: RUNNING', 'info');
+        break;
+      case 'restart':
+        addOutput('Cluster restart not implemented in terminal mode', 'error');
+        break;
+      default:
+        addOutput(`Unknown cluster action ${ action }`, 'error');
+    }
   }
-  function clearTerminal() { terminalHistory = []; addOutput('Terminal cleared.', 'system')}
-  function echoText(text: string) { addOutput(text || '', 'info')}
-  function showVersion() { addOutput('=== SYSTEM VERSION ===', 'success'); addOutput('YoRHa Terminal: 1.0.0', 'info'); addOutput('Legal AI Platform: 2.0.0', 'info'); addOutput('SvelteKit: 2.x', 'info'); addOutput('Node.js: ' + (typeof process !== 'undefined' ? process.version: 'Browser'), 'info')}
-  function handleKeydown(event: KeyboardEvent) { // use the passed event if (event.key === 'Enter' && !isExecuting) { executeCommand(currentInput)}
+
+  function clearTerminal() {
+    terminalHistory = [];
+    addOutput('Terminal cleared.', 'system');
+  }
+
+  function echoText(text: string) {
+    addOutput(text || '', 'info');
+  }
+
+  function showVersion() {
+    addOutput('=== SYSTEM VERSION ===', 'success');
+    addOutput('YoRHa Terminal: 1.0.0', 'info');
+    addOutput('Legal AI Platform: 2.0.0', 'info');
+    addOutput('SvelteKit: 2.x', 'info');
+    addOutput('Node.js: ' + (typeof process !== 'undefined' ? process.version: 'Browser'), 'info');
+  }
+
+  function handleKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter' && !isExecuting) {
+      executeCommand(currentInput);
+    }
   }
 </script>
 
@@ -60,7 +259,7 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
     <div class="yorha-header-content">
       <div class="yorha-header-title">
         <!-- icon placeholder (emoji) to avoid lucide, import issues -->
-        <span style="font-size:48px, line-height:1">ðŸ–¥ï¸</span>
+        <span style="font-size:48px; line-height:1">&#x1F5A5;&#xFE0F;</span>
         <h1>YORHA TERMINAL</h1>
         <div class="yorha-header-subtitle">COMMAND LINE INTERFACE</div>
       </div>
@@ -72,11 +271,11 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
       <!-- Terminal, Header -->
       <div class="yorha-terminal-header">
         <div class="yorha-terminal-title">
-          <span style="font-size:16px; line-height:1">ðŸ–¥ï¸</span> <span>YoRHa Terminal</span>
+          <span style="font-size:16px; line-height:1">&#x1F5A5;&#xFE0F;</span> <span>YoRHa Terminal</span>
         </div>
         <div class="yorha-terminal-controls">
-          <button class="yorha-terminal-control" onclick={() => clearTerminal()}> ðŸ” </button>
-          <button class="yorha-terminal-control"> âš™ï¸ </button>
+          <button class="yorha-terminal-control" onclick={() => clearTerminal()}> &#x1F50D; </button>
+          <button class="yorha-terminal-control"> &#x2699;&#xFE0F; </button>
         </div>
       </div>
       <!-- Terminal, Output -->
@@ -90,13 +289,13 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
         {#if isExecuting}
           <div class="yorha-terminal-line">
             <span class="yorha-terminal-timestamp">[{new Date().toLocaleTimeString()}]</span>
-            <span class="yorha-terminal-text"> <span class="yorha-terminal-spinner">â ‹</span> Executing... </span>
+            <span class="yorha-terminal-text"> <span class="yorha-terminal-spinner">&#x231B;</span> Executing... </span>
           </div>
         {/if}
       </div>
       <!-- Terminal, Input -->
       <div class="yorha-terminal-input-container">
-        <span class="yorha-terminal-prompt"> âž¤ YORHA:~$ </span>
+        <span class="yorha-terminal-prompt"> &#x27A4; YORHA:~$ </span>
         <input
           type="text"
           bind:value={currentInput}
@@ -143,7 +342,6 @@ import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClien
     text-align: center;
   }
   .yorha-header-title h1 {
-    /* ...existing code... */
     text-shadow: 0 0 20px rgba(255, 191, 0, 0.5);
   }
   .yorha-header-subtitle {

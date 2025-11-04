@@ -266,22 +266,22 @@ import type { Case } from '$lib/types';
 
 <style>
   .page-container {
-    max-width: 1400px
-    margin: 0 auto
+    max-width: 1400px;
+    margin: 0 auto;
     padding: 2rem}
   .page-header {
     margin-bottom: 2rem}
   .header-content {
     margin-bottom: 1.5rem}
   .breadcrumb {
-    display: flex
-    align-items: center
-    gap: 0.5rem
-    margin-bottom: 1rem
-    font-size: 0.875rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
     color: #6b7280}
   .breadcrumb-link {
-    color: #3b82f6
+    color: #3b82f6;
     text-decoration: none}
   .breadcrumb-link:hover {
     text-decoration: underline}
@@ -290,196 +290,196 @@ import type { Case } from '$lib/types';
   .breadcrumb-current {
     font-weight: 500}
   .page-header h1 {
-    font-size: 2.5rem
-    color: #1f2937
+    font-size: 2.5rem;
+    color: #1f2937;
     margin-bottom: 0.5rem}
   .page-header p {
-    font-size: 1.125rem
-    color: #6b7280
+    font-size: 1.125rem;
+    color: #6b7280;
     margin-bottom: 1rem}
   .current-state-display {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 1rem}
   .state-label {
-    font-weight: 500
+    font-weight: 500;
     color: #374151}
   .current-state {
-    padding: 0.5rem 1rem
-    border-radius: 8px
-    font-weight: 500
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: 500;
     font-size: 1rem}
   .machine-selector {
-    display: flex
-    align-items: center
-    gap: 1rem
-    padding: 1rem
-    background: #f8fafc
-    border-radius: 12px
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 12px;
     border: 1px solid #e2e8f0}
   .machine-select {
-    padding: 0.5rem 1rem
-    border: 1px solid #d1d5db
-    border-radius: 6px
-    background: white
-    color: #374151
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: white;
+    color: #374151;
     min-width: 200px}
   .loading-state {
-    text-align: center
+    text-align: center;
     padding: 4rem}
   .spinner {
-    width: 40px
-    height: 40px
-    border: 4px solid #f3f4f6
-    border-top: 4px solid #3b82f6
-    border-radius: 50%; animation: spin 1s linear infinite
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%; animation: spin 1s linear infinite;
     margin: 0 auto 1rem}
   @keyframes spin {
     0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
   }
   .empty-state {
-    text-align: center
-    padding: 4rem
-    background: #f8fafc
-    border-radius: 12px
+    text-align: center;
+    padding: 4rem;
+    background: #f8fafc;
+    border-radius: 12px;
     border: 2px dashed #cbd5e1}
   .empty-state h2 {
-    color: #374151
+    color: #374151;
     margin-bottom: 0.5rem}
   .transitions-timeline {
     margin-bottom: 2rem}
   .timeline-header {
-    display: flex
-    justify-content: space-between
-    align-items: center
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 1.5rem}
   .timeline-header h2 {
-    color: #1f2937
+    color: #1f2937;
     margin: 0}
   .timeline-stats {
-    font-size: 0.875rem
+    font-size: 0.875rem;
     color: #6b7280}
   .timeline-container {
-    display: flex
+    display: flex;
     flex-direction: column
    ; gap: 1rem}
   /* alias for old class name used in markup migrations */
   .transition-card,
   .transition-nier-bits-card {
-    border: 2px solid
-    border-radius: 12px
-    padding: 1.5rem
-    cursor: pointer
+    border: 2px solid;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
     transition: all 0.2s ease}
   .transition-card: hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .transition-card.selected {
-    border-color: #3b82f6
-    box-shadow: 0, 0 0 2px rgba(59, 130, 246, 0.2)}
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2)}
   .transition-header {
-    display: flex
-    justify-content: space-between
+    display: flex;
+    justify-content: space-between;
     align-items: center}
   .transition-flow {
-    display: flex
+    display: flex;
     align-items: center
    ; gap: 1rem}
   .state-from 
   .state-to {
-    padding: 0.25rem 0.75rem
-    border-radius: 6px
-    background: #e5e7eb
-    color: #374151
-    font-weight: 500
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    background: #e5e7eb;
+    color: #374151;
+    font-weight: 500;
     font-size: 0.875rem}
   .state-to {
-    background: #dbeafe
+    background: #dbeafe;
     color: #1d4ed8}
   .transition-arrow {
-    display: flex
-    flex-direction: column
-    align-items: center
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 0.25rem}
   .arrow {
-    font-size: 1.25rem
+    font-size: 1.25rem;
     color: #6b7280}
   .event-label {
-    font-size: 0.75rem
-    color: #9ca3af
-    text-transform: uppercase
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-transform: uppercase;
     letter-spacing: 0.05em}
   .transition-meta {
-    display: flex
-    align-items: center
-    gap: 1rem
-    font-size: 0.875rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.875rem;
     color: #6b7280}
   .duration {
-    font-weight: 500
+    font-weight: 500;
     color: #059669}
   .transition-details {
-    margin-top: 1.5rem
-    padding-top: 1.5rem
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
     border-top: 1px solid #e5e7eb}
   .details-grid {
-    display: grid
-    grid-template-columns: 1fr 1fr 1fr
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 1.5rem}
   .detail-section h4 {
-    font-weight: 600
-    color: #374151
-    margin-bottom: 0.75rem
-    font-size: 0.875rem
-    text-transform: uppercase
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
     letter-spacing: 0.05em}
   .context-display {
-    background: #1f2937
-    color: #f9fafb
-    padding: 0.75rem
-    border-radius: 6px
-    font-size: 0.75rem
+    background: #1f2937;
+    color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
     overflow-x: auto
    ; margin: 0}
   .guards-list,
   .actions-list {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem}
   .guard-badge {
-    background: #dcfce7
-    color: #166534
-    padding: 0.25rem 0.5rem
-    border-radius: 4px
-    font-size: 0.75rem
+    background: #dcfce7;
+    color: #166534;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
     border: 1px solid #bbf7d0}
   .action-badge {
-    background: #fef3c7
-    color: #92400e; /* fixed to valid 6-digit hex */
-    padding: 0.25rem 0.5rem
-    border-radius: 4px
-    font-size: 0.75rem
+    background: #fef3c7;
+    color: #92400e; /* fixed to valid 6-digit hex */;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
     border: 1px solid #fde68a}
-  .no-guards { color: #9ca3af
-    font-style: italic
+  .no-guards { color: #9ca3af;
+    font-style: italic;
     font-size: 0.75rem}
   .transition-controls {
     margin-top: 2rem}
   /* alias for controls card */
   .controls-card,
   .controls-nier-bits-card {
-    border: 1px solid #e2e8f0
-    border-radius: 12px
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
     padding: 1rem}
   .controls-header { margin-bottom: 0.5rem}
   .controls-title { margin: 0; font-size: 1.125rem}
   .controls-content { padding-top: 0.5rem}
   .control-buttons {
-    display: flex
-    gap: 1rem
-    margin-bottom: 1rem
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
     flex-wrap: wrap}
   .control-note {
-    font-size: 0.875rem
+    font-size: 0.875rem;
     color: #6b7280
    ; margin: 0}
   @media (max-width: 768px) {
@@ -488,11 +488,11 @@ import type { Case } from '$lib/types';
     .details-grid {
       grid-template-columns: 1fr}
     .transition-header {
-      flex-direction: column
-      align-items: flex-start
+      flex-direction: column;
+      align-items: flex-start;
       gap: 1rem}
     .machine-selector {
-      flex-direction: column
+      flex-direction: column;
       align-items: stretch}
     .control-buttons {
       flex-direction: column}
@@ -500,17 +500,17 @@ import type { Case } from '$lib/types';
 
   /* Ensure button elements keep the .transition-card visuals but remove user-agent appearance */
   button.transition-card {
-    appearance: none
-    -webkit-appearance: none
-    -moz-appearance: none
-    background-color: transparent
-    text-align: left; /* keep inner layout same as div */
-    width: 100%; border: inherit; /* let .transition-card CSS control border */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: transparent;
+    text-align: left; /* keep inner layout same as div */;
+    width: 100%; border: inherit; /* let .transition-card CSS control border */;
     cursor: pointer}
 
   /* Visible focus style for keyboard users */
-  button.transition-card:focus { outline: none
-    box-shadow: 0, 0 0 3px rgba(59,130,246,0.18)}
+  button.transition-card:focus { outline: none;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.18)}
 </style>
 
 

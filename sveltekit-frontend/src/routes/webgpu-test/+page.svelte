@@ -116,78 +116,78 @@ import type { User } from '$lib/types';
 
 <style>
   .container {
-    max-width: 900px
+    max-width: 900px;
     margin: 0 auto
-   ; padding: 2rem
-    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif
+   ; padding: 2rem;
+    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif;
     color: #111827}
 
   header {
-    text-align: center
+    text-align: center;
     margin-bottom: 2rem}
 
   h1 {
-    color: #2563eb
+    color: #2563eb;
     margin-bottom: 0.25rem}
 
   section {
-    background: white
+    background: white;
     border-radius: 12px
-   ; padding: 1.5rem
+   ; padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0,0,0,0.06)}
 
   .controls {
     margin-bottom: 1rem}
 
   button {
-    background: #2563eb
-    color: white
-    border: none
-    padding: 0.6rem 1.1rem
-    border-radius: 8px
-    font-weight: 600
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.1rem;
+    border-radius: 8px;
+    font-weight: 600;
     cursor: pointer}
 ; button:hover:not(:disabled) {
     background: #1d4ed8}
 
   button:disabled {
-    background: #9ca3af
+    background: #9ca3af;
     cursor: not-allowed}
 
   .status-card {
-    display: flex
-    gap: 1rem
-    padding: 1rem
-    border-radius: 8px
-    border: 2px solid transparent
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 2px solid transparent;
     align-items: flex-start}
 
   .status-card.success {
-    border-color: #10b981
+    border-color: #10b981;
     background-color: #ecfdf5}
 
   .status-card.error {
-    border-color: #ef4444
+    border-color: #ef4444;
     background-color: #fef2f2}
 
   .status-icon {
-    font-size: 1.6rem
-    line-height: 1
-    width: 2rem
+    font-size: 1.6rem;
+    line-height: 1;
+    width: 2rem;
     text-align: center}
 
   .details h3 {
     color: #374151
-   ; margin: 0.75rem, 0 0.5rem 0
+   ; margin: 0.75rem, 0 0.5rem 0;
     font-size: 1rem}
 
   .details ul {
-    list-style: none
-    padding: 0
+    list-style: none;
+    padding: 0;
     margin: 0}
 
   .details li {
-    padding: 0.25rem 0
+    padding: 0.25rem 0;
     color: #4b5563}
 
   .error-list li {

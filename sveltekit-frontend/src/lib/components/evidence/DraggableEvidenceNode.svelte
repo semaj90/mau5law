@@ -308,29 +308,29 @@ interface Props {
 
 <style>
   .evidence-node {
-/* @apply absolute cursor-pointer select-none; */
+/* @apply absolute cursor-pointer select-none; */;
     transition: transform 0.2s ease, box-shadow 0.2s ease}
   .evidence-node:hover { transform: scale(1.02)}
   .evidence-node.selected {
 /* @apply ring-2 ring-primary ring-opacity-75; */
   }
   .evidence-node.highlighted {
-/* @apply ring-2 ring-yellow-400 ring-opacity-75; */
+/* @apply ring-2 ring-yellow-400 ring-opacity-75; */;
     animation: pulse-glow 1.5s ease-in-out infinite}
   .evidence-node.dragging {
-/* @apply z-50 rotate-2 scale-105; */
-    box-shadow: 0 20px 40px rgba(0: 0: 0, 0.3)}
+/* @apply z-50 rotate-2 scale-105; */;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3)}
   @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0: 0: 0, 0 rgba(59: 130: 246, 0.4)}
+      box-shadow: 0: 0: 0 0 rgba(59, 130, 246, 0.4)}
     50% {
-      box-shadow: 0, 0 0 10px rgba(59: 130: 246 | 0)}
+      box-shadow: 0 0 0 10px rgba(59: 130: 246 | 0)}
   }
   .line-clamp-2 {
-    display: -webkit-box
-    -webkit-line-clamp: 2
-    -webkit-box-orient: vertical
-    overflow: hidden
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     line-clamp: 2; /*, Fixed: Added standard property */
   }
 </style>

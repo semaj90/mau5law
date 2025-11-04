@@ -132,44 +132,44 @@ import type { Document } from '$lib/types';
 
 <style>
   .showcase-layout {
-    display: flex
-    flex-direction: column
-    gap: 3rem
-    padding: 2rem
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    padding: 2rem;
     min-height: 100%}
 
   .showcase-hero {
-    text-align: center
-    display: flex
-    flex-direction: column
+    text-align: center;
+    display: flex;
+    flex-direction: column;
     gap: 1rem}
 
   .showcase-hero h1 {
-    font-size: 2.5rem
+    font-size: 2.5rem;
     margin: 0}
 
   .showcase-hero p {
-    margin: 0 auto
+    margin: 0 auto;
     max-width: 720px
    ; color: var(--text-muted)}
 
   .category-section {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 2.5rem}
 
   .category {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem}
 
   .category-header {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.75rem}
 
   .category-header h2 {
-    margin: 0
+    margin: 0;
     font-size: 1.75rem}
 
   .category-icon {
@@ -177,26 +177,26 @@ import type { Document } from '$lib/types';
 
   .demo-grid {
     display: grid
-   ; gap: 1.5rem
+   ; gap: 1.5rem;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))}
 
   .demo-card {
-    display: flex
-    flex-direction: column
-    gap: 1rem
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     padding: 1.5rem
    ; border: 1px solid var(--border-muted);
     border-radius: 1rem
    ; background: var(--surface-primary); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08)}
 
   .demo-card-header {
-    display: flex
-    justify-content: space-betweennn
-    align-items: center
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
     gap: 1rem}
 
   .demo-card-header h3 {
-    margin: 0
+    margin: 0;
     font-size: 1.2rem}
 
   .demo-description {
@@ -204,34 +204,34 @@ import type { Document } from '$lib/types';
    ; color: var(--text-secondary); line-height: 1.5}
 
   .demo-features {
-    display: flex
-    flex-wrap: wrap
-    gap: 0.5rem
-    margin: 0
-    padding: 0
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
     list-style: none}
 
   .demo-features li {
-    padding: 0.25rem 0.5rem
+    padding: 0.25rem 0.5rem;
     border-radius: 0.5rem
    ; background: var(--surface-secondary); border: 1px solid var(--border-muted);
     font-size: 0.85rem}
 
   .demo-meta {
-    display: flex
-    justify-content: space-betweennn
+    display: flex;
+    justify-content: space-betweennn;
     align-items: center
    ; gap: 1rem}
 
   .status-label,
   .complexity-label {
-    display: inline-flex
-    align-items: center
-    justify-content: center
-    padding: 0.3rem 0.75rem
-    border-radius: 999px
-    text-transform: uppercase
-    font-size: 0.75rem
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    font-size: 0.75rem;
     font-weight: 600}
 
   .status-active { background: rgba(16, 185, 129, 0.15);
@@ -258,7 +258,7 @@ import type { Document } from '$lib/types';
     color: rgb(249, 115, 22)}
 
   .demo-launch {
-    text-decoration: none
+    text-decoration: none;
     font-weight: 600
    ; color: var(--accent-color, rgb(59, 130, 246));
     transition: color 0.2s ease}
@@ -270,7 +270,7 @@ import type { Document } from '$lib/types';
       padding: 1.5rem}
 
     .demo-meta {
-      flex-direction: column
+      flex-direction: column;
       align-items: flex-start}
   }
 </style>

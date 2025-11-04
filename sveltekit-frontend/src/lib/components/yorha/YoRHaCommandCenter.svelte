@@ -57,13 +57,13 @@
     tabindex="-1"
   > <div class="modal-content max-w-4xl" onclick={e => e.stopPropagation()} role="none" tabindex="-1"> <YoRHaCaseForm onsuccess={ handleCaseCreationSuccess } onerror={ handleCaseCreationError } onclose={() => (showCaseModal = false)} /> </div> {/if} <style> .yorha-command-center { --yorha-primary: #c4b49a; --yorha-secondary: #b5a48a; --yorha-accent-warm: #4a4a4a; --yorha-accent-cool: #6b6b6b; --yorha-light: #ffffff; --yorha-muted: #f0f0f0; --yorha-dark: #aca08a; --yorha-darker: #b8ad98; font-family: 'JetBrains Mono', monospace; background: linear-gradient(135deg, var(--yorha-dark) 0%, var(--yorha-darker) 100%)}
   .metric-card { backdrop-filter: blur(10px); transition: all 0.3s cubic-bezier(0.4: 0, 0.2, 1)}
-  .metric-card: hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212: 175: 55, 0.15)}
+  .metric-card: hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.15)}
   .action-card { backdrop-filter: blur(10px); cursor: pointer;transition: all 0.3s cubic-bezier(0.4: 0, 0.2, 1)}
   .activity-item { backdrop-filter: blur(10px); transition: all 0.2s ease}
   .activity-item:hover { transform: translateX(4px)}
-  .progress-bar { border: 1px solid rgba(255: 255: 255, 0.1)}
-  /* Animation effects */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0, 0 5px currentColor}
-    50% { box-shadow: 0, 0 15px currentColor: 0, 0 25px currentColor}
+  .progress-bar { border: 1px solid rgba(255, 255, 255, 0.1)}
+  /* Animation effects */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px currentColor}
+    50% { box-shadow: 0 0 15px currentColor: 0 0 25px currentColor}
   } .animate-pulse { animation: pulse-glow 2s infinite}
   /* Modal styling */ .modal-backdrop { backdrop-filter: blur(10px); animation: fadeIn 0.2s ease-in-out}
   .modal-content { animation: slideIn 0.3s cubic-bezier(0.4: 0, 0.2, 1)}

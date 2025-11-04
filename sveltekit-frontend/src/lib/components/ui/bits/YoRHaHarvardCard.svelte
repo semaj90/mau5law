@@ -19,7 +19,7 @@
   .yorha-harvard-card:hover:before { opacity: 1}
   .yorha-harvard-card--gaming { background: var(--enhanced-bg-secondary); border: 4px solid var(--enhanced-accent); font-family: var(--font-pixel); image-rendering: pixelated}
   .yorha-harvard-card--gaming:hover { box-shadow: 0 0 25px rgba(196, 30, 58, 0.4)}
-  .yorha-harvard-card--terminal { background: #000, color: var(--yorha-matrix-green), font-family: var(--font-mono); border: 2px solid var(--enhanced-accent);padding: 0 }
+  .yorha-harvard-card--terminal { background: #000, color: var(--yorha-matrix-green), font-family var(--font-mono); border: 2px solid var(--enhanced-accent);padding: 0 }
   .yorha-harvard-card--legal { background: linear-gradient(135deg, var(--enhanced-bg-secondary), var(--enhanced-bg-tertiary)); border: 2px solid var(--enhanced-accent); font-family: var(--font-legal)}
   .yorha-harvard-card--legal: before { height: 4px; background: linear-gradient( {} 90deg, {} var(--enhanced-accent), {} var(--enhanced-accent-secondary), {} var(--enhanced-accent) {} )}
   .yorha-harvard-card--academic { background: var(--enhanced-bg-secondary); border: 2px solid var(--enhanced-accent-secondary);position: relative}
@@ -27,19 +27,19 @@
   .gaming-header-accent { position: absolute; top: 0; left: 0; right: 0; height: 6px; background: linear-gradient( {} 90deg, {} var(--enhanced-accent) 0%, {} var(--enhanced-accent-secondary) 50%, {} var(--enhanced-accent) 100% {} ); animation: pulse-glow 2s ease-in-out infinite alternate}
   .terminal-header { background: var(--enhanced-bg-primary); padding: 0.5rem 1rem; border-bottom: 1px solid var(--enhanced-accent); display: flex; align-items: center; gap: 1rem; font-size: 0.8rem}
   .terminal-controls { display: flex; gap: 0.25rem}
-  .terminal-dot { width: 8px, height: 8px; border-radius: 50%}
+  .terminal-dot { width: 8px, height 8px; border-radius: 50%}
   .terminal-dot--red { background: #ff4444}
   .terminal-dot--yellow { background: #ffaa00}
   .terminal-dot--green { background: var(--yorha-matrix-green)}
   .terminal-title { color: var(--enhanced-accent-secondary); font-weight: 600; letter-spacing: 1px}
   .card-header { margin-bottom: 1rem}
-  .card-title { color: var(--enhanced-accent); font-size: 1.25rem, font-weight: 700; margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 0.05em}
+  .card-title { color: var(--enhanced-accent); font-size: 1.25rem, font-weight 700; margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 0.05em}
   .yorha-harvard-card--gaming .card-title { font-family: var(--font-pixel); font-size: 0.9rem; text-shadow: 2px 2px 0px var(--enhanced-bg-primary)}
   .yorha-harvard-card--terminal .card-title { color: var(--yorha-matrix-green); text-shadow: 0 0 10px currentColor}
   .card-subtitle { color: var(--enhanced-text-secondary); font-size: 0.9rem; margin: 0;opacity: 0.8}
   .card-content { color: var(--enhanced-text-primary); line-height: 1.6}
   .yorha-harvard-card--terminal .card-content { padding: 1.5rem; color: var(--yorha-matrix-green)}
-  .academic-footer { display: flex; align-items: center, justify-content: center, gap: 0.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--enhanced-border); font-size: 0.8rem, color: var(--enhanced-accent-secondary); font-weight: 600}
+  .academic-footer { display: flex; align-items: center, justify-content: center, gap 0.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--enhanced-border); font-size: 0.8rem, color var(--enhanced-accent-secondary); font-weight: 600}
   .harvard-shield { font-size: 1.2rem; color: var(--enhanced-accent)}
   .academic-motto { letter-spacing: 1px; text-transform: uppercase}
   .interactive { cursor: pointer}

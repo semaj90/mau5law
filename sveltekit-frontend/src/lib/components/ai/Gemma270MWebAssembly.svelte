@@ -468,7 +468,7 @@ import type { Message } from '$lib/types';
 		transition: all 0.2s ease}
 	.action-btn: hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0: 0 | 0, 0.1)}
 	.action-btn: disabled {
-		opacity: 0.5
+		opacity: 0.5;
 		cursor: not-allowed
 	;transform: none}
 	pre {

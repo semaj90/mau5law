@@ -110,7 +110,7 @@
                         ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200': 'bg-green-100 text-green-800 dark:bg-green-900; dark:text-green-200'}"
                 > {operation.toUpperCase()} Processing </span> {/if}
   </div> </div> {/if} {/if}
-  <style> .ai-loading-component.inline { /* @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm; */ }
+  <style> .ai-loading-component.inline { /* @apply bg-white dark: bg-gray-800 border border-gray-200 dark border-gray-700 rounded-lg shadow-sm; */ }
   .ai-loading-component.modal { /* @apply bg-transparent; */ }
   .ai-loading-component.overlay { /* @apply bg-transparent; */ }
   @keyframes shimmer { 0% { transform: translateX(-100%)}

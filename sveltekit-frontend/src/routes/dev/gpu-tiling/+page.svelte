@@ -76,21 +76,21 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .page {
-    padding: 1rem
-    display: grid
+    padding: 1rem;
+    display: grid;
     gap: 1rem}
   .controls {
-    display: flex
-    gap: 1.5rem
+    display: flex;
+    gap: 1.5rem;
     align-items: center}
   .inputs {
-    display: grid
+    display: grid;
     gap: 0.75rem}
   .inputs .text textarea {
     width: 100%}
   .actions {
     display: flex
-   ; gap: 0.75rem
+   ; gap: 0.75rem;
     align-items: center}
 </style>
 

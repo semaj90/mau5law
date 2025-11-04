@@ -25,8 +25,8 @@
   .metric-label { font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px}
   .metric-value { font-weight: 700; font-family: 'JetBrains Mono', monospace}
   .progress-container { border: 1px solid rgba(212, 175, 55, 0.3)}
-  .progress-bar { box-shadow: 0, 0 4px currentColor}
-  .status-dot { box-shadow: 0, 0 6px currentColor}
+  .progress-bar { box-shadow: 0 0 4px currentColor}
+  .status-dot { box-shadow: 0 0 6px currentColor}
   .network-indicator { animation: pulse 2s infinite}
   .system-id { background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%)}
   /* Responsive adjustments */ @media (max-width: 1200px) { .status-center { display: none}

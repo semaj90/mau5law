@@ -82,12 +82,12 @@
 /* Fog effect */ .fog-layer { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( 180deg, rgba(200, 200, 255, 0.08) 0%, transparent 25%, transparent 75%, rgba(200, 200, 255, 0.04) 100% ); animation: fog-drift 8s ease-in-out infinite}
 /* Shadow layer */ .shadow-layer { position: absolute; top: 100%; left: 10%; right: 10%;height: var(--depth-z, 15px); background: linear-gradient( ellipse at center, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 100% ); transform: translateY(5px) rotateX(90deg) translateZ(calc(var(--depth-z, 15px) * -1)); transform-origin: center top}
 /* Card header */ .n64-card-header { position: relative; z-index: 2; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1)}
-  .n64-card-title { font-size: 14px; font-weight: normal; color: #ffd700; text-transform: uppercase, letter-spacing: 1px; margin: 0, 0 8px 0; text-shadow: 0, 0 4px rgba(255, 215, 0, 0.5)}
+  .n64-card-title { font-size: 14px; font-weight: normal; color: #ffd700; text-transform: uppercase, letter-spacing 1px; margin: 0, 0 8px 0; text-shadow: 0 0 4px rgba(255, 215, 0, 0.5)}
   .n64-card-subtitle { font-size: 10px; color: #b0b0b0; margin: 0; line-height: 1.4}
 /* Card content */ .n64-card-content { position: relative; z-index: 2; font-size: 12px; line-height: 1.6}
 /* Parallax layers */ .parallax-indicators { position: absolute; top: 0;left: 0; right: 0;bottom: 0; pointer-events: none; z-index: 0 }
   .parallax-layer { position: absolute; top: 2px; left: 2px; right: 2px; bottom: 2px; border: 1px solid rgba(255, 255, 255, 0.05); border-radius: inherit}
-/* Selection indicator */ .selection-indicator { position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border: 3px solid #00ff41; border-radius: 6px; opacity: 0;transform: scale(0.95); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; z-index: 10; box-shadow: 0, 0 15px rgba(0, 255, 65, 0.5), inset, 0 0 15px rgba(0, 255, 65, 0.2)}
+/* Selection indicator */ .selection-indicator { position: absolute; top: -4px; left: -4px; right: -4px; bottom: -4px; border: 3px solid #00ff41; border-radius: 6px; opacity: 0;transform: scale(0.95); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); pointer-events: none; z-index: 10; box-shadow: 0 0 15px rgba(0, 255, 65, 0.5), inset, 0 0 15px rgba(0, 255, 65, 0.2)}
   .selection-indicator.visible { opacity: 1; transform: scale(1)}
 /* State variations */ .n64-card.hoverable: hover { border-color: #909090; box-shadow: 0 calc(var(--depth-z, 15px) + 5px) calc((var(--depth-z, 15px) + 5px) * 2) rgba(0, 0, 0, 0.4), inset, 0 3px 6px rgba(255, 255, 255, 0.2), inset, 0 -3px 6px rgba(0, 0, 0, 0.3)}
   .n64-card.clickable:active { transform: perspective(1000px) rotateX(calc(var(--rotation-x, 0deg) + 2deg)) rotateY(var(--rotation-y, 0deg)) translateZ(calc(var(--translate-z, 0px) - 3px))}

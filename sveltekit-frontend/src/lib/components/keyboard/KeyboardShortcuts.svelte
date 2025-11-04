@@ -101,15 +101,15 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
 
 @keyframes overlay-appear { from { opacity: 0} to { opacity: 1} }
 
-.command-palette { background: white; border-radius: 12px, box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25), 0, 0 0 1px rgba(0,0,0,0.05); width: 100%; max-width: 600px, max-height: 70vh, display: flex, flex-direction: column; animation: palette-appear 0.2s ease-out}
+.command-palette { background: white; border-radius: 12px, box-shadow 0 25px 50px -12px rgba(0,0,0,0.25), 0, 0 0 1px rgba(0,0,0,0.05); width: 100%; max-width: 600px, max-height: 70vh, display: flex, flex-direction column; animation: palette-appear 0.2s ease-out}
 
 @keyframes palette-appear { from { opacity: 0, transform: scale(0.95) translateY(-10px)} to { opacity: 1; transform: scale(1) translateY(0)} }
 
 .command-palette-header { padding: 1rem; border-bottom: 1px solid #e5e7eb}
 
-.search-container { position: relative, display: flex; align-items: center}
+.search-container { position: relative, display flex; align-items: center}
 
-.search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 3rem;border: none, outline: none, font-size: 1rem; background: transparent; color: #111827}
+.search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 3rem;border: none, outline: none, font-size 1rem; background: transparent; color: #111827}
 
 .search-input::placeholder { color: #9ca3af} .search-container: global(.close-button) { position: absolute; right: 0.5rem}
 
@@ -119,7 +119,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
 
 .command-item { display: flex; align-items: center; gap: 0.75rem;padding: 0.75rem 1rem; cursor: pointer;transition: background-color 0.1s ease}
 
-.command-item:hover, .command-item.selected { background: #f3f4f6} /* Removed unused .command-icon selector */ .command-content { flex: 1; min-width: 0} .command-title { font-weight: 500, color: #111827; margin-bottom: 0.125rem}
+.command-item:hover, .command-item.selected { background: #f3f4f6} /* Removed unused .command-icon selector */ .command-content { flex: 1; min-width: 0} .command-title { font-weight: 500, color #111827; margin-bottom: 0.125rem}
 
 .command-description { font-size: 0.875rem; color: #6b7280} /* Removed unused .no-results selector */ /* Removed unused .no-results p selector */ .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 2rem; text-align: center; color: #6b7280}
 

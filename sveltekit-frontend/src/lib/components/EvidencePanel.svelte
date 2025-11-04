@@ -106,87 +106,87 @@
   /* @unocss-include */
   .evidence-panel {
     background: var(--pico-background, #fff);
-    border-radius: 1rem
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); padding: 1.5rem
+    border-radius: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04); padding: 1.5rem;
     margin-bottom: 2rem}
   .evidence-title {
-    font-size: 1.3rem
-    margin-bottom: 1rem
-    font-weight: 600
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
     color: #374151}
   .evidence-upload {
-    display: flex
-    align-items: center
-    gap: 1rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     margin-bottom: 1rem}
   .evidence-upload-btn {
-    display: inline-block
-    background: #3b82f6
-    color: white
-    padding: 0.5rem 1rem
-    border-radius: 6px
-    cursor: pointer
-    font-weight: 500
-    transition: all 0.2s ease
+    display: inline-block;
+    background: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
     border: none}
-  .evidence-upload-btn:hover { background: #2563eb
+  .evidence-upload-btn:hover { background: #2563eb;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1)}
   .uploading {
     color: var(--pico-primary, #007bff)}
   .evidence-list {
-    display: flex
-    flex-wrap: wrap
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem}
   .evidence-nier-bits-card {
-    background: #f9fafb
-    border: 1px solid #e5e7eb
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
     border-radius: 8px
-   ;padding: 0.75rem
+   ;padding: 0.75rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); cursor: grab
-   ; transition: all 0.2s ease
-    min-width: 180px
-    max-width: 220px
+   ; transition: all 0.2s ease;
+    min-width: 180px;
+    max-width: 220px;
     user-select: none}
   .evidence-nier-bits-card:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); transform: translateY(-1px)}
   .evidence-nier-bits-card:active {
     cursor: grabbing}
   .evidence-meta {
-    font-size: 0.85em
-    color: #888
-    margin-bottom: 0.5em
-    display: flex
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 0.5em;
+    display: flex;
     gap: 0.5em}
   .evidence-tags {
     font-size: 0.75rem
-   ;background: rgba(59, 130, 246, 0.1); color: #3b82f6
-    padding: 0.125rem 0.5rem
-    border-radius: 12px
+   ;background: rgba(59, 130, 246, 0.1); color: #3b82f6;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
     font-weight: 500}
   .file-type {
-    font-size: 0.75rem
-    background: #e5e7eb
-    color: #4b5563
-    padding: 0.125rem 0.5rem
-    border-radius: 12px
-    font-weight: 500
+    font-size: 0.75rem;
+    background: #e5e7eb;
+    color: #4b5563;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
     text-transform: uppercase}
   .evidence-item-title {
-    font-weight: 600
-    color: #374151
-    font-size: 0.95em
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.95em;
     margin: 0.5em 0}
   .evidence-desc {
-    color: #6b7280
-    font-size: 0.85em
-    margin-top: 0.5em
+    color: #6b7280;
+    font-size: 0.85em;
+    margin-top: 0.5em;
     line-height: 1.4}
   .empty-state {
-    text-align: center
-    padding: 2rem
+    text-align: center;
+    padding: 2rem;
     color: #6b7280}
   .empty-hint {
-    font-size: 0.875rem
+    font-size: 0.875rem;
     margin-top: 0.5rem
    ;opacity: 0.8}
 </style>

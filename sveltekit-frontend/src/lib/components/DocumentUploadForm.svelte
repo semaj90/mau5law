@@ -235,30 +235,30 @@
 <style>
   .upload-area {
     border: 2px dashed var(--border-color);
-    border-radius: 8px
-    padding: 16px
+    border-radius: 8px;
+    padding: 16px;
     text-align: center
    ;transition: border-color 0.3s}
   .upload-area.active {
     border-color: var(--primary-color)}
   .drag-drop-content {
-    opacity: 0.7
+    opacity: 0.7;
     transition: opacity 0.3s}
   .drag-drop-content.active {
     opacity: 1}
   .file-info {
     margin-top: 16px}
   .file-item {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     justify-content: space-between
-   ;padding: 8px 0
+   ;padding: 8px 0;
     border-bottom: 1px solid var(--border-color)}
   .file-icon {
-    flex-shrink: 0
+    flex-shrink: 0;
     margin-right: 8px}
   .file-name {
-    flex-grow: 1
+    flex-grow: 1;
     font-weight: 500}
   .file-size {
     font-size: 0.875rem
@@ -268,19 +268,19 @@
   .remove-button { color: var(--danger-color)}
   .error-messages {
     margin-top: 16px
-   ;padding: 8px
+   ;padding: 8px;
     background-color: var(--danger-bg); border-radius: 4px}
   .error-message {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     margin-bottom: 4px}
   .error-text {
-    margin-left: 4px
+    margin-left: 4px;
     font-size: 0.875rem
    ;color: var(--danger-color)}
   .actions {
     margin-top: 16px
-   ;display: flex
+   ;display: flex;
     justify-content: flex-end}
   .save-draft-button {
     margin-right: 8px}

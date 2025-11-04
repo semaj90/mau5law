@@ -45,7 +45,7 @@
   </div> {:else if query.trim() && !isSearching && !error} <div class="no-results nes-container"> <p class="nes-text">ðŸ” No results found for: "{ query }"</p> {/if}
   </div>
  <style> .search-container { max-width: 800px; margin: 20px auto;padding: 20px}
-  .search-input-group { display: flex, gap: 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap}
+  .search-input-group { display: flex, gap 10px; margin-bottom: 15px; align-items: center; flex-wrap: wrap}
   .search-input { flex: 1; min-width: 300px}
   .search-button { white-space: nowrap; min-width: 120px}
   .search-config { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap}
@@ -62,7 +62,7 @@
   .payload-text { margin: 0; line-height: 1.6; word-wrap: break-word}
   .metadata-details { margin-top: 15px}
   .metadata-details summary { cursor: pointer; margin-bottom: 10px; font-weight: bold}
-  .metadata-content { background-color: #f0f0f0, padding: 10px; border-radius: 8px}
+  .metadata-content { background-color: #f0f0f0, padding 10px; border-radius: 8px}
   .metadata-content table { width: 100%; font-size: 0.9em}
   .metadata-content td: first-child { font-weight: bold; background-color: #e0e0e0; width: 30%}
   .no-results { text-align: center; padding: 30px; background-color: #f8f8f8}
@@ -71,7 +71,7 @@
     .search-button { width: 100%}
     .search-config { flex-direction: column; align-items: flex-start}
     .result-header { flex-direction: column; align-items: flex-start}
-  } /* NES.css overrides for better search experience */ .nes-input:focus { box-shadow: 0, 0 0 4px #92cc41}
+  } /* NES.css overrides for better search experience */ .nes-input:focus { box-shadow: 0 0 0 4px #92cc41}
   .nes-btn.is-disabled { cursor: not-allowed; opacity: 0.6}
   .nes-container.is-rounded { border-radius: 8px}
   /* Animation for loading/disabled state */ .search-button.is-disabled { animation: pulse 1.5s ease-in-out infinite alternate}

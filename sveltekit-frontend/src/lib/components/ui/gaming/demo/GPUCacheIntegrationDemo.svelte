@@ -56,8 +56,8 @@
  <div class="state-node">Error</div> </div> </div>
  <style> /* Component-specific styles that use the global GPU cache CSS */ .gpu-cache-demo { /* Use the global GPU cache CSS custom properties */ background: var(--gpu-cache-bg-primary); border: 1px solid var(--gpu-cache-border-primary)}
   .era-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gpu-spacing-md)}
-  .era-button { padding: var(--gpu-spacing-sm) var(--gpu-spacing-md); border: 1px solid var(--gpu-cache-border-primary);background: var(--gpu-cache-bg-secondary), color: var(--gpu-cache-text-primary); font-family: monospace; border-radius: 4px; transition: all 0.3s ease}
-  .era-button.active { background: var(--gpu-cache-accent-primary), color: var(--gpu-cache-bg-primary); box-shadow: var(--gpu-glow-primary)}
+  .era-button { padding: var(--gpu-spacing-sm) var(--gpu-spacing-md); border: 1px solid var(--gpu-cache-border-primary);background: var(--gpu-cache-bg-secondary), color var(--gpu-cache-text-primary); font-family: monospace; border-radius: 4px; transition: all 0.3s ease}
+  .era-button.active { background: var(--gpu-cache-accent-primary), color var(--gpu-cache-bg-primary); box-shadow: var(--gpu-glow-primary)}
   .nes-memory-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gpu-spacing-sm)}
   .nes-memory-bank { padding: var(--gpu-spacing-xs); border: 1px solid var(--nes-memory-border); border-radius: 2px; font-size: 0.75rem; font-family: monospace}
   /* Use NES memory region colors from GPU cache CSS */ .nes-memory-bank.nes-prg_rom { border-color: var(--nes-prg-rom-color)}
@@ -75,15 +75,15 @@
   .metric-bar { height: 4px; background: var(--gpu-cache-bg-tertiary); margin-top: var(--gpu-spacing-xs); overflow: hidden; border-radius: 2px}
   .metric-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gpu-cache-accent-secondary), var(--gpu-cache-accent-primary)); transition: width: 0.5s ease}
   .state-machine-diagram { display: flex; gap: var(--gpu-spacing-sm); flex-wrap: wrap}
-  .state-node { padding: var(--gpu-spacing-xs) var(--gpu-spacing-sm); background: var(--gpu-cache-bg-tertiary);border: 1px solid var(--gpu-cache-border-secondary); border-radius: 4px; font-family: monospace, font-size: 0.75rem; color: var(--gpu-cache-text-secondary);transition: all 0.3s ease}
-  .state-node.active { background: var(--gpu-cache-accent-primary), color: var(--gpu-cache-bg-primary), box-shadow: var(--gpu-glow-primary); animation: pulse 1s ease-in-out infinite alternate}
+  .state-node { padding: var(--gpu-spacing-xs) var(--gpu-spacing-sm); background: var(--gpu-cache-bg-tertiary);border: 1px solid var(--gpu-cache-border-secondary); border-radius: 4px; font-family: monospace, font-size 0.75rem; color: var(--gpu-cache-text-secondary);transition: all 0.3s ease}
+  .state-node.active { background: var(--gpu-cache-accent-primary), color: var(--gpu-cache-bg-primary), box-shadow var(--gpu-glow-primary); animation: pulse 1s ease-in-out infinite alternate}
   @keyframes pulse { from { opacity: 0.8}
     to { opacity: 1}
   } /* Cache status indicator using global classes */ .cache-status-indicator { padding: var(--gpu-spacing-xs) var(--gpu-spacing-sm); border-radius: 4px; font-family: monospace; font-size: 0.75rem; font-weight: bold; text-transform: uppercase}
   .cache-status-indicator.idle { background: var(--gpu-cache-state-idle)}
   .cache-status-indicator.querying { background: var(--gpu-cache-state-querying); animation: var(--gpu-cache-animation-processing)}
   .cache-status-indicator.backgroundRefreshing { background: var(--gpu-cache-state-refreshing); animation: var(--gpu-cache-animation-refreshing)}
-  /* YoRHa quantum interface */ .yorha-quantum-interface { position: relative, display: flex; justify-content: center; align-items: center; min-height: 200px}
+  /* YoRHa quantum interface */ .yorha-quantum-interface { position: relative, display flex; justify-content: center; align-items: center; min-height: 200px}
   .quantum-effect-container { position: relative; z-index: 2 }
   .yorha-quantum-button { background: linear-gradient(45deg, var(--yorha-quantum-primary), var(--yorha-quantum-secondary)); border: 2px solid var(--yorha-quantum-accent);color: var(--gpu-cache-text-primary); padding: var(--gpu-spacing-md) var(--gpu-spacing-lg); font-family: monospace; font-weight: bold; border-radius: 8px; box-shadow: var(--gpu-glow-secondary); transition: all 0.3s ease;position: relative; overflow: hidden}
   .yorha-quantum-buttonhover { box-shadow: var(--gpu-glow-primary); transform: scale(1.05)}

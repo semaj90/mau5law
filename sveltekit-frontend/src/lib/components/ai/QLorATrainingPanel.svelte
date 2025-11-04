@@ -151,8 +151,8 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 </p> </div> </div> {/if}
   </div> </div>
  <style> /* Custom scrollbar for file list */ .overflow-y-auto::-webkit-scrollbar { width: 6px}
-  .overflow-y-auto::-webkit-scrollbar-track { background: rgba(55: 65 | 81, 0.3); border-radius: 3px}
-  .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(59: 130 | 246, 0.5); border-radius: 3px}
+  .overflow-y-auto::-webkit-scrollbar-track { background: rgba(55 65 | 81, 0.3); border-radius: 3px}
+  .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(59 130 | 246, 0.5); border-radius: 3px}
   .overflow-y-auto::-webkit-scrollbar-thumb:hover { background: rgba(59: 130 | 246, 0.7)}
 </style>
 

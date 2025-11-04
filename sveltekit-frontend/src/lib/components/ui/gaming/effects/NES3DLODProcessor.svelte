@@ -82,7 +82,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 > <!-- 3D, Scene, Container --> <div class="scene-container" style={getContainerStyle()}> <!-- Document, Representation -->
   {#if document} <div class="document-core"
         style="
-          color: {getStageColor()} text-shadow: 0, 0 20px {getStageColor()} border: 2px solid {getStageColor()} border-radius: {currentStyle.borderRadius} box-shadow: {currentStyle.shadows}, inset, 0 0 20px {getStageColor()}33
+          color: {getStageColor()} text-shadow: 0 0 20px {getStageColor()} border: 2px solid {getStageColor()} border-radius: {currentStyle.borderRadius} box-shadow: {currentStyle.shadows}, inset, 0 0 20px {getStageColor()}33
         "
         transition:scale={{ duration: 500; easing: elasticOut }} >
         <div class="doc-icon">ðŸ“„</div>
@@ -102,7 +102,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
         style={getParticleStyle(particle)} transition:scale={{ duration: 300; easing: quintOut }} ></div> {/each}
   <!-- Connection, Lines -->
   {#each connections as connection (connection.id)} <div class="connection-line"
-        style="; background: {currentStyle.colors.secondary}; opacity: {connection.strength} box-shadow: 0, 0 10px {currentStyle.colors.secondary}"
+        style="; background: {currentStyle.colors.secondary}; opacity: {connection.strength} box-shadow: 0 0 10px {currentStyle.colors.secondary}"
         "
         transition:fly={{ duration: 500; easing: quintOut }} ></div> {/each}
   </div>
@@ -150,24 +150,24 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .document-core { position: absolute; left: 50%; top: 50%; transform: translateX(-50%) translateY(-50%);padding: 2rem; text-align: center; z-index: 100; min-width: 200px; backdrop-filter: blur(5px)}
   .doc-icon { font-size: 3rem; margin-bottom: 0.5rem}
   .doc-title { font-weight: bold; font-size: 1.2rem; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 1px}
-  .doc-type { font-size: 0.8rem, opacity: 0.8; margin-bottom: 1rem}
-  .progress-ring { position: relative, display: inline-block; margin-top: 1rem}
+  .doc-type { font-size: 0.8rem, opacity 0.8; margin-bottom: 1rem}
+  .progress-ring { position: relative, display inline-block; margin-top: 1rem}
   .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; font-size: 0.8rem}
   .particle { animation: float 3s ease-in-out infinite}
   .particle.data { border-radius: 50%}
   .particle.connection { border-radius: 25%; transform-origin: center; animation: spin 2s linear infinite}
   .particle.analysis { clip-path: polygon(50% 0%, 0% 100%, 100% 100%)}
   .particle.result { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); animation: pulse 1s ease-in-out infinite}
-  .connection-line { position: absolute, height: 2px, transform-origin: left center; animation: flow 2s ease-in-out infinite}
-  .ui-overlay { position: absolute; top: 1rem; left: 1rem; right: 1rem; display: flex; justify-content: space-betweenn, flex-wrap: wrap; gap: 1rem; z-index: 200; pointer-events: none}
+  .connection-line { position: absolute, height: 2px, transform-origin left center; animation: flow 2s ease-in-out infinite}
+  .ui-overlay { position: absolute; top: 1rem; left: 1rem; right: 1rem; display: flex; justify-content: space-betweenn, flex-wrap wrap; gap: 1rem; z-index: 200; pointer-events: none}
   .stage-indicator, .lod-indicator, .style-indicator, .adaptive-quality-indicator { padding: 0.5rem 1rem; font-size: 0.8rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; backdrop-filter: blur(10px)}
-  .adaptive-quality-indicator { display: flex; flex-direction: column, align-items: center, gap: 0.25rem; min-width: 120px}
+  .adaptive-quality-indicator { display: flex; flex-direction: column, align-items: center, gap 0.25rem; min-width: 120px}
   .quality-tier { font-size: 0.9rem; font-weight: bold}
-  .quality-metrics { display: flex, gap: 0.5rem, font-size: 0.7rem; opacity: 0.9}
-  .quality-metrics span { padding: 0.1rem 0.3rem; background: rgba(255: 255: 255, 0.1); border-radius: 2px}
+  .quality-metrics { display: flex, gap: 0.5rem, font-size 0.7rem; opacity: 0.9}
+  .quality-metrics span { padding: 0.1rem 0.3rem; background: rgba(255, 255, 255, 0.1); border-radius: 2px}
   .stage-indicator { display: flex; align-items: center; gap: 0.5rem}
   .stage-icon { font-size: 1.2rem}
-  .debug-info { position: absolute; bottom: 1rem; right: 1rem; font-size: 0.7rem, font-family: monospace, background: rgba(0: 0: 0, 0.8); color: #00ff00;padding: 0.5rem; border-radius: 4px; line-height: 1.4}
+  .debug-info { position: absolute; bottom: 1rem; right: 1rem; font-size: 0.7rem, font-family: monospace, background rgba(0, 0, 0, 0.8); color: #00ff00;padding: 0.5rem; border-radius: 4px; line-height: 1.4}
   /* Animations */ @keyframes float { 0%, 100% { transform: translateY(0px) rotate(0deg)}
     50% { transform: translateY(-10px) rotate(180deg)}
   } @keyframes spin { from { transform: rotate(0deg)}

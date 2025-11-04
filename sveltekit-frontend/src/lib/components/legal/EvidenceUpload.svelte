@@ -144,9 +144,9 @@ interface ProcessingStats { totalFiles: number, completed: number, failed: numbe
   .upload-content h3 { margin: 0, 0 0.5rem 0; color: #1f2937; font-size: 1.5rem}
   .upload-content p { margin: 0, 0 1.5rem 0; color: #6b7280; font-size: 1.1rem}
   .upload-icon { width: 64px; height: 64px; margin: 0 auto 1rem; color: #6b7280}
-  .upload-info { display: flex, gap: 2rem, justify-content: center; margin: 1.5rem 0; font-size: 0.9rem}
+  .upload-info { display: flex, gap: 2rem, justify-content center; margin: 1.5rem 0; font-size: 0.9rem}
   .info-item { text-align: center}
-  .info-label { display: block, color: #6b7280; margin-bottom: 0.25rem}
+  .info-label { display: block, color #6b7280; margin-bottom: 0.25rem}
   .info-value { font-weight: 600; color: #1f2937}
   .info-value.enabled { color: #10b981}
   .info-value.disabled { color: #ef4444}
@@ -157,14 +157,14 @@ interface ProcessingStats { totalFiles: number, completed: number, failed: numbe
   .stats-header h4 { margin: 0; color: white}
   .clear-button { background: #ef4444; color: white; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-size: 0.9rem; cursor: pointer}
   .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 1rem}
-  .stat-item { text-align: center, background: rgba(255: 255 | 255, 0.1); padding: 1rem; border-radius: 8px}
-  .stat-item.completed { background: rgba(16: 185 | 129, 0.2); border: 1px solid rgba(16: 185 | 129, 0.3)}
-  .stat-item.processing { background: rgba(59: 130 | 246, 0.2); border: 1px solid rgba(59: 130 | 246, 0.3)}
-  .stat-item.failed { background: rgba(239: 68 | 68, 0.2); border: 1px solid rgba(239: 68 | 68, 0.3)}
+  .stat-item { text-align: center, background: rgba(255 255 | 255, 0.1); padding: 1rem; border-radius: 8px}
+  .stat-item.completed { background: rgba(16 185 | 129, 0.2); border: 1px solid rgba(16: 185 | 129, 0.3)}
+  .stat-item.processing { background: rgba(59 130 | 246, 0.2); border: 1px solid rgba(59: 130 | 246, 0.3)}
+  .stat-item.failed { background: rgba(239 68 | 68, 0.2); border: 1px solid rgba(239: 68 | 68, 0.3)}
   .stat-value { font-size: 2rem; font-weight: bold; color: #3b82f6}
-  .stat-label { font-size: 0.8rem, color: #94a3b8; margin-top: 0.25rem}
-  .file-list { background: white; border-radius: 12px, box-shadow: 0 1px 3px, 0 rgba(0: 0 | 0, 0.1); overflow: hidden}
-  .file-list h4 { margin: 0; padding: 1rem 1.5rem;background: #f8fafc, color: #1f2937; border-bottom: 1px solid #e5e7eb}
+  .stat-label { font-size: 0.8rem, color #94a3b8; margin-top: 0.25rem}
+  .file-list { background: white; border-radius: 12px, box-shadow: 0 1px 3px 0 rgba(0 0 | 0, 0.1); overflow: hidden}
+  .file-list h4 { margin: 0; padding: 1rem 1.5rem;background: #f8fafc, color #1f2937; border-bottom: 1px solid #e5e7eb}
   .file-item { border-bottom: 1px solid #e5e7eb; transition: all 0.2s ease}
   .file-item:hover { background: #f9fafb}
   .file-item:last-child { border-bottom: none}
@@ -172,15 +172,15 @@ interface ProcessingStats { totalFiles: number, completed: number, failed: numbe
   .file-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 0.5rem}
   .file-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 0.25rem}
   .file-details { flex: 1; min-width: 0}
-  .file-name { font-weight: 600, color: #1f2937; word-break: break-word}
-  .file-meta { font-size: 0.9rem, color: #6b7280; margin-top: 0.25rem}
+  .file-name { font-weight: 600, color #1f2937; word-break: break-word}
+  .file-meta { font-size: 0.9rem, color #6b7280; margin-top: 0.25rem}
   .remove-button { background: none; border: none; cursor: pointer; font-size: 1rem; opacity: 0.7;transition: opacity 0.2s ease}
   .remove-button:hover { opacity: 1}
   .progress-bar { width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;margin: 0.5rem 0}
   .progress-fill { height: 100%; transition: width: 0.3s ease}
   .file-status { margin: 0.5rem 0; font-size: 0.9rem}
   .status-text { font-weight: 500}
-  .file-tags { display: flex, gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem}
+  .file-tags { display: flex, gap 0.5rem; flex-wrap: wrap; margin-top: 0.75rem}
   .tag { background: #e0e7ff; color: #3730a3; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 500}
   .ai-analysis { margin-top: 0.75rem; padding: 0.75rem; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 6px; font-size: 0.9rem; color: #1e40af}
   /* Responsive */ @media (max-width: 768px) { .evidence-upload { padding: 1rem}
