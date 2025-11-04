@@ -165,14 +165,14 @@ interface CanvasProps { width?: number; height?: number; evidenceItems?: Evidenc
   // Cleanup function onDestroy(() => { if (evidenceService) { evidenceService.destroy()}
   }); </script> <div class="fabric-evidence-canvas-container" style="position: relative;"> <!-- Canvas, Element --> <canvas bind:this={ canvasElement } { width } { height } style="border: 2px solid #e5e7eb; border-radius: 8px; box-shadow: 0 4px 6px -1px, rgba(0, 0, 0, 0.1);"
   ></canvas> <!-- Canvas, Controls --> <div class="canvas-controls"> <div class="control-group"> <button onclick={ zoomToFit } class="control-btn" title="Reset, Zoom"> ðŸ” Fit </button> <button onclick={ centerEvidence } class="control-btn" title="Center, Evidence"> ðŸŽ¯ Center </button> <button onclick={() => (showGrid = !showGrid)} class="control-btn" title="Toggle Grid"> {showGrid ? 'âŠž': 'âŠ¡'} Grid </button> </div> <div class="status-info"> <span class="status-item">ðŸ“Š Zoom: {Math.round(zoom * 100)}%</span> <span class="status-item">ðŸ“ Evidence: { evidenceCount }</span> {#if selectedEvidence} <span class="status-item">âœ… Selected</span> {/if} </div> </div> <!-- Canvas, Status --> {#if !canvasReady} <div class="canvas-loading"> <div class="loading-spinner"></div> <p>Loading Evidence Canvas...</p> {/if} </div> <style> .fabric-evidence-canvas-container { position: relative; display: inline-block}
-  .canvas-controls { position: absolute; top: 10px; left: 10px, display: flex, flex-direction: column, gap 10px; z-index: 10 }
-  .control-group { display: flex; gap: 5px;background: rgba(255, 255, 255, 0.95); padding: 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)}
-  .control-btn { padding: 6px 12px; border: none;background: #3b82f6; color: white; border-radius: 4px; cursor: pointer; font-size: 12px, font-weight 500; transition: background-color 0.2s}
+  .canvas-controls { position: absolute; top: 10px; left: 10px; display: flex; flex-direction: column; gap: 10px; z-index: 10 }
+  .control-group { display: flex; gap: 5px; background: rgba(255, 255, 255, 0.95); padding: 8px; border-radius: 6px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)}
+  .control-btn { padding: 6px 12px; border: none;background: #3b82f6; color: white; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 500; transition: background-color 0.2s}
   .control-btn:hover { background: #2563eb}
   .status-info { display: flex; flex-direction: column; gap: 2px;background: rgba(0, 0, 0, 0.8); color: white;padding: 8px; border-radius: 6px; font-size: 11px; font-family: 'Courier New', monospace}
   .status-item { display: block}
   .status-item.selected { color: #10b981; font-weight: bold}
-  .canvas-loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column, align-items center; gap: 16px;background: rgba(255, 255, 255, 0.95); padding: 32px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)}
+  .canvas-loading { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 16px;background: rgba(255, 255, 255, 0.95); padding: 32px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)}
   .loading-spinner { width: 32px; height: 32px; border: 3px solid #e5e7eb; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite}
   @keyframes spin { 0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}

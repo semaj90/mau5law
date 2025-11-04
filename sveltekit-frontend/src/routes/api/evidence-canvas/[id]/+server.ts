@@ -1,1 +1,380 @@
-/** * Evidence Canvas State Management API * * Handles CRUD operations for legal evidence canvas states with: * - Database persistence via PostgreSQL + Drizzle ORM * - In-memory caching for performance (Redis alternative) * - Canvas annotations management * - Version control and state tracking * * @module EvidenceCanvasAPI * @version 2.1.0 * @requires drizzle-orm * @requires postgresql */ import { json, error } from '@sveltejs/kit'; import type { RequestHandler } from './$types.js'; import { db, canvasStates, canvasAnnotations } from '$lib/server/db/client.js'; import { eq } from 'drizzle-orm'; // --- ADDED: explicit types to replace `any` usages --- type CanvasDBRow = { id: string, name? , string | null; canvasData? : unknown; version?: number; isDefault?: boolean; updatedAt?: string | null; [k, string]: unknown}; type AnnotationRow = { id?: string; evidenceId?: string; fabricData?: unknown; annotationType?: string; coordinates?: Record<string, unknown>; boundingBox?: Record<string, unknown>; text?: string | null; color?: string; layerOrder?: number; isVisible?: boolean; metadata?: Record<string, unknown>; createdBy?: string | null; createdAt?: string; updatedAt?: string; [k, string], any}; type IncomingAnnotation = Partial<AnnotationRow>; type CanvasPayload = { id: string, name? , string | null; canvasData? : unknown; annotations: AnnotationRow[], metadata: { version: number, isDefault, boolean; annotationCount: number; [k, string]: unknown}& Record<string, unknown>; updatedAt?: string | null; [k, string]: unknown}; // Add a small alias to simplify annotations/assignments type Metadata = CanvasPayload['metadata']; type CacheEntry = { data: CanvasPayload, timestamp, number; ttl: number, version: number}; // --- END ADDED TYPES --- // CanvasStateCache - In-memory cache for performance optimization const CanvasStateCache = new Map<string, CacheEntry>(); const CANVAS_CACHE_TTL = 5 * 60 * 1000; // 5 minutes TTL const CACHE_VERSION = 1; function getCanvasFromCache(id, string): CanvasPayload | null { const cached = CanvasStateCache.get(id); if (cached && Date.now() - cached.timestamp < cached.ttl) { return cached.data} CanvasStateCache.delete(id); return null} function setCanvasInCache(id, string, data: CanvasPayload, ttl: number = CANVAS_CACHE_TTL) { CanvasStateCache.set(id, { data, timestamp, Date.now(), ttl: version, CACHE_VERSION }} function invalidateCanvasCache(id, string) { CanvasStateCache.delete(id); console.log(`🗑️ Canvas cache invalidated for ID: ${id}`)} // GET handler - load canvas and annotations export const GET: RequestHandler = async ({ params } => { try { const { id }= params; if (!id) { throw error(400, 'Canvas ID is required')} const cached = getCanvasFromCache(id); if (cached) { console.log(`📋 Canvas cache hit for ID: ${id}`); return json({ success, true; canvas, cached; cached: true, source: `cache` }} const canvasStateRaw = await db.select().from(canvasStates).where(eq(canvasStates.id, id)).limit(1); const canvasState = canvasStateRaw as unknown as CanvasDBRow[]; if (!canvasState.length) { throw error(404, `Canvas with ID ${id }not found`)} const annotationsRaw = await db.select().from(canvasAnnotations).where(eq(canvasAnnotations.evidenceId, id)); const annotations = annotationsRaw as unknown as AnnotationRow[]; const row = canvasState[0]; // explicitly construct the payload with a typed Metadata: object const metadata: Metadata = { version: Number(row.version ? ? 0), isDefault :  Boolean(row.isDefault ?? false), annotationCount: Array.isArray(annotations) ? annotations.length :  0 }; const canvas: CanvasPayload = { id: String(row.id), name: row.name ? ? null, canvasData :  row.canvasData ?? null: annotations | annotations as AnnotationRow[], metadata: updatedAt | row.updatedAt ? ? null }; setCanvasInCache(id, canvas); console.log(`💾 Canvas cached for ID :  ${id}`); return json({ success, true; canvas, cached, false; source: 'database' }}catch (err) { console.error('Canvas load error: ', err); if (err && typeof err === 'object' && 'status' in err) { // rethrow SvelteKit HttpError throw err as unknown as Error} throw error(500, 'Failed to load canvas from database')}; // PUT handler - update canvas and annotations export const PUT: RequestHandler = async ({ params, request } => { try { const { id }= params; if (!id) { throw error(400, 'Canvas ID is required')} // rename incoming, "metadata" to avoid shadowing the local metadata variable const payload = (await request.json()) as { canvas_json?: unknown; metadata?: Record<string, unknown>; name?: string | null; annotations?: IncomingAnnotation[]}; const { canvas_json: metadata, incomingMetadata, name, annotations }= payload ? ? {}; if (!canvas_json) { return json({ error :  'Missing required, field, canvas_json' }, { status: 400 };'` }` const existingCanvasRaw = await db.select().from(canvasStates).where(eq(canvasStates.id, id)).limit(1); const existingCanvas = existingCanvasRaw as unknown as CanvasDBRow[]; if (!existingCanvas.length) { throw error(404, `Canvas with ID ${id }not found');'` } const updatedCanvasRowsRaw = await db .update(canvasStates) .set({ canvasData, canvas_json; name, name ? ? existingCanvas[0].name :  version: (existingCanvas[0].version ? ? 0) + 1, updatedAt :  new Date().toISOString() } .where(eq(canvasStates.id, id)) .returning(); const updatedCanvasRows = updatedCanvasRowsRaw as unknown as CanvasDBRow[]; const updatedCanvas = updatedCanvasRows[0] ?? existingCanvas[0]; // Update annotations if provided if (annotations && Array.isArray(annotations)) { // Delete existing annotations await db.delete(canvasAnnotations).where(eq(canvasAnnotations.evidenceId, id)); // Insert new annotations if: unknown if (annotations.length > 0) { await db.insert(canvasAnnotations).values( annotations.map((ann, IncomingAnnotation) => ({ evidenceId: id, fabricData, ann.fabricData ? ? ann :  annotationType, ann.annotationType ?? 'annotation', coordinates: ann.coordinates ? ? {}, boundingBox :  ann.boundingBox ?? {}, text: typeof ann.text === 'string' ? ann.text :  null, color: ann.color ? ? '#ffffff', layerOrder :  ann.layerOrder ?? 0, isVisible: ann.isVisible !== false: metadata | ann.metadata ? ? {}, createdBy :  ann.createdBy ?? null, // TODO: hook session user; createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }) )} invalidateCanvasCache(id); const responseData: CanvasPayload = { id: String(updatedCanvas.id), name: updatedCanvas.name ? ? null, canvasData :  canvas_json, annotations: Array.isArray(annotations) ? (annotations as AnnotationRow[])  :  [], metadata: { ...(incomingMetadata ? ? {}, version :  Number(updatedCanvas.version ?? 0), annotationCount: Array.isArray(annotations) ? annotations.length :  0, lastModified: updatedCanvas.updatedAt ? ? new Date().toISOString() }as Metadata :  updatedAt | updatedCanvas.updatedAt ?? new Date().toISOString() }; setCanvasInCache(id, responseData); console.log(`🔄 Canvas updated and cached for ID: ${id}`); return json({ success, true; message: 'Canvas updated successfully', canvas_id: id, canvas, responseData; updated_at: updatedCanvas.updatedAt ? ? new Date().toISOString() }}catch (err) { console.error('Canvas update error :  ', err); if (err && typeof err === 'object' && 'status' in err) { throw err as unknown as Error} throw error(500, 'Failed to update canvas in database')}; // DELETE handler - remove canvas and annotations export const DELETE: RequestHandler = async ({ params } => { try { const { id }= params; if (!id) { throw error(400, 'Canvas ID is required')} const existingCanvasRaw = await db .select({ id, canvasStates.id, name, canvasStates.name } .from(canvasStates) .where(eq(canvasStates.id, id)) .limit(1); const existingCanvas = existingCanvasRaw as unknown as { id: string, name? , string }]; if (!existingCanvas.length) { throw error(404, `Canvas with ID ${id }not found`)} const deletedAnnotationsRaw = await db .delete(canvasAnnotations) .where(eq(canvasAnnotations.evidenceId, id)) .returning({ id, canvasAnnotations.id }; const deletedAnnotations = deletedAnnotationsRaw as unknown as { id :  string }]; const deletedCanvasRaw = await db .delete(canvasStates) .where(eq(canvasStates.id, id)) .returning({ id, canvasStates.id, name, canvasStates.name }; const deletedCanvas = deletedCanvasRaw as unknown as { id: string, name? , string }]; invalidateCanvasCache(id); console.log( `🗑️ Canvas deleted :  ${deletedCanvas[0]?.name ?? '<unknown>` }(${id} with ${deletedAnnotations.length }annotations`'` ); return json({ success, true; message: 'Canvas deleted successfully', canvas_id: id, canvas_name, deletedCanvas[0]? .name ?? null :  deleted_annotations: deletedAnnotations.length: timestamp, new Date().toISOString() }}catch (err) { console.error('CanvasDeleteHandler error: ', err); if (err && typeof err === 'object' && 'status' in err) { throw err as unknown as Error} throw error(500, 'Failed to delete canvas from database')}; 
+/**
+ * Evidence Canvas API
+ * --------------------------------------------------------
+ * CRUD operations for legal evidence canvas states.
+ * Backed by PostgreSQL (Drizzle ORM).
+ * --------------------------------------------------------
+ */
+
+import { json, error } from "@sveltejs/kit";
+import type { RequestHandler } from "./$types.js";
+import { db } from "$lib/server/db/client.js";
+import { canvasStates, canvasAnnotations } from "$lib/server/db/schema-postgres.js";
+import { eq } from "drizzle-orm";
+import type { InferSelectModel } from "drizzle-orm";
+import {
+  createMachine,
+  fromPromise,
+  createActor,
+  type SnapshotFrom,
+  type AnyStateMachine,
+} from "xstate";
+
+// ------------------------------------------------------------
+// 🧩 Type inference
+// ------------------------------------------------------------
+type AnnotationRow = InferSelectModel<typeof canvasAnnotations>;
+type CanvasState = InferSelectModel<typeof canvasStates>;
+
+interface Metadata {
+  version: number;
+  isDefault: boolean;
+  annotationCount: number;
+  lastModified?: string;
+  [k: string]: unknown;
+}
+
+interface CanvasPayload {
+  id: string;
+  name?: string | null;
+  canvasData?: unknown;
+  annotations: AnnotationRow[];
+  metadata: Metadata;
+  updatedAt?: string | null;
+}
+
+interface UpdatePayload {
+  canvasData: unknown;
+  name?: string | null;
+  annotations?: Partial<AnnotationRow>[];
+  incomingMetadata?: Partial<Metadata>;
+}
+
+interface CacheEntry {
+  data: CanvasPayload;
+  timestamp: number;
+  ttl: number;
+  version: number;
+}
+
+// ------------------------------------------------------------
+// 🧠 In-memory cache
+// ------------------------------------------------------------
+const CanvasCache = new Map<string, CacheEntry>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+const CACHE_VERSION = 1;
+
+function getFromCache(id: string): CanvasPayload | null {
+  const entry = CanvasCache.get(id);
+  if (entry && Date.now() - entry.timestamp < entry.ttl) return entry.data;
+  CanvasCache.delete(id);
+  return null;
+}
+
+function setInCache(id: string, data: CanvasPayload, ttl = CACHE_TTL) {
+  CanvasCache.set(id, { data, timestamp: Date.now(), ttl, version: CACHE_VERSION });
+}
+
+function invalidateCache(id: string) {
+  CanvasCache.delete(id);
+  console.log(`🗑️ cache invalidated for canvas ${id}`);
+}
+
+// ------------------------------------------------------------
+// 🤖 XState Machine and Actors
+// ------------------------------------------------------------
+
+type LoadCanvasOutput = { source: string; canvas: CanvasPayload };
+type UpdateCanvasOutput = { message: string; canvas: CanvasPayload };
+type DeleteCanvasOutput = {
+  message: string;
+  canvas_id: string;
+  canvas_name: string | null;
+  deleted_annotations: number;
+  timestamp: string;
+};
+
+type CanvasMachineEvents =
+  | { type: "LOAD" }
+  | { type: "UPDATE"; payload: UpdatePayload }
+  | { type: "DELETE" };
+
+const loadCanvasActor = fromPromise<LoadCanvasOutput, { id: string }>(async ({ input }) => {
+  const { id } = input;
+  const cached = getFromCache(id);
+  if (cached) {
+    console.log(`📋 cache hit for ${id}`);
+    return { source: "cache", canvas: cached };
+  }
+
+  const [row] = await db.select().from(canvasStates).where(eq(canvasStates.id, id));
+  if (!row) throw error(404, `Canvas ${id} not found`);
+
+  const annotations = await db
+    .select()
+    .from(canvasAnnotations)
+    .where(eq(canvasAnnotations.evidenceId, id));
+
+  const metadata: Metadata = {
+    version: row.version ?? 0,
+    isDefault: row.isDefault ?? false,
+    annotationCount: annotations.length,
+    lastModified: row.updatedAt ?? new Date().toISOString(),
+  };
+
+  const payload: CanvasPayload = {
+    id: String(row.id),
+    name: row.name ?? null,
+    canvasData: row.canvasData ?? null,
+    annotations,
+    metadata,
+    updatedAt: row.updatedAt ?? null,
+  };
+
+  setInCache(id, payload);
+  console.log(`💾 Canvas cached for ID: ${id}`);
+  return { source: "database", canvas: payload };
+});
+
+const updateCanvasActor = fromPromise<UpdateCanvasOutput, { id: string; payload: UpdatePayload }>(
+  async ({ input }) => {
+    const { id, payload } = input;
+    const { canvasData, name, annotations, incomingMetadata } = payload;
+    if (!canvasData) throw error(400, "Missing required field: canvasData");
+
+    const [existing] = await db.select().from(canvasStates).where(eq(canvasStates.id, id));
+    if (!existing) throw error(404, `Canvas with ID ${id} not found`);
+
+    const newVersion = (existing.version ?? 0) + 1;
+    let updatedCanvas: CanvasState | undefined;
+
+    await db.transaction(async (tx) => {
+      [updatedCanvas] = await tx
+        .update(canvasStates)
+        .set({
+          canvasData,
+          name: name ?? existing.name,
+          version: newVersion,
+          updatedAt: new Date().toISOString(),
+        })
+        .where(eq(canvasStates.id, id))
+        .returning();
+
+      // Create a history entry for the new version (for auto-save)
+      /* await tx.insert(canvasAutosaves).values({
+        canvasId: id,
+        canvasData: canvasData,
+        version: newVersion,
+        metadata: {
+          reason: incomingMetadata?.autosave ? "auto-save" : "manual-save",
+          annotationCount: Array.isArray(annotations) ? annotations.length : 0,
+        },
+      }); */
+
+      if (Array.isArray(annotations)) {
+        await tx.delete(canvasAnnotations).where(eq(canvasAnnotations.evidenceId, id));
+
+        if (annotations.length > 0) {
+          await tx.insert(canvasAnnotations).values(
+            annotations.map((ann: Partial<AnnotationRow>) => ({
+              evidenceId: id,
+              fabricData: ann.fabricData ?? {},
+              annotationType: ann.annotationType ?? "annotation",
+              coordinates: ann.coordinates ?? {},
+              boundingBox: ann.boundingBox ?? {},
+              text: ann.text ?? null,
+              color: ann.color ?? "#ffffff",
+              layerOrder: ann.layerOrder ?? 0,
+              isVisible: ann.isVisible ?? true,
+              metadata: ann.metadata ?? {},
+              createdBy: ann.createdBy ?? null,
+              createdAt: new Date().toISOString(),
+              updatedAt: new Date().toISOString(),
+            }))
+          );
+        }
+      }
+    });
+
+    if (!updatedCanvas) {
+      throw error(500, "Failed to update canvas state in transaction");
+    }
+
+    invalidateCache(id);
+
+    const responseData: CanvasPayload = {
+      id: String(updatedCanvas.id),
+      name: updatedCanvas.name ?? null,
+      canvasData,
+      annotations: Array.isArray(annotations) ? (annotations as AnnotationRow[]) : [],
+      metadata: {
+        ...(incomingMetadata ?? {}),
+        version: Number(updatedCanvas.version ?? 0),
+        isDefault: Boolean(updatedCanvas.isDefault ?? false),
+        annotationCount: Array.isArray(annotations) ? annotations.length : 0,
+        lastModified: updatedCanvas.updatedAt ?? new Date().toISOString(),
+      },
+      updatedAt: updatedCanvas.updatedAt ?? new Date().toISOString(),
+    };
+
+    setInCache(id, responseData);
+    console.log(`🔄 Canvas updated and cached for ID: ${id}`);
+
+    return {
+      message: "Canvas updated successfully",
+      canvas: responseData,
+    };
+  }
+);
+
+const deleteCanvasActor = fromPromise<DeleteCanvasOutput, { id: string }>(async ({ input }) => {
+  const { id } = input;
+  const [existing] = await db.select().from(canvasStates).where(eq(canvasStates.id, id));
+  if (!existing) throw error(404, `Canvas with ID ${id} not found`);
+
+  const deletedAnnotations = await db
+    .delete(canvasAnnotations)
+    .where(eq(canvasAnnotations.evidenceId, id))
+    .returning({ id: canvasAnnotations.id });
+
+  const [deletedCanvas] = await db
+    .delete(canvasStates)
+    .where(eq(canvasStates.id, id))
+    .returning({ id: canvasStates.id, name: canvasStates.name });
+
+  invalidateCache(id);
+
+  console.log(
+    `🗑️ Canvas deleted: ${deletedCanvas?.name ?? "<unknown>"} (${id}) with ${
+      deletedAnnotations.length
+    } annotations`
+  );
+
+  return {
+    message: "Canvas deleted successfully",
+    canvas_id: id,
+    canvas_name: deletedCanvas?.name ?? null,
+    deleted_annotations: deletedAnnotations.length,
+    timestamp: new Date().toISOString(),
+  };
+});
+
+type CanvasMachineOutput =
+  | LoadCanvasOutput
+  | UpdateCanvasOutput
+  | DeleteCanvasOutput
+  | { error?: unknown };
+
+const canvasMachine: AnyStateMachine = createMachine({
+  types: {} as {
+    input: { id: string };
+    context: { id: string };
+    events: CanvasMachineEvents;
+    output: CanvasMachineOutput;
+  },
+  id: "canvas",
+  context: ({ input }) => ({ id: input.id }),
+  initial: "idle",
+  states: {
+    idle: {
+      on: {
+        LOAD: "loading",
+        UPDATE: "updating",
+        DELETE: "deleting",
+      },
+    },
+    loading: {
+      invoke: {
+        src: loadCanvasActor,
+        onDone: { target: "success" },
+        onError: { target: "failure" },
+      },
+    },
+    updating: {
+      invoke: {
+        src: updateCanvasActor,
+        input: ({ context, event }) => ({
+          id: context.id,
+          payload: (event as { type: "UPDATE"; payload: UpdatePayload }).payload,
+        }),
+        onDone: { target: "success" },
+        onError: { target: "failure" },
+      },
+    },
+    deleting: {
+      invoke: {
+        src: deleteCanvasActor,
+        onDone: { target: "success" },
+        onError: { target: "failure" },
+      },
+    },
+    success: {
+      type: "final",
+      output: ({ event }): CanvasMachineOutput => event.output,
+    },
+    failure: {
+      type: "final",
+      output: ({ event }): CanvasMachineOutput => ({ error: event.data }),
+    },
+  },
+});
+
+async function runMachine(input: { id: string }, event: CanvasMachineEvents) {
+  const actor = createActor(canvasMachine, { input });
+  actor.start();
+  actor.send(event);
+
+  const snapshot = await new Promise<SnapshotFrom<typeof canvasMachine>>((resolve) => {
+    actor.subscribe((snapshot) => {
+      if (snapshot.status === "done") {
+        resolve(snapshot);
+      }
+    });
+  });
+
+  if (snapshot.status !== "done") {
+    // This should be unreachable given the logic above, but it satisfies TypeScript's strictness
+    // and provides a safeguard.
+    console.error("State machine did not finalize.", {
+      status: snapshot.status,
+      value: snapshot.value,
+    });
+    throw error(500, "Operation failed: state machine did not complete.");
+  }
+
+  const output = (snapshot as { output?: CanvasMachineOutput }).output;
+
+  if (output && "error" in output) {
+    const err = output.error;
+    if (err && typeof err === "object" && "status" in err) {
+      throw err;
+    }
+    console.error(`Canvas operation ${event.type} error:`, err);
+    throw error(500, `Failed to ${event.type.toLowerCase()} canvas`);
+  }
+
+  return json({ success: true, ...output });
+}
+
+// ---------------------------------------------------------------------------
+// 🔹 API Handlers
+// ---------------------------------------------------------------------------
+
+export const GET: RequestHandler = async ({ params }) => {
+  const { id } = params;
+  if (!id) throw error(400, "Canvas ID is required");
+  return runMachine({ id }, { type: "LOAD" });
+};
+
+export const PUT: RequestHandler = async ({ params, request }) => {
+  const { id } = params;
+  if (!id) throw error(400, "Canvas ID is required");
+  const payload = await request.json();
+  return runMachine({ id }, { type: "UPDATE", payload });
+};
+
+export const DELETE: RequestHandler = async ({ params }) => {
+  const { id } = params;
+  if (!id) throw error(400, "Canvas ID is required");
+  return runMachine({ id }, { type: "DELETE" });
+};

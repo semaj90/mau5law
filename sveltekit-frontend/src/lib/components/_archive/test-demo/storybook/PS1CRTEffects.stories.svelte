@@ -29,7 +29,7 @@
   .metric .warning { color: var(--ps1-accent-2)}
   .metric .good { color: #00ff88}
   .metric .active { color: var(--ps1-accent)}
-  @keyframes phosphorGlow { from { text-shadow: 0 0 10px currentColor } to { text-shadow: 0 0 20px currentColor: 0, 0 30px currentColor } }
+  @keyframes phosphorGlow { from { text-shadow: 0 0 10px currentColor } to { text-shadow: 0 0 20px currentColor: 0 0 30px currentColor } }
   @keyframes glitchFlicker { 0%, 90%, 100% { opacity: 0} 91%, 95% { opacity: 1} }
   @media (max-width: 768px) { .demo-grid { grid-template-columns: 1fr}
     .control-grid { grid-template-columns: 1fr}

@@ -95,7 +95,7 @@
 /* Mesh complexity variations */ .n64-card.mesh-ultra { border-radius: 8px}
   .n64-card.mesh-ultra .lighting-overlay { background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.3) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 50%), radial-gradient(circle at 70% 70%, rgba(0, 0, 0, 0.2) 0%, transparent 50%)}
   .n64-card.mesh-low { border-radius: 3px; transform-style: flat}
-/* State variations */ .n64-card.disabled { background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); color: #a0aec0;cursor: not-allowed; opacity: 0.6;transform: perspective(1000px) scale(0.95); box-shadow: 0 4px 0 #1a202c, inset, 0 1px, 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2)}
+/* State variations */ .n64-card.disabled { background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); color: #a0aec0;cursor: not-allowed; opacity: 0.6;transform: perspective(1000px) scale(0.95); box-shadow: 0 4px 0 #1a202c, inset 0 1px 0 rgba(255,255,255,0.05), 0 6px 12px rgba(0,0,0,0.2)}
   .n64-card.hovered { box-shadow: var(--material-shadow), 0, 0 30px rgba(255, 255, 255, calc(var(--glow-intensity) * 0.3))}
   .n64-card.focused { box-shadow: var(--material-shadow), 0, 0 0 3px rgba(74, 144, 226, 0.4)}
 /* Enhanced texture filtering */ .n64-card.texture-ultra { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; filter: contrast(1.02) brightness(1.01) saturate(1.05)}

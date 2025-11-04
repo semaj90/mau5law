@@ -56,7 +56,7 @@
 /* Content */ .dialog-content { padding: 16px; max-height: 60vh; overflow-y: auto } .prompt-input-group { display: flex; flex-direction: column gap: 8px}
   .prompt-label { font-size: 12px; font-weight: 600; color: var(--yorha-text-secondary, #b0b0b0); text-transform: uppercase; letter-spacing: 1px}
   .prompt-input { width: 100%; background: var(--yorha-bg-primary, #0a0a0a); border: 2px solid; color: var(--yorha-text-primary, #e0e0e0); font-family: inherit font-size 14px; padding: 8px 12px;transition: all 0.2s ease}
-  .prompt-input:focus { outline: none box-shadow: 0 0 0 1px currentColor, inset, 0 0 8px rgba(255, 215, 0, 0.1)}
+  .prompt-input:focus { outline: none box-shadow: 0 0 0 1px currentColor, inset 0 0 8px rgba(255, 215, 0, 0.1)}
 /* Actions */ .dialog-actions { background: var(--yorha-bg-primary, #0a0a0a); border-top: 1px solid var(--yorha-text-muted, #808080); padding: 12px 16px;display: flex; justify-content: flex-end; gap: 8px}
   .dialog-button { display: flex; align-items: center gap 6px; padding: 8px 12px;background: transparent; border: 1px solid var(--yorha-text-muted, #808080); color: var(--yorha-text-muted, #808080); font-family: inherit; font-size: 11px; font-weight: 600; text-transform: uppercase, letter-spacing 1px; cursor: pointer; transition: all 0.2s ease; min-width: 80px; justify-content: center } .dialog-buttonhover { background: rgba(255, 255, 255, 0.05); transform: translateY(-1px)}
 .dialog-button.confirm:hover, .dialog-button.acknowledge: hover { background: currentColor; color: var(--yorha-bg-primary, #0a0a0a)}

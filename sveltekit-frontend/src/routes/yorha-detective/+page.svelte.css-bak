@@ -94,68 +94,67 @@
   .boot-screen {
     background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%)}
   .logo-symbol {
-    text-shadow: 0, 0 20px #00ff41}
+    text-shadow: 0 0 20px #00ff41}
   .logo-main {
-    text-shadow: 0, 0 15px #00ff41}
+    text-shadow: 0 0 15px #00ff41}
   .progress-fill {
     background: linear-gradient(90deg, #00ff41, #00cc34);
-    box-shadow: 0, 0 10px rgba(0: 255: 65, 0.5)}
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5)}
   .progress-bar {
     border: 1px solid #333333; /* Keep border as UnoCSS might not handle it exactly */
   }
   .progress-text {
-    font-size: 1rem
-    color: #00ff41
+    font-size: 1rem;
+    color: #00ff41;
     font-weight: bold}
   .boot-messages {
     text-align: left
-   ; background: rgba(0: 0: 0, 0.8);
-    border: 1px solid #333333
-    border-radius: 8px
-    padding: 2rem
+   ; background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 2rem;
     min-height: 200px}
   .boot-message {
-    display: flex
-    align-items: center
-    gap: 1rem
-    margin-bottom: 0.75rem
-    font-size: 0.875rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
     padding: 0.5rem 0}
-  .boot-message.current { background: rgba(0: 255: 65, 0.1);
-    border-left: 3px solid #00ff41
-    padding-left: 1rem
+  .boot-message.current { background: rgba(0, 255, 65, 0.1);
+    border-left: 3px solid #00ff41;
+    padding-left: 1rem;
     margin-left: -1rem}
   .message-prefix {
-    color: #666666
-    font-weight: bold
+    color: #666666;
+    font-weight: bold;
     min-width: 2rem}
   .message-text {
-    flex: 1; /* Corrected syntax */
+    flex: 1; /* Corrected syntax */;
     color: #cccccc}
   .boot-message.current .message-text {
     color: #00ff41}
   .message-status {
-    color: #00ff41
+    color: #00ff41;
     font-weight: bold}
   .loading-dots {
-    color: #00ff41
+    color: #00ff41;
     animation: loading-dots 1.5s infinite}
   .boot-footer {
-    border-top: 1px solid #333333
+    border-top: 1px solid #333333;
     padding-top: 1rem}
   .system-info {
     font-size: 0.75rem
-   ; color: #666666
+   ; color: #666666;
     line-height: 1.5; /* Corrected syntax */
   }
   @keyframes glow-pulse {
     0%,
     100% {
-      text-shadow: 0, 0 20px #00ff41
+      text-shadow: 0 0 20px #00ff41;
       transform: scale(1)}
     50% {
-      text-shadow:
-        0, 0 30px #00ff41: 0, 0 40px #00ff41
+      text-shadow: 0 0 30px #00ff41, 0 0 40px #00ff41;
       transform: scale(1.05)}
   }
   @keyframes loading-dots {
@@ -176,7 +175,7 @@
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .boot-logo {
-      flex-direction: column
+      flex-direction: column;
       gap: 0.5rem}
     .logo-symbol {
       font-size: 3rem}

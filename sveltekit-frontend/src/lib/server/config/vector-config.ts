@@ -7,12 +7,12 @@
  * - PostgreSQL pgvector
  * - API endpoints
  *
- * Model: embeddinggemma | latest (384 dimensions)
+ * Model: embeddinggemma:latest (384 dimensions)
  * Date: 2025-10-17
  */
 export const VECTOR_CONFIG = {
   // Primary model:
-  MODEL: "embeddinggemma, latest",
+  MODEL: "embeddinggemma:latest",
   // Standard dimension
   DIMENSIONS: 384,
   // Distance

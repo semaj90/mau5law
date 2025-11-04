@@ -2,6 +2,7 @@
 	import 'uno.css';
 
 	import type { AttachmentMetadata } from '$lib/types/sharedTypes';
+	import ContextualComposer from '$lib/components/chat/ContextualComposer.svelte';
 
 	type Role = 'user' | 'assistant';
 
@@ -22,9 +23,6 @@
 	let error = $state<string | null>(null);
 	let chatContainer = $state<HTMLDivElement | null>(null);
 	let attachment = $state<File | null>(null);
-	let attachmentInput = $state<HTMLInputElement | null>(null);
-	let dragActive = $state<boolean>(false);
-
 	const attachmentLabel = $derived(
 		attachment ? `${attachment.name} (${(attachment.size / 1024).toFixed(1)} KB)` : ''
 	);
@@ -103,40 +101,8 @@
 		}
 	}
 
-	function handleKeyDown(event: KeyboardEvent): void {
-		if (event.key === 'Enter' && !event.shiftKey) {
-			event.preventDefault();
-			void sendMessage();
-		}
-	}
-
-	function handleFileChange(event: Event): void {
-		const file = (event.currentTarget as HTMLInputElement)?.files?.[0];
-		attachment = file ?? null;
-	}
-
 	function clearAttachment(): void {
 		attachment = null;
-		if (attachmentInput) {
-			attachmentInput.value = '';
-		}
-	}
-
-	function handleDragOver(event: DragEvent): void {
-		event.preventDefault();
-		dragActive = true;
-	}
-
-	function handleDragLeave(event: DragEvent): void {
-		event.preventDefault();
-		dragActive = false;
-	}
-
-	function handleDrop(event: DragEvent): void {
-		event.preventDefault();
-		dragActive = false;
-		const file = event.dataTransfer?.files?.[0];
-		attachment = file ?? null;
 	}
 
 	$effect(() => {
@@ -188,48 +154,16 @@
 		</div>
 	{/if}
 
-	<div class="composer">
-		<div
-			class={`dropzone ${dragActive ? 'dragging' : ''}`}
-			on:dragover|preventDefault={handleDragOver}
-			on:dragleave={handleDragLeave}
-			on:drop={handleDrop}
-		>
-			<div class="dropzone-content">
-				<p class="dropzone-title">Drag & drop evidence</p>
-				<p class="dropzone-hint">PDF, DOCX, TXT, or images up to 25MB</p>
-				<label class="dropzone-action">
-					<input
-						type="file"
-						bind:this={attachmentInput}
-						class="sr-only"
-						on:change={handleFileChange}
-					/>
-					<span>Browse files</span>
-				</label>
-			</div>
-		</div>
-
-		{#if attachment}
-			<div class="attachment-chip">
-				<span>{attachmentLabel}</span>
-				<button type="button" on:click={clearAttachment} aria-label="Remove attachment">×</button>
-			</div>
-		{/if}
-
-		<div class="input-row">
-			<textarea
-				class="chat-input"
-				placeholder="Summarize the latest deposition, highlight risks..."
-				bind:value={userInput}
-				rows="3"
-				on:keydown={handleKeyDown}
-			/>
-			<button class="send-btn" on:click|preventDefault={sendMessage} disabled={isSending || !userInput.trim()}
-				>Send</button
-			>
-		</div>
-	</div>
+	<ContextualComposer
+		value={userInput}
+		isSending={isSending}
+		attachmentLabel={attachment ? attachmentLabel : null}
+		placeholder="Summarize the latest deposition, highlight risks..."
+		on:input={(event) => (userInput = event.detail)}
+		on:send={() => void sendMessage()}
+		on:attachmentSelected={(event) => (attachment = event.detail)}
+		on:clearAttachment={clearAttachment}
+	/>
 </div>
 
 <style>
@@ -337,110 +271,12 @@
 		font-size: 0.9rem;
 	}
 
-	.composer {
-		padding: 1.5rem 2rem 2rem;
-		display: flex;
-		flex-direction: column;
-		gap: 0.75rem;
-		background: #fff;
-		border-top: 1px solid rgba(15, 23, 42, 0.08);
-	}
-
-	.dropzone {
-		border: 1px dashed rgba(99, 102, 241, 0.5);
-		border-radius: 1rem;
-		padding: 1rem;
-		text-align: center;
-		background: rgba(99, 102, 241, 0.04);
-		transition: border-color 0.2s ease, background 0.2s ease;
-	}
-
-	.dropzone.dragging {
-		border-color: #2563eb;
-		background: rgba(37, 99, 235, 0.08);
-	}
-
-	.dropzone-title {
-		font-weight: 600;
-		margin-bottom: 0.25rem;
-	}
-
-	.dropzone-hint {
-		font-size: 0.85rem;
-		color: #64748b;
-		margin-bottom: 0.5rem;
-	}
-
-	.dropzone-action {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		padding: 0.35rem 0.85rem;
-		border-radius: 999px;
-		background: #2563eb;
-		color: #fff;
-		font-size: 0.85rem;
-		cursor: pointer;
-	}
-
-	.attachment-chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.4rem 0.8rem;
-		background: rgba(37, 99, 235, 0.08);
-		border-radius: 999px;
-		font-size: 0.85rem;
-	}
-
-	.attachment-chip button {
-		border: none;
-		background: transparent;
-		cursor: pointer;
-		font-size: 1rem;
-		color: inherit;
-	}
-
-	.input-row {
-		display: flex;
-		gap: 1rem;
-		align-items: flex-end;
-	}
-
-	.chat-input {
-		flex: 1;
-		padding: 1rem;
-		border-radius: 1rem;
-		border: 1px solid rgba(15, 23, 42, 0.12);
-		min-height: 90px;
-		resize: vertical;
-		font-size: 1rem;
-	}
-
-	.send-btn {
-		min-width: 120px;
-		height: 48px;
-		border-radius: 1rem;
-		border: none;
-		background: linear-gradient(135deg, #2563eb, #7c3aed);
-		color: #fff;
-		font-weight: 600;
-		cursor: pointer;
-		transition: opacity 0.2s ease;
-	}
-
-	.send-btn:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
-	}
-
 	@media (max-width: 768px) {
 		.ai-chat-shell {
 			border-radius: 1rem;
 		}
 
-		.messages-panel,
-		.composer {
+		.messages-panel {
 			padding: 1.25rem;
 		}
 	}

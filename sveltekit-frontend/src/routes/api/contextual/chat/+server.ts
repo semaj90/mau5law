@@ -5,6 +5,10 @@ import {
   ingestContextualAttachment,
   resolveAttachmentReference,
 } from "$lib/server/storage/contextual-attachment-helper";
+import {
+  isLuciaAvailableForContextualUploads,
+  requireLuciaForContextualUploads,
+} from "$lib/server/auth/contextual-upload-guard";
 
 interface ChatPayload {
   message?: string;
@@ -54,6 +58,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const contentType = request.headers.get("content-type") ?? "";
     const luciaSessionId = locals.contextualSessionId ?? locals.session?.id ?? "";
     const luciaUserId = locals.contextualUserId ?? locals.session?.userId ?? locals.user?.id ?? "";
+    const requireLucia = requireLuciaForContextualUploads();
+
+    if (requireLucia && !isLuciaAvailableForContextualUploads()) {
+      return json(
+        {
+          success: false,
+          error:
+            "Lucia authentication is not configured for contextual uploads. Enable Lucia or set CONTEXTUAL_UPLOADS_REQUIRE_AUTH=false for development.",
+        },
+        { status: 503 },
+      );
+    }
 
     let sessionId = "";
     let userId = "";
@@ -131,7 +147,11 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 
     if (!sessionId || !userId || !message) {
       return json(
-        { success: false, error: "Authenticated session and message are required" },
+        {
+          success: false,
+          error:
+            "Authenticated session and message are required. Ensure Lucia auth is configured and the user is signed in.",
+        },
         { status: 401 }
       );
     }

@@ -59,7 +59,7 @@
     50% { opacity: calc(var(--glow-intensity) * 1.5)}
   } /* Material type variations */:global(.n64-input.pbr) { background-blend-mode: overlay, normal}
   /* Mesh complexity variations */:global(.n64-input.mesh-high) { border-radius: 6px}:global(.n64-input.mesh-high) + .lighting-overlay { background: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, transparent 40%), linear-gradient(225deg, rgba(0, 0, 0, 0.2) 0%, transparent 60%), radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%)}:global(.n64-input.mesh-low) { border-radius: 2px; transform-style: flat}
-  /* Disabled state */:global(.n64-input:disabled),:global(.n64-input[disabled]) { background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); color: #a0aec0;cursor: not-allowed; opacity: 0.7;transform: perspective(1000px) scale(0.98); box-shadow: inset 0 4px, 0 #1a202c, inset, 0 1px, 0 rgba(255, 255, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.2)}
+  /* Disabled state */:global(.n64-input:disabled),:global(.n64-input[disabled]) { background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); color: #a0aec0;cursor: not-allowed; opacity: 0.7;transform: perspective(1000px) scale(0.98); box-shadow: inset 0 4px 0 #1a202c, inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 2px 4px rgba(0, 0, 0, 0.2)}
   /* Focus styles */:global(.n64-input: focus) { border-color: #4a90e2; box-shadow: var(--material-shadow), 0, 0 0 2px rgba(74, 144, 226, 0.3), 0, 0 20px rgba(74, 144, 226, 0.2)}
   /* Error state */:global(.n64-input[aria-invalid='true']) { border-color: #dc3545; box-shadow: var(--material-shadow), 0, 0 0 2px rgba(220, 53, 69, 0.3)}
   /* Loading indicator */ .loading-indicator { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); z-index: 4 }
@@ -77,7 +77,7 @@
     .n64-spinner { animation: none; border: 2px solid currentColor; border-right-color: transparent}
   } /* High contrast mode */ @media (prefers-contrast: high) {:global(.n64-input) { border: 3px solid currentColor; text-shadow: none}
     .lighting-overlay, .reflection-overlay, .input-glow-effect { display: none}
-  } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) {:global(.n64-input) { transform: none; box-shadow: inset 0 4px, 0 rgba(0, 0, 0, 0.3)}
+  } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) {:global(.n64-input) { transform: none; box-shadow: inset 0 4px 0 rgba(0, 0, 0, 0.3)}
     .lighting-overlay, .reflection-overlay, .input-glow-effect:global(.n64-input::after) { display: none}
   } /* Reduced motion / high contrast fallbacks already handled above */ </style>
 

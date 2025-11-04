@@ -117,8 +117,8 @@
     .progress-track { border: 1px solid currentColor}
     .bar-lighting, .bar-reflection, .progress-glow, .track-fog { display: none}
   } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-progress { transform: none}
-    .progress-track { box-shadow: inset 0 2px, 0 rgba(0, 0, 0, 0.4)}
-    .progress-bar { box-shadow: inset 0 2px, 0 rgba(255, 255, 255, 0.2)}
+    .progress-track { box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4)}
+    .progress-bar { box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2)}
     .bar-lighting, .bar-reflection, .progress-glow, .progress-particles, .track-fog, .texture-stream, .wave-effect { display: none}
   } /* Dark mode variations */ @media (prefers-color-scheme: dark) { .n64-progress { --fog-color: #101010}
   } </style>

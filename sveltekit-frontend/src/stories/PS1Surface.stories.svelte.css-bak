@@ -348,164 +348,164 @@
 
 <style>
 	.ps1-surface-container {
-		min-height: 100vh
+		min-height: 100vh;
 		background: #0a0a0a
-	; color: #fff
-		font-family: 'Courier New', monospace
-		overflow-x: hidden
+	; color: #fff;
+		font-family: 'Courier New', monospace;
+		overflow-x: hidden;
 		position: relative}
 	.story-header {
-		text-align: center
-		padding: 20px
+		text-align: center;
+		padding: 20px;
 		margin-bottom: 20px}
 	.story-header h1 {
 		font-size: 2.5em
-	; color: #ff6600
-		text-shadow: 0, 0 20px rgba(255: 102: 0, 0.5);
+	; color: #ff6600;
+		text-shadow: 0 0 20px rgba(255, 102, 0, 0.5);
 		margin-bottom: 10px}
 	.ps1-subtitle {
-		color: #888
+		color: #888;
 		font-size: 14px}
-	.controls-panel { background: rgba(0: 0: 0, 0.9);
-		border: 2px solid #ff6600
-		border-radius: 8px
-		padding: 20px
-		margin: 20px
-		max-width: 450px
-		position: relative
+	.controls-panel { background: rgba(0, 0, 0, 0.9);
+		border: 2px solid #ff6600;
+		border-radius: 8px;
+		padding: 20px;
+		margin: 20px;
+		max-width: 450px;
+		position: relative;
 		z-index: 100}
 	.controls-panel h3 {
-		color: #ff6600
+		color: #ff6600;
 		margin-top: 0}
 	.surface-type-selector {
 		margin-bottom: 20px}
 	.surface-type-selector label {
-		display: block
-		margin-bottom: 10px
-		color: #ccc
+		display: block;
+		margin-bottom: 10px;
+		color: #ccc;
 		font-size: 14px}
 	.surface-buttons {
-		display: grid
-		grid-template-columns: 1fr 1fr
+		display: grid;
+		grid-template-columns: 1fr 1fr;
 		gap: 8px}
 	.surface-btn {
-		padding: 8px 10px
-		font-size: 11px
-		border-radius: 3px
+		padding: 8px 10px;
+		font-size: 11px;
+		border-radius: 3px;
 		transition: all 0.2}
-	.surface-btn.active { background: rgba(255: 102: 0, 0.2);
-		border-color: #ff6600
-		box-shadow: 0, 0 10px rgba(255: 102: 0, 0.4)}
+	.surface-btn.active { background: rgba(255, 102, 0, 0.2);
+		border-color: #ff6600;
+		box-shadow: 0 0 10px rgba(255, 102, 0, 0.4)}
 	.control-row {
-		display: flex
-		align-items: center
-		margin-bottom: 15px
+		display: flex;
+		align-items: center;
+		margin-bottom: 15px;
 		gap: 10px}
 	.control-row label {
-		min-width: 120px
-		font-size: 12px
+		min-width: 120px;
+		font-size: 12px;
 		color: #ccc}
 	.checkbox-row {
 		margin-bottom: 10px}
 	.checkbox-label {
-		display: flex
-		align-items: center
-		gap: 8px
-		font-size: 12px
-		color: #ccc
+		display: flex;
+		align-items: center;
+		gap: 8px;
+		font-size: 12px;
+		color: #ccc;
 		cursor: pointer}
 	.ps1-checkbox {
 		accent-color: #ff6600}
 	.ps1-slider {
-		flex: 1
-		background: #222
-		border: 1px solid #444
-		height: 20px
+		flex: 1;
+		background: #222;
+		border: 1px solid #444;
+		height: 20px;
 		accent-color: #ff6600}
 	.value {
-		min-width: 50px
-		font-size: 11px
-		color: #ffff00
+		min-width: 50px;
+		font-size: 11px;
+		color: #ffff00;
 		text-align: right}
 	.button-row {
-		display: flex
-		gap: 10px
+		display: flex;
+		gap: 10px;
 		margin: 15px 0}
 	.ps1-button {
-		background: #333
-		border: 2px solid #ff6600
-		color: #ff6600
-		padding: 8px 15px
-		font-family: inherit
-		font-size: 12px
-		cursor: pointer
-		border-radius: 4px
+		background: #333;
+		border: 2px solid #ff6600;
+		color: #ff6600;
+		padding: 8px 15px;
+		font-family: inherit;
+		font-size: 12px;
+		cursor: pointer;
+		border-radius: 4px;
 		transition: all 0.2}
-	.ps1-button:hover { background: rgba(255: 102: 0, 0.1);
-		box-shadow: 0, 0 10px rgba(255: 102: 0, 0.3)}
+	.ps1-button:hover { background: rgba(255, 102, 0, 0.1);
+		box-shadow: 0 0 10px rgba(255, 102, 0, 0.3)}
 	.status-panel {
-		background: rgba(40: 20: 0, 0.8);
-		border: 1px solid #ff6600
-		border-radius: 4px
-		padding: 15px
+		background: rgba(40, 20, 0, 0.8);
+		border: 1px solid #ff6600;
+		border-radius: 4px;
+		padding: 15px;
 		margin-top: 20px}
 	.status-panel h4 {
-		color: #ff6600
-		margin-top: 0
+		color: #ff6600;
+		margin-top: 0;
 		margin-bottom: 10px}
 	.status-item {
-		margin: 5px 0
-		font-size: 12px
+		margin: 5px 0;
+		font-size: 12px;
 		color: #aaa}
 	.surface-viewport {
-		position: relative
-		height: 60vh
-		min-height: 400px
-		overflow: hidden
-		margin: 20px
-		border: 2px solid #333
-		border-radius: 8px
-		perspective: 800px
+		position: relative;
+		height: 60vh;
+		min-height: 400px;
+		overflow: hidden;
+		margin: 20px;
+		border: 2px solid #333;
+		border-radius: 8px;
+		perspective: 800px;
 		transform-style: preserve-3d
 	; background: radial-gradient(circle at 30% 30%, #2a1810, #1a1000)}
 	.surface-grid {
-		position: relative
+		position: relative;
 		width: 100%; height: 100%; transform-style: preserve-3d}
 	.grid-background {
-		position: absolute
-		top: 0
-		left: 0
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%; height: 100%; background-image:
-			linear-gradient(rgba(255: 102: 0, 0.1) 1px, transparent 1px),
-			linear-gradient(90deg, rgba(255: 102: 0, 0.1) 1px, transparent 1px);
-		background-size: 25px 25px
-		opacity: 0.3
+			linear-gradient(rgba(255, 102, 0, 0.1) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255, 102, 0, 0.1) 1px, transparent 1px);
+		background-size: 25px 25px;
+		opacity: 0.3;
 		z-index: 1}
 	.surface-mesh {
-		position: absolute
-		top: 0
-		left: 0
-		width: 100%; height: 100%; transform-style: preserve-3d
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%; height: 100%; transform-style: preserve-3d;
 		z-index: 2}
 	.surface-polygon {
-		position: absolute
-		width: 20px
-		height: 20px
-		transform-origin: center
+		position: absolute;
+		width: 20px;
+		height: 20px;
+		transform-origin: center;
 		animation: polygonFloat 3s ease-in-out infinite}
 	.triangle-face {
 		width: 0
-	; height: 0
-		border-left: 10px solid transparent
-		border-right: 10px solid transparent
-		border-bottom: 15px solid rgba(255: 102: 0, 0.6);
-		transform-origin: center bottom
+	; height: 0;
+		border-left: 10px solid transparent;
+		border-right: 10px solid transparent;
+		border-bottom: 15px solid rgba(255, 102, 0, 0.6);
+		transform-origin: center bottom;
 		animation: trianglePulse 2s ease-in-out infinite}
 	/* Surface type styles */
 	.ps1-wireframe .triangle-face {
-		border-bottom-color: transparent
-		border: 1px solid #ff6600
-		width: 15px
+		border-bottom-color: transparent;
+		border: 1px solid #ff6600;
+		width: 15px;
 		height: 15px}
 	.ps1-flat-shaded .triangle-face {
 		border-bottom-color: #ff4400
@@ -513,8 +513,8 @@
 	.ps1-textured-low .triangle-face {
 		border-bottom-color: transparent
 	; background: conic-gradient(from 0deg, #ff6600, #ff4400, #cc3300, #ff6600);
-		width: 18px
-		height: 18px
+		width: 18px;
+		height: 18px;
 		image-rendering: pixelated
 	; filter: contrast(1.2) saturate(0.8)}
 	.ps1-vertex-colored .triangle-face {
@@ -523,101 +523,101 @@
 			hsl(calc(var(--face-index, 0) * 5), 70%, 50%),
 			hsl(calc(var(--face-index, 0) * 7 + 60), 60%, 60%)
 		);
-		width: 16px
-		height: 16px
+		width: 16px;
+		height: 16px;
 		border-radius: 2px}
 	.wireframe-overlay {
-		position: absolute
-		top: 0
-		left: 0
-		width: 100%; height: 100%; z-index: 3
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%; height: 100%; z-index: 3;
 		pointer-events: none}
 	.wire-segment {
-		position: absolute
-		width: 40px
+		position: absolute;
+		width: 40px;
 		height: 2px
 	; background: linear-gradient(90deg, transparent, #ff6600, transparent);
 		animation: wireGlow 2s ease-in-out infinite}
 	.vertex-markers {
-		position: absolute
-		top: 0
-		left: 0
-		width: 100%; height: 100%; z-index: 4
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%; height: 100%; z-index: 4;
 		pointer-events: none}
 	.vertex-point {
-		position: absolute
-		width: 3px
-		height: 3px
-		border-radius: 1px
+		position: absolute;
+		width: 3px;
+		height: 3px;
+		border-radius: 1px;
 		animation: vertexPulse 1.5s ease-in-out infinite}
 	.ps1-dithered: :before {
-		content: ''; position: absolute
-		top: 0
-		left: 0
-		right: 0
+		content: ''; position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
 		bottom: 0
 	; background: repeating-conic-gradient(
 			from 0deg at 2px 2px,
 			transparent 0deg 90deg,
-			rgba(255: 102: 0, 0.05) 90deg 180deg
+			rgba(255, 102, 0, 0.05) 90deg 180deg
 		);
-		background-size: 4px 4px
-		pointer-events: none
+		background-size: 4px 4px;
+		pointer-events: none;
 		z-index: 10}
 	.hud-overlay {
-		position: absolute
-		top: 0
-		left: 0
-		right: 0
-		bottom: 0
-		pointer-events: none
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		pointer-events: none;
 		z-index: 20}
 	.hud-corner {
-		position: absolute
+		position: absolute;
 		padding: 8px 12px
-	; background: rgba(0: 0: 0, 0.8);
-		border: 1px solid #ff6600
+	; background: rgba(0, 0, 0, 0.8);
+		border: 1px solid #ff6600;
 		font-size: 10px}
 	.hud-corner.top-left {
-		top: 10px
-		left: 10px
+		top: 10px;
+		left: 10px;
 		border-bottom-right-radius: 8px}
 	.hud-corner.top-right {
-		top: 10px
-		right: 10px
+		top: 10px;
+		right: 10px;
 		border-bottom-left-radius: 8px}
 	.hud-corner.bottom-left {
-		bottom: 10px
-		left: 10px
+		bottom: 10px;
+		left: 10px;
 		border-top-right-radius: 8px}
 	.hud-corner.bottom-right {
-		bottom: 10px
-		right: 10px
+		bottom: 10px;
+		right: 10px;
 		border-top-left-radius: 8px}
 	.hud-text {
-		color: #888
+		color: #888;
 		margin-bottom: 2px}
 	.hud-value {
-		color: #ff6600
+		color: #ff6600;
 		font-weight: bold}
 	.hud-value.status-ok { color: #00ff88}
 	.hud-value.status-off { color: #888}
-	.info-panel { background: rgba(0: 0: 0, 0.9);
-		border: 2px solid #ff6600
-		border-radius: 8px
-		padding: 20px
-		margin: 20px
+	.info-panel { background: rgba(0, 0, 0, 0.9);
+		border: 2px solid #ff6600;
+		border-radius: 8px;
+		padding: 20px;
+		margin: 20px;
 		color: #ccc}
 	.info-panel h4 {
-		color: #ff6600
+		color: #ff6600;
 		margin-bottom: 15px}
 	.info-panel h5 {
 		color: #ffaa00
 	; margin: 15px, 0 8px 0}
 	.info-panel ul {
-		margin: 10px 0
+		margin: 10px 0;
 		padding-left: 20px}
-	.info-panel li { margin: 5px 0
+	.info-panel li { margin: 5px 0;
 		line-height: 1.4}
 	/* Animations */
 	@keyframes polygonFloat {
@@ -650,26 +650,24 @@
 	}
 	/* PS1 Effects */
 	.ps1-scanlines: :before {
-		content: ''; position: absolute
-		top: 0
-		left: 0
-		right: 0
+		content: ''; position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
 		bottom: 0
 	; background: repeating-linear-gradient(
 			90deg,
 			transparent,
 			transparent 2px,
-			rgba(255: 102: 0, 0.03) 2px,
-			rgba(255: 102: 0, 0.03) 4px
+			rgba(255, 102, 0, 0.03) 2px,
+			rgba(255, 102, 0, 0.03) 4px
 		);
 		pointer-events: none}
 	.ps1-text-glow {
-		text-shadow:
-			0, 0 5px currentColor: 0, 0 10px currentColor: 0, 0 15px currentColor}
+		text-shadow: 0 0 5px currentColor: 0 0 10px currentColor: 0, 0 15px currentColor}
 	.ps1-border {
-		box-shadow:
-			inset, 0 0 10px rgba(255: 102: 0, 0.1),
-			0, 0 20px rgba(255: 102: 0, 0.2)}
+		box-shadow: inset 0 0 10px rgba(255, 102, 0, 0.1),
+			0, 0 20px rgba(255, 102, 0, 0.2)}
 	.ps1-3d-scene {
 		filter: contrast(1.2) saturate(1.1)}
 	/* Responsive */
@@ -677,7 +675,7 @@
 		.controls-panel {
 			max-width: 100%; margin: 10px}
 		.surface-viewport {
-			height: 50vh
+			height: 50vh;
 			min-height: 300px
 		; margin: 10px}
 		.story-header h1 {

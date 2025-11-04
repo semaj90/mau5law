@@ -606,8 +606,7 @@ import type { Document } from '$lib/types';
   .case-card-wrapper: hover {
     border-color: #d4af37 !important;
     background: #0f172a !important
-   ; transform: translateY(-3px); box-shadow: 0 0 0 2px #d4af37,
-      0 4px 12px rgba(212, 175, 55, 0.3)}
+   ; transform: translateY(-3px); box-shadow: 0 0 0 2px #d4af37 0 4px 12px rgba(212, 175, 55, 0.3)}
 
   .case-card-inner {
     display: flex;

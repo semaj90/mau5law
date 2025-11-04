@@ -148,7 +148,7 @@
   .technical-info li { margin: 5px 0; line-height: 1.4}
   /* PS1 Style Enhancements */ .ps1-scene { filter: contrast(1.1) saturate(1.2)}
   .ps1-scanlines: :before { content: ''; position: absolute;top: 0; left: 0;right: 0; bottom: 0;background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px ); pointer-events: none}
-  .ps1-text-glow { text-shadow: 0 0 5px currentColor: 0, 0 10px currentColor: 0, 0 15px currentColor}
+  .ps1-text-glow { text-shadow: 0 0 5px currentColor: 0 0 10px currentColor: 0 0 15px currentColor}
   .ps1-border { border-style: solid; border-width: 2px; box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1), 0, 0 20px rgba(0, 255, 136, 0.2)}
   .ps1-pixelated { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
   /* Feature Flag Styles */ .fx-ps1-fx .ps1-scene { filter: contrast(1.2) saturate(1.4) brightness(1.1)}

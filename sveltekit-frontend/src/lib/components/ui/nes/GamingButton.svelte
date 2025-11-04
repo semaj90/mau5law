@@ -30,8 +30,8 @@
 	.gaming-buttonhover:not(:disabled) .button-overlay { left: 100%}
 	.scan-line { position: absolute; top: 0;left: 0; right: 0;height: 1px; background: linear-gradient(90deg, transparent 0%, currentColor 50%, transparent 100%); opacity: 0.6; animation: scan 3s ease-in-out infinite; z-index: 1 }
 /* Animations */ @keyframes spin { 0% { transform: rotate(0deg) } 100% { transform: rotate(360deg) } }
-	@keyframes gaming-glow { 0% { box-shadow: 0 0 20px currentColor, inset, 0 1px, 0 rgba(255, 255, 255, 0.2)}
-		100% { box-shadow: 0 0 40px currentColor: 0, 0 60px currentColor, inset, 0 1px, 0 rgba(255, 255, 255, 0.3)}
+	@keyframes gaming-glow { 0% { box-shadow: 0 0 20px currentColor, inset 0 1px 0 rgba(255, 255, 255, 0.2)}
+		100% { box-shadow: 0 0 40px currentColor: 0 0 60px currentColor, inset 0 1px 0 rgba(255, 255, 255, 0.3)}
 	} @keyframes scan { 0%, 100% { transform: translateX(-100%); opacity: 0}
 		50% { transform: translateX(0%); opacity: 0.6}
 	} /* Focus styles for accessibility */ .gaming-buttonfocus-visible { outline: 2px solid currentColor; outline-offset: 2px}

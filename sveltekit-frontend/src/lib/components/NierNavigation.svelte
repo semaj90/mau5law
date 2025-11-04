@@ -128,7 +128,7 @@
   .yorha-nav-link.active {
     color: var(--yorha-secondary, #ffd700);
     border-color: var(--yorha-secondary, #ffd700); background: var(--yorha-bg-tertiary, #2a2a2a);
-    box-shadow: inset 0 3px, 0 var(--yorha-secondary, #ffd700),
+    box-shadow: inset 0 3px 0 var(--yorha-secondary, #ffd700),
       0, 0 10px rgba(255, 215, 0, 0.2)}
   .nav-icon {
     font-size: 16px}
