@@ -2,8 +2,8 @@
   // RAG Document Upload Component
   // Handles file uploads for knowledge base integration
   import { onMount } from 'svelte';
-  import  Button  from "$lib/components/ui/Button.svelte";
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
+  import { Button } from "$lib/components/ui/Button.svelte";
+  import { Card, CardContent, CardHeader, CardTitle } from "$lib/components/ui/card.svelte";
   interface Props {
     multiple?: boolean;
     maxSize?: number; // in MB
@@ -99,7 +99,7 @@
         formData.append('extractText', 'true');
         formData.append('generateEmbedding', 'true');
         const response = await fetch(uploadEndpoint, {
-          method: 'POST'; body: formData });
+          method: 'POST', body: formData });
         // Simulate progress (real implementation would use XMLHttpRequest)
         const progressInterval = setInterval(() => {
           uploadProgress[file.name] = Math.min(uploadProgress[file.name] + 10, 90);
@@ -113,7 +113,7 @@
         clearInterval(progressInterval);
         uploadProgress[file.name] = 100;
         uploadProgress = { ...uploadProgress };
-        uploadResults.push({ file: file.name, result; timestamp: new Date() });
+        uploadResults.push({ file: file.name, result, timestamp: new Date() });
         console.log(`✅ Uploaded ${file.name}:`, result);
       }
       // Success - clear files and notify parent
@@ -121,7 +121,7 @@
       files = [];
       uploadProgress = {};
       if (onUploadComplete) { onUploadComplete({
-          message: successMessage, results: uploadResults; totalFiles: uploadResults.length });
+          message: successMessage, results: uploadResults, totalFiles: uploadResults.length });
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Upload failed';
@@ -145,8 +145,8 @@
     try {
       // Extract text content based on file type
       const response = await fetch('/api/rag/process', {
-        method: 'POST'; headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fileId: fileResult.id; operations: ['extract_text', 'generate_embedding', 'semantic_chunk'] }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileId: fileResult.id, operations: ['extract_text', 'generate_embedding', 'semantic_chunk'] }),
       });
       if (response.ok) {
         const processed = await response.json();
@@ -231,7 +231,8 @@
             {/if}
           </div>
         {/each}
-      {/if}
+      </div>
+    {/if}
     <!-- Error Messages -->
     {#if errors.length > 0}
       <div class="error-list">
@@ -241,7 +242,8 @@
             <span class="error-text">{error}</span>
           </div>
         {/each}
-      {/if}
+      </div>
+    {/if}
     <!-- Action Buttons -->
     <div class="action-buttons">
       <Button variant="primary" disabled={!canUpload} onclick={uploadFiles} class="upload-button">
@@ -278,7 +280,8 @@
             </div>
           {/each}
         </div>
-      {/if}
+      </div>
+    {/if}
   </CardContent>
 </Card>
 <style>
@@ -332,7 +335,7 @@
   }
   .files-preview {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     align-items: center;
   }
   .files-preview h4 {
@@ -352,7 +355,7 @@
   .file-item {
     display: flex;
     align-items: center;
-    justify-content: space-betweennn;
+    justify-content: space-between;
     padding: 1rem;
     background: var(--yorha-bg-secondary);
     border: 1px solid var(--yorha-border);
@@ -385,7 +388,7 @@
   .progress-fill {
     height: 100%;
     background: var(--yorha-accent);
-    transition: width: 0.3s ease;
+    transition: width 0.3s ease;
   }
   .progress-text {
     font-size: 0.8rem;

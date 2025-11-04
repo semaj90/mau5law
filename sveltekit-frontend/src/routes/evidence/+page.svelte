@@ -208,9 +208,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     font-size: 2.5rem;
     color: #ffd700;
     margin-bottom: 0.5rem;
-    text-shadow:
-      0,
-      0 20px rgba(255, 215, 0, 0.4);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
   }
 
   .subtitle {
@@ -251,9 +249,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 
   .action-card: hover {
     border-color: #ffd700;
-    box-shadow:
-      0,
-      0 30px rgba(255, 215, 0, 0.15);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
     transform: translateY(-2px);
   }
 

@@ -26,7 +26,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
  <style> /* YoRHa-specific input styling */ .yorha-input { font-family: 'JetBrains Mono', monospace}
   /* Focus ring animations */ input: focus-visible { outline: none; transition: all 0.2s ease}
   /* Custom validation styling */, input:invalid:not(:placeholder-shown) { border-color: rgb(239, 68 68)}
-  input:invalid:not(:placeholder-shown):focus { box-shadow: 0, 0 0 3px rgba(239, 68, 68, 0.1)}
+  input:invalid:not(:placeholder-shown):focus { box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1)}
   input:valid:not(:placeholder-shown) { border-color: rgb(34, 197 94)}
   /* Required field indicator */ label.required { position: relative}
 </style>

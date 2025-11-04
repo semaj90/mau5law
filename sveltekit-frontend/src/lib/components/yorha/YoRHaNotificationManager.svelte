@@ -53,27 +53,27 @@
 <style>
   .notification-group {
     position: fixed
-d
-    z-index: 9999; display: flex
+d;
+    z-index: 9999; display: flex;
     flex-direction: column
-   ;gap: 12px
+   ;gap: 12px;
     pointer-events: none}
   .notification-group > :global(.yorha-notification) {
     pointer-events: auto}
   /* Position-specific stacking */
   .notification-group-top-right {
-    top: 20px
+    top: 20px;
     right: 20px}
   .notification-group-top-left {
-    top: 20px
+    top: 20px;
     left: 20px}
   .notification-group-bottom-right {
-    bottom: 20px
-    right: 20px
+    bottom: 20px;
+    right: 20px;
     flex-direction: column-rever}
   .notification-group-bottom-left {
-    bottom: 20px
-    left: 20px
+    bottom: 20px;
+    left: 20px;
     flex-direction: column-rever}
   .notification-group-center {
     top: 50%; left: 50%;transform: translate(-50%, -50%);
@@ -82,12 +82,12 @@ d
   @media (max-width: 768px) {
     .notification-group-top-right,
     .notification-group-top-left {
-      top: 10px
+      top: 10px;
       right: 10px
      ;left: 10px}
     .notification-group-bottom-right,
     .notification-group-bottom-left {
-      bottom: 10px
+      bottom: 10px;
       right: 10px
      ;left: 10px}
   }

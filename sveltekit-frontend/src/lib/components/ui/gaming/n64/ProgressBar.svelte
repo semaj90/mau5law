@@ -62,11 +62,11 @@
     aria-valuemax={ max } aria-label={ label } aria-describedby={description ? 'progress-description': undefined} >
     <div class="progress-track"> <div class="progress-bar"
            style="width: {indeterminate ? '100%': animatedValue + '%'}"> {#if enableTextureStreaming} <div class="texture-stream" style="--stream-progress: { animatedValue }%">{/if} {#if enableLighting} <div class="bar-lighting">{/if} {#if enableReflections} <div class="bar-reflection">{/if} {#if enableProgressGlow} <div class="progress-glow">{/if} {#if enableWaveEffect} <div class="wave-effect">{/if} {#if enableParticles && isAnimating} <div class="progress-particles">{/if} </div> {#if enableFog} <div class="track-fog">{/if} </div> {#if loading || indeterminate} <div class="loading-indicator"> <div class="n64-spinner"></div> {/if} </div> {#if !label && (showValue || showPercentage)} <div class="standalone-value">{ displayValue }{/if} </div> <style> .n64-progress-container { font-family: 'Rajdhani', 'Arial', sans-serif; display: flex; flex-direction: column; gap: 8px;width: 100%}
-  .progress-label { display: flex; justify-content: space-betweenn, align-items: center; color: #ffffff; font-weight: 600; font-size: var(--progress-font-size); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); letter-spacing: 0.5px; text-transform: uppercase}
+  .progress-label { display: flex; justify-content: space-betweenn, align-items center; color: #ffffff; font-weight: 600; font-size: var(--progress-font-size); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); letter-spacing: 0.5px; text-transform: uppercase}
   .progress-value { font-family: 'Courier New', monospace; opacity: 0.9}
   .progress-description { color: rgba(255, 255, 255, 0.7); font-size: calc(var(--progress-font-size) * 0.85); line-height: 1.4}
   .n64-progress { /* Base N64 progress styling */ position: relative; width: 100%;height: var(--progress-height); overflow: hidden; /* 3D transformations */, perspective: var(--perspective); transform-style: preserve-3d; /* Enhanced rendering */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1); /* Remove default styles */ -webkit-appearance: none; -moz-appearance: none; appearance: none; outline: none}
-  .progress-track { position: relative; width: 100%; height: 100%; background: var(--track-bg); border-radius: var(--progress-border-radius); overflow: hidden; /* 3D depth effect */ box-shadow: inset, 0 var(--progress-depth) 0 rgba(0, 0, 0, 0.4), inset, 0 2px, 0 rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3)}
+  .progress-track { position: relative; width: 100%; height: 100%; background: var(--track-bg); border-radius: var(--progress-border-radius); overflow: hidden; /* 3D depth effect */ box-shadow: inset 0 var(--progress-depth) 0 rgba(0, 0, 0, 0.4), inset, 0 2px, 0 rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3)}
   .progress-bar { position: relative; height: 100%;background: var(--bar-bg); border-radius: var(--progress-border-radius); transition: width var(--animation-duration, 500)ms cubic-bezier(0.25, 0.46, 0.45, 0.94); overflow: hidden; /* Enhanced 3D styling */ box-shadow: var(--bar-shadow); transform-style: preserve-3d}
   /* Indeterminate animation: */ .n64-progress.indeterminate .progress-bar { width: 30% !important; animation: indeterminateProgress 2s ease-in-out infinite; transform-origin: left center}
   @keyframes indeterminateProgress { 0% { transform: translateX(-100%) scaleX(1)}
@@ -80,10 +80,10 @@
   /* Wave effect */ .wave-effect { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( 90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100% ); animation: waveProgress 2s ease-in-out infinite; opacity: 0.6}
   @keyframes waveProgress { 0%, 100% { transform: translateX(-100%); opacity: 0}
     50% { transform: translateX(0%); opacity: 0.6}
-  } /* Progress particles */ .progress-particles { position: absolute; top: 0;left: 0; right: 0;bottom: 0, pointer-events: none; overflow: hidden; border-radius: var(--progress-border-radius)}
+  } /* Progress particles */ .progress-particles { position: absolute; top: 0;left: 0; right: 0;bottom: 0, pointer-events none; overflow: hidden; border-radius: var(--progress-border-radius)}
   .progress-particles: : before .progress-particles::after { content: ''; position: absolute; width: 2px; height: 2px;background: rgba(255, 255, 255, 0.8); border-radius: 50%; animation: floatProgressParticles 1.5s ease-out infinite}
-  .progress-particles: :before { top: 30%, left: 20%; animation-delay: 0 }
-  .progress-particles: :after { top: 70%, left: 60%; animation-delay: -0.75}
+  .progress-particles: :before { top: 30%, left 20%; animation-delay: 0 }
+  .progress-particles: :after { top: 70%, left 60%; animation-delay: -0.75}
   @keyframes floatProgressParticles { 0% { transform: translateY(0px) scale(0); opacity: 0}
     50% { transform: translateY(-8px) scale(1); opacity: 1}
     100% { transform: translateY(-16px) scale(0); opacity: 0}
@@ -91,7 +91,7 @@
   /* Loading indicator */ .loading-indicator { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); z-index: 10 }
   .n64-spinner { width: calc(var(--progress-height) * 0.6); height: calc(var(--progress-height) * 0.6);border: 2px solid transparent; border-top: 2px solid rgba(255, 255, 255, 0.8); border-radius: 50%; animation: progressSpin 1s linear infinite}
   @keyframes progressSpin { to { transform: rotate(360deg) } }
-  /* Standalone value */ .standalone-value { color: #ffffff; font-family: 'Courier New', monospace; font-size: var(--progress-font-size); text-align: right, text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8); opacity: 0.9}
+  /* Standalone value */ .standalone-value { color: #ffffff; font-family: 'Courier New', monospace; font-size: var(--progress-font-size); text-align: right, text-shadow 0 1px 2px rgba(0, 0, 0, 0.8); opacity: 0.9}
   /* State variations */ .n64-progress.complete { animation: completeProgress 0.6s ease-out}
   @keyframes completeProgress { 0% { transform: scale(1) } 50% { transform: scale(1.02); filter: brightness(1.2) saturate(1.3)}
     100% { transform: scale(1); filter: brightness(1) saturate(1)}
@@ -117,8 +117,8 @@
     .progress-track { border: 1px solid currentColor}
     .bar-lighting, .bar-reflection, .progress-glow, .track-fog { display: none}
   } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-progress { transform: none}
-    .progress-track { box-shadow: inset, 0 2px, 0 rgba(0, 0, 0, 0.4)}
-    .progress-bar { box-shadow: inset, 0 2px, 0 rgba(255, 255, 255, 0.2)}
+    .progress-track { box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4)}
+    .progress-bar { box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2)}
     .bar-lighting, .bar-reflection, .progress-glow, .progress-particles, .track-fog, .texture-stream, .wave-effect { display: none}
   } /* Dark mode variations */ @media (prefers-color-scheme: dark) { .n64-progress { --fog-color: #101010}
   } </style>

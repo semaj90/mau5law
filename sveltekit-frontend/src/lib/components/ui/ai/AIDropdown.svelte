@@ -119,30 +119,30 @@
 	/* minimal styles â€” adapt to Bits UI / UnoCSS as needed */
 	.ai-dropdown { position: relative; display: inline-block}
 	.ai-dropdown-trigger {
-		display: inline-flex
-		align-items: center
-		justify-content: space-between
-		gap: 0.5rem
+		display: inline-flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
 		padding: 0.4rem 0.6rem
 	;background: var(--dropdown-bg, #fff); border: 1px solid var(--dropdown-border, #ccc);
-		border-radius: 6px
+		border-radius: 6px;
 		cursor: pointer}
 	.ai-dropdown-trigger[aria-disabled="true"] { opacity: 0.6; cursor: not-allowed}
 	.ai-dropdown-caret { font-size: 0.9em; margin-left: 0.5rem}
 	.ai-dropdown-list {
 		position: absolute
-	;top: calc(100% + 6px); left: 0
-		min-width: 160px
-		max-height: 240px
+	;top: calc(100% + 6px); left: 0;
+		min-width: 160px;
+		max-height: 240px;
 		overflow: auto
 	; background: var(--dropdown-bg, #fff); border: 1px solid var(--dropdown-border, #ccc);
 		box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-		z-index: 40
-		padding: 0.25rem 0
+		z-index: 40;
+		padding: 0.25rem 0;
 		border-radius: 6px}
 	.ai-dropdown-list li {
-		list-style: none
-		padding: 0.4rem 0.6rem
+		list-style: none;
+		padding: 0.4rem 0.6rem;
 		cursor: pointer}
 	.ai-dropdown-list li.highlighted { background: var(--dropdown-highlight, #eef)}
 	.ai-dropdown-list li.selected { font-weight: 600}

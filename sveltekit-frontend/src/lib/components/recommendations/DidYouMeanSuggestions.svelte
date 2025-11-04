@@ -87,6 +87,7 @@ interface Props { query?: string; placeholder?: string; contextType?: string; us
   .suggestions-scroll::-webkit-scrollbar-track { background: #f1f1f1}
   .suggestions-scroll: :-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px}
   .suggestions-scroll::-webkit-scrollbar-thumb:hover { background: #a8a8a8}
-</style>
+
+}</style>
 
 

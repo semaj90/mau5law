@@ -817,69 +817,69 @@
     min-height: 48px}
 
   .toolbar-group {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 0.25rem}
 
   .toolbar-btn {
-    padding: 0.5rem
-    border-radius: 0.375rem
-    transition: background-color 0.2s
-    border: none
-    background: transparent
-    cursor: pointer
-    display: flex
-    align-items: center
-    justify-content: center
-    min-width: 36px
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
     height: 36px}
 
   .toolbar-btn:hover {
     background-color: #f3f4f6}
 
   .toolbar-btn:disabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed}
 
   .toolbar-btn.active {
     background-color: #dbeafe
-    /* fixed hex */
+    /* fixed hex */;
     color: #2563eb}
 
   .toolbar-separator {
-    width: 1px
-    height: 1.5rem
-    background-color: #d1d5db
+    width: 1px;
+    height: 1.5rem;
+    background-color: #d1d5db;
     margin: 0 0.25rem}
 
   .zoom-display {
-    font-size: 0.875rem
-    color: #4b5563
-    min-width: 40px
+    font-size: 0.875rem;
+    color: #4b5563;
+    min-width: 40px;
     text-align: center}
 
   .dropdown {
     position: relative}
 
   .dropdown-menu {
-    position: absolute
-    top: 100%; left: 0
-    background-color: white
-    border: 1px solid #e5e7eb
-    border-radius: 0.375rem
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); padding: 0.25rem 0
-    z-index: 20
-    min-width: 150px
+    position: absolute;
+    top: 100%; left: 0;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); padding: 0.25rem 0;
+    z-index: 20;
+    min-width: 150px;
     display: none}
 
   .dropdown:hover .dropdown-menu {
     display: block}
 
   .dropdown-menu button {
-    width: 100%; text-align: left
-    padding: 0.5rem 0.75rem
-    border: none
-    background-color: transparent
+    width: 100%; text-align: left;
+    padding: 0.5rem 0.75rem;
+    border: none;
+    background-color: transparent;
     cursor: pointer}
 
   .dropdown-menu button:hover {

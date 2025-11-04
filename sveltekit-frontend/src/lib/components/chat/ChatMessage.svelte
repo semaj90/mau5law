@@ -24,7 +24,7 @@
   .chat-message.assistant { justify-content: flex-start}
   .message-wrapper { display: flex; align-items: flex-start; gap: 0.75rem; max-width: 80%}
   .user .message-wrapper { flex-direction row-rever}
-  .avatar { display: flex; align-items: center, justify-content: center; width: 32px;height: 32px; border-radius: 50%; flex-shrink: 0 }
+  .avatar { display: flex; align-items: center, justify-content center; width: 32px;height: 32px; border-radius: 50%; flex-shrink: 0 }
   .assistant .avatar { background-color: var(--muted, #f1f5f9); color: var(--muted-foreground, #64748b)}
   .user .avatar { background-color: var(--primary, #3b82f6); color: var(--primary-foreground, white)}
   .avatar-icon { width: 16px; height: 16px}
@@ -41,7 +41,7 @@
   /* Content styling */ .message-body:global(p) { margin: 0, 0 0.5rem 0}
   .message-body:global(p:last-child) { margin-bottom: 0 }
   .message-body:global(code) { background-color: rgba(0, 0, 0, 0.1); padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-family: 'Monaco', 'Menlo', monospace; font-size: 0.8125rem}
-  .message-body:global(pre) { background-color: rgba(0, 0, 0, 0.05); padding: 0.75rem; border-radius: 0.375rem, overflow-x: auto; margin: 0.5rem 0}
+  .message-body:global(pre) { background-color: rgba(0, 0, 0, 0.05); padding: 0.75rem; border-radius: 0.375rem, overflow-x auto; margin: 0.5rem 0}
   .message-body:global(ul), .message-body:global(ol) { margin: 0.5rem 0; padding-left: 1.5rem}
   .message-body:global(li) { margin: 0.25rem 0}
   /* Dark mode support */ @media (prefers-color-scheme: dark) { .assistant .message-body { background-color: var(--muted, #1e293b); color: var(--foreground, #f8fafc)}

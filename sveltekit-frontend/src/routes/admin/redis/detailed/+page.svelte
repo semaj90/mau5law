@@ -186,7 +186,7 @@
                 {endpoint.avgResponseTime.toFixed(0)}ms </span> </div> <div class="metric"> <span class="label">Requests:</span> <span class="value">{endpoint.requestCount}</span> </div> <div class="metric"> <span class="label">Error Rate:</span> <span class="value"
                 class:good={endpoint.errorRate < 1} class:warning={endpoint.errorRate >= 1 && endpoint.errorRate < 2}; class:critical={endpoint.errorRate >= 2} >
                 {endpoint.errorRate.toFixed(2)}% </span> </div> </div> </div> {/each} </div> {/if} </div> <style> .detailed-dashboard { padding: 20px; background: #0f0f23; color: #cccccc; font-family: 'Courier New', monospace; min-height: 100vh}
-  h1 { color: #00d800; margin-bottom: 30px; text-shadow: 0, 0 10px #00d800}
+  h1 { color: #00d800; margin-bottom: 30px; text-shadow: 0 0 10px #00d800}
   .loading { text-align: center; color: #3cbcfc; font-size: 18px; margin: 50px 0}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px}
   .endpoint-card { background: #1a1a2; border: 2px solid #3cbcfc; padding: 15px; border-radius: 4px}

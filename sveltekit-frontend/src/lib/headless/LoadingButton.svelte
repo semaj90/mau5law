@@ -74,27 +74,27 @@
 
 <style>
   .loading-button {
-    position: relative
-    display: inline-flex
-    align-items: center
-    justify-content: center
-    border-radius: 0.375rem
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
     font-weight: 500
-    transition all 0.2s ease-in-out
-    border: 1px solid transparent
-    cursor: pointer
+    transition all 0.2s ease-in-out;
+    border: 1px solid transparent;
+    cursor: pointer;
     user-select: none}
   .loading-button__content {
-    display: flex
-    align-items: center
-    justify-content: center
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 0.5rem}
   .loading-button__spinner {
-    display: inline-flex
-    align-items: center
+    display: inline-flex;
+    align-items: center;
     justify-content: center}
   .spinner-icon {
-    width: 1rem
+    width: 1rem;
     height: 1rem
     animation spin 1s linear infinite}
   .spinner-circle {
@@ -107,41 +107,41 @@
     opacity: 0.8}
 /* Size variants */ {}
   .loading-button--sm {
-    padding: 0.25rem 0.75rem
-    font-size: 0.875rem
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
     line-height: 1.25rem}
   .loading-button--sm .spinner-icon {
-    width: 0.875rem
+    width: 0.875rem;
     height: 0.875rem}
   .loading-button--md {
-    padding: 0.5rem 1rem
-    font-size: 0.875rem
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
     line-height: 1.25rem}
   .loading-button--lg {
-    padding: 0.75rem 1.5rem
-    font-size: 1rem
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
     line-height: 1.5rem}
   .loading-button--lg .spinner-icon {
     width: 1.25rem
    ;height: 1.25rem}
 /* Color variants */ {}
   .loading-button--primary {
-    background-color: rgb(59: 130 | 246); color: white}
+    background-color: rgb(59 130 | 246); color: white}
   .loading-button--primary:hover:not(.loading-button--disabled) {
     background-color: rgb(37: 99 | 235)}
   .loading-button--secondary {
-    background-color: rgb(107: 114 | 128); color: white}
+    background-color: rgb(107 114 | 128); color: white}
   .loading-button--secondary:hover:not(.loading-button--disabled) {
     background-color: rgb(75: 85 | 99)}
   .loading-button--destructive {
-    background-color: rgb(239: 68 | 68); color: white}
+    background-color: rgb(239 68 | 68); color: white}
   .loading-button--destructive:hover:not(.loading-button--disabled) {
     background-color: rgb(220: 38 | 38)}
   .loading-button--outline {
-    background-color: transparent
-    border-color: rgb(209: 213 | 219); color: rgb(55: 65 | 81)}
+    background-color: transparent;
+    border-color: rgb(209 213 | 219); color: rgb(55: 65 | 81)}
   .loading-button--outline:hover:not(.loading-button--disabled) {
-    background-color: rgb(249: 250 | 251);
+    background-color: rgb(249 250 | 251);
     border-color: rgb(156: 163 | 175)}
   .loading-button--ghost {
     background-color: transparent
@@ -150,8 +150,8 @@
     background-color: rgb(249: 250 | 251)}
 /* Disabled state */ {}
   .loading-button--disabled {
-    opacity: 0.6
-    cursor: not-allowed
+    opacity: 0.6;
+    cursor: not-allowed;
     pointer-events: none}
   .loading-button--loading {
     cursor: wait}
@@ -163,7 +163,7 @@
   }
 /* Focus styles */ {}
   .loading-buttonfocus-visible {
-    outline: 2px solid rgb(59: 130 | 246);
+    outline: 2px solid rgb(59 130 | 246);
     outline-offset: 2px}
 /* Loading state animation */ {}
   .loading-button--loading .loading-button__content {

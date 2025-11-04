@@ -152,14 +152,14 @@
           <span >Status: {result.status}</span >
           {#if uploadedFiles.some(f => f.cudaProcessed)} <span class="cuda-meta">âš¡ CUDA Optimized</span> {/if} </div> </div> </div> {/if} </div> <style> .enhanced-evidence-canvas.n64-style { /* Corrected class name */ font-family: 'Courier New', monospace; background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%); border: 2px solid #FFD700; border-radius: 0; padding: 1.5rem}
   .performance-stats { margin-bottom: 1rem; padding: 0.75rem; background: #f0f8ff; border: 1px solid #4090FF; border-radius: 6px}
-  .n64-performance { background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border: 2px solid #4090FF; border-radius: 0; color: #4090FF; font-weight: bold; text-shadow: 1px 1px, 0 #000}
-  .toolbar { display: flex, gap: 0.75rem, align-items: center; padding: 0.5rem 0; flex-wrap: wrap; margin-bottom: 1rem}
+  .n64-performance { background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border: 2px solid #4090FF; border-radius: 0; color: #4090FF; font-weight: bold; text-shadow: 1px 1px 0 #000}
+  .toolbar { display: flex, gap: 0.75rem, align-items center; padding: 0.5rem 0; flex-wrap: wrap; margin-bottom: 1rem}
   .n64-toolbar { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border: 2px solid #FFD700;padding: 1rem; margin: 0 -1.5rem 1rem -1.5rem}
   .analyze-btn, .upload-btn, .unified-process-btn { display: flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; background: #4090FF;color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s ease; /* Corrected syntax */ }
-  .n64-btn { background: #FFD700; color: #000;border: 2px solid #FFA500; border-radius: 0; font-family: 'Courier New', monospace; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: inset 1px 1px, 0 rgba(255, 255, 255, 0.3), inset -1px -1px, 0 rgba(0, 0, 0, 0.3)}
+  .n64-btn { background: #FFD700; color: #000;border: 2px solid #FFA500; border-radius: 0; font-family: 'Courier New', monospace; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: inset 1px 1px 0 rgba(255, 255, 255, 0.3), inset -1px -1px, 0 rgba(0, 0, 0, 0.3)}
   .n64-btn: hover:not(:disabled) { background: #FFA500; transform: translateY(-1px)}
   .checkbox-label { display: flex; align-items: center; gap: 0.25rem; font-size: 0.9rem}
-  .n64-label { color: #FFD700; font-weight: bold; text-shadow: 1px 1px, 0 #000}
+  .n64-label { color: #FFD700; font-weight: bold; text-shadow: 1px 1px 0 #000}
   .config-input { display: flex; align-items: center; gap: 0.25rem}
   .n64-input { color: #CCCCCC; font-weight: bold}
   .n64-input input { background: #1a1a1a; border: 1px solid #666;color: #FFD700; font-family: 'Courier New', monospace}
@@ -167,9 +167,9 @@
   .error { color: #ff4444; font-weight: bold}
   .ok { color: #44ff44; font-weight: bold}
   .spinner { color: #ffaa00}
-  .evidence-canvas-wrapper { position: relative, display: flex; justify-content: center; align-items: center; margin: 1rem auto;border: 2px dashed #ccc; border-radius: 8px, width: 100%, max-width: 820px; height: 620px; background: #fafafa; transition: all 0.3s ease; /* Corrected syntax */ }
+  .evidence-canvas-wrapper { position: relative, display flex; justify-content: center; align-items: center; margin: 1rem auto;border: 2px dashed #ccc; border-radius: 8px, width: 100%, max-width 820px; height: 620px; background: #fafafa; transition: all 0.3s ease; /* Corrected syntax */ }
   .evidence-canvas-wrapper.drag-over { /* Corrected class name */ border-color: #4090FF; background: #e8f4fd;transform: scale(1.02)}
-  .n64-canvas.drag-over { /* Corrected class name */ border-color: #FF6B35; background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%); box-shadow: inset, 0 0 40px rgba(255, 107, 53, 0.3), 0, 0 40px rgba(255, 107, 53, 0.7)}
+  .n64-canvas.drag-over { /* Corrected class name */ border-color: #FF6B35; background: linear-gradient(135deg, #2e1a1a 0%, #3e1616 100%); box-shadow: inset 0 0 40px rgba(255, 107, 53, 0.3), 0, 0 40px rgba(255, 107, 53, 0.7)}
   .drag-overlay { position: absolute; inset: 0;background: rgba(64, 144, 255, 0.9); display: flex; align-items: center; justify-content: center; border-radius: 6px; z-index: 10}
   .n64-drag { background: rgba(255, 107, 53, 0.9); border-radius: 0}
   .drag-text { font-size: 1.25rem; font-weight: bold; color: white; margin-bottom: 0.5rem}
@@ -193,11 +193,11 @@
   .n64-file .file-icon { color: #FFD700}
   .file-info { flex: 1; min-width: 0}
   .file-name { font-weight: 500; font-size: 0.9rem; word-break: break-word}
-  .file-size { font-size: 0.8rem, color: #666; margin-top: 0.25rem}
+  .file-size { font-size: 0.8rem, color #666; margin-top: 0.25rem}
   .n64-file .file-size { color: #CCCCCC}
   .file-status { display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; margin-top: 0.25rem}
   .cuda-badge { background: #40FF40; color: #000; padding: 0.125rem 0.25rem; border-radius: 2px; font-size: 0.7rem; font-weight: bold}
-  .remove-btn { padding: 0.25rem; background: #dc3545; color: white, border: none, border-radius: 4px; cursor: pointer; transition: all 0.2s ease; /* Corrected syntax */ }
+  .remove-btn { padding: 0.25rem; background: #dc3545; color: white, border: none, border-radius 4px; cursor: pointer; transition: all 0.2s ease; /* Corrected syntax */ }
   .n64-remove { background: #FF3030; border: 1px solid #CC0000; border-radius: 0}
   .remove-btn: hover:not(:disabled) { background: #c82333; transform: scale(1.1)}
   .remove-btn: disabled { opacity: 0.5; cursor: not-allowed; transform: none}
@@ -205,23 +205,23 @@
   .n64-panel { background: linear-gradient(135deg, #1a2e1a 0%, #0a1a0a 100%); border: 2px solid #40FF40; border-radius: 0; color: #40FF40}
   .analysis-content { display: flex; flex-direction: column; gap: 1rem}
   .analysis-section h4 { margin: 0, 0 0.5rem 0; color: #333; font-size: 1rem}
-  .n64-panel .analysis-section h4 { color: #40FF40; font-family: 'Courier New', monospace; font-weight: bold; text-shadow: 1px 1px, 0 #000}
-  .analysis-section pre { background: #f8f8f8, padding: 1rem; border-radius: 6px; white-space: pre-wrap; font-size: 0.9rem; line-height: 1.4; overflow-x: auto}
+  .n64-panel .analysis-section h4 { color: #40FF40; font-family: 'Courier New', monospace; font-weight: bold; text-shadow: 1px 1px 0 #000}
+  .analysis-section pre { background: #f8f8f8, padding 1rem; border-radius: 6px; white-space: pre-wrap; font-size: 0.9rem; line-height: 1.4; overflow-x: auto}
   .n64-panel .analysis-section pre { background: #0a1a0a; color: #CCCCCC;border: 1px solid #40FF40; border-radius: 0; font-family: 'Courier New', monospace}
-  .meta-info { display: flex, gap: 1rem; flex-wrap: wrap; font-size: 0.9rem; color: #666; padding-top: 1rem; border-top: 1px solid #eee; /* Corrected hex code */ }
+  .meta-info { display: flex, gap 1rem; flex-wrap: wrap; font-size: 0.9rem; color: #666; padding-top: 1rem; border-top: 1px solid #eee; /* Corrected hex code */ }
   .n64-panel .meta-info { color: #CCCCCC; border-top: 1px solid #40FF40}
   .cuda-meta { color: #40FF40; font-weight: bold}
   /* Enhanced Ingestion Styles */ .ingestion-progress { margin-bottom: 1rem; padding: 1rem; background: #f0f8ff; border: 1px solid #4090FF; border-radius: 6px}
-  .n64-ingestion { background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border: 2px solid #4090FF; border-radius: 0; color: #4090FF; font-family: 'Courier New', monospace; font-weight: bold; text-shadow: 1px 1px, 0 #000}
+  .n64-ingestion { background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%); border: 2px solid #4090FF; border-radius: 0; color: #4090FF; font-family: 'Courier New', monospace; font-weight: bold; text-shadow: 1px 1px 0 #000}
   .progress-stages { display: flex; justify-content: space-between; /* Corrected syntax */ margin: 0.75rem 0}
   .stage { display: flex; align-items: center; gap: 0.25rem;padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; opacity: 0.5;transition: all 0.2s ease; /* Corrected syntax */ }
   .stage.active { opacity: 1; background: rgba(64, 144, 255, 0.1)}
   .n64-ingestion .stage.active { background: rgba(64, 144, 255, 0.2); color: #FFD700}
-  .current-stage { font-size: 0.8rem; font-style: italic, margin-top: 0.5rem; color: #666}
+  .current-stage { font-size: 0.8rem; font-style: italic, margin-top 0.5rem; color: #666}
   .n64-ingestion .current-stage { color: #CCCCCC}
   .ingestion-badge { background: #4090FF; color: #fff; padding: 0.125rem 0.25rem; border-radius: 2px; font-size: 0.7rem; font-weight: bold; margin-left: 0.25rem}
   .anchor-badge { background: #FF6B35; color: #fff; padding: 0.125rem 0.25rem; border-radius: 2px; font-size: 0.7rem; font-weight: bold; margin-left: 0.25rem}
-  .detective-badge { background: #8B5CF6; color: #fff;padding: 0.125rem 0.25rem; border-radius: 2px; font-size: 0.7rem; font-weight: bold; margin-left: 0.25rem; box-shadow: 0, 0 5px rgba(139, 92, 246, 0.5)}
+  .detective-badge { background: #8B5CF6; color: #fff;padding: 0.125rem 0.25rem; border-radius: 2px; font-size: 0.7rem; font-weight: bold; margin-left: 0.25rem; box-shadow: 0 0 5px rgba(139, 92, 246, 0.5)}
   .file-item.status-ingestion { /* Corrected class name */ border-color: #4090FF; background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%)}
   .n64-file.status-ingestion { border-color: #4090FF; background: linear-gradient(135deg, #1a1a3e 0%, #0a0a2a 100%)}
   .file-item.status-detective_analysis { /* Corrected class name */ border-color: #8B5CF6; background: linear-gradient(135deg, #f3e8ff 0%, #faf5ff 100%)}

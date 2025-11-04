@@ -263,22 +263,22 @@ import type { Document } from '$lib/types';
 <style>
 	/* Custom styles for this page */
 	.nes-container {
-		background-color: #fff
+		background-color: #fff;
 		border: 1px solid #ddd}
 
 	.nes-text.is-primary {
 		color: #0070f3}
 
 	.nes-btn.is-primary {
-		background-color: #0070f3
+		background-color: #0070f3;
 		border-color: #0070f3}
 
 	.nes-btn.is-primary:hover {
-		background-color: #005bb5
+		background-color: #005bb5;
 		border-color: #005bb5}
 
 	.nes-badge.is-success {
-		background-color: #28a745
+		background-color: #28a745;
 		color: #fff}
 
 	.nes-radio.is-primary {
@@ -288,7 +288,7 @@ import type { Document } from '$lib/types';
 		margin-bottom: 1rem}
 
 	.title {
-		font-size: 1.125rem
+		font-size: 1.125rem;
 		font-weight: 500}
 
 	/* Spinner animation */

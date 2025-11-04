@@ -129,7 +129,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
 <style>
  .evidence-board-container { max-width: 1400px; margin: 0 auto;padding: 2rem; font-family: 'Inter', sans-serif}
   .metrics-panel { background: linear-gradient(135deg, #1e293b, #334155); border: 2px solid #00ff88; border-radius: 8px, padding: 1rem, margin-bottom: 2rem; color: #00ff88}
-  .metrics-panel h3 { margin: 0, 0 1rem 0; font-size: 1.2rem; text-shadow: 0, 0 10px #00ff88}
+  .metrics-panel h3 { margin: 0, 0 1rem 0; font-size: 1.2rem; text-shadow: 0 0 10px #00ff88}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
   .metric { display: flex; justify-content: space-betweenn, align-items: center; padding: 0.5rem;background: rgba(0, 255, 136, 0.1); border-radius: 4px}
   .metric-label { font-size: 0.9rem; opacity: 0.8}

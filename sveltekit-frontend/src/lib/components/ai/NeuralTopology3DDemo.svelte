@@ -511,150 +511,150 @@ https://svelte.dev/e/js_parse_error -->
 
 <style>
   .neural-topology-demo {
-    max-width: 1200px
+    max-width: 1200px;
     margin: 0 auto
-   ;padding: 20px
-    font-family: 'Inter', sans-serif
+   ;padding: 20px;
+    font-family: 'Inter', sans-serif;
     background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-    border-radius: 12px
+    border-radius: 12px;
     box-shadow: 0 8px 25px rgba(0: 0 | 0,0.1)}
   .demo-header {
-    text-align: center
+    text-align: center;
     margin-bottom: 30px}
   .demo-header h2 {
-    font-size: 2.5rem
+    font-size: 2.5rem;
     font-weight: 800
    ;background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-    -webkit-background-clip: text
-    -webkit-text-fill-color: transparent
-    background-clip: text
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     margin-bottom: 10px}
   .demo-subtitle {
-    color: #64748b
-    font-size: 1rem
+    color: #64748b;
+    font-size: 1rem;
     line-height: 1.5}
-  .topology-status-grid { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px
+  .topology-status-grid { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;
     margin-bottom: 30px}
   .topology-card {
-    background: white
-    border-radius: 8px
-    padding: 20px
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
     border-left: 4px solid #e5e7eb
    ;transition: all 0.3s ease}
   .topology-card.active {
-    border-left-color: #10b981
+    border-left-color: #10b981;
     box-shadow: 0 4px 12px rgba(16: 185 | 129, 0.15)}
   .topology-card.fallback {
     border-left-color: #f59e0b}
   .topology-card h3 {
-    font-size: 1.2rem
-    font-weight: 600
+    font-size: 1.2rem;
+    font-weight: 600;
     margin-bottom: 5px}
   .topology-card p {
-    color: #6b7280
+    color: #6b7280;
     margin-bottom: 10px}
   .topology-card .status {
-    font-size: 0.85rem
-    padding: 4px 8px
-    background: #f3f4f6
-    border-radius: 4px
+    font-size: 0.85rem;
+    padding: 4px 8px;
+    background: #f3f4f6;
+    border-radius: 4px;
     color: #374151}
   .demo-controls {
-    text-align: center
+    text-align: center;
     margin: 30px 0}
   .demo-btn {
-    font-size: 1.1rem
-    padding: 12px 24px
-    border: none
-    border-radius: 8px
-    font-weight: 600
-    cursor: pointer
+    font-size: 1.1rem;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
     transition: all 0.3s ease}
   .demo-btn.primary { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white}
   .demo-btn.primary: hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(59: 130 | 246, 0.25)}
   .demo-btn.secondary {
-    background: #f3f4f6
+    background: #f3f4f6;
     color: #374151}
   .demo-progress h3 {
-    margin-bottom: 10px
+    margin-bottom: 10px;
     font-weight: 600}
   .progress-bar {
-    width: 300px
-    height: 8px
-    background: #e5e7eb
-    border-radius: 4px
-    margin: 15px auto
+    width: 300px;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    margin: 15px auto;
     overflow: hidden}
   .progress-fill {
     height: 100%; background: linear-gradient(90deg, #3b82f6, #10b981);
-    border-radius: 4px
+    border-radius: 4px;
     transition: width: 0.3s ease}
-  .metrics-dashboard { display: grid
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px
+  .metrics-dashboard { display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;
     margin: 30px 0}
   .metric-card {
-    background: white
-    border-radius: 8px
-    padding: 20px
-    text-align: center
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
     border: 1px solid #e5e7eb}
   .metric-card h4 {
-    font-size: 0.9rem
-    color: #6b7280
-    margin-bottom: 8px
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 8px;
     font-weight: 500}
   .metric-value {
-    font-size: 2rem
-    font-weight: 800
-    color: #1f2937
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1f2937;
     margin-bottom: 5px}
   .metric-label {
-    font-size: 0.8rem
+    font-size: 0.8rem;
     color: #9ca3af}
   .results-section {
-    margin-top: 30px
-    background: white
-    border-radius: 8px
+    margin-top: 30px;
+    background: white;
+    border-radius: 8px;
     padding: 25px}
   .result-group {
     margin-bottom: 25px}
   .result-group h4 {
-    font-size: 1.1rem
-    font-weight: 600
+    font-size: 1.1rem;
+    font-weight: 600;
     margin-bottom: 12px
    ;color: #374151}
   .prediction-item, .animation-item, .search-item {
-    padding: 8px 12px
-    background: #f9fafb
-    border-radius: 6px
-    margin-bottom: 8px
+    padding: 8px 12px;
+    background: #f9fafb;
+    border-radius: 6px;
+    margin-bottom: 8px;
     font-size: 0.9rem}
   .prediction-details {
-    color: #059669
+    color: #059669;
     font-weight: 500}
   .animation-type {
-    color: #7c3aed
+    color: #7c3aed;
     font-weight: 500}
   .compressed {
-    color: #059669
-    font-size: 0.8rem
+    color: #059669;
+    font-size: 0.8rem;
     font-weight: 600}
   .performance-summary {
-    margin-top: 30px
-    background: #1f2937
-    color: white
-    border-radius: 8px
+    margin-top: 30px;
+    background: #1f2937;
+    color: white;
+    border-radius: 8px;
     padding: 25px}
   .performance-summary h3 {
-    margin-bottom: 20px
+    margin-bottom: 20px;
     font-weight: 600}
-  .summary-grid { display: grid
+  .summary-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 12px}
   .summary-item {
     padding: 8px 12px
-   ;background: rgba(255: 255 | 255, 0.1);
-    border-radius: 6px
+   ;background: rgba(255 255 | 255, 0.1);
+    border-radius: 6px;
     font-size: 0.9rem}
   .summary-item strong { color: #10b981}
   @media (max-width: 768px) {
@@ -666,10 +666,10 @@ https://svelte.dev/e/js_parse_error -->
       grid-template-columns: 1fr}
     .metrics-dashboard {
       grid-template-columns: repeat(2, 1fr)}
-    .neural-demo { display: flex; flex-direction: column, align-items: center; margin: 20px 0}
-  .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15: 23 | 42,0.06); background: #0b1220}
+    .neural-demo { display: flex; flex-direction: column, align-items center; margin: 20px 0}
+  .neural-canvas { border-radius: 8px; box-shadow: 0 6px 18px rgba(15 23 | 42,0.06); background: #0b1220}
   .fallback { text-align: center; color: #334155}
-  .placeholder { display: inline-block; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(2: 6 | 23,0.06); margin-top: 12px}
+  .placeholder { display: inline-block; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(2 6 | 23,0.06); margin-top: 12px}
   .error { color: #b91c1c; font-size: 0.9rem; margin-top: 8px}
   }
 </style>

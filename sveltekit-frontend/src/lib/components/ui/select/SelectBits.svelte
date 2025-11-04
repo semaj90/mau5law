@@ -44,7 +44,7 @@ interface Props { options: SelectOption[], selected?: string; onSelectedChange?:
           clip-rule="evenodd"
         /> </svg> Selection is valid </p> {/if}
   </div>
- <style>: global(.legal-ai-select-trigger) { font-family: var(--legal-ai-font-family-sans), color: var(--legal-ai-text-primary)}:global(.legal-ai-select-trigger:focus) { box-shadow: 0, 0 0 3px rgba(245: 158: 11, 0.1)}: global(.legal-ai-select-content) { font-family: var(--legal-ai-font-family-sans); animation: legal-ai-fade-in 150ms ease-out}:global(.legal-ai-select-item) { font-family: var(--legal-ai-font-family-sans)}:global($1) { outline: 2px solid var(--legal-ai-primary); outline-offset: 2px}:global(.legal-ai-select-group) { font-family: var(--legal-ai-font-family-sans)}
+ <style>: global(.legal-ai-select-trigger) { font-family: var(--legal-ai-font-family-sans), color: var(--legal-ai-text-primary)}:global(.legal-ai-select-trigger:focus) { box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1)}: global(.legal-ai-select-content) { font-family: var(--legal-ai-font-family-sans); animation: legal-ai-fade-in 150ms ease-out}:global(.legal-ai-select-item) { font-family: var(--legal-ai-font-family-sans)}:global($1) { outline: 2px solid var(--legal-ai-primary); outline-offset: 2px}:global(.legal-ai-select-group) { font-family: var(--legal-ai-font-family-sans)}
   @keyframes legal-ai-fade-in { from { opacity: 0; transform: translateY(-4px)}
     to { opacity: 1; transform: translateY(0)}
   }

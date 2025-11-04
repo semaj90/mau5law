@@ -87,7 +87,7 @@
   /* Pulse, animation: for processing state */ @keyframes ai-pulse { 0%, 100% { opacity: 1}
     50% { opacity: 0.5}
   } .ai-assistant-btn[data-status='processing'] { animation: ai-pulse 2s infinite}
-  /* Glowing effect for floating button */ .ai-assistant-btn.fixed:hover { box-shadow: 0, 0 30px rgba(var(--yorha-accent-gold-rgb), 0.3)}
+  /* Glowing effect for floating button */ .ai-assistant-btn.fixed:hover { box-shadow: 0 0 30px rgba(var(--yorha-accent-gold-rgb), 0.3)}
 </style>
 
 

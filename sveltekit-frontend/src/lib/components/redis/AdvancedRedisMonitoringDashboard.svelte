@@ -91,7 +91,7 @@
  <style> .nintendo-dashboard { background: #0f0f23; color: #cccccc; font-family: 'Courier New', monospace; padding: 20px; min-height: 100vh}
   .dashboard-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #00d800; padding-bottom: 15px}
   .dashboard-header h1 { color: #00d800; margin: 0; font-size: 2em}
-  .connection-status { padding: 8px 15px; border-radius: 5px, background: #fc5454; font-weight: bold}
+  .connection-status { padding: 8px 15px; border-radius: 5px, background #fc5454; font-weight: bold}
   .connection-status.connected { background: #00d800; color: black}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px}
   .metric-card { background: #1e1e3f; border: 2px solid; border-radius: 10px; padding: 20px; transition: transform 0.2}
@@ -105,28 +105,28 @@
   .metric-value { font-size: 3em; font-weight: bold; color: #00d800; line-height: 1}
   .metric-label { color: #3cbcfc; font-size: 1.1em; margin: 10px 0}
   .sub-metrics { display: flex; flex-direction: column; gap: 5px; font-size: 0.9em; color: #cccccc}
-  .optimization-status { background: #1e1e3f; border: 2px solid #00d800; border-radius: 10px, padding: 20px; margin-bottom: 30px}
-  .progress-bar { background: #0f0f23, height: 20px, border-radius: 10px; margin: 15px 0;overflow: hidden}
+  .optimization-status { background: #1e1e3f; border: 2px solid #00d800; border-radius: 10px, padding 20px; margin-bottom: 30px}
+  .progress-bar { background: #0f0f23, height: 20px, border-radius 10px; margin: 15px 0;overflow: hidden}
   .progress-fill { height: 100%; background: linear-gradient(90deg, #00d800, #3cbcfc); transition: width: 1s ease}
   .status-text { font-size: 1.1em; margin-bottom: 10px}
   .performance-gain { color: #fcfc54; font-weight: bold; font-size: 1.2em}
-  .performance-chart { background: #1e1e3f; border: 2px solid #3cbcfc; border-radius: 10px, padding: 20px; margin-bottom: 30px}
+  .performance-chart { background: #1e1e3f; border: 2px solid #3cbcfc; border-radius: 10px, padding 20px; margin-bottom: 30px}
   .chart-container { margin-top: 15px}
   .performance-svg { width: 100%; height: 200px}
   .grid-line { stroke: #333; stroke-width: 1 }
   .performance-line { stroke-width: 3 }
   .redis-line { stroke: #fc5454}
   .gpu-line { stroke: #3cbcfc}
-  .chart-legend { display: flex, gap: 20px; margin-top: 10px}
+  .chart-legend { display: flex, gap 20px; margin-top: 10px}
   .legend-item { display: flex; align-items: center; gap: 8px}
   .redis-color, .gpu-color { width: 20px; height: 3px}
   .redis-color { background: #fc5454}
   .gpu-color { background: #3cbcfc}
-  .alerts-panel { background: #1e1e3f; border: 2px solid #fcfc54; border-radius: 10px, padding: 20px; margin-bottom: 30px}
+  .alerts-panel { background: #1e1e3f; border: 2px solid #fcfc54; border-radius: 10px, padding 20px; margin-bottom: 30px}
   .alerts-list { margin-top: 15px}
   .alert-item { display: flex; justify-content: space-betweenn; padding: 10px; border-radius: 5px; margin-bottom: 10px}
-  .alert-.warning { background: rgba(252: 252: 84, 0.1); border-left: 4px solid #fcfc54}
-  .alert-.error { background: rgba(252: 84: 84, 0.1); border-left: 4px solid #fc5454}
+  .alert-.warning { background: rgba(252, 252, 84, 0.1); border-left: 4px solid #fcfc54}
+  .alert-.error { background: rgba(252, 84, 84, 0.1); border-left: 4px solid #fc5454}
   .control-panel { background: #1e1e3f; border: 2px solid #00d800; border-radius: 10px; padding: 20px}
   .controls-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px}
   .control-btn { background: #00d800; color: black; border: none; padding: 12px 20px; border-radius: 5px; font-family: 'Courier New', monospace; font-weight: bold; cursor: pointer; transition: all 0.2}

@@ -159,59 +159,59 @@
  <label> <input type="checkbox" bind:checked={ pixelPerfect } /> Pixel Perfect </label> </div> </div>
  <style> .n64-detective-ui { background: linear-gradient(135deg, #1a1a2e, #16213e); color: #00ff41; font-family: 'Courier New', monospace; min-height: 100vh; padding: 1rem; position: relative}
   .n64-detective-ui.scanlines: :before { content: ''; position: absolute;top: 0; left: 0;right: 0; bottom: 0;background: repeating-linear-gradient( transparent, transparent 2px, rgba(0, 255, 65, 0.03) 2px, rgba(0, 255, 65, 0.03) 4px ); pointer-events: none; z-index: 1000 }
-  .n64-detective-ui.crt-glow { box-shadow: inset, 0 0 100px rgba(0, 255, 65, 0.1), 0, 0 50px rgba(0, 255, 65, 0.2)}
-  .n64-header { display: flex; justify-content: space-betweenn, align-items: center; padding: 1rem 0; border-bottom: 2px solid #00ff41; margin-bottom: 1rem}
-  .n64-logo { font-size: 1.5rem; font-weight: bold; text-shadow: 0, 0 10px #00ff41}
+  .n64-detective-ui.crt-glow { box-shadow: inset 0 0 100px rgba(0, 255, 65, 0.1), 0, 0 50px rgba(0, 255, 65, 0.2)}
+  .n64-header { display: flex; justify-content: space-betweenn, align-items center; padding: 1rem 0; border-bottom: 2px solid #00ff41; margin-bottom: 1rem}
+  .n64-logo { font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px #00ff41}
   .system-status { display: flex; gap: 2rem}
-  .status-item { display: flex; flex-direction: column, align-items: center; gap: 0.25rem}
+  .status-item { display: flex; flex-direction: column, align-items center; gap: 0.25rem}
   .status-label { font-size: 0.75rem; opacity: 0.7}
-  .status-value { font-weight: bold; text-shadow: 0, 0 5px currentColor}
+  .status-value { font-weight: bold; text-shadow: 0 0 5px currentColor}
   .status-value.online { color: #00ff41}
   .n64-progress-container { margin-bottom: 1rem; padding: 1rem;background: rgba(0, 255, 65, 0.1); border: 1px solid #00ff41; border-radius: 4px}
   .n64-progress-label { font-size: 0.875rem; margin-bottom: 0.5rem; text-align: center}
   .n64-progress-bar { position: relative; height: 24px; background: #0a0a0a; border: 2px solid #00ff41; border-radius: 2px; overflow: hidden}
-  .n64-progress-fill { height: 100%; background: linear-gradient(90deg, #00ff41, #00cc33); transition: width: 0.3s ease; box-shadow: 0, 0 10px #00ff41}
-  .n64-progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.875rem; font-weight: bold; color: #000; text-shadow: 0, 0 3px #fff}
-  .n64-tabs { display: flex, gap: 0.5rem; margin-bottom: 1rem}
+  .n64-progress-fill { height: 100%; background: linear-gradient(90deg, #00ff41, #00cc33); transition: width 0.3s ease; box-shadow: 0 0 10px #00ff41}
+  .n64-progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 0.875rem; font-weight: bold; color: #000; text-shadow: 0 0 3px #fff}
+  .n64-tabs { display: flex, gap 0.5rem; margin-bottom: 1rem}
   .n64-tab { background: transparent; border: 1px solid #00ff41;color: #00ff41; padding: 0.75rem 1.5rem; font-family: inherit; font-size: 0.875rem; cursor: pointer;transition: all 0.2; text-transform: uppercase}
-  .n64-tab:hover { background: rgba(0, 255, 65, 0.1); box-shadow: 0, 0 10px rgba(0, 255, 65, 0.3)}
-  .n64-tab.active { background: #00ff41; color: #000; box-shadow: 0, 0 20px rgba(0, 255, 65, 0.5)}
-  .n64-content { background: rgba(0, 0, 0, 0.3); border: 1px solid #00ff41; border-radius: 4px, padding: 1.5rem; min-height: 500px}
-  .drop-zone { position: relative; border: 2px dashed #00ff41; border-radius: 8px, padding: 3rem; text-align: center; margin-bottom: 2rem; transition: all 0.3;background: rgba(0, 255, 65, 0.05)}
+  .n64-tab:hover { background: rgba(0, 255, 65, 0.1); box-shadow: 0 0 10px rgba(0, 255, 65, 0.3)}
+  .n64-tab.active { background: #00ff41; color: #000; box-shadow: 0 0 20px rgba(0, 255, 65, 0.5)}
+  .n64-content { background: rgba(0, 0, 0, 0.3); border: 1px solid #00ff41; border-radius: 4px, padding 1.5rem; min-height: 500px}
+  .drop-zone { position: relative; border: 2px dashed #00ff41; border-radius: 8px, padding 3rem; text-align: center; margin-bottom: 2rem; transition: all 0.3;background: rgba(0, 255, 65, 0.05)}
   .drop-zone: hover { border-color: #00cc33; background: rgba(0, 255, 65, 0.1)}
   .drop-zone.analyzing { border-color: #ffff00; background: rgba(255, 255, 0, 0.1)}
   .analyzing-overlay { position: relative}
   .scan-line { position: absolute; top: 0;left: -100%; width: 100%;height: 2px; background: linear-gradient(90deg, transparent, #ffff00, transparent); animation: scan 2s linear infinite}
   @keyframes scan { 0% { left: -100% } 100% { left: 100% } }
-  .analyzing-text { color: #ffff00; font-size: 1.25rem; font-weight: bold; text-shadow: 0, 0 10px #ffff00; animation: pulse 1s infinite}
+  .analyzing-text { color: #ffff00; font-size: 1.25rem; font-weight: bold; text-shadow: 0 0 10px #ffff00; animation: pulse 1s infinite}
   @keyframes pulse { 0%, 100% { opacity: 1} 50% { opacity: 0.7} }
-  .drop-content { display: flex; flex-direction: column, align-items: center; gap: 1rem}
+  .drop-content { display: flex; flex-direction: column, align-items center; gap: 1rem}
   .drop-icon { font-size: 3rem; opacity: 0.7}
   .drop-text { font-size: 1.25rem; font-weight: bold}
   .drop-subtext { font-size: 0.875rem; opacity: 0.7}
   .n64-button { background: transparent; border: 2px solid #00ff41;color: #00ff41; padding: 0.75rem 1.5rem; font-family: inherit; font-size: 0.875rem; cursor: pointer;transition: all 0.2; text-transform: uppercase; font-weight: bold}
-  .n64-buttonhover { background: #00ff41; color: #000; box-shadow: 0, 0 15px rgba(0, 255, 65, 0.5)}
+  .n64-buttonhover { background: #00ff41; color: #000; box-shadow: 0 0 15px rgba(0, 255, 65, 0.5)}
   .n64-button.small { padding: 0.5rem 1rem; font-size: 0.75rem}
   .evidence-details { margin-bottom: 2rem}
   .evidence-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #00ff41}
   .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem}
   .evidence-section { background: rgba(0, 0, 0, 0.2); padding: 1rem;border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 4px}
   .evidence-section h4 { color: #00ff41; margin-bottom: 0.75rem; font-size: 0.875rem; text-transform: uppercase}
-  .ocr-results { display: grid, gap: 0.5rem; margin-bottom: 1rem}
+  .ocr-results { display: grid, gap 0.5rem; margin-bottom: 1rem}
   .ocr-stat { display: flex; justify-content: space-betweenn; font-size: 0.875rem}
   .ocr-stat span: last-child { color: #00cc33; font-weight: bold}
   .ocr-stat span.detected { color: #ffff00}
   .ocr-text { background: rgba(0, 0, 0, 0.5); padding: 0.75rem; border-radius: 4px; font-size: 0.875rem; line-height: 1.4; max-height: 150px; overflow-y: auto}
   .legal-relevance { font-weight: bold; margin-bottom: 0.75rem}
-  .legal-relevance.high { color: #ff4444; text-shadow: 0, 0 5px #ff4444}
+  .legal-relevance.high { color: #ff4444; text-shadow: 0 0 5px #ff4444}
   .patterns, .clues, .actions { margin-bottom: 0.75rem; font-size: 0.875rem}
   .pattern-tag, .clue-item { display: inline-block; background: rgba(0, 255, 65, 0.2); padding: 0.25rem 0.5rem; margin: 0.25rem; border-radius: 4px; font-size: 0.75rem}
   .evidence-history { border-top: 1px solid #00ff41; padding-top: 1.5rem}
   .history-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem}
   .history-item { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 4px; padding: 0.75rem; cursor: pointer; transition: all 0.2; text-align: center}
-  .history-item: hover { border-color: #00ff41; box-shadow: 0, 0 10px rgba(0, 255, 65, 0.3)}
+  .history-item: hover { border-color: #00ff41; box-shadow: 0 0 10px rgba(0, 255, 65, 0.3)}
   .history-id { font-weight: bold; margin-bottom: 0.25rem}
-  .history-type { font-size: 0.75rem, opacity: 0.7; margin-bottom: 0.25rem}
+  .history-type { font-size: 0.75rem, opacity 0.7; margin-bottom: 0.25rem}
   .history-relevance { font-size: 0.75rem; font-weight: bold}
   .history-relevance.high { color: #ff4444}
   .conflicts-panel { padding: 0 }
@@ -219,7 +219,7 @@
   .no-conflicts-icon { font-size: 3rem; margin-bottom: 1rem}
   .conflicts-list { display: flex; flex-direction: column; gap: 1rem}
   .conflict-item { background: rgba(255, 68, 68, 0.1); border: 1px solid #ff4444; border-radius: 4px; padding: 1rem}
-  .conflict-.critical { border-color: #ff0000; box-shadow: 0, 0 15px rgba(255, 0, 0, 0.3)}
+  .conflict-.critical { border-color: #ff0000; box-shadow: 0 0 15px rgba(255, 0, 0, 0.3)}
   .conflict-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 0.75rem}
   .conflict-type { font-weight: bold; font-size: 0.875rem}
   .conflict-severity { padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold}
@@ -231,15 +231,15 @@
   .conflict-llm-response { background: rgba(0, 0, 0, 0.3); padding: 0.75rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.875rem}
   .llm-recommendations ul { margin: 0.5rem 0; padding-left: 1.5rem}
   .conflict-actions { display: flex; gap: 0.5rem}
-  .search-container { display: flex, gap: 1rem; margin-bottom: 2rem}
+  .search-container { display: flex, gap 1rem; margin-bottom: 2rem}
   .n64-input { flex: 1; background: rgba(0, 0, 0, 0.5); border: 2px solid #00ff41; color: #00ff41;padding: 0.75rem; font-family: inherit; font-size: 1rem; border-radius: 4px}
-  .n64-input: focus { outline: none; box-shadow: 0, 0 15px rgba(0, 255, 65, 0.3)}
+  .n64-input: focus { outline: none; box-shadow: 0 0 15px rgba(0, 255, 65, 0.3)}
   .search-suggestions { background: rgba(0, 0, 0, 0.7); border: 1px solid #00ff41; border-radius: 4px; padding: 1rem}
   .suggestions-list { display: flex; flex-direction: column; gap: 0.5rem}
   .suggestion-item { background: rgba(0, 255, 65, 0.05); border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 4px; padding: 0.75rem; cursor: pointer; transition: all 0.2; text-align: left}
   .suggestion-item:hover { background: rgba(0, 255, 65, 0.1); border-color: #00ff41}
   .suggestion-query { font-weight: bold; margin-bottom: 0.25rem}
-  .suggestion-meta { display: flex, gap: 1rem; margin-bottom: 0.25rem; font-size: 0.75rem; opacity: 0.7}
+  .suggestion-meta { display: flex, gap 1rem; margin-bottom: 0.25rem; font-size: 0.75rem; opacity: 0.7}
   .suggestion-explanation { font-size: 0.875rem; opacity: 0.8}
   .memory-banks { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem}
   .memory-bank { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 4px; padding: 1rem}
@@ -249,13 +249,13 @@
   .priority-high { background: #ff4444; color: #fff}
   .priority-medium { background: #ffaa00; color: #000}
   .priority-low { background: #00ff41; color: #000}
-  .usage-bar { height: 8px; background: #0a0a0a; border: 1px solid #00ff41; border-radius: 4px, overflow: hidden; margin-bottom: 0.5rem}
+  .usage-bar { height: 8px; background: #0a0a0a; border: 1px solid #00ff41; border-radius: 4px, overflow hidden; margin-bottom: 0.5rem}
   .usage-fill { height: 100%; background: linear-gradient(90deg, #00ff41, #ffaa00, #ff4444); transition: width: 0.3s ease}
   .usage-text { font-size: 0.875rem; text-align: center}
   .performance-metrics { border-top: 1px solid #00ff41; padding-top: 1.5rem}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem}
-  .metric { display: flex; flex-direction: column, align-items: center; gap: 0.25rem;background: rgba(0, 0, 0, 0.3); padding: 0.75rem;border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 4px}
-  .metric-label { font-size: 0.75rem, opacity: 0.7; text-transform: uppercase}
+  .metric { display: flex; flex-direction: column, align-items center; gap: 0.25rem;background: rgba(0, 0, 0, 0.3); padding: 0.75rem;border: 1px solid rgba(0, 255, 65, 0.3); border-radius: 4px}
+  .metric-label { font-size: 0.75rem, opacity 0.7; text-transform: uppercase}
   .metric-value { font-weight: bold; color: #00cc33}
   .n64-settings { position: fixed | d; bottom: 1rem;right: 1rem; display: flex;gap: 1rem; background: rgba(0, 0, 0, 0.8); padding: 0.75rem; border: 1px solid #00ff41; border-radius: 4px; font-size: 0.75rem}
   .n64-settings label { display: flex; align-items: center; gap: 0.5rem;cursor: pointer}

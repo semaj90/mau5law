@@ -61,7 +61,7 @@ import type { SearchResult } from '$lib/types'; // Svelte, 5 runes are auto-impo
   </div> {/snippet}
   </Card> {/if}
   </div>
- <style> .search-container { max-width: 1000px; margin: 0 auto;padding: 1rem, display: flex, flex-direction: column; gap: 2rem}
+ <style> .search-container { max-width: 1000px; margin: 0 auto;padding: 1rem, display: flex, flex-direction column; gap: 2rem}
   .search-form { display: flex; flex-direction: column; gap: 1.5rem}
   .form-group { display: flex; flex-direction: column; gap: 0.5rem}
   .form-group label { display: flex; align-items: center; gap: 0.5rem; font-weight: bold}
@@ -80,7 +80,7 @@ import type { SearchResult } from '$lib/types'; // Svelte, 5 runes are auto-impo
   .result-metadata { display: flex; gap: 0.5rem; margin: 0.5rem 0}
   .result-footer { font-size: 0.8rem; text-align: right; margin-top: 0.5rem}
   .error-display { margin-top: 1rem}
-  .error-message { margin-top: 0.5rem, display: flex, align-items: center; gap: 0.5rem}
+  .error-message { margin-top: 0.5rem, display: flex, align-items center; gap: 0.5rem}
   .inline-icon { width: 1rem; height: 1rem; display: inli; vertical-align: text-bottom}
   .animate-spin { animation: spin 1s linear infinite}
   @keyframes spin { from { transform: rotate(0deg)}

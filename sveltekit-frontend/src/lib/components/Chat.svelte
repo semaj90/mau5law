@@ -108,26 +108,26 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
   .error-message { font-family: monospace; font-size: 0.875rem; background: rgba(0, 0, 0, 0.05); padding: 0.5rem; border-radius: 4px; margin: 0.5rem 0}
   .error-boundary button { background: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer}
 
-  .chat-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px), display: flex; align-items: center; justify-content: center, z-index: 1000; padding: 1rem}
+  .chat-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px), display flex; align-items: center; justify-content: center, z-index 1000; padding: 1rem}
 
-  .chat-container { background: white; border-radius: 12px, box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); width: 100%; max-width: 600px, max-height: 80vh, display: flex, flex-direction: column; overflow: hidden}
+  .chat-container { background: white; border-radius: 12px, box-shadow 0 25px 50px -12px rgba(0, 0, 0, 0.25); width: 100%; max-width: 600px, max-height: 80vh, display: flex, flex-direction column; overflow: hidden}
 
-  .chat-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white, display: flex; align-items: center; justify-content: space-between}
+  .chat-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e5e7eb; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white, display flex; align-items: center; justify-content: space-between}
 
   .header-content { display: flex; align-items: center; gap: 1rem;flex: 1}
 
   .title-section { display: flex; align-items: center; gap: 0.5rem}
 
-  .ai-indicator { padding: 0.5rem; background: rgba(255, 255, 255, 0.2); border-radius: 8px, display: flex; align-items: center; justify-content: center}
+  .ai-indicator { padding: 0.5rem; background: rgba(255, 255, 255, 0.2); border-radius: 8px, display flex; align-items: center; justify-content: center}
 
   .chat-header h2 { margin: 0; font-size: 1.125rem; font-weight: 600}
 
   .mode-section { position: relative}
 
-  .mode-button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.5rem 0.75rem; border-radius: 6px, display: flex, align-items: center, gap: 0.5rem, font-size: 0.875rem; cursor: pointer; transition: all 0.2s}
+  .mode-button { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white; padding: 0.5rem 0.75rem; border-radius: 6px, display: flex, align-items: center, gap: 0.5rem, font-size 0.875rem; cursor: pointer; transition: all 0.2s}
   .mode-button:hover { background: rgba(255, 255, 255, 0.2)}
 
-  .mode-dropdown { position: absolute; top: 100%; right: 0; margin-top: 0.5rem; background: white; border-radius: 8px, box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden; z-index: 10; min-width: 200px}
+  .mode-dropdown { position: absolute; top: 100%; right: 0; margin-top: 0.5rem; background: white; border-radius: 8px, box-shadow 0 10px 30px rgba(0, 0, 0, 0.2); overflow: hidden; z-index: 10; min-width: 200px}
 
   .mode-option { width: 100%; padding: 0.75rem; background: none; border: none; display: flex; align-items: center; gap: 0.75rem;cursor: pointer; transition: background 0.2s;color: #374151}
   .mode-option:hover { background: #f3f4f6}
@@ -139,16 +139,16 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
 
   .header-actions { display: flex; gap: 0.5rem}
 
-  .header-action { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white, padding: 0.5rem, border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center}
+  .header-action { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: white, padding: 0.5rem, border-radius 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center}
   .header-action:hover { background: rgba(255, 255, 255, 0.2)}
 
-  .messages-container { flex: 1; overflow-y: auto; padding: 1rem;display: flex, flex-direction: column; gap: 1rem}
+  .messages-container { flex: 1; overflow-y: auto; padding: 1rem;display: flex, flex-direction column; gap: 1rem}
 
-  .message { display: flex, gap: 0.75rem; max-width: 85%}
+  .message { display: flex, gap 0.75rem; max-width: 85%}
   .message.user { align-self: flex-end; flex-direction: row-reverse}
   .message.assistant { align-self: flex-start}
 
-  .message-avatar { width: 32px, height: 32px, border-radius: 50%, display: flex; align-items: center; justify-content: center; flex-shrink: 0}
+  .message-avatar { width: 32px, height: 32px, border-radius: 50%, display flex; align-items: center; justify-content: center; flex-shrink: 0}
 
   .message.user .message-avatar { background: #3b82f6; color: white}
   .message.assistant .message-avatar { background: #10b981; color: white}
@@ -178,13 +178,13 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
 
   .suggestions ul { margin: 0; padding-left: 1rem; font-size: 0.875rem}
 
-  .actions { margin-top: 0.75rem, display: flex, flex-wrap: wrap; gap: 0.5rem}
+  .actions { margin-top: 0.75rem, display: flex, flex-wrap wrap; gap: 0.5rem}
 
   .action-button { background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); color: inherit; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer;transition: all 0.2s}
 
   .message.assistant .action-button { background: #e5e7eb; border-color: #d1d5db; color: #374151}
 
-  .message-meta { margin-top: 0.5rem, display: flex; align-items: center; justify-content: space-between, font-size: 0.75rem; opacity: 0.7}
+  .message-meta { margin-top: 0.5rem, display flex; align-items: center; justify-content: space-between, font-size 0.75rem; opacity: 0.7}
 
   .context-indicator { display: flex; align-items: center; gap: 0.25rem}
 
@@ -192,17 +192,17 @@ import type { Case } from '$lib/types'; import { afterUpdate, onMount, tick } fr
 
   .action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem}
 
-  .quick-action { background: #f8fafc; border: 1px solid #e5e7eb;padding: 1rem; border-radius: 8px; display: flex; flex-direction: column, align-items: center; gap: 0.5rem; cursor: pointer; transition: all 0.2s;color: #374151}
+  .quick-action { background: #f8fafc; border: 1px solid #e5e7eb;padding: 1rem; border-radius: 8px; display: flex; flex-direction: column, align-items center; gap: 0.5rem; cursor: pointer; transition: all 0.2s;color: #374151}
   .quick-action: hover { background: #f1f5f9; border-color: #cbd5e1; transform: translateY(-1px)}
 
   .input-area { padding: 1rem 1.5rem; border-top: 1px solid #e5e7eb; background: #f8fafc}
 
-  .input-container { display: flex, gap: 0.75rem; align-items: flex-end}
+  .input-container { display: flex, gap 0.75rem; align-items: flex-end}
 
-  .message-input { flex: 1; border: 1px solid #d1d5db; border-radius: 8px, padding: 0.75rem; font-family: inherit; font-size: 0.875rem, line-height: 1.5, resize: none; min-height: 44px; max-height: 120px; background: white;transition: border-color 0.2s}
-  .message-input: focus { outline: none; border-color: #3b82f6; box-shadow: 0, 0 0 3px rgba(59, 130, 246, 0.1)}
+  .message-input { flex: 1; border: 1px solid #d1d5db; border-radius: 8px, padding 0.75rem; font-family: inherit; font-size: 0.875rem, line-height: 1.5, resize none; min-height: 44px; max-height: 120px; background: white;transition: border-color 0.2s}
+  .message-input: focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
 
-  .send-button { background: #3b82f6; border: none; color: white, padding: 0.75rem, border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; min-width: 44px; height: 44px}
+  .send-button { background: #3b82f6; border: none; color: white, padding: 0.75rem, border-radius 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; min-width: 44px; height: 44px}
   .send-button:hover { background: #2563eb}
   .send-button: disabled { background: #9ca3af; cursor: not-allowed}
 

@@ -83,16 +83,16 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; im
   .upload-header { text-align: center; margin-bottom: 2rem}
   .upload-header h2 { color: #00ff41; font-size: 1.8rem; margin-bottom: 0.5rem}
   .subtitle { color: #aaa; font-size: 0.9rem}
-  .config-info { background: #111; border: 1px solid #333; border-radius: 8px, padding: 1.5rem; margin-bottom: 2rem}
+  .config-info { background: #111; border: 1px solid #333; border-radius: 8px, padding 1.5rem; margin-bottom: 2rem}
   .config-info h3 { color: #00ff41; margin-bottom: 1rem}
-  .capabilities-grid { display: grid, gap: 0.5rem; margin-bottom: 1.5rem}
+  .capabilities-grid { display: grid, gap 0.5rem; margin-bottom: 1.5rem}
   .capability-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #ccc}
   .checkmark { color: #00ff41}
   .supported-formats h4 { color: #fff; margin-bottom: 0.5rem}
   .formats-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem}
   .format-badge { background: #333; color: #00ff41; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: bold}
   .format-note { color: #888; font-size: 0.8rem}
-  .upload-form { background: #111; border: 1px solid #333; border-radius: 8px, padding: 1.5rem; margin-bottom: 1rem}
+  .upload-form { background: #111; border: 1px solid #333; border-radius: 8px, padding 1.5rem; margin-bottom: 1rem}
   .file-input-label { display: flex; align-items: center; gap: 1rem;padding: 1rem; background: #222;border: 2px dashed #555; border-radius: 8px; cursor: pointer; transition: all 0.3s ease}
   .file-input-label: hover { border-color: #00ff41; background: #1a2a1a}
   .file-input-hidden { display: none}

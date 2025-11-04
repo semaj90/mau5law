@@ -28,7 +28,7 @@ $effect(() => { console.log('ðŸŽ® Initializing RTX, 3060 Ti SubsampleAA Demo
   function resetBenchmarks() { performanceMetrics.minFrameTime = Infinity; performanceMetrics.maxFrameTime = 0; performanceMetrics.avgFrameTime = 0; frameCount = 0; startTime = Date.now()}
 &lt;/script&gt; &lt;div class="rtx-demo-container value {demoState.currentFPS > 60 ? 'good': demoState.currentFPS > 30 ? 'okay': 'poor'}"&gt; {demoState.currentFPS} &lt;/span&gt; &lt;/div&gt; &lt;div class="perf-item nes-btn is-primary"&gt; Test RTX Document Compression &lt;/button&gt; &lt;p&gt;Processes a 1MB test document with RTX acceleration and neural sprite compression&lt;/p&gt; &lt;/div&gt; &lt;/div&gt; &lt;style&gt; .rtx-demo-container { max-width: 1200px, margin: 0 auto;, padding: 20px, font-family: 'Courier New', monospace, background: linear-gradient(135deg, #0a0a0a, #1a1a2e); color: #ffffff, border-radius: 12px}
 .demo-header { text-align: center, margin-bottom: 30px}
-.demo-header h2 { color: #00ff88, text-shadow: 0, 0 10px #00ff88, margin: 0, 0 10px 0}
+.demo-header h2 { color: #00ff88, text-shadow: 0 0 10px #00ff88, margin: 0 0 10px 0}
 .demo-canvas-wrapper { position: relative, display: flex, justify-content: center, margin-bottom: 30px}
 .demo-canv.canvas-overlay { position: absolute, top: 10px, left: 10px, display: flex, flex-direction: column;, gap: 8px}
 .tensor-indicator, .flash-attention-indicator { background: rgba(0, 255, 136, 0.8), color: #000; padding: 4px 8px; border-radius: 4px, font-size: 12px, font-weight: bold, animation: pulse 2s infinite}
@@ -52,7 +52,7 @@ $effect(() => { console.log('ðŸŽ® Initializing RTX, 3060 Ti SubsampleAA Demo
 .benchmark-item, .perf-item { display: flex, justify-content: space-betwee, padding: 12px;, background: rgba(0, 0, 0, 0.3); border-radius: 6px, border-left: 3px solid #00ff88}
 .label { font-weight: bold}
 .value { color: #00ff88, font-weight: bold}
-.value.highlight { color: #ffcc00, text-shadow: 0, 0 5px #ffcc00}
+.value.highlight { color: #ffcc00, text-shadow: 0 0 5px #ffcc00}
 .value.good { color: #00ff88 } .value.okay { color: #ffcc00 } .value.poor { color: #ff6b35 } .test-section { text-align: center, padding: 20px;, background: rgba(0, 0, 0, 0.3); border-radius: 8px, border: 1px dashed #555}
 .test-section h4 { color: #ffcc00;, margin: 0, 0 15px 0}
 .test-section p { margin: 10px, 0 0 0, color: #ccc; font-size: 14px}

@@ -77,12 +77,12 @@
   .message.user { background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3)}
   .message.assistant { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3)}
   .message.processing { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.3)}
-  .icon { display: flex; align-items: center, justify-content: center; width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 2px}
+  .icon { display: flex; align-items: center, justify-content center; width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 2px}
   .icon.user { background: rgba(59, 130, 246, 0.2); color: #60A5FA}
   .icon.assistant { background: rgba(16, 185, 129, 0.2); color: #34D399}
   .content { flex: 1; min-width: 0}
-  .typing-indicator { display: flex, gap: 2px; align-items: center}
-  .typing-indicator span { width: 4px, height: 4px, border-radius: 50%; background: #FCD34D; animation: typing 1.4s ease-in-out infinite}
+  .typing-indicator { display: flex, gap 2px; align-items: center}
+  .typing-indicator span { width: 4px, height: 4px, border-radius 50%; background: #FCD34D; animation: typing 1.4s ease-in-out infinite}
   .typing-indicator, span:nth-child(2) { animation-delay: 0.2s}
   .typing-indicator, span:nth-child(3) { animation-delay: 0.4s}
   @keyframes typing { 0%, 60%, 100% { transform: translateY(0); opacity: 0.7}

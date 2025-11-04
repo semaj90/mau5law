@@ -271,14 +271,14 @@
 </div>
 <style>
   .yorha-table-container {
-    /* @apply bg-black border border-amber-400 relative overflow-hidden; */
-    font-family: 'Courier New', monospace
-    box-shadow: 0, 0 20px rgba(255, 191, 0, 0.3)}
+    /* @apply bg-black border border-amber-400 relative overflow-hidden; */;
+    font-family: 'Courier New', monospace;
+    box-shadow: 0 0 20px rgba(255, 191, 0, 0.3)}
   .yorha-table-container: :before {
-    content: ''; position: absolute
-    top: 0
-    left: 0
-    right: 0
+    content: ''; position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     height: 2px
    ;background: linear-gradient(90deg, transparent, #ffbf00, transparent); animation: scanline 3s linear infinite}
   .yorha-glitch-effect { animation: glitch 0.3s infinite}
@@ -309,7 +309,7 @@
   }
   .yorha-search-input {
     /* @apply w-full bg-black border border-amber-400 text-amber-400 px-3 py-2 pr-10 font-mono text-sm; */
-    /* @apply focus:outline-none focus:border-amber-300 focus:shadow-0 focus:shadow-amber-400; */
+    /* @apply focus:outline-none focus:border-amber-300 focus: shadow-0 focus shadow-amber-400; */
   }
   .yorha-search-icon {
     /* @apply absolute right-3 top-1/2 transform -translate-y-1/2 text-amber-400; */
@@ -318,14 +318,14 @@
     /* @apply flex items-center gap-3 text-amber-400 font-mono text-sm; */
   }
   .yorha-action-btn {
-    /* @apply bg-amber-400 text-black px-3 py-1 font-mono text-xs hover: bg-amber-300 transition-color; */
+    /* @apply bg-amber-400 text-black px-3 py-1 font-mono text-xs hover: bg-amber-300 transition-color; */;
     border: 1px solid #ffbf00}
   .yorha-table-wrapper {
     /* @apply overflow-auto max-h-96; */
   }
   .yorha-table {
-    /* @apply w-full text-amber-400 font-mono text-sm; */
-    border-collapse: separate
+    /* @apply w-full text-amber-400 font-mono text-sm; */;
+    border-collapse: separate;
     border-spacing: 0}
   .yorha-table-striped .yorha-row-even {
     /* @apply bg-gray-900; */
@@ -371,7 +371,7 @@
     /* @apply w-12 text-center; */
   }
   .yorha-checkbox {
-    /* @apply w-4 h-4 bg-black border border-amber-400 text-amber-400; */
+    /* @apply w-4 h-4 bg-black border border-amber-400 text-amber-400; */;
     accent-color: #ffbf00}
   .yorha-row-selected {
     /* @apply bg-amber-400 bg-opacity-10; */
@@ -391,7 +391,7 @@
   }
   .yorha-status-pending,
   .yorha-status-processing {
-    /* @apply bg-yellow-600 text-yellow-100 border-yellow-400; */
+    /* @apply bg-yellow-600 text-yellow-100 border-yellow-400; */;
     animation: pulse 1.5s infinite}
   .yorha-status-warning {
     /* @apply bg-orange-600 text-orange-100 border-orange-400; */
@@ -420,7 +420,7 @@
     /* @apply flex flex-col items-center gap-3 text-amber-400; */
   }
   .yorha-spinner {
-    /* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */
+    /* @apply w-8 h-8 border-2 border-amber-400 border-t-transparent rounded-full; */;
     animation: spin 1s linear infinite}
   .yorha-empty-state {
     /* @apply flex flex-col items-center gap-3 text-amber-400; */
@@ -439,7 +439,7 @@
   }
   .yorha-pagination-btn {
     /* @apply bg-black border border-amber-400 text-amber-400 px-3 py-1 font-mono text-sm; */
-    /* @apply hover:bg-amber-400 hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed; */
+    /* @apply hover:bg-amber-400 hover:text-black transition-colors disabled: opacity-50 disabled cursor-not-allowed; */
   }
   .yorha-page-info {
     /* @apply text-amber-400 font-mono text-sm mx-3; */

@@ -54,21 +54,21 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported let
       onclick={() => camera = { ...camera, position: { x: 0, y: 0; z: 50 } }} title="Reset Camera"
     > ðŸŽ¯ </button> {#if streamingActive} <button class="control-button"
         title="QUIC Streaming Active"
-      > ðŸ“¡ </button> {/if} </div> </div> <!-- Styles --> <style> .neo4j-3d-viewer { position: relative; /* Fixed syntax */ width: 100%, height: 100%, min-height: 400px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 12px; overflow: hidden; font-family: 'Roboto Mono', monospace; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)}
-  .yorha-theme { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%); border: 1px solid #00ff00; box-shadow: 0, 0 20px rgba(0, 255, 0, 0.2)}
+      > ðŸ“¡ </button> {/if} </div> </div> <!-- Styles --> <style> .neo4j-3d-viewer { position: relative; /* Fixed syntax */ width: 100%, height: 100%, min-height 400px; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 12px; overflow: hidden; font-family: 'Roboto Mono', monospace; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3)}
+  .yorha-theme { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #2a2a2a 100%); border: 1px solid #00ff00; box-shadow: 0 0 20px rgba(0, 255, 0, 0.2)}
   .dark-theme { background: linear-gradient(135deg, #111827 0%, #1f2937 50%, #374151 100%)}
   /* Corrected selector for loading state */ .neo4j-3d-viewer.loading .render-canvas { filter: blur(2px) brightness(0.7)}
   /* Progress Bar Styles */ .progress-container { position: absolute; /* Fixed syntax */ top: 20px; left: 20px; right: 20px; z-index: 10; /* Fixed syntax */, background: rgba(0, 0, 0, 0.8); padding: 16px; border-radius: 8px; backdrop-filter: blur(8px)}
   .progress-label { color: white; font-size: 14px; font-weight: 600; margin-bottom: 8px; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5)}
-  .progress-bar { position: relative; /* Fixed syntax */ width: 100%; height: 8px;background: rgba(255, 255, 255, 0.1); border-radius: 4px, overflow: hidden; margin-bottom: 8px}
+  .progress-bar { position: relative; /* Fixed syntax */ width: 100%; height: 8px;background: rgba(255, 255, 255, 0.1); border-radius: 4px, overflow hidden; margin-bottom: 8px}
   .progress-segment { position: absolute; /* Fixed syntax */ top: 0; /* Fixed syntax */ height: 100%; background: var(--segment-color, #0ea5e9); width: var(--segment-width, 8.33%); /* left property is now set inline in the template */ opacity: 0; transition: opacity 0.2s ease}
   .progress-segment.active { opacity: 0.6; animation: pulse 0.5s ease-in-out}
   .progress-fill { position: absolute; /* Fixed syntax */ top: 0; /* Fixed syntax */ left: 0; height: 100%;background: linear-gradient(90deg, #0ea5e9, #06b6d4); border-radius: 4px; transition: width: 0.3s ease-out}
   .yorha-theme .progress-fill { background: linear-gradient(90deg, #00ff00, #00cc00)}
-  .progress-info { display: flex; justify-content: space-between, align-items: center; color: white; font-size: 12px}
+  .progress-info { display: flex; justify-content: space-between, align-items center; color: white; font-size: 12px}
   .streaming-indicator { color: #00ff00; font-weight: 600; animation: blink 1s infinite}
-  /* Stats Overlay */ .stats-overlay { position: absolute; /* Fixed syntax */ bottom: 20px; left: 20px;background: rgba(0, 0, 0, 0.8); padding: 12px; border-radius: 6px, backdrop-filter: blur(8px), display: grid, grid-template-columns: repeat(2, 1fr); gap: 8px; min-width: 200px}
-  .stat { display: flex; justify-content: space-between, align-items: center; color: white; font-size: 12px}
+  /* Stats Overlay */ .stats-overlay { position: absolute; /* Fixed syntax */ bottom: 20px; left: 20px;background: rgba(0, 0, 0, 0.8); padding: 12px; border-radius: 6px, backdrop-filter: blur(8px), display: grid, grid-template-columns repeat(2, 1fr); gap: 8px; min-width: 200px}
+  .stat { display: flex; justify-content: space-between, align-items center; color: white; font-size: 12px}
   .stat-label { opacity: 0.7}
   .stat-value { font-weight: 600; color: #0ea5e9}
   .yorha-theme .stat-value { color: #00ff00}

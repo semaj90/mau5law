@@ -266,7 +266,7 @@
   {/if}
   <style>
   .performance-monitor {
-    user-select: none
+    user-select: none;
     pointer-events: auto}
 </style>
 

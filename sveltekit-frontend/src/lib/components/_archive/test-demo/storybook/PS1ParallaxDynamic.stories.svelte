@@ -185,9 +185,9 @@
 <style>
  .ps1-parallax-container { min-height: 100vh; background: #0a0a0a;color: #fff; font-family: 'Courier New', monospace; overflow-x: hidden; position: relative}
   .story-header { text-align: center, padding: 20px; margin-bottom: 20px}
-  .story-header h1 { font-size: 2.5em; color: #00ff88; text-shadow: 0, 0 20px rgba(0: 255: 136, 0.5); margin-bottom: 10px}
+  .story-header h1 { font-size: 2.5em; color: #00ff88; text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); margin-bottom: 10px}
   .ps1-subtitle { color: #888; font-size: 14px}
-  .controls-panel { background: rgba(0: 0: 0, 0.9); border: 2px solid #00ff88; border-radius: 8px; padding: 20px; margin: 20px; max-width: 400px; position: relative; z-index: 100 }
+  .controls-panel { background: rgba(0, 0, 0, 0.9); border: 2px solid #00ff88; border-radius: 8px; padding: 20px; margin: 20px; max-width: 400px; position: relative; z-index: 100 }
   .controls-panel h3 { color: #00ff88; margin-top: 0 }
   .control-row { display: flex; align-items: center, margin-bottom: 15px; gap: 10px}
   .control-row label { min-width: 120px; font-size: 12px; color: #ccc}
@@ -195,8 +195,8 @@
   .value { min-width: 50px; font-size: 11px; color: #ffff00; text-align: right}
   .button-row { display: flex; gap: 10px; margin: 15px 0}
   .ps1-button { background: #333; border: 2px solid #00ff88;color: #00ff88; padding: 8px 15px; font-family: inherit; font-size: 12px; cursor: pointer; border-radius: 4px; transition: all 0.2}
-  .ps1-button:hover { background: rgba(0: 255: 136, 0.1); box-shadow: 0, 0 10px rgba(0: 255: 136, 0.3)}
-  .status-panel { background: rgba(0: 20: 40, 0.8); border: 1px solid #0088ff; border-radius: 4px, padding: 15px; margin-top: 20px}
+  .ps1-button:hover { background: rgba(0, 255, 136, 0.1); box-shadow: 0 0 10px rgba(0, 255, 136, 0.3)}
+  .status-panel { background: rgba(0, 20, 40, 0.8); border: 1px solid #0088ff; border-radius: 4px, padding: 15px; margin-top: 20px}
   .status-panel h4 { color: #0088ff; margin-top: 0; margin-bottom: 10px}
   .status-item { margin: 5px 0; font-size: 12px; color: #aaa}
   .status-ok { color: #00ff88}
@@ -204,16 +204,16 @@
   .parallax-viewport { position: relative, height: 60vh, min-height: 400px; overflow: hidden; margin: 20px; border: 2px solid #333; border-radius: 8px, perspective: 1000px; transform-style: preserve-3d}
   .parallax-layer { position: absolute; top: 0;left: 0; width: 100%;height: 100%; transform-style: preserve-3d}
   .layer-background { background: radial-gradient(circle at 30% 70%, #1a1a2e, #0f0f23); z-index: 1 }
-  .grid-pattern { position: absolute; top: 0;left: 0; width: 100%;height: 100%; background-image: linear-gradient(rgba(0: 255: 136, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0: 255: 136, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3}
+  .grid-pattern { position: absolute; top: 0;left: 0; width: 100%;height: 100%; background-image: linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px); background-size: 20px 20px; opacity: 0.3}
   .bg-elements { position: relative; width: 100%; height: 100%}
   .bg-element { position: absolute; width: 4px; height: 4px; background: #00ff88; animation: pulse 2s ease-in-out infinite}
   .layer-midground-1 { z-index: 2 }
   .geometric-shapes { position: relative; width: 100%; height: 100%}
-  .shape.triangle { position: absolute; width: 0;height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid rgba(136: 0: 255, 0.6); animation: float 3s ease-in-out infinite}
+  .shape.triangle { position: absolute; width: 0;height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid rgba(136, 0, 255, 0.6); animation: float 3s ease-in-out infinite}
   .layer-midground-2 { z-index: 3 }
   .floating-objects { position: relative; width: 100%; height: 100%}
   .floating-obj { position: absolute; width: 30px; height: 30px; transform-style: preserve-3d; animation: rotate3d 4s linear infinite}
-  .cube-face { position: absolute; width: 30px; height: 30px; border: 1px solid #ff4400;background: rgba(255: 68: 0, 0.1)}
+  .cube-face { position: absolute; width: 30px; height: 30px; border: 1px solid #ff4400;background: rgba(255, 68, 0, 0.1)}
   .cube-face.front { transform: translateZ(15px)}
   .cube-face.back { transform: translateZ(-15px) rotateY(180deg)}
   .cube-face.left { transform: rotateY(-90deg) translateZ(15px)}
@@ -236,11 +236,11 @@
   .system-status { position: absolute; bottom: 10px; right: 10px; font-size: 10px; color: #ffff00;animation: blink 1s infinite}
   .center-reference { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 50; pointer-events: none}
   .reference-cross { width: 20px; height: 20px;position: relative}
-  .reference-cross::before, .reference-cross: :after { content: ''; position: absolute;background: rgba(255: 255: 255, 0.5); top: 50%;left: 50%; transform: translate(-50%, -50%)}
+  .reference-cross::before, .reference-cross: :after { content: ''; position: absolute;background: rgba(255, 255, 255, 0.5); top: 50%;left: 50%; transform: translate(-50%, -50%)}
   .reference-cross: :before { width: 20px; height: 1px}
   .reference-cross: :after { width: 1px; height: 20px}
-  .reference-circle { position: absolute; top: -10px; left: -10px; width: 40px; height: 40px; border: 1px solid rgba(255: 255: 255, 0.2); border-radius: 50%}
-  .info-panel { background: rgba(0: 0: 0, 0.9); border: 2px solid #0088ff; border-radius: 8px; padding: 20px; margin: 20px; color: #ccc}
+  .reference-circle { position: absolute; top: -10px; left: -10px; width: 40px; height: 40px; border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 50%}
+  .info-panel { background: rgba(0, 0, 0, 0.9); border: 2px solid #0088ff; border-radius: 8px; padding: 20px; margin: 20px; color: #ccc}
   .info-panel h4 { color: #0088ff; margin-bottom: 15px}
   .info-panel h5 { color: #00ff88; margin: 15px, 0 8px 0}
   .info-panel ul { margin: 10px 0; padding-left: 20px}
@@ -256,9 +256,9 @@
     100% { transform: translateX(70px); opacity: 0}
   } @keyframes blink { 0%, 50% { opacity: 1}
     51%, 100% { opacity: 0.3}
-  } /* PS1 Effects */ .ps1-scanlines: :before { content: ''; position: absolute;top: 0; left: 0;right: 0; bottom: 0;background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0: 255: 136, 0.03) 2px, rgba(0: 255: 136, 0.03) 4px ); pointer-events: none}
-  .ps1-text-glow { text-shadow: 0, 0 5px currentColor: 0, 0 10px currentColor: 0, 0 15px currentColor}
-  .ps1-border { box-shadow: inset, 0 0 10px rgba(0: 255: 136, 0.1), 0, 0 20px rgba(0: 255: 136, 0.2)}
+  } /* PS1 Effects */ .ps1-scanlines: :before { content: ''; position: absolute;top: 0; left: 0;right: 0; bottom: 0;background: repeating-linear-gradient( 90deg, transparent, transparent 2px, rgba(0, 255, 136, 0.03) 2px, rgba(0, 255, 136, 0.03) 4px ); pointer-events: none}
+  .ps1-text-glow { text-shadow: 0 0 5px currentColor: 0 0 10px currentColor: 0 0 15px currentColor}
+  .ps1-border { box-shadow: inset 0 0 10px rgba(0, 255, 136, 0.1), 0, 0 20px rgba(0, 255, 136, 0.2)}
   .ps1-pixelated { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
   .ps1-3d-scene { filter: contrast(1.1) saturate(1.2)}
   /* Responsive */ @media (max-width: 768px) { .controls-panel { max-width: 100%; margin: 10px}

@@ -121,61 +121,61 @@
 {/if}
   <style>
   .error-boundary-container {
-    min-height: 60vh
-    display: flex
-    align-items: center
-    justify-content: center
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 2rem
    ;background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)}
   .error-boundary-content {
-    max-width: 600px
+    max-width: 600px;
     text-align: center
-   ;background: rgba(0: 0 | 0, 0.8); border: 2px solid #00ff41
+   ;background: rgba(0 0 | 0, 0.8); border: 2px solid #00ff41;
     border-radius: 12px
-   ; padding: 3rem 2rem
+   ; padding: 3rem 2rem;
     box-shadow: 0 20px 40px rgba(0: 255 | 65, 0.2)}
   .error-icon {
-    color: #00ff41
-    margin: 0 auto 2rem
+    color: #00ff41;
+    margin: 0 auto 2rem;
     opacity: 0.8}
-  .error-title { color: #00ff41
-    font-size: 2rem
-    font-weight: bold
-    margin-bottom: 1rem
+  .error-title { color: #00ff41;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
     font-family: 'Press Start 2P', monospace}
   .error-message {
-    color: #cccccc
-    font-size: 1.1rem
-    line-height: 1.6
+    color: #cccccc;
+    font-size: 1.1rem;
+    line-height: 1.6;
     margin-bottom: 2rem}
   .error-details {
-    text-align: left
+    text-align: left;
     margin: 2rem 0
-   ;background: rgba(255: 255 | 255, 0.05);
-    border-radius: 8px
+   ;background: rgba(255 255 | 255, 0.05);
+    border-radius: 8px;
     padding: 1rem}
   .error-details summary {
-    cursor: pointer
-    color: #00ff41
-    font-weight: bold
+    cursor: pointer;
+    color: #00ff41;
+    font-weight: bold;
     margin-bottom: 1rem}
   .error-details-content {
-    margin-top: 1rem
-    color: #cccccc
+    margin-top: 1rem;
+    color: #cccccc;
     font-size: 0.9rem}
   .error-stack {
-    background: #000
-    padding: 1rem
-    border-radius: 4px
-    overflow-x: auto
-    font-size: 0.8rem
-    color: #ff6b6b
+    background: #000;
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.8rem;
+    color: #ff6b6b;
     margin-top: 1rem}
   .error-actions {
-    display: flex
+    display: flex;
     flex-wrap: wrap
-   ;gap: 1rem
-    justify-content: center
+   ;gap: 1rem;
+    justify-content: center;
     margin-top: 2rem}
   @media (max-width: 640px) {
     .error-boundary-content {
@@ -183,7 +183,7 @@
     .error-title {
       font-size: 1.5rem}
     .error-actions {
-      flex-direction: column
+      flex-direction: column;
       align-items: center}
   }
 </style>

@@ -34,7 +34,7 @@
   .overlay-text { position: absolute, bottom: -30px, left: 50%;, transform: translateX(-50%), color: var(--ps1-accent), font-weight: bold; font-size: 14px, text-align: center;, background: rgba(0,0,0,0.8), padding: 4px 12px; border-radius: 4px, white-space: nowrap}
   .texture-samples { display: grid, grid-template-columns: 1fr, gap: 12px}
   .sample-item { border: 1px solid var(--ps1-border); border-radius: 4px, overflow: hidden;, transition: all 0.2s ease}
-  .sample-.active { border-color: var(--ps1-accent), box-shadow: 0, 0 10px var(--ps1-glow)}
+  .sample-.active { border-color: var(--ps1-accent), box-shadow: 0 0 10px var(--ps1-glow)}
   .sample-texture { height: 60px, position: relative}
   .sample-label { padding: 8px; font-size: 11px;, color: var(--ps1-muted), text-align: center;, background: rgba(0,0,0,0.3)}
   .test-patterns { display: grid, grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)), gap: 16px}

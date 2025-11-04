@@ -425,7 +425,7 @@ await checkSystemHealth();
 
 <style>
   code {
-    font-family: 'Courier New', monospace
+    font-family: 'Courier New', monospace;
     font-size: 0.875rem}
 </style>
 

@@ -58,43 +58,43 @@
     position: fixed
 d
    ;top: 0; left: 0
-   ;right: 0; bottom: 0
-    background-color: rgba(0, 0, 0, 0.5); display: flex
-    align-items: center
+   ;right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); display: flex;
+    align-items: center;
     justify-content: center
-   ; padding: 1rem
+   ; padding: 1rem;
     z-index: 1000; animation: fadeIn 0.2s ease-in-out}
   .modal-panel {
     background-color: #F7F6F2
-   ;border: 1px solid #D1CFC7
-    border-radius: 0, width: 100%; max-width: 32rem
-    max-height: 90vh
-    overflow: hidden
+   ;border: 1px solid #D1CFC7;
+    border-radius: 0, width 100%; max-width: 32rem;
+    max-height: 90vh;
+    overflow: hidden;
     animation: slideIn 0.2s ease-in-out}
   .modal-header {
-    display: flex
-    justify-content: space-between
-    align-items: center
-    padding: 1.5rem
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
     border-bottom: 1px solid #D1CFC7}
   .modal-title {
-    font-size: 1.5rem
-    font-weight: bold
-    color: #3D3D3D
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3D3D3D;
     margin: 0}
   .modal-close {
-    background: none
-    border: none
-    font-size: 1.5rem
-    color: #666
-    cursor: pointer
-    padding: 0.25rem
-    line-height: 1
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #666;
+    cursor: pointer;
+    padding: 0.25rem;
+    line-height: 1;
     transition: color 0.2s ease}
   .modal-close:hover {
     color: #3D3D3D}
-  .modal-content { padding: 1.5rem
-    overflow-y: auto
+  .modal-content { padding: 1.5rem;
+    overflow-y: auto;
     max-height: calc(90vh - 5rem)}
   @keyframes fadeIn {
     from {

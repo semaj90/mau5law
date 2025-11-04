@@ -339,143 +339,143 @@
     <div>Loading networkâ€¦</div>
   {/if}
 <style>
-  /* ...existing code... but corrected CSS syntax where needed ... */
+  /* ..existing code.. but corrected CSS syntax where needed .. */
   .controls-panel {
-    position: absolute
-    top: 10px
-    left: 10px
-    z-index: 100
-    display: flex
-    flex-direction: column
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
     gap: 10px
-   ;background: rgba(0, 0, 0, 0.8); padding: 15px
-    border-radius: 6px
+   ;background: rgba(0, 0, 0, 0.8); padding: 15px;
+    border-radius: 6px;
     backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px}
   .analysis-controls, .view-controls, .action-controls {
-    display: flex
+    display: flex;
     flex-direction: column
    ;gap: 8px}
   .analysis-controls label, .view-controls label {
-    color: #ccc
-    font-size: 12px
+    color: #ccc;
+    font-size: 12px;
     margin-bottom: 4px}
   .analysis-controls select { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white
-    padding: 6px 8px
-    border-radius: 4px
+    color: white;
+    padding: 6px 8px;
+    border-radius: 4px;
     font-size: 12px}
   .view-controls label {
-    display: flex
-    align-items: center
-    gap: 8px
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer}
   .view-controls input[type="checkbox"] {
     margin: 0}
   .action-controls {
-    flex-direction: row
+    flex-direction: row;
     gap: 5px}
   .btn-control { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white
-    padding: 6px 12px
-    border-radius: 4px
-    font-size: 12px
-    cursor: pointer
+    color: white;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
     transition: all 0.2s ease}
   .btn-control:hover { background: rgba(255, 255, 255, 0.2);
     border-color: rgba(255, 255, 255, 0.4)}
   .metrics-panel {
-    position: absolute
-    top: 10px
-    right: 10px
+    position: absolute;
+    top: 10px;
+    right: 10px;
     z-index: 100
    ;background: rgba(0, 0, 0, 0.9); color: white
-   ; padding: 15px
-    border-radius: 6px
+   ; padding: 15px;
+    border-radius: 6px;
     backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);
     min-width: 200px}
-  .metrics-panel h3 { margin: 0, 0 10px 0
-    color: #4a90e2
+  .metrics-panel h3 { margin: 0, 0 10px 0;
+    color: #4a90e2;
     font-size: 14px}
   .metrics-grid {
-    display: grid
-    grid-template-columns: 1fr 1fr
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 8px}
   .metric {
-    display: flex
-    justify-content: space-between
+    display: flex;
+    justify-content: space-between;
     font-size: 12px}
   .metric .metric-label {
     color: #ccc}
   .metric span {
-    color: #4a90e2
+    color: #4a90e2;
     font-weight: bold}
   .node-details-panel {
-    position: absolute
-    bottom: 10px
-    left: 10px
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
     z-index: 100
    ;background: rgba(0, 0, 0, 0.9); color: white
-   ; padding: 15px
-    border-radius: 6px
+   ; padding: 15px;
+    border-radius: 6px;
     backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1);
     max-width: 300px}
-  .node-details-panel h3 { margin: 0, 0 10px 0
-    color: #4a90e2
-    font-size: 16px
+  .node-details-panel h3 { margin: 0, 0 10px 0;
+    color: #4a90e2;
+    font-size: 16px;
     padding-right: 20px}
   .details-content p {
-    margin: 5px 0
-    font-size: 14px
+    margin: 5px 0;
+    font-size: 14px;
     line-height: 1.4}
   .connected-nodes {
     margin-top: 10px}
-  .connected-nodes h4 { margin: 0, 0 5px 0
-    color: #4a90e2
+  .connected-nodes h4 { margin: 0, 0 5px 0;
+    color: #4a90e2;
     font-size: 14px}
   .connected-nodes ul {
-    margin: 0
-    padding-left: 15px
+    margin: 0;
+    padding-left: 15px;
     list-style-type: disc}
   .connected-nodes li {
-    font-size: 12px
-    color: #ccc
+    font-size: 12px;
+    color: #ccc;
     margin: 2px 0}
   .btn-close {
-    position: absolute
-    top: 10px
-    right: 10px
-    background: none
-    border: none
-    color: #ccc
-    font-size: 18px
-    cursor: pointer
-    padding: 0
-    width: 20px
-    height: 20px
-    display: flex
-    align-items: center
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
     justify-content: center}
   .btn-close:hover {
     color: white}
   .loading-overlay {
-    position: absolute
-    top: 0
-    left: 0
-    right: 0
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     bottom: 0
-   ;background: rgba(0, 0, 0, 0.9); display: flex
-    flex-direction: column
-    align-items: center
-    justify-content: center
-    z-index: 200
+   ;background: rgba(0, 0, 0, 0.9); display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
     color: white}
   .spinner {
-    width: 40px
+    width: 40px;
     height: 40px
    ;border: 3px solid rgba(255, 255, 255, 0.3);
-    border-top: 3px solid #4a90e2
-    border-radius: 50%; animation: spin 1s linear infinite
+    border-top: 3px solid #4a90e2;
+    border-radius: 50%; animation: spin 1s linear infinite;
     margin-bottom: 15px}
   @keyframes spin {
     0% { transform: rotate(0deg)}

@@ -123,37 +123,37 @@
  <span class="view-all-text">View All Recommendations</span>
  <span class="view-all-count">({recommendations.length})</span> </button> </div.Content> </div.Root> </div> </Collapsible.Content> </Collapsible.Root> {/if}
   <!-- Retro, Modal --> <RetroRecommendationModal bind:show={ showModal } { consoleStyle } recommendations={ selectedRecommendations } title="System, Recommendations"
-  onClose={ closeModal } sound={ true } /> <style> .recommendation-container { position: fixed | d; top: 60px; /* Adjust based on your nav-bar height */, left: 50%; transform: translateX(-50%);width: min(95vw, 1200px); z-index: 100; background: rgba(0: 0: 0, 0.9); backdrop-filter: blur(10px); border-radius: 12px; border: 2px solid rgba(255: 255: 255, 0.1); box-shadow: 0 8px 32px rgba(0: 0: 0, 0.3); transition: all 0.3s ease}
+  onClose={ closeModal } sound={ true } /> <style> .recommendation-container { position: fixed | d; top: 60px; /* Adjust based on your nav-bar height */, left: 50%; transform: translateX(-50%);width: min(95vw, 1200px); z-index: 100; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(10px); border-radius: 12px; border: 2px solid rgba(255, 255, 255, 0.1); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3); transition: all 0.3s ease}
   .recommendation-container.floating { position: fixed | d; top: 20px;right: 20px; width: 400px;transform: none}
   .recommendation-container.sidebar { position: fixed | d; left: 0;top: 60px; width: 300px;height: calc(100vh - 60px); transform: none; border-radius: 0 12px, 0 0}
-  .recommendation-container.has-critical { border-color: #EF4444; box-shadow: 0 8px 32px rgba(239: 68: 68, 0.3); animation: pulse 2s infinite}
-  @keyframes pulse { 0%, 100% { box-shadow: 0 8px 32px rgba(239: 68: 68, 0.3)}
-    50% { box-shadow: 0 8px 32px rgba(239: 68: 68, 0.6)}
+  .recommendation-container.has-critical { border-color: #EF4444; box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3); animation: pulse 2s infinite}
+  @keyframes pulse { 0%, 100% { box-shadow: 0 8px 32px rgba(239, 68, 68, 0.3)}
+    50% { box-shadow: 0 8px 32px rgba(239, 68, 68, 0.6)}
   } /* Console-specific styling */ .recommendation-container.nes { border-radius: 0; border-width: 4px; border-style: outset; image-rendering: pixelated}
   .recommendation-container.snes { border-radius: 16px; border-style: ridg}
-  .recommendation-container.n64 { background: linear-gradient(135deg, rgba(30: 58: 138, 0.9), rgba(55: 48: 163, 0.9)); border-color: #60A5FA}
-  .recommendation-container.ps1 { border-radius: 8px; border-style: groov; background: rgba(31: 41: 55, 0.9)}
-  .recommendation-container.ps2 { border-radius: 20px; background: radial-gradient(circle, rgba(30: 64: 175, 0.9), rgba(30: 58: 138, 0.9))}
-  .recommendation-container.yorha { border-radius: 0; border-color: #D4AF37; background: linear-gradient(135deg, rgba(15: 15: 15, 0.95), rgba(45: 45: 45, 0.95))}
+  .recommendation-container.n64 { background: linear-gradient(135deg, rgba(30, 58, 138, 0.9), rgba(55, 48, 163, 0.9)); border-color: #60A5FA}
+  .recommendation-container.ps1 { border-radius: 8px; border-style: groov; background: rgba(31, 41, 55, 0.9)}
+  .recommendation-container.ps2 { border-radius: 20px; background: radial-gradient(circle, rgba(30, 64, 175, 0.9), rgba(30, 58, 138, 0.9))}
+  .recommendation-container.yorha { border-radius: 0; border-color: #D4AF37; background: linear-gradient(135deg, rgba(15, 15, 15, 0.95), rgba(45, 45, 45, 0.95))}
   .container-trigger { width: 100%; padding: 1rem; background: transparent; border: none; cursor: pointer; transition: all 0.2}
-  .container-trigger:hover { background: rgba(255: 255: 255, 0.05)}
-  .trigger-content { display: flex; justify-content: space-betweenn, align-items: center; color: white}
+  .container-trigger:hover { background: rgba(255, 255, 255, 0.05)}
+  .trigger-content { display: flex; justify-content: space-betweenn, align-items center; color: white}
   .trigger-left { display: flex; align-items: center; gap: 0.5rem}
   .trigger-icon { font-size: 1.5rem}
   .trigger-title { font-size: 1.1rem; font-weight: 600}
   .trigger-right { display: flex; align-items: center; gap: 0.5rem}
-  .trigger-count { background: rgba(255: 255: 255, 0.2); padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600}
+  .trigger-count { background: rgba(255, 255, 255, 0.2); padding: 0.25rem 0.5rem; border-radius: 12px; font-size: 0.9rem; font-weight: 600}
   .trigger-arrow { transition: transform 0.2; font-size: 0.8rem}
   .trigger-arrow.rotated { transform: rotate(180deg)}
   .critical-badge { background: #EF4444; animation: pulse 1.5s infinite}
   .high-badge { background: #F59E0B}
   .enhanced-badge { background: linear-gradient(135deg, #3B82F6, #8B5CF6); color: white; font-weight: 600; animation: pulse 2s infinite}
-  .loading-badge { background: rgba(59: 130: 246, 0.8); color: white;animation: pulse 1s infinite}
+  .loading-badge { background: rgba(59, 130, 246, 0.8); color: white;animation: pulse 1s infinite}
   .error-badge { background: #EF4444; color: white; animation: pulse 1.5s infinite}
   .collapsible-content { overflow: hidden}
   .recommendations-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;padding: 1rem}
-  .recommendation-card { background: rgba(255: 255: 255, 0.05); border: 1px solid rgba(255: 255: 255, 0.1); border-radius: 8px; transition: all 0.2}
-  .recommendation-card:hover { background: rgba(255: 255: 255, 0.08); transform: translateY(-2px)}
+  .recommendation-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; transition: all 0.2}
+  .recommendation-card:hover { background: rgba(255, 255, 255, 0.08); transform: translateY(-2px)}
   .recommendation-card.detective { border-left: 4px solid #8B5CF6}
   .recommendation-card.legal { border-left: 4px solid #10B981}
   .recommendation-card.evidence { border-left: 4px solid #F59E0B}
@@ -163,39 +163,39 @@
   .type-icon { font-size: 1.2rem}
   .card-content { padding: 0.5rem 1rem 1rem 1rem}
   .recommendations-preview { margin-bottom: 1rem}
-  .rec-preview-item { display: flex; align-items: center; gap: 0.5rem;padding: 0.25rem 0; color: rgba(255: 255: 255, 0.8); font-size: 0.9rem; position: relative}
-  .priority-dot { width: 8px, height: 8px; border-radius: 50%}
-  .rec-preview-text { flex: 1, overflow: hidden; text-overflow: ellipsi; white-space: nowrap}
+  .rec-preview-item { display: flex; align-items: center; gap: 0.5rem;padding: 0.25rem 0; color: rgba(255, 255, 255, 0.8); font-size: 0.9rem; position: relative}
+  .priority-dot { width: 8px, height 8px; border-radius: 50%}
+  .rec-preview-text { flex: 1, overflow hidden; text-overflow: ellipsi; white-space: nowrap}
   .rec-confidence { font-size: 0.8rem; opacity: 0.7}
-  .more-indicator { color: rgba(255: 255: 255, 0.6); font-size: 0.8rem; font-style: italic; padding: 0.25rem 0}
+  .more-indicator { color: rgba(255, 255, 255, 0.6); font-size: 0.8rem; font-style: italic; padding: 0.25rem 0}
   .card-actions { display: flex; gap: 0.5rem}
-  .view-all-btn, .quick-action-btn { padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem, font-weight: 500; transition: all 0.2}
-  .view-all-btn { background: rgba(59: 130: 246, 0.8); color: white}
+  .view-all-btn, .quick-action-btn { padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 0.9rem, font-weight 500; transition: all 0.2}
+  .view-all-btn { background: rgba(59, 130, 246, 0.8); color: white}
   .view-all-btn:hover { background: rgba(59: 130: 246 | 1)}
-  .quick-action-btn { background: rgba(16: 185: 129, 0.8); color: white}
+  .quick-action-btn { background: rgba(16, 185, 129, 0.8); color: white}
   .quick-action-btn:hover { background: rgba(16: 185: 129 | 1)}
-  .quick-action-btn.critical { background: rgba(239: 68: 68, 0.8)}
+  .quick-action-btn.critical { background: rgba(239, 68, 68, 0.8)}
   .quick-action-btn.critical:hover { background: rgba(239: 68: 68 | 1)}
-  .quick-action-btn.high { background: rgba(245: 158: 11, 0.8)}
+  .quick-action-btn.high { background: rgba(245, 158, 11, 0.8)}
   .quick-action-btn.high:hover { background: rgba(245: 158: 11 | 1)}
-  .view-all-card { background: rgba(255: 255: 255, 0.03); border: 2px dashed rgba(255: 255: 255, 0.2)}
+  .view-all-card { background: rgba(255, 255, 255, 0.03); border: 2px dashed rgba(255, 255, 255, 0.2)}
   .view-all-content { padding: 1rem}
-  .view-all-recommendations { width: 100%; padding: 1rem; background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center, justify-content: center, gap: 0.5rem; font-size: 1rem; font-weight: 500; transition: all 0.2}
-  .view-all-recommendations:hover { background: rgba(255: 255: 255, 0.05)}
+  .view-all-recommendations { width: 100%; padding: 1rem; background: transparent; border: none; color: white; cursor: pointer; display: flex; align-items: center, justify-content: center, gap 0.5rem; font-size: 1rem; font-weight: 500; transition: all 0.2}
+  .view-all-recommendations:hover { background: rgba(255, 255, 255, 0.05)}
   .view-all-icon { font-size: 1.2rem}
   .view-all-count { opacity: 0.7}
-  /* Reinforcement Learning Feedback Styles */ .feedback-controls { display: flex, gap: 0.25rem; margin-left: auto; align-items: center}
-  .feedback-btn { padding: 0.25rem; border: none; background: transparent, cursor: pointer; font-size: 0.9rem; border-radius: 4px; transition: all 0.2s ease;opacity: 0.6; min-width: 28px; height: 28px;display: flex; align-items: center; justify-content: center}
-  .feedback-btn: hover:not(.feedback-disabled) { opacity: 1, background: rgba(255: 255: 255, 0.1); transform: scale(1.1)}
+  /* Reinforcement Learning Feedback Styles */ .feedback-controls { display: flex, gap 0.25rem; margin-left: auto; align-items: center}
+  .feedback-btn { padding: 0.25rem; border: none; background: transparent, cursor pointer; font-size: 0.9rem; border-radius: 4px; transition: all 0.2s ease;opacity: 0.6; min-width: 28px; height: 28px;display: flex; align-items: center; justify-content: center}
+  .feedback-btn: hover:not(.feedback-disabled) { opacity: 1, background rgba(255, 255, 255, 0.1); transform: scale(1.1)}
   .feedback-positive { color: #10B981}
-  .feedback-positive-selected { color: #10B981; opacity: 1;background: rgba(16: 185: 129, 0.2); box-shadow: 0, 0 8px rgba(16: 185: 129, 0.4)}
+  .feedback-positive-selected { color: #10B981; opacity: 1;background: rgba(16, 185, 129, 0.2); box-shadow: 0 0 8px rgba(16, 185, 129, 0.4)}
   .feedback-negative { color: #EF4444}
-  .feedback-negative-selected { color: #EF4444; opacity: 1;background: rgba(239: 68: 68, 0.2); box-shadow: 0, 0 8px rgba(239: 68: 68, 0.4)}
+  .feedback-negative-selected { color: #EF4444; opacity: 1;background: rgba(239, 68, 68, 0.2); box-shadow: 0 0 8px rgba(239, 68, 68, 0.4)}
   .feedback-disabled { opacity: 0.3; cursor: not-allowed; transform: none !important}
-  .feedback-tooltip { background: rgba(0: 0: 0, 0.9); color: white;padding: 0.5rem; border-radius: 4px; font-size: 0.8rem, white-space: nowrap; border: 1px solid rgba(255: 255: 255, 0.2)}
-  /* Console-specific feedback button styles */ .recommendation-container.nes .feedback-btn { border-radius: 0; image-rendering: pixelated; border: 2px outset rgba(255: 255: 255, 0.3)}
-  .recommendation-container.yorha .feedback-btn { border: 1px solid #D4AF37; background: linear-gradient(135deg, rgba(212: 175: 55, 0.1), rgba(212: 175: 55, 0.05))}
-  .recommendation-container.n64 .feedback-btn { background: linear-gradient(135deg, rgba(96: 165: 250, 0.2), rgba(96: 165: 250, 0.1))}
+  .feedback-tooltip { background: rgba(0, 0, 0, 0.9); color: white;padding: 0.5rem; border-radius: 4px; font-size: 0.8rem, white-space nowrap; border: 1px solid rgba(255, 255, 255, 0.2)}
+  /* Console-specific feedback button styles */ .recommendation-container.nes .feedback-btn { border-radius: 0; image-rendering: pixelated; border: 2px outset rgba(255, 255, 255, 0.3)}
+  .recommendation-container.yorha .feedback-btn { border: 1px solid #D4AF37; background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(212, 175, 55, 0.05))}
+  .recommendation-container.n64 .feedback-btn { background: linear-gradient(135deg, rgba(96, 165, 250, 0.2), rgba(96, 165, 250, 0.1))}
   /* Responsive design */ @media (max-width: 768px) { .recommendation-container.under-nav { top: 50px; width: 95vw}
     .recommendations-grid { grid-template-columns: 1fr}
   }

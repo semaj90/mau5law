@@ -129,12 +129,12 @@
 </div>
 <style>
   .lazy-loader-container {
-    position: relative
+    position: relative;
     width: 100%}
   /* Placeholder styles */
   .lazy-loader-placeholder {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     justify-content: center
    ;background: linear-gradient(
       90deg,
@@ -142,25 +142,25 @@
       rgba(255, 255, 255, 0.2) 50%,
       rgba(255, 255, 255, 0.1) 75%
     );
-    background-size: 200% 100%; animation: loading-shimmer 2s infinite
-    border-radius: 4px
+    background-size: 200% 100%; animation: loading-shimmer 2s infinite;
+    border-radius: 4px;
     min-height: 200px}
   .placeholder-content {
-    display: flex
-    flex-direction: column
-    align-items: center
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 12px
    ;color: rgba(255, 255, 255, 0.7)}
   /* Loading spinner */
   .loading-spinner {
-    width: 32px
+    width: 32px;
     height: 32px
    ;border: 3px solid rgba(255, 255, 255, 0.2);
     border-top: 3px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%; animation: spin 1s linear infinite}
   .loading-text {
-    margin: 0
-    font-size: 14px
+    margin: 0;
+    font-size: 14px;
     text-align: center}
   .debug-info {
     font-size: 12px
@@ -168,27 +168,27 @@
     font-family: monospace}
   /* Error styles */
   .lazy-loader-error {
-    display: flex
-    flex-direction: column
-    align-items: center
-    gap: 12px
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
     padding: 24px
    ;background: rgba(255, 0, 0, 0.1); border: 1px solid rgba(255, 0, 0, 0.3);
-    border-radius: 4px
+    border-radius: 4px;
     color: #ff6b6b}
   .error-icon {
     font-size: 32px}
   .error-message {
-    margin: 0
-    text-align: center
+    margin: 0;
+    text-align: center;
     font-size: 14px}
   .retry-button {
     padding: 8px 16px
    ;background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 4px
-    color: #ffffff
-    cursor: pointer
-    font-size: 12px
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 12px;
     transition: background 0.2s ease}
   .retry-button:hover { background: rgba(255, 255, 255, 0.2)}
   /* Content styles */
@@ -212,7 +212,7 @@
       gap: 8px}
     .loading-spinner {
       width: 24px
-     ;height: 24px
+     ;height: 24px;
       border-width: 2px}
     .loading-text {
       font-size: 12px}
@@ -232,7 +232,7 @@
     .lazy-loader-placeholder {
       border: 2px solid currentColor}
     .loading-spinner {
-      border-color: currentColor
+      border-color: currentColor;
       border-top-color: transparent}
   }
   /* Reduced motion */

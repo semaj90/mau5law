@@ -370,14 +370,14 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 </div>
 
 <style>
- /* @unocss-include */ .crud-dashboard { padding: 2rem, background: #f8fafc; min-height: 100vh}
+ /* @unocss-include */ .crud-dashboard { padding: 2rem, background #f8fafc; min-height: 100vh}
   .dashboard-header { margin-bottom: 2rem}
   .title-section h1 { font-size: 2rem; font-weight: 700; margin: 0, 0 0.5rem 0; color: #1f2937}
   .title-section p { color: #6b7280; margin: 0}
   .refresh-btn { display: flex; align-items: center; gap: 0.5rem;padding: 0.75rem 1rem; background: #3b82f6}
   @media (max-width: 768px) { .crud-dashboard { padding: 1rem}
     .content-grid { grid-template-columns: 1fr}
-    .header-content { flex-direction: column, gap: 1rem; align-items: flex-start}
+    .header-content { flex-direction: column, gap 1rem; align-items: flex-start}
     .section-actions { flex-direction: column; align-items: stretch; gap: 0.5rem}
     .search-box input { width: 100%}
     .actions-grid { grid-template-columns: 1fr}

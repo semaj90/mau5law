@@ -189,14 +189,14 @@
 
 <style>
   .yorha-harvard-title {
-    text-shadow: 0, 0 10px rgba(196, 30, 58, 0.3);
+    text-shadow: 0 0 10px rgba(196, 30, 58, 0.3);
     background: linear-gradient(
       135deg,
       var(--enhanced-text-primary) 0%,
       var(--enhanced-accent) 50%,
       var(--enhanced-accent-grey) 100%
     );
-    background-clip: text
-    -webkit-background-clip: text
+    background-clip: text;
+    -webkit-background-clip: text;
     -webkit-text-fill-color: transparent}
 </style>

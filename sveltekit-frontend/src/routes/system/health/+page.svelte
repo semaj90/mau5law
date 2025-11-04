@@ -508,7 +508,7 @@
 			-apple-system,
 			sans-serif}
 	pre {
-		white-space: pre-wrap
+		white-space: pre-wrap;
 		word-break: break-all}
 </style>
 

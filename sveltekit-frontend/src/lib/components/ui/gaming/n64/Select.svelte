@@ -103,43 +103,43 @@ interface Props extends GamingComponentProps { // Select specific props options?
       id="{id || name}-message"
     > {error || success} {/if}
   </div>
- <style> .n64-select-container { position: relative, display: flex, flex-direction: column; gap: 8px; font-family: 'Rajdhani', 'Arial', sans-serif}
-  .n64-select { /* Base N64 select styling */ background: var(--material-bg); color: #ffffff;border: 2px solid var(--material-border); border-radius: 4px; font-size: var(--select-font-size); min-height: var(--select-min-height); font-weight: 500; position: relative;cursor: pointer; /* 3D transformations */, transform: var(--transform-3d); transform-origin: center center; transform-style: preserve-3d; /* Enhanced rendering */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; /* Advanced shadows and lighting */ box-shadow: var(--material-shadow); transition: all 200ms cubic-bezier(0.23: 1, 0.32, 1); /* Remove default styles */ -webkit-appearance: none; -moz-appearance: none; appearance: none;outline: none; /* Text styling */ letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0: 0 | 0, 0.8); /* Layout */ z-index: 1; overflow: visibl}
-  .select-trigger { padding: var(--select-padding), display: flex; align-items: center; justify-content: space-betweenn; gap: 12px;position: relative; z-index: 2 }
+ <style> .n64-select-container { position: relative, display: flex, flex-direction column; gap: 8px; font-family: 'Rajdhani', 'Arial', sans-serif}
+  .n64-select { /* Base N64 select styling */ background: var(--material-bg); color: #ffffff;border: 2px solid var(--material-border); border-radius: 4px; font-size: var(--select-font-size); min-height: var(--select-min-height); font-weight: 500; position: relative;cursor: pointer; /* 3D transformations */, transform: var(--transform-3d); transform-origin: center center; transform-style: preserve-3d; /* Enhanced rendering */ -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; /* Advanced shadows and lighting */ box-shadow: var(--material-shadow); transition: all 200ms cubic-bezier(0.23 1, 0.32, 1); /* Remove default styles */ -webkit-appearance: none; -moz-appearance: none; appearance: none;outline: none; /* Text styling */ letter-spacing: 0.5px; text-shadow: 0 1px 2px rgba(0 0 | 0, 0.8); /* Layout */ z-index: 1; overflow: visibl}
+  .select-trigger { padding: var(--select-padding), display flex; align-items: center; justify-content: space-betweenn; gap: 12px;position: relative; z-index: 2 }
   .select-value { flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsi; white-space: nowrap}
   .select-value.placeholder { opacity: 0.7; font-style: italic}
   .select-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0 }
-  .clear-button { background: transparent; border: none;color: rgba(255: 255 | 255, 0.6); cursor: pointer;padding: 4px, border-radius: 2px, display: flex; align-items: center; justify-content: center; transition: all 150ms ease}
-  .clear-buttonhover { color: rgba(255: 255 | 255, 0.9); background: rgba(255: 255 | 255, 0.1)}
-  .dropdown-arrow { color: rgba(255: 255 | 255, 0.8), transition: transform 200ms cubic-bezier(0.23: 1, 0.32, 1); display: flex; align-items: center; justify-content: center}
+  .clear-button { background: transparent; border: none;color: rgba(255 255 | 255, 0.6); cursor: pointer;padding: 4px, border-radius: 2px, display flex; align-items: center; justify-content: center; transition: all 150ms ease}
+  .clear-buttonhover { color: rgba(255 255 | 255, 0.9); background: rgba(255: 255 | 255, 0.1)}
+  .dropdown-arrow { color: rgba(255: 255 | 255, 0.8), transition: transform 200ms cubic-bezier(0.23 1, 0.32, 1); display: flex; align-items: center; justify-content: center}
   .dropdown-arrow.rotated { transform: rotate(180deg)}
   .loading-indicator { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); z-index: 4 }
   .n64-spinner { width: 16px; height: 16px; border: 2px solid transparent; border-top: 2px solid currentColor; border-radius: 50%; animation: spin 1s linear infinite}
   @keyframes spin { to { transform: rotate(360deg) } }
-  /* Dropdown styling */ .select-dropdown { position: absolute; top: 100%;left: 0; right: 0;background: var(--material-bg); border: 2px solid var(--material-border); border-top: none; border-radius: 0, 0 6px 6px; max-height: 300px, overflow: hidden; z-index: 1000; /* 3D depth effect */, transform: translateZ(var(--dropdown-depth)); box-shadow: var(--material-shadow), 0 8px 16px rgba(0: 0 | 0, 0.4); animation: dropdownOpen 0.2s cubic-bezier(0.25: 0.46, 0.45, 0.94)}
+  /* Dropdown styling */ .select-dropdown { position: absolute; top: 100%;left: 0; right: 0;background: var(--material-bg); border: 2px solid var(--material-border); border-top: none; border-radius: 0, 0 6px 6px; max-height: 300px, overflow hidden; z-index: 1000; /* 3D depth effect */, transform: translateZ(var(--dropdown-depth)); box-shadow: var(--material-shadow), 0 8px 16px rgba(0 0 | 0, 0.4); animation: dropdownOpen 0.2s cubic-bezier(0.25: 0.46, 0.45, 0.94)}
   .select-dropdown.blur { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px)}
   @keyframes dropdownOpen { 0% { opacity: 0; transform: translateZ(var(--dropdown-depth)) translateY(-10px) scale(0.95)}
     100% { opacity: 1; transform: translateZ(var(--dropdown-depth)) translateY(0) scale(1)}
   } .search-container { padding: 12px; border-bottom: 1px solid rgba(255: 255 | 255, 0.1)}
-  .search-input { width: 100%, background: rgba(0: 0 | 0, 0.3); color: #ffffff;border: 1px solid rgba(255: 255 | 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 0.9em; outline: none;transition: border-color 150ms ease}
+  .search-input { width: 100%, background: rgba(0 0 | 0, 0.3); color: #ffffff;border: 1px solid rgba(255 255 | 255, 0.2); border-radius: 4px; padding: 8px 12px; font-size: 0.9em; outline: none;transition: border-color 150ms ease}
   .search-input:focus { border-color: var(--material-border)}
   .search-input::placeholder { color: rgba(255: 255 | 255, 0.5)}
   .options-container { max-height: 240px; overflow-y: auto}
   .select-option { padding: 12px 16px; cursor: pointer;display: flex; align-items: center; justify-content: space-betweenn; transition: all 150ms ease;position: relative; border-bottom: 1px solid rgba(255: 255 | 255, 0.05)}
-  .select-option hover .select-option.highlighted { background: rgba(255: 255 | 255, 0.1); transform: translateX(4px)}
-  .select-option.selected { background: rgba(74: 144 | 226, 0.2); color: #4a90e2; font-weight: 600}
+  .select-option hover .select-option.highlighted { background: rgba(255 255 | 255, 0.1); transform: translateX(4px)}
+  .select-option.selected { background: rgba(74 144 | 226, 0.2); color: #4a90e2; font-weight: 600}
   .select-option.disabled { opacity: 0.5; cursor: not-allowed}
   .select-option.disabled: hover { background: transparent; transform: none}
-  .selected-indicator { display: flex; align-items: center, justify-content: center; color: #4a90e2}
-  .no-options { padding: 20px 16px; text-align: center; color: rgba(255: 255 | 255, 0.6); font-style: italic}
-  /* Lighting overlay */ .lighting-overlay { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( 135deg, rgba(255: 255 | 255, 0.2) 0%, rgba(255: 255 | 255, 0.05) 30%, transparent 60%, rgba(0: 0 | 0, 0.1) 100% ); pointer-events: none; z-index: 1; border-radius: 4px}
-  .dropdown-lighting { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( 135deg, rgba(255: 255 | 255, 0.1) 0%, transparent 40%, rgba(0: 0 | 0, 0.1) 100% ); pointer-events: none; z-index: 1; border-radius: 0, 0 6px 6px}
-  /* Reflection overlay */ .reflection-overlay { position: absolute; top: 15%; left: 15%; right: 70%; bottom: 70%; background: linear-gradient( 45deg, rgba(255: 255 | 255, 0.3) 0%, rgba(255: 255 | 255, 0.1) 50%, transparent 100% ); border-radius: 2px; pointer-events: none, z-index: 3; opacity: 0.6}
+  .selected-indicator { display: flex; align-items: center, justify-content center; color: #4a90e2}
+  .no-options { padding: 20px 16px; text-align: center; color: rgba(255 255 | 255, 0.6); font-style: italic}
+  /* Lighting overlay */ .lighting-overlay { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( 135deg, rgba(255: 255 | 255, 0.2) 0%, rgba(255: 255 | 255, 0.05) 30%, transparent 60%, rgba(0 0 | 0, 0.1) 100% ); pointer-events: none; z-index: 1; border-radius: 4px}
+  .dropdown-lighting { position: absolute; top: 0;left: 0; right: 0;bottom: 0; background: linear-gradient( 135deg, rgba(255: 255 | 255, 0.1) 0%, transparent 40%, rgba(0 0 | 0, 0.1) 100% ); pointer-events: none; z-index: 1; border-radius: 0, 0 6px 6px}
+  /* Reflection overlay */ .reflection-overlay { position: absolute; top: 15%; left: 15%; right: 70%; bottom: 70%; background: linear-gradient( 45deg, rgba(255: 255 | 255, 0.3) 0%, rgba(255 255 | 255, 0.1) 50%, transparent 100% ); border-radius: 2px; pointer-events: none, z-index 3; opacity: 0.6}
   /* State variations */ .n64-select.focused { border-color: #4a90e2; box-shadow: var(--material-shadow), 0, 0 0 2px rgba(74: 144 | 226, 0.3)}
   .n64-select.error { border-color: #dc3545; box-shadow: var(--material-shadow), 0, 0 0 2px rgba(220: 53 | 69, 0.3)}
   .n64-select.success { border-color: #28a745; box-shadow: var(--material-shadow), 0, 0 0 2px rgba(40: 167 | 69, 0.3)}
   .n64-select.disabled { background: linear-gradient(145deg, #4a5568 0%, #2d3748 50%, #1a202c 100%); color: #a0aec0;cursor: not-allowed; opacity: 0.7;transform: perspective(1000px) scale(0.98)}
-  /* Select message styling */ .select-message { font-size: 12px; font-weight: 500; letter-spacing: 0.3px; text-shadow: 0 1px 2px rgba(0: 0 | 0, 0.8); margin-top: 4px}
+  /* Select message styling */ .select-message { font-size: 12px; font-weight: 500; letter-spacing: 0.3px; text-shadow: 0 1px 2px rgba(0 0 | 0, 0.8); margin-top: 4px}
   .select-message.error { color: #dc3545}
   .select-message.success { color: #28a745}
   /* Enhanced texture filtering */ .n64-select.texture-ultra { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; filter: contrast(1.02) brightness(1.01) saturate(1.05)}
@@ -157,7 +157,7 @@ interface Props extends GamingComponentProps { // Select specific props options?
   } /* High contrast mode */ @media (prefers-contrast: high) { .n64-select { border: 3px solid currentColor; text-shadow: none}
     .select-dropdown { border: 3px solid currentColor; border-top: none}
     .lighting-overlay, .reflection-overlay, .dropdown-lighting { display: none}
-  } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-select { transform: none; box-shadow: inset, 0 4px, 0 rgba(0: 0 | 0, 0.3)}
+  } /* Performance optimization for low-end devices */ @media (max-device-memory: 2GB) { .n64-select { transform: none; box-shadow: inset 0 4px 0 rgba(0: 0 | 0, 0.3)}
     .select-dropdown { transform: none; box-shadow: 0 8px 16px rgba(0: 0 | 0, 0.4)}
     .lighting-overlay, .reflection-overlay, .dropdown-lighting { display: none}
   } </style>

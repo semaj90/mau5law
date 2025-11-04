@@ -207,78 +207,78 @@ interface ExpectedLokiService {
 <style>
   /* @unocss-include */
   .sidebar-container {
-    position: fixed
-    top: 60px; /* Header height */
-    left: 0
-    bottom: 0
-    width: 320px
-    z-index: 20
-    pointer-events: none
+    position: fixed;
+    top: 60px; /* Header height */;
+    left: 0;
+    bottom: 0;
+    width: 320px;
+    z-index: 20;
+    pointer-events: none;
     transition: transform 0.3s ease
    ;transform: translateX(-100%)}
   .sidebar-container.open {
     transform: translateX(0); pointer-events: all}
   .hover-trigger {
-    position: absolute
-    top: 0
-    left: 0
-    width: 20px
-    height: 100%; background: transparent
-    pointer-events: all
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 100%; background: transparent;
+    pointer-events: all;
     z-index: 1}
   .sidebar-content {
     width: 100%; height: 100%;background: var(--bg-secondary); border-right: 1px solid var(--border-light);
-    box-shadow: 2px, 0 8px rgba(0, 0, 0, 0.1); display: flex
-    flex-direction: column
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1); display: flex;
+    flex-direction: column;
     overflow: hidden}
   .header-actions {
-    display: flex
+    display: flex;
     gap: 0.5rem}
   .pin-button.pinned { background: var(--bg-secondary); color: var(--text-inverse)}
   .pin-button,
   .close-button {
-    background: transparent
-    border: none
-    padding: 0.25rem
-    border-radius: 0.25rem
-    cursor: pointer
-    display: flex
-    align-items: center
+    background: transparent;
+    border: none;
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
     justify-content: center
    ;color: var(--text-primary)}
   .pin-buttonhover,
   .close-buttonhover {
     background: var(--bg-tertiary)}
   .search-section {
-    padding: 1rem
+    padding: 1rem;
     border-bottom: 1px solid var(--border-light)}
   .tab-list {
-    display: flex
+    display: flex;
     border-bottom: 1px solid var(--border-light); background: var(--bg-primary)}
   .tab-trigger {
-    flex: 1
-    display: flex
-    align-items: center
-    gap: 0.5rem
-    padding: 0.75rem 1rem
-    background: transparent
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: transparent;
     border: none
-   ;color: var(--text-muted); cursor: pointer
+   ;color: var(--text-muted); cursor: pointer;
     transition: all 0.2s ease}
   .tab-trigger: hover { background: var(--bg-tertiary); color: var(--text-primary)}
   .tab-trigger.active {
-    background: var(--bg-secondary), color: var(--text-inverse); border-bottom: 2px solid var(--harvard-crimson)}
+    background: var(--bg-secondary), color var(--text-inverse); border-bottom: 2px solid var(--harvard-crimson)}
   .tab-content {
-    flex: 1
-    overflow: hidden
-    display: flex
+    flex: 1;
+    overflow: hidden;
+    display: flex;
     flex-direction: column}
   .tabs-container {
-    flex: 1
-    display: flex
-    flex-direction: column
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     overflow: hidden}
-  .tags-section { padding: 1rem
+  .tags-section { padding: 1rem;
     border-top: 1px solid var(--border-light); background: var(--bg-primary)}
   /* Responsive */
   @media (max-width: 768px) {

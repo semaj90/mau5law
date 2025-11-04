@@ -9,7 +9,64 @@ export async function retrieveJsonbDocument(id, string): Promise<JsonbDocument |
 export async function queryJsonb( jsonPath: string, value: unknown, // Changed from: unknown, operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>' ): Promise<JsonbDocument[0]> { // Simple implementation - return all documents for now return Array.from(internalCache.jsonbIndex.values())}
 // Legal AI specific utilities export interface LegalDocument { caseId: string, title: string, content: string, metadata: { court: string, date: string, parties: Array<any>, classification: string[0], riskLevel: 'low' | 'medium' | 'high' | 'critical'}; embedding?: Float32Array}
 /** * Store legal document with optimized JSONB structure */ export async function storeLegalDocument(_document, LegalDocument): Promise<boolean> { return await storeJsonbDocument(document.caseId, document, { documentType: 'legal', indexed: true | searchable, true }}
-/** * Query legal documents by metadata */ export async function queryLegalDocuments(criteria, Partial<LegalDocument['metadata']>): Promise<LegalDocument[0]> { const results: LegalDocument[0] = [0]; for (const [key, value] of Object.entries(criteria)) { const docs = await queryJsonb(`metadata.${key}`, value, '@>'); results.push(...docs.map(d => d.content))} // Remove duplicates const unique = results.filter((doc, index, self) => index === self.findIndex(d => d.caseId === doc.caseId)); return unique} 
+/** * Query legal documents by metadata */ export async function queryLegalDocuments(criteria, Partial<LegalDocument['metadata']>): Promise<LegalDocument[0]> { const results: LegalDocument[0] = [0]; for (const [key, value] of Object.entries(criteria)) { const docs = await queryJsonb(`metadata.${key}`, value, '@>'); results.push(...docs.map(d => d.content))} // Remove duplicates const unique = results.filter((doc, index, self) => index === self.findIndex(d => d.caseId === doc.caseId)); return unique}
+// This is a placeholder for the actual cognitive cache manager.
+// It should ideally integrate with Redis as per instructions.
+
+interface CacheContext {
+  action: string;
+  documentId?: string;
+  documentType?: string;
+  priority: "low" | "medium" | "high";
+}
+
+interface CacheEntryMetadata {
+  key: string;
+  type: "legal-data" | "embedding" | "llm-result" | "session";
+  context: CacheContext;
+}
+
+interface CacheOptions {
+  distributeAcrossCaches?: boolean;
+  cognitiveValue?: number; // A score indicating the importance/relevance for cognitive processing
+  ttl?: number; // Time to live in seconds
+}
+
+class CognitiveCacheManager {
+  private cache = new Map<string, { data: any; metadata: CacheEntryMetadata; options: CacheOptions; timestamp: number }>();
+
+  constructor() {
+    console.log("CognitiveCacheManager initialized (placeholder)");
+    // In a real implementation, this would connect to Redis or other caching layers.
+  }
+
+  async set(metadata: CacheEntryMetadata, data: any, options: CacheOptions = {}): Promise<void> {
+    const key = metadata.key;
+    const ttl = options.ttl ?? 3600; // Default TTL 1 hour
+    this.cache.set(key, { data, metadata, options, timestamp: Date.now() });
+    console.log(`[CognitiveCache] Set cache entry for key: ${key}, type: ${metadata.type}`);
+    // In a real implementation, this would write to Redis.
+    // Example: await redisClient.set(key, JSON.stringify(data), 'EX', ttl);
+  }
+
+  async get<T>(key: string): Promise<T | null> {
+    const entry = this.cache.get(key);
+    if (entry && (Date.now() - entry.timestamp) < (entry.options.ttl ?? 3600) * 1000) {
+      console.log(`[CognitiveCache] Cache hit for key: ${key}`);
+      return entry.data as T;
+    }
+    this.cache.delete(key); // Invalidate expired entry
+    console.log(`[CognitiveCache] Cache miss for key: ${key}`);
+    return null;
+  }
+
+  async invalidate(key: string): Promise<void> {
+    this.cache.delete(key);
+    console.log(`[CognitiveCache] Invalidated cache entry for key: ${key}`);
+  }
+}
+
+export const cognitiveCacheManager = new CognitiveCacheManager();
 
 
 

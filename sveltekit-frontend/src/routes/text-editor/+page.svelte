@@ -28,7 +28,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
   .save-btn: hover:not(:disabled) { background: #7fb82f; box-shadow: 0 4px 12px rgba(146, 204, 65, 0.3)}
   /* Document Title Section */ .document-title-section { display: flex; align-items: center; gap: 12px}
   .document-title-input { flex: 1; background: var(--yorha-bg-tertiary, #2a2a2a); border: 1px solid var(--yorha-border, #606060); color: var(--yorha-text-primary, #e0e0e0); padding: 8px 12px; border-radius: 4px; font-size: 1.1rem; font-weight: 500; max-width: 300px}
-  .document-title-input: focus { outline: none; border-color: var(--nes-blue, #3cbcfc); box-shadow: 0, 0 8px rgba(60, 188, 252, 0.3)}
+  .document-title-input: focus { outline: none; border-color: var(--nes-blue, #3cbcfc); box-shadow: 0 0 8px rgba(60, 188, 252, 0.3)}
   .save-status { font-size: 0.8rem; color: var(--yorha-text-muted, #b0b0b0)}
   .modified-badge { font-size: 0.7rem; background: rgba(248, 56, 0, 0.1); border-color: var(--nes-red, #f83800); color: var(--nes-red, #f83800)}
   /* Stats Bar */ .stats-bar { background: var(--yorha-bg-tertiary, #2a2a2a); border-bottom: 1px solid var(--yorha-border, #606060); padding: 8px 24px}
@@ -53,8 +53,8 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
     .stats-content { flex-wrap: wrap; gap: 12px; justify-content: center}
     .editor-container { padding: 12px}
     .editor-content { height: calc(100vh - 350px)}
-  } /* Animations */ @keyframes glow-pulse { 0%, 100% { box-shadow: 0, 0 8px rgba(60, 188, 252, 0.3)}
-    50% { box-shadow: 0, 0 16px rgba(60, 188, 252, 0.6)}
+  } /* Animations */ @keyframes glow-pulse { 0%, 100% { box-shadow: 0 0 8px rgba(60, 188, 252, 0.3)}
+    50% { box-shadow: 0 0 16px rgba(60, 188, 252, 0.6)}
   } .action-btn:hover { animation: glow-pulse 2s ease-in-out infinite}
 </style>
 

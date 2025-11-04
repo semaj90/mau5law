@@ -406,56 +406,55 @@
 
 <style>
   .n64-switch-container {
-    font-family: 'Rajdhani', 'Arial', sans-serif
-    display: flex
-    align-items: flex-start
+    font-family: 'Rajdhani', 'Arial', sans-serif;
+    display: flex;
+    align-items: flex-start;
     gap: 12px}
   .n64-switch {
-    /* Base N64 switch styling */
+    /* Base N64 switch styling */;
     position: relative
    ;width: var(--switch-width); height: var(--switch-height);cursor: pointer
     /* 3D transformations */
-   ; transform: var(--transform-3d); transform-origin: center center
+   ; transform: var(--transform-3d); transform-origin: center center;
     transform-style: preserve-3d
-    /* Enhanced rendering */
-    -webkit-font-smoothing: antialiased
-    -moz-osx-font-smoothing: grayscale
+    /* Enhanced rendering */;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility
    ;transition: all var(--animation-duration) cubic-bezier(0.34, 1.56, 0.64, 1);
-    /* Remove default styles */
-    -webkit-appearance: none
-    -moz-appearance: none
-    appearance: none
+    /* Remove default styles */;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     outline: none
-    /* Performance optimization */
+    /* Performance optimization */;
     will-change: transform}
   .switch-track {
-    position: relative
+    position: relative;
     width: 100%; height: 100%;background: var(--track-bg); border-radius: calc(var(--switch-height) / 2); overflow: hidden
-    /* 3D track styling */
-    box-shadow:
-      inset, 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
+    /* 3D track styling */;
+    box-shadow: inset 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
       inset, 0 2px, 0 rgba(0, 0, 0, 0.6),
       0 2px 4px rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.1)}
   .switch-knob {
-    position: absolute
-    top: 2px
+    position: absolute;
+    top: 2px;
     left: 2px
    ;width: var(--knob-size); height: var(--knob-size);background: var(--knob-bg); border-radius: 50%;
-    /* 3D knob styling */
+    /* 3D knob styling */;
     box-shadow: var(--knob-shadow); border: 1px solid rgba(255, 255, 255, 0.2);
     /* Smooth mechanical animation: */
    ;transform: var(--knob-transform); transition: transform var(--animation-duration) cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    /* Performance optimization */
-    will-change: transform
+    /* Performance optimization */;
+    will-change: transform;
     transform-style: preserve-3d}
   /* Knob lighting overlay */
   .knob-lighting {
-    position: absolute
-    top: 0
-    left: 0
-    right: 0
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     bottom: 0
    ;background: radial-gradient(
       circle at 30% 30%,
@@ -466,18 +465,18 @@
     border-radius: 50%; pointer-events: none}
   /* Knob reflection */
   .knob-reflection {
-    position: absolute
+    position: absolute;
     top: 15%; left: 15%;
     right: 60%; bottom: 60%;background: linear-gradient(45deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.4) 50%, transparent 100%);
-    border-radius: 50%; pointer-events: none
+    border-radius: 50%; pointer-events: none;
     opacity: 0.7}
   /* Knob loading indicator */
   .knob-loading {
-    position: absolute
+    position: absolute;
     top: 50%; left: 50%;transform: translate(-50%, -50%);
     z-index: 10}
   .n64-spinner { width: calc(var(--knob-size) * 0.5); height: calc(var(--knob-size) * 0.5);
-    border: 2px solid transparent
+    border: 2px solid transparent;
     border-top: 2px solid rgba(255, 255, 255, 0.8);
     border-radius: 50%; animation: switchSpin 1s linear infinite}
   @keyframes switchSpin {
@@ -485,20 +484,20 @@
   }
   /* Track fog effect */
   .track-fog {
-    position: absolute
-    top: 0
-    left: 0
-    right: 0
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
     bottom: 0
-   ;background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%); opacity: 0.15
-    pointer-events: none
+   ;background: radial-gradient(ellipse at center, transparent 0%, var(--fog-color, #404040) 100%); opacity: 0.15;
+    pointer-events: none;
     border-radius: calc(var(--switch-height) / 2)}
   /* Toggle glow effect */
   .toggle-glow {
-    position: absolute
-    top: -4px
-    left: -4px
-    right: -4px
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
     bottom: -4px
    ;background: radial-gradient(
       ellipse at center,
@@ -518,15 +517,15 @@
   }
   /* Switch content styling */
   .switch-content {
-    display: flex
-    flex-direction: column
-    gap: 4px
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     flex: 1}
-  .switch-label { color: #ffffff
-    font-weight: 600
+  .switch-label { color: #ffffff;
+    font-weight: 600;
     font-size: var(--switch-font-size); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    letter-spacing: 0.5px
-    cursor: pointer
+    letter-spacing: 0.5px;
+    cursor: pointer;
     user-select: none}
   .switch-description { color: rgba(255, 255, 255, 0.7);
     font-size: calc(var(--switch-font-size) * 0.85);
@@ -535,15 +534,14 @@
   .n64-switch.focused { outline: 3px solid rgba(74, 144, 226, 0.6);
     outline-offset: 2px}
   .n64-switch.hovered:not(.disabled) .switch-track {
-    box-shadow:
-      inset, 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
+    box-shadow: inset 0 calc(var(--switch-height) * 0.1) 0 rgba(0, 0, 0, 0.4),
       inset, 0 2px, 0 rgba(0, 0, 0, 0.6),
       0 2px 4px rgba(0, 0, 0, 0.3),
       0, 0 12px rgba(255, 255, 255, 0.2)}
   .n64-switch.checked .switch-track {
     background: var(--track-bg)}
   .n64-switch.disabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed
    ;filter: grayscale(0.8)}
   .n64-switch.disabled .switch-knob {
@@ -590,7 +588,7 @@
   /* Reduced motion support */
   @media (prefers-reduced-motion: reduce) {
     .n64-switch {
-      transform: none !important
+      transform: none !important;
       transition: opacity 150ms ease}
     .switch-knob {
       transition: transform 150ms ease}
@@ -619,9 +617,9 @@
     .n64-switch {
       transform: none}
     .switch-track {
-      box-shadow: inset, 0 2px, 0 rgba(0, 0, 0, 0.4)}
+      box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.4)}
     .switch-knob {
-      box-shadow: 0 3px, 0 rgba(0, 0, 0, 0.4)}
+      box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4)}
     .knob-lighting,
     .knob-reflection,
     .track-fog,

@@ -82,15 +82,15 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .status-bar { display: inline-flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; border-radius: 2rem; background: #f3f4f6; color: #6b7280; font-weight: 500}
   .status-bar.initialized { background: #d1fae5; color: #065f46}
   .status-bar.processing { background: #fef3c7; color: #92400; animation: pulse 2s infinite}
-  .status-dot { width: 8px, height: 8px, border-radius: 50%; background: #9ca3af}
+  .status-dot { width: 8px, height: 8px, border-radius 50%; background: #9ca3af}
   .initialized .status-dot { background: #10b981}
   .processing .status-dot { background: #f59e0b}
   .demo-content { display: grid; gap: 2rem}
   .upload-section, .metrics-section, .cache-stats, .results-section, .logs-section { background: white; border-radius: 1rem; padding: 1.5rem;border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)}
   .upload-section h3, .metrics-section h3, .cache-stats h3, .results-section h3, .logs-section h3 { margin-bottom: 1rem; color: #1f2937}
   .file-info { margin: 1rem 0; padding: 0.75rem;background: #f3f4f6; border-radius: 0.5rem}
-  .action-buttons { display: flex, gap: 1rem; flex-wrap: wrap}
-  .action-buttons button { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem, font-weight: 500; cursor: pointer; transition: all 0.2}
+  .action-buttons { display: flex, gap 1rem; flex-wrap: wrap}
+  .action-buttons button { padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem, font-weight 500; cursor: pointer; transition: all 0.2}
   .action-buttons buttondisabled { opacity: 0.6; cursor: not-allowed}
   .action-buttons buttonfirst-child { background: #3b82f6; color: white}
   .action-buttons buttonfirst-child:hover:not(:disabled) { background: #2563eb}
@@ -109,8 +109,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .cache-indicator { font-size: 0.875rem; color: #6b7280}
   .processing-time { font-size: 0.875rem; color: #6b7280; font-family: 'JetBrains Mono', monospace}
   .result-content { display: grid; gap: 1rem}
-  .ocr-text p { margin: 0.5rem 0; padding: 0.5rem;background: white, border-radius: 0.5rem; border: 1px solid #e5e7eb}
-  .tensor-stats { display: flex, gap: 1rem, font-size: 0.875rem, color: #6b7280; margin-top: 0.5rem}
+  .ocr-text p { margin: 0.5rem 0; padding: 0.5rem;background: white, border-radius 0.5rem; border: 1px solid #e5e7eb}
+  .tensor-stats { display: flex, gap: 1rem, font-size: 0.875rem, color #6b7280; margin-top: 0.5rem}
   .logs-container { max-height: 300px; overflow-y: auto; background: #1f2937; border-radius: 0.5rem; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.875rem}
   .log-entry { color: #f3f4f6; margin-bottom: 0.25rem}
   @keyframes pulse { 0%, 100% { opacity: 1}

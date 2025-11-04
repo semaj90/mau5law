@@ -266,208 +266,208 @@ import type { Document } from '$lib/types';
 
 <style>
   .cached-rag-demo {
-    max-width: 1200px
+    max-width: 1200px;
     margin: 0 auto
-   ;padding: 20px
+   ;padding: 20px;
     font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
   .header {
-    text-align: center
-    margin-bottom: 30px
-    border-bottom: 2px solid #e2e8f0
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e2e8f0;
     padding-bottom: 20px}
   .header h2 {
-    color: #2d3748
+    color: #2d3748;
     margin-bottom: 10px}
   .header p {
-    color: #718096
+    color: #718096;
     font-size: 14px}
   .query-section {
-    background: #f7fafc
-    padding: 20px
-    border-radius: 8px
+    background: #f7fafc;
+    padding: 20px;
+    border-radius: 8px;
     margin-bottom: 20px}
   .input-group {
     margin-bottom: 15px}
   .input-group label {
-    display: block
-    margin-bottom: 5px
-    font-weight: 600
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
     color: #4a5568}
   .input-group textarea {
-    width: 100%; padding: 10px
-    border: 1px solid #e2e8f0
-    border-radius: 6px
-    font-size: 14px
+    width: 100%; padding: 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 14px;
     resize: vertical}
   .sample-queries p {
-    margin-bottom: 10px
-    font-weight: 600
+    margin-bottom: 10px;
+    font-weight: 600;
     color: #4a5568}
   .query-buttons {
-    display: flex
-    flex-wrap: wrap
-    gap: 8px
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-bottom: 20px}
   .sample-btn {
-    padding: 6px 12px
-    background: #e2e8f0
-    border: none
-    border-radius: 4px
-    cursor: pointer
+    padding: 6px 12px;
+    background: #e2e8f0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 12px
    ;transition: background-color 0.2}
   .sample-btn:hover:not(:disabled) {
     background: #cbd5e0}
   .sample-btn:disabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed}
   .actions {
-    display: flex
-    gap: 10px
+    display: flex;
+    gap: 10px;
     flex-wrap: wrap}
   .primary-btn {
-    background: #4299e1
-    color: white
-    border: none
-    padding: 12px 20px
-    border-radius: 6px
-    cursor: pointer
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    cursor: pointer;
     font-weight: 600
    ;transition: background-color 0.2}
   .primary-btn:hover:not(:disabled) {
     background: #3182c}
   .secondary-btn {
-    background: #e2e8f0
-    color: #4a5568
-    border: none
-    padding: 12px 16px
-    border-radius: 6px
+    background: #e2e8f0;
+    color: #4a5568;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 6px;
     cursor: pointer
    ;transition: background-color 0.2}
   .secondary-btn:hover:not(:disabled) {
     background: #cbd5e0}
   .primary-btn: disabled
   .secondary-btn:disabled {
-    opacity: 0.5
+    opacity: 0.5;
     cursor: not-allowed}
   .error {
-    background: #fed7d7
-    border: 1px solid #fc8181
-    border-radius: 6px
-    padding: 15px
+    background: #fed7d7;
+    border: 1px solid #fc8181;
+    border-radius: 6px;
+    padding: 15px;
     margin-bottom: 20px}
   .error h3 {
-    color: #c53030
+    color: #c53030;
     margin-bottom: 10px}
   .error p {
     color: #742a2a}
   .results {
-    background: white
-    border: 1px solid #e2e8f0
-    border-radius: 8px
-    padding: 20px
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
     margin-bottom: 20px}
   .cache-stats {
-    background: #f0fff4
-    border: 1px solid #9ae6b4
-    border-radius: 6px
-    padding: 15px
+    background: #f0fff4;
+    border: 1px solid #9ae6b4;
+    border-radius: 6px;
+    padding: 15px;
     margin-bottom: 20px}
   .cache-stats h4 {
-    color: #22543d
+    color: #22543d;
     margin-bottom: 15px}
-  .stats-grid { display: grid
+  .stats-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px}
   .stat {
-    display: flex
-    justify-content: space-betweenn
-    padding: 8px 12px
-    background: white
-    border-radius: 4px
+    display: flex;
+    justify-content: space-betweenn;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 4px;
     border: 1px solid #c6f6d5}
   .stat .label {
-    font-weight: 600
+    font-weight: 600;
     color: #2f855a}
   .stat .value.hit {
-    color: #38a169
+    color: #38a169;
     font-weight: 600}
   .stat .value.miss {
-    color: #e53e3
+    color: #e53e3;
     font-weight: 600}
   .query-results h4 {
-    color: #2d3748
+    color: #2d3748;
     margin-bottom: 15px}
   .results-list {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 15px}
   .result-item {
-    background: #f7fafc
-    border: 1px solid #e2e8f0
-    border-radius: 6px
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
     padding: 15px}
   .result-header {
-    display: flex
-    justify-content: space-betweenn
-    align-items: center
+    display: flex;
+    justify-content: space-betweenn;
+    align-items: center;
     margin-bottom: 10px}
   .result-header h5 {
-    color: #2d3748
+    color: #2d3748;
     margin: 0}
   .score {
-    background: #e2e8f0
-    padding: 4px 8px
-    border-radius: 4px
-    font-size: 12px
+    background: #e2e8f0;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
     color: #4a5568}
   .excerpt {
-    color: #718096
-    line-height: 1.5
+    color: #718096;
+    line-height: 1.5;
     margin-bottom: 10px}
   .metadata {
-    font-size: 12px
+    font-size: 12px;
     color: #a0aec0}
   .ai-response {
-    background: #edf2f7
-    border: 1px solid #cbd5e0
-    border-radius: 6px
-    padding: 15px
+    background: #edf2f7;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    padding: 15px;
     margin-top: 20px}
   .ai-response h4 {
-    color: #2d3748
+    color: #2d3748;
     margin-bottom: 15px}
   .response-text {
-    background: white
-    padding: 15px
-    border-radius: 4px
-    line-height: 1.6
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    line-height: 1.6;
     color: #2d3748}
   .metrics-section {
-    background: #f7fafc
-    border: 1px solid #e2e8f0
-    border-radius: 8px
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
     padding: 20px}
   .metrics-section h3 {
-    color: #2d3748
+    color: #2d3748;
     margin-bottom: 20px}
-  .metrics-grid { display: grid
+  .metrics-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px}
   .metric-card {
-    background: white
-    border: 1px solid #e2e8f0
-    border-radius: 6px
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
     padding: 15px}
   .metric-card h4 {
-    color: #2d3748
+    color: #2d3748;
     margin-bottom: 15px}
   .metric-stats {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 8px}
   .metric-stats > div {
-    display: flex
-    justify-content: space-betweenn
-    padding: 4px 0
+    display: flex;
+    justify-content: space-betweenn;
+    padding: 4px 0;
     border-bottom: 1px solid #f1f5f9}
   .hit-rate {
     font-weight: 600

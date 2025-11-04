@@ -82,8 +82,8 @@ interface ToolbarProps { theme?: 'default' | 'legal' | 'gaming' | 'yorha'; group
   .overflow-x-auto::-webkit-scrollbar-track { background: transparent}
   .overflow-x-auto::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 2px}
   /* YoRHa theme enhancements */:global(.yorha-toolbar) { animation: yorha-toolbar-pulse 4s ease-in-out infinite alternate}
-  @keyframes yorha-toolbar-pulse { from { box-shadow: 0, 0 30px rgba(0, 255, 65, 0.2)}
-    to { box-shadow: 0, 0 40px rgba(0, 255, 65, 0.3), 0, 0 60px rgba(0, 255, 65, 0.1)}
+  @keyframes yorha-toolbar-pulse { from { box-shadow: 0 0 30px rgba(0, 255, 65, 0.2)}
+    to { box-shadow: 0 0 40px rgba(0, 255, 65, 0.3), 0, 0 60px rgba(0, 255, 65, 0.1)}
   }
 </style>
 

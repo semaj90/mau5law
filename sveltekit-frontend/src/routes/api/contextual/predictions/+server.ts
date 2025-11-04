@@ -1,2 +1,37 @@
-﻿/** * Next-Step Predictions API Endpoint * * Get HMM-based next-step predictions for current conversation */ import { json } from '@sveltejs/kit'; import { contextualUnderstanding } from '$lib/server/ai/contextual-understanding-service'; import type { RequestHandler } from './$types'; export const GET: RequestHandler = async ({ url }) => { try { const sessionId = url.searchParams.get('sessionId'); const userId = url.searchParams.get('userId'); if (!sessionId || !userId) { return json( { error: 'Missing required, parameters, sessionId, userId' }, { status: 400 } )} const predictions = await contextualUnderstanding.getNextStepPredictions( sessionId, userId ); return json({ success: true, data: { predictions, count, predictions.length } })}catch (error) { console.error('Get predictions error: ', error); return json( { success: false, error: { code: 'PREDICTION_ERROR', message: error instanceof Error ? error.message :  'Unknown error' } }, { status: 500 } )}; 
+import { json, type RequestHandler } from "@sveltejs/kit";
+import { contextualUnderstanding } from "$lib/server/ai/contextual-understanding-service";
 
+export const GET: RequestHandler = async ({ url }) => {
+  try {
+    const sessionId = url.searchParams.get("sessionId")?.trim() ?? "";
+    const userId = url.searchParams.get("userId")?.trim() ?? "";
+
+    if (!sessionId || !userId) {
+      return json(
+        { success: false, error: "sessionId and userId query parameters are required" },
+        { status: 400 }
+      );
+    }
+
+    const predictions = await contextualUnderstanding.getNextStepPredictions(sessionId, userId);
+    return json(
+      {
+        success: true,
+        data: {
+          predictions,
+          count: predictions.length,
+        },
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("[contextual-predictions] Failed to fetch predictions", error);
+    return json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Unexpected error",
+      },
+      { status: 500 }
+    );
+  }
+};

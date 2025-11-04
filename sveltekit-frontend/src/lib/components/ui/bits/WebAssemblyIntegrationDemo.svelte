@@ -146,7 +146,7 @@
  <li>â€¢ <span class="text-purple-300">Redis Cache</span> - Sub-millisecond AI response caching</li>
  <li>â€¢ <span class="text-green-300">WASM Workers</span> - Background AI processing</li>
  <li>â€¢ <span class="text-yellow-300">YoRHa Theme</span> - Legal AI gaming aesthetics</li> </ul> </div> </div> </div> </div> </Card> </div>
- <style> .yorha-card { /* Professional card styling with gaming accents */ background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.85) 100%); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 0.75rem; backdrop-filter: blur(12px), box-shadow: 0 8px 32px -8px rgba(0, 0, 0, 0.25), 0, 0 0 1px rgba(148, 163, 184, 0.05), inset, 0 1px, 0 rgba(248, 250, 252, 0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)}
+ <style> .yorha-card { /* Professional card styling with gaming accents */ background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.85) 100%); border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 0.75rem; backdrop-filter: blur(12px), box-shadow 0 8px 32px -8px rgba(0, 0, 0, 0.25), 0, 0 0 1px rgba(148, 163, 184, 0.05), inset, 0 1px, 0 rgba(248, 250, 252, 0.05); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1)}
   .yorha-card: hover { transform: translateY(-2px); box-shadow: 0 20px 64px -12px rgba(0, 0, 0, 0.35), 0, 0 0 1px rgba(251, 191, 36, 0.1), inset, 0 1px, 0 rgba(248, 250, 252, 0.1); border-color: rgba(251, 191, 36, 0.2)}
 </style>
 

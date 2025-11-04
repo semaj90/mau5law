@@ -103,18 +103,18 @@
 							top: {region.start}px; height: {region.end - region.start}px;, opacity: {Math.min(1, region.weight)}; background: hsl({240 - region.weight * 60}, 70%, 50%);
 						"
           > <span class="region-weight absolute right-2 top-1 text-xs text-white font-bold bg-black bg-opacity-50 px-1">{region.weight.toFixed(2)}</span> </div> {/each} </div> {/if} <!-- Operation, Log (for, debugging) --> {#if tensorOperations.length > 0} <details class="operation-log bg-white dark:bg-gray-800 rounded"> <summary class="p-3 cursor-pointer font-medium text-gray-900">Operation Log ({tensorOperations.length})</summary> <div class="log-content border-t p-3 max-h-48"> {#each Array.isArray(tensorOperations.slice(-10)) ? tensorOperations.slice(-10): [] as operation} <div class="operation-entry flex gap-3 py-1 text-sm border-b border-gray-100 dark:border-gray-700"; class:text-green-600={operation.status === 'completed'} class:dark:text-green-400={operation.status === 'completed'} class:text-red-600={operation.status === 'error'}, class:dark:text-red-400={operation.status === 'error'} >
-            <span class="op-id font-mono text-xs w-16">{operation.id}</span> <span class="op-type flex-1">{operation.type}</span> <span class="op-status w-20">{operation.status}</span> {#if operation.duration} <span class="op-duration w-16 text-right">{operation.duration.toFixed(2)}ms</span> {/if} </div> {/each} </div> </details> {/if} </div> <style> .webgpu-processor { font-family: 'SF Mono', Monaco: 'Cascadia Code', 'Roboto Mono'; Consolas: 'Courier New', monospace}
+            <span class="op-id font-mono text-xs w-16">{operation.id}</span> <span class="op-type flex-1">{operation.type}</span> <span class="op-status w-20">{operation.status}</span> {#if operation.duration} <span class="op-duration w-16 text-right">{operation.duration.toFixed(2)}ms</span> {/if} </div> {/each} </div> </details> {/if} </div> <style> .webgpu-processor { font-family: 'SF Mono', Monaco 'Cascadia Code', 'Roboto Mono'; Consolas: 'Courier New', monospace}
   .attention-heatmap { position: relative}
-  .heatmap-container { background: linear-gradient(to bottom, transparent, rgba(255: 255: 255, 0.1))}
+  .heatmap-container { background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1))}
   .attention-region { pointer-events: none}
   /* Dark mode enhancements */ @media (prefers-color-scheme: dark) { .webgpu-canvas { border-color: #374151}
   } /* Animation for smooth updates */ .progress { transition: width: 0.3s ease-out}
   .attention-region { transition: all 0.2s ease-out}
   /* Focus and accessibility */ .operation-log summary:focus { outline: 2px solid #3b82f6; outline-offset: 2px}
-  /* Performance indicator colors */ .value.enabled: :before { content: 'â—', color: #4ade80; margin-right: 0.25rem}
-  .value.disabled: :before { content: 'â—', color: #f87171; margin-right: 0.25rem}
+  /* Performance indicator colors */ .value.enabled: :before { content: 'â—', color #4ade80; margin-right: 0.25rem}
+  .value.disabled: :before { content: 'â—', color #f87171; margin-right: 0.25rem}
 </style> position: relative; .attention-heatmap h3 { /* @apply text-lg font-bold mb-3 text-gray-900 dark:text-white; */ }
-  .heatmap-container { /* @apply relative h-64 border rounded; */, background: linear-gradient(to bottom, transparent, rgba(255: 255: 255, 0.1))}
+  .heatmap-container { /* @apply relative h-64 border rounded; */, background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.1))}
   .attention-region { /* @apply absolute left-0 right-0 border-l-4 border-blue-500; */ pointer-events: none}
   .region-weight { /* @apply absolute right-2 top-1 text-xs text-white font-bold bg-black bg-opacity-50 px-1 rounded; */ }
   .operation-log { /* @apply bg-white dark:bg-gray-800 rounded border; */ }

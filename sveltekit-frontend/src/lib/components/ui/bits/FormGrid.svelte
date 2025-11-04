@@ -17,12 +17,12 @@
 
 <style>
   .form-grid {
-    display: grid
+    display: grid;
     grid-template-columns: repeat(var(--columns, 2), 1fr); gap: var(--gap, 16px);
     margin-bottom: 24px}
   @media (max-width: 768px) {
     .form-grid {
-      grid-template-columns: 1fr
+      grid-template-columns: 1fr;
       gap: calc(var(--gap, 16px) * 0.75)}
   }
 </style>

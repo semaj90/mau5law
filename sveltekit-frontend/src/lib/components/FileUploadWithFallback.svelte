@@ -241,67 +241,67 @@ Automatically handles server upload with localStorage fallback
   .file-upload-container {
     width: 100%; max-width: 600px}
   .storage-indicator {
-    margin-bottom: 1rem
-    display: flex
-    align-items: center
-    gap: 0.5rem
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.875rem}
   .storage-bar {
-    flex: 1
-    height: 4px
-    background-color: #e5e7eb
-    border-radius: 2px
+    flex: 1;
+    height: 4px;
+    background-color: #e5e7eb;
+    border-radius: 2px;
     overflow: hidden}
   .storage-fill {
-    height: 100%; background-color: #3b82f6
+    height: 100%; background-color: #3b82f6;
     transition: width: 0.3s ease}
   .storage-fill.warning {
     background-color: #f59e0b}
   .storage-fill.critical {
     background-color: #ef4444}
   .storage-text {
-    color: #6b7280
+    color: #6b7280;
     white-space: nowrap}
   .drop-zone {
-    border: 2px dashed #d1d5db
-    border-radius: 8px
-    padding: 2rem
-    text-align: center
-    cursor: pointer
-    transition: all 0.2s ease
+    border: 2px dashed #d1d5db;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
     background-color: #f9fafb}
   .drop-zone:hover {
-    border-color: #3b82f6
+    border-color: #3b82f6;
     background-color: #f0f9ff}
   .drop-zone.drag-over {
-    border-color: #3b82f6
+    border-color: #3b82f6;
     background-color: #dbeaff
    ;transform: scale(1.02)}
   .drop-zone.uploading {
-    border-color: #10b981
+    border-color: #10b981;
     background-color: #f0fdf4}
   .upload-icon {
-    font-size: 3rem
+    font-size: 3rem;
     margin-bottom: 1rem}
   .upload-text strong {
-    display: block
-    color: #374151
+    display: block;
+    color: #374151;
     margin-bottom: 0.5rem}
   .upload-subtitle {
-    color: #6b7280
+    color: #6b7280;
     font-size: 0.875rem}
   .fallback-notice {
-    color: #f59e0b
+    color: #f59e0b;
     font-weight: 500}
   .upload-progress {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 1rem}
   .spinner {
-    width: 24px
-    height: 24px
-    border: 2px solid #e5e7eb
-    border-top: 2px solid #3b82f6
+    width: 24px;
+    height: 24px;
+    border: 2px solid #e5e7eb;
+    border-top: 2px solid #3b82f6;
     border-radius: 50%; animation: spin 1s linear infinite}
   @keyframes spin {
     0% { transform: rotate(0deg)}
@@ -310,54 +310,54 @@ Automatically handles server upload with localStorage fallback
   .progress-text {
     flex: 1}
   .progress-bar {
-    width: 100%; height: 8px
-    background-color: #e5e7eb
-    border-radius: 4px
-    overflow: hidden
+    width: 100%; height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
     margin: 0.5rem 0}
   .progress-fill {
-    height: 100%; background-color: #10b981
+    height: 100%; background-color: #10b981;
     transition: width: 0.3s ease}
   .error-message {
-    margin-top: 1rem
-    padding: 1rem
-    background-color: #fef2f2
-    border: 1px solid #fecaca
-    border-radius: 6px
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
     color: #dc2626}
   .results-container {
-    margin-top: 1rem
-    border: 1px solid #e5e7eb
-    border-radius: 8px
+    margin-top: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
     overflow: hidden}
   .results-header {
-    display: flex
-    justify-content: space-between
-    align-items: center
-    padding: 1rem
-    background-color: #f9fafb
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #f9fafb;
     border-bottom: 1px solid #e5e7eb}
   .results-header h4 {
-    margin: 0
+    margin: 0;
     color: #374151}
   .clear-btn {
-    padding: 0.25rem 0.5rem
-    background-color: #6b7280
-    color: white
-    border: none
-    border-radius: 4px
-    cursor: pointer
+    padding: 0.25rem 0.5rem;
+    background-color: #6b7280;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
     font-size: 0.75rem}
   .clear-btn:hover {
     background-color: #4b5563}
   .results-list {
-    max-height: 300px
+    max-height: 300px;
     overflow-y: auto}
   .result-item {
-    display: flex
-    align-items: center
-    gap: 0.75rem
-    padding: 0.75rem 1rem
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid #f3f4f6}
   .result-item:last-child {
     border-bottom: none}
@@ -370,25 +370,25 @@ Automatically handles server upload with localStorage fallback
   .result-details {
     flex: 1}
   .result-name {
-    font-weight: 500
+    font-weight: 500;
     color: #374151}
   .result-meta {
-    display: flex
-    align-items: center
-    gap: 0.5rem
-    margin-top: 0.25rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
     font-size: 0.75rem}
   .storage-type {
-    padding: 0.125rem 0.375rem
-    background-color: #e0e7ff
-    color: #3730a3
-    border-radius: 12px
+    padding: 0.125rem 0.375rem;
+    background-color: #e0e7ff;
+    color: #3730a3;
+    border-radius: 12px;
     font-weight: 500}
   .fallback-badge {
-    padding: 0.125rem 0.375rem
-    background-color: #fef3c7
-    color: #92400e
-    border-radius: 12px
+    padding: 0.125rem 0.375rem;
+    background-color: #fef3c7;
+    color: #92400e;
+    border-radius: 12px;
     font-weight: 500}
   .file-size {
     color: #6b7280}

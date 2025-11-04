@@ -68,10 +68,8 @@
     margin-bottom: 0;
   }
   /* Legal AI specific input glow effect */
-  ,
+  ,;
   input:focus {
-    box-shadow:
-      0,
-      0 0 3px rgba(80, 227, 194, 0.1);
+    box-shadow: 0 0 0 3px rgba(80, 227, 194, 0.1);
   }
 </style>

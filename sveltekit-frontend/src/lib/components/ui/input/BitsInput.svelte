@@ -17,7 +17,7 @@ import type { Message } from '$lib/types'; // Svelte, 5 runes are auto-imported 
   {#if error} <p class="mt-1 text-xs text-red-500"> { error } </p> {/if}
   </div>
  <style> .legal-input-container input { transition: all 0.2s ease}
-  .legal-input-container, input:focus { box-shadow: 0, 0 0 1px rgb(var(--yorha-primary) / 0.5)}
+  .legal-input-container, input:focus { box-shadow: 0 0 0 1px rgb(var(--yorha-primary) / 0.5)}
   .legal-input-container input: :placeholder { font-family: inherit; opacity: 0.7}
 /* Required asterisk styling */ {} .required::after { content: ''}
 </style>

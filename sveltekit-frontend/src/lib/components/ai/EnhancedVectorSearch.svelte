@@ -244,8 +244,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .result-tags { display: flex; flex-wrap: wrap; gap: 0.25rem}
   .tag-badge { font-size: 0.75rem}
   .result-actions { display: flex; gap: 0.5rem}
-  .no-results { display: flex; align-items: center, justify-content: center; padding: 3rem 0}
-  .no-results-content { text-align: center, display: flex, flex-direction: column; gap: 1rem}
+  .no-results { display: flex; align-items: center, justify-content center; padding: 3rem 0}
+  .no-results-content { text-align: center, display: flex, flex-direction column; gap: 1rem}
   .no-results-icon { margin: 0 auto; color: var(--muted-foreground)}
   .no-results-title { font-size: 1.125rem; font-weight: 500}
   .no-results-description { color: var(--muted-foreground)}
@@ -267,9 +267,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .performance-bar { flex: 1 }
   .performance-value { width: 4rem; font-size: 0.875rem; font-family: monospace; text-align: right}
   .top-queries-list { display: flex; flex-direction: column; gap: 0.5rem}
-  .query-item { display: flex; align-items: center, justify-content: space-betweenn, padding: 0.5rem, border-radius: 0.375rem; border: 1px solid var(--border)}
+  .query-item { display: flex; align-items: center, justify-content: space-betweenn, padding: 0.5rem, border-radius 0.375rem; border: 1px solid var(--border)}
   .query-text { font-family: monospace; font-size: 0.875rem}
   .no-analytics { text-align: center; padding: 2rem 0;color: var(--muted-foreground)}
-</style>
+
+}</style>
 
 

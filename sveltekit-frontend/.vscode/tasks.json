@@ -2,6 +2,160 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "📊 Error Analysis: Top 100 (Redis Cache)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-error-analyzer.mjs",
+				"--top", "100",
+				"--cache-only",
+				"--output", "error-top100.json"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Fast: Analyze top 100 errors using Redis cache (< 5s)",
+			"problemMatcher": []
+		},
+		{
+			"label": "📊 Error Analysis: Top 1,000 (Redis Cache)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-error-analyzer.mjs",
+				"--top", "1000",
+				"--cache-only",
+				"--output", "error-top1000.json"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Medium: Analyze top 1,000 errors using Redis cache (< 10s)",
+			"problemMatcher": []
+		},
+		{
+			"label": "📊 Error Analysis: Top 10,000 (Redis Cache)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-error-analyzer.mjs",
+				"--top", "10000",
+				"--cache-only",
+				"--output", "error-top10000.json"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Large: Analyze top 10,000 errors using Redis cache (< 30s)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔍 Inspect Ollama Endpoints",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/get-ollama-endpoints.mjs"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "shared"
+			},
+			"detail": "Print resolved Ollama endpoints and list installed embedding models",
+			"problemMatcher": []
+		},
+		{
+			"label": "🔄 Refresh Error Cache (Full Scan)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-error-analyzer.mjs",
+				"--refresh",
+				"--top", "100",
+				"--batch-size", "50",
+				"--parallel", "4",
+				"--output", "error-cache-refreshed.json"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Slow: Full scan of all files to refresh Redis cache (5-10 min)",
+			"problemMatcher": []
+		},
+		{
+			"label": "⚡ Incremental Error Scan (Git Changes)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/redis-error-analyzer.mjs",
+				"--incremental",
+				"--top", "100",
+				"--output", "error-incremental.json"
+			],
+			"group": "build",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Quick: Only scan files changed since last commit (< 1 min)",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧪 Test Full Stack Integration",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/test-full-stack-integration.mjs"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Test Redis, Qdrant, pgvector, Ollama, Go RAG integration",
+			"problemMatcher": []
+		},
+		{
+			"label": "🧪 Test Integration (Verbose)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"scripts/test-full-stack-integration.mjs",
+				"--verbose"
+			],
+			"group": "test",
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "dedicated"
+			},
+			"detail": "Test all services with detailed output",
+			"problemMatcher": []
+		},
+		{
 			"label": "⚡ Batch Fix: Event Handler Deprecations",
 			"type": "shell",
 			"command": "powershell",
@@ -1283,6 +1437,139 @@
 				"panel": "shared"
 			},
 			"detail": "Apply BullMQ to RabbitMQ migration (modifies files)"
+		},
+		{
+			"label": "🚀 Phase43: GPU Embedding Pipeline",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/phase43-ai-analyzer.mjs",
+				"error-analysis-report.json",
+				"--batch-size",
+				"5000"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Embed error logs with GPU-accelerated Ollama (90s, 37k errors → Qdrant + Redis)"
+		},
+		{
+			"label": "🎯 Phase44: CUDA Tensor Aggregation",
+			"type": "shell",
+			"command": "python",
+			"args": [
+				"${workspaceFolder}/scripts/phase44-tensor-aggregator.py",
+				"--limit",
+				"10000",
+				"--cluster",
+				"20",
+				"--compute-similarity"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"dependsOn": ["🚀 Phase43: GPU Embedding Pipeline"],
+			"detail": "K-means clustering on GPU (FP16 tensors, 20 clusters, similarity matrix)"
+		},
+		{
+			"label": "⚡ Concurrent AST Fixer",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/concurrent-ast-fixer.mjs",
+				"--workers=8",
+				"--batch-size=100",
+				"--use-qdrant",
+				"--use-mcp"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"dependsOn": ["🎯 Phase44: CUDA Tensor Aggregation"],
+			"detail": "AI-assisted concurrent error fixing (8 workers, Qdrant similarity, MCP context)"
+		},
+		{
+			"label": "🔥 Full GPU Pipeline (Phase43→44→Fixer)",
+			"type": "shell",
+			"command": "node",
+			"args": ["${workspaceFolder}/scripts/phase43-master-pipeline.mjs", "--full"],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": false
+			},
+			"detail": "Complete automation: Embed → Cluster → Fix (17-22 min total)"
+		},
+		{
+			"label": "📊 Analyze Svelte-Check Logs",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/categorize-svelte-check-log.mjs",
+				"--log",
+				"svelte-check-current.log",
+				"--limit",
+				"10000",
+				"--json"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Categorize svelte-check errors (batch 10k lines, JSON output)"
+		},
+		{
+			"label": "🔧 Fix Any Types (Safe Batch)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/fix-any-types.mjs",
+				"--apply",
+				"--backup"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"focus": true
+			},
+			"detail": "Remove :any type annotations (~27k fixes, auto-backup enabled)"
+		},
+		{
+			"label": "🧠 Phase43: Test Embedding (Sample)",
+			"type": "shell",
+			"command": "node",
+			"args": [
+				"${workspaceFolder}/scripts/phase43-ai-analyzer.mjs",
+				"error-analysis-report.json",
+				"--sample",
+				"100"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "shared"
+			},
+			"detail": "Test embedding pipeline on 100 errors (quick validation)"
 		}
 	]
 }

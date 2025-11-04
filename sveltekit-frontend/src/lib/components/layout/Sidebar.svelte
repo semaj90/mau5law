@@ -86,14 +86,14 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
  <p class="text-xs nes-text is-disabled"> {theme?.toUpperCase()} mode - All systems online </p> </div>
  <div class="text-xs bg-console-primary text-console-bg px-2 py-1 rounded">PWR</div> </div> </div> </div> </aside>
  <style> /* @unocss-include */ /* Gaming console aesthetic with console variable support */ aside { background: var(--console-gradient-sidebar, linear-gradient(180deg, #0f0f23, #1a1a2e)); border-right: 2px solid var(--console-primary, #00aa00)}
-  .nier-glow { box-shadow: 0, 0 10px var(--console-primary, rgba(0, 170, 0, 0.3))}
+  .nier-glow { box-shadow: 0 0 10px var(--console-primary, rgba(0, 170, 0, 0.3))}
   .bg-crimson-gradient { background: var(--console-primary, #00aa00)}
   .bg-console-primary { background: var(--console-primary, #00aa00)}
   .text-console-bg { color: var(--console-bg, #0f0f23)}
   .text-console-error { color: var(--console-error, #ff5555)}
   .bg-console-error { background: var(--console-error, #ff5555)}
-  /* Gaming-themed animations */ @keyframes nier-pulse { 0%, 100% { opacity: 1; box-shadow: 0, 0 5px var(--console-primary, #00aa00)}
-    50% { opacity: 0.6; box-shadow: 0, 0 10px var(--console-primary, #00aa00)}
+  /* Gaming-themed animations */ @keyframes nier-pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 5px var(--console-primary, #00aa00)}
+    50% { opacity: 0.6; box-shadow: 0 0 10px var(--console-primary, #00aa00)}
   } .animate-nier-pulse { animation: nier-pulse 2s infinite}
   /* Console-themed scrollbar */ nav::-webkit-scrollbar { width: 4px}
   nav::-webkit-scrollbar-track { background: transparent}

@@ -116,21 +116,21 @@ import type { Document } from '$lib/types';
     padding: 0.75rem}
   .search-bar {
     display: flex
-   ;gap: 8px
+   ;gap: 8px;
     align-items: center}
   .bits-row :global(.bits-input) {
     min-width: 320px}
   .bits-chip {
     margin-bottom: 6px}
   .result-row {
-    display: flex
-    justify-content: space-between
+    display: flex;
+    justify-content: space-between;
     gap: 12px}
   .result-main h4 { margin: 0, 0 6px 0}
   .badge {
-    font-size: 0.85rem
+    font-size: 0.85rem;
     background: #edf2ff
-   ;padding: 4px 8px
+   ;padding: 4px 8px;
     border-radius: 6px}
 </style>
     {/if}
@@ -144,21 +144,21 @@ import type { Document } from '$lib/types';
     padding: 0.75rem}
   .search-bar {
     display: flex
-   ;gap: 8px
+   ;gap: 8px;
     align-items: center}
   .bits-row :global(.bits-input) {
     min-width: 320px}
   .bits-chip {
     margin-bottom: 6px}
   .result-row {
-    display: flex
-    justify-content: space-betweenn
+    display: flex;
+    justify-content: space-betweenn;
     gap: 12px}
   .result-main h4 { margin: 0, 0 6px 0}
   .badge {
-    font-size: 0.85rem
+    font-size: 0.85rem;
     background: #edf2ff
-   ;padding: 4px 8px
+   ;padding: 4px 8px;
     border-radius: 6px}
 </style>
 

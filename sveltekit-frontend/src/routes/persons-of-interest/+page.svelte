@@ -279,9 +279,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 2rem;
     margin: 0;
-    text-shadow:
-      0,
-      0 10px rgba(16, 185, 129, 0.5);
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
     filter: drop-shadow(0, 0 5px rgba(16, 185, 129, 0.3));
   }
   .case-info {
@@ -304,9 +302,7 @@
   .case-badge.active {
     background: #10b981;
     color: #0d1117;
-    box-shadow:
-      0,
-      0 10px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
   }
   .case-badge.evidence {
     background: #6b7280;
@@ -342,9 +338,7 @@
     margin:
       0,
       0 0.5rem 0;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .person-matches p {
     color: #9ca3af;
@@ -378,25 +372,19 @@
   .person-entry:hover {
     background: rgba(16, 185, 129, 0.1);
     border-color: #10b981;
-    box-shadow:
-      0,
-      0 8px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
   }
   .person-entry.selected {
     background: rgba(16, 185, 129, 0.2);
     border-color: #10b981;
-    box-shadow:
-      0,
-      0 15px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
   }
   .person-number {
     color: #10b981;
     font-weight: bold;
     margin-right: 0.5rem;
     font-size: 0.75rem;
-    text-shadow:
-      0,
-      0 3px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 3px rgba(16, 185, 129, 0.3);
   }
   .person-name {
     color: #f0f6fc;
@@ -410,9 +398,7 @@
     margin:
       0,
       0 1rem 0;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .filter-group {
     margin-bottom: 1rem;
@@ -442,9 +428,7 @@
   .filter-btn:hover {
     background: rgba(16, 185, 129, 0.2);
     border-color: #10b981;
-    box-shadow:
-      0,
-      0 8px rgba(16, 185, 129, 0.2);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
   }
   /* Main Person Detail */
   .person-detail {
@@ -463,9 +447,7 @@
       0,
       0 1.5rem 0;
     text-align: center;
-    text-shadow:
-      0,
-      0 10px rgba(16, 185, 129, 0.5);
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
   }
   .person-photo-section {
     display: grid;
@@ -508,9 +490,7 @@
   .info-row .value {
     color: #10b981;
     font-weight: bold;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .status-badges {
     display: flex;
@@ -528,9 +508,7 @@
     background: #991b1b;
     color: #f9fafb;
     border: 1px solid #dc2626;
-    box-shadow:
-      0,
-      0 8px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.3);
   }
   .status-badge.monitoring {
     background: #d97706;
@@ -541,17 +519,13 @@
     background: #065f46;
     color: #f9fafb;
     border: 1px solid #10b981;
-    box-shadow:
-      0,
-      0 8px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
   }
   .priority-badge.high {
     background: #991b1b;
     color: #f9fafb;
     border: 1px solid #dc2626;
-    box-shadow:
-      0,
-      0 8px rgba(220, 38, 38, 0.3);
+    box-shadow: 0 0 8px rgba(220, 38, 38, 0.3);
   }
   .priority-badge.medium {
     background: #d97706;
@@ -586,9 +560,7 @@
     color: #10b981;
     font-weight: bold;
     margin-left: auto;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   /* Information Sections */
   .modus-section,
@@ -605,9 +577,7 @@
     margin:
       0,
       0 0.75rem 0;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .associates-list,
   .habits-list {
@@ -623,16 +593,14 @@
     border-bottom: 1px solid #6b7280;
     margin-bottom: 0.5rem;
   }
-  .associates-list,
+  .associates-list,;
   li::before,
   .habits-list li::before {
     content: 'â€¢ ';
     color: #10b981;
     font-weight: bold;
     margin-right: 0.5rem;
-    text-shadow:
-      0,
-      0 3px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 3px rgba(16, 185, 129, 0.3);
   }
   /* Right Stats Panel */
   .stats-panel {
@@ -654,27 +622,21 @@
     margin:
       0,
       0 0.75rem 0;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .danger-rating {
     background: rgba(220, 38, 38, 0.1);
     border: 2px solid #dc2626;
     border-radius: 8px;
     padding: 0.75rem;
-    box-shadow:
-      0,
-      0 15px rgba(220, 38, 38, 0.2);
+    box-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
   }
   .danger-number {
     color: #dc2626;
     font-family: 'Press Start 2P', cursive;
     font-size: 1.5rem;
     font-weight: bold;
-    text-shadow:
-      0,
-      0 10px rgba(220, 38, 38, 0.5);
+    text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
   }
   /* Attributes Section */ /* .attributes-section { margin-bottom: 1.5rem} */
   .attributes-section h4 {
@@ -684,9 +646,7 @@
     margin:
       0,
       0 1rem 0;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   /* .attribute-bars { display: flex; flex-direction: column; gap: 0.75rem} */
   .attribute-row {
@@ -712,9 +672,7 @@
     height: 100%;
     background: linear-gradient(90deg, #10b981, #34d399);
     transition: width 0.3s ease;
-    box-shadow:
-      0,
-      0 10px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
   }
   .attr-value {
     color: #10b981;
@@ -722,9 +680,7 @@
     font-size: 0.75rem;
     min-width: 30px;
     text-align: right;
-    text-shadow:
-      0,
-      0 3px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 3px rgba(16, 185, 129, 0.3);
   }
   /* Location and Actions */ /* .location-section, .actions-section { margin-bottom: 1.5rem} */
   .location-section h4 {
@@ -734,9 +690,7 @@
     margin:
       0,
       0 0.75rem 0;
-    text-shadow:
-      0,
-      0 5px rgba(16, 185, 129, 0.3);
+    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .location-info p {
     color: #e5e7eb;
@@ -781,7 +735,7 @@
   }
   .btn-ghost:hover {
     background: rgba(16, 185, 129, 0.04);
-  } /* ...existing styles... */
+  } /* ..existing styles.. */
 </style>
 
 

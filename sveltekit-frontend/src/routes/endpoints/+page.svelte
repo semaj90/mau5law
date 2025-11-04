@@ -22,16 +22,16 @@
   .endpoints-page {
     padding: 2rem}
   .page-title {
-    font-size: 1.8rem
-    margin-bottom: 1rem
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
     color: #ffd700}
   .endpoint-list {
-    display: grid
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1rem}
   .endpoint-card {
     border-radius: var(--radius-lg, 8px);
-    padding: 1rem
+    padding: 1rem;
     box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.3));
     background: var(--surface, #2a2a2a);
     color: var(--text-primary, #e0e0e0);
@@ -41,17 +41,17 @@
   .endpoint-card.fail {
     border-left: 6px solid var(--danger, #ff0041)}
   .endpoint-card h2 {
-    margin: 0 0 0.5rem 0
-    font-size: 1.2rem
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
     color: #ffd700}
   .path {
-    font-family: 'JetBrains Mono', monospace
-    font-size: 0.9rem
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
     color: var(--muted, #b0b0b0);
-    margin: 0.5rem 0
+    margin: 0.5rem 0;
     word-break: break-all}
   .status {
-    margin-top: 0.5rem
-    font-weight: 600
+    margin-top: 0.5rem;
+    font-weight: 600;
     color: var(--text-primary, #e0e0e0)}
 </style>

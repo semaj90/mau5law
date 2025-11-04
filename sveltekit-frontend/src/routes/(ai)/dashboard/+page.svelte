@@ -357,16 +357,16 @@ import type { Document } from '$lib/types';
 
 <style>
   .ai-dashboard {
-    display: flex
-    flex-direction: column
-    gap: 2rem
-    padding: 2rem
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
     min-height: 100%}
 
   .header-top {
-    display: flex
-    justify-content: space-between
-    align-items: center
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 2rem}
 
   .user-profile-section { display: flex}
@@ -376,56 +376,56 @@ import type { Document } from '$lib/types';
     border: 1px solid rgba(102, 126, 234, 0.2)}
 
   :global(.user-card-content) {
-    display: flex
-    align-items: center
+    display: flex;
+    align-items: center;
     gap: 1.5rem}
 
   .user-avatar {
     flex-shrink: 0}
 
   .avatar-circle {
-    width: 60px
-    height: 60px
+    width: 60px;
+    height: 60px;
     border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white
-   ; display: flex
-    align-items: center
-    justify-content: center
-    font-size: 1.5rem
-    font-weight: bold
+   ; display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1)}
 
   .user-info {
     flex: 1}
 
   .user-status {
-    margin: 0
+    margin: 0;
     font-size: 0.85rem
-   ; color: var(--text-muted); text-transform: uppercase
+   ; color: var(--text-muted); text-transform: uppercase;
     font-weight: 500}
 
-  .user-display-name { margin: 0.25rem, 0 0.5rem
+  .user-display-name { margin: 0.25rem, 0 0.5rem;
     font-size: 1.3rem
    ; color: var(--text-primary)}
 
   .user-role-info {
-    margin: 0
+    margin: 0;
     font-size: 0.85rem
    ; color: var(--text-muted)}
 
   .dashboard-header h1 {
-    font-size: 2rem
+    font-size: 2rem;
     margin: 0}
 
   .user-greeting {
-    display: flex
-    flex-direction: column
-    align-items: flex-end
-    gap: 0.25rem
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
     text-align: right}
 
   .user-name {
-    font-size: 1.1rem
+    font-size: 1.1rem;
     font-weight: 600
    ; color: var(--text-primary)}
 
@@ -433,7 +433,7 @@ import type { Document } from '$lib/types';
     font-size: 0.85rem
    ; color: var(--text-muted); text-transform: capitalize}
 
-  .subtitle { margin: 0.5rem, 0 0
+  .subtitle { margin: 0.5rem, 0 0;
     color: var(--text-muted)}
 
   .status-section {
@@ -442,14 +442,14 @@ import type { Document } from '$lib/types';
   :global(.status-card) {
     width: 100%}
 
-  .status-grid { display: grid
+  .status-grid { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1rem}
 
   .status-item {
-    display: flex
+    display: flex;
     flex-direction: column
-   ; gap: 0.5rem
+   ; gap: 0.5rem;
     font-size: 0.9rem}
 
   :global(.status-online) {
@@ -477,7 +477,7 @@ import type { Document } from '$lib/types';
     color: rgb(251, 191, 36)}
 
   .stats-grid {
-    display: grid
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 1rem}
 
@@ -485,7 +485,7 @@ import type { Document } from '$lib/types';
     text-align: center}
 
   .stat-value {
-    font-size: 2rem
+    font-size: 2rem;
     font-weight: bold}
 
   .stat-label {
@@ -493,26 +493,26 @@ import type { Document } from '$lib/types';
    ; color: var(--text-muted)}
 
   .section-header h2 {
-    margin: 0
+    margin: 0;
     font-size: 1.5rem}
 
-  .section-header p { margin: 0.25rem, 0 1rem
+  .section-header p { margin: 0.25rem, 0 1rem;
     color: var(--text-muted)}
 
   .services-grid {
-    display: grid
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem}
 
   :global(.service-card) {
-    display: flex
+    display: flex;
     flex-direction: column
    ; height: 100%}
 
   :global(.service-card) :global(.card-content) {
-    display: flex
-    flex-direction: column
-    gap: 1rem
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
     flex: 1}
 
   .service-icon {
@@ -523,20 +523,20 @@ import type { Document } from '$lib/types';
    ; color: var(--text-muted)}
 
   .service-meta {
-    display: flex
-    justify-content: space-between
-    align-items: center
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     font-size: 0.85rem}
 
   .activity-list {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 1rem}
 
   .activity-item {
-    display: flex
-    align-items: center
-    gap: 1rem
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     padding: 1rem
    ; border: 1px solid var(--border-muted);
     border-radius: 0.75rem}
@@ -545,142 +545,140 @@ import type { Document } from '$lib/types';
     font-size: 1.5rem}
 
   .activity-content h3 {
-    margin: 0
+    margin: 0;
     font-size: 1rem}
 
-  .activity-content p { margin: 0.25rem, 0 0
+  .activity-content p { margin: 0.25rem, 0 0;
     color: var(--text-muted); font-size: 0.85rem}
 
   :global(.activity-status) {
-    margin-left: auto
+    margin-left: auto;
     text-transform: capitalize}
 
   .cases-section {
-    display: flex
-    flex-direction: column
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem}
 
   .cases-header-container {
-    display: flex
-    flex-direction: row
-    justify-content: space-between
-    align-items: center
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     gap: 2rem}
 
-  .cases-section-title { margin: 0, 0 0.5rem 0
-    font-size: 1.5rem
+  .cases-section-title { margin: 0, 0 0.5rem 0;
+    font-size: 1.5rem;
     font-weight: bold
-   ; color: #d4af37
+   ; color: #d4af37;
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .cases-section-subtitle {
-    margin: 0
-    font-size: 0.85rem
-    color: #999
-    text-transform: uppercase
+    margin: 0;
+    font-size: 0.85rem;
+    color: #999;
+    text-transform: uppercase;
     letter-spacing: 1px}
 
   .view-all-cases-btn {
-    padding: 0.75rem 1.5rem !important
-    font-weight: bold !important
-    white-space: nowrap
+    padding: 0.75rem 1.5rem !important;
+    font-weight: bold !important;
+    white-space: nowrap;
     min-width: 150px}
 
-  .cases-grid-container { display: grid
+  .cases-grid-container { display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.25rem
+    gap: 1.25rem;
     width: 100%}
 
   .case-card-wrapper {
-    display: flex
-    text-decoration: none
-    color: inherit
-    cursor: pointer
-    border: 4px solid #1e293b !important
-    background: #1e293b !important
-    padding: 1.25rem !important
-    transition: all 0.2s ease
-    position: relative
+    display: flex;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    border: 4px solid #1e293b !important;
+    background: #1e293b !important;
+    padding: 1.25rem !important;
+    transition: all 0.2s ease;
+    position: relative;
     overflow: hidden}
 
   .case-card-wrapper: hover {
-    border-color: #d4af37 !important
+    border-color: #d4af37 !important;
     background: #0f172a !important
-   ; transform: translateY(-3px); box-shadow:
-      0, 0 0 2px #d4af37,
-      0 4px 12px rgba(212, 175, 55, 0.3)}
+   ; transform: translateY(-3px); box-shadow: 0 0 0 2px #d4af37 0 4px 12px rgba(212, 175, 55, 0.3)}
 
   .case-card-inner {
-    display: flex
-    flex-direction: column
-    gap: 0.75rem
-    width: 100%; position: relative
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%; position: relative;
     z-index: 1}
 
   .case-status-badge {
-    display: inline-block
-    width: fit-content
-    padding: 0.25rem 0.75rem
-    border: 2px solid currentColor
-    font-size: 0.7rem
-    font-weight: bold
-    text-transform: uppercase
+    display: inline-block;
+    width: fit-content;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid currentColor;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
     letter-spacing: 0.5px}
 
   .status-label {
     display: block}
 
   .case-priority-badge {
-    display: inline-block
-    width: fit-content
-    padding: 0.25rem 0.75rem
-    border: 2px solid currentColor
-    color: white
-    font-size: 0.7rem
-    font-weight: bold
-    text-transform: uppercase
+    display: inline-block;
+    width: fit-content;
+    padding: 0.25rem 0.75rem;
+    border: 2px solid currentColor;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
     letter-spacing: 0.5px}
 
   .priority-label {
     display: block}
 
-  .case-card-title { margin: 0.5rem, 0 0 0
-    font-size: 1rem
+  .case-card-title { margin: 0.5rem, 0 0 0;
+    font-size: 1rem;
     font-weight: bold
-   ; color: #fff
-    line-height: 1.3
-    word-break: break-word
+   ; color: #fff;
+    line-height: 1.3;
+    word-break: break-word;
     font-family: 'Press Start 2P', 'Courier New', monospace}
 
   .case-card-type {
-    margin: 0
-    font-size: 0.8rem
-    color: #888
-    display: flex
-    align-items: center
+    margin: 0;
+    font-size: 0.8rem;
+    color: #888;
+    display: flex;
+    align-items: center;
     gap: 0.5rem}
 
   .case-card-updated {
-    margin: 0
-    font-size: 0.75rem
-    color: #666
-    display: flex
-    align-items: center
+    margin: 0;
+    font-size: 0.75rem;
+    color: #666;
+    display: flex;
+    align-items: center;
     gap: 0.5rem}
 
   .case-card-hover-indicator {
-    margin-top: auto
-    padding-top: 0.75rem
-    border-top: 2px dashed #444
-    display: flex
-    justify-content: flex-end
-    align-items: center
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 2px dashed #444;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
     min-height: 1.5rem}
 
   .arrow-icon {
-    font-size: 1.5rem
-    color: #d4af37
-    font-weight: bold
+    font-size: 1.5rem;
+    color: #d4af37;
+    font-weight: bold;
     transition: transform 0.2s ease}
 
   .case-card-wrapper:hover .arrow-icon { transform: translateX(4px)}
@@ -696,8 +694,8 @@ import type { Document } from '$lib/types';
       grid-template-columns: 1fr}
 
     .cases-header-container {
-      flex-direction: column
-      align-items: flex-start
+      flex-direction: column;
+      align-items: flex-start;
       gap: 1rem}
 
     .cases-section-title {

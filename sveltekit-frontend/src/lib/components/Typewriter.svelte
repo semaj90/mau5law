@@ -42,10 +42,10 @@ https: //svelte.dev/e/js_parse_error -->
 <style>
   /* @unocss-include */
   .typewriter {
-    font-size: 1.2rem
-    color: #6c757d
-    min-height: 1.5rem
-    border-right: 2px solid #007bff
+    font-size: 1.2rem;
+    color: #6c757d;
+    min-height: 1.5rem;
+    border-right: 2px solid #007bff;
     padding-right: 5px
    ;animation: blink 1s infinite}
   @keyframes blink {

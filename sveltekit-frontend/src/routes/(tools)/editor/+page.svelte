@@ -181,9 +181,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .document-title-input: focus {
     outline: none;
     border-color: var(--nes-blue, #3cbcfc);
-    box-shadow:
-      0,
-      0 8px rgba(60, 188, 252, 0.3);
+    box-shadow: 0 0 8px rgba(60, 188, 252, 0.3);
   }
   .save-status {
     font-size: 0.8rem;
@@ -284,14 +282,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   @keyframes glow-pulse {
     0%,
     100% {
-      box-shadow:
-        0,
-        0 8px rgba(60, 188, 252, 0.3);
+      box-shadow: 0 0 8px rgba(60, 188, 252, 0.3);
     }
     50% {
-      box-shadow:
-        0,
-        0 16px rgba(60, 188, 252, 0.6);
+      box-shadow: 0 0 16px rgba(60, 188, 252, 0.6);
     }
   }
   .action-btn:hover {

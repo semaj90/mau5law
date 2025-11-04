@@ -144,63 +144,63 @@ import type { Case } from '$lib/types';
 
 <style>
   .cases-dashboard {
-    max-width: 1200px
-    margin: 0 auto
-    padding: 1rem
-    display: flex
-    flex-direction: column
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
     gap: 1.5rem}
-  .header { background: linear-gradient(135deg, #4a90e2, #7ed321) !important
+  .header { background: linear-gradient(135deg, #4a90e2, #7ed321) !important;
     text-align: center}
-  .header .title { color: white !important
-    font-family: 'Press Start 2P', cursive !important
+  .header .title { color: white !important;
+    font-family: 'Press Start 2P', cursive !important;
     font-size: 1.25rem !important}
-  .header .subtitle { color: rgba(255, 255, 255, 0.9) !important
+  .header .subtitle { color: rgba(255, 255, 255, 0.9) !important;
     font-size: 0.75rem}
   .controls {
-    display: flex
-    gap: 1rem
+    display: flex;
+    gap: 1rem;
     align-items: center}
-  .cases-grid { display: grid
+  .cases-grid { display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1rem}
   :global(.case-card) {
-    background: rgba(26, 26, 46, 0.6) !important
-    border: 2px solid var(--n64-primary) !important
+    background: rgba(26, 26, 46, 0.6) !important;
+    border: 2px solid var(--n64-primary) !important;
     padding: 1rem
    ; transition: all 0.3s ease}
   :global(.case-card:hover) {
     transform: translateY(-2px); box-shadow: 0 8px 25px rgba(74, 144, 226, 0.2);
     border-color: var(--n64-secondary) !important}
   .case-header {
-    display: flex
-    justify-content: space-between
-    align-items: flex-start
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 1rem}
-  .case-header h3 { color: var(--nier-text-primary); font-family: 'Press Start 2P', cursive
-    font-size: 0.875rem
-    margin: 0
-    line-height: 1.4
+  .case-header h3 { color: var(--nier-text-primary); font-family: 'Press Start 2P', cursive;
+    font-size: 0.875rem;
+    margin: 0;
+    line-height: 1.4;
     flex: 1}
   .case-stats {
-    display: flex
-    flex-direction: column
-    gap: 0.5rem
-    margin-bottom: 1rem
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
     padding: 0.75rem
    ; background: rgba(15, 15, 35, 0.5);
     border-radius: 4px}
   .stat {
-    display: flex
-    align-items: center
-    gap: 0.5rem
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.75rem
    ; color: var(--nier-text-secondary)}
   .progress-bar {
-    flex: 1
+    flex: 1;
     height: 8px
    ; background: rgba(74, 144, 226, 0.2);
-    border-radius: 4px
+    border-radius: 4px;
     overflow: hidden}
   .progress-fill {
     height: 100%; background: linear-gradient(90deg, #4a90e2, #7ed321);

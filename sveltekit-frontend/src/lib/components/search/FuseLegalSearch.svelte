@@ -59,7 +59,7 @@
   </div> {:else if searchQuery && !isSearching} <div class="bg-white dark:bg-slate-800 rounded-md shadow-sm px-6 py-8"> <p class="nes-text"> No results found for: "{ searchQuery }". </p>
  <p class="text-sm nes-text is-disabled">Try adjusting your search terms or use more general keywords.</p> {/if}
   </div>
- <style> /* replaced invalid `theme(...)` calls with concrete color values */:global(mark.hl) { background-color: #fef3c7; /* approximate Tailwind yellow-200 */, padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-weight: 500}:global(.dark mark.hl) { background-color: #78350f; /* approximate Tailwind yellow-900 */, color: #fff7ed; /* approximate Tailwind yellow-100 */ }
+ <style> /* replaced invalid `theme(..)` calls with concrete color values */:global(mark.hl) { background-color: #fef3c7; /* approximate Tailwind yellow-200 */, padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-weight: 500}:global(.dark mark.hl) { background-color: #78350f; /* approximate Tailwind yellow-900 */, color: #fff7ed; /* approximate Tailwind yellow-100 */ }
 </style>
 
 

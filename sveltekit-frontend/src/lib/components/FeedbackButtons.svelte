@@ -30,7 +30,7 @@ let lastResp = $state<any>(null); async function sendFeedback(reward: number): P
 </div>
 
 <style>
- .feedback-buttons { display: flex, gap: 8px; align-items: center}
+ .feedback-buttons { display: flex, gap 8px; align-items: center}
   button { padding: 6px 10px; border-radius: 6px; cursor: pointer}
   .up { background: #e6f6ea; color: #047857}
   .down { background: #fff1f2; color: #b91c1c}

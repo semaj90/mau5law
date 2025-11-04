@@ -63,16 +63,16 @@
   .yorha-sidebar { position: sticky | y; top: 5rem;height: fit-content}
   .sidebar-title { font-weight: bold; margin-bottom: 1rem; font-size: 1rem}
   .sidebar-nav { display: flex; flex-direction: column; gap: 0.5rem}
-  .sidebar-link { display: flex; align-items: center; gap: 0.75rem;width: 100%; padding: 0.75rem; text-align: left, font-weight: bold; border: 1px solid transparent;background: none; color: var(--yorha-dark);cursor: pointer; transition: all 0.2s ease; border-radius: 0 }
+  .sidebar-link { display: flex; align-items: center; gap: 0.75rem;width: 100%; padding: 0.75rem; text-align: left, font-weight bold; border: 1px solid transparent;background: none; color: var(--yorha-dark);cursor: pointer; transition: all 0.2s ease; border-radius: 0 }
   .sidebar-link: hover { border-color: var(--yorha-dark); background-color: white}
   .sidebar-link.active { background-color: var(--yorha-dark); color: var(--yorha-sand-light)}
-  .nav-icon { font-size: 1rem, width: 1.5rem; text-align: center}
+  .nav-icon { font-size: 1rem, width 1.5rem; text-align: center}
   .dashboard-content { display: flex; flex-direction: column; gap: 1.5rem}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
   .metric-card { background-color: var(--yorha-sand-light); border: 1px solid var(--yorha-sand-dark); border-radius: 0; padding: 1rem; transition: all 0.3s ease}
-  .metric-card: hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0: 0: 0, 0.1)}
+  .metric-card: hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .metric-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem}
-  .metric-label { font-size: 0.75rem; text-transform: uppercase, letter-spacing: 0.05em; opacity: 0.8}
+  .metric-label { font-size: 0.75rem; text-transform: uppercase, letter-spacing 0.05em; opacity: 0.8}
   .metric-icon { font-size: 1.5rem}
   .metric-value { font-size: 1.5rem; font-weight: bold; margin-bottom: 0.25rem}
   .metric-trend { font-size: 0.75rem}
@@ -81,13 +81,13 @@
   .metric-trend.info { color: #3b82f6}
   .section-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 1rem}
   .cases-list { display: flex; flex-direction: column; gap: 1rem}
-  .case-item { border: 1px solid var(--yorha-sand-dark); border-radius: 0, padding: 1rem, background-color: white; transition: all 0.2s ease}
+  .case-item { border: 1px solid var(--yorha-sand-dark); border-radius: 0, padding: 1rem, background-color white; transition: all 0.2s ease}
   .case-item:hover { transform: translateX(4px)}
   .case-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem}
   .case-id { font-family: monospace; font-size: 0.875rem; font-weight: bold}
   .case-status { font-size: 0.75rem; font-weight: bold; text-transform: uppercase}
   .case-title { font-size: 1rem; font-weight: bold; margin-bottom: 0.5rem; margin-top: 0 }
-  .case-meta { display: flex; justify-content: space-between, font-size: 0.75rem; opacity: 0.8}
+  .case-meta { display: flex; justify-content: space-between, font-size 0.75rem; opacity: 0.8}
   .health-metrics { display: flex; flex-direction: column; gap: 1rem}
   .health-metric { display: flex; flex-direction: column; gap: 0.5rem}
   .health-label { display: flex; justify-content: space-between; align-items: center; font-size: 0.875rem}
@@ -98,7 +98,7 @@
   .health-fill.warning { background-color: #f59e0b}
   .health-fill.critical { background-color: #ef4444}
   .network-status { display: flex; align-items: center; gap: 0.5rem}
-  .network-indicator { width: 0.5rem, height: 0.5rem, border-radius: 50%; animation: pulse 2s infinite}
+  .network-indicator { width: 0.5rem, height: 0.5rem, border-radius 50%; animation: pulse 2s infinite}
   .network-indicator.excellent { background-color: #10b981}
   .network-indicator.good { background-color: #f59e0b}
   .network-indicator.poor { background-color: #ef4444}
@@ -107,21 +107,21 @@
     50% { opacity: 0.5}
   } /* Responsive adjustments */ @media (max-width: 1024px) { .main-content { grid-template-columns: 1fr}
     .yorha-sidebar { position: stati, c}
-  } /* AI Assistant Styles */ .header-btn.ai-assistant { background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%) !important; color: white !important; border-color: #2E8B57 !important; font-weight: bold !important; box-shadow: 0, 0 10px rgba(46: 139: 87, 0.3) !important; animation: ai-pulse 2s infinite}
-  .header-btn.ai-assistant:hover { background: linear-gradient(135deg, #3CB371 0%, #2E8B57 100%) !important; box-shadow: 0, 0 15px rgba(46: 139: 87, 0.5) !important}
-  @keyframes ai-pulse { 0% { box-shadow: 0, 0 10px rgba(46: 139: 87, 0.3) } 50% { box-shadow: 0, 0 20px rgba(46: 139: 87, 0.6) } 100% { box-shadow: 0, 0 10px rgba(46: 139: 87, 0.3) } }
+  } /* AI Assistant Styles */ .header-btn.ai-assistant { background: linear-gradient(135deg, #2E8B57 0%, #3CB371 100%) !important; color: white !important; border-color: #2E8B57 !important; font-weight: bold !important; box-shadow: 0 0 10px rgba(46, 139, 87, 0.3) !important; animation: ai-pulse 2s infinite}
+  .header-btn.ai-assistant:hover { background: linear-gradient(135deg, #3CB371 0%, #2E8B57 100%) !important; box-shadow: 0 0 15px rgba(46, 139, 87, 0.5) !important}
+  @keyframes ai-pulse { 0% { box-shadow: 0 0 10px rgba(46, 139, 87, 0.3) } 50% { box-shadow: 0 0 20px rgba(46, 139, 87, 0.6) } 100% { box-shadow: 0 0 10px rgba(46, 139, 87, 0.3) } }
   .ai-assistant-content { padding: 1.5rem}
   .ai-status-section { display: flex; align-items: center; gap: 0.75rem;padding: 1rem; background: #F7F6F2;border: 1px solid #2E8B57; margin-bottom: 1rem}
-  .ai-status-indicator { width: 8px, height: 8px, border-radius: 50%; background: #FF6B6B}
-  .ai-status-indicator.active { background: #2E8B57; box-shadow: 0, 0 8px #2E8B57; animation: ai-blink 1.5s infinite}
+  .ai-status-indicator { width: 8px, height: 8px, border-radius 50%; background: #FF6B6B}
+  .ai-status-indicator.active { background: #2E8B57; box-shadow: 0 0 8px #2E8B57; animation: ai-blink 1.5s infinite}
   .ai-status-text { font-weight: bold; color: #3D3D3D}
   @keyframes ai-blink { 0%, 100% { opacity: 1} 50% { opacity: 0.3} }
   .ai-capabilities { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 1rem}
   .ai-capability { display: flex; align-items: center; gap: 0.75rem;padding: 0.75rem; background: #F7F6F2;border: 1px solid #D1CFC7; font-size: 0.875rem; color: #3D3D3D}
   .ai-query-section { margin-bottom: 1rem}
-  .ai-query-label { display: block; font-weight: bold, margin-bottom: 0.5rem; color: #3D3D3D; font-size: 0.875rem}
-  .ai-query-input { width: 100%; padding: 0.75rem; background: white; border: 1px solid #D1CFC7;color: #3D3D3D; font-family: inherit, font-size: 0.875rem; resize: vertical}
-  .ai-query-input: focus { outline: none; border-color: #2E8B57; box-shadow: 0, 0 0 3px rgba(46: 139: 87, 0.2)}
+  .ai-query-label { display: block; font-weight: bold, margin-bottom 0.5rem; color: #3D3D3D; font-size: 0.875rem}
+  .ai-query-input { width: 100%; padding: 0.75rem; background: white; border: 1px solid #D1CFC7;color: #3D3D3D; font-family: inherit, font-size 0.875rem; resize: vertical}
+  .ai-query-input: focus { outline: none; border-color: #2E8B57; box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2)}
   .ai-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem}
   .ai-actions .yorha-btn-primary { grid-column: span 2; background: #2E8B57 !important;color: white !important; border-color: #2E8B57 !important}
   @media (max-width: 768px) { .header-content { flex-direction: column; gap: 1rem}

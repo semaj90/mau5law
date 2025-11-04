@@ -39,7 +39,7 @@
   /* Main content area */ .gaming-content { position: relative; z-index: 1 }
   /* Transition overlay */ .transition-overlay { position: fixed; top: 0;left: 0; right: 0;bottom: 0; background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 9999; animation: fadeInOut 1s ease-in-out}
   .transition-content { text-align: center; color: white; font-family: 'Press Start 2P', monospace; font-size: 14px}
-  .era-indicator { margin-bottom: 2rem; text-transform: uppercase, letter-spacing: 2px; color: var(--yorha-secondary, #ffd700); text-shadow: 0, 0 10px currentColor}
+  .era-indicator { margin-bottom: 2rem; text-transform: uppercase, letter-spacing 2px; color: var(--yorha-secondary, #ffd700); text-shadow: 0 0 10px currentColor}
   .transition-spinner { width: 40px; height: 40px;border: 3px solid rgba(255, 255, 255, 0.3); border-top: 3px solid var(--yorha-secondary, #ffd700); border-radius: 50%; margin: 0 auto;animation: transitionSpin 1s linear infinite}
   @keyframes fadeInOut { 0% { opacity: 0}
     20% { opacity: 1}
@@ -47,17 +47,17 @@
     100% { opacity: 0}
   } @keyframes transitionSpin { 0% { transform: rotate(0deg)}
     100% { transform: rotate(360deg)}
-  } /* Debug panel */ .debug-panel { position: fixed; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.9); color: white; padding: 1rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; max-width: 300px, z-index: 10000; border: 1px solid var(--yorha-secondary, #ffd700)}
+  } /* Debug panel */ .debug-panel { position: fixed; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.9); color: white; padding: 1rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; max-width: 300px, z-index 10000; border: 1px solid var(--yorha-secondary, #ffd700)}
   .debug-panel h4 { margin: 0, 0 1rem 0; color: var(--yorha-secondary, #ffd700); font-size: 14px; text-transform: uppercase; letter-spacing: 1px}
   .debug-grid { display: grid; grid-template-columns: 1fr; gap: 0.5rem; margin-bottom: 1rem}
-  .debug-item { font-size: 11px, display: flex; justify-content: space-betweennn}
+  .debug-item { font-size: 11px, display flex; justify-content: space-betweennn}
   .debug-item strong { color: var(--yorha-text-accent, #ffd700)}
-  .debug-controls { display: flex, gap: 0.5rem; justify-content: space-betweennn}
+  .debug-controls { display: flex, gap 0.5rem; justify-content: space-betweennn}
   .debug-controls button { padding: 4px 8px; background: var(--yorha-bg-secondary, #1a1a1a); color: white; border: 1px solid var(--yorha-border, #333); border-radius: 2px; font-size: 10px; cursor: pointer; font-family: inherit}
   .debug-controls buttonhover { background: var(--yorha-secondary, #ffd700); color: black}
   /* Transitioning state */ .progressive-gaming-provider.transitioning { pointer-events: none}
   .progressive-gaming-provider.transitioning .gaming-content { filter: blur(1px); opacity: 0.8}
-  /* Responsive adjustments */ @media (max-width: 768px) { .debug-panel { position: static, margin: 1rem; max-width: none}
+  /* Responsive adjustments */ @media (max-width: 768px) { .debug-panel { position: static, margin 1rem; max-width: none}
     .transition-content { font-size: 12px; padding: 0 1rem}
     .era-indicator { margin-bottom: 1rem}
   } /* Reduced motion support */ @media (prefers-reduced-motion reduce) { .progressive-gaming-provider, .transition-overlay, .transition-spinner { animation: none !important; transition: none !important}

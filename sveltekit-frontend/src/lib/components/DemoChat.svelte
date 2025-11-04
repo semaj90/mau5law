@@ -25,12 +25,12 @@
   .sample-queries { margin-bottom: 1rem; padding: 1rem;background: rgba(255, 255, 255, 0.05); border-radius: 4px}
   .query-buttons { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem}
   .query-buttons button { font-size: 0.8em; padding: 0.5rem 1rem}
-  .chat-messages { flex: 1; overflow-y: auto, margin-bottom: 1rem, display: flex, flex-direction: column; gap: 1rem}
+  .chat-messages { flex: 1; overflow-y: auto, margin-bottom: 1rem, display: flex, flex-direction column; gap: 1rem}
   .message { display: flex; flex-direction: column}
   .message-user { align-items: flex-end}
   .message-ai { align-items: flex-start}
   .message-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.9em}
-  .message-content { max-width: 80%, padding: 1rem; word-wrap: break-word}
+  .message-content { max-width: 80%, padding 1rem; word-wrap: break-word}
   .message-user .message-content { background-color: #0066cc; margin-left: auto; color: white}
   .message-ai .message-content { background-color: #1a1a1a; color: #e6e6e6}
   .summary-title { color: #fff; font-size: 1.1em; margin: 0.5rem 0; border-bottom: 1px solid #495057; padding-bottom: 0.25rem}
@@ -39,13 +39,13 @@
   .message-sources h6 { margin: 0, 0 0.5rem 0; font-size: 0.9em}
   .source-item { display: flex; flex-direction: column; gap: 0.25rem; margin-bottom: 0.75rem; padding: 0.5rem;background: rgba(255, 255, 255, 0.05); border-radius: 4px}
   .source-item:last-child { margin-bottom: 0}
-  .source-relevance { font-size: 0.8em, color: #00ff00; font-weight: bold}
-  .source-excerpt { font-size: 0.85em, margin: 0; font-style: italic}
+  .source-relevance { font-size: 0.8em, color #00ff00; font-weight: bold}
+  .source-excerpt { font-size: 0.85em, margin 0; font-style: italic}
   .reasoning-details { margin-top: 1rem; padding: 0.5rem;background: rgba(255, 255, 0, 0.1); border-radius: 4px}
   .reasoning-details summary { cursor: pointer; font-size: 0.9em; margin-bottom: 0.5rem}
   .reasoning-list { margin: 0.5rem, 0 0 1rem; padding: 0}
   .reasoning-list li { margin-bottom: 0.25rem; font-size: 0.85em}
-  .loading-animation { display: flex, gap: 0.25rem; margin-bottom: 0.5rem}
+  .loading-animation { display: flex, gap 0.25rem; margin-bottom: 0.5rem}
   .loading-animation span { animation: pulse 1.5s ease-in-out infinite; font-size: 1.2em; color: #00ff00}
   .loading-animation, span:nth-child(1) { animation-delay: 0s}
   .loading-animation, span:nth-child(2) { animation-delay: 0.3s}
@@ -53,7 +53,7 @@
   @keyframes pulse { 0%, 100% { opacity: 0.4}
     50% { opacity: 1}
   } .empty-chat { text-align: center; padding: 3rem 2rem;opacity: 0.7}
-  .chat-input { display: flex, gap: 1rem; align-items: flex-end}
+  .chat-input { display: flex, gap 1rem; align-items: flex-end}
   .chat-input .nes-field { flex: 1}
   .chat-input textarea { resize: vertical; min-height: 60px}
   /* Responsive adjustments */ @media (max-width: 768px) { .query-buttons { flex-direction: column}

@@ -16,8 +16,8 @@
 /* Pulse animation: for critical badges */ {} .badge-critical { animation: badge-pulse 2s infinite}
   @keyframes badge-pulse { 0%, {} 100% { opacity: 1}
     50% { opacity: 0.7}
-  } /* Priority indicators */ {} .badge-high-priority { box-shadow: 0, 0 0 2px rgba(239, 68, 68, 0.3)}
-  .badge-medium-priority { box-shadow: 0, 0 0 2px rgba(245, 158, 11, 0.3)}
-  .badge-low-priority { box-shadow: 0, 0 0 2px rgba(34, 197, 94, 0.3)}
+  } /* Priority indicators */ {} .badge-high-priority { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3)}
+  .badge-medium-priority { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3)}
+  .badge-low-priority { box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3)}
 </style>
 

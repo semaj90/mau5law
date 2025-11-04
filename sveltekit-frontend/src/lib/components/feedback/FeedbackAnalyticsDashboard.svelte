@@ -94,12 +94,12 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
  <style> .feedback-analytics-dashboard { min-height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); padding: 2rem; .dashboard-header { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); .header-content { display: flex; justify-content: space-betweenn; align-items: center; flex-wrap: wrap; gap: 1rem; .header-title { display: flex; align-items: center; gap: 1rem; .header-actions { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap}
   .filters { display: flex; gap: 0.5rem}
   .filter-select { padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 6px; background: white; font-size: 0.875rem}
-  .action-button { display: flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; border-radius: 6px; font-weight: 500, font-size: 0.875rem; transition: all 0.2}
+  .action-button { display: flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; border-radius: 6px; font-weight: 500, font-size 0.875rem; transition: all 0.2}
   .refresh-button { background: #3b82f6; color: white;border: none}
   .refresh-buttonhover:not(:disabled) { background: #2563eb}
   .export-button { background: #10b981; color: white; border: none}
   .export-buttonhover { background: #059669}
-  .error-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px, padding: 1rem, margin-bottom: 2rem, display: flex, align-items: center; gap: 1rem; color: #dc2626}
+  .error-banner { background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px, padding: 1rem, margin-bottom: 2rem, display: flex, align-items center; gap: 1rem; color: #dc2626}
   .retry-button { display: flex; align-items: center; gap: 0.5rem;padding: 0.5rem 1rem; background: #dc2626;color: white; border: none; border-radius: 4px; font-size: 0.875rem; margin-left: auto}
   .loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem;color: #6b7280}
   .loading-spinner { width: 2rem; height: 2rem; border: 3px solid #e5e7eb; border-top: 3px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem}
@@ -110,14 +110,14 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .metric-card { padding: 1.5rem; border: 1px solid #e5e7eb; border-radius: 8px; background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%)}
   .metric-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem}
   .metric-icon { width: 1.25rem; height: 1.25rem}
-  .metric-label { font-size: 0.875rem, color: #6b7280; font-weight: 500}
+  .metric-label { font-size: 0.875rem, color #6b7280; font-weight: 500}
   .metric-value { font-size: 2rem; font-weight: bold; color: #1f2937; margin-bottom: 0.5rem}
-  .metric-unit { font-size: 1rem, color: #6b7280; font-weight: normal}
+  .metric-unit { font-size: 1rem, color #6b7280; font-weight: normal}
   .metric-trend { display: flex; align-items: center; gap: 0.25rem; font-size: 0.75rem}
   .metric-detail { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; color: #6b7280}
   .progress-bar { width: 100%; height: 4px; background: #e5e7eb; border-radius: 2px; overflow: hidden}
   .progress-fill { height: 100%; background: linear-gradient(90deg, #10b981 0%, #059669 100%); transition: width: 0.3s ease}
-  .section-title { display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem, font-weight: bold; color: #1f2937; margin-bottom: 1.5rem}
+  .section-title { display: flex; align-items: center; gap: 0.5rem; font-size: 1.5rem, font-weight bold; color: #1f2937; margin-bottom: 1.5rem}
   .breakdown-section, .insights-section, .issues-section { background: white; border-radius: 12px; padding: 2rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1)}
   .breakdown-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem}
   .breakdown-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem; background: #fafafa}
@@ -138,7 +138,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .insights-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 2rem}
   .insights-card, .recommendations-card { border: 1px solid #e5e7eb; border-radius: 8px; padding: 1.5rem;background: #fafafa}
   .insights-list, .recommendations-list { display: flex; flex-direction: column; gap: 1rem}
-  .insight-item, .recommendation-item { padding: 1rem, background: white, border-radius: 6px; border: 1px solid #e5e7eb}
+  .insight-item, .recommendation-item { padding: 1rem, background: white, border-radius 6px; border: 1px solid #e5e7eb}
   .insight-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 0.5rem}
   .insight-title { font-weight: 600; color: #1f2937}
   .insight-confidence { font-size: 0.75rem; background: #dbeaf; color: #1e40af; padding: 0.25rem 0.5rem; border-radius: 4px}
@@ -151,16 +151,16 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .recommendation-priority.priority-medium { background: #fed7aa; color: #ea580c}
   .recommendation-priority.priority-low { background: #bbf7d0; color: #047857}
   .recommendation-content { flex: 1 }
-  .recommendation-title { font-weight: 600, color: #1f2937; margin-bottom: 0.5rem}
+  .recommendation-title { font-weight: 600, color #1f2937; margin-bottom: 0.5rem}
   .recommendation-description { color: #6b7280; margin-bottom: 0.75rem}
   .recommendation-action { background: #3b82f6; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; font-size: 0.875rem}
   .issues-list { display: flex; flex-direction: column; gap: 1rem}
-  .issue-item { display: flex; gap: 1rem; padding: 1rem, background: white, border-radius: 6px; border: 1px solid #e5e7eb}
-  .issue-rank { display: flex; align-items: center, justify-content: center; width: 2rem; height: 2rem; background: #ef4444; color: white; border-radius: 50%; font-weight: bold; font-size: 0.875rem}
+  .issue-item { display: flex; gap: 1rem; padding: 1rem, background: white, border-radius 6px; border: 1px solid #e5e7eb}
+  .issue-rank { display: flex; align-items: center, justify-content center; width: 2rem; height: 2rem; background: #ef4444; color: white; border-radius: 50%; font-weight: bold; font-size: 0.875rem}
   .issue-content { flex: 1 }
-  .issue-title { font-weight: 600, color: #1f2937; margin-bottom: 0.5rem}
+  .issue-title { font-weight: 600, color #1f2937; margin-bottom: 0.5rem}
   .issue-description { color: #6b7280; margin-bottom: 0.75rem}
-  .issue-stats { display: flex, gap: 1rem; font-size: 0.875rem}
+  .issue-stats { display: flex, gap 1rem; font-size: 0.875rem}
   .issue-count { color: #dc2626; font-weight: 500}
   .issue-impact { color: #ea580c}
   .issue-trend { display: flex; align-items: center; gap: 0.25rem}
@@ -170,5 +170,6 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     .overview-cards { grid-template-columns: 1fr}
     .breakdown-grid { grid-template-columns: 1fr}
     .insights-grid { grid-template-columns: 1fr}
-  } </style>
+  } 
+}}}}</style>
 
