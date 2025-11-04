@@ -7,13 +7,7 @@
  * - JSON/text detection
  * - Batch text extraction with concurrency
  */
-import {
-  S3Client,
-  GetObjectCommand,
-  PutObjectCommand,
-  ListObjectsV2Command,
-  HeadObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 import { Readable } from "stream";
 

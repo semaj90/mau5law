@@ -1,55 +1,9 @@
 <script lang="ts">
-
-  // Svelte, 5 runes are auto-imported
-  interface Props {
-    points?: number[];
-    width?: number
-    height?: number
-    color?: string}
-
-  // exported props (idiomatic Svelte)
-  const { points } = $props<{ points: number[] }>()
-  const { width = 160 } = $props()
-  const { height = 50 } = $props()
-  const { color = '#2563eb' } = $props()
-  // reactive derived values with guards
-  const capped = $derived(points ? points.slice(-60) : []);
-
-  const max = $derived(capped.length ? Math.max(1, ...capped.map(v => (isFinite(v) ? v : 0))) : 1);
-
-  const d = $derived((() => {
-    if (!capped.length) return '');
-
-    const denom = capped.length > 1 ? capped.length - 1 : 1
-    return capped
-      .map((v, i) => {
-        const safeV = isFinite(v) ? v : 0
-        const x = (i / denom) * width
-        const y = height - (safeV / max) * height
-        // clamp values to svg bounds
-        const cx = Math.max(0, Math.min(width, x));
-
-        const cy = Math.max(0, Math.min(height, y));
-        return `${cx},${cy}`})
-      .join(' ')})();
-
+  // Truncated file - replaced with stub
 </script>
 
-<svg
-  {width}
-  {height}
-  viewBox={`0, 0 ${width} ${height}`}
-  class="overflow-visible"
-  role="img"
-  aria-label="performance, chart"
->
-  <polyline points={d} fill="none" stroke={color} stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
-</svg>
-
-<style>
-  svg {
-    display: block;
-  }
-</style>
-
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (PerfChart.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

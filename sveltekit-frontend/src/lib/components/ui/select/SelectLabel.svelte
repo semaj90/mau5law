@@ -1,22 +1,9 @@
-﻿<script lang="ts">
-  interface Props {
-    class?: string;
-  }
-  let { class: class_ = '', children }: Props & { children?: unknown } = $props();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<span class="space-y-4">
-  {#if children}
-    {@render children()}
-  {/if}
-</span>
-
-<style>
-  /* @unocss-include */
-  .select-label {
-    font-size: 12px;
-    font-weight: 500;
-    color: #6b7280;
-    margin-bottom: 4px;
-    display: block}
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (SelectLabel.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

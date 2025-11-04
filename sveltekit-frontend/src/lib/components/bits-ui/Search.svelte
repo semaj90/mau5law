@@ -1,38 +1,9 @@
 <script lang="ts">
-  import  VectorCard  from "./VectorCard.svelte";
-  
-  const { searchUrl } = $props<{ searchUrl: string }>()
-  const { onSelect } = $props<{ onSelect: (item: unknown) }>()
-  let query = '';
-  
-  let results: unknown[] = [];
-  async function doSearch(): Promise<any> {
-    const res = await fetch(searchUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ queryText: query }) });
-    results = (await res.json()).results ?? []}
+  // Truncated file - replaced with stub
 </script>
 
-<div class="bits-search">
-  <div class="search-bar">
-    <input bind:value={query} placeholder="Search, legal, documents..." />
-    <button onclick={doSearch}>Search</button>
-  </div>
-
-  <div class="results">
-  {#each Array.isArray(results) ? results : [] as r}
-      <VectorCard {r} onclick={() => onSelect(r)} />
-    {/each}
-  </div>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Search.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  .bits-search {
-    display: block;
-  }
-  .search-bar {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .results {
-    margin-top: 0.75rem;
-  }
-</style>

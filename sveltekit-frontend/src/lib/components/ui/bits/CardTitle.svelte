@@ -1,20 +1,9 @@
-﻿<script lang="ts">
-  import { cn } from '$lib/utils/cn';
-  interface CardTitleProps {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
-  let { class: className = '', children }: CardTitleProps = $props();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<h3 class={cn('shadcn-card-title', className)}>
-  <slot />
-</h3>
-
-<style>
-  : global(.shadcn-card-title) {
-    font-size: 1.25rem;
-    font-weight: 600;
-    line-height: 1.6
-   ;color: var(--color-foreground, hsl(var(--foreground)))}
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (CardTitle.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

@@ -102,7 +102,7 @@ class InMemoryQueue extends EventEmitter {
             try {
                 const result = await this.blpop(queueName, 1);
                 if (result) {
-                    const [, messageData] = result;
+                    const [ messageData] = result;
                     const message: QueueMessage = JSON.parse(messageData) as QueueMessage; // Cast to QueueMessage
                     try {
                         await callback({

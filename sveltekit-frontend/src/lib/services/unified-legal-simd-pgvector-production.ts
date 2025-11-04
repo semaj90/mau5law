@@ -1,8 +1,5 @@
 ﻿import type { Case } from "$lib/types";
-/** * ðŸš€ Production-Ready Unified Legal SIMD + PGVector Integration * * Features: * - Real Ollama embeddings (embeddinggemma: latest) * - Redis caching (IORedis with connection pooling) * - Qdrant vector search (fast similarity search) * - PostgreSQL + pgvector (persistent storage) * - WebGPU texture streaming (NES-style CHR-ROM) * - WASM clustering (high-performance grouping) * * All mocks replaced with production-ready adapters. */ import {
-  getServiceAdapters,
-  type ServiceEnvironment,
-} from "$lib/server/adapters/service-integrations";
+/** * ðŸš€ Production-Ready Unified Legal SIMD + PGVector Integration * * Features: * - Real Ollama embeddings (embeddinggemma: latest) * - Redis caching (IORedis with connection pooling) * - Qdrant vector search (fast similarity search) * - PostgreSQL + pgvector (persistent storage) * - WebGPU texture streaming (NES-style CHR-ROM) * - WASM clustering (high-performance grouping) * * All mocks replaced with production-ready adapters. */ import { getServiceAdapters, type ServiceEnvironment } from "$lib/server/adapters/service-integrations";
 import type {
   OllamaClient,
   QdrantClient,

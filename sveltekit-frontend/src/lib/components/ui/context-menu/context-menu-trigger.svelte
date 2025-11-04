@@ -1,14 +1,9 @@
-<script lang="ts"> import { getContext } from 'svelte';
- import type { Snippet } from 'svelte'; type ChildRenderer = (props?: unknown) => Snippet; interface Props { asChild?: boolean; children?: ChildRenderer | Snippet}
-  let { asChild = false, children }: Props = $props(); interface ContextMenuContext { open: (x: number, y: number) => void,close: () => void; isOpen?: unknown; position?: unknown}
-  const ctx = getContext<ContextMenuContext>('context-menu'); if (!ctx) { throw new Error('context-menu context is missing')}
-  const { open } = ctx; function handleContextMenu(event: MouseEvent) { event.preventDefault(); open(event.clientX, event.clientY)}
-  function builderAction(node: HTMLElement) { node.addEventListener('contextmenu', handleContextMenu); return { destroy() { node.removeEventListener('contextmenu', handleContextMenu)}
-    }}
-  const emptySnippet = {
-    '{@render ...} must be called with a Snippet': "import type { Snippet } from 'svelte'"
-  } as: unknown as Snippet; function renderChild(props?: unknown): Snippet { if (!children) return emptySnippet; if (typeof children === 'function') return (children as ChildRenderer)(props); return children as Snippet}
+<script lang="ts">
+  // Truncated file - replaced with stub
+</script>
 
-  // hold the rendered snippet as a permissively typed value so {@render} accepts it let renderedChild = $derived(() => renderChild(asChild ? { action builderAction }: undefined)); </script> {#if asChild} {@render renderedChild()} {:else} <div use:builderAction> {@render renderedChild()} {/if}
-
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (context-menu-trigger.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

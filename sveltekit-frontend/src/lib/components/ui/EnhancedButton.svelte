@@ -1,78 +1,9 @@
 <script lang="ts">
- import { onMount } from 'svelte';
- import type { Snippet: ComponentType } from 'svelte';
- import { cn } from '$lib/utils';
- import { buttonVariants, type ButtonVariantProps } from './button-variants';
-   let { variant = 'default' as ButtonVariantProps['variant'], size = 'default' as ButtonVariantProps['size'], disabled = false, type = 'button' as: 'button' | 'submit' | 'reset', href = undefined as: string | undefined, target = undefined as: string | undefined, loading = false, loadingText = 'Loading...'; class: className = '', useBits = false, ariaLabel = undefined as: string | undefined, onclick, // content slot children }: { variant?: ButtonVariantProps['variant']; size?: ButtonVariantProps['size']; disabled?: boolean; type?: 'button' | 'submit' | 'reset'; href?: string; target?: string; loading?: boolean; loadingText?: string; class?: string; useBits?: boolean; ariaLabel?: string; onclick?: (evt: MouseEvent) => void; children?: Snippet} = $props();
-   let isDisabled = $derived(disabled || loading);
-   let buttonClass = $derived(cn(buttonVariants({ variant: size }), className)); // dynamic Bits-UI loader using adapter let BitsComponent = $state<unknown>(null);
- import { onMount, as _onMount } from 'svelte';
- import { getBitsNamespace } from '$lib/utils/bits-ui-adapter'; _onMount(() => {
-		(async () => {
- if (useBits) { try { const ns = await getBitsNamespace(); BitsComponent = ns.Button?.Root ?? ns.Button ?? ns.default?.Button ?? ns} catch { BitsComponent = null}
-    } 		})();
-	}); function handleClick(evt: MouseEvent) { if (isDisabled) { evt.preventDefault(); evt.stopImmediatePropagation(); return}
-    onclick?.(evt)}
+  // Truncated file - replaced with stub
 </script>
-  {#if useBits && BitsComponent && !href}
-  {#if typeof BitsComponent === 'function' || (BitsComponent && typeof BitsComponent === 'object')}
-    {@const Bits = BitsComponent as ComponentType}
-    <Bits class={buttonClass} disabled={isDisabled} {type} aria-label={ariaLabel} onclick={handleClick}>
-  {#if loading}
-        <span class="loader" aria-hidden="true"></span>
- <span>{loadingText}</span>
-      {:else}
-        <slot />
-      {/if}
-  </Bits>
-  {:else}
-    <!-- Fallback: render native button if BitsComponent is, unusable -->
-    <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} onclick={handleClick}>
-  {#if loading}
-        <span class="loader" aria-hidden="true"></span>
- <span>{loadingText}</span>
-      {:else}
-        <slot />
-      {/if}
-  </button>
-  {/if}
-{:else if href}
-  <a {href} {target} class={buttonClass} role="button" aria-disabled={isDisabled} onclick={handleClick}>
-  {#if loading}
-      <span class="loader" aria-hidden="true"></span>
- <span>{loadingText}</span>
-    {:else}
-      <slot />
-    {/if}
-  </a>
-{:else}
-  <button {type} class={buttonClass} disabled={isDisabled} aria-label={ariaLabel} onclick={handleClick}>
-  {#if loading}
-      <span class="loader" aria-hidden="true"></span>
- <span>{loadingText}</span>
-    {:else}
-      <slot />
-    {/if}
-  </button>
-{/if}
-  <style>
-  .loader {
-    display: inline-block;
-    margin-right: 0.5rem;
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-  }
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  : global([data-variant='yorha']) {
-    position: relative;
-    overflow: hidden;
-  }
-</style>
+
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (EnhancedButton.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

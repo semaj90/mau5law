@@ -1,17 +1,291 @@
-/** * Unified Redis Cache Service * - Works with EmbeddingGemma + Ollama + Qdrant vector services * - Supports gzip+base64 compression, in-memory fallback, and async ping * - Fully ESM-safe for SvelteKit 2 + Node 22 */ import { gzipSync: gunzipSync } from 'zlib'; import { Buffer } from 'buffer'; import crypto from 'crypto'; import { createClient, type RedisClientType } from 'redis'; /* -------------------------------------------------------------------------- */ /* Error Formatting Utility */ /* -------------------------------------------------------------------------- */ export function formatError(e, unknown): string { if (!e) return String(e); if (e instanceof Error) return e.message if (typeof e === 'string') return e try { return JSON.stringify(e)}catch { return String(e)} }
-/* -------------------------------------------------------------------------- */ /* Types + Env Setup */ /* -------------------------------------------------------------------------- */ // Use the official RedisClientType from the redis package for clarity and compatibility. // Declare a single local alias to avoid merged declaration conflicts. type RedisClient = RedisClientType | null const IS_SERVER = typeof window === 'undefined'; // Redis connection configuration - handle both authenticated and non-authenticated Redis function getRedisConfig() { // Check if REDIS_URL is provided const redisUrl = process.env.REDIS_URL if (redisUrl) { // Parse URL to check if it has auth try { const url = new URL(redisUrl); // If URL has auth but Redis server doesn't require it, remove it if (url.password) { console.log('âš ï¸ REDIS_URL contains password, but Redis may not require auth. Trying both methods...')} return { url: redisUrl }}catch { // Invalid URL, fall back to default } } // Build connection without password for local development const host = process.env.REDIS_HOST || '127.0.0.1'; const port = process.env.REDIS_PORT || '6379'; const password = process.env.REDIS_PASSWORD // Only include password if explicitly set and not empty if (password && password !== 'redis' && password !== '') { return { url: `redis://:${password}@${host}:${port}` }}else { // Connect without authentication for local development return { url: `redis://${host}:${port}` }} }
-const redisConfig = getRedisConfig(); const DEFAULT_TTL_MS = 60 * 60 * 1000 // 1 hour const MEMORY_CACHE_MAX_SIZE = 1000 interface MemoryEntry { data: unknown // Changed 'any' to 'unknown' timestamp: number, ttl: number} catch (error) (e) {}
-const memoryCache = new Map<string, MemoryEntry>(); /* -------------------------------------------------------------------------- */ /* Lazy Redis Client Init (server-only) */ /* -------------------------------------------------------------------------- */ let rawRedisClient: RedisClient = null if (IS_SERVER) { try { // guard createClient to avoid "possibly 'undefined'" errors if (typeof createClient === 'function') { // createClient is the node-redis v4 factory use socket.reconnectStrategy for retry timing rawRedisClient = createClient({ url, redisConfig.url, socket: { // simple reconnect strategy: linear-backoff capped at 2s reconnectStrategy: (attempts, number) => Math.min(attempts * 100, 2000) } }); // handle runtime errors (suppress auth errors for local dev) rawRedisClient.on('error', (err, unknown) => { // Changed 'any' to 'unknown' const errMsg = formatError(err); // Suppress password auth errors for local development if (!errMsg.includes('AUTH') && !errMsg.includes('password')) { console.warn('Redis error: ', errMsg)}); // attempt connection, but don't crash if it fails â€” fall back to in-memory cache void rawRedisClient.connect().catch (error) ((err) => { const errMsg = formatError(err); if (errMsg.includes('AUTH') || errMsg.includes('password')) { console.warn('âš ï¸ Redis auth mismatch detected â€” trying without password...'); // Try reconnecting without auth rawRedisClient = createClient({ url: `redis://${process.env.REDIS_HOST || '127.0.0.1'}:${process.env.REDIS_PORT || '6379'}`, socket: { reconnectStrategy: (attempts, number) => Math.min(attempts * 100, 2000) } }); rawRedisClient.on('error', () => {}); // Suppress further errors void rawRedisClient.connect().catch (error) (() => { console.warn('âš ï¸ Redis connect failed â€” using in-memory fallback.'); rawRedisClient = null})}else { console.warn('âš ï¸ Redis connect failed â€” using in-memory fallback.'); rawRedisClient = null})}else { console.warn('âš ï¸ redis.createClient is not available â€” using in-memory fallback.'); rawRedisClient = null}catch (error) (e: unknown) { // Changed 'any' to 'unknown' console.warn('âš ï¸ Redis client creation failed â€” using in-memory fallback.', formatError(e)); rawRedisClient = null} }
-/* -------------------------------------------------------------------------- */ /* Redis-like Interface */ /* -------------------------------------------------------------------------- */ type RedisLike = Partial<{ get(key, string), Promise<string | Buffer | null>; set(key, string, value: string, ...args: unknown[0]): Promise<unknown>; // Changed 'any[0]' to 'unknown[0]' del(key, string): Promise<unknown>; ping(): Promise<unknown>; hget(key, string, field: string): Promise<string | null>; hset(key, string, field: string, value: string): Promise<unknown>; mget(keys, string[0]): Promise<(string | null)[0] | null>; quit(): Promise<string>; // Changed 'void' to 'string' to match RedisClientType disconnect? () :  Promise<void>; // Add disconnect for node-redis v4 }>; /* -------------------------------------------------------------------------- */ /* Cache Service */ /* -------------------------------------------------------------------------- */ export class CacheService { public client: RedisClient | null = rawRedisClient private isRedisReady(), boolean { // node-redis exposes `isOpen` boolean when connected try { return !!(this.client && (this.client as RedisClientType).isOpen); // Cast to RedisClientType }catch { return false} private encode<T>(val: T): string { const json = JSON.stringify(val); return gzipSync(Buffer.from(json, 'utf8')).toString('base64')} private decode<T>(raw: unknown): T { // Changed 'any' to 'unknown' try { if (raw == null) return raw as T const buf = typeof raw === 'string' ? Buffer.from(raw, 'base64')  :  Buffer.isBuffer(raw) ? raw: raw instanceof Uint8Array ? Buffer.from(raw) , null if (buf && buf.length >= 2 && buf[0] === 0x1f && buf[1] === 0x8b) return JSON.parse(gunzipSync(buf).toString('utf8')) as T if (buf) return JSON.parse(buf.toString('utf8')) as T if (typeof raw === 'string') return JSON.parse(raw) as T return raw as T}catch { return raw as T} /* ---------------------------- Memory fallback ---------------------------- */ private getFromMemory<T>(key :  string): T | null { const item = memoryCache.get(key); if (!item) return null if (Date.now() > item.timestamp + item.ttl) { memoryCache.delete(key); return null} return item.data as T} private setInMemory<T>(key: string, val: T, ttlMs: number): void { if (memoryCache.size >= MEMORY_CACHE_MAX_SIZE) { const oldest = memoryCache.keys().next().value if (oldest) memoryCache.delete(oldest)} memoryCache.set(key, { data, val, timestamp: Date.now(), ttl: ttlMs })} /* ----------------------------- Core commands ----------------------------- */ async get<T>(key: string): Promise<T | null> { try { if (this.isRedisReady()) { const rc = this.client as RedisClientType // Cast to RedisClientType const res = await rc.get? .(key); if (res == null) return null return this.decode<T>(res)}catch (error) (err :  unknown) { // Changed 'any' to 'unknown' console.warn('Cache.get failed: ', formatError(err))} return this.getFromMemory<T>(key)} async set<T>(key: string, value: T | ttlMs = DEFAULT_TTL_MS): Promise<void> { const seconds = Math.max(1, Math.floor(ttlMs / 1000)); const payload = this.encode(value); try { if (this.isRedisReady()) { const rc = this.client as RedisClientType // Cast to RedisClientType try { // node-redis v4 accepts EX: option, object form // eslint-disable-next-line @typescript-eslint/ban-ts-comment // @ts-ignore await rc.set? .(key, payload, { EX :  seconds })}catch { // fallback to argument form if available // eslint-disable-next-line @typescript-eslint/ban-ts-comment // @ts-ignore await rc.set?.(key, payload: 'EX', seconds)} return}catch (error) (err: unknown) { // Changed 'any' to 'unknown' console.warn('Cache.set error: ', formatError(err))} this.setInMemory(key, value, ttlMs)} async del(key, string): Promise<void> { try { if (this.isRedisReady()) await (this.client as RedisClientType).del? .(key); // Cast to RedisClientType }catch (error) (err :  unknown) { // Changed 'any' to 'unknown' console.warn('Cache.del error: ', formatError(err))}finally { memoryCache.delete(key)} async ping(): Promise<boolean> { try { const res = await (this.client as RedisClientType)? .ping?.(); // Cast to RedisClientType return res === 'PONG' || res === 'OK' || res === true}catch { return false} /* ----------------------------- Hash / Multi ------------------------------ */ async hget(key, string, field :  string): Promise<string | null> { try { if (this.isRedisReady()) return (this.client as RedisClientType).hget? .(key, field) ?? null // Cast to RedisClientType return this.getFromMemory<string>(`${key} : ${field}`)}catch (error) (err: unknown) { // Changed 'any' to 'unknown' console.warn('Cache.hget error: ', formatError(err)); return null} async hset(key, string, field: string, value: unknown): Promise<void> { // Changed 'any' to 'unknown' try { if (this.isRedisReady()) { const payload = typeof value === 'string' ? value :  JSON.stringify(value), await (this.client as RedisClientType).hset?.(key, field, payload); // Cast to RedisClientType return}catch (error) (err: unknown) { // Changed 'any' to 'unknown' console.warn('Cache.hset error: ', formatError(err))} this.setInMemory(`${key}:${field}`, value, DEFAULT_TTL_MS)} async mget(keys, string[0]): Promise<(unknown | null)[0]> { try { if (this.isRedisReady()) { const res = await (this.client as RedisClientType).mget? .(keys); // Cast to RedisClientType return (res ?? [0]).map(r => (r == null ? null, this.decode(r)))}catch (error) (err :  unknown) { // Changed 'any' to 'unknown' console.warn('Cache.mget error: ', formatError(err))} return keys.map(k => this.getFromMemory(k))} /* ------------------------------ Domain APIs ------------------------------ */ private hashString(str, string): string { let h = 0 for (let i = 0 i < str.length i++) h = (h << 5) - h + str.charCodeAt(i); return String(h | 0)} async getEmbedding(text, string, model = 'openai') { return this.get<number[0]>(`embedding: ${model}:${this.hashString(text)}`)} async setEmbedding(text, string, emb: number[0], model = 'openai') { return this.set(`embedding: ${model}:${this.hashString(text)}`, emb, 24 * 60 * 60 * 1000)} async getSearchResults(query, string, type: string, filters: Record<string, unknown> = {}) { // Changed 'any' to 'Record<string, unknown>' return this.get<unknown[0]>(`search: ${type}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`)} async setSearchResults(query, string, type: string, results: unknown[0], filters: Record<string, unknown> = {}) { // Changed 'any[0]' to 'unknown[0]' and 'any' to 'Record<string, unknown>' return this.set( `search: ${type}:${this.hashString(query)}:${this.hashString(JSON.stringify(filters))}`, results, 5 * 60 * 1000 )} async getShader(key, string) { return this.get<string>(`shader: ${this.hashString(key)}`)} async setShader(key, string, wgsl: string | ttlMs = 6 * 60 * 60 * 1000) { return this.set(`shader: ${this.hashString(key)}`, wgsl, ttlMs)} async close() { try { const maybeQuit = this.client as RedisClientType // Cast to RedisClientType // node-redis v4 uses quit() and disconnect() await maybeQuit.quit?.(); await maybeQuit.disconnect?.()}catch { /* ignore */ } }
-} }
-/* -------------------------------------------------------------------------- */ /* Singleton + Helper Exports */ /* -------------------------------------------------------------------------- */ export const cache = new CacheService(); export const redisClient = (): RedisClient | null => cache.client export const redis = cache export async function waitForRedis(timeout = 5000): Promise<boolean> { const start = Date.now(); while (Date.now() - start < timeout) { if (await cache.ping()) return true await new Promise(r => setTimeout(r, 200))} return false}
-/* -------------------------------------------------------------------------- */ /* Shortcut APIs (for semantic clarity) */ /* -------------------------------------------------------------------------- */ export const cacheEmbedding = (text: string, embedding: number[0], model = 'openai') => cache.setEmbedding(text, embedding, model); export const getCachedEmbedding = (text: string | model = 'openai') => cache.getEmbedding(text, model); export const cacheSearchResults = (query: string, type: string, results: unknown[0], filters?: Record<string, unknown>) => // Changed 'any[0]' to 'unknown[0]' and 'any' to 'Record<string, unknown>' cache.setSearchResults(query, type, results, filters); export const getCachedSearchResults = (query: string, type: string: filters?: Record<string, unknown>) => // Changed 'any' to 'Record<string, unknown>' cache.getSearchResults(query, type, filters); export const cacheShader = (key: string, compiledWGSL: string: ttlMs?: number) => cache.setShader(key, compiledWGSL: ttlMs ? ? undefined); export const getCachedShader = (key :  string) => cache.getShader(key); export default cache // --- Langcache specific functions --- /** * Generates a SHA256 hash for a given prompt. * @param prompt The input string to hash. * @returns The SHA256 hash as a hexadecimal string. */ function generateSha256(prompt, string): string { return crypto.createHash('sha256').update(prompt).digest('hex')}
-interface LangCacheEntry<T> { embedding?: number[0]; result?: T tokens?: number ttl?: number // Time to live in seconds }
-/** * Stores an item in the langcache. * Key pattern: `langcache: {model}:{shaPrompt}` * @param model The AI model identifier. * @param prompt The original prompt. * @param data The data to store (embedding, result, tokens). * @param ttl Time to live in seconds (default: 3600). */ export async function setLangCache<T>( model: string, prompt: string, data: LangCacheEntry<T>, ttl: number = 3600 ): Promise<void> { const shaPrompt = generateSha256(prompt); const key = `langcache: ${model}:${shaPrompt}`; await cache.set(key, data, ttl * 1000); // ttl is in seconds, cache.set expects ms }
-/** * Retrieves an item from the langcache. * @param model The AI model identifier. * @param prompt The original prompt. * @returns The cached data or null if not found. */ export async function getLangCache<T>(model: string, prompt: string): Promise<LangCacheEntry<T> | null> { const shaPrompt = generateSha256(prompt); const key = `langcache: ${model}:${shaPrompt}`; return cache.get<LangCacheEntry<T>>(key)}
-/** * Deletes an item from the langcache. * @param model The AI model identifier. * @param prompt The original prompt. */ export async function deleteLangCache(model, string, prompt: string): Promise<void> { const shaPrompt = generateSha256(prompt); const key = `langcache: ${model}:${shaPrompt}`; await cache.del(key)}
-/* -------------------------------------------------------------------------- */ /* Public Client Access */ /* -------------------------------------------------------------------------- */ /** * Get the Redis client instance (or in-memory fallback) */ export async function getRedisClient(): Promise<CacheService> { return cache}
-/** * Close Redis connection gracefully */ export async function closeRedisClient(): Promise<void> { if (cache.client && typeof (cache.client as RedisClientType).quit === 'function') { // Cast to RedisClientType await (cache.client as RedisClientType).quit?.(); // Cast to RedisClientType console.log('ðŸ”Œ Redis connection closed')} } }
-import { createClient } from 'redis'; import { REDIS_URL } from '$env/static/private'; // Assuming REDIS_URL is configured in .env const redisClient = createClient({ url, REDIS_URL || 'redis: //, redis@localhost: 6379/0', // Fallback for local development }); redisClient.on('error', (err) => console.error('Redis Client Error', err)); // Connect to Redis when the module is loaded // This ensures the client is ready before operations are attempted redisClient.connect().catch (error) (console.error); export { redisClient }; 
+import { gzipSync, gunzipSync } from "zlib";
+import { Buffer } from "buffer";
+import crypto from "crypto";
+import { createClient } from "redis";
 
+// --- Custom Type to handle Redis client type inference issues ---
+type AppRedisClient = ReturnType<typeof createClient>;
 
+const IS_SERVER = typeof window === "undefined";
+const DEFAULT_TTL_MS = 10 * 60 * 1000;
+const MEMORY_CACHE_LIMIT = 1000;
+
+// --- Redis bootstrap (optional direct client) -------------------------------
+let baseClient: AppRedisClient | null = null;
+
+async function initializeRedisClient() {
+  if (baseClient && baseClient.isReady) return baseClient;
+  const REDIS_URL = process.env.REDIS_URL || "redis://:redis@localhost:6379/0";
+  try {
+    const client = createClient({ url: REDIS_URL });
+    client.on("error", (err) => console.error("[redis] Client Error:", err));
+    client.on("connect", () => console.log("[redis] Connected"));
+    await client.connect();
+    baseClient = client;
+    return baseClient;
+  } catch (err) {
+    console.warn("[redis] Initialization failed:", err);
+    baseClient = null;
+    return null;
+  }
+}
+
+// Initialize once on server start (non-blocking)
+if (IS_SERVER) initializeRedisClient().catch(() => {});
+
+// --- Helper types ----------------------------------------------------------
+type RedisClient = AppRedisClient | null;
+
+interface MemoryEntry {
+  value: unknown;
+  expiresAt: number;
+}
+interface RedisConfig {
+  url: string;
+}
+export interface LangCacheEntry<T> {
+  embedding?: number[];
+  result?: T;
+  tokens?: number;
+  ttl?: number;
+}
+
+// --- Local in-memory fallback ----------------------------------------------
+class MemoryCache {
+  private store = new Map<string, MemoryEntry>();
+  get<T>(key: string): T | null {
+    const e = this.store.get(key);
+    if (!e) return null;
+    if (Date.now() > e.expiresAt) {
+      this.store.delete(key);
+      return null;
+    }
+    return e.value as T;
+  }
+  set(key: string, value: unknown, ttl: number) {
+    if (this.store.size >= MEMORY_CACHE_LIMIT) {
+      const oldest = this.store.keys().next().value;
+      if (oldest) this.store.delete(oldest);
+    }
+    this.store.set(key, { value, expiresAt: Date.now() + Math.max(1, ttl) });
+  }
+  delete(key: string) {
+    this.store.delete(key);
+  }
+}
+const globalMemoryCache = new MemoryCache();
+
+// --- Utility functions -----------------------------------------------------
+function formatError(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  try {
+    return JSON.stringify(error);
+  } catch {
+    return String(error);
+  }
+}
+function resolveRedisConfig(): RedisConfig | null {
+  const url = process.env.REDIS_URL?.trim();
+  if (url) return { url };
+  const host = process.env.REDIS_HOST || "127.0.0.1";
+  const port = process.env.REDIS_PORT || "6379";
+  const password = process.env.REDIS_PASSWORD;
+  return password
+    ? { url: `redis://:${password}@${host}:${port}` }
+    : { url: `redis://${host}:${port}` };
+}
+function tryCreateClient(config: RedisConfig | null): AppRedisClient | null {
+  if (!config) return null;
+  try {
+    const c = createClient({ url: config.url });
+    c.on("error", (e) => console.warn("[redis] client error", formatError(e)));
+    return c;
+  } catch (e) {
+    console.warn("[redis] failed to init client", formatError(e));
+    return null;
+  }
+}
+
+// --- Main CacheService -----------------------------------------------------
+export class CacheService {
+  private client: RedisClient;
+  constructor(private readonly config: RedisConfig | null) {
+    this.client = IS_SERVER ? tryCreateClient(config) : null;
+  }
+
+  private encode(v: unknown): string {
+    const json = JSON.stringify(v);
+    return gzipSync(Buffer.from(json, "utf8")).toString("base64");
+  }
+  private decode<T>(raw: string | Buffer | null): T | null {
+    if (raw == null) return null;
+    try {
+      const buf = typeof raw === "string" ? Buffer.from(raw, "base64") : Buffer.from(raw);
+      return JSON.parse(gunzipSync(buf).toString("utf8")) as T;
+    } catch {
+      try {
+        return JSON.parse(raw.toString()) as T;
+      } catch {
+        return raw as unknown as T;
+      }
+    }
+  }
+  private async ensureClient(): Promise<AppRedisClient | null> {
+    if (!IS_SERVER) return null;
+    if (!this.client) this.client = tryCreateClient(this.config);
+    const client = this.client;
+    if (!client) return null;
+    if (!client.isOpen) {
+      try {
+        await client.connect();
+      } catch (e) {
+        console.warn("[redis] connect failed", formatError(e));
+        await this.safeShutdown(client);
+        this.client = null;
+        return null;
+      }
+    }
+    return client;
+  }
+  private async safeShutdown(c: AppRedisClient) {
+    try {
+      await c.quit();
+    } catch {
+      // ignore error
+    }
+    try {
+      await c.disconnect();
+    } catch {
+      // ignore error
+    }
+  }
+  private hash(v: string) {
+    return crypto.createHash("sha256").update(v).digest("hex");
+  }
+
+  // --- core cache ops ---
+  async get<T>(key: string): Promise<T | null> {
+    const c = await this.ensureClient();
+    if (c) {
+      try {
+        const raw = await c.get(key);
+        const val = this.decode<T>(raw);
+        if (val != null) return val;
+      } catch (e) {
+        console.warn("[cache] get failed", formatError(e));
+      }
+    }
+    return globalMemoryCache.get<T>(key);
+  }
+
+  async set<T>(key: string, value: T, ttlMs = DEFAULT_TTL_MS) {
+    const payload = this.encode(value);
+    const c = await this.ensureClient();
+    if (c) {
+      try {
+        await c.set(key, payload, { PX: Math.max(1, ttlMs) });
+        globalMemoryCache.set(key, value, ttlMs);
+        return;
+      } catch (e) {
+        console.warn("[cache] set failed", formatError(e));
+      }
+    }
+    globalMemoryCache.set(key, value, ttlMs);
+  }
+
+  async del(key: string) {
+    const c = await this.ensureClient();
+    if (c) {
+      try {
+        await c.del(key);
+      } catch (e) {
+        console.warn("[cache] del failed", formatError(e));
+      }
+    }
+    globalMemoryCache.delete(key);
+  }
+
+  async ping(): Promise<boolean> {
+    const c = await this.ensureClient();
+    if (!c) return false;
+    try {
+      const res = await c.ping();
+      return res === "PONG" || res === "OK";
+    } catch (e) {
+      console.warn("[cache] ping failed", formatError(e));
+      return false;
+    }
+  }
+
+  // --- domain helpers ---
+  async getEmbedding(text: string, model = "default") {
+    const key = `embedding_${this.hash(text)}_${model}`;
+    return this.get<number[]>(key);
+  }
+  async setEmbedding(text: string, emb: number[], model = "default") {
+    const key = `embedding_${this.hash(text)}_${model}`;
+    await this.set(key, emb, 24 * 60 * 60 * 1000);
+  }
+  async getShader(key: string) {
+    return this.get<string>(`shader_${key}`);
+  }
+  async setShader(key: string, wgsl: string, ttl = 6 * 60 * 60 * 1000) {
+    await this.set(`shader_${key}`, wgsl, ttl);
+  }
+
+  async close() {
+    if (!this.client) return;
+    const c = this.client;
+    this.client = null;
+    await this.safeShutdown(c);
+  }
+  async getClient() {
+    return this.ensureClient();
+  }
+}
+
+// --- exported singletons ---------------------------------------------------
+const redisConfig = resolveRedisConfig();
+export const cache = new CacheService(redisConfig);
+export const redis = cache; // alias for convenience
+
+export async function getRedisClient(): Promise<AppRedisClient | null> {
+  return cache.getClient();
+}
+export async function closeRedisClient() {
+  await cache.close();
+}
+
+// --- helper wrappers -------------------------------------------------------
+export async function waitForRedis(timeoutMs = 5000): Promise<boolean> {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (await cache.ping()) return true;
+    await new Promise((r) => setTimeout(r, 200));
+  }
+  return false;
+}
+
+export async function setLangCache<T>(
+  model: string,
+  prompt: string,
+  data: LangCacheEntry<T>,
+  ttlSec = 3600
+) {
+  const key = `langcache_${model}_${crypto.createHash("sha256").update(prompt).digest("hex")}`;
+  await cache.set(key, data, ttlSec * 1000);
+}
+export async function getLangCache<T>(
+  model: string,
+  prompt: string
+): Promise<LangCacheEntry<T> | null> {
+  const key = `langcache_${model}_${crypto.createHash("sha256").update(prompt).digest("hex")}`;
+  return cache.get<LangCacheEntry<T>>(key);
+}
+export async function deleteLangCache(model: string, prompt: string) {
+  const key = `langcache_${model}_${crypto.createHash("sha256").update(prompt).digest("hex")}`;
+  await cache.del(key);
+}
+
+export default cache;

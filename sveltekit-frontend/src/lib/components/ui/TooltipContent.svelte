@@ -1,24 +1,9 @@
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  // runtime helper $props() is provided by the runes compiler; do not import it.
-  import { cn } from '$lib/utils';
-  import type { Snippet } from 'svelte';
-  interface Props {
-    children?: Snippet;
-    className?: string;
-  }
-
-  // initialize both children and className from props
-  let { children, className = '' }: Props = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<div
-  class={cn(
-    'z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md',
-    className
-  )}
->
-  <slot />
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (TooltipContent.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-

@@ -1,16 +1,9 @@
-﻿<script lang="ts">
-  // Compatibility shim: forward to real Dialog implementation
-  import  default, as RealDialog  from "$lib/components/ui/Dialog.svelte";
-  let { open = false, onClose = undefined, ...rest } = $props<{
-    open?: boolean
-    onClose?: (() => void)}>();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<!-- Svelte 5: Direct component usage instead, of, svelte:component -->
-<RealDialog {open} onclose={onClose} {...rest}>
-  <slot />
-</RealDialog>
-
-<style>
-  /* shim - no styles */
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Dialog.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

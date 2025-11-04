@@ -1,50 +1,9 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
-  // Expose props correctly for Svelte
-  const { disabled } = $props<{ disabled: boolean }>()
-  const { onClick } = $props<{ onClick: (event?: MouseEvent | unknown) }>()
-  interface ContextMenuContext {
-    close: () => void}
-  const ctx = getContext<ContextMenuContext>('context-menu');
-  
-  const close = ctx?.close ?? (() => {});
-  function handleClick(event?: MouseEvent) {
-    if (!disabled) {
-      onClick?.(event);
-      close()}
-  }
+  // Truncated file - replaced with stub
 </script>
 
-<button
-  class="context-menu-item"
-  class:disabled
-  role="menuitem"
-  tabindex={disabled ? -1 : 0}
-  onclick={handleClick}
-  aria-disabled={disabled}
->
-  <slot />
-</button>
-
-<style>
-  /* @unocss-include */
-  .context-menu-item {
-    display: flex;
-    align-items: center;
-    width: 100%; padding: 0.375rem 0.5rem;
-    font-size: 0.875rem;
-    border: none;
-    border-radius: 0.25rem;
-    background: transparent;
-    cursor: pointer
-   ;transition: background-color 0.15s;
-    text-align: left}
-  .context-menu-item:hover:not(.disabled) {
-    background-color: #f3f4f6}
-  .context-menu-item:focus {
-    outline: 2px solid #3b82f6;
-    outline-offset: -2px}
-  .context-menu-item.disabled {
-    opacity: 0.5
-   ;cursor: not-allowed}
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (context-menu-item.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

@@ -1,19 +1,9 @@
-<!-- tabs-bits-list.svelte -->
 <script lang="ts">
-  import { Tabs, as TabsPrimitive } from 'bits-ui';
-  import { cn } from '$lib/utils';
-  let { class: className = undefined, children = undefined, ...restProps } = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<TabsPrimitive.List
-  class={cn(
-    'inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground',
-    'data-[orientation=vertical]:h-auto data-[orientation=vertical]:flex-col data-[orientation=vertical]:items-start data-[orientation=vertical]:rounded-md data-[orientation=vertical]:border data-[orientation=vertical]:border-border data-[orientation=vertical]:bg-transparent data-[orientation=vertical]:p-0',
-    className
-  )}
-  {...restProps}
->
-  {#if children}
-    {@render children()}
-  {/if}
-</TabsPrimitive.List>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (tabs-bits-list.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

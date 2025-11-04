@@ -5,6 +5,7 @@ import { findFreePort } from './find-free-port.js';
 import chalk from 'chalk';
 
 const PREFERRED_PORT = parseInt(process.env.PORT) || 5173;
+const SIMD_DEFAULT_PORT = parseInt(process.env.SIMD_JSON_PORT || process.env.RAG_ENDPOINT_PORT) || 8095;
 // Allow callers to override search depth via env (useful in CI or port-constrained hosts)
 const MAX_PORT_TRIES = parseInt(process.env.MAX_PORT_TRIES) || 50;
 
@@ -24,14 +25,22 @@ async function startDevServer() {
       '\n'
     );
 
-  // Pass MAX_PORT_TRIES through to the finder (it will clamp defensively)
-  const availablePort = await findFreePort(PREFERRED_PORT, MAX_PORT_TRIES);
+    // Pass MAX_PORT_TRIES through to the finder (it will clamp defensively)
+    const availablePort = await findFreePort(PREFERRED_PORT, MAX_PORT_TRIES);
+    const simdPort = await findFreePort(SIMD_DEFAULT_PORT, MAX_PORT_TRIES);
 
     if (availablePort !== PREFERRED_PORT) {
       console.log(chalk.yellow(`⚠️  Port ${PREFERRED_PORT} is in use`));
       console.log(chalk.green(`✅ Using fallback port: ${availablePort}\n`));
     } else {
       console.log(chalk.green(`✅ Port ${PREFERRED_PORT} is available\n`));
+    }
+
+    if (simdPort !== SIMD_DEFAULT_PORT) {
+      console.log(chalk.yellow(`⚠️  SIMD service port ${SIMD_DEFAULT_PORT} is in use`));
+      console.log(chalk.green(`✅ SIMD service fallback port: ${simdPort}\n`));
+    } else {
+      console.log(chalk.green(`✅ SIMD service port ${SIMD_DEFAULT_PORT} is available\n`));
     }
 
     // Start Redis checker first
@@ -50,6 +59,18 @@ async function startDevServer() {
 
     // Give Redis a moment to initialize
     await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Start SIMD Go microservice (preferring compiled binary inside the helper)
+    const simdProcess = spawn('node', ['../scripts/start-simd-go-service.mjs'], {
+      cwd: process.cwd(),
+      stdio: 'inherit',
+      shell: true,
+      env: {
+        ...process.env,
+        FORCE_COLOR: '1',
+        SIMD_JSON_PORT: simdPort.toString(),
+      },
+    });
 
     // Start Vite with the available port
     const viteProcess = spawn(
@@ -75,10 +96,12 @@ async function startDevServer() {
       console.log(chalk.yellow(`\n\n🛑 Received ${signal}, shutting down gracefully...\n`));
 
       redisProcess.kill('SIGTERM');
+      simdProcess.kill('SIGTERM');
       viteProcess.kill('SIGTERM');
 
       setTimeout(() => {
         redisProcess.kill('SIGKILL');
+        simdProcess.kill('SIGKILL');
         viteProcess.kill('SIGKILL');
         process.exit(0);
       }, 5000);
@@ -94,9 +117,16 @@ async function startDevServer() {
       }
     });
 
+    simdProcess.on('exit', code => {
+      if (code !== 0 && code !== null) {
+        console.log(chalk.red(`❌ SIMD service exited with code ${code}`));
+      }
+    });
+
     viteProcess.on('exit', code => {
       console.log(chalk.yellow(`\n🛑 Vite server stopped (exit code: ${code})\n`));
       redisProcess.kill('SIGTERM');
+      simdProcess.kill('SIGTERM');
       process.exit(code || 0);
     });
   } catch (error) {

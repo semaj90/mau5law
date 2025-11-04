@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte'; // Props let { className = '', disabled = false, onclick, onitemclick, children }: { className?: string; disabled?: boolean; onclick?: (e: MouseEvent) => void; onitemclick?: (e: MouseEvent) => void; children?: Snippet} = $props(); function handleClick(e: MouseEvent) { if (disabled) { e.preventDefault(); return}
-
-  // notify parent usage and bubble original click onclick?.(e); onitemclick?.(e)}
+  // Truncated file - replaced with stub
 </script>
 
-<button class={`dropdown-item ${className}`} role="menuitem" onclick={handleClick} {disabled}> <slot /> </button>
-
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Item.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

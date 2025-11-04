@@ -1,69 +1,9 @@
-﻿<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class';
-, https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, keyword: 'class' -->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  interface ComponentFallbackProps {
-    class?: string
-    id?: string
-    ref?: HTMLElement | null
-    role?: string
-    ariaLabel?: string
-    style?: string
-    variant?: string
-    size?: string
-    disabled?: boolean
-    children?: anyn
-    [key: string]: anyn}
-  let {
-    class = '',
-    id = undefined,
-    ref = null,
-    role = undefined,
-    ariaLabel = undefined,
-    style = undefined,
-    variant = 'default',
-    size = 'default',
-    disabled = false,
-    children,
-    ...restProps
-  }: ComponentFallbackProps = $props();
-  // Generate fallback classes based on common patterns
-  // TODO: Convert to $derived: fallbackClasses = [
-    class,
-    variant && `variant-${variant}`,
-    size && `size-${size}`,
-    disabled && 'disabled',
-    'bits-ui-fallback'
-  ].filter(Boolean).join(' ')
+  // Truncated file - replaced with stub
 </script>
 
-<div {id} class={fallbackClasses} bind:this={ref} {role} aria-label={ariaLabel} {style} {disabled} {...restProps}>
-  {#if children}
-    {@render children()}
-  {/if}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (ComponentFallback.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-/* Enhanced fallback styling for better compatibility */ :global(.bits-ui-fallback) {
-    display: content}
-  :global(.bits-ui-fallback.variant-outline) {
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    background: transparent}
-  : global(.bits-ui-fallback.variant-ghost) {
-    border: none
-   ;background: transparent}
-  : global(.bits-ui-fallback.size-sm) {
-    font-size: 0.875rem
-   ;padding: 0.25rem 0.5rem}
-  :global(.bits-ui-fallback.disabled) {
-    opacity: 0.5;
-    pointer-events: none}
-/* Button-like fallback */ : global(.bits-ui-fallback[role="button"]) {
-    cursor: pointer
-   ;padding: 0.5rem 1rem;
-    border-radius: 0.375rem
-    transition all 0.2s ease}
-  :global(.bits-ui-fallback[role="button"]:hover:not(.disabled)) {
-    opacity: 0.8}
-</style>

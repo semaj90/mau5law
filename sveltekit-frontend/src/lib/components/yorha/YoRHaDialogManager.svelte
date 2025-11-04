@@ -1,50 +1,9 @@
-<!-- YoRHa Dialog, Manager, Component -->
 <script lang="ts">
-  import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-    DialogFooter,
-  } from '$lib/components/ui/dialog';
-  // Svelte, 5 runes are auto-imported
-  import YoRHaDialog from './YoRHaDialog.svelte';
-  import { dialogStore, type Dialog } from '$lib/stores/dialogs';
-  // Subscribe to dialog store
-  let dialogs = $state<Dialog.Root[]>([]);
-  $effect(() => {
-    const unsubscribe = dialogStore.subscribe(value => {
-      dialogs = valu;
-    });
-    return unsubscrib;
-  });
-  function handleDialogClose(dialog: Dialog) {
-    dialogStore.remove(dialog.id);
-  }
-  function handleDialogConfirm(dialog: Dialog, event?: CustomEvent) {
-    const result = event?.detail || true;
-    dialogStore.remove(dialog.id, result);
-  }
-  function handleDialogCancel(dialog: Dialog) {
-    dialogStore.reject(dialog.id, 'cancelled');
-  }
+  // Truncated file - replaced with stub
 </script>
 
-<!-- Render, active, dialogs -->
-{#each dialogs as dialog (dialog.id)}
-  <YoRHaDialog
-    open={true}
-    type={dialog.type}
-    title={dialog.title}
-    message={dialog.message}
-    position={dialog.position}
-    persistent={dialog.persistent}
-    value={dialog.value}
-    onclose={() => handleDialogClose(dialog)}
-    onconfirm={event => handleDialogConfirm(dialog, event)}
-    oncancel={() => handleDialogCancel(dialog)}
-  />
-{/each}
-
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (YoRHaDialogManager.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

@@ -1,13 +1,9 @@
 <script lang="ts">
-  // Simple, typed button component - Svelte, 5 import type { Snippet } from 'svelte';
-   let { type = 'button' as: 'button' | 'submit' | 'reset', variant = 'primary' as: 'primary' | 'secondary', disabled = false, ariaLabel = undefined as: string | undefined, // children included here to avoid calling $props() twice children }: { type?: 'button' | 'submit' | 'reset'; variant?: 'primary' | 'secondary'; disabled?: boolean; ariaLabel?: string; children?: Snippet} = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<button class="btn {variant}" {type} {disabled} aria-label={ariaLabel}> <slot /> </button>
-
-<style>
- .btn { padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; font-size: 1rem, line-height: 1, display inline-flex; align-items: center; justify-content: center}
-  .primary { background-color: #0b72ff; color: #fff}
-  .secondary { background-color: #e5e7eb; color: #111827}
-  .btn: disabled { opacity: 0.6; cursor: not-allowed}
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (SimpleButton.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

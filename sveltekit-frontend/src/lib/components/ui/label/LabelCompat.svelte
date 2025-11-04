@@ -1,17 +1,9 @@
-﻿<script lang="ts">
-  import Label from '$lib/components/ui/Label.svelte';
-
-  import type { HTMLAttributes } from 'svelte/elements';
-  // Svelte, 5 props pattern - Accept legacy props and map to base Label
-  interface Props extends HTMLAttributes<HTMLLabelElement> {
-    for?: string;
-    class?: string;
-  }
-  let { for: forProp = '', class: classProp = '', children, ...rest }: Props & { children?: unknown } = $props();
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<Label for_={forProp} class_={classProp} {...rest}>
-  {#if children}
-    {@render children()}
-  {/if}
-</Label>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (LabelCompat.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

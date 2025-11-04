@@ -1,0 +1,36 @@
+# Caddy configuration for QUIC proxy to local SvelteKit dev server
+# Listens on port 5178 with QUIC (HTTP/3) enabled
+# Proxies requests to localhost:5173 (default SvelteKit dev port)
+
+localhost:5178 {
+  # Enable HTTP/3 (QUIC)
+  protocols h1 h2 h3
+
+  # Proxy all requests to the local SvelteKit dev server
+  reverse_proxy localhost:5173 {
+    # Preserve original headers for dev server
+    header_up Host {http.request.host}
+    header_up X-Forwarded-For {http.request.remote}
+    header_up X-Forwarded-Proto {http.request.scheme}
+
+    # WebSocket support for SvelteKit HMR
+    transport http {
+      read_timeout 30s
+      write_timeout 30s
+    }
+  }
+
+  # Health check endpoint
+  handle /health {
+    respond "OK" 200
+  }
+
+  # Enable compression
+  encode gzip
+
+  # Logging
+  log {
+    output stdout
+    format console
+  }
+}

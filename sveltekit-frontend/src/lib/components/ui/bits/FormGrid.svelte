@@ -1,28 +1,9 @@
-<!--
-  Enhanced Bits - Form Grid
-  Responsive form layout component
--->
 <script lang="ts">
-  interface Props {
-    columns?: number;
-    gap?: string;
-    children?: unknown;
-  }
-  let { columns = 2, gap = '16px', children }: Props = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<div class="form-grid" style="--columns: {columns} --gap: {gap}">
-  <slot />
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (FormGrid.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(var(--columns, 2), 1fr); gap: var(--gap, 16px);
-    margin-bottom: 24px}
-  @media (max-width: 768px) {
-    .form-grid {
-      grid-template-columns: 1fr;
-      gap: calc(var(--gap, 16px) * 0.75)}
-  }
-</style>

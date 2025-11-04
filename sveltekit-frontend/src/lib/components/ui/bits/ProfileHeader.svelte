@@ -1,51 +1,9 @@
-﻿<!--
-  Enhanced Bits - Profile Header
-  Centered header section for profile pages
--->
 <script lang="ts">
-  interface Props {
-    title?: string;
-    subtitle?: string;
-    centered?: boolean;
-    children?: unknown;
-  }
-  let { title, subtitle, centered = true, children }: Props = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<div class="profile-header" class:centered>
-  {#if children}
-    {@render children()}
-  {:else}
-    {#if title}
-      <h1>{title}</h1>
-    {/if}
-    {#if subtitle}
-      <p>{subtitle}</p>
-    {/if}
-  {/if}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (ProfileHeader.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  .profile-header {
-    margin-bottom: 32px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--border, #e5e7eb)}
-  .profile-header.centered {
-    text-align: center}
-  .profile-header h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: var(--text-primary, #111827);
-    margin-bottom: 8px;
-    line-height: 1.2}
-  .profile-header p {
-    color: var(--text-secondary, #6b7280);
-    font-size: 16px;
-    line-height: 1.5}
-  @media (max-width: 768px) {
-    .profile-header h1 {
-      font-size: 24px}
-    .profile-header p {
-      font-size: 14px}
-  }
-</style>

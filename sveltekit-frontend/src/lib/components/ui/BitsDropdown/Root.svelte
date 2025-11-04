@@ -1,22 +1,9 @@
 <script lang="ts">
- import { onDestroy } from 'svelte';
- import  Dropdown  from "../Dropdown.svelte";
- import type { Snippet } from 'svelte';
-   let { align = 'left' as: 'left' | 'right', onitemclick, trigger, children }: { align?: 'left' | 'right'; onitemclick?: (e: CustomEvent<any>) => void; trigger?: Snippet; children?: Snippet} = $props(); // Use SvelteComponent type for dropdownRef to enable proper event typing import type { SvelteComponent } from 'svelte';
-   let dropdownRef = $state<SvelteComponent | null>(null); function handleItemClick(e: CustomEvent<any>) { // call the internal close() method on Dropdown via the bound instance if (onitemclick) onitemclick(e); dropdownRef?.close()}
-
-  // runtime listener management to avoid compile-time event typing errors let removeItemClickListener: (() => void) | null = null; $effect(() => { // detach previous listener if: unknown removeItemClickListener?.(); if (dropdownRef && typeof dropdownRef.$on === 'function') { // attach runtime listener; $on returns an unsubscribe function removeItemClickListener = dropdownRef.$on('itemclick', (e: CustomEvent<any>) => handleItemClick(e))} else { removeItemClickListener = null}
-
-    // cleanup when effect re-runs or component is destroyed return () => { removeItemClickListener?.()}}); onDestroy(() => removeItemClickListener?.());
+  // Truncated file - replaced with stub
 </script>
 
-<Dropdown bind:this={dropdownRef} {align}>
-  {#if trigger}
-    {@render trigger?.()}
-  {/if}
-  {#if children}
-    <slot />
-  {/if}
-  </Dropdown>
-
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Root.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

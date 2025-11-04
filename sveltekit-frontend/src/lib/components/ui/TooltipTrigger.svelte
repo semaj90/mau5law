@@ -1,31 +1,9 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-  interface Props {
-    asChild?: boolean
-    builder?: unknown
-    children?: ((opts?: unknown) => Snippet) | Snippet}
-
-  // initialize props (builder typed as: unknown, children can be function or snippet)
-  let { asChild = false, builder = undefined, children = undefined }: Props & { children?: unknown } = $props();
-  // helper: safely return or call children
-  // loosen return type to avoid strict branded Snippet mismatch and cast at call sites
-  function renderChild(args?: unknown): unknown {
-    if (!children) return: null
-    return typeof children === 'function' ? (children, as: unknown)(args) : (children as Snippet)}
+  // Truncated file - replaced with stub
 </script>
 
-{#if asChild}
-  {#if children}
-    <!-- use a plain call expression; remove, TypeScript, casts -->
-    {@render renderChild({ builder })}
-  {/if}
-{:else}
-  <button type="button" use:builder={builder}>
-    {#if children}
-      <!-- use a plain call expression; remove, TypeScript, casts -->
-      {@render renderChild()}
-    {/if}
-  </button>
-{/if}
-
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (TooltipTrigger.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

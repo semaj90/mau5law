@@ -1,23 +1,7 @@
 // Updated PostgreSQL schema based on database introspection // This schema matches the actual database structure (drizzle/schema.ts)
 import { sql } from "drizzle-orm";
 import { relations } from "drizzle-orm/relations";
-import {
-  boolean,
-  integer,
-  jsonb,
-  pgTable,
-  real,
-  serial,
-  text,
-  timestamp,
-  uuid,
-  varchar,
-  unique,
-  foreignKey,
-  numeric,
-  pgEnum,
-  index,
-} from "drizzle-orm/pg-core";
+import { boolean, integer, jsonb, pgTable, real, serial, text, timestamp, uuid, varchar, unique, foreignKey, numeric, pgEnum, index } from "drizzle-orm/pg-core";
 
 // Note: vector type is handled via sql`` template in table definitions
 
@@ -1137,42 +1121,7 @@ export const caseScores = pgTable(
 
 // caseId is optional: set to a valid case UUID when the AI query is associated with a specific case,
 // or leave as null for general queries not tied to any case.
-export const userAiQueries = pgTable(
-  "user_ai_queries",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    userId: uuid("user_id").notNull(), // Foreign key to users.id
-    caseId: uuid("case_id"), // Foreign key to cases.id; optional, can be null for general queries
-    query: text("query").notNull(),
-    response: text("response").notNull(),
-    model: varchar("model", { length: 100 }).default("gemma3-legal").notNull(),
-    queryType: varchar("query_type", { length: 50 }).default("general"),
-    confidence: numeric("confidence", { precision: 3, scale: 2 }),
-    tokensUsed: integer("tokens_used"),
-    processingTime: integer("processing_time"),
-    contextUsed: jsonb("context_used").default([]).notNull().$type<string[]>(),
-    embedding: text("embedding"), // Vector stored as text, converted in service layer
-    metadata: jsonb("metadata").default({}).notNull(),
-    isSuccessful: boolean("is_successful").default(true).notNull(),
-    errorMessage: text("error_message"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: `user_ai_queries_user_id_users_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `user_ai_queries_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-  ]
-);
+
 // Polymorphic association: entityId can reference multiple tables.
 // Supported entityType values and corresponding tables:
 // autoTags confirmation workflow:
@@ -1180,32 +1129,6 @@ export const userAiQueries = pgTable(
 // - confirmedBy: UUID of the user who confirmed the tag (nullable, foreign key to users).
 // - confirmedAt: timestamp when the tag was confirmed (nullable).
 // When isConfirmed is true, confirmedBy and confirmedAt should be set to indicate who confirmed and when.
-export const autoTags = pgTable(
-  "auto_tags",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    entityId: uuid("entity_id").notNull(), // This could be a foreign key to multiple tables (e.g., evidence, legalDocuments)
-    entityType: varchar("entity_type", { length: 50 }).notNull(),
-    tag: varchar("tag", { length: 100 }).notNull(),
-    confidence: numeric("confidence", { precision: 3, scale: 2 }).notNull(),
-    source: varchar("source", { length: 50 }).default("ai_analysis").notNull(),
-    model: varchar("model", { length: 100 }),
-    extractedAt: timestamp("extracted_at", { mode: "string" }).defaultNow().notNull(),
-    isConfirmed: boolean("is_confirmed").default(false).notNull(), // True if manually confirmed
-    confirmedBy: uuid("confirmed_by"), // User who confirmed (nullable, FK to users)
-    confirmedAt: timestamp("confirmed_at", { mode: "string" }), // When confirmed (nullable)
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.confirmedBy],
-      foreignColumns: [users.id],
-      name: `auto_tags_confirmed_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
 
 // === EMBEDDING CACHE ===
 export const embeddingCache = pgTable(
@@ -1223,23 +1146,90 @@ export const embeddingCache = pgTable(
   (table) => [unique("embedding_cache_text_hash_unique").on(table.textHash)]
 );
 
+// === USER AI QUERIES ===
+export const userAiQueriesTable = pgTable(
+  "user_ai_queries",
+  {
+    id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
+    userId: uuid("user_id").notNull(),
+    caseId: uuid("case_id"),
+    query: text("query").notNull(),
+    response: text("response").notNull(),
+    model: varchar("model", { length: 100 }).notNull(),
+    queryType: varchar("query_type", { length: 50 }).notNull(),
+    confidence: numeric("confidence", { precision: 3, scale: 2 }),
+    processingTime: integer("processing_time"), // in ms
+    contextUsed: jsonb("context_used").default([]).$type<string[]>(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+  },
+  (table) => ({
+    foreignKeys: [
+      foreignKey({
+        columns: [table.userId],
+        foreignColumns: [users.id],
+        name: "user_ai_queries_user_id_users_id_fk",
+      }).onDelete("cascade"),
+      foreignKey({
+        columns: [table.caseId],
+        foreignColumns: [cases.id],
+        name: "user_ai_queries_case_id_cases_id_fk",
+      }).onDelete("set null"),
+    ],
+  })
+);
+
+// === AUTO TAGS ===
+export const autoTagsTable = pgTable(
+  "auto_tags",
+  {
+    id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
+    entityId: uuid("entity_id").notNull(), // Polymorphic
+    entityType: varchar("entity_type", { length: 50 }).notNull(), // e.g., 'evidence', 'document'
+    tag: varchar("tag", { length: 100 }).notNull(),
+    confidence: real("confidence").notNull(),
+    source: varchar("source", { length: 100 }).notNull(), // e.g., 'ai_analysis', 'user'
+    model: varchar("model", { length: 100 }),
+    isConfirmed: boolean("is_confirmed").default(false).notNull(),
+    confirmedBy: uuid("confirmed_by"), // FK to users.id
+    confirmedAt: timestamp("confirmed_at", { mode: "string" }),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+  },
+  (table) => ({
+    foreignKeys: [
+      foreignKey({
+        columns: [table.confirmedBy],
+        foreignColumns: [users.id],
+        name: "auto_tags_confirmed_by_users_id_fk",
+      }).onDelete("set null"),
+    ],
+    indexes: [index("idx_autotags_entity").on(table.entityId, table.entityType)],
+  })
+);
+
 // === DOCUMENT CHUNKS ===
-export const documentChunks = pgTable("document_chunks", {
-  id: uuid("id")
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  documentId: uuid("document_id")
-    .references(() => documents.id)
-    .notNull(),
-  text: text("text").notNull(),
-  // Using jsonb for embedding to store number[] as a JSON array.
-  // For full pgvector integration, a custom Drizzle type or raw SQL might be preferred.
-  embedding: jsonb("embedding").$type<number[]>(),
-  position: integer("position").notNull(),
-  legalRelevance: real("legal_relevance").notNull(),
-  entities: jsonb("entities").$type<string[]>(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+export const documentChunksTable = pgTable(
+  "document_chunks",
+  {
+    id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
+    documentId: uuid("document_id").notNull(),
+    documentType: varchar("document_type", { length: 50 }).notNull(),
+    chunkIndex: integer("chunk_index").notNull(),
+    content: text("content").notNull(),
+    embedding: text("embedding"), // Vector stored as text
+    metadata: jsonb("metadata").default({}).notNull(),
+    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+  },
+  (table) => ({
+    foreignKeys: [
+      foreignKey({
+        columns: [table.documentId],
+        foreignColumns: [documents.id],
+        name: "document_chunks_document_id_documents_id_fk",
+      }).onDelete("cascade"),
+    ],
+    indexes: [index("idx_docchunks_document_id").on(table.documentId)],
+  })
+);
 
 // Corrected schema export to include all defined tables
 export const schema = {
@@ -1275,12 +1265,12 @@ export const schema = {
   legalResearch,
   vectorMetadata,
   caseScores,
-  userAiQueries,
-  autoTags,
   embeddingCache,
-  documents, // Ensure documents is included
-  documentChunks,
-  canvasAutosaves, // Assuming this is defined in schema-canvas-autosaves and should be part of the schema
+  documents,
+  documentChunks: documentChunksTable,
+  userAiQueries: userAiQueriesTable,
+  autoTags: autoTagsTable,
+  canvasAutosaves,
 };
 
 // === RELATIONS ===
@@ -1310,8 +1300,8 @@ export const usersRelations = relations(users, ({ many }) => ({
   legalAnalysisSessions: many(legalAnalysisSessions),
   legalResearchCreated: many(legalResearch),
   caseScoresCalculated: many(caseScores),
-  userAiQueries: many(userAiQueries),
-  autoTagsConfirmed: many(autoTags),
+  userAiQueries: many(userAiQueriesTable),
+  autoTagsConfirmed: many(autoTagsTable),
 }));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
@@ -1333,7 +1323,7 @@ export const casesRelations = relations(cases, ({ many, one }) => ({
   legalAnalysisSessions: many(legalAnalysisSessions),
   legalResearch: many(legalResearch),
   caseScores: many(caseScores),
-  userAiQueries: many(userAiQueries),
+  userAiQueries: many(userAiQueriesTable),
   canvasStates: many(canvasStates),
 }));
 
@@ -1388,13 +1378,13 @@ export const ragSessionsRelations = relations(ragSessions, ({ one, many }) => ({
   messages: many(ragMessages),
 }));
 
-export const userAiQueriesRelations = relations(userAiQueries, ({ one }) => ({
-  user: one(users, { fields: [userAiQueries.userId], references: [users.id] }),
-  case: one(cases, { fields: [userAiQueries.caseId], references: [cases.id] }),
+export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) => ({
+  user: one(users, { fields: [userAiQueriesTable.userId], references: [users.id] }),
+  case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
 }));
 
-export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
-  document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] }),
+export const documentChunksRelations = relations(documentChunksTable, ({ one }) => ({
+  document: one(documents, { fields: [documentChunksTable.documentId], references: [documents.id] }),
 }));
 
 // === DATABASE CONNECTION & HELPERS ===

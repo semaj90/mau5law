@@ -1,3 +1,9 @@
-﻿<script lang="ts"> import type { Snippet } from 'svelte'; interface Props { title?: string; subtitle?: string; footer?: string; content?: string; children?: Snippet}
-  let { title = 'Card Title', subtitle, footer, content = 'This is a NES.css styled card component.', children }: Props = $props(); </script> <section class="nes-container with-title"> <h3 class="title">{ title }</h3> {#if subtitle} <p class="subtitle">{ subtitle }</p> {/if} {#if children} {@render children()} {:else} <p>{ content }</p> {/if} {#if footer} <div class="footer">{ footer }{/if} </section>
+<script lang="ts">
+  // Truncated file - replaced with stub
+</script>
 
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Card.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

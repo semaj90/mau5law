@@ -1,20 +1,9 @@
 <script lang="ts">
-  const { onclick } = $props<{ onclick: (() }>()
-  const { disabled } = $props<{ disabled: boolean }>()
-  const { variant } = $props<{ variant: string | undefined }>()
-  const { size } = $props<{ size: string | undefined }>()
-  const { class } = $props<{ class: string }>()
+  // Truncated file - replaced with stub
 </script>
 
-<button
-  onclick={() => onclick && onclick()}
-  disabled={disabled}
-  class={`px-3 py-2 rounded ${class} ${variant ?? ''} ${size ?? ''}`}
->
-  <slot />
-</button>
-
-<style>
-  button[disabled] { opacity: 0.6; cursor: not-allowed}
-</style>
-
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Button.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

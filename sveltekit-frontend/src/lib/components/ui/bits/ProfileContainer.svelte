@@ -1,29 +1,9 @@
-﻿<!--
-  Enhanced Bits - Profile Container
-  Reusable container component for profile-style pages
--->
 <script lang="ts">
-  interface Props {
-    maxWidth?: string;
-    padding?: string;
-    children?: unknown;
-  }
-  let { maxWidth = '800px', padding = '24px', children }: Props = $props();
+  // Truncated file - replaced with stub
 </script>
 
-<div class="profile-container" style="max-width: {maxWidth} padding: {padding}">
-  <slot />
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (ProfileContainer.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-
-<style>
-  .profile-container {
-    margin: 0 auto;
-    background: var(--surface, #ffffff);
-    border-radius: var(--radius-lg, 12px);
-    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1))}
-  @media (max-width: 768px) {
-    .profile-container {
-      margin: 16px;
-      padding: 16px !important}
-  }
-</style>

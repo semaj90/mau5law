@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-  
-  let { className = '', children }: { className?: string; children?: Snippet } = $props();
+  // Truncated file - replaced with stub
 </script>
 
-+
-<div class={`dropdown-menu ${className}`} role="menu">
-  <slot />
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Content.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>

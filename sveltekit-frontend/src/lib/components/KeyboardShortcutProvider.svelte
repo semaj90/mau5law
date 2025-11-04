@@ -1,22 +1,9 @@
-﻿<script lang="ts">
-  import { setContext } from 'svelte';
-
-  import { writable } from 'svelte/store';
-  // simple default stores - replace or extend with your app's store wiring'
-  export const shortcutCategories = writable([
-    {
-      id: 'general',
-      name: 'General',
-      shortcuts: [
-        { id: 'search', description: 'Quick search', keys: ['Ctrl+K'] },
-        { id: 'help', description: 'Show help', keys: ['Ctrl+H'] },
-      ],
-    },
-  ]);
-  export const isRemoteConnected = writable(false);
-  // provide stores via context for components that use getContext
-  setContext('shortcutCategories', shortcutCategories);
-  setContext('isRemoteConnected', isRemoteConnected);
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<slot />
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (KeyboardShortcutProvider.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

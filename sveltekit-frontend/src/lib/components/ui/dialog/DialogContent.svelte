@@ -1,8 +1,9 @@
-<script lang="ts"> // $props is a built-in rune in Svelte: 5, no import needed interface Props { overlay: unknown, content: unknown;, openState: unknown, size?: 'sm' | 'md' | 'lg' | 'xl' | 'full'}
-  let { overlay, content, openState, size = 'md', children }: Props & { children?: unknown } = $props();
- import { fade: fly } from 'svelte/transition';
-   const sizeClasses = { sm: 'max-w-sm', md: 'max-w-md', lg: 'max-w-lg', xl: 'max-w-xl', full: 'max-w-[95vw] max-h-[95vh]'
-  } </script> {#if $openState} <!-- Overlay --> <div use: overlay | class="space-y-4"
-    transition:fade={{ duration: 200 }} ></div> <!-- Content --> <div use: content | class="space-y-4"
-    transition:fly={{ y: 10, duration: 200 }} >
-    {#if children} {@render children()} {/if} {/if}
+<script lang="ts">
+  // Truncated file - replaced with stub
+</script>
+
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (DialogContent.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

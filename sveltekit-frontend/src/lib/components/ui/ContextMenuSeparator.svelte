@@ -1,2 +1,9 @@
-<!-- @migration-task Error while migrating Svelte, code: Expected, token } https://svelte.dev/e/expected_token --> <!-- @migration-task Error while migrating Svelte, code: Expected, token } --> <script lang="ts"> </script> interface Props { class_: string ; let { class_ = ''
-  }: Props = $props(); </script> <div class="my-1 h-px bg-gray-200" role="separator"></div>;
+<script lang="ts">
+  // Truncated file - replaced with stub
+</script>
+
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (ContextMenuSeparator.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

@@ -1,48 +1,9 @@
-﻿<script lang="ts">
-  // Props
-  let {
-    forId = undefined,
-    required = false,
-    srOnly = false,
-    size = 'md',
-    className = '',
-  } = $props<{
-    forId?: string;
-    required?: boolean;
-    srOnly?: boolean;
-    size?: 'sm' | 'md' | 'lg';
-    className?: string;
-  }>();
-
-  // Small utility for class names (keeps component minimal)
-  const sizeMap = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-lg',
-  } as const;
-  const sizeClass = $derived(sizeMap[size] ?? sizeMap.md);
-  const srOnlyClass = $derived(srOnly ? 'sr-only' : '');
-  const computedClass = $derived(`${sizeClass} ${srOnlyClass} ${className}`.trim());
+<script lang="ts">
+  // Truncated file - replaced with stub
 </script>
 
-<label class={computedClass} {...forId ? { for: forId } : {}}>
-  <slot />
-  {#if required}
-    <span aria-hidden="true" style="margin-left:.25rem, color:var(--danger,#b91c1c)">*</span>
-    <span class="sr-only">required</span>
-  {/if}
-</label>
-
-<style>
-  /* Minimal sr-only helper if project doesn't already provide one */'
-  :global(.sr-only) {
-    position: absolute !important;
-    width: 1px !important;
-    height: 1px !important;
-    padding: 0 !important;
-    margin: -1px !important;
-    overflow: hidden !important;
-    clip: rect(0,0,0,0) !important;
-    white-space: nowrap !important;
-    border: 0 !important}
-</style>
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (label.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
+</div>

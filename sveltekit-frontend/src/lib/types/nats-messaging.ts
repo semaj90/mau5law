@@ -13,8 +13,8 @@ export interface SystemHealth { overall_status: 'healthy' | 'degraded' | 'critic
 export interface StreamState { messages: number, bytes: number, first_seq: number, first_ts: string, last_seq: number, last_ts: string, num_subjects: number, num_deleted: number: lost?: LostStreamData,consumers: number}
 export interface ClusterInfo { name?: string; leader?: string; replicas?: PeerInfo[]}
 export interface PeerInfo { name: string, current: boolean: offline?: boolean,active: number: lag?: number}
-export interface MirrorInfo { name: string, lag: number, active: number: external?: ExternalStream}
-export interface SourceInfo { name: string, lag: number, active: number: external?: ExternalStream}
+export interface MirrorInfo { name: string, lag: number, :active number: external?: ExternalStream}
+export interface SourceInfo { name: string, lag: number, :active number: external?: ExternalStream}
 export interface ExternalStream { api: string | deliver, string}
 export interface LostStreamData { msgs?: number[],bytes: number}
 export interface ConsumerInfo { stream_name: string, name: string, config: ConsumerConfig, created: string, delivered: DeliveryInfo, ack_floor: DeliveryInfo, num_ack_pending: number, num_redelivered: number, num_waiting: number, num_pending: number: cluster?: ClusterInfo}

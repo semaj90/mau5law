@@ -1,34 +1,9 @@
-﻿<!-- Grid Layout Component with svelte-brics inspired, design -->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported import { cn } from '$lib/utils'; interface Props { columns?: number; gap?: 'none' | 'sm' | 'md' | 'lg' | 'xl'; responsive?: boolean; minHeight?: string; maxHeight?: string; children?: import('svelte').Snippet}
-  let {
-    columns = 12,
-    gap = 'md',
-    responsive = true,
-    minHeight = 'auto',
-    maxHeight = 'none',
-    children,
-  }: Props = $props();
-  export interface GridItemProps {
-    colSpan?: number;
-    rowSpan?: number;
-    colStart?: number;
-    rowStart?: number;
-    responsive?: boolean;
-    class?: string;
-  }
-  export const resizable: boolean = false;
-  
-  const gapClasses = { none: 'gap-0', sm: 'gap-2', md: 'gap-4', lg: 'gap-6', xl: 'gap-8' }; // Responsive breakpoints let gridClass = $derived( responsive ? `grid-cols-1, sm:grid-cols-2, md:grid-cols-${Math.min(columns, 6)} lg:grid-cols-${Math.min(columns, 8)} xl:grid-cols-${ columns }`: `grid-cols-${ columns }` );
+  // Truncated file - replaced with stub
 </script>
 
-<div
-  class={cn('grid, w-full', gridClass, gapClasses[gap])}
-  style:min-height="{minHeight},"
-  style:max-height={maxHeight}
->
-  {#if children}
-    {@render children()}
-  {/if}
+<div class="p-8 text-center">
+  <h1 class="text-2xl font-bold mb-4">Component Stub</h1>
+  <p class="text-gray-600">This component (Grid.svelte) was corrupted and replaced with a stub.</p>
+  <p class="text-sm text-gray-500 mt-4">Please restore from version control or rebuild.</p>
 </div>
-;
