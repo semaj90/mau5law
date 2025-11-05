@@ -1,27 +1,25 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
-  import UnifiedCanvasIntegration from '$lib/components/unified.svelte';
-  import NierRichTextEditor from '$lib/components/editors.svelte';
-  import EnhancedAIAssistant from '$lib/components/ai.svelte';
-  import CitationsManager from '$lib/components/citations.svelte';
+  // import UnifiedCanvasIntegration from '$lib/components/unified.svelte'; // Not found, not used
+  // import NierRichTextEditor from '$lib/components/editors.svelte'; // Not found, not used
+  // import EnhancedAIAssistant from '$lib/components/ai.svelte'; // Not found, not used
+  // import CitationsManager from '$lib/components/citations.svelte'; // Not found, not used
   // UI components are imported via barrel files for consistency and SSR compatibility.
-  import Button from '$lib/components/ui/enhanced-bits.svelte';
-  import { Badge } from '$lib/components/ui/badge';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/Card';
-  import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
-  import FileText from 'lucide-svelte/icons/file-text';
-  import Search from 'lucide-svelte/icons/search';
-  import Brain from 'lucide-svelte/icons/brain';
-  import Zap from 'lucide-svelte/icons/zap';
-  import MessageSquare from 'lucide-svelte/icons/message-square';
-  import Camera from 'lucide-svelte/icons/camera';
-  import Shield from 'lucide-svelte/icons/shield';
-  import Database from 'lucide-svelte/icons/database';
-  import Cpu from 'lucide-svelte/icons/cpu';
-  import Save from 'lucide-svelte/icons/save';
-  import Upload from 'lucide-svelte/icons/upload';
+  // import Button from '$lib/components/ui/enhanced-bits.svelte'; // Not used
+  // import { Badge } from '$lib/components/ui/badge'; // Not used
+  // import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card'; // Corrected casing
+  // import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs'; // Not exported, not used
+  // import FileText from 'lucide-svelte/icons/file-text'; // Not used
+  // import Search from 'lucide-svelte/icons/search'; // Not used
+  // import Brain from 'lucide-svelte/icons/brain'; // Not used
+  // import Zap from 'lucide-svelte/icons/zap'; // Not used
+  // import MessageSquare from 'lucide-svelte/icons/message-square'; // Not used
+  // import Camera from 'lucide-svelte/icons/camera'; // Not used
+  // import Shield from 'lucide-svelte/icons/shield'; // Not used
+  // import Database from 'lucide-svelte/icons/database'; // Not used
+  // import Cpu from 'lucide-svelte/icons/cpu'; // Not used
+  // import Save from 'lucide-svelte/icons/save'; // Not used
+  // import Upload from 'lucide-svelte/icons/upload'; // Not used
 
   interface Case {
     id: string
@@ -56,7 +54,7 @@ import type { Document } from '$lib/types';
   let cases = $state<Case[]>([]);
   let evidence = $state<EvidenceItem[]>([]);
   let chatMessages = $state<ChatMessage[]>([]);
-  let activeTab = $state<string>('evidence');
+  // let activeTab = $state<string>('evidence'); // activeTab is declared but its value is never read.
   let investigationNotes = $state<string>('');
   let citations = $state<string[]>([]);
   let isSaving = $state<boolean>(false);
@@ -69,43 +67,43 @@ import type { Document } from '$lib/types';
   });
 
   // Evidence handling
-  function handleEvidenceUploaded(event: CustomEvent) {
-    const { file, position } = (event as CustomEvent).detail
-    console.log('ðŸ” Evidence uploaded:', file.name, 'at position', position);
-    const newEvidence: EvidenceItem = { id: `evidence-${Date.now()}`,
-      caseId: currentCase?.id || 'unknown',
-      title: file.name,
-      type: getEvidenceType(file.type),
-      status: 'analyzing',
-      tags: [],
-      uploadedAt: new Date().toISOString(),
-      size: file.size
-    };
-    evidence = [newEvidence, ...evidence];
-    addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id)}
-  function handleAnalysisComplete(event: CustomEvent) {
-    const { fileId, analysis, confidence } = (event as CustomEvent).detail
-    console.log('ðŸ§  Analysis complete:', analysis);
-    // Update evidence with analysis
-    evidence = evidence.map((item) => {
-      if (item.id === fileId) {
-        return {
-          ...item,
-          status: 'analyzed',
-          aiAnalysis: (analysis && analysis.summary) || 'Analysis completed',
-          confidence: confidence ?? 0.85,
-          tags: (analysis && analysis.tags) || ['analyzed']
-        }}
-      return item});
-    addChatMessage('assistant', `Analysis completed for ${fileId}: ${(analysis && analysis.summary) || 'Evidence processed successfully'}`, 'evidence', fileId)}
-  function handleDetectiveInsights(event: CustomEvent) {
-    const { patterns, conflicts } = (event as CustomEvent).detail
-    console.log('ðŸ•µï¸ Detective insights:', patterns);
-    if (conflicts && conflicts.length > 0) {
-      addChatMessage('assistant', `âš ï¸ Potential conflicts detected: ${conflicts.map((c: unknown) => c.description).join(', ')}`, 'analysis')}
-    if (patterns && patterns.length > 0) {
-      addChatMessage('assistant', `ðŸ” Patterns identified: ${patterns.map((p: unknown) => p.type).join(', ')}`, 'analysis')}
-  }
+  // function handleEvidenceUploaded(event: CustomEvent) { // handleEvidenceUploaded is declared but its value is never read.
+  //   const { file, position } = (event as CustomEvent).detail
+  //   console.log('ðŸ”  Evidence uploaded:', file.name, 'at position', position);
+  //   const newEvidence: EvidenceItem = { id: `evidence-${Date.now()}`,
+  //     caseId: currentCase?.id || 'unknown',
+  //     title: file.name,
+  //     type: getEvidenceType(file.type),
+  //     status: 'analyzing',
+  //     tags: [],
+  //     uploadedAt: new Date().toISOString(),
+  //     size: file.size
+  //   };
+  //   evidence = [newEvidence, ...evidence];
+  //   addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id)}
+  // function handleAnalysisComplete(event: CustomEvent) { // handleAnalysisComplete is declared but its value is never read.
+  //   const { fileId, analysis, confidence } = (event as CustomEvent).detail
+  //   console.log('ðŸ§  Analysis complete:', analysis);
+  //   // Update evidence with analysis
+  //   evidence = evidence.map((item) => {
+  //     if (item.id === fileId) {
+  //       return {
+  //         ...item,
+  //         status: 'analyzed',
+  //         aiAnalysis: (analysis && analysis.summary) || 'Analysis completed',
+  //         confidence: confidence ?? 0.85,
+  //         tags: (analysis && analysis.tags) || ['analyzed']
+  //       }}
+  //     return item});
+  //   addChatMessage('assistant', `Analysis completed for ${fileId}: ${(analysis && analysis.summary) || 'Evidence processed successfully'}`, 'evidence', fileId)}
+  // function handleDetectiveInsights(event: CustomEvent) { // handleDetectiveInsights is declared but its value is never read.
+  //   const { patterns, conflicts } = (event as CustomEvent).detail
+  //   console.log('ðŸ•µï¸  Detective insights:', patterns);
+  //   if (conflicts && conflicts.length > 0) {
+  //     addChatMessage('assistant', `âš ï¸  Potential conflicts detected: ${conflicts.map((c: { description: string }) => c.description).join(', ')}`, 'analysis')}
+  //   if (patterns && patterns.length > 0) {
+  //     addChatMessage('assistant', `ðŸ”  Patterns identified: ${patterns.map((p: { type: string }) => p.type).join(', ')}`, 'analysis')}
+  // }
 
   // AI Chat functionality
   function addChatMessage(role: 'user' | 'assistant' | 'system', content: string, context?: 'evidence' | 'case' | 'citation' | 'analysis', relatedId?: string) {
@@ -126,22 +124,22 @@ import type { Document } from '$lib/types';
     if (mimeType.startsWith('audio/')) return 'audio';
     if (mimeType.includes('pdf') || mimeType.includes('document')) return 'document';
     return 'digital'}
-  function getPriorityColor(priority: string) {
-    switch (priority) {
-      case, 'critical': return 'bg-red-500';
-      case, 'high': return 'bg-orange-500';
-      case, 'medium': return 'bg-yellow-500';
-      case, 'low': return 'bg-green-500';
-      default: return 'bg-gray-500'}
-  }
-  function getStatusColor(status: string) {
-    switch (status) {
-      case, 'analyzing': return 'bg-blue-500';
-      case, 'analyzed': return 'bg-green-500';
-      case, 'pending': return 'bg-yellow-500';
-      case, 'tagged': return 'bg-purple-500';
-      default: return 'bg-gray-500'}
-  }
+  // function getPriorityColor(priority: string) {
+  //   switch (priority) {
+  //     case 'critical': return 'bg-red-500';
+  //     case 'high': return 'bg-orange-500';
+  //     case 'medium': return 'bg-yellow-500';
+  //     case 'low': return 'bg-green-500';
+  //     default: return 'bg-gray-500'}
+  // }
+  // function getStatusColor(status: string) {
+  //   switch (status) {
+  //     case 'analyzing': return 'bg-blue-500';
+  //     case 'analyzed': return 'bg-green-500';
+  //     case 'pending': return 'bg-yellow-500';
+  //     case 'tagged': return 'bg-purple-500';
+  //     default: return 'bg-gray-500'}
+  // }
 
   // Initialize
   $effect(() => {
@@ -177,32 +175,32 @@ import type { Document } from '$lib/types';
   }
 
   // Save investigation progress
-  async function saveInvestigation(): Promise<void> {
-    if (!currentCase || isSaving) return
-    isSaving = true
-    try {
-      const investigationData = {
-        caseId: currentCase.id,
-        notes: investigationNotes,
-        evidence: evidence.filter(e => e.caseId === currentCase!.id), // Added non-null assertion
-        citations,
-        chatHistory: chatMessages,
-        updatedAt: new Date().toISOString()
-      };
-      // Save to backend
-      const response = await fetch(`/api/cases/${currentCase.id}/investigation`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(investigationData)
-      });
-      if (response.ok) {
-        addChatMessage('system', 'Investigation progress saved successfully.')} else {
-        addChatMessage('system', 'Failed to save investigation progress.')}
-    } catch (error) {
-      console.error('Save error:', error);'
-      addChatMessage('system', 'Error saving investigation progress.')} finally {
-      isSaving = false}
-  }
+  // async function saveInvestigation(): Promise<void> {
+  //   if (!currentCase || isSaving) return
+  //   isSaving = true
+  //   try {
+  //     const investigationData = {
+  //       caseId: currentCase.id,
+  //       notes: investigationNotes,
+  //       evidence: evidence.filter(e => e.caseId === currentCase!.id), // Added non-null assertion
+  //       citations,
+  //       chatHistory: chatMessages,
+  //       updatedAt: new Date().toISOString()
+  //     };
+  //     // Save to backend
+  //     const response = await fetch(`/api/cases/${currentCase.id}/investigation`, {
+  //       method: 'PUT',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify(investigationData)
+  //     });
+  //     if (response.ok) {
+  //       addChatMessage('system', 'Investigation progress saved successfully.')} else {
+  //       addChatMessage('system', 'Failed to save investigation progress.')}
+  //   } catch (error) {
+  //     console.error('Save error:', error);
+  //     addChatMessage('system', 'Error saving investigation progress.')} finally {
+  //     isSaving = false}
+  // }
 </script>
 
 <main class="page-repair">
@@ -225,14 +223,14 @@ import type { Document } from '$lib/types';
    ; background: rgba(0, 255, 136, 0.1)}
 
   /* Text shadow for header */
-  .text-shadow-green {
-    text-shadow: 0 0 10px #00ff88}
+  /* .text-shadow-green {
+    text-shadow: 0 0 10px #00ff88} */
 
   /* Active status item styling */
-  .status-item.active {
+  /* .status-item.active {
     background: rgba(0, 255, 136, 0.2);
     border-color: #00ff88
-   ; color: #00ff88}
+   ; color: #00ff88} */
 
   /* message/chat related styles need to be global because the chat component may render markup */
   :global(.message-header) {
@@ -251,9 +249,9 @@ import type { Document } from '$lib/types';
     height: 6px;
     background: #FFD700;
     border-radius: 50%; animation: thinking 1.5s ease-in-out infinite}
-  :global(.thinking-indicator, span:nth-child(2)) {
+  :global(.thinking-indicator span:nth-child(2)) { /* Corrected syntax */
     animation-delay: 0.3s}
-  :global(.thinking-indicator, span:nth-child(3)) {
+  :global(.thinking-indicator span:nth-child(3)) { /* Corrected syntax */
     animation-delay: 0.6s}
 
   :global(.citations-list) {
@@ -338,19 +336,19 @@ import type { Document } from '$lib/types';
     font-size: 0.9rem}
   /* Responsive */
   @media (max-width: 1024px) {
-    .evidence-layout {
-      grid-template-columns: 1fr}
-    .evidence-sidebar {
-      max-height: 300px}
+    /* .evidence-layout {
+      grid-template-columns: 1fr} */
+    /* .evidence-sidebar {
+      max-height: 300px} */
   }
   @media (max-width: 768px) {
-    .workspace-header {
-      padding: 0.5rem 1rem}
-    .header-content {
+    /* .workspace-header {
+      padding: 0.5rem 1rem} */
+    /* .header-content {
       flex-direction: column
      ; gap: 1rem;
-      align-items: flex-start}
-    :global(.tab-content) { /* Changed to global selector */;
-      padding: 0.5rem}
+      align-items: flex-start} */
+    :global(.tab-content) { /* Changed to global selector */
+      padding: 0.5rem;} /* Corrected CSS syntax */
   }
 </style>

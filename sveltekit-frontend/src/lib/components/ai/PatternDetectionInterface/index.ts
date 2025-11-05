@@ -1,1 +1,1 @@
-export { default, as PatternDetectionInterface } from './PatternDetectionInterface.svelte'; 
+export { default as PatternDetectionInterface } from "./PatternDetectionInterface.svelte";

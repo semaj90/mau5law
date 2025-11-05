@@ -57,16 +57,21 @@ class SimpleProgress {
 
 // Configuration
 const config = {
-  batchSize: parseInt(process.env.BATCH_SIZE || '500', 10),
-  concurrency: parseInt(process.env.CONCURRENCY || '8', 10),
-  redisUrl: process.env.REDIS_URL || 'redis://localhost:6379',
-  qdrantUrl: process.env.QDRANT_URL || 'http://localhost:6333',
-  ollamaUrl: process.env.OLLAMA_URL || 'http://localhost:11434',
-  embeddingModel: 'embeddinggemma:latest',
-  embeddingDim: parseInt(process.env.EMBED_DIM || '768', 10),
+  batchSize: parseInt(process.env.BATCH_SIZE || "500", 10),
+  concurrency: parseInt(process.env.CONCURRENCY || "8", 10),
+  redisUrl: process.env.REDIS_URL || "redis://localhost:6379",
+  qdrantUrl: process.env.QDRANT_URL || "http://localhost:6333",
+  ollamaUrl: process.env.OLLAMA_URL || "http://localhost:11434",
+  // Optional override if you run a dedicated GPU-backed embedding service
+  embeddingServiceUrl:
+    process.env.EMBEDDING_GPU_SERVICE_URL || process.env.OLLAMA_URL || "http://localhost:11434",
+  // Optional: hint to the analyzer (and recommended env) for Ollama GPU layers
+  ollamaGpuLayers: process.env.OLLAMA_GPU_LAYERS || "25",
+  embeddingModel: "embeddinggemma:latest",
+  embeddingDim: parseInt(process.env.EMBED_DIM || "768", 10),
   cacheTTL: 7 * 24 * 60 * 60, // 7 days
-  outputDir: 'logs/phase43',
-  collectionName: 'error_embeddings'
+  outputDir: "logs/phase43",
+  collectionName: "error_embeddings",
 };
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -120,6 +125,8 @@ class GPUEmbeddingAnalyzer {
 
     // Probe embedding dimension from Ollama to avoid silent mismatches
     await this.detectEmbeddingDim();
+    // Probe Ollama for GPU availability and provide guidance if it's not using GPU
+    await this.detectOllamaGpu();
     await this.ensureQdrantCollection();
     console.log("✅ Qdrant collection ready");
 
@@ -137,6 +144,75 @@ class GPUEmbeddingAnalyzer {
     console.log(`  • Concurrency: ${config.concurrency}`);
     console.log(`  • Model: ${config.embeddingModel}`);
     console.log(`  • Cache TTL: ${config.cacheTTL / 86400} days\n`);
+  }
+
+  async detectOllamaGpu() {
+    // Try to detect whether the Ollama server is configured to use GPU layers.
+    // Ollama's HTTP API doesn't expose a stable "gpu" flag across versions,
+    // so we use a best-effort approach: hit /api/version and look for clues,
+    // then fall back to checking the local env var hint `OLLAMA_GPU_LAYERS`.
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const resp = await fetch(`${config.ollamaUrl}/api/version`, {
+        method: "GET",
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
+
+      if (resp.ok) {
+        let body = null;
+        try {
+          body = await resp.json().catch(() => null);
+        } catch (e) {
+          body = null;
+        }
+
+        // Heuristic checks
+        const versionText = body?.version || body?.version_string || String(body || "");
+        const bodyStr = JSON.stringify(body || "");
+
+        const looksLikeGpu = /cuda|gpu|nvidia|rocm/i.test(bodyStr + versionText);
+
+        if (looksLikeGpu) {
+          console.log(`✅ Ollama appears to be GPU-enabled (probe: ${config.ollamaUrl}).`);
+          return;
+        }
+      }
+    } catch (err) {
+      // ignore probe errors — we will still check env hints below
+    }
+
+    // If we reach here, we couldn't confirm GPU usage via the HTTP probe.
+    if (config.ollamaGpuLayers) {
+      console.log(
+        `⚠️ Ollama GPU layers hint detected via env: OLLAMA_GPU_LAYERS=${config.ollamaGpuLayers}. ` +
+          `If embeddings still run on CPU, ensure the Ollama process was started with this variable set and that the host has a CUDA-capable GPU.`
+      );
+      return;
+    }
+
+    // No GPU detected / hinted — provide actionable guidance.
+    console.warn(`⚠️ Ollama does not appear to be GPU-enabled (or probe inconclusive).`);
+    console.warn(
+      `  • If you run Ollama locally and have an NVIDIA GPU, restart Ollama with CUDA enabled. Example:`
+    );
+    console.warn(`      $env:OLLAMA_GPU_LAYERS='25'           # PowerShell (Windows)`);
+    console.warn(`      OLLAMA_GPU_LAYERS=25 ollama serve    # Unix-like shells`);
+    console.warn(`  • Or run the helper script:`);
+    console.warn(
+      `      pwsh -NoProfile -File scripts/start-ollama-gpu.ps1  # or use the VS Code task`
+    );
+    console.warn(`  • Or set the environment variable for this process before running Phase43:`);
+    console.warn(
+      `      $env:OLLAMA_GPU_LAYERS='25'; node scripts/phase43-ai-analyzer.mjs <log-file>`
+    );
+    console.warn(
+      `  • If you prefer a dedicated GPU embedding service, set EMBEDDING_GPU_SERVICE_URL to a local GPU-backed endpoint and restart.`
+    );
+    console.warn(
+      `  • See README or docs for more deployment details. For now the analyzer will continue but embeddings may be CPU-backed and slower.`
+    );
   }
 
   async ensureQdrantCollection() {
@@ -188,7 +264,7 @@ class GPUEmbeddingAnalyzer {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
-      const resp = await fetch(`${config.ollamaUrl}/api/embeddings`, {
+      const resp = await fetch(`${config.embeddingServiceUrl}/api/embeddings`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ model: config.embeddingModel, prompt: "probe" }),
@@ -209,7 +285,20 @@ class GPUEmbeddingAnalyzer {
         config.embeddingDim = vec.length;
       }
     } catch (err) {
-      console.warn("⚠️ Embedding probe failed:", err?.message || err);
+      const msg = err?.message || String(err);
+      console.warn("⚠️ Embedding probe failed:", msg);
+
+      if (/ECONNREFUSED|Failed to connect|connect ECONNREFUSED/i.test(msg)) {
+        console.warn("  • Could not reach the embedding service at", config.embeddingServiceUrl);
+        console.warn(
+          "  • If you are using the Ollama desktop app, run the server API with GPU enabled:"
+        );
+        console.warn("      OLLAMA_GPU_LAYERS=25 ollama serve   # Unix-like shells");
+        console.warn("      $env:OLLAMA_GPU_LAYERS='25'; ollama serve   # PowerShell (Windows)");
+        console.warn(
+          "  • Or set EMBEDDING_GPU_SERVICE_URL to a GPU-backed endpoint and restart Phase43."
+        );
+      }
     }
   }
 
@@ -396,18 +485,42 @@ class GPUEmbeddingAnalyzer {
 
   async cacheEmbedding(id, data) {
     // Use UUID format for cache key to match Qdrant ID
-    await this.redis.hSet(`ai:embedding:${id}`, {
+    const cachePayload = {
       id: id, // Store the UUID
       summary: data.summary,
       vector: JSON.stringify(data.vector),
       timestamp: new Date().toISOString(),
       file: data.metadata.file || "",
-      line: String(data.metadata.line || ""),
+      line: String(data.metadata.line ?? ""),
       errorCode: data.metadata.errorCode || "",
-    });
+      errorMessage: data.metadata.errorMessage || "",
+      tags: JSON.stringify(data.metadata.tags ?? []),
+    };
+
+    await this.redis.hSet(`ai:embedding:${id}`, cachePayload);
 
     // Set expiry
     await this.redis.expire(`ai:embedding:${id}`, config.cacheTTL);
+
+    // Publish event for downstream services (Neo4j graph, analytics, etc.)
+    try {
+      const channel = process.env.EMBED_EVENTS_CHANNEL || "embeddings.new";
+      await this.redis.publish(
+        channel,
+        JSON.stringify({
+          id,
+          summary: data.summary,
+          file: cachePayload.file,
+          line: Number(cachePayload.line) || 0,
+          errorCode: cachePayload.errorCode,
+          errorMessage: cachePayload.errorMessage,
+          tags: data.metadata.tags ?? [],
+          emittedAt: new Date().toISOString(),
+        })
+      );
+    } catch (err) {
+      console.warn("⚠️ Failed to publish embedding event:", err?.message || err);
+    }
   }
 
   async getEmbedding(text) {
@@ -425,7 +538,7 @@ class GPUEmbeddingAnalyzer {
         const timeoutMs = 30000; // 30s
         const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
-        const response = await fetch(`${config.ollamaUrl}/api/embeddings`, {
+        const response = await fetch(`${config.embeddingServiceUrl}/api/embeddings`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

@@ -48,7 +48,7 @@
       "problemMatcher": []
     },
     {
-      "label": "📝 Svelte-Check with Log (gemma3-legal summarization)",
+      "label": "≡ƒô¥ Svelte-Check with Log (gemma3-legal summarization)",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -148,7 +148,7 @@
       "group": "test"
     },
     {
-      "label": "✅ TypeScript Check - Quick",
+      "label": "Γ£à TypeScript Check - Quick",
       "type": "shell",
       "command": "npx",
       "args": [
@@ -271,7 +271,7 @@
       "group": "test"
     },
     {
-      "label": "🔴 Start Redis Error Logger",
+      "label": "≡ƒö┤ Start Redis Error Logger",
       "type": "shell",
       "command": "go",
       "args": [
@@ -301,7 +301,7 @@
       }
     },
     {
-      "label": "🌐 Start SvelteKit Dev (via Error Logger)",
+      "label": "≡ƒîÉ Start SvelteKit Dev (via Error Logger)",
       "type": "shell",
       "command": "npm",
       "args": [
@@ -327,11 +327,11 @@
         "$tsc",
         "$eslint-compact"
       ],
-      "dependsOn": "🔴 Start Redis Error Logger",
+      "dependsOn": "≡ƒö┤ Start Redis Error Logger",
       "detail": "Starts SvelteKit development server (access via localhost:8080 for error logging)"
     },
     {
-      "label": "🧪 Test Error Logger",
+      "label": "≡ƒº¬ Test Error Logger",
       "type": "shell",
       "command": "node",
       "args": [
@@ -353,7 +353,7 @@
       "detail": "Tests Redis error logging with 4 simulated Vite errors and auto-solve"
     },
     {
-      "label": "📁 View Error Logs",
+      "label": "≡ƒôü View Error Logs",
       "type": "shell",
       "command": "code",
       "args": [
@@ -373,7 +373,7 @@
       "detail": "Opens the claude-pickup directory to view auto-generated error logs"
     },
     {
-      "label": "🔧 Check Redis Connection",
+      "label": "≡ƒöº Check Redis Connection",
       "type": "shell",
       "command": "docker",
       "args": [
@@ -395,11 +395,11 @@
       "detail": "Tests Redis connection in Docker container"
     },
     {
-      "label": "🚀 Start Full Development Stack",
+      "label": "≡ƒÜÇ Start Full Development Stack",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "🔧 Check Redis Connection",
-        "🔴 Start Redis Error Logger"
+        "≡ƒöº Check Redis Connection",
+        "≡ƒö┤ Start Redis Error Logger"
       ],
       "group": {
         "kind": "build",
@@ -413,10 +413,10 @@
         "showReuseMessage": true,
         "clear": true
       },
-      "detail": "Starts complete development environment: Redis → Error Logger → SvelteKit (use localhost:8080)"
+      "detail": "Starts complete development environment: Redis ΓåÆ Error Logger ΓåÆ SvelteKit (use localhost:8080)"
     },
     {
-      "label": "🗑️ Clean Error Logs",
+      "label": "≡ƒùæ∩╕Å Clean Error Logs",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -439,7 +439,7 @@
       "detail": "Cleans up auto-generated error log files (keeps README.md)"
     },
     {
-      "label": "🤖 Start MCP Multicore Server",
+      "label": "≡ƒñû Start MCP Multicore Server",
       "type": "shell",
       "command": "node",
       "args": [
@@ -483,7 +483,7 @@
       "detail": "Starts MCP multicore server with Context7 integration for auto-solve tasks"
     },
     {
-      "label": "🔧 MCP Health Check",
+      "label": "≡ƒöº MCP Health Check",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -503,7 +503,7 @@
       "detail": "Checks MCP multicore server health and worker status"
     },
     {
-      "label": "📊 MCP Metrics Dashboard",
+      "label": "≡ƒôè MCP Metrics Dashboard",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -523,12 +523,12 @@
       "detail": "Shows detailed MCP server metrics and worker status"
     },
     {
-      "label": "🚀 Start Full MCP Development Stack",
+      "label": "≡ƒÜÇ Start Full MCP Development Stack",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "🔧 Check Redis Connection",
-        "🤖 Start MCP Multicore Server",
-        "🔴 Start Redis Error Logger"
+        "≡ƒöº Check Redis Connection",
+        "≡ƒñû Start MCP Multicore Server",
+        "≡ƒö┤ Start Redis Error Logger"
       ],
       "group": {
         "kind": "build",
@@ -542,7 +542,7 @@
         "showReuseMessage": true,
         "clear": true
       },
-      "detail": "Starts complete MCP-enabled development environment: Redis → MCP Server → Error Logger → SvelteKit"
+      "detail": "Starts complete MCP-enabled development environment: Redis ΓåÆ MCP Server ΓåÆ Error Logger ΓåÆ SvelteKit"
     },
     {
       "label": "Open user toolset",
@@ -626,7 +626,7 @@
       "problemMatcher": []
     },
     {
-      "label": "🤖 Start LiteLLM Proxy (Ollama→Claude Code)",
+      "label": "≡ƒñû Start LiteLLM Proxy (OllamaΓåÆClaude Code)",
       "type": "shell",
       "command": "powershell",
       "args": [
@@ -672,12 +672,12 @@
       }
     },
     {
-      "label": "🔍 Check LiteLLM Status",
+      "label": "≡ƒöì Check LiteLLM Status",
       "type": "shell",
       "command": "powershell",
       "args": [
         "-Command",
-        "try { $response = Invoke-RestMethod -Uri 'http://localhost:4000/v1/models' -Headers @{'Authorization'='Bearer sk-1234'} -Method Get; Write-Host '✅ LiteLLM Proxy is running' -ForegroundColor Green; Write-Host 'Available models:' -ForegroundColor Cyan; $response.data | ForEach-Object { Write-Host '  -' $_.id -ForegroundColor Yellow } } catch { Write-Host '❌ LiteLLM Proxy is not running' -ForegroundColor Red; Write-Host 'Run task: 🤖 Start LiteLLM Proxy' -ForegroundColor Yellow }"
+        "try { $response = Invoke-RestMethod -Uri 'http://localhost:4000/v1/models' -Headers @{'Authorization'='Bearer sk-1234'} -Method Get; Write-Host 'Γ£à LiteLLM Proxy is running' -ForegroundColor Green; Write-Host 'Available models:' -ForegroundColor Cyan; $response.data | ForEach-Object { Write-Host '  -' $_.id -ForegroundColor Yellow } } catch { Write-Host 'Γ¥î LiteLLM Proxy is not running' -ForegroundColor Red; Write-Host 'Run task: ≡ƒñû Start LiteLLM Proxy' -ForegroundColor Yellow }"
       ],
       "group": "test",
       "presentation": {
@@ -692,7 +692,7 @@
       "detail": "Checks if LiteLLM proxy is running and shows available models"
     },
     {
-      "label": "🚀 Start MCP Context7 SIMD Server",
+      "label": "≡ƒÜÇ Start MCP Context7 SIMD Server",
       "type": "shell",
       "command": "node",
       "args": [
@@ -743,12 +743,12 @@
       }
     },
     {
-      "label": "📊 Check MCP Context7 Status",
+      "label": "≡ƒôè Check MCP Context7 Status",
       "type": "shell",
       "command": "powershell",
       "args": [
         "-Command",
-        "try { $health = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host '✅ MCP Context7 Server is running' -ForegroundColor Green; Write-Host ('Workers: ' + $health.workers) -ForegroundColor Cyan; Write-Host ('Redis: ' + $health.redis) -ForegroundColor Yellow; Write-Host ('PostgreSQL: ' + $health.postgres) -ForegroundColor Magenta; Write-Host ('SIMD: ' + $health.simd) -ForegroundColor Blue; Write-Host ('Cache Hit Ratio: ' + [math]::Round($health.cacheStats.ratio * 100, 2) + '%') -ForegroundColor Green; $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host ('Memory RSS: ' + [math]::Round($metrics.memory.rss/1MB, 2) + ' MB') -ForegroundColor Yellow } catch { Write-Host '❌ MCP Context7 Server is not running' -ForegroundColor Red; Write-Host 'Run task: 🚀 Start MCP Context7 SIMD Server' -ForegroundColor Yellow }"
+        "try { $health = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host 'Γ£à MCP Context7 Server is running' -ForegroundColor Green; Write-Host ('Workers: ' + $health.workers) -ForegroundColor Cyan; Write-Host ('Redis: ' + $health.redis) -ForegroundColor Yellow; Write-Host ('PostgreSQL: ' + $health.postgres) -ForegroundColor Magenta; Write-Host ('SIMD: ' + $health.simd) -ForegroundColor Blue; Write-Host ('Cache Hit Ratio: ' + [math]::Round($health.cacheStats.ratio * 100, 2) + '%') -ForegroundColor Green; $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host ('Memory RSS: ' + [math]::Round($metrics.memory.rss/1MB, 2) + ' MB') -ForegroundColor Yellow } catch { Write-Host 'Γ¥î MCP Context7 Server is not running' -ForegroundColor Red; Write-Host 'Run task: ≡ƒÜÇ Start MCP Context7 SIMD Server' -ForegroundColor Yellow }"
       ],
       "group": "test",
       "presentation": {
@@ -763,12 +763,12 @@
       "detail": "Checks MCP Context7 server health, cache stats, and integrations"
     },
     {
-      "label": "🎯 Start Complete AI Stack (LiteLLM + MCP + Dev)",
+      "label": "≡ƒÄ» Start Complete AI Stack (LiteLLM + MCP + Dev)",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "🤖 Start LiteLLM Proxy (Ollama→Claude Code)",
-        "🚀 Start MCP Context7 SIMD Server",
-        "🔴 Start Redis Error Logger"
+        "≡ƒñû Start LiteLLM Proxy (OllamaΓåÆClaude Code)",
+        "≡ƒÜÇ Start MCP Context7 SIMD Server",
+        "≡ƒö┤ Start Redis Error Logger"
       ],
       "group": {
         "kind": "build",
@@ -782,10 +782,10 @@
         "showReuseMessage": true,
         "clear": true
       },
-      "detail": "Starts complete AI development stack: LiteLLM (Ollama) → MCP Context7 (SIMD) → Redis Error Logger"
+      "detail": "Starts complete AI development stack: LiteLLM (Ollama) ΓåÆ MCP Context7 (SIMD) ΓåÆ Redis Error Logger"
     },
     {
-      "label": "🎨 Demo: SharedArrayBuffer + WebGPU Pattern",
+      "label": "≡ƒÄ¿ Demo: SharedArrayBuffer + WebGPU Pattern",
       "type": "shell",
       "command": "node",
       "args": [
@@ -801,10 +801,10 @@
         "clear": true
       },
       "problemMatcher": [],
-      "detail": "Demonstrates parallel CPU preparation → GPU upload pattern for legal document vectorization"
+      "detail": "Demonstrates parallel CPU preparation ΓåÆ GPU upload pattern for legal document vectorization"
     },
     {
-      "label": "✅ Check for Errors (TypeScript + Svelte)",
+      "label": "Γ£à Check for Errors (TypeScript + Svelte)",
       "type": "shell",
       "command": "npm",
       "args": [
@@ -832,7 +832,7 @@
       "detail": "Runs svelte-check to find TypeScript and Svelte errors (working directory: sveltekit-frontend)"
     },
     {
-      "label": "⚡ Quick Error Check (TypeScript only)",
+      "label": "ΓÜí Quick Error Check (TypeScript only)",
       "type": "shell",
       "command": "npx",
       "args": [
@@ -858,7 +858,7 @@
       "detail": "Fast TypeScript error check (working directory: sveltekit-frontend)"
     },
     {
-      "label": "🔧 Fix Common Errors (Auto)",
+      "label": "≡ƒöº Fix Common Errors (Auto)",
       "type": "shell",
       "command": "npm",
       "args": [
@@ -957,7 +957,7 @@
       "detail": "Compound task: run svelte-check and then the parser"
     },
     {
-      "label": "📊 Analyze TypeScript Errors by Priority",
+      "label": "≡ƒôè Analyze TypeScript Errors by Priority",
       "type": "shell",
       "command": "node",
       "args": [
@@ -966,7 +966,7 @@
       "group": "test"
     },
     {
-      "label": "🚀 Phase43: GPU Embedding Pipeline",
+      "label": "≡ƒÜÇ Phase43: GPU Embedding Pipeline",
       "type": "shell",
       "command": "node",
       "args": [
@@ -998,7 +998,7 @@
       "detail": "GPU-accelerated error embedding with Redis cache + Qdrant (384d)"
     },
     {
-      "label": "🎯 Phase44: CUDA Tensor Aggregation",
+      "label": "≡ƒÄ» Phase44: CUDA Tensor Aggregation",
       "type": "shell",
       "command": "python",
       "args": [
@@ -1022,10 +1022,10 @@
         "clear": false
       },
       "group": "build",
-      "detail": "Load embeddings from Redis → CUDA → PCA/clustering → PyTorch export"
+      "detail": "Load embeddings from Redis ΓåÆ CUDA ΓåÆ PCA/clustering ΓåÆ PyTorch export"
     },
     {
-      "label": "⚡ Concurrent AST Fixer",
+      "label": "ΓÜí Concurrent AST Fixer",
       "type": "shell",
       "command": "node",
       "args": [
@@ -1049,7 +1049,7 @@
       "detail": "8-16 parallel workers + SIMD + Qdrant + MCP for AI-assisted error fixing"
     },
     {
-      "label": "🎨 Prettier: Format All Code",
+      "label": "≡ƒÄ¿ Prettier: Format All Code",
       "type": "shell",
       "command": "npx",
       "args": [
@@ -1075,12 +1075,12 @@
       "detail": "Format all source files with Prettier"
     },
     {
-      "label": "🔥 Full GPU Pipeline: Embed → Aggregate → Fix",
+      "label": "≡ƒöÑ Full GPU Pipeline: Embed ΓåÆ Aggregate ΓåÆ Fix",
       "dependsOrder": "sequence",
       "dependsOn": [
-        "🚀 Phase43: GPU Embedding Pipeline",
-        "🎯 Phase44: CUDA Tensor Aggregation",
-        "⚡ Concurrent AST Fixer"
+        "≡ƒÜÇ Phase43: GPU Embedding Pipeline",
+        "≡ƒÄ» Phase44: CUDA Tensor Aggregation",
+        "ΓÜí Concurrent AST Fixer"
       ],
       "problemMatcher": [],
       "presentation": {
@@ -1095,7 +1095,39 @@
         "kind": "build",
         "isDefault": false
       },
-      "detail": "Complete GPU pipeline: Embed errors → CUDA clustering → AI-assisted fixes"
+      "detail": "Complete GPU pipeline: Embed errors ΓåÆ CUDA clustering ΓåÆ AI-assisted fixes"
+    },
+    {
+      "label": "🟢 Ollama Serve: GPU (25 layers)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/start-ollama-gpu.ps1",
+        "-GpuLayers",
+        "25",
+        "-WaitSeconds",
+        "20"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Start Ollama HTTP API with CUDA enabled (25 GPU layers)."
     }
   ],
   "inputs": [
