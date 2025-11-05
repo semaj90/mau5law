@@ -1231,6 +1231,28 @@ export const documentChunksTable = pgTable(
   })
 );
 
+// === VECTOR OUTBOX ===
+export const vectorOutbox = pgTable('vector_outbox', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  ownerType: varchar('owner_type', { length: 256 }).notNull(),
+  ownerId: varchar('owner_id', { length: 256 }).notNull(),
+  event: varchar('event', { length: 256 }).notNull(),
+  vector: text('vector'), // Storing vector as text, consider pgvector type if available
+  payload: jsonb('payload').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+export const vectorJobs = pgTable('vector_jobs', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  status: varchar('status', { enum: ['pending', 'processing', 'success', 'failed'] }).notNull(),
+  progress: integer('progress').default(0).notNull(),
+  result: jsonb('result'),
+  error: text('error'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Corrected schema export to include all defined tables
 export const schema = {
   users,
