@@ -11,6 +11,7 @@ const { Client } = pgPkg;
 // External service configuration
 const PHASE45_ADAPTER_URL = process.env.PHASE45_ADAPTER_URL || "http://localhost:8085";
 const DOC_INGEST_URL = (process.env.DOC_INGEST_URL || "http://localhost:8090").replace(/\/$/, "");
+const PHASE46_ADAPTER_URL = (process.env.PHASE46_ADAPTER_URL || "http://localhost:8092").replace(/\/$/, "");
 const DATABASE_URL = process.env.DATABASE_URL || null;
 const PG_VECTOR_TABLE = process.env.PHASE46_PG_TABLE || "rag_document_chunks";
 const VECTOR_SEARCH_LIMIT = Number(process.env.VECTOR_SEARCH_LIMIT || "5");

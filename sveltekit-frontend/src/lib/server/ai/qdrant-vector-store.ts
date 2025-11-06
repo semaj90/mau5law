@@ -9,9 +9,20 @@ import { QdrantClient, type QdrantClientParams } from "@qdrant/js-client-rest";
 import type { LegalEntity } from "$lib/types/sharedTypes";
 import { createHash } from "crypto";
 
-// --- Added: lightweight local types to satisfy TS checks ---
+// --- Revised: local types to avoid 'any' casts ---
 type QdrantCollectionsResponse = { collections?: Array<{ name: string }> };
-type QdrantFilter = { must?: Array<Record<string, any>> } | undefined;
+
+// Strict filter clause used in this file
+type QdrantFilterClause = {
+  key: string;
+  match?: { value: string | number };
+  range?: { gte?: number; lte?: number };
+};
+
+// Filter shape accepted by many client methods
+type QdrantFilter = { must?: QdrantFilterClause[] } | undefined;
+
+// Minimal typed view of a search hit
 interface QdrantSearchHit<T> {
   id?: string | number;
   score: number;
@@ -20,7 +31,55 @@ interface QdrantSearchHit<T> {
 interface QdrantCollectionInfo {
   points_count?: number;
 }
-// payload types used by the store
+
+// Minimal request shapes used in this module
+type QdrantUpsertPoint = { id: string | number; vector: number[]; payload?: Record<string, unknown> };
+type QdrantUpsertRequest = { wait?: boolean; points: QdrantUpsertPoint[] };
+
+type QdrantSearchRequest = {
+  vector: number[];
+  limit?: number;
+  with_payload?: boolean;
+  filter?: QdrantFilter;
+};
+
+// --- New: local aliases for package-specific Qdrant types (per-version differences) ---
+// These aliases avoid TS errors when the installed @qdrant/js-client-rest has different exported type names.
+// They are intentionally permissive but now typed to avoid `any` lint/compiler errors.
+// Refine further if you import exact types from the client.
+type QdrantUpsertParams = QdrantUpsertRequest & {
+  // client may accept additional parameters such as 'on_duplicate' or custom flags
+  on_duplicate?: "skip" | "update" | "replace" | string;
+  // extension index
+  [key: string]: unknown;
+};
+
+type QdrantSearchParams = QdrantSearchRequest & {
+  // Qdrant search sometimes accepts 'params' or additional options
+  params?: Record<string, unknown>;
+  // allow extra fields to tolerate client version differences
+  [key: string]: unknown;
+};
+
+type QdrantScrollParams = {
+  filter?: QdrantFilter;
+  limit?: number;
+  offset?: number;
+  with_payload?: boolean;
+  // extension point for client-specific scroll options
+  [key: string]: unknown;
+};
+
+type QdrantDeleteParams = {
+  wait?: boolean;
+  filter?: QdrantFilter;
+  // points may be provided instead of filter in some client APIs
+  points?: Array<string | number>;
+  // extension point
+  [key: string]: unknown;
+};
+
+// --- New: payload interfaces used in search result mapping ---
 interface ConversationPayload {
   sessionId?: string;
   turnIndex?: number;
@@ -29,20 +88,24 @@ interface ConversationPayload {
   intent?: string;
   hmmState?: number;
   confidence?: number;
+  // other payload fields may exist
 }
 interface EntityPayload {
   sessionId?: string;
   entityType?: string;
   entityValue?: string;
   confidence?: number;
+  // other payload fields may exist
 }
 interface SummaryPayload {
   sessionId?: string;
   summary?: string;
   turnCount?: number;
   currentState?: number;
+  confidence?: number;
+  // other payload fields may exist
 }
-// --- end added types ---
+// --- end revised types ---
 
 // Environment variables
 const QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
@@ -91,13 +154,24 @@ export class QdrantVectorStore {
         (await this.client.getCollections()) as unknown as QdrantCollectionsResponse;
       const exists = (collections.collections ?? []).some((c) => c.name === collectionName);
       if (!exists) {
-        const cfg: Record<string, unknown> = {
-          vectors: { size: vectorSize, distance: "Cosine" },
+        // Build a plain literal that matches the runtime shape Qdrant expects.
+        const createCfg = {
+          vectors: {
+            // "embeddings" is the named vector field required at runtime
+            embeddings: { size: vectorSize, distance: "Cosine" },
+          },
           optimizers_config: { default_segment_number: 2 },
           replication_factor: 1,
         };
-        // changed cast to 'any' to satisfy client method signature
-        await this.client.createCollection(collectionName, cfg as any);
+
+        // Use the actual parameter type of QdrantClient.createCollection to satisfy differing client typings.
+        type CreateCollectionParam = Parameters<QdrantClient['createCollection']>[1];
+
+        // Cast to the concrete runtime parameter type derived from the client method.
+        await this.client.createCollection(
+          collectionName,
+          createCfg as unknown as CreateCollectionParam
+        );
         console.log(`✓ Created Qdrant collection: ${collectionName}`);
       }
     } catch (error) {
@@ -131,10 +205,12 @@ export class QdrantVectorStore {
       entityCount: metadata?.entities?.length ?? 0,
       timestamp: Date.now(),
     };
-    await this.client.upsert(COLLECTIONS.CONVERSATIONS, {
+    const upsertReq: QdrantUpsertRequest = {
       wait: true,
       points: [{ id: pointId, vector: embedding, payload }],
-    } as any);
+    };
+    const upsertReqTyped = upsertReq as unknown as QdrantUpsertParams;
+    await this.client.upsert(COLLECTIONS.CONVERSATIONS, upsertReqTyped);
     return pointId;
   }
 
@@ -162,11 +238,12 @@ export class QdrantVectorStore {
     if (entView.span?.start !== undefined) payload.startPos = entView.span.start;
     if (entView.span?.end !== undefined) payload.endPos = entView.span.end;
 
-    await this.client.upsert(COLLECTIONS.ENTITIES, {
+    const upsertEnt: QdrantUpsertRequest = {
       wait: true,
       points: [{ id: pointId, vector: embedding, payload }],
-    } as any);
-
+    };
+    const upsertEntTyped = upsertEnt as unknown as QdrantUpsertParams;
+    await this.client.upsert(COLLECTIONS.ENTITIES, upsertEntTyped);
     return pointId;
   }
 
@@ -190,10 +267,12 @@ export class QdrantVectorStore {
       confidence: metadata?.confidence ?? null,
       timestamp: Date.now(),
     };
-    await this.client.upsert(COLLECTIONS.SUMMARIES, {
+    const upsertSummary: QdrantUpsertRequest = {
       wait: true,
       points: [{ id: pointId, vector: embedding, payload }],
-    } as any);
+    };
+    const upsertSummaryTyped = upsertSummary as unknown as QdrantUpsertParams;
+    await this.client.upsert(COLLECTIONS.SUMMARIES, upsertSummaryTyped);
     return pointId;
   }
 
@@ -223,17 +302,17 @@ export class QdrantVectorStore {
         qdrantFilter.must.push({ key: "confidence", range: { gte: filter.minConfidence } });
     }
 
-    const searchParams: Record<string, unknown> = {
+    const searchParams: QdrantSearchRequest = {
       vector: queryEmbedding,
       limit,
       with_payload: true,
       filter: qdrantFilter,
     };
-
+    const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
     const searchResult = (await this.client.search(
       COLLECTIONS.CONVERSATIONS,
-      searchParams as any
-    )) as QdrantSearchHit<ConversationPayload>[] | undefined;
+      searchParamsTyped
+    )) as unknown as QdrantSearchHit<ConversationPayload>[] | undefined;
 
     return (searchResult ?? []).map((hit) => {
       const p = hit.payload ?? {};
@@ -267,15 +346,17 @@ export class QdrantVectorStore {
     const filter = entityType
       ? { must: [{ key: "entityType", match: { value: entityType } }] }
       : undefined;
-    const searchParams: Record<string, unknown> = {
+    const searchParams: QdrantSearchRequest = {
       vector: queryEmbedding,
       limit,
       with_payload: true,
       filter,
     };
-    const searchResult = (await this.client.search(COLLECTIONS.ENTITIES, searchParams as any)) as
-      | QdrantSearchHit<EntityPayload>[]
-      | undefined;
+    const searchParamsTyped = searchParams as unknown as QdrantSearchParams;
+    const searchResult = (await this.client.search(
+      COLLECTIONS.ENTITIES,
+      searchParamsTyped
+    )) as unknown as QdrantSearchHit<EntityPayload>[] | undefined;
 
     return (searchResult ?? []).map((hit) => {
       const p = hit.payload ?? {};
@@ -303,11 +384,8 @@ export class QdrantVectorStore {
     }>
   > {
     await this.ensureInitialized();
-    const searchResult = (await this.client.search(COLLECTIONS.SUMMARIES, {
-      vector: queryEmbedding,
-      limit,
-      with_payload: true,
-    } as any)) as QdrantSearchHit<SummaryPayload>[] | undefined;
+    const summariesSearchParams = { vector: queryEmbedding, limit, with_payload: true } as unknown as QdrantSearchParams;
+    const searchResult = (await this.client.search(COLLECTIONS.SUMMARIES, summariesSearchParams)) as unknown as QdrantSearchHit<SummaryPayload>[] | undefined;
 
     return (searchResult ?? []).map((hit) => {
       const p = hit.payload ?? {};
@@ -324,11 +402,12 @@ export class QdrantVectorStore {
   /** Simple cluster analysis for entity types (lightweight) */
   async getEntityClusters(entityType: string, minClusterSize: number = 3) {
     await this.ensureInitialized();
-    const scrollResult = (await this.client.scroll(COLLECTIONS.ENTITIES, {
+    const scrollReq = {
       filter: { must: [{ key: "entityType", match: { value: entityType } }] },
       limit: 1000,
       with_payload: true,
-    } as any)) as { points?: Array<{ payload?: EntityPayload }> } | undefined;
+    } as unknown as QdrantScrollParams;
+    const scrollResult = (await this.client.scroll(COLLECTIONS.ENTITIES, scrollReq)) as unknown as { points?: Array<{ payload?: EntityPayload }> } | undefined;
 
     const counts = new Map<string, { count: number; confidence?: number }>();
     for (const p of scrollResult?.points ?? []) {
@@ -359,19 +438,18 @@ export class QdrantVectorStore {
   /** Delete conversation data across collections */
   async deleteConversationData(sessionId: string): Promise<void> {
     await this.ensureInitialized();
+    const deleteReq: QdrantDeleteParams = {
+      wait: true,
+      filter: { must: [{ key: "sessionId", match: { value: sessionId } }] },
+    } as unknown as QdrantDeleteParams;
+
+    // Cast to the runtime parameter type expected by the client to avoid TS mismatches across versions.
+    const deleteParam = deleteReq as unknown as Parameters<QdrantClient['delete']>[1];
+
     await Promise.all([
-      this.client.delete(COLLECTIONS.CONVERSATIONS, {
-        wait: true,
-        filter: { must: [{ key: "sessionId", match: { value: sessionId } }] },
-      } as any),
-      this.client.delete(COLLECTIONS.ENTITIES, {
-        wait: true,
-        filter: { must: [{ key: "sessionId", match: { value: sessionId } }] },
-      } as any),
-      this.client.delete(COLLECTIONS.SUMMARIES, {
-        wait: true,
-        filter: { must: [{ key: "sessionId", match: { value: sessionId } }] },
-      } as any),
+      this.client.delete(COLLECTIONS.CONVERSATIONS, deleteParam),
+      this.client.delete(COLLECTIONS.ENTITIES, deleteParam),
+      this.client.delete(COLLECTIONS.SUMMARIES, deleteParam),
     ]);
   }
 
@@ -388,6 +466,26 @@ export class QdrantVectorStore {
       this.client.getCollection(COLLECTIONS.SUMMARIES),
     ])) as unknown as [
       QdrantCollectionInfo | undefined,
+      QdrantCollectionInfo | undefined,
+      QdrantCollectionInfo | undefined
+    ];
+
+    const [conversations, entities, summaries] = resp;
+    return {
+      conversations: { count: conversations?.points_count ?? 0 },
+      entities: { count: entities?.points_count ?? 0 },
+      summaries: { count: summaries?.points_count ?? 0 },
+    };
+  }
+
+  /** Ensure store is initialized */
+  private async ensureInitialized(): Promise<void> {
+    if (!this.initialized) await this.initialize();
+  }
+} // end class
+
+// Export singleton instance
+export const qdrantVectorStore = new QdrantVectorStore();
       QdrantCollectionInfo | undefined,
       QdrantCollectionInfo | undefined,
     ];
