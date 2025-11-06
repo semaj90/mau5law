@@ -1,29 +1,160 @@
 <script lang="ts">
-import { userStore } from '$lib/stores/user'; import Button from '$lib/components/ui/button/Button.svelte'; import { LogOut, Smartphone, Monitor, Clock, MapPin, AlertCircle } from 'lucide-svelte'; interface Session { id: string, userAgent: string, ipAddress: string, createdAt: string, lastActivityAt: string, isCurrent: boolean;, deviceType: 'mobile' | 'tablet' | 'desktop' | 'unknown'}
+	import { onMount } from 'svelte';
+	import { userStore } from '$lib/stores/user';
+	import Button from '$lib/components/ui/button/Button.svelte';
+	import { LogOut, Smartphone, Monitor, Clock, MapPin, AlertCircle } from 'lucide-svelte';
 
-  let sessions = $state<Session[]>([]); let loading = $state<boolean>(true); let revoking = $state<string | null>(null); let message = $state<string>(''); let messageType = $state<'success' | 'error'>('success'); async function loadSessions(): Promise<any> { try { loading = true; const response = await fetch('/api/auth/sessions'); if (response.ok) { sessions = await response.json()} else { throw new Error('Failed to load sessions')}
-    } catch (error) { message = 'Failed to load sessions'; messageType = 'error'} finally { loading = false}
-  }
-  async function revokeSession(sessionId: string): Promise<any> { try { revoking = sessionId; const response = await fetch(`/api/auth/sessions/${ sessionId }`, { method: 'DELETE'
-      }); if (response.ok) { message = 'Session revoked successfully'; messageType = 'success'; await loadSessions()} else { throw new Error('Failed to revoke session')}
-    } catch (error) { message = 'Failed to revoke session'; messageType = 'error'} finally { revoking = null}
-  }
-  async function revokeAllOtherSessions(): Promise<any> { if (!confirm('This will log you out from all other devices. Continue?')) return; try { const response = await fetch('/api/auth/sessions/revoke-others', { method: 'POST'
-      }); if (response.ok) { message = 'All other sessions revoked'; messageType = 'success'; await loadSessions()} else { throw new Error('Failed to revoke sessions')}
-    } catch (error) { message = 'Failed to revoke sessions'; messageType = 'error'}
-  }
-  function getDeviceIcon(deviceType: string) { switch (deviceType) { case, 'mobile': return Smartphone; case, 'tablet': return Smartphone; default: return Monitor}
-  }
-  function parseUserAgent(userAgent: string): string { if (userAgent.includes('Chrome')) return 'Chrome'; if (userAgent.includes('Safari')) return 'Safari'; if (userAgent.includes('Firefox')) return 'Firefox'; if (userAgent.includes('Edge')) return 'Edge'; return 'Unknown Browser'}
+	interface Session {
+		id: string;
+		userAgent: string;
+		ipAddress: string;
+		createdAt: string;
+		lastActivityAt: string;
+		isCurrent: boolean;
+		deviceType: 'mobile' | 'tablet' | 'desktop' | 'unknown';
+	}
 
-  onMount(() => { loadSessions()}); import { onMount } from 'svelte';
+	let sessions = $state<Session[]>([]);
+	let loading = $state<boolean>(true);
+	let revoking = $state<string | null>(null);
+	let message = $state<string>('');
+	let messageType = $state<'success' | 'error'>('success');
+
+	async function loadSessions(): Promise<void> {
+		try {
+			loading = true;
+			const response = await fetch('/api/auth/sessions');
+			if (response.ok) {
+				sessions = await response.json();
+			} else {
+				throw new Error('Failed to load sessions');
+			}
+		} catch (err) {
+			message = 'Failed to load sessions';
+			messageType = 'error';
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function revokeSession(sessionId: string): Promise<void> {
+		try {
+			revoking = sessionId;
+			const response = await fetch(`/api/auth/sessions/${sessionId}`, { method: 'DELETE' });
+			if (response.ok) {
+				message = 'Session revoked successfully';
+				messageType = 'success';
+				await loadSessions();
+			} else {
+				throw new Error('Failed to revoke session');
+			}
+		} catch (err) {
+			message = 'Failed to revoke session';
+			messageType = 'error';
+		} finally {
+			revoking = null;
+		}
+	}
+
+	async function revokeAllOtherSessions(): Promise<void> {
+		if (!confirm('This will log you out from all other devices. Continue?')) return;
+		try {
+			const response = await fetch('/api/auth/sessions/revoke-others', { method: 'POST' });
+			if (response.ok) {
+				message = 'All other sessions revoked';
+				messageType = 'success';
+				await loadSessions();
+			} else {
+				throw new Error('Failed to revoke sessions');
+			}
+		} catch (err) {
+			message = 'Failed to revoke sessions';
+			messageType = 'error';
+		}
+	}
+
+	function getDeviceIcon(deviceType: string) {
+		switch (deviceType) {
+			case 'mobile':
+				return Smartphone;
+			case 'tablet':
+				return Smartphone;
+			case 'desktop':
+				return Monitor;
+			default:
+				return Monitor;
+		}
+	}
+
+	function parseUserAgent(userAgent: string): string {
+		if (!userAgent) return 'Unknown Browser';
+		if (userAgent.includes('Chrome')) return 'Chrome';
+		if (userAgent.includes('Safari')) return 'Safari';
+		if (userAgent.includes('Firefox')) return 'Firefox';
+		if (userAgent.includes('Edge')) return 'Edge';
+		return 'Unknown Browser';
+	}
+
+	onMount(() => {
+		loadSessions();
+	});
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<main class="page-sessions">
+	<h1>Active Sessions</h1>
+
+	{#if message}
+		<div class="alert" class:success={messageType === 'success'} class:error={messageType === 'error'}>
+			{message}
+		</div>
+	{/if}
+
+	<div class="actions">
+		<Button onclick={revokeAllOtherSessions} aria-label="Revoke other sessions">
+			<LogOut /> Revoke other sessions
+		</Button>
+	</div>
+
+	{#if loading}
+		<p>Loading sessions…</p>
+	{:else if sessions.length === 0}
+		<p>No active sessions found.</p>
+	{:else}
+		<ul class="sessions-list">
+			{#each sessions as session (session.id)}
+				<li class="session-item">
+					<svelte:component this={getDeviceIcon(session.deviceType)} class="device-icon" />
+					<div class="meta">
+						<div class="ua"><strong>{parseUserAgent(session.userAgent)}</strong> — {session.userAgent}</div>
+						<div class="ip">IP: {session.ipAddress}</div>
+						<div class="times">Created: {session.createdAt} · Last active: {session.lastActivityAt}</div>
+					</div>
+					<div class="controls">
+						{#if session.isCurrent}
+							<span class="badge current">Current session</span>
+						{:else}
+							<Button onclick={() => revokeSession(session.id)} disabled={revoking === session.id}>
+								{#if revoking === session.id} Revoking… {#else} Revoke {/if}
+							</Button>
+						{/if}
+					</div>
+				</li>
+			{/each}
+		</ul>
+	{/if}
 </main>
 
 <style>
-:global(body) { @apply bg-gray-50}
+	:global(body) { background: #f9fafb; }
+	.page-sessions { padding: 1rem; }
+	.actions { margin: 0.5rem 0 1rem; }
+	.sessions-list { list-style: none; padding: 0; margin: 0; }
+	.session-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
+	.device-icon { width: 28px; height: 28px; }
+	.meta { flex: 1; font-size: .9rem; color: #111827; }
+	.controls { margin-left: 0.5rem; }
+	.alert { padding: .5rem; border-radius: 4px; margin-bottom: .5rem; }
+	.alert.success { background: #ecfdf5; color: #065f46; }
+	.alert.error { background: #fef2f2; color: #991b1b; }
+	.badge.current { background: #eef2ff; padding: .25rem .5rem; border-radius: 4px; font-size: .8rem; }
 </style>

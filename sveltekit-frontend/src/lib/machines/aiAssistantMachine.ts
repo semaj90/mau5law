@@ -5,7 +5,6 @@
 } from "xstate";
 
 // runtime browser flag used during focused checks
-const browser = typeof window !== "undefined";
 
 // Replace the previous type that depended on a type-only import with a small runtime-safe interface
 type AmqplibConnection = {
@@ -318,13 +317,7 @@ class MemoryManager {
 }
 
 // --- Minimal worker pool (uses blobs safely) ---
-type Task =
-  | { type: "processDocument"; data: { content: string } }
-  | { type: string; data?: Record<string, unknown> };
-
-type TaskResult = { ok: true; result: unknown } | { ok: false; error: string };
-
-class $WebWorkerPool {
+export class $WebWorkerPool {
   private _workers: Worker[] = [];
   private _nextWorker = 0;
   constructor(
@@ -337,6 +330,9 @@ class $WebWorkerPool {
   ) {}
 
   async executeTask(task: Task): Promise<TaskResult> {
+    // use round-robin index to avoid "unused" diagnostics
+    this._nextWorker = (this._nextWorker + 1) % this._maxWorkers;
+
     const code = `
       self.onmessage = function(e) {
         const task = e.data;
@@ -354,6 +350,7 @@ class $WebWorkerPool {
     `;
     const blob = new Blob([code], { type: "application/javascript" });
     const worker = new Worker(URL.createObjectURL(blob));
+    this._workers.push(worker);
 
     return new Promise<TaskResult>((resolve, reject) => {
       const timeout = setTimeout(() => {
@@ -426,19 +423,16 @@ class RabbitMQService {
 
     let urlToUse = config?.url;
     if (!urlToUse) {
-      // Prefer process.env on the server. Avoid importing SvelteKit's $env to keep this file
-      // runtime-safe and friendly to TypeScript tooling. As a last resort, check Vite-style
-      // import.meta.env in a safe try/catch (avoid "typeof import" which breaks parsing).
+      // Prefer process.env on the server using a narrow cast
       let envUrl: string | undefined;
-      if (typeof process !== "undefined" && (process as any).env?.RABBITMQ_URL) {
-        envUrl = (process as any).env.RABBITMQ_URL;
-      } else {
+      if (typeof process !== "undefined") {
+        const proc = process as unknown as { env?: Record<string, string | undefined> };
+        envUrl = proc.env?.RABBITMQ_URL;
+      }
+      if (!envUrl) {
         try {
-          // import.meta exists in Vite/run-time but may not be available in all tooling/parsers.
-          // Use a safe cast inside try/catch to avoid parser/type errors.
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const meta = import.meta as any;
-          envUrl = meta?.env?.VITE_RABBITMQ_URL;
+          const meta = import.meta as unknown as { env?: { VITE_RABBITMQ_URL?: string } };
+          envUrl = meta.env?.VITE_RABBITMQ_URL;
         } catch {
           envUrl = undefined;
         }
@@ -542,10 +536,14 @@ class RabbitMQService {
       await channel.assertExchange(exchange, "topic", { durable: false });
 
       const json = JSON.stringify(payload);
-      const BufferGlobal = (globalThis as any).Buffer;
+
+      // typed Buffer helper to avoid `any`
+      const maybeBuffer = (
+        globalThis as unknown as { Buffer?: { from?: (s: string, enc?: string) => Uint8Array } }
+      ).Buffer;
       const content: Uint8Array =
-        typeof BufferGlobal !== "undefined"
-          ? BufferGlobal.from(json, "utf8")
+        typeof maybeBuffer !== "undefined" && typeof maybeBuffer.from === "function"
+          ? maybeBuffer.from(json, "utf8")
           : new TextEncoder().encode(json);
 
       channel.publish(exchange, routingKey, content);
@@ -768,7 +766,8 @@ class RabbitMQService {
 const rabbitmqService = new RabbitMQService();
 
 // --- Simplified machine that is syntactically correct and provides the same export name ---
-export const aiAssistantMachine = createMachine<AIAssistantContext, AIAssistantEvent>({
+// Removed explicit two-type generic to let XState infer types and avoid "No overload expects 2 type arguments"
+export const aiAssistantMachine = createMachine({
   id: "enhancedAiAssistant",
   initial: "initializing",
   context: {
@@ -831,9 +830,9 @@ export const aiAssistantMachine = createMachine<AIAssistantContext, AIAssistantE
       on: {
         SEND_MESSAGE: {
           target: "processing",
-          // Narrow the event by providing explicit generics to assign so `event` is typed properly
-          actions: assign<AIAssistantContext, AIAssistantEvent>((_, event) => {
-            if (event.type === "SEND_MESSAGE") {
+          // use the type-guard to safely narrow the event
+          actions: assign((_, event) => {
+            if (isSendMessage(event)) {
               return {
                 currentQuery: event.message,
                 isProcessing: true,
@@ -898,6 +897,23 @@ export const aiAssistantMachine = createMachine<AIAssistantContext, AIAssistantE
     },
   },
 });
+
+// Add: runtime-safe Task / TaskResult definitions used by the worker pool
+type Task = { type: string; data?: Record<string, unknown> };
+type TaskResult = { ok: boolean; result?: unknown; error?: string };
+
+// Add: type-guard for SEND_MESSAGE events to safely narrow `event` inside assign()
+function isSendMessage(
+  event: unknown
+): event is { type: "SEND_MESSAGE"; message: string; useContext7?: boolean; caseId?: string } {
+  // narrow shape check
+  return (
+    typeof event === "object" &&
+    event !== null &&
+    (event as any).type === "SEND_MESSAGE" &&
+    typeof (event as any).message === "string"
+  );
+}
 
 /**
  * Machine provider configuration

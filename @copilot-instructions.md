@@ -382,6 +382,106 @@ npm run dev:quic
 
 ---
 
+typescript: duplicate class and variable declarations and leftover fragments inside your file.
+You have multiple overlapping copies of LegalRAGPipeline and multiple export const ragPipeline = new LegalRAGPipeline(); declarations.
+
+Here’s what to do to fix everything cleanly:
+
+✅ 1. Root Cause Summary
+Problem	Description
+Cannot redeclare block-scoped variable 'ragPipeline'	You exported ragPipeline 3–4 times.
+Cannot find name 'hashText' / 'analyzeAnswer' / 'generateEmbedding'	Multiple partial class fragments caused scope loss.
+Declaration or statement expected, Unexpected keyword or identifier	Broken nesting from duplicated class or } blocks.
+'string' only refers to a type, but is being used as a value here	Usually occurs when TypeScript parser is desynced due to syntax duplication.
+✅ 2. Quick Fix (Safe Rewrite Pattern)
+
+Open your file and remove everything after the final } that closes the main class LegalRAGPipeline.
+
+Then ensure you only have one export:
+
+// --- bottom of file ---
+export const ragPipeline = new LegalRAGPipeline();
+
+
+Nothing else should follow this line.
+
+✅ 3. Verify Single Class Declaration
+
+Search in VS Code:
+
+class LegalRAGPipeline
+
+
+You should find only one definition.
+
+If you see multiple, keep only the most complete one (the one containing:
+initialize, ingestLegalDocument, answerLegalQuestion, analyzeContract, correlateEvidence, hybridSearch, helper methods).
+
+✅ 4. Verify Helper Methods
+
+Inside that single class, make sure these methods appear exactly once:
+
+private async generateEmbedding(text: string)
+
+private async smartLegalChunking(content: string)
+
+private analyzeAnswer(answer: string, sources: LangChainDocument[])
+
+private parseContractAnalysis(text: string)
+
+private hashText(text: string)
+
+async close()
+
+If you find duplicates — delete the extras.
+
+✅ 5. Re-run TypeScript Check
+
+From your repo root:
+
+npx tsc --noEmit
+
+
+or in Svelte projects:
+
+npx svelte-check
+
+
+You should see error count drop from ~300 → 0–3 (only possible type warnings left).
+
+✅ 6. (Optional) Add a Type-Only Fix to Prevent Redeclare
+
+If you plan to import this file in multiple modules that might hot-reload (e.g., Vite/SvelteKit dev), you can guard the singleton like this:
+
+// At bottom
+export const ragPipeline: LegalRAGPipeline =
+  (globalThis as any).ragPipeline ?? new LegalRAGPipeline();
+(globalThis as any).ragPipeline = ragPipeline;
+
+
+This prevents redeclaration during Vite’s HMR.
+
+✅ 7. Sanity Check: Syntax Structure
+
+A correct tail should look like this:
+
+  private hashText(text: string) {
+    return createHash('sha256').update(text).digest('hex');
+  }
+
+  async close(): Promise<void> {
+    try { await sql.end(); } catch {}
+    try { await redis.quit(); } catch {}
+  }
+} // <- closes class
+
+export const ragPipeline = new LegalRAGPipeline();
+
+
+Nothing else below this.
+
+Uses your getOllamaEndpoint() helper instead of hardcoded URLs.
+
 ## 📋 Essential Docker Environment Variables
 
 All environment variables should be set when running development servers or building for production.
