@@ -1,6 +1,6 @@
 import { browser } from "$app/environment";
 import { IndexedDBService } from "$lib/services/indexeddb-service"; // Corrected: Named import
-import type { LegalDocumentJSON } from "$lib/wasm/simd-json-wrapper"; // New import
+// import type { LegalDocumentJSON } from "$lib/wasm/simd-json-wrapper"; // New import - This import is causing the error.
 
 /**
  * Client-side background agent that periodically finds pending documents
@@ -9,6 +9,15 @@ import type { LegalDocumentJSON } from "$lib/wasm/simd-json-wrapper"; // New imp
  * This file intentionally keeps logic minimal and pushes heavy lifting to the server.
  */
 const DEFAULT_INTERVAL = 30_000; // 30s
+
+// WORKAROUND: Define LegalDocumentJSON locally as it's not exported from simd-json-wrapper.ts.
+// The ideal fix is to add 'export' to LegalDocumentJSON in $lib/wasm/simd-json-wrapper.ts.
+interface LegalDocumentJSON {
+  id: string;
+  content?: string;
+  metadata?: Record<string, unknown>;
+  // Add other properties if known from the original definition in simd-json-wrapper.ts
+}
 
 // Define a type for the document structure based on usage
 interface Document {

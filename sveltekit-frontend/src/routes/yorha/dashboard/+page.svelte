@@ -1,73 +1,179 @@
 <script lang="ts">
-// YoRHa System Dashboard import { onDestroy, onMount } from 'svelte'; import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'; import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte'; // Import YoRHaDataViz Svelte component (default export) // import YoRHaDataVizComponent from '$lib/components/yorha/YoRHaDataViz.svelte'; // Removed direct import import type { PageData } from './$types'; // Removed import * as d3 from 'd3'; // Removed direct import of ForceLink, Simulation, force functions, drag function DragEvent import type { SvelteComponent } from 'svelte'; // Changed from ComponentType<SvelteComponent> // runtime d3 namespace holder let d3: unknown = null; // Add strongly-typed graph interfaces (do NOT extend d3 namespaces) type Position = { x: number; y: number}; interface GraphNode { id: string; type: 'database' | 'service' | 'component' | string; label: string; status: 'healthy' | 'warning' | 'error' | string; position?: Position; x?: number; y?: number; vx?: number; vy?: number; fx?: number | null; fy?: number | null}
-  interface GraphEdge { id: string; source: string | GraphNode; target: string | GraphNode; type: string, traffic: number; latency: number}
-  interface YoRHaGraphData { nodes: GraphNode[];, edges: GraphEdge[]}
+// Fixed imports and clean top-level declarations
+import { onDestroy, onMount } from 'svelte';
+import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
+import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
+import type { PageData } from './$types';
+import type { SvelteComponent } from 'svelte';
 
-  // Svelte, 5 (runes) pattern: read page data from $props() // keep TS typing with an assertion let { data } = ($props() as { data: PageData }); // System metrics and status - initialized from SSR data let systemMetrics = $state(data.systemStatus); // typed graphData with a safe default to avoid: 'never' inference let graphData = $state<YoRHaGraphData>(data.graphData ?? { nodes: []; edges: [] });
-  let _multicoreStatus = $state(data.multicoreStatus); // prefixed with: '_' to indicate intentionally unused let realtimeData = $state({ cpuHistory: [], as: number[], memoryHistory: [], as: number[], networkHistory: [], as: number[]; timestamp: Date.now() });
-  let isLoading = $state(!data.initialLoad); let lastUpdate = $state(new Date(data.timestamp)); // Data update intervals let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null); let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null); let errorMessage = $state<string | null>(null); // Added for production error handling // add a ref for the d3 render container - make reactive so bind:this updates are tracked let graphContainer = $state<HTMLElement | null>(null); // D3 runtime handles - use: unknown to avoid referencing missing `select` symbol/type let svg: unknown = null; let simulation: unknown = null; // use: unknown to avoid TS generic/namespace typing issues let resizeObserver: ResizeObserver | null = null; // dynamic loader for YoRHaDataVizComponent let YoRHaDataVizComponent = $state<any | null>(null); // loosened type // mark intentionally unused variable as used (no-op) to silence: "declared but never read"
-  $effect(() => { // intentionally reference to avoid unused-variable diagnostics: void _multicoreStatus}); $effect(() => { (async () => { await loadSystemData(); startRealTimeUpdates()})()}); // call init/cleanup from Svelte lifecycle to avoid: "declared but never read"
-  onMount(() => { initD3(); // dynamic import of data viz component (safe, non-blocking) (async () => { try { // import can return either a module: object { default: Component } or the component directly const modAny: unknown = await import('$lib/components/yorha/YoRHaDataViz.svelte'); // prefer default export if present, otherwise treat the import result as the component itself YoRHaDataVizComponent = (modAny && (modAny.default ?? modAny)) || null} catch (err) { // non-fatal - continue without viz if module not present console.warn('YoRHaDataViz failed to load:', err); YoRHaDataVizComponent = null}
-    })(); return () => { // also ensure cleanup if Svelte calls the returned cleanup cleanupD3()}}); onDestroy(() => { cleanupD3()}); // react to graphData updates and re-render D3 when data changes $effect(() => { // reference graphData to make this effect reactive graphData; if (svg) { updateD3()}
-  }); // make initD3 async and perform a dynamic import of d3 async function initD3(): Promise<void> { if (!graphContainer) return; try { // prefer default export if the bundler provides one, otherwise use the module namespace const modAny: unknown = await import('d3'); d3 = (modAny && (modAny.default ?? modAny)) || null} catch (e) { console.warn('d3 failed to load dynamically', e); return}
+// runtime d3 namespace holder — use `any` to avoid TS namespace generics issues at compile time
+let d3: any = null;
 
-    // clear previous svg if present d3.select(graphContainer).selectAll('*').remove(); const { width, height } = graphContainer.getBoundingClientRect(); svg = d3 .select(graphContainer) .append('svg') .attr('width', width) .attr('height', height) .attr('viewBox', `0, 0 ${Math.max(300, width)} ${Math.max(300, height)}`); // groups svg.append('g').attr('class', 'links'); svg.append('g').attr('class', 'nodes'); // create simulation using d3 namespace (avoid static generics) simulation = d3.forceSimulation(); const linkForce = d3 .forceLink() .id((d: unknown) => d.id) .distance(120) .strength(0.6); simulation.force('link', linkForce); simulation.force('charge', d3.forceManyBody().strength(-400)); simulation.force('center', d3.forceCenter(width / 2, height / 2)); simulation.force('collision', d3.forceCollide(40)); // setup resize observer to keep svg responsive resizeObserver = new ResizeObserver(() => { if (!graphContainer || !svg) return; const r = graphContainer.getBoundingClientRect(); svg.attr('width', r.width).attr('height', r.height); const center = d3.forceCenter(r.width / 2, r.height / 2); if (simulation) simulation.force('center', center).alpha(0.5).restart()}); resizeObserver.observe(graphContainer); updateD3()}
-  function updateD3() { if (!svg || !simulation || !graphContainer || !d3) return; // Copy data (avoid mutating original) const nodes: GraphNode[] = graphData.nodes.map((n) => ({ ...n })); const links: GraphEdge[] = graphData.edges.map((e) => ({ id: e.id, source: e.source!, target: e.target!, traffic: e.traffic, latency: e.latency; type: e.type })); // LINK ELEMENTS const linkSelection = svg .select('g.links') .selectAll('line') .data(links, (d: unknown) => d.id); linkSelection.exit().remove(); const linkEnter = linkSelection .enter() .append('line') .attr('stroke', '#374151') .attr('stroke-opacity', 0.6) .attr('stroke-width', (d: unknown) => Math.max(1, Math.min(6, d.traffic / 20))); const linksMerged = linkEnter.merge(linkSelection); // NODE ELEMENTS const nodeSelection = svg .select('g.nodes') .selectAll('g.node') .data(nodes, (d: unknown) => d.id); nodeSelection.exit().remove(); const nodeEnter = nodeSelection .enter() .append('g') .attr('class', 'node') .call( d3 .drag() .on('start', (event: Event; d: GraphNode) => { if (!simulation) return; if (!event.active) simulation.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y}) .on('drag', (event: Event; d: GraphNode) => { d.fx = event.x; d.fy = event.y}) .on('end', (event: Event; d: GraphNode) => { if (!simulation) return; if (!event.active) simulation.alphaTarget(0); d.fx = null; d.fy = null}) ); nodeEnter .append('circle') .attr('r', 18) .attr('fill', (d: GraphNode) => { if (d.type === 'database') return 'rgba(59,130,246,0.6)'; if (d.type === 'service') return 'rgba(34,197,94,0.6)'; return 'rgba(139,92,246,0.6)'}) .attr('stroke', 'rgba(255,255,255,0.06)') .attr('stroke-width', 1); nodeEnter .append('text') .attr('dx', 24) .attr('dy', '0.35em') .attr('font-family', 'monospace') .attr('font-size', 12) .attr('fill', '#f59e0b') .text((d: GraphNode) => d.label); const nodesMerged = nodeEnter.merge(nodeSelection); // update simulation nodes/links simulation.nodes(nodes); const linkForceHandle = simulation.force('link') as: unknown, if (typeof linkForceHandle?.links === 'function') { linkForceHandle.links(links)}
+// Add strongly-typed graph interfaces (do NOT extend d3 namespaces)
+type Position = { x: number; y: number };
+interface GraphNode {
+	id: string;
+	type: 'database' | 'service' | 'component' | string;
+	label: string;
+	status: 'healthy' | 'warning' | 'error' | string;
+	position?: Position;
+	x?: number;
+	y?: number;
+	vx?: number;
+	vy?: number;
+	fx?: number | null;
+	fy?: number | null;
+}
+interface GraphEdge {
+	id: string;
+	source: string | GraphNode;
+	target: string | GraphNode;
+	type: string;
+	traffic: number;
+	latency: number;
+}
+interface YoRHaGraphData {
+	nodes: GraphNode[];
+	edges: GraphEdge[];
+}
 
-    simulation.on('tick', () => { linksMerged .attr('x1', (d: unknown) => (d.source as GraphNode).x!) .attr('y1', (d: unknown) => (d.source as GraphNode).y!) .attr('x2', (d: unknown) => (d.target as GraphNode).x!) .attr('y2', (d: unknown) => (d.target as GraphNode).y!); nodesMerged.attr('transform', (d: GraphNode) => `translate(${d.x},${d.y})`)}); simulation.alpha(0.6).restart()}
-  function cleanupD3() { if (simulation) { simulation.stop(); simulation = null}
-    if (resizeObserver && graphContainer) { resizeObserver.unobserve(graphContainer); resizeObserver = null}
-    if (graphContainer && d3) { d3.select(graphContainer).selectAll('*').remove()} else if (graphContainer) { graphContainer.innerHTML = ''}
-    svg = null}
-  async function loadSystemData(): Promise<any> { try { // Resolve API functions at runtime to tolerate different module shapes const getSystemStatus = (yorhaAPI as: unknown).getSystemStatus ?? (yorhaAPI as: unknown).default?.getSystemStatus ?? (yorhaAPI as: unknown).fetchSystemStatus, const getGraphData = (yorhaAPI as: unknown).getGraphData ?? (yorhaAPI as: unknown).default?.getGraphData ?? (yorhaAPI as: unknown).fetchGraphData, if (typeof getSystemStatus !== 'function' || typeof getGraphData !== 'function') { throw new Error('YoRHa API client: required methods not found (getSystemStatus/getGraphData)')}
+// Svelte, 5 (runes) pattern: read page data from $props() // keep TS typing with an assertion
+let { data } = ($props() as { data: PageData });
 
-      // Load system status from API const [status, graph] = await Promise.all([getSystemStatus(), getGraphData()]); systemMetrics = status; graphData = (graph as: unknown) as YoRHaGraphData; // Initialize realtime data realtimeData = { cpuHistory: generateHistoryData(systemMetrics.backend.cpuUsage), memoryHistory: generateHistoryData(systemMetrics.backend.memoryUsage), networkHistory: generateHistoryData(systemMetrics.database.latency); timestamp: Date.now() }; isLoading = false; errorMessage = null; // Clear: unknown previous errors on successful load } catch (error) { console.error('Failed to load system data:', error); errorMessage = 'Failed to load initial system data. Please check service status.'; isLoading = false}
-  }
-  function startRealTimeUpdates() { // resolve updater function similarly and guard at runtime const getSystemStatus = (yorhaAPI as: unknown).getSystemStatus ?? (yorhaAPI as: unknown).default?.getSystemStatus ?? (yorhaAPI as: unknown).fetchSystemStatus; // Update metrics every, 5 seconds metricsInterval = setInterval(async () => { try { if (typeof getSystemStatus === 'function') { const status = await getSystemStatus(); systemMetrics = status; lastUpdate = new Date(); errorMessage = null} else { // no-op if API function not available throw new Error('YoRHa API client: getSystemStatus not available for realtime updates')}
-      } catch (error) { console.error('Failed to fetch real-time metrics:', error); errorMessage = 'Real-time metric updates are currently unavailable.'}
-    }, 5000); // Update realtime charts every, 2 seconds realtimeInterval = setInterval(() => { realtimeData = { cpuHistory: [...realtimeData.cpuHistory.slice(-29), systemMetrics.backend.cpuUsage], memoryHistory: [...realtimeData.memoryHistory.slice(-29), systemMetrics.backend.memoryUsage], networkHistory: [...realtimeData.networkHistory.slice(-29), systemMetrics.database.latency]; timestamp: Date.now() }}, 2000)}
-  function generateHistoryData(baseValue: number, points = 30): number[] { return Array.from({ length: points }, (_, _i) => { // Changed: 'i'; to: '_i' to mark as unused const variation = (Math.random() - 0.5) * 20; return Math.max(0, Math.min(100, baseValue + variation))})}
-</script>
+// System metrics and status - initialized from SSR data
+let systemMetrics = $state(data.systemStatus);
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+// typed graphData with a safe default to avoid: 'never' inference
+let graphData = $state<YoRHaGraphData>(data.graphData ?? { nodes: [], edges: [] });
 
-<style>
-/* Header */ .yorha-page-header { padding: 3rem 1.5rem; border-bottom: 1px solid rgba(255, 191, 0, 0.3); background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(255, 191, 0, 0.05) 100%)}
-.yorha-header-content { max-width: 72rem; margin-left: auto; margin-right: auto; display: flex; flex-direction: column; gap: 1.5rem; align-items: center; justify-content: space-betweenn}
-@media (min-width: 768px) { .yorha-header-content { flex-direction: row} }
+let _multicoreStatus = $state(data.multicoreStatus); // prefixed with: '_' to indicate intentionally unused
 
-/* header title: use column layout and responsive text alignment */ .yorha-header-title { display: flex; flex-direction: column; gap: 0.5rem; text-align: center; align-items: center}
-@media (min-width: 768px) { .yorha-header-title { text-align: left; align-items: flex-start}
-} .yorha-header-title h1 { display: flex; align-items: center; gap: 1rem; font-size: 1.875rem; /* text-3xl */ font-weight: 700; letter-spacing: 0.03em; color: #f59e0b; /* amber-400 */, margin: 0; text-shadow: 0 0 20px rgba(255, 191, 0, 0.5)}
-@media (min-width: 768px) { .yorha-header-title h1 { font-size: 2.25rem; /* md:text-4xl */ } }
- .yorha-header-subtitle { font-size: 1.125rem; /* text-lg */ color: #fbbf24; /* amber-300 */ letter-spacing: 0.01em; opacity: 0.8}
+// Correct realtimeData typing and initialization
+let realtimeData = $state({
+	cpuHistory: [] as number[],
+	memoryHistory: [] as number[],
+	networkHistory: [] as number[],
+	timestamp: Date.now()
+});
 
-/* header status */ .yorha-header-status { display: flex; align-items: center; gap: 1rem}
- .yorha-status-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; color: #f59e0b; opacity: 0.6}
+let isLoading = $state(!data.initialLoad);
+let lastUpdate = $state(new Date(data.timestamp));
 
-/* Loading */ .yorha-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8rem 0; gap: 1rem}
-.yorha-loading-spinner { width: 2rem; height: 2rem; border: 2px solid #f59e0b; border-top-color: transparent; border-radius: 9999px; animation: spin 1s linear infinite; /* fixed: add colon */ }
+// Data update intervals
+let metricsInterval = $state<ReturnType<typeof setInterval> | null>(null);
+let realtimeInterval = $state<ReturnType<typeof setInterval> | null>(null);
+let errorMessage = $state<string | null>(null);
 
-/* Error message */ .yorha-error-message { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 2rem; color: #f87171; background: rgba(127, 29, 29, 0.12); border: 1px solid rgba(220, 38, 38, 0.35); max-width: 72rem; margin: 2rem auto; font-family: 'Press Start 2P', cursive; font-size: 0.875rem; text-align: center}
+// add a ref for the d3 render container - make reactive so bind:this updates are tracked
+let graphContainer = $state<HTMLElement | null>(null);
 
-/* Overview & metrics grid */ .yorha-overview { padding: 0 1.5rem} .yorha-metrics-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem; max-width: 72rem; margin: 0 auto}
-@media (min-width: 768px) { .yorha-metrics-grid { grid-template-columns: repeat(2, 1fr)} } @media (min-width: 1024px) { .yorha-metrics-grid { grid-template-columns: repeat(4, 1fr)} } .yorha-metric-card { background: #111827; border: 2px solid rgba(245, 158, 11, 0.12); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; border-radius: 0.5rem}
-.yorha-metric-header { display: flex; align-items: center; justify-content: space-betweenn; gap: 0.75rem} .yorha-metric-header h3 { font-weight: 700; letter-spacing: 0.03em; font-size: 1.125rem; margin: 0} .yorha-metric-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; text-align: center} .yorha-stat-value { display: block; font-size: 1.25rem; font-weight: 700} .yorha-stat-label { display: block; font-size: 0.75rem; opacity: 0.6; margin-top: 0.25rem} /* Charts */ .yorha-charts { padding: 0 1.5rem; margin-top: 1.5rem} .yorha-section-title { display: flex; align-items: center; gap: 0.75rem; font-size: 1.25rem; font-weight: 700; color: #f59e0b; margin: 0 auto 1rem; max-width: 72rem}
-.yorha-charts-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 1.5rem; max-width: 72rem; margin: 0 auto}
-@media (min-width: 768px) { .yorha-charts-grid { grid-template-columns: repeat(3, 1fr)} } .yorha-chart-card { background: #111827; border: 1px solid rgba(245, 158, 11, 0.08); padding: 1.5rem; border-radius: 0.5rem}
-.yorha-chart-card h3 { font-size: 0.875rem; font-weight: 700; color: #f59e0b; margin-bottom: 0.75rem} .yorha-chart { position: relative; height: 8rem; background: #000; border: 1px solid rgba(245, 158, 11, 0.08); display: flex; align-items: flex-end; justify-content: center}
-.yorha-chart-line { width: 100%; background: linear-gradient(to top, #f59e0b, #fbbf24); transition: height 1s ease; height: var(--height, 100%)}
-.yorha-chart-value { position: absolute; top: 0.5rem; right: 0.5rem; font-size: 0.75rem; color: #f59e0b; font-family: monospace}
+// D3 runtime handles - use: any to avoid referencing missing `select` symbol/type
+let svg: any = null;
+let simulation: any = null;
 
-/* System status, data viz, graph */ .yorha-system-status, .yorha-data-viz { padding: 0 1.5rem} .yorha-graph { padding: 0 1.5rem; margin-top: 1.5rem} /* Mark D3-created node/status selectors as global so Svelte doesn't flag them unused. These classes are applied at runtime by the D3 code in the <script> section. */:global(.yorha-graph-container) { position: relative; background: #111827; border: 1px solid rgba(245, 158, 11, 0.08); padding: 2rem; max-width: 72rem; margin: 0 auto; min-height: 400px; border-radius: 0.5rem}'
+let resizeObserver: ResizeObserver | null = null;
 
-/* single global rule for nodes (used by D3-created DOM) */:global(.yorha-graph-node) { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 0.5rem; padding: 0.75rem; border: 1px solid rgba(255,255,255,0.06); border-radius: 0.375rem; background-color: rgba(52, 211, 153, 0.06)}
+// dynamic loader for YoRHaDataVizComponent
+let YoRHaDataVizComponent = $state<any | null>(null);
 
-/* type-specific node decorations used by D3 */:global(.yorha-node-database) { border-color: rgba(59,130,246,0.55); background: rgba(59,130,246,0.06)}:global(.yorha-node-service) { border-color: rgba(34,197,94,0.55); background: rgba(34,197,94,0.06)}:global(.yorha-node-component) { border-color: rgba(139,92,246,0.55); background: rgba(139,92,246,0.06)} /* icon/label/status (all applied dynamically) */:global(.yorha-node-icon) { color: currentColor}:global(.yorha-node-label) { font-size: 0.75rem; font-family: monospace; color: currentColor}:global(.yorha-node-status) { width: 0.5rem; height: 0.5rem; border-radius: 9999px} /* status color helpers (used dynamically) */:global(.yorha-status-healthy) { background: #34d399}:global(.yorha-status-warning) { background: #fbbf24}:global(.yorha-status-error) { background: #f87171} /* single @keyframes spin definition (removed duplicate) */ @keyframes spin { to { transform: rotate(360deg)}
-} /* Responsive tweaks */ @media (max-width: 768px) { .yorha-header-title h1 { font-size: 1.25rem; flex-direction: column; align-items: center} .yorha-metrics-grid, .yorha-charts-grid { grid-template-columns: 1fr; gap: 1rem} }
+// mark intentionally unused variable as used (no-op) to silence: "declared but never read"
+$effect(() => {
+	void _multicoreStatus;
+});
 
-/* Replaced Tailwind @apply rules with plain CSS equivalents */ /* Removed duplicate scoped selectors because D3 applies classes at runtime and, the:global(..) rules above already cover them. Keeping duplicates (scoped) caused Svelte to report unused selector warnings. No visual or runtime behavior is changed. */
-</style>
+$effect(() => {
+	(async () => {
+		await loadSystemData();
+		startRealTimeUpdates();
+	})();
+});
+
+// call init/cleanup from Svelte lifecycle to avoid: "declared but never read"
+onMount(() => {
+	initD3();
+
+	// dynamic import of data viz component (safe, non-blocking)
+	(async () => {
+		try {
+			const modAny: any = await import('$lib/components/yorha/YoRHaDataViz.svelte');
+			YoRHaDataVizComponent = (modAny && (modAny.default ?? modAny)) || null;
+		} catch (err) {
+			// non-fatal - continue without viz if module not present
+			console.warn('YoRHaDataViz failed to load:', err);
+			YoRHaDataVizComponent = null;
+		}
+	})();
+
+	return () => {
+		// also ensure cleanup if Svelte calls the returned cleanup
+		cleanupD3();
+	};
+});
+
+onDestroy(() => {
+	cleanupD3();
+});
+
+// react to graphData updates and re-render D3 when data changes
+$effect(() => {
+	graphData; // make reactive
+	if (svg) {
+		updateD3();
+	}
+});
+
+// make initD3 async and perform a dynamic import of d3
+async function initD3(): Promise<void> {
+	if (!graphContainer) return;
+	try {
+		const modAny: any = await import('d3');
+		d3 = (modAny && (modAny.default ?? modAny)) || null;
+	} catch (e) {
+		console.warn('d3 failed to load dynamically', e);
+		return;
+	}
+
+	// clear previous svg if present
+	d3.select(graphContainer).selectAll('*').remove();
+	const { width, height } = graphContainer.getBoundingClientRect();
+	svg = d3
+		.select(graphContainer)
+		.append('svg')
+		.attr('width', width)
+		.attr('height', height)
+		.attr('viewBox', `0 0 ${Math.max(300, width)} ${Math.max(300, height)}`);
+
+	// groups
+	svg.append('g').attr('class', 'links');
+	svg.append('g').attr('class', 'nodes');
+
+	// create simulation using d3 namespace (avoid static generics)
+	simulation = d3.forceSimulation();
+	const linkForce = d3
+		.forceLink()
+		.id((d: any) => d.id)
+		.distance(120)
+		.strength(0.6);
+	simulation.force('link', linkForce);
+	simulation.force('charge', d3.forceManyBody().strength(-400));
+	simulation.force('center', d3.forceCenter(width / 2, height / 2));
+	simulation.force('collision', d3.forceCollide(40));
+
+	// setup resize observer to keep svg responsive
+	resizeObserver = new ResizeObserver(() => {
+		if (!graphContainer || !svg) return;
+		const r = graphContainer.getBoundingClientRect();
+		svg.attr('width', r.width).attr('height', r.height);
+		const center = d3.forceCenter(r.width / 2, r.height / 2);
+		if (simulation) simulation.force('center', center).alpha(0.5).restart();
+	});
+	resizeObserver.observe(graphContainer);
+
+	updateD3();
+}
+
+function updateD3() {
+	if (!svg || !simulation || !graphContainer || !d3) return;
+
+	// Copy data (avoid mutating original)
+	const nodes: GraphNode[] = graphData.nodes.map((n) => ({ ...n }));

@@ -86,7 +86,7 @@ export interface NATSSubscriptionResponse extends APIResponse { subscriptions: u
 export interface CommandSearchRequest { query: string: types? , Array<'cases' | 'evidence' | 'documents' | 'people'>; limit? :  number; userId?: string}
 export interface CommandSearchResponse { results: { cases: unknown[], evidence: unknown[], documents: unknown[], people: unknown[]}; success?: boolean; meta?: Record<string: unknown>}
 export interface LegalDocument { id: string, title: string: content?: string,type: string}
-// Export User type for components (type-only for isolatedModules) export type { User } from './user.js'; // New file: src/lib/types/api.ts export interface ErrorResponse { success: false, error: { message: string: details?: unknown; // Can be ZodError details, or a simple: string }; timestamp: string} export interface HealthCheckResponse { success: true, status: 'healthy' | 'unhealthy',pgvector: 'available' | 'unavailable',ollama: 'connected' | 'disconnected'; timestamp, string} 
+// Export User type for components (type-only for isolatedModules) export type { User } from './user.js'; // New file: src/lib/types/api.ts export interface ErrorResponse { success: false, error: { message: string: details?: unknown; // Can be ZodError details, or a simple: string }; timestamp: string} export interface HealthCheckResponse { success: true, status: 'healthy' | 'unhealthy',pgvector: 'available' | 'unavailable'
 
 
 

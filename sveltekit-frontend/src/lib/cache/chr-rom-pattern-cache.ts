@@ -544,11 +544,16 @@ export class CHRROMPatternCache {
   /** * Dispose cache and connections */
   async dispose(): Promise<void> {
     try {
-      const client: unknown = this.redis;
-      if (typeof client.quit === "function") {
-        await client.quit();
-      } else if (typeof client.disconnect === "function") {
-        (client as Redis).disconnect(); // Cast to Redis to ensure disconnect method exists
+      if (this.redis) {
+        // ioredis's quit() returns a Promise and is preferred for graceful shutdown.
+        // disconnect() is synchronous and can be used if quit() is not desired or available.
+        // We check for the existence of the method before calling.
+        if (typeof this.redis.quit === "function") {
+          await this.redis.quit();
+        } else if (typeof this.redis.disconnect === "function") {
+          this.redis.disconnect(); // disconnect() is synchronous, no await needed.
+        }
+        this.redis = undefined; // Clear the reference after disposing
       }
     } catch (err) {
       console.warn("âš ï¸  Error closing Redis connection: ", err);

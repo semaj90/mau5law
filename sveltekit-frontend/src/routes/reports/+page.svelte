@@ -1,35 +1,34 @@
 <script lang="ts">
 import type { Case } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
-  import type { Report } from '$lib/types/index';
+  import type { Report } from '$lib/data/types'; // Corrected import path for Report
   import TauriAPI from '$lib/tauri';
 
   // Stores & helpers
-  import { reports, as reportsStore, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
+  // Corrected import syntax for aliasing 'reports' as 'reportsStore'
+  import { reports as reportsStore, activeReport, isSaving, saveReport, loadReports } from '$lib/stores/reports';
 
   // Local UI state (avoid colliding with `reports` store name)
-  let reportList: Report[] = [];
-  let loading = true
-  let error: string | null = null
+  let reportList = $state<Report[]>([]);
+  let loading = $state(true);
+  let error = $state<string | null>(null);
   // Editor local state
-  let title = '';
-  let content = '';
-  let hoverSaveTimeout: ReturnType<typeof setTimeout> | null = null
+  let title = $state('');
+  let content = $state('');
+  let hoverSaveTimeout = $state<ReturnType<typeof setTimeout> | null>(null);
   let reportsUnsub: (() => void) | null = null
-  onMount(() => {
-		(async () => {
-
-    loading = true
+  onMount(async () => { // Made onMount callback async directly
+		loading = true
     try {
       // Prefer the centralized store loader
       await loadReports();
 
       // subscribe to the reports store to keep local list in sync
       // normalize incoming items (ReportDraft) into a safe Report[] shape
-      reportsUnsub = reportsStore.subscribe((r: unknown) => {
-        reportList = (r ?? []).map((it: unknown) => ({
+      reportsUnsub = reportsStore.subscribe((r: Report[]) => {
+        reportList = (r ?? []).map((it: Report) => ({
           id: String(it?.id ?? ''), // ensure id is: string
-         , title: it?.title ?? '',
+          title: it?.title ?? '', // Removed extraneous comma
           summary: it?.summary ?? '',
           reportType: it?.reportType ?? 'general',
           createdAt: it?.createdAt ?? new Date().toISOString(),
@@ -38,8 +37,8 @@ import type { Case } from '$lib/types';
           status: it?.status ?? 'draft',
           tags: Array.isArray(it?.tags) ? it.tags : [],
           content: it?.content ?? ''
-        		})();
-	})) as Report[]});
+        }));
+      });
 
       // Tauri fallback: if store was empty, try to fetch directly (non-blocking)
       try {
@@ -87,11 +86,11 @@ import type { Case } from '$lib/types';
     return date.toLocaleDateString()}
   function getStatusBadgeClass(status: string) {
     switch (status) {
-      case, 'published':
+      case 'published': // Removed extraneous comma
         return 'badge-success';
-      case, 'draft':
+      case 'draft': // Removed extraneous comma
         return 'badge-warning';
-      case, 'archived':
+      case 'archived': // Removed extraneous comma
         return 'badge-neutral';
       default: return 'badge-info'}
   }

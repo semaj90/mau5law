@@ -308,6 +308,55 @@ import { Card, CardContent } from '$lib/components/ui/card'; // OK if re-exporte
 
 ---
 
+In your <script lang="ts">, when you use runes like $state({}) or $state([]), Svelte 5 treats the result as unknown unless you supply a generic type parameter.
+
+According to the official Svelte 5 documentation on $state
+:
+
+You can create reactive state with $state(initialValue). When used with an array or simple object, the result is a deeply reactive proxy. To preserve type information, you can provide a generic type.
+
+✅ Fix: Give $state a Generic Type
+
+Here’s how to correctly type your $state declarations:
+
+// Before (inferred as unknown)
+let events = $state({});
+let files = $state([]);
+let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
+let loading = $state(true);
+let userQuery = $state('');
+let registerOpen = $state(false);
+
+// ✅ After (typed generics)
+let events = $state<Record<string, Function[]>>({});
+let files = $state<UploadFile[]>([]);
+let stats = $state<{ totalCases: number; totalEvidence: number; processingJobs: number }>({
+  totalCases: 0,
+  totalEvidence: 0,
+  processingJobs: 0
+});
+let loading = $state<boolean>(true);
+let userQuery = $state<string>('');
+let registerOpen = $state<boolean>(false);
+
+✅ Why It Works
+
+By adding a generic (e.g., <boolean>, <string>, <Record<string, Function[]>>), you’re explicitly telling TypeScript what type your $state proxy holds.
+That eliminates the “Object is of type ‘unknown’” errors and gives full IntelliSense + autocomplete in your .svelte file.
+
+⚙️ Summary
+Problem	Fix
+Object is of type 'unknown' when reading $state	Add generic types
+Svelte compiler loses field info	Use $state<Type>(initialValue)
+Want non-deep reactivity	Use $state.raw<Type>(value)
+Want immutable snapshot	Use $state.snapshot(value)
+
+This approach follows the Svelte 5 $state API behavior described in the official documentation
+
+svelte-complete
+
+.
+
 ## 🚀 Quick Start - Using Docker Environments with npm run dev:quic
 
 ### Development Server with Full Docker Environment Setup

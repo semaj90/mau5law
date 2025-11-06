@@ -152,12 +152,188 @@
       'unknown'
     ) as: string}
   function getWgslPreview(shader: ShaderSearchResult) {
-    return ((shader as: unknown).wgslPreview as: string) ?? (shader.wgsl ? shader.wgsl.substring(0, 200) + '...' : '')}
+    return ((shader as unknown).wgslPreview as string) ?? (shader.wgsl ? shader.wgsl.substring(0, 200) + '...' : 'No preview available.');
+  }
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<main class="container">
+  <header>
+    <h1>Shader Search & Registry</h1>
+    <p>Explore and manage WebGPU/WebGL shaders with AI-powered search.</p>
+  </header>
+
+  {#if stats}
+    <section class="stats-section">
+      <h2>Overall Shader Statistics</h2>
+      <div class="stats-grid">
+        <div>
+          <h3>Total Shaders</h3>
+          <p class="stat-number">{stats.totalShaders.total}</p>
+        </div>
+        <div>
+          <h3>WebGPU Shaders</h3>
+          <p class="stat-number webgpu-color">{stats.totalShaders.webgpu}</p>
+        </div>
+        <div>
+          <h3>WebGL Shaders</h3>
+          <p class="stat-number webgl-color">{stats.totalShaders.webgl}</p>
+        </div>
+        <div>
+          <h3>Avg. Performance</h3>
+          <p class="stat-number">{formatExecutionTime(stats.averagePerformance)}</p>
+        </div>
+        <div>
+          <h3>Total Usage</h3>
+          <p class="stat-number">{stats.totalUsage}</p>
+        </div>
+      </div>
+      {#if stats.topOperations.length > 0}
+        <h3>Top Operations</h3>
+        <div class="flex flex-wrap gap-2 mt-2">
+          {#each stats.topOperations.slice(0, 5) as op}
+            <button class="operation-tag">{op.operation} ({op.count})</button>
+          {/each}
+        </div>
+      {/if}
+    </section>
+  {/if}
+
+  <section class="search-section">
+    <h2>Shader Search</h2>
+    <div class="search-input-group">
+      <input
+        type="text"
+        placeholder="Search by keyword or description..."
+        bind:value={searchQuery}
+        class="search-input"
+        onkeydown={(e) => { if (e.key === 'Enter') performSearch(); }}
+      />
+      <button onclick={performSearch} disabled={isSearching} class="search-button">
+        {isSearching ? 'Searching...' : 'Search'}
+      </button>
+    </div>
+
+    <div class="filters-row">
+      <div class="filter-group">
+        <label for="operation-select">Operation</label>
+        <select id="operation-select" bind:value={selectedOperation} onchange={performSearch}>
+          <option value="">All Operations</option>
+          {#each availableOperations as op}
+            <option value={op}>{op}</option>
+          {/each}
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="shader-type-select">Shader Type</label>
+        <select id="shader-type-select" bind:value={selectedShaderType} onchange={performSearch}>
+          <option value="all">All Types</option>
+          <option value="webgpu">WebGPU</option>
+          <option value="webgl">WebGL</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="sort-by-select">Sort By</label>
+        <select id="sort-by-select" bind:value={sortBy} onchange={performSearch}>
+          <option value="relevance">Relevance</option>
+          <option value="performance">Performance</option>
+          <option value="usage">Usage</option>
+          <option value="recent">Recent</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="limit-input">Limit</label>
+        <input type="number" id="limit-input" bind:value={limit} min="1" max="100" onchange={performSearch} class="search-input" />
+      </div>
+
+      <button onclick={clearFilters} class="search-button" style="background: #ef4444;">Clear Filters</button>
+    </div>
+
+    {#if availableTags.length > 0}
+      <div class="tags-section">
+        <h3>Tags</h3>
+        <div class="tag-filters">
+          {#each availableTags as tag}
+            <button
+              onclick={() => { toggleTag(tag); performSearch(); }}
+              class="tag-button"
+              class:selected={selectedTags.includes(tag)}
+              aria-pressed={selectedTags.includes(tag)}
+            >
+              {tag}
+            </button>
+          {/each}
+        </div>
+      </div>
+    {/if}
+  </section>
+
+  <section class="results-section">
+    <div class="results-header">
+      <h2>Search Results</h2>
+      {#if searchMetadata}
+        <p>
+          Found {searchMetadata.totalResults} shaders in {searchMetadata.searchTime.toFixed(2)}ms
+          {#if searchMetadata.breakdown}
+            (WebGPU: {searchMetadata.breakdown.webgpu}, WebGL: {searchMetadata.breakdown.webgl})
+          {/if}
+        </p>
+      {/if}
+      <button onclick={exportResults} class="search-button" style="background: #10b981;">Export Results</button>
+    </div>
+
+    {#if isSearching}
+      <p>Loading shaders...</p>
+    {:else if searchResults.length === 0}
+      <p>No shaders found matching your criteria.</p>
+    {:else}
+      <div class="results-grid">
+        {#each searchResults as shader (shader.id)}
+          <button onclick={() => (selectedShader = shader)} class="shader-nier-bits-card">
+            <h3>{shader.metadata?.operation || 'Unknown Operation'}</h3>
+            <p>{shader.metadata?.description || 'No description available.'}</p>
+            <div class="flex flex-wrap gap-1 mt-2">
+              {#each shader.metadata?.tags || [] as tag}
+                <span class="selected-tag">{tag}</span>
+              {/each}
+            </div>
+            <div class="mt-2 text-sm text-gray-600">
+              <p>Type: {getShaderType(shader)}</p>
+              <p>Relevance: {formatRelevanceScore(shader.relevanceScore)}</p>
+              <p>Performance: {formatExecutionTime(shader.metadata?.averageExecutionTime)}</p>
+              <p>Usage: {shader.metadata?.usageCount || 0}</p>
+            </div>
+          </button>
+        {/each}
+      </div>
+    {/if}
+  </section>
+
+  {#if selectedShader}
+    <div class="modal-backdrop" onclick={() => (selectedShader = null)}>
+      <div class="modal" onclick={(e) => e.stopPropagation()}>
+        <div class="modal-header">
+          <h2>Shader Details: {selectedShader.metadata?.operation || 'Unknown'}</h2>
+          <button onclick={() => (selectedShader = null)} class="search-button" style="background: #ef4444;">Close</button>
+        </div>
+        <div class="p-4 overflow-y-auto flex-1">
+          <p><strong>ID:</strong> {selectedShader.id}</p>
+          <p><strong>Description:</strong> {selectedShader.metadata?.description || 'N/A'}</p>
+          <p><strong>Type:</strong> {getShaderType(selectedShader)}</p>
+          <p><strong>Tags:</strong> {selectedShader.metadata?.tags?.join(', ') || 'N/A'}</p>
+          <p><strong>Relevance Score:</strong> {formatRelevanceScore(selectedShader.relevanceScore)}</p>
+          <p><strong>Embedding Similarity:</strong> {formatRelevanceScore(selectedShader.embeddingSimilarity)}</p>
+          <p><strong>Average Execution Time:</strong> {formatExecutionTime(selectedShader.metadata?.averageExecutionTime)}</p>
+          <p><strong>Usage Count:</strong> {selectedShader.metadata?.usageCount || 0}</p>
+          <h3 class="mt-4">WGSL Code</h3>
+          <pre class="bg-gray-100 p-3 rounded-md text-sm overflow-x-auto">{selectedShader.wgsl || 'No WGSL code available.'}</pre>
+          <button onclick={() => copyShaderCode(selectedShader)} class="search-button mt-4" style="background: #2563eb;">Copy WGSL Code</button>
+        </div>
+      </div>
+    </div>
+  {/if}
 </main>
 
 <style>
@@ -166,20 +342,18 @@
      Keep visual parity but ensure all declarations are syntactically correct. */
 
   .container {
-    max-width: 1400px;
-    margin: 0 auto
-   ; padding: 2rem;
-    font-family: -apple-system; BlinkMacSystemFont: 'Segoe UI', Roboto, sans-serif}
+    max-width: 1400px; margin: 0 auto; padding: 2rem;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
 
   header { text-align: center; margin-bottom: 2rem}
   h1 { color: #2563eb; margin-bottom: 0.5rem}
 
   .stats-section, .search-section, .results-section {
     background: white;
-    border-radius: 12px
-   ; padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.06)}
+    border-radius: 12px; padding: 1.5rem;
+    margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.06);
+  }
 
   .stats-grid {
     display: grid;
@@ -188,8 +362,8 @@
     margin-bottom: 1rem}
 
   .stat-number { font-size: 1.5rem; font-weight: 700; color: #111827}
-  .stat-number.webgpu-color { color: #10b981}
-  .stat-number.webgl-color { color: #f59e0b}
+  .stat-number.webgpu-color { color: #10b981; }
+  .stat-number.webgl-color { color: #f59e0b; }
 
   .search-input-group { display: flex; gap:1rem; margin-bottom:1rem}
   .search-input { flex: 1; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 1rem}
@@ -197,8 +371,8 @@
 
   .filters-row { display: flex; gap:1rem; flex-wrap: wrap; align-items:end; margin-bottom:1rem}
   .filter-group { display: flex; flex-direction:column; gap:0.5rem}
-  .filter-group label { font-weight: 500; color:#374151}
-  .filter-group select { padding: 0.4rem; border:1px solid #e5e7eb; border-radius:6px}
+  .filter-group label { font-weight: 500; color:#374151; }
+  .filter-group select { padding: 0.4rem; border:1px solid #e5e7eb; border-radius:6px; }
 
   .tags-section { margin-top: 1rem}
   .tag-filters { display: flex; gap:0.5rem; flex-wrap: wrap; margin-top:0.5rem}
@@ -211,22 +385,22 @@
   .shader-nier-bits-card {
     border: 1px solid #e5e7eb;
     border-radius:8px;
-    padding:1rem;
-    cursor:pointer
-   ; transition: transform 0.15s ease, box-shadow 0.15s ease}
-  .shader-nier-bits-card: hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06)}
+    padding:1rem; cursor:pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .shader-nier-bits-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
 
   .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items:center; justify-content: center; z-index:1000}
-  .modal { background: white; border-radius:12px; width: 90%; max-width:1000px; max-height: 90vh; overflow:hidden; display: flex; flex-direction:column}
+  .modal { background: white; border-radius:12px; width: 90%; max-width:1000px; max-height: 90vh; overflow:hidden; display: flex; flex-direction:column; }
   .modal-header { display: flex; justify-content:space-between; align-items: center; padding:1rem; border-bottom:1px solid #e5e7eb}
 
-  pre { white-space: pre-wrap; word-break: break-word; color: #111827}
+  pre { white-space: pre-wrap; word-break: break-word; color: #111827; }
 
   /* small additions for button styles to visually match prior span styles */
   .operation-tag { background: transparent; border: none; padding: 0.25rem 0.5rem; cursor: pointer; border-radius: 8px}
   .operation-tag[aria-pressed="true"] { background:#e6f2ff}
   .selected-tag { background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px; cursor: pointer; margin-right:0.5rem}
   .selected-tag[aria-pressed="true"] { background: #2563eb; color:white; border-color:#2563eb}
-  .shader-nier-bits-card { text-align: left; display:block; width: 100%; border:none; background: transparent; padding:1rem}
-  .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25)}
+  .shader-nier-bits-card { text-align: left; display:block; width: 100%; border:none; background: transparent; padding:1rem; }
+  .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25); }
 </style>

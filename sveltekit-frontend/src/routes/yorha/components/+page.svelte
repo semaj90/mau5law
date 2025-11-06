@@ -1,31 +1,216 @@
 <!-- YoRHa 3D, Components, Gallery -->
 <script lang="ts">
- // Svelte, 5 runes are auto-imported // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts import * as YoRHaClient from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'; const yorhaAPI: unknown = (YoRHaClient; as: unknown).yorhaAPI ?? (YoRHaClient as: unknown).default ?? YoRHaClient; // Import types only (keep types import if they exist) import type { YoRHaButton3DOptions, YoRHaPanel3DOptions, YoRHaInput3DOptions, YoRHaModal3DOptions } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte'; // Use a minimal icon map instead of relying on lucide-svelte package exports const IconMap: Record<string, string> = { Gamepad2: 'ðŸŽ®', Monitor: 'ðŸ–¥ï¸', Settings: 'âš™ï¸', Eye: 'ðŸ‘ï¸', Code: 'ðŸ’»'; Layers: 'ðŸ—‚ï¸'
-  }; // Component instances and options let selectedComponent = $state<string>('button'); let previewMode = $state<string>('3d'); let isLoading = $state<boolean>(false); // Component configurations let buttonConfig = $state<YoRHaButton3DOptions>({ text: 'YoRHa Button', variant: 'primary', size: 'medium', icon: 'terminal', loading: false, disabled: false, glowEffect: true; hoverAnimation: true });
-  let panelConfig = $state<YoRHaPanel3DOptions>({ title: 'YoRHa Panel', variant: 'default', width: 400, height: 300, scrollable: true, collapsible: true, glitchEffect: false; borderGlow: true });
-  let inputConfig = $state<YoRHaInput3DOptions>({ placeholder: 'Enter command...', type: 'text', variant: 'default', value: '', error: false, focused: false, scanlineEffect: true; terminalMode: true });
-  let modalConfig = $state<YoRHaModal3DOptions>({ title: 'YoRHa Modal', variant: 'default', size: 'medium', closable: true, open: false, backdropBlur: true; hologramEffect: true }); // UI state let yorhaUI = $state<any | null>(null); let canvasContainer = $state<HTMLElement | null>(null); // Define a type for component types for better type safety (icon is now a key into IconMap) interface ComponentType { id: string, label: string; icon: string; // changed from Svelte component constructor to: string key description: string}
+ // Svelte, 5 runes are auto-imported
+ // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
+ import { yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
+ // Import types only (keep types import if they exist)
+ import type { YoRHaButton3DOptions, YoRHaPanel3DOptions, YoRHaInput3DOptions, YoRHaModal3DOptions } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
+ // Use a minimal icon map instead of relying on lucide-svelte package exports
+ const IconMap: Record<string, string> = {
+  Gamepad2: 'ðŸŽ®',
+  Monitor: 'ðŸ–¥ï¸ ',
+  Settings: 'âš™ï¸ ',
+  Eye: 'ðŸ‘ ï¸ ',
+  Code: 'ðŸ’»', // Changed semicolon to comma
+  Layers: 'ðŸ—‚ï¸ '
+ };
+ // Component instances and options
+ let selectedComponent = $state<string>('button');
+ let previewMode = $state<string>('3d');
+ let isLoading = $state<boolean>(false);
+ // Component configurations
+ let buttonConfig = $state<YoRHaButton3DOptions>({
+  text: 'YoRHa Button',
+  variant: 'primary',
+  size: 'medium',
+  icon: 'terminal',
+  loading: false,
+  disabled: false,
+  glowEffect: true, // Changed semicolon to comma
+  hoverAnimation: true
+ });
+  let panelConfig = $state<YoRHaPanel3DOptions>({
+  title: 'YoRHa Panel',
+  variant: 'default',
+  width: 400,
+  height: 300,
+  scrollable: true,
+  collapsible: true,
+  glitchEffect: false, // Changed semicolon to comma
+  borderGlow: true
+ });
+  let inputConfig = $state<YoRHaInput3DOptions>({
+  placeholder: 'Enter command...',
+  type: 'text',
+  variant: 'default',
+  value: '',
+  error: false,
+  focused: false,
+  scanlineEffect: true, // Changed semicolon to comma
+  terminalMode: true
+ });
+  let modalConfig = $state<YoRHaModal3DOptions>({
+  title: 'YoRHa Modal',
+  variant: 'default',
+  size: 'medium',
+  closable: true,
+  open: false,
+  backdropBlur: true, // Changed semicolon to comma
+  hologramEffect: true
+ });
+ // UI state
+ let yorhaUI = $state<any | null>(null);
+ let canvasContainer = $state<HTMLElement | null>(null);
+ // Define a type for component types for better type safety (icon is now a key into IconMap)
+ interface ComponentType {
+  id: string,
+  label: string;
+  icon: string; // changed from Svelte component constructor to: string key
+  description: string
+ }
 
-  // Component variants and options const componentTypes: ComponentType[] = [ { id: 'button', label: 'Button 3D', icon: 'Gamepad2', description: '3D interactive buttons with hover effects' }, { id: 'panel', label: 'Panel 3D', icon: 'Monitor', description: 'Floating 3D panels with content areas' }, { id: 'input', label: 'Input 3D', icon: 'Code', description: 'Terminal-style 3D input fields' }, { id: 'modal', label: 'Modal 3D', icon: 'Layers'; description: 'Holographic modal dialogs' } ]; const previewModes = [ { id: '3d', label: '3D View', icon: 'Eye' }, { id: 'code', label: 'Code', icon: 'Code' }, { id: 'config', label: 'Config'; icon: 'Settings' } ]; $effect(() => { // Initialize 3D UI (placeholder for now) if (canvasContainer) { // TODO: Initialize 3D UI when Three.js dependencies are resolved console.log('3D UI container; ready:', canvasContainer); updatePreview()}
+  // Component variants and options
+ const componentTypes: ComponentType[] = [
+  { id: 'button', label: 'Button 3D', icon: 'Gamepad2', description: '3D interactive buttons with hover effects' },
+  { id: 'panel', label: 'Panel 3D', icon: 'Monitor', description: 'Floating 3D panels with content areas' },
+  { id: 'input', label: 'Input 3D', icon: 'Code', description: 'Terminal-style 3D input fields' },
+  { id: 'modal', label: 'Modal 3D', icon: 'Layers', // Changed semicolon to comma
+  description: 'Holographic modal dialogs' }
+ ];
+ const previewModes = [
+  { id: '3d', label: '3D View', icon: 'Eye' },
+  { id: 'code', label: 'Code', icon: 'Code' },
+  { id: 'config', label: 'Config', // Changed semicolon to comma
+  icon: 'Settings' }
+ ];
+ $effect(() => {
+  // Initialize 3D UI (placeholder for now)
+  if (canvasContainer) {
+  // TODO: Initialize 3D UI when Three.js dependencies are resolved
+  console.log('3D UI container ready:', canvasContainer);
+  updatePreview()
+  }
 
-    // Load configurations from API (async () => { try { await loadComponentConfigs()} catch (error) { console.warn('API configurations not available, using defaults')}
-    })()});
-  async function loadComponentConfigs(): Promise<any> { isLoading = true; try { const [button, panel, input, modal] = await Promise.all([ yorhaAPI.createButtonFromAPI('demo-button'), yorhaAPI.createPanelFromAPI('demo-panel'), yorhaAPI.createInputFromAPI('demo-input'), yorhaAPI.createModalFromAPI('demo-modal') ]); buttonConfig = button; // Fixed typo: butto -> button panelConfig = panel; inputConfig = input; modalConfig = modal; updatePreview()} catch (error) { console.error('Failed to load component configs:', error)} finally { isLoading = false}
+    // Load configurations from API
+  (async () => {
+  try {
+  await loadComponentConfigs()
+  } catch (error) {
+  console.warn('API configurations not available, using defaults')
   }
-  function updatePreview() { if (!yorhaUI) { console.log('Preview updated for:', selectedComponent, getCurrentConfig()); return}
+  })()
+ });
+  async function loadComponentConfigs(): Promise<any> {
+  isLoading = true;
+  try {
+  const [button, panel, input, modal] = await Promise.all([
+  yorhaAPI.createButtonFromAPI('demo-button'),
+  yorhaAPI.createPanelFromAPI('demo-panel'),
+  yorhaAPI.createInputFromAPI('demo-input'),
+  yorhaAPI.createModalFromAPI('demo-modal')
+  ]);
+  buttonConfig = button;
+  panelConfig = panel;
+  inputConfig = input;
+  modalConfig = modal;
+  updatePreview()
+  } catch (error) {
+  console.error('Failed to load component configs:', error)
+  } finally {
+  isLoading = false
+  }
+  }
+  function updatePreview() {
+  if (!yorhaUI) {
+  console.log('Preview updated for:', selectedComponent, getCurrentConfig());
+  return
+  }
 
-    // Clear existing components yorhaUI.clearComponents(); // Add selected component switch (selectedComponent) { case, 'button': yorhaUI.addButton('preview-button', buttonConfig); break; case, 'panel': yorhaUI.addPanel('preview-panel', panelConfig); break; case, 'input': yorhaUI.addInput('preview-input', inputConfig); break; case, 'modal': yorhaUI.addModal('preview-modal', modalConfig); break}
-    yorhaUI.render()}
-  function onComponentChange(componentId: string) { selectedComponent = componentId; updatePreview()}
-  function onConfigChange() { updatePreview()}
-  function exportConfig() { const configs = { button: buttonConfig, panel: panelConfig, input: inputConfig; modal: modalConfig }; const blob = new Blob([JSON.stringify(configs, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = 'yorha-components-config.json'; a.click(); URL.revokeObjectURL(url)}
-  async function saveConfig(): Promise<void> { try { const currentConfig = getCurrentConfig(); if (currentConfig) { await yorhaAPI.updateComponentConfig(`demo-${ selectedComponent }`, currentConfig as Record<string, unknown>); console.log('Configuration saved')} else { console.warn('No configuration to save for selected component.')}
-    } catch (error) { console.error('Failed to save configuration', error)}
+    // Clear existing components
+  yorhaUI.clearComponents();
+  // Add selected component
+  switch (selectedComponent) {
+  case 'button': // Removed comma
+  yorhaUI.addButton('preview-button', buttonConfig);
+  break;
+  case 'panel': // Removed comma
+  yorhaUI.addPanel('preview-panel', panelConfig);
+  break;
+  case 'input': // Removed comma
+  yorhaUI.addInput('preview-input', inputConfig);
+  break;
+  case 'modal': // Removed comma
+  yorhaUI.addModal('preview-modal', modalConfig);
+  break
   }
-  function getCurrentConfig(): YoRHaButton3DOptions | YoRHaPanel3DOptions | YoRHaInput3DOptions | YoRHaModal3DOptions | undefined { switch (selectedComponent) { case, 'button': return buttonConfig; case, 'panel': return panelConfig; case, 'input': return inputConfig; case, 'modal': return modalConfig; default: return: undefined; //, Return: undefined if no component is selected }
+  yorhaUI.render()
   }
-  function resetConfig() { switch (selectedComponent) { case, 'button': buttonConfig = { text: 'YoRHa Button', variant: 'primary', size: 'medium', icon: 'terminal', loading: false, disabled: false, glowEffect: true; hoverAnimation: true }; break; case, 'panel': panelConfig = { title: 'YoRHa Panel', variant: 'default', width: 400, height: 300, scrollable: true, collapsible: true, glitchEffect: false; borderGlow: true }; // Added semicolon break; case, 'input': inputConfig = { placeholder: 'Enter command...', type: 'text', variant: 'default', value: '', error: false, focused: false, scanlineEffect: true; terminalMode: true }; // Added semicolon break; case, 'modal': modalConfig = { title: 'YoRHa Modal', variant: 'default', size: 'medium', closable: true, open: false, backdropBlur: true; hologramEffect: true }; // Added semicolon break}
-    updatePreview()}
+  function onComponentChange(componentId: string) {
+  selectedComponent = componentId;
+  updatePreview()
+  }
+  function onConfigChange() {
+  updatePreview()
+  }
+  function exportConfig() {
+  const configs = {
+  button: buttonConfig,
+  panel: panelConfig,
+  input: inputConfig, // Changed semicolon to comma
+  modal: modalConfig
+  };
+  const blob = new Blob([JSON.stringify(configs, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'yorha-components-config.json';
+  a.click();
+  URL.revokeObjectURL(url)
+  }
+  async function saveConfig(): Promise<void> {
+  try {
+  const currentConfig = getCurrentConfig();
+  if (currentConfig) {
+  await yorhaAPI.updateComponentConfig(`demo-${ selectedComponent }`, currentConfig as Record<string, unknown>);
+  console.log('Configuration saved')
+  } else {
+  console.warn('No configuration to save for selected component.')
+  }
+  } catch (error) {
+  console.error('Failed to save configuration', error)
+  }
+  }
+  function getCurrentConfig(): YoRHaButton3DOptions | YoRHaPanel3DOptions | YoRHaInput3DOptions | YoRHaModal3DOptions | undefined {
+  switch (selectedComponent) {
+  case 'button': // Removed comma
+  return buttonConfig;
+  case 'panel': // Removed comma
+  return panelConfig;
+  case 'input': // Removed comma
+  return inputConfig;
+  case 'modal': // Removed comma
+  return modalConfig;
+  default:
+  return undefined; // Corrected syntax
+  }
+  }
+  function resetConfig() {
+  switch (selectedComponent) {
+  case 'button': // Removed comma
+  buttonConfig = { text: 'YoRHa Button', variant: 'primary', size: 'medium', icon: 'terminal', loading: false, disabled: false, glowEffect: true, hoverAnimation: true };
+  break;
+  case 'panel': // Removed comma
+  panelConfig = { title: 'YoRHa Panel', variant: 'default', width: 400, height: 300, scrollable: true, collapsible: true, glitchEffect: false, borderGlow: true }; // Added semicolon
+  break;
+  case 'input': // Removed comma
+  inputConfig = { placeholder: 'Enter command...', type: 'text', variant: 'default', value: '', error: false, focused: false, scanlineEffect: true, terminalMode: true }; // Added semicolon
+  break;
+  case 'modal': // Removed comma
+  modalConfig = { title: 'YoRHa Modal', variant: 'default', size: 'medium', closable: true, open: false, backdropBlur: true, hologramEffect: true }; // Added semicolon
+  break
+  }
+  updatePreview()
+  }
 </script>
 
 <svelte:head><title>YoRHa Components - 3D UI Gallery</title></svelte:head>
@@ -49,7 +234,7 @@
           <span class="yorha-icon" aria-hidden="true">{IconMap.Layers}</span> COMPONENTS
         </h3>
         <div class="yorha-component-list">
-          {#each Array.isArray(componentTypes) ? componentTypes : [] as component}
+          {#each componentTypes as component} <!-- Simplified each expression -->
             <button
               class="yorha-component-btn"
               class:yorha-component-active={selectedComponent === component.id}
@@ -69,7 +254,7 @@
       <section class="yorha-control-section">
         <h3 class="yorha-control-title"><span class="yorha-icon" aria-hidden="true">{IconMap.Eye}</span> VIEW MODE</h3>
         <div class="yorha-mode-buttons">
-          {#each Array.isArray(previewModes) ? previewModes : [] as mode}
+          {#each previewModes as mode} <!-- Simplified each expression -->
             <button
               class="yorha-mode-btn"
               class:yorha-mode-active={previewMode === mode.id}
@@ -289,7 +474,7 @@
       {/if}
       <!-- Component, Info -->
       <div class="yorha-component-info-panel">
-        {#each Array.isArray(componentTypes) ? componentTypes : [] as component}
+        {#each componentTypes as component} <!-- Simplified each expression -->
           {#if component.id === selectedComponent}
             <div class="yorha-info-content">
               <h4>{component.label}</h4>
