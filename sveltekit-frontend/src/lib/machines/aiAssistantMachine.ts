@@ -906,12 +906,11 @@ type TaskResult = { ok: boolean; result?: unknown; error?: string };
 function isSendMessage(
   event: unknown
 ): event is { type: "SEND_MESSAGE"; message: string; useContext7?: boolean; caseId?: string } {
-  // narrow shape check
+  // runtime-safe narrow without `any`
+  if (typeof event !== "object" || event === null) return false;
+  const ev = event as Record<string, unknown>;
   return (
-    typeof event === "object" &&
-    event !== null &&
-    (event as any).type === "SEND_MESSAGE" &&
-    typeof (event as any).message === "string"
+    typeof ev.type === "string" && ev.type === "SEND_MESSAGE" && typeof ev.message === "string"
   );
 }
 
