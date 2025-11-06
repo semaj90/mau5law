@@ -1,6 +1,6 @@
 <script lang="ts">
   // Use bits-ui Button component (switch from enhanced-bits import)
-  import Button from '$lib/components/ui/Button.svelte';
+  import { Button } from '$lib/components/ui/button';
 
   import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
 
@@ -22,7 +22,7 @@
       <Button.Root class="bits-btn" variant="ghost" size="sm">
         <span class="mr-2">⬅️</span>
         Back to Dashboard
-      </Button>
+      </Button.Root>
     </a>
     <div class="p-6 rounded-lg bg-black/20 border border-gray-700/50">
       <h1 class="text-2xl sm:text-3xl font-bold mb-2 flex">

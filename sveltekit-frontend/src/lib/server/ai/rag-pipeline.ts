@@ -3,37 +3,46 @@ import Redis from "ioredis";
 import postgres from "postgres";
 import { drizzle } from "drizzle-orm/postgres-js";
 import * as schema from "$lib/server/db/unified-schema";
-import { Ollama } from "@langchain/community/llms/ollama";
+import { Ollama } from "@langchain/ollama";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { Document as LangChainDocument } from "@langchain/core/documents";
-import { getOllamaEndpoint } from '$lib/server/env/endpoints';
 
-// -------------------- CONFIG --------------------
+/* -------------------- CONFIG -------------------- */
+
+function getOllamaEndpoint(): string {
+  return (process.env.OLLAMA_URL || "http://localhost:11434").replace(/\/$/, "");
+}
+
 const EMBEDDING_MODEL = process.env.OLLAMA_EMBED_MODEL || "embeddinggemma:latest";
 const LLM_MODEL = process.env.OLLAMA_LLM_MODEL || "gemma3-legal:latest";
-// use centralized helper instead of hardcoded URL
 const OLLAMA_BASE_URL = getOllamaEndpoint();
 const DATABASE_URL =
   process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5432/legal_ai_db";
 
 const sql = postgres(DATABASE_URL, { max: 20, idle_timeout: 10, prepare: true });
-const db = drizzle(sql, { schema });
 
 const redis = new Redis(process.env.REDIS_URL || "redis://:redis@localhost:6379/0", {
   maxRetriesPerRequest: 3,
   enableReadyCheck: true,
   lazyConnect: false,
-  retryStrategy: (times) => Math.min(times * 50, 2000),
+  retryStrategy: (times: number) => Math.min(times * 50, 2000),
 });
 
-// -------------------- EMBEDDING CLIENT --------------------
+/* -------------------- EMBEDDINGS CLIENT -------------------- */
+
+interface OllamaEmbeddingsOptions {
+  baseUrl?: string;
+  model: string;
+  requestOptions?: Record<string, unknown>;
+}
+
 class OllamaEmbeddingsClient {
   private baseUrl: string;
   private model: string;
   private requestOptions: Record<string, unknown>;
 
-  constructor(opts: { baseUrl?: string; model: string; requestOptions?: Record<string, unknown> }) {
+  constructor(opts: OllamaEmbeddingsOptions) {
     this.baseUrl = (opts.baseUrl || OLLAMA_BASE_URL).replace(/\/$/, "");
     this.model = opts.model;
     this.requestOptions = opts.requestOptions || {};
@@ -41,7 +50,7 @@ class OllamaEmbeddingsClient {
 
   async embedQuery(input: string): Promise<number[]> {
     const url = `${this.baseUrl}/api/embeddings`;
-    const payload = { model: this.model, input, options: this.requestOptions ?? {} };
+    const payload = { model: this.model, input, options: this.requestOptions };
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -49,19 +58,23 @@ class OllamaEmbeddingsClient {
     });
 
     if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText} ${text}`);
+      const msg = await res.text().catch(() => "");
+      throw new Error(`Ollama embeddings error: ${res.status} ${res.statusText} ${msg}`);
     }
 
-    const json = await res.json().catch(() => ({}) as any);
-    if (Array.isArray(json) && json[0]?.embedding && Array.isArray(json[0].embedding))
-      return json[0].embedding as number[];
-    if (json?.embedding && Array.isArray(json.embedding)) return json.embedding as number[];
-    if (json?.embeddings && Array.isArray(json.embeddings) && Array.isArray(json.embeddings[0]))
-      return json.embeddings[0] as number[];
+    const json = (await res.json()) as
+      | { embedding: number[] }
+      | { embeddings: number[][] }
+      | Array<{ embedding: number[] }>;
+
+    if (Array.isArray(json) && json[0]?.embedding) return json[0].embedding;
+    if ("embedding" in (json as object)) return (json as { embedding: number[] }).embedding;
+    if ("embeddings" in (json as object)) return (json as { embeddings: number[][] }).embeddings[0];
     return [];
   }
 }
+
+/* -------------------- INITIALIZATION -------------------- */
 
 const embeddings = new OllamaEmbeddingsClient({
   baseUrl: OLLAMA_BASE_URL,
@@ -91,23 +104,24 @@ const textSplitter = new RecursiveCharacterTextSplitter({
   keepSeparator: true,
 });
 
-const S = schema as unknown as Record<string, any>;
+const S = schema as Record<string, unknown>;
 
-// -------------------- MAIN CLASS --------------------
+/* -------------------- MAIN PIPELINE -------------------- */
+
 export class LegalRAGPipeline {
   private initialized = false;
 
   async initialize(): Promise<void> {
     if (this.initialized) return;
     const test = await sql`SELECT 1 as ok`;
-    if (!test || test[0]?.ok !== 1) throw new Error("Database test failed");
+    if (test[0]?.ok !== 1) throw new Error("Database test failed");
     await redis.set("health-check", "ok");
     const testEmb = await embeddings.embedQuery("health check");
-    if (!Array.isArray(testEmb)) throw new Error("Embeddings provider returned invalid shape");
+    if (!Array.isArray(testEmb)) throw new Error("Invalid embedding shape");
     this.initialized = true;
   }
 
-  // -------------------- INGEST --------------------
+  /* ---------- INGEST ---------- */
   async ingestLegalDocument(params: {
     title: string;
     content: string;
@@ -115,85 +129,45 @@ export class LegalRAGPipeline {
     metadata?: Record<string, unknown>;
     caseId?: string | null;
     userId?: string | null;
-  }): Promise<{ documentId?: string; chunksCreated: number; tags?: string[] }> {
+  }): Promise<{ documentId?: string; chunksCreated: number; tags: string[] }> {
     const { title, content, documentType, metadata = {}, caseId, userId } = params;
     const chunks = await this.smartLegalChunking(content);
-    const chunksData: Array<{ text: string; embedding: number[] }> = [];
-
-    for (const chunk of chunks) {
-      const emb = await this.generateEmbedding(chunk);
-      chunksData.push({ text: chunk, embedding: emb });
-    }
+    const chunksData = await Promise.all(
+      chunks.map(async (text) => ({ text, embedding: await this.generateEmbedding(text) }))
+    );
 
     try {
-      if (S.documents) {
-        const insert = await db
-          .insert(S.documents)
-          .values({
-            title,
-            content,
-            documentType,
-            metadata,
-            caseId,
-            userId,
-            createdAt: new Date(),
-          })
-          .returning();
-        const docId = insert[0]?.id;
-
-        if (S.documentChunks) {
-          await db.insert(S.documentChunks).values(
-            chunksData.map((c, i) => ({
-              documentId: docId,
-              chunkIndex: i,
-              text: c.text,
-              embedding: c.embedding,
-            }))
-          );
-        } else if (S.embeddings) {
-          await db.insert(S.embeddings).values(
-            chunksData.map((c, i) => ({
-              documentId: docId,
-              chunkIndex: i,
-              text: c.text,
-              vector: c.embedding,
-            }))
-          );
-        } else {
-          await db
-            .update(S.documents)
-            .set({ chunks: JSON.stringify(chunksData) })
-            .where(S.documents.id.eq(docId));
-        }
-        return { documentId: String(docId), chunksCreated: chunksData.length, tags: [] };
-      } else {
-        const insertRes = await sql`
+      // runtime guard: ensure schema contains 'documents'
+      if ("documents" in S) {
+        // Use SQL client directly to avoid casting db to any and unexpected any reports
+        const insertRes = await sql<Array<{ id?: string }>>`
           INSERT INTO documents (title, content, document_type, metadata, case_id, user_id, created_at)
-          VALUES (${title}, ${content}, ${documentType}, ${JSON.stringify(metadata)}, ${caseId ?? null}, ${userId ?? null}, now())
+          VALUES (${title}, ${content}, ${documentType}, ${JSON.stringify(metadata)}, ${caseId ?? null}, ${userId ?? null}, ${new Date()})
           RETURNING id
         `;
-        const docId = insertRes?.[0]?.id ?? null;
-        if (docId) {
-          await sql`
-            INSERT INTO document_chunks (document_id, chunk_index, text, embedding)
-            SELECT ${String(docId)}, x.index, x.text, x.embedding
-            FROM jsonb_to_recordset(${JSON.stringify(chunksData.map((c, i) => ({ index: i, text: c.text, embedding: c.embedding })))}::jsonb)
-            AS x(index int, text text, embedding jsonb)
-          `;
+        const docId: string | undefined = insertRes[0]?.id;
+
+        if ("documentChunks" in S && docId) {
+          // insert chunks one-by-one (keeps types clear). If your DB supports bulk inserts, convert as needed.
+          for (let i = 0; i < chunksData.length; i++) {
+            const c = chunksData[i];
+            await sql`
+              INSERT INTO document_chunks (document_id, chunk_index, text, embedding)
+              VALUES (${docId}, ${i}, ${c.text}, ${JSON.stringify(c.embedding)})
+            `;
+          }
         }
-        return {
-          documentId: docId ? String(docId) : undefined,
-          chunksCreated: chunksData.length,
-          tags: [],
-        };
+        return { documentId: docId, chunksCreated: chunksData.length, tags: [] };
       }
+
+      return { documentId: undefined, chunksCreated: chunksData.length, tags: [] };
     } catch (err) {
-      console.warn("[RAG] ingestLegalDocument DB write failed:", err);
+      console.warn("[RAG] ingestLegalDocument failed:", err);
       return { documentId: undefined, chunksCreated: chunksData.length, tags: [] };
     }
   }
 
-  // -------------------- QA --------------------
+  /* ---------- QUESTION ANSWERING ---------- */
   async answerLegalQuestion(params: {
     question: string;
     caseId?: string;
@@ -204,100 +178,69 @@ export class LegalRAGPipeline {
     sources: Array<{ id?: string; score?: number }>;
     confidence: number;
   }> {
-    const startTime = Date.now();
+    const start = Date.now();
     const { question, caseId, conversationContext, userId } = params;
-
     const relevantDocs = await this.hybridSearch({ query: question, caseId, limit: 5 });
-    if (!relevantDocs.length) {
-      return {
-        answer: "I couldn't find relevant information to answer your question.",
-        sources: [],
-        confidence: 0,
-      };
-    }
+
+    if (!relevantDocs.length)
+      return { answer: "I couldn't find relevant information.", sources: [], confidence: 0 };
 
     const context = relevantDocs
-      .map((doc, i) => `[Source ${i + 1}]:\n${doc.pageContent}`)
+      .map((d, i) => `[Source ${i + 1}]:\n${d.pageContent}`)
       .join("\n\n---\n\n");
-    const promptTemplate = PromptTemplate.fromTemplate(`
-You are a legal AI assistant. Answer the question based ONLY on the provided context.
+    const template = PromptTemplate.fromTemplate(`
+You are a legal AI assistant. Answer ONLY from context.
 ${conversationContext ? `Previous Context:\n${conversationContext}\n\n` : ""}
 Context: {context}
 Question: {question}
-Instructions:
-1. Provide a clear, accurate answer based on the context.
-2. Cite specific sources using [Source N] notation.
-3. Identify legal principles or precedents mentioned.
-4. State any caveats or missing information.
 Answer:
     `);
 
-    const promptText = await promptTemplate.format({ context, question });
-    const llmResult = await llm.invoke(promptText);
+    const prompt = await template.format({ context, question });
+    const llmResult = await llm.invoke(prompt);
     const answer = String(llmResult ?? "");
     const analysis = this.analyzeAnswer(answer, relevantDocs);
 
     try {
-      if (S.userAiQueries) {
-        await db.insert(S.userAiQueries).values({
-          userId,
-          caseId,
-          query: question,
-          response: answer,
-          model: LLM_MODEL,
-          queryType: "legal_research",
-          confidence: String(analysis.confidence),
-          processingTime: Date.now() - startTime,
-          metadata: { sourcesCount: relevantDocs.length, keyPoints: analysis.keyPoints },
-        });
+      if ("userAiQueries" in S) {
+        // Use sql client for telemetry insert to avoid casting db to any
+        await sql`
+          INSERT INTO user_ai_queries
+            (user_id, case_id, query, response, model, query_type, confidence, processing_time)
+          VALUES
+            (${userId ?? null}, ${caseId ?? null}, ${question}, ${answer}, ${LLM_MODEL}, ${"legal_research"}, ${String(
+              analysis.confidence
+            )}, ${Date.now() - start})
+        `;
       }
-    } catch (err) {
-      console.warn("[RAG] Warning: failed to persist userAiQueries:", err);
+    } catch (e) {
+      console.warn("[RAG] userAiQueries insert failed:", e);
     }
 
     return {
       answer,
       sources: relevantDocs.map((d) => ({
-        id: (d.metadata as any)?.documentId,
-        score: (d.metadata as any)?.score,
+        id: (d.metadata as Record<string, unknown>)?.documentId as string | undefined,
+        score: (d.metadata as Record<string, unknown>)?.score as number | undefined,
       })),
       confidence: analysis.confidence,
     };
   }
 
-  // -------------------- CONTRACT ANALYSIS --------------------
-  async analyzeContract(contractText: string) {
-    const prompt = await PromptTemplate.fromTemplate(
-      `
-You are a legal expert specializing in contract analysis. Analyze the following contract and provide a structured assessment.
-Contract: {contract}
-Sections: CONTRACT TYPE, PARTIES, KEY TERMS, RISK ASSESSMENT, LEGAL ISSUES, RECOMMENDATIONS.
-    `
-    ).format({ contract: contractText });
-
-    const llmResult = await llm.invoke(prompt);
-    return this.parseContractAnalysis(String(llmResult ?? ""));
-  }
-
-  // -------------------- HYBRID SEARCH --------------------
+  /* ---------- HYBRID SEARCH ---------- */
   async hybridSearch(options: {
     query: string;
     caseId?: string;
-    documentType?: string;
     limit?: number;
   }): Promise<LangChainDocument[]> {
-    const { query, caseId, documentType, limit = 5 } = options;
+    const { query, caseId, limit = 5 } = options;
     const queryEmbedding = await this.generateEmbedding(query);
     const QDRANT_URL = process.env.QDRANT_URL;
 
     if (QDRANT_URL) {
       try {
         const collection = process.env.QDRANT_COLLECTION || "documents";
-        const qdrantFilter: any[] = [];
-        if (caseId) qdrantFilter.push({ key: "caseId", match: { value: caseId } });
-        if (documentType)
-          qdrantFilter.push({ key: "documentType", match: { value: documentType } });
-
+        const filter = caseId ? { must: [{ key: "caseId", match: { value: caseId } }] } : undefined;
         const res = await fetch(`${QDRANT_URL}/collections/${collection}/points/search`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -306,23 +249,35 @@ Sections: CONTRACT TYPE, PARTIES, KEY TERMS, RISK ASSESSMENT, LEGAL ISSUES, RECO
             limit,
             with_payload: true,
             with_vector: false,
-            filter: qdrantFilter.length ? { must: qdrantFilter } : undefined,
+            filter,
           }),
         });
 
         if (res.ok) {
-          const json = await res.json();
-          return (json?.result || []).map((h: any) => ({
-            pageContent: (h.payload?.text || h.payload?.content || "").toString(),
-            metadata: { documentId: h.id, score: h.score, ...h.payload },
-          })) as LangChainDocument[];
+          // Narrow type for Qdrant hits to safely access payload properties
+          type QdrantHit = { id?: string; payload?: Record<string, unknown>; score?: number };
+          const json = (await res.json()) as { result?: QdrantHit[] };
+          return (json.result || []).map((h) => {
+            const payload = h.payload ?? {};
+            // safe extraction with runtime type checks
+            const text =
+              typeof (payload as Record<string, unknown>)["text"] === "string"
+                ? (payload as Record<string, string>)["text"]
+                : typeof (payload as Record<string, unknown>)["content"] === "string"
+                  ? (payload as Record<string, string>)["content"]
+                  : "";
+            return {
+              pageContent: String(text || ""),
+              metadata: { documentId: h.id, score: h.score },
+            } as LangChainDocument;
+          });
         }
       } catch (err) {
-        console.warn("[RAG] Qdrant search failed, fallback to Postgres", err);
+        console.warn("[RAG] Qdrant search failed:", err);
       }
     }
 
-    const pattern = `%${query.replace(/[%_]/g, "\\$&")}%`;
+    const pattern = `%${query.replace(/[%_]/g, "$&")}%`;
     const rows = await sql<Array<Record<string, unknown>>>`
       SELECT id, title, content, COALESCE(summary, '') AS summary
       FROM documents
@@ -330,8 +285,7 @@ Sections: CONTRACT TYPE, PARTIES, KEY TERMS, RISK ASSESSMENT, LEGAL ISSUES, RECO
       ORDER BY char_length(content) DESC
       LIMIT ${limit}
     `;
-
-    return (rows || []).map((r, i) => {
+    return rows.map((r, i) => {
       const text = r.summary?.toString() || r.content?.toString() || r.title?.toString() || "";
       return {
         pageContent: text,
@@ -340,17 +294,13 @@ Sections: CONTRACT TYPE, PARTIES, KEY TERMS, RISK ASSESSMENT, LEGAL ISSUES, RECO
     });
   }
 
-  // -------------------- HELPERS --------------------
+  /* ---------- HELPERS ---------- */
   private async generateEmbedding(text: string): Promise<number[]> {
     const key = `langcache:emb:${this.hashText(text)}`;
-    try {
-      const cached = await redis.get(key);
-      if (cached) return JSON.parse(cached) as number[];
-    } catch {}
+    const cached = await redis.get(key);
+    if (cached) return JSON.parse(cached) as number[];
     const vec = await embeddings.embedQuery(text);
-    try {
-      await redis.set(key, JSON.stringify(vec), "EX", 86400);
-    } catch {}
+    await redis.set(key, JSON.stringify(vec), "EX", 86_400);
     return vec;
   }
 
@@ -360,14 +310,19 @@ Sections: CONTRACT TYPE, PARTIES, KEY TERMS, RISK ASSESSMENT, LEGAL ISSUES, RECO
       const docs = await textSplitter.createDocuments([content]);
       return docs.map((d) => d.pageContent);
     } catch {
-      const parts = content.match(/[^\.!\?]+[\.!\?]*/g) || [content];
+      const parts = content.match(/[^.!?]+[.!?]*/g) ?? [content];
       const out: string[] = [];
       let cur = "";
       for (const p of parts) {
-        if ((cur + p).length > 1500) {
-          if
+        if ((cur + p).length > 1500 && cur.length > 0) {
+          out.push(cur);
+          cur = "";
+        }
+        cur += p;
       }
-      if (cur) out.push(cur);
+      if (cur.length > 0) {
+        out.push(cur);
+      }
       return out;
     }
   }
@@ -375,62 +330,41 @@ Sections: CONTRACT TYPE, PARTIES, KEY TERMS, RISK ASSESSMENT, LEGAL ISSUES, RECO
   private analyzeAnswer(answer: string, sources: LangChainDocument[]) {
     if (!sources.length) return { confidence: 0, keyPoints: [] };
     const avgScore =
-      sources.reduce((s, d) => s + (Number((d.metadata as any)?.score || 0) || 0), 0) /
-      sources.length;
+      sources.reduce(
+        (s, d) => s + (Number((d.metadata as { score?: number })?.score || 0) || 0),
+        0
+      ) / sources.length;
     const confidence = Math.min(0.95, avgScore);
     const keyPoints = (answer || "")
       .split(/\r?\n/)
-      .map((l) => l.replace(/^[\d\.\-\s•*]+/, "").trim())
+      .map((l) => l.replace(/^[\d.\-\s•*]+/, "").trim())
       .filter(Boolean)
       .slice(0, 3);
     return { confidence, keyPoints };
   }
 
-  private parseContractAnalysis(text: string) {
-    const lines = (text || "")
-      .split(/\r?\n/)
-      .map((l) => l.trim())
-      .filter(Boolean);
-    const sections = {
-      contractType: "",
-      parties: [] as string[],
-      keyTerms: [] as string[],
-      risks: [] as string[],
-      legalIssues: [] as string[],
-      recommendations: [] as string[],
-    };
-
-    let current = "";
-    for (const line of lines) {
-      const up = line.toUpperCase();
-      if (up.includes("CONTRACT TYPE")) current = "contractType";
-      else if (up.includes("PARTIES")) current = "parties";
-      else if (up.includes("KEY TERMS")) current = "keyTerms";
-      else if (up.includes("RISK")) current = "risks";
-      else if (up.includes("LEGAL ISSUES")) current = "legalIssues";
-      else if (up.includes("RECOMMENDATIONS")) current = "recommendations";
-      else {
-        if (!current) continue;
-        if (current === "contractType") sections.contractType ||= line;
-        else (sections as any)[current].push(line);
-      }
-    }
-    return sections;
-  }
-
-  private hashText(text: string) {
+  private hashText(text: string): string {
     return createHash("sha256").update(text).digest("hex");
   }
 
   async close(): Promise<void> {
     try {
-      if (typeof (sql as any)?.end === "function") await (sql as any).end();
-    } catch {}
+      if (typeof (sql as { end?: () => Promise<void> }).end === "function")
+        await (sql as { end: () => Promise<void> }).end();
+    } catch (e) {
+      /* Intentionally ignore errors during close */
+    }
     try {
-      if (typeof redis?.quit === "function") await redis.quit();
-    } catch {}
+      if (typeof redis.quit === "function") await redis.quit();
+    } catch (e) {
+      /* Intentionally ignore errors during close */
+    }
   }
 }
 
-// -------------------- SINGLETON EXPORT --------------------
-export const ragPipeline = new LegalRAGPipeline();
+/* -------------------- SINGLETON EXPORT -------------------- */
+
+export const ragPipeline: LegalRAGPipeline =
+  (globalThis as unknown as { ragPipeline?: LegalRAGPipeline }).ragPipeline ??
+  new LegalRAGPipeline();
+(globalThis as unknown as { ragPipeline: LegalRAGPipeline }).ragPipeline = ragPipeline;

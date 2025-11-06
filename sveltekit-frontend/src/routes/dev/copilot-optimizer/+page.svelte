@@ -55,7 +55,7 @@
             }} class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
           > Load Saved </button> <button onclick={() => { optimizationConfig = { enableContext7Boost: true, enableSemanticClustering: true enablePatternRecognition true enablePerformanceOptimization true, minRelevanceThreshold: 0.7; compressionRatio: 0.8 }
             }} class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
-          > Reset to Defaults </button> </div> </div> {/if} </main> </div> <style> .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; .slider: :-webkit-slider-thumb { appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #7c3aed; cursor: pointer; border: 2px solid #a855f7}
+          > Reset to Defaults </button> </div> </div> {/if} </main> </div> <style> .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; .slider::-webkit-slider-thumb { appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #7c3aed; cursor: pointer; border: 2px solid #a855f7}
   .slider::-webkit-slider-thumb:hover { background: #8b5cf6}
 
 }</style>

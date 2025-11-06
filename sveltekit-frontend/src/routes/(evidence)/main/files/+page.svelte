@@ -215,7 +215,7 @@ import type { Case } from '$lib/types'; interface Props { caseId: string}
 
   .hidden-input { display: none}
 
-  /* NES.css overrides */:global(.nes-btn) { font-size: 0.7rem !important; padding: 0.5rem 1rem !important}:global(.nes-btn.is-small) { font-size: 0.6rem !important; padding: 0.4rem 0.75rem !important}:global(.nes-input),:global(.nes-textarea),:global(.nes-select select) { font-size: 0.7rem !important; background: #0a0c0e !important; color: #d4af37 !important}:global(.nes-field) { margin-bottom: 1rem}:global(.nes-field > label) { margin-bottom: 0.5rem; font-size: 0.7rem}:global(.nes-progress) { height: 1.5rem}:global(.nes-checkbox.is-dark > span) { background-color: #0a0c0e; border-color: #d4af37}:global(.nes-checkbox.is-dark >; input: checked +; span::before) { background-color: #d4af37}
+  /* NES.css overrides */:global(.nes-btn) { font-size: 0.7rem !important; padding: 0.5rem 1rem !important}:global(.nes-btn.is-small) { font-size: 0.6rem !important; padding: 0.4rem 0.75rem !important}:global(.nes-input),:global(.nes-textarea),:global(.nes-select select) { font-size: 0.7rem !important; background: #0a0c0e !important; color: #d4af37 !important}:global(.nes-field) { margin-bottom: 1rem}:global(.nes-field > label) { margin-bottom: 0.5rem; font-size: 0.7rem}:global(.nes-progress) { height: 1.5rem}:global(.nes-checkbox.is-dark > span) { background-color: #0a0c0e; border-color: #d4af37}:global(.nes-checkbox.is-dark >; input:checked +; span::before) { background-color: #d4af37}
 </style>
 
 

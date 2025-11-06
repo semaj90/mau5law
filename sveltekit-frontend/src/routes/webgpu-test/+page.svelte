@@ -109,7 +109,7 @@ import type { User } from '$lib/types';
 
   button:disabled {
     background: #9ca3af;
-    cursor: not-allowed}
+    cursor:not-allowed}
 
   .status-card {
     display: flex;

@@ -372,7 +372,7 @@ import type { Case } from '$lib/types';
     padding: 1.5rem;
     cursor: pointer;
     transition: all 0.2s ease}
-  .transition-card: hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
+  .transition-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .transition-card.selected {
     border-color: #3b82f6;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2)}

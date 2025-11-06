@@ -46,7 +46,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .data-nier-bits-card { /* Corrected selector */ background: white; padding: 1.5rem; border-radius: 6px; border: 1px solid #ddd}
   .data-nier-bits-card h3 { /* Corrected selector */ margin-top: 0; color: #0066cc}
   .session-item { display: block; width: 100%; text-align: left; padding: 0.75rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 4px; background: white; cursor: pointer; transition: all 0.2s}
-  .session-item: hover { border-color: #0066cc; background: #f8f9fa}
+  .session-item:hover { border-color: #0066cc; background: #f8f9fa}
   .session-item.selected { border-color: #0066cc; background: #e3f2fd}
   .document-item { padding: 1rem; margin: 0.75rem 0; border: 1px solid #e0e0e0; border-radius: 4px; background: white}
   .doc-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; font-size: 0.9rem; color: #666}
@@ -59,9 +59,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .test-btn.primary { background: #0066cc; color: white}
   .test-btn.danger { background: #dc3545; color: white}
   .test-btn.secondary { background: #6c757d; color: white}
-  .test-btn: not(.primary):not(.danger):not(.secondary) { background: #f8f9fa; border: 1px solid #ddd; color: #333}
-  .test-btn: hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.15)}
-  .test-btn: disabled { opacity: 0.6; cursor: not-allowed; transform: none; box-shadow: none}
+  .test-btn:not(.primary):not(.danger):not(.secondary) { background: #f8f9fa; border: 1px solid #ddd; color: #333}
+  .test-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.15)}
+  .test-btn:disabled { opacity: 0.6; cursor:not-allowed; transform: none; box-shadow: none}
   /* Processing State */ .processing-state { display: flex; align-items: center; gap: 1rem; padding: 1.5rem; background: #e3f2fd; border-radius: 6px; margin: 1rem 0}
   .spinner { width: 24px; height: 24px; border: 3px solid #f3f3f3; border-top: 3px solid #0066cc; border-radius: 50%; animation: spin 1s linear infinite}
   .progress-bar { flex: 1; height: 8px; background: #f0f0f0; border-radius: 4px; overflow: hidden}

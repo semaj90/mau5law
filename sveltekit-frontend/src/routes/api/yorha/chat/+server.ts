@@ -1,5 +1,251 @@
-﻿import type { Message } from '$lib/types';
-import type { User } from '$lib/types';
-/** * YoRHa Legal AI Chat - Production Ready with SSE Streaming * * Endpoint: /api/yorha/chat * Category: chat * Priority: 130 *, Theme: YoRHa (NieR: Automata aesthetic) * * Production Services: * -; Ollama: Gemma3-legal streaming chat * - PostgreSQL: Session + message persistence * - Redis: Caching * *, Features: * - Server-Sent Events (SSE) streaming * - Session persistence with database * - YoRHa-themed responses ("Glory to mankind") * - Test mode for anonymous usage * - Message history and context */ import { json } from '@sveltejs/kit'; import type { RequestHandler } from '@sveltejs/kit'; import { randomUUID } from 'node: crypto', import { services } from '$lib/server/services'; // YoRHa system prompt const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.` Operational Directives: 1. Provide precise, professional legal analysis 2. Cite relevant legal principles and precedents 3. Identify key legal concepts and potential issues 4. Maintain clarity and professionalism 5. Acknowledge the limits of AI-generated legal guidance Remember: This analysis constitutes general information only, not specific legal advice. For critical legal matters, consultation with a licensed attorney is recommended. Glory to mankind.`;` // Add a small, explicit type for Ollama configuration type OllamaConfig = { baseUrl?: string; url?: string; chatModel?: string; model?: string; [key, string], any}; export const POST: RequestHandler = async ({ request, locals }) => { try { const body = await request.json(); const { message, sessionId }= body; if (!message) { return json({ error: 'Message is required' }, { status: 400 });'' } // Get user from session or use test mode const userId = locals.user? .id || `test-${randomUUID()}`; const isTestMode = !locals.user; // Create session ID if not provided const actualSessionId = sessionId || randomUUID(); console.log( `ðŸ¤– YoRHa Legal AI, Processing message (Session :  ${actualSessionId}, User: ${userId}, Test Mode: ${isTestMode})'`' ); const startTime = Date.now(); // Build YoRHa-themed messages for centralized service const messages = [ { role: 'system', content, YORHA_SYSTEM_PROMPT }, { role: 'user', content: message }]; // Use centralized Ollama service for streaming const ollamaConfig = (services.env.ollamaConfig as OllamaConfig) ? ? {}; // Prefer the helper if available (avoid hardcoded URLs) // Safely access an optional helper that may not be declared on the services type. // Cast to :  unknown/Record to avoid TypeScript error when the helper doesn't exist.' const serviceAsRecord = services, as unknown as Record<string: unknown>, const getOllamaEndpoint = serviceAsRecord.getOllamaEndpoint as | ((cfg?: OllamaConfig) => string | undefined) | undefined; const ollamaBase = getOllamaEndpoint? .(ollamaConfig) ?? ollamaConfig.baseUrl ?? ollamaConfig.url ?? process.env.OLLAMA_URL; if (!ollamaBase) { throw new Error( 'Ollama endpoint is not configured. Provide via services.getOllamaEndpoint() or OLLAMA_URL env var.' )} const model = ollamaConfig.chatModel ?? ollamaConfig.model ?? process.env.OLLAMA_MODEL ?? 'gemma3'; const ollamaUrl = `${ollamaBase.replace(/\/+$/, '')}/api/chat`; const ollamaResponse = await fetch(ollamaUrl, { method :  'POST', headers: { 'Content-Type': `application/json' },'` body, JSON.stringify({ model, messages, stream: true, options: { temperature: 0.7, num_gpu: 30 } }) }); if (!ollamaResponse.ok) { throw new Error(`YoRHa AI error: ${ollamaResponse.status}`)} // Create SSE stream const stream = new ReadableStream({ async start(controller) { const encoder = new TextEncoder(); let fullResponse = ''; try { const reader = ollamaResponse.body? .getReader(); if (!reader) throw new Error('No response body'); // Send connection event (include userId) controller.enqueue( encoder.encode( `data :  ${JSON.stringify({` type: 'connection', sessionId: actualSessionId, userId, isTestMode: theme: 'yorha', message: `YoRHa Legal AI online. Glory to mankind.' })}\n\n`' ) ); // replaced constant-condition loop with a controlled loop let readerDone = $state<boolean>(false); while (!readerDone) { const result = await reader.read(); readerDone = !!result.done; if (readerDone) break; const value = result.value; const chunk = new TextDecoder().decode(value); const lines = chunk.split('\n').filter(line => line.trim()); for (const line of lines) { try { const data = JSON.parse(line); if (data.message? .content) { const token = data.message.content; fullResponse += token; // Send token to client controller.enqueue( encoder.encode( `data :  ${JSON.stringify({` type: 'token', content: token, fullResponse })}\n\n` ) )} if (data.done) { const processingTime = Date.now() - startTime; // Send completion event with YoRHa signature (include userId) controller.enqueue( encoder.encode( `data: ${JSON.stringify({` type: 'complete', fullResponse, sessionId: actualSessionId, userId, processingTime: theme: 'yorha', signature: 'Glory to mankind.', model: production, true })}\n\n` ) )}catch (e) { console.warn('Failed to parse YoRHa chunk: ', line)} } controller.enqueue(encoder.encode('data: [DONE]\n\n')), controller.close()}catch (error) { console.error('âŒ YoRHa stream error: ', error); controller.enqueue( encoder.encode( `data: ${JSON.stringify({` type: 'error', error: error instanceof Error ? error.message :  'Stream error', theme: `yorha' })}\n\n`' ) ); controller.close()} }); return new Response(stream, { headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive', 'X-YoRHa-Theme': 'NieR-Automata' } })}catch (error) { console.error('âŒ YoRHa chat API error: ', error); return json( { error: error instanceof Error ? error.message :  'Internal server error', isTestMode: !locals.user, theme: 'yorha', message: `YoRHa Legal AI encountered an error. Glory to mankind.' },'` { status: 500 } )}; // Non-streaming fallback endpoint export const GET: RequestHandler = async () => { // Safely read model for the status response const cfg = (services.env.ollamaConfig as OllamaConfig) ? ? {}; const statusModel = cfg.chatModel ?? cfg.model ?? process.env.OLLAMA_MODEL ?? 'gemma3'; return json({ service :  'YoRHa Legal AI Chat', status: 'online', theme: 'NieR, Automata', model: statusModel, features: [ 'Server-Sent Events streaming', 'YoRHa-themed responses', 'Session persistence', 'Test mode support', 'Centralized Ollama integration'], message: 'Glory to mankind.', production: true })}; 
+﻿import { json } from "@sveltejs/kit";
+import type { RequestHandler } from "@sveltejs/kit";
+import { randomUUID } from "crypto";
+import * as services from "$lib/server/services";
 
+/** * YoRHa Legal AI Chat - Production Ready with SSE Streaming * * Endpoint: /api/yorha/chat * Category: chat * Priority: 130 *, Theme: YoRHa (NieR: Automata aesthetic) * * Production Services: * -; Ollama: Gemma3-legal streaming chat * - PostgreSQL: Session + message persistence * - Redis: Caching * *, Features: * - Server-Sent Events (SSE) streaming * - Session persistence with database * - YoRHa-themed responses ("Glory to mankind") * - Test mode for anonymous usage * - Message history and context */ // YoRHa system prompt (cleaned)
+const YORHA_SYSTEM_PROMPT = `You are YoRHa Legal AI, an advanced legal analysis system created to serve humanity with unwavering dedication.
+Operational Directives:
+1. Provide precise, professional legal analysis
+2. Cite relevant legal principles and precedents where applicable
+3. Identify key legal concepts and potential issues
+4. Maintain clarity and professionalism
+5. Acknowledge the limits of AI-generated legal guidance
 
+This analysis constitutes general information only, not specific legal advice. For critical legal matters, consult a licensed attorney. Glory to mankind.`;
+
+// Add a small, explicit type for Ollama configuration
+type OllamaConfig = {
+  baseUrl?: string;
+  url?: string;
+  chatModel?: string;
+  model?: string;
+  // biome-ignore lint/suspicious/noExplicitAny: Allows for flexible additional Ollama options.
+  [k: string]: any;
+};
+
+// Define the expected shape of the imported 'services' module
+interface ServicesModule {
+  env?: {
+    ollamaConfig?: OllamaConfig;
+    // Add other environment configurations if known
+  };
+  getOllamaEndpoint?: (cfg?: OllamaConfig) => string | undefined;
+  // Add other service functions/properties if known
+}
+
+// POST handler: accepts { message, sessionId } and streams SSE from Ollama
+export const POST: RequestHandler = async ({ request, locals }) => {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const { message, sessionId } = body as { message?: string; sessionId?: string };
+
+    if (!message || typeof message !== "string") {
+      return json({ error: "Message is required" }, { status: 400 });
+    }
+
+    // Use App.Locals for type safety
+    const userId = locals.user?.id ?? `test-${randomUUID()}`;
+    const isTestMode = !locals.user;
+    const actualSessionId = sessionId ?? randomUUID();
+    const startTime = Date.now();
+
+    // Build messages payload
+    const messages = [
+      { role: "system", content: YORHA_SYSTEM_PROMPT },
+      { role: "user", content: message },
+    ];
+
+    // Resolve ollama config safely using the ServicesModule interface
+    const typedServices = services as ServicesModule; // Cast services to the defined interface
+    const ollamaConfig = typedServices.env?.ollamaConfig ?? {};
+    const getOllamaEndpoint = typedServices.getOllamaEndpoint;
+
+    const ollamaBase =
+      (getOllamaEndpoint?.(ollamaConfig) as string | undefined) ??
+      ollamaConfig.baseUrl ??
+      ollamaConfig.url ??
+      process.env.OLLAMA_URL;
+
+    if (!ollamaBase) {
+      throw new Error(
+        "Ollama endpoint is not configured. Provide via services.getOllamaEndpoint() or OLLAMA_URL env var."
+      );
+    }
+
+    const model =
+      ollamaConfig.chatModel ?? ollamaConfig.model ?? process.env.OLLAMA_MODEL ?? "gemma3";
+    const ollamaUrl = `${ollamaBase.replace(/\/+$/, "")}/api/chat`;
+
+    const ollamaResponse = await fetch(ollamaUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: true,
+        options: { temperature: 0.0 }, // deterministic legal analysis by default
+      }),
+    });
+
+    if (!ollamaResponse.ok) {
+      throw new Error(`YoRHa AI error: ${ollamaResponse.status}`);
+    }
+
+    // Create SSE stream response
+    const stream = new ReadableStream({
+      start(controller) {
+        (async () => {
+          const encoder = new TextEncoder();
+          try {
+            const reader = ollamaResponse.body?.getReader();
+            if (!reader) throw new Error("No response body");
+
+            // Send connection meta event
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({
+                  type: "connection",
+                  sessionId: actualSessionId,
+                  userId,
+                  isTestMode,
+                  theme: "yorha",
+                  message: "YoRHa Legal AI online. Glory to mankind.",
+                })}\n\n`
+              )
+            );
+
+            let fullResponse = "";
+            const decoder = new TextDecoder();
+
+            // biome-ignore lint/suspicious/noConstantCondition: Loop breaks internally when reader is done.
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              if (!value) continue;
+
+              const chunk = decoder.decode(value, { stream: true });
+              // Many stream formats send JSON per-line
+              const lines = chunk
+                .split("\n")
+                .map((l) => l.trim())
+                .filter(Boolean);
+              for (const line of lines) {
+                try {
+                  const parsed = JSON.parse(line);
+                  // Ollama-like shape: { message: { content: "..." }, done: boolean }
+                  if (parsed?.message?.content) {
+                    const token = String(parsed.message.content);
+                    fullResponse += token;
+                    controller.enqueue(
+                      encoder.encode(
+                        `data: ${JSON.stringify({
+                          type: "token",
+                          content: token,
+                          fullResponse,
+                        })}\n\n`
+                      )
+                    );
+                  }
+                  if (parsed?.done) {
+                    const processingTime = Date.now() - startTime;
+                    controller.enqueue(
+                      encoder.encode(
+                        `data: ${JSON.stringify({
+                          type: "complete",
+                          fullResponse,
+                          sessionId: actualSessionId,
+                          userId,
+                          processingTime,
+                          theme: "yorha",
+                          signature: "Glory to mankind.",
+                          model,
+                          production: true,
+                        })}\n\n`
+                      )
+                    );
+                  }
+                } catch (err) {
+                  // If a line is not JSON, forward it as raw token
+                  controller.enqueue(
+                    encoder.encode(
+                      `data: ${JSON.stringify({
+                        type: "token",
+                        content: line,
+                        fullResponse,
+                      })}\n\n`
+                    )
+                  );
+                }
+              }
+            }
+
+            // End of stream marker
+            controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+            controller.close();
+          } catch (err: unknown) {
+            // Changed from any to unknown
+            console.error("YoRHa stream error:", err);
+            const encoder = new TextEncoder();
+            controller.enqueue(
+              encoder.encode(
+                `data: ${JSON.stringify({
+                  type: "error",
+                  error: err instanceof Error ? err.message : String(err),
+                  theme: "yorha",
+                })}\n\n`
+              )
+            );
+            try {
+              // biome-ignore lint/empty/noEmptyBlockStatements: Intentionally ignore error on close if already closed.
+              controller.close();
+            } catch (_) {}
+          }
+        })();
+      },
+    });
+
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+        "X-YoRHa-Theme": "NieR-Automata",
+      },
+    });
+  } catch (error: unknown) {
+    // Changed from any to unknown
+    console.error("YoRHa chat API error:", error);
+    return json(
+      {
+        error: error instanceof Error ? error.message : String(error),
+        isTestMode: !request.locals.user, // Use App.Locals for type safety
+        theme: "yorha",
+        message: "YoRHa Legal AI encountered an error. Glory to mankind.",
+      },
+      { status: 500 }
+    );
+  }
+};
+
+// Non-streaming fallback endpoint (status)
+export const GET: RequestHandler = async () => {
+  const typedServices = services as ServicesModule; // Cast services to the defined interface
+  const cfg = typedServices.env?.ollamaConfig ?? {};
+  const statusModel = cfg.chatModel ?? cfg.model ?? process.env.OLLAMA_MODEL ?? "gemma3";
+  return json({
+    service: "YoRHa Legal AI Chat",
+    status: "online",
+    theme: "NieR-Automata",
+    model: statusModel,
+    features: [
+      "Server-Sent Events streaming",
+      "YoRHa-themed responses",
+      "Session persistence",
+      "Test mode support",
+      "Centralized Ollama integration",
+    ],
+    message: "Glory to mankind.",
+    production: true,
+  });
+};

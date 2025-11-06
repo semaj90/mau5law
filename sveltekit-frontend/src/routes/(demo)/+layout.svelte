@@ -123,7 +123,7 @@
     text-decoration: none
    ; color: var(--nier-text-secondary); background: var(--nier-bg-primary); transition: all 0.2s ease}
 
-  .demo-nav-item: hover {
+  .demo-nav-item:hover {
     border-color: var(--nier-accent-warm); color: var(--nier-accent-warm)}
 
   .demo-nav-item.active {
@@ -192,7 +192,7 @@
     font-size: 0.9rem}
 
   .demo-home-btn:hover,
-  .demo-main-btn: hover {
+  .demo-main-btn:hover {
     border-color: var(--nier-accent-warm); color: var(--nier-accent-warm)}
 
   /* Responsive */
@@ -215,7 +215,7 @@
 
   .demo-content::-webkit-scrollbar-track { background: var(--nier-bg-tertiary)}
 
-  .demo-content: :-webkit-scrollbar-thumb { background: var(--nier-accent-warm); border-radius: 4px}
+  .demo-content::-webkit-scrollbar-thumb { background: var(--nier-accent-warm); border-radius: 4px}
 
   .demo-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool)}
 </style>

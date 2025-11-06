@@ -2,7 +2,7 @@
   // Svelte 5 runes are auto-imported
   // $state and $derived are available in runes mode via types, not runtime imports
   import { Card } from '$lib/components/ui/card'; // Changed to named import
-  import { Button } from '$lib/components/ui/button'; // Changed to named import
+  import Button from '$lib/components/ui/button'; // Changed to default import
   import { Input } from '$lib/components/ui/input'; // Changed to named import
   import { Badge } from '$lib/components/ui/badge'; // Changed to named import
   import * as Lucide from 'lucide-svelte';
@@ -10,7 +10,6 @@
   // TEMPORARY WORKAROUNDS: The following aliases cast components to 'any' to bypass TypeScript errors in this demo.
   // This should NOT be in production code, as it disables type safety for component props and events.
   // Properly type the components or update their event/function typings for production use.
-  const ButtonAny = Button as any;
   const CardAny = Card as any;
 
   // Define the Person interface for strong typing
@@ -276,9 +275,9 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <ButtonAny class="header-btn bits-btn" onclick={() => (showNewPersonModal = true)} type="button">
+        <Button class="header-btn bits-btn" onclick={() => (showNewPersonModal = true)} type="button">
           <Plus class="w-4" /> ADD PERSON
-        </ButtonAny>
+        </Button>
       </div>
     </header>
 
@@ -390,15 +389,15 @@
               {/each}
             </div>
             <div class="person-actions nes-container">
-              <ButtonAny class="bits-btn" size="sm" variant="ghost" type="button">
+              <Button class="bits-btn" size="sm" variant="ghost" type="button">
                 <Eye class="w-4" /> View
-              </ButtonAny>
-              <ButtonAny class="bits-btn" size="sm" variant="ghost" type="button">
+              </Button>
+              <Button class="bits-btn" size="sm" variant="ghost" type="button">
                 <Edit class="w-4" /> Edit
-              </ButtonAny>
-              <ButtonAny class="bits-btn" size="sm" variant="destructive" type="button">
+              </Button>
+              <Button class="bits-btn" size="sm" variant="destructive" type="button">
                 <Trash2 class="w-4" /> Remove
-              </ButtonAny>
+              </Button>
             </div>
           </CardAny>
         {/each}
@@ -514,7 +513,7 @@
         </div>
       </div>
       <footer class="dialog-footer">
-        <ButtonAny
+        <Button
           class="bits-btn"
           variant="ghost"
           onclick={() => {
@@ -532,8 +531,8 @@
           type="button"
         >
           CANCEL
-        </ButtonAny>
-        <ButtonAny class="bits-btn" onclick={handleAddPerson} type="submit">ADD PERSON</ButtonAny>
+        </Button>
+        <Button class="bits-btn" onclick={handleAddPerson} type="submit">ADD PERSON</Button>
       </footer>
     </div>
   </div>

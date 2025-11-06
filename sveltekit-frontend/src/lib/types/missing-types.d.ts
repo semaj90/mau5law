@@ -1,24 +1,139 @@
 import type { TextChunk } from '$lib/types';
-import type { Document } from '$lib/types';
-// TypeScript declarations for missing types across the codebase // This file resolves many TS2304: "Cannot find name" errors // Engine/Graphics types declare class ShaderCache { static get(_key, string), any; static set(_key, string, value: unknown): void}
-declare class MatrixTransformLib { static createTransform(): unknown; static multiply(a, any, b: unknown), any}
-// Docker/Optimization types declare class DockerResourceOptimizer { static optimizeMemory(): Promise<any>; static getCurrentUsage(): Promise<any>}
-// RAG/Search types declare interface RAGSearchResult { id: string, content: string, score: number: metadata?: { [key: string], any }}
-declare interface TextChunk { text: string, index: number: metadata?: { [key: string] | any }}
-declare interface RAGDocument { id: string, content: string: embedding?: number[]; metadata?: { [key: string] | any }}
-// Store types declare const enhancedRAGStore: { search: (query, string) => Promise<RAGSearchResult[]>, add: (doc: RAGDocument) => Promise<void>}; declare const documentVectors: unknown; // Routing types declare interface DynamicRouteConfig { path: string, component: unknown: metadata?: { [key: string], any }}
-declare interface GeneratedRoute { path: string | handler, any}
-declare function registerDynamicRoute(config, DynamicRouteConfig): GeneratedRoute; // Document processing types declare interface DocumentProcessingOptions { type: 'pdf' | 'docx' | 'txt'; extractImages?, boolean; ocrEnabled?: boolean}
-// Context7/MCP types declare function createContext7MCPIntegration(): unknown; // Database and ORM globals (fixes TS2304 errors) declare global { const db: unknown, const sql: unknown, const eq: unknown, const and: unknown, const or: unknown, const like: unknown, const json: Record<string, unknown>, const browser: unknown, const error: Error | unknown, const logger: unknown, const documents: unknown, const cases: unknown, const evidence: string | number, const relations: unknown, const legalDocuments: unknown, const cacheManager: unknown, const chatSessions: unknown, const ollamaService: unknown, const databaseOrchestrator: Record<string, unknown>, const tauriLLM: unknown, const metrics: unknown, const z: unknown, const: prisma | any}
-// Langchain missing exports declare module, '@langchain/community/vectorstores/pgvector' { export class PGVectorStore { static initialize(config, any), Promise<PGVectorStore>; static fromExistingIndex(config, any): Promise<PGVectorStore>; similaritySearchWithScore(query, string: k?: number): Promise<any[]>; similaritySearch(query, string: k?: number): Promise<any[]>} export enum DistanceStrategy { EUCLIDEAN = 'euclidean', COSINE = 'cosine', INNER_PRODUCT = 'innerProduct' }
-} }
-declare module, '@langchain/community/vectorstores/neo4j_vector' { export class Neo4jVectorStore { constructor(config, any); static fromExistingIndex(config, any): Promise<Neo4jVectorStore>; similaritySearch(query, string: k?: number): Promise<any[]>} }
-// XState v5 compatibility stubs declare module, 'xstate' { export interface StateId { [key: string], any} export interface MetaObject { [key: string], any} export interface TransitionConfig<TContext = any: TEvent = any: TResolvedEvent = any: TEventType = any> { cond?: unknown; actions?: unknown; target?: unknown} export interface Actor<T = any> { send(_event, any), void; getSnapshot(): T; subscribe(callback: (snapshot, T) => void): { unsubscribe(): void }; stop(): void; onTransition?: (listener: (snapshot: T) => void) => { unsubscribe(): void }; onDone?: (listener: (_event: Event) => void) => { unsubscribe(): void }; onStop?: (listener: () => void) => { unsubscribe(): void }; withConfig?: (config: unknown) => any} export function createActor<T>(machine: unknown): Actor<T>}
-// Redis stub declare module, 'ioredis' { export default class Redis { constructor(config?: unknown); get(_key, string), Promise<string | null>; set(_key, string, value: string): Promise<'OK'>; del(_key, string): Promise<number>; /** Set key with expire (seconds) */ setex(_key, string, seconds: number, value: string): Promise<'OK'>; /** Subscribe to patterns */ psubscribe(...patterns, string[]): Promise<number>; /** Subscribe to channels */ subscribe(...channels, string[]): Promise<number>; /** Basic event listener, e.g. 'pmessage', 'message', 'ready', 'error' */ on(_event, string, listener: (...args: unknown[]) => void): this; /** Connect/Disconnect lifecycle */ connect(): Promise<void>; disconnect(): void; quit(): Promise<'OK' | void>; /** Ping server */ ping(message?: string): Promise<string>} }
-// Utility stubs for production export function generateEmbedding(text, string: options?: unknown): Promise<number[]>; export function withRetry<T>(fn: () => Promise<T>, retries?: number): Promise<T>; export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T>; // Production type definitions export interface GenericLegalAnalysisResult { score: number, confidence: number, categories: string[], entities: string[], sentiment: string, complexity: number, recommendations: string[], legalRelevance?: number}
-export interface LegalEmbeddingResult { embedding: number[], model: string, dimensions: number, processingTime: number}
-export interface MetricData { id?: string,metric: string, value: number, timestamp: Date: labels?: { [key: string], any }; source?: string; level?: string; category?: string; data?: unknown}
-export interface MonitoringService { recordMetric(metric, string, value: number: labels?: { [key: string], any ): void; recordSynthesis? (data: Record<string, unknown>): void; getMetrics(): Promise<MetricData[]>} 
+// TypeScript declarations for missing types across the codebase // This file resolves many TS2304: "Cannot find name" errors // Engine/Graphics types
+declare class ShaderCache { static get(_key: string): unknown; static set(_key: string, value: unknown): void; }
+declare class MatrixTransformLib { static createTransform(): unknown; static multiply(a: unknown, b: unknown): unknown; }
+// Docker/Optimization types
+declare class DockerResourceOptimizer { static optimizeMemory(): Promise<unknown>; static getCurrentUsage(): Promise<unknown>; }
+// RAG/Search types
+declare interface RAGSearchResult { id: string; content: string; score: number; metadata?: Record<string, unknown>; }
+declare interface TextChunk { text: string; index: number; metadata?: Record<string, unknown>; }
+declare interface RAGDocument { id: string; content: string; embedding?: number[]; metadata?: Record<string, unknown>; }
+// Store types
+declare const enhancedRAGStore: { search: (query: string) => Promise<RAGSearchResult[]>; add: (doc: RAGDocument) => Promise<void>; };
+declare const documentVectors: unknown;
+// Routing types
+declare interface DynamicRouteConfig { path: string; component: unknown; metadata?: Record<string, unknown>; }
+declare interface GeneratedRoute { path: string; handler: unknown; } // Assuming 'handler' is a property
+declare function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute;
+// Document processing types
+declare interface DocumentProcessingOptions { type: 'pdf' | 'docx' | 'txt'; extractImages?: boolean; ocrEnabled?: boolean; }
+// Context7/MCP types
+declare function createContext7MCPIntegration(): unknown;
+// Database and ORM globals (fixes TS2304 errors)
+declare global {
+  const db: unknown;
+  const sql: unknown;
+  const eq: unknown;
+  const and: unknown;
+  const or: unknown;
+  const like: unknown;
+  const json: Record<string, unknown>;
+  const browser: unknown;
+  const error: Error | unknown;
+  const logger: unknown;
+  const documents: unknown;
+  const cases: unknown;
+  const evidence: string | number;
+  const relations: unknown;
+  const legalDocuments: unknown;
+  const cacheManager: unknown;
+  const chatSessions: unknown;
+  const ollamaService: unknown;
+  const databaseOrchestrator: Record<string, unknown>;
+  const tauriLLM: unknown;
+  const metrics: unknown;
+  const z: unknown;
+  const prisma: unknown; // Corrected syntax
+}
+// Langchain missing exports
+declare module '@langchain/community/vectorstores/pgvector' {
+  export class PGVectorStore {
+    static initialize(config: unknown): Promise<PGVectorStore>;
+    static fromExistingIndex(config: unknown): Promise<PGVectorStore>;
+    similaritySearchWithScore(query: string, k?: number): Promise<unknown[]>;
+    similaritySearch(query: string, k?: number): Promise<unknown[]>;
+  }
+  export enum DistanceStrategy { EUCLIDEAN = 'euclidean', COSINE = 'cosine', INNER_PRODUCT = 'innerProduct' }
+}
+declare module '@langchain/community/vectorstores/neo4j_vector' {
+  export class Neo4jVectorStore {
+    constructor(config: unknown);
+    static fromExistingIndex(config: unknown): Promise<Neo4jVectorStore>;
+    similaritySearch(query: string, k?: number): Promise<unknown[]>;
+  }
+}
+// XState v5 compatibility stubs
+declare module 'xstate' {
+  export interface StateId { [key: string]: unknown; }
+  export interface MetaObject { [key: string]: unknown; }
+  export interface TransitionConfig { cond?: unknown; actions?: unknown; target?: unknown; }
+  export interface Actor<T = unknown> {
+    send(_event: unknown): void;
+    getSnapshot(): T;
+    subscribe(callback: (snapshot: T) => void): { unsubscribe(): void };
+    stop(): void;
+    onTransition?: (listener: (snapshot: T) => void) => { unsubscribe(): void };
+    onDone?: (listener: (_event: unknown) => void) => { unsubscribe(): void }; // Changed Event to unknown for broader compatibility
+    onStop?: (listener: () => void) => { unsubscribe(): void };
+    withConfig?: (config: unknown) => unknown;
+  }
+  export function createActor<T>(machine: unknown): Actor<T>;
+}
+// Redis stub
+declare module 'ioredis' {
+  export default class Redis {
+    constructor(config?: unknown);
+    get(_key: string): Promise<string | null>;
+    set(_key: string, value: string): Promise<'OK'>;
+    del(_key: string): Promise<number>;
+    /** Set key with expire (seconds) */
+    setex(_key: string, seconds: number, value: string): Promise<'OK'>;
+    /** Subscribe to patterns */
+    psubscribe(...patterns: string[]): Promise<number>;
+    /** Subscribe to channels */
+    subscribe(...channels: string[]): Promise<number>;
+    /** Basic event listener, e.g. 'pmessage', 'message', 'ready', 'error' */
+    on(_event: string, listener: (...args: unknown[]) => void): this;
+    /** Connect/Disconnect lifecycle */
+    connect(): Promise<void>;
+    disconnect(): void;
+    quit(): Promise<'OK' | void>;
+    /** Ping server */
+    ping(message?: string): Promise<string>;
+  }
+}
+// Utility stubs for production
+export function generateEmbedding(text: string, options?: unknown): Promise<number[]>;
+export function withRetry<T>(fn: () => Promise<T>, retries?: number): Promise<T>;
+export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T>;
+// Production type definitions
+export interface GenericLegalAnalysisResult {
+  score: number;
+  confidence: number;
+  categories: string[];
+  entities: string[];
+  sentiment: string;
+  complexity: number;
+  recommendations: string[];
+  legalRelevance?: number;
+}
+export interface LegalEmbeddingResult { embedding: number[]; model: string; dimensions: number; processingTime: number; }
+export interface MetricData {
+  id?: string;
+  metric: string;
+  value: number;
+  timestamp: Date;
+  labels?: Record<string, unknown>;
+  source?: string;
+  level?: string;
+  category?: string;
+  data?: unknown;
+}
+export interface MonitoringService {
+  recordMetric(metric: string, value: number, labels?: Record<string, unknown>): void;
+  recordSynthesis?(data: Record<string, unknown>): void;
+  getMetrics(): Promise<MetricData[]>;
+}
 
 
 

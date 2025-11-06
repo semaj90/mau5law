@@ -32,7 +32,7 @@
   }
   .quick-action.destructive { background: #ffecec; color: #9b1c1c; }
   .quick-action.link { background: transparent; border: none; color: var(--accent, #007bff); padding: 0.25rem 0.5rem; }
-  .quick-action:disabled { opacity: 0.5; cursor: not-allowed; }
+  .quick-action:disabled { opacity: 0.5; cursor:not-allowed; }
   .icon { display: inline-flex; align-items: center; justify-content: center; }
   .label { line-height: 1; }
 </style>

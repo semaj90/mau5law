@@ -212,7 +212,27 @@ def run_langextract(text: str) -> List[Dict[str, Any]]:
       examples=LANGEXTRACT_EXAMPLES,
       model_id=LANGEXTRACT_MODEL,
     )
-    return getattr(result, "extractions", []) or []
+    raw_items = getattr(result, "extractions", []) or []
+
+    def _normalize(value: Any) -> Any:
+      if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+      if isinstance(value, dict):
+        return {key: _normalize(val) for key, val in value.items()}
+      if isinstance(value, (list, tuple, set)):
+        return [_normalize(val) for val in value]
+
+      model_dump = getattr(value, "model_dump", None)
+      if callable(model_dump):
+        return _normalize(model_dump())
+
+      data = getattr(value, "__dict__", None)
+      if isinstance(data, dict):
+        return _normalize({key: val for key, val in data.items() if not key.startswith("_")})
+
+      return str(value)
+
+    return [_normalize(item) for item in raw_items]
   except Exception as exc:  # pragma: no cover - remote failures
     return [
       {

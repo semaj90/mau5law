@@ -32,7 +32,7 @@ import type { Document } from '$lib/types'; import  Button, LinkButton, YoRHaSea
   /* Cards Demo */ .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem}
   .elevated-card { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1)}
   .interactive-card { cursor: pointer; transition: all 0.2s ease}
-  .interactive-card: hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15)}
+  .interactive-card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(0, 0, 0, 0.15)}
   /* Search Demo */ .search-container { margin: 1rem 0}
   /* NES Demo */ .nes-themed { background: linear-gradient(135deg, #1a1a2e, #16213e); color: #ffffff}
   .nes-buttons-grid { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem}

@@ -1,16 +1,18 @@
-import type { Session } from "lucia";
-
+// See https://kit.svelte.dev/docs/types#app
+// for information about these interfaces
 declare global {
   namespace App {
+    interface Error {
+      // Add custom error properties here if needed
+    }
     interface Locals {
-      user: {
-        id: string;
-        email?: string;
-        role?: string;
-      } | null;
-      session: Session | null;
-      contextualSessionId?: string | null;
-      contextualUserId?: string | null;
+      user: { id: string } | null; // Define the user object structure
+    }
+    interface PageData {
+      // Add custom page data properties here if needed
+    }
+    interface Platform {
+      // Add custom platform properties here if needed
     }
   }
 }

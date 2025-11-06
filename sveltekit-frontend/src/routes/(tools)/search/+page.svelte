@@ -64,7 +64,7 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
     font-size: 0.9rem;
   }
 
-  .form-group input: focus {
+  .form-group input:focus {
     outline: none;
     border-color: #d4af37;
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
@@ -129,9 +129,9 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
     background: #e6c547;
   }
 
-  .btn-search: disabled {
+  .btn-search:disabled {
     opacity: 0.6;
-    cursor: not-allowed;
+    cursor:not-allowed;
   }
 
   .spinner {

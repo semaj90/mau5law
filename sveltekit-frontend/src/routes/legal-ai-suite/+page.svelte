@@ -40,11 +40,11 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .yorha-panel-content::-webkit-scrollbar {
     width: 6px;
   }
-  .yorha-panel-content: :-webkit-scrollbar-track {
+  .yorha-panel-content::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 3px;
   }
-  .yorha-panel-content: :-webkit-scrollbar-thumb {
+  .yorha-panel-content::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
   }

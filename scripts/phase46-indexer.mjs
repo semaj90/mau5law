@@ -13,6 +13,7 @@ import { createHash } from 'crypto';
 import Redis from 'ioredis';
 import neo4j from 'neo4j-driver';
 import pgPkg from 'pg';
+import fetch from 'node-fetch';
 
 const {
   Client: PostgresClient,
@@ -43,6 +44,8 @@ const NEO4J_PASSWORD = process.env.NEO4J_PASSWORD || 'neo4j';
 const TOP_K_SIMILAR = Number.parseInt(process.env.PHASE46_SIMILAR_TOP_K || '3', 10);
 const SIMILARITY_THRESHOLD = Number.parseFloat(process.env.PHASE46_SIMILAR_THRESHOLD || '0.82');
 const CHUNK_TEXT_PREVIEW = Number.parseInt(process.env.PHASE46_CHUNK_PREVIEW || '480', 10);
+const PHASE47_GRAPH_URL = process.env.PHASE47_GRAPH_URL || 'http://localhost:8093';
+const PHASE47_DISABLE = process.env.PHASE47_DISABLE === '1';
 
 function logInfo(message, ...args) {
   console.log(`[Phase46] ${message}`, ...args);
@@ -120,6 +123,52 @@ function buildSimilarityEdges(chunks, topK, threshold) {
     });
   }
   return edges;
+}
+
+async function callPhase47Graph(docId, chunkEmbeddings) {
+  if (PHASE47_DISABLE || !chunkEmbeddings.length || !PHASE47_GRAPH_URL) {
+    return null;
+  }
+
+  const url = `${PHASE47_GRAPH_URL.replace(/\/$/, '')}/analyze_graph`;
+  const payload = {
+    source: docId,
+    keys: chunkEmbeddings.map((chunk) => chunk.id),
+    text_embeddings: chunkEmbeddings.map((chunk) => chunk.embedding),
+    ast_embeddings: chunkEmbeddings.map((chunk) => chunk.embedding),
+    top_k: Math.min(TOP_K_SIMILAR, chunkEmbeddings.length),
+  };
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 5_000);
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      logWarn(`Phase47 graph analyzer returned ${res.status}`);
+      return null;
+    }
+    const json = await res.json();
+    if (!Array.isArray(json?.edges)) {
+      return null;
+    }
+    return json.edges
+      .filter((edge) => edge?.src && edge?.dst)
+      .map((edge) => ({
+        fromId: edge.src,
+        toId: edge.dst,
+        score: Number.parseFloat(edge.score),
+      }));
+  } catch (err) {
+    logWarn(`Phase47 graph analyzer unavailable: ${err.message}`);
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function connectRedis() {
@@ -388,7 +437,19 @@ async function main() {
       }
     }
 
-    const similarities = buildSimilarityEdges(chunkEmbeddings, TOP_K_SIMILAR, SIMILARITY_THRESHOLD);
+    let similarities = [];
+    if (chunkEmbeddings.length) {
+      const graphEdges = await callPhase47Graph(docMeta.docId, chunkEmbeddings);
+      if (Array.isArray(graphEdges) && graphEdges.length) {
+        similarities = graphEdges.map((edge) => ({
+          fromId: edge.fromId,
+          toId: edge.toId,
+          score: Number(edge.score || 0),
+        }));
+      } else {
+        similarities = buildSimilarityEdges(chunkEmbeddings, TOP_K_SIMILAR, SIMILARITY_THRESHOLD);
+      }
+    }
     docMeta.similarities = similarities;
     neo4jDocs.push(docMeta);
   }

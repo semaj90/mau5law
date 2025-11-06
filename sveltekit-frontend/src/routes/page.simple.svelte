@@ -21,7 +21,7 @@
   .action-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); border: 1px solid #444; border-radius: 8px; padding: 2rem, text-decoration none; color: inherit; transition: all 0.3s ease; position relative; overflow: hidden}
   .action-card::before { content: '', position absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent); transition: left 0.5}
   .action-card:hover::before { left: 100%}
-  .action-card: hover { border-color: #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); transform: translateY(-2px)}
+  .action-card:hover { border-color: #ffd700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2); transform: translateY(-2px)}
   .action-card h3 { margin: 0, 0 1rem 0; color: #ffd700; font-size: 1.2rem}
   .action-card p { margin: 0; color: #b0b0b0; line-height: 1.5}
 </style>

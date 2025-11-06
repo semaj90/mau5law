@@ -82,14 +82,14 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   .action-btn:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+    cursor:not-allowed;
   }
   .save-btn:not(:disabled) {
     background: var(--nes-green, #92cc41);
     border-color: var(--nes-green, #92cc41);
     color: #000;
   }
-  .save-btn: hover:not(:disabled) {
+  .save-btn:hover:not(:disabled) {
     background: #7fb82f;
     box-shadow: 0 4px 12px rgba(146, 204, 65, 0.3);
   }
@@ -110,7 +110,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     font-weight: 500;
     max-width: 300px;
   }
-  .document-title-input: focus {
+  .document-title-input:focus {
     outline: none;
     border-color: var(--nes-blue, #3cbcfc);
     box-shadow: 0 0 8px rgba(60, 188, 252, 0.3);

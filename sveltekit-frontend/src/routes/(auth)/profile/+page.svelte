@@ -61,7 +61,7 @@ import type { User } from '$lib/types'; import type { PageData } from './$types'
 
 <style>
 .stat-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08); transition: transform 0.2s ease, box-shadow 0.2s ease}
-  .stat-card: hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12)}
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12)}
   .stat-value { font-size: 1.6rem; font-weight: 600; color: #111827}
   .stat-label { margin-top: 4px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7280}
   .rag-stat { background: rgba(3, 105, 161, 0.08); border: 1px solid rgba(3, 105, 161, 0.2); border-radius: 10px; padding: 16px; text-align: center}
