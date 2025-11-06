@@ -1,20 +1,12 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-
-  import { Select } from 'bits-ui';
-  interface Props {
-    children?: import('svelte').Snippet;
-    class?: string;
-    [attr: string]: unknown;
-  }
-  let { children, class: className = '', ...rest }: Props = $props();
+// Truncated file - replaced with stub
 </script>
 
-<Select.Trigger class="space-y-4 {className}" {...rest}>
-  <slot />
-  <!-- No {#snippet children()} usage to avoid, slot/snippet, conflict -->
-</Select.Trigger>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-/* @unocss-include */ {}
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

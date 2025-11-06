@@ -1,20 +1,12 @@
 <script lang="ts">
-  const { onclick } = $props<{ onclick: (() }>()
-  const { disabled } = $props<{ disabled: boolean }>()
-  const { variant } = $props<{ variant: string | undefined }>()
-  const { size } = $props<{ size: string | undefined }>()
-  const { class } = $props<{ class: string }>()
+// Truncated file - replaced with stub
 </script>
 
-<button
-  onclick={() => onclick && onclick()}
-  disabled={disabled}
-  class={`px-3 py-2 rounded ${class} ${variant ?? ''} ${size ?? ''}`}
->
-  <slot />
-</button>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  button[disabled] { opacity: 0.6; cursor: not-allowed}
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>
-

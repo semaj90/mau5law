@@ -1,12 +1,14 @@
-﻿/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
+/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 import * as $protobuf from "protobufjs/minimal";
 
 // Common aliases
-const $Reader = $protobuf.Reader: $Writer = $protobuf.Writer: $util = $protobuf.util
+const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
 export const legal = $root.legal = (() => {
+
     /**
      * Namespace legal.
      * @exports legal
@@ -15,6 +17,7 @@ export const legal = $root.legal = (() => {
     const legal = {};
 
     legal.api = (function() {
+
         /**
          * Namespace api.
          * @memberof legal
@@ -23,6 +26,7 @@ export const legal = $root.legal = (() => {
         const api = {};
 
         api.User = (function() {
+
             /**
              * Properties of a User.
              * @memberof legal.api
@@ -44,7 +48,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IUser=} [properties] Properties to set
              */
-            undefined}
+            function User(properties) {
+                this.roles = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * User id.
@@ -76,28 +86,32 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.roles = $util.emptyArray
+            User.prototype.roles = $util.emptyArray;
+
             /**
              * User createdAt.
              * @member {google.protobuf.ITimestamp|null|undefined} createdAt
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.createdAt = null
+            User.prototype.createdAt = null;
+
             /**
              * User updatedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} updatedAt
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.updatedAt = null
+            User.prototype.updatedAt = null;
+
             /**
              * User preferences.
              * @member {legal.api.IUserPreferences|null|undefined} preferences
              * @memberof legal.api.User
              * @instance
              */
-            User.prototype.preferences = null
+            User.prototype.preferences = null;
+
             /**
              * Creates a new User instance using the specified properties.
              * @function create
@@ -119,7 +133,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            User.encode = undefined},;
+            User.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.email);
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.name);
+                if (message.roles != null && message.roles.length)
+                    for (let i = 0; i < message.roles.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.roles[i]);
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
+                    $root.google.protobuf.Timestamp.encode(message.createdAt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt"))
+                    $root.google.protobuf.Timestamp.encode(message.updatedAt, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.preferences != null && Object.hasOwnProperty.call(message, "preferences"))
+                    $root.legal.api.UserPreferences.encode(message.preferences, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified User message, length delimited. Does not implicitly {@link legal.api.User.verify|verify} messages.
@@ -145,7 +178,52 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            User.decode = undefined},;
+            User.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.User();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.email = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.name = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.roles && message.roles.length))
+                                message.roles = [];
+                            message.roles.push(reader.string());
+                            break;
+                        }
+                    case 5: {
+                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 6: {
+                            message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 7: {
+                            message.preferences = $root.legal.api.UserPreferences.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a User message from the specified reader or buffer, length delimited.
@@ -171,7 +249,42 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            User.verify = undefined};
+            User.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
+                        return "email: string expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                if (message.roles != null && message.hasOwnProperty("roles")) {
+                    if (!Array.isArray(message.roles))
+                        return "roles: array expected";
+                    for (let i = 0; i < message.roles.length; ++i)
+                        if (!$util.isString(message.roles[i]))
+                            return "roles: string[] expected";
+                }
+                if (message.createdAt != null && message.hasOwnProperty("createdAt")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.createdAt);
+                    if (error)
+                        return "createdAt." + error;
+                }
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.updatedAt);
+                    if (error)
+                        return "updatedAt." + error;
+                }
+                if (message.preferences != null && message.hasOwnProperty("preferences")) {
+                    let error = $root.legal.api.UserPreferences.verify(message.preferences);
+                    if (error)
+                        return "preferences." + error;
+                }
+                return null;
+            };
 
             /**
              * Creates a User message from a plain object. Also converts values to their respective internal types.
@@ -181,7 +294,40 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.User} User
              */
-            User.fromObject = undefined};
+            User.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.User)
+                    return object;
+                let message = new $root.legal.api.User();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.email != null)
+                    message.email = String(object.email);
+                if (object.name != null)
+                    message.name = String(object.name);
+                if (object.roles) {
+                    if (!Array.isArray(object.roles))
+                        throw TypeError(".legal.api.User.roles: array expected");
+                    message.roles = [];
+                    for (let i = 0; i < object.roles.length; ++i)
+                        message.roles[i] = String(object.roles[i]);
+                }
+                if (object.createdAt != null) {
+                    if (typeof object.createdAt !== "object")
+                        throw TypeError(".legal.api.User.createdAt: object expected");
+                    message.createdAt = $root.google.protobuf.Timestamp.fromObject(object.createdAt);
+                }
+                if (object.updatedAt != null) {
+                    if (typeof object.updatedAt !== "object")
+                        throw TypeError(".legal.api.User.updatedAt: object expected");
+                    message.updatedAt = $root.google.protobuf.Timestamp.fromObject(object.updatedAt);
+                }
+                if (object.preferences != null) {
+                    if (typeof object.preferences !== "object")
+                        throw TypeError(".legal.api.User.preferences: object expected");
+                    message.preferences = $root.legal.api.UserPreferences.fromObject(object.preferences);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a User message. Also converts values to other types if specified.
@@ -192,7 +338,39 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            User.toObject = undefined};
+            User.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.roles = [];
+                if (options.defaults) {
+                    object.id = "";
+                    object.email = "";
+                    object.name = "";
+                    object.createdAt = null;
+                    object.updatedAt = null;
+                    object.preferences = null;
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.email != null && message.hasOwnProperty("email"))
+                    object.email = message.email;
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                if (message.roles && message.roles.length) {
+                    object.roles = [];
+                    for (let j = 0; j < message.roles.length; ++j)
+                        object.roles[j] = message.roles[j];
+                }
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
+                    object.updatedAt = $root.google.protobuf.Timestamp.toObject(message.updatedAt, options);
+                if (message.preferences != null && message.hasOwnProperty("preferences"))
+                    object.preferences = $root.legal.api.UserPreferences.toObject(message.preferences, options);
+                return object;
+            };
 
             /**
              * Converts this User to JSON.
@@ -220,9 +398,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.User";
             };
 
-            return User})();
+            return User;
+        })();
 
         api.UserPreferences = (function() {
+
             /**
              * Properties of a UserPreferences.
              * @memberof legal.api
@@ -241,7 +421,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IUserPreferences=} [properties] Properties to set
              */
-            undefined}
+            function UserPreferences(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * UserPreferences theme.
@@ -265,7 +450,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.UserPreferences
              * @instance
              */
-            UserPreferences.prototype.notificationsEnabled = $state(false);
+            UserPreferences.prototype.notificationsEnabled = false;
 
             /**
              * UserPreferences analyticsOptIn.
@@ -273,7 +458,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.UserPreferences
              * @instance
              */
-            UserPreferences.prototype.analyticsOptIn = $state(false);
+            UserPreferences.prototype.analyticsOptIn = false;
 
             /**
              * Creates a new UserPreferences instance using the specified properties.
@@ -296,7 +481,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            UserPreferences.encode = undefined};
+            UserPreferences.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.theme != null && Object.hasOwnProperty.call(message, "theme"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.theme);
+                if (message.language != null && Object.hasOwnProperty.call(message, "language"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.language);
+                if (message.notificationsEnabled != null && Object.hasOwnProperty.call(message, "notificationsEnabled"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.notificationsEnabled);
+                if (message.analyticsOptIn != null && Object.hasOwnProperty.call(message, "analyticsOptIn"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.analyticsOptIn);
+                return writer;
+            };
 
             /**
              * Encodes the specified UserPreferences message, length delimited. Does not implicitly {@link legal.api.UserPreferences.verify|verify} messages.
@@ -322,7 +519,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            UserPreferences.decode = undefined};
+            UserPreferences.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.UserPreferences();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.theme = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.language = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.notificationsEnabled = reader.bool();
+                            break;
+                        }
+                    case 4: {
+                            message.analyticsOptIn = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a UserPreferences message from the specified reader or buffer, length delimited.
@@ -348,7 +576,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            UserPreferences.verify = undefined};
+            UserPreferences.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.theme != null && message.hasOwnProperty("theme"))
+                    if (!$util.isString(message.theme))
+                        return "theme: string expected";
+                if (message.language != null && message.hasOwnProperty("language"))
+                    if (!$util.isString(message.language))
+                        return "language: string expected";
+                if (message.notificationsEnabled != null && message.hasOwnProperty("notificationsEnabled"))
+                    if (typeof message.notificationsEnabled !== "boolean")
+                        return "notificationsEnabled: boolean expected";
+                if (message.analyticsOptIn != null && message.hasOwnProperty("analyticsOptIn"))
+                    if (typeof message.analyticsOptIn !== "boolean")
+                        return "analyticsOptIn: boolean expected";
+                return null;
+            };
 
             /**
              * Creates a UserPreferences message from a plain object. Also converts values to their respective internal types.
@@ -358,7 +602,20 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.UserPreferences} UserPreferences
              */
-            UserPreferences.fromObject = undefined};
+            UserPreferences.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.UserPreferences)
+                    return object;
+                let message = new $root.legal.api.UserPreferences();
+                if (object.theme != null)
+                    message.theme = String(object.theme);
+                if (object.language != null)
+                    message.language = String(object.language);
+                if (object.notificationsEnabled != null)
+                    message.notificationsEnabled = Boolean(object.notificationsEnabled);
+                if (object.analyticsOptIn != null)
+                    message.analyticsOptIn = Boolean(object.analyticsOptIn);
+                return message;
+            };
 
             /**
              * Creates a plain object from a UserPreferences message. Also converts values to other types if specified.
@@ -369,7 +626,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            UserPreferences.toObject = undefined};
+            UserPreferences.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.theme = "";
+                    object.language = "";
+                    object.notificationsEnabled = false;
+                    object.analyticsOptIn = false;
+                }
+                if (message.theme != null && message.hasOwnProperty("theme"))
+                    object.theme = message.theme;
+                if (message.language != null && message.hasOwnProperty("language"))
+                    object.language = message.language;
+                if (message.notificationsEnabled != null && message.hasOwnProperty("notificationsEnabled"))
+                    object.notificationsEnabled = message.notificationsEnabled;
+                if (message.analyticsOptIn != null && message.hasOwnProperty("analyticsOptIn"))
+                    object.analyticsOptIn = message.analyticsOptIn;
+                return object;
+            };
 
             /**
              * Converts this UserPreferences to JSON.
@@ -397,9 +673,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.UserPreferences";
             };
 
-            return UserPreferences})();
+            return UserPreferences;
+        })();
 
         api.AuthRequest = (function() {
+
             /**
              * Properties of an AuthRequest.
              * @memberof legal.api
@@ -418,7 +696,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAuthRequest=} [properties] Properties to set
              */
-            undefined}
+            function AuthRequest(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * AuthRequest email.
@@ -442,7 +725,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthRequest
              * @instance
              */
-            AuthRequest.prototype.rememberMe = $state(false);
+            AuthRequest.prototype.rememberMe = false;
 
             /**
              * AuthRequest clientInfo.
@@ -473,7 +756,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AuthRequest.encode = undefined};
+            AuthRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.email);
+                if (message.password != null && Object.hasOwnProperty.call(message, "password"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.password);
+                if (message.rememberMe != null && Object.hasOwnProperty.call(message, "rememberMe"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.rememberMe);
+                if (message.clientInfo != null && Object.hasOwnProperty.call(message, "clientInfo"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.clientInfo);
+                return writer;
+            };
 
             /**
              * Encodes the specified AuthRequest message, length delimited. Does not implicitly {@link legal.api.AuthRequest.verify|verify} messages.
@@ -499,7 +794,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AuthRequest.decode = undefined};
+            AuthRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AuthRequest();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.email = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.password = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.rememberMe = reader.bool();
+                            break;
+                        }
+                    case 4: {
+                            message.clientInfo = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an AuthRequest message from the specified reader or buffer, length delimited.
@@ -525,7 +851,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AuthRequest.verify = undefined};
+            AuthRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
+                        return "email: string expected";
+                if (message.password != null && message.hasOwnProperty("password"))
+                    if (!$util.isString(message.password))
+                        return "password: string expected";
+                if (message.rememberMe != null && message.hasOwnProperty("rememberMe"))
+                    if (typeof message.rememberMe !== "boolean")
+                        return "rememberMe: boolean expected";
+                if (message.clientInfo != null && message.hasOwnProperty("clientInfo"))
+                    if (!$util.isString(message.clientInfo))
+                        return "clientInfo: string expected";
+                return null;
+            };
 
             /**
              * Creates an AuthRequest message from a plain object. Also converts values to their respective internal types.
@@ -535,7 +877,20 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AuthRequest} AuthRequest
              */
-            AuthRequest.fromObject = undefined};
+            AuthRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.AuthRequest)
+                    return object;
+                let message = new $root.legal.api.AuthRequest();
+                if (object.email != null)
+                    message.email = String(object.email);
+                if (object.password != null)
+                    message.password = String(object.password);
+                if (object.rememberMe != null)
+                    message.rememberMe = Boolean(object.rememberMe);
+                if (object.clientInfo != null)
+                    message.clientInfo = String(object.clientInfo);
+                return message;
+            };
 
             /**
              * Creates a plain object from an AuthRequest message. Also converts values to other types if specified.
@@ -546,7 +901,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AuthRequest.toObject = undefined};
+            AuthRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.email = "";
+                    object.password = "";
+                    object.rememberMe = false;
+                    object.clientInfo = "";
+                }
+                if (message.email != null && message.hasOwnProperty("email"))
+                    object.email = message.email;
+                if (message.password != null && message.hasOwnProperty("password"))
+                    object.password = message.password;
+                if (message.rememberMe != null && message.hasOwnProperty("rememberMe"))
+                    object.rememberMe = message.rememberMe;
+                if (message.clientInfo != null && message.hasOwnProperty("clientInfo"))
+                    object.clientInfo = message.clientInfo;
+                return object;
+            };
 
             /**
              * Converts this AuthRequest to JSON.
@@ -574,9 +948,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AuthRequest";
             };
 
-            return AuthRequest})();
+            return AuthRequest;
+        })();
 
         api.AuthResponse = (function() {
+
             /**
              * Properties of an AuthResponse.
              * @memberof legal.api
@@ -596,7 +972,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAuthResponse=} [properties] Properties to set
              */
-            undefined}
+            function AuthResponse(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * AuthResponse success.
@@ -604,7 +985,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthResponse
              * @instance
              */
-            AuthResponse.prototype.success = $state(false);
+            AuthResponse.prototype.success = false;
 
             /**
              * AuthResponse token.
@@ -620,7 +1001,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthResponse
              * @instance
              */
-            AuthResponse.prototype.user = null
+            AuthResponse.prototype.user = null;
+
             /**
              * AuthResponse errorMessage.
              * @member {string} errorMessage
@@ -635,7 +1017,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AuthResponse
              * @instance
              */
-            AuthResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0
+            AuthResponse.prototype.expiresAt = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
             /**
              * Creates a new AuthResponse instance using the specified properties.
              * @function create
@@ -657,7 +1040,21 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AuthResponse.encode = undefined};
+            AuthResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.success);
+                if (message.token != null && Object.hasOwnProperty.call(message, "token"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.token);
+                if (message.user != null && Object.hasOwnProperty.call(message, "user"))
+                    $root.legal.api.User.encode(message.user, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.errorMessage);
+                if (message.expiresAt != null && Object.hasOwnProperty.call(message, "expiresAt"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int64(message.expiresAt);
+                return writer;
+            };
 
             /**
              * Encodes the specified AuthResponse message, length delimited. Does not implicitly {@link legal.api.AuthResponse.verify|verify} messages.
@@ -683,7 +1080,42 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AuthResponse.decode = undefined};
+            AuthResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AuthResponse();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.token = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.user = $root.legal.api.User.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 4: {
+                            message.errorMessage = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.expiresAt = reader.int64();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an AuthResponse message from the specified reader or buffer, length delimited.
@@ -709,7 +1141,28 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AuthResponse.verify = undefined};
+            AuthResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.token != null && message.hasOwnProperty("token"))
+                    if (!$util.isString(message.token))
+                        return "token: string expected";
+                if (message.user != null && message.hasOwnProperty("user")) {
+                    let error = $root.legal.api.User.verify(message.user);
+                    if (error)
+                        return "user." + error;
+                }
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    if (!$util.isString(message.errorMessage))
+                        return "errorMessage: string expected";
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
+                    if (!$util.isInteger(message.expiresAt) && !(message.expiresAt && $util.isInteger(message.expiresAt.low) && $util.isInteger(message.expiresAt.high)))
+                        return "expiresAt: integer|Long expected";
+                return null;
+            };
 
             /**
              * Creates an AuthResponse message from a plain object. Also converts values to their respective internal types.
@@ -719,7 +1172,32 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AuthResponse} AuthResponse
              */
-            AuthResponse.fromObject = undefined};
+            AuthResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.AuthResponse)
+                    return object;
+                let message = new $root.legal.api.AuthResponse();
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.token != null)
+                    message.token = String(object.token);
+                if (object.user != null) {
+                    if (typeof object.user !== "object")
+                        throw TypeError(".legal.api.AuthResponse.user: object expected");
+                    message.user = $root.legal.api.User.fromObject(object.user);
+                }
+                if (object.errorMessage != null)
+                    message.errorMessage = String(object.errorMessage);
+                if (object.expiresAt != null)
+                    if ($util.Long)
+                        (message.expiresAt = $util.Long.fromValue(object.expiresAt)).unsigned = false;
+                    else if (typeof object.expiresAt === "string")
+                        message.expiresAt = parseInt(object.expiresAt, 10);
+                    else if (typeof object.expiresAt === "number")
+                        message.expiresAt = object.expiresAt;
+                    else if (typeof object.expiresAt === "object")
+                        message.expiresAt = new $util.LongBits(object.expiresAt.low >>> 0, object.expiresAt.high >>> 0).toNumber();
+                return message;
+            };
 
             /**
              * Creates a plain object from an AuthResponse message. Also converts values to other types if specified.
@@ -730,7 +1208,36 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AuthResponse.toObject = undefined};
+            AuthResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.success = false;
+                    object.token = "";
+                    object.user = null;
+                    object.errorMessage = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.expiresAt = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.expiresAt = options.longs === String ? "0" : 0;
+                }
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.token != null && message.hasOwnProperty("token"))
+                    object.token = message.token;
+                if (message.user != null && message.hasOwnProperty("user"))
+                    object.user = $root.legal.api.User.toObject(message.user, options);
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    object.errorMessage = message.errorMessage;
+                if (message.expiresAt != null && message.hasOwnProperty("expiresAt"))
+                    if (typeof message.expiresAt === "number")
+                        object.expiresAt = options.longs === String ? String(message.expiresAt) : message.expiresAt;
+                    else
+                        object.expiresAt = options.longs === String ? $util.Long.prototype.toString.call(message.expiresAt) : options.longs === Number ? new $util.LongBits(message.expiresAt.low >>> 0, message.expiresAt.high >>> 0).toNumber() : message.expiresAt;
+                return object;
+            };
 
             /**
              * Converts this AuthResponse to JSON.
@@ -758,9 +1265,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AuthResponse";
             };
 
-            return AuthResponse})();
+            return AuthResponse;
+        })();
 
         api.LegalDocument = (function() {
+
             /**
              * Properties of a LegalDocument.
              * @memberof legal.api
@@ -788,7 +1297,14 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ILegalDocument=} [properties] Properties to set
              */
-            undefined}
+            function LegalDocument(properties) {
+                this.tags = [];
+                this.collaboratorIds = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * LegalDocument id.
@@ -828,35 +1344,40 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.type = 0
+            LegalDocument.prototype.type = 0;
+
             /**
              * LegalDocument tags.
              * @member {Array.<string>} tags
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.tags = $util.emptyArray
+            LegalDocument.prototype.tags = $util.emptyArray;
+
             /**
              * LegalDocument metadata.
              * @member {legal.api.IDocumentMetadata|null|undefined} metadata
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.metadata = null
+            LegalDocument.prototype.metadata = null;
+
             /**
              * LegalDocument createdAt.
              * @member {google.protobuf.ITimestamp|null|undefined} createdAt
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.createdAt = null
+            LegalDocument.prototype.createdAt = null;
+
             /**
              * LegalDocument updatedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} updatedAt
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.updatedAt = null
+            LegalDocument.prototype.updatedAt = null;
+
             /**
              * LegalDocument ownerId.
              * @member {string} ownerId
@@ -871,21 +1392,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.collaboratorIds = $util.emptyArray
+            LegalDocument.prototype.collaboratorIds = $util.emptyArray;
+
             /**
              * LegalDocument status.
              * @member {legal.api.DocumentStatus} status
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.status = 0
+            LegalDocument.prototype.status = 0;
+
             /**
              * LegalDocument securityLevel.
              * @member {legal.api.SecurityLevel} securityLevel
              * @memberof legal.api.LegalDocument
              * @instance
              */
-            LegalDocument.prototype.securityLevel = 0
+            LegalDocument.prototype.securityLevel = 0;
+
             /**
              * Creates a new LegalDocument instance using the specified properties.
              * @function create
@@ -907,7 +1431,39 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            LegalDocument.encode = undefined};
+            LegalDocument.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.title != null && Object.hasOwnProperty.call(message, "title"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.title);
+                if (message.content != null && Object.hasOwnProperty.call(message, "content"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.content);
+                if (message.fileUrl != null && Object.hasOwnProperty.call(message, "fileUrl"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.fileUrl);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.type);
+                if (message.tags != null && message.tags.length)
+                    for (let i = 0; i < message.tags.length; ++i)
+                        writer.uint32(/* id 6, wireType 2 =*/50).string(message.tags[i]);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    $root.legal.api.DocumentMetadata.encode(message.metadata, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
+                    $root.google.protobuf.Timestamp.encode(message.createdAt, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                if (message.updatedAt != null && Object.hasOwnProperty.call(message, "updatedAt"))
+                    $root.google.protobuf.Timestamp.encode(message.updatedAt, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                if (message.ownerId != null && Object.hasOwnProperty.call(message, "ownerId"))
+                    writer.uint32(/* id 10, wireType 2 =*/82).string(message.ownerId);
+                if (message.collaboratorIds != null && message.collaboratorIds.length)
+                    for (let i = 0; i < message.collaboratorIds.length; ++i)
+                        writer.uint32(/* id 11, wireType 2 =*/90).string(message.collaboratorIds[i]);
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
+                    writer.uint32(/* id 12, wireType 0 =*/96).int32(message.status);
+                if (message.securityLevel != null && Object.hasOwnProperty.call(message, "securityLevel"))
+                    writer.uint32(/* id 13, wireType 0 =*/104).int32(message.securityLevel);
+                return writer;
+            };
 
             /**
              * Encodes the specified LegalDocument message, length delimited. Does not implicitly {@link legal.api.LegalDocument.verify|verify} messages.
@@ -933,7 +1489,78 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            LegalDocument.decode = undefined};
+            LegalDocument.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.LegalDocument();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.title = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.content = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.fileUrl = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    case 6: {
+                            if (!(message.tags && message.tags.length))
+                                message.tags = [];
+                            message.tags.push(reader.string());
+                            break;
+                        }
+                    case 7: {
+                            message.metadata = $root.legal.api.DocumentMetadata.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 8: {
+                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 9: {
+                            message.updatedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 10: {
+                            message.ownerId = reader.string();
+                            break;
+                        }
+                    case 11: {
+                            if (!(message.collaboratorIds && message.collaboratorIds.length))
+                                message.collaboratorIds = [];
+                            message.collaboratorIds.push(reader.string());
+                            break;
+                        }
+                    case 12: {
+                            message.status = reader.int32();
+                            break;
+                        }
+                    case 13: {
+                            message.securityLevel = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a LegalDocument message from the specified reader or buffer, length delimited.
@@ -959,7 +1586,91 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            LegalDocument.verify = undefined};
+            LegalDocument.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.title != null && message.hasOwnProperty("title"))
+                    if (!$util.isString(message.title))
+                        return "title: string expected";
+                if (message.content != null && message.hasOwnProperty("content"))
+                    if (!$util.isString(message.content))
+                        return "content: string expected";
+                if (message.fileUrl != null && message.hasOwnProperty("fileUrl"))
+                    if (!$util.isString(message.fileUrl))
+                        return "fileUrl: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    case 8:
+                        break;
+                    }
+                if (message.tags != null && message.hasOwnProperty("tags")) {
+                    if (!Array.isArray(message.tags))
+                        return "tags: array expected";
+                    for (let i = 0; i < message.tags.length; ++i)
+                        if (!$util.isString(message.tags[i]))
+                            return "tags: string[] expected";
+                }
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    let error = $root.legal.api.DocumentMetadata.verify(message.metadata);
+                    if (error)
+                        return "metadata." + error;
+                }
+                if (message.createdAt != null && message.hasOwnProperty("createdAt")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.createdAt);
+                    if (error)
+                        return "createdAt." + error;
+                }
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.updatedAt);
+                    if (error)
+                        return "updatedAt." + error;
+                }
+                if (message.ownerId != null && message.hasOwnProperty("ownerId"))
+                    if (!$util.isString(message.ownerId))
+                        return "ownerId: string expected";
+                if (message.collaboratorIds != null && message.hasOwnProperty("collaboratorIds")) {
+                    if (!Array.isArray(message.collaboratorIds))
+                        return "collaboratorIds: array expected";
+                    for (let i = 0; i < message.collaboratorIds.length; ++i)
+                        if (!$util.isString(message.collaboratorIds[i]))
+                            return "collaboratorIds: string[] expected";
+                }
+                if (message.status != null && message.hasOwnProperty("status"))
+                    switch (message.status) {
+                    default:
+                        return "status: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        break;
+                    }
+                if (message.securityLevel != null && message.hasOwnProperty("securityLevel"))
+                    switch (message.securityLevel) {
+                    default:
+                        return "securityLevel: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                return null;
+            };
 
             /**
              * Creates a LegalDocument message from a plain object. Also converts values to their respective internal types.
@@ -969,7 +1680,147 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.LegalDocument} LegalDocument
              */
-            LegalDocument.fromObject = undefined};
+            LegalDocument.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.LegalDocument)
+                    return object;
+                let message = new $root.legal.api.LegalDocument();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.title != null)
+                    message.title = String(object.title);
+                if (object.content != null)
+                    message.content = String(object.content);
+                if (object.fileUrl != null)
+                    message.fileUrl = String(object.fileUrl);
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "DOCUMENT_TYPE_UNKNOWN":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "DOCUMENT_TYPE_CONTRACT":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "DOCUMENT_TYPE_BRIEF":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "DOCUMENT_TYPE_EVIDENCE":
+                case 3:
+                    message.type = 3;
+                    break;
+                case "DOCUMENT_TYPE_CITATION":
+                case 4:
+                    message.type = 4;
+                    break;
+                case "DOCUMENT_TYPE_RULING":
+                case 5:
+                    message.type = 5;
+                    break;
+                case "DOCUMENT_TYPE_MOTION":
+                case 6:
+                    message.type = 6;
+                    break;
+                case "DOCUMENT_TYPE_PLEADING":
+                case 7:
+                    message.type = 7;
+                    break;
+                case "DOCUMENT_TYPE_CORRESPONDENCE":
+                case 8:
+                    message.type = 8;
+                    break;
+                }
+                if (object.tags) {
+                    if (!Array.isArray(object.tags))
+                        throw TypeError(".legal.api.LegalDocument.tags: array expected");
+                    message.tags = [];
+                    for (let i = 0; i < object.tags.length; ++i)
+                        message.tags[i] = String(object.tags[i]);
+                }
+                if (object.metadata != null) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".legal.api.LegalDocument.metadata: object expected");
+                    message.metadata = $root.legal.api.DocumentMetadata.fromObject(object.metadata);
+                }
+                if (object.createdAt != null) {
+                    if (typeof object.createdAt !== "object")
+                        throw TypeError(".legal.api.LegalDocument.createdAt: object expected");
+                    message.createdAt = $root.google.protobuf.Timestamp.fromObject(object.createdAt);
+                }
+                if (object.updatedAt != null) {
+                    if (typeof object.updatedAt !== "object")
+                        throw TypeError(".legal.api.LegalDocument.updatedAt: object expected");
+                    message.updatedAt = $root.google.protobuf.Timestamp.fromObject(object.updatedAt);
+                }
+                if (object.ownerId != null)
+                    message.ownerId = String(object.ownerId);
+                if (object.collaboratorIds) {
+                    if (!Array.isArray(object.collaboratorIds))
+                        throw TypeError(".legal.api.LegalDocument.collaboratorIds: array expected");
+                    message.collaboratorIds = [];
+                    for (let i = 0; i < object.collaboratorIds.length; ++i)
+                        message.collaboratorIds[i] = String(object.collaboratorIds[i]);
+                }
+                switch (object.status) {
+                default:
+                    if (typeof object.status === "number") {
+                        message.status = object.status;
+                        break;
+                    }
+                    break;
+                case "DOCUMENT_STATUS_DRAFT":
+                case 0:
+                    message.status = 0;
+                    break;
+                case "DOCUMENT_STATUS_REVIEW":
+                case 1:
+                    message.status = 1;
+                    break;
+                case "DOCUMENT_STATUS_APPROVED":
+                case 2:
+                    message.status = 2;
+                    break;
+                case "DOCUMENT_STATUS_ARCHIVED":
+                case 3:
+                    message.status = 3;
+                    break;
+                case "DOCUMENT_STATUS_DELETED":
+                case 4:
+                    message.status = 4;
+                    break;
+                }
+                switch (object.securityLevel) {
+                default:
+                    if (typeof object.securityLevel === "number") {
+                        message.securityLevel = object.securityLevel;
+                        break;
+                    }
+                    break;
+                case "SECURITY_LEVEL_PUBLIC":
+                case 0:
+                    message.securityLevel = 0;
+                    break;
+                case "SECURITY_LEVEL_INTERNAL":
+                case 1:
+                    message.securityLevel = 1;
+                    break;
+                case "SECURITY_LEVEL_CONFIDENTIAL":
+                case 2:
+                    message.securityLevel = 2;
+                    break;
+                case "SECURITY_LEVEL_RESTRICTED":
+                case 3:
+                    message.securityLevel = 3;
+                    break;
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a LegalDocument message. Also converts values to other types if specified.
@@ -980,7 +1831,61 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            LegalDocument.toObject = undefined};
+            LegalDocument.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.tags = [];
+                    object.collaboratorIds = [];
+                }
+                if (options.defaults) {
+                    object.id = "";
+                    object.title = "";
+                    object.content = "";
+                    object.fileUrl = "";
+                    object.type = options.enums === String ? "DOCUMENT_TYPE_UNKNOWN" : 0;
+                    object.metadata = null;
+                    object.createdAt = null;
+                    object.updatedAt = null;
+                    object.ownerId = "";
+                    object.status = options.enums === String ? "DOCUMENT_STATUS_DRAFT" : 0;
+                    object.securityLevel = options.enums === String ? "SECURITY_LEVEL_PUBLIC" : 0;
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.title != null && message.hasOwnProperty("title"))
+                    object.title = message.title;
+                if (message.content != null && message.hasOwnProperty("content"))
+                    object.content = message.content;
+                if (message.fileUrl != null && message.hasOwnProperty("fileUrl"))
+                    object.fileUrl = message.fileUrl;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.legal.api.DocumentType[message.type] === undefined ? message.type : $root.legal.api.DocumentType[message.type] : message.type;
+                if (message.tags && message.tags.length) {
+                    object.tags = [];
+                    for (let j = 0; j < message.tags.length; ++j)
+                        object.tags[j] = message.tags[j];
+                }
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
+                    object.metadata = $root.legal.api.DocumentMetadata.toObject(message.metadata, options);
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
+                if (message.updatedAt != null && message.hasOwnProperty("updatedAt"))
+                    object.updatedAt = $root.google.protobuf.Timestamp.toObject(message.updatedAt, options);
+                if (message.ownerId != null && message.hasOwnProperty("ownerId"))
+                    object.ownerId = message.ownerId;
+                if (message.collaboratorIds && message.collaboratorIds.length) {
+                    object.collaboratorIds = [];
+                    for (let j = 0; j < message.collaboratorIds.length; ++j)
+                        object.collaboratorIds[j] = message.collaboratorIds[j];
+                }
+                if (message.status != null && message.hasOwnProperty("status"))
+                    object.status = options.enums === String ? $root.legal.api.DocumentStatus[message.status] === undefined ? message.status : $root.legal.api.DocumentStatus[message.status] : message.status;
+                if (message.securityLevel != null && message.hasOwnProperty("securityLevel"))
+                    object.securityLevel = options.enums === String ? $root.legal.api.SecurityLevel[message.securityLevel] === undefined ? message.securityLevel : $root.legal.api.SecurityLevel[message.securityLevel] : message.securityLevel;
+                return object;
+            };
 
             /**
              * Converts this LegalDocument to JSON.
@@ -1008,7 +1913,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.LegalDocument";
             };
 
-            return LegalDocument})();
+            return LegalDocument;
+        })();
 
         /**
          * DocumentType enum.
@@ -1026,16 +1932,17 @@ export const legal = $root.legal = (() => {
          */
         api.DocumentType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "DOCUMENT_TYPE_UNKNOWN"] = 0
-            values[valuesById[1] = "DOCUMENT_TYPE_CONTRACT"] = 1
-            values[valuesById[2] = "DOCUMENT_TYPE_BRIEF"] = 2
-            values[valuesById[3] = "DOCUMENT_TYPE_EVIDENCE"] = 3
-            values[valuesById[4] = "DOCUMENT_TYPE_CITATION"] = 4
-            values[valuesById[5] = "DOCUMENT_TYPE_RULING"] = 5
-            values[valuesById[6] = "DOCUMENT_TYPE_MOTION"] = 6
-            values[valuesById[7] = "DOCUMENT_TYPE_PLEADING"] = 7
-            values[valuesById[8] = "DOCUMENT_TYPE_CORRESPONDENCE"] = 8
-            return values})();
+            values[valuesById[0] = "DOCUMENT_TYPE_UNKNOWN"] = 0;
+            values[valuesById[1] = "DOCUMENT_TYPE_CONTRACT"] = 1;
+            values[valuesById[2] = "DOCUMENT_TYPE_BRIEF"] = 2;
+            values[valuesById[3] = "DOCUMENT_TYPE_EVIDENCE"] = 3;
+            values[valuesById[4] = "DOCUMENT_TYPE_CITATION"] = 4;
+            values[valuesById[5] = "DOCUMENT_TYPE_RULING"] = 5;
+            values[valuesById[6] = "DOCUMENT_TYPE_MOTION"] = 6;
+            values[valuesById[7] = "DOCUMENT_TYPE_PLEADING"] = 7;
+            values[valuesById[8] = "DOCUMENT_TYPE_CORRESPONDENCE"] = 8;
+            return values;
+        })();
 
         /**
          * DocumentStatus enum.
@@ -1049,12 +1956,13 @@ export const legal = $root.legal = (() => {
          */
         api.DocumentStatus = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "DOCUMENT_STATUS_DRAFT"] = 0
-            values[valuesById[1] = "DOCUMENT_STATUS_REVIEW"] = 1
-            values[valuesById[2] = "DOCUMENT_STATUS_APPROVED"] = 2
-            values[valuesById[3] = "DOCUMENT_STATUS_ARCHIVED"] = 3
-            values[valuesById[4] = "DOCUMENT_STATUS_DELETED"] = 4
-            return values})();
+            values[valuesById[0] = "DOCUMENT_STATUS_DRAFT"] = 0;
+            values[valuesById[1] = "DOCUMENT_STATUS_REVIEW"] = 1;
+            values[valuesById[2] = "DOCUMENT_STATUS_APPROVED"] = 2;
+            values[valuesById[3] = "DOCUMENT_STATUS_ARCHIVED"] = 3;
+            values[valuesById[4] = "DOCUMENT_STATUS_DELETED"] = 4;
+            return values;
+        })();
 
         /**
          * SecurityLevel enum.
@@ -1067,13 +1975,15 @@ export const legal = $root.legal = (() => {
          */
         api.SecurityLevel = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "SECURITY_LEVEL_PUBLIC"] = 0
-            values[valuesById[1] = "SECURITY_LEVEL_INTERNAL"] = 1
-            values[valuesById[2] = "SECURITY_LEVEL_CONFIDENTIAL"] = 2
-            values[valuesById[3] = "SECURITY_LEVEL_RESTRICTED"] = 3
-            return values})();
+            values[valuesById[0] = "SECURITY_LEVEL_PUBLIC"] = 0;
+            values[valuesById[1] = "SECURITY_LEVEL_INTERNAL"] = 1;
+            values[valuesById[2] = "SECURITY_LEVEL_CONFIDENTIAL"] = 2;
+            values[valuesById[3] = "SECURITY_LEVEL_RESTRICTED"] = 3;
+            return values;
+        })();
 
         api.DocumentMetadata = (function() {
+
             /**
              * Properties of a DocumentMetadata.
              * @memberof legal.api
@@ -1097,7 +2007,16 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IDocumentMetadata=} [properties] Properties to set
              */
-            undefined}
+            function DocumentMetadata(properties) {
+                this.parties = [];
+                this.practiceAreas = [];
+                this.keyTerms = [];
+                this.citations = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * DocumentMetadata jurisdiction.
@@ -1121,21 +2040,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.parties = $util.emptyArray
+            DocumentMetadata.prototype.parties = $util.emptyArray;
+
             /**
              * DocumentMetadata practiceAreas.
              * @member {Array.<string>} practiceAreas
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.practiceAreas = $util.emptyArray
+            DocumentMetadata.prototype.practiceAreas = $util.emptyArray;
+
             /**
              * DocumentMetadata confidenceScore.
              * @member {number} confidenceScore
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.confidenceScore = 0
+            DocumentMetadata.prototype.confidenceScore = 0;
+
             /**
              * DocumentMetadata riskLevel.
              * @member {string} riskLevel
@@ -1150,21 +2072,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.keyTerms = $util.emptyArray
+            DocumentMetadata.prototype.keyTerms = $util.emptyArray;
+
             /**
              * DocumentMetadata citations.
              * @member {Array.<legal.api.ILegalCitation>} citations
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.citations = $util.emptyArray
+            DocumentMetadata.prototype.citations = $util.emptyArray;
+
             /**
              * DocumentMetadata caseInfo.
              * @member {legal.api.ICaseInformation|null|undefined} caseInfo
              * @memberof legal.api.DocumentMetadata
              * @instance
              */
-            DocumentMetadata.prototype.caseInfo = null
+            DocumentMetadata.prototype.caseInfo = null;
+
             /**
              * Creates a new DocumentMetadata instance using the specified properties.
              * @function create
@@ -1186,7 +2111,33 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            DocumentMetadata.encode = undefined};
+            DocumentMetadata.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.jurisdiction != null && Object.hasOwnProperty.call(message, "jurisdiction"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.jurisdiction);
+                if (message.courtLevel != null && Object.hasOwnProperty.call(message, "courtLevel"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.courtLevel);
+                if (message.parties != null && message.parties.length)
+                    for (let i = 0; i < message.parties.length; ++i)
+                        $root.legal.api.Party.encode(message.parties[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.practiceAreas != null && message.practiceAreas.length)
+                    for (let i = 0; i < message.practiceAreas.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.practiceAreas[i]);
+                if (message.confidenceScore != null && Object.hasOwnProperty.call(message, "confidenceScore"))
+                    writer.uint32(/* id 5, wireType 5 =*/45).float(message.confidenceScore);
+                if (message.riskLevel != null && Object.hasOwnProperty.call(message, "riskLevel"))
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.riskLevel);
+                if (message.keyTerms != null && message.keyTerms.length)
+                    for (let i = 0; i < message.keyTerms.length; ++i)
+                        writer.uint32(/* id 7, wireType 2 =*/58).string(message.keyTerms[i]);
+                if (message.citations != null && message.citations.length)
+                    for (let i = 0; i < message.citations.length; ++i)
+                        $root.legal.api.LegalCitation.encode(message.citations[i], writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                if (message.caseInfo != null && Object.hasOwnProperty.call(message, "caseInfo"))
+                    $root.legal.api.CaseInformation.encode(message.caseInfo, writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified DocumentMetadata message, length delimited. Does not implicitly {@link legal.api.DocumentMetadata.verify|verify} messages.
@@ -1212,7 +2163,66 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            DocumentMetadata.decode = undefined};
+            DocumentMetadata.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.DocumentMetadata();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.jurisdiction = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.courtLevel = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.parties && message.parties.length))
+                                message.parties = [];
+                            message.parties.push($root.legal.api.Party.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.practiceAreas && message.practiceAreas.length))
+                                message.practiceAreas = [];
+                            message.practiceAreas.push(reader.string());
+                            break;
+                        }
+                    case 5: {
+                            message.confidenceScore = reader.float();
+                            break;
+                        }
+                    case 6: {
+                            message.riskLevel = reader.string();
+                            break;
+                        }
+                    case 7: {
+                            if (!(message.keyTerms && message.keyTerms.length))
+                                message.keyTerms = [];
+                            message.keyTerms.push(reader.string());
+                            break;
+                        }
+                    case 8: {
+                            if (!(message.citations && message.citations.length))
+                                message.citations = [];
+                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 9: {
+                            message.caseInfo = $root.legal.api.CaseInformation.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a DocumentMetadata message from the specified reader or buffer, length delimited.
@@ -1238,7 +2248,60 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            DocumentMetadata.verify = undefined};
+            DocumentMetadata.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
+                    if (!$util.isString(message.jurisdiction))
+                        return "jurisdiction: string expected";
+                if (message.courtLevel != null && message.hasOwnProperty("courtLevel"))
+                    if (!$util.isString(message.courtLevel))
+                        return "courtLevel: string expected";
+                if (message.parties != null && message.hasOwnProperty("parties")) {
+                    if (!Array.isArray(message.parties))
+                        return "parties: array expected";
+                    for (let i = 0; i < message.parties.length; ++i) {
+                        let error = $root.legal.api.Party.verify(message.parties[i]);
+                        if (error)
+                            return "parties." + error;
+                    }
+                }
+                if (message.practiceAreas != null && message.hasOwnProperty("practiceAreas")) {
+                    if (!Array.isArray(message.practiceAreas))
+                        return "practiceAreas: array expected";
+                    for (let i = 0; i < message.practiceAreas.length; ++i)
+                        if (!$util.isString(message.practiceAreas[i]))
+                            return "practiceAreas: string[] expected";
+                }
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
+                    if (typeof message.confidenceScore !== "number")
+                        return "confidenceScore: number expected";
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
+                    if (!$util.isString(message.riskLevel))
+                        return "riskLevel: string expected";
+                if (message.keyTerms != null && message.hasOwnProperty("keyTerms")) {
+                    if (!Array.isArray(message.keyTerms))
+                        return "keyTerms: array expected";
+                    for (let i = 0; i < message.keyTerms.length; ++i)
+                        if (!$util.isString(message.keyTerms[i]))
+                            return "keyTerms: string[] expected";
+                }
+                if (message.citations != null && message.hasOwnProperty("citations")) {
+                    if (!Array.isArray(message.citations))
+                        return "citations: array expected";
+                    for (let i = 0; i < message.citations.length; ++i) {
+                        let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
+                        if (error)
+                            return "citations." + error;
+                    }
+                }
+                if (message.caseInfo != null && message.hasOwnProperty("caseInfo")) {
+                    let error = $root.legal.api.CaseInformation.verify(message.caseInfo);
+                    if (error)
+                        return "caseInfo." + error;
+                }
+                return null;
+            };
 
             /**
              * Creates a DocumentMetadata message from a plain object. Also converts values to their respective internal types.
@@ -1248,7 +2311,59 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.DocumentMetadata} DocumentMetadata
              */
-            DocumentMetadata.fromObject = undefined};
+            DocumentMetadata.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.DocumentMetadata)
+                    return object;
+                let message = new $root.legal.api.DocumentMetadata();
+                if (object.jurisdiction != null)
+                    message.jurisdiction = String(object.jurisdiction);
+                if (object.courtLevel != null)
+                    message.courtLevel = String(object.courtLevel);
+                if (object.parties) {
+                    if (!Array.isArray(object.parties))
+                        throw TypeError(".legal.api.DocumentMetadata.parties: array expected");
+                    message.parties = [];
+                    for (let i = 0; i < object.parties.length; ++i) {
+                        if (typeof object.parties[i] !== "object")
+                            throw TypeError(".legal.api.DocumentMetadata.parties: object expected");
+                        message.parties[i] = $root.legal.api.Party.fromObject(object.parties[i]);
+                    }
+                }
+                if (object.practiceAreas) {
+                    if (!Array.isArray(object.practiceAreas))
+                        throw TypeError(".legal.api.DocumentMetadata.practiceAreas: array expected");
+                    message.practiceAreas = [];
+                    for (let i = 0; i < object.practiceAreas.length; ++i)
+                        message.practiceAreas[i] = String(object.practiceAreas[i]);
+                }
+                if (object.confidenceScore != null)
+                    message.confidenceScore = Number(object.confidenceScore);
+                if (object.riskLevel != null)
+                    message.riskLevel = String(object.riskLevel);
+                if (object.keyTerms) {
+                    if (!Array.isArray(object.keyTerms))
+                        throw TypeError(".legal.api.DocumentMetadata.keyTerms: array expected");
+                    message.keyTerms = [];
+                    for (let i = 0; i < object.keyTerms.length; ++i)
+                        message.keyTerms[i] = String(object.keyTerms[i]);
+                }
+                if (object.citations) {
+                    if (!Array.isArray(object.citations))
+                        throw TypeError(".legal.api.DocumentMetadata.citations: array expected");
+                    message.citations = [];
+                    for (let i = 0; i < object.citations.length; ++i) {
+                        if (typeof object.citations[i] !== "object")
+                            throw TypeError(".legal.api.DocumentMetadata.citations: object expected");
+                        message.citations[i] = $root.legal.api.LegalCitation.fromObject(object.citations[i]);
+                    }
+                }
+                if (object.caseInfo != null) {
+                    if (typeof object.caseInfo !== "object")
+                        throw TypeError(".legal.api.DocumentMetadata.caseInfo: object expected");
+                    message.caseInfo = $root.legal.api.CaseInformation.fromObject(object.caseInfo);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a DocumentMetadata message. Also converts values to other types if specified.
@@ -1259,7 +2374,55 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            DocumentMetadata.toObject = undefined};
+            DocumentMetadata.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.parties = [];
+                    object.practiceAreas = [];
+                    object.keyTerms = [];
+                    object.citations = [];
+                }
+                if (options.defaults) {
+                    object.jurisdiction = "";
+                    object.courtLevel = "";
+                    object.confidenceScore = 0;
+                    object.riskLevel = "";
+                    object.caseInfo = null;
+                }
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
+                    object.jurisdiction = message.jurisdiction;
+                if (message.courtLevel != null && message.hasOwnProperty("courtLevel"))
+                    object.courtLevel = message.courtLevel;
+                if (message.parties && message.parties.length) {
+                    object.parties = [];
+                    for (let j = 0; j < message.parties.length; ++j)
+                        object.parties[j] = $root.legal.api.Party.toObject(message.parties[j], options);
+                }
+                if (message.practiceAreas && message.practiceAreas.length) {
+                    object.practiceAreas = [];
+                    for (let j = 0; j < message.practiceAreas.length; ++j)
+                        object.practiceAreas[j] = message.practiceAreas[j];
+                }
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
+                    object.confidenceScore = options.json && !isFinite(message.confidenceScore) ? String(message.confidenceScore) : message.confidenceScore;
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
+                    object.riskLevel = message.riskLevel;
+                if (message.keyTerms && message.keyTerms.length) {
+                    object.keyTerms = [];
+                    for (let j = 0; j < message.keyTerms.length; ++j)
+                        object.keyTerms[j] = message.keyTerms[j];
+                }
+                if (message.citations && message.citations.length) {
+                    object.citations = [];
+                    for (let j = 0; j < message.citations.length; ++j)
+                        object.citations[j] = $root.legal.api.LegalCitation.toObject(message.citations[j], options);
+                }
+                if (message.caseInfo != null && message.hasOwnProperty("caseInfo"))
+                    object.caseInfo = $root.legal.api.CaseInformation.toObject(message.caseInfo, options);
+                return object;
+            };
 
             /**
              * Converts this DocumentMetadata to JSON.
@@ -1287,9 +2450,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.DocumentMetadata";
             };
 
-            return DocumentMetadata})();
+            return DocumentMetadata;
+        })();
 
         api.Party = (function() {
+
             /**
              * Properties of a Party.
              * @memberof legal.api
@@ -1308,7 +2473,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IParty=} [properties] Properties to set
              */
-            undefined}
+            function Party(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * Party name.
@@ -1340,7 +2510,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.Party
              * @instance
              */
-            Party.prototype.contact = null
+            Party.prototype.contact = null;
+
             /**
              * Creates a new Party instance using the specified properties.
              * @function create
@@ -1362,7 +2533,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Party.encode = undefined};
+            Party.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.name != null && Object.hasOwnProperty.call(message, "name"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.name);
+                if (message.role != null && Object.hasOwnProperty.call(message, "role"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.role);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.type);
+                if (message.contact != null && Object.hasOwnProperty.call(message, "contact"))
+                    $root.legal.api.ContactInfo.encode(message.contact, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified Party message, length delimited. Does not implicitly {@link legal.api.Party.verify|verify} messages.
@@ -1388,7 +2571,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Party.decode = undefined};
+            Party.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.Party();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.name = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.role = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.type = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.contact = $root.legal.api.ContactInfo.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a Party message from the specified reader or buffer, length delimited.
@@ -1414,7 +2628,25 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Party.verify = undefined};
+            Party.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.name != null && message.hasOwnProperty("name"))
+                    if (!$util.isString(message.name))
+                        return "name: string expected";
+                if (message.role != null && message.hasOwnProperty("role"))
+                    if (!$util.isString(message.role))
+                        return "role: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    if (!$util.isString(message.type))
+                        return "type: string expected";
+                if (message.contact != null && message.hasOwnProperty("contact")) {
+                    let error = $root.legal.api.ContactInfo.verify(message.contact);
+                    if (error)
+                        return "contact." + error;
+                }
+                return null;
+            };
 
             /**
              * Creates a Party message from a plain object. Also converts values to their respective internal types.
@@ -1424,7 +2656,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.Party} Party
              */
-            Party.fromObject = undefined};
+            Party.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.Party)
+                    return object;
+                let message = new $root.legal.api.Party();
+                if (object.name != null)
+                    message.name = String(object.name);
+                if (object.role != null)
+                    message.role = String(object.role);
+                if (object.type != null)
+                    message.type = String(object.type);
+                if (object.contact != null) {
+                    if (typeof object.contact !== "object")
+                        throw TypeError(".legal.api.Party.contact: object expected");
+                    message.contact = $root.legal.api.ContactInfo.fromObject(object.contact);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a Party message. Also converts values to other types if specified.
@@ -1435,7 +2683,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Party.toObject = undefined};
+            Party.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.name = "";
+                    object.role = "";
+                    object.type = "";
+                    object.contact = null;
+                }
+                if (message.name != null && message.hasOwnProperty("name"))
+                    object.name = message.name;
+                if (message.role != null && message.hasOwnProperty("role"))
+                    object.role = message.role;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = message.type;
+                if (message.contact != null && message.hasOwnProperty("contact"))
+                    object.contact = $root.legal.api.ContactInfo.toObject(message.contact, options);
+                return object;
+            };
 
             /**
              * Converts this Party to JSON.
@@ -1463,9 +2730,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.Party";
             };
 
-            return Party})();
+            return Party;
+        })();
 
         api.ContactInfo = (function() {
+
             /**
              * Properties of a ContactInfo.
              * @memberof legal.api
@@ -1484,7 +2753,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IContactInfo=} [properties] Properties to set
              */
-            undefined}
+            function ContactInfo(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * ContactInfo address.
@@ -1539,7 +2813,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ContactInfo.encode = undefined};
+            ContactInfo.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.address != null && Object.hasOwnProperty.call(message, "address"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.address);
+                if (message.phone != null && Object.hasOwnProperty.call(message, "phone"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.phone);
+                if (message.email != null && Object.hasOwnProperty.call(message, "email"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.email);
+                if (message.lawFirm != null && Object.hasOwnProperty.call(message, "lawFirm"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.lawFirm);
+                return writer;
+            };
 
             /**
              * Encodes the specified ContactInfo message, length delimited. Does not implicitly {@link legal.api.ContactInfo.verify|verify} messages.
@@ -1565,7 +2851,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ContactInfo.decode = undefined};
+            ContactInfo.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ContactInfo();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.address = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.phone = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.email = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.lawFirm = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a ContactInfo message from the specified reader or buffer, length delimited.
@@ -1591,7 +2908,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ContactInfo.verify = undefined};
+            ContactInfo.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.address != null && message.hasOwnProperty("address"))
+                    if (!$util.isString(message.address))
+                        return "address: string expected";
+                if (message.phone != null && message.hasOwnProperty("phone"))
+                    if (!$util.isString(message.phone))
+                        return "phone: string expected";
+                if (message.email != null && message.hasOwnProperty("email"))
+                    if (!$util.isString(message.email))
+                        return "email: string expected";
+                if (message.lawFirm != null && message.hasOwnProperty("lawFirm"))
+                    if (!$util.isString(message.lawFirm))
+                        return "lawFirm: string expected";
+                return null;
+            };
 
             /**
              * Creates a ContactInfo message from a plain object. Also converts values to their respective internal types.
@@ -1601,7 +2934,20 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ContactInfo} ContactInfo
              */
-            ContactInfo.fromObject = undefined};
+            ContactInfo.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.ContactInfo)
+                    return object;
+                let message = new $root.legal.api.ContactInfo();
+                if (object.address != null)
+                    message.address = String(object.address);
+                if (object.phone != null)
+                    message.phone = String(object.phone);
+                if (object.email != null)
+                    message.email = String(object.email);
+                if (object.lawFirm != null)
+                    message.lawFirm = String(object.lawFirm);
+                return message;
+            };
 
             /**
              * Creates a plain object from a ContactInfo message. Also converts values to other types if specified.
@@ -1612,7 +2958,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ContactInfo.toObject = undefined};
+            ContactInfo.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.address = "";
+                    object.phone = "";
+                    object.email = "";
+                    object.lawFirm = "";
+                }
+                if (message.address != null && message.hasOwnProperty("address"))
+                    object.address = message.address;
+                if (message.phone != null && message.hasOwnProperty("phone"))
+                    object.phone = message.phone;
+                if (message.email != null && message.hasOwnProperty("email"))
+                    object.email = message.email;
+                if (message.lawFirm != null && message.hasOwnProperty("lawFirm"))
+                    object.lawFirm = message.lawFirm;
+                return object;
+            };
 
             /**
              * Converts this ContactInfo to JSON.
@@ -1640,9 +3005,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ContactInfo";
             };
 
-            return ContactInfo})();
+            return ContactInfo;
+        })();
 
         api.LegalCitation = (function() {
+
             /**
              * Properties of a LegalCitation.
              * @memberof legal.api
@@ -1661,7 +3028,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ILegalCitation=} [properties] Properties to set
              */
-            undefined}
+            function LegalCitation(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * LegalCitation citationText.
@@ -1693,7 +3065,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.LegalCitation
              * @instance
              */
-            LegalCitation.prototype.type = 0
+            LegalCitation.prototype.type = 0;
+
             /**
              * Creates a new LegalCitation instance using the specified properties.
              * @function create
@@ -1715,7 +3088,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            LegalCitation.encode = undefined};
+            LegalCitation.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.citationText != null && Object.hasOwnProperty.call(message, "citationText"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.citationText);
+                if (message.source != null && Object.hasOwnProperty.call(message, "source"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.source);
+                if (message.url != null && Object.hasOwnProperty.call(message, "url"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.url);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.type);
+                return writer;
+            };
 
             /**
              * Encodes the specified LegalCitation message, length delimited. Does not implicitly {@link legal.api.LegalCitation.verify|verify} messages.
@@ -1741,7 +3126,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            LegalCitation.decode = undefined};
+            LegalCitation.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.LegalCitation();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.citationText = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.source = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.url = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a LegalCitation message from the specified reader or buffer, length delimited.
@@ -1767,7 +3183,30 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            LegalCitation.verify = undefined};
+            LegalCitation.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.citationText != null && message.hasOwnProperty("citationText"))
+                    if (!$util.isString(message.citationText))
+                        return "citationText: string expected";
+                if (message.source != null && message.hasOwnProperty("source"))
+                    if (!$util.isString(message.source))
+                        return "source: string expected";
+                if (message.url != null && message.hasOwnProperty("url"))
+                    if (!$util.isString(message.url))
+                        return "url: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                return null;
+            };
 
             /**
              * Creates a LegalCitation message from a plain object. Also converts values to their respective internal types.
@@ -1777,7 +3216,42 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.LegalCitation} LegalCitation
              */
-            LegalCitation.fromObject = undefined};
+            LegalCitation.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.LegalCitation)
+                    return object;
+                let message = new $root.legal.api.LegalCitation();
+                if (object.citationText != null)
+                    message.citationText = String(object.citationText);
+                if (object.source != null)
+                    message.source = String(object.source);
+                if (object.url != null)
+                    message.url = String(object.url);
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "CITATION_TYPE_CASE_LAW":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "CITATION_TYPE_STATUTE":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "CITATION_TYPE_REGULATION":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "CITATION_TYPE_SECONDARY":
+                case 3:
+                    message.type = 3;
+                    break;
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a LegalCitation message. Also converts values to other types if specified.
@@ -1788,7 +3262,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            LegalCitation.toObject = undefined};
+            LegalCitation.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.citationText = "";
+                    object.source = "";
+                    object.url = "";
+                    object.type = options.enums === String ? "CITATION_TYPE_CASE_LAW" : 0;
+                }
+                if (message.citationText != null && message.hasOwnProperty("citationText"))
+                    object.citationText = message.citationText;
+                if (message.source != null && message.hasOwnProperty("source"))
+                    object.source = message.source;
+                if (message.url != null && message.hasOwnProperty("url"))
+                    object.url = message.url;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.legal.api.CitationType[message.type] === undefined ? message.type : $root.legal.api.CitationType[message.type] : message.type;
+                return object;
+            };
 
             /**
              * Converts this LegalCitation to JSON.
@@ -1816,7 +3309,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.LegalCitation";
             };
 
-            return LegalCitation})();
+            return LegalCitation;
+        })();
 
         /**
          * CitationType enum.
@@ -1829,13 +3323,15 @@ export const legal = $root.legal = (() => {
          */
         api.CitationType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "CITATION_TYPE_CASE_LAW"] = 0
-            values[valuesById[1] = "CITATION_TYPE_STATUTE"] = 1
-            values[valuesById[2] = "CITATION_TYPE_REGULATION"] = 2
-            values[valuesById[3] = "CITATION_TYPE_SECONDARY"] = 3
-            return values})();
+            values[valuesById[0] = "CITATION_TYPE_CASE_LAW"] = 0;
+            values[valuesById[1] = "CITATION_TYPE_STATUTE"] = 1;
+            values[valuesById[2] = "CITATION_TYPE_REGULATION"] = 2;
+            values[valuesById[3] = "CITATION_TYPE_SECONDARY"] = 3;
+            return values;
+        })();
 
         api.CaseInformation = (function() {
+
             /**
              * Properties of a CaseInformation.
              * @memberof legal.api
@@ -1855,7 +3351,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ICaseInformation=} [properties] Properties to set
              */
-            undefined}
+            function CaseInformation(properties) {
+                this.judges = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * CaseInformation caseNumber.
@@ -1879,21 +3381,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.CaseInformation
              * @instance
              */
-            CaseInformation.prototype.filingDate = null
+            CaseInformation.prototype.filingDate = null;
+
             /**
              * CaseInformation status.
              * @member {legal.api.CaseStatus} status
              * @memberof legal.api.CaseInformation
              * @instance
              */
-            CaseInformation.prototype.status = 0
+            CaseInformation.prototype.status = 0;
+
             /**
              * CaseInformation judges.
              * @member {Array.<string>} judges
              * @memberof legal.api.CaseInformation
              * @instance
              */
-            CaseInformation.prototype.judges = $util.emptyArray
+            CaseInformation.prototype.judges = $util.emptyArray;
+
             /**
              * Creates a new CaseInformation instance using the specified properties.
              * @function create
@@ -1915,7 +3420,22 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            CaseInformation.encode = undefined};
+            CaseInformation.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.caseNumber != null && Object.hasOwnProperty.call(message, "caseNumber"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.caseNumber);
+                if (message.courtName != null && Object.hasOwnProperty.call(message, "courtName"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.courtName);
+                if (message.filingDate != null && Object.hasOwnProperty.call(message, "filingDate"))
+                    $root.google.protobuf.Timestamp.encode(message.filingDate, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.status);
+                if (message.judges != null && message.judges.length)
+                    for (let i = 0; i < message.judges.length; ++i)
+                        writer.uint32(/* id 5, wireType 2 =*/42).string(message.judges[i]);
+                return writer;
+            };
 
             /**
              * Encodes the specified CaseInformation message, length delimited. Does not implicitly {@link legal.api.CaseInformation.verify|verify} messages.
@@ -1941,7 +3461,44 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            CaseInformation.decode = undefined};
+            CaseInformation.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.CaseInformation();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.caseNumber = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.courtName = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.filingDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 4: {
+                            message.status = reader.int32();
+                            break;
+                        }
+                    case 5: {
+                            if (!(message.judges && message.judges.length))
+                                message.judges = [];
+                            message.judges.push(reader.string());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a CaseInformation message from the specified reader or buffer, length delimited.
@@ -1967,7 +3524,41 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            CaseInformation.verify = undefined};
+            CaseInformation.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.caseNumber != null && message.hasOwnProperty("caseNumber"))
+                    if (!$util.isString(message.caseNumber))
+                        return "caseNumber: string expected";
+                if (message.courtName != null && message.hasOwnProperty("courtName"))
+                    if (!$util.isString(message.courtName))
+                        return "courtName: string expected";
+                if (message.filingDate != null && message.hasOwnProperty("filingDate")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.filingDate);
+                    if (error)
+                        return "filingDate." + error;
+                }
+                if (message.status != null && message.hasOwnProperty("status"))
+                    switch (message.status) {
+                    default:
+                        return "status: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        break;
+                    }
+                if (message.judges != null && message.hasOwnProperty("judges")) {
+                    if (!Array.isArray(message.judges))
+                        return "judges: array expected";
+                    for (let i = 0; i < message.judges.length; ++i)
+                        if (!$util.isString(message.judges[i]))
+                            return "judges: string[] expected";
+                }
+                return null;
+            };
 
             /**
              * Creates a CaseInformation message from a plain object. Also converts values to their respective internal types.
@@ -1977,7 +3568,60 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.CaseInformation} CaseInformation
              */
-            CaseInformation.fromObject = undefined};
+            CaseInformation.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.CaseInformation)
+                    return object;
+                let message = new $root.legal.api.CaseInformation();
+                if (object.caseNumber != null)
+                    message.caseNumber = String(object.caseNumber);
+                if (object.courtName != null)
+                    message.courtName = String(object.courtName);
+                if (object.filingDate != null) {
+                    if (typeof object.filingDate !== "object")
+                        throw TypeError(".legal.api.CaseInformation.filingDate: object expected");
+                    message.filingDate = $root.google.protobuf.Timestamp.fromObject(object.filingDate);
+                }
+                switch (object.status) {
+                default:
+                    if (typeof object.status === "number") {
+                        message.status = object.status;
+                        break;
+                    }
+                    break;
+                case "CASE_STATUS_PENDING":
+                case 0:
+                    message.status = 0;
+                    break;
+                case "CASE_STATUS_ACTIVE":
+                case 1:
+                    message.status = 1;
+                    break;
+                case "CASE_STATUS_SETTLED":
+                case 2:
+                    message.status = 2;
+                    break;
+                case "CASE_STATUS_DISMISSED":
+                case 3:
+                    message.status = 3;
+                    break;
+                case "CASE_STATUS_DECIDED":
+                case 4:
+                    message.status = 4;
+                    break;
+                case "CASE_STATUS_APPEALED":
+                case 5:
+                    message.status = 5;
+                    break;
+                }
+                if (object.judges) {
+                    if (!Array.isArray(object.judges))
+                        throw TypeError(".legal.api.CaseInformation.judges: array expected");
+                    message.judges = [];
+                    for (let i = 0; i < object.judges.length; ++i)
+                        message.judges[i] = String(object.judges[i]);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a CaseInformation message. Also converts values to other types if specified.
@@ -1988,7 +3632,33 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            CaseInformation.toObject = undefined};
+            CaseInformation.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.judges = [];
+                if (options.defaults) {
+                    object.caseNumber = "";
+                    object.courtName = "";
+                    object.filingDate = null;
+                    object.status = options.enums === String ? "CASE_STATUS_PENDING" : 0;
+                }
+                if (message.caseNumber != null && message.hasOwnProperty("caseNumber"))
+                    object.caseNumber = message.caseNumber;
+                if (message.courtName != null && message.hasOwnProperty("courtName"))
+                    object.courtName = message.courtName;
+                if (message.filingDate != null && message.hasOwnProperty("filingDate"))
+                    object.filingDate = $root.google.protobuf.Timestamp.toObject(message.filingDate, options);
+                if (message.status != null && message.hasOwnProperty("status"))
+                    object.status = options.enums === String ? $root.legal.api.CaseStatus[message.status] === undefined ? message.status : $root.legal.api.CaseStatus[message.status] : message.status;
+                if (message.judges && message.judges.length) {
+                    object.judges = [];
+                    for (let j = 0; j < message.judges.length; ++j)
+                        object.judges[j] = message.judges[j];
+                }
+                return object;
+            };
 
             /**
              * Converts this CaseInformation to JSON.
@@ -2016,7 +3686,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.CaseInformation";
             };
 
-            return CaseInformation})();
+            return CaseInformation;
+        })();
 
         /**
          * CaseStatus enum.
@@ -2031,15 +3702,17 @@ export const legal = $root.legal = (() => {
          */
         api.CaseStatus = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "CASE_STATUS_PENDING"] = 0
-            values[valuesById[1] = "CASE_STATUS_ACTIVE"] = 1
-            values[valuesById[2] = "CASE_STATUS_SETTLED"] = 2
-            values[valuesById[3] = "CASE_STATUS_DISMISSED"] = 3
-            values[valuesById[4] = "CASE_STATUS_DECIDED"] = 4
-            values[valuesById[5] = "CASE_STATUS_APPEALED"] = 5
-            return values})();
+            values[valuesById[0] = "CASE_STATUS_PENDING"] = 0;
+            values[valuesById[1] = "CASE_STATUS_ACTIVE"] = 1;
+            values[valuesById[2] = "CASE_STATUS_SETTLED"] = 2;
+            values[valuesById[3] = "CASE_STATUS_DISMISSED"] = 3;
+            values[valuesById[4] = "CASE_STATUS_DECIDED"] = 4;
+            values[valuesById[5] = "CASE_STATUS_APPEALED"] = 5;
+            return values;
+        })();
 
         api.SearchRequest = (function() {
+
             /**
              * Properties of a SearchRequest.
              * @memberof legal.api
@@ -2062,7 +3735,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchRequest=} [properties] Properties to set
              */
-            undefined}
+            function SearchRequest(properties) {
+                this.filters = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SearchRequest query.
@@ -2078,35 +3757,39 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.filters = $util.emptyArray
+            SearchRequest.prototype.filters = $util.emptyArray;
+
             /**
              * SearchRequest limit.
              * @member {number} limit
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.limit = 0
+            SearchRequest.prototype.limit = 0;
+
             /**
              * SearchRequest offset.
              * @member {number} offset
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.offset = 0
+            SearchRequest.prototype.offset = 0;
+
             /**
              * SearchRequest type.
              * @member {legal.api.SearchType} type
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.type = 0
+            SearchRequest.prototype.type = 0;
+
             /**
              * SearchRequest includeEmbeddings.
              * @member {boolean} includeEmbeddings
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.includeEmbeddings = $state(false);
+            SearchRequest.prototype.includeEmbeddings = false;
 
             /**
              * SearchRequest sort.
@@ -2114,7 +3797,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchRequest
              * @instance
              */
-            SearchRequest.prototype.sort = null
+            SearchRequest.prototype.sort = null;
+
             /**
              * SearchRequest userId.
              * @member {string} userId
@@ -2144,7 +3828,28 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchRequest.encode = undefined};
+            SearchRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.query != null && Object.hasOwnProperty.call(message, "query"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.query);
+                if (message.filters != null && message.filters.length)
+                    for (let i = 0; i < message.filters.length; ++i)
+                        $root.legal.api.SearchFilter.encode(message.filters[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.limit != null && Object.hasOwnProperty.call(message, "limit"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.limit);
+                if (message.offset != null && Object.hasOwnProperty.call(message, "offset"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.offset);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.type);
+                if (message.includeEmbeddings != null && Object.hasOwnProperty.call(message, "includeEmbeddings"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).bool(message.includeEmbeddings);
+                if (message.sort != null && Object.hasOwnProperty.call(message, "sort"))
+                    $root.legal.api.SortOptions.encode(message.sort, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 8, wireType 2 =*/66).string(message.userId);
+                return writer;
+            };
 
             /**
              * Encodes the specified SearchRequest message, length delimited. Does not implicitly {@link legal.api.SearchRequest.verify|verify} messages.
@@ -2170,7 +3875,56 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchRequest.decode = undefined};
+            SearchRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchRequest();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.query = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            if (!(message.filters && message.filters.length))
+                                message.filters = [];
+                            message.filters.push($root.legal.api.SearchFilter.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 3: {
+                            message.limit = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.offset = reader.int32();
+                            break;
+                        }
+                    case 5: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    case 6: {
+                            message.includeEmbeddings = reader.bool();
+                            break;
+                        }
+                    case 7: {
+                            message.sort = $root.legal.api.SortOptions.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 8: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SearchRequest message from the specified reader or buffer, length delimited.
@@ -2196,7 +3950,51 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchRequest.verify = undefined};
+            SearchRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.query != null && message.hasOwnProperty("query"))
+                    if (!$util.isString(message.query))
+                        return "query: string expected";
+                if (message.filters != null && message.hasOwnProperty("filters")) {
+                    if (!Array.isArray(message.filters))
+                        return "filters: array expected";
+                    for (let i = 0; i < message.filters.length; ++i) {
+                        let error = $root.legal.api.SearchFilter.verify(message.filters[i]);
+                        if (error)
+                            return "filters." + error;
+                    }
+                }
+                if (message.limit != null && message.hasOwnProperty("limit"))
+                    if (!$util.isInteger(message.limit))
+                        return "limit: integer expected";
+                if (message.offset != null && message.hasOwnProperty("offset"))
+                    if (!$util.isInteger(message.offset))
+                        return "offset: integer expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        break;
+                    }
+                if (message.includeEmbeddings != null && message.hasOwnProperty("includeEmbeddings"))
+                    if (typeof message.includeEmbeddings !== "boolean")
+                        return "includeEmbeddings: boolean expected";
+                if (message.sort != null && message.hasOwnProperty("sort")) {
+                    let error = $root.legal.api.SortOptions.verify(message.sort);
+                    if (error)
+                        return "sort." + error;
+                }
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                return null;
+            };
 
             /**
              * Creates a SearchRequest message from a plain object. Also converts values to their respective internal types.
@@ -2206,7 +4004,65 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchRequest} SearchRequest
              */
-            SearchRequest.fromObject = undefined};
+            SearchRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SearchRequest)
+                    return object;
+                let message = new $root.legal.api.SearchRequest();
+                if (object.query != null)
+                    message.query = String(object.query);
+                if (object.filters) {
+                    if (!Array.isArray(object.filters))
+                        throw TypeError(".legal.api.SearchRequest.filters: array expected");
+                    message.filters = [];
+                    for (let i = 0; i < object.filters.length; ++i) {
+                        if (typeof object.filters[i] !== "object")
+                            throw TypeError(".legal.api.SearchRequest.filters: object expected");
+                        message.filters[i] = $root.legal.api.SearchFilter.fromObject(object.filters[i]);
+                    }
+                }
+                if (object.limit != null)
+                    message.limit = object.limit | 0;
+                if (object.offset != null)
+                    message.offset = object.offset | 0;
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "SEARCH_TYPE_FULL_TEXT":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "SEARCH_TYPE_SEMANTIC":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "SEARCH_TYPE_VECTOR":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "SEARCH_TYPE_HYBRID":
+                case 3:
+                    message.type = 3;
+                    break;
+                case "SEARCH_TYPE_LEGAL_CITATION":
+                case 4:
+                    message.type = 4;
+                    break;
+                }
+                if (object.includeEmbeddings != null)
+                    message.includeEmbeddings = Boolean(object.includeEmbeddings);
+                if (object.sort != null) {
+                    if (typeof object.sort !== "object")
+                        throw TypeError(".legal.api.SearchRequest.sort: object expected");
+                    message.sort = $root.legal.api.SortOptions.fromObject(object.sort);
+                }
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                return message;
+            };
 
             /**
              * Creates a plain object from a SearchRequest message. Also converts values to other types if specified.
@@ -2217,7 +4073,42 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchRequest.toObject = undefined};
+            SearchRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.filters = [];
+                if (options.defaults) {
+                    object.query = "";
+                    object.limit = 0;
+                    object.offset = 0;
+                    object.type = options.enums === String ? "SEARCH_TYPE_FULL_TEXT" : 0;
+                    object.includeEmbeddings = false;
+                    object.sort = null;
+                    object.userId = "";
+                }
+                if (message.query != null && message.hasOwnProperty("query"))
+                    object.query = message.query;
+                if (message.filters && message.filters.length) {
+                    object.filters = [];
+                    for (let j = 0; j < message.filters.length; ++j)
+                        object.filters[j] = $root.legal.api.SearchFilter.toObject(message.filters[j], options);
+                }
+                if (message.limit != null && message.hasOwnProperty("limit"))
+                    object.limit = message.limit;
+                if (message.offset != null && message.hasOwnProperty("offset"))
+                    object.offset = message.offset;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.legal.api.SearchType[message.type] === undefined ? message.type : $root.legal.api.SearchType[message.type] : message.type;
+                if (message.includeEmbeddings != null && message.hasOwnProperty("includeEmbeddings"))
+                    object.includeEmbeddings = message.includeEmbeddings;
+                if (message.sort != null && message.hasOwnProperty("sort"))
+                    object.sort = $root.legal.api.SortOptions.toObject(message.sort, options);
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                return object;
+            };
 
             /**
              * Converts this SearchRequest to JSON.
@@ -2245,9 +4136,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchRequest";
             };
 
-            return SearchRequest})();
+            return SearchRequest;
+        })();
 
         api.SearchFilter = (function() {
+
             /**
              * Properties of a SearchFilter.
              * @memberof legal.api
@@ -2265,7 +4158,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchFilter=} [properties] Properties to set
              */
-            undefined}
+            function SearchFilter(properties) {
+                this.values = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SearchFilter field.
@@ -2289,7 +4188,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchFilter
              * @instance
              */
-            SearchFilter.prototype.values = $util.emptyArray
+            SearchFilter.prototype.values = $util.emptyArray;
+
             /**
              * Creates a new SearchFilter instance using the specified properties.
              * @function create
@@ -2311,7 +4211,18 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchFilter.encode = undefined};
+            SearchFilter.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.field != null && Object.hasOwnProperty.call(message, "field"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.field);
+                if (message.operator != null && Object.hasOwnProperty.call(message, "operator"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.operator);
+                if (message.values != null && message.values.length)
+                    for (let i = 0; i < message.values.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.values[i]);
+                return writer;
+            };
 
             /**
              * Encodes the specified SearchFilter message, length delimited. Does not implicitly {@link legal.api.SearchFilter.verify|verify} messages.
@@ -2337,7 +4248,36 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchFilter.decode = undefined};
+            SearchFilter.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchFilter();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.field = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.operator = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.values && message.values.length))
+                                message.values = [];
+                            message.values.push(reader.string());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SearchFilter message from the specified reader or buffer, length delimited.
@@ -2363,7 +4303,24 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchFilter.verify = undefined};
+            SearchFilter.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.field != null && message.hasOwnProperty("field"))
+                    if (!$util.isString(message.field))
+                        return "field: string expected";
+                if (message.operator != null && message.hasOwnProperty("operator"))
+                    if (!$util.isString(message.operator))
+                        return "operator: string expected";
+                if (message.values != null && message.hasOwnProperty("values")) {
+                    if (!Array.isArray(message.values))
+                        return "values: array expected";
+                    for (let i = 0; i < message.values.length; ++i)
+                        if (!$util.isString(message.values[i]))
+                            return "values: string[] expected";
+                }
+                return null;
+            };
 
             /**
              * Creates a SearchFilter message from a plain object. Also converts values to their respective internal types.
@@ -2373,7 +4330,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchFilter} SearchFilter
              */
-            SearchFilter.fromObject = undefined};
+            SearchFilter.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SearchFilter)
+                    return object;
+                let message = new $root.legal.api.SearchFilter();
+                if (object.field != null)
+                    message.field = String(object.field);
+                if (object.operator != null)
+                    message.operator = String(object.operator);
+                if (object.values) {
+                    if (!Array.isArray(object.values))
+                        throw TypeError(".legal.api.SearchFilter.values: array expected");
+                    message.values = [];
+                    for (let i = 0; i < object.values.length; ++i)
+                        message.values[i] = String(object.values[i]);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a SearchFilter message. Also converts values to other types if specified.
@@ -2384,7 +4357,27 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchFilter.toObject = undefined};
+            SearchFilter.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.values = [];
+                if (options.defaults) {
+                    object.field = "";
+                    object.operator = "";
+                }
+                if (message.field != null && message.hasOwnProperty("field"))
+                    object.field = message.field;
+                if (message.operator != null && message.hasOwnProperty("operator"))
+                    object.operator = message.operator;
+                if (message.values && message.values.length) {
+                    object.values = [];
+                    for (let j = 0; j < message.values.length; ++j)
+                        object.values[j] = message.values[j];
+                }
+                return object;
+            };
 
             /**
              * Converts this SearchFilter to JSON.
@@ -2412,9 +4405,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchFilter";
             };
 
-            return SearchFilter})();
+            return SearchFilter;
+        })();
 
         api.SortOptions = (function() {
+
             /**
              * Properties of a SortOptions.
              * @memberof legal.api
@@ -2431,7 +4426,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISortOptions=} [properties] Properties to set
              */
-            undefined}
+            function SortOptions(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SortOptions field.
@@ -2447,7 +4447,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SortOptions
              * @instance
              */
-            SortOptions.prototype.descending = $state(false);
+            SortOptions.prototype.descending = false;
 
             /**
              * Creates a new SortOptions instance using the specified properties.
@@ -2470,7 +4470,15 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SortOptions.encode = undefined};
+            SortOptions.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.field != null && Object.hasOwnProperty.call(message, "field"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.field);
+                if (message.descending != null && Object.hasOwnProperty.call(message, "descending"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.descending);
+                return writer;
+            };
 
             /**
              * Encodes the specified SortOptions message, length delimited. Does not implicitly {@link legal.api.SortOptions.verify|verify} messages.
@@ -2496,7 +4504,30 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SortOptions.decode = undefined};
+            SortOptions.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SortOptions();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.field = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.descending = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SortOptions message from the specified reader or buffer, length delimited.
@@ -2522,7 +4553,17 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SortOptions.verify = undefined};
+            SortOptions.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.field != null && message.hasOwnProperty("field"))
+                    if (!$util.isString(message.field))
+                        return "field: string expected";
+                if (message.descending != null && message.hasOwnProperty("descending"))
+                    if (typeof message.descending !== "boolean")
+                        return "descending: boolean expected";
+                return null;
+            };
 
             /**
              * Creates a SortOptions message from a plain object. Also converts values to their respective internal types.
@@ -2532,7 +4573,16 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SortOptions} SortOptions
              */
-            SortOptions.fromObject = undefined};
+            SortOptions.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SortOptions)
+                    return object;
+                let message = new $root.legal.api.SortOptions();
+                if (object.field != null)
+                    message.field = String(object.field);
+                if (object.descending != null)
+                    message.descending = Boolean(object.descending);
+                return message;
+            };
 
             /**
              * Creates a plain object from a SortOptions message. Also converts values to other types if specified.
@@ -2543,7 +4593,20 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SortOptions.toObject = undefined};
+            SortOptions.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.field = "";
+                    object.descending = false;
+                }
+                if (message.field != null && message.hasOwnProperty("field"))
+                    object.field = message.field;
+                if (message.descending != null && message.hasOwnProperty("descending"))
+                    object.descending = message.descending;
+                return object;
+            };
 
             /**
              * Converts this SortOptions to JSON.
@@ -2571,7 +4634,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SortOptions";
             };
 
-            return SortOptions})();
+            return SortOptions;
+        })();
 
         /**
          * SearchType enum.
@@ -2585,14 +4649,16 @@ export const legal = $root.legal = (() => {
          */
         api.SearchType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "SEARCH_TYPE_FULL_TEXT"] = 0
-            values[valuesById[1] = "SEARCH_TYPE_SEMANTIC"] = 1
-            values[valuesById[2] = "SEARCH_TYPE_VECTOR"] = 2
-            values[valuesById[3] = "SEARCH_TYPE_HYBRID"] = 3
-            values[valuesById[4] = "SEARCH_TYPE_LEGAL_CITATION"] = 4
-            return values})();
+            values[valuesById[0] = "SEARCH_TYPE_FULL_TEXT"] = 0;
+            values[valuesById[1] = "SEARCH_TYPE_SEMANTIC"] = 1;
+            values[valuesById[2] = "SEARCH_TYPE_VECTOR"] = 2;
+            values[valuesById[3] = "SEARCH_TYPE_HYBRID"] = 3;
+            values[valuesById[4] = "SEARCH_TYPE_LEGAL_CITATION"] = 4;
+            return values;
+        })();
 
         api.SearchResponse = (function() {
+
             /**
              * Properties of a SearchResponse.
              * @memberof legal.api
@@ -2613,7 +4679,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchResponse=} [properties] Properties to set
              */
-            undefined}
+            function SearchResponse(properties) {
+                this.results = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SearchResponse results.
@@ -2621,21 +4693,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.results = $util.emptyArray
+            SearchResponse.prototype.results = $util.emptyArray;
+
             /**
              * SearchResponse totalCount.
              * @member {number} totalCount
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.totalCount = 0
+            SearchResponse.prototype.totalCount = 0;
+
             /**
              * SearchResponse maxScore.
              * @member {number} maxScore
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.maxScore = 0
+            SearchResponse.prototype.maxScore = 0;
+
             /**
              * SearchResponse queryId.
              * @member {string} queryId
@@ -2650,14 +4725,16 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.processingTimeMs = 0
+            SearchResponse.prototype.processingTimeMs = 0;
+
             /**
              * SearchResponse metadata.
              * @member {legal.api.ISearchMetadata|null|undefined} metadata
              * @memberof legal.api.SearchResponse
              * @instance
              */
-            SearchResponse.prototype.metadata = null
+            SearchResponse.prototype.metadata = null;
+
             /**
              * Creates a new SearchResponse instance using the specified properties.
              * @function create
@@ -2679,7 +4756,24 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchResponse.encode = undefined};
+            SearchResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.results != null && message.results.length)
+                    for (let i = 0; i < message.results.length; ++i)
+                        $root.legal.api.SearchResult.encode(message.results[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.totalCount != null && Object.hasOwnProperty.call(message, "totalCount"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.totalCount);
+                if (message.maxScore != null && Object.hasOwnProperty.call(message, "maxScore"))
+                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.maxScore);
+                if (message.queryId != null && Object.hasOwnProperty.call(message, "queryId"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.queryId);
+                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.processingTimeMs);
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    $root.legal.api.SearchMetadata.encode(message.metadata, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified SearchResponse message, length delimited. Does not implicitly {@link legal.api.SearchResponse.verify|verify} messages.
@@ -2705,7 +4799,48 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchResponse.decode = undefined};
+            SearchResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchResponse();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            if (!(message.results && message.results.length))
+                                message.results = [];
+                            message.results.push($root.legal.api.SearchResult.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 2: {
+                            message.totalCount = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            message.maxScore = reader.float();
+                            break;
+                        }
+                    case 4: {
+                            message.queryId = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.processingTimeMs = reader.int32();
+                            break;
+                        }
+                    case 6: {
+                            message.metadata = $root.legal.api.SearchMetadata.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SearchResponse message from the specified reader or buffer, length delimited.
@@ -2731,7 +4866,37 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchResponse.verify = undefined};
+            SearchResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.results != null && message.hasOwnProperty("results")) {
+                    if (!Array.isArray(message.results))
+                        return "results: array expected";
+                    for (let i = 0; i < message.results.length; ++i) {
+                        let error = $root.legal.api.SearchResult.verify(message.results[i]);
+                        if (error)
+                            return "results." + error;
+                    }
+                }
+                if (message.totalCount != null && message.hasOwnProperty("totalCount"))
+                    if (!$util.isInteger(message.totalCount))
+                        return "totalCount: integer expected";
+                if (message.maxScore != null && message.hasOwnProperty("maxScore"))
+                    if (typeof message.maxScore !== "number")
+                        return "maxScore: number expected";
+                if (message.queryId != null && message.hasOwnProperty("queryId"))
+                    if (!$util.isString(message.queryId))
+                        return "queryId: string expected";
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
+                    if (!$util.isInteger(message.processingTimeMs))
+                        return "processingTimeMs: integer expected";
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    let error = $root.legal.api.SearchMetadata.verify(message.metadata);
+                    if (error)
+                        return "metadata." + error;
+                }
+                return null;
+            };
 
             /**
              * Creates a SearchResponse message from a plain object. Also converts values to their respective internal types.
@@ -2741,7 +4906,35 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchResponse} SearchResponse
              */
-            SearchResponse.fromObject = undefined};
+            SearchResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SearchResponse)
+                    return object;
+                let message = new $root.legal.api.SearchResponse();
+                if (object.results) {
+                    if (!Array.isArray(object.results))
+                        throw TypeError(".legal.api.SearchResponse.results: array expected");
+                    message.results = [];
+                    for (let i = 0; i < object.results.length; ++i) {
+                        if (typeof object.results[i] !== "object")
+                            throw TypeError(".legal.api.SearchResponse.results: object expected");
+                        message.results[i] = $root.legal.api.SearchResult.fromObject(object.results[i]);
+                    }
+                }
+                if (object.totalCount != null)
+                    message.totalCount = object.totalCount | 0;
+                if (object.maxScore != null)
+                    message.maxScore = Number(object.maxScore);
+                if (object.queryId != null)
+                    message.queryId = String(object.queryId);
+                if (object.processingTimeMs != null)
+                    message.processingTimeMs = object.processingTimeMs | 0;
+                if (object.metadata != null) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".legal.api.SearchResponse.metadata: object expected");
+                    message.metadata = $root.legal.api.SearchMetadata.fromObject(object.metadata);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a SearchResponse message. Also converts values to other types if specified.
@@ -2752,7 +4945,36 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchResponse.toObject = undefined};
+            SearchResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.results = [];
+                if (options.defaults) {
+                    object.totalCount = 0;
+                    object.maxScore = 0;
+                    object.queryId = "";
+                    object.processingTimeMs = 0;
+                    object.metadata = null;
+                }
+                if (message.results && message.results.length) {
+                    object.results = [];
+                    for (let j = 0; j < message.results.length; ++j)
+                        object.results[j] = $root.legal.api.SearchResult.toObject(message.results[j], options);
+                }
+                if (message.totalCount != null && message.hasOwnProperty("totalCount"))
+                    object.totalCount = message.totalCount;
+                if (message.maxScore != null && message.hasOwnProperty("maxScore"))
+                    object.maxScore = options.json && !isFinite(message.maxScore) ? String(message.maxScore) : message.maxScore;
+                if (message.queryId != null && message.hasOwnProperty("queryId"))
+                    object.queryId = message.queryId;
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
+                    object.processingTimeMs = message.processingTimeMs;
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
+                    object.metadata = $root.legal.api.SearchMetadata.toObject(message.metadata, options);
+                return object;
+            };
 
             /**
              * Converts this SearchResponse to JSON.
@@ -2780,9 +5002,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchResponse";
             };
 
-            return SearchResponse})();
+            return SearchResponse;
+        })();
 
         api.SearchResult = (function() {
+
             /**
              * Properties of a SearchResult.
              * @memberof legal.api
@@ -2803,7 +5027,14 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchResult=} [properties] Properties to set
              */
-            undefined}
+            function SearchResult(properties) {
+                this.highlights = [];
+                this.relatedCitations = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SearchResult document.
@@ -2811,28 +5042,32 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.document = null
+            SearchResult.prototype.document = null;
+
             /**
              * SearchResult score.
              * @member {number} score
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.score = 0
+            SearchResult.prototype.score = 0;
+
             /**
              * SearchResult highlights.
              * @member {Array.<string>} highlights
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.highlights = $util.emptyArray
+            SearchResult.prototype.highlights = $util.emptyArray;
+
             /**
              * SearchResult similarity.
              * @member {legal.api.IVectorSimilarity|null|undefined} similarity
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.similarity = null
+            SearchResult.prototype.similarity = null;
+
             /**
              * SearchResult excerpt.
              * @member {string} excerpt
@@ -2847,7 +5082,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchResult
              * @instance
              */
-            SearchResult.prototype.relatedCitations = $util.emptyArray
+            SearchResult.prototype.relatedCitations = $util.emptyArray;
+
             /**
              * Creates a new SearchResult instance using the specified properties.
              * @function create
@@ -2869,7 +5105,25 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchResult.encode = undefined};
+            SearchResult.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.document != null && Object.hasOwnProperty.call(message, "document"))
+                    $root.legal.api.LegalDocument.encode(message.document, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.score != null && Object.hasOwnProperty.call(message, "score"))
+                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.score);
+                if (message.highlights != null && message.highlights.length)
+                    for (let i = 0; i < message.highlights.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.highlights[i]);
+                if (message.similarity != null && Object.hasOwnProperty.call(message, "similarity"))
+                    $root.legal.api.VectorSimilarity.encode(message.similarity, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.excerpt != null && Object.hasOwnProperty.call(message, "excerpt"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.excerpt);
+                if (message.relatedCitations != null && message.relatedCitations.length)
+                    for (let i = 0; i < message.relatedCitations.length; ++i)
+                        $root.legal.api.LegalCitation.encode(message.relatedCitations[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified SearchResult message, length delimited. Does not implicitly {@link legal.api.SearchResult.verify|verify} messages.
@@ -2895,7 +5149,50 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchResult.decode = undefined};
+            SearchResult.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchResult();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.document = $root.legal.api.LegalDocument.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 2: {
+                            message.score = reader.float();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.highlights && message.highlights.length))
+                                message.highlights = [];
+                            message.highlights.push(reader.string());
+                            break;
+                        }
+                    case 4: {
+                            message.similarity = $root.legal.api.VectorSimilarity.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.excerpt = reader.string();
+                            break;
+                        }
+                    case 6: {
+                            if (!(message.relatedCitations && message.relatedCitations.length))
+                                message.relatedCitations = [];
+                            message.relatedCitations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SearchResult message from the specified reader or buffer, length delimited.
@@ -2921,7 +5218,43 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchResult.verify = undefined};
+            SearchResult.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.document != null && message.hasOwnProperty("document")) {
+                    let error = $root.legal.api.LegalDocument.verify(message.document);
+                    if (error)
+                        return "document." + error;
+                }
+                if (message.score != null && message.hasOwnProperty("score"))
+                    if (typeof message.score !== "number")
+                        return "score: number expected";
+                if (message.highlights != null && message.hasOwnProperty("highlights")) {
+                    if (!Array.isArray(message.highlights))
+                        return "highlights: array expected";
+                    for (let i = 0; i < message.highlights.length; ++i)
+                        if (!$util.isString(message.highlights[i]))
+                            return "highlights: string[] expected";
+                }
+                if (message.similarity != null && message.hasOwnProperty("similarity")) {
+                    let error = $root.legal.api.VectorSimilarity.verify(message.similarity);
+                    if (error)
+                        return "similarity." + error;
+                }
+                if (message.excerpt != null && message.hasOwnProperty("excerpt"))
+                    if (!$util.isString(message.excerpt))
+                        return "excerpt: string expected";
+                if (message.relatedCitations != null && message.hasOwnProperty("relatedCitations")) {
+                    if (!Array.isArray(message.relatedCitations))
+                        return "relatedCitations: array expected";
+                    for (let i = 0; i < message.relatedCitations.length; ++i) {
+                        let error = $root.legal.api.LegalCitation.verify(message.relatedCitations[i]);
+                        if (error)
+                            return "relatedCitations." + error;
+                    }
+                }
+                return null;
+            };
 
             /**
              * Creates a SearchResult message from a plain object. Also converts values to their respective internal types.
@@ -2931,7 +5264,43 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchResult} SearchResult
              */
-            SearchResult.fromObject = undefined};
+            SearchResult.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SearchResult)
+                    return object;
+                let message = new $root.legal.api.SearchResult();
+                if (object.document != null) {
+                    if (typeof object.document !== "object")
+                        throw TypeError(".legal.api.SearchResult.document: object expected");
+                    message.document = $root.legal.api.LegalDocument.fromObject(object.document);
+                }
+                if (object.score != null)
+                    message.score = Number(object.score);
+                if (object.highlights) {
+                    if (!Array.isArray(object.highlights))
+                        throw TypeError(".legal.api.SearchResult.highlights: array expected");
+                    message.highlights = [];
+                    for (let i = 0; i < object.highlights.length; ++i)
+                        message.highlights[i] = String(object.highlights[i]);
+                }
+                if (object.similarity != null) {
+                    if (typeof object.similarity !== "object")
+                        throw TypeError(".legal.api.SearchResult.similarity: object expected");
+                    message.similarity = $root.legal.api.VectorSimilarity.fromObject(object.similarity);
+                }
+                if (object.excerpt != null)
+                    message.excerpt = String(object.excerpt);
+                if (object.relatedCitations) {
+                    if (!Array.isArray(object.relatedCitations))
+                        throw TypeError(".legal.api.SearchResult.relatedCitations: array expected");
+                    message.relatedCitations = [];
+                    for (let i = 0; i < object.relatedCitations.length; ++i) {
+                        if (typeof object.relatedCitations[i] !== "object")
+                            throw TypeError(".legal.api.SearchResult.relatedCitations: object expected");
+                        message.relatedCitations[i] = $root.legal.api.LegalCitation.fromObject(object.relatedCitations[i]);
+                    }
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a SearchResult message. Also converts values to other types if specified.
@@ -2942,7 +5311,40 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchResult.toObject = undefined};
+            SearchResult.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.highlights = [];
+                    object.relatedCitations = [];
+                }
+                if (options.defaults) {
+                    object.document = null;
+                    object.score = 0;
+                    object.similarity = null;
+                    object.excerpt = "";
+                }
+                if (message.document != null && message.hasOwnProperty("document"))
+                    object.document = $root.legal.api.LegalDocument.toObject(message.document, options);
+                if (message.score != null && message.hasOwnProperty("score"))
+                    object.score = options.json && !isFinite(message.score) ? String(message.score) : message.score;
+                if (message.highlights && message.highlights.length) {
+                    object.highlights = [];
+                    for (let j = 0; j < message.highlights.length; ++j)
+                        object.highlights[j] = message.highlights[j];
+                }
+                if (message.similarity != null && message.hasOwnProperty("similarity"))
+                    object.similarity = $root.legal.api.VectorSimilarity.toObject(message.similarity, options);
+                if (message.excerpt != null && message.hasOwnProperty("excerpt"))
+                    object.excerpt = message.excerpt;
+                if (message.relatedCitations && message.relatedCitations.length) {
+                    object.relatedCitations = [];
+                    for (let j = 0; j < message.relatedCitations.length; ++j)
+                        object.relatedCitations[j] = $root.legal.api.LegalCitation.toObject(message.relatedCitations[j], options);
+                }
+                return object;
+            };
 
             /**
              * Converts this SearchResult to JSON.
@@ -2970,9 +5372,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchResult";
             };
 
-            return SearchResult})();
+            return SearchResult;
+        })();
 
         api.VectorSimilarity = (function() {
+
             /**
              * Properties of a VectorSimilarity.
              * @memberof legal.api
@@ -2991,7 +5395,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IVectorSimilarity=} [properties] Properties to set
              */
-            undefined}
+            function VectorSimilarity(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * VectorSimilarity cosineSimilarity.
@@ -2999,21 +5408,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.VectorSimilarity
              * @instance
              */
-            VectorSimilarity.prototype.cosineSimilarity = 0
+            VectorSimilarity.prototype.cosineSimilarity = 0;
+
             /**
              * VectorSimilarity euclideanDistance.
              * @member {number} euclideanDistance
              * @memberof legal.api.VectorSimilarity
              * @instance
              */
-            VectorSimilarity.prototype.euclideanDistance = 0
+            VectorSimilarity.prototype.euclideanDistance = 0;
+
             /**
              * VectorSimilarity embeddingDimension.
              * @member {number} embeddingDimension
              * @memberof legal.api.VectorSimilarity
              * @instance
              */
-            VectorSimilarity.prototype.embeddingDimension = 0
+            VectorSimilarity.prototype.embeddingDimension = 0;
+
             /**
              * VectorSimilarity modelUsed.
              * @member {string} modelUsed
@@ -3043,7 +5455,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            VectorSimilarity.encode = undefined};
+            VectorSimilarity.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.cosineSimilarity != null && Object.hasOwnProperty.call(message, "cosineSimilarity"))
+                    writer.uint32(/* id 1, wireType 5 =*/13).float(message.cosineSimilarity);
+                if (message.euclideanDistance != null && Object.hasOwnProperty.call(message, "euclideanDistance"))
+                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.euclideanDistance);
+                if (message.embeddingDimension != null && Object.hasOwnProperty.call(message, "embeddingDimension"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.embeddingDimension);
+                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.modelUsed);
+                return writer;
+            };
 
             /**
              * Encodes the specified VectorSimilarity message, length delimited. Does not implicitly {@link legal.api.VectorSimilarity.verify|verify} messages.
@@ -3069,7 +5493,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            VectorSimilarity.decode = undefined};
+            VectorSimilarity.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.VectorSimilarity();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.cosineSimilarity = reader.float();
+                            break;
+                        }
+                    case 2: {
+                            message.euclideanDistance = reader.float();
+                            break;
+                        }
+                    case 3: {
+                            message.embeddingDimension = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.modelUsed = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a VectorSimilarity message from the specified reader or buffer, length delimited.
@@ -3095,7 +5550,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            VectorSimilarity.verify = undefined};
+            VectorSimilarity.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.cosineSimilarity != null && message.hasOwnProperty("cosineSimilarity"))
+                    if (typeof message.cosineSimilarity !== "number")
+                        return "cosineSimilarity: number expected";
+                if (message.euclideanDistance != null && message.hasOwnProperty("euclideanDistance"))
+                    if (typeof message.euclideanDistance !== "number")
+                        return "euclideanDistance: number expected";
+                if (message.embeddingDimension != null && message.hasOwnProperty("embeddingDimension"))
+                    if (!$util.isInteger(message.embeddingDimension))
+                        return "embeddingDimension: integer expected";
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    if (!$util.isString(message.modelUsed))
+                        return "modelUsed: string expected";
+                return null;
+            };
 
             /**
              * Creates a VectorSimilarity message from a plain object. Also converts values to their respective internal types.
@@ -3105,7 +5576,20 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.VectorSimilarity} VectorSimilarity
              */
-            VectorSimilarity.fromObject = undefined};
+            VectorSimilarity.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.VectorSimilarity)
+                    return object;
+                let message = new $root.legal.api.VectorSimilarity();
+                if (object.cosineSimilarity != null)
+                    message.cosineSimilarity = Number(object.cosineSimilarity);
+                if (object.euclideanDistance != null)
+                    message.euclideanDistance = Number(object.euclideanDistance);
+                if (object.embeddingDimension != null)
+                    message.embeddingDimension = object.embeddingDimension | 0;
+                if (object.modelUsed != null)
+                    message.modelUsed = String(object.modelUsed);
+                return message;
+            };
 
             /**
              * Creates a plain object from a VectorSimilarity message. Also converts values to other types if specified.
@@ -3116,7 +5600,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            VectorSimilarity.toObject = undefined};
+            VectorSimilarity.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.cosineSimilarity = 0;
+                    object.euclideanDistance = 0;
+                    object.embeddingDimension = 0;
+                    object.modelUsed = "";
+                }
+                if (message.cosineSimilarity != null && message.hasOwnProperty("cosineSimilarity"))
+                    object.cosineSimilarity = options.json && !isFinite(message.cosineSimilarity) ? String(message.cosineSimilarity) : message.cosineSimilarity;
+                if (message.euclideanDistance != null && message.hasOwnProperty("euclideanDistance"))
+                    object.euclideanDistance = options.json && !isFinite(message.euclideanDistance) ? String(message.euclideanDistance) : message.euclideanDistance;
+                if (message.embeddingDimension != null && message.hasOwnProperty("embeddingDimension"))
+                    object.embeddingDimension = message.embeddingDimension;
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    object.modelUsed = message.modelUsed;
+                return object;
+            };
 
             /**
              * Converts this VectorSimilarity to JSON.
@@ -3144,9 +5647,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.VectorSimilarity";
             };
 
-            return VectorSimilarity})();
+            return VectorSimilarity;
+        })();
 
         api.SearchMetadata = (function() {
+
             /**
              * Properties of a SearchMetadata.
              * @memberof legal.api
@@ -3164,7 +5669,14 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchMetadata=} [properties] Properties to set
              */
-            undefined}
+            function SearchMetadata(properties) {
+                this.suggestedQueries = [];
+                this.facets = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SearchMetadata suggestedQueries.
@@ -3172,21 +5684,23 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchMetadata
              * @instance
              */
-            SearchMetadata.prototype.suggestedQueries = $util.emptyArray
+            SearchMetadata.prototype.suggestedQueries = $util.emptyArray;
+
             /**
              * SearchMetadata facets.
              * @member {Array.<legal.api.ISearchFacet>} facets
              * @memberof legal.api.SearchMetadata
              * @instance
              */
-            SearchMetadata.prototype.facets = $util.emptyArray
+            SearchMetadata.prototype.facets = $util.emptyArray;
+
             /**
              * SearchMetadata hasMoreResults.
              * @member {boolean} hasMoreResults
              * @memberof legal.api.SearchMetadata
              * @instance
              */
-            SearchMetadata.prototype.hasMoreResults = $state(false);
+            SearchMetadata.prototype.hasMoreResults = false;
 
             /**
              * Creates a new SearchMetadata instance using the specified properties.
@@ -3209,7 +5723,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchMetadata.encode = undefined};
+            SearchMetadata.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.suggestedQueries != null && message.suggestedQueries.length)
+                    for (let i = 0; i < message.suggestedQueries.length; ++i)
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.suggestedQueries[i]);
+                if (message.facets != null && message.facets.length)
+                    for (let i = 0; i < message.facets.length; ++i)
+                        $root.legal.api.SearchFacet.encode(message.facets[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.hasMoreResults != null && Object.hasOwnProperty.call(message, "hasMoreResults"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).bool(message.hasMoreResults);
+                return writer;
+            };
 
             /**
              * Encodes the specified SearchMetadata message, length delimited. Does not implicitly {@link legal.api.SearchMetadata.verify|verify} messages.
@@ -3235,7 +5761,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchMetadata.decode = undefined};
+            SearchMetadata.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchMetadata();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            if (!(message.suggestedQueries && message.suggestedQueries.length))
+                                message.suggestedQueries = [];
+                            message.suggestedQueries.push(reader.string());
+                            break;
+                        }
+                    case 2: {
+                            if (!(message.facets && message.facets.length))
+                                message.facets = [];
+                            message.facets.push($root.legal.api.SearchFacet.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 3: {
+                            message.hasMoreResults = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SearchMetadata message from the specified reader or buffer, length delimited.
@@ -3261,7 +5818,30 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchMetadata.verify = undefined};
+            SearchMetadata.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.suggestedQueries != null && message.hasOwnProperty("suggestedQueries")) {
+                    if (!Array.isArray(message.suggestedQueries))
+                        return "suggestedQueries: array expected";
+                    for (let i = 0; i < message.suggestedQueries.length; ++i)
+                        if (!$util.isString(message.suggestedQueries[i]))
+                            return "suggestedQueries: string[] expected";
+                }
+                if (message.facets != null && message.hasOwnProperty("facets")) {
+                    if (!Array.isArray(message.facets))
+                        return "facets: array expected";
+                    for (let i = 0; i < message.facets.length; ++i) {
+                        let error = $root.legal.api.SearchFacet.verify(message.facets[i]);
+                        if (error)
+                            return "facets." + error;
+                    }
+                }
+                if (message.hasMoreResults != null && message.hasOwnProperty("hasMoreResults"))
+                    if (typeof message.hasMoreResults !== "boolean")
+                        return "hasMoreResults: boolean expected";
+                return null;
+            };
 
             /**
              * Creates a SearchMetadata message from a plain object. Also converts values to their respective internal types.
@@ -3271,7 +5851,31 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchMetadata} SearchMetadata
              */
-            SearchMetadata.fromObject = undefined};
+            SearchMetadata.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SearchMetadata)
+                    return object;
+                let message = new $root.legal.api.SearchMetadata();
+                if (object.suggestedQueries) {
+                    if (!Array.isArray(object.suggestedQueries))
+                        throw TypeError(".legal.api.SearchMetadata.suggestedQueries: array expected");
+                    message.suggestedQueries = [];
+                    for (let i = 0; i < object.suggestedQueries.length; ++i)
+                        message.suggestedQueries[i] = String(object.suggestedQueries[i]);
+                }
+                if (object.facets) {
+                    if (!Array.isArray(object.facets))
+                        throw TypeError(".legal.api.SearchMetadata.facets: array expected");
+                    message.facets = [];
+                    for (let i = 0; i < object.facets.length; ++i) {
+                        if (typeof object.facets[i] !== "object")
+                            throw TypeError(".legal.api.SearchMetadata.facets: object expected");
+                        message.facets[i] = $root.legal.api.SearchFacet.fromObject(object.facets[i]);
+                    }
+                }
+                if (object.hasMoreResults != null)
+                    message.hasMoreResults = Boolean(object.hasMoreResults);
+                return message;
+            };
 
             /**
              * Creates a plain object from a SearchMetadata message. Also converts values to other types if specified.
@@ -3282,7 +5886,30 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchMetadata.toObject = undefined};
+            SearchMetadata.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.suggestedQueries = [];
+                    object.facets = [];
+                }
+                if (options.defaults)
+                    object.hasMoreResults = false;
+                if (message.suggestedQueries && message.suggestedQueries.length) {
+                    object.suggestedQueries = [];
+                    for (let j = 0; j < message.suggestedQueries.length; ++j)
+                        object.suggestedQueries[j] = message.suggestedQueries[j];
+                }
+                if (message.facets && message.facets.length) {
+                    object.facets = [];
+                    for (let j = 0; j < message.facets.length; ++j)
+                        object.facets[j] = $root.legal.api.SearchFacet.toObject(message.facets[j], options);
+                }
+                if (message.hasMoreResults != null && message.hasOwnProperty("hasMoreResults"))
+                    object.hasMoreResults = message.hasMoreResults;
+                return object;
+            };
 
             /**
              * Converts this SearchMetadata to JSON.
@@ -3310,9 +5937,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchMetadata";
             };
 
-            return SearchMetadata})();
+            return SearchMetadata;
+        })();
 
         api.SearchFacet = (function() {
+
             /**
              * Properties of a SearchFacet.
              * @memberof legal.api
@@ -3329,7 +5958,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISearchFacet=} [properties] Properties to set
              */
-            undefined}
+            function SearchFacet(properties) {
+                this.values = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SearchFacet field.
@@ -3345,7 +5980,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SearchFacet
              * @instance
              */
-            SearchFacet.prototype.values = $util.emptyArray
+            SearchFacet.prototype.values = $util.emptyArray;
+
             /**
              * Creates a new SearchFacet instance using the specified properties.
              * @function create
@@ -3367,7 +6003,16 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SearchFacet.encode = undefined};
+            SearchFacet.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.field != null && Object.hasOwnProperty.call(message, "field"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.field);
+                if (message.values != null && message.values.length)
+                    for (let i = 0; i < message.values.length; ++i)
+                        $root.legal.api.FacetValue.encode(message.values[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified SearchFacet message, length delimited. Does not implicitly {@link legal.api.SearchFacet.verify|verify} messages.
@@ -3393,7 +6038,32 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SearchFacet.decode = undefined};
+            SearchFacet.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SearchFacet();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.field = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            if (!(message.values && message.values.length))
+                                message.values = [];
+                            message.values.push($root.legal.api.FacetValue.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SearchFacet message from the specified reader or buffer, length delimited.
@@ -3419,7 +6089,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SearchFacet.verify = undefined};
+            SearchFacet.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.field != null && message.hasOwnProperty("field"))
+                    if (!$util.isString(message.field))
+                        return "field: string expected";
+                if (message.values != null && message.hasOwnProperty("values")) {
+                    if (!Array.isArray(message.values))
+                        return "values: array expected";
+                    for (let i = 0; i < message.values.length; ++i) {
+                        let error = $root.legal.api.FacetValue.verify(message.values[i]);
+                        if (error)
+                            return "values." + error;
+                    }
+                }
+                return null;
+            };
 
             /**
              * Creates a SearchFacet message from a plain object. Also converts values to their respective internal types.
@@ -3429,7 +6115,24 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SearchFacet} SearchFacet
              */
-            SearchFacet.fromObject = undefined};
+            SearchFacet.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SearchFacet)
+                    return object;
+                let message = new $root.legal.api.SearchFacet();
+                if (object.field != null)
+                    message.field = String(object.field);
+                if (object.values) {
+                    if (!Array.isArray(object.values))
+                        throw TypeError(".legal.api.SearchFacet.values: array expected");
+                    message.values = [];
+                    for (let i = 0; i < object.values.length; ++i) {
+                        if (typeof object.values[i] !== "object")
+                            throw TypeError(".legal.api.SearchFacet.values: object expected");
+                        message.values[i] = $root.legal.api.FacetValue.fromObject(object.values[i]);
+                    }
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a SearchFacet message. Also converts values to other types if specified.
@@ -3440,7 +6143,23 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SearchFacet.toObject = undefined};
+            SearchFacet.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.values = [];
+                if (options.defaults)
+                    object.field = "";
+                if (message.field != null && message.hasOwnProperty("field"))
+                    object.field = message.field;
+                if (message.values && message.values.length) {
+                    object.values = [];
+                    for (let j = 0; j < message.values.length; ++j)
+                        object.values[j] = $root.legal.api.FacetValue.toObject(message.values[j], options);
+                }
+                return object;
+            };
 
             /**
              * Converts this SearchFacet to JSON.
@@ -3468,9 +6187,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SearchFacet";
             };
 
-            return SearchFacet})();
+            return SearchFacet;
+        })();
 
         api.FacetValue = (function() {
+
             /**
              * Properties of a FacetValue.
              * @memberof legal.api
@@ -3487,7 +6208,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IFacetValue=} [properties] Properties to set
              */
-            undefined}
+            function FacetValue(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * FacetValue value.
@@ -3503,7 +6229,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.FacetValue
              * @instance
              */
-            FacetValue.prototype.count = 0
+            FacetValue.prototype.count = 0;
+
             /**
              * Creates a new FacetValue instance using the specified properties.
              * @function create
@@ -3525,7 +6252,15 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            FacetValue.encode = undefined};
+            FacetValue.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.value);
+                if (message.count != null && Object.hasOwnProperty.call(message, "count"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.count);
+                return writer;
+            };
 
             /**
              * Encodes the specified FacetValue message, length delimited. Does not implicitly {@link legal.api.FacetValue.verify|verify} messages.
@@ -3551,7 +6286,30 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            FacetValue.decode = undefined};
+            FacetValue.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.FacetValue();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.value = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.count = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a FacetValue message from the specified reader or buffer, length delimited.
@@ -3577,7 +6335,17 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            FacetValue.verify = undefined};
+            FacetValue.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.value != null && message.hasOwnProperty("value"))
+                    if (!$util.isString(message.value))
+                        return "value: string expected";
+                if (message.count != null && message.hasOwnProperty("count"))
+                    if (!$util.isInteger(message.count))
+                        return "count: integer expected";
+                return null;
+            };
 
             /**
              * Creates a FacetValue message from a plain object. Also converts values to their respective internal types.
@@ -3587,7 +6355,16 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.FacetValue} FacetValue
              */
-            FacetValue.fromObject = undefined};
+            FacetValue.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.FacetValue)
+                    return object;
+                let message = new $root.legal.api.FacetValue();
+                if (object.value != null)
+                    message.value = String(object.value);
+                if (object.count != null)
+                    message.count = object.count | 0;
+                return message;
+            };
 
             /**
              * Creates a plain object from a FacetValue message. Also converts values to other types if specified.
@@ -3598,7 +6375,20 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            FacetValue.toObject = undefined};
+            FacetValue.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.value = "";
+                    object.count = 0;
+                }
+                if (message.value != null && message.hasOwnProperty("value"))
+                    object.value = message.value;
+                if (message.count != null && message.hasOwnProperty("count"))
+                    object.count = message.count;
+                return object;
+            };
 
             /**
              * Converts this FacetValue to JSON.
@@ -3626,9 +6416,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.FacetValue";
             };
 
-            return FacetValue})();
+            return FacetValue;
+        })();
 
         api.ChatMessage = (function() {
+
             /**
              * Properties of a ChatMessage.
              * @memberof legal.api
@@ -3651,7 +6443,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatMessage=} [properties] Properties to set
              */
-            undefined}
+            function ChatMessage(properties) {
+                this.attachments = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * ChatMessage id.
@@ -3691,28 +6489,32 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.type = 0
+            ChatMessage.prototype.type = 0;
+
             /**
              * ChatMessage attachments.
              * @member {Array.<legal.api.IAttachment>} attachments
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.attachments = $util.emptyArray
+            ChatMessage.prototype.attachments = $util.emptyArray;
+
             /**
              * ChatMessage timestamp.
              * @member {google.protobuf.ITimestamp|null|undefined} timestamp
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.timestamp = null
+            ChatMessage.prototype.timestamp = null;
+
             /**
              * ChatMessage metadata.
              * @member {legal.api.IMessageMetadata|null|undefined} metadata
              * @memberof legal.api.ChatMessage
              * @instance
              */
-            ChatMessage.prototype.metadata = null
+            ChatMessage.prototype.metadata = null;
+
             /**
              * Creates a new ChatMessage instance using the specified properties.
              * @function create
@@ -3734,7 +6536,28 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatMessage.encode = undefined};
+            ChatMessage.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.id != null && Object.hasOwnProperty.call(message, "id"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.id);
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.sessionId);
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.userId);
+                if (message.content != null && Object.hasOwnProperty.call(message, "content"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.content);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.type);
+                if (message.attachments != null && message.attachments.length)
+                    for (let i = 0; i < message.attachments.length; ++i)
+                        $root.legal.api.Attachment.encode(message.attachments[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp"))
+                    $root.google.protobuf.Timestamp.encode(message.timestamp, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                if (message.metadata != null && Object.hasOwnProperty.call(message, "metadata"))
+                    $root.legal.api.MessageMetadata.encode(message.metadata, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified ChatMessage message, length delimited. Does not implicitly {@link legal.api.ChatMessage.verify|verify} messages.
@@ -3760,7 +6583,56 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatMessage.decode = undefined};
+            ChatMessage.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatMessage();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.id = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.sessionId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.content = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    case 6: {
+                            if (!(message.attachments && message.attachments.length))
+                                message.attachments = [];
+                            message.attachments.push($root.legal.api.Attachment.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 7: {
+                            message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 8: {
+                            message.metadata = $root.legal.api.MessageMetadata.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a ChatMessage message from the specified reader or buffer, length delimited.
@@ -3786,7 +6658,53 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatMessage.verify = undefined};
+            ChatMessage.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.id != null && message.hasOwnProperty("id"))
+                    if (!$util.isString(message.id))
+                        return "id: string expected";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                if (message.content != null && message.hasOwnProperty("content"))
+                    if (!$util.isString(message.content))
+                        return "content: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        break;
+                    }
+                if (message.attachments != null && message.hasOwnProperty("attachments")) {
+                    if (!Array.isArray(message.attachments))
+                        return "attachments: array expected";
+                    for (let i = 0; i < message.attachments.length; ++i) {
+                        let error = $root.legal.api.Attachment.verify(message.attachments[i]);
+                        if (error)
+                            return "attachments." + error;
+                    }
+                }
+                if (message.timestamp != null && message.hasOwnProperty("timestamp")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.timestamp);
+                    if (error)
+                        return "timestamp." + error;
+                }
+                if (message.metadata != null && message.hasOwnProperty("metadata")) {
+                    let error = $root.legal.api.MessageMetadata.verify(message.metadata);
+                    if (error)
+                        return "metadata." + error;
+                }
+                return null;
+            };
 
             /**
              * Creates a ChatMessage message from a plain object. Also converts values to their respective internal types.
@@ -3796,7 +6714,68 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatMessage} ChatMessage
              */
-            ChatMessage.fromObject = undefined};
+            ChatMessage.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.ChatMessage)
+                    return object;
+                let message = new $root.legal.api.ChatMessage();
+                if (object.id != null)
+                    message.id = String(object.id);
+                if (object.sessionId != null)
+                    message.sessionId = String(object.sessionId);
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                if (object.content != null)
+                    message.content = String(object.content);
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "MESSAGE_TYPE_USER":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "MESSAGE_TYPE_ASSISTANT":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "MESSAGE_TYPE_SYSTEM":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "MESSAGE_TYPE_ERROR":
+                case 3:
+                    message.type = 3;
+                    break;
+                case "MESSAGE_TYPE_FUNCTION_CALL":
+                case 4:
+                    message.type = 4;
+                    break;
+                }
+                if (object.attachments) {
+                    if (!Array.isArray(object.attachments))
+                        throw TypeError(".legal.api.ChatMessage.attachments: array expected");
+                    message.attachments = [];
+                    for (let i = 0; i < object.attachments.length; ++i) {
+                        if (typeof object.attachments[i] !== "object")
+                            throw TypeError(".legal.api.ChatMessage.attachments: object expected");
+                        message.attachments[i] = $root.legal.api.Attachment.fromObject(object.attachments[i]);
+                    }
+                }
+                if (object.timestamp != null) {
+                    if (typeof object.timestamp !== "object")
+                        throw TypeError(".legal.api.ChatMessage.timestamp: object expected");
+                    message.timestamp = $root.google.protobuf.Timestamp.fromObject(object.timestamp);
+                }
+                if (object.metadata != null) {
+                    if (typeof object.metadata !== "object")
+                        throw TypeError(".legal.api.ChatMessage.metadata: object expected");
+                    message.metadata = $root.legal.api.MessageMetadata.fromObject(object.metadata);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a ChatMessage message. Also converts values to other types if specified.
@@ -3807,7 +6786,42 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatMessage.toObject = undefined};
+            ChatMessage.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.attachments = [];
+                if (options.defaults) {
+                    object.id = "";
+                    object.sessionId = "";
+                    object.userId = "";
+                    object.content = "";
+                    object.type = options.enums === String ? "MESSAGE_TYPE_USER" : 0;
+                    object.timestamp = null;
+                    object.metadata = null;
+                }
+                if (message.id != null && message.hasOwnProperty("id"))
+                    object.id = message.id;
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                if (message.content != null && message.hasOwnProperty("content"))
+                    object.content = message.content;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.legal.api.MessageType[message.type] === undefined ? message.type : $root.legal.api.MessageType[message.type] : message.type;
+                if (message.attachments && message.attachments.length) {
+                    object.attachments = [];
+                    for (let j = 0; j < message.attachments.length; ++j)
+                        object.attachments[j] = $root.legal.api.Attachment.toObject(message.attachments[j], options);
+                }
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
+                if (message.metadata != null && message.hasOwnProperty("metadata"))
+                    object.metadata = $root.legal.api.MessageMetadata.toObject(message.metadata, options);
+                return object;
+            };
 
             /**
              * Converts this ChatMessage to JSON.
@@ -3835,7 +6849,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatMessage";
             };
 
-            return ChatMessage})();
+            return ChatMessage;
+        })();
 
         /**
          * MessageType enum.
@@ -3849,14 +6864,16 @@ export const legal = $root.legal = (() => {
          */
         api.MessageType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "MESSAGE_TYPE_USER"] = 0
-            values[valuesById[1] = "MESSAGE_TYPE_ASSISTANT"] = 1
-            values[valuesById[2] = "MESSAGE_TYPE_SYSTEM"] = 2
-            values[valuesById[3] = "MESSAGE_TYPE_ERROR"] = 3
-            values[valuesById[4] = "MESSAGE_TYPE_FUNCTION_CALL"] = 4
-            return values})();
+            values[valuesById[0] = "MESSAGE_TYPE_USER"] = 0;
+            values[valuesById[1] = "MESSAGE_TYPE_ASSISTANT"] = 1;
+            values[valuesById[2] = "MESSAGE_TYPE_SYSTEM"] = 2;
+            values[valuesById[3] = "MESSAGE_TYPE_ERROR"] = 3;
+            values[valuesById[4] = "MESSAGE_TYPE_FUNCTION_CALL"] = 4;
+            return values;
+        })();
 
         api.MessageMetadata = (function() {
+
             /**
              * Properties of a MessageMetadata.
              * @memberof legal.api
@@ -3876,7 +6893,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IMessageMetadata=} [properties] Properties to set
              */
-            undefined}
+            function MessageMetadata(properties) {
+                this.sourceDocuments = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * MessageMetadata modelUsed.
@@ -3892,28 +6915,32 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.tokensUsed = 0
+            MessageMetadata.prototype.tokensUsed = 0;
+
             /**
              * MessageMetadata processingTimeMs.
              * @member {number} processingTimeMs
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.processingTimeMs = 0
+            MessageMetadata.prototype.processingTimeMs = 0;
+
             /**
              * MessageMetadata sourceDocuments.
              * @member {Array.<string>} sourceDocuments
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.sourceDocuments = $util.emptyArray
+            MessageMetadata.prototype.sourceDocuments = $util.emptyArray;
+
             /**
              * MessageMetadata confidenceScore.
              * @member {number} confidenceScore
              * @memberof legal.api.MessageMetadata
              * @instance
              */
-            MessageMetadata.prototype.confidenceScore = 0
+            MessageMetadata.prototype.confidenceScore = 0;
+
             /**
              * Creates a new MessageMetadata instance using the specified properties.
              * @function create
@@ -3935,7 +6962,22 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            MessageMetadata.encode = undefined};
+            MessageMetadata.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.modelUsed);
+                if (message.tokensUsed != null && Object.hasOwnProperty.call(message, "tokensUsed"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.tokensUsed);
+                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs"))
+                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.processingTimeMs);
+                if (message.sourceDocuments != null && message.sourceDocuments.length)
+                    for (let i = 0; i < message.sourceDocuments.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.sourceDocuments[i]);
+                if (message.confidenceScore != null && Object.hasOwnProperty.call(message, "confidenceScore"))
+                    writer.uint32(/* id 5, wireType 5 =*/45).float(message.confidenceScore);
+                return writer;
+            };
 
             /**
              * Encodes the specified MessageMetadata message, length delimited. Does not implicitly {@link legal.api.MessageMetadata.verify|verify} messages.
@@ -3961,7 +7003,44 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            MessageMetadata.decode = undefined};
+            MessageMetadata.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.MessageMetadata();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.modelUsed = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.tokensUsed = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            message.processingTimeMs = reader.float();
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.sourceDocuments && message.sourceDocuments.length))
+                                message.sourceDocuments = [];
+                            message.sourceDocuments.push(reader.string());
+                            break;
+                        }
+                    case 5: {
+                            message.confidenceScore = reader.float();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a MessageMetadata message from the specified reader or buffer, length delimited.
@@ -3987,7 +7066,30 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            MessageMetadata.verify = undefined};
+            MessageMetadata.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    if (!$util.isString(message.modelUsed))
+                        return "modelUsed: string expected";
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
+                    if (!$util.isInteger(message.tokensUsed))
+                        return "tokensUsed: integer expected";
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
+                    if (typeof message.processingTimeMs !== "number")
+                        return "processingTimeMs: number expected";
+                if (message.sourceDocuments != null && message.hasOwnProperty("sourceDocuments")) {
+                    if (!Array.isArray(message.sourceDocuments))
+                        return "sourceDocuments: array expected";
+                    for (let i = 0; i < message.sourceDocuments.length; ++i)
+                        if (!$util.isString(message.sourceDocuments[i]))
+                            return "sourceDocuments: string[] expected";
+                }
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
+                    if (typeof message.confidenceScore !== "number")
+                        return "confidenceScore: number expected";
+                return null;
+            };
 
             /**
              * Creates a MessageMetadata message from a plain object. Also converts values to their respective internal types.
@@ -3997,7 +7099,27 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.MessageMetadata} MessageMetadata
              */
-            MessageMetadata.fromObject = undefined};
+            MessageMetadata.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.MessageMetadata)
+                    return object;
+                let message = new $root.legal.api.MessageMetadata();
+                if (object.modelUsed != null)
+                    message.modelUsed = String(object.modelUsed);
+                if (object.tokensUsed != null)
+                    message.tokensUsed = object.tokensUsed | 0;
+                if (object.processingTimeMs != null)
+                    message.processingTimeMs = Number(object.processingTimeMs);
+                if (object.sourceDocuments) {
+                    if (!Array.isArray(object.sourceDocuments))
+                        throw TypeError(".legal.api.MessageMetadata.sourceDocuments: array expected");
+                    message.sourceDocuments = [];
+                    for (let i = 0; i < object.sourceDocuments.length; ++i)
+                        message.sourceDocuments[i] = String(object.sourceDocuments[i]);
+                }
+                if (object.confidenceScore != null)
+                    message.confidenceScore = Number(object.confidenceScore);
+                return message;
+            };
 
             /**
              * Creates a plain object from a MessageMetadata message. Also converts values to other types if specified.
@@ -4008,7 +7130,33 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            MessageMetadata.toObject = undefined};
+            MessageMetadata.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.sourceDocuments = [];
+                if (options.defaults) {
+                    object.modelUsed = "";
+                    object.tokensUsed = 0;
+                    object.processingTimeMs = 0;
+                    object.confidenceScore = 0;
+                }
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    object.modelUsed = message.modelUsed;
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
+                    object.tokensUsed = message.tokensUsed;
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
+                    object.processingTimeMs = options.json && !isFinite(message.processingTimeMs) ? String(message.processingTimeMs) : message.processingTimeMs;
+                if (message.sourceDocuments && message.sourceDocuments.length) {
+                    object.sourceDocuments = [];
+                    for (let j = 0; j < message.sourceDocuments.length; ++j)
+                        object.sourceDocuments[j] = message.sourceDocuments[j];
+                }
+                if (message.confidenceScore != null && message.hasOwnProperty("confidenceScore"))
+                    object.confidenceScore = options.json && !isFinite(message.confidenceScore) ? String(message.confidenceScore) : message.confidenceScore;
+                return object;
+            };
 
             /**
              * Converts this MessageMetadata to JSON.
@@ -4036,9 +7184,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.MessageMetadata";
             };
 
-            return MessageMetadata})();
+            return MessageMetadata;
+        })();
 
         api.ChatRequest = (function() {
+
             /**
              * Properties of a ChatRequest.
              * @memberof legal.api
@@ -4058,7 +7208,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatRequest=} [properties] Properties to set
              */
-            undefined}
+            function ChatRequest(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * ChatRequest sessionId.
@@ -4090,14 +7245,16 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatRequest
              * @instance
              */
-            ChatRequest.prototype.context = null
+            ChatRequest.prototype.context = null;
+
             /**
              * ChatRequest options.
              * @member {legal.api.IChatOptions|null|undefined} options
              * @memberof legal.api.ChatRequest
              * @instance
              */
-            ChatRequest.prototype.options = null
+            ChatRequest.prototype.options = null;
+
             /**
              * Creates a new ChatRequest instance using the specified properties.
              * @function create
@@ -4119,7 +7276,21 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatRequest.encode = undefined};
+            ChatRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.sessionId != null && Object.hasOwnProperty.call(message, "sessionId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.sessionId);
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.userId);
+                if (message.message != null && Object.hasOwnProperty.call(message, "message"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.message);
+                if (message.context != null && Object.hasOwnProperty.call(message, "context"))
+                    $root.legal.api.ChatContext.encode(message.context, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.options != null && Object.hasOwnProperty.call(message, "options"))
+                    $root.legal.api.ChatOptions.encode(message.options, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified ChatRequest message, length delimited. Does not implicitly {@link legal.api.ChatRequest.verify|verify} messages.
@@ -4145,7 +7316,42 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatRequest.decode = undefined};
+            ChatRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatRequest();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.sessionId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.message = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.context = $root.legal.api.ChatContext.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.options = $root.legal.api.ChatOptions.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a ChatRequest message from the specified reader or buffer, length delimited.
@@ -4171,7 +7377,30 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatRequest.verify = undefined};
+            ChatRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    if (!$util.isString(message.sessionId))
+                        return "sessionId: string expected";
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                if (message.message != null && message.hasOwnProperty("message"))
+                    if (!$util.isString(message.message))
+                        return "message: string expected";
+                if (message.context != null && message.hasOwnProperty("context")) {
+                    let error = $root.legal.api.ChatContext.verify(message.context);
+                    if (error)
+                        return "context." + error;
+                }
+                if (message.options != null && message.hasOwnProperty("options")) {
+                    let error = $root.legal.api.ChatOptions.verify(message.options);
+                    if (error)
+                        return "options." + error;
+                }
+                return null;
+            };
 
             /**
              * Creates a ChatRequest message from a plain object. Also converts values to their respective internal types.
@@ -4181,7 +7410,28 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatRequest} ChatRequest
              */
-            ChatRequest.fromObject = undefined};
+            ChatRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.ChatRequest)
+                    return object;
+                let message = new $root.legal.api.ChatRequest();
+                if (object.sessionId != null)
+                    message.sessionId = String(object.sessionId);
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                if (object.message != null)
+                    message.message = String(object.message);
+                if (object.context != null) {
+                    if (typeof object.context !== "object")
+                        throw TypeError(".legal.api.ChatRequest.context: object expected");
+                    message.context = $root.legal.api.ChatContext.fromObject(object.context);
+                }
+                if (object.options != null) {
+                    if (typeof object.options !== "object")
+                        throw TypeError(".legal.api.ChatRequest.options: object expected");
+                    message.options = $root.legal.api.ChatOptions.fromObject(object.options);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a ChatRequest message. Also converts values to other types if specified.
@@ -4192,7 +7442,29 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatRequest.toObject = undefined};
+            ChatRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.sessionId = "";
+                    object.userId = "";
+                    object.message = "";
+                    object.context = null;
+                    object.options = null;
+                }
+                if (message.sessionId != null && message.hasOwnProperty("sessionId"))
+                    object.sessionId = message.sessionId;
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                if (message.message != null && message.hasOwnProperty("message"))
+                    object.message = message.message;
+                if (message.context != null && message.hasOwnProperty("context"))
+                    object.context = $root.legal.api.ChatContext.toObject(message.context, options);
+                if (message.options != null && message.hasOwnProperty("options"))
+                    object.options = $root.legal.api.ChatOptions.toObject(message.options, options);
+                return object;
+            };
 
             /**
              * Converts this ChatRequest to JSON.
@@ -4220,9 +7492,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatRequest";
             };
 
-            return ChatRequest})();
+            return ChatRequest;
+        })();
 
         api.ChatContext = (function() {
+
             /**
              * Properties of a ChatContext.
              * @memberof legal.api
@@ -4241,7 +7515,15 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatContext=} [properties] Properties to set
              */
-            undefined}
+            function ChatContext(properties) {
+                this.documentIds = [];
+                this.previousMessageIds = [];
+                this.variables = {};
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * ChatContext documentIds.
@@ -4249,7 +7531,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatContext
              * @instance
              */
-            ChatContext.prototype.documentIds = $util.emptyArray
+            ChatContext.prototype.documentIds = $util.emptyArray;
+
             /**
              * ChatContext caseId.
              * @member {string} caseId
@@ -4264,14 +7547,16 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatContext
              * @instance
              */
-            ChatContext.prototype.previousMessageIds = $util.emptyArray
+            ChatContext.prototype.previousMessageIds = $util.emptyArray;
+
             /**
              * ChatContext variables.
              * @member {Object.<string,string>} variables
              * @memberof legal.api.ChatContext
              * @instance
              */
-            ChatContext.prototype.variables = $util.emptyObject
+            ChatContext.prototype.variables = $util.emptyObject;
+
             /**
              * Creates a new ChatContext instance using the specified properties.
              * @function create
@@ -4293,7 +7578,22 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatContext.encode = undefined};
+            ChatContext.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.documentIds != null && message.documentIds.length)
+                    for (let i = 0; i < message.documentIds.length; ++i)
+                        writer.uint32(/* id 1, wireType 2 =*/10).string(message.documentIds[i]);
+                if (message.caseId != null && Object.hasOwnProperty.call(message, "caseId"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.caseId);
+                if (message.previousMessageIds != null && message.previousMessageIds.length)
+                    for (let i = 0; i < message.previousMessageIds.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.previousMessageIds[i]);
+                if (message.variables != null && Object.hasOwnProperty.call(message, "variables"))
+                    for (let keys = Object.keys(message.variables), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.variables[keys[i]]).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified ChatContext message, length delimited. Does not implicitly {@link legal.api.ChatContext.verify|verify} messages.
@@ -4319,7 +7619,61 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatContext.decode = undefined};
+            ChatContext.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatContext(), key, value;
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            if (!(message.documentIds && message.documentIds.length))
+                                message.documentIds = [];
+                            message.documentIds.push(reader.string());
+                            break;
+                        }
+                    case 2: {
+                            message.caseId = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.previousMessageIds && message.previousMessageIds.length))
+                                message.previousMessageIds = [];
+                            message.previousMessageIds.push(reader.string());
+                            break;
+                        }
+                    case 4: {
+                            if (message.variables === $util.emptyObject)
+                                message.variables = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                let tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.variables[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a ChatContext message from the specified reader or buffer, length delimited.
@@ -4345,7 +7699,36 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatContext.verify = undefined};
+            ChatContext.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.documentIds != null && message.hasOwnProperty("documentIds")) {
+                    if (!Array.isArray(message.documentIds))
+                        return "documentIds: array expected";
+                    for (let i = 0; i < message.documentIds.length; ++i)
+                        if (!$util.isString(message.documentIds[i]))
+                            return "documentIds: string[] expected";
+                }
+                if (message.caseId != null && message.hasOwnProperty("caseId"))
+                    if (!$util.isString(message.caseId))
+                        return "caseId: string expected";
+                if (message.previousMessageIds != null && message.hasOwnProperty("previousMessageIds")) {
+                    if (!Array.isArray(message.previousMessageIds))
+                        return "previousMessageIds: array expected";
+                    for (let i = 0; i < message.previousMessageIds.length; ++i)
+                        if (!$util.isString(message.previousMessageIds[i]))
+                            return "previousMessageIds: string[] expected";
+                }
+                if (message.variables != null && message.hasOwnProperty("variables")) {
+                    if (!$util.isObject(message.variables))
+                        return "variables: object expected";
+                    let key = Object.keys(message.variables);
+                    for (let i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.variables[key[i]]))
+                            return "variables: string{k:string} expected";
+                }
+                return null;
+            };
 
             /**
              * Creates a ChatContext message from a plain object. Also converts values to their respective internal types.
@@ -4355,7 +7738,35 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatContext} ChatContext
              */
-            ChatContext.fromObject = undefined};
+            ChatContext.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.ChatContext)
+                    return object;
+                let message = new $root.legal.api.ChatContext();
+                if (object.documentIds) {
+                    if (!Array.isArray(object.documentIds))
+                        throw TypeError(".legal.api.ChatContext.documentIds: array expected");
+                    message.documentIds = [];
+                    for (let i = 0; i < object.documentIds.length; ++i)
+                        message.documentIds[i] = String(object.documentIds[i]);
+                }
+                if (object.caseId != null)
+                    message.caseId = String(object.caseId);
+                if (object.previousMessageIds) {
+                    if (!Array.isArray(object.previousMessageIds))
+                        throw TypeError(".legal.api.ChatContext.previousMessageIds: array expected");
+                    message.previousMessageIds = [];
+                    for (let i = 0; i < object.previousMessageIds.length; ++i)
+                        message.previousMessageIds[i] = String(object.previousMessageIds[i]);
+                }
+                if (object.variables) {
+                    if (typeof object.variables !== "object")
+                        throw TypeError(".legal.api.ChatContext.variables: object expected");
+                    message.variables = {};
+                    for (let keys = Object.keys(object.variables), i = 0; i < keys.length; ++i)
+                        message.variables[keys[i]] = String(object.variables[keys[i]]);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a ChatContext message. Also converts values to other types if specified.
@@ -4366,7 +7777,38 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatContext.toObject = undefined};
+            ChatContext.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.documentIds = [];
+                    object.previousMessageIds = [];
+                }
+                if (options.objects || options.defaults)
+                    object.variables = {};
+                if (options.defaults)
+                    object.caseId = "";
+                if (message.documentIds && message.documentIds.length) {
+                    object.documentIds = [];
+                    for (let j = 0; j < message.documentIds.length; ++j)
+                        object.documentIds[j] = message.documentIds[j];
+                }
+                if (message.caseId != null && message.hasOwnProperty("caseId"))
+                    object.caseId = message.caseId;
+                if (message.previousMessageIds && message.previousMessageIds.length) {
+                    object.previousMessageIds = [];
+                    for (let j = 0; j < message.previousMessageIds.length; ++j)
+                        object.previousMessageIds[j] = message.previousMessageIds[j];
+                }
+                let keys2;
+                if (message.variables && (keys2 = Object.keys(message.variables)).length) {
+                    object.variables = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.variables[keys2[j]] = message.variables[keys2[j]];
+                }
+                return object;
+            };
 
             /**
              * Converts this ChatContext to JSON.
@@ -4394,9 +7836,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatContext";
             };
 
-            return ChatContext})();
+            return ChatContext;
+        })();
 
         api.ChatOptions = (function() {
+
             /**
              * Properties of a ChatOptions.
              * @memberof legal.api
@@ -4416,7 +7860,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatOptions=} [properties] Properties to set
              */
-            undefined}
+            function ChatOptions(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * ChatOptions model.
@@ -4432,21 +7881,23 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.temperature = 0
+            ChatOptions.prototype.temperature = 0;
+
             /**
              * ChatOptions maxTokens.
              * @member {number} maxTokens
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.maxTokens = 0
+            ChatOptions.prototype.maxTokens = 0;
+
             /**
              * ChatOptions stream.
              * @member {boolean} stream
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.stream = $state(false);
+            ChatOptions.prototype.stream = false;
 
             /**
              * ChatOptions includeSources.
@@ -4454,7 +7905,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatOptions
              * @instance
              */
-            ChatOptions.prototype.includeSources = $state(false);
+            ChatOptions.prototype.includeSources = false;
 
             /**
              * Creates a new ChatOptions instance using the specified properties.
@@ -4477,7 +7928,21 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatOptions.encode = undefined};
+            ChatOptions.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.model != null && Object.hasOwnProperty.call(message, "model"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.model);
+                if (message.temperature != null && Object.hasOwnProperty.call(message, "temperature"))
+                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.temperature);
+                if (message.maxTokens != null && Object.hasOwnProperty.call(message, "maxTokens"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.maxTokens);
+                if (message.stream != null && Object.hasOwnProperty.call(message, "stream"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.stream);
+                if (message.includeSources != null && Object.hasOwnProperty.call(message, "includeSources"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).bool(message.includeSources);
+                return writer;
+            };
 
             /**
              * Encodes the specified ChatOptions message, length delimited. Does not implicitly {@link legal.api.ChatOptions.verify|verify} messages.
@@ -4503,7 +7968,42 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatOptions.decode = undefined};
+            ChatOptions.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatOptions();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.model = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.temperature = reader.float();
+                            break;
+                        }
+                    case 3: {
+                            message.maxTokens = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.stream = reader.bool();
+                            break;
+                        }
+                    case 5: {
+                            message.includeSources = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a ChatOptions message from the specified reader or buffer, length delimited.
@@ -4529,7 +8029,26 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatOptions.verify = undefined};
+            ChatOptions.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.model != null && message.hasOwnProperty("model"))
+                    if (!$util.isString(message.model))
+                        return "model: string expected";
+                if (message.temperature != null && message.hasOwnProperty("temperature"))
+                    if (typeof message.temperature !== "number")
+                        return "temperature: number expected";
+                if (message.maxTokens != null && message.hasOwnProperty("maxTokens"))
+                    if (!$util.isInteger(message.maxTokens))
+                        return "maxTokens: integer expected";
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (typeof message.stream !== "boolean")
+                        return "stream: boolean expected";
+                if (message.includeSources != null && message.hasOwnProperty("includeSources"))
+                    if (typeof message.includeSources !== "boolean")
+                        return "includeSources: boolean expected";
+                return null;
+            };
 
             /**
              * Creates a ChatOptions message from a plain object. Also converts values to their respective internal types.
@@ -4539,7 +8058,22 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatOptions} ChatOptions
              */
-            ChatOptions.fromObject = undefined};
+            ChatOptions.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.ChatOptions)
+                    return object;
+                let message = new $root.legal.api.ChatOptions();
+                if (object.model != null)
+                    message.model = String(object.model);
+                if (object.temperature != null)
+                    message.temperature = Number(object.temperature);
+                if (object.maxTokens != null)
+                    message.maxTokens = object.maxTokens | 0;
+                if (object.stream != null)
+                    message.stream = Boolean(object.stream);
+                if (object.includeSources != null)
+                    message.includeSources = Boolean(object.includeSources);
+                return message;
+            };
 
             /**
              * Creates a plain object from a ChatOptions message. Also converts values to other types if specified.
@@ -4550,7 +8084,29 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatOptions.toObject = undefined};
+            ChatOptions.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.model = "";
+                    object.temperature = 0;
+                    object.maxTokens = 0;
+                    object.stream = false;
+                    object.includeSources = false;
+                }
+                if (message.model != null && message.hasOwnProperty("model"))
+                    object.model = message.model;
+                if (message.temperature != null && message.hasOwnProperty("temperature"))
+                    object.temperature = options.json && !isFinite(message.temperature) ? String(message.temperature) : message.temperature;
+                if (message.maxTokens != null && message.hasOwnProperty("maxTokens"))
+                    object.maxTokens = message.maxTokens;
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
+                if (message.includeSources != null && message.hasOwnProperty("includeSources"))
+                    object.includeSources = message.includeSources;
+                return object;
+            };
 
             /**
              * Converts this ChatOptions to JSON.
@@ -4578,9 +8134,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatOptions";
             };
 
-            return ChatOptions})();
+            return ChatOptions;
+        })();
 
         api.ChatResponse = (function() {
+
             /**
              * Properties of a ChatResponse.
              * @memberof legal.api
@@ -4602,7 +8160,15 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IChatResponse=} [properties] Properties to set
              */
-            undefined}
+            function ChatResponse(properties) {
+                this.sources = [];
+                this.citations = [];
+                this.actionItems = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * ChatResponse response.
@@ -4618,14 +8184,16 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.sources = $util.emptyArray
+            ChatResponse.prototype.sources = $util.emptyArray;
+
             /**
              * ChatResponse confidence.
              * @member {number} confidence
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.confidence = 0
+            ChatResponse.prototype.confidence = 0;
+
             /**
              * ChatResponse modelUsed.
              * @member {string} modelUsed
@@ -4640,21 +8208,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.tokensUsed = 0
+            ChatResponse.prototype.tokensUsed = 0;
+
             /**
              * ChatResponse citations.
              * @member {Array.<legal.api.ILegalCitation>} citations
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.citations = $util.emptyArray
+            ChatResponse.prototype.citations = $util.emptyArray;
+
             /**
              * ChatResponse actionItems.
              * @member {Array.<legal.api.IActionItem>} actionItems
              * @memberof legal.api.ChatResponse
              * @instance
              */
-            ChatResponse.prototype.actionItems = $util.emptyArray
+            ChatResponse.prototype.actionItems = $util.emptyArray;
+
             /**
              * Creates a new ChatResponse instance using the specified properties.
              * @function create
@@ -4676,7 +8247,28 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ChatResponse.encode = undefined};
+            ChatResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.response != null && Object.hasOwnProperty.call(message, "response"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.response);
+                if (message.sources != null && message.sources.length)
+                    for (let i = 0; i < message.sources.length; ++i)
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.sources[i]);
+                if (message.confidence != null && Object.hasOwnProperty.call(message, "confidence"))
+                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.confidence);
+                if (message.modelUsed != null && Object.hasOwnProperty.call(message, "modelUsed"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.modelUsed);
+                if (message.tokensUsed != null && Object.hasOwnProperty.call(message, "tokensUsed"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.tokensUsed);
+                if (message.citations != null && message.citations.length)
+                    for (let i = 0; i < message.citations.length; ++i)
+                        $root.legal.api.LegalCitation.encode(message.citations[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.actionItems != null && message.actionItems.length)
+                    for (let i = 0; i < message.actionItems.length; ++i)
+                        $root.legal.api.ActionItem.encode(message.actionItems[i], writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified ChatResponse message, length delimited. Does not implicitly {@link legal.api.ChatResponse.verify|verify} messages.
@@ -4702,7 +8294,56 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ChatResponse.decode = undefined};
+            ChatResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ChatResponse();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.response = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            if (!(message.sources && message.sources.length))
+                                message.sources = [];
+                            message.sources.push(reader.string());
+                            break;
+                        }
+                    case 3: {
+                            message.confidence = reader.float();
+                            break;
+                        }
+                    case 4: {
+                            message.modelUsed = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.tokensUsed = reader.int32();
+                            break;
+                        }
+                    case 6: {
+                            if (!(message.citations && message.citations.length))
+                                message.citations = [];
+                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 7: {
+                            if (!(message.actionItems && message.actionItems.length))
+                                message.actionItems = [];
+                            message.actionItems.push($root.legal.api.ActionItem.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a ChatResponse message from the specified reader or buffer, length delimited.
@@ -4728,7 +8369,48 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ChatResponse.verify = undefined};
+            ChatResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.response != null && message.hasOwnProperty("response"))
+                    if (!$util.isString(message.response))
+                        return "response: string expected";
+                if (message.sources != null && message.hasOwnProperty("sources")) {
+                    if (!Array.isArray(message.sources))
+                        return "sources: array expected";
+                    for (let i = 0; i < message.sources.length; ++i)
+                        if (!$util.isString(message.sources[i]))
+                            return "sources: string[] expected";
+                }
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
+                    if (typeof message.confidence !== "number")
+                        return "confidence: number expected";
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    if (!$util.isString(message.modelUsed))
+                        return "modelUsed: string expected";
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
+                    if (!$util.isInteger(message.tokensUsed))
+                        return "tokensUsed: integer expected";
+                if (message.citations != null && message.hasOwnProperty("citations")) {
+                    if (!Array.isArray(message.citations))
+                        return "citations: array expected";
+                    for (let i = 0; i < message.citations.length; ++i) {
+                        let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
+                        if (error)
+                            return "citations." + error;
+                    }
+                }
+                if (message.actionItems != null && message.hasOwnProperty("actionItems")) {
+                    if (!Array.isArray(message.actionItems))
+                        return "actionItems: array expected";
+                    for (let i = 0; i < message.actionItems.length; ++i) {
+                        let error = $root.legal.api.ActionItem.verify(message.actionItems[i]);
+                        if (error)
+                            return "actionItems." + error;
+                    }
+                }
+                return null;
+            };
 
             /**
              * Creates a ChatResponse message from a plain object. Also converts values to their respective internal types.
@@ -4738,7 +8420,47 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ChatResponse} ChatResponse
              */
-            ChatResponse.fromObject = undefined};
+            ChatResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.ChatResponse)
+                    return object;
+                let message = new $root.legal.api.ChatResponse();
+                if (object.response != null)
+                    message.response = String(object.response);
+                if (object.sources) {
+                    if (!Array.isArray(object.sources))
+                        throw TypeError(".legal.api.ChatResponse.sources: array expected");
+                    message.sources = [];
+                    for (let i = 0; i < object.sources.length; ++i)
+                        message.sources[i] = String(object.sources[i]);
+                }
+                if (object.confidence != null)
+                    message.confidence = Number(object.confidence);
+                if (object.modelUsed != null)
+                    message.modelUsed = String(object.modelUsed);
+                if (object.tokensUsed != null)
+                    message.tokensUsed = object.tokensUsed | 0;
+                if (object.citations) {
+                    if (!Array.isArray(object.citations))
+                        throw TypeError(".legal.api.ChatResponse.citations: array expected");
+                    message.citations = [];
+                    for (let i = 0; i < object.citations.length; ++i) {
+                        if (typeof object.citations[i] !== "object")
+                            throw TypeError(".legal.api.ChatResponse.citations: object expected");
+                        message.citations[i] = $root.legal.api.LegalCitation.fromObject(object.citations[i]);
+                    }
+                }
+                if (object.actionItems) {
+                    if (!Array.isArray(object.actionItems))
+                        throw TypeError(".legal.api.ChatResponse.actionItems: array expected");
+                    message.actionItems = [];
+                    for (let i = 0; i < object.actionItems.length; ++i) {
+                        if (typeof object.actionItems[i] !== "object")
+                            throw TypeError(".legal.api.ChatResponse.actionItems: object expected");
+                        message.actionItems[i] = $root.legal.api.ActionItem.fromObject(object.actionItems[i]);
+                    }
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a ChatResponse message. Also converts values to other types if specified.
@@ -4749,7 +8471,46 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ChatResponse.toObject = undefined};
+            ChatResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.sources = [];
+                    object.citations = [];
+                    object.actionItems = [];
+                }
+                if (options.defaults) {
+                    object.response = "";
+                    object.confidence = 0;
+                    object.modelUsed = "";
+                    object.tokensUsed = 0;
+                }
+                if (message.response != null && message.hasOwnProperty("response"))
+                    object.response = message.response;
+                if (message.sources && message.sources.length) {
+                    object.sources = [];
+                    for (let j = 0; j < message.sources.length; ++j)
+                        object.sources[j] = message.sources[j];
+                }
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
+                    object.confidence = options.json && !isFinite(message.confidence) ? String(message.confidence) : message.confidence;
+                if (message.modelUsed != null && message.hasOwnProperty("modelUsed"))
+                    object.modelUsed = message.modelUsed;
+                if (message.tokensUsed != null && message.hasOwnProperty("tokensUsed"))
+                    object.tokensUsed = message.tokensUsed;
+                if (message.citations && message.citations.length) {
+                    object.citations = [];
+                    for (let j = 0; j < message.citations.length; ++j)
+                        object.citations[j] = $root.legal.api.LegalCitation.toObject(message.citations[j], options);
+                }
+                if (message.actionItems && message.actionItems.length) {
+                    object.actionItems = [];
+                    for (let j = 0; j < message.actionItems.length; ++j)
+                        object.actionItems[j] = $root.legal.api.ActionItem.toObject(message.actionItems[j], options);
+                }
+                return object;
+            };
 
             /**
              * Converts this ChatResponse to JSON.
@@ -4777,9 +8538,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ChatResponse";
             };
 
-            return ChatResponse})();
+            return ChatResponse;
+        })();
 
         api.ActionItem = (function() {
+
             /**
              * Properties of an ActionItem.
              * @memberof legal.api
@@ -4798,7 +8561,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IActionItem=} [properties] Properties to set
              */
-            undefined}
+            function ActionItem(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * ActionItem description.
@@ -4814,14 +8582,16 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.ActionItem
              * @instance
              */
-            ActionItem.prototype.priority = 0
+            ActionItem.prototype.priority = 0;
+
             /**
              * ActionItem dueDate.
              * @member {google.protobuf.ITimestamp|null|undefined} dueDate
              * @memberof legal.api.ActionItem
              * @instance
              */
-            ActionItem.prototype.dueDate = null
+            ActionItem.prototype.dueDate = null;
+
             /**
              * ActionItem assignedTo.
              * @member {string} assignedTo
@@ -4851,7 +8621,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            ActionItem.encode = undefined};
+            ActionItem.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.description);
+                if (message.priority != null && Object.hasOwnProperty.call(message, "priority"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.priority);
+                if (message.dueDate != null && Object.hasOwnProperty.call(message, "dueDate"))
+                    $root.google.protobuf.Timestamp.encode(message.dueDate, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.assignedTo != null && Object.hasOwnProperty.call(message, "assignedTo"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.assignedTo);
+                return writer;
+            };
 
             /**
              * Encodes the specified ActionItem message, length delimited. Does not implicitly {@link legal.api.ActionItem.verify|verify} messages.
@@ -4877,7 +8659,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            ActionItem.decode = undefined};
+            ActionItem.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.ActionItem();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.description = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.priority = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            message.dueDate = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 4: {
+                            message.assignedTo = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an ActionItem message from the specified reader or buffer, length delimited.
@@ -4903,7 +8716,32 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            ActionItem.verify = undefined};
+            ActionItem.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
+                        return "description: string expected";
+                if (message.priority != null && message.hasOwnProperty("priority"))
+                    switch (message.priority) {
+                    default:
+                        return "priority: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                if (message.dueDate != null && message.hasOwnProperty("dueDate")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.dueDate);
+                    if (error)
+                        return "dueDate." + error;
+                }
+                if (message.assignedTo != null && message.hasOwnProperty("assignedTo"))
+                    if (!$util.isString(message.assignedTo))
+                        return "assignedTo: string expected";
+                return null;
+            };
 
             /**
              * Creates an ActionItem message from a plain object. Also converts values to their respective internal types.
@@ -4913,7 +8751,45 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.ActionItem} ActionItem
              */
-            ActionItem.fromObject = undefined};
+            ActionItem.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.ActionItem)
+                    return object;
+                let message = new $root.legal.api.ActionItem();
+                if (object.description != null)
+                    message.description = String(object.description);
+                switch (object.priority) {
+                default:
+                    if (typeof object.priority === "number") {
+                        message.priority = object.priority;
+                        break;
+                    }
+                    break;
+                case "ACTION_PRIORITY_LOW":
+                case 0:
+                    message.priority = 0;
+                    break;
+                case "ACTION_PRIORITY_MEDIUM":
+                case 1:
+                    message.priority = 1;
+                    break;
+                case "ACTION_PRIORITY_HIGH":
+                case 2:
+                    message.priority = 2;
+                    break;
+                case "ACTION_PRIORITY_CRITICAL":
+                case 3:
+                    message.priority = 3;
+                    break;
+                }
+                if (object.dueDate != null) {
+                    if (typeof object.dueDate !== "object")
+                        throw TypeError(".legal.api.ActionItem.dueDate: object expected");
+                    message.dueDate = $root.google.protobuf.Timestamp.fromObject(object.dueDate);
+                }
+                if (object.assignedTo != null)
+                    message.assignedTo = String(object.assignedTo);
+                return message;
+            };
 
             /**
              * Creates a plain object from an ActionItem message. Also converts values to other types if specified.
@@ -4924,7 +8800,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ActionItem.toObject = undefined};
+            ActionItem.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.description = "";
+                    object.priority = options.enums === String ? "ACTION_PRIORITY_LOW" : 0;
+                    object.dueDate = null;
+                    object.assignedTo = "";
+                }
+                if (message.description != null && message.hasOwnProperty("description"))
+                    object.description = message.description;
+                if (message.priority != null && message.hasOwnProperty("priority"))
+                    object.priority = options.enums === String ? $root.legal.api.ActionPriority[message.priority] === undefined ? message.priority : $root.legal.api.ActionPriority[message.priority] : message.priority;
+                if (message.dueDate != null && message.hasOwnProperty("dueDate"))
+                    object.dueDate = $root.google.protobuf.Timestamp.toObject(message.dueDate, options);
+                if (message.assignedTo != null && message.hasOwnProperty("assignedTo"))
+                    object.assignedTo = message.assignedTo;
+                return object;
+            };
 
             /**
              * Converts this ActionItem to JSON.
@@ -4952,7 +8847,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.ActionItem";
             };
 
-            return ActionItem})();
+            return ActionItem;
+        })();
 
         /**
          * ActionPriority enum.
@@ -4965,13 +8861,15 @@ export const legal = $root.legal = (() => {
          */
         api.ActionPriority = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "ACTION_PRIORITY_LOW"] = 0
-            values[valuesById[1] = "ACTION_PRIORITY_MEDIUM"] = 1
-            values[valuesById[2] = "ACTION_PRIORITY_HIGH"] = 2
-            values[valuesById[3] = "ACTION_PRIORITY_CRITICAL"] = 3
-            return values})();
+            values[valuesById[0] = "ACTION_PRIORITY_LOW"] = 0;
+            values[valuesById[1] = "ACTION_PRIORITY_MEDIUM"] = 1;
+            values[valuesById[2] = "ACTION_PRIORITY_HIGH"] = 2;
+            values[valuesById[3] = "ACTION_PRIORITY_CRITICAL"] = 3;
+            return values;
+        })();
 
         api.Attachment = (function() {
+
             /**
              * Properties of an Attachment.
              * @memberof legal.api
@@ -4991,7 +8889,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAttachment=} [properties] Properties to set
              */
-            undefined}
+            function Attachment(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * Attachment filename.
@@ -5015,7 +8918,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.Attachment
              * @instance
              */
-            Attachment.prototype.size = $util.Long ? $util.Long.fromBits(0,0,false) : 0
+            Attachment.prototype.size = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
             /**
              * Attachment url.
              * @member {string} url
@@ -5053,7 +8957,21 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Attachment.encode = undefined};
+            Attachment.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.filename != null && Object.hasOwnProperty.call(message, "filename"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.filename);
+                if (message.contentType != null && Object.hasOwnProperty.call(message, "contentType"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.contentType);
+                if (message.size != null && Object.hasOwnProperty.call(message, "size"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int64(message.size);
+                if (message.url != null && Object.hasOwnProperty.call(message, "url"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.url);
+                if (message.checksum != null && Object.hasOwnProperty.call(message, "checksum"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.checksum);
+                return writer;
+            };
 
             /**
              * Encodes the specified Attachment message, length delimited. Does not implicitly {@link legal.api.Attachment.verify|verify} messages.
@@ -5079,7 +8997,42 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Attachment.decode = undefined};
+            Attachment.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.Attachment();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.filename = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.contentType = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.size = reader.int64();
+                            break;
+                        }
+                    case 4: {
+                            message.url = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.checksum = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an Attachment message from the specified reader or buffer, length delimited.
@@ -5105,7 +9058,26 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Attachment.verify = undefined};
+            Attachment.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.filename != null && message.hasOwnProperty("filename"))
+                    if (!$util.isString(message.filename))
+                        return "filename: string expected";
+                if (message.contentType != null && message.hasOwnProperty("contentType"))
+                    if (!$util.isString(message.contentType))
+                        return "contentType: string expected";
+                if (message.size != null && message.hasOwnProperty("size"))
+                    if (!$util.isInteger(message.size) && !(message.size && $util.isInteger(message.size.low) && $util.isInteger(message.size.high)))
+                        return "size: integer|Long expected";
+                if (message.url != null && message.hasOwnProperty("url"))
+                    if (!$util.isString(message.url))
+                        return "url: string expected";
+                if (message.checksum != null && message.hasOwnProperty("checksum"))
+                    if (!$util.isString(message.checksum))
+                        return "checksum: string expected";
+                return null;
+            };
 
             /**
              * Creates an Attachment message from a plain object. Also converts values to their respective internal types.
@@ -5115,7 +9087,29 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.Attachment} Attachment
              */
-            Attachment.fromObject = undefined};
+            Attachment.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.Attachment)
+                    return object;
+                let message = new $root.legal.api.Attachment();
+                if (object.filename != null)
+                    message.filename = String(object.filename);
+                if (object.contentType != null)
+                    message.contentType = String(object.contentType);
+                if (object.size != null)
+                    if ($util.Long)
+                        (message.size = $util.Long.fromValue(object.size)).unsigned = false;
+                    else if (typeof object.size === "string")
+                        message.size = parseInt(object.size, 10);
+                    else if (typeof object.size === "number")
+                        message.size = object.size;
+                    else if (typeof object.size === "object")
+                        message.size = new $util.LongBits(object.size.low >>> 0, object.size.high >>> 0).toNumber();
+                if (object.url != null)
+                    message.url = String(object.url);
+                if (object.checksum != null)
+                    message.checksum = String(object.checksum);
+                return message;
+            };
 
             /**
              * Creates a plain object from an Attachment message. Also converts values to other types if specified.
@@ -5126,7 +9120,36 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Attachment.toObject = undefined};
+            Attachment.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.filename = "";
+                    object.contentType = "";
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.size = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.size = options.longs === String ? "0" : 0;
+                    object.url = "";
+                    object.checksum = "";
+                }
+                if (message.filename != null && message.hasOwnProperty("filename"))
+                    object.filename = message.filename;
+                if (message.contentType != null && message.hasOwnProperty("contentType"))
+                    object.contentType = message.contentType;
+                if (message.size != null && message.hasOwnProperty("size"))
+                    if (typeof message.size === "number")
+                        object.size = options.longs === String ? String(message.size) : message.size;
+                    else
+                        object.size = options.longs === String ? $util.Long.prototype.toString.call(message.size) : options.longs === Number ? new $util.LongBits(message.size.low >>> 0, message.size.high >>> 0).toNumber() : message.size;
+                if (message.url != null && message.hasOwnProperty("url"))
+                    object.url = message.url;
+                if (message.checksum != null && message.hasOwnProperty("checksum"))
+                    object.checksum = message.checksum;
+                return object;
+            };
 
             /**
              * Converts this Attachment to JSON.
@@ -5154,9 +9177,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.Attachment";
             };
 
-            return Attachment})();
+            return Attachment;
+        })();
 
         api.AnalysisRequest = (function() {
+
             /**
              * Properties of an AnalysisRequest.
              * @memberof legal.api
@@ -5176,7 +9201,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisRequest=} [properties] Properties to set
              */
-            undefined}
+            function AnalysisRequest(properties) {
+                this.specificQueries = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * AnalysisRequest documentId.
@@ -5192,21 +9223,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisRequest
              * @instance
              */
-            AnalysisRequest.prototype.type = 0
+            AnalysisRequest.prototype.type = 0;
+
             /**
              * AnalysisRequest specificQueries.
              * @member {Array.<string>} specificQueries
              * @memberof legal.api.AnalysisRequest
              * @instance
              */
-            AnalysisRequest.prototype.specificQueries = $util.emptyArray
+            AnalysisRequest.prototype.specificQueries = $util.emptyArray;
+
             /**
              * AnalysisRequest options.
              * @member {legal.api.IAnalysisOptions|null|undefined} options
              * @memberof legal.api.AnalysisRequest
              * @instance
              */
-            AnalysisRequest.prototype.options = null
+            AnalysisRequest.prototype.options = null;
+
             /**
              * AnalysisRequest userId.
              * @member {string} userId
@@ -5236,7 +9270,22 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisRequest.encode = undefined};
+            AnalysisRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.documentId != null && Object.hasOwnProperty.call(message, "documentId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.documentId);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.type);
+                if (message.specificQueries != null && message.specificQueries.length)
+                    for (let i = 0; i < message.specificQueries.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).string(message.specificQueries[i]);
+                if (message.options != null && Object.hasOwnProperty.call(message, "options"))
+                    $root.legal.api.AnalysisOptions.encode(message.options, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.userId);
+                return writer;
+            };
 
             /**
              * Encodes the specified AnalysisRequest message, length delimited. Does not implicitly {@link legal.api.AnalysisRequest.verify|verify} messages.
@@ -5262,7 +9311,44 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisRequest.decode = undefined};
+            AnalysisRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisRequest();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.documentId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.specificQueries && message.specificQueries.length))
+                                message.specificQueries = [];
+                            message.specificQueries.push(reader.string());
+                            break;
+                        }
+                    case 4: {
+                            message.options = $root.legal.api.AnalysisOptions.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an AnalysisRequest message from the specified reader or buffer, length delimited.
@@ -5288,7 +9374,41 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisRequest.verify = undefined};
+            AnalysisRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.documentId != null && message.hasOwnProperty("documentId"))
+                    if (!$util.isString(message.documentId))
+                        return "documentId: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        break;
+                    }
+                if (message.specificQueries != null && message.hasOwnProperty("specificQueries")) {
+                    if (!Array.isArray(message.specificQueries))
+                        return "specificQueries: array expected";
+                    for (let i = 0; i < message.specificQueries.length; ++i)
+                        if (!$util.isString(message.specificQueries[i]))
+                            return "specificQueries: string[] expected";
+                }
+                if (message.options != null && message.hasOwnProperty("options")) {
+                    let error = $root.legal.api.AnalysisOptions.verify(message.options);
+                    if (error)
+                        return "options." + error;
+                }
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                return null;
+            };
 
             /**
              * Creates an AnalysisRequest message from a plain object. Also converts values to their respective internal types.
@@ -5298,7 +9418,60 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisRequest} AnalysisRequest
              */
-            AnalysisRequest.fromObject = undefined};
+            AnalysisRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.AnalysisRequest)
+                    return object;
+                let message = new $root.legal.api.AnalysisRequest();
+                if (object.documentId != null)
+                    message.documentId = String(object.documentId);
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "ANALYSIS_TYPE_RISK_ASSESSMENT":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "ANALYSIS_TYPE_CLAUSE_EXTRACTION":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "ANALYSIS_TYPE_COMPLIANCE_CHECK":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "ANALYSIS_TYPE_PRECEDENT_ANALYSIS":
+                case 3:
+                    message.type = 3;
+                    break;
+                case "ANALYSIS_TYPE_ENTITY_EXTRACTION":
+                case 4:
+                    message.type = 4;
+                    break;
+                case "ANALYSIS_TYPE_SENTIMENT_ANALYSIS":
+                case 5:
+                    message.type = 5;
+                    break;
+                }
+                if (object.specificQueries) {
+                    if (!Array.isArray(object.specificQueries))
+                        throw TypeError(".legal.api.AnalysisRequest.specificQueries: array expected");
+                    message.specificQueries = [];
+                    for (let i = 0; i < object.specificQueries.length; ++i)
+                        message.specificQueries[i] = String(object.specificQueries[i]);
+                }
+                if (object.options != null) {
+                    if (typeof object.options !== "object")
+                        throw TypeError(".legal.api.AnalysisRequest.options: object expected");
+                    message.options = $root.legal.api.AnalysisOptions.fromObject(object.options);
+                }
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                return message;
+            };
 
             /**
              * Creates a plain object from an AnalysisRequest message. Also converts values to other types if specified.
@@ -5309,7 +9482,33 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisRequest.toObject = undefined};
+            AnalysisRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.specificQueries = [];
+                if (options.defaults) {
+                    object.documentId = "";
+                    object.type = options.enums === String ? "ANALYSIS_TYPE_RISK_ASSESSMENT" : 0;
+                    object.options = null;
+                    object.userId = "";
+                }
+                if (message.documentId != null && message.hasOwnProperty("documentId"))
+                    object.documentId = message.documentId;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.legal.api.AnalysisType[message.type] === undefined ? message.type : $root.legal.api.AnalysisType[message.type] : message.type;
+                if (message.specificQueries && message.specificQueries.length) {
+                    object.specificQueries = [];
+                    for (let j = 0; j < message.specificQueries.length; ++j)
+                        object.specificQueries[j] = message.specificQueries[j];
+                }
+                if (message.options != null && message.hasOwnProperty("options"))
+                    object.options = $root.legal.api.AnalysisOptions.toObject(message.options, options);
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                return object;
+            };
 
             /**
              * Converts this AnalysisRequest to JSON.
@@ -5337,7 +9536,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisRequest";
             };
 
-            return AnalysisRequest})();
+            return AnalysisRequest;
+        })();
 
         /**
          * AnalysisType enum.
@@ -5352,15 +9552,17 @@ export const legal = $root.legal = (() => {
          */
         api.AnalysisType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "ANALYSIS_TYPE_RISK_ASSESSMENT"] = 0
-            values[valuesById[1] = "ANALYSIS_TYPE_CLAUSE_EXTRACTION"] = 1
-            values[valuesById[2] = "ANALYSIS_TYPE_COMPLIANCE_CHECK"] = 2
-            values[valuesById[3] = "ANALYSIS_TYPE_PRECEDENT_ANALYSIS"] = 3
-            values[valuesById[4] = "ANALYSIS_TYPE_ENTITY_EXTRACTION"] = 4
-            values[valuesById[5] = "ANALYSIS_TYPE_SENTIMENT_ANALYSIS"] = 5
-            return values})();
+            values[valuesById[0] = "ANALYSIS_TYPE_RISK_ASSESSMENT"] = 0;
+            values[valuesById[1] = "ANALYSIS_TYPE_CLAUSE_EXTRACTION"] = 1;
+            values[valuesById[2] = "ANALYSIS_TYPE_COMPLIANCE_CHECK"] = 2;
+            values[valuesById[3] = "ANALYSIS_TYPE_PRECEDENT_ANALYSIS"] = 3;
+            values[valuesById[4] = "ANALYSIS_TYPE_ENTITY_EXTRACTION"] = 4;
+            values[valuesById[5] = "ANALYSIS_TYPE_SENTIMENT_ANALYSIS"] = 5;
+            return values;
+        })();
 
         api.AnalysisOptions = (function() {
+
             /**
              * Properties of an AnalysisOptions.
              * @memberof legal.api
@@ -5379,7 +9581,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisOptions=} [properties] Properties to set
              */
-            undefined}
+            function AnalysisOptions(properties) {
+                this.practiceAreas = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * AnalysisOptions jurisdiction.
@@ -5395,21 +9603,23 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisOptions
              * @instance
              */
-            AnalysisOptions.prototype.practiceAreas = $util.emptyArray
+            AnalysisOptions.prototype.practiceAreas = $util.emptyArray;
+
             /**
              * AnalysisOptions confidenceThreshold.
              * @member {number} confidenceThreshold
              * @memberof legal.api.AnalysisOptions
              * @instance
              */
-            AnalysisOptions.prototype.confidenceThreshold = 0
+            AnalysisOptions.prototype.confidenceThreshold = 0;
+
             /**
              * AnalysisOptions includeRecommendations.
              * @member {boolean} includeRecommendations
              * @memberof legal.api.AnalysisOptions
              * @instance
              */
-            AnalysisOptions.prototype.includeRecommendations = $state(false);
+            AnalysisOptions.prototype.includeRecommendations = false;
 
             /**
              * Creates a new AnalysisOptions instance using the specified properties.
@@ -5432,7 +9642,20 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisOptions.encode = undefined};
+            AnalysisOptions.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.jurisdiction != null && Object.hasOwnProperty.call(message, "jurisdiction"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.jurisdiction);
+                if (message.practiceAreas != null && message.practiceAreas.length)
+                    for (let i = 0; i < message.practiceAreas.length; ++i)
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.practiceAreas[i]);
+                if (message.confidenceThreshold != null && Object.hasOwnProperty.call(message, "confidenceThreshold"))
+                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.confidenceThreshold);
+                if (message.includeRecommendations != null && Object.hasOwnProperty.call(message, "includeRecommendations"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.includeRecommendations);
+                return writer;
+            };
 
             /**
              * Encodes the specified AnalysisOptions message, length delimited. Does not implicitly {@link legal.api.AnalysisOptions.verify|verify} messages.
@@ -5458,7 +9681,40 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisOptions.decode = undefined};
+            AnalysisOptions.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisOptions();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.jurisdiction = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            if (!(message.practiceAreas && message.practiceAreas.length))
+                                message.practiceAreas = [];
+                            message.practiceAreas.push(reader.string());
+                            break;
+                        }
+                    case 3: {
+                            message.confidenceThreshold = reader.float();
+                            break;
+                        }
+                    case 4: {
+                            message.includeRecommendations = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an AnalysisOptions message from the specified reader or buffer, length delimited.
@@ -5484,7 +9740,27 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisOptions.verify = undefined};
+            AnalysisOptions.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
+                    if (!$util.isString(message.jurisdiction))
+                        return "jurisdiction: string expected";
+                if (message.practiceAreas != null && message.hasOwnProperty("practiceAreas")) {
+                    if (!Array.isArray(message.practiceAreas))
+                        return "practiceAreas: array expected";
+                    for (let i = 0; i < message.practiceAreas.length; ++i)
+                        if (!$util.isString(message.practiceAreas[i]))
+                            return "practiceAreas: string[] expected";
+                }
+                if (message.confidenceThreshold != null && message.hasOwnProperty("confidenceThreshold"))
+                    if (typeof message.confidenceThreshold !== "number")
+                        return "confidenceThreshold: number expected";
+                if (message.includeRecommendations != null && message.hasOwnProperty("includeRecommendations"))
+                    if (typeof message.includeRecommendations !== "boolean")
+                        return "includeRecommendations: boolean expected";
+                return null;
+            };
 
             /**
              * Creates an AnalysisOptions message from a plain object. Also converts values to their respective internal types.
@@ -5494,7 +9770,25 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisOptions} AnalysisOptions
              */
-            AnalysisOptions.fromObject = undefined};
+            AnalysisOptions.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.AnalysisOptions)
+                    return object;
+                let message = new $root.legal.api.AnalysisOptions();
+                if (object.jurisdiction != null)
+                    message.jurisdiction = String(object.jurisdiction);
+                if (object.practiceAreas) {
+                    if (!Array.isArray(object.practiceAreas))
+                        throw TypeError(".legal.api.AnalysisOptions.practiceAreas: array expected");
+                    message.practiceAreas = [];
+                    for (let i = 0; i < object.practiceAreas.length; ++i)
+                        message.practiceAreas[i] = String(object.practiceAreas[i]);
+                }
+                if (object.confidenceThreshold != null)
+                    message.confidenceThreshold = Number(object.confidenceThreshold);
+                if (object.includeRecommendations != null)
+                    message.includeRecommendations = Boolean(object.includeRecommendations);
+                return message;
+            };
 
             /**
              * Creates a plain object from an AnalysisOptions message. Also converts values to other types if specified.
@@ -5505,7 +9799,30 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisOptions.toObject = undefined};
+            AnalysisOptions.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.practiceAreas = [];
+                if (options.defaults) {
+                    object.jurisdiction = "";
+                    object.confidenceThreshold = 0;
+                    object.includeRecommendations = false;
+                }
+                if (message.jurisdiction != null && message.hasOwnProperty("jurisdiction"))
+                    object.jurisdiction = message.jurisdiction;
+                if (message.practiceAreas && message.practiceAreas.length) {
+                    object.practiceAreas = [];
+                    for (let j = 0; j < message.practiceAreas.length; ++j)
+                        object.practiceAreas[j] = message.practiceAreas[j];
+                }
+                if (message.confidenceThreshold != null && message.hasOwnProperty("confidenceThreshold"))
+                    object.confidenceThreshold = options.json && !isFinite(message.confidenceThreshold) ? String(message.confidenceThreshold) : message.confidenceThreshold;
+                if (message.includeRecommendations != null && message.hasOwnProperty("includeRecommendations"))
+                    object.includeRecommendations = message.includeRecommendations;
+                return object;
+            };
 
             /**
              * Converts this AnalysisOptions to JSON.
@@ -5533,9 +9850,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisOptions";
             };
 
-            return AnalysisOptions})();
+            return AnalysisOptions;
+        })();
 
         api.AnalysisResponse = (function() {
+
             /**
              * Properties of an AnalysisResponse.
              * @memberof legal.api
@@ -5556,7 +9875,14 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisResponse=} [properties] Properties to set
              */
-            undefined}
+            function AnalysisResponse(properties) {
+                this.results = [];
+                this.recommendations = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * AnalysisResponse analysisId.
@@ -5572,35 +9898,40 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.type = 0
+            AnalysisResponse.prototype.type = 0;
+
             /**
              * AnalysisResponse results.
              * @member {Array.<legal.api.IAnalysisResult>} results
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.results = $util.emptyArray
+            AnalysisResponse.prototype.results = $util.emptyArray;
+
             /**
              * AnalysisResponse overallConfidence.
              * @member {number} overallConfidence
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.overallConfidence = 0
+            AnalysisResponse.prototype.overallConfidence = 0;
+
             /**
              * AnalysisResponse createdAt.
              * @member {google.protobuf.ITimestamp|null|undefined} createdAt
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.createdAt = null
+            AnalysisResponse.prototype.createdAt = null;
+
             /**
              * AnalysisResponse recommendations.
              * @member {Array.<legal.api.IRecommendation>} recommendations
              * @memberof legal.api.AnalysisResponse
              * @instance
              */
-            AnalysisResponse.prototype.recommendations = $util.emptyArray
+            AnalysisResponse.prototype.recommendations = $util.emptyArray;
+
             /**
              * Creates a new AnalysisResponse instance using the specified properties.
              * @function create
@@ -5622,7 +9953,25 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisResponse.encode = undefined};
+            AnalysisResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.analysisId != null && Object.hasOwnProperty.call(message, "analysisId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.analysisId);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.type);
+                if (message.results != null && message.results.length)
+                    for (let i = 0; i < message.results.length; ++i)
+                        $root.legal.api.AnalysisResult.encode(message.results[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.overallConfidence != null && Object.hasOwnProperty.call(message, "overallConfidence"))
+                    writer.uint32(/* id 4, wireType 5 =*/37).float(message.overallConfidence);
+                if (message.createdAt != null && Object.hasOwnProperty.call(message, "createdAt"))
+                    $root.google.protobuf.Timestamp.encode(message.createdAt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                if (message.recommendations != null && message.recommendations.length)
+                    for (let i = 0; i < message.recommendations.length; ++i)
+                        $root.legal.api.Recommendation.encode(message.recommendations[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified AnalysisResponse message, length delimited. Does not implicitly {@link legal.api.AnalysisResponse.verify|verify} messages.
@@ -5648,7 +9997,50 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisResponse.decode = undefined};
+            AnalysisResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisResponse();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.analysisId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.results && message.results.length))
+                                message.results = [];
+                            message.results.push($root.legal.api.AnalysisResult.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 4: {
+                            message.overallConfidence = reader.float();
+                            break;
+                        }
+                    case 5: {
+                            message.createdAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 6: {
+                            if (!(message.recommendations && message.recommendations.length))
+                                message.recommendations = [];
+                            message.recommendations.push($root.legal.api.Recommendation.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an AnalysisResponse message from the specified reader or buffer, length delimited.
@@ -5674,7 +10066,52 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisResponse.verify = undefined};
+            AnalysisResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.analysisId != null && message.hasOwnProperty("analysisId"))
+                    if (!$util.isString(message.analysisId))
+                        return "analysisId: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        break;
+                    }
+                if (message.results != null && message.hasOwnProperty("results")) {
+                    if (!Array.isArray(message.results))
+                        return "results: array expected";
+                    for (let i = 0; i < message.results.length; ++i) {
+                        let error = $root.legal.api.AnalysisResult.verify(message.results[i]);
+                        if (error)
+                            return "results." + error;
+                    }
+                }
+                if (message.overallConfidence != null && message.hasOwnProperty("overallConfidence"))
+                    if (typeof message.overallConfidence !== "number")
+                        return "overallConfidence: number expected";
+                if (message.createdAt != null && message.hasOwnProperty("createdAt")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.createdAt);
+                    if (error)
+                        return "createdAt." + error;
+                }
+                if (message.recommendations != null && message.hasOwnProperty("recommendations")) {
+                    if (!Array.isArray(message.recommendations))
+                        return "recommendations: array expected";
+                    for (let i = 0; i < message.recommendations.length; ++i) {
+                        let error = $root.legal.api.Recommendation.verify(message.recommendations[i]);
+                        if (error)
+                            return "recommendations." + error;
+                    }
+                }
+                return null;
+            };
 
             /**
              * Creates an AnalysisResponse message from a plain object. Also converts values to their respective internal types.
@@ -5684,7 +10121,73 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisResponse} AnalysisResponse
              */
-            AnalysisResponse.fromObject = undefined};
+            AnalysisResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.AnalysisResponse)
+                    return object;
+                let message = new $root.legal.api.AnalysisResponse();
+                if (object.analysisId != null)
+                    message.analysisId = String(object.analysisId);
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "ANALYSIS_TYPE_RISK_ASSESSMENT":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "ANALYSIS_TYPE_CLAUSE_EXTRACTION":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "ANALYSIS_TYPE_COMPLIANCE_CHECK":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "ANALYSIS_TYPE_PRECEDENT_ANALYSIS":
+                case 3:
+                    message.type = 3;
+                    break;
+                case "ANALYSIS_TYPE_ENTITY_EXTRACTION":
+                case 4:
+                    message.type = 4;
+                    break;
+                case "ANALYSIS_TYPE_SENTIMENT_ANALYSIS":
+                case 5:
+                    message.type = 5;
+                    break;
+                }
+                if (object.results) {
+                    if (!Array.isArray(object.results))
+                        throw TypeError(".legal.api.AnalysisResponse.results: array expected");
+                    message.results = [];
+                    for (let i = 0; i < object.results.length; ++i) {
+                        if (typeof object.results[i] !== "object")
+                            throw TypeError(".legal.api.AnalysisResponse.results: object expected");
+                        message.results[i] = $root.legal.api.AnalysisResult.fromObject(object.results[i]);
+                    }
+                }
+                if (object.overallConfidence != null)
+                    message.overallConfidence = Number(object.overallConfidence);
+                if (object.createdAt != null) {
+                    if (typeof object.createdAt !== "object")
+                        throw TypeError(".legal.api.AnalysisResponse.createdAt: object expected");
+                    message.createdAt = $root.google.protobuf.Timestamp.fromObject(object.createdAt);
+                }
+                if (object.recommendations) {
+                    if (!Array.isArray(object.recommendations))
+                        throw TypeError(".legal.api.AnalysisResponse.recommendations: array expected");
+                    message.recommendations = [];
+                    for (let i = 0; i < object.recommendations.length; ++i) {
+                        if (typeof object.recommendations[i] !== "object")
+                            throw TypeError(".legal.api.AnalysisResponse.recommendations: object expected");
+                        message.recommendations[i] = $root.legal.api.Recommendation.fromObject(object.recommendations[i]);
+                    }
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from an AnalysisResponse message. Also converts values to other types if specified.
@@ -5695,7 +10198,40 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisResponse.toObject = undefined};
+            AnalysisResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.results = [];
+                    object.recommendations = [];
+                }
+                if (options.defaults) {
+                    object.analysisId = "";
+                    object.type = options.enums === String ? "ANALYSIS_TYPE_RISK_ASSESSMENT" : 0;
+                    object.overallConfidence = 0;
+                    object.createdAt = null;
+                }
+                if (message.analysisId != null && message.hasOwnProperty("analysisId"))
+                    object.analysisId = message.analysisId;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.legal.api.AnalysisType[message.type] === undefined ? message.type : $root.legal.api.AnalysisType[message.type] : message.type;
+                if (message.results && message.results.length) {
+                    object.results = [];
+                    for (let j = 0; j < message.results.length; ++j)
+                        object.results[j] = $root.legal.api.AnalysisResult.toObject(message.results[j], options);
+                }
+                if (message.overallConfidence != null && message.hasOwnProperty("overallConfidence"))
+                    object.overallConfidence = options.json && !isFinite(message.overallConfidence) ? String(message.overallConfidence) : message.overallConfidence;
+                if (message.createdAt != null && message.hasOwnProperty("createdAt"))
+                    object.createdAt = $root.google.protobuf.Timestamp.toObject(message.createdAt, options);
+                if (message.recommendations && message.recommendations.length) {
+                    object.recommendations = [];
+                    for (let j = 0; j < message.recommendations.length; ++j)
+                        object.recommendations[j] = $root.legal.api.Recommendation.toObject(message.recommendations[j], options);
+                }
+                return object;
+            };
 
             /**
              * Converts this AnalysisResponse to JSON.
@@ -5723,9 +10259,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisResponse";
             };
 
-            return AnalysisResponse})();
+            return AnalysisResponse;
+        })();
 
         api.AnalysisResult = (function() {
+
             /**
              * Properties of an AnalysisResult.
              * @memberof legal.api
@@ -5746,7 +10284,14 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IAnalysisResult=} [properties] Properties to set
              */
-            undefined}
+            function AnalysisResult(properties) {
+                this.supportingText = [];
+                this.citations = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * AnalysisResult category.
@@ -5770,28 +10315,32 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.confidence = 0
+            AnalysisResult.prototype.confidence = 0;
+
             /**
              * AnalysisResult supportingText.
              * @member {Array.<string>} supportingText
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.supportingText = $util.emptyArray
+            AnalysisResult.prototype.supportingText = $util.emptyArray;
+
             /**
              * AnalysisResult citations.
              * @member {Array.<legal.api.ILegalCitation>} citations
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.citations = $util.emptyArray
+            AnalysisResult.prototype.citations = $util.emptyArray;
+
             /**
              * AnalysisResult riskLevel.
              * @member {legal.api.RiskLevel} riskLevel
              * @memberof legal.api.AnalysisResult
              * @instance
              */
-            AnalysisResult.prototype.riskLevel = 0
+            AnalysisResult.prototype.riskLevel = 0;
+
             /**
              * Creates a new AnalysisResult instance using the specified properties.
              * @function create
@@ -5813,7 +10362,25 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            AnalysisResult.encode = undefined};
+            AnalysisResult.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.category != null && Object.hasOwnProperty.call(message, "category"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.category);
+                if (message.finding != null && Object.hasOwnProperty.call(message, "finding"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.finding);
+                if (message.confidence != null && Object.hasOwnProperty.call(message, "confidence"))
+                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.confidence);
+                if (message.supportingText != null && message.supportingText.length)
+                    for (let i = 0; i < message.supportingText.length; ++i)
+                        writer.uint32(/* id 4, wireType 2 =*/34).string(message.supportingText[i]);
+                if (message.citations != null && message.citations.length)
+                    for (let i = 0; i < message.citations.length; ++i)
+                        $root.legal.api.LegalCitation.encode(message.citations[i], writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                if (message.riskLevel != null && Object.hasOwnProperty.call(message, "riskLevel"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int32(message.riskLevel);
+                return writer;
+            };
 
             /**
              * Encodes the specified AnalysisResult message, length delimited. Does not implicitly {@link legal.api.AnalysisResult.verify|verify} messages.
@@ -5839,7 +10406,50 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            AnalysisResult.decode = undefined};
+            AnalysisResult.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.AnalysisResult();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.category = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.finding = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.confidence = reader.float();
+                            break;
+                        }
+                    case 4: {
+                            if (!(message.supportingText && message.supportingText.length))
+                                message.supportingText = [];
+                            message.supportingText.push(reader.string());
+                            break;
+                        }
+                    case 5: {
+                            if (!(message.citations && message.citations.length))
+                                message.citations = [];
+                            message.citations.push($root.legal.api.LegalCitation.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 6: {
+                            message.riskLevel = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes an AnalysisResult message from the specified reader or buffer, length delimited.
@@ -5865,7 +10475,46 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            AnalysisResult.verify = undefined};
+            AnalysisResult.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.category != null && message.hasOwnProperty("category"))
+                    if (!$util.isString(message.category))
+                        return "category: string expected";
+                if (message.finding != null && message.hasOwnProperty("finding"))
+                    if (!$util.isString(message.finding))
+                        return "finding: string expected";
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
+                    if (typeof message.confidence !== "number")
+                        return "confidence: number expected";
+                if (message.supportingText != null && message.hasOwnProperty("supportingText")) {
+                    if (!Array.isArray(message.supportingText))
+                        return "supportingText: array expected";
+                    for (let i = 0; i < message.supportingText.length; ++i)
+                        if (!$util.isString(message.supportingText[i]))
+                            return "supportingText: string[] expected";
+                }
+                if (message.citations != null && message.hasOwnProperty("citations")) {
+                    if (!Array.isArray(message.citations))
+                        return "citations: array expected";
+                    for (let i = 0; i < message.citations.length; ++i) {
+                        let error = $root.legal.api.LegalCitation.verify(message.citations[i]);
+                        if (error)
+                            return "citations." + error;
+                    }
+                }
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
+                    switch (message.riskLevel) {
+                    default:
+                        return "riskLevel: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                return null;
+            };
 
             /**
              * Creates an AnalysisResult message from a plain object. Also converts values to their respective internal types.
@@ -5875,7 +10524,59 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.AnalysisResult} AnalysisResult
              */
-            AnalysisResult.fromObject = undefined};
+            AnalysisResult.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.AnalysisResult)
+                    return object;
+                let message = new $root.legal.api.AnalysisResult();
+                if (object.category != null)
+                    message.category = String(object.category);
+                if (object.finding != null)
+                    message.finding = String(object.finding);
+                if (object.confidence != null)
+                    message.confidence = Number(object.confidence);
+                if (object.supportingText) {
+                    if (!Array.isArray(object.supportingText))
+                        throw TypeError(".legal.api.AnalysisResult.supportingText: array expected");
+                    message.supportingText = [];
+                    for (let i = 0; i < object.supportingText.length; ++i)
+                        message.supportingText[i] = String(object.supportingText[i]);
+                }
+                if (object.citations) {
+                    if (!Array.isArray(object.citations))
+                        throw TypeError(".legal.api.AnalysisResult.citations: array expected");
+                    message.citations = [];
+                    for (let i = 0; i < object.citations.length; ++i) {
+                        if (typeof object.citations[i] !== "object")
+                            throw TypeError(".legal.api.AnalysisResult.citations: object expected");
+                        message.citations[i] = $root.legal.api.LegalCitation.fromObject(object.citations[i]);
+                    }
+                }
+                switch (object.riskLevel) {
+                default:
+                    if (typeof object.riskLevel === "number") {
+                        message.riskLevel = object.riskLevel;
+                        break;
+                    }
+                    break;
+                case "RISK_LEVEL_LOW":
+                case 0:
+                    message.riskLevel = 0;
+                    break;
+                case "RISK_LEVEL_MEDIUM":
+                case 1:
+                    message.riskLevel = 1;
+                    break;
+                case "RISK_LEVEL_HIGH":
+                case 2:
+                    message.riskLevel = 2;
+                    break;
+                case "RISK_LEVEL_CRITICAL":
+                case 3:
+                    message.riskLevel = 3;
+                    break;
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from an AnalysisResult message. Also converts values to other types if specified.
@@ -5886,7 +10587,40 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            AnalysisResult.toObject = undefined};
+            AnalysisResult.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults) {
+                    object.supportingText = [];
+                    object.citations = [];
+                }
+                if (options.defaults) {
+                    object.category = "";
+                    object.finding = "";
+                    object.confidence = 0;
+                    object.riskLevel = options.enums === String ? "RISK_LEVEL_LOW" : 0;
+                }
+                if (message.category != null && message.hasOwnProperty("category"))
+                    object.category = message.category;
+                if (message.finding != null && message.hasOwnProperty("finding"))
+                    object.finding = message.finding;
+                if (message.confidence != null && message.hasOwnProperty("confidence"))
+                    object.confidence = options.json && !isFinite(message.confidence) ? String(message.confidence) : message.confidence;
+                if (message.supportingText && message.supportingText.length) {
+                    object.supportingText = [];
+                    for (let j = 0; j < message.supportingText.length; ++j)
+                        object.supportingText[j] = message.supportingText[j];
+                }
+                if (message.citations && message.citations.length) {
+                    object.citations = [];
+                    for (let j = 0; j < message.citations.length; ++j)
+                        object.citations[j] = $root.legal.api.LegalCitation.toObject(message.citations[j], options);
+                }
+                if (message.riskLevel != null && message.hasOwnProperty("riskLevel"))
+                    object.riskLevel = options.enums === String ? $root.legal.api.RiskLevel[message.riskLevel] === undefined ? message.riskLevel : $root.legal.api.RiskLevel[message.riskLevel] : message.riskLevel;
+                return object;
+            };
 
             /**
              * Converts this AnalysisResult to JSON.
@@ -5914,7 +10648,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.AnalysisResult";
             };
 
-            return AnalysisResult})();
+            return AnalysisResult;
+        })();
 
         /**
          * RiskLevel enum.
@@ -5927,13 +10662,15 @@ export const legal = $root.legal = (() => {
          */
         api.RiskLevel = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "RISK_LEVEL_LOW"] = 0
-            values[valuesById[1] = "RISK_LEVEL_MEDIUM"] = 1
-            values[valuesById[2] = "RISK_LEVEL_HIGH"] = 2
-            values[valuesById[3] = "RISK_LEVEL_CRITICAL"] = 3
-            return values})();
+            values[valuesById[0] = "RISK_LEVEL_LOW"] = 0;
+            values[valuesById[1] = "RISK_LEVEL_MEDIUM"] = 1;
+            values[valuesById[2] = "RISK_LEVEL_HIGH"] = 2;
+            values[valuesById[3] = "RISK_LEVEL_CRITICAL"] = 3;
+            return values;
+        })();
 
         api.Recommendation = (function() {
+
             /**
              * Properties of a Recommendation.
              * @memberof legal.api
@@ -5953,7 +10690,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IRecommendation=} [properties] Properties to set
              */
-            undefined}
+            function Recommendation(properties) {
+                this.steps = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * Recommendation title.
@@ -5977,21 +10720,24 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.Recommendation
              * @instance
              */
-            Recommendation.prototype.type = 0
+            Recommendation.prototype.type = 0;
+
             /**
              * Recommendation priority.
              * @member {legal.api.ActionPriority} priority
              * @memberof legal.api.Recommendation
              * @instance
              */
-            Recommendation.prototype.priority = 0
+            Recommendation.prototype.priority = 0;
+
             /**
              * Recommendation steps.
              * @member {Array.<string>} steps
              * @memberof legal.api.Recommendation
              * @instance
              */
-            Recommendation.prototype.steps = $util.emptyArray
+            Recommendation.prototype.steps = $util.emptyArray;
+
             /**
              * Creates a new Recommendation instance using the specified properties.
              * @function create
@@ -6013,7 +10759,22 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Recommendation.encode = undefined};
+            Recommendation.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.title != null && Object.hasOwnProperty.call(message, "title"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.title);
+                if (message.description != null && Object.hasOwnProperty.call(message, "description"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.description);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.type);
+                if (message.priority != null && Object.hasOwnProperty.call(message, "priority"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).int32(message.priority);
+                if (message.steps != null && message.steps.length)
+                    for (let i = 0; i < message.steps.length; ++i)
+                        writer.uint32(/* id 5, wireType 2 =*/42).string(message.steps[i]);
+                return writer;
+            };
 
             /**
              * Encodes the specified Recommendation message, length delimited. Does not implicitly {@link legal.api.Recommendation.verify|verify} messages.
@@ -6039,7 +10800,44 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Recommendation.decode = undefined};
+            Recommendation.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.Recommendation();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.title = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.description = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            message.type = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.priority = reader.int32();
+                            break;
+                        }
+                    case 5: {
+                            if (!(message.steps && message.steps.length))
+                                message.steps = [];
+                            message.steps.push(reader.string());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a Recommendation message from the specified reader or buffer, length delimited.
@@ -6065,7 +10863,44 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Recommendation.verify = undefined};
+            Recommendation.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.title != null && message.hasOwnProperty("title"))
+                    if (!$util.isString(message.title))
+                        return "title: string expected";
+                if (message.description != null && message.hasOwnProperty("description"))
+                    if (!$util.isString(message.description))
+                        return "description: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    switch (message.type) {
+                    default:
+                        return "type: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                if (message.priority != null && message.hasOwnProperty("priority"))
+                    switch (message.priority) {
+                    default:
+                        return "priority: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        break;
+                    }
+                if (message.steps != null && message.hasOwnProperty("steps")) {
+                    if (!Array.isArray(message.steps))
+                        return "steps: array expected";
+                    for (let i = 0; i < message.steps.length; ++i)
+                        if (!$util.isString(message.steps[i]))
+                            return "steps: string[] expected";
+                }
+                return null;
+            };
 
             /**
              * Creates a Recommendation message from a plain object. Also converts values to their respective internal types.
@@ -6075,7 +10910,71 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.Recommendation} Recommendation
              */
-            Recommendation.fromObject = undefined};
+            Recommendation.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.Recommendation)
+                    return object;
+                let message = new $root.legal.api.Recommendation();
+                if (object.title != null)
+                    message.title = String(object.title);
+                if (object.description != null)
+                    message.description = String(object.description);
+                switch (object.type) {
+                default:
+                    if (typeof object.type === "number") {
+                        message.type = object.type;
+                        break;
+                    }
+                    break;
+                case "RECOMMENDATION_TYPE_ACTION":
+                case 0:
+                    message.type = 0;
+                    break;
+                case "RECOMMENDATION_TYPE_RESEARCH":
+                case 1:
+                    message.type = 1;
+                    break;
+                case "RECOMMENDATION_TYPE_REVIEW":
+                case 2:
+                    message.type = 2;
+                    break;
+                case "RECOMMENDATION_TYPE_COMPLIANCE":
+                case 3:
+                    message.type = 3;
+                    break;
+                }
+                switch (object.priority) {
+                default:
+                    if (typeof object.priority === "number") {
+                        message.priority = object.priority;
+                        break;
+                    }
+                    break;
+                case "ACTION_PRIORITY_LOW":
+                case 0:
+                    message.priority = 0;
+                    break;
+                case "ACTION_PRIORITY_MEDIUM":
+                case 1:
+                    message.priority = 1;
+                    break;
+                case "ACTION_PRIORITY_HIGH":
+                case 2:
+                    message.priority = 2;
+                    break;
+                case "ACTION_PRIORITY_CRITICAL":
+                case 3:
+                    message.priority = 3;
+                    break;
+                }
+                if (object.steps) {
+                    if (!Array.isArray(object.steps))
+                        throw TypeError(".legal.api.Recommendation.steps: array expected");
+                    message.steps = [];
+                    for (let i = 0; i < object.steps.length; ++i)
+                        message.steps[i] = String(object.steps[i]);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a Recommendation message. Also converts values to other types if specified.
@@ -6086,7 +10985,33 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Recommendation.toObject = undefined};
+            Recommendation.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.steps = [];
+                if (options.defaults) {
+                    object.title = "";
+                    object.description = "";
+                    object.type = options.enums === String ? "RECOMMENDATION_TYPE_ACTION" : 0;
+                    object.priority = options.enums === String ? "ACTION_PRIORITY_LOW" : 0;
+                }
+                if (message.title != null && message.hasOwnProperty("title"))
+                    object.title = message.title;
+                if (message.description != null && message.hasOwnProperty("description"))
+                    object.description = message.description;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = options.enums === String ? $root.legal.api.RecommendationType[message.type] === undefined ? message.type : $root.legal.api.RecommendationType[message.type] : message.type;
+                if (message.priority != null && message.hasOwnProperty("priority"))
+                    object.priority = options.enums === String ? $root.legal.api.ActionPriority[message.priority] === undefined ? message.priority : $root.legal.api.ActionPriority[message.priority] : message.priority;
+                if (message.steps && message.steps.length) {
+                    object.steps = [];
+                    for (let j = 0; j < message.steps.length; ++j)
+                        object.steps[j] = message.steps[j];
+                }
+                return object;
+            };
 
             /**
              * Converts this Recommendation to JSON.
@@ -6114,7 +11039,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.Recommendation";
             };
 
-            return Recommendation})();
+            return Recommendation;
+        })();
 
         /**
          * RecommendationType enum.
@@ -6127,13 +11053,15 @@ export const legal = $root.legal = (() => {
          */
         api.RecommendationType = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "RECOMMENDATION_TYPE_ACTION"] = 0
-            values[valuesById[1] = "RECOMMENDATION_TYPE_RESEARCH"] = 1
-            values[valuesById[2] = "RECOMMENDATION_TYPE_REVIEW"] = 2
-            values[valuesById[3] = "RECOMMENDATION_TYPE_COMPLIANCE"] = 3
-            return values})();
+            values[valuesById[0] = "RECOMMENDATION_TYPE_ACTION"] = 0;
+            values[valuesById[1] = "RECOMMENDATION_TYPE_RESEARCH"] = 1;
+            values[valuesById[2] = "RECOMMENDATION_TYPE_REVIEW"] = 2;
+            values[valuesById[3] = "RECOMMENDATION_TYPE_COMPLIANCE"] = 3;
+            return values;
+        })();
 
         api.HealthCheckRequest = (function() {
+
             /**
              * Properties of a HealthCheckRequest.
              * @memberof legal.api
@@ -6150,7 +11078,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IHealthCheckRequest=} [properties] Properties to set
              */
-            undefined}
+            function HealthCheckRequest(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * HealthCheckRequest service.
@@ -6166,7 +11099,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.HealthCheckRequest
              * @instance
              */
-            HealthCheckRequest.prototype.includeDetails = $state(false);
+            HealthCheckRequest.prototype.includeDetails = false;
 
             /**
              * Creates a new HealthCheckRequest instance using the specified properties.
@@ -6189,7 +11122,15 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            HealthCheckRequest.encode = undefined};
+            HealthCheckRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.service != null && Object.hasOwnProperty.call(message, "service"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.service);
+                if (message.includeDetails != null && Object.hasOwnProperty.call(message, "includeDetails"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.includeDetails);
+                return writer;
+            };
 
             /**
              * Encodes the specified HealthCheckRequest message, length delimited. Does not implicitly {@link legal.api.HealthCheckRequest.verify|verify} messages.
@@ -6215,7 +11156,30 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            HealthCheckRequest.decode = undefined};
+            HealthCheckRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.HealthCheckRequest();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.service = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.includeDetails = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a HealthCheckRequest message from the specified reader or buffer, length delimited.
@@ -6241,7 +11205,17 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            HealthCheckRequest.verify = undefined};
+            HealthCheckRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.service != null && message.hasOwnProperty("service"))
+                    if (!$util.isString(message.service))
+                        return "service: string expected";
+                if (message.includeDetails != null && message.hasOwnProperty("includeDetails"))
+                    if (typeof message.includeDetails !== "boolean")
+                        return "includeDetails: boolean expected";
+                return null;
+            };
 
             /**
              * Creates a HealthCheckRequest message from a plain object. Also converts values to their respective internal types.
@@ -6251,7 +11225,16 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.HealthCheckRequest} HealthCheckRequest
              */
-            HealthCheckRequest.fromObject = undefined};
+            HealthCheckRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.HealthCheckRequest)
+                    return object;
+                let message = new $root.legal.api.HealthCheckRequest();
+                if (object.service != null)
+                    message.service = String(object.service);
+                if (object.includeDetails != null)
+                    message.includeDetails = Boolean(object.includeDetails);
+                return message;
+            };
 
             /**
              * Creates a plain object from a HealthCheckRequest message. Also converts values to other types if specified.
@@ -6262,7 +11245,20 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            HealthCheckRequest.toObject = undefined};
+            HealthCheckRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.service = "";
+                    object.includeDetails = false;
+                }
+                if (message.service != null && message.hasOwnProperty("service"))
+                    object.service = message.service;
+                if (message.includeDetails != null && message.hasOwnProperty("includeDetails"))
+                    object.includeDetails = message.includeDetails;
+                return object;
+            };
 
             /**
              * Converts this HealthCheckRequest to JSON.
@@ -6290,9 +11286,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.HealthCheckRequest";
             };
 
-            return HealthCheckRequest})();
+            return HealthCheckRequest;
+        })();
 
         api.HealthCheckResponse = (function() {
+
             /**
              * Properties of a HealthCheckResponse.
              * @memberof legal.api
@@ -6312,7 +11310,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IHealthCheckResponse=} [properties] Properties to set
              */
-            undefined}
+            function HealthCheckResponse(properties) {
+                this.details = {};
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * HealthCheckResponse healthy.
@@ -6320,7 +11324,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.HealthCheckResponse
              * @instance
              */
-            HealthCheckResponse.prototype.healthy = $state(false);
+            HealthCheckResponse.prototype.healthy = false;
 
             /**
              * HealthCheckResponse status.
@@ -6336,14 +11340,16 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.HealthCheckResponse
              * @instance
              */
-            HealthCheckResponse.prototype.details = $util.emptyObject
+            HealthCheckResponse.prototype.details = $util.emptyObject;
+
             /**
              * HealthCheckResponse timestamp.
              * @member {google.protobuf.ITimestamp|null|undefined} timestamp
              * @memberof legal.api.HealthCheckResponse
              * @instance
              */
-            HealthCheckResponse.prototype.timestamp = null
+            HealthCheckResponse.prototype.timestamp = null;
+
             /**
              * HealthCheckResponse version.
              * @member {string} version
@@ -6373,7 +11379,22 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            HealthCheckResponse.encode = undefined};
+            HealthCheckResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.healthy != null && Object.hasOwnProperty.call(message, "healthy"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.healthy);
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.status);
+                if (message.details != null && Object.hasOwnProperty.call(message, "details"))
+                    for (let keys = Object.keys(message.details), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.details[keys[i]]).ldelim();
+                if (message.timestamp != null && Object.hasOwnProperty.call(message, "timestamp"))
+                    $root.google.protobuf.Timestamp.encode(message.timestamp, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.version != null && Object.hasOwnProperty.call(message, "version"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.version);
+                return writer;
+            };
 
             /**
              * Encodes the specified HealthCheckResponse message, length delimited. Does not implicitly {@link legal.api.HealthCheckResponse.verify|verify} messages.
@@ -6399,7 +11420,61 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            HealthCheckResponse.decode = undefined};
+            HealthCheckResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.HealthCheckResponse(), key, value;
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.healthy = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.status = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (message.details === $util.emptyObject)
+                                message.details = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                let tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.details[key] = value;
+                            break;
+                        }
+                    case 4: {
+                            message.timestamp = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.version = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a HealthCheckResponse message from the specified reader or buffer, length delimited.
@@ -6425,7 +11500,33 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            HealthCheckResponse.verify = undefined};
+            HealthCheckResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.healthy != null && message.hasOwnProperty("healthy"))
+                    if (typeof message.healthy !== "boolean")
+                        return "healthy: boolean expected";
+                if (message.status != null && message.hasOwnProperty("status"))
+                    if (!$util.isString(message.status))
+                        return "status: string expected";
+                if (message.details != null && message.hasOwnProperty("details")) {
+                    if (!$util.isObject(message.details))
+                        return "details: object expected";
+                    let key = Object.keys(message.details);
+                    for (let i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.details[key[i]]))
+                            return "details: string{k:string} expected";
+                }
+                if (message.timestamp != null && message.hasOwnProperty("timestamp")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.timestamp);
+                    if (error)
+                        return "timestamp." + error;
+                }
+                if (message.version != null && message.hasOwnProperty("version"))
+                    if (!$util.isString(message.version))
+                        return "version: string expected";
+                return null;
+            };
 
             /**
              * Creates a HealthCheckResponse message from a plain object. Also converts values to their respective internal types.
@@ -6435,7 +11536,30 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.HealthCheckResponse} HealthCheckResponse
              */
-            HealthCheckResponse.fromObject = undefined};
+            HealthCheckResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.HealthCheckResponse)
+                    return object;
+                let message = new $root.legal.api.HealthCheckResponse();
+                if (object.healthy != null)
+                    message.healthy = Boolean(object.healthy);
+                if (object.status != null)
+                    message.status = String(object.status);
+                if (object.details) {
+                    if (typeof object.details !== "object")
+                        throw TypeError(".legal.api.HealthCheckResponse.details: object expected");
+                    message.details = {};
+                    for (let keys = Object.keys(object.details), i = 0; i < keys.length; ++i)
+                        message.details[keys[i]] = String(object.details[keys[i]]);
+                }
+                if (object.timestamp != null) {
+                    if (typeof object.timestamp !== "object")
+                        throw TypeError(".legal.api.HealthCheckResponse.timestamp: object expected");
+                    message.timestamp = $root.google.protobuf.Timestamp.fromObject(object.timestamp);
+                }
+                if (object.version != null)
+                    message.version = String(object.version);
+                return message;
+            };
 
             /**
              * Creates a plain object from a HealthCheckResponse message. Also converts values to other types if specified.
@@ -6446,7 +11570,34 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            HealthCheckResponse.toObject = undefined};
+            HealthCheckResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.objects || options.defaults)
+                    object.details = {};
+                if (options.defaults) {
+                    object.healthy = false;
+                    object.status = "";
+                    object.timestamp = null;
+                    object.version = "";
+                }
+                if (message.healthy != null && message.hasOwnProperty("healthy"))
+                    object.healthy = message.healthy;
+                if (message.status != null && message.hasOwnProperty("status"))
+                    object.status = message.status;
+                let keys2;
+                if (message.details && (keys2 = Object.keys(message.details)).length) {
+                    object.details = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.details[keys2[j]] = message.details[keys2[j]];
+                }
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    object.timestamp = $root.google.protobuf.Timestamp.toObject(message.timestamp, options);
+                if (message.version != null && message.hasOwnProperty("version"))
+                    object.version = message.version;
+                return object;
+            };
 
             /**
              * Converts this HealthCheckResponse to JSON.
@@ -6474,9 +11625,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.HealthCheckResponse";
             };
 
-            return HealthCheckResponse})();
+            return HealthCheckResponse;
+        })();
 
         api.SystemStatus = (function() {
+
             /**
              * Properties of a SystemStatus.
              * @memberof legal.api
@@ -6498,7 +11651,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.ISystemStatus=} [properties] Properties to set
              */
-            undefined}
+            function SystemStatus(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * SystemStatus serviceName.
@@ -6514,7 +11672,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.operational = $state(false);
+            SystemStatus.prototype.operational = false;
 
             /**
              * SystemStatus cpuUsage.
@@ -6522,35 +11680,40 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.cpuUsage = 0
+            SystemStatus.prototype.cpuUsage = 0;
+
             /**
              * SystemStatus memoryUsage.
              * @member {number} memoryUsage
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.memoryUsage = 0
+            SystemStatus.prototype.memoryUsage = 0;
+
             /**
              * SystemStatus activeConnections.
              * @member {number} activeConnections
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.activeConnections = 0
+            SystemStatus.prototype.activeConnections = 0;
+
             /**
              * SystemStatus requestsPerMinute.
              * @member {number|Long} requestsPerMinute
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.requestsPerMinute = $util.Long ? $util.Long.fromBits(0,0,false) : 0
+            SystemStatus.prototype.requestsPerMinute = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
             /**
              * SystemStatus lastUpdated.
              * @member {google.protobuf.ITimestamp|null|undefined} lastUpdated
              * @memberof legal.api.SystemStatus
              * @instance
              */
-            SystemStatus.prototype.lastUpdated = null
+            SystemStatus.prototype.lastUpdated = null;
+
             /**
              * Creates a new SystemStatus instance using the specified properties.
              * @function create
@@ -6572,7 +11735,25 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            SystemStatus.encode = undefined};
+            SystemStatus.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.serviceName != null && Object.hasOwnProperty.call(message, "serviceName"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.serviceName);
+                if (message.operational != null && Object.hasOwnProperty.call(message, "operational"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.operational);
+                if (message.cpuUsage != null && Object.hasOwnProperty.call(message, "cpuUsage"))
+                    writer.uint32(/* id 3, wireType 5 =*/29).float(message.cpuUsage);
+                if (message.memoryUsage != null && Object.hasOwnProperty.call(message, "memoryUsage"))
+                    writer.uint32(/* id 4, wireType 5 =*/37).float(message.memoryUsage);
+                if (message.activeConnections != null && Object.hasOwnProperty.call(message, "activeConnections"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.activeConnections);
+                if (message.requestsPerMinute != null && Object.hasOwnProperty.call(message, "requestsPerMinute"))
+                    writer.uint32(/* id 6, wireType 0 =*/48).int64(message.requestsPerMinute);
+                if (message.lastUpdated != null && Object.hasOwnProperty.call(message, "lastUpdated"))
+                    $root.google.protobuf.Timestamp.encode(message.lastUpdated, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified SystemStatus message, length delimited. Does not implicitly {@link legal.api.SystemStatus.verify|verify} messages.
@@ -6598,7 +11779,50 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            SystemStatus.decode = undefined};
+            SystemStatus.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.SystemStatus();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.serviceName = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.operational = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.cpuUsage = reader.float();
+                            break;
+                        }
+                    case 4: {
+                            message.memoryUsage = reader.float();
+                            break;
+                        }
+                    case 5: {
+                            message.activeConnections = reader.int32();
+                            break;
+                        }
+                    case 6: {
+                            message.requestsPerMinute = reader.int64();
+                            break;
+                        }
+                    case 7: {
+                            message.lastUpdated = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a SystemStatus message from the specified reader or buffer, length delimited.
@@ -6624,7 +11848,34 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            SystemStatus.verify = undefined};
+            SystemStatus.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.serviceName != null && message.hasOwnProperty("serviceName"))
+                    if (!$util.isString(message.serviceName))
+                        return "serviceName: string expected";
+                if (message.operational != null && message.hasOwnProperty("operational"))
+                    if (typeof message.operational !== "boolean")
+                        return "operational: boolean expected";
+                if (message.cpuUsage != null && message.hasOwnProperty("cpuUsage"))
+                    if (typeof message.cpuUsage !== "number")
+                        return "cpuUsage: number expected";
+                if (message.memoryUsage != null && message.hasOwnProperty("memoryUsage"))
+                    if (typeof message.memoryUsage !== "number")
+                        return "memoryUsage: number expected";
+                if (message.activeConnections != null && message.hasOwnProperty("activeConnections"))
+                    if (!$util.isInteger(message.activeConnections))
+                        return "activeConnections: integer expected";
+                if (message.requestsPerMinute != null && message.hasOwnProperty("requestsPerMinute"))
+                    if (!$util.isInteger(message.requestsPerMinute) && !(message.requestsPerMinute && $util.isInteger(message.requestsPerMinute.low) && $util.isInteger(message.requestsPerMinute.high)))
+                        return "requestsPerMinute: integer|Long expected";
+                if (message.lastUpdated != null && message.hasOwnProperty("lastUpdated")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.lastUpdated);
+                    if (error)
+                        return "lastUpdated." + error;
+                }
+                return null;
+            };
 
             /**
              * Creates a SystemStatus message from a plain object. Also converts values to their respective internal types.
@@ -6634,7 +11885,36 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.SystemStatus} SystemStatus
              */
-            SystemStatus.fromObject = undefined};
+            SystemStatus.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.SystemStatus)
+                    return object;
+                let message = new $root.legal.api.SystemStatus();
+                if (object.serviceName != null)
+                    message.serviceName = String(object.serviceName);
+                if (object.operational != null)
+                    message.operational = Boolean(object.operational);
+                if (object.cpuUsage != null)
+                    message.cpuUsage = Number(object.cpuUsage);
+                if (object.memoryUsage != null)
+                    message.memoryUsage = Number(object.memoryUsage);
+                if (object.activeConnections != null)
+                    message.activeConnections = object.activeConnections | 0;
+                if (object.requestsPerMinute != null)
+                    if ($util.Long)
+                        (message.requestsPerMinute = $util.Long.fromValue(object.requestsPerMinute)).unsigned = false;
+                    else if (typeof object.requestsPerMinute === "string")
+                        message.requestsPerMinute = parseInt(object.requestsPerMinute, 10);
+                    else if (typeof object.requestsPerMinute === "number")
+                        message.requestsPerMinute = object.requestsPerMinute;
+                    else if (typeof object.requestsPerMinute === "object")
+                        message.requestsPerMinute = new $util.LongBits(object.requestsPerMinute.low >>> 0, object.requestsPerMinute.high >>> 0).toNumber();
+                if (object.lastUpdated != null) {
+                    if (typeof object.lastUpdated !== "object")
+                        throw TypeError(".legal.api.SystemStatus.lastUpdated: object expected");
+                    message.lastUpdated = $root.google.protobuf.Timestamp.fromObject(object.lastUpdated);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a SystemStatus message. Also converts values to other types if specified.
@@ -6645,7 +11925,42 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SystemStatus.toObject = undefined};
+            SystemStatus.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.serviceName = "";
+                    object.operational = false;
+                    object.cpuUsage = 0;
+                    object.memoryUsage = 0;
+                    object.activeConnections = 0;
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.requestsPerMinute = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.requestsPerMinute = options.longs === String ? "0" : 0;
+                    object.lastUpdated = null;
+                }
+                if (message.serviceName != null && message.hasOwnProperty("serviceName"))
+                    object.serviceName = message.serviceName;
+                if (message.operational != null && message.hasOwnProperty("operational"))
+                    object.operational = message.operational;
+                if (message.cpuUsage != null && message.hasOwnProperty("cpuUsage"))
+                    object.cpuUsage = options.json && !isFinite(message.cpuUsage) ? String(message.cpuUsage) : message.cpuUsage;
+                if (message.memoryUsage != null && message.hasOwnProperty("memoryUsage"))
+                    object.memoryUsage = options.json && !isFinite(message.memoryUsage) ? String(message.memoryUsage) : message.memoryUsage;
+                if (message.activeConnections != null && message.hasOwnProperty("activeConnections"))
+                    object.activeConnections = message.activeConnections;
+                if (message.requestsPerMinute != null && message.hasOwnProperty("requestsPerMinute"))
+                    if (typeof message.requestsPerMinute === "number")
+                        object.requestsPerMinute = options.longs === String ? String(message.requestsPerMinute) : message.requestsPerMinute;
+                    else
+                        object.requestsPerMinute = options.longs === String ? $util.Long.prototype.toString.call(message.requestsPerMinute) : options.longs === Number ? new $util.LongBits(message.requestsPerMinute.low >>> 0, message.requestsPerMinute.high >>> 0).toNumber() : message.requestsPerMinute;
+                if (message.lastUpdated != null && message.hasOwnProperty("lastUpdated"))
+                    object.lastUpdated = $root.google.protobuf.Timestamp.toObject(message.lastUpdated, options);
+                return object;
+            };
 
             /**
              * Converts this SystemStatus to JSON.
@@ -6673,9 +11988,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.SystemStatus";
             };
 
-            return SystemStatus})();
+            return SystemStatus;
+        })();
 
         api.BatchRequest = (function() {
+
             /**
              * Properties of a BatchRequest.
              * @memberof legal.api
@@ -6694,7 +12011,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchRequest=} [properties] Properties to set
              */
-            undefined}
+            function BatchRequest(properties) {
+                this.operations = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * BatchRequest batchId.
@@ -6710,14 +12033,16 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchRequest
              * @instance
              */
-            BatchRequest.prototype.operations = $util.emptyArray
+            BatchRequest.prototype.operations = $util.emptyArray;
+
             /**
              * BatchRequest options.
              * @member {legal.api.IBatchOptions|null|undefined} options
              * @memberof legal.api.BatchRequest
              * @instance
              */
-            BatchRequest.prototype.options = null
+            BatchRequest.prototype.options = null;
+
             /**
              * BatchRequest userId.
              * @member {string} userId
@@ -6747,7 +12072,20 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchRequest.encode = undefined};
+            BatchRequest.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.batchId != null && Object.hasOwnProperty.call(message, "batchId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.batchId);
+                if (message.operations != null && message.operations.length)
+                    for (let i = 0; i < message.operations.length; ++i)
+                        $root.legal.api.BatchOperation.encode(message.operations[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.options != null && Object.hasOwnProperty.call(message, "options"))
+                    $root.legal.api.BatchOptions.encode(message.options, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.userId != null && Object.hasOwnProperty.call(message, "userId"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.userId);
+                return writer;
+            };
 
             /**
              * Encodes the specified BatchRequest message, length delimited. Does not implicitly {@link legal.api.BatchRequest.verify|verify} messages.
@@ -6773,7 +12111,40 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchRequest.decode = undefined};
+            BatchRequest.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchRequest();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.batchId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            if (!(message.operations && message.operations.length))
+                                message.operations = [];
+                            message.operations.push($root.legal.api.BatchOperation.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 3: {
+                            message.options = $root.legal.api.BatchOptions.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 4: {
+                            message.userId = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a BatchRequest message from the specified reader or buffer, length delimited.
@@ -6799,7 +12170,31 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchRequest.verify = undefined};
+            BatchRequest.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
+                    if (!$util.isString(message.batchId))
+                        return "batchId: string expected";
+                if (message.operations != null && message.hasOwnProperty("operations")) {
+                    if (!Array.isArray(message.operations))
+                        return "operations: array expected";
+                    for (let i = 0; i < message.operations.length; ++i) {
+                        let error = $root.legal.api.BatchOperation.verify(message.operations[i]);
+                        if (error)
+                            return "operations." + error;
+                    }
+                }
+                if (message.options != null && message.hasOwnProperty("options")) {
+                    let error = $root.legal.api.BatchOptions.verify(message.options);
+                    if (error)
+                        return "options." + error;
+                }
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    if (!$util.isString(message.userId))
+                        return "userId: string expected";
+                return null;
+            };
 
             /**
              * Creates a BatchRequest message from a plain object. Also converts values to their respective internal types.
@@ -6809,7 +12204,31 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchRequest} BatchRequest
              */
-            BatchRequest.fromObject = undefined};
+            BatchRequest.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.BatchRequest)
+                    return object;
+                let message = new $root.legal.api.BatchRequest();
+                if (object.batchId != null)
+                    message.batchId = String(object.batchId);
+                if (object.operations) {
+                    if (!Array.isArray(object.operations))
+                        throw TypeError(".legal.api.BatchRequest.operations: array expected");
+                    message.operations = [];
+                    for (let i = 0; i < object.operations.length; ++i) {
+                        if (typeof object.operations[i] !== "object")
+                            throw TypeError(".legal.api.BatchRequest.operations: object expected");
+                        message.operations[i] = $root.legal.api.BatchOperation.fromObject(object.operations[i]);
+                    }
+                }
+                if (object.options != null) {
+                    if (typeof object.options !== "object")
+                        throw TypeError(".legal.api.BatchRequest.options: object expected");
+                    message.options = $root.legal.api.BatchOptions.fromObject(object.options);
+                }
+                if (object.userId != null)
+                    message.userId = String(object.userId);
+                return message;
+            };
 
             /**
              * Creates a plain object from a BatchRequest message. Also converts values to other types if specified.
@@ -6820,7 +12239,30 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchRequest.toObject = undefined};
+            BatchRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.operations = [];
+                if (options.defaults) {
+                    object.batchId = "";
+                    object.options = null;
+                    object.userId = "";
+                }
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
+                    object.batchId = message.batchId;
+                if (message.operations && message.operations.length) {
+                    object.operations = [];
+                    for (let j = 0; j < message.operations.length; ++j)
+                        object.operations[j] = $root.legal.api.BatchOperation.toObject(message.operations[j], options);
+                }
+                if (message.options != null && message.hasOwnProperty("options"))
+                    object.options = $root.legal.api.BatchOptions.toObject(message.options, options);
+                if (message.userId != null && message.hasOwnProperty("userId"))
+                    object.userId = message.userId;
+                return object;
+            };
 
             /**
              * Converts this BatchRequest to JSON.
@@ -6848,9 +12290,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchRequest";
             };
 
-            return BatchRequest})();
+            return BatchRequest;
+        })();
 
         api.BatchOperation = (function() {
+
             /**
              * Properties of a BatchOperation.
              * @memberof legal.api
@@ -6868,7 +12312,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchOperation=} [properties] Properties to set
              */
-            undefined}
+            function BatchOperation(properties) {
+                this.parameters = {};
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * BatchOperation operationId.
@@ -6892,7 +12342,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchOperation
              * @instance
              */
-            BatchOperation.prototype.parameters = $util.emptyObject
+            BatchOperation.prototype.parameters = $util.emptyObject;
+
             /**
              * Creates a new BatchOperation instance using the specified properties.
              * @function create
@@ -6914,7 +12365,18 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchOperation.encode = undefined};
+            BatchOperation.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.operationId != null && Object.hasOwnProperty.call(message, "operationId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.operationId);
+                if (message.type != null && Object.hasOwnProperty.call(message, "type"))
+                    writer.uint32(/* id 2, wireType 2 =*/18).string(message.type);
+                if (message.parameters != null && Object.hasOwnProperty.call(message, "parameters"))
+                    for (let keys = Object.keys(message.parameters), i = 0; i < keys.length; ++i)
+                        writer.uint32(/* id 3, wireType 2 =*/26).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]).uint32(/* id 2, wireType 2 =*/18).string(message.parameters[keys[i]]).ldelim();
+                return writer;
+            };
 
             /**
              * Encodes the specified BatchOperation message, length delimited. Does not implicitly {@link legal.api.BatchOperation.verify|verify} messages.
@@ -6940,7 +12402,53 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchOperation.decode = undefined};
+            BatchOperation.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchOperation(), key, value;
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.operationId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.type = reader.string();
+                            break;
+                        }
+                    case 3: {
+                            if (message.parameters === $util.emptyObject)
+                                message.parameters = {};
+                            let end2 = reader.uint32() + reader.pos;
+                            key = "";
+                            value = "";
+                            while (reader.pos < end2) {
+                                let tag2 = reader.uint32();
+                                switch (tag2 >>> 3) {
+                                case 1:
+                                    key = reader.string();
+                                    break;
+                                case 2:
+                                    value = reader.string();
+                                    break;
+                                default:
+                                    reader.skipType(tag2 & 7);
+                                    break;
+                                }
+                            }
+                            message.parameters[key] = value;
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a BatchOperation message from the specified reader or buffer, length delimited.
@@ -6966,7 +12474,25 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchOperation.verify = undefined};
+            BatchOperation.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
+                    if (!$util.isString(message.operationId))
+                        return "operationId: string expected";
+                if (message.type != null && message.hasOwnProperty("type"))
+                    if (!$util.isString(message.type))
+                        return "type: string expected";
+                if (message.parameters != null && message.hasOwnProperty("parameters")) {
+                    if (!$util.isObject(message.parameters))
+                        return "parameters: object expected";
+                    let key = Object.keys(message.parameters);
+                    for (let i = 0; i < key.length; ++i)
+                        if (!$util.isString(message.parameters[key[i]]))
+                            return "parameters: string{k:string} expected";
+                }
+                return null;
+            };
 
             /**
              * Creates a BatchOperation message from a plain object. Also converts values to their respective internal types.
@@ -6976,7 +12502,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchOperation} BatchOperation
              */
-            BatchOperation.fromObject = undefined};
+            BatchOperation.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.BatchOperation)
+                    return object;
+                let message = new $root.legal.api.BatchOperation();
+                if (object.operationId != null)
+                    message.operationId = String(object.operationId);
+                if (object.type != null)
+                    message.type = String(object.type);
+                if (object.parameters) {
+                    if (typeof object.parameters !== "object")
+                        throw TypeError(".legal.api.BatchOperation.parameters: object expected");
+                    message.parameters = {};
+                    for (let keys = Object.keys(object.parameters), i = 0; i < keys.length; ++i)
+                        message.parameters[keys[i]] = String(object.parameters[keys[i]]);
+                }
+                return message;
+            };
 
             /**
              * Creates a plain object from a BatchOperation message. Also converts values to other types if specified.
@@ -6987,7 +12529,28 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchOperation.toObject = undefined};
+            BatchOperation.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.objects || options.defaults)
+                    object.parameters = {};
+                if (options.defaults) {
+                    object.operationId = "";
+                    object.type = "";
+                }
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
+                    object.operationId = message.operationId;
+                if (message.type != null && message.hasOwnProperty("type"))
+                    object.type = message.type;
+                let keys2;
+                if (message.parameters && (keys2 = Object.keys(message.parameters)).length) {
+                    object.parameters = {};
+                    for (let j = 0; j < keys2.length; ++j)
+                        object.parameters[keys2[j]] = message.parameters[keys2[j]];
+                }
+                return object;
+            };
 
             /**
              * Converts this BatchOperation to JSON.
@@ -7015,9 +12578,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchOperation";
             };
 
-            return BatchOperation})();
+            return BatchOperation;
+        })();
 
         api.BatchOptions = (function() {
+
             /**
              * Properties of a BatchOptions.
              * @memberof legal.api
@@ -7036,7 +12601,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchOptions=} [properties] Properties to set
              */
-            undefined}
+            function BatchOptions(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * BatchOptions parallelExecution.
@@ -7044,7 +12614,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.parallelExecution = $state(false);
+            BatchOptions.prototype.parallelExecution = false;
 
             /**
              * BatchOptions maxConcurrency.
@@ -7052,21 +12622,23 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.maxConcurrency = 0
+            BatchOptions.prototype.maxConcurrency = 0;
+
             /**
              * BatchOptions timeoutSeconds.
              * @member {number} timeoutSeconds
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.timeoutSeconds = 0
+            BatchOptions.prototype.timeoutSeconds = 0;
+
             /**
              * BatchOptions continueOnError.
              * @member {boolean} continueOnError
              * @memberof legal.api.BatchOptions
              * @instance
              */
-            BatchOptions.prototype.continueOnError = $state(false);
+            BatchOptions.prototype.continueOnError = false;
 
             /**
              * Creates a new BatchOptions instance using the specified properties.
@@ -7089,7 +12661,19 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchOptions.encode = undefined};
+            BatchOptions.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.parallelExecution != null && Object.hasOwnProperty.call(message, "parallelExecution"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).bool(message.parallelExecution);
+                if (message.maxConcurrency != null && Object.hasOwnProperty.call(message, "maxConcurrency"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.maxConcurrency);
+                if (message.timeoutSeconds != null && Object.hasOwnProperty.call(message, "timeoutSeconds"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.timeoutSeconds);
+                if (message.continueOnError != null && Object.hasOwnProperty.call(message, "continueOnError"))
+                    writer.uint32(/* id 4, wireType 0 =*/32).bool(message.continueOnError);
+                return writer;
+            };
 
             /**
              * Encodes the specified BatchOptions message, length delimited. Does not implicitly {@link legal.api.BatchOptions.verify|verify} messages.
@@ -7115,7 +12699,38 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchOptions.decode = undefined};
+            BatchOptions.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchOptions();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.parallelExecution = reader.bool();
+                            break;
+                        }
+                    case 2: {
+                            message.maxConcurrency = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            message.timeoutSeconds = reader.int32();
+                            break;
+                        }
+                    case 4: {
+                            message.continueOnError = reader.bool();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a BatchOptions message from the specified reader or buffer, length delimited.
@@ -7141,7 +12756,23 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchOptions.verify = undefined};
+            BatchOptions.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.parallelExecution != null && message.hasOwnProperty("parallelExecution"))
+                    if (typeof message.parallelExecution !== "boolean")
+                        return "parallelExecution: boolean expected";
+                if (message.maxConcurrency != null && message.hasOwnProperty("maxConcurrency"))
+                    if (!$util.isInteger(message.maxConcurrency))
+                        return "maxConcurrency: integer expected";
+                if (message.timeoutSeconds != null && message.hasOwnProperty("timeoutSeconds"))
+                    if (!$util.isInteger(message.timeoutSeconds))
+                        return "timeoutSeconds: integer expected";
+                if (message.continueOnError != null && message.hasOwnProperty("continueOnError"))
+                    if (typeof message.continueOnError !== "boolean")
+                        return "continueOnError: boolean expected";
+                return null;
+            };
 
             /**
              * Creates a BatchOptions message from a plain object. Also converts values to their respective internal types.
@@ -7151,7 +12782,20 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchOptions} BatchOptions
              */
-            BatchOptions.fromObject = undefined};
+            BatchOptions.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.BatchOptions)
+                    return object;
+                let message = new $root.legal.api.BatchOptions();
+                if (object.parallelExecution != null)
+                    message.parallelExecution = Boolean(object.parallelExecution);
+                if (object.maxConcurrency != null)
+                    message.maxConcurrency = object.maxConcurrency | 0;
+                if (object.timeoutSeconds != null)
+                    message.timeoutSeconds = object.timeoutSeconds | 0;
+                if (object.continueOnError != null)
+                    message.continueOnError = Boolean(object.continueOnError);
+                return message;
+            };
 
             /**
              * Creates a plain object from a BatchOptions message. Also converts values to other types if specified.
@@ -7162,7 +12806,26 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchOptions.toObject = undefined};
+            BatchOptions.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.parallelExecution = false;
+                    object.maxConcurrency = 0;
+                    object.timeoutSeconds = 0;
+                    object.continueOnError = false;
+                }
+                if (message.parallelExecution != null && message.hasOwnProperty("parallelExecution"))
+                    object.parallelExecution = message.parallelExecution;
+                if (message.maxConcurrency != null && message.hasOwnProperty("maxConcurrency"))
+                    object.maxConcurrency = message.maxConcurrency;
+                if (message.timeoutSeconds != null && message.hasOwnProperty("timeoutSeconds"))
+                    object.timeoutSeconds = message.timeoutSeconds;
+                if (message.continueOnError != null && message.hasOwnProperty("continueOnError"))
+                    object.continueOnError = message.continueOnError;
+                return object;
+            };
 
             /**
              * Converts this BatchOptions to JSON.
@@ -7190,9 +12853,11 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchOptions";
             };
 
-            return BatchOptions})();
+            return BatchOptions;
+        })();
 
         api.BatchResponse = (function() {
+
             /**
              * Properties of a BatchResponse.
              * @memberof legal.api
@@ -7213,7 +12878,13 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchResponse=} [properties] Properties to set
              */
-            undefined}
+            function BatchResponse(properties) {
+                this.results = [];
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * BatchResponse batchId.
@@ -7229,28 +12900,32 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.status = 0
+            BatchResponse.prototype.status = 0;
+
             /**
              * BatchResponse results.
              * @member {Array.<legal.api.IBatchResult>} results
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.results = $util.emptyArray
+            BatchResponse.prototype.results = $util.emptyArray;
+
             /**
              * BatchResponse startedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} startedAt
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.startedAt = null
+            BatchResponse.prototype.startedAt = null;
+
             /**
              * BatchResponse completedAt.
              * @member {google.protobuf.ITimestamp|null|undefined} completedAt
              * @memberof legal.api.BatchResponse
              * @instance
              */
-            BatchResponse.prototype.completedAt = null
+            BatchResponse.prototype.completedAt = null;
+
             /**
              * BatchResponse errorMessage.
              * @member {string} errorMessage
@@ -7280,7 +12955,24 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchResponse.encode = undefined};
+            BatchResponse.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.batchId != null && Object.hasOwnProperty.call(message, "batchId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.batchId);
+                if (message.status != null && Object.hasOwnProperty.call(message, "status"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.status);
+                if (message.results != null && message.results.length)
+                    for (let i = 0; i < message.results.length; ++i)
+                        $root.legal.api.BatchResult.encode(message.results[i], writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
+                if (message.startedAt != null && Object.hasOwnProperty.call(message, "startedAt"))
+                    $root.google.protobuf.Timestamp.encode(message.startedAt, writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.completedAt != null && Object.hasOwnProperty.call(message, "completedAt"))
+                    $root.google.protobuf.Timestamp.encode(message.completedAt, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage"))
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.errorMessage);
+                return writer;
+            };
 
             /**
              * Encodes the specified BatchResponse message, length delimited. Does not implicitly {@link legal.api.BatchResponse.verify|verify} messages.
@@ -7306,7 +12998,48 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchResponse.decode = undefined};
+            BatchResponse.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchResponse();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.batchId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.status = reader.int32();
+                            break;
+                        }
+                    case 3: {
+                            if (!(message.results && message.results.length))
+                                message.results = [];
+                            message.results.push($root.legal.api.BatchResult.decode(reader, reader.uint32()));
+                            break;
+                        }
+                    case 4: {
+                            message.startedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 5: {
+                            message.completedAt = $root.google.protobuf.Timestamp.decode(reader, reader.uint32());
+                            break;
+                        }
+                    case 6: {
+                            message.errorMessage = reader.string();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a BatchResponse message from the specified reader or buffer, length delimited.
@@ -7332,7 +13065,47 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchResponse.verify = undefined};
+            BatchResponse.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
+                    if (!$util.isString(message.batchId))
+                        return "batchId: string expected";
+                if (message.status != null && message.hasOwnProperty("status"))
+                    switch (message.status) {
+                    default:
+                        return "status: enum value expected";
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                        break;
+                    }
+                if (message.results != null && message.hasOwnProperty("results")) {
+                    if (!Array.isArray(message.results))
+                        return "results: array expected";
+                    for (let i = 0; i < message.results.length; ++i) {
+                        let error = $root.legal.api.BatchResult.verify(message.results[i]);
+                        if (error)
+                            return "results." + error;
+                    }
+                }
+                if (message.startedAt != null && message.hasOwnProperty("startedAt")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.startedAt);
+                    if (error)
+                        return "startedAt." + error;
+                }
+                if (message.completedAt != null && message.hasOwnProperty("completedAt")) {
+                    let error = $root.google.protobuf.Timestamp.verify(message.completedAt);
+                    if (error)
+                        return "completedAt." + error;
+                }
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    if (!$util.isString(message.errorMessage))
+                        return "errorMessage: string expected";
+                return null;
+            };
 
             /**
              * Creates a BatchResponse message from a plain object. Also converts values to their respective internal types.
@@ -7342,7 +13115,64 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchResponse} BatchResponse
              */
-            BatchResponse.fromObject = undefined};
+            BatchResponse.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.BatchResponse)
+                    return object;
+                let message = new $root.legal.api.BatchResponse();
+                if (object.batchId != null)
+                    message.batchId = String(object.batchId);
+                switch (object.status) {
+                default:
+                    if (typeof object.status === "number") {
+                        message.status = object.status;
+                        break;
+                    }
+                    break;
+                case "BATCH_STATUS_PENDING":
+                case 0:
+                    message.status = 0;
+                    break;
+                case "BATCH_STATUS_RUNNING":
+                case 1:
+                    message.status = 1;
+                    break;
+                case "BATCH_STATUS_COMPLETED":
+                case 2:
+                    message.status = 2;
+                    break;
+                case "BATCH_STATUS_FAILED":
+                case 3:
+                    message.status = 3;
+                    break;
+                case "BATCH_STATUS_CANCELLED":
+                case 4:
+                    message.status = 4;
+                    break;
+                }
+                if (object.results) {
+                    if (!Array.isArray(object.results))
+                        throw TypeError(".legal.api.BatchResponse.results: array expected");
+                    message.results = [];
+                    for (let i = 0; i < object.results.length; ++i) {
+                        if (typeof object.results[i] !== "object")
+                            throw TypeError(".legal.api.BatchResponse.results: object expected");
+                        message.results[i] = $root.legal.api.BatchResult.fromObject(object.results[i]);
+                    }
+                }
+                if (object.startedAt != null) {
+                    if (typeof object.startedAt !== "object")
+                        throw TypeError(".legal.api.BatchResponse.startedAt: object expected");
+                    message.startedAt = $root.google.protobuf.Timestamp.fromObject(object.startedAt);
+                }
+                if (object.completedAt != null) {
+                    if (typeof object.completedAt !== "object")
+                        throw TypeError(".legal.api.BatchResponse.completedAt: object expected");
+                    message.completedAt = $root.google.protobuf.Timestamp.fromObject(object.completedAt);
+                }
+                if (object.errorMessage != null)
+                    message.errorMessage = String(object.errorMessage);
+                return message;
+            };
 
             /**
              * Creates a plain object from a BatchResponse message. Also converts values to other types if specified.
@@ -7353,7 +13183,36 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchResponse.toObject = undefined};
+            BatchResponse.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.arrays || options.defaults)
+                    object.results = [];
+                if (options.defaults) {
+                    object.batchId = "";
+                    object.status = options.enums === String ? "BATCH_STATUS_PENDING" : 0;
+                    object.startedAt = null;
+                    object.completedAt = null;
+                    object.errorMessage = "";
+                }
+                if (message.batchId != null && message.hasOwnProperty("batchId"))
+                    object.batchId = message.batchId;
+                if (message.status != null && message.hasOwnProperty("status"))
+                    object.status = options.enums === String ? $root.legal.api.BatchStatus[message.status] === undefined ? message.status : $root.legal.api.BatchStatus[message.status] : message.status;
+                if (message.results && message.results.length) {
+                    object.results = [];
+                    for (let j = 0; j < message.results.length; ++j)
+                        object.results[j] = $root.legal.api.BatchResult.toObject(message.results[j], options);
+                }
+                if (message.startedAt != null && message.hasOwnProperty("startedAt"))
+                    object.startedAt = $root.google.protobuf.Timestamp.toObject(message.startedAt, options);
+                if (message.completedAt != null && message.hasOwnProperty("completedAt"))
+                    object.completedAt = $root.google.protobuf.Timestamp.toObject(message.completedAt, options);
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    object.errorMessage = message.errorMessage;
+                return object;
+            };
 
             /**
              * Converts this BatchResponse to JSON.
@@ -7381,7 +13240,8 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchResponse";
             };
 
-            return BatchResponse})();
+            return BatchResponse;
+        })();
 
         /**
          * BatchStatus enum.
@@ -7395,14 +13255,16 @@ export const legal = $root.legal = (() => {
          */
         api.BatchStatus = (function() {
             const valuesById = {}, values = Object.create(valuesById);
-            values[valuesById[0] = "BATCH_STATUS_PENDING"] = 0
-            values[valuesById[1] = "BATCH_STATUS_RUNNING"] = 1
-            values[valuesById[2] = "BATCH_STATUS_COMPLETED"] = 2
-            values[valuesById[3] = "BATCH_STATUS_FAILED"] = 3
-            values[valuesById[4] = "BATCH_STATUS_CANCELLED"] = 4
-            return values})();
+            values[valuesById[0] = "BATCH_STATUS_PENDING"] = 0;
+            values[valuesById[1] = "BATCH_STATUS_RUNNING"] = 1;
+            values[valuesById[2] = "BATCH_STATUS_COMPLETED"] = 2;
+            values[valuesById[3] = "BATCH_STATUS_FAILED"] = 3;
+            values[valuesById[4] = "BATCH_STATUS_CANCELLED"] = 4;
+            return values;
+        })();
 
         api.BatchResult = (function() {
+
             /**
              * Properties of a BatchResult.
              * @memberof legal.api
@@ -7422,7 +13284,12 @@ export const legal = $root.legal = (() => {
              * @constructor
              * @param {legal.api.IBatchResult=} [properties] Properties to set
              */
-            undefined}
+            function BatchResult(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * BatchResult operationId.
@@ -7438,7 +13305,7 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchResult
              * @instance
              */
-            BatchResult.prototype.success = $state(false);
+            BatchResult.prototype.success = false;
 
             /**
              * BatchResult resultData.
@@ -7462,7 +13329,8 @@ export const legal = $root.legal = (() => {
              * @memberof legal.api.BatchResult
              * @instance
              */
-            BatchResult.prototype.processingTimeMs = 0
+            BatchResult.prototype.processingTimeMs = 0;
+
             /**
              * Creates a new BatchResult instance using the specified properties.
              * @function create
@@ -7484,7 +13352,21 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            BatchResult.encode = undefined};
+            BatchResult.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.operationId != null && Object.hasOwnProperty.call(message, "operationId"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.operationId);
+                if (message.success != null && Object.hasOwnProperty.call(message, "success"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).bool(message.success);
+                if (message.resultData != null && Object.hasOwnProperty.call(message, "resultData"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.resultData);
+                if (message.errorMessage != null && Object.hasOwnProperty.call(message, "errorMessage"))
+                    writer.uint32(/* id 4, wireType 2 =*/34).string(message.errorMessage);
+                if (message.processingTimeMs != null && Object.hasOwnProperty.call(message, "processingTimeMs"))
+                    writer.uint32(/* id 5, wireType 5 =*/45).float(message.processingTimeMs);
+                return writer;
+            };
 
             /**
              * Encodes the specified BatchResult message, length delimited. Does not implicitly {@link legal.api.BatchResult.verify|verify} messages.
@@ -7510,7 +13392,42 @@ export const legal = $root.legal = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            BatchResult.decode = undefined};
+            BatchResult.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.legal.api.BatchResult();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.operationId = reader.string();
+                            break;
+                        }
+                    case 2: {
+                            message.success = reader.bool();
+                            break;
+                        }
+                    case 3: {
+                            message.resultData = reader.string();
+                            break;
+                        }
+                    case 4: {
+                            message.errorMessage = reader.string();
+                            break;
+                        }
+                    case 5: {
+                            message.processingTimeMs = reader.float();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a BatchResult message from the specified reader or buffer, length delimited.
@@ -7536,7 +13453,26 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            BatchResult.verify = undefined};
+            BatchResult.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
+                    if (!$util.isString(message.operationId))
+                        return "operationId: string expected";
+                if (message.success != null && message.hasOwnProperty("success"))
+                    if (typeof message.success !== "boolean")
+                        return "success: boolean expected";
+                if (message.resultData != null && message.hasOwnProperty("resultData"))
+                    if (!$util.isString(message.resultData))
+                        return "resultData: string expected";
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    if (!$util.isString(message.errorMessage))
+                        return "errorMessage: string expected";
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
+                    if (typeof message.processingTimeMs !== "number")
+                        return "processingTimeMs: number expected";
+                return null;
+            };
 
             /**
              * Creates a BatchResult message from a plain object. Also converts values to their respective internal types.
@@ -7546,7 +13482,22 @@ export const legal = $root.legal = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {legal.api.BatchResult} BatchResult
              */
-            BatchResult.fromObject = undefined};
+            BatchResult.fromObject = function fromObject(object) {
+                if (object instanceof $root.legal.api.BatchResult)
+                    return object;
+                let message = new $root.legal.api.BatchResult();
+                if (object.operationId != null)
+                    message.operationId = String(object.operationId);
+                if (object.success != null)
+                    message.success = Boolean(object.success);
+                if (object.resultData != null)
+                    message.resultData = String(object.resultData);
+                if (object.errorMessage != null)
+                    message.errorMessage = String(object.errorMessage);
+                if (object.processingTimeMs != null)
+                    message.processingTimeMs = Number(object.processingTimeMs);
+                return message;
+            };
 
             /**
              * Creates a plain object from a BatchResult message. Also converts values to other types if specified.
@@ -7557,7 +13508,29 @@ export const legal = $root.legal = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            BatchResult.toObject = undefined};
+            BatchResult.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    object.operationId = "";
+                    object.success = false;
+                    object.resultData = "";
+                    object.errorMessage = "";
+                    object.processingTimeMs = 0;
+                }
+                if (message.operationId != null && message.hasOwnProperty("operationId"))
+                    object.operationId = message.operationId;
+                if (message.success != null && message.hasOwnProperty("success"))
+                    object.success = message.success;
+                if (message.resultData != null && message.hasOwnProperty("resultData"))
+                    object.resultData = message.resultData;
+                if (message.errorMessage != null && message.hasOwnProperty("errorMessage"))
+                    object.errorMessage = message.errorMessage;
+                if (message.processingTimeMs != null && message.hasOwnProperty("processingTimeMs"))
+                    object.processingTimeMs = options.json && !isFinite(message.processingTimeMs) ? String(message.processingTimeMs) : message.processingTimeMs;
+                return object;
+            };
 
             /**
              * Converts this BatchResult to JSON.
@@ -7585,13 +13558,17 @@ export const legal = $root.legal = (() => {
                 return typeUrlPrefix + "/legal.api.BatchResult";
             };
 
-            return BatchResult})();
+            return BatchResult;
+        })();
 
-        return api})();
+        return api;
+    })();
 
-    return legal})();
+    return legal;
+})();
 
 export const google = $root.google = (() => {
+
     /**
      * Namespace google.
      * @exports google
@@ -7600,6 +13577,7 @@ export const google = $root.google = (() => {
     const google = {};
 
     google.protobuf = (function() {
+
         /**
          * Namespace protobuf.
          * @memberof google
@@ -7608,6 +13586,7 @@ export const google = $root.google = (() => {
         const protobuf = {};
 
         protobuf.Timestamp = (function() {
+
             /**
              * Properties of a Timestamp.
              * @memberof google.protobuf
@@ -7624,7 +13603,12 @@ export const google = $root.google = (() => {
              * @constructor
              * @param {google.protobuf.ITimestamp=} [properties] Properties to set
              */
-            undefined}
+            function Timestamp(properties) {
+                if (properties)
+                    for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
 
             /**
              * Timestamp seconds.
@@ -7632,14 +13616,16 @@ export const google = $root.google = (() => {
              * @memberof google.protobuf.Timestamp
              * @instance
              */
-            Timestamp.prototype.seconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0
+            Timestamp.prototype.seconds = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
             /**
              * Timestamp nanos.
              * @member {number} nanos
              * @memberof google.protobuf.Timestamp
              * @instance
              */
-            Timestamp.prototype.nanos = 0
+            Timestamp.prototype.nanos = 0;
+
             /**
              * Creates a new Timestamp instance using the specified properties.
              * @function create
@@ -7661,7 +13647,15 @@ export const google = $root.google = (() => {
              * @param {$protobuf.Writer} [writer] Writer to encode to
              * @returns {$protobuf.Writer} Writer
              */
-            Timestamp.encode = undefined},;
+            Timestamp.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.seconds != null && Object.hasOwnProperty.call(message, "seconds"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int64(message.seconds);
+                if (message.nanos != null && Object.hasOwnProperty.call(message, "nanos"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int32(message.nanos);
+                return writer;
+            };
 
             /**
              * Encodes the specified Timestamp message, length delimited. Does not implicitly {@link google.protobuf.Timestamp.verify|verify} messages.
@@ -7687,7 +13681,30 @@ export const google = $root.google = (() => {
              * @throws {Error} If the payload is not a reader or valid buffer
              * @throws {$protobuf.util.ProtocolError} If required fields are missing
              */
-            Timestamp.decode = undefined},;
+            Timestamp.decode = function decode(reader, length, error) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                let end = length === undefined ? reader.len : reader.pos + length, message = new $root.google.protobuf.Timestamp();
+                while (reader.pos < end) {
+                    let tag = reader.uint32();
+                    if (tag === error)
+                        break;
+                    switch (tag >>> 3) {
+                    case 1: {
+                            message.seconds = reader.int64();
+                            break;
+                        }
+                    case 2: {
+                            message.nanos = reader.int32();
+                            break;
+                        }
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
 
             /**
              * Decodes a Timestamp message from the specified reader or buffer, length delimited.
@@ -7713,7 +13730,17 @@ export const google = $root.google = (() => {
              * @param {Object.<string,*>} message Plain object to verify
              * @returns {string|null} `null` if valid, otherwise the reason why it is not
              */
-            Timestamp.verify = undefined};
+            Timestamp.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.seconds != null && message.hasOwnProperty("seconds"))
+                    if (!$util.isInteger(message.seconds) && !(message.seconds && $util.isInteger(message.seconds.low) && $util.isInteger(message.seconds.high)))
+                        return "seconds: integer|Long expected";
+                if (message.nanos != null && message.hasOwnProperty("nanos"))
+                    if (!$util.isInteger(message.nanos))
+                        return "nanos: integer expected";
+                return null;
+            };
 
             /**
              * Creates a Timestamp message from a plain object. Also converts values to their respective internal types.
@@ -7723,7 +13750,23 @@ export const google = $root.google = (() => {
              * @param {Object.<string,*>} object Plain object
              * @returns {google.protobuf.Timestamp} Timestamp
              */
-            Timestamp.fromObject = undefined};
+            Timestamp.fromObject = function fromObject(object) {
+                if (object instanceof $root.google.protobuf.Timestamp)
+                    return object;
+                let message = new $root.google.protobuf.Timestamp();
+                if (object.seconds != null)
+                    if ($util.Long)
+                        (message.seconds = $util.Long.fromValue(object.seconds)).unsigned = false;
+                    else if (typeof object.seconds === "string")
+                        message.seconds = parseInt(object.seconds, 10);
+                    else if (typeof object.seconds === "number")
+                        message.seconds = object.seconds;
+                    else if (typeof object.seconds === "object")
+                        message.seconds = new $util.LongBits(object.seconds.low >>> 0, object.seconds.high >>> 0).toNumber();
+                if (object.nanos != null)
+                    message.nanos = object.nanos | 0;
+                return message;
+            };
 
             /**
              * Creates a plain object from a Timestamp message. Also converts values to other types if specified.
@@ -7734,7 +13777,27 @@ export const google = $root.google = (() => {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            Timestamp.toObject = undefined};
+            Timestamp.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                let object = {};
+                if (options.defaults) {
+                    if ($util.Long) {
+                        let long = new $util.Long(0, 0, false);
+                        object.seconds = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.seconds = options.longs === String ? "0" : 0;
+                    object.nanos = 0;
+                }
+                if (message.seconds != null && message.hasOwnProperty("seconds"))
+                    if (typeof message.seconds === "number")
+                        object.seconds = options.longs === String ? String(message.seconds) : message.seconds;
+                    else
+                        object.seconds = options.longs === String ? $util.Long.prototype.toString.call(message.seconds) : options.longs === Number ? new $util.LongBits(message.seconds.low >>> 0, message.seconds.high >>> 0).toNumber() : message.seconds;
+                if (message.nanos != null && message.hasOwnProperty("nanos"))
+                    object.nanos = message.nanos;
+                return object;
+            };
 
             /**
              * Converts this Timestamp to JSON.
@@ -7762,11 +13825,13 @@ export const google = $root.google = (() => {
                 return typeUrlPrefix + "/google.protobuf.Timestamp";
             };
 
-            return Timestamp})();
+            return Timestamp;
+        })();
 
-        return protobuf})();
+        return protobuf;
+    })();
 
-    return google})();
+    return google;
+})();
 
 export { $root as default };
-

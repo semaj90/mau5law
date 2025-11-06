@@ -1,16 +1,12 @@
-﻿<script lang="ts">
-  // Compatibility shim: forward to real Input implementation
-  import { Input, as RealInput } from '$lib/components/ui/Input';
-  let { value = undefined, placeholder = undefined, disabled = false, ...rest } = $props<{
-    value?: string | number
-    placeholder?: string
-    disabled?: boolean}>();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<RealInput {value} {placeholder} {disabled} {...rest}>
-  <slot />
-</RealInput>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* shim - no styles */
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

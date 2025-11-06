@@ -1,24 +1,14 @@
-﻿<!--
-  Case Scoring Test Page - Enhanced-Bits Architecture
-  Testing the CaseScoringDashboard with Enhanced-Bits UI components
--->
 <script lang="ts">
-  import CaseScoringDashboard from '$lib/components/ai/CaseScoringDashboard.svelte';
+import CaseScoringDashboard from '$lib/components/ai/CaseScoringDashboard.svelte';
 </script>
 
-<svelte:head>
-  <title>Case Scoring Dashboard - Legal AI Platform</title>
-  <meta
-    name="description"
-    content="AI-powered case analysis and priority scoring dashboard using Enhanced-Bits architecture"
-  />
-</svelte:head>
-<div class="page-container">
+<main class="page-container">
+  <!-- Render the dashboard component so the import is used -->
   <CaseScoringDashboard />
-</div>
+</main>
 
 <style>
-  .page-container {
+.page-container {
     min-height: 100vh;
     background: #f8fafc;
   }

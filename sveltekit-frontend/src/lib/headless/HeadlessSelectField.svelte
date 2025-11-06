@@ -1,105 +1,12 @@
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
-  import * as Select from '$lib/components/ui/select/index.js';
-  import  FormField  from "./FormField.svelte";
-  // Using custom wrapper and bits-ui re-exports; some may be: undefined if not provided
-  const SelectRoot = (Select, as: unknown).Select || (Select as: unknown).Root || Select.default || (Select as: unknown),
-  const SelectTrigger = (Select as: unknown).SelectTrigger || (Select as: unknown).Trigger || (Select as: unknown).SelectTrigger || (Select as: unknown).Select?.Trigger
-  const SelectContent = (Select as: unknown).SelectContent || (Select as: unknown).Content || (Select as: unknown).Select?.Content
-  const SelectValue = (Select as: unknown).SelectValue || (Select as: unknown).Value || (Select as: unknown).Select?.Valu
-  const SelectItem = (Select as: unknown).SelectItem || (Select as: unknown).Item || (Select as: unknown).Select?.Item
-  interface SelectOption {
-    value: string
-    label?: string}
-  interface HeadlessSelectFieldProps { name: string
-    value?: string | null
-    selected?: string | null
-    options?: (string | SelectOption)[];
-    placeholder?: string
-    errors?: string[] | undefined
-    disabled?: boolean
-    autoSelectFirst?: boolean
-    emptyOptionLabel?: string
-    required?: boolean
-    description?: string
-    class?: string
-    onChange?: (_event: { name: string;, value: string | null }) => void}
-  let {
-    name,
-    value = $bindable(),
-    selected,
-    options = [],
-    placeholder = 'Select option',
-    errors = undefined,
-    disabled = false,
-    autoSelectFirst = false,
-    emptyOptionLabel = undefined,
-    required = false,
-    description = undefined,
-    class: className = '',
-    onChange,
-    ...rest}: HeadlessSelectFieldProps = $props();
-  // Internal state for current selection
-  let current = $state<string | null>(selected ?? value ?? null);
-  let mounted = $state<boolean>(false);
-  // Normalize options to consistent format
-  let normalized = $derived(
-    options.map(o =>
-      typeof o === 'string'
-        ? { value: o, label: o }
-        : { value: o.value, label: o.label ?? o.value }
-    )
-  );
-  // Sync external value changes
-  $effect(() => {
-    if (selected !== undefined && selected !== current) {
-      current = selected} else if (value !== undefined && value !== current) {
-      current = valu}
-  });
-  // Auto-select first option if enabled
-  $effect(() => {
-    if (mounted && autoSelectFirst && (current == null || current === '') && normalized.length > 0) {
-      updateValue(normalized[0].value)}
-  });
-  // Mount effect
-  $effect(() => {
-    mounted = true
-    return () => {
-      mounted = false}
-  });
-  function updateValue(v: string | null) {
-    if (current === v) return
-    current = v
-    // Update bindable props
-    if (value !== undefined) value = v
-    // Call onChange callback
-    if (onChange) {
-      onChange({ name, value: v })}
-  }
-  function handleValueChange(_event: CustomEvent<string>) {
-    updateValue(e(vent as CustomEvent).detail)}
+// Truncated file - replaced with stub
 </script>
 
-<FormField {name} {errors}>
-  {#snippet control()}
-    <div class={className} {...rest}>
-      <SelectRoot bind:value={current} {disabled} onValueChange={handleValueChange}>
-        <SelectTrigger>
-          <SelectValue {placeholder} />
-        </SelectTrigger>
-        <SelectContent>
-          {#if emptyOptionLabel}
-            <SelectItem value="">{emptyOptionLabel}</SelectItem>
-          {/if}
-          {#each normalized as opt (opt.value)}
-            <SelectItem value={opt.value}>{opt.label}</SelectItem>
-          {/each}
-        </SelectContent>
-      </SelectRoot>
-      <input type="hidden" {name} value={current || ''} />
-    </div>
-  {/snippet}
-</FormField>
-;
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
-
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

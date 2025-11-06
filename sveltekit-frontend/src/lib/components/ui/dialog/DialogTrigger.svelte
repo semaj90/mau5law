@@ -1,14 +1,12 @@
-﻿<script lang="ts">
-  import { Dialog } from 'bits-ui';
-  // Props are defined as $props() rune, no import needed
-  import type { Snippet } from 'svelte';
-  interface Props {
-    trigger?: Snippet;
-    children?: Snippet;
-  }
-  let { children: trigger }: Props = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<button>
-  <slot />
-</button>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

@@ -1,9 +1,12 @@
-﻿<div class="space-y-4"></div>
+<script lang="ts">
+// Truncated file - replaced with stub
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* @unocss-include */
-  .select-separator {
-    height: 1px;
-    background-color: #e5e7eb;
-    margin: 4px 0}
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

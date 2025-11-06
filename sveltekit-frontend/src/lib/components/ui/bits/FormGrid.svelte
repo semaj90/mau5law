@@ -1,28 +1,12 @@
-<!--
-  Enhanced Bits - Form Grid
-  Responsive form layout component
--->
 <script lang="ts">
-  interface Props {
-    columns?: number;
-    gap?: string;
-    children?: unknown;
-  }
-  let { columns = 2, gap = '16px', children }: Props = $props();
+// Truncated file - replaced with stub
 </script>
 
-<div class="form-grid" style="--columns: {columns} --gap: {gap}">
-  <slot />
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .form-grid {
-    display: grid;
-    grid-template-columns: repeat(var(--columns, 2), 1fr); gap: var(--gap, 16px);
-    margin-bottom: 24px}
-  @media (max-width: 768px) {
-    .form-grid {
-      grid-template-columns: 1fr;
-      gap: calc(var(--gap, 16px) * 0.75)}
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

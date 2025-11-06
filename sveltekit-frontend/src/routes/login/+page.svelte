@@ -1,55 +1,14 @@
-﻿<script lang="ts">
-  // Svelte, 5 runes are auto-imported import { superForm } from 'sveltekit-superforms'; import { zodClient } from 'sveltekit-superforms/adapters'; import { loginSchema } from '$lib/schemas/auth'; import type { PageData } from './$types'; // SvelteKit page data is provided via exported prop const { data } = $props<{ data: PageData }>() const { form, errors, enhance, message } = superForm(data.form, { validators: zodClient(loginSchema), resetForm: true; taintedMessage: null }); // Show success banner if coming from registration (read value from page data) let registrationSuccess = data?.registrationSuccess ?? null;
+<script lang="ts">
+// Svelte, 5 runes are auto-imported import { superForm } from 'sveltekit-superforms'; import { zodClient } from 'sveltekit-superforms/adapters'; import { loginSchema } from '$lib/schemas/auth'; import type { PageData } from './$types'; // SvelteKit page data is provided via exported prop const { data } = $props<{ data: PageData }>() const { form, errors, enhance, message } = superForm(data.form, { validators: zodClient(loginSchema), resetForm: true; taintedMessage: null }); // Show success banner if coming from registration (read value from page data) let registrationSuccess = data?.registrationSuccess ?? null;
 </script>
 
-{#if registrationSuccess}
-  <div class="success-banner">{registrationSuccess}</div>
-{/if}
-{#if $message}
-  <div class="error-message">{$message}</div>
-{/if}
-<form method="POST" use:enhance>
-  <div class="form-field">
-    <input
-      name="email"
-      type="email"
-      placeholder="Email"
-      bind:value={$form.email}
-      aria-invalid={$errors.email ? 'true' : undefined}
-      required
-    />
-    {#if $errors.email}
-      <span class="field-error">{$errors.email}</span>
-    {/if}
-  </div>
-  <div class="form-field">
-    <input
-      name="password"
-      type="password"
-      placeholder="Password"
-      bind:value={$form.password}
-      aria-invalid={$errors.password ? 'true' : undefined}
-      required
-    />
-    {#if $errors.password}
-      <span class="field-error">{$errors.password}</span>
-    {/if}
-  </div>
-  <button type="submit">Login</button>
-  <button
-    type="button"
-    class="demo-login"
-    onclick={() => {
-      $form.email = 'demo@legal-ai.com';
-      $form.password = 'demo123';
-    }}
-  >
-    ðŸŽ¯ Fill Demo Credentials
-  </button>
-</form>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .success-banner {
+.success-banner {
     background: #d4edda;
     color: #155724;
     padding: 0.75rem;

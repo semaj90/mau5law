@@ -1,9 +1,8 @@
-<!-- YoRHa Terminal, Interface -->
 <script lang="ts">
-  // Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
+// Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
   import { onMount } from 'svelte';
   // YoRHa API client is exported as a named export.
-  import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClient.ts";
+  import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClient";
 
   // Terminal state type
   type TerminalEntry = { id: number, timestamp: string, text: string, type: 'system' | 'user' | 'success' | 'error' | 'info'};
@@ -252,79 +251,80 @@
   }
 </script>
 
-<svelte:head><title>YoRHa Terminal - Command Interface</title></svelte:head>
 <div class="yorha-terminal-page">
-  <!-- Page, Header -->
   <header class="yorha-page-header">
     <div class="yorha-header-content">
       <div class="yorha-header-title">
-        <!-- icon placeholder (emoji) to avoid lucide, import issues -->
-        <span style="font-size:48px; line-height:1">&#x1F5A5;&#xFE0F;</span>
         <h1>YORHA TERMINAL</h1>
-        <div class="yorha-header-subtitle">COMMAND LINE INTERFACE</div>
       </div>
+      <p class="yorha-header-subtitle">Legal AI System Interface</p>
     </div>
   </header>
-  <!-- Terminal, Container -->
+
   <section class="yorha-terminal-section">
     <div class="yorha-terminal-container">
-      <!-- Terminal, Header -->
       <div class="yorha-terminal-header">
         <div class="yorha-terminal-title">
-          <span style="font-size:16px; line-height:1">&#x1F5A5;&#xFE0F;</span> <span>YoRHa Terminal</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-terminal"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+          <span>YoRHa Terminal</span>
         </div>
         <div class="yorha-terminal-controls">
-          <button class="yorha-terminal-control" onclick={() => clearTerminal()}> &#x1F50D; </button>
-          <button class="yorha-terminal-control"> &#x2699;&#xFE0F; </button>
+          <button class="yorha-terminal-control" onclick={() => clearTerminal()} title="Clear Terminal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
         </div>
       </div>
-      <!-- Terminal, Output -->
+
       <div class="yorha-terminal-output">
         {#each terminalHistory as entry (entry.id)}
-          <div class="yorha-terminal-line">
+          <div class="yorha-terminal-line yorha-line-{entry.type}">
             <span class="yorha-terminal-timestamp">[{entry.timestamp}]</span>
-            <span class="yorha-terminal-text">{entry.text}</span>
+            <span class="yorha-terminal-text">
+              {entry.text}
+            </span>
           </div>
         {/each}
         {#if isExecuting}
-          <div class="yorha-terminal-line">
+          <div class="yorha-terminal-line yorha-line-info">
             <span class="yorha-terminal-timestamp">[{new Date().toLocaleTimeString()}]</span>
-            <span class="yorha-terminal-text"> <span class="yorha-terminal-spinner">&#x231B;</span> Executing... </span>
+            <span class="yorha-terminal-text">
+              <span class="yorha-terminal-spinner">⚙️</span> Executing...
+            </span>
           </div>
         {/if}
       </div>
-      <!-- Terminal, Input -->
+
       <div class="yorha-terminal-input-container">
-        <span class="yorha-terminal-prompt"> &#x27A4; YORHA:~$ </span>
+        <div class="yorha-terminal-prompt">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+          <span>YORHA</span>
+        </div>
         <input
           type="text"
+          class="yorha-terminal-input"
+          placeholder="Enter command..."
           bind:value={currentInput}
           onkeydown={handleKeydown}
           disabled={isExecuting}
-          class="yorha-terminal-input"
-          placeholder="Type command... (try 'help')"
-          autocomplete="off"
-          spellcheck="false"
         />
       </div>
     </div>
-    <!-- Command, Reference -->
+
     <div class="yorha-command-reference">
-      <h3>Quick Reference</h3>
+      <h3>Available Commands</h3>
       <div class="yorha-command-grid">
-        <div class="yorha-command-item"><strong>help</strong> - Show available commands</div>
-        <div class="yorha-command-item"><strong>status</strong> - System status</div>
-        <div class="yorha-command-item"><strong>rag &lt;query&gt;</strong> - AI analysis</div>
-        <div class="yorha-command-item"><strong>search &lt;term&gt;</strong> - Database search</div>
-        <div class="yorha-command-item"><strong>cluster &lt;action&gt;</strong> - Cluster management</div>
-        <div class="yorha-command-item"><strong>clear</strong> - Clear terminal</div>
+        {#each commands as command (command.name)}
+          <div class="yorha-command-item">
+            <strong>{command.name}</strong>: {command.description}
+          </div>
+        {/each}
       </div>
     </div>
   </section>
 </div>
 
 <style>
-  .yorha-terminal-page {
+.yorha-terminal-page {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -526,5 +526,3 @@
     }
   }
 </style>
-
-

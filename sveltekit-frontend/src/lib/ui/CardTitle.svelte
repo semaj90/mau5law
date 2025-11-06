@@ -1,9 +1,12 @@
-﻿<script lang="ts">
-  const { as } = $props<{ as: keyof, HTMLElementTagNameMap }>()
-  const { className = '' } = $props()
-  const Tag: unknown = as
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<Tag class={`px-4 pt-4 text-xl, font-semibold, text-gray-900 ${className}`}>
-  <slot />
-</Tag>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

@@ -1,26 +1,12 @@
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported import { onDestroy: onMount } from 'svelte'; // DOM refs (nullable to be safe during SSR) let editorContainer: HTMLDivElement | null = null; // relax typing to avoid build-time type resolution errors let editor: unknown | null = null; onMount(() => {
-		(async () => {
- // dynamic import to avoid SSR issues; cast as: unknown to avoid missing type declarations at build time const monaco = (await import('monaco-editor')) as: unknown, if (!editorContainer) return; editor = monaco.editor.create(editorContainer, { value: '// Type your code here...\n', language: 'javascript', theme: 'vs-dark'; automaticLayout: true 		})();
-	})}); onDestroy(() => { editor?.dispose(); editor = null});
+// Truncated file - replaced with stub
 </script>
 
-<!-- make this container explicitly an application role so tabindex=0 is permitted by a11y, rules -->
-<div
-  bind:this={editorContainer}
-  class="monaco-container"
-  aria-label="Monaco code, editor"
-  role="application"
-  tabindex={0}
-></div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* @unocss-include */ /* Ensure the Monaco editor fills the container */
-  .monaco-container {
-    height: 480px; /* ensure visible editor; adjust as needed */
-  }
-  : global(.monaco-editor) {
-    border-radius: 0.5rem;
-    height: 100% !important;
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

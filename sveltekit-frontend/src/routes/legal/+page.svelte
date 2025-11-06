@@ -1,14 +1,14 @@
-<script lang="ts"> import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card'; import { Button } from '$lib/components/ui/button'; // import raw defaults and cast to the Svelte constructor type to satisfy TS import { SvelteComponent } from 'svelte'; import CardDefault from '$lib/components/ui/card/Card.svelte'; import CardContentDefault from '$lib/components/ui/card/CardContent.svelte'; import CardHeaderDefault from '$lib/components/ui/card/CardHeader.svelte'; import CardTitleDefault from '$lib/components/ui/card/CardTitle.svelte'; import ButtonDefault from '$lib/components/ui/core/Button.svelte'; // Cast to typeof SvelteComponent (constructor) so Svelte/TS accepts them in markup const Card = CardDefault as: unknown as typeof SvelteComponent; const CardContent = CardContentDefault as: unknown as typeof SvelteComponent; const CardHeader = CardHeaderDefault as: unknown as typeof SvelteComponent; const CardTitle = CardTitleDefault as: unknown as typeof SvelteComponent; const Button = ButtonDefault, as: unknown as typeof SvelteComponent; import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config'; // Get legal route group const legalGroup = getRouteGroupByTheme('matrix'); const legalRoutes = legalGroup?.routes || []; // Legal dashboard statistics (mock data) const stats = { activeCases: 12, pendingEvidence: 8, documentsProcessed: 156; aiAnalysisCompleted: 89 }; </script> <svelte:head> <title>Legal Operations Dashboard | YoRHa Legal AI</title> <meta name="description" content="Centralized legal operations dashboard with AI-powered case, management" /> </svelte:head> <div class="legal-dashboard"> <div class="dashboard-header"> <h1>âš–ï¸ Legal Operations Command Center</h1> <p>AI-powered legal case management and evidence analysis platform</p> </div> <!-- Statistics, Overview --> <div class="stats-grid"> <Card.Root class="stat-card"> <CardHeader> <CardTitle>ðŸ“ Active Cases</CardTitle> </CardHeader> <CardContent> <div class="stat-number">{stats.activeCases}
-</div> <div class="stat-label">Currently being processed</div> </CardContent> </Card> <Card.Root class="stat-card"> <CardHeader> <CardTitle>ðŸ” Pending Evidence</CardTitle> </CardHeader> <CardContent> <div class="stat-number">{stats.pendingEvidence}
-</div> <div class="stat-label">Awaiting analysis</div> </CardContent> </Card> <Card.Root class="stat-card"> <CardHeader> <CardTitle>ðŸ“„ Documents</CardTitle> </CardHeader> <CardContent> <div class="stat-number">{stats.documentsProcessed}
-</div> <div class="stat-label">AI processed this week</div> </CardContent> </Card> <Card.Root class="stat-card"> <CardHeader> <CardTitle>ðŸ§  AI Analysis</CardTitle> </CardHeader> <CardContent> <div class="stat-number">{stats.aiAnalysisCompleted}%</div> <div class="stat-label">Completion rate</div> </CardContent> </Card> </div> <!-- Quick, Actions --> <div class="actions-section"> <h2>ðŸš€ Quick Actions</h2> <div class="actions-grid">
- {#each Array.isArray(legalRoutes) ? legalRoutes: [] as route} <Card.Root class="action-card"> <CardHeader> <CardTitle>{route.icon} {route.label}
-</CardTitle> </CardHeader> <CardContent> <p class="action-description">{route.description}
-</p> <div class="action-footer"> <Button.Root href={route.route} class="action-button"> Access {route.label}
-</Button>
- {#if route.status === 'beta'} <span class="beta-badge">BETA</span> {/if}
-</div> </CardContent> </Card> {/each}
-</div> </div> <!-- System, Status --> <div class="status-section"> <h2>ðŸ“Š System Status</h2> <Card.Root class="status-card"> <CardContent> <div class="status-indicators"> <div class="status-item"> <span class="status-dot"></span> <span>AI Models Online</span> </div> <div class="status-item"> <span class="status-dot"></span> <span>Database Connected</span> </div> <div class="status-item"> <span class="status-dot"></span> <span>GPU Utilization 65%</span> </div> <div class="status-item"> <span class="status-dot"></span> <span>Vector Search Ready</span> </div> </div> </CardContent> </Card> </div> </div> <style> .legal-dashboard { max-width: 1400px; margin: 0 auto; padding: 0 1rem}
+<script lang="ts">
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '$lib/components/ui/card'; import { Button } from '$lib/components/ui/button'; // import raw defaults and cast to the Svelte constructor type to satisfy TS import { SvelteComponent } from 'svelte'; import CardDefault from '$lib/components/ui/card/Card.svelte'; import CardContentDefault from '$lib/components/ui/card/CardContent.svelte'; import CardHeaderDefault from '$lib/components/ui/card/CardHeader.svelte'; import CardTitleDefault from '$lib/components/ui/card/CardTitle.svelte'; import ButtonDefault from '$lib/components/ui/core/Button.svelte'; // Cast to typeof SvelteComponent (constructor) so Svelte/TS accepts them in markup const Card = CardDefault as: unknown as typeof SvelteComponent; const CardContent = CardContentDefault as: unknown as typeof SvelteComponent; const CardHeader = CardHeaderDefault as: unknown as typeof SvelteComponent; const CardTitle = CardTitleDefault as: unknown as typeof SvelteComponent; const Button = ButtonDefault, as: unknown as typeof SvelteComponent; import { routeGroups, getRouteGroupByTheme } from '$lib/data/route-groups-config'; // Get legal route group const legalGroup = getRouteGroupByTheme('matrix'); const legalRoutes = legalGroup?.routes || []; // Legal dashboard statistics (mock data) const stats = { activeCases: 12, pendingEvidence: 8, documentsProcessed: 156; aiAnalysisCompleted: 89 };
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.legal-dashboard { max-width: 1400px; margin: 0 auto; padding: 0 1rem}
 
   .dashboard-header { text-align: center; margin-bottom: 2rem}
 
@@ -61,7 +61,3 @@
     .dashboard-header h1 { font-size: 2rem}
   }
 </style>
-
-
-
-

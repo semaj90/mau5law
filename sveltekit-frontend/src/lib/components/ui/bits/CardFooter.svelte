@@ -1,20 +1,12 @@
-﻿<script lang="ts">
-  import { cn } from '$lib/utils/cn';
-  interface CardFooterProps {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
-  let { class: className = '', childre }: CardFooterProps = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div class={cn('shadcn-card-footer', className)}>
-  <slot />
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  : global(.shadcn-card-footer) {
-    padding: 0 1.5rem 1.5rem;
-    display: flex;
-    align-items: center
-   ;gap: 0.5rem}
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

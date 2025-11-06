@@ -265,7 +265,7 @@ type CanvasMachineOutput =
   | DeleteCanvasOutput
   | { error?: unknown };
 
-const canvasMachine: AnyStateMachine = createMachine({
+const canvasMachine = createMachine({
   types: {} as {
     input: { id: string };
     context: { id: string };

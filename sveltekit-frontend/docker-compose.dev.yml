@@ -4,7 +4,7 @@ healthcheck: test: ["CMD", "redis-cli", "--raw", "incr", "ping"] interval: 30s t
 pgvector extension postgres: image: pgvector/pgvector:pg16 container_name: deeds-postgres ports: - "5432:5432"
 environment: POSTGRES_DB: deeds POSTGRES_USER: postgres POSTGRES_PASSWORD: postgres volumes: -
 postgres_data:/var/lib/postgresql/data - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql healthcheck: test:
-["CMD-SHELL", "pg_isready -U postgres"] interval: 30s timeout: 10s retries: 3 # Neo4j Graph Database neo4j: image:
+["CMD-SHELL", "pg_isready -U postgres -d deeds"] interval: 30s timeout: 10s retries: 3 # Neo4j Graph Database neo4j: image:
 neo4j:5-community container_name: deeds-neo4j ports: - "7474:7474" - "7687:7687" environment: NEO4J_AUTH: neo4j/password
 NEO4J_PLUGINS: '["apoc"]' volumes: - neo4j_data:/data - neo4j_logs:/logs healthcheck: test: ["CMD", "cypher-shell",
 "-u", "neo4j", "-p", "password", "RETURN 1"] interval: 30s timeout: 10s retries: 3 # MinIO Object Storage minio: image:
@@ -24,3 +24,4 @@ NEO4J_PASSWORD=password - OLLAMA_URL=http://ollama:11434 - QDRANT_URL=http://qdr
 ENABLE_CUDA=true - ENABLE_SIMD_JSON=true depends_on: - redis - postgres - neo4j - ollama - qdrant healthcheck: test:
 ["CMD", "curl", "-f", "http://localhost:8094/health"] interval: 30s timeout: 10s retries: 3 volumes: redis_data:
 postgres_data: neo4j_data: neo4j_logs: minio_data: qdrant_data: ollama_data: networks: default: name: deeds-network
+

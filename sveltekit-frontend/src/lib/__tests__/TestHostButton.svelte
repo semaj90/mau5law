@@ -1,8 +1,12 @@
 <script lang="ts">
-  import  Button  from "../components/ui/wrappers/bits/Button.svelte";
-  const { onclick } = $props<{ onclick: ((e: MouseEvent) }>()
-  const { disabled } = $props<{ disabled: boolean }>()
-  const { label } = $props<{ label: string }>()
+// Truncated file - replaced with stub
 </script>
 
-<Button {onclick} {disabled}>{label}</Button>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

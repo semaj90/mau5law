@@ -1,8 +1,5 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
-  import { embedText } from '$lib/ai/tensor-client';
+import { embedText } from '$lib/ai/tensor-client';
   let text = 'A short legal passage about indemnification and liability.';
   let simdParse = true
   let gpuTile = true
@@ -36,46 +33,13 @@ https://svelte.dev/e/js_parse_error -->
   }
 </script>
 
-<div class="page">
-  <h1>GPU Tiling + SIMD Demo (OCR â†’ Embedding)</h1>
-  <p>WebGPU: {webgpuSupported ? 'available' : 'unavailable'}</p>
-  <div class="controls">
-    <label>
-      <input type="checkbox" bind:checked={simdParse} />
-      SIMD parse in Service Worker (zeroâ€‘copy)
-    </label>
-    <label>
-      <input type="checkbox" bind:checked={gpuTile} disabled={!webgpuSupported} />
-      GPU tiling (WebGPU)
-    </label>
-  </div>
-  <div class="inputs">
-    <div>
-      <label for="pick-image-for-ocr">Pick image for OCR:</label><input
-        id="pick-image-for-ocr"
-        type="file"
-        accept="image/*"
-        onchange={onImageSelected}
-        disabled={ocrBusy}
-      />
-      {#if ocrBusy}<span>OCRâ€¦</span>{/if}
-    </div>
-    <div class="text">
-      <label for="text">Text</label><textarea id="text" bind:value={text} rows="6" />
-    </div>
-  </div>
-  <div class="actions">
-    <button onclick={run} disabled={runBusy}>Process</button>
-    {#if runBusy}<span>Runningâ€¦</span>{/if}
-  </div>
-  {#if result}
-    <h3>Result</h3>
-    <pre>{JSON.stringify(result, null, 2)}</pre>
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .page {
+.page {
     padding: 1rem;
     display: grid;
     gap: 1rem}
@@ -93,5 +57,3 @@ https://svelte.dev/e/js_parse_error -->
    ; gap: 0.75rem;
     align-items: center}
 </style>
-
-

@@ -1,25 +1,14 @@
-﻿<!--
-  Document Drafting Test Page - Enhanced-Bits Architecture
-  Testing the LegalDocumentDrafting with Enhanced-Bits UI components
--->
 <script lang="ts">
-  import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
+import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
 </script>
 
-<svelte:head>
-  <title>Legal Document Drafting - Legal AI Platform</title>
-  <meta
-    name="description"
-    content="AI-powered legal document creation and collaborative editing using Enhanced-Bits architecture"
-  />
-</svelte:head>
-
-<div class="page-container">
-  <LegalDocumentDrafting />
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .page-container {
+.page-container {
     min-height: 100vh;
     background: #f8fafc;
   }

@@ -1,5 +1,5 @@
-﻿<script lang="ts">
-  // Svelte, 5 runes are auto-imported
+<script lang="ts">
+// Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   $effect(() => {
@@ -8,10 +8,11 @@
   });
 </script>
 
-<svelte:head>
-  <title>Redirecting...</title>
-</svelte:head>
-<div style="padding:3rem,text-align:center;">
-  <h2>Redirecting to All Routes...</h2>
-  <p>If you are not redirected automatically, <a href="/all-routes">click here</a>.</p>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

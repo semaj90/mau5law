@@ -168,19 +168,95 @@ export class SIMDJSONParser {
     return count; // Corrected placement of return
   }
 }
+
+// Placeholder for WASM exports (e.g., malloc, free)
+// In a real scenario, this would be populated after loading the WASM module.
+let wasmExports: {
+  memory?: WebAssembly.Memory;
+  malloc?: (size: number) => number;
+  free?: (ptr: number) => void;
+} = {};
+
+/**
+ * Initializes the WebAssembly module.
+ * In a production environment, this would load the actual .wasm file.
+ * For this TypeScript simulation, it provides mock WASM memory management.
+ * @param modulePath The path to the .wasm module.
+ */
+export async function initializeWasm(modulePath?: string): Promise<void> {
+  if (typeof WebAssembly === 'undefined') {
+    console.warn("WebAssembly is not supported in this environment. Using fallback memory management.");
+    // Provide a fallback if WASM is not available
+    wasmExports.memory = new WebAssembly.Memory({ initial: 256, maximum: 1024 }); // Mock memory
+    let heapPtr = 0;
+    wasmExports.malloc = (size: number) => {
+      const allocatedPtr = heapPtr;
+      heapPtr += size;
+      // Simple bump allocator, no actual free
+      if (heapPtr > wasmExports.memory!.buffer.byteLength) {
+        console.error("WASM memory allocation failed: Out of memory (mock).");
+        return 0; // Indicate failure
+      }
+      return allocatedPtr;
+    };
+    wasmExports.free = (ptr: number) => {
+      // In this mock, free does nothing as it's a simple bump allocator
+      console.log(`Mock WASM memory deallocated: ${ptr}`);
+    };
+    return;
+  }
+
+  // In a real scenario, you would load the WASM module here:
+  // const response = await fetch(modulePath || '/wasm/simd_parser.wasm');
+  // const { instance } = await WebAssembly.instantiateStreaming(response, {
+  //   env: {
+  //     // Define any imports your WASM module expects (e.g., console.log, Math.random)
+  //   }
+  // });
+  // wasmExports = instance.exports as typeof wasmExports;
+
+  // For now, we'll simulate a successful WASM load with mock exports
+  console.log("Simulating WebAssembly module initialization.");
+  wasmExports.memory = new WebAssembly.Memory({ initial: 256, maximum: 1024 }); // Actual WASM memory
+  let heapPtr = 0; // Simple bump allocator for simulation
+  wasmExports.malloc = (size: number) => {
+    const allocatedPtr = heapPtr;
+    heapPtr += size;
+    if (heapPtr > wasmExports.memory!.buffer.byteLength) {
+      console.error("WASM memory allocation failed: Out of memory (simulation).");
+      return 0;
+    }
+    return allocatedPtr;
+  };
+  wasmExports.free = (ptr: number) => {
+    // In this simulation, free does nothing as it's a simple bump allocator
+    console.log(`Simulated WASM memory deallocated: ${ptr}`);
+  };
+}
+
 // Export WASM memory management functions
 export function allocateMemory(size: number): number {
   // Corrected type annotation
-  // In TypeScript/browser environment, use regular memory allocation
-  // In actual WASM, this would use heap.alloc(size)
-  return size; // Placeholder implementation
+  if (!wasmExports.malloc) {
+    console.error("WASM module not initialized. Cannot allocate memory.");
+    return 0; // Indicate failure
+  }
+  const ptr = wasmExports.malloc(size);
+  if (ptr === 0) {
+    console.error(`Failed to allocate ${size} bytes from WASM memory.`);
+  } else {
+    console.log(`Allocated ${size} bytes at WASM memory address: ${ptr}`);
+  }
+  return ptr;
 }
 
 export function deallocateMemory(ptr: number): void {
   // Corrected type annotation
-  // In TypeScript/browser environment, memory is garbage collected
-  // In actual WASM, this would use heap.free(ptr)
-  console.log("Memory deallocated: ", ptr);
+  if (!wasmExports.free) {
+    console.error("WASM module not initialized. Cannot deallocate memory.");
+    return;
+  }
+  wasmExports.free(ptr);
 }
 
 // Performance benchmarking

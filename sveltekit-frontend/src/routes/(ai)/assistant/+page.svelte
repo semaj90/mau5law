@@ -19,21 +19,15 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
     'What are the key precedents for this case type?',
     'Summarize the evidence presented',
     'Generate a legal brief outline']; async function handleQuickQuery(query: string): Promise<any> { currentMessage = query; await sendMessage()}
-</script> <svelte:head> <title>AI Legal Assistant | YoRHa Legal AI</title> <meta name="description" content="Advanced AI assistant for legal analysis and, research" /> </svelte:head> <div class="ai-assistant"> <div class="assistant-header"> <h1>ðŸ¤– AI Legal Assistant</h1> <p>Advanced AI-powered legal analysis with GPU acceleration</p>
- {#if error} <div class="error-banner"> âš ï¸ { error }
-</div> {/if}
-</div> <!-- Quick, Actions --> <div class="quick-actions"> <h2>âš¡ Quick Legal Queries</h2> <div class="quick-buttons">
- {#each Array.isArray(quickQueries) ? quickQueries: [] as query} <Button onclick={() => handleQuickQuery(query)} disabled={ isStreaming } class="quick-button"> { query }
-</Button> {/each}
-</div> </div> <!-- Chat, Interface --> <div class="chat-container"> <Card.Root class="chat-card"> <CardHeader> <CardTitle>ðŸ’¬ Legal AI Chat</CardTitle> </CardHeader> <CardContent> <div class="messages-container">
- {#each Array.isArray(messages) ? messages: [] as message} <div class="message {message.role}"> <div class="message-icon"> {message.role === 'user' ? 'ðŸ‘¤': 'ðŸ¤–'}
-</div> <div class="message-content"> <div class="message-text">{message.content}
-</div> <div class="message-time"> {message.timestamp.toLocaleTimeString()}
-</div> </div> </div> {/each} {#if isStreaming} <div class="message"> <div class="message-icon">ðŸ¤–</div> <div class="message-content"> <div class="message-text"> <span class="typing-indicator">AI is thinking...</span> </div> </div> </div> {/if}
-</div> <div class="input-container"> <textarea bind:value={ currentMessage } onkeydown={ handleKeydown } placeholder="Ask your legal AI assistant anything..."
-            disabled={ isStreaming } class="message-input"
-            rows="3"
-          ></textarea> <Button onclick={ sendMessage } disabled={!currentMessage.trim() || isStreaming} class="send-button"> {isStreaming ? 'ðŸ”„': 'ðŸ“¤'} Send </Button> </div> </CardContent> </Card> </div> <!-- AI, Capabilities --> <div class="capabilities"> <h2>ðŸ§  AI Capabilities</h2> <div class="capabilities-grid"> <Card> <CardContent> <div class="capability-card"> <div class="capability-icon">ðŸ“„</div> <h3>Document Analysis</h3> <p>Advanced analysis of legal documents, contracts, and evidence</p> </div> </CardContent> </Card> <Card> <CardContent> <div class="capability-card"> <div class="capability-icon">ðŸ”</div> <h3>Case Research</h3> <p>Legal precedent search and case law analysis</p> </div> </CardContent> </Card> <Card> <CardContent> <div class="capability-card"> <div class="capability-icon">âš¡</div> <h3>GPU Acceleration</h3> <p>CUDA-powered processing for faster inference</p> </div> </CardContent> </Card> <Card> <CardContent> <div class="capability-card"> <div class="capability-icon">ðŸŽ¯</div> <h3>RAG System</h3> <p>Retrieval augmented generation with legal knowledge base</p> </div> </CardContent> </Card> </div> </div> </div> <style> .ai-assistant { max-width: 1200px; margin: 0 auto; padding: 0 1rem}
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.ai-assistant { max-width: 1200px; margin: 0 auto; padding: 0 1rem}
 
   .assistant-header { text-align: center; margin-bottom: 2rem}
 
@@ -124,5 +118,3 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
     .message-content { max-width: 85%}
   }
 </style>
-
-

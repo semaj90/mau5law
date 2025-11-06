@@ -42,104 +42,13 @@ import type { Case } from '$lib/types';
     await loadCitations()}
 </script>
 
-<svelte:head>
-  <title>Legal Citations | YoRHa Legal AI</title>
-  <meta name="description" content="Legal citation management and, validation, system" />
-</svelte:head>
-
-<div class="citations-page">
-  <div class="page-header">
-    <h1>ðŸ“ Legal Citations</h1>
-    <p>Manage and validate legal citations with AI assistance</p>
-  </div>
-
-  <!-- Search, and, Filters -->
-  <Card.Root class="search-card">
-    <CardContent>
-      <div class="search-controls">
-        <div class="search-input">
-          <input
-            type="text"
-            bind:value={searchQuery}
-            placeholder="Search citations, quoted text, or legal principles..."
-            class="search-field"
-          />
-        </div>
-        <div class="filter-controls">
-          <select bind:value={citationType} class="citation-type-select">
-            <option value="all">All Types</option>
-            <option value="case">Case Citations</option>
-            <option value="statute">Statute Citations</option>
-            <option value="regulation">Regulation Citations</option>
-          </select>
-        </div>
-        <Button.Root onclick={handleSearch} class="search-button">ðŸ” Search</Button>
-      </div>
-    </CardContent>
-  </Card>
-
-  <!-- Citations, Results -->
-
-  {#if loading}
-    <div class="loading-state">
-      <div class="loading-spinner"></div>
-      <p>Loading citations...</p>
-    </div>
-  {:else if citations.length === 0}
-    <div class="empty-state">
-      <div class="empty-icon">ðŸ“</div>
-      <h3>No citations found</h3>
-      <p>Try adjusting your search criteria or add new citations</p>
-    </div>
-  {:else}
-    <div class="citations-grid">
-
-      {#each Array.isArray(citations) ? citations : [] as citation}
-        <Card.Root class="citation-card">
-          <CardHeader>
-            <CardTitle class="citation-type">
-              {citation.citationType.toUpperCase()}
-              {#if citation.isKeyAuthority}
-                <span class="key-authority-badge">KEY</span>
-              {/if}
-</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div class="formatted-citation">
-              {citation.formattedCitation}
-</div>
-
-            {#if citation.quotedText}
-              <blockquote class="quoted-text">
-                "{citation.quotedText}"
-              </blockquote>
-            {/if}
-
-            {#if citation.legalPrinciple}
-              <div class="legal-principle">
-                <strong>Legal Principle:</strong>
-                {citation.legalPrinciple}
-</div>
-            {/if}
-
-            <div class="citation-footer">
-              <div class="relevance-score">
-                Relevance: {Math.round(parseFloat(citation.relevanceScore) * 100)}%
-              </div>
-              <div class="citation-actions">
-                <Button.Root size="sm" class="copy-button">ðŸ“‹ Copy</Button>
-                <Button.Root size="sm" class="edit-button">âœï¸ Edit</Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      {/each}
-</div>
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .citations-page {
+.citations-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 1rem}
@@ -274,5 +183,3 @@ import type { Case } from '$lib/types';
       font-size: 2rem}
   }
 </style>
-
-

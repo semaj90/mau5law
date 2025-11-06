@@ -1,11 +1,12 @@
-﻿<script lang="ts">
-  interface Props {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
-  let { children, class: className = '', ...restProps }: Props = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<h5 class="mb-1 font-medium leading-none" {...restProps}>
-  <slot />
-</h5>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

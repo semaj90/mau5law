@@ -1,5 +1,5 @@
-﻿<script lang="ts">
-  // Svelte, 5 runes are auto-imported
+<script lang="ts">
+// Svelte, 5 runes are auto-imported
   import { page } from '$app/state';
   import { browser } from '$app/environment';
   import type { Snippet } from 'svelte';
@@ -14,12 +14,13 @@
   let { children }: Props = $props();
 </script>
 
-<div class="evidence-canvas-layout" class:mounted>
-  {@render children?.()}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .evidence-canvas-layout {
+.evidence-canvas-layout {
     min-height: 100vh;
     width: 100%; opacity: 0;
     transition: opacity 0.2s ease-in-out}

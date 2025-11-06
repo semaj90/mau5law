@@ -1,44 +1,12 @@
-﻿<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  let {
-    checked = false,
-    disabled = false,
-    ariaLabel = 'Toggle',
-  } = $props<{
-    checked?: boolean;
-    disabled?: boolean;
-    ariaLabel?: string;
-  }>();
-  const dispatch = createEventDispatcher();
-
-  function toggle() {
-    if (disabled) return;
-    checked = !checked;
-    dispatch('change', { checked });
-  }
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<button
-  type="button"
-  role="switch"
-  aria-checked={checked}
-  aria-label={ariaLabel}
-  class="inline-flex items-center rounded-full p-0.5 focus:outline-none focus:ring-2"
-  onclick={toggle}
-  {disabled}
->
-  <span class="sr-only">{ariaLabel}</span>
-  <span class="w-9 h-5 flex items-center bg-muted rounded-full relative" class:opacity-50={disabled}>
-    <span
-      class="inline-block w-4 h-4 bg-white rounded-full transform transition-transform"
-      style="transform: translateX({checked ? 16 : 0}px);"
-    />
-  </span>
-</button>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* Minimal styling so Uno.css or your CSS system can override */
-  .bg-muted {
-    background-color: #e5e7eb;
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

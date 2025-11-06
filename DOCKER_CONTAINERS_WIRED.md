@@ -378,7 +378,7 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: legal_ai_db
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "legal_admin"]
+      test: ["CMD", "pg_isready", "-U", "legal_admin", "-d", "legal_ai_db"]
       interval: 10s
 
   redis:

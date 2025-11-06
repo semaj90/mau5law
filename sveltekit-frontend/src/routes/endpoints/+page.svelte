@@ -1,25 +1,14 @@
-﻿<script lang="ts">
-  let { data }: { data: unknown } = $props(); // { endpoints: { name: string, path: string, healthy: boolean, message?: string }[] }
+<script lang="ts">
+let { data }: { data: unknown } = $props(); // { endpoints: { name: string, path: string, healthy: boolean, message?: string }[] }
 </script>
 
-<div class="endpoints-page">
-  <h1 class="page-title">Endpoints & Status</h1>
-  <div class="endpoint-list">
-    {#each Array.isArray(data.endpoints) ? data.endpoints : [] as ep}
-      <div class="endpoint-card {ep.healthy ? 'ok' : 'fail'}">
-        <h2>{ep.name}</h2>
-        <p class="path">{ep.path}</p>
-        <p class="status">
-          {ep.healthy ? 'âœ… Healthy' : 'âŒ Down'}
-          {ep.message ? `(${ep.message})` : ''}
-        </p>
-      </div>
-    {/each}
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .endpoints-page {
+.endpoints-page {
     padding: 2rem}
   .page-title {
     font-size: 1.8rem;

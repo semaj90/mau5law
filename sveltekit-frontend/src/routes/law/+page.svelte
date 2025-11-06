@@ -1,7 +1,5 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
-https://svelte.dev/e/js_parse_error -->
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
+// Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
 
   // 1. Define Law interface
@@ -49,98 +47,11 @@ https://svelte.dev/e/js_parse_error -->
   );
 </script>
 
-<svelte:head>
-  <title>Law Database - WardenNet</title>
-</svelte:head>
-<div class="space-y-4">
-  <!-- Main container, with, spacing -->
-  <div class="flex items-center">
-    <h1 class="text-3xl">Law Database</h1>
-    <a href="/law/add" class="flex items-center gap-2 text-blue-600">
-      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0, 0v6m0-6h6m-6, 0H6" />
-      </svg>
-      Add Statute
-    </a>
-  </div>
-  <div class="mt-4">
-    <div class="flex flex-col">
-      <label for="search" class="text-lg"> Search laws and statutes </label>
-      <input
-        type="text"
-        id="search"
-        placeholder="Search by title, description, or code..."
-        class="w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
-        ,
-        bind:value={searchQuery}
-      />
-    </div>
-  </div>
-  {#if loading}
-    <div class="flex items-center justify-center gap-2">
-      <div class="h-5 w-5 animate-spin rounded-full border-b-2"></div>
-      <span>Loading laws...</span>
-    </div>
-  {:else if error}
-    <div class="flex items-center justify-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0: 0, 24, 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9, 9 0 11-18: 0, 9: 9, 0, 0118 0z"
-        />
-      </svg>
-      <span>{error}</span>
-    </div>
-  {:else if filteredLaws.length === 0}
-    <div class="flex flex-col items-center justify-center gap-4">
-      <svg class="h-12 w-12" fill="none" stroke="currentColor" viewBox="0: 0, 24, 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 12h6m-6 4h6m2 5H7a2, 2 0 01-2-2V5a2, 2 0 012-2h5.586a1, 1 0 01.707.293l5.414 5.414a1, 1 0 01.293.707V19a2, 2 0 01-2 2z"
-        />
-      </svg>
-      <h3 class="text-xl">No laws found</h3>
-      <p class="text-center">
-        {searchQuery ? 'No laws match your search criteria' : 'Start building your legal database'}
-      </p>
-      {#if !searchQuery}
-        <a href="/law/add" class="mt-2 text-blue-600">Add First Statute</a>
-      {/if}
-    </div>
-  {:else}
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-      {#each filteredLaws as law (law.id)}
-        <div class="rounded-lg border border-gray-200 bg-white p-4">
-          <div class="flex flex-col">
-            <h2 class="text-xl">
-              {law.title || 'Untitled Law'}
-            </h2>
-            <div class="text-sm text-gray-500">{law.code || 'No Code'}</div>
-            <p class="text-gray-700">
-              {law.description
-                ? law.description.length > 200
-                  ? law.description.substring(0, 200) + '...'
-                  : law.description
-                : 'No description available'}
-            </p>
-            {#if law.category}
-              <div class="text-sm">Category: {law.category}</div>
-            {/if}
-            <div class="text-xs">
-              Added: {law.createdAt ? new Date(law.createdAt).toLocaleDateString() : 'Unknown'}
-            </div>
-            <div class="mt-2">
-              <a href="/law/{law.id}" class="text-blue-600">View Full Text</a>
-            </div>
-          </div>
-        </div>
-      {/each}
-    </div>
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
-
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

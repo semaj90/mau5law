@@ -1,23 +1,121 @@
-<!-- @migration-task Error while migrating Svelte, code: Expected, token } https://svelte.dev/e/expected_token -->
-<!-- @migration-task Error while migrating Svelte; code: Expected, token } -->
 <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { page } from '$app/stores'; import Button from '$lib/components/ui/nes-Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; // Define Machine shape so TS can infer types (fixes: unknown[]) interface Machine { id: string, name: string; status: 'running' | 'idle' | 'error' | string; currentState: string, transitions: string[]; lastUpdated: string;, instances: number; // allow extra props if needed [key: string]: unknown; // component state (Svelte, 5 runes) with explicit generics let mounted = $state<boolean>(false); let machines = $state<Machine[]>([]); let selectedMachine = $state<Machine | null>(null); let loading = $state<boolean>(true); // Mock machine registry data - replace with actual XState registry const mockMachines: Machine[] = [ { id: 'auth-machine', name: 'Authentication State Machine', status: 'running', currentState: 'authenticated', transitions: ['logout', 'refresh', 'profile'], lastUpdated: new Date().toISOString(); instances: 3 }, {
-      id: 'case-management-machine', name: 'Case Management Workflow', status: 'running', currentState: 'reviewing', transitions: ['submit', 'save-draft', 'archive'], lastUpdated: new Date().toISOString(); instances: 1 }, {
-      id: 'rag-pipeline-machine', name: 'RAG Processing Pipeline', status: 'idle', currentState: 'waiting', transitions: ['process', 'reset', 'configure'], lastUpdated: new Date().toISOString(); instances: 0 }, {
-      id: 'gpu-allocation-machine', name: 'GPU Resource Allocation', status: 'running', currentState: 'allocated', transitions: ['release', 'extend', 'optimize'], lastUpdated: new Date().toISOString(); instances: 2], $effect(() => { mounted = true; loadMachines()});
-  async function loadMachines(): Promise<any> { loading = true; try { // In production: const response = await fetch('/api/state/machines') // For now, use mock data await new Promise(resolve => setTimeout(resolve, 500)); machines = mockMachines} catch (error) { console.error('Failed to load state machines:', error)} finally { loading = false}
-  }
-  async function restartMachine(machineId: string): Promise<any> { try { // await fetch(`/api/state/machines/${ machineId }/restart`, { method: 'POST' }) console.log('Restarting machine:', machineId); await loadMachines()} catch (error) { console.error('Failed to restart machine:', error)}
-  }
-  async function stopMachine(machineId: string): Promise<any> { try { // await fetch(`/api/state/machines/${ machineId }/stop`, { method: 'POST' }) console.log('Stopping machine:', machineId); await loadMachines()} catch (error) { console.error('Failed to stop machine:', error)}
-  }
-  function getStatusColor(status: string) { switch (status) { case, 'running': return 'bg-green-100 text-green-800'; case, 'idle': return 'bg-yellow-100 text-yellow-800'; case, 'error': return 'bg-red-100 text-red-800'; default: return 'bg-gray-100 text-gray-800'}
-  }
+	import type { Case } from '$lib/types';
+
+	// Define Machine shape so TS can infer types (fixes: unknown[])
+	interface Machine {
+		id: string;
+		name: string;
+		status: 'running' | 'idle' | 'error' | string;
+		currentState: string;
+		transitions: string[];
+		lastUpdated: string;
+		instances: number;
+		// allow extra props if needed
+		[key: string]: unknown;
+	}
+
+	// component state (Svelte 5 runes) with explicit generics
+	let mounted = $state<boolean>(false);
+	let machines = $state<Machine[]>([]);
+	let selectedMachine = $state<Machine | null>(null);
+	let loading = $state<boolean>(true);
+
+	// Mock machine registry data - replace with actual XState registry
+	const mockMachines: Machine[] = [
+		{
+			id: 'auth-machine',
+			name: 'Authentication State Machine',
+			status: 'running',
+			currentState: 'authenticated',
+			transitions: ['logout', 'refresh', 'profile'],
+			lastUpdated: new Date().toISOString(),
+			instances: 3
+		},
+		{
+			id: 'case-management-machine',
+			name: 'Case Management Workflow',
+			status: 'running',
+			currentState: 'reviewing',
+			transitions: ['submit', 'save-draft', 'archive'],
+			lastUpdated: new Date().toISOString(),
+			instances: 1
+		},
+		{
+			id: 'rag-pipeline-machine',
+			name: 'RAG Processing Pipeline',
+			status: 'idle',
+			currentState: 'waiting',
+			transitions: ['process', 'reset', 'configure'],
+			lastUpdated: new Date().toISOString(),
+			instances: 0
+		},
+		{
+			id: 'gpu-allocation-machine',
+			name: 'GPU Resource Allocation',
+			status: 'running',
+			currentState: 'allocated',
+			transitions: ['release', 'extend', 'optimize'],
+			lastUpdated: new Date().toISOString(),
+			instances: 2
+		}
+	];
+
+	$effect(() => {
+		mounted = true;
+		void loadMachines(); // Use void to explicitly ignore the Promise
+	});
+
+	async function loadMachines(): Promise<any> {
+		loading = true;
+		try {
+			// In production: const response = await fetch('/api/state/machines')
+			// For now, use mock data
+			await new Promise((resolve) => setTimeout(resolve, 500));
+			machines = mockMachines;
+		} catch (error) {
+			console.error('Failed to load state machines:', error);
+		} finally {
+			loading = false;
+		}
+	}
+
+	async function restartMachine(machineId: string): Promise<any> {
+		try {
+			// await fetch(`/api/state/machines/${ machineId }/restart`, { method: 'POST' })
+			console.log('Restarting machine:', machineId);
+			await loadMachines();
+		} catch (error) {
+			console.error('Failed to restart machine:', error);
+		}
+	}
+
+	async function stopMachine(machineId: string): Promise<any> {
+		try {
+			// await fetch(`/api/state/machines/${ machineId }/stop`, { method: 'POST' })
+			console.log('Stopping machine:', machineId);
+			await loadMachines();
+		} catch (error) {
+			console.error('Failed to stop machine:', error);
+		}
+	}
+
+	function getStatusColor(status: string) {
+		switch (status) {
+			case 'running':
+				return 'bg-green-100 text-green-800';
+			case 'idle':
+				return 'bg-yellow-100 text-yellow-800';
+			case 'error':
+				return 'bg-red-100 text-red-800';
+			default:
+				return 'bg-gray-100 text-gray-800';
+		}
+	}
 </script>
 
 <svelte:head>
   <title>XState Machine Registry - Legal AI Platform</title>
-  <meta name="description" content="Manage and monitor XState machines across the legal AI, platform" />
+  <meta name="description" content="Manage and monitor XState machines across the legal AI platform" />
 </svelte:head>
 <div class="page-container">
   <header class="page-header">
@@ -28,11 +126,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
         <span class="stat-number">{machines.length}</span> <span class="stat-label">Total Machines</span>
       </div>
       <div class="stat-card">
-        <span class="stat-number">{machines.filter(m => m.status === 'running').length}</span>
+        <span class="stat-number">{machines.filter((m: Machine) => m.status === 'running').length}</span>
         <span class="stat-label">Running</span>
       </div>
       <div class="stat-card">
-        <span class="stat-number">{machines.reduce((sum, m) => sum + (m.instances || 0), 0)}</span>
+        <span class="stat-number">{machines.reduce((sum: number, m: Machine) => sum + (m.instances || 0), 0)}</span>
         <span class="stat-label">Active Instances</span>
       </div>
     </div>

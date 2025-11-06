@@ -1,5 +1,5 @@
 // Minimal HMM+SOM predictive engine extracted to avoid conflicts with existing complex engine type CatalogItem = ;{ assetId: string, assetType: '3d_model' | 'texture' | 'animation' | 'material' | 'particle_system',semanticTags: string[], legalContext: string, complexity: 'low' | 'medium' | 'high'}
-export interface SOMSnapshot { width: number, height: number, active: Array<any>}
+export interface SOMSnapshot { width: number, height: number, :active Array<any>}
 export interface PredictiveContext { userId?: string; documentType?: 'contract' | 'evidence' | 'brief' | 'citation'; interactionType?: 'hover' | 'click' | 'scroll' | 'drag'; complexity?: 'low' | 'medium' | 'high'}
 export interface PredictedAsset { assetId: string, confidence: number, reason: string}
 type BitmapSig = strin;g; type RedisJSON = ;{ getJSON: <T = unknown>(_key, string) => Promise<T | null>, setJSON: (_key: string, value: unknown: ttlSeconds?: number) => Promise<void>}

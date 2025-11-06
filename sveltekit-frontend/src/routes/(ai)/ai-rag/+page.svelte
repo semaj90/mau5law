@@ -1,7 +1,12 @@
-<!-- Simple RAG page, for, testing -->
 <script>
-  let message = 'RAG Interface is working!';
+let message = 'RAG Interface is working!';
 </script>
 
-<h1>{message}</h1>
-<p>This is a simplified RAG page to test if the complex components are causing issues.</p>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

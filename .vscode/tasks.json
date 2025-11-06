@@ -1,1055 +1,1225 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "📝 Svelte-Check with Log (gemma3-legal summarization)",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-ExecutionPolicy",
-				"Bypass",
-				"-File",
-				"${workspaceFolder}/scripts/svelte-check-summarize.ps1"
-			],
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared"
-			},
-			"problemMatcher": [],
-			"detail": "Run svelte-check, log output, and summarize with gemma3-legal + embeddinggemma language extraction"
-		},
-		{
-			"label": "tsc --noEmit (sveltekit-frontend)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "tsc --noEmit (sveltekit-frontend dir)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "Start SvelteKit Dev (one-shot)",
-			"type": "shell",
-			"command": "npm",
-			"args": [
-				"run",
-				"dev"
-			],
-			"isBackground": false,
-			"group": "build"
-		},
-		{
-			"label": "Frontend: quick typecheck (no emit)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "Frontend: svelte-check (ultra-fast)",
-			"type": "shell",
-			"command": "npm",
-			"args": [
-				"run",
-				"check:ultra-fast"
-			],
-			"group": "test"
-		},
-		{
-			"label": "Quick TS/Svelte check (frontend)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "✅ TypeScript Check - Quick",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "tsc: sveltekit-frontend noEmit",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "tsc: sveltekit-frontend --noEmit",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck",
-				"-p",
-				"sveltekit-frontend"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "TS Check (frontend)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "TS quick check (frontend)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "TypeScript: sveltekit-frontend - noEmit check",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"isBackground": false,
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "TypeScript: sveltekit-frontend - narrow check",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck",
-				"-p",
-				"sveltekit-frontend"
-			],
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "TypeScript: sveltekit-frontend - narrow check",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck",
-				"-p",
-				"sveltekit-frontend"
-			],
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "test"
-		},
-		{
-			"label": "🔴 Start Redis Error Logger",
-			"type": "shell",
-			"command": "go",
-			"args": [
-				"run",
-				"simd-redis-vite-server.go"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/go-microservice"
-			},
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"problemMatcher": [],
-			"detail": "Starts Redis-based Vite error logging server with MCP Context7 auto-solve on port 8080",
-			"icon": {
-				"id": "server-process",
-				"color": "terminal.ansiRed"
-			}
-		},
-		{
-			"label": "🌐 Start SvelteKit Dev (via Error Logger)",
-			"type": "shell",
-			"command": "npm",
-			"args": [
-				"run",
-				"dev"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend"
-			},
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"problemMatcher": [
-				"$tsc",
-				"$eslint-compact"
-			],
-			"dependsOn": "🔴 Start Redis Error Logger",
-			"detail": "Starts SvelteKit development server (access via localhost:8080 for error logging)"
-		},
-		{
-			"label": "🧪 Test Error Logger",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"test-error-logger.js"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "new",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Tests Redis error logging with 4 simulated Vite errors and auto-solve"
-		},
-		{
-			"label": "📁 View Error Logs",
-			"type": "shell",
-			"command": "code",
-			"args": [
-				"logs/claude-pickup/"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"group": "build",
-			"presentation": {
-				"echo": false,
-				"reveal": "never",
-				"focus": false,
-				"panel": "shared"
-			},
-			"problemMatcher": [],
-			"detail": "Opens the claude-pickup directory to view auto-generated error logs"
-		},
-		{
-			"label": "🔧 Check Redis Connection",
-			"type": "shell",
-			"command": "docker",
-			"args": [
-				"exec",
-				"legal-ai-redis",
-				"redis-cli",
-				"ping"
-			],
-			"group": "build",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Tests Redis connection in Docker container"
-		},
-		{
-			"label": "🚀 Start Full Development Stack",
-			"dependsOrder": "sequence",
-			"dependsOn": [
-				"🔧 Check Redis Connection",
-				"🔴 Start Redis Error Logger"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": true
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"detail": "Starts complete development environment: Redis → Error Logger → SvelteKit (use localhost:8080)"
-		},
-		{
-			"label": "🗑️ Clean Error Logs",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				"Remove-Item logs/claude-pickup/*.json, logs/claude-pickup/*.md -ErrorAction SilentlyContinue"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"group": "build",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Cleans up auto-generated error log files (keeps README.md)"
-		},
-		{
-			"label": "🤖 Start MCP Multicore Server",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"scripts/mcp-multicore-server.mjs"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}",
-				"env": {
-					"MCP_PORT": "3002",
-					"MCP_WORKERS": "4",
-					"RTX_3060_OPTIMIZATION": "true",
-					"CONTEXT7_MULTICORE": "true"
-				}
-			},
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"isBackground": true,
-			"problemMatcher": {
-				"pattern": {
-					"regexp": "^(.*)$",
-					"file": 1,
-					"location": 2,
-					"message": 3
-				},
-				"background": {
-					"activeOnStart": true,
-					"beginsPattern": "Starting Enhanced MCP Multi-Core Server",
-					"endsPattern": "MCP Multi-Core Server ready"
-				}
-			},
-			"detail": "Starts MCP multicore server with Context7 integration for auto-solve tasks"
-		},
-		{
-			"label": "🔧 MCP Health Check",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				"try { $response = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host 'MCP Status:' $response.status -ForegroundColor Green; Write-Host 'Workers:' $response.workers -ForegroundColor Yellow; Write-Host 'Uptime:' $response.uptime 'seconds' -ForegroundColor Cyan } catch { Write-Host 'MCP Server not running' -ForegroundColor Red }"
-			],
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Checks MCP multicore server health and worker status"
-		},
-		{
-			"label": "📊 MCP Metrics Dashboard",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				"try { $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host '=== MCP Metrics Dashboard ===' -ForegroundColor Magenta; Write-Host 'Workers:' $metrics.workers -ForegroundColor Green; Write-Host 'Memory RSS:' ([math]::Round($metrics.memory.rss/1MB, 2)) 'MB' -ForegroundColor Yellow; Write-Host 'GPU Optimization:' $metrics.gpu -ForegroundColor Cyan; $workers = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/workers' -Method Get; Write-Host 'Active Workers:' $workers.active 'of' $workers.total -ForegroundColor Blue } catch { Write-Host 'MCP Server not running' -ForegroundColor Red }"
-			],
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "new",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Shows detailed MCP server metrics and worker status"
-		},
-		{
-			"label": "🚀 Start Full MCP Development Stack",
-			"dependsOrder": "sequence",
-			"dependsOn": [
-				"🔧 Check Redis Connection",
-				"🤖 Start MCP Multicore Server",
-				"🔴 Start Redis Error Logger"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"detail": "Starts complete MCP-enabled development environment: Redis → MCP Server → Error Logger → SvelteKit"
-		},
-		{
-			"label": "Open user toolset",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-ExecutionPolicy",
-				"Bypass",
-				"-File",
-				"${workspaceFolder}\\scripts\\open-user-toolset.ps1"
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "Build TRT LLM (WSL)",
-			"type": "shell",
-			"command": "wsl",
-			"args": [
-				"bash",
-				"-lc",
-				"source ~/trt_env_310/bin/activate && python3 -m tensorrt_llm.commands.build --checkpoint_dir=/home/james/gemma3_checkpoint_working --output_dir=/home/james/gemma3_trtllm_int4 --max_batch_size=2 --max_input_len=1024 --max_seq_len=2048 --max_beam_width=1 --use_gemm_plugin=auto --use_gpt_attention_plugin=float16 --paged_kv_cache --dtype=float16 --use_weight_only --weight_only_precision=int4_awq --per_group --group_size=128 --int8_kv_cache"
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "Monitor HMR Errors",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-Command",
-				"Get-Content -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Wait -Tail 20"
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "dedicated"
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "Clear HMR Error Log",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-Command",
-				"Remove-Item -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Force -ErrorAction SilentlyContinue"
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "silent"
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "Analyze WebSocket Errors",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-File",
-				"${workspaceFolder}\\scripts\\analyze-ws-errors.ps1"
-			],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"problemMatcher": []
-		},
-		{
-			"label": "🤖 Start LiteLLM Proxy (Ollama→Claude Code)",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-ExecutionPolicy",
-				"Bypass",
-				"-File",
-				"${workspaceFolder}\\start-litellm-proxy.ps1"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"isBackground": true,
-			"problemMatcher": {
-				"pattern": {
-					"regexp": "^(.*)$",
-					"file": 1,
-					"location": 2,
-					"message": 3
-				},
-				"background": {
-					"activeOnStart": true,
-					"beginsPattern": "Starting LiteLLM Proxy",
-					"endsPattern": "Application startup complete"
-				}
-			},
-			"detail": "Starts LiteLLM proxy to route Claude Code requests to Ollama gemma3-legal:latest (port 4000)",
-			"icon": {
-				"id": "robot",
-				"color": "terminal.ansiMagenta"
-			}
-		},
-		{
-			"label": "🔍 Check LiteLLM Status",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				"try { $response = Invoke-RestMethod -Uri 'http://localhost:4000/v1/models' -Headers @{'Authorization'='Bearer sk-1234'} -Method Get; Write-Host '✅ LiteLLM Proxy is running' -ForegroundColor Green; Write-Host 'Available models:' -ForegroundColor Cyan; $response.data | ForEach-Object { Write-Host '  -' $_.id -ForegroundColor Yellow } } catch { Write-Host '❌ LiteLLM Proxy is not running' -ForegroundColor Red; Write-Host 'Run task: 🤖 Start LiteLLM Proxy' -ForegroundColor Yellow }"
-			],
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Checks if LiteLLM proxy is running and shows available models"
-		},
-		{
-			"label": "🚀 Start MCP Context7 SIMD Server",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"${workspaceFolder}\\scripts\\mcp-context7-optimized.mjs"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}",
-				"env": {
-					"MCP_PORT": "3002",
-					"MCP_WORKERS": "8",
-					"REDIS_PASSWORD": "redis",
-					"DATABASE_URL": "postgresql://legal_admin:123456@localhost:5432/legal_ai_db",
-					"RTX_3060_OPTIMIZATION": "true",
-					"CONTEXT7_MULTICORE": "true",
-					"CONTEXT7_SIMD": "true"
-				}
-			},
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"isBackground": true,
-			"problemMatcher": {
-				"pattern": {
-					"regexp": "^(.*)$",
-					"file": 1,
-					"location": 2,
-					"message": 3
-				},
-				"background": {
-					"activeOnStart": true,
-					"beginsPattern": "Starting SIMD-Optimized MCP Context7 Server",
-					"endsPattern": "MCP Context7 Server ready"
-				}
-			},
-			"detail": "SIMD-optimized MCP server with Redis cache, PostgreSQL+pgvector (8 workers, port 3002)",
-			"icon": {
-				"id": "rocket",
-				"color": "terminal.ansiCyan"
-			}
-		},
-		{
-			"label": "📊 Check MCP Context7 Status",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-Command",
-				"try { $health = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host '✅ MCP Context7 Server is running' -ForegroundColor Green; Write-Host ('Workers: ' + $health.workers) -ForegroundColor Cyan; Write-Host ('Redis: ' + $health.redis) -ForegroundColor Yellow; Write-Host ('PostgreSQL: ' + $health.postgres) -ForegroundColor Magenta; Write-Host ('SIMD: ' + $health.simd) -ForegroundColor Blue; Write-Host ('Cache Hit Ratio: ' + [math]::Round($health.cacheStats.ratio * 100, 2) + '%') -ForegroundColor Green; $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host ('Memory RSS: ' + [math]::Round($metrics.memory.rss/1MB, 2) + ' MB') -ForegroundColor Yellow } catch { Write-Host '❌ MCP Context7 Server is not running' -ForegroundColor Red; Write-Host 'Run task: 🚀 Start MCP Context7 SIMD Server' -ForegroundColor Yellow }"
-			],
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Checks MCP Context7 server health, cache stats, and integrations"
-		},
-		{
-			"label": "🎯 Start Complete AI Stack (LiteLLM + MCP + Dev)",
-			"dependsOrder": "sequence",
-			"dependsOn": [
-				"🤖 Start LiteLLM Proxy (Ollama→Claude Code)",
-				"🚀 Start MCP Context7 SIMD Server",
-				"🔴 Start Redis Error Logger"
-			],
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "new",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"detail": "Starts complete AI development stack: LiteLLM (Ollama) → MCP Context7 (SIMD) → Redis Error Logger"
-		},
-		{
-			"label": "🎨 Demo: SharedArrayBuffer + WebGPU Pattern",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"${workspaceFolder}\\scripts\\mcp-webgpu-shared-buffer.mjs"
-			],
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "new",
-				"showReuseMessage": false,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Demonstrates parallel CPU preparation → GPU upload pattern for legal document vectorization"
-		},
-		{
-			"label": "✅ Check for Errors (TypeScript + Svelte)",
-			"type": "shell",
-			"command": "npm",
-			"args": [
-				"run",
-				"check"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend"
-			},
-			"group": {
-				"kind": "test",
-				"isDefault": true
-			},
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"problemMatcher": [
-				"$tsc"
-			],
-			"detail": "Runs svelte-check to find TypeScript and Svelte errors (working directory: sveltekit-frontend)"
-		},
-		{
-			"label": "⚡ Quick Error Check (TypeScript only)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"tsc",
-				"--noEmit",
-				"--skipLibCheck"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend"
-			},
-			"group": "test",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"problemMatcher": [
-				"$tsc"
-			],
-			"detail": "Fast TypeScript error check (working directory: sveltekit-frontend)"
-		},
-		{
-			"label": "🔧 Fix Common Errors (Auto)",
-			"type": "shell",
-			"command": "npm",
-			"args": [
-				"run",
-				"lint",
-				"--",
-				"--fix"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend"
-			},
-			"group": "build",
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"problemMatcher": [],
-			"detail": "Auto-fixes common linting errors (working directory: sveltekit-frontend)"
-		},
-		{
-			"label": "Svelte: check (json)",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"svelte-check",
-				"--tsconfig",
-				"sveltekit-frontend/tsconfig.json"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "silent",
-				"panel": "shared"
-			},
-			"detail": "Run svelte-check and write output to stdout (use the compound task to also parse)"
-		},
-		{
-			"label": "Svelte: check -> JSON (file)",
-			"type": "shell",
-			"command": "powershell",
-			"args": [
-				"-NoProfile",
-				"-Command",
-				"& { npx svelte-check --tsconfig sveltekit-frontend/tsconfig.json | Out-File -FilePath svelte-check-output.json -Encoding utf8 }"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"detail": "Run svelte-check and capture ANSI-output into svelte-check-output.json for parsing"
-		},
-		{
-			"label": "Parse svelte-check output",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"scripts/parse-svelte-check.cjs"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"problemMatcher": [],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"detail": "Parse the captured svelte-check output and produce top100.txt"
-		},
-		{
-			"label": "Svelte: check + parse",
-			"dependsOn": [
-				"Svelte: check -> JSON (file)",
-				"Parse svelte-check output"
-			],
-			"dependsOrder": "sequence",
-			"type": "shell",
-			"command": "echo",
-			"args": [
-				"Running svelte-check and parsing output..."
-			],
-			"presentation": {
-				"reveal": "always",
-				"panel": "shared"
-			},
-			"problemMatcher": [],
-			"detail": "Compound task: run svelte-check and then the parser"
-		},
-		{
-			"label": "📊 Analyze TypeScript Errors by Priority",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"scripts/analyze-errors-by-file.mjs"
-			],
-			"group": "test"
-		},
-		{
-			"label": "🚀 Phase43: GPU Embedding Pipeline",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"scripts/phase43-ai-analyzer.mjs",
-				"svelte-check-fronten1d.log",
-				"--batch-size",
-				"5000"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend",
-				"env": {
-					"BATCH_SIZE": "5000",
-					"CONCURRENCY": "8",
-					"REDIS_URL": "redis://localhost:6379",
-					"QDRANT_URL": "http://localhost:6333",
-					"OLLAMA_URL": "http://localhost:11434"
-				}
-			},
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "dedicated",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"group": "build",
-			"detail": "GPU-accelerated error embedding with Redis cache + Qdrant (384d)"
-		},
-		{
-			"label": "🎯 Phase44: CUDA Tensor Aggregation",
-			"type": "shell",
-			"command": "python",
-			"args": [
-				"scripts/phase44-tensor-aggregator.py",
-				"--limit",
-				"10000",
-				"--cluster",
-				"20",
-				"--compute-similarity"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend"
-			},
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "dedicated",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"group": "build",
-			"detail": "Load embeddings from Redis → CUDA → PCA/clustering → PyTorch export"
-		},
-		{
-			"label": "⚡ Concurrent AST Fixer",
-			"type": "shell",
-			"command": "node",
-			"args": [
-				"scripts/concurrent-ast-fixer.mjs",
-				"--workers=8",
-				"--batch-size=100"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend"
-			},
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "dedicated",
-				"showReuseMessage": true,
-				"clear": false
-			},
-			"group": "build",
-			"detail": "8-16 parallel workers + SIMD + Qdrant + MCP for AI-assisted error fixing"
-		},
-		{
-			"label": "🎨 Prettier: Format All Code",
-			"type": "shell",
-			"command": "npx",
-			"args": [
-				"prettier",
-				"--write",
-				"\"src/**/*.{svelte,ts,js,mjs}\"",
-				"--log-level",
-				"warn"
-			],
-			"options": {
-				"cwd": "${workspaceFolder}/sveltekit-frontend"
-			},
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": false,
-				"panel": "shared",
-				"showReuseMessage": false,
-				"clear": false
-			},
-			"group": "build",
-			"detail": "Format all source files with Prettier"
-		},
-		{
-			"label": "🔥 Full GPU Pipeline: Embed → Aggregate → Fix",
-			"dependsOrder": "sequence",
-			"dependsOn": [
-				"🚀 Phase43: GPU Embedding Pipeline",
-				"🎯 Phase44: CUDA Tensor Aggregation",
-				"⚡ Concurrent AST Fixer"
-			],
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"focus": true,
-				"panel": "dedicated",
-				"showReuseMessage": true,
-				"clear": true
-			},
-			"group": {
-				"kind": "build",
-				"isDefault": false
-			},
-			"detail": "Complete GPU pipeline: Embed errors → CUDA clustering → AI-assisted fixes"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "RAG: Run FastAPI Ingest Service",
+      "type": "shell",
+      "command": "uvicorn",
+      "args": [
+        "rag_ingest:app",
+        "--reload",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "${input:ragIngestPort}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "RAG: Run Go SIMD Accelerator",
+      "type": "shell",
+      "command": "go",
+      "args": ["run", "simd-json-accelerator.go"],
+      "options": {
+        "cwd": "${workspaceFolder}/go-microservice"
+      },
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "≡ƒô¥ Svelte-Check with Log (gemma3-legal summarization)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/svelte-check-summarize.ps1"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "Run svelte-check, log output, and summarize with gemma3-legal + embeddinggemma language extraction"
+    },
+    {
+      "label": "tsc --noEmit (sveltekit-frontend)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "isBackground": false,
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "tsc --noEmit (sveltekit-frontend dir)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "isBackground": false,
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "Start SvelteKit Dev (one-shot)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev"],
+      "isBackground": false,
+      "group": "build"
+    },
+    {
+      "label": "Frontend: quick typecheck (no emit)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "Frontend: svelte-check (ultra-fast)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "check:ultra-fast"],
+      "group": "test"
+    },
+    {
+      "label": "Quick TS/Svelte check (frontend)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "Γ£à TypeScript Check - Quick",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "tsc: sveltekit-frontend noEmit",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "isBackground": false,
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "tsc: sveltekit-frontend --noEmit",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "sveltekit-frontend"],
+      "isBackground": false,
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "TS Check (frontend)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "isBackground": false,
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "TS quick check (frontend)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "isBackground": false,
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "TypeScript: sveltekit-frontend - noEmit check",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "isBackground": false,
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "TypeScript: sveltekit-frontend - narrow check",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "sveltekit-frontend"],
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "TypeScript: sveltekit-frontend - narrow check",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck", "-p", "sveltekit-frontend"],
+      "problemMatcher": ["$tsc"],
+      "group": "test"
+    },
+    {
+      "label": "≡ƒö┤ Start Redis Error Logger",
+      "type": "shell",
+      "command": "go",
+      "args": ["run", "simd-redis-vite-server.go"],
+      "options": {
+        "cwd": "${workspaceFolder}/go-microservice"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Starts Redis-based Vite error logging server with MCP Context7 auto-solve on port 8080",
+      "icon": {
+        "id": "server-process",
+        "color": "terminal.ansiRed"
+      }
+    },
+    {
+      "label": "≡ƒîÉ Start SvelteKit Dev (via Error Logger)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "dev"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": ["$tsc", "$eslint-compact"],
+      "dependsOn": "≡ƒö┤ Start Redis Error Logger",
+      "detail": "Starts SvelteKit development server (access via localhost:8080 for error logging)"
+    },
+    {
+      "label": "≡ƒº¬ Test Error Logger",
+      "type": "shell",
+      "command": "node",
+      "args": ["test-error-logger.js"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Tests Redis error logging with 4 simulated Vite errors and auto-solve"
+    },
+    {
+      "label": "≡ƒôü View Error Logs",
+      "type": "shell",
+      "command": "code",
+      "args": ["logs/claude-pickup/"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": false,
+        "reveal": "never",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "Opens the claude-pickup directory to view auto-generated error logs"
+    },
+    {
+      "label": "≡ƒöº Check Redis Connection",
+      "type": "shell",
+      "command": "docker",
+      "args": ["exec", "legal-ai-redis", "redis-cli", "ping"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Tests Redis connection in Docker container"
+    },
+    {
+      "label": "≡ƒÜÇ Start Full Development Stack",
+      "dependsOrder": "sequence",
+      "dependsOn": ["≡ƒöº Check Redis Connection", "≡ƒö┤ Start Redis Error Logger"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "detail": "Starts complete development environment: Redis ΓåÆ Error Logger ΓåÆ SvelteKit (use localhost:8080)"
+    },
+    {
+      "label": "≡ƒùæ∩╕Å Clean Error Logs",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "Remove-Item logs/claude-pickup/*.json, logs/claude-pickup/*.md -ErrorAction SilentlyContinue"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Cleans up auto-generated error log files (keeps README.md)"
+    },
+    {
+      "label": "≡ƒñû Start MCP Multicore Server",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/mcp-multicore-server.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "MCP_PORT": "3002",
+          "MCP_WORKERS": "4",
+          "RTX_3060_OPTIMIZATION": "true",
+          "CONTEXT7_MULTICORE": "true"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^(.*)$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting Enhanced MCP Multi-Core Server",
+          "endsPattern": "MCP Multi-Core Server ready"
+        }
+      },
+      "detail": "Starts MCP multicore server with Context7 integration for auto-solve tasks"
+    },
+    {
+      "label": "≡ƒöº MCP Health Check",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "try { $response = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host 'MCP Status:' $response.status -ForegroundColor Green; Write-Host 'Workers:' $response.workers -ForegroundColor Yellow; Write-Host 'Uptime:' $response.uptime 'seconds' -ForegroundColor Cyan } catch { Write-Host 'MCP Server not running' -ForegroundColor Red }"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Checks MCP multicore server health and worker status"
+    },
+    {
+      "label": "≡ƒôè MCP Metrics Dashboard",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "try { $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host '=== MCP Metrics Dashboard ===' -ForegroundColor Magenta; Write-Host 'Workers:' $metrics.workers -ForegroundColor Green; Write-Host 'Memory RSS:' ([math]::Round($metrics.memory.rss/1MB, 2)) 'MB' -ForegroundColor Yellow; Write-Host 'GPU Optimization:' $metrics.gpu -ForegroundColor Cyan; $workers = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/workers' -Method Get; Write-Host 'Active Workers:' $workers.active 'of' $workers.total -ForegroundColor Blue } catch { Write-Host 'MCP Server not running' -ForegroundColor Red }"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Shows detailed MCP server metrics and worker status"
+    },
+    {
+      "label": "≡ƒÜÇ Start Full MCP Development Stack",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "≡ƒöº Check Redis Connection",
+        "≡ƒñû Start MCP Multicore Server",
+        "≡ƒö┤ Start Redis Error Logger"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "detail": "Starts complete MCP-enabled development environment: Redis ΓåÆ MCP Server ΓåÆ Error Logger ΓåÆ SvelteKit"
+    },
+    {
+      "label": "Open user toolset",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\open-user-toolset.ps1"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build TRT LLM (WSL)",
+      "type": "shell",
+      "command": "wsl",
+      "args": [
+        "bash",
+        "-lc",
+        "source ~/trt_env_310/bin/activate && python3 -m tensorrt_llm.commands.build --checkpoint_dir=/home/james/gemma3_checkpoint_working --output_dir=/home/james/gemma3_trtllm_int4 --max_batch_size=2 --max_input_len=1024 --max_seq_len=2048 --max_beam_width=1 --use_gemm_plugin=auto --use_gpt_attention_plugin=float16 --paged_kv_cache --dtype=float16 --use_weight_only --weight_only_precision=int4_awq --per_group --group_size=128 --int8_kv_cache"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Monitor HMR Errors",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "Get-Content -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Wait -Tail 20"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Clear HMR Error Log",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "Remove-Item -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Force -ErrorAction SilentlyContinue"
+      ],
+      "presentation": {
+        "echo": true,
+        "reveal": "silent"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Analyze WebSocket Errors",
+      "type": "shell",
+      "command": "powershell",
+      "args": ["-NoProfile", "-File", "${workspaceFolder}\\scripts\\analyze-ws-errors.ps1"],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "≡ƒñû Start LiteLLM Proxy (OllamaΓåÆClaude Code)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\start-litellm-proxy.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^(.*)$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting LiteLLM Proxy",
+          "endsPattern": "Application startup complete"
+        }
+      },
+      "detail": "Starts LiteLLM proxy to route Claude Code requests to Ollama gemma3-legal:latest (port 4000)",
+      "icon": {
+        "id": "robot",
+        "color": "terminal.ansiMagenta"
+      }
+    },
+    {
+      "label": "≡ƒöì Check LiteLLM Status",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "try { $response = Invoke-RestMethod -Uri 'http://localhost:4000/v1/models' -Headers @{'Authorization'='Bearer sk-1234'} -Method Get; Write-Host 'Γ£à LiteLLM Proxy is running' -ForegroundColor Green; Write-Host 'Available models:' -ForegroundColor Cyan; $response.data | ForEach-Object { Write-Host '  -' $_.id -ForegroundColor Yellow } } catch { Write-Host 'Γ¥î LiteLLM Proxy is not running' -ForegroundColor Red; Write-Host 'Run task: ≡ƒñû Start LiteLLM Proxy' -ForegroundColor Yellow }"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Checks if LiteLLM proxy is running and shows available models"
+    },
+    {
+      "label": "≡ƒÜÇ Start MCP Context7 SIMD Server",
+      "type": "shell",
+      "command": "node",
+      "args": ["${workspaceFolder}\\scripts\\mcp-context7-optimized.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "MCP_PORT": "3002",
+          "MCP_WORKERS": "8",
+          "REDIS_PASSWORD": "redis",
+          "DATABASE_URL": "postgresql://legal_admin:123456@localhost:5432/legal_ai_db",
+          "RTX_3060_OPTIMIZATION": "true",
+          "CONTEXT7_MULTICORE": "true",
+          "CONTEXT7_SIMD": "true"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^(.*)$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting SIMD-Optimized MCP Context7 Server",
+          "endsPattern": "MCP Context7 Server ready"
+        }
+      },
+      "detail": "SIMD-optimized MCP server with Redis cache, PostgreSQL+pgvector (8 workers, port 3002)",
+      "icon": {
+        "id": "rocket",
+        "color": "terminal.ansiCyan"
+      }
+    },
+    {
+      "label": "≡ƒôè Check MCP Context7 Status",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "try { $health = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host 'Γ£à MCP Context7 Server is running' -ForegroundColor Green; Write-Host ('Workers: ' + $health.workers) -ForegroundColor Cyan; Write-Host ('Redis: ' + $health.redis) -ForegroundColor Yellow; Write-Host ('PostgreSQL: ' + $health.postgres) -ForegroundColor Magenta; Write-Host ('SIMD: ' + $health.simd) -ForegroundColor Blue; Write-Host ('Cache Hit Ratio: ' + [math]::Round($health.cacheStats.ratio * 100, 2) + '%') -ForegroundColor Green; $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host ('Memory RSS: ' + [math]::Round($metrics.memory.rss/1MB, 2) + ' MB') -ForegroundColor Yellow } catch { Write-Host 'Γ¥î MCP Context7 Server is not running' -ForegroundColor Red; Write-Host 'Run task: ≡ƒÜÇ Start MCP Context7 SIMD Server' -ForegroundColor Yellow }"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Checks MCP Context7 server health, cache stats, and integrations"
+    },
+    {
+      "label": "≡ƒÄ» Start Complete AI Stack (LiteLLM + MCP + Dev)",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "≡ƒñû Start LiteLLM Proxy (OllamaΓåÆClaude Code)",
+        "≡ƒÜÇ Start MCP Context7 SIMD Server",
+        "≡ƒö┤ Start Redis Error Logger"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "detail": "Starts complete AI development stack: LiteLLM (Ollama) ΓåÆ MCP Context7 (SIMD) ΓåÆ Redis Error Logger"
+    },
+    {
+      "label": "≡ƒÄ¿ Demo: SharedArrayBuffer + WebGPU Pattern",
+      "type": "shell",
+      "command": "node",
+      "args": ["${workspaceFolder}\\scripts\\mcp-webgpu-shared-buffer.mjs"],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Demonstrates parallel CPU preparation ΓåÆ GPU upload pattern for legal document vectorization"
+    },
+    {
+      "label": "Γ£à Check for Errors (TypeScript + Svelte)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "check"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": ["$tsc"],
+      "detail": "Runs svelte-check to find TypeScript and Svelte errors (working directory: sveltekit-frontend)"
+    },
+    {
+      "label": "ΓÜí Quick Error Check (TypeScript only)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["tsc", "--noEmit", "--skipLibCheck"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": ["$tsc"],
+      "detail": "Fast TypeScript error check (working directory: sveltekit-frontend)"
+    },
+    {
+      "label": "≡ƒöº Fix Common Errors (Auto)",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "lint", "--", "--fix"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Auto-fixes common linting errors (working directory: sveltekit-frontend)"
+    },
+    {
+      "label": "Svelte: check (json)",
+      "type": "shell",
+      "command": "npx",
+      "args": ["svelte-check", "--tsconfig", "sveltekit-frontend/tsconfig.json"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared"
+      },
+      "detail": "Run svelte-check and write output to stdout (use the compound task to also parse)"
+    },
+    {
+      "label": "Svelte: check -> JSON (file)",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "& { npx svelte-check --tsconfig sveltekit-frontend/tsconfig.json | Out-File -FilePath svelte-check-output.json -Encoding utf8 }"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "detail": "Run svelte-check and capture ANSI-output into svelte-check-output.json for parsing"
+    },
+    {
+      "label": "Parse svelte-check output",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/parse-svelte-check.cjs"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "detail": "Parse the captured svelte-check output and produce top100.txt"
+    },
+    {
+      "label": "Svelte: check + parse",
+      "dependsOn": ["Svelte: check -> JSON (file)", "Parse svelte-check output"],
+      "dependsOrder": "sequence",
+      "type": "shell",
+      "command": "echo",
+      "args": ["Running svelte-check and parsing output..."],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "Compound task: run svelte-check and then the parser"
+    },
+    {
+      "label": "≡ƒôè Analyze TypeScript Errors by Priority",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/analyze-errors-by-file.mjs"],
+      "group": "test"
+    },
+    {
+      "label": "≡ƒÜÇ Phase43: GPU Embedding Pipeline",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "scripts/phase43-ai-analyzer.mjs",
+        "svelte-check-fronten1d.log",
+        "--batch-size",
+        "5000"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend",
+        "env": {
+          "BATCH_SIZE": "5000",
+          "CONCURRENCY": "8",
+          "REDIS_URL": "redis://localhost:6379",
+          "QDRANT_URL": "http://localhost:6333",
+          "OLLAMA_URL": "http://localhost:11434"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "GPU-accelerated error embedding with Redis cache + Qdrant (384d)"
+    },
+    {
+      "label": "≡ƒÄ» Phase44: CUDA Tensor Aggregation",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "scripts/phase44-tensor-aggregator.py",
+        "--limit",
+        "10000",
+        "--cluster",
+        "20",
+        "--compute-similarity"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "Load embeddings from Redis ΓåÆ CUDA ΓåÆ PCA/clustering ΓåÆ PyTorch export"
+    },
+    {
+      "label": "ΓÜí Concurrent AST Fixer",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/concurrent-ast-fixer.mjs", "--workers=8", "--batch-size=100"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "8-16 parallel workers + SIMD + Qdrant + MCP for AI-assisted error fixing"
+    },
+    {
+      "label": "≡ƒÄ¿ Prettier: Format All Code",
+      "type": "shell",
+      "command": "npx",
+      "args": ["prettier", "--write", "\"src/**/*.{svelte,ts,js,mjs}\"", "--log-level", "warn"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "Format all source files with Prettier"
+    },
+    {
+      "label": "≡ƒöÑ Full GPU Pipeline: Embed ΓåÆ Aggregate ΓåÆ Fix",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "≡ƒÜÇ Phase43: GPU Embedding Pipeline",
+        "≡ƒÄ» Phase44: CUDA Tensor Aggregation",
+        "ΓÜí Concurrent AST Fixer"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      },
+      "detail": "Complete GPU pipeline: Embed errors ΓåÆ CUDA clustering ΓåÆ AI-assisted fixes"
+    },
+    {
+      "label": "🟢 Ollama Serve: GPU (25 layers)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/start-ollama-gpu.ps1",
+        "-GpuLayers",
+        "25",
+        "-WaitSeconds",
+        "20"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Start Ollama HTTP API with CUDA enabled (25 GPU layers)."
+    },
+    {
+      "label": "TensorRT-LLM: Start Container",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "docker compose up -d tensorrt-llm"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "Start or restart the GPU TensorRT-LLM container (requires NVIDIA Docker)."
+    },
+    {
+      "label": "TensorRT-LLM: Health Check",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "try { $resp = Invoke-RestMethod -Uri 'http://localhost:8098/health' -TimeoutSec 5; Write-Host 'TensorRT-LLM healthy'; exit 0 } catch { Write-Error $_; exit 1 }"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "Ping the TensorRT-LLM health endpoint (default http://localhost:8098/health)."
+    },
+    {
+      "label": "Agentic Doc Retriever",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/agentic_search.mjs", "${input:errorCode}"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "Run LangChain + Ollama agentic search for a specific TypeScript error code."
+    },
+    {
+      "label": "Phase45: Run Indexer Now",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/phase45-indexer.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "REDIS_URL": "${input:phase45RedisUrl}",
+          "PHASE44_URL": "${input:phase45Phase44Url}",
+          "INDEXER_QUERY_KEY": "${input:phase45QueryKey}",
+          "INDEXER_BATCH_SIZE": "${input:phase45BatchSize}",
+          "INDEXER_TOP_K": "${input:phase45TopK}"
+        }
+      },
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "group": "build",
+      "detail": "Scan Redis for embeddings and trigger Phase 44 ranking to refresh Neo4j relationships."
+    },
+    {
+      "label": "Phase45: Schedule Daily Indexer",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "$scriptPath = \"${workspaceFolder}/scripts/phase45-indexer.mjs\";",
+        "$logPath = \"${workspaceFolder}/logs/phase45-indexer.log\";",
+        "$action = New-ScheduledTaskAction -Execute \"node.exe\" -Argument \"$scriptPath > $logPath 2>&1\";",
+        "$trigger = New-ScheduledTaskTrigger -Daily -At \"3:00 AM\";",
+        "$settings = New-ScheduledTaskSettingsSet -Compatibility V2.1 -StartWhenAvailable -RunOnlyIfNetworkAvailable -WakeToRun;",
+        "$principal = New-ScheduledTaskPrincipal -UserID \"System\" -LogonType ServiceAccount -RunLevel Highest;",
+        "Register-ScheduledTask -TaskName \"Phase45 Daily Indexer\" -Action $action -Trigger $trigger -Settings $settings -Principal $principal -Force;",
+        "Write-Host \"Scheduled 'Phase45 Daily Indexer' to run daily at 3:00 AM.\" -ForegroundColor Green"
+      ],
+      "group": "build",
+      "detail": "Create or update a Windows scheduled task that runs the Phase 45 indexer each night."
+    },
+    {
+      "label": "Python: Install Phase 45 Adapter Deps",
+      "type": "shell",
+      "command": "pip install -r python-services/requirements.txt",
+      "group": "build",
+      "detail": "Install Python dependencies for FastAPI services (Phase 45 Adapter + Doc Ingest)."
+    },
+    {
+      "label": "Python: Run Doc Ingest Service",
+      "type": "shell",
+      "command": "C:/Users/james/Videos/deeds-web-app/.venv/Scripts/python.exe",
+      "args": [
+        "-m",
+        "uvicorn",
+        "python-services.doc_ingest:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8090"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "detail": "Start the document ingestion FastAPI service (OCR + chunking + embeddings) on port 8090."
+    },
+    {
+      "label": "Python: Run Phase 45 Adapter",
+      "type": "shell",
+      "command": "uvicorn python-services.phase45_adapter:app --host 0.0.0.0 --port 8085",
+      "group": "build",
+      "isBackground": true,
+      "detail": "Run the Phase 45 Adapter FastAPI service (web crawler/summarizer) on port 8085."
+    },
+    {
+      "label": "Phase46: Safe Crawl (single URL)",
+      "type": "shell",
+      "command": "python",
+      "args": ["python-services/phase46_safe_crawl.py", "${input:phase46Url}"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "Fetch a whitelisted documentation URL, honor robots.txt, and cache text for ingestion."
+    },
+    {
+      "label": "Phase46: Run Document Indexer",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/phase46-indexer.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Load cached documents, read embeddings from Redis, and upsert into Postgres (pgvector) + Neo4j."
+    }
+  ],
+  "inputs": [
+    {
+      "id": "ragIngestPort",
+      "type": "promptString",
+      "description": "Port to run the RAG FastAPI ingest service on",
+      "default": "8080"
+    },
+    {
+      "id": "errorCode",
+      "type": "promptString",
+      "description": "Enter the TypeScript error code (e.g. TS2322)",
+      "default": "TS2322"
+    },
+    {
+      "id": "phase45RedisUrl",
+      "type": "promptString",
+      "description": "Redis URL for embeddings (press Enter for default)",
+      "default": "redis://localhost:6379"
+    },
+    {
+      "id": "phase45Phase44Url",
+      "type": "promptString",
+      "description": "Phase 44 analyzer URL (press Enter for default)",
+      "default": "http://localhost:8001"
+    },
+    {
+      "id": "phase45QueryKey",
+      "type": "promptString",
+      "description": "Optional fixed query key (leave blank to use the first key per batch)",
+      "default": ""
+    },
+    {
+      "id": "phase45BatchSize",
+      "type": "promptString",
+      "description": "Batch size per Phase 44 request",
+      "default": "100"
+    },
+    {
+      "id": "phase45TopK",
+      "type": "promptString",
+      "description": "Top-K recommendations to request",
+      "default": "10"
+    },
+    {
+      "id": "phase46Url",
+      "type": "promptString",
+      "description": "URL to crawl with the Phase 46 safe crawler",
+      "default": "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+    }
+  ]
 }
