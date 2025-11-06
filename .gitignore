@@ -342,6 +342,12 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 **/__pycache__/
 *.pyc
+python3.11/
+
+# Python virtual environment configuration
+.venv-phase46/
+.venv/
+.python311/
 
 # Cake - Uncomment if you are using it
 #tools/**
@@ -797,3 +803,4 @@ sveltekit-frontend/svelte-check-errors.txt
 !LICENSE*.txt
 !CHANGELOG*.txt
 !CONTRIBUTING*.txt
+!python-services/phase46_adapter/requirements.txt

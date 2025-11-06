@@ -258,7 +258,7 @@
     cursor: pointer}
 
   .error-actions, button:hover,
-  .error-actions a: hover {
+  .error-actions a:hover {
     border-color: var(--nier-accent-warm); color: var(--nier-accent-warm)}
 
   .demo-placeholder {

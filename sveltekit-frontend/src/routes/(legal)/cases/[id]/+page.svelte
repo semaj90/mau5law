@@ -75,11 +75,11 @@ import type { Case } from, '$lib/types';
 			border: 3px solid #d4af37;
 			background: #d4af37; color: #0a0a0a; cursor: pointer; transition: all 0.2s}
 
-		.nes-btn: hover:not(:disabled) {
+		.nes-btn:hover:not(:disabled) {
 			transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3)}
 
-		.nes-btn: disabled {
-			opacity: 0.5; cursor: not-allowed}
+		.nes-btn:disabled {
+			opacity: 0.5; cursor:not-allowed}
 
 		.nes-btn.is-primary {
 			background: #d4af37; color: #0a0a0a}

@@ -1103,13 +1103,7 @@
       "label": "Phase46: Start Adapter Service",
       "type": "shell",
       "command": "uvicorn",
-      "args": [
-        "doc_ingest:app",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8092"
-      ],
+      "args": ["doc_ingest:app", "--host", "0.0.0.0", "--port", "8092"],
       "options": {
         "cwd": "${workspaceFolder}/python-services/phase46_adapter"
       },
@@ -1162,66 +1156,24 @@
       "detail": "Health-check the adapter, run phase46-indexer, then trigger the agentic doc retriever for validation."
     },
     {
-      "label": "Python: Run Doc Ingest Service",
+      "label": "Phase46: Orchestrate Full Pipeline",
       "type": "shell",
-      "command": "C:/Users/james/Videos/deeds-web-app/.venv/Scripts/python.exe",
+      "command": "pwsh",
       "args": [
-        "-m",
-        "uvicorn",
-        "python-services.doc_ingest:app",
-        "--host",
-        "0.0.0.0",
-        "--port",
-        "8090"
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/run-phase46.ps1",
+        "-ComposeFile",
+        "${workspaceFolder}/docker-compose-full-stack-384.yml"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
       },
       "group": "build",
-      "isBackground": true,
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "dedicated"
-      },
-      "detail": "Start the document ingestion FastAPI service (OCR + chunking + embeddings) on port 8090."
-    },
-    {
-      "label": "Python: Run Phase 45 Adapter",
-      "type": "shell",
-      "command": "uvicorn python-services.phase45_adapter:app --host 0.0.0.0 --port 8085",
-      "group": "build",
-      "isBackground": true,
-      "detail": "Run the Phase 45 Adapter FastAPI service (web crawler/summarizer) on port 8085."
-    },
-    {
-      "label": "Phase46: Safe Crawl (single URL)",
-      "type": "shell",
-      "command": "python",
-      "args": ["python-services/phase46_safe_crawl.py", "${input:phase46Url}"],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "test",
-      "presentation": {
-        "echo": true,
-        "reveal": "always",
-        "focus": false,
-        "panel": "shared"
-      },
       "problemMatcher": [],
-      "detail": "Fetch a whitelisted documentation URL, honor robots.txt, and cache text for ingestion."
-    },
-    {
-      "label": "Phase46: Run Document Indexer",
-      "type": "shell",
-      "command": "node",
-      "args": ["scripts/phase46-indexer.mjs"],
-      "options": {
-        "cwd": "${workspaceFolder}"
-      },
-      "group": "build",
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -1230,8 +1182,67 @@
         "showReuseMessage": true,
         "clear": false
       },
+      "detail": "Run docker services, adapter ingestion, and the Phase46 npm pipeline through a single PowerShell orchestrator."
+    },
+    {
+      "label": "Phase47: Start Graph Analyzer",
+      "type": "shell",
+      "command": "uvicorn",
+      "args": ["phase47_graph_analyzer:app", "--host", "0.0.0.0", "--port", "8093"],
+      "options": {
+        "cwd": "${workspaceFolder}/python-services"
+      },
+      "group": "build",
+      "isBackground": true,
       "problemMatcher": [],
-      "detail": "Load cached documents, read embeddings from Redis, and upsert into Postgres (pgvector) + Neo4j."
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "detail": "Launch the Phase47 FastAPI analyzer (PyTorch/TensorRT fusion) on port 8093."
+    },
+    {
+      "label": "Phase47: Run QUIC Bridge",
+      "type": "shell",
+      "command": "go",
+      "args": ["run", "./cmd/quic-bridge"],
+      "options": {
+        "cwd": "${workspaceFolder}/go-microservice",
+        "env": {
+          "PHASE47_GRAPH_URL": "http://127.0.0.1:8093"
+        }
+      },
+      "group": "build",
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "detail": "Run the Go QUIC bridge to stream Redis embeddings into the Phase47 analyzer."
+    },
+    {
+      "label": "Phase48: Run Svelte-check JSON",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-NoProfile",
+        "-Command",
+        "if (-not (Test-Path .cache)) { New-Item -ItemType Directory -Force -Path .cache | Out-Null }; Push-Location sveltekit-frontend; npx svelte-check --fail-on-warnings=false --output json | Out-File -Encoding utf8 ../.cache/sveltecheck.json; Pop-Location"
+      ],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ],
+  "compounds": [
+    {
+      "label": "Phase47: Analyzer + Bridge",
+      "tasks": ["Phase47: Start Graph Analyzer", "Phase47: Run QUIC Bridge"],
+      "stopAll": true
     }
   ],
   "inputs": [

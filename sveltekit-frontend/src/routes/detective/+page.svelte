@@ -1,22 +1,80 @@
 <script lang="ts">
- // Svelte, 5 runes are auto-imported // Minimal hub that links to evidence board, evidence canvas, cases, and chat import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte'; import CaseForm from '$lib/components/forms/CaseForm.svelte'; import { getAuthContext } from '$lib/stores/unified'; import { onMount } from 'svelte'; const auth = getAuthContext(); let currentView = $state<string>('board'); // 'board' | 'create-case' | 'auth-demo'
-  let mounted = $state<boolean>(false); // Sample evidence data for the detective board let sampleEvidence = $state([ { id: 'evidence-1', title: 'Security Camera Footage', fileName: 'camera_feed_001.mp4', evidenceType: 'video', status: 'new', fileSize: 45678912, createdAt: new Date('2024-01-15T10:30:00'), uploadedAt: new Date('2024-01-15T10:30:00'), updatedAt: new Date('2024-01-15T10:30:00'), description: 'Video shows suspect entering building at, 10:23 PM wearing dark clothing', tags: ['surveillance', 'timestamp', 'suspect-entry'], hash: 'abc123', thumbnailUrl: '/api/thumbnails/evidence-1.jpg', aiSummary: 'Video shows suspect entering building at, 10:23 PM wearing dark clothing'
-    }, {
-      id: 'evidence-2', title: 'Witness Statement - John Doe', fileName: 'witness_statement_001.pdf', evidenceType: 'document', status: 'reviewing', fileSize: 1234567, createdAt: new Date('2024-01-16T14:20:00'), uploadedAt: new Date('2024-01-16T14:20:00'), updatedAt: new Date('2024-01-16T14:20:00'), description: 'Witness observed suspicious activity near the crime scene around, 10:15 PM', tags: ['witness', 'testimony', 'timeline'], aiSummary: 'Witness observed suspicious activity near the crime scene around, 10:15 PM'
-    }, {
+  // Svelte, 5 runes are auto-imported
+  // Minimal hub that links to evidence board, evidence canvas, cases, and chat
+  import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
+  import CaseForm from '$lib/components/forms/CaseForm.svelte';
+  import { getAuthContext } from '$lib/stores/unified';
+  import { onMount } from 'svelte';
+
+  const auth = getAuthContext();
+  let currentView = $state<string>('board'); // 'board' | 'create-case' | 'auth-demo'
+  let mounted = $state<boolean>(false);
+
+  // Sample evidence data for the detective board
+  let sampleEvidence = $state([ { id: 'evidence-1', title: 'Security Camera Footage', fileName: 'camera_feed_001.mp4', evidenceType: 'video', status: 'new', fileSize: 45678912, createdAt: new Date('2024-01-15T10:30:00'), uploadedAt: new Date('2024-01-15T10:30:00'), updatedAt: new Date('2024-01-15T10:30:00'), description: 'Video shows suspect entering building at 10:23 PM wearing dark clothing', tags: ['surveillance', 'timestamp', 'suspect-entry'], hash: 'abc123', thumbnailUrl: '/api/thumbnails/evidence-1.jpg', aiSummary: 'Video shows suspect entering building at 10:23 PM wearing dark clothing'
+    },
+    {
+      id: 'evidence-2', title: 'Witness Statement - John Doe', fileName: 'witness_statement_001.pdf', evidenceType: 'document', status: 'reviewing', fileSize: 1234567, createdAt: new Date('2024-01-16T14:20:00'), uploadedAt: new Date('2024-01-16T14:20:00'), updatedAt: new Date('2024-01-16T14:20:00'), description: 'Witness observed suspicious activity near the crime scene around 10:15 PM', tags: ['witness', 'testimony', 'timeline'], aiSummary: 'Witness observed suspicious activity near the crime scene around 10:15 PM'
+    },
+    {
       id: 'evidence-3', title: 'Crime Scene Photos', fileName: 'scene_photos_batch1.zip', evidenceType: 'image', status: 'approved', fileSize: 23456789, createdAt: new Date('2024-01-17T09:15:00'), uploadedAt: new Date('2024-01-17T09:15:00'), updatedAt: new Date('2024-01-17T09:15:00'), tags: ['crime-scene', 'forensics', 'photography'], hash: 'xyz789', thumbnailUrl: '/api/thumbnails/evidence-3.jpg'
-    }, {
+    },
+    {
       id: 'evidence-4', title: 'Phone Call Recording', fileName: 'call_recording_suspect.mp3', evidenceType: 'audio', status: 'new', fileSize: 5678901, createdAt: new Date('2024-01-18T11:45:00'), uploadedAt: new Date('2024-01-18T11:45:00'), updatedAt: new Date('2024-01-18T11:45:00'), description: 'Audio recording contains discussion about meeting location', tags: ['wiretap', 'conversation', 'evidence'], aiSummary: 'Audio recording contains discussion about meeting location'
-    }, {
-      id: 'evidence-5', title: 'Financial Records', fileName: 'bank_statements_2024.pdf', evidenceType: 'document', status: 'reviewing', fileSize: 3456789, createdAt: new Date('2024-01-19T16:30:00'), uploadedAt: new Date('2024-01-19T16:30:00'), updatedAt: new Date('2024-01-19T16:30:00'), description: 'Bank statements showing suspicious transactions', tags: ['financial', 'money-laundering', 'transactions'], aiSummary: 'Bank statements reveal suspicious large cash deposits totaling $50,000 over, 3 months'
-    }, {
-      id: 'evidence-6', title: 'DNA Analysis Report', fileName: 'dna_report_lab_001.pdf', evidenceType: 'document', status: 'approved', fileSize: 987654, createdAt: new Date('2024-01-20T09:00:00'), uploadedAt: new Date('2024-01-20T09:00:00'), updatedAt: new Date('2024-01-20T09:00:00'), description: 'Forensic DNA analysis results', tags: ['dna', 'forensics', 'lab-report'], hash: 'dna456', aiSummary: 'DNA evidence confirms 99.7% match with suspect sample collected at scene'
-    }]); $effect(() => { mounted = true}); function handleCaseFormSuccess(_event: CustomEvent) { console.log('Case created/updated:', e(vent as CustomEvent).detail); currentView = 'board'}
-  function handleCaseFormCancel() { currentView = 'board'}
+    },
+    {
+      id: 'evidence-5', title: 'Financial Records', fileName: 'bank_statements_2024.pdf', evidenceType: 'document', status: 'reviewing', fileSize: 3456789, createdAt: new Date('2024-01-19T16:30:00'), uploadedAt: new Date('2024-01-19T16:30:00'), updatedAt: new Date('2024-01-19T16:30:00'), description: 'Bank statements showing suspicious transactions', tags: ['financial', 'money-laundering', 'transactions'], aiSummary: 'Bank statements reveal suspicious large cash deposits totaling $50,000 over 3 months'
+    }
+  ]);
 
-  // Demo collaboration simulation function simulateCollaboration() { if (!mounted) return; // Simulate other users joining const mockUsers = [ { id: 'user-1', name: 'Sarah Chen', email: 'sarah.chen@prosecutor.office' }, { id: 'user-2', name: 'Mike Rodriguez', email: 'mike.rodriguez@prosecutor.office' }, { id: 'user-3', name: 'Dr. Lisa Kim', email: 'lisa.kim@forensics.office' }]; // Add one random user as if they joined const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)]; // Show notification if (typeof window !== 'undefined') { console.log(`${randomUser.name} joined the case`)}
+  let showCaseForm = $state(false);
 
-    // Simulated notification timeout setTimeout(() => { console.log('Notification dismissed')}, 3000); console.log('ðŸš€ Collaboration demo:', randomUser.name, 'joined the case')}
+  onMount(() => {
+    mounted = true;
+  });
+
+  function toggleView(view: string) {
+    currentView = view;
+  }
+
+  function createNewCase() {
+    currentView = 'create-case';
+  }
+
+  function handleCaseCreated(event: CustomEvent) {
+    console.log('Case created:', event.detail);
+    currentView = 'board';
+  }
+
+  function handleCaseCancelled() {
+    currentView = 'board';
+  }
+
+  // Demo collaboration simulation function
+  function simulateCollaboration() {
+    if (!mounted) return;
+
+    // Simulate other users joining
+    const mockUsers = [
+      { id: 'user-1', name: 'Sarah Chen', email: 'sarah.chen@prosecutor.office' },
+      { id: 'user-2', name: 'Mike Rodriguez', email: 'mike.rodriguez@prosecutor.office' },
+      { id: 'user-3', name: 'Dr. Lisa Kim', email: 'lisa.kim@forensics.office' }
+    ];
+
+    // Add one random user as if they joined
+    const randomUser = mockUsers[Math.floor(Math.random() * mockUsers.length)];
+
+    // Show notification
+    if (typeof window !== 'undefined') {
+      console.log(`${randomUser.name} joined the case`);
+    }
+
+    // Simulated notification timeout
+    setTimeout(() => {
+      console.log('Notification dismissed');
+    }, 3000);
+    console.log('ðŸš€ Collaboration demo:', randomUser.name, 'joined the case');
+  }
 </script>
 
 <div class="p-6 max-w-4xl mx-auto">
@@ -73,7 +131,7 @@
     {#if currentView === 'board'}
       <DetectiveBoard caseId="demo-case-001" evidence={sampleEvidence} />
     {:else if currentView === 'create-case'}
-      <div class="space-y-4"><CaseForm onsuccess={handleCaseFormSuccess} oncancel={handleCaseFormCancel} /></div>
+      <div class="space-y-4"><CaseForm onsuccess={handleCaseCreated} oncancel={handleCaseCancelled} /></div>
     {:else if currentView === 'auth-demo'}
       <div class="space-y-4">
         <div class="space-y-6">
@@ -160,6 +218,6 @@
       <p class="text-sm">Initializing Google Slides-like interface</p>
     </div>
   </div>
-{/if} ;
+{/if}
 
 

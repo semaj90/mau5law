@@ -175,7 +175,7 @@ import type { Document } from '$lib/types';
     position: relative;
     overflow: hidden}
 
-  .ai-nav-item: :before {
+  .ai-nav-item::before {
     content: ''; position: absolute;
     top: 0;
     left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
@@ -184,7 +184,7 @@ import type { Document } from '$lib/types';
   .ai-nav-item:hover::before {
     left: 100%}
 
-  .ai-nav-item: hover {
+  .ai-nav-item:hover {
     border-color: #00ffcc;
     color: #00ffcc
    ; background: var(--surface-tertiary, #1a1a1a);
@@ -214,7 +214,7 @@ import type { Document } from '$lib/types';
     position: relative}
 
   /* Cyberpunk grid background */
-  .ai-content: :before {
+  .ai-content::before {
     content: ''; position: absolute;
     top: 0;
     left: 0;
@@ -288,7 +288,7 @@ import type { Document } from '$lib/types';
     transition: all 0.3s ease;
     font-size: 0.9rem}
 
-  .ai-main-btn: hover {
+  .ai-main-btn:hover {
     border-color: #00ffcc
    ; color: #00ffcc;
     box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);

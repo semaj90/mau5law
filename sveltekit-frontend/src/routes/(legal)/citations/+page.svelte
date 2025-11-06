@@ -121,7 +121,7 @@ import type { Case } from '$lib/types';
     border: 1px solid var(--border-primary, #00ff00);
     transition: all 0.3s ease}
 
-  .citation-card: hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2)}
+  .citation-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2)}
 
   .citation-type {
     color: var(--text-primary, #00ff00);

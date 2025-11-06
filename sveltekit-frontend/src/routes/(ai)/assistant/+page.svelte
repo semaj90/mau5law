@@ -47,7 +47,7 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .quick-button:hover:not(:disabled) { background: rgba(0, 204, 255, 0.2); border-color: var(--text-primary, #00ccff); transform: translateY(-1px)}
 
-  .quick-button: disabled { opacity: 0.5; cursor: not-allowed}
+  .quick-button:disabled { opacity: 0.5; cursor:not-allowed}
 
   .chat-container { margin-bottom: 2rem}
 
@@ -83,15 +83,15 @@ import type { Document } from '$lib/types'; // Consolidated AI Assistant (replac
 
   .message-input { flex: 1; background: var(--surface-primary, #0a0a0a); border: 1px solid rgba(0, 204, 255, 0.3); border-radius: 4px; padding: 0.75rem; color: var(--text-primary, #ffffff); font-family: inherit; resize: vertical; min-height: 60px}
 
-  .message-input: focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0 0 10px rgba(0, 204, 255, 0.3)}
+  .message-input:focus { outline: none; border-color: var(--text-primary, #00ccff); box-shadow: 0 0 10px rgba(0, 204, 255, 0.3)}
 
   .message-input::placeholder { color: var(--text-secondary, #888888)}
 
   .send-button { background: var(--text-primary, #00ccff); color: var(--surface-secondary, #000000); border: none; padding: 0.75rem 1.5rem; border-radius: 4px; font-weight: bold; transition: all 0.2s}
 
-  .send-button: hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 204, 255, 0.5)}
+  .send-button:hover:not(:disabled) { transform: scale(1.05); box-shadow: 0 0 15px rgba(0, 204, 255, 0.5)}
 
-  .send-button: disabled { opacity: 0.5; cursor: not-allowed}
+  .send-button:disabled { opacity: 0.5; cursor:not-allowed}
 
   .capabilities { margin-bottom: 2rem}
 

@@ -64,9 +64,9 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 
 <style>
 /* @unocss-include */ .prose { max-width: none}
-  .prose: global(h1) { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem}
-  .prose: global(h2) { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; margin-top: 1.5rem}
-  .prose: global(p) { margin-bottom: 1rem; line-height: 1.6}
-  .prose: global(ul) { margin-bottom: 1rem; padding-left: 1.5rem}
+  .prose:global(h1) { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem}
+  .prose:global(h2) { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; margin-top: 1.5rem}
+  .prose:global(p) { margin-bottom: 1rem; line-height: 1.6}
+  .prose:global(ul) { margin-bottom: 1rem; padding-left: 1.5rem}
   .prose:global(li) { margin-bottom: 0.5rem}
 </style>

@@ -1,16 +1,16 @@
-import { json } from '@sveltejs/kit';
-import { ollamaChatStream } from '$lib/services/ollamaChatStream';
-import { initializeChatEmbeddingsTable, searchSimilarChats as _searchSimilarChats, type VectorSearchResult } from '$lib/server/services/vectorDBService';
-import { chatRateLimiter } from '$lib/server/middleware/rate-limiter';
+import { json, type RequestHandler } from '@sveltejs/kit';
+import ollamaChatStream from '$lib/services/ollamaChatStream'; // Changed to default import
+import * as vectorDBService from '$lib/server/services/vectorDBService'; // Changed to namespace import
+import chatRateLimiter from '$lib/server/middleware/rate-limiter'; // Changed to default import
 import { createHash } from 'node:crypto';
 import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import centralized Ollama endpoint helper
 
 // Define the expected signature for searchSimilarChats.
 // The actual function in $lib/server/services/vectorDBService.ts needs to be updated
 // to match this signature: (query: string, limit: number, threshold: number) => Promise<VectorSearchResult[]>.
-type ExpectedSearchSimilarChats = (query: string, limit: number, threshold: number) => Promise<VectorSearchResult[]>;
+type ExpectedSearchSimilarChats = (query: string, limit: number, threshold: number) => Promise<vectorDBService.VectorSearchResult[]>;
 // Cast the imported function to the expected type to resolve the type error in this file.
-const searchSimilarChats: ExpectedSearchSimilarChats = _searchSimilarChats as ExpectedSearchSimilarChats;
+const searchSimilarChats: ExpectedSearchSimilarChats = vectorDBService.searchSimilarChats as ExpectedSearchSimilarChats;
 
 // Define interfaces for robust logging
 interface LoggerBindings extends Record<string, unknown> { }
@@ -30,51 +30,27 @@ function createChildLoggerInstance(parentLogger: Logger, bindings: LoggerBinding
     warn: (message: string, component: string, metadata?: LoggerBindings) => parentLogger.warn(message, component, { ...bindings, ...metadata }),
     error: (message: string, component: string, error?: Error, metadata?: LoggerBindings) => parentLogger.error(message, component, error, { ...bindings, ...metadata }),
     withRequestId: (requestId: string) => createChildLoggerInstance(parentLogger, { ...bindings, requestId }),
-    child: (newBindings: LoggerBindings) => createChildLoggerInstance(parentLogger, { ...bindings, ...newBindings })
+    child: (newBindings: LoggerBindings) => createChildLoggerInstance(parentLogger, { ...bindings, ...newBindings }),
   };
 }
 
-// Simple console logger for now
+// Initialize a default logger instance
 const logger: Logger = {
-  info: (message: string, component: string, metadata?: LoggerBindings) => console.log(
-    `[${new Date().toLocaleTimeString()}] INFO [${component}] ${message}`, metadata ? JSON.stringify(metadata) : ''
-  ),
-  warn: (message: string, component: string, metadata?: LoggerBindings) => console.warn(
-    `[${new Date().toLocaleTimeString()}] WARN [${component}] ${message}`, metadata ? JSON.stringify(metadata) : ''
-  ),
-  error: (message: string, component: string, error?: Error, metadata?: LoggerBindings) => console.error(
-    `[${new Date().toLocaleTimeString()}] ERROR [${component}] ${message}`, error?.message || '', metadata ? JSON.stringify(metadata) : ''
-  ),
-  withRequestId: function (requestId: string): Logger {
-    return createChildLoggerInstance(this, { requestId });
-  },
-  child: function (bindings: LoggerBindings): Logger {
-    return createChildLoggerInstance(this, bindings);
-  }
+  info: (message, component, metadata) => console.info(`[INFO][${component}] ${message}`, metadata ? JSON.stringify(metadata) : ''),
+  warn: (message, component, metadata) => console.warn(`[WARN][${component}] ${message}`, metadata ? JSON.stringify(metadata) : ''),
+  error: (message, component, error, metadata) => console.error(`[ERROR][${component}] ${message}`, error, metadata ? JSON.stringify(metadata) : ''),
+  withRequestId: (requestId) => createChildLoggerInstance(logger, { requestId }),
+  child: (bindings) => createChildLoggerInstance(logger, bindings),
 };
 
-// New interface for recommendations
-export interface Recommendation {
-  text: string;
-  score?: number;
-  // Add other properties recommendations might have
-  [key: string]: unknown;
-}
-
-interface RateLimitResult {
-  allowed: boolean;
-  resetTime: number;
-  remaining: number;
-}
-
 // Initialize database on startup (attempt to create embeddings table once)
-let chatDbInitialized = $state<boolean>(false);
+let chatDbInitialized: boolean = false;
 async function ensureDbInitialized(): Promise<void> {
   // Run once
   if (chatDbInitialized) return Promise.resolve();
   try {
     // Attempt to create/ensure embeddings table (may throw if DB unavailable)
-    await initializeChatEmbeddingsTable();
+    await vectorDBService.initializeChatEmbeddingsTable(); // Updated reference
     chatDbInitialized = true;
     console.log('[chat-api-v3] Chat embeddings table initialized');
   } catch (err: unknown) {
@@ -205,7 +181,7 @@ export interface ChatResponse {
   response?: string;
   conversationId?: string;
   requestId?: string;
-  sources?: VectorSearchResult[];
+  sources?: vectorDBService.VectorSearchResult[]; // Qualified with vectorDBService
   metadata?: {
     model: string;
     temperature: number;
@@ -222,7 +198,7 @@ export interface ChatResponse {
 interface ChatStreamMetadata {
   type: 'sources' | 'recommendations' | 'text' | 'final';
   confidence?: number;
-  sources?: VectorSearchResult[];
+  sources?: vectorDBService.VectorSearchResult[]; // Qualified with vectorDBService
   recommendations?: Recommendation[];
   // Add other metadata properties as needed
 }
@@ -416,7 +392,7 @@ export const POST: RequestHandler = async ({ request }) => {
                 context: messages || []
               }) as AsyncGenerator<ChatStreamChunk>; // Cast to the defined chunk type
 
-              let sources: VectorSearchResult[] = [];
+              let sources: vectorDBService.VectorSearchResult[] = []; // Updated reference
               for await (const chunk of streamGenerator) {
                 if (chunk.metadata?.type === 'sources') {
                   sources = chunk.metadata.sources || [];
@@ -474,7 +450,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // For non-streaming responses
       conversationLogger.info('Starting non-streaming response', 'chat-api-v3');
       let fullResponse = '';
-      let sources: VectorSearchResult[] = [];
+      let sources: vectorDBService.VectorSearchResult[] = []; // Updated reference
       let vectorSearchUsed = false; // Changed from $state<boolean>(false)
 
       const streamGenerator = ollamaChatStream()({
@@ -521,6 +497,30 @@ export const POST: RequestHandler = async ({ request }) => {
           processingTimeMs: processingTime,
           vectorSearchUsed,
           sourcesCount: sources.length,
+          requestId,
+          timestamp: new Date().toISOString()
+        }
+      };
+      return json(response);
+    } catch (error: Error | unknown) {
+      const processingTime = Date.now() - startTime;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      requestLogger.error('Chat request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
+        duration: processingTime,
+        errorMessage
+      });
+      return json(
+        {
+          success: false,
+          error: 'Internal server error occurred while processing your request',
+          requestId,
+          metadata: { processingTimeMs: processingTime, timestamp: new Date().toISOString() }
+        },
+        { status: 500 }
+      );
+    }
+  });
+};
           requestId,
           timestamp: new Date().toISOString()
         }

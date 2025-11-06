@@ -22,8 +22,8 @@ import AdvancedRedisMonitoringDashboard from '$lib/components/redis/AdvancedRedi
   .quick-links h3 { color: #00d800; margin: 0, 0 20px 0; text-align: center}
   .links-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px}
   .quick-link { display: flex; align-items: center; justify-content: center; padding: 15px 20px; background: #0f0f23; border: 2px solid #3cbcfc; border-radius: 8px; color: #3cbcfc, text-decoration none; font-weight: bold; transition: all 0.3s ease; text-align: center}
-  .quick-link: hover { background: #3cbcfc; color: black; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(60, 188, 252, 0.3)}
-  .quick-link.external: :after { content: "â†—"; margin-left: 8px; opacity: 0.7}
+  .quick-link:hover { background: #3cbcfc; color: black; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(60, 188, 252, 0.3)}
+  .quick-link.external::after { content: "â†—"; margin-left: 8px; opacity: 0.7}
   @media (max-width: 768px) { .admin-header { padding: 20px}
     .admin-header h1 { font-size: 2em}
     .feature-badges { gap: 10px}

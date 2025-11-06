@@ -80,7 +80,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     transition: all 0.3s ease;
   }
 
-  .action-card: hover {
+  .action-card:hover {
     border-color: #ffd700;
     box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
     transform: translateY(-2px);
@@ -176,7 +176,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     font-size: 0.85rem;
   }
 
-  .form-input:focus, .form-textarea:focus, .form-select: focus {
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
     outline: none;
     border-color: #ffd700;
   }
@@ -272,7 +272,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 
   .upload-btn.disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+    cursor:not-allowed;
   }
 
   .reset-btn {
@@ -476,7 +476,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     font-size: 0.85rem;
   }
 
-  .action-link: hover {
+  .action-link:hover {
     background: #ffd700;
     color: #0a0a0a;
     transform: translateY(-1px);

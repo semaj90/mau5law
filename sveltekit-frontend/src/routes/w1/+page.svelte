@@ -89,7 +89,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .case-actions { display: flex; gap: 0.5rem}
   .btn-primary, .btn-secondary { padding: 0.5rem 1rem; border: none; border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; flex: 1}
   .btn-primary { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white}
-  .btn-primary: hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4)}
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4)}
   .btn-secondary { background: rgba(15, 23, 42, 0.8); color: #cbd5e1; border: 1px solid #334155}
   .btn-secondary:hover { background: rgba(30, 41, 59, 0.8)}
   .detective-mode { max-width: 800px; margin: 0 auto}
@@ -101,7 +101,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .step-label { font-size: 0.75rem; font-weight: 600; color: #94a3b8}
   .current-question { background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; border-radius: 1rem; padding: 2rem; text-align: center}
   .workflow-input, .quick-input { width: 100%; background: rgba(30, 41, 59, 0.5); border: 1px solid #334155; border-radius: 0.5rem; padding: 1rem; color: #e2e8f0; font-size: 1rem; margin: 1rem 0; resize: vertical}
-  .workflow-input:focus, .quick-input: focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2)}
+  .workflow-input:focus, .quick-input:focus { outline: none; border-color: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2)}
   .ai-assistant-panel { position: fixed; bottom: 2rem; right: 2rem; width: 400px; background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; border-radius: 1rem; padding: 1.5rem; backdrop-filter: blur(20px); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); z-index: 1000}
   .ai-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem}
   .ai-avatar { position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: all 0.3s ease}

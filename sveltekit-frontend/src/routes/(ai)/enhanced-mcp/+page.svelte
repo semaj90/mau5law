@@ -106,7 +106,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .status-card: hover {
+  .status-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
   }
@@ -278,7 +278,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /**
     transition: all 0.3s ease;
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
-  .feature-card: hover {
+  .feature-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     background: rgba(255, 255, 255, 0.1);

@@ -393,12 +393,12 @@ if (browser) {
     font-size: 1rem
    ; transition: all 0.2;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1)}
-  .test-buttonhover: not(:disabled) {
+  .test-buttonhover:not(:disabled) {
     background: #1d4ed8
    ; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15)}
   .test-buttondisabled {
     background: #6b7280;
-    cursor: not-allowed;
+    cursor:not-allowed;
     transform: none}
   .progress-container {
     background: white;
@@ -436,7 +436,7 @@ if (browser) {
    ; padding: 1.5rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     transition: all 0.2}
-  .result-card: hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  .result-card:hover { transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     border-color: #3b82f6}
   .result-card h3 { margin: 0, 0 1rem 0;
     font-size: 1.25rem;

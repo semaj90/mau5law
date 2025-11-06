@@ -50,7 +50,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .metrics-section { margin-bottom: 2rem}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem}
   .metric-card { transition: transform 0.2s ease, box-shadow 0.2s ease}
-  .metric-card: hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1)}
+  .metric-card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1)}
   .metric-header { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 1rem}
   .metric-name { font-size: 0.875rem; font-weight: 600; color: #374151; margin: 0}
   .metric-trend { padding: 0.25rem; border-radius: 0.375rem}
@@ -61,7 +61,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   .last-update { font-size: 0.75rem; color: #9ca3af}
   .analysis-section { margin-bottom: 2rem}
   .analysis-textarea { width: 100%; min-height: 80px; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 1rem; resize: vertical; transition: border-color 0.2s ease, box-shadow 0.2s ease}
-  .analysis-textarea: focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
+  .analysis-textarea:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1)}
   .analysis-actions { display: flex; gap: 1rem; margin-top: 1rem}
   .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; margin-bottom: 2rem}
   .insights-section, .tasks-section { height: 600px}

@@ -51,7 +51,7 @@
     font-family: 'JetBrains Mono', monospace;
     position: relative;
   }
-  .fugitive-dex: :before {
+  .fugitive-dex::before {
     content: '';
     position: fixed;
     top: 0;

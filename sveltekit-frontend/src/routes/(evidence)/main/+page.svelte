@@ -111,7 +111,7 @@ import type { Case } from '$lib/types';
     border-radius: 4px;
     transition: all 0.3s ease}
 
-  .action-link: hover {
+  .action-link:hover {
     background: #ffd700
    ; color: #1a1a1a}
 </style>

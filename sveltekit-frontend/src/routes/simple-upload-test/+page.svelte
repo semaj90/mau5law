@@ -126,7 +126,7 @@ async function performSearch(): Promise<void> {
 
 	button:disabled {
 		background-color: #ccc;
-		cursor: not-allowed;
+		cursor:not-allowed;
 	}
 
 	pre {

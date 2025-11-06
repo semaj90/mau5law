@@ -297,7 +297,7 @@ export async function processLegalDocument(
     // 1. Check cache first
     const cacheKey = `doc-${metadata.id}`;
     let cachedResult = await comprehensiveCachingService.get(cacheKey);
-    
+
     if (cachedResult) {
       return cachedResult;
     }
@@ -423,7 +423,7 @@ export async function batchAnalyzeDocuments(
     // Process documents in batches
     for (let i = 0; i < documents.length; i += 10) {
       const batch = documents.slice(i, i + 10);
-      
+
       // Process embeddings in parallel
       const embeddingPromises = batch.map(doc =>
         nomicEmbeddingService.processDocument(doc.content, doc.metadata)
@@ -450,14 +450,14 @@ export async function batchAnalyzeDocuments(
 
         results.push({
           documentId: doc.id,
-          status: embeddingResult.status === 'fulfilled' && 
+          status: embeddingResult.status === 'fulfilled' &&
                   analysisResult.status === 'fulfilled' ? 'success' : 'error',
-          embeddings: embeddingResult.status === 'fulfilled' ? 
+          embeddings: embeddingResult.status === 'fulfilled' ?
                      embeddingResult.value.embeddings : [],
-          analysis: analysisResult.status === 'fulfilled' ? 
+          analysis: analysisResult.status === 'fulfilled' ?
                    JSON.parse(analysisResult.value.result) : null,
-          error: embeddingResult.status === 'rejected' || 
-                 analysisResult.status === 'rejected' ? 
+          error: embeddingResult.status === 'rejected' ||
+                 analysisResult.status === 'rejected' ?
                  'Processing failed' : undefined
         });
       });
@@ -482,7 +482,7 @@ export async function batchAnalyzeDocuments(
 const health = await ollamaCudaService.getSystemHealth();
 if (health.gpu && health.gpu.memoryUsed / health.gpu.memoryTotal > 0.9) {
   console.warn('High GPU memory usage detected');
-  
+
   // Optimize for memory
   await ollamaCudaService.optimizeForUseCase('embedding');
 }
@@ -552,7 +552,7 @@ performanceOptimizationService.metricsStore.subscribe(metrics => {
   if (metrics.gpu.utilization > 95) {
     console.warn('High GPU utilization detected');
   }
-  
+
   if (metrics.latency.avgResponseTime > 5000) {
     console.warn('High response latency detected');
   }
@@ -581,7 +581,7 @@ performanceOptimizationService.metricsStore.subscribe(metrics => {
    ```typescript
    // Reduce batch size
    await nomicEmbeddingService.updateConfig({ batchSize: 16 });
-   
+
    // Use CPU fallback
    await ollamaCudaService.updateConfig({ enableGpuAcceleration: false });
    ```
@@ -591,7 +591,7 @@ performanceOptimizationService.metricsStore.subscribe(metrics => {
    // Check system health
    const health = await ollamaCudaService.getSystemHealth();
    console.log('System status:', health.status);
-   
+
    // Optimize for workload
    await performanceOptimizationService.optimizeForWorkload('chat');
    ```
@@ -601,7 +601,7 @@ performanceOptimizationService.metricsStore.subscribe(metrics => {
    // Check cache statistics
    const stats = comprehensiveCachingService.getStats();
    console.log('Cache hit rate:', stats.overall.hitRate);
-   
+
    // Warm up cache
    await comprehensiveCachingService.warmup(frequentData);
    ```

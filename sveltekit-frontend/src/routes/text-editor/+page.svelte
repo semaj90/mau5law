@@ -93,18 +93,18 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
   .header-content { display: flex; justify-content: space-between; /* fixed typo */ align-items: center; margin-bottom: 16px}
   .title-section { display: flex; align-items: center; gap: 16px}
   .title-icon { color: var(--nes-blue, #3cbcfc); filter: drop-shadow(0, 0 8px currentColor)}
-  /* Accessibility: Remove drop-shadow in high-contrast modes */ @media (forced-colors: active) { .title-icon { filter: none !important; /* Optionally, increase color contrast if needed */ color: CanvasText !important}
+  /* Accessibility: Remove drop-shadow in high-contrast modes */ @media (forced-colors:active) { .title-icon { filter: none !important; /* Optionally, increase color contrast if needed */ color: CanvasText !important}
   } .title-info h1 { font-size: 1.8rem; font-weight: bold; color: var(--yorha-text-primary, #e0e0e0); margin: 0; text-transform: uppercase; letter-spacing: 2px}
   .title-info p { font-size: 0.9rem; color: var(--yorha-text-muted, #b0b0b0); margin: 4px, 0 0 0}
   .header-actions { display: flex; gap: 12px; align-items: center}
   .action-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--yorha-bg-tertiary, #2a2a2a); border: 1px solid var(--yorha-border, #606060); color: var(--yorha-text-primary, #e0e0e0); border-radius: 4px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 0.5px}
   .action-btn:hover:not(:disabled) { background: var(--nes-blue, #3cbcfc); border-color: var(--nes-blue, #3cbcfc); color: #000; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(60, 188, 252, 0.3)}
-  .action-btn:disabled { opacity: 0.5; cursor: not-allowed}
+  .action-btn:disabled { opacity: 0.5; cursor:not-allowed}
   .save-btn:not(:disabled) { background: var(--nes-green, #92cc41); border-color: var(--nes-green, #92cc41); color: #000}
-  .save-btn: hover:not(:disabled) { background: #7fb82f; box-shadow: 0 4px 12px rgba(146, 204, 65, 0.3)}
+  .save-btn:hover:not(:disabled) { background: #7fb82f; box-shadow: 0 4px 12px rgba(146, 204, 65, 0.3)}
   /* Document Title Section */ .document-title-section { display: flex; align-items: center; gap: 12px}
   .document-title-input { flex: 1; background: var(--yorha-bg-tertiary, #2a2a2a); border: 1px solid var(--yorha-border, #606060); color: var(--yorha-text-primary, #e0e0e0); padding: 8px 12px; border-radius: 4px; font-size: 1.1rem; font-weight: 500; max-width: 300px}
-  .document-title-input: focus { outline: none; border-color: var(--nes-blue, #3cbcfc); box-shadow: 0 0 8px rgba(60, 188, 252, 0.3)}
+  .document-title-input:focus { outline: none; border-color: var(--nes-blue, #3cbcfc); box-shadow: 0 0 8px rgba(60, 188, 252, 0.3)}
   .save-status { font-size: 0.8rem; color: var(--yorha-text-muted, #b0b0b0)}
   .modified-badge { font-size: 0.7rem; background: rgba(248, 56, 0, 0.1); border-color: var(--nes-red, #f83800); color: var(--nes-red, #f83800)}
   /* Stats Bar */ .stats-bar { background: var(--yorha-bg-tertiary, #2a2a2a); border-bottom: 1px solid var(--yorha-border, #606060); padding: 8px 24px}

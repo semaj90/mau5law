@@ -31,7 +31,7 @@
   .chevron { font-size: 0.9rem; opacity: 0.7}
   .route-list { list-style: none; margin: 0; padding: 0.35rem 0.75rem 0.75rem; display: grid; gap: 0.4rem}
   .route-item a { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; padding: 0.45rem 0.55rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 0.4rem, text-decoration none; font-size: 0.8rem; line-height: 1.1; color: #1f2937; transition: background 0.12s, border-color 0.12s}
-  .route-item a: hover { background: #f3f4f6; border-color: #cbd5e1}
+  .route-item a:hover { background: #f3f4f6; border-color: #cbd5e1}
   .route-item code { background: #1f2937; color: #f8fafc; padding: 0.15rem 0.4rem; border-radius: 0.35rem; font-size: 0.7rem}
   .label { font-weight: 500}
   .badge { background: #2563eb; color: #fff; font-size: 0.55rem; padding: 0.15rem 0.4rem; border-radius: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em}

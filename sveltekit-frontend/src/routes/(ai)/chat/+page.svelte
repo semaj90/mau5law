@@ -153,7 +153,7 @@ import type { User } from '$lib/types'; /** * Production-Ready Integrated AI Cha
   .chat-area::-webkit-scrollbar-track {
     background: #333;
   }
-  .chat-area: :-webkit-scrollbar-thumb {
+  .chat-area::-webkit-scrollbar-thumb {
     background: #666;
     border-radius: 4px;
   }

@@ -64,7 +64,7 @@
     position: relative}
 
   /* Development-specific debugging grid */
-  .dev-main: :before {
+  .dev-main::before {
     content: ''; position: fixed;
     top: 0;
     left: 0;
@@ -77,7 +77,7 @@
     pointer-events: none;
     z-index: 0}
 
-  .dev-main .dev-main-content { /* Fix: Target the new wrapper div */;
+  .dev-main .dev-main-content { /* Fix:Target the new wrapper div */;
     position: relative;
     z-index: 1}
 

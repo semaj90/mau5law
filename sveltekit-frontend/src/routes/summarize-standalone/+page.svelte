@@ -448,7 +448,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
   }
   .tab:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+    cursor:not-allowed;
   }
   .loading-spinner {
     animation: spin 1s linear infinite;
@@ -554,7 +554,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
   }
   .btn:disabled {
     opacity: 0.5;
-    cursor: not-allowed;
+    cursor:not-allowed;
   }
   .processing-status {
     text-align: center;

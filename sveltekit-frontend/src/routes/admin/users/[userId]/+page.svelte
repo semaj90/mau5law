@@ -76,6 +76,6 @@ import type { User } from, '$lib/types'; // Svelte, 5 runes are auto-imported im
             > {formLoading ? '[REVOKING...]': '[REVOKE SESSION]'} </button> </div> </form> </div> </div> </div> {/if} <style> /* YoRHa cyberpunk aesthetic */:global(body) { background: #000; color: #fbbf24}
   /* Custom scrollbar */ .overflow-y-auto::-webkit-scrollbar, .overflow-x-auto::-webkit-scrollbar { width: 8px; height: 8px}
   .overflow-y-auto::-webkit-scrollbar-track, .overflow-x-auto::-webkit-scrollbar-track { background: #1f2937}
-  .overflow-y-auto::-webkit-scrollbar-thumb, .overflow-x-auto: :-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 4px}
-  .overflow-y-auto::-webkit-scrollbar-thumb: hover .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #f59e0b}
+  .overflow-y-auto::-webkit-scrollbar-thumb, .overflow-x-auto::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 4px}
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover .overflow-x-auto::-webkit-scrollbar-thumb:hover { background: #f59e0b}
 </style>

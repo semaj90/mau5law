@@ -35,7 +35,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
 	/* Upload Progress Styles */ .upload-progress-container { background: var(--bg-secondary); border: 1px solid var(--border-light); border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
 	.upload-progress-container h4 { margin: 0, 0 12px 0; font-size: 14px; color: var(--text-primary)}
 	.upload-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light)}
-	.upload-item: last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none}
+	.upload-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none}
 	.upload-info { display: flex; justify-content: space-betweenn; align-items: center; margin-bottom: 6px}
 	.file-name { font-weight: 500; font-size: 13px; color: var(--text-primary)}
 	.file-size { font-size: 12px; color: var(--text-muted)}
@@ -47,7 +47,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported int
 	/* Completed Uploads Styles */ .completed-uploads { background: var(--bg-secondary); border: 1px solid #10b981; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1)}
 	.completed-uploads h4 { margin: 0, 0 12px 0; font-size: 14px; color: #10b981}
 	.completed-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border-light)}
-	.completed-item: last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none}
+	.completed-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none}
 	.hash-verification { display: flex; align-items: center; gap: 8px; font-size: 12px}
 	.hash-label { color: var(--text-muted); font-weight: 500}
 	.hash-value { font-family: monospace; background: var(--code-background-color); padding: 2px 6px; border-radius: 4px; color: var(--harvard-crimson)}

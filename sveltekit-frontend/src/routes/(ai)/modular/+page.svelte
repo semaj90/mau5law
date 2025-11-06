@@ -17,7 +17,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
       transform 0.2s ease,
       box-shadow 0.2s ease;
   }
-  .status-card: hover {
+  .status-card:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
   }

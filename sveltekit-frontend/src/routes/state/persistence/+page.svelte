@@ -217,7 +217,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
   .filter-controls { margin-bottom: 1.5rem}
   .states-container { display: flex; flex-direction: column; gap: 1rem}
   .state-card { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.2s ease}
-  .state-card: hover { border-color: #d1d5db; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
+  .state-card:hover { border-color: #d1d5db; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
   .state-card.selected { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2)}
   .state-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem}
   .state-info { display: flex; align-items: center; gap: 1rem}
