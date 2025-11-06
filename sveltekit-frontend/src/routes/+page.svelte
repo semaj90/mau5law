@@ -1,17 +1,19 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
-	// Replace broken named imports with safe namespace import + fallbacks
 	import { browser } from '$app/environment';
 	import { derived, writable } from 'svelte/store';
 	import * as unified from '$lib/stores/unified';
   import LoginButton from '$lib/components/auth/LoginButton.svelte';
-  import RegisterModal from '$lib/components/auth/RegisterModal.svelte';
 
 	// Simple file uploader utility (bits-ui doesn't have createFileUploader)'
 	function createFileUploader(url: string) {
 		type UploadFile = { id: string, file: File, name: string, progress: number, error?: boolean };
-		let events: Record<string, Function[]> = $state({}); // Use $state for reactivity
-		let files = $state<UploadFile[]>([]); // Use $state for reactivity
+		type UploadEvents = {
+			success?: ((data: unknown) => void)[];
+			error?: ((err: unknown) => void)[];
+		};
+		// typed $state to avoid 'unknown' warnings
+		let events = $state<UploadEvents>({});
+		let files = $state<UploadFile[]>([]);
 
 		async function uploadImpl(file: File): Promise<any> {
 			try {
@@ -24,59 +26,75 @@ import type { Case } from '$lib/types';
 				});
 
 				if (!response.ok) {
-					throw new Error(`Upload failed: ${response.statusText}`);}
+					throw new Error(`Upload failed: ${response.statusText}`);
+				}
 
 				const result = await response.json();
-				events['success']?.forEach(fn => fn(result));
-				return result;} catch (error) {
-				events['error']?.forEach(fn => fn(error));
-				throw error;}
+				events.success?.forEach(fn => fn(result));
+				return result;
+			} catch (error) {
+				events.error?.forEach(fn => fn(error));
+				throw error;
+			}
 		}
 
 		return {
 			// exposes a simple array the template can iterate over
 			files,
 			// Accept FileList or Array<File>, push metadata and start upload
-      addFiles: (list: FileList | File[]) => {
-				// ensure we get a File[] and let TS know it
+			addFiles: (list: FileList | File[]) => {
 				const arr = Array.from(list as FileList | File[]) as File[];
 				arr.forEach((file) => {
-					const id = browser && crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`; // Corrected crypto access
+					const id = browser && (crypto as any).randomUUID ? (crypto as any).randomUUID() : `${Date.now()}-${Math.random()}`;
 					const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
-					files.push(fileObj); // Directly modify $state array
-					// start upload and update progress (coarse)
+					files.push(fileObj);
 					uploadImpl(file)
 						.then(() => {
 							fileObj.progress = 100;
-							events['success']?.forEach(fn => fn(fileObj));})
+							events.success?.forEach(fn => fn(fileObj));
+						})
 						.catch(() => {
 							fileObj.progress = 0;
 							fileObj.error = true;
-							events['error']?.forEach(fn => fn(fileObj));});});},
+							events.error?.forEach(fn => fn(fileObj));
+						});
+				});
+			},
 			upload: uploadImpl,
-      on: (event: string, callback: Function) => {
-        if (!events[event]) events[event] = [];
-        events[event].push(callback);}
-		};}
+			on: (event: keyof UploadEvents, callback: (data: unknown) => void) => {
+				if (event === 'success') {
+					if (!events.success) events.success = [];
+					events.success.push(callback);
+				} else if (event === 'error') {
+					if (!events.error) events.error = [];
+					events.error.push(callback);
+				}
+			}
+		};
+	}
 
 	// Create safe local stores that fall back if unified exports are missing
-	const recommendations = (unified as unknown).recommendations ?? writable<any[]>([]); // Corrected 'as unknown'
-	const partialRecommendations = (unified as unknown).partialRecommendations ?? writable<any[]>([]); // Corrected 'as unknown'
-	const engineState = (unified as unknown).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle'); // Corrected 'as unknown'
-	const errorMessage = (unified as unknown).errorMessage ?? writable<string>(''); // Corrected 'as unknown'
-	const runQuery = (unified as unknown).runQuery ?? (async (_q: string) => { // Corrected 'as unknown'
-		console.warn('runQuery stub called - unified.runQuery not available');});
+	const recommendations = (unified as any).recommendations ?? writable<any[]>([]);
+	const partialRecommendations = (unified as any).partialRecommendations ?? writable<any[]>([]);
+	const engineState = (unified as any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
+	const errorMessage = (unified as any).errorMessage ?? writable<string>('');
+	const runQuery =
+		(unified as any).runQuery ??
+		(async (_q: string) => {
+			console.warn('runQuery stub called - unified.runQuery not available');
+		});
 
 	// Use svelte/store derived and coerce values into arrays to avoid type errors
 	let displayRecommendations = derived(
 		[recommendations, partialRecommendations, engineState],
 		([$recs, $partial, $state]) => {
 			// cast to unknown before accessing .items to satisfy TS
-			const recsArr = Array.isArray($recs) ? $recs : (($recs as { items?: any[] })?.items ?? []); // Corrected 'as unknown' and type assertion
-			const partialArr = Array.isArray($partial) ? $partial : (($partial as { items?: any[] })?.items ?? []); // Corrected 'as unknown' and type assertion
+			const recsArr = Array.isArray($recs) ? $recs : (($recs as { items?: any[] })?.items ?? []);
+			const partialArr = Array.isArray($partial) ? $partial : (($partial as { items?: any[] })?.items ?? []);
 			// show streaming partials while processing, otherwise final recommendations
 			if ($state === 'processing' && partialArr.length) return partialArr;
-			return recsArr.length ? recsArr : partialArr;}
+			return recsArr.length ? recsArr : partialArr;
+		}
 	);
 
 	// --- Add missing reactive state used by the template / health checks ---
@@ -92,14 +110,22 @@ import type { Case } from '$lib/types';
 		embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
 		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
 	};
-  let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
-  let loading = $state<boolean>(true);
+  // typed stats and reactive primitives to silence 'unknown' type errors
+	let stats = $state<{ totalCases: number; totalEvidence: number; processingJobs: number }>({
+		totalCases: 0,
+		totalEvidence: 0,
+		processingJobs: 0
+	});
+	let loading = $state<boolean>(true);
 	let userQuery = $state<string>('');
 	let registerOpen = $state<boolean>(false);
+  let registerDialogRef: HTMLDialogElement; // Reference to the native dialog element
   // ---------------------------------------------------------------
 
   function openRegister() {
-    registerOpen = true;}
+    registerOpen = true;
+    registerDialogRef?.showModal(); // Use showModal() for native dialog
+  }
 
 	// Check system health on mount
 	$effect(() => {
@@ -108,28 +134,38 @@ import type { Case } from '$lib/types';
 			const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
 			return () => clearInterval(interval);}
 	});
-  async function checkSystemHealth(): Promise<any> {
+  // Type-safe system health check
+  async function checkSystemHealth(): Promise<void> {
 		try {
-			// Check database
-			const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false }));
+			interface WorkerStatus {
+				name?: string;
+				status?: string;
+				healthy?: boolean;
+				queueDepth?: number;
+				processedJobs?: number;
+			}
+
+			// safe fetch helpers with Response fallback
+			const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false } as Response));
 			systemStatus.database = dbCheck.ok ? 'online' : 'offline';
 
-			// Check Redis
-			const redisCheck = await fetch('/api/health/redis').catch(() => ({ ok: false }));
+			const redisCheck = await fetch('/api/health/redis').catch(() => ({ ok: false } as Response));
 			systemStatus.redis = redisCheck.ok ? 'online' : 'offline';
 
-			// Check Ollama
-			const ollamaCheck = await fetch('/api/health/ollama').catch(() => ({ ok: false }));
+			const ollamaCheck = await fetch('/api/health/ollama').catch(() => ({ ok: false } as Response));
 			systemStatus.ollama = ollamaCheck.ok ? 'online' : 'offline';
 
-			// Check GPU
-			const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false }));
+			const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false } as Response));
 			systemStatus.gpu = gpuCheck.ok ? 'online' : 'offline';
 
-			// Check Workers (NEW)
 			const workersCheck = await fetch('/api/health/workers').catch(() => null);
 			if (workersCheck?.ok) {
-				const workersData = await workersCheck.json();
+				const workersData = (await workersCheck.json()) as {
+					success?: boolean;
+					status?: string;
+					workers?: WorkerStatus[];
+				};
+
 				systemStatus.workers =
 					workersData.success && workersData.status === 'online'
 						? 'online'
@@ -137,46 +173,53 @@ import type { Case } from '$lib/types';
 							? 'degraded'
 							: 'offline';
 
-				// Update worker details safely
-				if (workersData.workers && Array.isArray(workersData.workers)) {
-					workersData.workers.forEach((worker: unknown) => {
-						const name = String((worker as { name?: string }).name || '').toLowerCase(); // Type assertion for worker
-						if (name.includes('ocr')) {
-							workerDetails.ocr = {
-								status: (worker as { status?: string }).status ?? 'offline',
-								healthy: !!(worker as { healthy?: boolean }).healthy,
-								queueDepth: (worker as { queueDepth?: number }).queueDepth || 0,
-								processedJobs: (worker as { processedJobs?: number }).processedJobs || 0
-							};} else if (name.includes('embed') || name.includes('embedding')) {
-							workerDetails.embedding = {
-								status: (worker as { status?: string }).status ?? 'offline',
-								healthy: !!(worker as { healthy?: boolean }).healthy,
-								queueDepth: (worker as { queueDepth?: number }).queueDepth || 0,
-								processedJobs: (worker as { processedJobs?: number }).processedJobs || 0
-							};} else if (name.includes('autotag')) {
-							workerDetails.autotag = {
-								status: (worker as { status?: string }).status ?? 'offline',
-								healthy: !!(worker as { healthy?: boolean }).healthy,
-								queueDepth: (worker as { queueDepth?: number }).queueDepth || 0,
-								processedJobs: (worker as { processedJobs?: number }).processedJobs || 0
-							};}
-					});}
+				for (const worker of workersData.workers ?? []) {
+					const name = (worker.name ?? '').toLowerCase();
+					if (name.includes('ocr')) {
+						workerDetails.ocr = {
+							status: worker.status ?? 'offline',
+							healthy: !!worker.healthy,
+							queueDepth: worker.queueDepth ?? 0,
+							processedJobs: worker.processedJobs ?? 0
+						};
+					} else if (name.includes('embed') || name.includes('embedding')) {
+						workerDetails.embedding = {
+							status: worker.status ?? 'offline',
+							healthy: !!worker.healthy,
+							queueDepth: worker.queueDepth ?? 0,
+							processedJobs: worker.processedJobs ?? 0
+						};
+					} else if (name.includes('autotag')) {
+						workerDetails.autotag = {
+							status: worker.status ?? 'offline',
+							healthy: !!worker.healthy,
+							queueDepth: worker.queueDepth ?? 0,
+							processedJobs: worker.processedJobs ?? 0
+						};
+					}
+				}
 			} else {
-				systemStatus.workers = 'offline';}
-
-			// Get stats
-			const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
-			if (statsResponse?.ok) {
-				const data = await statsResponse.json();
-				if (data.success) {
-					stats.totalCases = data.data.totalCases || 0;
-					stats.totalEvidence = data.data.totalEvidence || 0;
-					stats.processingJobs = data.data.activeJobs || 0;}
+				systemStatus.workers = 'offline';
 			}
 
-			loading = false;} catch (err) {
+			const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
+			if (statsResponse?.ok) {
+				const data = (await statsResponse.json()) as {
+					success?: boolean;
+					data?: { totalCases?: number; totalEvidence?: number; activeJobs?: number };
+				};
+				if (data.success && data.data) {
+					stats.totalCases = data.data.totalCases ?? 0;
+					stats.totalEvidence = data.data.totalEvidence ?? 0;
+					stats.processingJobs = data.data.activeJobs ?? 0;
+				}
+			}
+
+			loading = false;
+		} catch (err) {
 			console.error('Health check error:', err);
-			loading = false;}
+			loading = false;
+		}
 	}
   function getStatusColor(status: string) {
 		switch (status) {
@@ -227,9 +270,119 @@ import type { Case } from '$lib/types';
     console.log('Uploaded:', (res as { url?: string })?.url ?? res);}); // Type assertion for res
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<!-- Replace placeholder main with markup that uses the script variables, components and many CSS classes -->
+<main class="home-page">
+  <section class="nes-container hero-section-custom">
+    <div class="hero">
+      <h1 class="nes-text is-primary">Legal AI Platform</h1>
+      <p class="nes-text is-success subtitle-custom">GPU · Ollama · Redis · Qdrant</p>
+
+      <div class="auth-buttons-flex">
+        <LoginButton />
+        <button class="card-button-custom" onclick={openRegister}>Register</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="status-section-custom">
+    <div class="status-grid-custom">
+      <div class="status-item-custom card">
+        <div>
+          <div class="status-label-custom">Database</div>
+          <div class="status">{systemStatus.database} {getStatusIcon(systemStatus.database)}</div>
+        </div>
+        <div class={getStatusColor(systemStatus.database)}></div>
+      </div>
+
+      <div class="status-item-custom card">
+        <div>
+          <div class="status-label-custom">Redis</div>
+          <div class="status">{systemStatus.redis} {getStatusIcon(systemStatus.redis)}</div>
+        </div>
+        <div class={getStatusColor(systemStatus.redis)}></div>
+      </div>
+
+      <div class="status-item-custom card">
+        <div>
+          <div class="status-label-custom">Workers</div>
+          <div class="status">{systemStatus.workers} {getStatusIcon(systemStatus.workers)}</div>
+        </div>
+        <div class={getStatusColor(systemStatus.workers)}></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="quick-stats-custom">
+    <div class="stat-card-custom card">
+      <div class="stat-icon-custom">📁</div>
+      <div class="stat-content-custom">
+        <h3>Total Cases</h3>
+        <div class="stat-value-custom">{stats.totalCases}</div>
+      </div>
+    </div>
+
+    <div class="stat-card-custom card">
+      <div class="stat-icon-custom">🧾</div>
+      <div class="stat-content-custom">
+        <h3>Evidence</h3>
+        <div class="stat-value-custom">{stats.totalEvidence}</div>
+      </div>
+    </div>
+
+    <div class="stat-card-custom card">
+      <div class="stat-icon-custom">⚙️</div>
+      <div class="stat-content-custom">
+        <h3>Processing Jobs</h3>
+        <div class="stat-value-custom">{stats.processingJobs}</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ai-query-section-custom">
+    <div class="query-box">
+      <input
+        type="text"
+        placeholder="Ask the legal assistant..."
+        value={userQuery}
+        oninput={(e) => (userQuery = (e.currentTarget as HTMLInputElement).value)}
+        onkeydown={onKey}
+      />
+      <button onclick={handleSubmit} disabled={loading}>{loading ? 'Waiting...' : 'Ask'}</button>
+      <button class="card-button-custom" onclick={() => uploader.addFiles((window as any).fileList ?? [])}>Upload</button>
+    </div>
+
+    {#if $errorMessage}
+      <p class="nes-text is-error" style="margin-top: 1rem;">{$errorMessage}</p>
+    {/if}
+
+    <div class="recommendation-cards" aria-live="polite">
+      {#if $displayRecommendations && $displayRecommendations.length}
+        {#each $displayRecommendations as rec (rec.id ?? rec.title ?? Math.random())}
+          <div class="card {rec.streaming ? 'streaming' : ''} {rec.dynamic ? 'dym' : ''}">
+            {@html escapeHtml(rec.title ?? rec.summary ?? '')}
+            <div class="meta">
+              <span>{rec.source ?? 'AI'}</span>
+              <span>{rec.score ? `${Math.round(rec.score * 100) / 100}` : ''}</span>
+            </div>
+          </div>
+        {/each}
+      {:else}
+        <div class="card">No recommendations yet.</div>
+      {/if}
+    </div>
+  </section>
+
+  <!-- Native HTML5 <dialog> for registration -->
+  <dialog bind:this={registerDialogRef} onclose={() => (registerOpen = false)} class="nes-dialog is-rounded">
+    <form method="dialog">
+      <p class="title">Register for Legal AI Platform</p>
+      <p>This is a placeholder for the registration form.</p>
+      <div class="dialog-buttons">
+        <button class="nes-btn">Cancel</button>
+        <button class="nes-btn is-primary">Register</button>
+      </div>
+    </form>
+  </dialog>
 </main>
 
 <style>
@@ -280,12 +433,6 @@ import type { Case } from '$lib/types';
     font-weight: 600;
   }
 
-  .hero-section-custom .nes-text.is-disabled.tech-stack-custom {
-    font-size: 0.95rem; /* Added semicolon */
-    color: #888; /* Override NES.css disabled color */;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
   .status-section-custom,
   .worker-details-custom,
   .stats-section-custom,
@@ -333,11 +480,6 @@ import type { Case } from '$lib/types';
 
   .worker-icon-custom {
     font-size: 1.5rem;
-  }
-
-  .worker-stats-custom p {
-    margin: 0.5rem 0;
-    font-size: 0.9rem;
   }
 
   .worker-tech-custom {
@@ -516,20 +658,6 @@ import type { Case } from '$lib/types';
     text-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
   }
 
-  .featured-card-custom .nes-text.is-success {
-    font-size: 2rem; /* Added semicolon */
-    color: #00ff41;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 15px rgba(0, 255, 65, 0.3);
-  }
-
-  .featured-card-custom .nes-text.is-white.featured-description-custom {
-    font-size: 1.1rem;
-    color: #b0b0b0;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
-  }
-
   .featured-tech-custom {
     display: flex;
     flex-wrap: wrap;
@@ -545,12 +673,6 @@ import type { Case } from '$lib/types';
     border-radius: 8px; /* Added semicolon */
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
-  }
-
-  .featured-card-custom:hover .featured-button-custom {
-    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); /* Custom hover gradient */;
-    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
-    transform: scale(1.05);
   }
 
   /* AI Query Section */
@@ -631,27 +753,39 @@ import type { Case } from '$lib/types';
     align-items: center;
   }
 
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .hero-section-custom .nes-text.is-primary {
-      font-size: 2rem;
-    }
-
-    .hero-section-custom .nes-text.is-success.subtitle-custom {
-      font-size: 1.1rem;
-    }
-
-    .action-grid-custom {
-      grid-template-columns: 1fr;
-    }
-
-    .quick-stats-custom {
-      grid-template-columns: 1fr;
-    }
-
-    .action-buttons-custom {
-      flex-direction: column;
-      align-items: stretch;
-    }
+  /* Custom styles for the native dialog */
+  dialog {
+    padding: 2rem;
+    border: 2px solid #fff;
+    background-color: #212529;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
+    border-image: url('data:image/svg+xml;charset=utf-8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H10V10H0V0ZM1 1V9H9V1H1Z" fill="%2300FF41"/></svg>') 2;
   }
+
+  dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(5px);
+  }
+
+  .nes-dialog .title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #ffd700;
+  }
+
+  .nes-dialog .dialog-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .nes-btn {
+    font-size: 1rem;
+    padding: 0.8rem 1.5rem;
+  }
+
+  /* @unocss-include */
+  /* ...existing code... */
 </style>

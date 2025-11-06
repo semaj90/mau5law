@@ -42,7 +42,7 @@ services:
       - postgres-data:/var/lib/postgresql/data
       - ./init-db.sql:/docker-entrypoint-initdb.d/01-init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U legal_admin"]
+      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -591,7 +591,7 @@ echo "=== AI Infrastructure Health Check ==="
 echo ""
 
 echo "PostgreSQL..."
-docker exec legal-postgres-pgvector pg_isready -U legal_admin && echo "✅ OK" || echo "❌ FAILED"
+docker exec legal-postgres-pgvector pg_isready -U legal_admin -d legal_ai_db && echo "✅ OK" || echo "❌ FAILED"
 
 echo "Redis..."
 docker exec legal-redis-cache redis-cli ping && echo "✅ OK" || echo "❌ FAILED"

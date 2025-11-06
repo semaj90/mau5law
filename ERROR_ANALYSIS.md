@@ -1,7 +1,7 @@
 # TypeScript Error Analysis Report
-Generated: 2025-11-04T23:42:58.533Z
-Total files with errors: 593
-Total errors: 12600
+Generated: 2025-11-06T01:56:37.715Z
+Total files with errors: 586
+Total errors: 12599
 
 ## 🔴 Priority 1 - Fix These First (High Impact)
 - **src/lib/server/ai/rag-pipeline-enhanced.ts** (332 errors, priority: 352)  - Error codes: 1003, 1005, 1011, 1068, 1109, 1128, 1136, 1181, 1359, 1434
@@ -12,10 +12,10 @@ Total errors: 12600
 - **src/lib/machines/workflow-machine.ts** (160 errors, priority: 215)  - Error codes: 1003, 1005, 1109, 1128, 1131, 1135, 1136
 - **src/lib/server/db/pgvector-utils.ts** (161 errors, priority: 209)  - Error codes: 1002, 1005, 1011, 1109, 1128, 1131, 1136, 1160, 1389, 1434, 1435, 1443, 1472
 - **src/lib/server/ai/vector-search-service.ts** (155 errors, priority: 207)  - Error codes: 1002, 1003, 1005, 1011, 1068, 1109, 1128, 1131, 1135, 1136, 1434, 1435, 1442, 1443, 1472
-- **src/lib/client/secure-storage-client.ts** (163 errors, priority: 203)  - Error codes: 1002, 1003, 1005, 1068, 1109, 1128, 1131, 1136, 1434, 1442
+- **src/lib/server/graph/evidence-graph-service.ts** (155 errors, priority: 207)  - Error codes: 1003, 1005, 1068, 1109, 1128, 1131, 1136, 1138, 1359, 1434, 1442, 1472
+- **src/lib/server/db/vector-operations.ts** (169 errors, priority: 189)  - Error codes: 1003, 1005, 1068, 1109, 1128, 1136, 1181, 1434, 1472, 2809
 - **src/lib/rag/demo-rag.ts** (252 errors, priority: 176)  - Error codes: 1002, 1003, 1005, 1109, 1127, 1128, 1228, 1434, 1435
 - **src/lib/machines/legalAIMachine.v5.ts** (155 errors, priority: 175)  - Error codes: 1005, 1109, 1128, 1131, 1135, 1136, 1472
-- **src/lib/server/graph/evidence-graph-service.ts** (122 errors, priority: 174)  - Error codes: 1003, 1005, 1068, 1109, 1128, 1131, 1136, 1138, 1359, 1434, 1442, 1472
 - **src/lib/server/api-ssr-helpers.ts** (139 errors, priority: 159)  - Error codes: 1005, 1109, 1110, 1128, 1131, 1136, 1160, 1434, 1472, 2809
 - **src/lib/server/embedding-cache-service.ts** (101 errors, priority: 153)  - Error codes: 1003, 1005, 1011, 1109, 1128, 1131, 1136, 1181, 1434, 1472
 - **src/lib/ai/lod-cache-engine.ts** (152 errors, priority: 152)  - Error codes: 1002, 1005, 1068, 1109, 1128, 1131, 1134, 1434, 1442
@@ -54,19 +54,19 @@ Total errors: 12600
 - src/lib/server/database-pool-service.ts (34 errors, priority: 86)
 
 ## 🟢 Priority 3 - Low Impact
-453 files with low impact (3965 total errors)
+446 files with low impact (3925 total errors)
 
 ## 📊 Most Common Error Codes
-- TS1005: 550 files affected
-- TS1128: 321 files affected
-- TS1109: 232 files affected
-- TS1131: 173 files affected
+- TS1005: 543 files affected
+- TS1128: 319 files affected
+- TS1109: 230 files affected
+- TS1131: 170 files affected
 - TS1434: 125 files affected
-- TS1442: 102 files affected
+- TS1442: 99 files affected
 - TS1136: 83 files affected
 - TS1003: 82 files affected
-- TS1068: 73 files affected
-- TS1002: 41 files affected
+- TS1068: 72 files affected
+- TS1002: 40 files affected
 
 ## 📋 Recommended Fix Order
 ```
@@ -86,14 +86,14 @@ Total errors: 12600
    └─ 161 errors | Priority: 209
 8. src/lib/server/ai/vector-search-service.ts
    └─ 155 errors | Priority: 207
-9. src/lib/client/secure-storage-client.ts
-   └─ 163 errors | Priority: 203
-10. src/lib/rag/demo-rag.ts
+9. src/lib/server/graph/evidence-graph-service.ts
+   └─ 155 errors | Priority: 207
+10. src/lib/server/db/vector-operations.ts
+   └─ 169 errors | Priority: 189
+11. src/lib/rag/demo-rag.ts
    └─ 252 errors | Priority: 176
-11. src/lib/machines/legalAIMachine.v5.ts
+12. src/lib/machines/legalAIMachine.v5.ts
    └─ 155 errors | Priority: 175
-12. src/lib/server/graph/evidence-graph-service.ts
-   └─ 122 errors | Priority: 174
 13. src/lib/server/api-ssr-helpers.ts
    └─ 139 errors | Priority: 159
 14. src/lib/server/embedding-cache-service.ts

@@ -93,6 +93,7 @@ services:
       - "5434:5432"  # Map to 5434 to match existing configuration
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./sql/init/00-init-db.sql:/docker-entrypoint-initdb.d/00-init-db.sql
       - ./sql/init:/docker-entrypoint-initdb.d
     networks:
       - legal-ai-network
@@ -366,6 +367,61 @@ services:
       timeout: 15s
       retries: 3
       start_period: 60s
+
+  tensorrt-llm:
+    image: nvcr.io/nvidia/tensorrt-llm/release:latest
+    container_name: legal-ai-tensorrt-llm
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+      - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+      - HF_HUB_CACHE=/workspace/cache
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+    ports:
+      - "${TENSORRT_HTTP_PORT:-8096}:8096"
+      - "${TENSORRT_WS_PORT:-8097}:8097"
+      - "${TENSORRT_HEALTH_PORT:-8098}:8098"
+    volumes:
+      - ${TENSORRT_MODEL_DIR:-./docker/tensorrt-llm/models}:/workspace/models
+      - ${TENSORRT_ENGINE_DIR:-./docker/tensorrt-llm/engines}:/workspace/engines
+      - ${TENSORRT_CACHE_DIR:-./.cache/tensorrt-llm}:/workspace/cache
+    command:
+      - bash
+      - -lc
+      - |
+        set -e
+        echo 'Starting TensorRT-LLM server...'
+        python3 -m tensorrt_llm.hlapi.llm_server \
+          --host 0.0.0.0 \
+          --port 8096 \
+          --model ${TENSORRT_PRIMARY_MODEL:-/workspace/models} \
+          --tensorrt_llm_model_path /workspace/engines \
+          --max_batch_size ${TENSORRT_MAX_BATCH:-2} \
+          --max_input_len ${TENSORRT_MAX_INPUT:-2048} \
+          --max_output_len ${TENSORRT_MAX_OUTPUT:-1024}
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - curl -f http://localhost:8098/health || curl -f http://localhost:8096/health
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      redis:
+        condition: service_started
+    networks:
+      - legal-ai-network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   triton:
     image: nvcr.io/nvidia/tritonserver:23.09-py3
