@@ -1100,6 +1100,68 @@
       "detail": "Install Python dependencies for FastAPI services (Phase 45 Adapter + Doc Ingest)."
     },
     {
+      "label": "Phase46: Start Adapter Service",
+      "type": "shell",
+      "command": "uvicorn",
+      "args": [
+        "doc_ingest:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8092"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/python-services/phase46_adapter"
+      },
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "detail": "Start the Phase46 FastAPI adapter (LangExtract + embeddings) on port 8092."
+    },
+    {
+      "label": "Phase46: Structure Extract Test",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/structure-extract-test.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "detail": "Send a sample TS error snippet to the adapter /extract endpoint and print the LangExtract output."
+    },
+    {
+      "label": "Phase46: Full Pipeline",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/phase46-full-pipeline.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "detail": "Health-check the adapter, run phase46-indexer, then trigger the agentic doc retriever for validation."
+    },
+    {
       "label": "Python: Run Doc Ingest Service",
       "type": "shell",
       "command": "C:/Users/james/Videos/deeds-web-app/.venv/Scripts/python.exe",

@@ -18,7 +18,11 @@ const {
   Client: PostgresClient,
 } = pgPkg;
 
-const CACHE_DIR = process.env.DOC_INGEST_CACHE_DIR || path.join(process.cwd(), 'cache', 'doc_ingest');
+const DEFAULT_CACHE_DIR =
+  process.env.PHASE46_CACHE_DIR ||
+  process.env.DOC_INGEST_CACHE_DIR ||
+  path.join(process.cwd(), 'cache', 'phase46_adapter');
+const CACHE_DIR = path.resolve(DEFAULT_CACHE_DIR);
 const MANIFEST_PATH = path.join(CACHE_DIR, 'manifest.json');
 
 const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';

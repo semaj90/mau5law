@@ -205,6 +205,32 @@ async function docCacheSearch(substr) {
   }
 }
 
+async function structureExtractRequest({ text, persist, title, source }) {
+  const trimmed = text?.trim();
+  if (!trimmed) {
+    return { error: "structure_extract requires non-empty text input." };
+  }
+  const payload = {
+    text: trimmed,
+    persist: Boolean(persist),
+    title,
+    source,
+  };
+
+  const response = await fetch(`${PHASE46_ADAPTER_URL}/extract`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const body = await response.text();
+    throw new Error(`Phase46 adapter extract failed (${response.status}): ${body}`);
+  }
+
+  return response.json();
+}
+
 function stringifyResult(label, payload) {
   try {
     return JSON.stringify(payload);
@@ -248,6 +274,16 @@ export async function buildTools() {
           console.error(chalk.red(`[Agentic:vector_local_search] Failed: ${error.message}`));
           return `Vector search unavailable: ${error.message}`;
         }
+      },
+    },
+    {
+      name: "structure_extract",
+      description:
+        "Extract structured metadata (error_code, file_path, rule, suggested_fix) via Phase46 adapter + LangExtract.",
+      func: async ({ text, persist, title, source }) => {
+        const result = await structureExtractRequest({ text, persist, title, source });
+        console.log(chalk.yellow("[Agentic:structure_extract] Extraction complete."));
+        return stringifyResult("structure_extract", result);
       },
     },
     {
