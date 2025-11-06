@@ -1,17 +1,91 @@
 <script lang="ts">
-import type { Document } from '$lib/types'; import { onMount } from 'svelte'; // Some lucide-svelte installations/types export icons differently. // Import the single working icon and use simple fallbacks for others. import FileText from 'lucide-svelte'; // Dynamically load the editor to avoid: "no default export" TS error for the static import let EditorComponent: unknown = null; onMount(() => {
+import type { Document } from '$lib/types'; import { onMount } from 'svelte'; // Some lucide-svelte installations/types export icons differently. // Import the single working icon and use simple fallbacks for others. import { FileText } from 'lucide-svelte'; // Changed to named import as per Svelte 5 UI kit guidelines // Dynamically load the editor to avoid: "no default export" TS error for the static import let EditorComponent: unknown = null; onMount(() => {
 		(async () => {
  try { // cast the dynamic import to `any` to avoid TS checking module shape const mod = (await import('$lib/components/editors/NierRichTextEditor.svelte')) as: unknown; // safe assignment with fallbacks EditorComponent = mod?.default ?? mod?.NierRichTextEditor ?? mod} catch (err) { console.error('Failed to load NierRichTextEditor:', err); EditorComponent = null		})();
-	}); // --- CHANGED: Replace Svelte runes ($state / $derived) with plain variables + reactive statement --- let editorValue: string = ''; let documentTitle: string = 'Untitled Document'; let lastSaved: Date | null = null; let isModified: boolean = false; // initialize a documentStats: object and update reactively when editorValue changes let documentStats = { words: 0, characters: 0, charactersNoSpaces: 0; paragraphs: 0 }; $: { const trimmed = editorValue.trim(); documentStats = { words: trimmed ? trimmed.split(/\s+/).length: 0, characters: editorValue.length, charactersNoSpaces: editorValue.replace(/\s+/g, '').length; paragraphs: trimmed ? trimmed.split(/\n{ 2 }/).length: 0 }; function handleSave() { console.log('Saving document:', { title: documentTitle; content: editorValue }); lastSaved = new Date(); isModified = false}
+	}); // --- CHANGED: Replace Svelte runes ($state / $derived) with plain variables + reactive statement --- let editorValue: string = ''; let documentTitle: string = 'Untitled Document'; let lastSaved: Date | null = null; let isModified: boolean = false; // initialize a documentStats: object and update reactively when editorValue changes let documentStats = { words: 0, characters: 0, charactersNoSpaces: 0, paragraphs: 0 }; $: { const trimmed = editorValue.trim(); documentStats = { words: trimmed ? trimmed.split(/\s+/).length: 0, characters: editorValue.length, charactersNoSpaces: editorValue.replace(/\s+/g, '').length; paragraphs: trimmed ? trimmed.split(/\n{ 2 }/).length: 0 }; function handleSave() { console.log('Saving document:', { title: documentTitle, content: editorValue }); lastSaved = new Date(); isModified = false}
   function handleDownload() { const blob = new Blob([editorValue], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${documentTitle.replace(/\s+/g, '_')}.txt`; a.click(); URL.revokeObjectURL(url)}
   function handleShare() { if (navigator.share) { navigator.share({ title: documentTitle; text: editorValue })} else { navigator.clipboard.writeText(editorValue); alert('Content copied to clipboard!')}
   }
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+<div class="editor-page-container">
+	<header class="editor-header">
+		<div class="header-content">
+			<div class="title-section">
+				<FileText class="title-icon" size={32} />
+				<div class="title-info">
+					<h1>Document Editor</h1>
+					<p>Legal AI Platform</p>
+				</div>
+			</div>
+			<div class="header-actions">
+				<button class="action-btn save-btn" onclick={handleSave} disabled={!isModified}>
+					<FileText size={16} /> Save {isModified ? '*' : ''}
+				</button>
+				<button class="action-btn" onclick={handleDownload}>
+					<FileText size={16} /> Download
+				</button>
+				<button class="action-btn" onclick={handleShare}>
+					<FileText size={16} /> Share
+				</button>
+			</div>
+		</div>
+		<div class="document-title-section">
+			<input
+				type="text"
+				class="document-title-input"
+				bind:value={documentTitle}
+				oninput={() => (isModified = true)}
+			/>
+			<span class="save-status">
+				{#if lastSaved}
+					Last saved: {lastSaved.toLocaleTimeString()}
+				{:else}
+					Not yet saved
+				{/if}
+				{#if isModified}
+					<span class="modified-badge">Modified</span>
+				{/if}
+			</span>
+		</div>
+	</header>
+
+	<div class="stats-bar">
+		<div class="stats-content">
+			<div class="stat-item">
+				<span class="stat-label">Words:</span>
+				<span class="stat-value">{documentStats.words}</span>
+			</div>
+			<div class="stat-item">
+				<span class="stat-label">Characters:</span>
+				<span class="stat-value">{documentStats.characters}</span>
+			</div>
+			<div class="stat-item">
+				<span class="stat-label">No Spaces:</span>
+				<span class="stat-value">{documentStats.charactersNoSpaces}</span>
+			</div>
+			<div class="stat-item">
+				<span class="stat-label">Paragraphs:</span>
+				<span class="stat-value">{documentStats.paragraphs}</span>
+			</div>
+		</div>
+	</div>
+
+	<div class="editor-container">
+		<div class="editor-card">
+			{#if EditorComponent}
+				<svelte:component
+					this={EditorComponent}
+					bind:value={editorValue}
+					oninput={() => (isModified = true)}
+					class="editor-content"
+				/>
+			{:else}
+				<p>Loading editor...</p>
+			{/if}
+		</div>
+	</div>
+</div>
 
 <style>
 .editor-page-container { min-height: 100vh; background: var(--yorha-bg-primary, #0a0a0a); color: var(--yorha-text-primary, #e0e0e0); font-family: var(--gaming-font-16bit, 'Orbitron', sans-serif); display: flex; flex-direction: column}

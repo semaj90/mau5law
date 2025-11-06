@@ -1,242 +1,19 @@
 from __future__ import annotations
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from pydantic import BaseModel
-import os
-import requests
-from urllib.parse import urlparse, urljoin
-from bs4 import BeautifulSoup
-import redis
-import json
-import hashlib
-from langdetect import detect
-import nltk
-import re
-
-# Ensure punkt tokenizer is available; safe to call on import (no-op if present)
-try:
-    nltk.data.find('tokenizers/punkt')
-except Exception:
-    nltk.download('punkt')
-
-from nltk.tokenize import sent_tokenize
-
-# Optional OCR; only used if feature flag ENABLE_OCR is true and pytesseract is importable
-ENABLE_OCR = os.getenv('DOC_INGEST_ENABLE_OCR', 'false').lower() in ('1', 'true', 'yes')
-try:
-    if ENABLE_OCR:
-        from PIL import Image
-        import pytesseract
-except Exception:
-    ENABLE_OCR = False
-
-REDIS_HOST = os.getenv('REDIS_HOST', 'localhost')
-REDIS_PORT = int(os.getenv('REDIS_PORT', '6379'))
-REDIS_DB = int(os.getenv('REDIS_DB', '0'))
-
-r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB, decode_responses=True)
-
-app = FastAPI(title="Doc Ingest (safe)")
-
-
-class FetchRequest(BaseModel):
-    url: str
-    force: bool = False
-    enable_ocr: bool = False
-
-
-def normalize_url(u: str) -> str:
-    # Basic normalization: strip fragments, resolve relative
-    p = urlparse(u)
-    scheme = p.scheme or 'http'
-    netloc = p.netloc
-    path = p.path or '/'
-    return urljoin(f"{scheme}://{netloc}", path)
-
-
-def is_allowed_by_robots(url: str) -> bool:
-    # Minimal robots.txt check: fetch /robots.txt and look for Disallow rules for '*'
-    try:
-        parsed = urlparse(url)
-        robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
-        resp = requests.get(robots_url, timeout=3)
-        if resp.status_code != 200:
-            return True
-        txt = resp.text.splitlines()
-        user_agent = None
-        disallows = []
-        for line in txt:
-            line = line.strip()
-            if not line or line.startswith('#'):
-                continue
-            if line.lower().startswith('user-agent:'):
-                user_agent = line.split(':', 1)[1].strip()
-            elif line.lower().startswith('disallow:') and (user_agent == '*' or user_agent is None):
-                path = line.split(':', 1)[1].strip()
-                disallows.append(path)
-        path = parsed.path or '/'
-        for d in disallows:
-            if not d:
-                continue
-            if path.startswith(d):
-                return False
-        return True
-    except Exception:
-        return False
-
-
-def extract_text_from_html(html: str) -> str:
-    soup = BeautifulSoup(html, 'html.parser')
-    # remove scripts and styles
-    for tag in soup(['script', 'style', 'noscript', 'iframe']):
-        tag.decompose()
-
-    texts = []
-    # Prefer paragraphs and pre/code blocks
-    for el in soup.find_all(['p', 'pre', 'code', 'li']):
-        txt = el.get_text(separator=' ', strip=True)
-        if txt:
-            texts.append(txt)
-
-    if not texts:
-        # fallback to body text
-        body = soup.get_text(separator=' ', strip=True)
-        return body
-    return '\n'.join(texts)
-
-
-def chunk_sentences(text: str, max_sentences: int = 8) -> list:
-    # Split into sentences and create chunks of up to max_sentences each
-    sents = sent_tokenize(text)
-    chunks = []
-    for i in range(0, len(sents), max_sentences):
-        chunk = ' '.join(sents[i : i + max_sentences])
-        chunks.append(chunk)
-    return chunks
-
-
-def cache_doc(key: str, meta: dict, chunks: list):
-    payload = {'meta': meta, 'chunks': chunks}
-    r.set(key, json.dumps(payload))
-
-
-@app.post('/fetch_and_cache')
-def fetch_and_cache(req: FetchRequest, background_tasks: BackgroundTasks):
-    url = req.url
-    canonical = normalize_url(url)
-    key_hash = hashlib.sha1(canonical.encode('utf8')).hexdigest()
-    key = f"doc:{key_hash}"
-
-    # If not forced and exists, return existing
-    if not req.force and r.exists(key):
-        return {'cached': True, 'key': key}
-
-    # Robots.txt check
-    allowed = is_allowed_by_robots(canonical)
-    if not allowed:
-        raise HTTPException(status_code=403, detail='Disallowed by robots.txt')
-
-    # Fetch page
-    try:
-        resp = requests.get(canonical, timeout=6, headers={'User-Agent': 'LegalAI-DocIngest/1.0'})
-        if resp.status_code != 200:
-            raise HTTPException(status_code=resp.status_code, detail='Failed to fetch URL')
-        html = resp.text
-    except requests.RequestException as e:
-        raise HTTPException(status_code=502, detail=f'Fetch error: {str(e)}')
-
-    text = extract_text_from_html(html)
-    if not text or len(text.strip()) < 32:
-        raise HTTPException(status_code=422, detail='No extractable text found')
-
-    # Language detection
-    try:
-        lang = detect(text)
-    except Exception:
-        lang = 'unknown'
-
-    # Sentence chunking
-    chunks = chunk_sentences(text, max_sentences=8)
-
-    meta = {
-        'url': canonical,
-        'source': url,
-        'fetched_at': int(__import__('time').time()),
-        'lang': lang,
-        'ocr': False,
-    }
-
-    # Optionally perform OCR if enabled in request and feature flag
-    if req.enable_ocr and ENABLE_OCR:
-        # This is a safe stub: we do not download arbitrary images; user must enable and provide an image URL in real flows.
-        meta['ocr'] = True
-
-    # Cache in Redis
-    cache_doc(key, meta, chunks)
-
-    return {'cached': True, 'key': key, 'chunks': len(chunks), 'meta': meta}
-
-
-@app.get('/query')
-def query_cached(substr: str = None, limit: int = 10):
-    # Simple substring search across cached docs; returns list of {key, score, excerpt}
-    matches = []
-    try:
-        for key in r.scan_iter(match='doc:*'):
-            val = r.get(key)
-            if not val:
-                continue
-            obj = json.loads(val)
-            joined = ' '.join(obj.get('chunks', [])).lower()
-            if substr is None or substr.lower() in joined:
-                excerpt = None
-                if obj.get('chunks'):
-                    excerpt = obj['chunks'][0][:280]
-                matches.append({'key': key, 'url': obj.get('meta', {}).get('url'), 'excerpt': excerpt})
-                if len(matches) >= limit:
-                    break
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    return {'matches': matches}
-
-
-@app.get('/health')
-def health():
-    try:
-        _ = r.ping()
-        return {'ok': True, 'redis': True}
-    except Exception:
-        return {'ok': True, 'redis': False}
-#!/usr/bin/env python3
-"""
-Document ingestion API for RAG workflows.
------------------------------------------
-
-Features:
-- Upload or crawl documents (PDF, Word, HTML, plain text, images with OCR).
-- Clean, chunk, and language-tag extracted text.
-- Generate embeddings via embeddinggemma (TensorRT -> Ollama fallback).
-- Persist document + chunk metadata to local cache and Redis.
-
-This service is the bridge between raw sources and downstream indexing
-(pgvector, Neo4j, etc.). Heavy graph/vector linking happens in the
-Phase 46 indexer so the HTTP layer remains lightweight.
-"""
-
-from __future__ import annotations
-
 import datetime as dt
 import hashlib
 import json
 import logging
 import os
+import re
+import uuid
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional
 from urllib import robotparser
 from urllib.parse import urlparse
-import uuid
 
+import nltk
 import redis
 import requests
 from bs4 import BeautifulSoup
@@ -251,7 +28,6 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from langdetect import DetectorFactory, LangDetectException, detect
-import nltk
 from nltk.tokenize import sent_tokenize
 from pydantic import BaseModel, Field
 

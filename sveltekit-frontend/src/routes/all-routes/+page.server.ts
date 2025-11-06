@@ -1,6 +1,6 @@
-﻿import type { PageServerLoad } from "./$types.js";
+﻿import type { ServerLoad } from "@sveltejs/kit";
 
-export const load: PageServerLoad = async ({ locals, cookies }) => {
+export const load: ServerLoad = async ({ locals, cookies }) => {
   // Detect logged-in user (locals preferred) or session cookie as fallback
   const isLoggedIn = Boolean(locals.user) || Boolean(cookies.get("session"));
   const dashboardPath = isLoggedIn ? "/dashboard/activities" : "/dashboard";

@@ -81,6 +81,83 @@ $effect(() => {
 	void _multicoreStatus;
 });
 
+// Define missing functions
+async function loadSystemData(): Promise<void> {
+	isLoading = true;
+	errorMessage = null;
+	try {
+		// Simulate API call to fetch initial system data
+		// NOTE: The import `import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';`
+		// suggests `YoRHaAPIClient.svelte` is a Svelte component. If it's meant to provide API functions,
+		// it should typically be a `.ts` or `.js` file. For now, assuming `yorhaAPI` has these methods.
+		const response = await yorhaAPI.getSystemStatus(); // Assuming this exists and returns data
+		systemMetrics = response.systemStatus;
+		graphData = response.graphData ?? { nodes: [], edges: [] };
+		lastUpdate = new Date(response.timestamp);
+	} catch (error: any) {
+		console.error('Failed to load system data:', error);
+		errorMessage = `Failed to load system data: ${error.message || 'Unknown error'}`;
+	} finally {
+		isLoading = false;
+	}
+}
+
+function startRealTimeUpdates(): void {
+	// Clear any existing intervals first
+	if (metricsInterval) clearInterval(metricsInterval);
+	if (realtimeInterval) clearInterval(realtimeInterval);
+
+	metricsInterval = setInterval(async () => {
+		try {
+			const status = await yorhaAPI.getSystemStatus(); // Fetch updated system status
+			systemMetrics = status.systemStatus;
+			lastUpdate = new Date(status.timestamp);
+		} catch (error: any) {
+			console.error('Failed to update system metrics:', error);
+			errorMessage = `Failed to update system metrics: ${error.message || 'Unknown error'}`;
+		}
+	}, 5000); // Update every 5 seconds
+
+	realtimeInterval = setInterval(async () => {
+		try {
+			const rtData = await yorhaAPI.getRealtimeMetrics(); // Fetch updated real-time metrics
+			realtimeData = {
+				cpuHistory: [...realtimeData.cpuHistory.slice(-59), rtData.cpu], // Keep last 60 points
+				memoryHistory: [...realtimeData.memoryHistory.slice(-59), rtData.memory],
+				networkHistory: [...realtimeData.networkHistory.slice(-59), rtData.network],
+				timestamp: Date.now()
+			};
+		} catch (error: any) {
+			console.error('Failed to update real-time data:', error);
+			errorMessage = `Failed to update real-time data: ${error.message || 'Unknown error'}`;
+		}
+	}, 1000); // Update every 1 second
+}
+
+function cleanupD3(): void {
+	if (metricsInterval) {
+		clearInterval(metricsInterval);
+		metricsInterval = null;
+	}
+	if (realtimeInterval) {
+		clearInterval(realtimeInterval);
+		realtimeInterval = null;
+	}
+	if (simulation) {
+		simulation.stop();
+		simulation = null;
+	}
+	if (resizeObserver) {
+		resizeObserver.disconnect();
+		resizeObserver = null;
+	}
+	if (svg) {
+		svg.selectAll('*').remove();
+		svg = null;
+	}
+	d3 = null; // Clear d3 reference
+}
+
 $effect(() => {
 	(async () => {
 		await loadSystemData();
@@ -177,3 +254,186 @@ function updateD3() {
 
 	// Copy data (avoid mutating original)
 	const nodes: GraphNode[] = graphData.nodes.map((n) => ({ ...n }));
+	const edges: GraphEdge[] = graphData.edges.map((e) => ({ ...e }));
+
+	// Update links
+	const link = svg
+		.select('.links')
+		.selectAll('line')
+		.data(edges, (d: GraphEdge) => d.id)
+		.join(
+			(enter: any) =>
+				enter
+					.append('line')
+					.attr('stroke', '#555')
+					.attr('stroke-width', 1.5)
+					.attr('marker-end', 'url(#arrowhead)'), // Add marker for direction
+			(update: any) => update,
+			(exit: any) => exit.remove()
+		);
+
+	// Update nodes
+	const node = svg
+		.select('.nodes')
+		.selectAll('g.node') // Select the group for nodes
+		.data(nodes, (d: GraphNode) => d.id)
+		.join(
+			(enter: any) => {
+				const g = enter.append('g').attr('class', 'node');
+
+				g.append('circle')
+					.attr('r', 20)
+					.attr('fill', (d: GraphNode) => {
+						if (d.status === 'healthy') return '#4ade80';
+						if (d.status === 'warning') return '#fbbf24';
+						if (d.status === 'error') return '#ef4444';
+						return '#d4af37'; // Default color
+					})
+					.attr('stroke', '#333')
+					.attr('stroke-width', 2);
+
+				g.append('text')
+					.attr('text-anchor', 'middle')
+					.attr('dy', '0.35em')
+					.attr('fill', '#000')
+					.style('font-size', '10px')
+					.text((d: GraphNode) => d.label);
+
+				// Add drag behavior
+				g.call(
+					d3
+						.drag()
+						.on('start', dragstarted)
+						.on('drag', dragged)
+						.on('end', dragended)
+				);
+
+				return g;
+			},
+			(update: any) => {
+				update
+					.select('circle')
+					.attr('fill', (d: GraphNode) => {
+						if (d.status === 'healthy') return '#4ade80';
+						if (d.status === 'warning') return '#fbbf24';
+						if (d.status === 'error') return '#ef4444';
+						return '#d4af37';
+					});
+				update.select('text').text((d: GraphNode) => d.label);
+				return update;
+			},
+			(exit: any) => exit.remove()
+		);
+
+	// Update simulation with new data
+	simulation.nodes(nodes);
+	(simulation.force('link') as any).links(edges); // Cast to any to access links method
+	simulation.alpha(1).restart();
+
+	// Define the 'ticked' function for simulation updates
+	function ticked() {
+		link.attr('x1', (d: any) => d.source.x)
+			.attr('y1', (d: any) => d.source.y)
+			.attr('x2', (d: any) => d.target.x)
+			.attr('y2', (d: any) => d.target.y);
+
+		node.attr('transform', (d: any) => `translate(${d.x},${d.y})`);
+	}
+
+	simulation.on('tick', ticked);
+
+	// Drag functions
+	function dragstarted(event: any, d: any) {
+		if (!event.active) simulation.alphaTarget(0.3).restart();
+		d.fx = d.x;
+		d.fy = d.y;
+	}
+
+	function dragged(event: any, d: any) {
+		d.fx = event.x;
+		d.fy = event.y;
+	}
+
+	function dragended(event: any, d: any) {
+		if (!event.active) simulation.alphaTarget(0);
+		d.fx = null;
+		d.fy = null;
+	}
+
+	// Add arrowhead definition for directed links
+	svg.append('defs')
+		.append('marker')
+		.attr('id', 'arrowhead')
+		.attr('viewBox', '-0 -5 10 10')
+		.attr('refX', 25) // Position marker at the end of the line, slightly offset from node center
+		.attr('refY', 0)
+		.attr('orient', 'auto')
+		.attr('markerWidth', 6)
+		.attr('markerHeight', 6)
+		.attr('xoverflow', 'visible')
+		.append('path')
+		.attr('d', 'M 0,-5 L 10,0 L 0,5')
+		.attr('fill', '#555')
+		.style('stroke', 'none');
+}
+</script>
+
+<style>
+	:global(svg) {
+		display: block;
+		width: 100%;
+		height: 100%;
+	}
+</style>
+
+<main>
+	<div bind:this={graphContainer} class="graph-container"></div>
+	{#if $state.isLoading}
+		<div class="loading-overlay">
+			<YoRHaSystemStatus />
+		</div>
+	{/if}
+	{#if $state.errorMessage}
+		<div class="error-message">Error: {$state.errorMessage}</div>
+	{/if}
+	{#if YoRHaDataVizComponent}
+		<svelte:component this={YoRHaDataVizComponent} {...data.vizProps} />
+	{/if}
+</main>
+
+<template>
+	<svg bind:this={svg} class="d3-graph"></svg>
+</template>
+
+<style>
+	.graph-container {
+		position: relative;
+		width: 100%;
+		height: 100%;
+	}
+
+	.loading-overlay {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: rgba(255, 255, 255, 0.8);
+		z-index: 10;
+	}
+
+	.error-message {
+		position: absolute;
+		top: 10px;
+		left: 50%;
+		transform: translateX(-50%);
+		background: rgba(255, 0, 0, 0.8);
+		color: white;
+		padding: 10px 20px;
+		border-radius: 5px;
+		z-index: 10;
+	}
+</style>

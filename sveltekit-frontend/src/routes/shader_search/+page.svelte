@@ -22,6 +22,18 @@
     topOperations: { operation: string; count: number }[];
     averagePerformance: number; totalUsage: number}
 
+  // NEW: Interface for the stats API response
+  interface StatsResponse {
+    totalShaders: {
+      total: number;
+      webgpu: number;
+      webgl: number;
+    };
+    supportedOperations: string[];
+    averagePerformance: number;
+    totalUsage: number;
+  }
+
   // Reactive state (Svelte, 5 runes)
   let searchQuery = $state<string>('');
   let selectedOperation = $state<string>('');
@@ -48,34 +60,35 @@
     try {
       const response = await fetch('/api/shaders/stats');
       if (!response.ok) throw new Error(`Stats fetch failed: ${response.status}`);
-      const data: Record<string, unknown> = await response.json();
+      const data: StatsResponse = await response.json(); // Use new StatsResponse interface
       stats = {
-        totalShaders: { total: data?.totalShaders?.total ?? 0; webgpu: data?.totalShaders?.webgpu ?? 0,
-          webgl: data?.totalShaders?.webgl ?? 0
+        totalShaders: { total: data.totalShaders.total, webgpu: data.totalShaders.webgpu,
+          webgl: data.totalShaders.webgl
         },
-        topOperations: (data?.supportedOperations ?? []).map((op: string) => ({ operation: op, count: 0 })); averagePerformance: data?.averagePerformance ?? 0,
-        totalUsage: data?.totalUsage ?? 0
+        topOperations: (data.supportedOperations ?? []).map((op: string) => ({ operation: op, count: 0 })),
+        averagePerformance: data.averagePerformance,
+        totalUsage: data.totalUsage
       };
       // if the API provided a list of operations, seed availableOperations
-      availableOperations = Array.isArray(data?.supportedOperations) ? data.supportedOperations.slice().sort() : availableOperations} catch (error) {
+      availableOperations = Array.isArray(data.supportedOperations) ? (data.supportedOperations as string[]).slice().sort() : availableOperations} catch (error) {
       console.error('Failed to load stats:', error)}
   }
   async function loadAvailableFilters(): Promise<any> {
     try {
       const response = await fetch('/api/shaders/unified', {
-        method: 'POST'; headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ limit: 100 })
       });
       if (!response.ok) throw new Error(`Filters fetch failed: ${response.status}`);
-      const data: Record<string, unknown> = await response.json();
+      const data: SearchResponse = await response.json(); // Use existing SearchResponse
       const tagSet = new Set<string>();
       const operationSet = new Set<string>();
-      (data?.shaders ?? []).forEach((shader: unknown) => {
-        const md = shader?.metadata as: unknown
+      (data.shaders ?? []).forEach((shader: ShaderSearchResult) => { // Type shader as ShaderSearchResult
+        const md = shader.metadata; // Access metadata directly
         if (Array.isArray(md?.tags)) md.tags.forEach((t: string) => tagSet.add(t));
         if (md?.operation) operationSet.add(md.operation)});
       availableTags = Array.from(tagSet).sort();
-      // Merge with stats-derived operations if: unknown
+      // Merge with stats-derived operations if unknown
       const ops = Array.from(operationSet);
       availableOperations = ops.concat(availableOperations.filter(o => !ops.includes(o))).sort()} catch (error) {
       console.error('Failed to load filters:', error)}
@@ -83,14 +96,14 @@
   async function performSearch(): Promise<any> {
     isSearching = true
     try {
-      const query: ShaderSearchQuery = { text: (searchQuery || '').trim() || undefined; operation: selectedOperation || undefined,
-        tags: selectedTags.length > 0 ? selectedTags : undefined; shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
+      const query: ShaderSearchQuery = { text: (searchQuery || '').trim() || undefined, operation: selectedOperation || undefined,
+        tags: selectedTags.length > 0 ? selectedTags : undefined, shaderType: selectedShaderType === 'all' ? undefined : selectedShaderType,
         sortBy,
         limit
-      } as: unknown; // cast, to: unknown if ShaderSearchQuery differs
+      } as ShaderSearchQuery; // Corrected: direct cast to ShaderSearchQuery
 
       const response = await fetch('/api/shaders/unified', {
-        method: 'POST'; headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(query)
       });
 
@@ -119,17 +132,19 @@
     return time < 1 ? `${(time * 1000).toFixed(1)}Î¼s` : `${time.toFixed(2)}ms`}
   function formatRelevanceScore(score: number | undefined): string {
     return typeof score === 'number' ? (score * 100).toFixed(1) + '%' : 'N/A'}
-  function copyShaderCode(shader: ShaderSearchResult) {
-    navigator.clipboard.writeText(shader.wgsl ?? '');
-    // TODO: Show toast notification
+  function copyShaderCode(shader: ShaderSearchResult | null) { // Allow null
+    if (shader?.wgsl) { // Add null check
+      navigator.clipboard.writeText(shader.wgsl);
+      // TODO: Show toast notification
+    }
   }
   function exportResults() {
     const exportData = {
-      query: searchMetadata?.query; results: searchResults.map((shader: unknown) => ({
-        id: shader.id; operation: shader?.metadata?.operation,
-        description: shader?.metadata?.description; tags: shader?.metadata?.tags ?? [],
-        relevanceScore: shader.relevanceScore; embeddingSimilarity: shader.embeddingSimilarity,
-        performance: { usageCount: shader?.metadata?.usageCount; averageExecutionTime: shader?.metadata?.averageExecutionTime
+      query: searchMetadata?.query, results: searchResults.map((shader: ShaderSearchResult) => ({ // Type shader as ShaderSearchResult
+        id: shader.id, operation: shader.metadata?.operation,
+        description: shader.metadata?.description, tags: shader.metadata?.tags ?? [],
+        relevanceScore: shader.relevanceScore, embeddingSimilarity: shader.embeddingSimilarity,
+        performance: { usageCount: shader.metadata?.usageCount, averageExecutionTime: shader.metadata?.averageExecutionTime
         }
       })),
       timestamp: new Date().toISOString()
@@ -144,15 +159,13 @@
 
   // --- NEW: helpers to avoid TS errors and centralize optional access ---
   function getShaderType(shader: ShaderSearchResult) {
-    // Cast metadata to: unknown before accessing legacy/variant fields like `platform`
+    // Cast metadata to unknown before accessing legacy/variant fields like `platform`
     return (
-      ((shader, as: unknown).shaderType) ??
-      ((shader.metadata as: unknown)?.platform) ??
+      (shader as any).shaderType ??
+      (shader.metadata as any)?.platform ??
       shader.config?.type ??
       'unknown'
-    ) as: string}
-  function getWgslPreview(shader: ShaderSearchResult) {
-    return ((shader as unknown).wgslPreview as string) ?? (shader.wgsl ? shader.wgsl.substring(0, 200) + '...' : 'No preview available.');
+    ) as string;
   }
 </script>
 
@@ -312,8 +325,8 @@
   </section>
 
   {#if selectedShader}
-    <div class="modal-backdrop" onclick={() => (selectedShader = null)}>
-      <div class="modal" onclick={(e) => e.stopPropagation()}>
+    <div class="modal-backdrop" onclick={() => (selectedShader = null)} aria-label="Close shader details" role="button" tabindex="0">
+      <div class="modal" role="dialog" aria-modal="true" onclick={(e) => e.stopPropagation()}>
         <div class="modal-header">
           <h2>Shader Details: {selectedShader.metadata?.operation || 'Unknown'}</h2>
           <button onclick={() => (selectedShader = null)} class="search-button" style="background: #ef4444;">Close</button>
@@ -390,7 +403,7 @@
   }
   .shader-nier-bits-card:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
 
-  .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items:center; justify-content: center; z-index:1000}
+  .modal-backdrop { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items:center; justify-content: center; z-index:1000; border: none; padding: 0; }
   .modal { background: white; border-radius:12px; width: 90%; max-width:1000px; max-height: 90vh; overflow:hidden; display: flex; flex-direction:column; }
   .modal-header { display: flex; justify-content:space-between; align-items: center; padding:1rem; border-bottom:1px solid #e5e7eb}
 
@@ -398,9 +411,7 @@
 
   /* small additions for button styles to visually match prior span styles */
   .operation-tag { background: transparent; border: none; padding: 0.25rem 0.5rem; cursor: pointer; border-radius: 8px}
-  .operation-tag[aria-pressed="true"] { background:#e6f2ff}
   .selected-tag { background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.25rem 0.5rem; border-radius: 12px; cursor: pointer; margin-right:0.5rem}
-  .selected-tag[aria-pressed="true"] { background: #2563eb; color:white; border-color:#2563eb}
   .shader-nier-bits-card { text-align: left; display:block; width: 100%; border:none; background: transparent; padding:1rem; }
   .shader-nier-bits-card:focus { outline: 3px solid rgba(37,99,235,0.25); }
 </style>

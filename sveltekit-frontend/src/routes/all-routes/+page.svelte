@@ -13,7 +13,7 @@
 
   let { data }: Props = $props();
   let selectedRoute = $state<RouteItem | null>(null); // Explicitly typed
-  let showModal = $state<boolean>(false);
+  let showModal = $state<boolean>(false); // This line is correct Svelte 5 runes syntax.
   let searchTerm = $state<string>('');
   let selectedCategory = $state<string>('all');
   let selectedSection = $state<string>('all');
