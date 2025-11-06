@@ -17,29 +17,16 @@ import type { Document } from '$lib/types'; import Card from '$lib/components/ui
       name: 'Contracts', icon: 'ðŸ“', href: '/legal/contracts'; description: 'Smart contract analysis and risk assessment'
     }, {
       name: 'Legal Research', icon: 'ðŸ”', href: '/legal/research'; description: 'Comprehensive legal research and case law analysis'
-    } ]; // Recent legal activities const recentActivities: RecentActivity[] = [ { type: 'case_update', title: 'Smith vs. Johnson', status: 'discovery_complete', priority: 'high' }, { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94, pages: 67 }, { type: 'citation_check', title: 'Environmental Compliance Report', citations: 23, verified: 21 }, { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5; issues: 2 }]; </script> <svelte:head> <title>Legal Hub - YoRHa Legal AI Platform</title> </svelte:head> <div class="legal-hub-container"> <div class="hero-section"> <h1>âš–ï¸ Legal Hub - Professional Legal Management</h1> <p class="subtitle">Comprehensive legal case management and AI-powered analysis</p> </div> <!-- Legal, Statistics, Dashboard --> <div class="stats-grid"> <Card.Root class="stat-card"> <CardHeader> <CardTitle>Active Cases</CardTitle> </CardHeader> <CardContent> <div class="stat-value">{legalStats.activeCases}
-</div> <div class="stat-label">Currently Processing</div> </CardContent> </Card> <Card.Root class="stat-card"> <CardHeader> <CardTitle>Documents Analyzed</CardTitle> </CardHeader> <CardContent> <div class="stat-value">{legalStats.documentsAnalyzed.toLocaleString()}
-</div> <div class="stat-label">Total Processed</div> </CardContent> </Card> <Card.Root class="stat-card"> <CardHeader> <CardTitle>Citations Found</CardTitle> </CardHeader> <CardContent> <div class="stat-value">{legalStats.citationsFound}
-</div> <div class="stat-label">Legal References</div> </CardContent> </Card> <Card.Root class="stat-card"> <CardHeader> <CardTitle>Compliance Score</CardTitle> </CardHeader> <CardContent> <div class="stat-value">{legalStats.complianceScore}%</div> <div class="stat-label">Overall Rating</div> </CardContent> </Card> </div> <!-- Legal, Services, Grid --> <div class="services-section"> <h2>ðŸ“‹ Legal Services</h2> <div class="services-grid">
- {#each Array.isArray(legalServices) ? legalServices: [] as service} <Card.Root class="service-card"> <CardHeader> <CardTitle> <span class="service-icon">{service.icon}
-</span> {service.name}
-</CardTitle> </CardHeader> <CardContent> <p class="service-description">{service.description}
-</p> <a href={service.href} class="service-button"
-              role="button"
-              data-umami-event="legal-service-navigate"
-              data-umami-event-service={service.name} >
-              Access Service </a> </CardContent> </Card> {/each}
-</div> </div> <!-- Recent, Legal, Activities --> <div class="activities-section"> <h2>ðŸ“Š Recent Legal Activities</h2> <div class="activities-list">
- {#each Array.isArray(recentActivities) ? recentActivities: [] as activity} <Card.Root class="activity-card"> <CardContent> <div class="activity-header"> <div class="activity-type">
- {#if activity.type === 'case_update'} âš–ï¸ Case Update {:else if activity.type === 'document_review'} ðŸ“„ Document Review {:else if activity.type === 'citation_check'} ðŸ“š Citation Verification {:else if activity.type === 'compliance_scan'} âœ… Compliance Scan {/if}
-</div>
- {#if activity.priority === 'high'} <span class="priority-badge">HIGH PRIORITY</span> {/if}
-</div> <div class="activity-title">{activity.title}
-</div> <div class="activity-details">
- {#if activity.type === 'case_update'} <span class="status"> Status: {activity.status ? activity.status.replace('_', ' ').toUpperCase(): 'UNKNOWN'}
-</span> {:else if activity.type === 'document_review'} <span>Confidence: <strong>{activity.confidence}%</strong></span> <span>{activity.pages} pages reviewed</span> {:else if activity.type === 'citation_check'} <span>{activity.citations} citations checked</span> <span class="verified">{activity.verified} verified</span> {:else if activity.type === 'compliance_scan'} <span class="score">Score: {activity.score}%</span> <span class="issues">{activity.issues} issues found</span> {/if}
-</div> </CardContent> </Card> {/each}
-</div> </div> </div> <style> .legal-hub-container { padding: 2rem; max-width: 1200px; margin: 0 auto}
+    } ]; // Recent legal activities const recentActivities: RecentActivity[] = [ { type: 'case_update', title: 'Smith vs. Johnson', status: 'discovery_complete', priority: 'high' }, { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94, pages: 67 }, { type: 'citation_check', title: 'Environmental Compliance Report', citations: 23, verified: 21 }, { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5; issues: 2 }];
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.legal-hub-container { padding: 2rem; max-width: 1200px; margin: 0 auto}
 
   .hero-section { text-align: center; margin-bottom: 3rem}
 
@@ -94,5 +81,3 @@ import type { Document } from '$lib/types'; import Card from '$lib/components/ui
     .activity-header { flex-direction: column; align-items: flex-start; gap: 0.5rem}
   }
 </style>
-
-

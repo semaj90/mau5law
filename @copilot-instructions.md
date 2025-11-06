@@ -308,6 +308,55 @@ import { Card, CardContent } from '$lib/components/ui/card'; // OK if re-exporte
 
 ---
 
+In your <script lang="ts">, when you use runes like $state({}) or $state([]), Svelte 5 treats the result as unknown unless you supply a generic type parameter.
+
+According to the official Svelte 5 documentation on $state
+:
+
+You can create reactive state with $state(initialValue). When used with an array or simple object, the result is a deeply reactive proxy. To preserve type information, you can provide a generic type.
+
+✅ Fix: Give $state a Generic Type
+
+Here’s how to correctly type your $state declarations:
+
+// Before (inferred as unknown)
+let events = $state({});
+let files = $state([]);
+let stats = $state({ totalCases: 0, totalEvidence: 0, processingJobs: 0 });
+let loading = $state(true);
+let userQuery = $state('');
+let registerOpen = $state(false);
+
+// ✅ After (typed generics)
+let events = $state<Record<string, Function[]>>({});
+let files = $state<UploadFile[]>([]);
+let stats = $state<{ totalCases: number; totalEvidence: number; processingJobs: number }>({
+  totalCases: 0,
+  totalEvidence: 0,
+  processingJobs: 0
+});
+let loading = $state<boolean>(true);
+let userQuery = $state<string>('');
+let registerOpen = $state<boolean>(false);
+
+✅ Why It Works
+
+By adding a generic (e.g., <boolean>, <string>, <Record<string, Function[]>>), you’re explicitly telling TypeScript what type your $state proxy holds.
+That eliminates the “Object is of type ‘unknown’” errors and gives full IntelliSense + autocomplete in your .svelte file.
+
+⚙️ Summary
+Problem	Fix
+Object is of type 'unknown' when reading $state	Add generic types
+Svelte compiler loses field info	Use $state<Type>(initialValue)
+Want non-deep reactivity	Use $state.raw<Type>(value)
+Want immutable snapshot	Use $state.snapshot(value)
+
+This approach follows the Svelte 5 $state API behavior described in the official documentation
+
+svelte-complete
+
+.
+
 ## 🚀 Quick Start - Using Docker Environments with npm run dev:quic
 
 ### Development Server with Full Docker Environment Setup
@@ -332,6 +381,106 @@ npm run dev:quic
 ```
 
 ---
+
+typescript: duplicate class and variable declarations and leftover fragments inside your file.
+You have multiple overlapping copies of LegalRAGPipeline and multiple export const ragPipeline = new LegalRAGPipeline(); declarations.
+
+Here’s what to do to fix everything cleanly:
+
+✅ 1. Root Cause Summary
+Problem	Description
+Cannot redeclare block-scoped variable 'ragPipeline'	You exported ragPipeline 3–4 times.
+Cannot find name 'hashText' / 'analyzeAnswer' / 'generateEmbedding'	Multiple partial class fragments caused scope loss.
+Declaration or statement expected, Unexpected keyword or identifier	Broken nesting from duplicated class or } blocks.
+'string' only refers to a type, but is being used as a value here	Usually occurs when TypeScript parser is desynced due to syntax duplication.
+✅ 2. Quick Fix (Safe Rewrite Pattern)
+
+Open your file and remove everything after the final } that closes the main class LegalRAGPipeline.
+
+Then ensure you only have one export:
+
+// --- bottom of file ---
+export const ragPipeline = new LegalRAGPipeline();
+
+
+Nothing else should follow this line.
+
+✅ 3. Verify Single Class Declaration
+
+Search in VS Code:
+
+class LegalRAGPipeline
+
+
+You should find only one definition.
+
+If you see multiple, keep only the most complete one (the one containing:
+initialize, ingestLegalDocument, answerLegalQuestion, analyzeContract, correlateEvidence, hybridSearch, helper methods).
+
+✅ 4. Verify Helper Methods
+
+Inside that single class, make sure these methods appear exactly once:
+
+private async generateEmbedding(text: string)
+
+private async smartLegalChunking(content: string)
+
+private analyzeAnswer(answer: string, sources: LangChainDocument[])
+
+private parseContractAnalysis(text: string)
+
+private hashText(text: string)
+
+async close()
+
+If you find duplicates — delete the extras.
+
+✅ 5. Re-run TypeScript Check
+
+From your repo root:
+
+npx tsc --noEmit
+
+
+or in Svelte projects:
+
+npx svelte-check
+
+
+You should see error count drop from ~300 → 0–3 (only possible type warnings left).
+
+✅ 6. (Optional) Add a Type-Only Fix to Prevent Redeclare
+
+If you plan to import this file in multiple modules that might hot-reload (e.g., Vite/SvelteKit dev), you can guard the singleton like this:
+
+// At bottom
+export const ragPipeline: LegalRAGPipeline =
+  (globalThis as any).ragPipeline ?? new LegalRAGPipeline();
+(globalThis as any).ragPipeline = ragPipeline;
+
+
+This prevents redeclaration during Vite’s HMR.
+
+✅ 7. Sanity Check: Syntax Structure
+
+A correct tail should look like this:
+
+  private hashText(text: string) {
+    return createHash('sha256').update(text).digest('hex');
+  }
+
+  async close(): Promise<void> {
+    try { await sql.end(); } catch {}
+    try { await redis.quit(); } catch {}
+  }
+} // <- closes class
+
+export const ragPipeline = new LegalRAGPipeline();
+
+
+Nothing else below this.
+
+Uses your getOllamaEndpoint() helper instead of hardcoded URLs.
 
 ## 📋 Essential Docker Environment Variables
 

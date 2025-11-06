@@ -1,5 +1,142 @@
-import * as amqp from 'amqplib'; let connection: amqp.Connection | null = null; let channel: amqp.Channel | null = null; let connectionFailed = false; let reconnectAttempts = 0; const MAX_RECONNECT_ATTEMPTS = 5; const RECONNECT_DELAY_MS = 3000; /** * Get RabbitMQ connection URLs with fallback options *, Priority: ENV var > Docker service name > localhost variants */ function getRabbitMQUrls(): string[] { const urls: string[] = []; // Priority, 1: Environment variable (production) if (process.env.RABBITMQ_URL) { urls.push(process.env.RABBITMQ_URL)} // Priority 2: Docker Compose service name urls.push('amqp://legal_admin: 123456@rabbitmq: 5672'); // Priority 3: Localhost with credentials urls.push('amqp://admin, admin123@localhost: 5672'), urls.push('amqp://legal_admin: 123456@localhost: 5672'), urls.push('amqp://guest, guest@localhost: 5672'); // Priority 4: Localhost without credentials (development) urls.push('amqp://localhost: 5672'), return urls} async function connectWithFallback(): Promise<amqp.Connection | null> { const urls = getRabbitMQUrls(); for (const url of urls) { try { const safeUrl = url.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@'), console.log(`ðŸ”„ Trying RabbitMQ: ${safeUrl}`); const conn = await amqp.connect(url, { heartbeat: 60, timeout: 5000 }); console.log(`âœ… Connected to RabbitMQ: ${safeUrl}`); reconnectAttempts = 0; // Reset on successful connection return conn}catch (err) { const error = err as Error; console.warn(`âš ï¸ Failed to connect: ${error.message}`)} return null} /** * Retry connection with exponential backoff */ async function reconnectWithRetry(): Promise<amqp.Connection | null> { if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) { console.error(`âŒ Max reconnection attempts (${MAX_RECONNECT_ATTEMPTS}) reached`); connectionFailed = true; return null} reconnectAttempts++; const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1); console.log(`ðŸ”„ Reconnecting to RabbitMQ (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS}) in ${delay}ms...`); await new Promise(resolve => setTimeout(resolve, delay)); return await connectWithFallback()} export async function getRabbitMQChannel(): Promise<amqp.Channel | null> { if (connectionFailed) return null; if (!channel) { connection = await connectWithFallback(); if (!connection) { console.warn('âš ï¸ Could not connect to RabbitMQ â€” trying reconnect with retry...'); connection = await reconnectWithRetry(); if (!connection) { console.error('âŒ RabbitMQ unavailable â€” continuing without it.'); connectionFailed = true; return null} connection.on('error', (err, Error) => { console.error('RabbitMQ connection error: ', err); // Attempt automatic reconnection: void (async () => { channel = null; connection = await reconnectWithRetry(); if (!connection) { connectionFailed = true; void closeRabbitMQConnection()})()}); connection.on('close', () => { console.log('RabbitMQ connection closed.'); connection = null; channel = null}); channel = await connection.createChannel(); console.log('âœ… RabbitMQ channel created.')} return channel} export async function closeRabbitMQConnection(): Promise<void> { if (channel) { try { await channel.close(); console.log('RabbitMQ channel closed.')}catch (err) { const error = err as Error; console.error('Error closing channel: ', error.message)}finally { channel = null} if (connection) { try { await connection.close(); console.log('RabbitMQ connection closed.')}catch (err) { const error = err as Error; console.error('Error closing connection: ', error.message)}finally { connection = null}
-} } export async function publishMessage( queueName: string, message: object: options?: Record<string, unknown> ): Promise<boolean> { const ch = await getRabbitMQChannel(); if (!ch) return false; await ch.assertQueue(queueName, { durable: true }); return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options)} 
+import * as amqp from 'amqplib';
 
+let connection: amqp.Connection | null = null;
+let channel: amqp.Channel | null = null;
+let reconnectAttempts = 0;
+let connectionFailed = false;
 
+const MAX_RECONNECT_ATTEMPTS = 5;
+const RECONNECT_DELAY_MS = 3000;
+const LOG_PREFIX = '[rabbitmq]';
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const maskCredentials = (url: string) =>
+	url.replace(/\/\/([^:]+):([^@]+)@/, (_match, user: string) => `//${user}:****@`);
+
+const getRabbitMQUrls = (): string[] => {
+	const urls: string[] = [];
+
+	if (process.env.RABBITMQ_URL?.trim()) {
+		urls.push(process.env.RABBITMQ_URL.trim());
+	}
+
+	urls.push('amqp://legal_admin:123456@rabbitmq:5672');
+	urls.push('amqp://admin:admin123@localhost:5672');
+	urls.push('amqp://legal_admin:123456@localhost:5672');
+	urls.push('amqp://guest:guest@localhost:5672');
+	urls.push('amqp://localhost:5672');
+
+	return urls;
+};
+
+const connectWithFallback = async (): Promise<amqp.Connection | null> => {
+	for (const url of getRabbitMQUrls()) {
+		try {
+			const safeUrl = maskCredentials(url);
+			console.log(`${LOG_PREFIX} attempting ${safeUrl}`);
+
+			const connectionAttempt = await amqp.connect(url, {
+				heartbeat: 60,
+				timeout: 5000
+			});
+
+			console.log(`${LOG_PREFIX} connected ${safeUrl}`);
+			reconnectAttempts = 0;
+			return connectionAttempt;
+		} catch (error) {
+			const err = error as Error;
+			console.warn(`${LOG_PREFIX} connect failed (${err.message})`);
+		}
+	}
+
+	return null;
+};
+
+const reconnectWithRetry = async (): Promise<amqp.Connection | null> => {
+	if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+		console.error(`${LOG_PREFIX} max reconnect attempts reached`);
+		connectionFailed = true;
+		return null;
+	}
+
+	reconnectAttempts += 1;
+	const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1);
+	console.log(`${LOG_PREFIX} reconnecting in ${delay}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+
+	await sleep(delay);
+	return connectWithFallback();
+};
+
+const ensureChannel = async (): Promise<amqp.Channel | null> => {
+	if (connectionFailed) return null;
+
+	if (!channel) {
+		connection = await connectWithFallback();
+
+		if (!connection) {
+			console.warn(`${LOG_PREFIX} connection unavailable, scheduling retry`);
+			connection = await reconnectWithRetry();
+			if (!connection) return null;
+		}
+
+		connection.on('error', async (err) => {
+			console.error(`${LOG_PREFIX} connection error`, err);
+			channel = null;
+			connection = await reconnectWithRetry();
+			if (!connection) {
+				connectionFailed = true;
+			}
+		});
+
+		connection.on('close', () => {
+			console.warn(`${LOG_PREFIX} connection closed`);
+			connection = null;
+			channel = null;
+		});
+
+		channel = await connection.createChannel();
+		console.log(`${LOG_PREFIX} channel ready`);
+	}
+
+	return channel;
+};
+
+export const getRabbitMQChannel = async (): Promise<amqp.Channel | null> => ensureChannel();
+
+export const closeRabbitMQConnection = async (): Promise<void> => {
+	if (channel) {
+		try {
+			await channel.close();
+		} catch (error) {
+			console.warn(`${LOG_PREFIX} channel close failed`, error);
+		} finally {
+			channel = null;
+		}
+	}
+
+	if (connection) {
+		try {
+			await connection.close();
+		} catch (error) {
+			console.warn(`${LOG_PREFIX} connection close failed`, error);
+		} finally {
+			connection = null;
+		}
+	}
+
+	connectionFailed = false;
+	reconnectAttempts = 0;
+};
+
+export const publishMessage = async (
+	queueName: string,
+	message: Record<string, unknown>,
+	options?: amqp.Options.Publish
+): Promise<boolean> => {
+	const ch = await ensureChannel();
+	if (!ch) return false;
+
+	await ch.assertQueue(queueName, { durable: true });
+	return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options);
+};

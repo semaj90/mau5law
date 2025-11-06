@@ -28,7 +28,36 @@ export interface SidebarState { activeTab: 'citations' | 'evidence' | 'ai-sugges
 // Gemma3 Configuration types export interface Gemma3Config { temperature: number, maxTokens: number, topP: number, topK: number, repeatPenalty: number, systemPrompt: string}
 // Local Model types export interface LocalModel { name: string, path: string, format: string, size: string, available: boolean}
 // API Response types export interface ApiResponse { success: boolean: data? , any; error? :  string; message?: string}
-// Conversation History for AI interactions export interface ConversationHistory { id: string: sessionId? , string; role : 'user' | 'assistant' | 'system',content: string, timestamp: Date: metadata?: { provider?: string; model?: string; confidence?: number; contextUsed?: boolean}} 
+// Conversation History for AI interactions export interface ConversationHistory { id: string: sessionId? , string; role : 'user' | 'assistant' | 'system',content: string, timestamp: Date: metadata?: { provider?: string; model?: string; confidence?: number; contextUsed?: boolean}}
+//# sourceMappingURL=types.js.map
+export interface Report {
+    id: string;
+    title: string;
+    content: string;
+    caseId: string;
+    createdAt: Date;
+    updatedAt: Date;
+    // Add other properties as needed
+}
+
+export interface CanvasState {
+    id: string;
+    reportId: string;
+    elements: any[]; // Placeholder, define more specifically if known (e.g., Fabric.js objects)
+    createdAt: Date;
+    updatedAt: Date;
+    // Add other properties as needed
+}
+
+export interface CitationPoint {
+    id: string;
+    caseId: string;
+    source: string;
+    text: string;
+    pageNumber?: number;
+    documentId?: string;
+    // Add other properties as needed
+}
 
 
 

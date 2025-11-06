@@ -1,7 +1,11 @@
 import { Pool } from 'pg';
 import { drizzle, type NodePgDatabase } from 'drizzle-orm/node-postgres';
+import postgres from "postgres";
+import * as schema from "./schema-postgres"; // Assuming schema-postgres.ts exists
 
-import * as baseSchema from './schema-postgres';
+const connection = postgres(process.env.DATABASE_URL!);
+export const db = drizzle(connection, { schema });
+
 import { canvasAutosaves } from './schema-canvas-autosaves';
 
 const schema = { ...baseSchema, canvasAutosaves };

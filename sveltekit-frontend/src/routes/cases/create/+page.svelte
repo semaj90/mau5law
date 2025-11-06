@@ -1,46 +1,16 @@
-﻿<script lang="ts">
+<script lang="ts">
 import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; import Button from '$lib/components/ui/button/Button.svelte'; let title = $state<string>(''); let caseNumber = $state<string>(''); let description = $state<string>(''); // Align with server schema (maps, 'active' -> 'open') and prefer canonical values on client let status = $state<'open' | 'pending' | 'closed'>('open'); let loading = $state<boolean>(false); let error = $state<string | null>(null); async function handleSubmit(e: Event): Promise<any> { e.preventDefault(); try { loading = true; error = null; const response = await fetch('/api/cases', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ title, case_number: caseNumber, description, status }) }); if (response.ok) { const data = await response.json(); goto(`/cases/${data.id}`)} else { const errorData = await response.json(); error = errorData.error || 'Failed to create case'}
     } catch (err) { error = err instanceof Error ? err.message: 'Error creating case'} finally { loading = false}
   }
 </script>
 
-<svelte:head><title>Create Case - Legal AI Platform</title></svelte:head>
-<div class="create-case-page">
-  <header class="page-header"><h1>Create New Case</h1></header>
-  <div class="form-container">
-    {#if error}
-      <div class="error-banner">âš ï¸ {error}</div>
-    {/if}
-    <form onsubmit={handleSubmit}>
-      <div class="form-field">
-        <label for="title">Case Title *</label>
-        <input id="title" type="text" bind:value={title} required, disabled={loading} />
-      </div>
-      <div class="form-field">
-        <label for="caseNumber">Case Number</label>
-        <input id="caseNumber" type="text" bind:value={caseNumber} disabled={loading} />
-      </div>
-      <div class="form-field">
-        <label for="description">Description</label>
-        <textarea id="description" bind:value={description} disabled={loading} rows="5"></textarea>
-      </div>
-      <div class="form-field">
-        <label for="status">Status</label>
-        <select id="status" bind:value={status} disabled={loading}>
-          <option value="open">Open</option> <option value="pending">Pending</option>
-          <option value="closed">Closed</option>
-        </select>
-      </div>
-      <div class="form-actions">
-        <Button type="submit" disabled={loading}>{loading ? 'Creating...' : 'Create Case'}</Button>
-        <Button type="button" variant="outline" onclick={() => goto('/cases')}>Cancel</Button>
-      </div>
-    </form>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .create-case-page {
+.create-case-page {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;

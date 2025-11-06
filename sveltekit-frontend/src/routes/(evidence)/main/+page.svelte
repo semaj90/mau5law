@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
+import type { Case } from '$lib/types';
   import { page } from '$app/stores';
 
   let caseId = $derived($page.url.searchParams.get('caseId') || '');
@@ -19,59 +19,13 @@
   }
 </script>
 
-<svelte:head>
-  <title>Evidence Manager - YoRHa Legal AI</title>
-</svelte:head>
-
-<div class="home-page">
-  <div class="hero-section">
-    <h1>ðŸ“ Evidence Manager</h1>
-    <p class="subtitle">Upload and manage legal evidence files</p>
-    {#if caseId}
-      <p class="status">Case ID: <span class="text-green-400">{caseId}</span></p>
-    {:else}
-      <p class="status">Status: <span class="text-green-400">All Evidence âœ…</span></p>
-    {/if}
-  </div>
-
-  <div class="action-grid">
-    <div class="action-card">
-      <h3>ðŸ“¤ Upload Evidence</h3>
-      <input
-        type="file"
-        onchange={handleFileUpload}
-        accept=".pdf,.doc,.docx,.txt,.jpg,.png,.mp4,.mp3"
-        class="file-input"
-      />
-      {#if uploadFile}
-        <p>Selected: {uploadFile.name}</p>
-        <button onclick={submitEvidence} class="upload-btn">Submit Evidence</button>
-      {/if}
-    </div>
-
-    <div class="action-card">
-      <h3>ðŸ“Š Evidence Statistics</h3>
-      <p>Total Files: <span class="stat-value">0</span></p>
-      <p>Verified: <span class="stat-value">0</span></p>
-      <p>Pending: <span class="stat-value">0</span></p>
-    </div>
-
-    <div class="action-card">
-      <h3>ðŸ” Search Evidence</h3>
-      <input type="text" placeholder="Search by, filename, case, or, tags..." class="search-input" />
-      <button class="search-btn">Search</button>
-    </div>
-  </div>
-
-  <div class="quick-actions">
-    <a href="/" class="action-link">â† Back to Home</a>
-    <a href="/cases" class="action-link">View Cases</a>
-    <a href="/all-routes" class="action-link">All Routes</a>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .home-page {
+.home-page {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem}
@@ -161,5 +115,3 @@
     background: #ffd700
    ; color: #1a1a1a}
 </style>
-
-

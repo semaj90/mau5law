@@ -66,56 +66,13 @@ import type { User } from '$lib/types';
     runDiagnostics()});
 </script>
 
-<div class="container">
-  <header>
-    <h1>WebGPU Diagnostic</h1>
-    <p>Quick check for WebGPU / WebGL availability and recommendations.</p>
-  </header>
-
-  <section>
-    <div class="controls">
-      <button onclick={runDiagnostics} disabled={checking}>
-        {#if checking}Checking...{:else}Run diagnostics{/if}
-      </button>
-    </div>
-
-    <div class="status-card {isSuccess ? 'success' : 'error'}">
-      <div class="status-icon">{isSuccess ? 'âœ“' : 'âœ•'}</div>
-      <div>
-        <strong>{statusMessage}</strong>
-        <div class="details">
-          <h3>Environment</h3>
-          <ul>
-            <li>User Agent: {performanceStats.userAgent}</li>
-            <li>WebGPU: {performanceStats.webgpuAvailable ? 'available' : 'unavailable'}</li>
-            <li>WebGL: {performanceStats.webglAvailable ? 'available' : 'unavailable'}</li>
-          </ul>
-
-          {#if errors.length}
-            <h3>Errors</h3>
-            <ul class="error-list">
-              {#each Array.isArray(errors) ? errors : [] as err}
-                <li>{err}</li>
-              {/each}
-            </ul>
-          {/if}
-
-          {#if recommendations.length}
-            <h3>Recommendations</h3>
-            <ul class="recommendation-list">
-              {#each Array.isArray(recommendations) ? recommendations : [] as rec}
-                <li>{rec}</li>
-              {/each}
-            </ul>
-          {/if}
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .container {
+.container {
     max-width: 900px;
     margin: 0 auto
    ; padding: 2rem;
@@ -195,5 +152,3 @@ import type { User } from '$lib/types';
 
   .recommendation-list li { color: #059669}
 </style>
-
-

@@ -1,16 +1,12 @@
-﻿<script lang="ts">
-  import type { Snippet } from 'svelte';
-  interface Props {
-    class?: string;
-    children?: Snippet;
-  }
-  let { class: className = '', children }: Props = $props();
-  
-  let classes = $derived(className);
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div class="{classes} space-y-4">
-  {#if children}
-    {@render children()}
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

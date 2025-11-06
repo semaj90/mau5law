@@ -7,3 +7,7 @@ redis==5.0.4
 scikit-learn==1.5.2
 neo4j==5.22.0
 numpy==1.26.4
+fastapi==0.115.5
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+simdjson==5.0.0

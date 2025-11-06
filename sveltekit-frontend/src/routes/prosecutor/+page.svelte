@@ -1,40 +1,417 @@
-<!-- Prosecutor Dashboard - Complete Legal AI Workflow Features: Case management, evidence upload, AI chat, vector, search --> <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported import type { SearchResults } from '$lib/types/global'; import  Button  from "$lib/components/ui/Button.svelte"; import  Input  from "$lib/components/ui/Input.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; // dynamically loaded components to avoid static import / default export issues let EvidenceUploadComponent: typeof import('svelte').SvelteComponent | null = null; let OllamaChatInterface: typeof import('svelte').SvelteComponent | null = null; import { webGPUProcessor } from '$lib/services/webgpu-vector-processor'; import { Scale, Users, FileText, Upload, Search, Brain, Zap, Eye, Plus, Filter } from 'lucide-svelte'; import { onMount } from 'svelte'; // --- Type Definitions --- interface Case { id: string, caseNumber: string, title: string, status: string}
+<script lang="ts">
+  import type { Case } from '$lib/types';
+  // import type { SearchResults } from '$lib/types/global'; // Removed: SearchResults type is not used
+  import { Button } from "$lib/components/ui/button"; // Changed to named import
+  import { Input } from "$lib/components/ui/input"; // Changed to named import
+  import { Badge } from "$lib/components/ui/badge"; // Changed to named import
+
+  // dynamically loaded components (use `any` to avoid strict SvelteComponent typing incompatibilities)
+  let EvidenceUploadComponent = $state<any>(null);
+  let OllamaChatInterface = $state<any>(null);
+
+  // replace the failing named import with a safe module import (cast to any when inspecting)
+  import * as webGPUModule from '$lib/services/webgpu-vector-processor';
+  import { Scale, Users, FileText, Upload, Search, Brain, Eye, Plus } from 'lucide-svelte';
+  import { onMount } from 'svelte';
+
+  // --- Type Definitions ---
+  // interface Case { id: string, caseNumber: string, title: string, status: string} // Removed: Case type is already imported
   interface PersonOfInterest { name: string, role: string, tags: string[], priority: 'high' | 'normal' | 'low'}
   interface Evidence { title: string, fileName: string, uploadedAt: string, aiSummary?: string; aiAnalysis?: { prosecutionRelevance: 'high' | 'medium' | 'low'}}
-  interface SearchResult { id: string;, score: number, payload?: { fileName?: string; title?: string; tags?: string[]}}
+  interface SearchResult { id: string; score: number; payload?: { fileName?: string; title?: string; tags?: string[]}}; // Fixed: semicolons to commas
 
-  // State management let selectedCaseId = $state<string>(''); let cases: Case[] = $state([]); let personsOfInterest: PersonOfInterest[] = $state([]); let recentEvidence: Evidence[] = $state([]); let searchQuery = $state<string>(''); let searchResults: SearchResult[] = $state([]); let activeTab = $state<string>('overview'); // AI features state let webGPUEnabled = $state<boolean>(false); let ragSystemStatus = $state<string>('initializing'); onMount(() => { (async () => { // Check WebGPU availability webGPUEnabled = await webGPUProcessor.initialize(); // Load initial data await loadCases(); ragSystemStatus = 'ready'; // load UI components lazily; support either default or named export try { const evMod = await import('$lib/components/EvidenceUploadComponent.svelte'); EvidenceUploadComponent = evMod.default ?? evMod.EvidenceUploadComponent ?? null} catch (e) { console.warn('Failed to load EvidenceUploadComponent dynamically', e)}
-      try { const chatMod = await import('$lib/components/OllamaChatInterface.svelte'); OllamaChatInterface = chatMod.default ?? chatMod.OllamaChatInterface ?? null} catch (e) { console.warn('Failed to load OllamaChatInterface dynamically', e)}
-    })()}); $effect(() => { if (selectedCaseId) { loadPersonsOfInterest(); loadRecentEvidence()}
-  }); const loadCases = async () => { try { const response = await fetch('/api/cases'); if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`)}
-      const result = await response.json(); cases = result.data || []; if (cases.length > 0 && !selectedCaseId) { selectedCaseId = cases[0].id}
-    } catch (error) { console.error('Failed to load cases:', error)}
-  }; const loadPersonsOfInterest = async () => { if (!selectedCaseId) return; try { const response = await fetch(`/api/cases/${ selectedCaseId }/pois`); if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`)}
-      const result = await response.json(); personsOfInterest = result.data || []} catch (error) { console.error('Failed to load POIs:', error)}
-  }; const loadRecentEvidence = async () => { if (!selectedCaseId) return; try { const response = await fetch(`/api/cases/${ selectedCaseId }/evidence`); if (!response.ok) { throw new Error(`HTTP ${response.status}: ${response.statusText}`)}
-      const result = await response.json(); recentEvidence = result.data || []} catch (error) { console.error('Failed to load evidence:', error)}
-  }; // Enhanced vector search with WebGPU const performVectorSearch = async () => { if (!searchQuery.trim()) return; try { if (webGPUEnabled) { searchResults = await webGPUProcessor.searchSimilarEvidence( searchQuery, selectedCaseId, undefined, // any evidence type: undefined, // any tags, 20 )} else { // Fallback to API search const response = await fetch('/api/search/vector', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: searchQuery, caseId: selectedCaseId, type: 'evidence'
-          }) }); if (!response.ok) { throw new Error(`Vector search failed: ${response.statusText}`)}
-        const result = await response.json(); searchResults = result.results || []}
-    } catch (error) { console.error('Vector search failed:', error)}
-  }; // Handle evidence upload completion const handleEvidenceUploaded = (results: unknown[]) => { console.log('Evidence uploaded:', results); loadRecentEvidence(); // Refresh evidence list }; // Case selection handler const selectCase = (caseId: string) => { selectedCaseId = caseId}; </script> <svelte:head> <title>Prosecutor Dashboard - Legal AI Platform</title> </svelte:head> <div class="min-h-screen"> <!-- Header --> <header class="bg-white shadow-sm"> <div class="max-w-7xl mx-auto px-4 sm:px-6"> <div class="flex justify-between items-center"> <div class="flex items-center"> <Scale class="w-8 h-8" /> <h1 class="text-2xl font-bold">Prosecutor Dashboard</h1> {#if webGPUEnabled} <Badge variant="default" class="hidden"> <Zap class="w-3 h-3" /> GPU Accelerated </Badge> {/if} <Badge variant="default" class="hidden"> <Brain class="w-3 h-3" /> Gemma3Legal Active </Badge> </div> <div class="flex items-center"> <Badge variant="default"> {ragSystemStatus === 'ready' ? 'âœ…': 'â³'} RAG System </Badge> </div> </div> </div> </header> <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"> <!-- Case, Selector --> <div class="mb-6"> <div class="yorha-panel-header"> <h3 class="nes-text">Active Cases</h3> </div> <div class="yorha-panel-content"> <div class="flex flex-wrap"> {#each Array.isArray(cases) ? cases: [] as caseItem} <span class="bits-btn"> <Button variant={selectedCaseId === caseItem.id ? 'secondary': 'ghost'} onclick={() => selectCase(caseItem.id)} >
-                {caseItem.caseNumber} - {caseItem.title} <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">{caseItem.status}</span> </Button> </span> {/each} <span class="bits-btn"> <Button variant="secondary"
-              onclick={() => { /* New case handler */ }} >
-              <Plus class="w-4 h-4" /> New Case </Button> </span> </div> </div> </div> <!-- Main Dashboard, Layout --> <div class="grid grid-cols-1 xl:grid-cols-3"> <!-- Left Column: Evidence & Search --> <div class="xl:col-span-2"> <!-- Vector, Search --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center"> <Search class="w-5" /> Enhanced Vector Search {#if webGPUEnabled} <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200">GPU Accelerated</span> {/if} </h3> </div> <div class="yorha-panel-content"> <div class="flex"> <Input bind:value={ searchQuery } placeholder="Search, evidence, cases, precedents..." class="flex-1" /> <!-- moved classes to wrapper span to avoid passing: unknown: 'class' prop to, Button --> <span class="bits-btn"> <Button onclick={ performVectorSearch } disabled={!searchQuery.trim()}> <Search class="w-4" /> </Button> </span> </div> {#if searchResults.length > 0} <div class="space-y-2"> <h4 class="font-medium">Search Results ({searchResults.length})</h4> {#each Array.isArray(searchResults) ? searchResults: [] as result} <div class="p-3 bg-blue-50 border border-blue-200"> <div class="flex justify-between"> <div> <p class="font-medium text-sm">{result.payload?.fileName || result.id}</p> <p class="text-xs text-gray-600"> {result.payload?.title || 'No title'} </p> {#if result.payload?.tags} <div class="flex gap-1"> {#each Array.isArray(result.payload.tags) ? result.payload.tags: [] as tag} <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300"
-                                >{ tag }</span >
-                            {/each} </div> {/if} </div> <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200"
-                        >{Math.round((result.score || 0) * 100)}% match</span >
-                    </div> </div> {/each} </div> {/if} </div> </div> <!-- Evidence, Upload --> {#if EvidenceUploadComponent} <svelte:component this={EvidenceUploadComponent as, any} caseId={ selectedCaseId } enableWebGPU={ webGPUEnabled } onuploadcomplete={ handleEvidenceUploaded } /> {:else} <div class="p-4 text-sm">Loading uploaderâ€¦</div> {/if} <!-- Recent, Evidence --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center"> <FileText class="w-5" /> Recent Evidence ({recentEvidence.length}) </h3> </div> <div class="yorha-panel-content"> {#if recentEvidence.length === 0} <p class="text-gray-500 text-center">No evidence uploaded yet</p> {:else} <div class="space-y-3"> {#each Array.isArray(recentEvidence) ? recentEvidence: [] as evidence} <div class="flex items-center justify-between p-3 bg-gray-50"> <div class="flex items-center"> <FileText class="w-5 h-5" /> <div> <p class="font-medium">{evidence.title}</p> <p class="text-xs"> {evidence.fileName} â€¢ {new Date(evidence.uploadedAt).toLocaleDateString()} </p> {#if evidence.aiSummary} <p class="text-xs text-blue-600"> AI: {evidence.aiSummary.substring(0, 60)}... </p> {/if} </div> </div> <div class="flex items-center"> {#if evidence.aiAnalysis?.prosecutionRelevance} <Badge variant={evidence.aiAnalysis.prosecutionRelevance === 'high' ? 'destructive': 'outline'} class="text-xs"
-                        > {evidence.aiAnalysis.prosecutionRelevance} </Badge> {/if} <!-- move styling to, wrapper, span --> <span class="bits-btn px-2 py-1"> <Button variant="secondary"
-                          onclick={() => { /* view handler */ }} >
-                          <Eye class="w-4" /> </Button> </span> </div> </div> {/each} </div> {/if} </div> </div> </div> <!-- Right Column: AI Chat & POIs --> <div class="space-y-6"> <!-- Persons of, Interest --> <div class="nes-container"> <div class="yorha-panel-header"> <h3 class="nes-text is-primary flex items-center"> <Users class="w-5" /> Persons of Interest ({personsOfInterest.length}) </h3> </div> <div class="yorha-panel-content"> {#if personsOfInterest.length === 0} <p class="text-gray-500 text-center">No POIs for this case</p> {:else} <div class="space-y-3"> {#each Array.isArray(personsOfInterest) ? personsOfInterest: [] as poi} <div class="p-3 bg-gray-50"> <div class="flex justify-between"> <div> <p class="font-medium">{poi.name}</p> <p class="text-xs">{poi.role}</p> {#if poi.tags} <div class="flex gap-1"> {#each Array.isArray(poi.tags) ? poi.tags: [] as tag} <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300"
-                                >{ tag }</span >
-                            {/each} </div> {/if} </div> <Badge variant={poi.priority === 'high' ? 'destructive': 'outline'} class="text-xs"> {poi.priority || 'normal'} </Badge> </div> </div> {/each} </div> {/if} <!-- move sizing/styling to wrapper span so Button props remain, typed --> <span class="bits-btn w-full mt-3 block px-3 py-2"> <Button variant="secondary"
-                onclick={() => { /* New POI handler */ }} >
-                <Plus class="w-4 h-4" /> Add Person of Interest </Button> </span> </div> </div> <!-- AI, Chat, Assistant --> <div class="h-96"> {#if OllamaChatInterface} <svelte:component this={OllamaChatInterface as, any} caseId={ selectedCaseId } useRAG={ true } /> {:else} <div class="h-full flex items-center justify-center text-sm">Loading chatâ€¦</div> {/if} </div> </div> </div> <!-- System, Status, Bar --> <div class="fixed bottom-4 right-4"> <div class="bg-black text-white"> <div class="yorha-panel-content"> <div class="flex items-center space-x-4"> <div class="flex items-center"> <div class="w-2 h-2 bg-green-500"></div> <span>PostgreSQL</span> </div> <div class="flex items-center"> <div class="w-2 h-2 bg-green-500"></div> <span>MinIO</span> </div> <div class="flex items-center"> <div class="w-2 h-2 bg-green-500"></div> <span>Qdrant</span> </div> <div class="flex items-center"> <div class={'w-2, h-2, ' + (webGPUEnabled ? 'bg-green-500': 'bg-yellow-500') + ' rounded-full'}></div> <span>WebGPU</span> </div> <div class="flex items-center"> <div class="w-2 h-2 bg-green-500"></div> <span>Gemma3Legal</span> </div> </div> </div> </div> </div> </div> </div> <style> /* Prosecutor dashboard styling */:global(.prosecutor-dashboard) { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif}
-  /* Enhanced hover effects for elemental awareness */:global(*:hover) { transition: all 0.1s ease}
-  /* WebGPU acceleration indicators */:global(.gpu-accelerated) { position relative}:global(.gpu-accelerated::after) { content: 'âš¡', position absolute; top: -8px; right: -8px; font-size: 12px}
+  // State management
+  let selectedCaseId = $state<string>('');
+  let cases: Case[] = $state([]);
+  let personsOfInterest: PersonOfInterest[] = $state([]);
+  let recentEvidence: Evidence[] = $state([]);
+  let searchQuery = $state<string>('');
+  let searchResults: SearchResult[] = $state([]);
+  let activeTab = $state<string>('overview');
+
+  // AI features state
+  let webGPUEnabled = $state<boolean>(false);
+  let ragSystemStatus = $state<string>('initializing');
+
+  // Add a reactive holder for the resolved webgpu processor instance
+  let webGPUProcessor = $state<any>(null);
+
+  onMount(() => {
+    (async () => {
+      // Resolve and normalize the module export into an instance we can call methods on.
+      if (!webGPUProcessor) {
+        // Check common export shapes: default instance, named instance, class constructor
+        // use `any` to avoid TS complaining about missing named exports on the module type
+        const _m = webGPUModule as any;
+        let candidate = _m.default ?? _m.webGPUProcessor ?? _m.WebGPUVectorProcessor ?? _m.webgpuProcessor ?? null;
+        if (candidate) {
+          if (typeof candidate === 'function') {
+            // candidate is likely a class or factory - try to instantiate, otherwise fall back to using it directly
+            try {
+              webGPUProcessor = new candidate();
+            } catch (_) {
+              webGPUProcessor = candidate;
+            }
+          } else {
+            // candidate is already an instance/object
+            webGPUProcessor = candidate;
+          }
+        }
+      }
+
+      // Initialize WebGPU when available; tolerate missing initialize method
+      webGPUEnabled = webGPUProcessor ? await (webGPUProcessor.initialize?.() ?? Promise.resolve(false)) : false;
+
+      // Load initial data
+      await loadCases();
+      ragSystemStatus = 'ready';
+
+      // load UI components lazily; support either default or named export
+      try {
+        // suppress TS if the optional component file is not present in this project
+        // @ts-ignore
+        const evMod: any = await import('$lib/components/EvidenceUploadComponent.svelte');
+        EvidenceUploadComponent = evMod?.default ?? evMod ?? null;
+      } catch (e) {
+        console.warn('Failed to load EvidenceUploadComponent dynamically', e);
+      }
+      try {
+        // @ts-ignore
+        const chatMod: any = await import('$lib/components/OllamaChatInterface.svelte');
+        OllamaChatInterface = chatMod?.default ?? chatMod ?? null;
+      } catch (e) {
+        console.warn('Failed to load OllamaChatInterface dynamically', e);
+      }
+    })(); // Fixed: closing onMount's async IIFE
+  }); // Fixed: closing onMount callback
+
+  $effect(() => {
+    if (selectedCaseId) {
+      loadPersonsOfInterest();
+      loadRecentEvidence();
+    }
+  });
+
+  const loadCases = async () => {
+    try {
+      const response = await fetch('/api/cases');
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const result = await response.json();
+      cases = result.data || [];
+      if (cases.length > 0 && !selectedCaseId) {
+        selectedCaseId = cases[0].id;
+      }
+    } catch (error) {
+      console.error('Failed to load cases:', error);
+    }
+  };
+
+  const loadPersonsOfInterest = async () => {
+    if (!selectedCaseId) return;
+    try {
+      const response = await fetch(`/api/cases/${ selectedCaseId }/pois`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const result = await response.json();
+      personsOfInterest = result.data || [];
+    } catch (error) {
+      console.error('Failed to load POIs:', error);
+    }
+  };
+
+  const loadRecentEvidence = async () => {
+    if (!selectedCaseId) return;
+    try {
+      const response = await fetch(`/api/cases/${ selectedCaseId }/evidence`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      const result = await response.json();
+      recentEvidence = result.data || [];
+    } catch (error) {
+      console.error('Failed to load evidence:', error);
+    }
+  };
+
+  // Enhanced vector search with WebGPU
+  const performVectorSearch = async () => {
+    if (!searchQuery.trim()) return;
+    try {
+      if (webGPUEnabled && webGPUProcessor) {
+        // Use the resolved instance
+        searchResults = await webGPUProcessor.searchSimilarEvidence(
+          searchQuery,
+          selectedCaseId,
+          undefined, // any evidence type
+          undefined, // any tags
+          20
+        );
+      } else {
+        // Fallback to API search
+        const response = await fetch('/api/search/vector', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            query: searchQuery,
+            caseId: selectedCaseId,
+            type: 'evidence'
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`Vector search failed: ${response.statusText}`);
+        }
+        const result = await response.json();
+        searchResults = result.results || [];
+      }
+    } catch (error) {
+      console.error('Vector search failed:', error);
+    }
+  };
+
+  // Handle evidence upload completion
+  const handleEvidenceUploaded = (results: unknown[]) => {
+    console.log('Evidence uploaded:', results);
+    loadRecentEvidence(); // Refresh evidence list
+  };
+
+  // Case selection handler
+  const selectCase = (caseId: string) => {
+    selectedCaseId = caseId;
+  };
+</script>
+
+<div class="prosecutor-dashboard p-4 md:p-8 bg-gray-50 min-h-screen">
+  <header class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 flex items-center">
+      <Scale class="mr-3 text-blue-600" size={32} /> Prosecutor Dashboard
+    </h1>
+    <div class="flex items-center space-x-4">
+      <Badge variant="outline" class="text-sm">
+        RAG System: {ragSystemStatus}
+        {#if webGPUEnabled}
+          <span class="ml-2 gpu-accelerated" aria-hidden="true"></span>
+        {/if}
+      </Badge>
+      <!-- Use native button for action (accessible + avoids Button prop typing conflicts) -->
+      <button type="button" class="px-3 py-2 bg-blue-600 text-white rounded-md inline-flex items-center" onclick={() => console.log('Add New Case')}>
+        <Plus class="mr-2" size={18} /> Add New Case
+      </button>
+    </div>
+  </header>
+
+  <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Left Sidebar: Case List -->
+    <aside class="lg:col-span-1 bg-white rounded-lg shadow-md p-4">
+      <h2 class="text-xl font-semibold mb-4 flex items-center">
+        <FileText class="mr-2" size={20} /> Cases
+      </h2>
+      <div class="space-y-2">
+        {#each cases as caseItem (caseItem.id)}
+          <!-- button provides keyboard accessibility and proper role -->
+          <button
+            type="button"
+            onclick={() => selectCase(caseItem.id)}
+            class="w-full text-left p-3 rounded-md transition-colors duration-200 {selectedCaseId === caseItem.id ? 'bg-blue-100 text-blue-800 font-medium' : 'hover:bg-gray-100'}"
+          >
+            <h3 class="text-lg">{caseItem.title}</h3>
+            <p class="text-sm text-gray-500">Case #{(caseItem as any).caseNumber ?? (caseItem as any).id}</p>
+            <Badge variant="secondary" class="mt-1">{(caseItem as any).status ?? 'unknown'}</Badge>
+          </button>
+        {/each}
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <section class="lg:col-span-3">
+      {#if selectedCaseId}
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+          <h2 class="text-2xl font-bold mb-4 text-gray-800">
+            Case: {cases.find(c => c.id === selectedCaseId)?.title || 'N/A'}
+          </h2>
+
+          <!-- Tabs for Overview, Evidence, POI, AI Assistant -->
+          <div class="flex border-b border-gray-200 mb-6">
+            <!-- Use native buttons for tabs (avoids Button prop typing issues) -->
+            <button type="button" class="tab-button {activeTab === 'overview' ? 'tab-active' : ''}" onclick={() => activeTab = 'overview'}>
+              <Eye class="mr-2" size={18} /> Overview
+            </button>
+            <button type="button" class="tab-button {activeTab === 'evidence' ? 'tab-active' : ''}" onclick={() => activeTab = 'evidence'}>
+              <Upload class="mr-2" size={18} /> Evidence
+            </button>
+            <button type="button" class="tab-button {activeTab === 'pois' ? 'tab-active' : ''}" onclick={() => activeTab = 'pois'}>
+              <Users class="mr-2" size={18} /> Persons of Interest
+            </button>
+            <button type="button" class="tab-button {activeTab === 'ai-assistant' ? 'tab-active' : ''}" onclick={() => activeTab = 'ai-assistant'}>
+              <Brain class="mr-2" size={18} /> AI Assistant
+            </button>
+          </div>
+
+          <!-- Tab Content -->
+          {#if activeTab === 'overview'}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h3 class="text-xl font-semibold mb-3">Recent Evidence</h3>
+                {#if recentEvidence.length > 0}
+                  <ul class="space-y-2">
+                    {#each recentEvidence.slice(0, 3) as evidenceItem (evidenceItem.fileName)}
+                      <li class="bg-gray-50 p-3 rounded-md flex justify-between items-center">
+                        <span>{evidenceItem.title} ({evidenceItem.fileName})</span>
+                        <Badge variant="secondary">{evidenceItem.uploadedAt}</Badge>
+                      </li>
+                    {/each}
+                  </ul>
+                {:else}
+                  <p class="text-gray-500">No recent evidence.</p>
+                {/if}
+              </div>
+              <div>
+                <h3 class="text-xl font-semibold mb-3">Persons of Interest</h3>
+                {#if personsOfInterest.length > 0}
+                  <ul class="space-y-2">
+                    {#each personsOfInterest.slice(0, 3) as person (person.name)}
+                      <li class="bg-gray-50 p-3 rounded-md flex justify-between items-center">
+                        <span>{person.name} ({person.role})</span>
+                        <Badge variant="outline">{person.priority}</Badge>
+                      </li>
+                    {/each}
+                  </ul>
+                {:else}
+                  <p class="text-gray-500">No persons of interest.</p>
+                {/if}
+              </div>
+            </div>
+          {:else if activeTab === 'evidence'}
+            <div class="space-y-6">
+              <h3 class="text-xl font-semibold mb-4">Evidence Management</h3>
+              {#if EvidenceUploadComponent}
+                <EvidenceUploadComponent caseId={selectedCaseId} onevidenceuploaded={handleEvidenceUploaded} />
+              {/if}
+
+              <!-- Search / vector match UI -->
+              <div class="mt-4 flex items-center space-x-2">
+                <input
+                  class="border rounded-md px-3 py-2 w-full"
+                  placeholder="Search evidence (vector search)..."
+                  value={searchQuery}
+                  oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)}
+                  aria-label="Search evidence"
+                />
+                <button type="button" class="px-3 py-2 bg-blue-600 text-white rounded-md inline-flex items-center" onclick={() => performVectorSearch()}>
+                  <Search class="mr-2" size={16} /> Search
+                </button>
+              </div>
+
+              <!-- Search results -->
+              {#if searchResults.length > 0}
+                <ul class="mt-4 space-y-2">
+                  {#each searchResults as result (result.id)}
+                    <li class="bg-gray-50 p-3 rounded-md flex justify-between items-center">
+                      <span>{result.payload?.title || result.payload?.fileName || 'Untitled'} (Score: {result.score.toFixed(2)})</span>
+                      <Badge variant="secondary">Vector Match</Badge>
+                    </li>
+                  {/each}
+                </ul>
+              {:else if searchQuery.length > 0}
+                <p class="text-gray-500 mt-4">No search results found.</p>
+              {/if}
+
+              <h4 class="text-lg font-medium mb-2">All Evidence</h4>
+              {#if recentEvidence.length > 0}
+                <ul class="space-y-2">
+                  {#each recentEvidence as evidenceItem (evidenceItem.fileName)}
+                    <li class="bg-gray-50 p-3 rounded-md flex justify-between items-center">
+                      <span>{evidenceItem.title} ({evidenceItem.fileName})</span>
+                      <Badge variant="secondary">{evidenceItem.uploadedAt}</Badge>
+                    </li>
+                  {/each}
+                </ul>
+              {:else}
+                <p class="text-gray-500">No evidence uploaded for this case yet.</p>
+              {/if}
+            </div>
+          {:else if activeTab === 'pois'}
+            <h3 class="text-xl font-semibold mb-4">Persons of Interest</h3>
+            {#if personsOfInterest.length > 0}
+              <ul class="space-y-3">
+                {#each personsOfInterest as person (person.name)}
+                  <li class="bg-gray-50 p-4 rounded-md shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                      <span class="text-lg font-medium">{person.name}</span>
+                      <Badge variant="outline">{person.role}</Badge>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      {#each person.tags as tag}
+                        <Badge variant="secondary">{tag}</Badge>
+                      {/each}
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Priority: <Badge variant={person.priority === 'high' ? 'destructive' : person.priority === 'normal' ? 'warning' : 'default'}>{person.priority}</Badge></p>
+                  </li>
+                {/each}
+              </ul>
+            {:else}
+              <p class="text-gray-500">No persons of interest defined for this case.</p>
+            {/if}
+          {:else if activeTab === 'ai-assistant'}
+            <h3 class="text-xl font-semibold mb-4 flex items-center">
+              <Brain class="mr-2" size={20} /> AI Assistant
+            </h3>
+            {#if OllamaChatInterface}
+              <OllamaChatInterface caseId={selectedCaseId} />
+            {:else}
+              <p class="text-red-500">AI Chat Interface failed to load.</p>
+            {/if}
+          {/if}
+        </div>
+      {:else}
+        <div class="bg-white rounded-lg shadow-md p-6 text-center text-gray-600">
+          <p class="text-xl font-medium mb-4">Select a case from the left sidebar to view details.</p>
+          <p>Or click "Add New Case" to get started.</p>
+        </div>
+      {/if}
+    </section>
+  </div>
+</div>
+
+<style>
+  /* Prosecutor dashboard styling */
+  :global(.prosecutor-dashboard) {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  }
+  /* Enhanced hover effects for elemental awareness */
+  :global(*:hover) {
+    transition: all 0.1s ease;
+  }
+  /* WebGPU acceleration indicators */
+  :global(.gpu-accelerated) {
+    position: relative;
+  }
+  :global(.gpu-accelerated::after) {
+    content: '⚡'; /* Fixed: 'âš¡' was likely a character encoding issue, replaced with standard lightning bolt */
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 12px;
+  }
+  .tab-button {
+    padding: 0.5rem 1rem; /* px-4 py-2 */
+    font-size: 0.875rem; /* text-sm */
+    font-weight: 500; /* font-medium */
+    color: #4b5563; /* text-gray-600 */
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    background: transparent;
+    cursor: pointer;
+    transition: color 0.15s ease, background-color 0.15s ease;
+  }
+  .tab-button:hover {
+    color: #1d4ed8; /* blue-700 */
+    background-color: #f9fafb; /* gray-50 */
+  }
+  .tab-active {
+    border-bottom: 2px solid #2563eb; /* border-blue-600 */
+    color: #1d4ed8; /* text-blue-700 */
+  }
 </style>
-
-

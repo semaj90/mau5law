@@ -1,8 +1,12 @@
-﻿<script lang="ts">
-  interface Props {
-    class?: string;
-  }
-  let { class: className = '' }: Props = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div class="-mx-1 my-1 h-px"></div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

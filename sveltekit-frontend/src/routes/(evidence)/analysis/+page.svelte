@@ -1,62 +1,14 @@
 <script lang="ts">
-  import { Card, CardContent } from '$lib/components/ui/card';
+import { Card, CardContent } from '$lib/components/ui/card';
 </script>
 
-<div class="evidence-analysis-page">
-  <!-- Assuming there might be a header or other sections before the main content -->
-  <div class="page-header">
-    <h1 class="page-title">Legal AI Analysis Dashboard</h1>
-    <p class="page-description">
-      Leveraging advanced AI models and GPU acceleration for comprehensive legal document analysis.
-    </p>
-  </div>
-
-  <div class="dashboard-section">
-    <Card>
-      <CardContent>
-        <div class="tech-specs">
-          <div class="specs-grid">
-            <div class="spec-item">
-              <h4>AI Models</h4>
-              <ul>
-                <li>Gemma 3 Legal (8B parameters)</li>
-                <li>Embedding Gemma (latest)</li>
-                <li>Specialized legal training</li>
-              </ul>
-            </div>
-            <div class="spec-item">
-              <h4>Infrastructure</h4>
-              <ul>
-                <li>PostgreSQL 17 with pgvector</li>
-                <li>Redis caching layer</li>
-                <li>CUDA/RTX optimization</li>
-              </ul>
-            </div>
-            <div class="spec-item">
-              <h4>Frontend</h4>
-              <ul>
-                <li>SvelteKit 2 with Svelte 5</li>
-                <li>WebGPU acceleration</li>
-                <li>WebAssembly processing</li>
-              </ul>
-            </div>
-            <div class="spec-item">
-              <h4>Security</h4>
-              <ul>
-                <li>Chain of custody tracking</li>
-                <li>Audit trail logging</li>
-                <li>Role-based access control</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style lang="postcss">
-  .evidence-analysis-page { @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6 space-y-8; }
+.evidence-analysis-page { @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6 space-y-8; }
   .page-header { @apply text-center mb-8}
   .page-title { @apply text-4xl font-bold text-gray-900 dark:text-gray-100 mb-2}
   .page-description { @apply text-xl text-gray-600 dark:text-gray-400}
@@ -87,5 +39,3 @@
   .spec-item li { @apply flex items-start gap-2}
   .spec-item li:before { content: '•'; @apply text-indigo-500}
 </style>
-
-

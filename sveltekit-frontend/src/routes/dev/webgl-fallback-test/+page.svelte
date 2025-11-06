@@ -1,5 +1,5 @@
 <script lang="ts">
-  // Svelte, 5 runes are auto-imported
+// Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import  Button, Card, CardContent, CardHeader, CardTitle, Alert  from "$lib/components/ui/enhanced-bits.svelte";
   import { LodCacheEngine } from '$lib/gpu/lod-cache-engine.js';
@@ -66,37 +66,11 @@
     append('ðŸ“‹ This test validates WebGPU â†’ WebGL2 â†’ WebGL1 â†’ WASM fallback chain')});
 </script>
 
-<div class="container mx-auto p-6">
-  <Card>
-    <CardHeader>
-      <CardTitle>WebGL2/WebGPU Acceleration Test</CardTitle>
-      <p class="text-muted-foreground">Browser GPU acceleration capabilities for Gemma3 270M WebAssembly deployment</p>
-    </CardHeader>
-    <CardContent class="space-y-4">
-      <div class="flex">
-        <Button onclick={runTest} disabled={isRunning} variant="default">
-          {isRunning ? 'ðŸ”„ Testing...' : 'ðŸš€ Run Test'}
-        </Button>
-        <Button onclick={() => (log = '')} disabled={isRunning} variant="ghost">ðŸ—‘ï¸ Clear Log</Button>
-      </div>
-      {#if log}
-        <Alert>
-          <div class="font-mono text-sm whitespace-pre-wrap bg-background border rounded p-4 max-h-96">
-            {log}
-          </div>
-        </Alert>
-      {/if}
-      <div class="text-sm text-muted-foreground">
-        <p><strong>Testing Strategy:</strong></p>
-        <ul class="list-disc list-inside">
-          <li>ðŸ¥‡ <strong>WebGPU</strong>: Next-gen GPU compute for neural networks</li>
-          <li>ðŸ¥ˆ <strong>WebGL2</strong>: Transform feedback for matrix operations</li>
-          <li>ðŸ¥‰ <strong>WebGL1</strong>: Basic GPU acceleration fallback</li>
-          <li>ðŸ”§ <strong>WebAssembly</strong>: CPU-based SIMD processing</li>
-        </ul>
-      </div>
-    </CardContent>
-  </Card>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
-
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

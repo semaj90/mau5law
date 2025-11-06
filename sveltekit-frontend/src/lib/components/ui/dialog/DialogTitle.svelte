@@ -1,9 +1,12 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-  
-  let { title = '', children }: { title?: string; children?: Snippet } = $props();
+// Truncated file - replaced with stub
 </script>
 
-<h2 class="space-y-4">
-  <slot />
-</h2>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

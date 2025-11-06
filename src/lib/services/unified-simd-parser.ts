@@ -4,6 +4,7 @@
 import { SIMDJSONParser as WASMParser, LegalDocumentWASM, benchmarkSIMDParsing } from '../../sveltekit-frontend/src/wasm/simd-json-parser';
 import { SIMDJSONParserV2, SIMDBackend } from './simd-json-parser-v2';
 import { simdJSONParser } from './simd-json-parser';
+import { parseJSONHTTP } from '../../sveltekit-frontend/src/lib/services/simd-json-parser-http';
 import { UltraJSONParser, ultraJSONParser, fastParse as ultraFastParse } from '../../sveltekit-frontend/src/lib/wasm/ultra-json-parser';
 import { redisOptimized } from '../../sveltekit-frontend/src/lib/middleware/redis-orchestrator-middleware';
 
@@ -13,7 +14,8 @@ export enum ParseMode {
   TEST_RESULTS = 'test_results',
   PLAYWRIGHT_DATA = 'playwright_data',
   ULTRA_PERFORMANCE = 'ultra_performance',
-  WEBGPU_ACCELERATED = 'webgpu_accelerated'
+  WEBGPU_ACCELERATED = 'webgpu_accelerated',
+  HTTP_ACCELERATED = 'http_accelerated'
 }
 
 export interface UnifiedParseResult {
@@ -68,6 +70,10 @@ export class UnifiedSIMDParser {
         case ParseMode.WEBGPU_ACCELERATED:
           result = await this.parseWebGPUAccelerated(jsonString);
           break;
+        
+        case ParseMode.HTTP_ACCELERATED:
+          result = await this.parseHTTPAccelerated(jsonString);
+          break;
           
         default:
           result = await this.parseGeneric(jsonString);
@@ -79,6 +85,20 @@ export class UnifiedSIMDParser {
     } catch (error) {
       throw new Error(`Unified SIMD Parse Error: ${error.message}`);
     }
+  }
+
+  /**
+   * Parse JSON via the external HTTPS accelerator
+   */
+  private async parseHTTPAccelerated(jsonString: string): Promise<UnifiedParseResult> {
+    const data = await parseJSONHTTP(jsonString);
+
+    return {
+      data,
+      backend_used: 'HTTPS_ACCELERATOR',
+      parse_time_ms: 0,
+      memory_bank: 'REMOTE_HTTPS_ACCEL'
+    };
   }
 
   /**

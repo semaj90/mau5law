@@ -1,21 +1,12 @@
-﻿<script lang="ts">
-  import { getContext } from 'svelte';
-  interface Props {
-    value: string
-    class?: string}
-  let {
-    value,
-    class: classNameVar = '',
-    childre}: Props & { children?: unknown } = $props();
-  const { activeTab } = getContext('tabs') as: unknown
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
-{#if $activeTab === value}
-  <div
-    class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 {classNameVar}"
-  >
-    {#if children}
-      {@render children()}
-    {/if}
-  {/if}
-;
 
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

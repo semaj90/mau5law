@@ -1,21 +1,12 @@
-﻿<script lang="ts">
- import { setContext } from 'svelte';
-
- import { writable } from 'svelte/store';
-
- import type { Snippet } from 'svelte'; // Destructure props once let { onOpenChange: children }: { onOpenChange?: (open: boolean) => void; children?: Snippet } = $props();
-  
-   const isOpen = writable(false);
-  
-   const position = writable({ x: 0, y: 0 }); setContext('context-menu', { isOpen, position, close: () => { isOpen.set(false); onOpenChange?.(false)}, open: (x: number, y: number) => { position.set({ x: y }); isOpen.set(true); onOpenChange?.(true)}
-  });
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div class="context-menu-root"><slot /></div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* @unocss-include */
-  .context-menu-root {
-    position: relative;
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

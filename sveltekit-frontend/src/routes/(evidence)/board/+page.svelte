@@ -1,5 +1,5 @@
-﻿<script lang="ts">
-  // Svelte, 5 runes are auto-imported
+<script lang="ts">
+// Svelte, 5 runes are auto-imported
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Card from '$lib/components/ui/enhanced-bits.svelte';
@@ -13,59 +13,13 @@
   });
 </script>
 
-<svelte:head>
-  <title>Evidence Board - Legal AI Assistant</title>
-  <meta name="description" content="AI-powered evidence management with Ollama integration" />
-</svelte:head>
-
-<div class="evidence-page-container">
-  {#if showWelcome && pageLoaded}
-    <div class="welcome-banner animate-fade-in">
-      <Card variant="evidence" hoverable fullWidth class="nes-container">
-        <div class="nier-bits-yorha-panel-header">
-          <h3 class="nier-bits-nes-text">🎯 Evidence Board Ready</h3>
-          <p class="nier-bits-nes-text">AI-powered evidence management with RTX 3060 Ti acceleration</p>
-        </div>
-
-        <div class="nier-bits-yorha-panel-content">
-          <div class="welcome-stats">
-            <div class="stat">
-              <span class="stat-label">GPU</span>
-              <span class="stat-value">Active</span>
-            </div>
-            <div class="stat">
-              <span class="stat-label">WebGPU</span>
-              <span class="stat-value">Ready</span>
-            </div>
-            <div class="stat">
-              <span class="stat-label">pgvector</span>
-              <span class="stat-value">Connected</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="nier-bits-yorha-panel-content">
-          <Button class="nes-btn" variant="ghost" size="sm" onclick={() => (showWelcome = false)}>
-            Get Started â†’
-          </Button>
-        </div>
-      </Card>
-    </div>
-  {/if}
-
-  {#if pageLoaded}
-    <EnhancedEvidenceBoard />
-  {:else}
-    <div class="loading-screen">
-      <div class="loading-spinner"></div>
-      <p>Initializing Legal AI Platform...</p>
-      <small>Loading GPU acceleration, vector search, and fabric.js canvas...</small>
-    </div>
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .evidence-page-container {
+.evidence-page-container {
     min-height: 100vh;
     position: relative;
   }

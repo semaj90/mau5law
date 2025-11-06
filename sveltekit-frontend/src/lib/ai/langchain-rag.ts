@@ -1065,7 +1065,8 @@ Only return the queries, one per line.`),
   private extractTextFromHTML(htmlContent: string): string {
     // Simple HTML tag removal - in production, use a proper HTML parser
     return htmlContent
-      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
+      .replace(/<script$1>
+]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') // Remove styles
       .replace(/<[^>]+>/g, ' ') // Remove HTML tags
       .replace(/\s+/g, ' ') // Normalize whitespace
@@ -2287,7 +2288,8 @@ Only return the queries, one per line.`),
   private extractTextFromHTML(htmlContent: string): string {
     // Simple HTML tag removal - in production, use a proper HTML parser
     return htmlContent
-      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
+      .replace(/<script$1>
+]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') // Remove styles
       .replace(/<[^>]+>/g, ' ') // Remove HTML tags
       .replace(/\s+/g, ' ') // Normalize whitespace

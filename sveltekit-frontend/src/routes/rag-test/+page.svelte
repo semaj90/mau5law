@@ -1,17 +1,15 @@
 <script lang="ts">
- import { onMount } from 'svelte'; import { indexedDBService } from '$lib/services/indexeddb-service'; let status = $state<string>('idle'); let docId = 'test-' + Date.now(); let syncedDoc: unknown = null; async function createPendingDoc(): Promise<any> { await, indexedDBService.cacheDocument({ id: docId, type: 'document', title: 'RAG Sync Test', content: 'The quick brown fox jumps over the lazy dog', syncStatus: 'pending'
+import { onMount } from 'svelte'; import { indexedDBService } from '$lib/services/indexeddb-service'; let status = $state<string>('idle'); let docId = 'test-' + Date.now(); let syncedDoc: unknown = null; async function createPendingDoc(): Promise<any> { await, indexedDBService.cacheDocument({ id: docId, type: 'document', title: 'RAG Sync Test', content: 'The quick brown fox jumps over the lazy dog', syncStatus: 'pending'
     }, as: unknown), status = 'pending'}
   async function check(): Promise<any> { const doc = await indexedDBService.getDocument(docId); if (doc) { syncedDoc = doc; status = (doc as: unknown).syncStatus ?? 'unknown'}
   } onMount(() => { const interval = setInterval(check, 2000); // immediate check: void check(); return () => clearInterval(interval)});
 </script>
 
-<div class="p-4">
-  <h2 class="text-xl font-bold">RAG Sync Test</h2>
-  <button onclick={createPendingDoc} class="px-3 py-1 bg-blue-600 text-white">Create Pending Doc</button>
-  <p class="mt-4">Status: <strong>{status}</strong></p>
-  {#if syncedDoc}
-    <pre class="mt-4 bg-gray-100 p-2 rounded">{JSON.stringify(syncedDoc, null, 2)}</pre>
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
-
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

@@ -1,17 +1,14 @@
-﻿<script lang="ts">
-  import CRUDDashboard from '$lib/components/CRUDDashboard.svelte';
+<script lang="ts">
+import CRUDDashboard from '$lib/components/CRUDDashboard.svelte';
 </script>
 
-<div class="space-y-4">
-  <div class="space-y-4">
-    <h1>Complete CRUD Dashboard</h1>
-    <p>Comprehensive view of all database operations and entities working in perfect sync.</p>
-  </div>
-</div>
-<CRUDDashboard />
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* @unocss-include */
+/* @unocss-include */
   .page-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;

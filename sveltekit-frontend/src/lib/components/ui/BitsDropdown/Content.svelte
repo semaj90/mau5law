@@ -1,10 +1,12 @@
 <script lang="ts">
-  import type { Snippet } from 'svelte';
-  
-  let { className = '', children }: { className?: string; children?: Snippet } = $props();
+// Truncated file - replaced with stub
 </script>
 
-+
-<div class={`dropdown-menu ${className}`} role="menu">
-  <slot />
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

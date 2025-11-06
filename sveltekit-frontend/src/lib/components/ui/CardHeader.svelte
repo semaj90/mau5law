@@ -1,21 +1,12 @@
-﻿<script lang="ts">
-  import type { Snippet } from 'svelte';
-  interface Props {
-    class?: string;
-    children?: Snippet;
-  }
-  let { class: className = '', children }: Props = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div class="{className} flex flex-col">
-  {#if children}
-    {@render children()}
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .card-header {
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

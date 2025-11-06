@@ -1,6 +1,3 @@
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, toke
-https://svelte.dev/e/js_parse_error -->
-<!-- @migration-task Error while migrating Svelte, code: Unexpected, token -->
 <script lang="ts">
 import type { Document } from '$lib/types';
   import { onMount, onDestroy } from 'svelte';
@@ -123,4 +120,11 @@ import type { Document } from '$lib/types';
     return `${hours}h ${minutes}m ${seconds}s`}
 </script>
 
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

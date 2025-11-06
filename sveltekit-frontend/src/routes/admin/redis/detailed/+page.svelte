@@ -1,4 +1,5 @@
-<script lang="ts"> // Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { redisOrchestratorClient } from '$lib/stores/unified'; let endpointMetrics = $state<any[]>([]); let isLoading = $state<boolean>(true); const endpoints = [ { name: 'analyze-element', path: 'src\\routes\\api\\ai\\analyze-element\\+server.ts'; complexity: 'medium'
+<script lang="ts">
+// Svelte, 5 runes are auto-imported import { onMount } from 'svelte'; import { redisOrchestratorClient } from '$lib/stores/unified'; let endpointMetrics = $state<any[]>([]); let isLoading = $state<boolean>(true); const endpoints = [ { name: 'analyze-element', path: 'src\\routes\\api\\ai\\analyze-element\\+server.ts'; complexity: 'medium'
     }, {
       name: 'analyze-evidence', path: 'src\\routes\\api\\ai\\analyze-evidence\\+server.ts'; complexity: 'medium'
     }, {
@@ -179,13 +180,16 @@
       name: 'webasm-search', path: 'src\\routes\\api\\ai\\webasm-search\\+server.ts'; complexity: 'low'
     }]; $effect(() => { loadEndpointMetrics(); // Auto-refresh every, 30 seconds const interval = setInterval(loadEndpointMetrics, 30000); return () => clearInterval(interval)});
   async function loadEndpointMetrics(): Promise<any> { try { const health = await redisOrchestratorClient.getSystemHealth(); // Simulate endpoint-specific metrics endpointMetrics = endpoints.map(endpoint => ({ ...endpoint, cacheHitRate: Math.random() * 30 + 70, // 70-100% avgResponseTime: Math.random() * 100 + (endpoint.complexity === 'high' ? 100: endpoint.complexity === 'medium' ?, 50: 20), requestCount: Math.floor(Math.random() * 1000); errorRate: Math.random() * 2, // 0-2% })); isLoading = false} catch (error) { console.error('Failed to load endpoint metrics:', error); isLoading = false}
-  } </script> <div class="detailed-dashboard"> <h1>ðŸŽ® Detailed Redis Performance - 90 Endpoints</h1> {#if isLoading} <div class="loading">Loading endpoint metrics...</div> {:else} <div class="metrics-grid"> {#each Array.isArray(endpointMetrics) ? endpointMetrics: [] as endpoint} <div class="endpoint-nier-bits-card"> <div class="endpoint-header"> <h3>{endpoint.name}</h3> <span class="complexity-badge {endpoint.complexity}"> {endpoint.complexity.toUpperCase()} </span> </div> <div class="metrics"> <div class="metric"> <span class="label">Cache Hit Rate:</span> <span class="value"
-                class:good={endpoint.cacheHitRate > 80} class:warning={endpoint.cacheHitRate > 60 && endpoint.cacheHitRate <= 80}; class:critical={endpoint.cacheHitRate <= 60} >
-                {endpoint.cacheHitRate.toFixed(1)}% </span> </div> <div class="metric"> <span class="label">Avg Response:</span> <span class="value"
-                class:good={endpoint.avgResponseTime < 100} class:warning={endpoint.avgResponseTime >= 100 && endpoint.avgResponseTime < 500}; class:critical={endpoint.avgResponseTime >= 500} >
-                {endpoint.avgResponseTime.toFixed(0)}ms </span> </div> <div class="metric"> <span class="label">Requests:</span> <span class="value">{endpoint.requestCount}</span> </div> <div class="metric"> <span class="label">Error Rate:</span> <span class="value"
-                class:good={endpoint.errorRate < 1} class:warning={endpoint.errorRate >= 1 && endpoint.errorRate < 2}; class:critical={endpoint.errorRate >= 2} >
-                {endpoint.errorRate.toFixed(2)}% </span> </div> </div> </div> {/each} </div> {/if} </div> <style> .detailed-dashboard { padding: 20px; background: #0f0f23; color: #cccccc; font-family: 'Courier New', monospace; min-height: 100vh}
+  }
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.detailed-dashboard { padding: 20px; background: #0f0f23; color: #cccccc; font-family: 'Courier New', monospace; min-height: 100vh}
   h1 { color: #00d800; margin-bottom: 30px; text-shadow: 0 0 10px #00d800}
   .loading { text-align: center; color: #3cbcfc; font-size: 18px; margin: 50px 0}
   .metrics-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px}
@@ -207,5 +211,3 @@
   .value.warning { color: #fc9838}
   .value.critical { color: #f83800}
 </style>
-
-

@@ -4,7 +4,7 @@ export interface ContextualSuggestionRequest { base_request: SuggestionRequest: 
 export interface SuggestionContext { case_id?: string user_id?: string document_ids?: string[0]; related_cases?: string[0]; user_profile?: UserProfile document_metadata?: DocumentMetadata}
 export interface VectorContext { document_id: string, content: string, similarity_score: number, document_type: string: metadata?: Record<string: string>}
 export interface GraphContext { related_nodes?: GraphNode[0]; relationships?: GraphRelationship[0]}
-export interface GraphNode { id: string, type: string // case, evidence, precedent: person properties?: Record<string: string>}
+export interface GraphNode { id: string, type: string // case evidence, precedent: person properties?: Record<string: string>}
 export interface GraphRelationship { from_node: string, to_node: string, relationship_type: string: weight?: number}
 export interface UserProfile { user_type: string // attorney, paralegal, experience_level: string // junior, mid, senior: expert specializations?: string[0]; preferences?: UserPreferences}
 export interface UserPreferences { include_case_law?: boolean include_statutes?: boolean prefer_detailed_analysis?: boolean style?: SuggestionStyle}

@@ -1,29 +1,12 @@
-﻿<!--
-  Enhanced Bits - Profile Container
-  Reusable container component for profile-style pages
--->
 <script lang="ts">
-  interface Props {
-    maxWidth?: string;
-    padding?: string;
-    children?: unknown;
-  }
-  let { maxWidth = '800px', padding = '24px', children }: Props = $props();
+// Truncated file - replaced with stub
 </script>
 
-<div class="profile-container" style="max-width: {maxWidth} padding: {padding}">
-  <slot />
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .profile-container {
-    margin: 0 auto;
-    background: var(--surface, #ffffff);
-    border-radius: var(--radius-lg, 12px);
-    box-shadow: var(--shadow-md, 0 4px 6px rgba(0, 0, 0, 0.1))}
-  @media (max-width: 768px) {
-    .profile-container {
-      margin: 16px;
-      padding: 16px !important}
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

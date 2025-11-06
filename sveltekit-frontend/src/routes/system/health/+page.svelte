@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import { writable, get } from 'svelte/store';
-	// prefer the module entry (no .js) and avoid importing TS types from a .js file
-	import { coordinatorStatus, masterServiceCoordinator } from '$lib/services/master-service-coordinator';
+	// Assuming master-service-coordinator exports a singleton instance named 'masterServiceCoordinator'
+	// and that instance has a 'status' store and a 'services' array.
+	import { MasterServiceCoordinator } from '$lib/services/master-service-coordinator'; // Changed to named import
+
+	// Use the status store from the instance (guard at runtime in case the module exports a class/type)
+	// If MasterServiceCoordinator.status isn't present, fall back to a safe writable store so `get(...)` won't fail.
+	const coordinatorStatusStore = ((MasterServiceCoordinator as any)?.status) ?? writable(null);
+
 	// local lightweight ServiceStatus shape (keeps TS happy without importing types from a .js module)
 	type ServiceStatus = {
 		status?: string
@@ -11,7 +17,37 @@
 		errorCount?: number
 		uptime?: number
 		[key: string]: unknown};
+
+	interface ServiceMetadata { // Define an interface for service metadata
+		id: string;
+		displayName: string;
+		port: number;
+		tier: number;
+		protocol: string;
+		critical: boolean;
+		cudaAccelerated: boolean;
+	}
+
+	interface SystemStatusSummary {
+		totalServices: number;
+		healthyServices: number;
+		criticalErrors: number;
+	}
+
+	interface SystemStatusMetrics {
+		successRate: number;
+		avgResponseTime: number;
+	}
+
+	interface SystemStatusSnapshot {
+		services: Map<string, ServiceStatus>;
+		errors: Array<{ description: string }>;
+		summary: SystemStatusSummary;
+		metrics: SystemStatusMetrics;
+	}
+
 	interface ServiceHealth {
+		id: string;
 		name: string
 		url: string
 		status: 'online' | 'offline' | 'degraded';
@@ -40,15 +76,16 @@
 	const healthData = writable<HealthData | null>(null);
 	const loading = writable(true);
 	const error = writable<string | null>(null);
-	let refreshInterval: ReturnType<typeof setInterval> | null = null
-	let autoRefresh = true
-	let refreshRate = 5000; // ms
+	let refreshInterval: ReturnType<typeof setInterval> | null = null;
+	let autoRefresh = true;
+ 	let refreshRate = 5000; // ms
 	let selectedTier: 'all' | string = 'all';
-	let showOnlyIssues = $state<boolean>(false);
+	let showOnlyIssues = false;
 	// Real-time snapshot holder for coordinator data (populated during fetch)
-	let systemStatusSnapshot: unknown = { services: new Map<string any>(),
+	let systemStatusSnapshot: SystemStatusSnapshot = {
+		services: new Map<string, ServiceStatus>(),
 		errors: [],
-		summary: { totalServices: 0, healthyServices: 0 },
+		summary: { totalServices: 0, healthyServices: 0, criticalErrors: 0 },
 		metrics: { successRate: 1, avgResponseTime: 0 }
 	};
 	const fetchHealth = async () => {
@@ -64,9 +101,10 @@
 			if (legacyResponse?.ok) legacyData = await legacyResponse.json();
 			if (coordinatorResponse?.ok) coordinatorData = await coordinatorResponse.json();
 			// snapshot latest coordinator store (if available) for service maps/metrics
-			const coordFromStore = get(coordinatorStatus);
+			const coordFromStore = get(coordinatorStatusStore);
 			if (coordFromStore) {
-				systemStatusSnapshot = coordFromStore}
+				systemStatusSnapshot = coordFromStore as SystemStatusSnapshot;
+			}
 
 			// Merge data from both sources
 			const mergedData = mergeHealthData(legacyData, coordinatorData);
@@ -79,11 +117,11 @@
 	const mergeHealthData = (legacy: unknown, coordinator: unknown): HealthData => {
 		const now = Date.now();
 		// Use coordinator data if available, fallback to legacy
-		if ((coordinator as: unknown)?.success && (coordinator as: unknown).data) {
-			const data = (coordinator as: unknown).data
+		if ((coordinator as any)?.success && (coordinator as any).data) {
+			const data = (coordinator as any).data
 			// use the snapshot from the coordinator store (if present) for per-service status
-			const servicesMap = systemStatusSnapshot?.services instanceof Map ? systemStatusSnapshot.services : new Map<string ServiceStatus>();
-			const errors = systemStatusSnapshot?.errors || [];
+			const servicesMap = systemStatusSnapshot.services;
+			const errors = systemStatusSnapshot.errors;
 			// cast entries once so TypeScript understands tuple shape in subsequent filters/maps
 			const serviceEntries = Array.from(servicesMap.entries()) as [string, ServiceStatus][];
 			return {
@@ -99,13 +137,13 @@
 					response_time: data.performance?.avgResponseTime || null
 				},
 				services: mapServicesToHealthFormat(servicesMap),
-				summary: { critical_services: errors.map((e: unknown) => e.description || String(e)),
+				summary: { critical_services: errors.map((e: { description: string }) => e.description || 'Unknown Error'),
 					degraded_services: serviceEntries
 						.filter(([, status]) => status?.status === 'degraded')
-						.map(([id]) => masterServiceCoordinator.services.find(s => s.id === id)?.displayName || id),
+						.map(([id]) => (findServiceById(id)?.displayName ?? id)),
 					offline_services: serviceEntries
 						.filter(([, status]) => status?.status === 'failed' || status?.status === 'unknown')
-						.map(([id]) => masterServiceCoordinator.services.find(s => s.id === id)?.displayName || id)
+						.map(([id]) => (findServiceById(id)?.displayName ?? id))
 				},
 				recommendations: generateRecommendations()
 			}
@@ -133,25 +171,26 @@
 	}
 	const mapHealthStatus = (health: string): 'healthy' | 'degraded' | 'critical' => {
 		switch (health) {
-			case, 'excellent':
-			case, 'good':
+			case 'excellent':
+			case 'good':
 				return 'healthy';
-			case, 'degraded':
+			case 'degraded':
 				return 'degraded';
-			case, 'critical':
-			case, 'offline':
+			case 'critical':
+			case 'offline':
 			default: return 'critical'}
 	}
-	const mapServicesToHealthFormat = (services: Map<string ServiceStatus>): ServiceHealth[] => {
+	const mapServicesToHealthFormat = (services: Map<string, ServiceStatus>): ServiceHealth[] => {
 		const entries = Array.from(services.entries()) as [string, ServiceStatus][];
 		return entries.map(([id, status]) => {
-			const service = masterServiceCoordinator.services.find(s => s.id === id);
+			const service = findServiceById(id);
 			return {
+				id,
 				name: service?.displayName || id,
 				url: service ? `http://localhost:${service.port}` : '',
 				status: mapServiceStatus(status?.status || 'unknown'),
 				// coerce: null -> undefined so the type matches ServiceHealth.responseTime?: number
-			, responseTime: typeof status?.responseTime === 'number' ? status?.responseTime : undefined,
+				responseTime: typeof status?.responseTime === 'number' ? status?.responseTime : undefined,
 				lastCheck: status?.lastCheck || Date.now(),
 				details: { tier: service?.tier,
 					protocol: service?.protocol,
@@ -164,47 +203,47 @@
 		})}
 	const mapServiceStatus = (status: string): 'online' | 'offline' | 'degraded' => {
 		switch (status) {
-			case, 'healthy':
+			case 'healthy':
 				return 'online';
-			case, 'degraded':
+			case 'degraded':
 				return 'degraded';
-			case, 'failed':
-			case, 'unknown':
+			case 'failed':
+			case 'unknown':
 			default: return 'offline'}
 	}
 	const generateRecommendations = (): string[] => {
 		const recommendations: string[] = [];
-		const snap = systemStatusSnapshot || {};
-		if (snap?.summary?.criticalErrors > 0 || (snap.errors && snap.errors.length > 0)) {
+		const snap = systemStatusSnapshot;
+		if (snap.summary.criticalErrors > 0 || (snap.errors && snap.errors.length > 0)) {
 			recommendations.push('npm run coordinator:start - Start Master Service Coordinator')}
-		if ((snap?.metrics?.successRate ?? 1) < 0.8) {
+		if ((snap.metrics.successRate ?? 1) < 0.8) {
 			recommendations.push('npm run coordinator:restart-failed - Restart failed services')}
-		if ((snap?.metrics?.avgResponseTime ?? 0) > 5000) {
+		if ((snap.metrics.avgResponseTime ?? 0) > 5000) {
 			recommendations.push('npm run coordinator:optimize - Optimize service performance')}
 		return recommendations}
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case, 'online':
-			case, 'healthy':
+			case 'online':
+			case 'healthy':
 				return 'text-green-600 bg-green-50 border-green-200';
-			case, 'degraded':
+			case 'degraded':
 				return 'text-yellow-600 bg-yellow-50 border-yellow-200';
-			case, 'offline':
-			case, 'critical':
+			case 'offline':
+			case 'critical':
 				return 'text-red-600 bg-red-50 border-red-200';
 			default: return 'text-gray-600 bg-gray-50 border-gray-200'}
 	}
 	const getStatusIcon = (status: string) => {
 		switch (status) {
-			case, 'online':
-			case, 'healthy':
-				return 'âœ…';
-			case, 'degraded':
-				return 'âš ï¸';
-			case, 'offline':
-			case, 'critical':
-				return 'âŒ';
-			default: return 'ðŸ”'}
+			case 'online':
+			case 'healthy':
+				return '✅';
+			case 'degraded':
+				return '⚠️';
+			case 'offline':
+			case 'critical':
+				return '❌';
+			default: return '🔧'}
 	}
 	const formatTimestamp = (timestamp: number) => {
 		return new Date(timestamp).toLocaleString()}
@@ -230,34 +269,8 @@
 		} catch (error) {
 			console.error(`Failed to restart ${serviceId}:`, error)}
 	}
-  async function startAllServices(): Promise<any> {
-		try {
-			const response = await fetch('/api/v1/coordinator', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'start_all' })
-			});
-			if (response.ok) {
-				console.log('Starting all services...');
-				await fetchHealth(); // Refresh data
-			}
-		} catch (error) {
-			console.error('Failed to start all services:', error)}
-	}
-  async function forceHealthCheck(): Promise<any> {
-		try {
-			const response = await fetch('/api/v1/coordinator', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ action: 'force_health_check' })
-			});
-			if (response.ok) {
-				console.log('Forced health check initiated');
-				await fetchHealth(); // Refresh data
-			}
-		} catch (error) {
-			console.error('Failed to force health check:', error)}
-	}
+  // Removed unused function startAllServices
+  // Removed unused function forceHealthCheck
 
 	// Toggle auto-refresh
 	function toggleAutoRefresh() {
@@ -268,23 +281,56 @@
 			refreshInterval = null}
 	}
 
-	// compute displayed services array from the healthData store and local filters
+	// helper: safely find service metadata from multiple possible sources
+	const findServiceById = (id: string): ServiceMetadata | undefined => {
+		// try instance export shape (some modules export an instance with .services)
+		const mscAny = (MasterServiceCoordinator as any);
+		if (mscAny && Array.isArray(mscAny.services)) {
+			return (mscAny.services as ServiceMetadata[]).find((s) => s.id === id);
+		}
+
+		// try coordinator status store snapshot if it contains metadata (common shape: { servicesMetadata: [...] } or similar)
+		try {
+			const coordSnapshot = get(coordinatorStatusStore) as any;
+			if (coordSnapshot) {
+				if (Array.isArray(coordSnapshot.servicesMetadata)) {
+					return (coordSnapshot.servicesMetadata as ServiceMetadata[]).find((s) => s.id === id);
+				}
+				// some coordinators expose a map keyed by id
+				if (coordSnapshot.serviceCatalog && typeof coordSnapshot.serviceCatalog === 'object') {
+					return coordSnapshot[id] as ServiceMetadata | undefined;
+				}
+			}
+		} catch {
+			// ignore snapshot extraction errors and fallthrough to undefined
+		}
+
+		// fallback: no metadata available
+		return undefined;
+	};
+
+	// Compute displayed services reactively (works with template bindings)
 	let displayServicesArray: ServiceHealth[] = [];
+
 	$: {
 		const hd = get(healthData);
 		if (!hd) {
-			displayServicesArray = []} else {
+			displayServicesArray = [];
+		} else {
 			let services = hd.services ?? [];
 			if (selectedTier !== 'all') {
 				const tierNum = Number(selectedTier);
-				services = services.filter(s => (s.details as: unknown)?.tier === tierNum)}
+				services = services.filter((s: ServiceHealth) => ((s.details as any)?.tier) === tierNum);
+			}
 			if (showOnlyIssues) {
-				services = services.filter(s => s.status !== 'online')}
-			displayServicesArray = services}
+				services = services.filter((s: ServiceHealth) => s.status !== 'online');
+			}
+			displayServicesArray = services;
+		}
 	}
 
 	onMount(() => {
-		// initial fetch and optional auto-refresh: void fetchHealth();
+		void fetchHealth();
 		if (autoRefresh) {
 			refreshInterval = setInterval(fetchHealth, refreshRate)}
 	});
@@ -296,220 +342,109 @@
 	});
 </script>
 
-<svelte:head>
-  <title>System Health Dashboard - Legal AI Platform</title>
-</svelte:head>
-<div class="container mx-auto p-6">
-  <div class="flex justify-between items-center">
-    <div>
-      <h1 class="text-3xl font-bold">System Health Dashboard</h1>
-      <p class="text-gray-600">Legal AI Platform - CUDA GPU Integration Status</p>
-    </div>
-    <button
-      onclick={fetchHealth}
-      class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-      disabled={$loading}
-    >
-      {#if $loading}
-        <div class="animate-spin rounded-full h-4 w-4 border-b-2"></div>
-      {:else}
-        ðŸ”„
-      {/if}
-      Refresh
-    </button>
-  </div>
-  {#if $error}
-    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-      <div class="flex items-center">
-        <span class="text-xl">âŒ</span>
-        <div>
-          <h3 class="font-semibold">Health Check Failed</h3>
-          <p class="text-sm">{$error}</p>
-        </div>
-      </div>
-    </div>
-  {/if}
-  {#if $healthData}
-    <!-- Overall, Status -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class={`p-6, rounded-lg, border-2 ${getStatusColor($healthData.overall_status)}`}>
-        <div class="flex items-center">
-          <span class="text-3xl">{getStatusIcon($healthData.overall_status)}</span>
-          <div>
-            <h3 class="text-lg font-semibold">{$healthData.overall_status}</h3>
-            <p class="text-sm">Overall System Status</p>
-          </div>
-        </div>
-      </div>
-      <div class="p-6 rounded-lg border-2 border-blue-200">
-        <div class="flex items-center">
-          <span class="text-3xl">ðŸ“Š</span>
-          <div>
-            <h3 class="text-lg font-semibold">{$healthData.health_percentage}%</h3>
-            <p class="text-sm">
-              Services Online ({$healthData.services_online}/{$healthData.services_total})
-            </p>
-          </div>
-        </div>
-      </div>
-      <div
-        class={`p-6 rounded-lg border-2 ${$healthData.cuda.gpu_ready ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}
-      >
-        <div class="flex items-center">
-          <span class="text-3xl">ðŸŽ¯</span>
-          <div>
-            <h3 class={`text-lg, font-semibold ${$healthData.cuda.gpu_ready ? 'text-green-700' : 'text-red-700'}`}>
-              {$healthData.cuda.gpu_ready ? 'GPU Ready' : 'GPU Not Available'}
-            </h3>
-            <p class={`text-sm ${$healthData.cuda.gpu_ready ? 'text-green-600' : 'text-red-600'}`}>
-              CUDA Worker Status
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- CUDA, Service, Details -->
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4 flex items-center">
-        <span>âš¡</span> CUDA GPU Service
-      </h2>
-      <div class="bg-white rounded-lg border shadow-sm">
-        <div class="grid grid-cols-2 md:grid-cols-4">
-          <div class="text-center">
-            <div class={`text-2xl, mb-2 ${$healthData.cuda.service_available ? 'text-green-600' : 'text-red-600'}`}>
-              {$healthData.cuda.service_available ? 'âœ…' : 'âŒ'}
-            </div>
-            <h4 class="font-semibold">Service</h4>
-            <p class="text-sm">{$healthData.cuda.service_available ? 'Running' : 'Offline'}</p>
-          </div>
-          <div class="text-center">
-            <div class={`text-2xl, mb-2 ${$healthData.cuda.worker_available ? 'text-green-600' : 'text-red-600'}`}>
-              {$healthData.cuda.worker_available ? 'ðŸ”§' : 'âŒ'}
-            </div>
-            <h4 class="font-semibold">Worker</h4>
-            <p class="text-sm">{$healthData.cuda.worker_available ? 'Available' : 'Not Built'}</p>
-          </div>
-          <div class="text-center">
-            <div class={`text-2xl, mb-2 ${$healthData.cuda.gpu_ready ? 'text-green-600' : 'text-red-600'}`}>
-              {$healthData.cuda.gpu_ready ? 'ðŸš€' : 'âŒ'}
-            </div>
-            <h4 class="font-semibold">GPU Ready</h4>
-            <p class="text-sm">{$healthData.cuda.gpu_ready ? 'Yes' : 'No'}</p>
-          </div>
-          <div class="text-center">
-            <div class="text-2xl mb-2">â±ï¸</div>
-            <h4 class="font-semibold">Response Time</h4>
-            <p class="text-sm">{formatResponseTime($healthData.cuda.response_time)}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Services, Grid -->
-    <div class="mb-8">
-      <h2 class="text-2xl font-semibold mb-4 flex items-center">
-        <span>ðŸ—ï¸</span> All Services
-      </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {#each Array.isArray(displayServicesArray) ? displayServicesArray : [] as service}
-          <div class={`p-4, rounded-lg, border-2 ${getStatusColor(service.status)}`}>
-            <div class="flex items-center justify-between">
-              <h3 class="font-semibold">{service.name.replace('-', ' ')}</h3>
-              <span class="text-xl">{getStatusIcon(service.status)}</span>
-            </div>
-            <div class="space-y-1">
-              <p><span class="font-medium">Status:</span> {service.status}</p>
-              {#if service.responseTime}
-                <p><span class="font-medium">Response:</span> {formatResponseTime(service.responseTime)}</p>
-              {/if}
-              <p class="text-xs">Last check: {formatTimestamp(service.lastCheck)}</p>
-              {#if service.details && typeof service.details === 'object'}
-                <details class="mt-2">
-                  <summary class="cursor-pointer text-xs">Details</summary>
-                  <pre class="text-xs mt-1 opacity-60">{JSON.stringify(service.details, null, 2)}</pre>
-                </details>
-              {/if}
-            </div>
-          </div>
-        {/each}
-      </div>
-    </div>
-    <!-- Recommendations -->
-    {#if $healthData.recommendations.length > 0}
-      <div class="mb-8">
-        <h2 class="text-2xl font-semibold mb-4 flex items-center">
-          <span>ðŸ’¡</span> Recommendations
-        </h2>
-        <div class="bg-blue-50 border border-blue-200 rounded-lg">
-          <ul class="space-y-2">
-            {#each Array.isArray($healthData.recommendations) ? $healthData.recommendations : [] as recommendation}
-              <li class="flex items-start">
-                <span class="text-blue-600">â€¢</span>
-                <code class="text-sm bg-blue-100 px-2 py-1">{recommendation}</code>
-              </li>
-            {/each}
-          </ul>
-        </div>
-      </div>
+<main class="container mx-auto p-4">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold">System Health Dashboard</h1>
+    {#if $healthData}
+      <p class="text-gray-600">Last updated: {formatTimestamp($healthData.timestamp)}</p>
     {/if}
-    <!-- Summary -->
-    <div class="bg-gray-50 rounded-lg">
-      <h3 class="font-semibold">Summary</h3>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {#if $healthData.summary.critical_services.length > 0}
-          <div>
-            <h4 class="font-medium text-red-600">Critical Services Down:</h4>
-            <ul class="space-y-1">
-              {#each Array.isArray($healthData.summary.critical_services) ? $healthData.summary.critical_services : [] as service}
-                <li class="text-red-700">â€¢ {service}</li>
-              {/each}
-            </ul>
-          </div>
-        {/if}
-        {#if $healthData.summary.degraded_services.length > 0}
-          <div>
-            <h4 class="font-medium text-yellow-600">Degraded Services:</h4>
-            <ul class="space-y-1">
-              {#each Array.isArray($healthData.summary.degraded_services) ? $healthData.summary.degraded_services : [] as service}
-                <li class="text-yellow-700">â€¢ {service}</li>
-              {/each}
-            </ul>
-          </div>
-        {/if}
-        {#if $healthData.summary.offline_services.length > 0}
-          <div>
-            <h4 class="font-medium text-gray-600">Offline Services:</h4>
-            <ul class="space-y-1">
-              {#each Array.isArray($healthData.summary.offline_services) ? $healthData.summary.offline_services : [] as service}
-                <li class="text-gray-700">â€¢ {service}</li>
-              {/each}
-            </ul>
-          </div>
-        {/if}
-      </div>
-      <p class="text-xs text-gray-500">
-        Last updated: {formatTimestamp($healthData?.timestamp ?? Date.now())} | Auto-refresh: {Math.round(
-          refreshRate / 1000
-        )}s
-      </p>
+  </header>
+
+  {#if $loading && !$healthData}
+    <p>Loading health status...</p>
+  {:else if $error}
+    <div class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
+      <span class="font-medium">Error!</span> {$error}
     </div>
-  {:else if $loading}
-    <div class="flex items-center justify-center">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2"></div>
-      <span class="ml-2">Loading health data...</span>
+  {:else if $healthData}
+    <!-- Summary Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="p-4 rounded-lg shadow {getStatusColor($healthData.overall_status)}">
+        <h2 class="font-bold">Overall Status</h2>
+        <p class="text-2xl capitalize">{$healthData.overall_status}</p>
+      </div>
+      <div class="p-4 bg-white rounded-lg shadow">
+        <h2 class="font-bold">Health</h2>
+        <p class="text-2xl">{$healthData.health_percentage}%</p>
+      </div>
+      <div class="p-4 bg-white rounded-lg shadow">
+        <h2 class="font-bold">Services Online</h2>
+        <p class="text-2xl">{$healthData.services_online} / {$healthData.services_total}</p>
+      </div>
+      <div class="p-4 bg-white rounded-lg shadow">
+        <h2 class="font-bold">CUDA Status</h2>
+        <p class="text-2xl">{$healthData.cuda.gpu_ready ? 'Ready' : 'Unavailable'}</p>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="flex flex-wrap items-center gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
+      <button onclick={fetchHealth} class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 disabled:bg-gray-400" disabled={$loading}>
+        {$loading ? 'Refreshing...' : 'Refresh Now'}
+      </button>
+      <button onclick={toggleAutoRefresh} class="px-4 py-2 rounded {autoRefresh ? 'bg-green-600 text-white' : 'bg-gray-200'}">
+        Auto-Refresh: {autoRefresh ? 'On' : 'Off'}
+      </button>
+      <div class="flex items-center gap-2">
+        <label for="tier-select">Filter by Tier:</label>
+        <select id="tier-select" bind:value={selectedTier} class="p-2 border rounded">
+          <option value="all">All Tiers</option>
+          <option value="0">Tier 0 (Core)</option>
+          <option value="1">Tier 1 (Data)</option>
+          <option value="2">Tier 2 (AI/ML)</option>
+          <option value="3">Tier 3 (Application)</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="checkbox" id="show-issues" bind:checked={showOnlyIssues} class="w-4 h-4" />
+        <label for="show-issues">Show only issues</label>
+      </div>
+    </div>
+
+    <!-- Service List -->
+    <div class="overflow-x-auto bg-white rounded-lg shadow">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Response Time</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Check</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          {#each displayServicesArray as service (service.id)}
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="font-medium text-gray-900">{service.name}</div>
+                <div class="text-sm text-gray-500">{service.url}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {getStatusColor(service.status)}">
+                  {getStatusIcon(service.status)} {service.status}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatResponseTime(service.responseTime)}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{formatTimestamp(service.lastCheck)}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                {#if service.status !== 'online'}
+                  <button onclick={() => restartService(service.id)} class="text-indigo-600 hover:text-indigo-900">Restart</button>
+                {/if}
+              </td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
     </div>
   {/if}
-</div>
+</main>
 
 <style>
-	.container {
+.container {
 		font-family:
 			'Inter',
 			system-ui,
 			-apple-system,
 			sans-serif}
-	pre {
-		white-space: pre-wrap;
-		word-break: break-all}
 </style>
-
-

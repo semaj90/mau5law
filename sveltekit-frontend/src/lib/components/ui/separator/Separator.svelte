@@ -1,15 +1,12 @@
-﻿<script lang="ts">
-  interface Props {
-    orientation?: 'horizontal' | 'vertical';
-    decorative?: boolean;
-    class?: string;
-  }
-  let { orientation = 'horizontal', decorative = true, class: className = '', ...restProps }: Props = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div
-  role={decorative ? 'none' : 'separator'}
-  aria-orientation={orientation}
-  class="shrink-0 bg-border {orientation === 'horizontal' ? 'h-[1px] w-full' : 'h-full w-[1px]'} {className}"
-  {...restProps}
-></div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

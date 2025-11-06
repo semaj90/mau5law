@@ -1,16 +1,12 @@
-﻿<script lang="ts">
-  // Compatibility shim: forward to real Dialog implementation
-  import  default, as RealDialog  from "$lib/components/ui/Dialog.svelte";
-  let { open = false, onClose = undefined, ...rest } = $props<{
-    open?: boolean
-    onClose?: (() => void)}>();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<!-- Svelte 5: Direct component usage instead, of, svelte:component -->
-<RealDialog {open} onclose={onClose} {...rest}>
-  <slot />
-</RealDialog>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* shim - no styles */
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

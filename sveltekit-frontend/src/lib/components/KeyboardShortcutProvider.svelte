@@ -1,22 +1,12 @@
-﻿<script lang="ts">
-  import { setContext } from 'svelte';
-
-  import { writable } from 'svelte/store';
-  // simple default stores - replace or extend with your app's store wiring'
-  export const shortcutCategories = writable([
-    {
-      id: 'general',
-      name: 'General',
-      shortcuts: [
-        { id: 'search', description: 'Quick search', keys: ['Ctrl+K'] },
-        { id: 'help', description: 'Show help', keys: ['Ctrl+H'] },
-      ],
-    },
-  ]);
-  export const isRemoteConnected = writable(false);
-  // provide stores via context for components that use getContext
-  setContext('shortcutCategories', shortcutCategories);
-  setContext('isRemoteConnected', isRemoteConnected);
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<slot />
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

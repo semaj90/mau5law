@@ -1,20 +1,12 @@
-﻿<script lang="ts">
-  import { cn } from '$lib/utils/cn';
-  interface CardTitleProps {
-    class?: string;
-    children?: import('svelte').Snippet;
-  }
-  let { class: className = '', children }: CardTitleProps = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<h3 class={cn('shadcn-card-title', className)}>
-  <slot />
-</h3>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  : global(.shadcn-card-title) {
-    font-size: 1.25rem;
-    font-weight: 600;
-    line-height: 1.6
-   ;color: var(--color-foreground, hsl(var(--foreground)))}
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

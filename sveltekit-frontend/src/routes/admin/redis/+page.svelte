@@ -1,4 +1,14 @@
-﻿<script lang="ts"> import AdvancedRedisMonitoringDashboard from '$lib/components/redis/AdvancedRedisMonitoringDashboard.svelte'; // Auto-switch to advanced dashboard for next-level features let showAdvancedFeatures = true; </script> <svelte: head> <title>ðŸŽ® Redis Orchestrator - Nintendo-Level Performance Monitoring</title> <meta name="description" content="Real-time monitoring dashboard for Redis orchestrator with Nintendo-style, performance, optimization" /> </svelte:head> <div class="redis-admin-container"> <div class="admin-header"> <h1>ðŸŽ® Redis Orchestrator Command Center</h1> <p>Nintendo-level performance monitoring for your legal AI platform</p> <div class="feature-badges"> <span class="badge">ðŸŽ® Nintendo-Style</span> <span class="badge">âš¡ RTX, 3060 Ti</span> <span class="badge">ðŸš€ SIMD Accelerated</span> <span class="badge">ðŸ“Š Real-Time</span> </div> </div> <AdvancedRedisMonitoringDashboard /> <div class="quick-links"> <h3>ðŸ”— Quick Links</h3> <div class="links-grid"> <a href="/admin/performance-dashboard" class="quick-link"> ðŸ“ˆ Performance Dashboard </a> <a href="/admin/cluster" class="quick-link"> ðŸ”§ Cluster Management </a> <a href="http://localhost:3002/mcp/metrics" target="_blank" class="quick-link"> ðŸ‘¥ MCP Workers </a> <a href="http://localhost:15672" target="_blank" class="quick-link"> ðŸ° RabbitMQ Console </a> </div> </div> </div> <style> .redis-admin-container { background: #0f0f23; color: #cccccc; font-family: 'Courier New', monospace; min-height: 100vh; padding: 0 }
+<script lang="ts">
+import AdvancedRedisMonitoringDashboard from '$lib/components/redis/AdvancedRedisMonitoringDashboard.svelte'; // Auto-switch to advanced dashboard for next-level features let showAdvancedFeatures = true;
+</script>
+
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+.redis-admin-container { background: #0f0f23; color: #cccccc; font-family: 'Courier New', monospace; min-height: 100vh; padding: 0 }
   .admin-header { background: linear-gradient(135deg, #1e1e3f, #0f0f23); border-bottom: 3px solid #00d800; padding: 30px; text-align: center}
   .admin-header h1 { color: #00d800; margin: 0, 0 10px 0; font-size: 2.5em; text-shadow: 0 0 10px rgba(0, 216, 0, 0.5)}
   .admin-header p { color: #3cbcfc; font-size: 1.1em; margin: 0, 0 20px 0}
@@ -20,5 +30,5 @@
     .badge { font-size: 0.8em; padding: 6px 12px}
     .quick-links { margin: 15px; padding: 20px}
     .links-grid { grid-template-columns: 1fr}
-  } </style>
-
+  }
+</style>

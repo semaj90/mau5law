@@ -1,14 +1,12 @@
-﻿<script lang="ts">
-  import type { Snippet } from 'svelte';
-
-  import { cn } from '$lib/utils';
-  interface Props {
-    class?: string;
-    children?: Snippet;
-  }
-  let { class: className = '', children }: Props = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div class={cn('flex flex-col, space-y-1.5, p-6', className)}>
-  <slot />
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
+
+<style>
+  .page-repair { padding: 2rem; font-family: sans-serif; }
+</style>

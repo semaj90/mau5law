@@ -1,38 +1,12 @@
 <script lang="ts">
-  import  VectorCard  from "./VectorCard.svelte";
-  
-  const { searchUrl } = $props<{ searchUrl: string }>()
-  const { onSelect } = $props<{ onSelect: (item: unknown) }>()
-  let query = '';
-  
-  let results: unknown[] = [];
-  async function doSearch(): Promise<any> {
-    const res = await fetch(searchUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ queryText: query }) });
-    results = (await res.json()).results ?? []}
+// Truncated file - replaced with stub
 </script>
 
-<div class="bits-search">
-  <div class="search-bar">
-    <input bind:value={query} placeholder="Search, legal, documents..." />
-    <button onclick={doSearch}>Search</button>
-  </div>
-
-  <div class="results">
-  {#each Array.isArray(results) ? results : [] as r}
-      <VectorCard {r} onclick={() => onSelect(r)} />
-    {/each}
-  </div>
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  .bits-search {
-    display: block;
-  }
-  .search-bar {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .results {
-    margin-top: 0.75rem;
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>

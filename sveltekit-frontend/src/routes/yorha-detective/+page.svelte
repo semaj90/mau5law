@@ -1,6 +1,5 @@
-<!-- YoRHa Detective Interface, Demo, Page -->
 <script lang="ts">
-  import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
+import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
   let isBooting = $state<boolean>(true);
   let bootProgress = $state<number>(0);
@@ -29,160 +28,203 @@
   }, 500);
 </script>
 
-<svelte:head>
-  <title>YoRHa Detective Interface | Enhanced-Bits Gaming UI</title>
-  <meta name="description" content="Cyberpunk detective interface using, Enhanced-Bits, components" />
-</svelte:head>
 {#if isBooting}
-  <div class="boot-screen fixed inset-0 flex justify-center items-center z-1000 text-white" transition:fade>
-    <div class="boot-content text-center">
-      <div class="boot-logo flex flex-col md:flex-row justify-center items-center gap-2 md:gap-4">
-        <div class="logo-symbol">âš”ï¸</div>
-        <div class="logo-text">
-          <div class="logo-main text-[2rem] md:text-[2.5rem] font-bold">YoRHa</div>
-          <div class="logo-sub text-[1rem] text-[#cccccc] mt-1">DETECTIVE SYSTEM</div>
-        </div>
-      </div>
-      <div class="boot-progress">
-        <div class="progress-bar w-full h-2 bg-white/10 border border-[#333333] rounded overflow-hidden">
-          <div
-            class="progress-fill h-full rounded-[3px] transition-width duration-800"
-            style="width: {(bootProgress / bootSequence.length) * 100}%"
-          ></div>
-        </div>
-        <div class="progress-text">
-          {Math.round((bootProgress / bootSequence.length) * 100)}% Complete
-        </div>
-      </div>
-      <div class="boot-messages text-left bg-black/80 border border-[#333333] rounded-lg p-4 md:p-8 mb-8">
-        {#each bootMessages as message, index}
-          <div class="boot-message flex items-center gap-4 mb-3" transition:fade={{ delay: 200 }}>
-            <span class="message-prefix text-[#666666] font-bold">[{(index + 1).toString().padStart(2, '0')}]</span>
-            <span class="message-text flex-1">{message}</span>
-            <span class="message-status">âœ“</span>
-          </div>
-        {/each}
-        {#if bootProgress < bootSequence.length}
-          <div
-            class="boot-message current flex items-center gap-4 mb-3 text-[0.75rem] md:text-[0.875rem] py-2 bg-[#00ff41]/10 border-l-3"
-          >
-            <span class="message-prefix text-[#666666] font-bold"
-              >[{(bootProgress + 1).toString().padStart(2, '0')}]</span
-            >
-            <span class="message-text flex-1">
-              {bootSequence[bootProgress] || 'Finalizing...'}
-            </span>
+  <div class="boot-screen" transition:fade={{ duration: 500 }}>
+    <div class="boot-logo">
+      <span class="logo-symbol">Y</span>
+      <span class="logo-main">oRHa</span>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: {((bootProgress / bootSequence.length) * 100).toFixed(0)}%;"></div>
+    </div>
+    <div class="progress-text">
+      LOADING... {((bootProgress / bootSequence.length) * 100).toFixed(0)}%
+    </div>
+    <div class="boot-messages">
+      {#each bootMessages as message, i (message)}
+        <div class="boot-message" class:current={i === bootProgress - 1}>
+          <span class="message-prefix">[OK]</span>
+          <span class="message-text">{message}</span>
+          {#if i === bootProgress - 1 && bootProgress < bootSequence.length}
             <span class="loading-dots">...</span>
-          </div>
-        {/if}
-      </div>
-      <div class="boot-footer border-t">
-        <div class="system-info text-[0.75rem] text-[#666666] leading-normal">
-          YoRHa OS v2.0 | Neural Network Active | Enhanced-Bits Framework
+          {/if}
         </div>
+      {/each}
+    </div>
+    <div class="boot-footer">
+      <div class="system-info">
+        <p>YoRHa Detective OS v1.0.0</p>
+        <p>Copyright (C) 2077 YoRHa Command. All rights reserved.</p>
       </div>
     </div>
   </div>
 {:else}
-  <div transition:fade={{ delay: 300, duration: 800 }}>
-    <YorHADetectiveInterface />
-  </div>
+  <YorHADetectiveInterface />
 {/if}
 
 <style>
-  /* Custom styles for gradients, shadows, and animations not easily expressed with UnoCSS */
+/* Custom styles for gradients, shadows, and animations not easily expressed with UnoCSS */
   .boot-screen {
-    background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%)}
+    background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-family: monospace;
+    padding: 2rem;
+    z-index: 50;
+  }
+  .boot-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
   .logo-symbol {
-    text-shadow: 0 0 20px #00ff41}
+    text-shadow: 0 0 20px #00ff41;
+    font-size: 3.75rem; /* 6xl */
+    font-weight: 700; /* bold */
+    color: #22c55e; /* green-400 */
+  }
   .logo-main {
-    text-shadow: 0 0 15px #00ff41}
-  .progress-fill {
-    background: linear-gradient(90deg, #00ff41, #00cc34);
-    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5)}
+    text-shadow: 0 0 15px #00ff41;
+    font-size: 3rem; /* 5xl */
+    font-weight: 300; /* light */
+    color: #22c55e; /* green-400 */
+    margin-left: 1rem; /* ml-4 */
+  }
   .progress-bar {
     border: 1px solid #333333; /* Keep border as UnoCSS might not handle it exactly */
+    width: 100%;
+    max-width: 28rem; /* max-w-md */
+    height: 1rem; /* h-4 */
+    background-color: #1f2937; /* bg-gray-800 */
+    border-radius: 9999px; /* rounded-full */
+    overflow: hidden;
+    margin-bottom: 1rem; /* mb-4 */
+  }
+  .progress-fill {
+    background: linear-gradient(90deg, #00ff41, #00cc34);
+    box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+    height: 100%;
+    transition-property: all;
+    transition-duration: 500ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
   .progress-text {
     font-size: 1rem;
     color: #00ff41;
-    font-weight: bold}
+    font-weight: bold;
+    color: #22c55e; /* green-400 */
+    margin-bottom: 2rem; /* mb-8 */
+  }
   .boot-messages {
-    text-align: left
-   ; background: rgba(0, 0, 0, 0.8);
+    text-align: left;
+    background: rgba(0, 0, 0, 0.8);
     border: 1px solid #333333;
     border-radius: 8px;
     padding: 2rem;
-    min-height: 200px}
+    min-height: 200px;
+    width: 100%;
+    max-width: 42rem; /* max-w-2xl */
+    overflow-y: auto;
+    margin-bottom: 2rem; /* mb-8 */
+  }
   .boot-message {
     display: flex;
     align-items: center;
     gap: 1rem;
     margin-bottom: 0.75rem;
     font-size: 0.875rem;
-    padding: 0.5rem 0}
-  .boot-message.current { background: rgba(0, 255, 65, 0.1);
+    padding: 0.5rem 0;
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .boot-message.current {
+    background: rgba(0, 255, 65, 0.1);
     border-left: 3px solid #00ff41;
     padding-left: 1rem;
-    margin-left: -1rem}
+    margin-left: -1rem;
+  }
   .message-prefix {
     color: #666666;
     font-weight: bold;
-    min-width: 2rem}
+    min-width: 2rem;
+  }
   .message-text {
-    flex: 1; /* Corrected syntax */;
-    color: #cccccc}
+    flex: 1;
+    color: #cccccc;
+  }
   .boot-message.current .message-text {
-    color: #00ff41}
-  .message-status {
     color: #00ff41;
-    font-weight: bold}
+  }
   .loading-dots {
     color: #00ff41;
-    animation: loading-dots 1.5s infinite}
+    animation: loading-dots 1.5s infinite;
+  }
   .boot-footer {
     border-top: 1px solid #333333;
-    padding-top: 1rem}
+    padding-top: 1rem;
+    width: 100%;
+    max-width: 42rem; /* max-w-2xl */
+    text-align: center;
+    margin-top: auto;
+  }
   .system-info {
-    font-size: 0.75rem
-   ; color: #666666;
-    line-height: 1.5; /* Corrected syntax */
+    font-size: 0.75rem;
+    color: #666666;
+    line-height: 1.5;
   }
   @keyframes glow-pulse {
     0%,
     100% {
       text-shadow: 0 0 20px #00ff41;
-      transform: scale(1)}
+      transform: scale(1);
+    }
     50% {
-      text-shadow: 0 0 30px #00ff41 0 0 40px #00ff41;
-      transform: scale(1.05)}
+      text-shadow: 0 0 30px #00ff41, 0 0 40px #00ff41;
+      transform: scale(1.05);
+    }
   }
   @keyframes loading-dots {
     0%,
     20% {
-      opacity: 0; /* Corrected syntax */
+      opacity: 0;
     }
     40% {
-      opacity: 1; /* Corrected syntax */
+      opacity: 1;
     }
-    60% { opacity: 1; /* Corrected syntax */
+    60% {
+      opacity: 1;
     }
     80%,
     100% {
-      opacity: 0; /* Corrected syntax */
+      opacity: 0;
     }
   }
   /* Responsive adjustments */
   @media (max-width: 768px) {
     .boot-logo {
       flex-direction: column;
-      gap: 0.5rem}
+      gap: 0.5rem;
+    }
     .logo-symbol {
-      font-size: 3rem}
+      font-size: 3rem;
+    }
     .logo-main {
-      font-size: 2rem}
-    .boot-messages { padding: 1rem}
+      font-size: 2rem;
+    }
+    .boot-messages {
+      padding: 1rem;
+    }
     .boot-message {
-      font-size: 0.75rem}
+      font-size: 0.75rem;
+    }
   }
 </style>

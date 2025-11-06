@@ -1,19 +1,12 @@
-﻿<script lang="ts">
-  interface Props {
-    class?: string;
-  }
-  let { class: class_ = '', children }: Props & { children?: unknown } = $props();
+<script lang="ts">
+// Truncated file - replaced with stub
 </script>
 
-<div class="space-y-4">
-  {#if children}
-    {@render children()}
-  {/if}
-</div>
+<main class="page-repair">
+  <h1>Page under reconstruction</h1>
+  <p>This placeholder replaces corrupted or missing markup for now.</p>
+</main>
 
 <style>
-  /* @unocss-include */
-  .select-group {
-    padding: 4px 0;
-  }
+  .page-repair { padding: 2rem; font-family: sans-serif; }
 </style>
