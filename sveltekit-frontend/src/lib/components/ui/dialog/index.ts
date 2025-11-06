@@ -6,3 +6,7 @@ export { default as DialogDescription } from './DialogDescription.svelte';
 export { default as DialogTitle } from './DialogTitle.svelte';
 // These exports assume that Dialog.svelte, DialogContent.svelte, etc., exist
 // in the same directory. If they do not, you will need to create them.
+
+// Re-export everything from the canonical lowercase module to avoid TS casing conflicts.
+export * from '../dialog';
+export { default } from '../dialog';

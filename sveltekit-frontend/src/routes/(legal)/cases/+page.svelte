@@ -1,24 +1,223 @@
 <script lang="ts">
-import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; import type { PageData } from './$types'; interface CaseSummary { id: string, title?: string | null; description?: string | null; status?: string | null; priority?: string | null; caseNumber?: string | null; updatedAt?: string | Date | null; createdAt?: string | Date | null}
+import { goto } from '$app/navigation';
 
-  // Svelte, 5 props from server load function let { data }: { data: PageData } = $props(); const initialCases = Array.isArray(data.cases) ? (data.cases as CaseSummary[]): []; // Svelte, 5 runes - initialize from server data let cases = $state<CaseSummary[]>(initialCases); let loading = $state<boolean>(false); let error = $state<string | null>(data.error || null); // Development mode indicator let devBypassActive = $state(data.devBypassActive || false); function formatLabel(value: unknown): string { if (typeof value !== 'string') { return value ? String(value): ''}
-    const trimmed = value.trim(); if (!trimmed) return ''; return trimmed .split(/[_\s]+/) .filter(Boolean) .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1)) .join(' ')}
-  function formatDate(value: unknown): string { if (!value) return ''; try { const date = value instanceof Date ? value: new Date(value; as: string), if (Number.isNaN(date.getTime())) return ''; return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short'; day: 'numeric' })} catch { return ''}
+interface CaseSummary {
+  id: string;
+  title?: string | null;
+  description?: string | null;
+  status?: string | null;
+  priority?: string | null;
+  caseNumber?: string | null;
+  updatedAt?: string | Date | null;
+  createdAt?: string | Date | null;
+}
+
+// Define a more complete PageData interface to match expected server load output
+interface PageData {
+  user: { id: string; email?: string | undefined; role?: string | undefined; } | null;
+  cases?: CaseSummary[]; // Added missing property
+  error?: string | null; // Added missing property
+  devBypassActive?: boolean; // Added missing property
+}
+
+  // Svelte, 5 props from server load function
+  let { data }: { data: PageData } = $props();
+  const initialCases = Array.isArray(data.cases) ? (data.cases as CaseSummary[]) : [];
+
+  // Svelte, 5 runes - initialize from server data
+  let cases = $state<CaseSummary[]>(initialCases);
+  let loading = $state<boolean>(false);
+  let error = $state<string | null>(data.error || null);
+
+  // Development mode indicator
+  let devBypassActive = $state(data.devBypassActive || false);
+
+  function formatLabel(value: unknown): string {
+    if (typeof value !== 'string') {
+      return value ? String(value) : '';
+    }
+    const trimmed = value.trim();
+    if (!trimmed) return '';
+    return trimmed
+      .split(/[_\s]+/)
+      .filter(Boolean)
+      .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
+      .join(' ');
   }
-  function makeModifierClass(prefix: string; value: unknown): string { if (typeof value !== 'string') { return `${ prefix }-unknown`}
-    const trimmed = value.trim(); if (!trimmed) return `${ prefix }-unknown`; return `${ prefix }-${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}
 
-  const displayCases = $derived( (cases || []).map(caseItem => { const statusLabel = formatLabel(caseItem.status); const priorityLabel = formatLabel(caseItem.priority); const updatedLabel = formatDate(caseItem.updatedAt || caseItem.createdAt); return { ...caseItem, displayTitle: caseItem.title?.trim() || 'Untitled Case', statusLabel, statusClass: makeModifierClass('status', caseItem.status), priorityLabel, priorityClass: makeModifierClass('priority', caseItem.priority), updatedLabel; createdLabel: formatDate(caseItem.createdAt) }}) ); async function loadCases(): Promise<any> { try { loading = true; const response = await fetch('/api/cases'); if (!response.ok) { const payload = await response.json().catch(() => ({})); const message = payload?.error?.message || payload?.message || payload?.error || `Failed to load cases (${response.status})`; error = message; console.error('Failed to load cases:', payload); return}
-
-      const payload = await response.json().catch(() => ({})); const listCandidate = Array.isArray(payload?.data?.cases) ? payload.data.cases: Array.isArray(payload?.cases) ? payload.cases: [], cases = (listCandidate || []) as CaseSummary[]; error = null} catch (err) { console.error('Failed to load cases:', err); error = err instanceof Error ? err.message: 'Error loading cases'} finally { loading = false}
+  function formatDate(value: unknown): string {
+    if (!value) return '';
+    try {
+      const date = value instanceof Date ? value : new Date(value as string);
+      if (Number.isNaN(date.getTime())) return '';
+      return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    } catch {
+      return '';
+    }
   }
-  function navigateToCase(caseId: string) { goto(`/cases/${ caseId }`)}
-  function createNewCase() { goto('/cases/create')}
+
+  function makeModifierClass(prefix: string, value: unknown): string { // Changed semicolon to comma
+    if (typeof value !== 'string') {
+      return `${prefix}-unknown`;
+    }
+    const trimmed = value.trim();
+    if (!trimmed) return `${prefix}-unknown`;
+    return `${prefix}-${trimmed.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+  }
+
+  const displayCases = $derived(
+    (cases || []).map(caseItem => {
+      const statusLabel = formatLabel(caseItem.status);
+      const priorityLabel = formatLabel(caseItem.priority);
+      const updatedLabel = formatDate(caseItem.updatedAt || caseItem.createdAt);
+      return {
+        ...caseItem,
+        displayTitle: caseItem.title?.trim() || 'Untitled Case',
+        statusLabel,
+        statusClass: makeModifierClass('status', caseItem.status),
+        priorityLabel,
+        priorityClass: makeModifierClass('priority', caseItem.priority),
+        updatedLabel, // Changed semicolon to comma
+        createdLabel: formatDate(caseItem.createdAt),
+      };
+    })
+  );
+
+  async function loadCases(): Promise<any> {
+    try {
+      loading = true;
+      const response = await fetch('/api/cases');
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        const message = payload?.error?.message || payload?.message || payload?.error || `Failed to load cases (${response.status})`;
+        error = message;
+        console.error('Failed to load cases:', payload);
+        return;
+      }
+
+      const payload = await response.json().catch(() => ({}));
+      const listCandidate = Array.isArray(payload?.data?.cases) ? payload.data.cases : Array.isArray(payload?.cases) ? payload.cases : [];
+      cases = (listCandidate || []) as CaseSummary[]; // Assign to the $state variable 'cases'
+      error = null;
+    } catch (err) {
+      console.error('Failed to load cases:', err);
+      error = err instanceof Error ? err.message : 'Error loading cases';
+    } finally {
+      loading = false;
+    }
+  }
+
+  function navigateToCase(caseId: string) {
+    goto(`/cases/${caseId}`);
+  }
+
+  function createNewCase() {
+    goto('/cases/create');
+  }
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<main class="cases-page">
+  {#if devBypassActive}
+    <div class="dev-banner glass-panel">
+      <span aria-hidden="true">⚠️</span>
+      <p>
+        Development bypass active. Data may be mocked or incomplete.
+        <button onclick={loadCases} class="btn-secondary">Reload Real Data</button>
+      </p>
+    </div>
+  {/if}
+
+  <div class="page-header glass-panel">
+    <div class="page-title">
+      <span class="eyebrow">Legal AI Platform</span>
+      <h1>Case Management</h1>
+    </div>
+    <div class="header-actions">
+      <button onclick={loadCases} class="btn-secondary" disabled={loading}>
+        <span aria-hidden="true">🔄</span>
+        {loading ? 'Loading...' : 'Refresh Cases'}
+      </button>
+      <button onclick={createNewCase} class="btn-primary">
+        <span aria-hidden="true">➕</span>
+        Create New Case
+      </button>
+    </div>
+  </div>
+
+  {#if loading}
+    <div class="loading-state glass-panel">
+      <div class="spinner"></div>
+      <p>Loading legal cases from the database. Please wait...</p>
+    </div>
+  {:else if error}
+    <div class="error-state glass-panel">
+      <span class="state-icon" aria-hidden="true">❌</span>
+      <h3>Error Loading Cases</h3>
+      <p>An error occurred: {error}. Please try refreshing.</p>
+      <button onclick={loadCases} class="btn-secondary">Try Again</button>
+    </div>
+  {:else if displayCases.length === 0}
+    <div class="empty-state glass-panel">
+      <span class="state-icon" aria-hidden="true">📂</span>
+      <h3>No Cases Found</h3>
+      <p>It looks like there are no legal cases in your system yet. Start by creating a new one!</p>
+      <div class="empty-actions">
+        <button onclick={createNewCase} class="btn-primary">Create First Case</button>
+        <button onclick={loadCases} class="btn-secondary">Refresh</button>
+      </div>
+    </div>
+  {:else}
+    <div class="cases-grid">
+      {#each displayCases as caseItem (caseItem.id)}
+        <div
+          class="case-card glass-panel"
+          onclick={() => navigateToCase(caseItem.id)}
+          role="link"
+          tabindex="0"
+          onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              navigateToCase(caseItem.id);
+            }
+          }}
+        >
+          <div class="case-card-header">
+            <div class="case-title">
+              <h3>{caseItem.displayTitle}</h3>
+              {#if caseItem.caseNumber}
+                <span class="case-number">Case ID: {caseItem.caseNumber}</span>
+              {/if}
+            </div>
+            {#if caseItem.statusLabel}
+              <span class="case-status {caseItem.statusClass}">{caseItem.statusLabel}</span>
+            {/if}
+          </div>
+          <p class="case-description" class:placeholder={!caseItem.description}>
+            {caseItem.description || 'No description provided for this case.'}
+          </p>
+          <div class="case-meta">
+            {#if caseItem.priorityLabel}
+              <div class="meta-item">
+                <span aria-hidden="true">🔥</span>
+                <span class="priority-pill {caseItem.priorityClass}">{caseItem.priorityLabel}</span>
+              </div>
+            {/if}
+            {#if caseItem.updatedLabel}
+              <div class="meta-item">
+                <span aria-hidden="true">📅</span>
+                <span>Updated: {caseItem.updatedLabel}</span>
+              </div>
+            {/if}
+            {#if caseItem.createdLabel && caseItem.createdLabel !== caseItem.updatedLabel}
+              <div class="meta-item meta-date created">
+                <span aria-hidden="true">✨</span>
+                <span>Created: {caseItem.createdLabel}</span>
+              </div>
+            {/if}
+          </div>
+        </div>
+      {/each}
+    </div>
+  {/if}
 </main>
 
 <style>
@@ -37,7 +236,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     color: var(--console-fg, #f8fafc);
   }
 
-  .cases-page: :before {
+  .cases-page::before { /* Fixed pseudo-element syntax */
     content: '';
     position: absolute;
     inset: 0;
@@ -133,7 +332,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
   }
 
-  .btn-primary: hover {
+  .btn-primary:hover { /* Fixed pseudo-class syntax */
     transform: translateY(-2px);
     box-shadow: 0 14px 28px rgba(0, 255, 136, 0.45);
   }
@@ -143,7 +342,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     border-color: rgba(148, 163, 184, 0.4);
   }
 
-  .btn-secondary: hover:not(:disabled) {
+  .btn-secondary:hover:not(:disabled) { /* Fixed pseudo-class syntax */
     transform: translateY(-2px);
     background: rgba(51, 65, 85, 0.8);
     border-color: rgba(148, 163, 184, 0.6);
@@ -211,7 +410,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
       border-color 0.22s ease;
   }
 
-  .case-card: :after {
+  .case-card::after { /* Fixed pseudo-element syntax */
     content: '';
     position: absolute;
     inset: 0;
@@ -220,7 +419,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     transition: border-color 0.22s ease;
   }
 
-  .case-card:hover, .case-card: focus-visible {
+  .case-card:hover, .case-card:focus-visible { /* Fixed pseudo-class syntax */
     transform: translateY(-6px);
     box-shadow: 0 20px 36px rgba(2, 6, 23, 0.45);
   }

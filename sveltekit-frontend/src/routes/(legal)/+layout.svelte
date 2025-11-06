@@ -2,15 +2,14 @@
   // Legal AI interface layout with unified navigation
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import { applyConsolePalette, type ConsolePaletteName } from '$lib/themes/retro-console-palettes';
-
-  let { children, data }: { any; data: unknown } = $props();
+  import { setConsolePalette, type ConsolePalette } from '$lib/themes/retro-console-palettes';
+  import type { LayoutData } from './$types.js';
 
   // Legal-focused console theme (green on black for legal work)
-  const consolePalette: ConsolePaletteName = 'legal';
+  const consolePalette: ConsolePalette = 'legal';
 
   $effect(() => {
-    applyConsolePalette(consolePalette);
+    setConsolePalette(consolePalette);
   });
 </script>
 
@@ -26,7 +25,7 @@
       <Sidebar />
     </aside>
     <main class="legal-main">
-      {@render children()}
+      <slot />
     </main>
   </div>
 </div>
@@ -60,5 +59,7 @@
       width: 100%; height: auto;
       border-right: none;
       border-bottom: 1px solid var(--border-primary, #00ff00)}
+  }
+</style>
   }
 </style>

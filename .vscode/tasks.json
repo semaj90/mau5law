@@ -1100,14 +1100,6 @@
       "detail": "Install Python dependencies for FastAPI services (Phase 45 Adapter + Doc Ingest)."
     },
     {
-      "label": "Python: Run Phase 45 Adapter",
-      "type": "shell",
-      "command": "uvicorn python-services.phase45_adapter:app --host 0.0.0.0 --port 8085",
-      "group": "build",
-      "isBackground": true,
-      "detail": "Run the Phase 45 Adapter FastAPI service (web crawler/summarizer) on port 8085."
-    },
-    {
       "label": "Python: Run Doc Ingest Service",
       "type": "shell",
       "command": "C:/Users/james/Videos/deeds-web-app/.venv/Scripts/python.exe",
@@ -1134,13 +1126,18 @@
       "detail": "Start the document ingestion FastAPI service (OCR + chunking + embeddings) on port 8090."
     },
     {
+      "label": "Python: Run Phase 45 Adapter",
+      "type": "shell",
+      "command": "uvicorn python-services.phase45_adapter:app --host 0.0.0.0 --port 8085",
+      "group": "build",
+      "isBackground": true,
+      "detail": "Run the Phase 45 Adapter FastAPI service (web crawler/summarizer) on port 8085."
+    },
+    {
       "label": "Phase46: Safe Crawl (single URL)",
       "type": "shell",
       "command": "python",
-      "args": [
-        "python-services/phase46_safe_crawl.py",
-        "${input:phase46Url}"
-      ],
+      "args": ["python-services/phase46_safe_crawl.py", "${input:phase46Url}"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
@@ -1158,9 +1155,7 @@
       "label": "Phase46: Run Document Indexer",
       "type": "shell",
       "command": "node",
-      "args": [
-        "scripts/phase46-indexer.mjs"
-      ],
+      "args": ["scripts/phase46-indexer.mjs"],
       "options": {
         "cwd": "${workspaceFolder}"
       },
