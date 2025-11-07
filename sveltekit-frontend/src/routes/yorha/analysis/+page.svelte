@@ -1,7 +1,7 @@
 <script lang="ts">
 import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported
 // Card.svelte is exported as default from its module — import as default to avoid slot/type errors
-import { Card } from "$lib/components/ui/card";
+import Card from "$lib/components/ui/card";
 import { Progress } from '$lib/components/ui/progress';
 import { TrendingUp, AlertTriangle, Brain, Activity, Database, Clock } from 'lucide-svelte'; // AlertTriangle replaced
 

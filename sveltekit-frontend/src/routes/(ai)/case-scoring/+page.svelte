@@ -1,5 +1,5 @@
 <script lang="ts">
-import CaseScoringDashboard from '$lib/components/ai/CaseScoringDashboard.svelte';
+import { CaseScoringDashboard } from '$lib/components/ai/CaseScoringDashboard';
 </script>
 
 <main class="page-container">

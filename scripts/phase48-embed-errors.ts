@@ -44,15 +44,24 @@ async function embedText(text: string, model = "embeddinggemma:latest") {
 }
 
 async function main() {
-  console.log("[phase48] 🧩 Embedding Svelte-check diagnostics...");
+  console.log('[phase48] 🧩 Embedding Svelte-check diagnostics...');
   console.log(`[phase48] Input path: ${inputPath}  dryRun=${dryRun}`);
-  const raw = await fs.readFile(inputPath, 'utf8');
+
+  // Ensure we pass a definite string to fs.readFile (avoid string | undefined)
+  const resolvedInputPath = inputPath
+    ? String(inputPath)
+    : path.resolve('.cache/sveltecheck.trimmed.json');
+
+  // Read as string and help TS know this is a string (so .slice/.replace are available)
+  const raw = (await fs.readFile(resolvedInputPath, 'utf8')) as string;
+
   let json: any;
   try {
     json = JSON.parse(raw);
   } catch (err: any) {
-    console.error('[phase48] Fatal: JSON parse failed for', inputPath);
-    const snippet = raw.slice(0, 1200).replace(/\n/g, '\\n');
+    console.error('[phase48] Fatal: JSON parse failed for', resolvedInputPath);
+    // Guard snippet creation against Buffer by forcing string
+    const snippet = String(raw).slice(0, 1200).replace(/\n/g, '\\n');
     console.error('[phase48] File head snippet:', snippet);
     throw err;
   }

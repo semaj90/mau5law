@@ -1,17 +1,11 @@
 <script lang="ts">
-import type { Document } from '$lib/types';
-	// Safe imports (works with default or named exports)
-	import * as EssentialRoutePageModule from '$lib/templates/EssentialRoutePage.svelte';
-	const EssentialRouteComponent = EssentialRoutePageModule.default ?? EssentialRoutePageModule.EssentialRoutePage ?? EssentialRoutePageModule
-	// UI components / icons
-	import EnhancedButton from '$lib/components/ui/enhanced-bits.svelte';
-	import { FileText, Upload, Download, Brain, Clock, Star } from 'lucide-svelte';
+	import { FileText, Download, Brain, Clock, Star } from 'lucide-svelte';
 
 	// Fallback summary template
 	const FALLBACK_SUMMARY = `This legal document: "{filename}" outlines key provisions, procedural requirements, and compliance standards. Main points: statutory obligations, evidence handling rules, timelines, and recommended next steps.`;
 
 	// Types
-	type FileMetadata = { id: string, name: string;, size: number, uploadedAt?: string };
+	type FileMetadata = { id: string; name: string; size: number; uploadedAt?: string };
 
 	// State (Svelte, 5 runes are auto-imported)
 	let selectedFile = $state<FileMetadata | null>(null);
@@ -27,16 +21,16 @@ import type { Document } from '$lib/types';
 		{ value: 'bullet', label: 'Bullet Points', description: 'Structured list format' }
 	];
 
-	// Derived stats (memoization handled by $derived)
-	$derived wordCount = summary ? summary.trim().split(/\s+/).filter(Boolean).length : 0
-	$derived readMinutes = Math.max(1, Math.ceil(wordCount / 200));
+	// Derived stats (use explicit $derived calls and type them as numbers)
+	const wordCount = $derived<number>(summary ? summary.trim().split(/\s+/).filter(Boolean).length : 0);
+	const readMinutes = $derived<number>(Math.max(1, Math.ceil((wordCount ?? 0) / 200)));
 
-	// File upload handler â€” now posts to /api/ai/upload
-	async function handleFileUpload(event: Event): Promise<any> {
-		const input = event.currentTarget as HTMLInputElement | null
+	// File upload handler - now posts to /api/ai/upload
+	async function handleFileUpload(event: Event): Promise<void> {
+		const input = event.currentTarget as HTMLInputElement | null;
 		const file = input?.files?.[0] ?? (event.target as HTMLInputElement | null)?.files?.[0];
-		if (!file) return
-		isUploading = true
+		if (!file) return;
+		isUploading = true;
 		try {
 			const form = new FormData();
 			form.append('file', file);
@@ -44,22 +38,24 @@ import type { Document } from '$lib/types';
 			const data = await res.json().catch(() => null);
 			if (res.ok && data?.id) {
 				selectedFile = { id: data.id, name: data.name, size: file.size, uploadedAt: new Date().toISOString() };
-				rawFile = file} else {
+				rawFile = file;
+			} else {
 				// fallback to local id if upload failed
 				selectedFile = { id: crypto.randomUUID(), name: file.name, size: file.size, uploadedAt: new Date().toISOString() };
-				rawFile = file
+				rawFile = file;
 				console.warn('Upload endpoint returned an error:', data);
-'
 			}
 		} catch (err) {
-			console.error('Upload failed:', err)} finally {
-			isUploading = false}
+			console.error('Upload failed:', err);
+		} finally {
+			isUploading = false;
+		}
 	}
 
-	// Generate summary â€” call /api/ai/summarize
-	async function generateSummary(): Promise<any> {
-		if (!selectedFile) return
-		isSummarizing = true
+	// Generate summary - call /api/ai/summarize
+	async function generateSummary(): Promise<void> {
+		if (!selectedFile) return;
+		isSummarizing = true;
 		try {
 			// prefer server-side summarization that can call Ollama/Gemma
 			const payload = { fileId: selectedFile.id, type: summaryType };
@@ -68,45 +64,123 @@ import type { Document } from '$lib/types';
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(payload)
 			});
-
 			const data = await res.json().catch(() => null);
 			if (res.ok && data?.summary) {
-				summary = data.summary
-				return}
-
+				summary = data.summary;
+				return;
+			}
 			// fallback if server returns no summary
 			console.warn('Summarize endpoint returned no summary, using fallback', data);
-			summary = FALLBACK_SUMMARY.replace('{filename}', selectedFile.name)} catch (err) {
+			summary = FALLBACK_SUMMARY.replace('{filename}', selectedFile.name);
+		} catch (err) {
 			console.error('Summarization failed:', err);
-			summary = FALLBACK_SUMMARY.replace('{filename}', selectedFile.name)} finally {
-			isSummarizing = false}
+			summary = FALLBACK_SUMMARY.replace('{filename}', selectedFile?.name ?? 'document');
+		} finally {
+			isSummarizing = false;
+		}
 	}
 
 	// Export summary as .txt
-	function exportSummary() {
-		if (!summary) return
-		let url: string | null = null
+	function exportSummary(): void {
+		if (!summary) return;
+		let url: string | null = null;
 		try {
 			const blob = new Blob([summary], { type: 'text/plain' });
 			url = URL.createObjectURL(blob);
 			const a = document.createElement('a');
-			a.href = url
+			a.href = url;
 			a.download = `${selectedFile?.name || 'document'}_summary.txt`;
 			document.body.appendChild(a);
 			a.click();
-			a.remove()} catch (error) {
-			console.error('Failed to export summary:', error)} finally {
-			if (url) URL.revokeObjectURL(url)}
+			a.remove();
+		} catch (error) {
+			console.error('Failed to export summary:', error);
+		} finally {
+			if (url) URL.revokeObjectURL(url);
+		}
 	}
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<!-- replaced placeholder with real UI; use Svelte 5 event attributes like `onclick` / `onchange` -->
+<main class="summarize-page">
+	<div class="container nes-container">
+		<header class="header">
+			<h1 class="title"><FileText size={20} /> Document Summarizer</h1>
+			<p class="subtitle">Upload a legal doc and generate a concise AI summary.</p>
+		</header>
+
+		<section class="uploader">
+			<label class="nes-field">
+				<input
+					type="file"
+					accept=".pdf,.doc,.docx,.txt"
+					onchange={handleFileUpload}
+				/>
+			</label>
+
+			<!-- use the summaryTypes so it is not unused and allow user to pick summary type -->
+			<div class="summary-type">
+				<label for="summaryType">Summary style:</label>
+				<select id="summaryType" bind:value={summaryType}>
+					{#each summaryTypes as st}
+						<option value={st.value}>{st.label}</option>
+					{/each}
+				</select>
+			</div>
+
+			<div class="controls">
+				<button
+					class="nes-btn is-primary"
+					onclick={generateSummary}
+					disabled={!selectedFile || isSummarizing}
+					aria-disabled={!selectedFile || isSummarizing}
+				>
+					{#if isSummarizing}
+						<span class="animate-spin" aria-hidden="true">⏳</span>
+						&nbsp;Summarizing...
+					{:else}
+						<Brain size={16} />&nbsp;Summarize
+					{/if}
+				</button>
+
+				<button
+					class="nes-btn"
+					onclick={exportSummary}
+					disabled={!summary}
+					aria-disabled={!summary}
+				>
+					<Download size={16} />&nbsp;Export
+				</button>
+			</div>
+
+			{#if selectedFile}
+				<div class="file-meta">
+					<strong>{selectedFile.name}</strong>
+					<span class="meta">• {Math.round(selectedFile.size / 1024)} KB</span>
+					{#if selectedFile.uploadedAt}
+						<span class="meta">• uploaded {selectedFile.uploadedAt}</span>
+					{/if}
+				</div>
+			{/if}
+		</section>
+
+		<section class="summary">
+			<h2>Summary ({summaryType})</h2>
+			{#if summary}
+				<pre class="summary-box">{summary}</pre>
+				<div class="stats">
+					<span><Clock size={12} /> {readMinutes} min read</span>
+					<span><Star size={12} /> {wordCount} words</span>
+				</div>
+			{:else}
+				<p class="placeholder">No summary yet. Select a file and click Summarize.</p>
+			{/if}
+		</section>
+	</div>
 </main>
 
 <style>
-/* Custom styles for this page */
+	/* Custom styles for this page */
 	.nes-container {
 		background-color: #fff;
 		border: 1px solid #ddd}
@@ -144,4 +218,34 @@ import type { Document } from '$lib/types';
 
 	.animate-spin {
 		animation: spin 1s linear infinite}
+
+	/* Additional styles for the updated template */
+	.summarize-page { padding: 1.25rem; font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+	.container { max-width: 900px; margin: 0 auto; }
+	.header { display:flex; align-items:center; gap:0.75rem; margin-bottom:1rem; }
+	.header .title { display:flex; align-items:center; gap:0.5rem; font-size:1.25rem; margin:0; }
+	.uploader { margin-bottom:1rem; display:flex; flex-direction:column; gap:0.5rem; }
+	.controls { display:flex; gap:0.5rem; align-items:center; margin-top:0.5rem; }
+	.file-meta { margin-top:0.5rem; color:#666; font-size:0.9rem; }
+	.summary-box { white-space:pre-wrap; background:#f9f9f9; padding:1rem; border-radius:6px; border:1px solid #eee; }
+	.stats { margin-top:0.5rem; display:flex; gap:1rem; color:#555; font-size:0.9rem; align-items:center; }
+	.placeholder { color:#777; }
+
+	/* New styles for summary type selector */
+	.summary-type {
+		margin-top: 0.5rem;
+	}
+	.summary-type label {
+		display: block;
+		margin-bottom: 0.25rem;
+		font-weight: 500;
+	}
+	.summary-type select {
+		padding: 0.5rem;
+		font-size: 1rem;
+		border: 1px solid #ccc;
+		border-radius: 4px;
+		width: 100%;
+		max-width: 200px;
+	}
 </style>

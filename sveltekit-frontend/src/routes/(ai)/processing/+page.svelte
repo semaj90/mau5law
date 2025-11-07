@@ -8,6 +8,11 @@
   let nesGPUBridge: any = {};
   let glyphShaderCacheBridge: any = {};
 
+  import { fade, fly } from 'svelte/transition';
+
+  // Add Job type so $state infers properly (prevents 'never' issues)
+  type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
+  interface Job {
     id: string;
     documentId: string;
     analysisType: string;
@@ -61,18 +66,25 @@
   });
   async function initializeNESGPUBridge(): Promise<void> {
     try {
-      // Initialize GPU device for glyph shader cache
+      // Dynamically import modules and accept either named export, default export, or module object.
+      const nesMod: any = await import('$lib/gpu/nes-gpu-memory-bridge').catch(() => ({}));
+      nesGPUBridge = nesMod?.nesGPUBridge ?? nesMod?.default ?? nesMod ?? {};
+
+      const glyphMod: any = await import('$lib/cache/glyph-shader-cache-bridge').catch(() => ({}));
+      glyphShaderCacheBridge = glyphMod?.glyphShaderCacheBridge ?? glyphMod?.default ?? glyphMod ?? {};
+
+      // Initialize GPU device for glyph shader cache (guarded)
       const adapter = await navigator.gpu?.requestAdapter();
-      if (adapter) {
+      if (adapter && glyphShaderCacheBridge?.initialize) {
         const device = await adapter.requestDevice();
         await glyphShaderCacheBridge.initialize(device);
       }
 
       // Load initial metrics
       await updateSystemMetrics();
-      console.log('ðŸŽ¯ AI Processing Dashboard initialized with NES-GPU optimization');
+      console.log('AI Processing Dashboard initialized with NES-GPU optimization');
     } catch (error) {
-      console.error('âŒ Failed to initialize NES-GPU bridge:', error);
+      console.error('Failed to initialize NES-GPU bridge:', error);
     }
   }
   function startRealtimeMonitoring() {
@@ -85,7 +97,7 @@
   }
   async function updateSystemMetrics(): Promise<any> {
     try {
-      // Guard calls on nesGPUBridge which may not implement these exact methods
+      // Guard calls on nesGPUBridge/glyphShaderCacheBridge which may not implement these methods
       const nesGPUMetrics = (nesGPUBridge as any).getPerformanceMetrics?.();
       const glyphStats = (await glyphShaderCacheBridge.getGlyphCacheStats?.()) ?? {
         cacheHitRate: 0,

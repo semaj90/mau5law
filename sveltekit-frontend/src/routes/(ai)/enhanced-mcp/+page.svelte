@@ -1,49 +1,334 @@
 <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported /** * Enhanced MCP Integration Demo Page * Demonstrates cluster system, MCP tools, and Context7 integration with SvelteKit */ import { onMount } from 'svelte'; import { get, writable } from 'svelte/store'; // Dynamically-loaded component (avoids TypeScript: "no default export" error) let EnhancedMCPIntegration = $state<any>(null); // load component on client mount onMount(() => {
-		(async () => {
- try { const mod = await import('$lib/components/ai/EnhancedMCPIntegration.svelte'); // cast to: unknown before reading .default to avoid TS; error: "Property, 'default' does not exist ..."
-      EnhancedMCPIntegration = ((mod as: unknown).default ?? (mod as: unknown)) as: unknown} catch (e) { console.warn('Failed to dynamically load EnhancedMCPIntegration (non-fatal)', e)}
-  		})();
-	}); // Page state const integrationStatus = writable({ mcpServerRunning: false, vsCodeExtensionActive: false, clusterSystemOnline: false, ollamaModelsLoaded: false; contextualAnalysisReady: false }); type SystemLog = { timestamp: Date; level: 'info' | 'success' | 'warning' | 'error'; message: string;, source: string}; const systemLogs = writable<SystemLog[]>([]); let selectedCaseId = $state<string>('demo-case-001'); let enableRealtimeUpdates = $state<boolean>(true); let showMetrics = $state<boolean>(true); let enableClusterMode = $state<boolean>(true); $effect(() => { checkSystemStatus(); startSystemMonitoring(); logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system')});
-  async function checkSystemStatus(): Promise<any> { logMessage('info', 'Checking system status...', 'health-check'); // Check MCP Server try { const mcpResponse = await fetch('http://localhost:40000/health'), if (mcpResponse.ok) { integrationStatus.update(status => ({ ...status; mcpServerRunning: true })); logMessage('success', 'Context7 MCP Server is online', 'mcp-server')}
-    } catch (error) { logMessage('error', 'Context7 MCP Server is offline', 'mcp-server')}
+  import type { Case } from '$lib/types';
+  import { onMount } from 'svelte';
+  import { get, writable } from 'svelte/store';
 
-    // Check cluster performance results try { const clusterResponse = await fetch('/cluster-performance-simple.json'); if (clusterResponse.ok) { const data = await clusterResponse.json(); if (data.status === 'working') { integrationStatus.update(status => ({ ...status, clusterSystemOnline: true })); logMessage(
-            'success', `Cluster system validated - ${data.results.successfulRequests} successful requests`,
+  // Dynamically-loaded component (runes-mode $state is available project-wide)
+  let EnhancedMCPIntegration = $state<any>(null);
+
+  // load component on client mount
+  onMount(() => {
+    (async () => {
+      try {
+        const mod = await import('$lib/components/ai/EnhancedMCPIntegration.svelte');
+        const anyMod = mod as unknown as any;
+        EnhancedMCPIntegration = anyMod?.default ?? anyMod;
+      } catch (e) {
+        console.warn('Failed to dynamically load EnhancedMCPIntegration (non-fatal)', e);
+      }
+    })();
+  });
+
+  // Page state
+  const integrationStatus = writable({
+    mcpServerRunning: false,
+    vsCodeExtensionActive: false,
+    clusterSystemOnline: false,
+    ollamaModelsLoaded: false,
+    contextualAnalysisReady: false
+  });
+
+  type SystemLog = {
+    timestamp: Date;
+    level: 'info' | 'success' | 'warning' | 'error';
+    message: string;
+    source: string;
+  };
+
+  const systemLogs = writable<SystemLog[]>([]);
+
+  let selectedCaseId = $state<string>('demo-case-001');
+  let enableRealtimeUpdates = $state<boolean>(true);
+  let showMetrics = $state<boolean>(true);
+  let enableClusterMode = $state<boolean>(true);
+
+  $effect(() => {
+    checkSystemStatus();
+    startSystemMonitoring();
+    logMessage('info', 'Enhanced MCP Integration Demo loaded', 'system');
+  });
+
+  async function checkSystemStatus(): Promise<void> {
+    logMessage('info', 'Checking system status...', 'health-check');
+
+    // Check MCP Server
+    try {
+      const mcpResponse = await fetch('http://localhost:40000/health');
+      if (mcpResponse.ok) {
+        integrationStatus.update((status) => ({ ...status, mcpServerRunning: true }));
+        logMessage('success', 'Context7 MCP Server is online', 'mcp-server');
+      } else {
+        logMessage('warning', 'Context7 MCP Server returned non-OK status', 'mcp-server');
+      }
+    } catch (error) {
+      logMessage('error', 'Context7 MCP Server is offline', 'mcp-server');
+    }
+
+    // Check cluster performance results
+    try {
+      const clusterResponse = await fetch('/cluster-performance-simple.json');
+      if (clusterResponse.ok) {
+        const data = await clusterResponse.json();
+        if (data?.status === 'working') {
+          integrationStatus.update((status) => ({ ...status, clusterSystemOnline: true }));
+          logMessage(
+            'success',
+            `Cluster system validated - ${data.results?.successfulRequests ?? 0} successful requests`,
             'cluster'
-          )}
-      } } catch (error) { logMessage('warning', 'Cluster performance data not available', 'cluster')}
+          );
+        }
+      }
+    } catch (error) {
+      logMessage('warning', 'Cluster performance data not available', 'cluster');
+    }
 
-    // Check Ollama models try { const ollamaResponse = await fetch('http://localhost:11434/api/tags'), if (ollamaResponse.ok) { const models = await ollamaResponse.json(); if (models.models && models.models.length > 0) { integrationStatus.update(status => ({ ...status, ollamaModelsLoaded: true })); logMessage('success', `Ollama models loaded: ${models.models.length} models`, 'ollama')}
-      } } catch (error) { logMessage('warning', 'Ollama service not available', 'ollama')}
+    // Check Ollama models
+    try {
+      const ollamaResponse = await fetch('http://localhost:11434/api/tags');
+      if (ollamaResponse.ok) {
+        const models = await ollamaResponse.json();
+        if (models?.models && models.models.length > 0) {
+          integrationStatus.update((status) => ({ ...status, ollamaModelsLoaded: true }));
+          logMessage('success', `Ollama models loaded: ${models.models.length} models`, 'ollama');
+        }
+      }
+    } catch (error) {
+      logMessage('warning', 'Ollama service not available', 'ollama');
+    }
 
-    // Check VS Code extension (simulated) const hasVSCodeExtension = Math.random() > 0.3; // Simulate extension check if (hasVSCodeExtension) { integrationStatus.update(status => ({ ...status, vsCodeExtensionActive: true })); logMessage('success', 'VS Code Context7 MCP Assistant extension detected', 'vscode')} else { logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode')}
+    // Check VS Code extension (simulated)
+    const hasVSCodeExtension = Math.random() > 0.3;
+    if (hasVSCodeExtension) {
+      integrationStatus.update((status) => ({ ...status, vsCodeExtensionActive: true }));
+      logMessage('success', 'VS Code Context7 MCP Assistant extension detected', 'vscode');
+    } else {
+      logMessage('info', 'VS Code extension not detected (running in browser)', 'vscode');
+    }
 
-    // All systems check const statusSnapshot = get(integrationStatus); if (statusSnapshot.mcpServerRunning && statusSnapshot.clusterSystemOnline) { integrationStatus.update(status => ({ ...status, contextualAnalysisReady: true })); logMessage('success', 'Enhanced MCP Integration fully operational!', 'system')}
+    // All systems check
+    const statusSnapshot = get(integrationStatus);
+    if (statusSnapshot.mcpServerRunning && statusSnapshot.clusterSystemOnline) {
+      integrationStatus.update((status) => ({ ...status, contextualAnalysisReady: true }));
+      logMessage('success', 'Enhanced MCP Integration fully operational!', 'system');
+    }
   }
-  function startSystemMonitoring() { setInterval(async () => { // Periodic health checks try { const healthResponse = await fetch('http://localhost:40000/health'), if (healthResponse.ok) { const healthData = await healthResponse.json(); if (healthData.metrics && healthData.metrics.totalRequests > 0) { logMessage(
-              'info', `System healthy - ${healthData.metrics.totalRequests} total requests processed`,
+
+  function startSystemMonitoring(): void {
+    setInterval(async () => {
+      try {
+        const healthResponse = await fetch('http://localhost:40000/health');
+        if (healthResponse.ok) {
+          const healthData = await healthResponse.json();
+          if (healthData?.metrics?.totalRequests > 0) {
+            logMessage(
+              'info',
+              `System healthy - ${healthData.metrics.totalRequests} total requests processed`,
               'monitoring'
-            )}
-        } } catch (error) { // Silent monitoring, don't spam logs }'
-    }, 30000); // Every, 30 seconds }
-  function logMessage(level: 'info' | 'success' | 'warning' | 'error', message: string; source: string) { systemLogs.update(logs => [{ timestamp: new Date(), level, message, source }, ...logs.slice(0, 49)]); // Keep last, 50 logs }
-  async function runSystemDiagnostics(): Promise<any> { logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics'); const diagnostics = [ { name: 'MCP Server Health'; test: async () => { const response = await fetch('http://localhost:40000/health'), return response.ok}
-      }, {
-        name: 'Enhanced RAG Query', test: async () => { const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: 'System diagnostic test query', caseId: 'diagnostic-test'; maxResults: 1 }) }); return response.ok}
-      }, {
-        name: 'Memory Graph Operations', test: async () => { const response = await fetch('http://localhost:40000/mcp/memory/read-graph', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({}) }); return response.ok}
-      }, {
-        name: 'Context7 Documentation', test: async () => { const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', { method: 'POST', headers: { 'Content-Type': 'application/json' }; body: JSON.stringify({ libraryName: 'sveltekit' }) }); return response.ok}
-      }]; let passedTests = 0; for (const diagnostic of diagnostics) { try { const result = await diagnostic.test(); if (result) { logMessage('success', `âœ… ${diagnostic.name} - PASSED`, 'diagnostics'); passedTests++} else { logMessage('error', `âŒ ${diagnostic.name} - FAILED`, 'diagnostics')}
-      } catch (err) { // normalize: unknown thrown values const errMsg = err instanceof Error ? err.message: String(err), logMessage('error', `âŒ ${diagnostic.name} - ERROR: ${ errMsg }`, 'diagnostics')}
-    } logMessage('info', `Diagnostics complete: ${ passedTests }/${diagnostics.length} tests passed`, 'diagnostics')}
-  function clearLogs() { systemLogs.set([]); logMessage('info', 'System logs cleared', 'system')}
+            );
+          }
+        }
+      } catch (error) {
+        // silent monitoring errors
+      }
+    }, 30000); // every 30 seconds
+  }
+
+  function logMessage(level: SystemLog['level'], message: string, source: string): void {
+    systemLogs.update((logs) => [{ timestamp: new Date(), level, message, source }, ...logs].slice(0, 50));
+  }
+
+  async function runSystemDiagnostics(): Promise<void> {
+    logMessage('info', 'Running comprehensive system diagnostics...', 'diagnostics');
+
+    const diagnostics: Array<{ name: string; test: () => Promise<boolean> }> = [
+      {
+        name: 'MCP Server Health',
+        test: async () => {
+          try {
+            const response = await fetch('http://localhost:40000/health');
+            return response.ok;
+          } catch {
+            return false;
+          }
+        }
+      },
+      {
+        name: 'Enhanced RAG Query',
+        test: async () => {
+          try {
+            const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ query: 'System diagnostic test query', caseId: 'diagnostic-test', maxResults: 1 })
+            });
+            return response.ok;
+          } catch {
+            return false;
+          }
+        }
+      },
+      {
+        name: 'Memory Graph Operations',
+        test: async () => {
+          try {
+            const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({})
+            });
+            return response.ok;
+          } catch {
+            return false;
+          }
+        }
+      },
+      {
+        name: 'Context7 Documentation',
+        test: async () => {
+          try {
+            const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ libraryName: 'sveltekit' })
+            });
+            return response.ok;
+          } catch {
+            return false;
+          }
+        }
+      }
+    ];
+
+    let passedTests = 0;
+    for (const diagnostic of diagnostics) {
+      try {
+        const result = await diagnostic.test();
+        if (result) {
+          logMessage('success', `✓ ${diagnostic.name} - PASSED`, 'diagnostics');
+          passedTests++;
+        } else {
+          logMessage('error', `✖ ${diagnostic.name} - FAILED`, 'diagnostics');
+        }
+      } catch (err: unknown) {
+        const errMsg = err instanceof Error ? err.message : String(err);
+        logMessage('error', `✖ ${diagnostic.name} - ERROR: ${errMsg}`, 'diagnostics');
+      }
+    }
+
+    logMessage('info', `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`, 'diagnostics');
+  }
+
+  function clearLogs(): void {
+    systemLogs.set([]);
+    logMessage('info', 'System logs cleared', 'system');
+  }
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<!-- Replace placeholder with a minimal dashboard that exercises the CSS selectors -->
+<main class="enhanced-mcp-demo">
+  <header class="demo-header">
+    <h1>Enhanced MCP Integration</h1>
+    <p class="demo-subtitle">Lightweight dashboard showing status, diagnostics and recent system logs for Context7 MCP.</p>
+  </header>
+
+  <section class="system-status">
+    <h2>System Status</h2>
+    <div class="status-grid">
+      <div class="status-card {$integrationStatus.mcpServerRunning ? 'status-online' : 'status-offline'}">
+        <div class="status-icon">🛰️</div>
+        <div>
+          <div class="status-title">MCP Server</div>
+          <div class="status-subtitle">{$integrationStatus.mcpServerRunning ? 'Online' : 'Offline'}</div>
+        </div>
+      </div>
+
+      <div class="status-card {$integrationStatus.clusterSystemOnline ? 'status-online' : 'status-offline'}">
+        <div class="status-icon">🔗</div>
+        <div>
+          <div class="status-title">Cluster</div>
+          <div class="status-subtitle">{$integrationStatus.clusterSystemOnline ? 'Online' : 'Unavailable'}</div>
+        </div>
+      </div>
+
+      <div class="status-card {$integrationStatus.ollamaModelsLoaded ? 'status-online' : 'status-offline'}">
+        <div class="status-icon">🤖</div>
+        <div>
+          <div class="status-title">Ollama Models</div>
+          <div class="status-subtitle">{$integrationStatus.ollamaModelsLoaded ? 'Loaded' : 'Not loaded'}</div>
+        </div>
+      </div>
+
+      <div class="status-card {$integrationStatus.vsCodeExtensionActive ? 'status-online' : 'status-offline'}">
+        <div class="status-icon">🧩</div>
+        <div>
+          <div class="status-title">VS Code Extension</div>
+          <div class="status-subtitle">{$integrationStatus.vsCodeExtensionActive ? 'Detected' : 'Not detected'}</div>
+        </div>
+      </div>
+
+      <div class="status-card {$integrationStatus.contextualAnalysisReady ? 'status-online' : 'status-offline'}">
+        <div class="status-icon">⚙️</div>
+        <div>
+          <div class="status-title">Contextual Analysis</div>
+          <div class="status-subtitle">{$integrationStatus.contextualAnalysisReady ? 'Ready' : 'Pending'}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-controls">
+    <h2>Controls</h2>
+    <div class="controls-grid">
+      <div class="control-group">
+        <label>Selected Case</label>
+        <div>{selectedCaseId}</div>
+      </div>
+
+      <div class="control-group">
+        <label>Realtime Updates</label>
+        <div>{enableRealtimeUpdates ? 'Enabled' : 'Disabled'}</div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="diagnostic-button" onclick={runSystemDiagnostics}>Run Diagnostics</button>
+      <button class="clear-logs-button" onclick={clearLogs}>Clear Logs</button>
+    </div>
+  </section>
+
+  <section class="system-logs">
+    <h2>System Logs</h2>
+    <div class="logs-container">
+      {#if $systemLogs.length > 0}
+        {#each $systemLogs as log (log.timestamp)}
+          <div class="log-entry log-{log.level}">
+            <div class="log-timestamp">{new Date(log.timestamp).toLocaleTimeString()}</div>
+            <div class="log-source">{log.source}</div>
+            <div class="log-message">{log.message}</div>
+          </div>
+        {/each}
+      {:else}
+        <div class="no-logs">No logs yet</div>
+      {/if}
+    </div>
+  </section>
+
+  <section class="integration-features">
+    <h2>Features</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <div class="feature-title">Enhanced RAG</div>
+        <div class="feature-description">Hybrid vector search (pgvector + Qdrant) with Redis caching.</div>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Multi-LLM Orchestration</div>
+        <div class="feature-description">Parallel orchestration and agent coordination across providers.</div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <style>
