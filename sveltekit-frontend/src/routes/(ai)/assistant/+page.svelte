@@ -1,32 +1,220 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat) import  Button  from "$lib/components/ui/core.svelte"; import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte"; interface ChatMessage { id: string; role: 'user' | 'assistant'; content: string;, timestamp: Date}
+// Runes-mode reactive state (Svelte 5)
+type ChatMessage = {
+	id: string;
+	role: 'user' | 'assistant';
+	content: string;
+	timestamp: Date;
+};
 
-  let messages = $state<ChatMessage[]>([]); let currentMessage = $state<string>(''); let isStreaming = $state<boolean>(false); let error = $state<string>(''); async function sendMessage(): Promise<any> { if (!currentMessage.trim() || isStreaming) return; const userMessage: ChatMessage = { id: crypto.randomUUID(), role: 'user', content: currentMessage; timestamp: new Date() }; messages = [...messages, userMessage]; const messageToSend = currentMessage; currentMessage = ''; isStreaming = true; error = ''; try { // Use the consolidated AI chat endpoint const response = await fetch('/api/ai/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: messageToSend, model: 'gemma3-legal:latest'; useRAG: true }) }); if (!response.ok) { throw new Error(`HTTP ${response.status}`)}
+let messages = $state<ChatMessage[]>([]);
+let currentMessage = $state<string>('');
+let isStreaming = $state<boolean>(false);
+let error = $state<string>('');
 
-      const aiMessage: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: ''; timestamp: new Date() }; messages = [...messages, aiMessage]; // Handle streaming response if (response.body) { const reader = response.body.getReader(); const decoder = new TextDecoder(); try { while (true) { const { done, value } = await reader.read(); if (done) break; const chunk = decoder.decode(value); const lines = chunk.split('\n').filter(line => line.trim()); for (const line of lines) { if (line.startsWith('data: ')) { try { const data = JSON.parse(line.slice(6)); if (data.content) { messages[messages.length - 1].content += data.content; messages = [...messages]; // Trigger reactivity }
-                } catch (e) { console.warn('Failed to parse SSE data:', e)}
-              } }
-          } } finally { reader.releaseLock()}
-      } } catch (e) { error = `Failed to communicate with AI assistant: ${e instanceof Error ? e.message: 'Unknown error'}`; // Remove the empty AI message on error if (messages[messages.length - 1]?.role === 'assistant' && !messages[messages.length - 1]?.content) { messages = messages.slice(0, -1)}
-    } finally { isStreaming = false}
-  }
-  function handleKeydown(event: KeyboardEvent) { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); sendMessage()}
-  }
+// Send a message to backend AI; supports streaming SSE-like chunks or full JSON response
+async function sendMessage(): Promise<void> {
+	if (!currentMessage.trim() || isStreaming) return;
 
-   // Quick legal queries const quickQueries = [
-    'Analyze this contract for potential issues',
-    'What are the key precedents for this case type?',
-    'Summarize the evidence presented',
-    'Generate a legal brief outline']; async function handleQuickQuery(query: string): Promise<any> { currentMessage = query; await sendMessage()}
+	const userMessage: ChatMessage = {
+		id: crypto.randomUUID(),
+		role: 'user',
+		content: currentMessage.trim(),
+		timestamp: new Date()
+	};
+	messages = [...messages, userMessage];
+
+	const messageToSend = currentMessage;
+	currentMessage = '';
+	isStreaming = true;
+	error = '';
+
+	try {
+		const response = await fetch('/api/ai/chat', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ message: messageToSend, model: 'gemma3-legal:latest', useRAG: true })
+		});
+		if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+		// Append a placeholder assistant message that will be filled by stream or JSON
+		messages = [...messages, { id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date() }];
+
+		// If body is a stream (SSE-like), read incrementally
+		if (response.body) {
+			const reader = response.body.getReader();
+			const decoder = new TextDecoder();
+			let buffer = '';
+
+			try {
+				while (true) {
+					const { done, value } = await reader.read();
+					if (done) break;
+					buffer += decoder.decode(value, { stream: true });
+
+					const parts = buffer.split('\n');
+					buffer = parts.pop() || '';
+
+					for (const raw of parts) {
+						const line = raw.trim();
+						if (!line) continue;
+						// support "data: {...}" or raw JSON/text
+						const payload = line.startsWith('data:') ? line.slice(5).trim() : line;
+						try {
+							const parsed = JSON.parse(payload);
+							if (parsed?.content) {
+								messages[messages.length - 1].content += String(parsed.content);
+								messages = [...messages]; // trigger reactivity
+							} else if (typeof parsed === 'string') {
+								messages[messages.length - 1].content += parsed;
+								messages = [...messages];
+							}
+						} catch {
+							// not JSON: append raw chunk
+							messages[messages.length - 1].content += payload;
+							messages = [...messages];
+						}
+					}
+				}
+
+				// flush any remaining buffer
+				if (buffer) {
+					messages[messages.length - 1].content += buffer;
+					messages = [...messages];
+				}
+			} finally {
+				try { reader.releaseLock(); } catch { /* ignore */ }
+			}
+		} else {
+			// Non-streaming fallback: parse full JSON
+			const data = await response.json();
+			const text = data?.response || data?.text || data?.content || 'No response';
+			messages[messages.length - 1].content = String(text);
+			messages = [...messages];
+		}
+	} catch (e) {
+		error = `Failed to communicate with AI assistant: ${e instanceof Error ? e.message : String(e)}`;
+		// remove empty assistant placeholder if present
+		if (messages[messages.length - 1]?.role === 'assistant' && !messages[messages.length - 1]?.content) {
+			messages = messages.slice(0, -1);
+		}
+	} finally {
+		isStreaming = false;
+	}
+}
+
+function handleKeydown(event: KeyboardEvent) {
+	if (event.key === 'Enter' && !event.shiftKey) {
+		event.preventDefault();
+		void sendMessage();
+	}
+}
+
+// Quick legal queries
+const quickQueries = [
+	'Analyze this contract for potential issues',
+	'What are the key precedents for this case type?',
+	'Summarize the evidence presented',
+	'Generate a legal brief outline'
+];
+
+async function handleQuickQuery(query: string): Promise<void> {
+	currentMessage = query;
+	await sendMessage();
+}
+
+// Added: small helper to format timestamps used in the template
+function formatTime(date: Date | string | number): string {
+	const d = new Date(date);
+	return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+}
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<!-- Changed: replace placeholder main with markup that uses the CSS classes defined below -->
+<main class="ai-assistant">
+	<header class="assistant-header">
+		<h1>Legal AI Assistant</h1>
+		<p>Ask a question or use a quick query to get started.</p>
+	</header>
+
+	{#if error}
+		<div class="error-banner" role="alert">{error}</div>
+	{/if}
+
+	<section class="quick-actions">
+		<h2>Quick Queries</h2>
+		<div class="quick-buttons">
+			{#each quickQueries as q}
+				<button class="quick-button" type="button" onclick={() => void handleQuickQuery(q)}>{q}</button>
+			{/each}
+		</div>
+	</section>
+
+	<section class="chat-container">
+		<div class="chat-card">
+			<div class="messages-container" aria-live="polite">
+				{#each messages as msg, i (msg.id)}
+					<div class="message {msg.role === 'user' ? 'user' : 'assistant'}">
+						<div class="message-icon" aria-hidden="true">
+							{#if msg.role === 'user'}👤{:else}🧠{/if}
+						</div>
+						<div class="message-content">
+							<div class="message-text">{msg.content}</div>
+
+							{#if msg.role === 'assistant' && i === messages.length - 1 && isStreaming}
+								<div class="typing-indicator" aria-hidden="true">Typing…</div>
+							{/if}
+
+							<div class="message-time">{formatTime(msg.timestamp)}</div>
+						</div>
+					</div>
+				{/each}
+			</div>
+		</div>
+	</section>
+
+	<section class="input-container">
+		<textarea
+			class="message-input"
+			placeholder="Enter your message…"
+			bind:value={currentMessage}
+			onkeydown={(e) => handleKeydown(e as KeyboardEvent)}
+			rows="3"
+		></textarea>
+		<button
+			class="send-button"
+			type="button"
+			onclick={() => void sendMessage()}
+			disabled={isStreaming || !currentMessage.trim()}
+		>
+			{isStreaming ? 'Sending…' : 'Send'}
+		</button>
+	</section>
+
+	<section class="capabilities" aria-hidden="true">
+		<h2>Capabilities</h2>
+		<div class="capabilities-grid">
+			<div class="capability-card">
+				<div class="capability-icon">📄</div>
+				<h3>Document Analysis</h3>
+				<p>Summarize and extract key clauses from contracts and filings.</p>
+			</div>
+			<div class="capability-card">
+				<div class="capability-icon">🔎</div>
+				<h3>Precedent Search</h3>
+				<p>Find related cases and legal authorities using vector search.</p>
+			</div>
+			<div class="capability-card">
+				<div class="capability-icon">🧭</div>
+				<h3>Guided Drafts</h3>
+				<p>Generate briefs, outlines, and checklists for legal workflows.</p>
+			</div>
+		</div>
+	</section>
 </main>
 
 <style>
+/* ...existing CSS (unchanged) ... */
 .ai-assistant { max-width: 1200px; margin: 0 auto; padding: 0 1rem}
 
   .assistant-header { text-align: center; margin-bottom: 2rem}

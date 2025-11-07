@@ -1,45 +1,48 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
+  import type { Case } from '$lib/types';
+  import type { Document } from '$lib/types';
   import { onMount } from 'svelte';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
-  import  Textarea  from "$lib/components/ui/textarea.svelte";
+
+  // Keep only icons actually used; remove unused ones to silence linter warnings.
   import {
     Cpu,
     Brain,
     Zap,
     Database,
-    Play,
-    Pause,
-    RotateCcw,
-    Settings,
-    Activity,
-    Users,
-    Workflow
+    Activity
   } from 'lucide-svelte';
-  import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
-  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
-  import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
-  // dynamic orchestrator component (workaround for modules without a typed default export)
-  let OrchestratorComponent: unknown = null
-  onMount(() => {
-		(async () => {
 
-    try {
-      const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
-      OrchestratorComponent = (mod && (mod as: unknown).default) ?? (mod as: unknown).MultiLLMOrchestrator ?? mod} catch (err) {
-      console.warn('Failed to load orchestrator component dynamically:', err)}
-  		})();
-	});
+  // Removed unused UI imports (Button/Badge/Textarea/LLMSelector) to avoid "declared but never read".
+  import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
+
+  // Use namespace import to avoid TS errors when the module has different export shapes.
+  import * as aiWorkerService from '$lib/services/ai-worker-manager.js';
+
+  // dynamic orchestrator component (workaround for modules without a typed default export)
+  let OrchestratorComponent: unknown = null;
+
+  onMount(() => {
+    (async () => {
+      try {
+        const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
+        // prefer default export, then named export, then module itself
+        OrchestratorComponent = (mod as unknown as { default?: unknown; MultiLLMOrchestrator?: unknown }).default
+          ?? (mod as unknown as { default?: unknown; MultiLLMOrchestrator?: unknown }).MultiLLMOrchestrator
+          ?? mod;
+      } catch (err) {
+        console.warn('Failed to load orchestrator component dynamically:', err);
+      }
+    })();
+  });
 
   interface DemoResult {
-    task: AITask
-    response?: unknown
-    error?: string}
+    task: AITask;
+    response?: unknown;
+    error?: string;
+  }
 
-  // Local demo state (avoid runtime $state magic here for compile stability)
-  let selectedModel: LLMModel | undefined
+  // Local demo state
+  let selectedModel: LLMModel | undefined = undefined;
   let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
   let isProcessing = $state<boolean>(false);
   let demoResults: DemoResult[] = [];
@@ -76,92 +79,108 @@ import type { Document } from '$lib/types';
   ];
 
   // Run a demo scenario by creating analysis tasks and submitting them to the aiWorkerManager.
-  async function runDemoScenario(scenario: unknown): Promise<any> {
-    if (!selectedModel) return
-    isProcessing = true
+  async function runDemoScenario(scenario: unknown): Promise<void> {
+    if (!selectedModel) return;
+    isProcessing = true;
     demoResults = [];
     try {
-      const tasks: AITask[] = (scenario.tasks || []).map((taskConfig: unknown) =>
-        createAnalysisTask(
-          `${scenario.prompt}\n\nFocus: ${taskConfig.focus}`,
+      const tasks: AITask[] = (scenario as any).tasks?.map((taskConfig: any) =>
+        // use namespace import - aiWorkerService.createAnalysisTask
+        (aiWorkerService as any).createAnalysisTask(
+          `${(scenario as any).prompt}\n\nFocus: ${taskConfig.focus}`,
           taskConfig.focus,
           taskConfig.model,
           taskConfig.provider,
-          ({
+          {
             priority: 'high',
             maxTokens: 512,
             params: { temperature: 0.1 }
-          }, as: unknown)
+          }
         )
-      );
+      ) ?? [];
 
       demoResults = tasks.map((task) => ({ task }));
 
       const taskPromises = tasks.map(async (task) => {
         try {
-          const taskId = await aiWorkerManager.submitTask(task as: unknown),
-          const result = await aiWorkerManager.waitForTask(taskId);
+          // use namespace import for submit/wait
+          const taskId = await (aiWorkerService as any).submitTask(task);
+          const result = await (aiWorkerService as any).waitForTask(taskId);
           demoResults = demoResults.map((r) =>
             r.task === task ? { ...r, response: result } : r
           );
-          return result} catch (error) {
+          return result;
+        } catch (error) {
           console.error('Task failed:', error);
           demoResults = demoResults.map((r) =>
-            r.task === task ? { ...r, error: (error as Error).message ?? String(error) } : r
-          )}
+            r.task === task ? { ...r, error: (error as Error)?.message ?? String(error) } : r
+          );
+        }
       });
 
       await Promise.all(taskPromises);
-      console.log(`Demo scenario: "${scenario.name}" completed`)} catch (error) {
-      console.error('Demo scenario failed:', error)} finally {
-      isProcessing = false}
+      console.log(`Demo scenario: "${(scenario as any).name}" completed`);
+    } catch (error) {
+      console.error('Demo scenario failed:', error);
+    } finally {
+      isProcessing = false;
+    }
   }
-  async function submitCustomTask(): Promise<any> {
-    if (!selectedModel || !userPrompt || !userPrompt.trim()) return
-    isProcessing = true
-    let task: AITask | undefined
+
+  async function submitCustomTask(): Promise<void> {
+    if (!selectedModel || !userPrompt?.trim()) return;
+    isProcessing = true;
+    let task: AITask | undefined;
     try {
-      task = createGenerationTask(
+      // use namespace import - createGenerationTask
+      task = (aiWorkerService as any).createGenerationTask(
         userPrompt,
-        (selectedModel as: unknown).name,
-        (selectedModel as: unknown).provider,
-        ({
+        (selectedModel as any).name ?? (selectedModel as any).id ?? 'unknown-model',
+        (selectedModel as any).provider ?? 'ollama',
+        {
           priority: 'high',
           maxTokens: 1024,
           params: { temperature: 0.1 }
-        }, as: unknown)
-      ) as: unknown
-      if (task) {
-        demoResults = [{ task }];
-        const taskId = await aiWorkerManager.submitTask(task as: unknown),
-        const result = await aiWorkerManager.waitForTask(taskId);
-        demoResults = [{ task, response: result }];
-        console.log('Custom task, completed:', result)}
-    } catch (error) {
-      console.error('Custom task failed:', error);
-      if (task) {
-        demoResults = [{ task, error: (error as Error).message ?? String(error) }]}
+        }
+      ) as unknown as AITask;
+
+      const taskId = await (aiWorkerService as any).submitTask(task);
+      const result = await (aiWorkerService as any).waitForTask(taskId);
+
+      // prepend result to demoResults
+      demoResults = [{ task, response: result }, ...demoResults];
+    } catch (err) {
+      console.error('Custom task failed:', err);
+      demoResults = [
+        { task: (task as AITask) ?? (undefined as unknown as AITask), error: (err as Error)?.message ?? String(err) },
+        ...demoResults
+      ];
     } finally {
-      isProcessing = false}
+      isProcessing = false;
+    }
   }
-  function clearResults() {
-    demoResults = []}
-  function getProviderIcon(providerId: string) {
+
+  function providerIcon(providerId: string) {
+    // Map provider IDs to lucide-svelte icon components imported earlier
     switch (providerId) {
-      case, 'ollama':
-        return Cpu
-      case, 'vllm':
-        return Zap
-      case, 'autogen':
-        return Brain
-      case, 'crewai':
-        return Database
-      default: return Activity}
+      case 'ollama':
+        return Brain;
+      case 'vllm':
+        return Cpu;
+      case 'autogen':
+        return Zap;
+      case 'crewai':
+        return Database;
+      default:
+        return Activity;
+    }
   }
+
   function formatDuration(ms: number): string {
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
-    return `${(ms / 60000).toFixed(1)}m`}
+    return `${(ms / 60000).toFixed(1)}m`;
+  }
 </script>
 
 <main class="page-repair">

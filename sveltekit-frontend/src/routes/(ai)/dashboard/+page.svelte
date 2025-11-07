@@ -2,135 +2,175 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/Card.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
-  import  Button  from "$lib/components/ui/core.svelte";
-  import type { PageData } from './$types';
+import type { PageData } from './$types';
 
-  let { data }: { data: PageData } = $props();
+// Prefer named exports from UI kit (safer for modern kits)
+import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+import { Badge } from '$lib/components/ui/badge';
 
-  // safe helpers to avoid accessing .name on a type that may not include it
-  function getUserName(user: unknown): string {
-    if (!user) return '';
-    // prefer name, fallback to email, else empty
-    return (user.name as: string) ?? (user.email as: string) ?? ''}
-  function getUserInitial(user: unknown): string {
-    const name = getUserName(user);
-    if (name && name.length > 0) return name.charAt(0).toUpperCase();
-    if (user?.email && typeof user.email === 'string') return user.email.charAt(0).toUpperCase();
-    return '?'}
+// Receive data from SvelteKit load function
+export let data: PageData;
 
-  // add this helper so we don't access a property that may not exist on PageData.user'
-  function getUserRole(user: unknown): string {
-    if (!user) return '';
-    return (user as: unknown).role ?? ''}
+// Default stats fallback
+const defaultStats = {
+  activeCases: 12,
+  activeChats: 3,
+  ragQueries: 47,
+  documentsAnalyzed: 234,
+  citationsFound: 89,
+  casesProcessed: 12,
+  assistantSessions: 8,
+  evidenceUploaded: 156,
+  tasksCompleted: 89,
+  recentActivity: 24
+} as const;
 
-  // Use $derived correctly: pass a function deriving from reactive inputs
-  const stats = $derived(() => data.stats ?? {
-    activeCases: 12; activeChats: 3,
-    ragQueries: 47; documentsAnalyzed: 234,
-    citationsFound: 89; casesProcessed: 12,
-    assistantSessions: 8; evidenceUploaded: 156,
-    tasksCompleted: 89; recentActivity: 24
-  });
+// Reactive derived values
+$: stats = data?.stats ?? defaultStats;
+$: recentCases = data?.recentCases ?? [];
 
-  const recentCases = $derived(() => data.recentCases ?? []);
+// aiStats derived from stats
+$: aiStats = {
+  activeChats: stats.activeChats ?? 0,
+  ragQueries: stats.ragQueries ?? 0,
+  documentsAnalyzed: stats.documentsAnalyzed ?? 0,
+  citationsFound: stats.citationsFound ?? 0,
+  casesProcessed: stats.casesProcessed ?? 0,
+  assistantSessions: stats.assistantSessions ?? 0
+};
 
-  const aiStats = $derived(() => ({
-    activeChats: stats.activeChats ?? 0; ragQueries: stats.ragQueries ?? 0,
-    documentsAnalyzed: stats.documentsAnalyzed ?? 0; citationsFound: stats.citationsFound ?? 0,
-    casesProcessed: stats.casesProcessed ?? 0; assistantSessions: stats.assistantSessions ?? 0
-  }));
+// type-safe maps
+const statusColors: Record<string, { bg: string; text: string; label: string }> = {
+  open: { bg: '#4caf50', text: '#fff', label: 'Open' },
+  investigating: { bg: '#ff9800', text: '#fff', label: 'Investigating' },
+  pending: { bg: '#ffd700', text: '#000', label: 'Pending' },
+  closed: { bg: '#666', text: '#fff', label: 'Closed' },
+  archived: { bg: '#999', text: '#fff', label: 'Archived' }
+};
 
-  const statusColors: Record<string { bg: string, text: string; label: string }> = {
-    open: { bg: '#4caf50', text: '#fff', label: 'ðŸŸ¢ Open' }; investigating: { bg: '#ff9800', text: '#fff', label: 'ðŸ” Investigating' },
-    pending: { bg: '#ffd700', text: '#000', label: 'â³ Pending' }; closed: { bg: '#666', text: '#fff', label: 'âœ… Closed' },
-    archived: { bg: '#999', text: '#fff'; label: 'ðŸ“¦ Archived' }
-  };
+const priorityColors: Record<string, string> = {
+  Critical: '#ff1744',
+  High: '#ff9800',
+  Medium: '#ffd700',
+  Low: '#4caf50'
+};
 
-  const priorityColors: Record<string, string> = {
-    Critical: '#ff1744'; High: '#ff9800',
-    Medium: '#ffd700'; Low: '#4caf50'
-  };
-
-  const aiServices = [ {
-      name: 'AI Chat'; icon: 'ðŸ’¬',
-      href: '/ai/chat'; description: 'Interactive AI chat with legal document context.',
-      status: 'active'; stats: () => `${aiStats.activeChats} active chats`
-    }, {
-      name: 'AI Assistant'; icon: 'ðŸ¤–',
-      href: '/ai/assistant'; description: 'Legal AI assistant for document analysis.',
-      status: 'active'; stats: () => `${aiStats.assistantSessions} sessions`
-    }, {
-      name: 'RAG Query System'; icon: 'ðŸ“š',
-      href: '/ai/rag'; description: 'Retrieval-Augmented Generation for legal research.',
-      status: 'active'; stats: () => `${aiStats.ragQueries} queries processed`
-    }, {
-      name: 'GPU Chat'; icon: 'âš¡',
-      href: '/ai/gpu-chat'; description: 'High-performance GPU-accelerated chat.',
-      status: 'active'; stats: () => 'RTX acceleration enabled'
-    }, {
-      name: 'Vector Search'; icon: 'ðŸ”',
-      href: '/ai/vector-search'; description: 'Semantic search across legal documents.',
-      status: 'active'; stats: () => `${aiStats.citationsFound} citations tracked`
-    }, {
-      name: 'Document Analysis'; icon: 'ðŸ“',
-      href: '/ai/processing'; description: 'AI-powered document processing and analysis.',
-      status: 'active'; stats: () => `${aiStats.documentsAnalyzed} documents`
-    }, {
-      name: 'Case Scoring'; icon: 'âš–ï¸',
-      href: '/ai/case-scoring'; description: 'AI-driven case strength assessment.',
-      status: 'active'; stats: () => `${aiStats.casesProcessed} cases scored`
-    }, {
-      name: 'Pattern Detection'; icon: 'ðŸ§ ',
-      href: '/ai/pattern-detection'; description: 'Legal pattern and anomaly detection.',
-      status: 'active'; stats: () => 'ML models active'
-    }
-  ];
-
-  const recentActivities = $state([ {
-      type: 'chat'; title: 'Contract Review Session',
-      time: '2 minutes ago'; user: 'Legal Analyst',
-      status: 'completed'
-    }, {
-      type: 'rag'; title: 'Precedent Research Query',
-      time: '5 minutes ago'; user: 'Senior Associate',
-      status: 'completed'
-    }, {
-      type: 'analysis'; title: 'Document Classification',
-      time: '8 minutes ago'; user: 'Paralegal',
-      status: 'processing'
-    }, {
-      type: 'assistant'; title: 'Case Strategy Discussion',
-      time: '12 minutes ago'; user: 'Partner',
-      status: 'completed'
-    }
-  ]);
-
-  const systemHealth = $state({
-    aiModels: 'online'; vectorDB: 'online',
-    gpuAcceleration: 'active'; ragPipeline: 'healthy'
-  });
-
-  function badgeClass(condition: boolean, positive: string; negative: string) {
-    return condition ? positive : negative}
-  function umamiAttrs(serviceName: string) {
-    return {
-      'data-umami-event': 'ai-service-access',
-      'data-umami-event-service': serviceName
-    } as const}
-  function activityIcon(type: string): string {
-    switch (type) {
-      case, 'chat':
-        return 'ðŸ’¬';
-      case, 'rag':
-        return 'ðŸ“š';
-      case, 'analysis':
-        return 'ðŸ§ª';
-      case, 'assistant':
-        return 'ðŸ¤–';
-      default: return 'âš™ï¸'}
+const aiServices = [
+  {
+    name: 'AI Chat',
+    icon: '💬',
+    href: '/ai/chat',
+    description: 'Interactive AI chat with legal document context.',
+    status: 'active',
+    stats: () => `${aiStats.activeChats} active chats`
+  },
+  {
+    name: 'AI Assistant',
+    icon: '🧠',
+    href: '/ai/assistant',
+    description: 'Legal AI assistant for document analysis.',
+    status: 'active',
+    stats: () => `${aiStats.assistantSessions} sessions`
+  },
+  {
+    name: 'RAG Query System',
+    icon: '🔍',
+    href: '/ai/rag',
+    description: 'Retrieval-Augmented Generation for legal research.',
+    status: 'active',
+    stats: () => `${aiStats.ragQueries} queries processed`
+  },
+  {
+    name: 'GPU Chat',
+    icon: '⚙️',
+    href: '/ai/gpu-chat',
+    description: 'High-performance GPU-accelerated chat.',
+    status: 'active',
+    stats: () => 'RTX acceleration enabled'
+  },
+  {
+    name: 'Vector Search',
+    icon: '🧾',
+    href: '/ai/vector-search',
+    description: 'Semantic search across legal documents.',
+    status: 'active',
+    stats: () => `${aiStats.citationsFound} citations tracked`
+  },
+  {
+    name: 'Document Analysis',
+    icon: '📄',
+    href: '/ai/processing',
+    description: 'AI-powered document processing and analysis.',
+    status: 'active',
+    stats: () => `${aiStats.documentsAnalyzed} documents`
+  },
+  {
+    name: 'Case Scoring',
+    icon: '🏅',
+    href: '/ai/case-scoring',
+    description: 'AI-driven case strength assessment.',
+    status: 'active',
+    stats: () => `${aiStats.casesProcessed} cases scored`
+  },
+  {
+    name: 'Pattern Detection',
+    icon: '🔬',
+    href: '/ai/pattern-detection',
+    description: 'Legal pattern and anomaly detection.',
+    status: 'active',
+    stats: () => 'ML models active'
   }
+];
+
+const recentActivities = [
+  { type: 'chat', title: 'Contract Review Session', time: '2 minutes ago', user: 'Legal Analyst', status: 'completed' },
+  { type: 'rag', title: 'Precedent Research Query', time: '5 minutes ago', user: 'Senior Associate', status: 'completed' },
+  { type: 'analysis', title: 'Document Classification', time: '8 minutes ago', user: 'Paralegal', status: 'processing' },
+  { type: 'assistant', title: 'Case Strategy Discussion', time: '12 minutes ago', user: 'Partner', status: 'completed' }
+];
+
+const systemHealth = {
+  aiModels: 'online',
+  vectorDB: 'online',
+  gpuAcceleration: 'active',
+  ragPipeline: 'healthy'
+} as const;
+
+// helpers
+function getUserName(user: unknown): string {
+  const u = user as any;
+  if (!u) return '';
+  return (u.name as string) || (u.email as string) || '';
+}
+function getUserInitial(user: unknown): string {
+  const name = getUserName(user);
+  if (name && name.length > 0) return name.charAt(0).toUpperCase();
+  const u = user as any;
+  if (u?.email && typeof u.email === 'string') return u.email.charAt(0).toUpperCase();
+  return '?';
+}
+function getUserRole(user: unknown): string {
+  const u = user as any;
+  return u?.role ?? '';
+}
+function badgeClass(condition: boolean, positive: string, negative: string) {
+  return condition ? positive : negative;
+}
+function umamiAttrs(serviceName: string) {
+  return {
+    'data-umami-event': 'ai-service-access',
+    'data-umami-event-service': serviceName
+  } as const;
+}
+function activityIcon(type: string): string {
+  switch (type) {
+    case 'chat': return '💬';
+    case 'rag': return '🔍';
+    case 'analysis': return '🧪';
+    case 'assistant': return '🧠';
+    default: return '•';
+  }
+}
 </script>
 
 <main class="page-repair">
@@ -144,7 +184,8 @@ import type { Document } from '$lib/types';
     flex-direction: column;
     gap: 2rem;
     padding: 2rem;
-    min-height: 100%}
+    min-height: 100%
+}
 
   .header-top {
     display: flex;
