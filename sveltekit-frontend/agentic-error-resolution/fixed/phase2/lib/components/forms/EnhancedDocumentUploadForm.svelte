@@ -9,7 +9,7 @@
   import { AlertTriangle, CheckCircle, FileText, Loader2, RotateCcw, Save, Upload, X, Zap } from "lucide-svelte";
   import { onMount } from "svelte";
   import type { Infer, SuperValidated } from "sveltekit-superforms";
-</script>
+
   // Props
   let {
     data,
@@ -24,6 +24,7 @@
     caseId?: string | undefined,
     autoSave?: boolean
   } = $props();
+
   // Form state management
   const formIntegration = createDocumentUploadForm(data, {
     onSuccess,
@@ -32,16 +33,18 @@
     autoSaveDelay: 2000,
     resetOnSuccess: true
   });
-  const { form, actor, state, context, isValid, isSubmitting, errors, progress } = formIntegratio;
+
+  const { form, actor, state, context, isValid, isSubmitting, errors, progress } = formIntegration;
   const { form: formData, enhance } = form;
+
   // Form persistence
-  const persistence = new FormStatePersistence(
-    FORM_STORAGE_KEYS.DOCUMENT_UPLOAD
-  );
+  const persistence = new FormStatePersistence(FORM_STORAGE_KEYS.DOCUMENT_UPLOAD);
+
   // File handling
   let fileInput: HTMLInputElement | null = null;
-  let dragActive = $state(false);
+  let dragActive = false;
   let selectedFile: File | null = null;
+
   // Form options
   const documentTypes = [
     { value: "contract", label: "Contract" },
@@ -60,48 +63,45 @@
     { value: "local", label: "Local" },
     { value: "international", label: "International" },
   ];
-  // ============================================================================
+
   // FILE HANDLING
-  // ============================================================================
-  function handleFileSelect(_event: Event) {
-    // removed unused target assignment
-    const file = target.files?.[0];
+  function handleFileSelect(evt: Event) {
+    const input = evt.currentTarget as HTMLInputElement;
+    const file = input?.files?.[0];
     if (file) {
-      selectedFile = fil;
-      $formData.file = fil;
-      // Auto-populate title from filename
+      selectedFile = file;
+      $formData.file = file;
       if (!$formData.title) {
         $formData.title = file.name.replace(/\.[^/.]+$/, "");
       }
     }
   }
-  function handleDrop(_event: DragEvent) {
-    event.preventDefault();
-    dragActive = $state(false);
-    const file = event.dataTransfer?.files[0];
+  function handleDrop(evt: DragEvent) {
+    evt.preventDefault();
+    dragActive = false;
+    const file = evt.dataTransfer?.files[0];
     if (file) {
-      selectedFile = fil;
-      $formData.file = fil;
+      selectedFile = file;
+      $formData.file = file;
       if (!$formData.title) {
         $formData.title = file.name.replace(/\.[^/.]+$/, "");
       }
     }
   }
-  function handleDragOver(_event: DragEvent) {
-    event.preventDefault();
+  function handleDragOver(evt: DragEvent) {
+    evt.preventDefault();
     dragActive = true;
   }
   function handleDragLeave() {
-    dragActive = $state(false);
+    dragActive = false;
   }
   function removeFile() {
     selectedFile = null;
     $formData.file = null;
     if (fileInput) fileInput.value = "";
   }
-  // ============================================================================
+
   // FORM ACTIONS
-  // ============================================================================
   function handleSubmit() {
     if ($isValid && selectedFile) {
       actor.send({ type: "UPLOAD" });
@@ -114,16 +114,16 @@
       title: "",
       description: "",
       documentType: "other",
-      jurisdiction undefined;
+      jurisdiction: undefined,
       tags: [],
-      file: null
+      file: null,
       aiProcessing: {
-        generateSummary: true
-        extractEntities: true
-        riskAssessment: true
+        generateSummary: true,
+        extractEntities: true,
+        riskAssessment: true,
         generateRecommendations: false
-      },
-    }
+      }
+    };
     persistence.clear();
   }
   function handleSaveDraft() {
@@ -135,28 +135,24 @@
       Object.assign($formData, draft);
     }
   }
-  // ============================================================================
-  // REACTIVE STATEMENTS
-  // ============================================================================
-  let stateValue = $derived($state);
-  let contextValue = $derived($context);
-  let canSubmit = $derived($isValid && selectedFile && !$isSubmitting);
-  let showProgress = $derived($progress > 0 && $progress < 100);
-  let isCompleted = $derived(stateValue === "completed");
-  let isError = $derived(stateValue === "uploadError" ||
-    stateValue === "processingError" ||
-    stateValue === "failed");
+
+  // REACTIVE STATEMENTS (simple Svelte reactives)
+  $: stateValue = $state?.value ?? $state;
+  $: contextValue = $context;
+  $: canSubmit = $isValid && selectedFile && !$isSubmitting;
+  $: showProgress = $progress > 0 && $progress < 100;
+  $: isCompleted = stateValue === "completed";
+  $: isError = ["uploadError", "processingError", "failed"].includes(stateValue);
+
   // Ensure default form shape to prevent runtime errors
-  // Ensure default form shape to prevent runtime errors
-  // TODO: Convert to $derived
   if ($formData) {
     if (!$formData.aiProcessing) {
       $formData.aiProcessing = {
-        generateSummary: true
-        extractEntities: true
-        riskAssessment: true
+        generateSummary: true,
+        extractEntities: true,
+        riskAssessment: true,
         generateRecommendations: false
-      }
+      };
     }
     if (!$formData.tags) {
       $formData.tags = [];
@@ -165,68 +161,56 @@
       $formData.documentType = "other";
     }
   }
-    // ============================================================================
-    // LIFECYCLE
-    // ============================================================================
-    $effect(() => {
-      // Load draft if available
-      loadDraft();
-    });
-  </script>
-            <Badge
-              variant={isCompleted
-                ? "default"
-                : isError
-                  ? "destructive"
-                  : "secondary"}
-            >
-              {isCompleted
-                ? "Completed"
-                : isError
-                  ? "Error"
-                  : $isSubmitting
-                    ? "Processing"
-                    : "Ready"}
-            </Badge>
-          <div class="flex items-center gap-2">
-            <Upload size={24} />
-            Document Upload
-            <Badge
-              variant={isCompleted
-                ? "default"
-                : isError
-                  ? "destructive"
-                  : "secondary"}
-            >
-              {isCompleted
-                ? "Completed"
-                : isError
-                  ? "Error"
-                  : isSubmitting
-                    ? "Processing"
-                    : "Ready"}
-            </Badge>
-          </div>
-          <div class="flex gap-2">
-            <Button class="bits-btn"
-              variant="ghost"
-              size="sm"
-              onclick={handleSaveDraft}
-              disabled={$isSubmitting}
-            >
-<Save size={16} />
-</Button>
-            <Button class="bits-btn"
-              variant="ghost"
-              size="sm"
-              onclick={handleReset}
-              disabled={$isSubmitting}
-            >
-<RotateCcw size={16} />
-</Button>
-          </div>
-        </h3>
-      </div>
+
+  // LIFECYCLE
+  $effect(() => {
+    loadDraft();
+  });
+</script>
+
+<div class="enhanced-document-upload-form max-w-4xl mx-auto">
+  <div class="file-upload-card border-2 border-dashed border-gray-300 border-opacity-25 transition-color">
+    <div class="yorha-panel-header">
+      <h3 class="nes-text is-primary text-lg">
+        <div class="flex items-center gap-2">
+          <Upload size={24} />
+          Document Upload
+          <Badge
+            variant={isCompleted
+              ? "default"
+              : isError
+                ? "destructive"
+                : "secondary"}
+          >
+            {isCompleted
+              ? "Completed"
+              : isError
+                ? "Error"
+                : isSubmitting
+                  ? "Processing"
+                  : "Ready"}
+          </Badge>
+        </div>
+        <div class="flex gap-2">
+          <Button class="bits-btn"
+            variant="ghost"
+            size="sm"
+            onclick={handleSaveDraft}
+            disabled={$isSubmitting}
+          >
+            <Save size={16} />
+          </Button>
+          <Button class="bits-btn"
+            variant="ghost"
+            size="sm"
+            onclick={handleReset}
+            disabled={$isSubmitting}
+          >
+            <RotateCcw size={16} />
+          </Button>
+        </div>
+      </h3>
+    </div>
     {#if showProgress}
       <div class="yorha-panel-content">
         <div class="space-y-2">
@@ -254,7 +238,7 @@
         ondragleave={handleDragLeave}
         tabindex="0"
         onclick={() => fileInput?.click()}
-        keydown={(e) => e.key === "Enter" && fileInput?.click()}
+        onkeydown={(e) => e.key === "Enter" && fileInput?.click()}
       >
         {#if selectedFile}
           <div class="selected-file">
@@ -272,8 +256,8 @@
               onclick={removeFile}
               disabled={$isSubmitting}
             >
-<X size={16} />
-</Button>
+              <X size={16} />
+            </Button>
           </div>
         {:else}
           <div class="drop-zone-content">
@@ -285,15 +269,16 @@
               Supports PDF, DOCX, TXT, and image files up to 50MB
             </p>
             <Button class="bits-btn" variant="ghost" disabled={$isSubmitting}>
-<Upload class="mr-2" size={16} />
+              <Upload class="mr-2" size={16} />
               Browse Files
-</Button>
+            </Button>
           {/if}
       </div>
-      <input;
+      <input
         bind:this={fileInput}
         type="file"
-        accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp" onchange={handleFileSelect}
+        accept=".pdf,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp"
+        onchange={handleFileSelect}
         class="sr-only"
         disabled={$isSubmitting}
       />
@@ -313,7 +298,7 @@
               Title *
             </label>
             <Input
-              id="title";
+              id="title"
               bind:value={$formData.title}
               placeholder="Enter document title"
               class={$errors.title ? "border-red-500" : ""}
@@ -340,7 +325,7 @@
               <label for="documentType" class="block text-sm font-medium mb-2">
                 Document Type *
               </label>
-              <Select;
+              <Select
                 bind:value={$formData.documentType}
                 disabled={$isSubmitting}
               >
@@ -358,7 +343,7 @@
               <label for="jurisdiction" class="block text-sm font-medium mb-2">
                 Jurisdiction
               </label>
-              <Select;
+              <Select
                 bind:value={$formData.jurisdiction}
                 disabled={$isSubmitting}
               >
@@ -367,9 +352,7 @@
                 </SelectTrigger>
                 <SelectContent>
                   {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
-                    <SelectItem value={jurisdiction.value}
-                      >{jurisdiction.label}</SelectItem
-                    >
+                    <SelectItem value={jurisdiction.value}>{jurisdiction.label}</SelectItem>
                   {/each}
                 </SelectContent>
               </Select>
@@ -381,10 +364,12 @@
             </label>
             <Input
               id="tags"
-              value={$formData.tags.join(", ")} oninput={(e) => {
-                const value = e.currentTarget.valu;
+              value={$formData.tags?.join(", ") ?? ""}
+              oninput={(e) => {
+                const value = (e.currentTarget as HTMLInputElement).value;
                 $formData.tags = value
-                  .split.map((tag) => tag.trim())
+                  .split(',')
+                  .map((tag) => tag.trim())
                   .filter((tag) => tag);
               }}
               placeholder="contract, litigation, corporate"
@@ -421,7 +406,7 @@
                 Identify names, dates, amounts, and legal entities
               </span>
             </Checkbox>
-            <Checkbox;
+            <Checkbox
               bind:checked={$formData.aiProcessing.riskAssessment}
               disabled={$isSubmitting}
             >
@@ -430,7 +415,7 @@
                 Analyze potential legal risks and compliance issues
               </span>
             </Checkbox>
-            <Checkbox;
+            <Checkbox
               bind:checked={$formData.aiProcessing.generateRecommendations}
               disabled={$isSubmitting}
             >
@@ -440,7 +425,7 @@
               </span>
             </Checkbox>
           </div>
-          {#if Object.values.some(Boolean)}
+          {#if $formData?.aiProcessing && Object.values($formData.aiProcessing).some(Boolean)}
             <Alert>
               <Zap class="h-4 w-4" />
               <AlertDescription>
@@ -497,7 +482,8 @@ actor.send({ type: "SKIP_PROCESSING" })}
                 AI processing completed with {contextValue.aiResults
                   .confidence}% confidence.
               </p>
-            {/if}
+            </div>
+          {/if}
         </AlertDescription>
       </Alert>
     {/if}
@@ -514,14 +500,14 @@ actor.send({ type: "SKIP_PROCESSING" })}
           onclick={handleReset}
           disabled={$isSubmitting}
         >
-Reset Form
-</Button>
+          Reset Form
+        </Button>
         <Button class="bits-btn"
-          type="submit"
-          onclick|preventDefault={handleSubmit}
+          type="button"
+          onclick={handleSubmit}
           disabled={!canSubmit}
         >
-{#if $isSubmitting}
+          {#if $isSubmitting}
             <Loader2 class="mr-2 animate-spin" size={16} />
             {stateValue === "uploading"
               ? "Uploading..."
@@ -532,7 +518,7 @@ Reset Form
             <Upload class="mr-2" size={16} />
             Upload & Process
           {/if}
-</Button>
+        </Button>
       </div>
     </div>
   </form>

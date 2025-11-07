@@ -1,12 +1,10 @@
 package tensor
 
 /*
+#cgo CFLAGS: -I${SRCDIR}
 #cgo LDFLAGS: -L${SRCDIR} -lembedding_trt
-#include "embedding_trt.c"
-// The following lines are necessary to make C functions visible to Go
-// They must match the C function signatures exactly.
-extern int loadTRTEngine(const char* path);
-extern float runEmbedding(const char* text, float* out, int maxLen);
+#include "embedding_trt.h"
+#include <stdlib.h>
 */
 import "C"
 import (
@@ -77,9 +75,18 @@ func ExecuteGPUEmbedding(query string) (tensorID string, gpuTime int64) {
 	cQuery := C.CString(query)
 	defer C.free(unsafe.Pointer(cQuery)) // Free the C string after use
 
-	// Call the C function to run embedding inference
-	// The C function will fill the 'out' slice with the embedding
-	C.runEmbedding(cQuery, (*C.float)(unsafe.Pointer(&out[0])), C.int(len(out)))
+	// Safety: ensure out has at least one element before taking &out[0]
+	if len(out) == 0 {
+		log.Println("⚠️  embedding output buffer has zero length")
+		return "", -1
+	}
+
+	// Call the C function to run embedding inference and capture status
+	status := C.runEmbedding(cQuery, (*C.float)(unsafe.Pointer(&out[0])), C.int(len(out)))
+	if status != 0 {
+		log.Printf("❌ runEmbedding failed with status %d\n", int(status))
+		return "", -1
+	}
 
 	gpuTime = time.Since(start).Milliseconds()
 	tensorID = fmt.Sprintf("tensor_%d", start.UnixNano())

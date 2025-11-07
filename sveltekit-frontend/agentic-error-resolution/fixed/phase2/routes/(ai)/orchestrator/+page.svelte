@@ -4,9 +4,11 @@ Showcases the service worker-based AI orchestration system
 -->
 <script lang="ts">
   import { onMount } from 'svelte';
-  import  Button  from "$lib/components/ui/enhanced-bits.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
-  import  Textarea  from "$lib/components/ui/textarea.svelte";
+  // prefer named exports from the UI index modules (avoids .svelte path/type resolution issues)
+  import { Button } from '$lib/components/ui/core';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Textarea } from '$lib/components/ui/textarea';
+
   import {
     Cpu,
     Brain,
@@ -20,14 +22,17 @@ Showcases the service worker-based AI orchestration system
     Users,
     Workflow
   } from 'lucide-svelte';
-  import LLMSelector from '$lib/components/ai/LLMSelector.svelte';
-  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager.js';
-  import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
+  // use module entrypoints (drop explicit file extensions)
+  import LLMSelector from '$lib/components/ai/LLMSelector';
+  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager';
+  import type { AITask, LLMModel } from '$lib/types/ai-worker';
   // dynamic orchestrator component (workaround for modules without a typed default export)
-  let OrchestratorComponent: any = null;
+  let OrchestratorComponent = $state<any>(null);
+
   onMount(async () => {
     try {
       const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
+      // write into the $state-backed variable so template updates reactively
       OrchestratorComponent = (mod && (mod as any).default) ?? (mod as any).MultiLLMOrchestrator ?? mod;
     } catch (err) {
       console.warn('Failed to load orchestrator component dynamically:', err);
@@ -41,10 +46,10 @@ Showcases the service worker-based AI orchestration system
   }
 
   // Local demo state (avoid runtime $state magic here for compile stability)
-  let selectedModel: LLMModel | undefined;
-  let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
+  let selectedModel = $state<LLMModel | undefined>(undefined);
+  let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
   let isProcessing = $state(false);
-  let demoResults: DemoResult[] = [];
+  let demoResults = $state<DemoResult[]>([]);
 
   // Demo scenarios
   const demoScenarios = [
@@ -183,6 +188,18 @@ Showcases the service worker-based AI orchestration system
     if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
     return `${(ms / 60000).toFixed(1)}m`;
   }
+
+  // New helper: compute the result item classes safely (avoid inline expression inside class string)
+  function getResultClasses(result: DemoResult) {
+    const base = 'border rounded-lg p-3';
+    if (result.error) {
+      return `${base} border-red-200 bg-red-50 dark:bg-red-900/20`;
+    }
+    if (result.response) {
+      return `${base} border-green-200 bg-green-50 dark:bg-green-900/20`;
+    }
+    return `${base} border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20`;
+  }
 </script>
 <svelte:head>
   <title>Multi-LLM Orchestrator - Legal AI System</title>
@@ -244,10 +261,17 @@ Showcases the service worker-based AI orchestration system
               </p>
               <div class="space-y-2 mb-4">
                 {#each Array.isArray(scenario.tasks) ? scenario.tasks : [] as task}
-                  {@const SvelteComponent = getProviderIcon(task.provider)}
+                  {@const ProviderIcon = getProviderIcon(task.provider)}
                   <div class="flex items-center gap-2 text-xs">
-                    <div class="h-3 w-3 text-blue-500">
-  <SvelteComponent />
+                    {#if ProviderIcon}
+                      <div class="h-3 w-3">
+                        <!-- forward visual classes into the icon component (Svelte 5 dynamic tag) -->
+                        <ProviderIcon class="h-3 w-3 text-blue-500" />
+                      </div>
+                    {:else}
+                      <!-- safe fallback if no icon is returned -->
+                      <div class="h-3 w-3" />
+                    {/if}
                     <span class="text-gray-600 dark:text-gray-400">{task.focus}</span>
                   </div>
                 {/each}
@@ -256,8 +280,7 @@ Showcases the service worker-based AI orchestration system
                 variant="ghost"
                 size="sm"
                 class="w-full bits-btn bits-btn"
-                onclick={() =>
-runDemoScenario(scenario)}
+                onclick={() => runDemoScenario(scenario)}
                 disabled={isProcessing}
               >
                 {#if isProcessing}
@@ -346,14 +369,17 @@ runDemoScenario(scenario)}
           {:else}
             <div class="space-y-3 max-h-96 overflow-y-auto">
               {#each Array.isArray(demoResults) ? demoResults : [] as result}
-                {@const SvelteComponent_1 = getProviderIcon(result.task.providerId)}
-                <div class="border rounded-lg p-3 {result.error ? 'border-red-200 bg-red-50 dark:bg-red-900/20' : result.response ? 'border-green-200 bg-green-50 dark:bg-green-900/20' : 'border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20'}">
+                {@const ProviderIcon = getProviderIcon(result.task.providerId)}
+                <div class={getResultClasses(result)}>
                   <div class="flex items-start justify-between mb-2">
                     <div class="flex items-center gap-2">
-                      <div class="h-4 w-4 text-blue-500">
-  <SvelteComponent _1
-                        
-                      />
+                      {#if ProviderIcon}
+                        <div class="h-4 w-4 text-blue-500">
+                          <ProviderIcon class="h-4 w-4 text-blue-500" />
+                        </div>
+                      {:else}
+                        <div class="h-4 w-4" />
+                      {/if}
                       <span class="font-medium text-sm">
                         {result.task.providerId} - {result.task.model}
                       </span>
@@ -373,9 +399,11 @@ runDemoScenario(scenario)}
                       </Badge>
                     {/if}
                   </div>
+
                   <p class="text-xs text-gray-600 dark:text-gray-400 mb-2">
                     {result.task.prompt.substring(0, 100)}...
                   </p>
+
                   {#if result.response}
                     <div class="mt-2 p-2 bg-white dark:bg-gray-800 rounded text-xs">
                       <p class="font-medium mb-1">Response:</p>
@@ -395,9 +423,10 @@ runDemoScenario(scenario)}
                       <p class="text-red-600 dark:text-red-400">{result.error}</p>
                     </div>
                   {:else}
+                    <!-- Completed the previously unclosed branch: show a simple processing indicator and close the item container -->
                     <div class="mt-2 flex items-center gap-2 text-xs text-gray-500">
-                      <div class="animate-spin h-3 w-3 border border-gray-300 border-t-blue-500 rounded-full"></div>
-                      <span>Processing task...</span>
+                      <span class="animate-pulse">Processing…</span>
+                      <span>Waiting for worker</span>
                     </div>
                   {/if}
                 </div>
@@ -409,11 +438,11 @@ runDemoScenario(scenario)}
     </div>
     <!-- Main Orchestrator Component -->
     {#if OrchestratorComponent}
-      <svelte:component
-        this={OrchestratorComponent}
+      <!-- fixed prop name: maxConcurrentTasks (use dynamic tag in Svelte 5) -->
+      <OrchestratorComponent
         autoStart={true}
         showMetrics={true}
-        maxConcurrenttasks={3}
+        maxConcurrentTasks={3}
         enabledProviders={['ollama', 'vllm', 'autogen', 'crewai']}
       />
     {/if}

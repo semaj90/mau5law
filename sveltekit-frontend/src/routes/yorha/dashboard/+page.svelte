@@ -1,10 +1,9 @@
 <script lang="ts">
 // Fixed imports and clean top-level declarations
 import { onDestroy, onMount } from 'svelte';
-import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
+import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
 import YoRHaSystemStatus from '$lib/components/yorha/YoRHaSystemStatus.svelte';
 import type { PageData } from './$types';
-import type { SvelteComponent } from 'svelte';
 
 // runtime d3 namespace holder — use `any` to avoid TS namespace generics issues at compile time
 let d3: any = null;
@@ -75,6 +74,12 @@ let resizeObserver: ResizeObserver | null = null;
 
 // dynamic loader for YoRHaDataVizComponent
 let YoRHaDataVizComponent = $state<any | null>(null);
+
+// add: derived wrapper for runes-mode dynamic component rendering
+let VizComponent = $derived(YoRHaDataVizComponent);
+
+// add: safe vizProps derived from page data to avoid TS errors when PageData lacks vizProps
+let vizProps = $derived(() => (data as any).vizProps ?? {});
 
 // mark intentionally unused variable as used (no-op) to silence: "declared but never read"
 $effect(() => {
@@ -384,28 +389,7 @@ function updateD3() {
 		width: 100%;
 		height: 100%;
 	}
-</style>
 
-<main>
-	<div bind:this={graphContainer} class="graph-container"></div>
-	{#if $state.isLoading}
-		<div class="loading-overlay">
-			<YoRHaSystemStatus />
-		</div>
-	{/if}
-	{#if $state.errorMessage}
-		<div class="error-message">Error: {$state.errorMessage}</div>
-	{/if}
-	{#if YoRHaDataVizComponent}
-		<svelte:component this={YoRHaDataVizComponent} {...data.vizProps} />
-	{/if}
-</main>
-
-<template>
-	<svg bind:this={svg} class="d3-graph"></svg>
-</template>
-
-<style>
 	.graph-container {
 		position: relative;
 		width: 100%;
@@ -437,3 +421,23 @@ function updateD3() {
 		z-index: 10;
 	}
 </style>
+
+<main>
+	<div bind:this={graphContainer} class="graph-container"></div>
+
+	<!-- Use runes-mode state variables directly -->
+	{#if isLoading}
+		<div class="loading-overlay">
+			<YoRHaSystemStatus />
+		</div>
+	{/if}
+
+	{#if errorMessage}
+		<div class="error-message">Error: {errorMessage}</div>
+	{/if}
+
+	{#if VizComponent}
+		<!-- Render with runes-mode dynamic component (no <svelte:component>) -->
+		<VizComponent {...vizProps} />
+	{/if}
+</main>

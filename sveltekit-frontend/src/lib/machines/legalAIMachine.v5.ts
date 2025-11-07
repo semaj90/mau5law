@@ -4,10 +4,10 @@ import {
   fromPromise,
   type DoneActorEvent,
   type ErrorActorEvent,
-  createActor, // Add createActor import
+  createActor,
 } from "xstate";
-import { writable } from "svelte/store"; // Add writable import
-import { productionServiceClient } from "$lib/api/production-service-client.js"; // Changed import path as per instructions
+import { writable } from "svelte/store";
+import { productionServiceClient } from "$lib/api/production-service-client";
 
 // Legal AI Application State Machine - XState v5
 export interface Case {
@@ -172,75 +172,69 @@ interface ServiceHealthItem {
 export const legalAIMachine = setup({
   types: {} as { context: LegalAIContext; events: LegalAIEvent },
   actions: {
-    updateSystem: assign<LegalAIContext, DoneActorEvent<LegalAIContext["system"]>>({
-      system: ({ event }) => {
-        return event.output || initialContext.system;
-      },
+    // Use assign without generics and narrow event types inside each callback
+    updateSystem: assign((_, event) => {
+      const doneEvent = event as DoneActorEvent<LegalAIContext["system"]>;
+      return {
+        system: doneEvent?.output ?? initialContext.system,
+      };
     }),
-    setSystemError: assign<LegalAIContext, ErrorActorEvent>({
-      system: ({ context }) => ({ ...context.system, connected: false }),
-    }),
-    setUser: assign<LegalAIContext, DoneActorEvent<AuthResponse>>({
-      user: ({ event }) => {
-        const authResponse = event.output;
-        return {
-          ...authResponse,
+    setSystemError: assign((context) => ({
+      system: { ...context.system, connected: false },
+    })),
+    setUser: assign((_, event) => {
+      const doneEvent = event as DoneActorEvent<AuthResponse>;
+      const out = doneEvent?.output;
+      return {
+        user: {
+          id: out?.id ?? null,
+          email: out?.email ?? null,
+          role: out?.role ?? null,
+          permissions: (out?.permissions ?? []) as string[],
           isAuthenticated: true,
-        };
+        },
+      };
+    }),
+    clearUser: assign(() => ({
+      user: {
+        id: null,
+        email: null,
+        role: null,
+        permissions: [] as string[],
+        isAuthenticated: false,
       },
+    })),
+    setCases: assign((context, event) => {
+      const doneEvent = event as DoneActorEvent<Case[]>;
+      const casesOutput = doneEvent?.output ?? [];
+      return { cases: { ...context.cases, items: casesOutput, loading: false } };
     }),
-    clearUser: assign<LegalAIContext, LegalAIEvent>({
-      user: () => ({ id: null, email: null, role: null, permissions: [], isAuthenticated: false }),
+    setCurrentCase: assign((context, event) => {
+      const selectEvent = event as Extract<LegalAIEvent, { type: "CASES.SELECT" }>;
+      return {
+        cases: { ...context.cases, currentCase: selectEvent?.case ?? context.cases.currentCase },
+      };
     }),
-    setCases: assign<LegalAIContext, DoneActorEvent<Case[]>>({
-      cases: ({ context, event }) => {
-        const casesOutput = event.output || [];
-        return {
-          ...context.cases,
-          items: casesOutput,
-          loading: false,
-        };
-      },
+    setAIResponse: assign((context, event) => {
+      const doneEvent = event as DoneActorEvent<AIResponse>;
+      const aiResponse = doneEvent?.output ?? null;
+      return { ai: { ...context.ai, lastResponse: aiResponse, isProcessing: false } };
     }),
-    setCurrentCase: assign<LegalAIContext, Extract<LegalAIEvent, { type: "CASES.SELECT" }>>({
-      cases: ({ context, event }) => {
-        const selectEvent = event;
-        return {
-          ...context.cases,
-          currentCase: selectEvent.case,
-        };
-      },
+    setAIError: assign((context, event) => {
+      const errorEvent = event as ErrorActorEvent;
+      const message = (errorEvent?.error as Error)?.message ?? "AI processing failed";
+      return { ai: { ...context.ai, error: message, isProcessing: false } };
     }),
-    setAIResponse: assign<LegalAIContext, DoneActorEvent<AIResponse>>({
-      ai: ({ context, event }) => {
-        const aiResponse = event.output;
-        return {
-          ...context.ai,
-          lastResponse: aiResponse,
-          isProcessing: false,
-        };
-      },
-    }),
-    setAIError: assign<LegalAIContext, ErrorActorEvent>({
-      ai: ({ context, event }) => {
-        const errorEvent = event;
-        return {
-          ...context.ai,
-          error: (errorEvent.error as Error)?.message || "AI processing failed",
-          isProcessing: false,
-        };
-      },
-    }),
-    startAIProcessing: assign<LegalAIContext, Extract<LegalAIEvent, { type: "AI.QUERY" }>>({
-      ai: ({ context, event }) => {
-        const queryEvent = event;
-        return {
+    startAIProcessing: assign((context, event) => {
+      const queryEvent = event as Extract<LegalAIEvent, { type: "AI.QUERY" }>;
+      return {
+        ai: {
           ...context.ai,
           isProcessing: true,
-          currentQuery: queryEvent.prompt || "",
+          currentQuery: queryEvent?.prompt ?? "",
           error: null,
-        };
-      },
+        },
+      };
     }),
   },
   actors: {
@@ -256,9 +250,8 @@ export const legalAIMachine = setup({
         }
 
         const clusterStatus = clusterStatusResponse.data;
-        const serviceHealth: ServiceHealthItem[] = serviceHealthResponse.data; // Cast to new interface
+        const serviceHealth: ServiceHealthItem[] = serviceHealthResponse.data;
 
-        // Calculate overall health metrics
         const totalServices = clusterStatus.totalServices;
         const healthyServices = clusterStatus.healthyServices;
         const performanceScore =
@@ -286,7 +279,7 @@ export const legalAIMachine = setup({
           metrics: {
             errorCount: serviceHealth.reduce((acc: number, s) => acc + (s.errorCount || 0), 0),
             performanceScore: performanceScore,
-            uptime: Date.now(), // Assuming uptime is current timestamp for simplicity
+            uptime: Date.now(),
           },
         };
       } catch (error: Error | unknown) {
@@ -350,19 +343,17 @@ export const legalAIMachine = setup({
             priority: "performance",
           });
           if (response.success && response.data) {
-            // Ensure returned data is array of cases
             const cases = Array.isArray(response.data) ? response.data : response.data.cases || [];
             return cases.map((caseData: BackendCase) => ({
-              // Use BackendCase for mapping
               id: caseData.id!,
               title: caseData.title!,
-              status: caseData.status ?? "pending", // Use nullish coalescing for defaults
+              status: caseData.status ?? "pending",
               priority: caseData.priority ?? "medium",
               category: caseData.category ?? "general",
-              createdAt: caseData.createdAt ?? caseData.created_at, // Prioritize camelCase, then snake_case
-              updatedAt: caseData.updatedAt ?? caseData.updated_at, // Prioritize camelCase, then snake_case
+              createdAt: caseData.createdAt ?? caseData.created_at,
+              updatedAt: caseData.updatedAt ?? caseData.updated_at,
               description: caseData.description,
-              assignedTo: caseData.assignedTo ?? caseData.assigned_to, // Prioritize camelCase, then snake_case
+              assignedTo: caseData.assignedTo ?? caseData.assigned_to,
             }));
           } else {
             console.warn("Failed to load cases: ", response.error);
@@ -377,7 +368,6 @@ export const legalAIMachine = setup({
     processAIQuery: fromPromise(
       async ({ input }: { input: { prompt: string } }): Promise<AIResponse> => {
         try {
-          // call production service for AI query
           const response = await productionServiceClient.makeRequest("/api/ai/query", input, {
             timeout: 20000,
             priority: "performance",
@@ -471,7 +461,6 @@ export const legalAIMachine = setup({
         "SYSTEM.CHECK_STATUS": "initializing",
       },
     },
-    // Placeholder states
     registering: {
       after: { 1000: "idle" },
     },
@@ -482,7 +471,7 @@ export const legalAIMachine = setup({
       after: { 500: "idle" },
     },
   },
-}); // Correctly close the createMachine call
+});
 
 // Create the actor
 export const legalAIActor = createActor(legalAIMachine);
@@ -498,5 +487,4 @@ legalAIActor.subscribe((snapshot) => {
 // Start the actor
 legalAIActor.start();
 
-export default legalAIActor;
 export default legalAIActor;

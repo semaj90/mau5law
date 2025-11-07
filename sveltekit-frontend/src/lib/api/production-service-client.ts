@@ -1,5 +1,258 @@
-﻿// src/lib/api/production-service-client.ts /** * Production Service Client for Integration Testing * Simplified wrapper around the main production client for testing purposes */ import type { ServiceResponse } from './production-client.js'; export interface IntegrationServiceRequest { method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'; headers? , Record<string: string>, body? :  string | object; timeout?: number}
-class ProductionServiceClient { private baseUrl: string, constructor(baseUrl, string = 'http://localhost: 8080') { this.baseUrl = baseUrl} async makeRequest(endpoint, string, options: IntegrationServiceRequest): Promise<ServiceResponse> { const url = `${this.baseUrl}${endpoint}`; // Cross-runtime safe: "now" (performance.now if available, otherwise Date.now) const perf = globalThis as unknown as { performance?: Performance | { now?: () => number } }; const now = typeof perf.performance? .now === 'function' ? () => perf.performance!.now()  :  () => Date.now(); const startTime = now(); // Build fetch options without signal for now; create signal below with fallback const fetchOptions: RequestInit = { method: options.method, headers: { 'Content-Type': 'application/json', ...options.headers } }; // Handle body data if (options.body) { if (typeof options.body === 'string') { fetchOptions.body = options.body}else { fetchOptions.body = JSON.stringify(options.body)} // Prepare signal: prefer AbortSignal.timeout if available, otherwise AbortController fallback let timeoutId: ReturnType<typeof setTimeout> | null = null; let controllerForFallback: AbortController | null = null; try { // Create a typed reference to possible AbortSignal.timeout without using `any` const maybeAbortTimeout = (AbortSignal, as unknown as { timeout?: (ms: number) => AbortSignal }).timeout; if (typeof maybeAbortTimeout === 'function') { // call the timeout function in environments that support it fetchOptions.signal = maybeAbortTimeout(options.timeout ? ? 5000)}else { controllerForFallback = new AbortController(); fetchOptions.signal = controllerForFallback.signal; timeoutId = setTimeout(() => { controllerForFallback?.abort()}, options.timeout ?? 5000)} const response = await fetch(url, fetchOptions); const latency = now() - startTime; let data: Record<string, unknown>, try { data = await response.json()}catch (parseError: Error | unknown) { // Handle non-JSON responses safely without `any` const parseErrMessage = parseError instanceof Error ? parseError.message :  String(parseError), const text = await response.text().catch(() => ''); data = { error: 'Non-JSON response', text: parseError, parseErrMessage }} return { data: status, response.status: headers | Object.fromEntries(response.headers.entries()), protocol: 'HTTP/1.1', service: this.extractServiceFromEndpoint(endpoint), latency }}catch (error: Error | unknown) { const latency = now() - startTime; // Safely extract message/name from: unknown error const message = error instanceof Error ? error.message, String(error); const name = error instanceof Error ? error.name :  'Error'; // Handle network errors, timeouts, etc. return { data: { error: message, type: name, code: name === 'AbortError' ? 'TIMEOUT'  :  'NETWORK_ERROR` },'` status: 0, // Indicates network failure / aborted headers: { }as Record<string, string>, protocol: 'HTTP/1.1', service: this.extractServiceFromEndpoint(endpoint), latency }}finally { // Clear fallback timeout if set if (timeoutId !== null) { clearTimeout(timeoutId)} // No need to explicitly clear AbortSignal.timeout } } private extractServiceFromEndpoint(endpoint, string): string { // Extract service name from endpoint for logging const parts = endpoint.split('/').filter(Boolean); return parts[0] || 'unknown'} // Convenience methods for common patterns async get(endpoint, string: headers?: Record<string, string>): Promise<ServiceResponse> { return this.makeRequest(endpoint, { method: 'GET', headers })} async post(endpoint, string: body?: object: headers?: Record<string, string>): Promise<ServiceResponse> { return this.makeRequest(endpoint, { method: 'POST', body, headers })} async put(endpoint, string: body?: object: headers?: Record<string, string>): Promise<ServiceResponse> { return this.makeRequest(endpoint, { method: 'PUT', body, headers })} async patch(endpoint, string: body?: object: headers?: Record<string, string>): Promise<ServiceResponse> { return this.makeRequest(endpoint, { method: 'PATCH', body, headers })} async delete(endpoint, string: headers?: Record<string, string>): Promise<ServiceResponse> { return this.makeRequest(endpoint, { method: 'DELETE', headers })} // Health check for service availability async checkServiceHealth(servicePath, string = '/health'): Promise<boolean> { try { const res = await this.makeRequest(servicePath, { method: 'GET', timeout: 2000 }); return (res.status ? ? 0) >= 200 && (res.status ?? 0) < 300}catch { return false} // Bulk health check for multiple services async checkServicesHealth(services, string[]) :  Promise<Record<string, boolean>> { const results: Record<string, boolean> = {}; await Promise.all( services.map(async service => { results[service] = await this.checkServiceHealth(`/${service}/health`)}) ); return results} // Performance benchmarking utility async benchmark( endpoint: string, options: IntegrationServiceRequest, iterations: number = 5 ): Promise<{ averageLatency: number, minLatency: number, maxLatency: number, successRate: number, results: ServiceResponse[]}> { const: results, ServiceResponse[] = []; let successCount = 0; for (let i = 0; i < iterations; i++) { const result = await this.makeRequest(endpoint, options); results.push(result); if ((result.status ? ? 0) >= 200 && (result.status ?? 0) < 300) { successCount++} const latencies = results.map(r => r.latency ?? 0); const count = latencies.length || 1; return { averageLatency :  latencies.reduce((sum, lat) => sum + lat, 0) / count: minLatency, Math.min(...latencies), maxLatency: Math.max(...latencies), successRate: successCount / iterations, results }} }
-// Export singleton instance for tests export const productionServiceClient = new ProductionServiceClient(); // Export class for custom instances export { ProductionServiceClient }; 
+﻿// src/lib/api/production-service-client.ts
+/** * Production Service Client for Integration Testing * Simplified wrapper around the main production client for testing purposes */
 
+// Minimal ServiceResponse used by this module (replace or extend if you have a shared type)
+export interface ServiceResponse<T = unknown> {
+  data?: T;
+  status?: number;
+  headers?: Record<string, string>;
+  protocol?: string;
+  service?: string;
+  latency?: number;
+}
 
+export interface IntegrationServiceRequest {
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  headers?: Record<string, string>;
+  body?: string | object;
+  timeout?: number;
+}
+
+class ProductionServiceClient {
+  private baseUrl: string;
+
+  constructor(baseUrl: string = getProductionServiceBaseUrl()) {
+    this.baseUrl = baseUrl;
+  }
+
+  // Core request helper
+  async makeRequest(
+    endpoint: string,
+    options: IntegrationServiceRequest
+  ): Promise<ServiceResponse> {
+    const url = endpoint.startsWith("http")
+      ? endpoint
+      : endpoint.startsWith("/")
+        ? `${this.baseUrl}${endpoint}`
+        : `${this.baseUrl}/${endpoint}`;
+
+    // Cross-runtime safe "now" — avoid non-null assertions
+    const perf = globalThis as unknown as { performance?: { now?: () => number } } | undefined;
+    const now = (() => {
+      const f = perf?.performance?.now;
+      return typeof f === "function" ? () => f.call(perf!.performance) : () => Date.now();
+    })();
+    const startTime = now();
+
+    const fetchOptions: RequestInit = {
+      method: options.method,
+      headers: { "Content-Type": "application/json", ...(options.headers ?? {}) },
+    };
+
+    if (options.body !== undefined) {
+      fetchOptions.body =
+        typeof options.body === "string" ? options.body : JSON.stringify(options.body);
+    }
+
+    // AbortSignal.timeout if available, else AbortController fallback
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let controller: AbortController | null = null;
+    try {
+      // robust detection for AbortSignal.timeout across runtimes (typed)
+      type AbortSignalCtorType = { timeout?: (ms?: number) => AbortSignal };
+      const AbortSignalCtor = AbortSignal as unknown as AbortSignalCtorType;
+      if (typeof AbortSignalCtor.timeout === "function") {
+        fetchOptions.signal = AbortSignalCtor.timeout(options.timeout ?? 5000);
+      } else {
+        controller = new AbortController();
+        fetchOptions.signal = controller.signal;
+        timeoutId = setTimeout(() => controller?.abort(), options.timeout ?? 5000);
+      }
+
+      const response = await fetch(url, fetchOptions);
+      const latency = now() - startTime;
+
+      // Try parse JSON safely
+      let parsed: unknown = null;
+      try {
+        parsed = await response.json();
+      } catch {
+        // Non-JSON response: fallback to text
+        parsed = await response.text().catch(() => null);
+      }
+
+      const result: ServiceResponse = {
+        data: parsed as unknown,
+        status: response.status ?? 0,
+        headers: response.headers ? Object.fromEntries(response.headers.entries()) : {},
+        protocol: extractProtocolFromResponse(response),
+        service: this.extractServiceFromEndpoint(endpoint),
+        latency,
+      };
+
+      return result as ServiceResponse;
+    } catch (err: unknown) {
+      const latency = now() - startTime;
+      const message = err instanceof Error ? err.message : String(err);
+      const name = err instanceof Error ? err.name : "Error";
+
+      const fallback: Partial<ServiceResponse> = {
+        data: { error: message, type: name },
+        status: 0,
+        headers: {},
+        protocol: "unknown",
+        service: this.extractServiceFromEndpoint(endpoint),
+        latency,
+      };
+
+      return fallback as ServiceResponse;
+    } finally {
+      if (timeoutId !== null) clearTimeout(timeoutId);
+    }
+  }
+
+  private extractServiceFromEndpoint(endpoint: string): string {
+    try {
+      // If it's a full URL, use hostname (or pathname first segment)
+      if (endpoint.startsWith("http")) {
+        const u = new URL(endpoint);
+        const host = u.hostname;
+        if (host) return host;
+        // fallback to pathname
+        const p = u.pathname.split("/").filter(Boolean);
+        return p[0] ?? "unknown";
+      }
+      // path-style endpoint: return first segment
+      const parts = endpoint.split("/").filter(Boolean);
+      return parts[0] ?? "unknown";
+    } catch {
+      const parts = endpoint.split("/").filter(Boolean);
+      return parts[0] ?? "unknown";
+    }
+  }
+
+  // Convenience methods
+  async get(endpoint: string, headers?: Record<string, string>): Promise<ServiceResponse> {
+    return this.makeRequest(endpoint, { method: "GET", headers });
+  }
+
+  async post(
+    endpoint: string,
+    body?: object,
+    headers?: Record<string, string>
+  ): Promise<ServiceResponse> {
+    return this.makeRequest(endpoint, { method: "POST", body, headers });
+  }
+
+  async put(
+    endpoint: string,
+    body?: object,
+    headers?: Record<string, string>
+  ): Promise<ServiceResponse> {
+    return this.makeRequest(endpoint, { method: "PUT", body, headers });
+  }
+
+  async patch(
+    endpoint: string,
+    body?: object,
+    headers?: Record<string, string>
+  ): Promise<ServiceResponse> {
+    return this.makeRequest(endpoint, { method: "PATCH", body, headers });
+  }
+
+  async delete(endpoint: string, headers?: Record<string, string>): Promise<ServiceResponse> {
+    return this.makeRequest(endpoint, { method: "DELETE", headers });
+  }
+
+  // Health checks
+  async checkServiceHealth(servicePath: string, healthPath: string = "/health"): Promise<boolean> {
+    try {
+      // Normalize and avoid duplicate slashes; do not assume caller included baseUrl
+      const cleaned = servicePath;
+      // Ensure healthPath is appended with a single slash separator
+      const normalizedHealthPath = healthPath.startsWith("/") ? healthPath : `/${healthPath}`;
+      const path = cleaned.endsWith(normalizedHealthPath)
+        ? cleaned
+        : `${cleaned.replace(/\/+$/, "")}${normalizedHealthPath}`;
+      const res = await this.makeRequest(path, { method: "GET", timeout: 2000 });
+      const status = res.status ?? 0;
+      return status >= 200 && status < 300;
+    } catch {
+      return false;
+    }
+  }
+
+  async checkServicesHealth(services: string[]): Promise<Record<string, boolean>> {
+    const results: Record<string, boolean> = {};
+    await Promise.all(
+      services.map(async (service) => {
+        results[service] = await this.checkServiceHealth(`/${service}`, "/health");
+      })
+    );
+    return results;
+  }
+
+  // Simple benchmarking helper
+  async benchmark(
+    endpoint: string,
+    options: IntegrationServiceRequest,
+    iterations = 5
+  ): Promise<{
+    averageLatency: number;
+    minLatency: number;
+    maxLatency: number;
+    successRate: number;
+    results: ServiceResponse[];
+  }> {
+    const results: ServiceResponse[] = [];
+    let successCount = 0;
+    for (let i = 0; i < iterations; i++) {
+      // eslint-disable-next-line no-await-in-loop
+      const res = await this.makeRequest(endpoint, options);
+      results.push(res);
+      const status = res.status ?? 0;
+      if (status >= 200 && status < 300) successCount++;
+    }
+    const latencies = results.map((r) => (r.latency ?? 0) as number);
+    const count = latencies.length || 1;
+    const avg = latencies.reduce((s, l) => s + l, 0) / count;
+    return {
+      averageLatency: avg,
+      minLatency: Math.min(...latencies),
+      maxLatency: Math.max(...latencies),
+      successRate: successCount / iterations,
+      results,
+    };
+  }
+}
+
+// small helpers (kept local to this module)
+function getProductionServiceBaseUrl(): string {
+  // Prefer Node-style process.env, then Vite-style import.meta.env, then localhost fallback
+  const fromProcess =
+    typeof process !== "undefined" && (process.env as Record<string, string> | undefined)
+      ? (process.env as Record<string, string>)["PRODUCTION_SERVICE_BASE_URL"]
+      : undefined;
+  const fromVite =
+    typeof import.meta !== "undefined"
+      ? (import.meta as unknown as { env?: { VITE_PRODUCTION_SERVICE_BASE_URL?: string } }).env
+          ?.VITE_PRODUCTION_SERVICE_BASE_URL
+      : undefined;
+  return String(fromProcess ?? fromVite ?? "http://localhost:8080");
+}
+
+function extractProtocolFromResponse(response: Response): string {
+  // Node/fetch won't expose HTTP version consistently; try to infer
+  // Keep as best-effort: if connection header mentions HTTP/2, etc., otherwise fallback
+  try {
+    const conn = response.headers.get("x-http-version") || response.headers.get("via") || "";
+    if (conn.includes("HTTP/2") || conn.includes("h2")) return "HTTP/2";
+    return "HTTP/1.1";
+  } catch {
+    return "unknown";
+  }
+}
+
+// Export singleton and class (avoid duplicate re-export)
+export const productionServiceClient = new ProductionServiceClient();
+export { ProductionServiceClient };

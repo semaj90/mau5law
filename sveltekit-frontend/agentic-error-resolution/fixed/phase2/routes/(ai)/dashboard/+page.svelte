@@ -1,33 +1,37 @@
 <script lang="ts">
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
-  import  Badge  from "$lib/components/ui/badge.svelte";
-  import  Button  from "$lib/components/ui/core.svelte";
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
+  import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
   import type { PageData } from './$types';
 
-  let { data }: { data: PageData } = $props();
+  // Replace legacy `export let data` with Svelte 5 runes pattern
+  const { data } = $props<PageData>();
 
-  // safe helpers to avoid accessing .name on a type that may not include it
-  function getUserName(user: any): string {
-    if (!user) return '';
-    // prefer name, fallback to email, else empty
-    return (user.name as string) ?? (user.email as string) ?? '';
+  // Minimal types to avoid `unknown` property errors in templates
+  interface CaseItem {
+    id: string;
+    title?: string;
+    status?: string;
+    priority?: string;
+    caseType?: string;
+    lastUpdated?: string;
   }
 
-  function getUserInitial(user: any): string {
-    const name = getUserName(user);
-    if (name && name.length > 0) return name.charAt(0).toUpperCase();
-    if (user?.email && typeof user.email === 'string') return user.email.charAt(0).toUpperCase();
-    return '?';
+  interface Stats {
+    activeCases?: number;
+    activeChats?: number;
+    ragQueries?: number;
+    documentsAnalyzed?: number;
+    citationsFound?: number;
+    casesProcessed?: number;
+    assistantSessions?: number;
+    evidenceUploaded?: number;
+    tasksCompleted?: number;
+    recentActivity?: number;
   }
 
-  // add this helper so we don't access a property that may not exist on PageData.user
-  function getUserRole(user: any): string {
-    if (!user) return '';
-    return (user as any).role ?? '';
-  }
-
-  // Use $derived correctly: pass a function deriving from reactive inputs
-  const stats = $derived(() => data.stats ?? {
+  // Derive typed values directly (remove incorrect $derived usage)
+  const stats: Stats = data?.stats ?? {
     activeCases: 12,
     activeChats: 3,
     ragQueries: 47,
@@ -38,20 +42,58 @@
     evidenceUploaded: 156,
     tasksCompleted: 89,
     recentActivity: 24
-  });
+  };
 
-  const recentCases = $derived(() => data.recentCases ?? []);
+  const recentCases: CaseItem[] = (data?.recentCases as CaseItem[]) ?? [];
 
-  const aiStats = $derived(() => ({
+  const aiStats = {
     activeChats: stats.activeChats ?? 0,
     ragQueries: stats.ragQueries ?? 0,
     documentsAnalyzed: stats.documentsAnalyzed ?? 0,
     citationsFound: stats.citationsFound ?? 0,
     casesProcessed: stats.casesProcessed ?? 0,
     assistantSessions: stats.assistantSessions ?? 0
-  }));
+  };
 
-  const statusColors: Record<string { bg: string; text: string; label: string }> = {
+  const recentActivities = $state([
+    {
+      type: 'chat',
+      title: 'Contract Review Session',
+      time: '2 minutes ago',
+      user: 'Legal Analyst',
+      status: 'completed'
+    },
+    {
+      type: 'rag',
+      title: 'Precedent Research Query',
+      time: '5 minutes ago',
+      user: 'Senior Associate',
+      status: 'completed'
+    },
+    {
+      type: 'analysis',
+      title: 'Document Classification',
+      time: '8 minutes ago',
+      user: 'Paralegal',
+      status: 'processing'
+    },
+    {
+      type: 'assistant',
+      title: 'Case Strategy Discussion',
+      time: '12 minutes ago',
+      user: 'Partner',
+      status: 'completed'
+    }
+  ]);
+
+  const systemHealth = $state({
+    aiModels: 'online',
+    vectorDB: 'online',
+    gpuAcceleration: 'active',
+    ragPipeline: 'healthy'
+  });
+
+  const statusColors: Record<string, { bg: string; text: string; label: string }> = {
     open: { bg: '#4caf50', text: '#fff', label: '🟢 Open' },
     investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
     pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
@@ -59,7 +101,7 @@
     archived: { bg: '#999', text: '#fff', label: '📦 Archived' }
   };
 
-  const priorityColors: Record<string string> = {
+  const priorityColors: Record<string, string> = {
     Critical: '#ff1744',
     High: '#ff9800',
     Medium: '#ffd700',
@@ -132,44 +174,6 @@
       stats: () => 'ML models active'
     }
   ];
-
-  const recentActivities = $state([
-    {
-      type: 'chat',
-      title: 'Contract Review Session',
-      time: '2 minutes ago',
-      user: 'Legal Analyst',
-      status: 'completed'
-    },
-    {
-      type: 'rag',
-      title: 'Precedent Research Query',
-      time: '5 minutes ago',
-      user: 'Senior Associate',
-      status: 'completed'
-    },
-    {
-      type: 'analysis',
-      title: 'Document Classification',
-      time: '8 minutes ago',
-      user: 'Paralegal',
-      status: 'processing'
-    },
-    {
-      type: 'assistant',
-      title: 'Case Strategy Discussion',
-      time: '12 minutes ago',
-      user: 'Partner',
-      status: 'completed'
-    }
-  ]);
-
-  const systemHealth = $state({
-    aiModels: 'online',
-    vectorDB: 'online',
-    gpuAcceleration: 'active',
-    ragPipeline: 'healthy'
-  });
 
   function badgeClass(condition: boolean, positive: string, negative: string) {
     return condition ? positive : negative;
@@ -309,7 +313,7 @@
 
       <div class="cases-grid-container">
         {#each recentCases as caseItem (caseItem.id)}
-          <a href="/cases/{caseItem.id}" class="nes-container is-dark case-card-wrapper">
+          <a href={`/cases/${caseItem.id}`} class="nes-container is-dark case-card-wrapper">
             <div class="case-card-inner">
               <!-- Case Status Badge -->
               <div class="case-status-badge" style="background-color: {statusColors[caseItem.status]?.bg}">

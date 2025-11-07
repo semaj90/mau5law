@@ -10,22 +10,258 @@ Usage:
 
 import argparse
 import json
-from typing import Optional
+import os
+import time
+from typing import List, Optional
+from urllib.parse import urlparse, urlunparse
+from dotenv import load_dotenv
+
+load_dotenv()
 
 import numpy as np
 import redis
 import torch
+import torch.nn.functional as F
 from datetime import datetime
 from pathlib import Path
 from tqdm import tqdm
 
+
+class CUDATensorStore:
+    """GPU-resident tensor store with optional CUDA graph capture."""
+
+    def __init__(
+        self,
+        dim: int,
+        dtype: torch.dtype = torch.float16,
+        device: Optional[str] = None,
+        capture_graph: bool = False,
+        graph_batch_size: Optional[int] = None,
+    ):
+        self.dim = dim
+        self.dtype = dtype
+        self.device = torch.device(device or ('cuda' if torch.cuda.is_available() else 'cpu'))
+        self.capture_graph = capture_graph and self.device.type == 'cuda'
+        self.graph_batch_size = graph_batch_size
+
+        self.vectors: Optional[torch.Tensor] = None
+        self.metadata: List[dict] = []
+
+        # CUDA graph internals
+        self._graph: Optional[torch.cuda.CUDAGraph] = None
+        self._graph_in: Optional[torch.Tensor] = None
+        self._graph_out: Optional[torch.Tensor] = None
+        self._normalized_vectors: Optional[torch.Tensor] = None
+
+    def build_from(self, tensors: List[torch.Tensor], metadata: List[dict]) -> torch.Tensor:
+        if not tensors:
+            raise ValueError("No tensors supplied to CUDA store")
+        cpu_tensor = torch.stack([t.to('cpu', dtype=self.dtype) for t in tensors], dim=0)
+        # Ensure the store knows the actual embedding dimensionality from the data
+        if cpu_tensor.dim() != 2:
+            raise ValueError("Expected 2D tensor stack (N x D) from input tensors")
+        actual_dim = cpu_tensor.size(1)
+        self.dim = actual_dim
+        if self.device.type == 'cuda':
+            cpu_tensor = cpu_tensor.pin_memory()
+            self.vectors = cpu_tensor.to(self.device, non_blocking=True)
+        else:
+            self.vectors = cpu_tensor
+
+        self.metadata = metadata
+        self._normalized_vectors = F.normalize(self.vectors, dim=1)
+
+        if self.capture_graph and self.graph_batch_size:
+            self._capture_similarity_graph(self.graph_batch_size)
+
+        return self.vectors
+
+    def _capture_similarity_graph(self, batch_size: int) -> None:
+        if self.device.type != 'cuda' or self.vectors is None:
+            return
+
+        batch_size = max(1, batch_size)
+        self.graph_batch_size = batch_size
+        # graph_in shape: (batch_size, embedding_dim)
+        self._graph_in = torch.empty((batch_size, self.dim), device=self.device, dtype=self.dtype)
+        # graph_out shape: (batch_size, num_vectors)
+        self._graph_out = torch.empty(
+            (batch_size, self.vectors.size(0)), device=self.device, dtype=self.dtype
+        )
+
+        # Warm up cuBLAS/cuDNN context to avoid CUBLAS_STATUS_NOT_INITIALIZED
+        try:
+            warm_q = torch.randn((1, self.dim), device=self.device, dtype=self.dtype)
+            # small warm-up matmul
+            _ = torch.matmul(F.normalize(warm_q, dim=1), self._normalized_vectors.T[:1])
+        except Exception:
+            # Non-fatal: continue to attempt graph capture
+            pass
+
+        try:
+            # Force deterministic/safe CUDA/cuDNN config for capture to reduce invalidation
+            prev_allow_tf32 = getattr(torch.backends.cuda.matmul, 'allow_tf32', None)
+            prev_cudnn_benchmark = torch.backends.cudnn.benchmark
+            prev_cudnn_deterministic = torch.backends.cudnn.deterministic
+
+            try:
+                if prev_allow_tf32 is not None:
+                    torch.backends.cuda.matmul.allow_tf32 = False
+                torch.backends.cudnn.benchmark = False
+                torch.backends.cudnn.deterministic = True
+
+                # synchronize before capture
+                torch.cuda.synchronize()
+
+                graph = torch.cuda.CUDAGraph()
+                with torch.cuda.graph(graph):
+                    q_norm = F.normalize(self._graph_in, dim=1)
+                    out = torch.matmul(q_norm, self._normalized_vectors.T)
+                    self._graph_out.copy_(out)
+
+                self._graph = graph
+            finally:
+                # restore previous global flags
+                try:
+                    if prev_allow_tf32 is not None:
+                        torch.backends.cuda.matmul.allow_tf32 = prev_allow_tf32
+                except Exception:
+                    pass
+                try:
+                    torch.backends.cudnn.benchmark = prev_cudnn_benchmark
+                    torch.backends.cudnn.deterministic = prev_cudnn_deterministic
+                except Exception:
+                    pass
+        except Exception as e:
+            # If graph capture fails (common on some drivers), disable capture gracefully
+            print(f"⚠️  CUDA graph capture failed: {e}. Disabling capture for this store.")
+            # Attempt cleanup to avoid captured-state invalidation affecting subsequent CUDA ops
+            try:
+                torch.cuda.synchronize()
+                torch.cuda.empty_cache()
+            except Exception:
+                pass
+            self._graph = None
+            self.capture_graph = False
+
+    def run_similarity_graph(self, queries: torch.Tensor) -> torch.Tensor:
+        if not self._graph or self._graph_in is None or self._graph_out is None:
+            raise RuntimeError("CUDA graph has not been captured for this store")
+        # Expect queries to be 2D: (batch, dim)
+        if queries.ndim != 2 or queries.shape[1] != self.dim:
+            raise ValueError(f"Expected queries shape (batch,{self.dim}), got {tuple(queries.shape)}")
+        if queries.shape[0] > self._graph_in.shape[0]:
+            raise ValueError("Query batch larger than captured CUDA graph batch size")
+
+        batch_n = queries.shape[0]
+        self._graph_in[:batch_n].copy_(queries.to(self.device, dtype=self.dtype))
+        self._graph.replay()
+        return self._graph_out[:batch_n].clone()
+
+    def similarity(self, queries: torch.Tensor) -> torch.Tensor:
+        if self.vectors is None:
+            raise RuntimeError("Tensor store is empty")
+
+        queries = queries.to(self.device, dtype=self.dtype)
+        q_norm = F.normalize(queries, dim=1)
+        return torch.matmul(q_norm, self._normalized_vectors.T)
+
+    def benchmark_graph(self, batch_size: int, iters: int) -> float:
+        if self.device.type != 'cuda':
+            raise RuntimeError("CUDA graph benchmarking requires a CUDA device")
+        if self.vectors is None:
+            raise RuntimeError("Tensor store has no vectors to benchmark")
+
+        requested_batch = max(1, batch_size)
+        if (
+            self._graph_in is None
+            or self._graph_in.shape[0] < requested_batch
+            or self._graph is None
+        ):
+            self._capture_similarity_graph(requested_batch)
+
+        dummy_queries = torch.randn(
+            (requested_batch, self.dim), device=self.device, dtype=self.dtype
+        )
+
+        torch.cuda.synchronize()
+        start = time.perf_counter()
+        for _ in range(max(1, iters)):
+            self.run_similarity_graph(dummy_queries)
+        torch.cuda.synchronize()
+
+        elapsed = time.perf_counter() - start
+        return elapsed / max(1, iters)
+
+
 class CUDATensorAggregator:
-    def __init__(self, redis_url='redis://localhost:6379', device='cuda', embedding_dim=384, verbose: bool = True):
-        self.redis = redis.from_url(redis_url)
+    def __init__(
+        self,
+        redis_url='redis://localhost:6379',
+        redis_password: Optional[str] = None, # Add redis_password parameter
+        device='cuda',
+        embedding_dim=384,
+        verbose: bool = True,
+        store: Optional[CUDATensorStore] = None
+    ):
+        self.host = 'localhost'
+        self.port = 6379
+
+        # Parse the redis_url to extract host and port
+        parsed_url = urlparse(redis_url)
+
+        if parsed_url.hostname:
+            self.host = parsed_url.hostname
+        if parsed_url.port:
+            self.port = parsed_url.port
+
+        # Use provided redis_password, or fall back to environment variable
+        password = redis_password or os.getenv('REDIS_PASSWORD')
+
+        # Initialize Redis connection. Try a ping; if Redis returns AuthenticationError,
+        # attempt a retry using REDIS_PASSWORD from environment (if available).
+        self.redis = redis.Redis(
+            host=self.host,
+            port=self.port,
+            password=password,
+            decode_responses=False,
+            socket_connect_timeout=5,
+        )
+
+        try:
+            # First try: ping with the provided password (may be None)
+            self.redis.ping()
+            print("✅ Connected to Redis (auth OK)")
+        except redis.exceptions.AuthenticationError:
+            # If auth error and environment has password, retry explicitly
+            env_pw = os.getenv('REDIS_PASSWORD')
+            if env_pw and env_pw != password:
+                print("⚠️  Redis requires authentication. Retrying with REDIS_PASSWORD from env...")
+                try:
+                    self.redis = redis.Redis(
+                        host=self.host,
+                        port=self.port,
+                        password=env_pw,
+                        decode_responses=False,
+                        socket_connect_timeout=5,
+                    )
+                    self.redis.ping()
+                    print("✅ Connected to Redis using REDIS_PASSWORD from environment.")
+                except redis.exceptions.AuthenticationError:
+                    raise RuntimeError("Redis authentication failed with REDIS_PASSWORD from environment.")
+                except Exception as e:
+                    print(f"⚠️  Redis connection error after retry: {e}")
+                    raise
+            else:
+                raise RuntimeError("Redis authentication required but no REDIS_PASSWORD set in environment.")
+        except Exception as e:
+            print(f"⚠️  Redis connection error: {e}")
+            raise
+
         self.device = torch.device(device if torch.cuda.is_available() else 'cpu')
         self.embedding_dim = embedding_dim  # Memory-optimized 384d
-        # whether to print verbose warnings (safe default True)
         self.verbose = verbose
+        self.store = store or CUDATensorStore(dim=embedding_dim, device=self.device.type, dtype=torch.float16)
 
         if self.device.type == 'cuda':
             print(f"✅ CUDA available: {torch.cuda.get_device_name(0)}")
@@ -48,7 +284,7 @@ class CUDATensorAggregator:
             if limit and len(keys) >= limit:
                 break
 
-        print(f"📊 Found {len(keys)} cached embeddings\n")
+        print(f"🧮 Loaded {len(keys)} embeddings ({self.embedding_dim} dims)\n")
 
         tensors = []
         metadata = []
@@ -69,8 +305,8 @@ class CUDATensorAggregator:
                     vector_payload = str(raw_vector)
                 vector = json.loads(vector_payload)
 
-                # Convert to tensor and move to GPU
-                tensor = torch.tensor(vector, dtype=torch.float16, device=self.device)
+                # Convert to tensor and leave on CPU; store promotes to GPU with pinning
+                tensor = torch.tensor(vector, dtype=self.store.dtype, device='cpu')
                 tensors.append(tensor)
 
                 # Store metadata
@@ -94,7 +330,7 @@ class CUDATensorAggregator:
         expected_dim: Optional[int] = None
 
         for tensor in tensors:
-            current_dim = tensor.shape[0]
+            current_dim = tensor.shape
             if expected_dim is None:
                 expected_dim = current_dim
                 filtered_tensors.append(tensor)
@@ -114,7 +350,7 @@ class CUDATensorAggregator:
             raise ValueError("No embeddings matched the expected dimensionality.")
 
         # Stack into matrix
-        embedding_matrix = torch.stack(filtered_tensors)
+        embedding_matrix = self.store.build_from(filtered_tensors, metadata)
 
         print(f"\n✅ Loaded tensor matrix: {embedding_matrix.shape}")
         print(f"   Dtype: {embedding_matrix.dtype}")
@@ -127,12 +363,24 @@ class CUDATensorAggregator:
         """Compute GPU-accelerated statistics"""
         print("📊 Computing statistics on GPU...")
 
-        stats = {
-            'mean': torch.mean(embedding_matrix, dim=0),
-            'std': torch.std(embedding_matrix, dim=0),
-            'min': torch.min(embedding_matrix, dim=0)[0],
-            'max': torch.max(embedding_matrix, dim=0)[0],
-        }
+        try:
+            stats = {
+                'mean': torch.mean(embedding_matrix, dim=0),
+                'std': torch.std(embedding_matrix, dim=0),
+                # torch.min/torch.max with dim returns (values, indices); take values
+                'min': torch.min(embedding_matrix, dim=0)[0],
+                'max': torch.max(embedding_matrix, dim=0)[0],
+            }
+        except Exception as exc:
+            # If CUDA state is tainted (common after failed graph capture), fallback to CPU
+            print(f"⚠️  GPU stats computation failed ({exc}), falling back to CPU computations.")
+            cpu_emb = embedding_matrix.detach().cpu()
+            stats = {
+                'mean': torch.mean(cpu_emb, dim=0),
+                'std': torch.std(cpu_emb, dim=0),
+                'min': torch.min(cpu_emb, dim=0)[0],
+                'max': torch.max(cpu_emb, dim=0)[0],
+            }
 
         print(f"   Mean vector shape: {stats['mean'].shape}")
         print(f"   Std vector shape: {stats['std'].shape}")
@@ -143,12 +391,19 @@ class CUDATensorAggregator:
         """Compute pairwise cosine similarity matrix on GPU"""
         print("🔢 Computing similarity matrix (GPU-accelerated)...")
 
-        # Normalize vectors
-        norms = torch.norm(embedding_matrix, dim=1, keepdim=True)
-        normalized = embedding_matrix / norms
+        try:
+            # Normalize vectors
+            norms = torch.norm(embedding_matrix, dim=1, keepdim=True)
+            normalized = embedding_matrix / norms
 
-        # Compute similarity (matrix multiplication on GPU)
-        similarity = torch.mm(normalized, normalized.t())
+            # Compute similarity (matrix multiplication on GPU)
+            similarity = torch.mm(normalized, normalized.t())
+        except Exception as exc:
+            print(f"⚠️  GPU similarity computation failed ({exc}), falling back to CPU computation.")
+            cpu_emb = embedding_matrix.detach().cpu()
+            norms = torch.norm(cpu_emb, dim=1, keepdim=True)
+            normalized = cpu_emb / norms
+            similarity = torch.mm(normalized, normalized.t())
 
         print(f"   Similarity matrix shape: {similarity.shape}")
         print(f"   Memory: {similarity.element_size() * similarity.nelement() / 1e6:.2f} MB\n")
@@ -160,7 +415,6 @@ class CUDATensorAggregator:
         print(f"🎯 Finding {n_clusters} clusters (GPU-accelerated)...")
 
         from sklearn.cluster import KMeans
-
         # Move to CPU for sklearn (or use torch-based clustering)
         embeddings_cpu = embedding_matrix.cpu().numpy()
 
@@ -187,7 +441,21 @@ class CUDATensorAggregator:
         }
 
         if stats:
-            save_data['stats'] = {k: v.cpu() for k, v in stats.items()}
+            # Ensure stats values are CPU tensors or serializable values
+            safe_stats = {}
+            for k, v in stats.items():
+                try:
+                    if isinstance(v, torch.Tensor):
+                        safe_stats[k] = v.detach().cpu()
+                    else:
+                        # Try to convert numpy or python numbers to tensor
+                        try:
+                            safe_stats[k] = torch.tensor(v).cpu()
+                        except Exception:
+                            safe_stats[k] = v
+                except Exception:
+                    safe_stats[k] = v
+            save_data['stats'] = safe_stats
 
         if similarity is not None:
             # Save only summary stats, full matrix is huge
@@ -241,7 +509,7 @@ class CUDATensorAggregator:
                 for file in files:
                     file_counts[file] = file_counts.get(file, 0) + 1
 
-                sorted_files = sorted(file_counts.items(), key=lambda x: x[1], reverse=True)
+                sorted_files = sorted(file_counts.items(), key=lambda x: x, reverse=True)
                 f.write("| File | Count |\n")
                 f.write("|------|-------|\n")
                 for file, count in sorted_files[:20]:
@@ -258,6 +526,24 @@ def main():
     parser.add_argument('--embedding-dim', type=int, default=384, help='Embedding dimensions (384 or 768)')
     parser.add_argument('--compute-similarity', action='store_true', help='Compute similarity matrix')
     parser.add_argument('--cluster', type=int, help='Number of clusters for k-means')
+    parser.add_argument('--persist-store', action='store_true', help='Persist the GPU tensor store to disk')
+    parser.add_argument('--store-path', default='logs/phase44-cache.pt', help='Path for persisted tensor store')
+    parser.add_argument(
+        '--store-dtype',
+        default='fp16',
+        choices=['fp16', 'float16', 'bf16', 'bfloat16', 'fp32', 'float32'],
+        help='Tensor dtype used for the resident store',
+    )
+    parser.add_argument('--capture-graph', action='store_true', help='Capture CUDA graph for similarity batches')
+    parser.add_argument('--graph-batch-size', type=int, default=256, help='Batch size for CUDA graph capture')
+    parser.add_argument('--benchmark-graph', action='store_true', help='Benchmark CUDA graph replays')
+    parser.add_argument('--benchmark-iters', type=int, default=25, help='Iterations to average during benchmark')
+    parser.add_argument(
+        '--benchmark-batch-size',
+        type=int,
+        default=256,
+        help='Batch size to use when benchmarking CUDA graphs',
+    )
 
     args = parser.parse_args()
 
@@ -265,7 +551,35 @@ def main():
     print("║        PHASE 44 CUDA TENSOR AGGREGATION                ║")
     print("╚════════════════════════════════════════════════════════╝\n")
 
-    aggregator = CUDATensorAggregator(redis_url=args.redis_url, embedding_dim=args.embedding_dim)
+    dtype_map = {
+        'fp16': torch.float16,
+        'float16': torch.float16,
+        'bf16': torch.bfloat16,
+        'bfloat16': torch.bfloat16,
+        'fp32': torch.float32,
+        'float32': torch.float32,
+    }
+
+    store_device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    capture_flag = args.capture_graph or args.benchmark_graph
+    graph_batch = args.graph_batch_size
+    if args.benchmark_graph:
+        graph_batch = max(graph_batch, args.benchmark_batch_size)
+
+    tensor_store = CUDATensorStore(
+        dim=args.embedding_dim,
+        dtype=dtype_map[args.store_dtype],
+        device=store_device,
+        capture_graph=capture_flag,
+        graph_batch_size=graph_batch if capture_flag else None,
+    )
+
+    aggregator = CUDATensorAggregator(
+        redis_url=args.redis_url,
+        redis_password=os.getenv('REDIS_PASSWORD'), # Pass password explicitly
+        embedding_dim=args.embedding_dim,
+        store=tensor_store,
+    )
 
     # Load embeddings
     embedding_matrix, metadata = aggregator.load_embeddings_from_redis(limit=args.limit)
@@ -290,6 +604,32 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     aggregator.save_tensors(embedding_matrix, metadata, args.output, stats, similarity)
+
+    if args.benchmark_graph:
+        try:
+            avg_seconds = aggregator.store.benchmark_graph(
+                batch_size=args.benchmark_batch_size,
+                iters=args.benchmark_iters,
+            )
+            print(
+                f"⚡ CUDA graph replay avg: {avg_seconds * 1e3:.3f} ms "
+                f"({args.benchmark_batch_size}×{args.embedding_dim}, {args.benchmark_iters} iters)"
+            )
+        except RuntimeError as exc:
+            print(f"⚠️  CUDA graph benchmark skipped: {exc}")
+
+    if args.persist_store:
+        store_path = Path(args.store_path)
+        store_path.parent.mkdir(parents=True, exist_ok=True)
+        snapshot = {
+            'vectors': aggregator.store.vectors.detach().cpu(),
+            'metadata': aggregator.store.metadata,
+            'dtype': str(aggregator.store.dtype),
+            'dim': aggregator.store.dim,
+            'timestamp': datetime.now().isoformat(),
+        }
+        torch.save(snapshot, store_path)
+        print(f"✅ Aggregation complete — persisted {store_path}")
 
     # Generate report
     aggregator.generate_summary_report(embedding_matrix, metadata, stats, output_dir)

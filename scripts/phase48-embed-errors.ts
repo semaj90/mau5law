@@ -13,7 +13,15 @@ import { createClient } from "redis";
 
 const REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:6379";
 const OLLAMA_URL = process.env.OLLAMA_ENDPOINT ?? "http://127.0.0.1:11434";
-const SVELTECHECK_PATH = path.resolve(".cache/sveltecheck.json");
+// CLI options: --input PATH, --dry-run
+const argv = process.argv.slice(2);
+let inputPath = argv[argv.indexOf('--input') + 1] || undefined;
+const dryRun = argv.includes('--dry-run') || argv.includes('--dryrun');
+if (!inputPath || inputPath.startsWith('-')) {
+  inputPath = path.resolve('.cache/sveltecheck.trimmed.json');
+} else {
+  inputPath = path.resolve(inputPath);
+}
 
 /** Embedding client with Gemma3 + fallback */
 async function embedText(text: string, model = "embeddinggemma:latest") {
@@ -37,35 +45,58 @@ async function embedText(text: string, model = "embeddinggemma:latest") {
 
 async function main() {
   console.log("[phase48] 🧩 Embedding Svelte-check diagnostics...");
-  const raw = await fs.readFile(SVELTECHECK_PATH, "utf8");
-  const json = JSON.parse(raw);
-  const redis = createClient({ url: REDIS_URL });
-  await redis.connect();
+  console.log(`[phase48] Input path: ${inputPath}  dryRun=${dryRun}`);
+  const raw = await fs.readFile(inputPath, 'utf8');
+  let json: any;
+  try {
+    json = JSON.parse(raw);
+  } catch (err: any) {
+    console.error('[phase48] Fatal: JSON parse failed for', inputPath);
+    const snippet = raw.slice(0, 1200).replace(/\n/g, '\\n');
+    console.error('[phase48] File head snippet:', snippet);
+    throw err;
+  }
 
   const diagnostics = json.diagnostics ?? [];
   console.log(`[phase48] Found ${diagnostics.length} diagnostics`);
 
+  let redis: any = null;
+  if (!dryRun) {
+    redis = createClient({ url: REDIS_URL });
+    await redis.connect();
+  }
+
   for (const diag of diagnostics) {
     const text = `${diag.code}: ${diag.message} (${diag.file}:${diag.start?.line})`;
-    const vec = await embedText(text);
+    const vec = dryRun ? Array(8).fill(0) : await embedText(text);
     const payload = {
-      id: `ts-error:${diag.code}:${diag.file}`,
+      id: `diag:${diag.code ?? 'unknown'}:${diag.file ?? 'unknown'}`,
       vector: vec,
       metadata: {
-        code: diag.code,
-        file: diag.file,
+        code: diag.code ?? null,
+        file: diag.file ?? null,
         line: diag.start?.line ?? null,
-        severity: diag.severity,
-        message: diag.message,
+        severity: diag.severity ?? null,
+        message: diag.message ?? null,
         created_at: new Date().toISOString(),
       },
     };
-    await redis.publish("ai:embedding:new", JSON.stringify(payload));
-    console.log(`[phase48] → published ${payload.id}`);
+    if (!dryRun && redis) {
+      await redis.publish('ai:embedding:new', JSON.stringify(payload));
+      console.log(`[phase48] → published ${payload.id}`);
+    } else {
+      console.log(
+        `[phase48] (dry-run) would publish ${payload.id} vector_len=${payload.vector.length}`
+      );
+    }
   }
 
-  await redis.quit();
-  console.log("[phase48] ✅ Published all diagnostics to Redis → Phase47 pipeline");
+  if (redis) await redis.quit();
+  console.log(
+    dryRun
+      ? '[phase48] ✅ Dry-run complete (no Redis writes)'
+      : '[phase48] ✅ Published all diagnostics to Redis → Phase47 pipeline'
+  );
 }
 
 main().catch((err) => {

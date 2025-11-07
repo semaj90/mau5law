@@ -1,36 +1,34 @@
 <!-- AI Chat Test Page - Showcasing Svelte 5 + bits-ui + Docker Ollama Integration -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
+  // removed enhanced-bits Button import to use native HTML5 button with bits-ui classes
   import { onMount } from 'svelte';
-  import Button from '$lib/components/ui/Button.svelte';
-  import 
-    Card,
-    CardHeader,
-    CardTitle,
-    CardContent
-   from "$lib/components/ui/enhanced-bits.svelte";
   // Badge replaced with span - not available in enhanced-bits
-  import EnhancedAIChatTest from '$lib/components/ai/EnhancedAIChatTest.svelte';
-  import { Bot, MessageCircle, Cpu, Database, Zap, CheckCircle, XCircle, Loader2, Server, HardDrive } from 'lucide-svelte';
-  // State using Svelte 5 runes
-  let systemStatus = $state(null);
+  import LegalAIChat from '../../lib/components/LegalAIChat.svelte'; // Changed to import LegalAIChat with relative path
+  import { Bot, MessageCircle, Cpu, Database, Zap, Server, HardDrive } from 'lucide-svelte';
+  // State using Svelte 5 runes (typed to avoid implicit-any)
+  let systemStatus = $state<Record<string, any> | null>(null);
   let chatOpen = $state(false);
   let isLoading = $state(true);
-  // Check system status on mount
-  $effect(() => {
-    checkSystemStatus();
+  // Check system status on mount (avoid returning a Promise from a reactive $effect)
+  onMount(() => {
+    void checkSystemStatus();
   });
   async function checkSystemStatus() {
     try {
       isLoading = true;
-      // removed unused response assignment
+      const response = await fetch('/api/health/status');
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       const data = await response.json();
       // Normalize the response structure for compatibility
-      systemStatus = { services: data.services, environment: data.environment, // Legacy compatibility
-        ollama: data.services?.ollama || data.ollama, database: data.services?.database || data.database }
+      systemStatus = {
+        services: data.services ?? data,
+        environment: (data.environment ?? data.env) ?? {},
+        ollama: data.services?.ollama ?? data.ollama ?? { status: 'disconnected' },
+        database: data.services?.database ?? data.database ?? { status: 'disconnected' }
+      };
     } catch (error) {
       console.error('Failed to check system status:', error);
       systemStatus = {
@@ -45,16 +43,6 @@
       }
     } finally {
       isLoading = false;
-    }
-  }
-  function getStatusIcon(status: string) {
-    switch (status) {
-      case 'connected':
-        return CheckCircl;
-      case 'error':
-      case 'disconnected':
-        return XCircl;
-      default: return Loader2;
     }
   }
   function getStatusColor(status: string) {
@@ -108,17 +96,24 @@
             <p class="text-sm text-gray-500">Local AI Model Server</p>
           </div>
         </div>
+
         {#if isLoading}
           <div class="flex items-center gap-2 text-yellow-600">
-            <Loader2 class="h-4 w-4 animate-spin" />
+            <span class="loader h-4 w-4 inline-block" aria-hidden="true"></span>
             <span>Checking status...</span>
           </div>
-        {:else if systemStatus}
-          {@const StatusIcon = getStatusIcon(systemStatus.ollama.status)}
-          <div class="flex items-center gap-2 {getStatusColor(systemStatus.ollama.status)}">
-            <StatusIcon class="h-4 w-4" />
-            <span>{getStatusText(systemStatus.ollama.status)}</span>
+        {:else if systemStatus?.ollama}
+          <div class={"flex items-center gap-2 " + getStatusColor(systemStatus?.ollama?.status)}>
+            {#if systemStatus?.ollama?.status === 'connected'}
+              <span class="inline-block w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></span>
+            {:else if systemStatus?.ollama?.status === 'error' || systemStatus?.ollama?.status === 'disconnected'}
+              <span class="inline-block w-3 h-3 rounded-full bg-red-500" aria-hidden="true"></span>
+            {:else}
+              <span class="loader h-4 w-4 inline-block" aria-hidden="true"></span>
+            {/if}
+            <span>{getStatusText(systemStatus?.ollama?.status)}</span>
           </div>
+
           {#if systemStatus.ollama.version}
             <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">v{systemStatus.ollama.version}</span>
           {/if}
@@ -140,17 +135,24 @@
             <p class="text-sm text-gray-500">PostgreSQL with pgvector</p>
           </div>
         </div>
+
         {#if isLoading}
           <div class="flex items-center gap-2 text-yellow-600">
-            <Loader2 class="h-4 w-4 animate-spin" />
+            <span class="loader h-4 w-4 inline-block" aria-hidden="true"></span>
             <span>Checking status...</span>
           </div>
-        {:else if systemStatus}
-          {@const StatusIcon = getStatusIcon(systemStatus.database.status)}
-          <div class="flex items-center gap-2 {getStatusColor(systemStatus.database.status)}">
-            <StatusIcon class="h-4 w-4" />
-            <span>{getStatusText(systemStatus.database.status)}</span>
+        {:else if systemStatus?.database}
+          <div class={"flex items-center gap-2 " + getStatusColor(systemStatus?.database?.status)}>
+            {#if systemStatus?.database?.status === 'connected'}
+              <span class="inline-block w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></span>
+            {:else if systemStatus?.database?.status === 'error' || systemStatus?.database?.status === 'disconnected'}
+              <span class="inline-block w-3 h-3 rounded-full bg-red-500" aria-hidden="true"></span>
+            {:else}
+              <span class="loader h-4 w-4 inline-block" aria-hidden="true"></span>
+            {/if}
+            <span>{getStatusText(systemStatus?.database?.status)}</span>
           </div>
+
           {#if systemStatus.database.error}
             <p class="text-sm text-red-600 mt-2">
               {systemStatus.database.error}
@@ -170,7 +172,7 @@
           </div>
         </div>
         <div class="flex items-center gap-2 text-green-600">
-          <CheckCircle class="h-4 w-4" />
+          <span class="inline-block w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></span>
           <span>RTX 3060 Ti Ready</span>
         </div>
         <div class="flex gap-2 mt-2">
@@ -210,7 +212,7 @@
           Click below to open the enhanced chat interface and start a conversation with your local
           AI legal assistant.
         </p>
-        <EnhancedAIChatTest bind:open={chatOpen} caseId="TEST-CASE-001" />
+        <LegalAIChat bind:open={chatOpen} caseId="TEST-CASE-001" />
         <div class="mt-4 text-sm text-gray-500">
           <p>💡 Try asking about legal concepts, case analysis, or document review</p>
         </div>
@@ -253,13 +255,20 @@
     </div>
     <!-- Refresh Button -->
     <div class="text-center mt-8">
-  <Button variant="ghost" onclick={checkSystemStatus} disabled={isLoading} class="gap-2 bits-btn bits-btn">
-{#if isLoading}
-          <Loader2 class="h-4 w-4 animate-spin" />
+      <button
+        type="button"
+        class="bits-btn bits-btn-ghost gap-2 inline-flex items-center justify-center"
+        onclick={checkSystemStatus}
+        disabled={isLoading}
+        aria-live="polite"
+      >
+        {#if isLoading}
+          <span class="loader h-4 w-4 inline-block" aria-hidden="true"></span>
         {:else}
           <Server class="h-4 w-4" />
         {/if}
-        Refresh System Status
+        <span>Refresh System Status</span>
+      </button>
     </div>
   </div>
 </div>
@@ -275,5 +284,17 @@
   }
   :global(code) {
     font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  }
+
+  /* small inline spinner used in several places */
+  .loader {
+    border-radius: 9999px;
+    border: 2px solid rgba(0,0,0,0.08);
+    border-top-color: rgba(0,0,0,0.45);
+    animation: spin 1s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 </style>
