@@ -5,44 +5,6 @@ import chatRateLimiter from '$lib/server/middleware/rate-limiter'; // Changed to
 import { createHash } from 'node:crypto';
 import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import centralized Ollama endpoint helper
 
-// Define the expected signature for searchSimilarChats.
-// The actual function in $lib/server/services/vectorDBService.ts needs to be updated
-// to match this signature: (query: string, limit: number, threshold: number) => Promise<VectorSearchResult[]>.
-type ExpectedSearchSimilarChats = (query: string, limit: number, threshold: number) => Promise<vectorDBService.VectorSearchResult[]>;
-// Cast the imported function to the expected type to resolve the type error in this file.
-const searchSimilarChats: ExpectedSearchSimilarChats = vectorDBService.searchSimilarChats as ExpectedSearchSimilarChats;
-
-// Define interfaces for robust logging
-interface LoggerBindings extends Record<string, unknown> { }
-
-interface Logger {
-  info: (message: string, component: string, metadata?: LoggerBindings) => void;
-  warn: (message: string, component: string, metadata?: LoggerBindings) => void;
-  error: (message: string, component: string, error?: Error, metadata?: LoggerBindings) => void;
-  withRequestId: (requestId: string) => Logger;
-  child: (bindings: LoggerBindings) => Logger;
-}
-
-// Helper function to create child loggers: avoiding 'this' aliasing in the main logger object
-function createChildLoggerInstance(parentLogger: Logger, bindings: LoggerBindings): Logger {
-  return {
-    info: (message: string, component: string, metadata?: LoggerBindings) => parentLogger.info(message, component, { ...bindings, ...metadata }),
-    warn: (message: string, component: string, metadata?: LoggerBindings) => parentLogger.warn(message, component, { ...bindings, ...metadata }),
-    error: (message: string, component: string, error?: Error, metadata?: LoggerBindings) => parentLogger.error(message, component, error, { ...bindings, ...metadata }),
-    withRequestId: (requestId: string) => createChildLoggerInstance(parentLogger, { ...bindings, requestId }),
-    child: (newBindings: LoggerBindings) => createChildLoggerInstance(parentLogger, { ...bindings, ...newBindings }),
-  };
-}
-
-// Initialize a default logger instance
-const logger: Logger = {
-  info: (message, component, metadata) => console.info(`[INFO][${component}] ${message}`, metadata ? JSON.stringify(metadata) : ''),
-  warn: (message, component, metadata) => console.warn(`[WARN][${component}] ${message}`, metadata ? JSON.stringify(metadata) : ''),
-  error: (message, component, error, metadata) => console.error(`[ERROR][${component}] ${message}`, error, metadata ? JSON.stringify(metadata) : ''),
-  withRequestId: (requestId) => createChildLoggerInstance(logger, { requestId }),
-  child: (bindings) => createChildLoggerInstance(logger, bindings),
-};
-
 // Initialize database on startup (attempt to create embeddings table once)
 let chatDbInitialized: boolean = false;
 async function ensureDbInitialized(): Promise<void> {
@@ -483,6 +445,44 @@ export const POST: RequestHandler = async ({ request }) => {
         vectorSearchUsed,
         sourcesFound: sources.length,
         duration: processingTime
+      });
+
+      const response: ChatResponse = {
+        success: true,
+        response: fullResponse,
+        conversationId,
+        requestId,
+        sources: sources.length > 0 ? sources : undefined,
+        metadata: {
+          model,
+          temperature,
+          processingTimeMs: processingTime,
+          vectorSearchUsed,
+          sourcesCount: sources.length,
+          requestId,
+          timestamp: new Date().toISOString()
+        }
+      };
+      return json(response);
+    } catch (error: Error | unknown) {
+      const processingTime = Date.now() - startTime;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      requestLogger.error('Chat request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
+        duration: processingTime,
+        errorMessage
+      });
+      return json(
+        {
+          success: false,
+          error: 'Internal server error occurred while processing your request',
+          requestId,
+          metadata: { processingTimeMs: processingTime, timestamp: new Date().toISOString() }
+        },
+        { status: 500 }
+      );
+    }
+  });
+};
       });
 
       const response: ChatResponse = {

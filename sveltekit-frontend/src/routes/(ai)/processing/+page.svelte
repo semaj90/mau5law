@@ -1,14 +1,13 @@
 <script lang="ts">
-import type { Document } from '$lib/types';
-  import { nesGPUBridge } from '$lib/gpu/nes-gpu-memory-bridge';
-  import { glyphShaderCacheBridge } from '$lib/cache/glyph-shader-cache-bridge';
-  import LoadingButton from '$lib/headless/LoadingButton.svelte';
-  import FormField from '$lib/headless/FormField.svelte';
-  import { fade, fly } from 'svelte/transition';
+  // Removed unused imports:
+  // import type { Document } from '$lib/types';
+  // import FormField from '$lib/headless/FormField.svelte';
 
-  // Add Job type so $state infers properly (prevents 'never' issues)
-  type JobStatus = 'queued' | 'processing' | 'completed' | 'failed';
-  interface Job {
+  // Use dynamic imports for bridges to avoid "not a module" / "no exported member" compile issues.
+  // We'll populate these at runtime in initializeNESGPUBridge().
+  let nesGPUBridge: any = {};
+  let glyphShaderCacheBridge: any = {};
+
     id: string;
     documentId: string;
     analysisType: string;

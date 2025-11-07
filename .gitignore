@@ -349,6 +349,10 @@ python3.11/
 .venv/
 .python311/
 
+# Ignore local svelte backup folders created by sanitizer
+.svelte-error-fixes-backup/
+sveltekit-frontend/backups/
+
 # Cake - Uncomment if you are using it
 #tools/**
 #!tools/packages.config

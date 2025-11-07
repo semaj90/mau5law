@@ -1,11 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // Updated to use bits-ui components
-  import  Button  from "$lib/components/ui/button.svelte";
-  import  Label  from "$lib/components/ui/label.svelte";
-  import  Textarea  from "$lib/components/ui/textarea.svelte";
-  // lucide-svelte exports some icons as default; import Loader2 as the default export
-  import Loader2 from 'lucide-svelte';
+  import { Button, Label, Textarea } from '$lib/components/ui/core';
   import { onMount } from 'svelte';
 
   // Enhanced AI Types
@@ -60,7 +56,7 @@
   interface ServiceStatus {
     healthy: boolean;
     loading: boolean;
-    services: Record<string string>;
+    services: Record<string, string>;
     version: string;
     config: { [key: string]: any };
   }
@@ -269,6 +265,7 @@
               >
             {/if}
           </div>
+
           {#if serviceStatus.healthy}
             <div class="flex gap-4 text-sm">
               <span class="text-slate-600">
@@ -291,7 +288,8 @@
                     : "disabled"}
                 </span>
               </span>
-            {/if}
+            </div>
+          {/if}
         </div>
       </div>
     </header>
@@ -348,14 +346,18 @@
             class="mt-1"
           />
         </div>
-        <!-- Process Button -->
+        <!-- Process Button (replace Loader2 with inline spinner) -->
         <Button
           onclick={processDocument}
           disabled={processing || !serviceStatus.healthy}
           class="w-full mt-4"
         >
           {#if processing}
-            <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+            <!-- inline spinner -->
+            <svg class="mr-2 h-4 w-4 animate-spin inline-block" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
             Processing...
           {:else}
             Process Document
@@ -392,14 +394,17 @@
             />
           </div>
         </div>
-        <!-- Search Button -->
+        <!-- Search Button (replace Loader2 with inline spinner) -->
         <Button
           onclick={performVectorSearch}
           disabled={searching || !serviceStatus.healthy}
           class="w-full mt-4"
         >
           {#if searching}
-            <Loader2 class="mr-2 h-4 w-4 animate-spin" />
+            <svg class="mr-2 h-4 w-4 animate-spin inline-block" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
             Searching...
           {:else}
             Perform Vector Search
@@ -410,7 +415,7 @@
   </div>
 </div>
 
-<!-- Process Results Dialog (replaced DialogRoot/DialogContent with a plain Svelte modal) -->
+<!-- Process Results Dialog - fixed conditional blocks (each if has its matching closing tag and surrounding div) -->
 {#if showProcessDialog}
   <div class="fixed inset-0 z-50 flex items-center justify-center">
     <!-- overlay -->
@@ -443,20 +448,26 @@
             <Label class="text-right">Success:</Label>
             <span class="col-span-3">{processResult.success ? 'Yes' : 'No'}</span>
           </div>
+
           <div class="grid grid-cols-4 items-center gap-4">
             <Label class="text-right">Message:</Label>
             <span class="col-span-3">{processResult.message}</span>
           </div>
+
           {#if processResult.summary}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Summary:</Label>
               <span class="col-span-3 text-sm">{processResult.summary}</span>
-            {/if}
+            </div>
+          {/if}
+
           {#if processResult.keywords && processResult.keywords.length > 0}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Keywords:</Label>
               <span class="col-span-3">{processResult.keywords.join(', ')}</span>
-            {/if}
+            </div>
+          {/if}
+
           {#if processResult.legal_entities && processResult.legal_entities.length > 0}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Entities:</Label>
@@ -467,27 +478,38 @@
                   </span>
                 {/each}
               </div>
-            {/if}
+            </div>
+          {/if}
+
           {#if processResult.sentiment !== undefined}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Sentiment:</Label>
-              <span class="col-span-3">{getSentimentLabel(processResult.sentiment)} ({processResult.sentiment.toFixed(2)})</span>
-            {/if}
+              <span class={ `col-span-3 ${getSentimentColor(processResult.sentiment)}` }>
+                {getSentimentLabel(processResult.sentiment)} ({processResult.sentiment.toFixed(2)})
+              </span>
+            </div>
+          {/if}
+
           {#if processResult.confidence !== undefined}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Confidence:</Label>
               <span class="col-span-3">{(processResult.confidence * 100).toFixed(2)}%</span>
-            {/if}
+            </div>
+          {/if}
+
           {#if processResult.processing_time}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Time:</Label>
               <span class="col-span-3">{processResult.processing_time}</span>
-            {/if}
+            </div>
+          {/if}
+
           {#if processResult.cached_result !== undefined}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Cached:</Label>
               <span class="col-span-3">{processResult.cached_result ? 'Yes' : 'No'}</span>
-            {/if}
+            </div>
+          {/if}
         </div>
       {:else}
         <p>No results to display.</p>
@@ -497,7 +519,8 @@
         <Button onclick={() => (showProcessDialog = false)}>Close</Button>
       </div>
     </div>
-  {/if}
+  </div>
+{/if}
 
 <!-- Search Results Dialog (replaced DialogRoot/DialogContent with a plain Svelte modal) -->
 {#if showSearchDialog}
@@ -563,7 +586,8 @@
         <Button onclick={() => (showSearchDialog = false)}>Close</Button>
       </div>
     </div>
-  {/if}
+  </div>
+{/if}
 
 <style>
   /* Consolidated custom styles (single top-level <style> only) */

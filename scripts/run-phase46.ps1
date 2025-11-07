@@ -8,7 +8,6 @@
 param(
     [string]$DocsDir,
     [int]$AdapterPort = 8092,
-    [int]$GraphPort = 8093,
     [string]$ComposeFile
 )
 
@@ -75,18 +74,21 @@ function Wait-ForHttp {
 }
 
 function Get-ServiceContainerId {
-    param([string]$ServiceName, [string]$ComposeFile)
-    docker compose -f $ComposeFile ps -q $ServiceName 2>$null
+    param(
+        [string]$ServiceName
+    )
+
+    $containerId = docker compose -f $ComposeFile ps -q $ServiceName 2>$null
+    return $containerId
 }
 
 function Safe-DockerExec {
     param(
         [string]$ServiceName,
-        [string[]]$Command,
-        [string]$ComposeFile
+        [string[]]$Command
     )
 
-    $containerId = Get-ServiceContainerId -ServiceName $ServiceName -ComposeFile $ComposeFile
+    $containerId = Get-ServiceContainerId -ServiceName $ServiceName
     if (-not $containerId) {
         Write-Step "Skipping $ServiceName command; service not available."
         return
@@ -107,77 +109,74 @@ try {
         $ComposeFile = Join-Path $PWD 'docker-compose-vector-384.yml'
     }
 
-    if (-not (Test-Path $DocsDir)) {
-        Write-Step "Docs directory missing at $DocsDir. Creating it."
-        New-Item -ItemType Directory -Path $DocsDir -Force | Out-Null
-    }
-
     if (-not (Test-Path $ComposeFile)) {
         throw "Compose file '$ComposeFile' not found. Provide the correct -ComposeFile path."
     }
 
-    $serviceDefinitions = @(
-        [pscustomobject]@{ Name = 'redis'; Display = 'Redis'; Health = 'port'; Port = 6379 },
-        [pscustomobject]@{ Name = 'postgres'; Display = 'Postgres'; Health = 'port'; Port = 5432 },
-        [pscustomobject]@{ Name = 'neo4j'; Display = 'Neo4j'; Health = 'port'; Port = 7687 },
-        [pscustomobject]@{ Name = 'minio'; Display = 'MinIO'; Health = 'port'; Port = 9000 },
-        [pscustomobject]@{ Name = 'qdrant'; Display = 'Qdrant'; Health = 'http'; Url = 'http://localhost:6333/health' }
-    )
-
-    $previousErrorPreference = $ErrorActionPreference
-    $ErrorActionPreference = 'Continue'
-    try {
-        $availableServices = docker compose -f $ComposeFile config --services 2>$null | Where-Object { $_ } | ForEach-Object { $_.Trim() }
-    } finally {
-        $ErrorActionPreference = $previousErrorPreference
-    }
-
+    $availableServices = docker compose -f $ComposeFile config --services 2>$null | Where-Object { $_ } | ForEach-Object { $_.Trim() }
     if (-not $availableServices) {
         throw "No services found in compose file '$ComposeFile'."
     }
+
+    $serviceDefinitions = @(
+        @{ Name = 'redis'; Display = 'Redis'; Health = 'port'; Port = 6379 },
+        @{ Name = 'postgres'; Display = 'Postgres'; Health = 'port'; Port = 5432 },
+        @{ Name = 'minio'; Display = 'MinIO'; Health = 'port'; Port = 9000 },
+        @{ Name = 'qdrant'; Display = 'Qdrant'; Health = 'http'; Url = 'http://localhost:6333/health' }
+    )
 
     $servicesToManage = $serviceDefinitions | Where-Object { $availableServices -contains $_.Name }
     if (-not ($servicesToManage | Where-Object { $_.Name -in @('redis','postgres') })) {
         throw "Compose file '$ComposeFile' must include at least redis and postgres services for the pipeline."
     }
 
-    $startNames = @($servicesToManage | Select-Object -ExpandProperty Name)
-    Write-Step ("Starting Docker services: {0}" -f ($startNames -join ', '))
-    docker compose -f $ComposeFile up -d $startNames | Out-Null
+    # --- 1️⃣ Start backend services ---
+    Write-Host "🚀 Starting Docker services: redis, postgres, neo4j, minio, qdrant..."
+    docker compose -f docker-compose-full-stack-384.yml up -d redis postgres neo4j qdrant minio
 
-    Write-Step "Waiting for core services to report ready..."
-    foreach ($svc in $servicesToManage) {
-        switch ($svc.Health) {
-            'port' { Wait-ForPort -Port $svc.Port -Name $svc.Display }
-            'http' { Wait-ForHttp -Url $svc.Url -Name $svc.Display }
-        }
+    # --- 2️⃣ Health checks ---
+    function Wait-For-Port($port, $name) {
+        param(
+            [int]$port,
+            [string]$name
+        )
+
+        Wait-ForPort -Port $port -Name $name -TimeoutSeconds 60
     }
 
-    $adapterPath = Join-Path (Join-Path $PWD '.venv-phase46') 'Scripts\python.exe'
-    if (-not (Test-Path $adapterPath)) {
-        throw "Python executable not found at $adapterPath. Ensure .venv-phase46 is created."
-    }
+    Wait-For-Port 7687 "Neo4j"
+    Wait-For-Port 9000 "MinIO"
+    Wait-For-Port 6333 "Qdrant"
 
-    if ($servicesToManage.Name -contains 'minio') {
-        Write-Step "Ensuring MinIO bucket 'web_docs' exists..."
-        Safe-DockerExec -ServiceName 'minio' -ComposeFile $ComposeFile -Command @('mc','alias','set','local','http://localhost:9000','minioadmin','minioadmin') | Out-Null
-        Safe-DockerExec -ServiceName 'minio' -ComposeFile $ComposeFile -Command @('mc','mb','local/web_docs') | Out-Null
-    } else {
-        Write-Step "MinIO service not present in compose; skipping bucket setup."
-    }
+    # --- 3️⃣ Create MinIO bucket if missing ---
+    Write-Host "📦 Ensuring MinIO bucket 'web_docs' exists..."
+    docker exec -it legal-minio-384 mc alias set local http://localhost:9000 minioadmin minioadmin123 2>$null
+    docker exec -it legal-minio-384 mc mb local/web_docs 2>$null
 
-    Write-Step "Starting Python adapter on port $AdapterPort..."
-    $adapter = Start-UvicornProcess -PythonPath $adapterPath -Module 'python-services.doc_ingest:app' -Port $AdapterPort -Environment @{
-        PHASE46_CACHE_DIR = (Join-Path (Join-Path $PWD 'cache') 'phase46_adapter')
-    }
-    Start-Sleep -Seconds 3
-
-    Write-Step "Starting Phase47 graph analyzer on port $GraphPort..."
-    $graph = Start-UvicornProcess -PythonPath $adapterPath -Module 'go-microservice.cmd.phase47_graph_analyzer:app' -Port $GraphPort -Environment @{
-        QDRANT_URL = 'http://localhost:6333'
-        NEO4J_HTTP = 'http://localhost:8088'
-    }
+    # --- 4️⃣ Start Python Adapter ---
+    Write-Host "⚙️ Starting Python adapter (doc_ingest) on port $AdapterPort..."
+    $adapter = Start-Process -NoNewWindow -PassThru \
+        -FilePath ".\.venv-phase46\Scripts\python.exe" \
+        -ArgumentList "-m","uvicorn","python-services.doc_ingest:app","--host","0.0.0.0","--port",$AdapterPort
     Start-Sleep -Seconds 5
+
+    # --- 5️⃣ Start Phase47 Graph Analyzer ---
+    Write-Host "🧠 Starting Phase47 Graph Analyzer on port 8093..."
+    $analyzer = Start-Process -NoNewWindow -PassThru \
+        -FilePath ".\.venv-phase46\Scripts\python.exe" \
+        -ArgumentList "-m","uvicorn","python-services.phase47_graph_analyzer:app","--host","0.0.0.0","--port","8093"
+    Start-Sleep -Seconds 5
+
+    # --- 6️⃣ Run AST Exporter ---
+    Write-Host "✨ Running AST Exporter..."
+    $env:PHASE47_GRAPH_URL = "http://localhost:8093"
+    npx tsx go-microservice/cmd/phase47_astgraph.ts
+
+    # --- 7️⃣ Ingest all docs from $DocsDir ---
+    if (!(Test-Path $DocsDir)) {
+        Write-Step "Docs directory was missing at $DocsDir. Creating it now."
+        New-Item -ItemType Directory -Path $DocsDir -Force | Out-Null
+    }
 
     $files = Get-ChildItem -Path $DocsDir -File
     if ($files.Count -eq 0) {
@@ -198,83 +197,23 @@ try {
         Write-Step ("Uploaded {0} document(s) to adapter." -f $files.Count)
     }
 
-    Write-Step "Generating Phase47 AST cache via ts-morph..."
-    try {
-        & npx.cmd tsx go-microservice/cmd/phase47_astgraph.ts
-    } catch {
-        Write-Warning "AST cache generation failed: $_"
-    }
+    # --- 8️⃣ Run the Node pipeline ---
+    Write-Host "🧠 Running Phase46 full pipeline..."
+    $env:PHASE46_PIPELINE_AGENTIC = "1"
+    npm run phase46-full-pipeline
 
-    Write-Step "Running Phase46 full pipeline via npm..."
-    $env:PHASE46_PIPELINE_AGENTIC = '1'
-    $env:PHASE47_GRAPH_URL = "http://127.0.0.1:$GraphPort"
-    try {
-        & npm.cmd run phase46-full-pipeline
-    } finally {
-        Remove-Item Env:PHASE46_PIPELINE_AGENTIC -ErrorAction SilentlyContinue
-        Remove-Item Env:PHASE47_GRAPH_URL -ErrorAction SilentlyContinue
-    }
+    # --- 9️⃣ Verify data flow ---
+    Write-Host "🔎 Verifying Redis, pgvector, Neo4j, and Qdrant..."
+    docker exec -it legal-redis-384 redis-cli dbsize
+    docker exec -it legal-postgres-384 psql -U legal_admin -d legal_ai_db -c "SELECT COUNT(*) FROM document_embeddings;"
+    docker exec -it legal-neo4j-384 cypher-shell -u neo4j -p password "MATCH (d:Document)-[r:RELATED]->() RETURN COUNT(r);"
+    docker exec -it legal-qdrant-384 curl -s http://localhost:6333/collections
 
-    Write-Step "Collecting status metrics..."
-    if ($servicesToManage.Name -contains 'redis') {
-        try {
-            Safe-DockerExec -ServiceName 'redis' -ComposeFile $ComposeFile -Command @('redis-cli','dbsize')
-        } catch {
-            Write-Warning "Redis status check failed: $_"
-        }
-    }
-
-    if ($servicesToManage.Name -contains 'postgres') {
-        try {
-            Safe-DockerExec -ServiceName 'postgres' -ComposeFile $ComposeFile -Command @('psql','-U','legal_admin','-d','legal_ai_db','-c','SELECT COUNT(*) FROM document_embeddings;')
-        } catch {
-            Write-Warning "Postgres status check failed: $_"
-        }
-    }
-
-    if ($servicesToManage.Name -contains 'neo4j') {
-        try {
-            Safe-DockerExec -ServiceName 'neo4j' -ComposeFile $ComposeFile -Command @('cypher-shell','-u','neo4j','-p','123456',"MATCH (d:Document)-[r:RELATED]->() RETURN COUNT(r);")
-        } catch {
-            Write-Warning "Neo4j status check failed: $_"
-        }
-    } else {
-        Write-Step "Neo4j service not present; skipping graph verification query."
-    }
-
-    Write-Step "Phase46/47 pipeline complete."
-    if ($null -ne $adapter) {
-        Write-Step "Adapter PID: $($adapter.Id)"
-        Write-Step "Stop the adapter when finished with: Stop-Process -Id $($adapter.Id)"
-    } else {
-        Write-Step "Adapter process information was not captured."
-    }
-
-    if ($null -ne $graph) {
-        Write-Step "Graph analyzer PID: $($graph.Id)"
-        Write-Step "Stop the analyzer when finished with: Stop-Process -Id $($graph.Id)"
-    }
+    # --- 🔟 Done ---
+    Write-Host "`n🎉 Phase46 pipeline complete!"
+    Write-Host "Adapter PID: $($adapter.Id)"
+    Write-Host "Analyzer PID: $($analyzer.Id)"
+    Write-Host "Stop them anytime via: Stop-Process -Id $($adapter.Id), Stop-Process -Id $($analyzer.Id)"
 } finally {
     Pop-Location
-}
-function Start-UvicornProcess {
-    param(
-        [string]$PythonPath,
-        [string]$Module,
-        [int]$Port,
-        [hashtable]$Environment = @{}
-    )
-
-    $argumentList = @(
-        '-m','uvicorn',
-        $Module,
-        '--host','0.0.0.0',
-        '--port',$Port
-    )
-
-    if ($Environment.Count -gt 0) {
-        return Start-Process -FilePath $PythonPath -ArgumentList $argumentList -PassThru -NoNewWindow -WorkingDirectory $PWD -Environment $Environment
-    }
-
-    return Start-Process -FilePath $PythonPath -ArgumentList $argumentList -PassThru -NoNewWindow -WorkingDirectory $PWD
 }

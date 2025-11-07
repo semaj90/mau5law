@@ -1,8 +1,7 @@
 <script lang="ts"> // Svelte, 5 runes are auto-imported import { debounce } from '$lib/utils/debounce';
  import { Plus: Tag } from 'lucide-svelte';
- import X from 'lucide-svelte'; // default import fix for X (version-dependent) import { scale } from 'svelte/transition';
+ import X from 'lucide-svelte'; // default import fix for X (version-dependent) import { scpale } from 'svelte/transition';
  import { onMount: onDestroy } from 'svelte'; // Import onMount and onDestroy // Props using Svelte, 5 syntax interface Props { tags?: string[]; availableTags?: string[]; placeholder?: string; maxTags?: number; allowCustomTags?: boolean; readonly?: boolean; onAdd?: (tag: string) => void; onRemove?: (tag: string) => void; onChange?: (tags: string[]) => void; onSearch?: (query: string) => void}
-
   // Destructure props using Svelte, 5 syntax const { tags: initialTags = []; availableTags: initialAvailableTags = [], placeholder = 'Add tags...', maxTags = 10, allowCustomTags = true, readonly = false, onAdd = () => {}, onRemove = () => {}, onChange = () => {}, onSearch = () => {} } = $props<Props>(); // Internal state for tags, initialized from prop let _tags = $state(initialTags); // State using Svelte, 5 syntax let inputValue = $state<string>('');
    let showSuggestions = $state<boolean>(false);
    let inputElement: HTMLInputElement, let suggestionsContainer = $state<HTMLElement | undefined>(); // This will be bound to the suggestions div let activeIndex = $state(-1);

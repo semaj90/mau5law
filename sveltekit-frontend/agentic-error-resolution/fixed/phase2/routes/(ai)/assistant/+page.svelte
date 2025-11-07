@@ -1,7 +1,7 @@
 <script lang="ts">
   // Consolidated AI Assistant (replaces /ai-assistant, /aiassistant, /ai-chat)
-  import  Button  from "$lib/components/ui/core.svelte";
-  import  Card, CardContent, CardHeader, CardTitle  from "$lib/components/ui/card.svelte";
+  import { Button } from '$lib/components/ui/core';
+  import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
 
   interface ChatMessage {
     id: string;
@@ -10,7 +10,10 @@
     timestamp: Date;
   }
 
-  let messages = $state<ChatMessage[]>([]);
+  // <-- changed: avoid angle-bracket generics which Svelte may parse as HTML -->
+  // old: let messages = $state<ChatMessage[]>([]);
+  let messages = $state([]) as ChatMessage[];
+
   let currentMessage = $state('');
   let isStreaming = $state(false);
   let error = $state('');

@@ -1,5 +1,6 @@
 <script lang="ts">
-  // Removed unused imports and external UI imports (they were unused)
+  import { onMount } from 'svelte';
+  import { browser } from '$app/environment';
 
   // Local lightweight PageData shape (avoids importing a missing ./ $types)
   type PageData = {
@@ -7,19 +8,19 @@
     routeInventory?: { fileRoutesSample?: Array<{ route: string; title?: string }> };
   };
 
-  interface Props {
-    data: PageData
-  }
+  // --- Replaced: use Svelte 5 runes-style props accessor instead of `export let` ---
+  // Cannot use `export let` in runes mode — use $props() instead
+  const props = $props<{ data?: PageData }>();
+  let data: PageData = props.data ?? { availableRoutes: [], routeInventory: { fileRoutesSample: [] } };
 
-  let { data }: Props = $props();
-  let selectedRoute = $state<RouteItem | null>(null); // Explicitly typed
-  let showModal = $state<boolean>(false); // This line is correct Svelte 5 runes syntax.
-  let searchTerm = $state<string>('');
-  let selectedCategory = $state<string>('all');
-  let selectedSection = $state<string>('all');
-  let isLoaded = $state<boolean>(false);
-  // Keep some flags for future UI; minimal usage avoids "declared but never read" noise
-  let showStats = $state<boolean>(true);
+  // --- Changed: convert these to runes $state to avoid "declared but never read" warnings ---
+  let selectedRoute = $state<RouteItem | null>(null);
+  let showModal = $state(false);
+  let searchTerm = $state(''); // keep as state because it's bound to input
+  let selectedCategory = $state('all');
+  let selectedSection = $state('all');
+  let isLoaded = $state(false);
+  let showStats = $state(true);
 
   // K-means clustering logic for API endpoints (unchanged)
   function clusterAPIEndpoints(routes: RouteItem[]): Record<string, RouteItem[]> {
@@ -316,12 +317,17 @@
     selectedRoute = null;
   }
   function visitRoute(path: string) {
+    // Guard browser-only API to avoid SSR errors
+    if (!browser) return;
     window.open(path, '_blank');
   }
 
-  $effect(() => {
-    isLoaded = true;
-    console.log('All routes page loaded with', getAllRoutes().length, 'routes');
+  onMount(() => {
+    // Only perform client-side logging/side-effects when in the browser
+    if (browser) {
+      isLoaded = true;
+      console.log('All routes page loaded with', getAllRoutes().length, 'routes');
+    }
   });
 
   // --- Fixed: colorClassMap typing and comma separators ---
