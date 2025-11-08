@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
+  import type { Case } from '$lib/types';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
 
@@ -32,7 +32,7 @@ import type { Case } from '$lib/types';
       const response = await fetch('/api/evidence/hash/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hash: hashInput })
+        body: JSON.stringify({ hash: hashInput }),
       });
 
       const result = await response.json();
@@ -57,7 +57,7 @@ import type { Case } from '$lib/types';
       const response = await fetch('/api/evidence/hash', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ hash: hashInput, evidenceId })
+        body: JSON.stringify({ hash: hashInput, evidenceId }),
       });
 
       const result = await response.json();
@@ -85,5 +85,8 @@ import type { Case } from '$lib/types';
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

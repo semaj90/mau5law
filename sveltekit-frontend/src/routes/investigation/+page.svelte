@@ -22,32 +22,35 @@
   // import Upload from 'lucide-svelte/icons/upload'; // Not used
 
   interface Case {
-    id: string
-    title: string
+    id: string;
+    title: string;
     status: 'active' | 'investigating' | 'closed';
     priority: 'low' | 'medium' | 'high' | 'critical';
-    createdAt: string
-    updatedAt: string
-    description?: string
-    assignedTo?: string}
+    createdAt: string;
+    updatedAt: string;
+    description?: string;
+    assignedTo?: string;
+  }
   interface EvidenceItem {
-    id: string
-    caseId: string
-    title: string
+    id: string;
+    caseId: string;
+    title: string;
     type: 'document' | 'image' | 'video' | 'audio' | 'digital';
     status: 'pending' | 'analyzing' | 'analyzed' | 'tagged';
-    confidence?: number
-    aiAnalysis?: string
-    tags: string[],
-    uploadedAt: string
-    size: number}
+    confidence?: number;
+    aiAnalysis?: string;
+    tags: string[];
+    uploadedAt: string;
+    size: number;
+  }
   interface ChatMessage {
-    id: string
+    id: string;
     role: 'user' | 'assistant' | 'system';
-    content: string
-   , timestamp: string
+    content: string;
+    timestamp: string;
     context?: 'evidence' | 'case' | 'citation' | 'analysis';
-    relatedId?: string}
+    relatedId?: string;
+  }
 
   // State management with Svelte, 5 runes
   let currentCase = $state<Case | null>(null);
@@ -63,7 +66,7 @@
     detectiveAnalysis: true,
     aiAssistant: false,
     webgpuAcceleration: false,
-    ollamaConnection: false
+    ollamaConnection: false,
   });
 
   // Evidence handling
@@ -106,15 +109,22 @@
   // }
 
   // AI Chat functionality
-  function addChatMessage(role: 'user' | 'assistant' | 'system', content: string, context?: 'evidence' | 'case' | 'citation' | 'analysis', relatedId?: string) {
-    const message: ChatMessage = { id: `msg-${Date.now()}`,
+  function addChatMessage(
+    role: 'user' | 'assistant' | 'system',
+    content: string,
+    context?: 'evidence' | 'case' | 'citation' | 'analysis',
+    relatedId?: string
+  ) {
+    const message: ChatMessage = {
+      id: `msg-${Date.now()}`,
       role,
       content,
       timestamp: new Date().toISOString(),
       context,
-      relatedId: relatedId
+      relatedId: relatedId,
     };
-    chatMessages = [...chatMessages, message]}
+    chatMessages = [...chatMessages, message];
+  }
 
   // Utility functions
   function getEvidenceType(mimeType: string): EvidenceItem['type'] {
@@ -123,7 +133,8 @@
     if (mimeType.startsWith('video/')) return 'video';
     if (mimeType.startsWith('audio/')) return 'audio';
     if (mimeType.includes('pdf') || mimeType.includes('document')) return 'document';
-    return 'digital'}
+    return 'digital';
+  }
   // function getPriorityColor(priority: string) {
   //   switch (priority) {
   //     case 'critical': return 'bg-red-500';
@@ -148,30 +159,39 @@
     loadCases();
     loadSystemStatus();
     // Add welcome message
-    addChatMessage('assistant', 'Welcome to the Legal Investigation Workspace. I can help you analyze evidence, manage cases, and provide legal insights. How can I assist you today?')});
+    addChatMessage(
+      'assistant',
+      'Welcome to the Legal Investigation Workspace. I can help you analyze evidence, manage cases, and provide legal insights. How can I assist you today?'
+    );
+  });
   async function loadCases(): Promise<any> {
     try {
       const response = await fetch('/api/cases');
       if (response.ok) {
         const loadedCases: Case[] = await response.json();
-        cases = loadedCases
+        cases = loadedCases;
         if (!currentCase && cases.length > 0) {
-          currentCase = cases[0]}
+          currentCase = cases[0];
+        }
       } else {
         addChatMessage('system', 'Error: Could not load cases from the server.');
-        console.error('Failed to load cases', response.statusText)}
+        console.error('Failed to load cases', response.statusText);
+      }
     } catch (error) {
       addChatMessage('system', 'Error: Failed to connect to the server to load cases.');
-      console.error('Failed to load cases:', error)}
+      console.error('Failed to load cases:', error);
+    }
   }
   async function loadSystemStatus(): Promise<any> {
     try {
       const response = await fetch('/api/system/status');
       if (response.ok) {
         const status = await response.json();
-        systemStatus = { ...systemStatus, ...status }}
+        systemStatus = { ...systemStatus, ...status };
+      }
     } catch (error) {
-      console.log('Could not load system status:', error)}
+      console.log('Could not load system status:', error);
+    }
   }
 
   // Save investigation progress
@@ -209,18 +229,22 @@
 </main>
 
 <style>
-/* Global styles for tabs and chat components */
+  /* Global styles for tabs and chat components */
   :global(.workspace-tabs) {
     background: rgba(0, 0, 0, 0.8);
-    border-bottom: 1px solid #00ff88}
+    border-bottom: 1px solid #00ff88;
+  }
   :global(.tab-trigger) {
-    color: #cccccc
-   ; transition: color 0.3s ease}
+    color: #cccccc;
+    transition: color 0.3s ease;
+  }
   :global(.tab-trigger):hover {
-    color: #bfeecf}
-  :global(.tab-trigger[data-state="active"]) {
-    color: #00ff88
-   ; background: rgba(0, 255, 136, 0.1)}
+    color: #bfeecf;
+  }
+  :global(.tab-trigger[data-state='active']) {
+    color: #00ff88;
+    background: rgba(0, 255, 136, 0.1);
+  }
 
   /* Text shadow for header */
   /* .text-shadow-green {
@@ -238,102 +262,131 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
-    font-size: 0.8rem
-   ; opacity: 0.7}
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
   :global(.thinking-indicator) {
-    display: flex
-   ; gap: 0.25rem}
+    display: flex;
+    gap: 0.25rem;
+  }
   /* span rules declared earlier as global */
   :global(.thinking-indicator span) {
     width: 6px;
     height: 6px;
-    background: #FFD700;
-    border-radius: 50%; animation: thinking 1.5s ease-in-out infinite}
-  :global(.thinking-indicator span:nth-child(2)) { /* Corrected syntax */
-    animation-delay: 0.3s}
-  :global(.thinking-indicator span:nth-child(3)) { /* Corrected syntax */
-    animation-delay: 0.6s}
+    background: #ffd700;
+    border-radius: 50%;
+    animation: thinking 1.5s ease-in-out infinite;
+  }
+  :global(.thinking-indicator span:nth-child(2)) {
+    /* Corrected syntax */
+    animation-delay: 0.3s;
+  }
+  :global(.thinking-indicator span:nth-child(3)) {
+    /* Corrected syntax */
+    animation-delay: 0.6s;
+  }
 
   :global(.citations-list) {
-    flex: 1}
+    flex: 1;
+  }
   :global(.citation-item) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.75rem
-   ; border: 1px solid rgba(0, 255, 136, 0.3);
+    padding: 0.75rem;
+    border: 1px solid rgba(0, 255, 136, 0.3);
     border-radius: 4px;
-    margin-bottom: 0.5rem
-   ; background: rgba(0, 0, 0, 0.3)}
+    margin-bottom: 0.5rem;
+    background: rgba(0, 0, 0, 0.3);
+  }
 
   /* chat layout â€” make global so nested chat component DOM picks up these styles */
   :global(.chat-container) {
     display: flex;
-    flex-direction: column}
+    flex-direction: column;
+  }
   :global(.chat-content) {
     display: flex;
-    flex-direction: column
-   ; height: 100%}
+    flex-direction: column;
+    height: 100%;
+  }
   :global(.messages-container) {
     flex: 1;
     overflow-y: auto;
     margin-bottom: 1rem;
-    padding-right: 0.5rem}
+    padding-right: 0.5rem;
+  }
   :global(.message) {
-    margin-bottom: 1rem
-   ; padding: 1rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
     border-radius: 8px;
-    max-width: 90%}
+    max-width: 90%;
+  }
   :global(.message.user) {
-    margin-left: auto
-   ; background: rgba(0, 255, 136, 0.1);
-    border-left: 3px solid #00ff88}
+    margin-left: auto;
+    background: rgba(0, 255, 136, 0.1);
+    border-left: 3px solid #00ff88;
+  }
   :global(.message.assistant) {
-    margin-right: auto
-   ; background: rgba(255, 215, 0, 0.1);
-    border-left: 3px solid #FFD700}
+    margin-right: auto;
+    background: rgba(255, 215, 0, 0.1);
+    border-left: 3px solid #ffd700;
+  }
   :global(.message.system) {
     background: rgba(0, 150, 255, 0.1);
-    border-left: 3px solid #0096ff
-   ; margin: 0 auto;
-    max-width: 70%; text-align: center;
-    font-size: 0.9rem}
+    border-left: 3px solid #0096ff;
+    margin: 0 auto;
+    max-width: 70%;
+    text-align: center;
+    font-size: 0.9rem;
+  }
 
   :global(.message-role) {
     display: flex;
-    align-items: center
-   ; gap: 0.25rem;
+    align-items: center;
+    gap: 0.25rem;
     font-weight: 600;
-    text-transform: uppercase}
+    text-transform: uppercase;
+  }
   :global(.message-time) {
-    font-size: 0.7rem}
+    font-size: 0.7rem;
+  }
   :global(.message-content) {
-    line-height: 1.5}
+    line-height: 1.5;
+  }
   @keyframes thinking {
-    0%, 80%, 100% {
-      opacity: 0.3
-     ; transform: scale(0.8)}
+    0%,
+    80%,
+    100% {
+      opacity: 0.3;
+      transform: scale(0.8);
+    }
     40% {
-      opacity: 1
-     ; transform: scale(1)}
+      opacity: 1;
+      transform: scale(1);
+    }
   }
   :global(.chat-input) {
-    display: flex
-   ; gap: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
     align-items: center;
     padding-top: 1rem;
-    border-top: 1px solid rgba(0, 255, 136, 0.3)}
+    border-top: 1px solid rgba(0, 255, 136, 0.3);
+  }
   :global(.citations-container) {
     display: flex;
-    flex-direction: column
-   ; height: 100%}
+    flex-direction: column;
+    height: 100%;
+  }
   :global(.add-citation) {
-    margin-bottom: 2rem}
+    margin-bottom: 2rem;
+  }
   /* :global(.citations-list) is already global */
   /* :global(.citation-item) is already global */
   :global(.citation-text) {
     flex: 1;
-    font-size: 0.9rem}
+    font-size: 0.9rem;
+  }
   /* Responsive */
   @media (max-width: 1024px) {
     /* .evidence-layout {
@@ -348,7 +401,9 @@
       flex-direction: column
      ; gap: 1rem;
       align-items: flex-start} */
-    :global(.tab-content) { /* Changed to global selector */
-      padding: 0.5rem;} /* Corrected CSS syntax */
+    :global(.tab-content) {
+      /* Changed to global selector */
+      padding: 0.5rem;
+    } /* Corrected CSS syntax */
   }
 </style>

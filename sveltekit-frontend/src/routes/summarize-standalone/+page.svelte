@@ -7,7 +7,7 @@
   - Integration with your existing legal AI platform
 -->
 <script lang="ts">
-import type { Document } from '$lib/types';
+  import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   // Removed unused imports (onMount, enhance) and invalid type import ActionData
 
@@ -16,15 +16,15 @@ import type { Document } from '$lib/types';
   let summary = $state<string>('');
   let isLoading = $state<boolean>(false);
   let errorMessage = $state<string>('');
-  let processingSteps = $state<string[] >([]);
-  let metadata = $state<any >(null);
+  let processingSteps = $state<string[]>([]);
+  let metadata = $state<any>(null);
   // Summarization options
-  let summaryLength = $state<'short' | 'medium' | 'long' >('medium');
+  let summaryLength = $state<'short' | 'medium' | 'long'>('medium');
   let includeKeyTerms = $state<boolean>(true);
   let includeLegalAnalysis = $state<boolean>(true);
   let temperature = $state(0.3);
   // UI state
-  let activeTab = $state<'input' | 'summary' | 'analysis' >('input');
+  let activeTab = $state<'input' | 'summary' | 'analysis'>('input');
   let wordCount = $state<number>(0);
   let charCount = $state<number>(0);
   let estimatedProcessingTime = $state<number>(0);
@@ -86,7 +86,8 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
     const target = event.target as HTMLInputElement | null;
     const file = target?.files?.[0];
     if (!file) return;
-    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+    if (file.size > 10 * 1024 * 1024) {
+      // 10MB limit
       errorMessage = 'File size must be less than 10MB';
       return;
     }
@@ -119,7 +120,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
       '🔍 Analyzing document structure...',
       '✂️ Splitting into semantic chunks...',
       '🧠 Processing chunks with gemma3-legal...',
-      '📝 Generating comprehensive summary...'
+      '📝 Generating comprehensive summary...',
     ];
     try {
       const response = await fetch('/api/summarize', {
@@ -133,9 +134,9 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
             includeLegalAnalysis,
             temperature,
             chunkSize: 2000,
-            chunkOverlap: 200
-          }
-        })
+            chunkOverlap: 200,
+          },
+        }),
       });
       const data = await response.json();
       if (response.ok && data.success) {
@@ -144,7 +145,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
         processingSteps.push('✅ Summarization complete!');
         // Auto-switch to analysis tab if legal analysis was included
         if (includeLegalAnalysis && metadata?.legalRiskAnalysis) {
-          setTimeout(() => activeTab = 'analysis', 1000);
+          setTimeout(() => (activeTab = 'analysis'), 1000);
         }
       } else {
         errorMessage = data.error || 'An unknown error occurred during summarization.';
@@ -168,7 +169,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
       if (btn) {
         const originalText = btn.textContent;
         btn.textContent = 'Copied!';
-        setTimeout(() => btn.textContent = originalText, 2000);
+        setTimeout(() => (btn.textContent = originalText), 2000);
       }
     } catch (error) {
       console.error('Failed to copy:', error);
@@ -182,7 +183,10 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
 
 <svelte:head>
   <title>Legal Document Summarization - Legal AI Platform</title>
-  <meta name="description" content="AI-powered legal document summarization using advanced language models" />
+  <meta
+    name="description"
+    content="AI-powered legal document summarization using advanced language models"
+  />
 </svelte:head>
 <div class="summarization-container">
   <header class="page-header">
@@ -201,7 +205,10 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
     </div>
   </header>
   <div class="tab-navigation">
-    <button class="tab {activeTab === 'input' ? 'active' : ''}" onclick={() => (activeTab = 'input')}>
+    <button
+      class="tab {activeTab === 'input' ? 'active' : ''}"
+      onclick={() => (activeTab = 'input')}
+    >
       📄 Document Input
     </button>
     <button
@@ -228,7 +235,13 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
         <div class="input-controls">
           <div class="file-upload">
             <label for="file-input" class="btn"> 📄 Upload Document </label>
-            <input id="file-input" type="file" accept=".txt,.md,.pdf,.docx" onchange={handleFileUpload} hidden />
+            <input
+              id="file-input"
+              type="file"
+              accept=".txt,.md,.pdf,.docx"
+              onchange={handleFileUpload}
+              hidden
+            />
           </div>
           <div class="options-grid">
             <div class="option-group">
@@ -241,7 +254,14 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
             </div>
             <div class="option-group">
               <label for="temperature">Analysis Creativity:</label>
-              <input id="temperature" type="range" min="0" max="1" step="0.1" bind:value={temperature} />
+              <input
+                id="temperature"
+                type="range"
+                min="0"
+                max="1"
+                step="0.1"
+                bind:value={temperature}
+              />
               <span class="range-value">{temperature}</span>
             </div>
             <div class="option-group">
@@ -300,7 +320,9 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
             <div class="result-header">
               <h3>📝 Document Summary</h3>
               <div class="result-actions">
-                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}> 📝 Copy Summary </button>
+                <button id="copy-btn" class="btn nes-btn" onclick={copySummary}>
+                  📝 Copy Summary
+                </button>
               </div>
             </div>
             <div class="summary-content">
@@ -346,7 +368,9 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
           <div class="error-panel">
             <h3>❌ Processing Error</h3>
             <p>{errorMessage}</p>
-            <button class="btn nes-btn" onclick={() => (activeTab = 'input')}> ← Back to Input </button>
+            <button class="btn nes-btn" onclick={() => (activeTab = 'input')}>
+              ← Back to Input
+            </button>
           </div>
         {:else}
           <div class="empty-state">
@@ -368,7 +392,10 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
         {:else}
           <div class="empty-state">
             <h3>🛡️ No Legal Analysis Available</h3>
-            <p>Enable "Include Risk Analysis" in the options and process a document to see legal analysis here.</p>
+            <p>
+              Enable "Include Risk Analysis" in the options and process a document to see legal
+              analysis here.
+            </p>
           </div>
         {/if}
       </div>
@@ -448,14 +475,18 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
   }
   .tab:disabled {
     opacity: 0.5;
-    cursor:not-allowed;
+    cursor: not-allowed;
   }
   .loading-spinner {
     animation: spin 1s linear infinite;
   }
   @keyframes spin {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .content-area {
@@ -489,7 +520,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
     color: #374151;
   }
   .option-group select,
-  .option-group input[type="range"] {
+  .option-group input[type='range'] {
     padding: 0.5rem;
     border: 1px solid #d1d5db;
     border-radius: 0.25rem;
@@ -554,7 +585,7 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
   }
   .btn:disabled {
     opacity: 0.5;
-    cursor:not-allowed;
+    cursor: not-allowed;
   }
   .processing-status {
     text-align: center;
@@ -579,8 +610,13 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
     border-left: 4px solid #10b981;
   }
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
   }
   .summary-result {
     height: 100%;
@@ -665,7 +701,9 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
     white-space: pre-wrap;
   }
   /* File input styling */
-  #file-input { display: none; }
+  #file-input {
+    display: none;
+  }
   /* Responsive design */
   @media (max-width: 768px) {
     .summarization-container {
@@ -692,5 +730,3 @@ Additionally, we recommend exploring settlement negotiations before filing suit,
     }
   }
 </style>
-
-

@@ -1,5 +1,5 @@
 <script lang="ts">
-import PatternDetectionInterface from '$lib/components/ai/PatternDetectionInterface.svelte';
+  import PatternDetectionInterface from '$lib/components/ai/PatternDetectionInterface.svelte';
 </script>
 
 <main class="page-container">
@@ -11,10 +11,10 @@ import PatternDetectionInterface from '$lib/components/ai/PatternDetectionInterf
 </main>
 
 <style>
-.page-container {
-  min-height: 100vh;
-  background: #f8fafc;
-  padding: 2rem;
-  box-sizing: border-box;
-}
+  .page-container {
+    min-height: 100vh;
+    background: #f8fafc;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
 </style>

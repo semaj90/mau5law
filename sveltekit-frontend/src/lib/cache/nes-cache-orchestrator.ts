@@ -1,6 +1,6 @@
 ﻿/** * Placeholder for NESCacheOrchestrator. * This class provides a minimal implementation to satisfy imports * and can be expanded with actual caching logic as needed. */ export class NESCacheOrchestrator {
   constructor() {
-    console.log("NESCacheOrchestrator initialized (placeholder)");
+    console.log('NESCacheOrchestrator initialized (placeholder)');
   }
   /** * Placeholder method to get data from the cache. * @param key The cache key. * @returns The cached data or: null if not found. */ async get<
     T,

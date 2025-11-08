@@ -13,10 +13,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     const userId = locals.user?.id || url.searchParams.get('userId') || 'mock-user-id';
 
     if (!userId) {
-      return json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
 
     // Parse query parameters
@@ -47,7 +44,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     if (dateStart && dateEnd) {
       filters.dateRange = {
         start: new Date(dateStart),
-        end: new Date(dateEnd)
+        end: new Date(dateEnd),
       };
     }
 
@@ -58,16 +55,11 @@ export const GET: RequestHandler = async ({ url, locals }) => {
     }
 
     // Get cases with filters
-    const cases = await CaseManagementService.getCases(
-      userId,
-      filters,
-      page,
-      limit
-    );
+    const cases = await CaseManagementService.getCases(userId, filters, page, limit);
 
     // Get total count for pagination (this would need a separate query in real implementation)
     // For now, we'll estimate based on the returned results
-    const total = cases.length === limit ? (page * limit) + 1 : ((page - 1) * limit) + cases.length;
+    const total = cases.length === limit ? page * limit + 1 : (page - 1) * limit + cases.length;
 
     return json({
       success: true,
@@ -76,7 +68,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         page,
         limit,
         total,
-        totalPages: Math.ceil(total / limit)
+        totalPages: Math.ceil(total / limit),
       },
       filters: {
         search,
@@ -84,15 +76,14 @@ export const GET: RequestHandler = async ({ url, locals }) => {
         practiceArea,
         priority,
         tags,
-        dateRange: filters.dateRange
+        dateRange: filters.dateRange,
       },
       sorting: {
         sortBy,
-        sortOrder
+        sortOrder,
       },
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Cases API error:', error);
 
@@ -100,7 +91,7 @@ export const GET: RequestHandler = async ({ url, locals }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to load cases',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -112,10 +103,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const userId = locals.user?.id;
 
     if (!userId) {
-      return json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const caseData = await request.json();
@@ -144,7 +132,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       progress: caseData.progress || 0,
       riskLevel: caseData.riskLevel || 'medium',
       isArchived: false,
-      tags: caseData.tags || []
+      tags: caseData.tags || [],
     };
 
     // Create the case
@@ -153,9 +141,8 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       case: newCase,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Create case error:', error);
 
@@ -163,7 +150,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to create case',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -175,19 +162,13 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     const userId = locals.user?.id;
 
     if (!userId) {
-      return json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const { caseId, updates } = await request.json();
 
     if (!caseId) {
-      return json(
-        { error: 'Case ID is required' },
-        { status: 400 }
-      );
+      return json({ error: 'Case ID is required' }, { status: 400 });
     }
 
     // Update the case
@@ -196,9 +177,8 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
     return json({
       success: true,
       case: updatedCase,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Update case error:', error);
 
@@ -206,7 +186,7 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to update case',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -218,19 +198,13 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
     const userId = locals.user?.id;
 
     if (!userId) {
-      return json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const { caseIds } = await request.json();
 
     if (!caseIds || !Array.isArray(caseIds) || caseIds.length === 0) {
-      return json(
-        { error: 'Case IDs array is required' },
-        { status: 400 }
-      );
+      return json({ error: 'Case IDs array is required' }, { status: 400 });
     }
 
     // Archive cases instead of deleting them
@@ -242,24 +216,23 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
           { isArchived: true, status: 'archived' },
           userId
         );
-        results.push(<any><any>{ caseId, success: true, case: archivedCase });
+        results.push(<any>(<any>{ caseId, success: true, case: archivedCase }));
       } catch (error) {
-        results.push(<any><any>{
+        results.push(<any>(<any>{
           caseId,
           success: false,
-          error: error instanceof Error ? error.message : 'Failed to archive case'
-        });
+          error: error instanceof Error ? error.message : 'Failed to archive case',
+        }));
       }
     }
 
     return json({
       success: true,
       results,
-      archived: results.filter(r => r.success).length,
-      failed: results.filter(r => !r.success).length,
-      timestamp: new Date().toISOString()
+      archived: results.filter((r) => r.success).length,
+      failed: results.filter((r) => !r.success).length,
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Archive cases error:', error);
 
@@ -267,7 +240,7 @@ export const DELETE: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to archive cases',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );

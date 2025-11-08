@@ -31,7 +31,10 @@ export const GET: RequestHandler = async ({ request }) => {
       };
 
       // send initial snapshot
-      machine.list().then((list) => send({ type: 'snapshot', items: list })).catch(() => {});
+      machine
+        .list()
+        .then((list) => send({ type: 'snapshot', items: list }))
+        .catch(() => {});
 
       const onUpdate = (rec: any) => send({ type: 'update', item: rec });
       const onRemove = (id: string) => send({ type: 'remove', id });
@@ -60,5 +63,7 @@ export const GET: RequestHandler = async ({ request }) => {
 export const POST: RequestHandler = async ({ request }) => {
   // accept a small ping or control (not implemented fully) - return current list
   const list = await machine.list();
-  return new Response(JSON.stringify({ items: list }), { headers: { 'Content-Type': 'application/json' } });
+  return new Response(JSON.stringify({ items: list }), {
+    headers: { 'Content-Type': 'application/json' },
+  });
 };

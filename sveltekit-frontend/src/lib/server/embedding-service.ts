@@ -1,4 +1,4 @@
-import type { User } from "$lib/types";
+import type { User } from '$lib/types';
 
 export interface OllamaEmbeddingResponse {
   embedding: number[];
@@ -14,8 +14,8 @@ const DEFAULT_DIMENSIONS = 512;
 
 export class EmbeddingService {
   constructor(
-    private readonly baseUrl = "http://localhost:11434",
-    private readonly model = "embeddinggemma:latest",
+    private readonly baseUrl = 'http://localhost:11434',
+    private readonly model = 'embeddinggemma:latest',
     private readonly dimensions = DEFAULT_DIMENSIONS
   ) {}
 
@@ -34,11 +34,11 @@ export class EmbeddingService {
     return Promise.all(texts.map((text) => this.generateEmbedding(text, options)));
   }
 
-  async generateUserProfileEmbedding(_userId: User["id"]): Promise<void> {
+  async generateUserProfileEmbedding(_userId: User['id']): Promise<void> {
     // no-op stub to keep API compatible
   }
 
-  async generateUserPreferenceEmbedding(_userId: User["id"]): Promise<void> {
+  async generateUserPreferenceEmbedding(_userId: User['id']): Promise<void> {
     // no-op stub to keep API compatible
   }
 
@@ -55,7 +55,7 @@ export class EmbeddingService {
 
   cosineSimilarity(vectorA: number[], vectorB: number[]): number {
     if (vectorA.length !== vectorB.length) {
-      throw new Error("Vectors must have the same length");
+      throw new Error('Vectors must have the same length');
     }
     let dot = 0;
     let normA = 0;

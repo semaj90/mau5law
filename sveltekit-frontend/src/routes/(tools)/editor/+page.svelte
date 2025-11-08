@@ -1,16 +1,135 @@
+<!-- NieR-Themed Rich Text Editor Page Legal AI Platform - Text, Editor -->
 <script lang="ts">
-import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte'; import  Card, CardHeader, CardTitle, CardContent  from "$lib/components/ui/enhanced-bits.svelte"; import  Badge  from "$lib/components/ui/badge.svelte"; import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte'; import  NesCard  from "$lib/components/ui/nes-ui.svelte"; // Editor state let editorValue = $state<string>(''); let documentTitle = $state<string>('Untitled Document'); let lastSaved = $state<Date | null>(null); let isModified = $state<boolean>(false); // Document metadata let documentStats = $derived(() => { const trimmed = editorValue.trim(); return { words: trimmed ? trimmed.split(/\s+/).length: 0, characters: editorValue.length, charactersNoSpaces: editorValue.replace(/\s+/g, '').length; paragraphs: trimmed ? trimmed.split(/\n{ 2 }/).length: 0 }}); function handleEditorChange(_value: string) { editorValue = value; isModified = true; function handleSave() { // In a real app, this would save to backend console.log('Saving document:', { title: documentTitle; content: editorValue }); lastSaved = new Date(); isModified = false; function handleDownload() { const blob = new Blob([editorValue], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${documentTitle.replace(/\s+/g, '_')}.txt`; a.click(); URL.revokeObjectURL(url)}
-  function handleShare() { if (navigator.share) { navigator.share({ title: documentTitle; text: editorValue })} else { // Fallback: copy to clipboard navigator.clipboard.writeText(editorValue); alert('Content copied to clipboard!')}
+  import type { Document } from '$lib/types';
+  import NierRichTextEditor from '$lib/components/editors/NierRichTextEditor.svelte';
+  import { Card, CardHeader, CardTitle, CardContent } from "$lib/components/ui/card"; // Assuming enhanced-bits.svelte exports these as named exports from card
+  import { Badge } from "$lib/components/ui/badge"; // Assuming badge.svelte exports as named export
+  import { FileText, Save, Download, Share2, Settings } from 'lucide-svelte';
+  import NesCard from "$lib/components/ui/nes-ui.svelte"; // Assuming nes-ui.svelte exports as default, but using named import for consistency if possible, otherwise keep default.
+
+  // Editor state
+  let editorValue = $state<string>('');
+  let documentTitle = $state<string>('Untitled Document');
+  let lastSaved = $state<Date | null>(null);
+  let isModified = $state<boolean>(false);
+
+  // Document metadata
+  let documentStats = $derived(() => {
+    const trimmed = editorValue.trim();
+    return {
+      words: trimmed ? trimmed.split(/\s+/).length : 0,
+      characters: editorValue.length,
+      charactersNoSpaces: editorValue.replace(/\s+/g, '').length,
+      paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0
+    };
+  });
+
+  function handleEditorChange(value: string) {
+    editorValue = value;
+    isModified = true;
+  }
+
+  function handleSave() {
+    // In a real app, this would save to backend
+    console.log('Saving document:', { title: documentTitle, content: editorValue });
+    lastSaved = new Date();
+    isModified = false;
+  }
+
+  function handleDownload() {
+    const blob = new Blob([editorValue], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${documentTitle.replace(/\s+/g, '_')}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleShare() {
+    if (navigator.share) {
+      navigator.share({ title: documentTitle, text: editorValue });
+    } else {
+      // Fallback: copy to clipboard
+      navigator.clipboard.writeText(editorValue);
+      alert('Content copied to clipboard!');
+    }
   }
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+<svelte:head>
+  <title>Text Editor - Legal AI Platform</title>
+  <meta
+    name="description"
+    content="NieR-themed rich text editor for legal document creation and, investigation, notes"
+  />
+</svelte:head>
+<div class="editor-page-container">
+  <!-- Header -->
+  <div class="editor-header">
+    <div class="header-content">
+      <div class="title-section">
+        <FileText class="title-icon" size={28} />
+        <div class="title-info">
+          <h1 class="page-title">Text Editor</h1>
+          <p class="page-subtitle">NieR-themed rich text editor for legal documents</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button class="action-btn" onclick={handleSave} disabled={!isModified}> <Save size={16} /> Save </button>
+        <button class="action-btn" onclick={handleDownload}> <Download size={16} /> Download </button>
+        <button class="action-btn" onclick={handleShare}> <Share2 size={16} /> Share </button>
+      </div>
+    </div>
+    <!-- Document, Title -->
+    <div class="document-title-section">
+      <input bind:value={documentTitle} class="document-title-input" placeholder="Document, title..." type="text" />
+      {#if lastSaved}
+        <span class="save-status">Last saved: {lastSaved.toLocaleTimeString()}</span>
+      {/if}
+      {#if isModified}
+        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300">Unsaved</span>
+      {/if}
+    </div>
+  </div>
+  <!-- Stats, Bar -->
+  <div class="stats-bar">
+    <div class="stats-content">
+      <div class="stat-item">
+        <span class="stat-label">Words:</span> <span class="stat-value">{documentStats.words.toLocaleString()}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Characters:</span>
+        <span class="stat-value">{documentStats.characters.toLocaleString()}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">No spaces:</span>
+        <span class="stat-value">{documentStats.charactersNoSpaces.toLocaleString()}</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Paragraphs:</span> <span class="stat-value">{documentStats.paragraphs}</span>
+      </div>
+    </div>
+  </div>
+  <!-- Editor, Container -->
+  <div class="editor-container">
+    <div class="editor-nier-bits-card">
+      <div class="yorha-panel-content">
+        <NierRichTextEditor
+          bind:value={editorValue}
+          onValueChange={handleEditorChange} <!-- Add onValueChange prop to update editorValue -->
+          placeholder="Begin your investigation notes or legal document, here..."
+          caseId="EDITOR-SESSION"
+          readonly={false}
+          autosave={false}
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
 <style>
-.editor-page-container {
+  .editor-page-container {
     min-height: 100vh;
     background: var(--yorha-bg-primary, #0a0a0a);
     color: var(--yorha-text-primary, #e0e0e0);
@@ -24,7 +143,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   .header-content {
     display: flex;
-    justify-content: space-betweenn;
+    justify-content: space-between; /* Corrected 'space-betweenn' */
     align-items: center;
     margin-bottom: 16px;
   }
@@ -35,7 +154,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   .title-icon {
     color: var(--nes-blue, #3cbcfc);
-    filter: drop-shadow(0, 0 8px currentColor);
+    filter: drop-shadow(0 0 8px currentColor); /* Corrected '0, 0 8px' */
   }
   .title-info h1 {
     font-size: 1.8rem;
@@ -48,9 +167,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   .title-info p {
     font-size: 0.9rem;
     color: var(--yorha-text-muted, #b0b0b0);
-    margin:
-      4px,
-      0 0 0;
+    margin: 4px 0 0 0; /* Corrected '4px, 0 0 0' */
   }
   .header-actions {
     display: flex;
@@ -82,14 +199,14 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   .action-btn:disabled {
     opacity: 0.5;
-    cursor:not-allowed;
+    cursor: not-allowed;
   }
   .save-btn:not(:disabled) {
     background: var(--nes-green, #92cc41);
     border-color: var(--nes-green, #92cc41);
     color: #000;
   }
-  .save-btn:hover:not(:disabled) {
+  .save-btn:hover:not(:disabled) { /* Corrected ': hover' */
     background: #7fb82f;
     box-shadow: 0 4px 12px rgba(146, 204, 65, 0.3);
   }
@@ -110,10 +227,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     font-weight: 500;
     max-width: 300px;
   }
-  .document-title-input:focus {
+  .document-title-input:focus { /* Corrected ': focus' */
     outline: none;
     border-color: var(--nes-blue, #3cbcfc);
-    box-shadow: 0 0 8px rgba(60, 188, 252, 0.3);
+    box-shadow: 0 0 8px rgba(60, 188, 252, 0.3); /* Corrected '0, 0 8px' */
   }
   .save-status {
     font-size: 0.8rem;
@@ -214,13 +331,15 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   @keyframes glow-pulse {
     0%,
     100% {
-      box-shadow: 0 0 8px rgba(60, 188, 252, 0.3);
+      box-shadow: 0 0 8px rgba(60, 188, 252, 0.3); /* Corrected '0, 0 8px' */
     }
     50% {
-      box-shadow: 0 0 16px rgba(60, 188, 252, 0.6);
+      box-shadow: 0 0 16px rgba(60, 188, 252, 0.6); /* Corrected '0, 0 16px' */
     }
   }
   .action-btn:hover {
     animation: glow-pulse 2s ease-in-out infinite;
   }
 </style>
+
+

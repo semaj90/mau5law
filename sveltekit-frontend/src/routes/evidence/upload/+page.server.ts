@@ -6,7 +6,12 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import crypto from 'crypto'; // Corrected import
-import { evidenceUploadSchema, getFileTypeFromMime, validateFileSize, validateFileType } from '$lib/schemas/evidence-upload';
+import {
+  evidenceUploadSchema,
+  getFileTypeFromMime,
+  validateFileSize,
+  validateFileType,
+} from '$lib/schemas/evidence-upload';
 import { db } from '$lib/server/db'; // Adjust the import based on your project structure
 import { evidence, cases } from '$lib/server/db/schema'; // Adjust the import based on your project structure
 import { eq, type InferInsertModel } from 'drizzle-orm';
@@ -104,7 +109,8 @@ type IntermediateEvidenceMetadata = {
   processingOptions: ProcessingOptions;
 } & Partial<FinalEvidenceMetadata>; // All other fields are optional
 
-export const load: PageServerLoad = async ({ locals }) => { // Corrected 'load:' to 'export const load:' and arrow function syntax
+export const load: PageServerLoad = async ({ locals }) => {
+  // Corrected 'load:' to 'export const load:' and arrow function syntax
   // Initialize the form with default values
   const form = await superValidate(zod(evidenceUploadSchema));
 
@@ -112,14 +118,28 @@ export const load: PageServerLoad = async ({ locals }) => { // Corrected 'load:'
   const user = resolveUser(locals);
 
   // If no user and dev bypass enabled, return demo data
-  if (!user && dev && (process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.DEV_BYPASS_AUTH === 'true')) {
+  if (
+    !user &&
+    dev &&
+    (process.env.DEV_BYPASS_AUTH === 'true' || metaEnv.DEV_BYPASS_AUTH === 'true')
+  ) {
     console.warn('DEV_BYPASS_AUTH, returning demo cases for evidence upload');
     return {
       form,
       cases: [
-        { id: 'dev-case-001', title: 'Development Case', case_number: 'DEV-0001', status: 'active' },
-        { id: 'dev-case-002', title: 'Sample Evidence Case', case_number: 'DEV-0002', status: 'active' }
-      ]
+        {
+          id: 'dev-case-001',
+          title: 'Development Case',
+          case_number: 'DEV-0001',
+          status: 'active',
+        },
+        {
+          id: 'dev-case-002',
+          title: 'Sample Evidence Case',
+          case_number: 'DEV-0002',
+          status: 'active',
+        },
+      ],
     };
   }
 
@@ -130,7 +150,7 @@ export const load: PageServerLoad = async ({ locals }) => { // Corrected 'load:'
         id: cases.id, // Corrected object literal syntax
         title: cases.title,
         case_number: cases.case_number,
-        status: cases.status
+        status: cases.status,
       })
       .from(cases)
       .where(eq(cases.status, 'active'))
@@ -143,8 +163,10 @@ export const load: PageServerLoad = async ({ locals }) => { // Corrected 'load:'
   }
 };
 
-export const actions: Actions = { // Corrected 'actions:' to 'export const actions:'
-  upload: async ({ request, locals }) => { // Corrected arrow function syntax
+export const actions: Actions = {
+  // Corrected 'actions:' to 'export const actions:'
+  upload: async ({ request, locals }) => {
+    // Corrected arrow function syntax
     try {
       // 1) Parse incoming form data
       const formData = await request.formData();
@@ -157,7 +179,9 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
 
       // Ensure the provided entry supports arrayBuffer (basic duck-typing)
       if (typeof (rawFile as any).arrayBuffer !== 'function') {
-        return fail(400, { form: { errors: { file: ['Uploaded file is not readable on server'] } } });
+        return fail(400, {
+          form: { errors: { file: ['Uploaded file is not readable on server'] } },
+        });
       }
 
       // Normalize file fields safely for server-side processing
@@ -171,12 +195,14 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
       const title = (formData.get('title') ?? '').toString();
       const description = (formData.get('description') ?? '').toString();
       const evidenceType = (formData.get('evidenceType') ?? 'UNKNOWN').toString().toUpperCase();
-      const enableOcrFlag = ['on', 'true', '1'].includes((formData.get('enableOcr') ?? '').toString());
+      const enableOcrFlag = ['on', 'true', '1'].includes(
+        (formData.get('enableOcr') ?? '').toString()
+      );
 
       // parse tags (allow multiple)
       const tags = formData
         .getAll('tags')
-        .map(t => t.toString())
+        .map((t) => t.toString())
         .filter(Boolean);
 
       // 2) Optional: verify case exists if provided
@@ -210,7 +236,10 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
       if (enableOcrFlag && (evidenceType === 'PDF' || evidenceType === 'IMAGE')) {
         try {
           // prefer explicit OCR base from metaEnv, fallback to localhost dev host
-          const ocrBase = (metaEnv as any).OCR_BASE_URL ?? (metaEnv as any).BASE_URL ?? (dev ? 'http://localhost:5173' : 'http://localhost:5173'); // Corrected space in 5173 and trailing comma
+          const ocrBase =
+            (metaEnv as any).OCR_BASE_URL ??
+            (metaEnv as any).BASE_URL ??
+            (dev ? 'http://localhost:5173' : 'http://localhost:5173'); // Corrected space in 5173 and trailing comma
           const ocrUrl = new URL('/api/ocr/extract', ocrBase).toString();
           const ocrForm = new FormData();
           // create a Blob with correct mime type for OCR endpoint
@@ -219,7 +248,10 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
 
           if (ocrResponse.ok) {
             ocrResult = await ocrResponse.json();
-            console.log('OCR completed', { filename: ocrResult?.filename, pages: ocrResult?.pages }); // Corrected object literal and closing parenthesis
+            console.log('OCR completed', {
+              filename: ocrResult?.filename,
+              pages: ocrResult?.pages,
+            }); // Corrected object literal and closing parenthesis
           } else {
             console.warn('OCR service returned non-OK status: ', ocrResponse.status); // Corrected colon and closing parenthesis
           }
@@ -240,7 +272,7 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
         enableAiAnalysis: parseBooleanField('enableAiAnalysis'),
         enableOcr: parseBooleanField('enableOcr'),
         enableEmbeddings: parseBooleanField('enableEmbeddings'),
-        enableSummarization: parseBooleanField('enableSummarization')
+        enableSummarization: parseBooleanField('enableSummarization'),
       };
 
       // 8) Construct intermediate metadata based on evidence type
@@ -248,7 +280,7 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
         kind: evidenceType,
         uploadedAt: new Date().toISOString(), // Corrected colon
         fileSize: fileSize,
-        processingOptions
+        processingOptions,
       };
 
       switch (evidenceType) {
@@ -262,7 +294,7 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
             extractedText: ocrResult?.text ?? null, // Corrected colon
             legalConcepts: ocrResult?.legalConcepts ?? [], // Corrected '|' to ':'
             citations: ocrResult?.citations ?? [], // Corrected '|' to ':'
-            ocrConfidence: ocrResult?.averageConfidence ?? null // Corrected '|' to ':'
+            ocrConfidence: ocrResult?.averageConfidence ?? null, // Corrected '|' to ':'
           };
           break;
         case 'IMAGE':
@@ -273,7 +305,7 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
             format: fileType.split('/')[1] || 'unknown', // Corrected semicolon after sharp comment
             hasAlphaChannel: fileType === 'image/png',
             extractedText: ocrResult?.text ?? null, // Corrected colon
-            ocrConfidence: ocrResult?.averageConfidence ?? null // Corrected '|' to ':'
+            ocrConfidence: ocrResult?.averageConfidence ?? null, // Corrected '|' to ':'
           };
           break;
         case 'TEXT': {
@@ -283,7 +315,7 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
             kind: 'TEXT',
             wordCount: textContent.split(/\s+/).filter(Boolean).length,
             characterCount: textContent.length, // Corrected colon
-            language: 'unknown'
+            language: 'unknown',
           };
           break; // Corrected '}' and ','
         }
@@ -292,7 +324,8 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
       }
 
       // 9) Final metadata composition - prefer : over: null for optional fields
-      const finalMetadata: FinalEvidenceMetadata = { // Corrected 'const,' to 'const'
+      const finalMetadata: FinalEvidenceMetadata = {
+        // Corrected 'const,' to 'const'
         ...tempMetadata,
         tags, // 'tags' was already defined
         confidentialityLevel: (formData.get('confidentialityLevel') ?? 'standard').toString(), // Corrected '??'
@@ -309,13 +342,15 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
           }
           return [];
         })(), // Corrected '}' for IIFE
-        ocrResult: ocrResult ? {
-          extractedText: ocrResult.text,
-          confidence: ocrResult.averageConfidence, // Corrected colon
-          legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':'
-          citations: ocrResult.citations, // Corrected '|' to ':'
-          pageCount: ocrResult.pages // Corrected '|' to ':'
-        } : null
+        ocrResult: ocrResult
+          ? {
+              extractedText: ocrResult.text,
+              confidence: ocrResult.averageConfidence, // Corrected colon
+              legalConcepts: ocrResult.legalConcepts, // Corrected '|' to ':'
+              citations: ocrResult.citations, // Corrected '|' to ':'
+              pageCount: ocrResult.pages, // Corrected '|' to ':'
+            }
+          : null,
       };
 
       // 10) Insert evidence record into DB - Use secure getUserId from session
@@ -332,7 +367,7 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
           storage_key: storageKey,
           file_hash: `sha256:${fileHash}`, // Removed space
           file_size: fileSize,
-          metadata: finalMetadata
+          metadata: finalMetadata,
         }) // Corrected closing parenthesis for values object
         .returning();
 
@@ -340,10 +375,9 @@ export const actions: Actions = { // Corrected 'actions:' to 'export const actio
       return { success: true, evidence: inserted?.[0] ?? null }; // Corrected '? .' to '?.'
     } catch (error: Error | unknown) {
       console.error('Evidence upload failed: ', error); // Corrected closing parenthesis
-      return fail(500, { form: { errors: { _global: ['Server error while uploading evidence'] } } });
+      return fail(500, {
+        form: { errors: { _global: ['Server error while uploading evidence'] } },
+      });
     }
-  }
+  },
 };
-
-
-

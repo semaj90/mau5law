@@ -52,12 +52,12 @@ export interface RankingAnalytics {
 
 export class RAGRankingSystem {
   private defaultWeights: RankingWeights = {
-    cosine_similarity: 0.35,      // Primary semantic similarity
-    legal_domain_relevance: 0.25,  // Legal area/type relevance
-    document_recency: 0.10,        // How recent the document is
-    content_quality: 0.15,         // Document quality indicators
-    authority_score: 0.10,         // Source authority/credibility
-    context_match: 0.05           // Query context alignment
+    cosine_similarity: 0.35, // Primary semantic similarity
+    legal_domain_relevance: 0.25, // Legal area/type relevance
+    document_recency: 0.1, // How recent the document is
+    content_quality: 0.15, // Document quality indicators
+    authority_score: 0.1, // Source authority/credibility
+    context_match: 0.05, // Query context alignment
   };
 
   private legalDomainHierarchy: Record<string, string[]> = {
@@ -67,7 +67,7 @@ export class RAGRankingSystem {
     'criminal-law': ['prosecution', 'defense', 'evidence'],
     'employment-law': ['workplace', 'discrimination', 'labor-relations'],
     'business-law': ['corporate', 'securities', 'commercial'],
-    'property-law': ['real-estate', 'intellectual-property', 'land-use']
+    'property-law': ['real-estate', 'intellectual-property', 'land-use'],
   };
 
   private sourceAuthority: Record<string, number> = {
@@ -82,7 +82,7 @@ export class RAGRankingSystem {
     'legal-encyclopedia': 0.8,
     'law-review': 0.85,
     'government-publication': 0.9,
-    'unknown': 0.5
+    unknown: 0.5,
   };
 
   constructor() {}
@@ -96,7 +96,9 @@ export class RAGRankingSystem {
     customWeights?: Partial<RankingWeights>
   ): Promise<RankedResult[]> {
     const startTime = Date.now();
-    console.log(`🎯 Ranking ${candidates.length} candidates with context: ${context.search_intent || 'general'}`);
+    console.log(
+      `🎯 Ranking ${candidates.length} candidates with context: ${context.search_intent || 'general'}`
+    );
 
     const weights = { ...this.defaultWeights, ...customWeights };
     const rankedResults: RankedResult[] = [];
@@ -112,10 +114,10 @@ export class RAGRankingSystem {
           ranking_components: rankingComponents,
           ranking_explanation: this.generateRankingExplanation(rankingComponents, weights),
           confidence_level: this.calculateConfidenceLevel(rankingComponents),
-          recommended_action: this.determineRecommendedAction(finalScore, rankingComponents)
+          recommended_action: this.determineRecommendedAction(finalScore, rankingComponents),
         };
 
-        rankedResults.push(<any><any>rankedResult);
+        rankedResults.push(<any>(<any>rankedResult));
       } catch (error) {
         console.error(`❌ Error ranking result ${candidate.chunk_id}:`, error);
       }
@@ -143,7 +145,7 @@ export class RAGRankingSystem {
       recency_score: this.calculateRecencyScore(result, context),
       quality_score: this.calculateQualityScore(result),
       authority_score: this.calculateAuthorityScore(result),
-      context_score: this.calculateContextScore(result, context)
+      context_score: this.calculateContextScore(result, context),
     };
   }
 
@@ -201,14 +203,14 @@ export class RAGRankingSystem {
     // Apply temporal relevance preference
     switch (context.temporal_relevance) {
       case 'recent':
-        if (ageInDays <= 30) return 1.0;      // Last 30 days
-        if (ageInDays <= 365) return 0.8;     // Last year
-        if (ageInDays <= 1825) return 0.5;    // Last 5 years
+        if (ageInDays <= 30) return 1.0; // Last 30 days
+        if (ageInDays <= 365) return 0.8; // Last year
+        if (ageInDays <= 1825) return 0.5; // Last 5 years
         return 0.2;
 
       case 'historical':
-        if (ageInDays > 1825) return 1.0;     // Older than 5 years
-        if (ageInDays > 365) return 0.8;      // 1-5 years
+        if (ageInDays > 1825) return 1.0; // Older than 5 years
+        if (ageInDays > 365) return 0.8; // 1-5 years
         return 0.4;
 
       case 'any':
@@ -217,7 +219,7 @@ export class RAGRankingSystem {
         if (ageInDays <= 30) return 1.0;
         if (ageInDays <= 365) return 0.9;
         if (ageInDays <= 1825) return 0.7;
-        if (ageInDays <= 3650) return 0.5;    // 5-10 years
+        if (ageInDays <= 3650) return 0.5; // 5-10 years
         return 0.3;
     }
   }
@@ -253,10 +255,10 @@ export class RAGRankingSystem {
 
     // Legal formatting indicators
     const legalFormats = [
-      /\b\d+\.\s+/g,          // Numbered sections
-      /\([a-z]\)/g,           // Lettered subsections
-      /\bSEC\.\s+\d+/gi,      // Section references
-      /\bwhereas\b/gi         // Contract language
+      /\b\d+\.\s+/g, // Numbered sections
+      /\([a-z]\)/g, // Lettered subsections
+      /\bSEC\.\s+\d+/gi, // Section references
+      /\bwhereas\b/gi, // Contract language
     ];
 
     for (const pattern of legalFormats) {
@@ -301,7 +303,7 @@ export class RAGRankingSystem {
 
       switch (context.user_expertise_level) {
         case 'beginner':
-          score += complexity < 0.3 ? 0.3 : (complexity > 0.7 ? 0 : 0.15);
+          score += complexity < 0.3 ? 0.3 : complexity > 0.7 ? 0 : 0.15;
           break;
         case 'intermediate':
           score += complexity >= 0.3 && complexity <= 0.7 ? 0.3 : 0.1;
@@ -315,10 +317,10 @@ export class RAGRankingSystem {
     // Search intent alignment
     if (context.search_intent) {
       const intentKeywords = {
-        'research': ['analysis', 'study', 'overview', 'explanation', 'theory'],
-        'case_prep': ['precedent', 'ruling', 'decision', 'case', 'holding'],
-        'precedent': ['precedent', 'stare decisis', 'binding', 'authority'],
-        'general': ['introduction', 'basic', 'fundamental', 'overview']
+        research: ['analysis', 'study', 'overview', 'explanation', 'theory'],
+        case_prep: ['precedent', 'ruling', 'decision', 'case', 'holding'],
+        precedent: ['precedent', 'stare decisis', 'binding', 'authority'],
+        general: ['introduction', 'basic', 'fundamental', 'overview'],
       };
 
       const keywords = intentKeywords[context.search_intent] || [];
@@ -361,27 +363,27 @@ export class RAGRankingSystem {
     const explanations: string[] = [];
 
     if (components.cosine_similarity_score > 0.8) {
-      explanations.push(<any><any>'Highly similar content');
+      explanations.push(<any>(<any>'Highly similar content'));
     } else if (components.cosine_similarity_score > 0.6) {
-      explanations.push(<any><any>'Similar content');
+      explanations.push(<any>(<any>'Similar content'));
     }
 
     if (components.legal_domain_score > 0.7) {
-      explanations.push(<any><any>'Strong legal domain match');
+      explanations.push(<any>(<any>'Strong legal domain match'));
     } else if (components.legal_domain_score > 0.4) {
-      explanations.push(<any><any>'Related legal area');
+      explanations.push(<any>(<any>'Related legal area'));
     }
 
     if (components.authority_score > 0.8) {
-      explanations.push(<any><any>'Authoritative source');
+      explanations.push(<any>(<any>'Authoritative source'));
     }
 
     if (components.quality_score > 0.7) {
-      explanations.push(<any><any>'High-quality content');
+      explanations.push(<any>(<any>'High-quality content'));
     }
 
     if (components.recency_score > 0.8) {
-      explanations.push(<any><any>'Recent document');
+      explanations.push(<any>(<any>'Recent document'));
     }
 
     return explanations.length > 0 ? explanations.join(', ') : 'Standard relevance match';
@@ -398,7 +400,7 @@ export class RAGRankingSystem {
       components.quality_score,
       components.authority_score,
       components.recency_score,
-      components.context_score
+      components.context_score,
     ];
 
     let confidence = 0;
@@ -436,14 +438,14 @@ export class RAGRankingSystem {
     const words = content.split(/\s+/);
 
     const avgWordsPerSentence = words.length / sentences.length;
-    const complexTermCount = complexTerms.reduce((count, term) =>
-      count + (content.toLowerCase().includes(term) ? 1 : 0), 0);
+    const complexTermCount = complexTerms.reduce(
+      (count, term) => count + (content.toLowerCase().includes(term) ? 1 : 0),
+      0
+    );
     const citationCount = (content.match(/\d+\s+U\.S\.|\d+\s+F\.\d+d/g) || []).length;
 
     const complexity = Math.min(
-      (avgWordsPerSentence / 30) * 0.4 +
-      (complexTermCount / 5) * 0.4 +
-      (citationCount / 3) * 0.2,
+      (avgWordsPerSentence / 30) * 0.4 + (complexTermCount / 5) * 0.4 + (citationCount / 3) * 0.2,
       1.0
     );
 
@@ -453,19 +455,16 @@ export class RAGRankingSystem {
   /**
    * Generate ranking analytics
    */
-  generateAnalytics(
-    rankedResults: RankedResult[],
-    processingTime: number
-  ): RankingAnalytics {
-    const scores = rankedResults.map(r => r.final_score);
+  generateAnalytics(rankedResults: RankedResult[], processingTime: number): RankingAnalytics {
+    const scores = rankedResults.map((r) => r.final_score);
     const averageScore = scores.reduce((sum, score) => sum + score, 0) / scores.length;
 
     // Score distribution
     const scoreDistribution: Record<string, number> = {
-      'highly_relevant': 0,
-      'relevant': 0,
-      'potentially_relevant': 0,
-      'not_relevant': 0
+      highly_relevant: 0,
+      relevant: 0,
+      potentially_relevant: 0,
+      not_relevant: 0,
     };
 
     for (const result of rankedResults) {
@@ -478,21 +477,19 @@ export class RAGRankingSystem {
       average_score: Math.round(averageScore * 100) / 100,
       score_distribution: scoreDistribution,
       processing_time_ms: processingTime,
-      ranking_strategy: 'multi_factor_legal_rag'
+      ranking_strategy: 'multi_factor_legal_rag',
     };
   }
 
   /**
    * Adaptive ranking - adjust weights based on result feedback
    */
-  adaptWeights(
-    feedback: {
-      query: string;
-      results: RankedResult[];
-      user_clicks: number[];
-      user_ratings?: number[];
-    }
-  ): RankingWeights {
+  adaptWeights(feedback: {
+    query: string;
+    results: RankedResult[];
+    user_clicks: number[];
+    user_ratings?: number[];
+  }): RankingWeights {
     // Simple adaptation: increase weights for components that correlate with user engagement
     const newWeights = { ...this.defaultWeights };
 
@@ -504,11 +501,17 @@ export class RAGRankingSystem {
     );
 
     if (clickedResults.length > 0) {
-      const avgClickedSimilarity = clickedResults.reduce((sum, result) =>
-        sum + result.ranking_components.cosine_similarity_score, 0) / clickedResults.length;
+      const avgClickedSimilarity =
+        clickedResults.reduce(
+          (sum, result) => sum + result.ranking_components.cosine_similarity_score,
+          0
+        ) / clickedResults.length;
 
-      const avgClickedDomain = clickedResults.reduce((sum, result) =>
-        sum + result.ranking_components.legal_domain_score, 0) / clickedResults.length;
+      const avgClickedDomain =
+        clickedResults.reduce(
+          (sum, result) => sum + result.ranking_components.legal_domain_score,
+          0
+        ) / clickedResults.length;
 
       // Adjust weights slightly based on what users clicked
       if (avgClickedSimilarity > 0.8) {
@@ -548,14 +551,14 @@ export class RAGRankingSystem {
         similarity_score: 0.8,
         metadata: {
           legal_area: 'contract-law',
-          document_type: 'case-law'
+          document_type: 'case-law',
         },
-        legal_concepts: ['contract', 'breach']
+        legal_concepts: ['contract', 'breach'],
       };
 
       const testContext: RankingContext = {
         query: 'test query',
-        legal_area: 'contract-law'
+        legal_area: 'contract-law',
       };
 
       await this.rankResults([testResult], testContext);

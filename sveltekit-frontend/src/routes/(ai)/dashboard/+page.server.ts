@@ -1,5 +1,5 @@
-import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+import { redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
 type DashboardStats = {
   activeCases: number;
@@ -26,7 +26,7 @@ type RecentCase = {
 export const load: PageServerLoad = async ({ locals }) => {
   // Require authentication to access dashboard
   if (!locals.user) {
-    throw redirect(303, "/login");
+    throw redirect(303, '/login');
   }
 
   // Mock case data - replace with actual database queries
@@ -45,52 +45,52 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   const recentCases: RecentCase[] = [
     {
-      id: "case_001",
-      title: "Smith v. Johnson Corp",
-      caseType: "Employment Dispute",
-      status: "open",
-      priority: "High",
-      lastUpdated: "2 hours ago",
+      id: 'case_001',
+      title: 'Smith v. Johnson Corp',
+      caseType: 'Employment Dispute',
+      status: 'open',
+      priority: 'High',
+      lastUpdated: '2 hours ago',
     },
     {
-      id: "case_002",
-      title: "State v. Williams",
-      caseType: "Criminal Defense",
-      status: "investigating",
-      priority: "Critical",
-      lastUpdated: "5 hours ago",
+      id: 'case_002',
+      title: 'State v. Williams',
+      caseType: 'Criminal Defense',
+      status: 'investigating',
+      priority: 'Critical',
+      lastUpdated: '5 hours ago',
     },
     {
-      id: "case_003",
-      title: "Property Settlement - Anderson Estate",
-      caseType: "Real Estate",
-      status: "pending",
-      priority: "Medium",
-      lastUpdated: "1 day ago",
+      id: 'case_003',
+      title: 'Property Settlement - Anderson Estate',
+      caseType: 'Real Estate',
+      status: 'pending',
+      priority: 'Medium',
+      lastUpdated: '1 day ago',
     },
     {
-      id: "case_004",
-      title: "Merger Review - Tech Ventures Inc.",
-      caseType: "Corporate Law",
-      status: "open",
-      priority: "High",
-      lastUpdated: "3 hours ago",
+      id: 'case_004',
+      title: 'Merger Review - Tech Ventures Inc.',
+      caseType: 'Corporate Law',
+      status: 'open',
+      priority: 'High',
+      lastUpdated: '3 hours ago',
     },
     {
-      id: "case_005",
-      title: "Patent Infringement Litigation",
-      caseType: "Intellectual Property",
-      status: "investigating",
-      priority: "Medium",
-      lastUpdated: "12 hours ago",
+      id: 'case_005',
+      title: 'Patent Infringement Litigation',
+      caseType: 'Intellectual Property',
+      status: 'investigating',
+      priority: 'Medium',
+      lastUpdated: '12 hours ago',
     },
     {
-      id: "case_006",
-      title: "Contract Dispute - Construction",
-      caseType: "Commercial Dispute",
-      status: "closed",
-      priority: "Low",
-      lastUpdated: "2 days ago",
+      id: 'case_006',
+      title: 'Contract Dispute - Construction',
+      caseType: 'Commercial Dispute',
+      status: 'closed',
+      priority: 'Low',
+      lastUpdated: '2 days ago',
     },
   ];
 

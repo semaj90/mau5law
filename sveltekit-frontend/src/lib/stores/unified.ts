@@ -18,12 +18,12 @@
 // AI assistant
 export type AIAssistantState = AIAssistantStoreState; // maps to local store type defined below
 export type Message = AIMessage;
-export type MessageRole = AIMessage["role"];
+export type MessageRole = AIMessage['role'];
 export type AIModel = string; // fallback; replace with actual model union if available
 
 // User
 export type User = UserStoreState; // fallback mapping
-export type AuthState = Pick<UserStoreState, "isLoggedIn" | "id">;
+export type AuthState = Pick<UserStoreState, 'isLoggedIn' | 'id'>;
 export type UserPreferences = Record<string, unknown>;
 
 // Notifications (fallbacks)
@@ -61,10 +61,10 @@ export type POINetwork = Record<string, unknown>;
 export type POIAnalysis = Record<string, unknown>;
 
 // Svelte store utilities
-import { writable, type Readable, get } from "svelte/store";
+import { writable, type Readable, get } from 'svelte/store';
 
 // xstate integration (used by helper functions below)
-import { xstateIntegration } from "$lib/services/xstate-integration";
+import { xstateIntegration } from '$lib/services/xstate-integration';
 
 // --- User Store Types and Store ---
 export interface UserStoreState {
@@ -88,7 +88,7 @@ export const user: Readable<UserStoreState> = { subscribe: _user.subscribe };
 // --- AI Assistant Store Types and Store ---
 export interface AIMessage {
   id: string;
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   timestamp: number;
 }
@@ -114,16 +114,16 @@ const _aiAssistant = writable<AIAssistantStoreState>(initialAIAssistantState);
 export const aiAssistant: Readable<AIAssistantStoreState> = { subscribe: _aiAssistant.subscribe };
 
 // --- XState Integration for AI Assistant ---
-const AI_ASSISTANT_MACHINE_ID = "aiAssistantMachine"; // As per copilot-instructions.md
+const AI_ASSISTANT_MACHINE_ID = 'aiAssistantMachine'; // As per copilot-instructions.md
 
 // Strongly-typed events for the AI assistant XState machine.
 // Add or extend variants as needed by your state machine.
 export type AIAssistantEvent =
-  | { type: "OPEN" }
-  | { type: "CLOSE" }
-  | { type: "SEND_MESSAGE"; payload: { content: string; model?: AIModel; caseId?: string } }
-  | { type: "RECEIVE_MESSAGE"; payload: AIMessage }
-  | { type: "SET_CASE"; payload: { caseId: string | null } }
+  | { type: 'OPEN' }
+  | { type: 'CLOSE' }
+  | { type: 'SEND_MESSAGE'; payload: { content: string; model?: AIModel; caseId?: string } }
+  | { type: 'RECEIVE_MESSAGE'; payload: AIMessage }
+  | { type: 'SET_CASE'; payload: { caseId: string | null } }
   // Fallback to allow custom/extension events while still avoiding `any`
   | { type: string; [key: string]: unknown };
 
@@ -150,7 +150,7 @@ const initialState: WebsocketState = {
   dashboardData: { cases: [], evidence: [], stats: {} },
   processingJobs: [],
   recentActivity: [],
-  systemHealth: { api: "unknown", database: "unknown", aiServices: "unknown", jobQueue: "unknown" },
+  systemHealth: { api: 'unknown', database: 'unknown', aiServices: 'unknown', jobQueue: 'unknown' },
   activeEditors: {},
 };
 
@@ -184,15 +184,15 @@ export function getActiveEditorsForEvidence(evidenceId: number | string): string
 }
 
 export function formatRecentActivity(activity: unknown): string {
-  if (!activity || typeof activity !== "object") return "";
+  if (!activity || typeof activity !== 'object') return '';
 
   const activityAsRecord = activity as Record<string, unknown>;
 
   const ts = activityAsRecord.timestamp
     ? new Date(activityAsRecord.timestamp as string | number | Date).toLocaleString()
-    : "unknown time";
-  const who = activityAsRecord.user ?? activityAsRecord.actor ?? "System";
-  const msg = activityAsRecord.action ?? activityAsRecord.message ?? activityAsRecord.detail ?? "";
+    : 'unknown time';
+  const who = activityAsRecord.user ?? activityAsRecord.actor ?? 'System';
+  const msg = activityAsRecord.action ?? activityAsRecord.message ?? activityAsRecord.detail ?? '';
   return `${ts} â€” ${who}: ${msg}`;
 }
 

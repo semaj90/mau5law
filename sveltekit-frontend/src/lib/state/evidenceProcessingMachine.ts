@@ -1,12 +1,13 @@
-import type { Document } from "$lib/types";
+import type { Document } from '$lib/types';
 /** * XState State Machine for Evidence Processing Workflow * Handles the complete lifecycle of evidence from upload to AI analysis */ import {
   createMachine,
   assign,
-  fromPromise} from "xstate";
-import { bullmqService } from "../services/bullmqService.js";
-import { langChainService } from "../ai/langchain-ollama-service.js";
-import { ollamaService } from "../services/ollama-service.js";
-import { multiLayerCache } from "../services/multiLayerCache.js";
+  fromPromise,
+} from 'xstate';
+import { bullmqService } from '../services/bullmqService.js';
+import { langChainService } from '../ai/langchain-ollama-service.js';
+import { ollamaService } from '../services/ollama-service.js';
+import { multiLayerCache } from '../services/multiLayerCache.js';
 export interface DocumentProcessingJob {
   documentId: string;
   content: string;

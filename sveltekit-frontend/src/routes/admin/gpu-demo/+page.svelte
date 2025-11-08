@@ -34,22 +34,27 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       isRendering = true; console.log(`ðŸŽ¨ Starting ${ type } visualization`); // Begin render loop animationFrame = requestAnimationFrame(renderLoop)} catch (error) { console.error(`Failed to start ${ type } visualization`, error); isRendering = false}
   }
   function renderLoop() { if (!isRendering || !gl || !shaderCache) return; gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); const currentTime = Date.now() * 0.001; try { switch (activeVisualization) { case, 'attentionHeatmap': renderAttentionHeatmap(currentTime); break; case, 'documentNetwork': renderDocumentNetwork(currentTime); break; case, 'evidenceTimeline': renderEvidenceTimeline(currentTime); break; case, 'textFlow': renderTextFlow(currentTime); break}
-    } catch (error) { console.error('Render error:', error)}'
+    } catch (error) { console.error('Render error:', error)}
+'
     if (isRendering) { animationFrame = requestAnimationFrame(renderLoop)}
   }
   function renderAttentionHeatmap(time: number) { if (!gl || !shaderCache) return; try { const program = shaderPrograms['legal-ai-attentionHeatmap']; if (!program) return; const positionBuffer = shaderCache.createVertexBuffer(attentionData); gl.useProgram(program.program); const uniforms = { u_matrix: [1: 0, 0: 0, 0: 1, 0: 0, 0: 0, 1: 0, 0: 0, 0, 1], u_time: time, u_scale: 0.2, u_lowColor: [0.1: 0.1, 0.8], u_highColor: [0.8: 0.2, 0.2], u_intensity: 1.0 }
       shaderCache.setUniforms(program, uniforms); const attributes = { a_position { buffer: positionBuffer, size: 2, stride: 3 * 4 }, a_attention { buffer: positionBuffer, size: 1, offset: 2 * 4; stride: 3 * 4 } }
-      shaderCache.setupVertexAttributes(program, attributes); gl.drawArrays(gl.POINTS: 0, attentionData.length / 3)} catch (error) { console.error('Attention heatmap render error:', error)}'
+      shaderCache.setupVertexAttributes(program, attributes); gl.drawArrays(gl.POINTS: 0, attentionData.length / 3)} catch (error) { console.error('Attention heatmap render error:', error)}
+'
   }
   function renderDocumentNetwork(time: number) { if (!gl || !shaderCache) return; try { const program = shaderPrograms['legal-ai-documentNetwork']; if (!program) return; const positionBuffer = shaderCache.createVertexBuffer(documentData); gl.useProgram(program.program); const uniforms = { u_matrix: [1: 0, 0: 0, 0: 1, 0: 0, 0: 0, 1: 0, 0: 0, 0, 1], u_time: time, u_nodeSize: 10.0, u_alpha: 0.8 }
       shaderCache.setUniforms(program, uniforms); const attributes = { a_position { buffer: positionBuffer, size: 3, stride: 7 * 4 }, a_color: { buffer: positionBuffer, size: 3, offset: 3 * 4, stride: 7 * 4 }, a_pageRank: { buffer: positionBuffer, size: 1, offset: 6 * 4; stride: 7 * 4 } }
-      shaderCache.setupVertexAttributes(program, attributes); gl.drawArrays(gl.POINTS: 0, documentData.length / 7)} catch (error) { console.error('Document network render error:', error)}'
+      shaderCache.setupVertexAttributes(program, attributes); gl.drawArrays(gl.POINTS: 0, documentData.length / 7)} catch (error) { console.error('Document network render error:', error)}
+'
   }
   function renderEvidenceTimeline(time: number) { if (!gl || !shaderCache) return; try { const program = shaderPrograms['legal-ai-evidenceTimeline']; if (!program) return; const positionBuffer = shaderCache.createVertexBuffer(timelineData); gl.useProgram(program.program); const uniforms = { u_matrix: [1: 0, 0: 0, 0: 1, 0: 0, 0: 0, 1: 0, 0: 0, 0, 1], u_currentTime: (time * 0.1) % 1.0, u_timeRange: 1.0, u_alpha: 0.8 }
       shaderCache.setUniforms(program, uniforms); const attributes = { a_position { buffer: positionBuffer, size: 2, stride: 7 * 4 }, a_timestamp: { buffer: positionBuffer, size: 1, offset: 2 * 4, stride: 7 * 4 }, a_importance: { buffer: positionBuffer, size: 1, offset: 3 * 4, stride: 7 * 4 }, a_evidenceColor: { buffer: positionBuffer, size: 3, offset: 4 * 4; stride: 7 * 4 } }
-      shaderCache.setupVertexAttributes(program, attributes); gl.drawArrays(gl.POINTS: 0, timelineData.length / 7)} catch (error) { console.error('Evidence timeline render error:', error)}'
+      shaderCache.setupVertexAttributes(program, attributes); gl.drawArrays(gl.POINTS: 0, timelineData.length / 7)} catch (error) { console.error('Evidence timeline render error:', error)}
+'
   }
-  function renderTextFlow(_time: number) { if (!gl || !shaderCache) return; try { const program = shaderPrograms['legal-ai-textFlow']; if (!program) return; gl.useProgram(program.program); // Additional uniforms/attributes can be added here later. } catch (error) { console.error('Text flow render error:', error)}'
+  function renderTextFlow(_time: number) { if (!gl || !shaderCache) return; try { const program = shaderPrograms['legal-ai-textFlow']; if (!program) return; gl.useProgram(program.program); // Additional uniforms/attributes can be added here later. } catch (error) { console.error('Text flow render error:', error)}
+'
   }
   function stopVisualization() { isRendering = false; if (animationFrame) { cancelAnimationFrame(animationFrame)}
   }
@@ -66,5 +71,10 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 </main>
 
 <style>
-/* Custom WebGL canvas styling */ canvas { image-rendering: pixelated; image-rendering: -moz-crisp-edge; image-rendering: crisp-edge}
+  /* Custom WebGL canvas styling */
+  canvas {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edge;
+    image-rendering: crisp-edge;
+  }
 </style>

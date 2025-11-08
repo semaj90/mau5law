@@ -5,7 +5,10 @@
 
 <svelte:head>
   <title>Dashboard - WardenNet Legal</title>
-  <meta name="description" content="Legal AI dashboard with real-time analytics and, system, monitoring" />
+  <meta
+    name="description"
+    content="Legal AI dashboard with real-time analytics and, system, monitoring"
+  />
 </svelte:head>
 <div class="min-h-screen bg-gray-900">
   <main class="container mx-auto">

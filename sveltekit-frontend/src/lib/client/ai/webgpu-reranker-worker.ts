@@ -37,7 +37,7 @@ const RERANKER_WGSL = /* wgsl */ `
 `;
 
 const FALLBACK_EMBED_DIM = 256;
-const DEFAULT_MODEL = "embeddinggemma:latest";
+const DEFAULT_MODEL = 'embeddinggemma:latest';
 
 // Local feature flags/constants for WebGPU to avoid depending on lib.dom types in this build
 const GPU_BUFFER_USAGE = {
@@ -69,7 +69,7 @@ type GPUDeviceLike = {
   };
   createShaderModule: (opts: { code: string }) => unknown;
   createComputePipeline: (opts: {
-    layout: "auto" | unknown;
+    layout: 'auto' | unknown;
     compute: { module: unknown; entryPoint: string };
   }) => unknown;
   getBindGroupLayout: (idx: number) => unknown;
@@ -96,7 +96,7 @@ interface WebGPUNavigator {
 
 const embedLocally = (text: string, dim: number = FALLBACK_EMBED_DIM): Float32Array => {
   const vec = new Float32Array(dim);
-  const lower = (text ?? "").toLowerCase();
+  const lower = (text ?? '').toLowerCase();
   const len = lower.length || 1;
   for (let i = 0; i < dim; i++) {
     const ch = lower.charCodeAt(i % len) || 0;
@@ -128,8 +128,8 @@ const cpuRerank = (
 ) =>
   suggestions
     .map((s, idx) => {
-      const base = typeof s.score === "number" ? s.score : 0;
-      const label = s.label ?? s.text ?? "";
+      const base = typeof s.score === 'number' ? s.score : 0;
+      const label = s.label ?? s.text ?? '';
       const candVec = candidateVecs[idx] ?? embedLocally(label, queryVec.length);
       const cos = cosine(queryVec, candVec);
       return { ...s, score: 0.6 * cos + 0.4 * base };
@@ -143,11 +143,11 @@ async function fetchEmbeddings(
 ): Promise<Float32Array[] | null> {
   try {
     const reqHeaders: Record<string, string> = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...(headers ?? {}),
     };
-    const response = await fetch("/api/embeddings/generate?action=batch", {
-      method: "POST",
+    const response = await fetch('/api/embeddings/generate?action=batch', {
+      method: 'POST',
       headers: reqHeaders,
       body: JSON.stringify({ texts, model }),
     });
@@ -167,20 +167,20 @@ async function fetchEmbeddings(
     return arrays.map((arr: number[]) => Float32Array.from(arr));
   } catch (err) {
     // don't leak raw error objects to UI from worker
-    console.warn("Failed to fetch embeddings from server, using local fallback: ", String(err));
+    console.warn('Failed to fetch embeddings from server, using local fallback: ', String(err));
     return null;
   }
 }
 
 type RerankOptions = { model?: string; headers?: Record<string, string> } | undefined;
 
-self.addEventListener("message", async (event: MessageEvent) => {
+self.addEventListener('message', async (event: MessageEvent) => {
   const { query, suggestions, options } = event.data as {
     query: string;
     suggestions: Suggestion[];
     options?: RerankOptions;
   };
-  const labels = suggestions.map((s) => s.label ?? s.text ?? "");
+  const labels = suggestions.map((s) => s.label ?? s.text ?? '');
   const combinedInputs = [query, ...labels];
 
   let queryVec: Float32Array | null = null;
@@ -202,7 +202,7 @@ self.addEventListener("message", async (event: MessageEvent) => {
     }
 
     const hasGPU =
-      typeof navigator !== "undefined" && "gpu" in (navigator as unknown as WebGPUNavigator);
+      typeof navigator !== 'undefined' && 'gpu' in (navigator as unknown as WebGPUNavigator);
     if (!hasGPU) {
       self.postMessage({ data: cpuRerank(queryVec!, candidateVecs!, suggestions) });
       return;
@@ -214,7 +214,7 @@ self.addEventListener("message", async (event: MessageEvent) => {
     const device = (await adapterLike?.requestDevice?.()) as GPUDeviceLike | undefined;
 
     if (!device) {
-      throw new Error("WebGPU device unavailable");
+      throw new Error('WebGPU device unavailable');
     }
 
     const candidateCount = suggestions.length;
@@ -224,7 +224,7 @@ self.addEventListener("message", async (event: MessageEvent) => {
     }
 
     if (candidateVecs!.some((vec) => vec.length !== queryVec!.length)) {
-      console.warn("Inconsistent embedding dimensions, using CPU rerank");
+      console.warn('Inconsistent embedding dimensions, using CPU rerank');
       self.postMessage({ data: cpuRerank(queryVec!, candidateVecs!, suggestions) });
       return;
     }
@@ -273,8 +273,8 @@ self.addEventListener("message", async (event: MessageEvent) => {
 
     const module = device.createShaderModule({ code: RERANKER_WGSL });
     const pipeline = device.createComputePipeline({
-      layout: "auto",
-      compute: { module, entryPoint: "main" },
+      layout: 'auto',
+      compute: { module, entryPoint: 'main' },
     });
 
     // some runtimes/types are not present in TS build; cast pipeline to: unknown for these calls
@@ -327,13 +327,13 @@ self.addEventListener("message", async (event: MessageEvent) => {
       .map((suggestion, idx) => ({
         ...suggestion,
         score:
-          0.6 * mapped[idx] + 0.4 * (typeof suggestion.score === "number" ? suggestion.score : 0),
+          0.6 * mapped[idx] + 0.4 * (typeof suggestion.score === 'number' ? suggestion.score : 0),
       }))
       .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
     self.postMessage({ data: reranked });
   } catch (err) {
-    console.warn("WebGPU rerank failed, falling back to CPU: ", String(err));
+    console.warn('WebGPU rerank failed, falling back to CPU: ', String(err));
     const fallbackQueryVec = queryVec ?? embedLocally(query);
     const fallbackCandidateVecs =
       candidateVecs ?? labels.map((label) => embedLocally(label, fallbackQueryVec.length));

@@ -1,10 +1,10 @@
 /** * Vector Similarity API - Client WebAssembly to Server CUDA Bridge * Handles cosine similarity, euclidean distance, and batch operations */
-import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-import { PGVECTOR_CONFIG, getCudaServiceUrl } from "$lib/config/pgvector-gpu-config.js";
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { PGVECTOR_CONFIG, getCudaServiceUrl } from '$lib/config/pgvector-gpu-config.js';
 
 interface VectorSimilarityRequest {
-  operation: "cosine" | "euclidean" | "dot" | "manhattan" | "batch";
+  operation: 'cosine' | 'euclidean' | 'dot' | 'manhattan' | 'batch';
   vectorA: Float32Array | number[];
   vectorB?: Float32Array | number[];
   vectors?: Array<Float32Array | number[]>; // For batch operations
@@ -22,7 +22,7 @@ interface CUDAResponse {
 
 // CPU fallback implementations
 function cosineSimilarity(a: Float32Array, b: Float32Array): number {
-  if (a.length !== b.length) throw new Error("Vector dimensions must match");
+  if (a.length !== b.length) throw new Error('Vector dimensions must match');
   let dotProduct = 0;
   let normA = 0;
   let normB = 0;
@@ -36,7 +36,7 @@ function cosineSimilarity(a: Float32Array, b: Float32Array): number {
 }
 
 function euclideanDistance(a: Float32Array, b: Float32Array): number {
-  if (a.length !== b.length) throw new Error("Vector dimensions must match");
+  if (a.length !== b.length) throw new Error('Vector dimensions must match');
   let sum = 0;
   for (let i = 0; i < a.length; i++) {
     const diff = a[i] - b[i];
@@ -46,7 +46,7 @@ function euclideanDistance(a: Float32Array, b: Float32Array): number {
 }
 
 function dotProduct(a: Float32Array, b: Float32Array): number {
-  if (a.length !== b.length) throw new Error("Vector dimensions must match");
+  if (a.length !== b.length) throw new Error('Vector dimensions must match');
   let result = 0;
   for (let i = 0; i < a.length; i++) {
     result += a[i] * b[i];
@@ -55,7 +55,7 @@ function dotProduct(a: Float32Array, b: Float32Array): number {
 }
 
 function manhattanDistance(a: Float32Array, b: Float32Array): number {
-  if (a.length !== b.length) throw new Error("Vector dimensions must match");
+  if (a.length !== b.length) throw new Error('Vector dimensions must match');
   let sum = 0;
   for (let i = 0; i < a.length; i++) {
     sum += Math.abs(a[i] - b[i]);
@@ -72,20 +72,20 @@ async function processCPUVectorOperation(params: {
 }): Promise<number | number[]> {
   const { operation, vectorA, vectorB, vectors, algorithm } = params;
   switch (operation) {
-    case "cosine":
-      if (!vectorB) throw new Error("vectorB required for cosine similarity");
+    case 'cosine':
+      if (!vectorB) throw new Error('vectorB required for cosine similarity');
       return cosineSimilarity(vectorA, vectorB);
-    case "euclidean":
-      if (!vectorB) throw new Error("vectorB required for euclidean distance");
+    case 'euclidean':
+      if (!vectorB) throw new Error('vectorB required for euclidean distance');
       return euclideanDistance(vectorA, vectorB);
-    case "dot":
-      if (!vectorB) throw new Error("vectorB required for dot product");
+    case 'dot':
+      if (!vectorB) throw new Error('vectorB required for dot product');
       return dotProduct(vectorA, vectorB);
-    case "manhattan":
-      if (!vectorB) throw new Error("vectorB required for manhattan distance");
+    case 'manhattan':
+      if (!vectorB) throw new Error('vectorB required for manhattan distance');
       return manhattanDistance(vectorA, vectorB);
-    case "batch":
-      if (!vectors) throw new Error("vectors required for batch operation");
+    case 'batch':
+      if (!vectors) throw new Error('vectors required for batch operation');
       return vectors.map((vector) => {
         switch (algorithm) {
           case 0:
@@ -114,11 +114,11 @@ async function processCUDAVectorOperation(params: {
   requestId: string;
 }): Promise<CUDAResponse> {
   const { operation, vectorA, vectorB, vectors, algorithm, requestId } = params;
-  const cudaUrl = getCudaServiceUrl("submit");
+  const cudaUrl = getCudaServiceUrl('submit');
 
   // CHR-ROM optimized payload with tensor core targeting
   const payload = {
-    type: "vector_operation",
+    type: 'vector_operation',
     operation,
     request_id: requestId,
     data: {
@@ -131,26 +131,26 @@ async function processCUDAVectorOperation(params: {
     },
     gpu_config: {
       use_tensor_cores: true,
-      memory_pool: "CHR_ROM_optimized", // Enhanced memory region targeting
+      memory_pool: 'CHR_ROM_optimized', // Enhanced memory region targeting
       batch_size: Math.min(PGVECTOR_CONFIG.performance.batchSize, vectors?.length || 1),
       parallel_workers: PGVECTOR_CONFIG.performance.maxParallelWorkers,
       compute_capability: PGVECTOR_CONFIG.cuda.gpu.computeCapability,
       tensor_cores: PGVECTOR_CONFIG.cuda.gpu.tensorCores,
       memory_bandwidth_optimization: true,
-      simd_instructions: "AVX512_FP32", // Enhanced SIMD targeting
-      precision: "mixed_fp16_fp32", // Tensor core optimized precision
+      simd_instructions: 'AVX512_FP32', // Enhanced SIMD targeting
+      precision: 'mixed_fp16_fp32', // Tensor core optimized precision
     },
     performance_hints: {
       expected_throughput: vectors?.length || 1,
-      memory_pattern: "sequential_access",
-      cache_locality: "high",
-      branch_prediction: "favorable",
+      memory_pattern: 'sequential_access',
+      cache_locality: 'high',
+      branch_prediction: 'favorable',
     },
   };
 
   const response = await fetch(cudaUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
 
@@ -191,12 +191,12 @@ function calculateComplexityScore(
 // WebGPU/WebGL2 client-side processing hints
 function generateClientOptimizationHints(operation: string, dataSize: number) {
   return {
-    prefer_webgpu: dataSize < 10000 && operation !== "batch",
-    prefer_webgl2: dataSize < 5000 && operation === "dot",
+    prefer_webgpu: dataSize < 10000 && operation !== 'batch',
+    prefer_webgl2: dataSize < 5000 && operation === 'dot',
     prefer_wasm_simd: dataSize < 1000,
     intel_gpu_optimized: true,
-    memory_pattern: "coalesced_access",
-    shader_precision: dataSize > 1000 ? "highp" : "mediump",
+    memory_pattern: 'coalesced_access',
+    shader_precision: dataSize > 1000 ? 'highp' : 'mediump',
     workgroup_size: Math.min(256, Math.max(64, Math.floor(dataSize / 32))),
   };
 }
@@ -219,15 +219,15 @@ export const POST: RequestHandler = async ({ request }) => {
     // Enhanced validation with performance profiling
     if (!vectorA || vectorA.length === 0) {
       return json(
-        { success: false, error: "vectorA is required and cannot be empty" },
+        { success: false, error: 'vectorA is required and cannot be empty' },
         { status: 400 }
       );
     }
     if (
-      (operation === "cosine" ||
-        operation === "euclidean" ||
-        operation === "dot" ||
-        operation === "manhattan") &&
+      (operation === 'cosine' ||
+        operation === 'euclidean' ||
+        operation === 'dot' ||
+        operation === 'manhattan') &&
       !vectorB
     ) {
       return json(
@@ -235,9 +235,9 @@ export const POST: RequestHandler = async ({ request }) => {
         { status: 400 }
       );
     }
-    if (operation === "batch" && (!vectors || vectors.length === 0)) {
+    if (operation === 'batch' && (!vectors || vectors.length === 0)) {
       return json(
-        { success: false, error: "vectors array is required for batch operation" },
+        { success: false, error: 'vectors array is required for batch operation' },
         { status: 400 }
       );
     }
@@ -257,7 +257,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // CHR-ROM region optimization for tensor cores
     const shouldUseCUDA =
       useCUDA &&
-      (operation === "batch" ||
+      (operation === 'batch' ||
         dataSize > 5000 ||
         complexityScore > 75 ||
         (normalizedVectors && normalizedVectors.length > 50));
@@ -314,12 +314,12 @@ export const POST: RequestHandler = async ({ request }) => {
       clientOptimizations: {
         ...clientHints,
         recommendedProcessing: shouldUseCUDA
-          ? "server_cuda"
+          ? 'server_cuda'
           : clientHints.prefer_webgpu
-            ? "client_webgpu"
+            ? 'client_webgpu'
             : clientHints.prefer_webgl2
-              ? "client_webgl2"
-              : "client_wasm",
+              ? 'client_webgl2'
+              : 'client_wasm',
         memoryOptimizations: {
           chrRomRegion: shouldUseCUDA,
           vectorAlignment: true,
@@ -329,11 +329,11 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     });
   } catch (err: unknown) {
-    console.error("Vector similarity API error: ", err);
+    console.error('Vector similarity API error: ', err);
     return json(
       {
         success: false,
-        error: `Vector operation failed: ${err instanceof Error ? err.message : "Unknown error"}`,
+        error: `Vector operation failed: ${err instanceof Error ? err.message : 'Unknown error'}`,
         requestId,
         timestamp: new Date().toISOString(),
       },

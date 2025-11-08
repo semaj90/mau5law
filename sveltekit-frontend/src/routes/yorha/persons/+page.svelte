@@ -39,7 +39,8 @@
   const Shield = resolveIcon('Shield');
 
   // Persons of Interest data
-  let persons = $state<Person[]>([ // Use Person[] type
+  let persons = $state<Person[]>([
+    // Use Person[] type
     {
       id: 'POI-001',
       name: 'Marcus Chen',
@@ -50,7 +51,7 @@
       location: 'Downtown District',
       description: 'Former cybersecurity expert turned corporate spy',
       cases: ['CASE-2024-087', 'CASE-2024-089'],
-      photo: null
+      photo: null,
     },
     {
       id: 'POI-002',
@@ -62,7 +63,7 @@
       location: 'Tech Quarter',
       description: 'Data analyst with suspicious financial transactions',
       cases: ['CASE-2024-088'],
-      photo: null
+      photo: null,
     },
     {
       id: 'POI-003',
@@ -74,8 +75,8 @@
       location: 'Multiple Networks',
       description: 'Advanced persistent threat actor, identity: unknown',
       cases: ['CASE-2024-087', 'CASE-2024-090'],
-      photo: null
-    }
+      photo: null,
+    },
   ]);
 
   let searchQuery = $state<string>('');
@@ -83,21 +84,23 @@
   let showNewPersonModal = $state<boolean>(false);
 
   // New person form state for the modal
-  let newPerson = $state<Omit<Person, 'id' | 'cases' | 'photo'>>({ // Use Omit for new person form
+  let newPerson = $state<Omit<Person, 'id' | 'cases' | 'photo'>>({
+    // Use Omit for new person form
     name: '',
     alias: '',
     threat_level: 'low',
     status: 'surveillance',
     description: '',
     last_seen: '',
-    location: ''
+    location: '',
   });
 
   let isLoading = $state<boolean>(false);
   let error = $state<string | null>(null);
 
   // Filter persons based on search and threat level
-  let filteredPersons = $derived(() => { // Removed explicit type annotation from $derived, type will be inferred
+  let filteredPersons = $derived(() => {
+    // Removed explicit type annotation from $derived, type will be inferred
     // make a shallow copy to avoid mutating original
     let filtered = persons ? [...persons] : [];
     const q = (searchQuery || '').trim().toLowerCase();
@@ -164,12 +167,13 @@
   }
 
   // Add new person
-  async function addPerson(personData: Omit<Person, 'id' | 'cases' | 'photo'>): Promise<any> { // Type personData
+  async function addPerson(personData: Omit<Person, 'id' | 'cases' | 'photo'>): Promise<any> {
+    // Type personData
     try {
       const response = await fetch('/api/persons-of-interest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData)
+        body: JSON.stringify(personData),
       });
       if (response.ok) {
         const created: Person = await response.json(); // Type created
@@ -198,7 +202,7 @@
         status: 'surveillance',
         description: '',
         last_seen: '',
-        location: ''
+        location: '',
       };
       showNewPersonModal = false;
       error = null;
@@ -275,7 +279,11 @@
         <div class="persons-subtitle">Surveillance and Investigation Targets</div>
       </div>
       <div class="header-right">
-        <Button class="header-btn bits-btn" onclick={() => (showNewPersonModal = true)} type="button">
+        <Button
+          class="header-btn bits-btn"
+          onclick={() => (showNewPersonModal = true)}
+          type="button"
+        >
           <Plus class="w-4" /> ADD PERSON
         </Button>
       </div>
@@ -308,12 +316,16 @@
         </div>
         <!-- Added 'critical' class to stat-item -->
         <div class="stat-item critical">
-          <span class="stat-number">{persons.filter((item) => item.threat_level === 'critical').length}</span>
+          <span class="stat-number"
+            >{persons.filter((item) => item.threat_level === 'critical').length}</span
+          >
           <span class="stat-label">Critical</span>
         </div>
         <!-- Added 'wanted' class to stat-item -->
         <div class="stat-item wanted">
-          <span class="stat-number">{persons.filter((item) => item.status === 'wanted').length}</span>
+          <span class="stat-number"
+            >{persons.filter((item) => item.status === 'wanted').length}</span
+          >
           <span class="stat-label">Wanted</span>
         </div>
       </div>
@@ -322,7 +334,8 @@
     <!-- Error, State -->
     {#if error}
       <div class="error-banner">
-        <AlertTriangle class="w-4" /> {error}
+        <AlertTriangle class="w-4" />
+        {error}
       </div>
     {/if}
 
@@ -410,7 +423,9 @@
         <div class="empty-title">No Persons Found</div>
         <!-- fixed missing quote in, class, attribute -->
         <div class="empty-subtitle">
-          {searchQuery ? 'Try adjusting your search criteria' : 'Add persons of interest to begin tracking'}
+          {searchQuery
+            ? 'Try adjusting your search criteria'
+            : 'Add persons of interest to begin tracking'}
         </div>
       </div>
     {/if}
@@ -458,7 +473,12 @@
         <div class="form-grid">
           <div class="form-field">
             <label class="form-label" for="full-name">FULL NAME</label>
-            <Input id="full-name" placeholder="Enter full name" class="yorha-input" bind:value={newPerson.name} />
+            <Input
+              id="full-name"
+              placeholder="Enter full name"
+              class="yorha-input"
+              bind:value={newPerson.name}
+            />
           </div>
           <div class="form-field">
             <label class="form-label" for="alias">ALIAS / CODENAME</label>
@@ -489,7 +509,12 @@
           </div>
           <div class="form-field">
             <label class="form-label" for="last-seen">LAST SEEN DATE</label>
-            <Input id="last-seen" type="date" class="yorha-input" bind:value={newPerson.last_seen} />
+            <Input
+              id="last-seen"
+              type="date"
+              class="yorha-input"
+              bind:value={newPerson.last_seen}
+            />
           </div>
           <div class="form-field">
             <label class="form-label" for="location">LAST KNOWN LOCATION</label>
@@ -525,7 +550,7 @@
               status: 'surveillance',
               description: '',
               last_seen: '',
-              location: ''
+              location: '',
             };
           }}
           type="button"
@@ -587,7 +612,9 @@
     color: #888;
     text-decoration: none;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition:
+      background 0.15s,
+      color 0.15s;
     justify-content: space-between;
     font-size: 11px;
   }

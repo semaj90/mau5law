@@ -1,8 +1,8 @@
-import type { Cookies } from "@sveltejs/kit";
-import { getUserById } from "./db/queries.js";
+import type { Cookies } from '@sveltejs/kit';
+import { getUserById } from './db/queries.js';
 // Use namespace import to tolerate different export shapes in authUtils
-import * as authUtils from "./authUtils.js";
-import { db } from "./db/client.js";
+import * as authUtils from './authUtils.js';
+import { db } from './db/client.js';
 
 export interface Session {
   id: string;
@@ -37,11 +37,11 @@ type SignFn = (payload: object, expiresIn?: string) => Promise<string>;
 
 // Resolve a verify function from authUtils safely
 function resolveVerifyFn(): VerifyFn {
-  const candidates = ["verifyToken", "verifyJWT", "verifyJwt", "verify"];
+  const candidates = ['verifyToken', 'verifyJWT', 'verifyJwt', 'verify'];
   const container = authUtils as unknown as Record<string, unknown>;
   for (const name of candidates) {
     const candidate = container[name];
-    if (typeof candidate === "function") {
+    if (typeof candidate === 'function') {
       return async (token: string) => {
         // call and normalize result to VerifyPayload using typed candidate
         const fn = candidate as CandidateVerifyFn;
@@ -53,7 +53,7 @@ function resolveVerifyFn(): VerifyFn {
   }
   // check default export shape
   const def = (container.default ?? {}) as Record<string, unknown>;
-  if (typeof def.verify === "function") {
+  if (typeof def.verify === 'function') {
     return async (token: string) => {
       const fn = def.verify as CandidateVerifyFn;
       const maybe = fn(token);
@@ -67,11 +67,11 @@ function resolveVerifyFn(): VerifyFn {
 
 // Resolve a signer from authUtils safely
 function resolveSignFn(): SignFn {
-  const candidates = ["signJWT", "signToken", "sign"];
+  const candidates = ['signJWT', 'signToken', 'sign'];
   const container = authUtils as unknown as Record<string, unknown>;
   for (const name of candidates) {
     const candidate = container[name];
-    if (typeof candidate === "function") {
+    if (typeof candidate === 'function') {
       return async (payload: object, expiresIn?: string) => {
         const fn = candidate as CandidateSignFn;
         const maybe = fn(payload, expiresIn);
@@ -81,7 +81,7 @@ function resolveSignFn(): SignFn {
     }
   }
   const def = (container.default ?? {}) as Record<string, unknown>;
-  if (typeof def.sign === "function") {
+  if (typeof def.sign === 'function') {
     return async (payload: object, expiresIn?: string) => {
       const fn = def.sign as CandidateSignFn;
       const maybe = fn(payload, expiresIn);
@@ -89,7 +89,7 @@ function resolveSignFn(): SignFn {
       return String(res);
     };
   }
-  throw new Error("No JWT signer available from authUtils");
+  throw new Error('No JWT signer available from authUtils');
 }
 
 export async function validateSessionToken(
@@ -117,21 +117,21 @@ export async function validateSessionToken(
     const user: User = {
       id: dbUser.id,
       email: dbUser.email,
-      name: dbUser.name || dbUser.firstName || dbUser.email || "Unknown User",
+      name: dbUser.name || dbUser.firstName || dbUser.email || 'Unknown User',
       firstName: dbUser.firstName,
       role: dbUser.role,
     };
 
     return { session, user };
   } catch (error) {
-    console.error("Session validation error:", error);
+    console.error('Session validation error:', error);
     return { session: null, user: null };
   }
 }
 
 export async function generateSessionToken(userId: string): Promise<string> {
   const signFn: SignFn = resolveSignFn();
-  return await signFn({ userId }, "7d");
+  return await signFn({ userId }, '7d');
 }
 
 export function setSessionTokenCookie(
@@ -139,12 +139,12 @@ export function setSessionTokenCookie(
   token: string,
   expiresAt: Date
 ): void {
-  cookies.set("session", token, {
-    path: "/",
+  cookies.set('session', token, {
+    path: '/',
     expires: expiresAt,
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
   });
 }
 
@@ -168,17 +168,17 @@ export async function invalidateSession(sessionId: string): Promise<void> {
  * @param options An object containing the SvelteKit `cookies` object.
  */
 export async function deleteSessionTokenCookie({ cookies }: { cookies: Cookies }): Promise<void> {
-  console.log("[Session Service] Deleting session token cookie.");
+  console.log('[Session Service] Deleting session token cookie.');
   // Set the cookie to expire immediately for common session cookie names
   const cookieOptions = {
-    path: "/",
+    path: '/',
     expires: new Date(0), // Set to a past date
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax" as const, // 'lax' or 'strict'
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const, // 'lax' or 'strict'
   };
 
-  cookies.set("session_id", "", cookieOptions);
-  cookies.set("sessionId", "", cookieOptions);
-  cookies.set("session", "", cookieOptions);
+  cookies.set('session_id', '', cookieOptions);
+  cookies.set('sessionId', '', cookieOptions);
+  cookies.set('session', '', cookieOptions);
 }

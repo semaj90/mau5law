@@ -19,6 +19,14 @@
 </main>
 
 <style>
-/* Custom styles for enhanced appearance */:global(body) { font-family:
-      'Inter', -apple-system; BlinkMacSystemFont: 'Segoe UI', sans-serif}:global(code) { font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace}
+  /* Custom styles for enhanced appearance */
+  :global(body) {
+    font-family:
+      'Inter',
+      -apple-system;
+    blinkmacsystemfont: 'Segoe UI', sans-serif;
+  }
+  :global(code) {
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  }
 </style>

@@ -1,6 +1,6 @@
-import { json, type RequestHandler } from "@sveltejs/kit";
-import { contextualUnderstanding } from "$lib/server/ai/contextual-understanding-service";
-import type { LegalEntity } from "$lib/types/sharedTypes";
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { contextualUnderstanding } from '$lib/server/ai/contextual-understanding-service';
+import type { LegalEntity } from '$lib/types/sharedTypes';
 
 interface UpdatePayload {
   sessionId?: string;
@@ -14,12 +14,12 @@ interface UpdatePayload {
 
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const sessionId = url.searchParams.get("sessionId")?.trim() ?? "";
-    const userId = url.searchParams.get("userId")?.trim() ?? "";
+    const sessionId = url.searchParams.get('sessionId')?.trim() ?? '';
+    const userId = url.searchParams.get('userId')?.trim() ?? '';
 
     if (!sessionId || !userId) {
       return json(
-        { success: false, error: "sessionId and userId query parameters are required" },
+        { success: false, error: 'sessionId and userId query parameters are required' },
         { status: 400 }
       );
     }
@@ -27,11 +27,11 @@ export const GET: RequestHandler = async ({ url }) => {
     const state = await contextualUnderstanding.getContextualState(sessionId, userId);
     return json({ success: true, data: state }, { status: 200 });
   } catch (error) {
-    console.error("[contextual-state] GET failed", error);
+    console.error('[contextual-state] GET failed', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Unexpected error",
+        error: error instanceof Error ? error.message : 'Unexpected error',
       },
       { status: 500 }
     );
@@ -41,17 +41,17 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const payload = (await request.json()) as UpdatePayload;
-    const sessionId = payload.sessionId?.trim() ?? "";
-    const userId = payload.userId?.trim() ?? "";
-    const userMessage = payload.userMessage?.trim() ?? "";
-    const agentResponse = payload.agentResponse?.trim() ?? "";
-    const intent = payload.intent?.trim() ?? "";
+    const sessionId = payload.sessionId?.trim() ?? '';
+    const userId = payload.userId?.trim() ?? '';
+    const userMessage = payload.userMessage?.trim() ?? '';
+    const agentResponse = payload.agentResponse?.trim() ?? '';
+    const intent = payload.intent?.trim() ?? '';
 
     if (!sessionId || !userId || !userMessage || !agentResponse || !intent) {
       return json(
         {
           success: false,
-          error: "sessionId, userId, userMessage, agentResponse, and intent are required",
+          error: 'sessionId, userId, userMessage, agentResponse, and intent are required',
         },
         { status: 400 }
       );
@@ -69,11 +69,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({ success: true, data: updated }, { status: 200 });
   } catch (error) {
-    console.error("[contextual-state] POST failed", error);
+    console.error('[contextual-state] POST failed', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Unexpected error",
+        error: error instanceof Error ? error.message : 'Unexpected error',
       },
       { status: 500 }
     );
@@ -82,19 +82,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const sessionId = url.searchParams.get("sessionId")?.trim() ?? "";
+    const sessionId = url.searchParams.get('sessionId')?.trim() ?? '';
     if (!sessionId) {
-      return json({ success: false, error: "sessionId is required" }, { status: 400 });
+      return json({ success: false, error: 'sessionId is required' }, { status: 400 });
     }
 
     await contextualUnderstanding.clearContextualState(sessionId);
-    return json({ success: true, message: "Contextual state cleared" }, { status: 200 });
+    return json({ success: true, message: 'Contextual state cleared' }, { status: 200 });
   } catch (error) {
-    console.error("[contextual-state] DELETE failed", error);
+    console.error('[contextual-state] DELETE failed', error);
     return json(
       {
         success: false,
-        error: error instanceof Error ? error.message : "Unexpected error",
+        error: error instanceof Error ? error.message : 'Unexpected error',
       },
       { status: 500 }
     );

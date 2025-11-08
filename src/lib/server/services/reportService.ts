@@ -34,7 +34,8 @@ export const load: PageServerLoad = async ({ locals }) => {
   try {
     // resolve stable user ID
     const rawUserId = getUserId(locals);
-    const userId = typeof rawUserId === 'string' && rawUserId ? rawUserId : (locals.user as { id?: string })?.id;
+    const userId =
+      typeof rawUserId === 'string' && rawUserId ? rawUserId : (locals.user as { id?: string })?.id;
 
     if (!userId) {
       console.warn('⚠️ No userId available — returning mock data');
@@ -54,7 +55,9 @@ export const load: PageServerLoad = async ({ locals }) => {
       records = result.map((r) => {
         const savedAtRaw = (r as any).savedAt;
         const savedAtIso =
-          savedAtRaw instanceof Date ? savedAtRaw.toISOString() : new Date(String(savedAtRaw ?? Date.now())).toISOString();
+          savedAtRaw instanceof Date
+            ? savedAtRaw.toISOString()
+            : new Date(String(savedAtRaw ?? Date.now())).toISOString();
 
         return {
           id: r.id,
@@ -160,9 +163,9 @@ async function streamToString(
   const chunks: Uint8Array[] = [];
   const nodeStream = body as AsyncIterable<Buffer | Uint8Array | string>;
   for await (const chunk of nodeStream) {
-    if (typeof chunk === 'string') chunks.push(<any><any>Buffer.from(chunk));
-    else if (Buffer.isBuffer(chunk)) chunks.push(<any><any>chunk);
-    else chunks.push(<any><any>Buffer.from(chunk));
+    if (typeof chunk === 'string') chunks.push(<any>(<any>Buffer.from(chunk)));
+    else if (Buffer.isBuffer(chunk)) chunks.push(<any>(<any>chunk));
+    else chunks.push(<any>(<any>Buffer.from(chunk)));
   }
   return Buffer.concat(chunks).toString('utf-8');
 }

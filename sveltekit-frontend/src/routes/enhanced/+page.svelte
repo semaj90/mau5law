@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
+  import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
   // Debounce + streaming support
   let debounceMs = $state<number>(400);
   let autoSearch = $state<boolean>(true);
@@ -56,7 +56,7 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
-        signal: controller.signal
+        signal: controller.signal,
       });
       if (!res.ok) {
         errorMsg = `Request failed (${res.status})`;
@@ -78,12 +78,14 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
       const params = new URLSearchParams({
         query: (body as { query: string }).query,
         limit: String((body as { limit: number }).limit || 8),
-        mode: (body as { mode: string }).mode || 'simple'
+        mode: (body as { mode: string }).mode || 'simple',
       });
       if ((body as { threshold?: number }).threshold != null)
         params.set('threshold', String((body as { threshold: number }).threshold));
-      if ((body as { model?: string }).model) params.set('model', (body as { model: string }).model);
-      if ((body as { caseId?: string }).caseId) params.set('caseId', (body as { caseId: string }).caseId);
+      if ((body as { model?: string }).model)
+        params.set('model', (body as { model: string }).model);
+      if ((body as { caseId?: string }).caseId)
+        params.set('caseId', (body as { caseId: string }).caseId);
 
       const url = `/api/ai/vector-search/stream?${params.toString()}`;
       const res = await fetch(url, { signal: controller!.signal });
@@ -169,7 +171,8 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
   });
 
   function scoreClass(score: number) {
-    if (score == null) return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
+    if (score == null)
+      return 'bg-neutral-200 dark:bg-neutral-700 text-neutral-700 dark:text-neutral-200';
     if (score >= 0.9) return 'score-top';
     if (score >= 0.8) return 'score-high';
     if (score >= 0.65) return 'score-mid';
@@ -183,7 +186,7 @@ import type { Case } from '$lib/types'; // Svelte 5 runes are auto-imported
 </main>
 
 <style>
-:global(body) {
+  :global(body) {
     background: var(--background, transparent);
   }
   .score-low {

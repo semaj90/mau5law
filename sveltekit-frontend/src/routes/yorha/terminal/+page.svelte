@@ -1,55 +1,111 @@
 <script lang="ts">
-// Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
+  // Svelte 5 runes are auto-imported. $state is declared globally in src/types/svelte-helpers.d.ts
   import { onMount } from 'svelte';
   // YoRHa API client is exported as a named export.
-  import { YoRHaAPIClient } from "$lib/components/three/yorha-ui/api/YoRHaAPIClient";
+  import { YoRHaAPIClient } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
 
   // Terminal state type
-  type TerminalEntry = { id: number, timestamp: string, text: string, type: 'system' | 'user' | 'success' | 'error' | 'info'};
+  type TerminalEntry = {
+    id: number;
+    timestamp: string;
+    text: string;
+    type: 'system' | 'user' | 'success' | 'error' | 'info';
+  };
   let terminalHistory = $state<TerminalEntry[]>([]);
   let currentInput = $state<string>('');
   let isExecuting = $state<boolean>(false);
   // Removed unused terminalRef
 
   // Terminal commands type
-  type Command = { name: string, description: string, usage: string, execute: (args: string[]) => void | Promise<void>};
+  type Command = {
+    name: string;
+    description: string;
+    usage: string;
+    execute: (args: string[]) => void | Promise<void>;
+  };
   // Replace Record with an array (list of dicts)
   const commands: Command[] = [
-    { name: 'help', description: 'Show available commands', usage: 'help [command]', execute: (args: string[]) => showHelp(args) },
-    { name: 'status', description: 'Show system status', usage: 'status', execute: () => getSystemStatus() },
     {
-      name: 'rag', description: 'Execute RAG query', usage: 'rag <query>', execute: (args: string[]) => executeRAG(args.join(' ')) },
+      name: 'help',
+      description: 'Show available commands',
+      usage: 'help [command]',
+      execute: (args: string[]) => showHelp(args),
+    },
     {
-      name: 'search', description: 'Search legal database', usage: 'search <term>', execute: (args: string[]) => searchDatabase(args.join(' ')) },
+      name: 'status',
+      description: 'Show system status',
+      usage: 'status',
+      execute: () => getSystemStatus(),
+    },
     {
-      name: 'cluster', description: 'Cluster management', usage: 'cluster <health|status|restart>', execute: (args: string[]) => clusterCommand(args[0]) },
-    { name: 'clear', description: 'Clear terminal', usage: 'clear', execute: () => clearTerminal() },
-    { name: 'echo', description: 'Echo text', usage: 'echo <text>', execute: (args: string[]) => echoText(args.join(' ')) },
-    { name: 'version', description: 'Show system version', usage: 'version', execute: () => showVersion() }
+      name: 'rag',
+      description: 'Execute RAG query',
+      usage: 'rag <query>',
+      execute: (args: string[]) => executeRAG(args.join(' ')),
+    },
+    {
+      name: 'search',
+      description: 'Search legal database',
+      usage: 'search <term>',
+      execute: (args: string[]) => searchDatabase(args.join(' ')),
+    },
+    {
+      name: 'cluster',
+      description: 'Cluster management',
+      usage: 'cluster <health|status|restart>',
+      execute: (args: string[]) => clusterCommand(args[0]),
+    },
+    {
+      name: 'clear',
+      description: 'Clear terminal',
+      usage: 'clear',
+      execute: () => clearTerminal(),
+    },
+    {
+      name: 'echo',
+      description: 'Echo text',
+      usage: 'echo <text>',
+      execute: (args: string[]) => echoText(args.join(' ')),
+    },
+    {
+      name: 'version',
+      description: 'Show system version',
+      usage: 'version',
+      execute: () => showVersion(),
+    },
   ];
 
-  function getCommand(name: string) { return commands.find(c => c.name === name)}
+  function getCommand(name: string) {
+    return commands.find((c) => c.name === name);
+  }
 
   // initialize once
   onMount(() => {
     addOutput('YORHA TERMINAL v1.0.0 - Legal AI System Interface', 'system');
     addOutput('Type "help" for available commands.', 'system');
-    addOutput('', 'system')});
+    addOutput('', 'system');
+  });
 
-  function addOutput(text: string, type: 'system' | 'user' | 'success' | 'error' | 'info' = 'system') {
+  function addOutput(
+    text: string,
+    type: 'system' | 'user' | 'success' | 'error' | 'info' = 'system'
+  ) {
     const timestamp = new Date().toLocaleTimeString();
     terminalHistory = [
       ...terminalHistory,
       {
-        id: Date.now() + Math.random(), timestamp, text, type
-      }
+        id: Date.now() + Math.random(),
+        timestamp,
+        text,
+        type,
+      },
     ];
   }
 
   async function executeCommand(command: string): Promise<any> {
     if (!command.trim()) return;
     isExecuting = true;
-    addOutput(`> ${ command }`, 'user');
+    addOutput(`> ${command}`, 'user');
     const parts = command.trim().split(' ');
     const cmd = parts[0].toLowerCase();
     const args = parts.slice(1);
@@ -60,10 +116,10 @@
         await cmdDef.execute(args);
       } catch (error) {
         const e = error as Error;
-        addOutput(`Error executing ${ cmd }: ${e?.message || String(error)}`, 'error');
+        addOutput(`Error executing ${cmd}: ${e?.message || String(error)}`, 'error');
       }
     } else {
-      addOutput(`Unknown command: ${ cmd }. Type: "help" for available commands.`, 'error');
+      addOutput(`Unknown command: ${cmd}. Type: "help" for available commands.`, 'error');
     }
 
     isExecuting = false;
@@ -75,14 +131,15 @@
       const cmd = args[0].toLowerCase();
       const cmdDef = getCommand(cmd);
       if (cmdDef) {
-        addOutput(`${ cmd }: ${cmdDef.description}`, 'info');
+        addOutput(`${cmd}: ${cmdDef.description}`, 'info');
         addOutput(`Usage: ${cmdDef.usage}`, 'info');
       } else {
-        addOutput(`Unknown command: ${ cmd }`, 'error');
+        addOutput(`Unknown command: ${cmd}`, 'error');
       }
     } else {
       addOutput('Available commands:', 'info');
-      commands.forEach((c: Command) => { // Explicitly type 'c' as Command
+      commands.forEach((c: Command) => {
+        // Explicitly type 'c' as Command
         addOutput(` ${c.name.padEnd(10)} - ${c.description}`, 'info');
       });
     }
@@ -104,14 +161,24 @@
   async function safeGetSystemStatus(): Promise<any> {
     // Try multiple possible client method names at runtime to avoid type errors
     try {
-      if (typeof (YoRHaAPIClient as any)?.getSystemStatus === 'function') { return await (YoRHaAPIClient as any).getSystemStatus()}
-      if (typeof (YoRHaAPIClient as any)?.getStatus === 'function') { return await (YoRHaAPIClient as any).getStatus()}
-      if (typeof (YoRHaAPIClient as any)?.status === 'function') { return await (YoRHaAPIClient as any).status()}
+      if (typeof (YoRHaAPIClient as any)?.getSystemStatus === 'function') {
+        return await (YoRHaAPIClient as any).getSystemStatus();
+      }
+      if (typeof (YoRHaAPIClient as any)?.getStatus === 'function') {
+        return await (YoRHaAPIClient as any).getStatus();
+      }
+      if (typeof (YoRHaAPIClient as any)?.status === 'function') {
+        return await (YoRHaAPIClient as any).status();
+      }
 
       // Fallback to a server endpoint
       const res = await fetch('/api/yorha/status');
-      if (res.ok) { return await res.json()}
-      throw new Error(`HTTP ${res.status}`)} catch (err) { // Re-throw so caller can handle and show mock data
+      if (res.ok) {
+        return await res.json();
+      }
+      throw new Error(`HTTP ${res.status}`);
+    } catch (err) {
+      // Re-throw so caller can handle and show mock data
       throw err;
     }
   }
@@ -121,8 +188,8 @@
       addOutput('Fetching system status...', 'info');
       const status = await safeGetSystemStatus();
       addOutput('=== SYSTEM STATUS ===', 'success');
-      addOutput(`Database: ${status?.database?.connected ? 'CONNECTED': 'DISCONNECTED'}`, 'info');
-      addOutput(`Backend: ${status?.backend?.healthy ? 'HEALTHY': 'UNHEALTHY'}`, 'info');
+      addOutput(`Database: ${status?.database?.connected ? 'CONNECTED' : 'DISCONNECTED'}`, 'info');
+      addOutput(`Backend: ${status?.backend?.healthy ? 'HEALTHY' : 'UNHEALTHY'}`, 'info');
       addOutput(`Frontend: ${status?.frontend?.renderFPS ?? 'N/A'} FPS`, 'info');
       addOutput(`Services: ${status?.backend?.activeServices ?? 'N/A'} active`, 'info');
       addOutput(`CPU: ${status?.backend?.cpuUsage ?? 'N/A'}%`, 'info');
@@ -143,11 +210,11 @@
       return;
     }
     try {
-      addOutput(`Executing RAG query: "${ query }"`, 'info');
+      addOutput(`Executing RAG query: "${query}"`, 'info');
       const response = await fetch('/api/yorha/enhanced-rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query, context: 'terminal' })
+        body: JSON.stringify({ query, context: 'terminal' }),
       });
       if (response.ok) {
         const result = await response.json();
@@ -168,13 +235,14 @@
       return;
     }
     try {
-      addOutput(`Searching database for: "${ term }"`, 'info');
+      addOutput(`Searching database for: "${term}"`, 'info');
       const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`); // minimal endpoint
       if (response.ok) {
-        const result = await response.json() as SearchApiResponse; // Cast to SearchApiResponse
+        const result = (await response.json()) as SearchApiResponse; // Cast to SearchApiResponse
         addOutput('=== SEARCH RESULTS ===', 'success');
         if (Array.isArray(result.results) && result.results.length > 0) {
-          result.results.forEach((item: SearchResultItem, index: number) => { // Explicitly type 'item'
+          result.results.forEach((item: SearchResultItem, index: number) => {
+            // Explicitly type 'item'
             addOutput(`${index + 1}. ${item.title || item.name || 'Untitled'}`, 'info');
           });
         } else {
@@ -223,7 +291,7 @@
         addOutput('Cluster restart not implemented in terminal mode', 'error');
         break;
       default:
-        addOutput(`Unknown cluster action ${ action }`, 'error');
+        addOutput(`Unknown cluster action ${action}`, 'error');
     }
   }
 
@@ -241,7 +309,7 @@
     addOutput('YoRHa Terminal: 1.0.0', 'info');
     addOutput('Legal AI Platform: 2.0.0', 'info');
     addOutput('SvelteKit: 2.x', 'info');
-    addOutput('Node.js: ' + (typeof process !== 'undefined' ? process.version: 'Browser'), 'info');
+    addOutput('Node.js: ' + (typeof process !== 'undefined' ? process.version : 'Browser'), 'info');
   }
 
   function handleKeydown(event: KeyboardEvent) {
@@ -265,12 +333,39 @@
     <div class="yorha-terminal-container">
       <div class="yorha-terminal-header">
         <div class="yorha-terminal-title">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-terminal"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-terminal"
+            ><polyline points="4 17 10 11 4 5" /><line x1="12" x2="20" y1="19" y2="19" /></svg
+          >
           <span>YoRHa Terminal</span>
         </div>
         <div class="yorha-terminal-controls">
-          <button class="yorha-terminal-control" onclick={() => clearTerminal()} title="Clear Terminal">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          <button
+            class="yorha-terminal-control"
+            onclick={() => clearTerminal()}
+            title="Clear Terminal"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-x"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg
+            >
           </button>
         </div>
       </div>
@@ -296,7 +391,18 @@
 
       <div class="yorha-terminal-input-container">
         <div class="yorha-terminal-prompt">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6" /></svg
+          >
           <span>YORHA</span>
         </div>
         <input
@@ -324,7 +430,7 @@
 </div>
 
 <style>
-.yorha-terminal-page {
+  .yorha-terminal-page {
     min-height: 100vh;
     display: flex;
     flex-direction: column;

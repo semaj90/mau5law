@@ -11,7 +11,7 @@ import {
   vectorEmbeddings,
   legalDocuments,
   evidenceVectors,
-  caseEmbeddingsOptimized
+  caseEmbeddingsOptimized,
 } from '../../../sveltekit-frontend/drizzle/schema.js';
 import { eq, sql, cosineDistance, desc, and, gte, lte, inArray } from 'drizzle-orm';
 import type { VectorizedDocument, VectorizedChunk } from './gemma-embedding-service.js';
@@ -124,14 +124,14 @@ export class PostgreSQLVectorStorage {
       {
         name: 'idx_legal_docs_metadata_gin_optimized',
         sql: sql`CREATE INDEX IF NOT EXISTS idx_legal_docs_metadata_gin_optimized
-                ON legal_documents_jsonb USING gin (metadata jsonb_path_ops)`
+                ON legal_documents_jsonb USING gin (metadata jsonb_path_ops)`,
       },
 
       // Composite indexes for common query patterns
       {
         name: 'idx_legal_docs_type_area_jurisdiction',
         sql: sql`CREATE INDEX IF NOT EXISTS idx_legal_docs_type_area_jurisdiction
-                ON legal_documents_jsonb (document_type, practice_area, jurisdiction)`
+                ON legal_documents_jsonb (document_type, practice_area, jurisdiction)`,
       },
 
       // Vector similarity indexes with HNSW for better performance
@@ -139,14 +139,14 @@ export class PostgreSQLVectorStorage {
         name: 'idx_legal_docs_title_embedding_hnsw',
         sql: sql`CREATE INDEX IF NOT EXISTS idx_legal_docs_title_embedding_hnsw
                 ON legal_documents_jsonb USING hnsw (title_embedding vector_cosine_ops)
-                WITH (m = 16, ef_construction = 64)`
+                WITH (m = 16, ef_construction = 64)`,
       },
 
       {
         name: 'idx_legal_docs_content_embedding_hnsw',
         sql: sql`CREATE INDEX IF NOT EXISTS idx_legal_docs_content_embedding_hnsw
                 ON legal_documents_jsonb USING hnsw (content_embedding vector_cosine_ops)
-                WITH (m = 16, ef_construction = 64)`
+                WITH (m = 16, ef_construction = 64)`,
       },
 
       // Document chunks embedding index
@@ -154,22 +154,22 @@ export class PostgreSQLVectorStorage {
         name: 'idx_document_chunks_embedding_hnsw_optimized',
         sql: sql`CREATE INDEX IF NOT EXISTS idx_document_chunks_embedding_hnsw_optimized
                 ON document_chunks USING hnsw (embedding vector_cosine_ops)
-                WITH (m = 16, ef_construction = 64)`
+                WITH (m = 16, ef_construction = 64)`,
       },
 
       // Full-text search indexes
       {
         name: 'idx_legal_docs_fulltext_search',
         sql: sql`CREATE INDEX IF NOT EXISTS idx_legal_docs_fulltext_search
-                ON legal_documents_jsonb USING gin(to_tsvector('english', title || ' ' || content))`
+                ON legal_documents_jsonb USING gin(to_tsvector('english', title || ' ' || content))`,
       },
 
       // Metadata path indexes for fast filtering
       {
         name: 'idx_legal_docs_metadata_paths',
         sql: sql`CREATE INDEX IF NOT EXISTS idx_legal_docs_metadata_paths
-                ON legal_documents_jsonb USING btree ((metadata->>'confidence_score')::float)`
-      }
+                ON legal_documents_jsonb USING btree ((metadata->>'confidence_score')::float)`,
+      },
     ];
 
     for (const index of indexes) {
@@ -211,7 +211,9 @@ export class PostgreSQLVectorStorage {
         updated += batchResults.updated;
         errors += batchResults.errors;
 
-        console.log(`📦 Batch complete: +${batchResults.stored} stored, +${batchResults.updated} updated`);
+        console.log(
+          `📦 Batch complete: +${batchResults.stored} stored, +${batchResults.updated} updated`
+        );
       } catch (error) {
         console.error('❌ Batch processing failed:', error);
         errors += batch.length;
@@ -257,31 +259,33 @@ export class PostgreSQLVectorStorage {
               model_used: doc.embedding_model,
               embedding_model: doc.embedding_model,
               processing_time_ms: 0,
-              chunk_count: doc.chunks.length
-            }
+              chunk_count: doc.chunks.length,
+            },
           },
           titleEmbedding: doc.document_embedding?.length > 0 ? doc.document_embedding : null,
           contentEmbedding: doc.document_embedding?.length > 0 ? doc.document_embedding : null,
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
 
         // Check if document exists
-        const existing = await db.select()
+        const existing = await db
+          .select()
           .from(legalDocumentsJsonb)
           .where(eq(legalDocumentsJsonb.id, doc.id))
           .limit(1);
 
         if (existing.length > 0 && options.upsert) {
           // Update existing document
-          await db.update(legalDocumentsJsonb)
+          await db
+            .update(legalDocumentsJsonb)
             .set({
               title: documentData.title,
               content: documentData.content,
               metadata: documentData.metadata,
               titleEmbedding: documentData.titleEmbedding,
               contentEmbedding: documentData.contentEmbedding,
-              updatedAt: documentData.updatedAt
+              updatedAt: documentData.updatedAt,
             })
             .where(eq(legalDocumentsJsonb.id, doc.id));
           updated++;
@@ -295,7 +299,6 @@ export class PostgreSQLVectorStorage {
         if (options.includeChunks && doc.chunks?.length > 0) {
           await this.storeDocumentChunks(doc.id, doc.chunks as VectorizedChunk[]);
         }
-
       } catch (error) {
         console.error(`❌ Error storing document ${doc.id}:`, error);
         errors++;
@@ -308,10 +311,7 @@ export class PostgreSQLVectorStorage {
   /**
    * Store document chunks with embeddings
    */
-  private async storeDocumentChunks(
-    documentId: string,
-    chunks: VectorizedChunk[]
-  ): Promise<void> {
+  private async storeDocumentChunks(documentId: string, chunks: VectorizedChunk[]): Promise<void> {
     const chunkData = chunks.map((chunk, index) => ({
       id: chunk.id,
       documentId: documentId,
@@ -325,14 +325,13 @@ export class PostgreSQLVectorStorage {
         entities: chunk.entities || {},
         similarity_threshold: chunk.cosine_similarity_threshold || 0.7,
         source_chunk_id: chunk.id,
-        source_metadata: chunk.metadata
+        source_metadata: chunk.metadata,
       },
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     }));
 
     // Delete existing chunks for this document
-    await db.delete(documentChunks)
-      .where(eq(documentChunks.documentId, documentId));
+    await db.delete(documentChunks).where(eq(documentChunks.documentId, documentId));
 
     // Insert new chunks in batches
     const chunkBatches = this.chunkArray(chunkData, 50);
@@ -358,12 +357,7 @@ export class PostgreSQLVectorStorage {
       includeContent?: boolean;
     } = {}
   ): Promise<QueryResult[]> {
-    const {
-      limit = 10,
-      threshold = 0.5,
-      filters = {},
-      includeContent = true
-    } = options;
+    const { limit = 10, threshold = 0.5, filters = {}, includeContent = true } = options;
 
     console.log(`🔍 Performing semantic search with ${queryEmbedding.length}D embedding...`);
 
@@ -379,7 +373,10 @@ export class PostgreSQLVectorStorage {
           contentEmbedding: legalDocumentsJsonb.contentEmbedding,
           createdAt: legalDocumentsJsonb.createdAt,
           updatedAt: legalDocumentsJsonb.updatedAt,
-          similarity: sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)`.as('similarity')
+          similarity:
+            sql<number>`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector)`.as(
+              'similarity'
+            ),
         })
         .from(legalDocumentsJsonb);
 
@@ -387,23 +384,35 @@ export class PostgreSQLVectorStorage {
       const conditions = [];
 
       if (filters.document_type?.length) {
-        conditions.push(<any><any>sql`metadata->>'document_type' = ANY(${filters.document_type})`);
+        conditions.push(
+          <any>(<any>sql`metadata->>'document_type' = ANY(${filters.document_type})`)
+        );
       }
 
       if (filters.practice_area?.length) {
-        conditions.push(<any><any>sql`metadata->>'practice_area' = ANY(${filters.practice_area})`);
+        conditions.push(
+          <any>(<any>sql`metadata->>'practice_area' = ANY(${filters.practice_area})`)
+        );
       }
 
       if (filters.jurisdiction?.length) {
-        conditions.push(<any><any>sql`metadata->>'jurisdiction' = ANY(${filters.jurisdiction})`);
+        conditions.push(<any>(<any>sql`metadata->>'jurisdiction' = ANY(${filters.jurisdiction})`));
       }
 
       if (filters.confidence_min !== undefined) {
-        conditions.push(<any><any>sql`(metadata->>'confidence_score')::float >= ${filters.confidence_min}`);
+        conditions.push(
+          <any>(<any>sql`(metadata->>'confidence_score')::float >= ${filters.confidence_min}`)
+        );
       }
 
       // Add similarity threshold
-      conditions.push(<any><any>sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`);
+      conditions.push(
+        <any>(
+          (<any>(
+            sql`1 - (content_embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`
+          ))
+        )
+      );
 
       // Apply conditions
       if (conditions.length > 0) {
@@ -427,15 +436,14 @@ export class PostgreSQLVectorStorage {
           title_embedding: row.titleEmbedding,
           content_embedding: row.contentEmbedding,
           created_at: row.createdAt,
-          updated_at: row.updatedAt
+          updated_at: row.updatedAt,
         },
         chunk: null, // Will be populated if chunk search is requested
         similarity_score: row.similarity,
-        rank: index + 1
+        rank: index + 1,
       }));
 
       return queryResults;
-
     } catch (error) {
       console.error('❌ Semantic search failed:', error);
       throw error;
@@ -467,7 +475,9 @@ export class PostgreSQLVectorStorage {
           embedding: documentChunks.embedding,
           metadata: documentChunks.metadata,
           createdAt: documentChunks.createdAt,
-          similarity: sql<number>`1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector)`.as('similarity')
+          similarity: sql<number>`1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector)`.as(
+            'similarity'
+          ),
         })
         .from(documentChunks);
 
@@ -475,11 +485,15 @@ export class PostgreSQLVectorStorage {
 
       // Filter by document IDs if provided
       if (documentIds?.length) {
-        conditions.push(<any><any>inArray(documentChunks.documentId, documentIds));
+        conditions.push(<any>(<any>inArray(documentChunks.documentId, documentIds)));
       }
 
       // Add similarity threshold
-      conditions.push(<any><any>sql`1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`);
+      conditions.push(
+        <any>(
+          (<any>sql`1 - (embedding <=> ${JSON.stringify(queryEmbedding)}::vector) >= ${threshold}`)
+        )
+      );
 
       if (conditions.length > 0) {
         query = query.where(and(...conditions));
@@ -499,7 +513,7 @@ export class PostgreSQLVectorStorage {
           content: row.content,
           metadata: {} as StoredDocument['metadata'],
           created_at: row.createdAt,
-          updated_at: row.createdAt
+          updated_at: row.createdAt,
         },
         chunk: {
           id: row.id,
@@ -508,14 +522,13 @@ export class PostgreSQLVectorStorage {
           content: row.content,
           embedding: row.embedding,
           metadata: row.metadata as StoredChunk['metadata'],
-          created_at: row.createdAt
+          created_at: row.createdAt,
         },
         similarity_score: row.similarity,
-        rank: index + 1
+        rank: index + 1,
       }));
 
       return queryResults;
-
     } catch (error) {
       console.error('❌ Chunk search failed:', error);
       throw error;
@@ -543,22 +556,28 @@ export class PostgreSQLVectorStorage {
           id: legalDocumentsJsonb.id,
           title: legalDocumentsJsonb.title,
           content: legalDocumentsJsonb.content,
-          metadata: legalDocumentsJsonb.metadata
+          metadata: legalDocumentsJsonb.metadata,
         })
         .from(legalDocumentsJsonb);
 
       const conditions = [];
 
       if (filters.document_types?.length) {
-        conditions.push(<any><any>sql`metadata->>'document_type' = ANY(${filters.document_types})`);
+        conditions.push(
+          <any>(<any>sql`metadata->>'document_type' = ANY(${filters.document_types})`)
+        );
       }
 
       if (filters.practice_areas?.length) {
-        conditions.push(<any><any>sql`metadata->>'practice_area' = ANY(${filters.practice_areas})`);
+        conditions.push(
+          <any>(<any>sql`metadata->>'practice_area' = ANY(${filters.practice_areas})`)
+        );
       }
 
       if (confidence_min) {
-        conditions.push(<any><any>sql`(metadata->>'confidence_score')::float >= ${confidence_min}`);
+        conditions.push(
+          <any>(<any>sql`(metadata->>'confidence_score')::float >= ${confidence_min}`)
+        );
       }
 
       if (conditions.length > 0) {
@@ -577,7 +596,7 @@ export class PostgreSQLVectorStorage {
         const practiceArea = metadata.practice_area || 'general';
 
         // Generate instruction-input-output triplets
-        trainingData.push(<any><any>{
+        trainingData.push(<any>(<any>{
           instruction: `Analyze this ${metadata.document_type || 'legal document'} and provide key insights.`,
           input: `Document Title: ${doc.title}\n\nContent: ${doc.content.substring(0, 1000)}...`,
           output: `This ${metadata.document_type || 'document'} pertains to ${practiceArea}. Key legal concepts include: ${this.extractKeyLegalConcepts(doc.content).join(', ')}. The document's jurisdiction is ${metadata.jurisdiction || 'unspecified'} and it relates to ${metadata.legal_area || 'general legal matters'}.`,
@@ -585,14 +604,13 @@ export class PostgreSQLVectorStorage {
             document_id: doc.id,
             legal_area: practiceArea,
             difficulty_level: this.calculateDifficultyLevel(doc.content),
-            token_count: this.estimateTokenCount(doc.content)
-          }
-        });
+            token_count: this.estimateTokenCount(doc.content),
+          },
+        }));
       }
 
       console.log(`🎓 Generated ${trainingData.length} training examples`);
       return trainingData;
-
     } catch (error) {
       console.error('❌ QLoRA export failed:', error);
       throw error;
@@ -660,7 +678,7 @@ export class PostgreSQLVectorStorage {
         avg_query_time_ms: 150, // Placeholder - would need query performance monitoring
         by_document_type: {},
         by_practice_area: {},
-        by_jurisdiction: {}
+        by_jurisdiction: {},
       };
 
       // Process distribution statistics
@@ -676,9 +694,10 @@ export class PostgreSQLVectorStorage {
         statistics.by_jurisdiction[row.jurisdiction || 'unknown'] = parseInt(row.count);
       }
 
-      console.log(`📈 Statistics calculated: ${statistics.total_documents} docs, ${statistics.total_chunks} chunks`);
+      console.log(
+        `📈 Statistics calculated: ${statistics.total_documents} docs, ${statistics.total_chunks} chunks`
+      );
       return statistics;
-
     } catch (error) {
       console.error('❌ Failed to get storage statistics:', error);
       throw error;
@@ -691,28 +710,41 @@ export class PostgreSQLVectorStorage {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(<any><any>array.slice(i, i + size));
+      chunks.push(<any>(<any>array.slice(i, i + size)));
     }
     return chunks;
   }
 
   private extractKeyLegalConcepts(content: string): string[] {
     const concepts = [
-      'contract', 'tort', 'negligence', 'liability', 'damages', 'breach',
-      'jurisdiction', 'precedent', 'statute', 'regulation', 'constitutional',
-      'due process', 'evidence', 'discovery', 'motion', 'appeal'
+      'contract',
+      'tort',
+      'negligence',
+      'liability',
+      'damages',
+      'breach',
+      'jurisdiction',
+      'precedent',
+      'statute',
+      'regulation',
+      'constitutional',
+      'due process',
+      'evidence',
+      'discovery',
+      'motion',
+      'appeal',
     ];
 
-    return concepts.filter(concept =>
-      new RegExp(`\\b${concept}\\b`, 'i').test(content)
-    );
+    return concepts.filter((concept) => new RegExp(`\\b${concept}\\b`, 'i').test(content));
   }
 
   private calculateDifficultyLevel(content: string): number {
     const complexTerms = ['notwithstanding', 'pursuant', 'heretofore', 'whereas'];
     const citationCount = (content.match(/\d+\s+U\.S\.|\d+\s+F\.\d+d/g) || []).length;
-    const complexTermCount = complexTerms.reduce((count, term) =>
-      count + (content.toLowerCase().includes(term) ? 1 : 0), 0);
+    const complexTermCount = complexTerms.reduce(
+      (count, term) => count + (content.toLowerCase().includes(term) ? 1 : 0),
+      0
+    );
 
     return Math.min(Math.floor((complexTermCount + citationCount) / 3), 5);
   }
@@ -759,9 +791,8 @@ export class PostgreSQLVectorStorage {
         connection,
         indexes,
         vector_extension,
-        document_count
+        document_count,
       };
-
     } catch (error) {
       console.error('PostgreSQL Vector Storage health check failed:', error);
       return {
@@ -769,7 +800,7 @@ export class PostgreSQLVectorStorage {
         connection: false,
         indexes: false,
         vector_extension: false,
-        document_count: 0
+        document_count: 0,
       };
     }
   }

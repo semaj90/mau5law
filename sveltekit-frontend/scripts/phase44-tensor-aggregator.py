@@ -114,12 +114,33 @@ class CUDATensorStore:
                 torch.cuda.synchronize()
 
                 graph = torch.cuda.CUDAGraph()
-                with torch.cuda.graph(graph):
-                    q_norm = F.normalize(self._graph_in, dim=1)
-                    out = torch.matmul(q_norm, self._normalized_vectors.T)
-                    self._graph_out.copy_(out)
 
-                self._graph = graph
+                # Use an explicit micro-capture around the pure matmul on a dedicated stream.
+                # Capturing only the matmul reduces the chance of graph invalidation on
+                # Ampere/Turing drivers compared to capturing larger contexts.
+                try:
+                    stream = torch.cuda.Stream()
+                    with torch.cuda.stream(stream):
+                        # Begin capture, perform the minimal ops, then end capture.
+                        graph.capture_begin()
+                        q_norm = F.normalize(self._graph_in, dim=1)
+                        out = torch.matmul(q_norm, self._normalized_vectors.T)
+                        self._graph_out.copy_(out)
+                        graph.capture_end()
+
+                    # Ensure capture finished and is visible to default stream
+                    torch.cuda.synchronize()
+                    self._graph = graph
+                except Exception as e:
+                    # If the micro-capture fails, disable capture gracefully and try to clean up CUDA state
+                    print(f"⚠️  CUDA graph micro-capture failed: {e}. Disabling capture for this store.")
+                    try:
+                        torch.cuda.synchronize()
+                        torch.cuda.empty_cache()
+                    except Exception:
+                        pass
+                    self._graph = None
+                    self.capture_graph = False
             finally:
                 # restore previous global flags
                 try:
@@ -534,7 +555,8 @@ def main():
         choices=['fp16', 'float16', 'bf16', 'bfloat16', 'fp32', 'float32'],
         help='Tensor dtype used for the resident store',
     )
-    parser.add_argument('--capture-graph', action='store_true', help='Capture CUDA graph for similarity batches')
+    parser.add_argument('--capture-graph', action='store_true', help='(deprecated) Capture CUDA graph for similarity batches (kept for backward compatibility)')
+    parser.add_argument('--enable-graph-capture', action='store_true', help='Explicit opt-in to capture CUDA graphs for similarity batches')
     parser.add_argument('--graph-batch-size', type=int, default=256, help='Batch size for CUDA graph capture')
     parser.add_argument('--benchmark-graph', action='store_true', help='Benchmark CUDA graph replays')
     parser.add_argument('--benchmark-iters', type=int, default=25, help='Iterations to average during benchmark')
@@ -561,7 +583,8 @@ def main():
     }
 
     store_device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    capture_flag = args.capture_graph or args.benchmark_graph
+    # Make graph capture opt-in. Keep --capture-graph for backward compatibility
+    capture_flag = bool(args.capture_graph or args.enable_graph_capture or args.benchmark_graph)
     graph_batch = args.graph_batch_size
     if args.benchmark_graph:
         graph_batch = max(graph_batch, args.benchmark_batch_size)

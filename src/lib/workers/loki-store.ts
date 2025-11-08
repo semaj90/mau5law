@@ -36,9 +36,9 @@ export class LokiStore extends EventEmitter {
     const existing = this.collection.get(job.id) ?? null;
     const record: JobRecord = {
       id: job.id,
-      state: job.state ?? (existing?.state ?? 'queued'),
+      state: job.state ?? existing?.state ?? 'queued',
       payload: job.payload ?? existing?.payload,
-      retries: typeof job.retries === 'number' ? job.retries : existing?.retries ?? 0,
+      retries: typeof job.retries === 'number' ? job.retries : (existing?.retries ?? 0),
       lastError: job.lastError ?? existing?.lastError ?? null,
       createdAt: existing?.createdAt ?? this.nowIso(),
       updatedAt: this.nowIso(),
@@ -79,7 +79,9 @@ export class LokiStore extends EventEmitter {
   }
 
   async listJobs() {
-    return Array.from(this.collection.values()).sort((a, b) => a.updatedAt.localeCompare(b.updatedAt));
+    return Array.from(this.collection.values()).sort((a, b) =>
+      a.updatedAt.localeCompare(b.updatedAt)
+    );
   }
 
   async removeJob(id: string) {

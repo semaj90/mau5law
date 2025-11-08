@@ -45,7 +45,12 @@ export class JobStateMachine {
     const job = await this.store.getJob(id);
     const retries = (job?.retries ?? 0) + (opts?.retry ? 1 : 0);
     const state: JobRecord['state'] = opts?.retry ? 'retrying' : 'failed';
-    const updated = await this.store.setJob({ id, state, lastError: String(error?.message ?? error), retries });
+    const updated = await this.store.setJob({
+      id,
+      state,
+      lastError: String(error?.message ?? error),
+      retries,
+    });
     return updated;
   }
 

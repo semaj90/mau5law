@@ -1,5 +1,5 @@
-import { allRoutes } from "$lib/data/routes-config";
-import { error } from "@sveltejs/kit";
+import { allRoutes } from '$lib/data/routes-config';
+import { error } from '@sveltejs/kit';
 
 /**
  * Local (minimal) types to avoid hard coupling to external shape.
@@ -56,47 +56,47 @@ export class DynamicRouteGenerator {
   }
 
   private initializeDefaultPatterns(): void {
-    this.patterns.set("demo", {
-      pattern: "/demo/:slug",
-      template: "demo",
-      component: "routes/demo/[slug]/+page.svelte",
-      layout: "routes/demo/+layout.svelte",
+    this.patterns.set('demo', {
+      pattern: '/demo/:slug',
+      template: 'demo',
+      component: 'routes/demo/[slug]/+page.svelte',
+      layout: 'routes/demo/+layout.svelte',
       preload: true,
       ssr: true,
       hydrate: true,
     });
-    this.patterns.set("ai", {
-      pattern: "/ai/:feature",
-      template: "ai-feature",
-      component: "routes/ai/[feature]/+page.svelte",
-      layout: "routes/ai/+layout.svelte",
+    this.patterns.set('ai', {
+      pattern: '/ai/:feature',
+      template: 'ai-feature',
+      component: 'routes/ai/[feature]/+page.svelte',
+      layout: 'routes/ai/+layout.svelte',
       preload: true,
       ssr: false,
       hydrate: true,
     });
-    this.patterns.set("legal", {
-      pattern: "/legal/:type/[[id]]",
-      template: "legal-resource",
-      component: "routes/legal/[type]/[[id]]/+page.svelte",
-      layout: "routes/legal/+layout.svelte",
+    this.patterns.set('legal', {
+      pattern: '/legal/:type/[[id]]',
+      template: 'legal-resource',
+      component: 'routes/legal/[type]/[[id]]/+page.svelte',
+      layout: 'routes/legal/+layout.svelte',
       preload: true,
       ssr: true,
       hydrate: true,
     });
-    this.patterns.set("admin", {
-      pattern: "/admin/:section",
-      template: "admin-section",
-      component: "routes/admin/[section]/+page.svelte",
-      layout: "routes/admin/+layout.svelte",
+    this.patterns.set('admin', {
+      pattern: '/admin/:section',
+      template: 'admin-section',
+      component: 'routes/admin/[section]/+page.svelte',
+      layout: 'routes/admin/+layout.svelte',
       preload: false,
       ssr: true,
       hydrate: true,
     });
-    this.patterns.set("dev", {
-      pattern: "/dev/:tool",
-      template: "dev-tool",
-      component: "routes/dev/[tool]/+page.svelte",
-      layout: "routes/dev/+layout.svelte",
+    this.patterns.set('dev', {
+      pattern: '/dev/:tool',
+      template: 'dev-tool',
+      component: 'routes/dev/[tool]/+page.svelte',
+      layout: 'routes/dev/+layout.svelte',
       preload: false,
       ssr: false,
       hydrate: true,
@@ -114,7 +114,7 @@ export class DynamicRouteGenerator {
   private createRouteFromConfig(routeConfig: RouteDefinition): GeneratedRoute {
     const patternKey = this.findMatchingPattern(routeConfig);
     const cfg = patternKey ? this.patterns.get(patternKey) : undefined;
-    const path = routeConfig.route || "/";
+    const path = routeConfig.route || '/';
     const component = cfg?.component ?? routeConfig.component ?? this.inferComponentPath(path);
     const layout = cfg?.layout ?? routeConfig.layout;
     const params = this.extractParams(path);
@@ -138,19 +138,19 @@ export class DynamicRouteGenerator {
   }
 
   private findMatchingPattern(routeConfig: RouteDefinition): string | null {
-    const path = routeConfig.route || "";
-    if (path.startsWith("/demo/")) return "demo";
-    if (path.startsWith("/ai/") || routeConfig.category === "ai") return "ai";
-    if (path.startsWith("/legal/") || routeConfig.category === "legal") return "legal";
-    if (path.startsWith("/admin/") || routeConfig.category === "admin") return "admin";
-    if (path.startsWith("/dev/") || routeConfig.category === "dev") return "dev";
+    const path = routeConfig.route || '';
+    if (path.startsWith('/demo/')) return 'demo';
+    if (path.startsWith('/ai/') || routeConfig.category === 'ai') return 'ai';
+    if (path.startsWith('/legal/') || routeConfig.category === 'legal') return 'legal';
+    if (path.startsWith('/admin/') || routeConfig.category === 'admin') return 'admin';
+    if (path.startsWith('/dev/') || routeConfig.category === 'dev') return 'dev';
     return null;
   }
 
   private inferComponentPath(routePath: string): string {
-    let p = String(routePath || "").replace(/^\//, "");
-    if (!p) return "routes/+page.svelte";
-    p = p.replace(/\/+$/g, ""); // normalize trailing slash
+    let p = String(routePath || '').replace(/^\//, '');
+    if (!p) return 'routes/+page.svelte';
+    p = p.replace(/\/+$/g, ''); // normalize trailing slash
     return `routes/${p}/+page.svelte`;
   }
 
@@ -167,7 +167,7 @@ export class DynamicRouteGenerator {
       const name = m[2];
       // optional when explicitly double-bracketed or when it's a catch-all (ellipsis)
       const optional = routePath.includes(`[[${name}]]`) || Boolean(ellipsis);
-      params[name] = { optional: optional || false, type: "string" };
+      params[name] = { optional: optional || false, type: 'string' };
     }
     return params;
   }
@@ -182,8 +182,8 @@ export class DynamicRouteGenerator {
     options: Partial<DynamicRouteConfig> = {}
   ): GeneratedRoute {
     const config: DynamicRouteConfig = {
-      pattern: options.pattern ?? "dynamic",
-      template: options.template ?? "dynamic",
+      pattern: options.pattern ?? 'dynamic',
+      template: options.template ?? 'dynamic',
       component: options.component ?? this.inferComponentPath(path),
       layout: options.layout,
       params: options.params,
@@ -199,9 +199,9 @@ export class DynamicRouteGenerator {
       layout: config.layout,
       params: config.params ?? this.extractParams(path),
       metadata: {
-        category: "dynamic",
-        status: "active",
-        tags: ["dynamic"],
+        category: 'dynamic',
+        status: 'active',
+        tags: ['dynamic'],
         preload: Boolean(config.preload),
         ssr: Boolean(config.ssr),
         hydrate: Boolean(config.hydrate),
@@ -247,7 +247,7 @@ export class DynamicRouteGenerator {
       component: string;
       layout?: string;
       params: Record<string, { optional?: boolean; type?: string }>;
-      metadata: GeneratedRoute["metadata"];
+      metadata: GeneratedRoute['metadata'];
     }
   > {
     const manifest: Record<
@@ -257,7 +257,7 @@ export class DynamicRouteGenerator {
         component: string;
         layout?: string;
         params: Record<string, { optional?: boolean; type?: string }>;
-        metadata: GeneratedRoute["metadata"];
+        metadata: GeneratedRoute['metadata'];
       }
     > = {};
     for (const r of this.getAllRoutes()) {
@@ -273,8 +273,8 @@ export class DynamicRouteGenerator {
   }
 
   public generateRouteLoader(route: GeneratedRoute): string {
-    const componentPath = route.component.replace(/^routes\//, "../routes/");
-    const layoutPath = route.layout ? route.layout.replace(/^routes\//, "../routes/") : null;
+    const componentPath = route.component.replace(/^routes\//, '../routes/');
+    const layoutPath = route.layout ? route.layout.replace(/^routes\//, '../routes/') : null;
     let loader = `// Auto-generated route loader for ${route.id}\n`;
     loader += `export const component = () => import('${componentPath}');\n`;
     if (layoutPath) loader += `export const layout = () => import('${layoutPath}');\n`;
@@ -284,30 +284,30 @@ export class DynamicRouteGenerator {
   }
 
   public generateRouteTypes(): string {
-    let types = "// Auto-generated route types\n\n";
-    types += "export interface RouteParams {\n";
+    let types = '// Auto-generated route types\n\n';
+    types += 'export interface RouteParams {\n';
     for (const r of this.getAllRoutes()) {
       if (Object.keys(r.params).length > 0) {
         types += `  '${r.path}': {\n`;
         for (const [paramName, paramCfg] of Object.entries(r.params)) {
-          const optional = paramCfg.optional ? "?" : "";
-          const t = paramCfg.type ?? "string";
+          const optional = paramCfg.optional ? '?' : '';
+          const t = paramCfg.type ?? 'string';
           types += `    ${paramName}${optional}: ${t};\n`;
         }
-        types += "  };\n";
+        types += '  };\n';
       }
     }
-    types += "}\n\n";
-    types += "export type RouteId =\n";
+    types += '}\n\n';
+    types += 'export type RouteId =\n';
     types +=
       this.getAllRoutes()
         .map((r) => `  | '${r.id}'`)
-        .join("\n") + ";\n\n";
-    types += "export type RoutePath =\n";
+        .join('\n') + ';\n\n';
+    types += 'export type RoutePath =\n';
     types +=
       this.getAllRoutes()
         .map((r) => `  | '${r.path}'`)
-        .join("\n") + ";\n";
+        .join('\n') + ';\n';
     return types;
   }
 }
@@ -347,7 +347,7 @@ export function createDynamicRouteHandler(route: GeneratedRoute) {
     for (const [name, cfg] of Object.entries(route.params || {})) {
       if (!cfg.optional) {
         const val = params[name];
-        if (val == null || val === "") {
+        if (val == null || val === '') {
           throw error(404, `Missing required parameter: ${name}`);
         }
       }

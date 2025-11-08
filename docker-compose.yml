@@ -1,5 +1,3 @@
-version: "3.9"
-
 # NOTE: The top-level `services:` block was consolidated into a single section
 # later in this file. The original duplicated block was removed to prevent
 # "mapping key 'services' already defined" YAML errors when parsing.

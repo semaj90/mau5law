@@ -3,7 +3,7 @@
  * Handles vector storage, semantic search, and caching for Enhanced RAG
  */
 
-import { createClient } from "redis";
+import { createClient } from 'redis';
 
 export interface VectorDocument {
   id: string;
@@ -11,7 +11,7 @@ export interface VectorDocument {
   metadata: {
     title?: string;
     source?: string;
-    type?: "pdf" | "web" | "code" | "chat";
+    type?: 'pdf' | 'web' | 'code' | 'chat';
     timestamp?: string;
     chunk_index?: number;
     [key: string]: any;
@@ -36,23 +36,23 @@ export interface SemanticCacheEntry {
 
 export class RedisVectorService {
   private client: any;
-  private indexName = "vector_index";
-  private cachePrefix = "semantic_cache:";
+  private indexName = 'vector_index';
+  private cachePrefix = 'semantic_cache:';
   private isConnected = false;
   constructor() {
     this.client = createClient({
-      url: process.env.REDIS_URL || "redis://localhost:6379",
+      url: process.env.REDIS_URL || 'redis://localhost:6379',
       socket: {
         reconnectStrategy: (retries) => Math.min(retries * 50, 500),
       },
     });
 
-    this.client.on("error", (err) => {
-      console.error("Redis Client Error:", err);
+    this.client.on('error', (err) => {
+      console.error('Redis Client Error:', err);
     });
 
-    this.client.on("connect", () => {
-      console.log("✅ Redis Vector Service connected");
+    this.client.on('connect', () => {
+      console.log('✅ Redis Vector Service connected');
       this.isConnected = true;
     });
   }
@@ -77,49 +77,49 @@ export class RedisVectorService {
   private async ensureIndex(): Promise<void> {
     try {
       await this.client.ft.info(this.indexName);
-      console.log("✅ Vector index already exists");
+      console.log('✅ Vector index already exists');
     } catch (error) {
       // Index doesn't exist, create it
-      console.log("📊 Creating vector search index...");
+      console.log('📊 Creating vector search index...');
 
       await this.client.ft.create(
         this.indexName,
         {
-          "$.embedding": {
-            type: "VECTOR",
-            ALGORITHM: "HNSW",
-            TYPE: "FLOAT32",
+          '$.embedding': {
+            type: 'VECTOR',
+            ALGORITHM: 'HNSW',
+            TYPE: 'FLOAT32',
             DIM: 384, // Ollama Gemma embedding dimension
-            DISTANCE_METRIC: "COSINE",
-            AS: "embedding",
+            DISTANCE_METRIC: 'COSINE',
+            AS: 'embedding',
           },
-          "$.metadata.type": {
-            type: "TEXT",
-            AS: "metadata_type",
+          '$.metadata.type': {
+            type: 'TEXT',
+            AS: 'metadata_type',
             SORTABLE: true,
           },
-          "$.metadata.source": {
-            type: "TEXT",
-            AS: "metadata_source",
+          '$.metadata.source': {
+            type: 'TEXT',
+            AS: 'metadata_source',
             SORTABLE: true,
           },
           // Store timestamp as TEXT to match stored ISO string; change to NUMERIC if you persist epoch
-          "$.metadata.timestamp": {
-            type: "TEXT",
-            AS: "metadata_timestamp",
+          '$.metadata.timestamp': {
+            type: 'TEXT',
+            AS: 'metadata_timestamp',
             SORTABLE: true,
           },
-          "$.content": {
-            type: "TEXT",
-            AS: "content",
+          '$.content': {
+            type: 'TEXT',
+            AS: 'content',
           },
         },
         {
-          ON: "JSON",
-          PREFIX: "doc:",
+          ON: 'JSON',
+          PREFIX: 'doc:',
         }
       );
-      console.log("✅ Vector search index created successfully");
+      console.log('✅ Vector search index created successfully');
     }
   }
 
@@ -141,10 +141,10 @@ export class RedisVectorService {
     };
 
     if (doc.ttl) {
-      await this.client.json.set(key, "$", document);
+      await this.client.json.set(key, '$', document);
       await this.client.expire(key, doc.ttl);
     } else {
-      await this.client.json.set(key, "$", document);
+      await this.client.json.set(key, '$', document);
     }
 
     console.log(`✅ Stored document: ${doc.id}`);
@@ -170,7 +170,7 @@ export class RedisVectorService {
         content: doc.content,
       };
 
-      pipeline.json.set(key, "$", document);
+      pipeline.json.set(key, '$', document);
       if (doc.ttl) {
         pipeline.expire(key, doc.ttl);
       }
@@ -201,17 +201,17 @@ export class RedisVectorService {
     // Add filters if provided
     if (filter) {
       const filterClauses = Object.entries(filter).map(([key, value]) => {
-        if (key === "type") {
+        if (key === 'type') {
           return `@metadata_type:${value}`;
         }
-        if (key === "source") {
+        if (key === 'source') {
           return `@metadata_source:${value}`;
         }
         return `@${key}:${value}`;
       });
 
       if (filterClauses.length > 0) {
-        query = `(${filterClauses.join(" ")})=>[KNN ${topK} @embedding $query_vector AS score]`;
+        query = `(${filterClauses.join(' ')})=>[KNN ${topK} @embedding $query_vector AS score]`;
       }
     }
 
@@ -219,19 +219,19 @@ export class RedisVectorService {
       PARAMS: {
         query_vector: Buffer.from(new Float32Array(queryEmbedding).buffer),
       },
-      RETURN: ["$.id", "$.metadata", "$.content", "score"],
-      SORTBY: "score",
+      RETURN: ['$.id', '$.metadata', '$.content', 'score'],
+      SORTBY: 'score',
       LIMIT: { from: 0, size: topK },
     });
 
     return results.documents
       .map((doc: any) => ({
-        id: doc.value["$.id"],
+        id: doc.value['$.id'],
         // RediSearch returns vector distance; depending on config, smaller is closer.
         // If AS score gives similarity, parse directly; otherwise invert if needed upstream.
         score: Number(doc.value.score ?? doc.score ?? 0),
-        metadata: JSON.parse(doc.value["$.metadata"] || "{}"),
-        content: doc.value["$.content"] || "",
+        metadata: JSON.parse(doc.value['$.metadata'] || '{}'),
+        content: doc.value['$.content'] || '',
       }))
       .filter((result: SearchResult) => result.score >= threshold);
   }
@@ -257,11 +257,7 @@ export class RedisVectorService {
   /**
    * Store result in semantic cache
    */
-  async setCachedResult(
-    queryHash: string,
-    result: any,
-    ttl: number = 3600
-  ): Promise<void> {
+  async setCachedResult(queryHash: string, result: any, ttl: number = 3600): Promise<void> {
     await this.connect();
 
     const cacheKey = `${this.cachePrefix}${queryHash}`;
@@ -305,7 +301,7 @@ export class RedisVectorService {
       const info = await this.client.ft.info(this.indexName);
       return info;
     } catch (error) {
-      console.error("Error getting index stats:", error);
+      console.error('Error getting index stats:', error);
       return null;
     }
   }
@@ -332,7 +328,7 @@ export class RedisVectorService {
       await this.client.ping();
       return true;
     } catch (error) {
-      console.error("Redis health check failed:", error);
+      console.error('Redis health check failed:', error);
       return false;
     }
   }

@@ -52,5 +52,5 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 </main>
 
 <style>
-/* Example UnoCSS drag and drop styles */ /* border-blue-400, bg-blue-50, border-gray-300 are already used via class bindings above */ /* Add: unknown additional custom styles here if needed */
+  /* Example UnoCSS drag and drop styles */ /* border-blue-400, bg-blue-50, border-gray-300 are already used via class bindings above */ /* Add: unknown additional custom styles here if needed */
 </style>

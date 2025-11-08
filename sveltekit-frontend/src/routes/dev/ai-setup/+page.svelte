@@ -1,5 +1,5 @@
 <script lang="ts">
-import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
+  import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
 </script>
 
 <main class="page-repair">
@@ -8,5 +8,8 @@ import AiSetupBanner from '$lib/components/ai/AiSetupBanner.svelte';
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

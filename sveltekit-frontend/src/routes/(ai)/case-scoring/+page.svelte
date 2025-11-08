@@ -1,5 +1,5 @@
 <script lang="ts">
-import { CaseScoringDashboard } from '$lib/components/ai/CaseScoringDashboard';
+  import { CaseScoringDashboard } from '$lib/components/ai/CaseScoringDashboard';
 </script>
 
 <main class="page-container">
@@ -8,7 +8,7 @@ import { CaseScoringDashboard } from '$lib/components/ai/CaseScoringDashboard';
 </main>
 
 <style>
-.page-container {
+  .page-container {
     min-height: 100vh;
     background: #f8fafc;
   }

@@ -1,6 +1,6 @@
 import type { Document } from '$lib/types';
-import { sql } from "drizzle-orm";
-import type { PostgresJsDatabase } from "drizzle-orm/postgres-js/driver";
+import { sql } from 'drizzle-orm';
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js/driver';
 
 /** * PgVector Indexing Service * Advanced vector search and similarity operations using PostgreSQL pgvector extension * Optimized for legal document retrieval with hierarchical indexing * * Features: * - High-performance similarity search with cosine, L2, inner product * - Hierarchical document indexing with metadata * - Batch upsert operations for efficiency * - HNSW index support for fast approximate search * - Query optimization and execution plans * - Audit trail and versioning support * * @author Legal AI Platform Team * @version 1.0.0
  */
@@ -8,8 +8,8 @@ import type { PostgresJsDatabase } from "drizzle-orm/postgres-js/driver";
 export interface VectorIndexConfig {
   database: PostgresJsDatabase<Record<string, unknown>>;
   embeddingDimensions: number;
-  indexType?: "hnsw" | "ivfflat" | "btree";
-  distanceMetric?: "cosine" | "l2" | "inner_product";
+  indexType?: 'hnsw' | 'ivfflat' | 'btree';
+  distanceMetric?: 'cosine' | 'l2' | 'inner_product';
   maxResults?: number;
 }
 /** * Vector Document for Indexing */
@@ -19,7 +19,7 @@ export interface VectorDocument {
   embedding: number[];
   documentId: string;
   chunkId?: string;
-  embeddingType: "text" | "legal_context" | "case_summary" | "precedent" | "clause";
+  embeddingType: 'text' | 'legal_context' | 'case_summary' | 'precedent' | 'clause';
   metadata?: {
     caseId?: string;
     documentType?: string;
@@ -63,8 +63,8 @@ export class PgVectorIndexingService {
   constructor(config: VectorIndexConfig) {
     this.db = config.database;
     this.dimensions = config.embeddingDimensions;
-    this.indexType = config.indexType || "hnsw";
-    this.distanceMetric = config.distanceMetric || "cosine";
+    this.indexType = config.indexType || 'hnsw';
+    this.distanceMetric = config.distanceMetric || 'cosine';
     this.maxResults = config.maxResults || 10;
   }
   /** * Index a single vector document */
@@ -81,7 +81,7 @@ export class PgVectorIndexingService {
 INSERT INTO document_chunks (
     id, content, metadata, document_id, title, confidentiality_level, embedding_model, embedding_dimension, created_at, updated_at
 ) VALUES (
-    ${doc.id}, ${doc.content}, ${JSON.stringify(doc.metadata || {})}, ${doc.documentId}, ${doc.metadata?.documentType || null}, ${doc.metadata?.confidentialityLevel || "public"}, ${doc.modelUsed || "embeddinggemma:latest"}, ${this.dimensions}, NOW(), NOW()
+    ${doc.id}, ${doc.content}, ${JSON.stringify(doc.metadata || {})}, ${doc.documentId}, ${doc.metadata?.documentType || null}, ${doc.metadata?.confidentialityLevel || 'public'}, ${doc.modelUsed || 'embeddinggemma:latest'}, ${this.dimensions}, NOW(), NOW()
 ) ON CONFLICT (id) DO UPDATE SET
     content = ${doc.content},
     metadata = ${JSON.stringify(doc.metadata || {})},
@@ -92,7 +92,7 @@ INSERT INTO document_chunks (
 INSERT INTO embeddings (
     id, content, vector, document_id, chunk_id, embedding_type, model_used, metadata, created_at
 ) VALUES (
-    gen_random_uuid(), ${doc.content}, ${this.vectorToString(doc.embedding)}::vector, ${doc.documentId}, ${doc.chunkId || doc.id}, ${doc.embeddingType}, ${doc.modelUsed || "embeddinggemma:latest"}, ${JSON.stringify(doc.metadata || {})}, NOW()
+    gen_random_uuid(), ${doc.content}, ${this.vectorToString(doc.embedding)}::vector, ${doc.documentId}, ${doc.chunkId || doc.id}, ${doc.embeddingType}, ${doc.modelUsed || 'embeddinggemma:latest'}, ${JSON.stringify(doc.metadata || {})}, NOW()
 ) ON CONFLICT DO NOTHING
 `);
       return doc.id;
@@ -118,9 +118,9 @@ INSERT INTO embeddings (
       const chunksValues = docs
         .map(
           (doc) =>
-            `('${this.escape(doc.id)}', '${this.escape(doc.content)}', '${this.escape(JSON.stringify(doc.metadata || {}))}', '${this.escape(doc.documentId)}', '${this.escape(doc.metadata?.documentType || "")}', '${this.escape(doc.metadata?.confidentialityLevel || "public")}', '${this.escape(doc.modelUsed || "embeddinggemma:latest")}', ${this.dimensions}, NOW(), NOW())`
+            `('${this.escape(doc.id)}', '${this.escape(doc.content)}', '${this.escape(JSON.stringify(doc.metadata || {}))}', '${this.escape(doc.documentId)}', '${this.escape(doc.metadata?.documentType || '')}', '${this.escape(doc.metadata?.confidentialityLevel || 'public')}', '${this.escape(doc.modelUsed || 'embeddinggemma:latest')}', ${this.dimensions}, NOW(), NOW())`
         )
-        .join(",");
+        .join(',');
 
       if (chunksValues) {
         await this.db.execute(
@@ -140,9 +140,9 @@ ON CONFLICT (id) DO UPDATE SET
       const embeddingValues = docs
         .map(
           (doc) =>
-            `(gen_random_uuid(), '${this.escape(doc.content)}', '${this.vectorToString(doc.embedding)}'::vector, '${this.escape(doc.documentId)}', '${this.escape(doc.chunkId || doc.id)}', '${this.escape(doc.embeddingType)}', '${this.escape(doc.modelUsed || "embeddinggemma:latest")}', '${this.escape(JSON.stringify(doc.metadata || {}))}', NOW())`
+            `(gen_random_uuid(), '${this.escape(doc.content)}', '${this.vectorToString(doc.embedding)}'::vector, '${this.escape(doc.documentId)}', '${this.escape(doc.chunkId || doc.id)}', '${this.escape(doc.embeddingType)}', '${this.escape(doc.modelUsed || 'embeddinggemma:latest')}', '${this.escape(JSON.stringify(doc.metadata || {}))}', NOW())`
         )
-        .join(",");
+        .join(',');
 
       if (embeddingValues) {
         await this.db.execute(
@@ -247,7 +247,7 @@ SELECT
     e.chunk_id as "chunkId",
     (
         ${vectorWeight} * (1 - (e.vector <-> '${vectorStr}'::vector)) +
-        ${keywordWeight} * (CASE WHEN e.content ILIKE '%${keyword ? this.escape(keyword) : ""}%' THEN 1.0 ELSE 0.0 END)
+        ${keywordWeight} * (CASE WHEN e.content ILIKE '%${keyword ? this.escape(keyword) : ''}%' THEN 1.0 ELSE 0.0 END)
     ) as similarity,
     (e.vector <-> '${vectorStr}'::vector) as distance,
     e.metadata,
@@ -315,7 +315,7 @@ SELECT
         averageEmbeddingDimension: row.avg_dimension,
       };
     } catch (error) {
-      console.error("Failed to get stats: ", error);
+      console.error('Failed to get stats: ', error);
       return {
         totalDocuments: 0,
         totalChunks: 0,
@@ -332,7 +332,7 @@ SELECT
           `CREATE INDEX IF NOT EXISTS embedding_vector_hnsw_idx ON embeddings USING hnsw (vector vector_cosine_ops) WITH (m = 16, ef_construction = 64)`
         )
       );
-      console.log("HNSW index created successfully");
+      console.log('HNSW index created successfully');
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to create HNSW index: ${message}`);
@@ -340,7 +340,7 @@ SELECT
   }
   /** * Convert number array to PostgreSQL vector string format */
   private vectorToString(vector: number[]): string {
-    return `[${vector.join(",")}]`;
+    return `[${vector.join(',')}]`;
   }
   /** * Escape SQL strings to prevent injection */
   private escape(str: string): string {
@@ -356,17 +356,14 @@ export async function createPgVectorIndexingService(
   try {
     await service.createHNSWIndex();
   } catch (error) {
-    console.warn("HNSW index creation skipped: ", error);
+    console.warn('HNSW index creation skipped: ', error);
   }
   return service;
 }
 /** * Default configuration for PgVector Indexing Service */
 export const DEFAULT_PGVECTOR_CONFIG: Partial<VectorIndexConfig> = {
   embeddingDimensions: 768,
-  indexType: "hnsw",
-  distanceMetric: "cosine",
+  indexType: 'hnsw',
+  distanceMetric: 'cosine',
   maxResults: 10,
 };
-
-
-

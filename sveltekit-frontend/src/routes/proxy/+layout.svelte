@@ -1,5 +1,5 @@
 <script lang="ts">
-const { children } = $props();
+  const { children } = $props();
   // Svelte 5 layout for /proxy subtree.
 </script>
 
@@ -9,5 +9,8 @@ const { children } = $props();
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

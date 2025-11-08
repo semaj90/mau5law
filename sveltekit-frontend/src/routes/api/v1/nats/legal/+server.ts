@@ -1,9 +1,9 @@
-﻿import type { RequestHandler } from "./$types.js";
-import { json } from "@sveltejs/kit";
+﻿import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 
 // Legal AI Specific NATS Endpoints
 // High-level API for legal AI event publishing and management
-import EnhancedNATSMessagingService from "$lib/services/enhanced-nats-messaging";
+import EnhancedNATSMessagingService from '$lib/services/enhanced-nats-messaging';
 import type {
   CaseEventData,
   DocumentEventData,
@@ -11,19 +11,19 @@ import type {
   ChatEventData,
   SearchEventData,
   // SystemEventData removed - not exported from $lib/types/nats-messaging
-} from "$lib/types/nats-messaging";
+} from '$lib/types/nats-messaging';
 
 // Add a local alias for system events (matches getSystemEventSchema used below)
 type SystemEventData = {
   component: string;
-  status: "healthy" | "degraded" | "critical";
+  status: 'healthy' | 'degraded' | 'critical';
   metrics?: Record<string, unknown>;
   uptime_seconds?: number;
 };
 
 // Define a union type for all possible NATS event bodies
 interface NatsEventBody {
-  event_type: "case" | "document" | "ai_analysis" | "chat" | "search" | "system";
+  event_type: 'case' | 'document' | 'ai_analysis' | 'chat' | 'search' | 'system';
   action: string;
   data:
     | CaseEventData
@@ -50,20 +50,20 @@ export const POST: RequestHandler = async ({ request }) => {
     const body = (await request.json()) as NatsEventBody; // Cast body to the new union type
     const nats = getNATSService();
     switch (body.event_type) {
-      case "case":
+      case 'case':
         return await handleCaseEvent(nats, body as { action: string; data: CaseEventData });
-      case "document":
+      case 'document':
         return await handleDocumentEvent(nats, body as { action: string; data: DocumentEventData });
-      case "ai_analysis":
+      case 'ai_analysis':
         return await handleAIAnalysisEvent(
           nats,
           body as { action: string; data: AIAnalysisEventData }
         );
-      case "chat":
+      case 'chat':
         return await handleChatEvent(nats, body as { action: string; data: ChatEventData });
-      case "search":
+      case 'search':
         return await handleSearchEvent(nats, body as { action: string; data: SearchEventData });
-      case "system":
+      case 'system':
         return await handleSystemEvent(nats, body as { action: string; data: SystemEventData });
       default:
         return json(
@@ -72,10 +72,10 @@ export const POST: RequestHandler = async ({ request }) => {
         );
     }
   } catch (error: Error | unknown) {
-    console.error("Legal Error: ", error);
-    const details = error instanceof Error ? error.message : String(error ?? "Unknown error");
+    console.error('Legal Error: ', error);
+    const details = error instanceof Error ? error.message : String(error ?? 'Unknown error');
     return json(
-      { success: false, error: "Legal AI event processing failed", details },
+      { success: false, error: 'Legal AI event processing failed', details },
       { status: 500 }
     );
   }
@@ -84,86 +84,86 @@ export const POST: RequestHandler = async ({ request }) => {
 /* GET /api/v1/nats/legal - Get legal AI event schemas and capabilities */
 export const GET: RequestHandler = async () => {
   return json({
-    service: "Legal AI NATS Events",
-    version: "2.0.0",
+    service: 'Legal AI NATS Events',
+    version: '2.0.0',
     supported_events: {
       case: {
-        actions: ["created", "updated", "closed"],
-        subject_pattern: "legal.case.*",
-        required_fields: ["case_id", "case_number", "title", "status"],
+        actions: ['created', 'updated', 'closed'],
+        subject_pattern: 'legal.case.*',
+        required_fields: ['case_id', 'case_number', 'title', 'status'],
         schema: getCaseEventSchema(), // Corrected: Call the function to get the schema object
       },
       document: {
-        actions: ["uploaded", "processed", "analyzed", "indexed"],
-        subject_pattern: "legal.document.*",
-        required_fields: ["document_id", "filename", "file_type", "processing_status"],
+        actions: ['uploaded', 'processed', 'analyzed', 'indexed'],
+        subject_pattern: 'legal.document.*',
+        required_fields: ['document_id', 'filename', 'file_type', 'processing_status'],
         schema: getDocumentEventSchema(),
       },
       ai_analysis: {
-        actions: ["started", "completed", "failed"],
-        subject_pattern: "legal.ai.analysis.*",
-        required_fields: ["analysis_id", "analysis_type", "model_used"],
+        actions: ['started', 'completed', 'failed'],
+        subject_pattern: 'legal.ai.analysis.*',
+        required_fields: ['analysis_id', 'analysis_type', 'model_used'],
         schema: getAIAnalysisEventSchema(),
       },
       chat: {
-        actions: ["message", "response", "streaming"],
-        subject_pattern: "legal.chat.*",
-        required_fields: ["message_id", "session_id", "user_id", "content"],
+        actions: ['message', 'response', 'streaming'],
+        subject_pattern: 'legal.chat.*',
+        required_fields: ['message_id', 'session_id', 'user_id', 'content'],
         schema: getChatEventSchema(),
       },
       search: {
-        actions: ["query", "results"],
-        subject_pattern: "legal.search.*",
-        required_fields: ["query_id", "user_id", "query_text", "search_type"],
+        actions: ['query', 'results'],
+        subject_pattern: 'legal.search.*',
+        required_fields: ['query_id', 'user_id', 'query_text', 'search_type'],
         schema: getSearchEventSchema(),
       },
       system: {
-        actions: ["health", "metrics"],
-        subject_pattern: "system.*",
-        required_fields: ["component", "status"],
+        actions: ['health', 'metrics'],
+        subject_pattern: 'system.*',
+        required_fields: ['component', 'status'],
         schema: getSystemEventSchema(),
       },
     },
     examples: {
       case_created: {
-        event_type: "case",
-        action: "created",
+        event_type: 'case',
+        action: 'created',
         data: {
-          case_id: "case-12345",
-          case_number: "LEGAL-2024-001",
-          title: "Contract Dispute Analysis",
-          status: "open",
-          priority: "high",
-          assigned_to: ["lawyer1@firm.com"],
-          created_by: "paralegal@firm.com",
+          case_id: 'case-12345',
+          case_number: 'LEGAL-2024-001',
+          title: 'Contract Dispute Analysis',
+          status: 'open',
+          priority: 'high',
+          assigned_to: ['lawyer1@firm.com'],
+          created_by: 'paralegal@firm.com',
         },
       },
       document_uploaded: {
-        event_type: "document",
-        action: "uploaded",
+        event_type: 'document',
+        action: 'uploaded',
         data: {
-          document_id: "doc-67890",
-          case_id: "case-12345",
-          filename: "contract.pdf",
+          document_id: 'doc-67890',
+          case_id: 'case-12345',
+          filename: 'contract.pdf',
           file_type: `application/pdf`,
           file_size: 2048576,
           processing_status: `uploaded`,
         },
       },
       ai_analysis_completed: {
-        event_type: "ai_analysis",
-        action: "completed",
+        event_type: 'ai_analysis',
+        action: 'completed',
         data: {
-          analysis_id: "analysis-abc123",
-          case_id: "case-12345",
-          document_id: "doc-67890",
-          analysis_type: "summary",
-          model_used: "gemma3-legal",
+          analysis_id: 'analysis-abc123',
+          case_id: 'case-12345',
+          document_id: 'doc-67890',
+          analysis_type: 'summary',
+          model_used: 'gemma3-legal',
           confidence_score: 0.89,
           processing_time_ms: 1500,
           results: {
-            summary: "Contract analysis complete...",
-            key_terms: ["liability", "indemnification", "termination"],
+            summary: 'Contract analysis complete...',
+            key_terms: ['liability', 'indemnification', 'termination'],
           },
         },
       },
@@ -178,7 +178,7 @@ async function handleCaseEvent(
   body: { action: string; data: CaseEventData }
 ): Promise<Response> {
   const { action, data } = body;
-  if (!["created", "updated", "closed"].includes(action)) {
+  if (!['created', 'updated', 'closed'].includes(action)) {
     throw new Error(`Invalid action: ${action}`);
   }
   validateCaseData(data);
@@ -187,7 +187,7 @@ async function handleCaseEvent(
   await nats.publish(`legal.case.${action}`, { action, ...data });
   return json({
     success: true,
-    event_type: "case",
+    event_type: 'case',
     action: data.case_id, // Corrected: Use data.case_id
     data: { case_id: data.case_id, case_number: data.case_number },
     subject: `legal.case.${action}`,
@@ -200,7 +200,7 @@ async function handleDocumentEvent(
   body: { action: string; data: DocumentEventData }
 ): Promise<Response> {
   const { action, data } = body;
-  if (!["uploaded", "processed", "analyzed", "indexed"].includes(action)) {
+  if (!['uploaded', 'processed', 'analyzed', 'indexed'].includes(action)) {
     throw new Error(`Invalid action: ${action}`);
   }
   validateDocumentData(data);
@@ -209,7 +209,7 @@ async function handleDocumentEvent(
   await nats.publish(`legal.document.${action}`, { action, ...data });
   return json({
     success: true,
-    event_type: "document",
+    event_type: 'document',
     action: data.document_id, // Corrected: Use data.document_id
     data: { document_id: data.document_id, filename: data.filename },
     subject: `legal.document.${action}`,
@@ -222,7 +222,7 @@ async function handleAIAnalysisEvent(
   body: { action: string; data: AIAnalysisEventData }
 ): Promise<Response> {
   const { action, data } = body;
-  if (!["started", "completed", "failed"].includes(action)) {
+  if (!['started', 'completed', 'failed'].includes(action)) {
     throw new Error(`Invalid action: ${action}`);
   }
   validateAIAnalysisData(data);
@@ -231,7 +231,7 @@ async function handleAIAnalysisEvent(
   await nats.publish(`legal.ai.analysis.${action}`, { action, ...data });
   return json({
     success: true,
-    event_type: "ai_analysis",
+    event_type: 'ai_analysis',
     action: data.analysis_id, // Corrected: Use data.analysis_id
     data: { analysis_id: data.analysis_id, analysis_type: data.analysis_type },
     subject: `legal.ai.analysis.${action}`,
@@ -244,15 +244,15 @@ async function handleChatEvent(
   body: { action: string; data: ChatEventData }
 ): Promise<Response> {
   const { action, data } = body;
-  if (!["message", "response", "streaming"].includes(action)) {
+  if (!['message', 'response', 'streaming'].includes(action)) {
     throw new Error(`Invalid action: ${action}`);
   }
   validateChatData(data);
-  const isStreaming = action === "streaming"; // include streaming flag in the payload and publish to the chat subject
+  const isStreaming = action === 'streaming'; // include streaming flag in the payload and publish to the chat subject
   await nats.publish(`legal.chat.${action}`, { ...data, is_streaming: isStreaming });
   return json({
     success: true,
-    event_type: "chat",
+    event_type: 'chat',
     action: data.message_id, // Corrected: Use data.message_id
     data: { message_id: data.message_id, session_id: data.session_id },
     subject: `legal.chat.${action}`,
@@ -265,19 +265,19 @@ async function handleSearchEvent(
   body: { action: string; data: SearchEventData }
 ): Promise<Response> {
   const { action, data } = body;
-  if (!["query", "results"].includes(action)) {
+  if (!['query', 'results'].includes(action)) {
     throw new Error(`Invalid action: ${action}`);
   }
   validateSearchData(data);
-  if (action === "query") {
+  if (action === 'query') {
     // publish search queries to the standardized subject instead of calling a non-existent helper
-    await nats.publish("legal.search.query", data);
+    await nats.publish('legal.search.query', data);
   } else {
-    await nats.publish("legal.search.results", data);
+    await nats.publish('legal.search.results', data);
   }
   return json({
     success: true,
-    event_type: "search",
+    event_type: 'search',
     action: data.query_id, // Corrected: Use data.query_id
     data: { query_id: data.query_id },
     subject: `legal.search.${action}`,
@@ -290,19 +290,19 @@ async function handleSystemEvent(
   body: { action: string; data: SystemEventData }
 ): Promise<Response> {
   const { action, data } = body;
-  if (!["health", "metrics"].includes(action)) {
+  if (!['health', 'metrics'].includes(action)) {
     throw new Error(`Invalid action: ${action}`);
   }
   validateSystemData(data);
-  if (action === "health") {
+  if (action === 'health') {
     // publishSystemHealth did not exist on the service use generic subject
-    await nats.publish("system.health", data);
+    await nats.publish('system.health', data);
   } else {
-    await nats.publish("system.metrics", data);
+    await nats.publish('system.metrics', data);
   }
   return json({
     success: true,
-    event_type: "system",
+    event_type: 'system',
     action: data.component, // Corrected: Use data.component
     data: { component: data.component },
     subject: `system.${action}`,
@@ -312,44 +312,44 @@ async function handleSystemEvent(
 
 // Validation Functions
 function validateCaseData(data: CaseEventData): void {
-  const required = ["case_id", "case_number", "title", "status"];
+  const required = ['case_id', 'case_number', 'title', 'status'];
   for (const field of required) {
     if (!data[field as keyof CaseEventData]) {
       throw new Error(`Missing field: ${field}`);
     }
   }
-  const validStatuses = ["open", "in_progress", "closed", "archived"];
+  const validStatuses = ['open', 'in_progress', 'closed', 'archived'];
   if (!validStatuses.includes(data.status)) {
-    throw new Error(`Invalid status: ${data.status}. Must be one, of: ${validStatuses.join(", ")}`);
+    throw new Error(`Invalid status: ${data.status}. Must be one, of: ${validStatuses.join(', ')}`);
   }
 }
 
 function validateDocumentData(data: DocumentEventData): void {
-  const required = ["document_id", "filename", "file_type", "processing_status"];
+  const required = ['document_id', 'filename', 'file_type', 'processing_status'];
   for (const field of required) {
     if (!data[field as keyof DocumentEventData]) {
       throw new Error(`Missing field: ${field}`);
     }
   }
-  const validStatuses = ["uploaded", "processing", "processed", "indexed", "failed"];
+  const validStatuses = ['uploaded', 'processing', 'processed', 'indexed', 'failed'];
   if (!validStatuses.includes(data.processing_status)) {
     throw new Error(`Invalid processing_status: ${data.processing_status}`);
   }
 }
 
 function validateAIAnalysisData(data: AIAnalysisEventData): void {
-  const required = ["analysis_id", "analysis_type", "model_used"];
+  const required = ['analysis_id', 'analysis_type', 'model_used'];
   for (const field of required) {
     if (!data[field as keyof AIAnalysisEventData]) {
       throw new Error(`Missing field: ${field}`);
     }
   }
   const validTypes = [
-    "summary",
-    "classification",
-    "entity_extraction",
-    "sentiment",
-    "risk_assessment",
+    'summary',
+    'classification',
+    'entity_extraction',
+    'sentiment',
+    'risk_assessment',
   ];
   if (!validTypes.includes(data.analysis_type)) {
     throw new Error(`Invalid analysis_type: ${data.analysis_type}`);
@@ -357,13 +357,13 @@ function validateAIAnalysisData(data: AIAnalysisEventData): void {
 }
 
 function validateChatData(data: ChatEventData): void {
-  const required = ["message_id", "session_id", "user_id", "content"];
+  const required = ['message_id', 'session_id', 'user_id', 'content'];
   for (const field of required) {
     if (!data[field as keyof ChatEventData]) {
       throw new Error(`Missing field: ${field}`);
     }
     if (data.message_type) {
-      const validTypes = ["user", "assistant", "system"];
+      const validTypes = ['user', 'assistant', 'system'];
       if (!validTypes.includes(data.message_type)) {
         throw new Error(`Invalid message_type: ${data.message_type}`);
       }
@@ -372,26 +372,26 @@ function validateChatData(data: ChatEventData): void {
 }
 
 function validateSearchData(data: SearchEventData): void {
-  const required = ["query_id", "user_id", "query_text", "search_type"];
+  const required = ['query_id', 'user_id', 'query_text', 'search_type'];
   for (const field of required) {
     if (!data[field as keyof SearchEventData]) {
       throw new Error(`Missing field: ${field}`);
     }
   }
-  const validTypes = ["cases", "documents", "legal_precedents", "full_text", "semantic"];
+  const validTypes = ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'];
   if (!validTypes.includes(data.search_type)) {
     throw new Error(`Invalid search_type: ${data.search_type}`);
   }
 }
 
 function validateSystemData(data: SystemEventData): void {
-  const required = ["component", "status"];
+  const required = ['component', 'status'];
   for (const field of required) {
     if (!data[field as keyof SystemEventData]) {
       throw new Error(`Missing field: ${field}`);
     }
   }
-  const validStatuses = ["healthy", "degraded", "critical"];
+  const validStatuses = ['healthy', 'degraded', 'critical'];
   if (!validStatuses.includes(data.status)) {
     throw new Error(`Invalid status: ${data.status}`);
   }
@@ -400,101 +400,101 @@ function validateSystemData(data: SystemEventData): void {
 // Schema Functions
 function getCaseEventSchema() {
   return {
-    type: "object",
+    type: 'object',
     properties: {
-      case_id: { type: "string" },
-      case_number: { type: "string" },
-      title: { type: "string" },
-      status: { type: "string", enum: ["open", "in_progress", "closed", "archived"] },
-      priority: { type: "string", enum: ["low", "normal", "high", "urgent"] },
-      assigned_to: { type: "array", items: { type: "string" } },
-      created_by: { type: "string" },
-      metadata: { type: "object" },
+      case_id: { type: 'string' },
+      case_number: { type: 'string' },
+      title: { type: 'string' },
+      status: { type: 'string', enum: ['open', 'in_progress', 'closed', 'archived'] },
+      priority: { type: 'string', enum: ['low', 'normal', 'high', 'urgent'] },
+      assigned_to: { type: 'array', items: { type: 'string' } },
+      created_by: { type: 'string' },
+      metadata: { type: 'object' },
     },
-    required: ["case_id", "case_number", "title", "status"],
+    required: ['case_id', 'case_number', 'title', 'status'],
   };
 }
 
 function getDocumentEventSchema() {
   return {
-    type: "object",
+    type: 'object',
     properties: {
-      document_id: { type: "string" },
-      case_id: { type: "string" },
-      filename: { type: "string" },
-      file_type: { type: "string" },
-      file_size: { type: "number" },
+      document_id: { type: 'string' },
+      case_id: { type: 'string' },
+      filename: { type: 'string' },
+      file_type: { type: 'string' },
+      file_size: { type: 'number' },
       processing_status: {
-        type: "string",
-        enum: ["uploaded", "processing", "processed", "indexed", "failed"],
+        type: 'string',
+        enum: ['uploaded', 'processing', 'processed', 'indexed', 'failed'],
       },
-      checksum: { type: "string" },
-      metadata: { type: "object" },
+      checksum: { type: 'string' },
+      metadata: { type: 'object' },
     },
-    required: ["document_id", "filename", "file_type", "processing_status"],
+    required: ['document_id', 'filename', 'file_type', 'processing_status'],
   };
 }
 
 function getAIAnalysisEventSchema() {
   return {
-    type: "object",
+    type: 'object',
     properties: {
-      analysis_id: { type: "string" },
+      analysis_id: { type: 'string' },
       analysis_type: {
-        type: "string",
-        enum: ["summary", "classification", "entity_extraction", "sentiment", "risk_assessment"],
+        type: 'string',
+        enum: ['summary', 'classification', 'entity_extraction', 'sentiment', 'risk_assessment'],
       },
-      model_used: { type: "string" },
-      confidence_score: { type: "number", minimum: 0, maximum: 1 },
-      processing_time_ms: { type: "number" },
-      results: { type: "object" },
+      model_used: { type: 'string' },
+      confidence_score: { type: 'number', minimum: 0, maximum: 1 },
+      processing_time_ms: { type: 'number' },
+      results: { type: 'object' },
     },
-    required: ["analysis_id", "analysis_type", "model_used"],
+    required: ['analysis_id', 'analysis_type', 'model_used'],
   };
 }
 
 function getChatEventSchema() {
   return {
-    type: "object",
+    type: 'object',
     properties: {
-      message_id: { type: "string" },
-      session_id: { type: "string" },
-      user_id: { type: "string" },
-      message_type: { type: "string", enum: ["user", "assistant", "system"] },
-      content: { type: "string" },
-      is_streaming: { type: "boolean" },
+      message_id: { type: 'string' },
+      session_id: { type: 'string' },
+      user_id: { type: 'string' },
+      message_type: { type: 'string', enum: ['user', 'assistant', 'system'] },
+      content: { type: 'string' },
+      is_streaming: { type: 'boolean' },
     },
-    required: ["message_id", "session_id", "user_id", "content"],
+    required: ['message_id', 'session_id', 'user_id', 'content'],
   };
 }
 
 function getSearchEventSchema() {
   return {
-    type: "object",
+    type: 'object',
     properties: {
-      query_id: { type: "string" },
-      user_id: { type: "string" },
-      query_text: { type: "string" },
+      query_id: { type: 'string' },
+      user_id: { type: 'string' },
+      query_text: { type: 'string' },
       search_type: {
-        type: "string",
-        enum: ["cases", "documents", "legal_precedents", "full_text", "semantic"],
+        type: 'string',
+        enum: ['cases', 'documents', 'legal_precedents', 'full_text', 'semantic'],
       },
-      filters: { type: "object" },
-      results: { type: "array" },
+      filters: { type: 'object' },
+      results: { type: 'array' },
     },
-    required: ["query_id", "user_id", "query_text", "search_type"],
+    required: ['query_id', 'user_id', 'query_text', 'search_type'],
   };
 }
 
 function getSystemEventSchema() {
   return {
-    type: "object",
+    type: 'object',
     properties: {
       component: { type: `string` },
-      status: { type: "string", enum: ["healthy", "degraded", "critical"] },
+      status: { type: 'string', enum: ['healthy', 'degraded', 'critical'] },
       metrics: { type: `object` },
       uptime_seconds: { type: `number` },
     },
-    required: ["component", "status"],
+    required: ['component', 'status'],
   };
 }

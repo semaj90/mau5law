@@ -41,21 +41,21 @@ export class ClientSideAI {
     loaded: false,
     loading: false,
     error: null,
-    modelSize: 0
+    modelSize: 0,
   };
 
   private config: ClientAIConfig = {
     modelPath: '/models/gemma3-270m-q4km.gguf',
     contextSize: 4096,
     threads: navigator.hardwareConcurrency || 4,
-    gpuLayers: 0 // WebGL not typically used for llama.cpp
+    gpuLayers: 0, // WebGL not typically used for llama.cpp
   };
 
   private contextRules: ContextSwitchRules = {
-    maxTokensClient: 2048,        // Switch to server for longer queries
-    maxComplexityClient: 0.7,     // Complexity score 0-1
-    serverThreshold: 1500,        // Token count threshold
-    fallbackToServer: true
+    maxTokensClient: 2048, // Switch to server for longer queries
+    maxComplexityClient: 0.7, // Complexity score 0-1
+    serverThreshold: 1500, // Token count threshold
+    fallbackToServer: true,
   };
 
   constructor() {
@@ -89,7 +89,8 @@ export class ClientSideAI {
       }
 
       if (!mod || !(mod.LlamaCpp || mod.default)) {
-        const msg = 'llama cpp module not available in the environment; falling back to server-only mode';
+        const msg =
+          'llama cpp module not available in the environment; falling back to server-only mode';
         this.modelStatus.error = msg;
         console.warn('❌', msg);
         return;
@@ -122,13 +123,12 @@ export class ClientSideAI {
         embedding: false,
         useMmap: true,
         nGpuLayers: this.config.gpuLayers,
-        nThreads: this.config.threads
+        nThreads: this.config.threads,
       });
 
       this.modelStatus.loaded = true;
       this.modelStatus.modelSize = 100 * 1024 * 1024; // ~100MB estimate
       console.log('✅ Client-side gemma3:270m loaded successfully');
-
     } catch (error) {
       this.modelStatus.error = error instanceof Error ? error.message : 'Unknown error';
       console.error('❌ Failed to load client-side model:', error);
@@ -154,7 +154,7 @@ export class ClientSideAI {
       /liability|damages|breach|obligation/i,
       /jurisdiction|precedent|statute|regulation/i,
       /analysis|interpretation|opinion|advice/i,
-      /\bcite\b|\blaw\b|\blegal\b|\bcourt\b/i
+      /\bcite\b|\blaw\b|\blegal\b|\bcourt\b/i,
     ];
 
     const complexityScore = complexIndicators.reduce((score, pattern) => {
@@ -218,11 +218,7 @@ export class ClientSideAI {
   /**
    * Generate response using client-side WebAssembly model
    */
-  private async generateClientResponse(
-    query: string,
-    options: any,
-    analysis: any
-  ): Promise<any> {
+  private async generateClientResponse(query: string, options: any, analysis: any): Promise<any> {
     if (!this.llama || !this.modelStatus.loaded) {
       // Fallback to server if client model unavailable
       return this.generateServerResponse(query, options, analysis);
@@ -238,7 +234,7 @@ export class ClientSideAI {
         topP: 0.95,
         topK: 40,
         repeatPenalty: 1.1,
-        stop: ['</response>', '\n\nHuman:', '\n\nAssistant:']
+        stop: ['</response>', '\n\nHuman:', '\n\nAssistant:'],
       });
 
       const duration = Date.now() - startTime;
@@ -252,10 +248,9 @@ export class ClientSideAI {
           complexity: analysis.complexity,
           duration,
           model: 'gemma3:270m',
-          privacy: 'fully_private'
-        }
+          privacy: 'fully_private',
+        },
       };
-
     } catch (error) {
       console.warn('Client-side generation failed, falling back to server:', error);
       return this.generateServerResponse(query, options, analysis);
@@ -265,11 +260,7 @@ export class ClientSideAI {
   /**
    * Generate response using server TensorRT
    */
-  private async generateServerResponse(
-    query: string,
-    options: any,
-    analysis: any
-  ): Promise<any> {
+  private async generateServerResponse(query: string, options: any, analysis: any): Promise<any> {
     const startTime = Date.now();
 
     try {
@@ -282,8 +273,8 @@ export class ClientSideAI {
           model: 'gemma3-legal:latest',
           temperature: options.temperature || 0.1,
           maxTokens: options.maxTokens || 2048,
-          stream: options.stream || false
-        })
+          stream: options.stream || false,
+        }),
       });
 
       if (!response.ok) {
@@ -303,10 +294,9 @@ export class ClientSideAI {
           duration,
           model: 'gemma3-legal:latest',
           acceleration: 'tensorrt',
-          privacy: 'server_processed'
-        }
+          privacy: 'server_processed',
+        },
       };
-
     } catch (error) {
       throw new Error(`Server generation failed: ${error}`);
     }
@@ -331,7 +321,7 @@ Response: `;
     return {
       ...this.modelStatus,
       config: this.config,
-      rules: this.contextRules
+      rules: this.contextRules,
     };
   }
 

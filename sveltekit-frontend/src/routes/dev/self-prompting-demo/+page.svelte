@@ -16,8 +16,8 @@
       <div class="max-w-7xl mx-auto">
         <h1 class="text-4xl font-bold">Self-Prompting Agent Orchestration</h1>
         <p class="text-xl text-blue-100">
-          Experience advanced AI agent coordination with self-prompting loops, semantic search integration, memory graph
-          analysis, and automated legal workflow processing.
+          Experience advanced AI agent coordination with self-prompting loops, semantic search
+          integration, memory graph analysis, and automated legal workflow processing.
         </p>
         <div class="mt-8 grid grid-cols-1 md:grid-cols-4">
           <div class="bg-blue-700 bg-opacity-50 rounded-lg">
@@ -76,8 +76,8 @@
         </div>
         <div class="mt-8 pt-8 border-t border-gray-200">
           <p class="text-sm">
-            Advanced AI-powered legal workflow automation with self-prompting agent orchestration. Built with
-            production-ready SvelteKit architecture and Context7 MCP integration.
+            Advanced AI-powered legal workflow automation with self-prompting agent orchestration.
+            Built with production-ready SvelteKit architecture and Context7 MCP integration.
           </p>
         </div>
       </div>

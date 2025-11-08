@@ -20,7 +20,15 @@
   // Stores and Utilities
   // NOTE: The following functions must be exported from '$lib/utils/formatting.ts'
   // for TypeScript errors to be fully resolved.
-  import { formatRelativeTime, formatDetailedTimestamp, truncateFilename, truncateText, getFileIcon, getPriorityColor, getStatusColor } from '$lib/utils/formatting';
+  import {
+    formatRelativeTime,
+    formatDetailedTimestamp,
+    truncateFilename,
+    truncateText,
+    getFileIcon,
+    getPriorityColor,
+    getStatusColor,
+  } from '$lib/utils/formatting';
 
   // Component state
   let showDialog = $state<boolean>(false);
@@ -37,10 +45,13 @@
   let mockUser = $state({
     id: 'demo-user-123',
     email: 'demo@legalai.com',
-    role: 'prosecutor' as const
+    role: 'prosecutor' as const,
   });
 
-  interface TabItem { id: string; label: string }
+  interface TabItem {
+    id: string;
+    label: string;
+  }
   const tabs: TabItem[] = [
     { id: 'buttons', label: 'Buttons' },
     { id: 'avatars', label: 'Avatars' },
@@ -49,11 +60,15 @@
     { id: 'cards', label: 'Cards' },
     { id: 'session', label: 'Session Demo' },
     { id: 'formatting', label: 'Formatting' },
-    { id: 'sidebar', label: 'Global Sidebar' }
+    { id: 'sidebar', label: 'Global Sidebar' },
   ];
 
-  function openDialog() { showDialog = true; }
-  function closeDialog() { showDialog = false; }
+  function openDialog() {
+    showDialog = true;
+  }
+  function closeDialog() {
+    showDialog = false;
+  }
 
   // Modal functions
   function openModal(variant: string = 'gradient', size: string = 'md') {
@@ -61,22 +76,35 @@
     modalSize = size;
     showModal = true;
   }
-  function closeModal() { showModal = false; }
+  function closeModal() {
+    showModal = false;
+  }
 
   // Updated button variants to match common UI library types
-  const buttonVariants = ['default', 'secondary', 'destructive', 'outline', 'ghost', 'link'] as const;
+  const buttonVariants = [
+    'default',
+    'secondary',
+    'destructive',
+    'outline',
+    'ghost',
+    'link',
+  ] as const;
 
   // Mock session actions for demo
   const mockSessionActions = {
     setSession: (user: unknown, session: unknown) => console.log('Mock setSession', user, session),
     clearSession: () => console.log('Mock clearSession'),
-    init: (data: Record<string, unknown>) => console.log('Mock init:', data)
+    init: (data: Record<string, unknown>) => console.log('Mock init:', data),
   };
 
   // Mock session demo functions
   function simulateLogin() {
     mockSessionActive = true;
-    mockSessionActions.setSession(mockUser, { id: 'demo-session-123', user: mockUser, fresh: true });
+    mockSessionActions.setSession(mockUser, {
+      id: 'demo-session-123',
+      user: mockUser,
+      fresh: true,
+    });
   }
   function simulateLogout() {
     mockSessionActive = false;
@@ -86,7 +114,12 @@
     if (mockSessionActive) {
       // Simulate refreshing session data (could update stats, etc.)
       console.log('Mock refresh session');
-      mockSessionActions.setSession(mockUser, { id: 'demo-session-123', user: mockUser, fresh: false, refreshedAt: new Date().toISOString() });
+      mockSessionActions.setSession(mockUser, {
+        id: 'demo-session-123',
+        user: mockUser,
+        fresh: false,
+        refreshedAt: new Date().toISOString(),
+      });
     } else {
       console.log('No active session to refresh');
     }
@@ -106,23 +139,25 @@
   let authenticated = $derived(mockSessionActive);
 
   let stats = $derived(
-    mockSessionActive ? {
-      casesWorked: 23,
-      documentsReviewed: 157,
-      hoursLogged: 89.5,
-      accuracy: 94.2,
-      totalCases: 47,
-      totalEvidence: 1284,
-      totalDocuments: 567,
-      totalCitations: 89,
-      totalReports: 34
-    } : {
-      totalCases: 0,
-      totalEvidence: 0,
-      totalDocuments: 0,
-      totalCitations: 0,
-      totalReports: 0
-    }
+    mockSessionActive
+      ? {
+          casesWorked: 23,
+          documentsReviewed: 157,
+          hoursLogged: 89.5,
+          accuracy: 94.2,
+          totalCases: 47,
+          totalEvidence: 1284,
+          totalDocuments: 567,
+          totalCitations: 89,
+          totalReports: 34,
+        }
+      : {
+          totalCases: 0,
+          totalEvidence: 0,
+          totalDocuments: 0,
+          totalCitations: 0,
+          totalReports: 0,
+        }
   );
 
   // MOCK DATA FOR UI PREVIEW/TESTING ONLY:
@@ -145,14 +180,20 @@
     'deposition_video_plaintiff_testimony.mp4',
   ];
   const mockCases = [
-    { title: 'Corporate Fraud Investigation - Multinational Tech Company', status: 'open', priority: 'high' },
+    {
+      title: 'Corporate Fraud Investigation - Multinational Tech Company',
+      status: 'open',
+      priority: 'high',
+    },
     { title: 'Contract Dispute Resolution', status: 'pending', priority: 'medium' },
     { title: 'Criminal Defense - Armed Robbery Case', status: 'closed', priority: 'critical' },
-    { title: 'Family Law Custody Battle', status: 'open', priority: 'low' }
+    { title: 'Family Law Custody Battle', status: 'open', priority: 'low' },
   ];
 
   let focusReady = $state<boolean>(false);
-  $effect(() => { focusReady = true; });
+  $effect(() => {
+    focusReady = true;
+  });
 
   // TEMPORARY WORKAROUNDS: The following aliases cast components/functions to 'any' to bypass TypeScript errors in this demo.
   // This should NOT be in production code, as it disables type safety for component props and events.
@@ -196,16 +237,35 @@
       </div>
       <h2 class="section" style="margin-top: 1.5rem;">Quick Action Buttons</h2>
       <div class="grid buttons">
-        <QuickActionButtonAny icon="i-carbon-add" ariaLabel="Add item" onclick={() => console.log('Add clicked')}>
+        <QuickActionButtonAny
+          icon="i-carbon-add"
+          ariaLabel="Add item"
+          onclick={() => console.log('Add clicked')}
+        >
           Add Item
         </QuickActionButtonAny>
-        <QuickActionButtonAny icon="i-carbon-trash-can" variant="destructive" ariaLabel="Delete item" onclick={() => console.log('Delete clicked')}>
+        <QuickActionButtonAny
+          icon="i-carbon-trash-can"
+          variant="destructive"
+          ariaLabel="Delete item"
+          onclick={() => console.log('Delete clicked')}
+        >
           Delete
         </QuickActionButtonAny>
-        <QuickActionButtonAny icon="i-carbon-save" variant="default" ariaLabel="Save item" onclick={() => console.log('Save clicked')}>
+        <QuickActionButtonAny
+          icon="i-carbon-save"
+          variant="default"
+          ariaLabel="Save item"
+          onclick={() => console.log('Save clicked')}
+        >
           Save
         </QuickActionButtonAny>
-        <QuickActionButtonAny icon="i-carbon-download" variant="link" disabled ariaLabel="Download item">
+        <QuickActionButtonAny
+          icon="i-carbon-download"
+          variant="link"
+          disabled
+          ariaLabel="Download item"
+        >
           Download
         </QuickActionButtonAny>
       </div>
@@ -236,7 +296,12 @@
       <p class="meta">Uses a simple dialog component.</p>
     </div>
 
-    <DialogAny open={showDialog} onOpenChange={(v: boolean) => { if (!v) closeDialog(); }}>
+    <DialogAny
+      open={showDialog}
+      onOpenChange={(v: boolean) => {
+        if (!v) closeDialog();
+      }}
+    >
       <DialogContentAny>
         <!-- Replaced DialogHeader/DialogFooter (not exported) with simple wrappers -->
         <div class="dialog-header">
@@ -246,9 +311,18 @@
           </DialogDescriptionAny>
         </div>
 
-        <div class="dialog-footer" style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem;">
+        <div
+          class="dialog-footer"
+          style="display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem;"
+        >
           <ButtonAny variant="destructive" onclick={closeDialog}>Cancel</ButtonAny>
-          <ButtonAny variant="default" onclick={() => { console.log('Confirmed!'); closeDialog(); }}>Confirm</ButtonAny>
+          <ButtonAny
+            variant="default"
+            onclick={() => {
+              console.log('Confirmed!');
+              closeDialog();
+            }}>Confirm</ButtonAny
+          >
         </div>
       </DialogContentAny>
     </DialogAny>
@@ -266,7 +340,14 @@
       <!-- Changed div to button for accessibility and added aria-label -->
       <button type="button" class="modal-backdrop" onclick={closeModal} aria-label="Close modal">
         <!-- Added role="dialog" and aria-modal="true" for accessibility -->
-        <div class="modal-content {modalVariant} {modalSize}" role="dialog" aria-modal="true" tabindex="-1" onclick={e => e.stopPropagation()} onkeydown={e => e.stopPropagation()}>
+        <div
+          class="modal-content {modalVariant} {modalSize}"
+          role="dialog"
+          aria-modal="true"
+          tabindex="-1"
+          onclick={(e) => e.stopPropagation()}
+          onkeydown={(e) => e.stopPropagation()}
+        >
           <h3>Modal Variant: {modalVariant}</h3>
           <p>Size: {modalSize}. This is a placeholder for an enhanced modal component.</p>
           <ButtonAny onclick={closeModal}>Close Modal</ButtonAny>
@@ -278,7 +359,11 @@
       <h2 class="section">Stats Cards</h2>
       <div class="cards-grid">
         <StatsCard title="Cases Worked" value={stats.casesWorked} subtitle="Cases" />
-        <StatsCard title="Documents Reviewed" value={stats.documentsReviewed} subtitle="Documents" />
+        <StatsCard
+          title="Documents Reviewed"
+          value={stats.documentsReviewed}
+          subtitle="Documents"
+        />
         <StatsCard title="Hours Logged" value={stats.hoursLogged} subtitle="Hours" />
         <StatsCard title="Accuracy" value={`${stats.accuracy}%`} subtitle="Accuracy" />
       </div>
@@ -299,9 +384,15 @@
         {/if}
       </div>
       <div class="session-actions">
-        <ButtonAny variant="default" onclick={simulateLogin} disabled={authenticated}>Login</ButtonAny>
-        <ButtonAny variant="destructive" onclick={simulateLogout} disabled={!authenticated}>Logout</ButtonAny>
-        <ButtonAny variant="outline" onclick={simulateRefreshSession} disabled={!authenticated}>Refresh Session</ButtonAny>
+        <ButtonAny variant="default" onclick={simulateLogin} disabled={authenticated}
+          >Login</ButtonAny
+        >
+        <ButtonAny variant="destructive" onclick={simulateLogout} disabled={!authenticated}
+          >Logout</ButtonAny
+        >
+        <ButtonAny variant="outline" onclick={simulateRefreshSession} disabled={!authenticated}
+          >Refresh Session</ButtonAny
+        >
       </div>
       {#if authenticated}
         <div class="user-stats">
@@ -389,15 +480,27 @@
       </div>
       <div class="sidebar-info nes-container is-dark with-title">
         <p class="title">Sidebar State</p>
-        <p>The global sidebar is currently: <strong>{showSidebar ? 'Visible' : 'Hidden'}</strong>.</p>
-        <p>This component demonstrates how a global UI element's state can be controlled from a page.</p>
+        <p>
+          The global sidebar is currently: <strong>{showSidebar ? 'Visible' : 'Hidden'}</strong>.
+        </p>
+        <p>
+          This component demonstrates how a global UI element's state can be controlled from a page.
+        </p>
       </div>
       <div class="integration-notes">
         <h4>Integration Notes</h4>
         <ol class="nes-list is-circle">
-          <li>The actual sidebar component lives in <code>$lib/components/layout/Sidebar.svelte</code>.</li>
-          <li>Its visibility is controlled by a global store (e.g., <code>uiStore.svelte</code>).</li>
-          <li>This toggle binds to a local state variable for demo purposes. In a real app, it would dispatch an action to the global store.</li>
+          <li>
+            The actual sidebar component lives in <code>$lib/components/layout/Sidebar.svelte</code
+            >.
+          </li>
+          <li>
+            Its visibility is controlled by a global store (e.g., <code>uiStore.svelte</code>).
+          </li>
+          <li>
+            This toggle binds to a local state variable for demo purposes. In a real app, it would
+            dispatch an action to the global store.
+          </li>
         </ol>
       </div>
     </div>
@@ -405,54 +508,235 @@
 </main>
 
 <style>
-.layout { display: grid; gap: 1.25rem; padding: 1.5rem}
-  .tabs { display: flex; gap: 0.5rem; flex-wrap: wrap}
-  .tab-btn { cursor: pointer}
-  .tab-btn.active { outline: 3px solid var(--nes-primary, #212529)}
-  .grid { display: grid; gap: 1rem}
-  .grid.buttons { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr))}
-  .grid.avatars { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr))}
-  .cards-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr))}
+  .layout {
+    display: grid;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+  .tabs {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    outline: 3px solid var(--nes-primary, #212529);
+  }
+  .grid {
+    display: grid;
+    gap: 1rem;
+  }
+  .grid.buttons {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+  .grid.avatars {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  }
+  .cards-grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
   /* Removed unused CSS selector: h1 { font-family: 'Press Start 2P', monospace; font-size: 1.1rem} */
-  h2.section { margin: 0 0 0.75rem; font-size: 0.9rem; letter-spacing: 0.5px}
-  .section-wrap { padding: 1rem; border: 2px dashed #ccc; border-radius: 8px; background: #fff}
-  .meta { font-size: 0.65rem; opacity: 0.7; margin-top: 0.4rem}
-  /* Session Demo Styles */ .session-controls { display: flex; flex-direction: column; gap: 1rem}
-  .status-display { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap}
-  .user-details { display: flex; align-items: center; gap: 0.5rem}
-  .session-actions { display: flex; gap: 0.5rem; flex-wrap: wrap}
-  .user-stats h4 { margin: 0.5rem 0}
-  .stats-grid-demo { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 0.5rem}
-  .stat-card { text-align: center; padding: 0.5rem}
-  .stat-number { display: block; font-weight: bold; font-size: 1.2rem; color: #007bff}
-  .stat-label { display: block; font-size: 0.8rem; opacity: 0.8}
-  /* Formatting Demo Styles */ .formatting-demos { display: flex; flex-direction: column; gap: 1.5rem}
-  .demo-group h3 { margin: 0 0 0.75rem; font-size: 0.9rem}
-  .timestamp-examples, .filename-examples, .case-examples { display: flex; flex-direction: column; gap: 0.5rem}
-  .timestamp-row { display: grid; grid-template-columns: 1fr 100px 1fr; gap: 0.5rem; padding: 0.5rem; background: #f8f9fa; border-radius: 4px}
-  .timestamp-row span { font-size: 0.8rem}
-  .relative { font-weight: bold; color: #007bff}
-  .detailed { color: #666; cursor: help}
-  .filename-row { display: grid; grid-template-columns: 30px 1fr 1fr; gap: 0.5rem; padding: 0.5rem; background: #f8f9fa; border-radius: 4px; align-items: center}
-  .file-icon { font-size: 1.2rem; text-align: center}
-  .filename-row .original { font-family: monospace; font-size: 0.8rem}
-  .filename-row .truncated { font-family: monospace; font-size: 0.8rem; font-weight: bold; color: #007bff}
-  .case-row { margin-bottom: 0.5rem}
-  .case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem}
-  .case-title { font-weight: bold}
-  .case-meta { display: flex; gap: 0.5rem}
-  /* Sidebar Demo Styles */ .sidebar-controls { display: flex; flex-direction: column; gap: 1rem}
-  .control-group { display: flex; gap: 1rem; align-items: center}
-  .sidebar-info { color: inherit}
+  h2.section {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+  }
+  .section-wrap {
+    padding: 1rem;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background: #fff;
+  }
+  .meta {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-top: 0.4rem;
+  }
+  /* Session Demo Styles */
+  .session-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .status-display {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .user-details {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .session-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .user-stats h4 {
+    margin: 0.5rem 0;
+  }
+  .stats-grid-demo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+  .stat-card {
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .stat-number {
+    display: block;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #007bff;
+  }
+  .stat-label {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.8;
+  }
+  /* Formatting Demo Styles */
+  .formatting-demos {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .demo-group h3 {
+    margin: 0 0 0.75rem;
+    font-size: 0.9rem;
+  }
+  .timestamp-examples,
+  .filename-examples,
+  .case-examples {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .timestamp-row {
+    display: grid;
+    grid-template-columns: 1fr 100px 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+  }
+  .timestamp-row span {
+    font-size: 0.8rem;
+  }
+  .relative {
+    font-weight: bold;
+    color: #007bff;
+  }
+  .detailed {
+    color: #666;
+    cursor: help;
+  }
+  .filename-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: #f8f9fa;
+    border-radius: 4px;
+    align-items: center;
+  }
+  .file-icon {
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .filename-row .original {
+    font-family: monospace;
+    font-size: 0.8rem;
+  }
+  .filename-row .truncated {
+    font-family: monospace;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #007bff;
+  }
+  .case-row {
+    margin-bottom: 0.5rem;
+  }
+  .case-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+  }
+  .case-title {
+    font-weight: bold;
+  }
+  .case-meta {
+    display: flex;
+    gap: 0.5rem;
+  }
+  /* Sidebar Demo Styles */
+  .sidebar-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .control-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .sidebar-info {
+    color: inherit;
+  }
   /* Removed unused CSS selector: .feature-list { list-style: none; padding: 0; margin: 0.5rem 0} */
   /* Removed unused CSS selector: .feature-list li { margin: 0.25rem 0; padding: 0.25rem 0} */
-  .integration-notes { margin-top: 1rem}
-  .integration-notes ol { margin: 0.5rem 0; padding-left: 1.5rem}
-  .integration-notes li { margin: 0.25rem 0}
-  .avatar-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; text-align: center; }
-  .modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100; border: none; padding: 0; cursor: pointer; } /* Added border: none, padding: 0, cursor: pointer */
-  .modal-content { background: white; padding: 2rem; border-radius: 8px; }
-  .modal-content.sm { max-width: 300px; }
-  .modal-content.md { max-width: 500px; }
-  .modal-content.lg { max-width: 800px; }
+  .integration-notes {
+    margin-top: 1rem;
+  }
+  .integration-notes ol {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+  .integration-notes li {
+    margin: 0.25rem 0;
+  }
+  .avatar-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-align: center;
+  }
+  .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  } /* Added border: none, padding: 0, cursor: pointer */
+  .modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+  }
+  .modal-content.sm {
+    max-width: 300px;
+  }
+  .modal-content.md {
+    max-width: 500px;
+  }
+  .modal-content.lg {
+    max-width: 800px;
+  }
 </style>

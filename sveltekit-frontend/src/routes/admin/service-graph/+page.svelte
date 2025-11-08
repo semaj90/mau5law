@@ -132,6 +132,7 @@ import { onMount } from 'svelte';
 </main>
 
 <style>
-:global(body) {
-    background-color: #111827}
+  :global(body) {
+    background-color: #111827;
+  }
 </style>

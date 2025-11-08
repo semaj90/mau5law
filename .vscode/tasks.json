@@ -403,7 +403,10 @@
         "5000"
       ],
       "options": { "cwd": "${workspaceFolder}" },
-      "env": { "REDIS_URL": "redis://:redis@localhost:6379" },
+      "env": {
+        "REDIS_URL": "redis://:redis@localhost:6379",
+        "REDIS_PASSWORD": "${env:REDIS_PASSWORD}"
+      },
       "group": "build",
       "presentation": { "echo": true, "reveal": "always", "panel": "dedicated" },
       "problemMatcher": []
@@ -422,7 +425,11 @@
         "--capture-graph"
       ],
       "options": { "cwd": "${workspaceFolder}/sveltekit-frontend" },
-      "env": { "REDIS_URL": "redis://:redis@localhost:6379", "TORCH_CUDA_DEVICE": "0" },
+      "env": {
+        "REDIS_URL": "redis://:redis@localhost:6379",
+        "REDIS_PASSWORD": "${env:REDIS_PASSWORD}",
+        "TORCH_CUDA_DEVICE": "0"
+      },
       "group": "build",
       "presentation": { "echo": true, "reveal": "always", "panel": "dedicated" },
       "problemMatcher": []
@@ -436,6 +443,7 @@
         "cwd": "${workspaceFolder}/sveltekit-frontend",
         "env": {
           "REDIS_URL": "redis://:redis@localhost:6379",
+          "REDIS_PASSWORD": "${env:REDIS_PASSWORD}",
           "TORCH_CUDA_DEVICE": "0"
         }
       },
@@ -456,7 +464,11 @@
         "--benchmark-graph"
       ],
       "options": { "cwd": "${workspaceFolder}/sveltekit-frontend" },
-      "env": { "REDIS_URL": "redis://:redis@localhost:6379", "TORCH_CUDA_DEVICE": "0" },
+      "env": {
+        "REDIS_URL": "redis://:redis@localhost:6379",
+        "REDIS_PASSWORD": "${env:REDIS_PASSWORD}",
+        "TORCH_CUDA_DEVICE": "0"
+      },
       "group": "build",
       "presentation": { "echo": true, "reveal": "always", "panel": "dedicated" },
       "problemMatcher": []
@@ -1112,7 +1124,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-Command",
-        "docker compose up -d tensorrt-llm"
+        "$containerName = 'legal-ai-tensorrt-llm'; if (docker ps -a --format '{{.Names}}' | Select-String -Pattern $containerName) { Write-Host 'Container already exists, starting it...'; docker start $containerName } else { Write-Host 'Container does not exist, creating it...'; docker compose up -d tensorrt-llm }"
       ],
       "options": {
         "cwd": "${workspaceFolder}"

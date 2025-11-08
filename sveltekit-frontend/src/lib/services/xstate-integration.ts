@@ -1,10 +1,10 @@
-import { createActor, type AnyActorRef, type Snapshot } from "xstate";
-import { writable, type Writable } from "svelte/store";
+import { createActor, type AnyActorRef, type Snapshot } from 'xstate';
+import { writable, type Writable } from 'svelte/store';
 import {
   legalAIMachine,
   type LegalAIEvent,
   type LegalAIContext,
-} from "$lib/machines/legalAIMachine.v5";
+} from '$lib/machines/legalAIMachine.v5';
 
 // Create the actor for the legal AI machine
 const legalAIActor = createActor(legalAIMachine);

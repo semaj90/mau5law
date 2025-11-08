@@ -5,9 +5,9 @@ import type {
   HMMState,
   LegalEntity,
   NextStepPrediction,
-} from "$lib/types/sharedTypes";
-import { cognitiveCache, getRedisClient } from "$lib/server/cache";
-import { hmmStateMachine, LegalConversationState } from "./hmm-state-machine";
+} from '$lib/types/sharedTypes';
+import { cognitiveCache, getRedisClient } from '$lib/server/cache';
+import { hmmStateMachine, LegalConversationState } from './hmm-state-machine';
 
 const CONTEXT_TTL_SECONDS = Number(process.env.CONTEXT_STATE_TTL ?? 3600);
 const MAX_HISTORY_LENGTH = Number(process.env.CONTEXT_MAX_HISTORY ?? 50);
@@ -65,7 +65,7 @@ export class ContextualUnderstandingService {
       sessionId,
       userId,
       conversationHistory: [],
-      currentIntent: "greeting",
+      currentIntent: 'greeting',
       extractedEntities: [],
       hmmState: {
         currentState: LegalConversationState.GREETING,
@@ -157,10 +157,10 @@ export class ContextualUnderstandingService {
     const statuteRegex = /\b\d+\s+U\.S\.C\.\s*§\s*\d+\b/gi;
     const moneyRegex = /\$\s?\d+(?:,\d{3})*(?:\.\d{2})?/g;
 
-    this.collectMatches(entities, caseRegex, text, "case_number", 0.9);
-    this.collectMatches(entities, dateRegex, text, "date", 0.8);
-    this.collectMatches(entities, statuteRegex, text, "statute", 0.85);
-    this.collectMatches(entities, moneyRegex, text, "amount", 0.75);
+    this.collectMatches(entities, caseRegex, text, 'case_number', 0.9);
+    this.collectMatches(entities, dateRegex, text, 'date', 0.8);
+    this.collectMatches(entities, statuteRegex, text, 'statute', 0.85);
+    this.collectMatches(entities, moneyRegex, text, 'amount', 0.75);
 
     return entities;
   }
@@ -168,13 +168,13 @@ export class ContextualUnderstandingService {
   async getConversationSummary(sessionId: string, userId: string, maxTurns = 5): Promise<string> {
     const state = await this.getContextualState(sessionId, userId);
     const turns = state.conversationHistory.slice(-maxTurns);
-    if (turns.length === 0) return "No conversation history yet.";
+    if (turns.length === 0) return 'No conversation history yet.';
     return turns
       .map(
         (turn, idx) =>
-          `Turn ${idx + 1}\nUser: ${turn.userMessage}\nAssistant: ${turn.agentResponse ?? "[pending]"}`
+          `Turn ${idx + 1}\nUser: ${turn.userMessage}\nAssistant: ${turn.agentResponse ?? '[pending]'}`
       )
-      .join("\n\n");
+      .join('\n\n');
   }
 
   async clearContextualState(sessionId: string): Promise<void> {
@@ -184,7 +184,7 @@ export class ContextualUnderstandingService {
     if (redis) {
       await redis
         .del(key)
-        .catch((err) => console.warn("[context] Failed clearing Redis state", err));
+        .catch((err) => console.warn('[context] Failed clearing Redis state', err));
     }
   }
 
@@ -223,13 +223,13 @@ export class ContextualUnderstandingService {
     entities: LegalEntity[],
     regex: RegExp,
     text: string,
-    type: LegalEntity["type"] | "amount",
+    type: LegalEntity['type'] | 'amount',
     confidence: number
   ) {
     for (const match of text.matchAll(regex)) {
       if (!match[0]) continue;
       entities.push({
-        type: type as LegalEntity["type"],
+        type: type as LegalEntity['type'],
         value: match[0],
         confidence,
         span: { start: match.index ?? 0, end: (match.index ?? 0) + match[0].length },

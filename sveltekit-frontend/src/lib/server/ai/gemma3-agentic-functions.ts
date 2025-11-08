@@ -1,9 +1,9 @@
-import type { AttachmentMetadata, LegalEntity, NextStepPrediction } from "$lib/types/sharedTypes";
-import { embeddingGemma } from "./embeddinggemma-service";
-import { contextualUnderstanding } from "./contextual-understanding-service";
-import { generateCompletion, type OllamaGenerateResponse } from "./ollama-client";
+import type { AttachmentMetadata, LegalEntity, NextStepPrediction } from '$lib/types/sharedTypes';
+import { embeddingGemma } from './embeddinggemma-service';
+import { contextualUnderstanding } from './contextual-understanding-service';
+import { generateCompletion, type OllamaGenerateResponse } from './ollama-client';
 
-const DEFAULT_CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL ?? "gemma3:latest";
+const DEFAULT_CHAT_MODEL = process.env.OLLAMA_CHAT_MODEL ?? 'gemma3:latest';
 
 export interface AgenticGemma3Request {
   prompt: string;
@@ -56,7 +56,7 @@ export const agenticGemma3 = {
       const embeddingResult = await embeddingGemma.embed(request.prompt, { useCache: true });
       embedding = embeddingResult.embedding;
     } catch (err) {
-      console.warn("[agenticGemma3] Failed to embed prompt:", err);
+      console.warn('[agenticGemma3] Failed to embed prompt:', err);
     }
 
     await contextualUnderstanding.updateContextualState(
@@ -97,19 +97,19 @@ export const agenticGemma3 = {
     attachments?: AttachmentMetadata[]
   ): string {
     const parts: string[] = [];
-    parts.push("You are a legal AI assistant embedded inside a contextual chat system.");
+    parts.push('You are a legal AI assistant embedded inside a contextual chat system.');
     parts.push(
-      "Respond concisely, cite statutes when relevant, and decide when to call functions."
+      'Respond concisely, cite statutes when relevant, and decide when to call functions.'
     );
-    parts.push("");
+    parts.push('');
     parts.push(`Current HMM State: ${state.hmmState.currentState} (${state.currentIntent})`);
     parts.push(`Confidence: ${(state.confidence * 100).toFixed(1)}%`);
 
     if (attachments && attachments.length > 0) {
-      parts.push("");
-      parts.push("User provided attachments:");
+      parts.push('');
+      parts.push('User provided attachments:');
       attachments.forEach((attachment, index) => {
-        const label = attachment.originalName ?? attachment.key.split("/").pop() ?? attachment.key;
+        const label = attachment.originalName ?? attachment.key.split('/').pop() ?? attachment.key;
         parts.push(
           `${index + 1}. ${label} (${attachment.contentType}; ${this.describeBytes(attachment.size)})`
         );
@@ -120,24 +120,24 @@ export const agenticGemma3 = {
       const topEntities = state.extractedEntities
         .slice(-5)
         .map((entity) => `${entity.type}: ${entity.value}`);
-      parts.push("");
-      parts.push("Known entities:");
-      parts.push(topEntities.map((value) => `- ${value}`).join("\n"));
+      parts.push('');
+      parts.push('Known entities:');
+      parts.push(topEntities.map((value) => `- ${value}`).join('\n'));
     }
 
     if (state.conversationHistory.length > 0) {
       const recent = state.conversationHistory.slice(-3);
-      parts.push("");
-      parts.push("Recent turns:");
+      parts.push('');
+      parts.push('Recent turns:');
       recent.forEach((turn, idx) => {
         parts.push(`${idx + 1}. User: ${turn.userMessage}`);
-        parts.push(`   Assistant: ${turn.agentResponse ?? "[pending]"}`);
+        parts.push(`   Assistant: ${turn.agentResponse ?? '[pending]'}`);
       });
     }
 
     if (state.nextStepPredictions.length > 0) {
-      parts.push("");
-      parts.push("Likely next actions:");
+      parts.push('');
+      parts.push('Likely next actions:');
       state.nextStepPredictions.slice(0, 3).forEach((prediction, idx) => {
         parts.push(
           `${idx + 1}. ${prediction.action} (${Math.round(prediction.confidence * 100)}% confidence) — ${prediction.description}`
@@ -145,15 +145,15 @@ export const agenticGemma3 = {
       });
     }
 
-    parts.push("");
-    parts.push("User prompt:");
+    parts.push('');
+    parts.push('User prompt:');
     parts.push(prompt);
-    parts.push("");
+    parts.push('');
     parts.push(
-      "If a function call is required, output lines like `FUNCTION_CALL: functionName(param=value, ...)` before your final answer."
+      'If a function call is required, output lines like `FUNCTION_CALL: functionName(param=value, ...)` before your final answer.'
     );
 
-    return parts.join("\n");
+    return parts.join('\n');
   },
 
   parseFunctionCalls(text: string): AgenticFunctionCall[] {
@@ -162,11 +162,11 @@ export const agenticGemma3 = {
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(text)) !== null) {
-      const [ name, paramsRaw] = match;
+      const [name, paramsRaw] = match;
       const parameters: Record<string, unknown> = {};
       if (paramsRaw.trim().length > 0) {
-        for (const chunk of paramsRaw.split(",")) {
-          const [key, rawValue] = chunk.split("=").map((part) => part.trim());
+        for (const chunk of paramsRaw.split(',')) {
+          const [key, rawValue] = chunk.split('=').map((part) => part.trim());
           if (!key) continue;
           try {
             parameters[key] = JSON.parse(rawValue);
@@ -183,11 +183,11 @@ export const agenticGemma3 = {
 
   inferIntent(prompt: string): string {
     const lowered = prompt.toLowerCase();
-    if (lowered.includes("risk")) return "risk_assessment";
-    if (lowered.includes("precedent") || lowered.includes("case law")) return "legal_research";
-    if (lowered.includes("recommend") || lowered.includes("next step")) return "recommendation";
-    if (lowered.includes("document") || lowered.includes("evidence")) return "document_analysis";
-    return "general_inquiry";
+    if (lowered.includes('risk')) return 'risk_assessment';
+    if (lowered.includes('precedent') || lowered.includes('case law')) return 'legal_research';
+    if (lowered.includes('recommend') || lowered.includes('next step')) return 'recommendation';
+    if (lowered.includes('document') || lowered.includes('evidence')) return 'document_analysis';
+    return 'general_inquiry';
   },
 
   estimateConfidence(response: OllamaGenerateResponse, predictions: NextStepPrediction[]): number {
@@ -197,8 +197,8 @@ export const agenticGemma3 = {
   },
 
   describeBytes(size: number): string {
-    if (!Number.isFinite(size) || size <= 0) return "unknown size";
-    const units = ["B", "KB", "MB", "GB"];
+    if (!Number.isFinite(size) || size <= 0) return 'unknown size';
+    const units = ['B', 'KB', 'MB', 'GB'];
     let idx = 0;
     let value = size;
     while (value >= 1024 && idx < units.length - 1) {

@@ -5,7 +5,7 @@
 
 export interface Context7CategoryAnalysisItem {
   category: string;
-  status: "completed" | "pending";
+  status: 'completed' | 'pending';
   estimated_fixes: number;
   multicore_analysis?: {
     context?: string;
@@ -20,35 +20,35 @@ export interface Context7ErrorAnalysisResult {
 
 const DEFAULT_CATEGORIES: Context7CategoryAnalysisItem[] = [
   {
-    category: "svelte5_migration",
-    status: "completed",
+    category: 'svelte5_migration',
+    status: 'completed',
     estimated_fixes: 12,
     multicore_analysis: {
-      context: "Migration warnings and state rune updates",
+      context: 'Migration warnings and state rune updates',
     },
   },
   {
-    category: "ui_component_mismatch",
-    status: "completed",
+    category: 'ui_component_mismatch',
+    status: 'completed',
     estimated_fixes: 7,
     multicore_analysis: {
-      context: "Props and slot structure mismatches",
+      context: 'Props and slot structure mismatches',
     },
   },
   {
-    category: "binding_issues",
-    status: "completed",
+    category: 'binding_issues',
+    status: 'completed',
     estimated_fixes: 5,
     multicore_analysis: {
-      context: "Non-reactive updates and invalid bindings",
+      context: 'Non-reactive updates and invalid bindings',
     },
   },
   {
-    category: "css_unused_selectors",
-    status: "completed",
+    category: 'css_unused_selectors',
+    status: 'completed',
     estimated_fixes: 9,
     multicore_analysis: {
-      context: "Dead styles and selector drift",
+      context: 'Dead styles and selector drift',
     },
   },
 ];
@@ -66,10 +66,10 @@ export async function analyzeCurrentErrors(): Promise<Context7ErrorAnalysisResul
     total_estimated_errors,
     category_analysis: DEFAULT_CATEGORIES,
     overall_recommendations: [
-      "Prioritize Svelte 5 migration errors first",
-      "Refactor non-reactive locals to $state or derived stores",
-      "Normalize component prop naming consistency",
-      "Purge unused CSS to reduce bundle size",
+      'Prioritize Svelte 5 migration errors first',
+      'Refactor non-reactive locals to $state or derived stores',
+      'Normalize component prop naming consistency',
+      'Purge unused CSS to reduce bundle size',
     ],
   };
 }

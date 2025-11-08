@@ -1,14 +1,14 @@
 /** * Cognitive Cache Integration Service * Thread-safe JSONB/JSON operations with GPU acceleration support * Handles concurrent access patterns for legal AI database operations */
-import { writable, type Writable } from "svelte/store";
-import { browser } from "$app/environment";
-import { createHash } from "crypto"; // For SHA256 hashing on the server
+import { writable, type Writable } from 'svelte/store';
+import { browser } from '$app/environment';
+import { createHash } from 'crypto'; // For SHA256 hashing on the server
 
 // Define a minimal RedisClientType to satisfy type-checking without a direct dependency on 'redis'.
 // The actual client from '$lib/server/cache/redis' should match this shape.
 type RedisClientType = {
   isReady: boolean;
   get(key: string): Promise<string | null>;
-  set(key: string, value: string, options?: { EX: number }): Promise<"OK" | null>;
+  set(key: string, value: string, options?: { EX: number }): Promise<'OK' | null>;
   del(key: string | string[]): Promise<number>;
 };
 
@@ -16,11 +16,11 @@ type RedisClientType = {
 let redisClient: RedisClientType | undefined; // Type will be RedisClientType from 'redis'
 if (!browser) {
   // Dynamically import to avoid bundling for client
-  import("$lib/server/cache/redis")
+  import('$lib/server/cache/redis')
     .then(async (module) => {
       redisClient = await module.getRedisClient();
     })
-    .catch((e) => console.error("Failed to load Redis client:", e));
+    .catch((e) => console.error('Failed to load Redis client:', e));
 }
 
 // Thread synchronization primitives
@@ -75,7 +75,7 @@ const internalCache: ThreadSafeCache = {
   mutex: new AsyncMutex(),
   data: new Map(),
   jsonbIndex: new Map(),
-  gpuAccelerated: browser && "gpu" in navigator,
+  gpuAccelerated: browser && 'gpu' in navigator,
 };
 interface CacheStoreState {
   totalEntries: number;
@@ -88,7 +88,7 @@ export const cacheStore: Writable<CacheStoreState> = writable({
   totalEntries: 0,
   gpuAccelerated: internalCache.gpuAccelerated,
   threadSafe: true,
-  lastOperation: "initialized",
+  lastOperation: 'initialized',
 });
 /** * Thread-safe JSONB document storage with GPU acceleration */
 export class CognitiveCacheService {
@@ -106,17 +106,17 @@ export class CognitiveCacheService {
   }
   /** * Initialize WebGPU context for accelerated operations */
   private async initializeGPUContext(): Promise<void> {
-    if (browser && "gpu" in navigator) {
+    if (browser && 'gpu' in navigator) {
       try {
         // Assuming @webgpu/types is installed, navigator.gpu should be typed as GPU
         const adapter = await navigator.gpu.requestAdapter();
         if (adapter) {
           this.gpuContext = await adapter.requestDevice();
           internalCache.gpuAccelerated = true;
-          console.log("🚀 GPU acceleration enabled for cognitive cache");
+          console.log('🚀 GPU acceleration enabled for cognitive cache');
         }
       } catch (error) {
-        console.warn("GPU initialization failed, falling back to CPU: ", error);
+        console.warn('GPU initialization failed, falling back to CPU: ', error);
         internalCache.gpuAccelerated = false;
       }
     }
@@ -155,7 +155,7 @@ export class CognitiveCacheService {
       }));
       return true;
     } catch (error) {
-      console.error("Failed to store JSONB document: ", error);
+      console.error('Failed to store JSONB document: ', error);
       return false;
     } finally {
       release();
@@ -182,7 +182,7 @@ export class CognitiveCacheService {
   async queryJsonb(
     jsonPath: string,
     value: unknown, // Changed from: unknown,
-    operator: "@>" | "@?" | "@@" | "->" | "->>" = "@>"
+    operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
   ): Promise<JsonbDocument[]> {
     const release = await internalCache.mutex.acquire();
     try {
@@ -224,7 +224,7 @@ export class CognitiveCacheService {
       document.metadata.gpuProcessed = true;
       console.log(`🎯 GPU processed document: ${document.id}`);
     } catch (error) {
-      console.warn("GPU processing failed, using CPU fallback: ", error);
+      console.warn('GPU processing failed, using CPU fallback: ', error);
       document.metadata.gpuProcessed = false;
     }
   }
@@ -242,7 +242,7 @@ export class CognitiveCacheService {
     // Changed from: unknown
     if (depth > 3) return true; // Deep nesting
     if (Array.isArray(obj) && obj.length > 100) return true; // Large arrays
-    if (typeof obj === "object" && obj !== null) {
+    if (typeof obj === 'object' && obj !== null) {
       const keys = Object.keys(obj);
       if (keys.length > 20) return true; // Many properties
       return keys.some((key) =>
@@ -262,14 +262,14 @@ export class CognitiveCacheService {
     try {
       const pathValue = this.getJsonPathValue(content, jsonPath);
       switch (operator) {
-        case "@>": // Contains
+        case '@>': // Contains
           return JSON.stringify(pathValue).includes(JSON.stringify(value));
-        case "@?": // Path exists
+        case '@?': // Path exists
           return pathValue !== undefined;
-        case "@@": // Text search
+        case '@@': // Text search
           return JSON.stringify(pathValue).toLowerCase().includes(String(value).toLowerCase());
-        case "->": // Extract JSON: object
-        case "->>": // Extract as text
+        case '->': // Extract JSON: object
+        case '->>': // Extract as text
           return pathValue === value;
         default:
           return false;
@@ -281,15 +281,15 @@ export class CognitiveCacheService {
   /** * Extract value from JSON path */
   private getJsonPathValue(obj: unknown, path: string): unknown {
     // Changed from: unknown
-    const keys = path.split(".");
+    const keys = path.split('.');
     let current = obj;
     for (const key of keys) {
-      if (current === null || current === undefined || typeof current !== "object")
+      if (current === null || current === undefined || typeof current !== 'object')
         return undefined;
-      if (key.includes("[") && key.includes("]")) {
+      if (key.includes('[') && key.includes(']')) {
         // Handle array access like: "items[0]"
-        const [arrayKey, indexStr] = key.split("[");
-        const index = parseInt(indexStr.replace("]", ""), 10);
+        const [arrayKey, indexStr] = key.split('[');
+        const index = parseInt(indexStr.replace(']', ''), 10);
         current = (current as Record<string, unknown[]>)[arrayKey]?.[index];
       } else {
         current = (current as Record<string, unknown>)[key];
@@ -303,7 +303,7 @@ export class CognitiveCacheService {
       return `browser-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     }
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const process = require("process");
+    const process = require('process');
     return `server-${process.pid}-${Date.now()}`;
   }
   /** * Clear cache with thread synchronization */
@@ -312,7 +312,7 @@ export class CognitiveCacheService {
     try {
       internalCache.data.clear();
       internalCache.jsonbIndex.clear();
-      cacheStore.update((state) => ({ ...state, totalEntries: 0, lastOperation: "cleared" }));
+      cacheStore.update((state) => ({ ...state, totalEntries: 0, lastOperation: 'cleared' }));
     } finally {
       release();
     }
@@ -351,7 +351,7 @@ export async function retrieveJsonbDocument(id: string): Promise<JsonbDocument |
 export async function queryJsonb(
   jsonPath: string,
   value: unknown,
-  operator: "@>" | "@?" | "@@" | "->" | "->>" = "@>"
+  operator: '@>' | '@?' | '@@' | '->' | '->>' = '@>'
 ): Promise<JsonbDocument[]> {
   return cognitiveCache.queryJsonb(jsonPath, value, operator);
 }
@@ -365,7 +365,7 @@ export interface LegalDocument {
     date: string;
     parties: unknown[];
     classification: string[];
-    riskLevel: "low" | "medium" | "high" | "critical";
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';
   };
   embedding?: Float32Array;
 }
@@ -373,7 +373,7 @@ export interface LegalDocument {
 /** * Store legal document with optimized JSONB structure */
 export async function storeLegalDocument(document: LegalDocument): Promise<boolean> {
   return await storeJsonbDocument(document.caseId, document, {
-    documentType: "legal",
+    documentType: 'legal',
     indexed: true,
     searchable: true,
   });
@@ -381,11 +381,11 @@ export async function storeLegalDocument(document: LegalDocument): Promise<boole
 
 /** * Query legal documents by metadata */
 export async function queryLegalDocuments(
-  criteria: Partial<LegalDocument["metadata"]>
+  criteria: Partial<LegalDocument['metadata']>
 ): Promise<LegalDocument[]> {
   const results: LegalDocument[] = [];
   for (const [key, value] of Object.entries(criteria)) {
-    const docs = await queryJsonb(`metadata.${key}`, value, "@>");
+    const docs = await queryJsonb(`metadata.${key}`, value, '@>');
     results.push(...docs.map((d) => d.content as LegalDocument));
   }
   // Remove duplicates
@@ -400,13 +400,13 @@ interface CacheContext {
   action: string;
   documentId?: string;
   documentType?: string;
-  priority: "low" | "medium" | "high";
+  priority: 'low' | 'medium' | 'high';
 }
 
 /** * Cache Entry Metadata * Contains metadata for each cache entry, including key, type, and context */
 interface CacheEntryMetadata {
   key: string;
-  type: "legal-data" | "embedding" | "llm-result" | "session";
+  type: 'legal-data' | 'embedding' | 'llm-result' | 'session';
   context: CacheContext;
 }
 
@@ -423,13 +423,13 @@ async function sha256(str: string): Promise<string> {
     // In browser, use Web Crypto API
     const textEncoder = new TextEncoder();
     const data = textEncoder.encode(str);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hexHash = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+    const hexHash = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
     return hexHash;
   } else {
     // In Node.js, use 'crypto' module
-    return createHash("sha256").update(str).digest("hex");
+    return createHash('sha256').update(str).digest('hex');
   }
 }
 
@@ -440,7 +440,7 @@ class CognitiveCacheManager {
   >();
 
   constructor() {
-    console.log("CognitiveCacheManager initialized.");
+    console.log('CognitiveCacheManager initialized.');
   }
 
   async set(
@@ -472,7 +472,7 @@ class CognitiveCacheManager {
     }
   }
 
-  async get<T>(key: string, metadataType?: CacheEntryMetadata["type"]): Promise<T | null> {
+  async get<T>(key: string, metadataType?: CacheEntryMetadata['type']): Promise<T | null> {
     let entry:
       | { data: unknown; metadata: CacheEntryMetadata; options: CacheOptions; timestamp: number }
       | undefined;
@@ -481,8 +481,8 @@ class CognitiveCacheManager {
       try {
         const redisKey = await this.getRedisKey({
           key,
-          type: metadataType || "legal-data",
-          context: { action: "get", priority: "medium" },
+          type: metadataType || 'legal-data',
+          context: { action: 'get', priority: 'medium' },
         }); // Default type if not provided
         const cachedData = await redisClient.get(redisKey);
         if (cachedData) {
@@ -510,8 +510,8 @@ class CognitiveCacheManager {
       try {
         const redisKey = await this.getRedisKey({
           key,
-          type: metadataType || "legal-data",
-          context: { action: "get", priority: "medium" },
+          type: metadataType || 'legal-data',
+          context: { action: 'get', priority: 'medium' },
         });
         await redisClient.del(redisKey);
       } catch (error) {
@@ -523,13 +523,13 @@ class CognitiveCacheManager {
     return null;
   }
 
-  async invalidate(key: string, metadataType?: CacheEntryMetadata["type"]): Promise<void> {
+  async invalidate(key: string, metadataType?: CacheEntryMetadata['type']): Promise<void> {
     if (!browser && redisClient && redisClient.isReady) {
       try {
         const redisKey = await this.getRedisKey({
           key,
-          type: metadataType || "legal-data",
-          context: { action: "invalidate", priority: "medium" },
+          type: metadataType || 'legal-data',
+          context: { action: 'invalidate', priority: 'medium' },
         });
         await redisClient.del(redisKey);
         console.log(`[CognitiveCache] Invalidated Redis cache entry for key: ${redisKey}`);
@@ -544,10 +544,10 @@ class CognitiveCacheManager {
   // Helper to generate Redis key following the langcache pattern
   private async getRedisKey(metadata: CacheEntryMetadata): Promise<string> {
     // For 'embedding' and 'llm-result' types, use the langcache pattern
-    if (metadata.type === "embedding" || metadata.type === "llm-result") {
+    if (metadata.type === 'embedding' || metadata.type === 'llm-result') {
       // Assuming 'key' here might be a prompt or a combination that can be hashed
       // For a real scenario, 'model' would be part of metadata.context or metadata itself
-      const model = metadata.context?.documentType || "default"; // Placeholder for model name
+      const model = metadata.context?.documentType || 'default'; // Placeholder for model name
       const shaPrompt = await sha256(metadata.key); // Hash the key (e.g., prompt)
       return `langcache:${model}:${shaPrompt}`;
     }

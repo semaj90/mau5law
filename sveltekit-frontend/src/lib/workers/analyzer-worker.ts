@@ -8,7 +8,7 @@
  * - Streaming results to main thread
  */
 
-import { Ollama } from "ollama/browser";
+import { Ollama } from 'ollama/browser';
 
 // Worker state
 let ollama: Ollama | null = null;
@@ -18,7 +18,7 @@ let processingQueue: Map<string, any> = new Map();
 // Initialize Ollama client
 function initOllama(config: { url: string; model: string }) {
   ollama = new Ollama({
-    host: config.url || "http://localhost:11434",
+    host: config.url || 'http://localhost:11434',
   });
   console.log(`[Worker ${workerId}] Ollama initialized with ${config.model}`);
 }
@@ -36,11 +36,11 @@ function parseJSON(data: string): unknown {
 
 // Summarize error chunk with Gemma3
 async function summarizeChunk(chunk: unknown, prompt: string): Promise<string> {
-  if (!ollama) throw new Error("Ollama not initialized");
+  if (!ollama) throw new Error('Ollama not initialized');
 
   try {
     const response = await ollama.generate({
-      model: "gemma3-legal:latest",
+      model: 'gemma3-legal:latest',
       prompt:
         prompt ||
         `Analyze this error data and extract key insights:\n${JSON.stringify(chunk, null, 2)}`,
@@ -60,11 +60,11 @@ async function summarizeChunk(chunk: unknown, prompt: string): Promise<string> {
 
 // Generate embedding with embeddinggemma
 async function generateEmbedding(text: string): Promise<number[]> {
-  if (!ollama) throw new Error("Ollama not initialized");
+  if (!ollama) throw new Error('Ollama not initialized');
 
   try {
     const response = await ollama.embeddings({
-      model: "embeddinggemma:latest",
+      model: 'embeddinggemma:latest',
       prompt: text,
     });
 
@@ -87,7 +87,7 @@ async function processChunk(data: {
   // Step 1: Parse JSON (CPU SIMD)
   const parsed = parseJSON(data.jsonData);
   if (!parsed) {
-    return { id: data.id, error: "JSON parse failed" };
+    return { id: data.id, error: 'JSON parse failed' };
   }
 
   // Step 2: Generate summary (GPU via Ollama)
@@ -119,52 +119,52 @@ self.onmessage = async (event: MessageEvent) => {
   const { type, data } = event.data;
 
   switch (type) {
-    case "INIT":
+    case 'INIT':
       workerId = data.workerId || 0;
       initOllama(data.config);
-      self.postMessage({ type: "READY", workerId });
+      self.postMessage({ type: 'READY', workerId });
       break;
 
-    case "PROCESS_CHUNK":
+    case 'PROCESS_CHUNK':
       try {
         const result = await processChunk(data);
-        self.postMessage({ type: "CHUNK_COMPLETE", result });
+        self.postMessage({ type: 'CHUNK_COMPLETE', result });
       } catch (err) {
         self.postMessage({
-          type: "CHUNK_ERROR",
+          type: 'CHUNK_ERROR',
           error: err.message,
           id: data.id,
         });
       }
       break;
 
-    case "PROCESS_BATCH":
+    case 'PROCESS_BATCH':
       // Process multiple chunks in parallel
       const results = await Promise.allSettled(
         data.chunks.map((chunk: unknown) => processChunk(chunk))
       );
 
       self.postMessage({
-        type: "BATCH_COMPLETE",
+        type: 'BATCH_COMPLETE',
         results: results.map((r) =>
-          r.status === "fulfilled" ? r.value : { error: r.reason.message }
+          r.status === 'fulfilled' ? r.value : { error: r.reason.message }
         ),
       });
       break;
 
-    case "HEALTH_CHECK":
+    case 'HEALTH_CHECK':
       self.postMessage({
-        type: "HEALTH_STATUS",
+        type: 'HEALTH_STATUS',
         workerId,
         queueSize: processingQueue.size,
         ollamaReady: ollama !== null,
       });
       break;
 
-    case "SHUTDOWN":
+    case 'SHUTDOWN':
       processingQueue.clear();
       ollama = null;
-      self.postMessage({ type: "SHUTDOWN_COMPLETE", workerId });
+      self.postMessage({ type: 'SHUTDOWN_COMPLETE', workerId });
       break;
 
     default:
@@ -175,7 +175,7 @@ self.onmessage = async (event: MessageEvent) => {
 // Error handler
 self.onerror = (error: ErrorEvent) => {
   console.error(`[Worker ${workerId}] Unhandled error:`, error);
-  self.postMessage({ type: "WORKER_ERROR", error: error.message });
+  self.postMessage({ type: 'WORKER_ERROR', error: error.message });
 };
 
 // Export for TypeScript

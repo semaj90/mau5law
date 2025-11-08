@@ -10,7 +10,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
 </main>
 
 <style>
-.create-case-page {
+  .create-case-page {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem;
@@ -61,7 +61,10 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     font-size: 1rem;
   }
 
-  .form-field, input:focus, .form-field textarea:focus, .form-field select:focus {
+  .form-field,
+  input:focus,
+  .form-field textarea:focus,
+  .form-field select:focus {
     outline: none;
     border-color: #0066cc;
   }

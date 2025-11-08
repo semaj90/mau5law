@@ -1,124 +1,130 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
-	import { derived, writable } from 'svelte/store';
-	import * as unified from '$lib/stores/unified';
+  import { browser } from '$app/environment';
+  import { derived, writable } from 'svelte/store';
+  import * as unified from '$lib/stores/unified';
   import LoginButton from '$lib/components/auth/LoginButton.svelte';
 
-	// Simple file uploader utility (bits-ui doesn't have createFileUploader)'
-	function createFileUploader(url: string) {
-		type UploadFile = { id: string, file: File, name: string, progress: number, error?: boolean };
-		type UploadEvents = {
-			success?: ((data: unknown) => void)[];
-			error?: ((err: unknown) => void)[];
-		};
-		// typed $state to avoid 'unknown' warnings
-		let events = $state<UploadEvents>({});
-		let files = $state<UploadFile[]>([]);
+  // Simple file uploader utility (bits-ui doesn't have createFileUploader)'
+  function createFileUploader(url: string) {
+    type UploadFile = { id: string; file: File; name: string; progress: number; error?: boolean };
+    type UploadEvents = {
+      success?: ((data: unknown) => void)[];
+      error?: ((err: unknown) => void)[];
+    };
+    // typed $state to avoid 'unknown' warnings
+    let events = $state<UploadEvents>({});
+    let files = $state<UploadFile[]>([]);
 
-		async function uploadImpl(file: File): Promise<any> {
-			try {
-				const formData = new FormData();
-				formData.append('file', file);
+    async function uploadImpl(file: File): Promise<any> {
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
 
-				const response = await fetch(url, {
-					method: 'POST',
-					body: formData
-				});
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData,
+        });
 
-				if (!response.ok) {
-					throw new Error(`Upload failed: ${response.statusText}`);
-				}
+        if (!response.ok) {
+          throw new Error(`Upload failed: ${response.statusText}`);
+        }
 
-				const result = await response.json();
-				events.success?.forEach(fn => fn(result));
-				return result;
-			} catch (error) {
-				events.error?.forEach(fn => fn(error));
-				throw error;
-			}
-		}
+        const result = await response.json();
+        events.success?.forEach((fn) => fn(result));
+        return result;
+      } catch (error) {
+        events.error?.forEach((fn) => fn(error));
+        throw error;
+      }
+    }
 
-		return {
-			// exposes a simple array the template can iterate over
-			files,
-			// Accept FileList or Array<File>, push metadata and start upload
-			addFiles: (list: FileList | File[]) => {
-				const arr = Array.from(list as FileList | File[]) as File[];
-				arr.forEach((file) => {
-					const id = browser && (crypto as any).randomUUID ? (crypto as any).randomUUID() : `${Date.now()}-${Math.random()}`;
-					const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
-					files.push(fileObj);
-					uploadImpl(file)
-						.then(() => {
-							fileObj.progress = 100;
-							events.success?.forEach(fn => fn(fileObj));
-						})
-						.catch(() => {
-							fileObj.progress = 0;
-							fileObj.error = true;
-							events.error?.forEach(fn => fn(fileObj));
-						});
-				});
-			},
-			upload: uploadImpl,
-			on: (event: keyof UploadEvents, callback: (data: unknown) => void) => {
-				if (event === 'success') {
-					if (!events.success) events.success = [];
-					events.success.push(callback);
-				} else if (event === 'error') {
-					if (!events.error) events.error = [];
-					events.error.push(callback);
-				}
-			}
-		};
-	}
+    return {
+      // exposes a simple array the template can iterate over
+      files,
+      // Accept FileList or Array<File>, push metadata and start upload
+      addFiles: (list: FileList | File[]) => {
+        const arr = Array.from(list as FileList | File[]) as File[];
+        arr.forEach((file) => {
+          const id =
+            browser && (crypto as any).randomUUID
+              ? (crypto as any).randomUUID()
+              : `${Date.now()}-${Math.random()}`;
+          const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
+          files.push(fileObj);
+          uploadImpl(file)
+            .then(() => {
+              fileObj.progress = 100;
+              events.success?.forEach((fn) => fn(fileObj));
+            })
+            .catch(() => {
+              fileObj.progress = 0;
+              fileObj.error = true;
+              events.error?.forEach((fn) => fn(fileObj));
+            });
+        });
+      },
+      upload: uploadImpl,
+      on: (event: keyof UploadEvents, callback: (data: unknown) => void) => {
+        if (event === 'success') {
+          if (!events.success) events.success = [];
+          events.success.push(callback);
+        } else if (event === 'error') {
+          if (!events.error) events.error = [];
+          events.error.push(callback);
+        }
+      },
+    };
+  }
 
-	// Create safe local stores that fall back if unified exports are missing
-	const recommendations = (unified as any).recommendations ?? writable<any[]>([]);
-	const partialRecommendations = (unified as any).partialRecommendations ?? writable<any[]>([]);
-	const engineState = (unified as any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
-	const errorMessage = (unified as any).errorMessage ?? writable<string>('');
-	const runQuery =
-		(unified as any).runQuery ??
-		(async (_q: string) => {
-			console.warn('runQuery stub called - unified.runQuery not available');
-		});
+  // Create safe local stores that fall back if unified exports are missing
+  const recommendations = (unified as any).recommendations ?? writable<any[]>([]);
+  const partialRecommendations = (unified as any).partialRecommendations ?? writable<any[]>([]);
+  const engineState =
+    (unified as any).engineState ?? writable<'idle' | 'processing' | 'success' | 'failure'>('idle');
+  const errorMessage = (unified as any).errorMessage ?? writable<string>('');
+  const runQuery =
+    (unified as any).runQuery ??
+    (async (_q: string) => {
+      console.warn('runQuery stub called - unified.runQuery not available');
+    });
 
-	// Use svelte/store derived and coerce values into arrays to avoid type errors
-	let displayRecommendations = derived(
-		[recommendations, partialRecommendations, engineState],
-		([$recs, $partial, $state]) => {
-			// cast to unknown before accessing .items to satisfy TS
-			const recsArr = Array.isArray($recs) ? $recs : (($recs as { items?: any[] })?.items ?? []);
-			const partialArr = Array.isArray($partial) ? $partial : (($partial as { items?: any[] })?.items ?? []);
-			// show streaming partials while processing, otherwise final recommendations
-			if ($state === 'processing' && partialArr.length) return partialArr;
-			return recsArr.length ? recsArr : partialArr;
-		}
-	);
+  // Use svelte/store derived and coerce values into arrays to avoid type errors
+  let displayRecommendations = derived(
+    [recommendations, partialRecommendations, engineState],
+    ([$recs, $partial, $state]) => {
+      // cast to unknown before accessing .items to satisfy TS
+      const recsArr = Array.isArray($recs) ? $recs : (($recs as { items?: any[] })?.items ?? []);
+      const partialArr = Array.isArray($partial)
+        ? $partial
+        : (($partial as { items?: any[] })?.items ?? []);
+      // show streaming partials while processing, otherwise final recommendations
+      if ($state === 'processing' && partialArr.length) return partialArr;
+      return recsArr.length ? recsArr : partialArr;
+    }
+  );
 
-	// --- Add missing reactive state used by the template / health checks ---
-	let systemStatus: Record<string, string> = {
-		database: 'checking',
-		redis: 'checking',
-		ollama: 'checking',
-		gpu: 'checking',
-		workers: 'checking'
-	};
+  // --- Add missing reactive state used by the template / health checks ---
+  let systemStatus: Record<string, string> = {
+    database: 'checking',
+    redis: 'checking',
+    ollama: 'checking',
+    gpu: 'checking',
+    workers: 'checking',
+  };
   let workerDetails = {
-		ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
-		autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 }
-	};
+    ocr: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+    embedding: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+    autotag: { status: 'checking', healthy: false, queueDepth: 0, processedJobs: 0 },
+  };
   // typed stats and reactive primitives to silence 'unknown' type errors
-	let stats = $state<{ totalCases: number; totalEvidence: number; processingJobs: number }>({
-		totalCases: 0,
-		totalEvidence: 0,
-		processingJobs: 0
-	});
-	let loading = $state<boolean>(true);
-	let userQuery = $state<string>('');
-	let registerOpen = $state<boolean>(false);
+  let stats = $state<{ totalCases: number; totalEvidence: number; processingJobs: number }>({
+    totalCases: 0,
+    totalEvidence: 0,
+    processingJobs: 0,
+  });
+  let loading = $state<boolean>(true);
+  let userQuery = $state<string>('');
+  let registerOpen = $state<boolean>(false);
   let registerDialogRef: HTMLDialogElement; // Reference to the native dialog element
   // ---------------------------------------------------------------
 
@@ -127,147 +133,156 @@
     registerDialogRef?.showModal(); // Use showModal() for native dialog
   }
 
-	// Check system health on mount
-	$effect(() => {
-		if (browser) {
-			checkSystemHealth();
-			const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
-			return () => clearInterval(interval);}
-	});
+  // Check system health on mount
+  $effect(() => {
+    if (browser) {
+      checkSystemHealth();
+      const interval = setInterval(checkSystemHealth, 30000); // Check every 30s
+      return () => clearInterval(interval);
+    }
+  });
   // Type-safe system health check
   async function checkSystemHealth(): Promise<void> {
-		try {
-			interface WorkerStatus {
-				name?: string;
-				status?: string;
-				healthy?: boolean;
-				queueDepth?: number;
-				processedJobs?: number;
-			}
+    try {
+      interface WorkerStatus {
+        name?: string;
+        status?: string;
+        healthy?: boolean;
+        queueDepth?: number;
+        processedJobs?: number;
+      }
 
-			// safe fetch helpers with Response fallback
-			const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false } as Response));
-			systemStatus.database = dbCheck.ok ? 'online' : 'offline';
+      // safe fetch helpers with Response fallback
+      const dbCheck = await fetch('/api/health/database').catch(() => ({ ok: false }) as Response);
+      systemStatus.database = dbCheck.ok ? 'online' : 'offline';
 
-			const redisCheck = await fetch('/api/health/redis').catch(() => ({ ok: false } as Response));
-			systemStatus.redis = redisCheck.ok ? 'online' : 'offline';
+      const redisCheck = await fetch('/api/health/redis').catch(() => ({ ok: false }) as Response);
+      systemStatus.redis = redisCheck.ok ? 'online' : 'offline';
 
-			const ollamaCheck = await fetch('/api/health/ollama').catch(() => ({ ok: false } as Response));
-			systemStatus.ollama = ollamaCheck.ok ? 'online' : 'offline';
+      const ollamaCheck = await fetch('/api/health/ollama').catch(
+        () => ({ ok: false }) as Response
+      );
+      systemStatus.ollama = ollamaCheck.ok ? 'online' : 'offline';
 
-			const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false } as Response));
-			systemStatus.gpu = gpuCheck.ok ? 'online' : 'offline';
+      const gpuCheck = await fetch('/api/health/gpu').catch(() => ({ ok: false }) as Response);
+      systemStatus.gpu = gpuCheck.ok ? 'online' : 'offline';
 
-			const workersCheck = await fetch('/api/health/workers').catch(() => null);
-			if (workersCheck?.ok) {
-				const workersData = (await workersCheck.json()) as {
-					success?: boolean;
-					status?: string;
-					workers?: WorkerStatus[];
-				};
+      const workersCheck = await fetch('/api/health/workers').catch(() => null);
+      if (workersCheck?.ok) {
+        const workersData = (await workersCheck.json()) as {
+          success?: boolean;
+          status?: string;
+          workers?: WorkerStatus[];
+        };
 
-				systemStatus.workers =
-					workersData.success && workersData.status === 'online'
-						? 'online'
-						: workersData.status === 'degraded'
-							? 'degraded'
-							: 'offline';
+        systemStatus.workers =
+          workersData.success && workersData.status === 'online'
+            ? 'online'
+            : workersData.status === 'degraded'
+              ? 'degraded'
+              : 'offline';
 
-				for (const worker of workersData.workers ?? []) {
-					const name = (worker.name ?? '').toLowerCase();
-					if (name.includes('ocr')) {
-						workerDetails.ocr = {
-							status: worker.status ?? 'offline',
-							healthy: !!worker.healthy,
-							queueDepth: worker.queueDepth ?? 0,
-							processedJobs: worker.processedJobs ?? 0
-						};
-					} else if (name.includes('embed') || name.includes('embedding')) {
-						workerDetails.embedding = {
-							status: worker.status ?? 'offline',
-							healthy: !!worker.healthy,
-							queueDepth: worker.queueDepth ?? 0,
-							processedJobs: worker.processedJobs ?? 0
-						};
-					} else if (name.includes('autotag')) {
-						workerDetails.autotag = {
-							status: worker.status ?? 'offline',
-							healthy: !!worker.healthy,
-							queueDepth: worker.queueDepth ?? 0,
-							processedJobs: worker.processedJobs ?? 0
-						};
-					}
-				}
-			} else {
-				systemStatus.workers = 'offline';
-			}
+        for (const worker of workersData.workers ?? []) {
+          const name = (worker.name ?? '').toLowerCase();
+          if (name.includes('ocr')) {
+            workerDetails.ocr = {
+              status: worker.status ?? 'offline',
+              healthy: !!worker.healthy,
+              queueDepth: worker.queueDepth ?? 0,
+              processedJobs: worker.processedJobs ?? 0,
+            };
+          } else if (name.includes('embed') || name.includes('embedding')) {
+            workerDetails.embedding = {
+              status: worker.status ?? 'offline',
+              healthy: !!worker.healthy,
+              queueDepth: worker.queueDepth ?? 0,
+              processedJobs: worker.processedJobs ?? 0,
+            };
+          } else if (name.includes('autotag')) {
+            workerDetails.autotag = {
+              status: worker.status ?? 'offline',
+              healthy: !!worker.healthy,
+              queueDepth: worker.queueDepth ?? 0,
+              processedJobs: worker.processedJobs ?? 0,
+            };
+          }
+        }
+      } else {
+        systemStatus.workers = 'offline';
+      }
 
-			const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
-			if (statsResponse?.ok) {
-				const data = (await statsResponse.json()) as {
-					success?: boolean;
-					data?: { totalCases?: number; totalEvidence?: number; activeJobs?: number };
-				};
-				if (data.success && data.data) {
-					stats.totalCases = data.data.totalCases ?? 0;
-					stats.totalEvidence = data.data.totalEvidence ?? 0;
-					stats.processingJobs = data.data.activeJobs ?? 0;
-				}
-			}
+      const statsResponse = await fetch('/api/dashboard/stats').catch(() => null);
+      if (statsResponse?.ok) {
+        const data = (await statsResponse.json()) as {
+          success?: boolean;
+          data?: { totalCases?: number; totalEvidence?: number; activeJobs?: number };
+        };
+        if (data.success && data.data) {
+          stats.totalCases = data.data.totalCases ?? 0;
+          stats.totalEvidence = data.data.totalEvidence ?? 0;
+          stats.processingJobs = data.data.activeJobs ?? 0;
+        }
+      }
 
-			loading = false;
-		} catch (err) {
-			console.error('Health check error:', err);
-			loading = false;
-		}
-	}
+      loading = false;
+    } catch (err) {
+      console.error('Health check error:', err);
+      loading = false;
+    }
+  }
   function getStatusColor(status: string) {
-		switch (status) {
-			case 'online': // Removed comma
-				return 'is-success'; // NES.css success color
-			case 'offline': // Removed comma
-				return 'is-error'; // NES.css error color
-			case 'degraded': // Removed comma
-				return 'is-warning'; // NES.css warning color
-			default: return 'is-disabled'; // NES.css disabled/default color
-		}
-	}
+    switch (status) {
+      case 'online': // Removed comma
+        return 'is-success'; // NES.css success color
+      case 'offline': // Removed comma
+        return 'is-error'; // NES.css error color
+      case 'degraded': // Removed comma
+        return 'is-warning'; // NES.css warning color
+      default:
+        return 'is-disabled'; // NES.css disabled/default color
+    }
+  }
   function getStatusIcon(status: string) {
-		switch (status) {
-			case 'online': // Removed comma
-				return '✅';
-			case 'offline': // Removed comma
-				return '❌';
-			case 'degraded': // Removed comma
-				return '⚠️'; // Changed for degraded status
-			default: return '🕒';}
-	}
+    switch (status) {
+      case 'online': // Removed comma
+        return '✅';
+      case 'offline': // Removed comma
+        return '❌';
+      case 'degraded': // Removed comma
+        return '⚠️'; // Changed for degraded status
+      default:
+        return '🕒';
+    }
+  }
 
-	const handleSubmit = async () => {
-		if (userQuery.trim()) await runQuery(userQuery.trim());};
+  const handleSubmit = async () => {
+    if (userQuery.trim()) await runQuery(userQuery.trim());
+  };
 
-	// nice keyboard shortcut
-	const onKey = (e: KeyboardEvent) => {
-		if (e.key === 'Enter') handleSubmit();};
+  // nice keyboard shortcut
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === 'Enter') handleSubmit();
+  };
 
-	// lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
+  // lightweight HTML escape helper to avoid XSS for simple content (use sanitizer for richer content)
   function escapeHtml(str: string) {
     const s = String(str ?? '');
     const map: Record<string, string> = {
-			'&': '&amp;',
-			'<': '&lt;',
-			'>': '&gt;',
-			'"': '&quot;',
-			"'": '&#39;' // Corrected string literal
-		};
-		return s.replace(/[&<>"']/g, (m) => map[m as keyof typeof map]);
-	}
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;', // Corrected string literal
+    };
+    return s.replace(/[&<>"']/g, (m) => map[m as keyof typeof map]);
+  }
 
   const uploader = createFileUploader('/api/upload');
 
   // annotate parameter to avoid implicit: unknown
   uploader.on('success', (res: unknown) => {
-    console.log('Uploaded:', (res as { url?: string })?.url ?? res);}); // Type assertion for res
+    console.log('Uploaded:', (res as { url?: string })?.url ?? res);
+  }); // Type assertion for res
 </script>
 
 <!-- Replace placeholder main with markup that uses the script variables, components and many CSS classes -->
@@ -348,7 +363,10 @@
         onkeydown={onKey}
       />
       <button onclick={handleSubmit} disabled={loading}>{loading ? 'Waiting...' : 'Ask'}</button>
-      <button class="card-button-custom" onclick={() => uploader.addFiles((window as any).fileList ?? [])}>Upload</button>
+      <button
+        class="card-button-custom"
+        onclick={() => uploader.addFiles((window as any).fileList ?? [])}>Upload</button
+      >
     </div>
 
     {#if $errorMessage}
@@ -373,7 +391,11 @@
   </section>
 
   <!-- Native HTML5 <dialog> for registration -->
-  <dialog bind:this={registerDialogRef} onclose={() => (registerOpen = false)} class="nes-dialog is-rounded">
+  <dialog
+    bind:this={registerDialogRef}
+    onclose={() => (registerOpen = false)}
+    class="nes-dialog is-rounded"
+  >
     <form method="dialog">
       <p class="title">Register for Legal AI Platform</p>
       <p>This is a placeholder for the registration form.</p>
@@ -386,7 +408,7 @@
 </main>
 
 <style>
-/* @unocss-include */
+  /* @unocss-include */
   /*
     NES.css provides a strong retro aesthetic.
     Custom styles are kept minimal, primarily for specific gradients, shadows,
@@ -420,7 +442,7 @@
 
   .hero-section-custom .nes-text.is-primary {
     font-size: 3rem; /* Added semicolon */
-    color: #ffd700; /* Override NES.css primary color */;
+    color: #ffd700; /* Override NES.css primary color */
     margin-bottom: 1rem;
     text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     font-weight: 800;
@@ -428,7 +450,7 @@
 
   .hero-section-custom .nes-text.is-success.subtitle-custom {
     font-size: 1.4rem;
-    color: #00ff41; /* Override NES.css success color */;
+    color: #00ff41; /* Override NES.css success color */
     margin-bottom: 1rem;
     font-weight: 600;
   }
@@ -562,7 +584,8 @@
     transform: translateY(-4px);
   }
 
-  .action-card-custom::before { /* Corrected pseudo-element syntax */
+  .action-card-custom::before {
+    /* Corrected pseudo-element syntax */
     content: '';
     position: absolute;
     top: 0;
@@ -605,7 +628,8 @@
     overflow: hidden;
   }
 
-  .featured-card-custom::before { /* Corrected pseudo-element syntax */
+  .featured-card-custom::before {
+    /* Corrected pseudo-element syntax */
     content: '';
     position: absolute;
     top: 0;
@@ -719,7 +743,9 @@
     border-radius: 12px; /* Added semicolon */
     padding: 1rem;
     box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
-    transition: transform 200ms ease, opacity 200ms ease;
+    transition:
+      transform 200ms ease,
+      opacity 200ms ease;
     overflow: hidden;
   }
 
@@ -760,7 +786,8 @@
     background-color: #212529;
     color: #fff;
     box-shadow: 0 0 20px rgba(0, 255, 65, 0.5);
-    border-image: url('data:image/svg+xml;charset=utf-8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H10V10H0V0ZM1 1V9H9V1H1Z" fill="%2300FF41"/></svg>') 2;
+    border-image: url('data:image/svg+xml;charset=utf-8,<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 0H10V10H0V0ZM1 1V9H9V1H1Z" fill="%2300FF41"/></svg>')
+      2;
   }
 
   dialog::backdrop {

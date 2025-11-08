@@ -88,77 +88,93 @@ import type { Document } from '$lib/types';
 </main>
 
 <style>
-.showcase-layout {
+  .showcase-layout {
     display: flex;
     flex-direction: column;
     gap: 3rem;
     padding: 2rem;
-    min-height: 100%}
+    min-height: 100%;
+  }
 
   .showcase-hero {
     text-align: center;
     display: flex;
     flex-direction: column;
-    gap: 1rem}
+    gap: 1rem;
+  }
 
   .showcase-hero h1 {
     font-size: 2.5rem;
-    margin: 0}
+    margin: 0;
+  }
 
   .showcase-hero p {
     margin: 0 auto;
-    max-width: 720px
-   ; color: var(--text-muted)}
+    max-width: 720px;
+    color: var(--text-muted);
+  }
 
   .category-section {
     display: flex;
     flex-direction: column;
-    gap: 2.5rem}
+    gap: 2.5rem;
+  }
 
   .category {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem}
+    gap: 1.5rem;
+  }
 
   .category-header {
     display: flex;
     align-items: center;
-    gap: 0.75rem}
+    gap: 0.75rem;
+  }
 
   .category-header h2 {
     margin: 0;
-    font-size: 1.75rem}
+    font-size: 1.75rem;
+  }
 
   .category-icon {
-    font-size: 1.75rem}
+    font-size: 1.75rem;
+  }
 
   .demo-grid {
-    display: grid
-   ; gap: 1.5rem;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))}
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
 
   .demo-card {
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 1.5rem
-   ; border: 1px solid var(--border-muted);
-    border-radius: 1rem
-   ; background: var(--surface-primary); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08)}
+    padding: 1.5rem;
+    border: 1px solid var(--border-muted);
+    border-radius: 1rem;
+    background: var(--surface-primary);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
 
   .demo-card-header {
     display: flex;
     justify-content: space-betweennn;
     align-items: center;
-    gap: 1rem}
+    gap: 1rem;
+  }
 
   .demo-card-header h3 {
     margin: 0;
-    font-size: 1.2rem}
+    font-size: 1.2rem;
+  }
 
   .demo-description {
-    margin: 0
-   ; color: var(--text-secondary); line-height: 1.5}
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+  }
 
   .demo-features {
     display: flex;
@@ -166,19 +182,23 @@ import type { Document } from '$lib/types';
     gap: 0.5rem;
     margin: 0;
     padding: 0;
-    list-style: none}
+    list-style: none;
+  }
 
   .demo-features li {
     padding: 0.25rem 0.5rem;
-    border-radius: 0.5rem
-   ; background: var(--surface-secondary); border: 1px solid var(--border-muted);
-    font-size: 0.85rem}
+    border-radius: 0.5rem;
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-muted);
+    font-size: 0.85rem;
+  }
 
   .demo-meta {
     display: flex;
     justify-content: space-betweennn;
-    align-items: center
-   ; gap: 1rem}
+    align-items: center;
+    gap: 1rem;
+  }
 
   .status-label,
   .complexity-label {
@@ -189,45 +209,58 @@ import type { Document } from '$lib/types';
     border-radius: 999px;
     text-transform: uppercase;
     font-size: 0.75rem;
-    font-weight: 600}
+    font-weight: 600;
+  }
 
-  .status-active { background: rgba(16, 185, 129, 0.15);
-    color: rgb(16, 185, 129)}
+  .status-active {
+    background: rgba(16, 185, 129, 0.15);
+    color: rgb(16, 185, 129);
+  }
 
   .status-beta {
     background: rgba(245, 158, 11, 0.15);
-    color: rgb(245, 158, 11)}
+    color: rgb(245, 158, 11);
+  }
 
   .status-coming-soon {
     background: rgba(148, 163, 184, 0.15);
-    color: rgb(100, 116, 139)}
+    color: rgb(100, 116, 139);
+  }
 
   .complexity-low {
     background: rgba(59, 130, 246, 0.12);
-    color: rgb(59, 130, 246)}
+    color: rgb(59, 130, 246);
+  }
 
   .complexity-medium {
     background: rgba(139, 92, 246, 0.12);
-    color: rgb(139, 92, 246)}
+    color: rgb(139, 92, 246);
+  }
 
   .complexity-high {
     background: rgba(249, 115, 22, 0.12);
-    color: rgb(249, 115, 22)}
+    color: rgb(249, 115, 22);
+  }
 
   .demo-launch {
     text-decoration: none;
-    font-weight: 600
-   ; color: var(--accent-color, rgb(59, 130, 246));
-    transition: color 0.2s ease}
+    font-weight: 600;
+    color: var(--accent-color, rgb(59, 130, 246));
+    transition: color 0.2s ease;
+  }
 
-  .demo-launch:hover { color: var(--accent-emphasis, rgb(37, 99, 235))}
+  .demo-launch:hover {
+    color: var(--accent-emphasis, rgb(37, 99, 235));
+  }
 
   @media (max-width: 768px) {
     .showcase-layout {
-      padding: 1.5rem}
+      padding: 1.5rem;
+    }
 
     .demo-meta {
       flex-direction: column;
-      align-items: flex-start}
+      align-items: flex-start;
+    }
   }
 </style>

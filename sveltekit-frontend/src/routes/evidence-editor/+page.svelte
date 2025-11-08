@@ -21,8 +21,9 @@ import { Button } from '$lib/components/ui/button';
 </main>
 
 <style>
-/* @unocss-include */
+  /* @unocss-include */
   .evidence-editor-page {
-    height: 100vh
-   ; overflow: hidden}
+    height: 100vh;
+    overflow: hidden;
+  }
 </style>

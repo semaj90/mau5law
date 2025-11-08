@@ -6,7 +6,11 @@
    */
   // Import component with the name used in the template
   import SPACanvasComp from '$lib/components/ui/enhanced-bits/SPACanvasRenderer.svelte';
-  import { LegalAILogic, type LegalDocument, type EvidenceItem } from '$lib/core/logic/legal-ai-logic';
+  import {
+    LegalAILogic,
+    type LegalDocument,
+    type EvidenceItem,
+  } from '$lib/core/logic/legal-ai-logic';
   // Let Vite resolve the $lib alias (avoids PostCSS ENOENT on @import)
   import '$lib/styles/hybrid-theme.css';
 
@@ -15,7 +19,7 @@
     documents: [] as LegalDocument[],
     evidence: [] as EvidenceItem[],
     cases: [] as Case[], // Fixed: changed `;` to `,` and added type
-    chatMessages: []
+    chatMessages: [],
   };
 
   // reactive state for the data and flags
@@ -42,8 +46,8 @@
       metadata: {
         gemmaModel: 'gemma3:legal-latest',
         processingTime: Math.floor(Math.random() * 500) + 100, // Fixed: changed `;` to `,`
-        analysisDate: new Date().toISOString()
-      }
+        analysisDate: new Date().toISOString(),
+      },
     }));
 
     // Generate sample evidence items
@@ -56,8 +60,8 @@
       metadata: {
         collectedBy: 'Legal AI Assistant',
         verifiedBy: 'gemma3:legal-latest', // Fixed: changed `;` to `,`
-        chainOfCustody: true
-      }
+        chainOfCustody: true,
+      },
     }));
 
     // Generate sample cases
@@ -69,14 +73,14 @@
       aiAnalysis: {
         model: 'gemma3:legal-latest',
         confidence: Math.floor(Math.random() * 20) + 80,
-        riskAssessment: getRandomRisk()
-      }
+        riskAssessment: getRandomRisk(),
+      },
     }));
     console.log('ðŸ“Š Sample legal data loaded for SPA Canvas', {
       documents: legalData.documents.length,
       evidence: legalData.evidence.length,
       cases: legalData.cases.length, // Fixed: changed `;` to `,`
-      useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData)
+      useGamingCanvas: LegalAILogic.requiresGlyphEngine(legalData),
     });
   }
 
@@ -91,7 +95,7 @@
       'Real Estate Contract',
       'Intellectual Property License',
       'Environmental Impact Report',
-      'Tax Liability Assessment'
+      'Tax Liability Assessment',
     ];
     return types[Math.floor(Math.random() * types.length)];
   }
@@ -107,7 +111,7 @@
       'Audio Transcript Analysis',
       'Physical Evidence Catalog',
       'Chain of Custody Documentation',
-      'Expert Opinion Report'
+      'Expert Opinion Report',
     ];
     return types[Math.floor(Math.random() * types.length)];
   }
@@ -118,7 +122,7 @@
       'image',
       'video',
       'audio',
-      'transcript'
+      'transcript',
     ];
     return types[Math.floor(Math.random() * types.length)];
   }
@@ -134,13 +138,18 @@
       'Tax Evasion Investigation',
       'Personal Injury Lawsuit',
       'Intellectual Property Theft',
-      'Securities Fraud Case'
+      'Securities Fraud Case',
     ];
     return types[Math.floor(Math.random() * types.length)];
   }
 
   function getRandomPriority(): 'critical' | 'high' | 'medium' | 'low' {
-    const priorities: ('critical' | 'high' | 'medium' | 'low')[] = ['critical', 'high', 'medium', 'low'];
+    const priorities: ('critical' | 'high' | 'medium' | 'low')[] = [
+      'critical',
+      'high',
+      'medium',
+      'low',
+    ];
     const weights = [0.1, 0.2, 0.4, 0.3]; // Critical is rare
     const rand = Math.random();
     let cumulative = 0;
@@ -169,7 +178,7 @@
       'The merger agreement includes provisions for due diligence that require comprehensive review of financial statements, intellectual property portfolios, and regulatory compliance records...',
       'Patent application filing demonstrates novelty and non-obviousness criteria. Prior art search conducted using AI-enhanced legal research shows minimal overlap with existing patents...',
       'Criminal case evidence chain of custody has been verified through digital forensics analysis. All documentation meets federal evidence admissibility standards...',
-      'Civil litigation brief presents compelling arguments based on established precedent. Legal research indicates 85% probability of favorable outcome based on similar cases...'
+      'Civil litigation brief presents compelling arguments based on established precedent. Legal research indicates 85% probability of favorable outcome based on similar cases...',
     ];
     return samples[Math.floor(Math.random() * samples.length)];
   }
@@ -193,7 +202,12 @@
     const { type, position, view, data } = event.detail; // Fixed: added comma between type and position
     if (type === 'click' && view === 'documents') {
       // Use data in the log so it's not reported as unused
-      console.log('ðŸ“„ Analyzing document with gemma3:legal-latest at position', position, 'data:', data); // Fixed: removed extra quote and fixed closing brace
+      console.log(
+        'ðŸ“„ Analyzing document with gemma3:legal-latest at position',
+        position,
+        'data:',
+        data
+      ); // Fixed: removed extra quote and fixed closing brace
     }
   }
 
@@ -205,7 +219,7 @@
       'The legal precedent search using advanced AI models shows strong support for your position...',
       'Document review complete. Gemma3:legal-latest found 2 potential compliance issues that require attention...', // Fixed: removed comma after found
       'Risk assessment indicates moderate exposure. I recommend reviewing sections 4.2 and 7.1 of the agreement...',
-      'Legal entity extraction successful. Found 12 parties, 8 jurisdictions, and 15 key dates for timeline analysis...' // Fixed: removed commas after Found, and, and
+      'Legal entity extraction successful. Found 12 parties, 8 jurisdictions, and 15 key dates for timeline analysis...', // Fixed: removed commas after Found, and, and
     ];
     // Select a response so `response` is defined and aiResponses is used
     const response = aiResponses[Math.floor(Math.random() * aiResponses.length)];
@@ -225,7 +239,10 @@
           <span class="loading-dot">.</span>
         </div>
         <div class="loading-stats">
-          <p>Loading legal data: {legalData.documents.length} documents, {legalData.evidence.length} evidence items</p>
+          <p>
+            Loading legal data: {legalData.documents.length} documents, {legalData.evidence.length} evidence
+            items
+          </p>
           <p>AI model status: gemma3:legal-latest (online)</p>
           <p>GPU acceleration: Active (CUDA)</p>
         </div>
@@ -233,8 +250,8 @@
     </div>
   {:else}
     <SPACanvasComp
-      legalData={legalData}
-      currentView={currentView}
+      {legalData}
+      {currentView}
       onNavigation={handleNavigation}
       onInteraction={handleInteraction}
     />

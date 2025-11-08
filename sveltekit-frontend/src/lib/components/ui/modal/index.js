@@ -1,1 +1,1 @@
-export {Modal} from './Modal.svelte';
+export { Modal } from './Modal.svelte';

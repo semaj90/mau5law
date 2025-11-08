@@ -69,7 +69,7 @@ export class DocumentProcessor {
       path.join(this.outputDir, 'chunks'),
       path.join(this.outputDir, 'qlora'),
       path.join(this.outputDir, 'statistics'),
-      path.join(this.outputDir, 'batches')
+      path.join(this.outputDir, 'batches'),
     ];
 
     for (const dir of dirs) {
@@ -102,9 +102,7 @@ export class DocumentProcessor {
     const metadataList: DocumentMetadata[] = [];
 
     // Process in batches if requested
-    const batches = options.batchProcess
-      ? this.chunkArray(documents, this.batchSize)
-      : [documents];
+    const batches = options.batchProcess ? this.chunkArray(documents, this.batchSize) : [documents];
 
     for (let i = 0; i < batches.length; i++) {
       const batch = batches[i];
@@ -113,11 +111,10 @@ export class DocumentProcessor {
       for (const doc of batch) {
         try {
           const enhanced = await this.enhanceDocument(doc, options);
-          processedDocs.push(<any><any>enhanced);
+          processedDocs.push(<any>(<any>enhanced));
 
           const metadata = this.extractDocumentMetadata(enhanced);
-          metadataList.push(<any><any>metadata);
-
+          metadataList.push(<any>(<any>metadata));
         } catch (error) {
           console.error(`❌ Error processing document ${doc.id}:`, error);
         }
@@ -137,7 +134,7 @@ export class DocumentProcessor {
     return {
       processed: processedDocs,
       metadata: metadataList,
-      statistics
+      statistics,
     };
   }
 
@@ -156,7 +153,7 @@ export class DocumentProcessor {
 
     // Enhance chunks
     enhanced.chunks = await Promise.all(
-      doc.chunks.map(chunk => this.enhanceChunk(chunk, options))
+      doc.chunks.map((chunk) => this.enhanceChunk(chunk, options))
     );
 
     // Calculate complexity score
@@ -207,18 +204,24 @@ export class DocumentProcessor {
     amounts: string[];
   } {
     // Simple regex-based entity extraction (could be enhanced with NER models)
-    const persons = [...text.matchAll(/\b[A-Z][a-z]+ [A-Z][a-z]+\b/g)].map(m => m[0]);
-    const organizations = [...text.matchAll(/\b[A-Z][a-z]+ (?:Inc\.|Corp\.|LLC|Company|Corporation)\b/g)].map(m => m[0]);
-    const locations = [...text.matchAll(/\b[A-Z][a-z]+ (?:County|State|City|District)\b/g)].map(m => m[0]);
-    const dates = [...text.matchAll(/\b\d{12}\/\d{12}\/\d{4}|\b\d{4}-\d{2}-\d{2}\b/g)].map(m => m[0]);
-    const amounts = [...text.matchAll(/\$[\d,]+(?:\.\d{2})?/g)].map(m => m[0]);
+    const persons = [...text.matchAll(/\b[A-Z][a-z]+ [A-Z][a-z]+\b/g)].map((m) => m[0]);
+    const organizations = [
+      ...text.matchAll(/\b[A-Z][a-z]+ (?:Inc\.|Corp\.|LLC|Company|Corporation)\b/g),
+    ].map((m) => m[0]);
+    const locations = [...text.matchAll(/\b[A-Z][a-z]+ (?:County|State|City|District)\b/g)].map(
+      (m) => m[0]
+    );
+    const dates = [...text.matchAll(/\b\d{12}\/\d{12}\/\d{4}|\b\d{4}-\d{2}-\d{2}\b/g)].map(
+      (m) => m[0]
+    );
+    const amounts = [...text.matchAll(/\$[\d,]+(?:\.\d{2})?/g)].map((m) => m[0]);
 
     return {
       persons: [...new Set(persons)],
       organizations: [...new Set(organizations)],
       locations: [...new Set(locations)],
       dates: [...new Set(dates)],
-      amounts: [...new Set(amounts)]
+      amounts: [...new Set(amounts)],
     };
   }
 
@@ -227,16 +230,34 @@ export class DocumentProcessor {
    */
   private extractLegalConcepts(text: string): string[] {
     const legalTerms = [
-      'contract', 'breach', 'negligence', 'liability', 'damages', 'consideration',
-      'due process', 'probable cause', 'reasonable doubt', 'burden of proof',
-      'statute of limitations', 'res judicata', 'stare decisis', 'habeas corpus',
-      'tort', 'plaintiff', 'defendant', 'jurisdiction', 'venue', 'discovery',
-      'deposition', 'subpoena', 'injunction', 'summary judgment', 'appeal'
+      'contract',
+      'breach',
+      'negligence',
+      'liability',
+      'damages',
+      'consideration',
+      'due process',
+      'probable cause',
+      'reasonable doubt',
+      'burden of proof',
+      'statute of limitations',
+      'res judicata',
+      'stare decisis',
+      'habeas corpus',
+      'tort',
+      'plaintiff',
+      'defendant',
+      'jurisdiction',
+      'venue',
+      'discovery',
+      'deposition',
+      'subpoena',
+      'injunction',
+      'summary judgment',
+      'appeal',
     ];
 
-    const foundConcepts = legalTerms.filter(term =>
-      new RegExp(`\\b${term}\\b`, 'i').test(text)
-    );
+    const foundConcepts = legalTerms.filter((term) => new RegExp(`\\b${term}\\b`, 'i').test(text));
 
     return foundConcepts;
   }
@@ -245,7 +266,7 @@ export class DocumentProcessor {
    * Calculate document complexity score
    */
   private calculateComplexityScore(content: string): number {
-    const sentences = content.split(/[.!?]+/).filter(s => s.trim());
+    const sentences = content.split(/[.!?]+/).filter((s) => s.trim());
     const words = content.split(/\s+/);
 
     // Factors contributing to complexity
@@ -257,9 +278,9 @@ export class DocumentProcessor {
     // Weighted scoring
     const complexityScore = Math.min(
       (avgWordsPerSentence / 20) * 0.3 +
-      (legalTermCount / 10) * 0.4 +
-      (citationCount / 5) * 0.2 +
-      (complexPunctuation / words.length * 100) * 0.1,
+        (legalTermCount / 10) * 0.4 +
+        (citationCount / 5) * 0.2 +
+        (complexPunctuation / words.length) * 100 * 0.1,
       1.0
     );
 
@@ -274,35 +295,35 @@ export class DocumentProcessor {
     const content = (doc.content + ' ' + doc.title).toLowerCase();
 
     // Add metadata-based tags
-    tags.push(<any><any>doc.metadata.legal_area);
-    tags.push(<any><any>doc.metadata.document_type);
-    tags.push(<any><any>doc.metadata.jurisdiction);
+    tags.push(<any>(<any>doc.metadata.legal_area));
+    tags.push(<any>(<any>doc.metadata.document_type));
+    tags.push(<any>(<any>doc.metadata.jurisdiction));
 
     // Add content-based tags
     const topicTags = {
-      'regulatory': ['regulation', 'rule', 'compliance', 'administrative'],
-      'litigation': ['court', 'case', 'lawsuit', 'trial', 'judge'],
-      'commercial': ['business', 'commercial', 'trade', 'company'],
-      'constitutional': ['constitutional', 'amendment', 'rights', 'freedom'],
-      'international': ['international', 'treaty', 'foreign', 'global']
+      regulatory: ['regulation', 'rule', 'compliance', 'administrative'],
+      litigation: ['court', 'case', 'lawsuit', 'trial', 'judge'],
+      commercial: ['business', 'commercial', 'trade', 'company'],
+      constitutional: ['constitutional', 'amendment', 'rights', 'freedom'],
+      international: ['international', 'treaty', 'foreign', 'global'],
     };
 
     for (const [tag, keywords] of Object.entries(topicTags)) {
-      if (keywords.some(keyword => content.includes(keyword))) {
-        tags.push(<any><any>tag);
+      if (keywords.some((keyword) => content.includes(keyword))) {
+        tags.push(<any>(<any>tag));
       }
     }
 
     // Add complexity-based tags
     const complexity = doc.metadata.confidence_score || 0;
-    if (complexity > 0.8) tags.push(<any><any>'complex');
-    else if (complexity > 0.5) tags.push(<any><any>'intermediate');
-    else tags.push(<any><any>'basic');
+    if (complexity > 0.8) tags.push(<any>(<any>'complex'));
+    else if (complexity > 0.5) tags.push(<any>(<any>'intermediate'));
+    else tags.push(<any>(<any>'basic'));
 
     // Add length-based tags
-    if (doc.metadata.word_count > 5000) tags.push(<any><any>'long-form');
-    else if (doc.metadata.word_count > 1000) tags.push(<any><any>'medium-length');
-    else tags.push(<any><any>'short-form');
+    if (doc.metadata.word_count > 5000) tags.push(<any>(<any>'long-form'));
+    else if (doc.metadata.word_count > 1000) tags.push(<any>(<any>'medium-length'));
+    else tags.push(<any>(<any>'short-form'));
 
     return [...new Set(tags)];
   }
@@ -324,14 +345,17 @@ export class DocumentProcessor {
       confidence_score: doc.metadata.confidence_score,
       processing_status: 'processed',
       tags: (doc.metadata as any).tags || [],
-      complexity_score: this.calculateComplexityScore(doc.content)
+      complexity_score: this.calculateComplexityScore(doc.content),
     };
   }
 
   /**
    * Calculate processing statistics
    */
-  private calculateStatistics(docs: ProcessedLegalDocument[], processingTime: number): ProcessingStatistics {
+  private calculateStatistics(
+    docs: ProcessedLegalDocument[],
+    processingTime: number
+  ): ProcessingStatistics {
     const stats: ProcessingStatistics = {
       total_documents: docs.length,
       by_legal_area: {},
@@ -339,7 +363,7 @@ export class DocumentProcessor {
       by_jurisdiction: {},
       average_word_count: 0,
       total_chunks: 0,
-      processing_time_ms: processingTime
+      processing_time_ms: processingTime,
     };
 
     let totalWords = 0;
@@ -371,10 +395,7 @@ export class DocumentProcessor {
   /**
    * Convert to JSON format
    */
-  async convertToJSON(
-    documents: ProcessedLegalDocument[],
-    filename?: string
-  ): Promise<string> {
+  async convertToJSON(documents: ProcessedLegalDocument[], filename?: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const jsonFilename = filename || `legal-docs-${timestamp}.json`;
     const jsonPath = path.join(this.outputDir, 'json', jsonFilename);
@@ -383,9 +404,9 @@ export class DocumentProcessor {
       metadata: {
         generated_at: new Date().toISOString(),
         document_count: documents.length,
-        version: '1.0.0'
+        version: '1.0.0',
       },
-      documents
+      documents,
     };
 
     await fs.writeFile(jsonPath, JSON.stringify(output, null, 2));
@@ -396,15 +417,12 @@ export class DocumentProcessor {
   /**
    * Convert to JSONL format
    */
-  async convertToJSONL(
-    documents: ProcessedLegalDocument[],
-    filename?: string
-  ): Promise<string> {
+  async convertToJSONL(documents: ProcessedLegalDocument[], filename?: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const jsonlFilename = filename || `legal-docs-${timestamp}.jsonl`;
     const jsonlPath = path.join(this.outputDir, 'jsonl', jsonlFilename);
 
-    const jsonlContent = documents.map(doc => JSON.stringify(doc)).join('\n');
+    const jsonlContent = documents.map((doc) => JSON.stringify(doc)).join('\n');
     await fs.writeFile(jsonlPath, jsonlContent);
 
     console.log(`💾 JSONL saved: ${jsonlPath} (${documents.length} documents)`);
@@ -414,10 +432,7 @@ export class DocumentProcessor {
   /**
    * Export metadata separately
    */
-  async exportMetadata(
-    metadata: DocumentMetadata[],
-    filename?: string
-  ): Promise<string> {
+  async exportMetadata(metadata: DocumentMetadata[], filename?: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const metadataFilename = filename || `metadata-${timestamp}.json`;
     const metadataPath = path.join(this.outputDir, 'metadata', metadataFilename);
@@ -430,24 +445,21 @@ export class DocumentProcessor {
   /**
    * Export enhanced chunks separately
    */
-  async exportChunks(
-    documents: ProcessedLegalDocument[],
-    filename?: string
-  ): Promise<string> {
+  async exportChunks(documents: ProcessedLegalDocument[], filename?: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const chunksFilename = filename || `chunks-${timestamp}.jsonl`;
     const chunksPath = path.join(this.outputDir, 'chunks', chunksFilename);
 
-    const allChunks = documents.flatMap(doc =>
-      doc.chunks.map(chunk => ({
+    const allChunks = documents.flatMap((doc) =>
+      doc.chunks.map((chunk) => ({
         document_id: doc.id,
         document_title: doc.title,
         legal_area: doc.metadata.legal_area,
-        ...chunk
+        ...chunk,
       }))
     );
 
-    const chunksContent = allChunks.map(chunk => JSON.stringify(chunk)).join('\n');
+    const chunksContent = allChunks.map((chunk) => JSON.stringify(chunk)).join('\n');
     await fs.writeFile(chunksPath, chunksContent);
 
     console.log(`🧩 Chunks saved: ${chunksPath} (${allChunks.length} chunks)`);
@@ -457,10 +469,7 @@ export class DocumentProcessor {
   /**
    * Save processing statistics
    */
-  async saveStatistics(
-    statistics: ProcessingStatistics,
-    filename?: string
-  ): Promise<string> {
+  async saveStatistics(statistics: ProcessingStatistics, filename?: string): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const statsFilename = filename || `stats-${timestamp}.json`;
     const statsPath = path.join(this.outputDir, 'statistics', statsFilename);
@@ -473,12 +482,9 @@ export class DocumentProcessor {
   /**
    * Save batch during processing
    */
-  private async saveBatch(
-    documents: ProcessedLegalDocument[],
-    batchIndex: number
-  ): Promise<void> {
+  private async saveBatch(documents: ProcessedLegalDocument[], batchIndex: number): Promise<void> {
     const batchPath = path.join(this.outputDir, 'batches', `batch-${batchIndex}.jsonl`);
-    const batchContent = documents.map(doc => JSON.stringify(doc)).join('\n');
+    const batchContent = documents.map((doc) => JSON.stringify(doc)).join('\n');
     await fs.writeFile(batchPath, batchContent);
     console.log(`💾 Batch ${batchIndex} saved: ${batchPath}`);
   }
@@ -489,7 +495,7 @@ export class DocumentProcessor {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(<any><any>array.slice(i, i + size));
+      chunks.push(<any>(<any>array.slice(i, i + size)));
     }
     return chunks;
   }
@@ -516,8 +522,8 @@ export class DocumentProcessor {
       const content = await fs.readFile(filePath, 'utf-8');
       return content
         .split('\n')
-        .filter(line => line.trim())
-        .map(line => JSON.parse(line));
+        .filter((line) => line.trim())
+        .map((line) => JSON.parse(line));
     } catch (error) {
       console.error(`❌ Error loading JSONL from ${filePath}:`, error);
       throw error;

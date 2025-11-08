@@ -10,7 +10,10 @@ export interface TransportResult {
 /**
  * Try QUIC first, fall back to HTTPS. Returns parsed JSON and telemetry.
  */
-export async function parseJSONTransport(payload: string, preferQuic = true): Promise<TransportResult> {
+export async function parseJSONTransport(
+  payload: string,
+  preferQuic = true
+): Promise<TransportResult> {
   const start = performance.now();
   if (preferQuic) {
     try {

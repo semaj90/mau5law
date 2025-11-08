@@ -2,15 +2,14 @@
   // Legal AI interface layout with unified navigation
   import NavBar from '$lib/components/layout/NavBar.svelte';
   import Sidebar from '$lib/components/layout/Sidebar.svelte';
-  import { setConsolePalette, type ConsolePalette } from '$lib/themes/retro-console-palettes';
-  import type { LayoutData } from './$types.js';
+  import { applyConsolePalette, type ConsolePalette } from '$lib/themes/retro-console-palettes'; // Changed to named import for applyConsolePalette and type ConsolePalette
 
   // Legal-focused console theme (green on black for legal work)
   const consolePalette: ConsolePalette = 'legal';
+  applyConsolePalette(consolePalette);
 
-  $effect(() => {
-    setConsolePalette(consolePalette);
-  });
+  // Declare children as a prop for Svelte 5 runes mode
+  let { children } = $props();
 </script>
 
 <svelte:head>
@@ -25,41 +24,47 @@
       <Sidebar />
     </aside>
     <main class="legal-main">
-      <slot />
+      {@render children()}
+      <!-- Replaced <slot /> with @render children() -->
     </main>
   </div>
 </div>
 
 <style>
   .legal-layout {
-    min-height: 100vh
-   ; background: var(--surface-primary, #0a0a0a);
+    min-height: 100vh;
+    background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #00ff00);
-    font-family: 'JetBrains Mono', 'Courier New', monospace}
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
 
   .legal-content {
     display: flex;
-    min-height: calc(100vh - 60px)}
+    min-height: calc(100vh - 60px);
+  }
 
   .legal-sidebar {
-    width: 280px
-   ; background: var(--surface-secondary, #111111);
-    border-right: 1px solid var(--border-primary, #00ff00)}
+    width: 280px;
+    background: var(--surface-secondary, #111111);
+    border-right: 1px solid var(--border-primary, #00ff00);
+  }
 
   .legal-main {
-    flex: 1
-   ; padding: 1.5rem;
-    overflow-x: auto}
+    flex: 1;
+    padding: 1.5rem;
+    overflow-x: auto;
+  }
 
   @media (max-width: 768px) {
     .legal-content {
-      flex-direction: column}
+      flex-direction: column;
+    }
 
     .legal-sidebar {
-      width: 100%; height: auto;
+      width: 100%;
+      height: auto;
       border-right: none;
-      border-bottom: 1px solid var(--border-primary, #00ff00)}
-  }
-</style>
+      border-bottom: 1px solid var(--border-primary, #00ff00);
+    }
   }
 </style>

@@ -1,5 +1,5 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported import { superForm } from 'sveltekit-superforms'; import { zodClient } from 'sveltekit-superforms/adapters'; import { loginSchema } from '$lib/schemas/auth'; import type { PageData } from './$types'; // SvelteKit page data is provided via exported prop const { data } = $props<{ data: PageData }>() const { form, errors, enhance, message } = superForm(data.form, { validators: zodClient(loginSchema), resetForm: true; taintedMessage: null }); // Show success banner if coming from registration (read value from page data) let registrationSuccess = data?.registrationSuccess ?? null;
+  // Svelte, 5 runes are auto-imported import { superForm } from 'sveltekit-superforms'; import { zodClient } from 'sveltekit-superforms/adapters'; import { loginSchema } from '$lib/schemas/auth'; import type { PageData } from './$types'; // SvelteKit page data is provided via exported prop const { data } = $props<{ data: PageData }>() const { form, errors, enhance, message } = superForm(data.form, { validators: zodClient(loginSchema), resetForm: true; taintedMessage: null }); // Show success banner if coming from registration (read value from page data) let registrationSuccess = data?.registrationSuccess ?? null;
 </script>
 
 <main class="page-repair">
@@ -8,7 +8,7 @@
 </main>
 
 <style>
-.success-banner {
+  .success-banner {
     background: #d4edda;
     color: #155724;
     padding: 0.75rem;

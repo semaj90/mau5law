@@ -1,19 +1,19 @@
-import { json } from "@sveltejs/kit";
-import { minioStorage } from "$lib/server/storage/minio";
-import { createId } from "@paralleldrive/cuid2";
-import { exec } from "child_process";
-import { promisify } from "util";
-import { writeFile, unlink, mkdir } from "fs/promises";
-import { join } from "path";
-import { tmpdir } from "os";
+import { json } from '@sveltejs/kit';
+import { minioStorage } from '$lib/server/storage/minio';
+import { createId } from '@paralleldrive/cuid2';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+import { writeFile, unlink, mkdir } from 'fs/promises';
+import { join } from 'path';
+import { tmpdir } from 'os';
 // Fix 1: Correct import path for 'db' as per project guidelines
-import { db } from "$lib/server/db/client";
-import { sql } from "drizzle-orm";
+import { db } from '$lib/server/db/client';
+import { sql } from 'drizzle-orm';
 // Fix 2: Removed 'queueVectorEmbedding' from named imports as it's not exported from queue-service
-import { queueDocumentProcessing } from "$lib/services/queue-service";
+import { queueDocumentProcessing } from '$lib/services/queue-service';
 import {
   generateEmbeddings, // Corrected: Use generateEmbeddings
-} from "$lib/server/services/embedding-service";
+} from '$lib/server/services/embedding-service';
 
 // Temporary stub for queueVectorEmbedding to resolve compilation error.
 // This function should be properly implemented and exported from "$lib/services/queue-service".
@@ -92,15 +92,15 @@ export const POST = async ({ request, locals }) => {
 
   // 1. Auth check (Lucia v3 session or dev bypass)
   let user = locals.user;
-  const devBypass = process.env.DEV_BYPASS_AUTH === "true";
+  const devBypass = process.env.DEV_BYPASS_AUTH === 'true';
 
   if (!user && devBypass) {
     // Inject a mock user for development/testing
-    user = { id: "dev-user", email: "dev@localhost", name: "Dev User", role: "user" } as DevUser; // Corrected: Cast to DevUser
+    user = { id: 'dev-user', email: 'dev@localhost', name: 'Dev User', role: 'user' } as DevUser; // Corrected: Cast to DevUser
   }
 
   if (!user) {
-    return json({ message: "Authentication required", code: "UNAUTHORIZED" }, { status: 401 });
+    return json({ message: 'Authentication required', code: 'UNAUTHORIZED' }, { status: 401 });
   }
 
   let formData: FormData;
@@ -110,19 +110,19 @@ export const POST = async ({ request, locals }) => {
 
   try {
     formData = await request.formData();
-    const fileEntry = formData.get("file");
+    const fileEntry = formData.get('file');
 
     if (!fileEntry || !(fileEntry instanceof File)) {
-      return json({ message: "File is required", code: "MISSING_FILE" }, { status: 400 });
+      return json({ message: 'File is required', code: 'MISSING_FILE' }, { status: 400 });
     }
 
     file = fileEntry;
-    caseId = formData.get("caseId")?.toString();
-    description = formData.get("description")?.toString();
+    caseId = formData.get('caseId')?.toString();
+    description = formData.get('description')?.toString();
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     return json(
-      { message: "Invalid form data", error: message, code: "INVALID_FORM_DATA" },
+      { message: 'Invalid form data', error: message, code: 'INVALID_FORM_DATA' },
       { status: 400 }
     );
   }
@@ -130,17 +130,17 @@ export const POST = async ({ request, locals }) => {
   const documentId = createId();
   const filename = file.name;
   const fileSize = file.size;
-  const contentType = file.type || "application/octet-stream";
+  const contentType = file.type || 'application/octet-stream';
 
   console.log(`📄 [Upload] Starting: ${filename} (${fileSize} bytes) for user: ${user.id}`);
 
   try {
     // 2. Upload to MinIO
-    console.log("📦 [Upload] Step 1/6: Uploading to MinIO...");
+    console.log('📦 [Upload] Step 1/6: Uploading to MinIO...');
     const fileBuffer = Buffer.from(await file.arrayBuffer());
     const minioResult = await minioStorage.uploadDocument(filename, fileBuffer, {
       contentType,
-      documentType: "legal",
+      documentType: 'legal',
       userId: user.id,
       caseId,
       documentId,
@@ -150,19 +150,19 @@ export const POST = async ({ request, locals }) => {
     );
 
     // 3. Extract text with langextract-go
-    console.log("⚙️ [Upload] Step 2/6: Extracting text with langextract-go...");
-    let extractedText = "";
-    let extractionMethod = "fallback";
+    console.log('⚙️ [Upload] Step 2/6: Extracting text with langextract-go...');
+    let extractedText = '';
+    let extractionMethod = 'fallback';
 
     try {
       // Save file temporarily for langextract
-      const tempDir = join(tmpdir(), "legal-uploads");
+      const tempDir = join(tmpdir(), 'legal-uploads');
       await mkdir(tempDir, { recursive: true });
       const tempFilePath = join(tempDir, `${documentId}_${filename}`);
       await writeFile(tempFilePath, fileBuffer);
 
       // Call langextract-go CLI
-      const langextractPath = process.env.LANGEXTRACT_PATH || "../langextract-go/langextract";
+      const langextractPath = process.env.LANGEXTRACT_PATH || '../langextract-go/langextract';
       const { stdout, stderr } = await execAsync(
         `${langextractPath} extract "${tempFilePath}"`, // Corrected command string
         { timeout: 30000 } // 30s timeout
@@ -170,26 +170,26 @@ export const POST = async ({ request, locals }) => {
 
       if (stdout) {
         extractedText = stdout.trim();
-        extractionMethod = "langextract-go";
+        extractionMethod = 'langextract-go';
         console.log(`✅ [Upload] Text extracted: ${extractedText.length} characters`);
       } else if (stderr) {
-        console.warn("⚠️ [Upload] LangExtract stderr: ", stderr);
-        throw new Error("LangExtract failed");
+        console.warn('⚠️ [Upload] LangExtract stderr: ', stderr);
+        throw new Error('LangExtract failed');
       }
 
       // Cleanup temp file
       await unlink(tempFilePath).catch(() => {});
     } catch (extractError: Error | unknown) {
       const msg = extractError instanceof Error ? extractError.message : String(extractError);
-      console.warn("⚠️ [Upload] LangExtract failed, using fallback: ", msg);
+      console.warn('⚠️ [Upload] LangExtract failed, using fallback: ', msg);
 
       // Fallback: naive text extraction for .txt files
-      if (contentType.includes("text") || filename.endsWith(".txt")) {
-        extractedText = fileBuffer.toString("utf-8");
-        extractionMethod = "utf8-fallback";
+      if (contentType.includes('text') || filename.endsWith('.txt')) {
+        extractedText = fileBuffer.toString('utf-8');
+        extractionMethod = 'utf8-fallback';
       } else {
         extractedText = `[Binary file: ${filename}]`;
-        extractionMethod = "binary-placeholder";
+        extractionMethod = 'binary-placeholder';
       }
     }
 
@@ -197,33 +197,33 @@ export const POST = async ({ request, locals }) => {
     const chunks = chunkText(extractedText, { maxChunkChars: 3000, overlapChars: 500 });
 
     // 5. Generate embeddings for all chunks via server embedding-service
-    console.log("🧠 [Upload] Step 4/6: Generating embeddings via server embedding-service...");
+    console.log('🧠 [Upload] Step 4/6: Generating embeddings via server embedding-service...');
     let embeddings: number[][] = [];
-    let embeddingModel = "none";
+    let embeddingModel = 'none';
 
     try {
       const result = await generateEmbeddings({
         // Corrected: Use generateEmbeddings
         texts: chunks,
-        model: "embeddinggemma:latest",
+        model: 'embeddinggemma:latest',
       });
       embeddings = result.embeddings;
-      embeddingModel = result.source || "server-embedding-service";
+      embeddingModel = result.source || 'server-embedding-service';
       console.log(`✅ [Upload] Generated ${embeddings.length} embeddings using ${embeddingModel}`);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(
-        "⚠️ [Upload] Server embedding-service failed, falling back to remote services: ",
+        '⚠️ [Upload] Server embedding-service failed, falling back to remote services: ',
         msg
       );
 
       // Fallback: Try existing remote fallback embedding service URL
       try {
         const embeddingServiceUrl =
-          process.env.EMBEDDING_SERVICE_URL || "http://localhost:8094/api/embed";
+          process.env.EMBEDDING_SERVICE_URL || 'http://localhost:8094/api/embed';
         const fallbackResp = await fetch(embeddingServiceUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ texts: chunks }),
           signal: AbortSignal.timeout(60000),
         });
@@ -231,7 +231,7 @@ export const POST = async ({ request, locals }) => {
         if (fallbackResp.ok) {
           const fallbackData = await fallbackResp.json();
           embeddings = fallbackData.embeddings || [];
-          embeddingModel = fallbackData.model || "nomic-embed-text-fallback";
+          embeddingModel = fallbackData.model || 'nomic-embed-text-fallback';
           console.log(
             `✅ [Upload] Generated ${embeddings.length} embeddings using fallback ${embeddingModel}`
           );
@@ -241,12 +241,12 @@ export const POST = async ({ request, locals }) => {
           );
         }
       } catch (fallbackError: Error | unknown) {
-        console.warn("⚠️ [Upload] All embedding services failed (fallback):", fallbackError);
+        console.warn('⚠️ [Upload] All embedding services failed (fallback):', fallbackError);
       }
     }
 
     // 6. Store in PostgreSQL (documents + document_chunks)
-    console.log("💾 [Upload] Step 5/6: Storing in PostgreSQL...");
+    console.log('💾 [Upload] Step 5/6: Storing in PostgreSQL...');
 
     // Insert document
     await db.execute(sql`
@@ -267,7 +267,7 @@ export const POST = async ({ request, locals }) => {
           bucket: minioResult.bucket,
           objectName: minioResult.objectName,
         })},
-        ${"minio://" + minioResult.bucket + "/" + minioResult.objectName}
+        ${'minio://' + minioResult.bucket + '/' + minioResult.objectName}
       )
     `);
 
@@ -290,11 +290,11 @@ export const POST = async ({ request, locals }) => {
 
     // Enqueue vector embedding job for background processing
     try {
-      await queueVectorEmbedding("document", documentId, user.id);
+      await queueVectorEmbedding('document', documentId, user.id);
       console.log(`[Upload] Enqueued vector embedding job for document ${documentId}`);
     } catch (qErr: unknown) {
       const msg = qErr instanceof Error ? qErr.message : String(qErr);
-      console.warn("[Upload] Failed to enqueue embedding job: ", msg);
+      console.warn('[Upload] Failed to enqueue embedding job: ', msg);
     }
 
     // Enqueue document processing job (entity extraction, summary, additional embeddings)
@@ -303,7 +303,7 @@ export const POST = async ({ request, locals }) => {
         documentId,
         content:
           extractedText || `[Stored at: minio://${minioResult.bucket}/${minioResult.objectName}]`,
-        documentType: "legal",
+        documentType: 'legal',
         caseId: caseId ?? undefined,
         filePath: `minio://${minioResult.bucket}/${minioResult.objectName}`,
         options: {
@@ -322,11 +322,11 @@ export const POST = async ({ request, locals }) => {
       };
       console.log(`[Upload] Enqueued document processing job ${procJobId} (est ${estimated}s)`);
     } catch (procErr: unknown) {
-      console.warn("[Upload] Failed to enqueue document processing job: ", procErr);
+      console.warn('[Upload] Failed to enqueue document processing job: ', procErr);
     }
 
     // 7. Index in Qdrant (fire-and-forget)
-    console.log("⚙️ [Upload] Step 6/6: Indexing in Qdrant...");
+    console.log('⚙️ [Upload] Step 6/6: Indexing in Qdrant...');
     if (embeddings.length > 0) {
       indexInQdrant(documentId, chunks, embeddings, {
         filename,
@@ -335,7 +335,7 @@ export const POST = async ({ request, locals }) => {
         bucket: minioResult.bucket, // Corrected
         objectName: minioResult.objectName, // Corrected
       }).catch((err) => {
-        console.error("⚠️ [Upload] Qdrant indexing failed (non-blocking):", err);
+        console.error('⚠️ [Upload] Qdrant indexing failed (non-blocking):', err);
       });
     }
 
@@ -363,17 +363,17 @@ export const POST = async ({ request, locals }) => {
     return json(response, { status: 201 });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error("❌ [Upload] Failed: ", message);
+    console.error('❌ [Upload] Failed: ', message);
 
     const response: UploadResponse = {
       success: false,
-      documentId: "",
+      documentId: '',
       filename,
       size: fileSize, // Corrected
       chunks: 0,
       processingTime: Date.now() - startTime,
-      error: message || "Upload failed", // Corrected
-      metadata: { bucket: "", objectName: "", contentType },
+      error: message || 'Upload failed', // Corrected
+      metadata: { bucket: '', objectName: '', contentType },
     };
     return json(response, { status: 500 });
   }
@@ -416,14 +416,14 @@ async function indexInQdrant(
   } // Corrected metadata interface
 ): Promise<void> {
   try {
-    const collectionName = process.env.QDRANT_COLLECTION || "legal-documents";
-    const qdrantUrl = process.env.QDRANT_URL || "http://localhost:6333"; // Corrected URL string
+    const collectionName = process.env.QDRANT_COLLECTION || 'legal-documents';
+    const qdrantUrl = process.env.QDRANT_URL || 'http://localhost:6333'; // Corrected URL string
 
     // Create collection if not exists
     await fetch(`${qdrantUrl}/collections/${collectionName}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" }, // Corrected string literal
-      body: JSON.stringify({ vectors: { size: embeddings[0]?.length || 384, distance: "Cosine" } }), // Corrected string literal
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }, // Corrected string literal
+      body: JSON.stringify({ vectors: { size: embeddings[0]?.length || 384, distance: 'Cosine' } }), // Corrected string literal
     }).catch(() => {}); // Ignore if already exists
 
     // Upsert points
@@ -442,14 +442,14 @@ async function indexInQdrant(
     }));
 
     await fetch(`${qdrantUrl}/collections/${collectionName}/points`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" }, // Corrected string literal
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }, // Corrected string literal
       body: JSON.stringify({ points }),
     });
     console.log(`✅ [Qdrant] Indexed ${points.length} points for document: ${documentId}`);
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("❌ [Qdrant] Indexing failed: ", msg);
+    console.error('❌ [Qdrant] Indexing failed: ', msg);
     throw err;
   }
 }
@@ -459,20 +459,20 @@ async function indexInQdrant(
  */
 export const GET = async () => {
   return json({
-    endpoint: "POST /api/v1/documents/upload",
-    description: "Unified document upload with automatic processing",
+    endpoint: 'POST /api/v1/documents/upload',
+    description: 'Unified document upload with automatic processing',
     workflow: [
-      "1. Upload to MinIO storage",
-      "2. Extract text with langextract-go",
-      "3. Chunk text (3000 chars: 500 overlap)",
-      "4. Generate embeddings",
-      "5. Store in PostgreSQL",
-      "6. Index in Qdrant vector DB",
+      '1. Upload to MinIO storage',
+      '2. Extract text with langextract-go',
+      '3. Chunk text (3000 chars: 500 overlap)',
+      '4. Generate embeddings',
+      '5. Store in PostgreSQL',
+      '6. Index in Qdrant vector DB',
     ],
-    authentication: "Required (Lucia v3 session or DEV_BYPASS_AUTH)",
+    authentication: 'Required (Lucia v3 session or DEV_BYPASS_AUTH)',
     fields: {
-      file: "File (required)",
-      caseId: "string (optional)",
+      file: 'File (required)',
+      caseId: 'string (optional)',
       description: `string (optional)`,
     },
     example: {

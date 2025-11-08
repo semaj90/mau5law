@@ -4,15 +4,18 @@
 
 <svelte:head>
   <title>Context7 MCP Tools - Legal AI Development</title>
-  <meta name="description" content="Test and explore Context7 MCP tools for stack analysis and, best, practices" />
+  <meta
+    name="description"
+    content="Test and explore Context7 MCP tools for stack analysis and, best, practices"
+  />
 </svelte:head>
 <main class="min-h-screen">
   <div class="max-w-7xl mx-auto">
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-900">Context7 MCP Tools Integration</h1>
       <p class="text-lg text-gray-600 max-w-3xl">
-        Comprehensive toolset for SvelteKit legal AI development with stack analysis, best practices generation, and
-        intelligent integration suggestions.
+        Comprehensive toolset for SvelteKit legal AI development with stack analysis, best practices
+        generation, and intelligent integration suggestions.
       </p>
     </div>
     <MCPToolsDemo />
@@ -74,10 +77,14 @@
     <div class="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg">
       <h3 class="text-lg font-semibold text-yellow-800">Next Steps</h3>
       <ol class="list-decimal list-inside space-y-2">
-        <li>Run <code class="bg-yellow-100 px-2 py-1">TEST-MCP-SERVER.bat</code> to verify all integrations</li>
+        <li>
+          Run <code class="bg-yellow-100 px-2 py-1">TEST-MCP-SERVER.bat</code> to verify all integrations
+        </li>
         <li>Start Ollama server: <code class="bg-yellow-100 px-2 py-1">ollama serve</code></li>
         <li>
-          Configure Claude Desktop with <code class="bg-yellow-100 px-2 py-1">SETUP-CLAUDE-MCP-CONTEXT7.bat</code>
+          Configure Claude Desktop with <code class="bg-yellow-100 px-2 py-1"
+            >SETUP-CLAUDE-MCP-CONTEXT7.bat</code
+          >
         </li>
         <li>Test MCP tools in Claude Desktop or VS Code with Context7 integration</li>
         <li>Use tools for legal AI development guidance and best practices</li>

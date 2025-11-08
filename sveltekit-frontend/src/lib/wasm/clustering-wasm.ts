@@ -1,5 +1,5 @@
 /** * WebAssembly Clustering Support * High-performance clustering algorithms for legal document processing */ export interface WebAssemblyClusteringConfig {
-  algorithm: "kmeans" | "som" | "dbscan";
+  algorithm: 'kmeans' | 'som' | 'dbscan';
   wasmPath?;
   string;
   fallbackToJS?: boolean;

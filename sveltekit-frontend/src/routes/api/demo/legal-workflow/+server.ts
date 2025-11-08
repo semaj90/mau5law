@@ -20,7 +20,7 @@ const userDocumentsTable = schema.documents; // Assuming 'documents' is the corr
 
 // Helper to fail fast with a clear message if required schema exports are missing.
 function ensureRequiredTables(...tables: Array<{ name: string; table: any }>) {
-  const missing = tables.filter(t => !t.table).map(t => t.name);
+  const missing = tables.filter((t) => !t.table).map((t) => t.name);
   if (missing.length > 0) {
     throw new Error(
       `Missing DB exports: ${missing.join(', ')}. Please ensure these tables are exported from $lib/server/db/schema (e.g., export const documents = pgTable(...)).`
@@ -139,7 +139,10 @@ interface EvidenceMetadata {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     // Ensure minimal schema presence before dispatching actions
-    ensureRequiredTables({ name: 'cases', table: casesTable }, { name: 'caseActivities', table: caseActivitiesTable });
+    ensureRequiredTables(
+      { name: 'cases', table: casesTable },
+      { name: 'caseActivities', table: caseActivitiesTable }
+    );
     const { action, data } = await request.json();
     switch (action) {
       case 'create_case':
@@ -189,7 +192,9 @@ async function createLegalCase(data: any): Promise<any> {
       category: data.category || 'criminal',
       // Use extracted arrays (stringify when present)
       titleEmbedding: titleEmbeddingArray ? JSON.stringify(titleEmbeddingArray) : null,
-      descriptionEmbedding: descriptionEmbeddingArray ? JSON.stringify(descriptionEmbeddingArray) : null,
+      descriptionEmbedding: descriptionEmbeddingArray
+        ? JSON.stringify(descriptionEmbeddingArray)
+        : null,
       metadata: JSON.stringify({
         createdBy: data.userId,
         workflow: 'demo',
@@ -254,7 +259,12 @@ async function uploadEvidenceToCase(data: any): Promise<any> {
       activityType: 'evidence_uploaded',
       description: `Evidence "${file.name}" uploaded and queued for processing`,
       performedBy: data.userId,
-      metadata: JSON.stringify({ action: 'upload_evidence', filename: file.name, jobId, canvasPosition: position }),
+      metadata: JSON.stringify({
+        action: 'upload_evidence',
+        filename: file.name,
+        jobId,
+        canvasPosition: position,
+      }),
       createdAt: nowIso,
       updatedAt: nowIso,
     });
@@ -274,7 +284,8 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promis
   console.log('🎨 3: Updating canvas positions...');
   const { caseId, evidencePositions, userId } = data;
   // Ensure the documents table is available before proceeding
-  if (!userDocumentsTable) { // Use the aliased table
+  if (!userDocumentsTable) {
+    // Use the aliased table
     throw new Error(
       'Missing DB export: "documents" / "userDocuments" required for updateCanvasPositions. Please export it from $lib/server/db/schema.'
     );
@@ -324,7 +335,11 @@ async function updateCanvasPositions(data: UpdateCanvasPositionsPayload): Promis
           activityType: 'evidence_repositioned',
           description: `Evidence ${evidenceId} repositioned on canvas`,
           performedBy: userId,
-          metadata: JSON.stringify({ action: 'update_position', evidenceId, newPosition: position }),
+          metadata: JSON.stringify({
+            action: 'update_position',
+            evidenceId,
+            newPosition: position,
+          }),
           createdAt: nowIso,
           updatedAt: nowIso,
         });
@@ -370,7 +385,7 @@ async function generateTimeline(data: { caseId: string }): Promise<any> {
     .orderBy(userDocumentsTable.createdAt)) as UserDocumentRow[];
 
   // Reconstruct timeline with AI insights
-  const timeline = activities.map(activity => {
+  const timeline = activities.map((activity) => {
     let metadata: Record<string, unknown> = {};
     try {
       const raw = activity.metadata;
@@ -395,13 +410,14 @@ async function generateTimeline(data: { caseId: string }): Promise<any> {
   });
 
   // Add evidence processing events
-  evidenceDocuments.forEach(doc => {
+  evidenceDocuments.forEach((doc) => {
     // use the typed metadata and guarded parsing
     let metadata: EvidenceMetadata = {};
     try {
-      metadata = (typeof doc.metadata === 'string'
-        ? (JSON.parse(doc.metadata || '{}') as EvidenceMetadata)
-        : ((doc.metadata as EvidenceMetadata) ?? {})) || {};
+      metadata =
+        (typeof doc.metadata === 'string'
+          ? (JSON.parse(doc.metadata || '{}') as EvidenceMetadata)
+          : ((doc.metadata as EvidenceMetadata) ?? {})) || {};
     } catch (err) {
       console.warn('Failed to parse document.metadata for document: ', { id: doc.id, err });
       metadata = {};
@@ -454,7 +470,10 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     // Single result shape
     if ('embedding' in queryEmbeddingResult && Array.isArray(queryEmbeddingResult.embedding)) {
       queryEmbedding = queryEmbeddingResult.embedding;
-    } else if ('embeddings' in queryEmbeddingResult && Array.isArray(queryEmbeddingResult.embeddings)) {
+    } else if (
+      'embeddings' in queryEmbeddingResult &&
+      Array.isArray(queryEmbeddingResult.embeddings)
+    ) {
       // Batch shape: take the first embedding if available
       const batch = queryEmbeddingResult.embeddings;
       if (batch && batch.length > 0 && Array.isArray(batch[0])) {
@@ -464,12 +483,10 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   }
 
   // Load case information
-  const caseRows = await db
-    .select()
-    .from(casesTable)
-    .where(eq(casesTable.id, caseId))
-    .limit(1);
-  const caseRow = caseRows.length ? caseRows[0] : { caseNumber: 'UNKNOWN', title: 'Unknown Case', description: '' };
+  const caseRows = await db.select().from(casesTable).where(eq(casesTable.id, caseId)).limit(1);
+  const caseRow = caseRows.length
+    ? caseRows[0]
+    : { caseNumber: 'UNKNOWN', title: 'Unknown Case', description: '' };
 
   // Load evidence documents (defensive)
   const docs = (await db
@@ -527,13 +544,16 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     if (typeof possibleEmbedding === 'string') {
       try {
         const parsed = JSON.parse(possibleEmbedding) as unknown;
-        if (Array.isArray(parsed) && parsed.every(v => typeof v === 'number')) {
+        if (Array.isArray(parsed) && parsed.every((v) => typeof v === 'number')) {
           docEmbedding = parsed as number[];
         }
       } catch {
         docEmbedding = null;
       }
-    } else if (Array.isArray(possibleEmbedding) && (possibleEmbedding as unknown[]).every(v => typeof v === 'number')) {
+    } else if (
+      Array.isArray(possibleEmbedding) &&
+      (possibleEmbedding as unknown[]).every((v) => typeof v === 'number')
+    ) {
       docEmbedding = possibleEmbedding as number[];
     }
 
@@ -542,7 +562,9 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
   });
 
   // Pick top-K most relevant documents
-  const similarDocuments = evidenceList.sort((a, b) => (b.relevance || 0) - (a.relevance || 0)).slice(0, topK);
+  const similarDocuments = evidenceList
+    .sort((a, b) => (b.relevance || 0) - (a.relevance || 0))
+    .slice(0, topK);
 
   // Build RAG context
   const ragContext: RagContext = {
@@ -600,7 +622,11 @@ async function chatWithCase(data: ChatWithCasePayload): Promise<any> {
     step: 5,
     action: 'rag_chat_completed',
     response: aiResponse,
-    context: { documentsAnalyzed: similarDocuments.length, caseContext: true, embeddingSearch: !!queryEmbedding },
+    context: {
+      documentsAnalyzed: similarDocuments.length,
+      caseContext: true,
+      embeddingSearch: !!queryEmbedding,
+    },
     message: 'AI analysis complete using case evidence and context!',
   });
 }
@@ -627,7 +653,9 @@ function generateMockLegalResponse(context: RagContext): string {
   const { case: caseData, evidence, query } = context;
   const evidenceCount = evidence?.length || 0;
   const avgRelevance =
-    evidenceCount === 0 ? 0 : (evidence.reduce((sum, doc) => sum + (doc.relevance || 0), 0) / evidenceCount) * 100;
+    evidenceCount === 0
+      ? 0
+      : (evidence.reduce((sum, doc) => sum + (doc.relevance || 0), 0) / evidenceCount) * 100;
 
   return `Based on my analysis of Case ${caseData.caseNumber} "${caseData.title}" and ${evidenceCount} pieces of evidence:
 
@@ -659,10 +687,22 @@ export const GET: RequestHandler = async ({ url }) => {
       workflow: 'Legal AI Case Management Demo',
       steps: [
         { step: 1, action: 'create_case', description: 'Create new legal case with embeddings' },
-        { step: 2, action: 'upload_evidence', description: 'Upload multimodal evidence to MinIO + worker queue' },
-        { step: 3, action: 'update_canvas_positions', description: 'Position evidence on Fabric.js canvas' },
+        {
+          step: 2,
+          action: 'upload_evidence',
+          description: 'Upload multimodal evidence to MinIO + worker queue',
+        },
+        {
+          step: 3,
+          action: 'update_canvas_positions',
+          description: 'Position evidence on Fabric.js canvas',
+        },
         { step: 4, action: 'generate_timeline', description: 'Reconstruct chronological timeline' },
-        { step: 5, action: 'chat_with_case', description: 'RAG chat with case context and evidence' },
+        {
+          step: 5,
+          action: 'chat_with_case',
+          description: 'RAG chat with case context and evidence',
+        },
       ],
       technologies: [
         'SvelteKit 2 API routes',
@@ -701,7 +741,11 @@ export const GET: RequestHandler = async ({ url }) => {
                 { name: 'witness_statement.pdf', type: 'application/pdf', content: `base64...` },
                 { name: 'surveillance_audio.mp3', type: 'audio/mpeg', content: `base64...` },
               ],
-              canvasPositions: [{ x: 100, y: 100 }, { x: 300, y: 150 }, { x: 500, y: 200 }],
+              canvasPositions: [
+                { x: 100, y: 100 },
+                { x: 300, y: 150 },
+                { x: 500, y: 200 },
+              ],
             },
           },
         },
@@ -710,6 +754,3 @@ export const GET: RequestHandler = async ({ url }) => {
   }
   return json({ error: `Use ?demo=info for documentation` });
 };
-
-
-

@@ -1,22 +1,59 @@
 import type { TextChunk } from '$lib/types';
 // TypeScript declarations for missing types across the codebase // This file resolves many TS2304: "Cannot find name" errors // Engine/Graphics types
-declare class ShaderCache { static get(_key: string): unknown; static set(_key: string, value: unknown): void; }
-declare class MatrixTransformLib { static createTransform(): unknown; static multiply(a: unknown, b: unknown): unknown; }
+declare class ShaderCache {
+  static get(_key: string): unknown;
+  static set(_key: string, value: unknown): void;
+}
+declare class MatrixTransformLib {
+  static createTransform(): unknown;
+  static multiply(a: unknown, b: unknown): unknown;
+}
 // Docker/Optimization types
-declare class DockerResourceOptimizer { static optimizeMemory(): Promise<unknown>; static getCurrentUsage(): Promise<unknown>; }
+declare class DockerResourceOptimizer {
+  static optimizeMemory(): Promise<unknown>;
+  static getCurrentUsage(): Promise<unknown>;
+}
 // RAG/Search types
-declare interface RAGSearchResult { id: string; content: string; score: number; metadata?: Record<string, unknown>; }
-declare interface TextChunk { text: string; index: number; metadata?: Record<string, unknown>; }
-declare interface RAGDocument { id: string; content: string; embedding?: number[]; metadata?: Record<string, unknown>; }
+declare interface RAGSearchResult {
+  id: string;
+  content: string;
+  score: number;
+  metadata?: Record<string, unknown>;
+}
+declare interface TextChunk {
+  text: string;
+  index: number;
+  metadata?: Record<string, unknown>;
+}
+declare interface RAGDocument {
+  id: string;
+  content: string;
+  embedding?: number[];
+  metadata?: Record<string, unknown>;
+}
 // Store types
-declare const enhancedRAGStore: { search: (query: string) => Promise<RAGSearchResult[]>; add: (doc: RAGDocument) => Promise<void>; };
+declare const enhancedRAGStore: {
+  search: (query: string) => Promise<RAGSearchResult[]>;
+  add: (doc: RAGDocument) => Promise<void>;
+};
 declare const documentVectors: unknown;
 // Routing types
-declare interface DynamicRouteConfig { path: string; component: unknown; metadata?: Record<string, unknown>; }
-declare interface GeneratedRoute { path: string; handler: unknown; } // Assuming 'handler' is a property
+declare interface DynamicRouteConfig {
+  path: string;
+  component: unknown;
+  metadata?: Record<string, unknown>;
+}
+declare interface GeneratedRoute {
+  path: string;
+  handler: unknown;
+} // Assuming 'handler' is a property
 declare function registerDynamicRoute(config: DynamicRouteConfig): GeneratedRoute;
 // Document processing types
-declare interface DocumentProcessingOptions { type: 'pdf' | 'docx' | 'txt'; extractImages?: boolean; ocrEnabled?: boolean; }
+declare interface DocumentProcessingOptions {
+  type: 'pdf' | 'docx' | 'txt';
+  extractImages?: boolean;
+  ocrEnabled?: boolean;
+}
 // Context7/MCP types
 declare function createContext7MCPIntegration(): unknown;
 // Database and ORM globals (fixes TS2304 errors)
@@ -53,7 +90,11 @@ declare module '@langchain/community/vectorstores/pgvector' {
     similaritySearchWithScore(query: string, k?: number): Promise<unknown[]>;
     similaritySearch(query: string, k?: number): Promise<unknown[]>;
   }
-  export enum DistanceStrategy { EUCLIDEAN = 'euclidean', COSINE = 'cosine', INNER_PRODUCT = 'innerProduct' }
+  export enum DistanceStrategy {
+    EUCLIDEAN = 'euclidean',
+    COSINE = 'cosine',
+    INNER_PRODUCT = 'innerProduct',
+  }
 }
 declare module '@langchain/community/vectorstores/neo4j_vector' {
   export class Neo4jVectorStore {
@@ -64,9 +105,17 @@ declare module '@langchain/community/vectorstores/neo4j_vector' {
 }
 // XState v5 compatibility stubs
 declare module 'xstate' {
-  export interface StateId { [key: string]: unknown; }
-  export interface MetaObject { [key: string]: unknown; }
-  export interface TransitionConfig { cond?: unknown; actions?: unknown; target?: unknown; }
+  export interface StateId {
+    [key: string]: unknown;
+  }
+  export interface MetaObject {
+    [key: string]: unknown;
+  }
+  export interface TransitionConfig {
+    cond?: unknown;
+    actions?: unknown;
+    target?: unknown;
+  }
   export interface Actor<T = unknown> {
     send(_event: unknown): void;
     getSnapshot(): T;
@@ -117,7 +166,12 @@ export interface GenericLegalAnalysisResult {
   recommendations: string[];
   legalRelevance?: number;
 }
-export interface LegalEmbeddingResult { embedding: number[]; model: string; dimensions: number; processingTime: number; }
+export interface LegalEmbeddingResult {
+  embedding: number[];
+  model: string;
+  dimensions: number;
+  processingTime: number;
+}
 export interface MetricData {
   id?: string;
   metric: string;
@@ -134,6 +188,3 @@ export interface MonitoringService {
   recordSynthesis?(data: Record<string, unknown>): void;
   getMetrics(): Promise<MetricData[]>;
 }
-
-
-

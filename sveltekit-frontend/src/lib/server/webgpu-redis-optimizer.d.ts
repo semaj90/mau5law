@@ -1,4 +1,4 @@
-declare module "$lib/server/webgpu-redis-optimizer.js" {
+declare module '$lib/server/webgpu-redis-optimizer.js' {
   export class WebGPURedisOptimizer {
     constructor();
     setOptimized(

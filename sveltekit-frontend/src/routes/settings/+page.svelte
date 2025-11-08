@@ -20,7 +20,12 @@
         </div>
         <div class="field">
           <label for="email">Email:</label>
-          <input type="email" id="email" class="nes-input is-dark" placeholder="Enter, your, email" />
+          <input
+            type="email"
+            id="email"
+            class="nes-input is-dark"
+            placeholder="Enter, your, email"
+          />
         </div>
       </div>
       <div class="nes-container">

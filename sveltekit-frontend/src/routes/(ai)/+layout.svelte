@@ -117,142 +117,168 @@ import type { Document } from '$lib/types';
   .ai-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column
-   ; background: var(--surface-primary, #0a0a0a);
+    flex-direction: column;
+    background: var(--surface-primary, #0a0a0a);
     color: var(--text-primary, #00ccff);
-    font-family: 'JetBrains Mono', 'Courier New', monospace}
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+  }
 
   /* Header */
   .ai-header {
     background: var(--surface-secondary, #111111);
     border-bottom: 2px solid var(--border-primary, #00ccff);
     padding: 1rem;
-    box-shadow: 0 2px 8px rgba(0, 204, 255, 0.3)}
+    box-shadow: 0 2px 8px rgba(0, 204, 255, 0.3);
+  }
 
   .ai-brand {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem}
+    margin-bottom: 1rem;
+  }
 
   .ai-icon {
-    font-size: 2rem
-   ; filter: drop-shadow(0, 0 8px #00ccff)}
+    font-size: 2rem;
+    filter: drop-shadow(0, 0 8px #00ccff);
+  }
 
   .ai-title {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #00ccff
-   ; margin: 0;
-    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5)}
+    color: #00ccff;
+    margin: 0;
+    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+  }
 
   .ai-badge {
     background: linear-gradient(45deg, #00ccff, #0099cc);
-    color: #000
-   ; padding: 0.25rem 0.75rem;
+    color: #000;
+    padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.8rem;
     font-weight: bold;
-    box-shadow: 0 0 8px rgba(0, 204, 255, 0.4)}
+    box-shadow: 0 0 8px rgba(0, 204, 255, 0.4);
+  }
 
   /* Navigation */
   .ai-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem}
+    gap: 0.5rem;
+  }
 
   .ai-nav-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem
-   ; border: 1px solid var(--border-primary, #00ccff);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
-    text-decoration: none
-   ; color: var(--text-secondary, #66ccff);
+    text-decoration: none;
+    color: var(--text-secondary, #66ccff);
     background: var(--surface-primary, #0a0a0a);
     transition: all 0.3s ease;
     position: relative;
-    overflow: hidden}
+    overflow: hidden;
+  }
 
   .ai-nav-item::before {
-    content: ''; position: absolute;
+    content: '';
+    position: absolute;
     top: 0;
-    left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
-    transition: left 0.5s ease}
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 204, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
 
   .ai-nav-item:hover::before {
-    left: 100%}
+    left: 100%;
+  }
 
   .ai-nav-item:hover {
     border-color: #00ffcc;
-    color: #00ffcc
-   ; background: var(--surface-tertiary, #1a1a1a);
+    color: #00ffcc;
+    background: var(--surface-tertiary, #1a1a1a);
     box-shadow: 0 0 12px rgba(0, 255, 204, 0.3);
-    text-shadow: 0 0 8px rgba(0, 255, 204, 0.5)}
+    text-shadow: 0 0 8px rgba(0, 255, 204, 0.5);
+  }
 
   .ai-nav-item.active {
     border-color: #ff6600;
-    color: #ff6600
-   ; background: var(--surface-tertiary, #1a1a1a);
+    color: #ff6600;
+    background: var(--surface-tertiary, #1a1a1a);
     font-weight: bold;
     box-shadow: 0 0 16px rgba(255, 102, 0, 0.4);
-    text-shadow: 0 0 8px rgba(255, 102, 0, 0.6)}
+    text-shadow: 0 0 8px rgba(255, 102, 0, 0.6);
+  }
 
   .ai-nav-icon {
-    font-size: 1.2rem
-   ; filter: drop-shadow(0, 0 4px currentColor)}
+    font-size: 1.2rem;
+    filter: drop-shadow(0, 0 4px currentColor);
+  }
 
   .ai-nav-text {
-    font-size: 0.9rem}
+    font-size: 0.9rem;
+  }
 
   /* Content */
   .ai-content {
     flex: 1;
-    overflow-y: auto
-   ; background: var(--surface-primary, #0a0a0a);
-    position: relative}
+    overflow-y: auto;
+    background: var(--surface-primary, #0a0a0a);
+    position: relative;
+  }
 
   /* Cyberpunk grid background */
   .ai-content::before {
-    content: ''; position: absolute;
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
-    right: 0
-   ; bottom: 0;
+    right: 0;
+    bottom: 0;
     background-image:
       linear-gradient(45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%),
       linear-gradient(-45deg, transparent 49%, rgba(0, 204, 255, 0.03) 50%, transparent 51%);
     background-size: 40px 40px;
     pointer-events: none;
-    opacity: 0.5}
+    opacity: 0.5;
+  }
 
   .ai-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    min-height: 100%; position: relative;
-    z-index: 1}
+    min-height: 100%;
+    position: relative;
+    z-index: 1;
+  }
 
   .ai-placeholder {
     text-align: center;
-    padding: 4rem 2rem
-   ; background: var(--surface-secondary, #111111);
+    padding: 4rem 2rem;
+    background: var(--surface-secondary, #111111);
     border: 2px dashed #00ccff;
     border-radius: 1rem;
-    box-shadow: 0 0 20px rgba(0, 204, 255, 0.2)}
+    box-shadow: 0 0 20px rgba(0, 204, 255, 0.2);
+  }
 
   .ai-placeholder h2 {
     color: #00ccff;
     margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5)}
+    text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+  }
 
   /* Footer */
   .ai-footer {
     border-top: 2px solid var(--border-primary, #00ccff);
     background: var(--surface-secondary, #111111);
     padding: 1rem;
-    box-shadow: 0 -2px 8px rgba(0, 204, 255, 0.2)}
+    box-shadow: 0 -2px 8px rgba(0, 204, 255, 0.2);
+  }
 
   .ai-footer-content {
     max-width: 1400px;
@@ -260,67 +286,81 @@ import type { Document } from '$lib/types';
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 2rem}
+    gap: 2rem;
+  }
 
   .ai-info {
     display: flex;
     align-items: center;
     gap: 1rem;
-    font-size: 0.9rem
-   ; color: var(--text-muted, #66ccff)}
+    font-size: 0.9rem;
+    color: var(--text-muted, #66ccff);
+  }
 
   .ai-current strong {
     color: #00ffcc;
     text-transform: uppercase;
-    text-shadow: 0 0 6px rgba(0, 255, 204, 0.5)}
+    text-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
+  }
 
   .ai-controls {
     display: flex;
-    gap: 1rem}
+    gap: 1rem;
+  }
 
   .ai-main-btn {
-    padding: 0.5rem 1rem
-   ; border: 1px solid var(--border-primary, #00ccff);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-primary, #00ccff);
     border-radius: 0.5rem;
-    text-decoration: none
-   ; color: var(--text-primary, #00ccff);
+    text-decoration: none;
+    color: var(--text-primary, #00ccff);
     background: var(--surface-primary, #0a0a0a);
     transition: all 0.3s ease;
-    font-size: 0.9rem}
+    font-size: 0.9rem;
+  }
 
   .ai-main-btn:hover {
-    border-color: #00ffcc
-   ; color: #00ffcc;
+    border-color: #00ffcc;
+    color: #00ffcc;
     box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
-    text-shadow: 0 0 6px rgba(0, 255, 204, 0.5)}
+    text-shadow: 0 0 6px rgba(0, 255, 204, 0.5);
+  }
 
   /* Responsive */
   @media (max-width: 768px) {
     .ai-container {
-      padding: 1rem}
+      padding: 1rem;
+    }
 
     .ai-footer-content {
       flex-direction: column;
       text-align: center;
-      gap: 1rem}
+      gap: 1rem;
+    }
 
     .ai-nav {
-      justify-content: center}
+      justify-content: center;
+    }
   }
 
   /* Custom scrollbar with cyberpunk styling */
   .ai-content::-webkit-scrollbar {
-    width: 12px}
+    width: 12px;
+  }
 
-  .ai-content::-webkit-scrollbar-track { background: var(--surface-tertiary, #1a1a1a);
-    border: 1px solid #00ccff}
+  .ai-content::-webkit-scrollbar-track {
+    background: var(--surface-tertiary, #1a1a1a);
+    border: 1px solid #00ccff;
+  }
 
-  .ai-content::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #00ccff, #0099cc);
+  .ai-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00ccff, #0099cc);
     border-radius: 6px;
-    box-shadow: 0 0 8px rgba(0, 204, 255, 0.5)}
+    box-shadow: 0 0 8px rgba(0, 204, 255, 0.5);
+  }
 
-  .ai-content::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #00ffcc, #00ccaa);
-    box-shadow: 0 0 12px rgba(0, 255, 204, 0.7)}
+  .ai-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00ffcc, #00ccaa);
+    box-shadow: 0 0 12px rgba(0, 255, 204, 0.7);
+  }
 </style>
-
-

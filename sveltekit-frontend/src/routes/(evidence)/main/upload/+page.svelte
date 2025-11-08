@@ -14,11 +14,12 @@
     onError: ({ result }) => {
       const notice = document.createElement('div');
       notice.innerHTML = '⚠️ failure default to mock - Upload service temporarily unavailable';
-      notice.style.cssText = 'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
+      notice.style.cssText =
+        'position: fixed; top: 20px; right: 20px; background: rgba(220, 53, 69, 0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 5000);
       console.log('Upload failed, using mock fallback:', result);
-    }
+    },
   });
 
   // File upload state
@@ -39,7 +40,7 @@
   async function generateMetadataFromFile(file: File, evidenceType: string | undefined) {
     // Images: return dimensions + basic info
     if (file.type.startsWith('image/')) {
-      return await new Promise(resolve => {
+      return await new Promise((resolve) => {
         const img = new Image();
         img.onload = () => {
           resolve({
@@ -48,15 +49,16 @@
             mimeType: file.type,
             width: img.width,
             height: img.height,
-            detectedType: getFileTypeFromMime(file.type, evidenceType)
+            detectedType: getFileTypeFromMime(file.type, evidenceType),
           });
         };
-        img.onerror = () => resolve({
-          name: file.name,
-          size: file.size,
-          mimeType: file.type,
-          detectedType: getFileTypeFromMime(file.type, evidenceType)
-        });
+        img.onerror = () =>
+          resolve({
+            name: file.name,
+            size: file.size,
+            mimeType: file.type,
+            detectedType: getFileTypeFromMime(file.type, evidenceType),
+          });
         img.src = URL.createObjectURL(file);
       });
     }
@@ -69,7 +71,7 @@
         size: file.size,
         mimeType: file.type,
         preview: text.slice(0, 500),
-        detectedType: getFileTypeFromMime(file.type, evidenceType)
+        detectedType: getFileTypeFromMime(file.type, evidenceType),
       };
     }
 
@@ -78,7 +80,7 @@
       name: file.name,
       size: file.size,
       mimeType: file.type,
-      detectedType: getFileTypeFromMime(file.type, evidenceType)
+      detectedType: getFileTypeFromMime(file.type, evidenceType),
     };
   }
 
@@ -127,8 +129,8 @@
           detectedType: $form.evidence_type,
           estimatedProcessingTime: '2-5 minutes',
           suggestedTags: ['document', 'evidence'],
-          confidenceLevel: 'medium'
-        }
+          confidenceLevel: 'medium',
+        },
       };
     }
 
@@ -169,7 +171,9 @@
   function onEvidenceTypeChange() {
     if (selectedFile) {
       if (!validateFileType(selectedFile, $form.evidence_type)) {
-        $errors.file = [`File type ${selectedFile.type} not supported for ${$form.evidence_type} evidence`];
+        $errors.file = [
+          `File type ${selectedFile.type} not supported for ${$form.evidence_type} evidence`,
+        ];
       } else if ($errors.file) {
         delete $errors.file;
         $errors = $errors;
@@ -186,22 +190,22 @@
   }
 </script>
 
-<main class="page-repair"
-      ondragover={onDragOver}
-      ondragleave={onDragLeave}
-      ondrop={onDrop}
->
+<main class="page-repair" ondragover={onDragOver} ondragleave={onDragLeave} ondrop={onDrop}>
   <h1>Upload evidence</h1>
 
   <!-- Minimal dropzone / input that wires the handlers and prevents "declared but never used" warnings -->
-  <div class="dropzone" style="border:2px dashed #ccc; padding:1rem; border-radius:8px; margin-bottom:1rem;">
+  <div
+    class="dropzone"
+    style="border:2px dashed #ccc; padding:1rem; border-radius:8px; margin-bottom:1rem;"
+  >
     <p style="margin:0 0 0.5rem 0;">Drop a file here or choose a file</p>
     <label style="cursor:pointer; color:var(--accent, #0366d6);">
       <input type="file" style="display:none" onchange={onFileChange} />
       Choose file…
     </label>
     <div style="margin-top:.5rem;">
-      <label>Evidence type:
+      <label
+        >Evidence type:
         <select bind:value={$form.evidence_type} onchange={onEvidenceTypeChange}>
           <option value="DOCUMENT">Document</option>
           <option value="IMAGE">Image</option>
@@ -215,7 +219,11 @@
 
   {#if filePreview}
     <div style="margin-bottom:1rem;">
-      <img src={filePreview} alt="preview" style="max-width:100%; height:auto; border-radius:4px;" />
+      <img
+        src={filePreview}
+        alt="preview"
+        style="max-width:100%; height:auto; border-radius:4px;"
+      />
     </div>
   {/if}
 
@@ -227,10 +235,18 @@
 
   <div>
     <h3>Metadata preview</h3>
-    <pre style="background:#f7f7f7;padding:0.5rem;border-radius:4px;max-height:240px;overflow:auto;">{JSON.stringify(metadata, null, 2)}</pre>
+    <pre
+      style="background:#f7f7f7;padding:0.5rem;border-radius:4px;max-height:240px;overflow:auto;">{JSON.stringify(
+        metadata,
+        null,
+        2
+      )}</pre>
   </div>
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

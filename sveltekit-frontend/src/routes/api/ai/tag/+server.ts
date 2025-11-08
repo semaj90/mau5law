@@ -1,6 +1,6 @@
-import { json } from "@sveltejs/kit";
-import { redisOptimized } from "$lib/middleware/redis-orchestrator-middleware";
-import type { RequestHandler } from "./$types.js";
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestHandler } from './$types.js';
 
 // --- New Interfaces for AI Tagging Results ---
 interface OllamaGenerateResponse {
@@ -19,27 +19,27 @@ interface LegalMetadata {
   dates: string[];
   organizations: string[];
   evidenceType:
-    | "document"
-    | "photo"
-    | "video"
-    | "audio"
-    | "physical"
-    | "digital"
-    | "testimony"
-    | "other";
-  legalRelevance: "critical" | "high" | "medium" | "low";
+    | 'document'
+    | 'photo'
+    | 'video'
+    | 'audio'
+    | 'physical'
+    | 'digital'
+    | 'testimony'
+    | 'other';
+  legalRelevance: 'critical' | 'high' | 'medium' | 'low';
   summary: string;
   keyFacts: string[];
   legalCategories?: string[];
-  confidentialityLevel?: "public" | "internal" | "confidential" | "restricted";
-  urgencyLevel?: "immediate" | "high" | "normal" | "low";
+  confidentialityLevel?: 'public' | 'internal' | 'confidential' | 'restricted';
+  urgencyLevel?: 'immediate' | 'high' | 'normal' | 'low';
   potentialWitnesses?: string[];
   relatedCases?: string[];
   statutes?: string[];
   monetaryAmounts?: string[];
   timeReferences?: string[];
   actions?: string[];
-  sentiment?: "positive" | "negative" | "neutral";
+  sentiment?: 'positive' | 'negative' | 'neutral';
   language?: string;
   qualityScore?: number;
   extractionConfidence?: {
@@ -58,8 +58,8 @@ export const POST: RequestHandler = redisOptimized(async ({ request }) => {
   try {
     // Corrected destructuring assignment
     const { content, fileName, fileType, enhanced = false } = await request.json();
-    if (!content || content.trim() === "") {
-      return json({ error: "Content is required" }, { status: 400 });
+    if (!content || content.trim() === '') {
+      return json({ error: 'Content is required' }, { status: 400 });
     }
     // Enhanced prompt for better auto-form fill capabilities
     // Corrected template literal syntax
@@ -101,25 +101,25 @@ Guidelines:
 6. Suggest follow-up actions
 7. Rate extraction confidence for each category
 8. Identify potential red flags or Details:
-- Name: ${fileName || "Unknown"}
-- Type: ${fileType || "Unknown"}
-- Analysis: ${enhanced ? "Yes" : "No"}
+- Name: ${fileName || 'Unknown'}
+- Type: ${fileType || 'Unknown'}
+- Analysis: ${enhanced ? 'Yes' : 'No'}
 Content to analyze: ${content.slice(0, enhanced ? 5000 : 2000)}
 Return JSON object. No markdown, no explanations, no additional text.`;
     // Corrected template literal syntax
     const basicPrompt = `Extract structured legal metadata from this content. Return JSON:
-{ "tags": ["tag1", "tag2"], "title": "Brief title", "people": ["person1", "person2"], "locations": ["location1"], "dates": ["date1"], "organizations": ["org1"], "evidenceType": "document|photo|video|audio|other", "legalRelevance": "high|medium|low", "summary": "Brief summary", "keyFacts": ["fact1", "fact2"] } File: ${fileName || "Unknown"}, Content: ${content.slice(0, 2000)}`;
+{ "tags": ["tag1", "tag2"], "title": "Brief title", "people": ["person1", "person2"], "locations": ["location1"], "dates": ["date1"], "organizations": ["org1"], "evidenceType": "document|photo|video|audio|other", "legalRelevance": "high|medium|low", "summary": "Brief summary", "keyFacts": ["fact1", "fact2"] } File: ${fileName || 'Unknown'}, Content: ${content.slice(0, 2000)}`;
     const prompt = enhanced ? enhancedPrompt : basicPrompt;
 
     // Try legal Gemma3 model first, with fallbacks
-    const models = ["gemma3-legal", "gemma3", "gemma3-legal:latest"];
+    const models = ['gemma3-legal', 'gemma3', 'gemma3-legal:latest'];
     let result: OllamaGenerateResponse | null = null;
-    let modelUsed = "";
+    let modelUsed = '';
     for (const model of models) {
       try {
-        const ollamaResponse = await fetch("http://localhost:11434/api/generate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+        const ollamaResponse = await fetch('http://localhost:11434/api/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             model,
             prompt,
@@ -144,7 +144,7 @@ Return JSON object. No markdown, no explanations, no additional text.`;
       }
     }
     if (!result) {
-      return json({ error: "No AI models available" }, { status: 503 });
+      return json({ error: 'No AI models available' }, { status: 503 });
     }
     const parsedResult: LegalMetadata = await parseAndReturnTags(
       result.response,
@@ -159,7 +159,7 @@ Return JSON object. No markdown, no explanations, no additional text.`;
       try {
         await generateEmbedding(parsedResult, content);
       } catch (error: Error | unknown) {
-        console.log("Embedding generation failed: ", error); // Non-critical, continue without embedding
+        console.log('Embedding generation failed: ', error); // Non-critical, continue without embedding
       }
     }
     return json(
@@ -167,15 +167,15 @@ Return JSON object. No markdown, no explanations, no additional text.`;
         success: true,
         data: parsedResult,
         modelUsed: modelUsed,
-        processingTime: result.total_duration ? `${result.total_duration / 1000000}ms` : "N/A",
+        processingTime: result.total_duration ? `${result.total_duration / 1000000}ms` : 'N/A',
       },
       { status: 200 }
     );
   } catch (error: Error | unknown) {
-    console.error("AI Tagging error: ", error);
+    console.error('AI Tagging error: ', error);
     return json(
       {
-        error: "Failed to process content for tagging",
+        error: 'Failed to process content for tagging',
         details: error instanceof Error ? error.message : `Unknown error`,
       },
       { status: 500 }
@@ -188,33 +188,33 @@ async function parseAndReturnTags(
   fileName?: string,
   fileType?: string,
   enhanced = false,
-  modelUsed = ""
+  modelUsed = ''
 ): Promise<LegalMetadata> {
   // Enhanced default structure for auto-form
   let tagsResult: LegalMetadata = {
     tags: [],
-    title: fileName || "Untitled Evidence",
+    title: fileName || 'Untitled Evidence',
     people: [],
     locations: [],
     dates: [],
     organizations: [],
-    evidenceType: "other",
-    legalRelevance: "medium",
-    summary: "",
+    evidenceType: 'other',
+    legalRelevance: 'medium',
+    summary: '',
     keyFacts: [],
     // Enhanced fields for auto-form fill
     ...(enhanced && {
       legalCategories: [],
-      confidentialityLevel: "internal",
-      urgencyLevel: "normal",
+      confidentialityLevel: 'internal',
+      urgencyLevel: 'normal',
       potentialWitnesses: [],
       relatedCases: [],
       statutes: [],
       monetaryAmounts: [],
       timeReferences: [],
       actions: [],
-      sentiment: "neutral",
-      language: "en",
+      sentiment: 'neutral',
+      language: 'en',
       qualityScore: 0.5,
       extractionConfidence: { people: 0.5, locations: 0.5, dates: 0.5, organizations: 0.5 },
       redFlags: [],
@@ -225,22 +225,22 @@ async function parseAndReturnTags(
   };
   try {
     // Multiple JSON extraction strategies
-    let cleanResponse = (response || "").trim();
+    let cleanResponse = (response || '').trim();
     // Handle undefined response
     // Remove common AI response prefixes/suffixes
     const prefixesToRemove = [
-      "Here is the JSON: ",
+      'Here is the JSON: ',
       "Here's the data: ",
-      "Based on the content, here is the data: ",
-      "The JSON is: ",
-      "```json",
-      "```",
+      'Based on the content, here is the data: ',
+      'The JSON is: ',
+      '```json',
+      '```',
     ];
     const suffixesToRemove = [
-      "Please let me know if you need any clarification.",
-      "This analysis is based on the provided content.",
-      "```",
-      "Let me know if you need anything else.",
+      'Please let me know if you need any clarification.',
+      'This analysis is based on the provided content.',
+      '```',
+      'Let me know if you need anything else.',
     ];
     prefixesToRemove.forEach((prefix) => {
       if (cleanResponse.toLowerCase().startsWith(prefix.toLowerCase())) {
@@ -253,15 +253,15 @@ async function parseAndReturnTags(
       }
     });
     // Find JSON boundaries more robustly
-    const jsonStart = cleanResponse.indexOf("{");
-    const jsonEnd = cleanResponse.lastIndexOf("}");
+    const jsonStart = cleanResponse.indexOf('{');
+    const jsonEnd = cleanResponse.lastIndexOf('}');
     if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
       const jsonStr = cleanResponse.substring(jsonStart, jsonEnd + 1);
       try {
         const parsed = JSON.parse(jsonStr); // Validate and merge with defaults
         tagsResult = { ...tagsResult, ...validateAndCleanParsedData(parsed, enhanced) };
       } catch (parseError) {
-        console.warn("JSON parsing failed, attempting repair: ", parseError);
+        console.warn('JSON parsing failed, attempting repair: ', parseError);
         // Attempt JSON repair
         const repairedJson = attemptJsonRepair(jsonStr);
         if (repairedJson) {
@@ -272,25 +272,25 @@ async function parseAndReturnTags(
         }
       }
     } else {
-      throw new Error("No valid JSON structure found");
+      throw new Error('No valid JSON structure found');
     }
   } catch (parseError) {
-    console.error("Failed to parse AI response: ", parseError);
-    console.log("Raw response: ", response);
+    console.error('Failed to parse AI response: ', parseError);
+    console.log('Raw response: ', response);
     // Advanced fallback parsing using regex and NLP techniques
-    tagsResult = { ...tagsResult, ...extractWithFallbackMethods(response || "", enhanced) }; // Pass string, handle undefined
+    tagsResult = { ...tagsResult, ...extractWithFallbackMethods(response || '', enhanced) }; // Pass string, handle undefined
     // Add warning about parsing failure
     if (enhanced) {
       tagsResult.redFlags = [
         ...(tagsResult.redFlags || []),
-        "AI response parsing partially failed",
+        'AI response parsing partially failed',
       ];
       tagsResult.qualityScore = 0.3;
     }
   }
 
   // Auto-detect evidence type if not provided or invalid
-  if (!tagsResult.evidenceType || tagsResult.evidenceType === "other") {
+  if (!tagsResult.evidenceType || tagsResult.evidenceType === 'other') {
     tagsResult.evidenceType = detectEvidenceType(fileType);
   }
   // Enhance with file-based metadata
@@ -308,76 +308,76 @@ function validateAndCleanParsedData(
   // Changed type
   // Validate arrays
   if (Array.isArray(parsed.tags)) {
-    result.tags = parsed.tags.filter((t: string) => typeof t === "string");
+    result.tags = parsed.tags.filter((t: string) => typeof t === 'string');
   }
   if (Array.isArray(parsed.people)) {
-    result.people = parsed.people.filter((p: string) => typeof p === "string");
+    result.people = parsed.people.filter((p: string) => typeof p === 'string');
   }
   if (Array.isArray(parsed.locations)) {
-    result.locations = parsed.locations.filter((l: string) => typeof l === "string");
+    result.locations = parsed.locations.filter((l: string) => typeof l === 'string');
   }
   if (Array.isArray(parsed.dates)) {
     result.dates = validateDates(parsed.dates);
   }
   if (Array.isArray(parsed.organizations)) {
-    result.organizations = parsed.organizations.filter((o: string) => typeof o === "string");
+    result.organizations = parsed.organizations.filter((o: string) => typeof o === 'string');
   }
   if (Array.isArray(parsed.keyFacts)) {
-    result.keyFacts = parsed.keyFacts.filter((f: string) => typeof f === "string");
+    result.keyFacts = parsed.keyFacts.filter((f: string) => typeof f === 'string');
   }
   // Validate strings
-  if (typeof parsed.title === "string") {
+  if (typeof parsed.title === 'string') {
     result.title = parsed.title.substring(0, 100);
   }
-  if (typeof parsed.summary === "string") {
+  if (typeof parsed.summary === 'string') {
     result.summary = parsed.summary.substring(0, 300);
   }
   // Validate enums
   const validEvidenceTypes = [
-    "document",
-    "photo",
-    "video",
-    "audio",
-    "physical",
-    "digital",
-    "testimony",
-    "other",
+    'document',
+    'photo',
+    'video',
+    'audio',
+    'physical',
+    'digital',
+    'testimony',
+    'other',
   ];
-  if (typeof parsed.evidenceType === "string" && validEvidenceTypes.includes(parsed.evidenceType)) {
+  if (typeof parsed.evidenceType === 'string' && validEvidenceTypes.includes(parsed.evidenceType)) {
     result.evidenceType = parsed.evidenceType;
   }
-  const validLegalRelevance = ["critical", "high", "medium", "low"];
+  const validLegalRelevance = ['critical', 'high', 'medium', 'low'];
   if (
-    typeof parsed.legalRelevance === "string" &&
+    typeof parsed.legalRelevance === 'string' &&
     validLegalRelevance.includes(parsed.legalRelevance)
   ) {
     result.legalRelevance = parsed.legalRelevance;
   }
   // Confidence scores (0 to 1 range)
   if (
-    typeof parsed.qualityScore === "number" &&
+    typeof parsed.qualityScore === 'number' &&
     parsed.qualityScore >= 0 &&
     parsed.qualityScore <= 1
   ) {
     result.qualityScore = parsed.qualityScore;
   }
   // Extraction confidence
-  if (parsed.extractionConfidence && typeof parsed.extractionConfidence === "object") {
+  if (parsed.extractionConfidence && typeof parsed.extractionConfidence === 'object') {
     result.extractionConfidence = {
       people:
-        typeof parsed.extractionConfidence.people === "number"
+        typeof parsed.extractionConfidence.people === 'number'
           ? parsed.extractionConfidence.people
           : 0,
       locations:
-        typeof parsed.extractionConfidence.locations === "number"
+        typeof parsed.extractionConfidence.locations === 'number'
           ? parsed.extractionConfidence.locations
           : 0,
       dates:
-        typeof parsed.extractionConfidence.dates === "number"
+        typeof parsed.extractionConfidence.dates === 'number'
           ? parsed.extractionConfidence.dates
           : 0,
       organizations:
-        typeof parsed.extractionConfidence.organizations === "number"
+        typeof parsed.extractionConfidence.organizations === 'number'
           ? parsed.extractionConfidence.organizations
           : 0,
     };
@@ -466,7 +466,7 @@ function pad(n: string | number): string {
  */
 function extractWithFallbackMethods(response: string, _enhanced: boolean): Partial<LegalMetadata> {
   const out: Partial<LegalMetadata> = {};
-  if (!response || typeof response !== "string") return out;
+  if (!response || typeof response !== 'string') return out;
 
   // Tags: look for "tags: " list or lines like "- tag1, tag2"
   const tagsMatch =
@@ -474,7 +474,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
   if (tagsMatch) {
     const raw = tagsMatch[1];
     const items = raw
-      .replace(/["'\[\]]/g, "")
+      .replace(/["'\[\]]/g, '')
       .split(/[;,|]/)
       .map((s) => s.trim())
       .filter(Boolean);
@@ -496,7 +496,7 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
   if (dateTokens.length) out.dates = validateDates(dateTokens);
 
   // Summary: first 200 chars of text without JSON cruft
-  const cleaned = response.replace(/```.*?```/gs, "").replace(/[{[\]}]/g, " ");
+  const cleaned = response.replace(/```.*?```/gs, '').replace(/[{[\]}]/g, ' ');
   if (!out.summary) out.summary = cleaned.trim().slice(0, 300);
 
   return out;
@@ -505,15 +505,15 @@ function extractWithFallbackMethods(response: string, _enhanced: boolean): Parti
 /**
  * Simple evidence type detector from filename or content-type hint.
  */
-function detectEvidenceType(fileType?: string | null): LegalMetadata["evidenceType"] {
-  if (!fileType || typeof fileType !== "string") return "document";
+function detectEvidenceType(fileType?: string | null): LegalMetadata['evidenceType'] {
+  if (!fileType || typeof fileType !== 'string') return 'document';
   const ft = fileType.toLowerCase();
-  if (ft.includes("image") || ft.match(/\.(jpg|jpeg|png|gif)$/)) return "photo";
-  if (ft.includes("video") || ft.match(/\.(mp4|mov|avi|mkv)$/)) return "video";
-  if (ft.includes("audio") || ft.match(/\.(mp3|wav|ogg)$/)) return "audio";
-  if (ft.includes("pdf") || ft.includes("document") || ft.match(/\.(pdf|doc|docx|txt)$/))
-    return "document";
-  return "other";
+  if (ft.includes('image') || ft.match(/\.(jpg|jpeg|png|gif)$/)) return 'photo';
+  if (ft.includes('video') || ft.match(/\.(mp4|mov|avi|mkv)$/)) return 'video';
+  if (ft.includes('audio') || ft.match(/\.(mp3|wav|ogg)$/)) return 'audio';
+  if (ft.includes('pdf') || ft.includes('document') || ft.match(/\.(pdf|doc|docx|txt)$/))
+    return 'document';
+  return 'other';
 }
 
 /**
@@ -525,14 +525,14 @@ function enhanceWithFileMetadata(
   fileType?: string
 ): Partial<LegalMetadata> {
   const out = { ...base };
-  if ((!out.title || out.title === "") && fileName) {
+  if ((!out.title || out.title === '') && fileName) {
     // strip common extensions
     out.title = fileName
-      .replace(/\.[^/.]+$/, "")
-      .replace(/[_\-]/g, " ")
+      .replace(/\.[^/.]+$/, '')
+      .replace(/[_\-]/g, ' ')
       .substring(0, 100);
   }
-  if ((!out.evidenceType || out.evidenceType === "other") && fileType) {
+  if ((!out.evidenceType || out.evidenceType === 'other') && fileType) {
     out.evidenceType = detectEvidenceType(fileType);
   }
   return out;
@@ -542,7 +542,7 @@ function enhanceWithFileMetadata(
 async function generateEmbedding(parsedResult: LegalMetadata, content: string): Promise<void> {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\routes\api\ai\tag\+server.ts
   // This would typically call an embedding service (e.g., Ollama, FastAPI Embed)
-  console.log("Generating embedding for content...");
+  console.log('Generating embedding for content...');
   // Example:
   // const embeddingResponse = await fetch('http://localhost:8000/embed', {
   //   method: 'POST',
@@ -558,16 +558,16 @@ function attemptJsonRepair(jsonString: string): string | null {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\routes\api\ai\tag\+server.ts
   // This is a simplified stub. A real implementation might use a library like `json-repair`
   // or more sophisticated regex to fix common issues (e.g., trailing commas, unquoted keys).
-  console.warn("Attempting JSON repair (stub implementation)...");
+  console.warn('Attempting JSON repair (stub implementation)...');
   try {
     // Basic attempt: remove trailing commas, fix unquoted keys (very basic)
-    let repaired = jsonString.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]");
+    let repaired = jsonString.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
     // Attempt to wrap unquoted keys in quotes (very naive, might break valid JSON)
     repaired = repaired.replace(/([{,]\s*)([a-zA-Z0-9_]+?)\s*:/g, '$1"$2":');
     JSON.parse(repaired); // Test if it's now valid
     return repaired;
   } catch (e) {
-    console.error("JSON repair failed:", e);
+    console.error('JSON repair failed:', e);
     return null;
   }
 }

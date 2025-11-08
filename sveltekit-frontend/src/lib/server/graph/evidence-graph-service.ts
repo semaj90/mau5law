@@ -1,11 +1,11 @@
-import neo4j, { type Driver, type Transaction } from "neo4j-driver";
+import neo4j, { type Driver, type Transaction } from 'neo4j-driver';
 
 // Configuration / env with safe defaults
-const NEO4J_URL = process.env.NEO4J_URL ?? "bolt://localhost:7687";
-const NEO4J_USER = process.env.NEO4J_USER ?? "neo4j";
-const NEO4J_PASS = process.env.NEO4J_PASS ?? "neo4j";
-const NEO4J_INIT_ON_START = (process.env.NEO4J_INIT_ON_START ?? "false") === "true";
-const CREATE_SIMILARITY = (process.env.NEO4J_CREATE_SIMILARITY_LINKS ?? "false") === "true";
+const NEO4J_URL = process.env.NEO4J_URL ?? 'bolt://localhost:7687';
+const NEO4J_USER = process.env.NEO4J_USER ?? 'neo4j';
+const NEO4J_PASS = process.env.NEO4J_PASS ?? 'neo4j';
+const NEO4J_INIT_ON_START = (process.env.NEO4J_INIT_ON_START ?? 'false') === 'true';
+const CREATE_SIMILARITY = (process.env.NEO4J_CREATE_SIMILARITY_LINKS ?? 'false') === 'true';
 const SIMILARITY_THRESHOLD = Number(process.env.NEO4J_SIMILARITY_THRESHOLD ?? 0.85);
 
 // Singleton driver (typed from the runtime factory)
@@ -26,9 +26,9 @@ export async function ensureSchema(): Promise<void> {
   const session = driver.session();
   try {
     // Create simple constraints
-    await session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (e:Evidence) REQUIRE e.id IS UNIQUE");
-    await session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (c:Case) REQUIRE c.id IS UNIQUE");
-    await session.run("CREATE CONSTRAINT IF NOT EXISTS FOR (ent:Entity) REQUIRE ent.id IS UNIQUE");
+    await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (e:Evidence) REQUIRE e.id IS UNIQUE');
+    await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (c:Case) REQUIRE c.id IS UNIQUE');
+    await session.run('CREATE CONSTRAINT IF NOT EXISTS FOR (ent:Entity) REQUIRE ent.id IS UNIQUE');
   } finally {
     await session.close();
   }
@@ -146,7 +146,7 @@ export async function upsertEvidenceGraph(data: EvidenceGraphUpsertInput): Promi
     });
     return relationshipsCreated;
   } catch (err) {
-    console.warn("[Neo4j] upsertEvidenceGraph failed:", err);
+    console.warn('[Neo4j] upsertEvidenceGraph failed:', err);
     return 0;
   } finally {
     await session.close();
@@ -183,7 +183,7 @@ export async function createSimilarityLinks(
 }
 
 // Initialize schema on import if requested
-ensureSchema().catch((e) => console.debug("neo4j schema init failed", e));
+ensureSchema().catch((e) => console.debug('neo4j schema init failed', e));
 
 // Default export small service object
 const EvidenceGraphService = {

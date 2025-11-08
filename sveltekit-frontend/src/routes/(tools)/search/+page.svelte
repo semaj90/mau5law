@@ -11,7 +11,7 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
 </main>
 
 <style>
-.search-container {
+  .search-container {
     max-width: 900px;
     margin: 0 auto;
     padding: 2rem;
@@ -131,7 +131,7 @@ import type { Document } from '$lib/types'; import { superForm } from 'sveltekit
 
   .btn-search:disabled {
     opacity: 0.6;
-    cursor:not-allowed;
+    cursor: not-allowed;
   }
 
   .spinner {

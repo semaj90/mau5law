@@ -9,25 +9,24 @@
   let userName = $state<string>('');
 
   onMount(() => {
-		(async () => {
-
-    // Check if user is authenticated
-    try {
-      const response = await fetch('/api/auth/user');
-      if (response.ok) {
-        const user = await response.json();
-        isAuthenticated = true;
-        userName = user.username || user.email || 'User';
-      } else {
-        // Redirect to login if not authenticated
+    (async () => {
+      // Check if user is authenticated
+      try {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          const user = await response.json();
+          isAuthenticated = true;
+          userName = user.username || user.email || 'User';
+        } else {
+          // Redirect to login if not authenticated
+          await goto('/auth/login');
+        }
+      } catch (err) {
+        console.error('Auth check failed:', err);
         await goto('/auth/login');
       }
-    } catch (err) {
-      console.error('Auth check failed:', err);
-      await goto('/auth/login');
-    }
-  		})();
-	});
+    })();
+  });
 </script>
 
 <svelte:head>
@@ -181,10 +180,11 @@
 
 <style>
   .search-page {
-    min-height: 100vh
-   ; background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+    min-height: 100vh;
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
     color: var(--console-fg, white);
-    font-family: 'Courier New', monospace}
+    font-family: 'Courier New', monospace;
+  }
 
   .page-header {
     background: rgba(0, 0, 0, 0.5);
@@ -193,167 +193,216 @@
     display: flex;
     justify-content: space-betweennn;
     align-items: center;
-    gap: 2rem}
+    gap: 2rem;
+  }
 
   .header-content {
-    flex: 1}
+    flex: 1;
+  }
 
-  .page-title { margin: 0, 0 0.5rem 0;
-    font-size: 2rem
-   ; color: var(--console-primary, #00aa00);
-    letter-spacing: 1px}
+  .page-title {
+    margin:
+      0,
+      0 0.5rem 0;
+    font-size: 2rem;
+    color: var(--console-primary, #00aa00);
+    letter-spacing: 1px;
+  }
 
   .page-subtitle {
     margin: 0;
     opacity: 0.8;
-    font-size: 0.9rem}
+    font-size: 0.9rem;
+  }
 
   .header-nav {
     display: flex;
     align-items: center;
-    gap: 1rem}
+    gap: 1rem;
+  }
 
   .nav-button {
     padding: 0.75rem 1.5rem;
-    background: transparent
-   ; border: 2px solid var(--console-primary, #00aa00);
+    background: transparent;
+    border: 2px solid var(--console-primary, #00aa00);
     color: var(--console-fg, white);
-    border-radius: 4px
-   ; cursor: pointer;
+    border-radius: 4px;
+    cursor: pointer;
     font-family: 'Courier New', monospace;
     font-weight: bold;
-    transition: all 0.2s}
+    transition: all 0.2s;
+  }
 
-  .nav-button:hover { background: var(--console-primary, #00aa00);
-    color: var(--console-bg, #0f0f23)}
+  .nav-button:hover {
+    background: var(--console-primary, #00aa00);
+    color: var(--console-bg, #0f0f23);
+  }
 
   .user-info {
-    padding: 0.75rem 1rem
-   ; background: rgba(0, 170, 0, 0.1);
+    padding: 0.75rem 1rem;
+    background: rgba(0, 170, 0, 0.1);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px;
-    font-size: 0.9rem}
+    font-size: 0.9rem;
+  }
 
   .page-content {
     max-width: 1200px;
-    margin: 0 auto
-   ; padding: 2rem}
+    margin: 0 auto;
+    padding: 2rem;
+  }
 
   .features-section,
   .how-it-works,
   .tech-section {
-    margin: 3rem 0}
+    margin: 3rem 0;
+  }
 
   .section-title {
-    font-size: 1.5rem
-   ; color: var(--console-primary, #00aa00);
-    margin: 0, 0 1.5rem 0;
+    font-size: 1.5rem;
+    color: var(--console-primary, #00aa00);
+    margin:
+      0,
+      0 1.5rem 0;
     letter-spacing: 1px;
     border-bottom: 2px solid var(--console-primary, #00aa00);
-    padding-bottom: 0.5rem}
+    padding-bottom: 0.5rem;
+  }
 
-  .features-grid { display: grid;
+  .features-grid {
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem}
+    gap: 1rem;
+  }
 
   .feature-card {
-    padding: 1.5rem
-   ; background: rgba(0, 170, 0, 0.05);
+    padding: 1.5rem;
+    background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px;
-    transition: all 0.2s}
+    transition: all 0.2s;
+  }
 
-  .feature-card:hover { background: rgba(0, 170, 0, 0.1);
-    transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 170, 0, 0.2)}
+  .feature-card:hover {
+    background: rgba(0, 170, 0, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 170, 0, 0.2);
+  }
 
   .feature-card h3 {
-    margin: 0, 0 0.5rem 0;
-    color: var(--console-primary, #00aa00)}
+    margin:
+      0,
+      0 0.5rem 0;
+    color: var(--console-primary, #00aa00);
+  }
 
   .feature-card p {
     margin: 0;
     font-size: 0.9rem;
-    opacity: 0.8}
+    opacity: 0.8;
+  }
 
-  .steps { display: grid;
+  .steps {
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem}
+    gap: 1.5rem;
+  }
 
   .step {
     display: flex;
     gap: 1rem;
-    padding: 1.5rem
-   ; background: rgba(0, 170, 0, 0.05);
+    padding: 1.5rem;
+    background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
-    border-radius: 4px}
+    border-radius: 4px;
+  }
 
   .step-number {
     min-width: 40px;
     width: 40px;
-    height: 40px
-   ; background: var(--console-primary, #00aa00);
+    height: 40px;
+    background: var(--console-primary, #00aa00);
     color: var(--console-bg, #0f0f23);
-    border-radius: 50%; display: flex;
+    border-radius: 50%;
+    display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
-    flex-shrink: 0}
+    flex-shrink: 0;
+  }
 
-  .step-content h4 { margin: 0, 0 0.5rem 0;
-    color: var(--console-primary, #00aa00)}
+  .step-content h4 {
+    margin:
+      0,
+      0 0.5rem 0;
+    color: var(--console-primary, #00aa00);
+  }
 
   .step-content p {
     margin: 0;
     font-size: 0.9rem;
-    opacity: 0.8}
+    opacity: 0.8;
+  }
 
-  .tech-grid { display: grid;
+  .tech-grid {
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem}
+    gap: 1rem;
+  }
 
   .tech-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 1rem
-   ; background: rgba(0, 170, 0, 0.05);
+    padding: 1rem;
+    background: rgba(0, 170, 0, 0.05);
     border: 1px solid var(--console-primary, #00aa00);
     border-radius: 4px;
-    transition: all 0.2s}
+    transition: all 0.2s;
+  }
 
-  .tech-item:hover { background: rgba(0, 170, 0, 0.1);
-    transform: scale(1.05)}
+  .tech-item:hover {
+    background: rgba(0, 170, 0, 0.1);
+    transform: scale(1.05);
+  }
 
   .tech-icon {
     font-size: 2rem;
-    margin-bottom: 0.5rem}
+    margin-bottom: 0.5rem;
+  }
 
   .tech-name {
-    font-weight: bold
-   ; color: var(--console-primary, #00aa00);
-    margin-bottom: 0.25rem}
+    font-weight: bold;
+    color: var(--console-primary, #00aa00);
+    margin-bottom: 0.25rem;
+  }
 
   .tech-detail {
     font-size: 0.8rem;
-    opacity: 0.7}
+    opacity: 0.7;
+  }
 
   .loading {
-    text-align: center
-   ; padding: 3rem;
-    font-size: 1.2rem}
+    text-align: center;
+    padding: 3rem;
+    font-size: 1.2rem;
+  }
 
   @media (max-width: 768px) {
     .page-header {
       flex-direction: column;
-      text-align: center}
+      text-align: center;
+    }
 
     .page-title {
-      font-size: 1.5rem}
+      font-size: 1.5rem;
+    }
 
     .features-grid,
     .steps,
     .tech-grid {
-      grid-template-columns: 1fr}
+      grid-template-columns: 1fr;
+    }
   }
 </style>

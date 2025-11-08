@@ -1,21 +1,21 @@
 /* * Individual Citation API Routes * GET /api/v1/citations/[id] - Get specific citation * PUT /api/v1/citations/[id] - Update specific citation * DELETE /api/v1/citations/[id] - Delete specific citation */
-import { json, error, type RequestHandler } from "@sveltejs/kit";
-import makeHttpErrorPayload from "$lib/server/api/makeHttpError";
-import { db } from "$lib/server/db/unified-client";
-import { citations } from "$lib/server/db/schemas/cases-schema";
-import { eq } from "drizzle-orm";
-import { z } from "zod";
-import type { InferInsertModel } from "drizzle-orm"; // Corrected import for Drizzle ORM type inference
+import { json, error, type RequestHandler } from '@sveltejs/kit';
+import makeHttpErrorPayload from '$lib/server/api/makeHttpError';
+import { db } from '$lib/server/db/unified-client';
+import { citations } from '$lib/server/db/schemas/cases-schema';
+import { eq } from 'drizzle-orm';
+import { z } from 'zod';
+import type { InferInsertModel } from 'drizzle-orm'; // Corrected import for Drizzle ORM type inference
 
 // UUID validation schema
-const UUIDSchema = z.string().uuid("Invalid citation ID format");
+const UUIDSchema = z.string().uuid('Invalid citation ID format');
 
 // Update citation schema
 const UpdateCitationSchema = z.object({
   title: z.string().min(1).optional(),
   citation: z.string().min(1).optional(),
   citationType: z
-    .enum(["case_law", "statute", "regulation", "constitutional", "secondary", "other"])
+    .enum(['case_law', 'statute', 'regulation', 'constitutional', 'secondary', 'other'])
     .optional(),
   jurisdiction: z.string().optional(),
   court: z.string().optional(),
@@ -24,7 +24,7 @@ const UpdateCitationSchema = z.object({
   page: z.string().optional(),
   url: z.string().url().optional(),
   notes: z.string().optional(),
-  relevance: z.enum(["high", "medium", "low"]).optional(),
+  relevance: z.enum(['high', 'medium', 'low']).optional(),
   verified: z.boolean().optional(),
   metadata: z.record(z.any()).optional(),
 });
@@ -50,7 +50,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     if (!locals.session || !locals.user) {
       return error(
         401,
-        makeHttpErrorPayload({ message: "Authentication required", code: "AUTH_REQUIRED" })
+        makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       );
     }
 
@@ -67,7 +67,7 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     if (!citation) {
       return error(
         404,
-        makeHttpErrorPayload({ message: "Citation not found", code: "CITATION_NOT_FOUND" })
+        makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' })
       );
     }
 
@@ -81,13 +81,13 @@ export const GET: RequestHandler = async ({ params, locals }) => {
       },
     });
   } catch (err: unknown) {
-    console.error("Citation GET error: ", err);
+    console.error('Citation GET error: ', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
         makeHttpErrorPayload({
-          message: "Invalid citation ID",
-          code: "INVALID_ID",
+          message: 'Invalid citation ID',
+          code: 'INVALID_ID',
           details: err.errors,
         }) // Corrected details syntax
       );
@@ -96,8 +96,8 @@ export const GET: RequestHandler = async ({ params, locals }) => {
     return error(
       500,
       makeHttpErrorPayload({
-        message: "Failed to fetch citation",
-        code: "FETCH_FAILED",
+        message: 'Failed to fetch citation',
+        code: 'FETCH_FAILED',
         details: msg,
       }) // Corrected details syntax
     );
@@ -111,7 +111,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (!locals.session || !locals.user) {
       return error(
         401,
-        makeHttpErrorPayload({ message: "Authentication required", code: "AUTH_REQUIRED" })
+        makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       );
     }
 
@@ -125,11 +125,11 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     const inputData = UpdateCitationSchema.parse(body) as z.infer<typeof UpdateCitationSchema>; // Corrected z.infer syntax
 
     // Normalize citationType to DB-allowed values
-    const dbAllowedCitationTypes = new Set(["case_law", "statute", "regulation", "other"]);
+    const dbAllowedCitationTypes = new Set(['case_law', 'statute', 'regulation', 'other']);
     if (inputData.citationType && !dbAllowedCitationTypes.has(inputData.citationType)) {
       // map: unknown extended types to, 'other' (e.g. 'constitutional', 'secondary')
       // Use a mutable view for assignment
-      (inputData as Record<string, unknown>).citationType = "other";
+      (inputData as Record<string, unknown>).citationType = 'other';
     }
 
     // Build sanitized update payload containing only provided fields
@@ -152,7 +152,7 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     if (!existingCitation) {
       return error(
         404,
-        makeHttpErrorPayload({ message: "Citation not found", code: "CITATION_NOT_FOUND" })
+        makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' })
       );
     }
 
@@ -165,22 +165,22 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
 
     return json({
       success: true,
-      data: { citation: updatedCitation, message: "Citation updated successfully" }, // Corrected object destructuring
+      data: { citation: updatedCitation, message: 'Citation updated successfully' }, // Corrected object destructuring
       meta: {
         userId: getUserIdFromLocals(locals),
         citationId: citationId, // Corrected variable name
         timestamp: new Date().toISOString(),
-        action: "citation_updated",
+        action: 'citation_updated',
       },
     });
   } catch (err: unknown) {
-    console.error("Citation PUT error: ", err);
+    console.error('Citation PUT error: ', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
         makeHttpErrorPayload({
-          message: "Invalid citation data",
-          code: "INVALID_DATA",
+          message: 'Invalid citation data',
+          code: 'INVALID_DATA',
           details: err.errors,
         }) // Corrected details syntax
       );
@@ -189,8 +189,8 @@ export const PUT: RequestHandler = async ({ params, request, locals }) => {
     return error(
       500,
       makeHttpErrorPayload({
-        message: "Failed to update citation",
-        code: "UPDATE_FAILED",
+        message: 'Failed to update citation',
+        code: 'UPDATE_FAILED',
         details: msg,
       }) // Corrected details syntax
     );
@@ -204,7 +204,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     if (!locals.session || !locals.user) {
       return error(
         401,
-        makeHttpErrorPayload({ message: "Authentication required", code: "AUTH_REQUIRED" })
+        makeHttpErrorPayload({ message: 'Authentication required', code: 'AUTH_REQUIRED' })
       );
     }
 
@@ -220,7 +220,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     if (!existingCitation) {
       return error(
         404,
-        makeHttpErrorPayload({ message: "Citation not found", code: "CITATION_NOT_FOUND" })
+        makeHttpErrorPayload({ message: 'Citation not found', code: 'CITATION_NOT_FOUND' })
       );
     }
 
@@ -230,7 +230,7 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     return json({
       success: true,
       data: {
-        message: "Citation deleted successfully",
+        message: 'Citation deleted successfully',
         deletedCitation: { id: citationId, title: existingCitation.title }, // Corrected object destructuring
       },
       meta: {
@@ -241,13 +241,13 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
       },
     });
   } catch (err: unknown) {
-    console.error("Citation DELETE error: ", err);
+    console.error('Citation DELETE error: ', err);
     if (err instanceof z.ZodError) {
       return error(
         400,
         makeHttpErrorPayload({
-          message: "Invalid citation ID",
-          code: "INVALID_ID",
+          message: 'Invalid citation ID',
+          code: 'INVALID_ID',
           details: err.errors,
         }) // Corrected details syntax
       );
@@ -256,8 +256,8 @@ export const DELETE: RequestHandler = async ({ params, locals }) => {
     return error(
       500,
       makeHttpErrorPayload({
-        message: "Failed to delete citation",
-        code: "DELETE_FAILED",
+        message: 'Failed to delete citation',
+        code: 'DELETE_FAILED',
         details: msg,
       }) // Corrected details syntax
     );

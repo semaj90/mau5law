@@ -4,7 +4,7 @@
   export let text: string = '';
 </script>
 
-<label {...(forId ? { for: forId } : {})} class={className}>
+<label {...forId ? { for: forId } : {}} class={className}>
   {#if text}
     {text}
   {:else}

@@ -1,11 +1,11 @@
-﻿import { json } from "@sveltejs/kit";
-import { orchestrator } from "$lib/services/unified-legal-orchestrator";
-import { qdrant } from "$lib/server/vector/qdrant-manager";
-import { db, vectorSearch } from "$lib/server/database/connection";
-import { natsQuicSearchService } from "$lib/server/search/nats-quic-search-service";
-import type { RequestHandler } from "./$types.js";
-import * as enhancedEmbeddingSchema from "$lib/server/db/enhanced-embedding-schema"; // Import schema as a namespace
-import { ilike, and, eq, type SQL } from "drizzle-orm"; // Import SQL type from drizzle-orm
+﻿import { json } from '@sveltejs/kit';
+import { orchestrator } from '$lib/services/unified-legal-orchestrator';
+import { qdrant } from '$lib/server/vector/qdrant-manager';
+import { db, vectorSearch } from '$lib/server/database/connection';
+import { natsQuicSearchService } from '$lib/server/search/nats-quic-search-service';
+import type { RequestHandler } from './$types.js';
+import * as enhancedEmbeddingSchema from '$lib/server/db/enhanced-embedding-schema'; // Import schema as a namespace
+import { ilike, and, eq, type SQL } from 'drizzle-orm'; // Import SQL type from drizzle-orm
 
 type OrchestratorResponse = {
   _metadata?: { execution_path?: string; cached?: boolean };
@@ -28,28 +28,28 @@ export const POST: RequestHandler = async ({ request }) => {
     const searchRequest = await request.json();
     const {
       query, // The actual search string
-      type = "hybrid", // 'semantic', 'text', 'filtered', 'hybrid'
+      type = 'hybrid', // 'semantic', 'text', 'filtered', 'hybrid'
       filters = {},
       limit = 10,
       threshold = 0.7,
-      collections = ["documents"],
+      collections = ['documents'],
       user_id,
       case_id,
     } = searchRequest;
 
     if (!query) {
-      return json({ error: "Query parameter is required", status: "error" }, { status: 400 });
+      return json({ error: 'Query parameter is required', status: 'error' }, { status: 400 });
     }
 
     // Generate query embedding for semantic search
     let queryEmbedding: number[] = [];
-    if (type === "semantic" || type === "hybrid") {
+    if (type === 'semantic' || type === 'hybrid') {
       queryEmbedding = await generateQueryEmbedding(query);
     }
 
     // Build orchestration request
     const orchestrationRequest = {
-      type: "search" as const,
+      type: 'search' as const,
       payload: {
         query,
         type,
@@ -64,7 +64,7 @@ export const POST: RequestHandler = async ({ request }) => {
       context: {
         user_id,
         case_id,
-        priority: "normal" as const,
+        priority: 'normal' as const,
       },
       performance_requirements: { max_latency_ms: 2000, accuracy_threshold: threshold },
     };
@@ -75,8 +75,8 @@ export const POST: RequestHandler = async ({ request }) => {
     // If hybrid search wasn't used by orchestrator, do it manually
     let finalResults = response;
     if (
-      type === "hybrid" &&
-      (response as OrchestratorResponse)._metadata?.execution_path !== "hybrid"
+      type === 'hybrid' &&
+      (response as OrchestratorResponse)._metadata?.execution_path !== 'hybrid'
     ) {
       finalResults = await performHybridSearch(
         query,
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Track search analytics via NATS
     await natsQuicSearchService.publishAnalytics({
-      event_type: "search_request",
+      event_type: 'search_request',
       event_data: {
         query,
         search_type: type,
@@ -125,9 +125,9 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     });
   } catch (error: Error | unknown) {
-    console.error("Search error: ", error);
+    console.error('Search error: ', error);
     return json(
-      { error: "Search processing failed", details: (error as Error).message, status: "error" },
+      { error: 'Search processing failed', details: (error as Error).message, status: 'error' },
       { status: 500 }
     );
   }
@@ -135,38 +135,38 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // GET endpoint for saved searches and search history
 export const GET: RequestHandler = async ({ url }) => {
-  const user_id = url.searchParams.get("user_id");
-  const action = url.searchParams.get("action") || "history";
-  const limit = parseInt(url.searchParams.get("limit") || "10");
+  const user_id = url.searchParams.get('user_id');
+  const action = url.searchParams.get('action') || 'history';
+  const limit = parseInt(url.searchParams.get('limit') || '10');
 
   try {
     switch (action) {
-      case "history": {
+      case 'history': {
         // Wrapped in curly braces
         if (!user_id) {
-          return json({ error: "user_id required for search history" }, { status: 400 });
+          return json({ error: 'user_id required for search history' }, { status: 400 });
         }
         const history = await getSearchHistory(user_id, limit);
         return json({ success: true, data: { history } });
       }
-      case "suggestions": {
+      case 'suggestions': {
         // Wrapped in curly braces
-        const query = url.searchParams.get("query") || "";
+        const query = url.searchParams.get('query') || '';
         const suggestions = await getSearchSuggestions(query);
         return json({ success: true, data: { suggestions } });
       }
-      case "trending": {
+      case 'trending': {
         // Wrapped in curly braces
         const trending = await getTrendingSearches(limit);
         return json({ success: true, data: { trending } });
       }
       default:
-        return json({ error: "Invalid action" }, { status: 400 });
+        return json({ error: 'Invalid action' }, { status: 400 });
     }
   } catch (error: Error | unknown) {
-    console.error("Search error: ", error);
+    console.error('Search error: ', error);
     return json(
-      { error: "Search request failed", details: (error as Error).message },
+      { error: 'Search request failed', details: (error as Error).message },
       { status: 500 }
     );
   }
@@ -179,7 +179,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
     // For now, return a placeholder embedding. The 'query' parameter is intentionally unused here.
     return new Array(1536).fill(0.1);
   } catch (error) {
-    console.warn("Embedding generation failed, using zero vector");
+    console.warn('Embedding generation failed, using zero vector');
     return new Array(1536).fill(0);
   }
 }
@@ -248,7 +248,7 @@ async function performHybridSearch(
     // Combine and rank results
     return combineSearchResults(results, query);
   } catch (error: Error | unknown) {
-    console.error("Hybrid error: ", error);
+    console.error('Hybrid error: ', error);
     throw error;
   }
 }
@@ -272,7 +272,7 @@ async function performTextSearch(
     // Add filters
     for (const [key, value] of Object.entries(filters)) {
       // Cast filters
-      if (key === "case_id") {
+      if (key === 'case_id') {
         conditions.push(eq(enhancedEmbeddingSchema.documents.case_id, value as string)); // Use enhancedEmbeddingSchema.documents
       }
       // Add more filter conditions as needed
@@ -292,11 +292,11 @@ async function performTextSearch(
         title: doc.title,
         content_preview: doc.content?.substring(0, 200),
         score: 0.5, // Default score for text
-        source: "text_search",
+        source: 'text_search',
       })),
     };
   } catch (error) {
-    console.error("Text error: ", error);
+    console.error('Text error: ', error);
     return { results: [] };
   }
 }
@@ -313,14 +313,14 @@ function combineSearchResults(
 
   // Process each search result
   for (const result of results) {
-    if (result.status === "fulfilled" && result.value?.results) {
+    if (result.status === 'fulfilled' && result.value?.results) {
       for (const item of result.value.results as SearchResultItem[]) {
         // Avoid duplicates
         if (!seenIds.has(item.id)) {
           seenIds.add(item.id);
           combinedResults.push({
             ...item,
-            _hybrid_sources: [item.source || "unknown"],
+            _hybrid_sources: [item.source || 'unknown'],
           });
         } else {
           // Merge sources for duplicates
@@ -371,7 +371,7 @@ async function generateSearchSuggestions(
 function extractCommonTerms(results: SearchResultItem[]): string[] {
   const termCounts = new Map<string, number>();
   for (const result of results) {
-    const text = ((result.title || "") + " " + (result.content_preview || "")).toLowerCase();
+    const text = ((result.title || '') + ' ' + (result.content_preview || '')).toLowerCase();
     const words = text.match(/\b\w{4,}\b/g) || []; // Match words with 4 or more characters
     for (const word of words) {
       termCounts.set(word, (termCounts.get(word) || 0) + 1);
@@ -403,16 +403,16 @@ async function getSearchSuggestions(query: string): Promise<string[]> {
 
   // Add some general popular legal terms (can be fetched from a cache or DB in a real scenario)
   const popularTerms = [
-    "contract law",
-    "intellectual property",
-    "corporate governance",
-    "environmental law",
-    "criminal defense",
-    "family law",
-    "real estate",
-    "litigation",
-    "arbitration",
-    "mergers and acquisitions",
+    'contract law',
+    'intellectual property',
+    'corporate governance',
+    'environmental law',
+    'criminal defense',
+    'family law',
+    'real estate',
+    'litigation',
+    'arbitration',
+    'mergers and acquisitions',
   ];
 
   // Filter popular terms that start with the query for autocomplete-like behavior

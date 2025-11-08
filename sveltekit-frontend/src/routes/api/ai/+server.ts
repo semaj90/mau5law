@@ -1,14 +1,14 @@
 import type { User } from '$lib/types';
 import type { Case } from '$lib/types';
 import type { Document } from '$lib/types';
-import { json, type RequestHandler } from "@sveltejs/kit";
-import type { AIServiceResponse } from "$lib/ai/ai-service";
-import { getOllamaEndpoint } from "$lib/utils/ollama"; // Import the new utility function
+import { json, type RequestHandler } from '@sveltejs/kit';
+import type { AIServiceResponse } from '$lib/ai/ai-service';
+import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the new utility function
 
 interface AIRequest {
   caseId: string;
   prompt: string;
-  context?: "analysis" | "connection" | "annotation" | "investigation" | "general";
+  context?: 'analysis' | 'connection' | 'annotation' | 'investigation' | 'general';
   model?: string;
   evidenceIds?: string[];
   maxTokens?: number;
@@ -32,8 +32,8 @@ interface OllamaResponse {
 
 class LegalAIService {
   private ollamaUrl: string;
-  private defaultModel = "gemma3:legal-latest";
-  private embeddingModel = "embeddinggemma:latest";
+  private defaultModel = 'gemma3:legal-latest';
+  private embeddingModel = 'embeddinggemma:latest';
 
   constructor() {
     // Use getOllamaEndpoint() instead of hardcoded URL
@@ -44,14 +44,14 @@ class LegalAIService {
     const startTime = Date.now();
     try {
       // Build system prompt for legal context
-      const systemPrompt = this.buildLegalSystemPrompt(request.context || "general");
+      const systemPrompt = this.buildLegalSystemPrompt(request.context || 'general');
       // Combine system prompt with user prompt
       const fullPrompt = `${systemPrompt}\n\n${request.prompt}`;
 
       // Call Ollama API
       const response = await fetch(`${this.ollamaUrl}/api/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: request.model || this.defaultModel,
           prompt: fullPrompt,
@@ -61,7 +61,7 @@ class LegalAIService {
             top_p: 0.9,
             top_k: 40,
             num_predict: request.maxTokens || 2048,
-            stop: ["Human: ", "User: ", "---"],
+            stop: ['Human: ', 'User: ', '---'],
           },
         }),
       });
@@ -90,8 +90,8 @@ class LegalAIService {
         },
       };
     } catch (error) {
-      console.error("Legal AI Service Error: ", error);
-      throw new Error(`AI failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+      console.error('Legal AI Service Error: ', error);
+      throw new Error(`AI failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -142,7 +142,7 @@ Focus on next steps:
 - Potential legal challenges
 - Timeline and resource planning.`,
       general:
-        "\n\nCurrent Task: GENERAL LEGAL ASSISTANCE\nProvide comprehensive legal guidance as appropriate for the query.",
+        '\n\nCurrent Task: GENERAL LEGAL ASSISTANCE\nProvide comprehensive legal guidance as appropriate for the query.',
     };
     return (
       basePrompt +
@@ -155,7 +155,7 @@ Focus on next steps:
     context?: string
   ): {
     evidenceConnections: string[];
-    suggestedActions: AIServiceResponse["suggestedActions"];
+    suggestedActions: AIServiceResponse['suggestedActions'];
     confidence: number;
     reasoning: string;
   } {
@@ -168,16 +168,16 @@ Focus on next steps:
     }
 
     // Extract suggested actions based on common legal action
-    const suggestedActions: NonNullable<AIServiceResponse["suggestedActions"]> = [];
+    const suggestedActions: NonNullable<AIServiceResponse['suggestedActions']> = [];
     const actionPatterns = [
-      { pattern: /recommend(?:ed|ing)?\s+(.*?)(?:\.|$)/gi, type: "investigate" as const },
+      { pattern: /recommend(?:ed|ing)?\s+(.*?)(?:\.|$)/gi, type: 'investigate' as const },
       {
         pattern: /should(?:\s+be\s+)?(?:annotated|noted|marked)\s+(.*?)(?:\.|$)/gi,
-        type: "annotate" as const,
+        type: 'annotate' as const,
       },
-      { pattern: /connect(?:ed|ion)?\s+(?:to|with)\s+(.*?)(?:\.|$)/gi, type: "connect" as const },
-      { pattern: /search(?:\s+for|through)?\s+(.*?)(?:\.|$)/gi, type: "search" as const },
-      { pattern: /categorize(?:\s+as|under)?\s+(.*?)(?:\.|$)/gi, type: "categorize" as const },
+      { pattern: /connect(?:ed|ion)?\s+(?:to|with)\s+(.*?)(?:\.|$)/gi, type: 'connect' as const },
+      { pattern: /search(?:\s+for|through)?\s+(.*?)(?:\.|$)/gi, type: 'search' as const },
+      { pattern: /categorize(?:\s+as|under)?\s+(.*?)(?:\.|$)/gi, type: 'categorize' as const },
     ];
 
     actionPatterns.forEach(({ pattern, type }) => {
@@ -210,23 +210,23 @@ Focus on next steps:
   private cleanActionDescription(description: string): string {
     // Clean up extracted action descriptions
     return description
-      .replace(/[.:;!? ]+$/, "") // Remove trailing punctuation
-      .replace(/^\s*that\s+/i, "") // Remove leading "that"
-      .replace(/^\s*to\s+/i, "") // Remove leading "to"
+      .replace(/[.:;!? ]+$/, '') // Remove trailing punctuation
+      .replace(/^\s*that\s+/i, '') // Remove leading "that"
+      .replace(/^\s*to\s+/i, '') // Remove leading "to"
       .trim();
   }
 
-  private determinePriority(description: string): "low" | "medium" | "high" {
-    const highPriorityWords = ["urgent", "critical", "immediate", "asap", "priority"];
-    const mediumPriorityWords = ["important", "should", "recommend", "suggest"];
+  private determinePriority(description: string): 'low' | 'medium' | 'high' {
+    const highPriorityWords = ['urgent', 'critical', 'immediate', 'asap', 'priority'];
+    const mediumPriorityWords = ['important', 'should', 'recommend', 'suggest'];
     const lowDesc = description.toLowerCase();
 
     if (highPriorityWords.some((word) => lowDesc.includes(word))) {
-      return "high";
+      return 'high';
     } else if (mediumPriorityWords.some((word) => lowDesc.includes(word))) {
-      return "medium";
+      return 'medium';
     } else {
-      return "low";
+      return 'low';
     }
   }
 
@@ -234,21 +234,21 @@ Focus on next steps:
     let confidence = 0.5; // Base confidence
 
     // Increase confidence for structured responses
-    if (response.includes("•") || response.includes("-") || response.includes("1.")) {
+    if (response.includes('•') || response.includes('-') || response.includes('1.')) {
       confidence += 0.1;
     }
 
     // Increase confidence for legal terminology
-    const legalTerms = ["evidence", "legal", "court", "case", "precedent", "statute", "regulation"];
+    const legalTerms = ['evidence', 'legal', 'court', 'case', 'precedent', 'statute', 'regulation'];
     const foundTerms = legalTerms.filter((item) => response.includes(item));
     confidence += (foundTerms.length / legalTerms.length) * 0.2;
 
     // Increase confidence for specific context-appropriate content
     const contextKeywords = {
-      analysis: ["analyze", "assessment", "evaluation", "finding"],
-      connection: ["relationship", "connect", "link", "correlation"],
-      annotation: ["note", "significant", "important", "detail"],
-      investigation: ["next step", "recommend", "investigate", "follow-up"],
+      analysis: ['analyze', 'assessment', 'evaluation', 'finding'],
+      connection: ['relationship', 'connect', 'link', 'correlation'],
+      annotation: ['note', 'significant', 'important', 'detail'],
+      investigation: ['next step', 'recommend', 'investigate', 'follow-up'],
     };
 
     if (context && contextKeywords[context as keyof typeof contextKeywords]) {
@@ -291,10 +291,10 @@ Focus on next steps:
     const explanatorySentence = sentences.find(
       (sentence) =>
         sentence.length > 20 &&
-        (sentence.includes("indicate") || sentence.includes("suggest") || sentence.includes("show"))
+        (sentence.includes('indicate') || sentence.includes('suggest') || sentence.includes('show'))
     );
 
-    return explanatorySentence || "Analysis based on legal best practices and evidence evaluation.";
+    return explanatorySentence || 'Analysis based on legal best practices and evidence evaluation.';
   }
 }
 
@@ -306,18 +306,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Validate required fields
     if (!body.caseId || !body.prompt) {
-      return json({ error: "Missing required fields: caseId and prompt" }, { status: 400 });
+      return json({ error: 'Missing required fields: caseId and prompt' }, { status: 400 });
     }
 
     // Generate AI response
     const response = await legalAI.generateResponse(body);
     return json(response);
   } catch (error) {
-    console.error("AI API Error: ", error);
+    console.error('AI API Error: ', error);
     return json(
       {
-        error: "Internal server error",
-        message: error instanceof Error ? error.message : "Unknown error occurred",
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error occurred',
       },
       { status: 500 }
     );
@@ -333,26 +333,23 @@ export const GET: RequestHandler = async () => {
     // Check if Ollama is available
     const response = await fetch(`${ollamaUrl}/api/tags`);
     if (!response.ok) {
-      throw new Error("Ollama service unavailable");
+      throw new Error('Ollama service unavailable');
     }
 
     const models = await response.json();
     return json({
-      status: "healthy",
+      status: 'healthy',
       models: models.models || [],
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
     return json(
       {
-        status: "unhealthy",
-        error: error instanceof Error ? error.message : "Service check failed",
+        status: 'unhealthy',
+        error: error instanceof Error ? error.message : 'Service check failed',
         timestamp: new Date().toISOString(),
       },
       { status: 503 }
     );
   }
 };
-
-
-

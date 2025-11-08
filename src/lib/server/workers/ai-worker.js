@@ -7,7 +7,11 @@ async function handleTask(data) {
       const Fuse = require('fuse.js');
       const dataset = data.dataset || [];
       const query = data.query || '';
-      const fuse = new Fuse(dataset, { keys: ['title', 'content'], includeScore: true, includeMatches: true });
+      const fuse = new Fuse(dataset, {
+        keys: ['title', 'content'],
+        includeScore: true,
+        includeMatches: true,
+      });
       const results = fuse.search(query);
       return { success: true, result: results };
     }

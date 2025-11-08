@@ -55,48 +55,71 @@ import type { Case } from, '$lib/types';
 </main>
 
 <style>
-:global {
-		/* NES.css badge styling */
-		.nes-badge {
-			display: inline-block; padding: 0.5rem 1rem;
-			border-radius: 0; box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.5);
-			font-weight: bold}
+  :global {
+    /* NES.css badge styling */
+    .nes-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 0;
+      box-shadow: inset -2px -2px 0px rgba(0, 0, 0, 0.5);
+      font-weight: bold;
+    }
 
-		/* Dark theme overrides */
-		.nes-container.is-dark {
-			background-color: #1e293b; border-color: #d4af37}
+    /* Dark theme overrides */
+    .nes-container.is-dark {
+      background-color: #1e293b;
+      border-color: #d4af37;
+    }
 
-		.nes-container.is-error {
-			background-color: #7f1d1d; border-color: #ef4444}
+    .nes-container.is-error {
+      background-color: #7f1d1d;
+      border-color: #ef4444;
+    }
 
-		/* Button styling */
-		.nes-btn {
-			font-family: 'Press Start 2P', 'Courier New', monospace;
-			border: 3px solid #d4af37;
-			background: #d4af37; color: #0a0a0a; cursor: pointer; transition: all 0.2s}
+    /* Button styling */
+    .nes-btn {
+      font-family: 'Press Start 2P', 'Courier New', monospace;
+      border: 3px solid #d4af37;
+      background: #d4af37;
+      color: #0a0a0a;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-		.nes-btn:hover:not(:disabled) {
-			transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3)}
+    .nes-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
 
-		.nes-btn:disabled {
-			opacity: 0.5; cursor:not-allowed}
+    .nes-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
 
-		.nes-btn.is-primary {
-			background: #d4af37; color: #0a0a0a}
+    .nes-btn.is-primary {
+      background: #d4af37;
+      color: #0a0a0a;
+    }
 
-		.nes-btn.is-warning {
-			background: #ffd700; border-color: #ffd700; color: #0a0a0a}
-	}
+    .nes-btn.is-warning {
+      background: #ffd700;
+      border-color: #ffd700;
+      color: #0a0a0a;
+    }
+  }
 
-	/* Responsive adjustments */
-	@media (max-width: 640px) {
-		:global(.min-h-screen) {
-			padding: 1rem}
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    :global(.min-h-screen) {
+      padding: 1rem;
+    }
 
-		:global(h1) {
-			font-size: 1.5rem}
+    :global(h1) {
+      font-size: 1.5rem;
+    }
 
-		:global(h2) {
-			font-size: 1.25rem}
-	}
+    :global(h2) {
+      font-size: 1.25rem;
+    }
+  }
 </style>

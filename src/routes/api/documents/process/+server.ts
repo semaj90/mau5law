@@ -53,15 +53,18 @@ interface ProcessingResponse {
 }
 
 // In-memory job tracking (in production, use Redis or database)
-const activeJobs = new Map<string, {
-  id: string;
-  status: 'started' | 'processing' | 'completed' | 'failed';
-  stage: string;
-  progress: { completed: number; total: number };
-  startTime: number;
-  results?: any;
-  error?: string;
-}>();
+const activeJobs = new Map<
+  string,
+  {
+    id: string;
+    status: 'started' | 'processing' | 'completed' | 'failed';
+    stage: string;
+    progress: { completed: number; total: number };
+    startTime: number;
+    results?: any;
+    error?: string;
+  }
+>();
 
 /**
  * POST: Start document processing pipeline
@@ -79,11 +82,11 @@ export const POST: RequestHandler = async ({ request }) => {
       status: 'started',
       stage: 'initializing',
       progress: { completed: 0, total: 100 },
-      startTime: Date.now()
+      startTime: Date.now(),
     });
 
     // Start async processing (don't await - return immediately)
-    processDocuments(jobId, body).catch(error => {
+    processDocuments(jobId, body).catch((error) => {
       console.error(`❌ Job ${jobId} failed:`, error);
       const job = activeJobs.get(jobId);
       if (job) {
@@ -101,15 +104,14 @@ export const POST: RequestHandler = async ({ request }) => {
         stage: 'initializing',
         completed: 0,
         total: 100,
-        percentage: 0
-      }
+        percentage: 0,
+      },
     });
-
   } catch (err) {
     console.error('❌ Failed to start document processing:', err);
     throw error(400, {
       message: 'Invalid request parameters',
-      details: err instanceof Error ? err.message : 'Unknown error'
+      details: err instanceof Error ? err.message : 'Unknown error',
     });
   }
 };
@@ -138,10 +140,10 @@ export const GET: RequestHandler = async ({ url }) => {
       stage: job.stage,
       completed: job.progress.completed,
       total: job.progress.total,
-      percentage: Math.round((job.progress.completed / job.progress.total) * 100)
+      percentage: Math.round((job.progress.completed / job.progress.total) * 100),
     },
     results: job.results,
-    error: job.error
+    error: job.error,
   };
 
   return json(response);
@@ -200,7 +202,7 @@ async function processDocuments(jobId: string, request: ProcessingRequest): Prom
           onProgress: (completed, total) => {
             const progressPercent = 50 + Math.round((completed / total) * 25);
             updateJobProgress(jobId, 'generating_embeddings', progressPercent, 100);
-          }
+          },
         }
       );
 
@@ -215,10 +217,9 @@ async function processDocuments(jobId: string, request: ProcessingRequest): Prom
     if (request.storeResults !== false) {
       updateJobProgress(jobId, 'storing_results', 80, 100);
 
-      storageResults = await postgresqlVectorStorage.storeDocuments(
-        vectorizedDocs,
-        { includeChunks: true }
-      );
+      storageResults = await postgresqlVectorStorage.storeDocuments(vectorizedDocs, {
+        includeChunks: true,
+      });
 
       updateJobProgress(jobId, 'storing_results', 95, 100);
     }
@@ -233,7 +234,7 @@ async function processDocuments(jobId: string, request: ProcessingRequest): Prom
       documents_stored: storageResults ? storageResults.stored + storageResults.updated : 0,
       processing_time_ms: processingTimeMs,
       statistics: processingResult.statistics,
-      storage_results: storageResults
+      storage_results: storageResults,
     };
 
     // Update job as completed
@@ -245,7 +246,6 @@ async function processDocuments(jobId: string, request: ProcessingRequest): Prom
     activeJobs.set(jobId, finalJob);
 
     console.log(`✅ Job ${jobId} completed in ${processingTimeMs}ms`);
-
   } catch (err) {
     console.error(`❌ Job ${jobId} failed:`, err);
 
@@ -280,14 +280,17 @@ function generateJobId(): string {
 /**
  * Cleanup old jobs periodically (run every 5 minutes)
  */
-setInterval(() => {
-  const now = Date.now();
-  const maxAge = 30 * 60 * 1000; // 30 minutes
+setInterval(
+  () => {
+    const now = Date.now();
+    const maxAge = 30 * 60 * 1000; // 30 minutes
 
-  for (const [jobId, job] of activeJobs.entries()) {
-    if (now - job.startTime > maxAge) {
-      activeJobs.delete(jobId);
-      console.log(`🧹 Cleaned up old job: ${jobId}`);
+    for (const [jobId, job] of activeJobs.entries()) {
+      if (now - job.startTime > maxAge) {
+        activeJobs.delete(jobId);
+        console.log(`🧹 Cleaned up old job: ${jobId}`);
+      }
     }
-  }
-}, 5 * 60 * 1000);
+  },
+  5 * 60 * 1000
+);

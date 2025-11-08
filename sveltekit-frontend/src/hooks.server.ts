@@ -1,8 +1,8 @@
-import type { Handle } from "@sveltejs/kit";
-import { createRuntimeConnection, closeConnections } from "$lib/server/db/client";
-import { getRedisClient, closeRedisClient } from "$lib/server/cache/redis";
-import { getRabbitMQChannel, closeRabbitMQConnection } from "$lib/server/messaging/rabbitmq";
-import { setLuciaAvailabilityForUploads } from "$lib/server/auth/contextual-upload-guard";
+import type { Handle } from '@sveltejs/kit';
+import { createRuntimeConnection, closeConnections } from '$lib/server/db/client';
+import { getRedisClient, closeRedisClient } from '$lib/server/cache/redis';
+import { getRabbitMQChannel, closeRabbitMQConnection } from '$lib/server/messaging/rabbitmq';
+import { setLuciaAvailabilityForUploads } from '$lib/server/auth/contextual-upload-guard';
 
 type LuciaInstance = {
   sessionCookieName: string;
@@ -27,39 +27,39 @@ async function initializeServices() {
     await redis.ping();
     await getRabbitMQChannel().catch(() => null);
   } catch (error) {
-    console.error("Service initialization error:", error);
+    console.error('Service initialization error:', error);
   }
 }
 
 initializeServices().catch((error) =>
-  console.error("Unhandled service initialization error:", error)
+  console.error('Unhandled service initialization error:', error)
 );
 
 let authState: AuthState | null = null;
 async function loadAuth(): Promise<AuthState> {
   if (authState) return authState;
   try {
-    const module = await import("$lib/server/auth");
+    const module = await import('$lib/server/auth');
     const resolved =
       (module as { lucia?: LuciaInstance }).lucia ??
       (module as { default?: LuciaInstance }).default ??
       (module as unknown as LuciaInstance | undefined) ??
       null;
     if (resolved) {
-      console.log("[hooks] Lucia authentication loaded");
+      console.log('[hooks] Lucia authentication loaded');
       authState = { lucia: resolved, enabled: true };
       setLuciaAvailabilityForUploads(true);
       return authState;
     }
   } catch (error) {
-    console.warn("[hooks] Lucia authentication unavailable", error);
+    console.warn('[hooks] Lucia authentication unavailable', error);
   }
   setLuciaAvailabilityForUploads(false);
   authState = { lucia: null, enabled: false };
   return authState;
 }
 
-async function attachLuciaSession(event: Parameters<Handle>[0]["event"]): Promise<void> {
+async function attachLuciaSession(event: Parameters<Handle>[0]['event']): Promise<void> {
   const { lucia, enabled } = await loadAuth();
 
   event.locals.user = null;
@@ -82,18 +82,18 @@ async function attachLuciaSession(event: Parameters<Handle>[0]["event"]): Promis
       try {
         const freshCookie = lucia.createSessionCookie(session.id);
         event.cookies.set(freshCookie.name, freshCookie.value, {
-          path: "/",
+          path: '/',
           ...freshCookie.attributes,
         });
       } catch (cookieError) {
-        console.warn("[hooks] Failed to refresh session cookie", cookieError);
+        console.warn('[hooks] Failed to refresh session cookie', cookieError);
       }
     }
 
     if (!session) {
       const blank = lucia.createBlankSessionCookie();
       event.cookies.set(blank.name, blank.value, {
-        path: "/",
+        path: '/',
         ...blank.attributes,
       });
       return;
@@ -110,15 +110,15 @@ async function attachLuciaSession(event: Parameters<Handle>[0]["event"]): Promis
         }
       : null;
   } catch (error) {
-    console.warn("[hooks] Session validation failed", error);
+    console.warn('[hooks] Session validation failed', error);
     try {
       const blank = lucia.createBlankSessionCookie();
       event.cookies.set(blank.name, blank.value, {
-        path: "/",
+        path: '/',
         ...blank.attributes,
       });
     } catch (cookieError) {
-      console.warn("[hooks] Failed to clear session cookie", cookieError);
+      console.warn('[hooks] Failed to clear session cookie', cookieError);
     }
   }
 }
@@ -138,12 +138,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 
 const shutdown = async () => {
-  console.log("Shutting down services.");
+  console.log('Shutting down services.');
   await closeConnections();
   await closeRedisClient();
   await closeRabbitMQConnection();
   process.exit(0);
 };
 
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);

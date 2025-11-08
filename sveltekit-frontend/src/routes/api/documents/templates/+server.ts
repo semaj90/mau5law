@@ -1,12 +1,12 @@
-﻿import type { Case } from "$lib/types";
-import type { Document } from "$lib/types";
-import { json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types.js";
+﻿import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Document templates with pre-filled content
 const documentTemplates = {
   brief: {
-    title: "Criminal Case Brief",
+    title: 'Criminal Case Brief',
     content: `# Criminal Case Brief
 ## Case Overview
 [Case Name] v. [Defendant Name]
@@ -29,12 +29,12 @@ Date: [Date]
 ## Citations
 [List all legal authorities cited in the brief]
 `,
-    documentType: "brief",
-    tags: ["brief", "criminal", "template"],
+    documentType: 'brief',
+    tags: ['brief', 'criminal', 'template'],
     citations: [],
   },
   motion: {
-    title: "Motion to [Action]",
+    title: 'Motion to [Action]',
     content: `# Motion to [Action]
 ## Introduction
 [Defendant/Plaintiff] respectfully moves this Court to [specific action requested] on the grounds that [brief reason].
@@ -55,12 +55,12 @@ Respectfully submitted,
 [Bar Number]
 [Contact Information]
 `,
-    documentType: "motion",
-    tags: ["motion", "template"],
+    documentType: 'motion',
+    tags: ['motion', 'template'],
     citations: [],
   },
   contract: {
-    title: "Legal Contract",
+    title: 'Legal Contract',
     content: `# [Contract Title]
 **Parties:** This agreement is entered into between [Party 1 Name] ("[Party 1 Short Name]") and [Party 2 Name] ("[Party 2 Short Name]").
 **Date:** [Date]
@@ -90,12 +90,12 @@ Signature: _________________________, Date: __________
 **[Party 2 Name]**
 Signature: _________________________, Date: __________
 `,
-    documentType: "contract",
-    tags: ["contract", "template"],
+    documentType: 'contract',
+    tags: ['contract', 'template'],
     citations: [],
   },
   evidence: {
-    title: "Evidence Analysis Report",
+    title: 'Evidence Analysis Report',
     content: `# Evidence Analysis Report
 ## Case Number: [Case Number]
 Date of Analysis: [Date]
@@ -123,12 +123,12 @@ Analyst: [Analyst Name]
 - Appendix A: [Supporting documentation]
 - Appendix B: [Additional materials]
 `,
-    documentType: "evidence",
-    tags: ["evidence", "analysis", "template"],
+    documentType: 'evidence',
+    tags: ['evidence', 'analysis', 'template'],
     citations: [],
   },
   memo: {
-    title: "Legal Memorandum",
+    title: 'Legal Memorandum',
     content: `# Legal Memorandum
 **TO:** [Recipient]
 **FROM:** [Your Name]
@@ -148,12 +148,12 @@ Analyst: [Analyst Name]
 ## Conclusion
 [Summarize your analysis and provide recommendations]
 `,
-    documentType: "memo",
-    tags: ["memo", "memorandum", "template"],
+    documentType: 'memo',
+    tags: ['memo', 'memorandum', 'template'],
     citations: [],
   },
   pleading: {
-    title: "Legal Pleading",
+    title: 'Legal Pleading',
     content: `# [Type of Pleading]
 **IN THE [COURT NAME]**
 **[JURISDICTION]**
@@ -186,8 +186,8 @@ Respectfully submitted,
 [Bar Number]
 [Contact Information]
 `,
-    documentType: "pleading",
-    tags: ["pleading", "template"],
+    documentType: 'pleading',
+    tags: ['pleading', 'template'],
     citations: [],
   },
 };
@@ -195,7 +195,7 @@ Respectfully submitted,
 // GET /api/documents/templates - Get available document templates
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const documentType = url.searchParams.get("type");
+    const documentType = url.searchParams.get('type');
     if (documentType) {
       const template = documentTemplates[documentType as keyof typeof documentTemplates];
       if (!template) {
@@ -218,8 +218,8 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json({ success: true, templates });
   } catch (error: unknown) {
-    console.error("Error fetching templates: ", error);
-    return json({ success: false, error: "Failed to fetch templates" }, { status: 500 });
+    console.error('Error fetching templates: ', error);
+    return json({ success: false, error: 'Failed to fetch templates' }, { status: 500 });
   }
 };
 
@@ -227,20 +227,20 @@ export const GET: RequestHandler = async ({ url }) => {
 function getTemplateDescription(templateKey: string): string {
   const descriptions = {
     brief:
-      "A comprehensive template for criminal case briefs with fact analysis and legal arguments.",
-    motion: "A structured template for legal motions with proper formatting and argument sections.",
-    contract: "A basic contract template with standard clauses and signature blocks.",
-    evidence: "A detailed template for evidence analysis reports with inventory and conclusions.",
-    memo: "A legal memorandum template with question presented, analysis, and conclusions.",
-    pleading: "A formal pleading template with proper court formatting and claim structure.",
+      'A comprehensive template for criminal case briefs with fact analysis and legal arguments.',
+    motion: 'A structured template for legal motions with proper formatting and argument sections.',
+    contract: 'A basic contract template with standard clauses and signature blocks.',
+    evidence: 'A detailed template for evidence analysis reports with inventory and conclusions.',
+    memo: 'A legal memorandum template with question presented, analysis, and conclusions.',
+    pleading: 'A formal pleading template with proper court formatting and claim structure.',
   };
-  return descriptions[templateKey as keyof typeof descriptions] || "Legal document template.";
+  return descriptions[templateKey as keyof typeof descriptions] || 'Legal document template.';
 }
 
 // POST /api/documents/templates - Create a new document from a template
 export const POST: RequestHandler = async ({ url, request }) => {
   try {
-    const templateType = url.pathname.split("/").pop();
+    const templateType = url.pathname.split('/').pop();
     const body = await request.json();
 
     if (!templateType || !documentTemplates[templateType as keyof typeof documentTemplates]) {
@@ -258,7 +258,7 @@ export const POST: RequestHandler = async ({ url, request }) => {
     Object.entries(customizations).forEach(([key, value]) => {
       // Using a regex to replace placeholders like [key]
       customizedContent = customizedContent.replace(
-        new RegExp(`\\[${key}\\]`, "gi"),
+        new RegExp(`\\[${key}\\]`, 'gi'),
         String(value)
       );
     });
@@ -270,15 +270,15 @@ export const POST: RequestHandler = async ({ url, request }) => {
       content: customizedContent,
       documentType: template.documentType,
       caseId: caseId || null,
-      userId: userId || "user-1",
+      userId: userId || 'user-1',
       citations: template.citations,
-      tags: [...template.tags, "from-template"],
+      tags: [...template.tags, 'from-template'],
       metadata: {
         templateType,
         customizations,
         createdFromTemplate: true,
       },
-      status: "draft",
+      status: 'draft',
       version: 1,
       wordCount: customizedContent.split(/\s+/).length,
       createdAt: new Date().toISOString(),
@@ -287,9 +287,9 @@ export const POST: RequestHandler = async ({ url, request }) => {
 
     return json({ success: true, document: newDocument });
   } catch (error: unknown) {
-    console.error("Error creating document from template: ", error);
+    console.error('Error creating document from template: ', error);
     return json(
-      { success: false, error: "Failed to create document from template" },
+      { success: false, error: 'Failed to create document from template' },
       { status: 500 }
     );
   }

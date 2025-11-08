@@ -34,7 +34,7 @@ export interface PaginatedResponse<T = unknown> {
 export interface RequestOptions {
   headers?: Record<string, string>;
   signal?: AbortSignal;
-  retry?: { attempts?: number; backoffMs?: number; };
+  retry?: { attempts?: number; backoffMs?: number };
 }
 
 // Error types
@@ -43,7 +43,12 @@ export class ApiError extends Error {
   public code: string;
   public details?: Record<string, unknown> | unknown;
 
-  constructor(status: number, code = 'API_ERROR', message = 'API error', details?: Record<string, unknown> | unknown) {
+  constructor(
+    status: number,
+    code = 'API_ERROR',
+    message = 'API error',
+    details?: Record<string, unknown> | unknown
+  ) {
     super(message);
     this.name = 'ApiError';
     this.status = status;
@@ -74,10 +79,17 @@ export class LegalAIApiClient {
       query?: Record<string, unknown>;
       headers?: Record<string, string>;
       signal?: AbortSignal;
-      retry?: { attempts?: number; backoffMs?: number; };
-    } = {},
+      retry?: { attempts?: number; backoffMs?: number };
+    } = {}
   ): Promise<T> {
-    const { method = 'GET', body, query, headers = {}, signal, retry = { attempts: 3, backoffMs: 1000 } } = options;
+    const {
+      method = 'GET',
+      body,
+      query,
+      headers = {},
+      signal,
+      retry = { attempts: 3, backoffMs: 1000 },
+    } = options;
     const origin = browser ? window.location.origin : 'http://localhost:5173';
     const url = new URL(`${this.baseUrl}${endpoint}`, origin);
 
@@ -115,10 +127,15 @@ export class LegalAIApiClient {
         }
 
         if (!response.ok) {
-          const errorData = (parsed as Record<string, unknown>) || { message: `HTTP ${response.status}` };
+          const errorData = (parsed as Record<string, unknown>) || {
+            message: `HTTP ${response.status}`,
+          };
           const ed = errorData as Record<string, unknown>;
           const errCode = typeof ed?.['code'] === 'string' ? (ed['code'] as string) : 'API_ERROR';
-          const errMessage = typeof ed?.['message'] === 'string' ? (ed['message'] as string) : `HTTP ${response.status}`;
+          const errMessage =
+            typeof ed?.['message'] === 'string'
+              ? (ed['message'] as string)
+              : `HTTP ${response.status}`;
           const errDetails = ed?.['details'] ?? ed;
 
           if (response.status === 401) {
@@ -131,14 +148,19 @@ export class LegalAIApiClient {
       } catch (error: unknown) {
         lastError = error;
         // Don't retry on client errors (4xx) except 429 (rate limit)
-        if (error instanceof ApiError && error.status >= 400 && error.status < 500 && error.status !== 429) {
+        if (
+          error instanceof ApiError &&
+          error.status >= 400 &&
+          error.status < 500 &&
+          error.status !== 429
+        ) {
           throw error;
         }
         if (attempt === maxAttempts) {
           throw error;
         }
         const delay = (retry.backoffMs ?? 1000) * Math.pow(2, attempt - 1);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
     throw lastError;
@@ -157,7 +179,7 @@ export class LegalAIApiClient {
       status?: 'open' | 'closed' | 'pending' | 'archived';
       priority?: 'low' | 'medium' | 'high' | 'urgent';
       signal?: AbortSignal;
-    } = {},
+    } = {}
   ): Promise<PaginatedResponse<unknown>> {
     const { signal, ...query } = _options;
     return this.request<PaginatedResponse<unknown>>('/cases', { query, signal });
@@ -183,7 +205,7 @@ export class LegalAIApiClient {
       category?: string;
       metadata?: Record<string, unknown>;
     },
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
     return this.request<ApiResponse<unknown>>('/cases', { method: 'POST', body: caseData, signal });
   }
@@ -202,9 +224,13 @@ export class LegalAIApiClient {
       category: string;
       metadata: Record<string, unknown>;
     }>,
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>(`/cases/${id}`, { method: 'PUT', body: caseData, signal });
+    return this.request<ApiResponse<unknown>>(`/cases/${id}`, {
+      method: 'PUT',
+      body: caseData,
+      signal,
+    });
   }
 
   /**
@@ -226,7 +252,7 @@ export class LegalAIApiClient {
       evidenceType?: string;
       isPublic?: boolean;
       signal?: AbortSignal;
-    } = {},
+    } = {}
   ): Promise<PaginatedResponse<unknown>> {
     const { signal, ...query } = _options;
     return this.request<PaginatedResponse<unknown>>('/evidence', { query, signal });
@@ -260,9 +286,13 @@ export class LegalAIApiClient {
       isAdmissible?: boolean;
       confidentialityLevel?: string;
     },
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>('/evidence', { method: 'POST', body: evidenceData, signal });
+    return this.request<ApiResponse<unknown>>('/evidence', {
+      method: 'POST',
+      body: evidenceData,
+      signal,
+    });
   }
 
   /**
@@ -286,9 +316,13 @@ export class LegalAIApiClient {
       isAdmissible: boolean;
       confidentialityLevel: string;
     }>,
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>(`/evidence/${id}`, { method: 'PUT', body: evidenceData, signal });
+    return this.request<ApiResponse<unknown>>(`/evidence/${id}`, {
+      method: 'PUT',
+      body: evidenceData,
+      signal,
+    });
   }
 
   /**
@@ -310,7 +344,7 @@ export class LegalAIApiClient {
       reportType?: string;
       status?: string;
       signal?: AbortSignal;
-    } = {},
+    } = {}
   ): Promise<PaginatedResponse<unknown>> {
     const { signal, ...query } = _options;
     return this.request<PaginatedResponse<unknown>>('/reports', { query, signal });
@@ -336,9 +370,13 @@ export class LegalAIApiClient {
       status?: string;
       metadata?: Record<string, unknown>;
     },
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>('/reports', { method: 'POST', body: reportData, signal });
+    return this.request<ApiResponse<unknown>>('/reports', {
+      method: 'POST',
+      body: reportData,
+      signal,
+    });
   }
 
   /**
@@ -355,9 +393,13 @@ export class LegalAIApiClient {
       status: string;
       metadata: Record<string, unknown>;
     }>,
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>(`/reports/${id}`, { method: 'PUT', body: reportData, signal });
+    return this.request<ApiResponse<unknown>>(`/reports/${id}`, {
+      method: 'PUT',
+      body: reportData,
+      signal,
+    });
   }
 
   /**
@@ -378,7 +420,7 @@ export class LegalAIApiClient {
       riskLevel?: string;
       caseId?: string;
       signal?: AbortSignal;
-    } = {},
+    } = {}
   ): Promise<PaginatedResponse<unknown>> {
     const { signal, ...query } = _options;
     return this.request<PaginatedResponse<unknown>>('/persons-of-interest', { query, signal });
@@ -404,9 +446,13 @@ export class LegalAIApiClient {
       aliases?: string[];
       metadata?: Record<string, unknown>;
     },
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>('/persons-of-interest', { method: 'POST', body: personData, signal });
+    return this.request<ApiResponse<unknown>>('/persons-of-interest', {
+      method: 'POST',
+      body: personData,
+      signal,
+    });
   }
 
   /**
@@ -423,16 +469,23 @@ export class LegalAIApiClient {
       aliases: string[];
       metadata: Record<string, unknown>;
     }>,
-    signal?: AbortSignal,
+    signal?: AbortSignal
   ): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>(`/persons-of-interest/${id}`, { method: 'PUT', body: personData, signal });
+    return this.request<ApiResponse<unknown>>(`/persons-of-interest/${id}`, {
+      method: 'PUT',
+      body: personData,
+      signal,
+    });
   }
 
   /**
    * Delete person of interest
    */
   async deletePersonOfInterest(id: string, signal?: AbortSignal): Promise<ApiResponse<unknown>> {
-    return this.request<ApiResponse<unknown>>(`/persons-of-interest/${id}`, { method: 'DELETE', signal });
+    return this.request<ApiResponse<unknown>>(`/persons-of-interest/${id}`, {
+      method: 'DELETE',
+      signal,
+    });
   }
 
   // ===== UTILITY METHODS =====
@@ -442,8 +495,14 @@ export class LegalAIApiClient {
   async uploadFile(
     file: File,
     onProgress?: (progress: number) => void,
-    signal?: AbortSignal,
-  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; mimeType: string; hash: string }> {
+    signal?: AbortSignal
+  ): Promise<{
+    fileUrl: string;
+    fileName: string;
+    fileSize: number;
+    mimeType: string;
+    hash: string;
+  }> {
     const formData = new FormData();
     formData.append('file', file);
 
@@ -458,7 +517,7 @@ export class LegalAIApiClient {
         signal.addEventListener('abort', onAbort, { once: true });
       }
 
-      xhr.upload.addEventListener('progress', event => {
+      xhr.upload.addEventListener('progress', (event) => {
         if (event.lengthComputable && onProgress) {
           const progress = (event.loaded / event.total) * 100;
           onProgress(progress);
@@ -505,12 +564,13 @@ export class LegalAIApiClient {
    * Get health status of the API
    */
   async getHealthStatus(
-    signal?: AbortSignal,
-  ): Promise<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>> {
-    return this.request<ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>>(
-      '/health',
-      { signal },
-    );
+    signal?: AbortSignal
+  ): Promise<
+    ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>
+  > {
+    return this.request<
+      ApiResponse<{ status: string; timestamp: string; services: Record<string, unknown> }>
+    >('/health', { signal });
   }
 }
 
@@ -571,6 +631,3 @@ export type CreateCaseData = z.infer<typeof CreateCaseSchema>;
 export type CreateEvidenceData = z.infer<typeof CreateEvidenceSchema>;
 export type CreateReportData = z.infer<typeof CreateReportSchema>;
 export type CreatePersonOfInterestData = z.infer<typeof CreatePersonOfInterestSchema>;
-
-
-

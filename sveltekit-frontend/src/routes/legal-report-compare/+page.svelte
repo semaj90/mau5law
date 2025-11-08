@@ -44,7 +44,16 @@ import type { Document } from '$lib/types'; /** * Legal Report Comparison - PDF 
 </main>
 
 <style>
-:global(.loader-spin-icon) { animation: spin 1s linear infinite}
+  :global(.loader-spin-icon) {
+    animation: spin 1s linear infinite;
+  }
 
-  @keyframes spin { from { transform: rotate(0deg)} to { transform: rotate(360deg)} }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>

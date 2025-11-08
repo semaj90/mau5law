@@ -1,28 +1,28 @@
-﻿import { json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types.js";
+﻿import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
 
 // Enhanced Document Storage API with MinIO + PostgreSQL + Cognitive Cache
-import { db } from "$lib/server/db/client.js";
-import { legal_documents } from "$lib/server/db/schema-postgres";
-import cognitiveCacheManager from "$lib/services/cognitive-cache-integration"; // Changed to default import
-import { count } from "drizzle-orm"; // Add sql to the import
-import { getDatabaseHealth } from "$lib/server/utils/health.ts";
+import { db } from '$lib/server/db/client.js';
+import { legal_documents } from '$lib/server/db/schema-postgres';
+import cognitiveCacheManager from '$lib/services/cognitive-cache-integration'; // Changed to default import
+import { count } from 'drizzle-orm'; // Add sql to the import
+import { getDatabaseHealth } from '$lib/server/utils/health.ts';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    console.log("[Storage] Processing document storage request...");
+    console.log('[Storage] Processing document storage request...');
     const body = await request.json();
     const { content, embedding, metadata = {}, filename, legalAnalysis } = body; // Corrected destructuring
 
     if (!content) {
-      return json({ success: false, error: "Content is required" }, { status: 400 });
+      return json({ success: false, error: 'Content is required' }, { status: 400 });
     }
 
     // Check database health
     const dbHealth = await getDatabaseHealth();
-    if (dbHealth.overall !== "healthy") {
+    if (dbHealth.overall !== 'healthy') {
       return json(
-        { success: false, error: "Database temporarily unavailable", healthStatus: dbHealth },
+        { success: false, error: 'Database temporarily unavailable', healthStatus: dbHealth },
         { status: 503 }
       );
     }
@@ -31,13 +31,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Store document in legal_documents table with proper schema
     const documentData = {
-      title: filename || "untitled",
+      title: filename || 'untitled',
       content: content, // Corrected variable name
-      filename: filename || "untitled",
-      document_type: metadata.documentType || "document",
+      filename: filename || 'untitled',
+      document_type: metadata.documentType || 'document',
       jurisdiction: metadata.jurisdiction || null,
       practice_area: metadata.practiceArea || null,
-      processing_status: "completed" as const,
+      processing_status: 'completed' as const,
       content_embedding: embedding || null,
       title_embedding: null, // Could be generated separately
       analysis_results: legalAnalysis || null,
@@ -59,11 +59,11 @@ export const POST: RequestHandler = async ({ request }) => {
     const responseData = {
       success: true,
       documentId,
-      message: "Document stored successfully",
+      message: 'Document stored successfully',
       document: {
         id: documentId,
-        title: filename || "untitled", // Corrected syntax
-        filename: filename || "untitled",
+        title: filename || 'untitled', // Corrected syntax
+        filename: filename || 'untitled',
         documentType: documentData.document_type, // Corrected syntax
         jurisdiction: documentData.jurisdiction, // Corrected syntax
         practiceArea: documentData.practice_area, // Corrected syntax
@@ -71,7 +71,7 @@ export const POST: RequestHandler = async ({ request }) => {
         hasEmbedding: !!embedding,
         hasLegalAnalysis: !!legalAnalysis,
         isConfidential: documentData.is_confidential, // Corrected syntax
-        processingStatus: "completed", // Corrected syntax
+        processingStatus: 'completed', // Corrected syntax
       },
       meta: { timestamp: new Date().toISOString(), databaseHealth: dbHealth.overall },
     };
@@ -80,12 +80,12 @@ export const POST: RequestHandler = async ({ request }) => {
     await cognitiveCacheManager.set(
       {
         key: `document_${documentId}`,
-        type: "legal-data" as const,
+        type: 'legal-data' as const,
         context: {
-          action: "document-storage",
+          action: 'document-storage',
           documentId: documentId, // Use documentId here
           documentType: documentData.document_type, // Corrected syntax
-          priority: "medium" as const,
+          priority: 'medium' as const,
         },
       },
       responseData.document,
@@ -94,9 +94,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json(responseData);
   } catch (err: unknown) {
-    console.error("[Storage] Error: ", err);
+    console.error('[Storage] Error: ', err);
     return json(
-      { success: false, error: (err as Error).message || "Storage failed" },
+      { success: false, error: (err as Error).message || 'Storage failed' },
       { status: (err as { status?: number }).status || 500 }
     );
   }
@@ -113,12 +113,12 @@ export const GET: RequestHandler = async () => {
       const [result] = await db.select({ count: count() }).from(legal_documents);
       documentCount = result?.count || 0; // Corrected syntax
     } catch (countError) {
-      console.warn("[Storage] Failed to count documents : ", countError);
+      console.warn('[Storage] Failed to count documents : ', countError);
     }
 
     return json({
-      status: dbHealth.overall === "healthy" ? "healthy" : "unhealthy",
-      service: "Enhanced Document Storage",
+      status: dbHealth.overall === 'healthy' ? 'healthy' : 'unhealthy',
+      service: 'Enhanced Document Storage',
       features: {
         postgresqlStorage: dbHealth.postgres.connected,
         vectorEmbeddings: dbHealth.postgres.connected,
@@ -127,18 +127,18 @@ export const GET: RequestHandler = async () => {
         legalAnalysis: true,
       },
       database: { status: dbHealth.overall, documents: documentCount },
-      message: "POST to store legal documents with embeddings and analysis",
+      message: 'POST to store legal documents with embeddings and analysis',
       endpoints: {
-        store: "POST /api/documents/store",
-        retrieve: "GET /api/documents/[id]",
-        search: "POST /api/documents/search",
+        store: 'POST /api/documents/store',
+        retrieve: 'GET /api/documents/[id]',
+        search: 'POST /api/documents/search',
       },
-      version: "3.0.0",
+      version: '3.0.0',
     });
   } catch (err: unknown) {
     return json(
       {
-        status: "unhealthy",
+        status: 'unhealthy',
         error: (err as Error).message,
         timestamp: new Date().toISOString(),
       },

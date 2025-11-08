@@ -1,9 +1,10 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   import { enhance } from '$app/forms';
   interface Props {
-    data?: unknown
-    form?: unknown}
+    data?: unknown;
+    form?: unknown;
+  }
   let { data, form }: Props = $props();
   let isLoading = $state<boolean>(false);
   let showPassword = $state<boolean>(false);
@@ -15,5 +16,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

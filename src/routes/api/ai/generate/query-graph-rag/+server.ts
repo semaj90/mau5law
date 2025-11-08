@@ -1,5 +1,5 @@
-import type { RequestHandler } from "./$types";
-import { queryGraphRag } from "$lib/server/ai/graph-rag-orchestrator";
+import type { RequestHandler } from './$types';
+import { queryGraphRag } from '$lib/server/ai/graph-rag-orchestrator';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {
@@ -14,12 +14,12 @@ export const POST: RequestHandler = async ({ request }) => {
     });
     return new Response(JSON.stringify({ success: true, results }), {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (e) {
     return new Response(JSON.stringify({ success: false, error: String(e) }), {
       status: 500,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   }
 };

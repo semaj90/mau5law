@@ -4,13 +4,7 @@
   import { onMount } from 'svelte';
 
   // Keep only icons actually used; remove unused ones to silence linter warnings.
-  import {
-    Cpu,
-    Brain,
-    Zap,
-    Database,
-    Activity
-  } from 'lucide-svelte';
+  import { Cpu, Brain, Zap, Database, Activity } from 'lucide-svelte';
 
   // Removed unused UI imports (Button/Badge/Textarea/LLMSelector) to avoid "declared but never read".
   import type { AITask, LLMModel } from '$lib/types/ai-worker.js';
@@ -26,9 +20,11 @@
       try {
         const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
         // prefer default export, then named export, then module itself
-        OrchestratorComponent = (mod as unknown as { default?: unknown; MultiLLMOrchestrator?: unknown }).default
-          ?? (mod as unknown as { default?: unknown; MultiLLMOrchestrator?: unknown }).MultiLLMOrchestrator
-          ?? mod;
+        OrchestratorComponent =
+          (mod as unknown as { default?: unknown; MultiLLMOrchestrator?: unknown }).default ??
+          (mod as unknown as { default?: unknown; MultiLLMOrchestrator?: unknown })
+            .MultiLLMOrchestrator ??
+          mod;
       } catch (err) {
         console.warn('Failed to load orchestrator component dynamically:', err);
       }
@@ -43,39 +39,44 @@
 
   // Local demo state
   let selectedModel: LLMModel | undefined = undefined;
-  let userPrompt = 'Analyze the following legal document for key terms, potential issues, and recommendations...';
+  let userPrompt =
+    'Analyze the following legal document for key terms, potential issues, and recommendations...';
   let isProcessing = $state<boolean>(false);
   let demoResults: DemoResult[] = [];
 
   // Demo scenarios
-  const demoScenarios = [ {
+  const demoScenarios = [
+    {
       name: 'Legal Document Analysis',
       description: 'Parallel analysis across multiple AI models',
-      prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
+      prompt:
+        'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
       tasks: [
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
         { provider: 'vllm', model: 'vllm-gemma3-legal', focus: 'Risk assessment' },
-        { provider: 'autogen', model: 'autogen-agents', focus: 'Multi-agent legal review' }
-      ]
-    }, {
+        { provider: 'autogen', model: 'autogen-agents', focus: 'Multi-agent legal review' },
+      ],
+    },
+    {
       name: 'Evidence Processing',
       description: 'Multi-stage evidence analysis pipeline',
       prompt: 'Process and categorize evidence files for case preparation.',
       tasks: [
         { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Content classification' },
-        { provider: 'crewai', model: 'crewai-agents', focus: 'Evidence correlation' }
-      ]
-    }, {
+        { provider: 'crewai', model: 'crewai-agents', focus: 'Evidence correlation' },
+      ],
+    },
+    {
       name: 'Case Research',
       description: 'Comprehensive legal research workflow',
       prompt: 'Research relevant case law and statutes for this legal matter.',
       tasks: [
         { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Case law analysis' },
-        { provider: 'ollama', model: 'gemma3-legal', focus: 'Statute interpretation' }
-      ]
-    }
+        { provider: 'ollama', model: 'gemma3-legal', focus: 'Statute interpretation' },
+      ],
+    },
   ];
 
   // Run a demo scenario by creating analysis tasks and submitting them to the aiWorkerManager.
@@ -84,20 +85,21 @@
     isProcessing = true;
     demoResults = [];
     try {
-      const tasks: AITask[] = (scenario as any).tasks?.map((taskConfig: any) =>
-        // use namespace import - aiWorkerService.createAnalysisTask
-        (aiWorkerService as any).createAnalysisTask(
-          `${(scenario as any).prompt}\n\nFocus: ${taskConfig.focus}`,
-          taskConfig.focus,
-          taskConfig.model,
-          taskConfig.provider,
-          {
-            priority: 'high',
-            maxTokens: 512,
-            params: { temperature: 0.1 }
-          }
-        )
-      ) ?? [];
+      const tasks: AITask[] =
+        (scenario as any).tasks?.map((taskConfig: any) =>
+          // use namespace import - aiWorkerService.createAnalysisTask
+          (aiWorkerService as any).createAnalysisTask(
+            `${(scenario as any).prompt}\n\nFocus: ${taskConfig.focus}`,
+            taskConfig.focus,
+            taskConfig.model,
+            taskConfig.provider,
+            {
+              priority: 'high',
+              maxTokens: 512,
+              params: { temperature: 0.1 },
+            }
+          )
+        ) ?? [];
 
       demoResults = tasks.map((task) => ({ task }));
 
@@ -106,9 +108,7 @@
           // use namespace import for submit/wait
           const taskId = await (aiWorkerService as any).submitTask(task);
           const result = await (aiWorkerService as any).waitForTask(taskId);
-          demoResults = demoResults.map((r) =>
-            r.task === task ? { ...r, response: result } : r
-          );
+          demoResults = demoResults.map((r) => (r.task === task ? { ...r, response: result } : r));
           return result;
         } catch (error) {
           console.error('Task failed:', error);
@@ -140,7 +140,7 @@
         {
           priority: 'high',
           maxTokens: 1024,
-          params: { temperature: 0.1 }
+          params: { temperature: 0.1 },
         }
       ) as unknown as AITask;
 
@@ -152,8 +152,11 @@
     } catch (err) {
       console.error('Custom task failed:', err);
       demoResults = [
-        { task: (task as AITask) ?? (undefined as unknown as AITask), error: (err as Error)?.message ?? String(err) },
-        ...demoResults
+        {
+          task: (task as AITask) ?? (undefined as unknown as AITask),
+          error: (err as Error)?.message ?? String(err),
+        },
+        ...demoResults,
       ];
     } finally {
       isProcessing = false;
@@ -189,5 +192,5 @@
 </main>
 
 <style>
-/* @unocss-include */
+  /* @unocss-include */
 </style>

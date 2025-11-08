@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "types": ["node", "svelte"], // added "svelte" so Svelte types / tooling are available
+    "types": ["node"], // removed "svelte" so tsc won't search for a missing 'svelte' type library
     "isolatedModules": true,
     "strict": true, // Enable strict mode for better type safety
     "noImplicitReturns": true,

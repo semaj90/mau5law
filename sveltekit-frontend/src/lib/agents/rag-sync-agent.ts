@@ -1,6 +1,7 @@
-import { browser } from "$app/environment";
-import { IndexedDBService } from "$lib/services/indexeddb-service"; // Corrected: Named import
+import { browser } from '$app/environment';
+import { IndexedDBService } from '$lib/services/indexeddb-service'; // Corrected: Named import
 // import type { LegalDocumentJSON } from "$lib/wasm/simd-json-wrapper"; // New import - This import is causing the error.
+import * as vectorWasm from '$lib/wasm/vector-wasm-wrapper'; // Fix: Changed to namespace import to resolve 'no default export' error
 
 /**
  * Client-side background agent that periodically finds pending documents
@@ -21,10 +22,10 @@ interface LegalDocumentJSON {
 
 // Define a type for the document structure based on usage
 interface Document {
-  id: LegalDocumentJSON["id"];
-  content?: LegalDocumentJSON["content"];
-  metadata?: LegalDocumentJSON["metadata"];
-  syncStatus: "pending" | "synced" | "failed";
+  id: LegalDocumentJSON['id'];
+  content?: LegalDocumentJSON['content'];
+  metadata?: LegalDocumentJSON['metadata'];
+  syncStatus: 'pending' | 'synced' | 'failed';
   embedding?: number[];
 }
 
@@ -55,24 +56,24 @@ export class RAGSyncAgent {
     try {
       if (!navigator.onLine) return;
       const indexedDB = new IndexedDBService(); // Corrected: Instantiate the service
-      const docs: Document[] = await indexedDB.getDocumentsByType("document"); // Corrected: Use instantiated service and type assertion
-      const unsynced = docs.filter((d: Document) => d.syncStatus === "pending"); // Corrected: Explicit type for 'd'
+      const docs: Document[] = await indexedDB.getDocumentsByType('document'); // Corrected: Use instantiated service and type assertion
+      const unsynced = docs.filter((d: Document) => d.syncStatus === 'pending'); // Corrected: Explicit type for 'd'
 
       for (const doc of unsynced) {
         // Corrected: Explicit type for 'doc'
         try {
-          const res = await fetch("/api/rag/sync", {
-            method: "POST",
-            headers: { "content-type": "application/json" },
+          const res = await fetch('/api/rag/sync', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
             body: JSON.stringify({
               id: doc.id,
-              text: doc.content || "",
+              text: doc.content || '',
               metadata: doc.metadata || {},
             }),
           });
 
           if (!res.ok) {
-            console.warn("RAG sync failed for doc:", doc.id, "status:", res.status);
+            console.warn('RAG sync failed for doc:', doc.id, 'status:', res.status);
             continue;
           }
 
@@ -80,15 +81,15 @@ export class RAGSyncAgent {
           if (payload?.embedding) {
             // Persist embedding + mark synced
             doc.embedding = payload.embedding;
-            doc.syncStatus = "synced";
+            doc.syncStatus = 'synced';
             await indexedDB.cacheDocument(doc);
           }
         } catch (err) {
-          console.warn("RAG sync error for doc", doc.id, err);
+          console.warn('RAG sync error for doc', doc.id, err);
         }
       }
     } catch (err) {
-      console.error("RAGSyncAgent.runOnce failed", err);
+      console.error('RAGSyncAgent.runOnce failed', err);
     }
   }
 }

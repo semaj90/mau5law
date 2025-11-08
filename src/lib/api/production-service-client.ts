@@ -33,7 +33,7 @@ class ProductionServiceClient {
 
     const defaultHeaders = {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
+      Accept: 'application/json',
     };
 
     const config: RequestInit = {
@@ -54,16 +54,20 @@ class ProductionServiceClient {
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`Go service '${this.serviceName}' request to ${url} failed: ${response.status} ${response.statusText} - ${errorText}`);
+        throw new Error(
+          `Go service '${this.serviceName}' request to ${url} failed: ${response.status} ${response.statusText} - ${errorText}`
+        );
       }
 
       // Attempt to parse JSON, but handle cases where response might be empty or not JSON
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
-        return await response.json() as T;
+        return (await response.json()) as T;
       } else {
         // If not JSON, return a generic success object or throw if expecting JSON
-        console.warn(`Go service '${this.serviceName}' response for ${url} was not JSON. Status: ${response.status}`);
+        console.warn(
+          `Go service '${this.serviceName}' response for ${url} was not JSON. Status: ${response.status}`
+        );
         return {} as T; // Return empty object or handle as appropriate
       }
     } catch (error) {

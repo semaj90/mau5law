@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     enriched = await enhancedRagClient.request('/api/enrich', {
       method: 'POST',
-      json: { query: q, candidates: vectorResults }
+      json: { query: q, candidates: vectorResults },
     });
   } catch (err) {
     // log and proceed with vector results only

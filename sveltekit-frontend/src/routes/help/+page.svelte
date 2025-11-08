@@ -12,7 +12,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
       id: 'advanced', title: 'Advanced Features', icon: UserIcon; description: 'Power user features and tips'
     }, {
       id: 'troubleshooting', title: 'Troubleshooting', icon: AlertTriangle; description: 'Common issues and solutions'
-    }]; // Help articles const articles = [ // Getting Started, {
+    }]; // Help articles const articles = [ // Getting Started
+, {
       id: 'quick-start', category: 'getting-started', title: 'Quick Start Guide', description: 'Get up and running in, 5 minutes', type: 'article', duration: '5 min read', popularity: 5, tags: ['getting-started', 'tutorial', 'basics'], lastUpdated: '2024-01-15'; content: ` # Quick Start Guide Welcome to the Legal Case Management System! This guide will help you get started quickly. ## Step, 1: Set Up Your Profile 1. Navigate to Settings > Profile 2. Fill in your basic information 3. Upload a profile picture (optional) 4. Set your role and department ## Step 2: Create Your First Case 1. Go to Cases > New Case 2. Enter case title and description 3. Set priority and status 4. Save the case ## Step 3: Add Evidence 1. Open your case 2. Click: "Add Evidence"`
   3. Upload files or enter evidence descriptions 4. Tag and categorize evidence ## Step, 4: Use AI Assistant 1. Navigate to AI Assistant 2. Ask questions about your cases 3. Get analysis and recommendations 4. Export AI responses for documentation ## Next Steps - Explore the analytics dashboard - Set up notifications - Learn about advanced search features `
     }, {
@@ -63,10 +64,30 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 </main>
 
 <style>
-/* @unocss-include */ .prose { max-width: none}
-  .prose:global(h1) { font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem}
-  .prose:global(h2) { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.75rem; margin-top: 1.5rem}
-  .prose:global(p) { margin-bottom: 1rem; line-height: 1.6}
-  .prose:global(ul) { margin-bottom: 1rem; padding-left: 1.5rem}
-  .prose:global(li) { margin-bottom: 0.5rem}
+  /* @unocss-include */
+  .prose {
+    max-width: none;
+  }
+  .prose:global(h1) {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+  .prose:global(h2) {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    margin-top: 1.5rem;
+  }
+  .prose:global(p) {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+  .prose:global(ul) {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+  }
+  .prose:global(li) {
+    margin-bottom: 0.5rem;
+  }
 </style>

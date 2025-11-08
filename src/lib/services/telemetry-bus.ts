@@ -14,7 +14,7 @@ class TelemetryBus {
    */
   emit(event: string, data: any): void {
     // Store in history
-    this.eventHistory.push(<any><any>{ event, data, timestamp: Date.now() });
+    this.eventHistory.push(<any>(<any>{ event, data, timestamp: Date.now() }));
     if (this.eventHistory.length > this.maxHistorySize) {
       this.eventHistory.shift();
     }
@@ -22,7 +22,7 @@ class TelemetryBus {
     // Notify listeners
     const handlers = this.listeners.get(event);
     if (handlers) {
-      handlers.forEach(handler => {
+      handlers.forEach((handler) => {
         try {
           handler(data);
         } catch (error) {
@@ -34,7 +34,7 @@ class TelemetryBus {
     // Also emit to wildcard listeners
     const wildcardHandlers = this.listeners.get('*');
     if (wildcardHandlers) {
-      wildcardHandlers.forEach(handler => {
+      wildcardHandlers.forEach((handler) => {
         try {
           handler({ event, data });
         } catch (error) {
@@ -75,7 +75,7 @@ class TelemetryBus {
    */
   getHistory(eventFilter?: string): Array<{ event: string; data: any; timestamp: number }> {
     if (eventFilter) {
-      return this.eventHistory.filter(item => item.event === eventFilter);
+      return this.eventHistory.filter((item) => item.event === eventFilter);
     }
     return [...this.eventHistory];
   }

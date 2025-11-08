@@ -63,9 +63,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const exportId = generateExportId();
 
     // Step 1: Export training data from storage
-    const trainingData = await postgresqlVectorStorage.exportForQLoRATraining(
-      body.filters || {}
-    );
+    const trainingData = await postgresqlVectorStorage.exportForQLoRATraining(body.filters || {});
 
     if (trainingData.length === 0) {
       throw error(404, 'No documents found matching the specified filters');
@@ -111,7 +109,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const processingTime = Date.now() - startTime;
 
-    console.log(`✅ QLoRA export completed: ${statistics.total_examples} examples in ${processingTime}ms`);
+    console.log(
+      `✅ QLoRA export completed: ${statistics.total_examples} examples in ${processingTime}ms`
+    );
 
     const response: QLoRAExportResponse = {
       success: true,
@@ -121,16 +121,15 @@ export const POST: RequestHandler = async ({ request }) => {
       download_url: `/api/training/download/${exportId}`,
       statistics,
       training_config: body.training_config || {},
-      processing_time_ms: processingTime
+      processing_time_ms: processingTime,
     };
 
     return json(response);
-
   } catch (err) {
     console.error('❌ QLoRA export failed:', err);
     throw error(500, {
       message: 'QLoRA export failed',
-      details: err instanceof Error ? err.message : 'Unknown error'
+      details: err instanceof Error ? err.message : 'Unknown error',
     });
   }
 };
@@ -152,39 +151,36 @@ export const GET: RequestHandler = async ({ url }) => {
         by_practice_area: stats.by_practice_area,
         by_jurisdiction: stats.by_jurisdiction,
         estimated_training_examples: Math.floor(stats.total_documents * 2.5), // Rough estimate
-        formats_supported: ['jsonl', 'json', 'huggingface', 'csv']
+        formats_supported: ['jsonl', 'json', 'huggingface', 'csv'],
       });
-
     } else if (type === 'templates') {
       const templates = getInstructionTemplates();
 
       return json({
         success: true,
         instruction_templates: templates,
-        template_count: templates.length
+        template_count: templates.length,
       });
-
     } else if (type === 'preview') {
       // Generate a small preview of training data
       const limit = parseInt(url.searchParams.get('limit') || '5');
       const previewData = await postgresqlVectorStorage.exportForQLoRATraining({
-        limit
+        limit,
       });
 
       return json({
         success: true,
         preview_data: previewData,
-        sample_count: previewData.length
+        sample_count: previewData.length,
       });
     }
 
     throw error(400, 'Invalid request type');
-
   } catch (err) {
     console.error('❌ GET request failed:', err);
     throw error(500, {
       message: 'Request failed',
-      details: err instanceof Error ? err.message : 'Unknown error'
+      details: err instanceof Error ? err.message : 'Unknown error',
     });
   }
 };
@@ -200,32 +196,32 @@ function applyTrainingConfig(
 
   // Filter by difficulty levels
   if (config.difficulty_levels?.length) {
-    filteredData = filteredData.filter(item =>
+    filteredData = filteredData.filter((item) =>
       config.difficulty_levels!.includes(item.metadata.difficulty_level)
     );
   }
 
   // Filter by token length
   if (config.max_token_length) {
-    filteredData = filteredData.filter(item =>
-      item.metadata.token_count <= config.max_token_length!
+    filteredData = filteredData.filter(
+      (item) => item.metadata.token_count <= config.max_token_length!
     );
   }
 
   // Apply custom instruction templates
   if (config.instruction_templates?.length) {
     const templates = config.instruction_templates;
-    filteredData = filteredData.map(item => ({
+    filteredData = filteredData.map((item) => ({
       ...item,
-      instruction: templates[Math.floor(Math.random() * templates.length)]
+      instruction: templates[Math.floor(Math.random() * templates.length)],
     }));
   }
 
   // Add context if requested
   if (config.include_context) {
-    filteredData = filteredData.map(item => ({
+    filteredData = filteredData.map((item) => ({
       ...item,
-      input: `Context: ${item.metadata.legal_area}\n\n${item.input}`
+      input: `Context: ${item.metadata.legal_area}\n\n${item.input}`,
     }));
   }
 
@@ -233,44 +229,57 @@ function applyTrainingConfig(
 }
 
 function formatAsJSONL(data: any[]): string {
-  return data.map(item => JSON.stringify({
-    instruction: item.instruction,
-    input: item.input,
-    output: item.output
-  })).join('\n');
+  return data
+    .map((item) =>
+      JSON.stringify({
+        instruction: item.instruction,
+        input: item.input,
+        output: item.output,
+      })
+    )
+    .join('\n');
 }
 
 function formatAsJSON(data: any[]): string {
-  return JSON.stringify(data.map(item => ({
-    instruction: item.instruction,
-    input: item.input,
-    output: item.output,
-    metadata: item.metadata
-  })), null, 2);
+  return JSON.stringify(
+    data.map((item) => ({
+      instruction: item.instruction,
+      input: item.input,
+      output: item.output,
+      metadata: item.metadata,
+    })),
+    null,
+    2
+  );
 }
 
 function formatAsHuggingFace(data: any[]): string {
-  const formatted = data.map(item => ({
-    text: `### Instruction:\n${item.instruction}\n\n### Input:\n${item.input}\n\n### Response:\n${item.output}`
+  const formatted = data.map((item) => ({
+    text: `### Instruction:\n${item.instruction}\n\n### Input:\n${item.input}\n\n### Response:\n${item.output}`,
   }));
 
   return JSON.stringify(formatted, null, 2);
 }
 
 function formatAsCSV(data: any[]): string {
-  const headers = ['instruction', 'input', 'output', 'legal_area', 'difficulty_level', 'token_count'];
-  const rows = data.map(item => [
+  const headers = [
+    'instruction',
+    'input',
+    'output',
+    'legal_area',
+    'difficulty_level',
+    'token_count',
+  ];
+  const rows = data.map((item) => [
     escapeCsvField(item.instruction),
     escapeCsvField(item.input),
     escapeCsvField(item.output),
     item.metadata.legal_area,
     item.metadata.difficulty_level,
-    item.metadata.token_count
+    item.metadata.token_count,
   ]);
 
-  return [headers, ...rows]
-    .map(row => row.join(','))
-    .join('\n');
+  return [headers, ...rows].map((row) => row.join(',')).join('\n');
 }
 
 function escapeCsvField(field: string): string {
@@ -299,7 +308,7 @@ function calculateStatistics(data: any[], fileContent: string): any {
     by_legal_area: byLegalArea,
     by_difficulty: byDifficulty,
     avg_token_count: Math.round(totalTokens / data.length),
-    file_size_mb: Math.round(Buffer.byteLength(fileContent, 'utf8') / (1024 * 1024) * 100) / 100
+    file_size_mb: Math.round((Buffer.byteLength(fileContent, 'utf8') / (1024 * 1024)) * 100) / 100,
   };
 }
 
@@ -319,16 +328,16 @@ function getInstructionTemplates(): string[] {
     'Provide a comprehensive legal interpretation of this document.',
     'Explain the legal framework discussed in this content.',
     'What are the rights and obligations outlined in this legal text?',
-    'Analyze the legal reasoning presented in this document.'
+    'Analyze the legal reasoning presented in this document.',
   ];
 }
 
 function getFileExtension(format: string): string {
   const extensions: Record<string, string> = {
-    'jsonl': 'jsonl',
-    'json': 'json',
-    'huggingface': 'json',
-    'csv': 'csv'
+    jsonl: 'jsonl',
+    json: 'json',
+    huggingface: 'json',
+    csv: 'csv',
   };
   return extensions[format] || 'txt';
 }

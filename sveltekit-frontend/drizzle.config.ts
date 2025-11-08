@@ -9,7 +9,7 @@ if (!process.env.DATABASE_URL) {
 
 export default {
   schema: "./src/lib/server/db/schema-postgres.ts",
-  out: "./drizzle",
+  out: "./drizzle", // Directory for migrations
   dialect: "postgresql",
   dbCredentials: {
     url: process.env.DATABASE_URL!,

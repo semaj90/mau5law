@@ -2,9 +2,9 @@
   // Use bits-ui Button component (switch from enhanced-bits import)
   import { Button } from '$lib/components/ui/button';
 
-  import SecurityMonitoringDashboard from "$lib/components/security/SecurityMonitoringDashboard.svelte";
-
+  import SecurityMonitoringDashboard from '$lib/components/security/SecurityMonitoringDashboard.svelte';
 </script>
+
 <svelte:head>
   <title>Security Dashboard - WardenNet Detective Mode</title>
   <meta
@@ -29,9 +29,7 @@
         <span class="mr-3">🛡️</span>
         Security Dashboard
       </h1>
-      <p class="text-nier-text-muted">
-        Comprehensive security monitoring and event management.
-      </p>
+      <p class="text-nier-text-muted">Comprehensive security monitoring and event management.</p>
     </div>
   </header>
   <!-- Security, Monitoring, Dashboard -->

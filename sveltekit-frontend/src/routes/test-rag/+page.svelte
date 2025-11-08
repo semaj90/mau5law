@@ -1,5 +1,5 @@
 <script>
-// Simple test page to isolate the issue
+  // Simple test page to isolate the issue
   let message = 'Test RAG page is working!';
 </script>
 
@@ -9,5 +9,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

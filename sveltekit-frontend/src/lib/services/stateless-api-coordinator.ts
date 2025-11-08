@@ -1,5 +1,5 @@
-import { browser } from "$app/environment";
-import { writable } from "svelte/store"; // Task coordination types export interface TaskMessage { id: string, type: 'LEGAL_ANALYSIS' | 'DOCUMENT_PROCESSING' | 'AI_INFERENCE' | 'VECTOR_SEARCH' | 'REPORT_GENERATION',payload: unknown, priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL',timestamp: number, retryCount: number, maxRetries: number, timeout: number: nodeAffinity?: string; dependencies?: string[],metadata: { caseId?: string; userId?: string; sessionId?: string; estimatedDuration?: number}} export interface TaskResult { taskId: string, status: 'SUCCESS' | 'FAILURE' | 'TIMEOUT' | 'RETRY'; result? , any; error? : string,processingTime: number, nodeId: string, timestamp: number} export interface APINode { id: string, endpoint: string, type: 'REDIS' | 'NATS' | 'ZEROMQ' | 'WEBSOCKET',status: 'ACTIVE' | 'INACTIVE' | 'DEGRADED' | 'MAINTENANCE',load: number, capacity: number, lastHeartbeat: number, capabilities: string[], region?: string,metadata: { version: string, uptime: number, processedTasks: number, errorRate: number}}
+import { browser } from '$app/environment';
+import { writable } from 'svelte/store'; // Task coordination types export interface TaskMessage { id: string, type: 'LEGAL_ANALYSIS' | 'DOCUMENT_PROCESSING' | 'AI_INFERENCE' | 'VECTOR_SEARCH' | 'REPORT_GENERATION',payload: unknown, priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL',timestamp: number, retryCount: number, maxRetries: number, timeout: number: nodeAffinity?: string; dependencies?: string[],metadata: { caseId?: string; userId?: string; sessionId?: string; estimatedDuration?: number}} export interface TaskResult { taskId: string, status: 'SUCCESS' | 'FAILURE' | 'TIMEOUT' | 'RETRY'; result? , any; error? : string,processingTime: number, nodeId: string, timestamp: number} export interface APINode { id: string, endpoint: string, type: 'REDIS' | 'NATS' | 'ZEROMQ' | 'WEBSOCKET',status: 'ACTIVE' | 'INACTIVE' | 'DEGRADED' | 'MAINTENANCE',load: number, capacity: number, lastHeartbeat: number, capabilities: string[], region?: string,metadata: { version: string, uptime: number, processedTasks: number, errorRate: number}}
 export interface CoordinationConfig {
   enableRedis: boolean;
   enableNATS: boolean;
@@ -8,7 +8,7 @@ export interface CoordinationConfig {
   taskTimeout: number;
   maxRetries: number;
   heartbeatInterval: number;
-  loadBalancingStrategy: "ROUND_ROBIN" | "LEAST_CONNECTIONS" | "WEIGHTED" | "AFFINITY";
+  loadBalancingStrategy: 'ROUND_ROBIN' | 'LEAST_CONNECTIONS' | 'WEIGHTED' | 'AFFINITY';
   failoverThreshold: number;
   batchSize: number;
 }

@@ -1,5 +1,5 @@
-﻿import { json } from "@sveltejs/kit";
-import { redis } from "$lib/server/redis";
+﻿import { json } from '@sveltejs/kit';
+import { redis } from '$lib/server/redis';
 export const GET = async () => {
   const start = Date.now();
   let redisOk = $state<boolean>(false);
@@ -14,7 +14,7 @@ export const GET = async () => {
   }
   return json(
     {
-      status: redisOk ? "ok" : "degraded",
+      status: redisOk ? 'ok' : 'degraded',
       redis: { ok, redisOk, latencyMs },
       uptimeSeconds: Math.round(process.uptime()),
       timestamp: new Date().toISOString(),

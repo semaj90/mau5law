@@ -1,13 +1,13 @@
 // TypeScript types for Vector Job Processing System // Redis Streams + CUDA Worker + XState integration types
 export interface VectorJob {
   id: string;
-  ownerType: "evidence" | "report" | "case" | "document";
+  ownerType: 'evidence' | 'report' | 'case' | 'document';
   ownerId: string;
-  event: "upsert" | "delete" | "reembed" | "cluster";
+  event: 'upsert' | 'delete' | 'reembed' | 'cluster';
   vector?: number[];
   payload?: Record<string, unknown>;
-  priority: "high" | "medium" | "low";
-  status: "pending" | "queued" | "processing" | "completed" | "failed" | "cancelled";
+  priority: 'high' | 'medium' | 'low';
+  status: 'pending' | 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled';
   createdAt: Date;
   updatedAt?: Date;
   attempts: number;
@@ -16,7 +16,7 @@ export interface VectorJob {
 }
 export interface VectorJobResult {
   jobId: string;
-  status: "pending" | "success" | "failed";
+  status: 'pending' | 'success' | 'failed';
   result?: unknown;
   error?: string;
   progress?: number;
@@ -31,7 +31,7 @@ export interface VectorJobResult {
 }
 export interface CUDAProcessingStatus {
   jobId: string;
-  stage: "initializing" | "preprocessing" | "computing" | "postprocessing" | "completed";
+  stage: 'initializing' | 'preprocessing' | 'computing' | 'postprocessing' | 'completed';
   progress: number; // 0-100
   currentOperation: string;
   estimatedTimeRemainingMs?: number;
@@ -50,11 +50,11 @@ export interface VectorOperationRequest {
   operation: string; // e.g., "embedding", "similarity_search", "generate"
   vector?: number[]; // Pre-computed vector for search
   data?: Record<string, unknown>; // Added data property
-  options?: { priority?: "low" | "medium" | "high"; useWebGPU?: boolean; [key: string]: unknown };
+  options?: { priority?: 'low' | 'medium' | 'high'; useWebGPU?: boolean; [key: string]: unknown };
 }
 export interface VectorOperationResponse {
   jobId: string;
-  status: "queued" | "processing" | "completed" | "failed";
+  status: 'queued' | 'processing' | 'completed' | 'failed';
   queuePosition?: number;
   estimatedWaitTimeMs?: number;
   VectorJobResult?: VectorJobResult;
@@ -140,7 +140,7 @@ export interface LegalVectorEmbedding {
   text: string;
   embedding: number[];
   metadata: {
-    documentType: "contract" | "case_law" | "statute" | "evidence" | "brief";
+    documentType: 'contract' | 'case_law' | 'statute' | 'evidence' | 'brief';
     jurisdiction: string;
     practiceArea: string[];
     confidence: number;
@@ -155,7 +155,7 @@ export interface LegalSimilarityResult {
   commonConcepts: string[];
   legalCitations: string[];
   relevantStatutes: string[];
-  precedentStrength: "strong" | "moderate" | "weak";
+  precedentStrength: 'strong' | 'moderate' | 'weak';
 }
 // Monitoring and metrics types
 export interface VectorServiceMetrics {
@@ -180,13 +180,13 @@ export interface VectorServiceMetrics {
   };
 }
 export interface VectorHealthStatus {
-  overall: "healthy" | "degraded" | "unhealthy";
+  overall: 'healthy' | 'degraded' | 'unhealthy';
   services: {
-    redis: "connected" | "disconnected" | "error";
-    postgres: "connected" | "disconnected" | "error";
-    rabbitmq: "connected" | "disconnected" | "error";
-    cuda: "available" | "unavailable" | "error";
-    webgpu: "available" | "unavailable" | "not_supported";
+    redis: 'connected' | 'disconnected' | 'error';
+    postgres: 'connected' | 'disconnected' | 'error';
+    rabbitmq: 'connected' | 'disconnected' | 'error';
+    cuda: 'available' | 'unavailable' | 'error';
+    webgpu: 'available' | 'unavailable' | 'not_supported';
   };
   queues: { [queueName: string]: { depth: number; consumers: number; processingRate: number } };
   lastHealthCheck: Date;
@@ -201,24 +201,24 @@ export class VectorProcessingError extends Error {
     public retryable: boolean = true
   ) {
     super(message);
-    this.name = "VectorProcessingError";
+    this.name = 'VectorProcessingError';
   }
 }
 export class CUDAError extends VectorProcessingError {
   constructor(message: string, jobId: string, operation: string) {
-    super(message, jobId, operation, "cuda_processing", false);
-    this.name = "CUDAError";
+    super(message, jobId, operation, 'cuda_processing', false);
+    this.name = 'CUDAError';
   }
 }
 export class WebGPUError extends VectorProcessingError {
   constructor(message: string, jobId: string, operation: string) {
-    super(message, jobId, operation, "webgpu_processing", true);
-    this.name = "WebGPUError";
+    super(message, jobId, operation, 'webgpu_processing', true);
+    this.name = 'WebGPUError';
   }
 }
 export class RedisStreamError extends VectorProcessingError {
   constructor(message: string, jobId: string, operation: string) {
-    super(message, jobId, operation, "redis_streaming", true);
-    this.name = "RedisStreamError";
+    super(message, jobId, operation, 'redis_streaming', true);
+    this.name = 'RedisStreamError';
   }
 }

@@ -1,11 +1,11 @@
-import { loginSchema } from "$lib/schemas/auth";
-import { db } from "$lib/server/db/client";
-import { users } from "$lib/server/db/schema-postgres";
-import { eq } from "drizzle-orm";
-import { createUserSession, setSessionCookie, verifyPassword } from "$lib/server/lucia";
-import { fail, redirect } from "@sveltejs/kit";
-import { message, superValidate } from "sveltekit-superforms/server";
-import type { Actions, PageServerLoad } from "./$types";
+import { loginSchema } from '$lib/schemas/auth';
+import { db } from '$lib/server/db/client';
+import { users } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import { createUserSession, setSessionCookie, verifyPassword } from '$lib/server/lucia';
+import { fail, redirect } from '@sveltejs/kit';
+import { message, superValidate } from 'sveltekit-superforms/server';
+import type { Actions, PageServerLoad } from './$types';
 
 // Replace load to accept the full event and pass it to superValidate
 export const load: PageServerLoad = async (event) => {
@@ -14,13 +14,13 @@ export const load: PageServerLoad = async (event) => {
 
   // If user is already logged in, redirect to dashboard
   if (localsTyped.user) {
-    throw redirect(303, "/dashboard");
+    throw redirect(303, '/dashboard');
   }
 
   // Registration success banner
-  const registered = event.url.searchParams.get("registered");
+  const registered = event.url.searchParams.get('registered');
   const registrationSuccess =
-    registered === "true" ? "Account created successfully! You can now sign in." : undefined;
+    registered === 'true' ? 'Account created successfully! You can now sign in.' : undefined;
 
   // Initialize SuperForms form for initial page render.
   // Use schema-only overload for initial render
@@ -54,11 +54,11 @@ export const actions: Actions = {
           .where(eq(users.email, email as string)) // Use eq directly
           .limit(1);
       } catch (e: unknown) {
-        console.error("[Login] DB select failed: ", e);
-        return message(form, "Login failed (db error). Please try again.", { status: 500 });
+        console.error('[Login] DB select failed: ', e);
+        return message(form, 'Login failed (db error). Please try again.', { status: 500 });
       }
       if (!Array.isArray(existingUser) || existingUser.length === 0) {
-        return message(form, "Incorrect email or password", { status: 400 });
+        return message(form, 'Incorrect email or password', { status: 400 });
       }
       // Narrow the user shape for local usage
       const user = existingUser[0] as {
@@ -68,18 +68,18 @@ export const actions: Actions = {
         is_active?: boolean;
       };
       if (!user || !user.hashed_password) {
-        return message(form, "Incorrect email or password", { status: 400 });
+        return message(form, 'Incorrect email or password', { status: 400 });
       }
       // Check if user is active
       if (!user.is_active) {
-        return message(form, "Account is deactivated", { status: 403 });
+        return message(form, 'Account is deactivated', { status: 403 });
       }
 
       // Verify password using custom lucia
       const validPassword = await verifyPassword(user.hashed_password, password as string);
       if (!validPassword) {
         console.log(`[Login] Password verification failed for ${user.email}`);
-        return message(form, "Incorrect email or password", { status: 400 });
+        return message(form, 'Incorrect email or password', { status: 400 });
       }
 
       // Create session using custom lucia
@@ -87,15 +87,15 @@ export const actions: Actions = {
       setSessionCookie(cookies, sessionId, expiresAt);
 
       // Dev debug: print short session id to server logs for quick verification
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === 'development') {
         console.log(`[Login] session set: ${sessionId.substring(0, 12)}... for ${user.email}`);
       }
       console.log(`[Login] User ${user.email} logged in successfully`);
-      throw redirect(303, "/dashboard");
+      throw redirect(303, '/dashboard');
     } catch (err: unknown) {
-      console.error("[Login] Error: ", err);
+      console.error('[Login] Error: ', err);
       if (err instanceof Response) throw err;
-      return message(form, "Login failed. Please try again.", { status: 500 });
+      return message(form, 'Login failed. Please try again.', { status: 500 });
     }
   },
 };

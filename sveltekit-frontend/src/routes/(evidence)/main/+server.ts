@@ -1,7 +1,7 @@
-import { json } from "@sveltejs/kit";
-import { randomUUID } from "node:crypto";
-import type { RequestHandler } from "./$types.js";
-import { uploadFile } from "$lib/server/minio-client"; // Import the new MinIO utility
+import { json } from '@sveltejs/kit';
+import { randomUUID } from 'node:crypto';
+import type { RequestHandler } from './$types.js';
+import { uploadFile } from '$lib/server/minio-client'; // Import the new MinIO utility
 
 // Allow GET requests to pass through to the page
 export const GET: RequestHandler = async ({ request }) => {
@@ -13,27 +13,27 @@ export const GET: RequestHandler = async ({ request }) => {
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const form = await request.formData();
-    const file = form.get("file") as File;
-    const caseId = (form.get("caseId") as string) || "unknown";
+    const file = form.get('file') as File;
+    const caseId = (form.get('caseId') as string) || 'unknown';
 
-    if (!file) return json({ success: false, error: "No file" }, { status: 400 });
+    if (!file) return json({ success: false, error: 'No file' }, { status: 400 });
 
     const buffer = Buffer.from(await file.arrayBuffer());
     const id = randomUUID();
     const objectName = `${id}_${file.name}`;
 
     // Implement MinIO putObject
-    await uploadFile("evidence", objectName, buffer, {
-      "x-amz-meta-case-id": caseId,
-      "x-amz-meta-original-name": file.name,
+    await uploadFile('evidence', objectName, buffer, {
+      'x-amz-meta-case-id': caseId,
+      'x-amz-meta-original-name': file.name,
     });
 
-    console.log("Uploaded to MinIO: ", { objectName, caseId, originalName: file.name }); // Fix: use file.name for originalName
+    console.log('Uploaded to MinIO: ', { objectName, caseId, originalName: file.name }); // Fix: use file.name for originalName
     return json({ success: true, id, objectName });
   } catch (err: unknown) {
-    console.error("Evidence upload error", err);
+    console.error('Evidence upload error', err);
     return json(
-      { success: false, error: (err as any)?.message || "upload error" },
+      { success: false, error: (err as any)?.message || 'upload error' },
       { status: 500 }
     );
   }

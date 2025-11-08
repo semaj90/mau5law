@@ -9,8 +9,8 @@
         const response = await fetch(`${apiBase}/auth/logout`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
-          }
+            'Content-Type': 'application/json',
+          },
         });
 
         // Ensure cache invalidation completes before redirecting
@@ -35,5 +35,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

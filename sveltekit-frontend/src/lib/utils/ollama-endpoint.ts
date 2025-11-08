@@ -7,7 +7,7 @@ export function getOllamaEndpoint(): string {
   // Prefer OLLAMA_URL from environment variables (e.g., Docker Compose service name 'ollama')
   // Fallback to localhost for local development without Docker.
   // The default port 11434 is standard for Ollama.
-  return process.env.OLLAMA_URL || "http://localhost:11434";
+  return process.env.OLLAMA_URL || 'http://localhost:11434';
 }
 
 /**
@@ -32,15 +32,15 @@ export function getOllamaEmbeddingEndpoint(): string {
  * @returns The full URL for the specified Ollama API endpoint.
  */
 export function getOllamaApiEndpoint(
-  type: "generate" | "delete" | "list" | "show" | string
+  type: 'generate' | 'delete' | 'list' | 'show' | string
 ): string {
   const base = getOllamaEndpoint(); // Get the base Ollama URL
   switch (type) {
-    case "delete":
+    case 'delete':
       return `${base}/api/delete`;
-    case "list":
+    case 'list':
       return `${base}/api/tags`;
-    case "show":
+    case 'show':
       return `${base}/api/show`;
     default:
       return `${base}/api/generate`; // Default to generate if type is unknown

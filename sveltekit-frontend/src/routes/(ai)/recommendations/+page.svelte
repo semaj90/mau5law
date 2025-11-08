@@ -1,5 +1,5 @@
 <script lang="ts">
-import RecommendationEngine from '$lib/components/ai/RecommendationEngine.svelte';
+  import RecommendationEngine from '$lib/components/ai/RecommendationEngine.svelte';
 </script>
 
 <main class="page-repair">
@@ -8,7 +8,8 @@ import RecommendationEngine from '$lib/components/ai/RecommendationEngine.svelte
 </main>
 
 <style>
-.page-container {
-    min-height: 100vh
-   ; background: #f8fafc}
+  .page-container {
+    min-height: 100vh;
+    background: #f8fafc;
+  }
 </style>

@@ -38,7 +38,11 @@
     <!-- Demo, Navigation -->
     <nav class="demo-nav">
       {#each Array.isArray(demoRoutes) ? demoRoutes : [] as route}
-        <a href={`/demo/${route.slug}`} class="demo-nav-item" class:active={currentDemo === route.slug}>
+        <a
+          href={`/demo/${route.slug}`}
+          class="demo-nav-item"
+          class:active={currentDemo === route.slug}
+        >
           <span class="demo-nav-icon">{route.icon}</span>
           <span class="demo-nav-text">{route.name}</span>
         </a>
@@ -80,85 +84,118 @@
   .demo-layout {
     min-height: 100vh;
     display: flex;
-    flex-direction: column
-   ; background: var(--nier-bg-primary); color: var(--nier-text-primary)}
+    flex-direction: column;
+    background: var(--nier-bg-primary);
+    color: var(--nier-text-primary);
+  }
 
   /* Header */
   .demo-header {
-    background: var(--nier-bg-secondary); border-bottom: 2px solid var(--nier-accent-warm);
-    padding: 1rem}
+    background: var(--nier-bg-secondary);
+    border-bottom: 2px solid var(--nier-accent-warm);
+    padding: 1rem;
+  }
 
   .demo-brand {
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-bottom: 1rem}
+    margin-bottom: 1rem;
+  }
 
   .demo-icon {
-    font-size: 2rem}
+    font-size: 2rem;
+  }
 
   .demo-title {
     font-size: 1.5rem;
-    font-weight: bold
-   ; color: var(--nier-accent-warm); margin: 0}
+    font-weight: bold;
+    color: var(--nier-accent-warm);
+    margin: 0;
+  }
 
-  .demo-badge { background: var(--nier-accent-warm); color: var(--nier-bg-primary); padding: 0.25rem 0.75rem;
+  .demo-badge {
+    background: var(--nier-accent-warm);
+    color: var(--nier-bg-primary);
+    padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.8rem;
-    font-weight: bold}
+    font-weight: bold;
+  }
 
   /* Navigation */
   .demo-nav {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem}
+    gap: 0.5rem;
+  }
 
   .demo-nav-item {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.5rem 1rem
-   ; border: 1px solid var(--nier-border-primary);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    text-decoration: none
-   ; color: var(--nier-text-secondary); background: var(--nier-bg-primary); transition: all 0.2s ease}
+    text-decoration: none;
+    color: var(--nier-text-secondary);
+    background: var(--nier-bg-primary);
+    transition: all 0.2s ease;
+  }
 
   .demo-nav-item:hover {
-    border-color: var(--nier-accent-warm); color: var(--nier-accent-warm)}
+    border-color: var(--nier-accent-warm);
+    color: var(--nier-accent-warm);
+  }
 
   .demo-nav-item.active {
-    border-color: var(--nier-accent-cool); color: var(--nier-accent-cool); background: var(--nier-bg-tertiary); font-weight: bold}
+    border-color: var(--nier-accent-cool);
+    color: var(--nier-accent-cool);
+    background: var(--nier-bg-tertiary);
+    font-weight: bold;
+  }
 
   .demo-nav-icon {
-    font-size: 1.2rem}
+    font-size: 1.2rem;
+  }
 
   .demo-nav-text {
-    font-size: 0.9rem}
+    font-size: 0.9rem;
+  }
 
   /* Content */
   .demo-content {
     flex: 1;
-    overflow-y: auto
-   ; background: var(--nier-bg-primary)}
+    overflow-y: auto;
+    background: var(--nier-bg-primary);
+  }
 
   .demo-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
-    min-height: 100%}
+    min-height: 100%;
+  }
 
   .demo-placeholder {
     text-align: center;
-    padding: 4rem 2rem
-   ; background: var(--nier-bg-secondary); border: 2px dashed var(--nier-border-muted);
-    border-radius: 1rem}
+    padding: 4rem 2rem;
+    background: var(--nier-bg-secondary);
+    border: 2px dashed var(--nier-border-muted);
+    border-radius: 1rem;
+  }
 
-  .demo-placeholder h2 { color: var(--nier-accent-warm); margin-bottom: 1rem}
+  .demo-placeholder h2 {
+    color: var(--nier-accent-warm);
+    margin-bottom: 1rem;
+  }
 
   /* Footer */
   .demo-footer {
     border-top: 2px solid var(--nier-border-primary);
-    background: var(--nier-bg-secondary); padding: 1rem}
+    background: var(--nier-bg-secondary);
+    padding: 1rem;
+  }
 
   .demo-footer-content {
     max-width: 1400px;
@@ -166,58 +203,77 @@
     display: flex;
     justify-content: space-betweennn;
     align-items: center;
-    gap: 2rem}
+    gap: 2rem;
+  }
 
   .demo-info {
     display: flex;
     align-items: center;
     gap: 1rem;
-    font-size: 0.9rem
-   ; color: var(--nier-text-muted)}
+    font-size: 0.9rem;
+    color: var(--nier-text-muted);
+  }
 
   .demo-current strong {
-    color: var(--nier-accent-cool); text-transform: uppercase}
+    color: var(--nier-accent-cool);
+    text-transform: uppercase;
+  }
 
   .demo-controls {
-    display: flex
-   ; gap: 1rem}
+    display: flex;
+    gap: 1rem;
+  }
 
   .demo-home-btn,
   .demo-main-btn {
-    padding: 0.5rem 1rem
-   ; border: 1px solid var(--nier-border-primary);
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--nier-border-primary);
     border-radius: 0.5rem;
-    text-decoration: none
-   ; color: var(--nier-text-primary); background: var(--nier-bg-primary); transition: all 0.2s ease;
-    font-size: 0.9rem}
+    text-decoration: none;
+    color: var(--nier-text-primary);
+    background: var(--nier-bg-primary);
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+  }
 
   .demo-home-btn:hover,
   .demo-main-btn:hover {
-    border-color: var(--nier-accent-warm); color: var(--nier-accent-warm)}
+    border-color: var(--nier-accent-warm);
+    color: var(--nier-accent-warm);
+  }
 
   /* Responsive */
   @media (max-width: 768px) {
     .demo-container {
-      padding: 1rem}
+      padding: 1rem;
+    }
 
     .demo-footer-content {
       flex-direction: column;
       text-align: center;
-      gap: 1rem}
+      gap: 1rem;
+    }
 
     .demo-nav {
-      justify-content: center}
+      justify-content: center;
+    }
   }
 
   /* Custom scrollbar */
   .demo-content::-webkit-scrollbar {
-    width: 8px}
+    width: 8px;
+  }
 
-  .demo-content::-webkit-scrollbar-track { background: var(--nier-bg-tertiary)}
+  .demo-content::-webkit-scrollbar-track {
+    background: var(--nier-bg-tertiary);
+  }
 
-  .demo-content::-webkit-scrollbar-thumb { background: var(--nier-accent-warm); border-radius: 4px}
+  .demo-content::-webkit-scrollbar-thumb {
+    background: var(--nier-accent-warm);
+    border-radius: 4px;
+  }
 
-  .demo-content::-webkit-scrollbar-thumb:hover { background: var(--nier-accent-cool)}
+  .demo-content::-webkit-scrollbar-thumb:hover {
+    background: var(--nier-accent-cool);
+  }
 </style>
-
-

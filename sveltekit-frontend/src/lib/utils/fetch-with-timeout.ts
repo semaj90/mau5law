@@ -1,25 +1,25 @@
 /** * Fetch utility with AbortController timeout * Replaces deprecated timeout in RequestInit for better error handling */ export interface FetchWithTimeoutOptions
-  extends Omit<RequestInit, "signal"> {
+  extends Omit<RequestInit, 'signal'> {
   /** Timeout in milliseconds (default: 30000ms / 30s) */ timeout?: number;
   /** Custom AbortSignal to combine with timeout */ signal?: AbortSignal;
   /** Retry configuration */ retry?: {
     attempts: number;
     delay: number;
-    backoff?: "linear" | "exponential";
+    backoff?: 'linear' | 'exponential';
   };
 }
 export interface FetchTimeoutError extends Error {
-  name: "TimeoutError";
-  code: "FETCH_TIMEOUT";
+  name: 'TimeoutError';
+  code: 'FETCH_TIMEOUT';
   duration?: number;
 }
 export interface FetchAbortError extends Error {
-  name: "AbortError";
-  code: "FETCH_ABORTED";
+  name: 'AbortError';
+  code: 'FETCH_ABORTED';
 }
 export interface FetchNetworkError extends Error {
-  name: "NetworkError";
-  code: "NETWORK_ERROR";
+  name: 'NetworkError';
+  code: 'NETWORK_ERROR';
   status?: number;
 }
 /** * Enhanced fetch with AbortController-based timeout and retry logic */ export async function fetchWithTimeout(
@@ -54,30 +54,30 @@ export interface FetchNetworkError extends Error {
       // Handle different error types
       if (error instanceof Error) {
         // Type narrowing for error
-        if (error.name === "AbortError") {
+        if (error.name === 'AbortError') {
           if (externalSignal?.aborted) {
             const abortError: FetchAbortError = new Error(
-              "Request was aborted by external signal"
+              'Request was aborted by external signal'
             ) as FetchAbortError;
-            abortError.name = "AbortError";
-            abortError.code = "FETCH_ABORTED";
+            abortError.name = 'AbortError';
+            abortError.code = 'FETCH_ABORTED';
             throw abortError;
           } else {
             const timeoutError: FetchTimeoutError = new Error(
               `Request timed out after ${timeout}ms`
             ) as FetchTimeoutError;
-            timeoutError.name = "TimeoutError";
-            timeoutError.code = "FETCH_TIMEOUT";
+            timeoutError.name = 'TimeoutError';
+            timeoutError.code = 'FETCH_TIMEOUT';
             timeoutError.duration = timeout;
             throw timeoutError;
           }
-        } else if (error instanceof TypeError && error.message.includes("fetch")) {
+        } else if (error instanceof TypeError && error.message.includes('fetch')) {
           // Corrected nesting
           const networkError: FetchNetworkError = new Error(
             `Network error: ${error.message}`
           ) as FetchNetworkError;
-          networkError.name = "NetworkError";
-          networkError.code = "NETWORK_ERROR";
+          networkError.name = 'NetworkError';
+          networkError.code = 'NETWORK_ERROR';
           throw networkError;
         }
       }
@@ -86,7 +86,7 @@ export interface FetchNetworkError extends Error {
       if (retry && attempt < retry.attempts) {
         // Added check for retry
         const delay =
-          retry.backoff === "exponential"
+          retry.backoff === 'exponential'
             ? retry.delay * Math.pow(2, attempt)
             : retry.delay * (attempt + 1);
         console.warn(
@@ -120,10 +120,10 @@ export interface FetchNetworkError extends Error {
 ): Promise<Response> {
   return fetchWithTimeout(url, {
     timeout: 45000, // 45s for AI operations
-    retry: { attempts: 3, delay: 1000, backoff: "exponential" },
+    retry: { attempts: 3, delay: 1000, backoff: 'exponential' },
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
       ...options.headers,
     },
     ...options,
@@ -135,9 +135,9 @@ export interface FetchNetworkError extends Error {
 ): Promise<Response> {
   return fetchWithTimeout(url, {
     timeout: 60000, // 60s for model operations
-    retry: { attempts: 2, delay: 2000, backoff: "linear" },
+    retry: { attempts: 2, delay: 2000, backoff: 'linear' },
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options.headers,
     },
     ...options,
@@ -149,7 +149,7 @@ export interface FetchNetworkError extends Error {
 ): Promise<Response> {
   return fetchWithTimeout(url, {
     timeout: 15000, // 15s for DB operations
-    retry: { attempts: 2, delay: 500, backoff: "linear" },
+    retry: { attempts: 2, delay: 500, backoff: 'linear' },
     ...options,
   });
 }
@@ -163,7 +163,7 @@ export interface FetchNetworkError extends Error {
       break;
     }
     signal.addEventListener(
-      "abort",
+      'abort',
       () => {
         controller.abort();
       },
@@ -180,9 +180,9 @@ export interface FetchNetworkError extends Error {
 ): error is FetchTimeoutError {
   return (
     error instanceof Error &&
-    error.name === "TimeoutError" &&
-    "code" in error &&
-    (error as FetchTimeoutError).code === "FETCH_TIMEOUT"
+    error.name === 'TimeoutError' &&
+    'code' in error &&
+    (error as FetchTimeoutError).code === 'FETCH_TIMEOUT'
   );
 }
 /** * Check if error is an abort error */ export function isAbortError(
@@ -190,9 +190,9 @@ export interface FetchNetworkError extends Error {
 ): error is FetchAbortError {
   return (
     error instanceof Error &&
-    error.name === "AbortError" &&
-    "code" in error &&
-    (error as FetchAbortError).code === "FETCH_ABORTED"
+    error.name === 'AbortError' &&
+    'code' in error &&
+    (error as FetchAbortError).code === 'FETCH_ABORTED'
   );
 }
 /** * Check if error is a network error */ export function isNetworkError(
@@ -200,9 +200,9 @@ export interface FetchNetworkError extends Error {
 ): error is FetchNetworkError {
   return (
     error instanceof Error &&
-    error.name === "NetworkError" &&
-    "code" in error &&
-    (error as FetchNetworkError).code === "NETWORK_ERROR"
+    error.name === 'NetworkError' &&
+    'code' in error &&
+    (error as FetchNetworkError).code === 'NETWORK_ERROR'
   );
 }
 /** * Create a reusable AbortController with timeout */ export function createTimeoutController(

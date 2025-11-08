@@ -23,14 +23,20 @@ export class LangchainQdrantRetriever {
     return getEmbeddingFromGemma(query);
   }
 
-  async search(query: string, filters: Record<string, unknown> = {}, useCache = true): Promise<Document[]> {
+  async search(
+    query: string,
+    filters: Record<string, unknown> = {},
+    useCache = true
+  ): Promise<Document[]> {
     const cacheKey = `retriever:${COLLECTION_NAME}:${query}:${JSON.stringify(filters)}`;
     if (useCache) {
       const cached = await redis.cacheGet(cacheKey);
       if (cached) {
         try {
           const parsed: any[] = JSON.parse(cached);
-          return parsed.map((p) => ({ pageContent: p.pageContent, metadata: p.metadata } as unknown as Document));
+          return parsed.map(
+            (p) => ({ pageContent: p.pageContent, metadata: p.metadata }) as unknown as Document
+          );
         } catch (err) {
           // continue
         }
@@ -38,9 +44,18 @@ export class LangchainQdrantRetriever {
     }
 
     const embedding = await this.embed(query);
-    const points = await VectorSearchService.searchByEmbedding(embedding || new Float32Array(0), { limit: this.topK, collectionName: COLLECTION_NAME });
+    const points = await VectorSearchService.searchByEmbedding(embedding || new Float32Array(0), {
+      limit: this.topK,
+      collectionName: COLLECTION_NAME,
+    });
 
-    const docs: Document[] = points.map((p) => ({ pageContent: p.snippet || '', metadata: { id: p.id, score: p.score, source: p.source } } as unknown as Document));
+    const docs: Document[] = points.map(
+      (p) =>
+        ({
+          pageContent: p.snippet || '',
+          metadata: { id: p.id, score: p.score, source: p.source },
+        }) as unknown as Document
+    );
 
     if (docs.length) await redis.cacheSet(cacheKey, JSON.stringify(docs), 60);
     return docs;
@@ -48,7 +63,9 @@ export class LangchainQdrantRetriever {
 
   async rerank(docs: Document[], query: string): Promise<Document[]> {
     // Placeholder: simple numeric sort
-    return docs.sort((a, b) => (b.metadata?.score || 0) - (a.metadata?.score || 0)).slice(0, this.topK);
+    return docs
+      .sort((a, b) => (b.metadata?.score || 0) - (a.metadata?.score || 0))
+      .slice(0, this.topK);
   }
 
   async retrieve(query: string, filters: Record<string, unknown> = {}): Promise<Document[]> {

@@ -170,26 +170,34 @@ import type { Document } from '$lib/types';
 </main>
 
 <style>
-.hybrid-rag-demo {
-    background: #212529
-   ; color: #d4af37;
-    font-family: 'Press Start 2P', 'Courier New', monospace}
+  .hybrid-rag-demo {
+    background: #212529;
+    color: #d4af37;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
 
   .text-gold-400 {
-    color: #d4af37}
+    color: #d4af37;
+  }
 
   .text-gold-600 {
-    color: #b8941f}
+    color: #b8941f;
+  }
 
   .bg-gold-600 {
-    background-color: #b8941f}
+    background-color: #b8941f;
+  }
 
   .animate-spin {
-    animation: spin 1s linear infinite}
+    animation: spin 1s linear infinite;
+  }
 
   @keyframes spin {
-    from { transform: rotate(0deg)}
+    from {
+      transform: rotate(0deg);
+    }
     to {
-      transform: rotate(360deg)}
+      transform: rotate(360deg);
+    }
   }
 </style>

@@ -39,21 +39,26 @@ import { embedText } from '$lib/ai/tensor-client';
 </main>
 
 <style>
-.page {
+  .page {
     padding: 1rem;
     display: grid;
-    gap: 1rem}
+    gap: 1rem;
+  }
   .controls {
     display: flex;
     gap: 1.5rem;
-    align-items: center}
+    align-items: center;
+  }
   .inputs {
     display: grid;
-    gap: 0.75rem}
+    gap: 0.75rem;
+  }
   .inputs .text textarea {
-    width: 100%}
+    width: 100%;
+  }
   .actions {
-    display: flex
-   ; gap: 0.75rem;
-    align-items: center}
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+  }
 </style>

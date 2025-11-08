@@ -31,10 +31,24 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 </main>
 
 <style>
-/* @unocss-include */ /* Grid background pattern */ #evidence-canvas { background-color: #f9fafb}
-  /* Smooth transitions for drag and drop */ .evidence-card { transition: transform 0.1s ease}
-  .evidence-card:hover { transform: translateY(-2px)}
-  /* Connection line animations */ svg line { animation: dash 2s linear infinite}
-  @keyframes dash { to { stroke-dashoffset: -10}
+  /* @unocss-include */ /* Grid background pattern */
+  #evidence-canvas {
+    background-color: #f9fafb;
+  }
+  /* Smooth transitions for drag and drop */
+  .evidence-card {
+    transition: transform 0.1s ease;
+  }
+  .evidence-card:hover {
+    transform: translateY(-2px);
+  }
+  /* Connection line animations */
+  svg line {
+    animation: dash 2s linear infinite;
+  }
+  @keyframes dash {
+    to {
+      stroke-dashoffset: -10;
+    }
   }
 </style>

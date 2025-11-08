@@ -1,15 +1,15 @@
 /** * Type definitions for NATS Messaging Service */ // Define the union type for message categories
 export type MessageType =
-  | "case_management"
-  | "document_processing"
-  | "ai_analysis"
-  | "search_operation"
-  | "real_time_communication"
-  | "system_monitoring"
-  | "request"
-  | "response"
-  | "mock"
-  | "unknown"; // Generic type for message data payload
+  | 'case_management'
+  | 'document_processing'
+  | 'ai_analysis'
+  | 'search_operation'
+  | 'real_time_communication'
+  | 'system_monitoring'
+  | 'request'
+  | 'response'
+  | 'mock'
+  | 'unknown'; // Generic type for message data payload
 export type MessageData = Record<string, any> | string | number | boolean | null | Array<any>; // Interface for a standard Legal AI Message
 export interface LegalAIMessage {
   id: string;
@@ -45,15 +45,15 @@ export interface TLSConfig {
 export interface StreamConfig {
   name: string;
   subjects: string[];
-  retention: "limits" | "interest" | "workqueue";
+  retention: 'limits' | 'interest' | 'workqueue';
   max_age?: number; // milliseconds
   max_msgs?: number;
   max_bytes?: number;
   max_msg_size?: number;
-  storage: "file" | "memory";
+  storage: 'file' | 'memory';
   replicas?: number;
   no_ack?: boolean;
-  discard?: "old" | "new";
+  discard?: 'old' | 'new';
   duplicate_window?: number;
 }
 // Interface for NATS JetStream Consumer configuration
@@ -61,12 +61,12 @@ export interface ConsumerConfig {
   name: string;
   durable_name?: string;
   description?: string;
-  deliver_policy: "all" | "last" | "new" | "by_start_sequence" | "by_start_time";
-  ack_policy: "none" | "all" | "explicit";
+  deliver_policy: 'all' | 'last' | 'new' | 'by_start_sequence' | 'by_start_time';
+  ack_policy: 'none' | 'all' | 'explicit';
   ack_wait?: number;
   max_deliver?: number;
   filter_subject?: string;
-  replay_policy?: "instant" | "original";
+  replay_policy?: 'instant' | 'original';
   rate_limit?: number;
   sample_freq?: string;
   max_waiting?: number;
@@ -102,9 +102,9 @@ export interface ConnectionInfo {
 export interface SubscriptionOptions {
   queue_group?: string;
   max_in_flight?: number;
-  ack_policy?: "none" | "all" | "explicit";
+  ack_policy?: 'none' | 'all' | 'explicit';
   durable_name?: string;
-  deliver_policy?: "all" | "last" | "new";
+  deliver_policy?: 'all' | 'last' | 'new';
   ack_wait_ms?: number;
   max_deliver?: number;
   rate_limit_bps?: number;
@@ -174,20 +174,20 @@ export interface PerformanceMetrics {
   };
 }
 export interface SystemHealth {
-  overall_status: "healthy" | "degraded" | "critical";
-  connection_health: "connected" | "reconnecting" | "disconnected";
-  message_processing_health: "normal" | "backlogged" | "failing";
-  stream_health: Record<string, "healthy" | "degraded" | "critical">;
-  consumer_health: Record<string, "active" | "stalled" | "failed">;
+  overall_status: 'healthy' | 'degraded' | 'critical';
+  connection_health: 'connected' | 'reconnecting' | 'disconnected';
+  message_processing_health: 'normal' | 'backlogged' | 'failing';
+  stream_health: Record<string, 'healthy' | 'degraded' | 'critical'>;
+  consumer_health: Record<string, 'active' | 'stalled' | 'failed'>;
   last_check: string;
 } // Add missing SystemHealthEventData so MessageData union is valid
 export interface SystemHealthEventData {
   service?: string; // optional service name (e.g. "gpu-orchestrator", "legal-gateway")
-  status?: SystemHealth["overall_status"]; // reuse existing SystemHealth type for status
+  status?: SystemHealth['overall_status']; // reuse existing SystemHealth type for status
   health?: SystemHealth; // full health snapshot when available
   metrics?: PerformanceMetrics | MessageMetrics | Record<string, unknown>; // optional metrics payload
   details?: Record<string, unknown>; // extensible additional information
-  severity?: "info" | "warning" | "error" | "critical";
+  severity?: 'info' | 'warning' | 'error' | 'critical';
   occurred_at?: string;
 } // Stream Processing Types
 export interface StreamInfo {
@@ -265,26 +265,26 @@ export interface NATSEvent {
   data: MessageData;
 }
 export type NATSEventType =
-  | "connected"
-  | "disconnected"
-  | "reconnecting"
-  | "error"
-  | "slow_consumer"
-  | "message_published"
-  | "message_received"
-  | "subscription_created"
-  | "subscription_deleted"
-  | "stream_created"
-  | "stream_deleted"
-  | "consumer_created"
-  | "consumer_deleted"; // Legal AI Specific Types
+  | 'connected'
+  | 'disconnected'
+  | 'reconnecting'
+  | 'error'
+  | 'slow_consumer'
+  | 'message_published'
+  | 'message_received'
+  | 'subscription_created'
+  | 'subscription_deleted'
+  | 'stream_created'
+  | 'stream_deleted'
+  | 'consumer_created'
+  | 'consumer_deleted'; // Legal AI Specific Types
 export interface CaseEventData {
   case_id: string;
   case_number: string;
   title: string;
-  status: "open" | "in_progress" | "closed" | "archived";
+  status: 'open' | 'in_progress' | 'closed' | 'archived';
   assigned_to: string[];
-  priority: "low" | "normal" | "high" | "urgent";
+  priority: 'low' | 'normal' | 'high' | 'urgent';
   created_by: string;
   updated_by?: string;
   metadata?: Record<string, unknown>;
@@ -297,7 +297,7 @@ export interface DocumentEventData {
   file_size: number;
   checksum: string;
   storage_path: string;
-  processing_status: "uploaded" | "processing" | "processed" | "indexed" | "failed";
+  processing_status: 'uploaded' | 'processing' | 'processed' | 'indexed' | 'failed';
   extracted_text?: string;
   metadata?: Record<string, unknown>;
 }
@@ -306,11 +306,11 @@ export interface AIAnalysisEventData {
   case_id?: string;
   document_id?: string;
   analysis_type:
-    | "summary"
-    | "classification"
-    | "entity_extraction"
-    | "sentiment"
-    | "risk_assessment";
+    | 'summary'
+    | 'classification'
+    | 'entity_extraction'
+    | 'sentiment'
+    | 'risk_assessment';
   model_used: string;
   confidence_score: number;
   results: Record<string, unknown> | Array<unknown> | string | number | boolean | null;
@@ -322,7 +322,7 @@ export interface ChatEventData {
   message_id: string;
   session_id: string;
   user_id: string;
-  message_type: "user" | "assistant" | "system";
+  message_type: 'user' | 'assistant' | 'system';
   content: string;
   context?: MessageData | Record<string, unknown>;
   attachments?: string[];
@@ -333,7 +333,7 @@ export interface SearchEventData {
   query_id: string;
   user_id: string;
   query_text: string;
-  search_type: "cases" | "documents" | "legal_precedents" | "full_text" | "semantic";
+  search_type: 'cases' | 'documents' | 'legal_precedents' | 'full_text' | 'semantic';
   filters?: SearchFilters;
   results?: SearchResult[];
   total_results?: number;
@@ -349,7 +349,7 @@ export interface SearchFilters {
 }
 export interface SearchResult {
   id: string;
-  type: "case" | "document" | "precedent";
+  type: 'case' | 'document' | 'precedent';
   title: string;
   relevance_score: number;
   snippet?: string;
@@ -379,7 +379,7 @@ export interface WorkItem {
   error_message?: string;
   worker_id?: string;
 } // Utility Types
-export type MessagePriority = "low" | "normal" | "high" | "urgent"; // Added missing type
+export type MessagePriority = 'low' | 'normal' | 'high' | 'urgent'; // Added missing type
 export interface RequestOptions {
   timeout_ms?: number;
   headers?: Record<string, string>;

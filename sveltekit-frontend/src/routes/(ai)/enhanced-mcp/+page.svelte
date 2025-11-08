@@ -25,7 +25,7 @@
     vsCodeExtensionActive: false,
     clusterSystemOnline: false,
     ollamaModelsLoaded: false,
-    contextualAnalysisReady: false
+    contextualAnalysisReady: false,
   });
 
   type SystemLog = {
@@ -134,7 +134,9 @@
   }
 
   function logMessage(level: SystemLog['level'], message: string, source: string): void {
-    systemLogs.update((logs) => [{ timestamp: new Date(), level, message, source }, ...logs].slice(0, 50));
+    systemLogs.update((logs) =>
+      [{ timestamp: new Date(), level, message, source }, ...logs].slice(0, 50)
+    );
   }
 
   async function runSystemDiagnostics(): Promise<void> {
@@ -150,7 +152,7 @@
           } catch {
             return false;
           }
-        }
+        },
       },
       {
         name: 'Enhanced RAG Query',
@@ -159,13 +161,17 @@
             const response = await fetch('http://localhost:40000/mcp/enhanced-rag/query', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ query: 'System diagnostic test query', caseId: 'diagnostic-test', maxResults: 1 })
+              body: JSON.stringify({
+                query: 'System diagnostic test query',
+                caseId: 'diagnostic-test',
+                maxResults: 1,
+              }),
             });
             return response.ok;
           } catch {
             return false;
           }
-        }
+        },
       },
       {
         name: 'Memory Graph Operations',
@@ -174,13 +180,13 @@
             const response = await fetch('http://localhost:40000/mcp/memory/read-graph', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({})
+              body: JSON.stringify({}),
             });
             return response.ok;
           } catch {
             return false;
           }
-        }
+        },
       },
       {
         name: 'Context7 Documentation',
@@ -189,14 +195,14 @@
             const response = await fetch('http://localhost:40000/mcp/context7/resolve-library-id', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ libraryName: 'sveltekit' })
+              body: JSON.stringify({ libraryName: 'sveltekit' }),
             });
             return response.ok;
           } catch {
             return false;
           }
-        }
-      }
+        },
+      },
     ];
 
     let passedTests = 0;
@@ -215,7 +221,11 @@
       }
     }
 
-    logMessage('info', `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`, 'diagnostics');
+    logMessage(
+      'info',
+      `Diagnostics complete: ${passedTests}/${diagnostics.length} tests passed`,
+      'diagnostics'
+    );
   }
 
   function clearLogs(): void {
@@ -228,49 +238,81 @@
 <main class="enhanced-mcp-demo">
   <header class="demo-header">
     <h1>Enhanced MCP Integration</h1>
-    <p class="demo-subtitle">Lightweight dashboard showing status, diagnostics and recent system logs for Context7 MCP.</p>
+    <p class="demo-subtitle">
+      Lightweight dashboard showing status, diagnostics and recent system logs for Context7 MCP.
+    </p>
   </header>
 
   <section class="system-status">
     <h2>System Status</h2>
     <div class="status-grid">
-      <div class="status-card {$integrationStatus.mcpServerRunning ? 'status-online' : 'status-offline'}">
+      <div
+        class="status-card {$integrationStatus.mcpServerRunning
+          ? 'status-online'
+          : 'status-offline'}"
+      >
         <div class="status-icon">🛰️</div>
         <div>
           <div class="status-title">MCP Server</div>
-          <div class="status-subtitle">{$integrationStatus.mcpServerRunning ? 'Online' : 'Offline'}</div>
+          <div class="status-subtitle">
+            {$integrationStatus.mcpServerRunning ? 'Online' : 'Offline'}
+          </div>
         </div>
       </div>
 
-      <div class="status-card {$integrationStatus.clusterSystemOnline ? 'status-online' : 'status-offline'}">
+      <div
+        class="status-card {$integrationStatus.clusterSystemOnline
+          ? 'status-online'
+          : 'status-offline'}"
+      >
         <div class="status-icon">🔗</div>
         <div>
           <div class="status-title">Cluster</div>
-          <div class="status-subtitle">{$integrationStatus.clusterSystemOnline ? 'Online' : 'Unavailable'}</div>
+          <div class="status-subtitle">
+            {$integrationStatus.clusterSystemOnline ? 'Online' : 'Unavailable'}
+          </div>
         </div>
       </div>
 
-      <div class="status-card {$integrationStatus.ollamaModelsLoaded ? 'status-online' : 'status-offline'}">
+      <div
+        class="status-card {$integrationStatus.ollamaModelsLoaded
+          ? 'status-online'
+          : 'status-offline'}"
+      >
         <div class="status-icon">🤖</div>
         <div>
           <div class="status-title">Ollama Models</div>
-          <div class="status-subtitle">{$integrationStatus.ollamaModelsLoaded ? 'Loaded' : 'Not loaded'}</div>
+          <div class="status-subtitle">
+            {$integrationStatus.ollamaModelsLoaded ? 'Loaded' : 'Not loaded'}
+          </div>
         </div>
       </div>
 
-      <div class="status-card {$integrationStatus.vsCodeExtensionActive ? 'status-online' : 'status-offline'}">
+      <div
+        class="status-card {$integrationStatus.vsCodeExtensionActive
+          ? 'status-online'
+          : 'status-offline'}"
+      >
         <div class="status-icon">🧩</div>
         <div>
           <div class="status-title">VS Code Extension</div>
-          <div class="status-subtitle">{$integrationStatus.vsCodeExtensionActive ? 'Detected' : 'Not detected'}</div>
+          <div class="status-subtitle">
+            {$integrationStatus.vsCodeExtensionActive ? 'Detected' : 'Not detected'}
+          </div>
         </div>
       </div>
 
-      <div class="status-card {$integrationStatus.contextualAnalysisReady ? 'status-online' : 'status-offline'}">
+      <div
+        class="status-card {$integrationStatus.contextualAnalysisReady
+          ? 'status-online'
+          : 'status-offline'}"
+      >
         <div class="status-icon">⚙️</div>
         <div>
           <div class="status-title">Contextual Analysis</div>
-          <div class="status-subtitle">{$integrationStatus.contextualAnalysisReady ? 'Ready' : 'Pending'}</div>
+          <div class="status-subtitle">
+            {$integrationStatus.contextualAnalysisReady ? 'Ready' : 'Pending'}
+          </div>
         </div>
       </div>
     </div>
@@ -319,20 +361,24 @@
       <div class="feature-card">
         <div class="feature-icon">🔍</div>
         <div class="feature-title">Enhanced RAG</div>
-        <div class="feature-description">Hybrid vector search (pgvector + Qdrant) with Redis caching.</div>
+        <div class="feature-description">
+          Hybrid vector search (pgvector + Qdrant) with Redis caching.
+        </div>
       </div>
 
       <div class="feature-card">
         <div class="feature-icon">🧠</div>
         <div class="feature-title">Multi-LLM Orchestration</div>
-        <div class="feature-description">Parallel orchestration and agent coordination across providers.</div>
+        <div class="feature-description">
+          Parallel orchestration and agent coordination across providers.
+        </div>
       </div>
     </div>
   </section>
 </main>
 
 <style>
-.enhanced-mcp-demo {
+  .enhanced-mcp-demo {
     min-height: 100vh;
     background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
     color: #e5e7eb;

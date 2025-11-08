@@ -11,5 +11,8 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; le
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

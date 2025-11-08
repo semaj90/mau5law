@@ -1,31 +1,31 @@
-﻿import type { RequestHandler } from "./$types.js"; // Unified Vector Processing API Endpoint // Integrates Redis Streams + CUDA Worker + WebGPU + WASM LLM + PostgreSQL
-import { json } from "@sveltejs/kit";
+﻿import type { RequestHandler } from './$types.js'; // Unified Vector Processing API Endpoint // Integrates Redis Streams + CUDA Worker + WebGPU + WASM LLM + PostgreSQL
+import { json } from '@sveltejs/kit';
 import type {
   VectorOperationRequest,
   VectorOperationResponse,
   VectorJobResult,
-} from "$lib/types/vector-jobs";
+} from '$lib/types/vector-jobs';
 
 // Environment configuration
-const VECTOR_SERVICE_URL = import.meta.env.VECTOR_SERVICE_URL || "http://localhost:5178/vector";
-const USE_WEBGPU_FALLBACK = import.meta.env.USE_WEBGPU_FALLBACK === "true";
+const VECTOR_SERVICE_URL = import.meta.env.VECTOR_SERVICE_URL || 'http://localhost:5178/vector';
+const USE_WEBGPU_FALLBACK = import.meta.env.USE_WEBGPU_FALLBACK === 'true';
 
 export const POST: RequestHandler = async ({ request, url }) => {
-  const operation = url.searchParams.get("operation") || "embedding";
+  const operation = url.searchParams.get('operation') || 'embedding';
   try {
     const requestData: VectorOperationRequest = await request.json();
     // Validate request
     if (!requestData.ownerType || !requestData.ownerId) {
-      return json({ error: "Missing required fields: ownerType, ownerId" }, { status: 400 });
+      return json({ error: 'Missing required fields: ownerType, ownerId' }, { status: 400 });
     }
     // Route to vector processing service
     const response = await routeVectorRequest(requestData, operation);
     return json(response);
   } catch (error: Error | unknown) {
-    console.error("Vector API error: ", error);
+    console.error('Vector API error: ', error);
     return json(
       {
-        error: "Vector processing failed",
+        error: 'Vector processing failed',
         details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
@@ -34,27 +34,27 @@ export const POST: RequestHandler = async ({ request, url }) => {
 };
 
 export const GET: RequestHandler = async ({ url, params }) => {
-  const action = url.searchParams.get("action") || "health";
+  const action = url.searchParams.get('action') || 'health';
   try {
     switch (action) {
-      case "health":
+      case 'health':
         return await getHealthStatus();
-      case "metrics":
+      case 'metrics':
         return await getSystemMetrics();
-      case "queues":
+      case 'queues':
         return await getQueueStatus();
-      case "performance":
+      case 'performance':
         return await getPerformanceMetrics();
-      case "status":
+      case 'status':
         return await getJobStatus(params, url); // Handle job status
       default:
-        return json({ error: "Unknown action" }, { status: 400 });
+        return json({ error: 'Unknown action' }, { status: 400 });
     }
   } catch (error: Error | unknown) {
-    console.error("Vector API GET error: ", error);
+    console.error('Vector API GET error: ', error);
     return json(
       {
-        error: "Request failed",
+        error: 'Request failed',
         details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
@@ -70,11 +70,11 @@ async function routeVectorRequest(
   // Determine processing path based on configuration and availability
   const processingPath = await determineProcessingPath(request, _operation);
   switch (processingPath) {
-    case "cuda":
+    case 'cuda':
       return await processCUDA(request, jobId, _operation);
-    case "webgpu":
+    case 'webgpu':
       return await processWebGPU(request, jobId, _operation);
-    case "wasm":
+    case 'wasm':
       return await processWASM(request, jobId, _operation);
     default:
       return await processDefault(request, jobId, _operation);
@@ -84,7 +84,7 @@ async function routeVectorRequest(
 async function determineProcessingPath(
   request: VectorOperationRequest,
   operation: string
-): Promise<"cuda" | "webgpu" | "wasm" | "default"> {
+): Promise<'cuda' | 'webgpu' | 'wasm' | 'default'> {
   // Check service availability and request preferences
   const preferences: { useWebGPU?: boolean; [k: string]: unknown } = (request as any).options || {}; // eslint-disable-line @typescript-eslint/no-explicit-any
 
@@ -95,25 +95,25 @@ async function determineProcessingPath(
     if (cudaResponse.ok) {
       const health = await cudaResponse.json();
       if (health.cuda) {
-        return "cuda";
+        return 'cuda';
       }
     }
   } catch (error: Error | unknown) {
-    console.log("CUDA service unavailable: ", error);
+    console.log('CUDA service unavailable: ', error);
   }
 
   // Check WebGPU preference and availability
   if (preferences.useWebGPU || USE_WEBGPU_FALLBACK) {
     // WebGPU check would be done client-side, but we can assume availability
-    return "webgpu";
+    return 'webgpu';
   }
 
   // For text generation tasks, prefer WASM LLM
-  if (operation === "generate" || operation === "analysis") {
-    return "wasm";
+  if (operation === 'generate' || operation === 'analysis') {
+    return 'wasm';
   }
 
-  return "default";
+  return 'default';
 }
 
 async function processCUDA(
@@ -125,8 +125,8 @@ async function processCUDA(
   try {
     // Submit job to vector Redis service
     const response = await fetch(`${VECTOR_SERVICE_URL}/api/vector/jobs`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         id: jobId,
         owner_type: request.ownerType,
@@ -137,9 +137,9 @@ async function processCUDA(
           operation: request.operation,
           data: request.data,
           use_cuda: true,
-          priority: request.options?.priority || "medium",
+          priority: request.options?.priority || 'medium',
         },
-        priority: request.options?.priority || "medium",
+        priority: request.options?.priority || 'medium',
       }),
     });
 
@@ -150,7 +150,7 @@ async function processCUDA(
 
     const pendingJobResult: VectorJobResult = {
       jobId: jobId,
-      status: "pending",
+      status: 'pending',
       metadata: {
         processingTimeMs: 0,
         cudaUsed: true,
@@ -163,13 +163,13 @@ async function processCUDA(
 
     return {
       jobId: (result as any).job_id || jobId, // eslint-disable-line @typescript-eslint/no-explicit-any
-      status: "queued",
+      status: 'queued',
       queuePosition: (result as any).queue_position, // eslint-disable-line @typescript-eslint/no-explicit-any
       estimatedWaitTimeMs: (result as any).estimated_wait_time_ms, // eslint-disable-line @typescript-eslint/no-explicit-any
       VectorJobResult: pendingJobResult, // Added required property
     };
   } catch (error: Error | unknown) {
-    console.error("CUDA processing failed: ", error);
+    console.error('CUDA processing failed: ', error);
     throw error;
   }
 }
@@ -184,7 +184,7 @@ async function processWebGPU(
   // This endpoint would coordinate with the client
   const webGpuResult: VectorJobResult = {
     jobId,
-    status: "success",
+    status: 'success',
     metadata: {
       processingTimeMs: 0,
       cudaUsed: false,
@@ -196,7 +196,7 @@ async function processWebGPU(
   };
   return {
     jobId: jobId,
-    status: "queued", // Still queued on server, client handles actual processing
+    status: 'queued', // Still queued on server, client handles actual processing
     VectorJobResult: webGpuResult, // Assigned to the required property
   };
 }
@@ -211,7 +211,7 @@ async function processWASM(
   // Would involve client-side WASM execution
   const wasmResult: VectorJobResult = {
     jobId,
-    status: "success",
+    status: 'success',
     metadata: {
       processingTimeMs: 0,
       cudaUsed: false,
@@ -223,7 +223,7 @@ async function processWASM(
   };
   return {
     jobId: jobId,
-    status: "queued", // Still queued on server, client handles actual processing
+    status: 'queued', // Still queued on server, client handles actual processing
     VectorJobResult: wasmResult, // Assigned to the required property
   };
 }
@@ -237,8 +237,8 @@ async function processDefault(
   // Fallback to PostgreSQL-only processing
   try {
     // Store job in database outbox for eventual processing
-    const db = await import("$lib/server/db/drizzle");
-    const { vectorOutbox } = await import("$lib/server/db/schema-postgres");
+    const db = await import('$lib/server/db/drizzle');
+    const { vectorOutbox } = await import('$lib/server/db/schema-postgres');
     await db.default.insert(vectorOutbox).values({
       ownerType: request.ownerType,
       ownerId: request.ownerId,
@@ -249,7 +249,7 @@ async function processDefault(
 
     const pendingJobResult: VectorJobResult = {
       jobId: jobId,
-      status: "pending",
+      status: 'pending',
       metadata: {
         processingTimeMs: 0,
         cudaUsed: false,
@@ -262,12 +262,12 @@ async function processDefault(
 
     return {
       jobId: jobId,
-      status: "queued",
+      status: 'queued',
       estimatedWaitTimeMs: 5000, // 5 seconds estimate for CPU processing
       VectorJobResult: pendingJobResult, // Added required property
     };
   } catch (error: Error | unknown) {
-    console.error("Default processing failed: ", error);
+    console.error('Default processing failed: ', error);
     throw error;
   }
 }
@@ -281,11 +281,11 @@ async function getHealthStatus(): Promise<Response> {
     ]);
 
     const health: {
-      overall: "healthy" | "degraded" | "unhealthy";
-      services: Record<string, "connected" | "error">;
+      overall: 'healthy' | 'degraded' | 'unhealthy';
+      services: Record<string, 'connected' | 'error'>;
       timestamp: string;
     } = {
-      overall: "healthy",
+      overall: 'healthy',
       services: {
         vectorService: resolveServiceStatus(healthChecks[0]),
         database: resolveServiceStatus(healthChecks[1]),
@@ -296,18 +296,18 @@ async function getHealthStatus(): Promise<Response> {
 
     // Determine overall health
     const serviceValues = Object.values(health.services);
-    if (serviceValues.every((s) => s === "connected")) {
-      health.overall = "healthy";
-    } else if (serviceValues.some((s) => s === "connected")) {
-      health.overall = "degraded";
+    if (serviceValues.every((s) => s === 'connected')) {
+      health.overall = 'healthy';
+    } else if (serviceValues.some((s) => s === 'connected')) {
+      health.overall = 'degraded';
     } else {
-      health.overall = "unhealthy";
+      health.overall = 'unhealthy';
     }
     return json(health);
   } catch (error: Error | unknown) {
     return json(
       {
-        overall: "unhealthy",
+        overall: 'unhealthy',
         error: error instanceof Error ? error.message : String(error),
         timestamp: new Date().toISOString(),
       },
@@ -324,8 +324,8 @@ async function getSystemMetrics(): Promise<Response> {
     ]);
 
     const metrics = {
-      queues: queueMetrics.status === "fulfilled" ? queueMetrics.value : {},
-      performance: performanceMetrics.status === "fulfilled" ? performanceMetrics.value : {},
+      queues: queueMetrics.status === 'fulfilled' ? queueMetrics.value : {},
+      performance: performanceMetrics.status === 'fulfilled' ? performanceMetrics.value : {},
       timestamp: new Date().toISOString(),
     };
     return json(metrics);
@@ -351,7 +351,7 @@ async function getQueueStatus(): Promise<Response> {
   } catch (error: Error | unknown) {
     return json(
       {
-        error: "Queue status unavailable",
+        error: 'Queue status unavailable',
         details: error instanceof Error ? error.message : String(error),
       },
       { status: 503 }
@@ -394,12 +394,12 @@ async function checkServiceHealth(serviceUrl: string): Promise<boolean> {
 
 async function checkDatabaseHealth(): Promise<boolean> {
   try {
-    const db = await import("$lib/server/db/drizzle");
+    const db = await import('$lib/server/db/drizzle');
     // Simple query to test connection
-    await db.default.execute("SELECT 1");
+    await db.default.execute('SELECT 1');
     return true;
   } catch (error: Error | unknown) {
-    console.error("Database health check failed: ", error);
+    console.error('Database health check failed: ', error);
     return false;
   }
 }
@@ -424,7 +424,7 @@ async function fetchQueueMetrics(): Promise<QueueMetrics> {
       return await response.json();
     }
   } catch (error: Error | unknown) {
-    console.warn("Queue metrics unavailable: ", error);
+    console.warn('Queue metrics unavailable: ', error);
   }
   // Return mock data
   return {
@@ -453,27 +453,27 @@ async function fetchPerformanceMetrics(): Promise<PerformanceMetrics> {
   };
 }
 
-function resolveServiceStatus(result: PromiseSettledResult<unknown>): "connected" | "error" {
-  if (result.status === "fulfilled" && result.value) {
-    return "connected";
+function resolveServiceStatus(result: PromiseSettledResult<unknown>): 'connected' | 'error' {
+  if (result.status === 'fulfilled' && result.value) {
+    return 'connected';
   }
-  return "error";
+  return 'error';
 }
 
 // Job status endpoint - now a private helper function
 async function getJobStatus(
-  params: Parameters<typeof GET>[0]["params"], // Corrected type for params
+  params: Parameters<typeof GET>[0]['params'], // Corrected type for params
   url: URL
 ): Promise<Response> {
-  const jobId = url.searchParams.get("jobId"); // Get jobId only from search parameters
+  const jobId = url.searchParams.get('jobId'); // Get jobId only from search parameters
   if (!jobId) {
     return json({ error: `Job ID required` }, { status: 400 });
   }
   try {
     // Check job status in database
-    const db = await import("$lib/server/db/drizzle");
-    const { vectorJobs } = await import("$lib/server/db/schema-postgres");
-    const { eq } = await import("drizzle-orm");
+    const db = await import('$lib/server/db/drizzle');
+    const { vectorJobs } = await import('$lib/server/db/schema-postgres');
+    const { eq } = await import('drizzle-orm');
     const job = await db.default.select().from(vectorJobs).where(eq(vectorJobs.id, jobId)).limit(1);
 
     if (job.length === 0) {
@@ -495,10 +495,10 @@ async function getJobStatus(
           : null,
     });
   } catch (error: Error | unknown) {
-    console.error("Job status query failed: ", error);
+    console.error('Job status query failed: ', error);
     return json(
       {
-        error: "Status query failed",
+        error: 'Status query failed',
         details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }

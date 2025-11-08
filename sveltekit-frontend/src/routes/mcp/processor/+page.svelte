@@ -1,5 +1,5 @@
 <script lang="ts">
-// This is an illustrative example based on the Svelte, 5 migration notes.
+  // This is an illustrative example based on the Svelte, 5 migration notes.
   // In a real application, 'CardA' and, 'CardB' would be imported components.
   import CardA from '$lib/components/ui/CardA.svelte';
   import CardB from '$lib/components/ui/CardB.svelte';
@@ -18,5 +18,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

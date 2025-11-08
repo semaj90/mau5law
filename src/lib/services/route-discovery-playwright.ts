@@ -39,33 +39,33 @@ export class SvelteKitRouteDiscovery {
       pages: [],
       api: [],
       layouts: [],
-      errors: []
+      errors: [],
     };
 
     // Find all route files
     const patterns = [
-      `${this.routesDir}/**/*.svelte`,   // Page components
-      `${this.routesDir}/**/*.ts`,       // API routes and server files
-      `${this.routesDir}/**/*.js`,       // JS server files
+      `${this.routesDir}/**/*.svelte`, // Page components
+      `${this.routesDir}/**/*.ts`, // API routes and server files
+      `${this.routesDir}/**/*.js`, // JS server files
     ];
 
-    const allFiles = patterns.flatMap(pattern => globSync(pattern));
+    const allFiles = patterns.flatMap((pattern) => globSync(pattern));
 
-    allFiles.forEach(file => {
+    allFiles.forEach((file) => {
       const route = this.parseRouteFile(file);
       if (route) {
         switch (route.type) {
           case 'page':
-            routes.pages.push(<any><any>route);
+            routes.pages.push(<any>(<any>route));
             break;
           case 'api':
-            routes.api.push(<any><any>route);
+            routes.api.push(<any>(<any>route));
             break;
           case 'layout':
-            routes.layouts.push(<any><any>route);
+            routes.layouts.push(<any>(<any>route));
             break;
           case 'error':
-            routes.errors.push(<any><any>route);
+            routes.errors.push(<any>(<any>route));
             break;
         }
       }
@@ -93,7 +93,7 @@ export class SvelteKitRouteDiscovery {
       type: this.getRouteType(filename),
       hasParams: this.hasRouteParams(relativePath),
       estimatedComplexity: 'low',
-      relatedServices: []
+      relatedServices: [],
     };
 
     // Analyze file content for complexity and services
@@ -101,7 +101,7 @@ export class SvelteKitRouteDiscovery {
       const content = readFileSync(filePath, 'utf-8');
       route.estimatedComplexity = this.analyzeComplexity(content);
       route.relatedServices = this.detectRelatedServices(content);
-      
+
       if (route.type === 'api') {
         route.method = this.detectApiMethod(content);
       }
@@ -117,18 +117,18 @@ export class SvelteKitRouteDiscovery {
    */
   private isRouteFile(filename: string): boolean {
     const routeFiles = [
-      '+page.svelte',     // Page components
-      '+layout.svelte',   // Layout components
-      '+error.svelte',    // Error pages
-      '+page.ts',         // Page server functions
-      '+page.js',         // Page server functions (JS)
-      '+layout.ts',       // Layout server functions
-      '+layout.js',       // Layout server functions (JS)
-      '+server.ts',       // API routes
-      '+server.js',       // API routes (JS)
+      '+page.svelte', // Page components
+      '+layout.svelte', // Layout components
+      '+error.svelte', // Error pages
+      '+page.ts', // Page server functions
+      '+page.js', // Page server functions (JS)
+      '+layout.ts', // Layout server functions
+      '+layout.js', // Layout server functions (JS)
+      '+server.ts', // API routes
+      '+server.js', // API routes (JS)
     ];
 
-    return routeFiles.some(pattern => filename.endsWith(pattern));
+    return routeFiles.some((pattern) => filename.endsWith(pattern));
   }
 
   /**
@@ -177,21 +177,21 @@ export class SvelteKitRouteDiscovery {
    */
   private analyzeComplexity(content: string): 'low' | 'medium' | 'high' {
     const complexityMarkers = [
-      'fetch(',         // API calls
-      'await ',         // Async operations
-      'Promise.',       // Promise handling
-      'setTimeout(',    // Timers
-      'setInterval(',   // Intervals
-      'WebSocket',      // WebSocket connections
-      'EventSource',    // Server-sent events
-      'localStorage',   // Local storage
+      'fetch(', // API calls
+      'await ', // Async operations
+      'Promise.', // Promise handling
+      'setTimeout(', // Timers
+      'setInterval(', // Intervals
+      'WebSocket', // WebSocket connections
+      'EventSource', // Server-sent events
+      'localStorage', // Local storage
       'sessionStorage', // Session storage
-      'IndexedDB',      // Database operations
-      'crypto.',        // Cryptographic operations
+      'IndexedDB', // Database operations
+      'crypto.', // Cryptographic operations
     ];
 
-    const matches = complexityMarkers.filter(marker => content.includes(marker)).length;
-    
+    const matches = complexityMarkers.filter((marker) => content.includes(marker)).length;
+
     if (matches >= 5) return 'high';
     if (matches >= 2) return 'medium';
     return 'low';
@@ -204,22 +204,30 @@ export class SvelteKitRouteDiscovery {
     const services = [];
 
     // AI/ML Services
-    if (content.includes('ollama') || content.includes('Ollama')) services.push(<any><any>'ollama');
-    if (content.includes('openai') || content.includes('OpenAI')) services.push(<any><any>'openai');
-    if (content.includes('gemma') || content.includes('Gemma')) services.push(<any><any>'gemma');
-    if (content.includes('embedding')) services.push(<any><any>'embeddings');
+    if (content.includes('ollama') || content.includes('Ollama'))
+      services.push(<any>(<any>'ollama'));
+    if (content.includes('openai') || content.includes('OpenAI'))
+      services.push(<any>(<any>'openai'));
+    if (content.includes('gemma') || content.includes('Gemma')) services.push(<any>(<any>'gemma'));
+    if (content.includes('embedding')) services.push(<any>(<any>'embeddings'));
 
     // Database Services
-    if (content.includes('redis') || content.includes('Redis')) services.push(<any><any>'redis');
-    if (content.includes('postgres') || content.includes('PostgreSQL')) services.push(<any><any>'postgresql');
-    if (content.includes('qdrant') || content.includes('Qdrant')) services.push(<any><any>'qdrant');
-    if (content.includes('minio') || content.includes('MinIO')) services.push(<any><any>'minio');
+    if (content.includes('redis') || content.includes('Redis')) services.push(<any>(<any>'redis'));
+    if (content.includes('postgres') || content.includes('PostgreSQL'))
+      services.push(<any>(<any>'postgresql'));
+    if (content.includes('qdrant') || content.includes('Qdrant'))
+      services.push(<any>(<any>'qdrant'));
+    if (content.includes('minio') || content.includes('MinIO')) services.push(<any>(<any>'minio'));
 
     // Specialized Services
-    if (content.includes('nintendo') || content.includes('Nintendo')) services.push(<any><any>'nintendo-memory');
-    if (content.includes('orchestrator') || content.includes('Orchestrator')) services.push(<any><any>'ai-orchestrator');
-    if (content.includes('cuda') || content.includes('CUDA') || content.includes('gpu')) services.push(<any><any>'gpu-acceleration');
-    if (content.includes('nes') || content.includes('NES')) services.push(<any><any>'nes-texture');
+    if (content.includes('nintendo') || content.includes('Nintendo'))
+      services.push(<any>(<any>'nintendo-memory'));
+    if (content.includes('orchestrator') || content.includes('Orchestrator'))
+      services.push(<any>(<any>'ai-orchestrator'));
+    if (content.includes('cuda') || content.includes('CUDA') || content.includes('gpu'))
+      services.push(<any>(<any>'gpu-acceleration'));
+    if (content.includes('nes') || content.includes('NES'))
+      services.push(<any>(<any>'nes-texture'));
 
     return services;
   }
@@ -227,15 +235,20 @@ export class SvelteKitRouteDiscovery {
   /**
    * Detect API method from server file content
    */
-  private detectApiMethod(content: string): 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | undefined {
+  private detectApiMethod(
+    content: string
+  ): 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | undefined {
     const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
-    
+
     for (const method of methods) {
-      if (content.includes(`export const ${method}`) || content.includes(`export async function ${method}`)) {
+      if (
+        content.includes(`export const ${method}`) ||
+        content.includes(`export async function ${method}`)
+      ) {
         return method as any;
       }
     }
-    
+
     return 'GET'; // Default assumption
   }
 
@@ -244,7 +257,7 @@ export class SvelteKitRouteDiscovery {
    */
   generatePlaywrightTestSuite(): string {
     const routes = this.discoverRoutes();
-    
+
     return `
 // Auto-generated Playwright test suite for ALL SvelteKit routes
 // Nintendo-Style Performance Monitoring and Route Discovery
@@ -270,7 +283,9 @@ test.describe('🎮 Complete Route Discovery & Testing Suite', () => {
 
   // Test all page routes
   test.describe('📄 Page Routes', () => {
-    ${routes.pages.map(route => `
+    ${routes.pages
+      .map(
+        (route) => `
     test('Page: ${route.path}', async ({ page }) => {
       console.log('🔍 Testing page: ${route.path}');
       const startTime = Date.now();
@@ -304,20 +319,32 @@ test.describe('🎮 Complete Route Discovery & Testing Suite', () => {
           console.warn('⚠️ Found potential errors:', errors);
         }
         
-        ${route.relatedServices.length > 0 ? `
+        ${
+          route.relatedServices.length > 0
+            ? `
         // Service-specific checks
-        ${route.relatedServices.includes('ai-orchestrator') ? `
+        ${
+          route.relatedServices.includes('ai-orchestrator')
+            ? `
         if (await page.locator('[data-testid="orchestrator-ready"]').count() > 0) {
           await expect(page.locator('[data-testid="orchestrator-ready"]')).toBeVisible();
         }
-        ` : ''}
+        `
+            : ''
+        }
         
-        ${route.relatedServices.includes('nintendo-memory') ? `
+        ${
+          route.relatedServices.includes('nintendo-memory')
+            ? `
         if (await page.locator('.nintendo-memory-banks').count() > 0) {
           await expect(page.locator('.nintendo-memory-banks')).toBeVisible();
         }
-        ` : ''}
-        ` : ''}
+        `
+            : ''
+        }
+        `
+            : ''
+        }
         
         console.log(\`✅ Page \${route.path}: \${loadTime}ms - Services: [${route.relatedServices.join(', ')}]\`);
         
@@ -326,23 +353,31 @@ test.describe('🎮 Complete Route Discovery & Testing Suite', () => {
         throw error;
       }
     });
-    `).join('')}
+    `
+      )
+      .join('')}
   });
 
   // Test all API routes
   test.describe('🔌 API Routes', () => {
-    ${routes.api.map(route => `
+    ${routes.api
+      .map(
+        (route) => `
     test('API: ${route.method} ${route.path}', async ({ request }) => {
       console.log('🔍 Testing API: ${route.method} ${route.path}');
       const startTime = Date.now();
       
       try {
-        const response = await request.${(route.method || 'GET').toLowerCase()}(\`\${BASE_URL}${route.path}\`${route.method === 'POST' ? `, {
+        const response = await request.${(route.method || 'GET').toLowerCase()}(\`\${BASE_URL}${route.path}\`${
+          route.method === 'POST'
+            ? `, {
           data: {
             query: 'Test API endpoint',
             test: true
           }
-        }` : ''});
+        }`
+            : ''
+        });
         
         const responseTime = Date.now() - startTime;
         
@@ -366,7 +401,9 @@ test.describe('🎮 Complete Route Discovery & Testing Suite', () => {
         console.warn('API test failed - this might be expected for routes requiring specific parameters');
       }
     });
-    `).join('')}
+    `
+      )
+      .join('')}
   });
 
   // Load testing with concurrent requests

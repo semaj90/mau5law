@@ -28,5 +28,8 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 </main>
 
 <style>
-/* @unocss-include */:global(body) { background-color: #f9fafb}
+  /* @unocss-include */
+  :global(body) {
+    background-color: #f9fafb;
+  }
 </style>

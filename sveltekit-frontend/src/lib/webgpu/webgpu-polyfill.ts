@@ -1,5 +1,17 @@
-﻿import type { WebGPUComputeShader } from "$lib/types/vector-jobs";
+﻿import type { WebGPUComputeShader } from '$lib/types/vector-jobs';
 // (removed the static import of shader-cache-manager to avoid mismatched export errors)
+
+/**
+ * Local narrow type for environments that expose navigator.gpu.
+ * We only model the bits we need so we avoid `any` casts.
+ */
+type NavigatorWithGPU = {
+  gpu?: {
+    requestAdapter?: (options?: {
+      powerPreference?: 'high-performance' | 'low-power';
+    }) => Promise<GPUAdapter | null>;
+  };
+};
 
 export class WebGPUPolyfillService {
   // GPU/WebGL state
@@ -24,28 +36,29 @@ export class WebGPUPolyfillService {
 
   // Safe logging helpers
   private safeLog = (...args: unknown[]) => {
-    if (typeof console !== "undefined" && typeof console.log === "function") console.log(...args);
+    if (typeof console !== 'undefined' && typeof console.log === 'function') console.log(...args);
   };
   private safeWarn = (...args: unknown[]) => {
-    if (typeof console !== "undefined" && typeof console.warn === "function") console.warn(...args);
+    if (typeof console !== 'undefined' && typeof console.warn === 'function') console.warn(...args);
   };
   private safeError = (...args: unknown[]) => {
-    if (typeof console !== "undefined" && typeof console.error === "function")
+    if (typeof console !== 'undefined' && typeof console.error === 'function')
       console.error(...args);
   };
   private safeDebug = (...args: unknown[]) => {
-    if (typeof console !== "undefined" && typeof console.debug === "function")
+    if (typeof console !== 'undefined' && typeof console.debug === 'function')
       console.debug(...args);
   };
 
   /** Initializes WebGPU if available; otherwise attempts WebGL2 fallback. */
   async initialize(): Promise<boolean> {
     // Try WebGPU first
-    const nav = typeof navigator !== "undefined" ? (navigator as any) : undefined;
+    const nav =
+      typeof navigator !== 'undefined' ? (navigator as unknown as NavigatorWithGPU) : undefined;
     if (nav?.gpu) {
       try {
         this.adapter =
-          (await nav.gpu.requestAdapter?.({ powerPreference: "high-performance" })) ?? null;
+          (await nav.gpu.requestAdapter?.({ powerPreference: 'high-performance' })) ?? null;
         if (this.adapter) {
           this.device = (await this.adapter.requestDevice?.()) ?? null;
           if (this.device) {
@@ -54,31 +67,68 @@ export class WebGPUPolyfillService {
 
             // initialize shader cache manager if available (dynamic import to support multiple export shapes)
             try {
-              const mod: any = await import("./shader-cache-manager.js");
-              // prefer instance named export, then class/constructor, then default
-              const exported = mod?.shaderCacheManager ?? mod?.ShaderCacheManager ?? mod?.default;
+              // keep the import result as `unknown` and narrow safely
+              const modUnknown: unknown = await import('./shader-cache-manager.js');
+              let exported: unknown | undefined;
+
+              if (modUnknown && typeof modUnknown === 'object') {
+                const modObj = modUnknown as Record<string, unknown>;
+                if ('shaderCacheManager' in modObj) exported = modObj['shaderCacheManager'];
+                else if ('ShaderCacheManager' in modObj) exported = modObj['ShaderCacheManager'];
+                else if ('default' in modObj) exported = modObj['default'];
+              }
+
               if (exported) {
-                // If exported is an object with initialize()
-                if (typeof exported.initialize === "function") {
-                  await exported.initialize(this.device);
-                } else if (typeof exported === "function") {
-                  // exported might be a constructor/class; try to use a singleton instance or create one
-                  const instance = (exported as any).instance ?? new (exported as any)();
-                  if (instance && typeof instance.initialize === "function") {
-                    await instance.initialize(this.device);
+                // Case: exported is an object with initialize()
+                if (typeof exported === 'object' && exported !== null) {
+                  const maybeInit = (exported as Record<string, unknown>)['initialize'];
+                  if (typeof maybeInit === 'function') {
+                    await (maybeInit as (d: GPUDevice) => Promise<void> | void)(this.device);
+                  } else {
+                    // maybe exported has an `instance` singleton
+                    const instanceCandidate = (exported as Record<string, unknown>)['instance'];
+                    if (instanceCandidate && typeof instanceCandidate === 'object') {
+                      const instInit = (instanceCandidate as Record<string, unknown>)['initialize'];
+                      if (typeof instInit === 'function') {
+                        await (instInit as (d: GPUDevice) => Promise<void> | void)(this.device);
+                      }
+                    }
+                  }
+                } else if (typeof exported === 'function') {
+                  // exported might be a constructor function/class
+                  // first try `instance` property on the function (common singleton)
+                  const fnAsRecord = exported as unknown as Record<string, unknown>;
+                  const fnInstance = fnAsRecord['instance'];
+                  if (fnInstance && typeof fnInstance === 'object') {
+                    const instInit = (fnInstance as Record<string, unknown>)['initialize'];
+                    if (typeof instInit === 'function') {
+                      await (instInit as (d: GPUDevice) => Promise<void> | void)(this.device);
+                    }
+                  } else {
+                    // try constructing
+                    try {
+                      const Ctor = exported as unknown as new () => Record<string, unknown>;
+                      const instance = new Ctor();
+                      const instInit = instance['initialize'];
+                      if (typeof instInit === 'function') {
+                        await (instInit as (d: GPUDevice) => Promise<void> | void)(this.device);
+                      }
+                    } catch {
+                      // ignore constructors that require args or otherwise fail
+                    }
                   }
                 }
               }
             } catch (e: unknown) {
-              this.safeDebug("shaderCacheManager initialize ignored: ", String(e));
+              this.safeDebug('shaderCacheManager initialize ignored: ', String(e));
             }
 
-            this.safeLog("WebGPU initialized successfully");
+            this.safeLog('WebGPU initialized successfully');
             return true;
           }
         }
       } catch (error: unknown) {
-        this.safeWarn("WebGPU initialization failed, falling back to WebGL: ", String(error));
+        this.safeWarn('WebGPU initialization failed, falling back to WebGL: ', String(error));
       }
     }
 
@@ -88,24 +138,24 @@ export class WebGPUPolyfillService {
 
   private initializeWebGLFallback(): boolean {
     try {
-      if (typeof document === "undefined") return false;
-      this.canvas = document.createElement("canvas");
+      if (typeof document === 'undefined') return false;
+      this.canvas = document.createElement('canvas');
       this.webglFallback =
-        this.canvas.getContext("webgl2", { powerPreference: "high-performance" }) ?? null;
+        this.canvas.getContext('webgl2', { powerPreference: 'high-performance' }) ?? null;
       if (!this.webglFallback) {
-        this.safeError("WebGL2 not available");
+        this.safeError('WebGL2 not available');
         return false;
       }
       // Optionally log renderer info
       try {
-        this.safeLog("Renderer: ", this.webglFallback.getParameter(this.webglFallback.RENDERER));
+        this.safeLog('Renderer: ', this.webglFallback.getParameter(this.webglFallback.RENDERER));
       } catch {
         /* ignore */
       }
-      this.safeLog("WebGL2 fallback initialized");
+      this.safeLog('WebGL2 fallback initialized');
       return true;
     } catch (error: unknown) {
-      this.safeError("WebGL initialization failed: ", String(error));
+      this.safeError('WebGL initialization failed: ', String(error));
       return false;
     }
   }
@@ -113,7 +163,7 @@ export class WebGPUPolyfillService {
   /** Embedding computation entry point — prefers GPU/WebGL but falls back to CPU. */
   async computeEmbedding(inputVector: number[], dimensions = 384): Promise<number[]> {
     const startTime =
-      typeof performance !== "undefined" && typeof performance.now === "function"
+      typeof performance !== 'undefined' && typeof performance.now === 'function'
         ? performance.now()
         : Date.now();
     try {
@@ -128,13 +178,13 @@ export class WebGPUPolyfillService {
         result = this.computeEmbeddingCPU(inputVector, dimensions);
       }
       const processingTime =
-        (typeof performance !== "undefined" && typeof performance.now === "function"
+        (typeof performance !== 'undefined' && typeof performance.now === 'function'
           ? performance.now()
           : Date.now()) - startTime;
       this.updatePerformanceStats(processingTime);
       return result;
     } catch (error: unknown) {
-      this.safeError("Embedding computation failed: ", String(error));
+      this.safeError('Embedding computation failed: ', String(error));
       return this.computeEmbeddingCPU(inputVector, dimensions);
     }
   }
@@ -144,7 +194,7 @@ export class WebGPUPolyfillService {
     _inputVector: number[],
     dimensions: number
   ): Promise<number[]> {
-    if (!this.device || !this.queue) throw new Error("WebGPU device not available");
+    if (!this.device || !this.queue) throw new Error('WebGPU device not available');
     // Future: implement WGSL compute shader for embeddings
     return this.computeEmbeddingCPU(new Array(dimensions).fill(0), dimensions);
   }
@@ -173,9 +223,9 @@ export class WebGPUPolyfillService {
 
   /** Similarity entry point — prefers GPU/WebGL but falls back to CPU. */
   async computeSimilarity(vector1: number[], vector2: number[]): Promise<number> {
-    if (vector1.length !== vector2.length) throw new Error("Vectors must have the same dimensions");
+    if (vector1.length !== vector2.length) throw new Error('Vectors must have the same dimensions');
     const startTime =
-      typeof performance !== "undefined" && typeof performance.now === "function"
+      typeof performance !== 'undefined' && typeof performance.now === 'function'
         ? performance.now()
         : Date.now();
     try {
@@ -190,19 +240,19 @@ export class WebGPUPolyfillService {
         similarity = this.computeSimilarityCPU(vector1, vector2);
       }
       const processingTime =
-        (typeof performance !== "undefined" && typeof performance.now === "function"
+        (typeof performance !== 'undefined' && typeof performance.now === 'function'
           ? performance.now()
           : Date.now()) - startTime;
       this.updatePerformanceStats(processingTime);
       return similarity;
     } catch (error: unknown) {
-      this.safeError("Similarity computation failed: ", String(error));
+      this.safeError('Similarity computation failed: ', String(error));
       return this.computeSimilarityCPU(vector1, vector2);
     }
   }
 
   private async computeSimilarityWebGPU(vector1: number[], vector2: number[]): Promise<number> {
-    if (!this.device || !this.queue) throw new Error("WebGPU device not available");
+    if (!this.device || !this.queue) throw new Error('WebGPU device not available');
     // Future: implement WGSL compute shader for GPU acceleration.
     return this.computeSimilarityCPU(vector1, vector2);
   }
@@ -260,16 +310,16 @@ export class WebGPUPolyfillService {
       if (this.device) {
         // Some implementations expose destroy()
         const maybeDestroy = this.device as unknown as { destroy?: () => void | Promise<void> };
-        if (typeof maybeDestroy.destroy === "function") {
+        if (typeof maybeDestroy.destroy === 'function') {
           try {
             const ret = maybeDestroy.destroy();
-            if (ret && typeof (ret as Promise<void>).then === "function") {
+            if (ret && typeof (ret as Promise<void>).then === 'function') {
               (ret as Promise<void>).catch((e) =>
-                this.safeDebug("device.destroy() rejected: ", String(e))
+                this.safeDebug('device.destroy() rejected: ', String(e))
               );
             }
           } catch (callErr: unknown) {
-            this.safeDebug("device.destroy() call threw: ", String(callErr));
+            this.safeDebug('device.destroy() call threw: ', String(callErr));
           }
         }
       }
@@ -286,7 +336,7 @@ export class WebGPUPolyfillService {
     try {
       if (this.webglFallback && this.canvas) {
         const gl = this.webglFallback;
-        const loseExt = gl.getExtension("WEBGL_lose_context") as {
+        const loseExt = gl.getExtension('WEBGL_lose_context') as {
           loseContext?: () => void;
         } | null;
         if (loseExt?.loseContext) {
@@ -305,6 +355,6 @@ export class WebGPUPolyfillService {
     }
 
     this.shaderCache.clear();
-    this.safeLog("WebGPU/WebGL resources cleaned up");
+    this.safeLog('WebGPU/WebGL resources cleaned up');
   }
 }

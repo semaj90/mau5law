@@ -13,20 +13,14 @@
  *  - src/lib/server/redis-client                (exported redis or getRedis())
  */
 
-import type {
-  Driver as Neo4jDriver,
-  Session as Neo4jSession,
-} from "neo4j-driver";
-import type { Pool } from "pg";
-import type { Redis } from "ioredis";
+import type { Driver as Neo4jDriver, Session as Neo4jSession } from 'neo4j-driver';
+import type { Pool } from 'pg';
+import type { Redis } from 'ioredis';
 
-import qdrantClientFactory from "$lib/server/services/qdrant-client"; // resilient client (see file below)
-import { embed as embedder } from "$lib/server/ai/embedder"; // expected adapter; throws if missing
-import { db as drizzleDb, pg as pgClient } from "$lib/server/db/client"; // best-effort; optional
-import {
-  redis as sharedRedis,
-  ensureRedisReady,
-} from "$lib/server/redis-client";
+import qdrantClientFactory from '$lib/server/services/qdrant-client'; // resilient client (see file below)
+import { embed as embedder } from '$lib/server/ai/embedder'; // expected adapter; throws if missing
+import { db as drizzleDb, pg as pgClient } from '$lib/server/db/client'; // best-effort; optional
+import { redis as sharedRedis, ensureRedisReady } from '$lib/server/redis-client';
 
 type QueryOptions = {
   text?: string;
@@ -48,12 +42,12 @@ export type RagResult = {
 const DEFAULT_LIMIT = 10;
 const DEFAULT_EXPAND = 2;
 
-const ALPHA = parseFloat(process.env.RAG_ALPHA || "0.7"); // similarity weight
-const BETA = parseFloat(process.env.RAG_BETA || "0.2"); // graph weight
-const GAMMA = parseFloat(process.env.RAG_GAMMA || "0.1"); // redis boost
+const ALPHA = parseFloat(process.env.RAG_ALPHA || '0.7'); // similarity weight
+const BETA = parseFloat(process.env.RAG_BETA || '0.2'); // graph weight
+const GAMMA = parseFloat(process.env.RAG_GAMMA || '0.1'); // redis boost
 
 // Qdrant collection name - adjust to your collection
-const COLLECTION = process.env.QDRANT_COLLECTION || "legal_documents";
+const COLLECTION = process.env.QDRANT_COLLECTION || 'legal_documents';
 
 let qdrant = qdrantClientFactory();
 
@@ -70,11 +64,7 @@ async function getRedisBoost(id: string): Promise<number> {
   }
 }
 
-async function fetchQdrantHits(
-  embedding: number[],
-  limit: number,
-  filters?: Record<string, any>
-) {
+async function fetchQdrantHits(embedding: number[], limit: number, filters?: Record<string, any>) {
   // qdrant.search(collection, { vector, limit, with_payload: true })
   try {
     const resp = await qdrant.search(COLLECTION, {
@@ -94,11 +84,8 @@ async function fetchQdrantHits(
     // Normalize expected response shape: { id, score, payload }
     return (resp || []).map((h: any) => ({
       id: String(h.id),
-      similarity: typeof h.score === "number" ? h.score : h.distance ?? 0,
-      content:
-        (h.payload &&
-          (h.payload.text || h.payload.content || h.payload.title)) ||
-        "",
+      similarity: typeof h.score === 'number' ? h.score : (h.distance ?? 0),
+      content: (h.payload && (h.payload.text || h.payload.content || h.payload.title)) || '',
       metadata: h.payload || {},
     }));
   } catch (e) {
@@ -111,13 +98,10 @@ async function fetchGraphNeighbors(ids: string[], expand: number) {
   const neo4jUri = process.env.NEO4J_URI;
   if (neo4jUri) {
     try {
-      const neo4j = await import("neo4j-driver");
-      const user = process.env.NEO4J_USER || "neo4j";
-      const pass = process.env.NEO4J_PASSWORD || "";
-      const driver: Neo4jDriver = neo4j.driver(
-        neo4jUri,
-        neo4j.auth.basic(user, pass)
-      );
+      const neo4j = await import('neo4j-driver');
+      const user = process.env.NEO4J_USER || 'neo4j';
+      const pass = process.env.NEO4J_PASSWORD || '';
+      const driver: Neo4jDriver = neo4j.driver(neo4jUri, neo4j.auth.basic(user, pass));
       const session: Neo4jSession = driver.session();
       try {
         // Query neighbors for given ids
@@ -130,9 +114,9 @@ async function fetchGraphNeighbors(ids: string[], expand: number) {
         `;
         const res = await session.run(q, { ids, limit: expand * ids.length });
         const rows = res.records.map((r) => ({
-          id: r.get("id"),
-          content: r.get("content"),
-          weight: Number(r.get("weight") ?? 0),
+          id: r.get('id'),
+          content: r.get('content'),
+          weight: Number(r.get('weight') ?? 0),
         }));
         await session.close();
         await driver.close();
@@ -156,8 +140,8 @@ async function fetchGraphNeighbors(ids: string[], expand: number) {
     // try to use a `pg` client or drizzle raw execution. We'll assume pgClient exposes `execute` or pool
     const pool: Pool | undefined =
       (pgClient as any)?._pool || (pgClient as any)?.pool || (pgClient as any);
-    if (pool && typeof pool.query === "function") {
-      const placeholders = ids.map((_, i) => `$${i + 1}`).join(",");
+    if (pool && typeof pool.query === 'function') {
+      const placeholders = ids.map((_, i) => `$${i + 1}`).join(',');
       const q = `
         SELECT e.target AS id, d.content, SUM(e.weight) AS weight
         FROM edges e
@@ -183,9 +167,7 @@ async function fetchGraphNeighbors(ids: string[], expand: number) {
 }
 
 function normalizeWeights(items: Array<{ id: string; weight?: number }>) {
-  const weights = items.map((i) =>
-    typeof i.weight === "number" ? i.weight : 0
-  );
+  const weights = items.map((i) => (typeof i.weight === 'number' ? i.weight : 0));
   const max = weights.length ? Math.max(...weights) : 1;
   return items.map((i, idx) => ({
     id: i.id,
@@ -206,18 +188,18 @@ export async function initQdrantIndexes() {
     if (!has) {
       // create minimal collection (vector size detection is caller responsibility)
       // We'll create a general collection config — adjust `vector_size` to your embedder length
-      const vectorSize = Number(process.env.EMBED_DIM || "1536"); // conservative default
+      const vectorSize = Number(process.env.EMBED_DIM || '1536'); // conservative default
       await client.createCollection?.(COLLECTION, {
-        vectors: { size: vectorSize, distance: "Cosine" },
+        vectors: { size: vectorSize, distance: 'Cosine' },
         // payload schema not enforced here - create payload index if client supports it
       });
     }
 
     // Create payload index for common fields if supported
     try {
-      await client.createPayloadIndex?.(COLLECTION, "type", "keyword");
-      await client.createPayloadIndex?.(COLLECTION, "title", "text");
-      await client.createPayloadIndex?.(COLLECTION, "tags", "keyword");
+      await client.createPayloadIndex?.(COLLECTION, 'type', 'keyword');
+      await client.createPayloadIndex?.(COLLECTION, 'title', 'text');
+      await client.createPayloadIndex?.(COLLECTION, 'tags', 'keyword');
     } catch {
       // ignore if client doesn't support
     }
@@ -229,19 +211,16 @@ export async function initQdrantIndexes() {
 }
 
 export async function queryGraphRag(opts: QueryOptions): Promise<RagResult[]> {
-  const limit = Math.min(
-    opts.limit ?? DEFAULT_LIMIT,
-    Number(process.env.RAG_MAX_RESULTS || "50")
-  );
+  const limit = Math.min(opts.limit ?? DEFAULT_LIMIT, Number(process.env.RAG_MAX_RESULTS || '50'));
   const expand = opts.expandNeighbors ?? DEFAULT_EXPAND;
 
   // 1) ensure embedding
   let embedding = opts.embedding;
   if (!embedding) {
-    if (!opts.text) throw new Error("Either text or embedding required");
+    if (!opts.text) throw new Error('Either text or embedding required');
     embedding = await embedder(opts.text);
     if (!Array.isArray(embedding) || embedding.length === 0)
-      throw new Error("Embedder returned empty embedding");
+      throw new Error('Embedder returned empty embedding');
   }
 
   // 2) query qdrant for base hits
@@ -255,7 +234,7 @@ export async function queryGraphRag(opts: QueryOptions): Promise<RagResult[]> {
     baseHits = await fetchQdrantHits(embedding, limit, opts.filters);
   } catch (e) {
     // degrade gracefully: try to return empty set with warning
-    console.warn("[graph-rag] Qdrant search failed, returning empty:", e);
+    console.warn('[graph-rag] Qdrant search failed, returning empty:', e);
     baseHits = [];
   }
 
@@ -278,9 +257,7 @@ export async function queryGraphRag(opts: QueryOptions): Promise<RagResult[]> {
   );
 
   // Map id -> normalized weight
-  const graphWeightById = new Map<string, number>(
-    normalizedGraph.map((g) => [g.id, g.norm])
-  );
+  const graphWeightById = new Map<string, number>(normalizedGraph.map((g) => [g.id, g.norm]));
 
   // Compose candidates map (dedupe ids).
   const candidates = new Map<string, RagResult>();
@@ -304,11 +281,10 @@ export async function queryGraphRag(opts: QueryOptions): Promise<RagResult[]> {
   for (const n of neighbors) {
     const id = String(n.id);
     const existing = candidates.get(id);
-    const gw =
-      graphWeightById.get(id) ?? (typeof n.weight === "number" ? n.weight : 0);
+    const gw = graphWeightById.get(id) ?? (typeof n.weight === 'number' ? n.weight : 0);
     const boost = await getRedisBoost(id);
     const similarity = existing?.similarity ?? 0;
-    const content = existing?.content ?? n.content ?? "";
+    const content = existing?.content ?? n.content ?? '';
     const score = ALPHA * similarity + BETA * gw + GAMMA * boost;
     if (!existing || score > (existing.score ?? 0)) {
       candidates.set(id, {
@@ -325,7 +301,7 @@ export async function queryGraphRag(opts: QueryOptions): Promise<RagResult[]> {
   // produce sorted list
   const results = Array.from(candidates.values())
     .sort((a, b) => b.score - a.score)
-    .slice(0, Math.min(limit, Number(process.env.RAG_CANDIDATES || "4")));
+    .slice(0, Math.min(limit, Number(process.env.RAG_CANDIDATES || '4')));
 
   return results;
 }

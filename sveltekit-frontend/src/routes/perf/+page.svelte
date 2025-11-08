@@ -27,7 +27,8 @@
   interface ProfilingSnapshot { kernel_samples?: number; tensor_core_util?: number; dram_throughput_gbs?: number; occupancy_avg?: number; enabled?: boolean; ts?: number; // timestamp Timestamp?: number; // timestamp notes?: string[]}
 
   // --- End New Interfaces --- // Server-provided alerts & history let serverAlerts = $state<ServerAlert[]>([]); let serverAlertCounts = $state({warn:0,crit:0});
-  let historyGpuUtilSeries = $state<number[]>([]); let historyJobsSeries = $state<number[]>([]); let historyMemUsedSeries = $state<number[]>([]); let historyLoad1Series = $state<number[]>([]); let historyRedisMemSeries = $state<number[]>([]); let anomalyStats: AnomalyStats | null = null; let activeHistoryTab = $state<'gpu'|'jobs'|'system'|'redis'|'anomaly'>('gpu'); // New tabs for profiling & engines let showGpuEngines = $state<boolean>(false); let showWorkers = $state<boolean>(false); let showProfiling = $state<boolean>(false); // Backend (cuda-service) new endpoints data let gpuEngines: GpuEngines | null = null; let workerStats: WorkerStat[] = $state([]); let profilingSnapshot: ProfilingSnapshot | null = null; let profilingHistory: ProfilingHistoryEntry[] = $state([]); let lastProfilingFetched: number | null = null; async function fetchCudaEndpoint(path: string): Promise<Response> { try { const r = await fetch(`/api/cuda${ path }`); if (r.ok) return await r.json()} catch (e) { console.error('CUDA endpoint error:', e)}'
+  let historyGpuUtilSeries = $state<number[]>([]); let historyJobsSeries = $state<number[]>([]); let historyMemUsedSeries = $state<number[]>([]); let historyLoad1Series = $state<number[]>([]); let historyRedisMemSeries = $state<number[]>([]); let anomalyStats: AnomalyStats | null = null; let activeHistoryTab = $state<'gpu'|'jobs'|'system'|'redis'|'anomaly'>('gpu'); // New tabs for profiling & engines let showGpuEngines = $state<boolean>(false); let showWorkers = $state<boolean>(false); let showProfiling = $state<boolean>(false); // Backend (cuda-service) new endpoints data let gpuEngines: GpuEngines | null = null; let workerStats: WorkerStat[] = $state([]); let profilingSnapshot: ProfilingSnapshot | null = null; let profilingHistory: ProfilingHistoryEntry[] = $state([]); let lastProfilingFetched: number | null = null; async function fetchCudaEndpoint(path: string): Promise<Response> { try { const r = await fetch(`/api/cuda${ path }`); if (r.ok) return await r.json()} catch (e) { console.error('CUDA endpoint error:', e)}
+'
     return: null}
   async function refreshEnginesWorkersProfiling(): Promise<any> { const [eng, wrk, prof, profHist] = await Promise.all([ fetchCudaEndpoint('/metrics/gpu/engines'), fetchCudaEndpoint('/metrics/workers'), fetchCudaEndpoint('/metrics/profiling/summary'), fetchCudaEndpoint('/metrics/profiling/history?limit=50') ]); if (eng) gpuEngines = eng; else gpuEngines = null; if (wrk) workerStats = wrk.workers || []; else workerStats = []; if (prof) profilingSnapshot = prof.snapshot || prof; else profilingSnapshot = null; if (profHist && profHist.history) profilingHistory = profHist.history; else profilingHistory = []; lastProfilingFetched = Date.now()}
 
@@ -40,7 +41,8 @@
 
   }
   return}
-        } catch (error) { console.error('Cache metrics error:', error)}'
+        } catch (error) { console.error('Cache metrics error:', error)}
+'
       }
 
    // Closing brace for the for-loop // Simulate realistic cache metrics based on performance optimization principles const mockData = { hits: Math.floor(Math.random() * 50000) + 10000, misses: Math.floor(Math.random() * 5000) + 1000, hitRate: 0.85 + Math.random() * 0.14, // 85-99% hit rate evictions: Math.floor(Math.random() * 200), size: Math.floor(Math.random() * 1024 * 1024 * 100), // Up to 100MB maxSize: 1024 * 1024 * 256, // 256MB max entries: Math.floor(Math.random() * 10000) + 1000, types: {
@@ -108,5 +110,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

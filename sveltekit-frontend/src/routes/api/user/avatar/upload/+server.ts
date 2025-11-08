@@ -1,14 +1,14 @@
-import { users } from "$lib/server/db/schema-postgres";
-import { json } from "@sveltejs/kit";
-import { existsSync, mkdirSync, writeFileSync } from "fs";
-import { join } from "path";
-import { eq } from "drizzle-orm";
-import { db } from "$lib/server/db/index";
-import type { RequestHandler } from "./$types.js";
+import { users } from '$lib/server/db/schema-postgres';
+import { json } from '@sveltejs/kit';
+import { existsSync, mkdirSync, writeFileSync } from 'fs';
+import { join } from 'path';
+import { eq } from 'drizzle-orm';
+import { db } from '$lib/server/db/index';
+import type { RequestHandler } from './$types.js';
 
-const UPLOAD_DIR = "static/uploads/avatars";
+const UPLOAD_DIR = 'static/uploads/avatars';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/svg+xml", "image/webp"];
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/svg+xml', 'image/webp'];
 
 // Ensure upload directory exists
 if (!existsSync(UPLOAD_DIR)) {
@@ -29,15 +29,15 @@ type UploadFile = {
 
 // Use the narrow LocalsWithUser type instead of `any`
 function getUserId(locals: LocalsWithUser): string {
-  return String(locals?.user?.id ?? locals?.user?.userId ?? "unknown");
+  return String(locals?.user?.id ?? locals?.user?.userId ?? 'unknown');
 }
 
 function isUploadFile(v: any): v is UploadFile {
   return (
     !!v &&
-    typeof (v as UploadFile).arrayBuffer === "function" &&
-    typeof (v as UploadFile).name === "string" &&
-    typeof (v as UploadFile).size === "number"
+    typeof (v as UploadFile).arrayBuffer === 'function' &&
+    typeof (v as UploadFile).name === 'string' &&
+    typeof (v as UploadFile).size === 'number'
   );
 }
 
@@ -46,24 +46,24 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({ error: `Not authenticated` }, { status: 401 });
   }
   try {
-    console.log("Avatar upload started for user: ", getUserId(locals));
+    console.log('Avatar upload started for user: ', getUserId(locals));
     const formData = await request.formData();
     console.log(
-      "FormData received, entries: ",
+      'FormData received, entries: ',
       Array.from(formData.entries()).map(([k, v]) => [k, typeof v])
     );
-    const fileEntry = formData.get("avatar");
+    const fileEntry = formData.get('avatar');
     if (!isUploadFile(fileEntry)) {
-      console.log("No valid file found in formData");
+      console.log('No valid file found in formData');
       return json({ error: `No file provided` }, { status: 400 });
     }
     const file = fileEntry;
-    console.log("File details: ", { name: file.name, type: file.type ?? "", size: file.size });
+    console.log('File details: ', { name: file.name, type: file.type ?? '', size: file.size });
 
     // Validate file type
-    const fileType = file.type || "";
+    const fileType = file.type || '';
     if (!ALLOWED_TYPES.includes(fileType)) {
-      console.log("Invalid file type: ", fileType);
+      console.log('Invalid file type: ', fileType);
       return json(
         { error: `Invalid file type. Allowed: JPEG, PNG, GIF, SVG, WebP` },
         { status: 400 }
@@ -73,22 +73,22 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     // Validate file size
     const fileSize = Number(file.size || 0);
     if (fileSize > MAX_FILE_SIZE) {
-      console.log("File too large: ", fileSize);
+      console.log('File too large: ', fileSize);
       return json({ error: `File too large. Maximum size: 5MB` }, { status: 400 });
     }
 
     // Generate unique filename
     const timestamp = Date.now();
-    const extension = String(file.name).split(".").pop()?.toLowerCase() || "jpg";
+    const extension = String(file.name).split('.').pop()?.toLowerCase() || 'jpg';
     const filename = `avatar_${getUserId(locals)}_${timestamp}.${extension}`;
     const filepath = join(UPLOAD_DIR, filename);
-    console.log("Saving file to: ", filepath);
+    console.log('Saving file to: ', filepath);
 
     // Convert file to buffer and save
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     writeFileSync(filepath, buffer);
-    console.log("File saved successfully");
+    console.log('File saved successfully');
 
     // Update user's avatar URL in database
     const avatarUrl = `/uploads/avatars/${filename}`;
@@ -96,12 +96,12 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       .update(users)
       .set({ avatarUrl })
       .where(eq(users.id, getUserId(locals)));
-    console.log("Database updated successfully");
+    console.log('Database updated successfully');
 
-    return json({ success: true, avatarUrl, message: "Avatar uploaded successfully" });
+    return json({ success: true, avatarUrl, message: 'Avatar uploaded successfully' });
   } catch (error: Error | unknown) {
-    console.error("Avatar upload error: ", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error('Avatar upload error: ', error);
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return json({ error: `Upload failed: ${errorMessage}` }, { status: 500 });
   }
 };
@@ -116,9 +116,9 @@ export const DELETE: RequestHandler = async ({ locals }) => {
       .update(users)
       .set({ avatarUrl: null })
       .where(eq(users.id, getUserId(locals)));
-    return json({ success: true, message: "Avatar removed successfully" });
+    return json({ success: true, message: 'Avatar removed successfully' });
   } catch (error: Error | unknown) {
-    console.error("Avatar removal error: ", error);
+    console.error('Avatar removal error: ', error);
     return json({ error: `Removal failed` }, { status: 500 });
   }
 };

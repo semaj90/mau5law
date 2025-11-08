@@ -1,13 +1,13 @@
-import { createClient, type RedisClientType } from "redis";
+import { createClient, type RedisClientType } from 'redis';
 
 type RedisClientOptions = Parameters<typeof createClient>[0];
 
 const DEFAULT_REDIS_URL =
-  process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? "redis://localhost:6379";
-const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? "";
+  process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? 'redis://localhost:6379';
+const REDIS_PASSWORD = process.env.REDIS_PASSWORD ?? '';
 const SHOULD_USE_REDIS =
-  process.env.CACHE_BACKEND === "redis" ||
-  process.env.USE_REDIS === "true" ||
+  process.env.CACHE_BACKEND === 'redis' ||
+  process.env.USE_REDIS === 'true' ||
   Boolean(process.env.REDIS_URL);
 
 export const MEMORY_CACHE_TTL_MS = 5 * 60 * 1000;
@@ -35,7 +35,7 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
       const result = await Promise.race([
         fn(),
         new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Redis op timeout")), REDIS_TIMEOUT_MS)
+          setTimeout(() => reject(new Error('Redis op timeout')), REDIS_TIMEOUT_MS)
         ),
       ]);
       return result;
@@ -45,7 +45,7 @@ async function withBackoff<T>(fn: () => Promise<T>): Promise<T> {
       await sleep(REDIS_BASE_DELAY_MS * Math.pow(2, attempt - 1));
     }
   }
-  throw lastErr instanceof Error ? lastErr : new Error("Redis operation failed");
+  throw lastErr instanceof Error ? lastErr : new Error('Redis operation failed');
 }
 
 async function connectRedis(): Promise<RedisClientType | null> {
@@ -63,7 +63,7 @@ async function connectRedis(): Promise<RedisClientType | null> {
     }
 
     const client = createClient(options);
-    client.on("error", (err) => console.error("[cache] Redis error:", err));
+    client.on('error', (err) => console.error('[cache] Redis error:', err));
 
     await withBackoff(async () => {
       if (!client.isOpen) {
@@ -73,7 +73,7 @@ async function connectRedis(): Promise<RedisClientType | null> {
 
     return client;
   } catch (err) {
-    console.warn("[cache] Failed to connect to Redis, falling back to memory cache:", err);
+    console.warn('[cache] Failed to connect to Redis, falling back to memory cache:', err);
     return null;
   }
 }
@@ -104,13 +104,13 @@ export async function setCache(
   const client = await getRedisClient();
   if (!client) return;
 
-  const payload = typeof value === "string" ? value : JSON.stringify(value);
+  const payload = typeof value === 'string' ? value : JSON.stringify(value);
   const exSeconds = Math.max(1, Math.ceil(ttlMs / 1000));
 
   try {
     await withBackoff(() => client.set(key, payload, { EX: exSeconds }));
   } catch (err) {
-    console.warn("[cache] Redis SET failed (best-effort):", err);
+    console.warn('[cache] Redis SET failed (best-effort):', err);
   }
 }
 
@@ -128,7 +128,7 @@ export function getFromMemoryCache(key: string): { found: boolean; value?: unkno
 
 const tokenBuckets = new Map<string, { tokens: number; lastRefill: number }>();
 
-export function checkRateLimit(key = "global"): { ok: boolean; remaining: number } {
+export function checkRateLimit(key = 'global'): { ok: boolean; remaining: number } {
   const now = Date.now();
   const bucket = tokenBuckets.get(key) ?? { tokens: RATE_LIMIT_TOKENS, lastRefill: now };
   const elapsed = now - bucket.lastRefill;
@@ -152,7 +152,7 @@ export function checkRateLimit(key = "global"): { ok: boolean; remaining: number
 }
 
 export async function redisRateLimit(
-  key = "global",
+  key = 'global',
   maxRequests = RATE_LIMIT_TOKENS,
   windowMs = RATE_LIMIT_REFILL_MS
 ): Promise<{ ok: boolean; remaining: number }> {
@@ -175,7 +175,7 @@ export async function redisRateLimit(
     const remaining = Math.max(0, maxRequests - Number(current));
     return { ok: Number(current) <= maxRequests, remaining };
   } catch (err) {
-    console.warn("[cache] Redis rate limit failed, falling back to memory limiter:", err);
+    console.warn('[cache] Redis rate limit failed, falling back to memory limiter:', err);
     return checkRateLimit(key);
   }
 }
@@ -195,7 +195,7 @@ export const cognitiveCache = {
       if (!result) return null;
       return JSON.parse(result) as T;
     } catch (err) {
-      console.warn("[cache] Redis GET failed:", err);
+      console.warn('[cache] Redis GET failed:', err);
       return null;
     }
   },

@@ -2,14 +2,13 @@
  * Cases Dashboard - Server Load Function
  * Loads real cases from PostgreSQL database with optimized queries
  */
-import type { ServerLoad } from "@sveltejs/kit";
-import { Pool } from "pg";
+import type { ServerLoad } from '@sveltejs/kit';
+import { Pool } from 'pg';
 
 // Create a single Pool (reuse across requests)
 const pool = new Pool({
   connectionString:
-    process.env.DATABASE_URL ||
-    "postgresql://legal_admin:123456@localhost:5434/legal_ai_test",
+    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_test',
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,
@@ -34,7 +33,7 @@ export interface CaseData {
   id: string;
   case_number: string;
   title: string;
-  status: "active" | "pending" | "closed" | "archived";
+  status: 'active' | 'pending' | 'closed' | 'archived';
   metadata: Record<string, any> | null;
   created_at: Date;
   updated_at: Date;
@@ -70,33 +69,29 @@ function calculateLastUpdate(updatedAt: Date): string {
   const diffDays = Math.floor(diffMs / 86400000);
 
   if (diffMins < 1) {
-    return "just now";
+    return 'just now';
   } else if (diffMins < 60) {
-    return `${diffMins} min${diffMins > 1 ? "s" : ""} ago`;
+    return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
   } else if (diffHours < 24) {
-    return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
+    return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
   } else {
-    return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+    return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
   }
 }
 
 /**
  * Calculate case progress based on evidence analysis
  */
-function calculateProgress(
-  evidenceCount: number,
-  analyzedCount: number,
-  status: string
-): number {
+function calculateProgress(evidenceCount: number, analyzedCount: number, status: string): number {
   if (evidenceCount === 0) {
-    return status === "active" ? 25 : status === "closed" ? 100 : 0;
+    return status === 'active' ? 25 : status === 'closed' ? 100 : 0;
   }
 
   // Calculate percentage of evidence analyzed
   const analysisPercentage = (analyzedCount / evidenceCount) * 100;
 
   // Ensure progress is between 0-100, with at least 25% for active cases
-  const baseProgress = status === "active" ? 25 : 0;
+  const baseProgress = status === 'active' ? 25 : 0;
   return Math.min(100, Math.max(baseProgress, Math.round(analysisPercentage)));
 }
 
@@ -108,9 +103,7 @@ export const load: ServerLoad = async (): Promise<LoadResponse> => {
       // runtime guard / cast so TypeScript doesn't complain about BoundPool.connect
       const runtimePool: any = pool as unknown as any;
       const acquiredClient =
-        typeof runtimePool.connect === "function"
-          ? await runtimePool.connect()
-          : null;
+        typeof runtimePool.connect === 'function' ? await runtimePool.connect() : null;
 
       // Use either the acquired client or the pool directly (both at runtime support .query)
       const executor = acquiredClient ?? runtimePool;
@@ -150,8 +143,8 @@ export const load: ServerLoad = async (): Promise<LoadResponse> => {
 
       // Transform database rows to CaseData objects with proper types
       const cases: CaseData[] = rows.map((row: CaseRow) => {
-        const evidenceCount = parseInt(String(row.evidence_count || "0"));
-        const analyzedCount = parseInt(String(row.analyzed_evidence_count || "0"));
+        const evidenceCount = parseInt(String(row.evidence_count || '0'));
+        const analyzedCount = parseInt(String(row.analyzed_evidence_count || '0'));
         const createdAt = new Date(row.created_at);
         const updatedAt = new Date(row.updated_at);
 
@@ -165,7 +158,7 @@ export const load: ServerLoad = async (): Promise<LoadResponse> => {
           id: row.id,
           case_number: row.case_number,
           title: row.title,
-          status: row.status as "active" | "pending" | "closed" | "archived",
+          status: row.status as 'active' | 'pending' | 'closed' | 'archived',
           metadata: row.metadata,
           created_at: createdAt,
           updated_at: updatedAt,
@@ -178,10 +171,10 @@ export const load: ServerLoad = async (): Promise<LoadResponse> => {
       // Calculate comprehensive summary statistics
       const summary: CaseSummary = {
         total: cases.length,
-        active: cases.filter((c) => c.status === "active").length,
-        pending: cases.filter((c) => c.status === "pending").length,
-        closed: cases.filter((c) => c.status === "closed").length,
-        archived: cases.filter((c) => c.status === "archived").length,
+        active: cases.filter((c) => c.status === 'active').length,
+        pending: cases.filter((c) => c.status === 'pending').length,
+        closed: cases.filter((c) => c.status === 'closed').length,
+        archived: cases.filter((c) => c.status === 'archived').length,
         totalEvidence: cases.reduce((sum, c) => sum + c.evidenceCount, 0),
       };
 
@@ -196,48 +189,49 @@ export const load: ServerLoad = async (): Promise<LoadResponse> => {
       };
     } finally {
       // ensure the client is released if it was acquired
-      if (client && typeof client.release === "function") {
+      if (client && typeof client.release === 'function') {
         try {
           client.release();
         } catch (releaseErr) {
-          console.warn("Failed to release DB client:", releaseErr);
+          console.warn('Failed to release DB client:', releaseErr);
         }
       } else {
         // If we acquired via runtimePool.connect above we stored it in acquiredClient variable (not client),
         // but to keep changes minimal we check the runtime pool again and attempt a safe release pattern.
         try {
           const runtimePool: any = pool as unknown as any;
-          if (typeof runtimePool.connect === "function") {
+          if (typeof runtimePool.connect === 'function') {
             // If connect is available, we are in a runtime that supports it (e.g., Node.js)
             // Attempt to release any acquired client safely
             await new Promise<void>((resolve) => {
               const timeout = setTimeout(() => {
-                console.warn("DB client release timeout");
+                console.warn('DB client release timeout');
                 resolve();
               }, 2000); // 2 seconds timeout for release
 
               // Use the runtime-detected pool to release the client
-              runtimePool.connect()
+              runtimePool
+                .connect()
                 .then((acquiredClient: any) => {
-                  if (typeof acquiredClient.release === "function") {
+                  if (typeof acquiredClient.release === 'function') {
                     acquiredClient.release();
                   }
                   resolve();
                 })
                 .catch((err: unknown) => {
-                  console.warn("Error acquiring client for release:", err);
+                  console.warn('Error acquiring client for release:', err);
                   resolve();
                 });
             });
           }
         } catch (err) {
-          console.warn("Error during DB client release:", err);
+          console.warn('Error during DB client release:', err);
         }
       }
     }
   } catch (error) {
     // Log detailed error for debugging
-    console.error("❌ Failed to load cases from database:", {
+    console.error('❌ Failed to load cases from database:', {
       error: error instanceof Error ? error.message : String(error),
       stack: error instanceof Error ? error.stack : undefined,
       timestamp: new Date().toISOString(),
@@ -254,32 +248,32 @@ export const load: ServerLoad = async (): Promise<LoadResponse> => {
         archived: 0,
         totalEvidence: 0,
       },
-      error: error instanceof Error ? error.message : "Failed to load cases from database",
+      error: error instanceof Error ? error.message : 'Failed to load cases from database',
     };
   }
 };
 
 // Handle pool shutdown gracefully (useful for testing and server shutdown)
-if (typeof process !== "undefined") {
+if (typeof process !== 'undefined') {
   // safe shutdown helper that narrows the pool type and handles errors with typed catch
   const shutdownPool = async () => {
     const maybePool = pool as unknown as { end?: () => Promise<void> };
-    if (typeof maybePool.end === "function") {
+    if (typeof maybePool.end === 'function') {
       try {
         await maybePool.end();
       } catch (err: unknown) {
-        console.error("Error closing database pool:", err);
+        console.error('Error closing database pool:', err);
       }
     } else {
       console.warn("Database pool has no 'end' method; skipping close.");
     }
   };
 
-  process.on("SIGTERM", () => {
+  process.on('SIGTERM', () => {
     void shutdownPool();
   });
 
-  process.on("SIGINT", () => {
+  process.on('SIGINT', () => {
     void shutdownPool();
   });
 }

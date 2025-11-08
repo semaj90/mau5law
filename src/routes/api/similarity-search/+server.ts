@@ -6,19 +6,21 @@ import type { SimilaritySearchRequest, SimilaritySearchResponse } from '../embed
 
 // Similarity search using the vector database
 export const POST: RequestHandler = async ({ request }) => {
-	try {
-		const body = await request.json() as SimilaritySearchRequest;
-		const { query, top_k = 5, model = 'embeddinggemma:latest' } = body;
+  try {
+    const body = (await request.json()) as SimilaritySearchRequest;
+    const { query, top_k = 5, model = 'embeddinggemma:latest' } = body;
 
-		if (!query || query.trim().length === 0) {
-			return json({ error: 'Query is required' }, { status: 400 });
-		}
+    if (!query || query.trim().length === 0) {
+      return json({ error: 'Query is required' }, { status: 400 });
+    }
 
-		const startTime = Date.now();
+    const startTime = Date.now();
 
-		// Call the Python similarity search
-		const result = await new Promise<SimilaritySearchResponse>((resolve, reject) => {
-			const python = spawn('python', ['-c', `
+    // Call the Python similarity search
+    const result = await new Promise<SimilaritySearchResponse>((resolve, reject) => {
+      const python = spawn('python', [
+        '-c',
+        `
 import sys
 sys.path.append('${process.cwd().replace(/\\/g, '\\\\')}')
 from embedding_adapter_512 import EmbeddingAdapter512, similarity_search_demo
@@ -66,45 +68,45 @@ result = {
 }
 
 print(json.dumps(result))
-			`]);
+			`,
+      ]);
 
-			let output = '';
-			let error = '';
+      let output = '';
+      let error = '';
 
-			python.stdout.on('data', (data) => {
-				output += data.toString();
-			});
+      python.stdout.on('data', (data) => {
+        output += data.toString();
+      });
 
-			python.stderr.on('data', (data) => {
-				error += data.toString();
-			});
+      python.stderr.on('data', (data) => {
+        error += data.toString();
+      });
 
-			python.on('close', (code) => {
-				if (code !== 0) {
-					reject(new Error(`Python process failed: ${error}`));
-					return;
-				}
+      python.on('close', (code) => {
+        if (code !== 0) {
+          reject(new Error(`Python process failed: ${error}`));
+          return;
+        }
 
-				try {
-					// Extract JSON from output (last line)
-					const lines = output.trim().split('\n');
-					const jsonLine = lines[lines.length - 1];
-					const result = JSON.parse(jsonLine);
-					result.processing_time_ms = Date.now() - startTime;
-					resolve(result);
-				} catch (e) {
-					reject(new Error(`Failed to parse result: ${e}`));
-				}
-			});
-		});
+        try {
+          // Extract JSON from output (last line)
+          const lines = output.trim().split('\n');
+          const jsonLine = lines[lines.length - 1];
+          const result = JSON.parse(jsonLine);
+          result.processing_time_ms = Date.now() - startTime;
+          resolve(result);
+        } catch (e) {
+          reject(new Error(`Failed to parse result: ${e}`));
+        }
+      });
+    });
 
-		return json(result);
-
-	} catch (error) {
-		console.error('Similarity search error:', error);
-		return json(
-			{ error: 'Failed to perform similarity search', details: error.message },
-			{ status: 500 }
-		);
-	}
+    return json(result);
+  } catch (error) {
+    console.error('Similarity search error:', error);
+    return json(
+      { error: 'Failed to perform similarity search', details: error.message },
+      { status: 500 }
+    );
+  }
 };

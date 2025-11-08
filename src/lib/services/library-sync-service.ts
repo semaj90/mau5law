@@ -3,14 +3,14 @@
  * Periodically fetches latest libraries/tools from GitHub/context7 and stores agent/LLM call logs
  */
 
-import { Redis } from "ioredis";
-import { redisVectorService } from "./redis-vector-service.js";
+import { Redis } from 'ioredis';
+import { redisVectorService } from './redis-vector-service.js';
 
 export interface LibraryMetadata {
   id: string;
   name: string;
   version: string;
-  source: "github" | "context7" | "npm";
+  source: 'github' | 'context7' | 'npm';
   url: string;
   description: string;
   lastUpdated: Date;
@@ -20,12 +20,7 @@ export interface LibraryMetadata {
 export interface AgentCallLog {
   id: string;
   timestamp: Date;
-  agentType:
-    | "rag"
-    | "best-practices"
-    | "crawler"
-    | "orchestrator"
-    | "evaluation";
+  agentType: 'rag' | 'best-practices' | 'crawler' | 'orchestrator' | 'evaluation';
   operation: string;
   input: any;
   output: any;
@@ -41,8 +36,8 @@ class LibrarySyncService {
 
   constructor() {
     this.redis = new Redis({
-      host: process.env.REDIS_HOST || "localhost",
-      port: parseInt(process.env.REDIS_PORT || "6379"),
+      host: process.env.REDIS_HOST || 'localhost',
+      port: parseInt(process.env.REDIS_PORT || '6379'),
       db: 0,
     });
   }
@@ -56,9 +51,9 @@ class LibrarySyncService {
     this.syncInterval = setInterval(async () => {
       try {
         await this.syncAllLibraries();
-        console.log("📚 Library sync completed successfully");
+        console.log('📚 Library sync completed successfully');
       } catch (error) {
-        console.error("❌ Library sync failed:", error);
+        console.error('❌ Library sync failed:', error);
       }
     }, intervalMs);
 
@@ -96,17 +91,17 @@ class LibrarySyncService {
     try {
       // Popular AI/ML libraries and frameworks
       const popularRepos = [
-        "openai/openai-node",
-        "anthropics/anthropic-sdk-typescript",
-        "hwchase17/langchainjs",
-        "microsoft/vscode",
-        "sveltejs/kit",
-        "microsoft/TypeScript",
-        "vercel/ai",
-        "redis/redis",
-        "qdrant/qdrant-js",
-        "jonahcrenshaw/crewai",
-        "microsoft/autogen",
+        'openai/openai-node',
+        'anthropics/anthropic-sdk-typescript',
+        'hwchase17/langchainjs',
+        'microsoft/vscode',
+        'sveltejs/kit',
+        'microsoft/TypeScript',
+        'vercel/ai',
+        'redis/redis',
+        'qdrant/qdrant-js',
+        'jonahcrenshaw/crewai',
+        'microsoft/autogen',
       ];
 
       for (const repo of popularRepos) {
@@ -116,7 +111,7 @@ class LibrarySyncService {
         }
       }
     } catch (error) {
-      console.error("Failed to sync GitHub libraries:", error);
+      console.error('Failed to sync GitHub libraries:', error);
     }
   }
 
@@ -127,7 +122,7 @@ class LibrarySyncService {
     try {
       const response = await fetch(`https://api.github.com/repos/${repo}`, {
         headers: {
-          "User-Agent": "Enhanced-RAG-Assistant",
+          'User-Agent': 'Enhanced-RAG-Assistant',
           ...(process.env.GITHUB_TOKEN && {
             Authorization: `token ${process.env.GITHUB_TOKEN}`,
           }),
@@ -139,12 +134,12 @@ class LibrarySyncService {
       const data = await response.json();
 
       return {
-        id: `github-${repo.replace("/", "-")}`,
+        id: `github-${repo.replace('/', '-')}`,
         name: data.name,
-        version: data.default_branch || "main",
-        source: "github",
+        version: data.default_branch || 'main',
+        source: 'github',
         url: data.html_url,
-        description: data.description || "",
+        description: data.description || '',
         lastUpdated: new Date(data.updated_at),
         tags: data.topics || [],
       };
@@ -163,24 +158,24 @@ class LibrarySyncService {
       // For now, we'll store known context7 libraries
       const context7Libraries = [
         {
-          id: "context7-mongodb",
-          name: "MongoDB Context7",
-          version: "latest",
-          source: "context7" as const,
-          url: "/mongodb/docs",
-          description: "MongoDB documentation and context",
+          id: 'context7-mongodb',
+          name: 'MongoDB Context7',
+          version: 'latest',
+          source: 'context7' as const,
+          url: '/mongodb/docs',
+          description: 'MongoDB documentation and context',
           lastUpdated: new Date(),
-          tags: ["database", "nosql", "mongodb"],
+          tags: ['database', 'nosql', 'mongodb'],
         },
         {
-          id: "context7-nextjs",
-          name: "Next.js Context7",
-          version: "latest",
-          source: "context7" as const,
-          url: "/vercel/next.js",
-          description: "Next.js framework documentation",
+          id: 'context7-nextjs',
+          name: 'Next.js Context7',
+          version: 'latest',
+          source: 'context7' as const,
+          url: '/vercel/next.js',
+          description: 'Next.js framework documentation',
           lastUpdated: new Date(),
-          tags: ["react", "framework", "nextjs"],
+          tags: ['react', 'framework', 'nextjs'],
         },
       ];
 
@@ -188,7 +183,7 @@ class LibrarySyncService {
         await this.storeLibraryMetadata(lib);
       }
     } catch (error) {
-      console.error("Failed to sync Context7 libraries:", error);
+      console.error('Failed to sync Context7 libraries:', error);
     }
   }
 
@@ -198,16 +193,16 @@ class LibrarySyncService {
   async syncNpmLibraries(): Promise<void> {
     try {
       const popularPackages = [
-        "@langchain/core",
-        "openai",
-        "@anthropic-ai/sdk",
-        "redis",
-        "qdrant-js",
-        "pdf-parse",
-        "puppeteer",
-        "cheerio",
-        "svelte",
-        "@sveltejs/kit",
+        '@langchain/core',
+        'openai',
+        '@anthropic-ai/sdk',
+        'redis',
+        'qdrant-js',
+        'pdf-parse',
+        'puppeteer',
+        'cheerio',
+        'svelte',
+        '@sveltejs/kit',
       ];
 
       for (const pkg of popularPackages) {
@@ -217,30 +212,28 @@ class LibrarySyncService {
         }
       }
     } catch (error) {
-      console.error("Failed to sync NPM libraries:", error);
+      console.error('Failed to sync NPM libraries:', error);
     }
   }
 
   /**
    * Fetch NPM package metadata
    */
-  async fetchNpmPackageMetadata(
-    packageName: string
-  ): Promise<LibraryMetadata | null> {
+  async fetchNpmPackageMetadata(packageName: string): Promise<LibraryMetadata | null> {
     try {
       const response = await fetch(`https://registry.npmjs.org/${packageName}`);
       if (!response.ok) return null;
 
       const data = await response.json();
-      const latestVersion = data["dist-tags"]?.latest || "";
+      const latestVersion = data['dist-tags']?.latest || '';
 
       return {
-        id: `npm-${packageName.replace(/[@\/]/g, "-")}`,
+        id: `npm-${packageName.replace(/[@\/]/g, '-')}`,
         name: packageName,
         version: latestVersion,
-        source: "npm",
+        source: 'npm',
         url: `https://www.npmjs.com/package/${packageName}`,
-        description: data.description || "",
+        description: data.description || '',
         lastUpdated: new Date(data.time?.[latestVersion] || Date.now()),
         tags: data.keywords || [],
       };
@@ -258,7 +251,7 @@ class LibrarySyncService {
     await this.redis.setex(key, 86400, JSON.stringify(metadata)); // 24 hour TTL
 
     // Add to library index
-    await this.redis.sadd("libraries:index", metadata.id);
+    await this.redis.sadd('libraries:index', metadata.id);
 
     // Index by source
     await this.redis.sadd(`libraries:source:${metadata.source}`, metadata.id);
@@ -279,18 +272,10 @@ class LibrarySyncService {
       await this.redis.setex(key, 86400 * 7, JSON.stringify(log)); // 7 day TTL
 
       // Add to agent logs index
-      await this.redis.zadd(
-        "agent_logs:timeline",
-        log.timestamp.getTime(),
-        key
-      );
+      await this.redis.zadd('agent_logs:timeline', log.timestamp.getTime(), key);
 
       // Index by agent type
-      await this.redis.zadd(
-        `agent_logs:${log.agentType}`,
-        log.timestamp.getTime(),
-        key
-      );
+      await this.redis.zadd(`agent_logs:${log.agentType}`, log.timestamp.getTime(), key);
 
       // Store in vector DB for semantic search if text content available
       if (log.input || log.output) {
@@ -300,7 +285,7 @@ class LibrarySyncService {
           id: `agent_log_${log.id}`,
           content,
           metadata: {
-            type: "agent_log",
+            type: 'agent_log',
             agentType: log.agentType,
             operation: log.operation,
             timestamp: log.timestamp.toISOString(),
@@ -312,34 +297,29 @@ class LibrarySyncService {
 
       console.log(`📝 Logged agent call: ${log.agentType}/${log.operation}`);
     } catch (error) {
-      console.error("Failed to log agent call:", error);
+      console.error('Failed to log agent call:', error);
     }
   }
 
   /**
    * Get recent agent logs
    */
-  async getRecentAgentLogs(
-    agentType?: string,
-    limit: number = 50
-  ): Promise<AgentCallLog[]> {
+  async getRecentAgentLogs(agentType?: string, limit: number = 50): Promise<AgentCallLog[]> {
     try {
-      const indexKey = agentType
-        ? `agent_logs:${agentType}`
-        : "agent_logs:timeline";
+      const indexKey = agentType ? `agent_logs:${agentType}` : 'agent_logs:timeline';
       const logKeys = await this.redis.zrevrange(indexKey, 0, limit - 1);
 
       const logs: AgentCallLog[] = [];
       for (const key of logKeys) {
         const logData = await this.redis.get(key);
         if (logData) {
-          logs.push(<any><any>JSON.parse(logData));
+          logs.push(<any>(<any>JSON.parse(logData)));
         }
       }
 
       return logs;
     } catch (error) {
-      console.error("Failed to get agent logs:", error);
+      console.error('Failed to get agent logs:', error);
       return [];
     }
   }
@@ -349,12 +329,10 @@ class LibrarySyncService {
    */
   async searchLibraries(
     query: string,
-    source?: "github" | "context7" | "npm"
+    source?: 'github' | 'context7' | 'npm'
   ): Promise<LibraryMetadata[]> {
     try {
-      const indexKey = source
-        ? `libraries:source:${source}`
-        : "libraries:index";
+      const indexKey = source ? `libraries:source:${source}` : 'libraries:index';
       const libraryIds = await this.redis.smembers(indexKey);
 
       const libraries: LibraryMetadata[] = [];
@@ -366,20 +344,16 @@ class LibrarySyncService {
           if (
             lib.name.toLowerCase().includes(query.toLowerCase()) ||
             lib.description.toLowerCase().includes(query.toLowerCase()) ||
-            lib.tags.some((tag) =>
-              tag.toLowerCase().includes(query.toLowerCase())
-            )
+            lib.tags.some((tag) => tag.toLowerCase().includes(query.toLowerCase()))
           ) {
-            libraries.push(<any><any>lib);
+            libraries.push(<any>(<any>lib));
           }
         }
       }
 
-      return libraries.sort(
-        (a, b) => b.lastUpdated.getTime() - a.lastUpdated.getTime()
-      );
+      return libraries.sort((a, b) => b.lastUpdated.getTime() - a.lastUpdated.getTime());
     } catch (error) {
-      console.error("Failed to search libraries:", error);
+      console.error('Failed to search libraries:', error);
       return [];
     }
   }
@@ -392,7 +366,7 @@ class LibrarySyncService {
       const data = await this.redis.get(`library:${id}`);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error("Failed to get library:", error);
+      console.error('Failed to get library:', error);
       return null;
     }
   }
@@ -405,24 +379,16 @@ class LibrarySyncService {
       // Clean up old agent logs (older than 30 days)
       const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
 
-      const oldLogs = await this.redis.zrangebyscore(
-        "agent_logs:timeline",
-        0,
-        thirtyDaysAgo
-      );
+      const oldLogs = await this.redis.zrangebyscore('agent_logs:timeline', 0, thirtyDaysAgo);
       for (const logKey of oldLogs) {
         await this.redis.del(logKey);
       }
 
-      await this.redis.zremrangebyscore(
-        "agent_logs:timeline",
-        0,
-        thirtyDaysAgo
-      );
+      await this.redis.zremrangebyscore('agent_logs:timeline', 0, thirtyDaysAgo);
 
       console.log(`🧹 Cleaned up ${oldLogs.length} old agent logs`);
     } catch (error) {
-      console.error("Failed to cleanup:", error);
+      console.error('Failed to cleanup:', error);
     }
   }
 }

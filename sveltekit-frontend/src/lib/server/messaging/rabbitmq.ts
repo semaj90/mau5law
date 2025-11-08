@@ -12,131 +12,133 @@ const LOG_PREFIX = '[rabbitmq]';
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const maskCredentials = (url: string) =>
-	url.replace(/\/\/([^:]+):([^@]+)@/, (_match, user: string) => `//${user}:****@`);
+  url.replace(/\/\/([^:]+):([^@]+)@/, (_match, user: string) => `//${user}:****@`);
 
 const getRabbitMQUrls = (): string[] => {
-	const urls: string[] = [];
+  const urls: string[] = [];
 
-	if (process.env.RABBITMQ_URL?.trim()) {
-		urls.push(process.env.RABBITMQ_URL.trim());
-	}
+  if (process.env.RABBITMQ_URL?.trim()) {
+    urls.push(process.env.RABBITMQ_URL.trim());
+  }
 
-	urls.push('amqp://legal_admin:123456@rabbitmq:5672');
-	urls.push('amqp://admin:admin123@localhost:5672');
-	urls.push('amqp://legal_admin:123456@localhost:5672');
-	urls.push('amqp://guest:guest@localhost:5672');
-	urls.push('amqp://localhost:5672');
+  urls.push('amqp://legal_admin:123456@rabbitmq:5672');
+  urls.push('amqp://admin:admin123@localhost:5672');
+  urls.push('amqp://legal_admin:123456@localhost:5672');
+  urls.push('amqp://guest:guest@localhost:5672');
+  urls.push('amqp://localhost:5672');
 
-	return urls;
+  return urls;
 };
 
 const connectWithFallback = async (): Promise<amqp.Connection | null> => {
-	for (const url of getRabbitMQUrls()) {
-		try {
-			const safeUrl = maskCredentials(url);
-			console.log(`${LOG_PREFIX} attempting ${safeUrl}`);
+  for (const url of getRabbitMQUrls()) {
+    try {
+      const safeUrl = maskCredentials(url);
+      console.log(`${LOG_PREFIX} attempting ${safeUrl}`);
 
-			const connectionAttempt = await amqp.connect(url, {
-				heartbeat: 60,
-				timeout: 5000
-			});
+      const connectionAttempt = await amqp.connect(url, {
+        heartbeat: 60,
+        timeout: 5000,
+      });
 
-			console.log(`${LOG_PREFIX} connected ${safeUrl}`);
-			reconnectAttempts = 0;
-			return connectionAttempt;
-		} catch (error) {
-			const err = error as Error;
-			console.warn(`${LOG_PREFIX} connect failed (${err.message})`);
-		}
-	}
+      console.log(`${LOG_PREFIX} connected ${safeUrl}`);
+      reconnectAttempts = 0;
+      return connectionAttempt;
+    } catch (error) {
+      const err = error as Error;
+      console.warn(`${LOG_PREFIX} connect failed (${err.message})`);
+    }
+  }
 
-	return null;
+  return null;
 };
 
 const reconnectWithRetry = async (): Promise<amqp.Connection | null> => {
-	if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
-		console.error(`${LOG_PREFIX} max reconnect attempts reached`);
-		connectionFailed = true;
-		return null;
-	}
+  if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
+    console.error(`${LOG_PREFIX} max reconnect attempts reached`);
+    connectionFailed = true;
+    return null;
+  }
 
-	reconnectAttempts += 1;
-	const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1);
-	console.log(`${LOG_PREFIX} reconnecting in ${delay}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+  reconnectAttempts += 1;
+  const delay = RECONNECT_DELAY_MS * Math.pow(2, reconnectAttempts - 1);
+  console.log(
+    `${LOG_PREFIX} reconnecting in ${delay}ms (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`
+  );
 
-	await sleep(delay);
-	return connectWithFallback();
+  await sleep(delay);
+  return connectWithFallback();
 };
 
 const ensureChannel = async (): Promise<amqp.Channel | null> => {
-	if (connectionFailed) return null;
+  if (connectionFailed) return null;
 
-	if (!channel) {
-		connection = await connectWithFallback();
+  if (!channel) {
+    connection = await connectWithFallback();
 
-		if (!connection) {
-			console.warn(`${LOG_PREFIX} connection unavailable, scheduling retry`);
-			connection = await reconnectWithRetry();
-			if (!connection) return null;
-		}
+    if (!connection) {
+      console.warn(`${LOG_PREFIX} connection unavailable, scheduling retry`);
+      connection = await reconnectWithRetry();
+      if (!connection) return null;
+    }
 
-		connection.on('error', async (err) => {
-			console.error(`${LOG_PREFIX} connection error`, err);
-			channel = null;
-			connection = await reconnectWithRetry();
-			if (!connection) {
-				connectionFailed = true;
-			}
-		});
+    connection.on('error', async (err) => {
+      console.error(`${LOG_PREFIX} connection error`, err);
+      channel = null;
+      connection = await reconnectWithRetry();
+      if (!connection) {
+        connectionFailed = true;
+      }
+    });
 
-		connection.on('close', () => {
-			console.warn(`${LOG_PREFIX} connection closed`);
-			connection = null;
-			channel = null;
-		});
+    connection.on('close', () => {
+      console.warn(`${LOG_PREFIX} connection closed`);
+      connection = null;
+      channel = null;
+    });
 
-		channel = await connection.createChannel();
-		console.log(`${LOG_PREFIX} channel ready`);
-	}
+    channel = await connection.createChannel();
+    console.log(`${LOG_PREFIX} channel ready`);
+  }
 
-	return channel;
+  return channel;
 };
 
 export const getRabbitMQChannel = async (): Promise<amqp.Channel | null> => ensureChannel();
 
 export const closeRabbitMQConnection = async (): Promise<void> => {
-	if (channel) {
-		try {
-			await channel.close();
-		} catch (error) {
-			console.warn(`${LOG_PREFIX} channel close failed`, error);
-		} finally {
-			channel = null;
-		}
-	}
+  if (channel) {
+    try {
+      await channel.close();
+    } catch (error) {
+      console.warn(`${LOG_PREFIX} channel close failed`, error);
+    } finally {
+      channel = null;
+    }
+  }
 
-	if (connection) {
-		try {
-			await connection.close();
-		} catch (error) {
-			console.warn(`${LOG_PREFIX} connection close failed`, error);
-		} finally {
-			connection = null;
-		}
-	}
+  if (connection) {
+    try {
+      await connection.close();
+    } catch (error) {
+      console.warn(`${LOG_PREFIX} connection close failed`, error);
+    } finally {
+      connection = null;
+    }
+  }
 
-	connectionFailed = false;
-	reconnectAttempts = 0;
+  connectionFailed = false;
+  reconnectAttempts = 0;
 };
 
 export const publishMessage = async (
-	queueName: string,
-	message: Record<string, unknown>,
-	options?: amqp.Options.Publish
+  queueName: string,
+  message: Record<string, unknown>,
+  options?: amqp.Options.Publish
 ): Promise<boolean> => {
-	const ch = await ensureChannel();
-	if (!ch) return false;
+  const ch = await ensureChannel();
+  if (!ch) return false;
 
-	await ch.assertQueue(queueName, { durable: true });
-	return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options);
+  await ch.assertQueue(queueName, { durable: true });
+  return ch.sendToQueue(queueName, Buffer.from(JSON.stringify(message)), options);
 };
