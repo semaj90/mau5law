@@ -4,7 +4,7 @@
    ================================================================= */
 
 /* Import base styles */
-@import "./app.css";
+@import './app.css';
 
 /* ===== ENHANCED ANIMATIONS ===== */
 @keyframes digital-pulse {
@@ -108,7 +108,7 @@
 }
 
 .nier-matrix-bg::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
   background-image: repeating-linear-gradient(
@@ -134,15 +134,10 @@
 }
 
 .nier-card-interactive::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    135deg,
-    transparent 0%,
-    rgba(0, 255, 65, 0.1) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(135deg, transparent 0%, rgba(0, 255, 65, 0.1) 50%, transparent 100%);
   transform: translateX(-100%);
   transition: transform 0.6s;
 }
@@ -172,7 +167,7 @@
 }
 
 .nier-terminal::before {
-  content: "> ";
+  content: '> ';
   color: var(--digital-green);
   font-weight: bold;
 }
@@ -190,12 +185,7 @@
 /* Holographic Button */
 .nier-button-holo {
   position: relative;
-  background: linear-gradient(
-    45deg,
-    var(--nier-black),
-    var(--nier-dark-gray),
-    var(--nier-black)
-  );
+  background: linear-gradient(45deg, var(--nier-black), var(--nier-dark-gray), var(--nier-black));
   color: var(--nier-white);
   border: 1px solid transparent;
   border-radius: var(--radius-lg);
@@ -205,7 +195,7 @@
 }
 
 .nier-button-holo::before {
-  content: "";
+  content: '';
   position: absolute;
   inset: -2px;
   background: linear-gradient(
@@ -248,18 +238,13 @@
 }
 
 .nier-data-stream::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 100%;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    rgba(0, 255, 65, 0.4) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 255, 65, 0.4) 50%, transparent 100%);
   transform: translateY(-100%);
   animation: data-stream 3s linear infinite;
   pointer-events: none;
@@ -392,7 +377,7 @@
 }
 
 .nier-sidebar-item::before {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   top: 0;
@@ -594,7 +579,7 @@
 }
 
 .evidence-chain::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   left: 0;

@@ -291,8 +291,15 @@ import '$lib/styles/bits-ui.css';
     <!-- Use flex and gap for horizontal spacing -->
     <div class="relative flex-1">
       <!-- Use relative and flex-1 for search input -->
-      <span class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400">{ICON.search}</span>
-      <Input type="text" placeholder="Search citations..." bind:value={searchQuery} class="pl-8 w-full" />
+      <span class="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+        >{ICON.search}</span
+      >
+      <Input
+        type="text"
+        placeholder="Search citations..."
+        bind:value={searchQuery}
+        class="pl-8 w-full"
+      />
       <!-- Add pl-8 for icon padding -->
     </div>
     <select bind:value={selectedCategory} class="p-2 border rounded">
@@ -310,10 +317,14 @@ import '$lib/styles/bits-ui.css';
       data-nes-theme="citation-primary"
       data-operation="add-citation"
     >
-      <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
+      <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon"
+        >{ICON.plus}</span
+      >
       Add Citation
     </Button>
-    <div id="add-citation-help" class="sr-only">Create a new legal citation with title, content, source, and tags</div>
+    <div id="add-citation-help" class="sr-only">
+      Create a new legal citation with title, content, source, and tags
+    </div>
   </div>
   <!-- Citations Grid -->
   <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -356,12 +367,20 @@ import '$lib/styles/bits-ui.css';
                 {citation.isFavorite ? 'Remove from favorites' : 'Add to favorites'}
               </DropdownMenuItem>
 
-              <DropdownMenuItem href="#" onclick={() => copyCitation(citation)} onselect={() => copyCitation(citation)}>
+              <DropdownMenuItem
+                href="#"
+                onclick={() => copyCitation(citation)}
+                onselect={() => copyCitation(citation)}
+              >
                 <span class="w-4 h-4 mr-2">{ICON.copy}</span>
                 Copy citation
               </DropdownMenuItem>
 
-              <DropdownMenuItem href="#" onclick={() => editCitation(citation)} onselect={() => editCitation(citation)}>
+              <DropdownMenuItem
+                href="#"
+                onclick={() => editCitation(citation)}
+                onselect={() => editCitation(citation)}
+              >
                 <span class="w-4 h-4 mr-2">{ICON.edit}</span>
                 Edit
               </DropdownMenuItem>
@@ -384,10 +403,14 @@ import '$lib/styles/bits-ui.css';
 
         <div class="flex gap-2 mb-2">
           <!-- Use flex and gap for category/favorite badges -->
-          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{citation.category}</span>
+          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+            >{citation.category}</span
+          >
           {#if citation.isFavorite}
             <!-- Badge replaced with span -->
-            <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
+            <span
+              class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+            >
               <span class="w-3 h-3 mr-1">{ICON.star}</span>
               Favorite
             </span>
@@ -407,7 +430,9 @@ import '$lib/styles/bits-ui.css';
             <div class="flex flex-wrap gap-2">
               <!-- Use flex-wrap and gap for tags -->
               {#each Array.isArray(citation.tags) ? citation.tags : [] as tag}
-                <span class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
+                <span
+                  class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                >
                   <span class="w-3 h-3 mr-1">{ICON.tag}</span>
                   {tag}
                 </span>
@@ -457,7 +482,8 @@ import '$lib/styles/bits-ui.css';
         {:else}
           <h3 class="text-xl font-semibold">No saved citations</h3>
           <p class="text-gray-600">
-            You haven't saved any citations yet. Start by adding citations from reports or create new ones.
+            You haven't saved any citations yet. Start by adding citations from reports or create
+            new ones.
           </p>
           <Button
             class="nes-citation-control n64-enhanced lod-optimized retro-first-citation-btn"
@@ -468,11 +494,14 @@ import '$lib/styles/bits-ui.css';
             data-nes-theme="citation-primary"
             data-operation="add-first-citation"
           >
-            <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon">{ICON.plus}</span>
+            <span class="mr-2 w-4 h-4" aria-hidden="true" role="img" aria-label="Plus icon"
+              >{ICON.plus}</span
+            >
             Add your first citation
           </Button>
           <div id="first-citation-help" class="sr-only">
-            Start your citation collection by creating your first legal citation with source and notes
+            Start your citation collection by creating your first legal citation with source and
+            notes
           </div>
         {/if}
       </div>
@@ -599,7 +628,11 @@ import '$lib/styles/bits-ui.css';
               <!-- Use grid for category and tags -->
               <div class="grid gap-2">
                 <label for="edit-category" class="text-sm font-medium">Category</label>
-                <select id="edit-category" bind:value={editingCitation.category} class="p-2 border rounded">
+                <select
+                  id="edit-category"
+                  bind:value={editingCitation.category}
+                  class="p-2 border rounded"
+                >
                   {#each Array.isArray(categories.slice(1)) ? categories.slice(1) : [] as category}
                     <option value={category.value}>{category.label}</option>
                   {/each}

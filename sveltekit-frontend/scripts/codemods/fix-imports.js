@@ -1,11 +1,11 @@
 // scripts/codemods/fix-imports.js
-import { workerData, parentPort } from "node:worker_threads";
-import { readFile, writeFile } from "node:fs/promises";
+import { workerData, parentPort } from 'node:worker_threads';
+import { readFile, writeFile } from 'node:fs/promises';
 
 const { file } = workerData;
 
 (async () => {
-  let text = await readFile(file, "utf8");
+  let text = await readFile(file, 'utf8');
   const original = text;
 
   // 1️⃣ lucide-svelte: switch named imports → default
@@ -27,10 +27,10 @@ const { file } = workerData;
   );
 
   // 4️⃣ Replace deprecated HeadlessUI props
-  text = text.replace(/children:/g, "");
+  text = text.replace(/children:/g, '');
 
   // 5️⃣ Remove duplicate imports introduced by merges
-  text = text.replace(/^(import .*;)\n(?=.*^\1$)/gm, "");
+  text = text.replace(/^(import .*;)\n(?=.*^\1$)/gm, '');
 
   if (text !== original) {
     await writeFile(file, text);

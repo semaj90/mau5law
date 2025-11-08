@@ -2,29 +2,98 @@
 <!-- @migration-task Error while migrating Svelte; code: Expected, token } -->
 <script lang="ts">
 import type { User } from '$lib/types';
-import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // XState State Persistence Management import { onMount } from 'svelte'; import { page } from '$app/stores'; import Button from '$lib/components/ui/nes-Button.svelte'; import NesCard from '$lib/components/ui/nes-Card.svelte'; let mounted = $state<boolean>(false); let persistedStates = $state<any[]>([]); let loading = $state<boolean>(true); let selectedState = $state<any | null>(null); let restoring = $state<boolean>(false); // Mock persisted state data (fixed: object literal syntax) let mockPersistedStates = [ { id: 'auth_user_123_20240110_143022', machineId: 'auth-machine', userId: 'user_123', state: 'authenticated', context: { userId: 'user_123', token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', sessionId: 'sess_456', permissions: ['read', 'write', 'admin']; lastActivity: '2024-01-10T14:30:22.000Z'
-      }, timestamp: '2024-01-10T14:30:22.000Z', version: '1.0.2', size: 1247; checksum: 'sha256:a1b2c3d4...'
-    }, {
-      id: 'case_case_789_20240110_142015', machineId: 'case-management-machine', userId: 'user_123', state: 'reviewing', context: { caseId: 'case_789', title: 'Smith vs. Johnson Contract Dispute', status: 'under_review', assignedTo: 'user_123', documents: ['doc_001', 'doc_002', 'doc_003'], evidence: ['evidence_456', 'evidence_789'], deadline: '2024-01-15T00:00:00.000Z'; notes: 'Awaiting additional documentation from plaintiff.'
-      }, timestamp: '2024-01-10T14:20:15.000Z', version: '2.1.0', size: 2891; checksum: 'sha256:e5f6g7h8...'
-    }, {
-      id: 'rag_pipeline_20240110_141030', machineId: 'rag-pipeline-machine', userId: 'system', state: 'processing', context: { pipelineId: 'pipeline_001', documents: [ { id: 'doc_123', status: 'embedded', chunks: 45 }, { id: 'doc_124', status: 'processing', chunks: 0 }, { id: 'doc_125', status: 'queued', chunks: 0 } ], totalChunks: 342, processedChunks: 298, batchSize: 32; modelVersion: 'gemma-3-legal-v1.2'
-      }, timestamp: '2024-01-10T14:10:30.000Z', version: '3.0.1', size: 5672; checksum: 'sha256:i9j0k1l2...'], $effect(() => { mounted = true; loadPersistedStates()});
-  async function loadPersistedStates(): Promise<any> { loading = true; try { // In production: const response = await fetch('/api/state/persistence') await new Promise(resolve => setTimeout(resolve, 1000)); persistedStates = mockPersistedStates; // fixed identifier } catch (error) { console.error('Failed to load persisted states:', error)} finally { loading = false}
-  async function restoreState(stateId: string): Promise<any> { restoring = true; try { // await fetch(`/api/state/persistence/${ stateId }/restore`, { method: 'POST' }) console.log('Restoring state:', stateId); await new Promise(resolve => setTimeout(resolve, 1500)); alert('State restored successfully!')} catch (error) { console.error('Failed to restore state:', error); alert('Failed to restore state')} finally { restoring = false}
+import { onMount } from 'svelte';
+
+// Simplified and valid state persistence page script while we repair more complex
+// serialized mock data that contained malformed tokens.
+let mounted = false;
+let persistedStates: Array<any> = [];
+let loading = true;
+let selectedState: any = null;
+let restoring = false;
+
+const mockPersistedStates = [
+  {
+    id: 'auth_user_123_20240110_143022',
+    machineId: 'auth-machine',
+    userId: 'user_123',
+    state: 'authenticated',
+    context: { userId: 'user_123', sessionId: 'sess_456', permissions: ['read', 'write', 'admin'], lastActivity: '2024-01-10T14:30:22.000Z' },
+    timestamp: '2024-01-10T14:30:22.000Z',
+    version: '1.0.2',
+    size: 1247,
+    checksum: 'sha256:a1b2c3d4...'
+  },
+  {
+    id: 'case_case_789_20240110_142015',
+    machineId: 'case-management-machine',
+    userId: 'user_123',
+    state: 'reviewing',
+    context: {
+      caseId: 'case_789',
+      title: 'Smith vs. Johnson Contract Dispute',
+      status: 'under_review',
+      assignedTo: 'user_123',
+      documents: ['doc_001', 'doc_002', 'doc_003'],
+      evidence: ['evidence_456', 'evidence_789'],
+      deadline: '2024-01-15T00:00:00.000Z',
+      notes: 'Awaiting additional documentation from plaintiff.'
+    },
+    timestamp: '2024-01-10T14:20:15.000Z',
+    version: '2.1.0',
+    size: 2891,
+    checksum: 'sha256:e5f6g7h8...'
   }
-  async function deletePersistedState(stateId: string): Promise<void> { if (!confirm('Are you sure you want to delete this persisted state? This action cannot be undone.')) { return}
-    try { // await fetch(`/api/state/persistence/${ stateId }`, { method: 'DELETE' }) console.log('Deleting state:', stateId); persistedStates = persistedStates.filter(s => s.id !== stateId); if (selectedState?.id === stateId) { selectedState = null}
-    } catch (error) { console.error('Failed to delete state:', error); alert('Failed to delete state')}
+];
+
+onMount(() => {
+  mounted = true;
+  loadPersistedStates();
+});
+
+async function loadPersistedStates() {
+  loading = true;
+  try {
+    // Simulate fetch for now
+    await new Promise((r) => setTimeout(r, 500));
+    persistedStates = mockPersistedStates;
+  } catch (err) {
+    console.error('Failed to load persisted states:', err);
+  } finally {
+    loading = false;
   }
-  function formatBytes(bytes: number) { if (bytes === 0) return '0 Bytes'; const k = 1024; const sizes = ['Bytes', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}
-  function getStateColor(state: string) { if (state.includes('error')) return 'bg-red-100 text-red-800'; if (state.includes('processing') || state.includes('reviewing')) return 'bg-yellow-100 text-yellow-800'; if (state.includes('authenticated') || state.includes('completed')) return 'bg-green-100 text-green-800'; return 'bg-blue-100 text-blue-800'}
-  function getMachineDisplayName(machineId: string) { const names: Record<string, string> = {
-      'auth-machine': 'Authentication',
-      'case-management-machine': 'Case Management',
-      'rag-pipeline-machine': 'RAG Pipeline',
-      'gpu-allocation-machine': 'GPU Allocation'
-    }; return names[machineId] || machineId}
+}
+
+async function restoreState(stateId: string) {
+  restoring = true;
+  try {
+    console.log('Restoring state', stateId);
+    await new Promise((r) => setTimeout(r, 800));
+    alert('State restored successfully');
+  } catch (err) {
+    console.error('Failed to restore state:', err);
+    alert('Restore failed');
+  } finally {
+    restoring = false;
+  }
+}
+
+function formatBytes(bytes: number) {
+  if (!bytes) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
+}
+
+function getMachineDisplayName(machineId: string) {
+  const names: Record<string, string> = {
+    'auth-machine': 'Authentication',
+    'case-management-machine': 'Case Management',
+    'rag-pipeline-machine': 'RAG Pipeline'
+  };
+  return names[machineId] || machineId;
+}
 </script>
 
 <svelte:head>

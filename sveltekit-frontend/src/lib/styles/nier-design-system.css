@@ -24,7 +24,7 @@
   --nier-info: #1976d2;
 
   /* Typography add gothic san serif?*/
-  --nier-font-family: "JetBrains Mono", "Courier New", monospace;
+  --nier-font-family: 'JetBrains Mono', 'Courier New', monospace;
   --nier-font-size-sm: 0.75rem;
   --nier-font-size-base: 0.875rem;
   --nier-font-size-lg: 1rem;
@@ -94,14 +94,14 @@ body {
   transform: translateY(1px);
 }
 
-[data-melt-button][data-variant="primary"],
+[data-melt-button][data-variant='primary'],
 .nier-button.primary {
   background: var(--nier-accent-primary);
   border-color: var(--nier-accent-secondary);
   color: var(--nier-bg-primary);
 }
 
-[data-melt-button][data-variant="primary"]:hover,
+[data-melt-button][data-variant='primary']:hover,
 .nier-button.primary:hover {
   background: var(--nier-accent-secondary);
   box-shadow: var(--nier-shadow-glow);
@@ -275,7 +275,7 @@ body {
 
 .nier-editor-content {
   color: var(--nier-text-primary);
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   min-height: 100%;
   padding: var(--nier-space-lg);
 }
@@ -437,4 +437,3 @@ body {
     padding: var(--nier-space-md);
   }
 }
-

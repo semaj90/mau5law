@@ -112,7 +112,9 @@ function runCommand(cmd, args, opts = {}) {
 
   // Print concise summary to console
   if (Object.keys(grouped).length) {
-    process.stdout.write(`TypeScript diagnostics found in ${Object.keys(grouped).length} file(s).\n`);
+    process.stdout.write(
+      `TypeScript diagnostics found in ${Object.keys(grouped).length} file(s).\n`
+    );
     // print first few entries
     const files = Object.keys(grouped).slice(0, 5);
     for (const f of files) {

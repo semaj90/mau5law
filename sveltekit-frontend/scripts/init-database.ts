@@ -68,7 +68,9 @@ async function main() {
     await ensurePgvectorExtension(targetClient);
 
     // Optionally show current extensions (helpful for debugging)
-    const ext = await targetClient.query("SELECT extname, extversion FROM pg_extension WHERE extname = 'vector'");
+    const ext = await targetClient.query(
+      "SELECT extname, extversion FROM pg_extension WHERE extname = 'vector'"
+    );
     // Guard against null/undefined rowCount (pg types may allow null)
     if ((ext?.rowCount ?? 0) > 0) {
       console.log('Installed extension:', ext.rows?.[0]);
@@ -86,7 +88,7 @@ async function main() {
   }
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error('Unexpected error:', err?.message ?? err);
   process.exit(4);
 });

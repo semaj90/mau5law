@@ -151,7 +151,9 @@
       // Guarded call to nesGPUBridge if available
       try {
         if (nesGPUBridge && typeof (nesGPUBridge as any).storeCHRROMPattern === 'function') {
-          await (nesGPUBridge as any).storeCHRROMPattern(`search_${Date.now()}`, { query: searchQuery });
+          await (nesGPUBridge as any).storeCHRROMPattern(`search_${Date.now()}`, {
+            query: searchQuery,
+          });
         }
       } catch (e) {
         console.warn('nesGPUBridge.storeCHRROMPattern failed or unavailable', e);
@@ -194,7 +196,8 @@
         dateDecided: '2019-03-15',
         documentType: 'case',
         precedentialValue: 'High',
-        summary: 'Landmark case establishing new standards for contract interpretation in commercial disputes...',
+        summary:
+          'Landmark case establishing new standards for contract interpretation in commercial disputes...',
         keyTopics: ['Contract Law', 'Commercial Disputes', 'Interpretation'],
         relevanceScore: 0.94,
         citedBy: 47,
@@ -211,7 +214,8 @@
         dateDecided: '2020-12-01',
         documentType: 'regulation',
         precedentialValue: 'High',
-        summary: 'Discovery scope limitations and proportionality requirements in civil litigation...',
+        summary:
+          'Discovery scope limitations and proportionality requirements in civil litigation...',
         keyTopics: ['Discovery', 'Civil Procedure', 'Proportionality'],
         relevanceScore: 0.89,
         citedBy: 234,
@@ -228,7 +232,8 @@
         dateDecided: '2023-01-01',
         documentType: 'brief',
         precedentialValue: 'Medium',
-        summary: 'Comprehensive template and analysis for drafting effective summary judgment motions...',
+        summary:
+          'Comprehensive template and analysis for drafting effective summary judgment motions...',
         keyTopics: ['Summary Judgment', 'Motion Practice', 'Legal Writing'],
         relevanceScore: 0.82,
         citedBy: 12,
@@ -239,7 +244,7 @@
   }
   async function generateAISuggestions(results: DocumentResult[]) {
     // Extract key terms and generate related search suggestions
-    const topics = results.flatMap(r => r.keyTopics || []);
+    const topics = results.flatMap((r) => r.keyTopics || []);
     const uniqueTopics = [...new Set(topics)];
     aiSuggestions = [
       `Related cases on ${uniqueTopics[0] || 'similar topics'}`,
@@ -422,7 +427,7 @@
               <input
                 type="search"
                 bind:value={searchQuery}
-                onkeydown={e => e.key === 'Enter' && performSearch()}
+                onkeydown={(e) => e.key === 'Enter' && performSearch()}
                 placeholder="Search legal documents, cases, statutes, and precedents..."
                 class="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
@@ -430,7 +435,11 @@
                 <div
                   class="mr-2 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
-                  <LoadingButton onclick={performSearch} loading={isSearching} disabled={!searchQuery.trim()}>
+                  <LoadingButton
+                    onclick={performSearch}
+                    loading={isSearching}
+                    disabled={!searchQuery.trim()}
+                  >
                     {#if isSearching}
                       Searching...
                     {:else}
@@ -461,7 +470,8 @@
             {#if advancedSearch}
               <div class="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction">Jurisdiction</label
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="jurisdiction"
+                    >Jurisdiction</label
                   ><select
                     id="jurisdiction"
                     bind:value={selectedFilters.jurisdiction}
@@ -474,7 +484,9 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="court">Court</label><select
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="court"
+                    >Court</label
+                  ><select
                     id="court"
                     bind:value={selectedFilters.court}
                     class="w-full rounded-md border-gray-300 text-sm"
@@ -486,7 +498,8 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type">Document Type</label
+                  <label class="block text-sm font-medium text-gray-700 mb-1" for="document-type"
+                    >Document Type</label
                   ><select
                     id="document-type"
                     bind:value={selectedFilters.documentType}
@@ -499,8 +512,9 @@
                   </select>
                 </div>
                 <div class="md:col-span-2">
-                  <label class="block text-sm font-medium text-gray-700 mb-1" for="precedential-value"
-                    >Precedential Value</label
+                  <label
+                    class="block text-sm font-medium text-gray-700 mb-1"
+                    for="precedential-value">Precedential Value</label
                   ><select
                     id="precedential-value"
                     bind:value={selectedFilters.precedentialValue}
@@ -566,7 +580,9 @@
             </div>
             <!-- Results List -->
             {#each Array.isArray(searchResults) ? searchResults : [] as result}
-              <div class="bg-white rounded-lg shadow border border-gray-200 p-6 hover:shadow-md transition-shadow">
+              <div
+                class="bg-white rounded-lg shadow border border-gray-200 p-6 hover:shadow-md transition-shadow"
+              >
                 <div class="flex items-start justify-between mb-3">
                   <div class="flex-1">
                     <h3 class="text-lg font-semibold text-blue-600 hover:text-blue-800">

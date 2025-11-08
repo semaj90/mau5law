@@ -47,7 +47,7 @@ https://svelte.dev/e/attribute_duplicate -->
       more: '⋯',
       eye: '👁️',
       tag: '🏷️',
-      trash: '🗑️'
+      trash: '🗑️',
     };
     const c = cls ? ` class="${cls}"` : '';
     const glyph = map[name] ?? '❔';
@@ -89,12 +89,17 @@ https://svelte.dev/e/attribute_duplicate -->
       if (mimeType.includes('pdf')) return 'fileText';
     }
     switch ((evidenceType || '').toLowerCase()) {
-      case 'image': return 'image';
-      case 'video': return 'video';
-      case 'audio': return 'music';
+      case 'image':
+        return 'image';
+      case 'video':
+        return 'video';
+      case 'audio':
+        return 'music';
       case 'document':
-      case 'pdf': return 'fileText';
-      default: return 'file';
+      case 'pdf':
+        return 'fileText';
+      default:
+        return 'file';
     }
   }
   // --- CHANGES END ---
@@ -121,10 +126,20 @@ https://svelte.dev/e/attribute_duplicate -->
     setSorting: (_f: string, _o: string) => {},
     toggleSelection: (_id: string) => {},
     clearSelection: () => {},
-    deleteEvidence: async (_id: string) => {}
+    deleteEvidence: async (_id: string) => {},
   };
-  let evidenceGrid: any = { subscribe: (fn: any) => { fn(undefined); return () => {}; } };
-  let filteredEvidence: any = { subscribe: (fn: any) => { fn([]); return () => {}; } };
+  let evidenceGrid: any = {
+    subscribe: (fn: any) => {
+      fn(undefined);
+      return () => {};
+    },
+  };
+  let filteredEvidence: any = {
+    subscribe: (fn: any) => {
+      fn([]);
+      return () => {};
+    },
+  };
 
   // Subscribe to store changes
   $effect(() => {
@@ -270,10 +285,15 @@ https://svelte.dev/e/attribute_duplicate -->
 <div class="space-y-4">
   {#if showHeader}
     <!-- Header with search and controls -->
-    <div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 mb-6">
+    <div
+      class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 mb-6"
+    >
       <div class="flex items-center gap-4 mb-4">
         <div class="relative flex-1">
-          {@html renderIcon('search', 'absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400')}
+          {@html renderIcon(
+            'search',
+            'absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400'
+          )}
           <input
             bind:this={searchInput}
             type="text"
@@ -290,7 +310,12 @@ https://svelte.dev/e/attribute_duplicate -->
           value={sortBy}
           onchange={(e) => {
             const value = (e.target as HTMLSelectElement)?.value;
-            if (value === 'title' || value === 'evidenceType' || value === 'fileSize' || value === 'uploadedAt') {
+            if (
+              value === 'title' ||
+              value === 'evidenceType' ||
+              value === 'fileSize' ||
+              value === 'uploadedAt'
+            ) {
               toggleSort(value);
             }
           }}
@@ -323,7 +348,9 @@ https://svelte.dev/e/attribute_duplicate -->
 
       <!-- Selection controls -->
       {#if selectedItems.size > 0}
-        <div class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg mt-4">
+        <div
+          class="flex items-center justify-between p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg mt-4"
+        >
           <span class="text-sm text-blue-700 dark:text-blue-300">
             {selectedItems.size} item{selectedItems.size !== 1 ? 's' : ''} selected
           </span>
@@ -334,17 +361,25 @@ https://svelte.dev/e/attribute_duplicate -->
             >
               Clear
             </button>
-            <button class="px-3 py-1 border rounded bg-white dark:bg-gray-800 text-sm" onclick={() => {
-              // implement bulk download if needed
-              filteredData.forEach((it) => { if (selectedItems.has(it.id)) downloadEvidence(it); });
-            }}>
-              {@html renderIcon('download','w-4 h-4')} Download
+            <button
+              class="px-3 py-1 border rounded bg-white dark:bg-gray-800 text-sm"
+              onclick={() => {
+                // implement bulk download if needed
+                filteredData.forEach((it) => {
+                  if (selectedItems.has(it.id)) downloadEvidence(it);
+                });
+              }}
+            >
+              {@html renderIcon('download', 'w-4 h-4')} Download
             </button>
-            <button class="px-3 py-1 border rounded bg-white dark:bg-gray-800 text-sm" onclick={() => {
-              // implement bulk archive placeholder
-              alert('Archive selected (not implemented)');
-            }}>
-              {@html renderIcon('archive','w-4 h-4')} Archive
+            <button
+              class="px-3 py-1 border rounded bg-white dark:bg-gray-800 text-sm"
+              onclick={() => {
+                // implement bulk archive placeholder
+                alert('Archive selected (not implemented)');
+              }}
+            >
+              {@html renderIcon('archive', 'w-4 h-4')} Archive
             </button>
           </div>
         </div>
@@ -374,18 +409,13 @@ https://svelte.dev/e/attribute_duplicate -->
       {@html renderIcon('file', 'w-12 h-12 mx-auto mb-4 text-gray-400')}
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">No evidence found</h3>
       <p class="text-gray-600 dark:text-gray-400">
-        {searchQuery
-          ? 'Try adjusting your search terms.'
-          : 'Upload some evidence to get started.'}
+        {searchQuery ? 'Try adjusting your search terms.' : 'Upload some evidence to get started.'}
       </p>
     </div>
   {:else}
     <div class="mt-6">
       {#if viewMode === 'grid'}
-        <div
-          class="grid gap-4"
-          style={`grid-template-columns: repeat(${columns}, minmax(0, 1fr))`}
-        >
+        <div class="grid gap-4" style={`grid-template-columns: repeat(${columns}, minmax(0, 1fr))`}>
           {#each filteredData as item (item.id)}
             <div
               class={`bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-lg transition-shadow cursor-pointer ${selectedItems.has(item.id) ? 'ring-2 ring-blue-500' : ''}`}
@@ -399,7 +429,9 @@ https://svelte.dev/e/attribute_duplicate -->
               }}
               aria-pressed={selectedItems.has(item.id)}
             >
-              <div class="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-md mb-4 flex items-center justify-center">
+              <div
+                class="relative aspect-video bg-gray-100 dark:bg-gray-800 rounded-md mb-4 flex items-center justify-center"
+              >
                 {#if (item as any).fileUrl && isImageFile((item as any).mimeType || '')}
                   <img
                     src={(item as any).fileUrl}
@@ -408,14 +440,20 @@ https://svelte.dev/e/attribute_duplicate -->
                     loading="lazy"
                   />
                 {:else}
-                  {@const iconKey = getFileIconKey((item as any).evidenceType || '', (item as any).mimeType)}
+                  {@const iconKey = getFileIconKey(
+                    (item as any).evidenceType || '',
+                    (item as any).mimeType
+                  )}
                   {@html renderIcon(iconKey, 'w-12 h-12 text-gray-400')}
                 {/if}
                 <div class="absolute top-2 left-2">
                   <input
                     type="checkbox"
                     checked={selectedItems.has(item.id)}
-                    onclick={(e: MouseEvent) => { e.stopPropagation(); toggleSelection(item); }}
+                    onclick={(e: MouseEvent) => {
+                      e.stopPropagation();
+                      toggleSelection(item);
+                    }}
                     class="h-5 w-5 rounded text-blue-600 border-gray-300 focus:ring-blue-500"
                   />
                 </div>
@@ -427,15 +465,23 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
 
               <div class="flex flex-col">
-                <h3 class="font-semibold text-gray-900 dark:text-white truncate" title={(item as any).title}>
+                <h3
+                  class="font-semibold text-gray-900 dark:text-white truncate"
+                  title={(item as any).title}
+                >
                   {(item as any).title}
                 </h3>
                 {#if (item as any).description}
-                  <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2" title={(item as any).description}>
+                  <p
+                    class="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2"
+                    title={(item as any).description}
+                  >
                     {(item as any).description}
                   </p>
                 {/if}
-                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
+                <div
+                  class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400"
+                >
                   <div class="flex justify-between items-center">
                     <span>{formatDate((item as any).uploadedAt)}</span>
                     {#if (item as any).fileSize}
@@ -445,13 +491,17 @@ https://svelte.dev/e/attribute_duplicate -->
 
                   {#if (item as any).tags && (item as any).tags.length > 0}
                     <div class="mt-2 flex flex-wrap gap-1">
-                      {#each (Array.isArray((item as any).tags) ? (item as any).tags.slice(0, 3) : []) as tag}
-                        <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs">
+                      {#each Array.isArray((item as any).tags) ? (item as any).tags.slice(0, 3) : [] as tag}
+                        <span
+                          class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs"
+                        >
                           {tag}
                         </span>
                       {/each}
                       {#if (item as any).tags.length > 3}
-                        <span class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full text-xs">
+                        <span
+                          class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full text-xs"
+                        >
                           +{(item as any).tags.length - 3}
                         </span>
                       {/if}
@@ -465,7 +515,10 @@ https://svelte.dev/e/attribute_duplicate -->
       {:else}
         <div class="border border-gray-200 dark:border-gray-700 rounded-lg">
           {#each filteredData as item (item.id)}
-            {@const iconKey = getFileIconKey((item as any).evidenceType || '', (item as any).mimeType)}
+            {@const iconKey = getFileIconKey(
+              (item as any).evidenceType || '',
+              (item as any).mimeType
+            )}
             <div
               class={`flex items-center p-3 gap-4 border-b border-gray-200 dark:border-gray-700 last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-800/50 cursor-pointer ${selectedItems.has(item.id) ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
               role="button"
@@ -481,10 +534,15 @@ https://svelte.dev/e/attribute_duplicate -->
               <input
                 type="checkbox"
                 checked={selectedItems.has(item.id)}
-                onclick={(e: MouseEvent) => { e.stopPropagation(); toggleSelection(item); }}
+                onclick={(e: MouseEvent) => {
+                  e.stopPropagation();
+                  toggleSelection(item);
+                }}
                 class="h-5 w-5 rounded text-blue-600 border-gray-300 focus:ring-blue-500"
               />
-              <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+              <div
+                class="flex-shrink-0 w-10 h-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
+              >
                 {@html renderIcon(iconKey, 'w-6 h-6 text-gray-500 dark:text-gray-400')}
               </div>
 
@@ -520,13 +578,17 @@ https://svelte.dev/e/attribute_duplicate -->
 
                 {#if item.tags && item.tags.length > 0}
                   <div class="mt-2 flex flex-wrap gap-1">
-                    {#each (Array.isArray(item.tags) ? item.tags.slice(0, 5) : []) as tag}
-                      <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs">
+                    {#each Array.isArray(item.tags) ? item.tags.slice(0, 5) : [] as tag}
+                      <span
+                        class="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full text-xs"
+                      >
                         {tag}
                       </span>
                     {/each}
                     {#if item.tags.length > 5}
-                      <span class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full text-xs">
+                      <span
+                        class="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full text-xs"
+                      >
                         +{item.tags.length - 5}
                       </span>
                     {/if}
@@ -535,7 +597,10 @@ https://svelte.dev/e/attribute_duplicate -->
               </div>
 
               <div class="flex-shrink-0">
-                <button class="px-2 py-1 border rounded bg-white dark:bg-gray-800" aria-label="More">
+                <button
+                  class="px-2 py-1 border rounded bg-white dark:bg-gray-800"
+                  aria-label="More"
+                >
                   {@html renderIcon('more', 'w-5 h-5')}
                 </button>
               </div>

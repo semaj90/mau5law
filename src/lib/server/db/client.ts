@@ -3,29 +3,32 @@
  * Uses the DATABASE_URL environment variable for connection.
  */
 
-import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import { getDatabaseUrl } from "$lib/server/utils/env";
-import * as schema from "./schema"; // Import all schema definitions
+// Replace node-postgres + pg pool with postgres-js + drizzle-postgres-js
+import postgres from 'postgres';
+import { drizzle } from 'drizzle-orm/postgres-js';
+// Import env helper as default (could be a function or a string)
+import getDatabaseUrl from '$lib/server/utils/env';
+import * as schema from './schema'; // Import all schema definitions
 
-const databaseUrl = getDatabaseUrl();
+// Resolve the database URL from helper (function or string) with safe fallbacks
+const resolvedFromHelper =
+  typeof getDatabaseUrl === 'function' ? getDatabaseUrl() : (getDatabaseUrl as string | undefined);
 
-// For production, use a connection pool.
-// For development, a single client might be sufficient, but a pool is safer.
-const pool = new Pool({
-  connectionString: databaseUrl,
+const DATABASE_URL =
+  resolvedFromHelper ?? process.env.DATABASE_URL ?? 'postgresql://postgres:postgres@localhost:5432/postgres';
+
+// Create a postgres-js client (handles pooling internally)
+const sql = postgres(DATABASE_URL, {
+  // optional small defaults; adjust for your environment
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined,
+  max: Number(process.env.PG_MAX_CLIENTS ?? 10),
 });
 
-const db = drizzle(pool, { schema });
+// Initialize Drizzle with postgres-js adapter and schema
+export const db = drizzle(sql, { schema });
 
+// Export default for compatibility with existing imports
 export default db;
 
-// export connectionString for debugging/health checks if needed
-export const DB_CONNECTION_STRING = databaseUrl;
-}
-
-// Drizzle ORM instance (if you need typed schema usage later)
-export const db = getDb();
-
-// export connectionString for debugging/health checks if needed
-export const DB_CONNECTION_STRING = getDatabaseUrl();
+// Export connection string for debugging/health checks if needed
+export const DB_CONNECTION_STRING = DATABASE_URL;

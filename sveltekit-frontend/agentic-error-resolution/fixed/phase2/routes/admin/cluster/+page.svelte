@@ -158,9 +158,14 @@
 
 <svelte:head>
   <title>Node.js Cluster Management - Legal AI Admin</title>
-  <meta name="description" content="Real-time monitoring and management for Node.js cluster architecture" />
+  <meta
+    name="description"
+    content="Real-time monitoring and management for Node.js cluster architecture"
+  />
 </svelte:head>
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6">
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white p-6"
+>
   <!-- Header -->
   <div class="max-w-7xl mx-auto mb-8">
     <div class="flex justify-between items-center mb-6">
@@ -286,7 +291,8 @@
         </h3>
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium mb-2" for="target-workers">Target Workers</label><input
+            <label class="block text-sm font-medium mb-2" for="target-workers">Target Workers</label
+            ><input
               id="target-workers"
               type="number"
               ;
@@ -433,7 +439,9 @@
                 <td class="py-3 px-4">{worker.connections}</td>
                 <td class="py-3 px-4">{worker.requestsHandled.toLocaleString()}</td>
                 <td class="py-3 px-4">{formatBytes(worker.memoryUsage.heapUsed)}</td>
-                <td class="py-3 px-4">{formatCpuTime(worker.cpuUsage.user + worker.cpuUsage.system)}</td>
+                <td class="py-3 px-4"
+                  >{formatCpuTime(worker.cpuUsage.user + worker.cpuUsage.system)}</td
+                >
                 <td class="py-3 px-4">
                   <span
                     class={worker.errors > 10
@@ -449,7 +457,9 @@
               </tr>
             {:else}
               <tr>
-                <td colspan="9" class="py-8 text-center text-gray-400"> No worker data available </td>
+                <td colspan="9" class="py-8 text-center text-gray-400">
+                  No worker data available
+                </td>
               </tr>
             {/each}
           </tbody>

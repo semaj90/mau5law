@@ -41,7 +41,7 @@
     assistantSessions: 8,
     evidenceUploaded: 156,
     tasksCompleted: 89,
-    recentActivity: 24
+    recentActivity: 24,
   };
 
   const recentCases: CaseItem[] = (data?.recentCases as CaseItem[]) ?? [];
@@ -52,7 +52,7 @@
     documentsAnalyzed: stats.documentsAnalyzed ?? 0,
     citationsFound: stats.citationsFound ?? 0,
     casesProcessed: stats.casesProcessed ?? 0,
-    assistantSessions: stats.assistantSessions ?? 0
+    assistantSessions: stats.assistantSessions ?? 0,
   };
 
   const recentActivities = $state([
@@ -61,36 +61,36 @@
       title: 'Contract Review Session',
       time: '2 minutes ago',
       user: 'Legal Analyst',
-      status: 'completed'
+      status: 'completed',
     },
     {
       type: 'rag',
       title: 'Precedent Research Query',
       time: '5 minutes ago',
       user: 'Senior Associate',
-      status: 'completed'
+      status: 'completed',
     },
     {
       type: 'analysis',
       title: 'Document Classification',
       time: '8 minutes ago',
       user: 'Paralegal',
-      status: 'processing'
+      status: 'processing',
     },
     {
       type: 'assistant',
       title: 'Case Strategy Discussion',
       time: '12 minutes ago',
       user: 'Partner',
-      status: 'completed'
-    }
+      status: 'completed',
+    },
   ]);
 
   const systemHealth = $state({
     aiModels: 'online',
     vectorDB: 'online',
     gpuAcceleration: 'active',
-    ragPipeline: 'healthy'
+    ragPipeline: 'healthy',
   });
 
   const statusColors: Record<string, { bg: string; text: string; label: string }> = {
@@ -98,14 +98,14 @@
     investigating: { bg: '#ff9800', text: '#fff', label: '🔍 Investigating' },
     pending: { bg: '#ffd700', text: '#000', label: '⏳ Pending' },
     closed: { bg: '#666', text: '#fff', label: '✅ Closed' },
-    archived: { bg: '#999', text: '#fff', label: '📦 Archived' }
+    archived: { bg: '#999', text: '#fff', label: '📦 Archived' },
   };
 
   const priorityColors: Record<string, string> = {
     Critical: '#ff1744',
     High: '#ff9800',
     Medium: '#ffd700',
-    Low: '#4caf50'
+    Low: '#4caf50',
   };
 
   const aiServices = [
@@ -115,7 +115,7 @@
       href: '/ai/chat',
       description: 'Interactive AI chat with legal document context.',
       status: 'active',
-      stats: () => `${aiStats.activeChats} active chats`
+      stats: () => `${aiStats.activeChats} active chats`,
     },
     {
       name: 'AI Assistant',
@@ -123,7 +123,7 @@
       href: '/ai/assistant',
       description: 'Legal AI assistant for document analysis.',
       status: 'active',
-      stats: () => `${aiStats.assistantSessions} sessions`
+      stats: () => `${aiStats.assistantSessions} sessions`,
     },
     {
       name: 'RAG Query System',
@@ -131,7 +131,7 @@
       href: '/ai/rag',
       description: 'Retrieval-Augmented Generation for legal research.',
       status: 'active',
-      stats: () => `${aiStats.ragQueries} queries processed`
+      stats: () => `${aiStats.ragQueries} queries processed`,
     },
     {
       name: 'GPU Chat',
@@ -139,7 +139,7 @@
       href: '/ai/gpu-chat',
       description: 'High-performance GPU-accelerated chat.',
       status: 'active',
-      stats: () => 'RTX acceleration enabled'
+      stats: () => 'RTX acceleration enabled',
     },
     {
       name: 'Vector Search',
@@ -147,7 +147,7 @@
       href: '/ai/vector-search',
       description: 'Semantic search across legal documents.',
       status: 'active',
-      stats: () => `${aiStats.citationsFound} citations tracked`
+      stats: () => `${aiStats.citationsFound} citations tracked`,
     },
     {
       name: 'Document Analysis',
@@ -155,7 +155,7 @@
       href: '/ai/processing',
       description: 'AI-powered document processing and analysis.',
       status: 'active',
-      stats: () => `${aiStats.documentsAnalyzed} documents`
+      stats: () => `${aiStats.documentsAnalyzed} documents`,
     },
     {
       name: 'Case Scoring',
@@ -163,7 +163,7 @@
       href: '/ai/case-scoring',
       description: 'AI-driven case strength assessment.',
       status: 'active',
-      stats: () => `${aiStats.casesProcessed} cases scored`
+      stats: () => `${aiStats.casesProcessed} cases scored`,
     },
     {
       name: 'Pattern Detection',
@@ -171,8 +171,8 @@
       href: '/ai/pattern-detection',
       description: 'Legal pattern and anomaly detection.',
       status: 'active',
-      stats: () => 'ML models active'
-    }
+      stats: () => 'ML models active',
+    },
   ];
 
   function badgeClass(condition: boolean, positive: string, negative: string) {
@@ -182,7 +182,7 @@
   function umamiAttrs(serviceName: string) {
     return {
       'data-umami-event': 'ai-service-access',
-      'data-umami-event-service': serviceName
+      'data-umami-event-service': serviceName,
     } as const;
   }
 
@@ -196,7 +196,8 @@
         return '🧪';
       case 'assistant':
         return '🤖';
-      default: return '⚙️';
+      default:
+        return '⚙️';
     }
   }
 </script>
@@ -244,25 +245,49 @@
         <div class="status-grid">
           <div class="status-item">
             <span>AI Models</span>
-            <Badge class={badgeClass(systemHealth.aiModels === 'online', 'status-online', 'status-offline')}>
+            <Badge
+              class={badgeClass(
+                systemHealth.aiModels === 'online',
+                'status-online',
+                'status-offline'
+              )}
+            >
               {systemHealth.aiModels}
             </Badge>
           </div>
           <div class="status-item">
             <span>Vector DB</span>
-            <Badge class={badgeClass(systemHealth.vectorDB === 'online', 'status-online', 'status-offline')}>
+            <Badge
+              class={badgeClass(
+                systemHealth.vectorDB === 'online',
+                'status-online',
+                'status-offline'
+              )}
+            >
               {systemHealth.vectorDB}
             </Badge>
           </div>
           <div class="status-item">
             <span>GPU Acceleration</span>
-            <Badge class={badgeClass(systemHealth.gpuAcceleration === 'active', 'status-active', 'status-inactive')}>
+            <Badge
+              class={badgeClass(
+                systemHealth.gpuAcceleration === 'active',
+                'status-active',
+                'status-inactive'
+              )}
+            >
               {systemHealth.gpuAcceleration}
             </Badge>
           </div>
           <div class="status-item">
             <span>RAG Pipeline</span>
-            <Badge class={badgeClass(systemHealth.ragPipeline === 'healthy', 'status-healthy', 'status-degraded')}>
+            <Badge
+              class={badgeClass(
+                systemHealth.ragPipeline === 'healthy',
+                'status-healthy',
+                'status-degraded'
+              )}
+            >
               {systemHealth.ragPipeline}
             </Badge>
           </div>
@@ -316,14 +341,20 @@
           <a href={`/cases/${caseItem.id}`} class="nes-container is-dark case-card-wrapper">
             <div class="case-card-inner">
               <!-- Case Status Badge -->
-              <div class="case-status-badge" style="background-color: {statusColors[caseItem.status]?.bg}">
+              <div
+                class="case-status-badge"
+                style="background-color: {statusColors[caseItem.status]?.bg}"
+              >
                 <span style="color: {statusColors[caseItem.status]?.text}" class="status-label">
                   {statusColors[caseItem.status]?.label || caseItem.status}
                 </span>
               </div>
 
               <!-- Priority Badge -->
-              <div class="case-priority-badge" style="background-color: {priorityColors[caseItem.priority]}">
+              <div
+                class="case-priority-badge"
+                style="background-color: {priorityColors[caseItem.priority]}"
+              >
                 <span class="priority-label">{caseItem.priority}</span>
               </div>
 

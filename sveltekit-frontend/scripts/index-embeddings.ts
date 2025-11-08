@@ -6,7 +6,7 @@ import { upsertToQdrant } from '../src/lib/server/vector/qdrant';
 async function indexSamples() {
   const docs = [
     { id: 'doc-1', text: 'Example legal contract about lease agreements', source: 'sample' },
-    { id: 'doc-2', text: 'Another legal memo about tort law and negligence', source: 'sample' }
+    { id: 'doc-2', text: 'Another legal memo about tort law and negligence', source: 'sample' },
   ];
 
   for (const d of docs) {
@@ -17,4 +17,7 @@ async function indexSamples() {
   }
 }
 
-indexSamples().catch(err => { console.error(err); process.exit(1); });
+indexSamples().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

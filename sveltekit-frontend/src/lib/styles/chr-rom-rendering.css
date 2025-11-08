@@ -27,7 +27,7 @@
 /* PNG-specific rendering (NES 8-bit pixel art) */
 .chr-rom-png {
   image-rendering: -webkit-optimize-contrast;
-  image-rendering: -moz-crisp-edges; 
+  image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 }
@@ -38,11 +38,11 @@
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: -o-crisp-edges;
-  
+
   /* Disable subpixel rendering */
   -webkit-font-smoothing: none;
   -moz-osx-font-smoothing: unset;
-  
+
   /* Ensure pixel boundaries */
   image-rendering: optimizeSpeed;
   image-rendering: -webkit-optimize-contrast;
@@ -137,7 +137,7 @@
     transform: scale(1);
     transform-origin: top left;
   }
-  
+
   .chr-rom-svg {
     /* Allow SVG to use higher resolution */
     image-rendering: auto;
@@ -159,12 +159,12 @@
 }
 
 @keyframes chrRomFadeIn {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: scale(0.95);
   }
-  to { 
-    opacity: 1; 
+  to {
+    opacity: 1;
     transform: scale(1);
   }
 }
@@ -174,19 +174,21 @@
 }
 
 @keyframes chrRomPulse {
-  0%, 100% { 
-    opacity: 1; 
+  0%,
+  100% {
+    opacity: 1;
   }
-  50% { 
-    opacity: 0.7; 
+  50% {
+    opacity: 0.7;
   }
 }
 
 /* Loading states */
 .chr-rom-loading {
-  background: linear-gradient(90deg, 
-    rgba(203, 213, 225, 0.1) 25%, 
-    rgba(203, 213, 225, 0.3) 50%, 
+  background: linear-gradient(
+    90deg,
+    rgba(203, 213, 225, 0.1) 25%,
+    rgba(203, 213, 225, 0.3) 50%,
     rgba(203, 213, 225, 0.1) 75%
   );
   background-size: 200% 100%;
@@ -205,7 +207,9 @@
 /* Hover effects for interactive patterns */
 .chr-rom-interactive {
   cursor: pointer;
-  transition: transform 0.1s ease, filter 0.1s ease;
+  transition:
+    transform 0.1s ease,
+    filter 0.1s ease;
 }
 
 .chr-rom-interactive:hover {
@@ -227,7 +231,7 @@
   /* GPU acceleration for smooth animations */
   will-change: transform, opacity;
   transform: translateZ(0);
-  
+
   /* Optimize paint and composite */
   contain: layout style paint;
 }
@@ -236,7 +240,7 @@
 .chr-rom-container {
   /* Optimize for pattern grids */
   contain: layout paint;
-  
+
   /* Prevent layout shifts */
   min-height: 16px;
   min-width: 16px;
@@ -247,7 +251,7 @@
   .chr-rom-doc-icon {
     filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.1));
   }
-  
+
   .chr-rom-doc-icon:hover {
     filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
   }
@@ -260,7 +264,7 @@
     animation: none !important;
     transition: none !important;
   }
-  
+
   .chr-rom-pulse {
     animation: none;
   }

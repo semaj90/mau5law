@@ -7,12 +7,7 @@
   // (Svelte forwards those to the root element below).
 </script>
 
-<button
-  {...$$restProps}
-  onclick={onclick}
-  disabled={disabled}
-  class="ui-button"
->
+<button {...$$restProps} {onclick} {disabled} class="ui-button">
   <slot />
 </button>
 
@@ -24,11 +19,14 @@
     gap: 0.5rem;
     padding: 0.5rem 0.75rem;
     border-radius: 6px;
-    border: 1px solid rgba(0,0,0,0.08);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     background: var(--btn-bg, #0ea5e9);
     color: var(--btn-fg, #fff);
     cursor: pointer;
     font-weight: 600;
   }
-  .ui-button:disabled { opacity: 0.6; cursor: not-allowed; }
+  .ui-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 </style>

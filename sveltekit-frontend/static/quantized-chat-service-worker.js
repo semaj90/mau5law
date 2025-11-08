@@ -37,7 +37,11 @@ class GRPMOThinkingEngine {
     try {
       const historicalData = await this.fetchUserChatHistory();
       this.buildThinkingPatterns(historicalData);
-      console.log('🧠 GRPMO Thinking Engine initialized with', this.thinkingPatterns.size, 'patterns');
+      console.log(
+        '🧠 GRPMO Thinking Engine initialized with',
+        this.thinkingPatterns.size,
+        'patterns'
+      );
     } catch (error) {
       console.warn('GRPMO initialization failed:', error);
     }
@@ -113,7 +117,7 @@ class GRPMOThinkingEngine {
 
     // Tokenize and convert common patterns to glyphs
     const tokens = this.tokenizeMarkdown(text);
-    const glyphs = tokens.map(token => {
+    const glyphs = tokens.map((token) => {
       if (!glyphMap.has(token)) {
         glyphMap.set(token, String.fromCharCode(32 + glyphCount));
         glyphCount++;
@@ -144,10 +148,12 @@ class GRPMOThinkingEngine {
     let tokens = [text];
 
     for (const pattern of patterns) {
-      tokens = tokens.flatMap(token => (typeof token === 'string' ? token.split(pattern) : [token]));
+      tokens = tokens.flatMap((token) =>
+        typeof token === 'string' ? token.split(pattern) : [token]
+      );
     }
 
-    return tokens.filter(token => token && token.trim());
+    return tokens.filter((token) => token && token.trim());
   }
 
   // Bit-level compression for quantized data
@@ -323,7 +329,7 @@ class CHRROMPatternCache {
 const chrROMCache = new CHRROMPatternCache();
 
 // Main service worker event handlers
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
   // Intercept chat API requests
@@ -520,12 +526,12 @@ async function decompressQuantizedResponse(quantizedData) {
 
   return glyphs
     .split('')
-    .map(glyph => reverseGlyphMap[glyph] || glyph)
+    .map((glyph) => reverseGlyphMap[glyph] || glyph)
     .join('');
 }
 
 // Background sync for thinking patterns
-self.addEventListener('sync', event => {
+self.addEventListener('sync', (event) => {
   if (event.tag === 'grpmo-thinking-sync') {
     event.waitUntil(syncThinkingPatterns());
   }
@@ -556,7 +562,7 @@ async function syncThinkingPatterns() {
 }
 
 // Performance monitoring
-self.addEventListener('message', event => {
+self.addEventListener('message', (event) => {
   // Allow the main thread to set the API base URL
   if (event.data && event.data.type === 'SET_API_BASE_URL' && event.data.url) {
     chatApiBaseUrl = event.data.url;

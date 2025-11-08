@@ -452,7 +452,12 @@
         >
           {isLoading ? '⏳ Testing...' : '🚀 Run Authenticated CRUD Test'}
         </Button>
-        <Button class="bits-btn" onclick={() => checkAuth()} disabled={isLoading} variant="secondary">
+        <Button
+          class="bits-btn"
+          onclick={() => checkAuth()}
+          disabled={isLoading}
+          variant="secondary"
+        >
           🔍 Check Auth
         </Button>
         <Button
@@ -490,7 +495,9 @@
         <Button class="bits-btn" onclick={clearResults} variant="ghost">🧹 Clear Results</Button>
       </div>
       {#if !isAuthenticated}
-        <p class="text-sm text-gray-500 mt-2">⚠️ Authentication required to run tests. Please log in first.</p>
+        <p class="text-sm text-gray-500 mt-2">
+          ⚠️ Authentication required to run tests. Please log in first.
+        </p>
       {/if}
     </div>
   </div>
@@ -549,7 +556,9 @@
                     Created: {new Date(caseItem.createdAt).toLocaleDateString()}
                   </p>
                   {#if caseItem.metadata?.embedding}
-                    <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded mt-1">
+                    <span
+                      class="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded mt-1"
+                    >
                       🧠 Has Embedding
                     </span>
                   {/if}
@@ -573,7 +582,9 @@
       {#if testResults.length === 0}
         <p class="text-gray-500">No test results yet. Run some tests to see results here.</p>
       {:else}
-        <div class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto space-y-1">
+        <div
+          class="bg-gray-900 text-green-400 p-4 rounded font-mono text-sm max-h-96 overflow-y-auto space-y-1"
+        >
           {#each Array.isArray(testResults) ? testResults : [] as result}
             <div
               class={(result as { includes?: any }).includes('❌')

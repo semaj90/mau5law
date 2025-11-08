@@ -992,10 +992,7 @@ function reconcile(
         move(pending3, next2, anchor);
         prev = pending3;
       } else {
-        var child_anchor = current
-          ? /** @type {TemplateNode} */
-            current.e.nodes_start
-          : anchor;
+        var child_anchor = current ? /** @type {TemplateNode} */ current.e.nodes_start : anchor;
         prev = create_item(
           child_anchor,
           state2,
@@ -1198,14 +1195,8 @@ function create_item(
   }
 }
 function move(item, next2, anchor) {
-  var end = item.next
-    ? /** @type {TemplateNode} */
-      item.next.e.nodes_start
-    : anchor;
-  var dest = next2
-    ? /** @type {TemplateNode} */
-      next2.e.nodes_start
-    : anchor;
+  var end = item.next ? /** @type {TemplateNode} */ item.next.e.nodes_start : anchor;
+  var dest = next2 ? /** @type {TemplateNode} */ next2.e.nodes_start : anchor;
   var node =
     /** @type {TemplateNode} */
     item.e.nodes_start;
@@ -1986,8 +1977,7 @@ function remove_input_defaults(input) {
 function set_value(element2, value) {
   var attributes = get_attributes(element2);
   if (
-    attributes.value ===
-      (attributes.value = value ?? void 0) || // treat null and undefined the same for the initial value // @ts-expect-error
+    attributes.value === (attributes.value = value ?? void 0) || // treat null and undefined the same for the initial value // @ts-expect-error
     // `progress` elements always need their value set when it's `0`
     (element2.value === value && (value !== 0 || element2.nodeName !== 'PROGRESS'))
   ) {
@@ -1998,8 +1988,7 @@ function set_value(element2, value) {
 function set_checked(element2, checked) {
   var attributes = get_attributes(element2);
   if (
-    attributes.checked ===
-    (attributes.checked = checked ?? void 0) // treat null and undefined the same for the initial value
+    attributes.checked === (attributes.checked = checked ?? void 0) // treat null and undefined the same for the initial value
   ) {
     return;
   }
@@ -3398,10 +3387,7 @@ function createEventDispatcher() {
     var _a;
     const events =
       /** @type {Record<string, Function | Function[]>} */
-      (_a = active_component_context.s.$$events) == null
-        ? void 0
-        : /** @type {any} */
-          _a[type];
+      (_a = active_component_context.s.$$events) == null ? void 0 : /** @type {any} */ _a[type];
     if (events) {
       const callbacks = is_array(events) ? events.slice() : [events];
       const event2 = create_custom_event(

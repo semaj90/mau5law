@@ -8,8 +8,8 @@
  * ✅ Configurable endpoint paths (Ollama / TensorRT)
  */
 
-import { cacheGet, cacheSet, formatError } from "$lib/server/cache/redis";
-import { getOllamaEndpoint } from "$lib/server/utils/env"; // Changed to named import from new env.ts
+import redisCacheUtils from "$lib/server/cache/redis"; // Changed to import default object
+import getOllamaEndpoint from "$lib/server/utils/env"; // Changed to default import
 
 const DEFAULT_MODEL = process.env.EMBED_MODEL || "embeddinggemma:latest";
 // Renamed and adjusted to be a base URL, consistent with getOllamaEndpoint's expected return.
@@ -66,7 +66,7 @@ export async function getEmbeddingFromGemma(
   const key = `embedding:${model}:${text.slice(0, 200)}`;
 
   // 🔹 Step 1: Try Redis cache
-  const cached = await cacheGet<number[]>(key); // Changed from cache.get
+  const cached = (await redisCacheUtils.cacheGet(key)) as number[]; // Access via default object
   if (cached) {
     // Auto-refresh TTL for hot keys
     // The cacheGet/cacheSet functions should ideally handle TTL refresh internally.
@@ -106,10 +106,10 @@ export async function getEmbeddingFromGemma(
     }
 
     // 🔹 Step 4: Cache embedding
-    await cacheSet(key, vector, DEFAULT_TTL_MS); // Changed from cache.set
+    await redisCacheUtils.cacheSet(key, vector, DEFAULT_TTL_MS); // Access via default object
     return vector;
   } catch (err) {
-    console.error("getEmbeddingFromGemma error:", formatError(err));
+    console.error("getEmbeddingFromGemma error:", redisCacheUtils.formatError(err)); // Access via default object
     return [];
   }
 }
@@ -122,7 +122,7 @@ export async function testEmbeddingHealth(): Promise<{ ok: boolean; reason?: str
     const status = await checkEndpointHealth();
     return { ok: status, reason: status ? "healthy" : "endpoint unreachable" };
   } catch (err) {
-    return { ok: false, reason: formatError(err) };
+    return { ok: false, reason: redisCacheUtils.formatError(err) }; // Access via default object
   }
 }
 
@@ -134,5 +134,4 @@ import { getEmbeddingFromGemma } from "$lib/server/ai/embeddinggemma-service";
 
 const emb = await getEmbeddingFromGemma("The plaintiff filed a motion for dismissal");
 console.log("Embedding length:", emb.length);
-*/
 */

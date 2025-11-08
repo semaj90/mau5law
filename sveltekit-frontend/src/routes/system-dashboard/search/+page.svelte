@@ -97,34 +97,35 @@ import type { Document } from '$lib/types';
       const requestBody = {
         query: query.trim(),
         mode: searchMode,
-        filters: { document_types: Array.from(selectedTypes),
+        filters: {
+          document_types: Array.from(selectedTypes),
           similarity_threshold: similarityThreshold,
           limit: 20
         },
-        options: { include_highlights: true,
-          include_metadata: true,
-          boost_recent: true
-        }
+        options: { include_highlights: true, include_metadata: true, boost_recent: true }
       };
-      console.log('Vector search, request:', requestBody);
+
       const response = await fetch('/api/unified/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(requestBody)
       });
-      if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText || response.status}`)}
-      const data = await response.json() as SearchResponse
-      if (!data.success) {
-        throw new Error('Search request failed')}
+
+      if (!response.ok) throw new Error(`Search failed: ${response.statusText || response.status}`);
+
+      const data = (await response.json()) as SearchResponse;
+      if (!data.success) throw new Error('Search request failed');
+
       results = data.results || [];
-      searchInfo = data.query_info || null
+      searchInfo = data.query_info || null;
       suggestions = data.suggestions || [];
-      console.log('Vector search results:', data)} catch (err) {
+      console.log('Vector search results:', data);
+    } catch (err) {
       console.error('Search error:', err);
-'
-      error = err instanceof Error ? err.message : 'Search failed'} finally {
-      loading = false}
+      error = err instanceof Error ? err.message : 'Search failed';
+    } finally {
+      loading = false;
+    }
   }
   function handleKeyPress(e: KeyboardEvent) {
     if (e.key === 'Enter') {

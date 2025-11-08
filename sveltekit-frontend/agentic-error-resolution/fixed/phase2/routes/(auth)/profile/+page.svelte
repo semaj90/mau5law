@@ -308,7 +308,9 @@
 </svelte:head>
 
 {#if isHydrating}
-  <div class="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-gray-600 dark:text-gray-300">
+  <div
+    class="flex min-h-[50vh] flex-col items-center justify-center gap-4 text-gray-600 dark:text-gray-300"
+  >
     <span class="nes-text is-primary animate-pulse text-lg">Loading your profile...</span>
     <span class="text-sm opacity-75">Connecting to secure Drizzle-backed services</span>
   </div>
@@ -329,7 +331,8 @@
       <div class="space-y-2">
         <h1 class="text-3xl font-semibold text-gray-900 dark:text-gray-50">Hello, {displayName}</h1>
         <p class="text-sm text-gray-600 dark:text-gray-300">
-          Keep your profile in sync across UnoCSS-powered UI, Bits-UI dialogs, and Docker-discovered microservices.
+          Keep your profile in sync across UnoCSS-powered UI, Bits-UI dialogs, and Docker-discovered
+          microservices.
         </p>
       </div>
       <div class="flex items-center gap-4">
@@ -358,7 +361,10 @@
       >
         <div class="flex items-start justify-between gap-4">
           <span>{feedback.text}</span>
-          <button class="text-xs uppercase tracking-wide opacity-70 hover:opacity-100" onclick={clearFeedback}>
+          <button
+            class="text-xs uppercase tracking-wide opacity-70 hover:opacity-100"
+            onclick={clearFeedback}
+          >
             Dismiss
           </button>
         </div>
@@ -407,17 +413,30 @@
             </span>
           </div>
           <div class="flex flex-wrap items-center gap-3">
-            <Button type="submit" disabled={isSaving} className="nes-btn is-primary flex items-center gap-2 px-4 py-2">
+            <Button
+              type="submit"
+              disabled={isSaving}
+              className="nes-btn is-primary flex items-center gap-2 px-4 py-2"
+            >
               <span>{isSaving ? 'Saving...' : 'Save Changes'}</span>
             </Button>
-            <Button type="button" disabled={isSaving} onclick={refreshProfile} className="nes-btn px-4 py-2">
+            <Button
+              type="button"
+              disabled={isSaving}
+              onclick={refreshProfile}
+              className="nes-btn px-4 py-2"
+            >
               Reset
             </Button>
           </div>
         </form>
 
-        <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900">
-          <h3 class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300">
+        <div
+          class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+        >
+          <h3
+            class="mb-3 text-sm font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-300"
+          >
             Profile Picture
           </h3>
           <AvatarUpload
@@ -454,15 +473,19 @@
         <div
           class="rounded-lg border border-dashed border-indigo-300 bg-indigo-50 p-4 text-xs text-indigo-700 dark:border-indigo-500/50 dark:bg-indigo-500/10 dark:text-indigo-200"
         >
-          <p>Stats are powered by Drizzle ORM queries and stay in sync with Docker-discovered Postgres services.</p>
+          <p>
+            Stats are powered by Drizzle ORM queries and stay in sync with Docker-discovered
+            Postgres services.
+          </p>
         </div>
       </Card>
     </div>
 
     <Card variant="evidence" class="space-y-6" title="AI Knowledge Base">
       <p class="text-sm text-gray-600 dark:text-gray-300">
-        Upload briefs, filings, exhibits, or research memos to enrich the GPU-backed RAG pipeline. Files are processed
-        through the UnoCSS-friendly pipeline and vectorized via Drizzle-managed workflows.
+        Upload briefs, filings, exhibits, or research memos to enrich the GPU-backed RAG pipeline.
+        Files are processed through the UnoCSS-friendly pipeline and vectorized via Drizzle-managed
+        workflows.
       </p>
 
       <div class="flex flex-wrap items-center gap-3">
@@ -483,7 +506,9 @@
       </div>
 
       {#if showRagUpload}
-        <div class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900">
+        <div
+          class="rounded-lg border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-900"
+        >
           <DocumentUpload
             multiple={true}
             maxSize={25}

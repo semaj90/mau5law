@@ -48,7 +48,9 @@
       </div>
       <div class="header-controls">
         <ThemeToggle />
-        <Button variant="primary" onclick={() => window.open('/all-routes', '_blank')}>View All Routes</Button>
+        <Button variant="primary" onclick={() => window.open('/all-routes', '_blank')}
+          >View All Routes</Button
+        >
       </div>
     </div>
   </div>
@@ -182,7 +184,11 @@
         </Card>
         <Card title="Legal Theme Search" class="demo-card">
           <div class="search-container">
-            <YoRHaSearchBar theme="legal" placeholder="Professional legal search..." onsearch={handleSearchDemo} />
+            <YoRHaSearchBar
+              theme="legal"
+              placeholder="Professional legal search..."
+              onsearch={handleSearchDemo}
+            />
           </div>
         </Card>
       </div>

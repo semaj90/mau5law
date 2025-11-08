@@ -139,7 +139,9 @@ export function activate(context: vscode.ExtensionContext) {
     <div class="max-w-7xl mx-auto px-6 py-8">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <h1
+            class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"
+          >
             Autonomous Engineering System
           </h1>
           <p class="text-xl text-gray-600 dark:text-gray-300 mt-2">
@@ -166,7 +168,9 @@ export function activate(context: vscode.ExtensionContext) {
         </div>
         <div class="text-right">
           <p class="text-sm text-gray-500 dark:text-gray-400">Phase 4+ Implementation</p>
-          <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Comprehensive AI Orchestration</p>
+          <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+            Comprehensive AI Orchestration
+          </p>
         </div>
       </div>
     </div>
@@ -184,10 +188,16 @@ export function activate(context: vscode.ExtensionContext) {
                 class={'h-6 w-6 ' + getStatusColor(feature.status)}
                 aria-hidden="true"
               />
-              <span class="sr-only">{feature.name} {feature.status ? 'operational' : 'offline'}</span>
+              <span class="sr-only"
+                >{feature.name} {feature.status ? 'operational' : 'offline'}</span
+              >
 
-              <div class={'w-2 h-2 rounded-full ' + (feature.status ? 'bg-green-500' : 'bg-red-500')}></div>
-              <div class={'w-2 h-2 rounded-full ' + (feature.status ? 'bg-green-500' : 'bg-red-500')}></div>
+              <div
+                class={'w-2 h-2 rounded-full ' + (feature.status ? 'bg-green-500' : 'bg-red-500')}
+              ></div>
+              <div
+                class={'w-2 h-2 rounded-full ' + (feature.status ? 'bg-green-500' : 'bg-red-500')}
+              ></div>
             </div>
             <!-- Added missing closing div for the flex container -->
             <h3 class="font-semibold text-sm mb-1">{feature.name}</h3>
@@ -213,7 +223,12 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             System Architecture
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showArchitecture = !showArchitecture)}>
+          <Button
+            class="bits-btn"
+            variant="ghost"
+            size="sm"
+            onclick={() => (showArchitecture = !showArchitecture)}
+          >
             {showArchitecture ? 'Hide' : 'Show'} Details
           </Button>
         </h3>
@@ -233,7 +248,9 @@ export function activate(context: vscode.ExtensionContext) {
                       class="h-5 w-5 text-blue-600 dark:text-blue-400"
                       aria-hidden="true"
                     />
-                    <span class="sr-only">{feature.name} {feature.status ? 'online' : 'offline'}</span>
+                    <span class="sr-only"
+                      >{feature.name} {feature.status ? 'online' : 'offline'}</span
+                    >
                   </div>
                   <div>
                     <h3 class="font-semibold">{feature.name}</h3>
@@ -246,7 +263,9 @@ export function activate(context: vscode.ExtensionContext) {
                   {feature.description}
                 </p>
                 <div class="space-y-1">
-                  <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Capabilities:</p>
+                  <p class="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Capabilities:
+                  </p>
                   {#each Array.isArray(feature.capabilities) ? feature.capabilities : [] as capability}
                     <div class="flex items-center gap-2 text-xs">
                       <CheckCircle class="h-3 w-3 text-green-500" />
@@ -269,7 +288,12 @@ export function activate(context: vscode.ExtensionContext) {
             <Code class="h-5 w-5" />
             VS Code Extension Integration
           </span>
-          <Button class="bits-btn" variant="ghost" size="sm" onclick={() => (showIntegration = !showIntegration)}>
+          <Button
+            class="bits-btn"
+            variant="ghost"
+            size="sm"
+            onclick={() => (showIntegration = !showIntegration)}
+          >
             {showIntegration ? 'Hide' : 'Show'} Examples
           </Button>
         </h3>
@@ -361,7 +385,10 @@ export function activate(context: vscode.ExtensionContext) {
             <span class="text-sm text-green-600">Complete</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
-            <div class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full" style="width: 100%"></div>
+            <div
+              class="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full"
+              style="width: 100%"
+            ></div>
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div class="flex items-center gap-2">
@@ -383,10 +410,10 @@ export function activate(context: vscode.ExtensionContext) {
           </div>
           <div class="mt-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg">
             <p class="text-sm text-green-800 dark:text-green-300">
-              <strong>System Complete:</strong> Comprehensive AI orchestration system is fully operational with Copilot self-prompting,
-              multi-agent coordination, autonomous engineering, and VS Code extension integration. The system can now autonomously
-              analyze problems, coordinate multiple AI agents, and provide comprehensive solutions across webapp, desktop,
-              and mobile platforms.
+              <strong>System Complete:</strong> Comprehensive AI orchestration system is fully operational
+              with Copilot self-prompting, multi-agent coordination, autonomous engineering, and VS Code
+              extension integration. The system can now autonomously analyze problems, coordinate multiple
+              AI agents, and provide comprehensive solutions across webapp, desktop, and mobile platforms.
             </p>
           </div>
         </div>

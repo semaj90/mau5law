@@ -61,7 +61,7 @@ async function initializeWasm() {
           decompress_blob: decompressBlobWasm,
 
           // Memory management
-          malloc: size => new ArrayBuffer(size),
+          malloc: (size) => new ArrayBuffer(size),
           free: () => {},
 
           // Metrics
@@ -390,7 +390,7 @@ function decodeVarint(bytes) {
 
 function updateCompressionMetrics() {
   if (metrics.operations.length > 0) {
-    const compressionOps = metrics.operations.filter(op => op.type === 'pack');
+    const compressionOps = metrics.operations.filter((op) => op.type === 'pack');
     if (compressionOps.length > 0) {
       metrics.averageCompressionRatio =
         compressionOps.reduce((sum, op) => sum + op.compressionRatio, 0) / compressionOps.length;

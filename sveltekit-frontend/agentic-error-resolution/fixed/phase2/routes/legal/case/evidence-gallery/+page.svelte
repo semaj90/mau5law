@@ -157,7 +157,9 @@
     >
       🏠
     </button>
-    <button class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white"> 📋 </button>
+    <button class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center text-white">
+      📋
+    </button>
     <button
       class="w-10 h-10 bg-gray-700 hover:bg-gray-600 rounded flex items-center justify-center text-white transition-colors"
     >
@@ -213,12 +215,21 @@
     <div class="flex-1 flex">
       <!-- Canvas Controls -->
       <div class="absolute top-4 left-4 flex items-center space-x-2 z-10">
-        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>🔒 100%</Button>
-        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📎 CONNECT</Button>
-        <Button onclick={addEvidence} class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm">
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled
+          >🔒 100%</Button
+        >
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled
+          >📎 CONNECT</Button
+        >
+        <Button
+          onclick={addEvidence}
+          class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 text-sm"
+        >
           + ADD EVIDENCE
         </Button>
-        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled>📚 LIBRARY (0)</Button>
+        <Button class="bg-gray-600 hover:bg-gray-700 text-white px-3 py-2 text-sm" disabled
+          >📚 LIBRARY (0)</Button
+        >
       </div>
       <!-- Connection Status -->
       <div class="absolute bottom-4 left-4 z-10">
@@ -316,7 +327,10 @@
         {/each}
         <!-- Connection Mode Overlay -->
         {#if isConnecting}
-          <div class="absolute inset-0 bg-blue-500 bg-opacity-10 flex items-center justify-center" style="z-index: 10;">
+          <div
+            class="absolute inset-0 bg-blue-500 bg-opacity-10 flex items-center justify-center"
+            style="z-index: 10;"
+          >
             <div class="bg-white p-4 rounded-lg shadow-lg border">
               <div class="text-center">
                 <div class="text-lg font-bold text-blue-600 mb-2">Connection Mode</div>
@@ -347,7 +361,9 @@
                   <div class="text-sm font-medium text-gray-800">{caseItem.name}</div>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <span class="px-2 py-1 text-xs rounded {getStatusColor(caseItem.status)} text-white">
+                  <span
+                    class="px-2 py-1 text-xs rounded {getStatusColor(caseItem.status)} text-white"
+                  >
                     {caseItem.status}
                   </span>
                   <span class="text-green-500">✓</span>
@@ -396,9 +412,13 @@
         </div>
         <!-- Action Buttons -->
         <div class="p-4 border-t space-y-2">
-          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white">+ Add Evidence</Button>
+          <Button onclick={addEvidence} class="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            >+ Add Evidence</Button
+          >
           <Button class="w-full bg-green-600 hover:bg-green-700 text-white">🔍 Analyze All</Button>
-          <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white">📊 Generate Report</Button>
+          <Button class="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            >📊 Generate Report</Button
+          >
         </div>
       </div>
     </div>

@@ -179,9 +179,10 @@ export class GemmaEmbeddingService {
         }
       });
 
-      // Process batch with concurrency limit
-      const batchEmbeddings = await this.processConcurrently(batchPromises, this.concurrencyLimit);
-      embeddings.push(<any><any>...batchEmbeddings.filter(emb => emb !== null));
+  // Process batch with concurrency limit
+  const batchEmbeddings = await this.processConcurrently(batchPromises, this.concurrencyLimit);
+  // Append non-null embeddings from this batch
+  embeddings.push(...(batchEmbeddings.filter((emb) => emb !== null) as any[]));
 
       // Add delay between batches to avoid overwhelming the server
       if (batches.indexOf(batch) < batches.length - 1) {
@@ -240,12 +241,12 @@ export class GemmaEmbeddingService {
             try {
               const chunkEmbedding = await this.generateEmbedding(chunk.content);
 
-              vectorizedChunks.push(<any><any>{
-                ...chunk as EnhancedDocumentChunk,
+              vectorizedChunks.push({
+                ...(chunk as EnhancedDocumentChunk),
                 embedding: chunkEmbedding,
                 embedding_model: this.currentModel,
                 cosine_similarity_threshold: 0.7 // Default threshold
-              });
+              } as any);
 
               totalEmbeddings++;
             } catch (error) {
@@ -256,7 +257,7 @@ export class GemmaEmbeddingService {
           vectorizedDoc.chunks = vectorizedChunks;
         }
 
-        vectorizedDocs.push(<any><any>vectorizedDoc);
+  vectorizedDocs.push(vectorizedDoc as any);
         completed++;
 
         if (onProgress) {
@@ -341,7 +342,7 @@ export class GemmaEmbeddingService {
         const similarity = this.calculateCosineSimilarity(queryEmbedding, chunk.embedding);
 
         if (similarity >= minSimilarity) {
-          results.push(<any><any>{
+          results.push({
             document_id: doc.id,
             chunk_id: chunk.id,
             content: chunk.content,
@@ -353,7 +354,7 @@ export class GemmaEmbeddingService {
               chunk_metadata: chunk.metadata
             },
             legal_concepts: chunk.legal_concepts || []
-          });
+          } as any);
         }
       }
     }
@@ -395,7 +396,7 @@ export class GemmaEmbeddingService {
   private chunkArray<T>(array: T[], size: number): T[][] {
     const chunks: T[][] = [];
     for (let i = 0; i < array.length; i += size) {
-      chunks.push(<any><any>array.slice(i, i + size));
+      chunks.push(array.slice(i, i + size));
     }
     return chunks;
   }
@@ -408,11 +409,11 @@ export class GemmaEmbeddingService {
     const executing: Promise<void>[] = [];
 
     for (const promise of promises) {
-      const execute = promise.then(result => {
-        results.push(<any><any>result);
+      const execute = promise.then((result) => {
+        results.push(result as any);
       });
 
-      executing.push(<any><any>execute);
+      executing.push(execute as Promise<void>);
 
       if (executing.length >= concurrencyLimit) {
         await Promise.race(executing);
@@ -472,7 +473,7 @@ export class GemmaEmbeddingService {
       // Check all models
       for (const model of [this.primaryModel, ...this.fallbackModels]) {
         if (await this.isModelAvailable(model)) {
-          availableModels.push(<any><any>model);
+          availableModels.push(model);
         }
       }
 

@@ -1,2 +1,3 @@
-import {enable_tracing_mode_flag} from './chunk-6SIJFJGE.js'; import './chunk-KWPVD4H7.js'; // node_modules/svelte/src/internal/flags/tracing.js
+import { enable_tracing_mode_flag } from './chunk-6SIJFJGE.js';
+import './chunk-KWPVD4H7.js'; // node_modules/svelte/src/internal/flags/tracing.js
 enable_tracing_mode_flag(); //# sourceMappingURL=svelte_internal_flags_tracing.js.map

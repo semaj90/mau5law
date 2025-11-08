@@ -38,7 +38,11 @@
   let modalVariant = $state('gradient');
   let modalSize = $state('md');
   // Mock user data for session/user demo
-  let mockUser = $state({ id: 'demo-user-123', email: 'demo@legalai.com', role: 'prosecutor' as const });
+  let mockUser = $state({
+    id: 'demo-user-123',
+    email: 'demo@legalai.com',
+    role: 'prosecutor' as const,
+  });
   interface TabItem {
     id: string;
     label: string;
@@ -154,7 +158,11 @@
     'deposition_video_plaintiff_testimony.mp4',
   ];
   const mockCases = [
-    { title: 'Corporate Fraud Investigation - Multinational Tech Company', status: 'open', priority: 'high' },
+    {
+      title: 'Corporate Fraud Investigation - Multinational Tech Company',
+      status: 'open',
+      priority: 'high',
+    },
     { title: 'Contract Dispute Resolution', status: 'pending', priority: 'medium' },
     { title: 'Criminal Defense - Armed Robbery Case', status: 'closed', priority: 'critical' },
     { title: 'Family Law Custody Battle', status: 'open', priority: 'low' },
@@ -221,7 +229,11 @@
           <div>
             <div
               class="avatar-placeholder"
-              style="width: {size === 'small' ? '24px' : size === 'medium' ? '32px' : '48px'}; height: {size === 'small'
+              style="width: {size === 'small'
+                ? '24px'
+                : size === 'medium'
+                  ? '32px'
+                  : '48px'}; height: {size === 'small'
                 ? '24px'
                 : size === 'medium'
                   ? '32px'
@@ -268,17 +280,29 @@
       <!-- Modal Trigger Buttons -->
       <div class="grid buttons" style="margin-bottom: 1.5rem;">
         <!-- Use any-typed alias to avoid TS: 'never' event typing -->
-        <QuickActionButtonAny onclick={() => openModal('gradient', 'md')}>Gradient Modal</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('gradient', 'md')}
+          >Gradient Modal</QuickActionButtonAny
+        >
 
-        <QuickActionButtonAny onclick={() => openModal('diamond', 'lg')}>Diamond Pattern</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('diamond', 'lg')}
+          >Diamond Pattern</QuickActionButtonAny
+        >
 
-        <QuickActionButtonAny onclick={() => openModal('gaming', 'md')}>Gaming Modal</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('gaming', 'md')}
+          >Gaming Modal</QuickActionButtonAny
+        >
 
-        <QuickActionButtonAny onclick={() => openModal('legal', 'xl')}>Legal Modal XL</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('legal', 'xl')}
+          >Legal Modal XL</QuickActionButtonAny
+        >
 
-        <QuickActionButtonAny onclick={() => openModal('default', 'sm')}>Default Small</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('default', 'sm')}
+          >Default Small</QuickActionButtonAny
+        >
 
-        <QuickActionButtonAny onclick={() => openModal('diamond', 'md')}>NES Diamond</QuickActionButtonAny>
+        <QuickActionButtonAny onclick={() => openModal('diamond', 'md')}
+          >NES Diamond</QuickActionButtonAny
+        >
       </div>
 
       <!-- Demo Cards with Diamond Backgrounds -->
@@ -288,11 +312,12 @@
       </div>
 
       <div class="meta">
-        Enhanced modals with gradient colors, diamond patterns, and NES.css integration. sm, md, lg, xl and themes
-        (gradient, diamond, gaming, legal, default).
+        Enhanced modals with gradient colors, diamond patterns, and NES.css integration. sm, md, lg,
+        xl and themes (gradient, diamond, gaming, legal, default).
         <br />
-        <strong>Developer Note:</strong> See <code>src/routes/ui-preview/+page.svelte</code> for modal implementation.
-        To use: call <code>openModal(variant, size)</code> and conditionally render the modal block.
+        <strong>Developer Note:</strong> See <code>src/routes/ui-preview/+page.svelte</code> for
+        modal implementation. To use: call <code>openModal(variant, size)</code> and conditionally render
+        the modal block.
       </div>
       <!-- End of Enhanced Modals Section -->
     </section>
@@ -331,7 +356,9 @@
       {#if currentUser}
         <div class="user-details">
           <span>👤 {currentUser.email || currentUser.id}</span>
-          <span class="nes-badge is-small {getPriorityColor(currentUser.role)}">{currentUser.role}</span>
+          <span class="nes-badge is-small {getPriorityColor(currentUser.role)}"
+            >{currentUser.role}</span
+          >
         </div>
         <div class="user-stats">
           <h4>User Data Stats:</h4>
@@ -396,10 +423,14 @@
                   <span class="case-title" title={case_.title}>
                     {truncateText(case_.title, 50)}
                   </span>
-                  <span class="nes-badge is-small {getStatusColor(case_.status)}">{case_.status}</span>
+                  <span class="nes-badge is-small {getStatusColor(case_.status)}"
+                    >{case_.status}</span
+                  >
                 </div>
                 <div class="case-meta">
-                  <span class="nes-badge is-small {getPriorityColor(case_.priority)}">{case_.priority}</span>
+                  <span class="nes-badge is-small {getPriorityColor(case_.priority)}"
+                    >{case_.priority}</span
+                  >
                 </div>
               </div>
             {/each}
@@ -455,22 +486,28 @@
 {#if showModal}
   <dialog class="nes-dialog is-dark" open>
     <form method="dialog">
-      <p class="title">Enhanced Modal - {modalVariant.charAt(0).toUpperCase() + modalVariant.slice(1)} Style</p>
+      <p class="title">
+        Enhanced Modal - {modalVariant.charAt(0).toUpperCase() + modalVariant.slice(1)} Style
+      </p>
       <div class="space-y-6">
         <!-- Modal Content based on variant -->
         {#if modalVariant === 'gradient'}
           <div class="space-y-4">
             <h3 class="text-xl font-bold text-enhanced-text-primary">Gradient Modal Content</h3>
             <p class="text-enhanced-text-secondary">
-              This modal features beautiful gradient backgrounds combining Harvard crimson, gold, and grey tones. The
-              gradients create visual depth while maintaining readability.
+              This modal features beautiful gradient backgrounds combining Harvard crimson, gold,
+              and grey tones. The gradients create visual depth while maintaining readability.
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20 to-harvard-gold/20">
+              <div
+                class="p-4 rounded-lg bg-gradient-to-r from-harvard-crimson/20 to-harvard-gold/20"
+              >
                 <h4 class="font-semibold text-enhanced-text-primary">Crimson to Gold</h4>
                 <p class="text-sm text-enhanced-text-secondary">Harvard signature colors</p>
               </div>
-              <div class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20 to-harvard-crimson/20">
+              <div
+                class="p-4 rounded-lg bg-gradient-to-r from-enhanced-accent-grey/20 to-harvard-crimson/20"
+              >
                 <h4 class="font-semibold text-enhanced-text-primary">Grey to Crimson</h4>
                 <p class="text-sm text-enhanced-text-secondary">NES-style balance</p>
               </div>
@@ -478,10 +515,12 @@
           </div>
         {:else if modalVariant === 'diamond'}
           <div class="space-y-4">
-            <h3 class="text-xl font-bold text-enhanced-text-primary nes-diamond-text">Diamond Pattern Modal</h3>
+            <h3 class="text-xl font-bold text-enhanced-text-primary nes-diamond-text">
+              Diamond Pattern Modal
+            </h3>
             <p class="text-enhanced-text-secondary">
-              This modal showcases NES-style diamond patterns with repeating gradients. The patterns are created using
-              CSS background images.
+              This modal showcases NES-style diamond patterns with repeating gradients. The patterns
+              are created using CSS background images.
             </p>
             <div class="grid grid-cols-1 gap-4">
               <div class="p-4 rounded-lg nes-diamond-small">
@@ -500,14 +539,20 @@
           </div>
         {:else if modalVariant === 'gaming'}
           <div class="space-y-4">
-            <h3 class="text-xl font-bold text-enhanced-text-primary" style="font-family: 'Press Start 2P', monospace;">
+            <h3
+              class="text-xl font-bold text-enhanced-text-primary"
+              style="font-family: 'Press Start 2P', monospace;"
+            >
               Gaming Modal
             </h3>
             <p class="text-enhanced-text-secondary">
-              A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style elements.
+              A gaming-themed modal with cyberpunk aesthetics, scan lines, and terminal-style
+              elements.
             </p>
             <div class="space-y-4">
-              <div class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent gaming-scan-lines">
+              <div
+                class="p-4 rounded-lg bg-enhanced-bg-secondary border border-enhanced-accent gaming-scan-lines"
+              >
                 <h4 class="font-semibold text-enhanced-text-primary mb-2">Terminal Interface</h4>
                 <div class="font-mono text-green-400 text-sm">
                   <div>> System Status: ONLINE</div>

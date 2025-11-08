@@ -25,9 +25,9 @@
       // Normalize the response structure for compatibility
       systemStatus = {
         services: data.services ?? data,
-        environment: (data.environment ?? data.env) ?? {},
+        environment: data.environment ?? data.env ?? {},
         ollama: data.services?.ollama ?? data.ollama ?? { status: 'disconnected' },
-        database: data.services?.database ?? data.database ?? { status: 'disconnected' }
+        database: data.services?.database ?? data.database ?? { status: 'disconnected' },
       };
     } catch (error) {
       console.error('Failed to check system status:', error);
@@ -40,7 +40,7 @@
         // Legacy compatibility
         ollama: { status: 'error', error: 'Failed to connect' },
         database: { status: 'error', error: 'Failed to connect' },
-      }
+      };
     } finally {
       isLoading = false;
     }
@@ -52,7 +52,8 @@
       case 'error':
       case 'disconnected':
         return 'text-red-500';
-      default: return 'text-yellow-500';
+      default:
+        return 'text-yellow-500';
     }
   }
   function getStatusText(status: string) {
@@ -63,15 +64,18 @@
         return 'Error';
       case 'disconnected':
         return 'Disconnected';
-      default: return 'Checking...';
+      default:
+        return 'Checking...';
     }
   }
 </script>
+
 <svelte:head>
   <title>AI Chat Assistant Test - Deeds Legal AI</title>
   <meta
     name="description"
-    content="Test page for the enhanced AI chat assistant with Docker Ollama integration" />
+    content="Test page for the enhanced AI chat assistant with Docker Ollama integration"
+  />
 </svelte:head>
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
   <div class="container mx-auto px-4 py-8">
@@ -103,9 +107,10 @@
             <span>Checking status...</span>
           </div>
         {:else if systemStatus?.ollama}
-          <div class={"flex items-center gap-2 " + getStatusColor(systemStatus?.ollama?.status)}>
+          <div class={'flex items-center gap-2 ' + getStatusColor(systemStatus?.ollama?.status)}>
             {#if systemStatus?.ollama?.status === 'connected'}
-              <span class="inline-block w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></span>
+              <span class="inline-block w-3 h-3 rounded-full bg-green-500" aria-hidden="true"
+              ></span>
             {:else if systemStatus?.ollama?.status === 'error' || systemStatus?.ollama?.status === 'disconnected'}
               <span class="inline-block w-3 h-3 rounded-full bg-red-500" aria-hidden="true"></span>
             {:else}
@@ -115,7 +120,9 @@
           </div>
 
           {#if systemStatus.ollama.version}
-            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">v{systemStatus.ollama.version}</span>
+            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+              >v{systemStatus.ollama.version}</span
+            >
           {/if}
           {#if systemStatus.ollama.error}
             <p class="text-sm text-red-600 mt-2">
@@ -142,9 +149,10 @@
             <span>Checking status...</span>
           </div>
         {:else if systemStatus?.database}
-          <div class={"flex items-center gap-2 " + getStatusColor(systemStatus?.database?.status)}>
+          <div class={'flex items-center gap-2 ' + getStatusColor(systemStatus?.database?.status)}>
             {#if systemStatus?.database?.status === 'connected'}
-              <span class="inline-block w-3 h-3 rounded-full bg-green-500" aria-hidden="true"></span>
+              <span class="inline-block w-3 h-3 rounded-full bg-green-500" aria-hidden="true"
+              ></span>
             {:else if systemStatus?.database?.status === 'error' || systemStatus?.database?.status === 'disconnected'}
               <span class="inline-block w-3 h-3 rounded-full bg-red-500" aria-hidden="true"></span>
             {:else}
@@ -176,8 +184,12 @@
           <span>RTX 3060 Ti Ready</span>
         </div>
         <div class="flex gap-2 mt-2">
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">CUDA 12.9</span>
-          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">8GB VRAM</span>
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >CUDA 12.9</span
+          >
+          <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+            >8GB VRAM</span
+          >
         </div>
       </div>
     </div>
@@ -248,7 +260,8 @@
           <h4 class="font-semibold text-gray-900 mb-2">Connection Details</h4>
           <p class="text-sm text-gray-600">
             Ollama URL: <code class="bg-white px-2 py-1 rounded"
-              >{systemStatus.environment.ollamaUrl}</code>
+              >{systemStatus.environment.ollamaUrl}</code
+            >
           </p>
         </div>
       {/if}
@@ -272,6 +285,7 @@
     </div>
   </div>
 </div>
+
 <style>
   /* Custom styles for enhanced appearance */
   :global(body) {
@@ -289,12 +303,14 @@
   /* small inline spinner used in several places */
   .loader {
     border-radius: 9999px;
-    border: 2px solid rgba(0,0,0,0.08);
-    border-top-color: rgba(0,0,0,0.45);
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-top-color: rgba(0, 0, 0, 0.45);
     animation: spin 1s linear infinite;
     display: inline-block;
   }
   @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+      transform: rotate(360deg);
+    }
   }
 </style>

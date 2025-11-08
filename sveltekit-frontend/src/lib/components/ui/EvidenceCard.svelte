@@ -1,5 +1,6 @@
 <script lang="ts">
-  // Truncated file - replaced with stub
+  // Define props using Svelte 5 runes
+  let { title, value }: { title: string; value: string } = $props();
 </script>
 
 <main class="page-repair">

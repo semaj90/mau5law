@@ -10,7 +10,7 @@ declare namespace WebAssembly {
 }
 
 // WASM module imports (e.g., llama.cpp, Rust, or Go wasm-pack output)
-declare module "*.wasm" {
+declare module '*.wasm' {
   const value: ArrayBuffer;
   export default value;
 }

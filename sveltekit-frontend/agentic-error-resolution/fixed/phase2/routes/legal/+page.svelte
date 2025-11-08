@@ -21,12 +21,20 @@
   const legalRoutes = legalGroup?.routes || [];
 
   // Legal dashboard statistics (mock data)
-  const stats = { activeCases: 12, pendingEvidence: 8, documentsProcessed: 156, aiAnalysisCompleted: 89 };
+  const stats = {
+    activeCases: 12,
+    pendingEvidence: 8,
+    documentsProcessed: 156,
+    aiAnalysisCompleted: 89,
+  };
 </script>
 
 <svelte:head>
   <title>Legal Operations Dashboard | YoRHa Legal AI</title>
-  <meta name="description" content="Centralized legal operations dashboard with AI-powered case management" />
+  <meta
+    name="description"
+    content="Centralized legal operations dashboard with AI-powered case management"
+  />
 </svelte:head>
 
 <div class="legal-dashboard">

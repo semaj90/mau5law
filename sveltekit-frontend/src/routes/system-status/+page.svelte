@@ -1,10 +1,19 @@
 <script lang="ts">
   import type { User } from '$lib/types';
   import EvidenceBoardLayout from '$lib/components/layout/EvidenceBoardLayout.svelte';
-  import EvidenceCard from '$lib/components/ui/EvidenceCard.svelte';
+  import { EvidenceCard } from '$lib/components/ui/EvidenceCard'; // Changed to named import
 
-  // Svelte 5 runes
-  let systemStatus = $state<Record<string, any>>({});
+  // Replace the very-generic Record<string, any> with a focused shape
+  type SystemStatus = {
+    cpuUsage?: string;
+    memoryUsage?: string;
+    diskUsage?: string;
+    networkTraffic?: string;
+    [key: string]: unknown;
+  };
+
+  // Svelte 5 runes - narrow the state type
+  let systemStatus = $state<SystemStatus>({});
   let authStatus = $state<any>(null);
 
   type TestResult = {
@@ -163,10 +172,14 @@
     </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      <EvidenceCard title="CPU Usage" value={systemStatus.cpuUsage || 'N/A'} />
-      <EvidenceCard title="Memory Usage" value={systemStatus.memoryUsage || 'N/A'} />
-      <EvidenceCard title="Disk Usage" value={systemStatus.diskUsage || 'N/A'} />
-      <EvidenceCard title="Network Traffic" value={systemStatus.networkTraffic || 'N/A'} />
+      <!-- Removed 'as any' casts as EvidenceCard now correctly types its props -->
+      <EvidenceCard title="CPU Usage" value={String(systemStatus.cpuUsage ?? 'N/A')} />
+      <EvidenceCard title="Memory Usage" value={String(systemStatus.memoryUsage ?? 'N/A')} />
+      <EvidenceCard title="Disk Usage" value={String(systemStatus.diskUsage ?? 'N/A')} />
+      <EvidenceCard
+        title="Network Traffic"
+        value={String(systemStatus.networkTraffic ?? 'N/A')}
+      />
     </div>
 
     <div class="health-checks-panel bg-gray-800 p-4 rounded-lg shadow-lg border border-gray-700">

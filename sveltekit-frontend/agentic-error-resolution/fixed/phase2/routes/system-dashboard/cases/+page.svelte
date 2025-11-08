@@ -106,7 +106,7 @@
     <!-- use value + oninput because Input.value is not bindable in this component -->
     <Input
       value={searchQuery}
-      oninput={e => (searchQuery = (e.target as HTMLInputElement).value)}
+      oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)}
       placeholder="Search cases..."
     />
     <Button variant="primary">➕ NEW CASE</Button>
@@ -119,7 +119,11 @@
             <h3>{case_.title}</h3>
             <span class="status-badge nes-badge">
               <span
-                class={case_.status === 'active' ? 'is-success' : case_.status === 'error' ? 'is-error' : 'is-warning'}
+                class={case_.status === 'active'
+                  ? 'is-success'
+                  : case_.status === 'error'
+                    ? 'is-error'
+                    : 'is-warning'}
               >
                 {case_.status.toUpperCase()}
               </span>
@@ -141,13 +145,23 @@
           </div>
           <div class="case-actions">
             <!-- navigation via goto -->
-            <Button onclick={() => openEvidenceBoard(case_.id)} variant="primary" size="sm">🔍 Evidence Board</Button>
-            <Button onclick={() => openDetails(case_.id)} variant="secondary" size="sm">📝 Details</Button>
+            <Button onclick={() => openEvidenceBoard(case_.id)} variant="primary" size="sm"
+              >🔍 Evidence Board</Button
+            >
+            <Button onclick={() => openDetails(case_.id)} variant="secondary" size="sm"
+              >📝 Details</Button
+            >
 
             <!-- use onclick prop instead of on:click -->
-            <Button onclick={() => runAnalysis(case_.id)} variant="secondary" size="sm">🤖 Run Analysis</Button>
-            <Button onclick={() => generateReport(case_.id)} variant="ghost" size="sm">📄 Generate Report</Button>
-            <Button onclick={() => deleteCase(case_.id)} variant="destructive" size="sm">🗑️ Delete</Button>
+            <Button onclick={() => runAnalysis(case_.id)} variant="secondary" size="sm"
+              >🤖 Run Analysis</Button
+            >
+            <Button onclick={() => generateReport(case_.id)} variant="ghost" size="sm"
+              >📄 Generate Report</Button
+            >
+            <Button onclick={() => deleteCase(case_.id)} variant="destructive" size="sm"
+              >🗑️ Delete</Button
+            >
           </div>
         </Card>
       {/each}

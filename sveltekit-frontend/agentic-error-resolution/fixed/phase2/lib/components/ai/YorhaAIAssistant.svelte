@@ -259,7 +259,11 @@
 <!-- Replace deprecated <svelte:component> usages with direct component tags -->
 <RootAny bind:open={isOpen}>
   <TriggerAny asChild let:builder>
-    <Button {...builder} variant="primary" class="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full p-4 shadow-lg">
+    <Button
+      {...builder}
+      variant="primary"
+      class="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full p-4 shadow-lg"
+    >
       <Bot class="h-6 w-6" />
     </Button>
   </TriggerAny>
@@ -288,7 +292,11 @@
             <div class="text-center text-xs text-muted-foreground">{message.content}</div>
           {:else}
             <!-- Fix: compute classes instead of embedding JS inside a plain string -->
-            <div class={message.role === 'user' ? 'flex items-start gap-3 justify-end' : 'flex items-start gap-3'}>
+            <div
+              class={message.role === 'user'
+                ? 'flex items-start gap-3 justify-end'
+                : 'flex items-start gap-3'}
+            >
               {#if message.role === 'assistant'}
                 <div
                   class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
@@ -311,7 +319,7 @@
           {/if}
         {/each}
 
-        {#if isStreaming && !chatSession.messages.some(m => m.streaming)}
+        {#if isStreaming && !chatSession.messages.some((m) => m.streaming)}
           <div class="flex items-start gap-3">
             <div
               class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground"
@@ -334,7 +342,7 @@
           placeholder="Ask a legal question..."
           class="flex-1"
           disabled={!isConnected || isConnecting}
-          oninput={e => {
+          oninput={(e) => {
             // support native input events and components that emit e.detail.value
             const val =
               e && (e.target as HTMLInputElement)?.value !== undefined

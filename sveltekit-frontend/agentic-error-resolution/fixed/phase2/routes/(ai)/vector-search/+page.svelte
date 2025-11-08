@@ -105,7 +105,14 @@
 
           <div class="option-group">
             <label>Similarity Threshold:</label>
-            <input type="range" bind:value={threshold} min="0.1" max="1.0" step="0.1" class="threshold-slider" />
+            <input
+              type="range"
+              bind:value={threshold}
+              min="0.1"
+              max="1.0"
+              step="0.1"
+              class="threshold-slider"
+            />
             <span class="threshold-value">{threshold}</span>
           </div>
 
@@ -116,7 +123,11 @@
         </div>
 
         <div class="search-actions">
-          <Button onclick={performVectorSearch} disabled={!query.trim() || loading} class="search-button">
+          <Button
+            onclick={performVectorSearch}
+            disabled={!query.trim() || loading}
+            class="search-button"
+          >
             {#if loading}
               🔄 Searching...
             {:else}
@@ -206,7 +217,10 @@
       </CardHeader>
       <CardContent>
         <ul class="tips-list">
-          <li>Use natural language queries like: "contract breach damages" or: "witness credibility issues"</li>
+          <li>
+            Use natural language queries like: "contract breach damages" or: "witness credibility
+            issues"
+          </li>
           <li>Vector search finds semantically similar content, not just keyword matches</li>
           <li>Lower similarity thresholds will return more results but may be less relevant</li>
           <li>Try different search types (content/cases/evidence) for specialized results</li>

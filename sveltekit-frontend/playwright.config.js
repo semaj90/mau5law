@@ -12,11 +12,9 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'off',
-    screenshot: 'off'
+    screenshot: 'off',
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } }
-  ],
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   // Do not start or manage the dev server; assume dev:solo already running
-  webServer: undefined
+  webServer: undefined,
 });

@@ -63,7 +63,11 @@ async function main() {
       console.error('  Failed to apply for', f, err.message);
     }
   }
-  if (!apply) console.log('\nDry-run complete. Re-run with --apply to perform moves and create shims.');
+  if (!apply)
+    console.log('\nDry-run complete. Re-run with --apply to perform moves and create shims.');
 }
 
-main().catch(err => { console.error(err); process.exit(2); });
+main().catch((err) => {
+  console.error(err);
+  process.exit(2);
+});

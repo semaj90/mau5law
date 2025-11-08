@@ -20,11 +20,15 @@ Showcases the service worker-based AI orchestration system
     Settings,
     Activity,
     Users,
-    Workflow
+    Workflow,
   } from 'lucide-svelte';
   // use module entrypoints (drop explicit file extensions)
   import LLMSelector from '$lib/components/ai/LLMSelector';
-  import { aiWorkerManager, createGenerationTask, createAnalysisTask } from '$lib/services/ai-worker-manager';
+  import {
+    aiWorkerManager,
+    createGenerationTask,
+    createAnalysisTask,
+  } from '$lib/services/ai-worker-manager';
   import type { AITask, LLMModel } from '$lib/types/ai-worker';
   // dynamic orchestrator component (workaround for modules without a typed default export)
   let OrchestratorComponent = $state<any>(null);
@@ -33,7 +37,8 @@ Showcases the service worker-based AI orchestration system
     try {
       const mod = await import('$lib/components/ai/MultiLLMOrchestrator.svelte');
       // write into the $state-backed variable so template updates reactively
-      OrchestratorComponent = (mod && (mod as any).default) ?? (mod as any).MultiLLMOrchestrator ?? mod;
+      OrchestratorComponent =
+        (mod && (mod as any).default) ?? (mod as any).MultiLLMOrchestrator ?? mod;
     } catch (err) {
       console.warn('Failed to load orchestrator component dynamically:', err);
     }
@@ -47,7 +52,9 @@ Showcases the service worker-based AI orchestration system
 
   // Local demo state (avoid runtime $state magic here for compile stability)
   let selectedModel = $state<LLMModel | undefined>(undefined);
-  let userPrompt = $state('Analyze the following legal document for key terms, potential issues, and recommendations...');
+  let userPrompt = $state(
+    'Analyze the following legal document for key terms, potential issues, and recommendations...'
+  );
   let isProcessing = $state(false);
   let demoResults = $state<DemoResult[]>([]);
 
@@ -56,12 +63,13 @@ Showcases the service worker-based AI orchestration system
     {
       name: 'Legal Document Analysis',
       description: 'Parallel analysis across multiple AI models',
-      prompt: 'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
+      prompt:
+        'Analyze this contract for potential legal issues, key terms, and compliance requirements.',
       tasks: [
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Legal compliance analysis' },
         { provider: 'vllm', model: 'vllm-gemma3-legal', focus: 'Risk assessment' },
-        { provider: 'autogen', model: 'autogen-agents', focus: 'Multi-agent legal review' }
-      ]
+        { provider: 'autogen', model: 'autogen-agents', focus: 'Multi-agent legal review' },
+      ],
     },
     {
       name: 'Evidence Processing',
@@ -70,8 +78,8 @@ Showcases the service worker-based AI orchestration system
       tasks: [
         { provider: 'ollama', model: 'nomic-embed-text', focus: 'Text embedding generation' },
         { provider: 'ollama', model: 'gemma3-legal', focus: 'Content classification' },
-        { provider: 'crewai', model: 'crewai-agents', focus: 'Evidence correlation' }
-      ]
+        { provider: 'crewai', model: 'crewai-agents', focus: 'Evidence correlation' },
+      ],
     },
     {
       name: 'Case Research',
@@ -80,9 +88,9 @@ Showcases the service worker-based AI orchestration system
       tasks: [
         { provider: 'autogen', model: 'autogen-agents', focus: 'Legal research coordination' },
         { provider: 'crewai', model: 'crewai-agents', focus: 'Case law analysis' },
-        { provider: 'ollama', model: 'gemma3-legal', focus: 'Statute interpretation' }
-      ]
-    }
+        { provider: 'ollama', model: 'gemma3-legal', focus: 'Statute interpretation' },
+      ],
+    },
   ];
 
   // Run a demo scenario by creating analysis tasks and submitting them to the aiWorkerManager.
@@ -97,11 +105,11 @@ Showcases the service worker-based AI orchestration system
           taskConfig.focus,
           taskConfig.model,
           taskConfig.provider,
-          ({
+          {
             priority: 'high',
             maxTokens: 512,
-            params: { temperature: 0.1 }
-          } as any)
+            params: { temperature: 0.1 },
+          } as any
         )
       );
 
@@ -111,9 +119,7 @@ Showcases the service worker-based AI orchestration system
         try {
           const taskId = await aiWorkerManager.submitTask(task as any);
           const result = await aiWorkerManager.waitForTask(taskId);
-          demoResults = demoResults.map((r) =>
-            r.task === task ? { ...r, response: result } : r
-          );
+          demoResults = demoResults.map((r) => (r.task === task ? { ...r, response: result } : r));
           return result;
         } catch (error) {
           console.error('Task failed:', error);
@@ -141,11 +147,11 @@ Showcases the service worker-based AI orchestration system
         userPrompt,
         (selectedModel as any).name,
         (selectedModel as any).provider,
-        ({
+        {
           priority: 'high',
           maxTokens: 1024,
-          params: { temperature: 0.1 }
-        } as any)
+          params: { temperature: 0.1 },
+        } as any
       ) as any;
 
       if (task) {
@@ -179,7 +185,8 @@ Showcases the service worker-based AI orchestration system
         return Brain;
       case 'crewai':
         return Database;
-      default: return Activity;
+      default:
+        return Activity;
     }
   }
 
@@ -201,16 +208,21 @@ Showcases the service worker-based AI orchestration system
     return `${base} border-yellow-200 bg-yellow-50 dark:bg-yellow-900/20`;
   }
 </script>
+
 <svelte:head>
   <title>Multi-LLM Orchestrator - Legal AI System</title>
 </svelte:head>
-<div class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+<div
+  class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900"
+>
   <!-- Header Section -->
   <div class="bg-white dark:bg-gray-800 shadow-sm border-b">
     <div class="max-w-7xl mx-auto px-6 py-8">
       <div class="flex items-center justify-between">
         <div>
-          <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1
+            class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"
+          >
             Multi-LLM Orchestrator
           </h1>
           <p class="text-xl text-gray-600 dark:text-gray-300 mt-2">
@@ -237,7 +249,9 @@ Showcases the service worker-based AI orchestration system
         </div>
         <div class="text-right">
           <p class="text-sm text-gray-500 dark:text-gray-400">Phase 2 Implementation</p>
-          <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">Service Worker Multi-threading</p>
+          <p class="text-lg font-semibold text-gray-800 dark:text-gray-200">
+            Service Worker Multi-threading
+          </p>
         </div>
       </div>
     </div>
@@ -308,12 +322,7 @@ Showcases the service worker-based AI orchestration system
         <div class="yorha-panel-content space-y-4">
           <div>
             <label for="llm-selector" class="block text-sm font-medium mb-2">Select AI Model</label>
-            <LLMSelector
-              id="llm-selector"
-              bind:selectedModel={selectedModel}
-              showMetrics={true}
-              filterBy="all"
-            />
+            <LLMSelector id="llm-selector" bind:selectedModel showMetrics={true} filterBy="all" />
           </div>
           <div>
             <label for="task-prompt" class="block text-sm font-medium mb-2">Task Prompt</label>
@@ -383,20 +392,17 @@ Showcases the service worker-based AI orchestration system
                       <span class="font-medium text-sm">
                         {result.task.providerId} - {result.task.model}
                       </span>
-                      <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{result.task.type}</span>
+                      <span
+                        class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        >{result.task.type}</span
+                      >
                     </div>
                     {#if result.response}
-                      <Badge class="bg-green-100 text-green-800 text-xs">
-                        Completed
-                      </Badge>
+                      <Badge class="bg-green-100 text-green-800 text-xs">Completed</Badge>
                     {:else if result.error}
-                      <Badge class="bg-red-100 text-red-800 text-xs">
-                        Failed
-                      </Badge>
+                      <Badge class="bg-red-100 text-red-800 text-xs">Failed</Badge>
                     {:else}
-                      <Badge class="bg-yellow-100 text-yellow-800 text-xs">
-                        Processing
-                      </Badge>
+                      <Badge class="bg-yellow-100 text-yellow-800 text-xs">Processing</Badge>
                     {/if}
                   </div>
 
@@ -412,7 +418,11 @@ Showcases the service worker-based AI orchestration system
                       </p>
                       {#if result.response.metrics}
                         <div class="flex items-center gap-4 mt-2 text-xs text-gray-500">
-                          <span>Processing: {formatDuration(result.response.metrics.processingTime || 0)}</span>
+                          <span
+                            >Processing: {formatDuration(
+                              result.response.metrics.processingTime || 0
+                            )}</span
+                          >
                           <span>Tokens: {result.response.metrics.tokensProcessed || 0}</span>
                         </div>
                       {/if}
@@ -497,15 +507,16 @@ Showcases the service worker-based AI orchestration system
         </div>
         <div class="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <p class="text-sm text-blue-800 dark:text-blue-300">
-            <strong>Phase 2 Complete:</strong> Service worker infrastructure enables true multi-threading for AI tasks,
-            allowing parallel processing across different LLM providers while maintaining responsive UI interactions.
-            Next phase will implement AutoGen and CrewAI agent coordination.
+            <strong>Phase 2 Complete:</strong> Service worker infrastructure enables true multi-threading
+            for AI tasks, allowing parallel processing across different LLM providers while maintaining
+            responsive UI interactions. Next phase will implement AutoGen and CrewAI agent coordination.
           </p>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 <style>
   /* @unocss-include */
 </style>

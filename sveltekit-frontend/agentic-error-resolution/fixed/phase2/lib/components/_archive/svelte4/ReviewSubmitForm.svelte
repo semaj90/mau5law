@@ -151,7 +151,9 @@ https://svelte.dev/e/js_parse_error -->
     <div class="bg-gray-50 border border-gray-200 rounded-lg p-6">
       <div class="flex items-center justify-between mb-4">
         <span class="text-sm font-medium text-gray-700">Overall Quality Score</span>
-        <span class="text-2xl font-bold {getScoreColor(formData.quality_score)} px-3 py-1 rounded-lg">
+        <span
+          class="text-2xl font-bold {getScoreColor(formData.quality_score)} px-3 py-1 rounded-lg"
+        >
           {formData.quality_score}/100
         </span>
       </div>
@@ -169,7 +171,9 @@ https://svelte.dev/e/js_parse_error -->
       <div class="space-y-3">
         {#each Array.isArray(qualityCriteria) ? qualityCriteria : [] as criterion}
           {@const score = $sectionScores[criterion.id] || 0}
-          <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+          <div
+            class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg"
+          >
             <div class="flex items-center space-x-3">
               <span class="text-xl">{getSectionIcon(criterion.id)}</span>
               <div>
@@ -200,13 +204,21 @@ https://svelte.dev/e/js_parse_error -->
         <div class="flex items-center">
           <span class="text-xl mr-3">{formData.completeness_check ? '✅' : '❌'}</span>
           <div>
-            <p class="text-sm font-medium {formData.completeness_check ? 'text-green-800' : 'text-red-800'}">
+            <p
+              class="text-sm font-medium {formData.completeness_check
+                ? 'text-green-800'
+                : 'text-red-800'}"
+            >
               {formData.completeness_check
                 ? 'Case is ready for submission'
                 : 'Case requires additional work before submission'}
             </p>
             {#if !formData.completeness_check}
-              <p class="text-xs {formData.completeness_check ? 'text-green-600' : 'text-red-600'} mt-1">
+              <p
+                class="text-xs {formData.completeness_check
+                  ? 'text-green-600'
+                  : 'text-red-600'} mt-1"
+              >
                 Minimum quality score of 80% required for submission
               </p>
             {/if}
@@ -223,10 +235,22 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
         <h4 class="font-medium text-blue-900 mb-3">📋 Case Information</h4>
         <div class="space-y-2 text-sm">
-          <div><span class="font-medium">Title:</span> {allFormData.caseInfo?.title || 'Not provided'}</div>
-          <div><span class="font-medium">Client:</span> {allFormData.caseInfo?.client_name || 'Not provided'}</div>
-          <div><span class="font-medium">Type:</span> {allFormData.caseInfo?.case_type || 'Not specified'}</div>
-          <div><span class="font-medium">Priority:</span> {allFormData.caseInfo?.priority || 'Not set'}</div>
+          <div>
+            <span class="font-medium">Title:</span>
+            {allFormData.caseInfo?.title || 'Not provided'}
+          </div>
+          <div>
+            <span class="font-medium">Client:</span>
+            {allFormData.caseInfo?.client_name || 'Not provided'}
+          </div>
+          <div>
+            <span class="font-medium">Type:</span>
+            {allFormData.caseInfo?.case_type || 'Not specified'}
+          </div>
+          <div>
+            <span class="font-medium">Priority:</span>
+            {allFormData.caseInfo?.priority || 'Not set'}
+          </div>
         </div>
       </div>
       <!-- Documents -->
@@ -241,7 +265,10 @@ https://svelte.dev/e/js_parse_error -->
             <span class="font-medium">OCR Results:</span>
             {allFormData.documents?.ocr_results?.length || 0} processed
           </div>
-          <div><span class="font-medium">Status:</span> {allFormData.documents?.processing_status || 'Pending'}</div>
+          <div>
+            <span class="font-medium">Status:</span>
+            {allFormData.documents?.processing_status || 'Pending'}
+          </div>
         </div>
       </div>
       <!-- Evidence -->
@@ -266,7 +293,10 @@ https://svelte.dev/e/js_parse_error -->
       <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
         <h4 class="font-medium text-purple-900 mb-3">🤖 AI Analysis</h4>
         <div class="space-y-2 text-sm">
-          <div><span class="font-medium">Strength:</span> {allFormData.ai_analysis?.case_strength_score || 0}/100</div>
+          <div>
+            <span class="font-medium">Strength:</span>
+            {allFormData.ai_analysis?.case_strength_score || 0}/100
+          </div>
           <div>
             <span class="font-medium">Outcome:</span>
             {allFormData.ai_analysis?.predicted_outcome || 'Not analyzed'}

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 async function logA11yLandmarks(page) {
-  const roles = ['main','navigation','banner','contentinfo','search'];
+  const roles = ['main', 'navigation', 'banner', 'contentinfo', 'search'];
   for (const role of roles) {
     const count = await page.locator(`[role="${role}"]`).count();
     console.log(`ROLE ${role}: ${count}`);
@@ -20,19 +20,23 @@ test.describe('Legal AI SvelteKit Application', () => {
     const title = await page.title();
     console.log(`Page title: ${title}`);
 
-  // Assert key UI markers (lenient so smoke test is robust)
-  const hasYoRHa = await page.locator('text=YoRHa').first().isVisible().catch(() => false);
-  console.log(`YoRHa branding visible: ${hasYoRHa}`);
-  expect(hasYoRHa).toBeTruthy();
+    // Assert key UI markers (lenient so smoke test is robust)
+    const hasYoRHa = await page
+      .locator('text=YoRHa')
+      .first()
+      .isVisible()
+      .catch(() => false);
+    console.log(`YoRHa branding visible: ${hasYoRHa}`);
+    expect(hasYoRHa).toBeTruthy();
 
-  const mainCount = await page.locator('main, [role="main"]').count();
-  console.log(`Main landmark count: ${mainCount}`);
-  expect(mainCount).toBeGreaterThan(0);
+    const mainCount = await page.locator('main, [role="main"]').count();
+    console.log(`Main landmark count: ${mainCount}`);
+    expect(mainCount).toBeGreaterThan(0);
 
-  await logA11yLandmarks(page);
+    await logA11yLandmarks(page);
 
-  // Take a lightweight screenshot
-  await page.screenshot({ path: 'homepage-test.png', fullPage: false });
+    // Take a lightweight screenshot
+    await page.screenshot({ path: 'homepage-test.png', fullPage: false });
 
     // Check if the page loaded without errors
     const bodyText = await page.locator('body').textContent();
@@ -51,12 +55,13 @@ test.describe('Legal AI SvelteKit Application', () => {
 
     // Try to trigger any JavaScript errors by checking console
     const errors = [];
-    page.on('pageerror', error => {
+    page.on('pageerror', (error) => {
       errors.push(error.message);
     });
 
     // Check if ErrorBoundary component is present in the DOM
-    const errorBoundaryExists = await page.locator('[class*="error-boundary"], [class*="ErrorBoundary"]').count() > 0;
+    const errorBoundaryExists =
+      (await page.locator('[class*="error-boundary"], [class*="ErrorBoundary"]').count()) > 0;
     console.log(`Error boundary component found: ${errorBoundaryExists}`);
 
     // Log any JavaScript errors
@@ -78,11 +83,15 @@ test.describe('Legal AI SvelteKit Application', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for gaming-related components
-  const gamingElements = await page.locator('[class*="gaming"], [class*="nes-"], [class*="snes-"], [class*="yorha"], [data-testid="gaming-root"]').count();
+    const gamingElements = await page
+      .locator(
+        '[class*="gaming"], [class*="nes-"], [class*="snes-"], [class*="yorha"], [data-testid="gaming-root"]'
+      )
+      .count();
     console.log(`Gaming-themed elements found: ${gamingElements}`);
 
     // Check for any custom buttons
-  const customButtons = await page.locator('button, [role="button"]').count();
+    const customButtons = await page.locator('button, [role="button"]').count();
     console.log(`Interactive buttons found: ${customButtons}`);
 
     // Take screenshot of the final state

@@ -10,14 +10,19 @@ test.describe('Core route smoke checks', () => {
     const loginButton = page.getByRole('button', { name: /login|sign in/i }).first();
     const registerButton = page.getByRole('button', { name: /register|sign up/i }).first();
 
-    if ((await loginButton.count()) > 0 && (await loginButton.isVisible()) &&
-        (await registerButton.count()) > 0 && (await registerButton.isVisible())) {
+    if (
+      (await loginButton.count()) > 0 &&
+      (await loginButton.isVisible()) &&
+      (await registerButton.count()) > 0 &&
+      (await registerButton.isVisible())
+    ) {
       await expect(loginButton).toBeVisible();
       await expect(registerButton).toBeVisible();
     } else {
       test.info().annotations.push({
         type: 'note',
-        description: 'Home page is still using the reconstruction placeholder; auth buttons not rendered.'
+        description:
+          'Home page is still using the reconstruction placeholder; auth buttons not rendered.',
       });
       await expect(placeholder.first()).toBeVisible();
     }
@@ -30,7 +35,7 @@ test.describe('Core route smoke checks', () => {
     if (await placeholder.first().isVisible()) {
       test.info().annotations.push({
         type: 'note',
-        description: 'All routes page currently in reconstruction placeholder state.'
+        description: 'All routes page currently in reconstruction placeholder state.',
       });
       await expect(placeholder.first()).toBeVisible();
     } else {
@@ -46,7 +51,7 @@ test.describe('Core route smoke checks', () => {
     if (await placeholder.first().isVisible()) {
       test.info().annotations.push({
         type: 'note',
-        description: 'Upload page currently shows reconstruction placeholder instead of MinIO UI.'
+        description: 'Upload page currently shows reconstruction placeholder instead of MinIO UI.',
       });
       await expect(placeholder).toContainText(PLACEHOLDER_TEXT);
     } else {

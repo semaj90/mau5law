@@ -20,7 +20,7 @@ class OCRServiceWorker {
     try {
       // Initialize Tesseract worker
       this.ocrWorker = await Tesseract.createWorker('eng', 1, {
-        logger: m => console.log(`OCR Worker: ${m.status} (${Math.round(m.progress * 100)}%)`)
+        logger: (m) => console.log(`OCR Worker: ${m.status} (${Math.round(m.progress * 100)}%)`),
       });
 
       // Check for GPU acceleration capabilities
@@ -34,16 +34,15 @@ class OCRServiceWorker {
         capabilities: {
           ocr: true,
           gpuAcceleration: this.gpuAcceleration,
-          models: ['tesseract_wasm', 'tesseract_simd']
-        }
+          models: ['tesseract_wasm', 'tesseract_simd'],
+        },
       });
-
     } catch (error) {
       console.error('❌ OCR Worker initialization failed:', error);
 
       self.postMessage({
         type: 'worker_error',
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -63,7 +62,6 @@ class OCRServiceWorker {
       const canvas = new OffscreenCanvas(1, 1);
       const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
       return !!gl;
-
     } catch (error) {
       console.warn('GPU support check failed:', error);
       return false;
@@ -83,17 +81,17 @@ class OCRServiceWorker {
       const ocrOptions = this.getOCROptions(options.method);
 
       // Process with Tesseract
-      const { data: { text, confidence, words } } = await this.ocrWorker.recognize(
-        processableImage,
-        ocrOptions
-      );
+      const {
+        data: { text, confidence, words },
+      } = await this.ocrWorker.recognize(processableImage, ocrOptions);
 
       // Extract regions/bounding boxes
-      const regions = words?.map(word => ({
-        bbox: [word.bbox.x0, word.bbox.y0, word.bbox.x1, word.bbox.y1],
-        text: word.text,
-        confidence: word.confidence / 100
-      })) || [];
+      const regions =
+        words?.map((word) => ({
+          bbox: [word.bbox.x0, word.bbox.y0, word.bbox.x1, word.bbox.y1],
+          text: word.text,
+          confidence: word.confidence / 100,
+        })) || [];
 
       // Generate embedding if requested
       let embedding = null;
@@ -115,8 +113,8 @@ class OCRServiceWorker {
           lodLevel: this.determineLODLevel(processableImage),
           tensorOptimization: this.gpuAcceleration,
           gpuAccelerated: this.gpuAcceleration,
-          workerThread: true
-        }
+          workerThread: true,
+        },
       };
 
       console.log(`✅ OCR job ${jobId} completed: ${text.length} chars, ${regions.length} regions`);
@@ -124,15 +122,14 @@ class OCRServiceWorker {
       // Send result back to main thread
       self.postMessage({
         jobId: jobId,
-        result: result
+        result: result,
       });
-
     } catch (error) {
       console.error(`❌ OCR job ${jobId} failed:`, error);
 
       self.postMessage({
         jobId: jobId,
-        error: error.message
+        error: error.message,
       });
     }
   }
@@ -159,7 +156,7 @@ class OCRServiceWorker {
   getOCROptions(method) {
     const baseOptions = {
       tessedit_pageseg_mode: '6', // Uniform block of text
-      preserve_interword_spaces: '1'
+      preserve_interword_spaces: '1',
     };
 
     switch (method) {
@@ -168,14 +165,14 @@ class OCRServiceWorker {
           ...baseOptions,
           tessedit_do_invert: '0',
           tessedit_create_hocr: '1',
-          tessedit_create_tsv: '1'
+          tessedit_create_tsv: '1',
         };
 
       case 'cuda_tensorrt':
         return {
           ...baseOptions,
           tessedit_pageseg_mode: '3', // Fully automatic page segmentation
-          tessedit_ocr_engine_mode: '1' // Neural nets LSTM engine
+          tessedit_ocr_engine_mode: '1', // Neural nets LSTM engine
         };
 
       default:
@@ -189,7 +186,7 @@ class OCRServiceWorker {
     if (typeof imageData === 'string') return 1;
     if (imageData instanceof Uint8Array) {
       if (imageData.length > 1024 * 1024) return 3; // High detail
-      if (imageData.length > 256 * 1024) return 2;  // Medium detail
+      if (imageData.length > 256 * 1024) return 2; // Medium detail
       return 1; // Low detail
     }
     return 2;
@@ -204,7 +201,7 @@ class OCRServiceWorker {
       const words = text
         .toLowerCase()
         .split(/\s+/)
-        .filter(w => w.length > 2);
+        .filter((w) => w.length > 2);
       const vocab = Array.from(new Set(words));
 
       // Create a simple 384-dimensional embedding using a deterministic
@@ -215,7 +212,7 @@ class OCRServiceWorker {
       const embedding = new Float32Array(dim);
 
       // FNV-1a 32-bit hash implementation
-      const fnv1a = str => {
+      const fnv1a = (str) => {
         let h = 0x811c9dc5;
         for (let i = 0; i < str.length; i++) {
           h ^= str.charCodeAt(i);
@@ -225,7 +222,7 @@ class OCRServiceWorker {
       };
 
       // Lightweight LCG: x_{n+1} = (a * x_n + c) mod 2^32
-      const lcg = seed => {
+      const lcg = (seed) => {
         let state = seed >>> 0;
         return () => {
           state = (Math.imul(1664525, state) + 1013904223) >>> 0;
@@ -264,7 +261,7 @@ class OCRServiceWorker {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash);
@@ -275,7 +272,7 @@ class OCRServiceWorker {
 const ocrServiceWorker = new OCRServiceWorker();
 
 // Handle messages from main thread
-self.onmessage = async function(event) {
+self.onmessage = async function (event) {
   const { type, jobId, imageData, method, confidenceThreshold, enableEmbedding } = event.data;
 
   switch (type) {
@@ -283,14 +280,14 @@ self.onmessage = async function(event) {
       await ocrServiceWorker.processOCR(jobId, imageData, {
         method,
         confidenceThreshold,
-        enableEmbedding
+        enableEmbedding,
       });
       break;
 
     case 'worker_ping':
       self.postMessage({
         type: 'worker_pong',
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
       break;
 
@@ -300,8 +297,8 @@ self.onmessage = async function(event) {
         stats: {
           ready: !!ocrServiceWorker.ocrWorker,
           gpuAccelerated: ocrServiceWorker.gpuAcceleration,
-          jobsProcessed: 0 // Would track in real implementation
-        }
+          jobsProcessed: 0, // Would track in real implementation
+        },
       });
       break;
 
@@ -311,12 +308,12 @@ self.onmessage = async function(event) {
 };
 
 // Handle worker errors
-self.onerror = function(error) {
+self.onerror = function (error) {
   console.error('OCR Service Worker error:', error);
 
   self.postMessage({
     type: 'worker_error',
-    error: error.message || 'Unknown worker error'
+    error: error.message || 'Unknown worker error',
   });
 };
 

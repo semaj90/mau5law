@@ -269,7 +269,9 @@
             <span class="status-dot active"></span>
             <span class="status-text">9S AI ASSISTANT</span>
           </div>
-          <div class="system-description">YoRHa AI Assistant Online - Detective Support System Active</div>
+          <div class="system-description">
+            YoRHa AI Assistant Online - Detective Support System Active
+          </div>
         </div>
         <div class="messages-container" bind:this={messagesContainer}>
           {#each messages as message (message.id)}
@@ -308,13 +310,17 @@
             <span class="input-prompt">🕵️</span>
             <Input
               value={currentInput}
-              oninput={e => (currentInput = (e.target as HTMLInputElement).value)}
+              oninput={(e) => (currentInput = (e.target as HTMLInputElement).value)}
               placeholder="Ask 9S about your investigation..."
               class="chat-input"
               onkeypress={handleKeyPress}
               disabled={isTyping}
             />
-            <Button class="send-btn" onclick={sendMessage} disabled={!currentInput.trim() || isTyping}>⚡SEND</Button>
+            <Button
+              class="send-btn"
+              onclick={sendMessage}
+              disabled={!currentInput.trim() || isTyping}>⚡SEND</Button
+            >
           </div>
         </div>
       </div>

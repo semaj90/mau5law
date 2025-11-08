@@ -2,9 +2,9 @@
 // Compiles to WASM for browser-side legal document processing
 // Legal document structure for WASM processing
 export class LegalDocumentWASM {
-  public id: string = "";
-  public title: string = ""; // Corrected type annotation
-  public content: string = "";
+  public id: string = '';
+  public title: string = ''; // Corrected type annotation
+  public content: string = '';
   public confidence: number = 0.0;
   public processedAt: number = 0;
   public entityCount: number = 0;
@@ -40,10 +40,10 @@ export class SIMDStringOps {
     const citations: string[] = [];
     // Common legal citation patterns
     const patterns = [
-      "\\d+ U\\.S\\. \\d+", // Supreme Court
-      "\\d+ F\\.\\d+d \\d+", // Federal courts
-      "\\d+ S\\.Ct\\. \\d+", // Supreme Court Reporter
-      "\\d+ L\\.Ed\\.\\d+d \\d+", // Lawyer's Edition
+      '\\d+ U\\.S\\. \\d+', // Supreme Court
+      '\\d+ F\\.\\d+d \\d+', // Federal courts
+      '\\d+ S\\.Ct\\. \\d+', // Supreme Court Reporter
+      '\\d+ L\\.Ed\\.\\d+d \\d+', // Lawyer's Edition
     ];
     for (const pattern of patterns) {
       const matches = SIMDStringOps.findPatternMatches(text, pattern);
@@ -58,14 +58,14 @@ export class SIMDStringOps {
     const matches: string[] = [];
     // Use regex for pattern matching (would be SIMD in actual WASM)
     try {
-      const regex = new RegExp(pattern, "g");
+      const regex = new RegExp(pattern, 'g');
       let match: RegExpExecArray | null;
       while ((match = regex.exec(text)) !== null) {
         matches.push(match[0]);
       }
     } catch (error) {
       // Fallback for invalid regex patterns
-      console.warn("Invalid regex pattern: ", pattern);
+      console.warn('Invalid regex pattern: ', pattern);
     }
     return matches;
   }
@@ -80,10 +80,10 @@ export class SIMDJSONParser {
     // Convert bytes to string for parsing
     const jsonStr = new TextDecoder().decode(jsonBytes);
     // SIMD-accelerated field extraction
-    doc.id = SIMDJSONParser.extractStringField(jsonStr, "id");
-    doc.title = SIMDJSONParser.extractStringField(jsonStr, "title");
-    doc.content = SIMDJSONParser.extractStringField(jsonStr, "content");
-    doc.confidence = SIMDJSONParser.extractNumberField(jsonStr, "confidence");
+    doc.id = SIMDJSONParser.extractStringField(jsonStr, 'id');
+    doc.title = SIMDJSONParser.extractStringField(jsonStr, 'title');
+    doc.content = SIMDJSONParser.extractStringField(jsonStr, 'content');
+    doc.confidence = SIMDJSONParser.extractNumberField(jsonStr, 'confidence');
     doc.processedAt = Date.now();
     // Use SIMD for entity and citation counting
     doc.entityCount = SIMDJSONParser.countLegalEntities(doc.content);
@@ -108,10 +108,10 @@ export class SIMDJSONParser {
     // Corrected type annotation
     const startPattern = `"${fieldName}":"`; // Corrected string literal
     const startIndex = json.indexOf(startPattern);
-    if (startIndex === -1) return "";
+    if (startIndex === -1) return '';
     const valueStart = startIndex + startPattern.length;
     const valueEnd = json.indexOf('"', valueStart); // Corrected string literal
-    if (valueEnd === -1) return "";
+    if (valueEnd === -1) return '';
     return json.substring(valueStart, valueEnd);
   }
   // SIMD-optimized: number field extraction
@@ -148,12 +148,12 @@ export class SIMDJSONParser {
     let count = 0;
     // Legal entity patterns (simplified)
     const entityPatterns = [
-      "United States Code",
-      "Code of Federal Regulations",
-      "Federal Register",
-      "Supreme Court",
-      "District Court",
-      "Circuit Court",
+      'United States Code',
+      'Code of Federal Regulations',
+      'Federal Register',
+      'Supreme Court',
+      'District Court',
+      'Circuit Court',
     ];
     for (let i = 0; i < entityPatterns.length; i++) {
       const pattern = entityPatterns[i];
@@ -184,9 +184,9 @@ let wasmExports: {
  * @param modulePath The path to the .wasm module.
  */
 export async function initializeWasm(modulePath?: string): Promise<void> {
-  if (typeof WebAssembly === "undefined") {
+  if (typeof WebAssembly === 'undefined') {
     console.warn(
-      "WebAssembly is not supported in this environment. Using fallback memory management."
+      'WebAssembly is not supported in this environment. Using fallback memory management.'
     );
     // Provide a fallback if WASM is not available
     wasmExports.memory = new WebAssembly.Memory({ initial: 256, maximum: 1024 }); // Mock memory
@@ -196,7 +196,7 @@ export async function initializeWasm(modulePath?: string): Promise<void> {
       heapPtr += size;
       // Simple bump allocator, no actual free
       if (heapPtr > wasmExports.memory!.buffer.byteLength) {
-        console.error("WASM memory allocation failed: Out of memory (mock).");
+        console.error('WASM memory allocation failed: Out of memory (mock).');
         return 0; // Indicate failure
       }
       return allocatedPtr;
@@ -218,14 +218,14 @@ export async function initializeWasm(modulePath?: string): Promise<void> {
   // wasmExports = instance.exports as typeof wasmExports;
 
   // For now, we'll simulate a successful WASM load with mock exports
-  console.log("Simulating WebAssembly module initialization.");
+  console.log('Simulating WebAssembly module initialization.');
   wasmExports.memory = new WebAssembly.Memory({ initial: 256, maximum: 1024 }); // Actual WASM memory
   let heapPtr = 0; // Simple bump allocator for simulation
   wasmExports.malloc = (size: number) => {
     const allocatedPtr = heapPtr;
     heapPtr += size;
     if (heapPtr > wasmExports.memory!.buffer.byteLength) {
-      console.error("WASM memory allocation failed: Out of memory (simulation).");
+      console.error('WASM memory allocation failed: Out of memory (simulation).');
       return 0;
     }
     return allocatedPtr;
@@ -240,7 +240,7 @@ export async function initializeWasm(modulePath?: string): Promise<void> {
 export function allocateMemory(size: number): number {
   // Corrected type annotation
   if (!wasmExports.malloc) {
-    console.error("WASM module not initialized. Cannot allocate memory.");
+    console.error('WASM module not initialized. Cannot allocate memory.');
     return 0; // Indicate failure
   }
   const ptr = wasmExports.malloc(size);
@@ -255,7 +255,7 @@ export function allocateMemory(size: number): number {
 export function deallocateMemory(ptr: number): void {
   // Corrected type annotation
   if (!wasmExports.free) {
-    console.error("WASM module not initialized. Cannot deallocate memory.");
+    console.error('WASM module not initialized. Cannot deallocate memory.');
     return;
   }
   wasmExports.free(ptr);

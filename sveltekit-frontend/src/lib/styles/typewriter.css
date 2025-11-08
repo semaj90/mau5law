@@ -12,11 +12,13 @@
 }
 
 @keyframes cursor-blink {
-  0%, 50% {
+  0%,
+  50% {
     border-color: transparent;
   }
-  51%, 100% {
-    border-color: #3D3D3D;
+  51%,
+  100% {
+    border-color: #3d3d3d;
   }
 }
 
@@ -26,13 +28,13 @@
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: #F7F6F2;
-  border: 2px solid #3D3D3D;
+  background-color: #f7f6f2;
+  border: 2px solid #3d3d3d;
   padding: 12px 20px;
   font-family: 'Roboto Mono', monospace;
   font-weight: 500;
   font-size: 16px;
-  color: #3D3D3D;
+  color: #3d3d3d;
   z-index: 9999;
   white-space: nowrap;
   overflow: hidden;
@@ -46,7 +48,7 @@
 }
 
 .ai-typewriter.typing {
-  border-right: 3px solid #3D3D3D;
+  border-right: 3px solid #3d3d3d;
   animation: cursor-blink 1s infinite;
 }
 
@@ -60,21 +62,21 @@
 
 .ai-typewriter .text.animating {
   animation: typewriter 2.5s steps(25, end) forwards;
-  border-right: 3px solid #3D3D3D;
+  border-right: 3px solid #3d3d3d;
 }
 
 /* YoRHa themed version */
 .ai-typewriter.yorha {
-  background-color: #EAE8E1;
-  border-color: #D1CFC7;
-  color: #3D3D3D;
+  background-color: #eae8e1;
+  border-color: #d1cfc7;
+  color: #3d3d3d;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .ai-typewriter.yorha::before {
-  content: "🤖 AI: ";
+  content: '🤖 AI: ';
   color: #666;
   font-weight: 400;
   text-transform: none;
@@ -83,14 +85,18 @@
 
 /* Quantum shimmer effect for enhanced modes */
 .ai-typewriter.quantum {
-  background: linear-gradient(90deg, #F7F6F2 25%, rgba(59, 130, 246, 0.1) 50%, #F7F6F2 75%);
+  background: linear-gradient(90deg, #f7f6f2 25%, rgba(59, 130, 246, 0.1) 50%, #f7f6f2 75%);
   background-size: 200% 100%;
   animation: quantum-shimmer 3s infinite;
 }
 
 @keyframes quantum-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 /* Matrix-style green theme */
@@ -107,17 +113,17 @@
 
 /* God mode golden theme */
 .ai-typewriter.god {
-  background: linear-gradient(45deg, #F7F6F2, #FFF8DC);
-  border-color: #FFD700;
-  color: #8B4513;
+  background: linear-gradient(45deg, #f7f6f2, #fff8dc);
+  border-color: #ffd700;
+  color: #8b4513;
   box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
 /* AI Whisperer purple theme */
 .ai-typewriter.ai-whisperer {
-  background: linear-gradient(45deg, #F7F6F2, #F0E6FF);
-  border-color: #9333EA;
-  color: #581C87;
+  background: linear-gradient(45deg, #f7f6f2, #f0e6ff);
+  border-color: #9333ea;
+  color: #581c87;
 }
 
 /* Mobile responsiveness */

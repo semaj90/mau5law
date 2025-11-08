@@ -88,7 +88,7 @@ async function startRedis() {
   const isPortOpen = await (async () => {
     try {
       const net = await import('net');
-      return await new Promise(resolve => {
+      return await new Promise((resolve) => {
         const sock = new net.Socket();
         sock.setTimeout(500);
         sock.on('connect', () => {
@@ -140,7 +140,7 @@ async function startRedis() {
     }
   );
 
-  redis.on('error', err => {
+  redis.on('error', (err) => {
     console.error('❌ Failed to start Redis:', err.message);
     console.log('💡 Try installing Redis:');
     console.log('   Windows: choco install redis-64');
@@ -149,7 +149,7 @@ async function startRedis() {
     process.exit(1);
   });
 
-  redis.on('close', code => {
+  redis.on('close', (code) => {
     console.log(`🔴 Redis server exited with code ${code}`);
   });
 

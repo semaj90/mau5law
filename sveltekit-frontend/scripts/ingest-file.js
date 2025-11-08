@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 import { ingestMinioObject } from '../src/lib/ingest/worker.mjs';
 
-const [,, bucket, key] = process.argv;
+const [, , bucket, key] = process.argv;
 if (!bucket || !key) {
   console.error('Usage: node scripts/ingest-file.js <bucket> <key>');
   process.exit(2);
 }
 
-(async ()=>{
+(async () => {
   try {
     const r = await ingestMinioObject(bucket, key);
     console.log('Ingest result:', r);

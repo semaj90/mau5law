@@ -151,7 +151,8 @@ AI Document Summarization - Generate summaries of legal documents
                     <FileText class="w-4 h-4" />
                     <span class="text-sm">{selectedFile.name}</span>
                   </div>
-                  <span class="nes-badge is-success">{Math.round(selectedFile.size / 1024)} KB</span>
+                  <span class="nes-badge is-success">{Math.round(selectedFile.size / 1024)} KB</span
+                  >
                 </div>
               </div>
             {/if}
@@ -180,7 +181,10 @@ AI Document Summarization - Generate summaries of legal documents
 
             <div class="pt-4 border-t border-gray-600">
               <div class="nes-btn is-primary w-full">
-                <EnhancedButton onclick={generateSummary} disabled={!selectedFile || isUploading || isSummarizing}>
+                <EnhancedButton
+                  onclick={generateSummary}
+                  disabled={!selectedFile || isUploading || isSummarizing}
+                >
                   {#if isSummarizing}
                     <Brain class="w-4 h-4 mr-2 animate-pulse" />
                     Generating Summary...

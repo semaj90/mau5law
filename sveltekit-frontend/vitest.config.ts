@@ -5,8 +5,17 @@ import { fileURLToPath } from 'url';
 export default defineConfig({
   test: {
     // include unit tests in our new test folder and standard patterns
-    include: ['src/lib/tests/unit/**/*.test.{js,ts}', 'src/**/*.{test,spec}.{js,ts}', 'src/lib/**/*.test.{js,ts}'],
-    exclude: ['node_modules/**', 'dist/**', 'tests/**', 'src/lib/services/**/__tests__/integration/**'],
+    include: [
+      'src/lib/tests/unit/**/*.test.{js,ts}',
+      'src/**/*.{test,spec}.{js,ts}',
+      'src/lib/**/*.test.{js,ts}',
+    ],
+    exclude: [
+      'node_modules/**',
+      'dist/**',
+      'tests/**',
+      'src/lib/services/**/__tests__/integration/**',
+    ],
     environment: 'jsdom',
     globals: true,
     // Omit heavy global setup for lightweight unit tests to avoid importing large integration helpers

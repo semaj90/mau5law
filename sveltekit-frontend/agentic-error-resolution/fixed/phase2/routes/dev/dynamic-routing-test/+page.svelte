@@ -156,7 +156,9 @@ https://svelte.dev/e/attribute_duplicate -->
     <!-- Header -->
     <div class="text-center">
       <h1 class="text-4xl font-bold text-yorha-secondary mb-4">🛣️ Dynamic Routing Test Suite</h1>
-      <p class="text-yorha-text-secondary">Testing route configuration and navigation functionality</p>
+      <p class="text-yorha-text-secondary">
+        Testing route configuration and navigation functionality
+      </p>
       <p class="text-sm text-yorha-text-muted mt-2">
         Current Path: <code class="bg-yorha-bg-secondary px-2 py-1 rounded">{currentPath}</code>
       </p>
@@ -185,7 +187,9 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Test Results</h2>
       {#if $testResults.length > 0}
-        <div class="bg-yorha-bg-secondary p-4 rounded font-mono text-sm space-y-2 max-h-64 overflow-y-auto">
+        <div
+          class="bg-yorha-bg-secondary p-4 rounded font-mono text-sm space-y-2 max-h-64 overflow-y-auto"
+        >
           {#each Array.isArray($testResults) ? $testResults : [] as result}
             <div class="text-yorha-text-primary">{result}</div>
           {/each}
@@ -202,21 +206,28 @@ https://svelte.dev/e/attribute_duplicate -->
           <div class="space-y-3">
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Total Routes:</span>
-              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">{$routeStats.total}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                >{$routeStats.total}</span
+              >
             </div>
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Active:</span>
-              <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white">{$routeStats.active}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-blue-500 text-white"
+                >{$routeStats.active}</span
+              >
             </div>
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Experimental:</span>
-              <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+              <span
+                class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                 >{$routeStats.experimental}</span
               >
             </div>
             <div class="flex justify-between">
               <span class="text-yorha-text-secondary">Beta:</span>
-              <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white">{$routeStats.beta}</span>
+              <span class="px-2 py-1 rounded text-xs font-medium bg-red-500 text-white"
+                >{$routeStats.beta}</span
+              >
             </div>
           </div>
         {:else}
@@ -230,7 +241,10 @@ https://svelte.dev/e/attribute_duplicate -->
             {#each Object.entries($routeStats.categories) as [category, count]}
               <div class="flex justify-between text-sm">
                 <span class="text-yorha-text-secondary capitalize">{category}:</span>
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700">{count}</span>
+                <span
+                  class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                  >{count}</span
+                >
               </div>
             {/each}
           </div>
@@ -310,13 +324,16 @@ https://svelte.dev/e/attribute_duplicate -->
     <div class="p-6 nes-container">
       <h2 class="text-2xl font-semibold mb-4 text-yorha-accent">Debug Information</h2>
       <details class="cursor-pointer">
-        <summary class="text-yorha-secondary hover:text-yorha-accent mb-4"> View All Routes Configuration </summary>
+        <summary class="text-yorha-secondary hover:text-yorha-accent mb-4">
+          View All Routes Configuration
+        </summary>
         <div class="grid grid-cols-1 gap-2 max-h-64 overflow-y-auto">
           {#each Array.isArray(allRoutes) ? allRoutes : [] as route}
             <div class="bg-yorha-bg-secondary p-2 rounded text-xs">
               <div class="flex justify-between items-center">
                 <span class="font-mono text-yorha-accent">{route.id}</span>
-                <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                <span
+                  class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                   >{route.category}</span
                 >
               </div>
@@ -327,7 +344,9 @@ https://svelte.dev/e/attribute_duplicate -->
         </div>
 
         <!-- show full JSON for quick debugging (uses formatJson so it's not unused) -->
-        <pre class="mt-3 text-xs bg-white/5 p-3 rounded max-h-80 overflow-auto">{formatJson(allRoutes)}</pre>
+        <pre class="mt-3 text-xs bg-white/5 p-3 rounded max-h-80 overflow-auto">{formatJson(
+            allRoutes
+          )}</pre>
       </details>
     </div>
   </div>

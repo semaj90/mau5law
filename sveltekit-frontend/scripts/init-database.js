@@ -1,6 +1,7 @@
 const { Client } = require('pg');
 
-const TARGET_DB = process.argv[2] || process.env.TARGET_DB || process.env.LEGAL_AI_DB || 'legal_ai_db';
+const TARGET_DB =
+  process.argv[2] || process.env.TARGET_DB || process.env.LEGAL_AI_DB || 'legal_ai_db';
 
 function buildConnConfig(dbName = 'postgres') {
   // Prefer a full connection string if provided
@@ -76,7 +77,9 @@ async function ensurePgvectorExtension(targetClient) {
     await targetClient.connect();
     await ensurePgvectorExtension(targetClient);
 
-    const ext = await targetClient.query("SELECT extname, extversion FROM pg_extension WHERE extname = 'vector'");
+    const ext = await targetClient.query(
+      "SELECT extname, extversion FROM pg_extension WHERE extname = 'vector'"
+    );
     if ((ext?.rowCount ?? 0) > 0) {
       console.log('Installed extension:', ext.rows?.[0]);
     } else {
@@ -93,7 +96,7 @@ async function ensurePgvectorExtension(targetClient) {
       await targetClient.end();
     } catch (_) {}
   }
-})().catch(err => {
+})().catch((err) => {
   console.error('Unexpected error:', err?.message ?? err);
   process.exit(4);
 });

@@ -1868,11 +1868,7 @@ function move_effect(effect2, fragment) {
   var node = effect2.nodes_start;
   var end = effect2.nodes_end;
   while (node !== null) {
-    var next2 =
-      node === end
-        ? null
-        : /** @type {TemplateNode} */
-          get_next_sibling(node);
+    var next2 = node === end ? null : /** @type {TemplateNode} */ get_next_sibling(node);
     fragment.append(node);
     node = next2;
   }
@@ -2708,11 +2704,7 @@ function destroy_effect(effect2, remove_dom = true) {
 }
 function remove_effect_dom(node, end) {
   while (node !== null) {
-    var next2 =
-      node === end
-        ? null
-        : /** @type {TemplateNode} */
-          get_next_sibling(node);
+    var next2 = node === end ? null : /** @type {TemplateNode} */ get_next_sibling(node);
     node.remove();
     node = next2;
   }

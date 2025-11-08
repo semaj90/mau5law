@@ -49,7 +49,7 @@
     id: string;
     content: string;
     score: number;
-    metadata: { [key: string]: any }
+    metadata: { [key: string]: any };
   }
 
   // Define ServiceStatus interface
@@ -66,17 +66,17 @@
     healthy: false,
     loading: true,
     services: {},
-    version: "",
+    version: '',
     config: {},
   });
-  let documentContent = $state<string>("");
-  let selectedDocumentType = $state<string>("contract");
-  let selectedJurisdiction = $state<string>("US");
-  let selectedPracticeArea = $state<string>("commercial");
+  let documentContent = $state<string>('');
+  let selectedDocumentType = $state<string>('contract');
+  let selectedJurisdiction = $state<string>('US');
+  let selectedPracticeArea = $state<string>('commercial');
   let useGPU = $state<boolean>(true);
   let processing = $state<boolean>(false);
   let processResult = $state<DocumentResponse | null>(null);
-  let searchQuery = $state<string>("");
+  let searchQuery = $state<string>('');
   let searchLimit = $state<number>(10);
   let searching = $state<boolean>(false);
   let searchResults = $state<VectorSearchResponse | null>(null);
@@ -84,33 +84,33 @@
   let showSearchDialog = $state<boolean>(false);
   // Enhanced configuration
   // Enhanced configuration
-  const API_BASE = "/api"; // Use SvelteKit API routes
+  const API_BASE = '/api'; // Use SvelteKit API routes
   const documentTypes = [
-    { value: "contract", label: "Contract" },
-    { value: "litigation", label: "Litigation" },
-    { value: "patent", label: "Patent" },
-    { value: "regulatory", label: "Regulatory" },
-    { value: "general", label: "General Legal" },
+    { value: 'contract', label: 'Contract' },
+    { value: 'litigation', label: 'Litigation' },
+    { value: 'patent', label: 'Patent' },
+    { value: 'regulatory', label: 'Regulatory' },
+    { value: 'general', label: 'General Legal' },
   ];
   const jurisdictions = [
-    { value: "US", label: "United States" },
-    { value: "CA", label: "Canada" },
-    { value: "UK", label: "United Kingdom" },
-    { value: "EU", label: "European Union" },
-    { value: "INTL", label: "International" },
+    { value: 'US', label: 'United States' },
+    { value: 'CA', label: 'Canada' },
+    { value: 'UK', label: 'United Kingdom' },
+    { value: 'EU', label: 'European Union' },
+    { value: 'INTL', label: 'International' },
   ];
   const practiceAreas = [
-    { value: "commercial", label: "Commercial Law" },
-    { value: "ip", label: "Intellectual Property" },
-    { value: "constitutional", label: "Constitutional Law" },
-    { value: "criminal", label: "Criminal Law" },
-    { value: "corporate", label: "Corporate Law" },
-    { value: "employment", label: "Employment Law" },
+    { value: 'commercial', label: 'Commercial Law' },
+    { value: 'ip', label: 'Intellectual Property' },
+    { value: 'constitutional', label: 'Constitutional Law' },
+    { value: 'criminal', label: 'Criminal Law' },
+    { value: 'corporate', label: 'Corporate Law' },
+    { value: 'employment', label: 'Employment Law' },
   ];
   const models = [
     { value: 'gemma3-legal', label: 'Gemma3 Legal', description: 'Legal-specialized model' },
     { value: 'gemma3:latest', label: 'Gemma3 General', description: 'General purpose model' },
-    { value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' }
+    { value: 'gemma2:2b', label: 'Gemma2 2B', description: 'Fast, lightweight model' },
   ];
   // Enhanced service functions
   async function checkServiceHealth() {
@@ -123,43 +123,58 @@
           healthy: true,
           loading: false,
           services: health.services || {},
-          version: health.version || "",
+          version: health.version || '',
           config: health.config || {},
-        }
+        };
       } else {
         throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
-      console.error("Health check failed:", error);
+      console.error('Health check failed:', error);
       serviceStatus = {
         healthy: false,
         loading: false,
         services: {},
-        version: "",
+        version: '',
         config: {},
-      }
+      };
     }
   }
   async function processDocument() {
     if (!documentContent.trim()) {
-      alert("Please enter document content");
+      alert('Please enter document content');
       return;
     }
-    try { processing = true;
+    try {
+      processing = true;
       processResult = null;
       const request: DocumentRequest = {
-        content: documentContent, document_type: selectedDocumentType, practice_area: selectedPracticeArea, jurisdiction: selectedJurisdiction, use_gpu: useGPU, metadata: {
-          timestamp: new Date().toISOString(), user_id: "demo-user", session_id: "demo-session" },
-      }
-      const response = await fetch(`${API_BASE}/process`, { method: "POST", headers: {
-          "Content-Type": "application/json" },
+        content: documentContent,
+        document_type: selectedDocumentType,
+        practice_area: selectedPracticeArea,
+        jurisdiction: selectedJurisdiction,
+        use_gpu: useGPU,
+        metadata: {
+          timestamp: new Date().toISOString(),
+          user_id: 'demo-user',
+          session_id: 'demo-session',
+        },
+      };
+      const response = await fetch(`${API_BASE}/process`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify(request),
       });
-      if (!response.ok) throw new Error("Document processing failed");
+      if (!response.ok) throw new Error('Document processing failed');
       processResult = await response.json();
     } catch (error) {
-      console.error("Document processing error:", error);
-      processResult = { success: false, message: error instanceof Error ? error.message : "Unknown error" };
+      console.error('Document processing error:', error);
+      processResult = {
+        success: false,
+        message: error instanceof Error ? error.message : 'Unknown error',
+      };
     } finally {
       processing = false;
     }
@@ -167,7 +182,7 @@
   }
   async function performVectorSearch() {
     if (!searchQuery || !searchQuery.trim()) {
-      alert("Please enter a search query");
+      alert('Please enter a search query');
       return;
     }
     try {
@@ -179,7 +194,7 @@
         limit: Number(searchLimit) || 10,
         model: 'embeddinggemma:latest',
         use_gpu: Boolean(useGPU),
-        filters: {}
+        filters: {},
       };
 
       const response = await fetch(`${API_BASE}/vector-search`, {
@@ -204,18 +219,18 @@
     }
   }
   function getSentimentColor(sentiment: number): string {
-    if (sentiment == null || Number.isNaN(sentiment)) return "text-gray-500";
-    if (sentiment > 0.7) return "text-green-600";
-    if (sentiment > 0.5) return "text-blue-600";
-    if (sentiment > 0.3) return "text-yellow-600";
-    return "text-red-600";
+    if (sentiment == null || Number.isNaN(sentiment)) return 'text-gray-500';
+    if (sentiment > 0.7) return 'text-green-600';
+    if (sentiment > 0.5) return 'text-blue-600';
+    if (sentiment > 0.3) return 'text-yellow-600';
+    return 'text-red-600';
   }
   function getSentimentLabel(sentiment: number): string {
-    if (sentiment == null || Number.isNaN(sentiment)) return "Unknown";
-    if (sentiment > 0.7) return "Positive";
-    if (sentiment > 0.5) return "Somewhat Positive";
-    if (sentiment > 0.3) return "Neutral";
-    return "Negative";
+    if (sentiment == null || Number.isNaN(sentiment)) return 'Unknown';
+    if (sentiment > 0.7) return 'Positive';
+    if (sentiment > 0.5) return 'Somewhat Positive';
+    if (sentiment > 0.3) return 'Neutral';
+    return 'Negative';
   }
   onMount(() => {
     checkServiceHealth().catch((e) => console.warn('initial health check failed', e));
@@ -231,9 +246,7 @@
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
     <header class="mb-8">
-      <h1 class="text-4xl font-bold text-slate-800 mb-2">
-        🏛️ Enhanced Legal AI System
-      </h1>
+      <h1 class="text-4xl font-bold text-slate-800 mb-2">🏛️ Enhanced Legal AI System</h1>
       <p class="text-slate-600 text-lg">
         Gemma3-Legal GGUF • NVIDIA CUDA • Redis-Native • Advanced RAG
       </p>
@@ -257,12 +270,10 @@
               class:text-green-800={serviceStatus.healthy}
               class:text-red-800={!serviceStatus.healthy}
             >
-              {serviceStatus.healthy ? "System Online" : "System Offline"}
+              {serviceStatus.healthy ? 'System Online' : 'System Offline'}
             </span>
             {#if serviceStatus.version}
-              <span class="text-sm text-slate-600"
-                >v{serviceStatus.version}</span
-              >
+              <span class="text-sm text-slate-600">v{serviceStatus.version}</span>
             {/if}
           </div>
 
@@ -274,7 +285,7 @@
                   class:text-green-600={serviceStatus.services.redis === 'connected'}
                   class:text-red-600={serviceStatus.services.redis !== 'connected'}
                 >
-                  {serviceStatus.services.redis || "unknown"}
+                  {serviceStatus.services.redis || 'unknown'}
                 </span>
               </span>
               <span class="text-slate-600">
@@ -283,9 +294,7 @@
                   class:text-green-600={serviceStatus.services.gpu === 'true'}
                   class:text-blue-600={serviceStatus.services.gpu !== 'true'}
                 >
-                  {serviceStatus.services.gpu === "true"
-                    ? "enabled"
-                    : "disabled"}
+                  {serviceStatus.services.gpu === 'true' ? 'enabled' : 'disabled'}
                 </span>
               </span>
             </div>
@@ -297,16 +306,18 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <!-- Document Processing -->
       <div class="bg-white rounded-xl shadow-lg p-6">
-        <h2
-          class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2"
-        >
+        <h2 class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
           📄 Document Processing
         </h2>
         <!-- Configuration -->
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <Label for="document-type">Document Type</Label>
-            <select id="document-type" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedDocumentType}>
+            <select
+              id="document-type"
+              class="w-full mt-1 border rounded px-2 py-2"
+              bind:value={selectedDocumentType}
+            >
               {#each Array.isArray(documentTypes) ? documentTypes : [] as type}
                 <option value={type.value}>{type.label}</option>
               {/each}
@@ -314,7 +325,11 @@
           </div>
           <div>
             <Label for="jurisdiction">Jurisdiction</Label>
-            <select id="jurisdiction" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedJurisdiction}>
+            <select
+              id="jurisdiction"
+              class="w-full mt-1 border rounded px-2 py-2"
+              bind:value={selectedJurisdiction}
+            >
               {#each Array.isArray(jurisdictions) ? jurisdictions : [] as jurisdiction}
                 <option value={jurisdiction.value}>{jurisdiction.label}</option>
               {/each}
@@ -324,7 +339,11 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
           <div>
             <Label for="practice-area">Practice Area</Label>
-            <select id="practice-area" class="w-full mt-1 border rounded px-2 py-2" bind:value={selectedPracticeArea}>
+            <select
+              id="practice-area"
+              class="w-full mt-1 border rounded px-2 py-2"
+              bind:value={selectedPracticeArea}
+            >
               {#each Array.isArray(practiceAreas) ? practiceAreas : [] as area}
                 <option value={area.value}>{area.label}</option>
               {/each}
@@ -354,9 +373,22 @@
         >
           {#if processing}
             <!-- inline spinner -->
-            <svg class="mr-2 h-4 w-4 animate-spin inline-block" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            <svg
+              class="mr-2 h-4 w-4 animate-spin inline-block"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              ></path>
             </svg>
             Processing...
           {:else}
@@ -366,9 +398,7 @@
       </div>
       <!-- Vector Search -->
       <div class="bg-white rounded-xl shadow-lg p-6">
-        <h2
-          class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2"
-        >
+        <h2 class="text-2xl font-bold text-slate-800 mb-4 flex items-center gap-2">
           🔍 Vector Search
         </h2>
         <!-- Search Configuration -->
@@ -401,9 +431,22 @@
           class="w-full mt-4"
         >
           {#if searching}
-            <svg class="mr-2 h-4 w-4 animate-spin inline-block" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            <svg
+              class="mr-2 h-4 w-4 animate-spin inline-block"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+              ></path>
             </svg>
             Searching...
           {:else}
@@ -419,7 +462,11 @@
 {#if showProcessDialog}
   <div class="fixed inset-0 z-50 flex items-center justify-center">
     <!-- overlay -->
-    <div class="fixed inset-0 bg-black/40" onclick={() => (showProcessDialog = false)} aria-hidden="true"></div>
+    <div
+      class="fixed inset-0 bg-black/40"
+      onclick={() => (showProcessDialog = false)}
+      aria-hidden="true"
+    ></div>
 
     <!-- dialog panel -->
     <div
@@ -473,7 +520,9 @@
               <Label class="text-right">Entities:</Label>
               <div class="col-span-3">
                 {#each Array.isArray(processResult.legal_entities) ? processResult.legal_entities : [] as entity}
-                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1">
+                  <span
+                    class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mr-1 mb-1"
+                  >
                     {entity.name} ({entity.type})
                   </span>
                 {/each}
@@ -484,7 +533,7 @@
           {#if processResult.sentiment !== undefined}
             <div class="grid grid-cols-4 items-center gap-4">
               <Label class="text-right">Sentiment:</Label>
-              <span class={ `col-span-3 ${getSentimentColor(processResult.sentiment)}` }>
+              <span class={`col-span-3 ${getSentimentColor(processResult.sentiment)}`}>
                 {getSentimentLabel(processResult.sentiment)} ({processResult.sentiment.toFixed(2)})
               </span>
             </div>
@@ -526,7 +575,11 @@
 {#if showSearchDialog}
   <div class="fixed inset-0 z-50 flex items-center justify-center">
     <!-- overlay -->
-    <div class="fixed inset-0 bg-black/40" onclick={() => (showSearchDialog = false)} aria-hidden="true"></div>
+    <div
+      class="fixed inset-0 bg-black/40"
+      onclick={() => (showSearchDialog = false)}
+      aria-hidden="true"
+    ></div>
 
     <!-- dialog panel -->
     <div
@@ -537,7 +590,9 @@
       <div class="flex items-start justify-between">
         <div>
           <h3 class="text-lg font-semibold">Vector Search Results</h3>
-          <p class="text-sm text-slate-600">Documents and cases semantically similar to your query.</p>
+          <p class="text-sm text-slate-600">
+            Documents and cases semantically similar to your query.
+          </p>
         </div>
         <button
           type="button"
@@ -559,7 +614,8 @@
               <div class="border-l-4 border-blue-500 p-3">
                 <h4 class="font-semibold">{result.metadata.title || 'Untitled Document'}</h4>
                 <p class="text-sm text-muted-foreground">
-                  Score: {result.score !== undefined ? (result.score * 100).toFixed(1) : 'N/A'}% | ID: {result.id}
+                  Score: {result.score !== undefined ? (result.score * 100).toFixed(1) : 'N/A'}% |
+                  ID: {result.id}
                 </p>
                 <p class="mt-2 text-sm line-clamp-3">{result.content}</p>
                 {#if result.metadata.source}
@@ -577,7 +633,9 @@
           {/each}
         </div>
       {:else if searchResults && searchResults.results.length === 0}
-        <p class="py-4 text-center text-muted-foreground">No similar documents found for: "{searchResults.query}".</p>
+        <p class="py-4 text-center text-muted-foreground">
+          No similar documents found for: "{searchResults.query}".
+        </p>
       {:else}
         <p class="py-4 text-center text-muted-foreground">Enter a query to see search results.</p>
       {/if}

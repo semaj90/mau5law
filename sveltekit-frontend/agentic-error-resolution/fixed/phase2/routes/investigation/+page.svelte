@@ -11,7 +11,13 @@
   // UI components are imported via barrel files for consistency and SSR compatibility.
   import Button from '$lib/components/ui/enhanced-bits.svelte';
   import { Badge } from '$lib/components/ui/badge';
-  import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '$lib/components/ui/card';
+  import {
+    Card,
+    CardHeader,
+    CardTitle,
+    CardDescription,
+    CardContent,
+  } from '$lib/components/ui/card';
   import { Tabs, TabsList, TabsTrigger, TabsContent } from '$lib/components/ui/tabs';
   import FileText from 'lucide-svelte/icons/file-text';
   import Search from 'lucide-svelte/icons/search';
@@ -87,13 +93,18 @@
       size: file.size,
     };
     evidence = [newEvidence, ...evidence];
-    addChatMessage('system', `Evidence uploaded: ${file.name}. Starting AI analysis...`, 'evidence', newEvidence.id);
+    addChatMessage(
+      'system',
+      `Evidence uploaded: ${file.name}. Starting AI analysis...`,
+      'evidence',
+      newEvidence.id
+    );
   }
   function handleAnalysisComplete(event: CustomEvent) {
     const { fileId, analysis, confidence } = (event as CustomEvent).detail;
     console.log('🧠 Analysis complete:', analysis);
     // Update evidence with analysis
-    evidence = evidence.map(item => {
+    evidence = evidence.map((item) => {
       if (item.id === fileId) {
         return {
           ...item,
@@ -123,7 +134,11 @@
       );
     }
     if (patterns && patterns.length > 0) {
-      addChatMessage('assistant', `🔍 Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`, 'analysis');
+      addChatMessage(
+        'assistant',
+        `🔍 Patterns identified: ${patterns.map((p: any) => p.type).join(', ')}`,
+        'analysis'
+      );
     }
   }
   // AI Chat functionality
@@ -230,7 +245,7 @@
       const investigationData = {
         caseId: currentCase.id,
         notes: investigationNotes,
-        evidence: evidence.filter(e => e.caseId === currentCase!.id), // Added non-null assertion
+        evidence: evidence.filter((e) => e.caseId === currentCase!.id), // Added non-null assertion
         citations,
         chatHistory: chatMessages,
         updatedAt: new Date().toISOString(),
@@ -257,15 +272,22 @@
 
 <svelte:head>
   <title>Legal Investigation Workspace - YoRHa Legal AI</title>
-  <meta name="description" content="Integrated workspace for legal investigation with AI-powered evidence analysis" />
+  <meta
+    name="description"
+    content="Integrated workspace for legal investigation with AI-powered evidence analysis"
+  />
 </svelte:head>
 
 <div
   class="investigation-workspace flex flex-col h-screen bg-gradient-to-br from-[#0a0a0a] to-[#1a1a1a] text-[#00ff88] font-mono"
 >
   <!-- Header -->
-  <div class="workspace-header border-b-2 border-[#00ff88] bg-[#00ff88]/10 px-4 py-2 sm:px-8 sm:py-4">
-    <div class="header-content flex justify-between items-center flex-col sm:flex-row gap-4 sm:gap-0">
+  <div
+    class="workspace-header border-b-2 border-[#00ff88] bg-[#00ff88]/10 px-4 py-2 sm:px-8 sm:py-4"
+  >
+    <div
+      class="header-content flex justify-between items-center flex-col sm:flex-row gap-4 sm:gap-0"
+    >
       <div class="case-info">
         <h1 class="text-2xl font-bold mb-2 text-shadow-green">🔍 Legal Investigation Workspace</h1>
         {#if currentCase}
@@ -281,7 +303,12 @@
         {/if}
       </div>
       <div class="workspace-actions flex items-center gap-4">
-        <Button onclick={saveInvestigation} variant="ghost" size="sm" disabled={!currentCase || isSaving}>
+        <Button
+          onclick={saveInvestigation}
+          variant="ghost"
+          size="sm"
+          disabled={!currentCase || isSaving}
+        >
           {#if isSaving}
             <Cpu class="w-4 h-4 mr-2 animate-spin" />
             Saving...
@@ -388,7 +415,9 @@
               <CardContent>
                 <div class="evidence-list">
                   {#each evidence as item}
-                    <div class="evidence-item p-3 border border-[#00ff88]/30 rounded-md mb-2 bg-black/30">
+                    <div
+                      class="evidence-item p-3 border border-[#00ff88]/30 rounded-md mb-2 bg-black/30"
+                    >
                       <div class="evidence-header flex justify-between items-center mb-2">
                         <span class="evidence-title font-medium">{item.title}</span>
                         <Badge class={`${getStatusColor(item.status)} text-white text-xs`}>
@@ -410,12 +439,15 @@
                         </div>
                       {/if}
                       {#if item.aiAnalysis}
-                        <p class="evidence-analysis text-sm text-gray-400 mt-2 leading-tight">{item.aiAnalysis}</p>
+                        <p class="evidence-analysis text-sm text-gray-400 mt-2 leading-tight">
+                          {item.aiAnalysis}
+                        </p>
                       {/if}
                       {#if item.tags.length > 0}
                         <div class="evidence-tags flex flex-wrap gap-1 mt-2">
                           {#each Array.isArray(item.tags) ? item.tags : [] as tag}
-                            <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-300"
+                            <span
+                              class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-300"
                               >{tag}</span
                             >
                           {/each}
@@ -424,7 +456,9 @@
                     </div>
                   {/each}
                   {#if evidence.length === 0}
-                    <div class="empty-state flex flex-col items-center justify-center h-48 text-center opacity-60">
+                    <div
+                      class="empty-state flex flex-col items-center justify-center h-48 text-center opacity-60"
+                    >
                       <Upload class="w-8 h-8 text-gray-400 mb-2" />
                       <p class="text-gray-500">Upload evidence to begin analysis</p>
                     </div>
@@ -441,7 +475,9 @@
         <Card class="h-full">
           <CardHeader>
             <CardTitle>Investigation Notes</CardTitle>
-            <CardDescription>Document findings, observations, and analysis using the rich text editor</CardDescription>
+            <CardDescription
+              >Document findings, observations, and analysis using the rich text editor</CardDescription
+            >
           </CardHeader>
           <CardContent class="h-full">
             <NierRichTextEditor
@@ -458,7 +494,8 @@
           <CardHeader>
             <CardTitle>Unified AI Legal Assistant</CardTitle>
             <CardDescription>
-              Advanced AI assistant with Ollama, vLLM, WebGPU acceleration, and Go microservices integration
+              Advanced AI assistant with Ollama, vLLM, WebGPU acceleration, and Go microservices
+              integration
             </CardDescription>
           </CardHeader>
           <CardContent class="h-full p-0">
@@ -480,7 +517,9 @@
         <Card class="h-full">
           <CardHeader>
             <CardTitle>Legal Citations & References</CardTitle>
-            <CardDescription>Advanced citation management with AI-powered legal research integration</CardDescription>
+            <CardDescription
+              >Advanced citation management with AI-powered legal research integration</CardDescription
+            >
           </CardHeader>
           <CardContent class="h-full p-0">
             <CitationsManager caseId={currentCase?.id || 'demo-case'} readonly={false} />
