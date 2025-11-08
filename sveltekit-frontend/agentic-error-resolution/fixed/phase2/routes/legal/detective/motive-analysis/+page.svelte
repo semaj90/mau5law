@@ -476,17 +476,29 @@
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div>
           <div class="text-sm text-gray-600">NES RAM Usage</div>
-          <div class="text-lg font-mono">{memoryMetrics.nesRAM.used}/{memoryMetrics.nesRAM.total} KB</div>
-          <Progress value={(memoryMetrics.nesRAM.used / memoryMetrics.nesRAM.total) * 100} class="w-full mt-1" />
+          <div class="text-lg font-mono">
+            {memoryMetrics.nesRAM.used}/{memoryMetrics.nesRAM.total} KB
+          </div>
+          <Progress
+            value={(memoryMetrics.nesRAM.used / memoryMetrics.nesRAM.total) * 100}
+            class="w-full mt-1"
+          />
         </div>
         <div>
           <div class="text-sm text-gray-600">CHR-ROM Usage</div>
-          <div class="text-lg font-mono">{memoryMetrics.chrROM.used}/{memoryMetrics.chrROM.total} KB</div>
-          <Progress value={(memoryMetrics.chrROM.used / memoryMetrics.chrROM.total) * 100} class="w-full mt-1" />
+          <div class="text-lg font-mono">
+            {memoryMetrics.chrROM.used}/{memoryMetrics.chrROM.total} KB
+          </div>
+          <Progress
+            value={(memoryMetrics.chrROM.used / memoryMetrics.chrROM.total) * 100}
+            class="w-full mt-1"
+          />
         </div>
         <div>
           <div class="text-sm text-gray-600">Glyph Cache</div>
-          <div class="text-lg font-mono">{memoryMetrics.glyphCache.hitRate.toFixed(1)}% hit rate</div>
+          <div class="text-lg font-mono">
+            {memoryMetrics.glyphCache.hitRate.toFixed(1)}% hit rate
+          </div>
           <div class="text-xs text-gray-500">{memoryMetrics.glyphCache.entries} entries</div>
         </div>
         <div>
@@ -572,7 +584,10 @@
                     <span>Aggression</span>
                     <span>{suspectProfile.behaviorAnalysis.aggression}%</span>
                   </div>
-                  <Progress value={suspectProfile.behaviorAnalysis.aggression} class="w-full mt-1" />
+                  <Progress
+                    value={suspectProfile.behaviorAnalysis.aggression}
+                    class="w-full mt-1"
+                  />
                 </div>
                 <div>
                   <div class="flex justify-between text-sm">
@@ -586,7 +601,10 @@
                     <span>Impulsivity</span>
                     <span>{suspectProfile.behaviorAnalysis.impulsivity}%</span>
                   </div>
-                  <Progress value={suspectProfile.behaviorAnalysis.impulsivity} class="w-full mt-1" />
+                  <Progress
+                    value={suspectProfile.behaviorAnalysis.impulsivity}
+                    class="w-full mt-1"
+                  />
                 </div>
                 <div>
                   <div class="flex justify-between text-sm">
@@ -650,7 +668,9 @@
                 <div class="text-sm font-medium text-purple-700 mb-2">Trigger Events</div>
                 <div class="flex flex-wrap gap-2">
                   {#each Array.isArray(motive.triggerEvents) ? motive.triggerEvents : [] as trigger}
-                    <Badge class="bg-transparent border text-sm px-2 py-0.5 text-purple-700">{trigger}</Badge>
+                    <Badge class="bg-transparent border text-sm px-2 py-0.5 text-purple-700"
+                      >{trigger}</Badge
+                    >
                   {/each}
                 </div>
               </div>
@@ -705,11 +725,15 @@
                   <div class="text-sm text-gray-600">Overall Risk</div>
                 </div>
                 <div class="text-center p-4 border rounded-lg">
-                  <div class="text-lg font-bold text-yellow-600">{riskAssessment.immediateThreat}</div>
+                  <div class="text-lg font-bold text-yellow-600">
+                    {riskAssessment.immediateThreat}
+                  </div>
                   <div class="text-sm text-gray-600">Immediate Threat</div>
                 </div>
                 <div class="text-center p-4 border rounded-lg">
-                  <div class="text-lg font-bold text-purple-600">{riskAssessment.escalationPotential}</div>
+                  <div class="text-lg font-bold text-purple-600">
+                    {riskAssessment.escalationPotential}
+                  </div>
                   <div class="text-sm text-gray-600">Escalation Potential</div>
                 </div>
               </div>
@@ -804,7 +828,9 @@
                 <div class="font-medium">{pattern.pattern}</div>
                 <div class="flex items-center gap-2">
                   <span class="text-sm">Confidence: {(pattern.confidence * 100).toFixed(1)}%</span>
-                  <Badge class={getThreatColor(pattern.riskLevel) + ' text-white'}>{pattern.riskLevel}</Badge>
+                  <Badge class={getThreatColor(pattern.riskLevel) + ' text-white'}
+                    >{pattern.riskLevel}</Badge
+                  >
                 </div>
               </div>
               <div class="text-sm text-gray-600">

@@ -245,17 +245,18 @@ async function applyFeedbackLearning(recommendations, userProfile) {
     const feedbackData = await response.json();
     const { patterns } = feedbackData;
 
-    return recommendations.map(rec => {
+    return recommendations.map((rec) => {
       // Apply learning adjustments based on historical feedback
       let adjustedConfidence = rec.confidence;
 
       // Check for similar patterns in feedback history
       const similarFeedback = patterns.filter(
-        p => p.type === rec.type && p.similarity > 0.7 && p.context === rec.context
+        (p) => p.type === rec.type && p.similarity > 0.7 && p.context === rec.context
       );
 
       if (similarFeedback.length > 0) {
-        const avgFeedbackScore = similarFeedback.reduce((sum, f) => sum + f.score, 0) / similarFeedback.length;
+        const avgFeedbackScore =
+          similarFeedback.reduce((sum, f) => sum + f.score, 0) / similarFeedback.length;
         // Blend original confidence with learned feedback (weighted 70/30)
         adjustedConfidence = rec.confidence * 0.7 + avgFeedbackScore * 0.3;
       }
@@ -397,7 +398,7 @@ function calculateKeywordSimilarity(query, doc) {
 
   const queryWords = query.toLowerCase().split(/\s+/);
   const docContent = (doc.content || doc.title || doc.description || '').toLowerCase();
-  const matchCount = queryWords.filter(word => docContent.includes(word)).length;
+  const matchCount = queryWords.filter((word) => docContent.includes(word)).length;
 
   return Math.min(matchCount / queryWords.length, 1);
 }
@@ -429,16 +430,17 @@ function calculatePredictiveScore(doc, predictedAssets) {
   if (!predictedAssets || predictedAssets.length === 0) return 0.3;
 
   const matchingAssets = predictedAssets.filter(
-    asset =>
+    (asset) =>
       asset.documentId === doc.id ||
       asset.category === doc.category ||
-      (asset.keywords && doc.keywords && asset.keywords.some(k => doc.keywords.includes(k)))
+      (asset.keywords && doc.keywords && asset.keywords.some((k) => doc.keywords.includes(k)))
   );
 
   if (matchingAssets.length === 0) return 0.2;
 
   const avgPredictionScore =
-    matchingAssets.reduce((sum, asset) => sum + (asset.confidence || 0.5), 0) / matchingAssets.length;
+    matchingAssets.reduce((sum, asset) => sum + (asset.confidence || 0.5), 0) /
+    matchingAssets.length;
 
   return Math.min(avgPredictionScore, 1);
 }
@@ -473,7 +475,8 @@ function determineRecommendationType(doc, _context) {
   const content = (doc.content || doc.title || doc.description || '').toLowerCase();
 
   if (content.includes('evidence') || content.includes('exhibit')) return 'evidence';
-  if (content.includes('legal') || content.includes('law') || content.includes('court')) return 'legal';
+  if (content.includes('legal') || content.includes('law') || content.includes('court'))
+    return 'legal';
   if (content.includes('detective') || content.includes('investigation')) return 'detective';
 
   return 'ai'; // Default to AI-generated recommendation
@@ -501,7 +504,10 @@ function generateEnhancedReason(query, doc, keywordSim, contextRel, predictiveSc
 
 function calculateAverageConfidence(items) {
   if (!items || items.length === 0) return 0;
-  const sum = items.reduce((acc, item) => acc + (typeof item.confidence === 'number' ? item.confidence : 0), 0);
+  const sum = items.reduce(
+    (acc, item) => acc + (typeof item.confidence === 'number' ? item.confidence : 0),
+    0
+  );
   return sum / items.length;
 }
 

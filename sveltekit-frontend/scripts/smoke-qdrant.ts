@@ -3,7 +3,14 @@ import { pathToFileURL } from 'url';
 
 async function run() {
   try {
-    const modPath = path.resolve(process.cwd(), 'src', 'lib', 'server', 'services', 'qdrant-client.ts');
+    const modPath = path.resolve(
+      process.cwd(),
+      'src',
+      'lib',
+      'server',
+      'services',
+      'qdrant-client.ts'
+    );
     const modUrl = pathToFileURL(modPath).href;
     const mod = await import(modUrl);
     if (!mod) throw new Error('Failed to import qdrant client');

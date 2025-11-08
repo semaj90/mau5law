@@ -22,7 +22,7 @@
   function pushToast(message: string, type: 'info' | 'success' | 'error' = 'info') {
     const id = crypto.randomUUID();
     toasts = [...toasts, { id, message, type }];
-    setTimeout(() => (toasts = toasts.filter(t => t.id !== id)), 4500);
+    setTimeout(() => (toasts = toasts.filter((t) => t.id !== id)), 4500);
   }
 
   async function checkSystemStatus() {
@@ -127,7 +127,9 @@
               </div>
               <div class="status-item">
                 <div class="label">Neo4j</div>
-                <div class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'Active' : 'Inactive'}</div>
+                <div class="pill {systemStatus.neo4j ? 'on' : 'off'}">
+                  {systemStatus.neo4j ? 'Active' : 'Inactive'}
+                </div>
               </div>
             </div>
           </div>
@@ -174,12 +176,15 @@
             <tbody>
               <tr
                 ><td>GPU Orchestrator</td><td
-                  ><span class="pill {systemStatus.gpu ? 'on' : 'off'}">{systemStatus.gpu ? 'OK' : 'Down'}</span></td
+                  ><span class="pill {systemStatus.gpu ? 'on' : 'off'}"
+                    >{systemStatus.gpu ? 'OK' : 'Down'}</span
+                  ></td
                 ></tr
               >
               <tr
                 ><td>Ollama</td><td
-                  ><span class="pill {systemStatus.ollama ? 'on' : 'off'}">{systemStatus.ollama ? 'OK' : 'Down'}</span
+                  ><span class="pill {systemStatus.ollama ? 'on' : 'off'}"
+                    >{systemStatus.ollama ? 'OK' : 'Down'}</span
                   ></td
                 ></tr
               >
@@ -199,7 +204,8 @@
               >
               <tr
                 ><td>Neo4j</td><td
-                  ><span class="pill {systemStatus.neo4j ? 'on' : 'off'}">{systemStatus.neo4j ? 'OK' : 'Down'}</span
+                  ><span class="pill {systemStatus.neo4j ? 'on' : 'off'}"
+                    >{systemStatus.neo4j ? 'OK' : 'Down'}</span
                   ></td
                 ></tr
               >
@@ -214,14 +220,18 @@
         </CardHeader>
         <CardContent>
           <p class="muted">
-            Need immediate help? Check service logs or run the health check. For deeper issues, open the diagnostics
-            dashboard.
+            Need immediate help? Check service logs or run the health check. For deeper issues, open
+            the diagnostics dashboard.
           </p>
           <div class="actions">
-            <Button variant="secondary" onclick={() => pushToast('Diagnostics opened (stub)', 'info')}
+            <Button
+              variant="secondary"
+              onclick={() => pushToast('Diagnostics opened (stub)', 'info')}
               >Open Diagnostics</Button
             >
-            <Button variant="ghost" onclick={() => pushToast('Logs tail started (stub)', 'info')}>Tail Logs</Button>
+            <Button variant="ghost" onclick={() => pushToast('Logs tail started (stub)', 'info')}
+              >Tail Logs</Button
+            >
           </div>
         </CardContent>
       </Card>

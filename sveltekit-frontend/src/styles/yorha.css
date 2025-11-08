@@ -20,8 +20,8 @@
   --golden-ratio-inv: 0.618;
 
   /* Typography */
-  --font-mono: "JetBrains Mono", "Consolas", "Monaco", "Courier New", monospace;
-  --font-display: "Orbitron", "JetBrains Mono", monospace;
+  --font-mono: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+  --font-display: 'Orbitron', 'JetBrains Mono', monospace;
 
   /* Spacing Golden Ratio Scale */
   --space-xs: 0.25rem; /* 4px */
@@ -112,7 +112,7 @@ body {
 }
 
 .yorha-panel::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -2px;
   left: -2px;
@@ -153,18 +153,13 @@ body {
 }
 
 .yorha-btn::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--yorha-accent-blue),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, var(--yorha-accent-blue), transparent);
   transition: left 0.3s ease;
 }
 
@@ -238,7 +233,7 @@ body {
 }
 
 .yorha-evidence-board::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -412,7 +407,7 @@ body {
 }
 
 .yorha-status::before {
-  content: "";
+  content: '';
   width: 8px;
   height: 8px;
   background: currentColor;

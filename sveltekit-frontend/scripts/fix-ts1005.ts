@@ -16,15 +16,15 @@ import path from 'path';
 let Project: any;
 let SyntaxKind: any;
 try {
-	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const tsMorph = require('ts-morph');
-	Project = tsMorph.Project;
-	SyntaxKind = tsMorph.SyntaxKind;
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const tsMorph = require('ts-morph');
+  Project = tsMorph.Project;
+  SyntaxKind = tsMorph.SyntaxKind;
 } catch (err) {
-	console.error('ts-morph is not installed. Install as a dev dependency and retry:');
-	console.error('  npm install -D ts-morph');
-	console.error('Or run: pnpm add -D ts-morph');
-	process.exit(1);
+  console.error('ts-morph is not installed. Install as a dev dependency and retry:');
+  console.error('  npm install -D ts-morph');
+  console.error('Or run: pnpm add -D ts-morph');
+  process.exit(1);
 }
 
 const ROOT = path.resolve(__dirname, '..');
@@ -39,13 +39,16 @@ function readTopFiles(): string[] {
   if (!fs.existsSync(topPath)) return [];
   try {
     const data = JSON.parse(fs.readFileSync(topPath, 'utf8')) as string[];
-    return data.map(p => path.resolve(ROOT, '..', p));
+    return data.map((p) => path.resolve(ROOT, '..', p));
   } catch (e) {
     return [];
   }
 }
 
-const project = new Project({ tsConfigFilePath: path.join(ROOT, 'tsconfig.json'), skipAddingFilesFromTsConfig: true });
+const project = new Project({
+  tsConfigFilePath: path.join(ROOT, 'tsconfig.json'),
+  skipAddingFilesFromTsConfig: true,
+});
 
 // Collect files to analyze: top files if available, otherwise all .ts/.tsx/.svelte? We'll limit to .ts/.tsx
 let filesToAnalyze = readTopFiles();
@@ -57,7 +60,14 @@ if (filesToAnalyze.length === 0) {
 // fallback: ensure paths are unique
 filesToAnalyze = Array.from(new Set(filesToAnalyze)).slice(0, 20);
 
-type Patch = { file: string; description: string; start: number; end: number; oldText: string; newText: string };
+type Patch = {
+  file: string;
+  description: string;
+  start: number;
+  end: number;
+  oldText: string;
+  newText: string;
+};
 const patches: Patch[] = [];
 
 for (const filePath of filesToAnalyze) {
@@ -77,7 +87,11 @@ for (const filePath of filesToAnalyze) {
       if (!parent) continue;
 
       // Only inspect object literal expressions and array literals and parameter lists
-      if (parent.getKind() === SyntaxKind.ObjectLiteralExpression || parent.getKind() === SyntaxKind.ArrayLiteralExpression || parent.getKind() === SyntaxKind.ParameterList) {
+      if (
+        parent.getKind() === SyntaxKind.ObjectLiteralExpression ||
+        parent.getKind() === SyntaxKind.ArrayLiteralExpression ||
+        parent.getKind() === SyntaxKind.ParameterList
+      ) {
         const children = node.getChildren();
         for (let i = 0; i + 1 < children.length; i++) {
           const a = children[i];
@@ -91,7 +105,14 @@ for (const filePath of filesToAnalyze) {
               const end = b.getStart();
               const oldText = text.slice(start, end);
               const newText = oldText + ','; // suggest inserting a comma at end of oldText
-              issues.push({ file: filePath as string, description: 'Insert comma between elements', start, end, oldText, newText });
+              issues.push({
+                file: filePath as string,
+                description: 'Insert comma between elements',
+                start,
+                end,
+                oldText,
+                newText,
+              });
             }
           }
         }
@@ -124,6 +145,10 @@ for (const filePath of filesToAnalyze) {
   }
 }
 
-const summary = { generatedAt: new Date().toISOString(), filesAnalyzed: filesToAnalyze.length, patches: patches.length };
+const summary = {
+  generatedAt: new Date().toISOString(),
+  filesAnalyzed: filesToAnalyze.length,
+  patches: patches.length,
+};
 fs.writeFileSync(SUMMARY_FILE, JSON.stringify(summary, null, 2));
 console.log('Dry-run complete. Previews in', LOGS_DIR, 'summary:', SUMMARY_FILE);

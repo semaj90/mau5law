@@ -13,14 +13,18 @@ describe('StorePayload Schema Validation', () => {
     const payload = { metadata: { title: 'Test' } };
     const parsed = StorePayload.safeParse(payload);
     expect(parsed.success).toBe(false);
-    expect(parsed.error.flatten().fieldErrors.text).toEqual(['String must contain at least 1 character(s)']);
+    expect(parsed.error.flatten().fieldErrors.text).toEqual([
+      'String must contain at least 1 character(s)',
+    ]);
   });
 
   it('should invalidate a store payload with empty text', () => {
     const payload = { text: '', metadata: { title: 'Test' } };
     const parsed = StorePayload.safeParse(payload);
     expect(parsed.success).toBe(false);
-    expect(parsed.error.flatten().fieldErrors.text).toEqual(['String must contain at least 1 character(s)']);
+    expect(parsed.error.flatten().fieldErrors.text).toEqual([
+      'String must contain at least 1 character(s)',
+    ]);
   });
 
   it('should validate a store payload with only text', () => {

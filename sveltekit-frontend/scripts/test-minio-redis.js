@@ -26,7 +26,7 @@ async function testMinio() {
   const client = new MinioClient({
     endPoint: endpoint,
     port,
-    useSSL: (process.env.MINIO_USE_SSL === 'true') || false,
+    useSSL: process.env.MINIO_USE_SSL === 'true' || false,
     accessKey: access,
     secretKey: secret,
   });
@@ -38,7 +38,9 @@ async function testMinio() {
       exists = await client.bucketExists(bucket);
     } catch (err) {
       // some MinIO versions throw on bucketExists when auth is wrong; rethrow with hint
-      throw new Error(`bucketExists failed: ${err.message}. Hint: check MINIO_ROOT_USER / MINIO_ROOT_PASSWORD match the running container`);
+      throw new Error(
+        `bucketExists failed: ${err.message}. Hint: check MINIO_ROOT_USER / MINIO_ROOT_PASSWORD match the running container`
+      );
     }
     if (!exists) {
       console.log('Bucket does not exist, creating:', bucket);
@@ -85,7 +87,9 @@ async function testRedis() {
     return true;
   } catch (err) {
     console.error('Redis test failed:', err.message || err);
-    try { await client.quit(); } catch (e) {}
+    try {
+      await client.quit();
+    } catch (e) {}
     return false;
   }
 }
@@ -99,19 +103,23 @@ async function testPostgres() {
   const client = new Client({ connectionString: url });
   try {
     await client.connect();
-    const res = await client.query(`SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_name = 'documents' ORDER BY column_name;`);
+    const res = await client.query(
+      `SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_name = 'documents' ORDER BY column_name;`
+    );
     console.log('Postgres documents table rows:', res.rowCount);
     if (res.rowCount) console.table(res.rows.slice(0, 50));
     await client.end();
     return true;
   } catch (err) {
     console.error('Postgres check failed:', err.message || err);
-    try { await client.end(); } catch (e) {}
+    try {
+      await client.end();
+    } catch (e) {}
     return false;
   }
 }
 
-(async function main(){
+(async function main() {
   try {
     const m = await testMinio();
     const r = await testRedis();

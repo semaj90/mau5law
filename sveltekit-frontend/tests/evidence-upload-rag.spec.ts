@@ -16,8 +16,9 @@ test.describe('Evidence Upload with RAG Integration', () => {
     // Try multiple navigation strategies
     const navigationSuccessful = await page.evaluate(async () => {
       // Strategy 1: Direct click on navigation link
-      const evidenceLink = document.querySelector('a[href*="evidence"]') ||
-                          document.querySelector('a[href*="upload"]');
+      const evidenceLink =
+        document.querySelector('a[href*="evidence"]') ||
+        document.querySelector('a[href*="upload"]');
       if (evidenceLink) {
         (evidenceLink as HTMLAnchorElement).click();
         return true;
@@ -59,7 +60,9 @@ test.describe('Evidence Upload with RAG Integration', () => {
     await page.locator('input[name="title"]').fill('Test Evidence Upload - RAG Integration');
 
     // Fill in description
-    await page.locator('textarea[name="description"]').fill('Testing RAG pipeline integration with file upload');
+    await page
+      .locator('textarea[name="description"]')
+      .fill('Testing RAG pipeline integration with file upload');
 
     // Select evidence type
     await page.locator('select[name="evidence_type"]').selectOption('TEXT');
@@ -149,27 +152,29 @@ test.describe('Evidence Upload with RAG Integration', () => {
     // Make direct API call to RAG endpoint
     const directRagTest = await page.evaluate(async (endpoint) => {
       const formData = new FormData();
-      const testFile = new File(['Test evidence content for RAG ingestion'], 'test-evidence.txt', { type: 'text/plain' });
+      const testFile = new File(['Test evidence content for RAG ingestion'], 'test-evidence.txt', {
+        type: 'text/plain',
+      });
       formData.append('files', testFile);
 
       try {
         const response = await fetch(endpoint, {
           method: 'POST',
-          body: formData
+          body: formData,
         });
 
         return {
           status: response.status,
           ok: response.ok,
           statusText: response.statusText,
-          body: await response.text().catch(() => 'Unable to read body')
+          body: await response.text().catch(() => 'Unable to read body'),
         };
       } catch (error) {
         return {
           status: 0,
           ok: false,
           statusText: 'Network Error',
-          body: error instanceof Error ? error.message : 'Unknown error'
+          body: error instanceof Error ? error.message : 'Unknown error',
         };
       }
     }, ragEndpoint);
@@ -198,39 +203,50 @@ test.describe('Evidence Upload with RAG Integration', () => {
 
     // Test with different file types
     const fileTypes = [
-      { name: 'test.txt', content: 'This is a test text file for RAG ingestion.', type: 'text/plain' },
-      { name: 'legal-doc.txt', content: 'Legal document content with case law references.', type: 'text/plain' },
+      {
+        name: 'test.txt',
+        content: 'This is a test text file for RAG ingestion.',
+        type: 'text/plain',
+      },
+      {
+        name: 'legal-doc.txt',
+        content: 'Legal document content with case law references.',
+        type: 'text/plain',
+      },
     ];
 
     for (const fileType of fileTypes) {
       console.log(`\nTesting RAG with: ${fileType.name}`);
 
-      const result = await page.evaluate(async ({ endpoint, file }) => {
-        const formData = new FormData();
-        const blob = new File([file.content], file.name, { type: file.type });
-        formData.append('files', blob);
+      const result = await page.evaluate(
+        async ({ endpoint, file }) => {
+          const formData = new FormData();
+          const blob = new File([file.content], file.name, { type: file.type });
+          formData.append('files', blob);
 
-        try {
-          const response = await fetch(endpoint, {
-            method: 'POST',
-            body: formData
-          });
+          try {
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              body: formData,
+            });
 
-          return {
-            fileName: file.name,
-            status: response.status,
-            ok: response.ok,
-            body: await response.text().catch(() => 'Unable to read')
-          };
-        } catch (error) {
-          return {
-            fileName: file.name,
-            status: 0,
-            ok: false,
-            body: error instanceof Error ? error.message : 'Error'
-          };
-        }
-      }, { endpoint: ragEndpoint, file: fileType });
+            return {
+              fileName: file.name,
+              status: response.status,
+              ok: response.ok,
+              body: await response.text().catch(() => 'Unable to read'),
+            };
+          } catch (error) {
+            return {
+              fileName: file.name,
+              status: 0,
+              ok: false,
+              body: error instanceof Error ? error.message : 'Error',
+            };
+          }
+        },
+        { endpoint: ragEndpoint, file: fileType }
+      );
 
       console.log(`  ${fileType.name}: Status ${result.status} (${result.ok ? '✅' : '❌'})`);
 

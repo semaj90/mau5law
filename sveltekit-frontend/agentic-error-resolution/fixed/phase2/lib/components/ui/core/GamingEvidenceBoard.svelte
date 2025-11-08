@@ -115,7 +115,11 @@
         <span class="case-name">CORPORATE ESPIONAGE INV</span>
         <div class="case-items">
           {#each caseInfo.items as item, index}
-            <div class="case-item" class:active={index === 0} transitionfade={{ delay: index * 100 }}>
+            <div
+              class="case-item"
+              class:active={index === 0}
+              transitionfade={{ delay: index * 100 }}
+            >
               {item}
               <span class="status-indicator {index < 2 ? 'active' : 'pending'}">
                 {index < 2 ? 'active' : 'pending'}

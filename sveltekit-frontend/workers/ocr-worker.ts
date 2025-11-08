@@ -19,13 +19,14 @@ import { minioService } from '../src/lib/server/storage/minio-service.js';
 
 // Environment configuration
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
-const DATABASE_URL = process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
+const DATABASE_URL =
+  process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5434/legal_ai_db';
 
 // PostgreSQL connection pool
 const pgPool = new Pool({
   connectionString: DATABASE_URL,
   max: 10,
-  idleTimeoutMillis: 30000
+  idleTimeoutMillis: 30000,
 });
 
 // Tesseract GPU worker pool
@@ -73,7 +74,7 @@ async function initializeTesseractWorkers(): Promise<void> {
       // Use LSTM neural network for better accuracy
       tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY,
       // Optimize for legal documents
-      tessedit_pageseg_mode: Tesseract.PSM.AUTO
+      tessedit_pageseg_mode: Tesseract.PSM.AUTO,
     });
 
     tesseractWorkers.push(worker);
@@ -121,7 +122,7 @@ async function extractTextFromPDF(buffer: Buffer): Promise<OCRResult> {
         confidence: 1.0, // Native extraction has 100% confidence
         pages: pdfData.numpages,
         language: 'eng',
-        processingTime
+        processingTime,
       };
     }
 
@@ -131,17 +132,21 @@ async function extractTextFromPDF(buffer: Buffer): Promise<OCRResult> {
     // Convert PDF pages to images and OCR each page
     // (In production, use pdf2image or similar)
     const worker = tesseractWorkers[0];
-    const { data: { text, confidence } } = await worker.recognize(buffer);
+    const {
+      data: { text, confidence },
+    } = await worker.recognize(buffer);
 
     const processingTime = Date.now() - startTime;
-    console.log(`✅ [OCR Worker] OCR extracted ${text.length} chars with ${Math.round(confidence)}% confidence`);
+    console.log(
+      `✅ [OCR Worker] OCR extracted ${text.length} chars with ${Math.round(confidence)}% confidence`
+    );
 
     return {
       text,
       confidence: confidence / 100,
       pages: pdfData.numpages,
       language: 'eng',
-      processingTime
+      processingTime,
     };
   } catch (error) {
     console.error('❌ [OCR Worker] PDF processing failed:', error);
@@ -167,17 +172,21 @@ async function extractTextFromImage(buffer: Buffer): Promise<OCRResult> {
     // Get available worker from pool
     const worker = tesseractWorkers[Math.floor(Math.random() * tesseractWorkers.length)];
 
-    const { data: { text, confidence } } = await worker.recognize(preprocessed);
+    const {
+      data: { text, confidence },
+    } = await worker.recognize(preprocessed);
 
     const processingTime = Date.now() - startTime;
-    console.log(`✅ [OCR Worker] OCR extracted ${text.length} chars with ${Math.round(confidence)}% confidence in ${processingTime}ms`);
+    console.log(
+      `✅ [OCR Worker] OCR extracted ${text.length} chars with ${Math.round(confidence)}% confidence in ${processingTime}ms`
+    );
 
     return {
       text,
       confidence: confidence / 100,
       pages: 1,
       language: 'eng',
-      processingTime
+      processingTime,
     };
   } catch (error) {
     console.error('❌ [OCR Worker] Image processing failed:', error);
@@ -243,17 +252,16 @@ async function publishToEmbeddingQueue(
   const embeddingJob = {
     ...job,
     extractedText,
-    previousStage: 'ocr'
+    previousStage: 'ocr',
   };
 
   const queue = 'embedding_processing_queue';
   await channel.assertQueue(queue, { durable: true });
 
-  const success = channel.sendToQueue(
-    queue,
-    Buffer.from(JSON.stringify(embeddingJob)),
-    { persistent: true, priority: job.priority }
-  );
+  const success = channel.sendToQueue(queue, Buffer.from(JSON.stringify(embeddingJob)), {
+    persistent: true,
+    priority: job.priority,
+  });
 
   if (success) {
     console.log(`📤 [OCR Worker] Published job ${job.documentId} to embedding queue`);
@@ -278,7 +286,7 @@ async function sendXStateEvent(
     documentId,
     type: eventType,
     context,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 
   channel.sendToQueue(queue, Buffer.from(JSON.stringify(event)), { persistent: true });
@@ -300,7 +308,7 @@ async function processOCRJob(channel: amqp.Channel, job: DocumentProcessingJob):
     // Send OCR started event
     await sendXStateEvent(channel, job.documentId, 'OCR_STARTED', {
       stage: 'processing_ocr',
-      progress: 0
+      progress: 0,
     });
 
     // Download file from MinIO
@@ -326,7 +334,7 @@ async function processOCRJob(channel: amqp.Channel, job: DocumentProcessingJob):
       progress: 100,
       textLength: ocrResult.text.length,
       confidence: ocrResult.confidence,
-      processingTime: ocrResult.processingTime
+      processingTime: ocrResult.processingTime,
     });
 
     // Route to next stage based on processingType
@@ -341,7 +349,7 @@ async function processOCRJob(channel: amqp.Channel, job: DocumentProcessingJob):
     // Send error event
     await sendXStateEvent(channel, job.documentId, 'OCR_FAILED', {
       stage: 'error',
-      error: error instanceof Error ? error.message : String(error)
+      error: error instanceof Error ? error.message : String(error),
     });
 
     throw error;
@@ -417,7 +425,6 @@ async function startOCRWorker(): Promise<void> {
       console.log('✅ [OCR Worker] Shutdown complete');
       process.exit(0);
     });
-
   } catch (error) {
     console.error('❌ [OCR Worker] Startup failed:', error);
     process.exit(1);

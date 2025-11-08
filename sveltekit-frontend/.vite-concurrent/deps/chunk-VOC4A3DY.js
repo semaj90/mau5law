@@ -942,10 +942,7 @@ function createBubbler() {
     var _a;
     const events =
       /** @type {Record<string, Function | Function[]>} */
-      (_a = active_component_context.s.$$events) == null
-        ? void 0
-        : /** @type {any} */
-          _a[type];
+      (_a = active_component_context.s.$$events) == null ? void 0 : /** @type {any} */ _a[type];
     if (events) {
       const callbacks = is_array(events) ? events.slice() : [events];
       for (const fn of callbacks) {

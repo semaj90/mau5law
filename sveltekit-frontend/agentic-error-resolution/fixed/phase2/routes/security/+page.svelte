@@ -7,7 +7,10 @@
 
 <svelte:head>
   <title>Security Dashboard - WardenNet Detective Mode</title>
-  <meta name="description" content="Monitor system security events, health status, and security metrics" />
+  <meta
+    name="description"
+    content="Monitor system security events, health status, and security metrics"
+  />
 
   <!-- HTML5 / legacy fallback meta tags -->
   <meta name="viewport" content="width=device-width, initial-scale=1" />

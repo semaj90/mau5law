@@ -134,14 +134,14 @@
 @layer base {
   /* * {
     /* @apply border-border outline-ring/50; */ /* Commented out to resolve "Unknown at rule @apply" error. Uncomment after Tailwind CSS is configured. */
-    /* These Tailwind CSS patterns are intentionally commented out. */
-    /* Enable them only if your build uses PostCSS with the Tailwind CSS plugin. */
-    /* See 'postcss.config.cjs' for configuration details. */
+  /* These Tailwind CSS patterns are intentionally commented out. */
+  /* Enable them only if your build uses PostCSS with the Tailwind CSS plugin. */
+  /* See 'postcss.config.cjs' for configuration details. */
   /* } */
   /* html, body {
     /* @apply bg-background text-foreground; */ /* Commented out to resolve "Unknown at rule @apply" error. Uncomment after Tailwind CSS is configured. */
-    /* Uncomment the @apply line above if Tailwind CSS and PostCSS are enabled in your project. */
-    /* See comment above regarding @apply directive. */
-    /* See comment above regarding @apply directive. */
+  /* Uncomment the @apply line above if Tailwind CSS and PostCSS are enabled in your project. */
+  /* See comment above regarding @apply directive. */
+  /* See comment above regarding @apply directive. */
   /* } */
 }

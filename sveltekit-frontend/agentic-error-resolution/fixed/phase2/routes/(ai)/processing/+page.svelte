@@ -252,7 +252,10 @@
 
 <svelte:head>
   <title>AI Processing Dashboard - NES-GPU Optimized</title>
-  <meta name="description" content="Real-time AI document processing with NES-GPU memory bridge optimization" />
+  <meta
+    name="description"
+    content="Real-time AI document processing with NES-GPU memory bridge optimization"
+  />
 </svelte:head>
 <div class="min-h-screen bg-gray-50 p-6">
   <!-- Header -->
@@ -264,7 +267,9 @@
           <span class="w-8 h-8 text-blue-600">🧠</span>
           AI Processing Dashboard
         </h1>
-        <p class="text-gray-600 mt-2">Real-time legal document processing with NES-GPU memory bridge optimization</p>
+        <p class="text-gray-600 mt-2">
+          Real-time legal document processing with NES-GPU memory bridge optimization
+        </p>
       </div>
       <div class="flex items-center gap-3">
         <button
@@ -297,24 +302,32 @@
         <div>
           <div class="flex justify-between text-sm">
             <span>RAM</span>
-            <span>{Math.round(systemMetrics.nesMemory.usedRAM)}/{systemMetrics.nesMemory.totalRAM}</span>
+            <span
+              >{Math.round(systemMetrics.nesMemory.usedRAM)}/{systemMetrics.nesMemory
+                .totalRAM}</span
+            >
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div
               class="bg-blue-600 h-2 rounded-full"
-              style="width: {(systemMetrics.nesMemory.usedRAM / systemMetrics.nesMemory.totalRAM) * 100}%"
+              style="width: {(systemMetrics.nesMemory.usedRAM / systemMetrics.nesMemory.totalRAM) *
+                100}%"
             ></div>
           </div>
         </div>
         <div>
           <div class="flex justify-between text-sm">
             <span>CHR-ROM</span>
-            <span>{Math.round(systemMetrics.nesMemory.usedCHR)}/{systemMetrics.nesMemory.totalCHR}</span>
+            <span
+              >{Math.round(systemMetrics.nesMemory.usedCHR)}/{systemMetrics.nesMemory
+                .totalCHR}</span
+            >
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div
               class="bg-green-600 h-2 rounded-full"
-              style="width: {(systemMetrics.nesMemory.usedCHR / systemMetrics.nesMemory.totalCHR) * 100}%"
+              style="width: {(systemMetrics.nesMemory.usedCHR / systemMetrics.nesMemory.totalCHR) *
+                100}%"
             ></div>
           </div>
         </div>
@@ -327,7 +340,9 @@
         <span class="w-5 h-5 text-gray-400">🖥️</span>
       </div>
       <div class="text-center">
-        <div class="text-3xl font-bold text-gray-900">{Math.round(systemMetrics.gpuUtilization)}%</div>
+        <div class="text-3xl font-bold text-gray-900">
+          {Math.round(systemMetrics.gpuUtilization)}%
+        </div>
         <div class="text-sm text-gray-500">Utilization</div>
         <div class="text-xs text-gray-400 mt-2">
           {Math.round(systemMetrics.vectorProcessingRate)} vectors/sec
@@ -341,7 +356,9 @@
         <span class="w-5 h-5 text-gray-400">🗄️</span>
       </div>
       <div class="text-center">
-        <div class="text-3xl font-bold text-gray-900">{Math.round(systemMetrics.glyphCacheHitRate)}%</div>
+        <div class="text-3xl font-bold text-gray-900">
+          {Math.round(systemMetrics.glyphCacheHitRate)}%
+        </div>
         <div class="text-sm text-gray-500">Hit Rate</div>
         <div class="text-xs text-gray-400 mt-2">
           {systemMetrics.chrRomPatterns} cached patterns
@@ -379,15 +396,23 @@
           <div class="p-3 border border-gray-200 rounded-lg mb-3">
             <div class="flex items-center justify-between mb-2">
               <span class="font-medium text-sm">{job.documentId}</span>
-              <span class="px-2 py-1 rounded-full text-xs font-medium {getPriorityColor(job.priority)}">
+              <span
+                class="px-2 py-1 rounded-full text-xs font-medium {getPriorityColor(job.priority)}"
+              >
                 {job.priority}
               </span>
             </div>
             <div class="text-xs text-gray-500">
-              {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(job.createdAt)}
+              {job.analysisType} · {job.useGPU ? `Bank ${job.bankId}` : 'CPU'} · {formatTimeAgo(
+                job.createdAt
+              )}
             </div>
             <div class="flex justify-end mt-2">
-              <button onclick={() => cancelJob(job.id)} class="text-xs text-red-600 hover:text-red-800" type="button">
+              <button
+                onclick={() => cancelJob(job.id)}
+                class="text-xs text-red-600 hover:text-red-800"
+                type="button"
+              >
                 Cancel
               </button>
             </div>
@@ -428,7 +453,9 @@
             <div class="text-xs text-gray-500 space-y-1">
               <div>{job.analysisType} · {Math.round(job.progress)}% complete</div>
               <div>
-                {job.bankId ? `Bank ${getBankName(job.bankId)} · GPU Layers: ${job.gpuLayers || 0}` : 'CPU Processing'}
+                {job.bankId
+                  ? `Bank ${getBankName(job.bankId)} · GPU Layers: ${job.gpuLayers || 0}`
+                  : 'CPU Processing'}
               </div>
               <div>Started {formatTimeAgo(job.startedAt)}</div>
             </div>
@@ -456,12 +483,17 @@
           <div class="p-3 border border-green-200 bg-green-50 rounded-lg mb-3">
             <div class="flex items-center justify-between mb-2">
               <span class="font-medium text-sm">{job.documentId}</span>
-              <span class="px-2 py-1 rounded-full text-xs font-medium {getStatusColor(job.status)}"> ✓ Done </span>
+              <span class="px-2 py-1 rounded-full text-xs font-medium {getStatusColor(job.status)}">
+                ✓ Done
+              </span>
             </div>
             <div class="text-xs text-gray-600 space-y-1">
               <div>{job.analysisType}</div>
               {#if job.results}
-                <div>Confidence: {Math.round(job.results.confidence * 100)}% · Entities: {job.results.entities}</div>
+                <div>
+                  Confidence: {Math.round(job.results.confidence * 100)}% · Entities: {job.results
+                    .entities}
+                </div>
               {/if}
               <div>Completed {formatTimeAgo(job.completedAt)}</div>
             </div>
@@ -485,19 +517,27 @@
     </h3>
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <div class="text-center">
-        <div class="text-2xl font-bold text-gray-900">{performanceStats.totalDocumentsProcessed}</div>
+        <div class="text-2xl font-bold text-gray-900">
+          {performanceStats.totalDocumentsProcessed}
+        </div>
         <div class="text-sm text-gray-500">Documents Processed</div>
       </div>
       <div class="text-center">
-        <div class="text-2xl font-bold text-gray-900">{Math.round(performanceStats.averageProcessingTime)}ms</div>
+        <div class="text-2xl font-bold text-gray-900">
+          {Math.round(performanceStats.averageProcessingTime)}ms
+        </div>
         <div class="text-sm text-gray-500">Avg Processing Time</div>
       </div>
       <div class="text-center">
-        <div class="text-2xl font-bold text-gray-900">{Math.round(performanceStats.successRate)}%</div>
+        <div class="text-2xl font-bold text-gray-900">
+          {Math.round(performanceStats.successRate)}%
+        </div>
         <div class="text-sm text-gray-500">Success Rate</div>
       </div>
       <div class="text-center">
-        <div class="text-2xl font-bold text-gray-900">{Math.round(performanceStats.memoryEfficiency * 100)}%</div>
+        <div class="text-2xl font-bold text-gray-900">
+          {Math.round(performanceStats.memoryEfficiency * 100)}%
+        </div>
         <div class="text-sm text-gray-500">Memory Efficiency</div>
       </div>
     </div>
@@ -528,8 +568,19 @@
           class="text-gray-400 hover:text-gray-600"
           onclick={() => (showJobDialog = false)}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -537,7 +588,9 @@
       <form onsubmit={submitProcessingJob} class="space-y-4">
         <!-- replaced FormField (typing children error) with inline markup -->
         <div>
-          <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1"> Document ID </label>
+          <label for="documentId" class="block text-sm font-medium text-gray-700 mb-1">
+            Document ID
+          </label>
           <input
             id="documentId"
             name="documentId"
@@ -553,7 +606,9 @@
         </div>
 
         <div>
-          <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1"> Analysis Type </label>
+          <label for="analysisType" class="block text-sm font-medium text-gray-700 mb-1">
+            Analysis Type
+          </label>
           <select
             id="analysisType"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -567,7 +622,9 @@
           </select>
         </div>
         <div>
-          <label for="priority" class="block text-sm font-medium text-gray-700 mb-1"> Priority </label>
+          <label for="priority" class="block text-sm font-medium text-gray-700 mb-1">
+            Priority
+          </label>
           <select
             id="priority"
             class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
@@ -585,7 +642,9 @@
             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             bind:checked={newJobForm.useGPU}
           />
-          <label for="useGPU" class="ml-2 block text-sm text-gray-900"> Use GPU Acceleration (NES-GPU Bridge) </label>
+          <label for="useGPU" class="ml-2 block text-sm text-gray-900">
+            Use GPU Acceleration (NES-GPU Bridge)
+          </label>
         </div>
         {#if newJobForm.errors.general}
           <div class="text-red-600 text-sm">{newJobForm.errors.general[0]}</div>

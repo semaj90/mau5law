@@ -4,17 +4,17 @@
 /** Compute cosine similarity between two vectors */
 export function cosineSimilarity(a: Float32Array, b: Float32Array): f32 {
   if (a.length !== b.length) return 0.0;
-  
+
   let dotProduct: f32 = 0.0;
   let normA: f32 = 0.0;
   let normB: f32 = 0.0;
-  
+
   for (let i = 0; i < a.length; i++) {
     dotProduct += unchecked(a[i] * b[i]);
     normA += unchecked(a[i] * a[i]);
     normB += unchecked(b[i] * b[i]);
   }
-  
+
   const magnitude = Mathf.sqrt(normA) * Mathf.sqrt(normB);
   return magnitude > 0 ? dotProduct / magnitude : 0.0;
 }
@@ -26,11 +26,11 @@ export function normalize(vec: Float32Array): Float32Array {
     magnitude += unchecked(vec[i] * vec[i]);
   }
   magnitude = Mathf.sqrt(magnitude);
-  
+
   const result = new Float32Array(vec.length);
   if (magnitude > 0) {
     for (let i = 0; i < vec.length; i++) {
-      unchecked(result[i] = vec[i] / magnitude);
+      unchecked((result[i] = vec[i] / magnitude));
     }
   }
   return result;
@@ -44,12 +44,12 @@ export function batchSimilarity(
   dims: i32
 ): Float32Array {
   const results = new Float32Array(docCount);
-  
+
   for (let i = 0; i < docCount; i++) {
     const offset = i * dims;
     const docVec = documents.slice(offset, offset + dims);
-    unchecked(results[i] = cosineSimilarity(query, docVec));
+    unchecked((results[i] = cosineSimilarity(query, docVec)));
   }
-  
+
   return results;
 }

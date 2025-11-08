@@ -111,7 +111,7 @@ export class YoRHaAPIClient {
     // Stop existing streams if reloading
     this.stopDataStreams();
     const url = layoutUrl.startsWith('http') ? layoutUrl : layoutUrl;
-    const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    const res = await fetch(url, { headers: { Accept: 'application/json' } });
     if (!res.ok) throw new Error(`Failed to load layout: ${res.status}`);
     this.layout = await res.json();
     this.notifySubscribers('layout:loaded', this.layout);
@@ -130,7 +130,7 @@ export class YoRHaAPIClient {
         case 'rest': {
           const interval = setInterval(async () => {
             try {
-              const res = await fetch(ds.endpoint, { headers: { 'Accept': 'application/json' } });
+              const res = await fetch(ds.endpoint, { headers: { Accept: 'application/json' } });
               if (res.ok) {
                 const data = await res.json();
                 this.pushData(ds.name, data);
@@ -161,7 +161,9 @@ export class YoRHaAPIClient {
   }
   /** Stop all active data source intervals. */
   stopDataStreams(): void {
-    Array.from(this.dataSourceIntervals.values()).forEach(interval => clearInterval(interval as any));
+    Array.from(this.dataSourceIntervals.values()).forEach((interval) =>
+      clearInterval(interval as any)
+    );
     this.dataSourceIntervals.clear();
   }
   /** Push data from a source into cache + notify watchers */
@@ -293,7 +295,7 @@ export class YoRHaAPIClient {
   private notifySubscribers(eventName: string, data: unknown): void {
     const callbacks = this.subscribers.get(eventName);
     if (callbacks) {
-      callbacks.forEach(callback => callback(data));
+      callbacks.forEach((callback) => callback(data));
     }
   }
   // WebSocket Integration with QUIC fallback
@@ -377,7 +379,9 @@ export class YoRHaAPIClient {
       this.eventSource?.close();
       const delay = Math.min(30000, Math.pow(2, this.sseAttempts) * 1000 + Math.random() * 500);
       this.sseAttempts++;
-      console.error(`SSE connection error, retrying in ${(delay / 1000).toFixed(1)}s (attempt ${this.sseAttempts})`);
+      console.error(
+        `SSE connection error, retrying in ${(delay / 1000).toFixed(1)}s (attempt ${this.sseAttempts})`
+      );
       setTimeout(() => this.initServerSentEvents(), delay);
     };
   }
@@ -387,7 +391,7 @@ export class YoRHaAPIClient {
     const defaultOptions: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
-        ...(this.config.apiKey && { 'Authorization': `Bearer ${this.config.apiKey}` }),
+        ...(this.config.apiKey && { Authorization: `Bearer ${this.config.apiKey}` }),
       },
       ...options,
     };
@@ -408,7 +412,7 @@ export class YoRHaAPIClient {
       } catch (error: any) {
         lastError = error as Error;
         if (attempt < this.config.retryAttempts - 1) {
-          await new Promise(resolve => setTimeout(resolve, Math.pow(2, attempt) * 1000));
+          await new Promise((resolve) => setTimeout(resolve, Math.pow(2, attempt) * 1000));
         }
       }
     }
@@ -432,20 +436,25 @@ export const yorhaAPI = new YoRHaAPIClient();
 // Component Data Validators
 export const YoRHaValidators = {
   validateButtonConfig: (config: any): config is YoRHaButton3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.text === 'string' || config.text === undefined);
+    return (
+      typeof config === 'object' && (typeof config.text === 'string' || config.text === undefined)
+    );
   },
   validatePanelConfig: (config: any): config is YoRHaPanel3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.title === 'string' || config.title === undefined);
+    return (
+      typeof config === 'object' && (typeof config.title === 'string' || config.title === undefined)
+    );
   },
   validateInputConfig: (config: any): config is YoRHaInput3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.placeholder === 'string' || config.placeholder === undefined);
+    return (
+      typeof config === 'object' &&
+      (typeof config.placeholder === 'string' || config.placeholder === undefined)
+    );
   },
   validateModalConfig: (config: any): config is YoRHaModal3DOptions => {
-    return typeof config === 'object' &&
-           (typeof config.title === 'string' || config.title === undefined);
-  }
-}
+    return (
+      typeof config === 'object' && (typeof config.title === 'string' || config.title === undefined)
+    );
+  },
+};
 // YoRHaAPIClient is already exported above as a class

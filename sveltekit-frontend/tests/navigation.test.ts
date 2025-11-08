@@ -30,6 +30,6 @@ test('high-priority routes are ordered correctly', async ({ page }) => {
   const navLinks = await page.locator('nav ul li a').allTextContents();
 
   // Filter out any unexpected links and assert the order of expected links
-  const orderedNavLinks = navLinks.filter(linkText => expectedOrder.includes(linkText));
+  const orderedNavLinks = navLinks.filter((linkText) => expectedOrder.includes(linkText));
   expect(orderedNavLinks).toEqual(expectedOrder);
 });

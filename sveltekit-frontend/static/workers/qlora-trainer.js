@@ -111,7 +111,7 @@ class QLorATrainer {
 
       // Yield control periodically
       if (Math.random() < 0.1) {
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise((resolve) => setTimeout(resolve, 0));
       }
     }
 
@@ -194,9 +194,9 @@ class QLorATrainer {
 
   softmax(logits) {
     const maxLogit = Math.max(...logits);
-    const exps = logits.map(x => Math.exp(x - maxLogit));
+    const exps = logits.map((x) => Math.exp(x - maxLogit));
     const sumExps = exps.reduce((a, b) => a + b, 0);
-    return exps.map(x => x / sumExps);
+    return exps.map((x) => x / sumExps);
   }
 
   calculateLoss(prediction, target) {
@@ -260,7 +260,9 @@ class QLorATrainer {
       momentum[i] = this.optimizer.beta1 * momentum[i] + (1 - this.optimizer.beta1) * gradients[i];
 
       // Update biased second raw moment estimate
-      variance[i] = this.optimizer.beta2 * variance[i] + (1 - this.optimizer.beta2) * gradients[i] * gradients[i];
+      variance[i] =
+        this.optimizer.beta2 * variance[i] +
+        (1 - this.optimizer.beta2) * gradients[i] * gradients[i];
 
       // Compute bias-corrected first moment estimate
       const mHat = momentum[i] / (1 - Math.pow(this.optimizer.beta1, trainingState.step + 1));
@@ -269,7 +271,8 @@ class QLorATrainer {
       const vHat = variance[i] / (1 - Math.pow(this.optimizer.beta2, trainingState.step + 1));
 
       // Update parameters
-      params[i] -= (this.optimizer.learningRate * mHat) / (Math.sqrt(vHat) + this.optimizer.epsilon);
+      params[i] -=
+        (this.optimizer.learningRate * mHat) / (Math.sqrt(vHat) + this.optimizer.epsilon);
 
       // Weight decay
       params[i] *= 1 - this.optimizer.learningRate * this.optimizer.weightDecay;
@@ -418,7 +421,9 @@ class ReinforcementLearningAgent {
   getStats() {
     const recentRewards = this.rewardHistory.slice(-100);
     const averageReward =
-      recentRewards.length > 0 ? recentRewards.reduce((a, b) => a + b, 0) / recentRewards.length : 0;
+      recentRewards.length > 0
+        ? recentRewards.reduce((a, b) => a + b, 0) / recentRewards.length
+        : 0;
 
     return {
       episodeCount: this.episodeCount,
@@ -434,7 +439,7 @@ class ReinforcementLearningAgent {
 let trainer = new QLorATrainer();
 
 // Worker message handlers
-self.addEventListener('message', async event => {
+self.addEventListener('message', async (event) => {
   const { type, data } = event.data;
 
   try {

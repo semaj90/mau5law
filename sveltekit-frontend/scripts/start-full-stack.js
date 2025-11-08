@@ -42,14 +42,14 @@ const services = {
   workers: {
     ocr: { running: false, optional: false },
     embedding: { running: false, optional: false },
-    autotag: { running: false, optional: true }
-  }
+    autotag: { running: false, optional: true },
+  },
 };
 
 // Graceful shutdown
 function gracefulShutdown(signal) {
   console.log(`\n📡 Received ${signal}. Shutting down...`);
-  childProcesses.forEach(child => {
+  childProcesses.forEach((child) => {
     if (!child.killed) {
       console.log(`  ⏹ Stopping process ${child.pid}...`);
       child.kill('SIGTERM');
@@ -83,9 +83,11 @@ async function checkPort(port) {
 // Check service health
 async function checkServiceHealth(url) {
   return new Promise((resolve) => {
-    http.get(url, (res) => {
-      resolve(res.statusCode === 200 || res.statusCode === 404);
-    }).on('error', () => resolve(false));
+    http
+      .get(url, (res) => {
+        resolve(res.statusCode === 200 || res.statusCode === 404);
+      })
+      .on('error', () => resolve(false));
   });
 }
 
@@ -103,7 +105,9 @@ async function isDockerRunning() {
 async function startDockerContainer(name, image, ports, env = []) {
   try {
     // Check if container exists
-    const { stdout } = await execAsync(`docker ps -a --filter "name=${name}" --format "{{.Names}}"`);
+    const { stdout } = await execAsync(
+      `docker ps -a --filter "name=${name}" --format "{{.Names}}"`
+    );
 
     if (stdout.trim() === name) {
       // Container exists, start it
@@ -114,8 +118,8 @@ async function startDockerContainer(name, image, ports, env = []) {
 
     // Create new container
     console.log(`   Creating new container ${name}...`);
-    const portMappings = ports.map(p => `-p ${p}`).join(' ');
-    const envVars = env.map(e => `-e ${e}`).join(' ');
+    const portMappings = ports.map((p) => `-p ${p}`).join(' ');
+    const envVars = env.map((e) => `-e ${e}`).join(' ');
     await execAsync(`docker run -d --name ${name} ${portMappings} ${envVars} ${image}`);
     return true;
   } catch (error) {
@@ -163,18 +167,14 @@ async function setupPostgreSQL() {
       'legal-ai-postgres',
       'postgres:17-alpine',
       ['5432:5432'],
-      [
-        'POSTGRES_DB=legal_ai_db',
-        'POSTGRES_USER=legal_admin',
-        'POSTGRES_PASSWORD=123456'
-      ]
+      ['POSTGRES_DB=legal_ai_db', 'POSTGRES_USER=legal_admin', 'POSTGRES_PASSWORD=123456']
     );
 
     if (started) {
       services.postgres.running = true;
       services.postgres.docker = true;
       console.log('   ✅ PostgreSQL container started');
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       return true;
     }
   }
@@ -192,7 +192,7 @@ async function setupPostgreSQL() {
   if (started) {
     console.log('   ✅ Windows PostgreSQL service started');
     services.postgres.running = true;
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
     return true;
   }
 
@@ -224,7 +224,7 @@ async function setupRedis() {
     if (started) {
       // Set password using redis-cli
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         await execAsync('docker exec legal-ai-redis redis-cli CONFIG SET requirepass redis');
         console.log('   ✅ Redis password set to: redis');
       } catch {}
@@ -274,16 +274,15 @@ async function setupMinIO() {
       'legal-ai-minio',
       'minio/minio:latest',
       ['9000:9000', '9001:9001'],
-      [
-        'MINIO_ROOT_USER=minioadmin',
-        'MINIO_ROOT_PASSWORD=minioadmin123'
-      ]
+      ['MINIO_ROOT_USER=minioadmin', 'MINIO_ROOT_PASSWORD=minioadmin123']
     );
 
     if (started) {
       // Start MinIO server
       try {
-        await execAsync('docker exec legal-ai-minio minio server /data --console-address ":9001" &');
+        await execAsync(
+          'docker exec legal-ai-minio minio server /data --console-address ":9001" &'
+        );
       } catch {}
 
       services.minio.running = true;
@@ -312,7 +311,7 @@ async function setupOllama() {
   const ollamaPaths = [
     'C:/Users/james/Music/deeds-web-app/web-app/Ollama/ollama.exe',
     'ollama', // System PATH
-    'C:/Program Files/Ollama/ollama.exe'
+    'C:/Program Files/Ollama/ollama.exe',
   ];
 
   console.log('   Starting Ollama with GPU layers 30...');
@@ -326,8 +325,8 @@ async function setupOllama() {
         env: {
           ...process.env,
           OLLAMA_NUM_GPU: '30',
-          OLLAMA_HOST: '0.0.0.0:11434'
-        }
+          OLLAMA_HOST: '0.0.0.0:11434',
+        },
       });
 
       ollama.on('error', (err) => {
@@ -335,7 +334,7 @@ async function setupOllama() {
       });
 
       ollama.unref(); // Don't wait for it
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 3000));
 
       const running = await checkPort(11434);
       if (running) {
@@ -388,7 +387,7 @@ async function setupTensorRT() {
           'REDIS_PASSWORD=redis',
           'TENSORRT_PORT=8096',
           'CUDA_VISIBLE_DEVICES=0',
-          'NVIDIA_VISIBLE_DEVICES=all'
+          'NVIDIA_VISIBLE_DEVICES=all',
         ]
       );
 
@@ -402,7 +401,7 @@ async function setupTensorRT() {
         console.log('   📊 TensorRT API: http://localhost:8096');
         console.log('   🔌 WebSocket: ws://localhost:8097');
         console.log('   ❤️  Health: http://localhost:8098/health');
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         return true;
       }
     } catch (error) {
@@ -461,7 +460,9 @@ async function startWorkers() {
     DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
     SKIP_MIGRATIONS: 'true', // Workers should not run migrations
     // RabbitMQ
-    RABBITMQ_URL: services.rabbitmq.running ? 'amqp://guest:guest@localhost:5672' : 'amqp://localhost:5672',
+    RABBITMQ_URL: services.rabbitmq.running
+      ? 'amqp://guest:guest@localhost:5672'
+      : 'amqp://localhost:5672',
     // MinIO
     MINIO_ENDPOINT: 'localhost',
     MINIO_PORT: '9000',
@@ -472,7 +473,7 @@ async function startWorkers() {
     OLLAMA_URL: 'http://localhost:11434',
     // Redis
     REDIS_URL: 'redis://:redis@localhost:6379/0',
-    REDIS_PASSWORD: 'redis'
+    REDIS_PASSWORD: 'redis',
   };
 
   // Start OCR Worker (GPU-accelerated)
@@ -483,7 +484,7 @@ async function startWorkers() {
         cwd: projectRoot,
         stdio: ['ignore', 'pipe', 'pipe'],
         shell: true,
-        env: workerEnv
+        env: workerEnv,
       });
 
       ocrWorker.stdout.on('data', (data) => {
@@ -516,12 +517,16 @@ async function startWorkers() {
   if (services.rabbitmq.running && services.ollama.running && services.postgres.running) {
     console.log('   🔧 Starting RabbitMQ Embedding Worker (Ollama + Qdrant + pgvector)...');
     try {
-      const embeddingWorker = spawn('npx', ['tsx', 'src/lib/workers/rabbitmq-embedding-worker.ts'], {
-        cwd: projectRoot,
-        stdio: ['ignore', 'pipe', 'pipe'],
-        shell: true,
-        env: workerEnv
-      });
+      const embeddingWorker = spawn(
+        'npx',
+        ['tsx', 'src/lib/workers/rabbitmq-embedding-worker.ts'],
+        {
+          cwd: projectRoot,
+          stdio: ['ignore', 'pipe', 'pipe'],
+          shell: true,
+          env: workerEnv,
+        }
+      );
 
       embeddingWorker.stdout.on('data', (data) => {
         const output = data.toString().trim();
@@ -541,7 +546,9 @@ async function startWorkers() {
 
       childProcesses.add(embeddingWorker);
       services.workers.embedding.running = true;
-      console.log('   ✅ RabbitMQ Embedding Worker started (embeddinggemma:latest + Qdrant + pgvector)');
+      console.log(
+        '   ✅ RabbitMQ Embedding Worker started (embeddinggemma:latest + Qdrant + pgvector)'
+      );
     } catch (error) {
       console.error(`   ❌ Failed to start Embedding Worker: ${error.message}`);
     }
@@ -557,7 +564,7 @@ async function startWorkers() {
         cwd: projectRoot,
         stdio: ['ignore', 'pipe', 'pipe'],
         shell: true,
-        env: workerEnv
+        env: workerEnv,
       });
 
       autotagWorker.stdout.on('data', (data) => {
@@ -587,7 +594,7 @@ async function startWorkers() {
   }
 
   // Summary
-  const workersStarted = Object.values(services.workers).filter(w => w.running).length;
+  const workersStarted = Object.values(services.workers).filter((w) => w.running).length;
   console.log(`\n   📊 Workers Status: ${workersStarted}/3 running`);
 }
 
@@ -625,13 +632,13 @@ async function startSvelteKit() {
       RTX_3060_OPTIMIZATION: 'true',
       CONTEXT7_MULTICORE: 'true',
       // Development
-      NODE_ENV: 'development'
-    }
+      NODE_ENV: 'development',
+    },
   });
 
   childProcesses.add(vite);
 
-  await new Promise(resolve => setTimeout(resolve, 5000));
+  await new Promise((resolve) => setTimeout(resolve, 5000));
 
   console.log('   ✅ SvelteKit started on http://localhost:5173');
 }
@@ -643,35 +650,55 @@ async function printServiceStatus() {
 
   console.log('📍 Service Status:\n');
 
-  console.log(`   ${services.postgres.running ? '✅' : '❌'} PostgreSQL:     ${services.postgres.running ? 'postgresql://localhost:5432/legal_ai_db' : 'Not Running'}`);
+  console.log(
+    `   ${services.postgres.running ? '✅' : '❌'} PostgreSQL:     ${services.postgres.running ? 'postgresql://localhost:5432/legal_ai_db' : 'Not Running'}`
+  );
   if (services.postgres.docker) console.log('      (Docker container)');
 
-  console.log(`   ${services.redis.running ? '✅' : '❌'} Redis:          ${services.redis.running ? 'redis://localhost:6379 (password: redis)' : 'Not Running'}`);
+  console.log(
+    `   ${services.redis.running ? '✅' : '❌'} Redis:          ${services.redis.running ? 'redis://localhost:6379 (password: redis)' : 'Not Running'}`
+  );
   if (services.redis.docker) console.log('      (Docker container)');
 
-  console.log(`   ${services.minio.running ? '✅' : '❌'} MinIO:          ${services.minio.running ? 'http://localhost:9000' : 'Not Running'}`);
-  if (services.minio.running) console.log('      Console: http://localhost:9001 (minioadmin/minioadmin123)');
+  console.log(
+    `   ${services.minio.running ? '✅' : '❌'} MinIO:          ${services.minio.running ? 'http://localhost:9000' : 'Not Running'}`
+  );
+  if (services.minio.running)
+    console.log('      Console: http://localhost:9001 (minioadmin/minioadmin123)');
 
-  console.log(`   ${services.ollama.running ? '✅' : '❌'} Ollama:         ${services.ollama.running ? 'http://localhost:11434 (30 GPU layers)' : 'Not Running'}`);
+  console.log(
+    `   ${services.ollama.running ? '✅' : '❌'} Ollama:         ${services.ollama.running ? 'http://localhost:11434 (30 GPU layers)' : 'Not Running'}`
+  );
 
-  console.log(`   ${services.tensorrt.running ? '✅' : '⚠️ '} TensorRT-LLM:   ${services.tensorrt.running ? 'http://localhost:8096 (GPU acceleration)' : 'Skipped (optional)'}`);
+  console.log(
+    `   ${services.tensorrt.running ? '✅' : '⚠️ '} TensorRT-LLM:   ${services.tensorrt.running ? 'http://localhost:8096 (GPU acceleration)' : 'Skipped (optional)'}`
+  );
   if (services.tensorrt.running) {
     console.log('      API: http://localhost:8096');
     console.log('      WebSocket: ws://localhost:8097');
     console.log('      Health: http://localhost:8098/health');
   }
 
-  console.log(`   ${services.rabbitmq.running ? '✅' : '⚠️ '} RabbitMQ:       ${services.rabbitmq.running ? 'amqp://localhost:5672' : 'Skipped (optional)'}`);
-  if (services.rabbitmq.running) console.log('      Management: http://localhost:15672 (guest/guest)');
+  console.log(
+    `   ${services.rabbitmq.running ? '✅' : '⚠️ '} RabbitMQ:       ${services.rabbitmq.running ? 'amqp://localhost:5672' : 'Skipped (optional)'}`
+  );
+  if (services.rabbitmq.running)
+    console.log('      Management: http://localhost:15672 (guest/guest)');
 
   console.log(`   ✅ SvelteKit:       http://localhost:5173`);
 
   console.log('\n   ⚙️  Workers:\n');
-  console.log(`   ${services.workers.ocr.running ? '✅' : '❌'} OCR Worker:        ${services.workers.ocr.running ? 'Running (Tesseract GPU + MinIO + PostgreSQL)' : 'Not Running'}`);
-  console.log(`   ${services.workers.embedding.running ? '✅' : '❌'} Embedding Worker:  ${services.workers.embedding.running ? 'Running (Ollama embeddings + pgvector)' : 'Not Running'}`);
-  console.log(`   ${services.workers.autotag.running ? '✅' : '⚠️ '} Autotag Worker:    ${services.workers.autotag.running ? 'Running (keyword extraction)' : 'Skipped (optional)'}`);
+  console.log(
+    `   ${services.workers.ocr.running ? '✅' : '❌'} OCR Worker:        ${services.workers.ocr.running ? 'Running (Tesseract GPU + MinIO + PostgreSQL)' : 'Not Running'}`
+  );
+  console.log(
+    `   ${services.workers.embedding.running ? '✅' : '❌'} Embedding Worker:  ${services.workers.embedding.running ? 'Running (Ollama embeddings + pgvector)' : 'Not Running'}`
+  );
+  console.log(
+    `   ${services.workers.autotag.running ? '✅' : '⚠️ '} Autotag Worker:    ${services.workers.autotag.running ? 'Running (keyword extraction)' : 'Skipped (optional)'}`
+  );
 
-  const workersRunning = Object.values(services.workers).filter(w => w.running).length;
+  const workersRunning = Object.values(services.workers).filter((w) => w.running).length;
   console.log(`\n   📊 Total Workers: ${workersRunning}/3 active`);
 
   console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -706,7 +733,7 @@ async function startFullStack() {
     await setupRedis();
     await setupMinIO();
     await setupOllama();
-    await setupTensorRT();  // NEW: TensorRT-LLM GPU acceleration
+    await setupTensorRT(); // NEW: TensorRT-LLM GPU acceleration
     await setupRabbitMQ();
 
     // Start workers (depends on infrastructure)
@@ -717,7 +744,6 @@ async function startFullStack() {
 
     // Print status
     await printServiceStatus();
-
   } catch (error) {
     console.error('\n❌ Failed to start full-stack environment:', error.message);
     process.exit(1);
@@ -725,7 +751,7 @@ async function startFullStack() {
 }
 
 // Start everything
-startFullStack().catch(error => {
+startFullStack().catch((error) => {
   console.error('❌ Fatal error:', error);
   process.exit(1);
 });

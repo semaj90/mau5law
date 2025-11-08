@@ -299,23 +299,35 @@
   <title>Legal Report Comparison - YoRHa Legal AI</title>
 </svelte:head>
 
-<div class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-8">
+<div
+  class="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white p-8"
+>
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+      <h1
+        class="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent"
+      >
         ⚖️ Legal Report Comparison
       </h1>
       <p class="text-slate-400 mb-4">
-        Upload PDF legal reports for AI-powered analysis with WHO/WHAT/WHY/HOW/EVIDENCE extraction and case similarity
-        search
+        Upload PDF legal reports for AI-powered analysis with WHO/WHAT/WHY/HOW/EVIDENCE extraction
+        and case similarity search
       </p>
 
       <div class="flex flex-wrap gap-2 text-sm">
-        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400"> 📄 OCR Text Extraction </span>
-        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400"> 🧠 gemma3-legal:latest </span>
-        <span class="px-3 py-1 rounded-full bg-green-500/20 text-green-400"> 🔢 embeddinggemma vectors </span>
-        <span class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400"> 🏷️ Qdrant tags </span>
+        <span class="px-3 py-1 rounded-full bg-blue-500/20 text-blue-400">
+          📄 OCR Text Extraction
+        </span>
+        <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400">
+          🧠 gemma3-legal:latest
+        </span>
+        <span class="px-3 py-1 rounded-full bg-green-500/20 text-green-400">
+          🔢 embeddinggemma vectors
+        </span>
+        <span class="px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400">
+          🏷️ Qdrant tags
+        </span>
       </div>
     </div>
 
@@ -342,7 +354,9 @@
                 onchange={handleFileUpload}
                 class="w-full px-4 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 cursor-pointer"
               />
-              <div class="mt-2 text-xs text-slate-500">Supported: PDF, TXT, JSON, PNG/JPG, MP4, MP3</div>
+              <div class="mt-2 text-xs text-slate-500">
+                Supported: PDF, TXT, JSON, PNG/JPG, MP4, MP3
+              </div>
               {#if uploadFile}
                 <div class="mt-2 flex items-center gap-2 text-sm text-slate-400">
                   <FileText class="w-4 h-4" />
@@ -368,7 +382,9 @@
 
             <!-- Document Type -->
             <div>
-              <label for="document-type" class="block text-sm font-medium text-slate-300 mb-2"> Document Type </label>
+              <label for="document-type" class="block text-sm font-medium text-slate-300 mb-2">
+                Document Type
+              </label>
               <select
                 id="document-type"
                 bind:value={formData.documentType}
@@ -387,7 +403,9 @@
             <!-- Jurisdiction & Case Number -->
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="jurisdiction" class="block text-sm font-medium text-slate-300 mb-2"> Jurisdiction </label>
+                <label for="jurisdiction" class="block text-sm font-medium text-slate-300 mb-2">
+                  Jurisdiction
+                </label>
                 <input
                   id="jurisdiction"
                   type="text"
@@ -398,7 +416,9 @@
               </div>
 
               <div>
-                <label for="case-number" class="block text-sm font-medium text-slate-300 mb-2"> Case Number </label>
+                <label for="case-number" class="block text-sm font-medium text-slate-300 mb-2">
+                  Case Number
+                </label>
                 <input
                   id="case-number"
                   type="text"
@@ -418,7 +438,8 @@
                 class="w-4 h-4 rounded border-slate-600 bg-slate-700 text-blue-500 focus:ring-blue-500"
               />
               <label for="enableComparison" class="text-sm text-slate-300">
-                Enable case similarity search and recommendations (using embeddinggemma + Qdrant tags)
+                Enable case similarity search and recommendations (using embeddinggemma + Qdrant
+                tags)
               </label>
             </div>
 
@@ -431,7 +452,14 @@
               {#if isUploading}
                 <span class="flex items-center gap-2 justify-center">
                   <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"
+                    <circle
+                      class="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="4"
+                      fill="none"
                     ></circle>
                     <path
                       class="opacity-75"
@@ -471,7 +499,10 @@
           <CardContent class="pt-6">
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-2xl font-bold text-white">Analysis Results</h2>
-              <Button onclick={resetForm} class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg">
+              <Button
+                onclick={resetForm}
+                class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-lg"
+              >
                 Upload New Report
               </Button>
             </div>
@@ -508,7 +539,8 @@
             </div>
 
             <div class="mt-4 text-sm text-slate-400">
-              Processing time: {(analysisResult.processingTime / 1000).toFixed(2)}s | Text extracted: {analysisResult.extractedTextLength.toLocaleString()}
+              Processing time: {(analysisResult.processingTime / 1000).toFixed(2)}s | Text
+              extracted: {analysisResult.extractedTextLength.toLocaleString()}
               characters
             </div>
           </CardContent>
@@ -520,7 +552,9 @@
             <button
               onclick={() => (activeTab = tab as typeof activeTab)}
               class={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                activeTab === tab ? 'bg-blue-600 text-white' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                activeTab === tab
+                  ? 'bg-blue-600 text-white'
+                  : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
               }`}
             >
               {#if tab === 'who'}
@@ -569,7 +603,9 @@
                 {/each}
 
                 {#if analysisResult.analysis.who.personsOfInterest.length === 0}
-                  <div class="text-center text-slate-400 py-8">No persons of interest identified</div>
+                  <div class="text-center text-slate-400 py-8">
+                    No persons of interest identified
+                  </div>
                 {/if}
               </div>
             {:else if activeTab === 'what'}
@@ -748,7 +784,9 @@
               </div>
             {:else if activeTab === 'comparison'}
               <!-- COMPARISON Section -->
-              <h3 class="text-xl font-bold text-white mb-4">📊 Case Similarity & Recommendations</h3>
+              <h3 class="text-xl font-bold text-white mb-4">
+                📊 Case Similarity & Recommendations
+              </h3>
 
               {#if analysisResult.comparison}
                 <div class="space-y-6">
@@ -762,8 +800,12 @@
                         {#each Array.isArray(analysisResult.comparison.similarCases) ? analysisResult.comparison.similarCases : [] as similarCase}
                           <div class="bg-slate-700/50 rounded-lg p-4">
                             <div class="flex items-center justify-between mb-2">
-                              <h5 class="text-lg font-semibold text-blue-400">{similarCase.title}</h5>
-                              <span class="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400">
+                              <h5 class="text-lg font-semibold text-blue-400">
+                                {similarCase.title}
+                              </h5>
+                              <span
+                                class="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400"
+                              >
                                 {(similarCase.similarity * 100).toFixed(0)}% match
                               </span>
                             </div>
@@ -773,7 +815,9 @@
                                 <span class="text-sm text-slate-400">Matched factors:</span>
                                 <div class="flex flex-wrap gap-1 mt-1">
                                   {#each Array.isArray(similarCase.matchedFactors) ? similarCase.matchedFactors : [] as factor}
-                                    <span class="px-2 py-1 rounded text-xs bg-purple-500/20 text-purple-400">
+                                    <span
+                                      class="px-2 py-1 rounded text-xs bg-purple-500/20 text-purple-400"
+                                    >
                                       {factor}
                                     </span>
                                   {/each}
@@ -835,14 +879,18 @@
                   {#if analysisResult.comparison.aiInsights}
                     <div>
                       <h4 class="text-sm font-semibold text-slate-400 mb-2">AI Insights</h4>
-                      <div class="bg-slate-700/50 rounded-lg p-4 text-slate-300 whitespace-pre-wrap">
+                      <div
+                        class="bg-slate-700/50 rounded-lg p-4 text-slate-300 whitespace-pre-wrap"
+                      >
                         {analysisResult.comparison.aiInsights}
                       </div>
                     </div>
                   {/if}
                 </div>
               {:else}
-                <div class="text-center text-slate-400 py-8">Comparison was not enabled for this analysis</div>
+                <div class="text-center text-slate-400 py-8">
+                  Comparison was not enabled for this analysis
+                </div>
               {/if}
             {/if}
           </CardContent>

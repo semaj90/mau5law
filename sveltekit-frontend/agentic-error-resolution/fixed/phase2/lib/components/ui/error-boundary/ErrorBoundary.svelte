@@ -80,12 +80,16 @@
 
 {#if hasError && error}
   <!-- Error State -->
-  <div class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg">
+  <div
+    class="min-h-screen bg-nier-bg-primary text-nier-text-primary flex items-center justify-center p-golden-lg"
+  >
     <Card class="bg-nier-bg-secondary border-red-500/30 max-w-2xl w-full nes-container">
       <div class="text-center pb-golden-lg nes-container">
         <div class="mb-golden-md">
           <!-- YoRHa Error Icon -->
-          <div class="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center">
+          <div
+            class="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center"
+          >
             <svg class="w-8 h-8 text-red-400" fill="currentColor" viewBox="0 0 20 20">
               <path
                 fill-rule="evenodd"
@@ -95,27 +99,38 @@
             </svg>
           </div>
         </div>
-        <h2 class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm nes-container">
+        <h2
+          class="text-2xl font-bold text-red-400 uppercase tracking-wide mb-golden-sm nes-container"
+        >
           System Error Detected
         </h2>
         <p class="text-nier-text-secondary nes-container">
-          The YoRHa Legal AI system encountered an unexpected error. Our androids are investigating the issue.
+          The YoRHa Legal AI system encountered an unexpected error. Our androids are investigating
+          the issue.
         </p>
       </div>
       <div class="space-y-golden-lg nes-container">
         <!-- Error Details -->
         <div class="bg-nier-bg-tertiary border border-nier-border-muted rounded p-golden-md">
-          <h3 class="text-sm font-bold text-nier-accent-warm uppercase tracking-wide mb-golden-sm">Error Details</h3>
+          <h3 class="text-sm font-bold text-nier-accent-warm uppercase tracking-wide mb-golden-sm">
+            Error Details
+          </h3>
           <div class="font-mono text-sm space-y-golden-xs">
             <div class="grid grid-cols-4 gap-2">
               <span class="text-nier-text-secondary">ID:</span>
               <span class="col-span-3 text-red-400">{errorId}</span>
               <span class="text-nier-text-secondary">Message:</span>
-              <span class="col-span-3 text-nier-text-primary">{error?.message ?? 'Unknown error'}</span>
+              <span class="col-span-3 text-nier-text-primary"
+                >{error?.message ?? 'Unknown error'}</span
+              >
               <span class="text-nier-text-secondary">Location</span>
-              <span class="col-span-3 text-nier-text-primary">{globalThis.$page?.url?.pathname ?? 'unknown'}</span>
+              <span class="col-span-3 text-nier-text-primary"
+                >{globalThis.$page?.url?.pathname ?? 'unknown'}</span
+              >
               <span class="text-nier-text-secondary">Location</span>
-              <span class="col-span-3 text-nier-text-primary">{globalThis.location?.pathname ?? 'unknown'}</span>
+              <span class="col-span-3 text-nier-text-primary"
+                >{globalThis.location?.pathname ?? 'unknown'}</span
+              >
             </div>
           </div>
         </div>

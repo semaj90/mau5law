@@ -8,7 +8,6 @@ import { users } from '../src/lib/server/db/schema-postgres';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 
-
 interface TestUser {
   email: string;
   password: string;
@@ -96,12 +95,12 @@ async function seedUsers() {
 
   console.log('\n🎉 Seeding complete!\n');
   console.log('Test Credentials:');
-  testUsers.forEach(u => {
+  testUsers.forEach((u) => {
     console.log(`  📧 ${u.email} / 🔐 ${u.password}`);
   });
 }
 
-seedUsers().catch(error => {
+seedUsers().catch((error) => {
   console.error('Fatal error:', error);
   process.exit(1);
 });

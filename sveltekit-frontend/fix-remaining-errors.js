@@ -12,24 +12,36 @@ function fixRemainingErrors(filePath) {
 
     // Fix broken clusterMetrics.set calls
     if (content.includes('clusterMetrics.set(metrics)')) {
-      content = content.replace(/clusterMetrics\.set\(metrics\)/g, 'clusterMetrics.set({activeWorkers: (data as any).metrics');
+      content = content.replace(
+        /clusterMetrics\.set\(metrics\)/g,
+        'clusterMetrics.set({activeWorkers: (data as any).metrics'
+      );
       changed = true;
     }
 
     // Fix broken mcpTools.update and queryResults.update patterns
     if (content.includes('mcpTools.update.toolId')) {
-      content = content.replace(/mcpTools\.update\.toolId[^)]*\)/g, 'mcpTools.update(tools => tools.map(tool => tool.id === (data as any).toolId ? { ...tool, status: (data as any).status, lastUsed: new Date() } : tool))');
+      content = content.replace(
+        /mcpTools\.update\.toolId[^)]*\)/g,
+        'mcpTools.update(tools => tools.map(tool => tool.id === (data as any).toolId ? { ...tool, status: (data as any).status, lastUsed: new Date() } : tool))'
+      );
       changed = true;
     }
 
     if (content.includes('queryResults.update.result')) {
-      content = content.replace(/queryResults\.update\.result[^)]*\)/g, 'queryResults.update(results => [(data as any).result, ...results.slice(0, 9)])');
+      content = content.replace(
+        /queryResults\.update\.result[^)]*\)/g,
+        'queryResults.update(results => [(data as any).result, ...results.slice(0, 9)])'
+      );
       changed = true;
     }
 
     // Fix executeMCPTool function parameter
     if (content.includes('async function executeMCPTool(toolId: string, args: any = {} {')) {
-      content = content.replace(/async function executeMCPTool\(toolId: string, args: any = \{\} \{/g, 'async function executeMCPTool(toolId: string, args: any = {}) {');
+      content = content.replace(
+        /async function executeMCPTool\(toolId: string, args: any = \{\} \{/g,
+        'async function executeMCPTool(toolId: string, args: any = {}) {'
+      );
       changed = true;
     }
 
@@ -42,16 +54,21 @@ function fixRemainingErrors(filePath) {
 
     // Fix JSON.stringify issues
     if (content.includes('JSON.stringify(result), null, 2)')) {
-      content = content.replace(/JSON\.stringify\(result\), null, 2\)/g, 'JSON.stringify((result as any).result, null, 2)');
+      content = content.replace(
+        /JSON\.stringify\(result\), null, 2\)/g,
+        'JSON.stringify((result as any).result, null, 2)'
+      );
       changed = true;
     }
 
     // Fix $state declarations with wrong syntax (remaining cases)
-    const stateDeclarationPattern = /let\s+(\w+)\s*=\s*\$state<[^>]+>\((['"][^'"]*['"])\)\s*\(\s*\);/g;
+    const stateDeclarationPattern =
+      /let\s+(\w+)\s*=\s*\$state<[^>]+>\((['"][^'"]*['"])\)\s*\(\s*\);/g;
     if (stateDeclarationPattern.test(content)) {
       content = content.replace(stateDeclarationPattern, (match, varName, defaultValue) => {
         if (defaultValue === "''") return `let ${varName} = $state<Record<string, any>>({});`;
-        if (defaultValue === '"false"') return `let ${varName} = $state<Record<string, boolean>>({});`;
+        if (defaultValue === '"false"')
+          return `let ${varName} = $state<Record<string, boolean>>({});`;
         return `let ${varName} = $state<Record<string, any>>({});`;
       });
       changed = true;
@@ -95,7 +112,10 @@ function fixRemainingErrors(filePath) {
 
     // Fix return results.map.item.id pattern
     if (content.includes('return results.map.item.id')) {
-      content = content.replace(/return results\.map\.item\.id,/g, 'return results.map(result => ({\n      id: result.item.id,');
+      content = content.replace(
+        /return results\.map\.item\.id,/g,
+        'return results.map(result => ({\n      id: result.item.id,'
+      );
       changed = true;
     }
 
@@ -121,15 +141,15 @@ const patterns = [
   'src/lib/components/ai/EnhancedMCPIntegration.svelte',
   'src/lib/components/search/UnifiedSearchBar.svelte',
   'src/lib/components/yorha/YoRHaForm.svelte',
-  'src/**/*.svelte'
+  'src/**/*.svelte',
 ];
 
 let totalFixed = 0;
 
-patterns.forEach(pattern => {
+patterns.forEach((pattern) => {
   try {
     const files = glob.sync(pattern, { cwd: '.' });
-    files.forEach(file => {
+    files.forEach((file) => {
       if (fixRemainingErrors(file)) {
         totalFixed++;
       }

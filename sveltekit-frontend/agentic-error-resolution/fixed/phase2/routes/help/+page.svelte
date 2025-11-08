@@ -34,11 +34,36 @@
   let searchQuery = $state('');
   // Help categories
   const categories = [
-    { id: 'getting-started', title: 'Getting Started', icon: Star, description: 'New to the system? Start here' },
-    { id: 'cases', title: 'Case Management', icon: Book, description: 'Managing and organizing cases' },
-    { id: 'evidence', title: 'Evidence Handling', icon: Search, description: 'Evidence collection and analysis' },
-    { id: 'ai-assistant', title: 'AI Assistant', icon: MessageSquare, description: 'Using AI features effectively' },
-    { id: 'advanced', title: 'Advanced Features', icon: UserIcon, description: 'Power user features and tips' },
+    {
+      id: 'getting-started',
+      title: 'Getting Started',
+      icon: Star,
+      description: 'New to the system? Start here',
+    },
+    {
+      id: 'cases',
+      title: 'Case Management',
+      icon: Book,
+      description: 'Managing and organizing cases',
+    },
+    {
+      id: 'evidence',
+      title: 'Evidence Handling',
+      icon: Search,
+      description: 'Evidence collection and analysis',
+    },
+    {
+      id: 'ai-assistant',
+      title: 'AI Assistant',
+      icon: MessageSquare,
+      description: 'Using AI features effectively',
+    },
+    {
+      id: 'advanced',
+      title: 'Advanced Features',
+      icon: UserIcon,
+      description: 'Power user features and tips',
+    },
     {
       id: 'troubleshooting',
       title: 'Troubleshooting',
@@ -314,7 +339,8 @@
   const faqs = [
     {
       question: 'How do I reset my password?',
-      answer: 'Go to Settings > Security > Change Password. Enter your current password and new password twice.',
+      answer:
+        'Go to Settings > Security > Change Password. Enter your current password and new password twice.',
     },
     {
       question: 'Can I export my case data?',
@@ -327,11 +353,13 @@
     },
     {
       question: 'What file types are supported for evidence?',
-      answer: 'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.',
+      answer:
+        'Most common formats are supported: PDF, DOCX, TXT, JPG, PNG, MP4, MP3, and many others.',
     },
     {
       question: 'How do I collaborate with team members?',
-      answer: 'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.',
+      answer:
+        'Add participants to cases, use shared notes, and enable notifications to keep everyone informed.',
     },
   ];
 
@@ -339,13 +367,13 @@
     let results = articles;
     // Filter by category
     if (activeCategory !== 'all') {
-      results = results.filter(article => article.category === activeCategory);
+      results = results.filter((article) => article.category === activeCategory);
     }
     // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       results = results.filter(
-        article =>
+        (article) =>
           article.title.toLowerCase().includes(query) ||
           article.description.toLowerCase().includes(query) ||
           article.content.toLowerCase().includes(query)
@@ -389,7 +417,9 @@
       <HelpCircle class="h-8 w-8" />
       Help & Support
     </h1>
-    <p class="text-green-100">Documentation, tutorials, and support resources to help you succeed</p>
+    <p class="text-green-100">
+      Documentation, tutorials, and support resources to help you succeed
+    </p>
   </div>
   <!-- Search -->
   <div class="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -472,7 +502,9 @@
       <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="bg-gray-50 border-b border-gray-200 p-4">
           <h2 class="text-lg font-semibold">
-            {activeCategory === 'all' ? 'All Articles' : categories.find(c => c.id === activeCategory)?.title}
+            {activeCategory === 'all'
+              ? 'All Articles'
+              : categories.find((c) => c.id === activeCategory)?.title}
           </h2>
           <p class="text-sm text-gray-600 mt-1">
             {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''} found
@@ -509,7 +541,11 @@
                     </div>
                     <!-- Article preview -->
                     <div class="prose prose-sm max-w-none text-gray-700 mb-4">
-                      {@html article.content.split('\n').slice(0, 3).join('\n').substring(0, 200)}...
+                      {@html article.content
+                        .split('\n')
+                        .slice(0, 3)
+                        .join('\n')
+                        .substring(0, 200)}...
                     </div>
                     <Button class="bits-btn" variant="ghost" size="sm">
                       <!-- Removed duplicate: 'bits-btn' -->
@@ -526,7 +562,9 @@
           <div class="p-12 text-center">
             <Search class="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 class="text-lg font-medium text-gray-900 mb-2">No articles found</h3>
-            <p class="text-gray-600">Try adjusting your search terms or browse different categories</p>
+            <p class="text-gray-600">
+              Try adjusting your search terms or browse different categories
+            </p>
           </div>
         {/if}
       </div>
@@ -543,7 +581,9 @@
                 class="flex justify-between items-center w-full p-4 text-left bg-gray-50 hover:bg-gray-100 rounded-lg cursor-pointer transition-colors"
               >
                 <span class="font-medium text-gray-900">{faq.question}</span>
-                <ArrowRight class="h-5 w-5 text-gray-400 group-open:rotate-90 transition-transform" />
+                <ArrowRight
+                  class="h-5 w-5 text-gray-400 group-open:rotate-90 transition-transform"
+                />
               </summary>
               <div class="mt-3 p-4 text-gray-700 bg-gray-50 rounded-lg">
                 {faq.answer}

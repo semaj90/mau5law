@@ -83,9 +83,19 @@
 
   // Recent legal activities
   const recentActivities: RecentActivity[] = [
-    { type: 'case_update', title: 'Smith vs. Johnson', status: 'discovery_complete', priority: 'high' },
+    {
+      type: 'case_update',
+      title: 'Smith vs. Johnson',
+      status: 'discovery_complete',
+      priority: 'high',
+    },
     { type: 'document_review', title: 'Corporate Merger Agreement', confidence: 94, pages: 67 },
-    { type: 'citation_check', title: 'Environmental Compliance Report', citations: 23, verified: 21 },
+    {
+      type: 'citation_check',
+      title: 'Environmental Compliance Report',
+      citations: 23,
+      verified: 21,
+    },
     { type: 'compliance_scan', title: 'Q3 Regulatory Review', score: 98.5, issues: 2 },
   ];
 </script>
@@ -199,7 +209,9 @@
             <div class="activity-details">
               {#if activity.type === 'case_update'}
                 <span class="status">
-                  Status: {activity.status ? activity.status.replace('_', ' ').toUpperCase() : 'UNKNOWN'}
+                  Status: {activity.status
+                    ? activity.status.replace('_', ' ').toUpperCase()
+                    : 'UNKNOWN'}
                 </span>
               {:else if activity.type === 'document_review'}
                 <span>Confidence: <strong>{activity.confidence}%</strong></span>

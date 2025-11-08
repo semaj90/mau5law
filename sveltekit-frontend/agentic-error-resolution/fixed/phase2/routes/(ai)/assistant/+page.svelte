@@ -18,10 +18,15 @@
   let isStreaming = $state(false);
   let error = $state('');
 
-  async function sendMessage() { if (!currentMessage.trim() || isStreaming) return;
+  async function sendMessage() {
+    if (!currentMessage.trim() || isStreaming) return;
 
     const userMessage: ChatMessage = {
-      id: crypto.randomUUID(), role: 'user', content: currentMessage, timestamp: new Date() };
+      id: crypto.randomUUID(),
+      role: 'user',
+      content: currentMessage,
+      timestamp: new Date(),
+    };
 
     messages = [...messages, userMessage];
     const messageToSend = currentMessage;
@@ -34,14 +39,23 @@
       const response = await fetch('/api/ai/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: messageToSend, model: 'gemma3-legal:latest', useRAG: true }),
+        body: JSON.stringify({
+          message: messageToSend,
+          model: 'gemma3-legal:latest',
+          useRAG: true,
+        }),
       });
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
 
-      const aiMessage: ChatMessage = { id: crypto.randomUUID(), role: 'assistant', content: '', timestamp: new Date() };
+      const aiMessage: ChatMessage = {
+        id: crypto.randomUUID(),
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+      };
 
       messages = [...messages, aiMessage];
 
@@ -56,7 +70,7 @@
             if (done) break;
 
             const chunk = decoder.decode(value);
-            const lines = chunk.split('\n').filter(line => line.trim());
+            const lines = chunk.split('\n').filter((line) => line.trim());
 
             for (const line of lines) {
               if (line.startsWith('data: ')) {
@@ -79,7 +93,10 @@
     } catch (e) {
       error = `Failed to communicate with AI assistant: ${e instanceof Error ? e.message : 'Unknown error'}`;
       // Remove the empty AI message on error
-      if (messages[messages.length - 1]?.role === 'assistant' && !messages[messages.length - 1]?.content) {
+      if (
+        messages[messages.length - 1]?.role === 'assistant' &&
+        !messages[messages.length - 1]?.content
+      ) {
         messages = messages.slice(0, -1);
       }
     } finally {
@@ -180,7 +197,11 @@
             class="message-input"
             rows="3"
           ></textarea>
-          <Button onclick={sendMessage} disabled={!currentMessage.trim() || isStreaming} class="send-button">
+          <Button
+            onclick={sendMessage}
+            disabled={!currentMessage.trim() || isStreaming}
+            class="send-button"
+          >
             {isStreaming ? '🔄' : '📤'} Send
           </Button>
         </div>

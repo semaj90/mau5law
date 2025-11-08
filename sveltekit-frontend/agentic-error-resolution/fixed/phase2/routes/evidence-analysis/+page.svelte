@@ -56,7 +56,9 @@
 <div class="evidence-analysis-page">
   <div class="page-header">
     <h1 class="page-title">AI-Powered Evidence Analysis</h1>
-    <p class="page-description">Analyze legal evidence using advanced AI models with interactive visualizations</p>
+    <p class="page-description">
+      Analyze legal evidence using advanced AI models with interactive visualizations
+    </p>
   </div>
   <div class="feature-cards">
     <Card>
@@ -132,12 +134,17 @@
         <div class="demo-placeholder">
           <div class="placeholder-content">
             <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
             </svg>
             <h3>WebGPU-Accelerated Evidence Graph</h3>
             <p>
-              Experience real-time 3D visualization of evidence relationships with GPU acceleration for smooth
-              interaction with complex data.
+              Experience real-time 3D visualization of evidence relationships with GPU acceleration
+              for smooth interaction with complex data.
             </p>
             <ul class="demo-features">
               <li>Real-time force-directed layout</li>

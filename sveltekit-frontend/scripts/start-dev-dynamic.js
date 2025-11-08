@@ -5,7 +5,8 @@ import { findFreePort } from './find-free-port.js';
 import chalk from 'chalk';
 
 const PREFERRED_PORT = parseInt(process.env.PORT) || 5173;
-const SIMD_DEFAULT_PORT = parseInt(process.env.SIMD_JSON_PORT || process.env.RAG_ENDPOINT_PORT) || 8095;
+const SIMD_DEFAULT_PORT =
+  parseInt(process.env.SIMD_JSON_PORT || process.env.RAG_ENDPOINT_PORT) || 8095;
 // Allow callers to override search depth via env (useful in CI or port-constrained hosts)
 const MAX_PORT_TRIES = parseInt(process.env.MAX_PORT_TRIES) || 50;
 
@@ -53,12 +54,13 @@ async function startDevServer() {
         FORCE_COLOR: '1',
         REDIS_PASSWORD: effectiveRedisPassword,
         DEV_BYPASS_AUTH: process.env.DEV_BYPASS_AUTH,
-          DATABASE_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db',
+        DATABASE_URL:
+          process.env.DATABASE_URL || 'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db',
       },
     });
 
     // Give Redis a moment to initialize
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     // Start SIMD Go microservice (preferring compiled binary inside the helper)
     const simdProcess = spawn('node', ['../scripts/start-simd-go-service.mjs'], {
@@ -86,13 +88,15 @@ async function startDevServer() {
           VITE_PORT: availablePort.toString(),
           REDIS_PASSWORD: effectiveRedisPassword,
           DEV_BYPASS_AUTH: process.env.DEV_BYPASS_AUTH,
-          DATABASE_URL: process.env.DATABASE_URL || 'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db',
+          DATABASE_URL:
+            process.env.DATABASE_URL ||
+            'postgresql://legal_admin:123456@127.0.0.1:5432/legal_ai_db',
         },
       }
     );
 
     // Handle graceful shutdown
-    const shutdown = signal => {
+    const shutdown = (signal) => {
       console.log(chalk.yellow(`\n\n🛑 Received ${signal}, shutting down gracefully...\n`));
 
       redisProcess.kill('SIGTERM');
@@ -111,19 +115,19 @@ async function startDevServer() {
     process.on('SIGTERM', () => shutdown('SIGTERM'));
 
     // Monitor process exits
-    redisProcess.on('exit', code => {
+    redisProcess.on('exit', (code) => {
       if (code !== 0 && code !== null) {
         console.log(chalk.red(`❌ Redis process exited with code ${code}`));
       }
     });
 
-    simdProcess.on('exit', code => {
+    simdProcess.on('exit', (code) => {
       if (code !== 0 && code !== null) {
         console.log(chalk.red(`❌ SIMD service exited with code ${code}`));
       }
     });
 
-    viteProcess.on('exit', code => {
+    viteProcess.on('exit', (code) => {
       console.log(chalk.yellow(`\n🛑 Vite server stopped (exit code: ${code})\n`));
       redisProcess.kill('SIGTERM');
       simdProcess.kill('SIGTERM');

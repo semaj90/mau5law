@@ -1,28 +1,50 @@
-// eslint.config.js — ESLint 9+ flat-config for SvelteKit 2 + TypeScript + Prettier
-import js from "@eslint/js";
-import ts from "typescript-eslint";
-import svelte from "eslint-plugin-svelte";
-import prettier from "eslint-config-prettier";
+// ESM-compatible flat config for ESLint 9+
+// Works with Svelte 5 (runes), TypeScript 5+, and Prettier integration
 
-/** @type {import("eslint").Linter.FlatConfig[]} */
-export default [
+import process from 'node:process';
+import js from '@eslint/js';
+import ts from 'typescript-eslint';
+import svelte from 'eslint-plugin-svelte';
+import prettier from 'eslint-config-prettier';
+import globals from 'globals';
+
+export default ts.config(
   js.configs.recommended,
   ...ts.configs.recommended,
-  ...svelte.configs["flat/recommended"],
-  prettier, // must be last
+  ...svelte.configs['flat/recommended'],
+  prettier,
   {
-    files: ["**/*.ts", "**/*.js", "**/*.svelte"],
+    files: ['**/*.{svelte,ts,js}'],
     languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.node
+      },
       parserOptions: {
-        projectService: true,
-        tsconfigRootDir: process.cwd(),
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: import.meta.dirname,
+        extraFileExtensions: ['.svelte'],
       },
     },
     rules: {
-      "@typescript-eslint/no-unused-vars": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "no-undef": "off",
-      "svelte/no-at-html-tags": "off",
+      // --- General ---
+      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+      'no-undef': 'off',
+
+      // --- TypeScript tweaks ---
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', ignoreRestSiblings: true }],
+      '@typescript-eslint/no-explicit-any': 'off',
+
+      // --- Svelte specifics ---
+      'svelte/no-at-html-tags': 'off', // allow controlled HTML injection
     },
-  },
-];
+    ignores: [
+      'node_modules',
+      '.svelte-kit',
+      'build',
+      'dist',
+      'coverage',
+      '**/*.config.*',
+    ],
+  }
+);

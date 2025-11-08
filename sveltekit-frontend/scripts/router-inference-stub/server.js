@@ -1,4 +1,3 @@
-
 // Minimal HTTP server to act as a router inference microservice for development
 import { createServer } from 'http';
 
@@ -39,7 +38,9 @@ const server = createServer(async (req, res) => {
   // Log incoming request for debugging
   try {
     // eslint-disable-next-line no-console
-    console.log(`[stub] incoming ${req.method} ${req.url} from ${req.socket.remoteAddress}:${req.socket.remotePort}`);
+    console.log(
+      `[stub] incoming ${req.method} ${req.url} from ${req.socket.remoteAddress}:${req.socket.remotePort}`
+    );
   } catch (e) {
     /* ignore */
   }

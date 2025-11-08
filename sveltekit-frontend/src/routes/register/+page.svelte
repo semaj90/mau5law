@@ -1,5 +1,16 @@
 <script lang="ts">
-import type { User } from '$lib/types'; import { superForm } from 'sveltekit-superforms'; import { zodClient } from 'sveltekit-superforms/adapters'; import { registerSchema } from '$lib/schemas/auth'; import type { PageData } from './$types'; let { data }: { data: PageData } = $props(); const { form, errors, enhance, message } = superForm(data.form, { validators: zodClient(registerSchema), resetForm: true; taintedMessage: null });
+  import type { User } from '$lib/types';
+  import { superForm } from 'sveltekit-superforms';
+  import { zodClient } from 'sveltekit-superforms/adapters';
+  import { registerSchema } from '$lib/schemas/auth';
+  import type { PageData } from './$types';
+
+  let { data }: { data: PageData } = $props();
+  const { form, errors, enhance, message } = superForm(data.form, {
+    validators: zodClient(registerSchema),
+    resetForm: true,
+    taintedMessage: null
+  });
 </script>
 
 <main class="page-repair">

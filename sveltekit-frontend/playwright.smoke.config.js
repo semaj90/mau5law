@@ -11,15 +11,13 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:5173',
     trace: 'off',
-    screenshot: 'off'
+    screenshot: 'off',
   },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } }
-  ],
+  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
     command: 'vite dev --host localhost --strictPort',
     port: 5173,
     reuseExistingServer: true,
-    timeout: 60000
-  }
+    timeout: 60000,
+  },
 });

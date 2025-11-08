@@ -1,5 +1,6 @@
 <script lang="ts">
-  // Truncated file - replaced with stub
+  // Explicitly define as a Svelte 5 component with no props, primarily using slots
+  let {} = $props();
 </script>
 
 <main class="page-repair">

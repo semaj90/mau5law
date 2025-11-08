@@ -16,11 +16,16 @@ test.describe('RAG sync smoke', () => {
     await expect(status).toBeVisible({ timeout: 5000 });
 
     // Wait up to 30s for the syncStatus to become 'synced'
-    await page.waitForFunction(() => {
-      const el = Array.from(document.querySelectorAll('body *')).find(n => /syncStatus:\s*/i.test(n.textContent || ''));
-      if (!el) return false;
-      return /synced/i.test(el.textContent || '');
-    }, { timeout: 30000 });
+    await page.waitForFunction(
+      () => {
+        const el = Array.from(document.querySelectorAll('body *')).find((n) =>
+          /syncStatus:\s*/i.test(n.textContent || '')
+        );
+        if (!el) return false;
+        return /synced/i.test(el.textContent || '');
+      },
+      { timeout: 30000 }
+    );
 
     // Verify IndexedDB entry has embedding and syncStatus
     const result = await page.evaluate(async () => {
@@ -28,10 +33,17 @@ test.describe('RAG sync smoke', () => {
       const dbName = 'deeds-legal-ai-db';
       try {
         const req = indexedDB.open(dbName);
-        const db = await new Promise((res, rej) => { req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error); });
+        const db = await new Promise((res, rej) => {
+          req.onsuccess = () => res(req.result);
+          req.onerror = () => rej(req.error);
+        });
         const tx = db.transaction('documents', 'readonly');
         const store = tx.objectStore('documents');
-        const all = await new Promise((res, rej) => { const r = store.getAll(); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+        const all = await new Promise((res, rej) => {
+          const r = store.getAll();
+          r.onsuccess = () => res(r.result);
+          r.onerror = () => rej(r.error);
+        });
         return all;
       } catch (e) {
         return { error: String(e) };

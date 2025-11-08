@@ -48,99 +48,85 @@ class MultiAgentOrchestrator {
     this.initializeAgentDefinitions();
   }
 
+  // Helper to safely get message from unknown errors
+  private extractErrorMessage(err: unknown): string {
+    if (!err) return 'Unknown error';
+    if (typeof err === 'string') return err;
+    if (err instanceof Error) return err.message;
+    try {
+      return JSON.stringify(err as any);
+    } catch {
+      return 'Unknown error';
+    }
+  }
+
   /**
    * Initialize predefined agent definitions
    */
   private initializeAgentDefinitions(): void {
     const agents: AgentNode[] = [
       {
-        id: "coordinator",
-        name: "Workflow Coordinator",
-        type: "coordinator",
-        description:
-          "Orchestrates multi-agent workflows and manages task distribution",
-        capabilities: [
-          "workflow_planning",
-          "task_distribution",
-          "result_aggregation",
-        ],
+        id: 'coordinator',
+        name: 'Workflow Coordinator',
+        type: 'coordinator',
+        description: 'Orchestrates multi-agent workflows and manages task distribution',
+        capabilities: ['workflow_planning', 'task_distribution', 'result_aggregation'],
         dependencies: [],
-        status: "idle",
+        status: 'idle',
       },
       {
-        id: "rag_specialist",
-        name: "RAG Specialist",
-        type: "specialist",
-        description:
-          "Handles document retrieval and semantic search operations",
-        capabilities: [
-          "vector_search",
-          "document_retrieval",
-          "context_enhancement",
-        ],
+        id: 'rag_specialist',
+        name: 'RAG Specialist',
+        type: 'specialist',
+        description: 'Handles document retrieval and semantic search operations',
+        capabilities: ['vector_search', 'document_retrieval', 'context_enhancement'],
         dependencies: [],
-        status: "idle",
+        status: 'idle',
       },
       {
-        id: "code_analyst",
-        name: "Code Analysis Agent",
-        type: "specialist",
-        description: "Analyzes code structure, patterns, and quality",
-        capabilities: [
-          "code_analysis",
-          "pattern_detection",
-          "quality_assessment",
-        ],
+        id: 'code_analyst',
+        name: 'Code Analysis Agent',
+        type: 'specialist',
+        description: 'Analyzes code structure, patterns, and quality',
+        capabilities: ['code_analysis', 'pattern_detection', 'quality_assessment'],
         dependencies: [],
-        status: "idle",
+        status: 'idle',
       },
       {
-        id: "best_practices_agent",
-        name: "Best Practices Agent",
-        type: "specialist",
-        description: "Generates and validates best practices recommendations",
-        capabilities: [
-          "best_practices_generation",
-          "standards_validation",
-          "recommendations",
-        ],
-        dependencies: ["rag_specialist", "code_analyst"],
-        status: "idle",
+        id: 'best_practices_agent',
+        name: 'Best Practices Agent',
+        type: 'specialist',
+        description: 'Generates and validates best practices recommendations',
+        capabilities: ['best_practices_generation', 'standards_validation', 'recommendations'],
+        dependencies: ['rag_specialist', 'code_analyst'],
+        status: 'idle',
       },
       {
-        id: "documentation_agent",
-        name: "Documentation Agent",
-        type: "specialist",
-        description: "Creates and maintains documentation",
-        capabilities: ["doc_generation", "doc_validation", "formatting"],
-        dependencies: ["code_analyst"],
-        status: "idle",
+        id: 'documentation_agent',
+        name: 'Documentation Agent',
+        type: 'specialist',
+        description: 'Creates and maintains documentation',
+        capabilities: ['doc_generation', 'doc_validation', 'formatting'],
+        dependencies: ['code_analyst'],
+        status: 'idle',
       },
       {
-        id: "quality_validator",
-        name: "Quality Validator",
-        type: "validator",
-        description: "Validates output quality and consistency",
-        capabilities: [
-          "quality_check",
-          "consistency_validation",
-          "compliance_check",
-        ],
+        id: 'quality_validator',
+        name: 'Quality Validator',
+        type: 'validator',
+        description: 'Validates output quality and consistency',
+        capabilities: ['quality_check', 'consistency_validation', 'compliance_check'],
         dependencies: [],
-        status: "idle",
+        status: 'idle',
       },
       {
-        id: "executor",
-        name: "Code Executor",
-        type: "executor",
-        description: "Executes code changes and file operations",
-        capabilities: [
-          "file_operations",
-          "code_execution",
-          "system_integration",
-        ],
-        dependencies: ["quality_validator"],
-        status: "idle",
+        id: 'executor',
+        name: 'Code Executor',
+        type: 'executor',
+        description: 'Executes code changes and file operations',
+        capabilities: ['file_operations', 'code_execution', 'system_integration'],
+        dependencies: ['quality_validator'],
+        status: 'idle',
       },
     ];
 
@@ -161,15 +147,14 @@ class MultiAgentOrchestrator {
     const workflowId = crypto.randomUUID();
 
     // Select agents based on required capabilities
-    const selectedAgents =
-      this.selectAgentsForCapabilities(requiredCapabilities);
+    const selectedAgents = this.selectAgentsForCapabilities(requiredCapabilities);
 
     const workflow: OrchestratorWorkflow = {
       id: workflowId,
       name,
       description,
       agents: selectedAgents,
-      status: "pending",
+      status: 'pending',
       logs: [`Workflow created: ${name}`],
     };
 
@@ -179,8 +164,8 @@ class MultiAgentOrchestrator {
     await librarySyncService.logAgentCall({
       id: crypto.randomUUID(),
       timestamp: new Date(),
-      agentType: "orchestrator",
-      operation: "create_workflow",
+      agentType: 'orchestrator',
+      operation: 'create_workflow',
       input: { name, description, requiredCapabilities, context },
       output: { workflowId, agentCount: selectedAgents.length },
       duration: 0,
@@ -193,19 +178,16 @@ class MultiAgentOrchestrator {
   /**
    * Execute a workflow
    */
-  async executeWorkflow(
-    workflowId: string,
-    context: WorkflowContext
-  ): Promise<any> {
+  async executeWorkflow(workflowId: string, context: WorkflowContext): Promise<any> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
       throw new Error(`Workflow ${workflowId} not found`);
     }
 
-    workflow.status = "running";
+    workflow.status = 'running';
     workflow.startTime = new Date();
-    workflow.logs.push(<any><any>
-      `Workflow execution started at ${workflow.startTime.toISOString()}`
+    workflow.logs.push(
+      <any>(<any>`Workflow execution started at ${workflow.startTime.toISOString()}`)
     );
 
     const startTime = Date.now();
@@ -219,41 +201,34 @@ class MultiAgentOrchestrator {
         // Execute agents in parallel within each phase
         const phasePromises = phase.map(async (agent) => {
           try {
-            agent.status = "running";
-            workflow.logs.push(<any><any>`Starting agent: ${agent.name}`);
+            agent.status = 'running';
+            workflow.logs.push(<any>(<any>`Starting agent: ${agent.name}`));
 
-            const agentResult = await this.executeAgent(
-              agent,
-              context,
-              results
-            );
+            const agentResult = await this.executeAgent(agent, context, results);
 
             agent.result = agentResult;
-            agent.status = "completed";
+            agent.status = 'completed';
             results[agent.id] = agentResult;
 
-            workflow.logs.push(<any><any>`Completed agent: ${agent.name}`);
+            workflow.logs.push(<any>(<any>`Completed agent: ${agent.name}`));
 
             return agentResult;
-          } catch (error) {
-            agent.error = error.message;
-            agent.status = "failed";
-            workflow.logs.push(<any><any>
-              `Failed agent: ${agent.name} - ${error.message}`
-            );
-            throw error;
+          } catch (err) {
+            const msg = this.extractErrorMessage(err);
+            agent.error = msg;
+            agent.status = 'failed';
+            workflow.logs.push(`Failed agent: ${agent.name} - ${msg}`);
+            throw new Error(msg);
           }
         });
 
         await Promise.all(phasePromises);
       }
 
-      workflow.status = "completed";
+      workflow.status = 'completed';
       workflow.endTime = new Date();
       workflow.result = results;
-      workflow.logs.push(<any><any>
-        `Workflow completed at ${workflow.endTime.toISOString()}`
-      );
+      workflow.logs.push(<any>(<any>`Workflow completed at ${workflow.endTime.toISOString()}`));
 
       const duration = Date.now() - startTime;
 
@@ -261,8 +236,8 @@ class MultiAgentOrchestrator {
       await librarySyncService.logAgentCall({
         id: crypto.randomUUID(),
         timestamp: new Date(),
-        agentType: "orchestrator",
-        operation: "execute_workflow",
+        agentType: 'orchestrator',
+        operation: 'execute_workflow',
         input: { workflowId, context },
         output: { results, agentCount: workflow.agents.length },
         duration,
@@ -271,9 +246,10 @@ class MultiAgentOrchestrator {
 
       return results;
     } catch (error) {
-      workflow.status = "failed";
+      workflow.status = 'failed';
       workflow.endTime = new Date();
-      workflow.logs.push(<any><any>`Workflow failed: ${error.message}`);
+      const msg = this.extractErrorMessage(error);
+      workflow.logs.push(<any>(<any>`Workflow failed: ${msg}`));
 
       const duration = Date.now() - startTime;
 
@@ -281,16 +257,16 @@ class MultiAgentOrchestrator {
       await librarySyncService.logAgentCall({
         id: crypto.randomUUID(),
         timestamp: new Date(),
-        agentType: "orchestrator",
-        operation: "execute_workflow",
+        agentType: 'orchestrator',
+        operation: 'execute_workflow',
         input: { workflowId, context },
-        output: { error: error.message },
+        output: { error: msg },
         duration,
         success: false,
-        error: error.message,
+        error: msg,
       });
 
-      throw error;
+      throw new Error(msg);
     }
   }
 
@@ -308,39 +284,29 @@ class MultiAgentOrchestrator {
       let result: any;
 
       switch (agent.id) {
-        case "coordinator":
+        case 'coordinator':
           result = await this.executeCoordinator(context, previousResults);
           break;
-        case "rag_specialist":
+        case 'rag_specialist':
           result = await this.executeRAGSpecialist(context, previousResults);
           break;
-        case "code_analyst":
+        case 'code_analyst':
           result = await this.executeCodeAnalyst(context, previousResults);
           break;
-        case "best_practices_agent":
-          result = await this.executeBestPracticesAgent(
-            context,
-            previousResults
-          );
+        case 'best_practices_agent':
+          result = await this.executeBestPracticesAgent(context, previousResults);
           break;
-        case "documentation_agent":
-          result = await this.executeDocumentationAgent(
-            context,
-            previousResults
-          );
+        case 'documentation_agent':
+          result = await this.executeDocumentationAgent(context, previousResults);
           break;
-        case "quality_validator":
+        case 'quality_validator':
           result = await this.executeQualityValidator(context, previousResults);
           break;
-        case "executor":
+        case 'executor':
           result = await this.executeCodeExecutor(context, previousResults);
           break;
         default:
-          result = await this.executeCustomAgent(
-            agent,
-            context,
-            previousResults
-          );
+          result = await this.executeCustomAgent(agent, context, previousResults);
       }
 
       const duration = Date.now() - startTime;
@@ -349,7 +315,7 @@ class MultiAgentOrchestrator {
       await librarySyncService.logAgentCall({
         id: crypto.randomUUID(),
         timestamp: new Date(),
-        agentType: "orchestrator",
+        agentType: 'orchestrator',
         operation: `agent_${agent.id}`,
         input: {
           agentId: agent.id,
@@ -366,23 +332,24 @@ class MultiAgentOrchestrator {
       const duration = Date.now() - startTime;
 
       // Log agent failure
+      const errMsg = this.extractErrorMessage(error);
       await librarySyncService.logAgentCall({
         id: crypto.randomUUID(),
         timestamp: new Date(),
-        agentType: "orchestrator",
+        agentType: 'orchestrator',
         operation: `agent_${agent.id}`,
         input: {
           agentId: agent.id,
           context,
           previousResults: Object.keys(previousResults),
         },
-        output: { error: error.message },
+        output: { error: errMsg },
         duration,
         success: false,
-        error: error.message,
+        error: errMsg,
       });
 
-      throw error;
+      throw new Error(errMsg);
     }
   }
 
@@ -394,9 +361,9 @@ class MultiAgentOrchestrator {
     previousResults: Record<string, any>
   ): Promise<any> {
     return {
-      action: "coordinate",
+      action: 'coordinate',
       query: context.originalQuery,
-      plan: "Multi-agent workflow coordination",
+      plan: 'Multi-agent workflow coordination',
       timestamp: new Date().toISOString(),
     };
   }
@@ -409,26 +376,43 @@ class MultiAgentOrchestrator {
     previousResults: Record<string, any>
   ): Promise<any> {
     try {
-      const searchResults = await redisVectorService.search(
-        context.originalQuery,
-        {
+      // Prefer semantic search function. If not available, fall back gracefully.
+      let searchResults: any[] = [];
+      if (typeof (redisVectorService as any).searchSimilar === 'function') {
+        try {
+          // Best-effort: create a query embedding using gemmaEmbeddingService if available
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
+          const { gemmaEmbeddingService } = require('./gemma-embedding-service.js');
+          const queryEmb = await gemmaEmbeddingService.generateEmbedding(context.originalQuery);
+          searchResults = await (redisVectorService as any).searchSimilar(queryEmb, {
+            topK: 10,
+            threshold: 0.7,
+          });
+        } catch (e) {
+          searchResults = [];
+        }
+      } else if (typeof (redisVectorService as any).search === 'function') {
+        searchResults = await (redisVectorService as any).search(context.originalQuery, {
           limit: 10,
           threshold: 0.7,
-        }
-      );
+        });
+      } else {
+        searchResults = [];
+      }
 
       return {
-        action: "rag_search",
+        action: 'rag_search',
         query: context.originalQuery,
         results: searchResults,
-        relevantDocs: searchResults.length,
+        relevantDocs: Array.isArray(searchResults) ? searchResults.length : 0,
         timestamp: new Date().toISOString(),
       };
-    } catch (error) {
+    } catch (err) {
+      const msg = this.extractErrorMessage(err);
       return {
-        action: "rag_search",
+        action: 'rag_search',
         query: context.originalQuery,
-        error: error.message,
+        error: msg,
         results: [],
         timestamp: new Date().toISOString(),
       };
@@ -444,12 +428,12 @@ class MultiAgentOrchestrator {
   ): Promise<any> {
     // This would integrate with actual code analysis tools
     return {
-      action: "code_analysis",
-      analysis: "Code structure and patterns analyzed",
+      action: 'code_analysis',
+      analysis: 'Code structure and patterns analyzed',
       metrics: {
-        complexity: "medium",
-        quality: "good",
-        patterns: ["mvc", "dependency_injection"],
+        complexity: 'medium',
+        quality: 'good',
+        patterns: ['mvc', 'dependency_injection'],
       },
       timestamp: new Date().toISOString(),
     };
@@ -466,20 +450,21 @@ class MultiAgentOrchestrator {
       const ragResults = previousResults.rag_specialist?.results || [];
       const codeAnalysis = previousResults.code_analyst?.analysis;
 
-      const practices = await bestPracticesService.generateBestPractices(
-        context.originalQuery,
-        { ragResults, codeAnalysis }
-      );
+      const practices = await bestPracticesService.generateBestPractices(context.originalQuery, {
+        ragResults,
+        codeAnalysis,
+      });
 
       return {
-        action: "best_practices_generation",
+        action: 'best_practices_generation',
         practices,
         timestamp: new Date().toISOString(),
       };
-    } catch (error) {
+    } catch (err) {
+      const msg = this.extractErrorMessage(err);
       return {
-        action: "best_practices_generation",
-        error: error.message,
+        action: 'best_practices_generation',
+        error: msg,
         practices: [],
         timestamp: new Date().toISOString(),
       };
@@ -494,9 +479,9 @@ class MultiAgentOrchestrator {
     previousResults: Record<string, any>
   ): Promise<any> {
     return {
-      action: "documentation_generation",
-      documentation: "Generated documentation based on analysis",
-      sections: ["overview", "implementation", "best_practices"],
+      action: 'documentation_generation',
+      documentation: 'Generated documentation based on analysis',
+      sections: ['overview', 'implementation', 'best_practices'],
       timestamp: new Date().toISOString(),
     };
   }
@@ -510,13 +495,13 @@ class MultiAgentOrchestrator {
   ): Promise<any> {
     const validationResults = {
       quality_score: 0.85,
-      consistency: "high",
-      compliance: "passed",
+      consistency: 'high',
+      compliance: 'passed',
       issues: [],
     };
 
     return {
-      action: "quality_validation",
+      action: 'quality_validation',
       validation: validationResults,
       timestamp: new Date().toISOString(),
     };
@@ -531,9 +516,9 @@ class MultiAgentOrchestrator {
   ): Promise<any> {
     // This would execute actual code changes
     return {
-      action: "code_execution",
+      action: 'code_execution',
       executed: false,
-      reason: "Simulation mode - no actual changes made",
+      reason: 'Simulation mode - no actual changes made',
       timestamp: new Date().toISOString(),
     };
   }
@@ -564,19 +549,19 @@ result = {
 print(json.dumps(result))
 `;
 
-      const pythonProcess = spawn("python", ["-c", pythonScript]);
-      let output = "";
-      let error = "";
+      const pythonProcess = spawn('python', ['-c', pythonScript]);
+      let output = '';
+      let error = '';
 
-      pythonProcess.stdout.on("data", (data) => {
+      pythonProcess.stdout.on('data', (data) => {
         output += data.toString();
       });
 
-      pythonProcess.stderr.on("data", (data) => {
+      pythonProcess.stderr.on('data', (data) => {
         error += data.toString();
       });
 
-      pythonProcess.on("close", (code) => {
+      pythonProcess.on('close', (code) => {
         if (code === 0) {
           try {
             const result = JSON.parse(output);
@@ -596,7 +581,7 @@ print(json.dumps(result))
       // Timeout after 30 seconds
       setTimeout(() => {
         pythonProcess.kill();
-        reject(new Error("Agent execution timeout"));
+        reject(new Error('Agent execution timeout'));
       }, 30000);
     });
   }
@@ -611,15 +596,15 @@ print(json.dumps(result))
     for (const capability of capabilities) {
       for (const [id, agent] of this.agentDefinitions) {
         if (agent.capabilities.includes(capability) && !addedAgents.has(id)) {
-          selectedAgents.push(<any><any>{ ...agent });
+          selectedAgents.push({ ...agent } as AgentNode);
           addedAgents.add(id);
         }
       }
     }
 
     // Always include coordinator if not already selected
-    if (!addedAgents.has("coordinator")) {
-      selectedAgents.unshift({ ...this.agentDefinitions.get("coordinator")! });
+    if (!addedAgents.has('coordinator')) {
+      selectedAgents.unshift({ ...this.agentDefinitions.get('coordinator')! });
     }
 
     return selectedAgents;
@@ -638,18 +623,16 @@ print(json.dumps(result))
 
       for (const [id, agent] of remaining) {
         // Check if all dependencies are completed
-        const canExecute = agent.dependencies.every((dep) =>
-          completed.has(dep)
-        );
+        const canExecute = agent.dependencies.every((dep) => completed.has(dep));
 
         if (canExecute) {
-          phase.push(<any><any>agent);
+          phase.push(agent);
         }
       }
 
       if (phase.length === 0) {
         // Circular dependency or unresolvable dependencies
-        phase.push(<any><any>...Array.from(remaining.values()));
+        phase.push(...Array.from(remaining.values()));
       }
 
       for (const agent of phase) {
@@ -657,7 +640,7 @@ print(json.dumps(result))
         completed.add(agent.id);
       }
 
-      plan.push(<any><any>phase);
+      plan.push(phase);
     }
 
     return plan;
@@ -683,17 +666,15 @@ print(json.dumps(result))
   async cancelWorkflow(workflowId: string): Promise<void> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow) {
-      workflow.status = "failed";
+      workflow.status = 'failed';
       workflow.endTime = new Date();
-      workflow.logs.push(<any><any>
-        `Workflow cancelled at ${workflow.endTime.toISOString()}`
-      );
+      workflow.logs.push(<any>(<any>`Workflow cancelled at ${workflow.endTime.toISOString()}`));
 
       await librarySyncService.logAgentCall({
         id: crypto.randomUUID(),
         timestamp: new Date(),
-        agentType: "orchestrator",
-        operation: "cancel_workflow",
+        agentType: 'orchestrator',
+        operation: 'cancel_workflow',
         input: { workflowId },
         output: { cancelled: true },
         duration: 0,

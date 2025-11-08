@@ -9,6 +9,6 @@
 <style>
   .ui-card-header {
     padding: 0.75rem 1rem;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   }
 </style>

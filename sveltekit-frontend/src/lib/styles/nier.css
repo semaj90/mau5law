@@ -10,7 +10,7 @@
   --color-success: #98c379;
   --color-warning: #e5c07b;
   --color-info: #61afef;
-  --font-family: "Noto Sans", "Segoe UI", "Arial", sans-serif;
+  --font-family: 'Noto Sans', 'Segoe UI', 'Arial', sans-serif;
 }
 
 body {

@@ -1,7 +1,19 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { onMount } from 'svelte';
-  import { Search, Users, Plus, Eye, Edit, Filter, Grid, List, Trash2, AlertCircle, UserPlus } from 'lucide-svelte';
+  import {
+    Search,
+    Users,
+    Plus,
+    Eye,
+    Edit,
+    Filter,
+    Grid,
+    List,
+    Trash2,
+    AlertCircle,
+    UserPlus,
+  } from 'lucide-svelte';
   import Card from '$lib/components/ui/Card.svelte';
   import Input from '$lib/components/ui/Input.svelte';
 
@@ -10,7 +22,8 @@
   const Select = (SelectModule as any).default ?? (SelectModule as any).Select ?? SelectModule;
 
   import * as TextareaModule from '$lib/components/ui/Textarea.svelte';
-  const Textarea = (TextareaModule as any).default ?? (TextareaModule as any).Textarea ?? TextareaModule;
+  const Textarea =
+    (TextareaModule as any).default ?? (TextareaModule as any).Textarea ?? TextareaModule;
 
   // Add Dialog import (runtime-safe fallback)
   import * as DialogModule from 'bits-ui';
@@ -274,23 +287,23 @@
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
-        poi =>
+        (poi) =>
           poi.name.toLowerCase().includes(query) ||
           poi.notes?.toLowerCase().includes(query) ||
-          poi.aliases?.some(alias => alias.toLowerCase().includes(query))
+          poi.aliases?.some((alias) => alias.toLowerCase().includes(query))
       );
     }
 
     if (statusFilter !== 'all') {
-      filtered = filtered.filter(poi => poi.status === statusFilter);
+      filtered = filtered.filter((poi) => poi.status === statusFilter);
     }
 
     if (priorityFilter !== 'all') {
-      filtered = filtered.filter(poi => poi.priority === priorityFilter);
+      filtered = filtered.filter((poi) => poi.priority === priorityFilter);
     }
 
     if (threatLevelFilter !== 'all') {
-      filtered = filtered.filter(poi => poi.threatLevel === threatLevelFilter);
+      filtered = filtered.filter((poi) => poi.threatLevel === threatLevelFilter);
     }
 
     filteredPois = filtered;
@@ -346,7 +359,11 @@
         <Filter class="w-4 h-4 mr-2" />
         Filters
       </button>
-      <button type="button" class="bits-btn" onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}>
+      <button
+        type="button"
+        class="bits-btn"
+        onclick={() => (viewMode = viewMode === 'grid' ? 'list' : 'grid')}
+      >
         {#if viewMode === 'grid'}
           <List class="w-4 h-4" />
         {:else}
@@ -379,8 +396,9 @@
       <div class="grid md:grid-cols-3 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="status-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >Status</label
+          <label
+            for="status-filter"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label
           >
           <Select
             options={[
@@ -398,8 +416,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="priority-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >Priority</label
+          <label
+            for="priority-filter"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label
           >
           <Select
             options={[
@@ -416,7 +435,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="threat-filter" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          <label
+            for="threat-filter"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >Threat Level</label
           >
           <Select
@@ -473,7 +494,9 @@
         <Card class="p-6 hover:shadow-lg transition-shadow">
           <div class="flex items-start justify-between mb-4">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+              <div
+                class="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center"
+              >
                 <span class="text-blue-600 dark:text-blue-300 font-semibold text-lg">
                   {poi.name.charAt(0).toUpperCase()}
                 </span>
@@ -482,10 +505,17 @@
                 <h3 class="font-semibold text-gray-900 dark:text-white">{poi.name}</h3>
                 <div class="flex gap-1 mt-1">
                   <!-- replaced Badge with span to avoid Svelte typing mismatch -->
-                  <span class={cn(statusColors[poi.status], 'text-xs rounded px-2 py-0.5 font-medium')}>
+                  <span
+                    class={cn(statusColors[poi.status], 'text-xs rounded px-2 py-0.5 font-medium')}
+                  >
                     {poi.status.replace('_', ' ')}
                   </span>
-                  <span class={cn(priorityColors[poi.priority], 'text-xs rounded px-2 py-0.5 font-medium')}>
+                  <span
+                    class={cn(
+                      priorityColors[poi.priority],
+                      'text-xs rounded px-2 py-0.5 font-medium'
+                    )}
+                  >
                     {poi.priority}
                   </span>
                 </div>
@@ -522,10 +552,14 @@
     <!-- List View -->
     <Card class="overflow-hidden">
       {#each Array.isArray(filteredPois) ? filteredPois : [] as poi}
-        <div class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+        <div
+          class="border-b border-gray-200 dark:border-gray-700 p-4 hover:bg-gray-50 dark:hover:bg-gray-700"
+        >
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-4">
-              <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center">
+              <div
+                class="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center"
+              >
                 <span class="text-blue-600 dark:text-blue-300 font-semibold">
                   {poi.name.charAt(0).toUpperCase()}
                 </span>
@@ -559,7 +593,7 @@
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Add New Person of Interest</h2>
     <form
-      onsubmit={e => {
+      onsubmit={(e) => {
         e.preventDefault();
         createPoi();
       }}
@@ -568,7 +602,9 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
+          <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >Name *</label
+          >
           <Input
             id="name"
             value={formData.name}
@@ -579,7 +615,10 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+          <label
+            for="status"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label
+          >
           <Select
             options={[
               { value: 'person_of_interest', label: 'Person of Interest' },
@@ -597,7 +636,10 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label>
+          <label
+            for="priority"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label
+          >
           <Select
             options={[
               { value: 'low', label: 'Low' },
@@ -611,7 +653,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          <label
+            for="threatLevel"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >Threat Level</label
           >
           <Select
@@ -629,7 +673,9 @@
 
       <div>
         <!-- replaced Label component with native label element -->
-        <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+        <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          >Notes</label
+        >
         <Textarea
           id="notes"
           bind:value={formData.notes}
@@ -639,7 +685,9 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <button type="button" class="bits-btn" onclick={() => (showCreateDialog = false)}>Cancel</button>
+        <button type="button" class="bits-btn" onclick={() => (showCreateDialog = false)}
+          >Cancel</button
+        >
         <button type="submit" class="bits-btn" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Creating...' : 'Create POI'}
         </button>
@@ -653,7 +701,7 @@
   <div class="p-6">
     <h2 class="text-lg font-semibold mb-4">Edit Person of Interest</h2>
     <form
-      onsubmit={e => {
+      onsubmit={(e) => {
         e.preventDefault();
         updatePoi();
       }}
@@ -662,7 +710,10 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="edit-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label>
+          <label
+            for="edit-name"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Name *</label
+          >
           <Input
             id="edit-name"
             value={formData.name}
@@ -673,7 +724,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="edit-status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label
+          <label
+            for="edit-status"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label
           >
           <Select
             options={[
@@ -692,8 +745,9 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="edit-priority" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
-            >Priority</label
+          <label
+            for="edit-priority"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priority</label
           >
           <Select
             options={[
@@ -708,7 +762,9 @@
         </div>
         <div>
           <!-- replaced Label component with native label element -->
-          <label for="edit-threatLevel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+          <label
+            for="edit-threatLevel"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
             >Threat Level</label
           >
           <Select
@@ -726,7 +782,10 @@
 
       <div>
         <!-- replaced Label component with native label element -->
-        <label for="edit-notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+        <label
+          for="edit-notes"
+          class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label
+        >
         <Textarea
           id="edit-notes"
           bind:value={formData.notes}
@@ -736,7 +795,9 @@
       </div>
 
       <div class="flex justify-end gap-2">
-        <button type="button" class="bits-btn" onclick={() => (showEditDialog = false)}>Cancel</button>
+        <button type="button" class="bits-btn" onclick={() => (showEditDialog = false)}
+          >Cancel</button
+        >
         <button type="submit" class="bits-btn" disabled={isSubmitting || !formData.name.trim()}>
           {isSubmitting ? 'Updating...' : 'Update POI'}
         </button>

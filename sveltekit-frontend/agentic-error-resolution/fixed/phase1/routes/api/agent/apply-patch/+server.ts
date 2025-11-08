@@ -118,7 +118,10 @@ export const POST: RequestHandler = async ({ request }) => {
     demoPatchStorage.set(patchId, updatedPatch);
 
     // Compute linesChanged from metadata for more accurate demo data
-    const linesChanged = typeof updatedPatch.metadata?.lineChanges === 'number' ? updatedPatch.metadata.lineChanges : 0;
+    const linesChanged =
+      typeof updatedPatch.metadata?.lineChanges === 'number'
+        ? updatedPatch.metadata.lineChanges
+        : 0;
 
     const result = {
       success: true,

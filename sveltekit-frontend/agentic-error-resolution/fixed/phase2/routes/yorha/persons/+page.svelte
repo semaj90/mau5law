@@ -79,14 +79,14 @@
     const q = (searchQuery || '').trim().toLowerCase();
     if (q) {
       filtered = filtered.filter(
-        item =>
+        (item) =>
           (item.name || '').toLowerCase().includes(q) ||
           (item.alias || '').toLowerCase().includes(q) ||
           (item.description || '').toLowerCase().includes(q)
       );
     }
     if (selectedThreatLevel && selectedThreatLevel !== 'all') {
-      filtered = filtered.filter(item => item.threat_level === selectedThreatLevel);
+      filtered = filtered.filter((item) => item.threat_level === selectedThreatLevel);
     }
     return filtered;
   });
@@ -281,11 +281,15 @@
           <span class="stat-label">Total Persons</span>
         </div>
         <div class="stat-item critical">
-          <span class="stat-number">{persons.filter(item => item.threat_level === 'critical').length}</span>
+          <span class="stat-number"
+            >{persons.filter((item) => item.threat_level === 'critical').length}</span
+          >
           <span class="stat-label">Critical</span>
         </div>
         <div class="stat-item high">
-          <span class="stat-number">{persons.filter(item => item.status === 'wanted').length}</span>
+          <span class="stat-number"
+            >{persons.filter((item) => item.status === 'wanted').length}</span
+          >
           <span class="stat-label">Wanted</span>
         </div>
       </div>
@@ -352,7 +356,8 @@
               </div>
               <div class="person-cases">
                 {#each Array.isArray(person.cases) ? person.cases : [] as caseId}
-                  <span class="case-badge px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                  <span
+                    class="case-badge px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                     >{caseId}</span
                   >
                 {/each}
@@ -384,7 +389,9 @@
         <div class="empty-title">No Persons Found</div>
         <!-- fixed missing quote in class attribute -->
         <div class="empty-subtitle">
-          {searchQuery ? 'Try adjusting your search criteria' : 'Add persons of interest to begin tracking'}
+          {searchQuery
+            ? 'Try adjusting your search criteria'
+            : 'Add persons of interest to begin tracking'}
         </div>
       </div>
     {/if}
@@ -399,7 +406,7 @@
     tabindex="0"
     aria-label="Close person modal"
     onclick={() => (showNewPersonModal = false)}
-    onkeydown={e => {
+    onkeydown={(e) => {
       // Close on Enter / Space / Escape for keyboard users
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar' || e.key === 'Escape') {
         showNewPersonModal = false;
@@ -413,14 +420,17 @@
       aria-modal="true"
       aria-labelledby="dialog-title"
       tabindex="-1"
-      onclick={e => e.stopPropagation()}
-      onkeydown={e => e.stopPropagation()}
+      onclick={(e) => e.stopPropagation()}
+      onkeydown={(e) => e.stopPropagation()}
     >
       <header class="dialog-header">
         <!-- ensure the heading has the id referenced by aria-labelledby -->
         <h3 id="dialog-title" class="dialog-title">ADD PERSON OF INTEREST</h3>
-        <button class="close-btn" aria-label="Close" type="button" onclick={() => (showNewPersonModal = false)}
-          >×</button
+        <button
+          class="close-btn"
+          aria-label="Close"
+          type="button"
+          onclick={() => (showNewPersonModal = false)}>×</button
         >
       </header>
 
@@ -428,11 +438,21 @@
         <div class="form-grid">
           <div class="form-field">
             <label class="form-label" for="full-name">FULL NAME</label>
-            <Input id="full-name" placeholder="Enter full name" class="yorha-input" bind:value={newPerson.name} />
+            <Input
+              id="full-name"
+              placeholder="Enter full name"
+              class="yorha-input"
+              bind:value={newPerson.name}
+            />
           </div>
           <div class="form-field">
             <label class="form-label" for="alias">ALIAS / CODENAME</label>
-            <Input id="alias" placeholder="Known alias or codename" class="yorha-input" bind:value={newPerson.alias} />
+            <Input
+              id="alias"
+              placeholder="Known alias or codename"
+              class="yorha-input"
+              bind:value={newPerson.alias}
+            />
           </div>
           <div class="form-field">
             <label class="form-label" for="threat-level">THREAT LEVEL</label>
@@ -454,7 +474,12 @@
           </div>
           <div class="form-field">
             <label class="form-label" for="last-seen">LAST SEEN DATE</label>
-            <Input id="last-seen" type="date" class="yorha-input" bind:value={newPerson.last_seen} />
+            <Input
+              id="last-seen"
+              type="date"
+              class="yorha-input"
+              bind:value={newPerson.last_seen}
+            />
           </div>
           <div class="form-field">
             <label class="form-label" for="location">LAST KNOWN LOCATION</label>

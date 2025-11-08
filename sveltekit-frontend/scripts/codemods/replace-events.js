@@ -70,7 +70,7 @@ async function run() {
   if (!apply) console.log('\nRun with --apply to write changes.');
 }
 
-run().catch(err => {
+run().catch((err) => {
   console.error(err);
   process.exit(1);
 });

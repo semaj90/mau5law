@@ -100,7 +100,9 @@
         <Shield class="w-8 h-8 text-primary" />
         Admin Dashboard
       </h1>
-      <p class="nes-text is-disabled mt-2">Legal AI Platform system administration and monitoring</p>
+      <p class="nes-text is-disabled mt-2">
+        Legal AI Platform system administration and monitoring
+      </p>
     </div>
     <div class="flex items-center gap-3">
       <Badge variant="secondary" class="gap-1">

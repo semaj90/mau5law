@@ -87,17 +87,14 @@ function fixSyntaxErrors(filePath) {
 
 // Find all .svelte and .ts files
 // removed unused srcDir assignment
-const patterns = [
-  'src/**/*.svelte',
-  'src/**/*.ts'
-];
+const patterns = ['src/**/*.svelte', 'src/**/*.ts'];
 
 let totalFixed = 0;
 
-patterns.forEach(pattern => {
+patterns.forEach((pattern) => {
   const files = glob.sync(pattern, { cwd: '.' });
 
-  files.forEach(file => {
+  files.forEach((file) => {
     if (fixSyntaxErrors(file)) {
       totalFixed++;
     }

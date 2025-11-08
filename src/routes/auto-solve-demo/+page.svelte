@@ -37,8 +37,8 @@
   // Derived sources array based on checkbox states
   const sources = $derived(() => {
     const sourceList: string[] = [];
-    if (demoConfig.cornellEnabled) sourceList.push(<any><any>'legal-info-institute');
-    if (demoConfig.justiaEnabled) sourceList.push(<any><any>'justia-legal-resources');
+  if (demoConfig.cornellEnabled) sourceList.push('legal-info-institute');
+  if (demoConfig.justiaEnabled) sourceList.push('justia-legal-resources');
     return sourceList;
   });
 

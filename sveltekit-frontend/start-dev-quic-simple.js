@@ -15,14 +15,14 @@ console.log('🌐 Starting Caddy QUIC proxy...');
 const caddy = spawn('npm', ['run', 'caddy:start'], {
   cwd: __dirname,
   stdio: 'inherit',
-  shell: true
+  shell: true,
 });
 
 caddy.on('close', (code) => {
   if (code === 0) {
     console.log('✅ Caddy started successfully');
     console.log('🌐 QUIC: http://localhost:5178/agent-demo');
-    
+
     // Start Vite dev server
     console.log('🔷 Starting Vite development server...');
     const vite = spawn('npx', ['vite', 'dev', '--host', '0.0.0.0'], {
@@ -36,8 +36,8 @@ caddy.on('close', (code) => {
         ENABLE_GPU: 'true',
         RTX_3060_OPTIMIZATION: 'true',
         CONTEXT7_MULTICORE: 'true',
-        OLLAMA_GPU_LAYERS: '30'
-      }
+        OLLAMA_GPU_LAYERS: '30',
+      },
     });
 
     vite.on('close', (code) => {

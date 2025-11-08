@@ -171,8 +171,12 @@ https://svelte.dev/e/js_parse_error -->
   <!-- Main Analysis Card -->
   <div class="w-full nes-container">
     <div class="yorha-panel-header">
-      <h3 class="nes-text is-primary flex items-center gap-2">📄 Evidence Upload & Configuration</h3>
-      <p class="nes-text">Configure your evidence analysis parameters and upload documents for processing</p>
+      <h3 class="nes-text is-primary flex items-center gap-2">
+        📄 Evidence Upload & Configuration
+      </h3>
+      <p class="nes-text">
+        Configure your evidence analysis parameters and upload documents for processing
+      </p>
     </div>
     <div class="yorha-panel-content space-y-6">
       <!-- Form Configuration -->
@@ -180,7 +184,13 @@ https://svelte.dev/e/js_parse_error -->
         <!-- Case ID -->
         <div class="space-y-2">
           <Label for_="caseId">Case ID *</Label>
-          <Input id="caseId" bind:value={caseId} placeholder="CASE-2024-001" disabled={analyzing} class="font-mono" />
+          <Input
+            id="caseId"
+            bind:value={caseId}
+            placeholder="CASE-2024-001"
+            disabled={analyzing}
+            class="font-mono"
+          />
         </div>
         <!-- Evidence Type -->
         <div class="space-y-2">
@@ -254,19 +264,25 @@ https://svelte.dev/e/js_parse_error -->
     <CardFooter class="flex justify-between">
       <div class="flex items-center gap-2">
         {#if priority !== 'low'}
-          <Badge class={priorityOptions.find(p => p.value === priority)?.color}>
-            {priorityOptions.find(p => p.value === priority)?.label}
+          <Badge class={priorityOptions.find((p) => p.value === priority)?.color}>
+            {priorityOptions.find((p) => p.value === priority)?.label}
           </Badge>
         {/if}
         {#if evidenceType !== 'other'}
           <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
-            >{evidenceTypes.find(t => t.value === evidenceType)?.label}</span
+            >{evidenceTypes.find((t) => t.value === evidenceType)?.label}</span
           >
         {/if}
       </div>
       <div class="flex gap-2">
-        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}>Reset</Button>
-        <Button class="bits-btn" onclick={startAnalysis} disabled={analyzing || !caseId || !evidenceContent}>
+        <Button class="bits-btn" variant="ghost" onclick={resetForm} disabled={analyzing}
+          >Reset</Button
+        >
+        <Button
+          class="bits-btn"
+          onclick={startAnalysis}
+          disabled={analyzing || !caseId || !evidenceContent}
+        >
           {analyzing ? 'Analyzing...' : 'Start Analysis'}
         </Button>
       </div>
@@ -306,13 +322,19 @@ https://svelte.dev/e/js_parse_error -->
             {@const isActive = currentStep === i}
             {@const isCompleted = step.status === 'completed'}
             {@const isProcessing = step.status === 'processing'}
-            <div class="transition-all duration-300 {isActive ? 'ring-2 ring-primary shadow-md' : ''} nes-container">
+            <div
+              class="transition-all duration-300 {isActive
+                ? 'ring-2 ring-primary shadow-md'
+                : ''} nes-container"
+            >
               <div class="yorha-panel-content p-4">
                 <div class="flex items-center gap-4">
                   <!-- Status Icon -->
                   <div class="flex-shrink-0">
                     {#if isCompleted}
-                      <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center">
+                      <div
+                        class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center"
+                      >
                         ✓
                       </div>
                     {:else if isProcessing}
@@ -322,7 +344,9 @@ https://svelte.dev/e/js_parse_error -->
                         {step.icon}
                       </div>
                     {:else}
-                      <div class="w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center">
+                      <div
+                        class="w-10 h-10 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center"
+                      >
                         {step.icon}
                       </div>
                     {/if}
@@ -334,13 +358,17 @@ https://svelte.dev/e/js_parse_error -->
                         {step.name}
                       </h3>
                       {#if isProcessing}
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        <span
+                          class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                           >Processing</span
                         >
                       {:else if isCompleted}
                         <Badge class="bg-green-100 text-green-800">Completed</Badge>
                       {:else}
-                        <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">Pending</span>
+                        <span
+                          class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                          >Pending</span
+                        >
                       {/if}
                     </div>
                     <p class="text-sm nes-text is-disabled">
@@ -370,15 +398,16 @@ https://svelte.dev/e/js_parse_error -->
       <DialogContent class="max-w-4xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Analysis Results - {caseId}</DialogTitle>
-          <DialogDescription>Multi-agent pipeline analysis completed successfully</DialogDescription>
+          <DialogDescription>Multi-agent pipeline analysis completed successfully</DialogDescription
+          >
         </DialogHeader>
         <div class="space-y-4">
           {#each Object.entries(results.outputs) as [key, data]}
             <div class="nes-container">
               <div class="yorha-panel-header">
                 <h3 class="nes-text is-primary text-lg">
-                  {steps.find(s => s.key === key)?.icon || '📄'}
-                  {key.replace.replace(/\b\w/g, l => l.toUpperCase())}
+                  {steps.find((s) => s.key === key)?.icon || '📄'}
+                  {key.replace.replace(/\b\w/g, (l) => l.toUpperCase())}
                 </h3>
               </div>
               <div class="yorha-panel-content">
@@ -400,8 +429,12 @@ https://svelte.dev/e/js_parse_error -->
           {/each}
         </div>
         <DialogFooter>
-          <Button class="bits-btn" variant="ghost" onclick={() => (showResults = false)}>Close</Button>
-          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}>View Case Details</Button>
+          <Button class="bits-btn" variant="ghost" onclick={() => (showResults = false)}
+            >Close</Button
+          >
+          <Button class="bits-btn" onclick={() => goto(`/cases/${caseId}`)}
+            >View Case Details</Button
+          >
         </DialogFooter>
       </DialogContent>
     </Dialog>

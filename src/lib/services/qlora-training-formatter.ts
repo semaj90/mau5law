@@ -167,7 +167,7 @@ export class QLoRATrainingFormatter {
 
     for (const doc of documents) {
       const docExamples = await this.createExamplesFromDocument(doc);
-      examples.push(<any><any>...docExamples);
+      examples.push(...docExamples);
     }
 
     return examples;
@@ -185,7 +185,7 @@ export class QLoRATrainingFormatter {
       try {
         const example = await this.createExample(doc, template);
         if (example) {
-          examples.push(<any><any>example);
+          examples.push(example as QLoRATrainingExample);
         }
       } catch (error) {
         console.warn(`Failed to create example for document ${doc.id}:`, error);
@@ -286,16 +286,16 @@ export class QLoRATrainingFormatter {
     if (augmentationConfig.enable_context_injection) {
       const contextVariations = examples
         .slice(0, Math.floor(examples.length * 0.2))
-        .map(example => this.injectContext(example));
-      augmented.push(<any><any>...contextVariations);
+        .map((example) => this.injectContext(example));
+      augmented.push(...contextVariations);
     }
 
     // Paraphrasing (simplified version)
     if (augmentationConfig.enable_paraphrasing) {
       const paraphrased = examples
         .slice(0, Math.floor(examples.length * 0.1))
-        .map(example => this.paraphraseExample(example));
-      augmented.push(<any><any>...paraphrased);
+        .map((example) => this.paraphraseExample(example));
+      augmented.push(...paraphrased);
     }
 
     return augmented;

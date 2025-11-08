@@ -129,7 +129,12 @@
   // User Activity Timeline State
   let userActivityTimeline = $state<UserActivity[]>([]);
   let activityLoading = $state(false);
-  let focusMetrics = $state<FocusMetrics>({ sessionsToday: 0, totalTime: 0, casesAnalyzed: 0, evidenceReviewed: 0 });
+  let focusMetrics = $state<FocusMetrics>({
+    sessionsToday: 0,
+    totalTime: 0,
+    casesAnalyzed: 0,
+    evidenceReviewed: 0,
+  });
 
   async function checkSystemStatus(): Promise<void> {
     try {
@@ -235,10 +240,10 @@
               // gather all: 'data:' lines for this packet (handles multi-line data)
               const dataLines = packet
                 .split(/\r?\n/)
-                .map(l => l.trim())
+                .map((l) => l.trim())
                 .filter(Boolean)
-                .filter(l => l.startsWith('data:'))
-                .map(l => l.replace(/^data:\s*/, ''))
+                .filter((l) => l.startsWith('data:'))
+                .map((l) => l.replace(/^data:\s*/, ''))
                 .join('\n');
 
               if (!dataLines) continue;
@@ -365,7 +370,8 @@
           title: 'Mock Police Report - Employment Dispute',
           type: 'police_report',
           date: '2024-01-15',
-          content: 'Mock evidence: Initial incident report regarding workplace harassment allegations.',
+          content:
+            'Mock evidence: Initial incident report regarding workplace harassment allegations.',
           confidence: 0.85,
         },
         {
@@ -465,7 +471,9 @@
   <div class="max-w-6xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+      <h1
+        class="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2"
+      >
         Legal AI Assistant
       </h1>
       <p class="text-gray-600">Enhanced RAG with PostgreSQL Vector Search & Real-time Chat</p>
@@ -578,7 +586,12 @@
           <CardContent class="flex-1 overflow-y-auto space-y-4 mb-4 min-h-0 border rounded-lg p-4">
             {#if messages.length === 0}
               <div class="text-center text-gray-500 mt-20">
-                <svg class="w-12 h-12 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-12 h-12 mx-auto mb-4 text-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -602,7 +615,10 @@
                       {message.content}
                     </div>
                     <div
-                      class={cn('text-xs mt-1 opacity-70', message.role === 'user' ? 'text-blue-100' : 'text-gray-500')}
+                      class={cn(
+                        'text-xs mt-1 opacity-70',
+                        message.role === 'user' ? 'text-blue-100' : 'text-gray-500'
+                      )}
                     >
                       {message.timestamp.toLocaleTimeString()}
                     </div>
@@ -634,7 +650,12 @@
                 aria-label="Send message"
               >
                 {#if isStreaming}
-                  <svg class="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-4 h-4 animate-spin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -655,7 +676,11 @@
           <Card class="mt-6 p-6 nes-container">
             <CardHeader class="mb-4 flex justify-between items-center">
               <CardTitle class="text-xl font-semibold flex items-center gap-2">
-                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                <svg
+                  class="w-6 h-6 text-purple-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                   ><path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -672,13 +697,20 @@
                 aria-label="Close timeline"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
                 </svg>
               </Button>
             </CardHeader>
             <CardContent class="space-y-4">
               {#each Array.isArray(poiTimelineData) ? poiTimelineData : [] as poi}
-                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div
+                  class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
                   <div class="flex justify-between items-start mb-3">
                     <div>
                       <h3 class="font-semibold text-lg">{poi.name}</h3>
@@ -749,7 +781,12 @@
           <Card class="mt-6 p-6 nes-container">
             <CardHeader>
               <CardTitle class="text-xl font-semibold mb-4 flex items-center gap-2">
-                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  class="w-6 h-6 text-blue-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -792,7 +829,9 @@
             </CardHeader>
             <CardContent>
               <div class="space-y-2">
-                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"> Gemma3-Legal </span>
+                <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700">
+                  Gemma3-Legal
+                </span>
                 <p class="text-xs text-gray-500">
                   Specialized legal language model with contract analysis capabilities
                 </p>
@@ -808,26 +847,66 @@
             <CardContent>
               <div class="space-y-3">
                 <div class="flex items-center gap-2 text-sm">
-                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  <svg
+                    class="w-4 h-4 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
                   Vector Search (pgvector)
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  <svg
+                    class="w-4 h-4 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
                   Real-time Streaming
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  <svg
+                    class="w-4 h-4 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
                   Enhanced RAG
                 </div>
                 <div class="flex items-center gap-2 text-sm">
-                  <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  <svg
+                    class="w-4 h-4 text-green-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M5 13l4 4L19 7"
+                    ></path>
                   </svg>
                   PostgreSQL Integration
                 </div>
@@ -883,7 +962,12 @@
                 aria-label="Analyze evidence"
               >
                 {#if timelineLoading}
-                  <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-4 h-4 mr-2 animate-spin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -912,7 +996,12 @@
                 aria-label="Generate user activity timeline"
               >
                 {#if activityLoading}
-                  <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-4 h-4 mr-2 animate-spin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -974,7 +1063,12 @@
       <div class="flex justify-between items-start mb-6">
         <div>
           <h2 class="text-2xl font-bold text-nier-text-primary flex items-center gap-2">
-            <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="w-6 h-6 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -995,9 +1089,20 @@
             {/if}
           </div>
         </div>
-        <Button variant="secondary" size="sm" onclick={closePOIDetails} class="bits-btn" aria-label="Close">
+        <Button
+          variant="secondary"
+          size="sm"
+          onclick={closePOIDetails}
+          class="bits-btn"
+          aria-label="Close"
+        >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
           </svg>
         </Button>
       </div>
@@ -1006,7 +1111,11 @@
         <!-- Activity Timeline -->
         <div>
           <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            <svg
+              class="w-5 h-5 text-purple-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
               ><path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -1022,7 +1131,9 @@
                 <div class="absolute -left-[21px] top-1.5 w-2 h-2 bg-purple-500 rounded-full"></div>
                 <div class="font-medium">{activity.description || activity.type}</div>
                 {#if activity.timestamp}
-                  <div class="text-sm text-gray-500">{new Date(activity.timestamp).toLocaleString()}</div>
+                  <div class="text-sm text-gray-500">
+                    {new Date(activity.timestamp).toLocaleString()}
+                  </div>
                 {/if}
               </div>
             {/each}
@@ -1035,7 +1146,12 @@
         <!-- Evidence Sources -->
         <div>
           <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              class="w-5 h-5 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
@@ -1074,7 +1190,12 @@
         {#if selectedPOI.relationships && selectedPOI.relationships.length > 0}
           <div>
             <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
-              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                class="w-5 h-5 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -1098,7 +1219,9 @@
 
       <!-- Modal Footer -->
       <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
-        <Button variant="secondary" onclick={closePOIDetails} class="bits-btn" aria-label="Close">Close</Button>
+        <Button variant="secondary" onclick={closePOIDetails} class="bits-btn" aria-label="Close"
+          >Close</Button
+        >
         <Button
           onclick={() => {
             handleQuickQuery(`Tell me more about ${selectedPOI.name} based on the evidence`);

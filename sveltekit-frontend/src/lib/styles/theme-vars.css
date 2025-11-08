@@ -12,7 +12,8 @@
   --color-nier-border-muted: #606060;
   --color-nier-accent-warm: #ffd700;
   /* Precomputed rgba fallback for subtle overlays */
-  --color-nier-accent-warm-rgba: 255, 215, 0; /* use in rgba(var(--color-nier-accent-warm-rgba), 0.18) */
+  --color-nier-accent-warm-rgba:
+    255, 215, 0; /* use in rgba(var(--color-nier-accent-warm-rgba), 0.18) */
   --color-nier-accent-cool: #87ceeb;
   --color-nier-shadow: rgba(224, 224, 224, 0.15);
   --color-nier-overlay: rgba(224, 224, 224, 0.08);
@@ -23,5 +24,9 @@
 }
 
 /* Utility: fallback variables for older components */
-.nier-accent-warm { color: var(--color-nier-accent-warm); }
-.nier-bg-secondary { background: var(--color-nier-bg-secondary); }
+.nier-accent-warm {
+  color: var(--color-nier-accent-warm);
+}
+.nier-bg-secondary {
+  background: var(--color-nier-bg-secondary);
+}

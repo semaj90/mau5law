@@ -293,7 +293,9 @@ Features:
                     <Upload class="w-12 h-12 mx-auto text-gray-400 mb-4" />
                     <p class="text-lg font-medium">Upload Evidence Files</p>
                     <p class="text-gray-500">Drag & drop or click to browse</p>
-                    <p class="text-sm text-gray-400 mt-2">Supports: PDF, DOC, TXT, Images, Audio, Video</p>
+                    <p class="text-sm text-gray-400 mt-2">
+                      Supports: PDF, DOC, TXT, Images, Audio, Video
+                    </p>
                   </label>
                 </div>
 
@@ -306,7 +308,9 @@ Features:
                         <div class="flex items-center">
                           <FileText class="w-4 h-4 mr-2 text-gray-400" />
                           <span class="font-medium">{file.filename}</span>
-                          <span class="text-sm text-gray-500 ml-2">({(file.size / 1024).toFixed(1)} KB)</span>
+                          <span class="text-sm text-gray-500 ml-2"
+                            >({(file.size / 1024).toFixed(1)} KB)</span
+                          >
                         </div>
                         <div class="flex items-center">
                           {#if file.analyzed}
@@ -340,22 +344,38 @@ Features:
             <Card.Content class="space-y-4">
               <div class="space-y-3">
                 <label class="flex items-center">
-                  <input type="checkbox" bind:checked={analysisOptions.enableCrossDocumentAnalysis} class="mr-2" />
+                  <input
+                    type="checkbox"
+                    bind:checked={analysisOptions.enableCrossDocumentAnalysis}
+                    class="mr-2"
+                  />
                   <span class="text-sm">Cross-document analysis</span>
                 </label>
 
                 <label class="flex items-center">
-                  <input type="checkbox" bind:checked={analysisOptions.extractTimelines} class="mr-2" />
+                  <input
+                    type="checkbox"
+                    bind:checked={analysisOptions.extractTimelines}
+                    class="mr-2"
+                  />
                   <span class="text-sm">Timeline extraction</span>
                 </label>
 
                 <label class="flex items-center">
-                  <input type="checkbox" bind:checked={analysisOptions.detectRelationships} class="mr-2" />
+                  <input
+                    type="checkbox"
+                    bind:checked={analysisOptions.detectRelationships}
+                    class="mr-2"
+                  />
                   <span class="text-sm">Relationship detection</span>
                 </label>
 
                 <label class="flex items-center">
-                  <input type="checkbox" bind:checked={analysisOptions.parallelProcessing} class="mr-2" />
+                  <input
+                    type="checkbox"
+                    bind:checked={analysisOptions.parallelProcessing}
+                    class="mr-2"
+                  />
                   <span class="text-sm">Parallel processing</span>
                 </label>
               </div>
@@ -399,7 +419,11 @@ Features:
                 </div>
               {/if}
 
-              <Button onclick={startBatchAnalysis} disabled={isAnalyzing || uploadedFiles.length === 0} class="w-full">
+              <Button
+                onclick={startBatchAnalysis}
+                disabled={isAnalyzing || uploadedFiles.length === 0}
+                class="w-full"
+              >
                 {#if isAnalyzing}
                   <div class="flex items-center">
                     <div
@@ -443,7 +467,8 @@ Features:
             <Card>
               <Card.Content class="p-4">
                 <div class="text-2xl font-bold text-orange-600">
-                  {batchAnalysisResults.cross_document_analysis?.correlation_analysis.common_entities.length || 0}
+                  {batchAnalysisResults.cross_document_analysis?.correlation_analysis
+                    .common_entities.length || 0}
                 </div>
                 <div class="text-sm text-gray-600">Correlations</div>
               </Card.Content>
@@ -483,13 +508,22 @@ Features:
                     {#if result.success && result.analysis}
                       <div class="text-sm space-y-2">
                         <p><strong>Summary:</strong> {result.analysis.summary}</p>
-                        <p><strong>Confidence:</strong> {(result.analysis.confidence * 100).toFixed(1)}%</p>
+                        <p>
+                          <strong>Confidence:</strong>
+                          {(result.analysis.confidence * 100).toFixed(1)}%
+                        </p>
                         <p><strong>Document Type:</strong> {result.analysis.document_type}</p>
                         {#if result.analysis.key_entities.length > 0}
-                          <p><strong>Key Entities:</strong> {result.analysis.key_entities.join(', ')}</p>
+                          <p>
+                            <strong>Key Entities:</strong>
+                            {result.analysis.key_entities.join(', ')}
+                          </p>
                         {/if}
                         {#if result.analysis.legal_issues.length > 0}
-                          <p><strong>Legal Issues:</strong> {result.analysis.legal_issues.join(', ')}</p>
+                          <p>
+                            <strong>Legal Issues:</strong>
+                            {result.analysis.legal_issues.join(', ')}
+                          </p>
                         {/if}
                       </div>
                     {:else}
@@ -570,9 +604,14 @@ Features:
                 <div class="text-sm text-blue-800">
                   <p>Total Events: {timelineData.events.length}</p>
                   <p>
-                    Date Range: {timelineData.summary.date_range.earliest} to {timelineData.summary.date_range.latest}
+                    Date Range: {timelineData.summary.date_range.earliest} to {timelineData.summary
+                      .date_range.latest}
                   </p>
-                  <p>Confidence: {(timelineData.summary.confidence.overall_confidence * 100).toFixed(1)}%</p>
+                  <p>
+                    Confidence: {(timelineData.summary.confidence.overall_confidence * 100).toFixed(
+                      1
+                    )}%
+                  </p>
                 </div>
               </div>
 
@@ -611,7 +650,9 @@ Features:
           <Clock class="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h3 class="text-lg font-medium text-gray-900 mb-2">No Timeline Data</h3>
           <p class="text-gray-500 mb-4">Timeline extraction requires completed analysis.</p>
-          <Button onclick={extractUnifiedTimeline} disabled={!batchAnalysisResults}>Extract Timeline</Button>
+          <Button onclick={extractUnifiedTimeline} disabled={!batchAnalysisResults}
+            >Extract Timeline</Button
+          >
         </div>
       {/if}
     {:else if currentTab === 'citations'}

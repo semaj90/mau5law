@@ -9,7 +9,7 @@ import {
   getServiceDiscovery,
   initializeCommonServices,
   COMMON_SERVICES,
-  ServiceDiscoveryResult
+  ServiceDiscoveryResult,
 } from '../src/lib/server/helpers/service-discovery';
 
 async function main() {
@@ -47,7 +47,7 @@ async function main() {
         Service: name,
         URL: result.url,
         Source: result.source.toUpperCase(),
-        Verified: result.verified ? '✅' : result.verified === false ? '❌' : '⊘'
+        Verified: result.verified ? '✅' : result.verified === false ? '❌' : '⊘',
       }));
 
       console.table(tableData);
@@ -57,10 +57,8 @@ async function main() {
       console.log('═'.repeat(60));
       const sources = {
         env: Object.values(results).filter((r) => r.source === 'env').length,
-        discovery: Object.values(results).filter((r) => r.source === 'discovery')
-          .length,
-        fallback: Object.values(results).filter((r) => r.source === 'fallback')
-          .length
+        discovery: Object.values(results).filter((r) => r.source === 'discovery').length,
+        fallback: Object.values(results).filter((r) => r.source === 'fallback').length,
       };
       console.log(`Configured via ENV: ${sources.env}`);
       console.log(`Discovered via Docker: ${sources.discovery}`);
@@ -87,15 +85,9 @@ async function main() {
 
     console.log('\n✅ Service discovery complete!');
     console.log('\nUsage Tips:');
-    console.log(
-      '  • Enable Docker discovery: DEV_DOCKER_DISCOVERY=true npm run dev'
-    );
-    console.log(
-      '  • Verify specific service: node scripts/discover-services.ts minio'
-    );
-    console.log(
-      '  • Set env var to override: MINIO_ENDPOINT=http://custom:9000'
-    );
+    console.log('  • Enable Docker discovery: DEV_DOCKER_DISCOVERY=true npm run dev');
+    console.log('  • Verify specific service: node scripts/discover-services.ts minio');
+    console.log('  • Set env var to override: MINIO_ENDPOINT=http://custom:9000');
   } catch (error) {
     console.error('❌ Service discovery failed:');
     console.error(error);

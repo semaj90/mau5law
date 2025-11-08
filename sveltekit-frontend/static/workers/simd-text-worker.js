@@ -456,7 +456,7 @@ function encodeWordFrequency(segment) {
   const words = segment.text.split(/\s+/);
   const wordFreq = {};
 
-  words.forEach(word => {
+  words.forEach((word) => {
     const clean = word.toLowerCase().replace(/[^\w]/g, '');
     wordFreq[clean] = (wordFreq[clean] || 0) + 1;
   });
@@ -483,7 +483,9 @@ function calculateSemanticDensity(text) {
   const meaningfulWords = text
     .split(/\s+/)
     .filter(
-      word => word.length > 3 && !/^(the|and|but|for|are|with|they|have|this|that|will|you|not|all|can)$/i.test(word)
+      (word) =>
+        word.length > 3 &&
+        !/^(the|and|but|for|are|with|they|have|this|that|will|you|not|all|can)$/i.test(word)
     );
 
   return Math.min(meaningfulWords.length / text.split(/\s+/).length, 1);
@@ -607,7 +609,7 @@ function calculateSemanticPreservation(segments, tiles) {
     if (tiles[index]) {
       const originalCategories = categorizeContent(segment.text);
       const preservedCategories = tiles[index].tileMetadata.categories;
-      const overlap = originalCategories.filter(cat => preservedCategories.includes(cat)).length;
+      const overlap = originalCategories.filter((cat) => preservedCategories.includes(cat)).length;
       preservationScore += overlap / originalCategories.length;
     }
   });
@@ -622,7 +624,8 @@ function updateSIMDStats(totalTime, compressionTime, uiTime, compressionRatio) {
 
   // Rolling average for compression ratio
   simdStats.averageCompressionRatio =
-    (simdStats.averageCompressionRatio * (simdStats.totalProcessed - 1) + compressionRatio) / simdStats.totalProcessed;
+    (simdStats.averageCompressionRatio * (simdStats.totalProcessed - 1) + compressionRatio) /
+    simdStats.totalProcessed;
 }
 
 // Additional message handlers
@@ -678,7 +681,7 @@ async function handleBatchSIMDProcessing(payload, messageId) {
         const tempId = `batch-${i}-${Date.now()}`;
 
         // Set up temporary message handler
-        const handleBatchItem = event => {
+        const handleBatchItem = (event) => {
           if (event.data.id === tempId) {
             self.removeEventListener('message', handleBatchItem); // Remove listener once handled
             if (event.data.type === 'simd_result') {
@@ -731,7 +734,7 @@ async function handleBatchSIMDProcessing(payload, messageId) {
         totalTime: batchTime,
         itemsProcessed: results.length,
         avgTimePerItem: batchTime / results.length,
-        successRate: results.filter(r => !r.error).length / results.length,
+        successRate: results.filter((r) => !r.error).length / results.length,
       },
     },
     id: messageId,

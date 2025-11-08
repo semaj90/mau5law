@@ -153,14 +153,20 @@
                   .total_pieces})</span
               >
               <Progress
-                value={(analysisData.evidenceAnalysis.processed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                value={(analysisData.evidenceAnalysis.processed /
+                  analysisData.evidenceAnalysis.total_pieces) *
+                  100}
                 class="progress-bar"
               />
             </div>
             <div class="progress-item">
-              <span class="progress-label">AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span>
+              <span class="progress-label"
+                >AI Analyzed ({analysisData.evidenceAnalysis.ai_analyzed})</span
+              >
               <Progress
-                value={(analysisData.evidenceAnalysis.ai_analyzed / analysisData.evidenceAnalysis.total_pieces) * 100}
+                value={(analysisData.evidenceAnalysis.ai_analyzed /
+                  analysisData.evidenceAnalysis.total_pieces) *
+                  100}
                 class="progress-bar"
               />
             </div>
@@ -213,17 +219,28 @@
               <div class="performance-item">
                 <div class="performance-label">Accuracy</div>
                 <div class="performance-value">{analysisData.aiPerformance.accuracy}%</div>
-                <Progress value={analysisData.aiPerformance.accuracy} class="performance-progress" />
+                <Progress
+                  value={analysisData.aiPerformance.accuracy}
+                  class="performance-progress"
+                />
               </div>
               <div class="performance-item">
                 <div class="performance-label">Processing Speed</div>
-                <div class="performance-value">{analysisData.aiPerformance.processing_speed}s avg</div>
-                <Progress value={100 - analysisData.aiPerformance.processing_speed * 20} class="performance-progress" />
+                <div class="performance-value">
+                  {analysisData.aiPerformance.processing_speed}s avg
+                </div>
+                <Progress
+                  value={100 - analysisData.aiPerformance.processing_speed * 20}
+                  class="performance-progress"
+                />
               </div>
               <div class="performance-item">
                 <div class="performance-label">Confidence Score</div>
                 <div class="performance-value">{analysisData.aiPerformance.confidence}%</div>
-                <Progress value={analysisData.aiPerformance.confidence} class="performance-progress" />
+                <Progress
+                  value={analysisData.aiPerformance.confidence}
+                  class="performance-progress"
+                />
               </div>
             </div>
             <div class="performance-footer">
@@ -249,19 +266,26 @@
                       <div class="analysis-basic-info">
                         <span class="analysis-id">{analysis.id}</span>
                         <span class="analysis-case">{analysis.case_id}</span>
-                        <span class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
+                        <span
+                          class="px-2 py-1 rounded text-xs font-medium border border-gray-300 text-gray-700"
                           >{analysis.type}</span
                         >
                       </div>
                       <div class="analysis-status">
                         {#if analysis.status === 'completed'}
-                          <span class="px-2 py-1 rounded text-xs font-medium bg-green-600 text-white">COMPLETED</span>
+                          <span
+                            class="px-2 py-1 rounded text-xs font-medium bg-green-600 text-white"
+                            >COMPLETED</span
+                          >
                           <span class="confidence-score">{analysis.confidence}% confidence</span>
                         {:else if analysis.status === 'processing'}
-                          <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600 text-white">PROCESSING</span>
+                          <span class="px-2 py-1 rounded text-xs font-medium bg-blue-600 text-white"
+                            >PROCESSING</span
+                          >
                           <Activity class="w-4 h-4 animate-pulse" />
                         {:else}
-                          <span class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
+                          <span
+                            class="px-2 py-1 rounded text-xs font-medium bg-gray-200 text-gray-700"
                             >{analysis.status.toUpperCase()}</span
                           >
                         {/if}
@@ -273,7 +297,8 @@
                     <div class="analysis-footer">
                       <span class="analysis-timestamp">{analysis.timestamp}</span>
                       <div class="bits-btn">
-                        <ButtonComponent size="sm" variant="secondary">View Details</ButtonComponent>
+                        <ButtonComponent size="sm" variant="secondary">View Details</ButtonComponent
+                        >
                       </div>
                     </div>
                   </div>

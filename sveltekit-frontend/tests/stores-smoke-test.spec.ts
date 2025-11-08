@@ -4,7 +4,7 @@ test.describe('Store Consolidation Smoke Tests', () => {
   test('auth store loads without errors', async ({ page }) => {
     // Listen for console errors
     const errors: string[] = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
@@ -15,10 +15,8 @@ test.describe('Store Consolidation Smoke Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for import errors related to auth stores
-    const importErrors = errors.filter(e =>
-      e.includes('auth') ||
-      e.includes('authStore') ||
-      e.includes('Cannot find module')
+    const importErrors = errors.filter(
+      (e) => e.includes('auth') || e.includes('authStore') || e.includes('Cannot find module')
     );
 
     expect(importErrors).toHaveLength(0);
@@ -26,7 +24,7 @@ test.describe('Store Consolidation Smoke Tests', () => {
 
   test('AI assistant store loads without errors', async ({ page }) => {
     const errors: string[] = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
@@ -37,9 +35,8 @@ test.describe('Store Consolidation Smoke Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for import errors related to AI stores
-    const importErrors = errors.filter(e =>
-      e.includes('ai-assistant') ||
-      e.includes('Cannot find module')
+    const importErrors = errors.filter(
+      (e) => e.includes('ai-assistant') || e.includes('Cannot find module')
     );
 
     expect(importErrors).toHaveLength(0);
@@ -47,7 +44,7 @@ test.describe('Store Consolidation Smoke Tests', () => {
 
   test('chat store loads without errors', async ({ page }) => {
     const errors: string[] = [];
-    page.on('console', msg => {
+    page.on('console', (msg) => {
       if (msg.type() === 'error') {
         errors.push(msg.text());
       }
@@ -58,10 +55,8 @@ test.describe('Store Consolidation Smoke Tests', () => {
     await page.waitForLoadState('networkidle');
 
     // Check for import errors related to chat stores
-    const importErrors = errors.filter(e =>
-      e.includes('chat') ||
-      e.includes('chatStore') ||
-      e.includes('Cannot find module')
+    const importErrors = errors.filter(
+      (e) => e.includes('chat') || e.includes('chatStore') || e.includes('Cannot find module')
     );
 
     expect(importErrors).toHaveLength(0);

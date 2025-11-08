@@ -59,7 +59,8 @@
     <div class="yorha-panel-header">
       <h3 class="nes-text is-primary text-2xl font-bold">Vector Pipeline Demo</h3>
       <p class="text-gray-600">
-        XState machine orchestrating PostgreSQL → Redis Streams → Go microservice → CUDA worker → Qdrant
+        XState machine orchestrating PostgreSQL → Redis Streams → Go microservice → CUDA worker →
+        Qdrant
       </p>
     </div>
     <div class="yorha-panel-content">
@@ -80,16 +81,28 @@
       </div>
       <!-- Control Buttons -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <Button class="bits-btn" onclick={submitSingleJob} disabled={currentState === 'processingJob'}>
+        <Button
+          class="bits-btn"
+          onclick={submitSingleJob}
+          disabled={currentState === 'processingJob'}
+        >
           Submit Single Job
         </Button>
-        <Button class="bits-btn" onclick={submitBatchJobs} disabled={currentState === 'processingBatch'}>
+        <Button
+          class="bits-btn"
+          onclick={submitBatchJobs}
+          disabled={currentState === 'processingBatch'}
+        >
           Submit Batch
         </Button>
         <Button class="bits-btn" onclick={runHealthCheck} variant="ghost">Health Check</Button>
         <Button class="bits-btn" onclick={resetPipeline} variant="error">Reset Pipeline</Button>
-        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}>Enable WebGPU</Button>
-        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}>Disable WebGPU</Button>
+        <Button class="bits-btn" onclick={enableWebGPU} disabled={pipelineStatus?.webgpu}
+          >Enable WebGPU</Button
+        >
+        <Button class="bits-btn" onclick={disableWebGPU} disabled={!pipelineStatus?.webgpu}
+          >Disable WebGPU</Button
+        >
         <Button
           class="bits-btn"
           onclick={retryFailedJobs}
@@ -202,7 +215,9 @@
               <div class="flex justify-between">
                 <span>Last Run:</span>
                 <span class="text-sm">
-                  {metrics?.lastProcessedAt ? new Date(metrics.lastProcessedAt).toLocaleTimeString() : 'Never'}
+                  {metrics?.lastProcessedAt
+                    ? new Date(metrics.lastProcessedAt).toLocaleTimeString()
+                    : 'Never'}
                 </span>
               </div>
             </div>
