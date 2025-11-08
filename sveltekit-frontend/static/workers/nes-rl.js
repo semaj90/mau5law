@@ -23,6 +23,78 @@ const NES_CONFIG = {
   metaLearningEnabled: true, // Enable meta-learning across models
 };
 
+
+// Read flags from global and url
+// - Reads flags from worker URL query string (e.g. /workers/nes-rl.js?autoInit=1&populationSize=32)
+// - Also reads `self.NES_RL_FLAGS` if the host page sets an object before spawning the worker
+// - Merges provided flags into NES_CONFIG and provides an initial INIT config
+// -----------------------------------------------------------------------------
+
+function parseQueryFlags() {
+  try {
+    if (typeof self === 'undefined' || !self.location) return {};
+    const q = self.location.search || '';
+    if (!q || q.length < 2) return {};
+    const params = new URLSearchParams(q);
+    const out = {};
+    for (const [k, v] of params.entries()) {
+      // Coerce numeric / boolean when possible
+      if (/^\d+$/.test(v)) out[k] = Number(v);
+      else if (/^(true|false)$/i.test(v)) out[k] = v.toLowerCase() === 'true';
+      else out[k] = v;
+    }
+    return out;
+  } catch (e) {
+    return {};
+  }
+}
+
+function mergeFlagsIntoConfig(flags = {}) {
+  // Only merge known numeric/boolean fields we expect
+  const numericFields = [
+    'populationSize',
+    'learningRate',
+    'noiseStdDev',
+    'eliteRatio',
+    'maxGenerations',
+    'convergenceThreshold',
+    'parallelEvaluations',
+    'contextMemorySize',
+    'somGridSize'
+  ];
+
+  const booleanFields = ['metaLearningEnabled'];
+
+  for (const k of numericFields) {
+    if (k in flags && typeof flags[k] === 'number') NES_CONFIG[k] = flags[k];
+  }
+  for (const k of booleanFields) {
+    if (k in flags) NES_CONFIG[k] = Boolean(flags[k]);
+  }
+
+  // Allow overriding initial population parallelism and other tuning flags
+  if ('parallelEvaluations' in flags && typeof flags.parallelEvaluations === 'number') {
+    NES_CONFIG.parallelEvaluations = flags.parallelEvaluations;
+  }
+
+  // Provide model preference via flags
+  if (flags.initialModel && MODEL_CONFIGS[flags.initialModel]) {
+    // save as default on global scope for auto-init
+    self.__NES_RL_initialModel = flags.initialModel;
+  }
+
+  return NES_CONFIG;
+}
+
+// Read flags from global and url
+const __queryFlags = parseQueryFlags();
+const __globalFlags = (typeof self !== 'undefined' && self.NES_RL_FLAGS) || {};
+const __mergedFlags = { ...__globalFlags, ...__queryFlags };
+if (Object.keys(__mergedFlags).length > 0) {
+  mergeFlagsIntoConfig(__mergedFlags);
+}
+
+
 // Model-specific configurations
 const MODEL_CONFIGS = {
   'gemma-270m-fast': {
@@ -1464,6 +1536,10 @@ class EnhancedNESRLAgent {
 }
 
 // Export for use in service workers
+// Provide backward-compatible class alias: original code references `NESRLAgent` in places
+// (ensureAgent and legacy consumers). Create alias to the enhanced class.
+const NESRLAgent = EnhancedNESRLAgent;
+
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = { NESRLAgent, NES_CONFIG };
 } else if (typeof self !== 'undefined') {
@@ -1507,6 +1583,32 @@ console.log('🧬 NES-RL module loaded successfully');
   function ensureAgent(config) {
     if (!agentInstance) agentInstance = new NESRLAgent(config || {});
     return agentInstance;
+  }
+
+  // Auto-initialize agent if runtime flags request it (autoInit=true or autoInit=1)
+  try {
+    const autoFlag = __mergedFlags && (
+      __mergedFlags.autoInit === true ||
+      __mergedFlags.autoInit === 'true' ||
+      __mergedFlags.autoInit === 1 ||
+      __mergedFlags.autoInit === '1'
+    );
+    if (autoFlag) {
+      const initConfig = {
+        ...(typeof self.__NES_RL_initialModel !== 'undefined' ? { initialModel: self.__NES_RL_initialModel } : {}),
+        ...( __mergedFlags || {} ),
+      };
+      const ag = ensureAgent(initConfig);
+      if (typeof self.postMessage === 'function') {
+        try {
+          self.postMessage({ type: 'INIT_OK', payload: { stats: ag.getStats(), autoInit: true } });
+        } catch (e) {
+          // ignore
+        }
+      }
+    }
+  } catch (e) {
+    console.warn('NES-RL auto-init check failed', e && e.message ? e.message : e);
   }
 
   // Basic command protocol for host ↔ worker

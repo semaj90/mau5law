@@ -1,4 +1,7 @@
-/*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
+// Generated file - do not edit.
+// Instruct ESLint and TS tooling to skip / not type-check this generated JS.
+ /* eslint-disable */
+/* @ts-nocheck */
 import * as $protobuf from 'protobufjs/minimal';
 
 // Common aliases

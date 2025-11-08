@@ -1,12 +1,10 @@
 // ESM-compatible flat config for ESLint 9+
 // Works with Svelte 5 (runes), TypeScript 5+, and Prettier integration
 
-import process from 'node:process';
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 import svelte from 'eslint-plugin-svelte';
 import prettier from 'eslint-config-prettier';
-import globals from 'globals';
 
 export default ts.config(
   js.configs.recommended,
@@ -16,10 +14,6 @@ export default ts.config(
   {
     files: ['**/*.{svelte,ts,js}'],
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node
-      },
       parserOptions: {
         project: ['./tsconfig.json'],
         tsconfigRootDir: import.meta.dirname,
@@ -32,7 +26,7 @@ export default ts.config(
       'no-undef': 'off',
 
       // --- TypeScript tweaks ---
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', ignoreRestSiblings: true }],
+      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-explicit-any': 'off',
 
       // --- Svelte specifics ---

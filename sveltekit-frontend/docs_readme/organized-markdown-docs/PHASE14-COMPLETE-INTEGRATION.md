@@ -1,8 +1,8 @@
 # Phase 14: Complete Legal AI System Integration
 ## Windows Native Implementation with GPU Acceleration
 
-**Generated**: August 5, 2025  
-**Status**: Implementation Complete  
+**Generated**: August 5, 2025
+**Status**: Implementation Complete
 **Architecture**: Go + Redis + BullMQ + Neo4j + Qdrant + Ollama (CUDA)
 
 ---
@@ -70,7 +70,7 @@ cd qdrant-windows
 ```bash
 ollama list
 nvidia-smi
-# Should show gemma3-legal and nomic-embed-text using GPU
+# Should show gemma3-legal:latest, embeddinggemma:latest and fallback to nomic-embed-text using GPU
 ```
 
 ### 4. Start Redis (Windows Native)
@@ -198,7 +198,7 @@ VITE_REDIS_PORT=6379
 ## 🐛 Known Issues & Fixes
 
 ### Issue 1: Ollama Slow Start
-**Problem**: `ollama list` times out on first run  
+**Problem**: `ollama list` times out on first run
 **Solution**: Add startup delay in scripts
 ```bash
 ollama serve &
@@ -206,7 +206,7 @@ sleep 10  # Wait for Ollama to initialize
 ```
 
 ### Issue 2: TypeScript Import Errors
-**Problem**: Module resolution failures  
+**Problem**: Module resolution failures
 **Solution**: Ensure `package.json` exports are configured
 ```json
 {
@@ -218,7 +218,7 @@ sleep 10  # Wait for Ollama to initialize
 ```
 
 ### Issue 3: CUDA Not Detected
-**Problem**: Ollama not using GPU  
+**Problem**: Ollama not using GPU
 **Solution**: Set environment variables
 ```bash
 set CUDA_VISIBLE_DEVICES=0

@@ -28,7 +28,7 @@ const sql = postgres(DATABASE_URL, {
 export const db = drizzle(sql, { schema });
 
 // Export default for compatibility with existing imports
-export default db;
+export { db as default };
 
 // Export connection string for debugging/health checks if needed
 export const DB_CONNECTION_STRING = DATABASE_URL;

@@ -1,4 +1,6 @@
-﻿interface MemoryInfo {
+﻿declare module 'fabric';
+
+interface MemoryInfo {
   totalJSHeapSize: number;
   usedJSHeapSize: number;
   jsHeapSizeLimit: number;

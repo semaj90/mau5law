@@ -1,6 +1,4 @@
-﻿import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-// Production database query utilities with type safety
+﻿// Production database query utilities with type safety
 import { desc, asc, count, eq, and, or, like, type AnyColumn, type SQL } from 'drizzle-orm'; // Corrected import path for Drizzle functions and added AnyColumn, SQL
 
 export interface QueryFilters {
@@ -79,7 +77,10 @@ export class QueryBuilder {
         searchConditions.push(like(t.socialSecurityNumber, `%${filters.search}%`));
       if (t.driversLicense) searchConditions.push(like(t.driversLicense, `%${filters.search}%`));
       if (searchConditions.length > 0) {
-        conditions.push(or(...searchConditions));
+        // or(...) can be typed as SQL<unknown> | undefined in some overloads;
+        // cast to Condition to satisfy the strict type expected by `conditions`.
+        const orClause = or(...searchConditions) as Condition;
+        conditions.push(orClause);
       }
     }
 
@@ -206,11 +207,10 @@ export class QueryBuilder {
     }
 
     // Narrow the count query result shape
-    const countResult = (await countQuery.execute()) as Array<
-      { count?: number } | Record<string, unknown> | undefined
-    >;
-    const total =
-      Array.isArray(countResult) && countResult.length > 0 ? (countResult[0]?.count ?? 0) : 0;
+    const countResult = (await countQuery.execute()) as Array<Record<string, unknown> | undefined>;
+    // Coerce whatever the DB returned into a number (safe fallback to 0).
+    const rawCount = Array.isArray(countResult) && countResult.length > 0 ? countResult[0]?.['count'] : undefined;
+    const total = Number(rawCount ?? 0);
 
     return { data, total, pagination };
   }
