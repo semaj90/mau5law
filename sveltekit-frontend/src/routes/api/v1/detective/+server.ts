@@ -1,18 +1,18 @@
-﻿import { cuidSchema } from "$lib/server/z-schemas";
+﻿import { cuidSchema } from '$lib/server/z-schemas';
 /** * Detective Mode API Routes * * Endpoints: * GET /api/v1/detective - Get detective insights for cases * POST /api/v1/detective - Run detective analysis */
-import { json, type RequestHandler } from "@sveltejs/kit";
-import { db, sql } from "$lib/server/db";
-import { z } from "zod";
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { db, sql } from '$lib/server/db';
+import { z } from 'zod';
 
 // Detective analysis schema
 const DetectiveAnalysisSchema = z.object({
-  caseId: z.string().uuid("Invalid case ID"), // Corrected syntax
+  caseId: z.string().uuid('Invalid case ID'), // Corrected syntax
   analysisType: z.enum([
-    "pattern_detection",
-    "anomaly_detection",
-    "connection_analysis",
-    "timeline_gap",
-    "risk_assessment",
+    'pattern_detection',
+    'anomaly_detection',
+    'connection_analysis',
+    'timeline_gap',
+    'risk_assessment',
   ]),
   evidenceIds: z.array(cuidSchema).optional(),
   options: z
@@ -42,7 +42,7 @@ class DetectiveModeService {
       sql` SELECT * FROM cases WHERE id = ${caseId} LIMIT 1 `
     )) as Array<Record<string, unknown>> | undefined; // Corrected syntax
     if (!Array.isArray(caseResult) || caseResult.length === 0) {
-      throw new Error("Case not found");
+      throw new Error('Case not found');
     }
 
     // Generate AI-powered insights
@@ -59,52 +59,52 @@ class DetectiveModeService {
 
   // Rename unused args to start with underscore and type options properly
   private async generateInsights(
-    analysisType: DetectiveAnalysis["analysisType"], // Corrected syntax
+    analysisType: DetectiveAnalysis['analysisType'], // Corrected syntax
     _caseId?: string,
     _evidenceIds?: string[],
-    _options?: DetectiveAnalysis["options"]
+    _options?: DetectiveAnalysis['options']
   ) {
     // This would integrate with your local LLM for real detective analysis
     // For now, return sample insights
     const sampleInsights = {
       pattern_detection: [
         {
-          title: "Recurring Location Pattern",
-          description: "Multiple evidence pieces reference the same location",
+          title: 'Recurring Location Pattern',
+          description: 'Multiple evidence pieces reference the same location',
           confidence: 0.85,
-          priority: "high",
+          priority: 'high',
         }, // Corrected syntax
       ],
       anomaly_detection: [
         {
-          title: "Timeline Inconsistency",
+          title: 'Timeline Inconsistency',
           description: "Evidence timestamps don't align with witness statements",
           confidence: 0.78,
-          priority: "high",
+          priority: 'high',
         }, // Corrected syntax
       ],
       connection_analysis: [
         {
-          title: "Person of Interest Connection",
-          description: "Multiple POIs share common associates",
+          title: 'Person of Interest Connection',
+          description: 'Multiple POIs share common associates',
           confidence: 0.92,
-          priority: "critical",
+          priority: 'critical',
         }, // Corrected syntax
       ],
       timeline_gap: [
         {
-          title: "Missing Evidence Window",
-          description: "30-day gap in evidence collection",
+          title: 'Missing Evidence Window',
+          description: '30-day gap in evidence collection',
           confidence: 0.88,
-          priority: "medium",
+          priority: 'medium',
         }, // Corrected syntax
       ],
       risk_assessment: [
         {
-          title: "High-Stakes Case Risk",
-          description: "Case contains indicators requiring immediate attention",
+          title: 'High-Stakes Case Risk',
+          description: 'Case contains indicators requiring immediate attention',
           confidence: 0.94,
-          priority: "critical",
+          priority: 'critical',
         }, // Corrected syntax
       ],
     };
@@ -117,17 +117,17 @@ function getUserId(locals: App.Locals): string {
   // Corrected syntax to use App.Locals
   // locals shape may vary between adapters; handle common shapes
   const l = locals as { user?: { id?: string }; session?: { user?: { id?: string } } } | undefined; // Corrected syntax
-  if (!l) return "unknown";
+  if (!l) return 'unknown';
   // use the typed variable directly (no `any` casts)
-  if (l.user?.id && typeof l.user.id === "string") return l.user.id;
-  if (l.session?.user?.id && typeof l.session.user.id === "string") return l.session.user.id;
-  return "unknown";
+  if (l.user?.id && typeof l.user.id === 'string') return l.user.id;
+  if (l.session?.user?.id && typeof l.session.user.id === 'string') return l.session.user.id;
+  return 'unknown';
 }
 
 // -- add helper normalize: unknown errors, to: string
 function getErrorMessage(err: unknown): string {
   // Corrected syntax
-  if (!err) return "Unknown error";
+  if (!err) return 'Unknown error';
   if (err instanceof Error) return err.message;
   try {
     return String(JSON.stringify(err));
@@ -142,19 +142,19 @@ export const GET: RequestHandler = async ({ locals, url }) => {
   try {
     if (!locals.user?.id) {
       // Simplified authentication check
-      return json({ success: false, message: "Authentication required" }, { status: 401 });
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
-    const caseId = url.searchParams.get("caseId");
+    const caseId = url.searchParams.get('caseId');
     // Return sample insights for now
     const insights = [
       {
         id: crypto.randomUUID(), // Corrected syntax
-        caseId: caseId || "default-case-id", // Corrected syntax, added fallback
-        type: "pattern_detection",
-        title: "Evidence clustering detected",
-        description: "Multiple evidence pieces show correlation patterns",
+        caseId: caseId || 'default-case-id', // Corrected syntax, added fallback
+        type: 'pattern_detection',
+        title: 'Evidence clustering detected',
+        description: 'Multiple evidence pieces show correlation patterns',
         confidence: 0.87,
-        priority: "high",
+        priority: 'high',
         createdAt: new Date().toISOString(),
       },
     ];
@@ -165,9 +165,9 @@ export const GET: RequestHandler = async ({ locals, url }) => {
     });
   } catch (err: unknown) {
     const errMsg = getErrorMessage(err);
-    console.error("Error fetching insights: ", errMsg);
+    console.error('Error fetching insights: ', errMsg);
     return json(
-      { success: false, message: "Failed to fetch insights", details: errMsg },
+      { success: false, message: 'Failed to fetch insights', details: errMsg },
       { status: 500 }
     );
   }
@@ -179,7 +179,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
   try {
     if (!locals.user?.id) {
       // Simplified authentication check
-      return json({ success: false, message: "Authentication required" }, { status: 401 });
+      return json({ success: false, message: 'Authentication required' }, { status: 401 });
     }
     const body = await request.json();
     const validatedData = DetectiveAnalysisSchema.parse(body);
@@ -195,18 +195,18 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     );
   } catch (err: unknown) {
     const errMsg = getErrorMessage(err);
-    console.error("Error running analysis: ", errMsg);
+    console.error('Error running analysis: ', errMsg);
     // z.ZodError detection and response
     if (err instanceof z.ZodError) {
       return json(
-        { success: false, message: "Invalid analysis request", details: err.errors },
+        { success: false, message: 'Invalid analysis request', details: err.errors },
         { status: 400 }
       );
     }
     // Domain-specific error checks
-    if (errMsg === "Case not found") {
-      return json({ success: false, message: "Case not found" }, { status: 404 });
+    if (errMsg === 'Case not found') {
+      return json({ success: false, message: 'Case not found' }, { status: 404 });
     }
-    return json({ success: false, message: "Analysis failed", details: errMsg }, { status: 500 });
+    return json({ success: false, message: 'Analysis failed', details: errMsg }, { status: 500 });
   }
 };

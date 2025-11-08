@@ -2,7 +2,7 @@
 export interface MemoryRoom {
   id: string;
   name: string;
-  theme: "evidence" | "contracts" | "cases" | "research";
+  theme: 'evidence' | 'contracts' | 'cases' | 'research';
   documents: LegalDocument[];
   position: [number, number, number];
   size: [number, number, number];
@@ -12,7 +12,7 @@ export interface MemoryRoom {
 export interface LegalDocument {
   id: string;
   title: string;
-  type: "evidence" | "contract" | "brief" | "citation";
+  type: 'evidence' | 'contract' | 'brief' | 'citation';
   content: string;
   confidence: number;
   priority: number;
@@ -49,14 +49,14 @@ export class MemoryPalaceEngine {
 
   constructor(canvas: HTMLCanvasElement, settings?: Partial<PalaceSettings>) {
     this.canvas = canvas;
-    const gl = canvas.getContext("webgl2", {
+    const gl = canvas.getContext('webgl2', {
       antialias: false, // N64-style pixelated look
       alpha: false,
       depth: true,
       preserveDrawingBuffer: false,
     });
     if (!gl) {
-      throw new Error("WebGL2 not supported");
+      throw new Error('WebGL2 not supported');
     }
     this.gl = gl;
     this.settings = {
@@ -64,7 +64,7 @@ export class MemoryPalaceEngine {
       lodLevels: 4,
       textureResolution: 64, // N64-style low-res textures
       memoryBudgetMB: 4, // N64 memory constraint
-      consolePalette: "n64",
+      consolePalette: 'n64',
       ...settings,
     };
     this.camera = {
@@ -149,7 +149,7 @@ void main() {
 `;
     this.shaderProgram = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);
     if (!this.shaderProgram) {
-      throw new Error("Failed to create shader program");
+      throw new Error('Failed to create shader program');
     }
   }
 
@@ -167,7 +167,7 @@ void main() {
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error("Shader program linking failed: ", gl.getProgramInfoLog(program));
+      console.error('Shader program linking failed: ', gl.getProgramInfoLog(program));
       gl.deleteProgram(program);
       return null;
     }
@@ -183,7 +183,7 @@ void main() {
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-      console.error("Shader compilation failed: ", gl.getShaderInfoLog(shader));
+      console.error('Shader compilation failed: ', gl.getShaderInfoLog(shader));
       gl.deleteShader(shader);
       return null;
     }
@@ -243,8 +243,8 @@ void main() {
     const projectionMatrix = this.calculateProjectionMatrix();
 
     // Set uniforms
-    const viewLoc = gl.getUniformLocation(this.shaderProgram, "viewMatrix");
-    const projLoc = gl.getUniformLocation(this.shaderProgram, "projectionMatrix");
+    const viewLoc = gl.getUniformLocation(this.shaderProgram, 'viewMatrix');
+    const projLoc = gl.getUniformLocation(this.shaderProgram, 'projectionMatrix');
     gl.uniformMatrix4fv(viewLoc, false, viewMatrix);
     gl.uniformMatrix4fv(projLoc, false, projectionMatrix);
 

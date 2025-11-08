@@ -72,7 +72,10 @@ export class WorkflowEventStream {
   private events = writable<WorkflowEvent[]>([]);
   private latestEvent = writable<WorkflowEvent | null>(null);
 
-  constructor(private sessionId: string, private baseUrl = '') {}
+  constructor(
+    private sessionId: string,
+    private baseUrl = ''
+  ) {}
 
   /**
    * Connect to SSE endpoint

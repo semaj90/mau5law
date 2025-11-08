@@ -4,12 +4,12 @@
  */
 
 import { json, error } from '@sveltejs/kit';
-import type { RequestHandler, RequestEvent } from "./$types";
+import type { RequestHandler, RequestEvent } from './$types';
 
-import { gemmaEmbeddingService } from "../../../../lib/services/gemma-embedding-service.js";
-import { ragRankingSystem } from "../../../../lib/services/rag-ranking-system.js";
-import { postgresqlVectorStorage } from "../../../../lib/services/postgresql-vector-storage.js";
-import type { RankingContext } from "../../../../lib/services/rag-ranking-system.js";
+import { gemmaEmbeddingService } from '../../../../lib/services/gemma-embedding-service.js';
+import { ragRankingSystem } from '../../../../lib/services/rag-ranking-system.js';
+import { postgresqlVectorStorage } from '../../../../lib/services/postgresql-vector-storage.js';
+import type { RankingContext } from '../../../../lib/services/rag-ranking-system.js';
 
 interface SearchRequest {
   query: string;
@@ -57,18 +57,14 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
     const body: SearchRequest = await request.json();
 
     if (!body.query || body.query.trim().length === 0) {
-      throw error(400, "Query is required");
+      throw error(400, 'Query is required');
     }
 
-    console.log(
-      `🔍 Processing search query: "${body.query.substring(0, 100)}..."`
-    );
+    console.log(`🔍 Processing search query: "${body.query.substring(0, 100)}..."`);
 
     // Step 1: Generate query embedding
     const embeddingStartTime = Date.now();
-    const queryEmbedding = await gemmaEmbeddingService.generateEmbedding(
-      body.query
-    );
+    const queryEmbedding = await gemmaEmbeddingService.generateEmbedding(body.query);
     const embeddingTime = Date.now() - embeddingStartTime;
 
     console.log(`🧠 Generated embedding in ${embeddingTime}ms`);
@@ -86,15 +82,9 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
     // Choose search method based on options
     let rawResults;
     if (body.options?.searchChunks) {
-      rawResults = await postgresqlVectorStorage.searchChunks(
-        queryEmbedding,
-        searchOptions
-      );
+      rawResults = await postgresqlVectorStorage.searchChunks(queryEmbedding, searchOptions);
     } else {
-      rawResults = await postgresqlVectorStorage.semanticSearch(
-        queryEmbedding,
-        searchOptions
-      );
+      rawResults = await postgresqlVectorStorage.semanticSearch(queryEmbedding, searchOptions);
     }
 
     const searchTime = Date.now() - searchStartTime;
@@ -111,9 +101,9 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
       similarity_score: result.similarity_score,
       metadata: {
         document_title: result.document.title,
-        legal_area: result.document.metadata?.legal_area || "general",
-        document_type: result.document.metadata?.document_type || "document",
-        jurisdiction: result.document.metadata?.jurisdiction || "general",
+        legal_area: result.document.metadata?.legal_area || 'general',
+        document_type: result.document.metadata?.document_type || 'document',
+        jurisdiction: result.document.metadata?.jurisdiction || 'general',
         chunk_metadata: result.chunk?.metadata || {},
       },
       legal_concepts: result.chunk?.metadata?.legal_concepts || [],
@@ -125,10 +115,9 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
       legal_area: body.context?.legal_area,
       document_type: body.context?.document_type,
       jurisdiction: body.context?.jurisdiction,
-      user_expertise_level:
-        body.context?.user_expertise_level || "intermediate",
-      search_intent: body.context?.search_intent || "research",
-      temporal_relevance: body.context?.temporal_relevance || "any",
+      user_expertise_level: body.context?.user_expertise_level || 'intermediate',
+      search_intent: body.context?.search_intent || 'research',
+      temporal_relevance: body.context?.temporal_relevance || 'any',
     };
 
     const rankedResults = await ragRankingSystem.rankResults(
@@ -142,10 +131,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
 
     // Step 4: Generate analytics
     const totalTime = Date.now() - startTime;
-    const analytics = ragRankingSystem.generateAnalytics(
-      rankedResults,
-      rankingTime
-    );
+    const analytics = ragRankingSystem.generateAnalytics(rankedResults, rankingTime);
 
     // Step 5: Format response
     const response: SearchResponse = {
@@ -154,11 +140,8 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
       results: rankedResults.map((result) => ({
         id: result.document_id,
         title: result.metadata.document_title,
-        content:
-          body.options?.includeContent !== false ? result.content : undefined,
-        snippet:
-          result.content.substring(0, 300) +
-          (result.content.length > 300 ? "..." : ""),
+        content: body.options?.includeContent !== false ? result.content : undefined,
+        snippet: result.content.substring(0, 300) + (result.content.length > 300 ? '...' : ''),
         similarity_score: result.similarity_score,
         final_score: result.final_score,
         confidence_level: result.confidence_level,
@@ -184,7 +167,7 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
         embedding_time_ms: embeddingTime,
         ranking_time_ms: rankingTime,
         model_used: gemmaEmbeddingService.getModelInfo().current,
-        ranking_strategy: "multi_factor_legal_rag",
+        ranking_strategy: 'multi_factor_legal_rag',
       },
       analytics,
     };
@@ -192,12 +175,9 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
     console.log(`✅ Search completed in ${totalTime}ms`);
     return json(response);
   } catch (err) {
-    console.error("❌ Search failed:", err);
+    console.error('❌ Search failed:', err);
     // SvelteKit `error` expects a status and a string/Error — don't pass arbitrary objects
-    throw error(
-      500,
-      "Search failed: " + (err instanceof Error ? err.message : "Unknown error")
-    );
+    throw error(500, 'Search failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
   }
 };
 
@@ -206,10 +186,10 @@ export const POST: RequestHandler = async ({ request }: RequestEvent) => {
  */
 export const GET: RequestHandler = async ({ url }: RequestEvent) => {
   try {
-    const query = url.searchParams.get("q") || "";
-    const type = url.searchParams.get("type") || "suggestions";
+    const query = url.searchParams.get('q') || '';
+    const type = url.searchParams.get('type') || 'suggestions';
 
-    if (type === "suggestions") {
+    if (type === 'suggestions') {
       // Generate search suggestions based on common legal queries
       const suggestions = generateSearchSuggestions(query);
 
@@ -217,37 +197,33 @@ export const GET: RequestHandler = async ({ url }: RequestEvent) => {
         success: true,
         query,
         suggestions,
-        type: "suggestions",
+        type: 'suggestions',
       });
-    } else if (type === "filters") {
+    } else if (type === 'filters') {
       // Get available filter values from database
       const filterOptions = await getFilterOptions();
 
       return json({
         success: true,
         filters: filterOptions,
-        type: "filters",
+        type: 'filters',
       });
-    } else if (type === "stats") {
+    } else if (type === 'stats') {
       // Get search statistics
       const stats = await postgresqlVectorStorage.getStorageStatistics();
 
       return json({
         success: true,
         statistics: stats,
-        type: "stats",
+        type: 'stats',
       });
     }
 
-    throw error(400, "Invalid request type");
+    throw error(400, 'Invalid request type');
   } catch (err) {
-    console.error("❌ GET request failed:", err);
+    console.error('❌ GET request failed:', err);
     // Return a simple string message to satisfy overloads
-    throw error(
-      500,
-      "Request failed: " +
-        (err instanceof Error ? err.message : "Unknown error")
-    );
+    throw error(500, 'Request failed: ' + (err instanceof Error ? err.message : 'Unknown error'));
   }
 };
 
@@ -270,7 +246,7 @@ function generateSearchSuggestions(query: string): string[] {
     'environmental law violations',
     'immigration visa requirements',
     'tax law deductions',
-    'insurance coverage disputes'
+    'insurance coverage disputes',
   ];
 
   if (!query || query.length < 2) {
@@ -280,7 +256,7 @@ function generateSearchSuggestions(query: string): string[] {
   const queryLower = query.toLowerCase();
 
   // Filter suggestions that contain query terms
-  const filtered = legalSuggestions.filter(suggestion =>
+  const filtered = legalSuggestions.filter((suggestion) =>
     suggestion.toLowerCase().includes(queryLower)
   );
 
@@ -288,24 +264,24 @@ function generateSearchSuggestions(query: string): string[] {
   const specific = [];
 
   if (queryLower.includes('contract')) {
-    specific.push(<any><any>
-      'contract breach remedies',
+    specific.push(
+      <any>(<any>'contract breach remedies'),
       'contract formation elements',
       'contract termination clauses'
     );
   }
 
   if (queryLower.includes('tort')) {
-    specific.push(<any><any>
-      'tort negligence standard',
+    specific.push(
+      <any>(<any>'tort negligence standard'),
       'tort intentional infliction',
       'tort strict liability'
     );
   }
 
   if (queryLower.includes('criminal')) {
-    specific.push(<any><any>
-      'criminal constitutional rights',
+    specific.push(
+      <any>(<any>'criminal constitutional rights'),
       'criminal evidence rules',
       'criminal sentencing guidelines'
     );
@@ -325,7 +301,7 @@ async function getFilterOptions(): Promise<{
     return {
       document_types: Object.keys(stats.by_document_type),
       practice_areas: Object.keys(stats.by_practice_area),
-      jurisdictions: Object.keys(stats.by_jurisdiction)
+      jurisdictions: Object.keys(stats.by_jurisdiction),
     };
   } catch (error) {
     console.error('Failed to get filter options:', error);
@@ -333,8 +309,14 @@ async function getFilterOptions(): Promise<{
     // Return default options
     return {
       document_types: ['case-law', 'statute', 'regulation', 'constitutional', 'legal-guide'],
-      practice_areas: ['contract-law', 'tort-law', 'criminal-law', 'constitutional-law', 'business-law'],
-      jurisdictions: ['federal', 'state', 'international']
+      practice_areas: [
+        'contract-law',
+        'tort-law',
+        'criminal-law',
+        'constitutional-law',
+        'business-law',
+      ],
+      jurisdictions: ['federal', 'state', 'international'],
     };
   }
 }

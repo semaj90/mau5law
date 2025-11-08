@@ -6,19 +6,19 @@
  * --------------------------------------------------------
  */
 
-import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types.js";
-import { db } from "$lib/server/db/client.js";
-import { canvasStates, canvasAnnotations } from "$lib/server/db/schema-postgres.js";
-import { eq } from "drizzle-orm";
-import type { InferSelectModel } from "drizzle-orm";
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+import { db } from '$lib/server/db/client.js';
+import { canvasStates, canvasAnnotations } from '$lib/server/db/schema-postgres.js';
+import { eq } from 'drizzle-orm';
+import type { InferSelectModel } from 'drizzle-orm';
 import {
   createMachine,
   fromPromise,
   createActor,
   type SnapshotFrom,
   type AnyStateMachine,
-} from "xstate";
+} from 'xstate';
 
 // ------------------------------------------------------------
 // 🧩 Type inference
@@ -95,16 +95,16 @@ type DeleteCanvasOutput = {
 };
 
 type CanvasMachineEvents =
-  | { type: "LOAD" }
-  | { type: "UPDATE"; payload: UpdatePayload }
-  | { type: "DELETE" };
+  | { type: 'LOAD' }
+  | { type: 'UPDATE'; payload: UpdatePayload }
+  | { type: 'DELETE' };
 
 const loadCanvasActor = fromPromise<LoadCanvasOutput, { id: string }>(async ({ input }) => {
   const { id } = input;
   const cached = getFromCache(id);
   if (cached) {
     console.log(`📋 cache hit for ${id}`);
-    return { source: "cache", canvas: cached };
+    return { source: 'cache', canvas: cached };
   }
 
   const [row] = await db.select().from(canvasStates).where(eq(canvasStates.id, id));
@@ -133,14 +133,14 @@ const loadCanvasActor = fromPromise<LoadCanvasOutput, { id: string }>(async ({ i
 
   setInCache(id, payload);
   console.log(`💾 Canvas cached for ID: ${id}`);
-  return { source: "database", canvas: payload };
+  return { source: 'database', canvas: payload };
 });
 
 const updateCanvasActor = fromPromise<UpdateCanvasOutput, { id: string; payload: UpdatePayload }>(
   async ({ input }) => {
     const { id, payload } = input;
     const { canvasData, name, annotations, incomingMetadata } = payload;
-    if (!canvasData) throw error(400, "Missing required field: canvasData");
+    if (!canvasData) throw error(400, 'Missing required field: canvasData');
 
     const [existing] = await db.select().from(canvasStates).where(eq(canvasStates.id, id));
     if (!existing) throw error(404, `Canvas with ID ${id} not found`);
@@ -179,11 +179,11 @@ const updateCanvasActor = fromPromise<UpdateCanvasOutput, { id: string; payload:
             annotations.map((ann: Partial<AnnotationRow>) => ({
               evidenceId: id,
               fabricData: ann.fabricData ?? {},
-              annotationType: ann.annotationType ?? "annotation",
+              annotationType: ann.annotationType ?? 'annotation',
               coordinates: ann.coordinates ?? {},
               boundingBox: ann.boundingBox ?? {},
               text: ann.text ?? null,
-              color: ann.color ?? "#ffffff",
+              color: ann.color ?? '#ffffff',
               layerOrder: ann.layerOrder ?? 0,
               isVisible: ann.isVisible ?? true,
               metadata: ann.metadata ?? {},
@@ -197,7 +197,7 @@ const updateCanvasActor = fromPromise<UpdateCanvasOutput, { id: string; payload:
     });
 
     if (!updatedCanvas) {
-      throw error(500, "Failed to update canvas state in transaction");
+      throw error(500, 'Failed to update canvas state in transaction');
     }
 
     invalidateCache(id);
@@ -221,7 +221,7 @@ const updateCanvasActor = fromPromise<UpdateCanvasOutput, { id: string; payload:
     console.log(`🔄 Canvas updated and cached for ID: ${id}`);
 
     return {
-      message: "Canvas updated successfully",
+      message: 'Canvas updated successfully',
       canvas: responseData,
     };
   }
@@ -245,13 +245,13 @@ const deleteCanvasActor = fromPromise<DeleteCanvasOutput, { id: string }>(async 
   invalidateCache(id);
 
   console.log(
-    `🗑️ Canvas deleted: ${deletedCanvas?.name ?? "<unknown>"} (${id}) with ${
+    `🗑️ Canvas deleted: ${deletedCanvas?.name ?? '<unknown>'} (${id}) with ${
       deletedAnnotations.length
     } annotations`
   );
 
   return {
-    message: "Canvas deleted successfully",
+    message: 'Canvas deleted successfully',
     canvas_id: id,
     canvas_name: deletedCanvas?.name ?? null,
     deleted_annotations: deletedAnnotations.length,
@@ -272,22 +272,22 @@ const canvasMachine = createMachine({
     events: CanvasMachineEvents;
     output: CanvasMachineOutput;
   },
-  id: "canvas",
+  id: 'canvas',
   context: ({ input }) => ({ id: input.id }),
-  initial: "idle",
+  initial: 'idle',
   states: {
     idle: {
       on: {
-        LOAD: "loading",
-        UPDATE: "updating",
-        DELETE: "deleting",
+        LOAD: 'loading',
+        UPDATE: 'updating',
+        DELETE: 'deleting',
       },
     },
     loading: {
       invoke: {
         src: loadCanvasActor,
-        onDone: { target: "success" },
-        onError: { target: "failure" },
+        onDone: { target: 'success' },
+        onError: { target: 'failure' },
       },
     },
     updating: {
@@ -295,25 +295,25 @@ const canvasMachine = createMachine({
         src: updateCanvasActor,
         input: ({ context, event }) => ({
           id: context.id,
-          payload: (event as { type: "UPDATE"; payload: UpdatePayload }).payload,
+          payload: (event as { type: 'UPDATE'; payload: UpdatePayload }).payload,
         }),
-        onDone: { target: "success" },
-        onError: { target: "failure" },
+        onDone: { target: 'success' },
+        onError: { target: 'failure' },
       },
     },
     deleting: {
       invoke: {
         src: deleteCanvasActor,
-        onDone: { target: "success" },
-        onError: { target: "failure" },
+        onDone: { target: 'success' },
+        onError: { target: 'failure' },
       },
     },
     success: {
-      type: "final",
+      type: 'final',
       output: ({ event }): CanvasMachineOutput => event.output,
     },
     failure: {
-      type: "final",
+      type: 'final',
       output: ({ event }): CanvasMachineOutput => ({ error: event.data }),
     },
   },
@@ -326,27 +326,27 @@ async function runMachine(input: { id: string }, event: CanvasMachineEvents) {
 
   const snapshot = await new Promise<SnapshotFrom<typeof canvasMachine>>((resolve) => {
     actor.subscribe((snapshot) => {
-      if (snapshot.status === "done") {
+      if (snapshot.status === 'done') {
         resolve(snapshot);
       }
     });
   });
 
-  if (snapshot.status !== "done") {
+  if (snapshot.status !== 'done') {
     // This should be unreachable given the logic above, but it satisfies TypeScript's strictness
     // and provides a safeguard.
-    console.error("State machine did not finalize.", {
+    console.error('State machine did not finalize.', {
       status: snapshot.status,
       value: snapshot.value,
     });
-    throw error(500, "Operation failed: state machine did not complete.");
+    throw error(500, 'Operation failed: state machine did not complete.');
   }
 
   const output = (snapshot as { output?: CanvasMachineOutput }).output;
 
-  if (output && "error" in output) {
+  if (output && 'error' in output) {
     const err = output.error;
-    if (err && typeof err === "object" && "status" in err) {
+    if (err && typeof err === 'object' && 'status' in err) {
       throw err;
     }
     console.error(`Canvas operation ${event.type} error:`, err);
@@ -362,19 +362,19 @@ async function runMachine(input: { id: string }, event: CanvasMachineEvents) {
 
 export const GET: RequestHandler = async ({ params }) => {
   const { id } = params;
-  if (!id) throw error(400, "Canvas ID is required");
-  return runMachine({ id }, { type: "LOAD" });
+  if (!id) throw error(400, 'Canvas ID is required');
+  return runMachine({ id }, { type: 'LOAD' });
 };
 
 export const PUT: RequestHandler = async ({ params, request }) => {
   const { id } = params;
-  if (!id) throw error(400, "Canvas ID is required");
+  if (!id) throw error(400, 'Canvas ID is required');
   const payload = await request.json();
-  return runMachine({ id }, { type: "UPDATE", payload });
+  return runMachine({ id }, { type: 'UPDATE', payload });
 };
 
 export const DELETE: RequestHandler = async ({ params }) => {
   const { id } = params;
-  if (!id) throw error(400, "Canvas ID is required");
-  return runMachine({ id }, { type: "DELETE" });
+  if (!id) throw error(400, 'Canvas ID is required');
+  return runMachine({ id }, { type: 'DELETE' });
 };

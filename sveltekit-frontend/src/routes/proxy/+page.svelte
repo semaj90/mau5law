@@ -1,5 +1,5 @@
 <script lang="ts">
-interface Props {
+  interface Props {
     data: { message: string; path: string; targetExample: string; now: string };
   }
   let { data }: Props = $props();
@@ -11,5 +11,8 @@ interface Props {
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

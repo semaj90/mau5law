@@ -24,9 +24,9 @@ function parseSources(input: any): VectorSearchResult[] {
       (it): it is VectorSearchResult =>
         typeof it === 'object' &&
         it !== null &&
-        ('similarity' in it || 'score' in it || 'id' in it || 'text' in it),
+        ('similarity' in it || 'score' in it || 'id' in it || 'text' in it)
     )
-    .map(it => it as VectorSearchResult);
+    .map((it) => it as VectorSearchResult);
 }
 
 export interface ChatMessage {
@@ -114,11 +114,13 @@ export const GET: RequestHandler = async ({ url }) => {
 
       // searchSimilarChats has a zero-arg signature; fetch all candidates then filter locally by query
       const rawResults = await searchSimilarChats();
-      const allResults: VectorSearchResult[] = Array.isArray(rawResults) ? (rawResults as VectorSearchResult[]) : [];
+      const allResults: VectorSearchResult[] = Array.isArray(rawResults)
+        ? (rawResults as VectorSearchResult[])
+        : [];
 
       // Narrow candidates by textual match to the provided query (case-insensitive)
       const qLower = query.toLowerCase();
-      let results = allResults.filter(r => {
+      let results = allResults.filter((r) => {
         // Cast via unknown to acknowledge intentional structural cast to an indexable record
         const rec = r as unknown as Record<string, unknown> | null;
         if (!rec || typeof rec !== 'object') return false;
@@ -132,7 +134,7 @@ export const GET: RequestHandler = async ({ url }) => {
       // If a numeric threshold was provided, filter by typical similarity property if present
       if (typeof threshold === 'number' && !Number.isNaN(threshold)) {
         type Scored = { similarity?: number; score?: number };
-        results = results.filter(r => {
+        results = results.filter((r) => {
           const scored = r as unknown as Scored;
           const sim = scored.similarity ?? scored.score ?? null;
           return typeof sim === 'number' ? sim >= threshold : true;
@@ -153,14 +155,14 @@ export const GET: RequestHandler = async ({ url }) => {
 
     return json(
       { success: false, error: 'Invalid action. Use ?action=health or ?action=search' },
-      { status: 400 },
+      { status: 400 }
     );
   } catch (error: Error | unknown) {
     console.error('Enhanced chat GET error: ', error);
     const errMsg = error instanceof Error ? error.message : String(error);
     return json(
       { success: false, status: 'unhealthy', error: errMsg, timestamp: new Date().toISOString() },
-      { status: 503 },
+      { status: 503 }
     );
   }
 };
@@ -185,11 +187,15 @@ export const POST: RequestHandler = async ({ request }) => {
     } = body;
 
     if (!message && (!messages || messages.length === 0)) {
-      return json({ success: false, error: 'Message or messages array is required' }, { status: 400 });
+      return json(
+        { success: false, error: 'Message or messages array is required' },
+        { status: 400 }
+      );
     }
 
     // Use the message directly or get the last user message from messages array
-    const userMessage = message || (messages && messages.length ? messages[messages.length - 1].content : undefined);
+    const userMessage =
+      message || (messages && messages.length ? messages[messages.length - 1].content : undefined);
 
     if (!userMessage) {
       return json({ success: false, error: 'No user message found' }, { status: 400 });
@@ -203,7 +209,9 @@ export const POST: RequestHandler = async ({ request }) => {
           try {
             // Treat ollamaChatStream as a generator of unknown and narrow at runtime
             const streamGenerator = (
-              ollamaChatStream as unknown as (opts: Record<string, unknown>) => AsyncGenerator<unknown>
+              ollamaChatStream as unknown as (
+                opts: Record<string, unknown>
+              ) => AsyncGenerator<unknown>
             )({
               message: userMessage,
               model,
@@ -220,7 +228,9 @@ export const POST: RequestHandler = async ({ request }) => {
 
             for await (const chunkRaw of streamGenerator) {
               const chunk = chunkRaw as { text?: unknown; metadata?: unknown };
-              const meta = chunk.metadata as { type?: string; sources?: unknown; confidence?: unknown } | undefined;
+              const meta = chunk.metadata as
+                | { type?: string; sources?: unknown; confidence?: unknown }
+                | undefined;
 
               if (meta?.type === 'sources') {
                 sources = parseSources(meta.sources);
@@ -328,10 +338,7 @@ export const POST: RequestHandler = async ({ request }) => {
         processingTimeMs: Date.now() - startTime,
         timestamp: new Date().toISOString(),
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
-
-
-

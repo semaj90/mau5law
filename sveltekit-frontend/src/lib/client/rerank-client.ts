@@ -1,5 +1,5 @@
-import { browser } from "$app/environment";
-import Loki from "lokijs"; // Import Loki.js
+import { browser } from '$app/environment';
+import Loki from 'lokijs'; // Import Loki.js
 
 // Define a lightweight local type that captures the collection methods used here.
 type LokiCollection<T> = {
@@ -41,14 +41,14 @@ let db: Loki | null = null;
 let candidatesCollection: LokiCollection<Candidate> | null = null;
 
 if (browser) {
-  db = new Loki("rerank_cache.db"); // Use a distinct database name
-  candidatesCollection = db.addCollection<Candidate>("rerank_candidates", {
-    unique: ["id", "rerankedScore"],
+  db = new Loki('rerank_cache.db'); // Use a distinct database name
+  candidatesCollection = db.addCollection<Candidate>('rerank_candidates', {
+    unique: ['id', 'rerankedScore'],
   }); // Ensure unique by id and score for reranked results
   // Load database from IndexedDB if available
   db.loadDatabase({}, (err) => {
-    if (err) console.error("Error loading Loki.js database: ", err);
-    else console.log("Loki.js database loaded.");
+    if (err) console.error('Error loading Loki.js database: ', err);
+    else console.log('Loki.js database loaded.');
   });
 }
 
@@ -64,13 +64,13 @@ async function webgpuRerank(
   const qTokens = query.toLowerCase().split(/\s+/).filter(Boolean);
   const scored = (candidates as Candidate[]).map((c) => {
     const textFromMeta =
-      (c.metadata && (c.metadata["text"] as string)) || (c["text"] as string) || "";
-    const text = (textFromMeta || "").toLowerCase();
+      (c.metadata && (c.metadata['text'] as string)) || (c['text'] as string) || '';
+    const text = (textFromMeta || '').toLowerCase();
     let overlap = 0;
     for (const t of qTokens) {
       if (text.includes(t)) overlap++;
     }
-    const base = typeof c.score === "number" ? c.score : 0;
+    const base = typeof c.score === 'number' ? c.score : 0;
     // Combine base score and overlap: weighted heuristic
     const rerankedScore = base * 0.7 + overlap * 0.3;
     return { ...c, rerankedScore };
@@ -83,33 +83,33 @@ async function webgpuRerank(
 export async function rerank(
   query: string,
   candidates: Candidate[],
-  options?: RerankRequest["options"]
+  options?: RerankRequest['options']
 ): Promise<Candidate[]> {
   // filepath: c:\Users\james\Videos\deeds-web-app\sveltekit-frontend\src\lib\client\rerank-client.ts
   let cacheKey: string | undefined;
   if (browser && candidatesCollection) {
     // Check if all candidates for this query are already cached
     // This is a simplified cache check. A more robust one would involve hashing the query and candidate IDs.
-    cacheKey = `rerank:${query}:${candidates.map((c) => c.id).join(",")}`;
-    const cachedResult = candidatesCollection.findOne({ "metadata.cacheKey": cacheKey });
+    cacheKey = `rerank:${query}:${candidates.map((c) => c.id).join(',')}`;
+    const cachedResult = candidatesCollection.findOne({ 'metadata.cacheKey': cacheKey });
     if (cachedResult) {
-      console.log("Cache hit for rerank: ", cacheKey);
+      console.log('Cache hit for rerank: ', cacheKey);
       return candidatesCollection
-        .find({ "metadata.cacheKey": cacheKey })
+        .find({ 'metadata.cacheKey': cacheKey })
         .sort((a, b) => (b.rerankedScore ?? 0) - (a.rerankedScore ?? 0));
     }
   }
 
   let reranked: Candidate[] = [];
   try {
-    const res = await fetch("/api/rerank", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('/api/rerank', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query, candidates, options }),
     });
 
     if (!res.ok) {
-      console.error("Rerank API call failed: ", res.statusText);
+      console.error('Rerank API call failed: ', res.statusText);
       // Use WebGPU fallback to locally rerank (now properly typed)
       const fallback = await webgpuRerank(query, candidates);
       reranked = fallback;
@@ -117,9 +117,9 @@ export async function rerank(
       reranked = await res.json();
     }
   } catch (err) {
-    console.warn("Rerank API call or WebGPU fallback failed: ", err);
+    console.warn('Rerank API call or WebGPU fallback failed: ', err);
     // If API fails and fallback also fails, throw an error
-    throw new Error("Failed to rerank candidates");
+    throw new Error('Failed to rerank candidates');
   }
 
   if (browser) {
@@ -128,7 +128,7 @@ export async function rerank(
       const locallyReranked = await webgpuRerank(query, reranked);
       reranked = locallyReranked;
     } catch (err) {
-      console.warn("Local WebGPU rerank refinement failed: ", err);
+      console.warn('Local WebGPU rerank refinement failed: ', err);
     }
 
     if (candidatesCollection && cacheKey) {
@@ -136,7 +136,7 @@ export async function rerank(
       reranked.forEach((candidate) => {
         const existing = candidatesCollection.findOne({
           id: candidate.id,
-          "metadata.cacheKey": cacheKey,
+          'metadata.cacheKey': cacheKey,
         });
         const metadata = { ...(candidate.metadata ?? {}), cacheKey };
         if (existing) {
@@ -146,9 +146,9 @@ export async function rerank(
         }
       });
       db?.saveDatabase((err) => {
-        if (err) console.error("Error saving Loki.js database: ", err);
+        if (err) console.error('Error saving Loki.js database: ', err);
       });
-      console.log("Cache set for rerank: ", cacheKey);
+      console.log('Cache set for rerank: ', cacheKey);
     }
   }
   return reranked;

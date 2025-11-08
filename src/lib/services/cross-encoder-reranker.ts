@@ -8,7 +8,7 @@ export type AssistantInput = {
 };
 
 function normalizePiece(piece: string | { text: string }): string {
-  const raw = typeof piece === 'string' ? piece : piece?.text ?? '';
+  const raw = typeof piece === 'string' ? piece : (piece?.text ?? '');
   return raw.replace(/\s+/g, ' ').trim();
 }
 

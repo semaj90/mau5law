@@ -8,46 +8,157 @@ import type { Document } from '$lib/types'; import  Card, CardContent, CardHeade
 </main>
 
 <style>
-.ai-hub-container { padding: 2rem; max-width: 1200px; margin: 0 auto}
+  .ai-hub-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-  .hero-section { text-align: center; margin-bottom: 3rem}
+  .hero-section {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
 
-  .hero-section h1 { font-size: 2.5rem; font-weight: bold; color: #00d4aa; margin-bottom: 1rem}
+  .hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #00d4aa;
+    margin-bottom: 1rem;
+  }
 
-  .subtitle { font-size: 1.2rem; color: #a1a1aa; margin-bottom: 2rem}
+  .subtitle {
+    font-size: 1.2rem;
+    color: #a1a1aa;
+    margin-bottom: 2rem;
+  }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem}:global(.stat-card) { background: rgba(0, 212, 170, 0.1); border: 1px solid rgba(0, 212, 170, 0.3)}
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+  :global(.stat-card) {
+    background: rgba(0, 212, 170, 0.1);
+    border: 1px solid rgba(0, 212, 170, 0.3);
+  }
 
-  .stat-value { font-size: 2rem; font-weight: bold; color: #00d4aa}
+  .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #00d4aa;
+  }
 
-  .stat-label { font-size: 0.9rem; color: #71717a; margin-top: 0.5rem}
+  .stat-label {
+    font-size: 0.9rem;
+    color: #71717a;
+    margin-top: 0.5rem;
+  }
 
-  .services-section { margin-bottom: 3rem}
+  .services-section {
+    margin-bottom: 3rem;
+  }
 
-  .services-section h2 { font-size: 1.8rem; color: #00d4aa; margin-bottom: 1.5rem}
+  .services-section h2 {
+    font-size: 1.8rem;
+    color: #00d4aa;
+    margin-bottom: 1.5rem;
+  }
 
-  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem}:global(.service-card) { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease}:global(.service-card:hover) { background: rgba(0, 212, 170, 0.1); border-color: rgba(0, 212, 170, 0.3); transform: translateY(-2px)}
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  :global(.service-card) {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  :global(.service-card:hover) {
+    background: rgba(0, 212, 170, 0.1);
+    border-color: rgba(0, 212, 170, 0.3);
+    transform: translateY(-2px);
+  }
 
-  .service-icon { font-size: 1.5rem; margin-right: 0.5rem}
+  .service-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+  }
 
-  .service-description { color: #a1a1aa; margin-bottom: 1rem}:global(.service-button) { width: 100%; background: #00d4aa; color: #000; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s ease}:global(.service-button:hover) { background: #00b89a; transform: translateY(-1px)}
+  .service-description {
+    color: #a1a1aa;
+    margin-bottom: 1rem;
+  }
+  :global(.service-button) {
+    width: 100%;
+    background: #00d4aa;
+    color: #000;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  :global(.service-button:hover) {
+    background: #00b89a;
+    transform: translateY(-1px);
+  }
 
-  .activities-section h2 { font-size: 1.8rem; color: #00d4aa; margin-bottom: 1.5rem}
+  .activities-section h2 {
+    font-size: 1.8rem;
+    color: #00d4aa;
+    margin-bottom: 1.5rem;
+  }
 
-  .activities-list { display: grid; gap: 1rem}:global(.activity-card) { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1)}
+  .activities-list {
+    display: grid;
+    gap: 1rem;
+  }
+  :global(.activity-card) {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-  .activity-type { font-weight: 600; color: #00d4aa; margin-bottom: 0.5rem}
+  .activity-type {
+    font-weight: 600;
+    color: #00d4aa;
+    margin-bottom: 0.5rem;
+  }
 
-  .activity-details { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; color: #a1a1aa}
+  .activity-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #a1a1aa;
+  }
 
-  .confidence, .results, .pages, .similarity { color: #00d4aa; font-weight: 600}
+  .confidence,
+  .results,
+  .pages,
+  .similarity {
+    color: #00d4aa;
+    font-weight: 600;
+  }
 
-  @media (max-width: 768px) { .hero-section h1 { font-size: 2rem}
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 2rem;
+    }
 
-    .stats-grid { grid-template-columns: repeat(2, 1fr)}
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
 
-    .services-grid { grid-template-columns: 1fr}
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
 
-    .activity-details { flex-direction: column; align-items: flex-start; gap: 0.5rem}
+    .activity-details {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
   }
 </style>

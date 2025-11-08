@@ -1,5 +1,5 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   $effect(() => {
@@ -14,5 +14,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

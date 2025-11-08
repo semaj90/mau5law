@@ -36,7 +36,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 </main>
 
 <style>
-/* Custom scrollbar for logs */
+  /* Custom scrollbar for logs */
   .yorha-panel-content::-webkit-scrollbar {
     width: 6px;
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Document } from '$lib/types';
+  import type { Document } from '$lib/types';
   import { browserRAG } from '$lib/ai/browser-rag-chain';
   import { onMount } from 'svelte';
   import { Database, Lock, Zap, FileText, MessageSquare, AlertCircle } from 'lucide-svelte';
@@ -43,29 +43,28 @@ import type { Document } from '$lib/types';
   let isStreaming = $state<boolean>(false);
 
   onMount(() => {
-		(async () => {
+    (async () => {
+      try {
+        currentStep = 'Initializing Browser RAG (this may take 2-5 minutes on first load)...';
+        isLoading = true;
+        // Initialize RAG chain
+        await browserRAG.initialize();
 
-    try {
-      currentStep = 'Initializing Browser RAG (this may take 2-5 minutes on first load)...';
-      isLoading = true;
-      // Initialize RAG chain
-      await browserRAG.initialize();
+        currentStep = 'Adding sample legal documents to knowledge base...';
+        // Add sample documents
+        await browserRAG.addDocuments(sampleDocuments);
 
-      currentStep = 'Adding sample legal documents to knowledge base...';
-      // Add sample documents
-      await browserRAG.addDocuments(sampleDocuments);
-
-      isInitialized = true;
-      currentStep = 'âœ… Ready! Ask a legal question.';
-      error = null;
-    } catch (err) {
-      error = `Initialization failed: ${err}`;
-      console.error('RAG Init, Error:', err);
-    } finally {
-      isLoading = false;
-    }
-  		})();
-	});
+        isInitialized = true;
+        currentStep = 'âœ… Ready! Ask a legal question.';
+        error = null;
+      } catch (err) {
+        error = `Initialization failed: ${err}`;
+        console.error('RAG Init, Error:', err);
+      } finally {
+        isLoading = false;
+      }
+    })();
+  });
   async function handleQuery(): Promise<any> {
     if (!query.trim() || !isInitialized) return;
     try {
@@ -142,20 +141,23 @@ import type { Document } from '$lib/types';
 </main>
 
 <style>
-.demo-container {
+  .demo-container {
     min-height: 100vh;
     background: #212529;
-    color: #d4af37
-   ; padding: 2rem;
-    font-family: 'Press Start 2P', 'Courier New', monospace}
+    color: #d4af37;
+    padding: 2rem;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
 
   .title {
     font-size: 1.5rem;
-    margin-bottom: 0.5rem}
+    margin-bottom: 0.5rem;
+  }
 
   .subtitle {
     font-size: 0.75rem;
-    color: #9ca3af}
+    color: #9ca3af;
+  }
 
   .privacy-badge {
     display: inline-flex;
@@ -166,75 +168,100 @@ import type { Document } from '$lib/types';
     color: white;
     border-radius: 4px;
     margin-top: 1rem;
-    font-size: 0.75rem}
+    font-size: 0.75rem;
+  }
 
-  .stats-grid { display: grid;
+  .stats-grid {
+    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1rem;
-    margin: 1.5rem 0}
+    margin: 1.5rem 0;
+  }
 
   .answer-box {
     background: #1a1d20;
     padding: 1rem;
     border-radius: 4px;
-    margin-top: 0.5rem}
+    margin-top: 0.5rem;
+  }
 
   .flex {
-    display: flex}
+    display: flex;
+  }
 
   .items-center {
-    align-items: center}
+    align-items: center;
+  }
 
   .gap-2 {
-    gap: 0.5rem}
+    gap: 0.5rem;
+  }
 
   .gap-4 {
-    gap: 1rem}
+    gap: 1rem;
+  }
 
   .mb-1 {
-    margin-bottom: 0.25rem}
+    margin-bottom: 0.25rem;
+  }
 
   .mb-2 {
-    margin-bottom: 0.5rem}
+    margin-bottom: 0.5rem;
+  }
 
   .mb-4 {
-    margin-bottom: 1rem}
+    margin-bottom: 1rem;
+  }
 
   .mt-1 {
-    margin-top: 0.25rem}
+    margin-top: 0.25rem;
+  }
 
   .mt-2 {
-    margin-top: 0.5rem}
+    margin-top: 0.5rem;
+  }
 
   .text-xs {
-    font-size: 0.75rem}
+    font-size: 0.75rem;
+  }
 
   .text-sm {
-    font-size: 0.875rem}
+    font-size: 0.875rem;
+  }
 
   .text-lg {
-    font-size: 1.125rem}
+    font-size: 1.125rem;
+  }
 
   .font-bold {
-    font-weight: bold}
+    font-weight: bold;
+  }
 
   .text-gray-400 {
-    color: #9ca3af}
+    color: #9ca3af;
+  }
 
   .text-blue-400 {
-    color: #60a5fa}
+    color: #60a5fa;
+  }
 
   .text-green-400 {
-    color: #4ade80}
+    color: #4ade80;
+  }
 
   .text-yellow-400 {
-    color: #facc15}
+    color: #facc15;
+  }
 
   .cursor-pointer {
-    cursor: pointer}
+    cursor: pointer;
+  }
 
   .whitespace-pre-wrap {
-    white-space: pre-wrap}
+    white-space: pre-wrap;
+  }
 
-  .inline { display: inline}
+  .inline {
+    display: inline;
+  }
 </style>

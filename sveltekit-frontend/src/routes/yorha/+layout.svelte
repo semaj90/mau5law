@@ -3,7 +3,16 @@
   import '../../app.css';
   import { afterNavigate, goto } from '$app/navigation';
   import { onMount } from 'svelte';
-  import { Terminal, Monitor, Database, Cpu, Search, Bot, ChevronRight, ChevronLeft } from 'lucide-svelte';
+  import {
+    Terminal,
+    Monitor,
+    Database,
+    Cpu,
+    Search,
+    Bot,
+    ChevronRight,
+    ChevronLeft,
+  } from 'lucide-svelte';
   // removed static Svelte component import (UI component may not export JS helpers)
   // import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
 
@@ -21,27 +30,65 @@
 
   // Navigation structure
   const navItems: NavItem[] = [
-    { path: '/yorha', label: 'Command Center', icon: Terminal, description: 'Main YoRHa interface hub' },
-    { path: '/yorha/dashboard', label: 'System Dashboard', icon: Monitor, description: 'Live system monitoring' },
-    { path: '/yorha/components', label: 'UI Components', icon: Bot, description: '3D UI component gallery' },
-    { path: '/yorha/api-test', label: 'API Testing', icon: Cpu, description: 'Live API integration tests' },
-    { path: '/yorha/terminal', label: 'Terminal', icon: Terminal, description: 'YoRHa command terminal' },
-    { path: '/yorha/data-grid', label: 'Data Grid', icon: Database, description: 'Advanced data visualization' },
-    { path: '/yorha/search', label: 'Vector Search', icon: Search, description: 'Semantic search interface' },
-    { path: '/yorha/chat', label: 'AI Chat', icon: Bot, description: 'Enhanced AI conversation' }
+    {
+      path: '/yorha',
+      label: 'Command Center',
+      icon: Terminal,
+      description: 'Main YoRHa interface hub',
+    },
+    {
+      path: '/yorha/dashboard',
+      label: 'System Dashboard',
+      icon: Monitor,
+      description: 'Live system monitoring',
+    },
+    {
+      path: '/yorha/components',
+      label: 'UI Components',
+      icon: Bot,
+      description: '3D UI component gallery',
+    },
+    {
+      path: '/yorha/api-test',
+      label: 'API Testing',
+      icon: Cpu,
+      description: 'Live API integration tests',
+    },
+    {
+      path: '/yorha/terminal',
+      label: 'Terminal',
+      icon: Terminal,
+      description: 'YoRHa command terminal',
+    },
+    {
+      path: '/yorha/data-grid',
+      label: 'Data Grid',
+      icon: Database,
+      description: 'Advanced data visualization',
+    },
+    {
+      path: '/yorha/search',
+      label: 'Vector Search',
+      icon: Search,
+      description: 'Semantic search interface',
+    },
+    { path: '/yorha/chat', label: 'AI Chat', icon: Bot, description: 'Enhanced AI conversation' },
   ];
 
   // runtime-safe fetch helper (try dynamic JS module first, then fetch API)
   async function fetchYoRhaStatus(): Promise<any | null> {
     try {
       // Cast to any so TypeScript doesn't enforce a specific shape on the imported module.
-      const mod = (await import('$lib/components/three/yorha-ui/api/YoRHaAPIClient').catch(() => null)) as any;
+      const mod = (await import('$lib/components/three/yorha-ui/api/YoRHaAPIClient').catch(
+        () => null
+      )) as any;
       if (mod) {
         // Named exported function
         if (typeof mod.getSystemStatus === 'function') return await mod.getSystemStatus();
 
         // Default export function/object
-        if (mod?.default && typeof mod.default.getSystemStatus === 'function') return await mod.default.getSystemStatus();
+        if (mod?.default && typeof mod.default.getSystemStatus === 'function')
+          return await mod.default.getSystemStatus();
 
         // Class or object export: try static method first, then instance method
         if (mod?.YoRHaAPIClient) {
@@ -53,7 +100,8 @@
             }
             try {
               const instance = new Client();
-              if (typeof instance.getSystemStatus === 'function') return await instance.getSystemStatus();
+              if (typeof instance.getSystemStatus === 'function')
+                return await instance.getSystemStatus();
             } catch {
               // ignore construction failures and continue to fallback
             }
@@ -78,7 +126,8 @@
 
     afterNavigate((nav) => {
       try {
-        currentPath = nav?.to?.url?.pathname ?? (typeof window !== 'undefined' ? window.location.pathname : '');
+        currentPath =
+          nav?.to?.url?.pathname ?? (typeof window !== 'undefined' ? window.location.pathname : '');
       } catch {
         currentPath = '';
       }
@@ -92,10 +141,10 @@
         const services = Array.isArray(s.services)
           ? s.services.length
           : typeof s.serviceCount === 'number'
-          ? s.serviceCount
-          : typeof s.servicesCount === 'number'
-          ? s.servicesCount
-          : 0;
+            ? s.serviceCount
+            : typeof s.servicesCount === 'number'
+              ? s.servicesCount
+              : 0;
         systemStatus = { connected: !!status, services, errors: s.errors ?? 0 };
       } catch (error) {
         console.warn('YoRHa API not available:', error);
@@ -113,7 +162,9 @@
     if (path === '/yorha') return currentPath === '/yorha';
     return currentPath === path || currentPath.startsWith(path + '/');
   }
-  function closeSidebar() { sidebarOpen = false; }
+  function closeSidebar() {
+    sidebarOpen = false;
+  }
   function handleSidebarKeydown(e: KeyboardEvent) {
     if (e.key === 'Enter' || e.key === ' ') {
       closeSidebar();
@@ -125,13 +176,16 @@
   <header class="yorha-header">
     <div class="yorha-header-content">
       <!-- changed: use onclick (runes) instead of, deprecated; onclick -->
-      <button class="yorha-menu-toggle"
+      <button
+        class="yorha-menu-toggle"
         aria-label="Open sidebar"
-        onclick={() => (sidebarOpen = true)} >
-        <Terminal size={ 16 } /> </button>
+        onclick={() => (sidebarOpen = true)}
+      >
+        <Terminal size={16} />
+      </button>
       <div class="yorha-brand">
         <span class="yorha-brand-icon">
-          <Terminal size={ 32 } />
+          <Terminal size={32} />
         </span>
         <span class="yorha-brand-title">YoRHa Interface</span>
       </div>
@@ -165,7 +219,12 @@
       aria-label="Close sidebar overlay"
     ></div>
 
-    <div class="yorha-sidebar" role="dialog" aria-label="YoRHa Sidebar" class:yorha-sidebar-open={sidebarOpen}>
+    <div
+      class="yorha-sidebar"
+      role="dialog"
+      aria-label="YoRHa Sidebar"
+      class:yorha-sidebar-open={sidebarOpen}
+    >
       <nav class="yorha-nav" aria-label="Main navigation">
         <div class="yorha-nav-header">
           <h2>Navigation</h2>
@@ -214,7 +273,9 @@
     background-color: #000;
     color: #f59e0b; /* amber-400 */
     font-family: 'Courier New', monospace;
-    background-image: radial-gradient(circle at 20% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 191, 0, 0.03) 0%, transparent 50%);
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 191, 0, 0.03) 0%, transparent 50%);
   }
 
   /* Header */
@@ -229,7 +290,7 @@
     justify-content: space-between; /* fixed typo */
     padding: 1rem 1.5rem;
     z-index: 40;
-    background: linear-gradient(180deg, rgba(0,0,0,0.6), rgba(0,0,0,0.2));
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
     border-bottom: 1px solid rgba(245, 158, 11, 0.06);
   }
 
@@ -253,7 +314,9 @@
     color: #f59e0b;
     background: transparent;
     border: 1px solid rgba(245, 158, 11, 0.3);
-    transition: color 0.15s ease, border-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
     cursor: pointer;
   }
   :global(.yorha-menu-toggle:hover) {
@@ -383,7 +446,9 @@
     text-decoration: none;
     border: none;
     cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
   }
   :global(.yorha-nav-link:hover) {
     background: rgba(245, 158, 11, 0.1);
@@ -463,5 +528,3 @@
     }
   }
 </style>
-
-

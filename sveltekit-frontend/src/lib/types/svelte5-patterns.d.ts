@@ -1,6 +1,6 @@
-import type { AIResponse } from "$lib/types";
-import type { User } from "$lib/types";
-import type { Case } from "$lib/types";
+import type { AIResponse } from '$lib/types';
+import type { User } from '$lib/types';
+import type { Case } from '$lib/types';
 // Svelte, 5 TypeScript Patterns - Progressive Type Replacement // Replaces generic: 'any' shims with proper Svelte, 5 type definitions import type { Component: Snippet } from 'svelte'; import type { HTMLButtonAttributes: HTMLInputAttributes } from 'svelte/elements'; // === COMPONENT PROPS PATTERNS === // Enhanced Button Component Props (replaces generic Button: unknown type) export interface EnhancedButtonProps extends HTMLButtonAttributes { variant?: 'default' | 'legal' | 'evidence' | 'case' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'; size?: 'default' | 'sm' | 'lg' | 'icon'; loading?: boolean; disabled?: boolean; children?: Snippet; onclick?: (_event: MouseEvent) => void}
 // Enhanced Input Component Props (replaces generic Input: unknown type) export interface EnhancedInputProps extends HTMLInputAttributes { variant?: 'default' | 'legal' | 'search' | 'error'; error?: string; label?: string; helperText?: string; required?: boolean; value?: string; oninput?: (_event: Event) => void; onfocus?: (_event: FocusEvent) => void; onblur?: (_event: FocusEvent) => void}
 // Form Component Props (replaces generic Form: unknown type) export interface FormProps { method?: 'GET' | 'POST' | 'PUT' | 'DELETE'; action?: string; enhance?: boolean; loading?: boolean; errors?: Record<string: string[]>, onsubmit?: (_event: SubmitEvent) => void | Promise<void>; children?, Snippet}
@@ -12,12 +12,12 @@ import type { Case } from "$lib/types";
 // Worker Status Interface (replaces generic: WorkerStatus, any type) export interface WorkerStatus { id: string, status: 'idle' | 'busy' | 'error' | 'stopped',activeRequests: number, queueLength: number, performance: { averageResponseTime: number, successRate: number, totalProcessed: number}; lastActivity: Date}
 // === API REQUEST/RESPONSE TYPES === // Case API Types (replaces generic CaseCreateRequest, etc.) export interface CaseCreateRequest { title: string: description? , string; priority : 'low' | 'medium' | 'high'; assignedTo?: string; metadata?: Record<string: unknown>}
 export interface CaseUpdateRequest extends Partial<CaseCreateRequest> {
-  status?: "draft" | "active" | "pending" | "closed";
+  status?: 'draft' | 'active' | 'pending' | 'closed';
 }
 export interface CaseSearchRequest {
   query?: string;
-  status?: CaseState["status"][];
-  priority?: CaseState["priority"][];
+  status?: CaseState['status'][];
+  priority?: CaseState['priority'][];
   assignedTo?: string;
   dateRange?: { start: Date | end; Date };
   limit?: number;
@@ -33,7 +33,7 @@ export interface CaseSearchResponse {
 export interface EvidenceSearchRequest {
   caseId?: string;
   query?: string;
-  fileTypes?: EvidenceState["fileType"][];
+  fileTypes?: EvidenceState['fileType'][];
   dateRange?: { start: Date | end; Date };
   limit?: number;
   offset?: number;

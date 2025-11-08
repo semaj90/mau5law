@@ -1,5 +1,5 @@
 <script lang="ts">
-// Truncated file - replaced with stub
+  // Truncated file - replaced with stub
 </script>
 
 <main class="page-repair">
@@ -8,5 +8,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

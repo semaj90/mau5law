@@ -29,32 +29,39 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
 
 <svelte:head>
   <title>State Persistence Management - Legal AI Platform</title>
-  <meta name="description" content="Manage XState persistence, restoration, and, state, hydration" />
+  <meta
+    name="description"
+    content="Manage XState persistence, restoration, and, state, hydration"
+  />
 </svelte:head>
 <div class="page-container">
   <header class="page-header">
     <div class="header-content">
       <div class="breadcrumb">
         <a href="/state/machines" class="breadcrumb-link">State Machines</a>
-        <span class="breadcrumb-separator">â†’</span> <span class="breadcrumb-current">Persistence</span>
+        <span class="breadcrumb-separator">â†’</span>
+        <span class="breadcrumb-current">Persistence</span>
       </div>
       <h1>ðŸ’¾ State Persistence Manager</h1>
       <p>Manage state snapshots, restoration, and hydration across the legal AI platform</p>
     </div>
     <div class="stats-grid">
       <div class="stat-nier-bits-card">
-        <span class="stat-number">{persistedStates.length}</span> <span class="stat-label">Persisted States</span>
+        <span class="stat-number">{persistedStates.length}</span>
+        <span class="stat-label">Persisted States</span>
       </div>
       <div class="stat-nier-bits-card">
-        <span class="stat-number">{formatBytes(persistedStates.reduce((sum, s) => sum + s.size, 0))}</span>
+        <span class="stat-number"
+          >{formatBytes(persistedStates.reduce((sum, s) => sum + s.size, 0))}</span
+        >
         <span class="stat-label">Total Storage</span>
       </div>
       <div class="stat-nier-bits-card">
-        <span class="stat-number">{new Set(persistedStates.map(s => s.machineId)).size}</span>
+        <span class="stat-number">{new Set(persistedStates.map((s) => s.machineId)).size}</span>
         <span class="stat-label">Machines</span>
       </div>
       <div class="stat-nier-bits-card">
-        <span class="stat-number">{new Set(persistedStates.map(s => s.userId)).size}</span>
+        <span class="stat-number">{new Set(persistedStates.map((s) => s.userId)).size}</span>
         <span class="stat-label">Users</span>
       </div>
     </div>
@@ -68,7 +75,10 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
     {:else if persistedStates.length === 0}
       <div class="empty-state">
         <h2>ðŸ’¾ No Persisted States</h2>
-        <p>No state snapshots have been saved yet. States are automatically persisted during critical transitions.</p>
+        <p>
+          No state snapshots have been saved yet. States are automatically persisted during critical
+          transitions.
+        </p>
       </div>
     {:else}
       <div class="states-grid">
@@ -84,7 +94,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
                 role="button"
                 tabindex="0"
                 onclick={() => (selectedState = selectedState?.id === state.id ? null : state)}
-                onkeydown={e => {
+                onkeydown={(e) => {
                   // Activate on Enter or Space for keyboard users if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectedState = selectedState?.id === state.id ? null: state}
                 }}
               >
@@ -100,13 +110,16 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
                 </div>
                 <div class="state-details">
                   <div class="detail-row">
-                    <span class="detail-label">ID:</span> <span class="detail-value"><code>{state.id}</code></span>
+                    <span class="detail-label">ID:</span>
+                    <span class="detail-value"><code>{state.id}</code></span>
                   </div>
                   <div class="detail-row">
-                    <span class="detail-label">User:</span> <span class="detail-value">{state.userId}</span>
+                    <span class="detail-label">User:</span>
+                    <span class="detail-value">{state.userId}</span>
                   </div>
                   <div class="detail-row">
-                    <span class="detail-label">Version</span> <span class="detail-value">{state.version}</span>
+                    <span class="detail-label">Version</span>
+                    <span class="detail-value">{state.version}</span>
                   </div>
                   <div class="detail-row">
                     <span class="detail-label">Checksum:</span>
@@ -116,7 +129,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
                 <div class="state-actions">
                   <button
                     class="nes-btn"
-                    onclick={e => {
+                    onclick={(e) => {
                       e.stopPropagation();
                       void restoreState(state.id);
                     }}
@@ -126,7 +139,7 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
                   </button>
                   <button
                     class="nes-btn"
-                    onclick={e => {
+                    onclick={(e) => {
                       e.stopPropagation();
                       void deletePersistedState(state.id);
                     }}
@@ -148,7 +161,11 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
               <div class="inspector-content">
                 <div class="context-viewer">
                   <h4>State Context</h4>
-                  <pre class="context-display">{JSON.stringify(selectedState.context, null, 2)}</pre>
+                  <pre class="context-display">{JSON.stringify(
+                      selectedState.context,
+                      null,
+                      2
+                    )}</pre>
                 </div>
                 <div class="metadata-viewer">
                   <h4>Metadata</h4>
@@ -175,7 +192,9 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
                     </div>
                     <div class="metadata-item">
                       <span class="metadata-label">Timestamp:</span>
-                      <span class="metadata-value">{new Date(selectedState.timestamp).toLocaleString()}</span>
+                      <span class="metadata-value"
+                        >{new Date(selectedState.timestamp).toLocaleString()}</span
+                      >
                     </div>
                   </div>
                 </div>
@@ -189,67 +208,326 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported // 
 </div>
 
 <style>
- /* Load local fonts from the static/ folder */ @font-face { font-family: "Inter"; src: url("@/sveltekit-frontend/static/fonts/Inter-Variable.woff2") format("woff2"), url("@/sveltekit-frontend/static/fonts/Inter-Regular.woff") format("woff"); font-weight: 100 900; font-style: normal; font-display: swap}
-@font-face { font-family: "SF Mono"; src: url("@/sveltekit-frontend/static/fonts/SFMono-Regular.woff2") format("woff2"), url("@/sveltekit-frontend/static/fonts/SFMono-Regular.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap}
+  /* Load local fonts from the static/ folder */
+  @font-face {
+    font-family: 'Inter';
+    src:
+      url('@/sveltekit-frontend/static/fonts/Inter-Variable.woff2') format('woff2'),
+      url('@/sveltekit-frontend/static/fonts/Inter-Regular.woff') format('woff');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'SF Mono';
+    src:
+      url('@/sveltekit-frontend/static/fonts/SFMono-Regular.woff2') format('woff2'),
+      url('@/sveltekit-frontend/static/fonts/SFMono-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
 
-/* use the local Inter as the page font; fall back to system fonts */ .page-container { max-width: 1600px; margin: 0 auto; padding: 2rem; font-family: "Inter", system-ui, -apple-system "Segoe UI"; Roboto: "Helvetica Neue", Arial}
+  /* use the local Inter as the page font; fall back to system fonts */
+  .page-container {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system 'Segoe UI';
+    roboto: 'Helvetica Neue', Arial;
+  }
 
-.page-header { margin-bottom: 2rem}
-  .header-content { margin-bottom: 1.5rem}
-  .breadcrumb { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.875rem; color: #6b7280}
-  .breadcrumb-link { color: #3b82f6; text-decoration: none}
-  .breadcrumb-link:hover { text-decoration: underline}
-  .breadcrumb-separator { color: #9ca3af}
-  .breadcrumb-current { font-weight: 500}
-  .page-header h1 { font-size: 2.5rem; color: #1f2937; margin-bottom: 0.5rem}
-  .page-header p { font-size: 1.125rem; color: #6b7280}
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem}
-  .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.5rem; text-align: center}
-  .stat-number { display: block; font-size: 2rem; font-weight: 700; color: #1f2937}
-  .stat-label { font-size: 0.875rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em}
-  .loading-state { text-align: center; padding: 4rem}
-  .spinner { width: 40px; height: 40px; border: 4px solid #f3f4f6; border-top: 4px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 1rem}
-  @keyframes spin { 0% { transform: rotate(0deg)} 100% { transform: rotate(360deg)} }
-  .empty-state { text-align: center; padding: 4rem; background: #f8fafc; border-radius: 12px; border: 2px dashed #cbd5e1}
-  .empty-state h2 { color: #374151; margin-bottom: 0.5rem}
-  .states-grid { display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start}
-  .states-list h2 { color: #1f2937; margin-bottom: 1rem}
-  .filter-controls { margin-bottom: 1.5rem}
-  .states-container { display: flex; flex-direction: column; gap: 1rem}
-  .state-card { background: white; border: 2px solid #e5e7eb; border-radius: 12px; padding: 1.5rem; cursor: pointer; transition: all 0.2s ease}
-  .state-card:hover { border-color: #d1d5db; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)}
-  .state-card.selected { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2)}
-  .state-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem}
-  .state-info { display: flex; align-items: center; gap: 1rem}
-  .state-title { font-size: 1.125rem; font-weight: 600; color: #1f2937; margin: 0}
-  .state-badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em}
-  .state-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.25rem; font-size: 0.875rem; color: #6b7280}
-  .state-size { font-weight: 500}
-  .state-details { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 8px}
-  .detail-row { display: flex; justify-content: space-between; align-items: center}
-  .detail-label { font-weight: 500; color: #374151; font-size: 0.875rem}
-  .detail-value { color: #6b7280; font-size: 0.875rem}
-  .detail-value code, .checksum { background: #e5e7eb; padding: 0.125rem 0.375rem; border-radius: 4px; font-family: "SF Mono", "SFMono-Regular", Menlo; Monaco: "Courier New", monospace; font-size: 0.75rem}
-  .checksum { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap}
-  .state-actions { display: flex; gap: 0.75rem}
-  .state-inspector { position: sticky; top: 2rem}
-  .inspector-card { border: 1px solid #e2e8f0; border-radius: 12px}
-  .inspector-subtitle { font-size: 0.875rem; color: #6b7280; margin: 0; font-family: 'SF Mono', 'Monaco', monospace}
-  .context-viewer { margin-bottom: 2rem}
-  .context-viewer h4 { font-weight: 600; color: #374151; margin-bottom: 0.75rem}
-  .context-display { background: #1f2937; color: #f9fafb; padding: 1rem; border-radius: 8px; font-size: 0.8rem; overflow-x: auto; margin: 0; max-height: 300px; overflow-y: auto}
-  .metadata-viewer h4 { font-weight: 600; color: #374151; margin-bottom: 0.75rem}
-  .metadata-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem}
-  .metadata-item { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: #f8fafc; border-radius: 6px}
-  .metadata-label { font-weight: 500; color: #374151; font-size: 0.875rem}
-  .metadata-value { color: #6b7280; font-size: 0.875rem; text-align: right}
-  @media (max-width: 1200px) { .states-grid { grid-template-columns: 1fr}
-    .state-inspector { position: static}
-  } @media (max-width: 768px) { .page-container { padding: 1rem}
-    .state-header { flex-direction: column; align-items: flex-start; gap: 1rem}
-    .state-actions { width: 100%; justify-content: space-between}
-    .stats-grid { grid-template-columns: repeat(2, 1fr)}
+  .page-header {
+    margin-bottom: 2rem;
+  }
+  .header-content {
+    margin-bottom: 1.5rem;
+  }
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  .breadcrumb-link {
+    color: #3b82f6;
+    text-decoration: none;
+  }
+  .breadcrumb-link:hover {
+    text-decoration: underline;
+  }
+  .breadcrumb-separator {
+    color: #9ca3af;
+  }
+  .breadcrumb-current {
+    font-weight: 500;
+  }
+  .page-header h1 {
+    font-size: 2.5rem;
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+  }
+  .page-header p {
+    font-size: 1.125rem;
+    color: #6b7280;
+  }
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .stat-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .stat-number {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+  .stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .loading-state {
+    text-align: center;
+    padding: 4rem;
+  }
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+  }
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .empty-state {
+    text-align: center;
+    padding: 4rem;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px dashed #cbd5e1;
+  }
+  .empty-state h2 {
+    color: #374151;
+    margin-bottom: 0.5rem;
+  }
+  .states-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+    align-items: start;
+  }
+  .states-list h2 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+  }
+  .filter-controls {
+    margin-bottom: 1.5rem;
+  }
+  .states-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .state-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .state-card:hover {
+    border-color: #d1d5db;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  .state-card.selected {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+  .state-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  .state-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .state-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin: 0;
+  }
+  .state-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .state-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  .state-size {
+    font-weight: 500;
+  }
+  .state-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+  }
+  .detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .detail-label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+  .detail-value {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+  .detail-value code,
+  .checksum {
+    background: #e5e7eb;
+    padding: 0.125rem 0.375rem;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'SFMono-Regular', Menlo;
+    monaco: 'Courier New', monospace;
+    font-size: 0.75rem;
+  }
+  .checksum {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .state-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+  .state-inspector {
+    position: sticky;
+    top: 2rem;
+  }
+  .inspector-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+  }
+  .inspector-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin: 0;
+    font-family: 'SF Mono', 'Monaco', monospace;
+  }
+  .context-viewer {
+    margin-bottom: 2rem;
+  }
+  .context-viewer h4 {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.75rem;
+  }
+  .context-display {
+    background: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    overflow-x: auto;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  .metadata-viewer h4 {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.75rem;
+  }
+  .metadata-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  .metadata-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: #f8fafc;
+    border-radius: 6px;
+  }
+  .metadata-label {
+    font-weight: 500;
+    color: #374151;
+    font-size: 0.875rem;
+  }
+  .metadata-value {
+    color: #6b7280;
+    font-size: 0.875rem;
+    text-align: right;
+  }
+  @media (max-width: 1200px) {
+    .states-grid {
+      grid-template-columns: 1fr;
+    }
+    .state-inspector {
+      position: static;
+    }
+  }
+  @media (max-width: 768px) {
+    .page-container {
+      padding: 1rem;
+    }
+    .state-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .state-actions {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 </style>
-
-

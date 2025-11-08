@@ -1,10 +1,10 @@
 /** Dynamic Navigation System - manages navigation state and programmatic utilities */
-import { writable, derived, get, type Writable, type Readable } from "svelte/store";
-import { goto, afterNavigate } from "$app/navigation";
-import { browser } from "$app/environment";
+import { writable, derived, get, type Writable, type Readable } from 'svelte/store';
+import { goto, afterNavigate } from '$app/navigation';
+import { browser } from '$app/environment';
 
 // Robust import for route registry: tolerate different export shapes (routeRegistry, RouteRegistry, default)
-import * as RouteRegistryModule from "./route-registry.js";
+import * as RouteRegistryModule from './route-registry.js';
 
 // Local lightweight types to avoid `any` and to make intent explicit
 interface RouteDescriptor {
@@ -76,14 +76,14 @@ export interface NavigationOptions {
 export interface NavigationGuard {
   name: string;
   condition: (to: string, from: string) => boolean | Promise<boolean>;
-  action?: "prevent" | "redirect" | "confirm";
+  action?: 'prevent' | 'redirect' | 'confirm';
   redirectTo?: string;
   message?: string;
 }
 
 export class DynamicNavigation {
   private state: Writable<NavigationState> = writable({
-    currentPath: "/",
+    currentPath: '/',
     previousPath: null,
     navigationHistory: [],
     breadcrumbs: [],
@@ -104,19 +104,19 @@ export class DynamicNavigation {
     if (browser) {
       // Use afterNavigate + window.location instead of deprecated `page` store
       // initial sync
-      this.updateCurrentPath(typeof window !== "undefined" ? window.location.pathname : "/");
+      this.updateCurrentPath(typeof window !== 'undefined' ? window.location.pathname : '/');
 
       // Listen to SvelteKit navigation completion events
       afterNavigate(() => {
         // Use window.location for deterministic path info
-        const pathname = typeof window !== "undefined" ? window.location.pathname : "/";
+        const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
         // route params from page store are deprecated here; ignore if not available
         this.updateCurrentPath(pathname);
       });
 
       // Browser navigation buttons
-      window.addEventListener("popstate", this.handlePopState.bind(this));
-      window.addEventListener("beforeunload", this.handleBeforeUnload.bind(this));
+      window.addEventListener('popstate', this.handlePopState.bind(this));
+      window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this));
     }
   }
 
@@ -128,7 +128,7 @@ export class DynamicNavigation {
   /** Navigate to a path */
   public async navigate(path: string, options: NavigationOptions = {}): Promise<void> {
     const currentState = get(this.state);
-    const from = currentState.currentPath || (browser ? window.location.pathname : "/");
+    const from = currentState.currentPath || (browser ? window.location.pathname : '/');
 
     // Guard bypass option
     if (!options.guardBypass) {
@@ -157,7 +157,7 @@ export class DynamicNavigation {
         this.addToHistory(path, options.state);
       }
     } catch (error) {
-      console.error("Navigation failed:", error);
+      console.error('Navigation failed:', error);
       throw error;
     } finally {
       this.state.update((s) => ({ ...s, isNavigating: false }));
@@ -174,7 +174,7 @@ export class DynamicNavigation {
     if (!route) {
       throw new Error(`Route not found: ${routeId}`);
     }
-    const template = route.route ?? route.path ?? "";
+    const template = route.route ?? route.path ?? '';
     const path = this.buildPath(String(template), params);
     await this.navigate(path, options);
   }
@@ -241,10 +241,10 @@ export class DynamicNavigation {
         const allowed = await Promise.resolve(guard.condition(to, from));
         if (!allowed) {
           // handle guard actions
-          if (guard.action === "redirect" && guard.redirectTo) {
+          if (guard.action === 'redirect' && guard.redirectTo) {
             return { allowed: true, redirectTo: guard.redirectTo };
           }
-          if (guard.action === "confirm" && guard.message) {
+          if (guard.action === 'confirm' && guard.message) {
             const confirmed = browser ? confirm(guard.message) : false;
             if (!confirmed) return { allowed: false };
             continue;
@@ -253,7 +253,7 @@ export class DynamicNavigation {
           return { allowed: false };
         }
       } catch (err) {
-        console.warn("Navigation guard threw an error, preventing navigation:", err);
+        console.warn('Navigation guard threw an error, preventing navigation:', err);
         return { allowed: false };
       }
     }
@@ -312,20 +312,20 @@ export class DynamicNavigation {
 
   /** Breadcrumb generation (simple, readable labels) */
   private generateBreadcrumbs(path: string, routeId?: string): BreadcrumbItem[] {
-    const segments = path.split("/").filter(Boolean);
+    const segments = path.split('/').filter(Boolean);
     const breadcrumbs: BreadcrumbItem[] = [];
     // home
-    breadcrumbs.push({ label: "Home", path: "/", isActive: path === "/" });
-    let currentPath = "";
+    breadcrumbs.push({ label: 'Home', path: '/', isActive: path === '/' });
+    let currentPath = '';
     for (let i = 0; i < segments.length; i++) {
       currentPath += `/${segments[i]}`;
       const isActive = i === segments.length - 1;
       let label = segments[i]
-        .split("-")
+        .split('-')
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-        .join(" ");
+        .join(' ');
       // attempt to use route metadata for label if available
-      const route = routeRegistry.getRoute(routeId ?? "");
+      const route = routeRegistry.getRoute(routeId ?? '');
       if (route && route.label) label = String(route.label);
       breadcrumbs.push({ label, path: currentPath, routeId: routeId, isActive });
     }
@@ -334,30 +334,30 @@ export class DynamicNavigation {
 
   /** Build path with parameter replacement for common patterns */
   private buildPath(template: string, params: Record<string, string>): string {
-    let path = template || "";
+    let path = template || '';
     // replace parameter patterns: :id, [id], [[id]] (simple)
     for (const [key, value] of Object.entries(params)) {
-      const v = String(value ?? "");
-      path = path.replace(new RegExp(`:${key}\\b`, "g"), v);
-      path = path.replace(new RegExp(`\\[\\[${key}\\]\\]`, "g"), v);
-      path = path.replace(new RegExp(`\\[${key}\\]`, "g"), v);
+      const v = String(value ?? '');
+      path = path.replace(new RegExp(`:${key}\\b`, 'g'), v);
+      path = path.replace(new RegExp(`\\[\\[${key}\\]\\]`, 'g'), v);
+      path = path.replace(new RegExp(`\\[${key}\\]`, 'g'), v);
     }
     // remove unresolved optional segments like /[[...]] or /[[id]]
-    path = path.replace(/\/\[\[[^\]]+\]\]/g, "");
+    path = path.replace(/\/\[\[[^\]]+\]\]/g, '');
     // clean double slashes
-    path = path.replace(/\/+/g, "/");
-    return path || "/";
+    path = path.replace(/\/+/g, '/');
+    return path || '/';
   }
 
   /** Handle popstate */
   private handlePopState(_e: PopStateEvent): void {
-    this.updateCurrentPath(browser ? window.location.pathname : "/");
+    this.updateCurrentPath(browser ? window.location.pathname : '/');
   }
 
   /** Handle beforeunload (confirm guards) */
   private handleBeforeUnload(e: BeforeUnloadEvent): string | void {
     for (const guard of this.guards.values()) {
-      if (guard.action === "confirm" && guard.message) {
+      if (guard.action === 'confirm' && guard.message) {
         e.preventDefault();
         // Some browsers require setting returnValue; use a narrower typed cast
         (e as BeforeUnloadEvent & { returnValue?: string }).returnValue = guard.message;
@@ -447,13 +447,13 @@ export function createRouteAwareNavigation(routeId: string) {
     isActive: derived([currentPath], ([path]) => {
       const route = routeRegistry.getRoute(routeId);
       if (!route) return false;
-      const routePath = route.route ?? route.path ?? "";
-      return path === routePath || path.startsWith(routePath + "/");
+      const routePath = route.route ?? route.path ?? '';
+      return path === routePath || path.startsWith(routePath + '/');
     }),
     href: derived(navigationState, (_nav) => {
       const route = routeRegistry.getRoute(routeId);
-      if (!route) return "#";
-      return route.route ?? route.path ?? "#";
+      if (!route) return '#';
+      return route.route ?? route.path ?? '#';
     }),
   };
 }

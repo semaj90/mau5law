@@ -6,12 +6,12 @@
  * to the dashboard for display and approval.
  */
 
-import { json } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-import { QdrantClient } from "@qdrant/js-client-rest";
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { QdrantClient } from '@qdrant/js-client-rest';
 
-const QDRANT_URL = process.env.QDRANT_URL || "http://localhost:6333";
-const COLLECTION_NAME = "ai_repair_suggestions";
+const QDRANT_URL = process.env.QDRANT_URL || 'http://localhost:6333';
+const COLLECTION_NAME = 'ai_repair_suggestions';
 
 interface RepairSuggestion {
   id: string;
@@ -21,7 +21,7 @@ interface RepairSuggestion {
   error_message: string;
   suggested_fix: string;
   confidence: number;
-  status: "pending" | "applied" | "rejected";
+  status: 'pending' | 'applied' | 'rejected';
   created_at: string;
 }
 
@@ -31,9 +31,9 @@ export const GET: RequestHandler = async ({ url }) => {
     const qdrant = new QdrantClient({ url: QDRANT_URL });
 
     // Parse query parameters
-    const status = url.searchParams.get("status") || "pending";
-    const limit = parseInt(url.searchParams.get("limit") || "50", 10);
-    const minConfidence = parseFloat(url.searchParams.get("min_confidence") || "0.5");
+    const status = url.searchParams.get('status') || 'pending';
+    const limit = parseInt(url.searchParams.get('limit') || '50', 10);
+    const minConfidence = parseFloat(url.searchParams.get('min_confidence') || '0.5');
 
     // Query Qdrant for repair suggestions
     const searchResult = await qdrant.scroll(COLLECTION_NAME, {
@@ -41,11 +41,11 @@ export const GET: RequestHandler = async ({ url }) => {
       filter: {
         must: [
           {
-            key: "status",
+            key: 'status',
             match: { value: status },
           },
           {
-            key: "confidence",
+            key: 'confidence',
             range: { gte: minConfidence },
           },
         ],
@@ -73,8 +73,8 @@ export const GET: RequestHandler = async ({ url }) => {
       min_confidence: minConfidence,
     });
   } catch (error) {
-    console.error("Failed to fetch repair suggestions:", error);
-    return json({ error: "Failed to fetch repair suggestions" }, { status: 500 });
+    console.error('Failed to fetch repair suggestions:', error);
+    return json({ error: 'Failed to fetch repair suggestions' }, { status: 500 });
   }
 };
 
@@ -83,7 +83,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const { id, status, applied_diff } = await request.json();
 
-    if (!["applied", "rejected"].includes(status)) {
+    if (!['applied', 'rejected'].includes(status)) {
       return json({ error: 'Invalid status. Must be "applied" or "rejected"' }, { status: 400 });
     }
 
@@ -105,18 +105,18 @@ export const POST: RequestHandler = async ({ request }) => {
       status,
     });
   } catch (error) {
-    console.error("Failed to update repair status:", error);
-    return json({ error: "Failed to update repair status" }, { status: 500 });
+    console.error('Failed to update repair status:', error);
+    return json({ error: 'Failed to update repair status' }, { status: 500 });
   }
 };
 
 // DELETE: Remove repair suggestion
 export const DELETE: RequestHandler = async ({ url }) => {
   try {
-    const id = url.searchParams.get("id");
+    const id = url.searchParams.get('id');
 
     if (!id) {
-      return json({ error: "Missing id parameter" }, { status: 400 });
+      return json({ error: 'Missing id parameter' }, { status: 400 });
     }
 
     const qdrant = new QdrantClient({ url: QDRANT_URL });
@@ -130,7 +130,7 @@ export const DELETE: RequestHandler = async ({ url }) => {
       id,
     });
   } catch (error) {
-    console.error("Failed to delete repair suggestion:", error);
-    return json({ error: "Failed to delete repair suggestion" }, { status: 500 });
+    console.error('Failed to delete repair suggestion:', error);
+    return json({ error: 'Failed to delete repair suggestion' }, { status: 500 });
   }
 };

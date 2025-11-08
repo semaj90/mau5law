@@ -1,4 +1,4 @@
-﻿import { z } from "zod";
+﻿import { z } from 'zod';
 
 // Zod schemas for vector search & RAG endpoints
 export const vectorSearchRequestSchema = z.object({
@@ -24,12 +24,12 @@ export const vectorSearchResponseSchema = z.object({
 
 // Schema for the RAG request payload
 export const ragRequestSchema = z.object({
-  query: z.string().min(1, "Query cannot be empty."),
+  query: z.string().min(1, 'Query cannot be empty.'),
   top_k: z.number().int().min(1).max(100).default(5).optional(),
   filter: z.record(z.any()).optional(), // Optional filters for metadata
-  user_id: z.string().uuid("Invalid user ID format.").optional(),
-  session_id: z.string().uuid("Invalid session ID format.").optional(),
-  context_strategy: z.enum(["hybrid", "vector_only", "keyword_only"]).default("hybrid").optional(),
+  user_id: z.string().uuid('Invalid user ID format.').optional(),
+  session_id: z.string().uuid('Invalid session ID format.').optional(),
+  context_strategy: z.enum(['hybrid', 'vector_only', 'keyword_only']).default('hybrid').optional(),
   return_documents: z.boolean().default(true).optional(),
   return_embeddings: z.boolean().default(false).optional(),
 });
@@ -59,7 +59,7 @@ export const similarCasesRequestSchema = z.object({
   userId: z.string().min(1).optional(),
   limit: z.number().int().positive().max(100).default(10),
   threshold: z.number().min(0).max(1).default(0.7),
-  caseId: z.string().uuid("Invalid case ID format.").optional(),
+  caseId: z.string().uuid('Invalid case ID format.').optional(),
 });
 
 // Minimal response schema to satisfy imports and provide type safety
@@ -79,7 +79,7 @@ export const similarCasesResponseSchema = z.object({
 });
 
 export const healthResponseSchema = z.object({
-  status: z.enum(["healthy", "degraded", "unhealthy"]).default("healthy"),
+  status: z.enum(['healthy', 'degraded', 'unhealthy']).default('healthy'),
 });
 
 export type VectorSearchRequest = z.infer<typeof vectorSearchRequestSchema>;

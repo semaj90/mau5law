@@ -42,6 +42,6 @@ export function getSSEStream(): ReadableStream<string> {
         clearInterval(heartbeat);
         listeners.delete(send);
       };
-    }
+    },
   });
 }

@@ -8,7 +8,7 @@ import type { User } from '$lib/types'; import { superForm } from 'sveltekit-sup
 </main>
 
 <style>
-.error-message {
+  .error-message {
     background: #f8d7da;
     color: #721c24;
     padding: 0.75rem;

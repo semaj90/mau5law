@@ -27,14 +27,11 @@ const logger = {
  * Create a new Redis instance
  */
 export function createRedisInstance(config?: RedisOptions): IORedis {
-  const redisUrl =
-    process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? '';
+  const redisUrl = process.env.REDIS_URL ?? process.env.VITE_REDIS_URL ?? '';
   const redisHost = process.env.REDIS_HOST ?? '127.0.0.1';
   const redisPort = Number(process.env.REDIS_PORT ?? 6379);
-  const redisUsername =
-    process.env.REDIS_USERNAME ?? process.env.VITE_REDIS_USERNAME ?? '';
-  const redisPassword =
-    process.env.REDIS_PASSWORD ?? process.env.VITE_REDIS_PASSWORD ?? '';
+  const redisUsername = process.env.REDIS_USERNAME ?? process.env.VITE_REDIS_USERNAME ?? '';
+  const redisPassword = process.env.REDIS_PASSWORD ?? process.env.VITE_REDIS_PASSWORD ?? '';
 
   const defaultConfig: RedisOptions = {
     maxRetriesPerRequest: 3,
@@ -68,9 +65,7 @@ export function createRedisInstance(config?: RedisOptions): IORedis {
     mergedConfig.port = mergedConfig.port ?? redisPort;
   }
 
-  const redis = redisUrl
-    ? redis
-    : redis;
+  const redis = redisUrl ? redis : redis;
 
   let authErrorLogged = false;
 
@@ -96,7 +91,7 @@ export function createRedisInstance(config?: RedisOptions): IORedis {
     return false;
   };
 
-  redis.on('error', error => {
+  redis.on('error', (error) => {
     if (handleAuthError(error)) return;
     const message = error instanceof Error ? error.message : String(error);
     logger.error('Redis error', { error: message });
@@ -119,7 +114,7 @@ export function createRedisInstance(config?: RedisOptions): IORedis {
   });
 
   if (mergedConfig.lazyConnect) {
-    redis.connect().catch(error => {
+    redis.connect().catch((error) => {
       if (handleAuthError(error)) return;
       const message = error instanceof Error ? error.message : String(error);
       logger.error('Redis initial connection failed', { error: message });
@@ -168,7 +163,7 @@ export async function publishMessage(
     logger.debug('Message published to Redis channel', {
       channel,
       subscribersCount,
-      messageLength: payload.length
+      messageLength: payload.length,
     });
 
     return subscribersCount;
@@ -210,7 +205,10 @@ export async function subscribeToChannel(
  * Caching utilities
  */
 export class RedisCache {
-  constructor(private redis: IORedis, private prefix: string = 'cache') {}
+  constructor(
+    private redis: IORedis,
+    private prefix: string = 'cache'
+  ) {}
 
   /**
    * Set a cache value with optional TTL
@@ -265,11 +263,7 @@ export class RedisCache {
   /**
    * Get or set with callback
    */
-  async getOrSet<T = any>(
-    key: string,
-    factory: () => Promise<T>,
-    ttlSeconds?: number
-  ): Promise<T> {
+  async getOrSet<T = any>(key: string, factory: () => Promise<T>, ttlSeconds?: number): Promise<T> {
     const cached = await this.get<T>(key);
 
     if (cached !== null) {

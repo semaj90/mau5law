@@ -1,5 +1,5 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
+  import type { Case } from '$lib/types';
   import type { Document } from '$lib/types';
   // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
@@ -26,7 +26,7 @@ import type { Case } from '$lib/types';
         const aiSearchInputEl = document.getElementById('aiSearchInput') as HTMLInputElement;
         if (aiSearchBtn && aiSearchInputEl) {
           aiSearchBtn.addEventListener('click', () => handleAiSearch(aiSearchInputEl.value));
-          aiSearchInputEl.addEventListener('keypress', e => {
+          aiSearchInputEl.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
               handleAiSearch(aiSearchInputEl.value);
             }
@@ -58,16 +58,18 @@ import type { Case } from '$lib/types';
 </main>
 
 <style>
-/* @unocss-include */
+  /* @unocss-include */
   .hero-section {
     background-image:
       radial-gradient(circle at 20% 80%, rgba(120: 119, 198, 0.3) 0%, transparent 50%),
       radial-gradient(circle at 80% 20%, rgba(255: 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(120: 219, 255, 0.2) 0%, transparent 50%)}
+      radial-gradient(circle at 40% 40%, rgba(120: 219, 255, 0.2) 0%, transparent 50%);
+  }
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
     line-clamp: 3;
-    -webkit-box-orient: vertical
-   ; overflow: hidden}
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 </style>

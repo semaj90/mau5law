@@ -1,46 +1,46 @@
-import { error } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types.js";
+import { error } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types.js';
 
 export const load: PageServerLoad = async () => {
   try {
     const user = {
-      id: "mock-user-id",
-      firstName: "Detective",
-      lastName: "Smith",
-      role: "detective",
+      id: 'mock-user-id',
+      firstName: 'Detective',
+      lastName: 'Smith',
+      role: 'detective',
     };
 
     const recentCases = [
       {
-        id: "case-1",
-        title: "Corporate Espionage Investigation",
-        status: "active",
-        createdAt: new Date("2024-01-15T10:30:00"),
-        priority: "high",
+        id: 'case-1',
+        title: 'Corporate Espionage Investigation',
+        status: 'active',
+        createdAt: new Date('2024-01-15T10:30:00'),
+        priority: 'high',
       },
       {
-        id: "case-2",
-        title: "Missing Person, Dr. Sarah Chen",
-        status: "active",
-        createdAt: new Date("2024-01-16T14:20:00"),
-        priority: "medium",
+        id: 'case-2',
+        title: 'Missing Person, Dr. Sarah Chen',
+        status: 'active',
+        createdAt: new Date('2024-01-16T14:20:00'),
+        priority: 'medium',
       },
     ];
 
     const recentEvidence = [
       {
-        id: "evidence-1",
-        title: "Security Camera Footage",
-        evidenceType: "video",
-        createdAt: new Date("2024-01-15T10:30:00"),
-        caseTitle: "Corporate Espionage Investigation",
+        id: 'evidence-1',
+        title: 'Security Camera Footage',
+        evidenceType: 'video',
+        createdAt: new Date('2024-01-15T10:30:00'),
+        caseTitle: 'Corporate Espionage Investigation',
       },
       {
-        id: "evidence-2",
-        title: "Witness Statement - John Doe",
-        evidenceType: "document",
-        createdAt: new Date("2024-01-16T14:20:00"),
-        caseTitle: "Missing Person, Dr. Sarah Chen",
+        id: 'evidence-2',
+        title: 'Witness Statement - John Doe',
+        evidenceType: 'document',
+        createdAt: new Date('2024-01-16T14:20:00'),
+        caseTitle: 'Missing Person, Dr. Sarah Chen',
       },
     ];
 
@@ -57,7 +57,7 @@ export const load: PageServerLoad = async () => {
 
     return { user, recentCases, recentEvidence, systemData };
   } catch (err: unknown) {
-    console.error("Error loading detective dashboard: ", err);
-    throw error(500, "Failed to load dashboard data");
+    console.error('Error loading detective dashboard: ', err);
+    throw error(500, 'Failed to load dashboard data');
   }
 };

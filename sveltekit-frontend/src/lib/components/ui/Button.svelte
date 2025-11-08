@@ -1,5 +1,16 @@
 <script lang="ts">
-// Truncated file - replaced with stub
+  type Variant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'; // Example variants, adjust as needed
+  let {
+    onclick,
+    variant = 'default',
+    class: className = '',
+    ...rest
+  }: {
+    onclick?: (event: MouseEvent) => void;
+    variant?: Variant;
+    class?: string;
+    [key: string]: any; // To capture any other passed props
+  } = $props();
 </script>
 
 <main class="page-repair">
@@ -7,6 +18,17 @@
   <p>This placeholder replaces corrupted or missing markup for now.</p>
 </main>
 
+<button
+  {onclick}
+  class="{className} {variant === 'outline' ? 'border border-gray-300' : ''}"
+  {...rest}
+>
+  <slot />
+</button>
+
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

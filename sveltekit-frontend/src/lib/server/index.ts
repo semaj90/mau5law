@@ -12,4 +12,4 @@ export interface MultimodalEmbedding {
     processingTime: number;
   };
 }
-export * from "../services/rabbitmq-service";
+export * from '../services/rabbitmq-service';

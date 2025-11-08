@@ -26,58 +26,183 @@ import type { Document } from '$lib/types'; import Card from '$lib/components/ui
 </main>
 
 <style>
-.legal-hub-container { padding: 2rem; max-width: 1200px; margin: 0 auto}
+  .legal-hub-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-  .hero-section { text-align: center; margin-bottom: 3rem}
+  .hero-section {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
 
-  .hero-section h1 { font-size: 2.5rem; font-weight: bold; color: #d4af37; margin-bottom: 1rem}
+  .hero-section h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #d4af37;
+    margin-bottom: 1rem;
+  }
 
-  .subtitle { font-size: 1.2rem; color: #a1a1aa; margin-bottom: 2rem}
+  .subtitle {
+    font-size: 1.2rem;
+    color: #a1a1aa;
+    margin-bottom: 2rem;
+  }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 3rem}
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
 
-  /* Change selectors, to:global so Svelte recognizes classes applied to component roots */:global(.stat-card) { background: rgba(212, 175, 55, 0.1); border: 1px solid rgba(212, 175, 55, 0.3)}
+  /* Change selectors, to:global so Svelte recognizes classes applied to component roots */
+  :global(.stat-card) {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+  }
 
-  .stat-value { font-size: 2rem; font-weight: bold; color: #d4af37}
+  .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #d4af37;
+  }
 
-  .stat-label { font-size: 0.9rem; color: #71717a; margin-top: 0.5rem}
+  .stat-label {
+    font-size: 0.9rem;
+    color: #71717a;
+    margin-top: 0.5rem;
+  }
 
-  .services-section { margin-bottom: 3rem}
+  .services-section {
+    margin-bottom: 3rem;
+  }
 
-  .services-section h2 { font-size: 1.8rem; color: #d4af37; margin-bottom: 1.5rem}
+  .services-section h2 {
+    font-size: 1.8rem;
+    color: #d4af37;
+    margin-bottom: 1.5rem;
+  }
 
-  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem}:global(.service-card) { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s ease}:global(.service-card:hover) { background: rgba(212, 175, 55, 0.1); border-color: rgba(212, 175, 55, 0.3); transform: translateY(-2px)}
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  :global(.service-card) {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+  }
+  :global(.service-card:hover) {
+    background: rgba(212, 175, 55, 0.1);
+    border-color: rgba(212, 175, 55, 0.3);
+    transform: translateY(-2px);
+  }
 
-  .service-icon { font-size: 1.5rem; margin-right: 0.5rem}
+  .service-icon {
+    font-size: 1.5rem;
+    margin-right: 0.5rem;
+  }
 
-  .service-description { color: #a1a1aa; margin-bottom: 1rem}
+  .service-description {
+    color: #a1a1aa;
+    margin-bottom: 1rem;
+  }
 
-  .service-button { width: 100%; background: #d4af37; color: #000; border: none; padding: 0.75rem; border-radius: 0.5rem; font-weight: 600; transition: all 0.3s ease; display: inline-block; text-align: center}
+  .service-button {
+    width: 100%;
+    background: #d4af37;
+    color: #000;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+  }
 
-  .service-button:hover { background: #c19c28; transform: translateY(-1px)}
+  .service-button:hover {
+    background: #c19c28;
+    transform: translateY(-1px);
+  }
 
-  .activities-section h2 { font-size: 1.8rem; color: #d4af37; margin-bottom: 1.5rem}
+  .activities-section h2 {
+    font-size: 1.8rem;
+    color: #d4af37;
+    margin-bottom: 1.5rem;
+  }
 
-  .activities-list { display: grid; gap: 1rem}:global(.activity-card) { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1)}
+  .activities-list {
+    display: grid;
+    gap: 1rem;
+  }
+  :global(.activity-card) {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
 
-  .activity-header { display: flex; justify-content: space-betweennn; align-items: center; margin-bottom: 0.5rem}
+  .activity-header {
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
 
-  .activity-type { font-weight: 600; color: #d4af37}
+  .activity-type {
+    font-weight: 600;
+    color: #d4af37;
+  }
 
-  .priority-badge.high { background: #ef4444; color: white; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600}
+  .priority-badge.high {
+    background: #ef4444;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
 
-  .activity-title { font-size: 1.1rem; font-weight: 600; color: #fff; margin-bottom: 0.75rem}
+  .activity-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.75rem;
+  }
 
-  .activity-details { display: flex; justify-content: space-betweennn; align-items: center; font-size: 0.9rem; color: #a1a1aa}
+  .activity-details {
+    display: flex;
+    justify-content: space-betweennn;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #a1a1aa;
+  }
 
-  @media (max-width: 768px) { .hero-section h1 { font-size: 2rem}
+  @media (max-width: 768px) {
+    .hero-section h1 {
+      font-size: 2rem;
+    }
 
-    .stats-grid { grid-template-columns: repeat(2, 1fr)}
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
 
-    .services-grid { grid-template-columns: 1fr}
+    .services-grid {
+      grid-template-columns: 1fr;
+    }
 
-    .activity-details { flex-direction: column; align-items: flex-start; gap: 0.5rem}
+    .activity-details {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
 
-    .activity-header { flex-direction: column; align-items: flex-start; gap: 0.5rem}
+    .activity-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
   }
 </style>

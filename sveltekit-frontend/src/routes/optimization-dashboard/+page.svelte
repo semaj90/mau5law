@@ -164,12 +164,19 @@ import { onMount } from 'svelte';
 </main>
 
 <style>
-/* Custom scrollbar for webkit browsers */
+  /* Custom scrollbar for webkit browsers */
   ::-webkit-scrollbar {
-    width: 8px}
-  ::-webkit-scrollbar-track { background: rgb(30, 41 59);
-    border-radius: 4px}
-  ::-webkit-scrollbar-thumb { background: rgb(100, 116 139);
-    border-radius: 4px}
-  ::-webkit-scrollbar-thumb:hover { background: rgb(148, 163 184)}
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgb(30, 41 59);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(100, 116 139);
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(148, 163 184);
+  }
 </style>

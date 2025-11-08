@@ -30,4 +30,3 @@ export const getGoServiceBase = (serviceName?: string) => {
   }
   return process.env.GO_MICROSERVICE_URL || 'http://localhost:8080'; // Added a default localhost fallback
 };
-

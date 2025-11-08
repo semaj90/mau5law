@@ -1,5 +1,5 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   import EnhancedEvidenceBoard from '$lib/components/evidence/EnhancedEvidenceBoard.svelte';
   import Button from '$lib/components/ui/Button.svelte';
   import Card from '$lib/components/ui/enhanced-bits.svelte';
@@ -19,7 +19,7 @@
 </main>
 
 <style>
-.evidence-page-container {
+  .evidence-page-container {
     min-height: 100vh;
     position: relative;
   }

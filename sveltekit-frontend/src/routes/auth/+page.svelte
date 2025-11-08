@@ -16,5 +16,8 @@
 </main>
 
 <style>
-/* Custom checkbox styling for better visibility */ input[type='checkbox'] { accent-color: #eab308}
+  /* Custom checkbox styling for better visibility */
+  input[type='checkbox'] {
+    accent-color: #eab308;
+  }
 </style>

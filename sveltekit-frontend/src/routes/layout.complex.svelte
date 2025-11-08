@@ -1,4 +1,4 @@
-﻿<script lang="ts">
+﻿<script lang="ts" runes>
   import '../app.css';
   import '../lib/styles/modern-yorha-theme.css';
   import { setContext } from 'svelte';
@@ -15,14 +15,14 @@
     sidebarOpen: () => sidebarOpen,
     setSidebarOpen: (v: boolean) => (sidebarOpen = v),
     toggleSidebar: () => (sidebarOpen = !sidebarOpen),
-    toggleTheme: () => (theme = theme === 'dark' ? 'light' : 'dark')
+    toggleTheme: () => (theme = theme === 'dark' ? 'light' : 'dark'),
   });
 
   // Nav props object typed as any to avoid strict prop-type mismatch errors on the component
   let navProps: any = {
     sidebarOpen: () => sidebarOpen,
     setSidebarOpen: (v: boolean) => (sidebarOpen = v),
-    toggleSidebar: () => (sidebarOpen = !sidebarOpen)
+    toggleSidebar: () => (sidebarOpen = !sidebarOpen),
   };
 
   $effect(() => {
@@ -34,7 +34,7 @@
     navProps = {
       sidebarOpen: () => sidebarOpen,
       setSidebarOpen: (v: boolean) => (sidebarOpen = v),
-      toggleSidebar: () => (sidebarOpen = !sidebarOpen)
+      toggleSidebar: () => (sidebarOpen = !sidebarOpen),
     };
   });
 </script>
@@ -45,7 +45,11 @@
     <Navigation {...navProps} />
   </header>
 
-  <aside class="app-sidebar transition-transform" class:sidebar-hidden={!sidebarOpen} style="grid-area: sidebar;">
+  <aside
+    class="app-sidebar transition-transform"
+    class:sidebar-hidden={!sidebarOpen}
+    style="grid-area: sidebar;"
+  >
     <nav class="sidebar-nav">
       <div class="space-y-golden">
         <a href="/" class="yorha-nav-item">Home</a>
@@ -58,7 +62,7 @@
 
   <main class="app-main" style="grid-area: main;">
     <div class="container">
-      {@render children}
+      <slot />
     </div>
   </main>
 
@@ -74,21 +78,53 @@
 </div>
 
 <style>
-  .app-layout { min-height: 100vh; }
-  .app-header { background: var(--yorha-bg-secondary); border-bottom: 1px solid var(--yorha-border-primary); box-shadow: var(--yorha-shadow-sm); }
-  .app-sidebar { background: var(--yorha-bg-secondary); border-right: 1px solid var(--yorha-border-primary); overflow-y: auto; }
-  .app-main { background: var(--yorha-bg-primary); overflow-y: auto; position: relative; }
-  .app-footer { background: var(--yorha-bg-tertiary); border-top: 1px solid var(--yorha-border-primary); font-size: var(--text-sm); }
-  .sidebar-nav { height: 100%; }
+  .app-layout {
+    min-height: 100vh;
+  }
+  .app-header {
+    background: var(--yorha-bg-secondary);
+    border-bottom: 1px solid var(--yorha-border-primary);
+    box-shadow: var(--yorha-shadow-sm);
+  }
+  .app-sidebar {
+    background: var(--yorha-bg-secondary);
+    border-right: 1px solid var(--yorha-border-primary);
+    overflow-y: auto;
+  }
+  .app-main {
+    background: var(--yorha-bg-primary);
+    overflow-y: auto;
+    position: relative;
+  }
+  .app-footer {
+    background: var(--yorha-bg-tertiary);
+    border-top: 1px solid var(--yorha-border-primary);
+    font-size: var(--text-sm);
+  }
+  .sidebar-nav {
+    height: 100%;
+  }
 
   @media (max-width: 768px) {
     .app-layout {
       /* Mobile: single-column layout */
-      grid-template-areas: "header" "main" "footer";
+      grid-template-areas: 'header' 'main' 'footer';
       grid-template-columns: 1fr;
     }
-    .app-sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 16rem; z-index: 50; transform: translateX(-100%); }
-    .app-sidebar:not(.sidebar-hidden) { transform: translateX(0); }
-    .app-main { padding-top: 0; }
+    .app-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 16rem;
+      z-index: 50;
+      transform: translateX(-100%);
+    }
+    .app-sidebar:not(.sidebar-hidden) {
+      transform: translateX(0);
+    }
+    .app-main {
+      padding-top: 0;
+    }
   }
 </style>

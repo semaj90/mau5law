@@ -1,5 +1,5 @@
 <script lang="ts">
-// Svelte 5 runes are auto-imported
+  // Svelte 5 runes are auto-imported
   // import type { Case } from '$lib/types'; // 'Case' is declared but its value is never read.
   // import { onMount } from 'svelte'; // onMount is not used.
 
@@ -24,11 +24,19 @@
         }),
       });
       const result = await res.json();
-      if ((result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).success) {
-        summary = (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).summary;
+      if (
+        (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown })
+          .success
+      ) {
+        summary = (
+          result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }
+        ).summary;
         confidence =
-          (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata?.confidence || 0.85;
-        ragScore = (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).metadata?.ragScore || 0.82;
+          (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown })
+            .metadata?.confidence || 0.85;
+        ragScore =
+          (result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown })
+            .metadata?.ragScore || 0.82;
       } else {
         summary = `API Error: ${(result as { success?: unknown; summary?: unknown; metadata?: unknown; error?: unknown }).error}`;
       }
@@ -63,5 +71,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

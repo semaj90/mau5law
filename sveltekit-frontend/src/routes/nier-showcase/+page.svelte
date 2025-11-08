@@ -27,14 +27,19 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Hero, Section -->
     <section class="text-center py-12">
-      <h1 class="text-5xl md:text-6xl font-display font-bold nier-heading mb-4">YoRHa Legal Division</h1>
+      <h1 class="text-5xl md:text-6xl font-display font-bold nier-heading mb-4">
+        YoRHa Legal Division
+      </h1>
       <p class="text-xl text-nier-gray dark:text-nier-silver mb-8" style="animation-delay: 0.2s">
         Advanced Case Management System â€¢ For the Glory of Mankind
       </p>
       <div class="flex justify-center gap-4" style="animation-delay: 0.4s">
         <button onclick={() => (showAIAssistant = true)} class="nier-button-digital px-6 py-3">
           <span class="mr-2">ðŸ¤–</span> Launch AI Assistant
-        </button> <a href="#showcase" class="nier-button-outline px-6 py-3 text-nier-black"> View Components </a>
+        </button>
+        <a href="#showcase" class="nier-button-outline px-6 py-3 text-nier-black">
+          View Components
+        </a>
       </div>
     </section>
     <!-- Stats, Overview -->
@@ -80,7 +85,9 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     <section id="showcase" class="py-12">
       <div class="text-center">
         <h2 class="text-3xl font-display font-bold nier-heading">Component Showcase</h2>
-        <p class="text-lg text-nier-gray">Explore the complete, NieR: Automata themed component library</p>
+        <p class="text-lg text-nier-gray">
+          Explore the complete, NieR: Automata themed component library
+        </p>
       </div>
       {#if NierThemeShowcase}
         <NierThemeShowcase />
@@ -102,18 +109,26 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
           </p>
         </div>
         <div class="text-center">
-          <div class="w-20 h-20 mx-auto mb-4 bg-nier-gradient-crimson rounded-2xl flex items-center justify-center">
+          <div
+            class="w-20 h-20 mx-auto mb-4 bg-nier-gradient-crimson rounded-2xl flex items-center justify-center"
+          >
             ðŸ§
           </div>
           <h3 class="text-xl font-semibold">AI-Powered Analysis</h3>
-          <p class="text-sm text-nier-gray">Advanced pattern recognition and predictive analytics for case insights</p>
+          <p class="text-sm text-nier-gray">
+            Advanced pattern recognition and predictive analytics for case insights
+          </p>
         </div>
         <div class="text-center">
-          <div class="w-20 h-20 mx-auto mb-4 bg-nier-gradient-gold rounded-2xl flex items-center justify-center">
+          <div
+            class="w-20 h-20 mx-auto mb-4 bg-nier-gradient-gold rounded-2xl flex items-center justify-center"
+          >
             âš¡
           </div>
           <h3 class="text-xl font-semibold">Real-time Collaboration</h3>
-          <p class="text-sm text-nier-gray">Seamless team coordination with live updates and shared workspaces</p>
+          <p class="text-sm text-nier-gray">
+            Seamless team coordination with live updates and shared workspaces
+          </p>
         </div>
       </div>
     </section>
@@ -157,5 +172,3 @@ import type { Case } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
     animation: fade-in 0.6s ease-out forward;
   }
 </style>
-
-

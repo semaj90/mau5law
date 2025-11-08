@@ -2,7 +2,7 @@
   createMachine,
   assign,
   fromPromise,
-} from "xstate";
+} from 'xstate';
 
 // runtime browser flag used during focused checks
 
@@ -10,7 +10,7 @@
 type AmqplibConnection = {
   createChannel: () => Promise<Channel>;
   close: () => Promise<void>;
-  on?: (event: "error" | "close" | string, cb: (...args: unknown[]) => void) => void;
+  on?: (event: 'error' | 'close' | string, cb: (...args: unknown[]) => void) => void;
 };
 
 // Define the AmqplibModule interface for dynamic import typing
@@ -76,7 +76,7 @@ type ConsumeMessage = {
 // --- Simplified/cleaned types (kept for compatibility) ---
 export interface ConversationEntry {
   id: string;
-  type: "user" | "assistant" | "system";
+  type: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   metadata?: Record<string, unknown>;
@@ -116,7 +116,7 @@ type SemanticSearchContext = Record<string, unknown>;
 interface VectorSearchOptions {
   topK?: number;
   threshold?: number;
-  indexType?: "HNSW" | "IVF";
+  indexType?: 'HNSW' | 'IVF';
 }
 
 type LegalSearchFilters = Record<string, string | number | boolean>;
@@ -128,14 +128,14 @@ interface CaseContextPayload {
 }
 
 interface Context7Options {
-  depth?: "shallow" | "deep";
+  depth?: 'shallow' | 'deep';
   sources?: string[];
 }
 
 interface BenchmarkOptions {
   iterations?: number;
   targetService?: string;
-  type: "cpu" | "gpu" | "network" | "e2e";
+  type: 'cpu' | 'gpu' | 'network' | 'e2e';
 }
 
 interface ServiceScaleConfig {
@@ -147,7 +147,7 @@ interface ServiceScaleConfig {
 
 interface DocumentReference {
   id: string;
-  source: "minio" | "local";
+  source: 'minio' | 'local';
 }
 
 interface ModelTrainingConfig {
@@ -166,43 +166,43 @@ interface WorkflowPayload {
 interface Collaborator {
   userId: string;
   name: string;
-  role: "attorney" | "paralegal" | "viewer";
+  role: 'attorney' | 'paralegal' | 'viewer';
 }
 
 type AIAssistantEvent =
-  | { type: "SEND_MESSAGE"; message: string; useContext7?: boolean; caseId?: string }
-  | { type: "UPLOAD_DOCUMENT"; file: File; caseId?: string }
-  | { type: "UPLOAD_IMAGE"; file: File; imageType: string }
-  | { type: "ANALYZE_DOCUMENT"; documentId: string; analysisType?: string }
-  | { type: "CLEAR_CONVERSATION" }
-  | { type: "RETRY_LAST" }
-  | { type: "SET_MODEL"; model: string }
-  | { type: "SET_TEMPERATURE"; temperature: number }
-  | { type: "CHECK_SERVICE_HEALTH" }
-  | { type: "STOP_GENERATION" }
-  | { type: "STREAM_CHUNK"; chunk: string }
-  | { type: "STREAM_END"; summary?: string }
-  | { type: "PERFORM_OCR"; imageId: string }
-  | { type: "SEARCH_SEMANTIC"; query: string; context?: SemanticSearchContext }
-  | { type: "SEARCH_VECTOR"; query: string; options?: VectorSearchOptions }
-  | { type: "SEARCH_LEGAL"; query: string; filters?: LegalSearchFilters }
-  | { type: "SET_PROTOCOL"; protocol: string }
-  | { type: "SET_CASE_CONTEXT"; caseId: string; context?: CaseContextPayload }
-  | { type: "ANALYZE_WITH_CONTEXT7"; query: string; options?: Context7Options }
-  | { type: "CONNECT_RABBITMQ"; config?: { url?: string } }
-  | { type: "DISCONNECT_RABBITMQ" }
-  | { type: "BENCHMARK_PERFORMANCE"; options?: BenchmarkOptions }
-  | { type: "OPTIMIZE_RESOURCES" }
-  | { type: "SCALE_SERVICES"; scaleConfig?: ServiceScaleConfig }
-  | { type: "MEMORY_CLEANUP" }
-  | { type: "BATCH_ANALYZE_DOCUMENTS"; documents: DocumentReference[] }
-  | { type: "TRAIN_CUSTOM_MODEL"; modelConfig?: ModelTrainingConfig }
-  | { type: "EXECUTE_WORKFLOW"; workflow?: WorkflowPayload }
-  | { type: "COLLABORATION_USER_JOINED"; user: Collaborator }
-  | { type: "COLLABORATION_USER_LEFT"; user: Collaborator }
-  | { type: "CACHE_CLEAR" }
-  | { type: "PERFORMANCE_RESET" }
-  | { type: "ERROR_RECOVER"; errorId?: string };
+  | { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean; caseId?: string }
+  | { type: 'UPLOAD_DOCUMENT'; file: File; caseId?: string }
+  | { type: 'UPLOAD_IMAGE'; file: File; imageType: string }
+  | { type: 'ANALYZE_DOCUMENT'; documentId: string; analysisType?: string }
+  | { type: 'CLEAR_CONVERSATION' }
+  | { type: 'RETRY_LAST' }
+  | { type: 'SET_MODEL'; model: string }
+  | { type: 'SET_TEMPERATURE'; temperature: number }
+  | { type: 'CHECK_SERVICE_HEALTH' }
+  | { type: 'STOP_GENERATION' }
+  | { type: 'STREAM_CHUNK'; chunk: string }
+  | { type: 'STREAM_END'; summary?: string }
+  | { type: 'PERFORM_OCR'; imageId: string }
+  | { type: 'SEARCH_SEMANTIC'; query: string; context?: SemanticSearchContext }
+  | { type: 'SEARCH_VECTOR'; query: string; options?: VectorSearchOptions }
+  | { type: 'SEARCH_LEGAL'; query: string; filters?: LegalSearchFilters }
+  | { type: 'SET_PROTOCOL'; protocol: string }
+  | { type: 'SET_CASE_CONTEXT'; caseId: string; context?: CaseContextPayload }
+  | { type: 'ANALYZE_WITH_CONTEXT7'; query: string; options?: Context7Options }
+  | { type: 'CONNECT_RABBITMQ'; config?: { url?: string } }
+  | { type: 'DISCONNECT_RABBITMQ' }
+  | { type: 'BENCHMARK_PERFORMANCE'; options?: BenchmarkOptions }
+  | { type: 'OPTIMIZE_RESOURCES' }
+  | { type: 'SCALE_SERVICES'; scaleConfig?: ServiceScaleConfig }
+  | { type: 'MEMORY_CLEANUP' }
+  | { type: 'BATCH_ANALYZE_DOCUMENTS'; documents: DocumentReference[] }
+  | { type: 'TRAIN_CUSTOM_MODEL'; modelConfig?: ModelTrainingConfig }
+  | { type: 'EXECUTE_WORKFLOW'; workflow?: WorkflowPayload }
+  | { type: 'COLLABORATION_USER_JOINED'; user: Collaborator }
+  | { type: 'COLLABORATION_USER_LEFT'; user: Collaborator }
+  | { type: 'CACHE_CLEAR' }
+  | { type: 'PERFORMANCE_RESET' }
+  | { type: 'ERROR_RECOVER'; errorId?: string };
 
 // --- Type for the output of the processing query promise ---
 type ProcessQueryOutput = { response: string };
@@ -225,7 +225,7 @@ class GPUProcessor {
 
   async initialize(): Promise<boolean> {
     try {
-      const nav = typeof navigator !== "undefined" ? (navigator as NavWithGPU) : undefined;
+      const nav = typeof navigator !== 'undefined' ? (navigator as NavWithGPU) : undefined;
       if (!nav?.gpu) {
         this.initialized = false;
         return false;
@@ -273,7 +273,7 @@ class MultiLayerCache {
     }
   }
 
-  async clear(_layer?: "l1" | "all"): Promise<void> {
+  async clear(_layer?: 'l1' | 'all'): Promise<void> {
     this.l1Cache.clear();
   }
 
@@ -292,8 +292,8 @@ class MemoryManager {
 
   getMemoryUsage(): number {
     try {
-      const perf = typeof performance !== "undefined" ? performance : undefined;
-      if (perf && "memory" in perf) {
+      const perf = typeof performance !== 'undefined' ? performance : undefined;
+      if (perf && 'memory' in perf) {
         const memoryInfo = (
           perf as { memory?: { usedJSHeapSize: number; jsHeapSizeLimit: number } }
         ).memory;
@@ -323,7 +323,7 @@ export class $WebWorkerPool {
   constructor(
     private _maxWorkers = Math.max(
       1,
-      typeof navigator !== "undefined"
+      typeof navigator !== 'undefined'
         ? (navigator as Navigator & { hardwareConcurrency?: number }).hardwareConcurrency || 4
         : 1
     )
@@ -348,7 +348,7 @@ export class $WebWorkerPool {
         }
       };
     `;
-    const blob = new Blob([code], { type: "application/javascript" });
+    const blob = new Blob([code], { type: 'application/javascript' });
     const worker = new Worker(URL.createObjectURL(blob));
     this._workers.push(worker);
 
@@ -359,7 +359,7 @@ export class $WebWorkerPool {
         } catch {
           // ignore
         }
-        reject(new Error("Worker timeout"));
+        reject(new Error('Worker timeout'));
       }, 30_000);
 
       worker.onmessage = (ev) => {
@@ -401,7 +401,7 @@ export class $WebWorkerPool {
 // --- Replace previous RabbitMQService stub with a real server implementation ---
 class RabbitMQService {
   private connection: AmqplibConnection | null = null;
-  private connectionUrl = "amqp://localhost:5672";
+  private connectionUrl = 'amqp://localhost:5672';
   private connectionPromise: Promise<boolean> | null = null;
   private channels: Map<string, { channel: Channel; consumerTag?: string; queue?: string }> =
     new Map();
@@ -416,8 +416,8 @@ class RabbitMQService {
   }
 
   private async _doConnect(config?: { url?: string }): Promise<boolean> {
-    if (typeof window !== "undefined") {
-      console.warn("[RabbitMQ] RabbitMQ connection is not available in the browser.");
+    if (typeof window !== 'undefined') {
+      console.warn('[RabbitMQ] RabbitMQ connection is not available in the browser.');
       return false;
     }
 
@@ -425,7 +425,7 @@ class RabbitMQService {
     if (!urlToUse) {
       // Prefer process.env on the server using a narrow cast
       let envUrl: string | undefined;
-      if (typeof process !== "undefined") {
+      if (typeof process !== 'undefined') {
         const proc = process as unknown as { env?: Record<string, string | undefined> };
         envUrl = proc.env?.RABBITMQ_URL;
       }
@@ -443,27 +443,27 @@ class RabbitMQService {
     this.connectionUrl = urlToUse || this.connectionUrl;
 
     try {
-      const amqplibMod = (await import("amqplib")) as unknown as AmqplibModule;
+      const amqplibMod = (await import('amqplib')) as unknown as AmqplibModule;
       const connectFn = amqplibMod.connect || amqplibMod.default?.connect;
-      if (!connectFn) throw new Error("amqplib.connect not available");
+      if (!connectFn) throw new Error('amqplib.connect not available');
 
       this.connection = await connectFn(this.connectionUrl);
 
       // Use a callback signature compatible with the declared on(..., cb: (...args: unknown[]) => void)
-      this.connection.on?.("error", (...args: unknown[]) => {
+      this.connection.on?.('error', (...args: unknown[]) => {
         const err = args[0] as Error | undefined;
-        console.error("[RabbitMQ] Connection error: ", err?.message ?? String(err));
+        console.error('[RabbitMQ] Connection error: ', err?.message ?? String(err));
         this._cleanupConnection();
       });
-      this.connection.on?.("close", (..._args: unknown[]) => {
-        console.log("[RabbitMQ] Connection closed.");
+      this.connection.on?.('close', (..._args: unknown[]) => {
+        console.log('[RabbitMQ] Connection closed.');
         this._cleanupConnection();
       });
 
       console.log(`[RabbitMQ] Connected to ${this.connectionUrl}`);
       return true;
     } catch (error) {
-      console.error("[RabbitMQ] Failed to connect: ", error);
+      console.error('[RabbitMQ] Failed to connect: ', error);
       this.connection = null;
       return false;
     }
@@ -475,7 +475,7 @@ class RabbitMQService {
       try {
         entry.channel?.close?.();
       } catch (e) {
-        console.warn("[RabbitMQ] Error closing channel during cleanup: ", e);
+        console.warn('[RabbitMQ] Error closing channel during cleanup: ', e);
       }
     }
     this.channels.clear();
@@ -491,13 +491,13 @@ class RabbitMQService {
         if (entry.consumerTag && entry.channel?.cancel) {
           await entry.channel
             .cancel(entry.consumerTag)
-            .catch((e: unknown) => console.warn("[RabbitMQ] Error cancelling consumer: ", e));
+            .catch((e: unknown) => console.warn('[RabbitMQ] Error cancelling consumer: ', e));
         }
         await entry.channel
           ?.close?.()
-          .catch((e: unknown) => console.warn("[RabbitMQ] Error closing channel: ", e));
+          .catch((e: unknown) => console.warn('[RabbitMQ] Error closing channel: ', e));
       } catch (e) {
-        console.warn("[RabbitMQ] Error during channel disconnect cleanup: ", e);
+        console.warn('[RabbitMQ] Error during channel disconnect cleanup: ', e);
       }
     }
     this.channels.clear();
@@ -505,9 +505,9 @@ class RabbitMQService {
     if (this.connection) {
       try {
         await this.connection.close();
-        console.log("[RabbitMQ] Disconnected.");
+        console.log('[RabbitMQ] Disconnected.');
       } catch (e) {
-        console.warn("[RabbitMQ] Error while disconnecting: ", e);
+        console.warn('[RabbitMQ] Error while disconnecting: ', e);
       }
       this.connection = null;
     }
@@ -519,21 +519,21 @@ class RabbitMQService {
   }
 
   private async publish(exchange: string, routingKey: string, payload: unknown): Promise<void> {
-    if (typeof window !== "undefined") {
-      console.warn("[RabbitMQ] publish skipped in browser.");
+    if (typeof window !== 'undefined') {
+      console.warn('[RabbitMQ] publish skipped in browser.');
       return;
     }
 
     const ok = await this._ensureConnected();
     if (!ok || !this.connection) {
-      console.warn("[RabbitMQ] Not connected. Cannot publish message.");
+      console.warn('[RabbitMQ] Not connected. Cannot publish message.');
       return;
     }
 
     let channel: Channel | undefined;
     try {
       channel = await this.connection.createChannel();
-      await channel.assertExchange(exchange, "topic", { durable: false });
+      await channel.assertExchange(exchange, 'topic', { durable: false });
 
       const json = JSON.stringify(payload);
 
@@ -542,8 +542,8 @@ class RabbitMQService {
         globalThis as unknown as { Buffer?: { from?: (s: string, enc?: string) => Uint8Array } }
       ).Buffer;
       const content: Uint8Array =
-        typeof maybeBuffer !== "undefined" && typeof maybeBuffer.from === "function"
-          ? maybeBuffer.from(json, "utf8")
+        typeof maybeBuffer !== 'undefined' && typeof maybeBuffer.from === 'function'
+          ? maybeBuffer.from(json, 'utf8')
           : new TextEncoder().encode(json);
 
       channel.publish(exchange, routingKey, content);
@@ -553,26 +553,26 @@ class RabbitMQService {
         payload
       );
     } catch (error) {
-      console.error("[RabbitMQ] Failed to publish message: ", error);
+      console.error('[RabbitMQ] Failed to publish message: ', error);
       try {
         await channel?.close?.();
       } catch (e) {
-        console.warn("[RabbitMQ] Error closing channel after publish failure: ", e);
+        console.warn('[RabbitMQ] Error closing channel after publish failure: ', e);
       }
     }
   }
 
   publishSystemHealth(payload: unknown): Promise<void> {
-    return this.publish("system_events", "health.log", payload);
+    return this.publish('system_events', 'health.log', payload);
   }
 
   notifyAIAnalysisCompleted(id: string, payload: unknown): Promise<void> {
-    return this.publish("ai_events", `analysis.completed.${id}`, payload);
+    return this.publish('ai_events', `analysis.completed.${id}`, payload);
   }
 
   subscribeToSystemEvents(cb: (msg: unknown) => void): void {
-    if (typeof window !== "undefined") {
-      console.warn("[RabbitMQ] subscribeToSystemEvents is not available in the browser (no-op).");
+    if (typeof window !== 'undefined') {
+      console.warn('[RabbitMQ] subscribeToSystemEvents is not available in the browser (no-op).');
       return;
     }
 
@@ -581,9 +581,9 @@ class RabbitMQService {
         const ok = await this._ensureConnected();
         if (!ok || !this.connection) return;
         const channel = await this.connection.createChannel();
-        await channel.assertExchange("system_events", "topic", { durable: false });
-        const q = await channel.assertQueue("", { exclusive: true });
-        await channel.bindQueue(q.queue, "system_events", "#");
+        await channel.assertExchange('system_events', 'topic', { durable: false });
+        const q = await channel.assertQueue('', { exclusive: true });
+        await channel.bindQueue(q.queue, 'system_events', '#');
 
         const consumeResult = await channel.consume(
           q.queue,
@@ -591,11 +591,11 @@ class RabbitMQService {
             if (!msg) return;
             let payload: unknown = null;
             try {
-              const text = msg.content?.toString?.("utf8") ?? String(msg.content);
+              const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
             } catch {
               try {
-                payload = msg.content?.toString?.("utf8") ?? null;
+                payload = msg.content?.toString?.('utf8') ?? null;
               } catch {
                 payload = null;
               }
@@ -604,7 +604,7 @@ class RabbitMQService {
             try {
               cb(payload);
             } catch (err) {
-              console.error("[RabbitMQ] subscriber callback error: ", err);
+              console.error('[RabbitMQ] subscriber callback error: ', err);
             }
 
             try {
@@ -615,21 +615,21 @@ class RabbitMQService {
           },
           { noAck: false }
         );
-        this.channels.set("system_events", {
+        this.channels.set('system_events', {
           channel,
           consumerTag: consumeResult.consumerTag,
           queue: q.queue,
         });
-        console.log("[RabbitMQ] Subscribed to system_events");
+        console.log('[RabbitMQ] Subscribed to system_events');
       } catch (err) {
-        console.error("[RabbitMQ] subscribeToSystemEvents failed: ", err);
+        console.error('[RabbitMQ] subscribeToSystemEvents failed: ', err);
       }
     })();
   }
 
   subscribeToCase(caseId: string, cb: (msg: unknown) => void): void {
-    if (typeof window !== "undefined") {
-      console.warn("[RabbitMQ] subscribeToCase is not available in the browser (no-op).");
+    if (typeof window !== 'undefined') {
+      console.warn('[RabbitMQ] subscribeToCase is not available in the browser (no-op).');
       return;
     }
 
@@ -638,11 +638,11 @@ class RabbitMQService {
         const ok = await this._ensureConnected();
         if (!ok || !this.connection) return;
         const channel = await this.connection.createChannel();
-        await channel.assertExchange("case_events", "topic", { durable: false });
-        const q = await channel.assertQueue("", { exclusive: true });
+        await channel.assertExchange('case_events', 'topic', { durable: false });
+        const q = await channel.assertQueue('', { exclusive: true });
 
-        await channel.bindQueue(q.queue, "case_events", `case.${caseId}`);
-        await channel.bindQueue(q.queue, "case_events", "case.#");
+        await channel.bindQueue(q.queue, 'case_events', `case.${caseId}`);
+        await channel.bindQueue(q.queue, 'case_events', 'case.#');
 
         const consumeResult = await channel.consume(
           q.queue,
@@ -650,11 +650,11 @@ class RabbitMQService {
             if (!msg) return;
             let payload: unknown = null;
             try {
-              const text = msg.content?.toString?.("utf8") ?? String(msg.content);
+              const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
             } catch {
               try {
-                payload = msg.content?.toString?.("utf8") ?? null;
+                payload = msg.content?.toString?.('utf8') ?? null;
               } catch {
                 payload = null;
               }
@@ -663,7 +663,7 @@ class RabbitMQService {
             try {
               cb(payload);
             } catch (err) {
-              console.error("[RabbitMQ] case subscriber callback error: ", err);
+              console.error('[RabbitMQ] case subscriber callback error: ', err);
             }
 
             try {
@@ -681,14 +681,14 @@ class RabbitMQService {
         });
         console.log(`[RabbitMQ] Subscribed to case ${caseId}`);
       } catch (err) {
-        console.error("[RabbitMQ] subscribeToCase failed: ", err);
+        console.error('[RabbitMQ] subscribeToCase failed: ', err);
       }
     })();
   }
 
   subscribeToAIAnalysis(cb: (msg: unknown) => void): void {
-    if (typeof window !== "undefined") {
-      console.warn("[RabbitMQ] subscribeToAIAnalysis is not available in the browser (no-op).");
+    if (typeof window !== 'undefined') {
+      console.warn('[RabbitMQ] subscribeToAIAnalysis is not available in the browser (no-op).');
       return;
     }
 
@@ -697,9 +697,9 @@ class RabbitMQService {
         const ok = await this._ensureConnected();
         if (!ok || !this.connection) return;
         const channel = await this.connection.createChannel();
-        await channel.assertExchange("ai_events", "topic", { durable: false });
-        const q = await channel.assertQueue("", { exclusive: true });
-        await channel.bindQueue(q.queue, "ai_events", "analysis.#");
+        await channel.assertExchange('ai_events', 'topic', { durable: false });
+        const q = await channel.assertQueue('', { exclusive: true });
+        await channel.bindQueue(q.queue, 'ai_events', 'analysis.#');
 
         const consumeResult = await channel.consume(
           q.queue,
@@ -707,11 +707,11 @@ class RabbitMQService {
             if (!msg) return;
             let payload: unknown = null;
             try {
-              const text = msg.content?.toString?.("utf8") ?? String(msg.content);
+              const text = msg.content?.toString?.('utf8') ?? String(msg.content);
               payload = JSON.parse(text);
             } catch {
               try {
-                payload = msg.content?.toString?.("utf8") ?? null;
+                payload = msg.content?.toString?.('utf8') ?? null;
               } catch {
                 payload = null;
               }
@@ -720,7 +720,7 @@ class RabbitMQService {
             try {
               cb(payload);
             } catch (err) {
-              console.error("[RabbitMQ] ai analysis subscriber callback error: ", err);
+              console.error('[RabbitMQ] ai analysis subscriber callback error: ', err);
             }
 
             try {
@@ -731,14 +731,14 @@ class RabbitMQService {
           },
           { noAck: false }
         );
-        this.channels.set("ai_events", {
+        this.channels.set('ai_events', {
           channel,
           consumerTag: consumeResult.consumerTag,
           queue: q.queue,
         });
-        console.log("[RabbitMQ] Subscribed to ai_events analysis.*");
+        console.log('[RabbitMQ] Subscribed to ai_events analysis.*');
       } catch (err) {
-        console.error("[RabbitMQ] subscribeToAIAnalysis failed: ", err);
+        console.error('[RabbitMQ] subscribeToAIAnalysis failed: ', err);
       }
     })();
   }
@@ -768,15 +768,15 @@ const rabbitmqService = new RabbitMQService();
 // --- Simplified machine that is syntactically correct and provides the same export name ---
 // Removed explicit two-type generic to let XState infer types and avoid "No overload expects 2 type arguments"
 export const aiAssistantMachine = createMachine({
-  id: "enhancedAiAssistant",
-  initial: "initializing",
+  id: 'enhancedAiAssistant',
+  initial: 'initializing',
   context: {
-    currentQuery: "",
-    response: "",
+    currentQuery: '',
+    response: '',
     conversationHistory: [],
     sessionId: `session_${Date.now()}_${Math.random().toString(36).slice(2)}`,
     isProcessing: false,
-    model: "embeddinggemma:latest",
+    model: 'embeddinggemma:latest',
     temperature: 0.7,
     maxTokens: 2048,
     availableModels: [],
@@ -789,11 +789,11 @@ export const aiAssistantMachine = createMachine({
   states: {
     initializing: {
       invoke: {
-        id: "init",
+        id: 'init',
         src: fromPromise(
           async (): Promise<{
             gpuReady: boolean;
-            cacheStats: ReturnType<MultiLayerCache["getCacheStats"]>;
+            cacheStats: ReturnType<MultiLayerCache['getCacheStats']>;
             memoryUsage: number;
           }> => {
             const gpu = GPUProcessor.getInstance();
@@ -808,7 +808,7 @@ export const aiAssistantMachine = createMachine({
           }
         ),
         onDone: {
-          target: "idle",
+          target: 'idle',
           // Replace event:any with a safe cast to the expected done-event shape
           actions: assign((_, event) => {
             const done = event as { data?: { gpuReady?: boolean } };
@@ -818,7 +818,7 @@ export const aiAssistantMachine = createMachine({
           }),
         },
         onError: {
-          target: "idle",
+          target: 'idle',
           // Safely extract error payload without using `any`
           actions: assign((_, event) => ({
             error: { message: String((event as { data?: unknown }).data ?? event) },
@@ -829,7 +829,7 @@ export const aiAssistantMachine = createMachine({
     idle: {
       on: {
         SEND_MESSAGE: {
-          target: "processing",
+          target: 'processing',
           // use the type-guard to safely narrow the event
           actions: assign((_, event) => {
             if (isSendMessage(event)) {
@@ -848,7 +848,7 @@ export const aiAssistantMachine = createMachine({
     },
     processing: {
       invoke: {
-        id: "processQuery",
+        id: 'processQuery',
         input: ({ context }) => ({ currentQuery: context.currentQuery }),
         src: fromPromise(
           async ({ input }: { input: { currentQuery: string } }): Promise<ProcessQueryOutput> => {
@@ -857,14 +857,14 @@ export const aiAssistantMachine = createMachine({
           }
         ),
         onDone: {
-          target: "idle",
+          target: 'idle',
           // Cast done-event to minimal shape and read .data safely
           actions: assign((context, event) => {
             const done = event as { data?: { response?: unknown } };
-            const resp = String(done.data?.response ?? "");
+            const resp = String(done.data?.response ?? '');
             const newEntry: ConversationEntry = {
               id: `assistant_${Date.now()}`,
-              type: "assistant",
+              type: 'assistant',
               content: resp,
               timestamp: new Date(),
             };
@@ -872,12 +872,12 @@ export const aiAssistantMachine = createMachine({
               response: resp,
               conversationHistory: [...context.conversationHistory, newEntry],
               isProcessing: false,
-              currentQuery: "",
+              currentQuery: '',
             };
           }),
         },
         onError: {
-          target: "error",
+          target: 'error',
           // Safely extract error payload without `any`
           actions: assign((_, event) => ({
             error: { message: String((event as { data?: unknown }).data ?? event) },
@@ -887,10 +887,10 @@ export const aiAssistantMachine = createMachine({
       },
     },
     error: {
-      entry: "logError",
+      entry: 'logError',
       on: {
         ERROR_RECOVER: {
-          target: "idle",
+          target: 'idle',
           actions: assign(() => ({ error: null })),
         },
       },
@@ -905,12 +905,12 @@ type TaskResult = { ok: boolean; result?: unknown; error?: string };
 // Add: type-guard for SEND_MESSAGE events to safely narrow `event` inside assign()
 function isSendMessage(
   event: unknown
-): event is { type: "SEND_MESSAGE"; message: string; useContext7?: boolean; caseId?: string } {
+): event is { type: 'SEND_MESSAGE'; message: string; useContext7?: boolean; caseId?: string } {
   // runtime-safe narrow without `any`
-  if (typeof event !== "object" || event === null) return false;
+  if (typeof event !== 'object' || event === null) return false;
   const ev = event as Record<string, unknown>;
   return (
-    typeof ev.type === "string" && ev.type === "SEND_MESSAGE" && typeof ev.message === "string"
+    typeof ev.type === 'string' && ev.type === 'SEND_MESSAGE' && typeof ev.message === 'string'
   );
 }
 
@@ -934,10 +934,10 @@ export const aiAssistantProvider = {
     clearError: assign(() => ({ error: null })),
     logError: (ctx: AIAssistantContext) => {
       if (ctx.error) {
-        console.error("[aiAssistant] error", ctx.error);
+        console.error('[aiAssistant] error', ctx.error);
         try {
           // best-effort publish; swallow errors
-          rabbitmqService.publishSystemHealth({ type: "error", error: ctx.error }).catch(() => {});
+          rabbitmqService.publishSystemHealth({ type: 'error', error: ctx.error }).catch(() => {});
         } catch {
           // suppress
         }

@@ -103,7 +103,8 @@ import { browser } from '$app/environment';
       };
 
       ws.onerror = (error) => {
-        console.error('âŒ WebSocket error:', error);'
+        console.error('âŒ WebSocket error:', error);
+'
       };
 
       ws.onclose = () => {
@@ -276,7 +277,8 @@ import { browser } from '$app/environment';
         console.log(`âœ… File uploaded (${result.source}):`, currentFileId)} else {
         throw new Error(result.error || 'Upload failed')}
     } catch (error) {
-      console.error('Upload error:', error);'
+      console.error('Upload error:', error);
+'
       workflowStatus = {
         stage: 'error',
         progress: 0,
@@ -319,7 +321,8 @@ import { browser } from '$app/environment';
       } else {
         console.error('Search failed:', data.error)}
     } catch (error) {
-      console.error('Search error:', error);'
+      console.error('Search error:', error);
+'
     } finally {
       isSearching = false}
   }
@@ -410,21 +413,32 @@ import { browser } from '$app/environment';
 </main>
 
 <style>
-/* Custom scrollbar for terminal */
+  /* Custom scrollbar for terminal */
   .overflow-y-auto::-webkit-scrollbar {
-    width: 8px}
+    width: 8px;
+  }
 
-  .overflow-y-auto::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.3)}
+  .overflow-y-auto::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.3);
+  }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.5);
-    border-radius: 4px}
+  .overflow-y-auto::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.5);
+    border-radius: 4px;
+  }
 
-  .overflow-y-auto::-webkit-scrollbar-thumb:hover { background: rgba(100, 116, 139, 0.7)}
+  .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.7);
+  }
 
   /* Smooth animations */
   @keyframes pulse {
-    0%, 100% {
-      opacity: 1}
-    50% { opacity: 0.5}
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

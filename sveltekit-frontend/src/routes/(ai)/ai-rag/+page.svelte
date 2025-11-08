@@ -1,5 +1,5 @@
 <script>
-let message = 'RAG Interface is working!';
+  let message = 'RAG Interface is working!';
 </script>
 
 <main class="page-repair">
@@ -8,5 +8,8 @@ let message = 'RAG Interface is working!';
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

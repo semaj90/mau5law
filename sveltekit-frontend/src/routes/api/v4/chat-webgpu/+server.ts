@@ -3,14 +3,14 @@
  * High-performance chat with RTX, 3060 Ti optimization and tensor acceleration
  * Solves the 213-second response time bottleneck with GPU compute shaders
  */
-import type { RequestHandler } from "./$types.js";
-import { json } from "@sveltejs/kit";
-import * as webgpuAI from "$lib/webgpu/webgpu-ai-engine.js"; // Changed to namespace import
-import { WebGPURedisOptimizer } from "$lib/server/webgpu-redis-optimizer.js";
-import { ollamaChatStream } from "$lib/services/ollamaChatStream.js"; // Changed to named import
-import { getRedisClient } from "$lib/server/cache/redis";
-import { LLM_MODEL, requireRedis } from "$lib/server/ai/legal-rag-pipeline"; // Import LLM_MODEL and requireRedis
-import type { RedisClientType } from "redis"; // Import RedisClientType
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
+import * as webgpuAI from '$lib/webgpu/webgpu-ai-engine.js'; // Changed to namespace import
+import { WebGPURedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
+import { ollamaChatStream } from '$lib/services/ollamaChatStream.js'; // Changed to named import
+import { getRedisClient } from '$lib/server/cache/redis';
+import { LLM_MODEL, requireRedis } from '$lib/server/ai/legal-rag-pipeline'; // Import LLM_MODEL and requireRedis
+import type { RedisClientType } from 'redis'; // Import RedisClientType
 
 // Instantiate the WebGPURedisOptimizer and get the Redis client
 const webgpuRedisOptimizer = new WebGPURedisOptimizer();
@@ -72,7 +72,7 @@ async function checkGPURateLimit(clientIP: string): Promise<boolean> {
     }
     return true;
   } catch (error) {
-    console.error("Redis rate limiting failed, falling back to allowing request:", error);
+    console.error('Redis rate limiting failed, falling back to allowing request:', error);
     // In case Redis is down, allow the request to proceed to avoid service interruption
     return true;
   }
@@ -82,7 +82,7 @@ async function checkGPURateLimit(clientIP: string): Promise<boolean> {
 function isArrayBufferView(x: unknown): x is ArrayBufferView {
   // Corrected function signature: 'any' to 'unknown'
   // ArrayBuffer.is.View guards ArrayBufferView types (TypedArray, DataView)
-  return typeof x === "object" && x !== null && ArrayBuffer.isView(x);
+  return typeof x === 'object' && x !== null && ArrayBuffer.isView(x);
 }
 function viewToFloat32(view: ArrayBufferView): Float32Array {
   if (view instanceof Float32Array) return view;
@@ -97,17 +97,17 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
   // Direct typed array / view
   if (isArrayBufferView(input)) return viewToFloat32(input);
   // Plain: number array
-  if (Array.isArray(input) && input.every((n) => typeof n === "number")) {
+  if (Array.isArray(input) && input.every((n) => typeof n === 'number')) {
     return new Float32Array(input as number[]);
   }
   // Object shapes that might contain a buffer-like property
-  if (typeof input === "object" && input !== null) {
+  if (typeof input === 'object' && input !== null) {
     const obj = input as Record<string, unknown>;
-    const keys = ["result", "optimized", "data", "buffer", "optimizedBuffer"];
+    const keys = ['result', 'optimized', 'data', 'buffer', 'optimizedBuffer'];
     for (const k of keys) {
       const v = obj[k];
       if (isArrayBufferView(v)) return viewToFloat32(v);
-      if (Array.isArray(v) && v.every((n) => typeof n === "number")) {
+      if (Array.isArray(v) && v.every((n) => typeof n === 'number')) {
         return new Float32Array(v as number[]);
       }
     }
@@ -124,7 +124,7 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
       await webgpuAI.waitForReady(3000);
     }
     if (!webgpuAI.isReady()) {
-      throw new Error("WebGPU not available");
+      throw new Error('WebGPU not available');
     }
     // Convert text to token embeddings using GPU
     const tokens = new Float32Array(Math.min(text.length, 2048));
@@ -141,10 +141,10 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
     // Use safe extractor instead of `any` cast
     const extracted = extractFloat32FromResult(result);
     if (!extracted)
-      throw new Error("Unexpected result shape from webgpuAI.processDimensionalArray");
+      throw new Error('Unexpected result shape from webgpuAI.processDimensionalArray');
     return extracted;
   } catch (error) {
-    console.warn("WebGPU tokenization failed, using CPU fallback: ", error);
+    console.warn('WebGPU tokenization failed, using CPU fallback: ', error);
     // CPU fallback tokenization
     const tokens = new Float32Array(Math.min(text.length, 512));
     for (let i = 0; i < tokens.length; i++) {
@@ -166,10 +166,10 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
     // CPU fallback for rate-limited requests
     const model = request.model || LLM_MODEL; // Use LLM_MODEL as default
     const fallbackResult = await ollamaChatStream(request.message, model); // Corrected call
-    let response = "";
+    let response = '';
     for await (const chunk of fallbackResult as AsyncIterable<OllamaChunk>) {
       // Annotate with OllamaChunk
-      if (chunk?.metadata?.type === "text") {
+      if (chunk?.metadata?.type === 'text') {
         response += chunk.text;
       }
     }
@@ -183,7 +183,7 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
   }
   try {
     // Step, 1: WebGPU tokenization and preprocessing
-    console.log("Starting WebGPU-accelerated chat processing"); // Removed emoji
+    console.log('Starting WebGPU-accelerated chat processing'); // Removed emoji
     const tokens = await tokenizeWithWebGPU(request.message);
     // Step 2: GPU tensor compression for memory efficiency
     let compressedTokens = tokens;
@@ -193,7 +193,7 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
       const compressedRaw = (await webgpuRedisOptimizer.setOptimized(
         `tokens_${Date.now()}`,
         tokens,
-        { compress: true, priority: "high", parallel: true }
+        { compress: true, priority: 'high', parallel: true }
       )) as unknown;
       // Define a narrow shape we expect when optimizer returns: an | object
       type CompressedObject = {
@@ -206,7 +206,7 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
       const extractArrayView = (input: unknown): ArrayBufferView | undefined => {
         if (input == null) return undefined;
         if (ArrayBuffer.isView(input)) return input as ArrayBufferView;
-        if (typeof input === "object") {
+        if (typeof input === 'object') {
           const obj = input as CompressedObject;
           if (obj.optimized && ArrayBuffer.is.View(obj.optimized)) return obj.optimized;
           if (obj.result && ArrayBuffer.is.View(obj.result)) return obj.result;
@@ -224,9 +224,9 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
         );
       }
       // Safely extract compressionRatio if provided
-      if (typeof compressedRaw === "object" && compressedRaw !== null) {
+      if (typeof compressedRaw === 'object' && compressedRaw !== null) {
         const obj = compressedRaw as CompressedObject;
-        if (typeof obj.compressionRatio === "number") {
+        if (typeof obj.compressionRatio === 'number') {
           compressionRatio = obj.compressionRatio;
         } else {
           // Corrected else block
@@ -253,7 +253,7 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
       }
       return extracted;
     })();
-    let response = "";
+    let response = '';
     // Decode tokens back to text (simplified)
     for (let i = 0; i < Math.min(responseTokens.length, 1000); i++) {
       const charCode = Math.round(responseTokens[i] * 255);
@@ -264,13 +264,13 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
     // Fallback: Use Ollama if WebGPU output is unintelligible
     if (response.length < 10 || !/[a-zA-Z]/.test(response)) {
       // Corrected length check
-      console.log("WebGPU output unclear, using Ollama hybrid approach"); // Removed emoji
+      console.log('WebGPU output unclear, using Ollama hybrid approach'); // Removed emoji
       const model = request.model || LLM_MODEL; // Use LLM_MODEL as default
       const ollamaResult = await ollamaChatStream(request.message, model); // Corrected call
-      response = "";
+      response = '';
       for await (const chunk of ollamaResult as AsyncIterable<OllamaChunk>) {
         // Annotate with OllamaChunk
-        if (chunk?.metadata?.type === "text") {
+        if (chunk?.metadata?.type === 'text') {
           response += chunk.text;
         }
       }
@@ -280,7 +280,7 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
     const processingTime = performance.now() - startTime;
     return {
       success: true,
-      response: response || "WebGPU processing completed successfully.", // Corrected response assignment
+      response: response || 'WebGPU processing completed successfully.', // Corrected response assignment
       processingTime, // Corrected assignment
       gpuAccelerated: true, // Corrected assignment
       tensorCompression: {
@@ -295,14 +295,14 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
       },
     };
   } catch (error: Error | unknown) {
-    console.error("WebGPU chat processing failed: ", error);
+    console.error('WebGPU chat processing failed: ', error);
     // Emergency fallback to CPU - call ollamaChatStream() with no args
     const model = request.model || LLM_MODEL; // Use LLM_MODEL as default
     const fallbackResult = await ollamaChatStream(request.message, model); // Corrected call
-    let response = "";
+    let response = '';
     for await (const chunk of fallbackResult as AsyncIterable<OllamaChunk>) {
       // Annotate with OllamaChunk
-      if (chunk?.metadata?.type === "text") {
+      if (chunk?.metadata?.type === 'text') {
         response += chunk.text;
       }
     }
@@ -319,14 +319,14 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
 // GET endpoint for WebGPU capabilities and health check
 export const GET: RequestHandler = async ({ url }) => {
   try {
-    const action = url.searchParams.get("action") || "health";
-    if (action === "health") {
+    const action = url.searchParams.get('action') || 'health';
+    if (action === 'health') {
       const capabilities = webgpuAI.getCapabilities();
       const optimizerStats = await webgpuRedisOptimizer.getOptimizationStats();
       return json(
         {
           success: true,
-          service: "webgpu-chat-v4",
+          service: 'webgpu-chat-v4',
           webgpuAvailable: capabilities.webgpu?.isSupported ?? false,
           rtxOptimized: true,
           features: {
@@ -336,9 +336,9 @@ export const GET: RequestHandler = async ({ url }) => {
             memoryOptimization: true,
           },
           performance: {
-            expectedResponseTime: "2-5 seconds",
+            expectedResponseTime: '2-5 seconds',
             tensorCoreCount: 112,
-            memoryBandwidth: "448 GB/s",
+            memoryBandwidth: '448 GB/s',
             maxConcurrentRequests: MAX_GPU_REQUESTS,
           },
           currentMetrics: optimizerStats,
@@ -347,18 +347,18 @@ export const GET: RequestHandler = async ({ url }) => {
         { status: 200 }
       );
     }
-    if (action === "capabilities") {
+    if (action === 'capabilities') {
       return json(webgpuAI.getCapabilities(), { status: 200 });
     }
     return json(
-      { success: false, error: "Invalid action. Use ?action=health or ?action=capabilities" },
+      { success: false, error: 'Invalid action. Use ?action=health or ?action=capabilities' },
       { status: 400 }
     ); // Corrected return syntax
   } catch (error: Error | unknown) {
     return json(
       {
         success: false,
-        error: "WebGPU health check failed",
+        error: 'WebGPU health check failed',
         details: error instanceof Error ? error.message : String(error), // Corrected details access
       }, // Corrected details access
       { status: 500 }
@@ -371,7 +371,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body = (await request.json()) as WebGPUChatRequest;
     // Input validation
-    if (!body.message || typeof body.message !== "string") {
+    if (!body.message || typeof body.message !== 'string') {
       return json(
         { success: false, error: `Message is required and must be a string` },
         { status: 400 }
@@ -385,7 +385,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
     // Get client IP for rate limiting
     const clientIP =
-      request.headers.get("x-forwarded-for") || request.headers.get("x-real-ip") || "unknown";
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
     // Process with WebGPU acceleration
     const result = await processWebGPUChat(body, clientIP);
     return json(result, { status: 200 });
@@ -394,7 +394,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return json(
       {
         success: false,
-        error: "WebGPU chat processing failed",
+        error: 'WebGPU chat processing failed',
         details: error instanceof Error ? error.message : String(error), // Safely access error message
         processingTime: performance.now() - startTime,
         gpuAccelerated: false,

@@ -68,13 +68,15 @@ async function fetchRelated(
   threshold: number,
   authToken?: string,
   signal?: AbortSignal
-): Promise<Array<{ id: string; title?: string; score?: number; metadata?: Record<string, unknown> }>> {
+): Promise<
+  Array<{ id: string; title?: string; score?: number; metadata?: Record<string, unknown> }>
+> {
   if (!apiBase) {
     // Mock response for offline development / tests
     await new Promise((r) => setTimeout(r, 80)); // simulate latency
     return [
       { id: rootId + '-A', title: 'Related doc A', score: 0.82 },
-      { id: rootId + '-B', title: 'Related doc B', score: 0.71 }
+      { id: rootId + '-B', title: 'Related doc B', score: 0.71 },
     ].filter((r) => (r.score ?? 0) >= threshold);
   }
 
@@ -82,7 +84,7 @@ async function fetchRelated(
   url.searchParams.set('rootId', rootId);
   url.searchParams.set('threshold', String(threshold));
 
-  const headers: Record<string, string> = { 'Accept': 'application/json' };
+  const headers: Record<string, string> = { Accept: 'application/json' };
   if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
 
   const res = await fetch(url.toString(), { method: 'GET', headers, signal });
@@ -96,7 +98,7 @@ async function fetchRelated(
     id: String(item.id),
     title: typeof item.title === 'string' ? item.title : undefined,
     score: typeof item.score === 'number' ? item.score : undefined,
-    metadata: typeof item.metadata === 'object' ? item.metadata : undefined
+    metadata: typeof item.metadata === 'object' ? item.metadata : undefined,
   }));
 }
 
@@ -179,7 +181,7 @@ async function buildEvidenceChain(
       );
       child.score = item.score;
       child.title = child.title ?? item.title;
-      node.related!.push(<any><any>child);
+      node.related!.push(<any>(<any>child));
     } catch (err) {
       if ((err as any)?.name === 'AbortError' || String(err) === 'aborted') {
         throw err;
@@ -212,20 +214,21 @@ addEventListener('message', async (ev: MessageEvent<WorkerMessage>) => {
       return;
     }
 
-    const {
-      rootId,
-      maxDepth = 3,
-      similarityThreshold = 0.65,
-      apiBase,
-      authToken
-    } = msg.payload;
+    const { rootId, maxDepth = 3, similarityThreshold = 0.65, apiBase, authToken } = msg.payload;
 
     currentAbort = new AbortController();
     const signal = currentAbort.signal;
 
     try {
       postProgress(0, 0, 'Starting evidence chain build');
-      const tree = await buildEvidenceChain(rootId, maxDepth, similarityThreshold, apiBase, authToken, signal);
+      const tree = await buildEvidenceChain(
+        rootId,
+        maxDepth,
+        similarityThreshold,
+        apiBase,
+        authToken,
+        signal
+      );
       if (signal.aborted) {
         postCancelled();
       } else {

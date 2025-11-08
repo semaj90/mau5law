@@ -5,14 +5,14 @@
  * This module ensures all API route data is properly serialized and structured
  * for server-side rendering with Bits UI components.
  */
-import type { RequestHandler } from "@sveltejs/kit";
+import type { RequestHandler } from '@sveltejs/kit';
 
 // Safe, optional integrations (may be undefined in some environments)
 // Use namespace imports and resolve common export names to avoid TS errors
-import * as ThreadSafeModule from "./thread-safe-postgres.js";
-import * as ConcurrentSerializerModule from "./concurrent-json-serializer.js";
-import * as GpuCoordinatorModule from "./gpu-thread-coordinator.js";
-import * as CognitiveCacheModule from "../services/cognitive-cache-integration.js";
+import * as ThreadSafeModule from './thread-safe-postgres.js';
+import * as ConcurrentSerializerModule from './concurrent-json-serializer.js';
+import * as GpuCoordinatorModule from './gpu-thread-coordinator.js';
+import * as CognitiveCacheModule from '../services/cognitive-cache-integration.js';
 
 // Resolve possible exported symbols (named/default/alt-name)
 const threadSafePostgres =
@@ -39,7 +39,7 @@ const cognitiveCache =
 export interface SSRResponse<T = unknown> {
   success: boolean;
   data: T | null;
-  meta: { timestamp: string; cached: boolean; source: "ssr" | "api" };
+  meta: { timestamp: string; cached: boolean; source: 'ssr' | 'api' };
   error?: string;
 }
 
@@ -64,15 +64,15 @@ function estimateDataSize(data: unknown): number {
 /** Ensure data is serializable for SSR: drop functions/symbols and convert Dates. */
 export function sanitizeForSSR<T>(input: T): T {
   if (input === null || input === undefined) return input;
-  if (typeof input === "string" || typeof input === "number" || typeof input === "boolean")
+  if (typeof input === 'string' || typeof input === 'number' || typeof input === 'boolean')
     return input;
   if (input instanceof Date) return input.toISOString() as unknown as T;
   if (Array.isArray(input)) return input.map((i) => sanitizeForSSR(i)) as unknown as T;
-  if (typeof input === "object") {
+  if (typeof input === 'object') {
     const out: Record<string, unknown> = {};
     const entries = Object.entries(input as Record<string, unknown>);
     for (const [k, v] of entries) {
-      if (typeof v === "function" || typeof v === "symbol") continue;
+      if (typeof v === 'function' || typeof v === 'symbol') continue;
       out[k] = sanitizeForSSR(v as unknown);
     }
     return out as unknown as T;
@@ -103,7 +103,7 @@ interface ThreadSafePG {
 
 // Callable predicate (avoid `Function` type)
 function isCallable(fn: unknown): fn is (...args: unknown[]) => unknown {
-  return typeof fn === "function";
+  return typeof fn === 'function';
 }
 
 // Safe adapters with correct typing
@@ -175,31 +175,31 @@ export async function createSSRResponse<T = unknown>(
       sanitizedData = sanitizeForSSR(data);
     }
   } catch (err) {
-    console.warn("GPU serialization failed, falling back to CPU:", err);
+    console.warn('GPU serialization failed, falling back to CPU:', err);
     sanitizedData = sanitizeForSSR(data);
   }
 
   const responseObj: SSRResponse<T> = {
     success: true,
     data: sanitizedData as T,
-    meta: { timestamp: new Date().toISOString(), cached: !!options?.cached, source: "ssr" },
+    meta: { timestamp: new Date().toISOString(), cached: !!options?.cached, source: 'ssr' },
   };
 
-  let serializedResponse = "";
+  let serializedResponse = '';
   try {
     const ser = await serializerImpl.serialize(responseObj, {
       compress: estimateDataSize(responseObj) > 50 * 1024,
       gpuAccelerated: shouldUseGPU,
     });
-    if (typeof ser === "string") {
+    if (typeof ser === 'string') {
       serializedResponse = ser;
-    } else if (ser && typeof ser === "object" && typeof (ser as any).serialized === "string") {
+    } else if (ser && typeof ser === 'object' && typeof (ser as any).serialized === 'string') {
       serializedResponse = (ser as any).serialized;
     } else {
       serializedResponse = JSON.stringify(responseObj);
     }
   } catch (err) {
-    console.warn("Concurrent serialization failed, falling back to JSON.stringify:", err);
+    console.warn('Concurrent serialization failed, falling back to JSON.stringify:', err);
     serializedResponse = JSON.stringify(responseObj);
   }
 
@@ -208,20 +208,20 @@ export async function createSSRResponse<T = unknown>(
     try {
       await cacheImpl.storeJsonbDocument(options.cacheKey, {
         response: responseObj,
-        responseType: "ssr",
+        responseType: 'ssr',
         gpuProcessed: shouldUseGPU,
         threadSafe: !!options?.threadSafe,
       });
     } catch (err) {
-      console.warn("Cache store failed:", err);
+      console.warn('Cache store failed:', err);
     }
   }
 
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    "Cache-Control": "public, max-age=30",
-    "X-GPU-Accelerated": shouldUseGPU ? "true" : "false",
-    "X-Thread-Safe": options?.threadSafe ? "true" : "false",
+    'Content-Type': 'application/json',
+    'Cache-Control': 'public, max-age=30',
+    'X-GPU-Accelerated': shouldUseGPU ? 'true' : 'false',
+    'X-Thread-Safe': options?.threadSafe ? 'true' : 'false',
     ...(options?.headers ?? {}),
   };
 
@@ -237,12 +237,12 @@ export function createSSRErrorResponse(
   const response: SSRResponse = {
     success: false,
     data: data ?? null,
-    meta: { timestamp: new Date().toISOString(), cached: false, source: "ssr" },
+    meta: { timestamp: new Date().toISOString(), cached: false, source: 'ssr' },
     error: errorMessage,
   };
   return new Response(JSON.stringify(response), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { 'Content-Type': 'application/json' },
   });
 }
 
@@ -252,7 +252,7 @@ export async function loadWithSSR<T>(loader: () => Promise<T>, fallback: T): Pro
     const data = await loader();
     return sanitizeForSSR(data);
   } catch (err) {
-    console.error("SSR Error: ", err);
+    console.error('SSR Error: ', err);
     return fallback;
   }
 }
@@ -270,7 +270,7 @@ export async function batchSSRRequests<T extends Record<string, unknown>>(
       const fn = requests[k];
       try {
         const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Request timeout")), timeout)
+          setTimeout(() => reject(new Error('Request timeout')), timeout)
         );
         const res = await Promise.race([fn(), timeoutPromise]);
         (results as Record<string, unknown>)[String(k)] = sanitizeForSSR(res);
@@ -308,9 +308,9 @@ export function withSSRHandler<T>(
       });
     } catch (err) {
       const e = err as { message?: string; status?: number };
-      console.error("SSR Error: ", err);
+      console.error('SSR Error: ', err);
       const status = e?.status ?? 500;
-      const message = e?.message ?? "Internal server error";
+      const message = e?.message ?? 'Internal server error';
       return createSSRErrorResponse(message, status);
     }
   }) as RequestHandler;
@@ -336,7 +336,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, unknown>>(
     entries.map(async ([key, requestFn]) => {
       try {
         const timeoutPromise = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error("Request timeout")), timeout)
+          setTimeout(() => reject(new Error('Request timeout')), timeout)
         );
         const result = await Promise.race([requestFn(), timeoutPromise]);
 
@@ -346,8 +346,8 @@ export async function batchSSRRequestsGPU<T extends Record<string, unknown>>(
             compress: estimateDataSize(result) > 50 * 1024,
           });
           let parsed: unknown;
-          if (typeof ser === "string") parsed = JSON.parse(ser);
-          else if (ser && typeof ser === "object" && typeof (ser as any).serialized === "string")
+          if (typeof ser === 'string') parsed = JSON.parse(ser);
+          else if (ser && typeof ser === 'object' && typeof (ser as any).serialized === 'string')
             parsed = JSON.parse((ser as any).serialized);
           else parsed = sanitizeForSSR(result);
           (results as Record<string, unknown>)[key] = parsed;
@@ -363,7 +363,7 @@ export async function batchSSRRequestsGPU<T extends Record<string, unknown>>(
               { gpuProcessed: gpuAccelerated, threadSafe: !!options?.threadSafe }
             );
           } catch (e) {
-            console.warn("Failed to cache batch result for", key, e);
+            console.warn('Failed to cache batch result for', key, e);
           }
         }
       } catch (error) {
@@ -397,10 +397,10 @@ export async function getThreadSyncHealth(): Promise<Record<string, unknown>> {
       (cacheStats as any)?.threadSafe &&
       (serializerStats as any)?.activeWorkers > 0 &&
       (gpuHealth as any)?.gpuAvailable
-        ? "healthy"
+        ? 'healthy'
         : (postgresHealth as any)?.connected && (cacheStats as any)?.threadSafe
-          ? "degraded"
-          : "unhealthy";
+          ? 'degraded'
+          : 'unhealthy';
 
     return {
       postgres: postgresHealth,
@@ -410,13 +410,13 @@ export async function getThreadSyncHealth(): Promise<Record<string, unknown>> {
       overall_status: overallStatus,
     };
   } catch (error) {
-    console.error("Health failed: ", error);
+    console.error('Health failed: ', error);
     return {
       postgres: { connected: false },
       cognitive_cache: { threadSafe: false },
       serializer: { activeWorkers: 0 },
       gpu_coordinator: { gpuAvailable: false },
-      overall_status: "unhealthy",
+      overall_status: 'unhealthy',
     };
   }
 }

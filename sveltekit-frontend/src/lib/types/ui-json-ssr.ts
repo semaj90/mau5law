@@ -9,6 +9,3 @@ export interface ButtonAnalyticsEvent {
   variant?: string;
   size?: string;
 }
-
-
-

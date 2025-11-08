@@ -7,9 +7,15 @@
  * - JSON/text detection
  * - Batch text extraction with concurrency
  */
-import { S3Client, GetObjectCommand, PutObjectCommand, ListObjectsV2Command, HeadObjectCommand } from "@aws-sdk/client-s3";
-import { Upload } from "@aws-sdk/lib-storage";
-import { Readable } from "stream";
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+  ListObjectsV2Command,
+  HeadObjectCommand,
+} from '@aws-sdk/client-s3';
+import { Upload } from '@aws-sdk/lib-storage';
+import { Readable } from 'stream';
 
 interface MinIOConfig {
   endpoint: string;
@@ -64,7 +70,9 @@ async function streamToBuffer(stream: Readable | Uint8Array | ArrayBuffer): Prom
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = [];
     (stream as Readable)
-      .on('data', (chunk: Buffer | string) => chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)))
+      .on('data', (chunk: Buffer | string) =>
+        chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk))
+      )
       .on('end', () => resolve(Buffer.concat(chunks)))
       .on('error', reject);
   });
@@ -92,7 +100,7 @@ export class MinIOService {
 
   static async getTextContent(
     minioUrl: string,
-    options?: { maxSize?: number },
+    options?: { maxSize?: number }
   ): Promise<TextExtractionResult> {
     const start = Date.now();
     const { maxSize = 10 * 1024 * 1024 } = options || {};
@@ -139,9 +147,15 @@ export class MinIOService {
     bucket: string,
     key: string,
     content: string,
-    metadata?: Record<string, string>,
+    metadata?: Record<string, string>
   ): Promise<string> {
-    const cmd = new PutObjectCommand({ Bucket: bucket, Key: key, Body: content, ContentType: 'text/plain', Metadata: metadata });
+    const cmd = new PutObjectCommand({
+      Bucket: bucket,
+      Key: key,
+      Body: content,
+      ContentType: 'text/plain',
+      Metadata: metadata,
+    });
     await this.client.send(cmd);
     return `minio://${bucket}/${key}`;
   }
@@ -150,7 +164,7 @@ export class MinIOService {
     bucket: string,
     key: string,
     content: Buffer | Uint8Array | string,
-    contentType?: string,
+    contentType?: string
   ): Promise<string> {
     const upload = new Upload({
       client: this.client,
@@ -168,12 +182,12 @@ export class MinIOService {
   static async listObjects(
     bucket: string,
     prefix?: string,
-    maxKeys: number = 1000,
+    maxKeys: number = 1000
   ): Promise<FileMetadata[]> {
     try {
       const cmd = new ListObjectsV2Command({ Bucket: bucket, Prefix: prefix, MaxKeys: maxKeys });
       const res = await this.client.send(cmd);
-      return (res.Contents || []).map(item => ({
+      return (res.Contents || []).map((item) => ({
         key: item.Key!,
         size: item.Size || 0,
         lastModified: item.LastModified || new Date(),
@@ -191,7 +205,8 @@ export class MinIOService {
       const cmd = new HeadObjectCommand({ Bucket: bucket, Key: key });
       await this.client.send(cmd);
       return true;
-    } catch (error: Error | unknown) { // Explicitly type error as 'any' or a more specific type if known
+    } catch (error: Error | unknown) {
+      // Explicitly type error as 'any' or a more specific type if known
       if (error instanceof Error && error.name === 'NotFound') {
         return false;
       }
@@ -210,7 +225,8 @@ export class MinIOService {
         contentType: res.ContentType || undefined,
         bucket,
       };
-    } catch (error: Error | unknown) { // Explicitly type error as 'any' or a more specific type if known
+    } catch (error: Error | unknown) {
+      // Explicitly type error as 'any' or a more specific type if known
       if (error instanceof Error && error.name === 'NotFound') {
         return null;
       }
@@ -220,7 +236,7 @@ export class MinIOService {
 
   static async batchExtractText(
     minioUrls: string[],
-    options?: { concurrency?: number; maxSize?: number },
+    options?: { concurrency?: number; maxSize?: number }
   ): Promise<Array<{ url: string; result?: TextExtractionResult; error?: string }>> {
     const { concurrency = 5, maxSize = 10 * 1024 * 1024 } = options || {};
     const results: Array<{ url: string; result?: TextExtractionResult; error?: string }> = [];
@@ -230,7 +246,8 @@ export class MinIOService {
         try {
           const result = await this.getTextContent(url, { maxSize });
           return { url, result };
-        } catch (err: unknown) { // Explicitly type err as 'any' or a more specific type if known
+        } catch (err: unknown) {
+          // Explicitly type err as 'any' or a more specific type if known
           return { url, error: err instanceof Error ? err.message : String(err) };
         }
       });

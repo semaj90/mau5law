@@ -13,10 +13,7 @@ export const GET: RequestHandler = async ({ url, cookies, locals }) => {
     const userId = locals.user?.id || url.searchParams.get('userId') || 'mock-user-id';
 
     if (!userId) {
-      return json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
 
     // Get dashboard statistics
@@ -25,9 +22,8 @@ export const GET: RequestHandler = async ({ url, cookies, locals }) => {
     return json({
       success: true,
       stats,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Dashboard API error:', error);
 
@@ -35,7 +31,7 @@ export const GET: RequestHandler = async ({ url, cookies, locals }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Failed to load dashboard',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );
@@ -47,10 +43,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const userId = locals.user?.id;
 
     if (!userId) {
-      return json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      return json({ error: 'Authentication required' }, { status: 401 });
     }
 
     const { action, caseId } = await request.json();
@@ -60,10 +53,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     switch (action) {
       case 'generate_recommendations':
         if (!caseId) {
-          return json(
-            { error: 'Case ID required for recommendation generation' },
-            { status: 400 }
-          );
+          return json({ error: 'Case ID required for recommendation generation' }, { status: 400 });
         }
         result = await CaseManagementService.generateAIRecommendations(caseId);
         break;
@@ -73,18 +63,14 @@ export const POST: RequestHandler = async ({ request, locals }) => {
         break;
 
       default:
-        return json(
-          { error: 'Invalid action' },
-          { status: 400 }
-        );
+        return json({ error: 'Invalid action' }, { status: 400 });
     }
 
     return json({
       success: true,
       data: result,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error('Dashboard action error:', error);
 
@@ -92,7 +78,7 @@ export const POST: RequestHandler = async ({ request, locals }) => {
       {
         success: false,
         error: error instanceof Error ? error.message : 'Action failed',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       },
       { status: 500 }
     );

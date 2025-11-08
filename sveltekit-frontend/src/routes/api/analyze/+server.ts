@@ -1,16 +1,16 @@
-﻿import type { Document } from "$lib/types";
-import type { RequestHandler } from "@sveltejs/kit";
-import { json } from "@sveltejs/kit";
-import { createHash } from "node:crypto";
+﻿import type { Document } from '$lib/types';
+import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { createHash } from 'node:crypto';
 
-const LANGEXTRACT_URL = process.env.LANGEXTRACT_URL || "http://localhost:8081/analyze";
+const LANGEXTRACT_URL = process.env.LANGEXTRACT_URL || 'http://localhost:8081/analyze';
 
 async function jsExtract(message: string): Promise<any> {
   const words = message
     .toLowerCase()
     .split(/\s+/)
     // Replace punctuation using a Unicode-aware negative character class to avoid unnecessary escapes.
-    .map((w) => w.replace(/[^\p{L}\p{N}\s]+/gu, ""))
+    .map((w) => w.replace(/[^\p{L}\p{N}\s]+/gu, ''))
     .filter(Boolean);
   const counts: Record<string, number> = {};
   for (const w of words) counts[w] = (counts[w] || 0) + 1;
@@ -22,15 +22,15 @@ type AnalysisRequest = {
   documentId?: string;
   evidenceId?: string;
   caseId?: string;
-  documentType?: "evidence" | "case_file" | "legal_document" | "ocr_scan";
-  analysisType?: "classification" | "extraction" | "reasoning" | "compliance" | "chain_of_custody";
+  documentType?: 'evidence' | 'case_file' | 'legal_document' | 'ocr_scan';
+  analysisType?: 'classification' | 'extraction' | 'reasoning' | 'compliance' | 'chain_of_custody';
   useThinkingStyle?: boolean;
   contextDocuments?: string[];
   userId?: string;
   // support simple langextract fields
   message?: string;
   user_id?: string;
-  mode?: "langextract" | "analysis";
+  mode?: 'langextract' | 'analysis';
 };
 
 function buildEnhancedAnalysisPrompt(
@@ -43,7 +43,7 @@ function buildEnhancedAnalysisPrompt(
 ): string {
   const basePrompt = `Analyze this ${documentType} document for ${analysisType}.
 Text: ${documentText}
-${contextualInfo ? `Context: ${contextualInfo}` : ""}
+${contextualInfo ? `Context: ${contextualInfo}` : ''}
 Provide a structured focusing on: 1. Key findings 2. Legal relevance 3. Compliance issues (if any) 4. Format: JSON with clear sections for each point.`;
 
   if (useThinkingStyle) {
@@ -64,30 +64,30 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // If caller explicitly requested langextract mode OR only provided a message (simple extraction)
   const wantsLangExtract =
-    body.mode === "langextract" || (!!body.message && !body.analysisType && !body.text);
+    body.mode === 'langextract' || (!!body.message && !body.analysisType && !body.text);
 
   if (wantsLangExtract) {
-    const text = body.message ?? body.text ?? "";
+    const text = body.message ?? body.text ?? '';
     // Try Go langextract endpoint, fallback to JS extractor
     try {
       const resp = await fetch(LANGEXTRACT_URL, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ text }),
       });
       if (resp.ok) {
         const data = await resp.json();
-        return json({ ok: true, source: "langextract-service", data }, { status: 200 });
+        return json({ ok: true, source: 'langextract-service', data }, { status: 200 });
       } else {
         // fallback
         const counts = await jsExtract(text);
-        return json({ ok: true, source: "langextract-fallback-js", data: counts }, { status: 200 });
+        return json({ ok: true, source: 'langextract-fallback-js', data: counts }, { status: 200 });
       }
     } catch (e) {
       // network or other error -> fallback
       const counts = await jsExtract(text);
       return json(
-        { ok: true, source: "langextract-fallback-js", data: counts, error: String(e) },
+        { ok: true, source: 'langextract-fallback-js', data: counts, error: String(e) },
         { status: 200 }
       );
     }
@@ -95,30 +95,30 @@ export const POST: RequestHandler = async ({ request }) => {
 
   // RICHER ANALYSIS path
   try {
-    const text = body.text ?? "";
+    const text = body.text ?? '';
     const prompt = buildEnhancedAnalysisPrompt(
       text,
-      body.analysisType ?? "analysis",
-      body.documentType ?? "legal_document",
+      body.analysisType ?? 'analysis',
+      body.documentType ?? 'legal_document',
       Boolean(body.useThinkingStyle),
-      Array.isArray(body.contextDocuments) ? body.contextDocuments.join("\n") : "",
+      Array.isArray(body.contextDocuments) ? body.contextDocuments.join('\n') : '',
       {}
     );
     // deterministic id for this prompt/analysis (uses createHash)
-    const id = createHash("sha256").update(prompt).digest("hex");
+    const id = createHash('sha256').update(prompt).digest('hex');
     // Return a skeleton analysis (LLM integration would replace this)
     const analysis = {
       id: id,
       promptSummary: prompt.slice(0, 500),
       keyFindings: [],
-      legalRelevance: "",
+      legalRelevance: '',
       complianceIssues: [],
       recommendations: [],
     };
-    return json({ ok: true, source: "analysis-skeleton", analysis }, { status: 200 });
+    return json({ ok: true, source: 'analysis-skeleton', analysis }, { status: 200 });
   } catch (err) {
     return json(
-      { ok: false, error: "Failed to perform analysis", details: String(err) },
+      { ok: false, error: 'Failed to perform analysis', details: String(err) },
       { status: 500 }
     );
   }

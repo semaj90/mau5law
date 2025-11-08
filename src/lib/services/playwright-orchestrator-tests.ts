@@ -34,14 +34,14 @@ export class PlaywrightOrchestratorTester {
         query: 'What are the essential elements of a valid contract under common law?',
         expectedModel: 'gemma3-legal:latest',
         expectedResponseTime: 3000, // 3 seconds max
-        memoryBankExpected: 'L1_GEMMA3_LEGAL'
+        memoryBankExpected: 'L1_GEMMA3_LEGAL',
       },
       {
         name: 'Legal Analysis - Tort Law',
         query: 'Explain negligence and its four elements in tort law',
-        expectedModel: 'gemma3-legal:latest', 
+        expectedModel: 'gemma3-legal:latest',
         expectedResponseTime: 3000,
-        memoryBankExpected: 'L1_GEMMA3_LEGAL'
+        memoryBankExpected: 'L1_GEMMA3_LEGAL',
       },
 
       // Embedding Tests
@@ -50,14 +50,14 @@ export class PlaywrightOrchestratorTester {
         query: 'Generate embedding for contract similarity analysis',
         expectedModel: 'embeddinggemma:latest',
         expectedResponseTime: 1000,
-        memoryBankExpected: 'L1_EMBEDDINGGEMMA'
+        memoryBankExpected: 'L1_EMBEDDINGGEMMA',
       },
       {
         name: 'Semantic Search Request',
         query: 'Create semantic vector for legal document search',
         expectedModel: 'embeddinggemma:latest',
         expectedResponseTime: 1000,
-        memoryBankExpected: 'L1_EMBEDDINGGEMMA'
+        memoryBankExpected: 'L1_EMBEDDINGGEMMA',
       },
 
       // General Query Tests
@@ -66,7 +66,7 @@ export class PlaywrightOrchestratorTester {
         query: 'What is artificial intelligence and how does it work?',
         expectedModel: 'gemma3-legal:latest',
         expectedResponseTime: 2000,
-        memoryBankExpected: 'L1_GEMMA3_LEGAL'
+        memoryBankExpected: 'L1_GEMMA3_LEGAL',
       },
 
       // Cache Hit Tests
@@ -75,8 +75,8 @@ export class PlaywrightOrchestratorTester {
         query: 'What are the essential elements of a valid contract under common law?', // Duplicate of first query
         expectedModel: 'cache_hit',
         expectedResponseTime: 100, // Should be very fast from cache
-        memoryBankExpected: 'L3_EXISTING_REDIS'
-      }
+        memoryBankExpected: 'L3_EXISTING_REDIS',
+      },
     ];
   }
 
@@ -90,15 +90,15 @@ export class PlaywrightOrchestratorTester {
         query: 'Analyze breach of contract remedies in commercial law',
         expectedModel: 'gemma3-legal:latest',
         expectedResponseTime: 4000,
-        memoryBankExpected: 'L1_GEMMA3_LEGAL'
+        memoryBankExpected: 'L1_GEMMA3_LEGAL',
       },
       {
         name: 'L1 Bank Switch - Embedding After Legal',
         query: 'Find similar cases using embedding search',
-        expectedModel: 'embeddinggemma:latest', 
+        expectedModel: 'embeddinggemma:latest',
         expectedResponseTime: 1200,
-        memoryBankExpected: 'L1_EMBEDDINGGEMMA'
-      }
+        memoryBankExpected: 'L1_EMBEDDINGGEMMA',
+      },
     ];
   }
 
@@ -107,7 +107,7 @@ export class PlaywrightOrchestratorTester {
    */
   generatePlaywrightTests(): string {
     const scenarios = [...this.getTestScenarios(), ...this.getMemoryBankTests()];
-    
+
     return `
 // Auto-generated Playwright tests for Legal AI Orchestrator
 // Nintendo-Style Memory Management Test Suite
@@ -129,7 +129,9 @@ test.describe('Legal AI Orchestrator - Nintendo Memory Management', () => {
     });
   });
 
-${scenarios.map((scenario, index) => `
+${scenarios
+  .map(
+    (scenario, index) => `
   test('${scenario.name}', async ({ page }) => {
     // Test ${index + 1}: ${scenario.name}
     const startTime = Date.now();
@@ -168,7 +170,9 @@ ${scenarios.map((scenario, index) => `
     
     console.log(\`✅ \${scenario.name}: \${responseTime}ms - Model: \${modelUsed} - Bank: \${memoryBank}\`);
   });
-`).join('')}
+`
+  )
+  .join('')}
 
   test('Health Check API Integration', async ({ request }) => {
     // Test the health check API

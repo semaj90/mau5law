@@ -56,11 +56,51 @@ async function checkQdrantHealth(): Promise<boolean> {
 /* -------------------------------------------------------------------------- */
 function generateMockResults(limit: number): VectorSearchResult[] {
   const mockData = [
-    { id: 'doc-101', score: 0.95, payload: { title: 'Landmark Case: Roe v. Wade', date: '1973-01-22', summary: 'Summary of Roe v. Wade...' } },
-    { id: 'doc-102', score: 0.92, payload: { title: 'Contract Dispute: Acme Corp v. Beta Inc.', date: '2021-03-15', summary: 'Details of a contract dispute...' } },
-    { id: 'doc-103', score: 0.88, payload: { title: 'Patent Infringement: Tech Innovations', date: '2022-07-01', summary: 'Analysis of a patent infringement claim...' } },
-    { id: 'doc-104', score: 0.85, payload: { title: 'Environmental Law: Green Earth Coalition', date: '2020-11-10', summary: 'Case related to environmental regulations...' } },
-    { id: 'doc-105', score: 0.80, payload: { title: 'Criminal Defense: State v. John Doe', date: '2023-02-28', summary: 'Summary of a criminal defense case...' } },
+    {
+      id: 'doc-101',
+      score: 0.95,
+      payload: {
+        title: 'Landmark Case: Roe v. Wade',
+        date: '1973-01-22',
+        summary: 'Summary of Roe v. Wade...',
+      },
+    },
+    {
+      id: 'doc-102',
+      score: 0.92,
+      payload: {
+        title: 'Contract Dispute: Acme Corp v. Beta Inc.',
+        date: '2021-03-15',
+        summary: 'Details of a contract dispute...',
+      },
+    },
+    {
+      id: 'doc-103',
+      score: 0.88,
+      payload: {
+        title: 'Patent Infringement: Tech Innovations',
+        date: '2022-07-01',
+        summary: 'Analysis of a patent infringement claim...',
+      },
+    },
+    {
+      id: 'doc-104',
+      score: 0.85,
+      payload: {
+        title: 'Environmental Law: Green Earth Coalition',
+        date: '2020-11-10',
+        summary: 'Case related to environmental regulations...',
+      },
+    },
+    {
+      id: 'doc-105',
+      score: 0.8,
+      payload: {
+        title: 'Criminal Defense: State v. John Doe',
+        date: '2023-02-28',
+        summary: 'Summary of a criminal defense case...',
+      },
+    },
   ];
   return mockData.slice(0, limit);
 }
@@ -115,7 +155,9 @@ export class VectorSearchService {
 
         if (!response.ok) {
           const errorBody = await response.text();
-          console.error(`Qdrant search failed: ${response.status} ${response.statusText} - ${errorBody}`);
+          console.error(
+            `Qdrant search failed: ${response.status} ${response.statusText} - ${errorBody}`
+          );
           // Fallback to mock data on Qdrant error
           return generateMockResults(limit);
         }

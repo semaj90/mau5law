@@ -38,10 +38,10 @@ class TensorRTBridge {
 
   // GPU monitoring thresholds
   private gpuThresholds = {
-    maxMemoryUsage: 0.85,     // 85% GPU memory usage
-    maxTemperature: 80,       // 80°C
-    criticalMemory: 0.95,     // 95% critical threshold
-    cooldownPeriod: 30000     // 30 seconds
+    maxMemoryUsage: 0.85, // 85% GPU memory usage
+    maxTemperature: 80, // 80°C
+    criticalMemory: 0.95, // 95% critical threshold
+    cooldownPeriod: 30000, // 30 seconds
   };
 
   private lastGpuCheck = 0;
@@ -80,8 +80,9 @@ class TensorRTBridge {
     const gpuStatus = await this.getGPUStatus();
 
     // Check GPU memory and temperature
-    const gpuOk = gpuStatus.utilization < this.gpuThresholds.maxMemoryUsage &&
-                  gpuStatus.temperature < this.gpuThresholds.maxTemperature;
+    const gpuOk =
+      gpuStatus.utilization < this.gpuThresholds.maxMemoryUsage &&
+      gpuStatus.temperature < this.gpuThresholds.maxTemperature;
 
     // Analyze query complexity
     const isComplexQuery = this.isComplexLegalQuery(request.query);
@@ -120,24 +121,25 @@ class TensorRTBridge {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer dummy' // If needed
+          Authorization: 'Bearer dummy', // If needed
         },
         body: JSON.stringify({
           model: request.model || 'gemma3-legal:latest',
           messages: [
             {
               role: 'system',
-              content: 'You are a legal AI assistant. Provide accurate, helpful responses while noting that this is not legal advice.'
+              content:
+                'You are a legal AI assistant. Provide accurate, helpful responses while noting that this is not legal advice.',
             },
             {
               role: 'user',
-              content: request.query
-            }
+              content: request.query,
+            },
           ],
           temperature: request.temperature || 0.1,
           max_tokens: request.maxTokens || 2048,
-          stream: request.stream || false
-        })
+          stream: request.stream || false,
+        }),
       });
 
       if (!response.ok) {
@@ -152,9 +154,8 @@ class TensorRTBridge {
         duration: 0, // Will be set by caller
         tokens: this.estimateTokens(result.choices?.[0]?.message?.content || ''),
         source: 'tensorrt-llm',
-        gpu_status: routing.gpuStatus
+        gpu_status: routing.gpuStatus,
       };
-
     } catch (error) {
       console.warn('TensorRT generation failed, falling back to Ollama:', error);
       return this.generateWithOllama(request, routing);
@@ -176,8 +177,8 @@ class TensorRTBridge {
         prompt: request.query,
         temperature: request.temperature || 0.3,
         max_tokens: request.maxTokens || 1024,
-        stream: false
-      })
+        stream: false,
+      }),
     });
 
     if (!response.ok) {
@@ -192,7 +193,7 @@ class TensorRTBridge {
       duration: 0,
       tokens: this.estimateTokens(result.response || ''),
       source: 'ollama-fallback',
-      gpu_status: routing.gpuStatus
+      gpu_status: routing.gpuStatus,
     };
   }
 
@@ -202,14 +203,14 @@ class TensorRTBridge {
   private async getGPUStatus(): Promise<GPUMemoryStatus> {
     // Cache GPU status for 5 seconds to avoid excessive polling
     const now = Date.now();
-    if (this.gpuStatus && (now - this.lastGpuCheck) < 5000) {
+    if (this.gpuStatus && now - this.lastGpuCheck < 5000) {
       return this.gpuStatus;
     }
 
     try {
       // Try to get GPU status from your existing monitoring
       const response = await fetch(`${this.bridgeUrl}/health`, {
-        timeout: 1000
+        timeout: 1000,
       });
 
       if (response.ok) {
@@ -220,13 +221,12 @@ class TensorRTBridge {
           used: health.gpu?.memory_used || 0,
           free: health.gpu?.memory_free || 12288,
           utilization: health.gpu?.utilization || 0,
-          temperature: health.gpu?.temperature || 45
+          temperature: health.gpu?.temperature || 45,
         };
       } else {
         // Fallback to estimated values
         this.gpuStatus = this.getEstimatedGPUStatus();
       }
-
     } catch (error) {
       console.warn('GPU monitoring unavailable, using estimates:', error);
       this.gpuStatus = this.getEstimatedGPUStatus();
@@ -241,11 +241,11 @@ class TensorRTBridge {
    */
   private getEstimatedGPUStatus(): GPUMemoryStatus {
     return {
-      total: 12288,    // 12GB RTX 3060 Ti
-      used: 6144,      // Assume 50% usage
+      total: 12288, // 12GB RTX 3060 Ti
+      used: 6144, // Assume 50% usage
       free: 6144,
       utilization: 0.5,
-      temperature: 65  // Reasonable estimate
+      temperature: 65, // Reasonable estimate
     };
   }
 
@@ -261,12 +261,14 @@ class TensorRTBridge {
       /precedent.*research/i,
       /compliance.*review/i,
       /risk.*evaluation/i,
-      /\b(draft|review|analyze|interpret)\b.*\b(agreement|contract|clause|provision)\b/i
+      /\b(draft|review|analyze|interpret)\b.*\b(agreement|contract|clause|provision)\b/i,
     ];
 
-    return complexPatterns.some(pattern => pattern.test(query)) ||
-           query.length > 500 ||
-           (query.match(/\b(legal|law|court|statute|regulation)\b/gi) || []).length > 2;
+    return (
+      complexPatterns.some((pattern) => pattern.test(query)) ||
+      query.length > 500 ||
+      (query.match(/\b(legal|law|court|statute|regulation)\b/gi) || []).length > 2
+    );
   }
 
   /**
@@ -286,7 +288,7 @@ const tensorrtBridge = new TensorRTBridge();
  */
 export const POST: RequestHandler = async ({ request }) => {
   try {
-    const body = await request.json() as TensorRTRequest;
+    const body = (await request.json()) as TensorRTRequest;
 
     // Validate request
     if (!body.query || typeof body.query !== 'string') {
@@ -298,16 +300,18 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json({
       success: true,
-      ...result
+      ...result,
     });
-
   } catch (error) {
     console.error('AI generation error:', error);
 
-    return json({
-      error: 'AI generation failed',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return json(
+      {
+        error: 'AI generation failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 };
 
@@ -326,20 +330,22 @@ export const GET: RequestHandler = async () => {
       endpoints: {
         tensorrt_bridge: 'http://localhost:8086',
         tensorrt_llm: 'http://localhost:8084',
-        ollama: 'http://localhost:11434'
+        ollama: 'http://localhost:11434',
       },
       features: {
         client_side_ai: true,
         context_switching: true,
         gpu_monitoring: true,
-        intelligent_routing: true
-      }
+        intelligent_routing: true,
+      },
     });
-
   } catch (error) {
-    return json({
-      status: 'error',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return json(
+      {
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
   }
 };

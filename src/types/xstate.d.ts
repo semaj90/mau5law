@@ -3,7 +3,11 @@
 
 declare module 'xstate' {
   // coarse signatures to unblock compilation
-  export function createMachine<Context = any, Event = any>(config: any, options?: any, initialContext?: Context): any;
+  export function createMachine<Context = any, Event = any>(
+    config: any,
+    options?: any,
+    initialContext?: Context
+  ): any;
   export function assign<TContext = any, TEvent = any>(mapper: any): any;
 
   export type DoneInvokeEvent<T = any> = { type: string; data: T };

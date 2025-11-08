@@ -15,9 +15,19 @@ import type IORedis from 'ioredis';
 
 // Event types that can be sent to the client
 export interface WorkflowEvent {
-  type: 'SSE_CONNECTED' | 'OCR_COMPLETE' | 'OCR_ERROR' | 'EMBEDDING_COMPLETE' |
-        'EMBEDDING_ERROR' | 'ENTITY_COMPLETE' | 'ENTITY_ERROR' | 'SUMMARY_COMPLETE' |
-        'SUMMARY_ERROR' | 'WORKFLOW_COMPLETE' | 'WORKFLOW_ERROR' | 'HEARTBEAT';
+  type:
+    | 'SSE_CONNECTED'
+    | 'OCR_COMPLETE'
+    | 'OCR_ERROR'
+    | 'EMBEDDING_COMPLETE'
+    | 'EMBEDDING_ERROR'
+    | 'ENTITY_COMPLETE'
+    | 'ENTITY_ERROR'
+    | 'SUMMARY_COMPLETE'
+    | 'SUMMARY_ERROR'
+    | 'WORKFLOW_COMPLETE'
+    | 'WORKFLOW_ERROR'
+    | 'HEARTBEAT';
   timestamp: string;
   sessionId: string;
   evidenceId?: string;
@@ -84,7 +94,6 @@ export const GET: RequestHandler = async ({ params }) => {
         }, 30000);
 
         console.log(`[SSE] Client connected to workflow session: ${sessionId}`);
-
       } catch (error) {
         console.error('[SSE] Error setting up SSE connection:', error);
         controller.error(error);
@@ -113,7 +122,7 @@ export const GET: RequestHandler = async ({ params }) => {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
       // Enable CORS if needed
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET',

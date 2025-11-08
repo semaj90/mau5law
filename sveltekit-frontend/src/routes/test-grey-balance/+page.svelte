@@ -12,7 +12,9 @@
     <!-- Page, Header -->
     <div class="text-center">
       <h1 class="text-4xl font-bold text-enhanced-text-primary mb-4">Grey Balance Test</h1>
-      <p class="text-enhanced-text-secondary">Testing NES-style grey balance with Harvard crimson components</p>
+      <p class="text-enhanced-text-secondary">
+        Testing NES-style grey balance with Harvard crimson components
+      </p>
     </div>
 
     <!-- Button, Variants, Section -->
@@ -41,7 +43,8 @@
           <h3 class="text-lg font-semibold text-enhanced-text-primary">Size & Effects</h3>
           <YoRHaHarvardButton variant="grey" size="sm">Small Grey</YoRHaHarvardButton>
           <YoRHaHarvardButton variant="crimson-grey" size="md" glowing>Glowing</YoRHaHarvardButton>
-          <YoRHaHarvardButton variant="grey" size="lg" pixelated>Large Pixelated</YoRHaHarvardButton>
+          <YoRHaHarvardButton variant="grey" size="lg" pixelated>Large Pixelated</YoRHaHarvardButton
+          >
         </div>
       </div>
     </section>
@@ -52,16 +55,36 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <!-- Original, Cards -->
-        <YoRHaHarvardCard variant="default" title="Default Harvard" subtitle="Classic, crimson, styling">
-          <p class="text-enhanced-text-secondary">Traditional Harvard crimson card with academic styling.</p>
+        <YoRHaHarvardCard
+          variant="default"
+          title="Default Harvard"
+          subtitle="Classic, crimson, styling"
+        >
+          <p class="text-enhanced-text-secondary">
+            Traditional Harvard crimson card with academic styling.
+          </p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard variant="gaming" title="Gaming Card" subtitle="YoRHa, gaming, theme" glowing>
-          <p class="text-enhanced-text-secondary">Gaming-themed card with scan lines and effects.</p>
+        <YoRHaHarvardCard
+          variant="gaming"
+          title="Gaming Card"
+          subtitle="YoRHa, gaming, theme"
+          glowing
+        >
+          <p class="text-enhanced-text-secondary">
+            Gaming-themed card with scan lines and effects.
+          </p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard variant="legal" title="Legal, Card" subtitle="Professional, styling" bordered>
-          <p class="text-enhanced-text-secondary">Professional legal document styling with borders.</p>
+        <YoRHaHarvardCard
+          variant="legal"
+          title="Legal, Card"
+          subtitle="Professional, styling"
+          bordered
+        >
+          <p class="text-enhanced-text-secondary">
+            Professional legal document styling with borders.
+          </p>
         </YoRHaHarvardCard>
 
         <!-- Grey, Balance, Cards -->
@@ -69,12 +92,26 @@
           <p class="text-enhanced-text-secondary">Pure grey card following NES color patterns.</p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard variant="crimson-grey" title="Crimson Grey, Balance" subtitle="Balanced, approach" glowing>
-          <p class="text-enhanced-text-secondary">Balanced card combining Harvard crimson with grey tones.</p>
+        <YoRHaHarvardCard
+          variant="crimson-grey"
+          title="Crimson Grey, Balance"
+          subtitle="Balanced, approach"
+          glowing
+        >
+          <p class="text-enhanced-text-secondary">
+            Balanced card combining Harvard crimson with grey tones.
+          </p>
         </YoRHaHarvardCard>
 
-        <YoRHaHarvardCard variant="terminal" title="Terminal, Grey" subtitle="Monospace, styling" scanLines>
-          <p class="text-enhanced-text-secondary">Terminal-style card with monospace text and scan lines.</p>
+        <YoRHaHarvardCard
+          variant="terminal"
+          title="Terminal, Grey"
+          subtitle="Monospace, styling"
+          scanLines
+        >
+          <p class="text-enhanced-text-secondary">
+            Terminal-style card with monospace text and scan lines.
+          </p>
         </YoRHaHarvardCard>
       </div>
     </section>
@@ -119,7 +156,11 @@
             <div class="mb-4">
               <YoRHaHarvardButton variant="primary">Primary Action</YoRHaHarvardButton>
             </div>
-            <YoRHaHarvardCard variant="default" title="Heavy Crimson" subtitle="Overwhelming, red, tones">
+            <YoRHaHarvardCard
+              variant="default"
+              title="Heavy Crimson"
+              subtitle="Overwhelming, red, tones"
+            >
               <p class="text-enhanced-text-secondary">
                 Too much crimson can be overwhelming and doesn't match NES aesthetics.'
               </p>
@@ -133,7 +174,11 @@
             <div class="mb-4">
               <YoRHaHarvardButton variant="crimson-grey">Balanced Action</YoRHaHarvardButton>
             </div>
-            <YoRHaHarvardCard variant="crimson-grey" title="Balanced Design" subtitle="Grey with, crimson, accents">
+            <YoRHaHarvardCard
+              variant="crimson-grey"
+              title="Balanced Design"
+              subtitle="Grey with, crimson, accents"
+            >
               <p class="text-enhanced-text-secondary">
                 Perfect balance of grey neutrals with Harvard crimson highlights.
               </p>
@@ -166,7 +211,10 @@
           onclick={() => alert('Balanced card clicked!')}
           glowing
         >
-          <YoRHaHarvardButton variant="crimson-grey" onclick={() => alert('Balanced button clicked!')}>
+          <YoRHaHarvardButton
+            variant="crimson-grey"
+            onclick={() => alert('Balanced button clicked!')}
+          >
             Balanced Action
           </YoRHaHarvardButton>
         </YoRHaHarvardCard>
@@ -178,7 +226,11 @@
           onclick={() => alert('Terminal card clicked!')}
           scanLines
         >
-          <YoRHaHarvardButton variant="grey" pixelated, onclick={() => alert('Terminal button clicked!')}>
+          <YoRHaHarvardButton
+            variant="grey"
+            pixelated,
+            onclick={() => alert('Terminal button clicked!')}
+          >
             Execute Command
           </YoRHaHarvardButton>
         </YoRHaHarvardCard>
@@ -198,5 +250,6 @@
     );
     background-clip: text;
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent}
+    -webkit-text-fill-color: transparent;
+  }
 </style>

@@ -25,7 +25,12 @@
     try {
       if (!ts) return '';
       // Accept ISO: string, number, or Date
-      const d = typeof ts === 'string' || typeof ts === 'number' ? new Date(ts as string | number) : ts instanceof Date ? ts : new Date(String(ts));
+      const d =
+        typeof ts === 'string' || typeof ts === 'number'
+          ? new Date(ts as string | number)
+          : ts instanceof Date
+            ? ts
+            : new Date(String(ts));
       if (isNaN(d.getTime())) return '';
       return d.toLocaleString();
     } catch {
@@ -45,67 +50,82 @@
     {
       name: 'Authentication Debug',
       endpoint: '/api/auth/debug',
-      description: 'Check authentication status and development flags'
+      description: 'Check authentication status and development flags',
     },
     {
       name: 'Development Auth Creation',
       endpoint: '/api/dev-auth?seed=true',
-      description: 'Create development session with sample data'
+      description: 'Create development session with sample data',
     },
     {
       name: 'Enhanced RAG Health',
       endpoint: 'http://localhost:8094/health',
-      description: 'Go microservice health check'
+      description: 'Go microservice health check',
     },
     {
       name: 'Upload Service Health',
       endpoint: 'http://localhost:8093/health',
-      description: 'File upload service health'
+      description: 'File upload service health',
     },
     {
       name: 'Ollama Health',
       endpoint: 'http://localhost:11434/api/version',
-      description: 'Ollama local LLM service health'
+      description: 'Ollama local LLM service health',
     },
     {
       name: 'Qdrant Health',
       endpoint: 'http://localhost:6333/health',
-      description: 'Qdrant vector database health'
+      description: 'Qdrant vector database health',
     },
     {
       name: 'Redis Health',
       endpoint: 'http://localhost:6379/ping',
-      description: 'Redis cache health'
+      description: 'Redis cache health',
     },
     {
       name: 'PostgreSQL Health',
       endpoint: '/api/db/health',
-      description: 'PostgreSQL database health'
+      description: 'PostgreSQL database health',
     },
     {
       name: 'MinIO Health',
       endpoint: 'http://localhost:9000/minio/health/live',
-      description: 'MinIO object storage health'
+      description: 'MinIO object storage health',
     },
     {
       name: 'RabbitMQ Health',
       endpoint: 'http://localhost:15672/api/overview',
-      description: 'RabbitMQ message queue health (management UI)'
-    }
+      description: 'RabbitMQ message queue health (management UI)',
+    },
   ];
 
   async function runTest(test: TestConfig) {
-    testResults = { ...testResults, [test.name]: { status: 0, timestamp: new Date(), success: false, error: 'Running...' } };
+    testResults = {
+      ...testResults,
+      [test.name]: { status: 0, timestamp: new Date(), success: false, error: 'Running...' },
+    };
     try {
       const response = await fetch(test.endpoint, {
         method: test.method || 'GET',
         body: test.body ? JSON.stringify(test.body) : undefined,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
       const data = await response.json();
-      testResults = { ...testResults, [test.name]: { ...testResults[test.name], status: response.status, success: response.ok, data, error: response.ok ? undefined : data.detail || JSON.stringify(data) } };
+      testResults = {
+        ...testResults,
+        [test.name]: {
+          ...testResults[test.name],
+          status: response.status,
+          success: response.ok,
+          data,
+          error: response.ok ? undefined : data.detail || JSON.stringify(data),
+        },
+      };
     } catch (error: any) {
-      testResults = { ...testResults, [test.name]: { ...testResults[test.name], success: false, error: error.message } };
+      testResults = {
+        ...testResults,
+        [test.name]: { ...testResults[test.name], success: false, error: error.message },
+      };
     }
   }
 
@@ -129,7 +149,7 @@
       cpuUsage: '25%',
       memoryUsage: '40%',
       diskUsage: '60%',
-      networkTraffic: '10Mbps'
+      networkTraffic: '10Mbps',
     };
   }
 
@@ -163,8 +183,10 @@
                 class="w-3 h-3 rounded-full mr-3"
                 class:bg-green-500={testResults[test.name]?.success}
                 class:bg-red-500={testResults[test.name]?.success === false}
-                class:bg-yellow-500={!testResults[test.name]?.status && testResults[test.name]?.error === 'Running...'}
-                class:bg-gray-500={!testResults[test.name]?.status && testResults[test.name]?.error !== 'Running...'}
+                class:bg-yellow-500={!testResults[test.name]?.status &&
+                  testResults[test.name]?.error === 'Running...'}
+                class:bg-gray-500={!testResults[test.name]?.status &&
+                  testResults[test.name]?.error !== 'Running...'}
               ></span>
               <div>
                 <p class="font-medium text-white">{test.name}</p>
@@ -193,5 +215,3 @@
 <style lang="postcss">
   /* Add any specific styles for this page here */
 </style>
-
-

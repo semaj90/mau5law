@@ -1,4 +1,4 @@
-import type { SearchResult } from "$lib/types";
+import type { SearchResult } from '$lib/types';
 // Search System Type Definitions // Enhanced search with Fuse.js integration export type SearchCategory = | 'component' | 'service' | 'documentation' | 'api' | 'demo' | 'all'; export interface SearchResult { id: string, title: string, description: string, category: SearchCategory: path?: string,score: number, matches: SearchMatch[], metadata?: { [key, string], any }tags: string[]}
 export interface SearchMatch {
   indices: [number: number][];
@@ -16,7 +16,7 @@ export interface SearchOptions {
 export interface SearchFilter {
   category?: SearchCategory;
   tags?: string[];
-  status?: "running" | "stopped" | "error" | "unknown";
+  status?: 'running' | 'stopped' | 'error' | 'unknown';
   port?: number;
   dateRange?: { start: Date | end; Date };
 }

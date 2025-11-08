@@ -1,10 +1,10 @@
-﻿/** * Gaming Types - Minimal Working Version */ export type GamingEra = "8bit" | "16bit" | "n64";
+﻿/** * Gaming Types - Minimal Working Version */ export type GamingEra = '8bit' | '16bit' | 'n64';
 export interface GamingThemeState {
   currentEra: GamingEra;
   availableEras: GamingEra[];
   isTransitioning: boolean;
   transitionDuration: number;
-  performanceLevel: "low" | "medium" | "high";
+  performanceLevel: 'low' | 'medium' | 'high';
   era: GamingEra;
   colorPalette: string[];
   soundEnabled: boolean;
@@ -39,8 +39,8 @@ export interface ProgressiveGamingConfig {
   bitsUICompatibility: boolean;
 }
 export interface GamingComponentProps {
-  variant?: "primary" | "secondary" | "accent" | "ghost" | "outline";
-  size?: "xs" | "sm" | "md" | "lg" | "xl";
+  variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'outline';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   disabled?: boolean;
   loading?: boolean;
   class?: string;
@@ -49,12 +49,12 @@ export interface GamingComponentProps {
   any;
 }
 export interface N64RenderingOptions {
-  textureQuality: "low" | "medium" | "high" | "ultra";
+  textureQuality: 'low' | 'medium' | 'high' | 'ultra';
   enableBilinearFiltering: boolean;
   enableTrilinearFiltering: boolean;
   anisotropicLevel: 1 | 2 | 4 | 8 | 16;
-  meshComplexity: "low" | "medium" | "high" | "ultra";
-  materialType: "basic" | "phong" | "pbr";
+  meshComplexity: 'low' | 'medium' | 'high' | 'ultra';
+  materialType: 'basic' | 'phong' | 'pbr';
   enableShadows: boolean;
   enableReflections: boolean;
   shadowMapSize: 256 | 512 | 1024 | 2048;

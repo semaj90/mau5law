@@ -1,4 +1,4 @@
-import type { ConversationTurn, HMMState, NextStepPrediction } from "$lib/types/sharedTypes";
+import type { ConversationTurn, HMMState, NextStepPrediction } from '$lib/types/sharedTypes';
 
 export enum LegalConversationState {
   GREETING = 0,
@@ -121,14 +121,14 @@ const TRANSITIONS: StateTransition[] = [
 ];
 
 const STATE_LABELS: Record<LegalConversationState, string> = {
-  [LegalConversationState.GREETING]: "Greeting",
-  [LegalConversationState.CASE_INQUIRY]: "Case Inquiry",
-  [LegalConversationState.DOCUMENT_ANALYSIS]: "Document Analysis",
-  [LegalConversationState.LEGAL_RESEARCH]: "Legal Research",
-  [LegalConversationState.RISK_ASSESSMENT]: "Risk Assessment",
-  [LegalConversationState.RECOMMENDATION]: "Recommendation",
-  [LegalConversationState.FOLLOW_UP]: "Follow Up",
-  [LegalConversationState.CONCLUSION]: "Conclusion",
+  [LegalConversationState.GREETING]: 'Greeting',
+  [LegalConversationState.CASE_INQUIRY]: 'Case Inquiry',
+  [LegalConversationState.DOCUMENT_ANALYSIS]: 'Document Analysis',
+  [LegalConversationState.LEGAL_RESEARCH]: 'Legal Research',
+  [LegalConversationState.RISK_ASSESSMENT]: 'Risk Assessment',
+  [LegalConversationState.RECOMMENDATION]: 'Recommendation',
+  [LegalConversationState.FOLLOW_UP]: 'Follow Up',
+  [LegalConversationState.CONCLUSION]: 'Conclusion',
 };
 
 const STATE_ACTIONS: Record<
@@ -136,50 +136,50 @@ const STATE_ACTIONS: Record<
   { action: string; description: string; requiredContext: string[]; durationMs: number }
 > = {
   [LegalConversationState.GREETING]: {
-    action: "greet_user",
-    description: "Acknowledge the user and set expectations.",
+    action: 'greet_user',
+    description: 'Acknowledge the user and set expectations.',
     requiredContext: [],
     durationMs: 2_000,
   },
   [LegalConversationState.CASE_INQUIRY]: {
-    action: "gather_case_details",
-    description: "Ask for missing case metadata before analysis.",
-    requiredContext: ["case_number", "jurisdiction", "parties"],
+    action: 'gather_case_details',
+    description: 'Ask for missing case metadata before analysis.',
+    requiredContext: ['case_number', 'jurisdiction', 'parties'],
     durationMs: 5_000,
   },
   [LegalConversationState.DOCUMENT_ANALYSIS]: {
-    action: "review_documents",
-    description: "Inspect uploaded evidence and produce summaries.",
-    requiredContext: ["document_list"],
+    action: 'review_documents',
+    description: 'Inspect uploaded evidence and produce summaries.',
+    requiredContext: ['document_list'],
     durationMs: 8_000,
   },
   [LegalConversationState.LEGAL_RESEARCH]: {
-    action: "perform_research",
-    description: "Run precedent search and retrieve relevant citations.",
-    requiredContext: ["issues", "statutes"],
+    action: 'perform_research',
+    description: 'Run precedent search and retrieve relevant citations.',
+    requiredContext: ['issues', 'statutes'],
     durationMs: 12_000,
   },
   [LegalConversationState.RISK_ASSESSMENT]: {
-    action: "assess_risk",
-    description: "Score case outcomes and identify blockers.",
-    requiredContext: ["risk_matrix"],
+    action: 'assess_risk',
+    description: 'Score case outcomes and identify blockers.',
+    requiredContext: ['risk_matrix'],
     durationMs: 6_000,
   },
   [LegalConversationState.RECOMMENDATION]: {
-    action: "deliver_recommendations",
-    description: "Summarize findings and suggest next steps.",
-    requiredContext: ["summary", "actions"],
+    action: 'deliver_recommendations',
+    description: 'Summarize findings and suggest next steps.',
+    requiredContext: ['summary', 'actions'],
     durationMs: 4_000,
   },
   [LegalConversationState.FOLLOW_UP]: {
-    action: "plan_follow_up",
-    description: "Schedule follow ups or gather additional data.",
-    requiredContext: ["schedule", "tasks"],
+    action: 'plan_follow_up',
+    description: 'Schedule follow ups or gather additional data.',
+    requiredContext: ['schedule', 'tasks'],
     durationMs: 3_000,
   },
   [LegalConversationState.CONCLUSION]: {
-    action: "close_session",
-    description: "Close the loop and archive the session context.",
+    action: 'close_session',
+    description: 'Close the loop and archive the session context.',
     requiredContext: [],
     durationMs: 2_000,
   },
@@ -246,7 +246,7 @@ export class HMMStateMachine {
   }
 
   getStateName(state: number): string {
-    return STATE_LABELS[state as LegalConversationState] ?? "Unknown";
+    return STATE_LABELS[state as LegalConversationState] ?? 'Unknown';
   }
 
   detectPatterns(history: number[]): Array<{ pattern: number[]; frequency: number }> {
@@ -254,7 +254,7 @@ export class HMMStateMachine {
     const counts = new Map<string, { pattern: number[]; frequency: number }>();
     for (let i = 0; i <= history.length - 3; i += 1) {
       const slice = history.slice(i, i + 3);
-      const key = slice.join("-");
+      const key = slice.join('-');
       const current = counts.get(key) ?? { pattern: slice, frequency: 0 };
       current.frequency += 1;
       counts.set(key, current);
@@ -279,35 +279,35 @@ export class HMMStateMachine {
 
   private inferStateFromIntent(intent: string, userMessage: string): LegalConversationState {
     const normalizedIntent = intent.toLowerCase();
-    if (normalizedIntent.includes("greet")) return LegalConversationState.GREETING;
-    if (normalizedIntent.includes("inquiry") || normalizedIntent.includes("intake"))
+    if (normalizedIntent.includes('greet')) return LegalConversationState.GREETING;
+    if (normalizedIntent.includes('inquiry') || normalizedIntent.includes('intake'))
       return LegalConversationState.CASE_INQUIRY;
-    if (normalizedIntent.includes("document") || normalizedIntent.includes("upload"))
+    if (normalizedIntent.includes('document') || normalizedIntent.includes('upload'))
       return LegalConversationState.DOCUMENT_ANALYSIS;
-    if (normalizedIntent.includes("research") || normalizedIntent.includes("precedent"))
+    if (normalizedIntent.includes('research') || normalizedIntent.includes('precedent'))
       return LegalConversationState.LEGAL_RESEARCH;
-    if (normalizedIntent.includes("risk") || normalizedIntent.includes("assess"))
+    if (normalizedIntent.includes('risk') || normalizedIntent.includes('assess'))
       return LegalConversationState.RISK_ASSESSMENT;
-    if (normalizedIntent.includes("recommend")) return LegalConversationState.RECOMMENDATION;
-    if (normalizedIntent.includes("follow")) return LegalConversationState.FOLLOW_UP;
-    if (normalizedIntent.includes("conclude") || normalizedIntent.includes("close"))
+    if (normalizedIntent.includes('recommend')) return LegalConversationState.RECOMMENDATION;
+    if (normalizedIntent.includes('follow')) return LegalConversationState.FOLLOW_UP;
+    if (normalizedIntent.includes('conclude') || normalizedIntent.includes('close'))
       return LegalConversationState.CONCLUSION;
 
     const text = userMessage.toLowerCase();
-    if (text.includes("hello") || text.includes("hi")) return LegalConversationState.GREETING;
-    if (text.includes("case") || text.includes("client"))
+    if (text.includes('hello') || text.includes('hi')) return LegalConversationState.GREETING;
+    if (text.includes('case') || text.includes('client'))
       return LegalConversationState.CASE_INQUIRY;
-    if (text.includes("document") || text.includes("pdf"))
+    if (text.includes('document') || text.includes('pdf'))
       return LegalConversationState.DOCUMENT_ANALYSIS;
-    if (text.includes("statute") || text.includes("precedent"))
+    if (text.includes('statute') || text.includes('precedent'))
       return LegalConversationState.LEGAL_RESEARCH;
-    if (text.includes("risk") || text.includes("exposure"))
+    if (text.includes('risk') || text.includes('exposure'))
       return LegalConversationState.RISK_ASSESSMENT;
-    if (text.includes("recommendation") || text.includes("next step"))
+    if (text.includes('recommendation') || text.includes('next step'))
       return LegalConversationState.RECOMMENDATION;
-    if (text.includes("follow up") || text.includes("check in"))
+    if (text.includes('follow up') || text.includes('check in'))
       return LegalConversationState.FOLLOW_UP;
-    if (text.includes("thanks") || text.includes("goodbye"))
+    if (text.includes('thanks') || text.includes('goodbye'))
       return LegalConversationState.CONCLUSION;
 
     return LegalConversationState.CASE_INQUIRY;

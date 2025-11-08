@@ -1,6 +1,6 @@
-import { EventEmitter } from "events";
+import { EventEmitter } from 'events';
 
-declare module "ioredis" {
+declare module 'ioredis' {
   /**
    * Augment the Redis interface to include EventEmitter methods.
    * This resolves TypeScript errors where: 'on', 'off', 'once' are not found on the Redis type,

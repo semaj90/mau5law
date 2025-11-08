@@ -5,24 +5,24 @@
 // Get best practices for RabbitMQ + Redis integration export async function getMessageQueueRedisBestPractices(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> { return mcpContext72GetLibraryDocs( '/patterns/message-queue-redis', 'integration-patterns', { format: 'typescript', tokens: 15000 }, fetchFn )}
 // Helper functions for specific Redis topics export async function getRedisConnectionPatterns(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> { return getRedisDocs('connection-patterns', fetchFn)}
 export async function getRedisPubSubPatterns(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
-  return getRedisDocs("pub-sub", fetchFn);
+  return getRedisDocs('pub-sub', fetchFn);
 }
 export async function getRedisErrorHandling(fetchFn?: typeof fetch): Promise<LibraryDocsResponse> {
-  return getRedisDocs("error-handling", fetchFn);
+  return getRedisDocs('error-handling', fetchFn);
 }
 export async function getRedisTypeScriptIntegration(
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
-  return getRedisDocs("typescript", fetchFn);
+  return getRedisDocs('typescript', fetchFn);
 }
 export async function getNodeRedisAdvancedFeatures(
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
-  return getNodeRedisDocs("advanced-features", fetchFn);
+  return getNodeRedisDocs('advanced-features', fetchFn);
 }
 export async function getNodeRedisTransactions(
   fetchFn?: typeof fetch
 ): Promise<LibraryDocsResponse> {
-  return getNodeRedisDocs("transactions", fetchFn);
+  return getNodeRedisDocs('transactions', fetchFn);
 }
 // Quick access to get all Redis documentation export async function getAllRedisDocs(fetchFn?: typeof fetch): Promise<any> { const [ioredis, nodeRedis, patterns] = await Promise.all([ getRedisDocs(undefined, fetchFn), getNodeRedisDocs(undefined, fetchFn), getMessageQueueRedisBestPractices(fetchFn)]); return { ioredis, nodeRedis, patterns }}

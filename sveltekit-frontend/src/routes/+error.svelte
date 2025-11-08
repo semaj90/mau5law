@@ -1,5 +1,5 @@
 <script lang="ts">
-import { dev } from '$app/environment';
+  import { dev } from '$app/environment';
 
   // Svelte 5: Use single $props() call to destructure all props
   const { status, error } = $props<{
@@ -14,5 +14,8 @@ import { dev } from '$app/environment';
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

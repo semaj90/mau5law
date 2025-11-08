@@ -1,4 +1,4 @@
-declare module "pg" {
+declare module 'pg' {
   // Minimal Pool surface used by this project file.
   export class Pool {
     constructor(config?: any);

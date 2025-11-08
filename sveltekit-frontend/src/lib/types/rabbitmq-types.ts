@@ -78,6 +78,3 @@ export interface RabbitMQConnection {
   heartbeat?: number;
   connectionTimeout?: number; // ms
 }
-
-
-

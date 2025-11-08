@@ -52,7 +52,7 @@ import type { Document } from '$lib/types'; import { goto } from '$app/navigatio
 </main>
 
 <style>
-:global(body) {
+  :global(body) {
     background: #0f172a;
   }
 </style>

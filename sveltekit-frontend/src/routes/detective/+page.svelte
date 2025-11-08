@@ -22,7 +22,7 @@
       tags: ['surveillance', 'timestamp', 'suspect-entry'],
       hash: 'abc123',
       thumbnailUrl: '/api/thumbnails/evidence-1.jpg',
-      aiSummary: 'Video shows suspect entering building at 10:23 PM wearing dark clothing'
+      aiSummary: 'Video shows suspect entering building at 10:23 PM wearing dark clothing',
     },
     {
       id: 'evidence-2',
@@ -36,7 +36,7 @@
       updatedAt: new Date('2024-01-16T14:20:00'),
       description: 'Witness observed suspicious activity near the crime scene around 10:15 PM',
       tags: ['witness', 'testimony', 'timeline'],
-      aiSummary: 'Witness observed suspicious activity near the crime scene around 10:15 PM'
+      aiSummary: 'Witness observed suspicious activity near the crime scene around 10:15 PM',
     },
     {
       id: 'evidence-3',
@@ -50,7 +50,7 @@
       updatedAt: new Date('2024-01-17T09:15:00'),
       tags: ['crime-scene', 'forensics', 'photography'],
       hash: 'xyz789',
-      thumbnailUrl: '/api/thumbnails/evidence-3.jpg'
+      thumbnailUrl: '/api/thumbnails/evidence-3.jpg',
     },
     {
       id: 'evidence-4',
@@ -64,7 +64,7 @@
       updatedAt: new Date('2024-01-18T11:45:00'),
       description: 'Audio recording contains discussion about meeting location',
       tags: ['wiretap', 'conversation', 'evidence'],
-      aiSummary: 'Audio recording contains discussion about meeting location'
+      aiSummary: 'Audio recording contains discussion about meeting location',
     },
     {
       id: 'evidence-5',
@@ -78,8 +78,9 @@
       updatedAt: new Date('2024-01-19T16:30:00'),
       description: 'Bank statements showing suspicious transactions',
       tags: ['financial', 'money-laundering', 'transactions'],
-      aiSummary: 'Bank statements reveal suspicious large cash deposits totaling $50,000 over 3 months'
-    }
+      aiSummary:
+        'Bank statements reveal suspicious large cash deposits totaling $50,000 over 3 months',
+    },
   ]);
 
   onMount(() => {
@@ -99,7 +100,7 @@
   let authState = $state({
     isAuthenticated: false,
     isLoading: false,
-    user: null as { name?: string; email?: string } | null
+    user: null as { name?: string; email?: string } | null,
   });
 
   const auth = {
@@ -119,7 +120,7 @@
       await new Promise((r) => setTimeout(r, 200));
       authState.isAuthenticated = !!authState.user;
       authState.isLoading = false;
-    }
+    },
   };
 
   // Demo collaboration simulation function
@@ -130,7 +131,7 @@
     const mockUsers = [
       { id: 'user-1', name: 'Sarah Chen', email: 'sarah.chen@prosecutor.office' },
       { id: 'user-2', name: 'Mike Rodriguez', email: 'mike.rodriguez@prosecutor.office' },
-      { id: 'user-3', name: 'Dr. Lisa Kim', email: 'lisa.kim@forensics.office' }
+      { id: 'user-3', name: 'Dr. Lisa Kim', email: 'lisa.kim@forensics.office' },
     ];
 
     // Add one random user as if they joined
@@ -176,15 +177,27 @@
     <div class="space-y-2">
       <h1 class="text-xl">Detective Mode</h1>
       <div class="flex gap-2">
-        <button onclick={() => (currentView = 'board')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button
+          onclick={() => (currentView = 'board')}
+          class="border rounded px-3 py-1 hover:bg-white/5"
+        >
           Evidence Board
         </button>
-        <button onclick={() => (currentView = 'create-case')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button
+          onclick={() => (currentView = 'create-case')}
+          class="border rounded px-3 py-1 hover:bg-white/5"
+        >
           Create Case
         </button>
-        <button onclick={() => (currentView = 'auth-demo')} class="border rounded px-3 py-1 hover:bg-white/5">
+        <button
+          onclick={() => (currentView = 'auth-demo')}
+          class="border rounded px-3 py-1 hover:bg-white/5"
+        >
           Auth Demo
-        </button> <button onclick={simulateCollaboration} class="border rounded px-3 py-1"> Demo Collab </button>
+        </button>
+        <button onclick={simulateCollaboration} class="border rounded px-3 py-1">
+          Demo Collab
+        </button>
       </div>
       <div class="space-y-4">
         <!-- Demo Status, Badge -->
@@ -194,7 +207,9 @@
         {#if authState.isAuthenticated}
           <div class="flex items-center">
             <span>Welcome, {authState.user?.name || authState.user?.email}</span>
-            <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5">Logout</button>
+            <button onclick={() => auth.logout()} class="border rounded px-2 py-1 hover:bg-white/5"
+              >Logout</button
+            >
           </div>
         {:else}
           <div class="text-sm">Not authenticated</div>
@@ -224,7 +239,8 @@
             <div class="space-y-4">
               <div>
                 <h3 class="text-lg font-semibold">Auth State</h3>
-                <pre class="bg-black/30 p-2 rounded border border-white/10 overflow-x-auto">{JSON.stringify(
+                <pre
+                  class="bg-black/30 p-2 rounded border border-white/10 overflow-x-auto">{JSON.stringify(
                     authState,
                     null,
                     2
@@ -300,5 +316,3 @@
     </div>
   </div>
 {/if}
-
-

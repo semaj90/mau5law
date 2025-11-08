@@ -48,8 +48,8 @@ export class AnalyzerWorkerPool {
     const workerPromises = [];
 
     for (let i = 0; i < this.config.workerCount!; i++) {
-      const worker = new Worker(new URL("./analyzer-worker.ts", import.meta.url), {
-        type: "module",
+      const worker = new Worker(new URL('./analyzer-worker.ts', import.meta.url), {
+        type: 'module',
       });
 
       this.workers.push(worker);
@@ -62,22 +62,22 @@ export class AnalyzerWorkerPool {
       // Initialize worker
       const initPromise = new Promise<void>((resolve) => {
         const handler = (event: MessageEvent) => {
-          if (event.data.type === "READY" && event.data.workerId === i) {
-            worker.removeEventListener("message", handler);
+          if (event.data.type === 'READY' && event.data.workerId === i) {
+            worker.removeEventListener('message', handler);
             this.workerStatus.set(i, true);
             resolve();
           }
         };
-        worker.addEventListener("message", handler);
+        worker.addEventListener('message', handler);
       });
 
       worker.postMessage({
-        type: "INIT",
+        type: 'INIT',
         data: {
           workerId: i,
           config: {
-            url: this.config.ollamaUrl || "http://localhost:11434",
-            model: this.config.model || "gemma3-legal:latest",
+            url: this.config.ollamaUrl || 'http://localhost:11434',
+            model: this.config.model || 'gemma3-legal:latest',
           },
         },
       });
@@ -99,7 +99,7 @@ export class AnalyzerWorkerPool {
       const availableWorker = this.getAvailableWorker();
       if (availableWorker !== null) {
         this.workers[availableWorker].postMessage({
-          type: "PROCESS_CHUNK",
+          type: 'PROCESS_CHUNK',
           data: task,
         });
       } else {
@@ -110,7 +110,7 @@ export class AnalyzerWorkerPool {
       setTimeout(() => {
         if (this.listeners.has(task.id)) {
           this.listeners.delete(task.id);
-          reject(new Error("Task timeout"));
+          reject(new Error('Task timeout'));
         }
       }, 30000);
     });
@@ -145,19 +145,19 @@ export class AnalyzerWorkerPool {
       const batchId = `batch-${Date.now()}-${workerId}`;
 
       const handler = (event: MessageEvent) => {
-        if (event.data.type === "BATCH_COMPLETE") {
-          this.workers[workerId].removeEventListener("message", handler);
+        if (event.data.type === 'BATCH_COMPLETE') {
+          this.workers[workerId].removeEventListener('message', handler);
           resolve(event.data.results);
         }
       };
 
-      this.workers[workerId].addEventListener("message", handler);
+      this.workers[workerId].addEventListener('message', handler);
       this.workers[workerId].postMessage({
-        type: "PROCESS_BATCH",
+        type: 'PROCESS_BATCH',
         data: { batchId, chunks },
       });
 
-      setTimeout(() => reject(new Error("Batch timeout")), 60000);
+      setTimeout(() => reject(new Error('Batch timeout')), 60000);
     });
   }
 
@@ -180,7 +180,7 @@ export class AnalyzerWorkerPool {
     const { type, result, results, error } = event.data;
 
     switch (type) {
-      case "CHUNK_COMPLETE":
+      case 'CHUNK_COMPLETE':
         if (this.listeners.has(result.id)) {
           this.listeners.get(result.id)!(result);
           this.listeners.delete(result.id);
@@ -189,7 +189,7 @@ export class AnalyzerWorkerPool {
         this.processNextTask();
         break;
 
-      case "CHUNK_ERROR":
+      case 'CHUNK_ERROR':
         console.error(`Worker ${workerId} error:`, error);
         if (this.listeners.has(event.data.id)) {
           this.listeners.get(event.data.id)!({ error } as any);
@@ -197,7 +197,7 @@ export class AnalyzerWorkerPool {
         }
         break;
 
-      case "HEALTH_STATUS":
+      case 'HEALTH_STATUS':
         console.log(`Worker ${workerId} health:`, event.data);
         break;
     }
@@ -222,19 +222,19 @@ export class AnalyzerWorkerPool {
 
     this.workers[workerId].terminate();
 
-    const worker = new Worker(new URL("./analyzer-worker.ts", import.meta.url), { type: "module" });
+    const worker = new Worker(new URL('./analyzer-worker.ts', import.meta.url), { type: 'module' });
 
     this.workers[workerId] = worker;
     worker.onmessage = (event) => this.handleWorkerMessage(workerId, event);
     worker.onerror = (error) => this.handleWorkerError(workerId, error);
 
     worker.postMessage({
-      type: "INIT",
+      type: 'INIT',
       data: {
         workerId,
         config: {
-          url: this.config.ollamaUrl || "http://localhost:11434",
-          model: this.config.model || "gemma3-legal:latest",
+          url: this.config.ollamaUrl || 'http://localhost:11434',
+          model: this.config.model || 'gemma3-legal:latest',
         },
       },
     });
@@ -251,7 +251,7 @@ export class AnalyzerWorkerPool {
 
     const task = this.taskQueue.shift()!;
     this.workers[availableWorker].postMessage({
-      type: "PROCESS_CHUNK",
+      type: 'PROCESS_CHUNK',
       data: task,
     });
   }
@@ -272,11 +272,11 @@ export class AnalyzerWorkerPool {
    * Shutdown all workers
    */
   async shutdown(): Promise<void> {
-    console.log("Shutting down worker pool...");
+    console.log('Shutting down worker pool...');
 
     const shutdownPromises = this.workers.map((worker) => {
       return new Promise<void>((resolve) => {
-        worker.postMessage({ type: "SHUTDOWN" });
+        worker.postMessage({ type: 'SHUTDOWN' });
         setTimeout(() => {
           worker.terminate();
           resolve();
@@ -288,7 +288,7 @@ export class AnalyzerWorkerPool {
     this.workers = [];
     this.workerStatus.clear();
     this.taskQueue = [];
-    console.log("✅ Worker pool shutdown complete");
+    console.log('✅ Worker pool shutdown complete');
   }
 }
 

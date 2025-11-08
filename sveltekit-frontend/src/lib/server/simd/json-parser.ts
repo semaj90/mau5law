@@ -5,9 +5,9 @@
  * Integrates with worker pool for parallel processing
  */
 
-import { Worker } from "worker_threads";
-import path from "path";
-import os from "os";
+import { Worker } from 'worker_threads';
+import path from 'path';
+import os from 'os';
 
 interface ParseTask {
   id: string;
@@ -40,16 +40,16 @@ export class SIMDJSONParser {
    * Initialize worker pool
    */
   private initializeWorkers(): void {
-    const workerPath = path.join(process.cwd(), "src/lib/workers/json-worker.js");
+    const workerPath = path.join(process.cwd(), 'src/lib/workers/json-worker.js');
 
     for (let i = 0; i < this.workerCount; i++) {
       const worker = new Worker(workerPath);
 
-      worker.on("message", (result: ParseResult) => {
+      worker.on('message', (result: ParseResult) => {
         this.handleResult(result);
       });
 
-      worker.on("error", (error) => {
+      worker.on('error', (error) => {
         console.error(`Worker ${i} error:`, error);
       });
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { onMount } from 'svelte';
+  import { onMount } from 'svelte';
 
   type RegistryServer = {
     name: string;
@@ -22,7 +22,7 @@ import { onMount } from 'svelte';
       if (!res.ok) throw new Error('Failed to load MCP registry');
       const data = await res.json();
       servers = data.servers ?? [];
-      if (!servers.find(s => s.name === serverName) && servers.length > 0) {
+      if (!servers.find((s) => s.name === serverName) && servers.length > 0) {
         serverName = servers[0].name;
       }
     } catch (err: unknown) {
@@ -52,12 +52,11 @@ import { onMount } from 'svelte';
   }
 
   onMount(() => {
-		(async () => {
-
-    await loadServers();
-    await fetchMcp();
-  		})();
-	});
+    (async () => {
+      await loadServers();
+      await fetchMcp();
+    })();
+  });
 </script>
 
 <main class="page-repair">
@@ -66,5 +65,8 @@ import { onMount } from 'svelte';
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

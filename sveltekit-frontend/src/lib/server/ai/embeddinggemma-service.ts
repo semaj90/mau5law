@@ -1,8 +1,8 @@
-import { createHash } from "crypto";
-import { cognitiveCache } from "$lib/server/cache";
-import { generateEmbedding as requestEmbedding } from "./ollama-client";
+import { createHash } from 'crypto';
+import { cognitiveCache } from '$lib/server/cache';
+import { generateEmbedding as requestEmbedding } from './ollama-client';
 
-const DEFAULT_MODEL = process.env.OLLAMA_EMBED_MODEL ?? "embeddinggemma:latest";
+const DEFAULT_MODEL = process.env.OLLAMA_EMBED_MODEL ?? 'embeddinggemma:latest';
 const DEFAULT_DIMENSIONS = Number(process.env.OLLAMA_EMBED_DIM ?? 384);
 const DEFAULT_CACHE_TTL_SECONDS = Number(process.env.EMBEDDING_CACHE_TTL ?? 60 * 60 * 24 * 7); // 7 days
 
@@ -27,7 +27,7 @@ export interface BatchEmbeddingResult {
 }
 
 export class EmbeddingGemmaService {
-  private readonly cachePrefix = "embedding:gemma:";
+  private readonly cachePrefix = 'embedding:gemma:';
 
   async embed(text: string, options: EmbeddingOptions = {}): Promise<EmbeddingResult> {
     const start = Date.now();
@@ -84,7 +84,7 @@ export class EmbeddingGemmaService {
   }
 
   private buildCacheKey(text: string, model: string): string {
-    const hash = createHash("sha256").update(`${model}:${text}`).digest("hex");
+    const hash = createHash('sha256').update(`${model}:${text}`).digest('hex');
     return `${this.cachePrefix}${hash}`;
   }
 }

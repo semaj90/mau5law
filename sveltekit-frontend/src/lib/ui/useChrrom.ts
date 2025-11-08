@@ -1,4 +1,4 @@
-import { chrCache, type CHRPattern } from "$lib/gpu/chrrom-cache";
+import { chrCache, type CHRPattern } from '$lib/gpu/chrrom-cache';
 export async function getCHRPatternOrFetch(
   _key,
   string,

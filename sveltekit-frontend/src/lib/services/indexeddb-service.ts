@@ -1,4 +1,4 @@
-﻿import { openDB, type IDBPDatabase } from "idb";
+﻿import { openDB, type IDBPDatabase } from 'idb';
 
 // Define the Document interface as it's used by this service.
 // This should be compatible with the Document interface in rag-sync-agent.ts.
@@ -6,13 +6,13 @@ interface Document {
   id: string;
   content?: string;
   metadata?: Record<string, unknown>;
-  syncStatus: "pending" | "synced" | "failed";
+  syncStatus: 'pending' | 'synced' | 'failed';
   embedding?: number[];
 }
 
-const DB_NAME = "legal-ai-db";
+const DB_NAME = 'legal-ai-db';
 const DB_VERSION = 1;
-const STORE_NAME = "documents"; // Object store for documents
+const STORE_NAME = 'documents'; // Object store for documents
 
 export class IndexedDBService {
   private db: Promise<IDBPDatabase>;
@@ -22,7 +22,7 @@ export class IndexedDBService {
       upgrade(db) {
         // Create an object store for documents if it doesn't exist
         if (!db.objectStoreNames.contains(STORE_NAME)) {
-          db.createObjectStore(STORE_NAME, { keyPath: "id" });
+          db.createObjectStore(STORE_NAME, { keyPath: 'id' });
         }
       },
     });

@@ -1,7 +1,7 @@
 // Reworked and valid TypeScript RAG types and helpers
 
 // Document kind union
-export type DocumentKind = "legal" | "case" | "evidence" | "research" | "document";
+export type DocumentKind = 'legal' | 'case' | 'evidence' | 'research' | 'document';
 
 // Core document shape
 export interface DocumentType {
@@ -100,7 +100,7 @@ export interface RAGResponse {
 }
 
 // Extended types for optimization compatibility
-export type ExtendedDocumentType = DocumentKind | "research";
+export type ExtendedDocumentType = DocumentKind | 'research';
 
 export interface OptimizedRAGDocument {
   id: string;
@@ -131,7 +131,7 @@ export interface VectorSearchOptions {
 export interface EmbeddingConfig {
   model: string;
   dimensions: number;
-  provider: "openai" | "ollama" | "local";
+  provider: 'openai' | 'ollama' | 'local';
 }
 
 // RAG source summary type
@@ -140,22 +140,22 @@ export interface RAGSource {
   title?: string;
   content: string;
   relevance: number;
-  type: "document" | "evidence" | "case" | "legal" | "research";
+  type: 'document' | 'evidence' | 'case' | 'legal' | 'research';
 }
 
 // Type guard and normalizer
 export function isValidDocumentType(value: unknown): value is DocumentKind {
   return (
-    typeof value === "string" &&
-    ["legal", "case", "evidence", "research", "document"].includes(value)
+    typeof value === 'string' &&
+    ['legal', 'case', 'evidence', 'research', 'document'].includes(value)
   );
 }
 
 export function normalizeDocumentType(value: unknown): DocumentKind {
   // Map legacy 'research' to 'document' if desired,
   // otherwise return a safe default of 'document'
-  if (value === "research") return "document";
-  return isValidDocumentType(value) ? value : "document";
+  if (value === 'research') return 'document';
+  return isValidDocumentType(value) ? value : 'document';
 }
 
 // add a shared Metadata alias (avoids `any`)

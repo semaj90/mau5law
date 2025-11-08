@@ -5,17 +5,21 @@ import path from 'path';
 const MAX_WORKERS = Math.min(8, Math.max(1, os.cpus().length || 1));
 
 export class ThreadPool {
-  private queue: Array<{ data: any; resolve: (v: unknown) => void; reject: (e: unknown) => void }> = [];
+  private queue: Array<{ data: any; resolve: (v: unknown) => void; reject: (e: unknown) => void }> =
+    [];
   private active = 0;
   public maxWorkers: number;
 
-  constructor(private scriptPath: string, maxWorkers = MAX_WORKERS) {
+  constructor(
+    private scriptPath: string,
+    maxWorkers = MAX_WORKERS
+  ) {
     this.maxWorkers = Math.max(1, Math.min(maxWorkers, MAX_WORKERS));
   }
 
   runTask<T = unknown>(data: any): Promise<T> {
     return new Promise((resolve, reject) => {
-      this.queue.push(<any><any>{ data, resolve, reject });
+      this.queue.push(<any>(<any>{ data, resolve, reject }));
       this.tryRun();
     });
   }

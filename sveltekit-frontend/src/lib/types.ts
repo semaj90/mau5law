@@ -1,37 +1,37 @@
 // Central shared type definitions (incremental widening to unblock svelte-check)
 export type ButtonVariant =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "destructive"
-  | "outline"
-  | "ghost"
-  | "link"
-  | "danger"
-  | "success"
-  | "warning"
-  | "info"
-  | "nier"
-  | "crimson"
-  | "gold"
-  | "case"
-  | "evidence"
-  | "legal";
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'destructive'
+  | 'outline'
+  | 'ghost'
+  | 'link'
+  | 'danger'
+  | 'success'
+  | 'warning'
+  | 'info'
+  | 'nier'
+  | 'crimson'
+  | 'gold'
+  | 'case'
+  | 'evidence'
+  | 'legal';
 
-export type ButtonSize = "sm" | "md" | "lg" | "icon";
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 // Transitional FormField type: allow known union plus fallback: string to avoid blocking builds
 export type FormFieldType =
-  | "text"
-  | "number"
-  | "date"
-  | "email"
-  | "select"
-  | "file"
-  | "textarea"
-  | "password"
-  | "checkbox"
-  | "radio";
+  | 'text'
+  | 'number'
+  | 'date'
+  | 'email'
+  | 'select'
+  | 'file'
+  | 'textarea'
+  | 'password'
+  | 'checkbox'
+  | 'radio';
 
 export interface FormField {
   id: string;
@@ -64,7 +64,7 @@ export interface User {
 }
 
 // --- Added Unified Types (API / AI / DB / Canvas / GPU / State Machine) ---
-export type ServiceStatus = "operational" | "degraded" | "offline" | "unknown";
+export type ServiceStatus = 'operational' | 'degraded' | 'offline' | 'unknown';
 
 export interface APIResponse<T> {
   success: boolean;
@@ -83,25 +83,25 @@ export interface FormSubmissionResult<T = unknown> {
 
 // AI / Worker
 export type AITaskType =
-  | "generate"
-  | "analyze"
-  | "embed"
-  | "search"
-  | "embedding"
-  | "analysis"
-  | "classification"
-  | "summarization";
+  | 'generate'
+  | 'analyze'
+  | 'embed'
+  | 'search'
+  | 'embedding'
+  | 'analysis'
+  | 'classification'
+  | 'summarization';
 
 export type WorkerMessageType =
-  | "error"
-  | "status"
-  | "result"
-  | "task"
-  | "TASK_STARTED"
-  | "TASK_COMPLETED"
-  | "TASK_ERROR"
-  | "TASK_CANCELLED"
-  | "STATUS_UPDATE";
+  | 'error'
+  | 'status'
+  | 'result'
+  | 'task'
+  | 'TASK_STARTED'
+  | 'TASK_COMPLETED'
+  | 'TASK_ERROR'
+  | 'TASK_CANCELLED'
+  | 'STATUS_UPDATE';
 
 export interface AITask {
   taskId: string;
@@ -110,12 +110,12 @@ export interface AITask {
   model: string;
   prompt: string;
   timestamp: number;
-  priority: "low" | "medium" | "high";
+  priority: 'low' | 'medium' | 'high';
   [key: string]: unknown; // Corrected syntax
 }
 
 export interface WorkerStatus {
-  status: "idle" | "processing" | "error";
+  status: 'idle' | 'processing' | 'error';
   activeRequests: number;
   queueLength: number;
   providers: { id: string; status: ServiceStatus }[]; // Corrected syntax
@@ -135,14 +135,14 @@ export interface WorkerMessage {
 }
 
 // Copilot & RAG
-export type CopilotSource = "context7_mcp" | "enhanced_local_index" | "basic_index";
+export type CopilotSource = 'context7_mcp' | 'enhanced_local_index' | 'basic_index';
 
 export interface CopilotIndexEntry {
   id: string;
   content: string;
   score: number;
   source: CopilotSource;
-  type: "case" | "document" | "evidence" | "statute";
+  type: 'case' | 'document' | 'evidence' | 'statute';
   jurisdiction: string;
   practiceArea: string[];
   confidentialityLevel: number;
@@ -216,7 +216,7 @@ export interface UserActivityLog {
 }
 
 // GPU / Tensor
-export type GPUTaskType = "matrix_multiply" | "convolution" | "attention" | "fft";
+export type GPUTaskType = 'matrix_multiply' | 'convolution' | 'attention' | 'fft';
 
 export interface GPUTaskRequest {
   taskId: string;
@@ -235,14 +235,14 @@ export interface VertexBuffer {
 export interface GlobalAppContext {
   user: { id: string; email: string } | null;
   activeCaseId: string | null;
-  theme: "light" | "dark";
+  theme: 'light' | 'dark';
 }
 
 export type GlobalAppEvent =
-  | { type: "LOGIN"; user: { id: string; email: string } }
-  | { type: "LOGOUT" }
-  | { type: "SET_CASE"; caseId: string } // Corrected syntax
-  | { type: "SET_THEME"; theme: "light" | "dark" };
+  | { type: 'LOGIN'; user: { id: string; email: string } }
+  | { type: 'LOGOUT' }
+  | { type: 'SET_CASE'; caseId: string } // Corrected syntax
+  | { type: 'SET_THEME'; theme: 'light' | 'dark' };
 
 // New types for Rerank functionality
 export interface Candidate {

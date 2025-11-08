@@ -3,9 +3,22 @@
  * Business logic for legal case management with AI integration
  */
 import { db } from '../db';
-import { cases, caseTodos, caseRecommendations, caseActivities, caseAssignments } from '../db/schemas/case-management';
+import {
+  cases,
+  caseTodos,
+  caseRecommendations,
+  caseActivities,
+  caseAssignments,
+} from '../db/schemas/case-management';
 import { eq, and, or, desc, asc, sql, count, avg, sum } from 'drizzle-orm';
-import type { Case, NewCase, CaseTodo, NewCaseTodo, CaseRecommendation, NewCaseRecommendation } from '../db/schemas/case-management';
+import type {
+  Case,
+  NewCase,
+  CaseTodo,
+  NewCaseTodo,
+  CaseRecommendation,
+  NewCaseRecommendation,
+} from '../db/schemas/case-management';
 
 export interface CaseFilters {
   status?: string[];
@@ -54,14 +67,9 @@ export class CaseManagementService {
         .select()
         .from(cases)
         .leftJoin(caseAssignments, eq(caseAssignments.caseId, cases.id))
-        .where(
-          or(
-            eq(cases.primaryAttorneyId, userId),
-            eq(caseAssignments.userId, userId)
-          )
-        );
+        .where(or(eq(cases.primaryAttorneyId, userId), eq(caseAssignments.userId, userId)));
 
-      const caseIds = userCases.map(uc => uc.cases.id);
+      const caseIds = userCases.map((uc) => uc.cases.id);
 
       // Parallel queries for better performance
       const [
@@ -73,25 +81,23 @@ export class CaseManagementService {
         overdueTodos,
         pendingRecommendations,
         totalTimeSpent,
-        recentActivities
+        recentActivities,
       ] = await Promise.all([
         // Total cases count
-        db.select({ count: count() })
+        db
+          .select({ count: count() })
           .from(cases)
           .where(sql`${cases.id} = ANY(${caseIds})`),
 
         // Active cases count
-        db.select({ count: count() })
+        db
+          .select({ count: count() })
           .from(cases)
-          .where(
-            and(
-              sql`${cases.id} = ANY(${caseIds})`,
-              eq(cases.status, 'active')
-            )
-          ),
+          .where(and(sql`${cases.id} = ANY(${caseIds})`, eq(cases.status, 'active'))),
 
         // Cases completed this month
-        db.select({ count: count() })
+        db
+          .select({ count: count() })
           .from(cases)
           .where(
             and(
@@ -102,12 +108,14 @@ export class CaseManagementService {
           ),
 
         // Average progress
-        db.select({ avg: avg(cases.progress) })
+        db
+          .select({ avg: avg(cases.progress) })
           .from(cases)
           .where(sql`${cases.id} = ANY(${caseIds})`),
 
         // High priority cases
-        db.select({ count: count() })
+        db
+          .select({ count: count() })
           .from(cases)
           .where(
             and(
@@ -117,7 +125,8 @@ export class CaseManagementService {
           ),
 
         // Overdue todos
-        db.select({ count: count() })
+        db
+          .select({ count: count() })
           .from(caseTodos)
           .where(
             and(
@@ -128,7 +137,8 @@ export class CaseManagementService {
           ),
 
         // Pending recommendations
-        db.select({ count: count() })
+        db
+          .select({ count: count() })
           .from(caseRecommendations)
           .where(
             and(
@@ -138,16 +148,18 @@ export class CaseManagementService {
           ),
 
         // Total time spent
-        db.select({ sum: sum(cases.timeSpent) })
+        db
+          .select({ sum: sum(cases.timeSpent) })
           .from(cases)
           .where(sql`${cases.id} = ANY(${caseIds})`),
 
         // Recent activities (last 10)
-        db.select()
+        db
+          .select()
           .from(caseActivities)
           .where(sql`${caseActivities.caseId} = ANY(${caseIds})`)
           .orderBy(desc(caseActivities.createdAt))
-          .limit(10)
+          .limit(10),
       ]);
 
       return {
@@ -159,7 +171,7 @@ export class CaseManagementService {
         overdueTodos: overdueTodos[0]?.count || 0,
         pendingRecommendations: pendingRecommendations[0]?.count || 0,
         totalTimeSpent: Number(totalTimeSpent[0]?.sum || 0),
-        recentActivities: recentActivities || []
+        recentActivities: recentActivities || [],
       };
     } catch (error) {
       console.error('Error getting dashboard stats:', error);
@@ -170,12 +182,7 @@ export class CaseManagementService {
   /**
    * Get cases with filtering and pagination
    */
-  static async getCases(
-    userId: string,
-    filters: CaseFilters = {},
-    page = 1,
-    limit = 20
-  ) {
+  static async getCases(userId: string, filters: CaseFilters = {}, page = 1, limit = 20) {
     try {
       let query = db
         .select({
@@ -183,49 +190,48 @@ export class CaseManagementService {
           primaryAttorney: {
             id: sql`pa.id`,
             name: sql`pa.name`,
-            email: sql`pa.email`
+            email: sql`pa.email`,
           },
           client: {
             id: sql`cl.id`,
             name: sql`cl.name`,
-            email: sql`cl.email`
-          }
+            email: sql`cl.email`,
+          },
         })
         .from(cases)
         .leftJoin(sql`users pa`, eq(cases.primaryAttorneyId, sql`pa.id`))
         .leftJoin(sql`users cl`, eq(cases.clientId, sql`cl.id`))
         .leftJoin(caseAssignments, eq(caseAssignments.caseId, cases.id))
-        .where(
-          or(
-            eq(cases.primaryAttorneyId, userId),
-            eq(caseAssignments.userId, userId)
-          )
-        );
+        .where(or(eq(cases.primaryAttorneyId, userId), eq(caseAssignments.userId, userId)));
 
       // Apply filters
       const conditions = [];
 
       if (filters.status?.length) {
-        conditions.push(<any><any>sql`${cases.status} = ANY(${filters.status})`);
+        conditions.push(<any>(<any>sql`${cases.status} = ANY(${filters.status})`));
       }
 
       if (filters.practiceArea?.length) {
-        conditions.push(<any><any>sql`${cases.practiceArea} = ANY(${filters.practiceArea})`);
+        conditions.push(<any>(<any>sql`${cases.practiceArea} = ANY(${filters.practiceArea})`));
       }
 
       if (filters.priority?.length) {
-        conditions.push(<any><any>sql`${cases.priority} = ANY(${filters.priority})`);
+        conditions.push(<any>(<any>sql`${cases.priority} = ANY(${filters.priority})`));
       }
 
       if (filters.tags?.length) {
-        conditions.push(<any><any>sql`${cases.tags} && ${filters.tags}`);
+        conditions.push(<any>(<any>sql`${cases.tags} && ${filters.tags}`));
       }
 
       if (filters.dateRange) {
-        conditions.push(<any><any>
-          and(
-            sql`${cases.createdAt} >= ${filters.dateRange.start}`,
-            sql`${cases.createdAt} <= ${filters.dateRange.end}`
+        conditions.push(
+          <any>(
+            (<any>(
+              and(
+                sql`${cases.createdAt} >= ${filters.dateRange.start}`,
+                sql`${cases.createdAt} <= ${filters.dateRange.end}`
+              )
+            ))
           )
         );
       }
@@ -236,10 +242,7 @@ export class CaseManagementService {
 
       // Add pagination
       const offset = (page - 1) * limit;
-      const results = await query
-        .orderBy(desc(cases.updatedAt))
-        .limit(limit)
-        .offset(offset);
+      const results = await query.orderBy(desc(cases.updatedAt)).limit(limit).offset(offset);
 
       return results;
     } catch (error) {
@@ -291,7 +294,7 @@ export class CaseManagementService {
       // Log significant changes
       const changes = [];
       if (updates.status && updates.status !== currentCase.status) {
-        changes.push(<any><any>`Status changed from ${currentCase.status} to ${updates.status}`);
+        changes.push(<any>(<any>`Status changed from ${currentCase.status} to ${updates.status}`));
         await this.logActivity(
           caseId,
           updatedBy,
@@ -305,16 +308,13 @@ export class CaseManagementService {
       }
 
       if (updates.priority && updates.priority !== currentCase.priority) {
-        changes.push(<any><any>`Priority changed from ${currentCase.priority} to ${updates.priority}`);
+        changes.push(
+          <any>(<any>`Priority changed from ${currentCase.priority} to ${updates.priority}`)
+        );
       }
 
       if (changes.length > 0) {
-        await this.logActivity(
-          caseId,
-          updatedBy,
-          'updated',
-          `Case updated: ${changes.join(', ')}`
-        );
+        await this.logActivity(caseId, updatedBy, 'updated', `Case updated: ${changes.join(', ')}`);
       }
 
       return updatedCase;
@@ -341,18 +341,18 @@ export class CaseManagementService {
           case: {
             id: cases.id,
             title: cases.title,
-            caseNumber: cases.caseNumber
+            caseNumber: cases.caseNumber,
           },
           assignedTo: {
             id: sql`atu.id`,
             name: sql`atu.name`,
-            email: sql`atu.email`
+            email: sql`atu.email`,
           },
           createdBy: {
             id: sql`cbu.id`,
             name: sql`cbu.name`,
-            email: sql`cbu.email`
-          }
+            email: sql`cbu.email`,
+          },
         })
         .from(caseTodos)
         .leftJoin(cases, eq(caseTodos.caseId, cases.id))
@@ -362,36 +362,37 @@ export class CaseManagementService {
       const conditions = [];
 
       if (caseId) {
-        conditions.push(<any><any>eq(caseTodos.caseId, caseId));
+        conditions.push(<any>(<any>eq(caseTodos.caseId, caseId)));
       }
 
       if (userId) {
-        conditions.push(<any><any>
-          or(
-            eq(caseTodos.assignedToId, userId),
-            eq(caseTodos.createdById, userId)
-          )
+        conditions.push(
+          <any>(<any>or(eq(caseTodos.assignedToId, userId), eq(caseTodos.createdById, userId)))
         );
       }
 
       // Apply filters
       if (filters.status?.length) {
-        conditions.push(<any><any>sql`${caseTodos.status} = ANY(${filters.status})`);
+        conditions.push(<any>(<any>sql`${caseTodos.status} = ANY(${filters.status})`));
       }
 
       if (filters.priority?.length) {
-        conditions.push(<any><any>sql`${caseTodos.priority} = ANY(${filters.priority})`);
+        conditions.push(<any>(<any>sql`${caseTodos.priority} = ANY(${filters.priority})`));
       }
 
       if (filters.category?.length) {
-        conditions.push(<any><any>sql`${caseTodos.category} = ANY(${filters.category})`);
+        conditions.push(<any>(<any>sql`${caseTodos.category} = ANY(${filters.category})`));
       }
 
       if (filters.dueDate) {
-        conditions.push(<any><any>
-          and(
-            sql`${caseTodos.dueDate} >= ${filters.dueDate.start}`,
-            sql`${caseTodos.dueDate} <= ${filters.dueDate.end}`
+        conditions.push(
+          <any>(
+            (<any>(
+              and(
+                sql`${caseTodos.dueDate} >= ${filters.dueDate.start}`,
+                sql`${caseTodos.dueDate} <= ${filters.dueDate.end}`
+              )
+            ))
           )
         );
       }
@@ -454,7 +455,7 @@ export class CaseManagementService {
           completedAt: new Date(),
           completionNotes,
           actualHours: actualHours ? String(actualHours) : undefined,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(caseTodos.id, todoId))
         .returning();
@@ -487,8 +488,8 @@ export class CaseManagementService {
           reviewedBy: {
             id: sql`rbu.id`,
             name: sql`rbu.name`,
-            email: sql`rbu.email`
-          }
+            email: sql`rbu.email`,
+          },
         })
         .from(caseRecommendations)
         .leftJoin(sql`users rbu`, eq(caseRecommendations.reviewedById, sql`rbu.id`))
@@ -496,10 +497,7 @@ export class CaseManagementService {
 
       if (status) {
         query = query.where(
-          and(
-            eq(caseRecommendations.caseId, caseId),
-            eq(caseRecommendations.status, status)
-          )
+          and(eq(caseRecommendations.caseId, caseId), eq(caseRecommendations.status, status))
         );
       }
 
@@ -518,10 +516,7 @@ export class CaseManagementService {
     recommendationData: NewCaseRecommendation
   ): Promise<CaseRecommendation> {
     try {
-      const [newRec] = await db
-        .insert(caseRecommendations)
-        .values(recommendationData)
-        .returning();
+      const [newRec] = await db.insert(caseRecommendations).values(recommendationData).returning();
 
       // Log recommendation generation
       if (recommendationData.caseId) {
@@ -559,7 +554,7 @@ export class CaseManagementService {
           reviewedById: reviewedBy,
           reviewedAt: new Date(),
           reviewNotes,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(caseRecommendations.id, recommendationId))
         .returning();
@@ -593,7 +588,7 @@ export class CaseManagementService {
         entityType,
         entityId,
         oldValue,
-        newValue
+        newValue,
       });
     } catch (error) {
       console.error('Error logging activity:', error);
@@ -607,10 +602,7 @@ export class CaseManagementService {
   static async generateAIRecommendations(caseId: string): Promise<CaseRecommendation[]> {
     try {
       // Get case details for AI analysis
-      const [caseDetails] = await db
-        .select()
-        .from(cases)
-        .where(eq(cases.id, caseId));
+      const [caseDetails] = await db.select().from(cases).where(eq(cases.id, caseId));
 
       if (!caseDetails) {
         throw new Error('Case not found');
@@ -619,10 +611,12 @@ export class CaseManagementService {
       // Get case todos and recent activities for context
       const [todos, activities] = await Promise.all([
         db.select().from(caseTodos).where(eq(caseTodos.caseId, caseId)),
-        db.select().from(caseActivities)
+        db
+          .select()
+          .from(caseActivities)
           .where(eq(caseActivities.caseId, caseId))
           .orderBy(desc(caseActivities.createdAt))
-          .limit(20)
+          .limit(20),
       ]);
 
       // AI Analysis based on case data
@@ -630,17 +624,18 @@ export class CaseManagementService {
 
       // Risk-based recommendations
       if (caseDetails.riskLevel === 'high' || caseDetails.riskLevel === 'critical') {
-        recommendations.push(<any><any>{
+        recommendations.push(<any>(<any>{
           caseId,
           type: 'risk_mitigation' as const,
           title: 'High Risk Case - Immediate Review Required',
-          description: 'This case has been flagged as high risk. Consider scheduling an immediate review with senior counsel.',
+          description:
+            'This case has been flagged as high risk. Consider scheduling an immediate review with senior counsel.',
           reasoning: `Risk level: ${caseDetails.riskLevel}. Practice area: ${caseDetails.practiceArea}`,
           confidence: '0.9500',
           priority: 'high' as const,
           aiModel: 'gemma3-legal',
-          aiVersion: '1.0'
-        });
+          aiVersion: '1.0',
+        }));
       }
 
       // Progress-based recommendations
@@ -650,7 +645,7 @@ export class CaseManagementService {
         );
 
         if (daysUntilDue < 30) {
-          recommendations.push(<any><any>{
+          recommendations.push(<any>(<any>{
             caseId,
             type: 'timeline_adjustment' as const,
             title: 'Timeline Risk - Consider Resource Allocation',
@@ -659,35 +654,36 @@ export class CaseManagementService {
             confidence: '0.8500',
             priority: 'medium' as const,
             aiModel: 'gemma3-legal',
-            aiVersion: '1.0'
-          });
+            aiVersion: '1.0',
+          }));
         }
       }
 
       // Todo-based recommendations
       const overdueTodos = todos.filter(
-        t => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'completed'
+        (t) => t.dueDate && new Date(t.dueDate) < new Date() && t.status !== 'completed'
       );
 
       if (overdueTodos.length > 0) {
-        recommendations.push(<any><any>{
+        recommendations.push(<any>(<any>{
           caseId,
           type: 'action_item' as const,
           title: `${overdueTodos.length} Overdue Tasks Require Attention`,
-          description: 'Multiple tasks are past their due dates. Consider reassigning or extending deadlines.',
+          description:
+            'Multiple tasks are past their due dates. Consider reassigning or extending deadlines.',
           reasoning: `${overdueTodos.length} overdue tasks detected`,
           confidence: '0.9800',
           priority: 'high' as const,
           aiModel: 'gemma3-legal',
-          aiVersion: '1.0'
-        });
+          aiVersion: '1.0',
+        }));
       }
 
       // Create recommendations in database
       const createdRecommendations = [];
       for (const rec of recommendations) {
         const created = await this.createRecommendation(rec);
-        createdRecommendations.push(<any><any>created);
+        createdRecommendations.push(<any>(<any>created));
       }
 
       return createdRecommendations;

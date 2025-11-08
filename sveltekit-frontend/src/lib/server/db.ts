@@ -5,25 +5,33 @@ import { documents, documentChunks } from './db/schema-postgres';
 import type { LegalDocument } from '../../routes/api/legal/ingest/+server';
 import { sql } from 'drizzle-orm';
 
-export async function storeDocumentsInDatabase(documentsToStore: LegalDocument[], caseId: string): Promise<void> {
-  console.log(`💾 Storing ${documentsToStore.length} documents for case ${caseId} in PostgreSQL...`);
+export async function storeDocumentsInDatabase(
+  documentsToStore: LegalDocument[],
+  caseId: string
+): Promise<void> {
+  console.log(
+    `💾 Storing ${documentsToStore.length} documents for case ${caseId} in PostgreSQL...`
+  );
 
   try {
     for (const doc of documentsToStore) {
       // Insert document
-      const [insertedDocument] = await db.insert(documents).values({
-        id: doc.id,
-        caseId: caseId,
-        filename: doc.filename,
-        jurisdiction: doc.jurisdiction,
-        extractedText: doc.extractedText,
-        prosecutionScore: doc.prosecutionScore,
-        processingMetadata: doc.processingMetadata,
-      }).returning({ id: documents.id });
+      const [insertedDocument] = await db
+        .insert(documents)
+        .values({
+          id: doc.id,
+          caseId: caseId,
+          filename: doc.filename,
+          jurisdiction: doc.jurisdiction,
+          extractedText: doc.extractedText,
+          prosecutionScore: doc.prosecutionScore,
+          processingMetadata: doc.processingMetadata,
+        })
+        .returning({ id: documents.id });
 
       if (insertedDocument) {
         // Insert chunks for the document
-        const chunksToInsert = doc.chunks.map(chunk => ({
+        const chunksToInsert = doc.chunks.map((chunk) => ({
           id: chunk.id,
           documentId: insertedDocument.id,
           text: chunk.text,

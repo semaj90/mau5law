@@ -32,7 +32,10 @@ interface SaveRequestBody {
 }
 
 // Helper for Ollama interaction, similar to generateRAGResponse but more generic
-async function callOllamaGenerate(prompt: string, model: string = 'gemma3-legal:latest'): Promise<string> {
+async function callOllamaGenerate(
+  prompt: string,
+  model: string = 'gemma3-legal:latest'
+): Promise<string> {
   try {
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
     const response = await fetch(`${ollamaUrl}/api/generate`, {
@@ -42,8 +45,8 @@ async function callOllamaGenerate(prompt: string, model: string = 'gemma3-legal:
         model: model,
         prompt: prompt,
         stream: false,
-        options: { temperature: 0.7, top_p: 0.9, max_tokens: 1000 }
-      })
+        options: { temperature: 0.7, top_p: 0.9, max_tokens: 1000 },
+      }),
     });
 
     if (!response.ok) {
@@ -136,7 +139,10 @@ export const POST: RequestHandler = async ({ request, url }) => {
           if (embeddingResult?.success) {
             if ('embedding' in embeddingResult && Array.isArray(embeddingResult.embedding)) {
               textEmbedding = embeddingResult.embedding;
-            } else if ('embeddings' in embeddingResult && Array.isArray(embeddingResult.embeddings)) {
+            } else if (
+              'embeddings' in embeddingResult &&
+              Array.isArray(embeddingResult.embeddings)
+            ) {
               const batch = embeddingResult.embeddings;
               if (batch && batch.length > 0 && Array.isArray(batch[0])) {
                 textEmbedding = batch[0];
@@ -184,7 +190,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       });
     } catch (err) {
       console.error('Canvas analysis error: ', err);
-      const message = err instanceof Error ? err.message : 'An unknown error occurred during canvas analysis';
+      const message =
+        err instanceof Error ? err.message : 'An unknown error occurred during canvas analysis';
       return error(500, `Canvas analysis failed: ${message}`);
     }
   } else if (endpoint === 'save') {
@@ -230,7 +237,8 @@ export const POST: RequestHandler = async ({ request, url }) => {
       });
     } catch (err) {
       console.error('Canvas save error: ', err);
-      const message = err instanceof Error ? err.message : 'An unknown error occurred during canvas save';
+      const message =
+        err instanceof Error ? err.message : 'An unknown error occurred during canvas save';
       return error(500, `Canvas save failed: ${message}`);
     }
   }

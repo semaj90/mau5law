@@ -14,8 +14,8 @@
     <div class="max-w-6xl mx-auto">
       <h1 class="text-3xl font-bold">Context7 Integration Test Suite</h1>
       <p class="text-xl text-green-100">
-        Comprehensive testing environment for Context7 semantic search, agent orchestration, MCP tools integration, and
-        real-time workflow automation.
+        Comprehensive testing environment for Context7 semantic search, agent orchestration, MCP
+        tools integration, and real-time workflow automation.
       </p>
       <div class="mt-6 grid grid-cols-1 md:grid-cols-3">
         <div class="bg-green-700 bg-opacity-50 rounded-lg">
@@ -37,8 +37,8 @@
   <footer class="bg-white border-t border-gray-200">
     <div class="max-w-6xl mx-auto px-6">
       <p class="text-sm">
-        Context7 MCP Integration Test Suite - Validate real semantic search, agent orchestration, and workflow
-        automation.
+        Context7 MCP Integration Test Suite - Validate real semantic search, agent orchestration,
+        and workflow automation.
       </p>
     </div>
   </footer>

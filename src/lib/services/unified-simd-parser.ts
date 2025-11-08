@@ -1,11 +1,19 @@
 // Unified SIMD JSON Parser - Combines all SIMD backends
 // Nintendo-Style Performance with Legal Document Optimization + Redis Integration
 
-import { SIMDJSONParser as WASMParser, LegalDocumentWASM, benchmarkSIMDParsing } from '../../sveltekit-frontend/src/wasm/simd-json-parser';
+import {
+  SIMDJSONParser as WASMParser,
+  LegalDocumentWASM,
+  benchmarkSIMDParsing,
+} from '../../sveltekit-frontend/src/wasm/simd-json-parser';
 import { SIMDJSONParserV2, SIMDBackend } from './simd-json-parser-v2';
 import { simdJSONParser } from './simd-json-parser';
 import { parseJSONHTTP } from '../../sveltekit-frontend/src/lib/services/simd-json-parser-http';
-import { UltraJSONParser, ultraJSONParser, fastParse as ultraFastParse } from '../../sveltekit-frontend/src/lib/wasm/ultra-json-parser';
+import {
+  UltraJSONParser,
+  ultraJSONParser,
+  fastParse as ultraFastParse,
+} from '../../sveltekit-frontend/src/lib/wasm/ultra-json-parser';
 import { redisOptimized } from '../../sveltekit-frontend/src/lib/middleware/redis-orchestrator-middleware';
 
 export enum ParseMode {
@@ -15,7 +23,7 @@ export enum ParseMode {
   PLAYWRIGHT_DATA = 'playwright_data',
   ULTRA_PERFORMANCE = 'ultra_performance',
   WEBGPU_ACCELERATED = 'webgpu_accelerated',
-  HTTP_ACCELERATED = 'http_accelerated'
+  HTTP_ACCELERATED = 'http_accelerated',
 }
 
 export interface UnifiedParseResult {
@@ -44,7 +52,10 @@ export class UnifiedSIMDParser {
   /**
    * Parse JSON with optimal backend selection based on content type
    */
-  async parseOptimal(jsonString: string, mode: ParseMode = ParseMode.GENERIC_JSON): Promise<UnifiedParseResult> {
+  async parseOptimal(
+    jsonString: string,
+    mode: ParseMode = ParseMode.GENERIC_JSON
+  ): Promise<UnifiedParseResult> {
     const startTime = performance.now();
 
     try {
@@ -54,34 +65,33 @@ export class UnifiedSIMDParser {
         case ParseMode.LEGAL_DOCUMENT:
           result = await this.parseLegalDocument(jsonString);
           break;
-          
+
         case ParseMode.PLAYWRIGHT_DATA:
           result = await this.parsePlaywrightData(jsonString);
           break;
-          
+
         case ParseMode.TEST_RESULTS:
           result = await this.parseTestResults(jsonString);
           break;
-          
+
         case ParseMode.ULTRA_PERFORMANCE:
           result = await this.parseUltraPerformance(jsonString);
           break;
-          
+
         case ParseMode.WEBGPU_ACCELERATED:
           result = await this.parseWebGPUAccelerated(jsonString);
           break;
-        
+
         case ParseMode.HTTP_ACCELERATED:
           result = await this.parseHTTPAccelerated(jsonString);
           break;
-          
+
         default:
           result = await this.parseGeneric(jsonString);
       }
 
       result.parse_time_ms = performance.now() - startTime;
       return result;
-
     } catch (error) {
       throw new Error(`Unified SIMD Parse Error: ${error.message}`);
     }
@@ -97,7 +107,7 @@ export class UnifiedSIMDParser {
       data,
       backend_used: 'HTTPS_ACCELERATOR',
       parse_time_ms: 0,
-      memory_bank: 'REMOTE_HTTPS_ACCEL'
+      memory_bank: 'REMOTE_HTTPS_ACCEL',
     };
   }
 
@@ -117,9 +127,8 @@ export class UnifiedSIMDParser {
         memory_bank: 'L1_WASM_LEGAL',
         legal_entities: legalDoc.entityCount,
         citations: [], // Would be populated by citation extraction
-        confidence: legalDoc.confidence
+        confidence: legalDoc.confidence,
       };
-
     } catch (error) {
       // Fallback to V2 parser
       const data = await this.v2Parser.parse(jsonString);
@@ -127,7 +136,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_FALLBACK',
         parse_time_ms: 0,
-        memory_bank: 'L2_V2_FALLBACK'
+        memory_bank: 'L2_V2_FALLBACK',
       };
     }
   }
@@ -145,9 +154,8 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_PLAYWRIGHT',
         parse_time_ms: 0,
-        memory_bank: 'L1_PLAYWRIGHT_OPTIMIZED'
+        memory_bank: 'L1_PLAYWRIGHT_OPTIMIZED',
       };
-
     } catch (error) {
       // Fallback to V1 parser
       const data = this.v1Parser.parse(jsonString);
@@ -155,7 +163,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V1_FALLBACK',
         parse_time_ms: 0,
-        memory_bank: 'L3_V1_FALLBACK'
+        memory_bank: 'L3_V1_FALLBACK',
       };
     }
   }
@@ -170,9 +178,8 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_TEST_RESULTS',
         parse_time_ms: 0,
-        memory_bank: 'L2_TEST_CACHE'
+        memory_bank: 'L2_TEST_CACHE',
       };
-
     } catch (error) {
       // Very robust fallback for test data
       const data = JSON.parse(jsonString);
@@ -180,7 +187,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'NATIVE_JSON',
         parse_time_ms: 0,
-        memory_bank: 'L3_NATIVE_FALLBACK'
+        memory_bank: 'L3_NATIVE_FALLBACK',
       };
     }
   }
@@ -193,14 +200,14 @@ export class UnifiedSIMDParser {
       const data = await this.ultraParser.fastParse(jsonString, {
         enableSIMD: true,
         enableGPU: false,
-        cacheKey: `ultra_${this.generateCacheKey(jsonString)}`
+        cacheKey: `ultra_${this.generateCacheKey(jsonString)}`,
       });
-      
+
       return {
         data,
         backend_used: 'ULTRA_SIMD',
         parse_time_ms: 0,
-        memory_bank: 'L1_ULTRA_PERFORMANCE'
+        memory_bank: 'L1_ULTRA_PERFORMANCE',
       };
     } catch (error) {
       // Fallback to V2 parser
@@ -209,7 +216,7 @@ export class UnifiedSIMDParser {
         data,
         backend_used: 'V2_ULTRA_FALLBACK',
         parse_time_ms: 0,
-        memory_bank: 'L2_V2_FALLBACK'
+        memory_bank: 'L2_V2_FALLBACK',
       };
     }
   }
@@ -222,27 +229,27 @@ export class UnifiedSIMDParser {
       const data = await this.ultraParser.fastParse(jsonString, {
         enableSIMD: true,
         enableGPU: true,
-        cacheKey: `webgpu_${this.generateCacheKey(jsonString)}`
+        cacheKey: `webgpu_${this.generateCacheKey(jsonString)}`,
       });
-      
+
       return {
         data,
         backend_used: 'WEBGPU_ULTRA',
         parse_time_ms: 0,
-        memory_bank: 'L1_WEBGPU_ACCELERATION'
+        memory_bank: 'L1_WEBGPU_ACCELERATION',
       };
     } catch (error) {
       // Fallback to Ultra without GPU
       const data = await this.ultraParser.fastParse(jsonString, {
         enableSIMD: true,
-        enableGPU: false
+        enableGPU: false,
       });
-      
+
       return {
         data,
         backend_used: 'ULTRA_NO_GPU',
         parse_time_ms: 0,
-        memory_bank: 'L2_ULTRA_FALLBACK'
+        memory_bank: 'L2_ULTRA_FALLBACK',
       };
     }
   }
@@ -256,7 +263,7 @@ export class UnifiedSIMDParser {
       data,
       backend_used: 'V2_GENERIC',
       parse_time_ms: 0,
-      memory_bank: 'L1_V2_GENERIC'
+      memory_bank: 'L1_V2_GENERIC',
     };
   }
 
@@ -264,26 +271,31 @@ export class UnifiedSIMDParser {
    * Clean Playwright-specific JSON issues
    */
   private cleanPlaywrightJSON(jsonString: string): string {
-    return jsonString
-      // Fix Playwright test result formatting
-      .replace(/\\"/g, '"')
-      .replace(/\\\\/g, '\\')
-      // Fix timestamp formatting
-      .replace(/"timestamp":"(\d+)"/g, '"timestamp":$1')
-      // Fix boolean strings
-      .replace(/"(true|false)"/g, '$1')
-      // Fix numeric strings
-      .replace(/":(\d+(?:\.\d+)?),"/g, '":$1,"')
-      // Remove trailing commas in arrays/objects
-      .replace(/,(\s*[}\]])/g, '$1')
-      // Fix null values
-      .replace(/"null"/g, 'null');
+    return (
+      jsonString
+        // Fix Playwright test result formatting
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, '\\')
+        // Fix timestamp formatting
+        .replace(/"timestamp":"(\d+)"/g, '"timestamp":$1')
+        // Fix boolean strings
+        .replace(/"(true|false)"/g, '$1')
+        // Fix numeric strings
+        .replace(/":(\d+(?:\.\d+)?),"/g, '":$1,"')
+        // Remove trailing commas in arrays/objects
+        .replace(/,(\s*[}\]])/g, '$1')
+        // Fix null values
+        .replace(/"null"/g, 'null')
+    );
   }
 
   /**
    * Batch parse multiple documents with optimal backend selection
    */
-  async parseBatch(jsonStrings: string[], mode: ParseMode = ParseMode.GENERIC_JSON): Promise<UnifiedParseResult[]> {
+  async parseBatch(
+    jsonStrings: string[],
+    mode: ParseMode = ParseMode.GENERIC_JSON
+  ): Promise<UnifiedParseResult[]> {
     const results: UnifiedParseResult[] = [];
 
     // Use Promise.all for parallel processing when appropriate
@@ -300,9 +312,8 @@ export class UnifiedSIMDParser {
           parse_time_ms: 0, // Would be measured in real implementation
           memory_bank: 'L1_WASM_BATCH',
           legal_entities: doc.entityCount,
-          confidence: doc.confidence
+          confidence: doc.confidence,
         }));
-
       } catch (error) {
         // Fallback to individual parsing
         console.warn('WASM batch parsing failed, falling back to individual parsing');
@@ -310,7 +321,7 @@ export class UnifiedSIMDParser {
     }
 
     // Individual parsing with parallel processing
-    const parsePromises = jsonStrings.map(jsonString => this.parseOptimal(jsonString, mode));
+    const parsePromises = jsonStrings.map((jsonString) => this.parseOptimal(jsonString, mode));
     return await Promise.all(parsePromises);
   }
 
@@ -326,7 +337,9 @@ export class UnifiedSIMDParser {
     // Test JSON for benchmarking
     const testJSON = JSON.stringify({
       test: 'benchmark',
-      data: Array(100).fill(0).map((_, i) => ({ id: i, value: `test_${i}` }))
+      data: Array(100)
+        .fill(0)
+        .map((_, i) => ({ id: i, value: `test_${i}` })),
     });
 
     // Ultra parser benchmarks
@@ -379,16 +392,26 @@ export class UnifiedSIMDParser {
       v2_stats: this.v2Parser.getPerformanceStats(),
       ultra_stats: this.ultraParser.getPerformanceMetrics(),
       memory_usage: `${(performance as any).memory?.usedJSHeapSize / 1024 / 1024 || 0}MB`,
-      backends_available: ['WASM_SIMD_Legal', 'Ultra_WebGPU', 'Ultra_SIMD', 'V2_Auto', 'V1_Legacy', 'Native_JSON']
+      backends_available: [
+        'WASM_SIMD_Legal',
+        'Ultra_WebGPU',
+        'Ultra_SIMD',
+        'V2_Auto',
+        'V1_Legacy',
+        'Native_JSON',
+      ],
     };
   }
 
   /**
    * Parse with Redis caching for instant Nintendo-level performance
    */
-  async parseWithRedisCache(jsonString: string, mode: ParseMode = ParseMode.GENERIC_JSON): Promise<UnifiedParseResult> {
+  async parseWithRedisCache(
+    jsonString: string,
+    mode: ParseMode = ParseMode.GENERIC_JSON
+  ): Promise<UnifiedParseResult> {
     const cacheKey = `simd_parse:${mode}:${this.generateCacheKey(jsonString)}`;
-    
+
     // Check Redis cache first (CHR_ROM speed)
     const cached = await redisOptimized.getCachedResult(cacheKey);
     if (cached) {
@@ -396,24 +419,27 @@ export class UnifiedSIMDParser {
         ...cached,
         backend_used: `${cached.backend_used}_CACHED`,
         memory_bank: 'CHR_ROM_REDIS_CACHE',
-        parse_time_ms: 0.1 // Sub-millisecond cached response
+        parse_time_ms: 0.1, // Sub-millisecond cached response
       };
     }
 
     // Parse with optimal backend
     const result = await this.parseOptimal(jsonString, mode);
-    
+
     // Cache result in Redis with TTL based on complexity
     const ttl = this.calculateCacheTTL(jsonString, mode);
     await redisOptimized.cacheResult(cacheKey, result, ttl);
-    
+
     return result;
   }
 
   /**
    * Batch parse with Redis optimization for ultra performance
    */
-  async parseBatchWithRedis(jsonStrings: string[], mode: ParseMode = ParseMode.GENERIC_JSON): Promise<UnifiedParseResult[]> {
+  async parseBatchWithRedis(
+    jsonStrings: string[],
+    mode: ParseMode = ParseMode.GENERIC_JSON
+  ): Promise<UnifiedParseResult[]> {
     const results: UnifiedParseResult[] = [];
     const uncachedIndices: number[] = [];
     const uncachedStrings: string[] = [];
@@ -422,29 +448,29 @@ export class UnifiedSIMDParser {
     for (let i = 0; i < jsonStrings.length; i++) {
       const cacheKey = `simd_parse:${mode}:${this.generateCacheKey(jsonStrings[i])}`;
       const cached = await redisOptimized.getCachedResult(cacheKey);
-      
+
       if (cached) {
         results[i] = {
           ...cached,
           backend_used: `${cached.backend_used}_CACHED`,
-          memory_bank: 'CHR_ROM_REDIS_BATCH'
+          memory_bank: 'CHR_ROM_REDIS_BATCH',
         };
       } else {
-        uncachedIndices.push(<any><any>i);
-        uncachedStrings.push(<any><any>jsonStrings[i]);
+        uncachedIndices.push(<any>(<any>i));
+        uncachedStrings.push(<any>(<any>jsonStrings[i]));
       }
     }
 
     // Parse uncached documents in batch
     if (uncachedStrings.length > 0) {
       const parsedResults = await this.parseBatch(uncachedStrings, mode);
-      
+
       // Cache and assign results
       for (let j = 0; j < uncachedStrings.length; j++) {
         const originalIndex = uncachedIndices[j];
         const result = parsedResults[j];
         results[originalIndex] = result;
-        
+
         // Cache for next time
         const cacheKey = `simd_parse:${mode}:${this.generateCacheKey(uncachedStrings[j])}`;
         const ttl = this.calculateCacheTTL(uncachedStrings[j], mode);
@@ -461,21 +487,21 @@ export class UnifiedSIMDParser {
   private calculateCacheTTL(jsonString: string, mode: ParseMode): number {
     const size = jsonString.length;
     const complexity = this.calculateComplexity(jsonString);
-    
+
     switch (mode) {
       case ParseMode.LEGAL_DOCUMENT:
         // Legal documents cache longer (stable content)
         return size > 10000 ? 7200 : 3600; // 2 hours for large, 1 hour for small
-      
+
       case ParseMode.TEST_RESULTS:
         // Test results cache shorter (frequently changing)
         return 300; // 5 minutes
-      
+
       case ParseMode.ULTRA_PERFORMANCE:
       case ParseMode.WEBGPU_ACCELERATED:
         // Performance-critical caching
         return complexity > 0.8 ? 1800 : 900; // 30 min for complex, 15 min for simple
-      
+
       default:
         return 600; // 10 minutes default
     }
@@ -489,13 +515,13 @@ export class UnifiedSIMDParser {
     const nesting = (jsonString.match(/[\[\{]/g) || []).length;
     const arrays = (jsonString.match(/\[/g) || []).length;
     const objects = (jsonString.match(/\{/g) || []).length;
-    
+
     // Normalize complexity score 0-1
     const sizeScore = Math.min(size / 100000, 1); // Up to 100KB
     const nestingScore = Math.min(nesting / 1000, 1); // Up to 1000 nested structures
     const structureScore = (arrays + objects) / Math.max(nesting, 1);
-    
-    return (sizeScore * 0.4 + nestingScore * 0.4 + structureScore * 0.2);
+
+    return sizeScore * 0.4 + nestingScore * 0.4 + structureScore * 0.2;
   }
 
   /**
@@ -505,7 +531,7 @@ export class UnifiedSIMDParser {
     // Fast hash for Nintendo-style memory banking
     let hash = 0;
     for (let i = 0; i < Math.min(jsonString.length, 100); i++) {
-      hash = ((hash << 5) - hash + jsonString.charCodeAt(i)) & 0xFFFFFFFF;
+      hash = ((hash << 5) - hash + jsonString.charCodeAt(i)) & 0xffffffff;
     }
     return hash.toString(36);
   }
@@ -516,10 +542,10 @@ export class UnifiedSIMDParser {
   async clearAllCaches(): Promise<void> {
     this.v2Parser.clearCache();
     this.ultraParser.clearCache();
-    
+
     // Clear Redis cache with pattern matching
     await redisOptimized.clearCachePattern('simd_parse:*');
-    
+
     console.log('🎮 All Nintendo memory banks cleared across all parsers (V2, Ultra, WASM, Redis)');
   }
 
@@ -535,18 +561,26 @@ export class UnifiedSIMDParser {
     cache_hit_rates: { [key: string]: number };
   }> {
     const redisStats = await redisOptimized.getStats();
-    
+
     return {
       v2_stats: this.v2Parser.getPerformanceStats(),
       ultra_stats: this.ultraParser.getPerformanceMetrics(),
       redis_stats: redisStats,
       memory_usage: `${(performance as any).memory?.usedJSHeapSize / 1024 / 1024 || 0}MB`,
-      backends_available: ['WASM_SIMD_Legal', 'Ultra_WebGPU', 'Ultra_SIMD', 'V2_Auto', 'V1_Legacy', 'Native_JSON', 'Redis_Cached'],
+      backends_available: [
+        'WASM_SIMD_Legal',
+        'Ultra_WebGPU',
+        'Ultra_SIMD',
+        'V2_Auto',
+        'V1_Legacy',
+        'Native_JSON',
+        'Redis_Cached',
+      ],
       cache_hit_rates: {
         redis: redisStats?.hit_rate || 0,
         ultra: this.ultraParser.getCacheHitRate?.() || 0,
-        v2: this.v2Parser.getCacheHitRate?.() || 0
-      }
+        v2: this.v2Parser.getCacheHitRate?.() || 0,
+      },
     };
   }
 }

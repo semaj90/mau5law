@@ -24,7 +24,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 </main>
 
 <style>
-.home-page {
+  .home-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
@@ -176,7 +176,9 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     font-size: 0.85rem;
   }
 
-  .form-input:focus, .form-textarea:focus, .form-select:focus {
+  .form-input:focus,
+  .form-textarea:focus,
+  .form-select:focus {
     outline: none;
     border-color: #ffd700;
   }
@@ -272,7 +274,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
 
   .upload-btn.disabled {
     opacity: 0.5;
-    cursor:not-allowed;
+    cursor: not-allowed;
   }
 
   .reset-btn {

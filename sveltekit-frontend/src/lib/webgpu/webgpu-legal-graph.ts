@@ -1,7 +1,17 @@
 // Minimal WebGPU scaffold for the WebGPULegalDocumentGraph interface
 // Phase A: stable, SSR-safe, emits per-frame stats via onFrame
 
-import { captureLatency, type LatencyEntry } from "$lib/services/latency-logger";
+import { captureLatency, type LatencyEntry } from '$lib/services/latency-logger';
+
+// Minimal local WebGPU typings to avoid casting to `any` when global WebGPU types
+// may not be present in the TS environment. We only model what's used here.
+type LocalGPUDevice = { [key: string]: unknown };
+type LocalGPUAdapter = {
+  requestDevice: () => Promise<LocalGPUDevice>;
+};
+type LocalNavigatorGPU = {
+  requestAdapter?: () => Promise<LocalGPUAdapter | null> | undefined;
+};
 
 export type PerformanceStats = {
   // frames per second
@@ -29,8 +39,9 @@ export interface WebGPULegalDocumentGraph {
 /* ...existing code... (this file previously contained a broken/minified scaffold) ...existing code... */
 
 export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
-  private adapter: GPUAdapter | null = null;
-  private device: GPUDevice | null = null;
+  // use local minimal types instead of global GPU* types or `any`
+  private adapter: LocalGPUAdapter | null = null;
+  private device: LocalGPUDevice | null = null;
   // removed unused `ctx` to silence "declared but its value is never read"
   private rafId: number | null = null;
   private lastFrame = 0;
@@ -46,24 +57,29 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
 
   /** SSR-safe initialization: only runs in browser and when WebGPU is exposed. */
   async initialize(): Promise<void> {
-    if (typeof window === "undefined") return;
-    // navigator.gpu typings vary; use unknown cast to avoid `any`
+    if (typeof window === 'undefined') return;
+
+    // navigator.gpu may not be typed in this environment; cast to our local shape
     const gpuApi =
-      typeof navigator !== "undefined"
-        ? ((navigator as unknown as { gpu?: unknown }).gpu ?? null)
+      typeof navigator !== 'undefined'
+        ? ((navigator as unknown as { gpu?: LocalNavigatorGPU }).gpu ?? null)
         : null;
-    if (!gpuApi || typeof (gpuApi as any).requestAdapter !== "function") return;
+
+    // Guard: ensure requestAdapter is available and callable
+    if (!gpuApi || typeof gpuApi.requestAdapter !== 'function') return;
 
     try {
-      // requestAdapter can return null
-      this.adapter = await (gpuApi as any).requestAdapter?.();
-      if (!this.adapter) return;
+      // requestAdapter can return null; call via typed gpuApi
+      const adapter = await gpuApi.requestAdapter?.();
+      if (!adapter) return;
+
+      this.adapter = adapter;
       this.device = await this.adapter.requestDevice();
       // canvas/context setup is optional; consumer can set ctx if needed later
     } catch (err) {
       // Fail silently for unsupported environments; keep usable fallback behavior.
       // eslint-disable-next-line no-console
-      console.debug("WebGPU initialization failed:", err);
+      console.debug('WebGPU initialization failed:', err);
       this.adapter = null;
       this.device = null;
     }
@@ -82,7 +98,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
   startRenderLoop(): void {
     if (this.rafId) return; // already running
     // provide a small type-safe performance fallback for SSR environments
-    if (typeof performance === "undefined") {
+    if (typeof performance === 'undefined') {
       (globalThis as unknown as { performance?: { now: () => number } }).performance = {
         now: Date.now,
       };
@@ -126,7 +142,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
       } catch (e) {
         // swallow callback errors to keep render loop stable
         // eslint-disable-next-line no-console
-        console.debug("frame callback error", e);
+        console.debug('frame callback error', e);
       }
     }
 
@@ -145,7 +161,7 @@ export class WebGPULegalDocumentGraphImpl implements WebGPULegalDocumentGraph {
         frameDelta: Math.round(dt),
         gpuActive: !!this.device,
         fallbackMode: !this.device,
-        note: "webgpu-frame",
+        note: 'webgpu-frame',
       };
       // cast to LatencyEntry when calling captureLatency to keep shape checks loose
       void captureLatency(entry as LatencyEntry);

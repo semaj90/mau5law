@@ -1,8 +1,8 @@
 <script lang="ts">
-import type { User } from '$lib/types';
+  import type { User } from '$lib/types';
   import type { PageData } from './$types';
   let { data }: { data: PageData } = $props();
-  const { user, session } = data
+  const { user, session } = data;
 </script>
 
 <main class="page-repair">
@@ -11,14 +11,17 @@ import type { User } from '$lib/types';
 </main>
 
 <style>
-.container {
-    animation: fadeIn 0.5s ease-i}
+  .container {
+    animation: fadeIn 0.5s ease-i;
+  }
   @keyframes fadeIn {
     from {
-      opacity: 0
-     ; transform: translateY(20px)}
+      opacity: 0;
+      transform: translateY(20px);
+    }
     to {
-      opacity: 1
-     ; transform: translateY(0)}
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>

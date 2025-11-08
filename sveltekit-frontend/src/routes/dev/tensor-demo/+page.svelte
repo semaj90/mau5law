@@ -9,5 +9,19 @@
 </main>
 
 <style>
-:global(body) { background: #0b0d10; color: #e5e7eb } textarea { outline: none } button { outline: none } pre { background: rgba(255,255,255,0.03); padding: 0.75rem; border-radius: 0.5rem }
+  :global(body) {
+    background: #0b0d10;
+    color: #e5e7eb;
+  }
+  textarea {
+    outline: none;
+  }
+  button {
+    outline: none;
+  }
+  pre {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
 </style>

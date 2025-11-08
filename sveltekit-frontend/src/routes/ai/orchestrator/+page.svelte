@@ -1,5 +1,5 @@
 <script>
-// Placeholder for AI Orchestrator page
+  // Placeholder for AI Orchestrator page
 </script>
 
 <main class="page-repair">
@@ -8,5 +8,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

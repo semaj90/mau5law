@@ -104,7 +104,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 3,
         timeout_ms: 30000,
         dependencies: [],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'fetch_documents',
@@ -116,7 +116,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 2,
         timeout_ms: 60000,
         dependencies: ['initialize_services'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'process_documents',
@@ -128,7 +128,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 2,
         timeout_ms: 120000,
         dependencies: ['fetch_documents'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'generate_embeddings',
@@ -140,7 +140,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 2,
         timeout_ms: 300000,
         dependencies: ['process_documents'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'store_documents',
@@ -152,7 +152,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 3,
         timeout_ms: 180000,
         dependencies: ['generate_embeddings'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'generate_statistics',
@@ -164,19 +164,19 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 1,
         timeout_ms: 30000,
         dependencies: ['store_documents'],
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     ],
     error_handling: {
       continue_on_error: false,
       retry_failed_steps: true,
-      max_workflow_retries: 2
+      max_workflow_retries: 2,
     },
     notifications: {
       on_success: ['console', 'log'],
       on_failure: ['console', 'log'],
-      on_progress: ['console']
-    }
+      on_progress: ['console'],
+    },
   },
 
   search_only: {
@@ -194,7 +194,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 2,
         timeout_ms: 15000,
         dependencies: [],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'generate_query_embedding',
@@ -206,7 +206,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 2,
         timeout_ms: 30000,
         dependencies: ['initialize_search_services'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'perform_vector_search',
@@ -218,7 +218,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 2,
         timeout_ms: 60000,
         dependencies: ['generate_query_embedding'],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'rank_results',
@@ -230,19 +230,19 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 1,
         timeout_ms: 30000,
         dependencies: ['perform_vector_search'],
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     ],
     error_handling: {
       continue_on_error: false,
       retry_failed_steps: true,
-      max_workflow_retries: 1
+      max_workflow_retries: 1,
     },
     notifications: {
       on_success: ['console'],
       on_failure: ['console'],
-      on_progress: ['console']
-    }
+      on_progress: ['console'],
+    },
   },
 
   health_check: {
@@ -260,7 +260,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 1,
         timeout_ms: 10000,
         dependencies: [],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'check_document_processor',
@@ -272,7 +272,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 1,
         timeout_ms: 10000,
         dependencies: [],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'check_embedding_service',
@@ -284,7 +284,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 1,
         timeout_ms: 15000,
         dependencies: [],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'check_ranking_system',
@@ -296,7 +296,7 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 1,
         timeout_ms: 10000,
         dependencies: [],
-        status: 'pending'
+        status: 'pending',
       },
       {
         id: 'check_vector_storage',
@@ -308,19 +308,19 @@ const workflowTemplates: Record<string, WorkflowDefinition> = {
         max_retries: 1,
         timeout_ms: 15000,
         dependencies: [],
-        status: 'pending'
-      }
+        status: 'pending',
+      },
     ],
     error_handling: {
       continue_on_error: true,
       retry_failed_steps: false,
-      max_workflow_retries: 0
+      max_workflow_retries: 0,
     },
     notifications: {
       on_success: ['console'],
-      on_failure: ['console']
-    }
-  }
+      on_failure: ['console'],
+    },
+  },
 };
 
 /**
@@ -330,8 +330,7 @@ export const POST: RequestHandler = async ({ request }) => {
   try {
     const body: OrchestrationRequest = await request.json();
 
-    const workflowDef = body.workflow ||
-      workflowTemplates[body.workflow_type || 'full_pipeline'];
+    const workflowDef = body.workflow || workflowTemplates[body.workflow_type || 'full_pipeline'];
 
     if (!workflowDef) {
       throw error(400, 'Invalid workflow definition or type');
@@ -350,18 +349,18 @@ export const POST: RequestHandler = async ({ request }) => {
       progress: {
         completed_steps: 0,
         total_steps: workflowDef.steps.length,
-        percentage: 0
+        percentage: 0,
       },
       start_time: Date.now(),
       results: {},
-      errors: []
+      errors: [],
     };
 
     activeExecutions.set(executionId, execution);
 
     // Start async workflow execution
-    executeWorkflow(workflowDef, execution, body.parameters || {}, body.options || {})
-      .catch(error => {
+    executeWorkflow(workflowDef, execution, body.parameters || {}, body.options || {}).catch(
+      (error) => {
         console.error(`❌ Workflow ${executionId} failed:`, error);
         const exec = activeExecutions.get(executionId);
         if (exec) {
@@ -370,21 +369,21 @@ export const POST: RequestHandler = async ({ request }) => {
           exec.duration_ms = exec.end_time - exec.start_time;
           activeExecutions.set(executionId, exec);
         }
-      });
+      }
+    );
 
     return json<OrchestrationResponse>({
       success: true,
       execution_id: executionId,
       workflow_id: workflowDef.id,
       status: 'running',
-      progress: execution.progress
+      progress: execution.progress,
     });
-
   } catch (err) {
     console.error('❌ Failed to start workflow orchestration:', err);
     throw error(400, {
       message: 'Invalid orchestration request',
-      details: err instanceof Error ? err.message : 'Unknown error'
+      details: err instanceof Error ? err.message : 'Unknown error',
     });
   }
 };
@@ -400,7 +399,7 @@ export const GET: RequestHandler = async ({ url }) => {
     return json({
       success: true,
       templates: Object.keys(workflowTemplates),
-      definitions: workflowTemplates
+      definitions: workflowTemplates,
     });
   }
 
@@ -421,7 +420,7 @@ export const GET: RequestHandler = async ({ url }) => {
     status: execution.status,
     progress: execution.progress,
     results: execution.results,
-    errors: execution.errors
+    errors: execution.errors,
   };
 
   return json(response);
@@ -440,9 +439,9 @@ async function executeWorkflow(
 
   try {
     // Update workflow steps with parameters
-    const updatedSteps = workflow.steps.map(step => ({
+    const updatedSteps = workflow.steps.map((step) => ({
       ...step,
-      params: { ...step.params, ...parameters[step.id] }
+      params: { ...step.params, ...parameters[step.id] },
     }));
 
     // Execute steps based on dependencies
@@ -467,18 +466,17 @@ async function executeWorkflow(
     activeExecutions.set(execution.execution_id, execution);
 
     console.log(`✅ Workflow ${execution.execution_id} completed in ${execution.duration_ms}ms`);
-
   } catch (err) {
     console.error(`❌ Workflow ${execution.execution_id} failed:`, err);
 
     execution.status = 'failed';
     execution.end_time = Date.now();
     execution.duration_ms = execution.end_time - execution.start_time;
-    execution.errors.push(<any><any>{
+    execution.errors.push(<any>(<any>{
       step_id: execution.current_step,
       error: err instanceof Error ? err.message : 'Unknown error',
-      timestamp: Date.now()
-    });
+      timestamp: Date.now(),
+    }));
 
     activeExecutions.set(execution.execution_id, execution);
 
@@ -499,7 +497,7 @@ async function executeStep(
 
   // Check dependencies
   for (const depId of step.dependencies) {
-    const depStep = allSteps.find(s => s.id === depId);
+    const depStep = allSteps.find((s) => s.id === depId);
     if (!depStep || depStep.status !== 'completed') {
       throw new Error(`Dependency ${depId} not satisfied for step ${step.id}`);
     }
@@ -523,12 +521,14 @@ async function executeStep(
 
       console.log(`✅ Step completed: ${step.name}`);
       return;
-
     } catch (err) {
       lastError = err instanceof Error ? err : new Error('Unknown error');
       attempts++;
 
-      console.error(`❌ Step ${step.name} failed (attempt ${attempts}/${step.max_retries + 1}):`, lastError.message);
+      console.error(
+        `❌ Step ${step.name} failed (attempt ${attempts}/${step.max_retries + 1}):`,
+        lastError.message
+      );
 
       if (attempts <= step.max_retries) {
         console.log(`🔄 Retrying step: ${step.name}`);
@@ -542,11 +542,11 @@ async function executeStep(
   step.end_time = Date.now();
   step.error = lastError?.message;
 
-  execution.errors.push(<any><any>{
+  execution.errors.push(<any>(<any>{
     step_id: step.id,
     error: lastError?.message || 'Unknown error',
-    timestamp: Date.now()
-  });
+    timestamp: Date.now(),
+  }));
 
   if (!errorHandling.continue_on_error) {
     throw lastError;
@@ -558,7 +558,10 @@ async function executeStep(
 /**
  * Execute the actual step method
  */
-async function executeStepMethod(step: WorkflowStep, previousResults: Record<string, any>): Promise<any> {
+async function executeStepMethod(
+  step: WorkflowStep,
+  previousResults: Record<string, any>
+): Promise<any> {
   const services: Record<string, any> = {
     autoDocumentFetcher,
     documentProcessor,
@@ -577,8 +580,8 @@ async function executeStepMethod(step: WorkflowStep, previousResults: Record<str
         await gemmaEmbeddingService.initialize();
         await postgresqlVectorStorage.initialize();
         return { initialized: true };
-      }
-    }
+      },
+    },
   };
 
   const service = services[step.service];
@@ -621,20 +624,23 @@ function generateExecutionId(): string {
 }
 
 function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
  * Cleanup old executions periodically
  */
-setInterval(() => {
-  const now = Date.now();
-  const maxAge = 60 * 60 * 1000; // 1 hour
+setInterval(
+  () => {
+    const now = Date.now();
+    const maxAge = 60 * 60 * 1000; // 1 hour
 
-  for (const [executionId, execution] of activeExecutions.entries()) {
-    if (now - execution.start_time > maxAge) {
-      activeExecutions.delete(executionId);
-      console.log(`🧹 Cleaned up old execution: ${executionId}`);
+    for (const [executionId, execution] of activeExecutions.entries()) {
+      if (now - execution.start_time > maxAge) {
+        activeExecutions.delete(executionId);
+        console.log(`🧹 Cleaned up old execution: ${executionId}`);
+      }
     }
-  }
-}, 10 * 60 * 1000); // Clean every 10 minutes
+  },
+  10 * 60 * 1000
+); // Clean every 10 minutes

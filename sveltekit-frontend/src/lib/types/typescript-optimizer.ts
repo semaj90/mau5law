@@ -9,7 +9,7 @@ export interface TypeScriptError {
   message: string;
   code: string;
   context: string;
-  severity?: "error" | "warning" | "info";
+  severity?: 'error' | 'warning' | 'info';
   category?: string;
 }
 
@@ -38,7 +38,7 @@ export interface TypeScriptFixResult {
 export interface AutoSolveRequest {
   errors: TypeScriptError[];
   max_fixes?: number;
-  strategy?: "auto" | "optimized" | "gpu_first" | "llama_thinking" | "template_only" | "hybrid";
+  strategy?: 'auto' | 'optimized' | 'gpu_first' | 'llama_thinking' | 'template_only' | 'hybrid';
   use_thinking?: boolean;
   quality_threshold?: number;
   timeout_ms?: number;
@@ -54,12 +54,12 @@ export interface OptimizedFixRequest {
   target_latency?: number; // milliseconds per error
   quality_threshold?: number; // 0.0 - 1.0
   batch_size?: number;
-  priority?: "low" | "normal" | "high" | "urgent";
+  priority?: 'low' | 'normal' | 'high' | 'urgent';
 }
 
 export interface BenchmarkRequest {
   error_count: number;
-  strategy: "speed" | "quality" | "comparison";
+  strategy: 'speed' | 'quality' | 'comparison';
   iterations?: number;
   endpoints?: string[];
   parameters?: Record<string, unknown>;
@@ -162,7 +162,7 @@ export interface ScalingAnalysis {
 // Service Status Types
 export interface OptimizerStatus {
   service: string;
-  status: "operational" | "degraded" | "down";
+  status: 'operational' | 'degraded' | 'down';
   version: string;
   timestamp: string;
   go_service: { available: boolean; health: unknown; url: string };
@@ -209,7 +209,7 @@ export interface OptimizerConfig {
 }
 
 export interface ProcessingPriority {
-  level: "low" | "normal" | "high" | "urgent";
+  level: 'low' | 'normal' | 'high' | 'urgent';
   timeout_multiplier: number;
   resource_allocation: number; // 0.0 - 1.0
   queue_priority: number;
@@ -261,7 +261,7 @@ export interface StreamingProcessingResponse {
 export interface ProcessingSession {
   id: string;
   created_at: string;
-  status: "queued" | "processing" | "completed" | "failed" | "cancelled";
+  status: 'queued' | 'processing' | 'completed' | 'failed' | 'cancelled';
   total_errors: number;
   processed_errors: number;
   successful_fixes: number;
@@ -272,14 +272,14 @@ export interface ProcessingSession {
 
 // WebSocket Event Types for Real-time Updates
 export interface WebSocketEvent {
-  type: "progress" | "completed" | "error" | "status";
+  type: 'progress' | 'completed' | 'error' | 'status';
   session_id: string;
   data: Record<string, unknown>;
   timestamp: string;
 }
 
 export interface ProgressEvent extends WebSocketEvent {
-  type: "progress";
+  type: 'progress';
   data: {
     processed: number;
     total: number;
@@ -290,7 +290,7 @@ export interface ProgressEvent extends WebSocketEvent {
 }
 
 export interface CompletedEvent extends WebSocketEvent {
-  type: "completed";
+  type: 'completed';
   data: {
     total_fixes: number;
     processing_time: number;
@@ -300,7 +300,7 @@ export interface CompletedEvent extends WebSocketEvent {
 }
 
 export interface ErrorEvent extends WebSocketEvent {
-  type: "error";
+  type: 'error';
   data: {
     error_message: string;
     error_code: string;
@@ -311,32 +311,32 @@ export interface ErrorEvent extends WebSocketEvent {
 
 // Export utility types
 export type ProcessingStrategy =
-  | "auto"
-  | "optimized"
-  | "gpu_first"
-  | "llama_thinking"
-  | "template_only"
-  | "hybrid"
-  | "streaming";
+  | 'auto'
+  | 'optimized'
+  | 'gpu_first'
+  | 'llama_thinking'
+  | 'template_only'
+  | 'hybrid'
+  | 'streaming';
 
 export type ProcessingStatus =
-  | "queued"
-  | "processing"
-  | "completed"
-  | "failed"
-  | "cancelled"
-  | "streaming";
+  | 'queued'
+  | 'processing'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
+  | 'streaming';
 
-export type PerformanceGrade = "A+" | "A" | "B+" | "B" | "C+" | "C" | "D" | "F";
+export type PerformanceGrade = 'A+' | 'A' | 'B+' | 'B' | 'C+' | 'C' | 'D' | 'F';
 
 export type PerformanceTier =
-  | "minimal"
-  | "basic"
-  | "standard"
-  | "professional"
-  | "enterprise"
-  | "ultra"
-  | "gpu_accelerated";
+  | 'minimal'
+  | 'basic'
+  | 'standard'
+  | 'professional'
+  | 'enterprise'
+  | 'ultra'
+  | 'gpu_accelerated';
 
 // Helper type for API responses
 export interface APIResponse<T = unknown> {

@@ -9,7 +9,7 @@ import type { User } from '$lib/types'; // Svelte, 5 runes are auto-imported imp
 </main>
 
 <style>
-.demo-container {
+  .demo-container {
     font-family: 'Inter', system-ui, sans-serif;
   }
   .status-card {

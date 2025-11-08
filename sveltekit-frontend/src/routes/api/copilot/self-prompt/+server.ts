@@ -3,7 +3,10 @@
 import { json, error } from '@sveltejs/kit';
 
 // Placeholder for copilotSelfPrompt - will be implemented
-async function copilotSelfPrompt(prompt: string, options: CopilotSelfPromptOptions): Promise<SelfPromptResult> {
+async function copilotSelfPrompt(
+  prompt: string,
+  options: CopilotSelfPromptOptions
+): Promise<SelfPromptResult> {
   // Mock implementation for now
   return {
     synthesizedOutput: `Analysis for: ${prompt}`,
@@ -11,7 +14,9 @@ async function copilotSelfPrompt(prompt: string, options: CopilotSelfPromptOptio
       { description: 'Implement solution', priority: 'high', estimatedTime: 30 },
       { description: 'Test implementation', priority: 'medium', estimatedTime: 15 },
     ],
-    recommendations: [{ title: 'Performance', description: 'Optimize API calls', impact: 'high', effort: 'medium' }],
+    recommendations: [
+      { title: 'Performance', description: 'Optimize API calls', impact: 'high', effort: 'medium' },
+    ],
     executionPlan: 'Step-by-step implementation plan',
     selfPrompt: 'Generated self-prompt for Copilot',
     metadata: { processingTime: 150, confidence: 0.85, sources: ['api', 'docs'], tokensUsed: 1250 },
@@ -217,19 +222,19 @@ ${result.synthesizedOutput}
 
 ## Next Actions
 ${result.nextActions
-    .map(
-      (action: NextAction, index: number) =>
-        `${index + 1}. **${action.description}** (${action.priority} priority, ~${action.estimatedTime}min)`,
-    )
-    .join('\n')}
+  .map(
+    (action: NextAction, index: number) =>
+      `${index + 1}. **${action.description}** (${action.priority} priority, ~${action.estimatedTime}min)`
+  )
+  .join('\n')}
 
 ## Strategic Recommendations
 ${result.recommendations
-    .map(
-      (rec: Recommendation, index: number) =>
-        `${index + 1}. **${rec.title}**: ${rec.description} (Impact: ${rec.impact}, Effort: ${rec.effort})`,
-    )
-    .join('\n')}
+  .map(
+    (rec: Recommendation, index: number) =>
+      `${index + 1}. **${rec.title}**: ${rec.description} (Impact: ${rec.impact}, Effort: ${rec.effort})`
+  )
+  .join('\n')}
 
 ## Execution Plan
 ${result.executionPlan || 'No execution plan generated'}
@@ -250,7 +255,10 @@ function getCopilotUsageExamples() {
     {
       title: 'Basic Problem Analysis',
       description: 'Analyze a general development issue',
-      request: { prompt: 'I have TypeScript errors in my SvelteKit application', options: { mode: 'comprehensive' } },
+      request: {
+        prompt: 'I have TypeScript errors in my SvelteKit application',
+        options: { mode: 'comprehensive' },
+      },
       curl: `curl -X POST http://localhost:5173/api/copilot/self-prompt \\
   -H "Content-Type: application/json" \\
   -d '{"prompt": "I have TypeScript errors in my SvelteKit application", "mode": "comprehensive"}'`,
@@ -260,7 +268,10 @@ function getCopilotUsageExamples() {
       description: 'Full autonomous problem-solving across all platforms',
       request: {
         prompt: 'Our application has performance issues and needs optimization',
-        options: { mode: 'autonomous', context: { platform: 'all', urgency: 'high', includeTests: true } },
+        options: {
+          mode: 'autonomous',
+          context: { platform: 'all', urgency: 'high', includeTests: true },
+        },
       },
       curl: `curl -X POST http://localhost:5173/api/copilot/self-prompt \\
   -H "Content-Type: application/json" \\
@@ -269,7 +280,10 @@ function getCopilotUsageExamples() {
     {
       title: 'Quick Analysis',
       description: 'Fast semantic search without full orchestration',
-      request: { prompt: 'How do I implement authentication in SvelteKit?', options: { mode: 'quick', outputFormat: 'markdown' } },
+      request: {
+        prompt: 'How do I implement authentication in SvelteKit?',
+        options: { mode: 'quick', outputFormat: 'markdown' },
+      },
       curl: `curl -X POST http://localhost:5173/api/copilot/self-prompt \\
   -H "Content-Type: application/json" \\
   -d '{"prompt": "How do I implement authentication in SvelteKit?", "mode": "quick", "options": {"outputFormat": "markdown"}}'`,
@@ -279,7 +293,11 @@ function getCopilotUsageExamples() {
       description: 'Legal-specific analysis with specialized agents',
       request: {
         prompt: 'Analyze this contract for potential legal issues and compliance requirements',
-        options: { mode: 'comprehensive', context: { platform: 'webapp', urgency: 'medium' }, outputFormat: 'structured' },
+        options: {
+          mode: 'comprehensive',
+          context: { platform: 'webapp', urgency: 'medium' },
+          outputFormat: 'structured',
+        },
       },
       curl: `curl -X POST http://localhost:5173/api/copilot/self-prompt \\
   -H "Content-Type: application/json" \\
@@ -292,7 +310,12 @@ function getCopilotUsageExamples() {
         prompt: 'Generate a comprehensive plan to fix all errors in the current workspace',
         options: {
           mode: 'autonomous',
-          context: { targetExtensions: ['cline', 'roo', 'copilot'], platform: 'all', urgency: 'critical', includeTests: true },
+          context: {
+            targetExtensions: ['cline', 'roo', 'copilot'],
+            platform: 'all',
+            urgency: 'critical',
+            includeTests: true,
+          },
           outputFormat: 'json',
         },
       },
@@ -325,5 +348,3 @@ function validateRequestBody(body: any): { isValid: boolean; errors: string[] } 
 
   return { isValid: errors.length === 0, errors };
 }
-
-

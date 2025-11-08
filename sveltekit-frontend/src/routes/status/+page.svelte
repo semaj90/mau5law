@@ -59,25 +59,30 @@
         '--gpu-cache-bg-primary',
         '--gpu-cache-accent-primary',
         '--nes-prg-rom-color',
-        '--gpu-cache-state-idle'
+        '--gpu-cache-state-idle',
       ];
-      const loadedVars = gpuVars.filter(item => computedStyle.getPropertyValue(item).trim() !== '');
+      const loadedVars = gpuVars.filter(
+        (item) => computedStyle.getPropertyValue(item).trim() !== ''
+      );
 
       if (loadedVars.length === gpuVars.length) {
         integrationTests['gpu-cache'] = {
           status: 'success',
           message: 'GPU cache CSS integration fully loaded',
-          details: { loadedVars: loadedVars.length, totalVars: gpuVars.length }
+          details: { loadedVars: loadedVars.length, totalVars: gpuVars.length },
         };
       } else {
         integrationTests['gpu-cache'] = {
           status: 'warning',
           message: `GPU cache CSS partially loaded: ${loadedVars.length}/${gpuVars.length} variables`,
-          details: { loadedVars, missingVars: gpuVars.filter(v => !loadedVars.includes(v)) }
+          details: { loadedVars, missingVars: gpuVars.filter((v) => !loadedVars.includes(v)) },
         };
       }
     } catch (error) {
-      integrationTests['gpu-cache'] = { status: 'error', message: `GPU cache integration error: ${error}` };
+      integrationTests['gpu-cache'] = {
+        status: 'error',
+        message: `GPU cache integration error: ${error}`,
+      };
     }
   }
 
@@ -102,16 +107,19 @@
         integrationTests['gaming'] = {
           status: 'success',
           message: 'Gaming components and constants loaded successfully',
-          details: { nesColors: nesCount, n64Presets: n64Count }
+          details: { nesColors: nesCount, n64Presets: n64Count },
         };
       } else {
         integrationTests['gaming'] = {
           status: 'error',
-          message: 'Gaming constants not properly loaded'
+          message: 'Gaming constants not properly loaded',
         };
       }
     } catch (error) {
-      integrationTests['gaming'] = { status: 'error', message: `Gaming components error: ${error}` };
+      integrationTests['gaming'] = {
+        status: 'error',
+        message: `Gaming components error: ${error}`,
+      };
     }
   }
 
@@ -142,24 +150,35 @@
         integrationTests['postgresql'] = {
           status: 'success',
           message: 'PostgreSQL + pgvector connected and healthy',
-          details: { host, port }
+          details: { host, port },
         };
       } else if (pgStatus === 'unknown') {
-        integrationTests['postgresql'] = { status: 'warning', message: 'PostgreSQL status: unknown' };
+        integrationTests['postgresql'] = {
+          status: 'warning',
+          message: 'PostgreSQL status: unknown',
+        };
       } else {
         integrationTests['postgresql'] = {
           status: 'error',
-          message: 'PostgreSQL connection failed or unhealthy'
+          message: 'PostgreSQL connection failed or unhealthy',
         };
       }
     } catch (error) {
-      integrationTests['postgresql'] = { status: 'error', message: `PostgreSQL test error: ${error}` };
+      integrationTests['postgresql'] = {
+        status: 'error',
+        message: `PostgreSQL test error: ${error}`,
+      };
     }
   }
 
   async function testAPIEndpoints(): Promise<any> {
     try {
-      const endpoints = ['/api/v1/vector/search', '/api/v1/rag', '/api/v1/gpu-cache', '/api/v1/cluster'];
+      const endpoints = [
+        '/api/v1/vector/search',
+        '/api/v1/rag',
+        '/api/v1/gpu-cache',
+        '/api/v1/cluster',
+      ];
       let successCount = 0;
       for (const endpoint of endpoints) {
         try {
@@ -172,10 +191,13 @@
       integrationTests['api-endpoints'] = {
         status: successCount >= endpoints.length / 2 ? 'success' : 'warning',
         message: `API endpoints: ${successCount}/${endpoints.length} accessible`,
-        details: { endpoints, successCount }
+        details: { endpoints, successCount },
       };
     } catch (error) {
-      integrationTests['api-endpoints'] = { status: 'error', message: `API endpoints test error: ${error}` };
+      integrationTests['api-endpoints'] = {
+        status: 'error',
+        message: `API endpoints test error: ${error}`,
+      };
     }
   }
 

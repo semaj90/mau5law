@@ -1,5 +1,5 @@
 <script lang="ts">
-import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
+  import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInterface.svelte';
   import { fade } from 'svelte/transition';
   let isBooting = $state<boolean>(true);
   let bootProgress = $state<number>(0);
@@ -35,7 +35,10 @@ import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInter
       <span class="logo-main">oRHa</span>
     </div>
     <div class="progress-bar">
-      <div class="progress-fill" style="width: {((bootProgress / bootSequence.length) * 100).toFixed(0)}%;"></div>
+      <div
+        class="progress-fill"
+        style="width: {((bootProgress / bootSequence.length) * 100).toFixed(0)}%;"
+      ></div>
     </div>
     <div class="progress-text">
       LOADING... {((bootProgress / bootSequence.length) * 100).toFixed(0)}%
@@ -63,7 +66,7 @@ import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInter
 {/if}
 
 <style>
-/* Custom styles for gradients, shadows, and animations not easily expressed with UnoCSS */
+  /* Custom styles for gradients, shadows, and animations not easily expressed with UnoCSS */
   .boot-screen {
     background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #000000 100%);
     position: fixed;
@@ -188,7 +191,9 @@ import YorHADetectiveInterface from '$lib/components/ui/core/YorHADetectiveInter
       transform: scale(1);
     }
     50% {
-      text-shadow: 0 0 30px #00ff41, 0 0 40px #00ff41;
+      text-shadow:
+        0 0 30px #00ff41,
+        0 0 40px #00ff41;
       transform: scale(1.05);
     }
   }

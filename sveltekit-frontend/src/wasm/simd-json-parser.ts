@@ -184,8 +184,10 @@ let wasmExports: {
  * @param modulePath The path to the .wasm module.
  */
 export async function initializeWasm(modulePath?: string): Promise<void> {
-  if (typeof WebAssembly === 'undefined') {
-    console.warn("WebAssembly is not supported in this environment. Using fallback memory management.");
+  if (typeof WebAssembly === "undefined") {
+    console.warn(
+      "WebAssembly is not supported in this environment. Using fallback memory management."
+    );
     // Provide a fallback if WASM is not available
     wasmExports.memory = new WebAssembly.Memory({ initial: 256, maximum: 1024 }); // Mock memory
     let heapPtr = 0;

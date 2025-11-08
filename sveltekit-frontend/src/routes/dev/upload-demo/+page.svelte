@@ -1,5 +1,5 @@
 <script lang="ts">
-import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
+  import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
   import { submitWithProgress } from '$lib/api/submitWithProgress';
 
   let last = '';
@@ -31,5 +31,8 @@ import UploadProgress from '$lib/components/upload/UploadProgress.svelte';
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

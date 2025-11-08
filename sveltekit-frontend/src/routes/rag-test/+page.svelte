@@ -11,5 +11,8 @@ import { onMount } from 'svelte'; import { indexedDBService } from '$lib/service
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

@@ -1,24 +1,24 @@
 <script lang="ts">
-import { goto } from '$app/navigation';
+  import { goto } from '$app/navigation';
 
-interface CaseSummary {
-  id: string;
-  title?: string | null;
-  description?: string | null;
-  status?: string | null;
-  priority?: string | null;
-  caseNumber?: string | null;
-  updatedAt?: string | Date | null;
-  createdAt?: string | Date | null;
-}
+  interface CaseSummary {
+    id: string;
+    title?: string | null;
+    description?: string | null;
+    status?: string | null;
+    priority?: string | null;
+    caseNumber?: string | null;
+    updatedAt?: string | Date | null;
+    createdAt?: string | Date | null;
+  }
 
-// Define a more complete PageData interface to match expected server load output
-interface PageData {
-  user: { id: string; email?: string | undefined; role?: string | undefined; } | null;
-  cases?: CaseSummary[]; // Added missing property
-  error?: string | null; // Added missing property
-  devBypassActive?: boolean; // Added missing property
-}
+  // Define a more complete PageData interface to match expected server load output
+  interface PageData {
+    user: { id: string; email?: string | undefined; role?: string | undefined } | null;
+    cases?: CaseSummary[]; // Added missing property
+    error?: string | null; // Added missing property
+    devBypassActive?: boolean; // Added missing property
+  }
 
   // Svelte, 5 props from server load function
   let { data }: { data: PageData } = $props();
@@ -41,7 +41,7 @@ interface PageData {
     return trimmed
       .split(/[_\s]+/)
       .filter(Boolean)
-      .map(segment => segment.charAt(0).toUpperCase() + segment.slice(1))
+      .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
       .join(' ');
   }
 
@@ -50,13 +50,18 @@ interface PageData {
     try {
       const date = value instanceof Date ? value : new Date(value as string);
       if (Number.isNaN(date.getTime())) return '';
-      return date.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      return date.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      });
     } catch {
       return '';
     }
   }
 
-  function makeModifierClass(prefix: string, value: unknown): string { // Changed semicolon to comma
+  function makeModifierClass(prefix: string, value: unknown): string {
+    // Changed semicolon to comma
     if (typeof value !== 'string') {
       return `${prefix}-unknown`;
     }
@@ -66,7 +71,7 @@ interface PageData {
   }
 
   const displayCases = $derived(
-    (cases || []).map(caseItem => {
+    (cases || []).map((caseItem) => {
       const statusLabel = formatLabel(caseItem.status);
       const priorityLabel = formatLabel(caseItem.priority);
       const updatedLabel = formatDate(caseItem.updatedAt || caseItem.createdAt);
@@ -89,14 +94,22 @@ interface PageData {
       const response = await fetch('/api/cases');
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
-        const message = payload?.error?.message || payload?.message || payload?.error || `Failed to load cases (${response.status})`;
+        const message =
+          payload?.error?.message ||
+          payload?.message ||
+          payload?.error ||
+          `Failed to load cases (${response.status})`;
         error = message;
         console.error('Failed to load cases:', payload);
         return;
       }
 
       const payload = await response.json().catch(() => ({}));
-      const listCandidate = Array.isArray(payload?.data?.cases) ? payload.data.cases : Array.isArray(payload?.cases) ? payload.cases : [];
+      const listCandidate = Array.isArray(payload?.data?.cases)
+        ? payload.data.cases
+        : Array.isArray(payload?.cases)
+          ? payload.cases
+          : [];
       cases = (listCandidate || []) as CaseSummary[]; // Assign to the $state variable 'cases'
       error = null;
     } catch (err) {
@@ -221,7 +234,7 @@ interface PageData {
 </main>
 
 <style>
-:global(body.theme-legal) {
+  :global(body.theme-legal) {
     background-color: var(--legal-background, #0f172a);
   }
 
@@ -236,12 +249,16 @@ interface PageData {
     color: var(--console-fg, #f8fafc);
   }
 
-  .cases-page::before { /* Fixed pseudo-element syntax */
+  .cases-page::before {
+    /* Fixed pseudo-element syntax */
     content: '';
     position: absolute;
     inset: 0;
     border-radius: 28px;
-    background: var(--console-gradient-main, linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(0, 255, 136, 0.15)));
+    background: var(
+      --console-gradient-main,
+      linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(0, 255, 136, 0.15))
+    );
     opacity: 0.25;
     pointer-events: none;
   }
@@ -332,7 +349,8 @@ interface PageData {
     box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
   }
 
-  .btn-primary:hover { /* Fixed pseudo-class syntax */
+  .btn-primary:hover {
+    /* Fixed pseudo-class syntax */
     transform: translateY(-2px);
     box-shadow: 0 14px 28px rgba(0, 255, 136, 0.45);
   }
@@ -342,7 +360,8 @@ interface PageData {
     border-color: rgba(148, 163, 184, 0.4);
   }
 
-  .btn-secondary:hover:not(:disabled) { /* Fixed pseudo-class syntax */
+  .btn-secondary:hover:not(:disabled) {
+    /* Fixed pseudo-class syntax */
     transform: translateY(-2px);
     background: rgba(51, 65, 85, 0.8);
     border-color: rgba(148, 163, 184, 0.6);
@@ -410,7 +429,8 @@ interface PageData {
       border-color 0.22s ease;
   }
 
-  .case-card::after { /* Fixed pseudo-element syntax */
+  .case-card::after {
+    /* Fixed pseudo-element syntax */
     content: '';
     position: absolute;
     inset: 0;
@@ -419,7 +439,9 @@ interface PageData {
     transition: border-color 0.22s ease;
   }
 
-  .case-card:hover, .case-card:focus-visible { /* Fixed pseudo-class syntax */
+  .case-card:hover,
+  .case-card:focus-visible {
+    /* Fixed pseudo-class syntax */
     transform: translateY(-6px);
     box-shadow: 0 20px 36px rgba(2, 6, 23, 0.45);
   }

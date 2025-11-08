@@ -48,7 +48,7 @@ export interface Recommendation {
   score: number;
   reasoning: string;
   action?: string;
-  priority?: "low" | "medium" | "high" | "critical";
+  priority?: 'low' | 'medium' | 'high' | 'critical';
 }
 
 export interface DocumentItem {
@@ -85,8 +85,8 @@ export interface LLMOutput {
 
 export interface Party {
   name: string;
-  role: "plaintiff" | "defendant" | "witness" | "attorney" | "other";
-  type: "individual" | "corporation" | "government";
+  role: 'plaintiff' | 'defendant' | 'witness' | 'attorney' | 'other';
+  type: 'individual' | 'corporation' | 'government';
 }
 
 export interface LegalMetadata {
@@ -95,13 +95,13 @@ export interface LegalMetadata {
     jurisdiction: string;
     parties: Party[];
     datesFiled: string[];
-    courtLevel: "district" | "appellate" | "supreme";
+    courtLevel: 'district' | 'appellate' | 'supreme';
   };
   classification: {
-    documentType: "contract" | "evidence" | "brief" | "citation";
+    documentType: 'contract' | 'evidence' | 'brief' | 'citation';
     practiceArea: string[];
     confidenceLevel: number;
-    riskLevel: "low" | "medium" | "high" | "critical";
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';
   };
   processing: {
     extractedEntities: string[];
@@ -113,14 +113,14 @@ export interface LegalMetadata {
 
 export interface LegalEntity {
   type:
-    | "person"
-    | "organization"
-    | "date"
-    | "location"
-    | "case_number"
-    | "statute"
-    | "clause"
-    | "amount";
+    | 'person'
+    | 'organization'
+    | 'date'
+    | 'location'
+    | 'case_number'
+    | 'statute'
+    | 'clause'
+    | 'amount';
   value: string;
   confidence: number;
   span: { start: number; end: number };
@@ -136,7 +136,7 @@ export interface AttachmentMetadata {
   hash: string;
   uploadedAt: string;
   originalName?: string;
-  source?: "upload" | "reference";
+  source?: 'upload' | 'reference';
 }
 
 export interface ConversationTurn {
@@ -185,7 +185,7 @@ export interface LangExtractResult {
   clauses: Clause[];
   jurisdiction: string;
   documentType: string;
-  riskLevel: "low" | "medium" | "high" | "critical";
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
   confidence: number;
   processingTime: number;
 }
@@ -193,7 +193,7 @@ export interface LangExtractResult {
 export interface LegalDate {
   text: string;
   normalized: string | null;
-  type: "filing" | "execution" | "expiration" | "hearing" | "deadline" | "other";
+  type: 'filing' | 'execution' | 'expiration' | 'hearing' | 'deadline' | 'other';
   confidence: number;
 }
 
@@ -201,8 +201,8 @@ export interface Clause {
   number: number;
   heading: string;
   text: string;
-  type: "termination" | "indemnification" | "confidentiality" | "payment" | "liability" | "other";
-  riskLevel: "low" | "medium" | "high" | "critical";
+  type: 'termination' | 'indemnification' | 'confidentiality' | 'payment' | 'liability' | 'other';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
   confidence: number;
 }
 
@@ -219,16 +219,16 @@ export interface SOMCluster {
 }
 
 export type ButtonVariant =
-  | "default"
-  | "primary"
-  | "secondary"
-  | "destructive"
-  | "outline"
-  | "ghost"
-  | "link"
-  | "danger"
-  | "success"
-  | "warning"
-  | "info";
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'destructive'
+  | 'outline'
+  | 'ghost'
+  | 'link'
+  | 'danger'
+  | 'success'
+  | 'warning'
+  | 'info';
 
-export type ButtonSize = "sm" | "md" | "lg" | "icon";
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';

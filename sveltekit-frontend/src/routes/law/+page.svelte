@@ -1,5 +1,5 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported
+  // Svelte, 5 runes are auto-imported
   import { onMount } from 'svelte';
 
   // 1. Define Law interface
@@ -20,26 +20,25 @@
 
   // 3. Fix data fetching with onMount
   onMount(() => {
-		(async () => {
-
-    try {
-      const response = await fetch('/api/v1/laws'); // Assuming /api/v1/laws is the endpoint
-      if (response.ok) {
-        laws = await response.json();
-      } else {
-        error = 'Failed to load laws';
+    (async () => {
+      try {
+        const response = await fetch('/api/v1/laws'); // Assuming /api/v1/laws is the endpoint
+        if (response.ok) {
+          laws = await response.json();
+        } else {
+          error = 'Failed to load laws';
+        }
+      } catch (err) {
+        error = 'Error loading laws';
+        console.error('Error:', err);
+      } finally {
+        loading = false;
       }
-    } catch (err) {
-      error = 'Error loading laws';
-      console.error('Error:', err);
-    } finally {
-      loading = false;
-    }
-  		})();
-	});
+    })();
+  });
   let filteredLaws = $derived(
     laws.filter(
-      law =>
+      (law) =>
         (law.title?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         (law.description?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false) ||
         (law.code?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false)
@@ -53,5 +52,8 @@
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

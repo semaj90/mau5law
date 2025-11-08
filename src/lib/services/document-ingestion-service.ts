@@ -3,13 +3,13 @@
  * Handles document ingestion for Enhanced RAG system
  */
 
-import fs from "fs/promises";
-import path from "path";
-import pdfParse from "pdf-parse";
-import { chromium } from "playwright";
-import * as cheerio from "cheerio";
-import crypto from "crypto";
-import { redisVectorService, VectorDocument } from "./redis-vector-service.js";
+import fs from 'fs/promises';
+import path from 'path';
+import pdfParse from 'pdf-parse';
+import { chromium } from 'playwright';
+import * as cheerio from 'cheerio';
+import crypto from 'crypto';
+import { redisVectorService, VectorDocument } from './redis-vector-service.js';
 
 export interface DocumentChunk {
   id: string;
@@ -17,7 +17,7 @@ export interface DocumentChunk {
   metadata: {
     title?: string;
     source: string;
-    type: "pdf" | "web" | "text";
+    type: 'pdf' | 'web' | 'text';
     page?: number;
     chunk_index: number;
     timestamp: string;
@@ -50,10 +50,7 @@ export class DocumentIngestionService {
   /**
    * Parse PDF file and extract text
    */
-  async parsePDF(
-    filePath: string,
-    options: { maxPages?: number } = {}
-  ): Promise<ParsedDocument> {
+  async parsePDF(filePath: string, options: { maxPages?: number } = {}): Promise<ParsedDocument> {
     try {
       console.log(`📄 Parsing PDF: ${filePath}`);
 
@@ -62,12 +59,12 @@ export class DocumentIngestionService {
         max: options.maxPages || 0, // 0 = all pages
       });
 
-      const filename = path.basename(filePath, ".pdf");
+      const filename = path.basename(filePath, '.pdf');
       const documentId = this.generateDocumentId(filePath);
 
       const chunks = this.chunkText(pdfData.text, {
         source: filePath,
-        type: "pdf",
+        type: 'pdf',
         title: filename,
         pages: pdfData.numpages,
       });
@@ -78,7 +75,7 @@ export class DocumentIngestionService {
         content: pdfData.text,
         metadata: {
           source: filePath,
-          type: "pdf",
+          type: 'pdf',
           pages: pdfData.numpages,
           fileSize: fileBuffer.length,
           timestamp: new Date().toISOString(),
@@ -86,9 +83,7 @@ export class DocumentIngestionService {
         chunks,
       };
 
-      console.log(
-        `✅ PDF parsed: ${chunks.length} chunks from ${pdfData.numpages} pages`
-      );
+      console.log(`✅ PDF parsed: ${chunks.length} chunks from ${pdfData.numpages} pages`);
       return result;
     } catch (error) {
       console.error(`❌ Error parsing PDF ${filePath}:`, error);
@@ -99,10 +94,7 @@ export class DocumentIngestionService {
   /**
    * Crawl web page and extract content
    */
-  async crawlWebPage(
-    url: string,
-    options: CrawlOptions = {}
-  ): Promise<ParsedDocument> {
+  async crawlWebPage(url: string, options: CrawlOptions = {}): Promise<ParsedDocument> {
     const browser = await chromium.launch({ headless: true });
 
     try {
@@ -111,12 +103,10 @@ export class DocumentIngestionService {
       const page = await browser.newPage();
 
       // Set user agent and viewport
-      await page.setUserAgent(
-        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-      );
+      await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36');
       await page.setViewportSize({ width: 1200, height: 800 });
 
-      await page.goto(url, { waitUntil: "networkidle" });
+      await page.goto(url, { waitUntil: 'networkidle' });
 
       // Wait for additional time if specified
       if (options.waitTime) {
@@ -131,31 +121,27 @@ export class DocumentIngestionService {
       const $ = cheerio.load(content);
 
       // Remove scripts, styles, and other non-content elements
-      $(
-        "script, style, nav, header, footer, aside, .ad, .advertisement"
-      ).remove();
+      $('script, style, nav, header, footer, aside, .ad, .advertisement').remove();
 
       // Extract text from specific selector if provided
-      const textContent = options.selector
-        ? $(options.selector).text()
-        : $("body").text();
+      const textContent = options.selector ? $(options.selector).text() : $('body').text();
 
       const cleanText = this.cleanText(textContent);
       const documentId = this.generateDocumentId(url);
 
       const chunks = this.chunkText(cleanText, {
         source: url,
-        type: "web",
-        title: title || "Web Page",
+        type: 'web',
+        title: title || 'Web Page',
       });
 
       const result: ParsedDocument = {
         id: documentId,
-        title: title || "Web Page",
+        title: title || 'Web Page',
         content: cleanText,
         metadata: {
           source: url,
-          type: "web",
+          type: 'web',
           title,
           crawlDate: new Date().toISOString(),
           wordCount: cleanText.split(/\s+/).length,
@@ -176,10 +162,7 @@ export class DocumentIngestionService {
   /**
    * Crawl multiple pages from a website
    */
-  async crawlWebsite(
-    startUrl: string,
-    options: CrawlOptions = {}
-  ): Promise<ParsedDocument[]> {
+  async crawlWebsite(startUrl: string, options: CrawlOptions = {}): Promise<ParsedDocument[]> {
     const { maxPages = 10, followLinks = true, excludePatterns = [] } = options;
     const visited = new Set<string>();
     const toVisit = [startUrl];
@@ -202,26 +185,26 @@ export class DocumentIngestionService {
 
         try {
           const doc = await this.crawlWebPage(url, options);
-          results.push(<any><any>doc);
+          results.push(<any>(<any>doc));
 
           // Find additional links if followLinks is enabled
           if (followLinks && results.length < maxPages) {
             const page = await browser.newPage();
-            await page.goto(url, { waitUntil: "networkidle" });
+            await page.goto(url, { waitUntil: 'networkidle' });
 
             const links = await page.$$eval(
-              "a[href]",
+              'a[href]',
               (elements) =>
                 elements
-                  .map((el) => el.getAttribute("href"))
-                  .filter((href) => href && href.startsWith("http"))
+                  .map((el) => el.getAttribute('href'))
+                  .filter((href) => href && href.startsWith('http'))
                   .slice(0, 5) // Limit links per page
             );
 
             // Add new links to visit
             links.forEach((link) => {
               if (!visited.has(link) && !toVisit.includes(link)) {
-                toVisit.push(<any><any>link);
+                toVisit.push(<any>(<any>link));
               }
             });
 
@@ -255,54 +238,46 @@ export class DocumentIngestionService {
       try {
         const embedding = await embeddingFunction(chunk.content);
 
-        vectorDocs.push(<any><any>{
+        vectorDocs.push(<any>(<any>{
           id: chunk.id,
           embedding,
           metadata: chunk.metadata,
           content: chunk.content,
           ttl: 7200, // 2 hours default TTL
-        });
+        }));
       } catch (error) {
-        console.error(
-          `❌ Error generating embedding for chunk ${chunk.id}:`,
-          error
-        );
+        console.error(`❌ Error generating embedding for chunk ${chunk.id}:`, error);
       }
     }
 
     // Batch store all chunks
     if (vectorDocs.length > 0) {
       await redisVectorService.storeBatch(vectorDocs);
-      console.log(
-        `✅ Stored ${vectorDocs.length} chunks for document: ${document.title}`
-      );
+      console.log(`✅ Stored ${vectorDocs.length} chunks for document: ${document.title}`);
     }
   }
 
   /**
    * Chunk text into smaller pieces with overlap
    */
-  private chunkText(
-    text: string,
-    baseMetadata: Record<string, any>
-  ): DocumentChunk[] {
+  private chunkText(text: string, baseMetadata: Record<string, any>): DocumentChunk[] {
     const chunks: DocumentChunk[] = [];
     const words = text.split(/\s+/);
 
-    let currentChunk = "";
+    let currentChunk = '';
     let currentWords: string[] = [];
     let chunkIndex = 0;
 
     for (let i = 0; i < words.length; i++) {
-      currentWords.push(<any><any>words[i]);
-      currentChunk = currentWords.join(" ");
+      currentWords.push(<any>(<any>words[i]));
+      currentChunk = currentWords.join(' ');
 
       // Check if chunk is large enough
       if (currentChunk.length >= this.maxChunkSize || i === words.length - 1) {
         if (currentChunk.trim()) {
           const chunkId = `${baseMetadata.source}_chunk_${chunkIndex}`;
 
-          chunks.push(<any><any>{
+          chunks.push(<any>(<any>{
             id: this.generateDocumentId(chunkId),
             content: currentChunk.trim(),
             metadata: {
@@ -310,7 +285,7 @@ export class DocumentIngestionService {
               chunk_index: chunkIndex,
               timestamp: new Date().toISOString(),
             },
-          });
+          }));
 
           chunkIndex++;
         }
@@ -323,10 +298,10 @@ export class DocumentIngestionService {
           );
 
           currentWords = currentWords.slice(-overlapWords);
-          currentChunk = currentWords.join(" ");
+          currentChunk = currentWords.join(' ');
         } else {
           currentWords = [];
-          currentChunk = "";
+          currentChunk = '';
         }
       }
     }
@@ -339,8 +314,8 @@ export class DocumentIngestionService {
    */
   private cleanText(text: string): string {
     return text
-      .replace(/\s+/g, " ") // Normalize whitespace
-      .replace(/\n\s*\n/g, "\n") // Remove empty lines
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .replace(/\n\s*\n/g, '\n') // Remove empty lines
       .trim();
   }
 
@@ -348,14 +323,14 @@ export class DocumentIngestionService {
    * Generate consistent document ID from source
    */
   private generateDocumentId(source: string): string {
-    return crypto.createHash("md5").update(source).digest("hex");
+    return crypto.createHash('md5').update(source).digest('hex');
   }
 
   /**
    * Get supported file types
    */
   getSupportedTypes(): string[] {
-    return ["pdf", "txt", "html", "web"];
+    return ['pdf', 'txt', 'html', 'web'];
   }
 
   /**
@@ -372,7 +347,7 @@ export class DocumentIngestionService {
 
       return redisHealthy;
     } catch (error) {
-      console.error("Document ingestion service health check failed:", error);
+      console.error('Document ingestion service health check failed:', error);
       return false;
     }
   }

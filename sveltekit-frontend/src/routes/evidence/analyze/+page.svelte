@@ -35,7 +35,17 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 </main>
 
 <style>
-/* Custom animations for progress indicators */ @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3)}
-    50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6)}
-  } .animate-pulse-glow { animation: pulse-glow 2s infinite}
+  /* Custom animations for progress indicators */
+  @keyframes pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 5px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+    }
+  }
+  .animate-pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
 </style>

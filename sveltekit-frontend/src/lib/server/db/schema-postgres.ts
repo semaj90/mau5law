@@ -1,7 +1,24 @@
 // Updated PostgreSQL schema based on database introspection // This schema matches the actual database structure (drizzle/schema.ts)
 import { sql } from "drizzle-orm";
 import { relations } from "drizzle-orm/relations";
-import { boolean, integer, jsonb, pgTable, real, serial, text, timestamp, uuid, varchar, unique, foreignKey, numeric, pgEnum, index } from "drizzle-orm/pg-core";
+import {
+  bigint,
+  boolean,
+  integer,
+  jsonb,
+  pgTable,
+  real,
+  serial,
+  text,
+  timestamp,
+  uuid,
+  varchar,
+  unique,
+  foreignKey,
+  numeric,
+  pgEnum,
+  index
+} from "drizzle-orm/pg-core";
 
 // Note: vector type is handled via sql`` template in table definitions
 
@@ -75,26 +92,33 @@ export const verificationStatusEnum = pgEnum("verification_status", [
   "rejected",
   "needs_review",
 ]);
+export const documentStatusEnum = pgEnum('document_status', ['queued', 'processing', 'processed', 'failed', 'pending_ocr', 'ocr_completed', 'pending_embedding', 'embedding_completed', 'pending_summary', 'summary_completed']);
+export const summaryTypeEnum = pgEnum('summary_type', ['legal_analysis', 'executive_summary', 'key_facts']);
+export const caseRiskLevelEnum = pgEnum("case_risk_level", [
+  "low",
+  "medium",
+  "high",
+  "critical",
+  "urgent",
+]);
 
-// Assuming canvasAutosaves is another table, but it's imported and then not used in the provided snippet.
-import { canvasAutosaves } from "./schema-canvas-autosaves"; // Keep this import if it's used elsewhere
+// === TABLES FOR LEGAL AI APPLICATION ===
 
-// Define a basic users table as it's referenced by foreign keys
 export const users = pgTable("users", {
   id: uuid("id")
     .default(sql`gen_random_uuid()`)
     .primaryKey()
     .notNull(),
-  // Add other common user fields if known, e.g.:
-  // name: varchar('name', { length: 255 }),
-  // email: varchar('email', { length: 255 }).unique().notNull(),
-  // emailVerified: timestamp('email_verified', { withTimezone: true, mode: 'string' }),
-  // image: text('image'),
+  email: varchar("email", { length: 255 }).unique().notNull(),
+  hashedPassword: varchar("hashed_password", { length: 255 }).notNull(),
+  name: varchar("name", { length: 255 }),
+  firstName: varchar("first_name", { length: 255 }),
+  lastName: varchar("last_name", { length: 255 }),
+  role: userRoleEnum("role").notNull().default("prosecutor"),
   createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
 });
 
-// Reconstructing sessions table from the fragment
 export const sessions = pgTable(
   "sessions",
   {
@@ -276,23 +300,6 @@ export const evidence = pgTable(
     subType: varchar("sub_type", { length: 50 }),
     fileUrl: text("file_url"),
     fileName: varchar("file_name", { length: 255 }),
-    fileSize: integer("file_size"),
-    mimeType: varchar("mime_type", { length: 100 }),
-    hash: varchar("hash", { length: 128 }),
-    tags: jsonb("tags").default([]).notNull().$type<string[]>(),
-    chainOfCustody: jsonb("chain_of_custody").default([]).notNull(), // This might need a specific type if it's an array of objects
-    collectedAt: timestamp("collected_at", { mode: "string" }),
-    collectedBy: varchar("collected_by", { length: 255 }),
-    location: text("location"),
-    labAnalysis: jsonb("lab_analysis").default({}).notNull(),
-    aiAnalysis: jsonb("ai_analysis").default({}).notNull(),
-    aiTags: jsonb("ai_tags").default([]).notNull().$type<string[]>(),
-    aiSummary: text("ai_summary"),
-    summary: text("summary"),
-    isAdmissible: boolean("is_admissible").default(true).notNull(),
-    confidentialityLevel: confidentialityEnum("confidentiality_level")
-      .default("standard")
-      .notNull(),
     canvasPosition: jsonb("canvas_position").default({}).notNull(),
     uploadedBy: uuid("uploaded_by"), // Foreign key to users.id
     uploadedAt: timestamp("uploaded_at", { mode: "string" }).defaultNow().notNull(),
@@ -328,737 +335,80 @@ export const evidence = pgTable(
   })
 );
 
-// Define documents table as it's referenced by documentChunks
-export const documents = pgTable("documents", {
-  id: uuid("id")
-    .default(sql`gen_random_uuid()`)
-    .primaryKey()
-    .notNull(),
-  title: varchar("title", { length: 255 }).notNull(),
-  content: text("content"),
-  // Add other relevant fields for a document table
-  createdAt: timestamp("created_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+// Define documents table
+export const documents = pgTable('documents', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  title: text('title').notNull(),
+  content: text('content'),
+  s3Key: text('s3_key').notNull(), // Added
+  s3Bucket: text('s3_bucket').notNull().default('legal-documents'), // Added
+  originalName: text('original_name').notNull(), // Added
+  mimeType: text('mime_type').notNull(), // Added
+  fileSize: bigint('file_size', { mode: 'number' }).notNull().default(0), // Added
+  caseId: uuid('case_id'), // Added, assuming foreign key to cases table
+  userId: uuid('user_id'), // Added, assuming foreign key to users table
+  status: documentStatusEnum('status').notNull().default('queued'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
-// === LEGAL DOCUMENT MANAGEMENT ===
-export const legalDocuments = pgTable(
-  "legal_documents",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    title: varchar("title", { length: 500 }).notNull(),
-    documentType: documentTypeEnum("document_type").notNull(),
-    jurisdiction: varchar("jurisdiction", { length: 100 }),
-    court: varchar("court", { length: 200 }),
-    citation: varchar("citation", { length: 300 }),
-    fullCitation: text("full_citation"),
-    docketNumber: varchar("docket_number", { length: 100 }),
-    dateDecided: timestamp("date_decided", { mode: "string" }),
-    datePublished: timestamp("date_published", { mode: "string" }),
-    fullText: text("full_text"),
-    content: text("content"),
-    summary: text("summary"),
-    headnotes: text("headnotes"),
-    keywords: jsonb("keywords").default([]).$type<string[]>(),
-    topics: jsonb("topics").default([]).$type<string[]>(),
-    parties: jsonb("parties").default({}), // This might need a specific type if it's an object
-    judges: jsonb("judges").default([]).$type<string[]>(),
-    attorneys: jsonb("attorneys").default({}), // This might need a specific type if it's an object
-    outcome: varchar("outcome", { length: 100 }),
-    precedentialValue: varchar("precedential_value", { length: 50 }),
-    url: text("url"),
-    pdfUrl: text("pdf_url"),
-    westlawId: varchar("westlaw_id", { length: 100 }),
-    lexisId: varchar("lexis_id", { length: 100 }),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    evidenceId: uuid("evidence_id"), // Foreign key to evidence.id
-    isActive: boolean("is_active").default(true),
-    isDirty: boolean("is_dirty").default(false),
-    lastSavedAt: timestamp("last_saved_at", { mode: "string" }),
-    autoSaveData: jsonb("auto_save_data"),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-    embedding: text("embedding"), // Vector stored as text, converted in service layer
-  },
-  (table) => [
+// Define legalDocuments table (based on documents, with additional fields for Qdrant integration)
+export const legalDocuments = pgTable('legal_documents', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  title: text('title').notNull(),
+  content: text('content'),
+  s3Key: text('s3_key').notNull(),
+  s3Bucket: text('s3_bucket').notNull().default('legal-documents'),
+  originalName: text('original_name').notNull(),
+  mimeType: text('mime_type').notNull(),
+  fileSize: bigint('file_size', { mode: 'number' }).notNull().default(0),
+  caseId: uuid('case_id'), // Foreign key to cases table
+  userId: uuid('user_id'), // Foreign key to users table
+  evidenceId: uuid('evidence_id'), // Added: Foreign key to evidence table
+  createdBy: uuid('created_by'), // Added: Foreign key to users table
+  status: documentStatusEnum('status').notNull().default('queued'),
+  documentType: documentTypeEnum('document_type'), // Specific legal document type
+  practiceArea: varchar('practice_area', { length: 100 }),
+  metadata: jsonb('metadata'), // General metadata
+  contentEmbedding: sql`vector(384)`, // pgvector column for embeddings
+  qdrantId: uuid('qdrant_id'), // ID in Qdrant
+  qdrantCollection: varchar('qdrant_collection', { length: 100 }), // Qdrant collection name
+  lastSyncedToQdrant: timestamp('last_synced_to_qdrant', { withTimezone: true, mode: 'string' }),
+  deletedAt: timestamp('deleted_at', { withTimezone: true, mode: 'string' }), // Soft delete
+  createdAt: timestamp('created_at', { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true, mode: "string" }).defaultNow().notNull(),
+}, (table) => ({
+  indexes: [
+    index("idx_legal_documents_case_id").on(table.caseId),
+    index("idx_legal_documents_user_id").on(table.userId),
+    index("idx_legal_documents_status").on(table.status),
+    index("idx_legal_documents_qdrant_id").on(table.qdrantId),
+    // HNSW index for contentEmbedding for fast similarity search
+    index("idx_legal_documents_content_embedding_hnsw").using(sql`HNSW (content_embedding vector_cosine_ops)`).on(table.contentEmbedding),
+  ],
+  foreignKeys: [
     foreignKey({
       columns: [table.caseId],
       foreignColumns: [cases.id],
-      name: `legal_documents_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.evidenceId],
-      foreignColumns: [evidence.id],
-      name: `legal_documents_evidence_id_evidence_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `legal_documents_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === CASE ACTIVITIES & TIMELINE ===
-export const caseActivities = pgTable(
-  "case_activities",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id").notNull(), // Foreign key to cases.id
-    activityType: varchar("activity_type", { length: 50 }).notNull(),
-    title: varchar("title", { length: 255 }).notNull(),
-    description: text("description"),
-    scheduledFor: timestamp("scheduled_for", { mode: "string" }),
-    completedAt: timestamp("completed_at", { mode: "string" }),
-    status: activityStatusEnum("status").default("pending").notNull(),
-    priority: casePriorityEnum("priority").default("medium").notNull(),
-    assignedTo: uuid("assigned_to"), // Foreign key to users.id
-    relatedEvidence: jsonb("related_evidence").default([]).notNull().$type<string[]>(),
-    relatedCriminals: jsonb("related_criminals").default([]).notNull().$type<string[]>(),
-    metadata: jsonb("metadata").default({}).notNull(),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => ({
-    foreignKeys: [
-      foreignKey({
-        columns: [table.caseId],
-        foreignColumns: [cases.id],
-        name: "case_activities_case_id_cases_id_fk",
-      }).onDelete("cascade"),
-      foreignKey({
-        columns: [table.assignedTo],
-        foreignColumns: [users.id],
-        name: "case_activities_assigned_to_users_id_fk",
-      }).onDelete("set null"),
-      foreignKey({
-        columns: [table.createdBy],
-        foreignColumns: [users.id],
-        name: "case_activities_created_by_users_id_fk",
-      }).onDelete("set null"),
-    ],
-  })
-);
-
-// === ATTACHMENT VERIFICATIONS ===
-export const attachmentVerifications = pgTable(
-  "attachment_verifications",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    attachmentId: uuid("attachment_id").notNull(), // This might be a foreign key to evidence.id or legalDocuments.id
-    verifiedBy: uuid("verified_by").notNull(), // Foreign key to users.id
-    verificationStatus: verificationStatusEnum("verification_status").default("pending").notNull(),
-    verificationNotes: text("verification_notes"),
-    verifiedAt: timestamp("verified_at", { mode: "string" }).defaultNow().notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.verifiedBy],
-      foreignColumns: [users.id],
-      name: `attachment_verifications_verified_by_users_id_fk`,
-    }).onDelete("cascade"),
-    // Potentially add foreign key for attachmentId if it refers to a specific table, e.g.:
-    // foreignKey({ columns: [table.attachmentId], foreignColumns: [evidence.id], name: `attachment_verifications_attachment_id_evidence_id_fk` }).onDelete('cascade'),
-  ]
-);
-
-// === CANVAS ANNOTATIONS ===
-export const canvasAnnotations = pgTable(
-  "canvas_annotations",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    evidenceId: uuid("evidence_id"), // Foreign key to evidence.id
-    fabricData: jsonb("fabric_data").notNull(),
-    annotationType: varchar("annotation_type", { length: 50 }),
-    coordinates: jsonb("coordinates"),
-    boundingBox: jsonb("bounding_box"),
-    text: text("text"),
-    color: varchar("color", { length: 20 }),
-    layerOrder: integer("layer_order").default(0),
-    isVisible: boolean("is_visible").default(true),
-    metadata: jsonb("metadata").default({}).notNull(),
-    version: integer("version").default(1),
-    parentAnnotationId: uuid("parent_annotation_id"), // Self-referencing or to another annotation
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.evidenceId],
-      foreignColumns: [evidence.id],
-      name: `canvas_annotations_evidence_id_evidence_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `canvas_annotations_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === CANVAS STATES ===
-export const canvasStates = pgTable(
-  "canvas_states",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    name: varchar("name", { length: 255 }).notNull(),
-    canvasData: jsonb("canvas_data").notNull(),
-    version: integer("version").default(1),
-    isDefault: boolean("is_default").default(false),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `canvas_states_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `canvas_states_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === AI REPORTS & ANALYSIS ===
-export const aiReports = pgTable(
-  "ai_reports",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    reportType: varchar("report_type", { length: 50 }).notNull(),
-    title: varchar("title", { length: 255 }).notNull(),
-    content: text("content").notNull(),
-    richTextContent: jsonb("rich_text_content"),
-    metadata: jsonb("metadata").default({}).notNull(),
-    canvasElements: jsonb("canvas_elements").default([]).notNull(), // Assuming array of objects
-    generatedBy: varchar("generated_by", { length: 100 }).default("gemma3-legal"),
-    confidence: numeric("confidence", { precision: 3, scale: 2 }).default("0.85"),
-    isActive: boolean("is_active").default(true),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `ai_reports_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `ai_reports_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === CITATIONS ===
-export const citations = pgTable(
-  "citations",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    documentId: uuid("document_id"), // Foreign key to legalDocuments.id
-    citationType: varchar("citation_type", { length: 50 }).notNull(),
-    relevanceScore: numeric("relevance_score", { precision: 3, scale: 2 }),
-    pageNumber: integer("page_number"),
-    pinpointCitation: varchar("pinpoint_citation", { length: 100 }),
-    quotedText: text("quoted_text"),
-    contextBefore: text("context_before"),
-    contextAfter: text("context_after"),
-    annotation: text("annotation"),
-    legalPrinciple: text("legal_principle"),
-    citationFormat: varchar("citation_format", { length: 20 }).default("bluebook"),
-    formattedCitation: text("formatted_citation"),
-    shepardsTreatment: varchar("shepards_treatment", { length: 50 }),
-    isKeyAuthority: boolean("is_key_authority").default(false),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `citations_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.documentId],
-      foreignColumns: [legalDocuments.id],
-      name: `citations_document_id_legal_documents_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `citations_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === REPORTS ===
-export const reports = pgTable(
-  "reports",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    title: varchar("title", { length: 255 }).notNull(),
-    content: text("content"),
-    reportType: documentTypeEnum("report_type").default("report"),
-    status: reportStatusEnum("status").default("draft"),
-    isPublic: boolean("is_public").default(false),
-    tags: jsonb("tags").default([]).notNull().$type<string[]>(),
-    metadata: jsonb("metadata").default({}).notNull(),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `reports_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `reports_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === SAVED REPORTS ===
-export const savedReports = pgTable(
-  "saved_reports",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    title: varchar("title", { length: 300 }).notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    reportType: varchar("report_type", { length: 50 }).notNull(),
-    templateId: uuid("template_id"),
-    content: jsonb("content").notNull(),
-    htmlContent: text("html_content"),
-    generatedBy: varchar("generated_by", { length: 50 }).default("manual"),
-    aiModel: varchar("ai_model", { length: 50 }),
-    aiPrompt: text("ai_prompt"),
-    exportFormat: varchar("export_format", { length: 20 }).default("pdf"),
-    status: reportStatusEnum("status").default("draft"),
-    version: integer("version").default(1),
-    wordCount: integer("word_count"),
-    tags: jsonb("tags").default([]).$type<string[]>(),
-    metadata: jsonb("metadata").default({}),
-    sharedWith: jsonb("shared_with").default([]).$type<string[]>(), // Assuming array of user IDs or similar
-    lastExported: timestamp("last_exported", { mode: "string" }),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `saved_reports_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `saved_reports_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === THEMES & UI CUSTOMIZATION ===
-export const themes = pgTable(
-  "themes",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    name: varchar("name", { length: 100 }).notNull(),
-    description: text("description"),
-    cssVariables: jsonb("css_variables").notNull(),
-    colorPalette: jsonb("color_palette").notNull(),
-    isSystem: boolean("is_system").default(false).notNull(),
-    isPublic: boolean("is_public").default(false).notNull(),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `themes_created_by_users_id_fk`,
-    }).onDelete("cascade"),
-  ]
-);
-
-// === PERSONS OF INTEREST ===
-export const personsOfInterest = pgTable(
-  "persons_of_interest",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    name: varchar("name", { length: 255 }).notNull(),
-    aliases: jsonb("aliases").default([]).notNull().$type<string[]>(),
-    relationship: varchar("relationship", { length: 100 }),
-    threatLevel: threatLevelEnum("threat_level").default("low"),
-    status: varchar("status", { length: 20 }).default("active"),
-    profileData: jsonb("profile_data").default({}).notNull(),
-    tags: jsonb("tags").default([]).notNull().$type<string[]>(),
-    position: jsonb("position").default({}).notNull(), // Assuming coordinates or similar
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `persons_of_interest_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.createdBy],
-      foreignColumns: [users.id],
-      name: `persons_of_interest_created_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === HASH VERIFICATIONS ===
-export const hashVerifications = pgTable(
-  "hash_verifications",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    evidenceId: uuid("evidence_id"), // Foreign key to evidence.id
-    verifiedHash: varchar("verified_hash", { length: 64 }).notNull(),
-    storedHash: varchar("stored_hash", { length: 64 }),
-    result: boolean("result").notNull(),
-    verificationMethod: varchar("verification_method", { length: 50 }).default("manual"),
-    verifiedBy: uuid("verified_by"), // Foreign key to users.id
-    verifiedAt: timestamp("verified_at", { mode: "string" }).defaultNow(),
-    notes: text("notes"),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.evidenceId],
-      foreignColumns: [evidence.id],
-      name: `hash_verifications_evidence_id_evidence_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [table.verifiedBy],
-      foreignColumns: [users.id],
-      name: `hash_verifications_verified_by_users_id_fk`,
-    }).onDelete("set null"),
-  ]
-);
-
-// === VECTOR EMBEDDINGS FOR AI SEARCH ===
-export const contentEmbeddings = pgTable("content_embeddings", {
-  id: uuid("id")
-    .default(sql`gen_random_uuid()`)
-    .primaryKey()
-    .notNull(),
-  contentId: uuid("content_id").notNull(),
-  contentType: varchar("content_type", { length: 50 }).notNull(),
-  textContent: text("text_content").notNull(),
-  embedding: text("embedding"), // Vector stored as text, converted in service layer
-  metadata: jsonb("metadata").default({}).notNull(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-});
-
-export const userEmbeddings = pgTable(
-  "user_embeddings",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    userId: uuid("user_id"), // Foreign key to users.id
-    content: text("content").notNull(),
-    embedding: text("embedding").notNull(),
-    metadata: jsonb("metadata").default({}).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: `user_embeddings_user_id_users_id_fk`,
-    }).onDelete("cascade"),
-  ]
-);
-
-export const chatEmbeddings = pgTable("chat_embeddings", {
-  id: uuid("id")
-    .default(sql`gen_random_uuid()`)
-    .primaryKey()
-    .notNull(),
-  conversationId: uuid("conversation_id").notNull(),
-  messageId: uuid("message_id").notNull(),
-  content: text("content").notNull(),
-  embedding: text("embedding").notNull(),
-  role: varchar("role", { length: 20 }).notNull(),
-  metadata: jsonb("metadata").default({}).notNull(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-});
-
-export const evidenceVectors = pgTable(
-  "evidence_vectors",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    evidenceId: uuid("evidence_id"), // Foreign key to evidence.id
-    content: text("content").notNull(),
-    embedding: text("embedding").notNull(),
-    metadata: jsonb("metadata").default({}).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.evidenceId],
-      foreignColumns: [evidence.id],
-      name: `evidence_vectors_evidence_id_evidence_id_fk`,
-    }).onDelete("cascade"),
-  ]
-);
-
-export const caseEmbeddings = pgTable(
-  "case_embeddings",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    content: text("content").notNull(),
-    embedding: text("embedding").notNull(),
-    metadata: jsonb("metadata").default({}).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `case_embeddings_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-  ]
-);
-
-// === RAG (Retrieval Augmented Generation) SESSIONS ===
-export const ragSessions = pgTable(
-  "rag_sessions",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    sessionId: varchar("session_id", { length: 255 }).notNull(),
-    userId: uuid("user_id"), // Foreign key to users.id
-    title: varchar("title", { length: 255 }),
-    model: varchar("model", { length: 100 }),
-    isActive: boolean("is_active").default(true).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.userId],
-      foreignColumns: [users.id],
-      name: `rag_sessions_user_id_users_id_fk`,
-    }).onDelete("cascade"),
-    unique("rag_sessions_session_id_unique").on(table.sessionId),
-  ]
-);
-
-export const ragMessages = pgTable(
-  "rag_messages",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    sessionId: varchar("session_id", { length: 255 }).notNull(), // Foreign key to ragSessions.sessionId
-    messageIndex: integer("message_index").notNull(),
-    role: varchar("role", { length: 20 }).notNull(),
-    content: text("content").notNull(),
-    retrievedSources: jsonb("retrieved_sources").default([]).notNull().$type<string[]>(),
-    sourceCount: integer("source_count").default(0).notNull(),
-    retrievalScore: varchar("retrieval_score", { length: 10 }),
-    processingTime: integer("processing_time"),
-    model: varchar("model", { length: 100 }),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => ({
-    foreignKeys: [
-      foreignKey({
-        columns: [table.sessionId],
-        foreignColumns: [ragSessions.sessionId],
-        name: "rag_messages_session_id_rag_sessions_session_id_fk",
-      }).onDelete("cascade"),
-    ],
-  })
-);
-
-// === STATUTES ===
-export const statutes = pgTable("statutes", {
-  id: uuid("id")
-    .default(sql`gen_random_uuid()`)
-    .primaryKey()
-    .notNull(),
-  title: varchar("title", { length: 255 }).notNull(),
-  code: varchar("code", { length: 100 }).notNull(),
-  description: text("description"),
-  category: varchar("category", { length: 100 }),
-  jurisdiction: varchar("jurisdiction", { length: 100 }),
-  isActive: boolean("is_active").default(true),
-  penalties: jsonb("penalties").default({}).notNull(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-});
-
-// === LEGAL PRECEDENTS ===
-export const legalPrecedents = pgTable("legal_precedents", {
-  id: uuid("id")
-    .default(sql`gen_random_uuid()`)
-    .primaryKey()
-    .notNull(),
-  caseTitle: varchar("case_title", { length: 255 }).notNull(),
-  citation: varchar("citation", { length: 255 }).notNull(),
-  court: varchar("court", { length: 100 }),
-  year: integer("year"),
-  jurisdiction: varchar("jurisdiction", { length: 50 }),
-  summary: text("summary"),
-  fullText: text("full_text"),
-  embedding: text("embedding"),
-  relevanceScore: numeric("relevance_score", { precision: 3, scale: 2 }),
-  legalPrinciples: jsonb("legal_principles").default([]).notNull().$type<string[]>(),
-  linkedCases: jsonb("linked_cases").default([]).notNull().$type<string[]>(),
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-});
-
-// === LEGAL ANALYSIS SESSIONS ===
-export const legalAnalysisSessions = pgTable(
-  "legal_analysis_sessions",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    userId: uuid("user_id"), // Foreign key to users.id
-    sessionType: varchar("session_type", { length: 50 }).default("case_analysis"),
-    analysisPrompt: text("analysis_prompt"),
-    analysisResult: text("analysis_result"),
-    confidenceLevel: numeric("confidence_level", { precision: 3, scale: 2 }),
-    sourcesUsed: jsonb("sources_used").default([]).notNull().$type<string[]>(),
-    model: varchar("model", { length: 100 }).default("gemma3-legal"),
-    processingTime: integer("processing_time"),
-    isActive: boolean("is_active").default(true),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `legal_analysis_sessions_case_id_cases_id_fk`,
+      name: "legal_documents_case_id_cases_id_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [table.userId],
       foreignColumns: [users.id],
-      name: `legal_analysis_sessions_user_id_users_id_fk`,
-    }).onDelete("cascade"),
-  ]
-);
-
-// === LEGAL RESEARCH ===
-export const legalResearch = pgTable(
-  "legal_research",
-  {
-    id: uuid("id")
-      .default(sql`gen_random_uuid()`)
-      .primaryKey()
-      .notNull(),
-    caseId: uuid("case_id"), // Foreign key to cases.id
-    query: text("query").notNull(),
-    searchTerms: jsonb("search_terms").default([]).$type<string[]>(),
-    jurisdiction: varchar("jurisdiction", { length: 100 }),
-    dateRange: jsonb("date_range"),
-    courtLevel: varchar("court_level", { length: 50 }),
-    practiceArea: varchar("practice_area", { length: 100 }),
-    resultsCount: integer("results_count").default(0),
-    searchResults: jsonb("search_results").default([]), // Array of objects
-    aiSummary: text("ai_summary"),
-    keyFindings: jsonb("key_findings").default([]).$type<string[]>(),
-    recommendedCitations: jsonb("recommended_citations").default([]).$type<string[]>(),
-    searchDuration: integer("search_duration"),
-    dataSource: varchar("data_source", { length: 50 }),
-    isBookmarked: boolean("is_bookmarked").default(false),
-    createdBy: uuid("created_by"), // Foreign key to users.id
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => [
-    foreignKey({
-      columns: [table.caseId],
-      foreignColumns: [cases.id],
-      name: `legal_research_case_id_cases_id_fk`,
-    }).onDelete("cascade"),
-    foreignKey({
+      name: "legal_documents_user_id_users_id_fk",
+    }).onDelete("set null"),
+    foreignKey({ // Added foreign key for evidenceId
+      columns: [table.evidenceId],
+      foreignColumns: [evidence.id],
+      name: "legal_documents_evidence_id_evidence_id_fk",
+    }).onDelete("set null"),
+    foreignKey({ // Added foreign key for createdBy
       columns: [table.createdBy],
       foreignColumns: [users.id],
-      name: `legal_research_created_by_users_id_fk`,
+      name: "legal_documents_created_by_users_id_fk",
     }).onDelete("set null"),
-  ]
-);
+  ],
+}));
 
 // === VECTOR METADATA ===
 export const vectorMetadata = pgTable(
@@ -1079,14 +429,6 @@ export const vectorMetadata = pgTable(
 );
 
 // === CASE SCORING SYSTEM ===
-export const caseRiskLevelEnum = pgEnum("case_risk_level", [
-  "low",
-  "medium",
-  "high",
-  "critical",
-  "urgent",
-]);
-
 export const caseScores = pgTable(
   "case_scores",
   {
@@ -1118,17 +460,6 @@ export const caseScores = pgTable(
     }).onDelete("set null"),
   ]
 );
-
-// caseId is optional: set to a valid case UUID when the AI query is associated with a specific case,
-// or leave as null for general queries not tied to any case.
-
-// Polymorphic association: entityId can reference multiple tables.
-// Supported entityType values and corresponding tables:
-// autoTags confirmation workflow:
-// - isConfirmed: boolean, true if the tag has been manually confirmed by a user.
-// - confirmedBy: UUID of the user who confirmed the tag (nullable, foreign key to users).
-// - confirmedAt: timestamp when the tag was confirmed (nullable).
-// When isConfirmed is true, confirmedBy and confirmedAt should be set to indicate who confirmed and when.
 
 // === EMBEDDING CACHE ===
 export const embeddingCache = pgTable(
@@ -1206,51 +537,334 @@ export const autoTagsTable = pgTable(
   })
 );
 
-// === DOCUMENT CHUNKS ===
-export const documentChunksTable = pgTable(
-  "document_chunks",
-  {
-    id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
-    documentId: uuid("document_id").notNull(),
-    documentType: varchar("document_type", { length: 50 }).notNull(),
-    chunkIndex: integer("chunk_index").notNull(),
-    content: text("content").notNull(),
-    embedding: text("embedding"), // Vector stored as text
-    metadata: jsonb("metadata").default({}).notNull(),
-    createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-  },
-  (table) => ({
-    foreignKeys: [
-      foreignKey({
-        columns: [table.documentId],
-        foreignColumns: [documents.id],
-        name: "document_chunks_document_id_documents_id_fk",
-      }).onDelete("cascade"),
-    ],
-    indexes: [index("idx_docchunks_document_id").on(table.documentId)],
-  })
-);
-
 // === VECTOR OUTBOX ===
 export const vectorOutbox = pgTable('vector_outbox', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   ownerType: varchar('owner_type', { length: 256 }).notNull(),
   ownerId: varchar('owner_id', { length: 256 }).notNull(),
   event: varchar('event', { length: 256 }).notNull(),
-  vector: text('vector'), // Storing vector as text, consider pgvector type if available
+  vector: sql`vector(384)`, // Using sql`vector(384)` for pgvector type
   payload: jsonb('payload').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const vectorJobs = pgTable('vector_jobs', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   status: varchar('status', { enum: ['pending', 'processing', 'success', 'failed'] }).notNull(),
   progress: integer('progress').default(0).notNull(),
   result: jsonb('result'),
   error: text('error'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
+// === ADDITIONAL TABLES ===
+export const caseActivities = pgTable('case_activities', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'),
+  assignedTo: uuid('assigned_to'),
+  createdBy: uuid('created_by'),
+  activityType: varchar('activity_type', { length: 100 }),
+  description: text('description'),
+  status: activityStatusEnum('status'),
+  dueDate: timestamp('due_date'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const attachmentVerifications = pgTable('attachment_verifications', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  attachmentId: uuid('attachment_id'), // FK to evidence.id or legalDocuments.id
+  verifiedBy: uuid('verified_by'), // FK to users.id
+  status: verificationStatusEnum('status'),
+  verificationDate: timestamp('verification_date'),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const canvasStates = pgTable('canvas_states', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'), // FK to cases.id
+  userId: uuid('user_id'), // FK to users.id
+  stateData: jsonb('state_data').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const canvasAnnotations = pgTable('canvas_annotations', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  canvasStateId: uuid('canvas_state_id'), // FK to canvasStates
+  createdBy: uuid('created_by'), // FK to users.id
+  annotationData: jsonb('annotation_data').default({}).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updatedAt').defaultNow()
+});
+
+export const canvasAutosaves = pgTable("canvas_autosaves", {
+  id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  canvasStateId: uuid("canvas_state_id"), // FK to canvasStates
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const aiReports = pgTable('ai_reports', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'), // FK to cases.id
+  createdBy: uuid('created_by'), // FK to users.id
+  reportType: varchar('report_type', { length: 100 }).notNull(),
+  summary: text('summary'),
+  fullReport: text('full_report'),
+  generatedAt: timestamp('generated_at').defaultNow().notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const citations = pgTable('citations', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  documentId: uuid('document_id'), // FK to legalDocuments.id
+  caseId: uuid('case_id'), // FK to cases.id
+  citationText: text('citation_text').notNull(),
+  sourceUrl: text('source_url'),
+  pageNumber: integer('page_number'),
+  confidence: real('confidence'),
+  createdBy: uuid('created_by'), // FK to users.id
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const reports = pgTable('reports', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'), // FK to cases.id
+  createdBy: uuid('created_by'), // FK to users.id
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content'),
+  status: reportStatusEnum('status').default('draft').notNull(),
+  generatedAt: timestamp('generated_at').defaultNow().notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const savedReports = pgTable('saved_reports', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  userId: uuid('user_id').notNull(), // FK to users.id
+  reportId: uuid('report_id').notNull(), // FK to reports.id
+  caseId: uuid('case_id'), // FK to cases.id
+  savedAt: timestamp('saved_at').defaultNow().notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const themes = pgTable('themes', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  userId: uuid('user_id').notNull(), // FK to users.id
+  name: varchar('name', { length: 100 }).notNull(),
+  config: jsonb('config').notNull(),
+  isDefault: boolean('is_default').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const personsOfInterest = pgTable('persons_of_interest', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'), // FK to cases.id
+  createdBy: uuid('created_by'), // FK to users.id
+  name: varchar('name', { length: 255 }).notNull(),
+  role: varchar('role', { length: 100 }),
+  description: text('description'),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const hashVerifications = pgTable('hash_verifications', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  evidenceId: uuid('evidence_id'), // FK to evidence.id
+  verifiedBy: uuid('verified_by'), // FK to users.id
+  hashValue: varchar('hash_value', { length: 128 }).notNull(),
+  verificationDate: timestamp('verification_date').defaultNow().notNull(),
+  isVerified: boolean('is_verified').default(false).notNull(),
+  notes: text('notes'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const contentEmbeddings = pgTable('content_embeddings', (table) => ({
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  documentId: uuid('document_id'), // FK to documents or legalDocuments
+  embedding: sql`vector(384)`, // Using sql`vector(384)` for pgvector type
+  model: varchar('model', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow()
+}));
+
+export const userEmbeddings = pgTable('user_embeddings', (table) => ({
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  userId: uuid('user_id').notNull(), // FK to users.id
+  embedding: sql`vector(384)`,
+  context: text('context'),
+  model: varchar('model', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow()
+}));
+
+export const chatEmbeddings = pgTable('chat_embeddings', (table) => ({
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  ragMessageId: uuid('rag_message_id'), // FK to ragMessages
+  embedding: sql`vector(384)`,
+  model: varchar('model', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow()
+}));
+
+export const evidenceVectors = pgTable('evidence_vectors', (table) => ({
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  evidenceId: uuid('evidence_id'), // FK to evidence.id
+  embedding: sql`vector(384)`,
+  model: varchar('model', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow()
+}));
+
+export const caseEmbeddings = pgTable('case_embeddings', (table) => ({
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'), // FK to cases.id
+  embedding: sql`vector(384)`,
+  model: varchar('model', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow()
+}));
+
+export const ragSessions = pgTable('rag_sessions', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  userId: uuid('user_id').notNull(), // FK to users.id
+  caseId: uuid('case_id'), // FK to cases.id
+  startedAt: timestamp('started_at').defaultNow().notNull(),
+  endedAt: timestamp('ended_at'),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const ragMessages = pgTable('rag_messages', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  sessionId: uuid('session_id').notNull(), // FK to ragSessions.id
+  role: varchar('role', { length: 50 }).notNull(), // 'user' or 'ai'
+  content: text('content').notNull(),
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const statutes = pgTable('statutes', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  jurisdiction: varchar('jurisdiction', { length: 100 }).notNull(),
+  section: varchar('section', { length: 100 }),
+  content: text('content'),
+  effectiveDate: timestamp('effective_date'),
+  repealedDate: timestamp('repealed_date'),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updatedAt').defaultNow()
+});
+
+export const legalPrecedents = pgTable('legal_precedents', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'), // FK to cases.id
+  title: varchar('title', { length: 255 }).notNull(),
+  court: varchar('court', { length: 200 }),
+  citation: varchar('citation', { length: 200 }).unique().notNull(),
+  summary: text('summary'),
+  fullTextUrl: text('full_text_url'),
+  decisionDate: timestamp('decision_date'),
+  jurisdiction: varchar('jurisdiction', { length: 100 }),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updatedAt').defaultNow()
+});
+
+export const legalAnalysisSessions = pgTable('legal_analysis_sessions', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  userId: uuid('user_id').notNull(), // FK to users.id
+  caseId: uuid('case_id'), // FK to cases.id
+  startedAt: timestamp('started_at').defaultNow().notNull(),
+  endedAt: timestamp('ended_at'),
+  analysisType: varchar('analysis_type', { length: 100 }),
+  result: jsonb('result'),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updatedAt').defaultNow()
+});
+
+export const legalResearch = pgTable('legal_research', {
+  id: uuid("id")
+    .default(sql`gen_random_uuid()`)
+    .primaryKey()
+    .notNull(),
+  caseId: uuid("case_id"), // Foreign key to cases.id
+  query: text("query").notNull(),
+  searchTerms: jsonb("search_terms").default([]).$type<string[]>(),
+  jurisdiction: varchar("jurisdiction", { length: 100 }),
+  dateRange: jsonb("date_range"),
+  courtLevel: varchar("court_level", { length: 50 }),
+  practiceArea: varchar("practice_area", { length: 100 }),
+  resultsCount: integer("results_count").default(0),
+  searchResults: jsonb("search_results").default([]), // Array of objects
+  aiSummary: text("ai_summary"),
+  keyFindings: jsonb("key_findings").default([]).$type<string[]>(),
+  recommendedCitations: jsonb("recommended_citations").default([]).$type<string[]>(),
+  searchDuration: integer("search_duration"),
+  dataSource: varchar("data_source", { length: 50 }),
+  isBookmarked: boolean("is_bookmarked").default(false),
+  createdBy: uuid("created_by"), // Foreign key to users.id
+  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
+}, (table) => [
+  foreignKey({
+    columns: [table.caseId],
+    foreignColumns: [cases.id],
+    name: `legal_research_case_id_cases_id_fk`,
+  }).onDelete("cascade"),
+  foreignKey({
+    columns: [table.createdBy],
+    foreignColumns: [users.id],
+    name: `legal_research_created_by_users_id_fk`,
+  }).onDelete("set null"),
+]);
+
+// === DOCUMENT PROCESSING/CHUNKS/SUMMARIES ===
+export const documentProcessing = pgTable('document_processing', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  documentId: uuid('document_id'), // FK to documents.id
+  status: documentStatusEnum('status'),
+  progress: integer('progress'),
+  error: text('error'),
+  startedAt: timestamp('started_at'),
+  completedAt: timestamp('completed_at'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow()
+});
+
+export const documentChunks = pgTable('document_chunks', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  documentId: uuid('document_id'), // FK to documents.id
+  chunkText: text('chunk_text'),
+  chunkIndex: integer('chunk_index'),
+  embedding: sql`vector(384)`, // Using sql`vector(384)` for pgvector type
+  createdAt: timestamp('created_at').defaultNow()
+}, (table) => ({
+  indexes: [
+    // HNSW index for embedding for fast similarity search
+    index("idx_document_chunks_embedding_hnsw").using(sql`HNSW (embedding vector_cosine_ops)`).on(table.embedding),
+  ],
+}));
+
+export const documentSummaries = pgTable('document_summaries', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  documentId: uuid('document_id'), // FK to documents.id
+  summaryType: summaryTypeEnum('summary_type'),
+  summaryText: text('summary_text'),
+  model: varchar('model', { length: 100 }),
+  createdAt: timestamp('created_at').defaultNow()
 });
 
 // Corrected schema export to include all defined tables
@@ -1289,22 +903,25 @@ export const schema = {
   caseScores,
   embeddingCache,
   documents,
-  documentChunks: documentChunksTable,
+  documentProcessing,
+  documentChunks,
+  documentSummaries,
   userAiQueries: userAiQueriesTable,
   autoTags: autoTagsTable,
+  vectorOutbox,
+  vectorJobs,
   canvasAutosaves,
 };
 
 // === RELATIONS ===
 export const usersRelations = relations(users, ({ many }) => ({
-  // casesAsLead: many(cases, { relationName: 'leadProsecutor' }), // 'leadProsecutor' column does not exist in cases
-  // casesCreated: many(cases, { relationName: 'createdBy' }), // 'createdBy' column does not exist in cases
   sessions: many(sessions),
   emailVerificationCodes: many(emailVerificationCodes),
   passwordResetTokens: many(passwordResetTokens),
   criminalsCreated: many(criminals),
   evidenceUploaded: many(evidence),
-  legalDocumentsCreated: many(legalDocuments),
+  legalDocumentsCreated: many(legalDocuments, { relationName: 'createdBy' }),
+  legalDocumentsOwned: many(legalDocuments, { relationName: 'ownedDocuments' }),
   caseActivitiesAssigned: many(caseActivities, { relationName: `assignedTo` }),
   caseActivitiesCreated: many(caseActivities, { relationName: `createdBy` }),
   attachmentVerificationsPerformed: many(attachmentVerifications),
@@ -1316,6 +933,195 @@ export const usersRelations = relations(users, ({ many }) => ({
   savedReportsCreated: many(savedReports),
   themesCreated: many(themes),
   personsOfInterestCreated: many(personsOfInterest),
+  hashVerificationsPerformed: many(hashVerifications),
+  userEmbeddings: many(userEmbeddings),
+  ragSessions: many(ragSessions),
+  legalAnalysisSessions: many(legalAnalysisSessions),
+  legalResearchCreated: many(legalResearch, { relationName: 'createdBy' }),
+  caseScoresCalculated: many(caseScores, { relationName: 'calculatedBy' }),
+  userAiQueries: many(userAiQueriesTable),
+  autoTagsConfirmed: many(autoTagsTable, { relationName: 'confirmedBy' }),
+}));
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));
+
+export const casesRelations = relations(cases, ({ many, one }) => ({
+  assignedAttorney: one(users, { fields: [cases.assignedAttorney], references: [users.id] }),
+  evidence: many(evidence),
+  activities: many(caseActivities),
+  legalDocuments: many(legalDocuments),
+  aiReports: many(aiReports),
+  citations: many(citations),
+  reports: many(reports),
+  savedReports: many(savedReports),
+  personsOfInterest: many(personsOfInterest),
+  caseEmbeddings: many(caseEmbeddings),
+  ragSessions: many(ragSessions),
+  legalAnalysisSessions: many(legalAnalysisSessions),
+  legalResearch: many(legalResearch),
+  caseScores: many(caseScores),
+  userAiQueries: many(userAiQueriesTable),
+  canvasStates: many(canvasStates),
+}));
+
+export const criminalsRelations = relations(criminals, ({ many, one }) => ({
+  createdBy: one(users, { fields: [criminals.createdBy], references: [users.id] }),
+  evidence: many(evidence),
+}));
+
+export const evidenceRelations = relations(evidence, ({ one, many }) => ({
+  uploadedBy: one(users, { fields: [evidence.uploadedBy], references: [users.id] }),
+  case: one(cases, { fields: [evidence.caseId], references: [cases.id] }),
+  criminal: one(criminals, { fields: [evidence.criminalId], references: [criminals.id] }),
+  legalDocuments: many(legalDocuments),
+  canvasAnnotations: many(canvasAnnotations),
+  evidenceVectors: many(evidenceVectors),
+  hashVerifications: many(hashVerifications),
+}));
+
+export const legalDocumentsRelations = relations(legalDocuments, ({ one, many }) => ({
+  case: one(cases, { fields: [legalDocuments.caseId], references: [cases.id] }),
+  user: one(users, { fields: [legalDocuments.userId], references: [users.id], relationName: 'ownedDocuments' }),
+  evidence: one(evidence, { fields: [legalDocuments.evidenceId], references: [evidence.id] }),
+  createdBy: one(users, { fields: [legalDocuments.createdBy], references: [users.id], relationName: 'createdBy' }),
+  citations: many(citations),
+}));
+
+export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
+  case: one(cases, { fields: [caseActivities.caseId], references: [cases.id] }),
+  assignedTo: one(users, {
+    fields: [caseActivities.assignedTo],
+    references: [users.id],
+    relationName: `assignedTo`,
+  }),
+  createdBy: one(users, {
+    fields: [caseActivities.createdBy],
+    references: [users.id],
+    relationName: `createdBy`,
+  }),
+}));
+
+export const attachmentVerificationsRelations = relations(attachmentVerifications, ({ one }) => ({
+  verifiedBy: one(users, { fields: [attachmentVerifications.verifiedBy], references: [users.id] }),
+  // attachment: one(evidence, { fields: [attachmentVerifications.attachmentId], references: [evidence.id] }), // Assuming attachmentId refers to evidence
+}));
+
+export const canvasStatesRelations = relations(canvasStates, ({ one, many }) => ({
+  case: one(cases, { fields: [canvasStates.caseId], references: [cases.id] }),
+  user: one(users, { fields: [canvasStates.userId], references: [users.id] }),
+  annotations: many(canvasAnnotations),
+  autosaves: many(canvasAutosaves),
+}));
+
+export const canvasAnnotationsRelations = relations(canvasAnnotations, ({ one }) => ({
+  canvasState: one(canvasStates, { fields: [canvasAnnotations.canvasStateId], references: [canvasStates.id] }),
+  createdBy: one(users, { fields: [canvasAnnotations.createdBy], references: [users.id] }),
+}));
+
+export const canvasAutosavesRelations = relations(canvasAutosaves, ({ one }) => ({
+  canvasState: one(canvasStates, { fields: [canvasAutosaves.canvasStateId], references: [canvasStates.id] }),
+}));
+
+export const aiReportsRelations = relations(aiReports, ({ one }) => ({
+  case: one(cases, { fields: [aiReports.caseId], references: [cases.id] }),
+  createdBy: one(users, { fields: [aiReports.createdBy], references: [users.id] }),
+}));
+
+export const citationsRelations = relations(citations, ({ one }) => ({
+  document: one(legalDocuments, { fields: [citations.documentId], references: [legalDocuments.id] }),
+  case: one(cases, { fields: [citations.caseId], references: [cases.id] }),
+  createdBy: one(users, { fields: [citations.createdBy], references: [users.id] }),
+}));
+
+export const reportsRelations = relations(reports, ({ one, many }) => ({
+  case: one(cases, { fields: [reports.caseId], references: [cases.id] }),
+  createdBy: one(users, { fields: [reports.createdBy], references: [users.id] }),
+  savedReports: many(savedReports),
+}));
+
+export const savedReportsRelations = relations(savedReports, ({ one }) => ({
+  user: one(users, { fields: [savedReports.userId], references: [users.id] }),
+  report: one(reports, { fields: [savedReports.reportId], references: [reports.id] }),
+  case: one(cases, { fields: [savedReports.caseId], references: [cases.id] }),
+}));
+
+export const themesRelations = relations(themes, ({ one }) => ({
+  user: one(users, { fields: [themes.userId], references: [users.id] }),
+}));
+
+export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
+  case: one(cases, { fields: [personsOfInterest.caseId], references: [cases.id] }),
+  createdBy: one(users, { fields: [personsOfInterest.createdBy], references: [users.id] }),
+}));
+
+export const hashVerificationsRelations = relations(hashVerifications, ({ one }) => ({
+  evidence: one(evidence, { fields: [hashVerifications.evidenceId], references: [evidence.id] }),
+  verifiedBy: one(users, { fields: [hashVerifications.verifiedBy], references: [users.id] }),
+}));
+
+export const contentEmbeddingsRelations = relations(contentEmbeddings, ({ one }) => ({
+  document: one(legalDocuments, { fields: [contentEmbeddings.documentId], references: [legalDocuments.id] }),
+}));
+
+export const userEmbeddingsRelations = relations(userEmbeddings, ({ one }) => ({
+  user: one(users, { fields: [userEmbeddings.userId], references: [users.id] }),
+}));
+
+export const chatEmbeddingsRelations = relations(chatEmbeddings, ({ one }) => ({
+  ragMessage: one(ragMessages, { fields: [chatEmbeddings.ragMessageId], references: [ragMessages.id] }),
+}));
+
+export const evidenceVectorsRelations = relations(evidenceVectors, ({ one }) => ({
+  evidence: one(evidence, { fields: [evidenceVectors.evidenceId], references: [evidence.id] }),
+}));
+
+export const caseEmbeddingsRelations = relations(caseEmbeddings, ({ one }) => ({
+  case: one(cases, { fields: [caseEmbeddings.caseId], references: [cases.id] }),
+}));
+
+export const ragSessionsRelations = relations(ragSessions, ({ one, many }) => ({
+  user: one(users, { fields: [ragSessions.userId], references: [users.id] }),
+  messages: many(ragMessages),
+}));
+
+export const ragMessagesRelations = relations(ragMessages, ({ one, many }) => ({
+  session: one(ragSessions, { fields: [ragMessages.sessionId], references: [ragSessions.id] }),
+  chatEmbeddings: many(chatEmbeddings),
+}));
+
+export const statutesRelations = relations(statutes, () => ({
+  // No explicit relations defined in the provided context
+}));
+
+export const legalPrecedentsRelations = relations(legalPrecedents, ({ one }) => ({
+  case: one(cases, { fields: [legalPrecedents.caseId], references: [cases.id] }),
+}));
+
+export const legalAnalysisSessionsRelations = relations(legalAnalysisSessions, ({ one }) =>
+}));
+
+export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
+  case: one(cases, { fields: [personsOfInterest.caseId], references: [cases.id] }),
+  createdBy: one(users, { fields: [personsOfInterest.createdBy], references: [users.id] }),
+}));
+
+export const ragSessionsRelations = relations(ragSessions, ({ one, many }) => ({
+  user: one(users, { fields: [ragSessions.userId], references: [users.id] }),
+  messages: many(ragMessages),
+}));
+
+export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) => ({
+  user: one(users, { fields: [userAiQueriesTable.userId], references: [users.id] }),
+  case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
+}));
+
+// === DATABASE CONNECTION & HELPERS ===
+// Export commonly used query helpers for consistency
+// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
+export const helpers = { sql };
+export const helpers = { sql };
   hashVerificationsPerformed: many(hashVerifications),
   userEmbeddings: many(userEmbeddings),
   ragSessions: many(ragSessions),
@@ -1413,3 +1219,4 @@ export const documentChunksRelations = relations(documentChunksTable, ({ one }) 
 // Export commonly used query helpers for consistency
 // Keep helpers minimal here to avoid importing unavailable symbols in this environment.
 export const helpers = { sql };
+

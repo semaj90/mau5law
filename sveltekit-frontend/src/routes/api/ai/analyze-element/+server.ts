@@ -1,7 +1,7 @@
 /** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: analyze-element * Category: conservative * Bank: PRG_ROM * Priority: 150 * Type: aiAnalysis * * Impact: * - Cache; Strategy: conservative * - Memory: Bank | PRG_ROM (Nintendo-style) * - hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */
-import type { RequestHandler } from "@sveltejs/kit";
-import { json } from "@sveltejs/kit";
-import { redisOptimized } from "$lib/middleware/redis-orchestrator-middleware";
+import type { RequestHandler } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
 
 type Analysis = {
   relevance: string;
@@ -15,23 +15,23 @@ type Analysis = {
 const originalPOSTHandler: RequestHandler = async ({ request }) => {
   try {
     const payload = await request.json();
-    const elementType = payload?.elementType ?? "unknown";
-    const content = payload?.content ?? "";
-    const context = payload?.context ?? "";
+    const elementType = payload?.elementType ?? 'unknown';
+    const content = payload?.content ?? '';
+    const context = payload?.context ?? '';
 
     if (!content || content.length < 3) {
       return json(
-        { error: "No content to analyze", relevance: "No content to analyze" },
+        { error: 'No content to analyze', relevance: 'No content to analyze' },
         { status: 400 }
       );
     }
 
     // Quick legal relevance analysis
-    const response: Response = await fetch("http://localhost:11434/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response: Response = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: "gemma3-legal:latest",
+        model: 'gemma3-legal:latest',
         prompt: `Analyze this UI element for legal relevance:
 Element: ${elementType}, Content: "${content}"
 Context: ${context}
@@ -41,9 +41,9 @@ Provide a brief 1-sentence legal relevance assessment and classification. Format
     });
 
     if (!response.ok) {
-      const text = await response.text().catch(() => "");
-      console.error("Remote analyze service returned non-OK: ", response.status, text);
-      return json({ error: "Remote analyze service failed" }, { status: 502 });
+      const text = await response.text().catch(() => '');
+      console.error('Remote analyze service returned non-OK: ', response.status, text);
+      return json({ error: 'Remote analyze service failed' }, { status: 502 });
     }
 
     const result: unknown = await response.json().catch(() => null);
@@ -53,25 +53,25 @@ Provide a brief 1-sentence legal relevance assessment and classification. Format
 
     if (!result) {
       analysis = {
-        relevance: "Content may have legal significance",
-        legalContext: "general",
+        relevance: 'Content may have legal significance',
+        legalContext: 'general',
         actionable: false,
       };
-    } else if (typeof result === "string") {
+    } else if (typeof result === 'string') {
       try {
         analysis = JSON.parse(result) as Analysis;
       } catch (e) {
-        analysis = { relevance: "unknown", raw: result };
+        analysis = { relevance: 'unknown', raw: result };
       }
-    } else if (typeof result === "object" && result !== null) {
+    } else if (typeof result === 'object' && result !== null) {
       const r = result as Record<string, unknown>;
-      if ("response" in r) {
+      if ('response' in r) {
         const inner = r.response;
-        if (typeof inner === "string") {
+        if (typeof inner === 'string') {
           try {
             analysis = JSON.parse(inner) as Analysis;
           } catch (e) {
-            analysis = { relevance: "unknown", response: inner };
+            analysis = { relevance: 'unknown', response: inner };
           }
         } else {
           analysis = inner as unknown as Analysis;
@@ -80,18 +80,18 @@ Provide a brief 1-sentence legal relevance assessment and classification. Format
         analysis = r as Analysis;
       }
     } else {
-      analysis = { relevance: "unknown", raw: result };
+      analysis = { relevance: 'unknown', raw: result };
     }
 
     return json(analysis);
   } catch (error: Error | unknown) {
     // avoid using `any` for error; log safely
     console.error(
-      "Element analysis failed: ",
+      'Element analysis failed: ',
       error instanceof Error ? error.message : String(error)
     );
     return json(
-      { error: "Analysis unavailable", relevance: "Analysis unavailable" },
+      { error: 'Analysis unavailable', relevance: 'Analysis unavailable' },
       { status: 500 }
     );
   }

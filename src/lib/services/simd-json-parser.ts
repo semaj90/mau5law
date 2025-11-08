@@ -19,7 +19,7 @@ export class SIMDJSONParser {
       allowTrailingCommas: false,
       allowComments: false,
       maxDepth: 64,
-      ...options
+      ...options,
     };
   }
 
@@ -34,16 +34,18 @@ export class SIMDJSONParser {
     try {
       // Pre-process for common legal AI patterns
       const cleaned = this.preprocessLegalJSON(jsonString);
-      
+
       // Use native JSON parser with SIMD optimizations if available
       if (this.options.enableSIMD && this.hasSIMDSupport()) {
         return this.parseSIMD(cleaned);
       }
-      
+
       // Fallback to standard parser
       return JSON.parse(cleaned);
     } catch (error) {
-      throw new Error(`SIMD JSON Parse Error: ${error.message}\nInput: ${jsonString.substring(0, 100)}...`);
+      throw new Error(
+        `SIMD JSON Parse Error: ${error.message}\nInput: ${jsonString.substring(0, 100)}...`
+      );
     }
   }
 
@@ -55,7 +57,7 @@ export class SIMDJSONParser {
       if (this.options.enableSIMD && this.hasSIMDSupport()) {
         return this.stringifySIMD(obj, space);
       }
-      
+
       return JSON.stringify(obj, null, space);
     } catch (error) {
       throw new Error(`SIMD JSON Stringify Error: ${error.message}`);
@@ -67,7 +69,7 @@ export class SIMDJSONParser {
    */
   private preprocessLegalJSON(jsonString: string): string {
     let cleaned = jsonString.trim();
-    
+
     // Fix common legal AI JSON issues
     cleaned = cleaned
       // Fix unescaped quotes in legal text
@@ -100,7 +102,7 @@ export class SIMDJSONParser {
         return JSON.parse(jsonString);
       }
     }
-    
+
     return JSON.parse(jsonString);
   }
 
@@ -110,31 +112,31 @@ export class SIMDJSONParser {
   private parseWithSIMDAcceleration(jsonString: string): any {
     // Simulate SIMD-optimized parsing
     // In a real implementation, this would use WebAssembly SIMD operations
-    
+
     const startTime = performance.now();
-    
+
     // Use Uint8Array for SIMD-friendly operations
     const bytes = new TextEncoder().encode(jsonString);
-    
+
     // SIMD-style parallel processing simulation
     const chunks = [];
     const chunkSize = 16; // SIMD register size
-    
+
     for (let i = 0; i < bytes.length; i += chunkSize) {
       const chunk = bytes.slice(i, i + chunkSize);
-      chunks.push(<any><any>this.processSIMDChunk(chunk));
+      chunks.push(<any>(<any>this.processSIMDChunk(chunk)));
     }
-    
+
     // Reconstruct and parse
     const processed = new TextDecoder().decode(new Uint8Array(chunks.flat()));
     const result = JSON.parse(processed);
-    
+
     const parseTime = performance.now() - startTime;
-    
+
     if (parseTime < 1) {
       console.log(`🚀 SIMD JSON Parse: ${parseTime.toFixed(2)}ms (${bytes.length} bytes)`);
     }
-    
+
     return result;
   }
 
@@ -144,18 +146,18 @@ export class SIMDJSONParser {
   private processSIMDChunk(chunk: Uint8Array): number[] {
     // Simulate SIMD operations on 16-byte chunks
     const processed = Array.from(chunk);
-    
+
     // SIMD-style validation and cleaning
     for (let i = 0; i < processed.length; i++) {
       const byte = processed[i];
-      
+
       // Fast character validation using SIMD-style operations
       if (byte < 32 && byte !== 9 && byte !== 10 && byte !== 13) {
         // Replace invalid control characters
         processed[i] = 32; // space
       }
     }
-    
+
     return processed;
   }
 
@@ -164,22 +166,26 @@ export class SIMDJSONParser {
    */
   private stringifySIMD(obj: any, space?: number): string {
     const startTime = performance.now();
-    
+
     // Use standard JSON.stringify but with SIMD-friendly pre-processing
-    const serialized = JSON.stringify(obj, (key, value) => {
-      // SIMD-friendly value processing
-      if (typeof value === 'string') {
-        return this.optimizeStringForSIMD(value);
-      }
-      return value;
-    }, space);
-    
+    const serialized = JSON.stringify(
+      obj,
+      (key, value) => {
+        // SIMD-friendly value processing
+        if (typeof value === 'string') {
+          return this.optimizeStringForSIMD(value);
+        }
+        return value;
+      },
+      space
+    );
+
     const stringifyTime = performance.now() - startTime;
-    
+
     if (stringifyTime > 1) {
       console.log(`🚀 SIMD JSON Stringify: ${stringifyTime.toFixed(2)}ms`);
     }
-    
+
     return serialized;
   }
 
@@ -191,10 +197,14 @@ export class SIMDJSONParser {
     return str.replace(/[\u0000-\u001F]/g, (char) => {
       const code = char.charCodeAt(0);
       switch (code) {
-        case 9: return '\\t';
-        case 10: return '\\n';
-        case 13: return '\\r';
-        default: return `\\u${code.toString(16).padStart(4, '0')}`;
+        case 9:
+          return '\\t';
+        case 10:
+          return '\\n';
+        case 13:
+          return '\\r';
+        default:
+          return `\\u${code.toString(16).padStart(4, '0')}`;
       }
     });
   }
@@ -216,12 +226,12 @@ export class SIMDJSONParser {
    */
   parseLegalDocument(jsonString: string): LegalDocumentData {
     const parsed = this.parse(jsonString);
-    
+
     // Validate legal document structure
     if (!parsed.case_id || !parsed.document_type) {
       throw new Error('Invalid legal document structure');
     }
-    
+
     return parsed as LegalDocumentData;
   }
 
@@ -230,12 +240,12 @@ export class SIMDJSONParser {
    */
   parseTestResults(jsonString: string): PlaywrightTestResult {
     const parsed = this.parse(jsonString);
-    
+
     // Validate test result structure
     if (!parsed.tests || !Array.isArray(parsed.tests)) {
       throw new Error('Invalid Playwright test result structure');
     }
-    
+
     return parsed as PlaywrightTestResult;
   }
 }
@@ -290,5 +300,5 @@ export const simdJSONParser = new SIMDJSONParser({
   enableSIMD: true,
   validateUTF8: true,
   allowTrailingCommas: true, // For lenient test data parsing
-  maxDepth: 32
+  maxDepth: 32,
 });

@@ -1,5 +1,5 @@
 // Missing type definitions for external libraries
-declare module "fuse.js" {
+declare module 'fuse.js' {
   interface FuseOptions<T> {
     keys?: Array<string | { name: string; weight: number }>;
     threshold?: number;
@@ -27,16 +27,16 @@ declare module "fuse.js" {
   }
   export = Fuse;
 }
-declare module "@tiptap/extension-table-row" {
-  import { Node } from "@tiptap/core";
+declare module '@tiptap/extension-table-row' {
+  import { Node } from '@tiptap/core';
   export interface TableRowOptions {
     HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
   }
   export const TableRow: Node<TableRowOptions>;
   export default TableRow;
 }
-declare module "@tiptap/extension-table-cell" {
-  import { Node } from "@tiptap/core";
+declare module '@tiptap/extension-table-cell' {
+  import { Node } from '@tiptap/core';
   export interface TableCellOptions {
     HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
     resizable?: boolean;
@@ -44,8 +44,8 @@ declare module "@tiptap/extension-table-cell" {
   export const TableCell: Node<TableCellOptions>;
   export default TableCell;
 }
-declare module "@tiptap/extension-table-header" {
-  import { Node } from "@tiptap/core";
+declare module '@tiptap/extension-table-header' {
+  import { Node } from '@tiptap/core';
   export interface TableHeaderOptions {
     HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
     resizable?: boolean;
@@ -53,8 +53,8 @@ declare module "@tiptap/extension-table-header" {
   export const TableHeader: Node<TableHeaderOptions>;
   export default TableHeader;
 }
-declare module "@tiptap/extension-table" {
-  import { Node } from "@tiptap/core";
+declare module '@tiptap/extension-table' {
+  import { Node } from '@tiptap/core';
   export interface TableOptions {
     HTMLAttributes?: { [key: string]: string | number | boolean | null | undefined };
     resizable?: boolean;
@@ -67,7 +67,7 @@ declare module "@tiptap/extension-table" {
   export const Table: Node<TableOptions>;
   export default Table;
 }
-declare module "@tailwindcss/postcss" {
+declare module '@tailwindcss/postcss' {
   const plugin: unknown;
   export default plugin;
 }

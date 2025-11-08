@@ -2,8 +2,8 @@
 // import { Button, Card } from '$lib/components/ui/enhanced-bits';
 
 // Export components that exist in this folder
-export { default as Button } from "./Button.svelte";
-export { default as Card } from "./Card.svelte";
+export { default as Button } from './Button.svelte';
+export { default as Card } from './Card.svelte';
 
 // If you add other components (e.g., Modal, Input, Tabs), re-export them here.
 // Example (uncomment / adjust paths when those files exist):
@@ -12,6 +12,6 @@ export { default as Card } from "./Card.svelte";
 // export { default as Tabs } from './Tabs.svelte';
 
 // Re-export named UI components (create this file if it does not exist)
-export { default as Button } from "./Button.svelte";
-export { default as Card } from "./Card.svelte";
-export { default as Input } from "./Input.svelte";
+export { default as Button } from './Button.svelte';
+export { default as Card } from './Card.svelte';
+export { default as Input } from './Input.svelte';

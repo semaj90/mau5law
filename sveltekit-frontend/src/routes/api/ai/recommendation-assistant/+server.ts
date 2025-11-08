@@ -1,9 +1,9 @@
-﻿import type { Case } from "$lib/types";
-import type { Document } from "$lib/types";
+﻿import type { Case } from '$lib/types';
+import type { Document } from '$lib/types';
 /** * ðŸ¤– AI Assistant for Recommendations * Integrates Gemma3 Legal model with recommendation engine */
-import type { RequestHandler } from "./$types";
-import { json } from "@sveltejs/kit";
-import { multiLayerCache } from "$lib/cache/MultiLayerCacheSystem";
+import type { RequestHandler } from './$types';
+import { json } from '@sveltejs/kit';
+import { multiLayerCache } from '$lib/cache/MultiLayerCacheSystem';
 
 interface AIRecommendationRequest {
   context: {
@@ -15,9 +15,9 @@ interface AIRecommendationRequest {
     workHistory?: string[];
   };
   query?: {
-    type: "case-analysis" | "search-suggestion" | "workflow-optimization" | "precedent-discovery";
+    type: 'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery';
   };
-  type: "case-analysis" | "search-suggestion" | "workflow-optimization" | "precedent-discovery";
+  type: 'case-analysis' | 'search-suggestion' | 'workflow-optimization' | 'precedent-discovery';
 }
 
 interface AIRecommendationResponse {
@@ -30,7 +30,7 @@ interface AIRecommendationResponse {
 
 interface AIRecommendation {
   id: string;
-  type: "case" | "document" | "search" | "workflow" | "precedent";
+  type: 'case' | 'document' | 'search' | 'workflow' | 'precedent';
   title: string;
   description: string;
   confidence: number;
@@ -42,7 +42,7 @@ interface AIRecommendation {
 interface AIAction {
   action: string;
   description: string;
-  priority: "low" | "medium" | "high" | "critical";
+  priority: 'low' | 'medium' | 'high' | 'critical';
   estimatedTime: string;
   tools?: string[];
 }
@@ -53,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
     const { context, query, type } = body;
 
     if (!context || !type) {
-      return json({ success: false, error: "No input" }, { status: 400 });
+      return json({ success: false, error: 'No input' }, { status: 400 });
     }
 
     // Generate cache key based on request
@@ -73,20 +73,20 @@ export const POST: RequestHandler = async ({ request }) => {
     // Generate AI recommendations based on type
     let aiResponse: AIRecommendationResponse;
     switch (type) {
-      case "case-analysis":
+      case 'case-analysis':
         aiResponse = await generateCaseAnalysis(context, query);
         break;
-      case "search-suggestion":
+      case 'search-suggestion':
         aiResponse = await generateSearchSuggestions(context, query);
         break;
-      case "workflow-optimization":
+      case 'workflow-optimization':
         aiResponse = await generateWorkflowOptimization(context, query);
         break;
-      case "precedent-discovery":
+      case 'precedent-discovery':
         aiResponse = await generatePrecedentDiscovery(context, query);
         break;
       default:
-        return json({ success: false, error: "Invalid recommendation type" }, { status: 400 });
+        return json({ success: false, error: 'Invalid recommendation type' }, { status: 400 });
     }
 
     // Cache the AI response
@@ -107,51 +107,51 @@ export const POST: RequestHandler = async ({ request }) => {
       { status: 200 }
     );
   } catch (error: Error | unknown) {
-    console.error("AI error: ", error);
+    console.error('AI error: ', error);
 
     // Return mock AI recommendations on error
     const mockResponse: AIRecommendationResponse = {
       recommendations: [
         {
-          id: "mock-rec-001",
-          type: "case",
-          title: "Mock Employment Law Analysis",
-          description: "Similar case pattern detected with 85% success rate",
+          id: 'mock-rec-001',
+          type: 'case',
+          title: 'Mock Employment Law Analysis',
+          description: 'Similar case pattern detected with 85% success rate',
           confidence: 0.85,
           priority: 200,
-          metadata: { caseType: "employment", jurisdiction: "federal" },
-          aiInsight: "Mock AI insight: Focus on procedural compliance and documentation timeline",
+          metadata: { caseType: 'employment', jurisdiction: 'federal' },
+          aiInsight: 'Mock AI insight: Focus on procedural compliance and documentation timeline',
         },
         {
-          id: "mock-rec-002",
-          type: "precedent",
-          title: "Mock Recent Circuit Decision",
-          description: "Favorable precedent strengthens legal position",
+          id: 'mock-rec-002',
+          type: 'precedent',
+          title: 'Mock Recent Circuit Decision',
+          description: 'Favorable precedent strengthens legal position',
           confidence: 0.78,
           priority: 180,
-          metadata: { court: "Appeals Court", date: "2024-01-15" },
-          aiInsight: "Mock AI insight: New precedent supports wrongful termination claims",
+          metadata: { court: 'Appeals Court', date: '2024-01-15' },
+          aiInsight: 'Mock AI insight: New precedent supports wrongful termination claims',
         },
       ],
       reasoning:
-        "Mock AI reasoning: Analysis based on legal patterns and precedent matching. Real AI service currently unavailable.",
+        'Mock AI reasoning: Analysis based on legal patterns and precedent matching. Real AI service currently unavailable.',
       confidence: 0.75,
       suggestedActions: [
         {
-          action: "Mock Document Review",
-          description: "Review employment contract terms and timeline",
-          priority: "high",
-          estimatedTime: "2-3 hours",
-          tools: ["Document Analyzer", "Timeline Builder"],
+          action: 'Mock Document Review',
+          description: 'Review employment contract terms and timeline',
+          priority: 'high',
+          estimatedTime: '2-3 hours',
+          tools: ['Document Analyzer', 'Timeline Builder'],
         },
       ],
-      relatedTopics: ["Employment Law", "Contract Analysis", "Legal Precedents"],
+      relatedTopics: ['Employment Law', 'Contract Analysis', 'Legal Precedents'],
     };
 
     return json(
       {
         success: false,
-        error: "failure default to mock",
+        error: 'failure default to mock',
         data: mockResponse,
         fromCache: false,
         timestamp: new Date().toISOString(),
@@ -159,7 +159,7 @@ export const POST: RequestHandler = async ({ request }) => {
           recommendationCount: mockResponse.recommendations.length,
           confidence: mockResponse.confidence,
           processingTime: 500,
-          source: "mock-ai-service",
+          source: 'mock-ai-service',
         },
       },
       { status: 500 }
@@ -175,50 +175,50 @@ async function generateCaseAnalysis(
   // In production, this would call your CUDA service Gemma3: legal-latest
   const recommendations: AIRecommendation[] = [
     {
-      id: "case-rec-001",
-      type: "case",
-      title: "Similar Employment Dispute Pattern",
-      description: "Found: 3 similar cases with comparable fact patterns and successful outcomes",
+      id: 'case-rec-001',
+      type: 'case',
+      title: 'Similar Employment Dispute Pattern',
+      description: 'Found: 3 similar cases with comparable fact patterns and successful outcomes',
       confidence: 0.87,
       priority: 220,
       metadata: {
-        similarCases: ["Smith vs. TechCorp", "Johnson vs. StartupInc", "Davis vs. MegaCorp"],
+        similarCases: ['Smith vs. TechCorp', 'Johnson vs. StartupInc', 'Davis vs. MegaCorp'],
         successRate: 0.85,
-        averageSettlement: "$125,000",
+        averageSettlement: '$125,000',
       },
       aiInsight:
-        "The pattern analysis suggests focusing on wrongful termination precedents and documenting timeline discrepancies.",
+        'The pattern analysis suggests focusing on wrongful termination precedents and documenting timeline discrepancies.',
     },
     {
-      id: "case-rec-002",
-      type: "document",
-      title: "Critical Evidence Gap Identified",
-      description: "Missing employment contract addendum could strengthen your position",
+      id: 'case-rec-002',
+      type: 'document',
+      title: 'Critical Evidence Gap Identified',
+      description: 'Missing employment contract addendum could strengthen your position',
       confidence: 0.91,
       priority: 240,
       metadata: {
-        documentType: "contract-addendum",
-        location: "likely in HR files",
-        importance: "case-critical",
+        documentType: 'contract-addendum',
+        location: 'likely in HR files',
+        importance: 'case-critical',
       },
       aiInsight:
-        "Contract June 2023 contains non-compete clause modifications that directly contradict opposing arguments.",
+        'Contract June 2023 contains non-compete clause modifications that directly contradict opposing arguments.',
     },
     {
-      id: "case-rec-003",
-      type: "precedent",
-      title: "Recent Favorable Precedent",
-      description: "New 9th Circuit decision strengthens your wrongful termination claim",
+      id: 'case-rec-003',
+      type: 'precedent',
+      title: 'Recent Favorable Precedent',
+      description: 'New 9th Circuit decision strengthens your wrongful termination claim',
       confidence: 0.83,
       priority: 200,
       metadata: {
-        caseNumber: "No. 23-1456",
-        court: "9th Circuit Court of Appeals",
-        date: "2024-01-15",
+        caseNumber: 'No. 23-1456',
+        court: '9th Circuit Court of Appeals',
+        date: '2024-01-15',
         relevanceScore: 0.89,
       },
       aiInsight:
-        "Martinez v. TechSolutions establishes new standard for constructive dismissal in at-will employment states.",
+        'Martinez v. TechSolutions establishes new standard for constructive dismissal in at-will employment states.',
     },
   ];
 
@@ -228,32 +228,32 @@ async function generateCaseAnalysis(
     confidence: 0.85,
     suggestedActions: [
       {
-        action: "Request HR Document Discovery",
-        description: "Subpoena complete HR file including contract amendments",
-        priority: "high",
-        estimatedTime: "3-5 business days",
-        tools: ["Document Request Template", "Subpoena Generator"],
+        action: 'Request HR Document Discovery',
+        description: 'Subpoena complete HR file including contract amendments',
+        priority: 'high',
+        estimatedTime: '3-5 business days',
+        tools: ['Document Request Template', 'Subpoena Generator'],
       },
       {
-        action: "Research 9th Circuit Precedents",
-        description: "Comprehensive review of recent employment decisions",
-        priority: "medium",
-        estimatedTime: "2-3 hours",
-        tools: ["Precedent Database", "Case Law Search"],
+        action: 'Research 9th Circuit Precedents',
+        description: 'Comprehensive review of recent employment decisions',
+        priority: 'medium',
+        estimatedTime: '2-3 hours',
+        tools: ['Precedent Database', 'Case Law Search'],
       },
       {
-        action: "Interview Additional Witnesses",
-        description: "Identify co-workers who witnessed discriminatory behavior",
-        priority: "high",
-        estimatedTime: "1 week",
-        tools: ["Witness Interview Template", "Deposition Scheduler"],
+        action: 'Interview Additional Witnesses',
+        description: 'Identify co-workers who witnessed discriminatory behavior',
+        priority: 'high',
+        estimatedTime: '1 week',
+        tools: ['Witness Interview Template', 'Deposition Scheduler'],
       },
     ],
     relatedTopics: [
-      "Wrongful Termination Damages",
-      "Employment Contract Interpretation",
-      "Discrimination Evidence Standards",
-      "Constructive Dismissal Elements",
+      'Wrongful Termination Damages',
+      'Employment Contract Interpretation',
+      'Discrimination Evidence Standards',
+      'Constructive Dismissal Elements',
     ],
   };
 }
@@ -265,48 +265,48 @@ async function generateSearchSuggestions(
   // AI-powered search query recommendations
   const recommendations: AIRecommendation[] = [
     {
-      id: "search-rec-001",
-      type: "search",
+      id: 'search-rec-001',
+      type: 'search',
       title: 'Optimized Query: "Employment Termination Timeline"',
-      description: "Refined search focusing on procedural requirements and documentation",
+      description: 'Refined search focusing on procedural requirements and documentation',
       confidence: 0.79,
       priority: 180,
       metadata: {
-        originalQuery: query || "employment contract termination",
-        optimizedQuery: "employment termination timeline documentation procedural requirements",
+        originalQuery: query || 'employment contract termination',
+        optimizedQuery: 'employment termination timeline documentation procedural requirements',
         expectedResults: 156,
         confidenceBoost: 0.23,
       },
       aiInsight: 'Adding "timeline" and "procedural" increases relevant result precision by 34%.',
     },
     {
-      id: "search-rec-002",
-      type: "search",
+      id: 'search-rec-002',
+      type: 'search',
       title: 'Related Search: "Constructive Dismissal Evidence"',
-      description: "Complementary search to uncover additional case theories",
+      description: 'Complementary search to uncover additional case theories',
       confidence: 0.82,
       priority: 160,
       metadata: {
-        searchType: "precedents",
-        filters: { practiceArea: "employment-law", dateRange: "last-2-years" },
+        searchType: 'precedents',
+        filters: { practiceArea: 'employment-law', dateRange: 'last-2-years' },
         expectedResults: 89,
       },
-      aiInsight: "Your recent case pattern suggests constructive dismissal angle worth exploring.",
+      aiInsight: 'Your recent case pattern suggests constructive dismissal angle worth exploring.',
     },
     {
-      id: "search-rec-003",
-      type: "search",
-      title: "Jurisdiction-Specific Query",
-      description: "State-specific employment law variations for California cases",
+      id: 'search-rec-003',
+      type: 'search',
+      title: 'Jurisdiction-Specific Query',
+      description: 'State-specific employment law variations for California cases',
       confidence: 0.75,
       priority: 140,
       metadata: {
-        jurisdiction: "California",
-        specificLaws: ["Labor Code 2922", "FEHA provisions"],
+        jurisdiction: 'California',
+        specificLaws: ['Labor Code 2922', 'FEHA provisions'],
         caseCount: 234,
       },
       aiInsight:
-        "California-specific protections may provide additional remedies not available federally.",
+        'California-specific protections may provide additional remedies not available federally.',
     },
   ];
 
@@ -316,25 +316,25 @@ async function generateSearchSuggestions(
     confidence: 0.79,
     suggestedActions: [
       {
-        action: "Use Advanced Search Filters",
-        description: "Apply AI-recommended filters for better precision",
-        priority: "medium",
-        estimatedTime: "5 minutes",
-        tools: ["Advanced Search Interface"],
+        action: 'Use Advanced Search Filters',
+        description: 'Apply AI-recommended filters for better precision',
+        priority: 'medium',
+        estimatedTime: '5 minutes',
+        tools: ['Advanced Search Interface'],
       },
       {
-        action: "Set Up Search Alerts",
-        description: "Monitor new developments in employment law",
-        priority: "low",
-        estimatedTime: "10 minutes",
-        tools: ["Alert Management System"],
+        action: 'Set Up Search Alerts',
+        description: 'Monitor new developments in employment law',
+        priority: 'low',
+        estimatedTime: '10 minutes',
+        tools: ['Alert Management System'],
       },
     ],
     relatedTopics: [
-      "Boolean Search Operators",
-      "Legal Database Best Practices",
-      "Jurisdiction-Specific Research",
-      "Citation Analysis Techniques",
+      'Boolean Search Operators',
+      'Legal Database Best Practices',
+      'Jurisdiction-Specific Research',
+      'Citation Analysis Techniques',
     ],
   };
 }
@@ -346,51 +346,51 @@ async function generateWorkflowOptimization(
   // Workflow efficiency recommendations
   const recommendations: AIRecommendation[] = [
     {
-      id: "workflow-rec-001",
-      type: "workflow",
-      title: "Document Review Bottleneck Identified",
-      description: "Spending 34% more time on document review than optimal",
+      id: 'workflow-rec-001',
+      type: 'workflow',
+      title: 'Document Review Bottleneck Identified',
+      description: 'Spending 34% more time on document review than optimal',
       confidence: 0.88,
       priority: 200,
       metadata: {
-        currentTime: "4.2 hours/day",
-        optimalTime: "2.8 hours/day",
-        potentialSavings: "1.4 hours/day",
+        currentTime: '4.2 hours/day',
+        optimalTime: '2.8 hours/day',
+        potentialSavings: '1.4 hours/day',
         efficiency: 0.67,
       },
       aiInsight:
-        "Implementing AI-assisted document categorization could reduce review time by 33%.",
+        'Implementing AI-assisted document categorization could reduce review time by 33%.',
     },
     {
-      id: "workflow-rec-002",
-      type: "workflow",
-      title: "Case Priority Rebalancing Needed",
-      description: "Low-priority cases consuming disproportionate time resources",
+      id: 'workflow-rec-002',
+      type: 'workflow',
+      title: 'Case Priority Rebalancing Needed',
+      description: 'Low-priority cases consuming disproportionate time resources',
       confidence: 0.84,
       priority: 180,
       metadata: {
         lowPriorityCases: 3,
-        timeAllocation: "45%",
-        recommendedAllocation: "25%",
-        redistributionOpportunity: "20%",
+        timeAllocation: '45%',
+        recommendedAllocation: '25%',
+        redistributionOpportunity: '20%',
       },
       aiInsight:
-        "Delegating routine tasks in low-priority cases frees up 8 hours weekly for high-value work.",
+        'Delegating routine tasks in low-priority cases frees up 8 hours weekly for high-value work.',
     },
     {
-      id: "workflow-rec-003",
-      type: "workflow",
-      title: "Research Automation Opportunity",
-      description: "Repetitive precedent searches can be automated",
+      id: 'workflow-rec-003',
+      type: 'workflow',
+      title: 'Research Automation Opportunity',
+      description: 'Repetitive precedent searches can be automated',
       confidence: 0.76,
       priority: 160,
       metadata: {
         repetitiveSearches: 12,
         automationPotential: 0.8,
-        timesSaved: "2.5 hours/week",
+        timesSaved: '2.5 hours/week',
       },
       aiInsight:
-        "Setting up saved search templates for common precedent patterns saves significant time.",
+        'Setting up saved search templates for common precedent patterns saves significant time.',
     },
   ];
 
@@ -400,32 +400,32 @@ async function generateWorkflowOptimization(
     confidence: 0.83,
     suggestedActions: [
       {
-        action: "Implement Document AI Categorization",
-        description: "Deploy automated document classification system",
-        priority: "high",
-        estimatedTime: "2-3 days setup",
-        tools: ["Document AI System", "Category Templates"],
+        action: 'Implement Document AI Categorization',
+        description: 'Deploy automated document classification system',
+        priority: 'high',
+        estimatedTime: '2-3 days setup',
+        tools: ['Document AI System', 'Category Templates'],
       },
       {
-        action: "Rebalance Case Priorities",
-        description: "Redistribute time allocation based on case value",
-        priority: "medium",
-        estimatedTime: "1 hour planning",
-        tools: ["Priority Matrix", "Time Tracking Dashboard"],
+        action: 'Rebalance Case Priorities',
+        description: 'Redistribute time allocation based on case value',
+        priority: 'medium',
+        estimatedTime: '1 hour planning',
+        tools: ['Priority Matrix', 'Time Tracking Dashboard'],
       },
       {
-        action: "Create Search Templates",
-        description: "Build automated searches for common research patterns",
-        priority: "medium",
-        estimatedTime: "30 minutes",
-        tools: ["Search Template Builder", "Alert System"],
+        action: 'Create Search Templates',
+        description: 'Build automated searches for common research patterns',
+        priority: 'medium',
+        estimatedTime: '30 minutes',
+        tools: ['Search Template Builder', 'Alert System'],
       },
     ],
     relatedTopics: [
-      "Legal Process Automation",
-      "Time Management for Lawyers",
-      "Document Review Efficiency",
-      "Case Priority Management",
+      'Legal Process Automation',
+      'Time Management for Lawyers',
+      'Document Review Efficiency',
+      'Case Priority Management',
     ],
   };
 }
@@ -437,52 +437,52 @@ async function generatePrecedentDiscovery(
   // Precedent discovery and recommendations
   const recommendations: AIRecommendation[] = [
     {
-      id: "precedent-rec-001",
-      type: "precedent",
-      title: "Landmark Decision: Data Privacy in Employment",
-      description: "Recent Supreme Court decision impacts employee monitoring cases",
+      id: 'precedent-rec-001',
+      type: 'precedent',
+      title: 'Landmark Decision: Data Privacy in Employment',
+      description: 'Recent Supreme Court decision impacts employee monitoring cases',
       confidence: 0.92,
       priority: 250,
       metadata: {
-        caseTitle: "Privacy Rights Coalition v. MegaCorp",
-        court: "U.S. Supreme Court",
-        date: "2024-02-15",
-        impact: "transformative",
+        caseTitle: 'Privacy Rights Coalition v. MegaCorp',
+        court: 'U.S. Supreme Court',
+        date: '2024-02-15',
+        impact: 'transformative',
         relevanceScore: 0.94,
       },
       aiInsight:
-        "This decision fundamentally changes the landscape for employment privacy rights and surveillance.",
+        'This decision fundamentally changes the landscape for employment privacy rights and surveillance.',
     },
     {
-      id: "precedent-rec-002",
-      type: "precedent",
-      title: "Circuit Split on Remote Work Rights",
-      description: "Conflicting appeals court decisions create Supreme Court review opportunity",
+      id: 'precedent-rec-002',
+      type: 'precedent',
+      title: 'Circuit Split on Remote Work Rights',
+      description: 'Conflicting appeals court decisions create Supreme Court review opportunity',
       confidence: 0.86,
       priority: 210,
       metadata: {
-        circuits: ["2nd Circuit", "9th Circuit", "5th Circuit"],
-        conflictArea: "remote work accommodation requirements",
+        circuits: ['2nd Circuit', '9th Circuit', '5th Circuit'],
+        conflictArea: 'remote work accommodation requirements',
         certProbability: 0.72,
       },
       aiInsight:
-        "The circuit split makes this area volatile - strategy should account for potential Supreme Court review.",
+        'The circuit split makes this area volatile - strategy should account for potential Supreme Court review.',
     },
     {
-      id: "precedent-rec-003",
-      type: "precedent",
-      title: "Emerging AI Bias in Hiring Precedents",
-      description: "New line of cases addressing algorithmic discrimination in employment",
+      id: 'precedent-rec-003',
+      type: 'precedent',
+      title: 'Emerging AI Bias in Hiring Precedents',
+      description: 'New line of cases addressing algorithmic discrimination in employment',
       confidence: 0.78,
       priority: 190,
       metadata: {
         caseCount: 15,
-        jurisdiction: "Multiple",
-        trend: "increasing",
-        aiImpact: "high",
+        jurisdiction: 'Multiple',
+        trend: 'increasing',
+        aiImpact: 'high',
       },
       aiInsight:
-        "AI bias in hiring is becoming a major litigation area - early precedents are still developing.",
+        'AI bias in hiring is becoming a major litigation area - early precedents are still developing.',
     },
   ];
 
@@ -492,33 +492,33 @@ async function generatePrecedentDiscovery(
     confidence: 0.85,
     suggestedActions: [
       {
-        action: "Monitor Supreme Court Docket",
-        description: "Track cert petitions in employment privacy cases",
-        priority: "high",
-        estimatedTime: "Weekly check (15 min)",
-        tools: ["Court Monitoring System", "Docket Alerts"],
+        action: 'Monitor Supreme Court Docket',
+        description: 'Track cert petitions in employment privacy cases',
+        priority: 'high',
+        estimatedTime: 'Weekly check (15 min)',
+        tools: ['Court Monitoring System', 'Docket Alerts'],
       },
       {
-        action: "Research Circuit Split Implications",
-        description: "Analyze strategic implications of conflicting precedents",
-        priority: "medium",
-        estimatedTime: "2-3 hours",
-        tools: ["Circuit Analysis Tool", "Precedent Mapper"],
+        action: 'Research Circuit Split Implications',
+        description: 'Analyze strategic implications of conflicting precedents',
+        priority: 'medium',
+        estimatedTime: '2-3 hours',
+        tools: ['Circuit Analysis Tool', 'Precedent Mapper'],
       },
       {
-        action: "Create AI Bias Case Library",
-        description: "Build comprehensive database of AI discrimination cases",
-        priority: "medium",
-        estimatedTime: "1 day",
-        tools: ["Case Database", "Tagging System"],
+        action: 'Create AI Bias Case Library',
+        description: 'Build comprehensive database of AI discrimination cases',
+        priority: 'medium',
+        estimatedTime: '1 day',
+        tools: ['Case Database', 'Tagging System'],
       },
     ],
     relatedTopics: [
-      "Supreme Court Practice",
-      "Circuit Court Analysis",
-      "Technology Law Trends",
-      "Employment Discrimination",
-      "AI and Legal Ethics",
+      'Supreme Court Practice',
+      'Circuit Court Analysis',
+      'Technology Law Trends',
+      'Employment Discrimination',
+      'AI and Legal Ethics',
     ],
   };
 }

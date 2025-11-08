@@ -38,7 +38,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   async function analyzePersonsOfInterest(): Promise<any> { if (evidenceReports.length === 0) { await loadEvidenceReports()}
     timelineLoading = true; try { // Semantic RAG analysis to extract POI from evidence reports const ragResponse = await fetch('/api/v1/rag/analyze-poi', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ evidenceReports: evidenceReports, analysisType: 'semantic_entity_extraction', includeTimeline: true }) }); if (ragResponse.ok) { ragAnalysisResults = await ragResponse.json(); // Extract POI timeline data from semantic analysis poiTimelineData = ragAnalysisResults.persons?.map((person: unknown) => ({ // Explicitly type person id: person.id, name: person.name, type: person.type || 'person', activities: person.timeline || [], confidence: person.confidence || 0.8, evidenceSources: person.sources || [], relationships: person.relationships || [] })) || []; showTimeline = true}
-    } catch (e) { error = 'Failed to analyze persons of interest'; console.error('POI analysis error:', e)} finally { timelineLoading = false}'
+    } catch (e) { error = 'Failed to analyze persons of interest'; console.error('POI analysis error:', e)} finally { timelineLoading = false}
+'
   }
   async function generateUserActivityTimeline(): Promise<any> { activityLoading = true; try { const response = await fetch('/api/v1/user/activity'); // Declared: 'response' here if (response.ok) { const data = await response.json(); userActivityTimeline = data.timeline || []; focusMetrics = { sessionsToday: data.metrics?.sessionsToday || 0, totalTime: data.metrics?.totalTime || 0, casesAnalyzed: data.metrics?.casesAnalyzed || 0, evidenceReviewed: data.metrics?.evidenceReviewed || 0 }
       } } catch (e) { console.error('Failed to generate user activity timeline:', e)} finally { activityLoading = false}
@@ -55,5 +56,8 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
 </main>
 
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

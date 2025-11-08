@@ -1,4 +1,4 @@
-﻿import bcrypt from "bcryptjs"; // Password hashing utilities using bcrypt // Salt rounds for bcrypt (higher = more secure but slower) const SALT_ROUNDS = 12; /** * Hash a password using bcrypt */ export async function hashPassword(password, string): Promise<string> { return bcrypt.hash(password, SALT_ROUNDS)}
+﻿import bcrypt from 'bcryptjs'; // Password hashing utilities using bcrypt // Salt rounds for bcrypt (higher = more secure but slower) const SALT_ROUNDS = 12; /** * Hash a password using bcrypt */ export async function hashPassword(password, string): Promise<string> { return bcrypt.hash(password, SALT_ROUNDS)}
 /** * Verify a password against its hash */ export async function verifyPassword(
   password: string,
   hashedPassword: string
@@ -9,8 +9,8 @@
   length,
   number = 32
 ): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }

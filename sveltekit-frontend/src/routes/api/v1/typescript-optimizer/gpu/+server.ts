@@ -1,14 +1,14 @@
-import { json } from "@sveltejs/kit"; // Added json import
-import type { RequestHandler } from "./$types.js";
+import { json } from '@sveltejs/kit'; // Added json import
+import type { RequestHandler } from './$types.js';
 // GPU-Accelerated TypeScript Error Processing
 // NVIDIA RTX, 3060 Ti optimized processing for high-performance TypeScript error fixing
 import type {
   OptimizedFixRequest,
   OptimizedFixResponse,
   GPUProcessingStats,
-} from "$lib/types/typescript-optimizer";
+} from '$lib/types/typescript-optimizer';
 
-const ENHANCED_API_BASE_URL = "http://localhost:8094"; // Removed extra space
+const ENHANCED_API_BASE_URL = 'http://localhost:8094'; // Removed extra space
 
 /* POST /api/v1/typescript-optimizer/gpu - GPU-accelerated error processing */
 export const POST: RequestHandler = async ({ request }) => {
@@ -18,7 +18,7 @@ export const POST: RequestHandler = async ({ request }) => {
     // Validate GPU processing request
     if (!body.errors || !Array.isArray(body.errors)) {
       return json(
-        { success: false, error: "Invalid GPU request: errors array required" }, // Corrected message
+        { success: false, error: 'Invalid GPU request: errors array required' }, // Corrected message
         { status: 400 }
       );
     }
@@ -28,8 +28,8 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: "GPU processing requires minimum 5 errors for efficiency", // Corrected message
-          recommendation: "Use /api/v1/typescript-optimizer for smaller batches",
+          error: 'GPU processing requires minimum 5 errors for efficiency', // Corrected message
+          recommendation: 'Use /api/v1/typescript-optimizer for smaller batches',
           provided_count: body.errors.length,
         },
         { status: 400 }
@@ -51,7 +51,7 @@ export const POST: RequestHandler = async ({ request }) => {
       max_concurrency: Math.min(errorCount, 16), // Higher concurrency for GPU
       target_latency: 2, // Aggressive 2ms target per error
       quality_threshold: body.quality_threshold ?? 0.85, // Corrected nullish coalescing
-      strategy: "gpu_first", // Corrected syntax
+      strategy: 'gpu_first', // Corrected syntax
     };
 
     // Check GPU availability first
@@ -60,9 +60,9 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: "GPU acceleration not available",
-          details: "NVIDIA GPU service is not responding",
-          fallback: "Use /api/v1/typescript-optimizer for CPU processing", // Corrected string
+          error: 'GPU acceleration not available',
+          details: 'NVIDIA GPU service is not responding',
+          fallback: 'Use /api/v1/typescript-optimizer for CPU processing', // Corrected string
         },
         { status: 503 }
       );
@@ -73,9 +73,9 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(
         {
           success: false,
-          error: "GPU not available for processing",
+          error: 'GPU not available for processing',
           gpu_status: gpuStatus,
-          fallback: "Use /api/v1/typescript-optimizer for CPU processing", // Corrected string
+          fallback: 'Use /api/v1/typescript-optimizer for CPU processing', // Corrected string
         },
         { status: 503 }
       );
@@ -87,8 +87,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
     // Process with GPU acceleration
     const response = await fetch(`${ENHANCED_API_BASE_URL}/api/gpu/batch-process`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" }, // Corrected string literal
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }, // Corrected string literal
       body: JSON.stringify(gpuOptimizedRequest), // Corrected body assignment
     });
 
@@ -134,7 +134,7 @@ export const POST: RequestHandler = async ({ request }) => {
       },
       performance: {
         grade: calculatePerformanceGrade(gpuStats.gpu_efficiency_score),
-        tier: "gpu_accelerated",
+        tier: 'gpu_accelerated',
         speedup_vs_cpu: `${gpuStats.performance_vs_cpu_multiplier.toFixed(1)}x`,
         target_achieved: gpuOptimizedRequest.target_latency
           ? gpuStats.throughput_errors_per_second >= 1000 / gpuOptimizedRequest.target_latency
@@ -143,9 +143,9 @@ export const POST: RequestHandler = async ({ request }) => {
       metadata: {
         ...result.optimization_meta, // Corrected spread syntax
         processed_at: new Date().toISOString(), // Corrected syntax
-        api_version: "2.0.0",
+        api_version: '2.0.0',
         gpu_accelerated: true,
-        hardware: "NVIDIA RTX, 3060 Ti",
+        hardware: 'NVIDIA RTX, 3060 Ti',
         cuda_version: gpuStatus.cuda_version, // Corrected syntax
         sveltekit_gpu_processor: true, // Corrected syntax
       },
@@ -153,12 +153,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
     return json(enhancedResult);
   } catch (error: Error | unknown) {
-    console.error("GPU Processing Error: ", error);
+    console.error('GPU Processing Error: ', error);
     return json(
       {
         success: false,
-        error: "GPU processing failed",
-        details: error instanceof Error ? error.message : "Unknown error",
+        error: 'GPU processing failed',
+        details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
         gpu_processing: true,
         fallback_available: true,
@@ -176,7 +176,7 @@ export const GET: RequestHandler = async () => {
     const gpuStatus = gpuStatusResponse.ok ? await gpuStatusResponse.json() : null; // Added semicolon
 
     return json({
-      service: "GPU-Accelerated TypeScript Processor",
+      service: 'GPU-Accelerated TypeScript Processor',
       gpu_available: gpuStatus?.gpu_available || false,
       gpu_info: gpuStatus, // Removed space
       capabilities: {
@@ -189,26 +189,26 @@ export const GET: RequestHandler = async () => {
         template_matching: true,
       },
       performance: {
-        expected_throughput: "500+ errors/second",
-        gpu_speedup: "3-8x vs CPU",
-        memory_usage: "~4.2GB VRAM",
-        optimization_layers: ["cuda_kernels", "memory_pooling", "template_cache"],
+        expected_throughput: '500+ errors/second',
+        gpu_speedup: '3-8x vs CPU',
+        memory_usage: '~4.2GB VRAM',
+        optimization_layers: ['cuda_kernels', 'memory_pooling', 'template_cache'],
       },
       requirements: {
         nvidia_gpu: true,
-        cuda_version: "12.8+",
-        minimum_vram: "4GB",
-        supported_architectures: ["Ampere", "Ada Lovelace", "Hopper"],
+        cuda_version: '12.8+',
+        minimum_vram: '4GB',
+        supported_architectures: ['Ampere', 'Ada Lovelace', 'Hopper'],
       },
       timestamp: new Date().toISOString(),
     });
   } catch (error: Error | unknown) {
     return json(
       {
-        service: "GPU-Accelerated TypeScript Processor",
+        service: 'GPU-Accelerated TypeScript Processor',
         gpu_available: false,
-        error: "Unable to check GPU status",
-        details: error instanceof Error ? error.message : "Unknown error",
+        error: 'Unable to check GPU status',
+        details: error instanceof Error ? error.message : 'Unknown error',
         timestamp: new Date().toISOString(),
       },
       { status: 503 }
@@ -232,12 +232,12 @@ function calculateGPUEfficiency(
 
 function calculatePerformanceGrade(efficiencyScore: number): string {
   // Corrected parameter type
-  if (efficiencyScore >= 95) return "A+";
-  if (efficiencyScore >= 85) return "A";
-  if (efficiencyScore >= 75) return "B+";
-  if (efficiencyScore >= 65) return "B";
-  if (efficiencyScore >= 55) return "C";
-  return "D";
+  if (efficiencyScore >= 95) return 'A+';
+  if (efficiencyScore >= 85) return 'A';
+  if (efficiencyScore >= 75) return 'B+';
+  if (efficiencyScore >= 65) return 'B';
+  if (efficiencyScore >= 55) return 'C';
+  return 'D';
 }
 
 function estimateSpeedupVsCPU(errorCount: number): number {

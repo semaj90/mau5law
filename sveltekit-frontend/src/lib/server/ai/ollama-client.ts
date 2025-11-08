@@ -1,7 +1,7 @@
 const DEFAULT_OLLAMA_URL =
-  process.env.OLLAMA_URL ?? process.env.OLLAMA_BASE_URL ?? "http://localhost:11434";
-const DEFAULT_GENERATE_MODEL = process.env.OLLAMA_CHAT_MODEL ?? "gemma3:latest";
-const DEFAULT_EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL ?? "embeddinggemma:latest";
+  process.env.OLLAMA_URL ?? process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434';
+const DEFAULT_GENERATE_MODEL = process.env.OLLAMA_CHAT_MODEL ?? 'gemma3:latest';
+const DEFAULT_EMBED_MODEL = process.env.OLLAMA_EMBED_MODEL ?? 'embeddinggemma:latest';
 const DEFAULT_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS ?? 45_000);
 
 export interface OllamaGenerateResponse {
@@ -43,7 +43,7 @@ export async function fetchFromOllama<T>(
 ): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), init.timeoutMs ?? DEFAULT_TIMEOUT_MS);
-  const url = `${getOllamaBaseUrl()}${path.startsWith("/") ? path : `/${path}`}`;
+  const url = `${getOllamaBaseUrl()}${path.startsWith('/') ? path : `/${path}`}`;
 
   try {
     const response = await fetch(url, {
@@ -77,9 +77,9 @@ export async function generateCompletion(
     },
   };
 
-  return fetchFromOllama<OllamaGenerateResponse>("/api/generate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  return fetchFromOllama<OllamaGenerateResponse>('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
     timeoutMs: params.timeoutMs,
   });
@@ -93,17 +93,17 @@ export async function generateEmbedding(
     prompt: params.text,
   };
 
-  return fetchFromOllama<OllamaEmbeddingResponse>("/api/embeddings", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  return fetchFromOllama<OllamaEmbeddingResponse>('/api/embeddings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
     timeoutMs: params.timeoutMs,
   });
 }
 
 export async function listOllamaModels(): Promise<string[]> {
-  const data = await fetchFromOllama<{ models: Array<{ name: string }> }>("/api/tags", {
-    method: "GET",
+  const data = await fetchFromOllama<{ models: Array<{ name: string }> }>('/api/tags', {
+    method: 'GET',
   });
   return data.models?.map((m) => m.name) ?? [];
 }

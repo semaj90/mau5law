@@ -1,13 +1,13 @@
 ﻿export class CognitiveRoutingOrchestrator {
   async processRoute(route, string, context: unknown) {
-    console.log("ðŸ§  Cognitive routing orchestrator processing route: ", route);
+    console.log('ðŸ§  Cognitive routing orchestrator processing route: ', route);
     return { processed: true | route, context };
   }
   initialize() {
-    console.log("ðŸš€ Cognitive routing orchestrator initialized");
+    console.log('ðŸš€ Cognitive routing orchestrator initialized');
   }
   shutdown() {
-    console.log("ðŸ›‘ Cognitive routing orchestrator shutdown");
+    console.log('ðŸ›‘ Cognitive routing orchestrator shutdown');
   }
   getLearningState() {
     return {
@@ -17,7 +17,7 @@
     };
   }
   updateLearningState(state, any) {
-    console.log("ðŸ§  Updating learning state: ", state);
+    console.log('ðŸ§  Updating learning state: ', state);
     return true;
   }
   getEfficiencyScore() {

@@ -20,55 +20,118 @@ import { hybridEmbeddings } from '$lib/ai/hybrid-embeddings'; import { onMount }
 </main>
 
 <style>
-.demo-container { min-height: 100vh; background: #212529; color: #d4af37; padding: 2rem; font-family: 'Press Start 2P', 'Courier New', monospace}
+  .demo-container {
+    min-height: 100vh;
+    background: #212529;
+    color: #d4af37;
+    padding: 2rem;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
 
-  .title { font-size: 1.5rem; margin-bottom: 0.5rem}
+  .title {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
 
-  .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 1.5rem 0}
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
 
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-top: 1rem}
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+  }
 
-  .flex { display: flex}
+  .flex {
+    display: flex;
+  }
 
-  .items-center { align-items: center}
+  .items-center {
+    align-items: center;
+  }
 
-  .justify-between { justify-content: space-betweennn}
+  .justify-between {
+    justify-content: space-betweennn;
+  }
 
-  .gap-2 { gap: 0.5rem}
+  .gap-2 {
+    gap: 0.5rem;
+  }
 
-  .gap-4 { gap: 1rem}
+  .gap-4 {
+    gap: 1rem;
+  }
 
-  .mb-2 { margin-bottom: 0.5rem}
+  .mb-2 {
+    margin-bottom: 0.5rem;
+  }
 
-  .mb-4 { margin-bottom: 1rem}
+  .mb-4 {
+    margin-bottom: 1rem;
+  }
 
-  .mt-1 { margin-top: 0.25rem}
+  .mt-1 {
+    margin-top: 0.25rem;
+  }
 
-  .mt-2 { margin-top: 0.5rem}
+  .mt-2 {
+    margin-top: 0.5rem;
+  }
 
-  .mt-4 { margin-top: 1rem}
+  .mt-4 {
+    margin-top: 1rem;
+  }
 
-  .text-xs { font-size: 0.75rem}
+  .text-xs {
+    font-size: 0.75rem;
+  }
 
-  .text-sm { font-size: 0.875rem}
+  .text-sm {
+    font-size: 0.875rem;
+  }
 
-  .text-lg { font-size: 1.125rem}
+  .text-lg {
+    font-size: 1.125rem;
+  }
 
-  .font-bold { font-weight: bold}
+  .font-bold {
+    font-weight: bold;
+  }
 
-  .text-gray-400 { color: #9ca3af}
+  .text-gray-400 {
+    color: #9ca3af;
+  }
 
-  .text-green-400 { color: #4ade80}
+  .text-green-400 {
+    color: #4ade80;
+  }
 
-  .text-blue-400 { color: #60a5fa}
+  .text-blue-400 {
+    color: #60a5fa;
+  }
 
-  .text-yellow-400 { color: #facc15}
+  .text-yellow-400 {
+    color: #facc15;
+  }
 
-  .cursor-pointer { cursor: pointer}
+  .cursor-pointer {
+    cursor: pointer;
+  }
 
-  .overflow-x-auto { overflow-x: auto}
+  .overflow-x-auto {
+    overflow-x: auto;
+  }
 
-  .flex-1 { flex: 1 }
+  .flex-1 {
+    flex: 1;
+  }
 
-  .w-24 { width: 6rem}
+  .w-24 {
+    width: 6rem;
+  }
 </style>

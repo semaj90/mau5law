@@ -12,7 +12,7 @@
 </main>
 
 <style>
-/* Additional terminal-style animations */
+  /* Additional terminal-style animations */
   .text-green-400 {
     text-shadow: 0 0 5px currentColor;
   }

@@ -1,5 +1,5 @@
 <script lang="ts">
-import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
+  import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.svelte';
 </script>
 
 <main class="page-repair">
@@ -8,7 +8,7 @@ import EvidenceFilesManager from '$lib/components/evidence/EvidenceFilesManager.
 </main>
 
 <style>
-.container {
+  .container {
     max-width: 1200px;
   }
 </style>

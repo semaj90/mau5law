@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request, url }) => {
 async function handleMatrixOperation(
   request: Request,
   requestId: string,
-  apiStartTime: number,
+  apiStartTime: number
 ): Promise<Response> {
   const startTime = Date.now();
   const body: MatrixOperation = await request.json();
@@ -81,7 +81,7 @@ async function handleMatrixOperation(
   // Validate matrix dimensions
   const rowsA = matrixA.length;
   const colsA = matrixA[0]?.length || 0;
-  if (matrixA.some(row => row.length !== colsA)) {
+  if (matrixA.some((row) => row.length !== colsA)) {
     throw error(400, 'matrixA must have consistent row lengths');
   }
 
@@ -132,7 +132,9 @@ async function handleMatrixOperation(
     metadata: {
       operation,
       inputShape: [rowsA, colsA],
-      outputShape: Array.isArray(result[0]) ? [result.length, (result[0] as number[]).length] : [result.length],
+      outputShape: Array.isArray(result[0])
+        ? [result.length, (result[0] as number[]).length]
+        : [result.length],
       processingTime,
       usedCUDA: shouldUseCUDA,
       parallelWorkers,
@@ -159,7 +161,12 @@ async function handleMatrixOperation(
         simdVectorization: !shouldUseCUDA,
       },
       tensorCoreHints: shouldUseCUDA
-        ? { optimalTileSize: [16, 16], mixedPrecision: true, warpOptimization: true, sharedMemoryTiling: true }
+        ? {
+            optimalTileSize: [16, 16],
+            mixedPrecision: true,
+            warpOptimization: true,
+            sharedMemoryTiling: true,
+          }
         : undefined,
     },
   };
@@ -169,7 +176,7 @@ async function handleMatrixOperation(
 async function handleBatchOperation(
   request: Request,
   _requestId: string,
-  _apiStartTime: number,
+  _apiStartTime: number
 ): Promise<Response> {
   const startTime = Date.now();
   const body: MatrixBatchOperation = await request.json();
@@ -203,7 +210,9 @@ async function handleBatchOperation(
     result = await processCPUBatchOperation({ operation, matrices, transformMatrix, chunkSize });
     // Estimate total FLOPS for batch operations
     totalFlops = matrices.reduce((acc, matrix) => {
-      return acc + estimateFLOPS(operation.replace('batch_', ''), matrix.length, matrix[0]?.length || 0);
+      return (
+        acc + estimateFLOPS(operation.replace('batch_', ''), matrix.length, matrix[0]?.length || 0)
+      );
     }, 0);
   }
 
@@ -233,7 +242,12 @@ async function processCUDAMatrixOperation(params: {
   workers: number;
   requestId: string;
   matrixComplexity: number;
-}): Promise<{ result: number[][] | number[]; flops: number; memoryUsed: number; parallelWorkers: number }> {
+}): Promise<{
+  result: number[][] | number[];
+  flops: number;
+  memoryUsed: number;
+  parallelWorkers: number;
+}> {
   const { operation, matrixA, matrixB, precision, workers, requestId, matrixComplexity } = params;
   const cudaUrl = getCudaServiceUrl('submit');
 
@@ -242,7 +256,14 @@ async function processCUDAMatrixOperation(params: {
     type: 'matrix_operation',
     operation,
     request_id: requestId,
-    data: { matrixA, matrixB, precision, workers, complexity_score: matrixComplexity, complexity: matrixComplexity },
+    data: {
+      matrixA,
+      matrixB,
+      precision,
+      workers,
+      complexity_score: matrixComplexity,
+      complexity: matrixComplexity,
+    },
     gpu_config: {
       use_tensor_cores: true,
       memory_optimization: 'CHR_ROM_tensor_aligned',
@@ -364,7 +385,7 @@ async function processCPUBatchOperation(params: {
   for (let i = 0; i < matrices.length; i += chunkSize) {
     const chunk = matrices.slice(i, i + chunkSize);
     const chunkResults = await Promise.all(
-      chunk.map(async matrix => {
+      chunk.map(async (matrix) => {
         switch (operation) {
           case 'batch_multiply':
             if (!transformMatrix) throw new Error('transformMatrix required for batch_multiply');
@@ -376,7 +397,7 @@ async function processCPUBatchOperation(params: {
           default:
             throw new Error(`Unknown operation: ${operation}`);
         }
-      }),
+      })
     );
     results.push(...chunkResults);
   }
@@ -469,7 +490,7 @@ function inverseMatrix(matrix: number[][]): number[][] {
     }
   }
   // Extract inverse matrix
-  return augmented.map(row => row.slice(n));
+  return augmented.map((row) => row.slice(n));
 }
 
 function computeEigenvalues(matrix: number[][]): number[] {
@@ -504,7 +525,7 @@ function computeEigenvalues(matrix: number[][]): number[] {
     }
 
     eigenvalue = newEigenvalue;
-    vector = newVector.map(val => val / norm);
+    vector = newVector.map((val) => val / norm);
   }
   // Return dominant eigenvalue (simplified - full implementation would compute all eigenvalues)
   return [eigenvalue];
@@ -528,10 +549,15 @@ function normalizeMatrix(matrix: number[][]): number[][] {
   }
 
   // Normalize
-  return matrix.map(row => row.map(val => val / norm));
+  return matrix.map((row) => row.map((val) => val / norm));
 }
 
-function estimateFLOPS(operation: string, rows: number, cols: number, matrixB?: number[][]): number {
+function estimateFLOPS(
+  operation: string,
+  rows: number,
+  cols: number,
+  matrixB?: number[][]
+): number {
   switch (operation) {
     case 'multiply': {
       const colsB = matrixB?.[0]?.length || cols;
@@ -553,7 +579,7 @@ function calculateMatrixComplexity(
   operation: string,
   rows: number,
   cols: number,
-  matrixB?: number[][],
+  matrixB?: number[][]
 ): number {
   const baseComplexity = Math.log2(rows * cols + 1) * 10;
 
@@ -573,14 +599,22 @@ function calculateMatrixComplexity(
   const sizeMultiplier = Math.log2(Math.max(rows, cols) + 1) / 10;
 
   // Second matrix impact for binary operations
-  const secondMatrixMultiplier = matrixB ? Math.log2(matrixB.length * matrixB[0].length + 1) / 20 : 0;
+  const secondMatrixMultiplier = matrixB
+    ? Math.log2(matrixB.length * matrixB[0].length + 1) / 20
+    : 0;
 
-  const finalComplexity = baseComplexity * multiplier * (1 + sizeMultiplier + secondMatrixMultiplier);
+  const finalComplexity =
+    baseComplexity * multiplier * (1 + sizeMultiplier + secondMatrixMultiplier);
   return Math.min(100, Math.max(0, finalComplexity));
 }
 
 // WebGPU/WebGL2/WASM client optimization hints for matrix operations
-function generateMatrixClientHints(operation: string, rows: number, cols: number, complexity: number) {
+function generateMatrixClientHints(
+  operation: string,
+  rows: number,
+  cols: number,
+  complexity: number
+) {
   const totalElements = rows * cols;
   const isSquare = rows === cols;
   return {
@@ -632,6 +666,3 @@ export const GET: RequestHandler = async () => {
     timestamp: new Date().toISOString(),
   });
 };
-
-
-

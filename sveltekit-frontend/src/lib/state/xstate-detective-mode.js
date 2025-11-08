@@ -16,7 +16,7 @@
  */
 import { browser } from '$app/environment';
 
-let inspector
+let inspector;
 /**
  * Enables the XState inspector if in a browser and development environment.
  * This will open an iframe with the XState visualizer.
@@ -44,9 +44,14 @@ export async function enableDetectiveMode(options = {}) {
           iframe.style.boxShadow = '0 5px 15px rgba(0,0,0,0.2)';
           iframe.style.borderRadius = '8px';
           document.body.appendChild(iframe);
-          return iframe}, ...options});
-      console.log('ðŸ•µï¸ XState Detective Mode enabled. Inspector is running.') } catch (e) {
-      console.error('Failed to enable XState Detective Mode. Is "@xstate/inspect" installed?', e) }
+          return iframe;
+        },
+        ...options,
+      });
+      console.log('ðŸ•µï¸ XState Detective Mode enabled. Inspector is running.');
+    } catch (e) {
+      console.error('Failed to enable XState Detective Mode. Is "@xstate/inspect" installed?', e);
+    }
   }
 }
 
@@ -58,9 +63,11 @@ export function disableDetectiveMode() {
     inspector.disconnect();
     const iframe = document.getElementById('xstate-inspector-iframe');
     if (iframe) {
-      iframe.remove() }
-    inspector = undefined
-    console.log('ðŸ•µï¸ XState Detective Mode disabled.') }
+      iframe.remove();
+    }
+    inspector = undefined;
+    console.log('ðŸ•µï¸ XState Detective Mode disabled.');
+  }
 }
 
 /**
@@ -69,7 +76,8 @@ export function disableDetectiveMode() {
  */
 export function toggleDetectiveMode(options = {}) {
   if (inspector) {
-    disableDetectiveMode() } else {
-    enableDetectiveMode(options) }
+    disableDetectiveMode();
+  } else {
+    enableDetectiveMode(options);
+  }
 }
-

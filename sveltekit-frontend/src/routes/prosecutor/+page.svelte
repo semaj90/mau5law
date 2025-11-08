@@ -1,9 +1,9 @@
 <script lang="ts">
   import type { Case } from '$lib/types';
   // import type { SearchResults } from '$lib/types/global'; // Removed: SearchResults type is not used
-  import { Button } from "$lib/components/ui/button"; // Changed to named import
-  import { Input } from "$lib/components/ui/input"; // Changed to named import
-  import { Badge } from "$lib/components/ui/badge"; // Changed to named import
+  import { Button } from '$lib/components/ui/button'; // Changed to named import
+  import { Input } from '$lib/components/ui/input'; // Changed to named import
+  import { Badge } from '$lib/components/ui/badge'; // Changed to named import
 
   // dynamically loaded components (use `any` to avoid strict SvelteComponent typing incompatibilities)
   let EvidenceUploadComponent = $state<any>(null);
@@ -16,9 +16,24 @@
 
   // --- Type Definitions ---
   // interface Case { id: string, caseNumber: string, title: string, status: string} // Removed: Case type is already imported
-  interface PersonOfInterest { name: string, role: string, tags: string[], priority: 'high' | 'normal' | 'low'}
-  interface Evidence { title: string, fileName: string, uploadedAt: string, aiSummary?: string; aiAnalysis?: { prosecutionRelevance: 'high' | 'medium' | 'low'}}
-  interface SearchResult { id: string; score: number; payload?: { fileName?: string; title?: string; tags?: string[]}}; // Fixed: semicolons to commas
+  interface PersonOfInterest {
+    name: string;
+    role: string;
+    tags: string[];
+    priority: 'high' | 'normal' | 'low';
+  }
+  interface Evidence {
+    title: string;
+    fileName: string;
+    uploadedAt: string;
+    aiSummary?: string;
+    aiAnalysis?: { prosecutionRelevance: 'high' | 'medium' | 'low' };
+  }
+  interface SearchResult {
+    id: string;
+    score: number;
+    payload?: { fileName?: string; title?: string; tags?: string[] };
+  } // Fixed: semicolons to commas
 
   // State management
   let selectedCaseId = $state<string>('');
@@ -43,7 +58,12 @@
         // Check common export shapes: default instance, named instance, class constructor
         // use `any` to avoid TS complaining about missing named exports on the module type
         const _m = webGPUModule as any;
-        let candidate = _m.default ?? _m.webGPUProcessor ?? _m.WebGPUVectorProcessor ?? _m.webgpuProcessor ?? null;
+        let candidate =
+          _m.default ??
+          _m.webGPUProcessor ??
+          _m.WebGPUVectorProcessor ??
+          _m.webgpuProcessor ??
+          null;
         if (candidate) {
           if (typeof candidate === 'function') {
             // candidate is likely a class or factory - try to instantiate, otherwise fall back to using it directly
@@ -60,7 +80,9 @@
       }
 
       // Initialize WebGPU when available; tolerate missing initialize method
-      webGPUEnabled = webGPUProcessor ? await (webGPUProcessor.initialize?.() ?? Promise.resolve(false)) : false;
+      webGPUEnabled = webGPUProcessor
+        ? await (webGPUProcessor.initialize?.() ?? Promise.resolve(false))
+        : false;
 
       // Load initial data
       await loadCases();
@@ -111,7 +133,7 @@
   const loadPersonsOfInterest = async () => {
     if (!selectedCaseId) return;
     try {
-      const response = await fetch(`/api/cases/${ selectedCaseId }/pois`);
+      const response = await fetch(`/api/cases/${selectedCaseId}/pois`);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -125,7 +147,7 @@
   const loadRecentEvidence = async () => {
     if (!selectedCaseId) return;
     try {
-      const response = await fetch(`/api/cases/${ selectedCaseId }/evidence`);
+      const response = await fetch(`/api/cases/${selectedCaseId}/evidence`);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -157,8 +179,8 @@
           body: JSON.stringify({
             query: searchQuery,
             caseId: selectedCaseId,
-            type: 'evidence'
-          })
+            type: 'evidence',
+          }),
         });
         if (!response.ok) {
           throw new Error(`Vector search failed: ${response.statusText}`);
@@ -196,7 +218,11 @@
         {/if}
       </Badge>
       <!-- Use native button for action (accessible + avoids Button prop typing conflicts) -->
-      <button type="button" class="px-3 py-2 bg-blue-600 text-white rounded-md inline-flex items-center" onclick={() => console.log('Add New Case')}>
+      <button
+        type="button"
+        class="px-3 py-2 bg-blue-600 text-white rounded-md inline-flex items-center"
+        onclick={() => console.log('Add New Case')}
+      >
         <Plus class="mr-2" size={18} /> Add New Case
       </button>
     </div>
@@ -214,10 +240,15 @@
           <button
             type="button"
             onclick={() => selectCase(caseItem.id)}
-            class="w-full text-left p-3 rounded-md transition-colors duration-200 {selectedCaseId === caseItem.id ? 'bg-blue-100 text-blue-800 font-medium' : 'hover:bg-gray-100'}"
+            class="w-full text-left p-3 rounded-md transition-colors duration-200 {selectedCaseId ===
+            caseItem.id
+              ? 'bg-blue-100 text-blue-800 font-medium'
+              : 'hover:bg-gray-100'}"
           >
             <h3 class="text-lg">{caseItem.title}</h3>
-            <p class="text-sm text-gray-500">Case #{(caseItem as any).caseNumber ?? (caseItem as any).id}</p>
+            <p class="text-sm text-gray-500">
+              Case #{(caseItem as any).caseNumber ?? (caseItem as any).id}
+            </p>
             <Badge variant="secondary" class="mt-1">{(caseItem as any).status ?? 'unknown'}</Badge>
           </button>
         {/each}
@@ -229,22 +260,38 @@
       {#if selectedCaseId}
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
           <h2 class="text-2xl font-bold mb-4 text-gray-800">
-            Case: {cases.find(c => c.id === selectedCaseId)?.title || 'N/A'}
+            Case: {cases.find((c) => c.id === selectedCaseId)?.title || 'N/A'}
           </h2>
 
           <!-- Tabs for Overview, Evidence, POI, AI Assistant -->
           <div class="flex border-b border-gray-200 mb-6">
             <!-- Use native buttons for tabs (avoids Button prop typing issues) -->
-            <button type="button" class="tab-button {activeTab === 'overview' ? 'tab-active' : ''}" onclick={() => activeTab = 'overview'}>
+            <button
+              type="button"
+              class="tab-button {activeTab === 'overview' ? 'tab-active' : ''}"
+              onclick={() => (activeTab = 'overview')}
+            >
               <Eye class="mr-2" size={18} /> Overview
             </button>
-            <button type="button" class="tab-button {activeTab === 'evidence' ? 'tab-active' : ''}" onclick={() => activeTab = 'evidence'}>
+            <button
+              type="button"
+              class="tab-button {activeTab === 'evidence' ? 'tab-active' : ''}"
+              onclick={() => (activeTab = 'evidence')}
+            >
               <Upload class="mr-2" size={18} /> Evidence
             </button>
-            <button type="button" class="tab-button {activeTab === 'pois' ? 'tab-active' : ''}" onclick={() => activeTab = 'pois'}>
+            <button
+              type="button"
+              class="tab-button {activeTab === 'pois' ? 'tab-active' : ''}"
+              onclick={() => (activeTab = 'pois')}
+            >
               <Users class="mr-2" size={18} /> Persons of Interest
             </button>
-            <button type="button" class="tab-button {activeTab === 'ai-assistant' ? 'tab-active' : ''}" onclick={() => activeTab = 'ai-assistant'}>
+            <button
+              type="button"
+              class="tab-button {activeTab === 'ai-assistant' ? 'tab-active' : ''}"
+              onclick={() => (activeTab = 'ai-assistant')}
+            >
               <Brain class="mr-2" size={18} /> AI Assistant
             </button>
           </div>
@@ -287,7 +334,10 @@
             <div class="space-y-6">
               <h3 class="text-xl font-semibold mb-4">Evidence Management</h3>
               {#if EvidenceUploadComponent}
-                <EvidenceUploadComponent caseId={selectedCaseId} onevidenceuploaded={handleEvidenceUploaded} />
+                <EvidenceUploadComponent
+                  caseId={selectedCaseId}
+                  onevidenceuploaded={handleEvidenceUploaded}
+                />
               {/if}
 
               <!-- Search / vector match UI -->
@@ -299,7 +349,11 @@
                   oninput={(e) => (searchQuery = (e.target as HTMLInputElement).value)}
                   aria-label="Search evidence"
                 />
-                <button type="button" class="px-3 py-2 bg-blue-600 text-white rounded-md inline-flex items-center" onclick={() => performVectorSearch()}>
+                <button
+                  type="button"
+                  class="px-3 py-2 bg-blue-600 text-white rounded-md inline-flex items-center"
+                  onclick={() => performVectorSearch()}
+                >
                   <Search class="mr-2" size={16} /> Search
                 </button>
               </div>
@@ -309,7 +363,11 @@
                 <ul class="mt-4 space-y-2">
                   {#each searchResults as result (result.id)}
                     <li class="bg-gray-50 p-3 rounded-md flex justify-between items-center">
-                      <span>{result.payload?.title || result.payload?.fileName || 'Untitled'} (Score: {result.score.toFixed(2)})</span>
+                      <span
+                        >{result.payload?.title || result.payload?.fileName || 'Untitled'} (Score: {result.score.toFixed(
+                          2
+                        )})</span
+                      >
                       <Badge variant="secondary">Vector Match</Badge>
                     </li>
                   {/each}
@@ -347,7 +405,15 @@
                         <Badge variant="secondary">{tag}</Badge>
                       {/each}
                     </div>
-                    <p class="text-sm text-gray-600 mt-2">Priority: <Badge variant={person.priority === 'high' ? 'destructive' : person.priority === 'normal' ? 'warning' : 'default'}>{person.priority}</Badge></p>
+                    <p class="text-sm text-gray-600 mt-2">
+                      Priority: <Badge
+                        variant={person.priority === 'high'
+                          ? 'destructive'
+                          : person.priority === 'normal'
+                            ? 'warning'
+                            : 'default'}>{person.priority}</Badge
+                      >
+                    </p>
                   </li>
                 {/each}
               </ul>
@@ -367,7 +433,9 @@
         </div>
       {:else}
         <div class="bg-white rounded-lg shadow-md p-6 text-center text-gray-600">
-          <p class="text-xl font-medium mb-4">Select a case from the left sidebar to view details.</p>
+          <p class="text-xl font-medium mb-4">
+            Select a case from the left sidebar to view details.
+          </p>
           <p>Or click "Add New Case" to get started.</p>
         </div>
       {/if}
@@ -404,7 +472,9 @@
     border-top-right-radius: 0.375rem;
     background: transparent;
     cursor: pointer;
-    transition: color 0.15s ease, background-color 0.15s ease;
+    transition:
+      color 0.15s ease,
+      background-color 0.15s ease;
   }
   .tab-button:hover {
     color: #1d4ed8; /* blue-700 */

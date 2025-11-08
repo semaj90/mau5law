@@ -12,14 +12,14 @@
  */
 export const VECTOR_CONFIG = {
   // Primary model:
-  MODEL: "embeddinggemma:latest",
+  MODEL: 'embeddinggemma:latest',
   // Standard dimension
   DIMENSIONS: 384,
   // Distance
   DISTANCE_METRIC: {
-    POSTGRES: "vector_cosine_ops",
-    QDRANT: "Cosine",
-    FAISS: "METRIC_INNER_PRODUCT",
+    POSTGRES: 'vector_cosine_ops',
+    QDRANT: 'Cosine',
+    FAISS: 'METRIC_INNER_PRODUCT',
   },
   // Index
   INDEX: {
@@ -37,20 +37,20 @@ export const VECTOR_CONFIG = {
   },
   // Collection
   COLLECTIONS: {
-    LEGAL_DOCUMENTS: "legal_documents_384",
-    CASE_EMBEDDINGS: "case_embeddings_384",
-    EVIDENCE: "evidence_384",
-    RAG_DOCUMENTS: "rag_documents_384",
-    CHAT_MESSAGES: "chat_messages_384",
-    KNOWLEDGE_BASE: "knowledge_base_384",
+    LEGAL_DOCUMENTS: 'legal_documents_384',
+    CASE_EMBEDDINGS: 'case_embeddings_384',
+    EVIDENCE: 'evidence_384',
+    RAG_DOCUMENTS: 'rag_documents_384',
+    CHAT_MESSAGES: 'chat_messages_384',
+    KNOWLEDGE_BASE: 'knowledge_base_384',
   },
   // Docker Desktop URLs (production-ready)
   DOCKER_SERVICES: {
-    QDRANT_URL: process.env.QDRANT_URL || "http://localhost:6333",
+    QDRANT_URL: process.env.QDRANT_URL || 'http://localhost:6333',
     POSTGRES_URL:
-      process.env.DATABASE_URL || "postgresql://legal_admin:123456@localhost:5432/legal_ai_db",
-    OLLAMA_URL: process.env.OLLAMA_URL || "http://localhost:11434",
-    REDIS_URL: process.env.REDIS_URL || "redis://:redis@localhost:6379/0",
+      process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+    OLLAMA_URL: process.env.OLLAMA_URL || 'http://localhost:11434',
+    REDIS_URL: process.env.REDIS_URL || 'redis://:redis@localhost:6379/0',
   },
   // Batch
   BATCH_SIZE: {
@@ -116,7 +116,7 @@ Redis: ${VECTOR_CONFIG.DOCKER_SERVICES.REDIS_URL}
 --- Collections ---
 ${Object.entries(VECTOR_CONFIG.COLLECTIONS)
   .map(([k, v]) => ` - ${k}: ${v}`)
-  .join("\n")}
+  .join('\n')}
 --------------------
 `.trim();
 }

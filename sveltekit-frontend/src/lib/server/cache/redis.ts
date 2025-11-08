@@ -1,12 +1,12 @@
-import { gzipSync, gunzipSync } from "zlib";
-import { Buffer } from "buffer";
-import crypto from "crypto";
-import { createClient } from "redis";
+import { gzipSync, gunzipSync } from 'zlib';
+import { Buffer } from 'buffer';
+import crypto from 'crypto';
+import { createClient } from 'redis';
 
 // --- Custom Type to handle Redis client type inference issues ---
 type AppRedisClient = ReturnType<typeof createClient>;
 
-const IS_SERVER = typeof window === "undefined";
+const IS_SERVER = typeof window === 'undefined';
 const DEFAULT_TTL_MS = 10 * 60 * 1000;
 const MEMORY_CACHE_LIMIT = 1000;
 
@@ -15,16 +15,16 @@ let baseClient: AppRedisClient | null = null;
 
 async function initializeRedisClient() {
   if (baseClient && baseClient.isReady) return baseClient;
-  const REDIS_URL = process.env.REDIS_URL || "redis://:redis@localhost:6379/0";
+  const REDIS_URL = process.env.REDIS_URL || 'redis://:redis@localhost:6379/0';
   try {
     const client = createClient({ url: REDIS_URL });
-    client.on("error", (err) => console.error("[redis] Client Error:", err));
-    client.on("connect", () => console.log("[redis] Connected"));
+    client.on('error', (err) => console.error('[redis] Client Error:', err));
+    client.on('connect', () => console.log('[redis] Connected'));
     await client.connect();
     baseClient = client;
     return baseClient;
   } catch (err) {
-    console.warn("[redis] Initialization failed:", err);
+    console.warn('[redis] Initialization failed:', err);
     baseClient = null;
     return null;
   }
@@ -78,7 +78,7 @@ const globalMemoryCache = new MemoryCache();
 // --- Utility functions -----------------------------------------------------
 function formatError(error: unknown): string {
   if (error instanceof Error) return error.message;
-  if (typeof error === "string") return error;
+  if (typeof error === 'string') return error;
   try {
     return JSON.stringify(error);
   } catch {
@@ -88,8 +88,8 @@ function formatError(error: unknown): string {
 function resolveRedisConfig(): RedisConfig | null {
   const url = process.env.REDIS_URL?.trim();
   if (url) return { url };
-  const host = process.env.REDIS_HOST || "127.0.0.1";
-  const port = process.env.REDIS_PORT || "6379";
+  const host = process.env.REDIS_HOST || '127.0.0.1';
+  const port = process.env.REDIS_PORT || '6379';
   const password = process.env.REDIS_PASSWORD;
   return password
     ? { url: `redis://:${password}@${host}:${port}` }
@@ -99,10 +99,10 @@ function tryCreateClient(config: RedisConfig | null): AppRedisClient | null {
   if (!config) return null;
   try {
     const c = createClient({ url: config.url });
-    c.on("error", (e) => console.warn("[redis] client error", formatError(e)));
+    c.on('error', (e) => console.warn('[redis] client error', formatError(e)));
     return c;
   } catch (e) {
-    console.warn("[redis] failed to init client", formatError(e));
+    console.warn('[redis] failed to init client', formatError(e));
     return null;
   }
 }
@@ -116,13 +116,13 @@ export class CacheService {
 
   private encode(v: unknown): string {
     const json = JSON.stringify(v);
-    return gzipSync(Buffer.from(json, "utf8")).toString("base64");
+    return gzipSync(Buffer.from(json, 'utf8')).toString('base64');
   }
   private decode<T>(raw: string | Buffer | null): T | null {
     if (raw == null) return null;
     try {
-      const buf = typeof raw === "string" ? Buffer.from(raw, "base64") : Buffer.from(raw);
-      return JSON.parse(gunzipSync(buf).toString("utf8")) as T;
+      const buf = typeof raw === 'string' ? Buffer.from(raw, 'base64') : Buffer.from(raw);
+      return JSON.parse(gunzipSync(buf).toString('utf8')) as T;
     } catch {
       try {
         return JSON.parse(raw.toString()) as T;
@@ -140,7 +140,7 @@ export class CacheService {
       try {
         await client.connect();
       } catch (e) {
-        console.warn("[redis] connect failed", formatError(e));
+        console.warn('[redis] connect failed', formatError(e));
         await this.safeShutdown(client);
         this.client = null;
         return null;
@@ -161,7 +161,7 @@ export class CacheService {
     }
   }
   private hash(v: string) {
-    return crypto.createHash("sha256").update(v).digest("hex");
+    return crypto.createHash('sha256').update(v).digest('hex');
   }
 
   // --- core cache ops ---
@@ -173,7 +173,7 @@ export class CacheService {
         const val = this.decode<T>(raw);
         if (val != null) return val;
       } catch (e) {
-        console.warn("[cache] get failed", formatError(e));
+        console.warn('[cache] get failed', formatError(e));
       }
     }
     return globalMemoryCache.get<T>(key);
@@ -188,7 +188,7 @@ export class CacheService {
         globalMemoryCache.set(key, value, ttlMs);
         return;
       } catch (e) {
-        console.warn("[cache] set failed", formatError(e));
+        console.warn('[cache] set failed', formatError(e));
       }
     }
     globalMemoryCache.set(key, value, ttlMs);
@@ -200,7 +200,7 @@ export class CacheService {
       try {
         await c.del(key);
       } catch (e) {
-        console.warn("[cache] del failed", formatError(e));
+        console.warn('[cache] del failed', formatError(e));
       }
     }
     globalMemoryCache.delete(key);
@@ -211,19 +211,19 @@ export class CacheService {
     if (!c) return false;
     try {
       const res = await c.ping();
-      return res === "PONG" || res === "OK";
+      return res === 'PONG' || res === 'OK';
     } catch (e) {
-      console.warn("[cache] ping failed", formatError(e));
+      console.warn('[cache] ping failed', formatError(e));
       return false;
     }
   }
 
   // --- domain helpers ---
-  async getEmbedding(text: string, model = "default") {
+  async getEmbedding(text: string, model = 'default') {
     const key = `embedding_${this.hash(text)}_${model}`;
     return this.get<number[]>(key);
   }
-  async setEmbedding(text: string, emb: number[], model = "default") {
+  async setEmbedding(text: string, emb: number[], model = 'default') {
     const key = `embedding_${this.hash(text)}_${model}`;
     await this.set(key, emb, 24 * 60 * 60 * 1000);
   }
@@ -273,18 +273,18 @@ export async function setLangCache<T>(
   data: LangCacheEntry<T>,
   ttlSec = 3600
 ) {
-  const key = `langcache_${model}_${crypto.createHash("sha256").update(prompt).digest("hex")}`;
+  const key = `langcache_${model}_${crypto.createHash('sha256').update(prompt).digest('hex')}`;
   await cache.set(key, data, ttlSec * 1000);
 }
 export async function getLangCache<T>(
   model: string,
   prompt: string
 ): Promise<LangCacheEntry<T> | null> {
-  const key = `langcache_${model}_${crypto.createHash("sha256").update(prompt).digest("hex")}`;
+  const key = `langcache_${model}_${crypto.createHash('sha256').update(prompt).digest('hex')}`;
   return cache.get<LangCacheEntry<T>>(key);
 }
 export async function deleteLangCache(model: string, prompt: string) {
-  const key = `langcache_${model}_${crypto.createHash("sha256").update(prompt).digest("hex")}`;
+  const key = `langcache_${model}_${crypto.createHash('sha256').update(prompt).digest('hex')}`;
   await cache.del(key);
 }
 

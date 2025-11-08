@@ -1,9 +1,9 @@
-import type { Document } from "$lib/types";
-import type { RequestHandler } from "./$types.js";
-import { json } from "@sveltejs/kit";
+import type { Document } from '$lib/types';
+import type { RequestHandler } from './$types.js';
+import { json } from '@sveltejs/kit';
 export interface TestResult {
   test: string;
-  status: "success" | "error" | "warning";
+  status: 'success' | 'error' | 'warning';
   data?;
   any;
   error?: string;

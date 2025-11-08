@@ -87,7 +87,7 @@ export interface MetricData {
 // GPU-specific types
 export interface GPUChatMessage {
   id: string;
-  role: "user" | "assistant" | "system";
+  role: 'user' | 'assistant' | 'system';
   content: string;
   timestamp: Date;
   embedding?: number[];
@@ -112,7 +112,7 @@ export interface GPUProcessingStatus {
 }
 
 export interface StreamingResponse {
-  type: "chunk" | "complete" | "error";
+  type: 'chunk' | 'complete' | 'error';
   content?: string;
   error?: string;
   metadata?: {

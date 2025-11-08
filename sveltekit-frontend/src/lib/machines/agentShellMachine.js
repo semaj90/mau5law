@@ -1,3 +1,5 @@
 ﻿export const agentShellMachine = {
-  id: 'agentShellStub', initial: 'idle', states: { idle: {} }};
-
+  id: 'agentShellStub',
+  initial: 'idle',
+  states: { idle: {} },
+};

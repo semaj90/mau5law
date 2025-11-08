@@ -7,7 +7,7 @@ export enum SIMDBackend {
   AVX2 = 'avx2',
   SSE4 = 'sse4',
   NEON = 'neon',
-  FALLBACK = 'fallback'
+  FALLBACK = 'fallback',
 }
 
 export interface SIMDConfig {
@@ -33,7 +33,7 @@ export class SIMDJSONParserV2 {
       maxConcurrency: 4,
       cacheSize: 1000,
       nintendoMemoryOptimization: true,
-      ...config
+      ...config,
     };
 
     this.detectOptimalBackend();
@@ -90,7 +90,7 @@ export class SIMDJSONParserV2 {
     }
 
     const cacheKey = this.generateCacheKey(jsonString);
-    
+
     // Nintendo L1 Cache check
     if (this.parseCache.has(cacheKey)) {
       return this.parseCache.get(cacheKey);
@@ -102,7 +102,7 @@ export class SIMDJSONParserV2 {
     try {
       // Preprocess for legal AI patterns
       const cleaned = this.preprocessLegalJSON(jsonString);
-      
+
       // Route to optimal backend
       switch (this.activeBackend) {
         case SIMDBackend.WASM_SIMD:
@@ -122,19 +122,20 @@ export class SIMDJSONParserV2 {
       }
 
       const parseTime = performance.now() - startTime;
-      
+
       // Nintendo memory management - cache results
       if (this.config.nintendoMemoryOptimization) {
         this.manageCacheMemory(cacheKey, result);
       }
-      
+
       // Performance logging
       if (this.config.enableBenchmark && parseTime > 0.1) {
-        console.log(`🎮 SIMD Parse [${this.activeBackend}]: ${parseTime.toFixed(2)}ms (${jsonString.length} bytes)`);
+        console.log(
+          `🎮 SIMD Parse [${this.activeBackend}]: ${parseTime.toFixed(2)}ms (${jsonString.length} bytes)`
+        );
       }
 
       return result;
-
     } catch (error) {
       throw new Error(`SIMD JSON Parse Error [${this.activeBackend}]: ${error.message}`);
     }
@@ -147,21 +148,21 @@ export class SIMDJSONParserV2 {
     // Simulate WebAssembly SIMD parsing
     const bytes = new TextEncoder().encode(jsonString);
     const chunks: Uint8Array[] = [];
-    
+
     // Process in SIMD-friendly 16-byte chunks
     for (let i = 0; i < bytes.length; i += 16) {
       const chunk = bytes.slice(i, i + 16);
       const processed = await this.processWASMChunk(chunk);
-      chunks.push(<any><any>processed);
+      chunks.push(<any>(<any>processed));
     }
-    
+
     const processed = new Uint8Array(chunks.reduce((acc, chunk) => acc + chunk.length, 0));
     let offset = 0;
     for (const chunk of chunks) {
       processed.set(chunk, offset);
       offset += chunk.length;
     }
-    
+
     const result = new TextDecoder().decode(processed);
     return JSON.parse(result);
   }
@@ -172,14 +173,14 @@ export class SIMDJSONParserV2 {
   private async parseAVX2(jsonString: string): Promise<any> {
     const bytes = new TextEncoder().encode(jsonString);
     const processed = new Uint8Array(bytes.length);
-    
+
     // Process 32 bytes at a time (AVX2 register width)
     for (let i = 0; i < bytes.length; i += 32) {
       const chunk = bytes.slice(i, i + 32);
       const result = this.processAVX2Chunk(chunk);
       processed.set(result, i);
     }
-    
+
     const result = new TextDecoder().decode(processed);
     return JSON.parse(result);
   }
@@ -190,14 +191,14 @@ export class SIMDJSONParserV2 {
   private async parseSSE4(jsonString: string): Promise<any> {
     const bytes = new TextEncoder().encode(jsonString);
     const processed = new Uint8Array(bytes.length);
-    
+
     // Process 16 bytes at a time (SSE4 register width)
     for (let i = 0; i < bytes.length; i += 16) {
       const chunk = bytes.slice(i, i + 16);
       const result = this.processSSE4Chunk(chunk);
       processed.set(result, i);
     }
-    
+
     const result = new TextDecoder().decode(processed);
     return JSON.parse(result);
   }
@@ -208,14 +209,14 @@ export class SIMDJSONParserV2 {
   private async parseNEON(jsonString: string): Promise<any> {
     const bytes = new TextEncoder().encode(jsonString);
     const processed = new Uint8Array(bytes.length);
-    
+
     // Process 16 bytes at a time (NEON register width)
     for (let i = 0; i < bytes.length; i += 16) {
       const chunk = bytes.slice(i, i + 16);
       const result = this.processNEONChunk(chunk);
       processed.set(result, i);
     }
-    
+
     const result = new TextDecoder().decode(processed);
     return JSON.parse(result);
   }
@@ -226,14 +227,14 @@ export class SIMDJSONParserV2 {
   private async processWASMChunk(chunk: Uint8Array): Promise<Uint8Array> {
     // Simulate WebAssembly SIMD operations
     const processed = new Uint8Array(chunk.length);
-    
+
     // Parallel character validation and cleaning
     for (let i = 0; i < chunk.length; i++) {
       const byte = chunk[i];
       // Fast validation using SIMD-style bit operations
-      processed[i] = (byte < 32 && byte !== 9 && byte !== 10 && byte !== 13) ? 32 : byte;
+      processed[i] = byte < 32 && byte !== 9 && byte !== 10 && byte !== 13 ? 32 : byte;
     }
-    
+
     return processed;
   }
 
@@ -242,14 +243,14 @@ export class SIMDJSONParserV2 {
    */
   private processAVX2Chunk(chunk: Uint8Array): Uint8Array {
     const processed = new Uint8Array(chunk.length);
-    
+
     // Simulate AVX2 parallel processing
     for (let i = 0; i < chunk.length; i++) {
       const byte = chunk[i];
       // AVX2-style vectorized operations
       processed[i] = byte < 32 && ![9, 10, 13].includes(byte) ? 32 : byte;
     }
-    
+
     return processed;
   }
 
@@ -258,13 +259,13 @@ export class SIMDJSONParserV2 {
    */
   private processSSE4Chunk(chunk: Uint8Array): Uint8Array {
     const processed = new Uint8Array(chunk.length);
-    
+
     // Simulate SSE4 parallel processing
     for (let i = 0; i < chunk.length; i++) {
       const byte = chunk[i];
       processed[i] = byte < 32 && ![9, 10, 13].includes(byte) ? 32 : byte;
     }
-    
+
     return processed;
   }
 
@@ -273,13 +274,13 @@ export class SIMDJSONParserV2 {
    */
   private processNEONChunk(chunk: Uint8Array): Uint8Array {
     const processed = new Uint8Array(chunk.length);
-    
+
     // Simulate NEON parallel processing
     for (let i = 0; i < chunk.length; i++) {
       const byte = chunk[i];
       processed[i] = byte < 32 && ![9, 10, 13].includes(byte) ? 32 : byte;
     }
-    
+
     return processed;
   }
 
@@ -287,21 +288,23 @@ export class SIMDJSONParserV2 {
    * Enhanced legal JSON preprocessing
    */
   private preprocessLegalJSON(jsonString: string): string {
-    return jsonString
-      .trim()
-      // Fix common legal text escaping issues
-      .replace(/\\"/g, '"')  // Fix double escaping
-      .replace(/([^\\])\\([^"\\\/bfnrt])/g, '$1\\\\$2')  // Fix invalid escapes
-      .replace(/\n/g, '\\n')  // Escape newlines
-      .replace(/\r/g, '\\r')  // Escape carriage returns
-      .replace(/\t/g, '\\t')  // Escape tabs
-      // Fix trailing commas
-      .replace(/,(\s*[}\]])/g, '$1')
-      // Fix unescaped control characters
-      .replace(/[\x00-\x1F\x7F]/g, (char) => {
-        const code = char.charCodeAt(0);
-        return `\\u${code.toString(16).padStart(4, '0')}`;
-      });
+    return (
+      jsonString
+        .trim()
+        // Fix common legal text escaping issues
+        .replace(/\\"/g, '"') // Fix double escaping
+        .replace(/([^\\])\\([^"\\\/bfnrt])/g, '$1\\\\$2') // Fix invalid escapes
+        .replace(/\n/g, '\\n') // Escape newlines
+        .replace(/\r/g, '\\r') // Escape carriage returns
+        .replace(/\t/g, '\\t') // Escape tabs
+        // Fix trailing commas
+        .replace(/,(\s*[}\]])/g, '$1')
+        // Fix unescaped control characters
+        .replace(/[\x00-\x1F\x7F]/g, (char) => {
+          const code = char.charCodeAt(0);
+          return `\\u${code.toString(16).padStart(4, '0')}`;
+        })
+    );
   }
 
   /**
@@ -314,7 +317,7 @@ export class SIMDJSONParserV2 {
       const firstKey = this.parseCache.keys().next().value;
       this.parseCache.delete(firstKey);
     }
-    
+
     this.parseCache.set(key, value);
   }
 
@@ -325,7 +328,7 @@ export class SIMDJSONParserV2 {
     // Fast hash for Nintendo-style memory banking
     let hash = 0;
     for (let i = 0; i < Math.min(jsonString.length, 100); i++) {
-      hash = ((hash << 5) - hash + jsonString.charCodeAt(i)) & 0xFFFFFFFF;
+      hash = ((hash << 5) - hash + jsonString.charCodeAt(i)) & 0xffffffff;
     }
     return hash.toString(36);
   }
@@ -335,9 +338,7 @@ export class SIMDJSONParserV2 {
    */
   private hasWASMSIMD(): boolean {
     try {
-      return typeof WebAssembly !== 'undefined' && 
-             WebAssembly.validate && 
-             'simd' in WebAssembly;
+      return typeof WebAssembly !== 'undefined' && WebAssembly.validate && 'simd' in WebAssembly;
     } catch {
       return false;
     }
@@ -345,41 +346,43 @@ export class SIMDJSONParserV2 {
 
   private hasAVX2Support(): boolean {
     // Simulate AVX2 detection (would use CPU feature detection in real implementation)
-    return typeof navigator !== 'undefined' && 
-           navigator.hardwareConcurrency >= 4;
+    return typeof navigator !== 'undefined' && navigator.hardwareConcurrency >= 4;
   }
 
   private hasSSE4Support(): boolean {
     // Simulate SSE4 detection
-    return typeof navigator !== 'undefined' && 
-           navigator.hardwareConcurrency >= 2;
+    return typeof navigator !== 'undefined' && navigator.hardwareConcurrency >= 2;
   }
 
   private hasNEONSupport(): boolean {
     // Simulate ARM NEON detection
-    return typeof navigator !== 'undefined' && 
-           navigator.platform?.includes('ARM') || 
-           navigator.userAgent?.includes('ARM');
+    return (
+      (typeof navigator !== 'undefined' && navigator.platform?.includes('ARM')) ||
+      navigator.userAgent?.includes('ARM')
+    );
   }
 
   /**
    * Get performance statistics
    */
-  getPerformanceStats(): { 
-    backend: SIMDBackend; 
-    cacheHitRate: number; 
+  getPerformanceStats(): {
+    backend: SIMDBackend;
+    cacheHitRate: number;
     averageParseTime: number;
   } {
-    const cacheHitRate = this.parseCache.size > 0 ? 
-      (this.parseCache.size / (this.parseCache.size + 1)) * 100 : 0;
-    
-    const avgParseTime = this.performanceCache.size > 0 ?
-      Array.from(this.performanceCache.values()).reduce((a, b) => a + b, 0) / this.performanceCache.size : 0;
+    const cacheHitRate =
+      this.parseCache.size > 0 ? (this.parseCache.size / (this.parseCache.size + 1)) * 100 : 0;
+
+    const avgParseTime =
+      this.performanceCache.size > 0
+        ? Array.from(this.performanceCache.values()).reduce((a, b) => a + b, 0) /
+          this.performanceCache.size
+        : 0;
 
     return {
       backend: this.activeBackend,
       cacheHitRate,
-      averageParseTime: avgParseTime
+      averageParseTime: avgParseTime,
     };
   }
 

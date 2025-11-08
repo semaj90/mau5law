@@ -150,5 +150,3 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     return json({ error: 'Failed to create criminal record' }, { status: 500 });
   }
 };
-
-

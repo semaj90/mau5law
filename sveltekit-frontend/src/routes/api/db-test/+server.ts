@@ -9,9 +9,16 @@ export async function GET() {
 
     // Check if the query returned a result
     if (result && result.length > 0) {
-      return json({ status: 'success', message: 'Database connected successfully!', data: result[0] });
+      return json({
+        status: 'success',
+        message: 'Database connected successfully!',
+        data: result[0],
+      });
     } else {
-      return json({ status: 'error', message: 'Database query returned no results.' }, { status: 500 });
+      return json(
+        { status: 'error', message: 'Database query returned no results.' },
+        { status: 500 }
+      );
     }
   } catch (error: unknown) {
     console.error('Database connection test failed:', error);
@@ -19,6 +26,9 @@ export async function GET() {
     if (error instanceof Error) {
       errorMessage = error.message;
     }
-    return json({ status: 'error', message: 'Database connection failed.', error: errorMessage }, { status: 500 });
+    return json(
+      { status: 'error', message: 'Database connection failed.', error: errorMessage },
+      { status: 500 }
+    );
   }
 }

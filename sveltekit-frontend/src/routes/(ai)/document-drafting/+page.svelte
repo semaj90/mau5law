@@ -1,5 +1,5 @@
 <script lang="ts">
-import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
+  import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svelte';
 </script>
 
 <main class="page-container">
@@ -12,9 +12,9 @@ import LegalDocumentDrafting from '$lib/components/ai/LegalDocumentDrafting.svel
 </main>
 
 <style>
-.page-container {
-  min-height: 100vh;
-  background: #f8fafc;
-  padding: 1rem;
-}
+  .page-container {
+    min-height: 100vh;
+    background: #f8fafc;
+    padding: 1rem;
+  }
 </style>

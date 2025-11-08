@@ -1,22 +1,82 @@
 <!-- Modern Dark YoRHa Legal, AI, Platform -->
 <script lang="ts">
- // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
- import { goto } from '$app/navigation';
- import { FileText, Users, Activity, AlertTriangle, CheckCircle2, Search, Plus, BarChart3, Clock, Eye, Shield, Database, Settings, ChevronRight, Folder, UserCheck, TrendingUp, Terminal, Cpu, Monitor, Zap, Brain } from 'lucide-svelte'; // Dashboard data let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
-  let activeCases = $state([ { id: 1, title: 'CORPORATE ESPIONAGE INVESTIGATION', items: 8, timeAgo: '2 hours ago', priority: 'high', status: 'active'
-    }, {
-      id: 2, title: 'MISSING PERSon DR. SARAH CHEN', items: 15, timeAgo: '4 hours ago', priority: 'high', status: 'active'
-    }, {
-      id: 3, title: 'FINANCIAL FRAUD ANALYSIS', items: 4, timeAgo: '1 day ago', priority: 'medium', status: 'pending'
-    }]);
-   let systemStatus = $state([ { message: 'System backup completed successfully', time: '10 minutes ago', type: 'success'
-    }, {
-      message: 'Evidence analysis queue processing slowly', time: '1 hour ago', type: 'warning'
-    }, {
-      message: 'New facial recognition matches found', time: '2 hours ago', type: 'success'
-    }]); $effect(() => { console.log('YoRHa Legal AI Detective Interface initialized')}); function handleNewCase() { goto('/cases/new')}
-  function handleGlobalSearch() { goto('/search')}
-  function handleViewAll() { goto('/cases')}
+  // Svelte, 5 runes are auto-imported import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import {
+    FileText,
+    Users,
+    Activity,
+    AlertTriangle,
+    CheckCircle2,
+    Search,
+    Plus,
+    BarChart3,
+    Clock,
+    Eye,
+    Shield,
+    Database,
+    Settings,
+    ChevronRight,
+    Folder,
+    UserCheck,
+    TrendingUp,
+    Terminal,
+    Cpu,
+    Monitor,
+    Zap,
+    Brain,
+  } from 'lucide-svelte'; // Dashboard data let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
+  let activeCases = $state([
+    {
+      id: 1,
+      title: 'CORPORATE ESPIONAGE INVESTIGATION',
+      items: 8,
+      timeAgo: '2 hours ago',
+      priority: 'high',
+      status: 'active',
+    },
+    {
+      id: 2,
+      title: 'MISSING PERSon DR. SARAH CHEN',
+      items: 15,
+      timeAgo: '4 hours ago',
+      priority: 'high',
+      status: 'active',
+    },
+    {
+      id: 3,
+      title: 'FINANCIAL FRAUD ANALYSIS',
+      items: 4,
+      timeAgo: '1 day ago',
+      priority: 'medium',
+      status: 'pending',
+    },
+  ]);
+  let systemStatus = $state([
+    { message: 'System backup completed successfully', time: '10 minutes ago', type: 'success' },
+    {
+      message: 'Evidence analysis queue processing slowly',
+      time: '1 hour ago',
+      type: 'warning',
+    },
+    {
+      message: 'New facial recognition matches found',
+      time: '2 hours ago',
+      type: 'success',
+    },
+  ]);
+  $effect(() => {
+    console.log('YoRHa Legal AI Detective Interface initialized');
+  });
+  function handleNewCase() {
+    goto('/cases/new');
+  }
+  function handleGlobalSearch() {
+    goto('/search');
+  }
+  function handleViewAll() {
+    goto('/cases');
+  }
 </script>
 
 <svelte:head><title>YoRHa Legal AI Detective Interface</title></svelte:head>
@@ -25,12 +85,18 @@
   <!-- Quick, Actions, Header -->
   <div class="yorha-bg-secondary border-b border-gray-700">
     <div class="flex items-center">
-      <div class="flex items-center"><div class="text-sm">YoRHa Detective Interface â€¢ 8/20/2025 16:08:30</div></div>
+      <div class="flex items-center">
+        <div class="text-sm">YoRHa Detective Interface â€¢ 8/20/2025 16:08:30</div>
+      </div>
 
       <div class="flex items-center">
-        <button class="yorha-btn yorha-nes-btn" onclick={handleNewCase}> <Plus class="w-4 h-4" /> NEW CASE </button>
+        <button class="yorha-btn yorha-nes-btn" onclick={handleNewCase}>
+          <Plus class="w-4 h-4" /> NEW CASE
+        </button>
 
-        <button class="yorha-btn" onclick={handleGlobalSearch}> <Search class="w-4 h-4" /> GLOBAL SEARCH </button>
+        <button class="yorha-btn" onclick={handleGlobalSearch}>
+          <Search class="w-4 h-4" /> GLOBAL SEARCH
+        </button>
       </div>
     </div>
   </div>
@@ -52,19 +118,27 @@
 
           <ChevronRight class="w-4 h-4" />
         </a>
- <a href="/persons" class="yorha-nav-item"> <Users class="w-4" /> <span>PERSONS OF INTEREST</span> </a>
+        <a href="/persons" class="yorha-nav-item">
+          <Users class="w-4" /> <span>PERSONS OF INTEREST</span>
+        </a>
 
         <a href="/analysis" class="yorha-nav-item">
           <BarChart3 class="w-4" /> <span>ANALYSIS</span>
 
           <ChevronRight class="w-4 h-4" />
         </a>
- <a href="/search" class="yorha-nav-item"> <Search class="w-4" /> <span>GLOBAL SEARCH</span> </a>
+        <a href="/search" class="yorha-nav-item">
+          <Search class="w-4" /> <span>GLOBAL SEARCH</span>
+        </a>
 
-        <a href="/terminal" class="yorha-nav-item"> <Terminal class="w-4" /> <span>TERMINAL</span> </a>
+        <a href="/terminal" class="yorha-nav-item">
+          <Terminal class="w-4" /> <span>TERMINAL</span>
+        </a>
 
         <div class="pt-4 border-t border-gray-700">
-          <a href="/system" class="yorha-nav-item"> <Settings class="w-4" /> <span>SYSTEM CONFIG</span> </a>
+          <a href="/system" class="yorha-nav-item">
+            <Settings class="w-4" /> <span>SYSTEM CONFIG</span>
+          </a>
         </div>
       </nav>
 
@@ -151,7 +225,9 @@
 
             <div class="space-y-4">
               {#each Array.isArray(activeCases) ? activeCases : [] as caseItem}
-                <div class="border border-gray-700 rounded-lg p-4 hover:bg-gray-800 transition-colors cursor-pointer">
+                <div
+                  class="border border-gray-700 rounded-lg p-4 hover:bg-gray-800 transition-colors cursor-pointer"
+                >
                   <div class="flex items-center justify-between">
                     <h3 class="font-medium">{caseItem.title}</h3>
 
@@ -166,16 +242,16 @@
                       {:else}
                         <span class="yorha-badge">pending</span>
                       {/if}
-  </div>
+                    </div>
                   </div>
 
                   <div class="flex items-center justify-between text-sm">
                     <span>{caseItem.items} items</span>
- <span>{caseItem.timeAgo}</span>
+                    <span>{caseItem.timeAgo}</span>
                   </div>
                 </div>
               {/each}
-  </div>
+            </div>
           </div>
         </div>
 
@@ -195,14 +271,14 @@
                   {:else}
                     <AlertTriangle class="w-5 h-5 text-yellow-400" />
                   {/if}
-  <div class="flex-1">
+                  <div class="flex-1">
                     <p class="text-sm">{status.message}</p>
 
                     <p class="text-xs">{status.time}</p>
                   </div>
                 </div>
               {/each}
-  </div>
+            </div>
           </div>
 
           <!-- Quick, Actions -->
@@ -212,27 +288,39 @@
             </div>
 
             <div class="space-y-3">
-              <button class="w-full yorha-btn yorha-nes-btn"> <Database class="w-4 h-4" /> EVIDENCE BOARD </button>
+              <button class="w-full yorha-btn yorha-nes-btn">
+                <Database class="w-4 h-4" /> EVIDENCE BOARD
+              </button>
 
-              <button class="w-full yorha-btn yorha-nes-btn"> <Clock class="w-4 h-4" /> TIMELINE ANALYSIS </button>
+              <button class="w-full yorha-btn yorha-nes-btn">
+                <Clock class="w-4 h-4" /> TIMELINE ANALYSIS
+              </button>
 
-              <button class="w-full yorha-btn yorha-nes-btn"> <Terminal class="w-4 h-4" /> TERMINAL ACCESS </button>
+              <button class="w-full yorha-btn yorha-nes-btn">
+                <Terminal class="w-4 h-4" /> TERMINAL ACCESS
+              </button>
             </div>
           </div>
 
           <!-- AI, Status -->
           <div class="yorha-nier-bits-nier-bits-nier-bits-card" style="animation-delay: 0.6s">
-            <div class="yorha-nier-bits-yorha-panel-header"><h2 class="yorha-nier-bits-nes-text">AI SYSTEMS</h2></div>
+            <div class="yorha-nier-bits-yorha-panel-header">
+              <h2 class="yorha-nier-bits-nes-text">AI SYSTEMS</h2>
+            </div>
 
             <div class="space-y-3">
               <div class="flex items-center">
-                <div class="flex items-center"><Brain class="w-4 h-4" /> <span class="text-sm">Gemma3-Legal</span></div>
+                <div class="flex items-center">
+                  <Brain class="w-4 h-4" /> <span class="text-sm">Gemma3-Legal</span>
+                </div>
 
                 <span class="yorha-badge">ACTIVE</span>
               </div>
 
               <div class="flex items-center">
-                <div class="flex items-center"><Cpu class="w-4 h-4" /> <span class="text-sm">GPU Processing</span></div>
+                <div class="flex items-center">
+                  <Cpu class="w-4 h-4" /> <span class="text-sm">GPU Processing</span>
+                </div>
 
                 <span class="yorha-badge">78%</span>
               </div>
@@ -261,5 +349,3 @@
     justify-content: flex-start;
   }
 </style>
-
-

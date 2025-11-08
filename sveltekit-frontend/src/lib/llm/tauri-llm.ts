@@ -5,5 +5,5 @@ export async function runInference(model: string, prompt: string): Promise<strin
     await initializeTauri();
     tauriInitialized = true;
   }
-  return (await invoke("run_llm_inference", { model: prompt })) as Promise<string>;
+  return (await invoke('run_llm_inference', { model: prompt })) as Promise<string>;
 }

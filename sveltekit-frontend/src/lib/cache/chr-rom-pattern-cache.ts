@@ -1,15 +1,15 @@
 /** * CHR-ROM Pattern Cache Integration with Redis * Nintendo-inspired optimization for legal AI platform * Achieves 0.5-2ms response times for UI patterns */
-import Redis from "ioredis";
-import type { LegalDocumentJSON } from "$lib/wasm/simd-json-wrapper";
+import Redis from 'ioredis';
+import type { LegalDocumentJSON } from '$lib/wasm/simd-json-wrapper';
 
 export interface CHRROMPattern {
   id: string;
-  patternType: "ui_component" | "document_layout" | "visualization" | "text_pattern";
+  patternType: 'ui_component' | 'document_layout' | 'visualization' | 'text_pattern';
   bankId: number; // 0-7, like NES CHR-ROM banks
   tileData: Uint8Array; // 8x8 pixel patterns like NES tiles
   metadata: {
-    documentType: "contract" | "evidence" | "brief" | "citation";
-    riskLevel: "low" | "medium" | "high" | "critical";
+    documentType: 'contract' | 'evidence' | 'brief' | 'citation';
+    riskLevel: 'low' | 'medium' | 'high' | 'critical';
     cacheHits: number;
     lastAccessed: number;
     compressionRatio: number;
@@ -35,17 +35,17 @@ export interface CHRROMCache {
 }
 
 export interface PatternGenerationOptions {
-  documentType: "contract" | "evidence" | "brief" | "citation";
-  riskLevel: "low" | "medium" | "high" | "critical";
-  visualStyle: "modern" | "classic" | "minimal" | "detailed";
-  colorScheme: "default" | "accessibility" | "high_contrast" | "colorblind";
+  documentType: 'contract' | 'evidence' | 'brief' | 'citation';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  visualStyle: 'modern' | 'classic' | 'minimal' | 'detailed';
+  colorScheme: 'default' | 'accessibility' | 'high_contrast' | 'colorblind';
   animated: boolean;
 }
 
 export class CHRROMPatternCache {
   private redis: Redis | undefined;
   private cache: CHRROMCache;
-  private readonly CACHE_PREFIX = "chr_rom:";
+  private readonly CACHE_PREFIX = 'chr_rom:';
   private readonly BANK_SIZE = 8192; // 8KB per bank (like NES CHR-ROM)
   private readonly MAX_BANKS = 8; // NES had 8 CHR-ROM banks
   private readonly PATTERN_SIZE = 64; // 8x8 pixels = 64 bytes
@@ -53,8 +53,8 @@ export class CHRROMPatternCache {
   constructor(redisConfig?: unknown) {
     this.redis = new Redis(
       redisConfig || {
-        host: process.env.REDIS_HOST || "localhost",
-        port: parseInt(process.env.REDIS_PORT || "6379"),
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT || '6379'),
         password: process.env.REDIS_PASSWORD || undefined,
       }
     );
@@ -87,7 +87,7 @@ export class CHRROMPatternCache {
         this.generateDefaultTilePattern(bankView, tileOffset, bankId, tileIndex);
       }
     }
-    console.log("ðŸŽ® Initialized 8 CHR-ROM banks (64KB total) with default patterns");
+    console.log('ðŸŽ® Initialized 8 CHR-ROM banks (64KB total) with default patterns');
   }
 
   private generateDefaultTilePattern(
@@ -166,7 +166,7 @@ export class CHRROMPatternCache {
       );
       return null;
     } catch (error) {
-      console.error("â Œ CHR-ROM pattern cache error: ", error);
+      console.error('â Œ CHR-ROM pattern cache error: ', error);
       return null;
     }
   }
@@ -209,7 +209,7 @@ export class CHRROMPatternCache {
       const serializedPattern = this.serializePattern(pattern);
       if (this.redis) {
         // ioredis typings prefer 'set' with EX option instead of 'setex'
-        await this.redis.set(redisKey, serializedPattern, "EX", 3600); // 1 hour TTL
+        await this.redis.set(redisKey, serializedPattern, 'EX', 3600); // 1 hour TTL
       }
 
       // Store in L1 cache
@@ -220,7 +220,7 @@ export class CHRROMPatternCache {
       console.log(`âš¡ Generated CHR-ROM pattern: ${patternId} in ${generationTime.toFixed(2)}ms`);
       return pattern;
     } catch (error) {
-      console.error("â Œ Failed to generate CHR-ROM pattern: ", error);
+      console.error('â Œ Failed to generate CHR-ROM pattern: ', error);
       throw error;
     }
   }
@@ -266,16 +266,16 @@ export class CHRROMPatternCache {
       0xff, // Border
     ];
     // Add risk-based internal pattern
-    if (riskLevel === "critical") {
+    if (riskLevel === 'critical') {
       // Dense pattern for critical risk
       lines[2] = 0xbd;
       lines[3] = 0xdb;
       lines[4] = 0xbd;
       lines[5] = 0xdb;
-    } else if (riskLevel === "high") {
+    } else if (riskLevel === 'high') {
       lines[2] = 0xa5;
       lines[4] = 0xa5;
-    } else if (riskLevel === "medium") {
+    } else if (riskLevel === 'medium') {
       lines[3] = 0x99;
     }
     return this.expandLinesToTile(lines);
@@ -285,7 +285,7 @@ export class CHRROMPatternCache {
     // Evidence: File folder with contents
     const lines = [0x7e, 0xfe, 0x82, 0x82, 0x82, 0x82, 0x82, 0xfe];
     // Risk-based modifications
-    if (riskLevel === "critical") {
+    if (riskLevel === 'critical') {
       lines[2] = 0xba;
       lines[3] = 0xab;
       lines[4] = 0xba;
@@ -296,7 +296,7 @@ export class CHRROMPatternCache {
   private generateBriefPattern(riskLevel: string): Uint8Array {
     // Brief: Text document with paragraphs
     const lines = [0xff, 0x81, 0xbd, 0x81, 0xbd, 0x81, 0xbd, 0xff];
-    if (riskLevel === "critical") {
+    if (riskLevel === 'critical') {
       lines[2] = 0xff;
       lines[4] = 0xff;
       lines[6] = 0xff;
@@ -325,19 +325,19 @@ export class CHRROMPatternCache {
   private applyRiskLevelModifications(pattern: Uint8Array, riskLevel: string): Uint8Array {
     const modified = new Uint8Array(pattern);
     switch (riskLevel) {
-      case "critical":
+      case 'critical':
         // Increase pattern density
         for (let i = 0; i < modified.length; i += 2) {
           if (modified[i] === 0) modified[i] = 128;
         }
         break;
-      case "high":
+      case 'high':
         // Moderate density increase
         for (let i = 0; i < modified.length; i += 4) {
           if (modified[i] === 0) modified[i] = 64;
         }
         break;
-      case "medium":
+      case 'medium':
         // Slight density increase
         for (let i = 0; i < modified.length; i += 8) {
           if (modified[i] === 0) modified[i] = 32;
@@ -393,10 +393,10 @@ export class CHRROMPatternCache {
   private determinePatternType(
     _options: PatternGenerationOptions,
     sourceDocument?: LegalDocumentJSON
-  ): CHRROMPattern["patternType"] {
-    if (sourceDocument) return "document_layout";
-    if (_options.animated) return "visualization";
-    return "ui_component";
+  ): CHRROMPattern['patternType'] {
+    if (sourceDocument) return 'document_layout';
+    if (_options.animated) return 'visualization';
+    return 'ui_component';
   }
 
   private findAvailableBank(): number {
@@ -479,14 +479,14 @@ export class CHRROMPatternCache {
     const hitRate =
       metrics.totalRequests > 0
         ? ((metrics.cacheHits / metrics.totalRequests) * 100).toFixed(2)
-        : "0.00";
+        : '0.00';
     console.log(`ðŸ“Š CHR-ROM Cache Metrics:`);
     console.log(` Hit Rate: ${hitRate}% (${metrics.cacheHits}/${metrics.totalRequests})`);
     console.log(` Avg Response: ${metrics.averageResponseTime.toFixed(2)}ms`);
     console.log(` Patterns Cached: ${this.cache.patterns.size}`);
     console.log(` Hot Patterns: ${this.cache.hotPatterns.length}`);
     console.log(
-      ` Bank Utilization: [${this.cache.metrics.bankUtilization.map((u) => u.toFixed(1)).join(", ")}]`
+      ` Bank Utilization: [${this.cache.metrics.bankUtilization.map((u) => u.toFixed(1)).join(', ')}]`
     );
   }
 
@@ -508,9 +508,9 @@ export class CHRROMPatternCache {
           await this.redis.del(...keys);
         }
       } catch (err) {
-        console.error("Error clearing Redis keys for CHR-ROM patterns", err);
+        console.error('Error clearing Redis keys for CHR-ROM patterns', err);
       }
-      console.log("ðŸ§¹ Cleared all CHR-ROM patterns from cache and Redis");
+      console.log('ðŸ§¹ Cleared all CHR-ROM patterns from cache and Redis');
     }
   }
 
@@ -548,19 +548,19 @@ export class CHRROMPatternCache {
         // ioredis's quit() returns a Promise and is preferred for graceful shutdown.
         // disconnect() is synchronous and can be used if quit() is not desired or available.
         // We check for the existence of the method before calling.
-        if (typeof this.redis.quit === "function") {
+        if (typeof this.redis.quit === 'function') {
           await this.redis.quit();
-        } else if (typeof this.redis.disconnect === "function") {
+        } else if (typeof this.redis.disconnect === 'function') {
           this.redis.disconnect(); // disconnect() is synchronous, no await needed.
         }
         this.redis = undefined; // Clear the reference after disposing
       }
     } catch (err) {
-      console.warn("âš ï¸  Error closing Redis connection: ", err);
+      console.warn('âš ï¸  Error closing Redis connection: ', err);
     }
     this.cache.patterns.clear();
     this.cache.hotPatterns = [];
-    console.log("ðŸ—‘ï¸  CHR-ROM Pattern Cache disposed");
+    console.log('ðŸ—‘ï¸  CHR-ROM Pattern Cache disposed');
   }
 }
 

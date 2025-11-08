@@ -32,7 +32,7 @@ async function generateQueryEmbedding(query: string): Promise<number[]> {
 // Generate RAG response using Gemma3 legal model
 async function generateRAGResponse(query: string, context: SimilarChunk[]): Promise<string> {
   try {
-    const contextText = context.map(c => `${c.chunk_text}`).join('\n\n');
+    const contextText = context.map((c) => `${c.chunk_text}`).join('\n\n');
     const prompt = `Based on the following legal context, provide a comprehensive response to the query.
 Context: ${contextText}
 Query: ${query}
@@ -45,8 +45,8 @@ Response:`;
         model: 'gemma3-legal:latest', // Standardized model name
         prompt: prompt,
         stream: false,
-        options: { temperature: 0.7, top_p: 0.9, max_tokens: 1000 }
-      })
+        options: { temperature: 0.7, top_p: 0.9, max_tokens: 1000 },
+      }),
     });
 
     if (!response.ok) {
@@ -93,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
       ragResponse = await generateRAGResponse(query, similarChunks);
     }
 
-    const enhancedResults = similarChunks.map(chunk => ({
+    const enhancedResults = similarChunks.map((chunk) => ({
       id: chunk.id,
       content: chunk.chunk_text,
       similarity: Math.round(chunk.similarity * 1000) / 1000, // Round to 3 decimal places
@@ -101,8 +101,8 @@ export const POST: RequestHandler = async ({ request }) => {
         type: 'chat_conversation',
         conversationId: chunk.id,
         role: chunk.role || 'unknown',
-        source: 'chat_embeddings'
-      }
+        source: 'chat_embeddings',
+      },
     }));
 
     return json({
@@ -115,8 +115,8 @@ export const POST: RequestHandler = async ({ request }) => {
         threshold,
         embeddingModel: 'nomic-embed-text',
         ragModel: includeRAGResponse ? 'gemma3-legal:latest' : null,
-        searchTime: Date.now()
-      }
+        searchTime: Date.now(),
+      },
     });
   } catch (err) {
     console.error('Vector error: ', err);
@@ -124,4 +124,3 @@ export const POST: RequestHandler = async ({ request }) => {
     return error(500, `Search failed: ${message}`);
   }
 };
-

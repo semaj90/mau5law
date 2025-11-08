@@ -3,7 +3,7 @@
  * Centralized loader with caching and error handling
  */
 
-import { browser } from "$app/environment";
+import { browser } from '$app/environment';
 
 const wasmCache = new Map<string, WebAssembly.Instance>();
 
@@ -31,7 +31,7 @@ export class WasmLoader {
     options: WasmLoadOptions = {}
   ): Promise<T> {
     if (!browser) {
-      throw new Error("WASM modules can only be loaded in browser");
+      throw new Error('WASM modules can only be loaded in browser');
     }
 
     const { cache = true, timeout = 10000, retries = 3 } = options;

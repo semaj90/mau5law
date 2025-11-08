@@ -1,5 +1,5 @@
 <script lang="ts">
-// Truncated file - replaced with stub
+  let { class: className = '', ...rest }: { class?: string; [key: string]: any } = $props();
 </script>
 
 <main class="page-repair">
@@ -7,6 +7,13 @@
   <p>This placeholder replaces corrupted or missing markup for now.</p>
 </main>
 
+<div class={className} {...rest}>
+  <slot />
+</div>
+
 <style>
-  .page-repair { padding: 2rem; font-family: sans-serif; }
+  .page-repair {
+    padding: 2rem;
+    font-family: sans-serif;
+  }
 </style>

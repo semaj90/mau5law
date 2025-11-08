@@ -2,7 +2,7 @@
 export interface BaselineDiffResponse {
   timestamp: string;
   diffs: BaselineDiff[0];
-  overall_status: "stable" | "drift_detected" | "significant_drift";
+  overall_status: 'stable' | 'drift_detected' | 'significant_drift';
   summary: {
     total_metrics: number;
     normal_count: number;

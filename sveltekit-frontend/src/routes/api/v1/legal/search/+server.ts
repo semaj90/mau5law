@@ -7,9 +7,9 @@
  * - Result caching (Redis)
  * - Metadata filtering
  */
-import { json, error } from "@sveltejs/kit";
-import type { RequestHandler } from "./$types";
-import { getLegalAIPipeline } from "$lib/server/integrations";
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { getLegalAIPipeline } from '$lib/server/integrations';
 
 /**
  * Interface for the POST request body for legal search.
@@ -29,11 +29,11 @@ export const POST: RequestHandler = async ({ request }) => {
     const { query, topK = 10, filter } = body;
 
     // Validate inputs
-    if (!query || typeof query !== "string") {
+    if (!query || typeof query !== 'string') {
       throw error(400, 'Invalid or missing: "query" field');
     }
-    if (typeof topK !== "number" || topK < 1 || topK > 100) {
-      throw error(400, "topK must be a number between 1 and 100");
+    if (typeof topK !== 'number' || topK < 1 || topK > 100) {
+      throw error(400, 'topK must be a number between 1 and 100');
     }
 
     // Perform search
@@ -53,11 +53,11 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     });
   } catch (err: unknown) {
-    console.error("Search API error: ", err);
+    console.error('Search API error: ', err);
     if (err instanceof Error && (err as any).status) {
       throw err;
     }
-    throw error(500, err instanceof Error ? err.message : "Failed to search documents");
+    throw error(500, err instanceof Error ? err.message : 'Failed to search documents');
   }
 };
 
@@ -69,9 +69,9 @@ export const POST: RequestHandler = async ({ request }) => {
 export const GET: RequestHandler = async ({ url }) => {
   try {
     const pipeline = getLegalAIPipeline();
-    const query = url.searchParams.get("query");
-    const topK = parseInt(url.searchParams.get("topK") || "10", 10);
-    const type = url.searchParams.get("type"); // Filter by document type
+    const query = url.searchParams.get('query');
+    const topK = parseInt(url.searchParams.get('topK') || '10', 10);
+    const type = url.searchParams.get('type'); // Filter by document type
 
     if (!query) {
       throw error(400, 'Missing "query" parameter');
@@ -96,10 +96,10 @@ export const GET: RequestHandler = async ({ url }) => {
       },
     });
   } catch (err: unknown) {
-    console.error("Search API error: ", err);
+    console.error('Search API error: ', err);
     if (err instanceof Error && (err as any).status) {
       throw err;
     }
-    throw error(500, err instanceof Error ? err.message : "Failed to search documents");
+    throw error(500, err instanceof Error ? err.message : 'Failed to search documents');
   }
 };

@@ -10,8 +10,7 @@ import * as schema from './schema';
 // Create PostgreSQL connection pool
 const pool = new Pool({
   connectionString:
-    process.env.DATABASE_URL ||
-    'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
+    process.env.DATABASE_URL || 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,

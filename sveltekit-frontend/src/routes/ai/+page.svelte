@@ -17,7 +17,7 @@ import { onMount } from 'svelte'; import { webAssemblyAIAdapter } from '$lib/ada
 </main>
 
 <style>
-.btn {
+  .btn {
     background: #2563eb;
     color: #fff;
     padding: 0.5rem 1rem;

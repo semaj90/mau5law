@@ -54,9 +54,9 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const caseId = formData.get('caseId') as string;
-    const evidenceType = formData.get('evidenceType') as string || 'document';
-    const title = formData.get('title') as string || file.name;
-    const description = formData.get('description') as string || '';
+    const evidenceType = (formData.get('evidenceType') as string) || 'document';
+    const title = (formData.get('title') as string) || file.name;
+    const description = (formData.get('description') as string) || '';
 
     if (!file) {
       return new Response(JSON.stringify({ error: 'No file provided' }), { status: 400 });
@@ -110,24 +110,27 @@ export const POST: RequestHandler = async ({ request, locals }) => {
     const checksum = hash.digest('hex');
 
     // Insert evidence metadata into PostgreSQL
-    const [insertedEvidence] = await db.insert(evidence).values({
-      id: evidenceId,
-      case_id: caseId,
-      evidence_number: `EVD-${timestamp}`,
-      title,
-      description,
-      evidence_type: evidenceType,
-      file_name: file.name,
-      file_path: objectName,
-      file_size: file.size,
-      mime_type: file.type || 'application/octet-stream',
-      checksum,
-      source: `User upload - ${userId}`,
-      authenticated: false,
-      analyzed: false,
-      archived: false,
-      created_by: userId,
-    }).returning();
+    const [insertedEvidence] = await db
+      .insert(evidence)
+      .values({
+        id: evidenceId,
+        case_id: caseId,
+        evidence_number: `EVD-${timestamp}`,
+        title,
+        description,
+        evidence_type: evidenceType,
+        file_name: file.name,
+        file_path: objectName,
+        file_size: file.size,
+        mime_type: file.type || 'application/octet-stream',
+        checksum,
+        source: `User upload - ${userId}`,
+        authenticated: false,
+        analyzed: false,
+        archived: false,
+        created_by: userId,
+      })
+      .returning();
 
     console.log(`✅ Inserted evidence metadata into PostgreSQL: ${evidenceId}`);
 
@@ -404,7 +407,7 @@ function extractTags(title: string, description: string): string[] {
 
   for (const [tag, pattern] of Object.entries(docTypes)) {
     if (pattern.test(text)) {
-      tags.push(<any><any>tag);
+      tags.push(<any>(<any>tag));
     }
   }
 
@@ -412,7 +415,7 @@ function extractTags(title: string, description: string): string[] {
   const words = text.split(/\s+/);
   for (const word of words) {
     if (word.length > 3 && /^[A-Z][a-z]+$/.test(word)) {
-      tags.push(<any><any>word.toLowerCase());
+      tags.push(<any>(<any>word.toLowerCase()));
     }
   }
 

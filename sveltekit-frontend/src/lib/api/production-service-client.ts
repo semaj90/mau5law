@@ -12,7 +12,7 @@ export interface ServiceResponse<T = unknown> {
 }
 
 export interface IntegrationServiceRequest {
-  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
   body?: string | object;
   timeout?: number;
@@ -30,9 +30,9 @@ class ProductionServiceClient {
     endpoint: string,
     options: IntegrationServiceRequest
   ): Promise<ServiceResponse> {
-    const url = endpoint.startsWith("http")
+    const url = endpoint.startsWith('http')
       ? endpoint
-      : endpoint.startsWith("/")
+      : endpoint.startsWith('/')
         ? `${this.baseUrl}${endpoint}`
         : `${this.baseUrl}/${endpoint}`;
 
@@ -40,18 +40,18 @@ class ProductionServiceClient {
     const perf = globalThis as unknown as { performance?: { now?: () => number } } | undefined;
     const now = (() => {
       const f = perf?.performance?.now;
-      return typeof f === "function" ? () => f.call(perf!.performance) : () => Date.now();
+      return typeof f === 'function' ? () => f.call(perf!.performance) : () => Date.now();
     })();
     const startTime = now();
 
     const fetchOptions: RequestInit = {
       method: options.method,
-      headers: { "Content-Type": "application/json", ...(options.headers ?? {}) },
+      headers: { 'Content-Type': 'application/json', ...(options.headers ?? {}) },
     };
 
     if (options.body !== undefined) {
       fetchOptions.body =
-        typeof options.body === "string" ? options.body : JSON.stringify(options.body);
+        typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
     }
 
     // AbortSignal.timeout if available, else AbortController fallback
@@ -61,7 +61,7 @@ class ProductionServiceClient {
       // robust detection for AbortSignal.timeout across runtimes (typed)
       type AbortSignalCtorType = { timeout?: (ms?: number) => AbortSignal };
       const AbortSignalCtor = AbortSignal as unknown as AbortSignalCtorType;
-      if (typeof AbortSignalCtor.timeout === "function") {
+      if (typeof AbortSignalCtor.timeout === 'function') {
         fetchOptions.signal = AbortSignalCtor.timeout(options.timeout ?? 5000);
       } else {
         controller = new AbortController();
@@ -94,13 +94,13 @@ class ProductionServiceClient {
     } catch (err: unknown) {
       const latency = now() - startTime;
       const message = err instanceof Error ? err.message : String(err);
-      const name = err instanceof Error ? err.name : "Error";
+      const name = err instanceof Error ? err.name : 'Error';
 
       const fallback: Partial<ServiceResponse> = {
         data: { error: message, type: name },
         status: 0,
         headers: {},
-        protocol: "unknown",
+        protocol: 'unknown',
         service: this.extractServiceFromEndpoint(endpoint),
         latency,
       };
@@ -114,26 +114,26 @@ class ProductionServiceClient {
   private extractServiceFromEndpoint(endpoint: string): string {
     try {
       // If it's a full URL, use hostname (or pathname first segment)
-      if (endpoint.startsWith("http")) {
+      if (endpoint.startsWith('http')) {
         const u = new URL(endpoint);
         const host = u.hostname;
         if (host) return host;
         // fallback to pathname
-        const p = u.pathname.split("/").filter(Boolean);
-        return p[0] ?? "unknown";
+        const p = u.pathname.split('/').filter(Boolean);
+        return p[0] ?? 'unknown';
       }
       // path-style endpoint: return first segment
-      const parts = endpoint.split("/").filter(Boolean);
-      return parts[0] ?? "unknown";
+      const parts = endpoint.split('/').filter(Boolean);
+      return parts[0] ?? 'unknown';
     } catch {
-      const parts = endpoint.split("/").filter(Boolean);
-      return parts[0] ?? "unknown";
+      const parts = endpoint.split('/').filter(Boolean);
+      return parts[0] ?? 'unknown';
     }
   }
 
   // Convenience methods
   async get(endpoint: string, headers?: Record<string, string>): Promise<ServiceResponse> {
-    return this.makeRequest(endpoint, { method: "GET", headers });
+    return this.makeRequest(endpoint, { method: 'GET', headers });
   }
 
   async post(
@@ -141,7 +141,7 @@ class ProductionServiceClient {
     body?: object,
     headers?: Record<string, string>
   ): Promise<ServiceResponse> {
-    return this.makeRequest(endpoint, { method: "POST", body, headers });
+    return this.makeRequest(endpoint, { method: 'POST', body, headers });
   }
 
   async put(
@@ -149,7 +149,7 @@ class ProductionServiceClient {
     body?: object,
     headers?: Record<string, string>
   ): Promise<ServiceResponse> {
-    return this.makeRequest(endpoint, { method: "PUT", body, headers });
+    return this.makeRequest(endpoint, { method: 'PUT', body, headers });
   }
 
   async patch(
@@ -157,24 +157,24 @@ class ProductionServiceClient {
     body?: object,
     headers?: Record<string, string>
   ): Promise<ServiceResponse> {
-    return this.makeRequest(endpoint, { method: "PATCH", body, headers });
+    return this.makeRequest(endpoint, { method: 'PATCH', body, headers });
   }
 
   async delete(endpoint: string, headers?: Record<string, string>): Promise<ServiceResponse> {
-    return this.makeRequest(endpoint, { method: "DELETE", headers });
+    return this.makeRequest(endpoint, { method: 'DELETE', headers });
   }
 
   // Health checks
-  async checkServiceHealth(servicePath: string, healthPath: string = "/health"): Promise<boolean> {
+  async checkServiceHealth(servicePath: string, healthPath: string = '/health'): Promise<boolean> {
     try {
       // Normalize and avoid duplicate slashes; do not assume caller included baseUrl
       const cleaned = servicePath;
       // Ensure healthPath is appended with a single slash separator
-      const normalizedHealthPath = healthPath.startsWith("/") ? healthPath : `/${healthPath}`;
+      const normalizedHealthPath = healthPath.startsWith('/') ? healthPath : `/${healthPath}`;
       const path = cleaned.endsWith(normalizedHealthPath)
         ? cleaned
-        : `${cleaned.replace(/\/+$/, "")}${normalizedHealthPath}`;
-      const res = await this.makeRequest(path, { method: "GET", timeout: 2000 });
+        : `${cleaned.replace(/\/+$/, '')}${normalizedHealthPath}`;
+      const res = await this.makeRequest(path, { method: 'GET', timeout: 2000 });
       const status = res.status ?? 0;
       return status >= 200 && status < 300;
     } catch {
@@ -186,7 +186,7 @@ class ProductionServiceClient {
     const results: Record<string, boolean> = {};
     await Promise.all(
       services.map(async (service) => {
-        results[service] = await this.checkServiceHealth(`/${service}`, "/health");
+        results[service] = await this.checkServiceHealth(`/${service}`, '/health');
       })
     );
     return results;
@@ -230,26 +230,26 @@ class ProductionServiceClient {
 function getProductionServiceBaseUrl(): string {
   // Prefer Node-style process.env, then Vite-style import.meta.env, then localhost fallback
   const fromProcess =
-    typeof process !== "undefined" && (process.env as Record<string, string> | undefined)
-      ? (process.env as Record<string, string>)["PRODUCTION_SERVICE_BASE_URL"]
+    typeof process !== 'undefined' && (process.env as Record<string, string> | undefined)
+      ? (process.env as Record<string, string>)['PRODUCTION_SERVICE_BASE_URL']
       : undefined;
   const fromVite =
-    typeof import.meta !== "undefined"
+    typeof import.meta !== 'undefined'
       ? (import.meta as unknown as { env?: { VITE_PRODUCTION_SERVICE_BASE_URL?: string } }).env
           ?.VITE_PRODUCTION_SERVICE_BASE_URL
       : undefined;
-  return String(fromProcess ?? fromVite ?? "http://localhost:8080");
+  return String(fromProcess ?? fromVite ?? 'http://localhost:8080');
 }
 
 function extractProtocolFromResponse(response: Response): string {
   // Node/fetch won't expose HTTP version consistently; try to infer
   // Keep as best-effort: if connection header mentions HTTP/2, etc., otherwise fallback
   try {
-    const conn = response.headers.get("x-http-version") || response.headers.get("via") || "";
-    if (conn.includes("HTTP/2") || conn.includes("h2")) return "HTTP/2";
-    return "HTTP/1.1";
+    const conn = response.headers.get('x-http-version') || response.headers.get('via') || '';
+    if (conn.includes('HTTP/2') || conn.includes('h2')) return 'HTTP/2';
+    return 'HTTP/1.1';
   } catch {
-    return "unknown";
+    return 'unknown';
   }
 }
 

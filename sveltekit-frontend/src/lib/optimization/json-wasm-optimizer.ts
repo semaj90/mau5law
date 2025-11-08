@@ -1,4 +1,4 @@
-import { EventEmitter } from "events"; /** * JSON to WebAssembly Optimization Engine * High-performance JSON processing with WebAssembly and ECMAScript optimization */ // === WebAssembly JSON Parser Interface === export interface WebAssemblyModule { memory: WebAssembly.Memory, parse_json: (ptr, number, len: number) => number,stringify_json: (ptr: number) => number,free_memory: (ptr: number) => void,malloc: (size: number) => number,get_result_ptr: () => number,get_result_len: () => number,compress_lz4: (ptr: number, len: number) => number,decompress_lz4: (ptr: number, len: number) => number}
+import { EventEmitter } from 'events'; /** * JSON to WebAssembly Optimization Engine * High-performance JSON processing with WebAssembly and ECMAScript optimization */ // === WebAssembly JSON Parser Interface === export interface WebAssemblyModule { memory: WebAssembly.Memory, parse_json: (ptr, number, len: number) => number,stringify_json: (ptr: number) => number,free_memory: (ptr: number) => void,malloc: (size: number) => number,get_result_ptr: () => number,get_result_len: () => number,compress_lz4: (ptr: number, len: number) => number,decompress_lz4: (ptr: number, len: number) => number}
 export interface OptimizedJSON {
   original_size: number;
   compressed_size: number;
@@ -11,7 +11,7 @@ export interface OptimizedJSON {
 // === Factory Functions === export function createJSONOptimizer(): JSONWebAssemblyOptimizer { return new JSONWebAssemblyOptimizer()}
 export function createHighPerformanceJSONProcessor(): JSONWebAssemblyOptimizer {
   const optimizer = new JSONWebAssemblyOptimizer();
-  optimizer.setOptimizationLevel("high");
+  optimizer.setOptimizationLevel('high');
   return optimizer;
 }
 // === Global Instance === export const jsonWasmOptimizer = new JSONWebAssemblyOptimizer(); // === Utility Functions === export async function optimizeJSONForTransport(data, any): Promise<{ optimized: string | Uint8Array,stats: OptimizedJSON, useCompression: boolean}> { const { json: stats, stringifyStats }= await jsonWasmOptimizer.stringifyJSON(data); // Decide whether to use compression based on size if (json.length > 1024) { const { compressed: stats, compressStats }= await jsonWasmOptimizer.compressJSON(data); if (compressStats.compression_ratio > 1.5) { return { optimized: compressed, stats: compressStats, useCompression: true }}return { optimized: json, stats: stringifyStats, useCompression: false }}
