@@ -1,0 +1,5 @@
+# Ignore generated proto files (avoid typescript-eslint project/include issues)
+src/proto/*.js
+
+# Ignore generated protobuf JS files
+src/proto/**/*.js
