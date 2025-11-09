@@ -11,6 +11,8 @@ export const canvasSize = writable({ width: 1200, height: 800 });
 export const zoomLevel = writable(1);
 export const canvasPosition = writable({ x: 0, y: 0 });
 
+export const currentBoardId = writable<string | null>(null);
+
 // Board actions
 export const boardActions = {
   // Add a new object to the board
@@ -148,25 +150,70 @@ export const boardActions = {
   clearBoard() {
     boardObjects.set([]);
     selectedObjects.set([]);
+    currentBoardId.set(null);
   },
 
-  // Save board state to localStorage
-  saveBoard(caseId: string) {
-    boardObjects.subscribe((objects) => {
-      localStorage.setItem(`board-${caseId}`, JSON.stringify(objects));
+  // Save board state to the API
+  async saveBoard(caseId: string) {
+    let boardId: string | null = null;
+    currentBoardId.subscribe(id => boardId = id)();
+
+    boardObjects.subscribe(async (objects) => {
+      try {
+        if (boardId) {
+          // Update existing board
+          const response = await fetch(`/api/evidence-boards/${boardId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ layout: objects }),
+          });
+          if (!response.ok) throw new Error(`Failed to save board: ${response.statusText}`);
+        } else {
+          // Create new board
+          const response = await fetch('/api/evidence-boards', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              caseId,
+              name: `Evidence Board for Case ${caseId}`,
+              layout: objects,
+            }),
+          });
+          if (!response.ok) throw new Error(`Failed to create board: ${response.statusText}`);
+          const newBoard = await response.json();
+          if (newBoard.success && newBoard.data) {
+            currentBoardId.set(newBoard.data.id);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to save board state:", error);
+      }
     })();
   },
 
-  // Load board state from localStorage
-  loadBoard(caseId: string) {
-    const saved = localStorage.getItem(`board-${caseId}`);
-    if (saved) {
-      try {
-        const objects = JSON.parse(saved);
-        boardObjects.set(objects);
-      } catch (error) {
-        console.error("Failed to load board state:", error);
+  // Load board state from the API
+  async loadBoard(caseId: string) {
+    try {
+      const response = await fetch(`/api/evidence-boards?caseId=${caseId}`);
+      if (!response.ok) throw new Error(`Failed to load board: ${response.statusText}`);
+      
+      const result = await response.json();
+      if (result.success && result.data.length > 0) {
+        const board = result.data[0].board;
+        currentBoardId.set(board.id);
+        if (board.layout) {
+          boardObjects.set(board.layout);
+        } else {
+          boardObjects.set([]);
+        }
+      } else {
+        boardObjects.set([]);
+        currentBoardId.set(null);
       }
+    } catch (error) {
+      console.error("Failed to load board state:", error);
+      boardObjects.set([]);
+      currentBoardId.set(null);
     }
   },
 };

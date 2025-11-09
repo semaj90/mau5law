@@ -1,7 +1,8 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  type PerformanceStats = {
+  // replaced `type` with `interface` to resolve parsing error
+  interface PerformanceStats {
     webgpuAvailable: boolean;
     webglAvailable: boolean;
     userAgent: string;
@@ -87,8 +88,13 @@
   });
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
+<div class="container">
+  <header>
+    <h1>Page under reconstruction</h1>
+  </header>
+  <div class="controls">
+    <button on:click={runDiagnostics} disabled={checking}>Run Diagnostics</button>
+  </div>
   <p>This placeholder replaces corrupted or missing markup for now.</p>
   <!-- minimal diagnostics UI to surface status -->
   <section class="status-card {isSuccess ? 'success' : errors.length ? 'error' : ''}">
@@ -113,7 +119,7 @@
       </ul>
     </div>
   </section>
-</main>
+</div>
 
 <style>
   .container {

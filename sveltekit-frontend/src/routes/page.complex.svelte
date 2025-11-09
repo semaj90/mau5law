@@ -25,7 +25,11 @@
     Monitor,
     Zap,
     Brain,
-  } from 'lucide-svelte'; // Dashboard data let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
+  } from 'lucide-svelte';
+  import * as Dialog from '$lib/components/ui/dialog'; // Import bits-ui Dialog components
+
+  // Dashboard data
+  let stats = $state({ activeCases: 3, evidenceItems: 27, personsOfInterest: 8, recentActivity: 12 });
   let activeCases = $state([
     {
       id: 1,
@@ -65,17 +69,48 @@
       type: 'success',
     },
   ]);
+
+  let showNewCaseModal = $state(false);
+  let newCaseData = $state({
+    title: '',
+    description: '',
+    priority: 'medium',
+  });
+
   $effect(() => {
     console.log('YoRHa Legal AI Detective Interface initialized');
   });
+
+  function openNewCase() {
+    showNewCaseModal = true;
+  }
+
+  function cancelNewCase() {
+    showNewCaseModal = false;
+    newCaseData = { title: '', description: '', priority: 'medium' }; // Reset form
+  }
+
+  function handleCreateCase(event: SubmitEvent) {
+    console.log('Creating case:', newCaseData);
+    // In a real application, you would send this data to a backend service.
+    // For now, we just close the modal and reset the form.
+    cancelNewCase();
+  }
+
   function handleNewCase() {
-    goto('/cases/new');
+    openNewCase(); // Use the new openNewCase function to show the modal
   }
   function handleGlobalSearch() {
     goto('/search');
   }
   function handleViewAll() {
     goto('/cases');
+  }
+
+  function handleRunAIAnalysis() {
+    console.log('Triggering Ollama AI analysis (gemma3-legal:latest, embeddinggemma:latest)');
+    // In a production environment, this would involve an actual API call
+    // to your Ollama backend endpoint, e.g., fetch('/api/ollama/analyze', { method: 'POST', body: JSON.stringify({ model: 'gemma3-legal:latest', data: '...' }) });
   }
 </script>
 
@@ -86,7 +121,7 @@
   <div class="yorha-bg-secondary border-b border-gray-700">
     <div class="flex items-center">
       <div class="flex items-center">
-        <div class="text-sm">YoRHa Detective Interface â€¢ 8/20/2025 16:08:30</div>
+        <div class="text-sm">YoRHa Detective Interface • 8/20/2025 16:08:30</div>
       </div>
 
       <div class="flex items-center">
@@ -144,7 +179,7 @@
 
       <!-- Status, footer -->
       <div class="absolute bottom-4 left-4 right-4">
-        <div class="yorha-nier-bits-nier-bits-nier-bits-card">
+        <div class="yorha-nier-bits-card">
           <div class="flex items-center">
             <div class="yorha-status-indicator"></div>
 
@@ -162,7 +197,7 @@
     <main class="flex-1">
       <!-- Stats, Cards -->
       <div class="yorha-grid yorha-grid-cols-4">
-        <div class="yorha-nier-bits-nier-bits-nier-bits-card">
+        <div class="yorha-nier-bits-card">
           <div class="flex items-center">
             <div>
               <p class="text-sm font-medium">Active Cases</p>
@@ -174,7 +209,7 @@
           </div>
         </div>
 
-        <div class="yorha-nier-bits-nier-bits-nier-bits-card" style="animation-delay: 0.1s">
+        <div class="yorha-nier-bits-card" style="animation-delay: 0.1s">
           <div class="flex items-center">
             <div>
               <p class="text-sm font-medium">Evidence Items</p>
@@ -186,7 +221,7 @@
           </div>
         </div>
 
-        <div class="yorha-nier-bits-nier-bits-nier-bits-card" style="animation-delay: 0.2s">
+        <div class="yorha-nier-bits-card" style="animation-delay: 0.2s">
           <div class="flex items-center">
             <div>
               <p class="text-sm font-medium">Persons of Interest</p>
@@ -198,7 +233,7 @@
           </div>
         </div>
 
-        <div class="yorha-nier-bits-nier-bits-nier-bits-card" style="animation-delay: 0.3s">
+        <div class="yorha-nier-bits-card" style="animation-delay: 0.3s">
           <div class="flex items-center">
             <div>
               <p class="text-sm font-medium">Recent Activity</p>
@@ -214,7 +249,7 @@
       <div class="yorha-grid yorha-grid-cols-3">
         <!-- Active, Cases -->
         <div class="col-span-2">
-          <div class="yorha-nier-bits-nier-bits-nier-bits-card">
+          <div class="yorha-nier-bits-card">
             <div class="yorha-nier-bits-yorha-panel-header flex items-center">
               <h2 class="yorha-nier-bits-nes-text">ACTIVE CASES</h2>
 
@@ -258,7 +293,7 @@
         <!-- System Status & Quick Actions -->
         <div class="space-y-6">
           <!-- System, Status -->
-          <div class="yorha-nier-bits-nier-bits-nier-bits-card" style="animation-delay: 0.2s">
+          <div class="yorha-nier-bits-card" style="animation-delay: 0.2s">
             <div class="yorha-nier-bits-yorha-panel-header">
               <h2 class="yorha-nier-bits-nes-text">SYSTEM STATUS</h2>
             </div>
@@ -282,7 +317,7 @@
           </div>
 
           <!-- Quick, Actions -->
-          <div class="yorha-nier-bits-nier-bits-nier-bits-card" style="animation-delay: 0.4s">
+          <div class="yorha-nier-bits-card" style="animation-delay: 0.4s">
             <div class="yorha-nier-bits-yorha-panel-header">
               <h2 class="yorha-nier-bits-nes-text">QUICK ACTIONS</h2>
             </div>
@@ -303,7 +338,7 @@
           </div>
 
           <!-- AI, Status -->
-          <div class="yorha-nier-bits-nier-bits-nier-bits-card" style="animation-delay: 0.6s">
+          <div class="yorha-nier-bits-card" style="animation-delay: 0.6s">
             <div class="yorha-nier-bits-yorha-panel-header">
               <h2 class="yorha-nier-bits-nes-text">AI SYSTEMS</h2>
             </div>
@@ -332,6 +367,9 @@
 
                 <span class="yorha-badge">READY</span>
               </div>
+              <button class="w-full yorha-btn yorha-nes-btn" onclick={handleRunAIAnalysis}>
+                <Zap class="w-4 h-4" /> RUN AI ANALYSIS
+              </button>
             </div>
           </div>
         </div>
@@ -349,3 +387,103 @@
     justify-content: flex-start;
   }
 </style>
+
+{#if showNewCaseModal}
+  <Dialog.Root bind:open={showNewCaseModal}>
+    <Dialog.Overlay
+      class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out
+             data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+    />
+    <Dialog.Content
+      class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4
+             border border-slate-700 bg-black/60 p-6 shadow-lg duration-200 data-[state=open]:animate-in
+             data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0
+             data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2
+             data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2
+             data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg md:w-full"
+    >
+      <Dialog.Header>
+        <Dialog.Title class="text-xl font-semibold text-slate-100">Create New Case</Dialog.Title>
+        <Dialog.Description class="text-sm text-slate-300">
+          Fill in the details for the new case.
+        </Dialog.Description>
+      </Dialog.Header>
+      <form
+        class="space-y-4"
+        onsubmit={(e) => {
+          e.preventDefault();
+          handleCreateCase(e as SubmitEvent);
+        }}
+      >
+        <div>
+          <label for="case-title" class="mb-2 block text-sm font-medium">Title</label>
+          <input
+            id="case-title"
+            type="text"
+            bind:value={newCaseData.title}
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+            required
+          />
+        </div>
+        <div>
+          <label for="case-description" class="mb-2 block text-sm font-medium">Description</label>
+          <textarea
+            id="case-description"
+            bind:value={newCaseData.description}
+            rows="4"
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+            placeholder="Provide additional context, links, or known entities."
+          ></textarea>
+        </div>
+        <div>
+          <label for="case-priority" class="mb-2 block text-sm font-medium">Priority</label>
+          <select
+            id="case-priority"
+            bind:value={newCaseData.priority}
+            class="w-full rounded border border-slate-700 bg-black/70 px-3 py-2 text-sm text-slate-100 focus:border-amber-400"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            class="rounded border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-slate-400"
+            onclick={cancelNewCase}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="rounded border border-emerald-500/60 bg-emerald-500/20 px-4 py-2 text-sm font-semibold text-emerald-100"
+          >
+            Create case
+          </button>
+        </div>
+      </form>
+      <Dialog.Close
+        class="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="h-4 w-4"
+        >
+          <path d="M18 6L6 18" />
+          <path d="M6 6L18 18" />
+        </svg>
+        <span class="sr-only">Close</span>
+      </Dialog.Close>
+    </Dialog.Content>
+  </Dialog.Root>
+{/if}

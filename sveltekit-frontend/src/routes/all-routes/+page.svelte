@@ -1,31 +1,29 @@
 <script lang="ts">
   import { Card, CardContent, CardHeader, CardTitle } from '$lib/components/ui/card';
-  // Change: Use named imports for Dialog components
+  // Change: Use individual default imports for Dialog components
+  // Revert: Use named imports from the dialog index file, which is the standard Shadcn-svelte pattern.
   import {
-    Root,
-    Content,
-    Header,
-    Title,
-    Description,
-    Footer,
-    Close,
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogClose,
   } from '$lib/components/ui/dialog';
 
   // All Routes Explorer - Comprehensive Legal AI Platform Route Analysis
   // Integrates with Gemma Embeddings Vector Architecture for route categorization
 
-  // Add local PageData definition to fix $types error
-  type PageData = {
-    availableRoutes: Array<{ path: string; icon?: string; description?: string }>;
+  type Props = { // Changed from interface to type
+    data: { // PageData type moved here
+      availableRoutes: Array<{ path: string; icon?: string; description?: string }>;
 
-    routeInventory?: {
-      fileRoutesSample: Array<{ route: string; title: string }>;
+      routeInventory?: {
+        fileRoutesSample: Array<{ route: string; title: string }>;
+      };
     };
   };
-
-  interface Props {
-    data: PageData;
-  }
 
   let { data }: Props = $props();
   let selectedRoute = $state<RouteItem | null>(null); // Explicitly typed
@@ -958,20 +956,20 @@
                   >
                     📋 View All ({endpoints.length})
                   </button>
-                  <Root
+                  <Dialog
                     open={!!openClusterDialogs?.[serviceName]}
                     onOpenChange={(v: boolean) => !v && closeCluster(serviceName)}
                   >
-                    <Content>
-                      <Header>
-                        <Title>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>
                           {serviceIcon}
                           {serviceName.replace('-', ' ')} Service
-                        </Title>
-                        <Description>
+                        </DialogTitle>
+                        <DialogDescription>
                           List of all endpoints for the {serviceName.replace('-', ' ')} service.
-                        </Description>
-                      </Header>
+                        </DialogDescription>
+                      </DialogHeader>
                       <div class="grid gap-3">
                         {#each Array.isArray(endpoints) ? endpoints : [] as endpoint}
                           <div class="flex items-center justify-between p-3 bg-gray-50">
@@ -1001,13 +999,13 @@
                           </div>
                         {/each}
                       </div>
-                      <Footer>
-                        <Close asChild>
+                      <DialogFooter>
+                        <DialogClose asChild>
                           <button class="px-3 py-1 bg-gray-100 rounded">Close</button>
-                        </Close>
-                      </Footer>
-                    </Content>
-                  </Root>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </div>
               </CardContent>
             </Card>
@@ -1273,207 +1271,275 @@
           </div>
         </div>
         <div class="bg-white/50 rounded-lg">
-          <h4 class="font-bold text-pink-800">🔬 Embedding Operations</h4>
+          <h4 class="font-bold text-gray-800">📊 Monitoring & Infrastructure</h4>
           <p class="text-sm">
-            Direct Gemma embedding generation, SIMD optimization, and multi-worker processing
-            endpoints.
+            Routes for system health, metrics, and infrastructure management.
           </p>
           <div class="mt-2">
-            <span class="text-2xl font-bold text-pink-900"
-              >{routeStats.byCategory['gemma-embeddings'] || 0}
+            <span class="text-2xl font-bold text-gray-900"
+              >{routeStats.byCategory['infrastructure'] || 0}
             </span>
-            <span class="text-sm text-pink-600">routes</span>
+            <span class="text-sm text-gray-600">routes</span>
           </div>
         </div>
       </div>
-      <div class="mt-4 text-sm">
-        <p>
-          <strong>Architecture Integration</strong> This routing system implements the 5-layer Gemma
-          embeddings vector architecture with SIMD optimization, RabbitMQ distribution, XState orchestration,
-          and pgvector search capabilities.
-        </p>
-      </div>
-    </div>
-
-    <!-- System, Recommendations -->
-    <div
-      class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-lg"
-    >
-      <h3 class="text-xl font-bold mb-4 flex items-center">🎯 Consolidation Recommendations</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2">
-        <div>
-          <h4 class="font-bold text-red-800 mb-2 flex items-center">
-            ⚠️ Priority: Archive Demo Routes
-          </h4>
-          <p class="text-sm text-gray-700">
-            <strong>{routeStats.byPriority.demo + routeStats.byPriority.testing} </strong> demo/testing
-            routes should be archived to reduce complexity.
-          </p>
-          <p class="text-xs">
-            42% of routes are non-production demos that can be moved to /archive/
-          </p>
-        </div>
-        <div>
-          <h4 class="font-bold text-yellow-800 mb-2 flex items-center">
-            🔄 Priority: API Versioning
-          </h4>
-          <p class="text-sm text-gray-700">
-            <strong>{routeStats.byCategory['api-unversioned'] || 0} </strong> unversioned API routes
-            need standardization.
-          </p>
-          <p class="text-xs">Migrate unversioned APIs to /api/v2/ for consistency</p>
-        </div>
-      </div>
-    </div>
-  {:else}
-    <div class="text-center">
-      <div
-        class="animate-spin rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto"
-      ></div>
-      <h3 class="text-xl font-bold text-gray-800">Loading Route Explorer</h3>
-      <p class="text-gray-600">Analyzing Gemma embeddings vector architecture...</p>
     </div>
   {/if}
 </div>
 
-<!-- Route, Modal -->
-
-{#if showModal && selectedRoute}
-  <Root open={showModal} onOpenChange={(v: boolean) => (showModal = v)}>
-    <Content>
-      <Header>
-        <Title>
-          <div class="flex justify-between items-center">
-            <h2 class="text-xl">{selectedRoute.icon} {selectedRoute.name}</h2>
-            <Close asChild>
-              <button class="text-gray-500 hover:text-gray-700 text-2xl" aria-label="Close modal"
-                >×</button
-              >
-            </Close>
-          </div>
-        </Title>
-      </Header>
-      <div class="space-y-4">
-        <div>
-          <span class="font-semibold">URL:</span>
-          <code class="block mt-1 p-2 bg-gray-100 rounded">{selectedRoute.path} </code>
-        </div>
-        <div>
-          <span class="font-semibold">Type:</span>
-          <span
-            class="ml-2 px-2 py-1 rounded {selectedRoute.type === 'configured'
-              ? 'bg-green-100 text-green-800'
-              : 'bg-purple-100 text-purple-800'}"
-          >
-            {selectedRoute.type}
-          </span>
-        </div>
-
-        {#if selectedRoute.description}
-          <div>
-            <span class="font-semibold">Description</span>
-            <p class="mt-1">{selectedRoute.description}</p>
-          </div>
-        {/if}
-        <div class="flex gap-3">
-          <a
-            href={selectedRoute!.path}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex-1 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 text-center"
-          >
-            🚀 Visit Route
-          </a>
-          <button
-            onclick={() => navigator.clipboard.writeText(selectedRoute!.path)}
-            class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
-          >
-            📋 Copy URL
-          </button>
-        </div>
+<Dialog open={showModal} onOpenChange={(v) => (showModal = v)}>
+  <DialogContent class="sm:max-w-[425px]">
+    <DialogHeader>
+      <DialogTitle>{selectedRoute?.name}</DialogTitle>
+      <DialogDescription>Details for the route: {selectedRoute?.path}</DialogDescription>
+    </DialogHeader>
+    <div class="grid gap-4 py-4">
+      <div class="grid grid-cols-4 items-center gap-4">
+        <span class="text-right font-medium">Path:</span>
+        <code class="col-span-3 bg-gray-100 p-2 rounded">{selectedRoute?.path}</code>
       </div>
-    </Content>
-  </Root>
-{/if}
+      <div class="grid grid-cols-4 items-center gap-4">
+        <span class="text-right font-medium">Type:</span>
+        <span class="col-span-3">{selectedRoute?.type}</span>
+      </div>
+      {#if selectedRoute?.description}
+        <div class="grid grid-cols-4 items-center gap-4">
+          <span class="text-right font-medium">Description:</span>
+          <span class="col-span-3">{selectedRoute?.description}</span>
+        </div>
+      {/if}
+      <div class="grid grid-cols-4 items-center gap-4">
+        <span class="text-right font-medium">Category:</span>
+        <span class="col-span-3"
+          >{routeCategories[selectedRoute?.category || 'other']?.name}</span
+        >
+      </div>
+    </div>
+    <DialogFooter>
+      <DialogClose asChild>
+        <button class="px-4 py-2 bg-gray-100 rounded">Close</button>
+      </DialogClose>
+      <a
+        href={selectedRoute?.path}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+      >
+        Visit Route
+      </a>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
 
 <style>
-  /* Enhanced SSR-optimized 3-Column Flexbox Layout */
+  /* Flexbox layout for SSR optimization */
   .ssr-flexbox-container {
-    /* Ensure proper layout calculation on server-side rendering */;
-    min-height: 400px;
-    width: 100%;
-    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem; /* Adjust gap as needed */
   }
 
-  /* Dynamic flex-basis proportions for better visual balance */
   .flex-basis-31 {
-    flex: 0 0 calc(31% - 1rem);
-    max-width: calc(31% - 1rem);
+    flex-basis: calc(31% - 1rem); /* Roughly 1/3 with gap */
   }
   .flex-basis-33 {
-    flex: 0 0 calc(33% - 1rem);
-    max-width: calc(33% - 1rem);
+    flex-basis: calc(33% - 1rem); /* Roughly 1/3 with gap */
   }
   .flex-basis-35 {
-    flex: 0 0 calc(35% - 1rem);
-    max-width: calc(35% - 1rem);
+    flex-basis: calc(35% - 1rem); /* Roughly 1/3 with gap */
   }
 
-  /* SSR Card optimizations for consistent rendering */
-  .ssr-card {
-    display: flex;
-    flex-direction: column;
-    min-height: 280px;
-    max-height: 400px;
-    overflow: hidden;
-    /* Enhanced border and shadow for better visual hierarchy */;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-    padding: 1rem;
-    background: #fff;
-    border-radius: 8px;
-  }
-  .ssr-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  }
-
-  /* Responsive adjustments for smaller screens */
-  @media (max-width: 1024px) {
-    .flex-basis-31,
-    .flex-basis-33,
-    .flex-basis-35 {
-      flex: 0 0 calc(48% - 1rem);
-      max-width: calc(48% - 1rem);
-    }
-  }
   @media (max-width: 768px) {
     .flex-basis-31,
     .flex-basis-33,
     .flex-basis-35 {
-      flex: 0 0 100%;
-      max-width: 100%;
-      min-width: unset;
-    }
-    .ssr-flexbox-container {
-      gap: 1rem;
+      flex-basis: 100%; /* Full width on small screens */
     }
   }
 
-  /* API Service Grid optimizations */
-  .api-service-grid {
-    /* Ensure consistent grid layout across different viewport sizes */;
-    display: grid;
-    gap: 1.5rem;
-    align-items: start;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  /* General styling for route cards */
+  .route-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: all 0.2s ease-in-out;
   }
-  @media (min-width: 768px) and (max-width: 1023px) {
+
+  .route-card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .route-card-content {
+    padding: 1rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .route-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .route-card-icon {
+    font-size: 1.5rem;
+    margin-right: 0.75rem;
+  }
+
+  .route-card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 0.25rem;
+  }
+
+  .route-card-category {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .route-card-path {
+    background-color: #f1f5f9;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #334155;
+    margin-bottom: 0.75rem;
+    word-break: break-all;
+  }
+
+  .route-card-description {
+    font-size: 0.875rem;
+    color: #475569;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+
+  .route-card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .route-card-tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid;
+  }
+
+  .route-card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto; /* Pushes actions to the bottom */
+  }
+
+  .route-card-action-button {
+    flex: 1;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+  }
+
+  .route-card-action-button.visit {
+    background-color: #3b82f6;
+    color: white;
+  }
+
+  .route-card-action-button.visit:hover {
+    background-color: #2563eb;
+  }
+
+  .route-card-action-button.copy {
+    border: 1px solid #cbd5e1;
+    background-color: white;
+    color: #475569;
+  }
+
+  .route-card-action-button.copy:hover {
+    background-color: #f1f5f9;
+  }
+
+  /* API Service Cluster Specific Styles */
+  .api-service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .service-cluster {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: all 0.3s ease;
+    min-height: 340px;
+    max-height: 500px;
+  }
+
+  .service-cluster .card-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .endpoint-list {
+    margin-bottom: 1rem;
+    flex-grow: 1;
+    overflow-y: auto;
+    max-height: 200px; /* Limit height for scrollable list */
+  }
+
+  .endpoint-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #e2e8f0;
+  }
+
+  .endpoint-item:last-child {
+    border-bottom: none;
+  }
+
+  .endpoint-code {
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #334155;
+    background-color: #f8fafc;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    word-break: break-all;
+    flex-grow: 1;
+    margin-right: 0.5rem;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  /* Responsive adjustments for API service grid */
+  @media (min-width: 768px) {
     .api-service-grid {
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.25rem;
     }
   }
+
   @media (min-width: 1024px) {
     .api-service-grid {
       grid-template-columns: repeat(3, 1fr);

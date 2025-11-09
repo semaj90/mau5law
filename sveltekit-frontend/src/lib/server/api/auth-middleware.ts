@@ -1,0 +1,11 @@
+import { json, type RequestHandler } from '@sveltejs/kit';
+
+export const authenticateUser = async (event: Parameters<RequestHandler>[0]) => {
+    if (!event.locals.user) {
+        return json(
+            { success: false, message: 'Authentication required', code: 'AUTH_REQUIRED' },
+            { status: 401 }
+        );
+    }
+    return null; // No error, user is authenticated
+};

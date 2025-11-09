@@ -7,10 +7,6 @@
   - Integration with your existing legal AI platform
 -->
 <script lang="ts">
-  import type { Document } from '$lib/types';
-  // Svelte, 5 runes are auto-imported
-  // Removed unused imports (onMount, enhance) and invalid type import ActionData
-
   // Component state
   let reportText = $state<string>('');
   let summary = $state<string>('');

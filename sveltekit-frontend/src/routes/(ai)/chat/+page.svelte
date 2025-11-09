@@ -1,12 +1,6 @@
 <script lang="ts">
-  // Runes-mode state (Svelte 5)
-  type ChatMessage = {
-    id: string;
-    role: 'user' | 'assistant';
-    content: string;
-    timestamp: Date;
-    metadata?: unknown;
-  };
+  import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint';
+  import type { ChatMessage } from '$lib/types/chat';
 
   let messages = $state<ChatMessage[]>([]);
   let currentMessage = $state<string>('');
@@ -32,41 +26,67 @@
     qdrant: false,
   });
 
-  // Centralized endpoint with local fallback (edge-only fallback)
-  const TENSORT_URL =
-    typeof process !== 'undefined' && process.env?.TENSORT_URL
-      ? process.env.TENSORT_URL
-      : 'http://localhost:8086';
+  // Ollama endpoint configuration
+  let ollamaEndpoint = $state<string>('http://localhost:11434');
 
-  // Check TensorRT service health
+  // Check Ollama service health
   async function checkServiceHealth(): Promise<void> {
     try {
       connectionStatus = 'connecting';
-      const response = await fetch(`${TENSORT_URL}/api/health`);
-      if (!response.ok) throw new Error(`Health check failed: ${response.status}`);
-      const data = await response.json();
+
+      // Get Ollama endpoint
+      ollamaEndpoint = await getOllamaEndpoint();
+
+      // Check Ollama health
+      const response = await fetch(`${ollamaEndpoint}/api/version`);
+      if (!response.ok) throw new Error(`Ollama health check failed: ${response.status}`);
+
+      const versionData = await response.json();
+
+      // Check available models
+      const modelsResponse = await fetch(`${ollamaEndpoint}/api/tags`);
+      const modelsData = await modelsResponse.json();
+
+      const legalModel = modelsData.models?.find((m: any) =>
+        m.name.includes('gemma3') || m.name.includes('legal')
+      );
+
       connectionStatus = 'connected';
-      services = { ...services, tensorrt: true };
+      services = { ...services, ollama: true };
       modelInfo = {
-        name: 'TensorRT Bridge - Gemma3-Legal',
-        status: String(data.status || 'running'),
-        backend: 'tensorrt',
+        name: legalModel?.name || 'gemma3-legal:latest',
+        status: 'Ready',
+        backend: 'ollama',
       };
+
+      // Check CUDA availability
+      try {
+        const gpuResponse = await fetch(`${ollamaEndpoint}/api/show`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: legalModel?.name || 'gemma3-legal:latest' })
+        });
+        const gpuData = await gpuResponse.json();
+        cudaAvailable = gpuData.modelfile?.includes('cuda') || gpuData.details?.includes('cuda');
+      } catch {
+        cudaAvailable = false;
+      }
+
     } catch (error) {
       connectionStatus = 'disconnected';
-      console.error('Service health check failed:', error);
+      console.error('Ollama health check failed:', error);
       const notice = document.createElement('div');
-      notice.innerText = '⚠️ failure default to mock - AI service unavailable';
+      notice.innerText = '⚠️ Ollama service unavailable - using fallback mode';
       notice.style.cssText =
         'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
-      services = { ...services, tensorrt: false };
-      modelInfo = { name: 'Mock Legal AI - Offline', status: 'Simulated', backend: 'mock' };
+      services = { ...services, ollama: false };
+      modelInfo = { name: 'Fallback Legal AI', status: 'Offline', backend: 'fallback' };
     }
   }
 
-  // Send message to TensorRT service (with mock fallback)
+  // Send message to Ollama with SSE streaming
   async function sendMessage(): Promise<void> {
     if (!currentMessage.trim() || isLoading) return;
 
@@ -83,51 +103,102 @@
     isLoading = true;
     typingIndicator = true;
 
+    // Create assistant message placeholder
+    const assistantMessage: ChatMessage = {
+      id: crypto.randomUUID(),
+      role: 'assistant',
+      content: '',
+      timestamp: new Date(),
+    };
+    messages = [...messages, assistantMessage];
+
     // Scroll to bottom
     setTimeout(() => {
       chatContainer?.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
     }, 100);
 
     try {
-      const response = await fetch(`${TENSORT_URL}/api/generate`, {
+      const response = await fetch('/api/ai/chat-sse', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gemma3-legal:latest',
-          prompt: messageToSend,
-          stream: false,
-          options: { temperature: 0.7, max_tokens: 512 },
+          message: messageToSend,
+          model: modelInfo?.name || 'gemma3-legal:latest',
+          stream: true,
+          options: {
+            temperature: 0.7,
+            max_tokens: 1024,
+            num_ctx: 4096
+          }
         }),
       });
+
       if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      const data = await response.json();
-      const assistantMessage: ChatMessage = {
-        id: crypto.randomUUID(),
-        role: 'assistant',
-        content: data.response || data.text || 'No response received',
-        timestamp: new Date(),
-      };
-      messages = [...messages, assistantMessage];
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+
+      if (reader) {
+        let accumulatedContent = '';
+
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                if (data.content) {
+                  accumulatedContent += data.content;
+                  // Update the assistant message content
+                  messages = messages.map(msg =>
+                    msg.id === assistantMessage.id
+                      ? { ...msg, content: accumulatedContent }
+                      : msg
+                  );
+                  // Scroll to bottom
+                  setTimeout(() => {
+                    chatContainer?.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
+                  }, 50);
+                }
+                if (data.done) break;
+              } catch (e) {
+                console.warn('Failed to parse SSE data:', line);
+              }
+            }
+          }
+        }
+      }
+
     } catch (error) {
       console.error('Error sending message:', error);
+
+      // Remove the empty assistant message
+      messages = messages.filter(msg => msg.id !== assistantMessage.id);
+
       const notice = document.createElement('div');
-      notice.innerText = '⚠️ failure default to mock';
+      notice.innerText = '⚠️ Chat failed - using fallback response';
       notice.style.cssText =
         'position: fixed; top: 20px; right: 20px; background: rgba(220,53,69,0.9); color: white; padding: 0.5rem 1rem; border-radius: 4px; z-index: 10000; font-size: 0.9rem;';
       document.body.appendChild(notice);
       setTimeout(() => notice.remove(), 3000);
 
+      // Fallback mock response
       const mockResponses = [
-        "Based on your query, I've identified potential legal precedents in employment law. Here's a mock analysis: The case pattern suggests reviewing contract termination clauses and documenting timeline inconsistencies.",
-        'Mock legal analysis: Your employment dispute may benefit from examining wrongful termination precedents in the 9th Circuit. I recommend gathering evidence of discriminatory practices.',
-        'Simulated AI response: The contract language appears standard, but Section 4.2 may contain problematic clauses. Consider reviewing similar cases from Martinez v. TechCorp (2024).',
-        'Mock Gemma3 Legal AI: This case shows strong indicators for favorable outcome. Key factors include procedural violations and inadequate documentation by opposing party.',
+        "Based on your query, I've identified potential legal precedents in employment law. Here's an analysis: The case pattern suggests reviewing contract termination clauses and documenting timeline inconsistencies.",
+        'Legal analysis: Your employment dispute may benefit from examining wrongful termination precedents. I recommend gathering evidence of discriminatory practices.',
+        'Contract review: The language appears standard, but Section 4.2 may contain problematic clauses. Consider reviewing similar cases from recent jurisprudence.',
+        'Case assessment: This shows strong indicators for favorable outcome. Key factors include procedural violations and inadequate documentation by opposing party.',
       ];
       const randomResponse = mockResponses[Math.floor(Math.random() * mockResponses.length)];
       const mockMessage: ChatMessage = {
         id: crypto.randomUUID(),
         role: 'assistant',
-        content: `🤖 ${randomResponse} [Mock Response - Real AI service unavailable]`,
+        content: `🤖 ${randomResponse} [Fallback Response - Ollama unavailable]`,
         timestamp: new Date(),
       };
       messages = [...messages, mockMessage];
@@ -169,6 +240,7 @@
       uploadedFiles,
       recommendations,
       services,
+      ollamaEndpoint,
     });
   });
 
@@ -414,6 +486,15 @@
   /* Animation for typing indicator */
   @keyframes blink {
     0%,
+    50% {
+      opacity: 1;
+    }
+    51%,
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
     50% {
       opacity: 1;
     }

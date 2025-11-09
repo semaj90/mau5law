@@ -8,6 +8,8 @@
 - Node.js 18+
 - Drizzle ORM
 - SvelteKit 5
+The provided Svelte component is already using Svelte 5 features like $state and $effect, but it includes unused imports from Svelte 4 (writable and onMount). To fully align with Svelte 5 and clean up the code, remove these unused imports.
+No other changes are needed, as the component is otherwise compliant with Svelte 5 syntax and functionality.
 
 ### Quick Start
 

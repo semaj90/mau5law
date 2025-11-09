@@ -13,15 +13,17 @@
     ChevronRight,
     ChevronLeft,
   } from 'lucide-svelte';
-  // removed static Svelte component import (UI component may not export JS helpers)
-  // import * as yorhaAPI from '$lib/components/three/yorha-ui/api/YoRHaAPIClient.svelte';
 
-  interface NavItem {
+  // Add a tiny local constructor type to represent Svelte components without using `import type`:
+  type SvelteComponentConstructor = new (...args: any[]) => import('svelte').SvelteComponent;
+
+  type NavItem = {
     path: string;
     label: string;
-    icon?: any;
+    // Use the local constructor type so the parser doesn't see a top-level `import type` line
+    icon?: SvelteComponentConstructor | null;
     description: string;
-  }
+  };
 
   // System status and navigation
   let systemStatus = { connected: false, services: 0, errors: 0 };
@@ -179,7 +181,7 @@
       <button
         class="yorha-menu-toggle"
         aria-label="Open sidebar"
-        onclick={() => (sidebarOpen = true)}
+        on:click={() => (sidebarOpen = true)}
       >
         <Terminal size={16} />
       </button>
@@ -191,7 +193,8 @@
       </div>
       <div class="yorha-status-bar">
         <div class="yorha-status-item">
-          <span class="dot" aria-hidden="true"></span> Connected
+          <span class="dot" class:connected={systemStatus.connected} aria-hidden="true"></span>
+          {systemStatus.connected ? 'Connected' : 'Disconnected'}
         </div>
         <div class="yorha-status-item">
           Services: {systemStatus.services}
@@ -212,8 +215,8 @@
   {#if sidebarOpen}
     <div
       class="yorha-overlay"
-      onclick={closeSidebar}
-      onkeydown={handleSidebarKeydown}
+      on:click={closeSidebar}
+      on:keydown={handleSidebarKeydown}
       role="button"
       tabindex="0"
       aria-label="Close sidebar overlay"
@@ -232,8 +235,8 @@
             class="yorha-sidebar-close"
             aria-label="Close sidebar"
             tabindex="0"
-            onclick={closeSidebar}
-            onkeydown={handleSidebarKeydown}
+            on:click={closeSidebar}
+            on:keydown={handleSidebarKeydown}
           >
             <ChevronLeft size={16} />
           </button>
@@ -244,13 +247,13 @@
             <li class="yorha-nav-item">
               <button
                 class="yorha-nav-link"
-                onclick={() => navigateTo(item.path)}
+                on:click={() => navigateTo(item.path)}
                 class:yorha-nav-active={isActivePath(item.path)}
                 aria-current={isActivePath(item.path) ? 'page' : undefined}
               >
                 {#if item.icon}
-                  <!-- use direct dynamic tag form (Svelte 5 supports dynamic tags in loops) -->
-                  <item.icon size={16} />
+                  <!-- render icon with svelte:component for dynamic components -->
+                  <svelte:component this={item.icon} size={16} />
                 {/if}
                 <div class="yorha-nav-content">
                   <span class="yorha-nav-label">{item.label}</span>
@@ -380,6 +383,21 @@
   }
   :global(.yorha-quick-btn:hover) {
     background: #fbbf24;
+  }
+
+  /* Dot for status indicator */
+  :global(.dot) {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #f43f5e; /* red-400 for disconnected */
+    margin-right: 0.25rem;
+    box-shadow: 0 0 5px #f43f5e; /* subtle glow for disconnected */
+  }
+  :global(.dot.connected) {
+    background-color: #10b981; /* green-400 for connected */
+    box-shadow: 0 0 5px #10b981; /* subtle glow for connected */
   }
 
   /* Sidebar */
@@ -522,7 +540,7 @@
       width: 100%;
     }
     :global(.yorha-overlay) {
-      /* stronger overlay on small screens */;
+      /* stronger overlay on small screens */
       background: rgba(0, 0, 0, 0.6);
       z-index: 20;
     }

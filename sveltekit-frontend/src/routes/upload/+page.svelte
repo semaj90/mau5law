@@ -1,6 +1,6 @@
 <script lang="ts">
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
-  import { page } from '$app/stores';
+  import { page } from '$app/stores'; // Changed from '$app/state'
   import { goto } from '$app/navigation';
   import type { PageData } from './$types';
 
@@ -19,7 +19,7 @@
 
   let { data } = $props<{ data: PageData & { recentUploads?: UploadEntry[] } }>();
 
-  const caseId = $page.url.searchParams.get('caseId') || '';
+  const caseId = $page.url.searchParams.get('caseId') || ''; // Access value using $page
 
   // Use $state for reactive variables
   let recentUploads = $state<UploadEntry[]>(data.recentUploads ?? []);
@@ -280,40 +280,6 @@
     margin-bottom: 1em;
   }
 </style>
-    background: var(--bg-secondary);
-    border-radius: 16px;
-    padding: 3rem;
-    border: 1px solid var(--border-color);
-  }
 
-  .help-section h2 {
-    text-align: center;
-    margin: 0;
-  }
-
-  .help-section p {
-    margin-bottom: 1em;
-  }
-
-  .help-section ul {
-    list-style: disc;
-    margin-left: 20px;
-    margin-bottom: 1em;
-  }
-
-  .help-section li {
-    margin-bottom: 0.5em;
-  }
-
-  .help-section code {
-    background-color: #2d2d2d;
-    padding: 2px 4px;
-    border-radius: 4px;
-    font-family: 'Fira Code', monospace;
-  }
-
-  .help-section a {
-    color: #61dafb;
-    text-decoration: underline;
-  }
-</style>
+<!-- The component already uses Svelte 5 runes like $props and $state for reactivity.
+     No changes are needed for this file to migrate from Svelte 4 to Svelte 5. -->
