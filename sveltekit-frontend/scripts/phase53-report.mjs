@@ -1,19 +1,31 @@
 import fs from "fs";
 import path from "path";
 import { execSync } from "child_process";
+import { fileURLToPath } from 'url';
 
-// Ensure we always run Playwright and gpu-lint from the frontend working directory
-const frontendDir = path.join(process.cwd(), '..', 'sveltekit-frontend');
+// CLI flags
+const argv = process.argv.slice(2);
+const skipPlaywright = argv.includes('--skip-playwright') || argv.includes('-s');
+
+// Resolve `frontendDir` relative to this script file so the script is CWD-agnostic
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// script lives in sveltekit-frontend/scripts, so frontendDir is the parent directory
+const frontendDir = path.resolve(__dirname, '..');
 const reportDir = path.join(frontendDir, "test-reports");
 if (!fs.existsSync(reportDir)) {
   fs.mkdirSync(reportDir, { recursive: true });
 }
 
-try {
-  console.log("Running Playwright tests (from sveltekit-frontend)...");
-  execSync("npx playwright test --reporter=html", { stdio: "inherit", cwd: frontendDir });
-} catch (e) {
-  console.error("Playwright tests failed.");
+if (!skipPlaywright) {
+  try {
+    console.log("Running Playwright tests (from sveltekit-frontend)...");
+    execSync("npx playwright test --reporter=html", { stdio: "inherit", cwd: frontendDir });
+  } catch (e) {
+    console.error("Playwright tests failed.");
+  }
+} else {
+  console.log('Skipping Playwright tests (flag --skip-playwright provided)');
 }
 
 try {

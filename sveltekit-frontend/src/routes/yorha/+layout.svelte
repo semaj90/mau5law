@@ -271,7 +271,7 @@
   :global(.yorha-layout) {
     min-height: 100vh;
     background-color: #000;
-    color: #f59e0b; /* amber-400 */
+    color: #f59e0b; /* amber-400 */;
     font-family: 'Courier New', monospace;
     background-image:
       radial-gradient(circle at 20% 50%, rgba(255, 191, 0, 0.03) 0%, transparent 50%),
@@ -287,7 +287,7 @@
     height: 73px;
     display: flex;
     align-items: center;
-    justify-content: space-between; /* fixed typo */
+    justify-content: space-between; /* fixed typo */;
     padding: 1rem 1.5rem;
     z-index: 40;
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
@@ -320,7 +320,7 @@
     cursor: pointer;
   }
   :global(.yorha-menu-toggle:hover) {
-    color: #fbbf24; /* amber-300 */
+    color: #fbbf24; /* amber-300 */;
     border-color: rgba(245, 158, 11, 0.6);
   }
   :global(.yorha-brand-title) {
@@ -351,12 +351,12 @@
 
   /* Fixed syntax error: removed stray comma, separated statements */
   :global(.yorha-status-connected) {
-    color: #10b981; /* green-400 */
+    color: #10b981; /* green-400 */;
     opacity: 1;
   }
 
   :global(.yorha-status-error) {
-    color: #f43f5e; /* red-400 */
+    color: #f43f5e; /* red-400 */;
     opacity: 1;
   }
   :global(.yorha-quick-actions) {
@@ -388,7 +388,7 @@
     top: 73px;
     left: 0;
     bottom: 0;
-    width: 20rem; /* w-80 */
+    width: 20rem; /* w-80 */;
     background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(255, 191, 0, 0.05) 100%);
     border-right: 1px solid rgba(245, 158, 11, 0.3);
     transform: translateX(-100%);
@@ -407,7 +407,7 @@
   :global(.yorha-nav-header) {
     display: flex;
     align-items: center;
-    justify-content: space-between; /* fixed typo */
+    justify-content: space-between; /* fixed typo */;
     padding: 1.5rem;
     border-bottom: 1px solid rgba(245, 158, 11, 0.3);
   }
@@ -522,7 +522,7 @@
       width: 100%;
     }
     :global(.yorha-overlay) {
-      /* stronger overlay on small screens */
+      /* stronger overlay on small screens */;
       background: rgba(0, 0, 0, 0.6);
       z-index: 20;
     }

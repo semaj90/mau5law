@@ -39,6 +39,11 @@ export default ts.config(
       'dist',
       'coverage',
       '**/*.config.*',
+      'src/proto/*.js',
+      'src/proto/**/*.js',
+      "src/service-worker.ts",
+      "src/tests/**",
+      "**/*.d.ts"
     ],
   }
 );

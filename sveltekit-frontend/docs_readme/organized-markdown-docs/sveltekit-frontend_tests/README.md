@@ -79,7 +79,7 @@ This directory contains comprehensive Playwright tests for the SvelteKit 2 + Sve
 ### Prerequisites
 1. Ensure PostgreSQL is running with pgvector extension
 2. Ollama service should be running (`npm run ollama:start`)
-3. Required models should be available (`llama3.2`, `nomic-embed-text`)
+3. Required models should be available (`gemma3-legal:latest`, `nomic-embed-text`)
 
 ### Commands
 

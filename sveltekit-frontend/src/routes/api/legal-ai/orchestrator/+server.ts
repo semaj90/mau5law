@@ -405,7 +405,7 @@ class LegalAIOrchestrator {
   async executeWorkflow(request: OrchestrationRequest): Promise<OrchestrationResult> {
     const workflowId = this.generateWorkflowId();
     const startTime = Date.now();
-    let result: OrchestrationResult = {
+    const result: OrchestrationResult = {
       workflowId,
       workflow: request.workflow,
       status: 'processing',
@@ -422,7 +422,7 @@ class LegalAIOrchestrator {
     try {
       const workflowSteps = this.getWorkflowSteps(request.workflow);
       for (const stepConfig of workflowSteps) {
-        let step: WorkflowStep = {
+        const step: WorkflowStep = {
           name: stepConfig.name,
           status: 'processing',
           duration: 0,

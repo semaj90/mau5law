@@ -101,7 +101,7 @@ class VectorPipelineService {
   /* * Process documents from MinIO with FastEmbed integration */
   async processDocuments(request: VectorPipelineRequest): Promise<ProcessingResult> {
     const startTime = Date.now();
-    let results: EmbeddingResult[] = [];
+    const results: EmbeddingResult[] = [];
     const errors: string[] = [];
     try {
       // Determine which objects to process

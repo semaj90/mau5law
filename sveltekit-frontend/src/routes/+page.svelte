@@ -4,76 +4,28 @@
   import * as unified from '$lib/stores/unified';
   import LoginButton from '$lib/components/auth/LoginButton.svelte';
 
-  // Simple file uploader utility (bits-ui doesn't have createFileUploader)'
-  function createFileUploader(url: string) {
-    type UploadFile = { id: string; file: File; name: string; progress: number; error?: boolean };
-    type UploadEvents = {
-      success?: ((data: unknown) => void)[];
-      error?: ((err: unknown) => void)[];
-    };
-    // typed $state to avoid 'unknown' warnings
-    let events = $state<UploadEvents>({});
-    let files = $state<UploadFile[]>([]);
+  import { uploadAndAnalyze } from '$lib/server/actions/legal-actions';
 
-    async function uploadImpl(file: File): Promise<any> {
-      try {
-        const formData = new FormData();
-        formData.append('file', file);
+  let file: File | null = null;
+  let result = $state<any>(null); // Use any for now, or define a proper interface for the result
+  let isUploading = $state<boolean>(false);
 
-        const response = await fetch(url, {
-          method: 'POST',
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Upload failed: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        events.success?.forEach((fn) => fn(result));
-        return result;
-      } catch (error) {
-        events.error?.forEach((fn) => fn(error));
-        throw error;
-      }
+  async function handleUpload() {
+    if (!file) {
+      alert('Please select a file to upload.');
+      return;
     }
 
-    return {
-      // exposes a simple array the template can iterate over
-      files,
-      // Accept FileList or Array<File>, push metadata and start upload
-      addFiles: (list: FileList | File[]) => {
-        const arr = Array.from(list as FileList | File[]) as File[];
-        arr.forEach((file) => {
-          const id =
-            browser && (crypto as any).randomUUID
-              ? (crypto as any).randomUUID()
-              : `${Date.now()}-${Math.random()}`;
-          const fileObj: UploadFile = { id, file, name: file.name, progress: 0 };
-          files.push(fileObj);
-          uploadImpl(file)
-            .then(() => {
-              fileObj.progress = 100;
-              events.success?.forEach((fn) => fn(fileObj));
-            })
-            .catch(() => {
-              fileObj.progress = 0;
-              fileObj.error = true;
-              events.error?.forEach((fn) => fn(fileObj));
-            });
-        });
-      },
-      upload: uploadImpl,
-      on: (event: keyof UploadEvents, callback: (data: unknown) => void) => {
-        if (event === 'success') {
-          if (!events.success) events.success = [];
-          events.success.push(callback);
-        } else if (event === 'error') {
-          if (!events.error) events.error = [];
-          events.error.push(callback);
-        }
-      },
-    };
+    isUploading = true;
+    try {
+      result = await uploadAndAnalyze(file);
+      console.log('Analysis Complete:', result);
+    } catch (error) {
+      console.error('Upload and analysis failed:', error);
+      alert('Failed to upload and analyze document.');
+    } finally {
+      isUploading = false;
+    }
   }
 
   // Create safe local stores that fall back if unified exports are missing
@@ -363,14 +315,35 @@
         onkeydown={onKey}
       />
       <button onclick={handleSubmit} disabled={loading}>{loading ? 'Waiting...' : 'Ask'}</button>
+      <input type="file" bind:files={file} />
       <button
         class="card-button-custom"
-        onclick={() => uploader.addFiles((window as any).fileList ?? [])}>Upload</button
+        onclick={handleUpload}
+        disabled={isUploading}
       >
+        {isUploading ? 'Uploading...' : 'Upload & Analyze'}
+      </button>
     </div>
 
     {#if $errorMessage}
       <p class="nes-text is-error" style="margin-top: 1rem;">{$errorMessage}</p>
+    {/if}
+
+    {#if result}
+      <div class="nes-container with-title is-centered" style="margin-top: 2rem;">
+        <p class="title">Analysis Result</p>
+        <p><strong>Document ID:</strong> {result.documentId}</p>
+        <p><strong>Document Type:</strong> {result.parsed.document_type}</p>
+        <p><strong>Risk Level:</strong> {result.parsed.risk_level}</p>
+        <h4>Recommendations:</h4>
+        <ul>
+          {#each result.analysis.recommendations as rec}
+            <li>{rec.action} (confidence: {rec.confidence})</li>
+          {/each}
+        </ul>
+        <h4>Synthesis:</h4>
+        <p>{result.analysis.synthesis}</p>
+      </div>
     {/if}
 
     <div class="recommendation-cards" aria-live="polite">
@@ -435,14 +408,14 @@
   .nes-container.hero-section-custom {
     text-align: center;
     margin-bottom: 3rem;
-    padding: 3rem 1rem; /* Added semicolon */
+    padding: 3rem 1rem; /* Added semicolon */;
     background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 65, 0.05) 100%);
     border: 2px solid rgba(255, 215, 0, 0.3);
   }
 
   .hero-section-custom .nes-text.is-primary {
-    font-size: 3rem; /* Added semicolon */
-    color: #ffd700; /* Override NES.css primary color */
+    font-size: 3rem; /* Added semicolon */;
+    color: #ffd700; /* Override NES.css primary color */;
     margin-bottom: 1rem;
     text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
     font-weight: 800;
@@ -450,7 +423,7 @@
 
   .hero-section-custom .nes-text.is-success.subtitle-custom {
     font-size: 1.4rem;
-    color: #00ff41; /* Override NES.css success color */
+    color: #00ff41; /* Override NES.css success color */;
     margin-bottom: 1rem;
     font-weight: 600;
   }
@@ -472,7 +445,7 @@
 
   .status-item-custom {
     display: flex;
-    justify-content: space-between; /* Corrected typo */
+    justify-content: space-between; /* Corrected typo */;
     align-items: center;
     padding: 1rem;
   }
@@ -512,7 +485,7 @@
 
   .tech-badge {
     display: inline-block;
-    padding: 0.25rem 0.75rem; /* Added semicolon */
+    padding: 0.25rem 0.75rem; /* Added semicolon */;
     background: rgba(168, 85, 247, 0.2);
     border: 1px solid #a855f7;
     border-radius: 12px;
@@ -531,7 +504,7 @@
     padding: 2rem;
     display: flex;
     align-items: center;
-    gap: 1.5rem; /* Added semicolon */
+    gap: 1.5rem; /* Added semicolon */;
     transition: all 0.3s ease;
   }
 
@@ -542,12 +515,12 @@
   }
 
   .stat-icon-custom {
-    font-size: 3rem; /* Added semicolon */
+    font-size: 3rem; /* Added semicolon */;
     filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); /* Corrected comma */
   }
 
   .stat-content-custom h3 {
-    margin: 0 0 0.5rem 0; /* Corrected comma */
+    margin: 0 0 0.5rem 0; /* Corrected comma */;
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -555,7 +528,7 @@
 
   .stat-value-custom {
     font-size: 2rem;
-    font-weight: bold; /* Added semicolon */
+    font-weight: bold; /* Added semicolon */;
     margin: 0;
     font-family: 'JetBrains Mono', monospace;
   }
@@ -574,7 +547,7 @@
     position: relative;
     overflow: hidden;
     display: flex;
-    flex-direction: column; /* Added semicolon */
+    flex-direction: column; /* Added semicolon */;
     gap: 1rem;
   }
 
@@ -585,20 +558,20 @@
   }
 
   .action-card-custom::before {
-    /* Corrected pseudo-element syntax */
+    /* Corrected pseudo-element syntax */;
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px; /* Added semicolon */
+    height: 4px; /* Added semicolon */;
     background: linear-gradient(90deg, #ffd700, #00ff41);
     opacity: 0;
     transition: opacity 0.3s ease; /* Added semicolon */
   }
 
   .card-icon-custom {
-    font-size: 3rem; /* Added semicolon */
+    font-size: 3rem; /* Added semicolon */;
     filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.5)); /* Corrected comma */
   }
 
@@ -618,7 +591,7 @@
   .featured-card-custom {
     position: relative;
     display: block;
-    padding: 3rem; /* Added semicolon */
+    padding: 3rem; /* Added semicolon */;
     background: linear-gradient(135deg, rgba(0, 255, 65, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
     border: 3px solid #00ff41;
     border-radius: 16px;
@@ -629,13 +602,13 @@
   }
 
   .featured-card-custom::before {
-    /* Corrected pseudo-element syntax */
+    /* Corrected pseudo-element syntax */;
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 6px; /* Added semicolon */
+    height: 6px; /* Added semicolon */;
     background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
     background-size: 200% 100%;
     animation: shimmer 3s linear infinite; /* Added semicolon */
@@ -654,7 +627,7 @@
     position: absolute;
     top: 1rem;
     right: 1rem;
-    padding: 0.5rem 1rem; /* Added semicolon */
+    padding: 0.5rem 1rem; /* Added semicolon */;
     background: linear-gradient(135deg, #00ff41 0%, #00cc34 100%);
     color: #000;
     font-weight: 900;
@@ -694,7 +667,7 @@
     padding: 1rem 2rem;
     font-weight: 900;
     font-size: 1.2rem;
-    border-radius: 8px; /* Added semicolon */
+    border-radius: 8px; /* Added semicolon */;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 255, 65, 0.3);
   }
@@ -740,7 +713,7 @@
 
   .card {
     background: #ffffff;
-    border-radius: 12px; /* Added semicolon */
+    border-radius: 12px; /* Added semicolon */;
     padding: 1rem;
     box-shadow: 0 6px 18px rgba(13, 38, 59, 0.06);
     transition:
@@ -751,13 +724,13 @@
 
   .card.streaming {
     opacity: 0.95;
-    animation: pulse 1.2s infinite alternate; /* Added semicolon */
+    animation: pulse 1.2s infinite alternate; /* Added semicolon */;
     border: 1px dashed rgba(43, 108, 176, 0.12);
   }
 
   .card.dym {
     color: #ff6600;
-    border-left: 4px solid #ff9a3c; /* Added semicolon */
+    border-left: 4px solid #ff9a3c; /* Added semicolon */;
     background: linear-gradient(90deg, #fffaf5, #fff);
   }
 
@@ -774,7 +747,7 @@
     font-size: 0.85rem;
     color: #6b7280;
     margin-top: 0.5rem;
-    display: flex; /* Added semicolon */
+    display: flex; /* Added semicolon */;
     gap: 1rem;
     align-items: center;
   }

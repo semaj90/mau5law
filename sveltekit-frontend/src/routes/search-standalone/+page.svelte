@@ -220,7 +220,7 @@
     margin-bottom: 32px; /* Fixed: added semicolon */
   }
   .header-content {
-    text-align: center; /* Fixed: added semicolon */
+    text-align: center; /* Fixed: added semicolon */;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
   }
@@ -244,7 +244,7 @@
     margin: 0 auto;
   }
   .search-section {
-    margin-bottom: 32px; /* Fixed: added semicolon */
+    margin-bottom: 32px; /* Fixed: added semicolon */;
     display: flex;
     justify-content: center;
   }
@@ -317,7 +317,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8); /* Fixed: comma changed to semicolon */
+    background: rgba(0, 0, 0, 0.8); /* Fixed: comma changed to semicolon */;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -356,7 +356,7 @@
   }
   .modal-content h4 {
     font-size: 10px;
-    color: #495057; /* Fixed: added semicolon */
+    color: #495057; /* Fixed: added semicolon */;
     margin: 20px 0 12px 0; /* Fixed: comma changed to space */
   }
   .content-text {
@@ -398,7 +398,7 @@
   .footer-content {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Fixed: added semicolon */
+    align-items: center; /* Fixed: added semicolon */;
     background: rgba(255, 255, 255, 0.9);
   }
   .footer-text {
@@ -417,7 +417,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 8px; /* Fixed: added semicolon */
+    font-size: 8px; /* Fixed: added semicolon */;
     color: #495057;
   }
   /* Responsive design */
@@ -453,7 +453,7 @@
       width: 100%;
     }
     .modal-header {
-      flex-direction: column; /* Fixed: added semicolon */
+      flex-direction: column; /* Fixed: added semicolon */;
       gap: 12px;
     }
     .close-btn {

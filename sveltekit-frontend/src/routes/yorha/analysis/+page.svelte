@@ -353,7 +353,7 @@
   }
   .yorha-nav {
     flex: 1;
-    padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */
+    padding: 15px 15px; /* Changed from 15px 0; to provide consistent horizontal padding for the nav container */;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -366,8 +366,8 @@
   .nav-item {
     display: flex;
     align-items: center;
-    padding: 8px 0; /* Removed horizontal padding from item itself */
-    padding-left: 15px; /* Added explicit left padding for content alignment */
+    padding: 8px 0; /* Removed horizontal padding from item itself */;
+    padding-left: 15px; /* Added explicit left padding for content alignment */;
     background: none;
     border: none;
     color: #888;

@@ -10,7 +10,28 @@ import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const rootDir = join(__dirname, '..');
+
+const getProjectRoot = () => {
+  let currentDir = __dirname;
+  while (true) {
+    if (fs.existsSync(join(currentDir, 'package.json'))) {
+      return currentDir;
+    }
+    const parentDir = join(currentDir, '..');
+    if (parentDir === currentDir) {
+      // Reached the filesystem root
+      return null;
+    }
+    currentDir = parentDir;
+  }
+};
+
+const rootDir = getProjectRoot();
+
+if (!rootDir) {
+  console.error('❌ Could not determine project root. Make sure a package.json file exists in the root directory.');
+  process.exit(1);
+}
 
 console.log('\n🔍 AssemblyScript Installation & Compilation Verification\n');
 console.log('='.repeat(60));
@@ -120,12 +141,12 @@ try {
         abort: () => console.log('WASM abort called')
       }
     });
-    
+
     pass('WASM module instantiated successfully');
-    
+
     const exports = Object.keys(wasmModule.instance.exports);
     console.log(`   Exported functions: ${exports.slice(0, 10).join(', ')}${exports.length > 10 ? '...' : ''}`);
-    
+
     // Test if vector operations are available
     if (exports.includes('cosineSimilarity')) {
       pass('Vector operations exported correctly');
@@ -148,7 +169,7 @@ try {
     if (asconfig.targets) {
       const targets = Object.keys(asconfig.targets);
       pass(`Build targets configured: ${targets.join(', ')}`);
-      
+
       for (const target of targets) {
         const config = asconfig.targets[target];
         console.log(`   ${target}: ${config.outFile}`);
@@ -169,7 +190,7 @@ try {
     'asbuild:debug',
     'asbuild:release'
   ];
-  
+
   for (const script of wasmScripts) {
     if (packageJson.scripts?.[script]) {
       pass(`Script configured: ${script}`);

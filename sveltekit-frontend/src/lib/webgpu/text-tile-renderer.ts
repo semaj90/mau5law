@@ -357,7 +357,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     const startTime = performance.now();
     const { target = 'component-data', instantMode = true, qualityOverride } = options;
     console.log(`ðŸŽ¨ Rendering ${compressedTiles.length} text tiles to ${target}`);
-    let components: InstantUIComponent[] = [];
+    const components: InstantUIComponent[] = [];
 
     // Update quality tier if overridden
     const qualityTier = qualityOverride || this.config.qualityTier;
@@ -411,7 +411,7 @@ fn cs_main(@builtin(global_invocation_id) global_id: vec3<u32>) {
     tiles: CompressedTextTile[],
     qualityTier: 'nes' | 'snes' | 'n64'
   ): Promise<InstantUIComponent[]> {
-    let components: InstantUIComponent[] = [];
+    const components: InstantUIComponent[] = [];
     for (const tile of tiles) {
       // Check cache first
       if (this.tileCache.has(tile.id)) {

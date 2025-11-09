@@ -457,17 +457,17 @@
     position: relative;
   }
   :global(.gpu-accelerated::after) {
-    content: '⚡'; /* Fixed: 'âš¡' was likely a character encoding issue, replaced with standard lightning bolt */
+    content: '⚡'; /* Fixed: 'âš¡' was likely a character encoding issue, replaced with standard lightning bolt */;
     position: absolute;
     top: -8px;
     right: -8px;
     font-size: 12px;
   }
   .tab-button {
-    padding: 0.5rem 1rem; /* px-4 py-2 */
-    font-size: 0.875rem; /* text-sm */
-    font-weight: 500; /* font-medium */
-    color: #4b5563; /* text-gray-600 */
+    padding: 0.5rem 1rem; /* px-4 py-2 */;
+    font-size: 0.875rem; /* text-sm */;
+    font-weight: 500; /* font-medium */;
+    color: #4b5563; /* text-gray-600 */;
     border-top-left-radius: 0.375rem;
     border-top-right-radius: 0.375rem;
     background: transparent;
@@ -477,11 +477,11 @@
       background-color 0.15s ease;
   }
   .tab-button:hover {
-    color: #1d4ed8; /* blue-700 */
+    color: #1d4ed8; /* blue-700 */;
     background-color: #f9fafb; /* gray-50 */
   }
   .tab-active {
-    border-bottom: 2px solid #2563eb; /* border-blue-600 */
+    border-bottom: 2px solid #2563eb; /* border-blue-600 */;
     color: #1d4ed8; /* text-blue-700 */
   }
 </style>

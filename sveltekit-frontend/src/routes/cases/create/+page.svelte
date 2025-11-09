@@ -61,7 +61,7 @@ import type { Case } from '$lib/types'; import { goto } from '$app/navigation'; 
     font-size: 1rem;
   }
 
-  .form-field,
+  .form-field,;
   input:focus,
   .form-field textarea:focus,
   .form-field select:focus {

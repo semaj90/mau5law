@@ -278,11 +278,11 @@
     animation: thinking 1.5s ease-in-out infinite;
   }
   :global(.thinking-indicator span:nth-child(2)) {
-    /* Corrected syntax */
+    /* Corrected syntax */;
     animation-delay: 0.3s;
   }
   :global(.thinking-indicator span:nth-child(3)) {
-    /* Corrected syntax */
+    /* Corrected syntax */;
     animation-delay: 0.6s;
   }
 
@@ -402,7 +402,7 @@
      ; gap: 1rem;
       align-items: flex-start} */
     :global(.tab-content) {
-      /* Changed to global selector */
+      /* Changed to global selector */;
       padding: 0.5rem;
     } /* Corrected CSS syntax */
   }

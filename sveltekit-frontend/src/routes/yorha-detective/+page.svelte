@@ -90,24 +90,24 @@
   }
   .logo-symbol {
     text-shadow: 0 0 20px #00ff41;
-    font-size: 3.75rem; /* 6xl */
-    font-weight: 700; /* bold */
+    font-size: 3.75rem; /* 6xl */;
+    font-weight: 700; /* bold */;
     color: #22c55e; /* green-400 */
   }
   .logo-main {
     text-shadow: 0 0 15px #00ff41;
-    font-size: 3rem; /* 5xl */
-    font-weight: 300; /* light */
-    color: #22c55e; /* green-400 */
+    font-size: 3rem; /* 5xl */;
+    font-weight: 300; /* light */;
+    color: #22c55e; /* green-400 */;
     margin-left: 1rem; /* ml-4 */
   }
   .progress-bar {
-    border: 1px solid #333333; /* Keep border as UnoCSS might not handle it exactly */
+    border: 1px solid #333333; /* Keep border as UnoCSS might not handle it exactly */;
     width: 100%;
-    max-width: 28rem; /* max-w-md */
-    height: 1rem; /* h-4 */
-    background-color: #1f2937; /* bg-gray-800 */
-    border-radius: 9999px; /* rounded-full */
+    max-width: 28rem; /* max-w-md */;
+    height: 1rem; /* h-4 */;
+    background-color: #1f2937; /* bg-gray-800 */;
+    border-radius: 9999px; /* rounded-full */;
     overflow: hidden;
     margin-bottom: 1rem; /* mb-4 */
   }
@@ -123,7 +123,7 @@
     font-size: 1rem;
     color: #00ff41;
     font-weight: bold;
-    color: #22c55e; /* green-400 */
+    color: #22c55e; /* green-400 */;
     margin-bottom: 2rem; /* mb-8 */
   }
   .boot-messages {
@@ -134,7 +134,7 @@
     padding: 2rem;
     min-height: 200px;
     width: 100%;
-    max-width: 42rem; /* max-w-2xl */
+    max-width: 42rem; /* max-w-2xl */;
     overflow-y: auto;
     margin-bottom: 2rem; /* mb-8 */
   }
@@ -175,7 +175,7 @@
     border-top: 1px solid #333333;
     padding-top: 1rem;
     width: 100%;
-    max-width: 42rem; /* max-w-2xl */
+    max-width: 42rem; /* max-w-2xl */;
     text-align: center;
     margin-top: auto;
   }
@@ -191,9 +191,7 @@
       transform: scale(1);
     }
     50% {
-      text-shadow:
-        0 0 30px #00ff41,
-        0 0 40px #00ff41;
+      text-shadow: 0 0 30px #00ff41 0 0 40px #00ff41;
       transform: scale(1.05);
     }
   }
