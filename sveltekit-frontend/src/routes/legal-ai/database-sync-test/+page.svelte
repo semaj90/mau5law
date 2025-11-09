@@ -67,7 +67,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     margin: 1.5rem 0;
   }
   .status-nier-bits-card {
-    /* Corrected selector */
+    /* Corrected selector */;
     display: flex;
     align-items: center;
     gap: 0.75rem;
@@ -78,7 +78,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     transition: border-color 0.2s;
   }
   .status-nier-bits-card.online {
-    /* Corrected selector */
+    /* Corrected selector */;
     border-color: #28a745;
   }
   .status-indicator {
@@ -88,7 +88,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     background: #dc3545;
   }
   .status-nier-bits-card.online .status-indicator {
-    /* Corrected selector */
+    /* Corrected selector */;
     background: #28a745;
   }
   .last-checked {
@@ -103,14 +103,14 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
     gap: 2rem;
   }
   .data-nier-bits-card {
-    /* Corrected selector */
+    /* Corrected selector */;
     background: white;
     padding: 1.5rem;
     border-radius: 6px;
     border: 1px solid #ddd;
   }
   .data-nier-bits-card h3 {
-    /* Corrected selector */
+    /* Corrected selector */;
     margin-top: 0;
     color: #0066cc;
   }
@@ -300,7 +300,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   /* Error Display */
   .error-display {
-    background: #ffebee; /* Corrected color code */
+    background: #ffebee; /* Corrected color code */;
     border: 1px solid #f44336;
     border-radius: 6px;
     padding: 1rem;
@@ -309,7 +309,7 @@ import type { Document } from '$lib/types'; // Svelte, 5 runes are auto-imported
   }
   /* Test Log */
   .log-container {
-    background: #1e1e1e; /* Corrected color code */
+    background: #1e1e1e; /* Corrected color code */;
     color: #f0f0f0;
     padding: 1.5rem;
     border-radius: 6px;

@@ -104,7 +104,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
   }
   .header-content {
     display: flex;
-    justify-content: space-between; /* fixed typo */
+    justify-content: space-between; /* fixed typo */;
     align-items: center;
     margin-bottom: 16px;
   }
@@ -120,7 +120,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
   /* Accessibility: Remove drop-shadow in high-contrast modes */
   @media (forced-colors: active) {
     .title-icon {
-      filter: none !important; /* Optionally, increase color contrast if needed */
+      filter: none !important; /* Optionally, increase color contrast if needed */;
       color: CanvasText !important;
     }
   }

@@ -862,7 +862,7 @@
 				"-ExecutionPolicy",
 				"Bypass",
 				"-Command",
-				"Write-Host '🚀 Starting PostgreSQL 17 Server...' -ForegroundColor Green; $env:PGPASSWORD='123456'; & 'C:\Program Files\PostgreSQL\17\bin\pg_ctl.exe' start -D 'C:\Program Files\PostgreSQL\17\data' -l 'C:\Program Files\PostgreSQL\17\data\postgresql.log'; Write-Host '✅ PostgreSQL 17 started on port 5432' -ForegroundColor Cyan"
+				"Write-Host '🚀 Starting PostgreSQL 17 Server...' -ForegroundColor Green; $env:PGPASSWORD='123456'; & 'C:\\Program Files\\PostgreSQL\\17\\bin\\pg_ctl.exe' start -D 'C:\\Program Files\\PostgreSQL\\17\\data' -l 'C:\\Program Files\\PostgreSQL\\17\\data\\postgresql.log'; Write-Host '✅ PostgreSQL 17 started on port 5432' -ForegroundColor Cyan"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"
@@ -995,7 +995,7 @@
 				"-ExecutionPolicy",
 				"Bypass",
 				"-Command",
-				"Write-Host '🚀 Starting CUDA Vector Search Service...' -ForegroundColor Yellow; cd '${workspaceFolder}/go-microservice'; if (!(Test-Path 'BUILD-CUDA-VECTOR-SEARCH.bat')) { Write-Host '⚠️ CUDA build script not found - create manually' -ForegroundColor Yellow } else { .\BUILD-CUDA-VECTOR-SEARCH.bat }; Start-Process -NoNewWindow -FilePath '.\bin\cuda-vector-search.exe'; Write-Host '✅ CUDA Vector Search Service started' -ForegroundColor Cyan"
+				"Write-Host '🚀 Starting CUDA Vector Search Service...' -ForegroundColor Yellow; cd '${workspaceFolder}/go-microservice'; if (!(Test-Path 'BUILD-CUDA-VECTOR-SEARCH.bat')) { Write-Host '⚠️ CUDA build script not found - create manually' -ForegroundColor Yellow } else { .\\BUILD-CUDA-VECTOR-SEARCH.bat }; Start-Process -NoNewWindow -FilePath '.\\bin\\cuda-vector-search.exe'; Write-Host '✅ CUDA Vector Search Service started' -ForegroundColor Cyan"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"
@@ -1021,7 +1021,7 @@
 				"-ExecutionPolicy",
 				"Bypass",
 				"-Command",
-				"Write-Host '🚀 Starting GPU Metrics Exporter...' -ForegroundColor DarkGray; cd '${workspaceFolder}/go-microservice'; if (!(Test-Path 'BUILD-GPU-METRICS.bat')) { Write-Host '⚠️ GPU Metrics build script not found - create manually' -ForegroundColor Yellow } else { .\BUILD-GPU-METRICS.bat }; Set-Content -Path 'gpu-metric-exporter.log' -Value ''; Start-Process -NoNewWindow -FilePath 'go run ./cmd/gpu-metric-exporter' -RedirectStandardOutput 'gpu-metric-exporter.log' -RedirectStandardError 'gpu-metric-exporter.log'; Write-Host '✅ GPU Metrics Exporter started' -ForegroundColor Cyan"
+				"Write-Host '🚀 Starting GPU Metrics Exporter...' -ForegroundColor DarkGray; cd '${workspaceFolder}/go-microservice'; if (!(Test-Path 'BUILD-GPU-METRICS.bat')) { Write-Host '⚠️ GPU Metrics build script not found - create manually' -ForegroundColor Yellow } else { .\\BUILD-GPU-METRICS.bat }; Set-Content -Path 'gpu-metric-exporter.log' -Value ''; Start-Process -NoNewWindow -FilePath 'go run ./cmd/gpu-metric-exporter' -RedirectStandardOutput 'gpu-metric-exporter.log' -RedirectStandardError 'gpu-metric-exporter.log'; Write-Host '✅ GPU Metrics Exporter started' -ForegroundColor Cyan"
 			],
 			"options": {
 				"cwd": "${workspaceFolder}"

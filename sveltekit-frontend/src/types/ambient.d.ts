@@ -80,7 +80,7 @@ declare interface SimpleRedis {
 
 /** CommonJS-style redis module export (typings for legacy imports) */
 declare module 'redis' {
-	const Redis: { createClient?: (...args: any[]) => SimpleRedis } & any;
+	const Redis: { createClient?: (...args: unknown[]) => SimpleRedis } & unknown;
 	export = Redis;
 }
 

@@ -143,7 +143,7 @@
   }
   .header-content {
     display: flex;
-    justify-content: space-between; /* Corrected 'space-betweenn' */
+    justify-content: space-between; /* Corrected 'space-betweenn' */;
     align-items: center;
     margin-bottom: 16px;
   }
@@ -206,7 +206,7 @@
     border-color: var(--nes-green, #92cc41);
     color: #000;
   }
-  .save-btn:hover:not(:disabled) { /* Corrected ': hover' */
+  .save-btn:hover:not(:disabled) { /* Corrected ': hover' */;
     background: #7fb82f;
     box-shadow: 0 4px 12px rgba(146, 204, 65, 0.3);
   }
@@ -227,7 +227,7 @@
     font-weight: 500;
     max-width: 300px;
   }
-  .document-title-input:focus { /* Corrected ': focus' */
+  .document-title-input:focus { /* Corrected ': focus' */;
     outline: none;
     border-color: var(--nes-blue, #3cbcfc);
     box-shadow: 0 0 8px rgba(60, 188, 252, 0.3); /* Corrected '0, 0 8px' */

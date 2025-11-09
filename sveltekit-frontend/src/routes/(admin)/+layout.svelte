@@ -51,15 +51,15 @@
   }
 
   .admin-main {
-    flex: 1; /* Added semicolon */
+    flex: 1; /* Added semicolon */;
     padding: 1.5rem;
     overflow-x: auto;
   }
 
   /* Admin-specific security indicators */
   .admin-main::after {
-    content: 'ðŸ”’ ADMIN ACCESS'; /* Added semicolon */
-    position: fixed; /* Added semicolon */
+    content: 'ðŸ”’ ADMIN ACCESS'; /* Added semicolon */;
+    position: fixed; /* Added semicolon */;
     top: 70px;
     right: 20px;
     font-size: 0.75rem;

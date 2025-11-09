@@ -400,26 +400,7 @@
         "scripts/phase43-ai-analyzer.mjs",
         "svelte-check-frontend.log",
         "--batch-size",
-        "5000"
-      ],
-      "options": { "cwd": "${workspaceFolder}" },
-      "env": {
-        "REDIS_URL": "${env:REDIS_URL}",
-        "REDIS_PASSWORD": "${env:REDIS_PASSWORD}"
-      },
-      "group": "build",
-      "presentation": { "echo": true, "reveal": "always", "panel": "dedicated" },
-      "problemMatcher": []
-    },
-    {
-      "label": "Phase44: CUDA Tensor Aggregation",
-      "type": "shell",
-      "command": "python",
-      "args": [
-        "scripts/phase44-tensor-aggregator.py",
-        "--store-dtype",
-        "fp16",
-        "--persist-store",
+        "5000",
         "--store-path",
         "logs/phase44-cache.pt",
         "--capture-graph"
@@ -432,6 +413,34 @@
       "group": "build",
       "presentation": { "echo": true, "reveal": "always", "panel": "dedicated" },
       "problemMatcher": []
+    },
+    {
+      "label": "🟢 Ollama Serve: GPU (25 layers)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoLogo",
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}\\scripts\\start-ollama-gpu.ps1",
+        "-GpuLayers",
+        "25",
+        "-WaitSeconds",
+        "20"
+      ],
+      "group": "build",
+      "isBackground": true,
+      "detail": "Start Ollama GPU with fixed layers"
+    },
+    {
+      "label": "🟢 Ollama Serve: Auto GPU Layers",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/auto-ollama-launch.mjs"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "detail": "Auto-detects VRAM (4-12 GB) → sets optimal GPU layers & threads"
     },
     {
       "label": "Phase44: Benchmark CUDA Graph Replay",
@@ -1090,7 +1099,7 @@
         "-File",
         "${workspaceFolder}/scripts/start-ollama-gpu.ps1",
         "-GpuLayers",
-        "25",
+        "16",
         "-WaitSeconds",
         "20"
       ],

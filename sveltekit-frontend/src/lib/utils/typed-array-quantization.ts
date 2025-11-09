@@ -52,8 +52,8 @@ function float32ToFloat16(val: number): number {
   if (e < 103) return bits;
   if (e > 142) return bits | 0x7c00;
 
-  let exp = e - 112;
-  let mant = m >> 1;
+  const exp = e - 112;
+  const mant = m >> 1;
   return bits | (exp << 10) | mant;
 }
 

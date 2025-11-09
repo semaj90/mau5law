@@ -321,7 +321,7 @@
     color: #6b7280;
   }
   .state-indicator {
-    background: #dbeafe; /* fixed invalid hex */
+    background: #dbeafe; /* fixed invalid hex */;
     color: #1d4ed8;
     padding: 0.25rem 0.75rem;
     border-radius: 6px;

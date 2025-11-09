@@ -310,10 +310,8 @@ export const evidence = pgTable(
       index("evidence_case_id_idx").on(table.caseId),
       index("evidence_criminal_id_idx").on(table.criminalId),
       index("evidence_type_idx").on(table.evidenceType),
-      index("evidence_confidentiality_idx").on(table.confidentialityLevel),
       index("evidence_uploaded_by_idx").on(table.uploadedBy),
       index("evidence_uploaded_at_idx").on(table.uploadedAt),
-      index("evidence_hash_idx").on(table.hash),
     ],
     foreignKeys: [
       foreignKey({
@@ -370,11 +368,11 @@ export const legalDocuments = pgTable('legal_documents', {
   documentType: documentTypeEnum('document_type'), // Specific legal document type
   practiceArea: varchar('practice_area', { length: 100 }),
   metadata: jsonb('metadata'), // General metadata
-  contentEmbedding: sql`vector(384)`, // pgvector column for embeddings
+  contentEmbedding: text('content_embedding'), // pgvector column for embeddings
   qdrantId: uuid('qdrant_id'), // ID in Qdrant
   qdrantCollection: varchar('qdrant_collection', { length: 100 }), // Qdrant collection name
-  lastSyncedToQdrant: timestamp('last_synced_to_qdrant', { withTimezone: true, mode: 'string' }),
-  deletedAt: timestamp('deleted_at', { withTimezone: true, mode: 'string' }), // Soft delete
+  lastSyncedToQdrant: timestamp('last_synced_to_qdrant', { withTimezone: true, mode: "string" }),
+  deletedAt: timestamp('deleted_at', { withTimezone: true, mode: "string" }), // Soft delete
   createdAt: timestamp('created_at', { withTimezone: true, mode: "string" }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true, mode: "string" }).defaultNow().notNull(),
 }, (table) => ({
@@ -384,7 +382,7 @@ export const legalDocuments = pgTable('legal_documents', {
     index("idx_legal_documents_status").on(table.status),
     index("idx_legal_documents_qdrant_id").on(table.qdrantId),
     // HNSW index for contentEmbedding for fast similarity search
-    index("idx_legal_documents_content_embedding_hnsw").using(sql`HNSW (content_embedding vector_cosine_ops)`).on(table.contentEmbedding),
+    index("idx_legal_documents_content_embedding_hnsw").on(table.contentEmbedding).using(sql`HNSW (content_embedding vector_cosine_ops)`),
   ],
   foreignKeys: [
     foreignKey({
@@ -543,7 +541,7 @@ export const vectorOutbox = pgTable('vector_outbox', {
   ownerType: varchar('owner_type', { length: 256 }).notNull(),
   ownerId: varchar('owner_id', { length: 256 }).notNull(),
   event: varchar('event', { length: 256 }).notNull(),
-  vector: sql`vector(384)`, // Using sql`vector(384)` for pgvector type
+  vector: text('vector'), // Using sql`vector(384)` for pgvector type
   payload: jsonb('payload').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
@@ -692,46 +690,46 @@ export const hashVerifications = pgTable('hash_verifications', {
   updatedAt: timestamp('updated_at').defaultNow()
 });
 
-export const contentEmbeddings = pgTable('content_embeddings', (table) => ({
+export const contentEmbeddings = pgTable('content_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   documentId: uuid('document_id'), // FK to documents or legalDocuments
-  embedding: sql`vector(384)`, // Using sql`vector(384)` for pgvector type
+  embedding: text('embedding'), // Using sql`vector(384)` for pgvector type
   model: varchar('model', { length: 100 }),
   createdAt: timestamp('created_at').defaultNow()
-}));
+});
 
-export const userEmbeddings = pgTable('user_embeddings', (table) => ({
+export const userEmbeddings = pgTable('user_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   userId: uuid('user_id').notNull(), // FK to users.id
-  embedding: sql`vector(384)`,
+  embedding: text('embedding'),
   context: text('context'),
   model: varchar('model', { length: 100 }),
   createdAt: timestamp('created_at').defaultNow()
-}));
+});
 
-export const chatEmbeddings = pgTable('chat_embeddings', (table) => ({
+export const chatEmbeddings = pgTable('chat_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   ragMessageId: uuid('rag_message_id'), // FK to ragMessages
-  embedding: sql`vector(384)`,
+  embedding: text('embedding'),
   model: varchar('model', { length: 100 }),
   createdAt: timestamp('created_at').defaultNow()
-}));
+});
 
-export const evidenceVectors = pgTable('evidence_vectors', (table) => ({
+export const evidenceVectors = pgTable('evidence_vectors', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   evidenceId: uuid('evidence_id'), // FK to evidence.id
-  embedding: sql`vector(384)`,
+  embedding: text('embedding'),
   model: varchar('model', { length: 100 }),
   createdAt: timestamp('created_at').defaultNow()
-}));
+});
 
-export const caseEmbeddings = pgTable('case_embeddings', (table) => ({
+export const caseEmbeddings = pgTable('case_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   caseId: uuid('case_id'), // FK to cases.id
-  embedding: sql`vector(384)`,
+  embedding: text('embedding'),
   model: varchar('model', { length: 100 }),
   createdAt: timestamp('created_at').defaultNow()
-}));
+});
 
 export const ragSessions = pgTable('rag_sessions', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
@@ -849,12 +847,12 @@ export const documentChunks = pgTable('document_chunks', {
   documentId: uuid('document_id'), // FK to documents.id
   chunkText: text('chunk_text'),
   chunkIndex: integer('chunk_index'),
-  embedding: sql`vector(384)`, // Using sql`vector(384)` for pgvector type
+  embedding: text('embedding'), // Using sql`vector(384)` for pgvector type
   createdAt: timestamp('created_at').defaultNow()
 }, (table) => ({
   indexes: [
     // HNSW index for embedding for fast similarity search
-    index("idx_document_chunks_embedding_hnsw").using(sql`HNSW (embedding vector_cosine_ops)`).on(table.embedding),
+    index("idx_document_chunks_embedding_hnsw").on(table.embedding).using(sql`HNSW (embedding vector_cosine_ops)`),
   ],
 }));
 
@@ -1099,20 +1097,24 @@ export const legalPrecedentsRelations = relations(legalPrecedents, ({ one }) => 
   case: one(cases, { fields: [legalPrecedents.caseId], references: [cases.id] }),
 }));
 
-export const legalAnalysisSessionsRelations = relations(legalAnalysisSessions, ({ one }) =>
-}));
-
-export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
-  case: one(cases, { fields: [personsOfInterest.caseId], references: [cases.id] }),
-  createdBy: one(users, { fields: [personsOfInterest.createdBy], references: [users.id] }),
-}));
-
-export const ragSessionsRelations = relations(ragSessions, ({ one, many }) => ({
-  user: one(users, { fields: [ragSessions.userId], references: [users.id] }),
-  messages: many(ragMessages),
+export const legalAnalysisSessionsRelations = relations(legalAnalysisSessions, ({ one }) => ({
+  user: one(users, { fields: [legalAnalysisSessions.userId], references: [users.id] }),
+  case: one(cases, { fields: [legalAnalysisSessions.caseId], references: [cases.id] }),
 }));
 
 export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) => ({
+  user: one(users, { fields: [userAiQueriesTable.userId], references: [users.id] }),
+  case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
+}));
+
+export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
+  document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] }),
+}));
+
+// === DATABASE CONNECTION & HELPERS ===
+// Export commonly used query helpers for consistency
+// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
+export const helpers = { sql };
   user: one(users, { fields: [userAiQueriesTable.userId], references: [users.id] }),
   case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
 }));
@@ -1121,16 +1123,6 @@ export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) =>
 // Export commonly used query helpers for consistency
 // Keep helpers minimal here to avoid importing unavailable symbols in this environment.
 export const helpers = { sql };
-export const helpers = { sql };
-  hashVerificationsPerformed: many(hashVerifications),
-  userEmbeddings: many(userEmbeddings),
-  ragSessions: many(ragSessions),
-  legalAnalysisSessions: many(legalAnalysisSessions),
-  legalResearchCreated: many(legalResearch),
-  caseScoresCalculated: many(caseScores),
-  userAiQueries: many(userAiQueriesTable),
-  autoTagsConfirmed: many(autoTagsTable),
-}));
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),

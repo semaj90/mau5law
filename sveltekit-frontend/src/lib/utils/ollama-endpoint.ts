@@ -4,10 +4,9 @@
  * with a localhost fallback for local development without Docker Compose.
  */
 export function getOllamaEndpoint(): string {
-  // Prefer OLLAMA_URL from environment variables (e.g., Docker Compose service name 'ollama')
-  // Fallback to localhost for local development without Docker.
-  // The default port 11434 is standard for Ollama.
-  return process.env.OLLAMA_URL || 'http://localhost:11434';
+  const defaultPort = 11434;
+  const port = process.env.OLLAMA_PORT ? Number(process.env.OLLAMA_PORT) : defaultPort;
+  return process.env.OLLAMA_URL || `http://localhost:${port}`;
 }
 
 /**

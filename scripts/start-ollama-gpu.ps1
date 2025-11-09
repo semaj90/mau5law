@@ -7,9 +7,6 @@ Param(
 
 Write-Host "▶️ Starting Ollama server with GPU layers=$GpuLayers (port $Port)" -ForegroundColor Cyan
 
-# Set env var for this process
-$env:OLLAMA_GPU_LAYERS = [string]$GpuLayers
-
 try {
     # Start Ollama serve as a new background process
     $startInfo = New-Object System.Diagnostics.ProcessStartInfo

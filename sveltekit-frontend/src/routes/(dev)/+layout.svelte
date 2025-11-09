@@ -84,7 +84,7 @@
   }
 
   .dev-main .dev-main-content {
-    /* Fix:Target the new wrapper div */
+    /* Fix:Target the new wrapper div */;
     position: relative;
     z-index: 1;
   }

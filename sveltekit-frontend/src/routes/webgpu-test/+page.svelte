@@ -120,7 +120,7 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 2rem;
-    /* simplified, safe font stack to avoid linter issues */
+    /* simplified, safe font stack to avoid linter issues */;
     font-family:
       system-ui,
       -apple-system,

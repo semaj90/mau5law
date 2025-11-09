@@ -250,7 +250,7 @@
   }
 
   .cases-page::before {
-    /* Fixed pseudo-element syntax */
+    /* Fixed pseudo-element syntax */;
     content: '';
     position: absolute;
     inset: 0;
@@ -350,7 +350,7 @@
   }
 
   .btn-primary:hover {
-    /* Fixed pseudo-class syntax */
+    /* Fixed pseudo-class syntax */;
     transform: translateY(-2px);
     box-shadow: 0 14px 28px rgba(0, 255, 136, 0.45);
   }
@@ -361,7 +361,7 @@
   }
 
   .btn-secondary:hover:not(:disabled) {
-    /* Fixed pseudo-class syntax */
+    /* Fixed pseudo-class syntax */;
     transform: translateY(-2px);
     background: rgba(51, 65, 85, 0.8);
     border-color: rgba(148, 163, 184, 0.6);
@@ -430,7 +430,7 @@
   }
 
   .case-card::after {
-    /* Fixed pseudo-element syntax */
+    /* Fixed pseudo-element syntax */;
     content: '';
     position: absolute;
     inset: 0;
@@ -441,7 +441,7 @@
 
   .case-card:hover,
   .case-card:focus-visible {
-    /* Fixed pseudo-class syntax */
+    /* Fixed pseudo-class syntax */;
     transform: translateY(-6px);
     box-shadow: 0 20px 36px rgba(2, 6, 23, 0.45);
   }

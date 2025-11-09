@@ -1,1 +1,0 @@
-This is test evidence content for RAG pipeline integration testing. Legal document sample with case law references.

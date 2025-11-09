@@ -72,14 +72,14 @@
     "svelte:errors:analyze:1k": "node ./scripts/analyze-svelte-errors.mjs ./svelte-check.log 1000",
     "svelte:errors:embed": "node ./scripts/embed-svelte-error-index.mjs",
     "mcp:start": "node scripts/mcp-multicore-server.mjs",
-    "lint": "eslint_d . --cache",
-    "lint:fix": "eslint_d . --cache --fix",
+    "lint": "node sveltekit-frontend/scripts/eslint-with-cache.cjs",
+    "lint:fix": "cd sveltekit-frontend && npx eslint . --cache --fix && cd ..",
     "format": "prettierd .",
     "format:fix": "prettierd . --write",
     "typecheck": "tsc --noEmit",
     "check:all": "npm-run-all -p lint typecheck format",
     "fix:all": "npm-run-all -p lint:fix format:fix",
-    "lint:simd-cache": "node scripts/simd-eslint-cache.mjs"
+    "lint:simd-cache": "npx tsx sveltekit-frontend/scripts/simd-eslint-cache.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.920.0",

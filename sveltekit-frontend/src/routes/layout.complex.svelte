@@ -107,7 +107,7 @@
 
   @media (max-width: 768px) {
     .app-layout {
-      /* Mobile: single-column layout */
+      /* Mobile: single-column layout */;
       grid-template-areas: 'header' 'main' 'footer';
       grid-template-columns: 1fr;
     }

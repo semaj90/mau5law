@@ -25,6 +25,17 @@ npm run dev
 ```
 
 ## Code Patterns
+## Performance & Optimization
+- **Code Splitting**: Use dynamic imports for heavy components
+- **Caching**: Implement proper cache headers and strategies
+- **Streaming**: Load essential content first, stream secondary data
+- **Prefetching**: Use `data-sveltekit-preload-data` for navigation
+- **Bundle Optimization**: Configure Vite for optimal chunking
+
+### Error Handling
+- **Custom Error Pages**: Create `+error.svelte` for graceful failures
+- **Error Boundaries**: Wrap components with error handling logic
+- **Graceful Degradation**: Ensure functionality without JavaScript
 
 ### Database Queries
 

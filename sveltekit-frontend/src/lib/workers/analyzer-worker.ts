@@ -13,7 +13,7 @@ import { Ollama } from 'ollama/browser';
 // Worker state
 let ollama: Ollama | null = null;
 let workerId: number = 0;
-let processingQueue: Map<string, any> = new Map();
+const processingQueue: Map<string, any> = new Map();
 
 // Initialize Ollama client
 function initOllama(config: { url: string; model: string }) {
