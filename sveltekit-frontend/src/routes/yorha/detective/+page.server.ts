@@ -1,13 +1,15 @@
 import { error } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types.js';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
   try {
-    const user = {
-      id: 'mock-user-id',
-      firstName: 'Detective',
-      lastName: 'Smith',
-      role: 'detective',
+    // Attempt to retrieve user from session (e.g., via hooks.server.ts)
+    // Fallback to a mock user if no authenticated user is found.
+    const user = locals.user || {
+      id: 'guest-user',
+      firstName: 'Guest',
+      lastName: 'User',
+      role: 'guest',
     };
 
     const recentCases = [

@@ -4,7 +4,11 @@
 	import { goto } from '$app/navigation';
 
 	// Assume these types are defined elsewhere or add them
-	type Recommendation = any; // Replace with actual Recommendation type
+	interface Recommendation { // Changed from type to interface to fix parsing error
+		id: string;
+		text: string;
+		// Add other properties as needed based on actual recommendation structure
+	}
 	type UploadResult = {
 		id: string;
 		hasEmbedding: boolean;
@@ -30,10 +34,10 @@
 	let isUploading = $state(false);
 	let uploadProgress = $state(0);
 	let uploadResult = $state<UploadResult | null>(null);
-	let uploadError = $state(null);
-	let selectedEvidenceId = $state(null);
+	let uploadError = $state<string | null>(null); // Changed type to string | null
+  let selectedEvidenceId = $state<string | null>(evidence && evidence.length > 0 ? evidence[0].id : null); // Changed type to string | null
 	let recommendationsLoading = $state(false);
-	let recommendationsError = $state(null);
+	let recommendationsError = $state<string | null>(null); // Changed type to string | null
 	let recommendations = $state<Recommendation[]>([]);
 
 	// Form data
@@ -390,8 +394,9 @@
   <!-- Smart Evidence Recommendations -->
   {#if evidence && evidence.length > 0}
     <SmartEvidenceRecommendations
-      evidenceId={selectedEvidenceId}
-      {caseId}
+      evidenceId={selectedEvidenceId ?? evidence[0].id}
+      <!-- Changed to pass undefined if caseId is null -->
+      caseId={caseId ?? undefined}
       {recommendations}
       {recommendationsLoading}
       {recommendationsError}
@@ -468,9 +473,7 @@
   }
 
   .action-card h3 {
-    margin:
-      0,
-      0 1rem 0;
+    margin: 0 0 1rem 0; /* Corrected margin syntax */
     color: #ffd700;
     font-size: 1.1rem;
   }
@@ -533,9 +536,7 @@
   .file-size {
     font-size: 0.75rem;
     color: #888;
-    margin:
-      0.25rem,
-      0 0 0;
+    margin: 0.25rem 0 0 0; /* Corrected margin syntax */
   }
 
   .form-fields {
@@ -636,7 +637,7 @@
     transform: translateY(-1px);
   }
 
-  .upload-btn:disabled {  // Updated selector to ':disabled' to match the 'disabled' attribute usage
+  .upload-btn:disabled {  /* Updated selector to ':disabled' to match the 'disabled' attribute usage */
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -674,9 +675,7 @@
   .result-id {
     font-size: 0.7rem;
     color: #666;
-    margin:
-      0.25rem,
-      0 0 0;
+    margin: 0.25rem 0 0 0; /* Corrected margin syntax */
     font-family: monospace;
   }
   :global(.result-success-icon) {
@@ -746,7 +745,7 @@
 
   .meta-row {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* Corrected typo from space-betweennn */
     padding: 0.5rem 0;
     border-bottom: 1px solid #1a1d20;
     color: #b0b0b0;

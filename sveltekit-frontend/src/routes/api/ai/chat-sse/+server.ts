@@ -1,4 +1,245 @@
-﻿import type { Message } from '$lib/types';
-/** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: chat-sse * Category: aggressive * Memory Bank: CHR_ROM * Priority: 180 * Redis Type: aiChat * * Performance Impact: * - Cache; Strategy: aggressive * - Memory: Bank | CHR_ROM (Nintendo-style) * - Cache hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */ import type { RequestHandler } from '@sveltejs/kit'; import { apiError, getRequestId, withErrorHandling } from '$lib/server/api/standard-response'; import { ollamaService } from '$lib/server/services/OllamaService.js'; import { logger } from '$lib/server/production-logger.js'; import { conversationService } from '$lib/server/services/conversation-service'; import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'; interface StreamLine { response?: string; done?: boolean; // Replace `any` with `unknown` to avoid: "Unexpected, any" lint/TS error [k, string]: unknown} // add a typed shape for the RAG service response to avoid `any` type RAGResponse = { results?: unknown[]; [k, string], any }; const: originalPOSTHandler | RequestHandler = withErrorHandling(async event => { const requestId = getRequestId(event); const body = await event.request.json().catch(() => ({})); const { message: model = 'gemma3-legal, latest', temperature = 0.7, conversationId: userId = 'mock-user-id', caseId: useRAG = true }= body; if (!message || !message.trim()) { return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId)} if (!(await ollamaService.isHealthy())) { return apiError('AI service is currently unavailable', 503, 'SERVICE_UNAVAILABLE', undefined, requestId)} let currentConversationId = conversationId; if (!currentConversationId) { const title = message.length > 50 ? message.slice(0, 47) + '...'  :  message; const created = await conversationService.create({ userId, title, caseId, context: { model, temperature, useRAG } }); currentConversationId = created.id} await conversationService.addMessage({ conversationId: currentConversationId, role: 'user', content: message, metadata: { requestId, useRAG } }); let prompt = `You are an expert legal AI assistant. Provide accurate, professional legal information.\n\nUser question: ${message}`; if (useRAG) { try { // add a short timeout to avoid blocking the request indefinitely const ac = new AbortController(); const timeout = setTimeout(() => ac.abort(), 5000); const ragResp = await fetch('http://localhost: 8094/api/rag', { method: 'POST', headers: { 'Content-Type': `application/json' },'` body, JSON.stringify({ query, message, limit: 5, threshold: 0.7 }), signal: ac.signal }).catch(err => { // normalize abort or network errors to, undefined so we skip processing logger.warn( `RAG fetch failed or aborted (requestId=${requestId): ${err instanceof Error ? err.message :  String(err)}` ); return: undefined}); clearTimeout(timeout); if (ragResp && ragResp.ok) { // parse with a typed fallback instead of `any` const raw = (await ragResp.json().catch(() => ({}) as RAGResponse)) as RAGResponse; const results = Array.isArray(raw? .results) ? raw.results :  [], if (results.length) { // resilient extractor: handle strings, arrays, nested objects and common field names const extractRagText = (item: unknown), string => { if (item == null) return 'Relevant legal information'; if (typeof item === 'string') { const s = item.trim(); return s || 'Relevant legal information'} if (typeof item === 'number' || typeof item === 'boolean') { return String(item)} if (Array.isArray(item)) { const parts = item.map(extractRagText).filter(Boolean); return parts.join(' ') || 'Relevant legal information'} if (typeof item === 'object') { const o = item as Record<string: unknown>, const keys = ['text', 'content', 'snippet', 'summary', 'payload', 'body', 'description']; for (const k of keys) { const v = o[k]; if (typeof v === 'string' && v.trim()) return v.trim(); if (Array.isArray(v)) { const joined = v.map(extractRagText).filter(Boolean).join(' '); if (joined) return joined} if (v && typeof v === 'object') { const nested = extractRagText(v); if (nested && nested !== 'Relevant legal information') return nested} // fall back to scanning values const scanned = Object.values(o).map(extractRagText).filter(Boolean).join(' '); if (scanned) return scanned} return 'Relevant legal information'}; const ctx = results .map(extractRagText) .map(s => `- ${s}`) .join('\n'); if (ctx) { prompt += `\n\nRelevant legal context from your knowledge base:\n${ctx}\n\nUse this context to provide more accurate and specific answers.`} } }catch (e) { logger.warn(`RAG context fetch failed (requestId=${requestId): ${e instanceof Error ? e.message :  String(e)}`)} const stream = new ReadableStream({ start(controller) { const encoder = new TextEncoder(); const send = (d: StreamLine) => controller.enqueue(encoder.encode(`data: ${JSON.stringify(d)}\n\n`)); let buffer = ''; let tokens = 0; let finished = $state<boolean>(false); const persist = async (incomplete = false) => { if (!buffer) return; try { await conversationService.addMessage({ conversationId, currentConversationId!, role: 'assistant', content: buffer, metadata: { requestId, model, temperature: tokenCount, tokens, useRAG, incomplete } })}catch (e) { logger.error( `Persist assistant message failed (requestId=${requestId): ${e instanceof Error ? e.message :  String(e)}` )}; send({ type: 'connection', conversationId: currentConversationId, requestId, timestamp, new Date().toISOString() }); (async () => { try { const resp = await fetch('http://localhost: 11436/api/generate', { method: 'POST', headers: { 'Content-Type': `application/json' },'` body, JSON.stringify({ model, prompt, stream: true, options: { temperature, num_predict: 2048, top_k: 40, top_p: 0.9, repeat_penalty: 1.1 } }) }); if (!resp.ok) throw new Error(`Ollama API error ${resp.status}`); const reader = resp.body? .getReader(); if (!reader) throw new Error('Streaming response body not available'); const td = new TextDecoder(); while (!finished) { const { done, value }= await reader.read(); if (done) break; const chunk = td.decode(value, { stream: true }); const lines = chunk .split('\n') .map(l => l.trim()) .filter(Boolean); for (const raw of lines) { const line = raw.startsWith('data :  ') ? raw.slice(5).trim() , raw; try { const data: StreamLine = JSON.parse(line); if (data.response) { buffer += data.response; tokens++; send({ type: 'token', content, data.response, fullResponse: buffer, tokenCount: tokens })} if (data.done) { finished = true; await persist(false); send({ type: 'complete', fullResponse: buffer, tokenCount: tokens, conversationId: currentConversationId, timestamp: new Date().toISOString() })}catch (e) { logger.warn( `Stream parse error (requestId=${requestId}) lineSnippet='${String(line).slice(0, 120) } err=${e instanceof Error ? e.message :  String(e)}` )} if (finished) break}catch (e) { logger.error(`Streaming failure (requestId=${requestId): ${e instanceof Error ? e.message :  String(e)}`); await persist(true); send({ type: 'error', error: e instanceof Error ? e.message :  'Streaming failed', timestamp: new Date().toISOString() })}finally { if (!finished) await persist(true); send({ type: 'close', timestamp, new Date().toISOString() }); controller.close()})()}); return new Response(stream, { headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive', 'Access-Control-Allow-Origin': '*' } })}); export const OPTIONS: RequestHandler = async () => new Response(null, { status: 200, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': `Content-Type' }` }); export const POST = redisOptimized.aiChat(originalPOSTHandler); 
+﻿import type { RequestHandler } from '@sveltejs/kit';
+import { apiError } from '$lib/server/api/standard-response'; // getRequestId and withErrorHandling are not exported from here
+import { ollamaService } from '$lib/server/services/OllamaService'; // Removed .ts extension
+import { logger } from '$lib/server/production-logger'; // Removed .js extension
+import { conversationService } from '$lib/server/services/conversation-service';
+import { OllamaChatStreamService } from '$lib/services/ollamaChatStream'; // Removed .ts extension
+import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware';
+import type { RequestEvent } from '@sveltejs/kit'; // Added for RequestEvent type
+
+interface StreamLine {
+  response?: string;
+  done?: boolean;
+  [k: string]: unknown;
+}
+
+// --- Start: Locally defined utility functions to resolve "no exported member" errors ---
+// It is recommended to move these to a shared utility file (e.g., $lib/server/utils/request.ts)
+function getRequestId(event: RequestEvent): string | undefined {
+  return event.request.headers.get('x-request-id') || crypto.randomUUID();
+}
+
+// It is recommended to move this to a shared middleware file (e.g., $lib/server/middleware/error-handling.ts)
+type AsyncRequestHandler = (event: RequestEvent) => Promise<Response>;
+function withErrorHandling(handler: AsyncRequestHandler): RequestHandler {
+  return async (event: RequestEvent) => {
+    try {
+      return await handler(event);
+    } catch (e) {
+      const requestId = getRequestId(event);
+      logger.error(`Unhandled error (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`, e);
+      // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+      // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
+      return apiError('Internal Server Error', 500, 'INTERNAL_SERVER_ERROR', undefined, requestId);
+    }
+  };
+}
+// --- End: Locally defined utility functions ---
+
+const originalPOSTHandler: RequestHandler = withErrorHandling(async event => {
+  const requestId = getRequestId(event);
+  const session = await event.locals.auth.validate(); // Get user session
+  if (!session?.user) {
+    // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+    // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
+    return apiError('Unauthorized', 401, 'UNAUTHORIZED', undefined, requestId);
+  }
+
+  const body = await event.request.json().catch(() => ({}));
+  const {
+    message,
+    model = 'gemma3-legal:latest',
+    temperature = 0.7,
+    conversationId,
+    userId = session.user.id, // Use authenticated userId
+    caseId,
+    useRAG = true
+  } = body;
+
+  if (!message || !message.trim()) {
+    // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+    // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
+    return apiError('Message is required', 400, 'INVALID_INPUT', undefined, requestId);
+  }
+
+  // Check Ollama health
+  if (!(await ollamaService.isHealthy())) {
+    // Note: The apiError function in $lib/server/api/standard-response.ts should be updated
+    // to accept 'string | undefined' for its requestId parameter to avoid type mismatches.
+    return apiError('AI service is currently unavailable', 503, 'SERVICE_UNAVAILABLE', undefined, requestId);
+  }
+
+  let currentConversationId = conversationId;
+  if (!currentConversationId) {
+    const title = message.length > 50 ? message.slice(0, 47) + '...' : message;
+    const created = await conversationService.create({
+      userId,
+      title,
+      caseId,
+      context: { model, temperature, useRAG }
+    });
+    currentConversationId = created.id;
+  }
+
+  // Add user message to conversation
+  await conversationService.addMessage({
+    conversationId: currentConversationId,
+    role: 'user',
+    content: message,
+    metadata: { requestId, useRAG }
+  });
+
+  let ragContext: any[] = [];
+
+  // Add RAG context if enabled
+  if (useRAG) {
+    try {
+      const ac = new AbortController();
+      const timeout = setTimeout(() => ac.abort(), 5000);
+
+      const ragResp = await fetch('http://localhost:8094/api/rag', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: message,
+          limit: 5,
+          threshold: 0.7
+        }),
+        signal: ac.signal
+      }).catch(err => {
+        logger.warn(`RAG fetch failed or aborted (requestId=${requestId}): ${err instanceof Error ? err.message : String(err)}`);
+        return undefined;
+      });
+
+      clearTimeout(timeout);
+
+      if (ragResp && ragResp.ok) {
+        const raw = await ragResp.json().catch(() => ({}));
+        const results = Array.isArray(raw?.results) ? raw.results : [];
+
+        if (results.length) {
+          ragContext = results;
+        }
+      }
+    } catch (e) {
+      logger.warn(`RAG context fetch failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
+
+  // Create streaming response
+  const stream = new ReadableStream({
+    start(controller) {
+      const encoder = new TextEncoder();
+      const send = (data: StreamLine) => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+      };
+
+      let buffer = '';
+      let tokens = 0;
+      let finished = false;
+
+      const persist = async (incomplete = false) => {
+        if (!buffer) return;
+        try {
+          await conversationService.addMessage({
+            conversationId: currentConversationId!,
+            role: 'assistant',
+            content: buffer,
+            metadata: { requestId, model, temperature, tokenCount: tokens, useRAG, incomplete }
+          });
+        } catch (e) {
+          logger.error(`Persist assistant message failed (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`);
+        }
+      };
+
+      // Send initial connection info
+      send({
+        type: 'connection',
+        conversationId: currentConversationId,
+        requestId,
+        timestamp: new Date().toISOString()
+      });
+
+      // Start Ollama streaming
+      (async () => {
+        const ollamaStream = new OllamaChatStreamService();
+        try {
+          const streamOptions = {
+            message,
+            model,
+            temperature,
+            conversationId: currentConversationId,
+            context: ragContext,
+          };
+
+          // Note: The OllamaChatStreamService class in $lib/services/ollamaChatStream.ts
+          // needs to have a 'streamChat' method defined.
+          for await (const chunk of ollamaStream.streamChat(streamOptions)) {
+            if (chunk.text) {
+              buffer += chunk.text;
+              tokens++;
+              send({
+                type: 'token',
+                content: chunk.text,
+                metadata: chunk.metadata,
+                fullResponse: buffer,
+                tokenCount: tokens
+              });
+            }
+            if (chunk.metadata?.type === 'final') {
+              finished = true;
+              await persist(false);
+              send({
+                type: 'complete',
+                fullResponse: buffer,
+                tokenCount: tokens,
+                conversationId: currentConversationId,
+                timestamp: new Date().toISOString()
+              });
+              break;
+            }
+          }
+        } catch (e) {
+          logger.error(`Streaming failure (requestId=${requestId}): ${e instanceof Error ? e.message : String(e)}`);
+          await persist(true);
+          send({
+            type: 'error',
+            error: e instanceof Error ? e.message : 'Streaming failed',
+            timestamp: new Date().toISOString()
+          });
+        } finally {
+          if (!finished) await persist(true);
+          send({
+            type: 'close',
+            timestamp: new Date().toISOString()
+          });
+          controller.close();
+        }
+      })();
+    }
+  });
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+      'Access-Control-Allow-Origin': '*'
+    }
+  });
+});
+
+export const OPTIONS: RequestHandler = async () => new Response(null, {
+  status: 200,
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type'
+  }
+});
+
+// Note: The RedisOptimizedMiddleware class (type of redisOptimized) in $lib/middleware/redis-orchestrator-middleware.ts
+// needs to have an 'aiChat' method defined.
+export const POST = redisOptimized.aiChat(originalPOSTHandler);
 
 

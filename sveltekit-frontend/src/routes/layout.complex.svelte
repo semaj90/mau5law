@@ -1,4 +1,4 @@
-﻿<script lang="ts" runes>
+﻿<script lang="ts">
   import '../app.css';
   import '../lib/styles/modern-yorha-theme.css';
   import { setContext } from 'svelte';
@@ -11,7 +11,7 @@
   // Provide a small app context for other components/services
   setContext('app', {
     theme: () => theme,
-    setTheme: (v: 'dark' | 'light') => (theme = v),
+    setTheme(v: 'dark' | 'light') { theme = v; }, // Changed to method shorthand syntax
     sidebarOpen: () => sidebarOpen,
     setSidebarOpen: (v: boolean) => (sidebarOpen = v),
     toggleSidebar: () => (sidebarOpen = !sidebarOpen),
@@ -19,23 +19,18 @@
   });
 
   // Nav props object typed as any to avoid strict prop-type mismatch errors on the component
-  let navProps: any = {
+  const navProps: any = $derived({ // Changed to $derived
     sidebarOpen: () => sidebarOpen,
     setSidebarOpen: (v: boolean) => (sidebarOpen = v),
     toggleSidebar: () => (sidebarOpen = !sidebarOpen),
-  };
+  });
 
   $effect(() => {
     // Initialization side-effect
     console.log('Modern Dark YoRHa Legal AI Interface initialized');
     document.documentElement.setAttribute('data-theme', theme);
 
-    // keep navProps in sync if sidebarOpen or other values change
-    navProps = {
-      sidebarOpen: () => sidebarOpen,
-      setSidebarOpen: (v: boolean) => (sidebarOpen = v),
-      toggleSidebar: () => (sidebarOpen = !sidebarOpen),
-    };
+    // The navProps update logic is no longer needed here as it's now $derived
   });
 </script>
 
@@ -56,13 +51,14 @@
         <a href="/cases" class="yorha-nav-item">Cases</a>
         <a href="/evidence" class="yorha-nav-item">Evidence</a>
         <a href="/yorha" class="yorha-nav-item">YoRHa Interface</a>
+        <a href="/ai/chat" class="yorha-nav-item">AI Chat</a>
       </div>
     </nav>
   </aside>
 
   <main class="app-main" style="grid-area: main;">
     <div class="container">
-      <slot />
+      {@render children()}
     </div>
   </main>
 
@@ -107,7 +103,7 @@
 
   @media (max-width: 768px) {
     .app-layout {
-      /* Mobile: single-column layout */;
+      /* Mobile: single-column layout */
       grid-template-areas: 'header' 'main' 'footer';
       grid-template-columns: 1fr;
     }

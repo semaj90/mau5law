@@ -11,7 +11,7 @@
   <div class="max-w-6xl mx-auto">
     <!-- Page, Header -->
     <div class="text-center">
-      <h1 class="text-4xl font-bold text-enhanced-text-primary mb-4">Grey Balance Test</h1>
+      <h1 class="text-4xl font-bold text-enhanced-text-primary mb-4 yorha-harvard-title">Grey Balance Test</h1>
       <p class="text-enhanced-text-secondary">
         Testing NES-style grey balance with Harvard crimson components
       </p>

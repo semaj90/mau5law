@@ -4,11 +4,12 @@
   // $state runtime rune is provided globally via src/types/svelte-helpers.d.ts
   import { YoRHaAPIClient as yorhaAPI } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
   // Import types only (keep types import if they exist)
-  import type {
-    YoRHaPanel3DOptions,
-    YoRHaInput3DOptions,
-    YoRHaModal3DOptions,
-  } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
+  // Removed specific type imports as they are defined locally
+  // import type {
+  //   YoRHaPanel3DOptions,
+  //   YoRHaInput3DOptions,
+  //   YoRHaModal3DOptions,
+  // } from '$lib/components/three/yorha-ui/api/YoRHaAPIClient';
 
   // NOTE: YoRHaButton3DOptions is not exported from the API client, so it's defined locally based on usage.
   type YoRHaButton3DOptions = {
@@ -20,6 +21,41 @@
     disabled: boolean;
     glowEffect: boolean;
     hoverAnimation: boolean;
+  };
+
+  // Define YoRHaPanel3DOptions locally based on panelConfig usage
+  type YoRHaPanel3DOptions = {
+    title: string;
+    variant: 'default' | 'terminal' | 'status' | 'data';
+    width: number;
+    height: number;
+    scrollable: boolean;
+    collapsible: boolean;
+    glitchEffect: boolean;
+    borderGlow: boolean;
+  };
+
+  // Define YoRHaInput3DOptions locally based on inputConfig usage
+  type YoRHaInput3DOptions = {
+    placeholder: string;
+    type: 'text' | 'email' | 'password' | 'search' | 'number';
+    variant: 'default' | 'terminal' | 'secure' | 'scanner';
+    value: string;
+    error: boolean;
+    focused: boolean;
+    scanlineEffect: boolean;
+    terminalMode: boolean;
+  };
+
+  // Define YoRHaModal3DOptions locally based on modalConfig usage
+  type YoRHaModal3DOptions = {
+    title: string;
+    variant: 'default' | 'alert' | 'confirm' | 'fullscreen';
+    size: 'small' | 'medium' | 'large' | 'xl' | 'fullscreen';
+    closable: boolean;
+    open: boolean;
+    backdropBlur: boolean;
+    hologramEffect: boolean;
   };
 
   // Use a minimal icon map instead of relying on lucide-svelte package exports

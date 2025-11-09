@@ -32,7 +32,7 @@ export async function storeDocumentsInDatabase(
         const chunksToInsert = doc.chunks.map((chunk) => ({
           id: chunk.id,
           documentId: insertedDocument.id,
-          chunkText: chunk.text, // Map text to chunkText
+          content: chunk.text, // Map text to content to match schema
           chunkIndex: chunk.position, // Map position to chunkIndex
           embedding: chunk.embedding ? JSON.stringify(chunk.embedding) : null, // Convert to string
           // Omitted: legalRelevance and entities (not in schema)

@@ -1,14 +1,3 @@
-// Global WebAssembly types
-declare namespace WebAssembly {
-  interface Module {}
-  interface Instance {}
-  interface Memory {}
-  interface Table {}
-  interface CompileError extends Error {}
-  interface LinkError extends Error {}
-  interface RuntimeError extends Error {}
-}
-
 // WASM module imports (e.g., llama.cpp, Rust, or Go wasm-pack output)
 declare module '*.wasm' {
   const value: ArrayBuffer;
@@ -16,7 +5,7 @@ declare module '*.wasm' {
 }
 
 // Ollama API response format
-interface OllamaGenerateResponse {
+export interface OllamaGenerateResponse {
   model: string;
   created_at: string;
   response: string;
@@ -24,7 +13,7 @@ interface OllamaGenerateResponse {
 }
 
 // Ollama API streaming chunk (when using Server-Sent Events or fetch streaming)
-interface OllamaStreamChunk {
+export interface OllamaStreamChunk {
   response: string;
   done: boolean;
 }
@@ -42,7 +31,6 @@ declare global {
 declare global {
   interface Window {
     ollamaHost?: string; // e.g. "http://localhost:11434"
-    WebAssembly: typeof WebAssembly;
   }
   interface ImportMetaEnv {
     readonly VITE_OLLAMA_HOST?: string;
@@ -50,6 +38,27 @@ declare global {
   interface ImportMeta {
     readonly env: ImportMetaEnv;
   }
+
+  /**
+   * Standard API response format for successful or failed operations.
+   * Used by client-side helpers to consume SSR API data.
+   */
+  interface APIResponse<T> {
+    success: boolean;
+    data: T;
+    error?: string;
+  }
 }
+
+export {};
+  /**
+   * Standard API response format for successful or failed operations.
+   * Used by client-side helpers to consume SSR API data.
+   */
+  interface APIResponse<T> {
+    success: boolean;
+    data: T;
+    error?: string;
+  }
 
 export {};

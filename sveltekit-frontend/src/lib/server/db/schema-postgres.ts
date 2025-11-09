@@ -409,6 +409,26 @@ export const legalDocuments = pgTable('legal_documents', {
   ],
 }));
 
+// Define storageFiles table
+export const storageFiles = pgTable('storage_files', {
+  id: uuid('id').primaryKey().notNull().default(sql`gen_random_uuid()`),
+  key: text('key').notNull(),
+  original_name: text('original_name'),
+  bucket: text('bucket').notNull(),
+  userId: uuid('user_id'), // Changed to uuid and named userId for consistency
+  size: bigint('size', { mode: 'bigint' }).notNull(),
+  mime: text('mime'),
+  uploadedAt: timestamp('uploaded_at').defaultNow().notNull(), // Changed to uploadedAt for consistency
+}, (table) => ({
+  foreignKeys: [
+    foreignKey({
+      columns: [table.userId],
+      foreignColumns: [users.id],
+      name: "storage_files_user_id_users_id_fk",
+    }).onDelete("set null"),
+  ],
+}));
+
 // === VECTOR METADATA ===
 export const vectorMetadata = pgTable(
   "vector_metadata",
@@ -580,7 +600,7 @@ export const attachmentVerifications = pgTable('attachment_verifications', {
   verificationDate: timestamp('verification_date'),
   notes: text('notes'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updatedAt').defaultNow()
 });
 
 export const canvasStates = pgTable('canvas_states', {
@@ -617,7 +637,7 @@ export const aiReports = pgTable('ai_reports', {
   generatedAt: timestamp('generated_at').defaultNow().notNull(),
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  updatedAt: timestamp('updatedAt').defaultNow()
 });
 
 export const citations = pgTable('citations', {
@@ -668,251 +688,170 @@ export const themes = pgTable('themes', {
 });
 
 export const personsOfInterest = pgTable('persons_of_interest', {
-  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  caseId: uuid('case_id'), // FK to cases.id
-  createdBy: uuid('created_by'), // FK to users.id
-  name: varchar('name', { length: 255 }).notNull(),
-  role: varchar('role', { length: 100 }),
-  description: text('description'),
-  metadata: jsonb('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey(), // Fixed: Changed defaultRandom() to default(sql`gen_random_uuid()`)
+  name: varchar('name', { length: 256 }).notNull(),
+  caseId: uuid('case_id'), // Optional, can be null if not linked to a specific case
+  aliases: jsonb('aliases').$type<string[]>().default([]),
+  relationship: varchar('relationship', { length: 256 }),
+  // Add the threat_level column using the defined enum
+  threatLevel: threatLevelEnum('threat_level').default('low').notNull(),
+  status: varchar('status', { length: 50 }).default('active').notNull(), // e.g., active, inactive, archived
+  profileData: jsonb('profile_data').$type<Record<string, unknown>>().default({}), // Flexible JSON for additional data
+  tags: jsonb('tags').$type<string[]>().default([]),
+  position: jsonb('position').$type<Record<string, unknown>>().default({}), // e.g., coordinates, role
+  createdBy: uuid('created_by').notNull(), // User who created this POI
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull()
 });
+
+// === AI/VECTOR TABLES (Missing Definitions) ===
 
 export const hashVerifications = pgTable('hash_verifications', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  evidenceId: uuid('evidence_id'), // FK to evidence.id
-  verifiedBy: uuid('verified_by'), // FK to users.id
-  hashValue: varchar('hash_value', { length: 128 }).notNull(),
+  evidenceId: uuid('evidence_id').notNull(),
+  verifiedBy: uuid('verified_by'),
+  hashValue: text('hash_value').notNull(),
+  algorithm: varchar('algorithm', { length: 50 }).notNull(),
+  status: verificationStatusEnum('status').default('pending').notNull(),
   verificationDate: timestamp('verification_date').defaultNow().notNull(),
-  isVerified: boolean('is_verified').default(false).notNull(),
-  notes: text('notes'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const contentEmbeddings = pgTable('content_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  documentId: uuid('document_id'), // FK to documents or legalDocuments
-  embedding: text('embedding'), // Using sql`vector(384)` for pgvector type
-  model: varchar('model', { length: 100 }),
-  createdAt: timestamp('created_at').defaultNow()
+  documentId: uuid('document_id').notNull(),
+  embedding: text('embedding').notNull(), // Store vector as text
+  model: varchar('model', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const userEmbeddings = pgTable('user_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(), // FK to users.id
-  embedding: text('embedding'),
-  context: text('context'),
-  model: varchar('model', { length: 100 }),
-  createdAt: timestamp('created_at').defaultNow()
+  userId: uuid('user_id').notNull(),
+  embedding: text('embedding').notNull(), // Store vector as text
+  model: varchar('model', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const chatEmbeddings = pgTable('chat_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  ragMessageId: uuid('rag_message_id'), // FK to ragMessages
-  embedding: text('embedding'),
-  model: varchar('model', { length: 100 }),
-  createdAt: timestamp('created_at').defaultNow()
+  ragMessageId: uuid('rag_message_id').notNull(),
+  embedding: text('embedding').notNull(), // Store vector as text
+  model: varchar('model', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const evidenceVectors = pgTable('evidence_vectors', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  evidenceId: uuid('evidence_id'), // FK to evidence.id
-  embedding: text('embedding'),
-  model: varchar('model', { length: 100 }),
-  createdAt: timestamp('created_at').defaultNow()
+  evidenceId: uuid('evidence_id').notNull(),
+  vector: text('vector').notNull(), // Store vector as text
+  model: varchar('model', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const caseEmbeddings = pgTable('case_embeddings', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  caseId: uuid('case_id'), // FK to cases.id
-  embedding: text('embedding'),
-  model: varchar('model', { length: 100 }),
-  createdAt: timestamp('created_at').defaultNow()
+  caseId: uuid('case_id').notNull(),
+  embedding: text('embedding').notNull(), // Store vector as text
+  model: varchar('model', { length: 100 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const ragSessions = pgTable('rag_sessions', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(), // FK to users.id
-  caseId: uuid('case_id'), // FK to cases.id
-  startedAt: timestamp('started_at').defaultNow().notNull(),
-  endedAt: timestamp('ended_at'),
-  metadata: jsonb('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  userId: uuid('user_id').notNull(),
+  caseId: uuid('case_id'),
+  title: varchar('title', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const ragMessages = pgTable('rag_messages', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  sessionId: uuid('session_id').notNull(), // FK to ragSessions.id
-  role: varchar('role', { length: 50 }).notNull(), // 'user' or 'ai'
+  sessionId: uuid('session_id').notNull(),
+  role: varchar('role', { length: 50 }).notNull(), // e.g., 'user', 'assistant'
   content: text('content').notNull(),
-  timestamp: timestamp('timestamp').defaultNow().notNull(),
-  metadata: jsonb('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const statutes = pgTable('statutes', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
   title: varchar('title', { length: 255 }).notNull(),
-  jurisdiction: varchar('jurisdiction', { length: 100 }).notNull(),
-  section: varchar('section', { length: 100 }),
-  content: text('content'),
+  content: text('content').notNull(),
+  jurisdiction: varchar('jurisdiction', { length: 100 }),
   effectiveDate: timestamp('effective_date'),
-  repealedDate: timestamp('repealed_date'),
-  metadata: jsonb('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updatedAt').defaultNow()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const legalPrecedents = pgTable('legal_precedents', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  caseId: uuid('case_id'), // FK to cases.id
+  caseId: uuid('case_id'),
   title: varchar('title', { length: 255 }).notNull(),
+  summary: text('summary').notNull(),
+  citation: varchar('citation', { length: 255 }),
   court: varchar('court', { length: 200 }),
-  citation: varchar('citation', { length: 200 }).unique().notNull(),
-  summary: text('summary'),
-  fullTextUrl: text('full_text_url'),
   decisionDate: timestamp('decision_date'),
-  jurisdiction: varchar('jurisdiction', { length: 100 }),
-  metadata: jsonb('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updatedAt').defaultNow()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const legalAnalysisSessions = pgTable('legal_analysis_sessions', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  userId: uuid('user_id').notNull(), // FK to users.id
-  caseId: uuid('case_id'), // FK to cases.id
-  startedAt: timestamp('started_at').defaultNow().notNull(),
-  endedAt: timestamp('ended_at'),
-  analysisType: varchar('analysis_type', { length: 100 }),
-  result: jsonb('result'),
-  metadata: jsonb('metadata'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updatedAt').defaultNow()
+  userId: uuid('user_id').notNull(),
+  caseId: uuid('case_id'),
+  analysisType: varchar('analysis_type', { length: 100 }).notNull(),
+  inputData: jsonb('input_data'),
+  outputSummary: text('output_summary'),
+  status: varchar('status', { length: 50 }).default('pending').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const legalResearch = pgTable('legal_research', {
-  id: uuid("id")
-    .default(sql`gen_random_uuid()`)
-    .primaryKey()
-    .notNull(),
-  caseId: uuid("case_id"), // Foreign key to cases.id
-  query: text("query").notNull(),
-  searchTerms: jsonb("search_terms").default([]).$type<string[]>(),
-  jurisdiction: varchar("jurisdiction", { length: 100 }),
-  dateRange: jsonb("date_range"),
-  courtLevel: varchar("court_level", { length: 50 }),
-  practiceArea: varchar("practice_area", { length: 100 }),
-  resultsCount: integer("results_count").default(0),
-  searchResults: jsonb("search_results").default([]), // Array of objects
-  aiSummary: text("ai_summary"),
-  keyFindings: jsonb("key_findings").default([]).$type<string[]>(),
-  recommendedCitations: jsonb("recommended_citations").default([]).$type<string[]>(),
-  searchDuration: integer("search_duration"),
-  dataSource: varchar("data_source", { length: 50 }),
-  isBookmarked: boolean("is_bookmarked").default(false),
-  createdBy: uuid("created_by"), // Foreign key to users.id
-  createdAt: timestamp("created_at", { mode: "string" }).defaultNow().notNull(),
-}, (table) => [
-  foreignKey({
-    columns: [table.caseId],
-    foreignColumns: [cases.id],
-    name: `legal_research_case_id_cases_id_fk`,
-  }).onDelete("cascade"),
-  foreignKey({
-    columns: [table.createdBy],
-    foreignColumns: [users.id],
-    name: `legal_research_created_by_users_id_fk`,
-  }).onDelete("set null"),
-]);
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'),
+  createdBy: uuid('created_by').notNull(),
+  query: text('query').notNull(),
+  results: jsonb('results'),
+  status: varchar('status', { length: 50 }).default('completed').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
 
-// === DOCUMENT PROCESSING/CHUNKS/SUMMARIES ===
 export const documentProcessing = pgTable('document_processing', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  documentId: uuid('document_id'), // FK to documents.id
-  status: documentStatusEnum('status'),
-  progress: integer('progress'),
+  documentId: uuid('document_id').notNull(),
+  status: documentStatusEnum('status').notNull().default('queued'),
+  processor: varchar('processor', { length: 100 }),
+  metadata: jsonb('metadata'),
   error: text('error'),
   startedAt: timestamp('started_at'),
   completedAt: timestamp('completed_at'),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow()
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const documentChunks = pgTable('document_chunks', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  documentId: uuid('document_id'), // FK to documents.id
-  chunkText: text('chunk_text'),
-  chunkIndex: integer('chunk_index'),
-  embedding: text('embedding'), // Using sql`vector(384)` for pgvector type
-  createdAt: timestamp('created_at').defaultNow()
-}); // Removed deprecated extra config; add index via migration if needed
+  documentId: uuid('document_id').notNull(),
+  chunkIndex: integer('chunk_index').notNull(),
+  content: text('content').notNull(),
+  embedding: text('embedding'), // Store vector as text
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
 
 export const documentSummaries = pgTable('document_summaries', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
-  documentId: uuid('document_id'), // FK to documents.id
-  summaryType: summaryTypeEnum('summary_type'),
-  summaryText: text('summary_text'),
+  documentId: uuid('document_id').notNull(),
+  summaryType: summaryTypeEnum('summary_type').notNull(),
+  summaryText: text('summary_text').notNull(),
   model: varchar('model', { length: 100 }),
-  createdAt: timestamp('created_at').defaultNow()
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
-
-export const vectors = pgTable('vectors', {
-  id: serial('id').primaryKey(),
-  entity_type: text('entity_type').notNull(),
-  entity_id: integer('entity_id').notNull(),
-  embedding: text('embedding').notNull(),
-});
-
-// Corrected schema export to include all defined tables
-export const schema = {
-  users,
-  sessions,
-  emailVerificationCodes,
-  passwordResetTokens,
-  cases,
-  criminals,
-  evidence,
-  legalDocuments,
-  caseActivities,
-  attachmentVerifications,
-  canvasAnnotations,
-  canvasStates,
-  aiReports,
-  citations,
-  reports,
-  savedReports,
-  themes,
-  personsOfInterest,
-  hashVerifications,
-  contentEmbeddings,
-  userEmbeddings,
-  chatEmbeddings,
-  evidenceVectors,
-  caseEmbeddings,
-  ragSessions,
-  ragMessages,
-  statutes,
-  legalPrecedents,
-  legalAnalysisSessions,
-  legalResearch,
-  vectorMetadata,
-  caseScores,
-  embeddingCache,
-  documents,
-  documentProcessing,
-  documentChunks,
-  documentSummaries,
-  userAiQueries: userAiQueriesTable,
-  autoTags: autoTagsTable,
-  vectorOutbox,
-  vectorJobs,
-  canvasAutosaves,
-};
 
 // === RELATIONS ===
 // (All relations are now defined only once, with syntax fixed and duplicates removed)
@@ -925,6 +864,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   evidenceUploaded: many(evidence),
   legalDocumentsCreated: many(legalDocuments, { relationName: 'createdBy' }),
   legalDocumentsOwned: many(legalDocuments, { relationName: 'ownedDocuments' }),
+  storageFiles: many(storageFiles), // Added storageFiles relation
   caseActivitiesAssigned: many(caseActivities, { relationName: `assignedTo` }),
   caseActivitiesCreated: many(caseActivities, { relationName: `createdBy` }),
   attachmentVerificationsPerformed: many(attachmentVerifications),
@@ -948,6 +888,14 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));
+
+export const emailVerificationCodesRelations = relations(emailVerificationCodes, ({ one }) => ({
+  user: one(users, { fields: [emailVerificationCodes.userId], references: [users.id] }),
+}));
+
+export const passwordResetTokensRelations = relations(passwordResetTokens, ({ one }) => ({
+  user: one(users, { fields: [passwordResetTokens.userId], references: [users.id] }),
 }));
 
 export const casesRelations = relations(cases, ({ many, one }) => ({
@@ -984,12 +932,24 @@ export const evidenceRelations = relations(evidence, ({ one, many }) => ({
   hashVerifications: many(hashVerifications),
 }));
 
+export const documentsRelations = relations(documents, ({ many, one }) => ({
+  case: one(cases, { fields: [documents.caseId], references: [cases.id] }),
+  user: one(users, { fields: [documents.userId], references: [users.id] }),
+  documentProcessing: many(documentProcessing),
+  documentChunks: many(documentChunks),
+  documentSummaries: many(documentSummaries),
+}));
+
 export const legalDocumentsRelations = relations(legalDocuments, ({ one, many }) => ({
   case: one(cases, { fields: [legalDocuments.caseId], references: [cases.id] }),
   user: one(users, { fields: [legalDocuments.userId], references: [users.id], relationName: 'ownedDocuments' }),
   evidence: one(evidence, { fields: [legalDocuments.evidenceId], references: [evidence.id] }),
   createdBy: one(users, { fields: [legalDocuments.createdBy], references: [users.id], relationName: 'createdBy' }),
   citations: many(citations),
+}));
+
+export const storageFilesRelations = relations(storageFiles, ({ one }) => ({
+  user: one(users, { fields: [storageFiles.userId], references: [users.id] }),
 }));
 
 export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
@@ -1008,7 +968,7 @@ export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
 
 export const attachmentVerificationsRelations = relations(attachmentVerifications, ({ one }) => ({
   verifiedBy: one(users, { fields: [attachmentVerifications.verifiedBy], references: [users.id] }),
-  // attachment: one(evidence, { fields: [attachmentVerifications.attachmentId], references: [evidence.id] }), // Assuming attachmentId refers to evidence
+  attachment: one(evidence, { fields: [attachmentVerifications.attachmentId], references: [evidence.id] }), // Assuming attachmentId refers to evidence
 }));
 
 export const canvasStatesRelations = relations(canvasStates, ({ one, many }) => ({
@@ -1107,102 +1067,34 @@ export const legalAnalysisSessionsRelations = relations(legalAnalysisSessions, (
   case: one(cases, { fields: [legalAnalysisSessions.caseId], references: [cases.id] }),
 }));
 
+export const legalResearchRelations = relations(legalResearch, ({ one }) => ({
+  case: one(cases, { fields: [legalResearch.caseId], references: [cases.id] }),
+  createdBy: one(users, { fields: [legalResearch.createdBy], references: [users.id] }),
+}));
+
+export const vectorMetadataRelations = relations(vectorMetadata, () => ({
+  // documentId is text, not a direct Drizzle relation
+}));
+
+export const caseScoresRelations = relations(caseScores, ({ one }) => ({
+  case: one(cases, { fields: [caseScores.caseId], references: [cases.id] }),
+  calculatedBy: one(users, { fields: [caseScores.calculatedBy], references: [users.id] }),
+}));
+
+export const embeddingCacheRelations = relations(embeddingCache, () => ({
+  // No explicit relations
+}));
+
+export const documentProcessingRelations = relations(documentProcessing, ({ one }) => ({
+  document: one(documents, { fields: [documentProcessing.documentId], references: [documents.id] }),
+}));
+
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] }),
 }));
 
-// === DATABASE CONNECTION & HELPERS ===
-// Export commonly used query helpers for consistency
-// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
-export const helpers = { sql };
-
-// === DATABASE CONNECTION & HELPERS ===
-// Export commonly used query helpers for consistency
-// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
-export const helpers = { sql };
-
-// === DATABASE CONNECTION & HELPERS ===
-// Export commonly used query helpers for consistency
-// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
-export const helpers = { sql };
-
-// === DATABASE CONNECTION & HELPERS ===
-// Export commonly used query helpers for consistency
-// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
-export const helpers = { sql };
-
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users, { fields: [sessions.userId], references: [users.id] }),
-}));
-
-export const casesRelations = relations(cases, ({ many, one }) => ({
-  assignedAttorney: one(users, { fields: [cases.assignedAttorney], references: [users.id] }),
-  evidence: many(evidence),
-  activities: many(caseActivities),
-  legalDocuments: many(legalDocuments),
-  aiReports: many(aiReports),
-  citations: many(citations),
-  reports: many(reports),
-  savedReports: many(savedReports),
-  personsOfInterest: many(personsOfInterest),
-  caseEmbeddings: many(caseEmbeddings),
-  ragSessions: many(ragSessions),
-  legalAnalysisSessions: many(legalAnalysisSessions),
-  legalResearch: many(legalResearch),
-  caseScores: many(caseScores),
-  userAiQueries: many(userAiQueriesTable),
-  canvasStates: many(canvasStates),
-}));
-
-export const criminalsRelations = relations(criminals, ({ many, one }) => ({
-  createdBy: one(users, { fields: [criminals.createdBy], references: [users.id] }),
-  evidence: many(evidence),
-}));
-
-export const evidenceRelations = relations(evidence, ({ one, many }) => ({
-  uploadedBy: one(users, { fields: [evidence.uploadedBy], references: [users.id] }),
-  case: one(cases, { fields: [evidence.caseId], references: [cases.id] }),
-  criminal: one(criminals, { fields: [evidence.criminalId], references: [criminals.id] }),
-  legalDocuments: many(legalDocuments),
-  canvasAnnotations: many(canvasAnnotations),
-  evidenceVectors: many(evidenceVectors),
-  hashVerifications: many(hashVerifications),
-}));
-
-export const legalDocumentsRelations = relations(legalDocuments, ({ one, many }) => ({
-  case: one(cases, { fields: [legalDocuments.caseId], references: [cases.id] }),
-  evidence: one(evidence, { fields: [legalDocuments.evidenceId], references: [evidence.id] }),
-  createdBy: one(users, { fields: [legalDocuments.createdBy], references: [users.id] }),
-  citations: many(citations),
-}));
-
-export const caseActivitiesRelations = relations(caseActivities, ({ one }) => ({
-  case: one(cases, { fields: [caseActivities.caseId], references: [cases.id] }),
-  assignedTo: one(users, {
-    fields: [caseActivities.assignedTo],
-    references: [users.id],
-    relationName: `assignedTo`,
-  }),
-  createdBy: one(users, {
-    fields: [caseActivities.createdBy],
-    references: [users.id],
-    relationName: `createdBy`,
-  }),
-}));
-
-export const aiReportsRelations = relations(aiReports, ({ one }) => ({
-  case: one(cases, { fields: [aiReports.caseId], references: [cases.id] }),
-  createdBy: one(users, { fields: [aiReports.createdBy], references: [users.id] }),
-}));
-
-export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
-  case: one(cases, { fields: [personsOfInterest.caseId], references: [cases.id] }),
-  createdBy: one(users, { fields: [personsOfInterest.createdBy], references: [users.id] }),
-}));
-
-export const ragSessionsRelations = relations(ragSessions, ({ one, many }) => ({
-  user: one(users, { fields: [ragSessions.userId], references: [users.id] }),
-  messages: many(ragMessages),
+export const documentSummariesRelations = relations(documentSummaries, ({ one }) => ({
+  document: one(documents, { fields: [documentSummaries.documentId], references: [documents.id] }),
 }));
 
 export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) => ({
@@ -1210,12 +1102,89 @@ export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) =>
   case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
 }));
 
-export const documentChunksRelations = relations(documentChunksTable, ({ one }) => ({
-  document: one(documents, { fields: [documentChunksTable.documentId], references: [documents.id] }),
+export const autoTagsRelations = relations(autoTagsTable, ({ one }) => ({
+  confirmedBy: one(users, { fields: [autoTagsTable.confirmedBy], references: [users.id] }),
+}));
+
+export const vectorOutboxRelations = relations(vectorOutbox, () => ({
+  // No explicit relations
+}));
+
+export const vectorJobsRelations = relations(vectorJobs, () => ({
+  // No explicit relations
 }));
 
 // === DATABASE CONNECTION & HELPERS ===
 // Export commonly used query helpers for consistency
 // Keep helpers minimal here to avoid importing unavailable symbols in this environment.
 export const helpers = { sql };
+export const legalAnalysisSessionsRelations = relations(legalAnalysisSessions, ({ one }) => ({
+  user: one(users, { fields: [legalAnalysisSessions.userId], references: [users.id] }),
+  case: one(cases, { fields: [legalAnalysisSessions.caseId], references: [cases.id] }),
+}));
+
+export const legalResearchRelations = relations(legalResearch, ({ one }) => ({
+  case: one(cases, { fields: [legalResearch.caseId], references: [cases.id] }),
+  createdBy: one(users, { fields: [legalResearch.createdBy], references: [users.id] }),
+}));
+
+export const vectorMetadataRelations = relations(vectorMetadata, () => ({
+  // documentId is text, not a direct Drizzle relation
+}));
+
+export const caseScoresRelations = relations(caseScores, ({ one }) => ({
+  case: one(cases, { fields: [caseScores.caseId], references: [cases.id] }),
+  calculatedBy: one(users, { fields: [caseScores.calculatedBy], references: [users.id] }),
+}));
+
+export const embeddingCacheRelations = relations(embeddingCache, () => ({
+  // No explicit relations
+}));
+
+export const documentProcessingRelations = relations(documentProcessing, ({ one }) => ({
+  document: one(documents, { fields: [documentProcessing.documentId], references: [documents.id] }),
+}));
+
+export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
+  document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] }),
+}));
+
+export const documentSummariesRelations = relations(documentSummaries, ({ one }) => ({
+  document: one(documents, { fields: [documentSummaries.documentId], references: [documents.id] }),
+}));
+
+export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) => ({
+  user: one(users, { fields: [userAiQueriesTable.userId], references: [users.id] }),
+  case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
+}));
+
+export const autoTagsRelations = relations(autoTagsTable, ({ one }) => ({
+  confirmedBy: one(users, { fields: [autoTagsTable.confirmedBy], references: [users.id] }),
+}));
+
+export const vectorOutboxRelations = relations(vectorOutbox, () => ({
+  // No explicit relations
+}));
+
+export const vectorJobsRelations = relations(vectorJobs, () => ({
+  // No explicit relations
+}));
+
+// === DATABASE CONNECTION & HELPERS ===
+// Export commonly used query helpers for consistency
+// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
+export const helpers = { sql };
+
+import { pgTable, text, timestamp, varchar, bigint } from 'drizzle-orm/pg-core';
+
+export const storageFiles = pgTable('storage_files', {
+    id: varchar('id', { length: 256 }).primaryKey().notNull().defaultRandom(),
+    key: text('key').notNull(),
+    original_name: text('original_name'),
+    bucket: text('bucket').notNull(),
+    user_id: text('user_id'), // Assuming user_id is a text field
+    size: bigint('size', { mode: 'bigint' }).notNull(),
+    mime: text('mime'),
+    uploaded_at: timestamp('uploaded_at').defaultNow().notNull(),
+});
 

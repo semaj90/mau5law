@@ -30,7 +30,7 @@
     "noUnusedParameters": false,
     "noImplicitReturns": false
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte"],
+  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "src/lib/utils/bits-ui-ssr.disabled", "src/lib/utils/bits-ui-ssr.disabled"],
   "exclude": [
     "node_modules",
     "build",

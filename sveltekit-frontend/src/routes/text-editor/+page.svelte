@@ -1,11 +1,71 @@
 <script lang="ts">
-import type { Document } from '$lib/types'; import { onMount } from 'svelte'; // Some lucide-svelte installations/types export icons differently. // Import the single working icon and use simple fallbacks for others. import { FileText } from 'lucide-svelte'; // Changed to named import as per Svelte 5 UI kit guidelines // Dynamically load the editor to avoid: "no default export" TS error for the static import let EditorComponent: unknown = null; onMount(() => {
-		(async () => {
- try { // cast the dynamic import to `any` to avoid TS checking module shape const mod = (await import('$lib/components/editors/NierRichTextEditor.svelte')) as: unknown; // safe assignment with fallbacks EditorComponent = mod?.default ?? mod?.NierRichTextEditor ?? mod} catch (err) { console.error('Failed to load NierRichTextEditor:', err); EditorComponent = null		})();
-	}); // --- CHANGED: Replace Svelte runes ($state / $derived) with plain variables + reactive statement --- let editorValue: string = ''; let documentTitle: string = 'Untitled Document'; let lastSaved: Date | null = null; let isModified: boolean = false; // initialize a documentStats: object and update reactively when editorValue changes let documentStats = { words: 0, characters: 0, charactersNoSpaces: 0, paragraphs: 0 }; $: { const trimmed = editorValue.trim(); documentStats = { words: trimmed ? trimmed.split(/\s+/).length: 0, characters: editorValue.length, charactersNoSpaces: editorValue.replace(/\s+/g, '').length; paragraphs: trimmed ? trimmed.split(/\n{ 2 }/).length: 0 }; function handleSave() { console.log('Saving document:', { title: documentTitle, content: editorValue }); lastSaved = new Date(); isModified = false}
-  function handleDownload() { const blob = new Blob([editorValue], { type: 'text/plain' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `${documentTitle.replace(/\s+/g, '_')}.txt`; a.click(); URL.revokeObjectURL(url)}
-  function handleShare() { if (navigator.share) { navigator.share({ title: documentTitle; text: editorValue })} else { navigator.clipboard.writeText(editorValue); alert('Content copied to clipboard!')}
-  }
+import { onMount } from 'svelte';
+import type { SvelteComponent } from 'svelte'; // Added import for SvelteComponent type
+
+// Some lucide-svelte installations/types export icons differently.
+// Import the single working icon and use simple fallbacks for others.
+import { FileText } from 'lucide-svelte'; // Changed to named import as per Svelte 5 UI kit guidelines
+
+// Dynamically load the editor to avoid: "no default export" TS error for the static import
+let EditorComponent: typeof SvelteComponent | null = null; // Changed type from unknown to typeof SvelteComponent | null
+onMount(async () => {
+			try {
+				// Dynamically import the module.
+				// We expect it to either have a default export that is a SvelteComponent,
+				// or a named export 'NierRichTextEditor' that is a SvelteComponent,
+				// or the module itself exports the SvelteComponent directly.
+				const mod = await import('$lib/components/editors/NierRichTextEditor.svelte');
+				// Safely assign, asserting the final type to satisfy TypeScript.
+				EditorComponent = (mod?.default ?? (mod as any)?.NierRichTextEditor ?? mod) as typeof SvelteComponent;
+			} catch (err) {
+				console.error('Failed to load NierRichTextEditor:', err);
+				EditorComponent = null;
+			}
+		});
+
+// --- CHANGED: Replace Svelte runes ($state / $derived) with plain variables + reactive statement ---
+let editorValue: string = '';
+let documentTitle: string = 'Untitled Document';
+let lastSaved: Date | null = null;
+let isModified: boolean = false;
+
+// initialize a documentStats: object and update reactively when editorValue changes
+let documentStats = { words: 0, characters: 0, charactersNoSpaces: 0, paragraphs: 0 };
+
+$: {
+	const trimmed = editorValue.trim();
+	documentStats = {
+		words: trimmed ? trimmed.split(/\s+/).length : 0,
+		characters: editorValue.length,
+		charactersNoSpaces: editorValue.replace(/\s+/g, '').length, // Changed ; to ,
+		paragraphs: trimmed ? trimmed.split(/\n{2,}/).length : 0 // Corrected regex and removed extra }
+	};
+} // Added missing closing brace for reactive statement
+
+function handleSave() {
+	console.log('Saving document:', { title: documentTitle, content: editorValue });
+	lastSaved = new Date();
+	isModified = false;
+} // Added missing closing brace
+
+function handleDownload() {
+	const blob = new Blob([editorValue], { type: 'text/plain' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = `${documentTitle.replace(/\s+/g, '_')}.txt`;
+	a.click();
+	URL.revokeObjectURL(url);
+} // Added missing closing brace
+
+function handleShare() {
+	if (navigator.share) {
+		navigator.share({ title: documentTitle, text: editorValue }); // Changed ; to ,
+	} else {
+		navigator.clipboard.writeText(editorValue);
+		alert('Content copied to clipboard!');
+	}
+} // Added missing closing brace
 </script>
 
 <div class="editor-page-container">
@@ -113,13 +173,13 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
     align-items: center;
     gap: 16px;
   }
-  .title-icon {
+  :global(.title-icon) { /* Added :global() to fix unused selector warning */
     color: var(--nes-blue, #3cbcfc);
     filter: drop-shadow(0, 0 8px currentColor);
   }
   /* Accessibility: Remove drop-shadow in high-contrast modes */
   @media (forced-colors: active) {
-    .title-icon {
+    :global(.title-icon) { /* Added :global() to fix unused selector warning */
       filter: none !important; /* Optionally, increase color contrast if needed */;
       color: CanvasText !important;
     }
@@ -136,8 +196,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
     font-size: 0.9rem;
     color: var(--yorha-text-muted, #b0b0b0);
     margin:
-      4px,
-      0 0 0;
+      4px 0 0 0; /* Changed comma to space */
   }
   .header-actions {
     display: flex;
@@ -256,11 +315,11 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
     border: 2px solid var(--yorha-border, #606060);
   }
 
-  .editor-content {
+  :global(.editor-content) { /* Added :global() to fix unused selector warning */
     height: calc(100vh - 280px);
     width: 100%;
     padding: 0;
-  }
+  } /* Added missing closing brace */
 
   /* Responsive Design */
   @media (max-width: 768px) {
@@ -297,7 +356,7 @@ import type { Document } from '$lib/types'; import { onMount } from 'svelte'; //
     .editor-container {
       padding: 12px;
     }
-    .editor-content {
+    :global(.editor-content) { /* Added :global() to fix unused selector warning */
       height: calc(100vh - 350px);
     }
   } /* Animations */

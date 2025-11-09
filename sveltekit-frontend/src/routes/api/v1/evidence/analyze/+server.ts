@@ -1,13 +1,170 @@
-import { cuidSchema } from '$lib/server/z-schemas'; /* * Evidence AI Analysis API Routes - Connects with Ollama and CUDA services * POST /api/v1/evidence/analyze - Analyze evidence with AI * POST /api/v1/evidence/similar - Find similar evidence using vector search * POST /api/v1/evidence/suggest - Get AI suggestions for evidence */ import { json, type RequestHandler } from '@sveltejs/kit'; import { z } from 'zod'; import { getUserId, type LocalsWithUser } from '$lib/server/auth/utils'; import { getOllamaEndpoint } from '$lib/utils/ollama-endpoint'; import { getCudaServiceUrl } from '$lib/utils/cuda-endpoint'; // Import new helper // Configuration for running services const OLLAMA_GENERATE_ENDPOINT = getOllamaEndpoint('/api/generate'); const CUDA_SERVICE_URL = getCudaServiceUrl(); // Use the new helper const LEGAL_MODEL_GPU = 'gemma3-legal: latest'; // Primary model with GPU const LEGAL_MODEL_FALLBACK = 'gemma3: 270m'; // Fallback for no GPU // Request schemas const AnalyzeEvidenceSchema = z.object({ evidenceId: cuidSchema, filename, z.string(), content: z.string().optional(), type: z.enum(['document', 'image', 'video', 'audio', 'other']) }); const $SimilarEvidenceSchema = z.object({ evidenceId: cuidSchema, embedding, z.array(z.number()).optional(), content: z.string().optional(), limit: z.number().min(1).max(20).default(5) }); const $SuggestionSchema = z.object({ query, z.string(), context: z.string().optional(), type: z.enum(['search', 'legal', 'case', 'precedent']).default('legal') }); // Types interface OllamaResponse { model: string, response: string, done: boolean: context?: number[]; total_duration?: number; load_duration?: number; prompt_eval_count?: number; eval_count?: number; eval_duration?: number}
-interface AIAnalysisResult { summary: string, confidence: number, relevantLaws: string[], suggestedTags: string[], prosecutionScore: number, legalRelevance: string, keyFindings: string[], recommendations: string[]} // GPU detection helper async function detectGPU(): Promise<boolean> { try { // Probe CUDA service health endpoint (if available) with a short timeout const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 1500); try { const res = await fetch(`${CUDA_SERVICE_URL}/health`, { signal, controller.signal }); return !!res?.ok}
-finally { clearTimeout(timeout)}
-catch { return false} } // Get optimal model based on GPU availability async function getOptimalModel() :  Promise<string> { const hasGPU = await detectGPU(); return hasGPU ? LEGAL_MODEL_GPU: LEGAL_MODEL_FALLBACK} // Ollama client helper async function queryOllama(prompt, string: model?: string): Promise<string> { if (!model) { model = await getOptimalModel()}
-try { const response = await fetch(OLLAMA_GENERATE_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' },'`'` body, JSON.stringify({ model, prompt, stream: false, options: { temperature: 0.1, // Low temperature for consistent legal top_p: 0.9, num_predict: 1024, num_ctx: 4096 } }) }); if (!response.ok) { const bodyText = await response.text().catch(() => ''); throw new Error(`Ollama failed: ${response.status }${response.statusText }${bodyText}`)} data: OllamaResponse = await response.json(); return data.response}catch (error) { console.error('Ollama failed: ', error); throw new Error(`AI unavailable: ${String(error)}`)} } // CUDA service helper for embeddings and similarity async function getCudaEmbedding(text, string): Promise<number[] | null> { try { const response = await fetch(`${CUDA_SERVICE_URL}/process`, { // Use helper method: 'POST', headers: { 'Content-Type': 'application/json' },'`'` body, JSON.stringify({ job_id: `embedding_${Date.now()}`, type: 'text_embedding', content: text, max_length: 512 }) }); if (!response.ok) { console.warn('CUDA service unavailable embeddings: ', response.status, response.statusText); return null} const result = await response.json(); return result?.embedding ?? null}catch (error) { console.warn('CUDA failed:  ', error); return null} } /* * POST /api/v1/evidence/analyze * Analyze evidence with AI using the legal model */ export POST: RequestHandler = async ({ request, locals }) => { try { // Check authentication (allow test mode in development) const isTestMode = request.headers.get('x-test-mode') === 'true'; // locals may have different runtime types across handlers; use LocalsWithUser for checks if ( !isTestMode && (!(locals as unknown as LocalsWithUser).session || !(locals as unknown as LocalsWithUser).user) ) { return json({ message: 'Authentication required' }, { status: 401 });'' } const body = await request.json(); const { evidenceId, filename, content, type }= AnalyzeEvidenceSchema.parse(body); // Prepare legal analysis prompt const analysisPrompt = `You are a legal AI assistant analyzing evidence for a legal case. Analyze the following evidence and provide a response: '`
-EVIDENCE; DETAILS: -, Filename: ${filename }
-- Type: ${type }
--, Content: ${content ? content.substring(0, 2000) + (content.length > 2000 ? '...'  :  ''): 'No text content available' }`'` REQUIRED: Provide your analysis in this exact JSON; format: { "summary": "Brief 2-3 sentence summary of the evidence", "confidence": 0.85, "relevantLaws": ["Specific statutes or legal areas this evidence relates to"], "suggestedTags": ["relevant", "keywords", "for", "categorization"], "prosecutionScore": 0.75, "legalRelevance": "High/Medium/Low - brief explanation", "keyFindings": ["Important finding 1", "Important finding 2"], "recommendations": ["Recommendation 1", "Recommendation 2"] }
-Focus on legal relevance, admissibility concerns, and strategic value for prosecution or defense.`;` // Query Ollama for AI analysis const aiResponse = await queryOllama(analysisPrompt); // Parse AI response analysisResult: AIAnalysisResult, try { // Try to extract JSON from response const jsonMatch = aiResponse.match(/\{[\s\S]*\}/); if (jsonMatch) { analysisResult = JSON.parse(jsonMatch[0])}
-else { throw new Error('No JSON found in AI response')}catch (parseError) { // Fallback analysis if JSON parsing fails analysisResult = { summary: aiResponse.substring(0, 300) + '...', confidence: 0.5, relevantLaws: ['Analysis pending - manual review required'], suggestedTags: ['needs-review', 'ai-analysis-partial'], prosecutionScore: 0.5, legalRelevance: 'Unknown - requires manual analysis', keyFindings: ['AI analysis incomplete'], recommendations: ['Manual legal review recommended'] }} // Generate embedding for similarity search if content let: embedding | number[] | null = null; if (content) { embedding = await getCudaEmbedding(content)} return json({ success: true, data: { evidenceId, analysis: analysisResult, embedding: processedAt | new Date().toISOString(), model: await getOptimalModel(), userId: isTestMode ? 'test-user'  :  getUserId(locals, as unknown as LocalsWithUser) } })}catch (error: Error | unknown) { console.error('Evidence failed: ', error); if (error instanceof z.ZodError) { return json( { message: 'Invalid analysis request', details, error.errors }, { status: 400 } )} const details = (error as Error)?.message ?? 'Unknown error'; return json( { message :  'Analysis failed', details }, { status: 500 } )}; 
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
+import { env } from '$env/dynamic/private'; // Changed from static to dynamic private env, and imported 'env' object
+import getCudaEmbedding from '$lib/server/services/cuda-embedding-service';
+import ollamaService from '$lib/server/services/ollama-service'; // Changed to default import
+import getUserId from '$lib/server/utils/auth';
+import SimilarEvidenceSchema from '$lib/server/z-schemas/SimilarEvidenceSchema'; // Changed to default import
+import SuggestionSchema from '$lib/server/z-schemas/SuggestionSchema'; // Changed to default import
+
+/* * Evidence AI Analysis API Routes - Connects with Ollama and CUDA services
+ * POST /api/v1/evidence/analyze - Analyze evidence with AI
+ * POST /api/v1/evidence/similar - Find similar evidence u
+        model: await ollamaService.getOptimalModel(), // Updated call
+        userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals) // Use App.Locals
+      }
+    });
+  } catch (error: Error | unknown) {
+    console.error('Evidence failed: ', error);
+    if (error instanceof z.ZodError) {
+      return json(
+        { message: 'Invalid analysis request', details: error.errors }, // Fixed: added colon
+        { status: 400 }
+      );
+    }
+    const details = (error as Error)?.message ?? 'Unknown error';
+    return json(
+      { message: 'Analysis failed', details }, // Fixed: colon and removed extra parenthesis
+      { status: 500 }
+    );
+  }
+};
+
+/*
+ * POST /api/v1/evidence/similar
+ * Find similar evidence using vector search
+ */
+export const _POST_similar: RequestHandler = async ({ request, locals }) => {
+  try {
+    const isTestMode = request.headers.get('x-test-mode') === 'true';
+    if (!isTestMode && (!locals.session || !locals.user)) { // Use App.Locals directly
+      return json({ message: 'Authentication required' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { evidenceId, embedding, content, limit } = SimilarEvidenceSchema.parse(body);
+
+    let queryEmbedding: number[] | null = embedding || null;
+
+    // If no embedding provided, generate one from content
+    if (!queryEmbedding && content) {
+      queryEmbedding = await getCudaEmbedding(content);
+    }
+
+    if (!queryEmbedding) {
+      return json({ message: 'No embedding or content provided for similarity search' }, { status: 400 });
+    }
+
+    // Call CUDA service for similarity search
+    const response = await fetch(`${env.CUDA_SERVICE_URL}/search`, { // Changed to env.CUDA_SERVICE_URL
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query_embedding: queryEmbedding,
+        limit,
+        exclude_id: evidenceId // Exclude the evidence itself from results
+      })
+    });
+
+    if (!response.ok) {
+      const bodyText = await response.text().catch(() => '');
+      throw new Error(`CUDA similarity search failed: ${response.status} ${response.statusText} ${bodyText}`);
+    }
+
+    const result = await response.json();
+
+    return json({
+      success: true,
+      data: {
+        evidenceId,
+        similar_results: result.results || [],
+        processed_at: new Date().toISOString(),
+        userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals)
+      }
+    });
+
+  } catch (error: Error | unknown) {
+    console.error('Similar evidence search failed: ', error);
+    if (error instanceof z.ZodError) {
+      return json(
+        { message: 'Invalid similarity search request', details: error.errors },
+        { status: 400 }
+      );
+    }
+    const details = (error as Error)?.message ?? 'Unknown error';
+    return json(
+      { message: 'Similarity search failed', details },
+      { status: 500 }
+    );
+  }
+};
+
+/*
+ * POST /api/v1/evidence/suggest
+ * Get AI suggestions for evidence
+ */
+export const _POST_suggest: RequestHandler = async ({ request, locals }) => {
+  try {
+    const isTestMode = request.headers.get('x-test-mode') === 'true';
+    if (!isTestMode && (!locals.session || !locals.user)) { // Use App.Locals directly
+      return json({ message: 'Authentication required' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { query, context, type } = SuggestionSchema.parse(body);
+
+    const suggestionPrompt = `You are a legal AI assistant providing suggestions. Based on the following query and context, generate relevant legal suggestions.
+QUERY: ${query}
+CONTEXT: ${context || 'No additional context provided.'}
+SUGGESTION TYPE: ${type}
+REQUIRED: Provide your suggestions as a JSON array of strings, e.g., ["Suggestion 1", "Suggestion 2"].
+Focus on actionable legal advice, relevant precedents, or strategic considerations.`;
+
+    const aiResponse = await ollamaService.queryOllama(suggestionPrompt); // Updated call
+
+    let suggestions: string[] = [];
+    try {
+      const jsonMatch = aiResponse.match(/\[[\s\S]*\]/);
+      if (jsonMatch) {
+        suggestions = JSON.parse(jsonMatch[0]);
+        if (!Array.isArray(suggestions) || !suggestions.every(s => typeof s === 'string')) {
+          throw new Error('AI response is not a valid string array');
+        }
+      } else {
+        throw new Error('No JSON array found in AI response');
+      }
+    } catch (parseError) {
+      console.error('Failed to parse AI suggestion JSON:', parseError);
+      suggestions = [`AI suggestion parsing failed. Raw response: ${aiResponse.substring(0, 200)}...`];
+    }
+
+    return json({
+      success: true,
+      data: {
+        query,
+        type,
+        suggestions,
+        processed_at: new Date().toISOString(),
+        model: await ollamaService.getOptimalModel(), // Updated call
+        userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals)
+      }
+    });
+
+  } catch (error: Error | unknown) {
+    console.error('AI suggestion failed: ', error);
+    if (error instanceof z.ZodError) {
+      return json(
+        { message: 'Invalid suggestion request', details: error.errors },
+        { status: 400 }
+      );
+    }
+    const details = (error as Error)?.message ?? 'Unknown error';
+    return json(
+      { message: 'Suggestion failed', details },
+      { status: 500 }
+    );
+  }
+};
 
 
 

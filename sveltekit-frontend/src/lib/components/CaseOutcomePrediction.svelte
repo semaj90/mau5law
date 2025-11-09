@@ -12,10 +12,7 @@
 		jurisdiction = 'general',
 		partyType = 'plaintiff',
 		historicalData = [],
-		similarCases = [],
-		isLoading = false,
-		prediction = null,
-		error = null
+		similarCases = []
 	} = $props();
 
 	// Define a type for the prediction outcome part that is stored in history
@@ -36,6 +33,9 @@
 	}
 
 	// Local state
+	let isLoading = $state<boolean>(false);
+	let prediction = $state<any>(null); // Keep as any for flexibility, or define a proper type if available
+	let error = $state<string | null>(null);
 	let showAdvanced = writable(false);
 	let analysisHistory = writable<AnalysisHistoryItem[]>([]); // Explicitly type the writable store
 	let exportFormat = writable('json');
@@ -182,7 +182,21 @@
 		URL.revokeObjectURL(url);
 	}
 
-	function generateTextReport(data) {
+	// Define a type for the data parameter in generateTextReport
+	interface ExportData {
+		export_timestamp: string;
+		case_data: {
+			caseFacts: string;
+			caseType: string;
+			jurisdiction: string;
+			partyType: string;
+			historicalData: string[];
+			similarCases: string[];
+		};
+		prediction_results: any; // Or define a proper prediction type
+	}
+
+	function generateTextReport(data: ExportData) {
 		const pred = data.prediction_results;
 		return `
 CASE OUTCOME PREDICTION REPORT
