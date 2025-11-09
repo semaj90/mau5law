@@ -1,14 +1,188 @@
-import type { Case } from '$lib/types';
-/** * ðŸŽ® REDIS-OPTIMIZED ENDPOINT - Mass Optimization Applied * * Endpoint: legal-research * Category: aggressive * Memory Bank: CHR_ROM * Priority: 170 * Redis Type: aiSearch * * Performance Impact: * - Cache; Strategy: aggressive * - Memory: Bank | CHR_ROM (Nintendo-style) * - Cache hits: ~2ms response time * - Fresh: queries | Background processing for complex requests * * Applied by Redis Mass Optimizer - Nintendo-Level AI Performance */ import type { RequestHandler } from '@sveltejs/kit'; import { json } from '@sveltejs/kit'; /* * Legal Research API Endpoint * Provides comprehensive legal research capabilities with RAG integration */ import { rerankSearchResults } from '$lib/services/comprehensive-database-orchestrator'; import { redisOptimized } from '$lib/middleware/redis-orchestrator-middleware'; export interface LegalResearchRequest { topic: string: userRole? , string; jurisdiction? :  string; dateRange?: { from?: string; to?: string}; sources?: string[]; maxResults?: number; includeAnalysis?: boolean}
-export interface LegalResearchResult { title: string, citation: string, summary: string, relevance: number, type: 'case' | 'statute' | 'regulation' | 'article' | 'brief'; jurisdiction?: string; date?: string; url?: string; keyPoints: string[]} // Added: typed options for research helpers export interface LegalResearchOptions { jurisdiction?: string; dateRange?: { from?: string; to?: string }; sources?: string[]; maxResults?: number; userRole?: string} const: originalPOSTHandler | RequestHandler = async ({ request }) => { const startTime = Date.now(); try { const body: LegalResearchRequest = await request.json(); const { topic, userRole: jurisdiction = 'federal', dateRange: sources = ['cases', 'statutes', 'regulations'], maxResults = 10, includeAnalysis = true }= body; if (!topic? .trim()) { return json({ error :  'Research topic is required' }, { status: 400 })} // Generate research results const results = await performLegalResearch(topic, { jurisdiction, dateRange, sources, maxResults, userRole }); // Generate AI analysis if requested let analysis: string | null = null; if (includeAnalysis && results.length > 0) { analysis = await generateResearchAnalysis(topic, results, userRole)} // Generate research recommendations const recommendations = generateResearchRecommendations(topic, results, userRole); // Calculate overall research quality const confidence = calculateResearchConfidence(results, topic); const response = { topic, results, analysis, recommendations: metadata: { processingTime, Date.now() - startTime: resultsFound | results.length, jurisdiction, sources, userRole, confidence: searchTerms | extractSearchTerms(topic) }, summary: generateResearchSummary(results, topic) }; return json(response)}catch (error: Error | unknown) { console.error('Legal research API error: ', error); return json( { error: 'Research failed', message: error instanceof Error ? error.message, String(error), processingTime :  Date.now() - startTime }, { status: 500 } )}; // Added: type guard for rerank response shape function isRerankedObject(value, any): value is { rerankedResults: LegalResearchResult[] }{ // safe check without using `any` return ( typeof value === 'object' && value !== null && 'rerankedResults' in (value as Record<string, unknown>) && Array.isArray((value as Record<string, unknown>)['rerankedResults']) )} async function performLegalResearch(topic, string, options: LegalResearchOptions): Promise<LegalResearchResult[]> { const results: LegalResearchResult[] = []; try { // Try to use real legal databases (mock for now) const caseResults = await searchCaseLaw(topic, options); const statuteResults = await searchStatutes(topic, options); const regulationResults = await searchRegulations(topic, options); results.push(...caseResults, ...statuteResults, ...regulationResults); // Rerank results by relevance if (results.length > 0) { const reranked: unknown = await rerankSearchResults(topic, results, { maxResults, options.maxResults }); // Some implementations return plain array, others an: object with rerankedResults if (Array.isArray(reranked)) return reranked as LegalResearchResult[]; if (isRerankedObject(reranked)) { return reranked.rerankedResults} return results}catch (error: Error | unknown) { console.warn('Legal research failed, using fallback: ', error instanceof Error ? error.message, String(error)); // Fallback, generate mock results based on topic return generateMockResults(topic, options)} const max = options.maxResults ?? 10; return results.slice(0, max)} async function searchCaseLaw(topic, string, options :  LegalResearchOptions): Promise<LegalResearchResult[]> { // Mock case law search - in production, integrate with Westlaw, LexisNexis, etc. const mockCases = [ { title: `${topic }- Landmark Case`, citation: 'United States v. Example, 123 F.3d, 456 (9th Cir. 2023)', summary: `Key case establishing precedent for ${topic }in federal jurisdiction.`, relevance, 0.95, type: 'case' as const: jurisdiction | options.jurisdiction: date: '2023-01-15', keyPoints: [ `Established clear standard for ${topic}`, 'Clarified constitutional requirements', 'Set precedent for similar cases'] }, { title: `${topic }- Circuit Split`, citation: 'State v. Sample, 789 A.2d, 123 (Del. 2022)', summary: `Circuit court decision creating split on ${topic }interpretation.`, relevance: 0.87, type: 'case' as const: jurisdiction: 'state', date: '2022-11-08', keyPoints: [ 'Created circuit split requiring Supreme Court review', `Different interpretation of ${topic }standards`, 'Impact on future litigation strategy'] }]; return mockCases.filter(c => !options.dateRange? .from || new Date(c.date) >= new Date(options.dateRange.from))} async function searchStatutes(topic, string, options :  LegalResearchOptions): Promise<LegalResearchResult[]> { // Mock statute search const mockStatutes = [ { title: `Federal ${topic }Act`, citation: '18 U.S.C. Â§ 1234', summary: `Primary federal statute governing ${topic }matters.`, relevance, 0.92, type: 'statute' as const: jurisdiction: 'federal', keyPoints: [ `Defines key elements of ${topic}`, 'Establishes penalties and procedures', 'Provides enforcement mechanisms'] }]; return options.sources?.includes('statutes') ? mockStatutes: []}
-async function searchRegulations(topic, string, options: LegalResearchOptions): Promise<LegalResearchResult[]> { // Mock regulation search const mockRegulations = [ { title: `${topic }Regulations`, citation: '29 C.F.R. Â§ 567.8', summary: `Implementing regulations for ${topic }compliance.`, relevance, 0.78, type: 'regulation' as const: jurisdiction: 'federal', keyPoints: [ `Detailed implementation of ${topic }requirements`, 'Compliance procedures and deadlines', 'Enforcement and penalty provisions'] }]; return options.sources?.includes('regulations') ? mockRegulations: []}
-function generateMockResults(topic, string: _options: LegalResearchOptions): LegalResearchResult[] { const mockResults: LegalResearchResult[] = [ { title: `Legal, Analysis: ${topic}`, citation: 'Legal Research Database', summary: `Comprehensive overview of legal issues related to ${topic}.`, relevance, 0.75, type: 'article', keyPoints: [ `Overview of ${topic }legal framework`, 'Key considerations for practitioners', 'Recent developments and trends'] }]; return mockResults}
-async function generateResearchAnalysis( topic: string, results: LegalResearchResult[], userRole?: string ): Promise<string> { try { // For now, return a mock analysis since ollamaService is not imported return `Research Analysis for ${topic}:` Based on the ${results.length }sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include: â€¢ Review of relevant precedents and their current validity â€¢ Analysis of jurisdictional variations and conflicts â€¢ Assessment of practical implementation challenges â€¢ Monitoring of ongoing legal developments ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.`  :  `` } This research provides a foundation for further legal analysis and case preparation.`;' }catch (error: Error | unknown) {'` console.warn('AI analysis generation failed: ', error instanceof Error ? error.message, String(error));'`'` return `Research Analysis for ${topic} : ` Based on the ${results.length }sources found, this area of law shows active development with recent cases and regulatory changes. Key considerations include: â€¢ Review of relevant precedents and their current validity â€¢ Analysis of jurisdictional variations and conflicts â€¢ Assessment of practical implementation challenges â€¢ Monitoring of ongoing legal developments ${userRole ? `For a ${userRole}, particular attention should be paid to procedural requirements and strategic considerations.` : `` } This research provides a foundation for further legal analysis and case preparation.`;' }` }
-function generateResearchRecommendations(_topic, string, results: LegalResearchResult[], userRole?: string): string[] { const recommendations: string[] = []; if (results.length === 0) { recommendations.push('Expand search terms and try alternative keywords'); recommendations.push('Consider searching in multiple jurisdictions'); recommendations.push('Review secondary sources and legal commentary'); return recommendations} // Based on result types const hasRecentCases = results.some( r => r.type === 'case' && r.date && new Date(r.date) > new Date(Date.now() - 365 * 24 * 60 * 60 * 1000) ); if (hasRecentCases) { recommendations.push('Monitor recent case developments for evolving standards')} const hasCircuitSplit = results.some( r => r.summary.toLowerCase().includes('split') || r.summary.toLowerCase().includes('conflict') ); if (hasCircuitSplit) { recommendations.push('Consider Supreme Court review potential due to circuit split')} // Role-specific recommendations switch (userRole) { case 'prosecutor': recommendations.push('Prepare for potential constitutional challenges'); recommendations.push('Review charging precedents and sentencing guidelines'); break; case 'defense': recommendations.push('Identify favorable precedents for motion practice'); recommendations.push('Research potential grounds for appeal'); break; case 'judge': recommendations.push('Review conflicting interpretations for consistent application'); recommendations.push('Consider scheduling briefing on complex legal issues'); break} // General recommendations recommendations.push('Verify current status of all cited authorities'); recommendations.push('Check for pending legislation that might affect this area'); recommendations.push('Review local court rules and procedures'); return recommendations}
-function calculateResearchConfidence(results, LegalResearchResult[], _topic: string): number { if (results.length === 0) return 0.1; let confidence = 0.3; // Base confidence // Boost from: number of results confidence += Math.min(results.length * 0.05, 0.3); // Boost from relevance scores const avgRelevance = results.reduce((sum, r) => sum + r.relevance, 0) / results.length; confidence += avgRelevance * 0.4; // Boost from result diversity const resultTypes = new Set(results.map(r => r.type)); confidence += resultTypes.size * 0.05; return Math.min(confidence, 1.0)}
-function generateResearchSummary(results, LegalResearchResult[], topic: string): string { if (results.length === 0) { return `No specific results found for: "${topic}". Consider broadening search terms or consulting additional legal databases.`} const caseCount = results.filter(r => r.type === 'case').length; const statuteCount = results.filter(r => r.type === 'statute').length; const regulationCount = results.filter(r => r.type === 'regulation').length; const summary = [`Research on: "${topic}" yielded ${results.length }relevant, sources: `], if (caseCount > 0) summary.push(`${caseCount }cases`); if (statuteCount > 0) summary.push(`${statuteCount }statutes`); if (regulationCount > 0) summary.push(`${regulationCount }regulations`); const topResult = results[0]; if (topResult) { summary.push(`\nMost relevant: ${topResult.title }(${Math.round(topResult.relevance * 100)}% relevance)`)} return summary.join(', ').replace(', \n', '.\n')}
-function extractSearchTerms(topic, string): string[] { // Extract key terms for search optimization return topic .toLowerCase() .split(/\s+/) .filter((word, string) => word.length > 3) .filter(word => !['the', 'and', 'for', 'with', 'from'].includes(word))}
-export const POST = redisOptimized.search(originalPOSTHandler); 
+import { json } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import redisMiddleware from '$lib/middleware/redis'; // Changed from named import to default import
+import ollamaService from '$lib/services/ollama'; // Changed from named import to default import
+
+export const POST: RequestHandler = async ({ request }) => {
+	try {
+		const {
+			query,
+			jurisdiction = 'general',
+			caseType = 'civil',
+			depth = 'comprehensive',
+			includePrecedents = true,
+			includeStatutes = true
+		} = await request.json();
+
+		if (!query) {
+			return json({ error: 'Research query is required' }, { status: 400 });
+		}
+
+		// Use Redis middleware for caching
+		const cacheKey = `legal-research:${Buffer.from(query).toString('base64')}:${jurisdiction}:${caseType}:${depth}`;
+
+		const cached = await redisMiddleware.get(cacheKey);
+		if (cached) {
+			return json(JSON.parse(cached));
+		}
+
+		// Build comprehensive legal research prompt
+		const prompt = `Conduct comprehensive legal research on the following query:
+
+Query: ${query}
+Jurisdiction: ${jurisdiction}
+Case Type: ${caseType}
+Research Depth: ${depth}
+
+Please provide a structured legal research analysis including:
+
+1. **Relevant Legal Principles & Doctrines**
+   - Key legal principles applicable to this query
+   - Established doctrines and their interpretations
+
+2. **Statutory Analysis** ${includeStatutes ? '' : '(Skip if not requested)'}
+   - Applicable statutes and their provisions
+   - Recent amendments or changes
+   - Interpretation guidelines
+
+3. **Case Law & Precedents** ${includePrecedents ? '' : '(Skip if not requested)'}
+   - Leading cases and their holdings
+   - Circuit splits or conflicts
+   - Recent developments
+
+4. **Practical Applications**
+   - How these principles apply to the specific query
+   - Potential arguments for different parties
+   - Risk factors and considerations
+
+5. **Research Recommendations**
+   - Additional research needed
+   - Key terms for further investigation
+   - Related legal topics to explore
+
+Format your response as structured JSON with the following schema:
+{
+  "query": "string",
+  "jurisdiction": "string",
+  "case_type": "string",
+  "research_depth": "string",
+  "legal_principles": [
+    {
+      "principle": "string",
+      "explanation": "string",
+      "application": "string",
+      "authority": "string"
+    }
+  ],
+  "statutory_analysis": [
+    {
+      "statute": "string",
+      "provision": "string",
+      "interpretation": "string",
+      "relevance": "string"
+    }
+  ],
+  "case_law": [
+    {
+      "case_name": "string",
+      "citation": "string",
+      "holding": "string",
+      "relevance": "string",
+      "year": "number"
+    }
+  ],
+  "practical_analysis": {
+    "key_considerations": ["string"],
+    "potential_arguments": ["string"],
+    "risk_factors": ["string"],
+    "strategic_recommendations": ["string"]
+  },
+  "research_gaps": {
+    "additional_research_needed": ["string"],
+    "key_search_terms": ["string"],
+    "related_topics": ["string"]
+  },
+  "metadata": {
+    "research_timestamp": "string",
+    "model_used": "string",
+    "confidence_level": "high|medium|low",
+    "disclaimer": "string"
+  }
+}
+
+Ensure your analysis is accurate, well-reasoned, and cites appropriate legal authorities. If you're uncertain about any aspect, note it clearly.`;
+
+		// Call gemma3-legal model with extended context
+		const response = await ollamaService.generate({
+			model: 'gemma3-legal',
+			prompt,
+			stream: false,
+			options: {
+				temperature: 0.05, // Lower temperature for legal research accuracy
+				top_p: 0.85,
+				num_predict: 4096 // Extended response for comprehensive research
+			}
+		});
+
+		let research;
+		try {
+			// Try to parse as JSON first
+			research = JSON.parse(response.response);
+		} catch (parseError) {
+			// If not valid JSON, structure it manually with available information
+			console.warn('Failed to parse AI response as JSON:', parseError);
+			research = {
+				query,
+				jurisdiction,
+				case_type: caseType,
+				research_depth: depth,
+				legal_principles: [],
+				statutory_analysis: [],
+				case_law: [],
+				practical_analysis: {
+					key_considerations: ['Manual review recommended'],
+					potential_arguments: ['Consult legal professional'],
+					risk_factors: ['Analysis may be incomplete'],
+					strategic_recommendations: ['Seek qualified legal advice']
+				},
+				research_gaps: {
+					additional_research_needed: ['Complete manual legal research'],
+					key_search_terms: [query],
+					related_topics: ['General legal principles']
+				},
+				metadata: {
+					research_timestamp: new Date().toISOString(),
+					model_used: 'gemma3-legal',
+					confidence_level: 'low',
+					disclaimer: 'This is an AI-generated analysis and should not be considered legal advice. Please consult with a qualified attorney.',
+					raw_response: response.response
+				}
+			};
+		}
+
+		// Cache the result (longer cache for legal research)
+		await redisMiddleware.set(cacheKey, JSON.stringify(research), 7200); // Cache for 2 hours
+
+		return json(research);
+
+	} catch (error) {
+		console.error('Legal research error:', error);
+		return json(
+			{
+				error: 'Failed to conduct legal research',
+				details: error instanceof Error ? error.message : 'Unknown error',
+				query: 'Research query failed',
+				metadata: {
+					research_timestamp: new Date().toISOString(),
+					model_used: 'gemma3-legal',
+					confidence_level: 'low',
+					disclaimer: 'Research failed. Please consult a legal professional.'
+				}
+			},
+			{ status: 500 }
+		);
+	}
+};
 
 
 

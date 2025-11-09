@@ -1,26 +1,411 @@
 <script lang="ts">
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack Integration *
-   * Features: * - MinIO file upload * - OCR processing (unified 5-strategy fallback) * - Ollama embeddings (gemma3-legal:latest) * - PostgreSQL + pgvector storage * - Qdrant vector tagging * - Zod validation + Superforms *
-   * Tech: Svelte, 5 + SvelteKit, 2 + Drizzle ORM + bits-ui */ import { page } from '$app/stores'; import { toast } from 'svelte-sonner'; import { Upload, CheckCircle, AlertCircle, Loader2, FileText, Sparkles } from 'lucide-svelte'; // Svelte, 5 state management let caseId = $derived($page.url.searchParams.get('caseId') || 'demo-case-' + Math.random().toString(36).substr(2, 9)); let uploadFile = $state<File | null>(null); let isUploading = $state<boolean>(false); let uploadProgress = $state<number>(0); let uploadResult = $state<any>(null); let uploadError = $state<string | null>(null); let comparing = $state<boolean>(false); let compareError = $state<string | null>(null); let compareResult = $state<any>(null); // Form data let formData = $state({ title: '', description: '', evidenceType: 'document', tags: ''; isAdmissible: true }); // Derived state let canSubmit = $derived(uploadFile !== null && formData.title.length > 0 && !isUploading); let fileSize = $derived(uploadFile ? formatFileSize(uploadFile.size): null); function handleFileUpload(event: Event) { const target = event.target as HTMLInputElement; if (target.files && target.files.length > 0) { uploadFile = target.files[0]; // Auto-populate title if (!formData.title) { formData.title = target.files[0].name.replace(/\.[^/.]+$/, '')}
+	import SmartEvidenceRecommendations from '$lib/components/SmartEvidenceRecommendations.svelte';
+	import { Check, TriangleAlert as AlertTriangle, Loader, FileText, Sparkles, Upload } from 'lucide-svelte';
+	import { goto } from '$app/navigation';
 
-      // Auto-detect type const mime = target.files[0].type; if (mime.startsWith('image/')) formData.evidenceType = 'image'; else if (mime.startsWith('video/')) formData.evidenceType = 'video'; else if (mime.startsWith('audio/')) formData.evidenceType = 'audio'; else if (mime === 'application/pdf') formData.evidenceType = 'document'; toast.success(`Selected: ${target.files[0].name}`)}
-  }
-  async function submitEvidence(): Promise<any> { if (!uploadFile) return; isUploading = true; uploadProgress = 0; uploadError = null; uploadResult = null; try { const data = new FormData(); data.append('file', uploadFile); data.append('title', formData.title); data.append('description', formData.description); data.append('caseId', caseId); data.append('evidenceType', formData.evidenceType); data.append('tags', formData.tags); data.append('isAdmissible', formData.isAdmissible.toString()); uploadProgress = 25; toast.info('ðŸ“¦ Uploading to MinIO...'); const response = await fetch('/api/evidence/upload', { method: 'POST'; body: data }); uploadProgress = 75; if (!response.ok) { const errorData = await response.json(); throw new Error(errorData.error || 'Upload failed')}
+	// Assume these types are defined elsewhere or add them
+	type Recommendation = any; // Replace with actual Recommendation type
+	type UploadResult = {
+		id: string;
+		hasEmbedding: boolean;
+		aiSummary: string;
+		evidenceType: string;
+		fileSize: number;
+		createdAt: string;
+		tags: string[];
+	};
+	type PageData = {
+		user: any | null; // Updated to use 'any' directly (removed 'User' type alias)
+		evidence: any[];
+		caseId: string | null;
+	};
 
-      const result = await response.json(); uploadProgress = 100; if (result.success) { uploadResult = result.data; toast.success('âœ… Evidence uploaded and indexed!'); if (result.data.aiSummary) toast.info('ðŸ§  AI Summary generated'); if (result.data.hasEmbedding) toast.info('ðŸ”¢ Vector embedding created')} else { throw new Error(result.error || 'Upload failed')}
+	// Page data from server
+	let { data }: { data: PageData } = $props();
+	let evidence = $derived(data?.evidence || []);
+	let caseId = $derived(data?.caseId || null);
 
-    } catch (err: unknown) { console.error('Upload error:', err); uploadError = err.message || 'Unknown error'; toast.error(`âŒ Upload failed: ${ uploadError }`)} finally { isUploading = false}
-  }
-  function formatFileSize(bytes: number): string { if (bytes === 0) return '0 B'; const k = 1024; const sizes = ['B', 'KB', 'MB', 'GB']; const i = Math.floor(Math.log(bytes) / Math.log(k)); return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]}
-  function resetForm() { uploadFile = null; uploadResult = null; uploadError = null; compareResult = null; compareError = null; comparing = false; uploadProgress = 0; formData = { title: '', description: '', evidenceType: 'document', tags: ''; isAdmissible: true }}
-  async function runCompare(): Promise<any> { if (!uploadFile && !uploadResult) return; try { comparing = true; compareError = null; compareResult = null; const fd = new FormData(); if (uploadFile) fd.append('file', uploadFile); if (formData.description?.trim()) fd.append('text', formData.description.trim()); if (formData.tags?.trim()) fd.append('tags', formData.tags.trim()); fd.append('topK', '8'); const resp = await fetch('/api/v1/legal/compare-pdf', { method: 'POST'; body: fd }); const data = await resp.json(); if (!resp.ok || !data?.success) throw new Error(data?.error || 'Comparison failed'); compareResult = data.data; toast.success('ðŸ”Ž Similar cases analyzed')} catch (e: unknown) { compareError = e?.message || String(e); toast.error(`Comparison error: ${ compareError }`)} finally { comparing = false}
-  }
+	// State management
+	let uploadFile = $state<File | null>(null);
+	let isUploading = $state(false);
+	let uploadProgress = $state(0);
+	let uploadResult = $state<UploadResult | null>(null);
+	let uploadError = $state(null);
+	let selectedEvidenceId = $state(null);
+	let recommendationsLoading = $state(false);
+	let recommendationsError = $state(null);
+	let recommendations = $state<Recommendation[]>([]);
+
+	// Form data
+	let formData = $state({
+		title: '',
+		description: '',
+		evidenceType: 'document',
+		tags: '',
+		isAdmissible: true
+	});
+
+	// Derived state
+	let canSubmit = $derived(uploadFile !== null && formData.title.length > 0 && !isUploading);
+	let fileSize = $derived(uploadFile ? formatFileSize(uploadFile.size) : null);
+
+	function handleFileUpload(event: Event) {
+		const target = event.target as HTMLInputElement;
+		if (target.files && target.files.length > 0) {
+			uploadFile = target.files[0];
+			// Auto-populate title if empty
+			if (!formData.title) {
+				formData.title = target.files[0].name.replace(/\.[^/.]+$/, '');
+			}
+			// Auto-detect type
+			const mime = target.files[0].type;
+			if (mime.startsWith('image/')) formData.evidenceType = 'image';
+			else if (mime.startsWith('video/')) formData.evidenceType = 'video';
+			else if (mime.startsWith('audio/')) formData.evidenceType = 'audio';
+			else if (mime === 'application/pdf') formData.evidenceType = 'document';
+
+			console.log(`Selected: ${target.files[0].name}`);
+		}
+	}
+
+	async function submitEvidence() {
+		if (!uploadFile) return;
+
+		isUploading = true;
+		uploadProgress = 0;
+		uploadError = null;
+		uploadResult = null;
+
+		try {
+			const data = new FormData();
+			data.append('file', uploadFile);
+			data.append('title', formData.title);
+			data.append('description', formData.description);
+			data.append('caseId', caseId || '');
+			data.append('evidenceType', formData.evidenceType);
+			data.append('tags', formData.tags);
+			data.append('isAdmissible', formData.isAdmissible.toString());
+
+			uploadProgress = 25;
+			console.log('Uploading to MinIO...');
+
+			const response = await fetch('/api/evidence/upload', {
+				method: 'POST',
+				body: data
+			});
+
+			uploadProgress = 75;
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || 'Upload failed');
+			}
+
+			const result = await response.json();
+			uploadProgress = 100;
+
+			if (result.success) {
+				uploadResult = result.data;
+				console.log('Evidence uploaded and indexed!');
+				if (result.data.aiSummary) console.log('AI Summary generated');
+				if (result.data.hasEmbedding) console.log('Vector embedding created');
+
+				// Refresh the page data
+				window.location.reload();
+			} else {
+				throw new Error(result.error || 'Upload failed');
+			}
+		} catch (err: unknown) {
+			console.error('Upload error:', err);
+			uploadError = (err as Error).message || 'Unknown error';
+			console.error(`Upload failed: ${uploadError}`);
+		} finally {
+			isUploading = false;
+		}
+	}
+
+	function formatFileSize(bytes: number) {
+		if (bytes === 0) return '0 B';
+		const k = 1024;
+		const sizes = ['B', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+	}
+
+	function resetForm() {
+		uploadFile = null;
+		uploadResult = null;
+		uploadError = null;
+		uploadProgress = 0;
+		formData = {
+			title: '',
+			description: '',
+			evidenceType: 'document',
+			tags: '',
+			isAdmissible: true
+		};
+	}
+
+	async function generateRecommendations(evidenceId: string) {
+		recommendationsLoading = true;
+		recommendationsError = null;
+		selectedEvidenceId = evidenceId;
+
+		try {
+			const response = await fetch('/api/ai/evidence-recommendations', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					evidenceId,
+					caseId
+				})
+			});
+
+			if (!response.ok) {
+				throw new Error(`HTTP ${response.status}`);
+			}
+
+			const result = await response.json();
+			if (result.success) {
+				recommendations = result.data.recommendations;
+				console.log('AI recommendations generated!');
+			} else {
+				throw new Error(result.error || 'Failed to generate recommendations');
+			}
+		} catch (err: unknown) {
+			console.error('Recommendations error:', err);
+			recommendationsError = (err as Error).message || 'Failed to generate recommendations';
+			console.error(`${recommendationsError}`);
+		} finally {
+			recommendationsLoading = false;
+		}
+	}
+
+	function handleRecommendationEvent(event: any) {
+		const { type, detail } = event;
+		if (type === 'generate') {
+			generateRecommendations(detail.evidenceId);
+		}
+	}
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<main class="home-page">
+  <div class="hero-section">
+    <h1>🕵️ Evidence Management</h1>
+    <p class="subtitle">AI-Powered Legal Evidence Analysis & Recommendations</p>
+    <p class="status">Case: {caseId || 'No case selected'}</p>
+  </div>
+
+  <div class="action-grid">
+    <!-- Upload Card -->
+    <div class="action-card upload-card">
+      <h3>📤 Upload Evidence</h3>
+      <form onsubmit={(e) => { e.preventDefault(); submitEvidence(); }}>
+        <input
+          type="file"
+          class="file-input"
+          accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
+          onchange={handleFileUpload}
+          required
+        />
+
+        {#if uploadFile}
+          <div class="file-preview">
+            <FileText class="file-preview-file-icon" />
+            <div class="file-info">
+              <p class="file-name">{uploadFile.name}</p>
+              <p class="file-size">{fileSize}</p>
+            </div>
+          </div>
+        {/if}
+
+        <div class="form-fields">
+          <input
+            type="text"
+            class="form-input"
+            placeholder="Evidence Title"
+            bind:value={formData.title}
+            required
+          />
+
+          <textarea
+            class="form-textarea"
+            placeholder="Description (optional)"
+            bind:value={formData.description}
+            rows="3"
+          ></textarea>
+
+          <select class="form-select" bind:value={formData.evidenceType}>
+            <option value="document">Document</option>
+            <option value="image">Image</option>
+            <option value="video">Video</option>
+            <option value="audio">Audio</option>
+          </select>
+
+          <input
+            type="text"
+            class="form-input"
+            placeholder="Tags (comma-separated)"
+            bind:value={formData.tags}
+          />
+
+          <label class="form-input">
+            <input type="checkbox" bind:checked={formData.isAdmissible} />
+            Mark as admissible
+          </label>
+        </div>
+
+        {#if isUploading}
+          <div class="upload-progress">
+            <div class="progress-info">
+              <Loader class="loader-spin-icon" />
+              Uploading... {uploadProgress}%
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: {uploadProgress}%"></div>
+            </div>
+          </div>
+        {/if}
+
+        <div class="button-group">
+          <button type="submit" class="upload-btn" disabled={!canSubmit || isUploading}>
+            {#if isUploading}
+              <Loader class="loader-spin-icon" />
+              Uploading...
+            {:else}
+              <Upload class="icon" />
+              Upload Evidence
+            {/if}
+          </button>
+          <button type="button" class="reset-btn" onclick={resetForm}>
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Results Card -->
+    <div class="action-card results-card">
+      <h3>📊 Upload Results</h3>
+      {#if uploadResult}
+        <div class="result-success">
+          <div class="result-header">
+            <Check class="result-success-icon" />
+            <div>
+              <h4>Evidence Uploaded Successfully</h4>
+              <p class="result-id">ID: {uploadResult.id}</p>
+            </div>
+          </div>
+
+          <div class="processing-steps">
+            <div class="step">
+              {#if uploadResult.hasEmbedding}
+                <Check class="processing-step-icon" />
+              {:else}
+                <AlertTriangle class="processing-step-skip-icon" />
+              {/if}
+              Vector Embedding
+            </div>
+            <div class="step">
+              {#if uploadResult.aiSummary}
+                <Check class="processing-step-icon" />
+              {:else}
+                <AlertTriangle class="processing-step-skip-icon" />
+              {/if}
+              AI Summary
+            </div>
+          </div>
+
+          {#if uploadResult.aiSummary}
+            <div class="ai-summary">
+              <div class="summary-header">
+                <Sparkles class="ai-summary-sparkle-icon" />
+                AI Summary
+              </div>
+              <p>{uploadResult.aiSummary}</p>
+            </div>
+          {/if}
+
+          <div class="metadata">
+            <div class="meta-row">
+              <span>Type:</span>
+              <span>{uploadResult.evidenceType}</span>
+            </div>
+            <div class="meta-row">
+              <span>Size:</span>
+              <span>{formatFileSize(uploadResult.fileSize)}</span>
+            </div>
+            <div class="meta-row">
+              <span>Uploaded:</span>
+              <span>{new Date(uploadResult.createdAt).toLocaleString()}</span>
+            </div>
+          </div>
+
+          {#if uploadResult.tags && uploadResult.tags.length > 0}
+            <div class="tags">
+              {#each uploadResult.tags as tag (tag)}
+                <span class="tag">{tag}</span>
+              {/each}
+            </div>
+          {/if}
+        </div>
+      {:else if uploadError}
+        <div class="result-error">
+          <AlertTriangle class="result-error-icon" />
+          <h4>Upload Failed</h4>
+          <p>{uploadError}</p>
+        </div>
+      {:else}
+        <div class="result-empty">
+          <FileText class="result-empty-icon" />
+          <p>No evidence uploaded yet. Use the form to upload your first piece of evidence.</p>
+        </div>
+      {/if}
+    </div>
+
+    <!-- Info Card -->
+    <div class="action-card info-card">
+      <h3>🧠 AI Tech Stack</h3>
+      <div class="tech-stack">
+        <div class="tech-item">
+          <strong>Model:</strong> gemma3-legal:latest (6.8GB GGUF)
+        </div>
+        <div class="tech-item">
+          <strong>Vector DB:</strong> pgvector with cosine similarity
+        </div>
+        <div class="tech-item">
+          <strong>Storage:</strong> MinIO S3-compatible
+        </div>
+        <div class="tech-item">
+          <strong>Processing:</strong> CUDA acceleration + embeddings
+        </div>
+        <div class="tech-item">
+          <strong>Analysis:</strong> Pattern recognition & recommendations
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Smart Evidence Recommendations -->
+  {#if evidence && evidence.length > 0}
+    <SmartEvidenceRecommendations
+      evidenceId={selectedEvidenceId}
+      {caseId}
+      {recommendations}
+      {recommendationsLoading}
+      {recommendationsError}
+      on:generate={handleRecommendationEvent}
+    />
+  {/if}
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <button class="action-link" onclick={() => goto('/cases')}>📋 View Cases</button>
+    <button class="action-link" onclick={() => goto('/ai/vector-search')}>🔍 Vector Search</button>
+    <button class="action-link" onclick={() => goto('/ai/chat')}>💬 AI Assistant</button>
+    <button class="action-link" onclick={() => goto('/dashboard')}>📊 Dashboard</button>
+  </div>
 </main>
 
 <style>
@@ -54,10 +439,6 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
   .status {
     font-size: 0.9rem;
     color: #888;
-  }
-
-  .text-green-400 {
-    color: #92cc41;
   }
 
   .action-grid {
@@ -229,23 +610,6 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     margin-top: 1rem;
   }
 
-  .compare-actions {
-    margin-top: 0.75rem;
-  }
-  .comparison-panel {
-    margin-top: 1rem;
-    background: #0f1215;
-    border: 1px solid #2a2d30;
-    padding: 0.75rem;
-    border-radius: 8px;
-  }
-  .similar-item {
-    border-bottom: 1px solid #222;
-    padding: 0.35rem 0;
-  }
-  .similar-item:last-child {
-    border-bottom: none;
-  }
   .upload-btn,
   .reset-btn {
     flex: 1;
@@ -272,7 +636,7 @@ import type { Document } from '$lib/types'; /** * Evidence Manager - Full Stack 
     transform: translateY(-1px);
   }
 
-  .upload-btn.disabled {
+  .upload-btn:disabled {  // Updated selector to ':disabled' to match the 'disabled' attribute usage
     opacity: 0.5;
     cursor: not-allowed;
   }

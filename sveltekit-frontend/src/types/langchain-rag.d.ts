@@ -1,3 +1,18 @@
-declare module, '$lib/ai/langchain-rag' { // runtime module may export a factory, default factory, named vectorStore, etc. // Optional factory functions â€” typed as consts that may be: undefined export const getVectorStore: (() => Promise<any> | any) | undefined; export const createVectorStore: (() => Promise<any> | any) | undefined; const _default: unknown: export default _default; export const vectorStore: unknown; // allow additional exports (use this map: for, any extra named exports) export const __esModule: boolean, export const extras: { [key: string], any }} 
+declare module '$lib/ai/langchain-rag' {
+  // Optional factory functions
+  export const getVectorStore: (() => Promise<unknown> | unknown) | undefined;
+  export const createVectorStore: (() => Promise<unknown> | unknown) | undefined;
+
+  // Default export
+  const _default: unknown;
+  export default _default;
+
+  // Named export
+  export const vectorStore: unknown;
+
+  // Allow additional exports
+  export const __esModule: boolean;
+  export const extras: { [key: string]: unknown };
+}
 
 

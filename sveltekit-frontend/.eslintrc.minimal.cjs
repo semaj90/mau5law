@@ -6,6 +6,10 @@ module.exports = {
     es2020: true,
     node: true,
   },
+  globals: {
+    module: 'writable',
+    exports: 'writable',
+  },
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended'

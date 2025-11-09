@@ -1,10 +1,26 @@
 <script lang="ts">
-  let { data }: { data: unknown } = $props(); // { endpoints: { name: string, path: string, healthy: boolean, message?: string }[] }
+	type Endpoint = {
+		name: string;
+		path: string;
+		healthy: boolean;
+		message?: string;
+	};
+	let { data }: { data: { endpoints: Endpoint[] } } = $props();
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<main class="endpoints-page">
+	<h1 class="page-title">Service Endpoints Status</h1>
+	<div class="endpoint-list">
+		{#each data.endpoints as endpoint}
+			<div class="endpoint-card" class:ok={endpoint.healthy} class:fail={!endpoint.healthy}>
+				<h2>{endpoint.name}</h2>
+				<p class="path">{endpoint.path}</p>
+				{#if endpoint.message}
+					<p class="status">{endpoint.message}</p>
+				{/if}
+			</div>
+		{/each}
+	</div>
 </main>
 
 <style>

@@ -292,3 +292,30 @@ export const theme = {
     hero: 'linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 50%, #A51C30 100%)',
   },
 };
+
+/** * Fetch with timeout utility */
+export async function fetchWithTimeout(
+  resource: RequestInfo,
+  options: RequestInit & { timeout?: number } = {}
+): Promise<Response> {
+  const { timeout = 0, ...restOptions } = options;
+
+  if (timeout === 0) {
+    return fetch(resource, restOptions);
+  }
+
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+
+  try {
+    const response = await fetch(resource, {
+      ...restOptions,
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+}

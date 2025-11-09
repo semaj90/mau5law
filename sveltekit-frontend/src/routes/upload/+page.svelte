@@ -203,17 +203,6 @@
     color: var(--text-secondary);
   }
 
-  .info-card li {
-    margin-bottom: 0.5rem;
-  }
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-
   .text-button {
     background: none;
     border: none;
@@ -268,10 +257,6 @@
     margin-top: 0.25rem;
   }
 
-  .upload-status {
-    font-size: 1rem;
-  }
-
   .no-uploads {
     color: var(--text-secondary);
     font-style: italic;
@@ -280,6 +265,21 @@
   }
 
   .help-section {
+    background: var(--bg-secondary);
+    border-radius: 16px;
+    padding: 3rem;
+    border: 1px solid var(--border-color);
+  }
+
+  .help-section h2 {
+    text-align: center;
+    margin: 0;
+  }
+
+  .help-section p {
+    margin-bottom: 1em;
+  }
+</style>
     background: var(--bg-secondary);
     border-radius: 16px;
     padding: 3rem;

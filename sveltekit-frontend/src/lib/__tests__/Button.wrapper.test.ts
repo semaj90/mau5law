@@ -4,7 +4,7 @@ import { getBitsOverrides, registerOverride } from '../components/ui/wrappers/bi
 describe('Bits overrides registry', () => {
   it('allows registering and retrieving an override', () => {
     const fake = { Button: { name: 'FakeButton' } };
-    registerOverride('test-override', fake);
+    registerOverride('test-override', fake, {});
 
     const all = getBitsOverrides();
     expect(all['test-override']).toBeDefined();
