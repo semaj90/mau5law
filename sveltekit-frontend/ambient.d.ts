@@ -8,6 +8,14 @@ declare module '*.svelte' {
 }
 
 declare const __CURRENT_USER_ID__: string | undefined;
+
+// Add type definition for __CURRENT_USER_ID__
+declare global {
+  interface Window {
+    __CURRENT_USER_ID?: string;
+  }
+}
+
 declare const __DEV__: boolean;
 
 declare namespace NodeJS {

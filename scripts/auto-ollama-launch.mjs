@@ -71,7 +71,7 @@ function runOllama(gpuLayers, threads, port) {
     '-NumThreads',
     String(threads),
     '-WaitSeconds',
-    '15',
+    '30',
     '-Port',
     String(port),
   ];

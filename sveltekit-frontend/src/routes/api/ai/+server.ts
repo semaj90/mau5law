@@ -1,6 +1,3 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
-import type { Document } from '$lib/types';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import type { AIServiceResponse } from '$lib/ai/ai-service';
 import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import the new utility function
@@ -32,7 +29,7 @@ interface OllamaResponse {
 
 class LegalAIService {
   private ollamaUrl: string;
-  private defaultModel = 'gemma3:legal-latest';
+  private defaultModel = 'gemma3-legal:latest';
   private embeddingModel = 'embeddinggemma:latest';
 
   constructor() {

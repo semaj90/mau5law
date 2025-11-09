@@ -26,7 +26,7 @@ export interface ARIAStateParams {
   live?: 'off' | 'polite' | 'assertive'}
 
 export interface KeyboardNavigationParams {
-  keys: Record<string | (_event: KeyboardEvent) => void>;
+  keys: Record<string, (_event: KeyboardEvent) => void>;
   capture?: boolean;
   preventDefault?: boolean}
 

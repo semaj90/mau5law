@@ -2,8 +2,7 @@
 # Optimized for legal case management and prosecutor workflows
 
 # 1. Package your local GGUF into the model (portable across machines)
-BLOB weights ./gemma3Q4_K_M/mo16.gguf
-FROM @weights
+FROM ./gemma3Q4_K_M/mohf16-Q4_K_M.gguf
 
 # 2. Define the prompt template for Gemma (crucial for proper responses)
 TEMPLATE """<start_of_turn>user

@@ -1,7 +1,5 @@
 <script lang="ts">
-  import type { Document } from '$lib/types';
-  import { Search, Upload, Tag, FileText, Database } from 'lucide-svelte';
-  import { Button } from '$lib/components/ui/button'; // Changed from default to named import
+  import { FileText } from 'lucide-svelte';
   import { onMount } from 'svelte';
 
   // Reactive state using Svelte 5 runes ($state)
@@ -290,5 +288,7 @@
 
   .actions button {
     margin-left: 0.5rem;
+  }
+</style>
   }
 </style>

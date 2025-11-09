@@ -12,6 +12,9 @@ try {
     $startInfo = New-Object System.Diagnostics.ProcessStartInfo
     $startInfo.FileName = $OllamaPath
     $startInfo.Arguments = "serve"
+    if (-not $startInfo.EnvironmentVariables.ContainsKey("OLLAMA_PORT")) {
+        $startInfo.EnvironmentVariables.Add("OLLAMA_PORT", $Port)
+    }
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
     $startInfo.UseShellExecute = $false

@@ -289,7 +289,7 @@
     "format": "prettierd --write \"src/**/*.{svelte,ts,js}\"",
     "check:types": "tsc --noEmit --incremental",
     "lint:simd-cache": "node scripts/simd-eslint-cache.mjs",
-    "lint:cached": "node scripts/eslint-with-cache.cjs"
+    "lint:cached": "node scripts/eslint-with-cache.cjs",
     "fix:all": "npm-run-all -p lint:fix format:fix lint:simd-cache lint:gpu",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",

@@ -15,7 +15,7 @@ import Tesseract from 'tesseract.js';
 import { createWorker } from 'tesseract.js';
 import sharp from 'sharp';
 import { Pool } from 'pg';
-import { minioService } from '../src/lib/server/storage/minio-service.js';
+import * as minioService from '../src/lib/server/storage/minio-service.js'; // Changed to namespace import
 
 // Environment configuration
 const RABBITMQ_URL = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
@@ -70,11 +70,15 @@ async function initializeTesseractWorkers(): Promise<void> {
         }
       },
       // Enable GPU acceleration (requires Tesseract compiled with CUDA)
-      gpuAcceleration: true,
+      // This option is not directly supported by tesseract.js WorkerOptions.
+      // GPU acceleration relies on the underlying Tesseract engine being compiled with CUDA/OpenCL.
+      // gpuAcceleration: true, // Removed unsupported option
       // Use LSTM neural network for better accuracy
-      tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY,
-      // Optimize for legal documents
-      tessedit_pageseg_mode: Tesseract.PSM.AUTO,
+      tessedit_vars: {
+        tessedit_ocr_engine_mode: Tesseract.OEM.LSTM_ONLY,
+        // Optimize for legal documents
+        tessedit_pageseg_mode: Tesseract.PSM.AUTO,
+      },
     });
 
     tesseractWorkers.push(worker);

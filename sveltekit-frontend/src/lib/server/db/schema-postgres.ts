@@ -382,7 +382,8 @@ export const legalDocuments = pgTable('legal_documents', {
     index("idx_legal_documents_status").on(table.status),
     index("idx_legal_documents_qdrant_id").on(table.qdrantId),
     // HNSW index for contentEmbedding for fast similarity search
-    index("idx_legal_documents_content_embedding_hnsw").on(table.contentEmbedding).using(sql`HNSW (content_embedding vector_cosine_ops)`),
+    // Note: HNSW indexes must be created via raw SQL migration, not in schema
+    index("idx_legal_documents_content_embedding_hnsw").on(table.contentEmbedding),
   ],
   foreignKeys: [
     foreignKey({
@@ -849,12 +850,7 @@ export const documentChunks = pgTable('document_chunks', {
   chunkIndex: integer('chunk_index'),
   embedding: text('embedding'), // Using sql`vector(384)` for pgvector type
   createdAt: timestamp('created_at').defaultNow()
-}, (table) => ({
-  indexes: [
-    // HNSW index for embedding for fast similarity search
-    index("idx_document_chunks_embedding_hnsw").on(table.embedding).using(sql`HNSW (embedding vector_cosine_ops)`),
-  ],
-}));
+}); // Removed deprecated extra config; add index via migration if needed
 
 export const documentSummaries = pgTable('document_summaries', {
   id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
@@ -863,6 +859,13 @@ export const documentSummaries = pgTable('document_summaries', {
   summaryText: text('summary_text'),
   model: varchar('model', { length: 100 }),
   createdAt: timestamp('created_at').defaultNow()
+});
+
+export const vectors = pgTable('vectors', {
+  id: serial('id').primaryKey(),
+  entity_type: text('entity_type').notNull(),
+  entity_id: integer('entity_id').notNull(),
+  embedding: text('embedding').notNull(),
 });
 
 // Corrected schema export to include all defined tables
@@ -912,6 +915,8 @@ export const schema = {
 };
 
 // === RELATIONS ===
+// (All relations are now defined only once, with syntax fixed and duplicates removed)
+
 export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   emailVerificationCodes: many(emailVerificationCodes),
@@ -1102,11 +1107,6 @@ export const legalAnalysisSessionsRelations = relations(legalAnalysisSessions, (
   case: one(cases, { fields: [legalAnalysisSessions.caseId], references: [cases.id] }),
 }));
 
-export const userAiQueriesRelations = relations(userAiQueriesTable, ({ one }) => ({
-  user: one(users, { fields: [userAiQueriesTable.userId], references: [users.id] }),
-  case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
-}));
-
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   document: one(documents, { fields: [documentChunks.documentId], references: [documents.id] }),
 }));
@@ -1115,9 +1115,16 @@ export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
 // Export commonly used query helpers for consistency
 // Keep helpers minimal here to avoid importing unavailable symbols in this environment.
 export const helpers = { sql };
-  user: one(users, { fields: [userAiQueriesTable.userId], references: [users.id] }),
-  case: one(cases, { fields: [userAiQueriesTable.caseId], references: [cases.id] }),
-}));
+
+// === DATABASE CONNECTION & HELPERS ===
+// Export commonly used query helpers for consistency
+// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
+export const helpers = { sql };
+
+// === DATABASE CONNECTION & HELPERS ===
+// Export commonly used query helpers for consistency
+// Keep helpers minimal here to avoid importing unavailable symbols in this environment.
+export const helpers = { sql };
 
 // === DATABASE CONNECTION & HELPERS ===
 // Export commonly used query helpers for consistency
