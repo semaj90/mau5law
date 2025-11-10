@@ -13,9 +13,10 @@
     ChevronRight,
     ChevronLeft,
   } from 'lucide-svelte';
+  import type { SvelteComponent } from 'svelte'; // Added: Top-level type import
 
   // Add a tiny local constructor type to represent Svelte components without using `import type`:
-  type SvelteComponentConstructor = new (...args: any[]) => import('svelte').SvelteComponent;
+  type SvelteComponentConstructor = new (...args: any[]) => SvelteComponent; // Changed: Use imported SvelteComponent type
 
   type NavItem = {
     path: string;

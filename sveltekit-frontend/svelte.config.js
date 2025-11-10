@@ -3,6 +3,9 @@ import nodeAdapter from '@sveltejs/adapter-node';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
+  compilerOptions: {
+    runes: true
+  },
   // Use svelte-preprocess for safe defaults (TypeScript, PostCSS, scss, etc.)
   preprocess: vitePreprocess(),
 

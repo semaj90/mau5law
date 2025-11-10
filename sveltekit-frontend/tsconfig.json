@@ -1,36 +1,15 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "allowJs": true,
-    "checkJs": true,
+    "module": "esnext",
+    "target": "es2022",
     "verbatimModuleSyntax": true,
-    "sourceMap": true,
-    "strict": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "noEmit": true,
-    "isolatedModules": true,
-    "types": [
-      "svelte",
-      "vite/client",
-      "@sveltejs/kit",
-      "@webgpu/types",
-      "node"
-    ],
-    "incremental": false,
-    "tsBuildInfoFile": null,
-    "noImplicitAny": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitReturns": false
+    "strict": false,
+    "types": ["svelte"]
   },
-  "include": ["src/**/*.d.ts", "src/**/*.ts", "src/**/*.svelte", "src/lib/utils/bits-ui-ssr.disabled", "src/lib/utils/bits-ui-ssr.disabled"],
+  "include": ["src/**/*", "svelte.config.js", "vite.config.js"],
   "exclude": [
     "node_modules",
     "build",

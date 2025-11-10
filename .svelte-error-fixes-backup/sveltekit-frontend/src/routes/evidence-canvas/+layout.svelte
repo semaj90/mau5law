@@ -1,6 +1,6 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { browser } from '$app/environment'; // Import browser from SvelteKit's environment module
+  const browser = typeof window !== 'undefined'; // Fallback for browser environment check
   import type { Snippet } from 'svelte';
   // Add any layout-specific state or logic here
   let mounted = $state(false);

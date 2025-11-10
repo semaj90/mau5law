@@ -4,7 +4,7 @@
  * Spins up the local Caddy QUIC proxy (via docker-compose) and the Vite dev server.
  */
 
-import { spawn, spawnSync } from 'child_process';
+import { spawn, spawnSync, execSync } from 'child_process';
 import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -30,7 +30,7 @@ const runNpmScript = (script, label) => {
 
 // Set default environment variables
 const defaultEnv = {
-  REDIS_PASSWORD: 'redis',
+  REDIS_PASSWORD: '',
   DATABASE_URL: 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db',
   QUIC_ENABLED: 'true',
   DEV_BYPASS_AUTH: 'true',
@@ -80,6 +80,13 @@ try {
   runNpmScript('caddy:start', 'Caddy startup');
   caddyStarted = true;
   console.log('✅ Caddy proxy listening on http://localhost:5178 (QUIC enabled)');
+
+  try {
+    const info = execSync('docker ps --filter name=legal-ai-caddy-quic --format "{{.Names}} ({{.Status}})"', { encoding: 'utf8' });
+    console.log(`📦 Using container: ${info.trim()}`);
+  } catch {
+    console.warn('⚠️  Unable to query Docker container status');
+  }
 } catch (error) {
   console.warn('⚠️  Failed to start Caddy proxy automatically:', error.message);
   console.warn('   You can run "npm run caddy:start" manually if QUIC is required.');

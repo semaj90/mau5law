@@ -25,6 +25,12 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "Phase51: Start SIMD JSON Parser",
+			"type": "shell",
+			"command": "npm run simd:exe:start",
+			"presentation": { "reveal": "always", "panel": "dedicated" }
+		},
+		{
 			"label": "📊 Error Analysis: Top 100 (Redis Cache)",
 			"type": "shell",
 			"command": "node",

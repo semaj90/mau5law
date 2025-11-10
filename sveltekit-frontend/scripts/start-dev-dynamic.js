@@ -14,13 +14,44 @@ async function startDevServer() {
   console.log(chalk.cyan('\n🔍 Checking for available port...\n'));
 
   try {
-    // Ensure REDIS_PASSWORD is set to 'redis' if not already defined
-    const effectiveRedisPassword = process.env.REDIS_PASSWORD || 'redis';
+    // Check if Docker Redis is running
+    const dockerRedisRunning = await (async () => {
+      try {
+        const { spawn } = await import('child_process');
+        return new Promise((resolve) => {
+          const docker = spawn(
+            'docker',
+            ['ps', '--filter', 'name=legal-ai-redis', '--format', '{{.Names}}'],
+            {
+              stdio: 'pipe',
+            }
+          );
+
+          let output = '';
+          docker.stdout.on('data', (data) => {
+            output += data.toString();
+          });
+
+          docker.on('close', (code) => {
+            resolve(output.includes('legal-ai-redis'));
+          });
+
+          docker.on('error', () => {
+            resolve(false);
+          });
+        });
+      } catch {
+        return false;
+      }
+    })();
+
+    // Only set REDIS_PASSWORD if Docker Redis is NOT running (for local Redis)
+    const effectiveRedisPassword = dockerRedisRunning ? undefined : (process.env.REDIS_PASSWORD || 'redis');
 
     // Debug: show critical env vars in the parent process to validate cross-env propagation
     console.log(
       '\n🔒 DEBUG ENV: REDIS_PASSWORD=',
-      effectiveRedisPassword,
+      effectiveRedisPassword || '(none - Docker Redis)',
       ' DEV_BYPASS_AUTH=',
       process.env.DEV_BYPASS_AUTH,
       '\n'
