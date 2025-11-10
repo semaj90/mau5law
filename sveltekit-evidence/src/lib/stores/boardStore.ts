@@ -161,7 +161,7 @@ export const boardActions = {
     boardObjects.subscribe(async (objects) => {
       try {
         if (boardId) {
-          // Update existing board
+          // Ensure 'boardId' is consistently used for updating existing boards.
           const response = await fetch(`/api/evidence-boards/${boardId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },

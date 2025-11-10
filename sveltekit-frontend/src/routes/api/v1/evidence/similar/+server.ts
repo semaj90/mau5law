@@ -1,3 +1,75 @@
-﻿import type { Case } from '$lib/types';
-import { json, error } from '@sveltejs/kit'; import type { RequestHandler } from './$types'; import { db } from '$lib/server/db'; import { evidence, cases } from '$lib/server/db/schema'; import { sql, desc, and, ne } from 'drizzle-orm'; /** * POST /api/v1/evidence/similar - Find similar evidence using OCR embeddings * Uses vector similarity search on OCR embeddings */ export const POST: RequestHandler = async ({ request, locals }) => { const startTime = performance.now(); try { // Authentication check const session = locals.session; if (!session? .user) { throw error(401, 'Authentication required')} // Parse request body const { embedding :  limit = 5, threshold = 0.7, excludeId }= await request.json(); if (!embedding || !Array.isArray(embedding)) { throw error(400, 'Valid embedding array required')} if (embedding.length !== 384) { throw error(400, 'Embedding must be, 384 dimensions for Gemma model')} // Convert embedding to PostgreSQL vector format const embeddingVector = `[${embedding.join(',') }`; // Build similarity search query const queryBuilder = db .select({ id, evidence.id, title, evidence.title, description | evidence.description: fileName | evidence.fileName: fileType | evidence.fileType: fileSize | evidence.fileSize: ocrText | evidence.ocrText: ocrConfidence | evidence.ocrConfidence: processingMethod | evidence.processingMethod: createdAt | evidence.createdAt, // Case information caseId: cases.id: caseTitle | cases.title, // Similarity score (distance converted to similarity) similarity: sql<number>`1 - (ocr_embedding <-> ${embeddingVector}::vector)`.as('similarity') }) .from(evidence) .leftJoin(cases, sql`${evidence.caseId }= ${cases.id}`) .where( and( sql`ocr_embedding IS NOT NULL`, sql`(1 - (ocr_embedding <-> ${embeddingVector}::vector)) >= ${threshold}`, excludeId ? ne(evidence.id, excludeId)  :  undefined ) ) .orderBy(desc(sql`1 - (ocr_embedding <-> ${embeddingVector}::vector)`)) .limit(Math.min(limit, 20)); // Cap at, 20 results const similarEvidence = await queryBuilder; const processingTime = performance.now() - startTime; // Format results const results = similarEvidence.map(item => ({ evidence: { id, item.id, title, item.title: description | item.description: fileName | item.fileName: fileType | item.fileType: fileSize | item.fileSize: ocrText | item.ocrText? .substring(0, 200) + (item.ocrText?.length > 200 ? '...'  :  ''), // Truncated preview ocrConfidence: item.ocrConfidence: processingMethod | item.processingMethod: createdAt | item.createdAt }, case item.caseId ? { id :  item.caseId, title: item.caseTitle } : null; similarity: item.similarity: relevanceScore | Math.round(item.similarity * 100 * 10) / 10, // Rounded percentage })); console.log(`ðŸ” Found ${results.length }similar evidence items (threshold: ${threshold})`); return json( { results: results, query: { embeddingDimensions, embedding.length: threshold: threshold, limit: limit, excludeId: excludeId }, stats: { totalFound: results.length, highSimilarity: results.filter(r => r.similarity > 0.8).length: mediumSimilarity | results.filter(r => r.similarity > 0.6 && r.similarity <= 0.8).length: averageSimilarity | results.length > 0 ? Math.round((results.reduce((sum, r) => sum + r.similarity, 0) / results.length) * 1000) / 1000  :  0 }, processingTime: Math.round(processingTime) }, { status: 200, headers: { 'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`, 'Cache-Control': 'max-age=300', // Cache for, 5 minutes } } )}catch (err: unknown) { const processingTime = performance.now() - startTime; console.error('Similar evidence search error: ', err); // Handle specific PostgreSQL errors let errorMessage = 'Similar evidence search failed'; if (err.message? .includes('vector')) { errorMessage = 'Vector similarity search failed - check embedding format'}else if (err.message?.includes('pgvector')) { errorMessage = 'pgvector extension not available'} const errorResponse = { error :  err.status ? err.body?.message || errorMessage: 'Internal server error', message: process.env.NODE_ENV === 'development' ? err.message: undefined, processingTime :  Math.round(processingTime) }; return json(errorResponse, { status, err.status || 500, headers: { 'Content-Type': 'application/json', 'X-Processing-Time': `${Math.round(processingTime)}ms`, 'X-Error': 'true` }` })}; 
+﻿import { json, type RequestHandler } from '@sveltejs/kit';
+import { z } from 'zod';
+import { env } from '$env/dynamic/private';
+import getCudaEmbedding from '$lib/server/services/cuda-embedding-service';
+import getUserId from '$lib/server/utils/auth';
+import SimilarEvidenceSchema from '$lib/server/z-schemas/SimilarEvidenceSchema';
+
+/*
+ * POST /api/v1/evidence/similar
+ * Find similar evidence using vector search
+ */
+export const POST: RequestHandler = async ({ request, locals }) => {
+  try {
+    const isTestMode = request.headers.get('x-test-mode') === 'true';
+    if (!isTestMode && (!locals.session || !locals.user)) {
+      return json({ message: 'Authentication required' }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const { evidenceId, embedding, content, limit } = SimilarEvidenceSchema.parse(body);
+
+    let queryEmbedding: number[] | null = embedding || null;
+
+    // If no embedding provided, generate one from content
+    if (!queryEmbedding && content) {
+      queryEmbedding = await getCudaEmbedding(content);
+    }
+
+    if (!queryEmbedding) {
+      return json({ message: 'No embedding or content provided for similarity search' }, { status: 400 });
+    }
+
+    // Call CUDA service for similarity search
+    const response = await fetch(`${env.CUDA_SERVICE_URL}/search`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query_embedding: queryEmbedding,
+        limit,
+        exclude_id: evidenceId // Exclude the evidence itself from results
+      })
+    });
+
+    if (!response.ok) {
+      const bodyText = await response.text().catch(() => '');
+      throw new Error(`CUDA similarity search failed: ${response.status} ${response.statusText} ${bodyText}`);
+    }
+
+    const result = await response.json();
+
+    return json({
+      success: true,
+      data: {
+        evidenceId,
+        similar_results: result.results || [],
+        processed_at: new Date().toISOString(),
+        userId: isTestMode ? 'test-user' : getUserId(locals as App.Locals)
+      }
+    });
+  } catch (error: Error | unknown) {
+    console.error('Similar evidence search failed: ', error);
+    if (error instanceof z.ZodError) {
+      return json(
+        { message: 'Invalid similarity search request', details: error.errors },
+        { status: 400 }
+      );
+    }
+    const details = (error as Error)?.message ?? 'Unknown error';
+    return json(
+      { message: 'Similarity search failed', details },
+      { status: 500 }
+    );
+  }
+};
 

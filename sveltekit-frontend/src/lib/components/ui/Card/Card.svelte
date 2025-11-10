@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { class: className = '', ...rest }: { class?: string; [key: string]: any } = $props();
+  let { class: className = '', children, ...rest }: { class?: string; children?: any; [key: string]: any } = $props();
 </script>
 
 <main class="page-repair">
@@ -8,7 +8,7 @@
 </main>
 
 <div class={className} {...rest}>
-  <slot />
+  {@render children()}
 </div>
 
 <style>

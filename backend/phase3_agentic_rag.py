@@ -44,7 +44,7 @@ app.add_middleware(
 )
 
 # Configuration
-DATABASE_URL = "postgresql://legal_admin:LegalRAG2024!@localhost:5432/legal_ai"
+DATABASE_URL = "postgresql://legal_admin:123456@localhost:5432/legal_ai_db"
 REDIS_URL = "redis://localhost:6379"
 QDRANT_URL = "http://localhost:6333"
 GEMMA3_API = "http://localhost:11434/api/generate"

@@ -6,24 +6,20 @@
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
-    DialogHeader,
     DialogTitle,
-    DialogClose,
+    DialogFooter, // Added: Import DialogFooter from main dialog entry
+    DialogHeader, // Added: Import DialogHeader from main dialog entry
+    DialogClose, // Added: Import DialogClose from main dialog entry
   } from '$lib/components/ui/dialog';
+  // Removed: import DialogFooter from '$lib/components/ui/dialog/DialogFooter.svelte';
+  // Removed: import DialogHeader from '$lib/components/ui/dialog/DialogHeader.svelte';
+  // Removed: import DialogClose from '$lib/components/ui/dialog/DialogClose.svelte';
+  import type { Props } from '$lib/types/page'; // Import the Props type
 
   // All Routes Explorer - Comprehensive Legal AI Platform Route Analysis
   // Integrates with Gemma Embeddings Vector Architecture for route categorization
 
-  type Props = { // Changed from interface to type
-    data: { // PageData type moved here
-      availableRoutes: Array<{ path: string; icon?: string; description?: string }>;
-
-      routeInventory?: {
-        fileRoutesSample: Array<{ route: string; title: string }>;
-      };
-    };
-  };
+  // Removed: type Props definition moved to $lib/types/page.ts
 
   let { data }: Props = $props();
   let selectedRoute = $state<RouteItem | null>(null); // Explicitly typed
@@ -767,8 +763,7 @@
                 onclick={() => (selectedCategory = 'all')}
                 class="ml-1 text-blue-600 hover:text-blue-800">×</button
               >
-            </span>
-          {/if}
+            </span>{/if}
           {#if searchTerm}
             <span
               class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm flex items-center"

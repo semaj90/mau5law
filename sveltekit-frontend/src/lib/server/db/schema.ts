@@ -1,21 +1,30 @@
 ﻿// Move/import Drizzle pg-core symbols near the top of the file
 import {
   pgTable,
-  uuid,
   timestamp,
   text,
-  boolean,
   varchar,
   json,
   jsonb,
   real,
   integer,
   primaryKey,
-  customType, // Added customType import
+  customType,
 } from 'drizzle-orm/pg-core';
-// If you have a custom provider for pgvector, prefer the official drizzle/pg-core `vector` where possible.
-import { users } from './schema-postgres';
 import { sql } from 'drizzle-orm';
+
+// Define custom vector type for pgvector
+const vector = customType<{ data: number[]; driverData: string }>({
+  dataType(config) {
+    return `vector(${config?.length ?? 1536})`;
+  },
+  toDriver(value: number[]): string {
+    return JSON.stringify(value);
+  },
+  fromDriver(value: string): number[] {
+    return JSON.parse(value);
+  },
+});
 
 // Re-export the PostgreSQL schema as the main schema
 export * from './schema-postgres';
@@ -31,51 +40,6 @@ export const analysisResults = pgTable('analysis_results', {
   processingTime: integer('processing_time').default(0), // ms or seconds per your convention
   createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(),
   updatedAt: timestamp('updated_at', { mode: 'date' }).defaultNow(),
-});
-
-export const cases = pgTable('cases', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  title: varchar('title', { length: 255 }).notNull(),
-  description: text('description'),
-  createdBy: uuid('created_by').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  status: varchar('status', { length: 50 }).default('active'),
-  metadata: jsonb('metadata'),
-});
-
-export const evidence = pgTable('evidence', {
-  id: text('id')
-    .primaryKey()
-    .notNull()
-    .default(sql`gen_random_uuid()`),
-  caseId: text('case_id').notNull(),
-  title: text('title').notNull(),
-  content: text('content').notNull(),
-  summary: text('summary').notNull(),
-  documentType: text('document_type').notNull(), // e.g. 'legal_brief', 'contract', 'email'
-  source: text('source'), // e.g. 'email_archive', 'uploaded_file'
-  embedding: real('embedding').array().notNull(), // pgvector requires real[] type
-  metadata: jsonb('metadata').default({}), // Store additional structured data
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
-});
-
-export const documents = pgTable('documents', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull(),
-  content: text('content'),
-  // use the columnTypes callback's vector builder so typings align with Drizzle overloads'
-  embedding: sql`vector(1536)`,
-  createdAt: timestamp('created_at').defaultNow(),
-});
-
-export const sessions = pgTable('sessions', {
-  id: uuid('id').primaryKey(), // Remove.default(sql`gen_random_uuid()`) or similar
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id),
-  expiresAt: timestamp('expires_at', { withTimezone: true, mode: 'date' }).notNull(),
 });
 
 // Define the chat_messages table
@@ -109,10 +73,9 @@ export const chatEmbeddings = pgTable(
   {
     chatId: varchar('chat_id', { length: 256 })
       .notNull()
-      .references(() => chatMessages.id, { onDelete: 'cascade' }),
-    embedding: customType<{ data: number[]; driverData: string }>('vector(768)')(
-      'embedding'
-    ).notNull(), // Fixed: Use customType and .notNull()
+      .references(() => chatMessages.id, { onDelete: 'cascade' })
+      .primaryKey(), // Moved primaryKey here
+    embedding: vector('embedding', { length: 768 }).notNull(), // Fixed: Use custom vector type
     // Store quantized embedding as bytea (binary data) or text (base64 encoded)
     // For Float32Array, bytea is more efficient.
     quantizedEmbedding: text('quantized_embedding').notNull(), // Storing as base64: string for simplicity in JS,
@@ -128,31 +91,14 @@ export const chatEmbeddings = pgTable(
       .notNull(),
     semanticHash: varchar('semantic_hash', { length: 256 }).notNull(),
   },
-  (self) => {
-    // Changed 'table' to 'self'
-    return [
-      // Changed to return an array
-      primaryKey({ columns: [self.chatId] }),
-      // Add an index for efficient vector search
-      sql`CREATE INDEX ON ${sql.raw(self.name)} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);`, // Fixed: Use self.name
-    ];
-  }
+  // Removed the (self) => { ... } block for primaryKey and index
+  // The index creation should ideally be handled in a migration file or a separate SQL execution.
+  // For now, commenting it out to resolve the immediate TypeError.
+  // (self) => {
+  //   return [
+  //     sql`CREATE INDEX ON ${sql.raw(self.name)} USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);`,
+  //   ];
+  // }
 );
-
-// User Reports Table
-export const reports = pgTable('reports', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  userId: text('user_id').notNull(),
-  title: text('title').notNull(),
-  content: text('content').notNull(),
-  summary: text('summary'),
-  tags: jsonb('tags').$type<string[]>().default([]),
-  autoKeywords: jsonb('auto_keywords').$type<string[]>().default([]),
-  embedding: customType<{ data: number[]; driverData: string }>('vector(1536)')('embedding'), // Fixed: Use customType
-  sourceUri: text('source_uri'), // Optional: link to MinIO: object
-  isFavorite: boolean('is_favorite').default(false),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-});
 
 console.log('ðŸ“  Drizzle ORM schema defined');

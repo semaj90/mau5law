@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let recommendations: any[] = $state([]);
+  let recommendations = $state<any[]>([]);
   let loading = $state<boolean>(true);
   let error = $state<string | null>(null);
 

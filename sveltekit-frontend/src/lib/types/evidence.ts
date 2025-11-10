@@ -98,25 +98,54 @@ export type WSMessage =
   | { type: 'CHAT_MESSAGE'; message: ChatMessage }
   | { type: 'VECTOR_SEARCH_RESULT'; results: VectorSearchResult[] };
 // ==================== Export Actor Types ====================
-// Correct the generic arguments for: ActorRef | ActorRef<TEvent, TSnapshot>
-export type EvidenceActor = ActorRef<EvidenceSnapshot, WorkflowEvent>;
-// Replace SnapshotFrom<> usage (causes TS issues) with an explicit lightweight snapshot shape
-export type EvidenceSnapshot = {
+// Correct the generic arguments for: ActorRef<TEvent, TSnapshot>
+
+// Base properties common to all snapshot states
+type BaseSnapshotProperties = {
   context: WorkflowContext;
-  // current state value (string | object) depending on machine shape
-  value: unknown; // Made non-optional to satisfy Snapshot<unknown> constraint
-  // The status of the actor, required by XState's Snapshot interface'
-  status: 'active' | 'done' | 'error' | 'stopped';
-  // optional last event that produced this snapshot
-  lastEvent?: WorkflowEvent;
-  // simple metadata for UI/transport (timestamps, progress)
-  timestamp?: number;
+  value: unknown; // current state value (string | object) depending on machine shape
+  lastEvent?: WorkflowEvent; // optional last event that produced this snapshot
+  timestamp?: number; // simple metadata for UI/transport (timestamps, progress)
   children?: Record<string, ActorRef<any, any>>;
-  // Optional output when the actor is done
-  output?: unknown;
-  // Optional error when the actor has errored
-  error?: unknown;
 };
+
+// Define EvidenceSnapshot as a discriminated union to satisfy Snapshot<unknown>
+export type EvidenceSnapshot =
+  | (BaseSnapshotProperties & {
+      status: 'active' | 'stopped';
+      output?: undefined; // Explicitly undefined for these statuses
+      error?: undefined; // Explicitly undefined for these statuses
+    })
+  | (BaseSnapshotProperties & {
+      status: 'done';
+      output: unknown; // Required when status is 'done'
+      error?: undefined; // Must be undefined when status is 'done'
+    })
+  | (BaseSnapshotProperties & {
+      status: 'error';
+      error: unknown; // Required when status is 'error'
+      output?: undefined; // Must be undefined when status is 'error'
+    });
+
+export type EvidenceActor = ActorRef<EvidenceSnapshot, WorkflowEvent>;
+
+// ==================== Evidence Item Interface ====================
+export interface EvidenceItem {
+  id: string;
+  title: string;
+  fileName: string;
+  evidenceType: 'video' | 'document' | 'image' | 'audio'; // Or a more comprehensive union type
+  status: 'new' | 'reviewing' | 'approved'; // Or a more comprehensive union type
+  fileSize: number;
+  createdAt: Date;
+  uploadedAt: Date;
+  updatedAt: Date;
+  description?: string; // Optional
+  tags: string[];
+  hash?: string; // Optional
+  thumbnailUrl?: string; // Optional
+  aiSummary?: string; // Optional
+}
 
 
 

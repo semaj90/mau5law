@@ -31,7 +31,11 @@ export default defineConfig(({ mode }) => {
   return {
     assetsInclude: ['**/*.woff2'], // Added for font assets
     plugins: [
-      sveltekit(),
+      sveltekit({
+        compilerOptions: {
+          runes: true // 👈 enables rune transformer
+        }
+      }),
       UnoCSS(),
       // HMR error logger plugin
       {
@@ -142,6 +146,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     esbuild: {
+      target: 'esnext',
       legalComments: 'none',
       treeShaking: true,
     },

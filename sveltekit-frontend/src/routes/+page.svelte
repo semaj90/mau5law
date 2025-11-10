@@ -3,6 +3,7 @@
   import { derived, writable } from 'svelte/store';
   import * as unified from '$lib/stores/unified';
   import LoginButton from '$lib/components/auth/LoginButton.svelte';
+  import { createFileUploader } from '$lib/utils/file-uploader';
 
   import { uploadAndAnalyze } from '$lib/server/actions/legal-actions';
 
