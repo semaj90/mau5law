@@ -1,7 +1,7 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   // $state and $derived are available in runes mode via types, not runtime imports
-  import { Card } from '$lib/components/ui/card'; // Changed to named import
+  import Card from '$lib/components/ui/card'; // Changed to default import
   import Button from '$lib/components/ui/button'; // Changed to default import
   import { Input } from '$lib/components/ui/input'; // Changed to named import
   import { Badge } from '$lib/components/ui/badge'; // Changed to named import
@@ -10,7 +10,7 @@
   // TEMPORARY WORKAROUNDS: The following aliases cast components to 'any' to bypass TypeScript errors in this demo.
   // This should NOT be in production code, as it disables type safety for component props and events.
   // Properly type the components or update their event/function typings for production use.
-  const CardAny = Card as any;
+  const CardAny = Card;
 
   // Define the Person interface for strong typing
   interface Person {
@@ -417,11 +417,11 @@
       {/if}
     </div>
 
-    {#if filteredPersons.length === 0}
+    {#if filteredPersons().length === 0}
       <div class="empty-state">
         <div class="empty-icon">👤</div>
         <div class="empty-title">No Persons Found</div>
-        <!-- fixed missing quote in, class, attribute -->
+        <!-- fixed missing quote in class attribute -->
         <div class="empty-subtitle">
           {searchQuery
             ? 'Try adjusting your search criteria'

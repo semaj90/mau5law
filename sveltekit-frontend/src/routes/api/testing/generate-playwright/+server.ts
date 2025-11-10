@@ -1,14 +1,14 @@
 ﻿import { writeFileSync } from 'fs';
 import { join } from 'path';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path'; // Keep dirname for use in generatePlaywrightTestFile's *generated* content
+// import { fileURLToPath } from 'url';
+// import { dirname } from 'path'; // Keep dirname for use in generatePlaywrightTestFile's *generated* content
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 
 // Helper functions for test generation summary and todo file analysis
 function countGeneratedTests(playwrightTestContent: string): number {
-	const testCount = (playwrightTestContent.match(/test\\('/g) || []).length;
-	const describeCount = (playwrightTestContent.match(/test\\.describe\\('/g) || []).length;
+	const testCount = (playwrightTestContent.match(new RegExp("test\\(", "g")) || []).length;
+	const describeCount = (playwrightTestContent.match(new RegExp("test\\.describe\\(", "g")) || []).length;
 	// Count individual tests, not describe blocks
 	return testCount - describeCount;
 }
@@ -334,15 +334,13 @@ const __dirname = dirname(__filename);
  * Test Categories: OCR, JSON Conversion, RAG, Clustering, pgai Integration
  */
 test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
-	let page: Page; // Declare page here
-	test.beforeEach(async ({ page: testPage }) => { // Rename page to testPage to avoid conflict with outer 'page'
-		page = testPage; // Assign testPage to the declared page variable
+	test.beforeEach(async ({ page }) => { // Use 'page' directly from fixture
 		await page.goto('/demo/gpu-legal-ai/lawpdfs');
 		await page.waitForLoadState('networkidle');
 	});
 
 	test.describe('PDF Upload and OCR Processing', () => {
-		test('should successfully upload and process legal PDF with high accuracy', async () => {
+		test('should successfully upload and process legal PDF with high accuracy', async ({ page }) => { // Add page fixture here
 			// Test file upload
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 30000 }); // Fix: setInputFiles arguments
@@ -364,7 +362,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 			expect(citations).toBeTruthy();
 		});
 
-		test('should handle multiple PDF files in batch processing', async () => {
+		test('should handle multiple PDF files in batch processing', async ({ page }) => { // Add page fixture here
 			const testFiles = [
 				join(__dirname, 'fixtures', 'contract-1.pdf'),
 				join(__dirname, 'fixtures', 'contract-2.pdf'),
@@ -386,7 +384,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 			expect(processedCount).toContain(\`\${testFiles.length}\`); // Escaped inner template literal
 		});
 
-		test('should validate OCR quality metrics meet standards', async () => {
+		test('should validate OCR quality metrics meet standards', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 30000 }); // Fix: setInputFiles arguments
 
@@ -405,7 +403,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 	});
 
 	test.describe('JSON Conversion Pipeline', () => {
-		test('should convert OCR results to structured JSON format', async () => {
+		test('should convert OCR results to structured JSON format', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 20000 }); // Fix: setInputFiles arguments
 
@@ -421,7 +419,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 			expect(jsonData.document?.structure).toBeDefined();
 		});
 
-		test('should maintain data integrity during conversion', async () => {
+		test('should maintain data integrity during conversion', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 25000 }); // Fix: setInputFiles arguments
 
@@ -437,7 +435,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 	});
 
 	test.describe('Enhanced RAG Processing', () => {
-		test('should generate relevant legal recommendations', async () => {
+		test('should generate relevant legal recommendations', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 40000 }); // Fix: setInputFiles arguments
 
@@ -460,7 +458,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 			});
 		});
 
-		test('should handle vector similarity search effectively', async () => {
+		test('should handle vector similarity search effectively', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 35000 }); // Fix: setInputFiles arguments
 
@@ -479,7 +477,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 	});
 
 	test.describe('SOM/K-means Clustering Analysis', () => {
-		test('should perform clustering with high accuracy', async () => {
+		test('should perform clustering with high accuracy', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 45000 }); // Fix: setInputFiles arguments
 
@@ -499,7 +497,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 			expect(somGrid).toMatch(/\\d+x\\d+/);
 		});
 
-		test('should generate meaningful "did you mean" suggestions', async () => {
+		test('should generate meaningful "did you mean" suggestions', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 30000 }); // Fix: setInputFiles arguments
 
@@ -517,7 +515,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 	});
 
 	test.describe('PostgreSQL pgai Extension Integration', () => {
-		test('should successfully test pgai extension capabilities', async () => {
+		test('should successfully test pgai extension capabilities', async ({ page }) => { // Add page fixture here
 			const testFile = join(__dirname, 'fixtures', 'sample-contract.pdf');
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 20000 }); // Fix: setInputFiles arguments
 
@@ -534,7 +532,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 			expect(parseInt(embeddingDimensions || '0')).toBeGreaterThan(0);
 		});
 
-		test('should handle pgai errors gracefully', async () => {
+		test('should handle pgai errors gracefully', async ({ page }) => { // Add page fixture here
 			// Test with malformed or problematic input
 			const testFile = join(__dirname, 'fixtures', 'malformed-contract.pdf'); // Assuming a malformed fixture
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 15000 }); // Fix: setInputFiles arguments
@@ -547,7 +545,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 	});
 
 	test.describe('Performance and Load Testing', () => {
-		test('should process documents within acceptable time limits', async () => {
+		test('should process documents within acceptable time limits', async ({ page }) => { // Add page fixture here
 			const startTime = Date.now();
 			const testFile = join(__dirname, 'fixtures', 'medium-contract.pdf'); // Assuming a medium document fixture
 			await page.setInputFiles('[data-testid="pdf-upload"]', testFile, { timeout: 60000 }); // Fix: setInputFiles arguments
@@ -560,7 +558,7 @@ test.describe('Legal AI Processing Pipeline - Comprehensive Tests', () => {
 			console.log(\`Document processing completed in \${processingTime}ms\`);
 		});
 
-		test('should maintain system stability under concurrent processing', async () => {
+		test('should maintain system stability under concurrent processing', async ({ page }) => { // Add page fixture here
 			// Simulate multiple concurrent users
 			const promises = [];
 			for (let i = 0; i < 3; i++) {
