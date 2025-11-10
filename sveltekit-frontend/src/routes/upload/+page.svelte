@@ -1,6 +1,6 @@
 <script lang="ts">
   import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
-  import { page } from '$app/stores'; // Changed from '$app/state'
+  import { page } from '$app/state';
   import { goto } from '$app/navigation';
   import type { PageData } from './$types';
 
@@ -67,7 +67,7 @@
 
   <div class="upload-container">
     <section class="upload-section">
-      <MinIOUpload {caseId} oncomplete={handleUploadComplete} onerror={handleUploadError} />
+      <MinIOUpload on:complete={handleUploadComplete} on:error={handleUploadError} />
     </section>
 
     <aside class="info-sidebar">

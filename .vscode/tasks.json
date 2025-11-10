@@ -1438,79 +1438,203 @@
       "problemMatcher": []
     },
     {
-      "label": "🧠 Phase 53 – QA Report Generator",
+      "label": "🔍 Legal AI – Service Health Check",
       "type": "shell",
-      "command": "npm run qa:nightly",
-      "options": {
-        "cwd": "${workspaceFolder}/sveltekit-frontend"
-      },
-      "detail": "🧠 Run Playwright MCP + GPU Lint Gemma3-Legal Summary → test-reports/",
+      "command": "pwsh",
+      "args": [
+        "-ExecutionPolicy","Bypass",
+        "-File","${workspaceFolder}/start-phase53-agentic.ps1",
+        "-DryRun"
+      ],
+      "presentation": { "reveal": "always" },
       "problemMatcher": []
+    },
+    {
+      "label": "Legal AI: Development Environment Status",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run","legal-ai:development-environment-status"],
+      "presentation": { "reveal": "always" }
+    },
+    {
+      "label": "Phase 53 Agentic Orchestrator",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-ExecutionPolicy","Bypass",
+        "-File","${workspaceFolder}/start-phase53-agentic.ps1"
+      ],
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always" }
     }
     ,
     {
-      "label": "🧪 Generate Playwright Tests & Todo",
+      "label": "� Phase52: Start SIMD HTTP Fallback (Go)",
       "type": "shell",
-      "command": "powershell",
+      "command": "go",
       "args": [
-        "-NoProfile",
-        "-ExecutionPolicy",
-        "Bypass",
-        "-Command",
-        "try {",
-        "  # Check if SvelteKit is running",
-        "  $response = Invoke-WebRequest -Uri 'http://localhost:5173/' -TimeoutSec 5 -UseBasicParsing -ErrorAction SilentlyContinue;",
-        "  if ($response.StatusCode -ne 200) {",
-        "    Write-Host 'Starting SvelteKit dev server...' -ForegroundColor Yellow;",
-        "    Start-Process -NoNewWindow -FilePath 'npm' -ArgumentList 'run', 'dev' -WorkingDirectory '${workspaceFolder}/sveltekit-frontend';",
-        "    Start-Sleep -Seconds 10;",
-        "  }",
-        "  ",
-        "  # Generate test data",
-        "  $testResults = @{",
-        "    ocrResults = @(@{confidence = 95; text = 'Sample legal contract text'; legalConcepts = @('liability', 'breach'); citations = @('42 U.S.C. § 1983')});",
-        "    simdResults = @{processingTime = 150; vectorCount = 384; conceptsExtracted = 12};",
-        "    clusteringResults = @{kmeansClusters = 5; somGridSize = '10x10'; accuracy = 87; suggestions = @('contract terms', 'liability clauses', 'breach remedies')};",
-        "    ragRecommendations = @(@{relevance = 92; confidence = 88; content = 'Legal analysis of contract terms'})",
-        "  } | ConvertTo-Json -Depth 3;",
-        "  ",
-        "  $timestamp = Get-Date -Format 'yyyy-MM-dd-HH-mm-ss';",
-        "  $filename = \"playwright-tests-$timestamp.todo\";",
-        "  ",
-        "  $body = @{",
-        "    testResults = $testResults | ConvertFrom-Json;",
-        "    filename = $filename",
-        "  } | ConvertTo-Json -Depth 3;",
-        "  ",
-        "  Write-Host \"Generating Playwright tests and todo file: $filename\" -ForegroundColor Cyan;",
-        "  $apiResponse = Invoke-RestMethod -Uri 'http://localhost:5173/api/testing/generate-playwright' -Method Post -Body $body -ContentType 'application/json';",
-        "  ",
-        "  Write-Host '✅ Test generation completed!' -ForegroundColor Green;",
-        "  Write-Host \"📄 Todo file: $($apiResponse.files.todoPath)\" -ForegroundColor Yellow;",
-        "  Write-Host \"🧪 Test file: $($apiResponse.files.testPath)\" -ForegroundColor Yellow;",
-        "  Write-Host \"📊 Generated $($apiResponse.summary.totalTests) tests covering $($apiResponse.summary.testCategories.Count) categories\" -ForegroundColor Blue;",
-        "  Write-Host \"⏱️  Estimated runtime: $($apiResponse.summary.estimatedRunTime)\" -ForegroundColor Magenta;",
-        "  ",
-        "  # Open the generated files",
-        "  if ($apiResponse.files.todoPath) { code $apiResponse.files.todoPath };",
-        "  if ($apiResponse.files.testPath) { code $apiResponse.files.testPath };",
-        "  ",
-        "} catch {",
-        "  Write-Host \"❌ Error: $($_.Exception.Message)\" -ForegroundColor Red;",
-        "  Write-Host 'Make sure SvelteKit dev server is running on port 5173' -ForegroundColor Yellow;",
-        "}"
+        "run",
+        "${workspaceFolder}/go-microservice/simd-http-server.go"
       ],
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".",
+              "file": 1,
+              "location": 2,
+              "message": 3
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "🚀 SIMD FFI HTTP Fallback Server starting",
+            "endsPattern": "GET  /version - Get version info"
+          }
+        }
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
+      "label": "🧩 Phase52: Run AST Repair (SIMD MinIO)",
+      "type": "shell",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/sveltekit-frontend/scripts/phase52-ast-repair.mjs"
+      ],
+      "dependsOn": ["🧠 Phase52: Start SIMD HTTP Fallback (Go)"],
+      "problemMatcher": []
+    },
+    {
+      "label": "⚙️ Run Phase52 Full Pipeline (SIMD + AST Repair)",
+      "dependsOn": [
+        "🧠 Phase52: Start SIMD HTTP Fallback (Go)",
+        "🧩 Phase52: Run AST Repair (SIMD MinIO)"
+      ],
+      "dependsOrder": "sequence",
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "🔗 Build SIMD FFI Bridge (AVX2 + CUDA)",
+      "type": "shell",
+      "command": "cmd",
+      "args": ["/c", "cd go-microservice && BUILD-FFI-BRIDGE.bat"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
       "presentation": {
         "echo": true,
         "reveal": "always",
         "focus": false,
         "panel": "shared",
-        "showReuseMessage": false,
-        "clear": true
+        "showReuseMessage": true,
+        "clear": false
       },
       "problemMatcher": [],
-      "detail": "Generate comprehensive Playwright tests and SOM analysis todo file from test results API"
+      "detail": "Build Go FFI shared library for direct Node.js memory access (zero HTTP latency)"
+    },
+    {
+      "label": "🧪 Test SIMD FFI Bridge",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/test-ffi-bridge.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Test direct memory access to Go SIMD parser (AVX2 + CUDA)"
+    },
+    {
+      "label": "Phase52: Repair TypeScript (SIMD FFI Direct)",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/phase52-ast-repair.mjs"],
+      "options": {
+        "cwd": "${workspaceFolder}/sveltekit-frontend"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Zero-latency TypeScript repair using SIMD FFI bridge (direct memory access)"
+    },
+    {
+      "label": "Phase52: Full Pipeline (FFI + Isolate)",
+      "dependsOn": [
+        "Phase52: Isolate Top Errors",
+        "Phase52: Repair TypeScript (SIMD FFI Direct)"
+      ],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "detail": "Complete Phase 52 pipeline: isolate errors + FFI-accelerated repair"
+    },
+    {
+      "label": "⚙️ Run Phase52 Auto (Docker Redis + Go SIMD + Benchmark)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File",
+        "${workspaceFolder}/start-phase52.ps1"
+      ],
+      "options": {
+        "envFile": "${workspaceFolder}/.env.phase52.local"
+      },
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "🤖 Run Phase53 Agentic Fix (Gemma3-Legal)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-ExecutionPolicy", "Bypass",
+        "-File",
+        "${workspaceFolder}/start-phase53.ps1"
+      ],
+      "options": {
+        "envFile": "${workspaceFolder}/.env.phase52.local"
+      },
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "Phase52 → Phase53 Chain (Full GPU Pipeline)",
+      "dependsOn": [
+        "⚙️ Run Phase52 Auto (Docker Redis + Go SIMD + Benchmark)",
+        "🤖 Run Phase53 Agentic Fix (Gemma3-Legal)"
+      ],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": { "echo": true, "reveal": "always", "panel": "dedicated" }
     }
   ],
   "compounds": [
@@ -1558,6 +1682,58 @@
         "showReuseMessage": true,
         "clear": true
       }
+    },
+    {
+      "label": "Phase52 → Graph → Agentic Fix",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-ExecutionPolicy","Bypass",
+        "-File","${workspaceFolder}/start-phase52.ps1"
+      ],
+      "dependsOn": [
+        "Build AST Graph",
+        "Run Phase53 Agentic Fix"
+      ],
+      "dependsOrder": "sequence",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Build AST Graph",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/phase52-ast-graph.mjs"],
+      "options": { "cwd": "${workspaceFolder}/sveltekit-frontend" },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Phase53 Agentic Fix",
+      "type": "shell",
+      "command": "node",
+      "args": ["scripts/phase53-agentic-fix.mjs"],
+      "options": { "cwd": "${workspaceFolder}/sveltekit-frontend" },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": []
     }
   ],
   "inputs": [

@@ -49,6 +49,7 @@
     "playwright:install-deps": "playwright install-deps",
     "check:ultra-fast": "npm --prefix sveltekit-frontend run check:ultra-fast",
     "check:svelte": "npm --prefix sveltekit-frontend run check:svelte",
+    "legal-ai:development-environment-status": "docker ps --format \"table {{.Names}}\t{{.Status}}\t{{.Ports}}\"",
     "check:svelte:fast": "npm --prefix sveltekit-frontend run check:svelte:fast",
     "check": "node scripts/check-unified-simple.mjs",
     "simd:test": "node scripts/test-simd-integration.mjs",
