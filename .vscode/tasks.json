@@ -2,6 +2,80 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Python: Install SIMD Parser Deps",
+      "type": "shell",
+      "command": "pip install orjson numpy torch cupy-cuda12x fastapi uvicorn",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "Installs Python dependencies for the SIMD parser service."
+    },
+    {
+      "label": "Python: Start SIMD Parser Service",
+      "type": "shell",
+      "command": "uvicorn python.simd_parser_service:app --host 0.0.0.0 --port 8097",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "detail": "Starts the Python SIMD parser service on port 8097."
+    },
+    {
+      "label": "PowerShell: Run Phase 65 Adaptive Rebuilder",
+      "type": "shell",
+      "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/cpp-ast-exporter/phase65_adaptive_rebuilder.ps1\"",
+      "options": {
+        "env": {
+          "PUBLIC_VITE_SIMD_HTTP_ENDPOINT": "http://localhost:8097/json"
+        }
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated"
+      },
+      "problemMatcher": [],
+      "detail": "Runs the Phase 65 adaptive rebuilder with Python SIMD service enabled."
+    },
+    {
+      "label": "Automate SIMD Parser Setup and Build",
+      "dependsOn": [
+        "Python: Install SIMD Parser Deps",
+        "Python: Start SIMD Parser Service",
+        "PowerShell: Run Phase 65 Adaptive Rebuilder"
+      ],
+      "dependsOrder": "sequence",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "new",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Automates Python SIMD parser setup and runs the adaptive build."
+    },
+    {
       "label": "RAG: Run FastAPI Ingest Service",
       "type": "shell",
       "command": "uvicorn",
@@ -339,7 +413,7 @@
         "cwd": "${workspaceFolder}",
         "env": {
           "MCP_PORT": "3002",
-          "MCP_WORKERS": "4",
+          "MCP_WORKERS": "1",
           "RTX_3060_OPTIMIZATION": "true",
           "CONTEXT7_MULTICORE": "true"
         }
@@ -384,7 +458,7 @@
       "presentation": {
         "echo": true,
         "reveal": "always",
-        "focus": false,
+        "focus": true,
         "panel": "shared",
         "showReuseMessage": false,
         "clear": true
@@ -424,7 +498,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\\scripts\\start-ollama-gpu.ps1",
+        "${workspaceFolder}/scripts/start-ollama-gpu.ps1",
         "-GpuLayers",
         "25",
         "-WaitSeconds",
@@ -463,13 +537,23 @@
       "command": "python",
       "args": [
         "scripts/phase44-tensor-aggregator.py",
+        "--limit",
+        "10000",
+        "--cluster",
+        "20",
+        "--compute-similarity",
         "--store-dtype",
         "fp16",
         "--persist-store",
         "--store-path",
         "logs/phase44-cache.pt",
         "--capture-graph",
-        "--benchmark-graph"
+        "--graph-batch-size",
+        "256",
+        "--benchmark-batch-size",
+        "256",
+        "--benchmark-iters",
+        "50"
       ],
       "options": { "cwd": "${workspaceFolder}/sveltekit-frontend" },
       "env": {
@@ -544,11 +628,7 @@
     {
       "label": "≡ƒÜÇ Start Full MCP Development Stack",
       "dependsOrder": "sequence",
-      "dependsOn": [
-        "≡ƒöº Check Redis Connection",
-        "≡ƒñû Start MCP Multicore Server",
-        "≡ƒö┤ Start Redis Error Logger"
-      ],
+      "dependsOn": ["≡ƒöº Check Redis Connection", "≡ƒñû Start MCP Multicore Server"],
       "group": {
         "kind": "build",
         "isDefault": false
@@ -572,7 +652,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\\scripts\\open-user-toolset.ps1"
+        "${workspaceFolder}\scripts\open-user-toolset.ps1"
       ],
       "presentation": {
         "echo": true,
@@ -604,7 +684,7 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "Get-Content -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Wait -Tail 20"
+        "Get-Content -Path '${workspaceFolder}\logs\hmr-errors.log' -Wait -Tail 20"
       ],
       "presentation": {
         "echo": true,
@@ -620,7 +700,7 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "Remove-Item -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Force -ErrorAction SilentlyContinue"
+        "Remove-Item -Path '${workspaceFolder}\logs\hmr-errors.log' -Force -ErrorAction SilentlyContinue"
       ],
       "presentation": {
         "echo": true,
@@ -632,7 +712,7 @@
       "label": "Analyze WebSocket Errors",
       "type": "shell",
       "command": "powershell",
-      "args": ["-NoProfile", "-File", "${workspaceFolder}\\scripts\\analyze-ws-errors.ps1"],
+      "args": ["-NoProfile", "-File", "${workspaceFolder}\scripts\analyze-ws-errors.ps1"],
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -649,7 +729,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\\start-litellm-proxy.ps1"
+        "${workspaceFolder}\start-litellm-proxy.ps1"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -710,12 +790,12 @@
       "label": "≡ƒÜÇ Start MCP Context7 SIMD Server",
       "type": "shell",
       "command": "node",
-      "args": ["${workspaceFolder}\\scripts\\mcp-context7-optimized.mjs"],
+      "args": ["${workspaceFolder}\scripts\mcp-context7-optimized.mjs"],
       "options": {
         "cwd": "${workspaceFolder}",
         "env": {
           "MCP_PORT": "3002",
-          "MCP_WORKERS": "8",
+          "MCP_WORKERS": "1",
           "REDIS_PASSWORD": "redis",
           "DATABASE_URL": "postgresql://legal_admin:123456@localhost:5432/legal_ai_db",
           "RTX_3060_OPTIMIZATION": "true",
@@ -780,8 +860,7 @@
       "dependsOrder": "sequence",
       "dependsOn": [
         "≡ƒñû Start LiteLLM Proxy (OllamaΓåÆClaude Code)",
-        "≡ƒÜÇ Start MCP Context7 SIMD Server",
-        "≡ƒö┤ Start Redis Error Logger"
+        "≡ƒÜÇ Start MCP Context7 SIMD Server"
       ],
       "group": {
         "kind": "build",
@@ -801,7 +880,7 @@
       "label": "≡ƒÄ¿ Demo: SharedArrayBuffer + WebGPU Pattern",
       "type": "shell",
       "command": "node",
-      "args": ["${workspaceFolder}\\scripts\\mcp-webgpu-shared-buffer.mjs"],
+      "args": ["${workspaceFolder}\scripts\mcp-webgpu-shared-buffer.mjs"],
       "group": "test",
       "presentation": {
         "echo": true,
@@ -899,7 +978,7 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "& { npx svelte-check --tsconfig sveltekit-frontend/tsconfig.json | Out-File -FilePath svelte-check-output.json -Encoding utf8 }"
+        "if (-not (Test-Path .cache)) { New-Item -ItemType Directory -Force -Path .cache | Out-Null }; Push-Location sveltekit-frontend; npx svelte-check --fail-on-warnings=false --output json | Out-File -Encoding utf8 ../.cache/sveltecheck.json; Pop-Location"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -1000,7 +1079,6 @@
         "256",
         "--benchmark-batch-size",
         "256",
-        "--benchmark-graph",
         "--benchmark-iters",
         "50"
       ],
@@ -1469,7 +1547,7 @@
     }
     ,
     {
-      "label": "� Phase52: Start SIMD HTTP Fallback (Go)",
+      "label": " Phase52: Start SIMD HTTP Fallback (Go)",
       "type": "shell",
       "command": "go",
       "args": [
@@ -1794,5 +1872,3 @@
     }
   ]
 }
-
-

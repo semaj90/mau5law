@@ -8,8 +8,12 @@ declare global {
 			user: User | null;
 			session: Session | null;
 		}
+		interface Error {
+			message: string;
+			detail?: string;
+			errors?: Record<string, string[]>;
+		}
 		// interface PageData {}
-		// interface Error {}
 		// interface Platform {}
 	}
 
