@@ -102,3 +102,33 @@ export const chatEmbeddings = pgTable(
 );
 
 console.log('ðŸ“  Drizzle ORM schema defined');
+
+// Placeholder schema types for Drizzle ORM
+// Replace with your actual Drizzle schema definitions.
+
+export interface Case {
+  id: string;
+  title: string;
+  description: string;
+  caseNumber: string;
+  status: 'open' | 'closed' | 'pending';
+  createdAt: Date;
+  updatedAt: Date;
+  aiSummary?: string | null;
+}
+
+export interface NewCase extends Omit<Case, 'id' | 'createdAt' | 'updatedAt'> {}
+
+export interface Evidence {
+  id: string;
+  caseId: string;
+  type: string; // e.g., 'document', 'testimony', 'photo'
+  description: string;
+  filePath: string;
+  uploadedAt: Date;
+  aiSummary?: string | null;
+  embedding?: number[] | null;
+  metadata?: Record<string, unknown> | null;
+}
+
+export interface NewEvidence extends Omit<Evidence, 'id' | 'uploadedAt' | 'embedding'> {}
