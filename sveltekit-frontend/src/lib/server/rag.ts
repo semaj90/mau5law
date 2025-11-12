@@ -1,58 +1,24 @@
-/**
- * RAG (Retrieval-Augmented Generation) Service
- * Combines vector search with LLM generation for enhanced responses
- */
-import { OllamaService } from './ollama';
-import { EmbeddingService } from './embeddings';
+import { QdrantClient } from '@qdrant/js-client-rest';
+// import { QDRANT_URL, OLLAMA_URL, EMBEDDING_MODEL } from '$env/static/private';
+
+const qdrant = new QdrantClient({ url: 'http://localhost:6333' });
 
 export class RAGService {
-  private ollamaService: OllamaService;
-  private embeddingService: EmbeddingService;
-
-  constructor() {
-    this.ollamaService = new OllamaService();
-    this.embeddingService = new EmbeddingService();
-  }
-
-  async search(params: {
-    query: string;
-    caseId?: string;
-    userId: string;
-    limit?: number;
-  }): Promise<any[]> {
-    const { query, caseId, userId, limit = 10 } = params;
-
-    // Generate embedding for the query
-    const queryEmbedding = await this.embeddingService.generateEmbedding(query);
-
-    // Search for similar content (placeholder)
-    const similarContent = await this.embeddingService.searchSimilar(queryEmbedding, limit);
-
-    return similarContent;
-  }
-
-  async chat(params: {
-    message: string;
-    sessionId?: string;
-    caseId?: string;
-    userId: string;
-  }): Promise<string> {
-    const { message, sessionId, caseId, userId } = params;
-
-    // Get relevant context through vector search
-    const searchResults = await this.search({
-      query: message,
-      caseId,
-      userId,
+  async search(query: string) {
+    const res = await qdrant.search('evidence_vectors', {
+      vector: await this.embedQuery(query),
       limit: 5,
     });
+    return res;
+  }
 
-    // Extract context from search results
-    const context = searchResults.map((result: any) => result.content || result.text);
-
-    // Generate response with context
-    const response = await this.ollamaService.chat(message, context);
-
-    return response;
+  async embedQuery(q: string) {
+    const r = await fetch(`http://localhost:11434/api/embed`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'embeddinggemma:latest', input: q }),
+    });
+    const data = await r.json();
+    return data.data[0].embedding;
   }
 }

@@ -14,8 +14,7 @@
   let uploadProgress = $state(0);
   let uploadResult = $state<any | null>(null);
   let uploadError = $state<string | null>(null);
-  // Make selectedEvidenceId derived to react to changes in evidence
-  let selectedEvidenceId = $derived<string | null>(evidence && evidence.length > 0 ? evidence[0].id : null);
+  let selectedEvidenceId = $state<string | null>(evidence && evidence.length > 0 ? evidence[0].id : null);
   let recommendationsLoading = $state(false);
   let recommendationsError = $state<string | null>(null);
   let recommendations = $state<any[]>([]);
@@ -200,38 +199,31 @@
     }
   }
 
+  // Generate AI recommendations for selected evidence
   async function generateRecommendations(evidenceId: string) {
+    if (!evidenceId) return;
+
     recommendationsLoading = true;
     recommendationsError = null;
-    selectedEvidenceId = evidenceId; // Update selected evidence
 
     try {
-      const response = await fetch('/api/ai/evidence-recommendations', {
-        method: 'POST',
+      const response = await fetch(`/api/evidence/${evidenceId}/recommendations`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          evidenceId,
-          caseId
-        })
+        }
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        throw new Error(`Failed to generate recommendations: ${response.statusText}`);
       }
 
-      const result = await response.json();
-      if (result.success) {
-        recommendations = result.data.recommendations;
-        console.log('🎯 AI recommendations generated!');
-      } else {
-        throw new Error(result.error || 'Failed to generate recommendations');
-      }
-    } catch (err: any) {
-      console.error('Recommendations error:', err);
-      recommendationsError = err.message || 'Failed to generate recommendations';
-      console.error(`${recommendationsError}`);
+      const data = await response.json();
+      recommendations = data.recommendations || [];
+    } catch (error) {
+      console.error('Error generating recommendations:', error);
+      recommendationsError = error instanceof Error ? error.message : 'Failed to generate recommendations';
+      recommendations = [];
     } finally {
       recommendationsLoading = false;
     }
@@ -378,7 +370,10 @@
         {evidence}
         {taggedEvidenceIds}
         on:tagged={(e) => handleTagging(e)}
-        on:select={(e) => generateRecommendations(e.detail)} <!-- Add on:select handler -->
+        on:select={(e) => {
+          selectedEvidenceId = e.detail;
+          generateRecommendations(e.detail);
+        }} <!-- Add on:select handler -->
       />
     </div>
 

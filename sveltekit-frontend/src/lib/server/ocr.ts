@@ -1,35 +1,20 @@
-/**
- * OCR Service for document text extraction
- * Processes documents and extracts text content using OCR
- */
+import pdfParse = require('pdf-parse');
+
 export class OCRService {
-  async processDocument(documentId: string): Promise<{
-    text: string;
-    confidence: number;
-    language?: string;
-  }> {
-    // Placeholder implementation - in production, integrate with Tesseract or similar
-    console.log(`Processing OCR for document: ${documentId}`);
+  async extractText(file: File) {
+    try {
+      // For testing, handle text files directly
+      if (file.type === 'text/plain' || file.name.endsWith('.txt')) {
+        return await file.text();
+      }
 
-    // Simulate OCR processing
-    return {
-      text: 'Extracted text from document',
-      confidence: 0.95,
-      language: 'en',
-    };
-  }
-
-  async processImage(imageBuffer: Buffer): Promise<{
-    text: string;
-    confidence: number;
-    boundingBoxes?: any[];
-  }> {
-    // Placeholder for image OCR processing
-    console.log(`Processing OCR for image buffer`);
-
-    return {
-      text: 'Extracted text from image',
-      confidence: 0.90,
-    };
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const data = await pdfParse(buffer);
+      return data.text;
+    } catch (error) {
+      console.error('OCR extraction failed:', error);
+      // Fallback: return an empty string if OCR fails to avoid polluting content.
+      return '';
+    }
   }
 }
