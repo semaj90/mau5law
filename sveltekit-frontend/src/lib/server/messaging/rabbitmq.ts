@@ -1,7 +1,8 @@
 import * as amqp from 'amqplib';
+import type { Connection, Channel, Options } from 'amqplib';
 
-let connection: amqp.Connection | null = null;
-let channel: amqp.Channel | null = null;
+let connection: Connection | null = null;
+let channel: Channel | null = null;
 let reconnectAttempts = 0;
 let connectionFailed = false;
 
@@ -30,7 +31,7 @@ const getRabbitMQUrls = (): string[] => {
   return urls;
 };
 
-const connectWithFallback = async (): Promise<amqp.Connection | null> => {
+const connectWithFallback = async (): Promise<Connection | null> => {
   for (const url of getRabbitMQUrls()) {
     try {
       const safeUrl = maskCredentials(url);
@@ -39,7 +40,7 @@ const connectWithFallback = async (): Promise<amqp.Connection | null> => {
       const connectionAttempt = await amqp.connect(url, {
         heartbeat: 60,
         timeout: 5000,
-      });
+      } as Options.Connect); // Explicitly cast options to Options.Connect
 
       console.log(`${LOG_PREFIX} connected ${safeUrl}`);
       reconnectAttempts = 0;
@@ -53,7 +54,7 @@ const connectWithFallback = async (): Promise<amqp.Connection | null> => {
   return null;
 };
 
-const reconnectWithRetry = async (): Promise<amqp.Connection | null> => {
+const reconnectWithRetry = async (): Promise<Connection | null> => {
   if (reconnectAttempts >= MAX_RECONNECT_ATTEMPTS) {
     console.error(`${LOG_PREFIX} max reconnect attempts reached`);
     connectionFailed = true;
@@ -70,7 +71,7 @@ const reconnectWithRetry = async (): Promise<amqp.Connection | null> => {
   return connectWithFallback();
 };
 
-const ensureChannel = async (): Promise<amqp.Channel | null> => {
+const ensureChannel = async (): Promise<Channel | null> => {
   if (connectionFailed) return null;
 
   if (!channel) {
@@ -82,7 +83,7 @@ const ensureChannel = async (): Promise<amqp.Channel | null> => {
       if (!connection) return null;
     }
 
-    connection.on('error', async (err) => {
+    connection.on('error', async (err: Error) => {
       console.error(`${LOG_PREFIX} connection error`, err);
       channel = null;
       connection = await reconnectWithRetry();
@@ -104,7 +105,7 @@ const ensureChannel = async (): Promise<amqp.Channel | null> => {
   return channel;
 };
 
-export const getRabbitMQChannel = async (): Promise<amqp.Channel | null> => ensureChannel();
+export const getRabbitMQChannel = async (): Promise<Channel | null> => ensureChannel();
 
 export const closeRabbitMQConnection = async (): Promise<void> => {
   if (channel) {
@@ -134,7 +135,7 @@ export const closeRabbitMQConnection = async (): Promise<void> => {
 export const publishMessage = async (
   queueName: string,
   message: Record<string, unknown>,
-  options?: amqp.Options.Publish
+  options?: Options.Publish
 ): Promise<boolean> => {
   const ch = await ensureChannel();
   if (!ch) return false;

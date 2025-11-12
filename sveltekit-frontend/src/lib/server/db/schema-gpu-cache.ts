@@ -53,7 +53,7 @@ export const shaderCacheEntries = pgTable('shader_cache_entries', {
 export const shaderUserPatterns = pgTable('shader_user_patterns', {
   id: serial('id').primaryKey(),
   // User and session context
-  shaderId: uuid('shader_id').references(() => shaderCacheEntries.id, { onDelete: 'CASCADE' }), // fixed .references usage
+  shaderId: uuid('shader_id').references(() => shaderCacheEntries.id, { onDelete: 'cascade' }), // fixed .references usage
   userId: text('user_id').notNull(),
   sessionId: text('session_id'),
   accessTimestamp: timestamp('access_timestamp', { withTimezone: true }).defaultNow(),
@@ -103,10 +103,10 @@ export const shaderDependencies = pgTable('shader_dependencies', {
   id: serial('id').primaryKey(),
   // Dependency relationship
   parentShaderId: uuid('parent_shader_id').references(() => shaderCacheEntries.id, {
-    onDelete: 'CASCADE',
+    onDelete: 'cascade',
   }), // fixed .references usage
   childShaderId: uuid('child_shader_id').references(() => shaderCacheEntries.id, {
-    onDelete: 'CASCADE',
+    onDelete: 'cascade',
   }), // fixed .references usage
   // Dependency metadata
   dependencyType: text('dependency_type').notNull(), // 'include', 'texture', 'uniform', 'buffer'
@@ -200,5 +200,4 @@ export type InsertShaderDependency = typeof shaderDependencies.$inferInsert;
 export type ShaderCompilationQueue = typeof shaderCompilationQueue.$inferSelect;
 export type InsertShaderCompilationQueue = typeof shaderCompilationQueue.$inferInsert;
 export type ShaderRecommendation = typeof shaderRecommendationsView.$inferSelect;
-export type InsertShaderRecommendation = typeof shaderRecommendationsView.$inferInsert;
 export type InsertShaderRecommendation = typeof shaderRecommendationsView.$inferInsert;

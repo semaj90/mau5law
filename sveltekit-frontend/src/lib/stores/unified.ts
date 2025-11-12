@@ -130,7 +130,7 @@ export type AIAssistantEvent =
 // Function to send events to the AI Assistant XState machine
 export function sendToAIAssistant(event: AIAssistantEvent) {
   console.log(`[unified.ts] Sending event to AI Assistant machine: `, event);
-  xstateIntegration.sendEvent(AI_ASSISTANT_MACHINE_ID, event);
+  xstateIntegration.sendEvent(AI_ASSISTANT_MACHINE_ID, event as any);
 }
 
 // --- Websocket Store and Helpers ---

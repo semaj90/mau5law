@@ -109,7 +109,7 @@ async function searchEvidenceWithDrizzle(
       confidential_level: string | null;
       metadata: string | null;
     };
-    const results = await db.execute<EvidenceRow>(
+    const results = await db.execute(
       sql`
         SELECT
           id,
@@ -134,13 +134,13 @@ async function searchEvidenceWithDrizzle(
       similarity: row.similarity,
       evidenceType: row.evidence_type,
       confidentialityLevel: row.confidential_level || undefined,
-      metadata: row.metadata ? JSON.parse(row.metadata) : undefined
+      metadata: row.metadata ? JSON.parse(row.metadata) : undefined,
     }));
   } catch (err) {
     console.error('Evidence search error: ', err);
     throw error(500, {
       message: 'Evidence search failed',
-      detail: err instanceof Error ? err.message : 'Database error'
+      detail: err instanceof Error ? err.message : 'Database error',
     });
   }
 }
@@ -156,7 +156,7 @@ async function searchDocumentsWithDrizzle(
       content: string | null;
       similarity: number;
     };
-    const results = await db.execute<DocumentRow>(
+    const results = await db.execute(
       sql`
         SELECT
           id,
@@ -173,13 +173,13 @@ async function searchDocumentsWithDrizzle(
     return results.map((row: DocumentRow) => ({
       id: row.id,
       content: row.content || undefined,
-      similarity: row.similarity
+      similarity: row.similarity,
     }));
   } catch (err) {
     console.error('Documents search error: ', err);
     throw error(500, {
       message: 'Documents search failed',
-      detail: err instanceof Error ? err.message : 'Database error'
+      detail: err instanceof Error ? err.message : 'Database error',
     });
   }
 }

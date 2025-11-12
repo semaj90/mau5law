@@ -53,6 +53,16 @@ export class EmbeddingService {
     // no-op stub to keep API compatible
   }
 
+  async healthCheck(): Promise<boolean> {
+    // Simple health check - always return true for stub implementation
+    return true;
+  }
+
+  async getAvailableModels(): Promise<string[]> {
+    // Return available models for stub implementation
+    return ['nomic-embed-text', 'embeddinggemma:latest'];
+  }
+
   cosineSimilarity(vectorA: number[], vectorB: number[]): number {
     if (vectorA.length !== vectorB.length) {
       throw new Error('Vectors must have the same length');

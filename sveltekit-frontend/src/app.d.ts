@@ -4,18 +4,24 @@ import type { User, Session } from 'lucia';
 // for information about these interfaces
 declare global {
 	namespace App {
-		interface Locals {
-			user: User | null;
-			session: Session | null;
-		}
-		interface Error {
-			message: string;
-			detail?: string;
-			errors?: Record<string, string[]>;
-		}
-		// interface PageData {}
-		// interface Platform {}
-	}
+    // Define your User type based on what your authentication system provides
+    interface User {
+      id: string;
+      email: string;
+      // Add any other user properties you expect, e.g., name, roles
+    }
+
+    interface Locals {
+      session: {
+        user: User | null;
+        // Add other session-related properties if needed
+      };
+      // Add other locals properties if needed
+    }
+    // interface PageData {}
+    // interface Error {}
+    // interface Platform {}
+  }
 
 	interface ImportMetaEnv {
 		readonly NODE_ENV: string;

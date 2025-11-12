@@ -3,10 +3,10 @@
  * Provides modular loading of a JSON schema-driven layout
  * and real-time data subscriptions (SSE / WebSocket / polling).
  */
-import type { YoRHaButton3DOptions } from '../components/YoRHaButton3D.js';
-import type { YoRHaPanel3DOptions } from '../components/YoRHaPanel3D.js';
-import type { YoRHaInput3DOptions } from '../components/YoRHaInput3D.js';
-import type { YoRHaModal3DOptions } from '../components/YoRHaModal3D.js';
+import type { YoRHaButton3DOptions } from '../components/YoRHaButton3D';
+import type { YoRHaPanel3DOptions } from '../components/YoRHaPanel3D';
+import type { YoRHaInput3DOptions } from '../components/YoRHaInput3D';
+import type { YoRHaModal3DOptions } from '../components/YoRHaModal3D';
 export interface YoRHaAPIConfig {
   baseURL: string;
   apiKey?: string;
@@ -77,6 +77,23 @@ export interface YoRHaGraphData {
   nodes: Array<any>;
   edges: Array<any>;
 }
+
+export interface YoRHaDataSource {
+  name: string;
+  type: 'rest' | 'mock';
+  endpoint?: string;
+  intervalMs?: number;
+}
+
+export interface YoRHaLayout {
+  id: string;
+  name: string;
+  dataSources?: YoRHaDataSource[];
+  components: YoRHaComponentData[];
+  // Add other layout properties as needed
+  [key: string]: any;
+}
+
 export class YoRHaAPIClient {
   private config: YoRHaAPIConfig;
   private websocket?: WebSocket;
@@ -85,7 +102,7 @@ export class YoRHaAPIClient {
   private sseAttempts = 0;
   private cache = new Map<string, unknown>();
   private subscribers = new Map<string, Set<(data: unknown) => void>>();
-  private layout: unknown = null;
+  private layout: YoRHaLayout | null = null;
   private dataSourceIntervals = new Map<string, ReturnType<typeof setInterval>>();
   constructor(config: Partial<YoRHaAPIConfig> = {}) {
     this.config = {
@@ -130,7 +147,7 @@ export class YoRHaAPIClient {
         case 'rest': {
           const interval = setInterval(async () => {
             try {
-              const res = await fetch(ds.endpoint, { headers: { Accept: 'application/json' } });
+              const res = await fetch(ds.endpoint!, { headers: { Accept: 'application/json' } });
               if (res.ok) {
                 const data = await res.json();
                 this.pushData(ds.name, data);
@@ -183,12 +200,12 @@ export class YoRHaAPIClient {
     return this.cache.get(`ds:${id}`);
   }
   // Component Configuration API
-  async getComponentConfig(componentId: string, type: string): Promise<YoRHaComponentData> {
+  async getComponentConfig(componentId: string, _type: string): Promise<YoRHaComponentData> {
     const cacheKey = `config:${componentId}`;
     if (this.cache.has(cacheKey)) {
-      return this.cache.get(cacheKey);
+      return this.cache.get(cacheKey) as YoRHaComponentData;
     }
-    // removed unused response assignment
+    const response = await this.apiCall(`/components/${componentId}`);
     this.cache.set(cacheKey, response);
     return response;
   }
@@ -268,7 +285,7 @@ export class YoRHaAPIClient {
   // Event Logging
   async logEvent(_event: Omit<YoRHaEvent, 'timestamp'>): Promise<void> {
     const fullEvent = {
-      ...event,
+      ..._event, // Changed from 'event' to '_event'
       timestamp: new Date().toISOString(),
     };
     await this.apiCall('/events', {
@@ -287,9 +304,9 @@ export class YoRHaAPIClient {
     if (!this.subscribers.has(eventName)) {
       this.subscribers.set(eventName, new Set());
     }
-    this.subscribers.get(eventName)!.add(callback);
+    this.subscribers.get(eventName)!.add(callback as (data: unknown) => void);
     return () => {
-      this.subscribers.get(eventName)?.delete(callback);
+      this.subscribers.get(eventName)?.delete(callback as (data: unknown) => void);
     };
   }
   private notifySubscribers(eventName: string, data: unknown): void {

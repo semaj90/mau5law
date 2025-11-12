@@ -7,10 +7,10 @@ import { browser } from '$app/environment';
  * @param query - CSS media query string
  * @returns Reactive boolean indicating if query matches
  */
-export function createMediaQuery(query) {
+export function createMediaQuery(query: string) {
   // reactive: boolean state
   let matches = $state<boolean>(false);
-  let mediaQuery: MediaQueryList | null = null; // Fix: mediaQuery: MediaQueryList | null
+  let mediaQuery = null; // Fix: mediaQuery: MediaQueryList | null
 
   if (browser) {
     mediaQuery = window.matchMedia(query);
@@ -72,7 +72,7 @@ export function createMediaQuery(query) {
   return {
     get matches() {
       return matches;
-    }
+    },
   };
 }
 

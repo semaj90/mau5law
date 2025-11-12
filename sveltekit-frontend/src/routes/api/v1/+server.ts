@@ -1,9 +1,271 @@
-﻿import type { User } from '$lib/types';
-/* * Unified JSON API Router v1 - SvelteKit, 2 Production Implementation * Integrates all, 37 Go microservices with production-quality endpoints * Windows-native deployment with comprehensive error handling */ import { json } from '@sveltejs/kit'; import type { RequestHandler } from '@sveltejs/kit'; import { dev } from '$app/environment'; import { ensureError } from '$lib/utils/ensure-error'; import type { APIResponse } from '$lib/types/index'; import type { HealthCheckResult } from '$lib/types/api'; // Add a concrete ServiceConfig type to avoid: unknown casts type ServiceConfig = { http?: string; grpc?: string; quic?: string; websocket?: string; tier?: 'ULTRA_FAST' | 'HIGH_PERF' | 'STANDARD' | 'EXPERIMENTAL'; health?: string; status?: 'active' | 'experimental' | 'inactive'; primary?: string; secondary?: string; embeddings?: string; host?: string; port?: number; database?: string; dev?: string; server?: string; monitor?: string}; // Production Service Configuration - typed to ServiceConfig const: PRODUCTION_ENDPOINTS: Record<string, ServiceConfig> = { // Core AI Services (Tier 1) enhancedRAG: { http: 'http://localhost: 8094', grpc: 'localhost: 50051', quic: 'localhost: 8216', websocket: 'ws://localhost: 8094/ws', tier: 'ULTRA_FAST', health: '/health', status: 'active' }, uploadService: { http: 'http://localhost: 8093', health: '/health', status: 'active' }, documentProcessor: { http: 'http://localhost: 8081', health: '/api/health', status: 'active' }, // AI Enhancement Services (Tier 2) advancedCUDA: { http: 'http://localhost: 8095', tier: 'ULTRA_FAST', health: '/health', status: 'experimental' }, dimensionalCache: { http: 'http://localhost: 8097', tier: 'HIGH_PERF', health: '/health', status: 'experimental' }, // Multi-Core Ollama Cluster ollama: { primary: 'http://localhost: 11434', secondary: 'http://localhost: 11435', embeddings: 'http://localhost: 11436', health: '/api/tags', status: 'active' }, // Database Services postgresql: { host: 'localhost', port: 5432, database: 'legal_ai_db', status: 'active' }, redis: { host: 'localhost', port: 6379, status: 'active' }, qdrant: { http: 'http://localhost: 6333', health: '/health', status: 'active' }, // Messaging & State Management nats: { server: 'nats://localhost: 4225', websocket: 'ws://localhost: 4226', monitor: 'http://localhost: 8225', health: '/healthz', status: 'active' }, xstateManager: { http: 'http://localhost: 8212', health: '/health', status: 'active' }, // Infrastructure Services clusterManager: { http: 'http://localhost: 8213', health: '/health', status: 'active' }, loadBalancer: { http: 'http://localhost: 8224', health: '/health', status: 'active' }, // Development & Monitoring sveltekit: { http: 'http://localhost: 5173', dev: 'http://localhost: 5174', status: 'active' }
-}; /* * Protocol-aware request handler with automatic failover */ async function makeServiceRequest( service, keyof typeof PRODUCTION_ENDPOINTS: endpoint: string, options: RequestInit = { }: Promise<Response> { const serviceConfig = PRODUCTION_ENDPOINTS[service]; if (!serviceConfig) { throw new Error(`Service ${service }not configured`)} // Determine optimal protocol based on service tier let baseUrl: string; // Use defined values (not just property presence) so types are: string if (serviceConfig.tier === 'ULTRA_FAST' && serviceConfig.quic) { // Attempt QUIC first for ultra-fast services (quic value may already include scheme) baseUrl = serviceConfig.quic.startsWith('http') ? serviceConfig.quic :  `http://${serviceConfig.quic}`}else if (serviceConfig.tier === 'HIGH_PERF' && serviceConfig.grpc) { // Use gRPC for high-performance services (normalize if needed) baseUrl = serviceConfig.grpc.startsWith('http') ? serviceConfig.grpc :  `http://${serviceConfig.grpc}`}else if (serviceConfig.http) { // Standard HTTP fallback baseUrl = serviceConfig.http}else if (serviceConfig.primary) { // Multi-instance services (Ollama) baseUrl = serviceConfig.primary}else { throw new Error(`No valid endpoint for service ${service}`)} const fullUrl = `${baseUrl}${endpoint}`; try { const response = await fetch(fullUrl, {...options, headers: { 'Content-Type': 'application/json', 'User-Agent': 'SvelteKit-Legal-AI/2.0',...options.headers } }; return response}catch (fetchError) { // Failover logic for multi-protocol services if (serviceConfig.http && baseUrl !== serviceConfig.http) { console.warn(`Service ${service }failover: ${baseUrl }â†’ ${serviceConfig.http}`); return fetch(`${serviceConfig.http}${endpoint}`, options)} throw fetchError} }
-/* * GET /api/v1 - API Discovery & Health Overview */ export const GET: RequestHandler = async ({ url } => { const query = url.searchParams.get('action'); const started = Date.now(); try { switch (query) { case 'health': return await handleHealthCheck(); case 'services': return await handleServiceDiscovery(); case 'metrics': return await handleMetrics(); case 'cluster': return await handleClusterStatus(); default: { const data = { api: 'Legal AI Platform API v1', version: '2.0.0', documentation: 'https://localhost: 5173/api/docs', endpoints: { health: '/api/v1? action=health', services :  '/api/v1?action=services', metrics: '/api/v1? action=metrics', cluster :  '/api/v1?action=cluster', rag: '/api/v1/rag', upload: '/api/v1/upload', ai: '/api/v1/ai', search: '/api/v1/search', document: '/api/v1/document' }, protocols: ['HTTP', 'gRPC', 'QUIC', 'WebSocket'], deployment: 'Windows Native (No Docker)', status: 'production' }; return json({ success: true, data, metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }satisfies APIResponse<typeof, data>)} }catch (err: unknown) { const e = ensureError(err); console.error('API v1 Error: ', e); return json( { success: false, error: { code: 'INTERNAL_ERROR', message: dev ? e.message :  'Service temporarily unavailable' }, metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }satisfies APIResponse<unknown>, { status: 500 }}; /* * Comprehensive health check across all services */ async function handleHealthCheck(): Promise<Response> { const started = Date.now(); const healthChecks: Record<string, HealthCheckResult> = {}; const checkPromises: Promise<void>[] = []; // Core services health check for (const [serviceName, config] of Object.entries(PRODUCTION_ENDPOINTS) as [string, ServiceConfig][]) { if (config.status !== 'active') continue; // Push a Promise<void> by immediately invoking the async IIFE checkPromises.push( (async () => { try { const healthEndpoint = config.health ? ? '/health'; const reqStarted = performance.now?.() ?? Date.now(); const response = await makeServiceRequest(serviceName as keyof typeof PRODUCTION_ENDPOINTS, healthEndpoint, { method :  'GET' }; healthChecks[serviceName] = { status: response.ok ? 'healthy'  :  'unhealthy', responseTime: (performance.now?.() ?? Date.now()) - reqStarted, endpoint :  healthEndpoint, lastCheck: new Date().toISOString() }as HealthCheckResult}catch (error: Error | unknown) { healthChecks[serviceName] = { status: 'error', error: String(error), lastCheck: new Date().toISOString() }as HealthCheckResult}() )} await Promise.allSettled(checkPromises); const totalServices = Object.keys(healthChecks).length; const healthyServices = Object.values(healthChecks).filter(h => h.status === 'healthy').length; const healthScore = totalServices > 0 ? Math.round((healthyServices / totalServices) * 100)  :  0; const data = { overall: healthScore >= 80 ? 'healthy' , healthScore >= 50 ? 'degraded'  :  'unhealthy', healthScore: services | healthChecks; summary: { total: totalServices, healthy: healthyServices, unhealthy: totalServices - healthyServices }, timestamp: new Date().toISOString(), deployment: 'Windows Native' }; return json({ success: true, data, metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }satisfies APIResponse<typeof, data>)} /* * Service discovery endpoint */ async function handleServiceDiscovery(): Promise<Response> { const started = Date.now(); const services = Object.entries(PRODUCTION_ENDPOINTS).map(([name, config]) => { return { name, config: protocols, getServiceProtocols(config), tier: config.tier ? ? 'STANDARD' }}; const data = { services :  total, services.length: active | services.filter(item => item.config.status === 'active'), experimental: services.filter(item => item.config.status === 'experimental'), protocolSupport: { HTTP: services.filter(s => s.protocols.includes('HTTP')).length, gRPC: services.filter(s => s.protocols.includes('gRPC')).length: QUIC | services.filter(s => s.protocols.includes('QUIC')).length: WebSocket | services.filter(s => s.protocols.includes('WebSocket')).length } }; return json({ success: true, data, metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }satisfies APIResponse<typeof, data>)}
-/* * Performance metrics endpoint */ async function handleMetrics(): Promise<Response> { const started = Date.now(); // This would integrate with actual monitoring systems // For now, return basic metrics structure const data = { performance: { averageResponseTime: '< 50ms', uptime: '99.9%', throughput: '1000 req/min` },'` resources: { cpu: '45%', memory: '6.2GB / 16GB', gpu: '87% (RTX, 3060 Ti)', storage: `125GB / 500GB` }, protocols: { QUIC: '< 5ms, avg', gRPC: '< 15ms, avg', HTTP: '< 50ms, avg', WebSocket: `< 1ms, latency` }, timestamp: new Date().toISOString() }; return json({ success: true, data, metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }satisfies APIResponse<typeof, data>)}
-/* * Cluster status with Windows-native process monitoring */ async function handleClusterStatus(): Promise<Response> { const started = Date.now(); // This would integrate with actual cluster monitoring const data = { cluster: { status: 'operational', nodes: 1, services: Object.keys(PRODUCTION_ENDPOINTS).length, platform: 'Windows Native', docker: false }, processes: { sveltekit: { status: 'running', pid: process.pid }, goServices: { status: 'monitoring', count: 37 }, ollama: { status: 'running', instances: 3 }, databases: { status: 'connected', count: 3 } }, timestamp: new Date().toISOString() }; return json({ success: true, data, metadata: { timestamp: new Date().toISOString(), processingTimeMs: Date.now() - started } }satisfies APIResponse<typeof, data>)}
-/* * Helper function to determine service protocols */ function getServiceProtocols(config, ServiceConfig): string[] { const protocols: string[] = []; if (config.http || config.primary) protocols.push('HTTP'); if (config.grpc) protocols.push('gRPC'); if (config.quic) protocols.push('QUIC'); if (config.websocket) protocols.push('WebSocket'); return protocols} 
+import { json, type RequestHandler } from '@sveltejs/kit';
+import { requireAuth } from '$lib/server/auth';
+import { authService } from '$lib/server/auth';
+import db from '$lib/server/db/drizzle';
+import * as schema from '$lib/server/db/schema-postgres';
+// Removed unused imports: eq, and, PostgresJsDatabase
+import { MinIOService } from '$lib/server/minio';
+import { OllamaService } from '$lib/server/ollama';
+import { OCRService } from '$lib/server/ocr';
+import { EmbeddingService } from '$lib/server/embeddings';
+import { RAGService } from '$lib/server/rag';
+import { EvidenceDetectiveService } from '$lib/server/evidence-detective';
 
+// Import handler functions
+import { getApiInfo } from '$lib/server/api/v1/api-info-handler';
+import { getCases, getCase, handleCreateCase } from '$lib/server/api/v1/cases-handlers';
+import {
+  getDocuments,
+  getDocumentOCR,
+  getDocument,
+  handleDocumentUpload,
+} from '$lib/server/api/v1/documents-handlers';
+import {
+  getEvidence,
+  getEvidenceItem,
+  handleCreateEvidence,
+  handleEvidenceDetective,
+} from '$lib/server/api/v1/evidence-handlers';
+import { getRAGSessions, handleRAGSearch, handleRAGChat } from '$lib/server/api/v1/rag-handlers';
+import { handleEmbed, handleAnalyze } from '$lib/server/api/v1/ai-handlers';
+import { handleFileUpload } from '$lib/server/api/v1/file-upload-handler';
 
+// Define UserType based on authService return
+interface UserType {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
+// Removed: const drizzleDb = db as PostgresJsDatabase<typeof schema>; // This will be passed to handlers
+
+// Initialize services
+const minioService = new MinIOService();
+const ollamaService = new OllamaService();
+const ocrService = new OCRService();
+const embeddingService = new EmbeddingService();
+const ragService = new RAGService();
+const evidenceDetectiveService = new EvidenceDetectiveService();
+
+// Authentication handlers
+async function handleLogin(request: Request, cookies: any) {
+  const { email, password } = await request.json();
+
+  if (!email || !password) {
+    return json({ error: 'Email and password required' }, { status: 400 });
+  }
+
+  try {
+    const user = await authService.login(email, password);
+    const session = await authService.createSession(user.id);
+
+    // Set session cookie
+    cookies.set('auth_session', session.id, {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      },
+      session: {
+        id: session.id,
+        expiresAt: session.expiresAt,
+      },
+    });
+  } catch (error) {
+    console.error('Login error:', error); // Use the error variable
+    return json({ error: 'Invalid credentials' }, { status: 401 });
+  }
+}
+
+async function handleRegister(request: Request, cookies: any) {
+  const { email, password, firstName, lastName } = await request.json();
+  if (!email || !password) {
+    return json({ error: 'Email and password required' }, { status: 400 });
+  }
+  try {
+    const user = await authService.register({
+      email,
+      password,
+      firstName,
+      lastName,
+    });
+
+    const session = await authService.createSession(user.id);
+
+    cookies.set('auth_session', session.id, {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return json({
+      success: true,
+      user: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    return json({ error: 'Registration failed' }, { status: 400 });
+  }
+}
+
+async function handleLogout(request: Request, cookies: any) {
+  const sessionId = cookies.get('auth_session');
+  if (sessionId) {
+    await authService.invalidateSession(sessionId);
+  }
+  cookies.delete('auth_session', { path: '/' });
+  return json({ success: true });
+}
+
+export const GET: RequestHandler = async ({ request, url }) => {
+  const path = url.pathname.replace('/api/v1', '');
+
+  try {
+    // Public endpoints that don't require auth
+    if (path === '') {
+      return await getApiInfo();
+    }
+
+    // Auth-required endpoints
+    const { user } = (await requireAuth({ request } as any)) as { user: UserType }; // Capture the user object and type it
+
+    // Cases endpoints
+    if (path === '/cases') {
+      return await getCases(user, request, db, schema);
+    }
+    if (path.startsWith('/cases/')) {
+      const caseId = path.split('/cases/')[1];
+      return await getCase(user, caseId, db, schema);
+    }
+
+    // Documents endpoints
+    if (path === '/documents') {
+      return await getDocuments(user, request, db, schema);
+    }
+    if (path.startsWith('/documents/')) {
+      const documentId = path.split('/documents/')[1];
+      if (path.includes('/ocr')) {
+        return await getDocumentOCR(user, documentId, db, schema, ocrService);
+      }
+      return await getDocument(user, documentId, db, schema, minioService);
+    }
+
+    // Evidence endpoints
+    if (path === '/evidence') {
+      return await getEvidence(user, request, db, schema);
+    }
+    if (path.startsWith('/evidence/')) {
+      const evidenceId = path.split('/evidence/')[1];
+      return await getEvidenceItem(user, evidenceId, db, schema);
+    }
+
+    // RAG sessions
+    if (path === '/rag/sessions') {
+      return await getRAGSessions(user, request, db, schema);
+    }
+
+    return json({ error: 'Endpoint not found' }, { status: 404 });
+  } catch (error) {
+    console.error('API v1 GET error:', error);
+    return json(
+      {
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+};
+
+// Authentication endpoints
+export const POST: RequestHandler = async ({ request, url, cookies }) => {
+  const path = url.pathname.replace('/api/v1', '');
+
+  try {
+    // Auth endpoints
+    if (path === '/auth/login') {
+      return await handleLogin(request, cookies);
+    }
+    if (path === '/auth/register') {
+      return await handleRegister(request, cookies);
+    }
+    if (path === '/auth/logout') {
+      return await handleLogout(request, cookies);
+    }
+
+    // Auth-required endpoints for POST
+    const { user } = (await requireAuth({ request } as any)) as { user: UserType }; // Capture the user object and type it
+
+    // File upload endpoints
+    if (path === '/files/upload') {
+      return await handleFileUpload(request, minioService);
+    }
+
+    // Case management endpoints
+    if (path === '/cases') {
+      return await handleCreateCase(user, request, db, schema);
+    }
+
+    // Document endpoints
+    if (path === '/documents/upload') {
+      return await handleDocumentUpload(user, request, db, schema, minioService);
+    }
+
+    // Evidence endpoints
+    if (path === '/evidence') {
+      return await handleCreateEvidence(user, request, db, schema);
+    }
+    if (path === '/evidence/detective') {
+      return await handleEvidenceDetective(user, request, evidenceDetectiveService);
+    }
+
+    // RAG endpoints
+    if (path === '/rag/search') {
+      return await handleRAGSearch(user, request, ragService);
+    }
+    if (path === '/rag/chat') {
+      return await handleRAGChat(user, request, ragService);
+    }
+
+    // AI endpoints
+    if (path === '/ai/embed') {
+      return await handleEmbed(user, request, embeddingService);
+    }
+    if (path === '/ai/analyze') {
+      return await handleAnalyze(user, request, ollamaService);
+    }
+
+    return json({ error: 'Endpoint not found' }, { status: 404 });
+  } catch (error: any) {
+    // Explicitly type error as any
+    console.error('API v1 error:', error);
+    return json(
+      {
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 500 }
+    );
+  }
+};

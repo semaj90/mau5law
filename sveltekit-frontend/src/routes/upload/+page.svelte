@@ -1,7 +1,7 @@
 <script lang="ts">
-  import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
-  import { page } from '$app/state';
   import { goto } from '$app/navigation';
+  import { page } from '$app/state';
+  import MinIOUpload from '$lib/components/upload/MinIOUpload.svelte';
   import type { PageData } from './$types';
 
   // Define types for better clarity
@@ -19,7 +19,7 @@
 
   let { data } = $props<{ data: PageData & { recentUploads?: UploadEntry[] } }>();
 
-  const caseId = $page.url.searchParams.get('caseId') || ''; // Access value using $page
+  const caseId = page.url.searchParams.get('caseId') || ''; // Access value using page (reactive state in Svelte 5)
 
   // Use $state for reactive variables
   let recentUploads = $state<UploadEntry[]>(data.recentUploads ?? []);
