@@ -922,3 +922,8 @@ libtorch/
 sveltekit-frontend/svelte-check-errors.json
 sveltekit-frontend/svelte-check-errors.json
 sveltekit-frontend/svelte-check-errors.json
+sveltekit-frontend/build-debug/Debug/WardenNet.lib
+sveltekit-frontend/build-debug/CMakeFiles/4.0.0/CompilerIdCUDA/CompilerIdCUDA.lib
+sveltekit-frontend/build-debug/Debug/WardenNet.exp
+sveltekit-frontend/build-debug/
+sveltekit-frontend/build/

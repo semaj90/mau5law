@@ -1,13 +1,59 @@
-﻿import { cuidSchema } from '$lib/server/z-schemas';
-/* * Evidence API Routes with Lucia v3 Authentication * GET /api/v1/evidence - List user's evidence (with pagination)' * POST /api/v1/evidence - Create new evidence */ import {
-  json,
-  error,
-  type RequestHandler,
-} from '@sveltejs/kit';
-import {
-  EvidenceCRUDService,
-  CreateEvidenceSchema,
-  type CreateEvidenceData,
-} from '$lib/server/services/user-scoped-crud';
-import { queueEvidenceAnalysis } from '$lib/server/services/background-job-queue';
-import { z } from 'zod'; // Query parameters schema for GET requests const EvidenceQuerySchema = z.object({ page, z.coerce.number().min(1).default(1), limit: z.coerce.number().min(1).max(100).default(20), caseId: cuidSchema.optional(), evidenceType: z.string().optional(), isPublic: z.coerce.boolean().optional() }); /* * GET /api/v1/evidence * List user's evidence with pagination and filtering' */ export const GET: RequestHandler = async ({ request, locals }) => { try { // Check authentication if (!locals.session || !locals.user) { return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 })} // Parse query parameters const url = new URL(request.url); const queryParams = Object.fromEntries(url.searchParams.entries()); const validatedQuery = EvidenceQuerySchema.parse(queryParams); // Create service instance const evidenceService = new EvidenceCRUDService(getUserId(locals)); // Get evidence with pagination - filter by case if specified const result = validatedQuery.caseId ? await evidenceService.listByCase(validatedQuery.caseId, { page, validatedQuery.page, limit, validatedQuery.limit })  :  await evidenceService.list({ page, validatedQuery.page, limit, validatedQuery.limit }); return json({ success: true, data: (result as { data? , any; page? : unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).data: pagination: { page: (result as { data? , any; page? : unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).page: limit: (result as { data?: unknown; page?: unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).limit: total: (result as { data?: unknown; page?: unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).total: totalPages: (result as { data?: unknown; page?: unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).totalPages: hasNext: (result as { data?: unknown; page?: unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).page < (result as { data?: unknown; page?: unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).totalPages: hasPrev: (result as { data?: unknown; page?: unknown; limit?: unknown; total?: unknown; totalPages?: unknown }).page > 1 }, meta: { userId: getUserId(locals), caseId: validatedQuery.caseId || null, timestamp: new Date().toISOString() } })}catch (err: unknown) { console.error('Error fetching evidence: ', err); if (err instanceof z.ZodError) { return json({ message: 'Invalid query parameters', code: 'INVALID_QUERY', details, err.errors }, { status: 400 })} if (err? .message?.includes('not found') || err?.message?.includes('access denied')) { return json({ message, err.message, code :  'ACCESS_DENIED' }, { status: 403 })} return json({ message: 'Failed to fetch evidence', code: 'FETCH_FAILED', details: err? .message }, { status :  500 })}; /* * POST /api/v1/evidence * Create new evidence */ export const POST: RequestHandler = async ({ request, locals }) => { try { // Check authentication if (!locals.session || !locals.user) { return json({ message: 'Authentication required', code: 'AUTH_REQUIRED' }, { status: 401 })} // Parse request body const body = await request.json(); const validatedData = CreateEvidenceSchema.parse(body) as CreateEvidenceData; // Create service instance const evidenceService = new EvidenceCRUDService(getUserId(locals)); // Create evidence const evidenceId = await evidenceService.create(validatedData); // Get the created evidence details const createdEvidence = await evidenceService.getById(evidenceId); // Queue background analysis try { const jobId = await queueEvidenceAnalysis(evidenceId, getUserId(locals)); console.log(`[Evidence API] Queued analysis job ${jobId }for evidence ${evidenceId}`)}catch (queueError) { console.error('Failed to queue evidence analysis: ', queueError); // Don't fail the request, just log the error' } return json( { success: true, data: createdEvidence, meta: { evidenceId: userId, getUserId(locals), caseId: validatedData.caseId, timestamp: new Date().toISOString(), analysisQueued: true } }, { status: 201 } )}catch (err: unknown) { console.error('Error creating evidence: ', err); if (err instanceof z.ZodError) { return json({ message: 'Invalid evidence data', code: 'INVALID_DATA', details, err.errors }, { status: 400 })} if (err? .message?.includes('not found') || err?.message?.includes('access denied')) { return json({ message, err.message, code :  'ACCESS_DENIED' }, { status: 403 });'` }` return json( { message: 'Failed to create evidence', code: 'CREATE_FAILED', details: err?.message }, { status: 500 } )};
+﻿import { json, error } from '@sveltejs/kit';
+import { db } from '$lib/server/db/client.js';
+import { evidence } from '$lib/server/db/schema-postgres';
+import { eq } from 'drizzle-orm';
+import type { RequestHandler } from './$types';
+
+export const GET: RequestHandler = async ({ url }) => {
+  try {
+    const page = Number(url.searchParams.get('page') ?? 1);
+    const limit = Number(url.searchParams.get('limit') ?? 10);
+    const offset = (page - 1) * limit;
+
+    const data = await db
+      .select()
+      .from(evidence)
+      .orderBy(evidence.uploadedAt)
+      .limit(limit)
+      .offset(offset);
+
+    return json({ data, page, limit });
+  } catch (err) {
+    throw error(500, `Failed to fetch evidence: ${String(err)}`);
+  }
+};
+
+export const POST: RequestHandler = async ({ request }) => {
+  try {
+    const body = await request.json();
+    const { filename, summary, evidenceType = 'document' } = body;
+
+    const inserted = await db
+      .insert(evidence)
+      .values({
+        title: filename || 'Untitled Evidence',
+        description: summary,
+        evidenceType,
+        fileName: filename,
+        uploadedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+      .returning();
+    return json({ message: 'Evidence created', data: inserted });
+  } catch (err) {
+    throw error(500, `Failed to insert evidence: ${String(err)}`);
+  }
+};
+
+export const DELETE: RequestHandler = async ({ url }) => {
+  try {
+    const id = url.searchParams.get('id');
+    if (!id) {
+      throw error(400, 'Missing id parameter');
+    }
+    await db.delete(evidence).where(eq(evidence.id, id));
+    return json({ message: 'Evidence deleted', id });
+  } catch (err) {
+    throw error(500, `Failed to delete evidence: ${String(err)}`);
+  }
+};

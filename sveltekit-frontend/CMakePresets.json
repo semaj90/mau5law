@@ -1,0 +1,66 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 20
+    },
+    "configurePresets": [
+        {
+            "name": "windows-cuda",
+            "displayName": "Windows CUDA (RTX 3060 Ti)",
+            "description": "Optimized preset for Windows + RTX 3060 Ti + Intel 10th Gen + vcpkg toolchain",
+            "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x64-windows",
+                "CMAKE_CUDA_ARCHITECTURES": "86",
+                "CMAKE_CUDA_FLAGS": "-use_fast_math -lineinfo",
+                "CMAKE_CXX_FLAGS_RELEASE": "/O2 /arch:AVX2"
+            }
+        },
+        {
+            "name": "windows-debug",
+            "displayName": "Windows Debug (CPU only)",
+            "description": "Debug preset for development on CPU builds",
+            "generator": "Visual Studio 17 2022",
+            "architecture": "x64",
+            "binaryDir": "${sourceDir}/build-debug",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x64-windows"
+            }
+        },
+        {
+            "name": "wsl2-cuda",
+            "displayName": "WSL2 CUDA (Ubuntu)",
+            "description": "Cross-compile using NVIDIA CUDA under WSL2 Ubuntu",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build-wsl",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "CMAKE_TOOLCHAIN_FILE": "/usr/local/vcpkg/scripts/buildsystems/vcpkg.cmake",
+                "VCPKG_TARGET_TRIPLET": "x64-linux",
+                "CMAKE_CUDA_ARCHITECTURES": "86",
+                "CMAKE_CUDA_FLAGS": "-use_fast_math -lineinfo"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "release-build",
+            "configurePreset": "windows-cuda",
+            "description": "Build preset optimized for GPU Release builds",
+            "configuration": "Release"
+        },
+        {
+            "name": "debug-build",
+            "configurePreset": "windows-debug",
+            "description": "Debug build preset",
+            "configuration": "Debug"
+        }
+    ]
+}

@@ -34,5 +34,12 @@
       "source.organizeImports": "explicit"
     }
   },
-  "cmake.sourceDirectory": "C:/Users/james/Videos/deeds-web-app/sveltekit-frontend/node_modules/bare-os"
+  "cmake.sourceDirectory": "${workspaceFolder}",
+  "cmake.configureSettings": {
+    "CMAKE_TOOLCHAIN_FILE": "C:/vcpkg/scripts/buildsystems/vcpkg.cmake",
+    "VCPKG_TARGET_TRIPLET": "x64-windows"
+  },
+  "cmake.generator": "Visual Studio 17 2022",
+  "cmake.buildDirectory": "${workspaceFolder}/build",
+  "cmake.buildType": "Release"
 }

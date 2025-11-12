@@ -1,0 +1,226 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # PostgreSQL 17 + pgvector (Vector Database)
+  # ============================================================================
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: legal-ai-postgres
+    environment:
+      POSTGRES_DB: legal_ai_db
+      POSTGRES_USER: legal_admin
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    command: postgres -c shared_preload_libraries=vector
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U legal_admin -d legal_ai_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+  # ============================================================================
+  # Redis Cache
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: legal-ai-redis
+    command: redis-server --requirepass redis --maxmemory 2gb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+  # ============================================================================
+  # MinIO Object Storage
+  # ============================================================================
+  minio:
+    image: minio/minio:latest
+    container_name: legal-ai-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+  # ============================================================================
+  # Qdrant Vector Database
+  # ============================================================================
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: legal-ai-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+  # ============================================================================
+  # Ollama AI Service
+  # ============================================================================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: legal-ai-ollama
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+  # ============================================================================
+  # TensorRT-LLM Service
+  # ============================================================================
+  tensorrt-llm:
+    image: nvcr.io/nvidia/tensorrt-llm/release:latest
+    container_name: legal-ai-tensorrt
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    ports:
+      - "8000:8000"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+  # ============================================================================
+  # FastAPI RAG Backend Service (Port 8005)
+  # ============================================================================
+  fastapi-rag:
+    build:
+      context: .
+      dockerfile: Dockerfile.fastapi
+    container_name: legal-ai-fastapi
+    environment:
+      # Database
+      DATABASE_URL: postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      # Redis
+      REDIS_URL: redis://:redis@redis:6379/0
+      # MinIO
+      MINIO_URL: http://minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      # Qdrant
+      QDRANT_URL: http://qdrant:6333
+      # Ollama
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_EMBED_ENDPOINT: http://ollama:11434/api/embed
+      # TensorRT-LLM
+      TRT_LLM_ENDPOINT: http://tensorrt-llm:8000/api/infer
+      # SIMD/Performance
+      USE_SIMDJSON_NODE: "1"
+      USE_JSON_FAST: "1"
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./fastapi-app:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+      tensorrt-llm:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+  # ============================================================================
+  # RabbitMQ Message Queue
+  # ============================================================================
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: legal-ai-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - legal-ai-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  qdrant_data:
+  ollama_data:
+  rabbitmq_data:
+
+networks:
+  legal-ai-network:
+    driver: bridge
