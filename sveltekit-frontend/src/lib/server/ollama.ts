@@ -1,16 +1,14 @@
-﻿import { OLLAMA_URL, EMBEDDING_MODEL, LLM_MODEL } from '$env/static/private';
-
-export class OllamaService {
+﻿export class OllamaService {
   private get baseUrl() {
-    return OLLAMA_URL || 'http://localhost:11434';
+    return process.env.OLLAMA_URL || 'http://localhost:11434';
   }
 
   private get embeddingModel() {
-    return EMBEDDING_MODEL || 'embeddinggemma:latest';
+    return process.env.EMBEDDING_MODEL || 'embeddinggemma:latest';
   }
 
   private get llmModel() {
-    return LLM_MODEL || 'gemma3-legal:latest';
+    return process.env.LLM_MODEL || 'gemma3-legal:latest';
   }
 
   async generateEmbedding(text: string) {

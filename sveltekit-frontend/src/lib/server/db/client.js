@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import { drizzle } from 'drizzle-orm/node-postgres';
 
-import * as schema from './schema-postgres.js';
+import * as schema from './schema-postgres.ts';
 
 const DEFAULT_DATABASE_URL = 'postgresql://legal_admin:123456@localhost:5432/legal_ai_db';
 
@@ -84,7 +84,7 @@ export const pools = {
   },
 };
 
-export * from './schema-postgres.js';
+export * from './schema-postgres.ts';
 
 export default {
   getDb: createRuntimeConnection,
