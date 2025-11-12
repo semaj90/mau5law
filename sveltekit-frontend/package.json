@@ -491,9 +491,7 @@
     "asbuild": "npm run asbuild:debug && npm run asbuild:release",
     "qa:nightly": "node scripts/phase53-report.mjs",
     "analyze:build": "ts-node scripts/analyze-build-logs.ts",
-    "check:all": "svelte-check --output json > .svelte-check-output.json && npm run analyze:build",
-    "analyze:build": "ts-node scripts/analyze-build-logs.ts",
-    "check:all": "svelte-check --output json > .svelte-check-output.json && npm run analyze:build"
+    "check:all:json": "svelte-check --output json > .svelte-check-output.json && npm run analyze:build"
   },
   "devDependencies": {
     "@babel/core": "7.28.5",

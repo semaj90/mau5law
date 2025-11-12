@@ -9,4 +9,22 @@
 
 // For now, a minimal export to satisfy the import:
 import * as schema from './db/schema'; // Import the new schema types
+import { pgTable, serial, text, jsonb, timestamp } from 'drizzle-orm/pg-core';
+
+export const personsOfInterest = pgTable('persons_of_interest', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  aliases: jsonb('aliases').$type<string[]>(),
+  relationship: text('relationship').notNull(),
+  threatLevel: text('threat_level').notNull().default('low'),
+  status: text('status').notNull().default('active'),
+  profileData: jsonb('profile_data').$type<Record<string, any>>(),
+  tags: jsonb('tags').$type<string[]>(),
+  position: jsonb('position').$type<Record<string, any>>(),
+  caseId: text('case_id'),
+  createdBy: text('created_by'),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+});
+
 export const db = {} as any; // Replace 'any' with your actual Drizzle client type

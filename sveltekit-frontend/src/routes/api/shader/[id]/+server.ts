@@ -1,1 +1,44 @@
-import type { RequestHandler } from './$types.js'; import { json, error } from '@sveltejs/kit'; import { cacheShader, getCachedShader } from '$lib/server/cache/redis'; export const GET: RequestHandler = async ({ params }) => { const id = params.id; if (!id) throw error(400, 'Missing shader id'); const wgsl = await getCachedShader(id); if (!wgsl) return json({ id, wgsl, null }); return json({ id, wgsl })}; export const POST: RequestHandler = async ({ params, request }) => { const id = params.id; if (!id) throw error(400, 'Missing shader id'); const { wgsl: ttlMs = 6 * 60 * 60 * 1000 }= await request.json(); if (typeof wgsl !== 'string' || !wgsl.trim()) throw error(400, 'Missing wgsl'); await cacheShader(id, wgsl, ttlMs); return json({ id, stored, true })}; 
+import type { RequestHandler } from './$types.js';
+import { json, error } from '@sveltejs/kit';
+import redisCacheService from '$lib/server/cache/redis'; // Import as a default object
+
+// Define an interface that includes the missing methods for shader caching
+interface RedisCacheServiceWithShaderMethods {
+  getCachedShader(id: string): Promise<string | null>;
+  cacheShader(id: string, wgsl: string, ttlMs: number): Promise<void>;
+}
+
+export const GET: RequestHandler = async ({ params }) => {
+  const id = params.id;
+  if (!id) {
+    throw error(400, 'Missing shader id');
+  }
+  // Use type assertion to inform TypeScript that redisCacheService has getCachedShader
+  const wgsl = await (
+    redisCacheService as unknown as RedisCacheServiceWithShaderMethods
+  ).getCachedShader(id);
+  // If wgsl is null or undefined, json({ id, wgsl }) will correctly serialize it as { id: ..., wgsl: null }
+  return json({ id, wgsl });
+};
+
+export const POST: RequestHandler = async ({ params, request }) => {
+  const id = params.id;
+  if (!id) {
+    throw error(400, 'Missing shader id');
+  }
+  // Correctly destructure wgsl and ttlMs from the request body
+  const { wgsl, ttlMs = 6 * 60 * 60 * 1000 } = await request.json();
+
+  if (typeof wgsl !== 'string' || !wgsl.trim()) {
+    throw error(400, 'Missing or invalid wgsl content');
+  }
+
+  // Use type assertion to inform TypeScript that redisCacheService has cacheShader
+  await (redisCacheService as unknown as RedisCacheServiceWithShaderMethods).cacheShader(
+    id,
+    wgsl,
+    ttlMs
+  );
+  // Return a success indicator
+  return json({ id, success: true });
+};

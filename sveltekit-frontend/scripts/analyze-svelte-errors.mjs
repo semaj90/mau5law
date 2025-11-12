@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global console, process */
 /**
  * Svelte-Check Error Analyzer
  * Analyzes 100k+ svelte-check errors and generates actionable insights
@@ -40,67 +41,53 @@ function categorizeError(code, message) {
 }
 
 function parseErrorLine(line) {
-  // Parse svelte-check machine output format
-  // Format: /path/to/file:line:col: severity: message (code)
-  const match = line.match(/^(.+?):(\d+):(\d+):\s*(error|warning):\s*(.+?)\s*\(([a-z0-9-]+)\)$/i);
-  
+  // Parse svelte-check machine output format: timestamp SEVERITY "file" line:col "message"
+  // Example: 1762889081326 ERROR "src\lib\server\db\schema-postgres.ts" 836:14 "Cannot redeclare block-scoped variable 'documentChunks'."
+  const match = line.match(/^(\d+)\s+(ERROR|WARNING)\s+"([^"]+)"\s+(\d+):(\d+)\s+"([^"]+)"$/);
+
   if (match) {
-    const [, file, line, col, severity, message, code] = match;
+    const [, _timestamp, severity, file, line, col, message] = match; // Mark timestamp as unused
     return {
-      file: path.relative(process.cwd(), file),
+      file: path.relative(process.cwd(), file.replace(/\\/g, '/')), // Normalize path separators
       line: parseInt(line),
       col: parseInt(col),
-      severity,
+      severity: severity.toLowerCase(),
       message,
-      code,
+      code: 'unknown', // svelte-check machine format doesn't include error codes
     };
   }
-  
-  // Alternative format
-  const simpleMatch = line.match(/^(.+?):(\d+):(\d+):\s*(error|warning):\s*(.+)$/i);
-  if (simpleMatch) {
-    const [, file, line, col, severity, message] = simpleMatch;
-    return {
-      file: path.relative(process.cwd(), file),
-      line: parseInt(line),
-      col: parseInt(col),
-      severity,
-      message,
-      code: "unknown",
-    };
-  }
-  
+
   return null;
 }
 
 async function runSvelteCheck() {
   return new Promise((resolve, reject) => {
     const errors = [];
-    const proc = spawn("npx", ["svelte-check", "--output", "machine", "--threshold", "error"], {
-      cwd: path.resolve(__dirname, ".."),
+    const proc = spawn('npx', ['svelte-check', '--output', 'machine', '--threshold', 'error'], {
+      cwd: path.resolve(__dirname, '..'),
       shell: true,
     });
 
-    let buffer = "";
-    
-    proc.stdout.on("data", (data) => {
+    let buffer = '';
+
+    proc.stdout.on('data', (data) => {
       buffer += data.toString();
-      const lines = buffer.split("\n");
+      const lines = buffer.split('\n');
       buffer = lines.pop(); // Keep incomplete line in buffer
-      
+
       lines.forEach((line) => {
         if (line.trim()) {
           const error = parseErrorLine(line.trim());
           if (error) {
             errors.push(error);
-            
+
             // Update stats
-            if (error.severity === "error") {
+            if (error.severity === 'error') {
               errorStats.totalErrors++;
             } else {
               errorStats.totalWarnings++;
             }
-            
+
             // By code
             if (!errorStats.byCode[error.code]) {
               errorStats.byCode[error.code] = {
@@ -117,17 +104,17 @@ async function runSvelteCheck() {
                 message: error.message,
               });
             }
-            
+
             // By file
             if (!errorStats.byFile[error.file]) {
               errorStats.byFile[error.file] = { errors: 0, warnings: 0 };
             }
-            if (error.severity === "error") {
+            if (error.severity === 'error') {
               errorStats.byFile[error.file].errors++;
             } else {
               errorStats.byFile[error.file].warnings++;
             }
-            
+
             // By category
             const category = categorizeError(error.code, error.message);
             if (!errorStats.byCategory[category]) {
@@ -137,28 +124,28 @@ async function runSvelteCheck() {
           }
         }
       });
-      
+
       // Progress
       if (errors.length % 1000 === 0 && errors.length > 0) {
         process.stdout.write(`\r   Processed ${errors.length} errors...`);
       }
     });
 
-    proc.stderr.on("data", (data) => {
+    proc.stderr.on('data', (_data) => { // Mark data as unused
       // svelte-check writes to stderr, that's normal
     });
 
-    proc.on("close", (code) => {
+    proc.on('close', (_code) => { // Mark code as unused
       console.log(`\n✅ svelte-check analysis complete`);
       resolve(errors);
     });
 
-    proc.on("error", reject);
+    proc.on('error', reject);
   });
 }
 
 // Run analysis
-const allErrors = await runSvelteCheck();
+await runSvelteCheck(); // Removed 'const allErrors =' as it was unused
 
 // Calculate top errors
 errorStats.topErrors = Object.entries(errorStats.byCode)
@@ -170,39 +157,40 @@ errorStats.topErrors = Object.entries(errorStats.byCode)
 const patterns = [];
 
 // Pattern 1: Event directive deprecation
-const eventDirectiveErrors = errorStats.topErrors.filter(e => 
-  e.code.includes("event") || 
-  (e.examples[0]?.message.includes("on:") && e.examples[0]?.message.includes("deprecated"))
+const eventDirectiveErrors = errorStats.topErrors.filter(
+  (e) =>
+    e.code.includes('event') ||
+    (e.examples[0]?.message.includes('on:') && e.examples[0]?.message.includes('deprecated'))
 );
 if (eventDirectiveErrors.length > 0) {
   patterns.push({
-    name: "Event Directive Deprecation (on:click → onclick)",
+    name: 'Event Directive Deprecation (on:click → onclick)',
     impact: eventDirectiveErrors.reduce((sum, e) => sum + e.count, 0),
-    fix: "Replace on:event with onevent attributes",
+    fix: 'Replace on:event with onevent attributes',
     automated: true,
   });
 }
 
 // Pattern 2: TypeScript errors
-const tsErrors = errorStats.topErrors.filter(e => e.code.startsWith("ts"));
+const tsErrors = errorStats.topErrors.filter((e) => e.code.startsWith('ts'));
 if (tsErrors.length > 0) {
   patterns.push({
-    name: "TypeScript Errors",
+    name: 'TypeScript Errors',
     impact: tsErrors.reduce((sum, e) => sum + e.count, 0),
-    fix: "Type annotation and import fixes",
+    fix: 'Type annotation and import fixes',
     automated: false,
   });
 }
 
 // Pattern 3: Component issues
 const componentErrors = Object.entries(errorStats.byCategory)
-  .filter(([cat]) => cat === "Components")
+  .filter(([cat]) => cat === 'Components')
   .reduce((sum, [, count]) => sum + count, 0);
 if (componentErrors > 0) {
   patterns.push({
-    name: "Component Import/Usage Issues",
+    name: 'Component Import/Usage Issues',
     impact: componentErrors,
-    fix: "Review component imports and props",
+    fix: 'Review component imports and props',
     automated: false,
   });
 }
@@ -253,27 +241,29 @@ fs.writeFileSync(
 );
 
 // Print summary
-console.log("\n" + "=".repeat(70));
-console.log("📊 SVELTE-CHECK ERROR ANALYSIS");
-console.log("=".repeat(70));
+console.log('\n' + '='.repeat(70));
+console.log('📊 SVELTE-CHECK ERROR ANALYSIS');
+console.log('='.repeat(70));
 console.log(`🐛 Total Errors: ${errorStats.totalErrors.toLocaleString()}`);
 console.log(`⚠️  Total Warnings: ${errorStats.totalWarnings.toLocaleString()}`);
 console.log(`📝 Unique Error Codes: ${Object.keys(errorStats.byCode).length}`);
 console.log(`📁 Affected Files: ${Object.keys(errorStats.byFile).length}`);
-console.log("=".repeat(70));
+console.log('='.repeat(70));
 
-console.log("\n🔝 Top 10 Error Types:");
+console.log('\n🔝 Top 10 Error Types:');
 errorStats.topErrors.slice(0, 10).forEach((e, i) => {
-  console.log(`${(i + 1).toString().padStart(2)}. ${e.code.padEnd(30)} ${e.count.toLocaleString().padStart(8)} errors`);
+  console.log(
+    `${(i + 1).toString().padStart(2)}. ${e.code.padEnd(30)} ${e.count.toLocaleString().padStart(8)} errors`
+  );
 });
 
-console.log("\n📂 Top 5 Files with Most Errors:");
+console.log('\n📂 Top 5 Files with Most Errors:');
 topFiles.slice(0, 5).forEach((f, i) => {
-  console.log(`${(i + 1)}. ${f.file}`);
+  console.log(`${i + 1}. ${f.file}`);
   console.log(`   ${f.errors} errors, ${f.warnings} warnings`);
 });
 
-console.log("\n🏷️  Error Categories:");
+console.log('\n🏷️  Error Categories:');
 Object.entries(errorStats.byCategory)
   .sort((a, b) => b[1] - a[1])
   .slice(0, 10)
@@ -282,59 +272,58 @@ Object.entries(errorStats.byCategory)
   });
 
 if (patterns.length > 0) {
-  console.log("\n🎯 Detected Patterns (Fixable):");
+  console.log('\n🎯 Detected Patterns (Fixable):');
   patterns.forEach((p, i) => {
     console.log(`${i + 1}. ${p.name}`);
     console.log(`   Impact: ${p.impact.toLocaleString()} errors`);
     console.log(`   Fix: ${p.fix}`);
-    console.log(`   Automated: ${p.automated ? "✅ Yes" : "⚠️  Manual"}`);
+    console.log(`   Automated: ${p.automated ? '✅ Yes' : '⚠️  Manual'}`);
   });
 }
 
-console.log("\n📝 Reports Generated:");
+console.log('\n📝 Reports Generated:');
 console.log(`   ${path.relative(process.cwd(), OUTPUT_FILE)}`);
 console.log(`   ${path.relative(process.cwd(), TOP_ERRORS_FILE)}`);
 
-console.log("\n💡 Recommended Actions:");
+console.log('\n💡 Recommended Actions:');
 report.recommendations.forEach((rec, i) => {
   console.log(`${i + 1}. ${rec}`);
 });
 
-console.log("\n");
+console.log('\n');
 
 function generateRecommendations(stats) {
   const recs = [];
-  
+
   // Check for event directive errors
-  const eventErrors = stats.topErrors.find(e => 
-    e.code.includes("event") || 
-    e.examples[0]?.message.includes("on:")
+  const eventErrors = stats.topErrors.find(
+    (e) => e.code.includes('event') || e.examples[0]?.message.includes('on:')
   );
   if (eventErrors) {
-    recs.push("Run event directive migration: Replace on:event with onevent");
+    recs.push('Run event directive migration: Replace on:event with onevent');
   }
-  
+
   // Check for TypeScript errors
   const tsErrorCount = stats.topErrors
-    .filter(e => e.code.startsWith("ts"))
+    .filter((e) => e.code.startsWith('ts'))
     .reduce((sum, e) => sum + e.count, 0);
   if (tsErrorCount > 1000) {
     recs.push(`Fix ${tsErrorCount.toLocaleString()} TypeScript errors (high priority)`);
   }
-  
+
   // Check for component errors
-  if (stats.byCategory["Components"] > 500) {
-    recs.push("Review component import patterns and <svelte:component> usage");
+  if (stats.byCategory['Components'] > 500) {
+    recs.push('Review component import patterns and <svelte:component> usage');
   }
-  
+
   // Check for runes errors
-  if (stats.byCategory["Svelte 5 Runes"] > 100) {
-    recs.push("Migrate Svelte 4 patterns to Svelte 5 runes ($state, $derived, $effect)");
+  if (stats.byCategory['Svelte 5 Runes'] > 100) {
+    recs.push('Migrate Svelte 4 patterns to Svelte 5 runes ($state, $derived, $effect)');
   }
-  
-  recs.push("Run Phase 42 formatters: prettier + eslint");
-  recs.push("Create focused fix scripts for top 5 error types");
-  recs.push("Set up incremental fixing workflow (fix top errors first)");
-  
+
+  recs.push('Run Phase 42 formatters: prettier + eslint');
+  recs.push('Create focused fix scripts for top 5 error types');
+  recs.push('Set up incremental fixing workflow (fix top errors first)');
+
   return recs;
 }

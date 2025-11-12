@@ -1,5 +1,10 @@
-const fs = require('fs');
-const path = require('path');
+/* global console */
+import fs from 'fs';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 console.log('🚀 Starting advanced error cleanup for remaining ~91 errors...');
 
@@ -173,6 +178,14 @@ const advancedFixes = [
     search: /Type '.*' is missing the following properties/g,
     replace: '',
     description: 'Fix incomplete type annotations',
+  },
+  // Add fix for incorrect 'declare module, ...' syntax in .d.ts files
+  {
+    files: ['src/types/third-party.d.ts'],
+    search: /declare module, '/g,
+    replace: "declare module '",
+    description:
+      "Fix parsing error in .d.ts files (e.g., declare module, 'mod' -> declare module 'mod')",
   },
 ];
 

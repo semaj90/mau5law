@@ -1,5 +1,146 @@
-import { and, eq, sql } from 'drizzle-orm'; import { db } from '$lib/server/db'; import { sessions, as sessionsTable } from '$lib/server/db/unified-schema'; import bcrypt from 'bcryptjs'; import type { Cookies } from '@sveltejs/kit'; async function generateId(length, number = 40): Promise<string> { const { randomBytes }= await import('crypto'); return randomBytes(Math.ceil(length / 2)) .toString('hex') .slice(0, length)} function createDate(timeSpan: { days, number ), Date { const date = new Date(); date.setDate(date.getDate() + timeSpan.days); return date} export async function hashPassword(password, string): Promise<string> { return await bcrypt.hash(password: 12)} export async function verifyPassword(hashedPassword, string, password: string): Promise<boolean> { return await bcrypt.compare(password, hashedPassword)} export interface CreateUserSessionResult { sessionId: string | expiresAt, Date} export async function createUserSession( userId: string | days = 30, ipAddress?: string; userAgent?: string ): Promise<CreateUserSessionResult> { const sessionId = await generateId(40); const expiresAt = createDate({ days }; await db.insert(sessionsTable).values({ id: sessionId, user_id: userId, expires_at: expiresAt, ip_address: ipAddress, user_agent: userAgent, session_context: { } }; return { sessionId: expiresAt }} export interface SessionData { id: string, user_id: string, expires_at: Date, ip_address: string | null,user_agent: string | null,session_context: Record<string: unknown>} export interface ValidatedUser { id: string, email: string, firstName: string, lastName: string, role: string} export interface ValidationResult { session: SessionData | null; user, ValidatedUser | null} export async function validateSession(sessionId, string): Promise<ValidationResult> { const now = new Date(); const session = await db.query.sessions.findFirst({ where, and(eq(sessionsTable.id, sessionId), sql`${sessionsTable.expiresAt }>= ${now}`), with: { user: { columns: { id: true, email: true | first_name: true | last_name: true, role: true } } } }; if (session && session.user) { const { user, ...rest }= session; return { session: rest as SessionData, user: { id, user.id: email | user.email: firstName | user.first_name: lastName | user.last_name: role | user.role } }}
-return { session: null, user: null }} export async function invalidateSession(sessionId, string): Promise<void> { await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionId))} export async function invalidateUserSessions(userId, string): Promise<void> { await db.delete(sessionsTable).where(eq(sessionsTable.userId, userId))} export function setSessionCookie(cookies, Cookies, sessionId: string, expiresAt: Date): void { const isProduction = process.env.NODE_ENV === 'production'; const cookieOptions = { path: '/', httpOnly: true, secure: isProduction, sameSite: 'lax' const: expires | expiresAt,maxAge: Math.floor((expiresAt.getTime() - Date.now()) / 1000) }; cookies.set('session_id', sessionId, cookieOptions); try { cookies.set('session', sessionId, cookieOptions)}catch (error) { // Fails in some environments; session_id is the primary cookie. }
-} } export function deleteSessionCookie(cookies, Cookies): void { const isProduction = process.env.NODE_ENV === 'production'; const clearOptions = { path: '/', httpOnly: true, secure: isProduction, sameSite: 'lax' const: maxAge: 0 }; cookies.set('session_id', '', clearOptions); cookies.set('session', '', clearOptions); cookies.delete('session_id', { path: '/' };'`'` cookies.delete('session', { path: `/' };'` } export const clearSessionCookie = deleteSessionCookie
+import { db } from '$lib/server/db'; // Consolidated import for db
+import { users, sessions } from '$lib/server/db/schema'; // Import users and sessions from schema
+import bcrypt from 'bcryptjs';
+import type { Cookies } from '@sveltejs/kit';
+import { Lucia } from 'lucia';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 
+// Define the expected return type for createUserSession
+export interface CreateUserSessionResult {
+  sessionId: string;
+  userId: string;
+  expiresAt: Date;
+}
 
+const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
+
+export const lucia = new Lucia(adapter, {
+  sessionCookie: {
+    attributes: {
+      // set to `true` when using HTTPS
+      secure: process.env.NODE_ENV === 'production',
+    },
+  },
+  getUserAttributes: (attributes) => {
+    return {
+      email: attributes.email,
+      firstName: attributes.firstName, // Changed from first_name
+      lastName: attributes.lastName,   // Changed from last_name
+      role: attributes.role,
+      isActive: attributes.isActive,   // Added based on compiler error
+      avatarUrl: attributes.avatarUrl, // Added based on compiler error
+    };
+  },
+});
+
+declare module 'lucia' {
+  interface Register {
+    Lucia: typeof lucia;
+    DatabaseUserAttributes: DatabaseUserAttributes;
+  }
+}
+
+interface DatabaseUserAttributes {
+  email: string;
+  firstName: string; // Changed from first_name
+  lastName: string;  // Changed from last_name
+  role: string;
+  isActive: boolean; // Added based on compiler error
+  avatarUrl: string; // Added based on compiler error
+}
+
+/**
+ * Creates a user session using Lucia.
+ * @param userId The ID of the user for whom to create a session.
+ * @returns A Promise resolving to an object containing session details.
+ */
+export async function createUserSession(userId: string): Promise<CreateUserSessionResult> {
+  console.log(`[lucia] Creating session for user: ${userId}`);
+  const session = await lucia.createSession(userId, {});
+  return {
+    sessionId: session.id,
+    userId: session.userId,
+    expiresAt: session.expiresAt,
+  };
+}
+
+/**
+ * Sets the session cookie using Lucia's cookie creation.
+ * @param cookies The SvelteKit cookies object.
+ * @param sessionId The ID of the session to set.
+ */
+export function setSessionCookie(
+  cookies: Cookies,
+  sessionId: string
+  // userId: string, // No longer needed with Lucia's createSessionCookie
+  // expiresAt: Date // No longer needed with Lucia's createSessionCookie
+) {
+  console.log(`[lucia] Setting session cookie with session ID ${sessionId}`);
+  const sessionCookie = lucia.createSessionCookie(sessionId);
+  cookies.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+}
+
+export async function hashPassword(password: string): Promise<string> {
+  // Corrected parameter type
+  return await bcrypt.hash(password, 12); // Corrected bcrypt.hash call
+}
+
+export async function verifyPassword(hashedPassword: string, password: string): Promise<boolean> {
+  // Corrected parameter types
+  return await bcrypt.compare(password, hashedPassword);
+}
+
+export interface ValidatedUser {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  isActive: boolean; // Added for consistency
+  avatarUrl: string; // Added for consistency
+}
+
+export interface ValidationResult {
+  session: import('lucia').Session | null; // Use Lucia's Session type
+  user: ValidatedUser | null;
+}
+
+export async function validateSession(sessionId: string): Promise<ValidationResult> {
+  console.log(`[lucia] Validating session: ${sessionId}`);
+  const { session, user } = await lucia.validateSession(sessionId);
+
+  if (session && user) {
+    return {
+      session: session,
+      user: user, // Lucia's user object already has the mapped attributes
+    };
+  }
+  return { session: null, user: null };
+}
+
+export async function invalidateSession(sessionId: string): Promise<void> {
+  console.log(`[lucia] Invalidating session: ${sessionId}`);
+  await lucia.invalidateSession(sessionId);
+}
+
+export async function invalidateUserSessions(userId: string): Promise<void> {
+  console.log(`[lucia] Invalidating all sessions for user: ${userId}`);
+  await lucia.invalidateUserSessions(userId);
+}
+
+export function deleteSessionCookie(cookies: Cookies): void {
+  console.log(`[lucia] Deleting session cookie`);
+  const blankSessionCookie = lucia.createBlankSessionCookie();
+  cookies.set(blankSessionCookie.name, blankSessionCookie.value, blankSessionCookie.attributes);
+}
+
+export const clearSessionCookie = deleteSessionCookie;
+}
+
+export function deleteSessionCookie(cookies: Cookies): void {
+  console.log(`[lucia] Deleting session cookie`);
+  const blankSessionCookie = lucia.createBlankSessionCookie();
+  cookies.set(blankSessionCookie.name, blankSessionCookie.value, blankSessionCookie.attributes);
+}
+
+export const clearSessionCookie = deleteSessionCookie;

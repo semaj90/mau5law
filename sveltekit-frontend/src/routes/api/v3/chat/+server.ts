@@ -1,9 +1,16 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import ollamaChatStream from '$lib/services/ollamaChatStream'; // Changed to default import
-import * as vectorDBService from '$lib/server/services/vectorDBService'; // Changed to namespace import
-import chatRateLimiter from '$lib/server/middleware/rate-limiter'; // Changed to default import
+import { ollamaChatStream } from '$lib/services/ollamaChatStream'; // Changed to named import
+import * as vectorDBService from '$lib/server/services/vectorDBService'; // Namespace import remains
+import { chatRateLimiter } from '$lib/server/middleware/rate-limiter'; // Changed to named import
 import { createHash } from 'node:crypto';
 import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import centralized Ollama endpoint helper
+import { logger } from '$lib/server/logger'; // Changed to named import
+
+// Define an interface for the expected methods from vectorDBService
+interface VectorDBServiceWithChatMethods {
+  initializeChatEmbeddingsTable(): Promise<void>;
+  searchChatHistory(query: string, limit: number, threshold: number): Promise<VectorSearchResult[]>;
+}
 
 // Initialize database on startup (attempt to create embeddings table once)
 let chatDbInitialized: boolean = false;
@@ -31,7 +38,10 @@ function generateRequestId(): string {
 }
 
 // Rate limiting wrapper
-async function withRateLimit(request: Request, handler: () => Promise<Response>): Promise<Response> {
+async function withRateLimit(
+  request: Request,
+  handler: () => Promise<Response>
+): Promise<Response> {
   const result = chatRateLimiter.check(request) as RateLimitResult;
   if (!result.allowed) {
     const retryAfter = Math.ceil((result.resetTime - Date.now()) / 1000);
@@ -39,15 +49,15 @@ async function withRateLimit(request: Request, handler: () => Promise<Response>)
       {
         success: false,
         error: 'Too many requests. Please wait before sending another message.',
-        retryAfter: new Date(result.resetTime).toISOString()
+        retryAfter: new Date(result.resetTime).toISOString(),
       },
       {
         status: 429,
         headers: {
           'Retry-After': retryAfter.toString(),
           'X-RateLimit-Remaining': '0',
-          'X-RateLimit-Reset': result.resetTime.toString()
-        }
+          'X-RateLimit-Reset': result.resetTime.toString(),
+        },
       }
     );
   }
@@ -68,7 +78,9 @@ interface HealthCheckResults {
 async function performHealthChecks(): Promise<HealthCheckResults> {
   const results: HealthCheckResults = { ollama: false, database: false };
   try {
-    const ollamaResponse = await fetch(getOllamaEndpoint('api/version'), { signal: AbortSignal.timeout(3000) });
+    const ollamaResponse = await fetch(getOllamaEndpoint('api/version'), {
+      signal: AbortSignal.timeout(3000),
+    });
     results.ollama = ollamaResponse.ok;
   } catch {
     results.ollama = false;
@@ -83,7 +95,8 @@ async function performHealthChecks(): Promise<HealthCheckResults> {
 }
 
 // Validate request input
-function validateChatRequest(body: EnhancedChatRequest): { valid: boolean; error?: string } { // Changed 'any' to 'EnhancedChatRequest'
+function validateChatRequest(body: EnhancedChatRequest): { valid: boolean; error?: string } {
+  // Changed 'any' to 'EnhancedChatRequest'
   if (body === null || typeof body !== 'object') {
     return { valid: false, error: 'Invalid request body' };
   }
@@ -143,7 +156,7 @@ export interface ChatResponse {
   response?: string;
   conversationId?: string;
   requestId?: string;
-  sources?: vectorDBService.VectorSearchResult[]; // Qualified with vectorDBService
+  sources?: VectorSearchResult[]; // Updated to use defined type
   metadata?: {
     model: string;
     temperature: number;
@@ -160,7 +173,7 @@ export interface ChatResponse {
 interface ChatStreamMetadata {
   type: 'sources' | 'recommendations' | 'text' | 'final';
   confidence?: number;
-  sources?: vectorDBService.VectorSearchResult[]; // Qualified with vectorDBService
+  sources?: VectorSearchResult[]; // Updated to use defined type
   recommendations?: Recommendation[];
   // Add other metadata properties as needed
 }
@@ -217,17 +230,20 @@ export const GET: RequestHandler = async ({ url, request }) => {
             vectorCache: true,
             rateLimiting: true,
             structuredLogging: true,
-            productionReady: true
+            productionReady: true,
           },
           health: {
             ollama: healthChecks.ollama,
             database: healthChecks.database,
-            overall: overallHealth
+            overall: overallHealth,
           },
           performance: { responseTimeMs: Date.now() - startTime },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         };
-        requestLogger.info(`Health check completed: ${status}`, 'chat-api-v3', { duration: Date.now() - startTime, health: healthChecks });
+        requestLogger.info(`Health check completed: ${status}`, 'chat-api-v3', {
+          duration: Date.now() - startTime,
+          health: healthChecks,
+        });
         return json(response, { status: overallHealth ? 200 : 503 });
       }
 
@@ -238,38 +254,82 @@ export const GET: RequestHandler = async ({ url, request }) => {
         if (!query || query.length < 3) {
           requestLogger.warn('Invalid search query', 'chat-api-v3', { query });
           return json(
-            { success: false, error: 'Query parameter "q" is required and must be at least 3 characters long', requestId },
+            {
+              success: false,
+              error: 'Query parameter "q" is required and must be at least 3 characters long',
+              requestId,
+            },
             { status: 400 }
           );
         }
 
         const results = await searchSimilarChats(query, limit, 0.6);
-        requestLogger.info(`Search completed: ${results.length} results`, 'chat-api-v3', { query, resultCount: results.length, duration: Date.now() - startTime });
+        requestLogger.info(`Search completed: ${results.length} results`, 'chat-api-v3', {
+          query,
+          resultCount: results.length,
+          duration: Date.now() - startTime,
+        });
         return json({
           success: true,
           requestId,
           query,
           results: { count: results.length, items: results },
           performance: { searchTimeMs: Date.now() - startTime },
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         });
       }
 
       requestLogger.warn('Invalid action requested', 'chat-api-v3', { action });
       return json(
-        { success: false, error: 'Invalid action. Use ?action=health or ?action=search', requestId, availableActions: ['health', 'search'] },
+        {
+          success: false,
+          error: 'Invalid action. Use ?action=health or ?action=search',
+          requestId,
+          availableActions: ['health', 'search'],
+        },
         { status: 400 }
       );
     } catch (error: Error | unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      requestLogger.error('GET request failed', 'chat-api-v3', error instanceof Error ? error : undefined, { duration: Date.now() - startTime, url: url.toString(), errorMessage });
+      requestLogger.error(
+        'GET request failed',
+        'chat-api-v3',
+        error instanceof Error ? error : undefined,
+        { duration: Date.now() - startTime, url: url.toString(), errorMessage }
+      );
       return json(
-        { success: false, status: 'error', error: 'Internal server error', requestId, timestamp: new Date().toISOString() },
+        {
+          success: false,
+          status: 'error',
+          error: 'Internal server error',
+          requestId,
+          timestamp: new Date().toISOString(),
+        },
         { status: 503 }
       );
     }
   });
 };
+
+// Add missing type definitions at the top
+interface VectorSearchResult {
+  id: string;
+  content: string;
+  score: number;
+  // Add other properties as needed based on your vectorDBService
+}
+
+interface Recommendation {
+  type: string;
+  content: string;
+  // Add other properties as needed
+}
+
+interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  resetTime: number;
+}
 
 // POST method for enhanced chat with vector embeddings
 export const POST: RequestHandler = async ({ request }) => {
@@ -288,7 +348,12 @@ export const POST: RequestHandler = async ({ request }) => {
         const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
         requestLogger.warn('Invalid JSON in request body', 'chat-api-v3', { errorMessage });
         return json(
-          { success: false, error: 'Invalid JSON in request body', requestId, timestamp: new Date().toISOString() },
+          {
+            success: false,
+            error: 'Invalid JSON in request body',
+            requestId,
+            timestamp: new Date().toISOString(),
+          },
           { status: 400 }
         );
       }
@@ -298,7 +363,12 @@ export const POST: RequestHandler = async ({ request }) => {
       if (!validation.valid) {
         requestLogger.warn('Request validation failed', 'chat-api-v3', { error: validation.error });
         return json(
-          { success: false, error: validation.error, requestId, timestamp: new Date().toISOString() },
+          {
+            success: false,
+            error: validation.error,
+            requestId,
+            timestamp: new Date().toISOString(),
+          },
           { status: 400 }
         );
       }
@@ -319,7 +389,8 @@ export const POST: RequestHandler = async ({ request }) => {
         thinkingType = 'analysis', // Default thinking type
       } = body;
 
-      const userMessage = message || (messages && messages.length > 0 ? messages[messages.length - 1].content : '');
+      const userMessage =
+        message || (messages && messages.length > 0 ? messages[messages.length - 1].content : '');
 
       // Use requestLogger directly since withConversation might not be available
       const conversationLogger = requestLogger.child({ conversationId });
@@ -329,7 +400,7 @@ export const POST: RequestHandler = async ({ request }) => {
         temperature,
         maxTokens,
         stream,
-        useVectorSearch
+        useVectorSearch,
       });
 
       // For streaming responses
@@ -339,7 +410,8 @@ export const POST: RequestHandler = async ({ request }) => {
           async start(controller) {
             try {
               conversationLogger.info('Starting streaming response', 'chat-api-v3');
-              const streamGenerator = ollamaChatStream()({
+              const streamGenerator = ollamaChatStream({
+                // Removed extra ()
                 message: userMessage,
                 model,
                 temperature,
@@ -351,21 +423,38 @@ export const POST: RequestHandler = async ({ request }) => {
                 useGrpoRecommendations,
                 enableThinkingCapture,
                 thinkingType: sanitizeThinkingType(thinkingType),
-                context: messages || []
+                context: messages || [],
               }) as AsyncGenerator<ChatStreamChunk>; // Cast to the defined chunk type
 
-              let sources: vectorDBService.VectorSearchResult[] = []; // Updated reference
+              let sources: VectorSearchResult[] = []; // Use the defined interface
               for await (const chunk of streamGenerator) {
                 if (chunk.metadata?.type === 'sources') {
                   sources = chunk.metadata.sources || [];
-                  const sourcesChunk = { type: 'sources', sources, requestId, timestamp: new Date().toISOString() };
+                  const sourcesChunk = {
+                    type: 'sources',
+                    sources,
+                    requestId,
+                    timestamp: new Date().toISOString(),
+                  };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(sourcesChunk)}\n\n`));
                 } else if (chunk.metadata?.type === 'recommendations') {
                   const recommendations = chunk.metadata.recommendations || [];
-                  const recommendationsChunk = { type: 'grpo-recommendations', recommendations: { count: recommendations.length, items: recommendations }, requestId, timestamp: new Date().toISOString() };
-                  controller.enqueue(encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`));
+                  const recommendationsChunk = {
+                    type: 'grpo-recommendations',
+                    recommendations: { count: recommendations.length, items: recommendations },
+                    requestId,
+                    timestamp: new Date().toISOString(),
+                  };
+                  controller.enqueue(
+                    encoder.encode(`data: ${JSON.stringify(recommendationsChunk)}\n\n`)
+                  );
                 } else if (chunk.metadata?.type === 'text') {
-                  const textChunk = { type: 'text', text: chunk.text, confidence: chunk.metadata.confidence || 0.9, requestId };
+                  const textChunk = {
+                    type: 'text',
+                    text: chunk.text,
+                    confidence: chunk.metadata.confidence || 0.9,
+                    requestId,
+                  };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(textChunk)}\n\n`));
                 } else if (chunk.metadata?.type === 'final') {
                   const finalChunk = {
@@ -374,14 +463,16 @@ export const POST: RequestHandler = async ({ request }) => {
                     requestId,
                     processingTimeMs: Date.now() - startTime,
                     vectorSearchUsed: useVectorSearch,
-                    sources
+                    sources,
                   };
                   controller.enqueue(encoder.encode(`data: ${JSON.stringify(finalChunk)}\n\n`));
                 }
               }
               controller.enqueue(encoder.encode('data: [DONE]\n\n'));
               controller.close();
-              conversationLogger.info('Streaming completed', 'chat-api-v3', { duration: Date.now() - startTime });
+              conversationLogger.info('Streaming completed', 'chat-api-v3', {
+                duration: Date.now() - startTime,
+              });
             } catch (error: Error | unknown) {
               const errorMessage = error instanceof Error ? error.message : String(error);
               conversationLogger.error(
@@ -390,32 +481,38 @@ export const POST: RequestHandler = async ({ request }) => {
                 error instanceof Error ? error : undefined,
                 { errorMessage }
               );
-              const errorChunk = { type: 'error', error: 'An error occurred while processing your request', requestId, timestamp: new Date().toISOString() };
+              const errorChunk = {
+                type: 'error',
+                error: 'An error occurred while processing your request',
+                requestId,
+                timestamp: new Date().toISOString(),
+              };
               controller.enqueue(encoder.encode(`data: ${JSON.stringify(errorChunk)}\n\n`));
               controller.close();
             }
-          }
+          },
         });
 
         return new Response(readable, {
           headers: {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
+            Connection: 'keep-alive',
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Headers': 'Content-Type',
-            'X-Request-ID': requestId
-          }
+            'X-Request-ID': requestId,
+          },
         });
       }
 
       // For non-streaming responses
       conversationLogger.info('Starting non-streaming response', 'chat-api-v3');
-      let fullResponse = '';
-      let sources: vectorDBService.VectorSearchResult[] = []; // Updated reference
-      let vectorSearchUsed = false; // Changed from $state<boolean>(false)
+      let fullResponse = ''; // Declared here
+      let sources: VectorSearchResult[] = []; // Use the defined interface
+      let vectorSearchUsed = false;
 
-      const streamGenerator = ollamaChatStream()({
+      const streamGenerator = ollamaChatStream({
+        // Removed extra ()
         message: userMessage,
         model,
         temperature,
@@ -427,7 +524,7 @@ export const POST: RequestHandler = async ({ request }) => {
         useGrpoRecommendations,
         enableThinkingCapture,
         thinkingType: sanitizeThinkingType(thinkingType),
-        context: messages || []
+        context: messages || [],
       }) as AsyncGenerator<ChatStreamChunk>; // Cast to the defined chunk type
 
       for await (const chunk of streamGenerator) {
@@ -444,7 +541,7 @@ export const POST: RequestHandler = async ({ request }) => {
         responseLength: fullResponse.length,
         vectorSearchUsed,
         sourcesFound: sources.length,
-        duration: processingTime
+        duration: processingTime,
       });
 
       const response: ChatResponse = {
@@ -460,96 +557,28 @@ export const POST: RequestHandler = async ({ request }) => {
           vectorSearchUsed,
           sourcesCount: sources.length,
           requestId,
-          timestamp: new Date().toISOString()
-        }
+          timestamp: new Date().toISOString(),
+        },
       };
       return json(response);
     } catch (error: Error | unknown) {
       const processingTime = Date.now() - startTime;
       const errorMessage = error instanceof Error ? error.message : String(error);
-      requestLogger.error('Chat request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
-        duration: processingTime,
-        errorMessage
-      });
-      return json(
+      requestLogger.error(
+        'Chat request failed',
+        'chat-api-v3',
+        error instanceof Error ? error : undefined,
         {
-          success: false,
-          error: 'Internal server error occurred while processing your request',
-          requestId,
-          metadata: { processingTimeMs: processingTime, timestamp: new Date().toISOString() }
-        },
-        { status: 500 }
-      );
-    }
-  });
-};
-      });
-
-      const response: ChatResponse = {
-        success: true,
-        response: fullResponse,
-        conversationId,
-        requestId,
-        sources: sources.length > 0 ? sources : undefined,
-        metadata: {
-          model,
-          temperature,
-          processingTimeMs: processingTime,
-          vectorSearchUsed,
-          sourcesCount: sources.length,
-          requestId,
-          timestamp: new Date().toISOString()
+          duration: processingTime,
+          errorMessage,
         }
-      };
-      return json(response);
-    } catch (error: Error | unknown) {
-      const processingTime = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      requestLogger.error('Chat request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
-        duration: processingTime,
-        errorMessage
-      });
+      );
       return json(
         {
           success: false,
           error: 'Internal server error occurred while processing your request',
           requestId,
-          metadata: { processingTimeMs: processingTime, timestamp: new Date().toISOString() }
-        },
-        { status: 500 }
-      );
-    }
-  });
-};
-          requestId,
-          timestamp: new Date().toISOString()
-        }
-      };
-      return json(response);
-    } catch (error: Error | unknown) {
-      const processingTime = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      requestLogger.error('Chat request failed', 'chat-api-v3', error instanceof Error ? error : undefined, {
-        duration: processingTime,
-        errorMessage
-      });
-      return json(
-        {
-          success: false,
-          error: 'Internal server error occurred while processing your request',
-          requestId,
-          metadata: { processingTimeMs: processingTime, timestamp: new Date().toISOString() }
-        },
-        { status: 500 }
-      );
-    }
-  });
-};
-        {
-          success: false,
-          error: 'Internal server error occurred while processing your request',
-          requestId,
-          metadata: { processingTimeMs: processingTime, timestamp: new Date().toISOString() }
+          metadata: { processingTimeMs: processingTime, timestamp: new Date().toISOString() },
         },
         { status: 500 }
       );
@@ -557,5 +586,30 @@ export const POST: RequestHandler = async ({ request }) => {
   });
 };
 
-
-
+// Add placeholder function for searchSimilarChats (implement properly if needed)
+async function searchSimilarChats(
+  query: string,
+  limit: number,
+  threshold: number
+): Promise<VectorSearchResult[]> {
+  try {
+    // Implement actual search logic using vectorDBService
+    // Use type assertion to inform TypeScript that vectorDBService has searchChatHistory
+    const results = await (
+      vectorDBService as unknown as VectorDBServiceWithChatMethods
+    ).searchChatHistory(query, limit, threshold);
+    return results;
+  } catch (error) {
+    logger.error(
+      'Error searching similar chats',
+      'chat-api-v3',
+      error instanceof Error ? error : undefined,
+      {
+        query,
+        limit,
+        threshold,
+      }
+    );
+    return [];
+  }
+}

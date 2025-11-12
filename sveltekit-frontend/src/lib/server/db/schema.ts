@@ -132,3 +132,15 @@ export interface Evidence {
 }
 
 export interface NewEvidence extends Omit<Evidence, 'id' | 'uploadedAt' | 'embedding'> {}
+
+// Define the sessions table for Lucia
+export const sessions = pgTable('sessions', {
+  id: text('id').primaryKey(), // Lucia expects 'text' and manages the ID generation
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id),
+  expiresAt: timestamp('expires_at', {
+    withTimezone: true,
+    mode: 'date',
+  }).notNull(),
+});

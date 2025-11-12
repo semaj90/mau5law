@@ -1,15 +1,63 @@
 <script lang="ts">
-  // Truncated file - replaced with stub
+  import { Search } from 'lucide-svelte';
+
+  interface Props {
+    placeholder?: string;
+    value?: string;
+    disabled?: boolean;
+    class?: string;
+    type?: string;
+    oninput?: (event: Event) => void;
+    onchange?: (event: Event) => void;
+    onfocus?: (event: Event) => void;
+    onblur?: (event: Event) => void;
+    [key: string]: any;
+  }
+
+  let {
+    placeholder = '',
+    value = '',
+    disabled = false,
+    class: className = '',
+    type = 'text',
+    oninput,
+    onchange,
+    onfocus,
+    onblur,
+    ...rest
+  }: Props = $props();
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
-</main>
+<div class="relative">
+  <input
+    {type}
+    {placeholder}
+    {value}
+    {disabled}
+    {oninput}
+    {onchange}
+    {onfocus}
+    {onblur}
+    class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 pl-10 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 {className}"
+    {...rest}
+  />
+  <Search class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+</div>
 
 <style>
-  .page-repair {
-    padding: 2rem;
-    font-family: sans-serif;
+  /* Minimal styles for the input component */
+  .relative {
+    position: relative;
+  }
+
+  input {
+    width: 100%;
+  }
+
+  input:focus {
+    outline: none;
   }
 </style>
+
+export default InputBits;
+export { InputBits as Input };

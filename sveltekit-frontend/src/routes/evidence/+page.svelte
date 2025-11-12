@@ -1,510 +1,509 @@
 <script lang="ts">
-	import SmartEvidenceRecommendations from '$lib/components/SmartEvidenceRecommendations.svelte';
-	import { Check, TriangleAlert as AlertTriangle, Loader, FileText, Sparkles, Upload } from 'lucide-svelte';
-	import { goto } from '$app/navigation';
+  import EvidenceCanvas from '$lib/ui/EvidenceCanvas.svelte'; // Corrected import path
+  import { TriangleAlert as AlertTriangle, Check, FileText, Loader, Sparkles, Upload, Zap } from 'lucide-svelte';
+  import { onMount } from 'svelte';
 
-	// Assume these types are defined elsewhere or add them
-	interface Recommendation { // Changed from type to interface to fix parsing error
-		id: string;
-		text: string;
-		// Add other properties as needed based on actual recommendation structure
-	}
-	type UploadResult = {
-		id: string;
-		hasEmbedding: boolean;
-		aiSummary: string;
-		evidenceType: string;
-		fileSize: number;
-		createdAt: string;
-		tags: string[];
-	};
-	type PageData = {
-		user: any | null; // Updated to use 'any' directly (removed 'User' type alias)
-		evidence: any[];
-		caseId: string | null;
-	};
+  // Page data from server
+  let { data }: { data: any } = $props();
+  let evidence = $derived(data?.evidence || []);
+  let caseId = $derived(data?.caseId || null);
 
-	// Page data from server
-	let { data }: { data: PageData } = $props();
-	let evidence = $derived(data?.evidence || []);
-	let caseId = $derived(data?.caseId || null);
+  // State management with Svelte 5 runes
+  let uploadFile = $state<File | null>(null);
+  let isUploading = $state(false);
+  let uploadProgress = $state(0);
+  let uploadResult = $state<any | null>(null);
+  let uploadError = $state<string | null>(null);
+  // Make selectedEvidenceId derived to react to changes in evidence
+  let selectedEvidenceId = $derived<string | null>(evidence && evidence.length > 0 ? evidence[0].id : null);
+  let recommendationsLoading = $state(false);
+  let recommendationsError = $state<string | null>(null);
+  let recommendations = $state<any[]>([]);
+  let aiTaggingActive = $state(false);
+  let taggedEvidenceIds = $state<string[]>([]);
 
-	// State management
-	let uploadFile = $state<File | null>(null);
-	let isUploading = $state(false);
-	let uploadProgress = $state(0);
-	let uploadResult = $state<UploadResult | null>(null);
-	let uploadError = $state<string | null>(null); // Changed type to string | null
-  let selectedEvidenceId = $state<string | null>(evidence && evidence.length > 0 ? evidence[0].id : null); // Changed type to string | null
-	let recommendationsLoading = $state(false);
-	let recommendationsError = $state<string | null>(null); // Changed type to string | null
-	let recommendations = $state<Recommendation[]>([]);
+  // Form data
+  let formData = $state({
+    title: '',
+    description: '',
+    evidenceType: 'document',
+    tags: '',
+    isAdmissible: true
+  });
 
-	// Form data
-	let formData = $state({
-		title: '',
-		description: '',
-		evidenceType: 'document',
-		tags: '',
-		isAdmissible: true
-	});
+  // Derived state
+  let canSubmit = $derived(uploadFile !== null && formData.title.length > 0 && !isUploading);
+  let fileSize = $derived(uploadFile ? formatFileSize(uploadFile.size) : null);
 
-	// Derived state
-	let canSubmit = $derived(uploadFile !== null && formData.title.length > 0 && !isUploading);
-	let fileSize = $derived(uploadFile ? formatFileSize(uploadFile.size) : null);
+  // Load evidence on mount
+  onMount(async () => {
+    if (evidence.length === 0) {
+      await loadEvidence();
+    }
+  });
 
-	function handleFileUpload(event: Event) {
-		const target = event.target as HTMLInputElement;
-		if (target.files && target.files.length > 0) {
-			uploadFile = target.files[0];
-			// Auto-populate title if empty
-			if (!formData.title) {
-				formData.title = target.files[0].name.replace(/\.[^/.]+$/, '');
-			}
-			// Auto-detect type
-			const mime = target.files[0].type;
-			if (mime.startsWith('image/')) formData.evidenceType = 'image';
-			else if (mime.startsWith('video/')) formData.evidenceType = 'video';
-			else if (mime.startsWith('audio/')) formData.evidenceType = 'audio';
-			else if (mime === 'application/pdf') formData.evidenceType = 'document';
+  async function loadEvidence() {
+    try {
+      const res = await fetch('/api/v1/evidence');
+      const result = await res.json();
+      if (result.success) {
+        evidence = result.data || [];
+        // If evidence is loaded and selectedEvidenceId is null, set the first one
+        if (evidence.length > 0 && selectedEvidenceId === null) {
+          selectedEvidenceId = evidence[0].id;
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load evidence:', err);
+    }
+  }
 
-			console.log(`Selected: ${target.files[0].name}`);
-		}
-	}
+  function handleFileUpload(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (target.files && target.files.length > 0) {
+      uploadFile = target.files[0];
+      // Auto-populate title if empty
+      if (!formData.title) {
+        formData.title = target.files[0].name.replace(/\.[^/.]+$/, '');
+      }
+      // Auto-detect type
+      const mime = target.files[0].type;
+      if (mime.startsWith('image/')) formData.evidenceType = 'image';
+      else if (mime.startsWith('video/')) formData.evidenceType = 'video';
+      else if (mime.startsWith('audio/')) formData.evidenceType = 'audio';
+      else if (mime === 'application/pdf') formData.evidenceType = 'document';
 
-	async function submitEvidence() {
-		if (!uploadFile) return;
+      console.log(`🕵️ Selected: ${target.files[0].name}`);
+    }
+  }
 
-		isUploading = true;
-		uploadProgress = 0;
-		uploadError = null;
-		uploadResult = null;
+  async function submitEvidence() {
+    if (!uploadFile) return;
 
-		try {
-			const data = new FormData();
-			data.append('file', uploadFile);
-			data.append('title', formData.title);
-			data.append('description', formData.description);
-			data.append('caseId', caseId || '');
-			data.append('evidenceType', formData.evidenceType);
-			data.append('tags', formData.tags);
-			data.append('isAdmissible', formData.isAdmissible.toString());
+    isUploading = true;
+    uploadProgress = 0;
+    uploadError = null;
+    uploadResult = null;
 
-			uploadProgress = 25;
-			console.log('Uploading to MinIO...');
+    try {
+      const data = new FormData();
+      data.append('file', uploadFile);
+      data.append('title', formData.title);
+      data.append('description', formData.description);
+      data.append('caseId', caseId || '');
+      data.append('evidenceType', formData.evidenceType);
+      data.append('tags', formData.tags);
+      data.append('isAdmissible', formData.isAdmissible.toString());
 
-			const response = await fetch('/api/evidence/upload', {
-				method: 'POST',
-				body: data
-			});
+      uploadProgress = 25;
+      console.log('🚀 Uploading to MinIO...');
 
-			uploadProgress = 75;
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || 'Upload failed');
-			}
+      const response = await fetch('/api/evidence/upload', {
+        method: 'POST',
+        body: data
+      });
 
-			const result = await response.json();
-			uploadProgress = 100;
+      uploadProgress = 75;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
+      }
 
-			if (result.success) {
-				uploadResult = result.data;
-				console.log('Evidence uploaded and indexed!');
-				if (result.data.aiSummary) console.log('AI Summary generated');
-				if (result.data.hasEmbedding) console.log('Vector embedding created');
+      const result = await response.json();
+      uploadProgress = 100;
 
-				// Refresh the page data
-				window.location.reload();
-			} else {
-				throw new Error(result.error || 'Upload failed');
-			}
-		} catch (err: unknown) {
-			console.error('Upload error:', err);
-			uploadError = (err as Error).message || 'Unknown error';
-			console.error(`Upload failed: ${uploadError}`);
-		} finally {
-			isUploading = false;
-		}
-	}
+      if (result.success) {
+        uploadResult = result.data;
+        console.log('✅ Evidence uploaded and indexed!');
+        if (result.data.aiSummary) console.log('🧠 AI Summary generated');
+        if (result.data.hasEmbedding) console.log('🎯 Vector embedding created');
 
-	function formatFileSize(bytes: number) {
-		if (bytes === 0) return '0 B';
-		const k = 1024;
-		const sizes = ['B', 'KB', 'MB', 'GB'];
-		const i = Math.floor(Math.log(bytes) / Math.log(k));
-		return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-	}
+        // Refresh the page data
+        await loadEvidence();
+        resetForm();
+      } else {
+        throw new Error(result.error || 'Upload failed');
+      }
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      uploadError = err.message || 'Unknown error';
+      console.error(`❌ Upload failed: ${uploadError}`);
+    } finally {
+      isUploading = false;
+    }
+  }
 
-	function resetForm() {
-		uploadFile = null;
-		uploadResult = null;
-		uploadError = null;
-		uploadProgress = 0;
-		formData = {
-			title: '',
-			description: '',
-			evidenceType: 'document',
-			tags: '',
-			isAdmissible: true
-		};
-	}
+  function formatFileSize(bytes: number) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  }
 
-	async function generateRecommendations(evidenceId: string) {
-		recommendationsLoading = true;
-		recommendationsError = null;
-		selectedEvidenceId = evidenceId;
+  function resetForm() {
+    uploadFile = null;
+    uploadResult = null;
+    uploadError = null;
+    uploadProgress = 0;
+    formData = {
+      title: '',
+      description: '',
+      evidenceType: 'document',
+      tags: '',
+      isAdmissible: true
+    };
+  }
 
-		try {
-			const response = await fetch('/api/ai/evidence-recommendations', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					evidenceId,
-					caseId
-				})
-			});
+  // Handle AI tagging when evidence is dropped on canvas
+  async function handleTagging(e: CustomEvent<string[]>) { // Explicitly type 'e'
+    const evidenceIds = e.detail;
+    if (evidenceIds.length === 0) return;
 
-			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}`);
-			}
+    aiTaggingActive = true;
+    taggedEvidenceIds = evidenceIds;
 
-			const result = await response.json();
-			if (result.success) {
-				recommendations = result.data.recommendations;
-				console.log('AI recommendations generated!');
-			} else {
-				throw new Error(result.error || 'Failed to generate recommendations');
-			}
-		} catch (err: unknown) {
-			console.error('Recommendations error:', err);
-			recommendationsError = (err as Error).message || 'Failed to generate recommendations';
-			console.error(`${recommendationsError}`);
-		} finally {
-			recommendationsLoading = false;
-		}
-	}
+    try {
+      console.log('🎮 Starting AI detective mode for evidence:', evidenceIds);
 
-	function handleRecommendationEvent(event: any) {
-		const { type, detail } = event;
-		if (type === 'generate') {
-			generateRecommendations(detail.evidenceId);
-		}
-	}
+      const res = await fetch('/api/v1/evidence/detective', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          caseId: caseId || 'general',
+          query: 'auto-tag evidence for legal analysis',
+          evidenceIds,
+        }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log('🧠 AI Detective Results:', data.analysis);
+
+        // Show success feedback
+        setTimeout(() => {
+          aiTaggingActive = false;
+          taggedEvidenceIds = [];
+        }, 2000);
+
+        // Refresh evidence to show new tags
+        await loadEvidence();
+      } else {
+        throw new Error('AI tagging failed');
+      }
+    } catch (err: any) {
+      console.error('AI tagging error:', err);
+      aiTaggingActive = false;
+      taggedEvidenceIds = [];
+    }
+  }
+
+  async function generateRecommendations(evidenceId: string) {
+    recommendationsLoading = true;
+    recommendationsError = null;
+    selectedEvidenceId = evidenceId; // Update selected evidence
+
+    try {
+      const response = await fetch('/api/ai/evidence-recommendations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          evidenceId,
+          caseId
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        recommendations = result.data.recommendations;
+        console.log('🎯 AI recommendations generated!');
+      } else {
+        throw new Error(result.error || 'Failed to generate recommendations');
+      }
+    } catch (err: any) {
+      console.error('Recommendations error:', err);
+      recommendationsError = err.message || 'Failed to generate recommendations';
+      console.error(`${recommendationsError}`);
+    } finally {
+      recommendationsLoading = false;
+    }
+  }
 </script>
 
-<main class="home-page">
-  <div class="hero-section">
-    <h1>🕵️ Evidence Management</h1>
-    <p class="subtitle">AI-Powered Legal Evidence Analysis & Recommendations</p>
-    <p class="status">Case: {caseId || 'No case selected'}</p>
-  </div>
+<main class="nes-container is-dark with-title evidence-page">
+  <h1 class="title nes-text is-primary">🕵️ Evidence Detective Board</h1>
 
-  <div class="action-grid">
-    <!-- Upload Card -->
-    <div class="action-card upload-card">
-      <h3>📤 Upload Evidence</h3>
+  <div class="nes-container is-rounded evidence-grid">
+    <!-- Upload Section -->
+    <div class="nes-container is-dark upload-section">
+      <h3 class="nes-text is-warning">📤 Upload Evidence</h3>
+
       <form onsubmit={(e) => { e.preventDefault(); submitEvidence(); }}>
-        <input
-          type="file"
-          class="file-input"
-          accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
-          onchange={handleFileUpload}
-          required
-        />
+        <div class="file-upload">
+          <label for="evidence-file" class="nes-btn is-primary file-label">
+            <Upload size={16} />
+            Choose Evidence File
+          </label>
+          <input
+            id="evidence-file"
+            type="file"
+            class="file-input"
+            accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt"
+            onchange={handleFileUpload}
+            required
+          />
+        </div>
 
         {#if uploadFile}
-          <div class="file-preview">
-            <FileText class="file-preview-file-icon" />
+          <div class="file-preview nes-container is-rounded">
+            <span class="file-preview-icon-wrapper"> <!-- Wrapper for icon styling -->
+              <FileText />
+            </span>
             <div class="file-info">
-              <p class="file-name">{uploadFile.name}</p>
-              <p class="file-size">{fileSize}</p>
+              <p class="file-name nes-text">{uploadFile.name}</p>
+              <p class="file-size nes-text is-disabled">{fileSize}</p>
             </div>
           </div>
         {/if}
 
         <div class="form-fields">
-          <input
-            type="text"
-            class="form-input"
-            placeholder="Evidence Title"
-            bind:value={formData.title}
-            required
-          />
+          <div class="nes-field">
+            <label for="title" class="nes-text">Evidence Title</label>
+            <input
+              id="title"
+              type="text"
+              class="nes-input"
+              bind:value={formData.title}
+              placeholder="Enter evidence title"
+              required
+            />
+          </div>
 
-          <textarea
-            class="form-textarea"
-            placeholder="Description (optional)"
-            bind:value={formData.description}
-            rows="3"
-          ></textarea>
+          <div class="nes-field">
+            <label for="description" class="nes-text">Description</label>
+            <textarea
+              id="description"
+              class="nes-textarea"
+              bind:value={formData.description}
+              placeholder="Describe the evidence"
+              rows="3"
+            ></textarea>
+          </div>
 
-          <select class="form-select" bind:value={formData.evidenceType}>
-            <option value="document">Document</option>
-            <option value="image">Image</option>
-            <option value="video">Video</option>
-            <option value="audio">Audio</option>
-          </select>
+          <div class="nes-field">
+            <label for="evidenceType" class="nes-text">Type</label>
+            <div class="nes-select">
+              <select id="evidenceType" bind:value={formData.evidenceType}>
+                <option value="document">📄 Document</option>
+                <option value="image">🖼️ Image</option>
+                <option value="video">🎥 Video</option>
+                <option value="audio">🎵 Audio</option>
+              </select>
+            </div>
+          </div>
 
-          <input
-            type="text"
-            class="form-input"
-            placeholder="Tags (comma-separated)"
-            bind:value={formData.tags}
-          />
+          <div class="nes-field">
+            <label for="tags" class="nes-text">Tags</label>
+            <input
+              id="tags"
+              type="text"
+              class="nes-input"
+              bind:value={formData.tags}
+              placeholder="Comma-separated tags"
+            />
+          </div>
 
-          <label class="form-input">
+          <label class="nes-checkbox">
             <input type="checkbox" bind:checked={formData.isAdmissible} />
-            Mark as admissible
+            <span class="nes-text">Mark as admissible</span>
           </label>
         </div>
 
         {#if isUploading}
           <div class="upload-progress">
-            <div class="progress-info">
-              <Loader class="loader-spin-icon" />
+            <div class="progress-info nes-text is-primary">
+              <span class="loader-spin-icon-wrapper"> <!-- Wrapper for icon styling -->
+                <Loader />
+              </span>
               Uploading... {uploadProgress}%
             </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: {uploadProgress}%"></div>
-            </div>
+            <progress class="nes-progress is-primary" value={uploadProgress} max="100"></progress>
           </div>
         {/if}
 
         <div class="button-group">
-          <button type="submit" class="upload-btn" disabled={!canSubmit || isUploading}>
+          <button type="submit" class="nes-btn is-primary" disabled={!canSubmit || isUploading}>
             {#if isUploading}
-              <Loader class="loader-spin-icon" />
+              <span class="loader-spin-icon-wrapper"> <!-- Wrapper for icon styling -->
+                <Loader />
+              </span>
               Uploading...
             {:else}
-              <Upload class="icon" />
+              <Upload size={16} />
               Upload Evidence
             {/if}
           </button>
-          <button type="button" class="reset-btn" onclick={resetForm}>
+          <button type="button" class="nes-btn" onclick={resetForm}>
             Reset
           </button>
         </div>
       </form>
     </div>
 
-    <!-- Results Card -->
-    <div class="action-card results-card">
-      <h3>📊 Upload Results</h3>
+    <!-- Canvas Section -->
+    <div class="nes-container is-dark canvas-section">
+      <div class="canvas-header">
+        <h3 class="nes-text is-success">🎨 Evidence Canvas</h3>
+        {#if aiTaggingActive}
+          <div class="ai-status nes-text is-warning">
+            <Zap size={16} />
+            AI Detective Mode Active
+          </div>
+        {/if}
+      </div>
+
+      <div class="canvas-instructions nes-text is-disabled">
+        🖱️ Drag evidence cards onto the canvas to trigger AI auto-tagging
+      </div>
+
+      <EvidenceCanvas
+        {evidence}
+        {taggedEvidenceIds}
+        on:tagged={(e) => handleTagging(e)}
+        on:select={(e) => generateRecommendations(e.detail)} <!-- Add on:select handler -->
+      />
+    </div>
+
+    <!-- Results Section -->
+    <div class="nes-container is-dark results-section">
+      <h3 class="nes-text is-error">📊 Results</h3>
+
       {#if uploadResult}
-        <div class="result-success">
+        <div class="result-success nes-container is-rounded">
           <div class="result-header">
-            <Check class="result-success-icon" />
+            <span class="result-success-icon-wrapper"> <!-- Wrapper for icon styling -->
+              <Check />
+            </span>
             <div>
-              <h4>Evidence Uploaded Successfully</h4>
-              <p class="result-id">ID: {uploadResult.id}</p>
+              <h4 class="nes-text is-success">Evidence Uploaded!</h4>
+              <p class="result-id nes-text is-disabled">ID: {uploadResult.id}</p>
             </div>
           </div>
 
           <div class="processing-steps">
             <div class="step">
               {#if uploadResult.hasEmbedding}
-                <Check class="processing-step-icon" />
+                <span class="processing-step-icon-wrapper"> <!-- Wrapper for icon styling -->
+                  <Check />
+                </span>
               {:else}
-                <AlertTriangle class="processing-step-skip-icon" />
+                <span class="processing-step-skip-icon-wrapper"> <!-- Wrapper for icon styling -->
+                  <AlertTriangle />
+                </span>
               {/if}
-              Vector Embedding
+              <span class="nes-text">Vector Embedding</span>
             </div>
             <div class="step">
               {#if uploadResult.aiSummary}
-                <Check class="processing-step-icon" />
+                <span class="processing-step-icon-wrapper"> <!-- Wrapper for icon styling -->
+                  <Check />
+                </span>
               {:else}
-                <AlertTriangle class="processing-step-skip-icon" />
+                <span class="processing-step-skip-icon-wrapper"> <!-- Wrapper for icon styling -->
+                  <AlertTriangle />
+                </span>
               {/if}
-              AI Summary
+              <span class="nes-text">AI Summary</span>
             </div>
           </div>
 
           {#if uploadResult.aiSummary}
-            <div class="ai-summary">
-              <div class="summary-header">
-                <Sparkles class="ai-summary-sparkle-icon" />
+            <div class="ai-summary nes-container is-rounded">
+              <div class="summary-header nes-text is-primary">
+                <Sparkles size={14} />
                 AI Summary
               </div>
-              <p>{uploadResult.aiSummary}</p>
-            </div>
-          {/if}
-
-          <div class="metadata">
-            <div class="meta-row">
-              <span>Type:</span>
-              <span>{uploadResult.evidenceType}</span>
-            </div>
-            <div class="meta-row">
-              <span>Size:</span>
-              <span>{formatFileSize(uploadResult.fileSize)}</span>
-            </div>
-            <div class="meta-row">
-              <span>Uploaded:</span>
-              <span>{new Date(uploadResult.createdAt).toLocaleString()}</span>
-            </div>
-          </div>
-
-          {#if uploadResult.tags && uploadResult.tags.length > 0}
-            <div class="tags">
-              {#each uploadResult.tags as tag (tag)}
-                <span class="tag">{tag}</span>
-              {/each}
+              <p class="nes-text">{uploadResult.aiSummary}</p>
             </div>
           {/if}
         </div>
       {:else if uploadError}
-        <div class="result-error">
-          <AlertTriangle class="result-error-icon" />
-          <h4>Upload Failed</h4>
-          <p>{uploadError}</p>
+        <div class="result-error nes-container is-rounded">
+          <span class="result-error-icon-wrapper"> <!-- Wrapper for icon styling -->
+            <AlertTriangle />
+          </span>
+          <h4 class="nes-text is-error">Upload Failed</h4>
+          <p class="nes-text">{uploadError}</p>
         </div>
       {:else}
-        <div class="result-empty">
-          <FileText class="result-empty-icon" />
-          <p>No evidence uploaded yet. Use the form to upload your first piece of evidence.</p>
+        <div class="result-empty nes-text is-disabled">
+          <FileText size={32} />
+          <p>No evidence uploaded yet</p>
         </div>
       {/if}
     </div>
-
-    <!-- Info Card -->
-    <div class="action-card info-card">
-      <h3>🧠 AI Tech Stack</h3>
-      <div class="tech-stack">
-        <div class="tech-item">
-          <strong>Model:</strong> gemma3-legal:latest (6.8GB GGUF)
-        </div>
-        <div class="tech-item">
-          <strong>Vector DB:</strong> pgvector with cosine similarity
-        </div>
-        <div class="tech-item">
-          <strong>Storage:</strong> MinIO S3-compatible
-        </div>
-        <div class="tech-item">
-          <strong>Processing:</strong> CUDA acceleration + embeddings
-        </div>
-        <div class="tech-item">
-          <strong>Analysis:</strong> Pattern recognition & recommendations
-        </div>
-      </div>
-    </div>
   </div>
-
-  <!-- Smart Evidence Recommendations -->
-  {#if evidence && evidence.length > 0}
-    <SmartEvidenceRecommendations
-      evidenceId={selectedEvidenceId ?? evidence[0].id}
-      <!-- Changed to pass undefined if caseId is null -->
-      caseId={caseId ?? undefined}
-      {recommendations}
-      {recommendationsLoading}
-      {recommendationsError}
-      on:generate={handleRecommendationEvent}
-    />
-  {/if}
 
   <!-- Quick Actions -->
   <div class="quick-actions">
-    <button class="action-link" onclick={() => goto('/cases')}>📋 View Cases</button>
-    <button class="action-link" onclick={() => goto('/ai/vector-search')}>🔍 Vector Search</button>
-    <button class="action-link" onclick={() => goto('/ai/chat')}>💬 AI Assistant</button>
-    <button class="action-link" onclick={() => goto('/dashboard')}>📊 Dashboard</button>
+    <a href="/cases" class="nes-btn">📋 Cases</a>
+    <a href="/ai/vector-search" class="nes-btn is-primary">🔍 Vector Search</a>
+    <a href="/ai/chat" class="nes-btn is-success">💬 AI Assistant</a>
+    <a href="/dashboard" class="nes-btn is-warning">📊 Dashboard</a>
   </div>
 </main>
 
 <style>
-  .home-page {
+  .evidence-page {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
     min-height: 100vh;
-    background: #0a0a0a;
+    background: #101010;
+    color: white;
   }
 
-  .hero-section {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .hero-section h1 {
-    font-size: 2.5rem;
-    color: #ffd700;
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-  }
-
-  .subtitle {
-    font-size: 0.9rem;
-    color: #92cc41;
-    margin-bottom: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-  }
-
-  .status {
-    font-size: 0.9rem;
-    color: #888;
-  }
-
-  .action-grid {
+  .evidence-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
     gap: 1.5rem;
-    margin-bottom: 3rem;
+    margin: 2rem 0;
   }
 
   @media (max-width: 1024px) {
-    .action-grid {
+    .evidence-grid {
       grid-template-columns: 1fr;
     }
   }
-  .action-card {
-    background: linear-gradient(135deg, #1a1d20 0%, #0f1215 100%);
-    border: 2px solid #2a2d30;
-    border-radius: 12px;
-    padding: 1.5rem;
-    transition: all 0.3s ease;
+
+  .upload-section,
+  .canvas-section,
+  .results-section {
+    background: #1a1a1a;
+    border: 4px solid #333;
   }
 
-  .action-card:hover {
-    border-color: #ffd700;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.15);
-    transform: translateY(-2px);
+  .file-upload {
+    margin-bottom: 1rem;
   }
 
-  .action-card h3 {
-    margin: 0 0 1rem 0; /* Corrected margin syntax */
-    color: #ffd700;
-    font-size: 1.1rem;
-  }
-
-  .upload-card {
-    grid-column: 1;
-  }
-
-  .results-card {
-    grid-column: 2;
-  }
-
-  .info-card {
-    grid-column: 3;
-    grid-row: 1;
+  .file-label {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .file-input {
-    width: 100%;
-    padding: 0.75rem;
-    margin: 0.5rem 0;
-    background: #0a0d10;
-    border: 2px dashed #444;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-
-  .file-input:hover {
-    border-color: #ffd700;
+    display: none;
   }
 
   .file-preview {
@@ -512,12 +511,12 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    background: #0f1215;
-    border: 1px solid #2a2d30;
-    border-radius: 6px;
     margin: 1rem 0;
+    background: #2a2a2a;
+    border: 2px solid #444;
   }
-  :global(.file-preview-file-icon) {
+
+  .file-preview-icon-wrapper svg { /* Target SVG inside wrapper */
     width: 32px;
     height: 32px;
     color: #92cc41;
@@ -528,41 +527,20 @@
   }
 
   .file-name {
-    font-size: 0.9rem;
-    color: #e8e8e8;
     margin: 0;
+    font-size: 0.9rem;
   }
 
   .file-size {
+    margin: 0.25rem 0 0 0;
     font-size: 0.75rem;
-    color: #888;
-    margin: 0.25rem 0 0 0; /* Corrected margin syntax */
   }
 
   .form-fields {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
     margin: 1rem 0;
-  }
-
-  .form-input,
-  .form-textarea,
-  .form-select {
-    width: 100%;
-    padding: 0.5rem;
-    background: #0a0d10;
-    border: 1px solid #2a2d30;
-    border-radius: 6px;
-    color: white;
-    font-size: 0.85rem;
-  }
-
-  .form-input:focus,
-  .form-textarea:focus,
-  .form-select:focus {
-    outline: none;
-    border-color: #ffd700;
   }
 
   .upload-progress {
@@ -574,35 +552,17 @@
     align-items: center;
     gap: 0.5rem;
     margin-bottom: 0.5rem;
-    font-size: 0.85rem;
-    color: #92cc41;
   }
-  :global(.loader-spin-icon) {
+
+  .loader-spin-icon-wrapper svg { /* Target SVG inside wrapper */
     animation: spin 1s linear infinite;
     width: 16px;
     height: 16px;
   }
 
   @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  .progress-bar {
-    width: 100%;
-    height: 8px;
-    background: #0a0d10;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #92cc41, #ffd700);
-    transition: width 0.3s ease;
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
   }
 
   .button-group {
@@ -611,52 +571,34 @@
     margin-top: 1rem;
   }
 
-  .upload-btn,
-  .reset-btn {
-    flex: 1;
-    padding: 0.75rem 1rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 0.9rem;
+  .canvas-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .ai-status {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 0.5rem;
-    transition: all 0.3s ease;
+    animation: pulse 1s infinite;
   }
 
-  .upload-btn {
-    background: #ffd700;
-    color: #0a0a0a;
-  }
-
-  .upload-btn:hover {
-    background: #ffed4a;
-    transform: translateY(-1px);
-  }
-
-  .upload-btn:disabled {  /* Updated selector to ':disabled' to match the 'disabled' attribute usage */
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .reset-btn {
-    background: #f7d51d;
-    color: #0a0a0a;
+  .canvas-instructions {
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
   }
 
   .result-success,
   .result-error,
   .result-empty {
     padding: 1rem;
-    border-radius: 8px;
   }
 
   .result-success {
-    background: #0f1215;
-    border: 1px solid #2a2d30;
+    background: #1a1a1a;
+    border: 2px solid #2a2d30;
   }
 
   .result-header {
@@ -666,19 +608,13 @@
     margin-bottom: 1rem;
   }
 
-  .result-header h4 {
-    margin: 0;
-    color: #e8e8e8;
-    font-size: 1rem;
-  }
-
   .result-id {
     font-size: 0.7rem;
-    color: #666;
-    margin: 0.25rem 0 0 0; /* Corrected margin syntax */
+    margin: 0.25rem 0 0 0;
     font-family: monospace;
   }
-  :global(.result-success-icon) {
+
+  .result-success-icon-wrapper svg { /* Target SVG inside wrapper */
     width: 24px;
     height: 24px;
     color: #92cc41;
@@ -697,23 +633,23 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
-    color: #b0b0b0;
   }
-  :global(.processing-step-icon) {
+
+  .processing-step-icon-wrapper svg { /* Target SVG inside wrapper */
     width: 16px;
     height: 16px;
     color: #92cc41;
   }
-  :global(.processing-step-skip-icon) {
+
+  .processing-step-skip-icon-wrapper svg { /* Target SVG inside wrapper */
     width: 16px;
     height: 16px;
     color: #666;
   }
 
   .ai-summary {
-    background: #0a0d10;
+    background: #2a2a2a;
     padding: 0.75rem;
-    border-radius: 6px;
     margin: 1rem 0;
   }
 
@@ -723,104 +659,25 @@
     gap: 0.5rem;
     margin-bottom: 0.5rem;
     font-size: 0.75rem;
-    color: #a78bfa;
     font-weight: 600;
-  }
-  :global(.ai-summary-sparkle-icon) {
-    width: 14px;
-    height: 14px;
-  }
-
-  .ai-summary p {
-    font-size: 0.8rem;
-    color: #e8e8e8;
-    line-height: 1.5;
-    margin: 0;
-  }
-
-  .metadata {
-    margin-top: 1rem;
-    font-size: 0.8rem;
-  }
-
-  .meta-row {
-    display: flex;
-    justify-content: space-between; /* Corrected typo from space-betweennn */
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #1a1d20;
-    color: #b0b0b0;
-  }
-
-  .tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
-  }
-
-  .tag {
-    background: #2a2d30;
-    color: #ffd700;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-size: 0.7rem;
   }
 
   .result-error {
     background: #2a1a1a;
-    border: 1px solid #5a2a2a;
+    border: 2px solid #5a2a2a;
     text-align: center;
   }
-  :global(.result-error-icon) {
+
+  .result-error-icon-wrapper svg { /* Target SVG inside wrapper */
     width: 32px;
     height: 32px;
     color: #ef4444;
     margin: 0 auto 0.5rem;
   }
 
-  .result-error h4 {
-    color: #ef4444;
-    margin: 0.5rem 0;
-  }
-
-  .result-error p {
-    color: #b0b0b0;
-    font-size: 0.85rem;
-    margin: 0;
-  }
-
   .result-empty {
     text-align: center;
     padding: 2rem 1rem;
-  }
-  :global(.result-empty-icon) {
-    width: 48px;
-    height: 48px;
-    color: #333;
-    margin: 0 auto 1rem;
-    opacity: 0.3;
-  }
-
-  .result-empty p {
-    color: #666;
-    font-size: 0.85rem;
-    margin: 0;
-  }
-
-  .tech-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .tech-item {
-    font-size: 0.75rem;
-    color: #b0b0b0;
-    line-height: 1.6;
-  }
-
-  .tech-item strong {
-    color: #ffd700;
   }
 
   .quick-actions {
@@ -831,23 +688,7 @@
     margin-top: 2rem;
   }
 
-  .action-link {
-    color: #ffd700;
+  .quick-actions .nes-btn {
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px solid #ffd700;
-    border-radius: 6px;
-    transition: all 0.3s ease;
-    font-size: 0.85rem;
-  }
-
-  .action-link:hover {
-    background: #ffd700;
-    color: #0a0a0a;
-    transform: translateY(-1px);
-  }
-  :global(.icon) {
-    width: 16px;
-    height: 16px;
   }
 </style>
