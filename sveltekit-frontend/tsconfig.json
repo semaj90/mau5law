@@ -9,7 +9,15 @@
     "strict": false,
     "types": ["svelte"]
   },
-  "include": ["src/**/*", "svelte.config.js", "vite.config.js"],
+  "include": [
+    "src/**/*",
+    "svelte.config.js",
+    "vite.config.js",
+    "src/**/*.d.ts",
+    "src/**/*.js",
+    "src/**/*.ts",
+    "src/**/*.svelte"
+  ],
   "exclude": [
     "node_modules",
     "build",

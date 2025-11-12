@@ -1,36 +1,19 @@
-import Fuse from 'fuse.js';
+import Fuse from 'fuse.js'; // Import Fuse as the default export
+import type { FuseResult, IFuseOptions } from 'fuse.js'; // Import FuseResult and IFuseOptions as types
 
-export interface FuseSearchOptions {
-  keys: string[];
-  threshold?: number;
-  includeScore?: boolean;
-  includeMatches?: boolean;
-  minMatchCharLength?: number;
-  useExtendedSearch?: boolean;
-  ignoreLocation?: boolean;
-  findAllMatches?: boolean;
-  location?: number;
-  distance?: number;
-  maxPatternLength?: number;
-  caseSensitive?: boolean;
-  tokenize?: boolean;
-  matchAllTokens?: boolean;
-  isCaseSensitive?: boolean;
-}
-
-export interface SearchResult<T> {
-  item: T;
-  score?: number;
-  matches?: Fuse.FuseResultMatch[];
-  refIndex?: number;
-}
+// Use FuseResult<T> directly from fuse.js for search results.
+// This resolves the 'Fuse.FuseResultMatch' and 'refIndex' type errors.
+export type SearchResult<T> = FuseResult<T>; // Changed Fuse.FuseResult to FuseResult
 
 export class FuseSearchService<T = any> {
   private fuse: Fuse<T> | null = null;
   private data: T[] = [];
-  private options: FuseSearchOptions;
+  // Use IFuseOptions<T> for the options type.
+  private options: IFuseOptions<T>; // Changed Fuse.IFuseOptions to IFuseOptions
 
-  constructor(options: FuseSearchOptions) {
+  // Update constructor to accept IFuseOptions<T>.
+  constructor(options: IFuseOptions<T>) {
+    // Changed Fuse.IFuseOptions to IFuseOptions
     this.options = {
       includeScore: true,
       includeMatches: true,
@@ -94,12 +77,17 @@ export class FuseSearchService<T = any> {
       return [];
     }
 
-    const results = this.fuse.search(query, limit ? { limit } : undefined);
-    return results.map(result => ({
+    // The second argument to fuse.search is an options object, which correctly accepts 'limit'.
+    // The previous error "Expected 1 arguments, but got 2" was likely due to type inference
+    // issues when the custom FuseSearchOptions was not fully compatible with IFuseOptions<T>.
+    const searchOptions = limit ? { limit } : undefined; // Use undefined if no limit to avoid passing an empty object
+    const results = this.fuse.search(query, searchOptions);
+    return results.map((result) => ({
       item: result.item,
       score: result.score,
       matches: result.matches,
-      refIndex: result.refIndex,
+      // 'refIndex' does not exist on IFuseResult<T> and should be removed.
+      // refIndex: result.refIndex,
     }));
   }
 
@@ -137,8 +125,10 @@ export class FuseSearchService<T = any> {
    */
   getStats(): {
     totalItems: number;
-    searchKeys: string[];
-    options: FuseSearchOptions;
+    // Update searchKeys type to match IFuseOptions<T>['keys']
+    searchKeys: IFuseOptions<T>['keys']; // Changed Fuse.IFuseOptions to IFuseOptions
+    // Update options type to IFuseOptions<T>
+    options: IFuseOptions<T>; // Changed Fuse.IFuseOptions to IFuseOptions
   } {
     return {
       totalItems: this.data.length,
@@ -149,6 +139,7 @@ export class FuseSearchService<T = any> {
 }
 
 // Legal-specific search configurations
+// These configurations are compatible with Fuse.IFuseOptions<any>
 export const LEGAL_SEARCH_CONFIGS = {
   caseSearch: {
     keys: ['title', 'description', 'caseNumber', 'tags'],
@@ -184,7 +175,8 @@ export const LEGAL_SEARCH_CONFIGS = {
 // Pre-configured search instances for common legal entities
 export class LegalSearchManager {
   private static instance: LegalSearchManager;
-  private searches: Map<string, FuseSearchService> = new Map();
+  // Use FuseSearchService<any> for the map values to allow for different T types
+  private searches: Map<string, FuseSearchService<any>> = new Map();
 
   private constructor() {}
 
@@ -195,13 +187,16 @@ export class LegalSearchManager {
     return LegalSearchManager.instance;
   }
 
-  createSearch<T>(name: string, config: FuseSearchOptions): FuseSearchService<T> {
+  // Update config parameter to IFuseOptions<T>
+  createSearch<T>(name: string, config: IFuseOptions<T>): FuseSearchService<T> {
+    // Changed Fuse.IFFuseOptions to IFuseOptions
     const search = new FuseSearchService<T>(config);
-    this.searches.set(name, search);
+    this.searches.set(name, search as FuseSearchService<any>); // Cast for map compatibility
     return search;
   }
 
-  getSearch(name: string): FuseSearchService | undefined {
+  // Update return type to FuseSearchService<any>
+  getSearch(name: string): FuseSearchService<any> | undefined {
     return this.searches.get(name);
   }
 
