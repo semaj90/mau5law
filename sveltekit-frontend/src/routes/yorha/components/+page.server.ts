@@ -1,6 +1,6 @@
 import type { PageServerLoad } from './$types.js';
 
-export const load: PageServerLoad = async ({ url, fetch }) => {
+export const load: PageServerLoad = async () => {
   try {
     // Define YoRHa 3D component specifications for SSR
     const componentSpecs = {
@@ -23,7 +23,6 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
           hoverAnimation: true,
           clickFeedback: true,
           // subtle scale
-          click: loadingState | false, // spinner when loading
         },
       },
       panel: {
@@ -173,4 +172,5 @@ export const load: PageServerLoad = async ({ url, fetch }) => {
       error: 'Failed to load components data', // Removed trailing backtick
     };
   }
+};
 };

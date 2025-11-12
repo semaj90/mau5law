@@ -1,13 +1,11 @@
 <script lang="ts">
   import { browser } from '$app/environment';
-  import { derived, writable } from 'svelte/store';
-  import * as unified from '$lib/stores/unified';
   import LoginButton from '$lib/components/auth/LoginButton.svelte';
+  import * as unified from '$lib/stores/unified';
   import { createFileUploader } from '$lib/utils/file-uploader';
+  import { derived, writable } from 'svelte/store';
 
-  import { uploadAndAnalyze } from '$lib/server/actions/legal-actions';
-
-  let file: File | null = null;
+  let file = $state<File | null>(null);
   let result = $state<any>(null); // Use any for now, or define a proper interface for the result
   let isUploading = $state<boolean>(false);
 
@@ -19,7 +17,20 @@
 
     isUploading = true;
     try {
-      result = await uploadAndAnalyze(file);
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload-analyze', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      result = data.data;
       console.log('Analysis Complete:', result);
     } catch (error) {
       console.error('Upload and analysis failed:', error);
@@ -559,16 +570,15 @@
   }
 
   .action-card-custom::before {
-    /* Corrected pseudo-element syntax */;
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px; /* Added semicolon */;
+    height: 4px;
     background: linear-gradient(90deg, #ffd700, #00ff41);
     opacity: 0;
-    transition: opacity 0.3s ease; /* Added semicolon */
+    transition: opacity 0.3s ease;
   }
 
   .card-icon-custom {
@@ -603,16 +613,15 @@
   }
 
   .featured-card-custom::before {
-    /* Corrected pseudo-element syntax */;
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    height: 6px; /* Added semicolon */;
+    height: 6px;
     background: linear-gradient(90deg, #00ff41, #ffd700, #00ff41);
     background-size: 200% 100%;
-    animation: shimmer 3s linear infinite; /* Added semicolon */
+    animation: shimmer 3s linear infinite;
   }
 
   @keyframes shimmer {
