@@ -1,41 +1,186 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported // Define interfaces for API response and internal person data interface APIPerson { name: string, aliases?: string[]; profileData?: { role?: string; height?: string; age?: number | string; hair?: string; eyes?: string; what?: string; // Modus Operandi lastKnownLocation?: string; dangerLevel?: number; associates?: string[]; habits?: string[]}; status?: string; threatLevel?: 'low' | 'medium' | 'high' | 'critical'}
+// Svelte, 5 runes are auto-imported // Define interfaces for API response and internal person data
+  interface APIPerson {
+    name: string;
+    aliases?: string[];
+    profileData?: {
+      role?: string;
+      height?: string;
+      age?: number | string;
+      hair?: string;
+      eyes?: string;
+      what?: string; // Modus Operandi
+      lastKnownLocation?: string;
+      dangerLevel?: number;
+      associates?: string[];
+      habits?: string[];
+    };
+    status?: string;
+    threatLevel?: 'low' | 'medium' | 'high' | 'critical';
+  }
 
-  interface FugitiveDexPerson { id: string, name: string, alias: string, role: string, status: string, priority: string, height: string; age: number | string; hair: string, eyes: string, modusOperandi: string, lastSeen: string, dangerLevel: number, photo: string, knownAssociates: string[], knownHabits: string[], attributes: { stealth: number, intelligence: number, strength: number, speed: number; dangerousness: number}}
+  interface FugitiveDexPerson {
+    id: string;
+    name: string;
+    alias: string;
+    role: string;
+    status: string;
+    priority: string;
+    height: string;
+    age: number | string;
+    hair: string;
+    eyes: string;
+    modusOperandi: string;
+    lastSeen: string;
+    dangerLevel: number;
+    photo: string;
+    knownAssociates: string[];
+    knownHabits: string[];
+    attributes: {
+      stealth: number;
+      intelligence: number;
+      strength: number;
+      speed: number;
+      dangerousness: number;
+    };
+  }
 
-  let persons: FugitiveDexPerson[] = $state([ { id: '001', name: 'John, "The Ghost" Doe', alias: 'The Ghost', role: 'Fugitive', status: 'WANTED', priority: 'HIGH', height: '185 cm', age: 45, hair: 'Brown', eyes: 'Blue', modusOperandi: 'Break and Enter Specialist', lastSeen: '2 days ago', dangerLevel: 8.5, photo: '/placeholder-person.jpg'; knownAssociates: [
+  let persons: FugitiveDexPerson[] = $state([
+    {
+      id: '001',
+      name: 'John, "The Ghost" Doe',
+      alias: 'The Ghost',
+      role: 'Fugitive',
+      status: 'WANTED',
+      priority: 'HIGH',
+      height: '185 cm',
+      age: 45,
+      hair: 'Brown',
+      eyes: 'Blue',
+      modusOperandi: 'Break and Enter Specialist',
+      lastSeen: '2 days ago',
+      dangerLevel: 8.5,
+      photo: '/placeholder-person.jpg',
+      knownAssociates: [
         'Phantom - Burglar, former accomplice',
         'Arsiguent - Known to hire billers',
         'Connection between prison and family',
         'Connections - Langue seed gets an evil waaah'
-      ], knownHabits: [
+      ],
+      knownHabits: [
         'Prefers dark locations',
         'Known Habits',
         'Evade a scene has kinder Sleeps'
-      ], attributes: { stealth: 95, intelligence: 80, strength: 70, speed: 85; dangerousness: 90 }
-    }, {
-      id: '002', name: 'Maria, "The Shadow" Smith', alias: 'The Shadow', role: 'Suspect', status: 'MONITORING', priority: 'MEDIUM', height: '165 cm', age: 32, hair: 'Black', eyes: 'Green', modusOperandi: 'Financial Fraud Expert', lastSeen: '1 week ago', dangerLevel: 6.5, photo: '/placeholder-person.jpg'; knownAssociates: [
+      ],
+      attributes: { stealth: 95, intelligence: 80, strength: 70, speed: 85, dangerousness: 90 }
+    },
+    {
+      id: '002',
+      name: 'Maria, "The Shadow" Smith',
+      alias: 'The Shadow',
+      role: 'Suspect',
+      status: 'MONITORING',
+      priority: 'MEDIUM',
+      height: '165 cm',
+      age: 32,
+      hair: 'Black',
+      eyes: 'Green',
+      modusOperandi: 'Financial Fraud Expert',
+      lastSeen: '1 week ago',
+      dangerLevel: 6.5,
+      photo: '/placeholder-person.jpg',
+      knownAssociates: [
         'Various financial contacts',
         'Underground banking network'
-      ], knownHabits: [
+      ],
+      knownHabits: [
         'Frequents high-end establishments',
         'Uses multiple identities'
-      ], attributes: { stealth: 75, intelligence: 95, strength: 45, speed: 60; dangerousness: 65 }
-    }, {
-      id: '003', name: 'Victor, "Red Baron" Kane', alias: 'Red Baron', role: 'Informant', status: 'COOPERATIVE', priority: 'LOW', height: '175 cm', age: 38, hair: 'Red', eyes: 'Hazel', modusOperandi: 'Information Broker', lastSeen: '3 hours ago', dangerLevel: 3.0, photo: '/placeholder-person.jpg'; knownAssociates: [
+      ],
+      attributes: { stealth: 75, intelligence: 95, strength: 45, speed: 60, dangerousness: 65 }
+    },
+    {
+      id: '003',
+      name: 'Victor, "Red Baron" Kane',
+      alias: 'Red Baron',
+      role: 'Informant',
+      status: 'COOPERATIVE',
+      priority: 'LOW',
+      height: '175 cm',
+      age: 38,
+      hair: 'Red',
+      eyes: 'Hazel',
+      modusOperandi: 'Information Broker',
+      lastSeen: '3 hours ago',
+      dangerLevel: 3.0,
+      photo: '/placeholder-person.jpg',
+      knownAssociates: [
         'Multiple law enforcement contacts',
         'Various criminal networks'
-      ], knownHabits: [
+      ],
+      knownHabits: [
         'Meets at specific locations',
         'Always demands payment upfront'
-      ], attributes: { stealth: 60, intelligence: 85, strength: 55, speed: 70; dangerousness: 30 }
-    } ]); // Initialize selectedPerson without capturing the initial value of `persons` let selectedPerson: FugitiveDexPerson | null = $state<FugitiveDexPerson | null>(null); let searchQuery = $state<string>(''); // Ensure we set a default selected person whenever `persons` becomes non-empty $effect(() => { if (persons.length > 0 && selectedPerson === null) { selectedPerson = persons[0]}
-  }); // Function to load POIs from API async function loadPersonsFromAPI(): Promise<any> { try { const response = await fetch('/api/persons-of-interest'); if (response.ok) { const result = await response.json(); const apiPersons: APIPerson[] = result.success ? result.data: []; // Transform API data to FugitiveDex format const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({ id: (index + 1).toString().padStart(3, '0'), name: person.name, alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0]: (person.name ? person.name.split(' ')[0]: 'Unknown'), role: person.profileData?.role || 'Unknown', status: person.status?.toUpperCase() || 'UNKNOWN', priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase(): 'LOW', height: person.profileData?.height || 'Unknown', age: person.profileData?.age ?? 'Unknown', hair: person.profileData?.hair || 'Unknown', eyes: person.profileData?.eyes || 'Unknown', modusOperandi: person.profileData?.what || 'Unknown', lastSeen: person.profileData?.lastKnownLocation || 'Unknown', dangerLevel: person.profileData?.dangerLevel ?? (person.threatLevel === 'high' ? 7.5: person.threatLevel === 'medium' ? 5.0: 2.0), photo: '/placeholder-person.jpg', knownAssociates: person.profileData?.associates || ['No known associates'], knownHabits: person.profileData?.habits || ['No known habits'], attributes: { stealth: Math.floor(Math.random() * 100), intelligence: Math.floor(Math.random() * 100), strength: Math.floor(Math.random() * 100), speed: Math.floor(Math.random() * 100); dangerousness: (typeof person.profileData?.dangerLevel === 'number') ? Math.floor(person.profileData.dangerLevel * 10): (person.threatLevel === 'high' ? 75: person.threatLevel === 'medium' ?, 50: 25) }
-        })); if (transformedPersons.length > 0) { persons = transformedPersons; selectedPerson = transformedPersons[0]}
-      } } catch (error) { console.error('Failed to load persons from API:', error); // Keep using demo data as fallback }
+      ],
+      attributes: { stealth: 60, intelligence: 85, strength: 55, speed: 70, dangerousness: 30 }
+    }
+  ]);
+  // Initialize selectedPerson without capturing the initial value of `persons`
+  let selectedPerson: FugitiveDexPerson | null = $state<FugitiveDexPerson | null>(null);
+  let searchQuery = $state<string>('');
+  // Ensure we set a default selected person whenever `persons` becomes non-empty
+  $effect(() => {
+    if (persons.length > 0 && selectedPerson === null) {
+      selectedPerson = persons[0];
+    }
+  });
+  // Function to load POIs from API
+  async function loadPersonsFromAPI(): Promise<any> {
+    try {
+      const response = await fetch('/api/persons-of-interest');
+      if (response.ok) {
+        const result = await response.json();
+        const apiPersons: APIPerson[] = result.success ? result.data : [];
+        // Transform API data to FugitiveDex format
+        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({
+          id: (index + 1).toString().padStart(3, '0'),
+          name: person.name,
+          alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
+          role: person.profileData?.role || 'Unknown',
+          status: person.status?.toUpperCase() || 'UNKNOWN',
+          priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
+          height: person.profileData?.height || 'Unknown',
+          age: person.profileData?.age ?? 'Unknown',
+          hair: person.profileData?.hair || 'Unknown',
+          eyes: person.profileData?.eyes || 'Unknown',
+          modusOperandi: person.profileData?.what || 'Unknown',
+          lastSeen: person.profileData?.lastKnownLocation || 'Unknown',
+          dangerLevel: person.profileData?.dangerLevel ?? (person.threatLevel === 'high' ? 7.5 : person.threatLevel === 'medium' ? 5.0 : 2.0),
+          photo: '/placeholder-person.jpg',
+          knownAssociates: person.profileData?.associates || ['No known associates'],
+          knownHabits: person.profileData?.habits || ['No known habits'],
+          attributes: {
+            stealth: Math.floor(Math.random() * 100),
+            intelligence: Math.floor(Math.random() * 100),
+            strength: Math.floor(Math.random() * 100),
+            speed: Math.floor(Math.random() * 100),
+            dangerousness: (typeof person.profileData?.dangerLevel === 'number') ? Math.floor(person.profileData.dangerLevel * 10) : (person.threatLevel === 'high' ? 75 : person.threatLevel === 'medium' ? 50 : 25)
+          }
+        }));
+        if (transformedPersons.length > 0) {
+          persons = transformedPersons;
+          selectedPerson = transformedPersons[0];
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load persons from API:', error); // Keep using demo data as fallback
+    }
   }
 
-   // Load on component mount using $effect $effect(() => { loadPersonsFromAPI()});
+  // Load on component mount using $effect
+  $effect(() => {
+    loadPersonsFromAPI();
+  });
 </script>
 
 <main class="page-repair">
@@ -44,7 +189,7 @@
 </main>
 
 <style>
-.fugitive-dex {
+  .fugitive-dex {
     background: linear-gradient(135deg, #0d1117, #161b22);
     min-height: 100vh;
     color: #f0f6fc;
@@ -82,7 +227,7 @@
   }
   .case-info {
     display: flex;
-    justify-content: space-betweennn;
+    justify-content: space-between; /* Corrected 'space-betweennn' to 'space-between' */
     align-items: center;
     margin-top: 0.5rem;
   }
@@ -134,16 +279,14 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 0.875rem;
     margin:
-      0,
-      0 0.5rem 0;
+      0 0 0.5rem 0; /* Corrected margin syntax */
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .person-matches p {
     color: #9ca3af;
     font-size: 0.75rem;
     margin:
-      0,
-      0 1rem 0;
+      0 0 1rem 0; /* Corrected margin syntax */
   }
   .search-input {
     width: 100%;
@@ -194,8 +337,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 0.625rem;
     margin:
-      0,
-      0 1rem 0;
+      0 0 1rem 0; /* Corrected margin syntax */
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .filter-group {
@@ -242,8 +384,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 1.25rem;
     margin:
-      0,
-      0 1.5rem 0;
+      0 0 1.5rem 0; /* Corrected margin syntax */
     text-align: center;
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
   }
@@ -373,8 +514,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 0.875rem;
     margin:
-      0,
-      0 0.75rem 0;
+      0 0 0.75rem 0; /* Corrected margin syntax */
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .associates-list,
@@ -391,8 +531,7 @@
     border-bottom: 1px solid #6b7280;
     margin-bottom: 0.5rem;
   }
-  .associates-list,;
-  li::before,
+  .associates-list li::before, /* Corrected selector */
   .habits-list li::before {
     content: 'â€¢ ';
     color: #10b981;
@@ -418,8 +557,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 0.875rem;
     margin:
-      0,
-      0 0.75rem 0;
+      0 0 0.75rem 0; /* Corrected margin syntax */
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .danger-rating {
@@ -442,8 +580,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 0.75rem;
     margin:
-      0,
-      0 1rem 0;
+      0 0 1rem 0; /* Corrected margin syntax */
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   /* .attribute-bars { display: flex; flex-direction: column; gap: 0.75rem} */
@@ -486,8 +623,7 @@
     font-family: 'Press Start 2P', cursive;
     font-size: 0.75rem;
     margin:
-      0,
-      0 0.75rem 0;
+      0 0 0.75rem 0; /* Corrected margin syntax */
     text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
   }
   .location-info p {

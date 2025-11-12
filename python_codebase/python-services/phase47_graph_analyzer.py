@@ -9,16 +9,24 @@ optional acceleration/fallback layers.
 """
 from __future__ import annotations
 
-import json
-import logging
 import os
-import time
-from functools import lru_cache
-from typing import Any, Dict, Iterable, List, Optional, Tuple
+import torch
 
-import requests
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
+# Memory optimization for PyTorch
+if torch.cuda.is_available():
+    # Limit GPU memory usage
+    torch.cuda.set_per_process_memory_fraction(0.8)  # Use max 80% of GPU memory
+    torch.cuda.empty_cache()
+
+# Set Python memory limits
+import resource
+if hasattr(resource, 'RLIMIT_AS'):
+    # Set address space limit to 4GB
+    resource.setrlimit(resource.RLIMIT_AS, (4 * 1024 * 1024 * 1024, 4 * 1024 * 1024 * 1024))
+
+# Force garbage collection more frequently
+import gc
+gc.set_threshold(700, 10, 10)
 
 # Torch / CUDA handling (optional CPU fallback)
 try:

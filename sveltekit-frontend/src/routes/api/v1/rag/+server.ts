@@ -24,6 +24,9 @@ const ENHANCED_RAG_CONFIG = {
     semantic: '/api/rag/semantic',
     context: '/api/rag/context',
     health: '/health',
+    upload: '/rag/upload',
+    search: '/rag/search',
+    embed: '/rag/embed',
   },
 };
 
@@ -507,3 +510,71 @@ async function handleModels(): Promise<Response> {
     );
   }
 }
+
+/**
+ * PUT /api/v1/rag/upload - Upload evidence files for RAG processing
+ */
+export const PUT: RequestHandler = async ({ request }) => {
+  try {
+    const formData = await request.formData();
+    const file = formData.get('file') as File;
+
+    if (!file) {
+      throw error(400, 'No file provided');
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'image/tiff',
+      'text/plain'
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      throw error(400, 'Unsupported file type. Supported: PDF, JPEG, PNG, TIFF, TXT');
+    }
+
+    // Validate file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      throw error(400, 'File too large. Maximum size: 50MB');
+    }
+
+    // Create multipart form data for MCP server
+    const mcpFormData = new FormData();
+    mcpFormData.append('file', file);
+
+    // Send to MCP server
+    const response = await fetch(`${ENHANCED_RAG_CONFIG.http}${ENHANCED_RAG_CONFIG.endpoints.upload}`, {
+      method: 'POST',
+      body: mcpFormData
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw error(response.status, errorData.error || 'Upload failed');
+    }
+
+    const result = await response.json();
+
+    return json({
+      success: true,
+      docId: result.docId,
+      filename: result.filename,
+      contentType: result.contentType,
+      ocrPreview: result.ocrText,
+      embeddingPreview: result.embedding,
+      message: 'Evidence uploaded and processed successfully'
+    });
+
+  } catch (err) {
+    console.error('RAG upload error:', err);
+
+    if (err instanceof Error && 'status' in err) {
+      throw err;
+    }
+
+    throw error(500, 'Internal server error during upload');
+  }
+};

@@ -2,16 +2,21 @@
 import {
   defineConfig,
   presetUno,
-  presetAttributify,
-  presetIcons,
-  transformerDirectives,
-  transformerVariantGroup,
+  presetForms,
+  presetRadix,
+  transformerCompileClass,
 } from 'unocss';
 import extractorSvelte from '@unocss/extractor-svelte';
 
 export default defineConfig({
-  presets: [presetUno(), presetAttributify(), presetIcons()],
-  transformers: [transformerDirectives(), transformerVariantGroup()],
+  presets: [
+    presetUno(),
+    presetForms(),
+    presetRadix(),
+  ],
+  transformers: [
+    transformerCompileClass(),
+  ],
   extractors: [extractorSvelte()],
   theme: {
     colors: {

@@ -2,6 +2,7 @@
   "compilerOptions": {
     "moduleResolution": "nodenext", // use NodeNext for modern Node ESM behavior
     "module": "NodeNext", // match moduleResolution for proper ESM support
+    "allowImportingTsExtensions": true, // allow importing .ts extensions in ESM
     "sourceMap": false, // disable source maps for smaller production builds
     "inlineSources": false,
     "target": "ES2023", // bump target for Node 22 features

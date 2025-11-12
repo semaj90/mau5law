@@ -23,9 +23,9 @@
   async function loadDocuments(): Promise<void> {
     loadingDocuments = true;
     try {
-      const res = await fetch('/api/rag/documents?limit=50');
+      const res = await fetch('/api/v1/rag?action=documents');
       const json = await res.json();
-      if (json?.success) documents = json.documents ?? [];
+      if (json?.documents) documents = json.documents;
       else {
         documents = [];
         console.error('Failed to load documents:', json?.error);
@@ -44,7 +44,7 @@
       return;
     deletingId = id;
     try {
-      const res = await fetch(`/api/rag/documents/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/v1/rag/documents/${id}`, { method: 'DELETE' });
       const json = await res.json();
       if (json?.success) {
         documents = documents.filter((d) => d.id !== id);
@@ -62,7 +62,7 @@
   // Check system status on mount
   async function checkStatus(): Promise<void> {
     try {
-      const res = await fetch('/api/rag/status');
+      const res = await fetch('/api/v1/rag?action=health');
       systemStatus = await res.json();
     } catch (err) {
       console.error('Status check failed:', err);
@@ -89,7 +89,7 @@
       formData.append('file', selectedFile);
       if (tags) formData.append('tags', tags);
 
-      const res = await fetch('/api/rag/upload', { method: 'POST', body: formData });
+      const res = await fetch('/api/v1/rag/upload', { method: 'POST', body: formData });
       const json = await res.json();
       if (res.ok) {
         uploadResult = { success: true, ...json };
@@ -119,7 +119,7 @@
         .map((t) => t.trim())
         .filter(Boolean);
       const body = { query: searchQuery, searchType, tags: searchTagsArray, limit: 10 };
-      const res = await fetch('/api/rag/search', {
+      const res = await fetch('/api/v1/rag', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -197,7 +197,7 @@
                 <small>{doc.tags ? doc.tags.join(', ') : ''}</small>
               </div>
               <div class="actions">
-                <button onclick={() => window.open(`/api/rag/documents/${doc.id}/download`)}
+                <button onclick={() => window.open(`/api/v1/rag/documents/${doc.id}/download`)}
                   ><FileText /></button
                 >
                 <button onclick={() => deleteDocument(doc.id)} disabled={deletingId === doc.id}

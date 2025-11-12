@@ -7,7 +7,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
-  import { Dialog } from '$lib/components/ui/dialog'; // Changed to import only Dialog
+  import { DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Updated for bits-ui sub-components (SSR-compatible)
   import { Label } from '$lib/components/ui/label'; // Assuming Label is available for forms
 
   // Interfaces
@@ -61,7 +61,7 @@
 
   // State
   let searchQuery = $state<string>('');
-  let viewMode = $state<'grid' | 'list' | 'cards'>('cards');
+  let viewMode = $state<'grid' | 'list'>('grid'); // Changed to 'grid' | 'list' and initial value to 'grid'
   let showFilters = $state<boolean>(false);
   let selectedThreatLevel = $state<string>('');
   let selectedStatus = $state<string>('');
@@ -361,18 +361,18 @@
         <Download class="w-4 h-4 mr-2" /> Export
       </Button>
       <Dialog bind:open={showAddModal}>
-        <Dialog.Trigger asChild> {/* Changed to Dialog.Trigger */}
+        <DialogTrigger asChild> <!-- Updated to DialogTrigger with asChild for bits-ui -->
           <Button class="bg-yellow-600 text-gray-900 hover:bg-yellow-700">
             <Plus class="w-4 h-4 mr-2" /> Add Person
           </Button>
-        </Dialog.Trigger>
-        <Dialog.Content class="sm:max-w-[425px] bg-gray-900 text-gray-100 border-yellow-600/50"> {/* Changed to Dialog.Content */}
-          <Dialog.Header> {/* Changed to Dialog.Header */
-            <Dialog.Title class="text-yellow-400">Add New Person of Interest</Dialog.Title> {/* Changed to Dialog.Title */}
-            <Dialog.Description class="text-gray-400"> {/* Changed to Dialog.Description */}
+        </DialogTrigger>
+        <DialogContent class="sm:max-w-[425px] bg-gray-900 text-gray-100 border-yellow-600/50"> <!-- Updated to DialogContent -->
+          <DialogHeader> <!-- Updated to DialogHeader -->
+            <DialogTitle class="text-yellow-400">Add New Person of Interest</DialogTitle> <!-- Updated to DialogTitle -->
+            <DialogDescription class="text-gray-400"> <!-- Updated to DialogDescription -->
               Fill in the details for the new person. Click save when you're done.
-            </Dialog.Description>
-          </Dialog.Header>
+            </DialogDescription>
+          </DialogHeader>
           <div class="grid gap-4 py-4">
             {#if error}
               <div class="flex items-center gap-2 text-red-400 bg-red-900/30 p-2 rounded">
@@ -443,7 +443,7 @@
               <Input id="notes" bind:value={newPerson.profileData.notes} class="col-span-3 bg-gray-800 border-gray-700 text-gray-100" />
             </div>
           </div>
-          <Dialog.Footer> {/* Changed to Dialog.Footer */}
+          <DialogFooter> <!-- Updated to DialogFooter -->
             <Button type="submit" onclick={handleAddPerson} disabled={isLoading} class="bg-yellow-600 text-gray-900 hover:bg-yellow-700">
               {#if isLoading}
                 Adding...
@@ -451,13 +451,13 @@
                 Add Person
               {/if}
             </Button>
-          </Dialog.Footer>
-        </Dialog.Content>
+          </DialogFooter>
+        </DialogContent>
       </Dialog>
     </div>
   </header>
 
-  <div class="flex flex-col md:flex-row gap-6">
+  <div class="flex flex-col md:flex-row gap-6"> <!-- Added UnoCSS flex classes for layout -->
     <!-- Sidebar / Filters -->
     <aside class={cn("w-full md:w-64 p-4 bg-gray-900 border border-yellow-600/30 rounded-lg", showFilters ? 'block' : 'hidden md:block')}>
       <div class="flex justify-between items-center mb-4">
@@ -562,7 +562,7 @@
           <Button variant="outline" size="icon" onclick={() => (showFilters = !showFilters)} class="md:hidden border-yellow-600 text-yellow-400 hover:bg-yellow-900/20">
             <Filter class="w-4 h-4" />
           </Button>
-          <Button variant="outline" size="icon" onclick={() => (viewMode = 'cards')} class={cn("border-yellow-600 text-yellow-400 hover:bg-yellow-900/20", viewMode === 'cards' && 'bg-yellow-900/30')}>
+          <Button variant="outline" size="icon" onclick={() => (viewMode = 'grid')} class={cn("border-yellow-600 text-yellow-400 hover:bg-yellow-900/20", viewMode === 'grid' && 'bg-yellow-900/30')}> <!-- Fixed to set 'grid' -->
             <LayoutGrid class="w-4 h-4" />
           </Button>
           <Button variant="outline" size="icon" onclick={() => (viewMode = 'list')} class={cn("border-yellow-600 text-yellow-400 hover:bg-yellow-900/20", viewMode === 'list' && 'bg-yellow-900/30')}>
@@ -596,9 +596,9 @@
           </Button>
         </div>
       {:else}
-        {#if viewMode === 'cards'}
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {#each filteredPersons as (person: PersonOfInterest) (person.id)} {/* Explicitly typed person */}
+        {#if viewMode === 'grid'} <!-- Updated to check 'grid' -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> <!-- Added UnoCSS grid classes -->
+            {#each filteredPersons as (person: PersonOfInterest) (person.id)}
               <Card class="person-card bg-gray-900 border-yellow-600/30 text-gray-100">
                 <div class="flex items-center gap-4 p-4 border-b border-yellow-600/20">
                   <div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-gray-800 flex items-center justify-center text-yellow-400 text-xl font-bold">
@@ -633,9 +633,9 @@
             {/each}
           </div>
         {:else if viewMode === 'list'}
-          <div class="space-y-2">
-            {#each filteredPersons as (person: PersonOfInterest) (person.id)} {/* Explicitly typed person */}
-              <Card class="bg-gray-900 border-yellow-600/30 text-gray-100 p-4 flex items-center justify-between">
+          <div class="space-y-2"> <!-- Added UnoCSS space class -->
+            {#each filteredPersons as (person: PersonOfInterest) (person.id)}
+              <Card class="bg-gray-900 border-yellow-600/30 text-gray-100 p-4 flex items-center justify-between"> <!-- Added UnoCSS flex classes -->
                 <div class="flex items-center gap-4">
                   <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-800 flex items-center justify-center text-yellow-400 text-sm font-bold">
                     {#if person.profileData.photo}
@@ -669,6 +669,7 @@
 </div>
 
 <style>
+  @import 'nes.css/css/nes.min.css'; /* Kept NES.css for retro styling */
   /* Custom scrollbar for the interface */
   :global(.yorha-detective-interface *::-webkit-scrollbar) {
     width: 8px;
