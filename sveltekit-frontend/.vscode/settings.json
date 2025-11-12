@@ -1,10 +1,4 @@
-{
-  // ========================================
-  // GPU-ACCELERATED VS CODE CONFIGURATION
-  // ========================================
-
-  // GPU Rendering & Hardware Acceleration
-  "window.titleBarStyle": "custom",
+{  // ========================================  // GPU-ACCELERATED VS CODE CONFIGURATION  // ========================================  // GPU Rendering & Hardware Acceleration  "window.titleBarStyle": "custom",
   "workbench.experimental.useWebGL": true,
   "terminal.integrated.gpuAcceleration": "on",
   "editor.renderControlCharacters": false,
@@ -38,4 +32,5 @@
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
     }
-  },
+  }
+}
