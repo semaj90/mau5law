@@ -38,9 +38,10 @@
       "type": "shell",
       "command": "pwsh -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/cpp-ast-exporter/phase65_adaptive_rebuilder.ps1\"",
       "options": {
-        "env": {
-          "PUBLIC_VITE_SIMD_HTTP_ENDPOINT": "http://localhost:8097/json"
-        }
+        "cwd": "${workspaceFolder}"
+      },
+      "env": {
+        "PUBLIC_VITE_SIMD_HTTP_ENDPOINT": "http://localhost:8097/json"
       },
       "group": "build",
       "presentation": {
@@ -652,7 +653,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\scripts\open-user-toolset.ps1"
+        "${workspaceFolder}\\scripts\\open-user-toolset.ps1"
       ],
       "presentation": {
         "echo": true,
@@ -684,7 +685,7 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "Get-Content -Path '${workspaceFolder}\logs\hmr-errors.log' -Wait -Tail 20"
+        "Get-Content -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Wait -Tail 20"
       ],
       "presentation": {
         "echo": true,
@@ -700,11 +701,12 @@
       "args": [
         "-NoProfile",
         "-Command",
-        "Remove-Item -Path '${workspaceFolder}\logs\hmr-errors.log' -Force -ErrorAction SilentlyContinue"
+        "Remove-Item -Path '${workspaceFolder}\\logs\\hmr-errors.log' -Force -ErrorAction SilentlyContinue"
       ],
       "presentation": {
         "echo": true,
-        "reveal": "silent"
+        "reveal": "always",
+        "panel": "dedicated"
       },
       "problemMatcher": []
     },
@@ -712,7 +714,7 @@
       "label": "Analyze WebSocket Errors",
       "type": "shell",
       "command": "powershell",
-      "args": ["-NoProfile", "-File", "${workspaceFolder}\scripts\analyze-ws-errors.ps1"],
+      "args": ["-NoProfile", "-File", "${workspaceFolder}\\scripts\\analyze-ws-errors.ps1"],
       "presentation": {
         "echo": true,
         "reveal": "always",
@@ -729,7 +731,7 @@
         "-ExecutionPolicy",
         "Bypass",
         "-File",
-        "${workspaceFolder}\start-litellm-proxy.ps1"
+        "${workspaceFolder}\\start-litellm-proxy.ps1"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -787,61 +789,33 @@
       "detail": "Checks if LiteLLM proxy is running and shows available models"
     },
     {
-      "label": "≡ƒÜÇ Start MCP Context7 SIMD Server",
+      "label": "≡ƒÜÇ Start Phase 64 MCP Server",
       "type": "shell",
-      "command": "node",
-      "args": ["${workspaceFolder}\scripts\mcp-context7-optimized.mjs"],
+      "command": "npx",
+      "args": ["tsx", "src/server.ts"],
       "options": {
-        "cwd": "${workspaceFolder}",
-        "env": {
-          "MCP_PORT": "3002",
-          "MCP_WORKERS": "1",
-          "REDIS_PASSWORD": "redis",
-          "DATABASE_URL": "postgresql://legal_admin:123456@localhost:5432/legal_ai_db",
-          "RTX_3060_OPTIMIZATION": "true",
-          "CONTEXT7_MULTICORE": "true",
-          "CONTEXT7_SIMD": "true"
-        }
+        "cwd": "${workspaceFolder}"
       },
-      "group": {
-        "kind": "build",
-        "isDefault": false
-      },
+      "group": "build",
+      "isBackground": true,
       "presentation": {
         "echo": true,
         "reveal": "always",
         "focus": false,
-        "panel": "new",
+        "panel": "dedicated",
         "showReuseMessage": true,
         "clear": false
       },
-      "isBackground": true,
-      "problemMatcher": {
-        "pattern": {
-          "regexp": "^(.*)$",
-          "file": 1,
-          "location": 2,
-          "message": 3
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "Starting SIMD-Optimized MCP Context7 Server",
-          "endsPattern": "MCP Context7 Server ready"
-        }
-      },
-      "detail": "SIMD-optimized MCP server with Redis cache, PostgreSQL+pgvector (8 workers, port 3002)",
-      "icon": {
-        "id": "rocket",
-        "color": "terminal.ansiCyan"
-      }
+      "problemMatcher": [],
+      "detail": "Start the Phase 64 unified MCP server (SIMD + Redis + pgvector + Ollama) on port 3003"
     },
     {
-      "label": "≡ƒôè Check MCP Context7 Status",
+      "label": "≡ƒôè Check Phase 64 MCP Server Status",
       "type": "shell",
       "command": "powershell",
       "args": [
         "-Command",
-        "try { $health = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/health' -Method Get; Write-Host 'Γ£à MCP Context7 Server is running' -ForegroundColor Green; Write-Host ('Workers: ' + $health.workers) -ForegroundColor Cyan; Write-Host ('Redis: ' + $health.redis) -ForegroundColor Yellow; Write-Host ('PostgreSQL: ' + $health.postgres) -ForegroundColor Magenta; Write-Host ('SIMD: ' + $health.simd) -ForegroundColor Blue; Write-Host ('Cache Hit Ratio: ' + [math]::Round($health.cacheStats.ratio * 100, 2) + '%') -ForegroundColor Green; $metrics = Invoke-RestMethod -Uri 'http://localhost:3002/mcp/metrics' -Method Get; Write-Host ('Memory RSS: ' + [math]::Round($metrics.memory.rss/1MB, 2) + ' MB') -ForegroundColor Yellow } catch { Write-Host 'Γ¥î MCP Context7 Server is not running' -ForegroundColor Red; Write-Host 'Run task: ≡ƒÜÇ Start MCP Context7 SIMD Server' -ForegroundColor Yellow }"
+        "try { $health = Invoke-WebRequest -Uri 'http://localhost:3003/mcp/health' -Method GET -TimeoutSec 5; $json = $health.Content | ConvertFrom-Json; Write-Host 'Γ£à Phase 64 MCP Server is running' -ForegroundColor Green; Write-Host ('Health: ' + $json.ok) -ForegroundColor Cyan; Write-Host ('Workers: ' + $json.workers) -ForegroundColor Yellow } catch { Write-Host 'Γ¥î Phase 64 MCP Server is not running' -ForegroundColor Red; Write-Host 'Run task: ≡ƒÜÇ Start Phase 64 MCP Server' -ForegroundColor Yellow }"
       ],
       "group": "test",
       "presentation": {
@@ -853,7 +827,7 @@
         "clear": true
       },
       "problemMatcher": [],
-      "detail": "Checks MCP Context7 server health, cache stats, and integrations"
+      "detail": "Check Phase 64 MCP server health and status on port 3003"
     },
     {
       "label": "≡ƒÄ» Start Complete AI Stack (LiteLLM + MCP + Dev)",
@@ -880,7 +854,7 @@
       "label": "≡ƒÄ¿ Demo: SharedArrayBuffer + WebGPU Pattern",
       "type": "shell",
       "command": "node",
-      "args": ["${workspaceFolder}\scripts\mcp-webgpu-shared-buffer.mjs"],
+      "args": ["${workspaceFolder}\\scripts\\mcp-webgpu-shared-buffer.mjs"],
       "group": "test",
       "presentation": {
         "echo": true,
@@ -1520,8 +1494,10 @@
       "type": "shell",
       "command": "pwsh",
       "args": [
-        "-ExecutionPolicy","Bypass",
-        "-File","${workspaceFolder}/start-phase53-agentic.ps1",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/start-phase53-agentic.ps1",
         "-DryRun"
       ],
       "presentation": { "reveal": "always" },
@@ -1531,29 +1507,22 @@
       "label": "Legal AI: Development Environment Status",
       "type": "shell",
       "command": "npm",
-      "args": ["run","legal-ai:development-environment-status"],
+      "args": ["run", "legal-ai:development-environment-status"],
       "presentation": { "reveal": "always" }
     },
     {
       "label": "Phase 53 Agentic Orchestrator",
       "type": "shell",
       "command": "pwsh",
-      "args": [
-        "-ExecutionPolicy","Bypass",
-        "-File","${workspaceFolder}/start-phase53-agentic.ps1"
-      ],
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/start-phase53-agentic.ps1"],
       "group": { "kind": "build", "isDefault": true },
       "presentation": { "reveal": "always" }
-    }
-    ,
+    },
     {
       "label": " Phase52: Start SIMD HTTP Fallback (Go)",
       "type": "shell",
       "command": "go",
-      "args": [
-        "run",
-        "${workspaceFolder}/go-microservice/simd-http-server.go"
-      ],
+      "args": ["run", "${workspaceFolder}/go-microservice/simd-http-server.go"],
       "isBackground": true,
       "problemMatcher": [
         {
@@ -1581,9 +1550,7 @@
       "label": "🧩 Phase52: Run AST Repair (SIMD MinIO)",
       "type": "shell",
       "command": "node",
-      "args": [
-        "${workspaceFolder}/sveltekit-frontend/scripts/phase52-ast-repair.mjs"
-      ],
+      "args": ["${workspaceFolder}/sveltekit-frontend/scripts/phase52-ast-repair.mjs"],
       "dependsOn": ["🧠 Phase52: Start SIMD HTTP Fallback (Go)"],
       "problemMatcher": []
     },
@@ -1658,10 +1625,7 @@
     },
     {
       "label": "Phase52: Full Pipeline (FFI + Isolate)",
-      "dependsOn": [
-        "Phase52: Isolate Top Errors",
-        "Phase52: Repair TypeScript (SIMD FFI Direct)"
-      ],
+      "dependsOn": ["Phase52: Isolate Top Errors", "Phase52: Repair TypeScript (SIMD FFI Direct)"],
       "dependsOrder": "sequence",
       "group": "build",
       "presentation": {
@@ -1678,11 +1642,7 @@
       "label": "⚙️ Run Phase52 Auto (Docker Redis + Go SIMD + Benchmark)",
       "type": "shell",
       "command": "pwsh",
-      "args": [
-        "-ExecutionPolicy", "Bypass",
-        "-File",
-        "${workspaceFolder}/start-phase52.ps1"
-      ],
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/start-phase52.ps1"],
       "options": {
         "envFile": "${workspaceFolder}/.env.phase52.local"
       },
@@ -1693,11 +1653,7 @@
       "label": "🤖 Run Phase53 Agentic Fix (Gemma3-Legal)",
       "type": "shell",
       "command": "pwsh",
-      "args": [
-        "-ExecutionPolicy", "Bypass",
-        "-File",
-        "${workspaceFolder}/start-phase53.ps1"
-      ],
+      "args": ["-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/start-phase53.ps1"],
       "options": {
         "envFile": "${workspaceFolder}/.env.phase52.local"
       },
@@ -1705,14 +1661,24 @@
       "presentation": { "reveal": "always", "panel": "dedicated" }
     },
     {
-      "label": "Phase52 → Phase53 Chain (Full GPU Pipeline)",
-      "dependsOn": [
-        "⚙️ Run Phase52 Auto (Docker Redis + Go SIMD + Benchmark)",
-        "🤖 Run Phase53 Agentic Fix (Gemma3-Legal)"
-      ],
-      "dependsOrder": "sequence",
+      "label": "Phase66: Stop Full AI Stack",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": ["-f", "docker-compose.phase66.yml", "down"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "group": "build",
-      "presentation": { "echo": true, "reveal": "always", "panel": "dedicated" }
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Stop and remove all Phase 66 services and networks"
     }
   ],
   "compounds": [

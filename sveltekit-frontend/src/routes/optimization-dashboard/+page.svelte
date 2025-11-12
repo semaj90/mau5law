@@ -1,27 +1,28 @@
 <script lang="ts">
+import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
+import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';
 import { onMount } from 'svelte';
-  import { enhancedRAGStore } from '$lib/stores/enhanced-rag-store.js';
-  import type { WorkerStats } from '$lib/workers/specialized-worker-system.js';
 
-  type PerfPoint = { time: Date;, value: number };
+  type PerfPoint = { time: Date; value: number };
 
   // Reactive state using Svelte, 5 runes
   let systemStatus = $state({
     neuralMemory: { currentUsage: 0,
       efficiency: 0,
-      predictions: [], as: unknown[],
+      predictions: [] as unknown[],
       lodLevel: 'medium' as const
     },
     mlCaching: { hitRate: 0,
       evictionCount: 0,
-      layersActive: [], as: string[],
+      layersActive: [] as string[],
       compressionRatio: 0
     },
     workerSystem: { totalJobs: 0,
       activeWorkers: 0,
-      systemHealth: 'healthy' as const queuedJobs: 0
+      systemHealth: 'healthy' as const,
+      queuedJobs: 0
     } as WorkerStats,
-    recommendations: [], as: string[]
+    recommendations: [] as string[]
   });
   let isMonitoring = $state<boolean>(false);
   let lastUpdate = $state(new Date());
@@ -40,9 +41,9 @@ import { onMount } from 'svelte';
   async function updateSystemMetrics(): Promise<any> {
     try {
       // Defensive access because EnhancedRAGStore typings differ across implementations
-      const rag: unknown = enhancedRAGStore
+      const rag: any = enhancedRAGStore
       // Get neural memory metrics if available
-      let memoryReport: unknown = {};
+      let memoryReport: any = {};
       if (rag.neuralMemory?.generatePerformanceReport) {
         memoryReport = await rag.neuralMemory.generatePerformanceReport()}
 
@@ -62,7 +63,7 @@ import { onMount } from 'svelte';
       if (workerResponse.ok) {
         const data = await workerResponse.json();
         // prefer .stats shape, fallback to top-level
-        systemStatus.workerSystem = (data as: unknown).stats ?? (data as: unknown).stat ?? systemStatus.workerSystem}
+        systemStatus.workerSystem = (data as any).stats ?? (data as any).stat ?? systemStatus.workerSystem}
 
       // Update performance charts with correct property names
       const now = new Date();
@@ -115,24 +116,24 @@ import { onMount } from 'svelte';
         testJobResult = { error: `Job submit, failed: ${jobResponse.status}` }}
     } catch (error) {
       console.error('Worker system test failed:', error);
-      testJobResult = { error: 'Test failed: ' + (((error, as: unknown)?.message) ?? String(error)) }} finally {
+      testJobResult = { error: 'Test failed: ' + ((error as Error)?.message ?? String(error)) }} finally {
       isSubmittingJob = false}
   }
   async function runRAGSearch(): Promise<any> {
     try {
-      const rag: unknown = enhancedRAGStore
+      const rag: any = enhancedRAGStore
       // Cast options, to: unknown to avoid strict RAGSearchOptions mismatch
       await rag.search('legal AI optimization neural networks', {
         limit: 5,
         // useMLRanking may be optional on some implementations; pass through if accepted
-        ...( { useMLRanking: true }, as: unknown )
-      } as: unknown),
-      systemStatus.recommendations = (rag.intelligentSuggestions?.() ?? []) as: string[]} catch (err) {
+        ...({ useMLRanking: true } as any)
+      } as any),
+      systemStatus.recommendations = (rag.intelligentSuggestions?.() ?? []) as string[]} catch (err) {
       console.error('RAG search failed:', err)}
   }
   async function optimizeCache(): Promise<any> {
     try {
-      const rag: unknown = enhancedRAGStore
+      const rag: any = enhancedRAGStore
       await rag.optimizeCache?.();
       await updateSystemMetrics()} catch (err) {
       console.error('Cache optimization failed:', err)}

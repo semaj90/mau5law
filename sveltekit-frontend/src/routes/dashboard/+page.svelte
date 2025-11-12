@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
   import EvidenceCard from '$lib/ui/EvidenceCard.svelte';
-  import { Activity, BarChart3, FileText, Plus, Search, Users } from 'lucide-svelte';
+  import { Activity, BarChart, FileText, Plus, Search, Users } from 'lucide-svelte';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
 
@@ -137,7 +137,7 @@
 
     <div class="stat-card">
       <div class="stat-icon">
-        <BarChart3 size={24} />
+        <BarChart size={24} />
       </div>
       <div class="stat-content">
         <h3 class="stat-number">{stats.totalEvidence}</h3>

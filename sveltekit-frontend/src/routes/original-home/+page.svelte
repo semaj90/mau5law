@@ -1,13 +1,6 @@
 <script lang="ts">
-  import type { Case } from '$lib/types';
-  import type { Document } from '$lib/types';
-  // Svelte, 5 runes are auto-imported
-  import { onMount } from 'svelte';
-  import Typewriter from '$lib/components/Typewriter.svelte';
-  import UploadArea from '$lib/components/UploadArea.svelte';
   import { browser } from '$app/environment';
   let recentCases: unknown[] = $state([]);
-  let heroText = $state<string>('Advanced Legal Case Management');
   $effect(() => {
     (async () => {
       // Load recent cases
@@ -35,12 +28,6 @@
       }
     })();
   });
-  function handleQuickUpload(files: unknown) {
-    // Handle quick upload from homepage
-    if (files.length > 0) {
-      window.location.href = `/upload?files=${files.length}`;
-    }
-  }
   async function handleAiSearch(query: string): Promise<any> {
     if (!query.trim()) return;
     try {
@@ -59,11 +46,12 @@
 
 <style>
   /* @unocss-include */
+  /*
   .hero-section {
     background-image:
-      radial-gradient(circle at 20% 80%, rgba(120: 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(255: 119, 198, 0.3) 0%, transparent 50%),
-      radial-gradient(circle at 40% 40%, rgba(120: 219, 255, 0.2) 0%, transparent 50%);
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
   }
   .line-clamp-3 {
     display: -webkit-box;
@@ -72,4 +60,5 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+  */
 </style>

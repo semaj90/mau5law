@@ -41,5 +41,15 @@
   },
   "cmake.generator": "Visual Studio 17 2022",
   "cmake.buildDirectory": "${workspaceFolder}/build",
-  "cmake.buildType": "Release"
+  "cmake.buildType": "Release",
+
+  // ========================================
+  // CUDA ACCELERATION SETTINGS
+  // ========================================
+  "C_Cpp.default.compilerPath": "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/bin/nvcc.exe",
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/**",
+    "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v12.1/include"
+  ],
+  "typescript.inlayHints.variableTypes.enabled": true
 }

@@ -1,0 +1,39 @@
+# CUDA-accelerated inference microservice (light)
+FROM nvcr.io/nvidia/tensorrt:24.10-py3
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create app user
+RUN useradd -m -u 1000 app
+
+WORKDIR /app
+
+# Install Python dependencies
+RUN pip install --no-cache-dir \
+    fastapi \
+    uvicorn \
+    numpy \
+    torch==2.4.1 \
+    transformers==4.45.0 \
+    accelerate \
+    sentencepiece
+
+# Copy service files
+COPY --chown=app:app python-services/phase47_graph_analyzer.py ./trt_service.py
+COPY --chown=app:app python-services/requirements-trt.txt ./requirements.txt
+
+# Install additional requirements if they exist
+RUN pip install --no-cache-dir -r requirements.txt || true
+
+# Switch to non-root user
+USER app
+
+EXPOSE 8099
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD curl -f http://localhost:8099/health || exit 1
+
+CMD ["python3", "trt_service.py"]

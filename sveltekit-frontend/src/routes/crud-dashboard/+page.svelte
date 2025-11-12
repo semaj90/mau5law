@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CRUDDashboard from '$lib/components/CRUDDashboard.svelte';
+  // Removed unused import: import CRUDDashboard from '$lib/components/CRUDDashboard.svelte';
 </script>
 
 <main class="page-repair">
@@ -8,37 +8,18 @@
 </main>
 
 <style>
-  /* @unocss-include */
-  .page-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 3rem 2rem;
-    margin: -2rem -2rem 2rem -2rem;
+  .page-repair {
     text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
   }
-  .page-title h1 {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin:
-      0,
-      0 1rem 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  .page-repair h1 {
+    color: #ffd700;
+    font-size: 2rem;
+    margin-bottom: 1rem;
   }
-  .page-title p {
-    font-size: 1.125rem;
-    margin: 0;
-    opacity: 0.9;
-  }
-  @media (max-width: 768px) {
-    .page-header {
-      padding: 2rem 1rem;
-      margin: -1rem -1rem 1rem -1rem;
-    }
-    .page-title h1 {
-      font-size: 2rem;
-    }
-    .page-title p {
-      font-size: 1rem;
-    }
+  .page-repair p {
+    color: #b0b0b0;
   }
 </style>

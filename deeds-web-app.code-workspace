@@ -70,7 +70,9 @@
 
     // Terminal configuration
     "terminal.integrated.defaultProfile.windows": "PowerShell",
-    "powershell.cwd": "Main Project"
+    "powershell.cwd": "Main Project",
+    "powershell.codeFormatting.avoidSemicolonsAsLineTerminators": true,
+    "powershell.developer.editorServicesWaitForDebugger": true
   },
 
   "extensions": {

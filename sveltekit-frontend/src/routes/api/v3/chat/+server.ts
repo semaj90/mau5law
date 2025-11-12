@@ -1,10 +1,10 @@
 import { json, type RequestHandler } from '@sveltejs/kit';
-import { ollamaChatStream } from '$lib/services/ollamaChatStream'; // Changed to named import
+import ollamaChatStream from '$lib/services/ollamaChatStream'; // Changed to default import
 import * as vectorDBService from '$lib/server/services/vectorDBService'; // Namespace import remains
-import { chatRateLimiter } from '$lib/server/middleware/rate-limiter'; // Changed to named import
+import { chatRateLimiter } from '$lib/server/middleware/rate-limiter'; // Import remains, file created
 import { createHash } from 'node:crypto';
-import { getOllamaEndpoint } from '$lib/utils/ollama'; // Import centralized Ollama endpoint helper
-import { logger } from '$lib/server/logger'; // Changed to named import
+import { getOllamaEndpoint, getChatModel } from '$lib/utils/ollama'; // Updated to import model getter
+import logger from '$lib/server/logger'; // Reverted to default import
 
 // Define an interface for the expected methods from vectorDBService
 interface VectorDBServiceWithChatMethods {
@@ -208,10 +208,9 @@ function sanitizeThinkingType(t?: string): AllowedThinking | undefined {
 export const GET: RequestHandler = async ({ url, request }) => {
   return await withRateLimit(request, async () => {
     const requestId = generateRequestId();
-    const requestLogger = logger.withRequestId(requestId);
     const startTime = Date.now();
     try {
-      requestLogger.info('Health check request received', 'chat-api-v3');
+      logger.info(`[${requestId}] Health check request received`);
       const action = url.searchParams.get('action') || 'health';
 
       if (action === 'health') {
@@ -240,10 +239,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
           performance: { responseTimeMs: Date.now() - startTime },
           timestamp: new Date().toISOString(),
         };
-        requestLogger.info(`Health check completed: ${status}`, 'chat-api-v3', {
-          duration: Date.now() - startTime,
-          health: healthChecks,
-        });
+        logger.info(`[${requestId}] Health check completed: ${status}`);
         return json(response, { status: overallHealth ? 200 : 503 });
       }
 
@@ -252,7 +248,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '5'), 20);
 
         if (!query || query.length < 3) {
-          requestLogger.warn('Invalid search query', 'chat-api-v3', { query });
+          logger.warn('Invalid search query');
           return json(
             {
               success: false,
@@ -264,11 +260,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         }
 
         const results = await searchSimilarChats(query, limit, 0.6);
-        requestLogger.info(`Search completed: ${results.length} results`, 'chat-api-v3', {
-          query,
-          resultCount: results.length,
-          duration: Date.now() - startTime,
-        });
+        logger.info(`Search completed: ${results.length} results`);
         return json({
           success: true,
           requestId,
@@ -279,7 +271,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         });
       }
 
-      requestLogger.warn('Invalid action requested', 'chat-api-v3', { action });
+      logger.warn('Invalid action requested');
       return json(
         {
           success: false,
@@ -290,13 +282,7 @@ export const GET: RequestHandler = async ({ url, request }) => {
         { status: 400 }
       );
     } catch (error: Error | unknown) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      requestLogger.error(
-        'GET request failed',
-        'chat-api-v3',
-        error instanceof Error ? error : undefined,
-        { duration: Date.now() - startTime, url: url.toString(), errorMessage }
-      );
+      logger.error(`[${requestId}] GET request failed`);
       return json(
         {
           success: false,
@@ -335,7 +321,6 @@ interface RateLimitResult {
 export const POST: RequestHandler = async ({ request }) => {
   return await withRateLimit(request, async () => {
     const requestId = generateRequestId();
-    const requestLogger = logger.withRequestId(requestId);
     const startTime = Date.now();
 
     try {
@@ -346,7 +331,7 @@ export const POST: RequestHandler = async ({ request }) => {
         body = (await request.json()) as EnhancedChatRequest;
       } catch (parseError: Error | unknown) {
         const errorMessage = parseError instanceof Error ? parseError.message : String(parseError);
-        requestLogger.warn('Invalid JSON in request body', 'chat-api-v3', { errorMessage });
+        logger.warn('Invalid JSON in request body');
         return json(
           {
             success: false,
@@ -361,7 +346,7 @@ export const POST: RequestHandler = async ({ request }) => {
       // Validate input
       const validation = validateChatRequest(body);
       if (!validation.valid) {
-        requestLogger.warn('Request validation failed', 'chat-api-v3', { error: validation.error });
+        logger.warn('Request validation failed');
         return json(
           {
             success: false,
@@ -377,7 +362,7 @@ export const POST: RequestHandler = async ({ request }) => {
         message,
         messages,
         conversationId = `conv_${Date.now()}_${requestId.slice(-8)}`,
-        model = 'gemma3-legal:latest',
+        model = getChatModel(), // Updated to use centralized model
         temperature = 0.1,
         maxTokens = 2048,
         stream = false,
@@ -393,15 +378,7 @@ export const POST: RequestHandler = async ({ request }) => {
         message || (messages && messages.length > 0 ? messages[messages.length - 1].content : '');
 
       // Use requestLogger directly since withConversation might not be available
-      const conversationLogger = requestLogger.child({ conversationId });
-      conversationLogger.info('Chat request started', 'chat-api-v3', {
-        messageLength: userMessage.length,
-        model,
-        temperature,
-        maxTokens,
-        stream,
-        useVectorSearch,
-      });
+      logger.info(`[${requestId}] Chat request started`);
 
       // For streaming responses
       if (stream) {
@@ -409,7 +386,7 @@ export const POST: RequestHandler = async ({ request }) => {
         const readable = new ReadableStream({
           async start(controller) {
             try {
-              conversationLogger.info('Starting streaming response', 'chat-api-v3');
+              logger.info(`[${requestId}] Starting streaming response`);
               const streamGenerator = ollamaChatStream({
                 // Removed extra ()
                 message: userMessage,
@@ -470,17 +447,9 @@ export const POST: RequestHandler = async ({ request }) => {
               }
               controller.enqueue(encoder.encode('data: [DONE]\n\n'));
               controller.close();
-              conversationLogger.info('Streaming completed', 'chat-api-v3', {
-                duration: Date.now() - startTime,
-              });
+              logger.info(`[${requestId}] Streaming completed`);
             } catch (error: Error | unknown) {
-              const errorMessage = error instanceof Error ? error.message : String(error);
-              conversationLogger.error(
-                'Streaming response failed',
-                'chat-api-v3',
-                error instanceof Error ? error : undefined,
-                { errorMessage }
-              );
+              logger.error(`[${requestId}] Streaming response failed`);
               const errorChunk = {
                 type: 'error',
                 error: 'An error occurred while processing your request',
@@ -506,7 +475,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       // For non-streaming responses
-      conversationLogger.info('Starting non-streaming response', 'chat-api-v3');
+      logger.info(`[${requestId}] Starting non-streaming response`);
       let fullResponse = ''; // Declared here
       let sources: VectorSearchResult[] = []; // Use the defined interface
       let vectorSearchUsed = false;
@@ -537,12 +506,7 @@ export const POST: RequestHandler = async ({ request }) => {
       }
 
       const processingTime = Date.now() - startTime;
-      conversationLogger.info('Chat response completed', 'chat-api-v3', {
-        responseLength: fullResponse.length,
-        vectorSearchUsed,
-        sourcesFound: sources.length,
-        duration: processingTime,
-      });
+      logger.info(`[${requestId}] Chat response completed`);
 
       const response: ChatResponse = {
         success: true,
@@ -563,16 +527,7 @@ export const POST: RequestHandler = async ({ request }) => {
       return json(response);
     } catch (error: Error | unknown) {
       const processingTime = Date.now() - startTime;
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      requestLogger.error(
-        'Chat request failed',
-        'chat-api-v3',
-        error instanceof Error ? error : undefined,
-        {
-          duration: processingTime,
-          errorMessage,
-        }
-      );
+      logger.error(`[${requestId}] Chat request failed`);
       return json(
         {
           success: false,
@@ -602,9 +557,9 @@ async function searchSimilarChats(
   } catch (error) {
     logger.error(
       'Error searching similar chats',
-      'chat-api-v3',
-      error instanceof Error ? error : undefined,
-      {
+      { // Combined arguments into a single context object
+        tag: 'chat-api-v3', // This line is already correct and serves as an example
+        error: error instanceof Error ? error : undefined,
         query,
         limit,
         threshold,
