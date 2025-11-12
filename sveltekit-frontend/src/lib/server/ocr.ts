@@ -1,4 +1,4 @@
-import pdfParse = require('pdf-parse');
+import * as pdfParse from 'pdf-parse';
 
 export class OCRService {
   async extractText(file: File) {

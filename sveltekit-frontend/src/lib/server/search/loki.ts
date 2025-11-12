@@ -1,10 +1,13 @@
 import Loki from 'lokijs';
 
-export interface LokiSearchOptions {
-  collection: string;
-  indices?: string[];
-  unique?: string[];
+export interface LokiCollectionOptions {
+  indices?: readonly string[];
+  unique?: readonly string[];
   autoupdate?: boolean;
+}
+
+export interface LokiSearchOptions extends LokiCollectionOptions {
+  collection: string;
 }
 
 export interface SearchQuery {
@@ -28,6 +31,7 @@ export interface SearchResult<T = any> {
   total: number;
   page?: number;
   limit?: number;
+  collection?: string;
 }
 
 export class LokiSearchService {
@@ -45,14 +49,17 @@ export class LokiSearchService {
   /**
    * Create or get a collection
    */
-  getCollection<T = any>(name: string, options: LokiSearchOptions = {}): Collection<T> {
+  getCollection<T extends object = any>(
+    name: string,
+    options: LokiCollectionOptions = {}
+  ): Collection<T> {
     if (this.collections.has(name)) {
-      return this.collections.get(name)!;
+      return this.collections.get(name)! as Collection<T>;
     }
 
     const collection = this.db.addCollection<T>(name, {
-      indices: options.indices,
-      unique: options.unique,
+      indices: options.indices ? ([...options.indices] as (keyof T)[]) : undefined,
+      unique: options.unique ? ([...options.unique] as (keyof T)[]) : undefined,
       autoupdate: options.autoupdate ?? true,
     });
 
@@ -63,46 +70,49 @@ export class LokiSearchService {
   /**
    * Insert a document into a collection
    */
-  insert<T = any>(collectionName: string, doc: T): T & LokiObj {
+  insert<T extends object = any>(collectionName: string, doc: T): T & LokiObj {
     const collection = this.getCollection<T>(collectionName);
-    return collection.insert(doc);
+    return collection.insert(doc) as T & LokiObj;
   }
 
   /**
    * Insert multiple documents into a collection
    */
-  insertMany<T = any>(collectionName: string, docs: T[]): (T & LokiObj)[] {
+  insertMany<T extends object = any>(collectionName: string, docs: T[]): (T & LokiObj)[] {
     const collection = this.getCollection<T>(collectionName);
-    return docs.map(doc => collection.insert(doc));
+    return collection.insert(docs) as (T & LokiObj)[];
   }
 
   /**
    * Find documents matching a query
    */
-  find<T = any>(collectionName: string, query: SearchQuery = {}): (T & LokiObj)[] {
+  find<T extends object = any>(collectionName: string, query: SearchQuery = {}): (T & LokiObj)[] {
     const collection = this.getCollection<T>(collectionName);
-    return collection.find(query);
+    return collection.find(query as any);
   }
 
   /**
    * Find one document matching a query
    */
-  findOne<T = any>(collectionName: string, query: SearchQuery = {}): (T & LokiObj) | null {
+  findOne<T extends object = any>(
+    collectionName: string,
+    query: SearchQuery = {}
+  ): (T & LokiObj) | null {
     const collection = this.getCollection<T>(collectionName);
-    return collection.findOne(query);
+    return collection.findOne(query as any);
   }
 
   /**
    * Find documents with pagination
    */
-  findPaginated<T = any>(
+  findPaginated<T extends object = any>(
     collectionName: string,
     query: SearchQuery = {},
     page: number = 1,
     limit: number = 10
   ): SearchResult<T & LokiObj> {
     const collection = this.getCollection<T>(collectionName);
-    const results = collection.chain().find(query);
+    const results = collection.chain().find(query as any);
     const total = results.count();
 
     const data = results
@@ -122,13 +132,18 @@ export class LokiSearchService {
   /**
    * Update documents matching a query
    */
-  update<T = any>(
+  update<T extends object = any>(
     collectionName: string,
     query: SearchQuery,
     updateFn: (doc: T & LokiObj) => void
   ): number {
     const collection = this.getCollection<T>(collectionName);
-    return collection.updateWhere(updateFn, query);
+    const docs = collection.find(query as any);
+    docs.forEach((doc) => {
+      updateFn(doc);
+      collection.update(doc);
+    });
+    return docs.length;
   }
 
   /**
@@ -136,13 +151,17 @@ export class LokiSearchService {
    */
   remove(collectionName: string, query: SearchQuery): number {
     const collection = this.getCollection(collectionName);
-    return collection.removeWhere(query);
+    const docsToRemove = collection.find(query as any);
+    if (docsToRemove.length > 0) {
+      collection.remove(docsToRemove);
+    }
+    return docsToRemove.length;
   }
 
   /**
    * Get document by ID
    */
-  getById<T = any>(collectionName: string, id: string): (T & LokiObj) | null {
+  getById<T extends object = any>(collectionName: string, id: number): (T & LokiObj) | null {
     const collection = this.getCollection<T>(collectionName);
     return collection.get(id);
   }
@@ -150,7 +169,11 @@ export class LokiSearchService {
   /**
    * Update document by ID
    */
-  updateById<T = any>(collectionName: string, id: string, updates: Partial<T>): boolean {
+  updateById<T extends object = any>(
+    collectionName: string,
+    id: number,
+    updates: Partial<T>
+  ): boolean {
     const collection = this.getCollection<T>(collectionName);
     const doc = collection.get(id);
     if (!doc) return false;
@@ -163,9 +186,14 @@ export class LokiSearchService {
   /**
    * Remove document by ID
    */
-  removeById(collectionName: string, id: string): boolean {
+  removeById(collectionName: string, id: number): boolean {
     const collection = this.getCollection(collectionName);
-    return collection.remove(id);
+    const doc = collection.get(id);
+    if (doc) {
+      collection.remove(doc);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -180,7 +208,7 @@ export class LokiSearchService {
     return {
       count: collection.count(),
       indices: collection.binaryIndices ? Object.keys(collection.binaryIndices) : [],
-      unique: collection.uniqueNames || [],
+      unique: collection.uniqueNames ? collection.uniqueNames.map(String) : [],
     };
   }
 
@@ -208,7 +236,7 @@ export class LokiSearchService {
    * List all collections
    */
   listCollections(): string[] {
-    return this.db.listCollections().map(col => col.name);
+    return this.db.listCollections().map((col) => col.name);
   }
 
   /**

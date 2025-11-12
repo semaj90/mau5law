@@ -1,14 +1,15 @@
 import { Client } from 'minio';
+import { env } from '$env/dynamic/private';
 
 export class MinIOService {
   client = new Client({
-    endPoint: process.env.MINIO_HOST ?? 'localhost',
-    port: parseInt(process.env.MINIO_PORT ?? '9000'),
-    useSSL: process.env.MINIO_USE_SSL === 'true',
-    accessKey: process.env.MINIO_ACCESS_KEY ?? 'minioadmin',
-    secretKey: process.env.MINIO_SECRET_KEY ?? 'minioadmin123',
+    endPoint: env.MINIO_HOST ?? 'localhost',
+    port: parseInt(env.MINIO_PORT ?? '9000'),
+    useSSL: env.MINIO_USE_SSL === 'true',
+    accessKey: env.MINIO_ACCESS_KEY ?? 'minioadmin',
+    secretKey: env.MINIO_SECRET_KEY ?? 'minioadmin',
   });
-  bucket = process.env.MINIO_BUCKET ?? 'legal-docs';
+  bucket = env.MINIO_BUCKET ?? 'legal-docs';
 
   async uploadFile(file: File, userId: string) {
     try {

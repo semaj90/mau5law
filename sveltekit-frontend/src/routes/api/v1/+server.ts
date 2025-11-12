@@ -2,7 +2,6 @@ import { json } from '@sveltejs/kit';
 import { MinIOService } from '$lib/server/minio';
 import { OCRService } from '$lib/server/ocr';
 import { EmbeddingService } from '$lib/server/embeddings';
-import { RAGService } from '$lib/server/rag';
 import { OllamaService } from '$lib/server/ollama';
 import { db } from '$lib/server/db';
 import { legalDocuments } from '$lib/server/db/schema';
@@ -10,7 +9,6 @@ import { legalDocuments } from '$lib/server/db/schema';
 const minio = new MinIOService();
 const ocr = new OCRService();
 const embed = new EmbeddingService();
-const rag = new RAGService();
 const ollama = new OllamaService();
 
 export const GET = async () => {
@@ -29,8 +27,9 @@ export const POST = async ({ request, url }) => {
   const path = url.pathname;
 
   if (path.endsWith('/files/upload')) return handleFileUpload(request);
-  if (path.endsWith('/rag/search')) return handleRagSearch(request);
-  if (path.endsWith('/rag/chat')) return handleRagChat(request);
+  // RAG routes are handled by separate route files
+  // if (path.endsWith('/rag/search')) return handleRagSearch(request);
+  // if (path.endsWith('/rag/chat')) return handleRagChat(request);
 
   return json({ error: 'Unknown endpoint' }, { status: 404 });
 };
@@ -61,14 +60,4 @@ async function handleFileUpload(request: Request) {
   return json({ success: true, doc });
 }
 
-async function handleRagSearch(request: Request) {
-  const { query } = await request.json();
-  const results = await rag.search(query);
-  return json({ success: true, results });
-}
-
-async function handleRagChat(request: Request) {
-  const { message, caseId } = await request.json();
-  const reply = await ollama.chat(message, caseId);
-  return json({ success: true, reply });
-}
+// RAG routes are now handled by separate route files
