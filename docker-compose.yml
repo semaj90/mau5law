@@ -529,6 +529,213 @@ services:
       retries: 3
       start_period: 30s
 
+  # Phase 70: TensorRT-LLM Service
+  tensorrt-llm-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.trtllm
+    container_name: legal-ai-tensorrt-llm-service
+    runtime: nvidia
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - TORCH_CUDA_DEVICE=0
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+    ports:
+      - "8099:8099"
+    volumes:
+      - tensorrt_engines:/app/tensorrt_engines
+      - tokenizers:/app/tokenizers
+      - models:/app/models
+    command: ["python3", "python-services/tensorrt_llm_service.py"]
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8099/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # Phase 70: PyTorch Fallback Service
+  pytorch-fallback-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.trtllm
+    container_name: legal-ai-pytorch-fallback
+    runtime: nvidia
+    command: ["python3", "python-services/pytorch_fallback_service.py"]
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+        reservations:
+          memory: 3G
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - TORCH_CUDA_DEVICE=0
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+    ports:
+      - "8100:8100"
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8100/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # Phase 70: OCR Service
+  ocr-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.trtllm
+    container_name: legal-ai-ocr
+    command: ["python3", "python-services/ocr_tesseract.py"]
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+    environment:
+      - TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+    ports:
+      - "8101:8101"
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8101/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # Phase 70: Language Extraction Service
+  lang-extract-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.trtllm
+    container_name: legal-ai-lang-extract
+    command: ["python3", "python-services/lang_extract.py"]
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+    environment:
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+    ports:
+      - "8102:8102"
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8102/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # Phase 70: Web Crawl Service
+  web-crawl-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.trtllm
+    container_name: legal-ai-web-crawl
+    command: ["python3", "python-services/web_crawl.py"]
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 1G
+    environment:
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+    ports:
+      - "8103:8103"
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8103/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
+  # Phase 70: RAG Ingest Service
+  rag-ingest-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.trtllm
+    container_name: legal-ai-rag-ingest
+    command: ["python3", "python-services/rag_ingest.py"]
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 2G
+    environment:
+      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+      - REDIS_URL=redis://:redis@redis:6379/0
+      - REDIS_PASSWORD=redis
+    ports:
+      - "8104:8104"
+    volumes:
+      - chroma_db:/app/chroma_db
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8104/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - redis
+      - postgres
+    restart: unless-stopped
+
 volumes:
   postgres_data:
     driver: local
@@ -549,6 +756,17 @@ volumes:
   neo4j_data:
     driver: local
   neo4j_logs:
+    driver: local
+  # Phase 70 volumes
+  tensorrt_engines:
+    driver: local
+  tokenizers:
+    driver: local
+  models:
+    driver: local
+  chroma_db:
+    driver: local
+  training_data:
     driver: local
 
 networks:

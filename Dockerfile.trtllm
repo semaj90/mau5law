@@ -1,39 +1,71 @@
-# CUDA-accelerated inference microservice (light)
-FROM nvcr.io/nvidia/tensorrt:24.10-py3
+# Phase 70 TensorRT-LLM Dockerfile
+# Optimized for Python 3.12 + TensorRT 0.20.0 + CUDA 12.9 + RTX 3060 Ti
+# Reuses cached NVIDIA container layers - no downloads
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+FROM nvcr.io/nvidia/tensorrt-llm/release:latest
 
-# Create app user
-RUN useradd -m -u 1000 app
-
+# Set working directory
 WORKDIR /app
 
-# Install Python dependencies
+# Install additional dependencies (small additions only)
 RUN pip install --no-cache-dir \
-    fastapi \
-    uvicorn \
-    numpy \
-    torch==2.4.1 \
+    fastapi==0.104.1 \
+    uvicorn[standard]==0.24.0 \
     transformers==4.45.0 \
-    accelerate \
-    sentencepiece
+    pydantic==2.5.0 \
+    httpx==0.25.2 \
+    python-multipart==0.0.6 \
+    sentence-transformers==2.7.0 \
+    chromadb==0.4.24 \
+    redis==5.0.1 \
+    psycopg2-binary==2.9.9 \
+    pytesseract==0.3.13 \
+    beautifulsoup4==4.12.3 \
+    requests==2.31.0 \
+    tree-sitter==0.21.3 \
+    tree-sitter-typescript==0.21.2 \
+    tree-sitter-javascript==0.21.3 \
+    peft==0.11.1 \
+    bitsandbytes==0.43.1 \
+    accelerate==0.30.1
 
 # Copy service files
-COPY --chown=app:app python-services/phase47_graph_analyzer.py ./trt_service.py
-COPY --chown=app:app python-services/requirements-trt.txt ./requirements.txt
+COPY python-services/ ./python-services/
+COPY tensor_services/ ./tensor_services/
+COPY engine-builder/ ./engine-builder/
+COPY training/ ./training/
 
-# Install additional requirements if they exist
-RUN pip install --no-cache-dir -r requirements.txt || true
+# Create directories for engines, models, and data
+RUN mkdir -p \
+    tensorrt_engines \
+    tokenizers \
+    models \
+    chroma_db \
+    training_data \
+    engines
 
-# Switch to non-root user
-USER app
+# Build TensorRT engine during container build
+# NOTE: Engine build happens at runtime when GPU is available
+# RUN cd tensor_services/engine-builder && python3 build_engine.py
 
-EXPOSE 8099
+# Copy model files (these should be built separately)
+# COPY tensorrt_engines/ ./tensorrt_engines/
+# COPY tokenizers/ ./tokenizers/
+# COPY models/ ./models/
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-  CMD curl -f http://localhost:8099/health || exit 1
+# Copy startup script and make executable
+COPY tensor_services/engine-builder/start_tensorrt.sh /app/start_tensorrt.sh
+RUN chmod +x /app/start_tensorrt.sh
 
-CMD ["python3", "trt_service.py"]
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV CUDA_VISIBLE_DEVICES=0
+ENV TORCH_CUDA_DEVICE=0
+ENV TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python3 -c "import tensorrt_llm; print('TensorRT-LLM OK')" || exit 1
+
+# Default command (builds engine then starts service)
+CMD ["/app/start_tensorrt.sh"]
