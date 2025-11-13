@@ -183,9 +183,395 @@
   });
 </script>
 
-<main class="page-repair">
-  <h1>Page under reconstruction</h1>
-  <p>This placeholder replaces corrupted or missing markup for now.</p>
+<script lang="ts">
+// Svelte, 5 runes are auto-imported // Define interfaces for API response and internal person data
+  interface APIPerson {
+    name: string;
+    aliases?: string[];
+    profileData?: {
+      role?: string;
+      height?: string;
+      age?: number | string;
+      hair?: string;
+      eyes?: string;
+      what?: string; // Modus Operandi
+      lastKnownLocation?: string;
+      dangerLevel?: number;
+      associates?: string[];
+      habits?: string[];
+    };
+    status?: string;
+    threatLevel?: 'low' | 'medium' | 'high' | 'critical';
+  }
+
+  interface FugitiveDexPerson {
+    id: string;
+    name: string;
+    alias: string;
+    role: string;
+    status: string;
+    priority: string;
+    height: string;
+    age: number | string;
+    hair: string;
+    eyes: string;
+    modusOperandi: string;
+    lastSeen: string;
+    dangerLevel: number;
+    photo: string;
+    knownAssociates: string[];
+    knownHabits: string[];
+    attributes: {
+      stealth: number;
+      intelligence: number;
+      strength: number;
+      speed: number;
+      dangerousness: number;
+    };
+  }
+
+  let persons: FugitiveDexPerson[] = $state([
+    {
+      id: '001',
+      name: 'John, "The Ghost" Doe',
+      alias: 'The Ghost',
+      role: 'Fugitive',
+      status: 'WANTED',
+      priority: 'HIGH',
+      height: '185 cm',
+      age: 45,
+      hair: 'Brown',
+      eyes: 'Blue',
+      modusOperandi: 'Break and Enter Specialist',
+      lastSeen: '2 days ago',
+      dangerLevel: 8.5,
+      photo: '/placeholder-person.jpg',
+      knownAssociates: [
+        'Phantom - Burglar, former accomplice',
+        'Arsiguent - Known to hire billers',
+        'Connection between prison and family',
+        'Connections - Langue seed gets an evil waaah'
+      ],
+      knownHabits: [
+        'Prefers dark locations',
+        'Known Habits',
+        'Evade a scene has kinder Sleeps'
+      ],
+      attributes: { stealth: 95, intelligence: 80, strength: 70, speed: 85, dangerousness: 90 }
+    },
+    {
+      id: '002',
+      name: 'Maria, "The Shadow" Smith',
+      alias: 'The Shadow',
+      role: 'Suspect',
+      status: 'MONITORING',
+      priority: 'MEDIUM',
+      height: '165 cm',
+      age: 32,
+      hair: 'Black',
+      eyes: 'Green',
+      modusOperandi: 'Financial Fraud Expert',
+      lastSeen: '1 week ago',
+      dangerLevel: 6.5,
+      photo: '/placeholder-person.jpg',
+      knownAssociates: [
+        'Various financial contacts',
+        'Underground banking network'
+      ],
+      knownHabits: [
+        'Frequents high-end establishments',
+        'Uses multiple identities'
+      ],
+      attributes: { stealth: 75, intelligence: 95, strength: 45, speed: 60, dangerousness: 65 }
+    },
+    {
+      id: '003',
+      name: 'Victor, "Red Baron" Kane',
+      alias: 'Red Baron',
+      role: 'Informant',
+      status: 'COOPERATIVE',
+      priority: 'LOW',
+      height: '175 cm',
+      age: 38,
+      hair: 'Red',
+      eyes: 'Hazel',
+      modusOperandi: 'Information Broker',
+      lastSeen: '3 hours ago',
+      dangerLevel: 3.0,
+      photo: '/placeholder-person.jpg',
+      knownAssociates: [
+        'Multiple law enforcement contacts',
+        'Various criminal networks'
+      ],
+      knownHabits: [
+        'Meets at specific locations',
+        'Always demands payment upfront'
+      ],
+      attributes: { stealth: 60, intelligence: 85, strength: 55, speed: 70, dangerousness: 30 }
+    }
+  ]);
+  // Initialize selectedPerson without capturing the initial value of `persons`
+  let selectedPerson: FugitiveDexPerson | null = $state<FugitiveDexPerson | null>(null);
+  let searchQuery = $state<string>('');
+  // Ensure we set a default selected person whenever `persons` becomes non-empty
+  $effect(() => {
+    if (persons.length > 0 && selectedPerson === null) {
+      selectedPerson = persons[0];
+    }
+  });
+  // Function to load POIs from API
+  async function loadPersonsFromAPI(): Promise<any> {
+    try {
+      const response = await fetch('/api/persons-of-interest');
+      if (response.ok) {
+        const result = await response.json();
+        const apiPersons: APIPerson[] = result.success ? result.data : [];
+        // Transform API data to FugitiveDex format
+        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({
+          id: (index + 1).toString().padStart(3, '0'),
+          name: person.name,
+          alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
+          role: person.profileData?.role || 'Unknown',
+          status: person.status?.toUpperCase() || 'UNKNOWN',
+          priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
+          height: person.profileData?.height || 'Unknown',
+          age: person.profileData?.age ?? 'Unknown',
+          hair: person.profileData?.hair || 'Unknown',
+          eyes: person.profileData?.eyes || 'Unknown',
+          modusOperandi: person.profileData?.what || 'Unknown',
+          lastSeen: person.profileData?.lastKnownLocation || 'Unknown',
+          dangerLevel: person.profileData?.dangerLevel ?? (person.threatLevel === 'high' ? 7.5 : person.threatLevel === 'medium' ? 5.0 : 2.0),
+          photo: '/placeholder-person.jpg',
+          knownAssociates: person.profileData?.associates || ['No known associates'],
+          knownHabits: person.profileData?.habits || ['No known habits'],
+          attributes: {
+            stealth: Math.floor(Math.random() * 100),
+            intelligence: Math.floor(Math.random() * 100),
+            strength: Math.floor(Math.random() * 100),
+            speed: Math.floor(Math.random() * 100),
+            dangerousness: (typeof person.profileData?.dangerLevel === 'number') ? Math.floor(person.profileData.dangerLevel * 10) : (person.threatLevel === 'high' ? 75 : person.threatLevel === 'medium' ? 50 : 25)
+          }
+        }));
+        if (transformedPersons.length > 0) {
+          persons = transformedPersons;
+          selectedPerson = transformedPersons[0];
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load persons from API:', error); // Keep using demo data as fallback
+    }
+  }
+
+  // Load on component mount using $effect
+  $effect(() => {
+    loadPersonsFromAPI();
+  });
+</script>
+
+<main class="fugitive-dex">
+  <!-- Header Section -->
+  <header class="header-section">
+    <div class="fugitive-title">
+      <h1>PERSONS OF INTEREST DATABASE</h1>
+    </div>
+    <div class="case-info">
+      <div class="case-badges">
+        <span class="case-badge active">ACTIVE</span>
+        <span class="case-badge evidence">EVIDENCE</span>
+        <span class="case-badge analysis">ANALYSIS</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="main-layout">
+    <!-- Left Sidebar - Person List -->
+    <aside class="person-list">
+      <div class="list-header">
+        <h3>SUSPECTS</h3>
+        <div class="person-matches">
+          <p>{persons.length} MATCHES FOUND</p>
+        </div>
+      </div>
+
+      <!-- Search Input -->
+      <input
+        type="text"
+        placeholder="SEARCH PERSONS..."
+        class="search-input"
+        bind:value={searchQuery}
+      />
+
+      <!-- Person Entries -->
+      <div class="person-entries">
+        {#each persons.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.alias.toLowerCase().includes(searchQuery.toLowerCase())) as person}
+          <button
+            class="person-entry {selectedPerson?.id === person.id ? 'selected' : ''}"
+            onclick={() => selectedPerson = person}
+          >
+            <span class="person-number">{person.id}</span>
+            <div class="person-name">
+              <div>{person.name}</div>
+              <div style="font-size: 0.6rem; color: #9ca3af;">{person.alias}</div>
+            </div>
+          </button>
+        {/each}
+      </div>
+
+      <!-- Filter Section -->
+      <div class="filter-section">
+        <h4>FILTERS</h4>
+        <div class="filter-group">
+          <label>STATUS</label>
+          <div class="status-filters">
+            <button class="filter-btn active">ALL</button>
+            <button class="filter-btn">WANTED</button>
+            <button class="filter-btn">MONITORING</button>
+            <button class="filter-btn">COOPERATIVE</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label>PRIORITY</label>
+          <div class="status-filters">
+            <button class="filter-btn active">ALL</button>
+            <button class="filter-btn">HIGH</button>
+            <button class="filter-btn">MEDIUM</button>
+            <button class="filter-btn">LOW</button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Person Detail -->
+    <section class="person-detail">
+      {#if selectedPerson}
+        <div class="person-header-main">
+          <h2>{selectedPerson.name}</h2>
+        </div>
+
+        <div class="person-photo-section">
+          <div class="photo-container">
+            <div class="placeholder-photo">
+              <span>👤</span>
+              <p>NO PHOTO AVAILABLE</p>
+            </div>
+          </div>
+
+          <div class="basic-info">
+            <div class="info-row">
+              <span class="label">ALIAS:</span>
+              <span class="value">{selectedPerson.alias}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">ROLE:</span>
+              <span class="value">{selectedPerson.role}</span>
+            </div>
+            <div class="status-badges">
+              <span class="status-badge {selectedPerson.status.toLowerCase()}">{selectedPerson.status}</span>
+              <span class="priority-badge {selectedPerson.priority.toLowerCase()}">{selectedPerson.priority}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="physical-stats">
+          <div class="stat">
+            <span class="stat-label">HEIGHT:</span>
+            <span class="stat-value">{selectedPerson.height}</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">AGE:</span>
+            <span class="stat-value">{selectedPerson.age}</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">HAIR:</span>
+            <span class="stat-value">{selectedPerson.hair}</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">EYES:</span>
+            <span class="stat-value">{selectedPerson.eyes}</span>
+          </div>
+        </div>
+
+        <div class="modus-section">
+          <h3>MODUS OPERANDI</h3>
+          <p>{selectedPerson.modusOperandi}</p>
+        </div>
+
+        <div class="associates-section">
+          <h3>KNOWN ASSOCIATES</h3>
+          <ul class="associates-list">
+            {#each selectedPerson.knownAssociates as associate}
+              <li>{associate}</li>
+            {/each}
+          </ul>
+        </div>
+
+        <div class="habits-section">
+          <h3>KNOWN HABITS</h3>
+          <ul class="habits-list">
+            {#each selectedPerson.knownHabits as habit}
+              <li>{habit}</li>
+            {/each}
+          </ul>
+        </div>
+      {:else}
+        <div class="person-header-main">
+          <h2>SELECT A PERSON</h2>
+        </div>
+        <p style="text-align: center; color: #9ca3af;">Choose a person from the list to view their profile.</p>
+      {/if}
+    </section>
+
+    <!-- Right Stats Panel -->
+    <aside class="stats-panel">
+      {#if selectedPerson}
+        <div class="stats-header">
+          <h3>THREAT ANALYSIS</h3>
+        </div>
+
+        <div class="danger-rating">
+          <div style="text-align: center; margin-bottom: 0.5rem;">
+            <span class="danger-number">{selectedPerson.dangerLevel.toFixed(1)}</span>
+          </div>
+          <div style="text-align: center; color: #dc2626; font-weight: bold;">DANGER LEVEL</div>
+        </div>
+
+        <div class="attributes-section">
+          <h4>ATTRIBUTES</h4>
+          <div class="attribute-bars">
+            {#each Object.entries(selectedPerson.attributes) as [attr, value]}
+              <div class="attribute-row">
+                <span class="attr-label">{attr}:</span>
+                <div class="attr-bar">
+                  <div class="attr-fill" style="width: {value}%"></div>
+                </div>
+                <span class="attr-value">{value}</span>
+              </div>
+            {/each}
+          </div>
+        </div>
+
+        <div class="location-section">
+          <h4>LAST KNOWN LOCATION</h4>
+          <div class="location-info">
+            <p>{selectedPerson.lastSeen}</p>
+          </div>
+        </div>
+
+        <div class="actions-section">
+          <h4>ACTIONS</h4>
+          <button class="action-btn btn-primary">UPDATE INTEL</button>
+          <button class="action-btn btn-secondary">VIEW TIMELINE</button>
+          <button class="action-btn btn-ghost">EXPORT PROFILE</button>
+        </div>
+      {:else}
+        <div class="stats-header">
+          <h3>NO SELECTION</h3>
+        </div>
+        <p style="text-align: center; color: #9ca3af; font-size: 0.875rem;">Select a person to view threat analysis.</p>
+      {/if}
+    </aside>
+  </div>
 </main>
 
 <style>

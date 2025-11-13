@@ -3,9 +3,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import * as EnhancedRagModule from '$lib/services/enhanced-rag-semantic-analyzer';
 import { cachedRAGService } from '$lib/services/cached-rag-service';
-// Remove the following problematic imports:
-// import { enhancedCachingService } from '$lib/services/enhanced-caching-service';
-// import { cachingTester } from '$lib/services/test-caching-integration';
+
 import type { RAGQuery } from '$lib/services/enhanced-rag-semantic-analyzer';
 
 // --- Moved: typed ingestion result and helper for errors ---
@@ -25,14 +23,6 @@ type CachedRAGServiceLike = {
   processDocuments?: (docs: unknown[]) => Promise<IngestResultItem[]>;
   warmupCacheWithLegalQueries?: () => Promise<void>;
   //...other methods may exist but are not required here...
-};
-
-// NEW: lightweight typed view for enhancedCachingService metrics access
-type EnhancedCachingServiceLike = {
-  getCacheMetrics?: () => unknown | Promise<unknown>;
-  getMetrics?: () => unknown | Promise<unknown>;
-  metrics?: unknown;
-  // other methods/properties may exist
 };
 
 function getErrorMessage(err: unknown): string {
@@ -76,11 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
         return await handleRAGQuery(query, options);
       case 'ingest':
         return await handleDocumentIngestion(documents, options);
-      // Remove the following cases that depend on removed imports:
-      // case 'test':
-      //   return await handleCacheTest(options);
-      // case 'metrics':
-      //   return await handleCacheMetrics();
+
       case 'warmup':
         return await handleCacheWarmup();
       default:
@@ -142,7 +128,7 @@ async function handleRAGQuery(queryData: unknown, _options: unknown): Promise<Re
     // Local runtime-checked types to avoid `any` usages
     type RAGFilters = {
       confidenceThreshold?: number;
-      legalCategories?: string[];
+      legalCategories?: string; // Changed from string[] to string to match RAGQuery
       [key: string]: any;
     };
     type RAGSemanticOptions = {
@@ -155,13 +141,20 @@ async function handleRAGQuery(queryData: unknown, _options: unknown): Promise<Re
     const contextValue: string | undefined =
       typeof qd.context === 'string' ? qd.context : undefined;
     // Normalize filters: if provided, and object: use it; otherwise provide defaults
-    const filtersValue: RAGFilters =
+    const rawFilters =
       typeof qd.filters === 'object' && qd.filters !== null
-        ? (qd.filters as RAGFilters)
+        ? (qd.filters as { confidenceThreshold?: number; legalCategories?: string | string[] })
         : {
             confidenceThreshold: 0.7,
             legalCategories: ['CONTRACT', 'TORT', 'CONSTITUTIONAL', 'CORPORATE'],
           };
+
+    const filtersValue: RAGFilters = {
+      confidenceThreshold: rawFilters.confidenceThreshold ?? 0.7,
+      legalCategories: Array.isArray(rawFilters.legalCategories)
+        ? rawFilters.legalCategories.join(',')
+        : rawFilters.legalCategories,
+    };
     // Normalize semantic options with defaults
     const semanticSrc =
       typeof qd.semantic === 'object' && qd.semantic !== null
@@ -173,6 +166,7 @@ async function handleRAGQuery(queryData: unknown, _options: unknown): Promise<Re
       includeRelated: semanticSrc.includeRelated ?? true,
     };
     const ragQuery: RAGQuery = {
+      string: queryStr,
       query: queryStr,
       context: contextValue,
       filters: filtersValue,
@@ -261,12 +255,11 @@ export const GET: RequestHandler = async ({ url }) => {
       // case 'metrics':
       //   return await handleCacheMetrics();
       // case 'test': {
-      //   // Braces added to avoid "Unexpected lexical declaration in case block"
-      //   const testType = url.searchParams.get('type') || 'smoke';
-      //   return await handleCacheTest({ type: testType });
-      // }
       default:
-        return json({ error: 'Invalid action for GET request' }, { status: 400 });
+        return json(
+          { error: 'Invalid action. Supported: status' },
+          { status: 400 }
+        );
     }
   } catch (error: Error | unknown) {
     console.error('Cached RAG API GET error: ', error);
@@ -276,47 +269,4 @@ export const GET: RequestHandler = async ({ url }) => {
     );
   }
 };
-    console.error('Cache warmup failed: ', error);
-    return json({ success: false, error: getErrorMessage(error) }, { status: 500 });
-  }
-}
 
-export const GET: RequestHandler = async ({ url }) => {
-  const action = url.searchParams.get('action') || 'status';
-  try {
-    switch (action) {
-      case 'status':
-        return json({
-          success: true,
-          data: {
-            service: 'Cached RAG API',
-            status: 'active',
-            features: [
-              'Embedding caching with embeddinggemma',
-              'Query result caching',
-              'Response caching with gemma3, legal-latest',
-              'Batch document ingestion',
-              'Cache metrics and testing',
-              'PostgreSQL pgvector integration',
-            ],
-            timestamp: new Date().toISOString(),
-          },
-        });
-      case 'metrics':
-        return await handleCacheMetrics();
-      case 'test': {
-        // Braces added to avoid "Unexpected lexical declaration in case block"
-        const testType = url.searchParams.get('type') || 'smoke';
-        return await handleCacheTest({ type: testType });
-      }
-      default:
-        return json({ error: 'Invalid action for GET request' }, { status: 400 });
-    }
-  } catch (error: Error | unknown) {
-    console.error('Cached RAG API GET error: ', error);
-    return json(
-      { error: 'Internal server error', details: getErrorMessage(error) },
-      { status: 500 }
-    );
-  }
-};

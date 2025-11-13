@@ -34,6 +34,9 @@ export default defineConfig(({ mode }) => {
       sveltekit({
         compilerOptions: {
           runes: true // 👈 enables rune transformer
+        },
+        ssr: {
+          noExternal: ['bits-ui']
         }
       }),
       UnoCSS(),

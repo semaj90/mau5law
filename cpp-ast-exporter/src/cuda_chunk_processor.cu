@@ -96,3 +96,62 @@ extern "C" void compute_cosine_similarity(
     cudaFree(d_na);
     cudaFree(d_nb);
 }
+
+// --- CUDA kernel for normalization ---
+__global__ void normalize_kernel(float* data, int n) {
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i < n) {
+        data[i] = data[i] / 255.0f;
+    }
+}
+
+// --- Host wrapper function for normalization ---
+extern "C" void process_with_torch(float* pinned_data, int n) {
+    float* d_data;
+    cudaMalloc(&d_data, n * sizeof(float));
+    cudaMemcpy(d_data, pinned_data, n * sizeof(float), cudaMemcpyHostToDevice);
+
+    int threads = 256;
+    int blocks = (n + threads - 1) / threads;
+    normalize_kernel<<<blocks, threads>>>(d_data, n);
+    cudaDeviceSynchronize();
+
+    cudaMemcpy(pinned_data, d_data, n * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaFree(d_data);
+}
+
+#include <mma.h>
+using namespace nvcuda;
+
+extern "C" __global__
+void tensorcore_gemm(const half *A, const half *B, float *C, int M, int N, int K) {
+
+    // Leading dimensions
+    int lda = K;
+    int ldb = N;
+    int ldc = N;
+
+    // Warp tile (16x16x16)
+    wmma::fragment<wmma::matrix_a, 16, 16, 16, half, wmma::row_major> a_frag;
+    wmma::fragment<wmma::matrix_b, 16, 16, 16, half, wmma::col_major> b_frag;
+    wmma::fragment<wmma::accumulator, 16, 16, 16, float> c_frag;
+
+    wmma::fill_fragment(c_frag, 0.0f);
+
+    int warpM = (blockIdx.y * blockDim.y + threadIdx.y) / 32;
+    int warpN = (blockIdx.x * blockDim.x + threadIdx.x) / 32;
+
+    int aRow = warpM * 16;
+    int bCol = warpN * 16;
+
+    // Tile-level multiply
+    for (int k = 0; k < K; k += 16) {
+        wmma::load_matrix_sync(a_frag, A + aRow * lda + k, lda);
+        wmma::load_matrix_sync(b_frag, B + k * ldb + bCol, ldb);
+
+        wmma::mma_sync(c_frag, a_frag, b_frag, c_frag);
+    }
+
+    // Store result
+    wmma::store_matrix_sync(C + aRow * ldc + bCol, c_frag, ldc, wmma::mem_row_major);
+}

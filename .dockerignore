@@ -1,279 +1,37 @@
-# Dependencies
-node_modules/
-.pnpm-store/
+# Prevent copying entire 3–10 GB repo into Docker
+*/
 
-# Build outputs
-.svelte-kit/
-build/
-dist/
-.turbo/
+# Include only what's needed for builds
+!sveltekit-frontend/**
+!python-services/**
+!tensor_services/**
+!engine-builder/**
+!training/**
 
-# Cach# Python files and virtual environments
-__pycache__/
-*.py[cod]
-*$py.class
-*.egg-info/
-venv/
-env/
-.venv*/
-.venv-phase46/
-.venv-phase52/
-tensorrt_py310_env/
-tensorrt-build-env/
-trt_env_310/
-trt_env/
-tensorrt_new_env/
-python311/
-.venv/
-ubuntu-tensorrt/
-.pytest_cache/
-
-# Exclude all directories containing virtual environments
-**/lib64/
-**/bin/python*
-**/bin/pip*
-**/bin/activate*
-**/lib/python*/
-**/include/python*/
-**/share/python*/
-tensorsorrt_py310_env/
+# Exclude large/unnecessary directories
 .cache/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Git
-.git/
-.gitignore
-
-# Docker files (don't copy these into the image)
-Dockerfile
-docker-compose.yml
-.dockerignore
-
-# Go binaries and build artifacts
-*.exe
-*.dll
-*.so
-*.dylib
-go-microservices/
-legal-ai-microservice
-cuda-integration-wrapper
-artifact-indexing-service
-gpu-inference-server
-
-# Dependencies
 node_modules/
-.pnpm-store/
-
-# Build outputs
-.svelte-kit/
-build/
-dist/
-.turbo/
-
-# Cache and temp files
-.npm/
-.cache/
+logs/
+temp*/
+tmp*/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Git
-.git/
-.gitignore
-
-# Docker files (don't copy these into the image)
-Dockerfile
-docker-compose.yml
-.dockerignore
-
-# Go binaries and build artifacts
-*.exe
-*.dll
-*.so
-*.dylib
-go-microservices/
-legal-ai-microservice
-cuda-integration-wrapper
-artifact-indexing-service
-gpu-inference-server
-
-# Go cache and build artifacts
-.go-cache/
-go-microservice/bin/
-go-microservice/*.exe
-go-microservice/*.dll
+*.tmp
 __pycache__/
-*.py[cod]
-*$py.class
-*.egg-info/
-venv/
-env/
-.venv*/
-.venv-phase46/
-.venv-phase52/
-tensorrt_py310_env/
-tensorrt-build-env/
-trt_env_310/
-trt_env/
-tensorrt_new_env/
-python311/
-.venv/
 .pytest_cache/
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# Documentation
-docs/
+.coverage
+dist/
+build/
+.vscode/
+.git/
 *.md
-
-# Test files
-tests/
-test/
-*.test.js
-*.spec.js
-coverage/
-
-# Large data files
-*.zip
-*.tar
-*.tar.gz
-*.rar
-*.7z
-
-# Media files
-*.mp4
-*.avi
-*.mov
-*.mp3
-*.wav
-
-# Backup files
-*.bak
-*.backup
-*.old
-
-# Temporary directories
-tmp/
-temp/
-cache/
-
-# CUDA/GPU files
-*.cu
-*.cuh
-*.ptx
-
-# Model files (if large)
-*.onnx
-*.pb
-*.h5
-*.pt
-*.pth
-*.safetensors
-
-# MinIO data
-minio_data/
-
-# PostgreSQL data
-postgres_data/
-
-# Redis data
-redis_data/
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# Documentation
 docs/
-*.md
-
-# Test files
+scripts/
 tests/
-test/
-*.test.js
-*.spec.js
-coverage/
-
-# Large data files
-*.zip
-*.tar
-*.tar.gz
-*.rar
-*.7z
-
-# Media files
-*.mp4
-*.avi
-*.mov
-*.mp3
-*.wav
-
-# Backup files
-*.bak
-*.backup
-*.old
-
-# Temporary directories
-tmp/
-temp/
-cache/
-
-# CUDA/GPU files
-*.cu
-*.cuh
-*.ptx
-
-# Model files (if large)
-*.onnx
-*.pb
-*.h5
-*.pt
-*.pth
-*.safetensors
-
-# MinIO data
-minio_data/
-
-# PostgreSQL data
-postgres_data/
-
-# Redis data
-redis_data/
+*.txt
+*.json
+!package.json
+!tsconfig.json
+!pyproject.toml
+!requirements*.txt
+!Dockerfile*
+!docker-compose*.yml

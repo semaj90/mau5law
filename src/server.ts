@@ -109,6 +109,40 @@ export async function startServer() {
    Agentic Fallback Logic
 ──────────────────────────────── */
 
+async function runOCR(filePath: string): Promise<string> {
+  return new Promise((resolve) => {
+    // Use python OCR service
+    const pythonProcess = spawn('python3', ['python-services/ocr_tesseract.py', filePath], {
+      cwd: process.cwd()
+    });
+
+    let output = '';
+    let errorOutput = '';
+
+    pythonProcess.stdout.on('data', (data) => {
+      output += data.toString();
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      errorOutput += data.toString();
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code === 0) {
+        resolve(output.trim());
+      } else {
+        console.warn('OCR failed, using fallback:', errorOutput);
+        resolve(''); // Return empty string on OCR failure
+      }
+    });
+
+    pythonProcess.on('error', (error) => {
+      console.warn('OCR process error:', error);
+      resolve(''); // Return empty string on error
+    });
+  });
+}
+
 async function generateWithFallback(text: string, options: { maxTokens?: number; temperature?: number } = {}): Promise<string> {
   const { maxTokens = 1024, temperature = 0.7 } = options;
 
@@ -425,4 +459,5 @@ try {
 } catch (error) {
   console.error('❌ Failed to start server:', error);
   process.exit(1);
+}
 }

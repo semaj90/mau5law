@@ -5,7 +5,9 @@
   import Button from '$lib/components/ui/button'; // Changed to default import
   import { Input } from '$lib/components/ui/input'; // Changed to named import
   import { Badge } from '$lib/components/ui/badge'; // Changed to named import
+  import { appActions, appStore } from '$lib/stores/app-store';
   import * as Lucide from 'lucide-svelte';
+  import { onMount } from 'svelte';
 
   // TEMPORARY WORKAROUNDS: The following aliases cast components to 'any' to bypass TypeScript errors in this demo.
   // This should NOT be in production code, as it disables type safety for component props and events.
@@ -38,46 +40,10 @@
   const AlertTriangle = resolveIcon('AlertTriangle');
   const Shield = resolveIcon('Shield');
 
-  // Persons of Interest data
-  let persons = $state<Person[]>([
-    // Use Person[] type
-    {
-      id: 'POI-001',
-      name: 'Marcus Chen',
-      alias: 'The Ghost',
-      threat_level: 'high',
-      status: 'wanted',
-      last_seen: '2024-01-15',
-      location: 'Downtown District',
-      description: 'Former cybersecurity expert turned corporate spy',
-      cases: ['CASE-2024-087', 'CASE-2024-089'],
-      photo: null,
-    },
-    {
-      id: 'POI-002',
-      name: 'Sarah Williams',
-      alias: 'Red Phoenix',
-      threat_level: 'medium',
-      status: 'surveillance',
-      last_seen: '2024-01-20',
-      location: 'Tech Quarter',
-      description: 'Data analyst with suspicious financial transactions',
-      cases: ['CASE-2024-088'],
-      photo: null,
-    },
-    {
-      id: 'POI-003',
-      name: 'Unknown Subject',
-      alias: 'Digital Phantom',
-      threat_level: 'critical',
-      status: 'active',
-      last_seen: '2024-01-22',
-      location: 'Multiple Networks',
-      description: 'Advanced persistent threat actor, identity: unknown',
-      cases: ['CASE-2024-087', 'CASE-2024-090'],
-      photo: null,
-    },
-  ]);
+  // Persons of Interest data - now loaded from API
+  let persons = $state<Person[]>([]);
+  let loading = $state(true);
+  let error: string | null = $state(null);
 
   let searchQuery = $state<string>('');
   let selectedThreatLevel = $state<string>('all');
@@ -96,7 +62,28 @@
   });
 
   let isLoading = $state<boolean>(false);
-  let error = $state<string | null>(null);
+  let formError = $state<string | null>(null);
+
+  // Subscribe to app store
+  $effect(() => {
+    const unsubscribe = appStore.subscribe((state) => {
+      persons = state.pois.map((poi) => ({
+        id: poi.id,
+        name: poi.name,
+        alias: poi.alias || '',
+        threat_level: poi.threatLevel as 'low' | 'medium' | 'high' | 'critical',
+        status: poi.status as 'wanted' | 'surveillance' | 'active' | 'cleared',
+        last_seen: poi.lastSeen || new Date().toISOString().split('T')[0],
+        location: poi.location || 'Unknown',
+        description: poi.description || '',
+        cases: poi.caseIds || [],
+        photo: poi.photo || null
+      }));
+      loading = state.isLoading;
+      error = state.error;
+    });
+    return unsubscribe;
+  });
 
   // Filter persons based on search and threat level
   let filteredPersons = $derived(() => {
@@ -148,38 +135,20 @@
     }
   }
 
-  // Load persons from API
-  async function loadPersons(): Promise<any> {
-    try {
-      isLoading = true;
-      error = null;
-      const response = await fetch('/api/persons-of-interest');
-      if (response && response.ok) {
-        const data = await response.json();
-        persons = data?.persons || persons; // Fallback to mock data
-      }
-    } catch (err) {
-      error = 'Failed to load persons of interest';
-      console.warn('Using mock data due to API error:', err);
-    } finally {
-      isLoading = false;
-    }
-  }
-
   // Add new person
   async function addPerson(personData: Omit<Person, 'id' | 'cases' | 'photo'>): Promise<any> {
     // Type personData
     try {
-      const response = await fetch('/api/persons-of-interest', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(personData),
+      await appActions.createPOI({
+        name: personData.name,
+        alias: personData.alias,
+        threatLevel: personData.threat_level,
+        status: personData.status,
+        description: personData.description,
+        lastSeen: personData.last_seen,
+        location: personData.location,
       });
-      if (response.ok) {
-        const created: Person = await response.json(); // Type created
-        persons = [...persons, created];
-        showNewPersonModal = false;
-      }
+      showNewPersonModal = false;
     } catch (err) {
       error = 'Failed to add person';
       console.error('Add person failed:', err);
@@ -190,7 +159,7 @@
   async function handleAddPerson(): Promise<any> {
     // minimal validation
     if (!newPerson.name || newPerson.name.trim().length === 0) {
-      error = 'Name is required';
+      formError = 'Name is required';
       return;
     }
     try {
@@ -205,15 +174,22 @@
         location: '',
       };
       showNewPersonModal = false;
-      error = null;
+      formError = null;
     } catch (err) {
       console.error('Failed to add person from modal', err);
-      error = 'Failed to add person';
+      formError = 'Failed to add person';
     }
   }
 
-  $effect(() => {
-    loadPersons();
+  onMount(async () => {
+    await appActions.loadPOIs();
+
+    // Refresh data periodically
+    const interval = setInterval(async () => {
+      await appActions.loadPOIs();
+    }, 60000); // Refresh every minute
+
+    return () => clearInterval(interval);
   });
 </script>
 
@@ -239,8 +215,8 @@
           <span class="nav-text">ACTIVE CASES</span>
           <span class="nav-count">3</span>
         </a>
-        <a href="/evidenceboard" class="nav-item">
-          <span class="nav-icon">📋</span> EVIDENCE
+        <a href="/yorha/evidence" class="nav-item">
+          <span class="nav-icon">📋</span> EVIDENCE LIBRARY
         </a>
         <!-- Changed to <a> tag and added persons-active class -->
         <a href="/yorha/persons" class="nav-item persons-active">

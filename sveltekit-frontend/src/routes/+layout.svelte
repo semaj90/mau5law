@@ -1,10 +1,122 @@
-<!-- Minimal layout, for, testing -->
-<script>
-  // Minimal imports to test if the issue is with specific components
+<script lang="ts">
+  import { page } from '$app/stores';
+  import CommandCenterNav from '$lib/components/yorha/CommandCenterNav.svelte';
+  import SystemStatus from '$lib/components/yorha/SystemStatus.svelte';
+  import { cpuFallback } from '$lib/webgpu/webgpu-cpu-fallback';
+  import { webgpu } from '$lib/webgpu/webgpu-init';
+  import { onMount } from 'svelte';
+
+  let webgpuReady = false;
+  let cpuFallbackReady = false;
+
+  onMount(async () => {
+    try {
+      await webgpu.initialize();
+      webgpuReady = true;
+    } catch (error) {
+      console.warn('WebGPU initialization failed:', error);
+    }
+
+    try {
+      await cpuFallback.initialize();
+      cpuFallbackReady = true;
+    } catch (error) {
+      console.warn('CPU fallback initialization failed:', error);
+    }
+  });
+
+  $: isCommandCenter = $page.url.pathname.startsWith('/yorha') ||
+                       $page.url.pathname === '/' ||
+                       ['/command-center', '/active-cases', '/evidence-library',
+                        '/persons-of-interest', '/analysis-center', '/global-search',
+                        '/terminal', '/system-configuration', '/gpu-evidence-graph'].includes($page.url.pathname);
 </script>
 
-<div class="min-h-screen bg-gray-900">
-  <main class="container mx-auto">
-    <slot />
-  </main>
+<svelte:head>
+  <title>YoRHa Legal AI Platform</title>
+  <meta name="description" content="Advanced Legal AI Platform with GPU acceleration and evidence analysis" />
+  <link rel="icon" href="/favicon.ico" />
+</svelte:head>
+
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-mono">
+  {#if isCommandCenter}
+    <!-- YoRHa Command Center Interface -->
+    <div class="flex h-screen">
+      <!-- Navigation Sidebar -->
+      <aside class="w-64 bg-slate-800/50 backdrop-blur border-r border-slate-700/50">
+        <CommandCenterNav />
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Top Status Bar -->
+        <header class="h-16 bg-slate-800/30 backdrop-blur border-b border-slate-700/50 flex items-center justify-between px-6">
+          <div class="flex items-center space-x-4">
+            <div class="text-cyan-400 font-bold text-lg">YoRHa</div>
+            <div class="text-slate-400 text-sm">Legal AI Command Center</div>
+          </div>
+
+          <SystemStatus {webgpuReady} {cpuFallbackReady} />
+        </header>
+
+        <!-- Page Content -->
+        <div class="flex-1 overflow-auto p-6">
+          <slot />
+        </div>
+      </main>
+    </div>
+  {:else}
+    <!-- Standard Layout for other routes -->
+    <div class="min-h-screen">
+      <header class="bg-slate-800/50 backdrop-blur border-b border-slate-700/50">
+        <nav class="container mx-auto px-6 py-4">
+          <div class="flex items-center justify-between">
+            <a href="/" class="text-cyan-400 font-bold text-xl">YoRHa Legal AI</a>
+            <div class="flex space-x-6">
+              <a href="/yorha" class="text-slate-300 hover:text-cyan-400 transition-colors">Command Center</a>
+              <a href="/ai" class="text-slate-300 hover:text-cyan-400 transition-colors">AI Tools</a>
+              <a href="/evidence" class="text-slate-300 hover:text-cyan-400 transition-colors">Evidence</a>
+              <a href="/legal" class="text-slate-300 hover:text-cyan-400 transition-colors">Legal</a>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <main class="container mx-auto px-6 py-8">
+        <slot />
+      </main>
+    </div>
+  {/if}
 </div>
+
+<style>
+  /* YoRHa Terminal Aesthetic */
+  .terminal-glow {
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5);
+  }
+
+  .cyber-grid {
+    background-image:
+      linear-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(34, 211, 238, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+
+  /* Custom scrollbar for terminal aesthetic */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.5);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(34, 211, 238, 0.5);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 211, 238, 0.7);
+  }
+</style>
