@@ -70,6 +70,12 @@ export async function startServer() {
         return;
       }
 
+      if (req.url === '/agent/generate' && req.method === 'POST') {
+        console.log('🤖 Agentic generation requested');
+        await handleAgentGenerate(req, res);
+        return;
+      }
+
       res.writeHead(404);
       res.end('Not found');
     } catch (err) {
@@ -100,8 +106,61 @@ export async function startServer() {
 }
 
 /* ────────────────────────────────
-   RAG Handlers
+   Agentic Fallback Logic
 ──────────────────────────────── */
+
+async function generateWithFallback(text: string, options: { maxTokens?: number; temperature?: number } = {}): Promise<string> {
+  const { maxTokens = 1024, temperature = 0.7 } = options;
+
+  // Try TensorRT-LLM first (fastest)
+  try {
+    console.log('🚀 Trying TensorRT-LLM...');
+    const tensorrtResponse = await fetch('http://localhost:8099/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: text, max_tokens: maxTokens, temperature }),
+      signal: AbortSignal.timeout(5000) // 5 second timeout
+    });
+
+    if (tensorrtResponse.ok) {
+      const result = await tensorrtResponse.json();
+      console.log('✅ TensorRT-LLM success');
+      return result.generated_text;
+    }
+  } catch (error) {
+    console.warn('⚠️ TensorRT-LLM failed:', error);
+  }
+
+  // Fallback to PyTorch (slower but more compatible)
+  try {
+    console.log('🔄 Falling back to PyTorch...');
+    const pytorchResponse = await fetch('http://localhost:8098/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: text, max_tokens: maxTokens, temperature }),
+      signal: AbortSignal.timeout(10000) // 10 second timeout
+    });
+
+    if (pytorchResponse.ok) {
+      const result = await pytorchResponse.json();
+      console.log('✅ PyTorch fallback success');
+      return result.generated_text;
+    }
+  } catch (error) {
+    console.warn('⚠️ PyTorch fallback failed:', error);
+  }
+
+  // Final fallback to Ollama (slowest but most reliable)
+  try {
+    console.log('🐌 Final fallback to Ollama...');
+    const ollamaResult = await chatWithGemma([{ role: 'user', content: text }]);
+    console.log('✅ Ollama fallback success');
+    return ollamaResult;
+  } catch (error) {
+    console.error('❌ All LLM backends failed:', error);
+    throw new Error('All LLM services are unavailable');
+  }
+}
 
 async function handleRAGUpload(req: any, res: any) {
   try {
@@ -231,7 +290,7 @@ async function handleRAGEmbed(req: any, res: any) {
       body += chunk;
     }
 
-    const { text } = JSON.parse(body);
+    const { text, generateResponse = false } = JSON.parse(body);
 
     if (!text) {
       res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -239,13 +298,22 @@ async function handleRAGEmbed(req: any, res: any) {
       return;
     }
 
+    // Generate embedding using Ollama (embeddings are fast, keep using Ollama)
     const embedding = await generateEmbedding(text);
+
+    let generatedResponse = null;
+    if (generateResponse) {
+      // Use agentic fallback for text generation
+      generatedResponse = await generateWithFallback(text, { maxTokens: 512, temperature: 0.3 });
+    }
 
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({
       text: text.substring(0, 100) + '...',
       embedding: embedding,
-      dimensions: embedding.length
+      dimensions: embedding.length,
+      generatedResponse,
+      backends: ['tensorrt-llm', 'pytorch', 'ollama']
     }));
 
   } catch (error) {
@@ -255,6 +323,36 @@ async function handleRAGEmbed(req: any, res: any) {
   }
 }
 
+async function handleAgentGenerate(req: any, res: any) {
+  try {
+    let body = '';
+    for await (const chunk of req) {
+      body += chunk;
+    }
+
+    const { prompt, maxTokens = 1024, temperature = 0.7 } = JSON.parse(body);
+
+    if (!prompt) {
+      res.writeHead(400, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: 'Missing prompt field' }));
+      return;
+    }
+
+    const generatedText = await generateWithFallback(prompt, { maxTokens, temperature });
+
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      prompt: prompt.substring(0, 100) + '...',
+      generated_text: generatedText,
+      backend_used: 'agentic-fallback', // Could be enhanced to track which backend succeeded
+      tokens_generated: generatedText.split(' ').length // Rough estimate
+    }));
+
+  } catch (error) {
+    console.error('Agent generate error:', error);
+    res.writeHead(500, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: (error as Error).message }));
+  }
 async function runOCR(filePath: string): Promise<string> {
   return new Promise((resolve, reject) => {
     // Use python OCR service

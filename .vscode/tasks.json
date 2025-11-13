@@ -1679,6 +1679,366 @@
       },
       "problemMatcher": [],
       "detail": "Stop and remove all Phase 66 services and networks"
+    },
+    {
+      "label": "Phase70: Deploy All Services",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": [
+        "up",
+        "-d",
+        "tensorrt-llm-service",
+        "pytorch-fallback-service",
+        "ocr-service",
+        "lang-extract-service",
+        "web-crawl-service",
+        "rag-ingest-service"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Deploy all Phase 70 AI services using cached NVIDIA containers"
+    },
+    {
+      "label": "Phase70: Build TensorRT Engine",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "exec",
+        "legal-ai-tensorrt-llm-service",
+        "python3",
+        "engine-builder/build_engine.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Build TensorRT engine locally without downloads"
+    },
+    {
+      "label": "Phase70: Generate Training Data",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "exec",
+        "legal-ai-tensorrt-llm-service",
+        "python3",
+        "training/dataset_builder.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Generate QLoRA training dataset from database content"
+    },
+    {
+      "label": "Phase70: Train QLoRA Model",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "exec",
+        "legal-ai-tensorrt-llm-service",
+        "python3",
+        "training/train_qlora.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Train QLoRA model with 4-bit quantization"
+    },
+    {
+      "label": "Phase70: Test All Services",
+      "type": "shell",
+      "command": "powershell",
+      "args": [
+        "-Command",
+        "$services = @('8099', '8100', '8101', '8102', '8103', '8104');",
+        "foreach ($port in $services) {",
+        "  try {",
+        "    $response = Invoke-WebRequest -Uri \"http://localhost:$port/health\" -TimeoutSec 5;",
+        "    Write-Host \"Port $port : HEALTHY\" -ForegroundColor Green;",
+        "  } catch {",
+        "    Write-Host \"Port $port : UNHEALTHY\" -ForegroundColor Red;",
+        "  }",
+        "}"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Test health of all Phase 70 services (TensorRT, PyTorch, OCR, LangExtract, WebCrawl, RAG)"
+    },
+    {
+      "label": "Phase70: Test TensorRT-LLM Service",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X",
+        "POST",
+        "-H",
+        "Content-Type: application/json",
+        "-d",
+        "{\"prompt\":\"Explain legal contract basics\",\"max_tokens\":100}",
+        "http://localhost:8099/generate"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Test TensorRT-LLM service with legal contract query"
+    },
+    {
+      "label": "Phase70: Test PyTorch Fallback",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X",
+        "POST",
+        "-H",
+        "Content-Type: application/json",
+        "-d",
+        "{\"prompt\":\"What is breach of contract\",\"max_tokens\":50}",
+        "http://localhost:8100/generate"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Test PyTorch fallback service with legal query"
+    },
+    {
+      "label": "Phase70: Test OCR Service",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X",
+        "POST",
+        "-F",
+        "file=@sample-patent-application.txt",
+        "http://localhost:8101/extract"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Test OCR service with sample document"
+    },
+    {
+      "label": "Phase70: Test Language Extraction",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X",
+        "POST",
+        "-H",
+        "Content-Type: application/json",
+        "-d",
+        "{\"code\":\"function legalContract() { return 'binding agreement'; }\"}",
+        "http://localhost:8102/extract"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Test language extraction service with TypeScript code"
+    },
+    {
+      "label": "Phase70: Test Web Crawl",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X",
+        "POST",
+        "-H",
+        "Content-Type: application/json",
+        "-d",
+        "{\"url\":\"https://developer.mozilla.org/en-US/docs/Web/JavaScript\"}",
+        "http://localhost:8103/crawl"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Test web crawl service with MDN JavaScript docs"
+    },
+    {
+      "label": "Phase70: Test RAG Ingest",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-X",
+        "POST",
+        "-H",
+        "Content-Type: application/json",
+        "-d",
+        "{\"content\":\"Legal contracts are binding agreements between parties\",\"metadata\":{\"source\":\"test\"}}",
+        "http://localhost:8104/ingest"
+      ],
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Test RAG ingest service with legal content"
+    },
+    {
+      "label": "Phase70: Full Pipeline Test",
+      "dependsOn": [
+        "Phase70: Test All Services",
+        "Phase70: Test TensorRT-LLM Service",
+        "Phase70: Test PyTorch Fallback",
+        "Phase70: Test OCR Service",
+        "Phase70: Test Language Extraction",
+        "Phase70: Test Web Crawl",
+        "Phase70: Test RAG Ingest"
+      ],
+      "dependsOrder": "sequence",
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": true
+      },
+      "detail": "Run complete Phase 70 service integration test suite"
+    },
+    {
+      "label": "Phase70: Stop All Services",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": [
+        "stop",
+        "tensorrt-llm-service",
+        "pytorch-fallback-service",
+        "ocr-service",
+        "lang-extract-service",
+        "web-crawl-service",
+        "rag-ingest-service"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Stop all Phase 70 services"
+    },
+    {
+      "label": "Phase70: Clean Volumes",
+      "type": "shell",
+      "command": "docker-compose",
+      "args": [
+        "down",
+        "-v",
+        "tensorrt-llm-service",
+        "pytorch-fallback-service",
+        "ocr-service",
+        "lang-extract-service",
+        "web-crawl-service",
+        "rag-ingest-service"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Stop Phase 70 services and remove their volumes"
     }
   ],
   "compounds": [
