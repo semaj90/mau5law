@@ -3,6 +3,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { browser } from '$app/environment';
+  import { goto } from '$app/navigation';
   import  Card, CardContent, Button, Input  from "$lib/components/ui/enhanced-bits.svelte";
   interface ChatMessage {
     id: string;
@@ -35,6 +36,7 @@
     { icon: '🏠', label: 'COMMAND CENTER', active: true },
     { icon: '📋', label: 'ACTIVE CASES', count: 3 },
     { icon: '📚', label: 'EVIDENCE LIBRARY' },
+    { icon: '🔋', label: 'EVIDENCE GRAPH (GPU)' },
     { icon: '👥', label: 'PERSONS OF INTEREST' },
     { icon: '🔍', label: 'ANALYSIS CENTER' },
     { icon: '🌐', label: 'GLOBAL SEARCH' },
@@ -169,8 +171,14 @@
     sessionId = null;
     isTestMode = $state(false);
   }
-  function selectSidebarItem(index: number) { sidebarItems = sidebarItems.map((item, i) => ({
+  function selectSidebarItem(index: number) {
+    sidebarItems = sidebarItems.map((item, i) => ({
       ...item, active: i === index }));
+
+    // Handle navigation for specific items
+    if (sidebarItems[index].label === 'EVIDENCE GRAPH (GPU)') {
+      goto('/evidence-graph');
+    }
   }
   function handleKeyPress(event: KeyboardEvent) {
     if (event.key === 'Enter') {

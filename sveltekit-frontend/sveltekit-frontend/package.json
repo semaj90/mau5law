@@ -5,6 +5,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "cross-env": "^10.1.0"
+    "cross-env": "^10.1.0",
+    "ioredis": "^5.8.2"
   }
 }

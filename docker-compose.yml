@@ -2,9 +2,10 @@
 # later in this file. The original duplicated block was removed to prevent
 # "mapping key 'services' already defined" YAML errors when parsing.
 
-x-phaseh-bridge-build: &phaseh-bridge-build
-  context: .
-  dockerfile: native/autoencoder/Dockerfile.bridge
+# Temporarily commented out due to missing native/autoencoder directory
+# x-phaseh-bridge-build: &phaseh-bridge-build
+#   context: .
+#   dockerfile: native/autoencoder/Dockerfile.bridge
 
 services:
   # SvelteKit Frontend Service - Main
@@ -201,186 +202,189 @@ services:
       timeout: 10s
       retries: 3
 
-  # FastAPI embedding service
-  fastapi-embed:
-    build:
-      context: ./python-workers/fastapi-embed
-      dockerfile: Dockerfile
-    container_name: legal-ai-fastapi-embed
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-        reservations:
-          memory: 2G
-    ports:
-      - "8000:8000"
-    environment:
-      - PYTHONUNBUFFERED=1
-      - TRANSFORMERS_CACHE=/app/cache
-      - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
-    volumes:
-      - fastapi_cache:/app/cache
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      - redis
+  # Temporarily commented out due to missing python-workers/fastapi-embed directory
+  # fastapi-embed:
+  #   build:
+  #     context: ./python-workers/fastapi-embed
+  #     dockerfile: Dockerfile
+  #   container_name: legal-ai-fastapi-embed
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 4G
+  #       reservations:
+  #         memory: 2G
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     - PYTHONUNBUFFERED=1
+  #     - TRANSFORMERS_CACHE=/app/cache
+  #     - PYTORCH_CUDA_ALLOC_CONF=max_split_size_mb:512
+  #   volumes:
+  #     - fastapi_cache:/app/cache
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     - redis
 
-  analytics-bridge:
-    build:
-      <<: *phaseh-bridge-build
-    container_name: phase-h-analytics-bridge
-    command: ["uvicorn", "native.autoencoder.analytics_bridge:app", "--host", "0.0.0.0", "--port", "8001"]
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - USER_ANALYTICS_STREAM=user.analytics
-      - USER_INTENT_HASH_NAMESPACE=user:intent
-      - RL_FEEDBACK_STREAM=rl.feedback
-      - TRITON_URL=http://triton:8000
-      - PG_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - PG_INTENT_TABLE=user_intent_transitions
-      - PORT=8001
-    ports:
-      - "8001:8001"
-    volumes:
-      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
-    depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      triton:
-        condition: service_started
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh analytics-bridge"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+  # Temporarily commented out due to missing native/autoencoder directory
+  # analytics-bridge:
+  #   build:
+  #     <<: *phaseh-bridge-build
+  #   container_name: phase-h-analytics-bridge
+  #   command: ["uvicorn", "native.autoencoder.analytics_bridge:app", "--host", "0.0.0.0", "--port", "8001"]
+  #   environment:
+  #     - REDIS_URL=redis://redis:6379/0
+  #     - USER_ANALYTICS_STREAM=user.analytics
+  #     - USER_INTENT_HASH_NAMESPACE=user:intent
+  #     - RL_FEEDBACK_STREAM=rl.feedback
+  #     - TRITON_URL=http://triton:8000
+  #     - PG_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #     - PG_INTENT_TABLE=user_intent_transitions
+  #     - PORT=8001
+  #   ports:
+  #     - "8001:8001"
+  #   volumes:
+  #     - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #     triton:
+  #       condition: service_started
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh analytics-bridge"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 30s
 
-  cpu-synthesizer:
-    build:
-      <<: *phaseh-bridge-build
-    container_name: phase-h-cpu-synthesizer
-    command: ["uvicorn", "native.autoencoder.cpu_synthesizer:app", "--host", "0.0.0.0", "--port", "8101"]
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - CPU_SYNTH_MAX_TOKENS=256
-    ports:
-      - "8101:8101"
-    depends_on:
-      redis:
-        condition: service_healthy
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh http http://127.0.0.1:8101/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+  # Temporarily commented out due to missing native/autoencoder directory
+  # cpu-synthesizer:
+  #   build:
+  #     <<: *phaseh-bridge-build
+  #   container_name: phase-h-cpu-synthesizer
+  #   command: ["uvicorn", "native.autoencoder.cpu_synthesizer:app", "--host", "0.0.0.0", "--port", "8101"]
+  #   environment:
+  #     - REDIS_URL=redis://redis:6379/0
+  #     - CPU_SYNTH_MAX_TOKENS=256
+  #   ports:
+  #     - "8101:8101"
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh http http://127.0.0.1:8101/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 30s
 
-  behavior-router:
-    build:
-      <<: *phaseh-bridge-build
-    container_name: phase-h-behavior-router
-    command: ["python", "-m", "native.autoencoder.behavior_router"]
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - USER_ANALYTICS_STREAM=user.analytics
-      - USER_INTENT_HASH_NAMESPACE=user:intent
-      - RL_FEEDBACK_STREAM=rl.feedback
-      - PG_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - PG_INTENT_TABLE=user_intent_transitions
-    volumes:
-      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
-    depends_on:
-      redis:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      analytics-bridge:
-        condition: service_started
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+  # Temporarily commented out due to missing native/autoencoder directory
+  # behavior-router:
+  #   build:
+  #     <<: *phaseh-bridge-build
+  #   container_name: phase-h-behavior-router
+  #   command: ["python", "-m", "native.autoencoder.behavior_router"]
+  #   environment:
+  #     - REDIS_URL=redis://redis:6379/0
+  #     - USER_ANALYTICS_STREAM=user.analytics
+  #     - USER_INTENT_HASH_NAMESPACE=user:intent
+  #     - RL_FEEDBACK_STREAM=rl.feedback
+  #     - PG_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #     - PG_INTENT_TABLE=user_intent_transitions
+  #   volumes:
+  #     - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #     analytics-bridge:
+  #       condition: service_started
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 30s
 
-  qlora-trainer:
-    build:
-      <<: *phaseh-bridge-build
-    container_name: phase-h-qlora-trainer
-    command: ["python", "-m", "native.autoencoder.qlora_trainer_stream"]
-    runtime: nvidia
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - RL_FEEDBACK_STREAM=rl.feedback
-      - TRITON_URL=http://triton:8000
-      - ADAPTER_ARTIFACT_DIR=/app/native/autoencoder/artifacts
-      - TRITON_MODEL_NAME=gemma3_legal
-      - QLORA_BASE_MODEL=google/gemma-2b-it
-    volumes:
-      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
-      - ./native/autoencoder/triton_model_repository:/models:ro
-    depends_on:
-      redis:
-        condition: service_healthy
-      triton:
-        condition: service_started
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
-      interval: 60s
-      timeout: 15s
-      retries: 3
-      start_period: 60s
-    deploy:
-      resources:
-        limits:
-          memory: 16G
-        reservations:
-          memory: 8G
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-
-  adapter-merge-worker:
-    build:
-      <<: *phaseh-bridge-build
-    container_name: phase-h-adapter-merge-worker
-    command: ["python", "-m", "native.autoencoder.adapter_merge_worker"]
-    environment:
-      - REDIS_URL=redis://redis:6379/0
-      - TRITON_URL=http://triton:8000
-    volumes:
-      - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
-      - ./native/autoencoder/triton_model_repository:/models
-    depends_on:
-      redis:
-        condition: service_healthy
-      qlora-trainer:
-        condition: service_started
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
-      interval: 60s
-      timeout: 15s
-      retries: 3
-      start_period: 60s
+  # Temporarily commented out due to missing native/autoencoder directory
+  # qlora-trainer:
+  #   build:
+  #     <<: *phaseh-bridge-build
+  #   container_name: phase-h-qlora-trainer
+  #   command: ["python", "-m", "native.autoencoder.qlora_trainer_stream"]
+  #   runtime: nvidia
+  #   environment:
+  #     - REDIS_URL=redis://redis:6379/0
+  #     - RL_FEEDBACK_STREAM=rl.feedback
+  #     - TRITON_URL=http://triton:8000
+  #     - ADAPTER_ARTIFACT_DIR=/app/native/autoencoder/artifacts
+  #     - TRITON_MODEL_NAME=gemma3_legal
+  #     - QLORA_BASE_MODEL=google/gemma-2b-it
+  #   volumes:
+  #     - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+  #     - ./native/autoencoder/triton_model_repository:/models:ro
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #     triton:
+  #       condition: service_started
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
+  #     interval: 60s
+  #     timeout: 15s
+  #     retries: 3
+  #     start_period: 60s
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 16G
+  #       reservations:
+  #         memory: 8G
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]  # Temporarily commented out due to missing native/autoencoder directory
+  # adapter-merge-worker:
+  #   build:
+  #     <<: *phaseh-bridge-build
+  #   container_name: phase-h-adapter-merge-worker
+  #   command: ["python", "-m", "native.autoencoder.adapter_merge_worker"]
+  #   environment:
+  #     - REDIS_URL=redis://redis:6379/0
+  #     - TRITON_URL=http://triton:8000
+  #   volumes:
+  #     - ./native/autoencoder/artifacts:/app/native/autoencoder/artifacts
+  #     - ./native/autoencoder/triton_model_repository:/models
+  #   depends_on:
+  #     redis:
+  #       condition: service_healthy
+  #     qlora-trainer:
+  #       condition: service_started
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "/app/native/autoencoder/scripts/healthcheck.sh redis"]
+  #     interval: 60s
+  #     timeout: 15s
+  #     retries: 3
+  #     start_period: 60s
 
   tensorrt-llm:
     image: nvcr.io/nvidia/tensorrt-llm/release:latest
@@ -440,39 +444,38 @@ services:
       - legal-ai-network
     restart: unless-stopped
 
-  triton:
-    image: nvcr.io/nvidia/tritonserver:23.09-py3
-    container_name: phase-h-triton
-    shm_size: 1g
-    command: ["tritonserver", "--model-repository=/models", "--log-verbose=0"]
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    ports:
-      - "8000:8000"
-      - "8002:8002"
-    volumes:
-      - ./native/autoencoder/triton_model_repository:/models
-      - ./native/autoencoder/artifacts:/adapters
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-fsS", "http://localhost:8000/v2/health/ready"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    deploy:
-      resources:
-        limits:
-          memory: 8G
-        reservations:
-          memory: 4G
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-
-  # QUIC Server for high-performance protocols
+  # Temporarily commented out due to missing native/autoencoder directory
+  # triton:
+  #   image: nvcr.io/nvidia/tritonserver:23.09-py3
+  #   container_name: phase-h-triton
+  #   shm_size: 1g
+  #   command: ["tritonserver", "--model-repository=/models", "--log-verbose=0"]
+  #   runtime: nvidia
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all
+  #   ports:
+  #     - "8000:8000"
+  #     - "8002:8002"
+  #   volumes:
+  #     - ./native/autoencoder/triton_model_repository:/models
+  #     - ./native/autoencoder/artifacts:/adapters
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-fsS", "http://localhost:8000/v2/health/ready"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 8G
+  #       reservations:
+  #         memory: 4G
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]  # QUIC Server for high-performance protocols
   quic-server:
     build:
       context: .
@@ -529,212 +532,208 @@ services:
       retries: 3
       start_period: 30s
 
-  # Phase 70: TensorRT-LLM Service
-  tensorrt-llm-service:
-    build:
-      context: .
-      dockerfile: Dockerfile.trtllm
-    container_name: legal-ai-tensorrt-llm-service
-    runtime: nvidia
-    deploy:
-      resources:
-        limits:
-          memory: 8G
-        reservations:
-          memory: 4G
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    environment:
-      - CUDA_VISIBLE_DEVICES=0
-      - TORCH_CUDA_DEVICE=0
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - REDIS_URL=redis://:redis@redis:6379/0
-      - REDIS_PASSWORD=redis
-    ports:
-      - "8099:8099"
-    volumes:
-      - tensorrt_engines:/app/tensorrt_engines
-      - tokenizers:/app/tokenizers
-      - models:/app/models
-    command: ["python3", "python-services/tensorrt_llm_service.py"]
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8099/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      - redis
-      - postgres
-    restart: unless-stopped
-
-  # Phase 70: PyTorch Fallback Service
-  pytorch-fallback-service:
-    build:
-      context: .
-      dockerfile: Dockerfile.trtllm
-    container_name: legal-ai-pytorch-fallback
-    runtime: nvidia
-    command: ["python3", "python-services/pytorch_fallback_service.py"]
-    deploy:
-      resources:
-        limits:
-          memory: 6G
-        reservations:
-          memory: 3G
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    environment:
-      - CUDA_VISIBLE_DEVICES=0
-      - TORCH_CUDA_DEVICE=0
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - REDIS_URL=redis://:redis@redis:6379/0
-      - REDIS_PASSWORD=redis
-    ports:
-      - "8100:8100"
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8100/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      - redis
-      - postgres
-    restart: unless-stopped
-
-  # Phase 70: OCR Service
-  ocr-service:
-    build:
-      context: .
-      dockerfile: Dockerfile.trtllm
-    container_name: legal-ai-ocr
-    command: ["python3", "python-services/ocr_tesseract.py"]
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 1G
-    environment:
-      - TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - REDIS_URL=redis://:redis@redis:6379/0
-      - REDIS_PASSWORD=redis
-    ports:
-      - "8101:8101"
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8101/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      - redis
-      - postgres
-    restart: unless-stopped
+  # Temporarily commented out due to missing tensor_services directory
+  # tensorrt-llm-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.trtllm
+  #   container_name: legal-ai-tensorrt-llm-service
+  #   runtime: nvidia
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 8G
+  #       reservations:
+  #         memory: 4G
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   environment:
+  #     - CUDA_VISIBLE_DEVICES=0
+  #     - TORCH_CUDA_DEVICE=0
+  #     - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #     - REDIS_URL=redis://:redis@redis:6379/0
+  #     - REDIS_PASSWORD=redis
+  #   ports:
+  #     - "8099:8099"
+  #   volumes:
+  #     - tensorrt_engines:/app/tensorrt_engines
+  #     - tokenizers:/app/tokenizers
+  #     - models:/app/models
+  #   command: ["python3", "python-services/tensorrt_llm_service.py"]
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8099/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   restart: unless-stopped  # Temporarily commented out due to missing tensor_services directory
+  # pytorch-fallback-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.trtllm
+  #   container_name: legal-ai-pytorch-fallback
+  #   runtime: nvidia
+  #   command: ["python3", "python-services/pytorch_fallback_service.py"]
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 6G
+  #       reservations:
+  #         memory: 3G
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   environment:
+  #     - CUDA_VISIBLE_DEVICES=0
+  #     - TORCH_CUDA_DEVICE=0
+  #     - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #     - REDIS_URL=redis://:redis@redis:6379/0
+  #     - REDIS_PASSWORD=redis
+  #   ports:
+  #     - "8100:8100"
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8100/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   restart: unless-stopped  # Phase 70: OCR Service
+  # ocr-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.trtllm
+  #   container_name: legal-ai-ocr
+  #   command: ["python3", "python-services/ocr_tesseract.py"]
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 2G
+  #       reservations:
+  #         memory: 1G
+  #     environment:
+  #       - TESSDATA_PREFIX=/usr/share/tesseract-ocr/5/tessdata/
+  #       - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #       - REDIS_URL=redis://:redis@redis:6379/0
+  #       - REDIS_PASSWORD=redis
+  #   ports:
+  #     - "8101:8101"
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8101/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   restart: unless-stopped
 
   # Phase 70: Language Extraction Service
-  lang-extract-service:
-    build:
-      context: .
-      dockerfile: Dockerfile.trtllm
-    container_name: legal-ai-lang-extract
-    command: ["python3", "python-services/lang_extract.py"]
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 1G
-    environment:
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - REDIS_URL=redis://:redis@redis:6379/0
-      - REDIS_PASSWORD=redis
-    ports:
-      - "8102:8102"
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8102/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      - redis
-      - postgres
-    restart: unless-stopped
+  # lang-extract-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.trtllm
+  #   container_name: legal-ai-lang-extract
+  #   command: ["python3", "python-services/lang_extract.py"]
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 2G
+  #       reservations:
+  #         memory: 1G
+  #   environment:
+  #     - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #     - REDIS_URL=redis://:redis@redis:6379/0
+  #     - REDIS_PASSWORD=redis
+  #   ports:
+  #     - "8102:8102"
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8102/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   restart: unless-stopped
 
   # Phase 70: Web Crawl Service
-  web-crawl-service:
-    build:
-      context: .
-      dockerfile: Dockerfile.trtllm
-    container_name: legal-ai-web-crawl
-    command: ["python3", "python-services/web_crawl.py"]
-    deploy:
-      resources:
-        limits:
-          memory: 2G
-        reservations:
-          memory: 1G
-    environment:
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - REDIS_URL=redis://:redis@redis:6379/0
-      - REDIS_PASSWORD=redis
-    ports:
-      - "8103:8103"
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8103/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      - redis
-      - postgres
-    restart: unless-stopped
+  # web-crawl-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.trtllm
+  #   container_name: legal-ai-web-crawl
+  #   command: ["python3", "python-services/web_crawl.py"]
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 2G
+  #       reservations:
+  #         memory: 1G
+  #   environment:
+  #     - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #     - REDIS_URL=redis://:redis@redis:6379/0
+  #     - REDIS_PASSWORD=redis
+  #   ports:
+  #     - "8103:8103"
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8103/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   restart: unless-stopped
 
   # Phase 70: RAG Ingest Service
-  rag-ingest-service:
-    build:
-      context: .
-      dockerfile: Dockerfile.trtllm
-    container_name: legal-ai-rag-ingest
-    command: ["python3", "python-services/rag_ingest.py"]
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-        reservations:
-          memory: 2G
-    environment:
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - REDIS_URL=redis://:redis@redis:6379/0
-      - REDIS_PASSWORD=redis
-    ports:
-      - "8104:8104"
-    volumes:
-      - chroma_db:/app/chroma_db
-    networks:
-      - legal-ai-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8104/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    depends_on:
-      - redis
-      - postgres
-    restart: unless-stopped
+  # rag-ingest-service:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.trtllm
+  #   container_name: legal-ai-rag-ingest
+  #   command: ["python3", "python-services/rag_ingest.py"]
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         memory: 4G
+  #       reservations:
+  #         memory: 2G
+  #   environment:
+  #     - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
+  #     - REDIS_URL=redis://:redis@redis:6379/0
+  #     - REDIS_PASSWORD=redis
+  #   ports:
+  #     - "8104:8104"
+  #   volumes:
+  #     - chroma_db:/app/chroma_db
+  #   networks:
+  #     - legal-ai-network
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8104/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #   depends_on:
+  #     - redis
+  #     - postgres
+  #   restart: unless-stopped
 
 volumes:
   postgres_data:

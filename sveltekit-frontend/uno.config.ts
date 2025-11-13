@@ -1,23 +1,37 @@
-// @ts-nocheck
 import {
   defineConfig,
   presetUno,
+  presetIcons,
+  presetTypography,
+  presetAttributify,
+  presetWebFonts,
   presetForms,
   presetRadix,
-  transformerCompileClass,
+  transformerDirectives,
+  transformerVariantGroup,
+  transformerCompileClass
 } from 'unocss';
-import extractorSvelte from '@unocss/extractor-svelte';
 
 export default defineConfig({
   presets: [
     presetUno(),
+    presetIcons(),
+    presetTypography(),
+    presetAttributify(),
     presetForms(),
     presetRadix(),
+    presetWebFonts({
+      fonts: {
+        sans: 'Inter',
+        mono: 'JetBrains Mono',
+      }
+    })
   ],
   transformers: [
+    transformerDirectives(),
+    transformerVariantGroup(),
     transformerCompileClass(),
   ],
-  extractors: [extractorSvelte()],
   theme: {
     colors: {
       // Shadcn/UI CSS Variables - mapped to UnoCSS

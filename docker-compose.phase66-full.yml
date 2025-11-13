@@ -11,7 +11,7 @@ services:
       - .env.phase66.generated
     build:
       context: ./sveltekit-frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.sveltekit
     container_name: sveltekit-frontend
     environment:
       PUBLIC_VITE_API_URL: http://phase66-mcp-server:3003

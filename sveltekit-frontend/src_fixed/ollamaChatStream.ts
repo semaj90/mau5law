@@ -1,9 +1,5 @@
-import type { User } from '$lib/types';
-import type { Case } from '$lib/types';
 // @ts-nocheck
-import * as stream from "stream";
 import { ChatOllama } from '@langchain/ollama';
-import { HumanMessage, AIMessage, SystemMessage } from '@langchain/core/messages';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import {
 	generateEmbedding,
@@ -18,7 +14,6 @@ import {
 	type GrpoThinkingResponse,
 	type ThinkingRecommendation,
 } from '$lib/server/services/grpoThinkingService';
-import { eq as sql } from 'drizzle-orm';
 
 export interface ChatStreamOptions {
 	message: string;

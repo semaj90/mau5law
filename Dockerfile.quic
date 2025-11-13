@@ -21,10 +21,10 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy source code
-COPY legal-ai-quic-server-fixed.go ./
+COPY quic-server.go ./
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o legal-ai-quic-server legal-ai-quic-server-fixed.go
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o legal-ai-quic-server quic-server.go
 
 # Production stage
 FROM alpine:latest

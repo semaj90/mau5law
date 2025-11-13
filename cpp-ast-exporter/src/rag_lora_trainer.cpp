@@ -4,9 +4,10 @@
 #include <numeric> // For std::iota
 #include <cuda_runtime.h>
 
-// Forward declarations of CUDA functions from cuda_chunk_processor.cu
-void compute_cosine_similarity(const float* vec_a, const float* vec_b, float* result, int embedding_dim);
-void process_with_torch(float* pinned, int n); // New function to call
+extern "C" {
+    void compute_cosine_similarity(const float* vec_a, const float* vec_b, float* result, int embedding_dim);
+    void process_with_torch(float* pinned, int n); // New function to call
+}
 
 int main() {
     std::cout << "🧠 RAG LoRA Trainer (Phase 53/54) - C++ Component" << std::endl;

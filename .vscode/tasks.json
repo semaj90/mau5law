@@ -2039,6 +2039,43 @@
       },
       "problemMatcher": [],
       "detail": "Stop Phase 70 services and remove their volumes"
+    },
+    {
+      "label": "🔥 Build TensorRT Engines (FP16/FP8/INT8)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/build-tensorrt-engines.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "TENSORRT_CONTAINER": "legal-ai-tensorrt-llm",
+          "MODEL_PATH": "/workspace/models/gemma3-4b-it",
+          "OUTPUT_DIR": "/workspace/engines",
+          "BUILD_FP16": "true",
+          "BUILD_FP8": "true",
+          "BUILD_INT8": "true",
+          "MAX_BATCH_SIZE": "8",
+          "MAX_INPUT_LEN": "2048",
+          "MAX_OUTPUT_LEN": "512"
+        }
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Build TensorRT engines for Gemma3 with FP16/FP8/INT8 precision modes"
     }
   ],
   "compounds": [

@@ -1,8 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import DetectiveBoard from '$lib/components/detective/DetectiveBoard.svelte';
   import CaseForm from '$lib/components/forms/CaseForm.svelte';
-  import type { EvidenceItem } from '$lib/types/evidence'; // Import the interface
+  import type { EvidenceItem } from '$lib/types/evidence';
+  import { onMount } from 'svelte';
+ // Import the interface
 
   let currentView = $state<string>('board'); // 'board' | 'create-case' | 'auth-demo'
   let mounted = $state<boolean>(false);
@@ -300,23 +301,6 @@
                   <h4 class="font-medium">âœ… File Upload</h4>
                   <p class="text-sm">Progress bar with drag/drop support</p>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    {/if}
-  </main>
-{:else}
-  <!-- Loading, Screen -->
-  <div class="flex items-center justify-center">
-    <div class="text-center">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-      <p>Loading Detective Mode...</p>
-      <p class="text-sm">Initializing Google Slides-like interface</p>
-    </div>
-  </div>
-{/if}
               </div>
             </div>
           </div>

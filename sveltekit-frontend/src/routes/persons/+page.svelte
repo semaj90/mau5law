@@ -7,7 +7,7 @@
   import { Input } from '$lib/components/ui/input';
   import { Badge } from '$lib/components/ui/badge';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
-  import { DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Updated for bits-ui sub-components (SSR-compatible)
+  import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Updated for bits-ui sub-components (SSR-compatible)
   import { Label } from '$lib/components/ui/label'; // Assuming Label is available for forms
 
   // Interfaces

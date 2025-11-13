@@ -79,6 +79,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
         const cacheResult = await checkDimensionalCache(body.query, body.userId);
         if (cacheResult?.hit) {
           return {
+            success: true,
             results: cacheResult.results || [],
             answer: cacheResult.answer,
             totalResults: cacheResult.totalResults || 0,
