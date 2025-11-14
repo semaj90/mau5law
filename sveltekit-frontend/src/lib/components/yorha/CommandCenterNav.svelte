@@ -63,7 +63,7 @@
     goto(path);
   }
 
-  $: currentPath = $page.url.pathname;
+  let currentPath = $derived($page.url.pathname);
 </script>
 
 <div class="p-6">

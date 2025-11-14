@@ -7,23 +7,25 @@
   import * as Lucide from 'lucide-svelte';
   import { onMount } from 'svelte';
 
-  // Reactive state from app store
-  let searchResults: any[] = $state([]);
-  let isLoading = $state(false);
-  let error = $state<string | null>(null);
-  let searchQuery = $state<string>('');
+  // Reactive state from app store (plain locals to be updated via subscription)
+  let searchResults: any[] = [];
+  let isLoading = false;
+  let error: string | null = null;
+  let searchQuery = '';
 
-  let selectedType = $state<string>('all');
-  let selectedDateFrom = $state<string>('');
-  let selectedDateTo = $state<string>('');
+  let selectedType = 'all';
+  let selectedDateFrom = '';
+  let selectedDateTo = '';
 
-  // Subscribe to app store
-  $effect(() => {
+  // Subscribe to app store on mount
+  onMount(() => {
     const unsubscribe = appStore.subscribe((state) => {
       searchResults = state.searchResults;
       isLoading = state.isLoading;
       error = state.error;
     });
+
+    // return cleanup
     return unsubscribe;
   });
 
@@ -49,6 +51,11 @@
       default:
         return FileText;
     }
+  }
+
+  // helper to satisfy template dynamic component usage with TypeScript
+  function getResultIconAsAny(type: string): any {
+    return getResultIcon(type) as any;
   }
 
   function getTypeColor(type: string) {
@@ -81,7 +88,8 @@
     await appActions.search(searchQuery, filters);
   }
 
-  function handleKeyPress(event: KeyboardEvent) {
+  // use keydown for broader browser support in Svelte 5
+  function handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       performSearch();
     }
@@ -161,25 +169,34 @@
     <div class="search-interface">
       <div class="search-input-section">
         <div class="search-input-wrapper">
-          <Search class="search-icon w-5" />
-          <Input
-            type="text"
-            placeholder="Search across cases, evidence, persons, and documents..."
-            bind:value={searchQuery}
-            onkeypress={handleKeyPress}
-            class="search-input"
-          />
-          <Button onclick={performSearch} disabled={isLoading} class="search-btn">
-            {isLoading ? 'SEARCHING...' : 'SEARCH'}
-          </Button>
+          <div class="search-icon">
+            {#if Search}
+              <svelte:component this={Search} class="w-5" />
+            {:else}
+              <span class="search-fallback">🔍</span>
+            {/if}
+          </div>
+          <div class="search-input">
+            <Input
+              type="text"
+              placeholder="Search across cases, evidence, persons, and documents..."
+              bind:value={searchQuery}
+              on:keydown={handleKeyDown}
+            />
+          </div>
+          <div class="search-btn">
+            <Button on:click={performSearch} disabled={isLoading}>
+              {isLoading ? 'SEARCHING...' : 'SEARCH'}
+            </Button>
+          </div>
         </div>
       </div>
 
       <!-- Filters -->
       <div class="filters-section">
         <div class="filter-group">
-          <label class="filter-label">Type:</label>
-          <select bind:value={selectedType} class="filter-select">
+          <label for="filter-type" class="filter-label">Type:</label>
+          <select id="filter-type" bind:value={selectedType} class="filter-select">
             <option value="all">All Types</option>
             <option value="case">Cases</option>
             <option value="evidence">Evidence</option>
@@ -187,20 +204,24 @@
           </select>
         </div>
         <div class="filter-group">
-          <label class="filter-label">From Date:</label>
-          <Input
-            type="date"
-            bind:value={selectedDateFrom}
-            class="filter-date"
-          />
+          <label for="date-from" class="filter-label">From Date:</label>
+          <div class="filter-date">
+            <Input
+              id="date-from"
+              type="date"
+              bind:value={selectedDateFrom}
+            />
+          </div>
         </div>
         <div class="filter-group">
-          <label class="filter-label">To Date:</label>
-          <Input
-            type="date"
-            bind:value={selectedDateTo}
-            class="filter-date"
-          />
+          <label for="date-to" class="filter-label">To Date:</label>
+          <div class="filter-date">
+            <Input
+              id="date-to"
+              type="date"
+              bind:value={selectedDateTo}
+            />
+          </div>
         </div>
       </div>
     </div>
@@ -229,10 +250,12 @@
 
         <div class="results-grid">
           {#each searchResults as result (result.id)}
-            <Card class="result-card">
+            {@const Icon = getResultIconAsAny(result.type) || FileText}
+            <div class="result-card">
+              <Card>
               <div class="result-header">
                 <div class="result-icon">
-                  <svelte:component this={getResultIcon(result.type)} class="w-6 h-6" />
+                  <svelte:component this={Icon} class="w-6 h-6" />
                 </div>
                 <div class="result-info">
                   <div class="result-title">{result.title || result.name || 'Untitled'}</div>
@@ -272,10 +295,11 @@
               </div>
               <div class="result-actions">
                 <Button class="bits-btn" size="sm" variant="ghost" type="button">
-                  <Eye class="w-4" /> View Details
+                  <svelte:component this={Eye || FileText} class="w-4" /> View Details
                 </Button>
               </div>
-            </Card>
+              </Card>
+            </div>
           {/each}
         </div>
       {:else if searchQuery}

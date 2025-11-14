@@ -2,6 +2,7 @@
   import { browser } from '$app/environment';
   import LoginButton from '$lib/components/auth/LoginButton.svelte';
   import * as unified from '$lib/stores/unified';
+  import ContextualEvidenceChatModal from '$lib/components/ai/ContextualEvidenceChatModal.svelte';
   import { createFileUploader } from '$lib/utils/file-uploader';
   import { derived, writable } from 'svelte/store';
 
@@ -90,6 +91,7 @@
   let userQuery = $state<string>('');
   let registerOpen = $state<boolean>(false);
   let registerDialogRef: HTMLDialogElement; // Reference to the native dialog element
+  let showAIChatModal = $state(false);
   // ---------------------------------------------------------------
 
   function openRegister() {
@@ -259,6 +261,10 @@
       <div class="auth-buttons-flex">
         <LoginButton />
         <button class="card-button-custom" onclick={openRegister}>Register</button>
+        <button class="card-button-custom accent" onclick={() => (showAIChatModal = true)}>
+          Launch YoRHa AI Chat
+        </button>
+        <a class="card-button-custom link-button" href="/aichat">Open /aichat</a>
       </div>
     </div>
   </section>
@@ -314,6 +320,39 @@
         <h3>Processing Jobs</h3>
         <div class="stat-value-custom">{stats.processingJobs}</div>
       </div>
+    </div>
+  </section>
+
+  <section class="yorha-preview card">
+    <div class="yorha-preview-info">
+      <p class="eyebrow">YoRHa Command Center</p>
+      <h2>Launch AI Legal Assistant</h2>
+      <p>
+        Drag evidence, spawn Phoenix-style reports, and sync to LangExtract memory. The assistant is also
+        available at <code>/aichat</code> for a full-screen experience.
+      </p>
+      <div class="preview-actions">
+        <button class="card-button-custom accent" onclick={() => (showAIChatModal = true)}>Open Chat</button>
+        <a class="card-button-custom" href="/dev/client-embedding-demo">Embedding Demo</a>
+      </div>
+      <ul class="preview-list">
+        <li>Evidence uploads flow through MinIO + Redis</li>
+        <li>Case briefs via <code>/api/case-theory</code></li>
+        <li>QUIC contextual chat with file attachments</li>
+      </ul>
+    </div>
+    <div class="yorha-preview-panel">
+      <div class="preview-panel-header">
+        <span>AI LEGAL ASSISTANT — 9S MODE</span>
+        <span class="status-dot"></span>
+      </div>
+      <ul>
+        <li>Assistant status: ACTIVE</li>
+        <li>Evidence analysis: running</li>
+        <li>Gemma3-Legal latency: 120ms</li>
+        <li>Redis streams: healthy</li>
+      </ul>
+      <p class="preview-panel-prompt">Detective, upload evidence or request a case theory...</p>
     </div>
   </section>
 
@@ -375,6 +414,11 @@
     </div>
   </section>
 
+  <ContextualEvidenceChatModal
+    visible={showAIChatModal}
+    on:close={() => (showAIChatModal = false)}
+  />
+
   <!-- Native HTML5 <dialog> for registration -->
   <dialog
     bind:this={registerDialogRef}
@@ -414,6 +458,7 @@
     gap: 1rem;
     margin-top: 2rem;
     justify-content: center; /* Added semicolon */
+    flex-wrap: wrap;
   }
 
   /* Custom overrides for NES.css containers to match original gradients/shadows */
@@ -446,6 +491,65 @@
   .features-section-custom,
   .quick-actions-custom {
     margin-bottom: 3rem;
+  }
+
+  .yorha-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.25rem;
+    padding: 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.08);
+    background: #2a2016;
+    color: #f8f0d9;
+  }
+  .yorha-preview-info h2 {
+    margin: 0.35rem 0;
+  }
+  .preview-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin: 1rem 0;
+  }
+  .card-button-custom.accent {
+    background: #0f0f0f;
+    color: #fdf3d4;
+    border: 1px solid #fdf3d4;
+  }
+  .card-button-custom.link-button {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .preview-list {
+    list-style: square;
+    padding-left: 1.25rem;
+    color: #d4c9a9;
+  }
+  .yorha-preview-panel {
+    border: 2px solid #0f0f0f;
+    background: #12100c;
+    padding: 1rem;
+    min-height: 220px;
+  }
+  .preview-panel-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    background: #4ade80;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .preview-panel-prompt {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #cbd5f5;
   }
 
   .status-grid-custom {

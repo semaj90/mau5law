@@ -702,6 +702,38 @@ services:
   #     - postgres
   #   restart: unless-stopped
 
+  # EmbeddingGemma ONNX Service
+  embedding-service:
+    build:
+      context: .
+      dockerfile: python-services/Dockerfile.embedding
+    container_name: legal-ai-embedding
+    command: ["python", "embedding_service.py"]
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+          cpus: '2.0'
+        reservations:
+          memory: 2G
+          cpus: '1.0'
+    environment:
+      - PYTHONUNBUFFERED=1
+      - CUDA_VISIBLE_DEVICES=0
+    ports:
+      - "8094:8094"
+    volumes:
+      - ./models:/app/models:ro
+      - ./python-services:/app
+    networks:
+      - legal-ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8094/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
   # Phase 70: RAG Ingest Service
   # rag-ingest-service:
   #   build:

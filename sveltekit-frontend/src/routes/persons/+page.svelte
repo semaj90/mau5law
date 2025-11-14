@@ -1,14 +1,17 @@
 <script lang="ts">
   // Svelte 5 runes are auto-imported
   import { cn } from '$lib/utils';
-  import * as Lucide from 'lucide-svelte'; // Re-introducing Lucide icons
-  import { Card } from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
-  import { Input } from '$lib/components/ui/input';
+  import * as Lucide from 'lucide-svelte';
+// Re-introducing Lucide icons
   import { Badge } from '$lib/components/ui/badge';
+  import { Button } from '$lib/components/ui/button';
+  import { Card } from '$lib/components/ui/card';
+  import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '$lib/components/ui/dialog';
+  import { Input } from '$lib/components/ui/input';
   import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '$lib/components/ui/select';
-  import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '$lib/components/ui/dialog'; // Updated for bits-ui sub-components (SSR-compatible)
-  import { Label } from '$lib/components/ui/label'; // Assuming Label is available for forms
+// Updated for bits-ui sub-components (SSR-compatible)
+  import { Label } from '$lib/components/ui/label';
+ // Assuming Label is available for forms
 
   // Interfaces
   interface PersonOfInterest {
@@ -598,7 +601,7 @@
       {:else}
         {#if viewMode === 'grid'} <!-- Updated to check 'grid' -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"> <!-- Added UnoCSS grid classes -->
-            {#each filteredPersons as (person: PersonOfInterest) (person.id)}
+            {#each filteredPersons as person: PersonOfInterest (person.id)}
               <Card class="person-card bg-gray-900 border-yellow-600/30 text-gray-100">
                 <div class="flex items-center gap-4 p-4 border-b border-yellow-600/20">
                   <div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 bg-gray-800 flex items-center justify-center text-yellow-400 text-xl font-bold">
@@ -634,7 +637,7 @@
           </div>
         {:else if viewMode === 'list'}
           <div class="space-y-2"> <!-- Added UnoCSS space class -->
-            {#each filteredPersons as (person: PersonOfInterest) (person.id)}
+            {#each filteredPersons as person: PersonOfInterest (person.id)}
               <Card class="bg-gray-900 border-yellow-600/30 text-gray-100 p-4 flex items-center justify-between"> <!-- Added UnoCSS flex classes -->
                 <div class="flex items-center gap-4">
                   <div class="w-10 h-10 rounded-full overflow-hidden flex-shrink-0 bg-gray-800 flex items-center justify-center text-yellow-400 text-sm font-bold">

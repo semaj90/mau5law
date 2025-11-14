@@ -687,22 +687,83 @@ export const themes = pgTable('themes', {
   updatedAt: timestamp('updated_at').defaultNow()
 });
 
-export const personsOfInterest = pgTable('persons_of_interest', {
-  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey(), // Fixed: Changed defaultRandom() to default(sql`gen_random_uuid()`)
-  name: varchar('name', { length: 256 }).notNull(),
-  caseId: uuid('case_id'), // Optional, can be null if not linked to a specific case
+export const personsOfInterest = pgTable('persons', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid('case_id'),
+  createdBy: uuid('created_by'),
+  name: text('name').notNull(),
   aliases: jsonb('aliases').$type<string[]>().default([]),
-  relationship: varchar('relationship', { length: 256 }),
-  // Add the threat_level column using the defined enum
-  threatLevel: threatLevelEnum('threat_level').default('low').notNull(),
-  status: varchar('status', { length: 50 }).default('active').notNull(), // e.g., active, inactive, archived
-  profileData: jsonb('profile_data').$type<Record<string, unknown>>().default({}), // Flexible JSON for additional data
-  tags: jsonb('tags').$type<string[]>().default([]),
-  position: jsonb('position').$type<Record<string, unknown>>().default({}), // e.g., coordinates, role
-  createdBy: uuid('created_by').notNull(), // User who created this POI
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull()
+  threatLevel: varchar('threat_level', { enum: ["low", "medium", "high", "critical"] })
+    .default("low")
+    .notNull(),
+  status: varchar('status', { enum: ["surveillance", "wanted", "active", "cleared"] })
+    .default("surveillance")
+    .notNull(),
+  description: text('description').default(""),
+  lastSeen: varchar('last_seen'),
+  lastLocation: text('last_location'),
+  cases: jsonb('cases').$type<string[]>().default([]),
+  // Multiple photos with forensic metadata
+  photos: jsonb('photos').$type<{
+    id: string;
+    url: string;
+    filename: string;
+    uploadedAt: string;
+    metadata: {
+      exif?: Record<string, any>;
+      gps?: { lat: number; lng: number };
+      timestamp?: string;
+      deviceModel?: string;
+      resolution?: { width: number; height: number };
+    };
+    ai: {
+      faceEmbedding?: number[]; // Face recognition vector
+      quality: number; // Photo quality score
+      landmarks?: number[][]; // Facial landmarks
+    };
+  }[]>().default([]),
+  // Legacy single photo URL for backward compatibility
+  photoUrl: text('photo_url'),
+  ai: jsonb('ai').$type<{
+    riskScore: number;
+    patterns: string[];
+    recommendations: string[];
+    lastUpdated: string;
+  }>().default(null),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
 });
+
+// POI Photos table for better organization
+export const poiPhotos = pgTable('poi_photos', {
+  id: uuid('id').default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  poiId: uuid('poi_id').notNull(),
+  minioKey: text('minio_key').notNull(),
+  thumbnailKey: text('thumbnail_key'),
+  url: text('url').notNull(),
+  thumbnailUrl: text('thumbnail_url'),
+  originalName: text('original_name').notNull(),
+  mimeType: text('mime_type').notNull(),
+  size: bigint('size', { mode: 'number' }).notNull(),
+  aiCaption: text('ai_caption'),
+  aiTags: jsonb('ai_tags').default([]).$type<string[]>(),
+  exifData: jsonb('exif_data'),
+  forensicData: jsonb('forensic_data'),
+  faceEmbedding: text('face_embedding'), // Store vector as text for now
+  uploadedAt: timestamp('uploaded_at').defaultNow().notNull(),
+}, (table) => ({
+  foreignKeys: [
+    foreignKey({
+      columns: [table.poiId],
+      foreignColumns: [personsOfInterest.id],
+      name: "poi_photos_poi_id_persons_id_fk",
+    }).onDelete("cascade"),
+  ],
+  indexes: [
+    index("idx_poi_photos_poi_id").on(table.poiId),
+    index("idx_poi_photos_uploaded_at").on(table.uploadedAt),
+  ],
+}));
 
 // === AI/VECTOR TABLES (Missing Definitions) ===
 
@@ -915,6 +976,7 @@ export const casesRelations = relations(cases, ({ many, one }) => ({
   caseScores: many(caseScores),
   userAiQueries: many(userAiQueriesTable),
   canvasStates: many(canvasStates),
+  evidenceNodes: many(evidenceNodes),
 }));
 
 export const criminalsRelations = relations(criminals, ({ many, one }) => ({
@@ -1014,9 +1076,14 @@ export const themesRelations = relations(themes, ({ one }) => ({
   user: one(users, { fields: [themes.userId], references: [users.id] }),
 }));
 
-export const personsOfInterestRelations = relations(personsOfInterest, ({ one }) => ({
+export const personsOfInterestRelations = relations(personsOfInterest, ({ one, many }) => ({
   case: one(cases, { fields: [personsOfInterest.caseId], references: [cases.id] }),
   createdBy: one(users, { fields: [personsOfInterest.createdBy], references: [users.id] }),
+  photos: many(poiPhotos),
+}));
+
+export const poiPhotosRelations = relations(poiPhotos, ({ one }) => ({
+  poi: one(personsOfInterest, { fields: [poiPhotos.poiId], references: [personsOfInterest.id] }),
 }));
 
 export const hashVerificationsRelations = relations(hashVerifications, ({ one }) => ({
@@ -1112,6 +1179,90 @@ export const vectorOutboxRelations = relations(vectorOutbox, () => ({
 
 export const vectorJobsRelations = relations(vectorJobs, () => ({
   // No explicit relations
+}));
+
+// === POI PHOTOS TABLE ===
+export const poiPhotos = pgTable('poi_photos', {
+  id: serial('id').primaryKey(),
+  poiId: integer('poi_id').notNull().references(() => personsOfInterest.id),
+  minioPath: text('minio_path').notNull(),
+  url: text('url').notNull(),
+  thumbnailUrl: text('thumbnail_url'),
+  metadata: jsonb('metadata').$type<{
+    exif?: Record<string, any>;
+    gps?: { lat: number; lng: number } | null;
+    timestamp?: string | null;
+    device?: string | null;
+    ai?: {
+      caption?: string;
+      tags?: string[];
+      qualityScore?: number;
+      faceEmbedding?: number[];
+    };
+  }>(),
+  createdAt: timestamp('created_at').defaultNow().notNull()
+});
+
+export const evidenceNodes = pgTable("evidence_nodes", {
+  id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  caseId: uuid("case_id").notNull(),
+  title: text("title"),
+  description: text("description"),
+  type: text("type"), // video, image, document, audio, etc.
+  thumbnailUrl: text("thumbnail_url"),
+  contentUrl: text("content_url"),
+  x: integer("x").default(100), // board position
+  y: integer("y").default(100),
+  embedding: text("embedding"), // Store vector as text (768 dimensions)
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const evidenceConnections = pgTable("evidence_connections", {
+  id: uuid("id").default(sql`gen_random_uuid()`).primaryKey().notNull(),
+  sourceId: uuid("source_id").notNull(),
+  targetId: uuid("target_id").notNull(),
+  relationship: text("relationship").default("related"),
+  strength: real("strength").default(0.5),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  foreignKeys: [
+    foreignKey({
+      columns: [table.sourceId],
+      foreignColumns: [evidenceNodes.id],
+      name: "evidence_connections_source_id_evidence_nodes_id_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [table.targetId],
+      foreignColumns: [evidenceNodes.id],
+      name: "evidence_connections_target_id_evidence_nodes_id_fk",
+    }).onDelete("cascade"),
+  ],
+}));
+
+// === RELATIONS FOR EVIDENCE BOARD ===
+export const evidenceNodesRelations = relations(evidenceNodes, ({ one, many }) => ({
+  case: one(cases, { fields: [evidenceNodes.caseId], references: [cases.id] }),
+  connectionsAsSource: many(evidenceConnections, { relationName: "sourceConnections" }),
+  connectionsAsTarget: many(evidenceConnections, { relationName: "targetConnections" }),
+}));
+
+export const evidenceConnectionsRelations = relations(evidenceConnections, ({ one }) => ({
+  sourceNode: one(evidenceNodes, {
+    fields: [evidenceConnections.sourceId],
+    references: [evidenceNodes.id],
+    relationName: "sourceConnections"
+  }),
+  targetNode: one(evidenceNodes, {
+    fields: [evidenceConnections.targetId],
+    references: [evidenceNodes.id],
+    relationName: "targetConnections"
+  }),
+}));
+
+// === POI PHOTOS RELATIONS ===
+export const poiPhotosRelations = relations(poiPhotos, ({ one }) => ({
+  poi: one(personsOfInterest, { fields: [poiPhotos.poiId], references: [personsOfInterest.id] }),
 }));
 
 // === DATABASE CONNECTION & HELPERS ===

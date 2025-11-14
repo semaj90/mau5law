@@ -868,27 +868,25 @@
       "detail": "Demonstrates parallel CPU preparation ΓåÆ GPU upload pattern for legal document vectorization"
     },
     {
-      "label": "Γ£à Check for Errors (TypeScript + Svelte)",
+      "label": "npm run dev:trtllm",
       "type": "shell",
       "command": "npm",
-      "args": ["run", "check"],
+      "args": [
+        "run",
+        "dev:trtllm"
+      ],
       "options": {
         "cwd": "${workspaceFolder}/sveltekit-frontend"
       },
-      "group": {
-        "kind": "test",
-        "isDefault": true
-      },
+      "group": "build",
       "presentation": {
         "echo": true,
         "reveal": "always",
-        "focus": true,
-        "panel": "shared",
-        "showReuseMessage": true,
-        "clear": true
+        "focus": false,
+        "panel": "shared"
       },
-      "problemMatcher": ["$tsc"],
-      "detail": "Runs svelte-check to find TypeScript and Svelte errors (working directory: sveltekit-frontend)"
+      "problemMatcher": [],
+      "detail": "Start TensorRT-LLM container, Go inference service, and SvelteKit dev server with AI chat integration"
     },
     {
       "label": "ΓÜí Quick Error Check (TypeScript only)",

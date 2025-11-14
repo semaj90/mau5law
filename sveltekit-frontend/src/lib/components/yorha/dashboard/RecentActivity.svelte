@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { appStore } from '$lib/stores/app-store';
   import { onMount } from 'svelte';
 
   let activities: any[] = $state([]);
@@ -11,66 +10,7 @@
       loading = true;
       error = null;
 
-      // Load data from various sources to generate activities
-      await Promise.all([
-        appStore.loadCases(),
-        appStore.loadEvidence(),
-        appStore.loadSystemMetrics()
-      ]);
-
-      const cases = appStore.cases || [];
-      const evidence = appStore.evidence || [];
-      const metrics = appStore.systemMetrics;
-
-      // Generate activities from real data
-      const generatedActivities = [];
-
-      // Add case-related activities
-      cases.slice(0, 2).forEach((caseItem: any, index: number) => {
-        generatedActivities.push({
-          id: `case-${caseItem.id || index}`,
-          type: 'case_updated',
-          message: `Case ${caseItem.id || caseItem.title} status: ${caseItem.status || 'active'}`,
-          timestamp: caseItem.updatedAt ? new Date(caseItem.updatedAt) : new Date(Date.now() - 1000 * 60 * (15 + index * 10)),
-          icon: '📋',
-          color: 'text-yellow-400'
-        });
-      });
-
-      // Add evidence-related activities
-      evidence.slice(0, 2).forEach((evidenceItem: any, index: number) => {
-        generatedActivities.push({
-          id: `evidence-${evidenceItem.id || index}`,
-          type: 'evidence_processed',
-          message: `Evidence ${evidenceItem.filename || evidenceItem.title || 'document'} processed`,
-          timestamp: evidenceItem.createdAt ? new Date(evidenceItem.createdAt) : new Date(Date.now() - 1000 * 60 * (30 + index * 15)),
-          icon: '📄',
-          color: 'text-blue-400'
-        });
-      });
-
-      // Add system activities
-      if (metrics?.gpu) {
-        generatedActivities.push({
-          id: 'gpu-activity',
-          type: 'system_alert',
-          message: `GPU utilization: ${metrics.gpu.utilization || 0}%`,
-          timestamp: new Date(Date.now() - 1000 * 60 * 45),
-          icon: '⚡',
-          color: 'text-purple-400'
-        });
-      }
-
-      // Sort by timestamp (most recent first)
-      generatedActivities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-
-      activities = generatedActivities.slice(0, 5);
-
-    } catch (err) {
-      console.error('Failed to load recent activity:', err);
-      error = 'Failed to load activities';
-
-      // Fallback to mock data
+      // Use mock data for activities
       activities = [
         {
           id: 1,
@@ -113,6 +53,10 @@
           color: 'text-blue-400'
         }
       ];
+
+    } catch (err) {
+      console.error('Failed to load recent activity:', err);
+      error = 'Failed to load activities';
     } finally {
       loading = false;
     }
@@ -131,12 +75,12 @@
     }
   }
 
-  onMount(async () => {
-    await loadRecentActivity();
+  onMount(() => {
+    loadRecentActivity().catch(err => console.error('Failed to load initial activities:', err));
 
     // Refresh activities periodically
-    const interval = setInterval(async () => {
-      await loadRecentActivity();
+    const interval = setInterval(() => {
+      loadRecentActivity().catch(err => console.error('Failed to refresh activities:', err));
     }, 120000); // Refresh every 2 minutes
 
     return () => clearInterval(interval);

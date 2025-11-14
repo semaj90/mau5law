@@ -81,8 +81,8 @@
     }
   ];
 
-  let selectedEvidence = new Set();
-  let viewMode = 'grid'; // 'grid' or 'list'
+  let selectedEvidence = $state(new Set<string>());
+  let viewMode = $state('grid'); // 'grid' or 'list'
 
   function toggleSelection(evidenceId: string) {
     if (selectedEvidence.has(evidenceId)) {
@@ -152,7 +152,7 @@
           class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
           checked={selectedEvidence.size === evidence.length && evidence.length > 0}
           indeterminate={selectedEvidence.size > 0 && selectedEvidence.size < evidence.length}
-          on:change={selectAll}
+          onchange={selectAll}
         />
         <span class="text-sm text-slate-300">
           {selectedEvidence.size > 0 ? `${selectedEvidence.size} selected` : `${evidence.length} items`}
@@ -164,13 +164,13 @@
         <div class="flex bg-slate-700/50 rounded-lg p-1">
           <button
             class="p-1 rounded {viewMode === 'grid' ? 'bg-cyan-400/20 text-cyan-400' : 'text-slate-400'}"
-            on:click={() => viewMode = 'grid'}
+            onclick={() => viewMode = 'grid'}
           >
             ⊞
           </button>
           <button
             class="p-1 rounded {viewMode === 'list' ? 'bg-cyan-400/20 text-cyan-400' : 'text-slate-400'}"
-            on:click={() => viewMode = 'list'}
+            onclick={() => viewMode = 'list'}
           >
             ☰
           </button>
@@ -205,8 +205,8 @@
                 type="checkbox"
                 class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
                 checked={selectedEvidence.has(item.id)}
-                on:change={() => toggleSelection(item.id)}
-                on:click|stopPropagation
+                onchange={() => toggleSelection(item.id)}
+                onclick={(e) => e.stopPropagation()}
               />
               <span class="text-2xl">{getFileIcon(item.format)}</span>
             </div>
@@ -285,7 +285,7 @@
                   type="checkbox"
                   class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
                   checked={selectedEvidence.has(item.id)}
-                  on:change={() => toggleSelection(item.id)}
+                  onchange={() => toggleSelection(item.id)}
                 />
               </td>
 

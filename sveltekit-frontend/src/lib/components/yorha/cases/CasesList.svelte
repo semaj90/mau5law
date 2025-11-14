@@ -51,9 +51,46 @@
     }
   ];
 
-  let selectedCases = new Set();
-  let sortBy = 'updated';
-  let sortOrder = 'desc';
+  let selectedCases = $state(new Set<string>());
+  let sortBy = $state('updated');
+  let sortOrder = $state('desc');
+
+  let sortedCases = $derived([...cases].sort((a, b) => {
+    let aVal: any, bVal: any;
+
+    switch (sortBy) {
+      case 'title':
+        aVal = a.title.toLowerCase();
+        bVal = b.title.toLowerCase();
+        break;
+      case 'status':
+        aVal = a.status;
+        bVal = b.status;
+        break;
+      case 'priority':
+        const priorityOrder = { high: 3, medium: 2, low: 1 };
+        aVal = priorityOrder[a.priority as keyof typeof priorityOrder];
+        bVal = priorityOrder[b.priority as keyof typeof priorityOrder];
+        break;
+      case 'updated':
+        aVal = a.updated.getTime();
+        bVal = b.updated.getTime();
+        break;
+      case 'progress':
+        aVal = a.progress;
+        bVal = b.progress;
+        break;
+      default:
+        aVal = a.updated.getTime();
+        bVal = b.updated.getTime();
+    }
+
+    if (sortOrder === 'asc') {
+      return aVal > bVal ? 1 : -1;
+    } else {
+      return aVal < bVal ? 1 : -1;
+    }
+  }));
 
   function toggleCaseSelection(caseId: string) {
     if (selectedCases.has(caseId)) {
@@ -61,7 +98,7 @@
     } else {
       selectedCases.add(caseId);
     }
-    selectedCases = selectedCases;
+    selectedCases = new Set(selectedCases);
   }
 
   function selectAllCases() {
@@ -110,43 +147,6 @@
       return `${diffDays}d ago`;
     }
   }
-
-  $: sortedCases = [...cases].sort((a, b) => {
-    let aVal: any, bVal: any;
-
-    switch (sortBy) {
-      case 'title':
-        aVal = a.title.toLowerCase();
-        bVal = b.title.toLowerCase();
-        break;
-      case 'status':
-        aVal = a.status;
-        bVal = b.status;
-        break;
-      case 'priority':
-        const priorityOrder = { high: 3, medium: 2, low: 1 };
-        aVal = priorityOrder[a.priority as keyof typeof priorityOrder];
-        bVal = priorityOrder[b.priority as keyof typeof priorityOrder];
-        break;
-      case 'updated':
-        aVal = a.updated.getTime();
-        bVal = b.updated.getTime();
-        break;
-      case 'progress':
-        aVal = a.progress;
-        bVal = b.progress;
-        break;
-      default:
-        aVal = a.updated.getTime();
-        bVal = b.updated.getTime();
-    }
-
-    if (sortOrder === 'asc') {
-      return aVal > bVal ? 1 : -1;
-    } else {
-      return aVal < bVal ? 1 : -1;
-    }
-  });
 </script>
 
 <div class="bg-slate-800/50 backdrop-blur rounded-lg border border-slate-700/50">
@@ -159,7 +159,7 @@
           class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
           checked={selectedCases.size === cases.length && cases.length > 0}
           indeterminate={selectedCases.size > 0 && selectedCases.size < cases.length}
-          on:change={selectAllCases}
+          onchange={selectAllCases}
         />
         <span class="text-sm text-slate-300">
           {selectedCases.size > 0 ? `${selectedCases.size} selected` : `${cases.length} cases`}
@@ -185,20 +185,20 @@
       <thead class="bg-slate-700/30">
         <tr class="text-left text-xs font-medium text-slate-400 uppercase tracking-wider">
           <th class="px-4 py-3 w-12"></th>
-          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" on:click={() => { sortBy = 'title'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
+          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" onclick={() => { sortBy = 'title'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
             Case {sortBy === 'title' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
           </th>
-          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" on:click={() => { sortBy = 'status'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
+          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" onclick={() => { sortBy = 'status'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
             Status {sortBy === 'status' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
           </th>
-          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" on:click={() => { sortBy = 'priority'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
+          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" onclick={() => { sortBy = 'priority'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
             Priority {sortBy === 'priority' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
           </th>
           <th class="px-4 py-3">Assignee</th>
-          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" on:click={() => { sortBy = 'progress'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
+          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" onclick={() => { sortBy = 'progress'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
             Progress {sortBy === 'progress' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
           </th>
-          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" on:click={() => { sortBy = 'updated'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
+          <th class="px-4 py-3 cursor-pointer hover:text-cyan-400" onclick={() => { sortBy = 'updated'; sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; }}>
             Updated {sortBy === 'updated' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
           </th>
           <th class="px-4 py-3">Actions</th>
@@ -213,7 +213,7 @@
                 type="checkbox"
                 class="rounded border-slate-600 bg-slate-700 text-cyan-400 focus:ring-cyan-400"
                 checked={selectedCases.has(caseItem.id)}
-                on:change={() => toggleCaseSelection(caseItem.id)}
+                onchange={() => toggleCaseSelection(caseItem.id)}
               />
             </td>
 

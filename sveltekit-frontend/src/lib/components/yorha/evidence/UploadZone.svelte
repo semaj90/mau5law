@@ -3,10 +3,10 @@
 
   const dispatch = createEventDispatcher();
 
-  let isDragOver = false;
-  let uploadedFiles: File[] = [];
-  let uploadProgress = 0;
-  let isUploading = false;
+  let isDragOver = $state(false);
+  let uploadedFiles: File[] = $state([]);
+  let uploadProgress = $state(0);
+  let isUploading = $state(false);
 
   function handleDragOver(event: DragEvent) {
     event.preventDefault();
@@ -107,9 +107,10 @@
   <!-- Upload Zone -->
   <div
     class="border-2 border-dashed rounded-lg p-8 text-center transition-colors {isDragOver ? 'border-cyan-400 bg-cyan-400/10' : 'border-slate-600 hover:border-slate-500'}"
-    on:dragover={handleDragOver}
-    on:dragleave={handleDragLeave}
-    on:drop={handleDrop}
+    role="region"
+    ondragover={handleDragOver}
+    ondragleave={handleDragLeave}
+    ondrop={handleDrop}
   >
     <div class="mb-4">
       <div class="text-4xl mb-4">📁</div>
@@ -125,7 +126,7 @@
       accept=".pdf,.doc,.docx,.xls,.xlsx,.eml,.mp4,.avi,.mov,.jpg,.png,.gif"
       class="hidden"
       id="file-input"
-      on:change={handleFileSelect}
+      onchange={handleFileSelect}
     />
 
     <label
@@ -149,7 +150,7 @@
         <button
           class="px-4 py-2 bg-green-400/20 hover:bg-green-400/30 text-green-400 text-sm rounded-lg transition-colors disabled:opacity-50"
           disabled={isUploading}
-          on:click={uploadFiles}
+          onclick={uploadFiles}
         >
           {isUploading ? 'Uploading...' : 'Upload All'}
         </button>
@@ -184,7 +185,7 @@
             </div>
             <button
               class="p-1 text-slate-400 hover:text-red-400 transition-colors"
-              on:click={() => removeFile(index)}
+              onclick={() => removeFile(index)}
               disabled={isUploading}
             >
               ✕

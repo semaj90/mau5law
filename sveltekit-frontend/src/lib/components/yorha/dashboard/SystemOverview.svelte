@@ -2,20 +2,19 @@
   import { appStore } from '$lib/stores/app-store';
   import { onMount } from 'svelte';
 
-  export let webgpuCapabilities: any = null;
-  export let cpuCapabilities: any = null;
+  let { webgpuCapabilities = null, cpuCapabilities = null } = $props();
 
-  let systemHealth = {
+  let systemHealth = $state({
     overall: 85,
     webgpu: webgpuCapabilities?.hasWebGPU ? 95 : 60,
     cpu: cpuCapabilities?.hasWebGL ? 90 : 70,
     memory: 75,
     network: 100
-  };
+  });
 
-  let systemMetrics: any = null;
-  let loading = true;
-  let error: string | null = null;
+  let systemMetrics = $state<any>(null);
+  let loading = $state(true);
+  let error = $state<string | null>(null);
 
   async function loadSystemMetrics() {
     try {
@@ -50,7 +49,7 @@
     await loadSystemMetrics();
 
     // Update health metrics periodically
-    const interval = setInterval(async () => {
+    const interval = window.setInterval(async () => {
       await loadSystemMetrics();
     }, 30000); // Update every 30 seconds
 

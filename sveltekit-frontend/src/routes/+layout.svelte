@@ -5,7 +5,9 @@
   import { cpuFallback } from '$lib/webgpu/webgpu-cpu-fallback';
   import { webgpu } from '$lib/webgpu/webgpu-init';
   import { onMount } from 'svelte';
+  import { derived } from 'svelte/store';
 
+  // Simple boolean flags (avoid incorrect $state usage)
   let webgpuReady = false;
   let cpuFallbackReady = false;
 
@@ -25,11 +27,18 @@
     }
   });
 
-  $: isCommandCenter = $page.url.pathname.startsWith('/yorha') ||
-                       $page.url.pathname === '/' ||
-                       ['/command-center', '/active-cases', '/evidence-library',
-                        '/persons-of-interest', '/analysis-center', '/global-search',
-                        '/terminal', '/system-configuration', '/gpu-evidence-graph'].includes($page.url.pathname);
+  // Derived store based on the page store (runes-mode compatible)
+  const isCommandCenter = derived(page, ($page) => {
+    const path = $page.url.pathname;
+    return (
+      path.startsWith('/yorha') ||
+      path === '/' ||
+      ['/command-center', '/active-cases', '/evidence-library',
+       '/persons-of-interest', '/analysis-center', '/global-search',
+       '/terminal', '/system-configuration', '/gpu-evidence-graph'].includes(path)
+    );
+  });
+
 </script>
 
 <svelte:head>
