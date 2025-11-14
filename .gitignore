@@ -927,3 +927,13 @@ sveltekit-frontend/build-debug/CMakeFiles/4.0.0/CompilerIdCUDA/CompilerIdCUDA.li
 sveltekit-frontend/build-debug/Debug/WardenNet.exp
 sveltekit-frontend/build-debug/
 sveltekit-frontend/build/
+local-models/embeddinggemma_300m_onnx/embeddinggemma_300m_onnx/tokenizer_config.json
+local-models/embeddinggemma_300m_onnx/embeddinggemma_300m_onnx/tokenizer.json
+model_unsloth_hf_f16_backup/tokenizer_config.json
+model_unsloth_hf_f16_backup/tokenizer.json
+onnx_models/gemma_3_270m/tokenizer.json
+sveltekit-frontend/static/embeddinggemma_300m_onnx/config.json
+sveltekit-frontend/static/embeddinggemma_300m_onnx/model_info.json
+sveltekit-frontend/static/embeddinggemma_300m_onnx/special_tokens_map.json
+sveltekit-frontend/static/embeddinggemma_300m_onnx/tokenizer_config.json
+sveltekit-frontend/static/embeddinggemma_300m_onnx/tokenizer.json
