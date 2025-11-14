@@ -7,7 +7,7 @@ import type { RequestHandler } from './$types.js';
 import { json } from '@sveltejs/kit';
 import * as webgpuAIModule from '$lib/webgpu/webgpu-ai-engine.js'; // Changed to namespace import
 import { WebGPURedisOptimizer } from '$lib/server/webgpu-redis-optimizer.js';
-import { ollamaChatStream } from '$lib/services/ollamaChatStream.js'; // Changed to named import
+import ollamaChatStream from '$lib/services/ollamaChatStream.js';
 import { getRedisClient } from '$lib/server/cache/redis';
 import { LLM_MODEL /*, requireRedis */ } from '$lib/server/ai/legal-rag-pipeline'; // Removed unused requireRedis
 
@@ -147,7 +147,8 @@ function extractFloat32FromResult(input: unknown): Float32Array | undefined {
   }
   return undefined;
 }
-/** * Process chat with WebGPU acceleration and tensor compression */ async function processWebGPUChat(
+// Process chat with WebGPU acceleration and tensor compression
+async function processWebGPUChat(
   request: WebGPUChatRequest,
   clientIP: string
 ): Promise<WebGPUChatResponse> {
@@ -348,59 +349,9 @@ export const POST: RequestHandler = async ({ request }) => {
         gpuAccelerated: false,
         tensorCompression: { enabled: false },
       },
-      { status: 500 }
+      { status: 500 } // Internal Server Error
     );
   }
 };
-  }
-};
-  } catch (error: Error | unknown) {
-    return json(
-      {
-        success: false,
-        error: 'WebGPU health check failed',
-        details: error instanceof Error ? error.message : String(error), // Corrected details access
-      }, // Corrected details access
-      { status: 500 }
-    ); // Corrected return syntax
-  }
-};
-// POST endpoint for WebGPU-accelerated chat
-export const POST: RequestHandler = async ({ request }) => {
-  const startTime = performance.now();
-  try {
-    const body = (await request.json()) as WebGPUChatRequest;
-    // Input validation
-    if (!body.message || typeof body.message !== 'string') {
-      return json(
-        { success: false, error: `Message is required and must be a string` },
-        { status: 400 }
-      );
-    }
-    if (body.message.length > 4000) {
-      return json(
-        { success: false, error: `Message too long (max 4000 characters for WebGPU optimization)` },
-        { status: 400 }
-      );
-    }
-    // Get client IP for rate limiting
-    const clientIP =
-      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown';
-    // Process with WebGPU acceleration
-    const result = await processWebGPUChat(body, clientIP);
-    return json(result, { status: 200 });
-  } catch (error: unknown) {
-    // Changed type to unknown
-    return json(
-      {
-        success: false,
-        error: 'WebGPU chat processing failed',
-        details: error instanceof Error ? error.message : String(error), // Safely access error message
-        processingTime: performance.now() - startTime,
-        gpuAccelerated: false,
-        tensorCompression: { enabled: false },
-      },
-      { status: 500 }
-    );
-  }
-};
+// Export for testing purposes
+export { processWebGPUChat, checkGPURateLimit, getCapabilities };

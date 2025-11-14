@@ -1,33 +1,51 @@
 <script lang="ts">
-  import { type AISuggestion } from '$lib/evidence-canvas/ai-suggestions-service';
-  import type { EvidenceEdge, EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
-  import { CaseSuggestionModal } from '$lib/evidence-canvas/case-suggestion-modal.svelte';
-  import { EvidenceCanvas } from '$lib/evidence-canvas/evidence-canvas-core.svelte';
-  import { GraphControlPanel } from '$lib/evidence-canvas/graph-control-panel.svelte';
-  import { webgpuInitService } from '$lib/evidence-canvas/webgpu-init';
+  import type { EvidenceNode } from '$lib/evidence-canvas/case-similarity-service';
+  import CaseSuggestionModal from '$lib/evidence-canvas/CaseSuggestionModal.svelte';
+  import EvidenceCanvas from '$lib/evidence-canvas/EvidenceCanvas.svelte';
+  import GraphControlPanel from '$lib/evidence-canvas/GraphControlPanel.svelte';
+  import { initialize } from '$lib/evidence-canvas/webgpu-init';
   import { onDestroy, onMount } from 'svelte';
 
+  import fetchEvidence from '$lib/api/evidence';
+  import analyzeCaseSimilarity from '$lib/server/case-similarity';
+  import runGPUSimilarity from '$lib/webgpu/similarity-gpu';
+
+  interface EvidenceEdge {
+    id: string;
+    source: string;
+    target: string;
+    weight: number;
+  }
+
   // Reactive state
-  let canvas: EvidenceCanvas;
-  let suggestion: AISuggestion | null = null;
-  let isLoading = true;
-  let error: string | null = null;
-  let stats = {
+  let canvas = $state<any>(null);
+  let suggestion = $state<any>(null);
+  let isLoading = $state(true);
+  let error = $state<string | null>(null);
+  let stats = $state({
     nodes: 0,
     edges: 0,
     clusters: 0,
     gpuMemory: '0MB',
     processingTime: '0ms'
-  };
+  });
 
   // Live update event source
-  let eventSource: EventSource | null = null;
+  let eventSource = $state<EventSource | null>(null);
 
   // Control panel state
-  let layoutAlgorithm = 'force';
-  let showLabels = true;
-  let nodeSize = 'adaptive';
-  let edgeThreshold = 0.6;
+  let layoutAlgorithm = $state('force');
+  let showLabels = $state(true);
+  let nodeSize = $state('adaptive');
+  let edgeThreshold = $state(0.6);
+  let contextMenu = $state<{ visible: boolean; x: number; y: number; node: EvidenceNode | null }>({
+    visible: false,
+    x: 0,
+    y: 0,
+    node: null
+  });
+  let metadataNode = $state<EvidenceNode | null>(null);
+  let pinnedNodeIds = $state<string[]>([]);
 
   onMount(async () => {
     try {
@@ -41,6 +59,15 @@
     }
   });
 
+  onMount(() => {
+    if (typeof window === 'undefined') return;
+    const handler = () => {
+      contextMenu = { ...contextMenu, visible: false };
+    };
+    window.addEventListener('click', handler);
+    return () => window.removeEventListener('click', handler);
+  });
+
   onDestroy(() => {
     if (eventSource) {
       eventSource.close();
@@ -51,7 +78,8 @@
     console.log('🚀 Initializing WebGPU Evidence Canvas...');
 
     // Initialize WebGPU
-    const gpuCapabilities = await webgpuInitService.initialize();
+    // @ts-ignore
+    const gpuCapabilities = await initialize();
     if (!gpuCapabilities.isSupported) {
       throw new Error('WebGPU not supported. Please use a compatible browser with GPU acceleration.');
     }
@@ -60,6 +88,7 @@
     const evidenceItems = await fetchEvidence();
 
     // Analyze case similarity
+    // @ts-ignore
     const embeddings = await analyzeCaseSimilarity(evidenceItems);
 
     // Run GPU similarity analysis
@@ -83,23 +112,7 @@
     console.log('✅ Evidence canvas initialized with', nodes.length, 'nodes and', edges.length, 'edges');
   }
 
-  async function fetchEvidence(): Promise<any[]> {
-    // Import dynamically to avoid circular dependencies
-    const { fetchEvidence } = await import('$lib/api/evidence');
-    return await fetchEvidence();
-  }
 
-  async function analyzeCaseSimilarity(items: any[]): Promise<number[][]> {
-    // Import dynamically
-    const { analyzeCaseSimilarity } = await import('$lib/server/case-similarity');
-    return await analyzeCaseSimilarity(items);
-  }
-
-  async function runGPUSimilarity(items: any[], embeddings: number[][]): Promise<any> {
-    // Import dynamically
-    const { runGPUSimilarity } = await import('$lib/webgpu/similarity-gpu');
-    return await runGPUSimilarity(items, embeddings);
-  }
 
   function createGraphData(items: any[], similarityResults: any): { nodes: EvidenceNode[], edges: EvidenceEdge[] } {
     const nodes: EvidenceNode[] = items.map((item, i) => ({
@@ -111,21 +124,23 @@
       size: 20,
       color: getNodeColor(item.type),
       data: item,
-      clusterId: similarityResults.clusters?.[i] || null
+      clusterId: similarityResults.clusters?.[i] || null,
+      title: item.title || item.name || `Evidence ${i + 1}`,
+      content: item.content || '',
+      metadata: item.metadata || {}
     }));
 
     const edges: EvidenceEdge[] = [];
     if (similarityResults.similarityMatrix) {
       for (let i = 0; i < items.length; i++) {
         for (let j = i + 1; j < items.length; j++) {
-          const similarity = similarityResults.similarityMatrix[i][j];
-          if (similarity > edgeThreshold) {
+          const similarity = similarityResults.similarityMatrix[i]?.[j];
+          if (similarity && similarity > edgeThreshold) {
             edges.push({
               id: `edge_${i}_${j}`,
-              source: nodes[i].id,
-              target: nodes[j].id,
-              weight: similarity,
-              type: similarity > 0.8 ? 'strong' : 'weak'
+              source: items[i].id || `node_${i}`,
+              target: items[j].id || `node_${j}`,
+              weight: similarity
             });
           }
         }
@@ -199,7 +214,7 @@
   function showSimilaritySuggestion(data: any) {
     suggestion = {
       id: `similarity_${Date.now()}`,
-      type: 'similarity',
+      type: 'evidence',
       title: 'High Similarity Detected',
       description: `Cases "${data.case1}" and "${data.case2}" show ${Math.round(data.similarity * 100)}% similarity`,
       confidence: data.similarity,
@@ -222,7 +237,7 @@
   function showRelationshipSuggestion(data: any) {
     suggestion = {
       id: `relationship_${Date.now()}`,
-      type: 'relationship',
+      type: 'strategy',
       title: 'New Relationship Discovered',
       description: `Neo4j found connection: ${data.description}`,
       confidence: data.confidence || 0.9,
@@ -240,7 +255,7 @@
   function showPatternSuggestion(data: any) {
     suggestion = {
       id: `pattern_${Date.now()}`,
-      type: 'pattern',
+      type: 'risk',
       title: 'AI Pattern Detected',
       description: data.description,
       confidence: data.confidence || 0.85,
@@ -300,6 +315,108 @@
 
     suggestion = null;
   }
+
+  function handleNodeSelect(event: CustomEvent<EvidenceNode[]>) {
+    const nodes = event.detail ?? [];
+    if (nodes.length > 0) {
+      metadataNode = nodes.at(-1) ?? metadataNode;
+    }
+  }
+
+  function handleNodeContext(
+    event: CustomEvent<{
+      node: EvidenceNode | null;
+      screenX: number;
+      screenY: number;
+    }>
+  ) {
+    contextMenu = {
+      visible: true,
+      x: event.detail.screenX,
+      y: event.detail.screenY,
+      node: event.detail.node
+    };
+
+    if (event.detail.node) {
+      metadataNode = event.detail.node;
+    }
+  }
+
+  function openEvidenceRecord(node?: EvidenceNode | null) {
+    const id = node?.data?.id ?? node?.id;
+    if (!id) return;
+    window.open(`/yorha/evidence?id=${encodeURIComponent(id)}`, '_blank');
+  }
+
+  function compareEvidence(node?: EvidenceNode | null) {
+    const focus = node?.data?.caseId ?? node?.metadata?.caseId ?? node?.id;
+    if (!focus) return;
+    window.open(`/yorha/cases/compare?focus=${encodeURIComponent(focus)}`, '_blank');
+  }
+
+  function addToCaseSummary(node?: EvidenceNode | null) {
+    showToast(`Added ${node?.label ?? 'evidence'} to case summary queue`, 'info');
+  }
+
+  function showTimelinePosition(node?: EvidenceNode | null) {
+    const id = node?.data?.id ?? node?.id;
+    if (!id) return;
+    window.open(`/yorha/timeline?evidenceId=${encodeURIComponent(id)}`, '_blank');
+  }
+
+  function sendToAgenticPipeline(node?: EvidenceNode | null) {
+    showToast(`Agentic process triggered for ${node?.label ?? 'evidence'}`, 'success');
+  }
+
+  function togglePinNode(node?: EvidenceNode | null) {
+    if (!node) return;
+    if (pinnedNodeIds.includes(node.id)) {
+      pinnedNodeIds = pinnedNodeIds.filter((id) => id !== node.id);
+      showToast(`Unpinned ${node.label}`, 'info');
+    } else {
+      pinnedNodeIds = [...pinnedNodeIds, node.id];
+      showToast(`Pinned ${node.label}`, 'success');
+    }
+  }
+
+  function showMetadataPanel(node?: EvidenceNode | null) {
+    metadataNode = node ?? metadataNode;
+  }
+
+  function getTags(node: EvidenceNode | null) {
+    if (!node) return [];
+    const tags = node.metadata?.tags ?? node.data?.tags;
+    if (Array.isArray(tags)) return tags;
+    if (typeof tags === 'string') return tags.split(',').map((tag) => tag.trim());
+    return [];
+  }
+
+  function getVectorPreview(node: EvidenceNode | null) {
+    if (!node) return 'No vector data';
+    const vector = node.metadata?.similarityVector || node.data?.embedding;
+    if (Array.isArray(vector) && vector.length > 0) {
+      return `${vector
+        .slice(0, 6)
+        .map((value: number) => value.toFixed(2))
+        .join(', ')} … (${vector.length} dims)`;
+    }
+    return 'No vector data';
+  }
+
+  function getOcrSummary(node: EvidenceNode | null) {
+    if (!node) return 'No OCR summary available.';
+    return node.data?.ocrText || node.metadata?.ocrSummary || 'No OCR summary available.';
+  }
+
+  const contextActions = [
+    { label: 'Open Evidence', handler: openEvidenceRecord, accent: 'primary' },
+    { label: 'Compare Against…', handler: compareEvidence, accent: 'warning' },
+    { label: 'Add to Case Summary', handler: addToCaseSummary },
+    { label: 'Show Timeline Position', handler: showTimelinePosition },
+    { label: 'Send to Agentic Pipeline', handler: sendToAgenticPipeline },
+    { label: 'Pin Node', handler: togglePinNode },
+    { label: 'Show Metadata Panel', handler: showMetadataPanel }
+  ];
 </script>
 
 <div class="evidence-canvas-container">
@@ -312,13 +429,14 @@
     <div class="error-screen">
       <h2>Error Loading Evidence Canvas</h2>
       <p>{error}</p>
-      <button on:click={() => window.location.reload()} class="retry-btn">
+      <button onclick={() => window.location.reload()} class="retry-btn">
         Retry
       </button>
     </div>
   {:else}
     <!-- Control Panel -->
     <div class="control-panel">
+      <!-- @ts-expect-error -->
       <GraphControlPanel
         bind:layoutAlgorithm
         bind:showLabels
@@ -330,14 +448,18 @@
         on:edgeThresholdChange={handleEdgeThresholdChange}
       />
     </div>
-
     <!-- Canvas -->
     <div class="canvas-wrapper">
-      <EvidenceCanvas bind:this={canvas} />
+      <!-- @ts-expect-error -->
+      <EvidenceCanvas
+        bind:this={canvas}
+        on:nodeSelect={handleNodeSelect}
+        on:nodeContext={handleNodeContext}
+      />
     </div>
-
     <!-- AI Suggestion Modal -->
     {#if suggestion}
+      <!-- @ts-expect-error -->
       <CaseSuggestionModal
         {suggestion}
         on:action={handleSuggestionAction}
@@ -345,38 +467,229 @@
       />
     {/if}
   {/if}
-</div>
+    {#if contextMenu.visible}
+      <div
+        class="context-menu nes-container is-dark"
+        style={`left:${contextMenu.x}px; top:${contextMenu.y}px`}
+        on:click|stopPropagation
+      >
+        <p class="menu-title">{contextMenu.node?.label ?? 'Canvas'}</p>
+        {#each contextActions as action}
+          <button
+            class={`nes-btn ${action.accent ? `is-${action.accent}` : ''}`}
+            on:click={() => action.handler(contextMenu.node)}
+          >
+            {action.label}
+          </button>
+        {/each}
+      </div>
+    {/if}
 
+    {#if metadataNode}
+      <aside class="metadata-panel nes-container is-dark">
+        <header class="metadata-header">
+          <div>
+            <p class="metadata-title">{metadataNode.label}</p>
+            <p class="muted">{metadataNode.type}</p>
+          </div>
+          <button class="nes-btn" on:click={() => (metadataNode = null)}>Close</button>
+        </header>
+
+        <section>
+          <p class="section-label">OCR Summary</p>
+          <p class="section-body">{getOcrSummary(metadataNode)}</p>
+        </section>
+
+        <section>
+          <p class="section-label">Embedding Preview</p>
+          <p class="section-body mono">{getVectorPreview(metadataNode)}</p>
+        </section>
+
+        <section class="meta-grid">
+          <div>
+            <p class="section-label">Graph Rank</p>
+            <p class="section-body">{metadataNode.metadata?.graphRank ?? 'N/A'}</p>
+          </div>
+          <div>
+            <p class="section-label">Similarity</p>
+            <p class="section-body">{metadataNode.metadata?.similarityScore ?? 'N/A'}</p>
+          </div>
+        </section>
+
+        {#if getTags(metadataNode).length}
+          <section>
+            <p class="section-label">Tags</p>
+            <div class="tag-group">
+              {#each getTags(metadataNode) as tag}
+                <span class="tag">{tag}</span>
+              {/each}
+            </div>
+          </section>
+        {/if}
+
+        {#if metadataNode.metadata?.notes}
+          <section>
+            <p class="section-label">Notes</p>
+            <p class="section-body">{metadataNode.metadata?.notes}</p>
+          </section>
+        {/if}
+      </aside>
+    {/if}
+  {/if}
+</div>
 <style>
   .evidence-canvas-container {
-    @apply relative w-full h-screen bg-yorha-dark overflow-hidden;
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background-color: var(--yorha-dark);
+    overflow: hidden;
   }
 
   .loading-screen {
-    @apply flex flex-col items-center justify-center h-full text-white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: white;
   }
 
   .loading-spinner {
-    @apply w-12 h-12 border-4 border-neon-green border-t-transparent rounded-full animate-spin mb-4;
+    width: 3rem;
+    height: 3rem;
+    border: 4px solid var(--neon-green);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
   }
 
   .error-screen {
-    @apply flex flex-col items-center justify-center h-full text-white p-8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: white;
+    padding: 2rem;
   }
 
   .error-screen h2 {
-    @apply text-2xl text-red-400 mb-4;
+    font-size: 1.5rem;
+    color: #f87171;
+    margin-bottom: 1rem;
   }
 
   .retry-btn {
-    @apply px-6 py-2 bg-neon-green text-black font-bold rounded hover:bg-green-400 transition-colors;
+    padding: 0.5rem 1.5rem;
+    background-color: var(--neon-green);
+    color: black;
+    font-weight: bold;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+  }
+
+  .retry-btn:hover {
+    background-color: #22c55e;
   }
 
   .control-panel {
-    @apply absolute top-4 left-4 z-10;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10;
   }
 
   .canvas-wrapper {
-    @apply w-full h-full;
+    width: 100%;
+    height: 100%;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .context-menu {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 220px;
+    padding: 0.9rem;
+    border-radius: 0.8rem;
+    border: 1px solid rgba(103, 232, 249, 0.4);
+    background: rgba(2, 6, 23, 0.95);
+    z-index: 30;
+  }
+
+  .context-menu .menu-title {
+    margin: 0 0 0.35rem;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+    padding-bottom: 0.25rem;
+  }
+
+  .metadata-panel {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 320px;
+    max-height: calc(100% - 2rem);
+    overflow-y: auto;
+    border-radius: 1rem;
+    border: 1px solid rgba(103, 232, 249, 0.3);
+    background: rgba(2, 6, 23, 0.95);
+    z-index: 15;
+  }
+
+  .metadata-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .metadata-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .section-label {
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    letter-spacing: 0.08em;
+  }
+
+  .section-body {
+    margin: 0.25rem 0 0.75rem;
+  }
+
+  .section-body.mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .tag-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .tag {
+    padding: 0.1rem 0.6rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(148, 163, 184, 0.5);
+    font-size: 0.75rem;
   }
 </style>

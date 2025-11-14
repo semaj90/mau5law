@@ -1,1059 +1,201 @@
 <script lang="ts">
-// Svelte, 5 runes are auto-imported // Define interfaces for API response and internal person data
-  interface APIPerson {
-    name: string;
-    aliases?: string[];
-    profileData?: {
-      role?: string;
-      height?: string;
-      age?: number | string;
-      hair?: string;
-      eyes?: string;
-      what?: string; // Modus Operandi
-      lastKnownLocation?: string;
-      dangerLevel?: number;
-      associates?: string[];
-      habits?: string[];
-    };
-    status?: string;
-    threatLevel?: 'low' | 'medium' | 'high' | 'critical';
-  }
+	import PersonHeader from '$lib/components/PersonHeader.svelte';
+	import PersonList from '$lib/components/PersonList.svelte';
+	import PersonProfile from '$lib/components/PersonProfile.svelte';
+	import PersonStatsPanel from '$lib/components/PersonStatsPanel.svelte';
+	import type { APIPerson, FugitiveDexPerson } from '$lib/components/types';
 
-  interface FugitiveDexPerson {
-    id: string;
-    name: string;
-    alias: string;
-    role: string;
-    status: string;
-    priority: string;
-    height: string;
-    age: number | string;
-    hair: string;
-    eyes: string;
-    modusOperandi: string;
-    lastSeen: string;
-    dangerLevel: number;
-    photo: string;
-    knownAssociates: string[];
-    knownHabits: string[];
-    attributes: {
-      stealth: number;
-      intelligence: number;
-      strength: number;
-      speed: number;
-      dangerousness: number;
-    };
-  }
+	// Reactive state with Svelte 5 runes
+	let persons = $state<FugitiveDexPerson[]>([
+		{
+			id: '001',
+			name: 'John, "The Ghost" Doe',
+			alias: 'The Ghost',
+			role: 'Fugitive',
+			status: 'WANTED',
+			priority: 'HIGH',
+			height: '185 cm',
+			age: 45,
+			hair: 'Brown',
+			eyes: 'Blue',
+			modusOperandi: 'Break and Enter Specialist',
+			lastSeen: '2 days ago',
+			dangerLevel: 8.5,
+			photo: '/placeholder-person.jpg',
+			knownAssociates: [
+				'Phantom - Burglar, former accomplice',
+				'Arsiguent - Known to hire billers',
+				'Connection between prison and family',
+				'Connections - Langue seed gets an evil waaah'
+			],
+			knownHabits: [
+				'Prefers dark locations',
+				'Known Habits',
+				'Evade a scene has kinder Sleeps'
+			],
+			attributes: { stealth: 95, intelligence: 80, strength: 70, speed: 85, dangerousness: 90 }
+		},
+		{
+			id: '002',
+			name: 'Maria, "The Shadow" Smith',
+			alias: 'The Shadow',
+			role: 'Suspect',
+			status: 'MONITORING',
+			priority: 'MEDIUM',
+			height: '165 cm',
+			age: 32,
+			hair: 'Black',
+			eyes: 'Green',
+			modusOperandi: 'Financial Fraud Expert',
+			lastSeen: '1 week ago',
+			dangerLevel: 6.5,
+			photo: '/placeholder-person.jpg',
+			knownAssociates: [
+				'Various financial contacts',
+				'Underground banking network'
+			],
+			knownHabits: [
+				'Frequents high-end establishments',
+				'Uses multiple identities'
+			],
+			attributes: { stealth: 75, intelligence: 95, strength: 45, speed: 60, dangerousness: 65 }
+		},
+		{
+			id: '003',
+			name: 'Victor, "Red Baron" Kane',
+			alias: 'Red Baron',
+			role: 'Informant',
+			status: 'COOPERATIVE',
+			priority: 'LOW',
+			height: '175 cm',
+			age: 38,
+			hair: 'Red',
+			eyes: 'Hazel',
+			modusOperandi: 'Information Broker',
+			lastSeen: '3 hours ago',
+			dangerLevel: 3.0,
+			photo: '/placeholder-person.jpg',
+			knownAssociates: [
+				'Multiple law enforcement contacts',
+				'Various criminal networks'
+			],
+			knownHabits: [
+				'Meets at specific locations',
+				'Always demands payment upfront'
+			],
+			attributes: { stealth: 60, intelligence: 85, strength: 55, speed: 70, dangerousness: 30 }
+		}
+	]);
 
-  let persons: FugitiveDexPerson[] = $state([
-    {
-      id: '001',
-      name: 'John, "The Ghost" Doe',
-      alias: 'The Ghost',
-      role: 'Fugitive',
-      status: 'WANTED',
-      priority: 'HIGH',
-      height: '185 cm',
-      age: 45,
-      hair: 'Brown',
-      eyes: 'Blue',
-      modusOperandi: 'Break and Enter Specialist',
-      lastSeen: '2 days ago',
-      dangerLevel: 8.5,
-      photo: '/placeholder-person.jpg',
-      knownAssociates: [
-        'Phantom - Burglar, former accomplice',
-        'Arsiguent - Known to hire billers',
-        'Connection between prison and family',
-        'Connections - Langue seed gets an evil waaah'
-      ],
-      knownHabits: [
-        'Prefers dark locations',
-        'Known Habits',
-        'Evade a scene has kinder Sleeps'
-      ],
-      attributes: { stealth: 95, intelligence: 80, strength: 70, speed: 85, dangerousness: 90 }
-    },
-    {
-      id: '002',
-      name: 'Maria, "The Shadow" Smith',
-      alias: 'The Shadow',
-      role: 'Suspect',
-      status: 'MONITORING',
-      priority: 'MEDIUM',
-      height: '165 cm',
-      age: 32,
-      hair: 'Black',
-      eyes: 'Green',
-      modusOperandi: 'Financial Fraud Expert',
-      lastSeen: '1 week ago',
-      dangerLevel: 6.5,
-      photo: '/placeholder-person.jpg',
-      knownAssociates: [
-        'Various financial contacts',
-        'Underground banking network'
-      ],
-      knownHabits: [
-        'Frequents high-end establishments',
-        'Uses multiple identities'
-      ],
-      attributes: { stealth: 75, intelligence: 95, strength: 45, speed: 60, dangerousness: 65 }
-    },
-    {
-      id: '003',
-      name: 'Victor, "Red Baron" Kane',
-      alias: 'Red Baron',
-      role: 'Informant',
-      status: 'COOPERATIVE',
-      priority: 'LOW',
-      height: '175 cm',
-      age: 38,
-      hair: 'Red',
-      eyes: 'Hazel',
-      modusOperandi: 'Information Broker',
-      lastSeen: '3 hours ago',
-      dangerLevel: 3.0,
-      photo: '/placeholder-person.jpg',
-      knownAssociates: [
-        'Multiple law enforcement contacts',
-        'Various criminal networks'
-      ],
-      knownHabits: [
-        'Meets at specific locations',
-        'Always demands payment upfront'
-      ],
-      attributes: { stealth: 60, intelligence: 85, strength: 55, speed: 70, dangerousness: 30 }
-    }
-  ]);
-  // Initialize selectedPerson without capturing the initial value of `persons`
-  let selectedPerson: FugitiveDexPerson | null = $state<FugitiveDexPerson | null>(null);
-  let searchQuery = $state<string>('');
-  // Ensure we set a default selected person whenever `persons` becomes non-empty
-  $effect(() => {
-    if (persons.length > 0 && selectedPerson === null) {
-      selectedPerson = persons[0];
-    }
-  });
-  // Function to load POIs from API
-  async function loadPersonsFromAPI(): Promise<any> {
-    try {
-      const response = await fetch('/api/persons-of-interest');
-      if (response.ok) {
-        const result = await response.json();
-        const apiPersons: APIPerson[] = result.success ? result.data : [];
-        // Transform API data to FugitiveDex format
-        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({
-          id: (index + 1).toString().padStart(3, '0'),
-          name: person.name,
-          alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
-          role: person.profileData?.role || 'Unknown',
-          status: person.status?.toUpperCase() || 'UNKNOWN',
-          priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
-          height: person.profileData?.height || 'Unknown',
-          age: person.profileData?.age ?? 'Unknown',
-          hair: person.profileData?.hair || 'Unknown',
-          eyes: person.profileData?.eyes || 'Unknown',
-          modusOperandi: person.profileData?.what || 'Unknown',
-          lastSeen: person.profileData?.lastKnownLocation || 'Unknown',
-          dangerLevel: person.profileData?.dangerLevel ?? (person.threatLevel === 'high' ? 7.5 : person.threatLevel === 'medium' ? 5.0 : 2.0),
-          photo: '/placeholder-person.jpg',
-          knownAssociates: person.profileData?.associates || ['No known associates'],
-          knownHabits: person.profileData?.habits || ['No known habits'],
-          attributes: {
-            stealth: Math.floor(Math.random() * 100),
-            intelligence: Math.floor(Math.random() * 100),
-            strength: Math.floor(Math.random() * 100),
-            speed: Math.floor(Math.random() * 100),
-            dangerousness: (typeof person.profileData?.dangerLevel === 'number') ? Math.floor(person.profileData.dangerLevel * 10) : (person.threatLevel === 'high' ? 75 : person.threatLevel === 'medium' ? 50 : 25)
-          }
-        }));
-        if (transformedPersons.length > 0) {
-          persons = transformedPersons;
-          selectedPerson = transformedPersons[0];
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load persons from API:', error); // Keep using demo data as fallback
-    }
-  }
+	let selectedPerson = $state<FugitiveDexPerson | null>(null);
+	let searchQuery = $state<string>('');
 
-  // Load on component mount using $effect
-  $effect(() => {
-    loadPersonsFromAPI();
-  });
+	// Initialize selected person with $effect
+	$effect(() => {
+		if (persons.length > 0 && selectedPerson === null) {
+			selectedPerson = persons[0];
+		}
+	});
+
+	// Function to load POIs from API
+	async function loadPersonsFromAPI(): Promise<void> {
+		try {
+			const response = await fetch('/api/persons-of-interest');
+			if (response.ok) {
+				const result = await response.json();
+				const apiPersons: APIPerson[] = result.success ? result.data : [];
+				// Transform API data to FugitiveDex format
+				const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({
+					id: (index + 1).toString().padStart(3, '0'),
+					name: person.name,
+					alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
+					role: person.profileData?.role || 'Unknown',
+					status: person.status?.toUpperCase() || 'UNKNOWN',
+					priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
+					height: person.profileData?.height || 'Unknown',
+					age: person.profileData?.age ?? 'Unknown',
+					hair: person.profileData?.hair || 'Unknown',
+					eyes: person.profileData?.eyes || 'Unknown',
+					modusOperandi: person.profileData?.what || 'Unknown',
+					lastSeen: person.profileData?.lastKnownLocation || 'Unknown',
+					dangerLevel: person.profileData?.dangerLevel ?? (person.threatLevel === 'high' ? 7.5 : person.threatLevel === 'medium' ? 5.0 : 2.0),
+					photo: '/placeholder-person.jpg',
+					knownAssociates: person.profileData?.associates || ['No known associates'],
+					knownHabits: person.profileData?.habits || ['No known habits'],
+					attributes: {
+						stealth: Math.floor(Math.random() * 100),
+						intelligence: Math.floor(Math.random() * 100),
+						strength: Math.floor(Math.random() * 100),
+						speed: Math.floor(Math.random() * 100),
+						dangerousness: (typeof person.profileData?.dangerLevel === 'number') ? Math.floor(person.profileData.dangerLevel * 10) : (person.threatLevel === 'high' ? 75 : person.threatLevel === 'medium' ? 50 : 25)
+					}
+				}));
+				if (transformedPersons.length > 0) {
+					persons = transformedPersons;
+					selectedPerson = transformedPersons[0];
+				}
+			}
+		} catch (error) {
+			console.error('Failed to load persons from API:', error);
+			// Keep using demo data as fallback
+		}
+	}
+
+	// Load data on mount
+	$effect(() => {
+		loadPersonsFromAPI();
+	});
+
+	function handlePersonSelect(person: FugitiveDexPerson) {
+		selectedPerson = person;
+	}
+
+	function handleOpenAIModal(person: FugitiveDexPerson) {
+		// TODO: Implement AI modal
+		console.log('Open AI modal for:', person.name);
+	}
 </script>
 
-<script lang="ts">
-// Svelte, 5 runes are auto-imported // Define interfaces for API response and internal person data
-  interface APIPerson {
-    name: string;
-    aliases?: string[];
-    profileData?: {
-      role?: string;
-      height?: string;
-      age?: number | string;
-      hair?: string;
-      eyes?: string;
-      what?: string; // Modus Operandi
-      lastKnownLocation?: string;
-      dangerLevel?: number;
-      associates?: string[];
-      habits?: string[];
-    };
-    status?: string;
-    threatLevel?: 'low' | 'medium' | 'high' | 'critical';
-  }
+<main class="fugitive-dex min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-6">
+	<!-- Header -->
+	<PersonHeader />
 
-  interface FugitiveDexPerson {
-    id: string;
-    name: string;
-    alias: string;
-    role: string;
-    status: string;
-    priority: string;
-    height: string;
-    age: number | string;
-    hair: string;
-    eyes: string;
-    modusOperandi: string;
-    lastSeen: string;
-    dangerLevel: number;
-    photo: string;
-    knownAssociates: string[];
-    knownHabits: string[];
-    attributes: {
-      stealth: number;
-      intelligence: number;
-      strength: number;
-      speed: number;
-      dangerousness: number;
-    };
-  }
+	<!-- Main Layout -->
+	<div class="grid grid-cols-1 lg:grid-cols-[320px_1fr_320px] gap-6 mt-6">
+		<!-- Left Sidebar - Person List -->
+		<PersonList
+			{persons}
+			{selectedPerson}
+			bind:searchQuery
+			onSelect={handlePersonSelect}
+		/>
 
-  let persons: FugitiveDexPerson[] = $state([
-    {
-      id: '001',
-      name: 'John, "The Ghost" Doe',
-      alias: 'The Ghost',
-      role: 'Fugitive',
-      status: 'WANTED',
-      priority: 'HIGH',
-      height: '185 cm',
-      age: 45,
-      hair: 'Brown',
-      eyes: 'Blue',
-      modusOperandi: 'Break and Enter Specialist',
-      lastSeen: '2 days ago',
-      dangerLevel: 8.5,
-      photo: '/placeholder-person.jpg',
-      knownAssociates: [
-        'Phantom - Burglar, former accomplice',
-        'Arsiguent - Known to hire billers',
-        'Connection between prison and family',
-        'Connections - Langue seed gets an evil waaah'
-      ],
-      knownHabits: [
-        'Prefers dark locations',
-        'Known Habits',
-        'Evade a scene has kinder Sleeps'
-      ],
-      attributes: { stealth: 95, intelligence: 80, strength: 70, speed: 85, dangerousness: 90 }
-    },
-    {
-      id: '002',
-      name: 'Maria, "The Shadow" Smith',
-      alias: 'The Shadow',
-      role: 'Suspect',
-      status: 'MONITORING',
-      priority: 'MEDIUM',
-      height: '165 cm',
-      age: 32,
-      hair: 'Black',
-      eyes: 'Green',
-      modusOperandi: 'Financial Fraud Expert',
-      lastSeen: '1 week ago',
-      dangerLevel: 6.5,
-      photo: '/placeholder-person.jpg',
-      knownAssociates: [
-        'Various financial contacts',
-        'Underground banking network'
-      ],
-      knownHabits: [
-        'Frequents high-end establishments',
-        'Uses multiple identities'
-      ],
-      attributes: { stealth: 75, intelligence: 95, strength: 45, speed: 60, dangerousness: 65 }
-    },
-    {
-      id: '003',
-      name: 'Victor, "Red Baron" Kane',
-      alias: 'Red Baron',
-      role: 'Informant',
-      status: 'COOPERATIVE',
-      priority: 'LOW',
-      height: '175 cm',
-      age: 38,
-      hair: 'Red',
-      eyes: 'Hazel',
-      modusOperandi: 'Information Broker',
-      lastSeen: '3 hours ago',
-      dangerLevel: 3.0,
-      photo: '/placeholder-person.jpg',
-      knownAssociates: [
-        'Multiple law enforcement contacts',
-        'Various criminal networks'
-      ],
-      knownHabits: [
-        'Meets at specific locations',
-        'Always demands payment upfront'
-      ],
-      attributes: { stealth: 60, intelligence: 85, strength: 55, speed: 70, dangerousness: 30 }
-    }
-  ]);
-  // Initialize selectedPerson without capturing the initial value of `persons`
-  let selectedPerson: FugitiveDexPerson | null = $state<FugitiveDexPerson | null>(null);
-  let searchQuery = $state<string>('');
-  // Ensure we set a default selected person whenever `persons` becomes non-empty
-  $effect(() => {
-    if (persons.length > 0 && selectedPerson === null) {
-      selectedPerson = persons[0];
-    }
-  });
-  // Function to load POIs from API
-  async function loadPersonsFromAPI(): Promise<any> {
-    try {
-      const response = await fetch('/api/persons-of-interest');
-      if (response.ok) {
-        const result = await response.json();
-        const apiPersons: APIPerson[] = result.success ? result.data : [];
-        // Transform API data to FugitiveDex format
-        const transformedPersons: FugitiveDexPerson[] = apiPersons.map((person: APIPerson, index: number) => ({
-          id: (index + 1).toString().padStart(3, '0'),
-          name: person.name,
-          alias: (person.aliases && person.aliases.length > 0) ? person.aliases[0] : (person.name ? person.name.split(' ')[0] : 'Unknown'),
-          role: person.profileData?.role || 'Unknown',
-          status: person.status?.toUpperCase() || 'UNKNOWN',
-          priority: typeof person.threatLevel === 'string' ? person.threatLevel.toUpperCase() : 'LOW',
-          height: person.profileData?.height || 'Unknown',
-          age: person.profileData?.age ?? 'Unknown',
-          hair: person.profileData?.hair || 'Unknown',
-          eyes: person.profileData?.eyes || 'Unknown',
-          modusOperandi: person.profileData?.what || 'Unknown',
-          lastSeen: person.profileData?.lastKnownLocation || 'Unknown',
-          dangerLevel: person.profileData?.dangerLevel ?? (person.threatLevel === 'high' ? 7.5 : person.threatLevel === 'medium' ? 5.0 : 2.0),
-          photo: '/placeholder-person.jpg',
-          knownAssociates: person.profileData?.associates || ['No known associates'],
-          knownHabits: person.profileData?.habits || ['No known habits'],
-          attributes: {
-            stealth: Math.floor(Math.random() * 100),
-            intelligence: Math.floor(Math.random() * 100),
-            strength: Math.floor(Math.random() * 100),
-            speed: Math.floor(Math.random() * 100),
-            dangerousness: (typeof person.profileData?.dangerLevel === 'number') ? Math.floor(person.profileData.dangerLevel * 10) : (person.threatLevel === 'high' ? 75 : person.threatLevel === 'medium' ? 50 : 25)
-          }
-        }));
-        if (transformedPersons.length > 0) {
-          persons = transformedPersons;
-          selectedPerson = transformedPersons[0];
-        }
-      }
-    } catch (error) {
-      console.error('Failed to load persons from API:', error); // Keep using demo data as fallback
-    }
-  }
+		<!-- Main Person Detail -->
+		<PersonProfile
+			{selectedPerson}
+			onOpenAIModal={handleOpenAIModal}
+		/>
 
-  // Load on component mount using $effect
-  $effect(() => {
-    loadPersonsFromAPI();
-  });
-</script>
-
-<main class="fugitive-dex">
-  <!-- Header Section -->
-  <header class="header-section">
-    <div class="fugitive-title">
-      <h1>PERSONS OF INTEREST DATABASE</h1>
-    </div>
-    <div class="case-info">
-      <div class="case-badges">
-        <span class="case-badge active">ACTIVE</span>
-        <span class="case-badge evidence">EVIDENCE</span>
-        <span class="case-badge analysis">ANALYSIS</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Layout -->
-  <div class="main-layout">
-    <!-- Left Sidebar - Person List -->
-    <aside class="person-list">
-      <div class="list-header">
-        <h3>SUSPECTS</h3>
-        <div class="person-matches">
-          <p>{persons.length} MATCHES FOUND</p>
-        </div>
-      </div>
-
-      <!-- Search Input -->
-      <input
-        type="text"
-        placeholder="SEARCH PERSONS..."
-        class="search-input"
-        bind:value={searchQuery}
-      />
-
-      <!-- Person Entries -->
-      <div class="person-entries">
-        {#each persons.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.alias.toLowerCase().includes(searchQuery.toLowerCase())) as person}
-          <button
-            class="person-entry {selectedPerson?.id === person.id ? 'selected' : ''}"
-            onclick={() => selectedPerson = person}
-          >
-            <span class="person-number">{person.id}</span>
-            <div class="person-name">
-              <div>{person.name}</div>
-              <div style="font-size: 0.6rem; color: #9ca3af;">{person.alias}</div>
-            </div>
-          </button>
-        {/each}
-      </div>
-
-      <!-- Filter Section -->
-      <div class="filter-section">
-        <h4>FILTERS</h4>
-        <div class="filter-group">
-          <label>STATUS</label>
-          <div class="status-filters">
-            <button class="filter-btn active">ALL</button>
-            <button class="filter-btn">WANTED</button>
-            <button class="filter-btn">MONITORING</button>
-            <button class="filter-btn">COOPERATIVE</button>
-          </div>
-        </div>
-        <div class="filter-group">
-          <label>PRIORITY</label>
-          <div class="status-filters">
-            <button class="filter-btn active">ALL</button>
-            <button class="filter-btn">HIGH</button>
-            <button class="filter-btn">MEDIUM</button>
-            <button class="filter-btn">LOW</button>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Main Person Detail -->
-    <section class="person-detail">
-      {#if selectedPerson}
-        <div class="person-header-main">
-          <h2>{selectedPerson.name}</h2>
-        </div>
-
-        <div class="person-photo-section">
-          <div class="photo-container">
-            <div class="placeholder-photo">
-              <span>👤</span>
-              <p>NO PHOTO AVAILABLE</p>
-            </div>
-          </div>
-
-          <div class="basic-info">
-            <div class="info-row">
-              <span class="label">ALIAS:</span>
-              <span class="value">{selectedPerson.alias}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">ROLE:</span>
-              <span class="value">{selectedPerson.role}</span>
-            </div>
-            <div class="status-badges">
-              <span class="status-badge {selectedPerson.status.toLowerCase()}">{selectedPerson.status}</span>
-              <span class="priority-badge {selectedPerson.priority.toLowerCase()}">{selectedPerson.priority}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="physical-stats">
-          <div class="stat">
-            <span class="stat-label">HEIGHT:</span>
-            <span class="stat-value">{selectedPerson.height}</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">AGE:</span>
-            <span class="stat-value">{selectedPerson.age}</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">HAIR:</span>
-            <span class="stat-value">{selectedPerson.hair}</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">EYES:</span>
-            <span class="stat-value">{selectedPerson.eyes}</span>
-          </div>
-        </div>
-
-        <div class="modus-section">
-          <h3>MODUS OPERANDI</h3>
-          <p>{selectedPerson.modusOperandi}</p>
-        </div>
-
-        <div class="associates-section">
-          <h3>KNOWN ASSOCIATES</h3>
-          <ul class="associates-list">
-            {#each selectedPerson.knownAssociates as associate}
-              <li>{associate}</li>
-            {/each}
-          </ul>
-        </div>
-
-        <div class="habits-section">
-          <h3>KNOWN HABITS</h3>
-          <ul class="habits-list">
-            {#each selectedPerson.knownHabits as habit}
-              <li>{habit}</li>
-            {/each}
-          </ul>
-        </div>
-      {:else}
-        <div class="person-header-main">
-          <h2>SELECT A PERSON</h2>
-        </div>
-        <p style="text-align: center; color: #9ca3af;">Choose a person from the list to view their profile.</p>
-      {/if}
-    </section>
-
-    <!-- Right Stats Panel -->
-    <aside class="stats-panel">
-      {#if selectedPerson}
-        <div class="stats-header">
-          <h3>THREAT ANALYSIS</h3>
-        </div>
-
-        <div class="danger-rating">
-          <div style="text-align: center; margin-bottom: 0.5rem;">
-            <span class="danger-number">{selectedPerson.dangerLevel.toFixed(1)}</span>
-          </div>
-          <div style="text-align: center; color: #dc2626; font-weight: bold;">DANGER LEVEL</div>
-        </div>
-
-        <div class="attributes-section">
-          <h4>ATTRIBUTES</h4>
-          <div class="attribute-bars">
-            {#each Object.entries(selectedPerson.attributes) as [attr, value]}
-              <div class="attribute-row">
-                <span class="attr-label">{attr}:</span>
-                <div class="attr-bar">
-                  <div class="attr-fill" style="width: {value}%"></div>
-                </div>
-                <span class="attr-value">{value}</span>
-              </div>
-            {/each}
-          </div>
-        </div>
-
-        <div class="location-section">
-          <h4>LAST KNOWN LOCATION</h4>
-          <div class="location-info">
-            <p>{selectedPerson.lastSeen}</p>
-          </div>
-        </div>
-
-        <div class="actions-section">
-          <h4>ACTIONS</h4>
-          <button class="action-btn btn-primary">UPDATE INTEL</button>
-          <button class="action-btn btn-secondary">VIEW TIMELINE</button>
-          <button class="action-btn btn-ghost">EXPORT PROFILE</button>
-        </div>
-      {:else}
-        <div class="stats-header">
-          <h3>NO SELECTION</h3>
-        </div>
-        <p style="text-align: center; color: #9ca3af; font-size: 0.875rem;">Select a person to view threat analysis.</p>
-      {/if}
-    </aside>
-  </div>
+		<!-- Right Stats Panel -->
+		<PersonStatsPanel {selectedPerson} />
+	</div>
 </main>
 
 <style>
-  .fugitive-dex {
-    background: linear-gradient(135deg, #0d1117, #161b22);
-    min-height: 100vh;
-    color: #f0f6fc;
-    font-family: 'JetBrains Mono', monospace;
-    position: relative;
-  }
-  .fugitive-dex::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background:
-      linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px),
-      linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
-    z-index: -1;
-  }
-  /* Header Section */
-  .header-section {
-    background: rgba(0, 0, 0, 0.8);
-    border-bottom: 2px solid #10b981;
-    padding: 1rem 2rem;
-    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.2);
-  }
-  .fugitive-title h1 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 2rem;
-    margin: 0;
-    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-    filter: drop-shadow(0, 0 5px rgba(16, 185, 129, 0.3));
-  }
-  .case-info {
-    display: flex;
-    justify-content: space-between; /* Corrected 'space-betweennn' to 'space-between' */
-    align-items: center;
-    margin-top: 0.5rem;
-  }
-  .case-badges {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .case-badge {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: bold;
-    border-radius: 4px;
-    text-transform: uppercase;
-  }
-  .case-badge.active {
-    background: #10b981;
-    color: #0d1117;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-  }
-  .case-badge.evidence {
-    background: #6b7280;
-    color: #f9fafb;
-    border: 1px solid #9ca3af;
-  }
-  .case-badge.analysis {
-    background: #374151;
-    color: #f9fafb;
-    border: 1px solid #6b7280;
-  }
-  /* Main Layout */
-  .main-layout {
-    display: grid;
-    grid-template-columns: 300px 1fr 350px;
-    gap: 1rem;
-    height: calc(100vh - 120px);
-    padding: 1rem;
-  }
-  /* Left Sidebar */
-  .person-list {
-    background: rgba(13, 17, 23, 0.9);
-    border: 2px solid #10b981;
-    border-radius: 8px;
-    padding: 1rem;
-    overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
-  }
-  .list-header h3 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.875rem;
-    margin:
-      0 0 0.5rem 0; /* Corrected margin syntax */
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  .person-matches p {
-    color: #9ca3af;
-    font-size: 0.75rem;
-    margin:
-      0 0 1rem 0; /* Corrected margin syntax */
-  }
-  .search-input {
-    width: 100%;
-    margin-bottom: 1rem;
-  }
-  .person-entries {
-    margin-bottom: 2rem;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  .person-entry {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 0.5rem;
-    background: rgba(30, 41, 59, 0.5);
-    border: 1px solid #6b7280;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-align: left;
-  }
-  .person-entry:hover {
-    background: rgba(16, 185, 129, 0.1);
-    border-color: #10b981;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
-  }
-  .person-entry.selected {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: #10b981;
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-  }
-  .person-number {
-    color: #10b981;
-    font-weight: bold;
-    margin-right: 0.5rem;
-    font-size: 0.75rem;
-    text-shadow: 0 0 3px rgba(16, 185, 129, 0.3);
-  }
-  .person-name {
-    color: #f0f6fc;
-    font-size: 0.75rem;
-  }
-  /* Filter Section */
-  .filter-section h4 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.625rem;
-    margin:
-      0 0 1rem 0; /* Corrected margin syntax */
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  .filter-group {
-    margin-bottom: 1rem;
-  }
-  .filter-group label {
-    color: #9ca3af;
-    font-size: 0.75rem;
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-  .status-filters {
-    display: flex;
-    gap: 0.25rem;
-    flex-wrap: wrap;
-  }
-  .filter-btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.625rem;
-    background: rgba(30, 41, 59, 0.8);
-    border: 1px solid #6b7280;
-    color: #f0f6fc;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  .filter-btn.active,
-  .filter-btn:hover {
-    background: rgba(16, 185, 129, 0.2);
-    border-color: #10b981;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.2);
-  }
-  /* Main Person Detail */
-  .person-detail {
-    background: rgba(13, 17, 23, 0.9);
-    border: 2px solid #10b981;
-    border-radius: 8px;
-    padding: 1.5rem;
-    overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
-  }
-  .person-header-main h2 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 1.25rem;
-    margin:
-      0 0 1.5rem 0; /* Corrected margin syntax */
-    text-align: center;
-    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
-  }
-  .person-photo-section {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .photo-container {
-    background: rgba(30, 41, 59, 0.8);
-    border: 2px dashed #6b7280;
-    border-radius: 8px;
-    height: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-  .placeholder-photo span {
-    font-size: 3rem;
-    margin-bottom: 0.5rem;
-  }
-  .placeholder-photo p {
-    color: #9ca3af;
-    font-size: 0.75rem;
-    margin: 0;
-  }
-  .basic-info {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  .info-row {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .info-row .label {
-    color: #9ca3af;
-    font-weight: bold;
-  }
-  .info-row .value {
-    color: #10b981;
-    font-weight: bold;
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  .status-badges {
-    display: flex;
-    gap: 0.5rem;
-  }
-  .status-badge,
-  .priority-badge {
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
-    font-weight: bold;
-    border-radius: 4px;
-    text-align: center;
-  }
-  .status-badge.wanted {
-    background: #991b1b;
-    color: #f9fafb;
-    border: 1px solid #dc2626;
-    box-shadow: 0 0 8px rgba(220, 38, 38, 0.3);
-  }
-  .status-badge.monitoring {
-    background: #d97706;
-    color: #f9fafb;
-    border: 1px solid #f59e0b;
-  }
-  .status-badge.cooperative {
-    background: #065f46;
-    color: #f9fafb;
-    border: 1px solid #10b981;
-    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
-  }
-  .priority-badge.high {
-    background: #991b1b;
-    color: #f9fafb;
-    border: 1px solid #dc2626;
-    box-shadow: 0 0 8px rgba(220, 38, 38, 0.3);
-  }
-  .priority-badge.medium {
-    background: #d97706;
-    color: #f9fafb;
-    border: 1px solid #f59e0b;
-  }
-  .priority-badge.low {
-    background: #065f46;
-    color: #f9fafb;
-    border: 1px solid #10b981;
-  }
-  .physical-stats {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  .stat {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .stat-label {
-    color: #9ca3af;
-    font-size: 0.75rem;
-    min-width: 60px;
-  }
-  .stat-value {
-    color: #f0f6fc;
-    font-weight: bold;
-  }
-  .stat-number {
-    color: #10b981;
-    font-weight: bold;
-    margin-left: auto;
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  /* Information Sections */
-  .modus-section,
-  .associates-section,
-  .habits-section {
-    margin-bottom: 1.5rem;
-  }
-  .modus-section h3,
-  .associates-section h3,
-  .habits-section h3 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.875rem;
-    margin:
-      0 0 0.75rem 0; /* Corrected margin syntax */
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  .associates-list,
-  .habits-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  .associates-list li,
-  .habits-list li {
-    color: #e5e7eb;
-    font-size: 0.875rem;
-    padding: 0.25rem 0;
-    border-bottom: 1px solid #6b7280;
-    margin-bottom: 0.5rem;
-  }
-  .associates-list li::before, /* Corrected selector */
-  .habits-list li::before {
-    content: 'â€¢ ';
-    color: #10b981;
-    font-weight: bold;
-    margin-right: 0.5rem;
-    text-shadow: 0 0 3px rgba(16, 185, 129, 0.3);
-  }
-  /* Right Stats Panel */
-  .stats-panel {
-    background: rgba(13, 17, 23, 0.9);
-    border: 2px solid #10b981;
-    border-radius: 8px;
-    padding: 1rem;
-    overflow-y: auto;
-    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.1);
-  }
-  .stats-header {
-    text-align: center;
-    margin-bottom: 1.5rem;
-  }
-  .stats-header h3 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.875rem;
-    margin:
-      0 0 0.75rem 0; /* Corrected margin syntax */
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  .danger-rating {
-    background: rgba(220, 38, 38, 0.1);
-    border: 2px solid #dc2626;
-    border-radius: 8px;
-    padding: 0.75rem;
-    box-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
-  }
-  .danger-number {
-    color: #dc2626;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(220, 38, 38, 0.5);
-  }
-  /* Attributes Section */ /* .attributes-section { margin-bottom: 1.5rem} */
-  .attributes-section h4 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.75rem;
-    margin:
-      0 0 1rem 0; /* Corrected margin syntax */
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  /* .attribute-bars { display: flex; flex-direction: column; gap: 0.75rem} */
-  .attribute-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .attr-label {
-    color: #9ca3af;
-    font-size: 0.75rem;
-    min-width: 80px;
-    text-transform: capitalize;
-  }
-  .attr-bar {
-    flex: 1;
-    height: 12px;
-    background: rgba(30, 41, 59, 0.8);
-    border: 1px solid #6b7280;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .attr-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #10b981, #34d399);
-    transition: width 0.3s ease;
-    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-  }
-  .attr-value {
-    color: #10b981;
-    font-weight: bold;
-    font-size: 0.75rem;
-    min-width: 30px;
-    text-align: right;
-    text-shadow: 0 0 3px rgba(16, 185, 129, 0.3);
-  }
-  /* Location and Actions */ /* .location-section, .actions-section { margin-bottom: 1.5rem} */
-  .location-section h4 {
-    color: #10b981;
-    font-family: 'Press Start 2P', cursive;
-    font-size: 0.75rem;
-    margin:
-      0 0 0.75rem 0; /* Corrected margin syntax */
-    text-shadow: 0 0 5px rgba(16, 185, 129, 0.3);
-  }
-  .location-info p {
-    color: #e5e7eb;
-    font-size: 0.75rem;
-    margin: 0.25rem 0;
-  }
-  :global(.action-btn) {
-    width: 100%;
-    margin-bottom: 0.5rem;
-    font-size: 0.75rem;
-    padding: 0.5rem 0.75rem;
-    border-radius: 6px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    background: rgba(16, 185, 129, 0.08);
-    color: #e6fffa;
-    transition: all 0.15s ease;
-  }
-
-  /* Variant styles to approximate ButtonBits look */
-  .btn-primary {
-    background: linear-gradient(90deg, #10b981, #34d399);
-    color: #0d1117;
-    border-color: rgba(255, 255, 255, 0.05);
-    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.12);
-  }
-  .btn-primary:hover {
-    filter: brightness(0.95);
-  }
-  .btn-secondary {
-    background: linear-gradient(90deg, #6b7280, #9ca3af);
-    color: #0d1117;
-    border-color: rgba(0, 0, 0, 0.1);
-  }
-  .btn-secondary:hover {
-    filter: brightness(0.97);
-  }
-  .btn-ghost {
-    background: transparent;
-    color: #10b981;
-    border: 1px dashed rgba(16, 185, 129, 0.25);
-  }
-  .btn-ghost:hover {
-    background: rgba(16, 185, 129, 0.04);
-  } /* ..existing styles.. */
+	.fugitive-dex::before {
+		content: '';
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background:
+			linear-gradient(90deg, rgba(16, 185, 129, 0.1) 1px, transparent 1px),
+			linear-gradient(rgba(16, 185, 129, 0.1) 1px, transparent 1px);
+		background-size: 20px 20px;
+		pointer-events: none;
+		z-index: -1;
+	}
 </style>
+
+

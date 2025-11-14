@@ -3,11 +3,11 @@
 
   const dispatch = createEventDispatcher();
 
-  let searchQuery = '';
-  let statusFilter = 'all';
-  let priorityFilter = 'all';
-  let assigneeFilter = 'all';
-  let dateRange = 'all';
+  let searchQuery = $state('');
+  let statusFilter = $state('all');
+  let priorityFilter = $state('all');
+  let assigneeFilter = $state('all');
+  let dateRange = $state('all');
 
   const statusOptions = [
     { value: 'all', label: 'All Status' },
@@ -74,7 +74,7 @@
           placeholder="Search cases..."
           class="w-full pl-10 pr-4 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
           bind:value={searchQuery}
-          on:input={applyFilters}
+          oninput={applyFilters}
         />
         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,7 +89,7 @@
       <select
         class="bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
         bind:value={statusFilter}
-        on:change={applyFilters}
+        onchange={applyFilters}
       >
         {#each statusOptions as option}
           <option value={option.value}>{option.label}</option>
@@ -99,7 +99,7 @@
       <select
         class="bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
         bind:value={priorityFilter}
-        on:change={applyFilters}
+        onchange={applyFilters}
       >
         {#each priorityOptions as option}
           <option value={option.value}>{option.label}</option>
@@ -109,7 +109,7 @@
       <select
         class="bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
         bind:value={assigneeFilter}
-        on:change={applyFilters}
+        onchange={applyFilters}
       >
         {#each assigneeOptions as option}
           <option value={option.value}>{option.label}</option>
@@ -119,7 +119,7 @@
       <select
         class="bg-slate-700/50 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:ring-2 focus:ring-cyan-400 focus:border-transparent"
         bind:value={dateRange}
-        on:change={applyFilters}
+        onchange={applyFilters}
       >
         {#each dateRangeOptions as option}
           <option value={option.value}>{option.label}</option>
@@ -129,14 +129,14 @@
       <!-- Actions -->
       <button
         class="px-4 py-2 bg-slate-700/50 hover:bg-slate-600/50 text-slate-300 text-sm rounded-lg transition-colors"
-        on:click={clearFilters}
+        onclick={clearFilters}
       >
         Clear Filters
       </button>
 
       <button
         class="px-4 py-2 bg-cyan-400/20 hover:bg-cyan-400/30 text-cyan-400 text-sm rounded-lg transition-colors"
-        on:click={exportCases}
+        onclick={exportCases}
       >
         Export
       </button>

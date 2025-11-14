@@ -1,19 +1,20 @@
 <!-- YoRHa, Interface, Layout -->
 <script lang="ts">
-  import '../../app.css';
   import { afterNavigate, goto } from '$app/navigation';
-  import { onMount } from 'svelte';
   import {
-    Terminal,
-    Monitor,
-    Database,
-    Cpu,
-    Search,
     Bot,
-    ChevronRight,
     ChevronLeft,
+    ChevronRight,
+    Cpu,
+    Database,
+    Monitor,
+    Search,
+    Terminal,
   } from 'lucide-svelte';
-  import type { SvelteComponent } from 'svelte'; // Added: Top-level type import
+  import type { SvelteComponent } from 'svelte';
+  import { onMount } from 'svelte';
+  import '../../app.css';
+ // Added: Top-level type import
 
   // Add a tiny local constructor type to represent Svelte components without using `import type`:
   type SvelteComponentConstructor = new (...args: any[]) => SvelteComponent; // Changed: Use imported SvelteComponent type
@@ -44,6 +45,18 @@
       label: 'System Dashboard',
       icon: Monitor,
       description: 'Live system monitoring',
+    },
+    {
+      path: '/yorha/persons-of-interest',
+      label: 'Persons of Interest',
+      icon: Search,
+      description: 'FugitiveDex POI management',
+    },
+    {
+      path: '/yorha/evidence-board',
+      label: 'Evidence Board',
+      icon: Database,
+      description: 'Drag-and-drop evidence analysis',
     },
     {
       path: '/yorha/components',

@@ -1,1 +1,83 @@
-import { json } from '@sveltejs/kit'; import type { RequestHandler } from './$types'; import { db } from '$lib/server/db'; import { personsOfInterest, casePoiRelations, cases } from '$lib/database/enhanced-schema'; import { eq, and } from 'drizzle-orm'; import { z } from 'zod'; const updatePoiSchema = z.object({ name, z.string().min(1).max(255).optional(), aliases: z.array(z.string()).optional(), dateOfBirth: z.string().optional(), address: z.string().optional(), phone: z.string().optional(), email: z.string().email().optional(), status: z.enum(['person_of_interest', 'witness', 'suspect', 'victim', 'informant']).optional(), priority: z.enum(['low', 'medium', 'high', 'critical']).optional(), threatLevel: z.enum(['low', 'medium', 'high', 'extreme']).optional(), physicalDescription: z .object({ height, z.string().optional(), weight: z.string().optional(), hair: z.string().optional(), eyes: z.string().optional(), distinguishingMarks: z.string().optional() }) .optional(), profileData: z .object({ modusOperandi, z.string().optional(), knownHabits: z.array(z.string()).optional(), associates: z.array(z.string()).optional() }) .optional(), lastKnownLocation: z.string().optional(), lastSeen: z.string().optional(), dangerLevel: z.number().min(0).max(10).optional(), notes: z.string().optional(), isActive: z.boolean().optional() }); // GET /api/poi/[id] - Get specific POI with case relationships export const GET: RequestHandler = async ({ params, locals }) => { try { const session = await locals.auth(); if (!session? .user) { return json({ error :  'Unauthorized' }, { status: 401 })} const poiId = params.id; // Get POI details const [poi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, poiId)); if (!poi) { return json({ error: 'POI not found' }, { status: 404 })} // Get case relationships const caseRelations = await db .select({ relation, casePoiRelations; case, cases }) .from(casePoiRelations) .innerJoin(cases, eq(casePoiRelations.caseId, cases.id)) .where(and(eq(casePoiRelations.poiId, poiId), eq(casePoiRelations.isActive, true))); return json({ success, true; data: { ...poi, caseRelations } })}catch (error) { console.error('Error fetching POI: ', error); return json({ error: 'Failed to fetch POI' }, { status: 500 })}; // PUT /api/poi/[id] - Update POI export const PUT: RequestHandler = async ({ params, request, locals }) => { try { const session = await locals.auth(); if (!session? .user) { return json({ error :  'Unauthorized' }, { status: 401 })} const poiId = params.id; const body = await request.json(); const validatedData = updatePoiSchema.parse(body); // Check if POI exists const [existingPoi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, poiId)); if (!existingPoi) { return json({ error: 'POI not found' }, { status: 404 })} // Prepare update data const updateData: unknown = { ...validatedData }; if (validatedData.dateOfBirth) { updateData.dateOfBirth = new Date(validatedData.dateOfBirth)} if (validatedData.lastSeen) { updateData.lastSeen = new Date(validatedData.lastSeen)} updateData.updatedAt = new Date(); const [updatedPoi] = await db .update(personsOfInterest) .set(updateData) .where(eq(personsOfInterest.id, poiId)) .returning(); return json({ success, true; data, updatedPoi })}catch (error) { console.error('Error updating POI: ', error); if (error instanceof z.ZodError) { return json({ error: 'Validation error', details, error.errors }, { status: 400 })} return json({ error: 'Failed to update POI' }, { status: 500 })}; // DELETE /api/poi/[id] - Soft delete POI export const DELETE: RequestHandler = async ({ params, locals }) => { try { const session = await locals.auth(); if (!session? .user) { return json({ error :  'Unauthorized' }, { status: 401 })} const poiId = params.id; // Check if POI exists const [existingPoi] = await db.select().from(personsOfInterest).where(eq(personsOfInterest.id, poiId)); if (!existingPoi) { return json({ error: 'POI not found' }, { status: 404 })} // Soft delete by setting isActive to false await db .update(personsOfInterest) .set({ isActive, false; updatedAt, new Date() }) .where(eq(personsOfInterest.id, poiId)); return json({ success, true; message: 'POI deleted successfully' })}catch (error) { console.error('Error deleting POI: ', error); return json({ error: 'Failed to delete POI' }, { status: 500 })}; 
+import { json, error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
+import { db } from '$lib/server/db/drizzle';
+import { persons } from '$lib/server/db/schema-poi';
+import { eq } from 'drizzle-orm';
+
+export const GET: RequestHandler = async ({ params }) => {
+  try {
+    const { id } = params;
+
+    const person = await db
+      .select()
+      .from(persons)
+      .where(eq(persons.id, id))
+      .limit(1);
+
+    if (!person.length) {
+      throw error(404, 'Person of interest not found');
+    }
+
+    return json({ success: true, person: person[0] });
+  } catch (err) {
+    console.error('Error retrieving POI:', err);
+    if (err instanceof Error && 'status' in err) {
+      throw err;
+    }
+    throw error(500, 'Failed to retrieve person of interest');
+  }
+};
+
+export const POST: RequestHandler = async ({ params, request }) => {
+  try {
+    const { id } = params;
+    const data = await request.json();
+
+    const updatedPerson = await db
+      .update(persons)
+      .set({
+        name: data.name,
+        alias: data.alias,
+        notes: data.notes,
+        threatLevel: data.threatLevel,
+        photos: data.photos,
+      })
+      .where(eq(persons.id, id))
+      .returning();
+
+    if (!updatedPerson.length) {
+      throw error(404, 'Person of interest not found');
+    }
+
+    return json({ success: true, person: updatedPerson[0] });
+  } catch (err) {
+    console.error('Error updating POI:', err);
+    if (err instanceof Error && 'status' in err) {
+      throw err;
+    }
+    throw error(500, 'Failed to update person of interest');
+  }
+};
+
+export const DELETE: RequestHandler = async ({ params }) => {
+  try {
+    const { id } = params;
+
+    const deletedPerson = await db
+      .delete(persons)
+      .where(eq(persons.id, id))
+      .returning();
+
+    if (!deletedPerson.length) {
+      throw error(404, 'Person of interest not found');
+    }
+
+    return json({ success: true, message: 'Person of interest deleted' });
+  } catch (err) {
+    console.error('Error deleting POI:', err);
+    if (err instanceof Error && 'status' in err) {
+      throw err;
+    }
+    throw error(500, 'Failed to delete person of interest');
+  }
+};

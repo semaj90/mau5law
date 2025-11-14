@@ -1,21 +1,20 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  export let webgpuReady = false;
-  export let cpuFallbackReady = false;
+  let { webgpuReady = false, cpuFallbackReady = false } = $props();
 
-  let systemMetrics = {
+  let systemMetrics = $state({
     memory: 0,
     cpu: 0,
     gpu: 0,
     network: 0
-  };
+  });
 
-  let updateInterval: number;
+  let updateInterval = $state<number | undefined>(undefined);
 
   onMount(() => {
     // Update system metrics every 5 seconds
-    updateInterval = setInterval(async () => {
+    updateInterval = window.setInterval(async () => {
       try {
         // Get memory usage
         if ('memory' in performance) {

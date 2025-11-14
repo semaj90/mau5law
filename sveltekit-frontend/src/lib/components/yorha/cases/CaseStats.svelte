@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let stats = {
+  let stats = $state({
     totalCases: 47,
     activeCases: 23,
     reviewCases: 12,
@@ -11,7 +11,7 @@
     lowPriority: 24,
     avgCompletionTime: 14, // days
     successRate: 87
-  };
+  });
 
   let trends = {
     casesThisWeek: 5,

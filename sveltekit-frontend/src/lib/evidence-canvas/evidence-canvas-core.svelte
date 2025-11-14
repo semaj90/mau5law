@@ -5,6 +5,13 @@
 
   const dispatch = createEventDispatcher<{
     nodeSelect: EvidenceNode[];
+    nodeContext: {
+      node: EvidenceNode | null;
+      screenX: number;
+      screenY: number;
+      canvasX: number;
+      canvasY: number;
+    };
   }>();
 
   export let gpuAccelerationEnabled = false;
@@ -114,6 +121,7 @@
     canvas.addEventListener('mouseup', handleMouseUp);
     canvas.addEventListener('wheel', handleWheel);
     canvas.addEventListener('click', handleClick);
+    canvas.addEventListener('contextmenu', handleContextMenu);
   }
 
   function handleMouseDown(event: MouseEvent) {
@@ -182,6 +190,27 @@
       }
     }
     return null;
+  }
+
+  function handleContextMenu(event: MouseEvent) {
+    event.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const canvasX = (event.clientX - rect.left - panX) / zoom;
+    const canvasY = (event.clientY - rect.top - panY) / zoom;
+    const node = getNodeAtPosition(canvasX, canvasY);
+
+    if (node && !selectedNodes.some(n => n.id === node.id)) {
+      selectedNodes = [node];
+      dispatch('nodeSelect', selectedNodes);
+    }
+
+    dispatch('nodeContext', {
+      node: node ?? null,
+      screenX: event.clientX,
+      screenY: event.clientY,
+      canvasX,
+      canvasY
+    });
   }
 
   function toggleNodeSelection(node: EvidenceNode) {

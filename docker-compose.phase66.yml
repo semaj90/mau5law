@@ -112,9 +112,16 @@ services:
 
   # TensorRT-LLM GPU Inference Server
   tensorrt-llm:
-    image: nvcr.io/nvidia/tensorrt-llm/release:latest
+    build:
+      context: ./phase66/tensorrt-llm
+      dockerfile: Dockerfile
     container_name: phase66-tensorrt-llm
     runtime: nvidia
+    shm_size: "4gb"
+    ipc: host
+    ulimits:
+      memlock: -1
+      stack: 67108864
     deploy:
       resources:
         limits:
@@ -129,6 +136,7 @@ services:
       - NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
       - NVIDIA_DRIVER_CAPABILITIES=compute,utility
       - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
+      - LD_LIBRARY_PATH=/usr/local/tensorrt/targets/x86_64-linux-gnu/lib:${LD_LIBRARY_PATH}
       - HF_HUB_CACHE=/workspace/cache
       - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
       - REDIS_URL=redis://redis:6379
@@ -137,53 +145,16 @@ services:
       - "8097:8097"  # WebSocket
       - "8098:8098"  # Health check
     volumes:
-      - tensorrt_models:/workspace/models:ro
+      - tensorrt_models:/workspace/models
       - tensorrt_engines:/workspace/engines
       - tensorrt_cache:/workspace/cache
       - ./models:/workspace/models:ro
-    command:
-      - bash
-      - -lc
-      - |
-        set -e
-        echo '🚀 Starting Phase 66 TensorRT-LLM Server...'
-        if [ ! -d "/workspace/engines" ] || [ -z "$(ls -A /workspace/engines)" ]; then
-          echo '⚠️  No TensorRT engines found. Building from model...'
-          python3 -m tensorrt_llm.commands.build \
-            --checkpoint_dir /workspace/models \
-            --output_dir /workspace/engines \
-            --max_batch_size 4 \
-            --max_input_len 2048 \
-            --max_seq_len 4096 \
-            --max_beam_width 1 \
-            --use_gemm_plugin auto \
-            --use_gpt_attention_plugin float16 \
-            --paged_kv_cache \
-            --dtype float16 \
-            --use_weight_only \
-            --weight_only_precision int4_awq \
-            --per_group \
-            --group_size 128
-        fi
-        echo '🎯 Starting TensorRT-LLM inference server...'
-        python3 -m tensorrt_llm.hlapi.llm_server \
-          --host 0.0.0.0 \
-          --port 8096 \
-          --model /workspace/models \
-          --tensorrt_llm_model_path /workspace/engines \
-          --max_batch_size 4 \
-          --max_input_len 2048 \
-          --max_output_len 2048 \
-          --tokenizer_type gemma
+      - ./phase66:/workspace/phase66:ro
+      - ./python-services:/workspace/python-services:ro
+      - ./scripts:/workspace/scripts:ro
     networks:
       - phase66-network
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8098/health || curl -f http://localhost:8096/health"]
-      interval: 60s
-      timeout: 30s
-      retries: 5
-      start_period: 120s
 
   # Optional: Qdrant vector database for advanced operations
   qdrant:
@@ -272,8 +243,8 @@ volumes:
 
 networks:
   phase66-network:
-    name: legal-ai-network
+    name: legal-ai-network-phase66
     driver: bridge
     ipam:
       config:
-        - subnet: 172.25.0.0/16
+        - subnet: 172.26.0.0/16

@@ -5,9 +5,22 @@
   import { Input } from '$lib/components/ui/input';
   import { appActions, appStore } from '$lib/stores/app-store';
   import * as Lucide from 'lucide-svelte';
-  import { onMount } from 'svelte';
+
+  // Define the interface for an evidence item
+  interface EvidenceItem {
+    id: string;
+    filename: string;
+    description?: string;
+    caseId: string;
+    type: 'document' | 'image' | 'video' | 'audio' | 'pdf';
+    status: 'pending' | 'processing' | 'processed' | 'flagged';
+    fileSize?: number;
+    createdAt: string;
+    // Add any other properties an evidence item might have
+  }
 
   // Reactive state from app store
+  // use looser any[] typing to avoid strict mismatch with external store types
   let evidence: any[] = $state([]);
   let isLoading = $state(false);
   let error = $state<string | null>(null);
@@ -18,33 +31,33 @@
 
   // Subscribe to app store
   $effect(() => {
-    const unsubscribe = appStore.subscribe((state) => {
-      evidence = state.evidence;
-      isLoading = state.isLoading;
-      error = state.error;
-    });
-    return unsubscribe;
+    evidence = $appStore.evidence;
+    isLoading = $appStore.isLoading;
+    error = $appStore.error;
   });
 
   // Filter evidence based on search and filters
-  let filteredEvidence = $derived(() => {
-    let filtered = evidence ? [...evidence] : [];
-    const q = (searchQuery || '').trim().toLowerCase();
-    if (q) {
-      filtered = filtered.filter(
-        (item) =>
-          (item.filename || '').toLowerCase().includes(q) ||
-          (item.description || '').toLowerCase().includes(q) ||
-          (item.caseId || '').toLowerCase().includes(q)
-      );
-    }
-    if (selectedType && selectedType !== 'all') {
-      filtered = filtered.filter((item) => item.type === selectedType);
-    }
-    if (selectedStatus && selectedStatus !== 'all') {
-      filtered = filtered.filter((item) => item.status === selectedStatus);
-    }
-    return filtered;
+  // Use an effect to derive filteredEvidence in runes mode
+  let filteredEvidence: EvidenceItem[] = [];
+  $effect(() => {
+    filteredEvidence = (() => {
+      let filtered: any[] = evidence ? [...evidence] : [];
+      const q = (searchQuery || '').trim().toLowerCase();
+      if (q) {
+        filtered = filtered.filter((item: any) =>
+          ((item?.filename || '') as string).toLowerCase().includes(q) ||
+          ((item?.description || '') as string).toLowerCase().includes(q) ||
+          ((item?.caseId || '') as string).toLowerCase().includes(q)
+        );
+      }
+      if (selectedType && selectedType !== 'all') {
+        filtered = filtered.filter((item: any) => item?.type === selectedType);
+      }
+      if (selectedStatus && selectedStatus !== 'all') {
+        filtered = filtered.filter((item: any) => item?.status === selectedStatus);
+      }
+      return filtered as EvidenceItem[];
+    })();
   });
 
   function resolveIcon(name: string) {
@@ -61,7 +74,7 @@
   const Download = resolveIcon('Download');
   const Trash2 = resolveIcon('Trash2');
 
-  function getEvidenceIcon(type: string) {
+  function getEvidenceIcon(type: string): any {
     switch (type?.toLowerCase()) {
       case 'document':
       case 'pdf':
@@ -106,12 +119,16 @@
     }
   }
 
-  onMount(async () => {
-    await appActions.loadEvidence();
+  // Ensure the root effect does not return a Promise (wrap async work)
+  $effect.root(() => {
+    (async () => {
+      await appActions.loadEvidence();
+    })();
 
     // Refresh data periodically
-    const interval = setInterval(async () => {
-      await appActions.loadEvidence();
+    const interval = setInterval(() => {
+      // fire and forget
+      void appActions.loadEvidence();
     }, 30000); // Refresh every 30 seconds
 
     return () => clearInterval(interval);
@@ -244,10 +261,15 @@
         </div>
       {:else}
         {#each filteredEvidence as item (item.id)}
+          {@const EvidenceIcon = getEvidenceIcon(item.type) as any}
           <Card class="evidence-card">
             <div class="evidence-header">
               <div class="evidence-icon">
-                <svelte:component this={getEvidenceIcon(item.type)} class="w-8 h-8" />
+                {#if EvidenceIcon}
+                  <EvidenceIcon class="w-8 h-8" />
+                {:else}
+                  <File class="w-8 h-8" />
+                {/if}
               </div>
               <div class="evidence-info">
                 <div class="evidence-filename">{item.filename || 'Unknown File'}</div>

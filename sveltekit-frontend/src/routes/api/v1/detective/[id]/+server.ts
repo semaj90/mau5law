@@ -1,4 +1,4 @@
-/* * Individual Citation API Routes * GET /api/v1/citations/[id] - Get specific citation * PUT /api/v1/citations/[id] - Update specific citation * DELETE /api/v1/citations/[id] - Delete specific citation */ import {
+/* * Individual Detective API Routes * GET /api/v1/detective/[id] - Get specific detective * PUT /api/v1/detective/[id] - Update specific detective * DELETE /api/v1/detective/[id] - Delete specific detective */ import {
   json,
   error,
   type RequestHandler,
@@ -6,7 +6,7 @@
 import makeHttpErrorPayload from "$lib/server/api/makeHttpError";
 import { db } from "$lib/server/db/unified-client";
 import { citations } from "$lib/server/db/schemas/cases-schema";
-import { eq } from "drizzle-orm";
+import { eq, InferModel } from "drizzle-orm";
 import { z } from "zod";
 
 // UUID validation schema
@@ -34,10 +34,10 @@ type UserShape = { id?: string | number };
 type LocalsShape = { user?: UserShape; session?: { user?: UserShape } };
 
 // Helper to safely get user id from locals
-function getUserIdFromLocals(locals: unknown, any): string | null {
+function getUserIdFromLocals(locals: unknown): string | null {
   // locals shape varies; check common locations
   const l = locals as LocalsShape;
-  if (l? .user?.id) return String(l.user.id);
+  if (l?.user?.id) return String(l.user.id);
   if (l?.session?.user?.id) return String(l.session.user.id);
   return null
 }

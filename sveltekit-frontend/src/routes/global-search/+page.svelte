@@ -1,6 +1,5 @@
 <script lang="ts">
   import { OllamaGetEndpoint } from '$lib/server/ollama/client';
-  import { webgpuCapabilities } from '$lib/webgpu/webgpu-init';
 
   let searchQuery = $state('');
   let searchResults = $state<any[]>([]);

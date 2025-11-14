@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  let stats = {
+  let stats = $state({
     totalDocuments: 15432,
     documentsProcessed: 12847,
     aiAnalyzed: 9876,
@@ -9,13 +9,13 @@
     totalSize: '2.4 TB',
     avgProcessingTime: '3.2s',
     successRate: 94.7
-  };
+  });
 
-  let processingQueue = [
+  let processingQueue = $state([
     { id: 'EVD-2024-007', name: 'Contract Analysis.pdf', progress: 45, eta: '2m 15s' },
     { id: 'EVD-2024-008', name: 'Financial Report.xlsx', progress: 78, eta: '45s' },
     { id: 'EVD-2024-009', name: 'Email Chain.eml', progress: 23, eta: '4m 30s' }
-  ];
+  ]);
 
   onMount(() => {
     // Simulate real-time updates
@@ -23,7 +23,6 @@
       stats.documentsProcessed += Math.floor(Math.random() * 10);
       stats.aiAnalyzed += Math.floor(Math.random() * 8);
       stats.pendingAnalysis = stats.totalDocuments - stats.documentsProcessed;
-      stats = { ...stats };
 
       // Update processing queue
       processingQueue = processingQueue.map(item => ({
