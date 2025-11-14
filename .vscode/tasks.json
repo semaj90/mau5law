@@ -2230,6 +2230,179 @@
       "type": "promptString",
       "description": "URL to crawl with the Phase 46 safe crawler",
       "default": "https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+    },
+    {
+      "label": "🔥 Build TensorRT Engines (FP16/FP8/INT8)",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/scripts/build-tensorrt-engines.ps1"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+          "TENSORRT_CONTAINER": "legal-ai-tensorrt-llm",
+          "MODEL_PATH": "/workspace/models/gemma3-4b-it",
+          "OUTPUT_DIR": "/workspace/engines",
+          "BUILD_FP16": "true",
+          "BUILD_FP8": "true",
+          "BUILD_INT8": "true",
+          "MAX_BATCH_SIZE": "8",
+          "MAX_INPUT_LEN": "2048",
+          "MAX_OUTPUT_LEN": "512"
+        }
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Build TensorRT engines for Gemma3 with FP16/FP8/INT8 precision modes"
+    },
+    {
+      "label": "🖥️ YoRHa System Monitor - Quick Status",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/tools/monitor-dev.ps1",
+        "-Quick"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Quick system status: WSL disk, GPU memory, Docker containers, Node/Python processes"
+    },
+    {
+      "label": "📊 YoRHa System Monitor - Full Report",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/tools/monitor-dev.ps1",
+        "-Full"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "test",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Comprehensive system report: All metrics + recommendations + alerts"
+    },
+    {
+      "label": "🔧 YoRHa System Monitor - Cleanup Mode",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/tools/monitor-dev.ps1",
+        "-Cleanup"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Cleanup mode: Remove old logs, clear caches, optimize disk space"
+    },
+    {
+      "label": "📈 YoRHa System Monitor - Continuous Watch",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/tools/monitor-dev.ps1",
+        "-Watch"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "isBackground": true,
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "dedicated",
+        "showReuseMessage": true,
+        "clear": false
+      },
+      "problemMatcher": [],
+      "detail": "Continuous monitoring: Updates every 30 seconds, alerts on issues"
+    },
+    {
+      "label": "🧹 YoRHa System Monitor - Cleanup Environment",
+      "type": "shell",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-File",
+        "${workspaceFolder}/tools/cleanup-dev.ps1",
+        "-Force"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "dedicated",
+        "showReuseMessage": false,
+        "clear": true
+      },
+      "problemMatcher": [],
+      "detail": "Clean development environment: logs, caches, Docker resources, temp files"
     }
   ]
 }

@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { createEventDispatcher } from 'svelte';
   import type { AttachmentMetadata } from '$lib/types/sharedTypes';
+  import { createEventDispatcher, onMount } from 'svelte';
 
   type QuickAction = 'chat' | 'report' | 'case' | 'evidence';
 
@@ -339,7 +338,7 @@
           <p class="modal-eyebrow">YoRHa Command Center</p>
           <h2>{title}</h2>
         </div>
-        <button class="icon-button" on:click={closeModal} aria-label="Close">
+        <button class="icon-button" onclick={closeModal} aria-label="Close">
           ✕
         </button>
       </header>
@@ -351,7 +350,7 @@
             class:selected={selectedAction === tab.id}
             role="tab"
             aria-selected={selectedAction === tab.id}
-            on:click={() => (selectedAction = tab.id as QuickAction)}
+            onclick={() => (selectedAction = tab.id as QuickAction)}
           >
             {tab.label}
           </button>
@@ -363,10 +362,10 @@
           <div
             class:drop-active={dropActive}
             class="drop-zone"
-            on:dragenter|preventDefault={() => (dropActive = true)}
-            on:dragover|preventDefault={() => (dropActive = true)}
-            on:dragleave|preventDefault={() => (dropActive = false)}
-            on:drop={onDrop}
+            ondragenter|preventDefault={() => (dropActive = true)}
+            ondragover|preventDefault={() => (dropActive = true)}
+            ondragleave|preventDefault={() => (dropActive = false)}
+            ondrop={onDrop}
           >
             <p>Drag and drop files to add context or click to browse.</p>
             <input
@@ -386,7 +385,7 @@
                 <div class="attachment-pill" data-status={file.status}>
                   <span>{file.name}</span>
                   <small>{(file.size / 1024).toFixed(1)} KB • {file.status}</small>
-                  <button type="button" on:click={() => removeAttachment(file.id)} aria-label="Remove attachment">
+                  <button type="button" onclick={() => removeAttachment(file.id)} aria-label="Remove attachment">
                     ×
                   </button>
                 </div>
@@ -429,7 +428,7 @@
               {#if chatError}
                 <p class="error-text">{chatError}</p>
               {/if}
-              <button type="button" class="primary" on:click={sendChatMessage} disabled={sendingMessage}>
+              <button type="button" class="primary" onclick={sendChatMessage} disabled={sendingMessage}>
                 {sendingMessage ? 'Sending…' : 'Send to 9S'}
               </button>
             </div>
@@ -465,7 +464,7 @@
                       type="checkbox"
                       value={deliverable}
                       checked={reportForm.deliverables.includes(deliverable)}
-                      on:change={(event) => {
+                      onchange={(event) => {
                         const checked = (event.target as HTMLInputElement).checked;
                         reportForm = {
                           ...reportForm,
@@ -479,7 +478,7 @@
                   </label>
                 {/each}
               </fieldset>
-              <button type="button" class="primary" on:click={generateReport} disabled={reportStatus.state === 'running'}>
+              <button type="button" class="primary" onclick={generateReport} disabled={reportStatus.state === 'running'}>
                 {reportStatus.state === 'running' ? 'Generating…' : 'Generate Report'}
               </button>
               {#if reportStatus.state !== 'idle'}
@@ -528,7 +527,7 @@
                 Jurisdiction
                 <input type="text" bind:value={caseForm.jurisdiction} placeholder="e.g. Ninth Circuit" />
               </label>
-              <button type="button" class="primary" on:click={createCase} disabled={caseFormStatus.state === 'running'}>
+              <button type="button" class="primary" onclick={createCase} disabled={caseFormStatus.state === 'running'}>
                 {caseFormStatus.state === 'running' ? 'Creating…' : 'Create Case'}
               </button>
               {#if caseFormStatus.state !== 'idle'}
@@ -579,7 +578,7 @@
                   onchange={(event) => handleEvidenceFileInput((event.target as HTMLInputElement).files)}
                 />
               </div>
-              <button type="button" class="primary" on:click={uploadEvidence} disabled={evidenceStatus.state === 'running'}>
+              <button type="button" class="primary" onclick={uploadEvidence} disabled={evidenceStatus.state === 'running'}>
                 {evidenceStatus.state === 'running' ? 'Uploading…' : 'Upload Evidence'}
               </button>
               {#if evidenceStatus.state !== 'idle'}
