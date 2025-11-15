@@ -171,7 +171,7 @@
         <div class="search-input-wrapper">
           <div class="search-icon">
             {#if Search}
-              <svelte:component this={Search} class="w-5" />
+              <Search class="w-5" / />
             {:else}
               <span class="search-fallback">🔍</span>
             {/if}
@@ -255,7 +255,7 @@
               <Card>
               <div class="result-header">
                 <div class="result-icon">
-                  <svelte:component this={Icon} class="w-6 h-6" />
+                  <Icon class="w-6 h-6" / />
                 </div>
                 <div class="result-info">
                   <div class="result-title">{result.title || result.name || 'Untitled'}</div>
@@ -295,7 +295,7 @@
               </div>
               <div class="result-actions">
                 <Button class="bits-btn" size="sm" variant="ghost" type="button">
-                  <svelte:component this={Eye || FileText} class="w-4" /> View Details
+                  <Eye || FileText class="w-4" / /> View Details
                 </Button>
               </div>
               </Card>

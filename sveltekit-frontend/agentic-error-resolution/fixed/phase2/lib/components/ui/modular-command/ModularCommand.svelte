@@ -1,7 +1,7 @@
 <!-- Modular API-Integrated Command Palette -->
 <script lang="ts">
   // Svelte 5 runes are auto-imported
-  import { Command } from 'bits-ui';
+  import { Command } from 'bits-ui/components/ui/command';
   import { Search, FileText, Users, Calendar, Gavel, Loader2 } from 'lucide-svelte';
   import { cn } from '$lib/utils';
   import { onMount  } from "svelte";

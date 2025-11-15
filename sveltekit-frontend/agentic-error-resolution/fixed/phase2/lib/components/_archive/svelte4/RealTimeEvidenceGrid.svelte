@@ -462,10 +462,9 @@ https://svelte.dev/e/js_parse_error -->
                   onchange={() => toggleSelection((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).id)}
                   class="mx-auto px-4 max-w-7xl"
                 />
-                <svelte:component
-                  this={getTypeIcon((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type)}
+                <getTypeIcon((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any ).type)}
                   class="mx-auto px-4 max-w-7xl"
-                />
+                / />
               </div>
               <div class="mx-auto px-4 max-w-7xl">
                 {#if (item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).classification?.relevance !== undefined}
@@ -614,10 +613,9 @@ https://svelte.dev/e/js_parse_error -->
                 </td>
                 <td class="mx-auto px-4 max-w-7xl">
                   <div class="mx-auto px-4 max-w-7xl">
-                    <svelte:component
-                      this={getTypeIcon((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).type)}
+                    <getTypeIcon((item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any ).type)}
                       class="mx-auto px-4 max-w-7xl"
-                    />
+                    / />
                     <div>
                       <div class="mx-auto px-4 max-w-7xl">
                         {(item as { caseId?: any; title?: any; description?: any; type?: any; tags?: any; id?: any; classification?: any; timeline?: any }).title}

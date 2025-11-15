@@ -110,7 +110,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # TensorRT-LLM GPU Inference Server
+  # TensorRT-LLM GPU Inference Server - RTX 3060 Ti Optimized
   tensorrt-llm:
     build:
       context: ./phase66/tensorrt-llm
@@ -119,6 +119,7 @@ services:
     runtime: nvidia
     shm_size: "4gb"
     ipc: host
+    command: ["sleep", "infinity"]   # Keep container running for manual operations
     ulimits:
       memlock: -1
       stack: 67108864
@@ -138,19 +139,19 @@ services:
       - CUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES:-0}
       - LD_LIBRARY_PATH=/usr/local/tensorrt/targets/x86_64-linux-gnu/lib:${LD_LIBRARY_PATH}
       - HF_HUB_CACHE=/workspace/cache
-      - DATABASE_URL=postgresql://legal_admin:123456@postgres:5432/legal_ai_db
-      - REDIS_URL=redis://redis:6379
+      - HF_TOKEN=${HF_TOKEN}
+      - RTX_8GB_OPTIMIZATION=true
+      - MODEL_NAME=google/gemma-3-4b-it
+      - ENGINE_PRECISION=float16
+      - MAX_BATCH_SIZE=4
+      - MAX_INPUT_LEN=2048
+      - MAX_SEQ_LEN=4096
     ports:
-      - "8096:8096"  # HTTP API
-      - "8097:8097"  # WebSocket
-      - "8098:8098"  # Health check
+      - "8099:8099"  # RTX 8GB Streaming API
     volumes:
       - tensorrt_models:/workspace/models
       - tensorrt_engines:/workspace/engines
       - tensorrt_cache:/workspace/cache
-      - ./models:/workspace/models:ro
-      - ./phase66:/workspace/phase66:ro
-      - ./python-services:/workspace/python-services:ro
       - ./scripts:/workspace/scripts:ro
     networks:
       - phase66-network

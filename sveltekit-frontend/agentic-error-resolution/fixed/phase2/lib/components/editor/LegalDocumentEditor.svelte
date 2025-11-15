@@ -279,7 +279,7 @@
   <!-- Header with semantic styling -->
   <header class="mb-6 flex items-center justify-between">
     <div class="flex items-center gap-4">
-      <svelte:component this={getDocumentTypeIcon()} class="h-8 w-8 text-nier-primary" />
+      <getDocumentTypeIcon() class="h-8 w-8 text-nier-primary" / />
       <div>
         <h1 class="text-3xl font-bold text-nier-text">{title}</h1>
         <p class="text-sm text-nier-gray-light">

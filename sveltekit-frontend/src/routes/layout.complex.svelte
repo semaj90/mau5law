@@ -1,8 +1,8 @@
 ﻿<script lang="ts">
+  import Navigation from '$lib/components/Navigation.svelte';
+  import { setContext } from 'svelte';
   import '../app.css';
   import '../lib/styles/modern-yorha-theme.css';
-  import { setContext } from 'svelte';
-  import Navigation from '$lib/components/Navigation.svelte';
 
   // Runes-mode reactive locals
   let theme = $state<'dark' | 'light'>('dark');
@@ -58,7 +58,7 @@
 
   <main class="app-main" style="grid-area: main;">
     <div class="container">
-      {@render children()}
+      {@render children}
     </div>
   </main>
 

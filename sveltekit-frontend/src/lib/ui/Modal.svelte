@@ -124,7 +124,7 @@
           <div class="header-content">
             {#if getVariantIcon()}
               <div class="variant-icon">
-                <svelte:component this={getVariantIcon()} size={20} />
+                <getVariantIcon() size={20} / />
               </div>
             {/if}
 

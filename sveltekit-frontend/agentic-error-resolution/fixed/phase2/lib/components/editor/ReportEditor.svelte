@@ -13,7 +13,7 @@ https://svelte.dev/e/js_parse_error -->
   import  EvidenceForm  from "./EvidenceForm.svelte";
   import  MasonryGrid  from "$lib/components/ui/MasonryGrid.svelte";
   import  EvidenceCardComponent  from "$lib/components/evidence/EvidenceCard.svelte";
-  import { Button as BitsButton } from 'bits-ui';
+  import { Button as BitsButton } from 'bits-ui/components/ui/button';
   // Icons
   import { invalidateAll } from "$app/navigation";
   import { Columns, Download, Eye, Grid, Layout, Loader2, Maximize2, Minimize2, PanelLeftOpen, PenLine, Plus, Search, Settings, Trash2 } from "lucide-svelte";

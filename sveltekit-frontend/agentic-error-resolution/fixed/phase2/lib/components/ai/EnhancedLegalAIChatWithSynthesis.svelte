@@ -966,9 +966,7 @@ if (browser) {
                 <Tooltip.Root>
                   <Tooltip.Trigger>
                     <div class="flex items-center gap-1">
-                      <svelte:component
-                        this={getStatusIcon(status)}
-                        class="w-3 h-3 {getConfidenceColor(status === 'active' ? 1 : 0.3)}" />
+                      <getStatusIcon(status) class="w-3 h-3 {getConfidenceColor(status === 'active' ? 1 : 0.3)}" / />
                     </div>
                   </Tooltip.Trigger>
                   <Tooltip.Content>
@@ -1083,13 +1081,11 @@ if (browser) {
               : message.role === 'assistant'
                 ? 'bg-green-500'
                 : 'bg-gray-500'}">
-            <svelte:component
-              this={message.role === 'user'
+            <message.role === 'user'
                 ? Send
                 : message.role === 'assistant'
                   ? Brain
-                  : AlertTriangle}
-              class="w-4 h-4 text-white" />
+                  : AlertTriangle class="w-4 h-4 text-white" / />
           </div>
           <!-- Message Content -->
           <div class="flex-1 min-w-0">

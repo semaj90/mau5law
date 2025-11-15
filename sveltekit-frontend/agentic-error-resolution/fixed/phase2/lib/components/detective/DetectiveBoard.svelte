@@ -8,7 +8,7 @@
 	import 'nes.css/css/nes.min.css';
 
 	// Add Tooltip primitives
-	import * as Tooltip from 'bits-ui';
+	import { Tooltip } from 'bits-ui/components/ui/tooltip';
 
 	// utils & services
 	import Fuse from 'fuse.js';
@@ -507,7 +507,7 @@
 												tabindex="0"
 											>
 												<!-- Render EvidenceCard via svelte:component to avoid TS attribute checking on events -->
-												<svelte:component this={EvidenceCardAny} {item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}} />
+												<EvidenceCardAny {item} onview={() => /> handleViewEvidence(item)} onmoreOptions={() => {}} />
 											</div>
 
 											<!-- menu trigger -->
@@ -571,7 +571,7 @@
 										role="button"
 										tabindex="0"
 									>
-										<svelte:component this={EvidenceCardAny} {item} onview={() => handleViewEvidence(item)} onmoreOptions={() => {}}>
+										<EvidenceCardAny {item} onview={() => /> handleViewEvidence(item)} onmoreOptions={() => {}}>
 											<Card class="nes-container is-rounded p-2 w-full mt-2">
 												<CardHeader class="flex items-center justify-between">
 													<div class="flex items-center gap-2">

@@ -50,6 +50,20 @@
       "when": 1763072523832,
       "tag": "0006_fat_tattoo",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1763178835103,
+      "tag": "0007_careless_ben_urich",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1763180854420,
+      "tag": "0008_clammy_frightful_four",
+      "breakpoints": true
     }
   ]
 }

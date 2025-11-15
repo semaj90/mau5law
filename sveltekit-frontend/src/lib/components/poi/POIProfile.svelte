@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Dialog } from "@bits-ui/dialog";
+  import { Dialog } from "bits-ui/components/ui/dialog";
 
   export let person;
   let aiOpen = $state(false);

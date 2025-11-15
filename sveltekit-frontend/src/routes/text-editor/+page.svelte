@@ -134,10 +134,8 @@ function handleShare() {
   <div class="editor-container">
     <div class="editor-card">
       {#if EditorComponent}
-        <svelte:component
-          this={EditorComponent}
-          bind:value={editorValue}
-          oninput={() => (isModified = true)}
+        <EditorComponent bind:value={editorValue}
+          oninput={() => /> (isModified = true)}
           class="editor-content"
         />
       {:else}

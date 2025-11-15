@@ -9,7 +9,7 @@
   - Enhanced audio capabilities
 -->
 <script lang="ts">
-  import { Button as BitsButton } from 'bits-ui';
+  import { Button as BitsButton } from 'bits-ui/components/ui/button';
   import type { GamingComponentProps } from '../types/gaming-types.js';
   import { SNES_COLOR_PALETTE } from '../constants/gaming-constants.js';
   import type { Snippet } from 'svelte';

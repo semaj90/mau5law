@@ -208,7 +208,7 @@ and AI-powered verification features.
     <div class="flex items-center space-x-4">
       {#if integrityStatus}
         <Badge variant={integrityStatus === 'verified' ? 'success' : integrityStatus === 'compromised' ? 'destructive' : 'secondary'} class="px-3 py-1">
-          <svelte:component this={getStatusIcon(integrityStatus)} class="w-4 h-4 mr-2" />
+          <getStatusIcon(integrityStatus) class="w-4 h-4 mr-2" / />
           {integrityStatus.toUpperCase()}
         </Badge>
       {/if}

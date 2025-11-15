@@ -1,4 +1,4 @@
-﻿import { createMachine, interpret, fromPromise } from 'xstate';
+﻿import { createMachine, createActor, fromPromise } from 'xstate';
 
 export function createLLMStreamActor({
   url = '/api/ai/stream',
@@ -54,6 +54,6 @@ export function createLLMStreamActor({
     },
   });
 
-  const service = interpret(machine).start();
+  const service = createActor(machine).start();
   return service;
 }

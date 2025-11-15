@@ -1,8 +1,8 @@
 <!-- Toast/Notification System for Legal AI App -->
 <script lang="ts">
-  import { Toast } from 'bits-ui';
-  import { X, CheckCircle, AlertTriangle, AlertCircle, Info } from 'lucide-svelte';
   import { cn } from '$lib/utils';
+  import { Toast } from 'bits-ui/components/ui/toast';
+  import { AlertCircle, AlertTriangle, CheckCircle, Info, X } from 'lucide-svelte';
   export interface ToastProps {
     id: string;
     title?: string;

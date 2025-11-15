@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Dialog } from 'bits-ui';
-  import  Button  from "$lib/components/ui/button/Button.svelte";
-  import X from 'lucide-svelte';
   import { goto } from '$app/navigation';
-  import { superForm } from 'sveltekit-superforms';
-  import { zod } from 'sveltekit-superforms/adapters';
+  import Button from "$lib/components/ui/button/Button.svelte";
   import { loginSchema } from '$lib/schemas/auth';
   import { toastStore } from '$lib/stores/toast';
+  import { Dialog } from 'bits-ui/components/ui/dialog';
+  import X from 'lucide-svelte';
+  import { superForm } from 'sveltekit-superforms';
+  import { zod } from 'sveltekit-superforms/adapters';
   interface Props {
     onlogin?: () => void;
     open?: boolean;

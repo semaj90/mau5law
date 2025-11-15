@@ -156,10 +156,9 @@
 -            relatedAnalyses={[]}
 -          />
 +          <!-- Use svelte:component and cast the imported value to avoid instance-vs-constructor TS errors -->
-+          <svelte:component this={(WebGPUEvidenceGraphVisualization as unknown) as any}
-+            analysis={sampleAnalysis}
++          <(WebGPUEvidenceGraphVisualization as unknown) as any +            analysis={sampleAnalysis}
 +            relatedAnalyses={[]}
-+          />
++          / />
           <div class="placeholder-content">
             <svg class="placeholder-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />

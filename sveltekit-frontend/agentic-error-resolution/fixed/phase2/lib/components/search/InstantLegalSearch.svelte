@@ -230,7 +230,7 @@ https://svelte.dev/e/expected_token -->
                     value={docType.value}
                     class="rounded"
                   />
-                  <svelte:component this={docType.icon} class="h-4 w-4" />
+                  <docType.icon class="h-4 w-4" / />
                   <span class="text-sm">{docType.label}</span>
                 </label>
               {/each}
@@ -334,10 +334,8 @@ https://svelte.dev/e/expected_token -->
             <Card.Header class="pb-3">
               <div class="flex items-start justify-between">
                 <Card.Title class="text-base leading-tight flex items-center gap-2">
-                  <svelte:component
-                    this={getResultTypeIcon(result.resultType)}
-                    class="h-4 w-4 {getResultTypeColor(result.resultType)}"
-                  />
+                  <getResultTypeIcon(result.resultType) class="h-4 w-4 {getResultTypeColor(result.resultType)}"
+                  / />
                   {#if result.highlights?.title}
                     {@html result.highlights.title}
                   {:else}

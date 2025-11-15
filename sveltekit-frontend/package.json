@@ -7,8 +7,9 @@
     "dev": "cross-env DEV_BYPASS_AUTH=true REDIS_URL=redis://localhost:6379 REDIS_PASSWORD=redis vite dev --host 0.0.0.0 --strictPort",
     "dev:static": "concurrently -n \"Redis,Vite\" -c \"red,cyan\" \"node scripts/start-redis.js\" \"vite dev --host 0.0.0.0\"",
     "dev:solo": "vite dev --host 0.0.0.0 --strictPort",
-    "ingest:file": "tsx scripts/ingest-file.ts",
-    "test:minio:redis": "node scripts/test-minio-redis.js",
+    "rag:crawl": "tsx tools/web_crawler/index.ts",
+    "rag:index": "tsx tools/fs_indexer.ts",
+    "rag:mcp": "tsx src/mcp/server.ts",
     "dev:port": "node scripts/start-dev-dynamic.js",
     "dev:gpu": "cross-env NODE_OPTIONS=--max-old-space-size=6144 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev",
     "dev:gpu:quic": "cross-env NODE_OPTIONS=--max-old-space-size=6144 ENABLE_GPU=true RTX_3060_OPTIMIZATION=true CONTEXT7_MULTICORE=true OLLAMA_GPU_LAYERS=30 vite dev --port 5174 --strictPort --host 127.0.0.1",
@@ -634,10 +635,9 @@
     "@tiptap/core": "^3.0.7",
     "@tiptap/extension-collaboration": "^3.0.7",
     "@upstash/redis": "^1.35.6",
-    "@xstate/inspect": "^0.8.0",
     "amqplib": "0.10.9",
-    "bcryptjs": "^3.0.2",
-    "bits-ui": "2.14.2",
+    "cheerio": "^1.0.0",
+    "node-fetch": "^3.3.2",
     "cookie": "^1.0.2",
     "cors": "^2.8.5",
     "dotenv": "16.6.1",
@@ -663,7 +663,8 @@
     "ts-node": "^10.9.1",
     "uuid": "^10.0.0",
     "vitest": "^3.2.4",
-    "ws": "^8.18.3"
+    "ws": "^8.18.3",
+    "xstate": "5.24.0"
   },
   "exports": {
     ".": {
